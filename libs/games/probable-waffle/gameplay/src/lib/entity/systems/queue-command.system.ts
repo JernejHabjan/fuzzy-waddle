@@ -16,7 +16,7 @@ import { ProductionComponent } from "../components/production/production-compone
 import { QueueComponent } from "../components/queue/queue-component";
 import { SharedQueueItemType } from "../components/queue/shared-queue-item-type";
 import { ResearchComponent } from "../components/research/research-component";
-import { ProbableWaffleGameCommandTypes } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleGameCommandTypes } from "@fuzzy-waddle/probable-waffle-protocol";
 
 export class QueueCommandSystem {
   private commandBusSubscription?: Subscription;

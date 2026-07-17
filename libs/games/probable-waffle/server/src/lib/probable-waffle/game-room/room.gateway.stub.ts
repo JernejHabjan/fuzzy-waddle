@@ -1,4 +1,4 @@
-import { type ProbableWaffleRoomEvent } from "@fuzzy-waddle/api-interfaces";
+import { type ProbableWaffleRoomEvent } from "@fuzzy-waddle/probable-waffle-protocol";
 import { type RoomGatewayInterface } from "./room.gateway.interface";
 
 export const roomGatewayStub = {

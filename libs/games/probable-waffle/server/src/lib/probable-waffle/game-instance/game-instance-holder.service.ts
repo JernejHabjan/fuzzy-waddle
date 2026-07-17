@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { GameInstanceId, ProbableWaffleGameInstance } from "@fuzzy-waddle/api-interfaces";
+import { GameInstanceId } from "@fuzzy-waddle/platform-game-sessions";
+import { ProbableWaffleGameInstance } from "@fuzzy-waddle/probable-waffle-protocol";
 import { type GameInstanceHolderServiceInterface } from "./game-instance-holder.service.interface";
 
 @Injectable()

@@ -1,14 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from "@angular/core";
 import type { OnInit } from "@angular/core";
 
-import {
-  GameSaveKind,
-  GameSaveScope,
-  ProbableWaffleGameInstanceType,
-  isCampaignMissionId,
-  type CampaignMissionId,
-  type GameSaveRecord
-} from "@fuzzy-waddle/api-interfaces";
+import { GameSaveKind, GameSaveScope, ProbableWaffleGameInstanceType, isCampaignMissionId, type CampaignMissionId, type GameSaveRecord } from "@fuzzy-waddle/probable-waffle-protocol";
 import { ActivatedRoute, Router } from "@angular/router";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import { DatePipe } from "@angular/common";

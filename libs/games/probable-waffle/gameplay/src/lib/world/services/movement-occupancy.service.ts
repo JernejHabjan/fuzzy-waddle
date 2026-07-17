@@ -1,4 +1,4 @@
-import type { ActorId, Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import type { ActorId, Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { getActorComponent } from "../../data/actor-component";
 import { isGameObjectActiveInActiveScene } from "../../data/game-object-helper";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";

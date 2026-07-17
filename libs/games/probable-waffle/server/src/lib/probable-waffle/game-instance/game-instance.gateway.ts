@@ -9,36 +9,18 @@ import {
   WebSocketServer
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
-import {
-  GameSessionState,
-  type ProbableWaffleCommunicatorMessageEvent,
-  ProbableWaffleCommunicators,
-  type ProbableWaffleCommunicatorEventUnion,
-  type ProbableWaffleGameCommandEvent,
-  type ProbableWaffleGameFoundEvent,
-  type ProbableWaffleHostMigratedEvent,
-  type ProbableWaffleGameInstanceMetadataChangeEvent,
-  ProbableWaffleGameInstanceEvent,
-  ProbableWaffleGatewayEvent,
-  ProbableWaffleGatewayRoomTypes,
-  type ProbableWafflePlayerDataChangeEvent,
-  type ProbableWafflePlayerDisconnectedEvent,
-  ProbableWafflePlayerType,
-  type ProbableWafflePlayerReconnectedEvent,
-  type ProbableWaffleSnapshotResponseEvent,
-  type ProbableWaffleSpectatorDataChangeEvent,
-  type ProbableWaffleWebsocketRoomEvent
-} from "@fuzzy-waddle/api-interfaces";
+import { GameSessionState } from "@fuzzy-waddle/platform-game-sessions";
+import { type ProbableWaffleCommunicatorMessageEvent, ProbableWaffleCommunicators, type ProbableWaffleCommunicatorEventUnion, type ProbableWaffleGameCommandEvent, type ProbableWaffleGameFoundEvent, type ProbableWaffleHostMigratedEvent, type ProbableWaffleGameInstanceMetadataChangeEvent, ProbableWaffleGameInstanceEvent, ProbableWaffleGatewayEvent, ProbableWaffleGatewayRoomTypes, type ProbableWafflePlayerDataChangeEvent, type ProbableWafflePlayerDisconnectedEvent, ProbableWafflePlayerType, type ProbableWafflePlayerReconnectedEvent, type ProbableWaffleSnapshotResponseEvent, type ProbableWaffleSpectatorDataChangeEvent, type ProbableWaffleWebsocketRoomEvent } from "@fuzzy-waddle/probable-waffle-protocol";
 import { ProbableWaffleChatService } from "../chat/probable-waffle-chat.service";
 import { type AuthUser } from "@supabase/supabase-js";
-import { OnlineAccessGuard } from "@fuzzy-waddle/api/auth/guards/online-access.guard";
-import { CurrentUser } from "@fuzzy-waddle/api/auth/current-user";
+import { OnlineAccessGuard } from "@fuzzy-waddle/platform-identity/server/auth/guards/online-access.guard";
+import { CurrentUser } from "@fuzzy-waddle/platform-identity/server/auth/current-user";
 import { GameStateServerService, type UpdateGameStateResult } from "./game-state-server.service";
 import { RoomServerService } from "../game-room/room-server.service";
-import { ChatService } from "@fuzzy-waddle/api/app/chat/chat.service";
+import { ChatService } from "@fuzzy-waddle/platform-chat/server/chat/chat.service";
 import { PlayerDisconnectTrackerService } from "./multiplayer/player-disconnect-tracker.service";
 import { GameInstanceService } from "./game-instance.service";
-import { SocketConnectionAuthService } from "@fuzzy-waddle/api/auth/socket-connection-auth.service";
+import { SocketConnectionAuthService } from "@fuzzy-waddle/platform-identity/server/auth/socket-connection-auth.service";
 
 @WebSocketGateway({
   cors: {

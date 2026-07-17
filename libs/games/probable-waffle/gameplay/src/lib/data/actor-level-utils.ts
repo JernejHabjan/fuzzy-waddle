@@ -2,7 +2,7 @@ import { getActorComponent } from "./actor-component";
 import { OwnerComponent } from "../entity/components/owner-component";
 import { TechTreeService } from "./tech-tree/tech-tree.service";
 import { getSceneService } from "../world/services/scene-component-helpers";
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { AnimationActorComponent } from "../entity/components/animation/animation-actor-component";
 import { AttackComponent } from "../entity/components/combat/components/attack-component";
 import { HealthComponent } from "../entity/components/combat/components/health-component";

@@ -2,11 +2,11 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { CampaignComponent } from "./campaign.component";
 import { provideRouter } from "@angular/router";
-import { HomeNavTestingComponent } from "@fuzzy-waddle/portal/shared/components/home-nav/home-nav.component.spec";
-import { HomeNavComponent } from "@fuzzy-waddle/portal/shared/components/home-nav/home-nav.component";
+import { HomeNavTestingComponent } from "@fuzzy-waddle/platform-identity/client/home-nav/home-nav.component.spec";
+import { HomeNavComponent } from "@fuzzy-waddle/platform-identity/client/home-nav/home-nav.component";
 import { provideHttpClient } from "@angular/common/http";
-import { AuthService } from "@fuzzy-waddle/portal/auth/auth.service";
-import { authServiceStub } from "@fuzzy-waddle/portal/auth/auth.service.stub";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
+import { authServiceStub } from "@fuzzy-waddle/platform-identity/client/auth/auth.service.stub";
 
 describe("CampaignComponent", () => {
   let component: CampaignComponent;

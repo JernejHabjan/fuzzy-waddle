@@ -1,26 +1,16 @@
 import { Component, inject, signal, viewChild } from "@angular/core";
 import { FactionDefinitions } from "@fuzzy-waddle/probable-waffle-gameplay/player/faction-definitions";
 import { faCheck, faSpinner, faTimes } from "@fortawesome/free-solid-svg-icons";
-import {
-  GameSetupHelpers,
-  type PlayerNumber,
-  type PositionPlayerDefinition,
-  ProbableWaffleAiDifficulty,
-  ProbableWaffleGameInstanceType,
-  ProbableWaffleLevels,
-  type ProbableWaffleMapData,
-  ProbableWafflePlayer,
-  type ProbableWafflePlayerDataChangeEventProperty,
-  ProbableWafflePlayerType
-} from "@fuzzy-waddle/api-interfaces";
+import { GameSetupHelpers, type PositionPlayerDefinition, ProbableWaffleAiDifficulty, ProbableWaffleGameInstanceType, ProbableWaffleLevels, type ProbableWaffleMapData, ProbableWafflePlayer, type ProbableWafflePlayerDataChangeEventProperty, ProbableWafflePlayerType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { type PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 
 import { FormsModule } from "@angular/forms";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
-import { AuthService } from "@fuzzy-waddle/portal/auth/auth.service";
-import { ModalComponent } from "@fuzzy-waddle/portal/shared/components/modal/modal.component";
-import { ProfileComponent } from "@fuzzy-waddle/portal/home/profile/profile.component";
-import type { ModalConfig } from "@fuzzy-waddle/portal/shared/components/modal/modal-config";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
+import { ModalComponent } from "@fuzzy-waddle/platform-game-host/angular/components/modal/modal.component";
+import { ProfileComponent } from "@fuzzy-waddle/platform-identity/client/profile/profile.component";
+import type { ModalConfig } from "@fuzzy-waddle/platform-game-host/angular/components/modal/modal-config";
 
 export class PlayerTypeDefinitions {
   static playerTypes = [

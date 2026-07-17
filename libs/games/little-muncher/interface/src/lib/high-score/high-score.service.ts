@@ -1,10 +1,10 @@
 import { inject, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { LittleMuncherHillEnum, LittleMuncherScoreDto } from "@fuzzy-waddle/api-interfaces";
-import { environment } from "@fuzzy-waddle/portal-environments/environment";
+import { LittleMuncherHillEnum, LittleMuncherScoreDto } from "@fuzzy-waddle/little-muncher-protocol";
+import { environment } from "@fuzzy-waddle/environments/environment";
 import { firstValueFrom } from "rxjs";
-import { ServerHealthService } from "@fuzzy-waddle/portal/shared/services/server-health.service";
-import { AuthService } from "@fuzzy-waddle/portal/auth/auth.service";
+import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
 import { type HighScoreServiceInterface } from "./high-score.service.interface";
 
 @Injectable({

@@ -2,10 +2,10 @@ import type { OnInit } from "@angular/core";
 import { Component, inject, signal } from "@angular/core";
 import { Router, RouterLink } from "@angular/router";
 import { DatePipe } from "@angular/common";
-import { type MatchHistorySummary, ProbableWaffleLevels } from "@fuzzy-waddle/api-interfaces";
+import { type MatchHistorySummary, ProbableWaffleLevels } from "@fuzzy-waddle/probable-waffle-protocol";
 import { MatchHistoryService } from "../../services/match-history.service";
-import { AuthService } from "@fuzzy-waddle/portal/auth/auth.service";
-import { ServerHealthService } from "@fuzzy-waddle/portal/shared/services/server-health.service";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
+import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service";
 
 @Component({
   selector: "probable-waffle-match-history-page",

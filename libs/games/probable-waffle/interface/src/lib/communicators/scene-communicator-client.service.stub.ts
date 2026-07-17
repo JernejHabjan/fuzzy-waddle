@@ -1,6 +1,6 @@
 import { type SceneCommunicatorClientServiceInterface } from "./scene-communicator-client.service.interface";
 import { ProbableWaffleCommunicators } from "./probable-waffle.communicators";
-import { GameInstanceId } from "@fuzzy-waddle/api-interfaces";
+import { GameInstanceId } from "@fuzzy-waddle/platform-game-sessions";
 
 export const SceneCommunicatorClientServiceStub = {
   createCommunicators(gameInstanceId: GameInstanceId): Promise<ProbableWaffleCommunicators> {

@@ -1,5 +1,5 @@
 import { Injectable, Logger } from "@nestjs/common";
-import type { GameInstanceId, UserId } from "@fuzzy-waddle/api-interfaces";
+import type { GameInstanceId, UserId } from "@fuzzy-waddle/platform-game-sessions";
 
 /** How long (ms) to hold a player's slot after a network disconnect before evicting. */
 const RECONNECT_WINDOW_MS = 60_000;

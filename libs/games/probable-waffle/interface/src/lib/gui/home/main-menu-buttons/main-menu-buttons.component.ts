@@ -2,9 +2,9 @@ import { Component, inject, signal, type OnInit } from "@angular/core";
 
 import { environment } from "@fuzzy-waddle/environments/environment";
 import { RouterLink } from "@angular/router";
-import { TauriService } from "@fuzzy-waddle/portal/shared/services/tauri.service";
-import { AuthService } from "@fuzzy-waddle/portal/auth/auth.service";
-import { AvatarProviderService } from "@fuzzy-waddle/portal/shared/components/chat/avatar-provider/avatar-provider.service";
+import { TauriService } from "@fuzzy-waddle/platform-game-host/angular/services/tauri.service";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
+import { AvatarProviderService } from "@fuzzy-waddle/platform-identity/client/avatar-provider/avatar-provider.service";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 

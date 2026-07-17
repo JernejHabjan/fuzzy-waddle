@@ -1,4 +1,4 @@
-import { type RequestGameSearchForMatchMakingDto } from "@fuzzy-waddle/api-interfaces";
+import { type RequestGameSearchForMatchMakingDto } from "@fuzzy-waddle/probable-waffle-protocol";
 import { type User } from "@supabase/supabase-js";
 import { type MatchmakingServiceInterface } from "./matchmaking.service.interface";
 

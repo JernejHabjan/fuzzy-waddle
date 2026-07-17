@@ -43,23 +43,24 @@ Projects use `scope:<game-or-platform>` and one of `type:app`,
 The migration introduces these tags before enabling their final lint
 constraints, so unmigrated source remains usable between staged commits.
 
-## Initial inventory
+## Migration result
 
-- Nx projects: `client`, `client-e2e`, `api`, `api-e2e`, and
-  `api-interfaces`.
+- Nx applications: `portal`, `portal-e2e`, `probable-waffle-desktop`, `api`,
+  and `api-e2e`.
 - Web routes: `/little-muncher`, `/fly-squasher`, `/dungeon-crawler`, and
   `/aota` for Probable Waffle.
 - API game modules: Little Muncher, Fly Squasher, and Probable Waffle.
-- Phaser Editor: one workspace-root configuration and skip file.
-- Tauri: embedded in `apps/client/src-tauri` and configured to open `/aota`.
-- Game assets and metadata: grouped by game below `apps/client/src/assets` and
-  `apps/client/src/metadata`.
+- Phaser Editor: one configuration and skip file per gameplay project.
+- Tauri: isolated in `apps/probable-waffle-desktop/src-tauri` and configured to
+  open `/aota`.
+- Game assets and metadata: owned by each game below
+  `libs/games/<game>/gameplay/src`.
 - Phaser scenes: Fly Squasher has 4 scene files and Probable Waffle has 454;
   scene files and generated TypeScript remain in the same gameplay project.
 
-## Legacy contract classification
+## Contract ownership
 
-| `api-interfaces` area | New owner |
+| Contract area | Owner |
 | --- | --- |
 | chat | `platform-chat` |
 | current user/profile and UUID | `platform-identity` |
@@ -69,4 +70,3 @@ constraints, so unmigrated source remains usable between staged commits.
 | Little Muncher communicators, game instances, scores, and user info | `little-muncher-protocol` |
 | Probable Waffle communicators, transport DTOs, campaign, achievements, match history, and user info | `probable-waffle-protocol` |
 | Probable Waffle setup helpers, seeded randomness, definitions, spell/status rules | `probable-waffle-gameplay` |
-

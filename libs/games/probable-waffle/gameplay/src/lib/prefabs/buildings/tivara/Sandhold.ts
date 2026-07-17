@@ -7,7 +7,7 @@ import SandholdCursor from "./Sandhold/SandholdCursor";
 import SandholdFoundation1 from "./Sandhold/SandholdFoundation1";
 import SandholdFoundation2 from "./Sandhold/SandholdFoundation2";
 /* START-USER-IMPORTS */
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { ConstructionGameObjectInterfaceComponent } from "../../../entity/components/construction/construction-game-object-interface-component";
 import { setActorData } from "../../../data/actor-data";
 /* END-USER-IMPORTS */

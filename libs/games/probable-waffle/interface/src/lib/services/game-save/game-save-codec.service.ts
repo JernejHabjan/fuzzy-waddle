@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { PROBABLE_WAFFLE_SAVE_DATA_KEY, type ProbableWaffleGameInstanceData } from "@fuzzy-waddle/api-interfaces";
+import { PROBABLE_WAFFLE_SAVE_DATA_KEY, type ProbableWaffleGameInstanceData } from "@fuzzy-waddle/probable-waffle-protocol";
 import { GameSaveCodecServiceInterface } from "./game-save-codec.service.interface";
 
 const IV_LENGTH = 12;

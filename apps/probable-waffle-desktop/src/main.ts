@@ -8,10 +8,12 @@ import { ServiceWorkerModule } from "@angular/service-worker";
 import { environment } from "@fuzzy-waddle/environments/environment";
 import { probableWaffleRoutes } from "@fuzzy-waddle/probable-waffle-interface";
 import { SocketIoModule } from "ngx-socket-io";
-import { accessTokenInterceptor } from "@fuzzy-waddle/portal/auth/access-token.interceptor";
-import { AppComponent } from "@fuzzy-waddle/portal/app.component";
-import { AuthGuard } from "@fuzzy-waddle/portal/auth/auth.guard";
-import { authReadyInterceptor } from "@fuzzy-waddle/portal/auth/auth-ready.interceptor";
+import { accessTokenInterceptor } from "@fuzzy-waddle/platform-identity/client/auth/access-token.interceptor";
+import { AuthGuard } from "@fuzzy-waddle/platform-identity/client/auth/auth.guard";
+import { authReadyInterceptor } from "@fuzzy-waddle/platform-identity/client/auth/auth-ready.interceptor";
+import { DESKTOP_AUTH_BRIDGE } from "@fuzzy-waddle/platform-identity/client/auth/desktop-auth-bridge";
+import { TauriService } from "@fuzzy-waddle/platform-game-host/angular/services/tauri.service";
+import { AppComponent } from "./app/app.component";
 
 const routes = [
   { path: "", pathMatch: "full", redirectTo: "aota" },
@@ -33,6 +35,7 @@ bootstrapApplication(AppComponent, {
       SocketIoModule.forRoot(environment.socketIoConfig)
     ),
     AuthGuard,
+    { provide: DESKTOP_AUTH_BRIDGE, useExisting: TauriService },
     provideHttpClient(withInterceptors([authReadyInterceptor, accessTokenInterceptor]))
   ]
 }).catch((err) => console.error(err));

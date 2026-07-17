@@ -1,4 +1,4 @@
-import type { ProbableWaffleLightingAmbientKeyframe } from "@fuzzy-waddle/api-interfaces";
+import type { ProbableWaffleLightingAmbientKeyframe } from "@fuzzy-waddle/probable-waffle-protocol";
 
 export type ResolvedSceneLightingConfig = {
   enabled: boolean;

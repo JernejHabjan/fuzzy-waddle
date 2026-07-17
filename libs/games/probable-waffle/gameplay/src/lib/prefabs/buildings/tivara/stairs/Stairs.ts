@@ -4,7 +4,7 @@
 
 import StairsTopLeft from "./StairsTopLeft";
 /* START-USER-IMPORTS */
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { ConstructionGameObjectInterfaceComponent } from "../../../../entity/components/construction/construction-game-object-interface-component";
 import {
   getIsometricNeighbourDirectionsByTypes,

@@ -10,7 +10,8 @@ import AiControllerDebugLabel from "./AiControllerDebugLabel";
 /* START-USER-IMPORTS */
 import { getPlayers } from "../../../../data/scene-data";
 import HudProbableWaffle from "../../../../world/scenes/hud-scenes/HudProbableWaffle";
-import { type PlayerNumber, ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
+import { type PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
+import { ProbableWafflePlayerType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { getSceneService } from "../../../../world/services/scene-component-helpers";
 import { DebuggingService } from "../../../../world/services/DebuggingService";
 /* END-USER-IMPORTS */

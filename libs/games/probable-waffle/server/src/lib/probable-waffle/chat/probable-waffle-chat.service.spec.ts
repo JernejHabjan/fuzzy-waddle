@@ -1,7 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { ProbableWaffleChatService } from "./probable-waffle-chat.service";
-import { TextSanitizationService } from "@fuzzy-waddle/api/core/content-filters/text-sanitization.service";
-import { textSanitizationServiceStub } from "@fuzzy-waddle/api/core/content-filters/text-sanitization.service.stub";
+import { TextSanitizationService } from "@fuzzy-waddle/platform-chat/server/content-filters/text-sanitization.service";
+import { textSanitizationServiceStub } from "@fuzzy-waddle/platform-chat/server/content-filters/text-sanitization.service.stub";
 
 describe("ProbableWaffleChatService", () => {
   let service: ProbableWaffleChatService;

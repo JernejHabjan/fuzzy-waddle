@@ -33,7 +33,7 @@ jobs:
 
       # Keep CI on a single GitHub runner for this repo. Recent Nx Agents trials did
       # not improve end-to-end time because the expensive work is concentrated in a
-      # small number of large client targets rather than many independent projects.
+      # small number of large frontend targets rather than many independent projects.
       - name: Run linter
         run: pnpm run lint
         env:
@@ -60,8 +60,8 @@ jobs:
       # - name: Upload artifact
       #   uses: actions/upload-pages-artifact@v3
       #   with:
-      #     # Upload dist/apps/client
-      #     path: 'dist/apps/client'
+      #     # Upload dist/apps/portal
+      #     path: 'dist/apps/portal'
 
   # Deploy job
   #deploy:

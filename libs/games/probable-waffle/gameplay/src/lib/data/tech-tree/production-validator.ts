@@ -1,11 +1,6 @@
 // Centralized production & queue validation using tech tree, supply & resource state.
-import {
-  ObjectNames,
-  type PlayerNumber,
-  PreRequirement,
-  ProbableWafflePlayer,
-  ResourceType
-} from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames, PreRequirement, ProbableWafflePlayer, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { type PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 import { PlayerAiBlackboard } from "../../player/ai-controller/player-ai-blackboard";
 import { TechTreeService } from "./tech-tree.service";
 import { getCostForObjectName } from "../../entity/components/production/cost-utils";

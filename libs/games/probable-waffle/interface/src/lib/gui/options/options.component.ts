@@ -2,14 +2,14 @@ import { ChangeDetectorRef, Component, inject, type OnInit } from "@angular/core
 
 import { FormsModule } from "@angular/forms";
 import { RouterLink } from "@angular/router";
-import { AngularHost } from "@fuzzy-waddle/portal/shared/consts";
+import { AngularHost } from "@fuzzy-waddle/platform-game-host/angular/consts";
 import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { OptionsService } from "./options.service";
-import { HomeNavComponent } from "@fuzzy-waddle/portal/shared/components/home-nav/home-nav.component";
-import { CenterWrapperComponent } from "@fuzzy-waddle/portal/shared/components/center-wrapper/center-wrapper.component";
+import { HomeNavComponent } from "@fuzzy-waddle/platform-identity/client/home-nav/home-nav.component";
+import { CenterWrapperComponent } from "@fuzzy-waddle/platform-game-host/angular/components/center-wrapper/center-wrapper.component";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
-import { isTauri, TauriService } from "@fuzzy-waddle/portal/shared/services/tauri.service";
+import { isTauri, TauriService } from "@fuzzy-waddle/platform-game-host/angular/services/tauri.service";
 
 @Component({
   templateUrl: "./options.component.html",

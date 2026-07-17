@@ -1,15 +1,10 @@
 import { Body, Controller, Delete, Get, Post, UseGuards } from "@nestjs/common";
-import { OnlineAccessGuard } from "@fuzzy-waddle/api/auth/guards/online-access.guard";
-import { CurrentUser } from "@fuzzy-waddle/api/auth/current-user";
+import { OnlineAccessGuard } from "@fuzzy-waddle/platform-identity/server/auth/guards/online-access.guard";
+import { CurrentUser } from "@fuzzy-waddle/platform-identity/server/auth/current-user";
 import { type AuthUser } from "@supabase/supabase-js";
 import { GameInstanceService } from "./game-instance.service";
-import {
-  type GameInstanceDataDto,
-  type LittleMuncherGameCreateDto,
-  type LittleMuncherGameInstanceData,
-  type LittleMuncherRoom,
-  LittleMuncherScoreDto
-} from "@fuzzy-waddle/api-interfaces";
+import { type GameInstanceDataDto } from "@fuzzy-waddle/platform-game-sessions";
+import { type LittleMuncherGameCreateDto, type LittleMuncherGameInstanceData, type LittleMuncherRoom, LittleMuncherScoreDto } from "@fuzzy-waddle/little-muncher-protocol";
 import { LittleMuncherHighScoreService } from "../high-score/little-muncher-high-score.service";
 
 @Controller("little-muncher")

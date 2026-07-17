@@ -10,3 +10,4 @@ export * from "./lib/game/phaser/game/base-game";
 export * from "./lib/game/phaser/scene/base.scene";
 export * from "./lib/game/phaser/scene/scene-config.interface";
 export * from "./lib/game/phaser/scene/update-event-data";
+export * from "./lib/game-event-emitter";

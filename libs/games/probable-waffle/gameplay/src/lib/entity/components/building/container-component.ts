@@ -4,7 +4,7 @@ import { HealthComponent } from "../combat/components/health-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { VisionComponent } from "../vision-component";
 import { getGameObjectVisibility, isWaterUnit } from "../../../data/game-object-helper";
-import type { ContainerComponentData } from "@fuzzy-waddle/api-interfaces";
+import type { ContainerComponentData } from "@fuzzy-waddle/probable-waffle-protocol";
 import { IdComponent } from "../id-component";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
@@ -14,7 +14,7 @@ import { ContainableComponent } from "./containable-component";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { RepresentableComponent } from "../representable-component";
 import { ActorTranslateComponent } from "../movement/actor-translate-component";
-import type { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import type { Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 
 /**

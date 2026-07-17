@@ -1,6 +1,6 @@
 import type { ResearchData } from "./research-data";
 import { SpellType } from "../combat/spell-type";
-import { ObjectNames, ResearchType, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames, ResearchType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 export const researchDefinitions: Record<ResearchType, ResearchData> = {
   [ResearchType.SnowstormSpell]: {

@@ -1,5 +1,5 @@
 import { inject, Injectable } from "@angular/core";
-import type { PlayerScoreData } from "@fuzzy-waddle/api-interfaces";
+import type { PlayerScoreData } from "@fuzzy-waddle/probable-waffle-protocol";
 import { GameInstanceClientService } from "../communicators/game-instance-client.service";
 
 /**

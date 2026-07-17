@@ -1,14 +1,5 @@
 import { Injectable, Logger } from "@nestjs/common";
-import {
-  type ActorDefinition,
-  type PlayerStateHousing,
-  type PlayerStateResources,
-  type ProbableWaffleGameInstance,
-  type ProbableWafflePlayerDataChangeEvent,
-  ProbableWafflePlayerDataChangeProperties,
-  ResourceType,
-  type SelectionGroupData
-} from "@fuzzy-waddle/api-interfaces";
+import { type ActorDefinition, type PlayerStateHousing, type PlayerStateResources, type ProbableWaffleGameInstance, type ProbableWafflePlayerDataChangeEvent, ProbableWafflePlayerDataChangeProperties, ResourceType, type SelectionGroupData } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { User } from "@supabase/supabase-js";
 
 type PlayerDataChangeProperty = ProbableWafflePlayerDataChangeEvent["property"];

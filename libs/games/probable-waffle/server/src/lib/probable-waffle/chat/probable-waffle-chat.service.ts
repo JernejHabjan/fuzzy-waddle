@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { TextSanitizationService } from "@fuzzy-waddle/api/core/content-filters/text-sanitization.service";
+import { TextSanitizationService } from "@fuzzy-waddle/platform-chat/server/content-filters/text-sanitization.service";
 
 @Injectable()
 export class ProbableWaffleChatService {

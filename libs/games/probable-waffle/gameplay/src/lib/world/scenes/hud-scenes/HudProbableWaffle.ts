@@ -22,7 +22,7 @@ import { HudGameState } from "../../../hud/hud-game-state";
 import { HudElementVisibilityHandler } from "../../../hud/hud-element-visibility.handler";
 import { CursorHandler } from "../../../player/human-controller/cursor.handler";
 import { MultiSelectionHandler } from "../../../player/human-controller/multi-selection.handler";
-import { ProbableWaffleGameInstanceType, ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleGameInstanceType, ProbableWafflePlayerType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { getGameObjectBounds } from "../../../data/game-object-helper";
 import { filter, Subscription } from "rxjs";
 import { environment } from "@fuzzy-waddle/environments/environment";

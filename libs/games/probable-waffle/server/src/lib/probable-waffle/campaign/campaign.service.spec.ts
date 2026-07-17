@@ -1,5 +1,5 @@
 import { CampaignServerService } from "./campaign.service";
-import type { SupabaseProviderService } from "@fuzzy-waddle/api/core/supabase-provider/supabase-provider.service";
+import type { SupabaseProviderService } from "@fuzzy-waddle/platform-database-schema/server/supabase-provider/supabase-provider.service";
 
 describe("CampaignServerService", () => {
   it("records an owner-scoped victory and completion", async () => {

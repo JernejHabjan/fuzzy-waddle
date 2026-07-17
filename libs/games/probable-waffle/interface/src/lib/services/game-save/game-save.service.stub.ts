@@ -1,4 +1,4 @@
-import type { CampaignMissionId, GameSaveRecord } from "@fuzzy-waddle/api-interfaces";
+import type { CampaignMissionId, GameSaveRecord } from "@fuzzy-waddle/probable-waffle-protocol";
 import { GameSaveServiceInterface } from "./game-save.service.interface";
 import type { SaveGameRequest } from "./save-game-request";
 

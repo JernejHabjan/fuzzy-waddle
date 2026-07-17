@@ -1,4 +1,4 @@
-import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import {
   ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_ACTION,
   ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_IDLE

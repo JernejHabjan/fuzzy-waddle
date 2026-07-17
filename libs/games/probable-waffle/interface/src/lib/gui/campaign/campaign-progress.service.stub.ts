@@ -1,9 +1,4 @@
-import type {
-  CampaignMissionId,
-  CampaignMissionOutcome,
-  CampaignMissionProgress,
-  CampaignProgressData
-} from "@fuzzy-waddle/api-interfaces";
+import type { CampaignMissionId, CampaignMissionOutcome, CampaignMissionProgress, CampaignProgressData } from "@fuzzy-waddle/probable-waffle-protocol";
 import { CampaignProgressServiceInterface } from "./campaign-progress.service.interface";
 import { signal, Signal } from "@angular/core";
 

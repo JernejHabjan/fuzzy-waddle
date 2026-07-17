@@ -1,5 +1,5 @@
 import { getGameObjectCurrentTile } from "../data/game-object-helper";
-import type { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { getSceneService } from "../world/services/scene-component-helpers";
 import { NavigationService } from "../world/services/navigation.service";
 import { getActorComponent } from "../data/actor-component";

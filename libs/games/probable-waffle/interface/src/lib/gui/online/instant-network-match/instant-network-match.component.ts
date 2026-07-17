@@ -1,11 +1,11 @@
 import { Component, HostListener, inject, type OnDestroy, type OnInit } from "@angular/core";
 
-import { LoaderComponent } from "@fuzzy-waddle/portal/shared/loader/loader.component";
+import { LoaderComponent } from "@fuzzy-waddle/platform-game-host/angular/loader/loader.component";
 import { MatchmakingService } from "../matchmaking/matchmaking.service";
-import { ServerHealthService } from "@fuzzy-waddle/portal/shared/services/server-health.service";
+import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service";
 import { RouterLink } from "@angular/router";
-import { AngularHost } from "@fuzzy-waddle/portal/shared/consts";
-import { CenterWrapperComponent } from "@fuzzy-waddle/portal/shared/components/center-wrapper/center-wrapper.component";
+import { AngularHost } from "@fuzzy-waddle/platform-game-host/angular/consts";
+import { CenterWrapperComponent } from "@fuzzy-waddle/platform-game-host/angular/components/center-wrapper/center-wrapper.component";
 
 @Component({
   selector: "fuzzy-waddle-instant-network-match",

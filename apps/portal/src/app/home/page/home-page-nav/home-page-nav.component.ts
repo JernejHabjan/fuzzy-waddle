@@ -1,13 +1,13 @@
 import { Component, inject, type OnInit } from "@angular/core";
-import { AuthService } from "../../../auth/auth.service";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
-import { HomeNavComponent } from "../../../shared/components/home-nav/home-nav.component";
+import { HomeNavComponent } from "@fuzzy-waddle/platform-identity/client/home-nav/home-nav.component";
 import { RouterLink } from "@angular/router";
-import { AvatarProviderService } from "../../../shared/components/chat/avatar-provider/avatar-provider.service";
-import { CurrentUserProfileService } from "../../../data-access/profile/current-user-profile.service";
-import { getRoleIcon, getRoleLabel } from "../../../shared/utils/app-role-presentation";
-import type { CurrentUserProfileDto } from "@fuzzy-waddle/api-interfaces";
+import { AvatarProviderService } from "@fuzzy-waddle/platform-identity/client/avatar-provider/avatar-provider.service";
+import { CurrentUserProfileService } from "@fuzzy-waddle/platform-identity/client/profile-data/current-user-profile.service";
+import { getRoleIcon, getRoleLabel } from "@fuzzy-waddle/platform-identity/client/utils/app-role-presentation";
+import type { CurrentUserProfileDto } from "@fuzzy-waddle/platform-identity";
 
 @Component({
   selector: "fuzzy-waddle-home-page-nav",

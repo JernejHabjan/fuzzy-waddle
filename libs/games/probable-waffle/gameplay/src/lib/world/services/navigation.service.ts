@@ -10,7 +10,7 @@ import {
   TOP_LEFT,
   TOP_RIGHT
 } from "easystarjs";
-import type { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import type { Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
 import Phaser, { GameObjects } from "phaser";
 import { getActorComponent } from "../../data/actor-component";
 import { NavigableComponent } from "../../entity/components/movement/navigable-component";

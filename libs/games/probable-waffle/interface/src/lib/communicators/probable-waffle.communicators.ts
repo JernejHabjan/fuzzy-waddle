@@ -1,11 +1,5 @@
 import { Observable } from "rxjs";
-import type {
-  ProbableWaffleGameInstanceMetadataChangeEvent,
-  ProbableWaffleGameModeDataChangeEvent,
-  ProbableWaffleGameStateDataChangeEvent,
-  ProbableWafflePlayerDataChangeEvent,
-  ProbableWaffleSpectatorDataChangeEvent
-} from "@fuzzy-waddle/api-interfaces";
+import type { ProbableWaffleGameInstanceMetadataChangeEvent, ProbableWaffleGameModeDataChangeEvent, ProbableWaffleGameStateDataChangeEvent, ProbableWafflePlayerDataChangeEvent, ProbableWaffleSpectatorDataChangeEvent } from "@fuzzy-waddle/probable-waffle-protocol";
 
 export type ProbableWaffleCommunicators = {
   gameInstanceObservable: Observable<ProbableWaffleGameInstanceMetadataChangeEvent>;

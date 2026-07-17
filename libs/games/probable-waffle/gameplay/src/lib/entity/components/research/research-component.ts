@@ -1,4 +1,4 @@
-import { EventEmitter } from "@angular/core";
+import { GameEventEmitter as EventEmitter } from "@fuzzy-waddle/platform-game-host";
 import { researchDefinitions } from "./research-definitions";
 import { OwnerComponent } from "../owner-component";
 import { getActorComponent } from "../../../data/actor-component";
@@ -6,7 +6,7 @@ import { emitResource, getPlayer } from "../../../data/scene-data";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 import { onObjectReady } from "../../../data/game-object-helper";
-import { ObjectNames, type ResearchComponentData, type ResearchType } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames, type ResearchComponentData, type ResearchType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { QueueComponent } from "../queue/queue-component";
 import { QueueItemType, type UnifiedQueueItem } from "../queue/queue-item";
 import Phaser from "phaser";

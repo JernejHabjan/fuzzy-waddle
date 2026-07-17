@@ -1,13 +1,5 @@
 import { inject, Injectable } from "@angular/core";
-import {
-  type CampaignMissionId,
-  type EncodedGameSaveRecord,
-  GAME_SAVE_FORMAT_VERSION,
-  GameSaveKind,
-  type GameSaveRecord,
-  GameSaveScope,
-  GameSaveSyncState
-} from "@fuzzy-waddle/api-interfaces";
+import { type CampaignMissionId, type EncodedGameSaveRecord, GAME_SAVE_FORMAT_VERSION, GameSaveKind, type GameSaveRecord, GameSaveScope, GameSaveSyncState } from "@fuzzy-waddle/probable-waffle-protocol";
 import { GameSaveRepository } from "./game-save.repository";
 import { GameSaveSyncService } from "./game-save-sync.service";
 import { GameSaveCodecService } from "./game-save-codec.service";

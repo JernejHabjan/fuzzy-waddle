@@ -2,7 +2,7 @@ import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { OrderType } from "../../ai/order-type";
 import { CursorHandler, CursorType } from "./cursor.handler";
 import { getSceneComponent, getSceneService } from "../../world/services/scene-component-helpers";
-import { type Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import { type Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { canActorTraverseTile } from "../../data/game-object-helper";
 import {
   getCurrentPlayerNumber,

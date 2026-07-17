@@ -1,12 +1,7 @@
 import { Injectable } from "@nestjs/common";
-import { SupabaseProviderService } from "@fuzzy-waddle/api/core/supabase-provider/supabase-provider.service";
-import {
-  GameKey,
-  GameParticipantType,
-  GameResultStatus,
-  GameSessionStatus,
-  LittleMuncherScoreDto
-} from "@fuzzy-waddle/api-interfaces";
+import { SupabaseProviderService } from "@fuzzy-waddle/platform-database-schema/server/supabase-provider/supabase-provider.service";
+import { GameKey, GameParticipantType, GameResultStatus, GameSessionStatus } from "@fuzzy-waddle/platform-database-schema";
+import { LittleMuncherScoreDto } from "@fuzzy-waddle/little-muncher-protocol";
 import { type LittleMuncherHighScoreServiceInterface } from "./little-muncher-high-score.service.interface";
 import { User } from "@supabase/supabase-js";
 

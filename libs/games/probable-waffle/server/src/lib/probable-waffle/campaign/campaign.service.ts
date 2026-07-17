@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
-import { SupabaseProviderService } from "@fuzzy-waddle/api/core/supabase-provider/supabase-provider.service";
+import { SupabaseProviderService } from "@fuzzy-waddle/platform-database-schema/server/supabase-provider/supabase-provider.service";
 import type { CampaignResultDto } from "./campaign.dto";
-import type { CampaignMissionId } from "@fuzzy-waddle/api-interfaces";
+import type { CampaignMissionId } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { CampaignServerServiceInterface } from "./campaign.service.interface";
 
 @Injectable()

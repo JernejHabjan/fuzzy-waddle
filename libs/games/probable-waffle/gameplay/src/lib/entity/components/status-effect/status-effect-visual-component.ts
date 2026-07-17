@@ -1,6 +1,6 @@
 import { StatusEffectComponent } from "./status-effect-component";
 import { Subscription } from "rxjs";
-import { type StatusEffectData, StatusEffectType } from "@fuzzy-waddle/api-interfaces";
+import { type StatusEffectData, StatusEffectType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { HealthComponent } from "../combat/components/health-component";
 import Phaser from "phaser";
 import { getGameObjectRenderedTransform, onObjectReady } from "../../../data/game-object-helper";

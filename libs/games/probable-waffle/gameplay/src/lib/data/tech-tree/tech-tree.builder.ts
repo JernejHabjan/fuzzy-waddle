@@ -1,6 +1,6 @@
 // Pure builder that infers tech graph from prefab actor definitions.
 import { type TechTreeGraph } from "./tech-tree-graph";
-import { ObjectNames, PreRequirement } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames, PreRequirement } from "@fuzzy-waddle/probable-waffle-protocol";
 import { getPwActorDefinition } from "../../prefabs/definitions/actor-definitions";
 import { BuilderComponent } from "../../entity/components/construction/builder-component";
 import type { TechTreeNode } from "./tech-tree-node";

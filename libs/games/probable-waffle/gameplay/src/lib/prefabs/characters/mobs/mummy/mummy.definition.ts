@@ -1,4 +1,4 @@
-import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { PaymentType } from "../../../../entity/components/production/payment-type";
 import { ANIM_MUMMY_DEFINITION } from "./mummy_anim";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";

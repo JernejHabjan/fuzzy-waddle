@@ -76,11 +76,6 @@ export interface UpdateChatReportStatusDto {
   status: typeof ChatReportStatus.Reviewed | typeof ChatReportStatus.Actioned;
 }
 
-export interface BanUserDto {
-  bannedUntil?: string | null;
-  moderationNote?: string;
-}
-
 export interface ModerationBannedUserDto {
   userId: string;
   displayName: string;

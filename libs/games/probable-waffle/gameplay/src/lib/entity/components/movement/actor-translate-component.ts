@@ -1,5 +1,5 @@
 import { Observable, Subject } from "rxjs";
-import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { getGameObjectDirectionBetweenTiles } from "../../systems/movement.system";
 import {
   getGameObjectLogicalTransform,

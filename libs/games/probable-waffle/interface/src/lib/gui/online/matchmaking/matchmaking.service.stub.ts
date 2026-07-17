@@ -1,4 +1,4 @@
-import { FactionType } from "@fuzzy-waddle/api-interfaces";
+import { FactionType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { type IMatchmakingService } from "./matchmaking.service.interface";
 import { MatchmakingLevel } from "./matchmaking-level";
 

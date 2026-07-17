@@ -1,5 +1,6 @@
 import { type MapAnalysis, MapAnalyzer } from "./map-analyzer";
-import { FactionType, ObjectNames, ResourceType, type Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import { FactionType, ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { type Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { NavigationService } from "../../../world/services/navigation.service";

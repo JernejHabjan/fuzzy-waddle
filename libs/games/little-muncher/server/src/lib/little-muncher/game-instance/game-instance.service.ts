@@ -1,18 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { type User } from "@supabase/supabase-js";
-import {
-  type GameInstanceDataDto,
-  GameInstanceId,
-  GameSessionState,
-  type LittleMuncherGameCreateDto,
-  LittleMuncherGameInstance,
-  type LittleMuncherGameInstanceData,
-  type LittleMuncherRoom,
-  type LittleMuncherRoomEvent,
-  type LittleMuncherSpectatorEvent,
-  type RoomAction,
-  type SpectatorAction
-} from "@fuzzy-waddle/api-interfaces";
+import { type GameInstanceDataDto, GameInstanceId, GameSessionState, type RoomAction, type SpectatorAction } from "@fuzzy-waddle/platform-game-sessions";
+import { type LittleMuncherGameCreateDto, LittleMuncherGameInstance, type LittleMuncherGameInstanceData, type LittleMuncherRoom, type LittleMuncherRoomEvent, type LittleMuncherSpectatorEvent } from "@fuzzy-waddle/little-muncher-protocol";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import { GameInstanceGateway } from "./game-instance.gateway";
 import { type GameInstanceServiceInterface } from "./game-instance.service.interface";

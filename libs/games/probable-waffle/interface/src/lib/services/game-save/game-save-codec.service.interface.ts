@@ -1,4 +1,4 @@
-import type { ProbableWaffleGameInstanceData } from "@fuzzy-waddle/api-interfaces";
+import type { ProbableWaffleGameInstanceData } from "@fuzzy-waddle/probable-waffle-protocol";
 
 /** Encodes save payloads for local persistence and authenticated synchronization. */
 export abstract class GameSaveCodecServiceInterface {

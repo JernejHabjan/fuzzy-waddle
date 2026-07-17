@@ -1,4 +1,4 @@
-import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { ANIM_SKELETON_SCYTHE_DEFINITION } from "./skeleton_scythe_anim";
 import { weaponDefinitions } from "../../../../../entity/components/combat/weapon-definitions";
 import { ActorPhysicalType } from "../../../../../entity/components/combat/components/actor-physical-type";

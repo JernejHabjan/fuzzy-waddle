@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { HighScoreComponent } from "./high-score.component";
-import { ServerHealthService } from "@fuzzy-waddle/portal/shared/services/server-health.service";
-import { serverHealthServiceStub } from "@fuzzy-waddle/portal/shared/services/server-health.service.stub";
-import { AuthService } from "@fuzzy-waddle/portal/auth/auth.service";
-import { authServiceStub } from "@fuzzy-waddle/portal/auth/auth.service.stub";
+import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service";
+import { serverHealthServiceStub } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service.stub";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
+import { authServiceStub } from "@fuzzy-waddle/platform-identity/client/auth/auth.service.stub";
 import { HighScoreService } from "./high-score.service";
 import { highScoreServiceStub } from "./high-score.service.stub";
 import { FontAwesomeTestingModule } from "@fortawesome/angular-fontawesome/testing";

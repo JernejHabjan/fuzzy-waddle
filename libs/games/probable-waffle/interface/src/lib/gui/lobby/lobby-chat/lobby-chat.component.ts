@@ -1,10 +1,11 @@
 import { Component, inject, type OnDestroy, type OnInit } from "@angular/core";
 import { ProbableWaffleCommunicatorService } from "../../../communicators/probable-waffle-communicator.service";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
-import { AuthService } from "@fuzzy-waddle/portal/auth/auth.service";
-import { type ChatMessage, ProbableWaffleGameInstanceType } from "@fuzzy-waddle/api-interfaces";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
+import { type ChatMessage } from "@fuzzy-waddle/platform-chat";
+import { ProbableWaffleGameInstanceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { Subject, Subscription } from "rxjs";
-import { ChatComponent } from "@fuzzy-waddle/portal/shared/components/chat/chat.component";
+import { ChatComponent } from "@fuzzy-waddle/platform-chat/client/components/chat.component";
 
 @Component({
   selector: "probable-waffle-lobby-chat",

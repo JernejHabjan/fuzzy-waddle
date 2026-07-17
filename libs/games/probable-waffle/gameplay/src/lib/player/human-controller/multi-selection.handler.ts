@@ -1,7 +1,7 @@
 import Phaser, { GameObjects, Geom, Input } from "phaser";
 import { isFullscreenTopEdgeExit } from "./fullscreen-edge-guard";
 import HudProbableWaffle from "../../world/scenes/hud-scenes/HudProbableWaffle";
-import { type ProbableWaffleSelectionData } from "@fuzzy-waddle/api-interfaces";
+import { type ProbableWaffleSelectionData } from "@fuzzy-waddle/probable-waffle-protocol";
 import { getSceneComponent } from "../../world/services/scene-component-helpers";
 import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { BuildingCursor } from "./building-cursor";

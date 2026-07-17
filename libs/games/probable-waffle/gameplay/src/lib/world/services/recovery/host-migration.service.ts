@@ -1,6 +1,6 @@
 import type { Subscription } from "rxjs";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
-import { type ProbableWaffleHostMigratedEvent } from "@fuzzy-waddle/api-interfaces";
+import { type ProbableWaffleHostMigratedEvent } from "@fuzzy-waddle/probable-waffle-protocol";
 import { getCommunicator } from "../../../data/scene-data";
 import { getSceneSystem } from "../scene-component-helpers";
 import { SnapshotService } from "./snapshot.service";

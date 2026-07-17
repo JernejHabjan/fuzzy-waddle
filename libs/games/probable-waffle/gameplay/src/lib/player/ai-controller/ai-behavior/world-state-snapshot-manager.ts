@@ -1,5 +1,5 @@
 import { type EnemyIntel, PlayerAiBlackboard } from "../player-ai-blackboard";
-import { ObjectNames, ProbableWafflePlayer } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames, ProbableWafflePlayer } from "@fuzzy-waddle/probable-waffle-protocol";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";

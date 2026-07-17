@@ -3,12 +3,8 @@ import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { getActorComponent } from "../../data/actor-component";
 import { IdComponent } from "../../entity/components/id-component";
 import { MULTI_SELECTING } from "./multi-selection.handler";
-import type {
-  ActorId,
-  ProbableWaffleDoubleSelectionData,
-  ProbableWaffleSelectionData,
-  Vector3Simple
-} from "@fuzzy-waddle/api-interfaces";
+import type { ActorId, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
+import type { ProbableWaffleDoubleSelectionData, ProbableWaffleSelectionData } from "@fuzzy-waddle/probable-waffle-protocol";
 import { getSelectableGameObject, onSceneInitialized } from "../../data/game-object-helper";
 import { IsoHelper } from "../../world/tilemap/iso-helper";
 import { getSceneComponent, getSceneService } from "../../world/services/scene-component-helpers";

@@ -4,12 +4,8 @@ import { getActorComponent } from "../../../data/actor-component";
 import { emitResource, getPlayer } from "../../../data/scene-data";
 import { QueueComponent } from "../queue/queue-component";
 import { QueueItemType, type UnifiedQueueItem } from "../queue/queue-item";
-import {
-  ProbableWaffleGameCommandTypes,
-  type ProductionComponentData,
-  ResourceType,
-  type Vector3Simple
-} from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleGameCommandTypes, type ProductionComponentData, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { type Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { HealthComponent } from "../combat/components/health-component";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { SceneActorCreator } from "../../../world/services/scene-actor-creator";

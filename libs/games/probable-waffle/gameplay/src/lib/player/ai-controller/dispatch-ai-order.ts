@@ -4,7 +4,7 @@ import { CommandBusService } from "../../world/services/multiplayer/command-bus.
 import { getActorComponent } from "../../data/actor-component";
 import { IdComponent } from "../../entity/components/id-component";
 import type { OrderData } from "../../ai/OrderData";
-import type { PlayerNumber } from "@fuzzy-waddle/api-interfaces";
+import type { PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 
 /**

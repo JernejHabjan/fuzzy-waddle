@@ -1,12 +1,12 @@
 import { Component, inject } from "@angular/core";
-import { ServerHealthService } from "@fuzzy-waddle/portal/shared/services/server-health.service";
-import { AuthService } from "@fuzzy-waddle/portal/auth/auth.service";
+import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
 import { MatchmakingComponent } from "./matchmaking/matchmaking.component";
 import { HostComponent } from "./host/host.component";
 import { LobbiesComponent } from "./lobbies/lobbies.component";
-import { HomeNavComponent } from "@fuzzy-waddle/portal/shared/components/home-nav/home-nav.component";
+import { HomeNavComponent } from "@fuzzy-waddle/platform-identity/client/home-nav/home-nav.component";
 import { RouterLink } from "@angular/router";
-import { AngularHost } from "@fuzzy-waddle/portal/shared/consts";
+import { AngularHost } from "@fuzzy-waddle/platform-game-host/angular/consts";
 
 @Component({
   selector: "probable-waffle-online",

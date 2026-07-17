@@ -1,11 +1,7 @@
 import { Component, inject, input, type OnInit } from "@angular/core";
 
-import {
-  type GameScoreSnapshot,
-  type GameScoreSnapshotDto,
-  GameSetupHelpers,
-  type PlayerNumber
-} from "@fuzzy-waddle/api-interfaces";
+import { type GameScoreSnapshot, type GameScoreSnapshotDto, GameSetupHelpers } from "@fuzzy-waddle/probable-waffle-protocol";
+import { type PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { ScoreDataService } from "../../../services/score-data.service";
 import { type ChartConfiguration, type ChartData, type ChartTypeRegistry, type DefaultDataPoint } from "chart.js";

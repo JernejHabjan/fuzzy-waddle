@@ -1,4 +1,4 @@
-import { type AIBehaviorTreeStateData, ProbableWafflePlayer } from "@fuzzy-waddle/api-interfaces";
+import { type AIBehaviorTreeStateData, ProbableWafflePlayer } from "@fuzzy-waddle/probable-waffle-protocol";
 import { PlayerAiBlackboard } from "./player-ai-blackboard";
 import { PlayerAiControllerAgent } from "./player-ai-controller.agent";
 import { BehaviourTree } from "mistreevous";

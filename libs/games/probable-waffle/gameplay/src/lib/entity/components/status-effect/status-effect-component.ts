@@ -1,10 +1,5 @@
-import { EventEmitter } from "@angular/core";
-import {
-  DamageType,
-  type StatusEffectComponentData,
-  type StatusEffectData,
-  StatusEffectType
-} from "@fuzzy-waddle/api-interfaces";
+import { GameEventEmitter as EventEmitter } from "@fuzzy-waddle/platform-game-host";
+import { DamageType, type StatusEffectComponentData, type StatusEffectData, StatusEffectType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { Subscription } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
 import { HealthComponent } from "../combat/components/health-component";

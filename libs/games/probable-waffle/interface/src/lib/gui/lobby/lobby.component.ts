@@ -7,7 +7,7 @@ import { LobbyChatComponent } from "./lobby-chat/lobby-chat.component";
 import { MapBrowserComponent } from "./map-browser/map-browser.component";
 import { FormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
-import { ProbableWaffleGameInstanceType, ProbableWaffleMapEnum } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleGameInstanceType, ProbableWaffleMapEnum } from "@fuzzy-waddle/probable-waffle-protocol";
 import { TriggerComponent } from "./trigger/trigger.component";
 
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";

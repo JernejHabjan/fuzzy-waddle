@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 
 import { LobbyComponent } from "../../lobby/lobby.component";
-import { AngularHost } from "@fuzzy-waddle/portal/shared/consts";
+import { AngularHost } from "@fuzzy-waddle/platform-game-host/angular/consts";
 
 @Component({
   selector: "fuzzy-waddle-lobby-page",

@@ -4,13 +4,8 @@ import { IdComponent } from "../../entity/components/id-component";
 import { OwnerComponent } from "../../entity/components/owner-component";
 import { ResourceSourceComponent } from "../../entity/components/resource/resource-source-component";
 import { ResourceDrainComponent } from "../../entity/components/resource/resource-drain-component";
-import {
-  type ActorId,
-  ConstructionStateEnum,
-  ObjectNames,
-  type PlayerNumber,
-  ResourceType
-} from "@fuzzy-waddle/api-interfaces";
+import { type ActorId, type PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
+import { ConstructionStateEnum, ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { getSceneComponent, getSceneService } from "./scene-component-helpers";
@@ -25,7 +20,7 @@ import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 import { getCanonicalActorNameCached } from "../../data/tech-tree/canonical-actor-name";
 import { ConstructionSiteComponent } from "../../entity/components/construction/construction-site-component";
 import { shouldConsiderActorUnlocked } from "../../data/tech-tree/actor-unlock-utils";
-import { EventEmitter } from "@angular/core";
+import { GameEventEmitter as EventEmitter } from "@fuzzy-waddle/platform-game-host";
 
 export class ActorIndexSystem {
   // Event emitted when an actor unlock is registered for a player

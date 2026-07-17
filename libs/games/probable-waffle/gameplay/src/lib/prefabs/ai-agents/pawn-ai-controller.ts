@@ -10,7 +10,7 @@ import { HealthComponent } from "../../entity/components/combat/components/healt
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { DebuggingService } from "../../world/services/DebuggingService";
 import { Subscription } from "rxjs";
-import { type BackboardComponentData } from "@fuzzy-waddle/api-interfaces";
+import { type BackboardComponentData } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { PawnAiDefinition } from "./pawn-ai-definition";
 import { AiType } from "./ai-type";
 import { getActorComponent } from "../../data/actor-component";

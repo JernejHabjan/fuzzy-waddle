@@ -2,7 +2,7 @@ import { ConstructionSiteComponent } from "./construction-site-component";
 import { ContainerComponent } from "../building/container-component";
 import { Subject, type Subscription } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
-import { type BuilderComponentData, ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { type BuilderComponentData, ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { HealthComponent } from "../combat/components/health-component";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { AudioService } from "../../../world/services/audio.service";

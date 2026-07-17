@@ -1,9 +1,9 @@
 import { Component, HostListener, inject, type OnDestroy, type OnInit, ViewEncapsulation } from "@angular/core";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
-import { UserInstanceService } from "@fuzzy-waddle/portal/home/profile/user-instance.service";
+import { UserInstanceService } from "@fuzzy-waddle/platform-identity/client/profile/user-instance.service";
 import { RouterOutlet } from "@angular/router";
-import { AngularHost } from "@fuzzy-waddle/portal/shared/consts";
-import { TauriService } from "@fuzzy-waddle/portal/shared/services/tauri.service";
+import { AngularHost } from "@fuzzy-waddle/platform-game-host/angular/consts";
+import { TauriService } from "@fuzzy-waddle/platform-game-host/angular/services/tauri.service";
 
 @Component({
   templateUrl: "./probable-waffle.component.html",

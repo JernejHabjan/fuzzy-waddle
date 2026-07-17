@@ -1,4 +1,4 @@
-import type { CampaignMissionDefinition } from "@fuzzy-waddle/api-interfaces";
+import type { CampaignMissionDefinition } from "@fuzzy-waddle/probable-waffle-protocol";
 
 /** Creates and enters a fully initialized campaign game instance. */
 export abstract class CampaignLaunchServiceInterface {

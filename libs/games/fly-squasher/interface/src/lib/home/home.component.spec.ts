@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { HomeComponent } from "./home.component";
-import { ServerHealthService } from "@fuzzy-waddle/portal/shared/services/server-health.service";
-import { serverHealthServiceStub } from "@fuzzy-waddle/portal/shared/services/server-health.service.stub";
-import { AuthService } from "@fuzzy-waddle/portal/auth/auth.service";
-import { authServiceStub } from "@fuzzy-waddle/portal/auth/auth.service.stub";
+import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service";
+import { serverHealthServiceStub } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service.stub";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
+import { authServiceStub } from "@fuzzy-waddle/platform-identity/client/auth/auth.service.stub";
 import { FontAwesomeTestingModule } from "@fortawesome/angular-fontawesome/testing";
 import { provideRouter } from "@angular/router";
 

@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing";
 
 import { SceneCommunicatorClientService } from "./scene-communicator-client.service";
-import { AuthenticatedSocketService } from "@fuzzy-waddle/portal/data-access/chat/authenticated-socket.service";
-import { createAuthenticatedSocketServiceStub } from "@fuzzy-waddle/portal/data-access/chat/authenticated-socket.service.stub";
+import { AuthenticatedSocketService } from "@fuzzy-waddle/platform-chat/client/data-access/authenticated-socket.service";
+import { createAuthenticatedSocketServiceStub } from "@fuzzy-waddle/platform-chat/client/data-access/authenticated-socket.service.stub";
 
 describe("SceneCommunicatorClientService", () => {
   let service: SceneCommunicatorClientService;

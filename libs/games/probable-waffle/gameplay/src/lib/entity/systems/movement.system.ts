@@ -1,4 +1,4 @@
-import type { ActorId, Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import type { ActorId, Vector2Simple, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { getSceneComponent, getSceneService } from "../../world/services/scene-component-helpers";
 import { NavigationService, TerrainType } from "../../world/services/navigation.service";
 import { throttle } from "../../library/throttle";

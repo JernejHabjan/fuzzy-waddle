@@ -1,4 +1,4 @@
-import type { EncodedGameSaveRecord } from "@fuzzy-waddle/api-interfaces";
+import type { EncodedGameSaveRecord } from "@fuzzy-waddle/probable-waffle-protocol";
 
 /** Durable encoded save metadata repository. */
 export abstract class GameSaveRepositoryInterface {

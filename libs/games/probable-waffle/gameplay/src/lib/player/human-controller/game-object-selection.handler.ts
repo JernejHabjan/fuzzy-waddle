@@ -13,11 +13,8 @@ import { AttackComponent } from "../../entity/components/combat/components/attac
 import { ProductionCostComponent } from "../../entity/components/production/production-cost-component";
 import { ProductionComponent } from "../../entity/components/production/production-component";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
-import {
-  type ActorId,
-  ObjectNames,
-  type ProbableWaffleSelectionData
-} from "@fuzzy-waddle/api-interfaces";
+import { type ActorId } from "@fuzzy-waddle/platform-game-sessions";
+import { ObjectNames, type ProbableWaffleSelectionData } from "@fuzzy-waddle/probable-waffle-protocol";
 import { getActorSystem } from "../../data/actor-system";
 import { MovementSystem } from "../../entity/systems/movement.system";
 import { AudioActorComponent } from "../../entity/components/actor-audio/audio-actor-component";

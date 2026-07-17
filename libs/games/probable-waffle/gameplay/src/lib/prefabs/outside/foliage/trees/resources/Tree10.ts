@@ -4,7 +4,7 @@
 
 import TreeBird from "../../../../animals/tree-bird/TreeBird";
 /* START-USER-IMPORTS */
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import Phaser from "phaser";
 import { hasMultiplayerCommandRelay } from "../../../../../data/scene-data";
 /* END-USER-IMPORTS */

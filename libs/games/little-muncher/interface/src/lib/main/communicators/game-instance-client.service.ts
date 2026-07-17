@@ -1,20 +1,13 @@
 import { inject, Injectable } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 import { HttpClient } from "@angular/common/http";
-import {
-  type GameInstanceDataDto,
-  type GameInstanceId,
-  type LittleMuncherGameCreate,
-  type LittleMuncherGameCreateDto,
-  LittleMuncherGameInstance,
-  type LittleMuncherGameInstanceData,
-  type LittleMuncherLevel
-} from "@fuzzy-waddle/api-interfaces";
+import { type GameInstanceDataDto, type GameInstanceId } from "@fuzzy-waddle/platform-game-sessions";
+import { type LittleMuncherGameCreate, type LittleMuncherGameCreateDto, LittleMuncherGameInstance, type LittleMuncherGameInstanceData, type LittleMuncherLevel } from "@fuzzy-waddle/little-muncher-protocol";
 import { SceneCommunicatorClientService } from "./scene-communicator-client.service";
 import { type GameInstanceClientServiceInterface } from "./game-instance-client.service.interface";
-import { AuthService } from "@fuzzy-waddle/portal/auth/auth.service";
-import { ServerHealthService } from "@fuzzy-waddle/portal/shared/services/server-health.service";
-import { environment } from "@fuzzy-waddle/portal-environments/environment";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
+import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service";
+import { environment } from "@fuzzy-waddle/environments/environment";
 
 @Injectable({
   providedIn: "root"

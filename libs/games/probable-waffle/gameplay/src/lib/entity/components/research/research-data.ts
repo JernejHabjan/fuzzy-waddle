@@ -1,5 +1,5 @@
 import type { SpellType } from "../combat/spell-type";
-import { type ObjectNames, ResearchType, type ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { type ObjectNames, ResearchType, type ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 export interface ResearchData {
   type: ResearchType;

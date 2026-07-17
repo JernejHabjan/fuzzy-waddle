@@ -70,7 +70,7 @@ jobs:
         run: pnpm run version:check
 
       # Keep PR validation local to one runner. Nx Agents currently add coordination
-      # overhead here without speeding up this repo's mostly client-heavy workload.
+      # overhead here without speeding up this repo's mostly frontend-heavy workload.
       - name: Run linter
         run: pnpm run lint
         env:

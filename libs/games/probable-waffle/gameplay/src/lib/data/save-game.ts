@@ -7,7 +7,8 @@ import { TechTreeService } from "./tech-tree/tech-tree.service";
 import type { SaveGamePayload } from "./save-game-payload";
 import { SelectionGroupsComponent } from "../player/human-controller/selection-groups.component";
 import { CameraMovementHandler } from "../player/human-controller/cameraMovementHandler";
-import { GameSessionState, type AllScenesEventData, ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
+import { GameSessionState } from "@fuzzy-waddle/platform-game-sessions";
+import { type AllScenesEventData, ProbableWafflePlayerType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { AiPlayerHandler } from "../player/ai-controller/ai-player-handler";
 import { SimulationTickService } from "../world/services/simulation-tick.service";
 

@@ -1,4 +1,4 @@
-import type { CampaignMissionDefinition } from "@fuzzy-waddle/api-interfaces";
+import type { CampaignMissionDefinition } from "@fuzzy-waddle/probable-waffle-protocol";
 import { CampaignLaunchServiceInterface } from "./campaign-launch.service.interface";
 
 export class CampaignLaunchServiceStub extends CampaignLaunchServiceInterface {

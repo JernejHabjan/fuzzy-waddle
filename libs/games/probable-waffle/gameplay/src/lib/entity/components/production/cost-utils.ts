@@ -1,4 +1,4 @@
-import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
 
 /**

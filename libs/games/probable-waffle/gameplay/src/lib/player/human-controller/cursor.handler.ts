@@ -20,7 +20,7 @@ import { GameSettings } from "../../core/gameSettings";
 import { ContainableComponent } from "../../entity/components/building/containable-component";
 import { GathererComponent } from "../../entity/components/resource/gatherer-component";
 import GameObject = Phaser.GameObjects.GameObject;
-import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { NavigationService } from "../../world/services/navigation.service";
 import { IsoHelper } from "../../world/tilemap/iso-helper";
 import { ActorTranslateComponent } from "../../entity/components/movement/actor-translate-component";

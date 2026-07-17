@@ -1,4 +1,4 @@
-import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { ActorsStoneSfxOutOfResourcesSounds, ActorsStoneSfxSelectionSounds } from "./sfx-stone";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 import { SoundType } from "../../../../entity/components/actor-audio/sound-type";

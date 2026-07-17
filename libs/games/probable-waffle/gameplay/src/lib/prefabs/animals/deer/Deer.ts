@@ -3,7 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { RandomMovementComponent } from "../../../entity/components/movement/random-movement.component";
 import { onObjectReady } from "../../../data/game-object-helper";
 import type { RandomMovementDefinition } from "../../../entity/components/movement/random-movement-definition";

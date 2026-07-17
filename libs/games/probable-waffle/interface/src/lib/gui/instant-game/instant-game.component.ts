@@ -2,15 +2,10 @@ import { Component, inject } from "@angular/core";
 import type { OnInit } from "@angular/core";
 
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
-import {
-  FactionType,
-  GameSessionState,
-  ProbableWaffleGameInstanceType,
-  ProbableWaffleGameInstanceVisibility,
-  ProbableWaffleMapEnum
-} from "@fuzzy-waddle/api-interfaces";
-import { LoaderComponent } from "@fuzzy-waddle/portal/shared/loader/loader.component";
-import { AngularHost } from "@fuzzy-waddle/portal/shared/consts";
+import { FactionType, ProbableWaffleGameInstanceType, ProbableWaffleGameInstanceVisibility, ProbableWaffleMapEnum } from "@fuzzy-waddle/probable-waffle-protocol";
+import { GameSessionState } from "@fuzzy-waddle/platform-game-sessions";
+import { LoaderComponent } from "@fuzzy-waddle/platform-game-host/angular/loader/loader.component";
+import { AngularHost } from "@fuzzy-waddle/platform-game-host/angular/consts";
 
 @Component({
   selector: "fuzzy-waddle-instant-game",

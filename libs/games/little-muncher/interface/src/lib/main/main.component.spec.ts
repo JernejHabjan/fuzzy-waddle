@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MainComponent } from "./main.component";
 import { GameContainerTestingComponent } from "@fuzzy-waddle/platform-game-host/game-container/game-container.component.spec";
-import { AuthService } from "@fuzzy-waddle/portal/auth/auth.service";
-import { authServiceStub } from "@fuzzy-waddle/portal/auth/auth.service.stub";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
+import { authServiceStub } from "@fuzzy-waddle/platform-identity/client/auth/auth.service.stub";
 import { GameInterfaceTestingComponent } from "./game-interface/game-interface.component.spec";
 import { GameInstanceClientService } from "./communicators/game-instance-client.service";
 import { gameInstanceClientServiceStub } from "./communicators/game-instance-client.service.stub";

@@ -4,8 +4,8 @@ import { FormsModule } from "@angular/forms";
 import { Component } from "@angular/core";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.stub";
-import { AuthService } from "@fuzzy-waddle/portal/auth/auth.service";
-import { authServiceStub } from "@fuzzy-waddle/portal/auth/auth.service.stub";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
+import { authServiceStub } from "@fuzzy-waddle/platform-identity/client/auth/auth.service.stub";
 
 @Component({
   selector: "probable-waffle-game-mode-definition",

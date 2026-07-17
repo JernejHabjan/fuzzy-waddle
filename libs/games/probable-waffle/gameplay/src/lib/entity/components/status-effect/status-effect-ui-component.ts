@@ -5,7 +5,7 @@ import { Subscription } from "rxjs";
 import { getGameObjectBounds, getGameObjectDepth, onObjectReady } from "../../../data/game-object-helper";
 import { OwnerComponent } from "../owner-component";
 import { ActorTranslateComponent } from "../movement/actor-translate-component";
-import { type StatusEffectData, StatusEffectType } from "@fuzzy-waddle/api-interfaces";
+import { type StatusEffectData, StatusEffectType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { HealthComponent } from "../combat/components/health-component";
 import { HealthUiComponent } from "../combat/components/health-ui-component";
 

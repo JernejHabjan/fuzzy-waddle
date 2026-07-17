@@ -1,7 +1,7 @@
 import { inject, NgModule } from "@angular/core";
 import { Router, RouterModule, type Routes } from "@angular/router";
-import { AuthGuard } from "./auth/auth.guard";
-import { AppRoleGuard } from "./auth/app-role.guard";
+import { AuthGuard } from "@fuzzy-waddle/platform-identity/client/auth/auth.guard";
+import { AppRoleGuard } from "@fuzzy-waddle/platform-identity/client/auth/app-role.guard";
 import { LevelGuard } from "@fuzzy-waddle/fly-squasher-interface/choose-level/level.guard";
 import { isTauri } from "@fuzzy-waddle/platform-game-host/tauri";
 import { ensurePhaserGlobal } from "@fuzzy-waddle/platform-game-host/phaser/ensure-phaser-global";

@@ -1,18 +1,6 @@
 import { BaseScene } from "@fuzzy-waddle/platform-game-host/phaser/scene/base.scene";
 import { type ProbableWaffleGameData } from "./probable-waffle-game-data";
-import {
-  ProbableWaffleGameMode,
-  type ProbableWaffleGameModeData,
-  ProbableWaffleGameState,
-  type ProbableWaffleGameStateData,
-  ProbableWaffleLevels,
-  type ProbableWaffleMapData,
-  ProbableWafflePlayer,
-  type ProbableWafflePlayerControllerData,
-  type ProbableWafflePlayerStateData,
-  ProbableWaffleSpectator,
-  type ProbableWaffleSpectatorData
-} from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleGameMode, type ProbableWaffleGameModeData, ProbableWaffleGameState, type ProbableWaffleGameStateData, ProbableWaffleLevels, type ProbableWaffleMapData, ProbableWafflePlayer, type ProbableWafflePlayerControllerData, type ProbableWafflePlayerStateData, ProbableWaffleSpectator, type ProbableWaffleSpectatorData } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { ProbableWaffleCommunicatorServiceInterface } from "./ports/probable-waffle-communicator";
 import { BehaviorSubject } from "rxjs";
 

@@ -1,12 +1,7 @@
 import { State } from "mistreevous";
 import { type IPlayerControllerAgent } from "./player-ai-controller.agent.interface";
-import {
-  FactionType,
-  ObjectNames,
-  ProbableWafflePlayer,
-  ResourceType,
-  type Vector3Simple
-} from "@fuzzy-waddle/api-interfaces";
+import { FactionType, ObjectNames, ProbableWafflePlayer, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { type Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { environment } from "@fuzzy-waddle/environments/environment";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { DebuggingService } from "../../world/services/DebuggingService";

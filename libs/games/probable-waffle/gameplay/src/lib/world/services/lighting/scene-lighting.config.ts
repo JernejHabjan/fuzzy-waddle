@@ -1,4 +1,4 @@
-import type { ProbableWaffleLightingAmbientKeyframe, ProbableWaffleLightingConfig } from "@fuzzy-waddle/api-interfaces";
+import type { ProbableWaffleLightingAmbientKeyframe, ProbableWaffleLightingConfig } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { ResolvedSceneLightingConfig } from "./resolved-scene-lighting.config";
 
 const DEFAULT_AMBIENT_KEYFRAMES: ProbableWaffleLightingAmbientKeyframe[] = [

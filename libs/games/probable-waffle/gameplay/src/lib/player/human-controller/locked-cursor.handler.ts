@@ -74,7 +74,7 @@ export class LockedCursorHandler {
     if (!this.input.mouse || this.input.mouse.locked) return;
     // Apply Phaser pointer lock patch
     // This fixes pointer position updates when pointer lock is active
-    // See: apps/client/src/app/shared/game/phaser/patches/pointer-lock-patch.ts
+    // See: libs/games/probable-waffle/gameplay/src/lib/player/human-controller/pointer-lock-patch.ts
     applyPointerLockPatch();
     this.input.mouse.requestPointerLock();
   }
@@ -84,7 +84,7 @@ export class LockedCursorHandler {
    * This updates the custom cursor position based on pointer movement deltas
    *
    * Note: Phaser's pointer position is automatically updated via the patched Pointer.move() method
-   * (see apps/client/src/app/shared/game/phaser/patches/pointer-lock-patch.ts)
+   * (see libs/games/probable-waffle/gameplay/src/lib/player/human-controller/pointer-lock-patch.ts)
    * We only need to update the visual cursor position here
    */
   private onPointerMove(pointer: Phaser.Input.Pointer) {

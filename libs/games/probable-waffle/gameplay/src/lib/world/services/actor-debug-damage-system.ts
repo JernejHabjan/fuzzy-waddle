@@ -6,7 +6,7 @@ import { AnimationActorComponent } from "../../entity/components/animation/anima
 import { AnimationType } from "../../entity/components/animation/animation-type";
 import { environment } from "@fuzzy-waddle/environments/environment";
 import type { Subscription } from "rxjs";
-import { DamageType } from "@fuzzy-waddle/api-interfaces";
+import { DamageType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 export class ActorDebugDamageSystem {
   private externalModalOpen = false;

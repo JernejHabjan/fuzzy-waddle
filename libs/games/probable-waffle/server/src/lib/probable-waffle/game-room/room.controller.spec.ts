@@ -2,12 +2,12 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { RoomController } from "./room.controller";
 import { RoomServerService } from "./room-server.service";
 import { roomServerServiceStub } from "./room-server.service.stub";
-import { OnlineAccessGuard } from "@fuzzy-waddle/api/auth/guards/online-access.guard";
-import { SupabaseAuthGuard } from "@fuzzy-waddle/api/auth/guards/supabase-auth.guard";
-import { UserProfilesService } from "@fuzzy-waddle/api/app/user-profiles/user-profiles.service";
-import { onlineAccessGuardStub } from "@fuzzy-waddle/api/auth/guards/online-access.guard.stub";
-import { supabaseAuthGuardStub } from "@fuzzy-waddle/api/auth/guards/supabase-auth.guard.stub";
-import { userProfilesServiceStub } from "@fuzzy-waddle/api/app/user-profiles/user-profiles.service.stub";
+import { OnlineAccessGuard } from "@fuzzy-waddle/platform-identity/server/auth/guards/online-access.guard";
+import { SupabaseAuthGuard } from "@fuzzy-waddle/platform-identity/server/auth/guards/supabase-auth.guard";
+import { UserProfilesService } from "@fuzzy-waddle/platform-identity/server/user-profiles/user-profiles.service";
+import { onlineAccessGuardStub } from "@fuzzy-waddle/platform-identity/server/auth/guards/online-access.guard.stub";
+import { supabaseAuthGuardStub } from "@fuzzy-waddle/platform-identity/server/auth/guards/supabase-auth.guard.stub";
+import { userProfilesServiceStub } from "@fuzzy-waddle/platform-identity/server/user-profiles/user-profiles.service.stub";
 
 describe("RoomController", () => {
   let controller: RoomController;

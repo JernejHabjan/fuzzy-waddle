@@ -1,5 +1,5 @@
 import { TestBed } from "@angular/core/testing";
-import type { ProbableWaffleGameInstanceData } from "@fuzzy-waddle/api-interfaces";
+import type { ProbableWaffleGameInstanceData } from "@fuzzy-waddle/probable-waffle-protocol";
 import { GameSaveService } from "./game-save.service";
 import { GameSaveCodecService } from "./game-save-codec.service";
 import { GameSaveCodecServiceStub } from "./game-save-codec.service.stub";

@@ -3,7 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { EventEmitter } from "@angular/core";
+import { GameEventEmitter as EventEmitter } from "@fuzzy-waddle/platform-game-host";
 /* END-USER-IMPORTS */
 
 export default class ButtonSmall extends Phaser.GameObjects.Container {

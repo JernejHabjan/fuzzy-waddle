@@ -1,10 +1,9 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { HomeComponent } from "./home.component";
 import { provideRouter } from "@angular/router";
-import { HomePageNavTestingComponent } from "@fuzzy-waddle/portal/home/page/home-page-nav/home-page-nav.component.spec";
 import { BannerComponent } from "./banner/banner.component";
 import { BannerTestComponent } from "./banner/banner.component.spec";
-import { ModalComponent } from "@fuzzy-waddle/portal/shared/components/modal/modal.component";
+import { ModalComponent } from "@fuzzy-waddle/platform-game-host/angular/components/modal/modal.component";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Component } from "@angular/core";
 import { HomeBackgroundEffectComponent } from "./home-background-effect/home-background-effect.component";
@@ -30,7 +29,7 @@ describe("HomeComponent", () => {
           imports: [HomeBackgroundEffectComponent, BannerComponent]
         },
         add: {
-          imports: [HomePageNavTestingComponent, HomeBackgroundEffectTestComponent, BannerTestComponent]
+          imports: [HomeBackgroundEffectTestComponent, BannerTestComponent]
         }
       })
       .compileComponents();

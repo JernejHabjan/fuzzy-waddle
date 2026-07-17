@@ -14,7 +14,7 @@ import { ActorTranslateComponent } from "./movement/actor-translate-component";
 import { HealthComponent } from "./combat/components/health-component";
 import { ContainerComponent } from "./building/container-component";
 import { VisionComponent } from "./vision-component";
-import { type SelectableComponentData } from "@fuzzy-waddle/api-interfaces";
+import { type SelectableComponentData } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { SelectableDefinition } from "./selectable-definition";
 
 export class SelectableComponent {

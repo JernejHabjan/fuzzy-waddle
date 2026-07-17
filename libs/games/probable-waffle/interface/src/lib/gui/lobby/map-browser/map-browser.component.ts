@@ -9,12 +9,12 @@ import {
   output
 } from "@angular/core";
 
-import { ProbableWaffleLevels, type ProbableWaffleMapData, ProbableWaffleMapEnum } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleLevels, type ProbableWaffleMapData, ProbableWaffleMapEnum } from "@fuzzy-waddle/probable-waffle-protocol";
 import { environment } from "@fuzzy-waddle/environments/environment";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { Subscription } from "rxjs";
 import { SceneCommunicatorClientService } from "../../../communicators/scene-communicator-client.service";
-import { AuthService } from "@fuzzy-waddle/portal/auth/auth.service";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
 
 @Component({
   selector: "probable-waffle-map-browser",

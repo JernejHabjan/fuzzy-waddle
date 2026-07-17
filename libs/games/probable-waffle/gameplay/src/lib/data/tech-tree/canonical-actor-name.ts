@@ -1,5 +1,5 @@
 // Helper to get the canonical actor name, resolving randomOfType variants to their parent
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { pwActorDefinitions } from "../../prefabs/definitions/actor-definitions";
 import type { PrefabDefinition } from "../../prefabs/definitions/prefab-definition";
 

@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 import { AppController } from "./app.controller";
-import { AuthModule } from "../auth/auth.module";
+import { AuthModule } from "@fuzzy-waddle/platform-identity/server/auth/auth.module";
 import { ConfigModule } from "@nestjs/config";
 import { ChatModule } from "./chat/chat.module";
 import { LittleMuncherModule } from "@fuzzy-waddle/little-muncher-server";
@@ -9,7 +9,7 @@ import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { FlySquasherModule } from "@fuzzy-waddle/fly-squasher-server";
 import { ProbableWaffleModule } from "@fuzzy-waddle/probable-waffle-server";
 import { AchievementsModule } from "./achievements/achievements.module";
-import { UserProfilesModule } from "./user-profiles/user-profiles.module";
+import { UserProfilesModule } from "@fuzzy-waddle/platform-identity/server/user-profiles/user-profiles.module";
 
 @Module({
   imports: [

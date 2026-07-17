@@ -1,4 +1,4 @@
-import type { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import type { Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { onObjectReady } from "../../../data/game-object-helper";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
 import { getCenterTileCoordUnderObject } from "../../../library/tile-under-object";

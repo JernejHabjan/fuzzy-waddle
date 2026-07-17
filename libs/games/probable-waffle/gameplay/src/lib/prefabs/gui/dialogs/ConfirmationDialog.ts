@@ -4,7 +4,7 @@
 
 import ButtonSmall from "../buttons/ButtonSmall";
 /* START-USER-IMPORTS */
-import { EventEmitter } from "@angular/core";
+import { GameEventEmitter as EventEmitter } from "@fuzzy-waddle/platform-game-host";
 /* END-USER-IMPORTS */
 
 export default class ConfirmationDialog extends Phaser.GameObjects.Container {

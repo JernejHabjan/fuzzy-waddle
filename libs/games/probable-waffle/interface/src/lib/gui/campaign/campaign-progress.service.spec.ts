@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing";
 import { CampaignProgressService } from "./campaign-progress.service";
 import { provideHttpClient } from "@angular/common/http";
-import { AuthService } from "@fuzzy-waddle/portal/auth/auth.service";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
 
 describe("CampaignProgressService", () => {
   let service: CampaignProgressService;

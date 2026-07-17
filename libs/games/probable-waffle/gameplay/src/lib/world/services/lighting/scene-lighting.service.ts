@@ -1,4 +1,4 @@
-import type { ProbableWaffleLightingAmbientKeyframe } from "@fuzzy-waddle/api-interfaces";
+import type { ProbableWaffleLightingAmbientKeyframe } from "@fuzzy-waddle/probable-waffle-protocol";
 import { Subscription } from "rxjs";
 import { GameSettings } from "../../../core/gameSettings";
 import { getActorComponent } from "../../../data/actor-component";

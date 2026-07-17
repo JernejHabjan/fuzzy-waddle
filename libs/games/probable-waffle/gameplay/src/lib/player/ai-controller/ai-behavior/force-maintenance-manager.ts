@@ -1,5 +1,5 @@
 import { State } from "mistreevous";
-import { FactionType, ObjectNames, ProbableWafflePlayer } from "@fuzzy-waddle/api-interfaces";
+import { FactionType, ObjectNames, ProbableWafflePlayer } from "@fuzzy-waddle/probable-waffle-protocol";
 import { PlayerAiBlackboard } from "../player-ai-blackboard";
 import { getActorComponent } from "../../../data/actor-component";
 import { ProductionComponent } from "../../../entity/components/production/production-component";

@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
-import { GameSaveScope, isCampaignMissionInChapter } from "@fuzzy-waddle/api-interfaces";
-import { SupabaseProviderService } from "@fuzzy-waddle/api/core/supabase-provider/supabase-provider.service";
+import { GameSaveScope, isCampaignMissionInChapter } from "@fuzzy-waddle/probable-waffle-protocol";
+import { SupabaseProviderService } from "@fuzzy-waddle/platform-database-schema/server/supabase-provider/supabase-provider.service";
 import type { SyncGameSaveDto } from "./game-save.dto";
 import type { GameSaveServerServiceInterface } from "./game-save.service.interface";
 

@@ -1,4 +1,4 @@
-import type { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import type { Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
 
 export interface PathMoveConfig {
   radiusTilesAroundDestination?: number;

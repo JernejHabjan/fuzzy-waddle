@@ -1,4 +1,4 @@
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { getPwActorDefinition } from "../../prefabs/definitions/actor-definitions";
 import { getActorComponent } from "../../data/actor-component";

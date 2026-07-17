@@ -1,10 +1,10 @@
 import { Component } from "@angular/core";
-import { FlySquasherLevels } from "@fuzzy-waddle/api-interfaces";
+import { FlySquasherLevels } from "@fuzzy-waddle/fly-squasher-protocol";
 import { KeyValuePipe } from "@angular/common";
 import { RouterLink } from "@angular/router";
-import { AngularHost } from "@fuzzy-waddle/portal/shared/consts";
-import { HomeNavComponent } from "@fuzzy-waddle/portal/shared/components/home-nav/home-nav.component";
-import { CenterWrapperComponent } from "@fuzzy-waddle/portal/shared/components/center-wrapper/center-wrapper.component";
+import { AngularHost } from "@fuzzy-waddle/platform-game-host/angular/consts";
+import { HomeNavComponent } from "@fuzzy-waddle/platform-identity/client/home-nav/home-nav.component";
+import { CenterWrapperComponent } from "@fuzzy-waddle/platform-game-host/angular/components/center-wrapper/center-wrapper.component";
 
 @Component({
   selector: "fly-squasher-choose-level",

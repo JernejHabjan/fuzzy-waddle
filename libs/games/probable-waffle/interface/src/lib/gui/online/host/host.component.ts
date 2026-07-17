@@ -1,6 +1,6 @@
 import { Component, inject } from "@angular/core";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
-import { ProbableWaffleGameInstanceType, ProbableWaffleGameInstanceVisibility } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleGameInstanceType, ProbableWaffleGameInstanceVisibility } from "@fuzzy-waddle/probable-waffle-protocol";
 import { Router } from "@angular/router";
 
 import { FormsModule } from "@angular/forms";

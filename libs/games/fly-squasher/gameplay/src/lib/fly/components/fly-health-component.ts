@@ -1,5 +1,5 @@
 import { type FlyHealthBarOptions, FlyHealthUiComponent } from "./fly-health-ui-component";
-import { EventEmitter } from "@angular/core";
+import { GameEventEmitter } from "@fuzzy-waddle/platform-game-host";
 import { type IFlyBase } from "../component.service";
 import { FlyBase } from "../FlyBase";
 
@@ -8,7 +8,7 @@ export type HealthDefinition = {
 };
 
 export class FlyHealthComponent implements IFlyBase {
-  healthChanged: EventEmitter<number> = new EventEmitter<number>();
+  healthChanged = new GameEventEmitter<number>();
   private currentHealth: number;
   private healthUiComponent!: FlyHealthUiComponent;
 

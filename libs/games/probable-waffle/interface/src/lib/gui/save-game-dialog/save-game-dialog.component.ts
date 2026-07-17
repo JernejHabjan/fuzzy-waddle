@@ -2,13 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, signal, type OnInit } from 
 import { FormControl, ReactiveFormsModule, Validators } from "@angular/forms";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { DatePipe } from "@angular/common";
-import {
-  GameSaveKind,
-  GameSaveScope,
-  type CampaignMissionId,
-  type GameSaveRecord,
-  ProbableWaffleGameInstanceType
-} from "@fuzzy-waddle/api-interfaces";
+import { GameSaveKind, GameSaveScope, type CampaignMissionId, type GameSaveRecord, ProbableWaffleGameInstanceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { GameSaveService } from "../../services/game-save/game-save.service";
 import type { SaveGameDialogResult } from "./save-game-dialog-result";
 

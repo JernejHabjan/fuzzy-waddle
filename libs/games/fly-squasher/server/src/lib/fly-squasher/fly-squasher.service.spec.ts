@@ -1,7 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { FlySquasherService } from "./fly-squasher.service";
-import { SupabaseProviderService } from "@fuzzy-waddle/api/core/supabase-provider/supabase-provider.service";
-import { supabaseProviderServiceStub } from "@fuzzy-waddle/api/core/supabase-provider/supabase-provider.service.stub";
+import { SupabaseProviderService } from "@fuzzy-waddle/platform-database-schema/server/supabase-provider/supabase-provider.service";
+import { supabaseProviderServiceStub } from "@fuzzy-waddle/platform-database-schema/server/supabase-provider/supabase-provider.service.stub";
 
 describe("FlySquasherService", () => {
   let service: FlySquasherService;

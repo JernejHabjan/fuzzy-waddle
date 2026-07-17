@@ -81,13 +81,13 @@ pnpm start:api      # NestJS API     → http://localhost:3333
 | `pnpm e2e`       | Run Cypress end-to-end tests        |
 | `pnpm format`    | Format code                         |
 | `pnpm dep-graph` | Open Nx dependency graph            |
-| `pnpm editor`    | Launch Phaser Editor 2D (port 1959) |
+| `pnpm editor`    | Launch the Probable Waffle Phaser Editor project |
 
 To run a command for a single app:
 
 ```bash
-nx build client
+nx build portal
 nx test api
-nx lint client
-nx test client --testFile=apps/client/src/app/auth/auth.service.spec.ts
+nx lint portal
+nx test platform-identity --testFile=libs/platform/identity/src/lib/client/auth/auth.service.spec.ts
 ```

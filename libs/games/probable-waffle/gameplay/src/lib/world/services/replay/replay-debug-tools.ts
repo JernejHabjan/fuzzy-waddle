@@ -1,4 +1,4 @@
-import type { ProbableWaffleReplayCommandBatch, ProbableWaffleReplayTickDigest } from "@fuzzy-waddle/api-interfaces";
+import type { ProbableWaffleReplayCommandBatch, ProbableWaffleReplayTickDigest } from "@fuzzy-waddle/probable-waffle-protocol";
 
 /**
  * Build deterministic replay digests for one tick.

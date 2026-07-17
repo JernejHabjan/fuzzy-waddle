@@ -1,17 +1,12 @@
 import { Component, inject, type OnInit } from "@angular/core";
 import { DatePipe } from "@angular/common";
 import { FormsModule } from "@angular/forms";
-import {
-  ChatReportStatus,
-  UserAccountStatus,
-  type ModerationQueueDto,
-  type ModerationReportDto,
-  type ModerationReportGroupDto
-} from "@fuzzy-waddle/api-interfaces";
+import { ChatReportStatus, UserAccountStatus } from "@fuzzy-waddle/platform-database-schema";
+import { type ModerationQueueDto, type ModerationReportDto, type ModerationReportGroupDto } from "@fuzzy-waddle/platform-chat";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { ModerationService } from "../../data-access/moderation/moderation.service";
-import { HomeNavComponent } from "../../shared/components/home-nav/home-nav.component";
-import { getRoleIcon, getRoleLabel } from "../../shared/utils/app-role-presentation";
+import { HomeNavComponent } from "@fuzzy-waddle/platform-identity/client/home-nav/home-nav.component";
+import { getRoleIcon, getRoleLabel } from "@fuzzy-waddle/platform-identity/client/utils/app-role-presentation";
 
 @Component({
   selector: "fuzzy-waddle-moderation",

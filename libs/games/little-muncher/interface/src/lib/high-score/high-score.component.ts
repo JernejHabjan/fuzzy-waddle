@@ -1,15 +1,15 @@
 import type { OnInit } from "@angular/core";
 import { Component, inject } from "@angular/core";
 import { HighScoreService } from "./high-score.service";
-import { LittleMuncherHillEnum, LittleMuncherHills, LittleMuncherScoreDto } from "@fuzzy-waddle/api-interfaces";
+import { LittleMuncherHillEnum, LittleMuncherHills, LittleMuncherScoreDto } from "@fuzzy-waddle/little-muncher-protocol";
 import { faExclamationTriangle, faSpinner } from "@fortawesome/free-solid-svg-icons";
-import { ServerHealthService } from "@fuzzy-waddle/portal/shared/services/server-health.service";
+import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service";
 
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { RouterLink } from "@angular/router";
-import { AngularHost } from "@fuzzy-waddle/portal/shared/consts";
-import { HomeNavComponent } from "@fuzzy-waddle/portal/shared/components/home-nav/home-nav.component";
-import { CenterWrapperComponent } from "@fuzzy-waddle/portal/shared/components/center-wrapper/center-wrapper.component";
+import { AngularHost } from "@fuzzy-waddle/platform-game-host/angular/consts";
+import { HomeNavComponent } from "@fuzzy-waddle/platform-identity/client/home-nav/home-nav.component";
+import { CenterWrapperComponent } from "@fuzzy-waddle/platform-game-host/angular/components/center-wrapper/center-wrapper.component";
 
 @Component({
   selector: "little-muncher-high-score",

@@ -4,7 +4,7 @@
 
 /* START-USER-IMPORTS */
 import { IconHelper } from "./IconHelper";
-import { type ResourceType, type ObjectNames, ResearchType } from "@fuzzy-waddle/api-interfaces";
+import { type ResourceType, type ObjectNames, ResearchType } from "@fuzzy-waddle/probable-waffle-protocol";
 import ActorInfoLabel from "./ActorInfoLabel";
 import ActorDetails from "./ActorDetails";
 import Resource from "./Resource";

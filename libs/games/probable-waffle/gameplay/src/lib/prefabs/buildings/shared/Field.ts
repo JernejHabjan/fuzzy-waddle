@@ -3,7 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { ConstructionGameObjectInterfaceComponent } from "../../../entity/components/construction/construction-game-object-interface-component";
 import { TendableGameObjectInterfaceComponent } from "../../../entity/components/tendable/tendable-game-object-interface-component";
 import type { TendablePhase } from "../../../entity/components/tendable/tendable-component";

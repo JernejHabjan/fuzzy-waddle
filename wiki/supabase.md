@@ -107,7 +107,7 @@ Env ownership in this repo:
 |------------------------------------------------|--------------------------|-------------------------------------------------------------------------------------------|
 | `.env`                                         | Supabase CLI local stack | `SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID`, `SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET`         |
 | `apps/api/.env.local`                          | Nest API                 | `CORS_ORIGIN`, `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`                                     |
-| `apps/client/src/environments/environment*.ts` | Angular client           | public API URL, client URL, Supabase URL, Supabase anon/publishable key, Socket.IO config |
+| `libs/platform/game-host/src/lib/environments/environment*.ts` | Angular applications | public API URL, client URL, Supabase URL, Supabase anon/publishable key, Socket.IO config |
 
 For the Nest API:
 
@@ -123,13 +123,13 @@ For the Nest API:
 
 For the Angular client:
 
-- Hosted Supabase values live in `apps/client/src/environments/environment.prod.ts`.
-- Local Supabase values live in `apps/client/src/environments/environment.ts`.
+- Hosted Supabase values live in `libs/platform/game-host/src/lib/environments/environment.prod.ts`.
+- Local Supabase values live in `libs/platform/game-host/src/lib/environments/environment.ts`.
 - The browser client must use the anon/publishable key, never the service role key.
 
 ## Generating TypeScript Types
 
-Keep the shared types in `libs/api-interfaces/src/database/database.types.ts` in sync with your Supabase schema:
+Keep `libs/platform/database-schema/src/lib/database/database.types.ts` in sync with your Supabase schema:
 
 Start the local stack first:
 

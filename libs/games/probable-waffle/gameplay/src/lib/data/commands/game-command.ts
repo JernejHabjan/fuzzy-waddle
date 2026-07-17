@@ -8,4 +8,4 @@ export type {
   ProductionCommand,
   ResearchCommand,
   StopCommand
-} from "@fuzzy-waddle/api-interfaces";
+} from "@fuzzy-waddle/probable-waffle-protocol";

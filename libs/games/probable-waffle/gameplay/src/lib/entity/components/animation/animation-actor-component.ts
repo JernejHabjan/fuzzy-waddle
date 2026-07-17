@@ -13,7 +13,7 @@ import { oneTimeAnimations } from "./one-time-animations";
 import type { ActorAnimationsDefinition } from "./actor-animations-definition";
 import type { AnimationOptions } from "./animation-options";
 import { environment } from "@fuzzy-waddle/environments/environment";
-import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AnimationDefinitionMap } from "./animation-definition-map";
 
 export class AnimationActorComponent {

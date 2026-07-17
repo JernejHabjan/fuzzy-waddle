@@ -5,15 +5,7 @@ import { gameInstanceClientServiceStub } from "../../communicators/game-instance
 import { provideRouter } from "@angular/router";
 import { GameSaveService } from "../../services/game-save/game-save.service";
 import { GameSaveServiceStub } from "../../services/game-save/game-save.service.stub";
-import {
-  GAME_SAVE_FORMAT_VERSION,
-  GameSaveKind,
-  GameSaveScope,
-  GameSaveSyncState,
-  type GameSaveRecord,
-  type ProbableWaffleGameInstanceData,
-  ProbableWaffleGameInstanceType
-} from "@fuzzy-waddle/api-interfaces";
+import { GAME_SAVE_FORMAT_VERSION, GameSaveKind, GameSaveScope, GameSaveSyncState, type GameSaveRecord, type ProbableWaffleGameInstanceData, ProbableWaffleGameInstanceType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 describe("LoadComponent", () => {
   let component: LoadComponent;

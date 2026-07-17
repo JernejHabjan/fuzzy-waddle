@@ -82,7 +82,7 @@ jobs:
 
       # Release builds also stay on the coordinator runner for now. Nx Agents did not
       # materially reduce runtime for this repo's current target graph.
-      - name: Build GitHub Pages client
+      - name: Build GitHub Pages portal
         run: pnpm run build-gh-pages
         env:
           NX_BRANCH: ${{ github.ref_name }}

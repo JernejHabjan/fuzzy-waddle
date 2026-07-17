@@ -1,11 +1,11 @@
 import { TestBed, waitForAsync } from "@angular/core/testing";
 import { AppComponent } from "./app.component";
-import { ServerHealthService } from "./shared/services/server-health.service";
-import { serverHealthServiceStub } from "./shared/services/server-health.service.stub";
-import { AuthService } from "./auth/auth.service";
-import { authServiceStub } from "./auth/auth.service.stub";
-import { SwRefreshTestingComponent } from "./shared/components/sw-refresh/sw-refresh.component.spec";
-import { SwRefreshComponent } from "./shared/components/sw-refresh/sw-refresh.component";
+import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service";
+import { serverHealthServiceStub } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service.stub";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
+import { authServiceStub } from "@fuzzy-waddle/platform-identity/client/auth/auth.service.stub";
+import { SwRefreshTestingComponent } from "@fuzzy-waddle/platform-game-host/angular/components/sw-refresh/sw-refresh.component.spec";
+import { SwRefreshComponent } from "@fuzzy-waddle/platform-game-host/angular/components/sw-refresh/sw-refresh.component";
 import { provideRouter } from "@angular/router";
 
 describe("AppComponent", () => {

@@ -1,4 +1,5 @@
-import { type AoeZoneData, type StatusEffectData, type Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import { type AoeZoneData, type StatusEffectData } from "@fuzzy-waddle/probable-waffle-protocol";
+import { type Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
 import type { Subscription } from "rxjs";
 import { onSceneInitialized } from "../../data/game-object-helper";
 import { getActorComponent } from "../../data/actor-component";

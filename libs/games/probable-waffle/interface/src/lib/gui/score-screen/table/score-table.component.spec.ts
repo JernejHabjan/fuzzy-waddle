@@ -1,15 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ScoreTableComponent } from "./score-table.component";
-import {
-  createPlayerLobbyDefinition,
-  FactionType,
-  type PlayerScoreData,
-  type PositionPlayerDefinition,
-  ProbableWaffleGameInstanceType,
-  ProbableWaffleGameInstanceVisibility,
-  ProbableWafflePlayerType,
-  STANDARD_METRICS
-} from "@fuzzy-waddle/api-interfaces";
+import { createPlayerLobbyDefinition, FactionType, type PlayerScoreData, type PositionPlayerDefinition, ProbableWaffleGameInstanceType, ProbableWaffleGameInstanceVisibility, ProbableWafflePlayerType, STANDARD_METRICS } from "@fuzzy-waddle/probable-waffle-protocol";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.stub";
 import { ScoreDataService } from "../../../services/score-data.service";

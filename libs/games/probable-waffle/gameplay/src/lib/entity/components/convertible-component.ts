@@ -7,7 +7,8 @@ import { getSceneService } from "../../world/services/scene-component-helpers";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import { DistanceHelper } from "../../library/distance-helper";
 import type { ConvertibleDefinition } from "./convertible-definition";
-import type { ConvertibleComponentData, PlayerNumber } from "@fuzzy-waddle/api-interfaces";
+import type { ConvertibleComponentData } from "@fuzzy-waddle/probable-waffle-protocol";
+import type { PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 import { SimulationTickService } from "../../world/services/simulation-tick.service";
 import type { Subscription } from "rxjs";
 

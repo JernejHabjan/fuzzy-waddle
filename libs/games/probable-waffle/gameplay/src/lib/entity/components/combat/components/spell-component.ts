@@ -1,9 +1,9 @@
-import { EventEmitter } from "@angular/core";
+import { GameEventEmitter as EventEmitter } from "@fuzzy-waddle/platform-game-host";
 import type { Subscription } from "rxjs";
 import { SpellType } from "../spell-type";
 import type { SpellData } from "../spell-data";
 import { spellDefinitions } from "../spell-definitions";
-import { type SpellComponentData } from "@fuzzy-waddle/api-interfaces";
+import { type SpellComponentData } from "@fuzzy-waddle/probable-waffle-protocol";
 import Phaser from "phaser";
 import { isGameObjectActiveInActiveScene, onObjectReady } from "../../../../data/game-object-helper";
 import { getActorComponent } from "../../../../data/actor-component";

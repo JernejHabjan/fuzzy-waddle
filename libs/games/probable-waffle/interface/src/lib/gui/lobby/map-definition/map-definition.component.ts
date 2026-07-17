@@ -8,20 +8,12 @@ import {
   type OnInit,
   ViewChild
 } from "@angular/core";
-import {
-  GameSetupHelpers,
-  type PlayerLobbyDefinition,
-  type PlayerNumber,
-  type PositionPlayerDefinition,
-  ProbableWaffleLevels,
-  type ProbableWaffleMapData,
-  ProbableWafflePlayer,
-  type ProbableWafflePlayerDataChangeEventProperty
-} from "@fuzzy-waddle/api-interfaces";
+import { GameSetupHelpers, type PlayerLobbyDefinition, type PositionPlayerDefinition, ProbableWaffleLevels, type ProbableWaffleMapData, ProbableWafflePlayer, type ProbableWafflePlayerDataChangeEventProperty } from "@fuzzy-waddle/probable-waffle-protocol";
+import { type PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 import { SceneCommunicatorClientService } from "../../../communicators/scene-communicator-client.service";
 import { Subscription } from "rxjs";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
-import { AuthService } from "@fuzzy-waddle/portal/auth/auth.service";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
 import type { ProbableWaffleCommunicators } from "../../../communicators/probable-waffle.communicators";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";

@@ -36,6 +36,6 @@
     "sourceLang": "TYPE_SCRIPT",
     "esModule": true,
     "generateCode": true,
-    "outputFolder": "fuzzy-waddle/apps/client/src/app/fly-squasher/game/fly"
+    "outputFolder": "fuzzy-waddle/libs/games/fly-squasher/gameplay/src/lib/fly"
   }
 }

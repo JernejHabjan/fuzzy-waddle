@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MusicComponent } from "./music.component";
-import { HomeNavComponent } from "../../shared/components/home-nav/home-nav.component";
-import { HomeNavTestingComponent } from "../../shared/components/home-nav/home-nav.component.spec";
+import { HomeNavComponent } from "@fuzzy-waddle/platform-identity/client/home-nav/home-nav.component";
+import { HomeNavTestingComponent } from "@fuzzy-waddle/platform-identity/client/home-nav/home-nav.component.spec";
 
 describe("MusicComponent", () => {
   let component: MusicComponent;

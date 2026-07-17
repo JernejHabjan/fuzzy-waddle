@@ -1,5 +1,5 @@
-import type { GameCommand } from "@fuzzy-waddle/api-interfaces";
-import type { PlayerNumber } from "@fuzzy-waddle/api-interfaces";
+import type { GameCommand } from "@fuzzy-waddle/probable-waffle-protocol";
+import type { PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 
 /**
  * Per-tick per-player command buffer for deterministic lockstep.

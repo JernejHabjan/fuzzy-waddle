@@ -1,4 +1,3 @@
-import { Guid } from "@fuzzy-waddle/platform-identity";
 import { GameSessionState } from "./session";
 
 export interface GameInstanceMetadataData {
@@ -14,7 +13,7 @@ export abstract class GameInstanceMetadata<TData extends GameInstanceMetadataDat
 
   constructor(data?: TData) {
     this.data = data ?? ({} as TData);
-    this.data.gameInstanceId ??= new Guid().value;
+    this.data.gameInstanceId ??= globalThis.crypto.randomUUID();
     this.data.createdOn ??= new Date();
     this.data.sessionState ??= GameSessionState.NotStarted;
     this.data.updatedOn ??= new Date();

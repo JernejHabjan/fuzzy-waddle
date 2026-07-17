@@ -1,4 +1,4 @@
-import { ConstructionStateEnum, FactionType, ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { ConstructionStateEnum, FactionType, ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 
 export interface InitialActorConfig {
   actorName: ObjectNames;

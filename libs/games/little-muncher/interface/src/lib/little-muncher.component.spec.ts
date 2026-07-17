@@ -11,8 +11,8 @@ import { MainComponent } from "./main/main.component";
 import { HomeComponent } from "./home/home.component";
 import { MainTestingComponent } from "./main/main.component.spec";
 import { HomeTestingComponent } from "./home/home.component.spec";
-import { UserInstanceService } from "@fuzzy-waddle/portal/home/profile/user-instance.service";
-import { userInstanceServiceStub } from "@fuzzy-waddle/portal/home/profile/user-instance.service.stub";
+import { UserInstanceService } from "@fuzzy-waddle/platform-identity/client/profile/user-instance.service";
+import { userInstanceServiceStub } from "@fuzzy-waddle/platform-identity/client/profile/user-instance.service.stub";
 
 jest.mock("./game/const/game-config", () => ({
   littleMuncherGameConfig: {}

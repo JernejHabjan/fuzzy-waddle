@@ -1,8 +1,8 @@
 import { inject, Injectable } from "@angular/core";
 import { type SceneCommunicatorClientServiceInterface } from "./scene-communicator-client.service.interface";
 import { LittleMuncherCommunicatorService } from "./little-muncher-communicator.service";
-import { AuthenticatedSocketService } from "@fuzzy-waddle/portal/data-access/chat/authenticated-socket.service";
-import type { GameInstanceId } from "@fuzzy-waddle/api-interfaces";
+import { AuthenticatedSocketService } from "@fuzzy-waddle/platform-chat/client/data-access/authenticated-socket.service";
+import type { GameInstanceId } from "@fuzzy-waddle/platform-game-sessions";
 
 @Injectable({
   providedIn: "root"

@@ -82,7 +82,7 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_
 ## Attribution
 
 Some artwork is publicly available on [Pixilart](https://www.pixilart.com/darkneess10).
-Full attribution list: [attributions.json](apps/client/src/assets/general/attributions.json) · [Attributions page](https://fuzzy-waddle.onrender.com/attributions)
+Full attribution list: [attributions.json](apps/portal/src/assets/general/attributions.json) · [Attributions page](https://fuzzy-waddle.onrender.com/attributions)
 
 ---
 

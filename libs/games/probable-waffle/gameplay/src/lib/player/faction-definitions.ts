@@ -1,5 +1,5 @@
 import { FactionInfo } from "./faction-info";
-import { FactionType, ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { FactionType, ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 
 export class FactionDefinitions {
   static tivara: FactionInfo = new FactionInfo(

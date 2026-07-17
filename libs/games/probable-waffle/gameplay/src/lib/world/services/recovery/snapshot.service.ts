@@ -5,12 +5,8 @@ import { SimulationTickService } from "../simulation-tick.service";
 import { ActorIndexSystem } from "../ActorIndexSystem";
 import { ActorManager } from "../../../data/actor-manager";
 import { getCommunicator } from "../../../data/scene-data";
-import type {
-  ActorDefinition,
-  ProbableWaffleSnapshotData,
-  ProbableWaffleSnapshotResponseEvent,
-  UserId
-} from "@fuzzy-waddle/api-interfaces";
+import type { ActorDefinition, ProbableWaffleSnapshotData, ProbableWaffleSnapshotResponseEvent } from "@fuzzy-waddle/probable-waffle-protocol";
+import type { UserId } from "@fuzzy-waddle/platform-game-sessions";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { CancelableSimDelay } from "../simulation-time";
 import { createMultiplayerClientLogger } from "../multiplayer/multiplayer-client-logger";

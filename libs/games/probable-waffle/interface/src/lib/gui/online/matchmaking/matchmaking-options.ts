@@ -1,4 +1,4 @@
-import { FactionType, MatchmakingTeamConfiguration } from "@fuzzy-waddle/api-interfaces";
+import { FactionType, MatchmakingTeamConfiguration } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { MatchmakingLevel } from "./matchmaking-level";
 
 export type MatchmakingOptions = {

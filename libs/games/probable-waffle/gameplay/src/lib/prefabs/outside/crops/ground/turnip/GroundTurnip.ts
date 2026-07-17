@@ -4,7 +4,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { GrowthStageInterface } from "../../../../../entity/components/tendable/growth-stage.interface";
 import { AnimationType } from "../../../../../entity/components/animation/animation-type";
 import { SoundType } from "../../../../../entity/components/actor-audio/sound-type";

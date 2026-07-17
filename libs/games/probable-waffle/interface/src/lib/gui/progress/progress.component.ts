@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject, type OnInit, signal } from "@angular/core";
-import { AuthService } from "@fuzzy-waddle/portal/auth/auth.service";
-import { ServerHealthService } from "@fuzzy-waddle/portal/shared/services/server-health.service";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
+import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service";
 
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
-import { AngularHost } from "@fuzzy-waddle/portal/shared/consts";
-import { CenterWrapperComponent } from "@fuzzy-waddle/portal/shared/components/center-wrapper/center-wrapper.component";
-import { HomeNavComponent } from "@fuzzy-waddle/portal/shared/components/home-nav/home-nav.component";
+import { AngularHost } from "@fuzzy-waddle/platform-game-host/angular/consts";
+import { CenterWrapperComponent } from "@fuzzy-waddle/platform-game-host/angular/components/center-wrapper/center-wrapper.component";
+import { HomeNavComponent } from "@fuzzy-waddle/platform-identity/client/home-nav/home-nav.component";
 import { AtlasSpriteComponent } from "../../components/atlas-sprite/atlas-sprite.component";
 import { DatePipe, Location } from "@angular/common";
 
@@ -13,7 +13,7 @@ import { AchievementService } from "../../services/achievement/achievement.servi
 import { AchievementType } from "../../services/achievement/achievement-type";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { NgbDropdown, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle } from "@ng-bootstrap/ng-bootstrap";
-import type { AchievementDto } from "@fuzzy-waddle/api-interfaces";
+import type { AchievementDto } from "@fuzzy-waddle/probable-waffle-protocol";
 import { environment } from "@fuzzy-waddle/environments/environment";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { faShare, faArrowLeft, faLock } from "@fortawesome/free-solid-svg-icons";

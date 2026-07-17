@@ -1,4 +1,4 @@
-import type { ProbableWafflePauseChangedEvent } from "@fuzzy-waddle/api-interfaces";
+import type { ProbableWafflePauseChangedEvent } from "@fuzzy-waddle/probable-waffle-protocol";
 import { getCommunicator, getCurrentPlayerNumber } from "../../../data/scene-data";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { SimulationPauseReason, SimulationTickService } from "../simulation-tick.service";

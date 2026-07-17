@@ -1,20 +1,14 @@
 import { GameObjects, Input } from "phaser";
 import { isFullscreenTopEdgeExit } from "./fullscreen-edge-guard";
-import {
-  type ActorDefinition,
-  ObjectNames,
-  type PlayerNumber,
-  ResourceType,
-  type Vector2Simple,
-  type Vector3Simple
-} from "@fuzzy-waddle/api-interfaces";
+import { type ActorDefinition, ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { type PlayerNumber, type Vector2Simple, type Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { ActorManager } from "../../data/actor-manager";
 import { getGameObjectBounds, getGameObjectLogicalTransform, onSceneInitialized } from "../../data/game-object-helper";
 import { DepthHelper } from "../../world/services/depth.helper";
 import { getPwActorDefinition } from "../../prefabs/definitions/actor-definitions";
 import { upgradeFromCoreToConstructingActorData } from "../../data/actor-data";
 import { getCurrentPlayerNumber, getPlayer } from "../../data/scene-data";
-import { EventEmitter } from "@angular/core";
+import { GameEventEmitter as EventEmitter } from "@fuzzy-waddle/platform-game-host";
 import GameProbableWaffleScene from "../../world/scenes/GameProbableWaffleScene";
 import { Subscription } from "rxjs";
 import { TilemapComponent } from "../../world/tilemap/tilemap.component";

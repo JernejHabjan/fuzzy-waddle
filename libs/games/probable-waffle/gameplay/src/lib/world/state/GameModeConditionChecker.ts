@@ -4,18 +4,9 @@ import {
   getPlayersFromScene,
   isPlayerHostInScene
 } from "@fuzzy-waddle/platform-game-host/phaser/scene/base.scene";
-import {
-  GameResultStatus,
-  GameSessionState,
-  type LoseConditions,
-  ProbableWafflePlayerDataChangeProperties,
-  ProbableWaffleGameInstanceType,
-  ProbableWaffleGameMode,
-  ProbableWafflePlayer,
-  ProbableWafflePlayerType,
-  type TieConditions,
-  type WinConditions
-} from "@fuzzy-waddle/api-interfaces";
+import { GameResultStatus } from "@fuzzy-waddle/platform-database-schema";
+import { GameSessionState } from "@fuzzy-waddle/platform-game-sessions";
+import { type LoseConditions, ProbableWafflePlayerDataChangeProperties, ProbableWaffleGameInstanceType, ProbableWaffleGameMode, ProbableWafflePlayer, ProbableWafflePlayerType, type TieConditions, type WinConditions } from "@fuzzy-waddle/probable-waffle-protocol";
 import { type ProbableWaffleGameData } from "../../core/probable-waffle-game-data";
 import { isGameObjectActiveInActiveScene, isSceneActive } from "../../data/game-object-helper";
 import { ScenePlayerHelpers } from "../../data/scene-player-helpers";

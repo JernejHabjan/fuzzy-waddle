@@ -25,7 +25,7 @@ import {
   SkaduweeOwlSfxFurballFireSounds,
   SkaduweeOwlSfxFurballHitSounds
 } from "../../../prefabs/characters/skaduwee/skaduwee-owl/SkaduweeOwlSfx";
-import { DamageType } from "@fuzzy-waddle/api-interfaces";
+import { DamageType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { MedusaAnimationTypes } from "../../../prefabs/characters/mobs/medusa/anims-medusa";
 import { FlowerMonsterAnimationTypes } from "../../../prefabs/characters/mobs/flower_monster/anims-flower_monster";
 import { SandWormAnimationTypes } from "../../../prefabs/characters/mobs/sand_worm/anims-sand_worm";

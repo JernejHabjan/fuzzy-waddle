@@ -1,5 +1,5 @@
 import { ActorManager } from "./actor-manager";
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 
 describe("ActorManager", () => {
   describe("actorMap", () => {

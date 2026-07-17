@@ -7,17 +7,14 @@ import {
   WebSocketServer
 } from "@nestjs/websockets";
 import { UseGuards } from "@nestjs/common";
-import { OnlineAccessGuard } from "@fuzzy-waddle/api/auth/guards/online-access.guard";
-import { CurrentUser } from "@fuzzy-waddle/api/auth/current-user";
+import { OnlineAccessGuard } from "@fuzzy-waddle/platform-identity/server/auth/guards/online-access.guard";
+import { CurrentUser } from "@fuzzy-waddle/platform-identity/server/auth/current-user";
 import { type AuthUser } from "@supabase/supabase-js";
-import {
-  type CommunicatorEvent,
-  type LittleMuncherCommunicatorType,
-  LittleMuncherGatewayEvent
-} from "@fuzzy-waddle/api-interfaces";
+import { type CommunicatorEvent } from "@fuzzy-waddle/platform-game-sessions";
+import { type LittleMuncherCommunicatorType, LittleMuncherGatewayEvent } from "@fuzzy-waddle/little-muncher-protocol";
 import { GameStateServerService } from "./game-state-server.service";
 import { Server, Socket } from "socket.io";
-import { SocketConnectionAuthService } from "@fuzzy-waddle/api/auth/socket-connection-auth.service";
+import { SocketConnectionAuthService } from "@fuzzy-waddle/platform-identity/server/auth/socket-connection-auth.service";
 
 @WebSocketGateway({
   cors: {

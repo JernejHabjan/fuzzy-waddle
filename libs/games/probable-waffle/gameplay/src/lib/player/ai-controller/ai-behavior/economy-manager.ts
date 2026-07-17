@@ -1,5 +1,5 @@
 import { PlayerAiBlackboard } from "../player-ai-blackboard";
-import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 export class EconomyManager {
   constructor(private readonly blackboard: PlayerAiBlackboard) {}

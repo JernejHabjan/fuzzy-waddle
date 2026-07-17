@@ -1,4 +1,6 @@
-import { type ActorId, Guid, type IdComponentData } from "@fuzzy-waddle/api-interfaces";
+import { type ActorId } from "@fuzzy-waddle/platform-game-sessions";
+import { Guid } from "@fuzzy-waddle/platform-identity";
+import { type IdComponentData } from "@fuzzy-waddle/probable-waffle-protocol";
 
 export class IdComponent {
   id: ActorId = new Guid().value;

@@ -1,4 +1,5 @@
-import { type GameInstanceId, type ProbableWaffleGameInstance } from "@fuzzy-waddle/api-interfaces";
+import { type GameInstanceId } from "@fuzzy-waddle/platform-game-sessions";
+import { type ProbableWaffleGameInstance } from "@fuzzy-waddle/probable-waffle-protocol";
 import { type GameInstanceHolderServiceInterface } from "./game-instance-holder.service.interface";
 
 export const gameInstanceHolderServiceStub = {

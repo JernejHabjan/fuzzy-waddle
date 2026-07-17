@@ -1,4 +1,4 @@
-import type { ResearchType } from "@fuzzy-waddle/api-interfaces";
+import type { ResearchType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { ProductionQueueItem } from "../production/game-object";
 import { SharedQueueItemType } from "./shared-queue-item-type";
 

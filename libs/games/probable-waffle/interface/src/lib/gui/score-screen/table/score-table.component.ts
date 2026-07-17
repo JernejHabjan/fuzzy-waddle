@@ -1,6 +1,6 @@
 import type { OnInit } from "@angular/core";
 import { Component, inject, input } from "@angular/core";
-import { type PlayerScoreData, STANDARD_METRICS } from "@fuzzy-waddle/api-interfaces";
+import { type PlayerScoreData, STANDARD_METRICS } from "@fuzzy-waddle/probable-waffle-protocol";
 import { ScoreDataService } from "../../../services/score-data.service";
 
 @Component({

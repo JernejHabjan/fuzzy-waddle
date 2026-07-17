@@ -1,5 +1,5 @@
 import { Observable, Subject } from "rxjs";
-import { type LittleMuncherRoomEvent } from "@fuzzy-waddle/api-interfaces";
+import { type LittleMuncherRoomEvent } from "@fuzzy-waddle/little-muncher-protocol";
 import { type SpectateServiceInterface } from "./spectate.service.interface";
 
 export const spectateServiceStub = {

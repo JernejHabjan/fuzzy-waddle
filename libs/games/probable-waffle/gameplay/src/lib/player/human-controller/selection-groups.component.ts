@@ -5,7 +5,7 @@ import { CrossSceneCommunicationService } from "../../world/services/CrossSceneC
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { getActorComponent } from "../../data/actor-component";
 import { IdComponent } from "../../entity/components/id-component";
-import type { AllScenesEventData, SelectionGroupData } from "@fuzzy-waddle/api-interfaces";
+import type { AllScenesEventData, SelectionGroupData } from "@fuzzy-waddle/probable-waffle-protocol";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import type { Subscription } from "rxjs";
 import type GameProbableWaffleScene from "../../world/scenes/GameProbableWaffleScene";

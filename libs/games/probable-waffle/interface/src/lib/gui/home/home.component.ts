@@ -1,12 +1,12 @@
 import { Component, type OnInit, viewChild } from "@angular/core";
 
 import { HomeBackgroundEffectComponent } from "./home-background-effect/home-background-effect.component";
-import { AngularHost } from "@fuzzy-waddle/portal/shared/consts";
+import { AngularHost } from "@fuzzy-waddle/platform-game-host/angular/consts";
 import { MainMenuButtonsComponent } from "./main-menu-buttons/main-menu-buttons.component";
 import { TitleComponent } from "./title/title.component";
 import { BannerComponent } from "./banner/banner.component";
-import { ModalComponent } from "@fuzzy-waddle/portal/shared/components/modal/modal.component";
-import { type ModalConfig } from "@fuzzy-waddle/portal/shared/components/modal/modal-config";
+import { ModalComponent } from "@fuzzy-waddle/platform-game-host/angular/components/modal/modal.component";
+import { type ModalConfig } from "@fuzzy-waddle/platform-game-host/angular/components/modal/modal-config";
 
 @Component({
   templateUrl: "./home.component.html",

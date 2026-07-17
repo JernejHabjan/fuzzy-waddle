@@ -3,7 +3,7 @@ import { OrderData } from "../../../ai/OrderData";
 import { OrderType } from "../../../ai/order-type";
 import { getActorComponent } from "../../../data/actor-component";
 import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller";
-import type { Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import GameObject = Phaser.GameObjects.GameObject;
 
 /**

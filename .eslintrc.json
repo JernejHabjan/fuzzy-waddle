@@ -10,19 +10,81 @@
           "error",
           {
             "enforceBuildableLibDependency": true,
+            "banTransitiveDependencies": true,
+            "checkNestedExternalImports": true,
             "allow": [],
             "depConstraints": [
               {
-                "sourceTag": "scope:client",
-                "onlyDependOnLibsWithTags": ["scope:client", "scope:shared"]
+                "sourceTag": "scope:portal",
+                "onlyDependOnLibsWithTags": [
+                  "scope:portal",
+                  "scope:platform",
+                  "scope:probable-waffle",
+                  "scope:little-muncher",
+                  "scope:fly-squasher",
+                  "scope:dungeon-crawler"
+                ]
               },
               {
                 "sourceTag": "scope:api",
-                "onlyDependOnLibsWithTags": ["scope:api", "scope:shared"]
+                "onlyDependOnLibsWithTags": [
+                  "scope:api",
+                  "scope:platform",
+                  "scope:probable-waffle",
+                  "scope:little-muncher",
+                  "scope:fly-squasher"
+                ]
               },
               {
-                "sourceTag": "scope:shared",
-                "onlyDependOnLibsWithTags": ["scope:shared"]
+                "sourceTag": "scope:platform",
+                "onlyDependOnLibsWithTags": ["scope:platform"]
+              },
+              {
+                "sourceTag": "scope:probable-waffle",
+                "onlyDependOnLibsWithTags": ["scope:probable-waffle", "scope:platform"]
+              },
+              {
+                "sourceTag": "scope:little-muncher",
+                "onlyDependOnLibsWithTags": ["scope:little-muncher", "scope:platform"]
+              },
+              {
+                "sourceTag": "scope:fly-squasher",
+                "onlyDependOnLibsWithTags": ["scope:fly-squasher", "scope:platform"]
+              },
+              {
+                "sourceTag": "scope:dungeon-crawler",
+                "onlyDependOnLibsWithTags": ["scope:dungeon-crawler", "scope:platform"]
+              },
+              {
+                "sourceTag": "type:interface",
+                "onlyDependOnLibsWithTags": ["type:interface", "type:gameplay", "type:protocol", "type:platform"]
+              },
+              {
+                "sourceTag": "type:gameplay",
+                "onlyDependOnLibsWithTags": ["type:gameplay", "type:protocol", "type:platform"]
+              },
+              {
+                "sourceTag": "type:protocol",
+                "onlyDependOnLibsWithTags": ["type:protocol", "type:platform"]
+              },
+              {
+                "sourceTag": "type:server",
+                "onlyDependOnLibsWithTags": ["type:server", "type:protocol", "type:platform"]
+              },
+              {
+                "sourceTag": "type:platform",
+                "onlyDependOnLibsWithTags": ["type:platform"]
+              }
+            ]
+          }
+        ],
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["apps/*/src/**", "libs/*/src/**", "libs/games/*/*/src/**", "libs/platform/*/src/**"],
+                "message": "Import another project through its @fuzzy-waddle public alias."
               }
             ]
           }

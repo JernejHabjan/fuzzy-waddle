@@ -1,5 +1,5 @@
 import { Component, type OnInit, output } from "@angular/core";
-import { ProbableWaffleLevels, ProbableWaffleMapEnum } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleLevels, ProbableWaffleMapEnum } from "@fuzzy-waddle/probable-waffle-protocol";
 
 @Component({
   selector: "probable-waffle-map-filter",

@@ -1,6 +1,6 @@
 import { TechTreeBuilder } from "./tech-tree.builder";
 import { TechTreeService } from "./tech-tree.service";
-import { FactionType, ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { FactionType, ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 
 describe("TechTree", () => {
   describe("TechTreeBuilder", () => {

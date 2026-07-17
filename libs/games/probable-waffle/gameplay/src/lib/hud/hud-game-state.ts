@@ -1,4 +1,5 @@
-import { GameSessionState, ProbableWaffleGameInstanceType } from "@fuzzy-waddle/api-interfaces";
+import { GameSessionState } from "@fuzzy-waddle/platform-game-sessions";
+import { ProbableWaffleGameInstanceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { ProbableWaffleScene } from "../core/probable-waffle.scene";
 import { Subscription } from "rxjs";
 import { getSceneService } from "../world/services/scene-component-helpers";

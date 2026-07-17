@@ -1,5 +1,5 @@
 import { IsArray, IsIn, IsInt, IsOptional, IsString, IsUUID, Min } from "class-validator";
-import { CAMPAIGN_MISSION_IDS, type CampaignMissionId, CampaignMissionOutcome } from "@fuzzy-waddle/api-interfaces";
+import { CAMPAIGN_MISSION_IDS, type CampaignMissionId, CampaignMissionOutcome } from "@fuzzy-waddle/probable-waffle-protocol";
 
 export class StartCampaignRunDto {
   @IsUUID() runId!: string;

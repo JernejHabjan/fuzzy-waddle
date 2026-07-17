@@ -2,7 +2,7 @@ import { inject, Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, type CanActivate, Router, RouterStateSnapshot } from "@angular/router";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { environment } from "@fuzzy-waddle/environments/environment";
-import { ServerHealthService } from "@fuzzy-waddle/portal/shared/services/server-health.service";
+import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service";
 
 @Injectable({
   providedIn: "root"

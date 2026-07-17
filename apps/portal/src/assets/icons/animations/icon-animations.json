@@ -232,6 +232,6 @@
     "sourceLang": "TYPE_SCRIPT",
     "esModule": true,
     "generateCode": true,
-    "outputFolder": "fuzzy-waddle/apps/portal/src/app/probable-waffle/game/prefabs/gui"
+    "outputFolder": "fuzzy-waddle/libs/games/probable-waffle/gameplay/src/lib/prefabs/gui"
   }
 }

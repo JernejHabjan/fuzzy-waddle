@@ -1,13 +1,5 @@
-import {
-  GameSessionState,
-  GameSaveKind,
-  GameSaveScope,
-  type ProbableWaffleGameInstanceData,
-  ProbableWaffleGameInstanceType,
-  type ProbableWaffleReplayCommandBatch,
-  type ProbableWaffleReplayData,
-  type ProbableWaffleReplayDesyncDiagnostic
-} from "@fuzzy-waddle/api-interfaces";
+import { GameSessionState } from "@fuzzy-waddle/platform-game-sessions";
+import { GameSaveKind, GameSaveScope, type ProbableWaffleGameInstanceData, ProbableWaffleGameInstanceType, type ProbableWaffleReplayCommandBatch, type ProbableWaffleReplayData, type ProbableWaffleReplayDesyncDiagnostic } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { Subscription } from "rxjs";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { GameSavePort } from "@fuzzy-waddle/probable-waffle-gameplay";

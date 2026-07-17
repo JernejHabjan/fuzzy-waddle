@@ -5,14 +5,14 @@ import { FormsModule } from "@angular/forms";
 import { Component } from "@angular/core";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.stub";
-import { AuthService } from "@fuzzy-waddle/portal/auth/auth.service";
-import { authServiceStub } from "@fuzzy-waddle/portal/auth/auth.service.stub";
-import { AvatarProviderService } from "@fuzzy-waddle/portal/shared/components/chat/avatar-provider/avatar-provider.service";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
+import { authServiceStub } from "@fuzzy-waddle/platform-identity/client/auth/auth.service.stub";
+import { AvatarProviderService } from "@fuzzy-waddle/platform-identity/client/avatar-provider/avatar-provider.service";
 import { provideRouter } from "@angular/router";
-import { CurrentUserProfileService } from "@fuzzy-waddle/portal/data-access/profile/current-user-profile.service";
-import { currentUserProfileServiceStub } from "@fuzzy-waddle/portal/data-access/profile/current-user-profile.service.stub";
-import { UserInstanceService } from "@fuzzy-waddle/portal/home/profile/user-instance.service";
-import { userInstanceServiceStub } from "@fuzzy-waddle/portal/home/profile/user-instance.service.stub";
+import { CurrentUserProfileService } from "@fuzzy-waddle/platform-identity/client/profile-data/current-user-profile.service";
+import { currentUserProfileServiceStub } from "@fuzzy-waddle/platform-identity/client/profile-data/current-user-profile.service.stub";
+import { UserInstanceService } from "@fuzzy-waddle/platform-identity/client/profile/user-instance.service";
+import { userInstanceServiceStub } from "@fuzzy-waddle/platform-identity/client/profile/user-instance.service.stub";
 
 @Component({ selector: "probable-waffle-player-definition", template: "", standalone: true, imports: [] })
 export class PlayerDefinitionTestingComponent {}

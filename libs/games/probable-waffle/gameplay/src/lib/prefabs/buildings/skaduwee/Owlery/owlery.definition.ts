@@ -1,4 +1,4 @@
-import { ObjectNames, ResearchType, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames, ResearchType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import {
   ANIM_BUILDING_ICON_ANIMS_SKADUWEE_OWLERY_ACTION,
   ANIM_BUILDING_ICON_ANIMS_SKADUWEE_OWLERY_IDLE

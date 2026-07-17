@@ -2,7 +2,7 @@ import { ANIM_BANSHEE_DEFINITION } from "./anims-banshee";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
 import { weaponDefinitions } from "../../../../entity/components/combat/weapon-definitions";
-import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { PaymentType } from "../../../../entity/components/production/payment-type";
 import { AiType } from "../../../ai-agents/ai-type";
 import { SpellType } from "../../../../entity/components/combat/spell-type";

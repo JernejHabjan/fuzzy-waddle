@@ -5,13 +5,9 @@ import { ScoreThroughTimeComponent } from "./chart/score-through-time.component"
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import { ScoreDataService } from "../../services/score-data.service";
 import { ScoreSubmissionService } from "../../services/score-submission.service";
-import { AuthService } from "@fuzzy-waddle/portal/auth/auth.service";
-import {
-  CampaignMissionOutcome,
-  GameResultStatus,
-  type GameScoreSnapshotDto,
-  ProbableWafflePlayerType
-} from "@fuzzy-waddle/api-interfaces";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
+import { CampaignMissionOutcome, type GameScoreSnapshotDto, ProbableWafflePlayerType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { GameResultStatus } from "@fuzzy-waddle/platform-database-schema";
 import { CampaignProgressService } from "../campaign/campaign-progress.service";
 
 @Component({

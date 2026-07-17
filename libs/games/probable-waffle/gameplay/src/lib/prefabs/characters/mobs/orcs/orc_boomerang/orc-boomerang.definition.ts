@@ -1,4 +1,4 @@
-import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { ActorPhysicalType } from "../../../../../entity/components/combat/components/actor-physical-type";
 import { weaponDefinitions } from "../../../../../entity/components/combat/weapon-definitions";
 import { PaymentType } from "../../../../../entity/components/production/payment-type";

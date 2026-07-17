@@ -3,12 +3,12 @@ import { MapBrowserComponent } from "./map-browser.component";
 import { CommonModule } from "@angular/common";
 import { Component, input, model, output } from "@angular/core";
 import { SceneCommunicatorClientService } from "../../../communicators/scene-communicator-client.service";
-import { AuthService } from "@fuzzy-waddle/portal/auth/auth.service";
-import { authServiceStub } from "@fuzzy-waddle/portal/auth/auth.service.stub";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
+import { authServiceStub } from "@fuzzy-waddle/platform-identity/client/auth/auth.service.stub";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.stub";
 import { SceneCommunicatorClientServiceStub } from "../../../communicators/scene-communicator-client.service.stub";
-import { ProbableWaffleMapEnum } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleMapEnum } from "@fuzzy-waddle/probable-waffle-protocol";
 
 @Component({
   selector: "probable-waffle-map-browser",

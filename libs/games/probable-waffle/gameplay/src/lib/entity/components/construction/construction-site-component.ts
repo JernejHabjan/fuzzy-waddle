@@ -1,5 +1,5 @@
 import { PaymentType } from "../production/payment-type";
-import { type ConstructionSiteComponentData, ConstructionStateEnum, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { type ConstructionSiteComponentData, ConstructionStateEnum, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { HealthComponent } from "../combat/components/health-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "../owner-component";

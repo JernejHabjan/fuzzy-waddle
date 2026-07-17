@@ -1,16 +1,5 @@
 import { Injectable, Logger } from "@nestjs/common";
-import {
-  type ActorDefinition,
-  AllOrderTypes,
-  type GameCommand,
-  ObjectNames,
-  OrderType,
-  type ProbableWaffleGameCommandEvent,
-  type ProbableWaffleGameCommandType,
-  ProbableWaffleGameCommandTypes,
-  type ProbableWaffleGameInstance,
-  ResearchType
-} from "@fuzzy-waddle/api-interfaces";
+import { type ActorDefinition, AllOrderTypes, type GameCommand, ObjectNames, OrderType, type ProbableWaffleGameCommandEvent, type ProbableWaffleGameCommandType, ProbableWaffleGameCommandTypes, type ProbableWaffleGameInstance, ResearchType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { User } from "@supabase/supabase-js";
 
 /**

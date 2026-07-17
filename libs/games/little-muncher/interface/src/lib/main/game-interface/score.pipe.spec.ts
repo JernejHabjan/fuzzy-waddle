@@ -1,4 +1,4 @@
-import { WrapPipe } from "@fuzzy-waddle/portal/shared/pipes/wrap.pipe";
+import { WrapPipe } from "@fuzzy-waddle/platform-game-host/angular/pipes/wrap.pipe";
 
 describe("ScorePipe", () => {
   it("create an instance", () => {

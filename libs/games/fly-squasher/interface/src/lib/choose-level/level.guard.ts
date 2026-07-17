@@ -1,6 +1,6 @@
 import { inject, Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, type CanActivate, Router, RouterStateSnapshot } from "@angular/router";
-import { FlySquasherLevels } from "@fuzzy-waddle/api-interfaces";
+import { FlySquasherLevels } from "@fuzzy-waddle/fly-squasher-protocol";
 
 @Injectable({
   providedIn: "root"

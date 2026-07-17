@@ -1,9 +1,9 @@
 import { Component, inject } from "@angular/core";
 import type { OnInit } from "@angular/core";
-import { UserInstanceService } from "@fuzzy-waddle/portal/home/profile/user-instance.service";
+import { UserInstanceService } from "@fuzzy-waddle/platform-identity/client/profile/user-instance.service";
 
 import { RouterOutlet } from "@angular/router";
-import { AngularHost } from "@fuzzy-waddle/portal/shared/consts";
+import { AngularHost } from "@fuzzy-waddle/platform-game-host/angular/consts";
 
 @Component({
   templateUrl: "./fly-squasher.component.html",

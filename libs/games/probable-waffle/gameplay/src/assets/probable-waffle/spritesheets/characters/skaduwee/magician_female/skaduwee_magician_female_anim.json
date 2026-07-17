@@ -2263,6 +2263,6 @@
         "sourceLang": "TYPE_SCRIPT",
         "esModule": true,
         "generateCode": true,
-        "outputFolder": "fuzzy-waddle/apps/client/src/app/probable-waffle/game/animations"
+        "outputFolder": "fuzzy-waddle/libs/games/probable-waffle/gameplay/src/lib/animations"
     }
 }

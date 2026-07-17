@@ -4,7 +4,7 @@
 
 /* START-USER-IMPORTS */
 import { onObjectReady } from "../../../data/game-object-helper";
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { getActorComponent } from "../../../data/actor-component";
 import { AudioActorComponent } from "../../../entity/components/actor-audio/audio-actor-component";
 import { AnimationActorComponent } from "../../../entity/components/animation/animation-actor-component";

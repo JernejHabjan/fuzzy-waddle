@@ -16,15 +16,8 @@ import { IdComponent } from "../../../entity/components/id-component";
 import { OwnerComponent } from "../../../entity/components/owner-component";
 import { getGameObjectLogicalTransform } from "../../../data/game-object-helper";
 import { applyActorDefinitionToActor } from "../../../data/actor-data";
-import {
-  type ActorDefinition,
-  GameSessionState,
-  type PlayerNumber,
-  ProbableWaffleGatewayEvent,
-  type ProbableWaffleInstanceReseedRequiredEvent,
-  type ProbableWaffleSnapshotResponseEvent,
-  type ProbableWaffleWebsocketRoomEvent
-} from "@fuzzy-waddle/api-interfaces";
+import { type ActorDefinition, ProbableWaffleGatewayEvent, type ProbableWaffleInstanceReseedRequiredEvent, type ProbableWaffleSnapshotResponseEvent, type ProbableWaffleWebsocketRoomEvent } from "@fuzzy-waddle/probable-waffle-protocol";
+import { GameSessionState, type PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 import { ProbableWaffleSceneEventName } from "./probable-waffle-scene-events";
 import { createMultiplayerClientLogger } from "../multiplayer/multiplayer-client-logger";
 import {

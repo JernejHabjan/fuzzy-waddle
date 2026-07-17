@@ -3,9 +3,9 @@ import { ChangeDetectionStrategy, Component, type OnInit } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { FormsModule } from "@angular/forms";
 import { VolumeSettings } from "@fuzzy-waddle/fly-squasher-gameplay";
-import { AngularHost } from "@fuzzy-waddle/portal/shared/consts";
-import { HomeNavComponent } from "@fuzzy-waddle/portal/shared/components/home-nav/home-nav.component";
-import { CenterWrapperComponent } from "@fuzzy-waddle/portal/shared/components/center-wrapper/center-wrapper.component";
+import { AngularHost } from "@fuzzy-waddle/platform-game-host/angular/consts";
+import { HomeNavComponent } from "@fuzzy-waddle/platform-identity/client/home-nav/home-nav.component";
+import { CenterWrapperComponent } from "@fuzzy-waddle/platform-game-host/angular/components/center-wrapper/center-wrapper.component";
 
 @Component({
   imports: [RouterLink, FormsModule, HomeNavComponent, CenterWrapperComponent],

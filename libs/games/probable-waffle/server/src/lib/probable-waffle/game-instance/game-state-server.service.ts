@@ -1,21 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
-import {
-  GameSessionState,
-  type ProbableWaffleCommunicatorEventUnion,
-  ProbableWaffleCommunicators,
-  type ProbableWaffleDesyncAlertEvent,
-  type ProbableWaffleGameCommandEvent,
-  ProbableWaffleGameInstance,
-  type ProbableWaffleGameInstanceMetadataChangeEvent,
-  type ProbableWaffleGameModeDataChangeEvent,
-  type ProbableWaffleGameStateDataChangeEvent,
-  type ProbableWaffleInstanceReseedEvent,
-  ProbableWaffleListeners,
-  type ProbableWafflePauseChangedEvent,
-  type ProbableWafflePlayerDataChangeEvent,
-  type ProbableWaffleSnapshotResponseEvent,
-  type ProbableWaffleSpectatorDataChangeEvent
-} from "@fuzzy-waddle/api-interfaces";
+import { GameSessionState } from "@fuzzy-waddle/platform-game-sessions";
+import { type ProbableWaffleCommunicatorEventUnion, ProbableWaffleCommunicators, type ProbableWaffleDesyncAlertEvent, type ProbableWaffleGameCommandEvent, ProbableWaffleGameInstance, type ProbableWaffleGameInstanceMetadataChangeEvent, type ProbableWaffleGameModeDataChangeEvent, type ProbableWaffleGameStateDataChangeEvent, type ProbableWaffleInstanceReseedEvent, ProbableWaffleListeners, type ProbableWafflePauseChangedEvent, type ProbableWafflePlayerDataChangeEvent, type ProbableWaffleSnapshotResponseEvent, type ProbableWaffleSpectatorDataChangeEvent } from "@fuzzy-waddle/probable-waffle-protocol";
 import { GameInstanceService } from "./game-instance.service";
 import { type User } from "@supabase/supabase-js";
 import {

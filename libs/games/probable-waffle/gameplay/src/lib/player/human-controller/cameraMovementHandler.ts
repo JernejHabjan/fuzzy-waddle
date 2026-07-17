@@ -4,7 +4,7 @@ import { Subscription } from "rxjs";
 import { getSceneExternalComponent } from "../../world/services/scene-component-helpers";
 import { GameOptionsService } from "../../core/game-options.service";
 import { GameSettings } from "../../core/gameSettings";
-import type { CameraStateData } from "@fuzzy-waddle/api-interfaces";
+import type { CameraStateData } from "@fuzzy-waddle/probable-waffle-protocol";
 import { FULLSCREEN_TOP_EDGE_PX, isFullscreenTopEdgeExit } from "./fullscreen-edge-guard";
 
 export interface CameraMovementHandlerConfig {
@@ -143,7 +143,7 @@ export class CameraMovementHandler {
   /**
    * Handle edge scrolling based on pointer position
    * Note: Works automatically with pointer lock via patched Pointer.move()
-   * (see apps/client/src/app/shared/game/phaser/patches/pointer-lock-patch.ts)
+   * (see libs/games/probable-waffle/gameplay/src/lib/player/human-controller/pointer-lock-patch.ts)
    */
   private screenEdgeMovementUpdate() {
     if (!this.config.enabledMouseCornerMovement || !this.cursorOverGameInstance) return;

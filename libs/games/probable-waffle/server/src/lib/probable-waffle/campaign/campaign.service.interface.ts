@@ -1,4 +1,4 @@
-import type { CampaignMissionId } from "@fuzzy-waddle/api-interfaces";
+import type { CampaignMissionId } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { CampaignResultDto } from "./campaign.dto";
 
 /** Authenticated campaign run and progress persistence contract. */

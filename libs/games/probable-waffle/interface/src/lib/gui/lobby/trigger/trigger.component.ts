@@ -1,15 +1,10 @@
 import { Component, inject } from "@angular/core";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
-import { AuthService } from "@fuzzy-waddle/portal/auth/auth.service";
-import { ToastService } from "@fuzzy-waddle/portal/shared/services/toast.service";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
+import { ToastService } from "@fuzzy-waddle/platform-game-host/angular/services/toast.service";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { faCircle } from "@fortawesome/free-regular-svg-icons";
-import {
-  type PositionPlayerDefinition,
-  ProbableWaffleGameInstanceType,
-  type ProbableWafflePlayerDataChangeEventProperty,
-  ProbableWafflePlayerType
-} from "@fuzzy-waddle/api-interfaces";
+import { type PositionPlayerDefinition, ProbableWaffleGameInstanceType, type ProbableWafflePlayerDataChangeEventProperty, ProbableWafflePlayerType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 
 @Component({

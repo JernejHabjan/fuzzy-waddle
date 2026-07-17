@@ -27,7 +27,7 @@ pnpm tauri:dev
 pnpm tauri:build
 ```
 
-Output: `apps/client/src-tauri/target/release/bundle/nsis/Ashes of the Ancients_<version>_x64-setup.exe`
+Output: `apps/probable-waffle-desktop/src-tauri/target/release/bundle/nsis/Ashes of the Ancients_<version>_x64-setup.exe`
 
 ## Release Versioning
 

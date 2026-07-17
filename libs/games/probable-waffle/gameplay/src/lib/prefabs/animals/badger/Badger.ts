@@ -3,7 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { AnimationActorComponent } from "../../../entity/components/animation/animation-actor-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { getRandomTileInNavigableRadius, MovementSystem } from "../../../entity/systems/movement.system";

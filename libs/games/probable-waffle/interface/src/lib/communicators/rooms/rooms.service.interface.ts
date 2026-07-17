@@ -1,4 +1,4 @@
-import { ProbableWaffleMapEnum, type ProbableWaffleRoom } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleMapEnum, type ProbableWaffleRoom } from "@fuzzy-waddle/probable-waffle-protocol";
 import { type Signal, type WritableSignal } from "@angular/core";
 
 export interface RoomsServiceInterface {

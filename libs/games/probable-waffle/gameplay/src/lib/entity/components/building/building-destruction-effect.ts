@@ -4,7 +4,7 @@ import { FadeOutComponent } from "./fade-out-component";
 import type { FadeOutDefinition } from "./fade-out-definition";
 import { RepresentableComponent } from "../representable-component";
 import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { RepresentableDefinition } from "../representable-definition";
 import { getResearchedLevelForActor } from "../../../data/actor-level-utils";
 import GameObject = Phaser.GameObjects.GameObject;

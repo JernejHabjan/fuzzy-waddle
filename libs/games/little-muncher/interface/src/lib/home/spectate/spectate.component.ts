@@ -1,8 +1,8 @@
 import { Component, inject } from "@angular/core";
 import type { OnInit } from "@angular/core";
 import { SpectateService } from "./spectate.service";
-import { type LittleMuncherRoom } from "@fuzzy-waddle/api-interfaces";
-import { ServerHealthService } from "@fuzzy-waddle/portal/shared/services/server-health.service";
+import { type LittleMuncherRoom } from "@fuzzy-waddle/little-muncher-protocol";
+import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service";
 
 @Component({
   selector: "little-muncher-spectate",

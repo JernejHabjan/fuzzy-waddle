@@ -2,14 +2,14 @@ import { Component, inject } from "@angular/core";
 import type { OnInit } from "@angular/core";
 import { littleMuncherGameConfig } from "@fuzzy-waddle/little-muncher-gameplay/const/game-config";
 import { type LittleMuncherGameData } from "@fuzzy-waddle/little-muncher-gameplay/little-muncher-game-data";
-import { AuthService } from "@fuzzy-waddle/portal/auth/auth.service";
-import { LittleMuncherUserInfo } from "@fuzzy-waddle/api-interfaces";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
+import { LittleMuncherUserInfo } from "@fuzzy-waddle/little-muncher-protocol";
 import { LittleMuncherCommunicatorService } from "./communicators/little-muncher-communicator.service";
 import { GameInstanceClientService } from "./communicators/game-instance-client.service";
 
 import { GameContainerComponent } from "@fuzzy-waddle/platform-game-host/game-container/game-container.component";
 import { GameInterfaceComponent } from "./game-interface/game-interface.component";
-import { AngularHost } from "@fuzzy-waddle/portal/shared/consts";
+import { AngularHost } from "@fuzzy-waddle/platform-game-host/angular/consts";
 
 @Component({
   selector: "little-muncher-main",

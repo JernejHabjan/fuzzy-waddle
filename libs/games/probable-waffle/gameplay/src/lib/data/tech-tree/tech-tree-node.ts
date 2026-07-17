@@ -1,4 +1,4 @@
-import { ObjectNames, PreRequirement } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames, PreRequirement } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { PrefabDefinition } from "../../prefabs/definitions/prefab-definition";
 
 import type { TechNodeKind } from "./tech-node-kind";

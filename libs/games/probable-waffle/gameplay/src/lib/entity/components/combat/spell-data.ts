@@ -1,5 +1,5 @@
 import { SpellType } from "./spell-type";
-import { DamageType, type ObjectNames, ResearchType, SpellTargetType } from "@fuzzy-waddle/api-interfaces";
+import { DamageType, type ObjectNames, ResearchType, SpellTargetType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { ProjectileData } from "./projectile-data";
 import { AnimationType } from "../animation/animation-type";
 

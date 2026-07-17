@@ -1,13 +1,6 @@
 import { Blackboard } from "../../ai/blackboard";
-import {
-  ObjectNames,
-  type PlayerAiBlackboardData,
-  PreRequirement,
-  type PrerequisiteType,
-  ResourceType,
-  type Vector2Simple,
-  type Vector3Simple
-} from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames, type PlayerAiBlackboardData, PreRequirement, type PrerequisiteType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { type Vector2Simple, type Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import type { MapAnalysis } from "./ai-behavior/map-analyzer";
 import { ReservationPool } from "./resource-reservations";
 import { getActorComponent } from "../../data/actor-component";

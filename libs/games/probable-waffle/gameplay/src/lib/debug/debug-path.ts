@@ -1,4 +1,4 @@
-import type { Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import type { Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { environment } from "@fuzzy-waddle/environments/environment";
 import { drawDebugPoint } from "./debug-point";
 import { NavigationService } from "../world/services/navigation.service";

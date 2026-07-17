@@ -1863,6 +1863,6 @@
         "sourceLang": "TYPE_SCRIPT",
         "esModule": true,
         "generateCode": true,
-        "outputFolder": "fuzzy-waddle/apps/client/src/assets/probable-waffle/atlas"
+        "outputFolder": "fuzzy-waddle/libs/games/probable-waffle/gameplay/src/assets/probable-waffle/atlas"
     }
 }

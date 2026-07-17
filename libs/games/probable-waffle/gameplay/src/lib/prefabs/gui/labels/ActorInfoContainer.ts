@@ -13,7 +13,7 @@ import { Subscription } from "rxjs";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getCurrentPlayerNumber, getSelectedActors, listenToSelectionEvents } from "../../../data/scene-data";
 import { getPwActorDefinition } from "../../definitions/actor-definitions";
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { getActorComponent } from "../../../data/actor-component";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
 import { ConstructionSiteComponent } from "../../../entity/components/construction/construction-site-component";

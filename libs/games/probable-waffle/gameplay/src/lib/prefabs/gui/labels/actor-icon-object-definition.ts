@@ -1,4 +1,4 @@
-import type { ResearchType } from "@fuzzy-waddle/api-interfaces";
+import type { ResearchType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 export type ActorIconObjectDefinition = {
   actorObjectId?: string;

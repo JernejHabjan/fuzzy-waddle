@@ -5,7 +5,7 @@ import {
   SkaduweeOwlSfxMoveSounds,
   SkaduweeOwlSfxSelectionSounds
 } from "./SkaduweeOwlSfx";
-import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { PaymentType } from "../../../../entity/components/production/payment-type";
 import { ANIM_SKADUWEE_OWL_DEFINITION } from "./SkaduweeOwlAnims";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";

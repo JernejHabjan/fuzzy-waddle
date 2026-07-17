@@ -1,5 +1,5 @@
 import { type AchievementServiceInterface } from "./achievement.service.interface";
-import { type AchievementDto } from "@fuzzy-waddle/api-interfaces";
+import { type AchievementDto } from "@fuzzy-waddle/probable-waffle-protocol";
 import { Observable } from "rxjs";
 import { type AchievementDefinition } from "./achievement-definition";
 

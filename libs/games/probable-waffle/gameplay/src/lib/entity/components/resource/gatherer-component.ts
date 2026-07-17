@@ -4,7 +4,7 @@ import { DistanceHelper } from "../../../library/distance-helper";
 import { Subject, type Subscription } from "rxjs";
 import { ContainerComponent } from "../building/container-component";
 import { ResourceDrainComponent } from "./resource-drain-component";
-import { type GathererComponentData, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { type GathererComponentData, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "../owner-component";
 import { ConstructionSiteComponent } from "../construction/construction-site-component";

@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing";
-import { AuthService } from "@fuzzy-waddle/portal/auth/auth.service";
-import { authServiceStub } from "@fuzzy-waddle/portal/auth/auth.service.stub";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
+import { authServiceStub } from "@fuzzy-waddle/platform-identity/client/auth/auth.service.stub";
 import { AudioAtlasService } from "../audio-atlas/audio-atlas.service";
 import { audioAtlasServiceStub } from "../audio-atlas/audio-atlas.service.stub";
 import { AchievementService } from "./achievement.service";

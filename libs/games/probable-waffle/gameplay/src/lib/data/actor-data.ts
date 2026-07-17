@@ -1,5 +1,5 @@
 import { getPwActorDefinition } from "../prefabs/definitions/actor-definitions";
-import { type ActorDefinition } from "@fuzzy-waddle/api-interfaces";
+import { type ActorDefinition } from "@fuzzy-waddle/probable-waffle-protocol";
 import { VisionComponent } from "../entity/components/vision-component";
 import { InfoComponent } from "../entity/components/info-component";
 import { ObjectDescriptorComponent } from "../entity/components/object-descriptor-component";

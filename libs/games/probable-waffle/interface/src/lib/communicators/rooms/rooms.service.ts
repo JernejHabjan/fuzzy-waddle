@@ -1,20 +1,13 @@
 import { computed, inject, Injectable, type Signal, signal } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "@fuzzy-waddle/environments/environment";
-import {
-  GameSessionState,
-  ProbableWaffleGameInstanceType,
-  ProbableWaffleGatewayEvent,
-  type ProbableWaffleGetRoomsDto,
-  ProbableWaffleMapEnum,
-  type ProbableWaffleRoom,
-  type ProbableWaffleRoomEvent
-} from "@fuzzy-waddle/api-interfaces";
+import { GameSessionState } from "@fuzzy-waddle/platform-game-sessions";
+import { ProbableWaffleGameInstanceType, ProbableWaffleGatewayEvent, type ProbableWaffleGetRoomsDto, ProbableWaffleMapEnum, type ProbableWaffleRoom, type ProbableWaffleRoomEvent } from "@fuzzy-waddle/probable-waffle-protocol";
 import { firstValueFrom, Observable, Subscription } from "rxjs";
-import { AuthenticatedSocketService } from "@fuzzy-waddle/portal/data-access/chat/authenticated-socket.service";
+import { AuthenticatedSocketService } from "@fuzzy-waddle/platform-chat/client/data-access/authenticated-socket.service";
 import { map } from "rxjs/operators";
-import { AuthService } from "@fuzzy-waddle/portal/auth/auth.service";
-import { ServerHealthService } from "@fuzzy-waddle/portal/shared/services/server-health.service";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
+import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service";
 import { type RoomsServiceInterface } from "./rooms.service.interface";
 
 @Injectable({

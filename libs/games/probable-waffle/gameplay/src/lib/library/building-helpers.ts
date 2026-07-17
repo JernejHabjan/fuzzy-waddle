@@ -4,7 +4,7 @@ import { ContainerComponent } from "../entity/components/building/container-comp
 import { OwnerComponent } from "../entity/components/owner-component";
 import { ObjectDescriptorComponent } from "../entity/components/object-descriptor-component";
 import GameObject = Phaser.GameObjects.GameObject;
-import type { PlayerNumber } from "@fuzzy-waddle/api-interfaces";
+import type { PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 
 /**
  * Determines if a game object is a building based on its components.

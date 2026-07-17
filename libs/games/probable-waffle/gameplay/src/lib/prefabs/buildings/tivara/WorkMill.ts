@@ -7,7 +7,7 @@ import WorkMillCursor from "./WorkMill/WorkMillCursor";
 import WorkMillFoundation1 from "./WorkMill/WorkMillFoundation1";
 import WorkMillFoundation2 from "./WorkMill/WorkMillFoundation2";
 import WorkMillLevel1 from "./WorkMill/WorkMillLevel1";
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { ConstructionGameObjectInterfaceComponent } from "../../../entity/components/construction/construction-game-object-interface-component";
 import { setActorData } from "../../../data/actor-data";
 /* END-USER-IMPORTS */

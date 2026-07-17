@@ -1,19 +1,13 @@
 import { inject, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { environment } from "@fuzzy-waddle/portal-environments/environment";
-import {
-  type GameInstanceDataDto,
-  type GameInstanceId,
-  type LittleMuncherGameInstanceData,
-  LittleMuncherGatewayEvent,
-  type LittleMuncherRoom,
-  type LittleMuncherRoomEvent
-} from "@fuzzy-waddle/api-interfaces";
+import { environment } from "@fuzzy-waddle/environments/environment";
+import { type GameInstanceDataDto, type GameInstanceId } from "@fuzzy-waddle/platform-game-sessions";
+import { type LittleMuncherGameInstanceData, LittleMuncherGatewayEvent, type LittleMuncherRoom, type LittleMuncherRoomEvent } from "@fuzzy-waddle/little-muncher-protocol";
 import { firstValueFrom, Observable, Subject, Subscription } from "rxjs";
-import { AuthenticatedSocketService } from "@fuzzy-waddle/portal/data-access/chat/authenticated-socket.service";
+import { AuthenticatedSocketService } from "@fuzzy-waddle/platform-chat/client/data-access/authenticated-socket.service";
 import { map } from "rxjs/operators";
-import { AuthService } from "@fuzzy-waddle/portal/auth/auth.service";
-import { ServerHealthService } from "@fuzzy-waddle/portal/shared/services/server-health.service";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
+import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service";
 import { type SpectateServiceInterface } from "./spectate.service.interface";
 import { GameInstanceClientService } from "../../main/communicators/game-instance-client.service";
 

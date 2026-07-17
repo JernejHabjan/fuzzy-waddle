@@ -7,7 +7,7 @@ import {
   TivaraSlingshotSfxMoveSounds,
   TivaraSlingshotSfxSelectionSounds
 } from "./TivaraSlingshotSfx";
-import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { PaymentType } from "../../../../entity/components/production/payment-type";
 import {
   ANIM_TIVARA_SLINGSHOT_FEMALE_DEFINITION_LEVEL_1,

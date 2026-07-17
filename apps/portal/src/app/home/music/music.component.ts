@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core";
 
-import { AngularHost } from "../../shared/consts";
-import { HomeNavComponent } from "../../shared/components/home-nav/home-nav.component";
+import { AngularHost } from "@fuzzy-waddle/platform-game-host/angular/consts";
+import { HomeNavComponent } from "@fuzzy-waddle/platform-identity/client/home-nav/home-nav.component";
 
 @Component({
   selector: "fuzzy-waddle-music",

@@ -7,7 +7,7 @@ import {
   SkaduweeWarriorSfxMoveSounds,
   SkaduweeWarriorSfxSelectionSounds
 } from "./SkaduweeWarriorSfx";
-import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { PaymentType } from "../../../../entity/components/production/payment-type";
 import {
   ANIM_SKADUWEE_WARRIOR_MALE_DEFINITION_LEVEL_1,

@@ -14,12 +14,15 @@
     "emitDecoratorMetadata": false,
     "baseUrl": ".",
     "paths": {
-      "@fuzzy-waddle/api-interfaces": ["libs/api-interfaces/src/index.ts"],
       "@fuzzy-waddle/platform-identity": ["libs/platform/identity/src/index.ts"],
+      "@fuzzy-waddle/platform-identity/*": ["libs/platform/identity/src/lib/*"],
       "@fuzzy-waddle/platform-chat": ["libs/platform/chat/src/index.ts"],
+      "@fuzzy-waddle/platform-chat/*": ["libs/platform/chat/src/lib/*"],
       "@fuzzy-waddle/platform-game-sessions": ["libs/platform/game-sessions/src/index.ts"],
       "@fuzzy-waddle/platform-database-schema": ["libs/platform/database-schema/src/index.ts"],
+      "@fuzzy-waddle/platform-database-schema/*": ["libs/platform/database-schema/src/lib/*"],
       "@fuzzy-waddle/platform-game-host": ["libs/platform/game-host/src/index.ts"],
+      "@fuzzy-waddle/platform-game-host/angular/*": ["libs/platform/game-host/src/lib/angular/*"],
       "@fuzzy-waddle/platform-game-host/*": ["libs/platform/game-host/src/lib/game/*"],
       "@fuzzy-waddle/dungeon-crawler-gameplay": ["libs/games/dungeon-crawler/gameplay/src/index.ts"],
       "@fuzzy-waddle/dungeon-crawler-gameplay/*": ["libs/games/dungeon-crawler/gameplay/src/lib/*"],
@@ -43,10 +46,7 @@
       "@fuzzy-waddle/probable-waffle-gameplay/*": ["libs/games/probable-waffle/gameplay/src/lib/*"],
       "@fuzzy-waddle/probable-waffle-interface": ["libs/games/probable-waffle/interface/src/index.ts"],
       "@fuzzy-waddle/probable-waffle-interface/*": ["libs/games/probable-waffle/interface/src/lib/*"],
-      "@fuzzy-waddle/environments/*": ["libs/platform/game-host/src/lib/environments/*"],
-      "@fuzzy-waddle/api/*": ["apps/api/src/*"],
-      "@fuzzy-waddle/portal/*": ["apps/portal/src/app/*"],
-      "@fuzzy-waddle/portal-environments/*": ["libs/platform/game-host/src/lib/environments/*"]
+      "@fuzzy-waddle/environments/*": ["libs/platform/game-host/src/lib/environments/*"]
     },
     "strict": true,
     "noUnusedLocals": false,

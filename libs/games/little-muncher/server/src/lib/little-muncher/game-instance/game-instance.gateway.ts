@@ -1,12 +1,8 @@
 import { OnGatewayConnection, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
-import {
-  LittleMuncherGatewayEvent,
-  type LittleMuncherRoomEvent,
-  type LittleMuncherSpectatorEvent
-} from "@fuzzy-waddle/api-interfaces";
+import { LittleMuncherGatewayEvent, type LittleMuncherRoomEvent, type LittleMuncherSpectatorEvent } from "@fuzzy-waddle/little-muncher-protocol";
 import { type GameInstanceGatewayInterface } from "./game-instance.gateway.interface";
 import { Server, Socket } from "socket.io";
-import { SocketConnectionAuthService } from "@fuzzy-waddle/api/auth/socket-connection-auth.service";
+import { SocketConnectionAuthService } from "@fuzzy-waddle/platform-identity/server/auth/socket-connection-auth.service";
 
 @WebSocketGateway({
   cors: {

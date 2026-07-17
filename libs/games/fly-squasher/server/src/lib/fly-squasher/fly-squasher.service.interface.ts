@@ -1,4 +1,4 @@
-import { ScoreDto } from "@fuzzy-waddle/api-interfaces";
+import { ScoreDto } from "@fuzzy-waddle/fly-squasher-protocol";
 import { User } from "@supabase/supabase-js";
 
 export interface FlySquasherServiceInterface {

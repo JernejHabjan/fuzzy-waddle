@@ -4,8 +4,8 @@ import { AsyncPipe } from "@angular/common";
 import { map, Observable } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { type Attribution } from "./attribution";
-import { HomeNavComponent } from "../../shared/components/home-nav/home-nav.component";
-import { AngularHost } from "../../shared/consts";
+import { HomeNavComponent } from "@fuzzy-waddle/platform-identity/client/home-nav/home-nav.component";
+import { AngularHost } from "@fuzzy-waddle/platform-game-host/angular/consts";
 
 interface GroupedAttribution {
   type: string;

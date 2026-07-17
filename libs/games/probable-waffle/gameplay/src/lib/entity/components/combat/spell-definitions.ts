@@ -2,7 +2,7 @@ import { SpellType } from "./spell-type";
 import type { SpellData } from "./spell-data";
 import { ProjectileType } from "./projectile-type";
 import { AnimationType } from "../animation/animation-type";
-import { DamageType, ObjectNames, ResearchType, SpellTargetType } from "@fuzzy-waddle/api-interfaces";
+import { DamageType, ObjectNames, ResearchType, SpellTargetType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { BansheeAnimationTypes } from "../../../prefabs/characters/mobs/banshee/anims-banshee";
 import { MedusaAnimationTypes } from "../../../prefabs/characters/mobs/medusa/anims-medusa";
 import { WendigoAnimationTypes } from "../../../prefabs/characters/mobs/forest_wendigo/anims-forest_wendigo";

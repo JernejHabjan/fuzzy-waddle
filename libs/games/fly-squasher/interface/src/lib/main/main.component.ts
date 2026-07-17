@@ -1,22 +1,23 @@
 import { Component, inject, type OnDestroy, type OnInit, input } from "@angular/core";
 import { flySquasherGameConfig } from "@fuzzy-waddle/fly-squasher-gameplay/consts/game-config";
-import { FlySquasherGameInstance, FlySquasherLevels, FlySquasherUserInfo } from "@fuzzy-waddle/api-interfaces";
-import { AuthService } from "@fuzzy-waddle/portal/auth/auth.service";
+import { FlySquasherGameInstance, FlySquasherLevels, FlySquasherUserInfo } from "@fuzzy-waddle/fly-squasher-protocol";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
 import { type FlySquasherGameData } from "@fuzzy-waddle/fly-squasher-gameplay/fly-squasher-game-data";
 import { FlySquasherCommunicatorService } from "@fuzzy-waddle/fly-squasher-gameplay/fly-squasher-communicator.service";
 import { SceneCommunicatorClientService } from "./scene-communicator-client.service";
 import { Router } from "@angular/router";
-import { PreventNavigateBack } from "@fuzzy-waddle/portal/shared/handlers/prevent-navigate-back";
-import { type ModalConfig } from "@fuzzy-waddle/portal/shared/components/modal/modal-config";
+import { PreventNavigateBack } from "@fuzzy-waddle/platform-game-host/angular/handlers/prevent-navigate-back";
+import { type ModalConfig } from "@fuzzy-waddle/platform-game-host/angular/components/modal/modal-config";
 
 import { GameContainerComponent } from "@fuzzy-waddle/platform-game-host/game-container/game-container.component";
-import { AngularHost } from "@fuzzy-waddle/portal/shared/consts";
-import { LeaveButtonComponent } from "@fuzzy-waddle/portal/shared/components/leave-button/leave-button.component";
+import { AngularHost } from "@fuzzy-waddle/platform-game-host/angular/consts";
+import { LeaveButtonComponent } from "@fuzzy-waddle/platform-game-host/angular/components/leave-button/leave-button.component";
 
 @Component({
   templateUrl: "./main.component.html",
   styleUrls: ["./main.component.scss"],
   imports: [GameContainerComponent, LeaveButtonComponent],
+  providers: [FlySquasherCommunicatorService, SceneCommunicatorClientService],
   host: AngularHost.contentFlexFullHeight
 })
 export class MainComponent implements OnInit, OnDestroy {

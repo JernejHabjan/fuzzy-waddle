@@ -1,4 +1,4 @@
-import type { PlayerNumber } from "@fuzzy-waddle/api-interfaces";
+import type { PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 
 export enum ProbableWaffleSceneEventName {
   SceneAwake = "scene-awake",

@@ -1,25 +1,6 @@
 import { TwoWayCommunicator } from "@fuzzy-waddle/platform-game-host/communicators/two-way-communicator";
-import {
-  type GameInstanceId,
-  type ProbableWaffleCommunicatorMessageEvent,
-  type ProbableWaffleCommunicatorType,
-  type ProbableWaffleDesyncAlertEvent,
-  type ProbableWaffleGameCommandEvent,
-  type ProbableWaffleGameInstanceMetadataChangeEvent,
-  type ProbableWaffleGameModeDataChangeEvent,
-  type ProbableWaffleGameStateDataChangeEvent,
-  type ProbableWaffleHostMigratedEvent,
-  type ProbableWaffleInstanceReseedEvent,
-  type ProbableWaffleInstanceReseedRequiredEvent,
-  type ProbableWafflePauseChangedEvent,
-  type ProbableWafflePlayerDataChangeEvent,
-  type ProbableWafflePlayerDisconnectedEvent,
-  type ProbableWafflePlayerReconnectedEvent,
-  type ProbableWaffleSnapshotRequestEvent,
-  type ProbableWaffleSnapshotResponseEvent,
-  type ProbableWaffleSpectatorDataChangeEvent,
-  type ProbableWaffleStateHashEvent
-} from "@fuzzy-waddle/api-interfaces";
+import { type GameInstanceId } from "@fuzzy-waddle/platform-game-sessions";
+import { type ProbableWaffleCommunicatorMessageEvent, type ProbableWaffleCommunicatorType, type ProbableWaffleDesyncAlertEvent, type ProbableWaffleGameCommandEvent, type ProbableWaffleGameInstanceMetadataChangeEvent, type ProbableWaffleGameModeDataChangeEvent, type ProbableWaffleGameStateDataChangeEvent, type ProbableWaffleHostMigratedEvent, type ProbableWaffleInstanceReseedEvent, type ProbableWaffleInstanceReseedRequiredEvent, type ProbableWafflePauseChangedEvent, type ProbableWafflePlayerDataChangeEvent, type ProbableWafflePlayerDisconnectedEvent, type ProbableWafflePlayerReconnectedEvent, type ProbableWaffleSnapshotRequestEvent, type ProbableWaffleSnapshotResponseEvent, type ProbableWaffleSpectatorDataChangeEvent, type ProbableWaffleStateHashEvent } from "@fuzzy-waddle/probable-waffle-protocol";
 import { Socket } from "ngx-socket-io";
 
 export interface ProbableWaffleCommunicatorServiceInterface {

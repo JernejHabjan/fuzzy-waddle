@@ -1,17 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { SupabaseProviderService } from "@fuzzy-waddle/api/core/supabase-provider/supabase-provider.service";
-import {
-  type Database,
-  GameKey,
-  GameParticipantType,
-  GameResultStatus,
-  type GameScoreSnapshotDto,
-  GameSessionStatus,
-  type Json,
-  PlayerScoreDto,
-  ProbableWaffleMapEnum
-} from "@fuzzy-waddle/api-interfaces";
+import { SupabaseProviderService } from "@fuzzy-waddle/platform-database-schema/server/supabase-provider/supabase-provider.service";
+import { type Database, GameKey, GameParticipantType, GameResultStatus, GameSessionStatus, type Json } from "@fuzzy-waddle/platform-database-schema";
+import { type GameScoreSnapshotDto, PlayerScoreDto, ProbableWaffleMapEnum } from "@fuzzy-waddle/probable-waffle-protocol";
 import { GameSessionServiceInterface } from "./game-session.service.interface";
 
 type GameSessionRow = Database["public"]["Tables"]["game_sessions"]["Row"];

@@ -3,15 +3,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { GameSaveService } from "../../services/game-save/game-save.service";
 import { GameSaveServiceStub } from "../../services/game-save/game-save.service.stub";
 import { SaveGameDialogComponent } from "./save-game-dialog.component";
-import {
-  GAME_SAVE_FORMAT_VERSION,
-  GameSaveKind,
-  GameSaveScope,
-  GameSaveSyncState,
-  type GameSaveRecord,
-  type ProbableWaffleGameInstanceData,
-  ProbableWaffleGameInstanceType
-} from "@fuzzy-waddle/api-interfaces";
+import { GAME_SAVE_FORMAT_VERSION, GameSaveKind, GameSaveScope, GameSaveSyncState, type GameSaveRecord, type ProbableWaffleGameInstanceData, ProbableWaffleGameInstanceType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 describe("SaveGameDialogComponent", () => {
   let fixture: ComponentFixture<SaveGameDialogComponent>;

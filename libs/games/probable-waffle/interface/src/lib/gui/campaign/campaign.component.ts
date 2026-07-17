@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject, type OnInit } from "@angular/core";
-import type { CampaignChapterId } from "@fuzzy-waddle/api-interfaces";
+import type { CampaignChapterId } from "@fuzzy-waddle/probable-waffle-protocol";
 import { Router } from "@angular/router";
 
-import { HomeNavComponent } from "@fuzzy-waddle/portal/shared/components/home-nav/home-nav.component";
+import { HomeNavComponent } from "@fuzzy-waddle/platform-identity/client/home-nav/home-nav.component";
 import { AOTA_CAMPAIGN_CATALOG } from "./campaign-catalog";
 import { ChapterCardComponent } from "./chapter-card/chapter-card.component";
 import type { CampaignChapterCardState } from "./chapter-card/campaign-chapter-card-state";

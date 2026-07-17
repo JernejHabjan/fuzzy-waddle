@@ -1,9 +1,5 @@
-import type {
-  ObjectNames,
-  RepresentableComponentData,
-  Vector2Simple,
-  Vector3Simple
-} from "@fuzzy-waddle/api-interfaces";
+import type { ObjectNames, RepresentableComponentData } from "@fuzzy-waddle/probable-waffle-protocol";
+import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { getGameObjectBounds, getGameObjectVisibility, onObjectReady } from "../../data/game-object-helper";
 import { getActorComponent } from "../../data/actor-component";
 import { FlyingComponent } from "./movement/flying-component";

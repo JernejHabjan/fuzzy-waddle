@@ -1,9 +1,5 @@
-import {
-  ObjectNames,
-  type PlayerNumber,
-  ProbableWaffleGameCommandTypes,
-  type ResearchType
-} from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames, ProbableWaffleGameCommandTypes, type ResearchType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { type PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 import { getActorComponent } from "../actor-component";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";

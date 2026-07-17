@@ -2,14 +2,9 @@ import { Component, inject } from "@angular/core";
 import type { OnInit } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
-import {
-  type ProbableWaffleGameInstanceData,
-  ProbableWaffleGameInstanceType,
-  ProbableWaffleLevels,
-  type GameSaveRecord
-} from "@fuzzy-waddle/api-interfaces";
+import { type ProbableWaffleGameInstanceData, ProbableWaffleGameInstanceType, ProbableWaffleLevels, type GameSaveRecord } from "@fuzzy-waddle/probable-waffle-protocol";
 import { GameSaveService } from "../../services/game-save/game-save.service";
-import { GameLengthPipe } from "@fuzzy-waddle/portal/shared/pipes/game-length.pipe";
+import { GameLengthPipe } from "@fuzzy-waddle/probable-waffle-interface/pipes/game-length.pipe";
 import { DatePipe } from "@angular/common";
 
 @Component({

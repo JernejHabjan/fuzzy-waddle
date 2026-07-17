@@ -1,12 +1,7 @@
 // Runtime service that stores unified tech graph & per-player unlock state.
 import type { TechTreeGraph } from "./tech-tree-graph";
-import {
-  FactionType,
-  ObjectNames,
-  type PlayerNumber,
-  PreRequirement,
-  ResearchType
-} from "@fuzzy-waddle/api-interfaces";
+import { FactionType, ObjectNames, PreRequirement, ResearchType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { type PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 import { TechTreeBuilder } from "./tech-tree.builder";
 import { getCanonicalActorNameCached } from "./canonical-actor-name";
 import { BuilderComponent } from "../../entity/components/construction/builder-component";

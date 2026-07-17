@@ -1,6 +1,6 @@
 // Resource Reservation System
 // Central pool preventing double-spend of resources across planned builds or future unit training.
-import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 export interface ResourceReservation {
   id: string;

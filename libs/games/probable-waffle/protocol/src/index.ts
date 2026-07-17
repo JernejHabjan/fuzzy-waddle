@@ -12,6 +12,7 @@ export * from "./lib/game-instance/probable-waffle/player-scores.dto";
 export * from "./lib/game-instance/probable-waffle/game-command";
 export * from "./lib/game-instance/probable-waffle/game-state";
 export * from "./lib/game-instance/probable-waffle/player";
+export * from "./lib/game-instance/probable-waffle/room";
 export * from "./lib/game-instance/probable-waffle/game-instance-medatada";
 export * from "./lib/game-instance/probable-waffle/spectator";
 export * from "./lib/game-instance/probable-waffle/object-names";

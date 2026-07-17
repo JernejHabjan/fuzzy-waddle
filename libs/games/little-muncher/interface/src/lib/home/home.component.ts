@@ -1,16 +1,11 @@
 import { Component, inject, output } from "@angular/core";
-import {
-  type HillData,
-  type LittleMuncherGameCreate,
-  LittleMuncherHillEnum,
-  LittleMuncherHills
-} from "@fuzzy-waddle/api-interfaces";
-import { ServerHealthService } from "@fuzzy-waddle/portal/shared/services/server-health.service";
-import { AuthService } from "@fuzzy-waddle/portal/auth/auth.service";
+import { type HillData, type LittleMuncherGameCreate, LittleMuncherHillEnum, LittleMuncherHills } from "@fuzzy-waddle/little-muncher-protocol";
+import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
 import { KeyValuePipe } from "@angular/common";
 import { SpectateComponent } from "./spectate/spectate.component";
-import { AngularHost } from "@fuzzy-waddle/portal/shared/consts";
-import { HomeNavComponent } from "@fuzzy-waddle/portal/shared/components/home-nav/home-nav.component";
+import { AngularHost } from "@fuzzy-waddle/platform-game-host/angular/consts";
+import { HomeNavComponent } from "@fuzzy-waddle/platform-identity/client/home-nav/home-nav.component";
 import { RouterLink } from "@angular/router";
 
 @Component({

@@ -1,6 +1,6 @@
 import { PlayerAiBlackboard } from "../player-ai-blackboard";
 import { getActorComponent } from "../../../data/actor-component";
-import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { ProductionComponent } from "../../../entity/components/production/production-component";
 import { getCostForObjectName } from "../../../entity/components/production/cost-utils";
 import { GathererComponent } from "../../../entity/components/resource/gatherer-component";

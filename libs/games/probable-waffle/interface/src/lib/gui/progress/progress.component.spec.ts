@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { ProgressComponent } from "./progress.component";
-import { ServerHealthService } from "@fuzzy-waddle/portal/shared/services/server-health.service";
-import { serverHealthServiceStub } from "@fuzzy-waddle/portal/shared/services/server-health.service.stub";
-import { AuthService } from "@fuzzy-waddle/portal/auth/auth.service";
-import { authServiceStub } from "@fuzzy-waddle/portal/auth/auth.service.stub";
+import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service";
+import { serverHealthServiceStub } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service.stub";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
+import { authServiceStub } from "@fuzzy-waddle/platform-identity/client/auth/auth.service.stub";
 import { provideRouter } from "@angular/router";
 import { AchievementService } from "../../services/achievement/achievement.service";
 import { achievementServiceStub } from "../../services/achievement/achievement.service.stub";

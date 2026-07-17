@@ -61,7 +61,7 @@ http://127.0.0.1:54321/auth/v1/callback
 
 ## Angular Client Won't Start
 
-Ensure the API is running and the proxy is configured. The dev proxy config is at `apps/client/proxy.conf.json` and forwards `/api/*` to `http://localhost:3333`.
+Ensure the API is running and the proxy is configured. The dev proxy config is at `apps/portal/proxy.conf.json` and forwards `/api/*` to `http://localhost:3333`.
 
 ## Environment Variables Missing
 

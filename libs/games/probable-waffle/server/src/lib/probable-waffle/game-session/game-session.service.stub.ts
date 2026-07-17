@@ -1,4 +1,4 @@
-import { ProbableWaffleMapEnum } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWaffleMapEnum } from "@fuzzy-waddle/probable-waffle-protocol";
 import { GameSessionServiceInterface } from "./game-session.service.interface";
 
 export const gameSessionServiceStub = {

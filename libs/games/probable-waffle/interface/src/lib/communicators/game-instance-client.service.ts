@@ -2,47 +2,17 @@ import { inject, Injectable, NgZone } from "@angular/core";
 import { filter, firstValueFrom, Observable, Subject, Subscription } from "rxjs";
 import { environment } from "@fuzzy-waddle/environments/environment";
 import { HttpClient } from "@angular/common/http";
-import {
-  createPlayerLobbyDefinition,
-  type DifficultyModifiers,
-  type GameInstanceId,
-  GameSessionState,
-  GameSetupHelpers,
-  GameSaveKind,
-  GameSaveScope,
-  getRandomFactionType,
-  type MapTuning,
-  type PlayerLobbyDefinition,
-  type PlayerNumber,
-  type PositionPlayerDefinition,
-  ProbableWaffleAiDifficulty,
-  type ProbableWaffleDataChangeEventProperty,
-  type ProbableWaffleGameFoundEvent,
-  ProbableWaffleGameInstance,
-  type ProbableWaffleGameInstanceData,
-  ProbableWaffleGameInstanceEvent,
-  type ProbableWaffleGameInstanceMetadataData,
-  ProbableWaffleGameInstanceType,
-  ProbableWaffleGameInstanceVisibility,
-  type ProbableWaffleGameModeData,
-  type ProbableWaffleGameStateData,
-  ProbableWaffleListeners,
-  type ProbableWafflePlayerDataChangeEventPayload,
-  type ProbableWafflePlayerDataChangeEventProperty,
-  ProbableWafflePlayerType,
-  type ProbableWaffleSpectatorData,
-  type ProbableWaffleSpectatorDataChangeEventProperty,
-  type RequestGameSearchForMatchMakingDto
-} from "@fuzzy-waddle/api-interfaces";
-import { ServerHealthService } from "@fuzzy-waddle/portal/shared/services/server-health.service";
+import { createPlayerLobbyDefinition, type DifficultyModifiers, GameSetupHelpers, GameSaveKind, GameSaveScope, getRandomFactionType, type MapTuning, type PlayerLobbyDefinition, type PositionPlayerDefinition, ProbableWaffleAiDifficulty, type ProbableWaffleDataChangeEventProperty, type ProbableWaffleGameFoundEvent, ProbableWaffleGameInstance, type ProbableWaffleGameInstanceData, ProbableWaffleGameInstanceEvent, type ProbableWaffleGameInstanceMetadataData, ProbableWaffleGameInstanceType, ProbableWaffleGameInstanceVisibility, type ProbableWaffleGameModeData, type ProbableWaffleGameStateData, ProbableWaffleListeners, type ProbableWafflePlayerDataChangeEventPayload, type ProbableWafflePlayerDataChangeEventProperty, ProbableWafflePlayerType, type ProbableWaffleSpectatorData, type ProbableWaffleSpectatorDataChangeEventProperty, type RequestGameSearchForMatchMakingDto } from "@fuzzy-waddle/probable-waffle-protocol";
+import { type GameInstanceId, GameSessionState, type PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
+import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service";
 import { SceneCommunicatorClientService } from "./scene-communicator-client.service";
-import { AuthService } from "@fuzzy-waddle/portal/auth/auth.service";
-import { CurrentUserProfileService } from "@fuzzy-waddle/portal/data-access/profile/current-user-profile.service";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
+import { CurrentUserProfileService } from "@fuzzy-waddle/platform-identity/client/profile-data/current-user-profile.service";
 import { type GameInstanceClientServiceInterface } from "./game-instance-client.service.interface";
 import { Router } from "@angular/router";
 import { ProbableWaffleCommunicatorService } from "./probable-waffle-communicator.service";
 import { map } from "rxjs/operators";
-import { AuthenticatedSocketService } from "@fuzzy-waddle/portal/data-access/chat/authenticated-socket.service";
+import { AuthenticatedSocketService } from "@fuzzy-waddle/platform-chat/client/data-access/authenticated-socket.service";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { LoadComponent } from "../gui/load/load.component";
 import { OptionsComponent } from "../gui/options/options.component";

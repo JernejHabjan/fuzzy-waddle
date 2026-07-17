@@ -5,7 +5,7 @@
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 
 export default class Corpy extends Phaser.GameObjects.Sprite {
   constructor(scene: Phaser.Scene, x?: number, y?: number, texture?: string, frame?: number | string) {

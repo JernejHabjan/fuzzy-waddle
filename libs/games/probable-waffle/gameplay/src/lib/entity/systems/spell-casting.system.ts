@@ -1,13 +1,8 @@
 import { SpellType } from "../components/combat/spell-type";
 import type { SpellData } from "../components/combat/spell-data";
 import { spellDefinitions } from "../components/combat/spell-definitions";
-import {
-  DamageType,
-  type StatusEffectData,
-  StatusEffectType,
-  type Vector2Simple,
-  type Vector3Simple
-} from "@fuzzy-waddle/api-interfaces";
+import { DamageType, type StatusEffectData, StatusEffectType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { type Vector2Simple, type Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { getActorComponent } from "../../data/actor-component";
 import { SpellComponent } from "../components/combat/components/spell-component";
 import { HealthComponent } from "../components/combat/components/health-component";

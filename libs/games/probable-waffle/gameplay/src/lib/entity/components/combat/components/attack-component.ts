@@ -27,7 +27,7 @@ import { DistanceHelper } from "../../../../library/distance-helper";
 import { EffectsAnims } from "../../../../animations/effects";
 import SkaduweeOwlFurball from "../../../../prefabs/weapons/SkaduweeOwlFurball";
 import { FlyingComponent } from "../../movement/flying-component";
-import { type AttackComponentData } from "@fuzzy-waddle/api-interfaces";
+import { type AttackComponentData } from "@fuzzy-waddle/probable-waffle-protocol";
 import { ProjectileType } from "../projectile-type";
 import type { AnimationOptions } from "../../animation/animation-options";
 import type { ProjectileData } from "../projectile-data";

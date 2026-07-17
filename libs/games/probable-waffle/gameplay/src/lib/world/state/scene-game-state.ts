@@ -1,5 +1,6 @@
 import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
-import { GameSessionState, ProbableWaffleGameInstanceType } from "@fuzzy-waddle/api-interfaces";
+import { GameSessionState } from "@fuzzy-waddle/platform-game-sessions";
+import { ProbableWaffleGameInstanceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { getCommunicator } from "../../data/scene-data";
 import { ReadyBarrier } from "../services/multiplayer/ready-barrier.service";
 import TimerEvent = Phaser.Time.TimerEvent;

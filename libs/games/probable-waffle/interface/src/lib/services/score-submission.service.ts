@@ -2,12 +2,7 @@ import { inject, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable, of } from "rxjs";
 import { catchError, map } from "rxjs/operators";
-import {
-  type GameScoreSnapshotDto,
-  type PlayerScoreData,
-  type ProbableWaffleGameInstance,
-  ProbableWafflePlayerType
-} from "@fuzzy-waddle/api-interfaces";
+import { type GameScoreSnapshotDto, type PlayerScoreData, type ProbableWaffleGameInstance, ProbableWafflePlayerType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { environment } from "@fuzzy-waddle/environments/environment";
 
 @Injectable({

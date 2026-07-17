@@ -2,8 +2,8 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { InstantNetworkMatchComponent } from "./instant-network-match.component";
 import { matchmakingServiceStub } from "../matchmaking/matchmaking.service.stub";
 import { MatchmakingService } from "../matchmaking/matchmaking.service";
-import { ServerHealthService } from "@fuzzy-waddle/portal/shared/services/server-health.service";
-import { serverHealthServiceStub } from "@fuzzy-waddle/portal/shared/services/server-health.service.stub";
+import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service";
+import { serverHealthServiceStub } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service.stub";
 
 describe("InstantNetworkMatchComponent", () => {
   let component: InstantNetworkMatchComponent;

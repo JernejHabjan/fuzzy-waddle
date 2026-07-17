@@ -1,5 +1,5 @@
 import { PauseStateValidatorService } from "./pause-state-validator.service";
-import type { ProbableWaffleGameInstance, ProbableWafflePauseChangedEvent } from "@fuzzy-waddle/api-interfaces";
+import type { ProbableWaffleGameInstance, ProbableWafflePauseChangedEvent } from "@fuzzy-waddle/probable-waffle-protocol";
 
 describe("PauseStateValidatorService", () => {
   let service: PauseStateValidatorService;

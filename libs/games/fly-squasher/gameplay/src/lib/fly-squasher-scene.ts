@@ -1,16 +1,5 @@
 import { BaseScene } from "@fuzzy-waddle/platform-game-host/phaser/scene/base.scene";
-import {
-  FlySquasherGameMode,
-  type FlySquasherGameModeData,
-  FlySquasherGameState,
-  type FlySquasherGameStateData,
-  FlySquasherLevelEnum,
-  FlySquasherPlayer,
-  type FlySquasherPlayerControllerData,
-  type FlySquasherPlayerStateData,
-  FlySquasherSpectator,
-  type FlySquasherSpectatorData
-} from "@fuzzy-waddle/api-interfaces";
+import { FlySquasherGameMode, type FlySquasherGameModeData, FlySquasherGameState, type FlySquasherGameStateData, FlySquasherLevelEnum, FlySquasherPlayer, type FlySquasherPlayerControllerData, type FlySquasherPlayerStateData, FlySquasherSpectator, type FlySquasherSpectatorData } from "@fuzzy-waddle/fly-squasher-protocol";
 import { Scenes } from "./consts/scenes";
 import { Fly } from "./fly/fly";
 import { Scenery } from "./scenery/Scenery";

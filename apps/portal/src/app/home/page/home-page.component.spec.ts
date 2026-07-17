@@ -4,11 +4,11 @@ import { HomePageComponent } from "./home-page.component";
 import { FontAwesomeTestingModule } from "@fortawesome/angular-fontawesome/testing";
 import { HomePageNavTestingComponent } from "./home-page-nav/home-page-nav.component.spec";
 import { provideRouter } from "@angular/router";
-import { AuthService } from "../../auth/auth.service";
-import { authServiceStub } from "../../auth/auth.service.stub";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
+import { authServiceStub } from "@fuzzy-waddle/platform-identity/client/auth/auth.service.stub";
 import { HomePageNavComponent } from "./home-page-nav/home-page-nav.component";
-import { ServerHealthService } from "../../shared/services/server-health.service";
-import { serverHealthServiceStub } from "../../shared/services/server-health.service.stub";
+import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service";
+import { serverHealthServiceStub } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service.stub";
 
 describe("HomePageComponent", () => {
   let component: HomePageComponent;

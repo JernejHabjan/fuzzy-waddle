@@ -1,5 +1,6 @@
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
-import { GameSessionState, ProbableWafflePlayerType } from "@fuzzy-waddle/api-interfaces";
+import { GameSessionState } from "@fuzzy-waddle/platform-game-sessions";
+import { ProbableWafflePlayerType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { getCommunicator } from "../../../data/scene-data";
 import type { Subscription } from "rxjs";
 import Phaser from "phaser";

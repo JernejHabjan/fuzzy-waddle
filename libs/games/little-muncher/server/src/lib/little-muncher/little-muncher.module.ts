@@ -5,7 +5,7 @@ import { GameInstanceGateway } from "./game-instance/game-instance.gateway";
 import { GameStateServerService } from "./game-instance/game-state-server.service";
 import { GameStateGateway } from "./game-instance/game-state.gateway";
 import { LittleMuncherHighScoreService } from "./high-score/little-muncher-high-score.service";
-import { AuthModule } from "@fuzzy-waddle/api/auth/auth.module";
+import { AuthModule } from "@fuzzy-waddle/platform-identity/server/auth/auth.module";
 
 @Module({
   providers: [

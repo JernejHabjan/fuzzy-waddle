@@ -1,14 +1,14 @@
 import type { OnInit } from "@angular/core";
 import { Component, computed, inject } from "@angular/core";
-import { AuthService } from "./auth/auth.service";
-import { ServerHealthService } from "./shared/services/server-health.service";
-import { SwRefreshComponent } from "./shared/components/sw-refresh/sw-refresh.component";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
+import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service";
+import { SwRefreshComponent } from "@fuzzy-waddle/platform-game-host/angular/components/sw-refresh/sw-refresh.component";
 import { RouterOutlet } from "@angular/router";
-import { AngularHost } from "./shared/consts";
-import { ToastContainerComponent } from "./shared/components/toast-container.component";
-import { isTauri, TauriService } from "./shared/services/tauri.service";
-import { TauriSplashComponent } from "./shared/components/tauri-splash/tauri-splash.component";
-import { TauriTitlebarComponent } from "./shared/components/tauri-titlebar/tauri-titlebar.component";
+import { AngularHost } from "@fuzzy-waddle/platform-game-host/angular/consts";
+import { ToastContainerComponent } from "@fuzzy-waddle/platform-game-host/angular/components/toast-container.component";
+import { isTauri, TauriService } from "@fuzzy-waddle/platform-game-host/angular/services/tauri.service";
+import { TauriSplashComponent } from "@fuzzy-waddle/platform-game-host/angular/components/tauri-splash/tauri-splash.component";
+import { TauriTitlebarComponent } from "@fuzzy-waddle/platform-game-host/angular/components/tauri-titlebar/tauri-titlebar.component";
 
 @Component({
   selector: "fuzzy-waddle-root",

@@ -1,5 +1,5 @@
 import { generalWorkerDefinitions } from "../../shared/worker/worker-shared.definition";
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 import {

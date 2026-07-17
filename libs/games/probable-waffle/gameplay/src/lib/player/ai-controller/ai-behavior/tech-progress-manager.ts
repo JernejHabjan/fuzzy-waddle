@@ -5,7 +5,7 @@ import { ResearchComponent } from "../../../entity/components/research/research-
 import { SpellComponent } from "../../../entity/components/combat/components/spell-component";
 import { researchDefinitions } from "../../../entity/components/research/research-definitions";
 import { SpellType } from "../../../entity/components/combat/spell-type";
-import { ResearchType } from "@fuzzy-waddle/api-interfaces";
+import { ResearchType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { dispatchResearchCommand } from "../../../data/commands/queue-command-dispatch";
 
 /**

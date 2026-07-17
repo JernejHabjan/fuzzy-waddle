@@ -1,5 +1,5 @@
 import { Injectable, Logger } from "@nestjs/common";
-import { type ProbableWaffleGameInstance, type ProbableWafflePauseChangedEvent } from "@fuzzy-waddle/api-interfaces";
+import { type ProbableWaffleGameInstance, type ProbableWafflePauseChangedEvent } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { User } from "@supabase/supabase-js";
 
 @Injectable()

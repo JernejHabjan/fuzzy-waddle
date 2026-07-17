@@ -2,7 +2,7 @@
 
 import ButtonSmall from "./buttons/ButtonSmall";
 /* START-USER-IMPORTS */
-import { ProbableWafflePlayer } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWafflePlayer } from "@fuzzy-waddle/probable-waffle-protocol";
 /* END-USER-IMPORTS */
 
 export default class SurrenderDialog extends Phaser.GameObjects.Container {

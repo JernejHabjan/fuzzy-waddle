@@ -2,7 +2,7 @@ import { AnimationType } from "../animation/animation-type";
 import { WeaponType } from "./weapon-type";
 import type { SoundDefinition } from "../actor-audio/sound-definition";
 import type { ProjectileData } from "./projectile-data";
-import { DamageType } from "@fuzzy-waddle/api-interfaces";
+import { DamageType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 export interface AttackData {
   // Time before this attack can be used again, in seconds

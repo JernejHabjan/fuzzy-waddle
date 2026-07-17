@@ -1,4 +1,4 @@
-import type { GameSaveRecord } from "@fuzzy-waddle/api-interfaces";
+import type { GameSaveRecord } from "@fuzzy-waddle/probable-waffle-protocol";
 
 /** Explicit save action selected in the save dialog. */
 export type SaveGameDialogResult = ManualSaveDialogResult | QuicksaveDialogResult;

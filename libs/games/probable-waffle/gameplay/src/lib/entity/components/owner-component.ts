@@ -1,7 +1,9 @@
 import GameObject = Phaser.GameObjects.GameObject;
 import { getActorComponent } from "../../data/actor-component";
 import { Plugins } from "../../world/const/Plugins";
-import { GameSetupHelpers, Guid, type OwnerComponentData, type PlayerNumber } from "@fuzzy-waddle/api-interfaces";
+import { GameSetupHelpers, type OwnerComponentData } from "@fuzzy-waddle/probable-waffle-protocol";
+import { Guid } from "@fuzzy-waddle/platform-identity";
+import { type PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 import GameProbableWaffleScene from "../../world/scenes/GameProbableWaffleScene";
 import { HealthComponent } from "./combat/components/health-component";
 import { getGameObjectDepth, onObjectReady } from "../../data/game-object-helper";

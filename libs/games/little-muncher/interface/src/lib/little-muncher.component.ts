@@ -1,15 +1,16 @@
 import { Component, HostListener, inject, type OnDestroy, type OnInit } from "@angular/core";
-import { GameSessionState, type LittleMuncherGameCreate } from "@fuzzy-waddle/api-interfaces";
+import { GameSessionState } from "@fuzzy-waddle/platform-game-sessions";
+import { type LittleMuncherGameCreate } from "@fuzzy-waddle/little-muncher-protocol";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { SpectateService } from "./home/spectate/spectate.service";
 import { Subscription } from "rxjs";
 import { GameInstanceClientService } from "./main/communicators/game-instance-client.service";
-import { UserInstanceService } from "@fuzzy-waddle/portal/home/profile/user-instance.service";
+import { UserInstanceService } from "@fuzzy-waddle/platform-identity/client/profile/user-instance.service";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { HomeComponent } from "./home/home.component";
 import { MainComponent } from "./main/main.component";
 import { NgbToast } from "@ng-bootstrap/ng-bootstrap";
-import { AngularHost } from "@fuzzy-waddle/portal/shared/consts";
+import { AngularHost } from "@fuzzy-waddle/platform-game-host/angular/consts";
 
 @Component({
   templateUrl: "./little-muncher.component.html",

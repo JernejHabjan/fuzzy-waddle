@@ -1,7 +1,7 @@
-import { EventEmitter } from "@angular/core";
+import { GameEventEmitter as EventEmitter } from "@fuzzy-waddle/platform-game-host";
 import { HealthUiComponent } from "./health-ui-component";
 import { Subject, Subscription } from "rxjs";
-import { DamageType, type HealthComponentData } from "@fuzzy-waddle/api-interfaces";
+import { DamageType, type HealthComponentData } from "@fuzzy-waddle/probable-waffle-protocol";
 import { ContainerComponent } from "../../building/container-component";
 import Phaser from "phaser";
 import { getActorComponent } from "../../../../data/actor-component";

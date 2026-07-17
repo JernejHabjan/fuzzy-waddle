@@ -1,1 +1,1 @@
-export { AllOrderTypes, OrderLabelToTypeMap, OrderType } from "@fuzzy-waddle/api-interfaces";
+export { AllOrderTypes, OrderLabelToTypeMap, OrderType } from "@fuzzy-waddle/probable-waffle-protocol";

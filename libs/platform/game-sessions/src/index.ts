@@ -7,6 +7,7 @@ export * from "./lib/game-state";
 export * from "./lib/player/player-controller";
 export * from "./lib/player/player-state";
 export * from "./lib/player/player";
+export * from "./lib/room";
 export * from "./lib/session";
 export * from "./lib/spectator";
 export * from "./lib/user-info";

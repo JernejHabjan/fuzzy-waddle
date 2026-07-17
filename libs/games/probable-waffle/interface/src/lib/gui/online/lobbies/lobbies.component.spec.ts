@@ -2,19 +2,14 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { LobbiesComponent } from "./lobbies.component";
 import { Component } from "@angular/core";
 import { roomsServiceStub } from "../../../communicators/rooms/rooms.service.stub";
-import { ServerHealthService } from "@fuzzy-waddle/portal/shared/services/server-health.service";
-import { serverHealthServiceStub } from "@fuzzy-waddle/portal/shared/services/server-health.service.stub";
+import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service";
+import { serverHealthServiceStub } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service.stub";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.stub";
 import { RoomsService } from "../../../communicators/rooms/rooms.service";
 import { FontAwesomeTestingModule } from "@fortawesome/angular-fontawesome/testing";
-import {
-  GameSessionState,
-  ProbableWaffleGameInstanceType,
-  ProbableWaffleGameInstanceVisibility,
-  ProbableWafflePlayerType,
-  type ProbableWaffleRoom
-} from "@fuzzy-waddle/api-interfaces";
+import { GameSessionState } from "@fuzzy-waddle/platform-game-sessions";
+import { ProbableWaffleGameInstanceType, ProbableWaffleGameInstanceVisibility, ProbableWafflePlayerType, type ProbableWaffleRoom } from "@fuzzy-waddle/probable-waffle-protocol";
 
 @Component({ selector: "probable-waffle-lobbies", template: "", standalone: true, imports: [] })
 export class LobbiesTestingComponent {}

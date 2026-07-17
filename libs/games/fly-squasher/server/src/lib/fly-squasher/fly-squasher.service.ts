@@ -1,12 +1,7 @@
 import { Injectable } from "@nestjs/common";
-import { SupabaseProviderService } from "@fuzzy-waddle/api/core/supabase-provider/supabase-provider.service";
-import {
-  GameKey,
-  GameParticipantType,
-  GameResultStatus,
-  GameSessionStatus,
-  ScoreDto
-} from "@fuzzy-waddle/api-interfaces";
+import { SupabaseProviderService } from "@fuzzy-waddle/platform-database-schema/server/supabase-provider/supabase-provider.service";
+import { GameKey, GameParticipantType, GameResultStatus, GameSessionStatus } from "@fuzzy-waddle/platform-database-schema";
+import { ScoreDto } from "@fuzzy-waddle/fly-squasher-protocol";
 import { type FlySquasherServiceInterface } from "./fly-squasher.service.interface";
 import { User } from "@supabase/supabase-js";
 

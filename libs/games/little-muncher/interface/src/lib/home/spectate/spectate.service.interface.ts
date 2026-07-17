@@ -1,4 +1,5 @@
-import { type GameInstanceId, type LittleMuncherRoom, type LittleMuncherRoomEvent } from "@fuzzy-waddle/api-interfaces";
+import { type GameInstanceId } from "@fuzzy-waddle/platform-game-sessions";
+import { type LittleMuncherRoom, type LittleMuncherRoomEvent } from "@fuzzy-waddle/little-muncher-protocol";
 import { Observable, Subject } from "rxjs";
 
 export interface SpectateServiceInterface {

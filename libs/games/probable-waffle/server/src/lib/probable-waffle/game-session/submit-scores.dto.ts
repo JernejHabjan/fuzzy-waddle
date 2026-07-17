@@ -1,6 +1,6 @@
 import { IsArray, IsNumber, IsOptional, IsString, IsUUID, ValidateNested } from "class-validator";
 import { Type } from "class-transformer";
-import { type GameScoreSnapshotDto, PlayerScoreDto } from "@fuzzy-waddle/api-interfaces";
+import { type GameScoreSnapshotDto, PlayerScoreDto } from "@fuzzy-waddle/probable-waffle-protocol";
 
 export class SubmitScoresDto {
   @IsUUID()

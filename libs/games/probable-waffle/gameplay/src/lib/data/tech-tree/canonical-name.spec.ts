@@ -1,4 +1,4 @@
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { getCanonicalActorNameCached } from "./canonical-actor-name";
 
 describe("CanonicalName", () => {

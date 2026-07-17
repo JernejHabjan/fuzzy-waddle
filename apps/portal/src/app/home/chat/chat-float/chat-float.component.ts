@@ -1,12 +1,12 @@
 import type { OnInit } from "@angular/core";
 import { Component, inject } from "@angular/core";
 import { faWindowMaximize, faWindowMinimize } from "@fortawesome/free-solid-svg-icons";
-import { ChatService } from "../../../data-access/chat/chat.service";
+import { ChatService } from "@fuzzy-waddle/platform-chat/client/data-access/chat.service";
 
-import { ChatComponent } from "../../../shared/components/chat/chat.component";
+import { ChatComponent } from "@fuzzy-waddle/platform-chat/client/components/chat.component";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { Observable } from "rxjs";
-import type { ChatMessage } from "@fuzzy-waddle/api-interfaces";
+import type { ChatMessage } from "@fuzzy-waddle/platform-chat";
 
 @Component({
   selector: "fuzzy-waddle-chat-float",

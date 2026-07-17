@@ -5,7 +5,7 @@
 /* START-USER-IMPORTS */
 import { getCurrentPlayerNumber, getPlayer, listenToPlayerChangedChanged } from "../../../data/scene-data";
 import { Subscription } from "rxjs";
-import { ProbableWafflePlayer } from "@fuzzy-waddle/api-interfaces";
+import { ProbableWafflePlayer } from "@fuzzy-waddle/probable-waffle-protocol";
 /* END-USER-IMPORTS */
 
 export default class Resource extends Phaser.GameObjects.Container {

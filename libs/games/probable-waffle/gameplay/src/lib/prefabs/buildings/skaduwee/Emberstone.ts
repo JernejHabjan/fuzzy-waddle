@@ -6,7 +6,7 @@ import EmberstoneCursor from "./Emberstone/EmberstoneCursor";
 import EmberstoneFoundation1 from "./Emberstone/EmberstoneFoundation1";
 import EmberstoneLevel1 from "./Emberstone/EmberstoneLevel1";
 /* START-USER-IMPORTS */
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { ConstructionGameObjectInterfaceComponent } from "../../../entity/components/construction/construction-game-object-interface-component";
 import { setActorData } from "../../../data/actor-data";
 /* END-USER-IMPORTS */

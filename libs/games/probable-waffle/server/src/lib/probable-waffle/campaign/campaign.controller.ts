@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
 import type { AuthUser } from "@supabase/supabase-js";
-import { CurrentUser } from "@fuzzy-waddle/api/auth/current-user";
-import { OnlineAccessGuard } from "@fuzzy-waddle/api/auth/guards/online-access.guard";
+import { CurrentUser } from "@fuzzy-waddle/platform-identity/server/auth/current-user";
+import { OnlineAccessGuard } from "@fuzzy-waddle/platform-identity/server/auth/guards/online-access.guard";
 import { CampaignResultDto, MergeCampaignProgressDto, StartCampaignRunDto } from "./campaign.dto";
 import { CampaignServerService } from "./campaign.service";
 

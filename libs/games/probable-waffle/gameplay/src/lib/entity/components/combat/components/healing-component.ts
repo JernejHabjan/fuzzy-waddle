@@ -6,7 +6,7 @@ import { getSceneService } from "../../../../world/services/scene-component-help
 import { AudioService } from "../../../../world/services/audio.service";
 import { SimulationTickService } from "../../../../world/services/simulation-tick.service";
 import { SharedActorActionsSfxHealSounds } from "../../../../sfx/shared-actor-actions-sfx";
-import { type HealingComponentData } from "@fuzzy-waddle/api-interfaces";
+import { type HealingComponentData } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { HealingDefinition } from "./healing-definition";
 
 export class HealingComponent {

@@ -1,4 +1,4 @@
-import type { EncodedGameSaveRecord } from "@fuzzy-waddle/api-interfaces";
+import type { EncodedGameSaveRecord } from "@fuzzy-waddle/probable-waffle-protocol";
 import { GameSaveRepositoryInterface } from "./game-save.repository.interface";
 
 /** In-memory repository for component and service tests. */

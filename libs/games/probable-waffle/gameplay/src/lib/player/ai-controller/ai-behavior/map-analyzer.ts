@@ -1,9 +1,9 @@
-import type { PlayerNumber, Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import type { PlayerNumber, Vector2Simple, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { NeedType } from "./need-type";
-import { ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { getSimulationNow } from "../ai-time";
 import GameObject = Phaser.GameObjects.GameObject;
 

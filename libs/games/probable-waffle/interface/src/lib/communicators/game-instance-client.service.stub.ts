@@ -1,19 +1,5 @@
-import {
-  type DifficultyModifiers,
-  GameInstanceId,
-  type MapTuning,
-  type PlayerNumber,
-  type PositionPlayerDefinition,
-  type ProbableWaffleDataChangeEventProperty,
-  type ProbableWaffleGameFoundEvent,
-  ProbableWaffleGameInstance,
-  type ProbableWaffleGameInstanceData,
-  type ProbableWaffleGameInstanceMetadataData,
-  ProbableWaffleGameInstanceType,
-  ProbableWaffleGameInstanceVisibility,
-  type ProbableWaffleGameModeData,
-  type ProbableWaffleGameStateData
-} from "@fuzzy-waddle/api-interfaces";
+import { type DifficultyModifiers, type MapTuning, type PositionPlayerDefinition, type ProbableWaffleDataChangeEventProperty, type ProbableWaffleGameFoundEvent, ProbableWaffleGameInstance, type ProbableWaffleGameInstanceData, type ProbableWaffleGameInstanceMetadataData, ProbableWaffleGameInstanceType, ProbableWaffleGameInstanceVisibility, type ProbableWaffleGameModeData, type ProbableWaffleGameStateData } from "@fuzzy-waddle/probable-waffle-protocol";
+import { GameInstanceId, type PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 import { Observable, Subject } from "rxjs";
 import { type GameInstanceClientServiceInterface } from "./game-instance-client.service.interface";
 import { MatchmakingOptions } from "../gui/online/matchmaking/matchmaking-options";

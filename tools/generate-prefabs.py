@@ -5,7 +5,7 @@ generate-prefabs.py
 This script does four things in order:
 
 1. Creates `initStaticActor` helper in a new TypeScript file
-   (apps/.../game/data/init-static-actor.ts) so verbose inline
+   (`libs/games/probable-waffle/gameplay/src/lib/data/init-static-actor.ts`) so verbose inline
    setActorData + ObjectDescriptorComponent calls have a clean wrapper.
 
 2. Refactors every existing outside prefab .ts file that uses the
@@ -35,12 +35,12 @@ from pathlib import Path
 # ─── Paths ────────────────────────────────────────────────────────────────────
 
 REPO_ROOT        = Path(__file__).resolve().parent.parent
-GAME_ROOT        = REPO_ROOT / "apps" / "client" / "src" / "app" / "probable-waffle" / "game"
+GAME_ROOT        = REPO_ROOT / "libs" / "games" / "probable-waffle" / "gameplay" / "src" / "lib"
 PREFABS_ROOT     = GAME_ROOT / "prefabs"
 DATA_DIR         = GAME_ROOT / "data"
 
-CROPS_JSON       = REPO_ROOT / "apps" / "client" / "src" / "assets" / "probable-waffle" / "atlas" / "crops.json"
-ENV_JSON         = REPO_ROOT / "apps" / "client" / "src" / "assets" / "probable-waffle" / "atlas" / "environment.json"
+CROPS_JSON       = REPO_ROOT / "libs" / "games" / "probable-waffle" / "gameplay" / "src" / "assets" / "probable-waffle" / "atlas" / "crops.json"
+ENV_JSON         = REPO_ROOT / "libs" / "games" / "probable-waffle" / "gameplay" / "src" / "assets" / "probable-waffle" / "atlas" / "environment.json"
 
 CROPS_PREFABS_DIR = PREFABS_ROOT / "outside" / "crops"
 ENV_PREFABS_DIR   = PREFABS_ROOT / "outside" / "environment"
@@ -280,7 +280,7 @@ _TS_CROP_TMPL = """\
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import {{ ObjectNames }} from "@fuzzy-waddle/api-interfaces";
+import {{ ObjectNames }} from "@fuzzy-waddle/probable-waffle-protocol";
 /* END-USER-IMPORTS */
 
 export default class {class_name} extends Phaser.GameObjects.Image {{

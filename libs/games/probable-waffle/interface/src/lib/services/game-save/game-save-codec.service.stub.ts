@@ -1,4 +1,4 @@
-import type { ProbableWaffleGameInstanceData } from "@fuzzy-waddle/api-interfaces";
+import type { ProbableWaffleGameInstanceData } from "@fuzzy-waddle/probable-waffle-protocol";
 import { GameSaveCodecServiceInterface } from "./game-save-codec.service.interface";
 
 /** Deterministic test codec that preserves the production serialization boundary. */

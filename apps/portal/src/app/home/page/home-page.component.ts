@@ -1,17 +1,17 @@
 import { Component, inject, type OnInit } from "@angular/core";
 import { DatePipe } from "@angular/common";
-import { AuthService } from "../../auth/auth.service";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
 import { environment } from "@fuzzy-waddle/environments/environment";
-import { ServerHealthService } from "../../shared/services/server-health.service";
+import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service";
 
 import { ChatFloatComponent } from "../chat/chat-float/chat-float.component";
 import { RouterLink } from "@angular/router";
 import { HomePageNavComponent } from "./home-page-nav/home-page-nav.component";
-import { AngularHost } from "../../shared/consts";
+import { AngularHost } from "@fuzzy-waddle/platform-game-host/angular/consts";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { faCopyright, faMusic, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
-import { AppUserRole } from "@fuzzy-waddle/api-interfaces";
-import { CurrentUserProfileService } from "../../data-access/profile/current-user-profile.service";
+import { AppUserRole } from "@fuzzy-waddle/platform-database-schema";
+import { CurrentUserProfileService } from "@fuzzy-waddle/platform-identity/client/profile-data/current-user-profile.service";
 import { ModerationService } from "../../data-access/moderation/moderation.service";
 
 export type DisplayGame = {

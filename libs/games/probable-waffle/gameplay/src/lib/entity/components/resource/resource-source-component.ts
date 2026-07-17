@@ -1,4 +1,5 @@
-import { type ResourceSourceComponentData, ResourceType, type Vector2Simple } from "@fuzzy-waddle/api-interfaces";
+import { type ResourceSourceComponentData, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { type Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { ContainerComponent } from "../building/container-component";
 import { Subject } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";

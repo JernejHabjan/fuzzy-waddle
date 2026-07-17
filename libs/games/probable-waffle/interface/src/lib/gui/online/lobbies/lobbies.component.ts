@@ -1,21 +1,12 @@
 import { Component, inject, type OnDestroy, type OnInit, output } from "@angular/core";
-import {
-  GameSessionState,
-  ProbableWaffleGameInstanceType,
-  ProbableWaffleGameInstanceVisibility,
-  ProbableWaffleLevels,
-  type ProbableWaffleMapData,
-  type ProbableWaffleMapEnum,
-  ProbableWafflePlayerType,
-  type ProbableWaffleRoom,
-  ProbableWaffleRoomHelper
-} from "@fuzzy-waddle/api-interfaces";
+import { GameSessionState } from "@fuzzy-waddle/platform-game-sessions";
+import { ProbableWaffleGameInstanceType, ProbableWaffleGameInstanceVisibility, ProbableWaffleLevels, type ProbableWaffleMapData, type ProbableWaffleMapEnum, ProbableWafflePlayerType, type ProbableWaffleRoom, ProbableWaffleRoomHelper } from "@fuzzy-waddle/probable-waffle-protocol";
 import { RoomsService } from "../../../communicators/rooms/rooms.service";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { MapFilterComponent } from "./map-filter/map-filter.component";
-import { ToastService } from "@fuzzy-waddle/portal/shared/services/toast.service";
+import { ToastService } from "@fuzzy-waddle/platform-game-host/angular/services/toast.service";
 
 @Component({
   selector: "probable-waffle-lobbies",

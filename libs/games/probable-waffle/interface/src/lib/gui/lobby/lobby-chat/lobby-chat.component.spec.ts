@@ -3,8 +3,8 @@ import { LobbyChatComponent } from "./lobby-chat.component";
 import { ProbableWaffleCommunicatorService } from "../../../communicators/probable-waffle-communicator.service";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.stub";
-import { AuthService } from "@fuzzy-waddle/portal/auth/auth.service";
-import { authServiceStub } from "@fuzzy-waddle/portal/auth/auth.service.stub";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
+import { authServiceStub } from "@fuzzy-waddle/platform-identity/client/auth/auth.service.stub";
 import { Component } from "@angular/core";
 import { probableWaffleCommunicatorServiceStub } from "../../../communicators/probable-waffle-communicator.service.stub";
 

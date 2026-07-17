@@ -1,4 +1,4 @@
-import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/api-interfaces";
+import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { canActorTraverseTile, onObjectReady } from "../../../data/game-object-helper";

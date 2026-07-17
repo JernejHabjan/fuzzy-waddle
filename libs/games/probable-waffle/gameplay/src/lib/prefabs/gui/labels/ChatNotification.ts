@@ -3,7 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { type AllScenesEventData } from "@fuzzy-waddle/api-interfaces";
+import { type AllScenesEventData } from "@fuzzy-waddle/probable-waffle-protocol";
 import { filter, Subscription } from "rxjs";
 import type ChatButton from "../buttons/ChatButton";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";

@@ -1,12 +1,9 @@
 import { Component, inject } from "@angular/core";
-import {
-  type ProbableWaffleDataChangeEventProperty,
-  type ProbableWaffleGameModeData
-} from "@fuzzy-waddle/api-interfaces";
+import { type ProbableWaffleDataChangeEventProperty, type ProbableWaffleGameModeData } from "@fuzzy-waddle/probable-waffle-protocol";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 
 import { FormsModule } from "@angular/forms";
-import { AuthService } from "@fuzzy-waddle/portal/auth/auth.service";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
 
 @Component({
   selector: "probable-waffle-game-mode-definition",

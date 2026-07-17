@@ -10,7 +10,7 @@ import { Subscription } from "rxjs";
 import GameObject = Phaser.GameObjects.GameObject;
 import type { PrefabDefinition } from "../../definitions/prefab-definition";
 import { ResourceSourceComponent } from "../../../entity/components/resource/resource-source-component";
-import { DamageType } from "@fuzzy-waddle/api-interfaces";
+import { DamageType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { TendableComponent } from "../../../entity/components/tendable/tendable-component";
 import { ContainerComponent } from "../../../entity/components/building/container-component";
 /* END-USER-IMPORTS */

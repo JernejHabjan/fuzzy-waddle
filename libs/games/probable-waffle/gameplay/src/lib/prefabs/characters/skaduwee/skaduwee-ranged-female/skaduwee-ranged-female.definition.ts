@@ -7,7 +7,7 @@ import {
   SkaduweeRangedSfxMoveSounds,
   SkaduweeRangedSfxSelectionSounds
 } from "./SkaduweeRangedSfx";
-import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { PaymentType } from "../../../../entity/components/production/payment-type";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 import { SoundType } from "../../../../entity/components/actor-audio/sound-type";

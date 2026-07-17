@@ -1,10 +1,6 @@
-import { Injectable, type OnDestroy } from "@angular/core";
 import { TwoWayCommunicator } from "@fuzzy-waddle/platform-game-host/communicators/two-way-communicator";
-import {
-  type FlySquasherCommunicatorScoreEvent,
-  FlySquasherGatewayEvent,
-  type LittleMuncherCommunicatorType
-} from "@fuzzy-waddle/api-interfaces";
+import { type FlySquasherCommunicatorScoreEvent, FlySquasherGatewayEvent } from "@fuzzy-waddle/fly-squasher-protocol";
+import { type FlySquasherCommunicatorType } from "@fuzzy-waddle/fly-squasher-protocol";
 import type { CommunicatorService } from "@fuzzy-waddle/platform-game-host/communicators/CommunicatorService";
 
 export const flySquasherCommunicatorServiceStub = {
@@ -12,14 +8,11 @@ export const flySquasherCommunicatorServiceStub = {
   stopCommunication: () => {}
 };
 
-@Injectable({
-  providedIn: "root"
-})
-export class FlySquasherCommunicatorService implements CommunicatorService, OnDestroy {
-  score?: TwoWayCommunicator<FlySquasherCommunicatorScoreEvent, LittleMuncherCommunicatorType>;
+export class FlySquasherCommunicatorService implements CommunicatorService {
+  score?: TwoWayCommunicator<FlySquasherCommunicatorScoreEvent, FlySquasherCommunicatorType>;
 
   startCommunication() {
-    this.score = new TwoWayCommunicator<FlySquasherCommunicatorScoreEvent, LittleMuncherCommunicatorType>(
+    this.score = new TwoWayCommunicator<FlySquasherCommunicatorScoreEvent, FlySquasherCommunicatorType>(
       FlySquasherGatewayEvent.FlySquasherAction,
       "score"
     );

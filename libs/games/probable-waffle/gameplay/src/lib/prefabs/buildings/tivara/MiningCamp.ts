@@ -7,7 +7,7 @@ import MiningCampFoundation1 from "./MiningCamp/MiningCampFoundation1";
 import MiningCampFoundation2 from "./MiningCamp/MiningCampFoundation2";
 import MiningCampLevel1 from "./MiningCamp/MiningCampLevel1";
 /* START-USER-IMPORTS */
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { setActorData } from "../../../data/actor-data";
 import { ConstructionGameObjectInterfaceComponent } from "../../../entity/components/construction/construction-game-object-interface-component";
 /* END-USER-IMPORTS */

@@ -1,6 +1,6 @@
 import { PlayerAiBlackboard } from "../player-ai-blackboard";
 import { BasePlanner } from "./base-planner";
-import { ObjectNames, ResourceType } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { getCostForObjectName } from "../../../entity/components/production/cost-utils";
 
 /**

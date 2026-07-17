@@ -4,7 +4,7 @@
 
 import OlivalCursor from "../Olival/OlivalCursor";
 /* START-USER-IMPORTS */
-import { ObjectNames } from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { setActorData } from "../../../../data/actor-data";
 /* END-USER-IMPORTS */
 

@@ -1,13 +1,10 @@
 import { Body, Controller, Get, Post, Query, UseGuards } from "@nestjs/common";
-import { OnlineAccessGuard } from "@fuzzy-waddle/api/auth/guards/online-access.guard";
-import { CurrentUser } from "@fuzzy-waddle/api/auth/current-user";
+import { OnlineAccessGuard } from "@fuzzy-waddle/platform-identity/server/auth/guards/online-access.guard";
+import { CurrentUser } from "@fuzzy-waddle/platform-identity/server/auth/current-user";
 import { type AuthUser } from "@supabase/supabase-js";
 import { GameInstanceService } from "./game-instance.service";
-import {
-  GameInstanceId,
-  type ProbableWaffleGameInstanceData,
-  type ProbableWaffleGameInstanceMetadataData
-} from "@fuzzy-waddle/api-interfaces";
+import { GameInstanceId } from "@fuzzy-waddle/platform-game-sessions";
+import { type ProbableWaffleGameInstanceData, type ProbableWaffleGameInstanceMetadataData } from "@fuzzy-waddle/probable-waffle-protocol";
 
 @Controller("probable-waffle")
 export class GameInstanceController {

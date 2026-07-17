@@ -1,14 +1,6 @@
 import { Subject, Subscription } from "rxjs";
-import {
-  type GameCommand,
-  type GameCommandInput,
-  type PlayerNumber,
-  type ProbableWaffleGameCommandEvent,
-  ProbableWaffleGameCommandTypes,
-  ProbableWafflePlayer,
-  ProbableWafflePlayerType,
-  type ProbableWaffleReplayCommandBatch
-} from "@fuzzy-waddle/api-interfaces";
+import { type GameCommand, type GameCommandInput, type ProbableWaffleGameCommandEvent, ProbableWaffleGameCommandTypes, ProbableWafflePlayer, ProbableWafflePlayerType, type ProbableWaffleReplayCommandBatch } from "@fuzzy-waddle/probable-waffle-protocol";
+import { type PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 import { SimulationPauseReason, SimulationTickService } from "../simulation-tick.service";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { CommandBuffer } from "./command-buffer";

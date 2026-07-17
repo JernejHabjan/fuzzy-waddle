@@ -1,10 +1,5 @@
 import { GameCommandValidatorService } from "./game-command-validator.service";
-import {
-  ObjectNames,
-  type ProbableWaffleGameCommandEvent,
-  type ProbableWaffleGameInstance,
-  ResearchType
-} from "@fuzzy-waddle/api-interfaces";
+import { ObjectNames, type ProbableWaffleGameCommandEvent, type ProbableWaffleGameInstance, ResearchType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 describe("GameCommandValidatorService", () => {
   let service: GameCommandValidatorService;

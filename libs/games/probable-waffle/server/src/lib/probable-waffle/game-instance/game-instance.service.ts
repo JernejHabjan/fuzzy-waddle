@@ -1,24 +1,10 @@
 import { ForbiddenException, Injectable } from "@nestjs/common";
 import { type User } from "@supabase/supabase-js";
-import {
-  type DifficultyModifiers,
-  GameInstanceId,
-  type MapTuning,
-  ProbableWaffleCommunicators,
-  type ProbableWaffleCommunicatorEventUnion,
-  ProbableWaffleGameInstance,
-  type ProbableWaffleGameInstanceData,
-  ProbableWaffleGameInstanceVisibility,
-  type ProbableWafflePlayerDataChangeEvent,
-  type ProbableWaffleGameInstanceMetadataData,
-  type ProbableWaffleGameModeData,
-  type ProbableWaffleGameStateData,
-  ProbableWafflePlayerType,
-  type UserId
-} from "@fuzzy-waddle/api-interfaces";
+import { type DifficultyModifiers, type MapTuning, ProbableWaffleCommunicators, type ProbableWaffleCommunicatorEventUnion, ProbableWaffleGameInstance, type ProbableWaffleGameInstanceData, ProbableWaffleGameInstanceVisibility, type ProbableWafflePlayerDataChangeEvent, type ProbableWaffleGameInstanceMetadataData, type ProbableWaffleGameModeData, type ProbableWaffleGameStateData, ProbableWafflePlayerType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { GameInstanceId, type UserId } from "@fuzzy-waddle/platform-game-sessions";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import { type GameInstanceServiceInterface } from "./game-instance.service.interface";
-import { TextSanitizationService } from "@fuzzy-waddle/api/core/content-filters/text-sanitization.service";
+import { TextSanitizationService } from "@fuzzy-waddle/platform-chat/server/content-filters/text-sanitization.service";
 import { RoomServerService } from "../game-room/room-server.service";
 import { GameInstanceHolderService } from "./game-instance-holder.service";
 

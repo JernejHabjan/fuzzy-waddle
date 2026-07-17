@@ -5,6 +5,7 @@ export * from "./lib/game-instance/little-muncher/game-instance-medatada";
 export * from "./lib/game-instance/little-muncher/game-mode";
 export * from "./lib/game-instance/little-muncher/game-state";
 export * from "./lib/game-instance/little-muncher/player";
+export * from "./lib/game-instance/little-muncher/room";
 export * from "./lib/game-instance/little-muncher/spectator";
 export * from "./lib/little-muncher/little-muncher";
 export * from "./lib/user-info/little-muncher/user-info";

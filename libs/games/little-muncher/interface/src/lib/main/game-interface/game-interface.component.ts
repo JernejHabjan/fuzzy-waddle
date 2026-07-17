@@ -1,16 +1,16 @@
 import { ChangeDetectorRef, Component, inject, type OnDestroy, type OnInit } from "@angular/core";
-import type { ModalConfig } from "@fuzzy-waddle/portal/shared/components/modal/modal-config";
+import type { ModalConfig } from "@fuzzy-waddle/platform-game-host/angular/components/modal/modal-config";
 import type { Subscription } from "rxjs";
 import { faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
-import { AuthService } from "@fuzzy-waddle/portal/auth/auth.service";
-import { LittleMuncherHillEnum, LittleMuncherHills } from "@fuzzy-waddle/api-interfaces";
-import { PreventNavigateBack } from "@fuzzy-waddle/portal/shared/handlers/prevent-navigate-back";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
+import { LittleMuncherHillEnum, LittleMuncherHills } from "@fuzzy-waddle/little-muncher-protocol";
+import { PreventNavigateBack } from "@fuzzy-waddle/platform-game-host/angular/handlers/prevent-navigate-back";
 import { Router } from "@angular/router";
 import { GameInstanceClientService } from "../communicators/game-instance-client.service";
 import { LittleMuncherCommunicatorService } from "../communicators/little-muncher-communicator.service";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
-import { WrapPipe } from "@fuzzy-waddle/portal/shared/pipes/wrap.pipe";
-import { LeaveButtonComponent } from "@fuzzy-waddle/portal/shared/components/leave-button/leave-button.component";
+import { WrapPipe } from "@fuzzy-waddle/platform-game-host/angular/pipes/wrap.pipe";
+import { LeaveButtonComponent } from "@fuzzy-waddle/platform-game-host/angular/components/leave-button/leave-button.component";
 import { HighScoreService } from "../../high-score/high-score.service";
 
 @Component({
