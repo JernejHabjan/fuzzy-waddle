@@ -4,7 +4,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "start": "nx run-many --all --target=serve",
-    "start:api": "nx serve api",
+    "start:api": "nx serve api --outputStyle=stream",
     "start:client": "nx serve client",
     "start:client-open": "nx serve client --host=0.0.0.0 --disable-host-check",
     "tauri:dev": "nx run client:tauri-dev",
