@@ -1,6 +1,6 @@
 import { environment } from "../../../../../environments/environment";
 import type { Types } from "phaser";
-import { baseGameConfig } from "../../../../shared/game/base-game.config";
+import { baseGameConfig } from "@fuzzy-waddle/platform-game-host/base-game.config";
 import MapRiverCrossing from "../scenes/game-maps/MapRiverCrossing";
 import PreloadProbableWaffle from "../scenes/preload-scenes/PreloadProbableWaffle";
 import { Boot } from "../scenes/preload-scenes/Boot";

@@ -9,7 +9,7 @@ import {
   ProbableWafflePlayerType,
   GameResultStatus
 } from "@fuzzy-waddle/api-interfaces";
-import { getPlayersFromScene } from "../../../../shared/game/phaser/scene/base.scene";
+import { getPlayersFromScene } from "@fuzzy-waddle/platform-game-host/phaser/scene/base.scene";
 import { isGameObjectActiveInActiveScene, isSceneActive } from "../../data/game-object-helper";
 import { getCurrentPlayerNumber } from "../../data/scene-data";
 import { ScenePlayerHelpers } from "../../data/scene-player-helpers";

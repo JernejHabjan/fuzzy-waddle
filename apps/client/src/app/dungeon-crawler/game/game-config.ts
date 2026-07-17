@@ -1,7 +1,7 @@
 import DungeonPreloader from "./scenes/DungeonPreloader";
 import Dungeon from "./scenes/Dungeon";
 import DungeonUi from "./scenes/DungeonUi";
-import { baseGameConfig } from "../../shared/game/base-game.config";
+import { baseGameConfig } from "@fuzzy-waddle/platform-game-host/base-game.config";
 import VirtualJoystickPlugin from "phaser3-rex-plugins/plugins/virtualjoystick-plugin.js";
 
 export const dungeonCrawlerGameConfig: Phaser.Types.Core.GameConfig = {

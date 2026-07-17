@@ -2,7 +2,7 @@
 
 /* START OF COMPILED CODE */
 
-import PreloadBarUpdaterScript from "../../../shared/game/phaser/script-nodes/PreloadBarUpdaterScript";
+import PreloadBarUpdaterScript from "@fuzzy-waddle/platform-game-host/phaser/script-nodes/PreloadBarUpdaterScript";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 

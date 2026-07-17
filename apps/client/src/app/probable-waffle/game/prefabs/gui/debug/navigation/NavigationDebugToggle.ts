@@ -2,10 +2,10 @@
 
 /* START OF COMPILED CODE */
 
-import OnPointerDownScript from "../../../../../../shared/game/phaser/script-nodes-basic/OnPointerDownScript";
-import PushActionScript from "../../../../../../shared/game/phaser/script-nodes/PushActionScript";
-import OnPointerUpScript from "../../../../../../shared/game/phaser/script-nodes-basic/OnPointerUpScript";
-import EmitEventActionScript from "../../../../../../shared/game/phaser/script-nodes-basic/EmitEventActionScript";
+import OnPointerDownScript from "@fuzzy-waddle/platform-game-host/phaser/script-nodes-basic/OnPointerDownScript";
+import PushActionScript from "@fuzzy-waddle/platform-game-host/phaser/script-nodes/PushActionScript";
+import OnPointerUpScript from "@fuzzy-waddle/platform-game-host/phaser/script-nodes-basic/OnPointerUpScript";
+import EmitEventActionScript from "@fuzzy-waddle/platform-game-host/phaser/script-nodes-basic/EmitEventActionScript";
 /* START-USER-IMPORTS */
 import HudProbableWaffle from "../../../../world/scenes/hud-scenes/HudProbableWaffle";
 import { getSceneService } from "../../../../world/services/scene-component-helpers";

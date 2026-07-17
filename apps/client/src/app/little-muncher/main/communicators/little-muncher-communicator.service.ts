@@ -10,8 +10,8 @@ import {
   LittleMuncherGatewayEvent,
   LittleMuncherPosition
 } from "@fuzzy-waddle/api-interfaces";
-import { TwoWayCommunicator } from "../../../shared/game/communicators/two-way-communicator";
-import type { CommunicatorService } from "../../../shared/game/communicators/CommunicatorService";
+import { TwoWayCommunicator } from "@fuzzy-waddle/platform-game-host/communicators/two-way-communicator";
+import type { CommunicatorService } from "@fuzzy-waddle/platform-game-host/communicators/CommunicatorService";
 
 @Injectable({
   providedIn: "root"

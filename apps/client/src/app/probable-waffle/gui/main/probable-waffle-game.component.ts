@@ -1,11 +1,11 @@
 import { ChangeDetectorRef, Component, inject, type OnDestroy, type OnInit } from "@angular/core";
 import { ProbableWaffleGameInstance, ProbableWaffleUserInfo } from "@fuzzy-waddle/api-interfaces";
-import { type BaseGameData } from "../../../shared/game/phaser/game/base-game-data";
+import { type BaseGameData } from "@fuzzy-waddle/platform-game-host/phaser/game/base-game-data";
 import { ProbableWaffleCommunicatorService } from "../../communicators/probable-waffle-communicator.service";
 import { AuthService } from "../../../auth/auth.service";
 import { probableWaffleGameConfig } from "../../game/world/const/game-config";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
-import { GameContainerComponent } from "../../../shared/game/game-container/game-container.component";
+import { GameContainerComponent } from "@fuzzy-waddle/platform-game-host/game-container/game-container.component";
 import { AngularHost } from "../../../shared/consts";
 import { Subscription } from "rxjs";
 import { OptionsService } from "../options/options.service";

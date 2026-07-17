@@ -13,8 +13,8 @@ import {
   type BasePlayerControllerData,
   BaseSpectator,
   type BaseSpectatorData
-} from "@fuzzy-waddle/api-interfaces";
-import { Loader } from "../../../../little-muncher/game/loader";
+} from "@fuzzy-waddle/platform-game-sessions";
+import { Loader } from "../loader";
 import type { CommunicatorService } from "../../communicators/CommunicatorService";
 
 export const SceneGameDataKey = "SceneGameData";

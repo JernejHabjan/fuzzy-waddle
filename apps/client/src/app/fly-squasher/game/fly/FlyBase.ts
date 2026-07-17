@@ -1,6 +1,6 @@
 import { Utils } from "phaser";
 import { ComponentService, type IFlyBase } from "./component.service";
-import { BaseScene } from "../../../shared/game/phaser/scene/base.scene";
+import { BaseScene } from "@fuzzy-waddle/platform-game-host/phaser/scene/base.scene";
 
 export abstract class FlyBase implements IFlyBase {
   components: ComponentService;

@@ -12,12 +12,12 @@ import {
   LittleMuncherSpectator,
   type LittleMuncherSpectatorData
 } from "@fuzzy-waddle/api-interfaces";
-import { BaseScene } from "../../shared/game/phaser/scene/base.scene";
+import { BaseScene } from "@fuzzy-waddle/platform-game-host/phaser/scene/base.scene";
 import { type LittleMuncherGameData } from "./little-muncher-game-data";
 import { Pause } from "./pause";
 import { PlayerInputController } from "./player-input-controller";
 import { UiCommunicator, type UiCommunicatorData } from "./ui-communicator";
-import { Fireworks } from "../../shared/game/phaser/components/fireworks";
+import { Fireworks } from "@fuzzy-waddle/platform-game-host/phaser/components/fireworks";
 import { LittleMuncherCommunicatorService } from "../main/communicators/little-muncher-communicator.service";
 
 export enum ObjectName {

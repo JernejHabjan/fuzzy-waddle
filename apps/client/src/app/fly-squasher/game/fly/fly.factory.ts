@@ -1,4 +1,4 @@
-import { BaseScene } from "../../../shared/game/phaser/scene/base.scene";
+import { BaseScene } from "@fuzzy-waddle/platform-game-host/phaser/scene/base.scene";
 import { Fly } from "./fly";
 import { FlyHealthComponent } from "./components/fly-health-component";
 import { type WorldSpeedState } from "./components/fly-movement-component";

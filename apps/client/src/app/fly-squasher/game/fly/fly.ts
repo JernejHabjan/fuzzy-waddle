@@ -1,5 +1,5 @@
 import { Subject, Subscription } from "rxjs";
-import { BaseScene } from "../../../shared/game/phaser/scene/base.scene";
+import { BaseScene } from "@fuzzy-waddle/platform-game-host/phaser/scene/base.scene";
 import { FlyBase } from "./FlyBase";
 import { FlySoundComponent } from "./components/fly-sound-component";
 import { FlyMovementComponent, type WorldSpeedState } from "./components/fly-movement-component";

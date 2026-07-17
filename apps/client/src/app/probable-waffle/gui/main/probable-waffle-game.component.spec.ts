@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { ProbableWaffleGameComponent } from "./probable-waffle-game.component";
-import { GameContainerTestingComponent } from "../../../shared/game/game-container/game-container.component.spec";
+import { GameContainerTestingComponent } from "@fuzzy-waddle/platform-game-host/game-container/game-container.component.spec";
 import { gameInstanceClientServiceStub } from "../../communicators/game-instance-client.service.stub";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
-import { GameContainerComponent } from "../../../shared/game/game-container/game-container.component";
+import { GameContainerComponent } from "@fuzzy-waddle/platform-game-host/game-container/game-container.component";
 import { AchievementService } from "../../services/achievement/achievement.service";
 import { achievementServiceStub } from "../../services/achievement/achievement.service.stub";
 import { GameSaveService } from "../../services/game-save/game-save.service";

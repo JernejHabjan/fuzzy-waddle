@@ -23,9 +23,9 @@ import {
   type ProbableWaffleStateHashEvent,
   type ProbableWaffleWebsocketRoomEvent
 } from "@fuzzy-waddle/api-interfaces";
-import { TwoWayCommunicator } from "../../shared/game/communicators/two-way-communicator";
+import { TwoWayCommunicator } from "@fuzzy-waddle/platform-game-host/communicators/two-way-communicator";
 import { Socket } from "ngx-socket-io";
-import type { CommunicatorService } from "../../shared/game/communicators/CommunicatorService";
+import type { CommunicatorService } from "@fuzzy-waddle/platform-game-host/communicators/CommunicatorService";
 import { type ProbableWaffleCommunicatorServiceInterface } from "./probable-waffle-communicator.service.interface";
 import { createMultiplayerClientLogger } from "../game/world/services/multiplayer/multiplayer-client-logger";
 import { getNgxSocketIoRawSocket, type NgxSocketIoRawSocket } from "./ngx-socket-io-access";

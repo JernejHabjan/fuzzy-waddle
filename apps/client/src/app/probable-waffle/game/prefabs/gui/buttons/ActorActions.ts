@@ -2,7 +2,7 @@
 
 /* START OF COMPILED CODE */
 
-import OnPointerDownScript from "../../../../../shared/game/phaser/script-nodes-basic/OnPointerDownScript";
+import OnPointerDownScript from "@fuzzy-waddle/platform-game-host/phaser/script-nodes-basic/OnPointerDownScript";
 /* START-USER-IMPORTS */
 import ActorAction from "./ActorAction";
 import { getCommunicator, getCurrentPlayerNumber, getPlayer, listenToSelectionEvents } from "../../../data/scene-data";

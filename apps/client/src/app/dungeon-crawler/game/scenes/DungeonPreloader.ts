@@ -1,5 +1,5 @@
 import { Scene } from "phaser";
-import { type CreateSceneFromObjectConfig } from "../../../shared/game/phaser/scene/scene-config.interface";
+import { type CreateSceneFromObjectConfig } from "@fuzzy-waddle/platform-game-host/phaser/scene/scene-config.interface";
 import { AssetsDungeon } from "../assets";
 import { DungeonCrawlerScenes } from "../dungeonCrawlerScenes";
 

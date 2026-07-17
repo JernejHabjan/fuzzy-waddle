@@ -2,8 +2,8 @@
 
 /* START OF COMPILED CODE */
 
-import ScrollFactorScript from "../../../shared/game/phaser/script-nodes/ScrollFactorScript";
-import PlayerControllerScript from "../../../shared/game/phaser/script-nodes/PlayerControllerScript";
+import ScrollFactorScript from "@fuzzy-waddle/platform-game-host/phaser/script-nodes/ScrollFactorScript";
+import PlayerControllerScript from "@fuzzy-waddle/platform-game-host/phaser/script-nodes/PlayerControllerScript";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 

@@ -7,7 +7,7 @@ import { LittleMuncherUserInfo } from "@fuzzy-waddle/api-interfaces";
 import { LittleMuncherCommunicatorService } from "./communicators/little-muncher-communicator.service";
 import { GameInstanceClientService } from "./communicators/game-instance-client.service";
 
-import { GameContainerComponent } from "../../shared/game/game-container/game-container.component";
+import { GameContainerComponent } from "@fuzzy-waddle/platform-game-host/game-container/game-container.component";
 import { GameInterfaceComponent } from "./game-interface/game-interface.component";
 import { AngularHost } from "../../shared/consts";
 

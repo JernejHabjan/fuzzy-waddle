@@ -1,1 +1,1 @@
-export interface BaseData {}
+export * from "@fuzzy-waddle/platform-game-sessions";

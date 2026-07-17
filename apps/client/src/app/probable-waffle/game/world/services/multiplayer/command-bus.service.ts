@@ -20,7 +20,7 @@ import { OwnerComponent } from "../../../entity/components/owner-component";
 import { isMultiplayerDebugEnabled } from "./multiplayer-debug";
 import { createMultiplayerClientLogger } from "./multiplayer-client-logger";
 import { getNgxSocketIoRawSocket } from "../../../../communicators/ngx-socket-io-access";
-import { getPlayersFromScene } from "../../../../../shared/game/phaser/scene/base.scene";
+import { getPlayersFromScene } from "@fuzzy-waddle/platform-game-host/phaser/scene/base.scene";
 
 /**
  * Central command bus for all player- and AI-issued simulation commands.

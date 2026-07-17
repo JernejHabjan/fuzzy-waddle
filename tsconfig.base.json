@@ -14,7 +14,13 @@
     "emitDecoratorMetadata": false,
     "baseUrl": ".",
     "paths": {
-      "@fuzzy-waddle/api-interfaces": ["libs/api-interfaces/src/index.ts"]
+      "@fuzzy-waddle/api-interfaces": ["libs/api-interfaces/src/index.ts"],
+      "@fuzzy-waddle/platform-identity": ["libs/platform/identity/src/index.ts"],
+      "@fuzzy-waddle/platform-chat": ["libs/platform/chat/src/index.ts"],
+      "@fuzzy-waddle/platform-game-sessions": ["libs/platform/game-sessions/src/index.ts"],
+      "@fuzzy-waddle/platform-database-schema": ["libs/platform/database-schema/src/index.ts"],
+      "@fuzzy-waddle/platform-game-host": ["libs/platform/game-host/src/index.ts"],
+      "@fuzzy-waddle/platform-game-host/*": ["libs/platform/game-host/src/lib/game/*"]
     },
     "strict": true,
     "noUnusedLocals": false,

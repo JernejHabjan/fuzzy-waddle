@@ -1,17 +1,15 @@
-import { Component, inject, NgZone, type OnDestroy, type OnInit, ViewChild, input } from "@angular/core";
+import { Component, inject, isDevMode, NgZone, type OnDestroy, type OnInit, ViewChild, input } from "@angular/core";
 import { BaseGame } from "../phaser/game/base-game";
 import type { Types } from "phaser";
 import { type BaseGameData } from "../phaser/game/base-game-data";
 import { GameContainerElement } from "./game-container";
-import { AngularHost } from "../../consts";
-import { environment } from "../../../../environments/environment";
 
 @Component({
   selector: "fuzzy-waddle-game-container",
   templateUrl: "./game-container.component.html",
   styleUrls: ["./game-container.component.scss"],
   standalone: true,
-  host: AngularHost.contentFlexFullHeight
+  host: { class: "d-flex flex-column h-100" }
 })
 export class GameContainerComponent implements OnInit, OnDestroy {
   protected readonly GameContainerElement = GameContainerElement;
@@ -26,7 +24,7 @@ export class GameContainerComponent implements OnInit, OnDestroy {
   private _gameContainerElement!: HTMLDivElement;
 
   async ngOnInit(): Promise<void> {
-    if (environment.production) {
+    if (!isDevMode()) {
       await document.documentElement.requestFullscreen();
     }
   }

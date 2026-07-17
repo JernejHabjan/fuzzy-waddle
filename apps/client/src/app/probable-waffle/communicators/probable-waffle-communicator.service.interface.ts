@@ -1,4 +1,4 @@
-import { TwoWayCommunicator } from "../../shared/game/communicators/two-way-communicator";
+import { TwoWayCommunicator } from "@fuzzy-waddle/platform-game-host/communicators/two-way-communicator";
 import {
   type GameInstanceId,
   type ProbableWaffleCommunicatorMessageEvent,

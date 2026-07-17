@@ -2,7 +2,7 @@
 
 /* START OF COMPILED CODE */
 
-import OnPointerDownScript from "../../../../shared/game/phaser/script-nodes-basic/OnPointerDownScript";
+import OnPointerDownScript from "@fuzzy-waddle/platform-game-host/phaser/script-nodes-basic/OnPointerDownScript";
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { getSceneComponent, getSceneService } from "../../world/services/scene-component-helpers";

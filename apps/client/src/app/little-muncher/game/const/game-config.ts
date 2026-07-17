@@ -1,6 +1,6 @@
 import type { Types } from "phaser";
 import { LittleMuncherScene } from "../little-muncher-scene";
-import { baseGameConfig } from "../../../shared/game/base-game.config";
+import { baseGameConfig } from "@fuzzy-waddle/platform-game-host/base-game.config";
 import { LittleMuncherUiScene } from "../little-muncher-ui-scene";
 
 export const littleMuncherGameConfig: Types.Core.GameConfig = {

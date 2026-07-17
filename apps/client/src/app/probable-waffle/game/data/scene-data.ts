@@ -14,7 +14,7 @@ import { getActorComponent, hasActorComponent } from "./actor-component";
 import { IdComponent } from "../entity/components/id-component";
 import { Observable } from "rxjs";
 import GameProbableWaffleScene from "../world/scenes/GameProbableWaffleScene";
-import { BaseScene } from "../../../shared/game/phaser/scene/base.scene";
+import { BaseScene } from "@fuzzy-waddle/platform-game-host/phaser/scene/base.scene";
 import { AttackComponent } from "../entity/components/combat/components/attack-component";
 import { ProductionComponent } from "../entity/components/production/production-component";
 import { GathererComponent } from "../entity/components/resource/gatherer-component";

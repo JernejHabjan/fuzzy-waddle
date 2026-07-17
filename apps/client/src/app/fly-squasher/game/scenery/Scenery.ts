@@ -1,5 +1,5 @@
 import { Croissants } from "./Croissants";
-import { BaseScene } from "../../../shared/game/phaser/scene/base.scene";
+import { BaseScene } from "@fuzzy-waddle/platform-game-host/phaser/scene/base.scene";
 import { FlySquasherAudio } from "../audio";
 
 export class Scenery {

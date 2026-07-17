@@ -6,7 +6,7 @@ import { LevelGuard } from "./fly-squasher/choose-level/level.guard";
 import { environment } from "../environments/environment";
 import { GameInstanceGuard } from "./probable-waffle/gui/online/lobby-page/game-instance.guard";
 import { isTauri } from "./shared/utils/tauri";
-import { ensurePhaserGlobal } from "./shared/game/phaser/ensure-phaser-global";
+import { ensurePhaserGlobal } from "@fuzzy-waddle/platform-game-host/phaser/ensure-phaser-global";
 
 /** In Tauri the only published game is Probable Waffle — redirect root to /aota. */
 const tauriHomeRedirect = () => (isTauri() ? inject(Router).createUrlTree(["/aota"]) : true);

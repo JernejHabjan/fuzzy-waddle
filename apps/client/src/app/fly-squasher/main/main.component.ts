@@ -9,7 +9,7 @@ import { Router } from "@angular/router";
 import { PreventNavigateBack } from "../../shared/handlers/prevent-navigate-back";
 import { type ModalConfig } from "../../shared/components/modal/modal-config";
 
-import { GameContainerComponent } from "../../shared/game/game-container/game-container.component";
+import { GameContainerComponent } from "@fuzzy-waddle/platform-game-host/game-container/game-container.component";
 import { AngularHost } from "../../shared/consts";
 import { LeaveButtonComponent } from "../../shared/components/leave-button/leave-button.component";
 

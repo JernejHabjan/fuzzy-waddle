@@ -3,7 +3,7 @@ import {
   getGameModeFromScene,
   getPlayersFromScene,
   isPlayerHostInScene
-} from "../../../../shared/game/phaser/scene/base.scene";
+} from "@fuzzy-waddle/platform-game-host/phaser/scene/base.scene";
 import {
   GameResultStatus,
   GameSessionState,

@@ -1,4 +1,4 @@
-import { BaseUserInfo, GameInstance } from "@fuzzy-waddle/api-interfaces";
+import { BaseUserInfo, GameInstance } from "@fuzzy-waddle/platform-game-sessions";
 import type { CommunicatorService } from "../../communicators/CommunicatorService";
 
 export interface BaseGameData<
