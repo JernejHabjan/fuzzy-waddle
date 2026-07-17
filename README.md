@@ -37,7 +37,7 @@ Reuse, redistribution, or commercial use outside of GitHub requires explicit wri
 | Frontend (desktop) | Tauri 2 (wraps the Angular build) |
 | Backend            | NestJS 11, Socket.IO              |
 | Database / Auth    | Supabase (PostgreSQL + OAuth)     |
-| Monorepo           | Nx 22                             |
+| Monorepo           | Nx 23                             |
 | Package manager    | pnpm                              |
 
 ---

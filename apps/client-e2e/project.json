@@ -25,6 +25,6 @@
       }
     }
   },
-  "tags": [],
+  "tags": ["scope:client", "type:e2e"],
   "implicitDependencies": ["client"]
 }
