@@ -11,6 +11,10 @@ on:
       - synchronize
       - reopened
 
+permissions:
+  actions: read
+  contents: read
+
 env:
   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
 
@@ -54,6 +58,7 @@ jobs:
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           lfs: false
+          fetch-depth: 0
 
       - name: Setup pnpm
         uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
@@ -69,13 +74,18 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Derive affected project SHAs
+        uses: nrwl/nx-set-shas@afb73a62d26e41464e9254689e1fd6122ee683c1 # v5.0.1
+        with:
+          main-branch-name: develop
+
       - name: Verify app versions are in sync
         run: pnpm run version:check
 
       # Keep PR validation local to one runner. Nx Agents currently add coordination
       # overhead here without speeding up this repo's mostly frontend-heavy workload.
       - name: Run linter
-        run: pnpm run lint
+        run: pnpm nx affected -t lint
         env:
           NX_BRANCH: ${{ github.event.number }}
           NX_RUN_GROUP: ${{ github.run_id }}
@@ -83,13 +93,13 @@ jobs:
       # Revisit distributed CI only after the expensive targets are split into more
       # independent units that Nx can actually schedule across multiple machines.
       - name: Run tests
-        run: pnpm run test:ci
+        run: pnpm nx affected -t test --configuration=ci
         env:
           NX_BRANCH: ${{ github.event.number }}
           NX_RUN_GROUP: ${{ github.run_id }}
 
       - name: Test build
-        run: pnpm run build
+        run: pnpm nx affected -t build --configuration=production
         env:
           NX_BRANCH: ${{ github.event.number }}
           NX_RUN_GROUP: ${{ github.run_id }}
