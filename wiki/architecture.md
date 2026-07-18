@@ -61,15 +61,19 @@ in `apps/probable-waffle-desktop/src-tauri`, and its frontend output is
 
 Each gameplay project is independently openable in Phaser Editor:
 
-```bash
-pnpm editor:probable-waffle
-pnpm editor:little-muncher
-pnpm editor:fly-squasher
-pnpm editor:dungeon-crawler
-```
+- `libs/games/probable-waffle/gameplay`
+- `libs/games/little-muncher/gameplay`
+- `libs/games/fly-squasher/gameplay`
+- `libs/games/dungeon-crawler/gameplay`
 
 The `.scene` files, generated TypeScript, metadata, assets, `.skip`, and
 `phasereditor2d.config.json` live together in the owning gameplay project.
+Editor-only copies of shared prefab definitions use thin local TypeScript
+adapters, so the editor can resolve every prefab ID while runtime behaviour
+continues to come from `platform-game-host`.
+
+Run `pnpm phaser-editor:check` to verify asset-pack URLs, multiatlas frames,
+and prefab references across all four editor projects.
 
 ## API Architecture
 

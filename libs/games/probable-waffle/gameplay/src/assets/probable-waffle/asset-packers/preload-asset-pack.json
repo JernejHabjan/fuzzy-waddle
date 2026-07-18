@@ -2,7 +2,7 @@
     "section1": {
         "files": [
             {
-                "url": "assets/icons/loaders/probable-waffle-loader.png",
+                "url": "assets/probable-waffle/shared/icons/probable-waffle-loader.png",
                 "type": "image",
                 "key": "probable-waffle-loader"
             }

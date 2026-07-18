@@ -423,13 +423,6 @@
                 "key": "base_walk_3"
             },
             {
-                "url": [
-                    "assets/little-muncher/sfx/bird.mp3"
-                ],
-                "type": "audio",
-                "key": "bird"
-            },
-            {
                 "url": "assets/probable-waffle/atlas/anims/skaduwee/buildings.json",
                 "path": "assets/probable-waffle/atlas/anims/skaduwee/buildings.json",
                 "type": "animation",
@@ -499,9 +492,9 @@
                 "key": "centurion_walk"
             },
             {
-                "jsonURL": "assets/sfx/character.json",
+                "jsonURL": "assets/probable-waffle/shared/sfx/character.json",
                 "audioURL": [
-                    "assets/sfx/character.mp3"
+                    "assets/probable-waffle/shared/sfx/character.mp3"
                 ],
                 "type": "audioSprite",
                 "key": "character"

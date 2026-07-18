@@ -89,7 +89,7 @@ pnpm start:api      # NestJS API     → http://localhost:3333
 | `pnpm e2e`       | Run Cypress end-to-end tests                     |
 | `pnpm format`    | Format code                                      |
 | `pnpm dep-graph` | Open Nx dependency graph                         |
-| `pnpm editor`    | Launch the Probable Waffle Phaser Editor project |
+| `pnpm phaser-editor:check` | Validate all self-contained Phaser Editor projects |
 
 To run a command for a single app:
 

@@ -38,6 +38,9 @@ Open Phaser Editor in the `gameplay` directory for the game you want to edit. Do
 | Fly Squasher | `libs/games/fly-squasher/gameplay` |
 | Dungeon Crawler | `libs/games/dungeon-crawler/gameplay` |
 
+Run `pnpm phaser-editor:check` after changing scenes, prefabs, atlases, or asset packs. The check verifies
+that each editor project can resolve its own asset URLs, atlas frames, and prefab IDs.
+
 ---
 
 ## Tech Stack

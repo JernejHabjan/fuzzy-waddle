@@ -11,6 +11,7 @@
     "postinstall": "node tools/assets/check-git-lfs.mjs --warn",
     "assets:check": "node tools/assets/check-git-lfs.mjs",
     "assets:hydrate": "git lfs install --local && git lfs pull && git lfs checkout",
+    "phaser-editor:check": "node tools/phaser-editor/validate-project.mjs",
     "tauri:dev": "nx run probable-waffle-desktop:tauri-dev",
     "tauri:build": "nx run probable-waffle-desktop:tauri-build",
     "build": "nx run-many --all --target=build --configuration=production",
