@@ -53,7 +53,8 @@ export class GameSaveRepository implements GameSaveRepositoryInterface {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(DATABASE_NAME, DATABASE_VERSION);
       request.onupgradeneeded = () => {
-        if (request.result.objectStoreNames.contains("game-instances")) request.result.deleteObjectStore("game-instances");
+        if (request.result.objectStoreNames.contains("game-instances"))
+          request.result.deleteObjectStore("game-instances");
         if (!request.result.objectStoreNames.contains(OBJECT_STORE_NAME)) {
           request.result.createObjectStore(OBJECT_STORE_NAME, { keyPath: "id" });
         }

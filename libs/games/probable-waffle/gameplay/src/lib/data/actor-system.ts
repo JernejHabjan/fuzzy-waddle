@@ -1,4 +1,4 @@
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 import { ActorData, ActorDataKey } from "./actor-data";
 
 export function getActorSystem<T>(actor: GameObject, systemClass: new (...args: any[]) => T): T | undefined {

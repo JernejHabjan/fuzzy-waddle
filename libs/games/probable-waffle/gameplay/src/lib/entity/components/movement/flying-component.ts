@@ -7,7 +7,7 @@ import type { FlightDefinition } from "./flight-definition";
 import { markGameObjectAmbientResponsive } from "../../../world/services/lighting/lighting-game-object-meta";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { SceneLightingService } from "../../../world/services/lighting/scene-lighting.service";
-import Graphics = Phaser.GameObjects.Graphics;
+type Graphics = Phaser.GameObjects.Graphics;
 
 export class FlyingComponent {
   private verticalLineGraphics?: Graphics;

@@ -72,15 +72,15 @@ pnpm start:api      # NestJS API     → http://localhost:3333
 
 ## Common Commands
 
-| Command          | Description                         |
-| ---------------- | ----------------------------------- |
-| `pnpm build`     | Build all projects                  |
-| `pnpm test`      | Run all unit tests                  |
-| `pnpm lint`      | Lint all projects                   |
-| `pnpm lint-fix`  | Lint with auto-fix                  |
-| `pnpm e2e`       | Run Cypress end-to-end tests        |
-| `pnpm format`    | Format code                         |
-| `pnpm dep-graph` | Open Nx dependency graph            |
+| Command          | Description                                      |
+| ---------------- | ------------------------------------------------ |
+| `pnpm build`     | Build all projects                               |
+| `pnpm test`      | Run all unit tests                               |
+| `pnpm lint`      | Lint all projects                                |
+| `pnpm lint-fix`  | Lint with auto-fix                               |
+| `pnpm e2e`       | Run Cypress end-to-end tests                     |
+| `pnpm format`    | Format code                                      |
+| `pnpm dep-graph` | Open Nx dependency graph                         |
 | `pnpm editor`    | Launch the Probable Waffle Phaser Editor project |
 
 To run a command for a single app:

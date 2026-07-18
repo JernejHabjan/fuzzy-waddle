@@ -2,7 +2,7 @@
 export default {
   displayName: "probable-waffle-desktop",
   preset: "../../jest.preset.js",
-  setupFilesAfterEnv: ["<rootDir>/../portal/src/test-setup.ts"],
+  setupFilesAfterEnv: ["<rootDir>/../../tools/testing/angular/test-setup.ts"],
   coverageDirectory: "../../coverage/apps/probable-waffle-desktop",
   transform: {
     "^.+\\.(ts|mjs|js|html)$": [
@@ -21,7 +21,8 @@ export default {
   ],
   moduleNameMapper: {
     "^lodash-es$": "lodash",
-    "^phaser$": "<rootDir>/../portal/src/test/mocks/phaser.js",
-    "^@supabase/supabase-js$": "<rootDir>/../portal/src/test/mocks/supabase-js.js"
+    "^phaser$": "<rootDir>/../../tools/testing/angular/mocks/phaser.js",
+    "^phaser3-rex-plugins/.*$": "<rootDir>/../../tools/testing/angular/mocks/phaser3-rex-plugin.js",
+    "^@supabase/supabase-js$": "<rootDir>/../../tools/testing/angular/mocks/supabase-js.js"
   }
 };

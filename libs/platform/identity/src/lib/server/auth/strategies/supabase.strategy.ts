@@ -5,7 +5,7 @@ import { AuthStrategies } from "./auth-strategies";
 import { SupabaseV2AuthStrategy } from "./supabase-auth-strategy/supabase-v2-auth.strategy";
 import { type AuthUser } from "@supabase/supabase-js";
 import { type SupabaseAuthStrategyOptions } from "./supabase-auth-strategy/options.interface";
-import { UserAuthCacheService } from "@fuzzy-waddle/platform-identity/server/cache/user-auth-cache.service.ts/user-auth-cache.service";
+import { UserAuthCacheService } from "../../cache/user-auth-cache.service.ts/user-auth-cache.service";
 import { SupabaseProviderService } from "@fuzzy-waddle/platform-database-schema/server/supabase-provider/supabase-provider.service";
 
 @Injectable()

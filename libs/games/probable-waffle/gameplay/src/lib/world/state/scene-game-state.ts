@@ -3,7 +3,7 @@ import { GameSessionState } from "@fuzzy-waddle/platform-game-sessions";
 import { ProbableWaffleGameInstanceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { getCommunicator } from "../../data/scene-data";
 import { ReadyBarrier } from "../services/multiplayer/ready-barrier.service";
-import TimerEvent = Phaser.Time.TimerEvent;
+type TimerEvent = Phaser.Time.TimerEvent;
 
 export class SceneGameState {
   private sessionStateSubscription?: { unsubscribe(): void };

@@ -1,4 +1,8 @@
-import { type PlayerStateResources, type ResourceDrainComponentData, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  type PlayerStateResources,
+  type ResourceDrainComponentData,
+  ResourceType
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { ContainerComponent } from "../building/container-component";
 import { Subject } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
@@ -7,7 +11,7 @@ import { onObjectReady } from "../../../data/game-object-helper";
 import { OwnerComponent } from "../owner-component";
 import type { ResourceDrainDefinition } from "./resource-drain-definition";
 import { waitForSimulationDuration } from "../../../world/services/simulation-time";
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 
 // this is to be applied to townHall/mine/lodge where resources can be returned to
 export class ResourceDrainComponent {

@@ -1,5 +1,12 @@
 import { type PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
-import { type PlayerStateHousing, type PlayerStateResources, ProbableWafflePlayer, type ProbableWafflePlayerDataChangeEvent, type ProbableWafflePlayerDataChangeEventPayload, type ProbableWafflePlayerDataChangeEventProperty } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  type PlayerStateHousing,
+  type PlayerStateResources,
+  ProbableWafflePlayer,
+  type ProbableWafflePlayerDataChangeEvent,
+  type ProbableWafflePlayerDataChangeEventPayload,
+  type ProbableWafflePlayerDataChangeEventProperty
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { Scene } from "phaser";
 import { ProbableWaffleScene } from "../core/probable-waffle.scene";
 import type { ProbableWaffleCommunicatorServiceInterface } from "../core/ports/probable-waffle-communicator";

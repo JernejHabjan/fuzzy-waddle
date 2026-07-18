@@ -4,13 +4,16 @@ import { getActorComponent } from "../../data/actor-component";
 import { IdComponent } from "../../entity/components/id-component";
 import { MULTI_SELECTING } from "./multi-selection.handler";
 import type { ActorId, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
-import type { ProbableWaffleDoubleSelectionData, ProbableWaffleSelectionData } from "@fuzzy-waddle/probable-waffle-protocol";
+import type {
+  ProbableWaffleDoubleSelectionData,
+  ProbableWaffleSelectionData
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { getSelectableGameObject, onSceneInitialized } from "../../data/game-object-helper";
 import { IsoHelper } from "../../world/tilemap/iso-helper";
 import { getSceneComponent, getSceneService } from "../../world/services/scene-component-helpers";
 import { BuildingCursor } from "./building-cursor";
-import Pointer = Phaser.Input.Pointer;
-import GameObject = Phaser.GameObjects.GameObject;
+type Pointer = Phaser.Input.Pointer;
+type GameObject = Phaser.GameObjects.GameObject;
 import { PlayerActionsHandler } from "./player-actions-handler";
 
 export class SingleSelectionHandler {

@@ -45,7 +45,7 @@ import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 import { dispatchAiOrder } from "./dispatch-ai-order";
 import { IdComponent } from "../../entity/components/id-component";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 
 export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   private displayDebugInfo = false;

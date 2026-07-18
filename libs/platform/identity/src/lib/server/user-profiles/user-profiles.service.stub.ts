@@ -1,7 +1,7 @@
 import { type AuthUser } from "@supabase/supabase-js";
 import { AppUserRole, UserAccountStatus } from "@fuzzy-waddle/platform-database-schema";
-import { type BanUserDto } from "@fuzzy-waddle/platform-identity";
-import { type CurrentUserProfileDto } from "@fuzzy-waddle/platform-identity";
+import type { BanUserDto } from "../../user-moderation";
+import type { CurrentUserProfileDto } from "../../current-user-profile";
 import { type UserProfilesServiceInterface } from "./user-profiles.service.interface";
 
 export const userProfilesServiceStub = {

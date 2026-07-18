@@ -1,5 +1,10 @@
 import { GameCommandValidatorService } from "./game-command-validator.service";
-import { ObjectNames, type ProbableWaffleGameCommandEvent, type ProbableWaffleGameInstance, ResearchType } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  ObjectNames,
+  type ProbableWaffleGameCommandEvent,
+  type ProbableWaffleGameInstance,
+  ResearchType
+} from "@fuzzy-waddle/probable-waffle-protocol";
 
 describe("GameCommandValidatorService", () => {
   let service: GameCommandValidatorService;
@@ -50,7 +55,7 @@ describe("GameCommandValidatorService", () => {
           ]
         }
       }
-    } as ProbableWaffleGameInstance;
+    } as unknown as ProbableWaffleGameInstance;
   }
 
   function createMoveEvent(worldX: number, worldY: number, tick = 0): ProbableWaffleGameCommandEvent {

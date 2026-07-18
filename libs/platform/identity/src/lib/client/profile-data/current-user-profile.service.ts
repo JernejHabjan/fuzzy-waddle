@@ -1,9 +1,9 @@
 import { inject, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { firstValueFrom } from "rxjs";
-import type { CurrentUserProfileDto } from "@fuzzy-waddle/platform-identity";
+import type { CurrentUserProfileDto } from "../../current-user-profile";
 import { environment } from "@fuzzy-waddle/environments/environment";
-import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
+import { AuthService } from "../auth/auth.service";
 import type { ICurrentUserProfileService } from "./current-user-profile.service.interface";
 
 @Injectable({

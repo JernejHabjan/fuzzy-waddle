@@ -5,7 +5,7 @@ import { NavigationService } from "../world/services/navigation.service";
 import { getActorComponent } from "../data/actor-component";
 import { RepresentableComponent } from "../entity/components/representable-component";
 import { TilemapComponent } from "../world/tilemap/tilemap.component";
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 
 // Cache for navigation distances (key: "fromX,fromY->toX,toY,toZ", value: { distance, timestamp })
 interface NavigationDistanceCache {

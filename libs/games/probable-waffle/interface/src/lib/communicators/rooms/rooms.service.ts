@@ -2,7 +2,14 @@ import { computed, inject, Injectable, type Signal, signal } from "@angular/core
 import { HttpClient } from "@angular/common/http";
 import { environment } from "@fuzzy-waddle/environments/environment";
 import { GameSessionState } from "@fuzzy-waddle/platform-game-sessions";
-import { ProbableWaffleGameInstanceType, ProbableWaffleGatewayEvent, type ProbableWaffleGetRoomsDto, ProbableWaffleMapEnum, type ProbableWaffleRoom, type ProbableWaffleRoomEvent } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  ProbableWaffleGameInstanceType,
+  ProbableWaffleGatewayEvent,
+  type ProbableWaffleGetRoomsDto,
+  ProbableWaffleMapEnum,
+  type ProbableWaffleRoom,
+  type ProbableWaffleRoomEvent
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { firstValueFrom, Observable, Subscription } from "rxjs";
 import { AuthenticatedSocketService } from "@fuzzy-waddle/platform-chat/client/data-access/authenticated-socket.service";
 import { map } from "rxjs/operators";
@@ -35,14 +42,14 @@ export class RoomsService implements RoomsServiceInterface {
 
   matchmakingGamesInProgress: Signal<number> = computed(() => {
     // noinspection UnnecessaryLocalVariableJS
-      const rooms = this.rooms().filter(
-        (room) =>
-          room.gameInstanceMetadataData.type === ProbableWaffleGameInstanceType.Matchmaking &&
-          (room.gameInstanceMetadataData.currentHostUserId ?? room.gameInstanceMetadataData.createdBy) !==
-            this.authService.userId &&
-          room.gameInstanceMetadataData.sessionState !== GameSessionState.NotStarted &&
-          room.gameInstanceMetadataData.sessionState !== GameSessionState.Stopped
-      ).length;
+    const rooms = this.rooms().filter(
+      (room) =>
+        room.gameInstanceMetadataData.type === ProbableWaffleGameInstanceType.Matchmaking &&
+        (room.gameInstanceMetadataData.currentHostUserId ?? room.gameInstanceMetadataData.createdBy) !==
+          this.authService.userId &&
+        room.gameInstanceMetadataData.sessionState !== GameSessionState.NotStarted &&
+        room.gameInstanceMetadataData.sessionState !== GameSessionState.Stopped
+    ).length;
     return rooms;
   });
 

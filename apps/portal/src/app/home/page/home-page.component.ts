@@ -94,7 +94,9 @@ export class HomePageComponent implements OnInit {
       this.bannedUntil = profile?.bannedUntil ?? null;
       this.moderationNote = profile?.moderationNote ?? null;
       this.isModerator =
-        !!profile && !profile.isBanned && (profile.role === AppUserRole.Moderator || profile.role === AppUserRole.Admin);
+        !!profile &&
+        !profile.isBanned &&
+        (profile.role === AppUserRole.Moderator || profile.role === AppUserRole.Admin);
       if (!this.isModerator) {
         return;
       }

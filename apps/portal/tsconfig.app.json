@@ -7,7 +7,7 @@
     "moduleResolution": "bundler",
     "verbatimModuleSyntax": true
   },
-  "files": ["src/main.ts", "src/polyfills.ts"],
+  "files": ["src/main.ts", "../../libs/platform/game-host/src/lib/angular/polyfills.ts"],
   "include": ["src/**/*.d.ts"],
   "exclude": ["jest.config.ts", "**/*.test.ts", "**/*.spec.ts"]
 }

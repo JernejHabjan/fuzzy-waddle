@@ -17,7 +17,13 @@ import { LeaveButtonComponent } from "@fuzzy-waddle/platform-game-host/angular/c
   templateUrl: "./main.component.html",
   styleUrls: ["./main.component.scss"],
   imports: [GameContainerComponent, LeaveButtonComponent],
-  providers: [FlySquasherCommunicatorService, SceneCommunicatorClientService],
+  providers: [
+    {
+      provide: FlySquasherCommunicatorService,
+      useFactory: () => new FlySquasherCommunicatorService()
+    },
+    SceneCommunicatorClientService
+  ],
   host: AngularHost.contentFlexFullHeight
 })
 export class MainComponent implements OnInit, OnDestroy {

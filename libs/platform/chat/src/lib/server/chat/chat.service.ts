@@ -1,27 +1,25 @@
-import {
-  BadRequestException,
-  ConflictException,
-  forwardRef,
-  Inject,
-  Injectable,
-  NotFoundException
-} from "@nestjs/common";
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { type IChatService } from "./chat.service.interface";
 import { type AuthUser } from "@supabase/supabase-js";
 import { SupabaseProviderService } from "@fuzzy-waddle/platform-database-schema/server/supabase-provider/supabase-provider.service";
-import { TextSanitizationService } from "@fuzzy-waddle/platform-chat/server/content-filters/text-sanitization.service";
-import { AppUserRole, ChatChannelType, ChatMessageStatus, ChatReportStatus, GameKey } from "@fuzzy-waddle/platform-database-schema";
-import { type ChatMessage, type GetMessagesResponseDto, type ReportChatMessageDto } from "@fuzzy-waddle/platform-chat";
+import { TextSanitizationService } from "../content-filters/text-sanitization.service";
+import {
+  AppUserRole,
+  ChatChannelType,
+  ChatMessageStatus,
+  ChatReportStatus,
+  GameKey
+} from "@fuzzy-waddle/platform-database-schema";
+import type { ChatMessage, GetMessagesResponseDto, ReportChatMessageDto } from "../../chat";
 import { POSTGRES_ERROR_CODES } from "@fuzzy-waddle/platform-database-schema/server/database/postgres-error-codes";
-import { GameInstanceService } from "../probable-waffle/game-instance/game-instance.service";
+import { GameChatAccessRegistry } from "./game-chat-access-registry";
 
 @Injectable()
 export class ChatService implements IChatService {
   constructor(
     private readonly supabaseProviderService: SupabaseProviderService,
     private readonly textSanitizationService: TextSanitizationService,
-    @Inject(forwardRef(() => GameInstanceService))
-    private readonly probableWaffleGameInstanceService: GameInstanceService
+    private readonly gameChatAccessRegistry: GameChatAccessRegistry
   ) {}
 
   /**
@@ -309,6 +307,6 @@ export class ChatService implements IChatService {
       return;
     }
 
-    this.probableWaffleGameInstanceService.ensureCanJoinGameRoom(gameInstanceId, user);
+    this.gameChatAccessRegistry.ensureCanAccess(gameInstanceId, user);
   }
 }

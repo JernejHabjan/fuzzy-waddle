@@ -1,6 +1,14 @@
 import { Socket } from "ngx-socket-io";
 import { type GameInstanceId } from "@fuzzy-waddle/platform-game-sessions";
-import { type LittleMuncherCommunicatorClimbingEvent, type LittleMuncherCommunicatorPauseEvent, type LittleMuncherCommunicatorResetEvent, type LittleMuncherCommunicatorScoreEvent, type LittleMuncherCommunicatorType, LittleMuncherGatewayEvent, LittleMuncherPosition } from "@fuzzy-waddle/little-muncher-protocol";
+import {
+  type LittleMuncherCommunicatorClimbingEvent,
+  type LittleMuncherCommunicatorPauseEvent,
+  type LittleMuncherCommunicatorResetEvent,
+  type LittleMuncherCommunicatorScoreEvent,
+  type LittleMuncherCommunicatorType,
+  LittleMuncherGatewayEvent,
+  LittleMuncherPosition
+} from "@fuzzy-waddle/little-muncher-protocol";
 import { TwoWayCommunicator } from "@fuzzy-waddle/platform-game-host/communicators/two-way-communicator";
 import type { CommunicatorService } from "@fuzzy-waddle/platform-game-host/communicators/CommunicatorService";
 
@@ -51,5 +59,4 @@ export class LittleMuncherCommunicator implements CommunicatorService {
     this.pause?.destroy();
     this.reset?.destroy();
   }
-
 }

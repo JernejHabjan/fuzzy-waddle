@@ -1,6 +1,6 @@
 import { inject, Injectable, type OnDestroy } from "@angular/core";
 import { type Session } from "@supabase/supabase-js";
-import { DataAccessService } from "@fuzzy-waddle/platform-identity/client/data-access.service";
+import { DataAccessService } from "../data-access.service";
 import { type AuthServiceInterface } from "./auth.service.interface";
 import { BehaviorSubject, type Observable, type Subscription } from "rxjs";
 import { environment } from "@fuzzy-waddle/environments/environment";

@@ -1,5 +1,12 @@
 import { IsBoolean, IsIn, IsInt, IsOptional, IsString, IsUUID, MaxLength, Min } from "class-validator";
-import { CAMPAIGN_CHAPTER_IDS, CAMPAIGN_MISSION_IDS, type CampaignChapterId, type CampaignMissionId, GameSaveKind, GameSaveScope } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  CAMPAIGN_CHAPTER_IDS,
+  CAMPAIGN_MISSION_IDS,
+  type CampaignChapterId,
+  type CampaignMissionId,
+  GameSaveKind,
+  GameSaveScope
+} from "@fuzzy-waddle/probable-waffle-protocol";
 
 export class SyncGameSaveDto {
   @IsUUID() id!: string;

@@ -2,8 +2,8 @@
 
 /* START OF COMPILED CODE */
 
-import SpriteScriptNode from "../script-nodes-basic/SpriteScriptNode";
-import ScriptNode from "../script-nodes-basic/ScriptNode";
+import SpriteScriptNode from "@fuzzy-waddle/platform-game-host/phaser/script-nodes-basic/SpriteScriptNode";
+import ScriptNode from "@fuzzy-waddle/platform-game-host/phaser/script-nodes-basic/ScriptNode";
 /* START-USER-IMPORTS */
 import Player from "../prefabs/Player";
 /* END-USER-IMPORTS */

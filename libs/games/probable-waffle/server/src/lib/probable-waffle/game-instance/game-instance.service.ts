@@ -1,7 +1,20 @@
 import { ForbiddenException, Injectable } from "@nestjs/common";
 import { type User } from "@supabase/supabase-js";
-import { type DifficultyModifiers, type MapTuning, ProbableWaffleCommunicators, type ProbableWaffleCommunicatorEventUnion, ProbableWaffleGameInstance, type ProbableWaffleGameInstanceData, ProbableWaffleGameInstanceVisibility, type ProbableWafflePlayerDataChangeEvent, type ProbableWaffleGameInstanceMetadataData, type ProbableWaffleGameModeData, type ProbableWaffleGameStateData, ProbableWafflePlayerType } from "@fuzzy-waddle/probable-waffle-protocol";
-import { GameInstanceId, type UserId } from "@fuzzy-waddle/platform-game-sessions";
+import {
+  type DifficultyModifiers,
+  type MapTuning,
+  ProbableWaffleCommunicators,
+  type ProbableWaffleCommunicatorEventUnion,
+  ProbableWaffleGameInstance,
+  type ProbableWaffleGameInstanceData,
+  ProbableWaffleGameInstanceVisibility,
+  type ProbableWafflePlayerDataChangeEvent,
+  type ProbableWaffleGameInstanceMetadataData,
+  type ProbableWaffleGameModeData,
+  type ProbableWaffleGameStateData,
+  ProbableWafflePlayerType
+} from "@fuzzy-waddle/probable-waffle-protocol";
+import type { GameInstanceId, UserId } from "@fuzzy-waddle/platform-game-sessions";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import { type GameInstanceServiceInterface } from "./game-instance.service.interface";
 import { TextSanitizationService } from "@fuzzy-waddle/platform-chat/server/content-filters/text-sanitization.service";
@@ -116,113 +129,113 @@ export class GameInstanceService implements GameInstanceServiceInterface {
     return gameInstance.data;
   }
 
-electReplacementHost(
-  gameInstanceId: GameInstanceId,
-  previousHostUserId: UserId,
-  isUserDisconnected: (userId: UserId, gameInstanceId: GameInstanceId) => boolean
-): { currentHostUserId: UserId; currentHostPlayerNumber: number } | null {
-  const gameInstance = this.findGameInstance(gameInstanceId);
-  if (!gameInstance) {
-    return null;
+  electReplacementHost(
+    gameInstanceId: GameInstanceId,
+    previousHostUserId: UserId,
+    isUserDisconnected: (userId: UserId, gameInstanceId: GameInstanceId) => boolean
+  ): { currentHostUserId: UserId; currentHostPlayerNumber: number } | null {
+    const gameInstance = this.findGameInstance(gameInstanceId);
+    if (!gameInstance) {
+      return null;
+    }
+
+    const nextHost = gameInstance.players
+      .filter(
+        (player) =>
+          player.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.Human &&
+          typeof player.playerController.data.userId === "string" &&
+          player.playerController.data.userId !== previousHostUserId &&
+          player.playerNumber !== undefined &&
+          !isUserDisconnected(player.playerController.data.userId, gameInstanceId)
+      )
+      .sort((a, b) => (a.playerNumber ?? Number.MAX_SAFE_INTEGER) - (b.playerNumber ?? Number.MAX_SAFE_INTEGER))[0];
+
+    if (!nextHost?.playerController.data.userId || nextHost.playerNumber === undefined) {
+      return null;
+    }
+
+    gameInstance.gameInstanceMetadata.data.currentHostUserId = nextHost.playerController.data.userId;
+    gameInstance.gameInstanceMetadata.data.updatedOn = new Date();
+
+    return {
+      currentHostUserId: nextHost.playerController.data.userId,
+      currentHostPlayerNumber: nextHost.playerNumber
+    };
   }
 
-  const nextHost = gameInstance.players
-    .filter(
-      (player) =>
-        player.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.Human &&
-        typeof player.playerController.data.userId === "string" &&
-        player.playerController.data.userId !== previousHostUserId &&
-        player.playerNumber !== undefined &&
-        !isUserDisconnected(player.playerController.data.userId, gameInstanceId)
-    )
-    .sort((a, b) => (a.playerNumber ?? Number.MAX_SAFE_INTEGER) - (b.playerNumber ?? Number.MAX_SAFE_INTEGER))[0];
-
-  if (!nextHost?.playerController.data.userId || nextHost.playerNumber === undefined) {
-    return null;
+  getGameInstanceDataForUser(gameInstanceId: GameInstanceId, user: User): ProbableWaffleGameInstanceData | null {
+    const gameInstance = this.findGameInstance(gameInstanceId);
+    if (!gameInstance) return null;
+    this.ensureCanAccessGameInstance(gameInstance, user);
+    return gameInstance.data;
   }
 
-  gameInstance.gameInstanceMetadata.data.currentHostUserId = nextHost.playerController.data.userId;
-  gameInstance.gameInstanceMetadata.data.updatedOn = new Date();
-
-  return {
-    currentHostUserId: nextHost.playerController.data.userId,
-    currentHostPlayerNumber: nextHost.playerNumber
-  };
-}
-
-getGameInstanceDataForUser(gameInstanceId: GameInstanceId, user: User): ProbableWaffleGameInstanceData | null {
-  const gameInstance = this.findGameInstance(gameInstanceId);
-  if (!gameInstance) return null;
-  this.ensureCanAccessGameInstance(gameInstance, user);
-  return gameInstance.data;
-}
-
-/**
- * Public lobbies can be observed by any authenticated user. Private lobbies
- * stay visible only to the host, current players, and current spectators.
- */
-ensureCanAccessGameInstance(gameInstance: ProbableWaffleGameInstance, user: User): void {
-  if (
-    gameInstance.gameInstanceMetadata.data.visibility === ProbableWaffleGameInstanceVisibility.Public ||
-    gameInstance.isHost(user.id) ||
-    gameInstance.isPlayer(user.id) ||
-    gameInstance.isSpectator(user.id)
-  ) {
-    return;
-  }
-
-  throw new ForbiddenException("Game instance access denied");
-}
-
-ensureCanJoinGameRoom(gameInstanceId: GameInstanceId, user: User): void {
-  const gameInstance = this.requireGameInstance(gameInstanceId);
-  this.ensureCanAccessGameInstance(gameInstance, user);
-}
-
-/**
- * Mutations are intentionally narrower than reads:
- * hosts manage lobby metadata, players manage active state, and join/leave
- * events can only target the authenticated caller.
- *
- * This auth gate runs before the deeper multiplayer validators. It must allow
- * authoritative lockstep transport events through to those validators, or the
- * gateway can reject a valid command relay before sequence/ownership checks run.
- */
-ensureCanMutateGameInstance(body: ProbableWaffleCommunicatorEventUnion, user: User): void {
-  const gameInstanceId = body.gameInstanceId;
-  if (!gameInstanceId) {
-    throw new ForbiddenException("Game instance mutation target missing");
-  }
-  const gameInstance = this.requireGameInstance(gameInstanceId);
-
-  switch (body.communicator) {
-    case "gameInstanceMetadataDataChange":
-      if (!gameInstance.isHost(user.id)) {
-        throw new ForbiddenException("Only the host can update game metadata");
-      }
+  /**
+   * Public lobbies can be observed by any authenticated user. Private lobbies
+   * stay visible only to the host, current players, and current spectators.
+   */
+  ensureCanAccessGameInstance(gameInstance: ProbableWaffleGameInstance, user: User): void {
+    if (
+      gameInstance.gameInstanceMetadata.data.visibility === ProbableWaffleGameInstanceVisibility.Public ||
+      gameInstance.isHost(user.id) ||
+      gameInstance.isPlayer(user.id) ||
+      gameInstance.isSpectator(user.id)
+    ) {
       return;
-    case "gameModeDataChange":
-    case "gameStateDataChange":
-    case ProbableWaffleCommunicators.GameCommand:
-    case ProbableWaffleCommunicators.StateHash:
-    case ProbableWaffleCommunicators.SnapshotRequest:
-    case ProbableWaffleCommunicators.SnapshotResponse:
-    case ProbableWaffleCommunicators.DesyncAlert:
-    case ProbableWaffleCommunicators.PauseChanged:
-      if (!gameInstance.isPlayer(user.id)) {
-        throw new ForbiddenException("Only players can update active game state");
-      }
-      return;
-    case "playerDataChange":
-      this.ensureCanMutatePlayerData(gameInstance, body.payload, user);
-      return;
-    case "spectatorDataChange":
-      this.ensureUserOwnsTarget(body.payload.data?.userId ?? null, user.id, "Spectator access denied");
-      return;
-    default:
-      throw new ForbiddenException("Game instance mutation denied");
+    }
+
+    throw new ForbiddenException("Game instance access denied");
   }
-}
+
+  ensureCanJoinGameRoom(gameInstanceId: GameInstanceId, user: User): void {
+    const gameInstance = this.requireGameInstance(gameInstanceId);
+    this.ensureCanAccessGameInstance(gameInstance, user);
+  }
+
+  /**
+   * Mutations are intentionally narrower than reads:
+   * hosts manage lobby metadata, players manage active state, and join/leave
+   * events can only target the authenticated caller.
+   *
+   * This auth gate runs before the deeper multiplayer validators. It must allow
+   * authoritative lockstep transport events through to those validators, or the
+   * gateway can reject a valid command relay before sequence/ownership checks run.
+   */
+  ensureCanMutateGameInstance(body: ProbableWaffleCommunicatorEventUnion, user: User): void {
+    const gameInstanceId = body.gameInstanceId;
+    if (!gameInstanceId) {
+      throw new ForbiddenException("Game instance mutation target missing");
+    }
+    const gameInstance = this.requireGameInstance(gameInstanceId);
+
+    switch (body.communicator) {
+      case "gameInstanceMetadataDataChange":
+        if (!gameInstance.isHost(user.id)) {
+          throw new ForbiddenException("Only the host can update game metadata");
+        }
+        return;
+      case "gameModeDataChange":
+      case "gameStateDataChange":
+      case ProbableWaffleCommunicators.GameCommand:
+      case ProbableWaffleCommunicators.StateHash:
+      case ProbableWaffleCommunicators.SnapshotRequest:
+      case ProbableWaffleCommunicators.SnapshotResponse:
+      case ProbableWaffleCommunicators.DesyncAlert:
+      case ProbableWaffleCommunicators.PauseChanged:
+        if (!gameInstance.isPlayer(user.id)) {
+          throw new ForbiddenException("Only players can update active game state");
+        }
+        return;
+      case "playerDataChange":
+        this.ensureCanMutatePlayerData(gameInstance, body.payload, user);
+        return;
+      case "spectatorDataChange":
+        this.ensureUserOwnsTarget(body.payload.data?.userId ?? null, user.id, "Spectator access denied");
+        return;
+      default:
+        throw new ForbiddenException("Game instance mutation denied");
+    }
+  }
   private requireGameInstance(gameInstanceId: GameInstanceId): ProbableWaffleGameInstance {
     const gameInstance = this.findGameInstance(gameInstanceId);
     if (!gameInstance) {

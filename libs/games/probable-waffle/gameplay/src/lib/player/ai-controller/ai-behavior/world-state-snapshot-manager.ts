@@ -17,7 +17,7 @@ import { AI_CONFIG } from "../ai-config";
 import { getResearchedLevelForActor } from "../../../data/actor-level-utils";
 import { ContainableComponent } from "../../../entity/components/building/containable-component";
 import { isSceneActive } from "../../../data/game-object-helper";
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 
 export class WorldStateSnapshotManager {
   private lastOwnedRefreshAt = 0;

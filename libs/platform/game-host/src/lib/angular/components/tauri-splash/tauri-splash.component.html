@@ -1,8 +1,5 @@
-@if (shouldRender && phase() !== 'gone') {
-  <div
-    class="splash-overlay"
-    [class.phase-leaving]="phase() === 'leaving'"
-  >
+@if (shouldRender && phase() !== "gone") {
+  <div class="splash-overlay" [class.phase-leaving]="phase() === 'leaving'">
     <!-- Decorative corner frames -->
     <div class="corner corner--tl"></div>
     <div class="corner corner--tr"></div>
@@ -11,7 +8,7 @@
 
     <!-- Animated particle dots -->
     <div class="particles" aria-hidden="true">
-      @for (i of [1,2,3,4,5,6,7,8,9,10,11,12]; track i) {
+      @for (i of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]; track i) {
         <span class="particle" [style.--i]="i"></span>
       }
     </div>

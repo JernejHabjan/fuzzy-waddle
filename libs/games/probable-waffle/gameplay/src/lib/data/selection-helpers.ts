@@ -2,7 +2,7 @@ import { ProbableWaffleScene } from "../core/probable-waffle.scene";
 import { getSelectedActors, sortActorsByPriority } from "./scene-data";
 import { getSceneComponent } from "../world/services/scene-component-helpers";
 import { SelectionTabHandler } from "../player/human-controller/selection-tab-handler";
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 
 /**
  * Returns currently selected actors, sorted by priority, and the primary actor.

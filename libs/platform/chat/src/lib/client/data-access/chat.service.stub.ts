@@ -1,5 +1,5 @@
 import { type IChatService } from "./chat.service.interface";
-import { type ChatMessage, type GetMessagesResponseDto } from "@fuzzy-waddle/platform-chat";
+import type { ChatMessage, GetMessagesResponseDto } from "../../chat";
 import { Observable } from "rxjs";
 
 export const chatServiceStub = {

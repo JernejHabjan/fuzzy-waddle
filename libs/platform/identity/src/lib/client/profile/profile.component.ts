@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from "@angular/core";
-import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
+import { AuthService } from "../auth/auth.service";
 import { UserInstanceService } from "./user-instance.service";
 import { DatePipe } from "@angular/common";
 import { ProfileNavComponent } from "./profile-nav/profile-nav.component";
-import { CurrentUserProfileService } from "@fuzzy-waddle/platform-identity/client/profile-data/current-user-profile.service";
+import { CurrentUserProfileService } from "../profile-data/current-user-profile.service";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import {
   faArrowTrendUp,
@@ -15,10 +15,10 @@ import {
   faTrophy,
   faUserAstronaut
 } from "@fortawesome/free-solid-svg-icons";
-import { getRoleIcon, getRoleLabel } from "@fuzzy-waddle/platform-identity/client/utils/app-role-presentation";
+import { getRoleIcon, getRoleLabel } from "../utils/app-role-presentation";
 import { GameKey } from "@fuzzy-waddle/platform-database-schema";
-import { type CurrentUserProfileDto, type UserGameProfileStatDto } from "@fuzzy-waddle/platform-identity";
-import { AvatarProviderService } from "@fuzzy-waddle/platform-identity/client/avatar-provider/avatar-provider.service";
+import type { CurrentUserProfileDto, UserGameProfileStatDto } from "../../current-user-profile";
+import { AvatarProviderService } from "../avatar-provider/avatar-provider.service";
 import { RouterLink } from "@angular/router";
 
 @Component({
@@ -67,18 +67,17 @@ export class ProfileComponent {
     () =>
       this.currentUserProfile()?.displayName ??
       (this.isViewingSelf()
-        ? this.googleIdentityData?.full_name ??
+        ? (this.googleIdentityData?.full_name ??
           this.authService.fullName ??
           this.authService.session?.user?.email?.split("@")[0] ??
-          "Unknown"
+          "Unknown")
         : "Unknown")
   );
 
-  protected readonly profileAvatarUrl = computed(
-    () =>
-      this.avatarProviderService.getAvatar(
-        this.currentUserProfile()?.id ?? this.userId() ?? this.authService.userId ?? this.profileDisplayName()
-      )
+  protected readonly profileAvatarUrl = computed(() =>
+    this.avatarProviderService.getAvatar(
+      this.currentUserProfile()?.id ?? this.userId() ?? this.authService.userId ?? this.profileDisplayName()
+    )
   );
 
   protected readonly profileHandle = computed(() => {
@@ -106,7 +105,9 @@ export class ProfileComponent {
 
   protected readonly joinedAt = computed(
     () =>
-      this.currentUserProfile()?.createdAt ?? (this.isViewingSelf() ? this.authService.session?.user?.created_at : null) ?? null
+      this.currentUserProfile()?.createdAt ??
+      (this.isViewingSelf() ? this.authService.session?.user?.created_at : null) ??
+      null
   );
 
   protected readonly profileStats = computed<Array<{ label: string; value: number | string }>>(() => {
@@ -123,12 +124,15 @@ export class ProfileComponent {
     ];
   });
 
-  protected readonly topGames = computed<UserGameProfileStatDto[]>(() => this.currentUserProfile()?.playSummary.gameStats ?? []);
+  protected readonly topGames = computed<UserGameProfileStatDto[]>(
+    () => this.currentUserProfile()?.playSummary.gameStats ?? []
+  );
 
   private get googleIdentityData(): { full_name?: string | null } | null {
     return (
-      (this.authService.session?.user?.identities?.find((identity) => identity.provider === "google")
-        ?.identity_data as { full_name?: string | null } | undefined) ?? null
+      (this.authService.session?.user?.identities?.find((identity) => identity.provider === "google")?.identity_data as
+        | { full_name?: string | null }
+        | undefined) ?? null
     );
   }
 

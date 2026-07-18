@@ -1,9 +1,20 @@
 import { Injectable } from "@nestjs/common";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { SupabaseProviderService } from "@fuzzy-waddle/platform-database-schema/server/supabase-provider/supabase-provider.service";
-import { type Database, GameKey, GameParticipantType, GameResultStatus, GameSessionStatus, type Json } from "@fuzzy-waddle/platform-database-schema";
-import { type GameScoreSnapshotDto, PlayerScoreDto, ProbableWaffleMapEnum } from "@fuzzy-waddle/probable-waffle-protocol";
-import { GameSessionServiceInterface } from "./game-session.service.interface";
+import {
+  type Database,
+  GameKey,
+  GameParticipantType,
+  GameResultStatus,
+  GameSessionStatus,
+  type Json
+} from "@fuzzy-waddle/platform-database-schema";
+import {
+  type GameScoreSnapshotDto,
+  PlayerScoreDto,
+  ProbableWaffleMapEnum
+} from "@fuzzy-waddle/probable-waffle-protocol";
+import type { GameSessionServiceInterface } from "./game-session.service.interface";
 
 type GameSessionRow = Database["public"]["Tables"]["game_sessions"]["Row"];
 
@@ -96,7 +107,7 @@ export class GameSessionService implements GameSessionServiceInterface {
       await this.createSession({
         gameInstanceId,
         gameType: sessionMeta.gameType ?? "Skirmish",
-        mapId: sessionMeta.mapId ,
+        mapId: sessionMeta.mapId,
         createdByUserId: submittedByUserId,
         humanPlayerCount: sessionMeta.humanPlayerCount ?? 1
       });
@@ -452,7 +463,7 @@ export class GameSessionService implements GameSessionServiceInterface {
         .in("score_record_id", recordIds);
 
       for (const metric of metrics ?? []) {
-        const key = (metric.game_score_metric_definitions )?.metric_key;
+        const key = metric.game_score_metric_definitions?.metric_key;
         if (!key) continue;
         const existing = metricsMap.get(metric.score_record_id) ?? {};
         existing[key] = metric.metric_value;

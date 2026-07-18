@@ -1,5 +1,17 @@
 import { Scenes } from "./const/scenes";
-import { type LittleMuncherCommunicatorScoreEvent, LittleMuncherGameMode, type LittleMuncherGameModeData, LittleMuncherGameState, type LittleMuncherGameStateData, LittleMuncherHills, LittleMuncherPlayer, type LittleMuncherPlayerControllerData, type LittleMuncherPlayerStateData, LittleMuncherSpectator, type LittleMuncherSpectatorData } from "@fuzzy-waddle/little-muncher-protocol";
+import {
+  type LittleMuncherCommunicatorScoreEvent,
+  LittleMuncherGameMode,
+  type LittleMuncherGameModeData,
+  LittleMuncherGameState,
+  type LittleMuncherGameStateData,
+  LittleMuncherHills,
+  LittleMuncherPlayer,
+  type LittleMuncherPlayerControllerData,
+  type LittleMuncherPlayerStateData,
+  LittleMuncherSpectator,
+  type LittleMuncherSpectatorData
+} from "@fuzzy-waddle/little-muncher-protocol";
 import { BaseScene } from "@fuzzy-waddle/platform-game-host/phaser/scene/base.scene";
 import { type LittleMuncherGameData } from "./little-muncher-game-data";
 import { Pause } from "./pause";

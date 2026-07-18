@@ -36,7 +36,8 @@ import {
   emitStructureTopologyChanged,
   emitStructureTopologyChangedAtTile
 } from "../../prefabs/buildings/tivara/navigation-topology.events";
-import Vector2 = Phaser.Math.Vector2;
+const Vector2 = Phaser.Math.Vector2;
+type Vector2 = Phaser.Math.Vector2;
 
 export class BuildingCursor {
   placementGrid?: GameObjects.Graphics;
@@ -273,9 +274,7 @@ export class BuildingCursor {
         if (currentOrder.data.targetTileLocation && actorTransform) {
           const targetTile = currentOrder.data.targetTileLocation;
           const actorTile = IsoHelper.isometricWorldToTileXY(this.scene, actorTransform.x, actorTransform.y, false);
-          const distance = Math.sqrt(
-            Math.pow(actorTile.x - targetTile.x, 2) + Math.pow(actorTile.y - targetTile.y, 2)
-          );
+          const distance = Math.sqrt(Math.pow(actorTile.x - targetTile.x, 2) + Math.pow(actorTile.y - targetTile.y, 2));
 
           // Compare in tile space so placement does not wait on a world-vs-tile mismatch.
           if (distance <= 1) {

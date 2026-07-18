@@ -1,5 +1,9 @@
 import { VolumeSettings } from "../../core/volumeSettings";
-import { getGameObjectRenderedTransform, isGameObjectActiveInActiveScene, onSceneInitialized } from "../../data/game-object-helper";
+import {
+  getGameObjectRenderedTransform,
+  isGameObjectActiveInActiveScene,
+  onSceneInitialized
+} from "../../data/game-object-helper";
 import { getSceneExternalComponent } from "./scene-component-helpers";
 import { GameOptionsService } from "../../core/game-options.service";
 import { filter, Subscription } from "rxjs";

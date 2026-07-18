@@ -1,4 +1,4 @@
-import type { CurrentUserProfileDto } from "@fuzzy-waddle/platform-identity";
+import type { CurrentUserProfileDto } from "../../current-user-profile";
 
 export interface ICurrentUserProfileService {
   getUserProfile(userId?: string | null, forceRefresh?: boolean): Promise<CurrentUserProfileDto | null>;

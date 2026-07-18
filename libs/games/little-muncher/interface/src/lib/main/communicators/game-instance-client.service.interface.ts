@@ -1,4 +1,9 @@
-import { type LittleMuncherGameCreate, LittleMuncherGameInstance, type LittleMuncherGameInstanceData, type LittleMuncherLevel } from "@fuzzy-waddle/little-muncher-protocol";
+import {
+  type LittleMuncherGameCreate,
+  LittleMuncherGameInstance,
+  type LittleMuncherGameInstanceData,
+  type LittleMuncherLevel
+} from "@fuzzy-waddle/little-muncher-protocol";
 
 export interface GameInstanceClientServiceInterface {
   gameInstance?: LittleMuncherGameInstance;

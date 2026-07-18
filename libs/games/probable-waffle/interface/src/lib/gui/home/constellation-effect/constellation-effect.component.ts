@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, ElementRef, type AfterViewInit, type OnDestroy, viewChild } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  type AfterViewInit,
+  type OnDestroy,
+  viewChild
+} from "@angular/core";
 import { ConstellationParticle } from "./constellation-particle";
 
 type MousePosition = { x?: number; y?: number };

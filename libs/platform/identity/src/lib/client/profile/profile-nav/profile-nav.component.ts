@@ -1,8 +1,8 @@
 import { Component, inject } from "@angular/core";
 import { Router } from "@angular/router";
-import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
+import { AuthService } from "../../auth/auth.service";
 
-import { HomeNavComponent } from "@fuzzy-waddle/platform-identity/client/home-nav/home-nav.component";
+import { HomeNavComponent } from "../../home-nav/home-nav.component";
 
 @Component({
   selector: "fuzzy-waddle-profile-nav",

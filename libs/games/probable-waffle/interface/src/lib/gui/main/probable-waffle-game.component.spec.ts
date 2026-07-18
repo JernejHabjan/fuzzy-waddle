@@ -10,7 +10,7 @@ import { achievementServiceStub } from "../../services/achievement/achievement.s
 import { GameSaveService } from "../../services/game-save/game-save.service";
 import { GameSaveServiceStub } from "../../services/game-save/game-save.service.stub";
 
-jest.mock("../../game/world/const/game-config", () => ({
+jest.mock("@fuzzy-waddle/probable-waffle-gameplay/world/const/game-config", () => ({
   probableWaffleGameConfig: {}
 }));
 

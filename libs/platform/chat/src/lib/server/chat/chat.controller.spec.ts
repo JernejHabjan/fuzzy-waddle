@@ -1,34 +1,19 @@
-import { Test, TestingModule } from "@nestjs/testing";
 import { ChatService } from "./chat.service";
 import { chatServiceStub } from "./chat.service.stub";
 import { ChatController } from "./chat.controller";
 import { ChatReportReason } from "@fuzzy-waddle/platform-database-schema";
 import type { AuthUser } from "@supabase/supabase-js";
-import { OnlineAccessGuard } from "@fuzzy-waddle/platform-identity/server/auth/guards/online-access.guard";
-import { SupabaseAuthGuard } from "@fuzzy-waddle/platform-identity/server/auth/guards/supabase-auth.guard";
-import { UserProfilesService } from "@fuzzy-waddle/platform-identity/server/user-profiles/user-profiles.service";
-import { onlineAccessGuardStub } from "@fuzzy-waddle/platform-identity/server/auth/guards/online-access.guard.stub";
-import { supabaseAuthGuardStub } from "@fuzzy-waddle/platform-identity/server/auth/guards/supabase-auth.guard.stub";
-import { userProfilesServiceStub } from "@fuzzy-waddle/platform-identity/server/user-profiles/user-profiles.service.stub";
 
 describe("ChatController", () => {
-  let app: TestingModule;
+  const chatService = chatServiceStub as ChatService;
+  const controller = new ChatController(chatService);
 
-  beforeAll(async () => {
-    app = await Test.createTestingModule({
-      controllers: [ChatController],
-      providers: [
-        { provide: ChatService, useValue: chatServiceStub },
-        { provide: OnlineAccessGuard, useValue: onlineAccessGuardStub },
-        { provide: SupabaseAuthGuard, useValue: supabaseAuthGuardStub },
-        { provide: UserProfilesService, useValue: userProfilesServiceStub }
-      ]
-    }).compile();
+  beforeEach(() => {
+    jest.restoreAllMocks();
   });
 
   describe("getMessages", () => {
     it("should return empty messages", async () => {
-      const controller = app.get(ChatController);
       const result = await controller.getMessages({ id: "user-id" } as AuthUser, { limit: 10, offset: 0 });
       expect(result).toEqual({ messages: [], total: 0, hasMore: false });
     });
@@ -36,8 +21,6 @@ describe("ChatController", () => {
 
   describe("reportMessage", () => {
     it("should report a message for the current user", async () => {
-      const controller = app.get(ChatController);
-      const chatService = app.get(ChatService);
       const reportSpy = jest.spyOn(chatService, "reportMessage");
       const user = { id: "user-id" } as AuthUser;
 

@@ -9,10 +9,10 @@ import { SocketIoModule } from "ngx-socket-io";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { AppRoutingModule } from "./app/app-routing.module";
 import { bootstrapApplication, BrowserModule } from "@angular/platform-browser";
-import { accessTokenInterceptor } from "./app/auth/access-token.interceptor";
+import { accessTokenInterceptor } from "@fuzzy-waddle/platform-identity/client/auth/access-token.interceptor";
 import { provideHttpClient, withInterceptors } from "@angular/common/http";
-import { AuthGuard } from "./app/auth/auth.guard";
-import { authReadyInterceptor } from "./app/auth/auth-ready.interceptor";
+import { AuthGuard } from "@fuzzy-waddle/platform-identity/client/auth/auth.guard";
+import { authReadyInterceptor } from "@fuzzy-waddle/platform-identity/client/auth/auth-ready.interceptor";
 
 if (environment.production) {
   enableProdMode();

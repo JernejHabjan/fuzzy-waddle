@@ -1,4 +1,4 @@
-@use "../../../styles/_variables.scss" as *;
+@use "variables" as *;
 
 :host {
   background-color: $tertiary;
@@ -115,8 +115,7 @@
   border-radius: 28px;
   background:
     linear-gradient(135deg, $app-surface-glass-soft, transparent),
-    linear-gradient(135deg, $app-overlay-warm-gradient, $app-overlay-cool-gradient),
-    $app-surface-dark;
+    linear-gradient(135deg, $app-overlay-warm-gradient, $app-overlay-cool-gradient), $app-surface-dark;
   color: $app-text-on-dark;
 }
 

@@ -2,7 +2,12 @@ import { inject, Injectable } from "@angular/core";
 import { Subscription } from "rxjs";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { RoomsService } from "../../../communicators/rooms/rooms.service";
-import { FactionType, MatchmakingTeamConfiguration, type ProbableWaffleGameFoundEvent, ProbableWaffleLevels } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  FactionType,
+  MatchmakingTeamConfiguration,
+  type ProbableWaffleGameFoundEvent,
+  ProbableWaffleLevels
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { type IMatchmakingService } from "./matchmaking.service.interface";
 import { environment } from "@fuzzy-waddle/environments/environment";
 import type { MatchmakingLevel } from "./matchmaking-level";

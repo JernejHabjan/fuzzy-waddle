@@ -9,7 +9,12 @@ import { gameInstanceClientServiceStub } from "../../../communicators/game-insta
 import { RoomsService } from "../../../communicators/rooms/rooms.service";
 import { FontAwesomeTestingModule } from "@fortawesome/angular-fontawesome/testing";
 import { GameSessionState } from "@fuzzy-waddle/platform-game-sessions";
-import { ProbableWaffleGameInstanceType, ProbableWaffleGameInstanceVisibility, ProbableWafflePlayerType, type ProbableWaffleRoom } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  ProbableWaffleGameInstanceType,
+  ProbableWaffleGameInstanceVisibility,
+  ProbableWafflePlayerType,
+  type ProbableWaffleRoom
+} from "@fuzzy-waddle/probable-waffle-protocol";
 
 @Component({ selector: "probable-waffle-lobbies", template: "", standalone: true, imports: [] })
 export class LobbiesTestingComponent {}
@@ -65,7 +70,7 @@ describe("LobbiesComponent", () => {
         }
       ],
       spectators: []
-    } satisfies Partial<ProbableWaffleRoom> as ProbableWaffleRoom;
+    } as unknown as ProbableWaffleRoom;
 
     roomsServiceStub.rooms.set([fullLobby]);
 
@@ -92,7 +97,7 @@ describe("LobbiesComponent", () => {
         }
       ],
       spectators: []
-    } satisfies Partial<ProbableWaffleRoom> as ProbableWaffleRoom;
+    } as unknown as ProbableWaffleRoom;
 
     roomsServiceStub.rooms.set([inProgressLobby]);
     (component as any).select(inProgressLobby);

@@ -111,8 +111,7 @@ export class HudGameState {
   private shouldShowStartCountdown(): boolean {
     const gameType = this.probableWaffleScene.baseGameData.gameInstance.gameInstanceMetadata.data.type;
     return (
-      gameType === ProbableWaffleGameInstanceType.Matchmaking ||
-      gameType === ProbableWaffleGameInstanceType.SelfHosted
+      gameType === ProbableWaffleGameInstanceType.Matchmaking || gameType === ProbableWaffleGameInstanceType.SelfHosted
     );
   }
 

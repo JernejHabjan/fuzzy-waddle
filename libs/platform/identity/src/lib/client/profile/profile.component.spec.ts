@@ -2,12 +2,12 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { ProfileComponent } from "./profile.component";
 import { ProfileNavTestingComponent } from "./profile-nav/profile-nav.component.spec";
-import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
-import { authServiceStub } from "@fuzzy-waddle/platform-identity/client/auth/auth.service.stub";
+import { AuthService } from "../auth/auth.service";
+import { authServiceStub } from "../auth/auth.service.stub";
 import { ProfileNavComponent } from "./profile-nav/profile-nav.component";
-import { CurrentUserProfileService } from "@fuzzy-waddle/platform-identity/client/profile-data/current-user-profile.service";
-import { currentUserProfileServiceStub } from "@fuzzy-waddle/platform-identity/client/profile-data/current-user-profile.service.stub";
-import { AvatarProviderService } from "@fuzzy-waddle/platform-identity/client/avatar-provider/avatar-provider.service";
+import { CurrentUserProfileService } from "../profile-data/current-user-profile.service";
+import { currentUserProfileServiceStub } from "../profile-data/current-user-profile.service.stub";
+import { AvatarProviderService } from "../avatar-provider/avatar-provider.service";
 import { UserInstanceService } from "./user-instance.service";
 import { userInstanceServiceStub } from "./user-instance.service.stub";
 import { provideRouter } from "@angular/router";

@@ -4,10 +4,7 @@ import { CursorHandler, CursorType } from "./cursor.handler";
 import { getSceneComponent, getSceneService } from "../../world/services/scene-component-helpers";
 import { type Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { canActorTraverseTile } from "../../data/game-object-helper";
-import {
-  getCurrentPlayerNumber,
-  listenToSelectionEvents
-} from "../../data/scene-data";
+import { getCurrentPlayerNumber, listenToSelectionEvents } from "../../data/scene-data";
 import { SingleSelectionHandler } from "./single-selection.handler";
 import { BehaviorSubject, Subscription } from "rxjs";
 import { getPrimarySelectedActor } from "../../data/selection-helpers";
@@ -29,7 +26,7 @@ import { IdComponent } from "../../entity/components/id-component";
 import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 import { NavigationService } from "../../world/services/navigation.service";
 import { dispatchProductionCommand } from "../../data/commands/queue-command-dispatch";
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 
 export class PlayerActionsHandler {
   public static BUILDING_MODE_SHORTCUT_PRESSED = "hotkey-build-list-selection";

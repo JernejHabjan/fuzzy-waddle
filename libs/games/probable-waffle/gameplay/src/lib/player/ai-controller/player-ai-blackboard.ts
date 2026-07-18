@@ -1,5 +1,11 @@
 import { Blackboard } from "../../ai/blackboard";
-import { ObjectNames, type PlayerAiBlackboardData, PreRequirement, type PrerequisiteType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  ObjectNames,
+  type PlayerAiBlackboardData,
+  PreRequirement,
+  type PrerequisiteType,
+  ResourceType
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { type Vector2Simple, type Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import type { MapAnalysis } from "./ai-behavior/map-analyzer";
 import { ReservationPool } from "./resource-reservations";
@@ -8,7 +14,7 @@ import { PawnAiController } from "../../prefabs/ai-agents/pawn-ai-controller";
 import { RandomService } from "../../world/services/random.service";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { getSimulationNow } from "./ai-time";
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 
 export interface EnemyIntel {
   strength: number;

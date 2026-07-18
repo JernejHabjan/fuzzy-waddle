@@ -8,7 +8,15 @@ import {
   type OnInit,
   ViewChild
 } from "@angular/core";
-import { GameSetupHelpers, type PlayerLobbyDefinition, type PositionPlayerDefinition, ProbableWaffleLevels, type ProbableWaffleMapData, ProbableWafflePlayer, type ProbableWafflePlayerDataChangeEventProperty } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  GameSetupHelpers,
+  type PlayerLobbyDefinition,
+  type PositionPlayerDefinition,
+  ProbableWaffleLevels,
+  type ProbableWaffleMapData,
+  ProbableWafflePlayer,
+  type ProbableWafflePlayerDataChangeEventProperty
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { type PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 import { SceneCommunicatorClientService } from "../../../communicators/scene-communicator-client.service";
 import { Subscription } from "rxjs";

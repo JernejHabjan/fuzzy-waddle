@@ -1,7 +1,11 @@
 import { inject, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { firstValueFrom } from "rxjs";
-import { type ModerationQueueDto, type ModerationSummaryDto, type UpdateChatReportStatusDto } from "@fuzzy-waddle/platform-chat";
+import {
+  type ModerationQueueDto,
+  type ModerationSummaryDto,
+  type UpdateChatReportStatusDto
+} from "@fuzzy-waddle/platform-chat";
 import { type BanUserDto } from "@fuzzy-waddle/platform-identity";
 import { environment } from "@fuzzy-waddle/environments/environment";
 

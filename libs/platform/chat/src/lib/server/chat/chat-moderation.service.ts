@@ -1,7 +1,12 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { type AuthUser } from "@supabase/supabase-js";
 import { ChatMessageStatus, ChatReportStatus } from "@fuzzy-waddle/platform-database-schema";
-import { type ModerationQueueDto, type ModerationReportDto, type ModerationSummaryDto, type UpdateChatReportStatusDto } from "@fuzzy-waddle/platform-chat";
+import type {
+  ModerationQueueDto,
+  ModerationReportDto,
+  ModerationSummaryDto,
+  UpdateChatReportStatusDto
+} from "../../chat";
 import { type BanUserDto } from "@fuzzy-waddle/platform-identity";
 import { SupabaseProviderService } from "@fuzzy-waddle/platform-database-schema/server/supabase-provider/supabase-provider.service";
 import { UserProfilesService } from "@fuzzy-waddle/platform-identity/server/user-profiles/user-profiles.service";

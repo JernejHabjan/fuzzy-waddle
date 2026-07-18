@@ -3,7 +3,7 @@
 /* START OF COMPILED CODE */
 
 import ScrollFactorScript from "@fuzzy-waddle/platform-game-host/phaser/script-nodes/ScrollFactorScript";
-import PlayerControllerScript from "@fuzzy-waddle/platform-game-host/phaser/script-nodes/PlayerControllerScript";
+import PlayerControllerScript from "../script-nodes/PlayerControllerScript";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 

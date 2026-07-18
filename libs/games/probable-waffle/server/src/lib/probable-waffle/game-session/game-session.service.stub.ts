@@ -1,5 +1,5 @@
 import { ProbableWaffleMapEnum } from "@fuzzy-waddle/probable-waffle-protocol";
-import { GameSessionServiceInterface } from "./game-session.service.interface";
+import type { GameSessionServiceInterface } from "./game-session.service.interface";
 
 export const gameSessionServiceStub = {
   createSession: function (params: {

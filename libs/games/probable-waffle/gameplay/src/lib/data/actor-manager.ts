@@ -101,7 +101,7 @@ import Calf from "../prefabs/animals/calf/Calf";
 import Bull from "../prefabs/animals/bull/Bull";
 import Lamb from "../prefabs/animals/lamb/Lamb";
 import Piglet from "../prefabs/animals/piglet/Piglet";
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 import Banshee from "../prefabs/characters/mobs/banshee/Banshee";
 import BigWaterSlime from "../prefabs/characters/mobs/big_water_slime/BigWaterSlime";
 import SmallWaterSlime from "../prefabs/characters/mobs/small_water_slime/SmallWaterSlime";

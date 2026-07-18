@@ -1,7 +1,9 @@
 import { GameObjectSelectionHandler } from "./game-object-selection.handler";
 import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { OwnerComponent } from "../../entity/components/owner-component";
-import { createMockScene } from "phaser";
+import Phaser from "phaser";
+
+const { createMockScene } = Phaser as typeof Phaser & { createMockScene: () => any };
 
 // Mock the dependencies
 jest.mock("../../data/scene-data");
@@ -44,12 +46,7 @@ describe("GameObjectSelectionHandler - Multi-select filtering", () => {
       (getCurrentPlayerNumber as jest.Mock).mockReturnValue(currentPlayerNr);
 
       // Mock getSelectableSceneChildren to return both friendly and enemy units
-      (getSelectableSceneChildren as jest.Mock).mockReturnValue([
-        friendlyUnit1,
-        friendlyUnit2,
-        enemyUnit1,
-        enemyUnit2
-      ]);
+      (getSelectableSceneChildren as jest.Mock).mockReturnValue([friendlyUnit1, friendlyUnit2, enemyUnit1, enemyUnit2]);
 
       // Mock getGameObjectBounds to return bounds for all units
       (getGameObjectBounds as jest.Mock).mockReturnValue({
@@ -104,10 +101,7 @@ describe("GameObjectSelectionHandler - Multi-select filtering", () => {
       (getCurrentPlayerNumber as jest.Mock).mockReturnValue(currentPlayerNr);
 
       // Mock getSelectableSceneChildren to return only enemy units
-      (getSelectableSceneChildren as jest.Mock).mockReturnValue([
-        enemyUnit1,
-        enemyUnit2
-      ]);
+      (getSelectableSceneChildren as jest.Mock).mockReturnValue([enemyUnit1, enemyUnit2]);
 
       // Mock getGameObjectBounds to return bounds for all units
       (getGameObjectBounds as jest.Mock).mockReturnValue({
@@ -149,9 +143,7 @@ describe("GameObjectSelectionHandler - Multi-select filtering", () => {
       (getCurrentPlayerNumber as jest.Mock).mockReturnValue(1);
 
       // Mock getSelectableSceneChildren to return some units
-      (getSelectableSceneChildren as jest.Mock).mockReturnValue([
-        { name: "Warrior", scene: mockScene }
-      ]);
+      (getSelectableSceneChildren as jest.Mock).mockReturnValue([{ name: "Warrior", scene: mockScene }]);
 
       // Mock getGameObjectBounds to return bounds that don't overlap
       (getGameObjectBounds as jest.Mock).mockReturnValue({

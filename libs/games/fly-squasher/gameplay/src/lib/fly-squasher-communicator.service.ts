@@ -21,8 +21,4 @@ export class FlySquasherCommunicatorService implements CommunicatorService {
   stopCommunication() {
     this.score?.destroy();
   }
-
-  ngOnDestroy(): void {
-    this.stopCommunication();
-  }
 }

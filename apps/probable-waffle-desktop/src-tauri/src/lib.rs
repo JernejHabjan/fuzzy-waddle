@@ -174,7 +174,12 @@ pub fn run() {
 
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![set_cursor_grab, quit, get_app_version, toggle_fullscreen])
+        .invoke_handler(tauri::generate_handler![
+            set_cursor_grab,
+            quit,
+            get_app_version,
+            toggle_fullscreen
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

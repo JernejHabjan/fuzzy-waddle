@@ -2,13 +2,13 @@
 
 ## Tech Stack
 
-| Layer | Technology |
-| --- | --- |
-| Frontend (web) | Angular 21, Phaser 4, Bootstrap 5, Chart.js |
-| Frontend (desktop) | Angular 21 and Tauri 2 |
-| Backend | NestJS 11, Socket.IO |
-| Database / Auth | Supabase (PostgreSQL) |
-| Monorepo tooling | Nx 23, pnpm |
+| Layer              | Technology                                  |
+| ------------------ | ------------------------------------------- |
+| Frontend (web)     | Angular 21, Phaser 4, Bootstrap 5, Chart.js |
+| Frontend (desktop) | Angular 21 and Tauri 2                      |
+| Backend            | NestJS 11, Socket.IO                        |
+| Database / Auth    | Supabase (PostgreSQL)                       |
+| Monorepo tooling   | Nx 23, pnpm                                 |
 
 ## Monorepo Structure
 

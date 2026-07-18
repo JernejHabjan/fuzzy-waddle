@@ -2,7 +2,11 @@ import { Component, inject, type OnInit } from "@angular/core";
 import { DatePipe } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { ChatReportStatus, UserAccountStatus } from "@fuzzy-waddle/platform-database-schema";
-import { type ModerationQueueDto, type ModerationReportDto, type ModerationReportGroupDto } from "@fuzzy-waddle/platform-chat";
+import {
+  type ModerationQueueDto,
+  type ModerationReportDto,
+  type ModerationReportGroupDto
+} from "@fuzzy-waddle/platform-chat";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { ModerationService } from "../../data-access/moderation/moderation.service";
 import { HomeNavComponent } from "@fuzzy-waddle/platform-identity/client/home-nav/home-nav.component";
@@ -45,7 +49,7 @@ export class ModerationComponent implements OnInit {
 
   protected async updateReport(report: ModerationReportDto, status: ChatReportStatus): Promise<void> {
     await this.moderationService.updateReportStatus(report.id, {
-      status: status as (typeof ChatReportStatus.Reviewed | typeof ChatReportStatus.Actioned)
+      status: status as typeof ChatReportStatus.Reviewed | typeof ChatReportStatus.Actioned
     });
     await this.loadReports();
   }

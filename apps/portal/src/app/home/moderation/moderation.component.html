@@ -34,8 +34,11 @@
               <div class="group-title-row">
                 <h3>{{ bannedUser.displayName }}</h3>
                 @if (getRoleIcon(bannedUser.role ?? null); as roleIcon) {
-                  <fa-icon [icon]="roleIcon" [title]="getRoleLabel(bannedUser.role ?? null) ?? ''"
-                           class="group-role-icon" />
+                  <fa-icon
+                    [icon]="roleIcon"
+                    [title]="getRoleLabel(bannedUser.role ?? null) ?? ''"
+                    class="group-role-icon"
+                  />
                 }
               </div>
               <p class="group-email">{{ bannedUser.email || "No email available" }}</p>
@@ -50,7 +53,9 @@
             </div>
             <div class="banned-user-actions">
               <p class="group-status">Updated {{ bannedUser.updatedAt | date: "medium" }}</p>
-              <button class="btn btn-outline-primary" type="button" (click)="unbanUser(bannedUser.userId)">Unban</button>
+              <button class="btn btn-outline-primary" type="button" (click)="unbanUser(bannedUser.userId)">
+                Unban
+              </button>
             </div>
           </article>
         }
@@ -65,8 +70,11 @@
           <div class="group-title-row">
             <h2>{{ group.reportedUserDisplayName }}</h2>
             @if (getRoleIcon(group.reportedUserRole ?? null); as roleIcon) {
-              <fa-icon [icon]="roleIcon" [title]="getRoleLabel(group.reportedUserRole ?? null) ?? ''"
-                       class="group-role-icon" />
+              <fa-icon
+                [icon]="roleIcon"
+                [title]="getRoleLabel(group.reportedUserRole ?? null) ?? ''"
+                class="group-role-icon"
+              />
             }
           </div>
           <p class="group-email">{{ group.reportedUserEmail || "No email available" }}</p>
@@ -118,7 +126,11 @@
           }
 
           <div class="report-actions">
-            <button class="btn btn-outline-primary" type="button" (click)="updateReport(report, ChatReportStatus.Reviewed)">
+            <button
+              class="btn btn-outline-primary"
+              type="button"
+              (click)="updateReport(report, ChatReportStatus.Reviewed)"
+            >
               Mark reviewed
             </button>
             <button class="btn btn-danger" type="button" (click)="updateReport(report, ChatReportStatus.Actioned)">

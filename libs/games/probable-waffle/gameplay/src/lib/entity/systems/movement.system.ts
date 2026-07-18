@@ -40,7 +40,7 @@ import type { PathMoveConfig } from "./path-move-config";
 import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 import { getInterpolatedSimulationNow } from "../../world/services/simulation-time";
 import { MovementOccupancyService } from "../../world/services/movement-occupancy.service";
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 
 // When another actor is already stepping through the blocked tile, wait briefly
 // a couple of times before trying more disruptive recovery.

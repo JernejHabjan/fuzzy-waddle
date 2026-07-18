@@ -7,10 +7,7 @@ import { TauriSplashComponent } from "@fuzzy-waddle/platform-game-host/angular/c
 import { TauriTitlebarComponent } from "@fuzzy-waddle/platform-game-host/angular/components/tauri-titlebar/tauri-titlebar.component";
 import { ToastContainerComponent } from "@fuzzy-waddle/platform-game-host/angular/components/toast-container.component";
 import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service";
-import {
-  isTauri,
-  TauriService
-} from "@fuzzy-waddle/platform-game-host/angular/services/tauri.service";
+import { isTauri, TauriService } from "@fuzzy-waddle/platform-game-host/angular/services/tauri.service";
 
 @Component({
   selector: "fuzzy-waddle-root",

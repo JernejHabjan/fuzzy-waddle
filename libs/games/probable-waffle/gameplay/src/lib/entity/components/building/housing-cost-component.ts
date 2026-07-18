@@ -1,4 +1,4 @@
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 import { emitHousing } from "../../../data/scene-data";
 import { onObjectReady } from "../../../data/game-object-helper";
 import { HealthComponent } from "../combat/components/health-component";

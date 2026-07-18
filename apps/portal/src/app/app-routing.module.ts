@@ -29,7 +29,9 @@ const littleMuncherRoutes = [
       {
         path: "high-score",
         loadComponent: () =>
-          import("@fuzzy-waddle/little-muncher-interface/high-score/high-score.component").then((m) => m.HighScoreComponent)
+          import("@fuzzy-waddle/little-muncher-interface/high-score/high-score.component").then(
+            (m) => m.HighScoreComponent
+          )
       },
       { path: "**", redirectTo: "" }
     ]
@@ -42,26 +44,35 @@ const flySquasherRoutes = [
     children: [
       {
         path: "",
-        loadComponent: () => import("@fuzzy-waddle/fly-squasher-interface/home/home.component").then((m) => m.HomeComponent)
+        loadComponent: () =>
+          import("@fuzzy-waddle/fly-squasher-interface/home/home.component").then((m) => m.HomeComponent)
       },
       {
         path: "choose-level",
         loadComponent: () =>
-          import("@fuzzy-waddle/fly-squasher-interface/choose-level/choose-level.component").then((m) => m.ChooseLevelComponent)
+          import("@fuzzy-waddle/fly-squasher-interface/choose-level/choose-level.component").then(
+            (m) => m.ChooseLevelComponent
+          )
       },
       {
         path: "play/:level",
         loadComponent: () =>
-          loadGameComponent(() => import("@fuzzy-waddle/fly-squasher-interface/main/main.component")).then((m) => m.MainComponent),
+          loadGameComponent(() => import("@fuzzy-waddle/fly-squasher-interface/main/main.component")).then(
+            (m) => m.MainComponent
+          ),
         canActivate: [LevelGuard]
       },
       {
         path: "high-score",
-        loadComponent: () => import("@fuzzy-waddle/fly-squasher-interface/high-score/high-score.component").then((m) => m.HighScoreComponent)
+        loadComponent: () =>
+          import("@fuzzy-waddle/fly-squasher-interface/high-score/high-score.component").then(
+            (m) => m.HighScoreComponent
+          )
       },
       {
         path: "options",
-        loadComponent: () => import("@fuzzy-waddle/fly-squasher-interface/options/options.component").then((m) => m.OptionsComponent)
+        loadComponent: () =>
+          import("@fuzzy-waddle/fly-squasher-interface/options/options.component").then((m) => m.OptionsComponent)
       },
       { path: "**", redirectTo: "" }
     ]
@@ -92,12 +103,14 @@ const routes = [
   },
   {
     path: "profile",
-    loadComponent: () => import("./home/profile/profile.component").then((m) => m.ProfileComponent),
+    loadComponent: () =>
+      import("@fuzzy-waddle/platform-identity/client/profile/profile.component").then((m) => m.ProfileComponent),
     canActivate: [AuthGuard]
   },
   {
     path: "profile/:userId",
-    loadComponent: () => import("./home/profile/profile.component").then((m) => m.ProfileComponent),
+    loadComponent: () =>
+      import("@fuzzy-waddle/platform-identity/client/profile/profile.component").then((m) => m.ProfileComponent),
     canActivate: [AuthGuard]
   },
   {

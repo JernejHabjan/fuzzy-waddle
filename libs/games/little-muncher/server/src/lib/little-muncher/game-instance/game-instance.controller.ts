@@ -4,7 +4,12 @@ import { CurrentUser } from "@fuzzy-waddle/platform-identity/server/auth/current
 import { type AuthUser } from "@supabase/supabase-js";
 import { GameInstanceService } from "./game-instance.service";
 import { type GameInstanceDataDto } from "@fuzzy-waddle/platform-game-sessions";
-import { type LittleMuncherGameCreateDto, type LittleMuncherGameInstanceData, type LittleMuncherRoom, LittleMuncherScoreDto } from "@fuzzy-waddle/little-muncher-protocol";
+import {
+  type LittleMuncherGameCreateDto,
+  type LittleMuncherGameInstanceData,
+  type LittleMuncherRoom,
+  LittleMuncherScoreDto
+} from "@fuzzy-waddle/little-muncher-protocol";
 import { LittleMuncherHighScoreService } from "../high-score/little-muncher-high-score.service";
 
 @Controller("little-muncher")

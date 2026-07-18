@@ -6,7 +6,7 @@ import { getActorComponent } from "../../../data/actor-component";
 import { getGameObjectRenderedTransform } from "../../../data/game-object-helper";
 import type { ResourceSourceDefinition } from "./resource-source-definition";
 import { waitForSimulationDuration } from "../../../world/services/simulation-time";
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 
 export class ResourceSourceComponent {
   private static readonly debug = false;

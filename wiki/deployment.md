@@ -5,7 +5,7 @@ Both the portal and API are deployed on [Render](https://render.com).
 ## Portal
 
 | Setting           | Value                                                                   |
-|-------------------|-------------------------------------------------------------------------|
+| ----------------- | ----------------------------------------------------------------------- |
 | URL               | [https://fuzzy-waddle.onrender.com](https://fuzzy-waddle.onrender.com/) |
 | Build Command     | `pnpm install --frozen-lockfile; pnpm nx-build-portal`                  |
 | Publish Directory | `./dist/apps/portal`                                                    |
@@ -13,7 +13,7 @@ Both the portal and API are deployed on [Render](https://render.com).
 **Rewrite rule** — required for Angular client-side routing:
 
 | Field       | Value         |
-|-------------|---------------|
+| ----------- | ------------- |
 | Destination | `/index.html` |
 | Action      | `rewrite`     |
 
@@ -22,7 +22,7 @@ Reference: [Render SPA routing](https://render.com/docs/deploy-create-react-app#
 ## API
 
 | Setting                     | Value                                                                                                                             |
-|-----------------------------|-----------------------------------------------------------------------------------------------------------------------------------|
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | URL                         | [https://fuzzy-waddle-api.onrender.com](https://fuzzy-waddle-api.onrender.com/)                                                   |
 | Build Command               | `pnpm install --frozen-lockfile; pnpm nx build api`                                                                               |
 | Start Command               | `node dist/apps/api/main.js`                                                                                                      |

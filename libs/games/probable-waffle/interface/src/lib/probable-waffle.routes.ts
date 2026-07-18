@@ -45,7 +45,8 @@ export const probableWaffleRoutes = [
           },
           {
             path: "instant-game",
-            loadComponent: () => import("./gui/instant-game/instant-game.component").then((m) => m.InstantGameComponent),
+            loadComponent: () =>
+              import("./gui/instant-game/instant-game.component").then((m) => m.InstantGameComponent),
             canActivate: [() => !environment.production]
           },
           {
@@ -93,7 +94,8 @@ export const probableWaffleRoutes = [
           },
           {
             path: "score-screen",
-            loadComponent: () => import("./gui/score-screen/score-screen.component").then((m) => m.ScoreScreenComponent),
+            loadComponent: () =>
+              import("./gui/score-screen/score-screen.component").then((m) => m.ScoreScreenComponent),
             canActivate: [GameInstanceGuard]
           },
           {

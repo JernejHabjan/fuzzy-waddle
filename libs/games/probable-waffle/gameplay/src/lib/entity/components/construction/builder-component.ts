@@ -21,7 +21,7 @@ import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { ConstructableDefinition } from "./constructable-category";
 import type { AnimationOptions } from "../animation/animation-options";
 import type { BuilderDefinition } from "./builder-definition";
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 import { TilemapComponent } from "../../../world/tilemap/tilemap.component";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 

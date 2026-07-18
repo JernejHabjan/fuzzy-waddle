@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ReplayComponent } from "./replay.component";
-import { GameLengthPipe } from "@fuzzy-waddle/probable-waffle-interface/pipes/game-length.pipe";
+import { GameLengthPipe } from "../../pipes/game-length.pipe";
 import { gameInstanceClientServiceStub } from "../../communicators/game-instance-client.service.stub";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import { provideRouter } from "@angular/router";

@@ -5,7 +5,7 @@ import { getSceneService } from "../../../world/services/scene-component-helpers
 import { NeedType } from "./need-type";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { getSimulationNow } from "../ai-time";
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 
 // Lightweight result of a map analysis pass
 export interface MapAnalysis {

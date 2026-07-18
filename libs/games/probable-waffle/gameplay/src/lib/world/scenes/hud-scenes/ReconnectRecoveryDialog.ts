@@ -6,7 +6,6 @@
 /* END-USER-IMPORTS */
 
 export default class ReconnectRecoveryDialog extends Phaser.Scene {
-
   constructor() {
     super("ReconnectRecoveryDialog");
 
@@ -16,12 +15,22 @@ export default class ReconnectRecoveryDialog extends Phaser.Scene {
   }
 
   editorCreate(): void {
-
     // dialog_container
     const dialog_container = this.add.container(0, 0);
 
     // dialog_bg
-    const dialog_bg = this.add.nineslice(-150, -120, "gui", "cryos_mini_gui/surfaces/surface_dark.png", 20, 25, 1, 1, 1, 1);
+    const dialog_bg = this.add.nineslice(
+      -150,
+      -120,
+      "gui",
+      "cryos_mini_gui/surfaces/surface_dark.png",
+      20,
+      25,
+      1,
+      1,
+      1,
+      1
+    );
     dialog_bg.scaleX = 15;
     dialog_bg.scaleY = 10;
     dialog_bg.setOrigin(0, 0);
@@ -31,13 +40,19 @@ export default class ReconnectRecoveryDialog extends Phaser.Scene {
     const title_text = this.add.text(0, -80, "", {});
     title_text.setOrigin(0.5, 0.5);
     title_text.text = "Connection interrupted";
-    title_text.setStyle({ "align": "center", "color": "#ffcc66ff", "fontFamily": "disposabledroid", "fontSize": "24px", "resolution": 10 });
+    title_text.setStyle({
+      align: "center",
+      color: "#ffcc66ff",
+      fontFamily: "disposabledroid",
+      fontSize: "24px",
+      resolution: 10
+    });
     dialog_container.add(title_text);
 
     // message_text
     const message_text = this.add.text(0, -19, "", {});
     message_text.setOrigin(0.5, 0.5);
-    message_text.setStyle({ "align": "center", "color": "#ffffffff", "fontFamily": "disposabledroid", "resolution": 10 });
+    message_text.setStyle({ align: "center", color: "#ffffffff", fontFamily: "disposabledroid", resolution: 10 });
     message_text.setWordWrapWidth(260);
     dialog_container.add(message_text);
 
@@ -45,19 +60,41 @@ export default class ReconnectRecoveryDialog extends Phaser.Scene {
     const hint_text = this.add.text(0, 50, "", {});
     hint_text.setOrigin(0.5, 0.5);
     hint_text.text = "The match resumes automatically when sync recovers.";
-    hint_text.setStyle({ "align": "center", "color": "#bbbbbbff", "fontFamily": "disposabledroid", "fontSize": "14px", "resolution": 10 });
+    hint_text.setStyle({
+      align: "center",
+      color: "#bbbbbbff",
+      fontFamily: "disposabledroid",
+      fontSize: "14px",
+      resolution: 10
+    });
     hint_text.setWordWrapWidth(260);
     dialog_container.add(hint_text);
 
     // leave_match_button_bg
-    const leave_match_button_bg = this.add.nineslice(0, 92, "gui", "cryos_mini_gui/buttons/button_small.png", 180, 34, 4, 4, 4, 4);
+    const leave_match_button_bg = this.add.nineslice(
+      0,
+      92,
+      "gui",
+      "cryos_mini_gui/buttons/button_small.png",
+      180,
+      34,
+      4,
+      4,
+      4,
+      4
+    );
     dialog_container.add(leave_match_button_bg);
 
     // leave_match_button_text
     const leave_match_button_text = this.add.text(0, 91, "", {});
     leave_match_button_text.setOrigin(0.5, 0.5);
     leave_match_button_text.text = "Leave match";
-    leave_match_button_text.setStyle({ "align": "center", "color": "#000000ff", "fontFamily": "disposabledroid", "resolution": 10 });
+    leave_match_button_text.setStyle({
+      align: "center",
+      color: "#000000ff",
+      fontFamily: "disposabledroid",
+      resolution: 10
+    });
     dialog_container.add(leave_match_button_text);
 
     this.message_text = message_text;

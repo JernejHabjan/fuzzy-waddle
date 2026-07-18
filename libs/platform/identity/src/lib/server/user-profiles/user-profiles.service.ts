@@ -1,8 +1,8 @@
 import { BadRequestException, ForbiddenException, Injectable } from "@nestjs/common";
 import { type AuthUser } from "@supabase/supabase-js";
 import { AppUserRole, GameKey, GameKeys, UserAccountStatus } from "@fuzzy-waddle/platform-database-schema";
-import { type BanUserDto } from "@fuzzy-waddle/platform-identity";
-import { type CurrentUserProfileDto } from "@fuzzy-waddle/platform-identity";
+import type { BanUserDto } from "../../user-moderation";
+import type { CurrentUserProfileDto } from "../../current-user-profile";
 import { SupabaseProviderService } from "@fuzzy-waddle/platform-database-schema/server/supabase-provider/supabase-provider.service";
 import { type UserProfilesServiceInterface } from "./user-profiles.service.interface";
 

@@ -48,7 +48,7 @@ export class BaseScene<
 
   private subscriptions: Subscription[] = [];
 
-  override game!: BaseGame<TGameData>;
+  declare game: BaseGame<TGameData>;
   communicator!: TCommunicatorService;
   baseGameData!: TGameData;
 

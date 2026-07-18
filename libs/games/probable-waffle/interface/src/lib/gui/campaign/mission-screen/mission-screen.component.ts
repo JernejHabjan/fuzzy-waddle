@@ -6,7 +6,13 @@ import { CampaignProgressService } from "../campaign-progress.service";
 import { CampaignLaunchService } from "../campaign-launch.service";
 import { GameSaveService } from "../../../services/game-save/game-save.service";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
-import { CampaignFaction, isCampaignChapterId, isCampaignMissionId, type CampaignChapterId, type CampaignMissionId } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  CampaignFaction,
+  isCampaignChapterId,
+  isCampaignMissionId,
+  type CampaignChapterId,
+  type CampaignMissionId
+} from "@fuzzy-waddle/probable-waffle-protocol";
 
 @Component({
   selector: "fuzzy-waddle-campaign-mission-screen",

@@ -1,7 +1,11 @@
 import type { OnInit } from "@angular/core";
 import { Component, inject } from "@angular/core";
 import { HighScoreService } from "./high-score.service";
-import { LittleMuncherHillEnum, LittleMuncherHills, LittleMuncherScoreDto } from "@fuzzy-waddle/little-muncher-protocol";
+import {
+  LittleMuncherHillEnum,
+  LittleMuncherHills,
+  LittleMuncherScoreDto
+} from "@fuzzy-waddle/little-muncher-protocol";
 import { faExclamationTriangle, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service";
 

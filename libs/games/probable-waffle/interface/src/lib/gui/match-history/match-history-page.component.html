@@ -58,7 +58,9 @@
                 {{ match.userResult }}
               </span>
             </div>
-            <div data-label="Players">{{ match.humanPlayerCount }} player{{ match.humanPlayerCount > 1 ? "s" : "" }}</div>
+            <div data-label="Players">
+              {{ match.humanPlayerCount }} player{{ match.humanPlayerCount > 1 ? "s" : "" }}
+            </div>
             <div data-label="Actions">
               <button
                 class="btn btn-sm btn-primary"

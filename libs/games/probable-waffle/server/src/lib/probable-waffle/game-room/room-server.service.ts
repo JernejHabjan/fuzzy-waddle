@@ -1,7 +1,17 @@
 import { Injectable } from "@nestjs/common";
 import { RoomGateway } from "./room.gateway";
 import { GameSessionState, type RoomAction } from "@fuzzy-waddle/platform-game-sessions";
-import { ProbableWaffleCommunicators, type ProbableWaffleCommunicatorEventUnion, ProbableWaffleGameInstance, ProbableWaffleGameInstanceVisibility, type ProbableWaffleGetRoomsDto, type ProbableWafflePlayerDataChangeEvent, type ProbableWaffleRoom, type ProbableWaffleRoomEvent, type ProbableWaffleSpectatorDataChangeEvent } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  ProbableWaffleCommunicators,
+  type ProbableWaffleCommunicatorEventUnion,
+  ProbableWaffleGameInstance,
+  ProbableWaffleGameInstanceVisibility,
+  type ProbableWaffleGetRoomsDto,
+  type ProbableWafflePlayerDataChangeEvent,
+  type ProbableWaffleRoom,
+  type ProbableWaffleRoomEvent,
+  type ProbableWaffleSpectatorDataChangeEvent
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { type User } from "@supabase/supabase-js";
 import { GameInstanceHolderService } from "../game-instance/game-instance-holder.service";
 import { type RoomServerServiceInterface } from "./room-server.service.interface";

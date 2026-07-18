@@ -16,16 +16,20 @@
         },
         "index": "apps/probable-waffle-desktop/src/index.html",
         "browser": "apps/probable-waffle-desktop/src/main.ts",
-        "polyfills": ["apps/portal/src/polyfills.ts", "@angular/localize/init"],
+        "polyfills": ["libs/platform/game-host/src/lib/angular/polyfills.ts", "@angular/localize/init"],
         "tsConfig": "apps/probable-waffle-desktop/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
-          "apps/portal/src/favicon.ico",
+          {
+            "glob": "favicon.ico",
+            "input": "libs/platform/game-host/src/assets",
+            "output": "."
+          },
           {
             "glob": "**/*",
-            "input": "apps/portal/src/assets",
+            "input": "libs/platform/game-host/src/assets",
             "output": "assets",
-            "ignore": ["games/**"]
+            "ignore": ["favicon.ico"]
           },
           {
             "glob": "**/*",
@@ -33,7 +37,10 @@
             "output": "assets"
           }
         ],
-        "styles": ["apps/portal/src/styles/styles.scss"],
+        "styles": ["libs/platform/game-host/src/styles/styles.scss"],
+        "stylePreprocessorOptions": {
+          "includePaths": ["libs/platform/game-host/src/styles"]
+        },
         "allowedCommonJsDependencies": [
           "phaser",
           "websocket",
@@ -105,7 +112,7 @@
       "defaultConfiguration": "development",
       "options": {
         "port": 4201,
-        "proxyConfig": "apps/portal/proxy.conf.json"
+        "proxyConfig": "apps/probable-waffle-desktop/proxy.conf.json"
       },
       "continuous": true
     },

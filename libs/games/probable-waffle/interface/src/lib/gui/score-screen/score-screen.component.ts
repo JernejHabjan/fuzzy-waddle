@@ -6,7 +6,11 @@ import { GameInstanceClientService } from "../../communicators/game-instance-cli
 import { ScoreDataService } from "../../services/score-data.service";
 import { ScoreSubmissionService } from "../../services/score-submission.service";
 import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
-import { CampaignMissionOutcome, type GameScoreSnapshotDto, ProbableWafflePlayerType } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  CampaignMissionOutcome,
+  type GameScoreSnapshotDto,
+  ProbableWafflePlayerType
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { GameResultStatus } from "@fuzzy-waddle/platform-database-schema";
 import { CampaignProgressService } from "../campaign/campaign-progress.service";
 

@@ -3,8 +3,11 @@ import { OnlineAccessGuard } from "@fuzzy-waddle/platform-identity/server/auth/g
 import { CurrentUser } from "@fuzzy-waddle/platform-identity/server/auth/current-user";
 import { type AuthUser } from "@supabase/supabase-js";
 import { GameInstanceService } from "./game-instance.service";
-import { GameInstanceId } from "@fuzzy-waddle/platform-game-sessions";
-import { type ProbableWaffleGameInstanceData, type ProbableWaffleGameInstanceMetadataData } from "@fuzzy-waddle/probable-waffle-protocol";
+import type { GameInstanceId } from "@fuzzy-waddle/platform-game-sessions";
+import {
+  type ProbableWaffleGameInstanceData,
+  type ProbableWaffleGameInstanceMetadataData
+} from "@fuzzy-waddle/probable-waffle-protocol";
 
 @Controller("probable-waffle")
 export class GameInstanceController {

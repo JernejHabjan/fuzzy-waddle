@@ -1,4 +1,15 @@
-import { CampaignAvailability, type CampaignCatalog, type CampaignChapterDefinition, type CampaignChapterId, CampaignContentType, CampaignFaction, type CampaignMissionDefinition, type CampaignMissionId, CampaignMissionLayout, ProbableWaffleMapEnum } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  CampaignAvailability,
+  type CampaignCatalog,
+  type CampaignChapterDefinition,
+  type CampaignChapterId,
+  CampaignContentType,
+  CampaignFaction,
+  type CampaignMissionDefinition,
+  type CampaignMissionId,
+  CampaignMissionLayout,
+  ProbableWaffleMapEnum
+} from "@fuzzy-waddle/probable-waffle-protocol";
 
 const campaignArtworkRoot = "assets/probable-waffle/campaign";
 

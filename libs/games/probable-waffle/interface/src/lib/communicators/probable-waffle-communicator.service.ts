@@ -1,15 +1,34 @@
 import { EventEmitter, Injectable, type OnDestroy } from "@angular/core";
-import { type AllScenesEventData, type ProbableWaffleCommunicatorMessageEvent, type ProbableWaffleCommunicatorType, type ProbableWaffleDesyncAlertEvent, type ProbableWaffleGameCommandEvent, type ProbableWaffleGameInstanceMetadataChangeEvent, type ProbableWaffleGameModeDataChangeEvent, type ProbableWaffleGameStateDataChangeEvent, ProbableWaffleGatewayEvent, type ProbableWaffleHostMigratedEvent, type ProbableWaffleInstanceReseedEvent, type ProbableWaffleInstanceReseedRequiredEvent, type ProbableWafflePauseChangedEvent, type ProbableWafflePlayerDataChangeEvent, type ProbableWafflePlayerDisconnectedEvent, type ProbableWafflePlayerReconnectedEvent, type ProbableWaffleSnapshotRequestEvent, type ProbableWaffleSnapshotResponseEvent, type ProbableWaffleSpectatorDataChangeEvent, type ProbableWaffleStateHashEvent, type ProbableWaffleWebsocketRoomEvent } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  type AllScenesEventData,
+  type ProbableWaffleCommunicatorMessageEvent,
+  type ProbableWaffleCommunicatorType,
+  type ProbableWaffleDesyncAlertEvent,
+  type ProbableWaffleGameCommandEvent,
+  type ProbableWaffleGameInstanceMetadataChangeEvent,
+  type ProbableWaffleGameModeDataChangeEvent,
+  type ProbableWaffleGameStateDataChangeEvent,
+  ProbableWaffleGatewayEvent,
+  type ProbableWaffleHostMigratedEvent,
+  type ProbableWaffleInstanceReseedEvent,
+  type ProbableWaffleInstanceReseedRequiredEvent,
+  type ProbableWafflePauseChangedEvent,
+  type ProbableWafflePlayerDataChangeEvent,
+  type ProbableWafflePlayerDisconnectedEvent,
+  type ProbableWafflePlayerReconnectedEvent,
+  type ProbableWaffleSnapshotRequestEvent,
+  type ProbableWaffleSnapshotResponseEvent,
+  type ProbableWaffleSpectatorDataChangeEvent,
+  type ProbableWaffleStateHashEvent,
+  type ProbableWaffleWebsocketRoomEvent
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { type GameInstanceId } from "@fuzzy-waddle/platform-game-sessions";
 import { TwoWayCommunicator } from "@fuzzy-waddle/platform-game-host/communicators/two-way-communicator";
 import { Socket } from "ngx-socket-io";
 import type { CommunicatorService } from "@fuzzy-waddle/platform-game-host/communicators/CommunicatorService";
 import { type ProbableWaffleCommunicatorServiceInterface } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { createMultiplayerClientLogger } from "@fuzzy-waddle/probable-waffle-gameplay/world/services/multiplayer/multiplayer-client-logger";
-import {
-  getNgxSocketIoRawSocket,
-  type NgxSocketIoRawSocket
-} from "@fuzzy-waddle/probable-waffle-gameplay";
+import { getNgxSocketIoRawSocket, type NgxSocketIoRawSocket } from "@fuzzy-waddle/probable-waffle-gameplay";
 
 @Injectable({
   providedIn: "root"

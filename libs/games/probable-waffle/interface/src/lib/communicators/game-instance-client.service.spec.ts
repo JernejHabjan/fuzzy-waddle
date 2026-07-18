@@ -7,7 +7,12 @@ import { authServiceStub } from "@fuzzy-waddle/platform-identity/client/auth/aut
 import { provideRouter } from "@angular/router";
 import { provideHttpClient } from "@angular/common/http";
 import { GameSaveService } from "../services/game-save/game-save.service";
-import { GameSaveScope, type ProbableWaffleGameInstance, ProbableWaffleGameInstanceType, ProbableWaffleGameInstanceVisibility } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  GameSaveScope,
+  type ProbableWaffleGameInstance,
+  ProbableWaffleGameInstanceType,
+  ProbableWaffleGameInstanceVisibility
+} from "@fuzzy-waddle/probable-waffle-protocol";
 
 describe("GameInstanceClientService", () => {
   let service: GameInstanceClientService;

@@ -1,5 +1,9 @@
-import { OnGatewayConnection, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
-import { ProbableWaffleGatewayEvent, ProbableWaffleGatewayRoomTypes, type ProbableWaffleRoomEvent } from "@fuzzy-waddle/probable-waffle-protocol";
+import { WebSocketGateway, WebSocketServer, type OnGatewayConnection } from "@nestjs/websockets";
+import {
+  ProbableWaffleGatewayEvent,
+  ProbableWaffleGatewayRoomTypes,
+  type ProbableWaffleRoomEvent
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { Server, Socket } from "socket.io";
 import { SocketConnectionAuthService } from "@fuzzy-waddle/platform-identity/server/auth/socket-connection-auth.service";
 import { type RoomGatewayInterface } from "./room.gateway.interface";

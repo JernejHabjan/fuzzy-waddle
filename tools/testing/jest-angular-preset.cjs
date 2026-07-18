@@ -4,7 +4,7 @@ const nxPreset = require("../../jest.preset.js");
 module.exports = {
   ...nxPreset,
   testEnvironment: "jsdom",
-  setupFilesAfterEnv: [path.join(__dirname, "../../apps/portal/src/test-setup.ts")],
+  setupFilesAfterEnv: [path.join(__dirname, "angular/test-setup.ts")],
   transform: {
     "^.+\\.(ts|mjs|js|html)$": [
       "jest-preset-angular",
@@ -21,7 +21,8 @@ module.exports = {
   ],
   moduleNameMapper: {
     "^lodash-es$": "lodash",
-    "^phaser$": path.join(__dirname, "../../apps/portal/src/test/mocks/phaser.js"),
-    "^@supabase/supabase-js$": path.join(__dirname, "../../apps/portal/src/test/mocks/supabase-js.js")
+    "^phaser$": path.join(__dirname, "angular/mocks/phaser.js"),
+    "^phaser3-rex-plugins/.*$": path.join(__dirname, "angular/mocks/phaser3-rex-plugin.js"),
+    "^@supabase/supabase-js$": path.join(__dirname, "angular/mocks/supabase-js.js")
   }
 };

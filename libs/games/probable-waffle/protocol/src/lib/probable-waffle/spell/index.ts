@@ -1,2 +1,2 @@
-export * from './aoe-zone-data';
-export * from './spell-target-type';
+export * from "./aoe-zone-data";
+export * from "./spell-target-type";

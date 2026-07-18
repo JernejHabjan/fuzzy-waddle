@@ -40,5 +40,4 @@ export class ScoreDataService {
 
     return gameInstance.gameState.data.scoreSnapshots || [];
   }
-
 }

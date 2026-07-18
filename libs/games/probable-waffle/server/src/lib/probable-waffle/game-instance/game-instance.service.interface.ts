@@ -1,5 +1,9 @@
-import { GameInstanceId } from "@fuzzy-waddle/platform-game-sessions";
-import { ProbableWaffleGameInstance, type ProbableWaffleGameInstanceData, type ProbableWaffleGameInstanceMetadataData } from "@fuzzy-waddle/probable-waffle-protocol";
+import type { GameInstanceId } from "@fuzzy-waddle/platform-game-sessions";
+import {
+  ProbableWaffleGameInstance,
+  type ProbableWaffleGameInstanceData,
+  type ProbableWaffleGameInstanceMetadataData
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { type User } from "@supabase/supabase-js";
 
 export interface GameInstanceServiceInterface {

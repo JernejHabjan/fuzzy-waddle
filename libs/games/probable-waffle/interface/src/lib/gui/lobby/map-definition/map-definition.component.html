@@ -19,7 +19,10 @@
       <div class="position-relative">
         <canvas class="m-4 map-canvas" #canvas [height]="canvasHeight" [width]="canvasWidth"></canvas>
         @if (isHost && showDragCoachmark) {
-          <div class="position-absolute drag-coachmark" style="top: 1rem; left: calc(50% - {{ canvasWidth / 2 }}px + 1rem)">
+          <div
+            class="position-absolute drag-coachmark"
+            style="top: 1rem; left: calc(50% - {{ canvasWidth / 2 }}px + 1rem)"
+          >
             <div class="drag-coachmark__title">Choose start positions</div>
             <div class="drag-coachmark__body">Drag player dots on the map to reposition them.</div>
             <button type="button" class="drag-coachmark__dismiss" (click)="dismissDragCoachmark()">Got it</button>

@@ -6,7 +6,7 @@ import { getSceneService } from "../world/services/scene-component-helpers";
 import { ActorIndexSystem } from "../world/services/ActorIndexSystem";
 import { SimulationTickService } from "../world/services/simulation-tick.service";
 import type { Subscription } from "rxjs";
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 
 export class OrderData {
   constructor(

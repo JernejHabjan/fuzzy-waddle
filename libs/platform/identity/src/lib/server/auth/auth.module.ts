@@ -4,13 +4,13 @@ import { SupabaseStrategy } from "./strategies/supabase.strategy";
 import { jwtConstants } from "./constants";
 import { ScheduleModule } from "@nestjs/schedule";
 import { JwtModule } from "@nestjs/jwt";
-import { UserAuthCacheService } from "@fuzzy-waddle/platform-identity/server/cache/user-auth-cache.service.ts/user-auth-cache.service";
+import { UserAuthCacheService } from "../cache/user-auth-cache.service.ts/user-auth-cache.service";
 import { SupabaseProviderService } from "@fuzzy-waddle/platform-database-schema/server/supabase-provider/supabase-provider.service";
 import { SupabaseAuthGuard } from "./guards/supabase-auth.guard";
 import { OnlineAccessGuard } from "./guards/online-access.guard";
 import { ModeratorAccessGuard } from "./guards/moderator-access.guard";
 import { SocketConnectionAuthService } from "./socket-connection-auth.service";
-import { UserProfilesModule } from "@fuzzy-waddle/platform-identity/server/user-profiles/user-profiles.module";
+import { UserProfilesModule } from "../user-profiles/user-profiles.module";
 
 @Module({
   imports: [

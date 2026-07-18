@@ -5,7 +5,7 @@ import { Component } from "@angular/core";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.stub";
 import { SceneCommunicatorClientService } from "../../../communicators/scene-communicator-client.service";
-import { sceneCommunicatorClientServiceStub } from "../../../communicators/scene-communicator-client.service.stub";
+import { SceneCommunicatorClientServiceStub } from "../../../communicators/scene-communicator-client.service.stub";
 import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
 import { authServiceStub } from "@fuzzy-waddle/platform-identity/client/auth/auth.service.stub";
 
@@ -21,7 +21,7 @@ describe("MapDefinitionComponent", () => {
       imports: [MapDefinitionComponent, FormsModule],
       providers: [
         { provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub },
-        { provide: SceneCommunicatorClientService, useValue: sceneCommunicatorClientServiceStub },
+        { provide: SceneCommunicatorClientService, useValue: SceneCommunicatorClientServiceStub },
         { provide: AuthService, useValue: authServiceStub }
       ]
     }).compileComponents();

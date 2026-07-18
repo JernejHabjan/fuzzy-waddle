@@ -2,7 +2,11 @@ import type { OnInit } from "@angular/core";
 import { Component, inject, input, signal } from "@angular/core";
 import { Router, RouterLink } from "@angular/router";
 import { DatePipe } from "@angular/common";
-import { type GameSessionDetails, ProbableWaffleGameInstanceType, ProbableWaffleLevels } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  type GameSessionDetails,
+  ProbableWaffleGameInstanceType,
+  ProbableWaffleLevels
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { MatchHistoryService } from "../../services/match-history.service";
 import { ScoreTableComponent } from "../score-screen/table/score-table.component";
 import { ScoreThroughTimeComponent } from "../score-screen/chart/score-through-time.component";

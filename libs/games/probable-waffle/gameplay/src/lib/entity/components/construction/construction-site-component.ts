@@ -1,5 +1,9 @@
 import { PaymentType } from "../production/payment-type";
-import { type ConstructionSiteComponentData, ConstructionStateEnum, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  type ConstructionSiteComponentData,
+  ConstructionStateEnum,
+  ResourceType
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { HealthComponent } from "../combat/components/health-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "../owner-component";
@@ -25,7 +29,7 @@ import { IdComponent } from "../id-component";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { ProbableWaffleSceneEventName } from "../../../world/services/recovery/probable-waffle-scene-events";
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 
 export class ConstructionSiteComponent {
   public progressPercentage = 0;

@@ -10,7 +10,7 @@ import { GameContainerComponent } from "@fuzzy-waddle/platform-game-host/game-co
 import { GameInterfaceComponent } from "./game-interface/game-interface.component";
 import { Component } from "@angular/core";
 
-jest.mock("../game/const/game-config", () => ({
+jest.mock("@fuzzy-waddle/little-muncher-gameplay/const/game-config", () => ({
   littleMuncherGameConfig: {}
 }));
 

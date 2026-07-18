@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, ElementRef, type AfterViewInit, type OnDestroy, viewChild } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  type AfterViewInit,
+  type OnDestroy,
+  viewChild
+} from "@angular/core";
 
 type DriftParticle = {
   x: number;
@@ -194,7 +201,15 @@ export class AshfallEffectComponent implements AfterViewInit, OnDestroy {
 
       this.ctx.fillStyle = gradient;
       this.ctx.beginPath();
-      this.ctx.ellipse(width * 0.35 + offset - width * 0.2, height * (0.18 + i * 0.1), width * 0.42, height * 0.06, 0, 0, Math.PI * 2);
+      this.ctx.ellipse(
+        width * 0.35 + offset - width * 0.2,
+        height * (0.18 + i * 0.1),
+        width * 0.42,
+        height * 0.06,
+        0,
+        0,
+        Math.PI * 2
+      );
       this.ctx.fill();
     }
   }
@@ -234,11 +249,11 @@ export class AshfallEffectComponent implements AfterViewInit, OnDestroy {
   }
 
   private drawGems(width: number, height: number): void {
-    if (!this.ctx)      return;
+    if (!this.ctx) return;
 
     this.gems.forEach((gem) => {
       const ctx = this.ctx;
-      if (!ctx)  return;
+      if (!ctx) return;
       const pulse = (Math.sin(this.frame * 0.03 + gem.phase) + 1) / 2;
       const x = width * gem.xFactor;
       const y = height * gem.yFactor;

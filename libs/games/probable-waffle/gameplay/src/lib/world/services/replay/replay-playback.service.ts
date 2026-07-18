@@ -1,6 +1,9 @@
 import type { Subscription } from "rxjs";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
-import { type ProbableWaffleReplayCommandBatch, type ProbableWaffleReplayTickDigest } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  type ProbableWaffleReplayCommandBatch,
+  type ProbableWaffleReplayTickDigest
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { getSceneService } from "../scene-component-helpers";
 import { CommandBusService } from "../multiplayer/command-bus.service";
 import { SimulationTickService } from "../simulation-tick.service";

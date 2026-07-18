@@ -3,7 +3,7 @@ import Strategy from "passport-strategy";
 import { type AuthUser, SupabaseClient } from "@supabase/supabase-js";
 import { SUPABASE_AUTH, UNAUTHORIZED } from "./constants";
 import { type SupabaseAuthStrategyOptions } from "./options.interface";
-import { UserAuthCacheService } from "@fuzzy-waddle/platform-identity/server/cache/user-auth-cache.service.ts/user-auth-cache.service";
+import { UserAuthCacheService } from "../../../cache/user-auth-cache.service.ts/user-auth-cache.service";
 
 // fixes https://github.com/hiro1107/nestjs-supabase-auth/issues/7
 // uses node-cache to cache users for 1 hour

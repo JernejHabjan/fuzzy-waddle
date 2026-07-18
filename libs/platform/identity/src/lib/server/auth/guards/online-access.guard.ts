@@ -1,6 +1,6 @@
-import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
+import { Injectable, type CanActivate, type ExecutionContext } from "@nestjs/common";
 import { type AuthUser } from "@supabase/supabase-js";
-import { UserProfilesService } from "@fuzzy-waddle/platform-identity/server/user-profiles/user-profiles.service";
+import { UserProfilesService } from "../../user-profiles/user-profiles.service";
 import { SupabaseAuthGuard } from "./supabase-auth.guard";
 import { type OnlineAccessGuardInterface } from "./online-access.guard.interface";
 

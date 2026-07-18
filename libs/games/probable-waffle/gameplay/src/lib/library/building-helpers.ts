@@ -3,7 +3,7 @@ import { ProductionComponent } from "../entity/components/production/production-
 import { ContainerComponent } from "../entity/components/building/container-component";
 import { OwnerComponent } from "../entity/components/owner-component";
 import { ObjectDescriptorComponent } from "../entity/components/object-descriptor-component";
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 import type { PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 
 /**

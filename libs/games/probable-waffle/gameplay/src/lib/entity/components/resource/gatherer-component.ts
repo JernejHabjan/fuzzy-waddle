@@ -19,7 +19,11 @@ import {
 import { AnimationActorComponent } from "../animation/animation-actor-component";
 import { OrderType } from "../../../ai/order-type";
 import { ActorTranslateComponent } from "../movement/actor-translate-component";
-import { getGameObjectLogicalTransform, getGameObjectVisibility, onObjectReady } from "../../../data/game-object-helper";
+import {
+  getGameObjectLogicalTransform,
+  getGameObjectVisibility,
+  onObjectReady
+} from "../../../data/game-object-helper";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { AnimationType } from "../animation/animation-type";
 import { SoundType } from "../actor-audio/sound-type";
@@ -28,7 +32,7 @@ import type { SoundDefinition } from "../actor-audio/sound-definition";
 import type { GathererDefinition } from "./gatherer-definition";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { IdComponent } from "../id-component";
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 
 export class GathererComponent {
   private static readonly debug = false;

@@ -5,26 +5,26 @@ and import aliases use these names throughout the migration.
 
 ## Applications
 
-| Project | Root | Responsibility |
-| --- | --- | --- |
-| `portal` | `apps/portal` | Web shell and lazy composition of all game interfaces |
-| `api` | `apps/api` | NestJS composition root |
-| `probable-waffle-desktop` | `apps/probable-waffle-desktop` | Probable Waffle-only Angular and Tauri shell |
-| `portal-e2e` | `apps/portal-e2e` | Portal end-to-end tests |
-| `api-e2e` | `apps/api-e2e` | API end-to-end tests |
+| Project                   | Root                           | Responsibility                                        |
+| ------------------------- | ------------------------------ | ----------------------------------------------------- |
+| `portal`                  | `apps/portal`                  | Web shell and lazy composition of all game interfaces |
+| `api`                     | `apps/api`                     | NestJS composition root                               |
+| `probable-waffle-desktop` | `apps/probable-waffle-desktop` | Probable Waffle-only Angular and Tauri shell          |
+| `portal-e2e`              | `apps/portal-e2e`              | Portal end-to-end tests                               |
+| `api-e2e`                 | `apps/api-e2e`                 | API end-to-end tests                                  |
 
 ## Libraries
 
 Each game owns an Angular `interface` and Phaser `gameplay` project. Networked
 games additionally own `protocol` and `server` projects.
 
-| Domain | Projects |
-| --- | --- |
-| Probable Waffle | `probable-waffle-gameplay`, `probable-waffle-interface`, `probable-waffle-protocol`, `probable-waffle-server` |
-| Little Muncher | `little-muncher-gameplay`, `little-muncher-interface`, `little-muncher-protocol`, `little-muncher-server` |
-| Fly Squasher | `fly-squasher-gameplay`, `fly-squasher-interface`, `fly-squasher-protocol`, `fly-squasher-server` |
-| Dungeon Crawler | `dungeon-crawler-gameplay`, `dungeon-crawler-interface` |
-| Platform | `platform-identity`, `platform-chat`, `platform-game-sessions`, `platform-database-schema`, `platform-game-host` |
+| Domain          | Projects                                                                                                         |
+| --------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Probable Waffle | `probable-waffle-gameplay`, `probable-waffle-interface`, `probable-waffle-protocol`, `probable-waffle-server`    |
+| Little Muncher  | `little-muncher-gameplay`, `little-muncher-interface`, `little-muncher-protocol`, `little-muncher-server`        |
+| Fly Squasher    | `fly-squasher-gameplay`, `fly-squasher-interface`, `fly-squasher-protocol`, `fly-squasher-server`                |
+| Dungeon Crawler | `dungeon-crawler-gameplay`, `dungeon-crawler-interface`                                                          |
+| Platform        | `platform-identity`, `platform-chat`, `platform-game-sessions`, `platform-database-schema`, `platform-game-host` |
 
 ## Tags and dependency direction
 
@@ -60,13 +60,13 @@ constraints, so unmigrated source remains usable between staged commits.
 
 ## Contract ownership
 
-| Contract area | Owner |
-| --- | --- |
-| chat | `platform-chat` |
-| current user/profile and UUID | `platform-identity` |
-| generic room, session, game-instance, player, spectator, and vector types | `platform-game-sessions` |
-| generated database types and enums | `platform-database-schema` |
-| Fly Squasher communicators, game instances, scores, and user info | `fly-squasher-protocol` |
-| Little Muncher communicators, game instances, scores, and user info | `little-muncher-protocol` |
+| Contract area                                                                                       | Owner                      |
+| --------------------------------------------------------------------------------------------------- | -------------------------- |
+| chat                                                                                                | `platform-chat`            |
+| current user/profile and UUID                                                                       | `platform-identity`        |
+| generic room, session, game-instance, player, spectator, and vector types                           | `platform-game-sessions`   |
+| generated database types and enums                                                                  | `platform-database-schema` |
+| Fly Squasher communicators, game instances, scores, and user info                                   | `fly-squasher-protocol`    |
+| Little Muncher communicators, game instances, scores, and user info                                 | `little-muncher-protocol`  |
 | Probable Waffle communicators, transport DTOs, campaign, achievements, match history, and user info | `probable-waffle-protocol` |
-| Probable Waffle setup helpers, seeded randomness, definitions, spell/status rules | `probable-waffle-gameplay` |
+| Probable Waffle setup helpers, seeded randomness, definitions, spell/status rules                   | `probable-waffle-gameplay` |

@@ -1,5 +1,5 @@
 import { AppUserRole, GameKey, UserAccountStatus } from "@fuzzy-waddle/platform-database-schema";
-import { type CurrentUserProfileDto } from "@fuzzy-waddle/platform-identity";
+import type { CurrentUserProfileDto } from "../../current-user-profile";
 import type { ICurrentUserProfileService } from "./current-user-profile.service.interface";
 
 export const currentUserProfileServiceStub = {

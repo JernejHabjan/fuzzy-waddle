@@ -4,7 +4,12 @@ import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.se
 import { ToastService } from "@fuzzy-waddle/platform-game-host/angular/services/toast.service";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { faCircle } from "@fortawesome/free-regular-svg-icons";
-import { type PositionPlayerDefinition, ProbableWaffleGameInstanceType, type ProbableWafflePlayerDataChangeEventProperty, ProbableWafflePlayerType } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  type PositionPlayerDefinition,
+  ProbableWaffleGameInstanceType,
+  type ProbableWafflePlayerDataChangeEventProperty,
+  ProbableWafflePlayerType
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 
 @Component({

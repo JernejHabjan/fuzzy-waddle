@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { type AuthUser } from "@supabase/supabase-js";
 import { Socket } from "socket.io";
-import { UserProfilesService } from "@fuzzy-waddle/platform-identity/server/user-profiles/user-profiles.service";
+import { UserProfilesService } from "../user-profiles/user-profiles.service";
 import { SupabaseProviderService } from "@fuzzy-waddle/platform-database-schema/server/supabase-provider/supabase-provider.service";
 import { type SocketConnectionAuthServiceInterface } from "./socket-connection-auth.service.interface";
 

@@ -9,7 +9,7 @@ import { ConstructionGameObjectInterfaceComponent } from "../construction/constr
 import { ActorDataChangedEvent } from "../../../data/actor-data";
 import type { Subscription } from "rxjs";
 import type { HousingDefinition } from "./housing-definition";
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 
 /**
  * Component that provides housing capacity to buildings

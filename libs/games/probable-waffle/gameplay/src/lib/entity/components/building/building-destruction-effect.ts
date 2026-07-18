@@ -7,7 +7,7 @@ import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definit
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { RepresentableDefinition } from "../representable-definition";
 import { getResearchedLevelForActor } from "../../../data/actor-level-utils";
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 
 /**
  * Static utility for creating building destruction visual effects
@@ -32,7 +32,8 @@ export class BuildingDestructionEffect {
     if (!representableComponent) return;
     const renderedTransform = representableComponent.renderedWorldTransform;
 
-    const definition = getPwActorDefinition(buildingGameObject.name, getResearchedLevelForActor(buildingGameObject))!.components?.representable;
+    const definition = getPwActorDefinition(buildingGameObject.name, getResearchedLevelForActor(buildingGameObject))!
+      .components?.representable;
     if (!definition) throw new Error("BuildingDestructionEffect: Missing representable definition for building.");
 
     const buildingDepth = getGameObjectDepth(buildingGameObject) ?? undefined;

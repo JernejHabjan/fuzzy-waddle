@@ -1,6 +1,13 @@
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { type PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
-import { type PlayerScoreData, type GameScoreSnapshot, type PlayerScoreSnapshot, STANDARD_METRICS, type ProbableWafflePlayer, ProbableWafflePlayerType } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  type PlayerScoreData,
+  type GameScoreSnapshot,
+  type PlayerScoreSnapshot,
+  STANDARD_METRICS,
+  type ProbableWafflePlayer,
+  ProbableWafflePlayerType
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { GameResultStatus } from "@fuzzy-waddle/platform-database-schema";
 import { getPlayersFromScene } from "@fuzzy-waddle/platform-game-host/phaser/scene/base.scene";
 import { isGameObjectActiveInActiveScene, isSceneActive } from "../../data/game-object-helper";
@@ -16,9 +23,13 @@ import { ProbableWaffleSceneEventName } from "../services/recovery/probable-waff
 import { getSceneService } from "../services/scene-component-helpers";
 import { SimulationTickService } from "../services/simulation-tick.service";
 
-type RawScoreData = Map<PlayerNumber, PlayerScoreData> | [PlayerNumber, PlayerScoreData][] | PlayerScoreData[] | {
-  [playerNumber: string]: PlayerScoreData;
-};
+type RawScoreData =
+  | Map<PlayerNumber, PlayerScoreData>
+  | [PlayerNumber, PlayerScoreData][]
+  | PlayerScoreData[]
+  | {
+      [playerNumber: string]: PlayerScoreData;
+    };
 
 /**
  * Tracks player scores throughout the game for the score screen.

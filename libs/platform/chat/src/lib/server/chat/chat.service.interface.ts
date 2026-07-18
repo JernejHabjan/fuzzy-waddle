@@ -1,5 +1,5 @@
 import { type AuthUser } from "@supabase/supabase-js";
-import type { ChatMessage, GetMessagesResponseDto, ReportChatMessageDto } from "@fuzzy-waddle/platform-chat";
+import type { ChatMessage, GetMessagesResponseDto, ReportChatMessageDto } from "../../chat";
 
 export interface IChatService {
   postMessage(text: string, user: AuthUser, gameInstanceId?: string): Promise<ChatMessage>;

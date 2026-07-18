@@ -12,6 +12,12 @@
             "enforceBuildableLibDependency": true,
             "banTransitiveDependencies": true,
             "checkNestedExternalImports": true,
+            "checkDynamicDependenciesExceptions": [
+              "@fuzzy-waddle/platform-identity",
+              "@fuzzy-waddle/platform-identity/**",
+              "@fuzzy-waddle/fly-squasher-interface",
+              "@fuzzy-waddle/fly-squasher-interface/**"
+            ],
             "allow": [],
             "depConstraints": [
               {

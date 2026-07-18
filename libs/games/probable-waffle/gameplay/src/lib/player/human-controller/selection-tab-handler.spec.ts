@@ -164,12 +164,7 @@ describe("SelectionTabHandler", () => {
 
   it("should maintain order of first occurrence when grouping", () => {
     const { getSelectedActors } = require("../../data/scene-data");
-    const mixedActors = [
-      { name: "Worker" },
-      { name: "Warrior" },
-      { name: "Worker" },
-      { name: "Warrior" },
-    ];
+    const mixedActors = [{ name: "Worker" }, { name: "Warrior" }, { name: "Worker" }, { name: "Warrior" }];
     (getSelectedActors as jest.Mock).mockReturnValue(mixedActors);
 
     handler.updateGroupedActors();

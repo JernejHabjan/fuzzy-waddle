@@ -1,6 +1,6 @@
 import type { FadeOutDefinition } from "./fade-out-definition";
 import { CancelableSimDelay } from "../../../world/services/simulation-time";
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 
 /**
  * Component that manages fade-out

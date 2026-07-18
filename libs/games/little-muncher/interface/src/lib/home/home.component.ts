@@ -1,5 +1,10 @@
 import { Component, inject, output } from "@angular/core";
-import { type HillData, type LittleMuncherGameCreate, LittleMuncherHillEnum, LittleMuncherHills } from "@fuzzy-waddle/little-muncher-protocol";
+import {
+  type HillData,
+  type LittleMuncherGameCreate,
+  LittleMuncherHillEnum,
+  LittleMuncherHills
+} from "@fuzzy-waddle/little-muncher-protocol";
 import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service";
 import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
 import { KeyValuePipe } from "@angular/common";

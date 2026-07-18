@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars,no-undef */
-// src/test/mocks/phaser.js
+// Shared Angular test mock for Phaser.
 
 class Game {
   constructor(config) {
@@ -132,6 +132,12 @@ const MathUtils = {
   Vector2
 };
 
+const Utils = {
+  Array: {
+    GetRandom: (items) => items?.[0]
+  }
+};
+
 const Geom = {
   Circle,
   Rectangle,
@@ -191,6 +197,7 @@ const Phaser = {
   Geom,
   Scale,
   Math: MathUtils,
+  Utils,
   Display,
   Input,
   Physics,

@@ -19,7 +19,7 @@ export default class CallbackActionScript extends ScriptNode {
 
   /* START-USER-CODE */
 
-  execute(...args: any[]) {
+  override execute(...args: any[]) {
     if (this.callback) {
       this.callback(...args);
     }

@@ -22,7 +22,7 @@ export default class HorizontalMoveScript extends SpriteScriptNode {
 
   /* START-USER-CODE */
 
-  start() {
+  override start() {
     this.body.velocity.x = this.horizVelocity;
   }
 
@@ -30,7 +30,7 @@ export default class HorizontalMoveScript extends SpriteScriptNode {
     return this.gameObject.body as Phaser.Physics.Arcade.Body;
   }
 
-  update() {
+  override update() {
     if (this.gameObject.x < this.minX) {
       this.body.velocity.x = Math.abs(this.horizVelocity);
     }

@@ -1,6 +1,6 @@
 import { RandomService } from "../../world/services/random.service";
 import { getSceneService } from "../../world/services/scene-component-helpers";
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 
 /**
  * Picks one frame at random from the provided list and applies it to the parent

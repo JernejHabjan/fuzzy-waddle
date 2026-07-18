@@ -4,7 +4,11 @@ import type { ProbableWaffleCommunicators } from "./probable-waffle.communicator
 import type { GameInstanceId } from "@fuzzy-waddle/platform-game-sessions";
 
 export interface SceneCommunicatorClientServiceInterface {
-  createCommunicators(gameInstanceId: GameInstanceId, useServerTransport?: boolean): Promise<ProbableWaffleCommunicators>;
+  readonly communicatorObservables: ProbableWaffleCommunicators;
+  createCommunicators(
+    gameInstanceId: GameInstanceId,
+    useServerTransport?: boolean
+  ): Promise<ProbableWaffleCommunicators>;
   destroyCommunicators(
     gameInstanceId: GameInstanceId,
     subscriptions: Subscription[],

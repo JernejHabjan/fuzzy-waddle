@@ -1,20 +1,7 @@
 {
   "tags": {
-    "scopes": [
-      "platform",
-      "probable-waffle",
-      "little-muncher",
-      "fly-squasher",
-      "dungeon-crawler"
-    ],
-    "types": [
-      "app",
-      "interface",
-      "gameplay",
-      "protocol",
-      "server",
-      "platform"
-    ]
+    "scopes": ["platform", "probable-waffle", "little-muncher", "fly-squasher", "dungeon-crawler"],
+    "types": ["app", "interface", "gameplay", "protocol", "server", "platform"]
   },
   "applications": {
     "portal": "apps/portal",
@@ -29,11 +16,5 @@
     "fly-squasher": ["gameplay", "interface", "protocol", "server"],
     "dungeon-crawler": ["gameplay", "interface"]
   },
-  "platform": [
-    "identity",
-    "chat",
-    "game-sessions",
-    "database-schema",
-    "game-host"
-  ]
+  "platform": ["identity", "chat", "game-sessions", "database-schema", "game-host"]
 }

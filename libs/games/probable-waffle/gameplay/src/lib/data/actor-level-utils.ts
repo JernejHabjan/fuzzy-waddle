@@ -10,7 +10,7 @@ import { LevelComponent } from "../entity/components/level/level-component";
 import { getPwActorDefinition } from "../prefabs/definitions/actor-definitions";
 import { VisionComponent } from "../entity/components/vision-component";
 import { ContainerComponent } from "../entity/components/building/container-component";
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 
 /**
  * Returns the researched level for a game object based on the owning player's tech tree,

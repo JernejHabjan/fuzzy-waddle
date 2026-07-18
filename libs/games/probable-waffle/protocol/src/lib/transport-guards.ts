@@ -1,7 +1,4 @@
-import {
-  ProbableWaffleGameCommandTypes,
-  type GameCommand
-} from "./game-instance/probable-waffle/game-command";
+import { ProbableWaffleGameCommandTypes, type GameCommand } from "./game-instance/probable-waffle/game-command";
 import type { ProbableWaffleStartLevelDto } from "./probable-waffle/probable-waffle-api";
 
 interface RawPayload {

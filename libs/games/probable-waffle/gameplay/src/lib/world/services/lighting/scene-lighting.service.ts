@@ -14,9 +14,7 @@ import {
   shouldIgnoreSceneLighting,
   shouldRespondToSceneAmbient
 } from "./lighting-game-object-meta";
-import {
-  resolveSceneLightingConfig
-} from "./scene-lighting.config";
+import { resolveSceneLightingConfig } from "./scene-lighting.config";
 import type { ResolvedSceneLightingConfig } from "./resolved-scene-lighting.config";
 
 /**
@@ -215,9 +213,7 @@ export class SceneLightingService {
       lightingTarget: this.asLightingTarget(gameObject),
       ambientTarget: this.asAmbientTarget(gameObject),
       shadowCaster: this.asShadowCaster(gameObject),
-      actorMovedSubscription: this.areDropShadowsEnabled()
-        ? this.subscribeToActorMovement(gameObject)
-        : undefined,
+      actorMovedSubscription: this.areDropShadowsEnabled() ? this.subscribeToActorMovement(gameObject) : undefined,
       lightingEnabled: false,
       ambientAlpha: 1,
       shadowEnabled: false,
@@ -402,21 +398,26 @@ export class SceneLightingService {
     const daylightArc = Math.sin(daylightProgress * Math.PI);
     const solarPresence = easeInOut(daylightArc);
     const horizontalProgress = easeInOut(daylightProgress);
-    const radius = this.config.keyLight.radius * lerpNumber(
-      SceneLightingService.KeyLightRadiusMinScale,
-      SceneLightingService.KeyLightRadiusMaxScale,
-      solarPresence
-    );
-    const intensity = this.config.keyLight.intensity * lerpNumber(
-      SceneLightingService.KeyLightIntensityMinScale,
-      SceneLightingService.KeyLightIntensityMaxScale,
-      solarPresence
-    );
-    const x = cycleTime <= sunriseTime
-      ? footprint.left - travelMargin
-      : cycleTime >= sunsetTime
-        ? footprint.right + travelMargin
-        : lerpNumber(footprint.left - travelMargin, footprint.right + travelMargin, horizontalProgress);
+    const radius =
+      this.config.keyLight.radius *
+      lerpNumber(
+        SceneLightingService.KeyLightRadiusMinScale,
+        SceneLightingService.KeyLightRadiusMaxScale,
+        solarPresence
+      );
+    const intensity =
+      this.config.keyLight.intensity *
+      lerpNumber(
+        SceneLightingService.KeyLightIntensityMinScale,
+        SceneLightingService.KeyLightIntensityMaxScale,
+        solarPresence
+      );
+    const x =
+      cycleTime <= sunriseTime
+        ? footprint.left - travelMargin
+        : cycleTime >= sunsetTime
+          ? footprint.right + travelMargin
+          : lerpNumber(footprint.left - travelMargin, footprint.right + travelMargin, horizontalProgress);
     const y = horizonY - daylightArc * verticalTravel;
 
     return {
@@ -577,7 +578,8 @@ export class SceneLightingService {
    */
   private shouldUpdateShadow(tracked: TrackedObject): boolean {
     if (!tracked.shadowEnabled || !tracked.shadowCaster || !tracked.shadowVisual) return false;
-    if ((tracked.shadowCaster.active ?? true) === false || (tracked.shadowCaster.visible ?? true) === false) return false;
+    if ((tracked.shadowCaster.active ?? true) === false || (tracked.shadowCaster.visible ?? true) === false)
+      return false;
     if (tracked.shadowDirty) return true;
     return this.isGameObjectInCullRange(tracked.shadowCaster, "expandedShadowCamera");
   }
@@ -589,7 +591,8 @@ export class SceneLightingService {
   private shouldRenderShadow(tracked: TrackedObject): boolean {
     if (!tracked.shadowCaster) return false;
     if (tracked.gameObject.scene !== this.scene) return false;
-    if ((tracked.shadowCaster.active ?? true) === false || (tracked.shadowCaster.visible ?? true) === false) return false;
+    if ((tracked.shadowCaster.active ?? true) === false || (tracked.shadowCaster.visible ?? true) === false)
+      return false;
     return this.isGameObjectInCullRange(tracked.shadowCaster, "expandedShadowCamera");
   }
 
@@ -647,9 +650,8 @@ export class SceneLightingService {
     const bounds = this.getRenderableBounds(gameObject);
     if (!bounds) return allowMissingBounds;
 
-    const cullBounds = mode === "expandedShadowCamera"
-      ? this.getExpandedShadowCullBounds()
-      : this.getExpandedVisibilityCullBounds();
+    const cullBounds =
+      mode === "expandedShadowCamera" ? this.getExpandedShadowCullBounds() : this.getExpandedVisibilityCullBounds();
     return Phaser.Geom.Rectangle.Overlaps(cullBounds, bounds);
   }
 
@@ -813,11 +815,13 @@ export class SceneLightingService {
    */
   private subscribeToOptions(): void {
     const optionsService = getSceneExternalComponent(this.scene, GameOptionsService);
-    this.optionsChangedSubscription = optionsService?.settingsChanged.subscribe((change: { type: string; payload: unknown }) => {
-      if (change.type !== "game") return;
-      const newGameSettings = change.payload as GameSettings;
-      this.setEffectsEnabled(newGameSettings.enableSceneLightingEffects);
-    });
+    this.optionsChangedSubscription = optionsService?.settingsChanged.subscribe(
+      (change: { type: string; payload: unknown }) => {
+        if (change.type !== "game") return;
+        const newGameSettings = change.payload as GameSettings;
+        this.setEffectsEnabled(newGameSettings.enableSceneLightingEffects);
+      }
+    );
   }
 
   /**
@@ -945,13 +949,19 @@ export class SceneLightingService {
     container.list.forEach((child) => {
       if (shouldIgnoreSceneLighting(child)) return;
       if ((child as LightingAwareGameObject).visible === false) return;
-      const childBounds = child instanceof Phaser.GameObjects.Container
-        ? this.getContainerRenderableBounds(child)
-        : getGameObjectBoundsRaw(child);
+      const childBounds =
+        child instanceof Phaser.GameObjects.Container
+          ? this.getContainerRenderableBounds(child)
+          : getGameObjectBoundsRaw(child);
       if (!childBounds) return;
 
       if (!aggregateBounds) {
-        aggregateBounds = new Phaser.Geom.Rectangle(childBounds.x, childBounds.y, childBounds.width, childBounds.height);
+        aggregateBounds = new Phaser.Geom.Rectangle(
+          childBounds.x,
+          childBounds.y,
+          childBounds.width,
+          childBounds.height
+        );
         return;
       }
 

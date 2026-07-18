@@ -1,5 +1,10 @@
 import type { Signal } from "@angular/core";
-import type { CampaignMissionId, CampaignMissionOutcome, CampaignMissionProgress, CampaignProgressData } from "@fuzzy-waddle/probable-waffle-protocol";
+import type {
+  CampaignMissionId,
+  CampaignMissionOutcome,
+  CampaignMissionProgress,
+  CampaignProgressData
+} from "@fuzzy-waddle/probable-waffle-protocol";
 
 /** Read/write campaign progression contract used by the overview and mission lifecycle. */
 export abstract class CampaignProgressServiceInterface {

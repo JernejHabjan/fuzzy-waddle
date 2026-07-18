@@ -85,10 +85,7 @@ export class ReadyBarrier {
     } else {
       // Non-host: keep announcing readiness until the host advances the session state.
       this.sendReady(communicator);
-      this.announceInterval = window.setInterval(
-        () => this.sendReady(communicator),
-        ReadyBarrier.ANNOUNCE_INTERVAL_MS
-      );
+      this.announceInterval = window.setInterval(() => this.sendReady(communicator), ReadyBarrier.ANNOUNCE_INTERVAL_MS);
     }
 
     if (communicator.gameInstanceMetadataChanged) {

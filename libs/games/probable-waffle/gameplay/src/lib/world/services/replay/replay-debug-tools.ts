@@ -1,4 +1,7 @@
-import type { ProbableWaffleReplayCommandBatch, ProbableWaffleReplayTickDigest } from "@fuzzy-waddle/probable-waffle-protocol";
+import type {
+  ProbableWaffleReplayCommandBatch,
+  ProbableWaffleReplayTickDigest
+} from "@fuzzy-waddle/probable-waffle-protocol";
 
 /**
  * Build deterministic replay digests for one tick.
@@ -16,7 +19,9 @@ export function buildReplayTickDigest(
     playerDigests[batch.playerNumber] = djb2(stableSerialize(batch.commands));
   }
 
-  const digestInput = sortedBatches.map((batch) => `${batch.playerNumber}:${playerDigests[batch.playerNumber]}`).join("|");
+  const digestInput = sortedBatches
+    .map((batch) => `${batch.playerNumber}:${playerDigests[batch.playerNumber]}`)
+    .join("|");
   return {
     tick,
     digest: djb2(digestInput),

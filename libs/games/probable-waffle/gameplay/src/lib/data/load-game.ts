@@ -14,7 +14,7 @@ import { IdComponent } from "../entity/components/id-component";
 import { AoeZoneManager } from "../entity/systems/aoe-zone-manager";
 import { TechTreeService } from "./tech-tree/tech-tree.service";
 import { CancelableSimDelay } from "../world/services/simulation-time";
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 
 export class LoadGame {
   constructor(private readonly scene: GameProbableWaffleScene) {}

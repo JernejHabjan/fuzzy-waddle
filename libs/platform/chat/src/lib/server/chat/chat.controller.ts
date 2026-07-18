@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, ParseIntPipe, Post, Query, UseGuards } fr
 import { ChatService } from "./chat.service";
 import { OnlineAccessGuard } from "@fuzzy-waddle/platform-identity/server/auth/guards/online-access.guard";
 import { GetMessagesDto } from "./get-messages.dto";
-import type { GetMessagesResponseDto } from "@fuzzy-waddle/platform-chat";
+import type { GetMessagesResponseDto } from "../../chat";
 import { CurrentUser } from "@fuzzy-waddle/platform-identity/server/auth/current-user";
 import type { AuthUser } from "@supabase/supabase-js";
 import { ReportChatMessageBodyDto } from "./report-chat-message.dto";

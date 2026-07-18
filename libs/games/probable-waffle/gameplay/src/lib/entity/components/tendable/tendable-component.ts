@@ -5,7 +5,7 @@ import { onObjectReady } from "../../../data/game-object-helper";
 import type { TendableDefinition } from "./tendable-definition";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 
 /**
  * Growth phases used to drive worker animations and crop visuals.
@@ -30,7 +30,9 @@ export class TendableComponent {
   readonly onReset = new Subject<void>();
 
   private _currentPhase: TendablePhase = 0;
-  get phase(): TendablePhase { return this._currentPhase; }
+  get phase(): TendablePhase {
+    return this._currentPhase;
+  }
   private tenders = new Set<GameObject>();
   private resourceSourceComponent?: ResourceSourceComponent;
   private simulationTickSub?: Subscription;

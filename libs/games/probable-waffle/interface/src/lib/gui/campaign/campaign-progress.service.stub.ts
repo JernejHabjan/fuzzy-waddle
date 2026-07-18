@@ -1,6 +1,11 @@
-import type { CampaignMissionId, CampaignMissionOutcome, CampaignMissionProgress, CampaignProgressData } from "@fuzzy-waddle/probable-waffle-protocol";
+import type {
+  CampaignMissionId,
+  CampaignMissionOutcome,
+  CampaignMissionProgress,
+  CampaignProgressData
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { CampaignProgressServiceInterface } from "./campaign-progress.service.interface";
-import { signal, Signal } from "@angular/core";
+import { signal, type Signal } from "@angular/core";
 
 export class CampaignProgressServiceStub extends CampaignProgressServiceInterface {
   readonly missionProgress: Signal<CampaignMissionProgress[]> = signal([]);

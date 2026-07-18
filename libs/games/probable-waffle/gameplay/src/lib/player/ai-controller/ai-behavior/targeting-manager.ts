@@ -5,7 +5,7 @@ import { DistanceHelper } from "../../../library/distance-helper";
 import { OwnerComponent } from "../../../entity/components/owner-component";
 import { AttackComponent } from "../../../entity/components/combat/components/attack-component";
 import { isGameObjectActiveInActiveScene, isSceneActive } from "../../../data/game-object-helper";
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 
 /**
  * TargetingManager

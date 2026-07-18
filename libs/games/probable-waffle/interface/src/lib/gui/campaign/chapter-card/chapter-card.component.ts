@@ -1,5 +1,9 @@
 import { ChangeDetectionStrategy, Component, input, output } from "@angular/core";
-import type { CampaignChapterDefinition, CampaignChapterId, CampaignMissionProgress } from "@fuzzy-waddle/probable-waffle-protocol";
+import type {
+  CampaignChapterDefinition,
+  CampaignChapterId,
+  CampaignMissionProgress
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import type { CampaignChapterCardState } from "./campaign-chapter-card-state";
 
 @Component({

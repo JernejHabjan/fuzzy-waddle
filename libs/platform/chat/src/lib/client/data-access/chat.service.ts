@@ -4,7 +4,7 @@ import { map } from "rxjs/operators";
 import { firstValueFrom, Observable } from "rxjs";
 import { type IChatService } from "./chat.service.interface";
 import { AuthenticatedSocketService } from "./authenticated-socket.service";
-import { type ChatMessage, GatewayChatEvent, type GetMessagesResponseDto, type ReportChatMessageDto } from "@fuzzy-waddle/platform-chat";
+import { GatewayChatEvent, type ChatMessage, type GetMessagesResponseDto, type ReportChatMessageDto } from "../../chat";
 import { environment } from "@fuzzy-waddle/environments/environment";
 
 @Injectable({

@@ -1,9 +1,43 @@
 import { TwoWayCommunicator } from "@fuzzy-waddle/platform-game-host/communicators/two-way-communicator";
 import { type GameInstanceId } from "@fuzzy-waddle/platform-game-sessions";
-import { type ProbableWaffleCommunicatorMessageEvent, type ProbableWaffleCommunicatorType, type ProbableWaffleDesyncAlertEvent, type ProbableWaffleGameCommandEvent, type ProbableWaffleGameInstanceMetadataChangeEvent, type ProbableWaffleGameModeDataChangeEvent, type ProbableWaffleGameStateDataChangeEvent, type ProbableWaffleHostMigratedEvent, type ProbableWaffleInstanceReseedEvent, type ProbableWaffleInstanceReseedRequiredEvent, type ProbableWafflePauseChangedEvent, type ProbableWafflePlayerDataChangeEvent, type ProbableWafflePlayerDisconnectedEvent, type ProbableWafflePlayerReconnectedEvent, type ProbableWaffleSnapshotRequestEvent, type ProbableWaffleSnapshotResponseEvent, type ProbableWaffleSpectatorDataChangeEvent, type ProbableWaffleStateHashEvent } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  type AllScenesEventData,
+  type ProbableWaffleCommunicatorMessageEvent,
+  type ProbableWaffleCommunicatorType,
+  type ProbableWaffleDesyncAlertEvent,
+  type ProbableWaffleGameCommandEvent,
+  type ProbableWaffleGameInstanceMetadataChangeEvent,
+  type ProbableWaffleGameModeDataChangeEvent,
+  type ProbableWaffleGameStateDataChangeEvent,
+  type ProbableWaffleHostMigratedEvent,
+  type ProbableWaffleInstanceReseedEvent,
+  type ProbableWaffleInstanceReseedRequiredEvent,
+  type ProbableWafflePauseChangedEvent,
+  type ProbableWafflePlayerDataChangeEvent,
+  type ProbableWafflePlayerDisconnectedEvent,
+  type ProbableWafflePlayerReconnectedEvent,
+  type ProbableWaffleSnapshotRequestEvent,
+  type ProbableWaffleSnapshotResponseEvent,
+  type ProbableWaffleSpectatorDataChangeEvent,
+  type ProbableWaffleStateHashEvent
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { Socket } from "ngx-socket-io";
+import type { Observable, Subscription } from "rxjs";
+
+export interface ProbableWaffleLocalEventBus<T> {
+  emit(value: T): void;
+  subscribe(observer: (value: T) => void): Subscription;
+  pipe: Observable<T>["pipe"];
+}
+
+export type ProbableWaffleUtilityEventData = {
+  name: "save-game" | "load-game" | "settings" | "chat";
+  data?: unknown;
+};
 
 export interface ProbableWaffleCommunicatorServiceInterface {
+  allScenes: ProbableWaffleLocalEventBus<AllScenesEventData>;
+  utilityEvents: ProbableWaffleLocalEventBus<ProbableWaffleUtilityEventData>;
   gameInstanceMetadataChanged?: TwoWayCommunicator<
     ProbableWaffleGameInstanceMetadataChangeEvent,
     ProbableWaffleCommunicatorType

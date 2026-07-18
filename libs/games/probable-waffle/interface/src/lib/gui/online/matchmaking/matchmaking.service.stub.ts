@@ -1,12 +1,13 @@
-import { FactionType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { FactionType, MatchmakingTeamConfiguration } from "@fuzzy-waddle/probable-waffle-protocol";
 import { type IMatchmakingService } from "./matchmaking.service.interface";
-import { MatchmakingLevel } from "./matchmaking-level";
+import type { MatchmakingLevel } from "./matchmaking-level";
 
 export const matchmakingServiceStub = {
   searching: false,
   matchmakingOptions: {
     factionType: FactionType.Skaduwee,
     nrOfPlayers: 0,
+    teamConfiguration: MatchmakingTeamConfiguration.FreeForAll,
     levels: []
   },
   gameFound: false,

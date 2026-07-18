@@ -2,7 +2,12 @@ import { inject, Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "@fuzzy-waddle/environments/environment";
 import { type GameInstanceDataDto, type GameInstanceId } from "@fuzzy-waddle/platform-game-sessions";
-import { type LittleMuncherGameInstanceData, LittleMuncherGatewayEvent, type LittleMuncherRoom, type LittleMuncherRoomEvent } from "@fuzzy-waddle/little-muncher-protocol";
+import {
+  type LittleMuncherGameInstanceData,
+  LittleMuncherGatewayEvent,
+  type LittleMuncherRoom,
+  type LittleMuncherRoomEvent
+} from "@fuzzy-waddle/little-muncher-protocol";
 import { firstValueFrom, Observable, Subject, Subscription } from "rxjs";
 import { AuthenticatedSocketService } from "@fuzzy-waddle/platform-chat/client/data-access/authenticated-socket.service";
 import { map } from "rxjs/operators";

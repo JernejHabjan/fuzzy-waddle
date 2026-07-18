@@ -2,15 +2,33 @@ import { BadRequestException, Logger, UseGuards } from "@nestjs/common";
 import {
   ConnectedSocket,
   MessageBody,
-  OnGatewayConnection,
-  OnGatewayDisconnect,
+  type OnGatewayConnection,
+  type OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
 import { GameSessionState } from "@fuzzy-waddle/platform-game-sessions";
-import { type ProbableWaffleCommunicatorMessageEvent, ProbableWaffleCommunicators, type ProbableWaffleCommunicatorEventUnion, type ProbableWaffleGameCommandEvent, type ProbableWaffleGameFoundEvent, type ProbableWaffleHostMigratedEvent, type ProbableWaffleGameInstanceMetadataChangeEvent, ProbableWaffleGameInstanceEvent, ProbableWaffleGatewayEvent, ProbableWaffleGatewayRoomTypes, type ProbableWafflePlayerDataChangeEvent, type ProbableWafflePlayerDisconnectedEvent, ProbableWafflePlayerType, type ProbableWafflePlayerReconnectedEvent, type ProbableWaffleSnapshotResponseEvent, type ProbableWaffleSpectatorDataChangeEvent, type ProbableWaffleWebsocketRoomEvent } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  type ProbableWaffleCommunicatorMessageEvent,
+  ProbableWaffleCommunicators,
+  type ProbableWaffleCommunicatorEventUnion,
+  type ProbableWaffleGameCommandEvent,
+  type ProbableWaffleGameFoundEvent,
+  type ProbableWaffleHostMigratedEvent,
+  type ProbableWaffleGameInstanceMetadataChangeEvent,
+  ProbableWaffleGameInstanceEvent,
+  ProbableWaffleGatewayEvent,
+  ProbableWaffleGatewayRoomTypes,
+  type ProbableWafflePlayerDataChangeEvent,
+  type ProbableWafflePlayerDisconnectedEvent,
+  ProbableWafflePlayerType,
+  type ProbableWafflePlayerReconnectedEvent,
+  type ProbableWaffleSnapshotResponseEvent,
+  type ProbableWaffleSpectatorDataChangeEvent,
+  type ProbableWaffleWebsocketRoomEvent
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { ProbableWaffleChatService } from "../chat/probable-waffle-chat.service";
 import { type AuthUser } from "@supabase/supabase-js";
 import { OnlineAccessGuard } from "@fuzzy-waddle/platform-identity/server/auth/guards/online-access.guard";

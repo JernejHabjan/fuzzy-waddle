@@ -1,10 +1,16 @@
-import { MessageBody, OnGatewayConnection, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import {
+  MessageBody,
+  type OnGatewayConnection,
+  SubscribeMessage,
+  WebSocketGateway,
+  WebSocketServer
+} from "@nestjs/websockets";
 import { CurrentUser } from "@fuzzy-waddle/platform-identity/server/auth/current-user";
 import { type AuthUser } from "@supabase/supabase-js";
 import { UseGuards } from "@nestjs/common";
 import { OnlineAccessGuard } from "@fuzzy-waddle/platform-identity/server/auth/guards/online-access.guard";
 import { ChatService } from "./chat.service";
-import { type ChatMessage, GatewayChatEvent } from "@fuzzy-waddle/platform-chat";
+import { GatewayChatEvent, type ChatMessage } from "../../chat";
 import { Server, Socket } from "socket.io";
 import { SocketConnectionAuthService } from "@fuzzy-waddle/platform-identity/server/auth/socket-connection-auth.service";
 

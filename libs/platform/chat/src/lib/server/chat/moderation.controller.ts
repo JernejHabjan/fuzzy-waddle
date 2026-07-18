@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, ParseIntPipe, Post, UseGuards } from "@nestjs/common";
 import type { AuthUser } from "@supabase/supabase-js";
-import type { ModerationQueueDto, ModerationSummaryDto } from "@fuzzy-waddle/platform-chat";
+import type { ModerationQueueDto, ModerationSummaryDto } from "../../chat";
 import { CurrentUser } from "@fuzzy-waddle/platform-identity/server/auth/current-user";
 import { ModeratorAccessGuard } from "@fuzzy-waddle/platform-identity/server/auth/guards/moderator-access.guard";
 import { ChatModerationService } from "./chat-moderation.service";

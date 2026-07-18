@@ -1,4 +1,4 @@
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 import { ActorData, ActorDataKey } from "./actor-data";
 
 /**
@@ -52,6 +52,5 @@ export function getActorComponents<T extends any[]>(
   if (!actorData) {
     return componentClasses.map(() => undefined) as any;
   }
-  return componentClasses.map(cls => actorData.components.get(cls)) as any;
+  return componentClasses.map((cls) => actorData.components.get(cls)) as any;
 }
-

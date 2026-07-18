@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, type OnDestroy, type OnInit, signal } from "@angular/core";
-import { isTauri } from "@fuzzy-waddle/platform-game-host/tauri";
+import { isTauri } from "../../../game/tauri";
 
 /**
  * Cinematic splash screen overlay shown on Tauri desktop app launch.

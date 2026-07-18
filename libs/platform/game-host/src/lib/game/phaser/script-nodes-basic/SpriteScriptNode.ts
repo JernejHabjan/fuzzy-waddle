@@ -17,7 +17,7 @@ export default class SpriteScriptNode extends ScriptNode {
 
   /* START-USER-CODE */
 
-  get gameObject() {
+  override get gameObject() {
     return super.gameObject as Phaser.GameObjects.Sprite;
   }
 

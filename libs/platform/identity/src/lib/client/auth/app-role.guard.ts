@@ -1,7 +1,7 @@
 import { inject, Injectable } from "@angular/core";
 import { type CanActivate, Router } from "@angular/router";
 import { AppUserRole } from "@fuzzy-waddle/platform-database-schema";
-import { CurrentUserProfileService } from "@fuzzy-waddle/platform-identity/client/profile-data/current-user-profile.service";
+import { CurrentUserProfileService } from "../profile-data/current-user-profile.service";
 import { AuthService } from "./auth.service";
 
 @Injectable({

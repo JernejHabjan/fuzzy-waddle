@@ -1,6 +1,15 @@
 import { Component, inject, type OnDestroy, type OnInit, output } from "@angular/core";
 import { GameSessionState } from "@fuzzy-waddle/platform-game-sessions";
-import { ProbableWaffleGameInstanceType, ProbableWaffleGameInstanceVisibility, ProbableWaffleLevels, type ProbableWaffleMapData, type ProbableWaffleMapEnum, ProbableWafflePlayerType, type ProbableWaffleRoom, ProbableWaffleRoomHelper } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  ProbableWaffleGameInstanceType,
+  ProbableWaffleGameInstanceVisibility,
+  ProbableWaffleLevels,
+  type ProbableWaffleMapData,
+  type ProbableWaffleMapEnum,
+  ProbableWafflePlayerType,
+  type ProbableWaffleRoom,
+  ProbableWaffleRoomHelper
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { RoomsService } from "../../../communicators/rooms/rooms.service";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { faFilter } from "@fortawesome/free-solid-svg-icons";

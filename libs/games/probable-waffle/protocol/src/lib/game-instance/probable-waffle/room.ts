@@ -13,8 +13,7 @@ export interface ProbableWaffleRoomPlayer {
   controllerData: ProbableWafflePlayerControllerData;
 }
 
-export interface ProbableWaffleRoom
-  extends Room<ProbableWaffleGameInstanceMetadataData, ProbableWaffleGameModeData> {
+export interface ProbableWaffleRoom extends Room<ProbableWaffleGameInstanceMetadataData, ProbableWaffleGameModeData> {
   players: ProbableWaffleRoomPlayer[];
   spectators: ProbableWaffleSpectatorData[];
 }

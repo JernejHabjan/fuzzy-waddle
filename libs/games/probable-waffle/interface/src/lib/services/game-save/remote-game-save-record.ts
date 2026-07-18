@@ -1,4 +1,9 @@
-import { GAME_SAVE_FORMAT_VERSION, type CampaignChapterId, type CampaignMissionId, type GameSaveRecord } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  GAME_SAVE_FORMAT_VERSION,
+  type CampaignChapterId,
+  type CampaignMissionId,
+  type GameSaveRecord
+} from "@fuzzy-waddle/probable-waffle-protocol";
 
 /** API representation of a searchable save record whose game payload remains encoded. */
 export interface RemoteGameSaveRecord {

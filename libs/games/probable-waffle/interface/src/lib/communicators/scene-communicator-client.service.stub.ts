@@ -1,8 +1,9 @@
 import { type SceneCommunicatorClientServiceInterface } from "./scene-communicator-client.service.interface";
-import { ProbableWaffleCommunicators } from "./probable-waffle.communicators";
-import { GameInstanceId } from "@fuzzy-waddle/platform-game-sessions";
+import type { ProbableWaffleCommunicators } from "./probable-waffle.communicators";
+import type { GameInstanceId } from "@fuzzy-waddle/platform-game-sessions";
 
 export const SceneCommunicatorClientServiceStub = {
+  communicatorObservables: null,
   createCommunicators(gameInstanceId: GameInstanceId): Promise<ProbableWaffleCommunicators> {
     return Promise.resolve({} as ProbableWaffleCommunicators);
   },

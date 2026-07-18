@@ -207,5 +207,4 @@ export class HeightNavigationGraphBuilder {
       HEIGHT_NAVIGATION_DIRECTIONS.map(({ direction }) => [direction, { enterHeight, exitHeight }])
     ) as Partial<Record<NavigablePathDirection, HeightDirectionPortDefinition>>;
   }
-
 }

@@ -1,5 +1,17 @@
-import { type GameInstanceDataDto, GameInstanceId, type RoomAction, type SpectatorAction } from "@fuzzy-waddle/platform-game-sessions";
-import { type LittleMuncherGameCreateDto, LittleMuncherGameInstance, type LittleMuncherGameInstanceData, type LittleMuncherRoom, type LittleMuncherRoomEvent, type LittleMuncherSpectatorEvent } from "@fuzzy-waddle/little-muncher-protocol";
+import {
+  type GameInstanceDataDto,
+  type GameInstanceId,
+  type RoomAction,
+  type SpectatorAction
+} from "@fuzzy-waddle/platform-game-sessions";
+import {
+  type LittleMuncherGameCreateDto,
+  LittleMuncherGameInstance,
+  type LittleMuncherGameInstanceData,
+  type LittleMuncherRoom,
+  type LittleMuncherRoomEvent,
+  type LittleMuncherSpectatorEvent
+} from "@fuzzy-waddle/little-muncher-protocol";
 import { type User } from "@supabase/supabase-js";
 
 export interface GameInstanceServiceInterface {

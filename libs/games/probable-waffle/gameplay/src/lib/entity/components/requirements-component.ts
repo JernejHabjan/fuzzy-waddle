@@ -1,4 +1,4 @@
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 import type { RequirementsDefinition } from "./requirements-definition";
 
 export class RequirementsComponent {

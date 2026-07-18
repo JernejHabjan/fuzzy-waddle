@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 import { AppController } from "./app.controller";
 import { AuthModule } from "@fuzzy-waddle/platform-identity/server/auth/auth.module";
 import { ConfigModule } from "@nestjs/config";
-import { ChatModule } from "./chat/chat.module";
+import { ChatModule } from "@fuzzy-waddle/platform-chat/server/chat/chat.module";
 import { LittleMuncherModule } from "@fuzzy-waddle/little-muncher-server";
 import { APP_GUARD } from "@nestjs/core";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";

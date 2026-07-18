@@ -4,7 +4,13 @@ import { firstValueFrom } from "rxjs";
 import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
 import { environment } from "@fuzzy-waddle/environments/environment";
 import { GameSaveRepository } from "./game-save.repository";
-import { GAME_SAVE_FORMAT_VERSION, GameSaveScope, GameSaveSyncState, type EncodedGameSaveRecord, type GameSaveRecord } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  GAME_SAVE_FORMAT_VERSION,
+  GameSaveScope,
+  GameSaveSyncState,
+  type EncodedGameSaveRecord,
+  type GameSaveRecord
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { GameSaveSyncServiceInterface } from "./game-save-sync.service.interface";
 import type { RemoteGameSaveRecord } from "./remote-game-save-record";
 

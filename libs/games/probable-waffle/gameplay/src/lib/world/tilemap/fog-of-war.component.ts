@@ -16,7 +16,7 @@ import { HealthComponent } from "../../entity/components/combat/components/healt
 import { getSceneService } from "../services/scene-component-helpers";
 import { ActorIndexSystem } from "../services/ActorIndexSystem";
 import { ContainableComponent } from "../../entity/components/building/containable-component";
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 
 export enum FogOfWarMode {
   FULL_EXPLORATION = "fullExploration",

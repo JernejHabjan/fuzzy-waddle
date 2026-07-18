@@ -234,7 +234,12 @@ export class HealthComponent {
       this.setHealthValue(Math.max(this.healthComponentData.health - damage, 0));
     }
 
-    this.gameObject.scene.events.emit(ProbableWaffleSceneEventName.ScoreDamage, this.gameObject, damage, damageInitiator);
+    this.gameObject.scene.events.emit(
+      ProbableWaffleSceneEventName.ScoreDamage,
+      this.gameObject,
+      damage,
+      damageInitiator
+    );
 
     if (this.healthDefinition.healthDisplayBehavior === "onDamage") {
       this.setVisibilityUiComponent(true);

@@ -1,6 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { type CommunicatorEvent } from "@fuzzy-waddle/platform-game-sessions";
-import { type LittleMuncherCommunicatorClimbingEvent, type LittleMuncherCommunicatorPauseEvent, type LittleMuncherCommunicatorScoreEvent, type LittleMuncherCommunicatorType, LittleMuncherPosition } from "@fuzzy-waddle/little-muncher-protocol";
+import {
+  type LittleMuncherCommunicatorClimbingEvent,
+  type LittleMuncherCommunicatorPauseEvent,
+  type LittleMuncherCommunicatorScoreEvent,
+  type LittleMuncherCommunicatorType,
+  LittleMuncherPosition
+} from "@fuzzy-waddle/little-muncher-protocol";
 import { GameInstanceService } from "./game-instance.service";
 import { type User } from "@supabase/supabase-js";
 

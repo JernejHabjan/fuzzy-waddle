@@ -1,4 +1,4 @@
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 import { DistanceHelper } from "../../library/distance-helper";
 import { getActorComponent } from "../../data/actor-component";
 import { OwnerComponent } from "./owner-component";

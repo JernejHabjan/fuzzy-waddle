@@ -1,13 +1,11 @@
-import { getGreeting } from "../support/app.po";
+import { getFeaturedGame, getGameTiles, getPortalBrand } from "../support/app.po";
 
-describe("client", () => {
+describe("portal", () => {
   beforeEach(() => cy.visit("/"));
 
-  it("should display welcome message", () => {
-    // Custom command example, see `../support/commands.ts` file
-    cy.login("my-email@something.com", "myPassword");
-
-    // Function helper example, see `../support/app.po.ts` file
-    getGreeting().contains("Welcome client");
+  it("displays the game portal", () => {
+    getPortalBrand().should("contain.text", "Fuzzy Waddle");
+    getFeaturedGame().should("be.visible").and("contain.text", "Featured");
+    getGameTiles().should("have.length.at.least", 4);
   });
 });

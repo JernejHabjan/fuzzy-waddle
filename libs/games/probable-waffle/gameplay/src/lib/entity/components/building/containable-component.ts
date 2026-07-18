@@ -1,6 +1,6 @@
 import { ContainerComponent } from "./container-component";
 import { getActorComponent } from "../../../data/actor-component";
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 import { HealthComponent } from "../combat/components/health-component";
 
 /**

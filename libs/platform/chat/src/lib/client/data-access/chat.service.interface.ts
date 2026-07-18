@@ -1,4 +1,4 @@
-import { type ChatMessage, type GetMessagesResponseDto, type ReportChatMessageDto } from "@fuzzy-waddle/platform-chat";
+import type { ChatMessage, GetMessagesResponseDto, ReportChatMessageDto } from "../../chat";
 import { Observable } from "rxjs";
 
 export interface IChatService {

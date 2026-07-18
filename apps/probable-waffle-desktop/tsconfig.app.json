@@ -7,7 +7,7 @@
     "moduleResolution": "bundler",
     "verbatimModuleSyntax": true
   },
-  "files": ["src/main.ts", "../portal/src/polyfills.ts"],
+  "files": ["src/main.ts", "../../libs/platform/game-host/src/lib/angular/polyfills.ts"],
   "include": ["src/**/*.d.ts"],
   "exclude": ["**/*.test.ts", "**/*.spec.ts"]
 }

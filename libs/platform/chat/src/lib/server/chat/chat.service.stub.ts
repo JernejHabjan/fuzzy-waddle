@@ -1,6 +1,6 @@
 import { type AuthUser } from "@supabase/supabase-js";
 import { type IChatService } from "./chat.service.interface";
-import { type ChatMessage, type GetMessagesResponseDto, type ReportChatMessageDto } from "@fuzzy-waddle/platform-chat";
+import type { ChatMessage, GetMessagesResponseDto, ReportChatMessageDto } from "../../chat";
 
 export const chatServiceStub = {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

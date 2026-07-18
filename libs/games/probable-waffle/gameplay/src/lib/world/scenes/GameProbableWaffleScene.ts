@@ -24,7 +24,8 @@ import { SelectionGroupsComponent } from "../../player/human-controller/selectio
 import { GameModeConditionChecker } from "../state/GameModeConditionChecker";
 import { ScoreTracker } from "../state/ScoreTracker";
 import { getSceneExternalComponent } from "../services/scene-component-helpers";
-import { AchievementPort, AchievementType } from "@fuzzy-waddle/probable-waffle-gameplay";
+import { AchievementPort } from "../../core/ports/achievement.port";
+import { AchievementType } from "../../core/achievement-type";
 import { environment } from "@fuzzy-waddle/environments/environment";
 import { GameObjectActionAssigner } from "../../prefabs/gui/game-object-action-assigner";
 import { PlayerActionsHandler } from "../../player/human-controller/player-actions-handler";

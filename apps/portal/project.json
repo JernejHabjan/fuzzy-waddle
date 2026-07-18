@@ -16,13 +16,23 @@
         },
         "index": "apps/portal/src/index.html",
         "browser": "apps/portal/src/main.ts",
-        "polyfills": ["apps/portal/src/polyfills.ts", "@angular/localize/init"],
+        "polyfills": ["libs/platform/game-host/src/lib/angular/polyfills.ts", "@angular/localize/init"],
         "tsConfig": "apps/portal/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
-          "apps/portal/src/favicon.ico",
           "apps/portal/src/assets",
           "apps/portal/src/manifest.webmanifest",
+          {
+            "glob": "favicon.ico",
+            "input": "libs/platform/game-host/src/assets",
+            "output": "."
+          },
+          {
+            "glob": "**/*",
+            "input": "libs/platform/game-host/src/assets",
+            "output": "assets",
+            "ignore": ["favicon.ico"]
+          },
           {
             "glob": "**/*",
             "input": "libs/games/dungeon-crawler/gameplay/src/assets",
@@ -44,7 +54,10 @@
             "output": "assets"
           }
         ],
-        "styles": ["apps/portal/src/styles/styles.scss"],
+        "styles": ["libs/platform/game-host/src/styles/styles.scss"],
+        "stylePreprocessorOptions": {
+          "includePaths": ["libs/platform/game-host/src/styles"]
+        },
         "serviceWorker": "apps/portal/ngsw-config.json",
         "allowedCommonJsDependencies": [
           "phaser",

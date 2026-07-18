@@ -81,7 +81,10 @@ export class MovementDecalCursorService {
     if (!tileWorldXY) return;
 
     // Check if terrain is accessible using the unit's own terrain type
-    const isAccessible = canActorTraverseTile(this.gameObject, this.navigationService, { x: tileVec3.x, y: tileVec3.y });
+    const isAccessible = canActorTraverseTile(this.gameObject, this.navigationService, {
+      x: tileVec3.x,
+      y: tileVec3.y
+    });
 
     if (isAccessible) {
       this.showAccessibleMarker(tileWorldXY, tileVec3);

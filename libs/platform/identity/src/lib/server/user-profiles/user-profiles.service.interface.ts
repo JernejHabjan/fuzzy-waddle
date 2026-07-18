@@ -1,6 +1,6 @@
 import { type AuthUser } from "@supabase/supabase-js";
-import { type BanUserDto } from "@fuzzy-waddle/platform-identity";
-import { type CurrentUserProfileDto } from "@fuzzy-waddle/platform-identity";
+import type { BanUserDto } from "../../user-moderation";
+import type { CurrentUserProfileDto } from "../../current-user-profile";
 import { type AppUserRole } from "@fuzzy-waddle/platform-database-schema";
 
 export interface UserProfilesServiceInterface {

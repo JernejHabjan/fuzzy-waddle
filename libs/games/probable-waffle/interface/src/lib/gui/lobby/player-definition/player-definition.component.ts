@@ -1,7 +1,17 @@
 import { Component, inject, signal, viewChild } from "@angular/core";
 import { FactionDefinitions } from "@fuzzy-waddle/probable-waffle-gameplay/player/faction-definitions";
 import { faCheck, faSpinner, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { GameSetupHelpers, type PositionPlayerDefinition, ProbableWaffleAiDifficulty, ProbableWaffleGameInstanceType, ProbableWaffleLevels, type ProbableWaffleMapData, ProbableWafflePlayer, type ProbableWafflePlayerDataChangeEventProperty, ProbableWafflePlayerType } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  GameSetupHelpers,
+  type PositionPlayerDefinition,
+  ProbableWaffleAiDifficulty,
+  ProbableWaffleGameInstanceType,
+  ProbableWaffleLevels,
+  type ProbableWaffleMapData,
+  ProbableWafflePlayer,
+  type ProbableWafflePlayerDataChangeEventProperty,
+  ProbableWafflePlayerType
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { type PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 
@@ -188,8 +198,7 @@ export class PlayerDefinitionComponent {
 
   protected canViewProfile(player: ProbableWafflePlayer): boolean {
     return (
-      this.definition(player).playerType === ProbableWafflePlayerType.Human &&
-      !!player.playerController.data.userId
+      this.definition(player).playerType === ProbableWafflePlayerType.Human && !!player.playerController.data.userId
     );
   }
 

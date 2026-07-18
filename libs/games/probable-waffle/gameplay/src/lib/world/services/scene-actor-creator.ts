@@ -1,4 +1,10 @@
-import { type ActorDefinition, ConstructionStateEnum, FactionType, ObjectNames, type ProbableWaffleGameStateDataPayload } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  type ActorDefinition,
+  ConstructionStateEnum,
+  FactionType,
+  ObjectNames,
+  type ProbableWaffleGameStateDataPayload
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { type Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { ActorManager } from "../../data/actor-manager";
 import GameProbableWaffleScene from "../scenes/GameProbableWaffleScene";
@@ -24,7 +30,7 @@ import { LoadGame } from "../../data/load-game";
 import type { InitialActorConfig } from "../../player/faction-info";
 import { LevelComponent } from "../../entity/components/level/level-component";
 import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { upgradeActorToLevel } from "../../data/actor-level-utils";
 import { ActorIdAuthorityService } from "./multiplayer/actor-id-authority.service";

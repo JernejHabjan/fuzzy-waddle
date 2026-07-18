@@ -23,14 +23,14 @@ export default class FollowObjectScript extends SpriteScriptNode {
   private offsetX = 0;
   private offsetY = 0;
 
-  start() {
+  override start() {
     if (this.target) {
       this.offsetX = this.gameObject.x - this.target.x;
       this.offsetY = this.gameObject.y - this.target.y;
     }
   }
 
-  update() {
+  override update() {
     if (this.target) {
       this.gameObject.x = this.target.x + this.offsetX;
       this.gameObject.y = this.target.y + this.offsetY;

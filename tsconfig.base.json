@@ -46,7 +46,9 @@
       "@fuzzy-waddle/probable-waffle-gameplay/*": ["libs/games/probable-waffle/gameplay/src/lib/*"],
       "@fuzzy-waddle/probable-waffle-interface": ["libs/games/probable-waffle/interface/src/index.ts"],
       "@fuzzy-waddle/probable-waffle-interface/*": ["libs/games/probable-waffle/interface/src/lib/*"],
-      "@fuzzy-waddle/environments/*": ["libs/platform/game-host/src/lib/environments/*"]
+      "@fuzzy-waddle/environments/*": ["libs/platform/game-host/src/lib/environments/*"],
+      "passport-strategy": ["tools/types/passport-strategy.d.ts"],
+      "profanity-cleaner": ["tools/types/profanity-cleaner.d.ts"]
     },
     "strict": true,
     "noUnusedLocals": false,

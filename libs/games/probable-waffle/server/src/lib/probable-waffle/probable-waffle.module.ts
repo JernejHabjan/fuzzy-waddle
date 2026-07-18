@@ -1,4 +1,4 @@
-import { forwardRef, Module } from "@nestjs/common";
+import { Module } from "@nestjs/common";
 import { GameInstanceController } from "./game-instance/game-instance.controller";
 import { GameInstanceService } from "./game-instance/game-instance.service";
 import { GameStateServerService } from "./game-instance/game-state-server.service";
@@ -22,9 +22,10 @@ import { GameSaveController } from "./game-save/game-save.controller";
 import { GameSaveServerService } from "./game-save/game-save.service";
 import { CampaignController } from "./campaign/campaign.controller";
 import { CampaignServerService } from "./campaign/campaign.service";
+import { ProbableWaffleGameChatAccessService } from "./chat/probable-waffle-game-chat-access.service";
 
 @Module({
-  imports: [AuthModule, forwardRef(() => ChatModule), GameSessionModule],
+  imports: [AuthModule, ChatModule, GameSessionModule],
   providers: [
     GameInstanceGateway,
     RoomGateway,
@@ -40,7 +41,8 @@ import { CampaignServerService } from "./campaign/campaign.service";
     RoomServerService,
     PlayerDisconnectTrackerService,
     GameSaveServerService,
-    CampaignServerService
+    CampaignServerService,
+    ProbableWaffleGameChatAccessService
   ],
   exports: [GameInstanceService],
   controllers: [GameInstanceController, RoomController, MatchmakingController, GameSaveController, CampaignController]

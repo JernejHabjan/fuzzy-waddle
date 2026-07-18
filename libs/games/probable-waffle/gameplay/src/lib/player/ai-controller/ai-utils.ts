@@ -4,7 +4,7 @@ import { getPwActorDefinition } from "../../prefabs/definitions/actor-definition
 import { getActorComponent } from "../../data/actor-component";
 import { AttackComponent } from "../../entity/components/combat/components/attack-component";
 import { getResearchedLevelForActor } from "../../data/actor-level-utils";
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 
 export function getUnitStrength(unit: GameObject): number {
   const definition = getPwActorDefinition(unit.name, getResearchedLevelForActor(unit));

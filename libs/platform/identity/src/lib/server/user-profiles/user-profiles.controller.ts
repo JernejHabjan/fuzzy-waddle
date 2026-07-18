@@ -1,8 +1,8 @@
 import { Controller, Get, Param, UseGuards } from "@nestjs/common";
-import { type CurrentUserProfileDto } from "@fuzzy-waddle/platform-identity";
+import type { CurrentUserProfileDto } from "../../current-user-profile";
 import { type AuthUser } from "@supabase/supabase-js";
-import { CurrentUser } from "@fuzzy-waddle/platform-identity/server/auth/current-user";
-import { SupabaseAuthGuard } from "@fuzzy-waddle/platform-identity/server/auth/guards/supabase-auth.guard";
+import { CurrentUser } from "../auth/current-user";
+import { SupabaseAuthGuard } from "../auth/guards/supabase-auth.guard";
 import { UserProfilesService } from "./user-profiles.service";
 
 @Controller("profile")

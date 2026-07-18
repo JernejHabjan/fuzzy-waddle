@@ -1,5 +1,5 @@
 @use "sass:color";
-@use "../../../../styles/_variables.scss" as *;
+@use "variables" as *;
 
 :host {
   min-height: 100%;

@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { DungeonCrawlerComponent } from "./dungeon-crawler.component";
 
-jest.mock("./game/game-config", () => ({
+jest.mock("@fuzzy-waddle/dungeon-crawler-gameplay/game-config", () => ({
   dungeonCrawlerGameConfig: {}
 }));
 

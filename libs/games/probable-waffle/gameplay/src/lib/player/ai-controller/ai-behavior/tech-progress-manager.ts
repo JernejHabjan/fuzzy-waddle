@@ -110,15 +110,15 @@ export class TechProgressManager {
     // Find a building that can perform this research
     const researchBuildings = this.getResearchBuildings();
     for (const building of researchBuildings) {
-        const researchComponent = getActorComponent(building, ResearchComponent);
-        if (researchComponent) {
-          const { canStart } = researchComponent.canStartResearch(researchType);
-          if (canStart) {
-            const success = dispatchResearchCommand(building.scene, building, this.playerNumber, researchType);
-            if (success) {
-              this.log("AI started research:", researchType);
-              return State.SUCCEEDED;
-            }
+      const researchComponent = getActorComponent(building, ResearchComponent);
+      if (researchComponent) {
+        const { canStart } = researchComponent.canStartResearch(researchType);
+        if (canStart) {
+          const success = dispatchResearchCommand(building.scene, building, this.playerNumber, researchType);
+          if (success) {
+            this.log("AI started research:", researchType);
+            return State.SUCCEEDED;
+          }
         }
       }
     }

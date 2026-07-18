@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing";
 
 import { AuthService } from "./auth.service";
-import { DataAccessService } from "@fuzzy-waddle/platform-identity/client/data-access.service";
-import { dataAccessServiceStub } from "@fuzzy-waddle/platform-identity/client/data-access.service.stub";
+import { DataAccessService } from "../data-access.service";
+import { dataAccessServiceStub } from "../data-access.service.stub";
 
 describe("AuthService", () => {
   let service: AuthService;

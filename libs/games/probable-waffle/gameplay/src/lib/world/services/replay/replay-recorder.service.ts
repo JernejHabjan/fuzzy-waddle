@@ -1,8 +1,16 @@
 import { GameSessionState } from "@fuzzy-waddle/platform-game-sessions";
-import { GameSaveKind, GameSaveScope, type ProbableWaffleGameInstanceData, ProbableWaffleGameInstanceType, type ProbableWaffleReplayCommandBatch, type ProbableWaffleReplayData, type ProbableWaffleReplayDesyncDiagnostic } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  GameSaveKind,
+  GameSaveScope,
+  type ProbableWaffleGameInstanceData,
+  ProbableWaffleGameInstanceType,
+  type ProbableWaffleReplayCommandBatch,
+  type ProbableWaffleReplayData,
+  type ProbableWaffleReplayDesyncDiagnostic
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import type { Subscription } from "rxjs";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
-import { GameSavePort } from "@fuzzy-waddle/probable-waffle-gameplay";
+import { GameSavePort } from "../../../core/ports/game-save.port";
 import { getSceneExternalComponent, getSceneService } from "../scene-component-helpers";
 import { CommandBusService } from "../multiplayer/command-bus.service";
 import { buildReplayTickDigest } from "./replay-debug-tools";
@@ -110,15 +118,17 @@ export class ReplayRecorderService {
       replayData
     };
 
-    await gameSaveService.save({
-      scope: GameSaveScope.Skirmish,
-      kind: GameSaveKind.Manual,
-      name: `${metadataData.name} Replay ${new Date().toISOString()} ${scene.gameInstanceId}`,
-      gameInstanceData: replayGameInstanceData,
-      thumbnail: ""
-    }).catch((error: unknown) => {
-      console.error("[ReplayRecorder] Failed to save replay.", error);
-    });
+    await gameSaveService
+      .save({
+        scope: GameSaveScope.Skirmish,
+        kind: GameSaveKind.Manual,
+        name: `${metadataData.name} Replay ${new Date().toISOString()} ${scene.gameInstanceId}`,
+        gameInstanceData: replayGameInstanceData,
+        thumbnail: ""
+      })
+      .catch((error: unknown) => {
+        console.error("[ReplayRecorder] Failed to save replay.", error);
+      });
   }
 
   /** Releases subscriptions after replay capture lifecycle ends. */

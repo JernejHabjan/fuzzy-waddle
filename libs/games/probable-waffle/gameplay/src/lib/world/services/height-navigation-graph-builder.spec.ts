@@ -54,24 +54,21 @@ describe("height navigation ports", () => {
     expect(component.getDirectionPort(NavigablePathDirection.Bottom)).toBeUndefined();
   });
 
-  it.each(WALL_PREFAB_KEYS)(
-    "keeps every wall prefab elevated-only for open directions: %s",
-    (wallKey) => {
-      const navigablePath = WALL_PREFAB_DEFINITIONS[wallKey].navigablePath;
-      const component = createNavigableComponent({ navigableHeight: 42, enterHeight: 64, exitHeight: 64 });
-      component.allowNavigablePath(navigablePath);
+  it.each(WALL_PREFAB_KEYS)("keeps every wall prefab elevated-only for open directions: %s", (wallKey) => {
+    const navigablePath = WALL_PREFAB_DEFINITIONS[wallKey].navigablePath;
+    const component = createNavigableComponent({ navigableHeight: 42, enterHeight: 64, exitHeight: 64 });
+    component.allowNavigablePath(navigablePath);
 
-      for (const { direction } of HEIGHT_NAVIGATION_DIRECTIONS) {
-        const port = component.getDirectionPort(direction);
-        if (navigablePath[direction]) {
-          expect(port).toEqual({ enterHeight: 64, exitHeight: 64 });
-          expect(canConnectHeightNavigationPorts({ enterHeight: 0, exitHeight: 0 }, port)).toBe(false);
-        } else {
-          expect(port).toBeUndefined();
-        }
+    for (const { direction } of HEIGHT_NAVIGATION_DIRECTIONS) {
+      const port = component.getDirectionPort(direction);
+      if (navigablePath[direction]) {
+        expect(port).toEqual({ enterHeight: 64, exitHeight: 64 });
+        expect(canConnectHeightNavigationPorts({ enterHeight: 0, exitHeight: 0 }, port)).toBe(false);
+      } else {
+        expect(port).toBeUndefined();
       }
     }
-  );
+  });
 
   it("keeps bottom-left/bottom-right wall approachable only from the open upper sides", () => {
     expect(WALL_PREFAB_DEFINITIONS.bottomLeftBottomRight.navigablePath).toEqual({
@@ -233,11 +230,7 @@ function createLineGraph(cells: HeightNavigationCell[]): Map<string, HeightNavig
   return buildHeightNavigationEdges([cells]);
 }
 
-function createCell(
-  x: number,
-  navigableHeight: number,
-  ports: HeightNavigationCell["ports"]
-): HeightNavigationCell {
+function createCell(x: number, navigableHeight: number, ports: HeightNavigationCell["ports"]): HeightNavigationCell {
   return {
     x,
     y: 0,

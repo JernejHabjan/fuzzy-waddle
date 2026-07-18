@@ -10,7 +10,7 @@ import {
   viewChild
 } from "@angular/core";
 import { ChatReportReason } from "@fuzzy-waddle/platform-database-schema";
-import { type ChatMessage } from "@fuzzy-waddle/platform-chat";
+import type { ChatMessage } from "../../chat";
 import { AvatarProviderService } from "@fuzzy-waddle/platform-identity/client/avatar-provider/avatar-provider.service";
 import { Observable, Subscription, Subject } from "rxjs";
 import { debounceTime } from "rxjs/operators";
@@ -18,7 +18,7 @@ import { debounceTime } from "rxjs/operators";
 import { FormsModule } from "@angular/forms";
 import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
 import { AngularHost } from "@fuzzy-waddle/platform-game-host/angular/consts";
-import { ChatService } from "@fuzzy-waddle/platform-chat/client/data-access/chat.service";
+import { ChatService } from "../data-access/chat.service";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { getRoleIcon, getRoleLabel } from "@fuzzy-waddle/platform-identity/client/utils/app-role-presentation";
@@ -241,7 +241,9 @@ export class ChatComponent implements OnInit, OnDestroy {
       return;
     }
 
-    await this.router.navigate(message.userId === this.authService.userId ? ["/profile"] : ["/profile", message.userId]);
+    await this.router.navigate(
+      message.userId === this.authService.userId ? ["/profile"] : ["/profile", message.userId]
+    );
   }
 
   @HostListener("window:beforeunload")

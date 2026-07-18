@@ -1,5 +1,5 @@
 import type { ProductionCostDefinition } from "./production-cost-definition";
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 
 export class ProductionCostComponent {
   finishedSound?: string;

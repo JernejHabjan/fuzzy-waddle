@@ -4,7 +4,11 @@ import { getActorComponent } from "../../../data/actor-component";
 import { emitResource, getPlayer } from "../../../data/scene-data";
 import { QueueComponent } from "../queue/queue-component";
 import { QueueItemType, type UnifiedQueueItem } from "../queue/queue-item";
-import { ProbableWaffleGameCommandTypes, type ProductionComponentData, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  ProbableWaffleGameCommandTypes,
+  type ProductionComponentData,
+  ResourceType
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { type Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { HealthComponent } from "../combat/components/health-component";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
@@ -29,7 +33,7 @@ import { OrderType } from "../../../ai/order-type";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { getActorSystem } from "../../../data/actor-system";
 import { ActionSystem } from "../../systems/action.system";
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 
 export class ProductionComponent {
   private readonly rallyPoint: RallyPoint;

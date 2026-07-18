@@ -1,4 +1,8 @@
-import type { ActorDefinition, ProbableWaffleReplayDesyncDiagnostic, ProbableWaffleStateHashDiagnostics } from "@fuzzy-waddle/probable-waffle-protocol";
+import type {
+  ActorDefinition,
+  ProbableWaffleReplayDesyncDiagnostic,
+  ProbableWaffleStateHashDiagnostics
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import type { Subscription } from "rxjs";
 import { getSceneService } from "../scene-component-helpers";
 import { SimulationTickService } from "../simulation-tick.service";

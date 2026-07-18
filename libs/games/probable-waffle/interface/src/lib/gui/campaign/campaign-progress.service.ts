@@ -1,7 +1,13 @@
 import { HttpClient } from "@angular/common/http";
 import { computed, inject, Injectable, signal } from "@angular/core";
 import { firstValueFrom } from "rxjs";
-import { type CampaignCatalog, type CampaignMissionId, CampaignMissionOutcome, type CampaignMissionProgress, type CampaignProgressData } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  type CampaignCatalog,
+  type CampaignMissionId,
+  CampaignMissionOutcome,
+  type CampaignMissionProgress,
+  type CampaignProgressData
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { AOTA_CAMPAIGN_CATALOG } from "./campaign-catalog";
 import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
 import { environment } from "@fuzzy-waddle/environments/environment";

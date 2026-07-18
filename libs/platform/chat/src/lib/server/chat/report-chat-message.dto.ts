@@ -1,5 +1,5 @@
 import { ChatReportReason, ChatReportStatus } from "@fuzzy-waddle/platform-database-schema";
-import { type ReportChatMessageDto, type UpdateChatReportStatusDto } from "@fuzzy-waddle/platform-chat";
+import type { ReportChatMessageDto, UpdateChatReportStatusDto } from "../../chat";
 import { type BanUserDto } from "@fuzzy-waddle/platform-identity";
 import { IsEnum, IsIn, IsISO8601, IsOptional, IsString, MaxLength } from "class-validator";
 

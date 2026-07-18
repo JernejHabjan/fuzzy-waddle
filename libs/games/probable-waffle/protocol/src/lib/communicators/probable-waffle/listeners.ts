@@ -286,7 +286,9 @@ export class ProbableWaffleListeners {
               return false;
             }
             const vector = value as Record<string, unknown>;
-            return typeof vector["x"] === "number" && typeof vector["y"] === "number" && typeof vector["z"] === "number";
+            return (
+              typeof vector["x"] === "number" && typeof vector["y"] === "number" && typeof vector["z"] === "number"
+            );
           }
 
           ProbableWaffleListeners.logDebugInfo("housing removed for player", player.playerNumber);
@@ -337,12 +339,12 @@ export class ProbableWaffleListeners {
   }
 
   static gameStateDataChanged(gameInstance: ProbableWaffleGameInstance, event: ProbableWaffleGameStateDataChangeEvent) {
-      switch (event.property) {
-        case "all": {
-          gameInstance.gameState = new ProbableWaffleGameState(event.data.gameState as any);
-          ProbableWaffleListeners.logDebugInfo("game state changed to", gameInstance.gameState!.data);
-          break;
-        }
+    switch (event.property) {
+      case "all": {
+        gameInstance.gameState = new ProbableWaffleGameState(event.data.gameState as any);
+        ProbableWaffleListeners.logDebugInfo("game state changed to", gameInstance.gameState!.data);
+        break;
+      }
       case "health.health":
         const actorHealth = this.getActorById(event.data.actorDefinition!.id!, gameInstance);
         if (!actorHealth) throw new Error("Actor not found with id " + event.data.actorDefinition!.id);

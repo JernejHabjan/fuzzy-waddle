@@ -1,4 +1,4 @@
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 import { getActorComponent } from "../../data/actor-component";
 import { Plugins } from "../../world/const/Plugins";
 import { GameSetupHelpers, type OwnerComponentData } from "@fuzzy-waddle/probable-waffle-protocol";
@@ -306,6 +306,10 @@ export class OwnerComponent {
     this.healthUiVisibilitySubscription?.unsubscribe();
     this.constructionProgressSubscription?.unsubscribe();
     this.gameObject.off(ContainerComponent.GameObjectVisibilityChanged, this.gameObjectVisibilityChanged, this);
-    this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.refreshOwnerUiVisibilityFrameNonDeterministic, this);
+    this.gameObject.scene?.events.off(
+      Phaser.Scenes.Events.UPDATE,
+      this.refreshOwnerUiVisibilityFrameNonDeterministic,
+      this
+    );
   }
 }

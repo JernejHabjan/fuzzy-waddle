@@ -34,10 +34,7 @@ export function markGameObjectAmbientResponsive(gameObject: Phaser.GameObjects.G
   target.setData?.(SceneLightingDataKeys.ambientResponsive, true);
 }
 
-export function setGameObjectSceneShadowCasting(
-  gameObject: Phaser.GameObjects.GameObject,
-  castsShadow: boolean
-): void {
+export function setGameObjectSceneShadowCasting(gameObject: Phaser.GameObjects.GameObject, castsShadow: boolean): void {
   const target = gameObject as DataEnabledGameObject;
   target.setDataEnabled?.();
   target.setData?.(SceneLightingDataKeys.castsShadow, castsShadow);

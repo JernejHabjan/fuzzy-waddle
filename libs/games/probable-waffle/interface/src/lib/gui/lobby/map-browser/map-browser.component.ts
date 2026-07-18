@@ -1,15 +1,10 @@
-import {
-  Component,
-  effect,
-  inject,
-  input,
-  model,
-  type OnDestroy,
-  type OnInit,
-  output
-} from "@angular/core";
+import { Component, effect, inject, input, model, type OnDestroy, type OnInit, output } from "@angular/core";
 
-import { ProbableWaffleLevels, type ProbableWaffleMapData, ProbableWaffleMapEnum } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  ProbableWaffleLevels,
+  type ProbableWaffleMapData,
+  ProbableWaffleMapEnum
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { environment } from "@fuzzy-waddle/environments/environment";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { Subscription } from "rxjs";

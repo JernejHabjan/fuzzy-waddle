@@ -37,7 +37,7 @@ import { TilemapComponent } from "../../../../world/tilemap/tilemap.component";
 import { CancelableSimDelay } from "../../../../world/services/simulation-time";
 import { SimulationTickService } from "../../../../world/services/simulation-tick.service";
 import TivaraAlchemistVase from "../../../../prefabs/weapons/TivaraAlchemistVase";
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 
 export class AttackComponent {
   remainingCooldown = 0;

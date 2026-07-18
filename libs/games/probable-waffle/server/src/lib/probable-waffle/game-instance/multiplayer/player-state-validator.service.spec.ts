@@ -1,4 +1,8 @@
-import { type ProbableWaffleGameInstance, type ProbableWafflePlayerDataChangeEvent, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  type ProbableWaffleGameInstance,
+  type ProbableWafflePlayerDataChangeEvent,
+  ResourceType
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { PlayerStateValidatorService } from "./player-state-validator.service";
 
 describe("PlayerStateValidatorService", () => {

@@ -3,9 +3,9 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ProfileNavComponent } from "./profile-nav.component";
 import { provideRouter } from "@angular/router";
 import { Component } from "@angular/core";
-import { HomeNavTestingComponent } from "@fuzzy-waddle/platform-identity/client/home-nav/home-nav.component.spec";
+import { HomeNavTestingComponent } from "../../home-nav/home-nav.component.spec";
 
-import { HomeNavComponent } from "@fuzzy-waddle/platform-identity/client/home-nav/home-nav.component";
+import { HomeNavComponent } from "../../home-nav/home-nav.component";
 
 @Component({ selector: "fuzzy-waddle-profile-nav", template: "", standalone: true, imports: [] })
 export class ProfileNavTestingComponent {}

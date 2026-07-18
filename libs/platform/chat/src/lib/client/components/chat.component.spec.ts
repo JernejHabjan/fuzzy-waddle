@@ -6,7 +6,7 @@ import { AvatarProviderService } from "@fuzzy-waddle/platform-identity/client/av
 import { avatarProviderServiceStub } from "@fuzzy-waddle/platform-identity/client/avatar-provider/avatar-provider.service.stub";
 import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
 import { authServiceStub } from "@fuzzy-waddle/platform-identity/client/auth/auth.service.stub";
-import { ChatService } from "@fuzzy-waddle/platform-chat/client/data-access/chat.service";
+import { ChatService } from "../data-access/chat.service";
 import { Subject } from "rxjs";
 import { provideRouter } from "@angular/router";
 

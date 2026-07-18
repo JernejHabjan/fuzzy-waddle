@@ -2,8 +2,7 @@ import type { Room, RoomEvent, SpectatorEvent } from "@fuzzy-waddle/platform-gam
 import { LittleMuncherGameMode } from "./game-mode";
 import type { LittleMuncherGameInstanceMetadataData } from "./game-instance-medatada";
 
-export interface LittleMuncherRoom
-  extends Room<LittleMuncherGameInstanceMetadataData, LittleMuncherGameMode> {}
+export interface LittleMuncherRoom extends Room<LittleMuncherGameInstanceMetadataData, LittleMuncherGameMode> {}
 
 export interface LittleMuncherRoomEvent extends RoomEvent<LittleMuncherRoom> {}
 

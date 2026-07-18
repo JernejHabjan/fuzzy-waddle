@@ -1,7 +1,7 @@
 import { BehaviorSubject, Observable } from "rxjs";
 import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { getSelectedActors } from "../../data/scene-data";
-import GameObject = Phaser.GameObjects.GameObject;
+type GameObject = Phaser.GameObjects.GameObject;
 
 /**
  * Groups actors by their name (GameObject.name) for tab switching.
@@ -10,7 +10,7 @@ import GameObject = Phaser.GameObjects.GameObject;
 export class SelectionTabHandler {
   private currentTabIndexSubject = new BehaviorSubject<number>(0);
   private groupedActorsSubject = new BehaviorSubject<GameObject[][]>([]);
-  
+
   constructor(private readonly scene: ProbableWaffleScene) {
     this.setupKeyboardListener();
   }
@@ -67,7 +67,7 @@ export class SelectionTabHandler {
 
     const groups = this.groupActorsByType(selectedActors);
     this.groupedActorsSubject.next(groups);
-    
+
     // Reset to first group when selection changes
     this.currentTabIndexSubject.next(0);
   }
@@ -108,7 +108,7 @@ export class SelectionTabHandler {
    */
   private setupKeyboardListener(): void {
     if (!this.scene.input.keyboard) return;
-    
+
     this.scene.input.keyboard.on("keydown", this.handleKeyDown, this);
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       this.scene.input.keyboard?.off("keydown", this.handleKeyDown, this);
