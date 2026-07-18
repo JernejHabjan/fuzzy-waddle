@@ -22,7 +22,7 @@ export default class BlockObsidian2 extends Phaser.GameObjects.Image {
     /* END-USER-CTR-CODE */
   }
 
-  public z: number = 0;
+  public override z: number = 0;
 
   /* START-USER-CODE */
   override name = ObjectNames.BlockObsidian2;

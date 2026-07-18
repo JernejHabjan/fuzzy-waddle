@@ -36,7 +36,7 @@ export default class BlockStoneWater5 extends Phaser.GameObjects.Container {
     /* END-USER-CTR-CODE */
   }
 
-  public z: number = 0;
+  public override z: number = 0;
 
   /* START-USER-CODE */
   override name = ObjectNames.BlockStoneWater5;

@@ -28,7 +28,7 @@ export default class BlockStoneTopRight extends Phaser.GameObjects.Image {
     /* END-USER-CTR-CODE */
   }
 
-  public z: number = 0;
+  public override z: number = 0;
 
   /* START-USER-CODE */
   override name = ObjectNames.BlockStoneTopRight;

@@ -37,14 +37,14 @@ export default class BlockObsidianLava2 extends Phaser.GameObjects.Container {
     /* END-USER-CTR-CODE */
   }
 
-  public z: number = 0;
+  public override z: number = 0;
 
   /* START-USER-CODE */
   override name = ObjectNames.BlockObsidianLava2;
 
   private particles: LavaParticles;
 
-  setDepth(value: number): this {
+  override setDepth(value: number): this {
     this.particles.setDepth(value);
     return super.setDepth(value);
   }
