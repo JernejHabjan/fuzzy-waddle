@@ -18,17 +18,10 @@ import { getSceneService } from "../../../../world/services/scene-component-help
 import { AudioService } from "../../../../world/services/audio.service";
 import { DepthHelper } from "../../../../world/services/depth.helper";
 import { ActorIndexSystem } from "../../../../world/services/ActorIndexSystem";
-import SlingshotRock from "../../../../prefabs/weapons/SlingshotRock";
-import Arrow from "../../../../prefabs/weapons/Arrow";
-import FireArrow from "../../../../prefabs/weapons/FireArrow";
-import FireBall from "../../../../prefabs/weapons/FireBall";
-import FrostBolt from "../../../../prefabs/weapons/FrostBolt";
 import { DistanceHelper } from "../../../../library/distance-helper";
 import { EffectsAnims } from "../../../../animations/effects";
-import SkaduweeOwlFurball from "../../../../prefabs/weapons/SkaduweeOwlFurball";
 import { FlyingComponent } from "../../movement/flying-component";
 import { type AttackComponentData } from "@fuzzy-waddle/probable-waffle-protocol";
-import { ProjectileType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/projectile-type";
 import type { AnimationOptions } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-options";
 import type { ProjectileData } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/projectile-data";
 import type { AttackDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/components/attack-definition";
@@ -36,7 +29,7 @@ import type { IsoDirection } from "@fuzzy-waddle/probable-waffle-gameplay/entity
 import { TilemapComponent } from "../../../../world/tilemap/tilemap.component";
 import { CancelableSimDelay } from "../../../../world/services/simulation-time";
 import { SimulationTickService } from "../../../../world/services/simulation-tick.service";
-import TivaraAlchemistVase from "../../../../prefabs/weapons/TivaraAlchemistVase";
+import { PhaserProjectileFactory } from "../../../../combat/phaser-projectile-factory";
 type GameObject = Phaser.GameObjects.GameObject;
 
 export class AttackComponent {
@@ -390,41 +383,10 @@ export class AttackComponent {
     targetY: number,
     track: boolean
   ) {
-    let projectileSprite;
-    switch (projectile.type) {
-      case ProjectileType.SlingshotProjectile:
-        projectileSprite = new SlingshotRock(this.gameObject.scene);
-        break;
-      case ProjectileType.FlowerSpit:
-        projectileSprite = new SlingshotRock(this.gameObject.scene); // todo poison dart -  // todo use mobs_flower_monster_plant shot anim
-        break;
-      case ProjectileType.SandWormAcid:
-        projectileSprite = new SlingshotRock(this.gameObject.scene); // todo poison dart -  // todo use mobs_flower_monster_plant shot anim
-        break;
-      case ProjectileType.ArrowProjectile:
-        projectileSprite = new Arrow(this.gameObject.scene);
-        break;
-      case ProjectileType.FireArrowProjectile:
-        projectileSprite = new FireArrow(this.gameObject.scene);
-        break;
-      case ProjectileType.FireballProjectile:
-        projectileSprite = new FireBall(this.gameObject.scene);
-        break;
-      case ProjectileType.FurballProjectile:
-        projectileSprite = new SkaduweeOwlFurball(this.gameObject.scene);
-        break;
-      case ProjectileType.VaseProjectile:
-        projectileSprite = new TivaraAlchemistVase(this.gameObject.scene);
-        break;
-      case ProjectileType.CorpyAcidProjectile:
-        projectileSprite = new SkaduweeOwlFurball(this.gameObject.scene); // todo
-        break;
-      case ProjectileType.FrostBoltProjectile:
-        projectileSprite = new FrostBolt(this.gameObject.scene);
-        break;
-      default:
-        console.error("Unknown projectile type", projectile.type);
-        return;
+    const projectileSprite = PhaserProjectileFactory.create(this.gameObject.scene, projectile.type);
+    if (!projectileSprite) {
+      console.error("Unknown projectile type", projectile.type);
+      return;
     }
 
     if (track) this.projectileSprite = projectileSprite;

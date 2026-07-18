@@ -18,11 +18,11 @@ import { NavigationService } from "../../world/services/navigation.service";
 import { SceneActorCreator } from "../../world/services/scene-actor-creator";
 import { CancelableSimDelay } from "../../world/services/simulation-time";
 import { DistanceHelper } from "../../library/distance-helper";
-import FrostBolt from "../../prefabs/weapons/FrostBolt";
 import { ProjectileType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/projectile-type";
 import { DepthHelper } from "../../world/services/depth.helper";
 import { IsoHelper } from "../../world/tilemap/iso-helper";
 import Phaser from "phaser";
+import { PhaserProjectileFactory } from "../../combat/phaser-projectile-factory";
 
 export class SpellCastingSystem {
   private spellComponent?: SpellComponent;
@@ -150,17 +150,9 @@ export class SpellCastingSystem {
     if (!targetWorld) return;
 
     // Create projectile sprite
-    let projectileSprite: Phaser.GameObjects.Image | undefined;
-
-    switch (projectile.type) {
-      case ProjectileType.FrostBoltProjectile:
-      case ProjectileType.SnowstormProjectile:
-        projectileSprite = new FrostBolt(this.gameObject.scene);
-        break;
-      default:
-        projectileSprite = new FrostBolt(this.gameObject.scene); // Default to frost bolt
-        break;
-    }
+    const projectileSprite =
+      PhaserProjectileFactory.create(this.gameObject.scene, projectile.type) ??
+      PhaserProjectileFactory.create(this.gameObject.scene, ProjectileType.FrostBoltProjectile); // Default to frost bolt
 
     if (!projectileSprite) return;
 
