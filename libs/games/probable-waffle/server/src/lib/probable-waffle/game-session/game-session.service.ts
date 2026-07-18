@@ -5,11 +5,11 @@ import {
   type Database,
   GameKey,
   GameParticipantType,
-  GameResultStatus,
   GameSessionStatus,
   type Json
 } from "@fuzzy-waddle/platform-database-schema";
 import {
+  GameResultStatus,
   type GameScoreSnapshotDto,
   PlayerScoreDto,
   ProbableWaffleMapEnum

@@ -4,9 +4,9 @@ import {
   getPlayersFromScene,
   isPlayerHostInScene
 } from "@fuzzy-waddle/platform-game-host/phaser/scene/base.scene";
-import { GameResultStatus } from "@fuzzy-waddle/platform-database-schema";
 import { GameSessionState } from "@fuzzy-waddle/platform-game-sessions";
 import {
+  GameResultStatus,
   type LoseConditions,
   ProbableWafflePlayerDataChangeProperties,
   ProbableWaffleGameInstanceType,

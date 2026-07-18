@@ -5,10 +5,10 @@ import {
   type GameScoreSnapshot,
   type PlayerScoreSnapshot,
   STANDARD_METRICS,
+  GameResultStatus,
   type ProbableWafflePlayer,
   ProbableWafflePlayerType
 } from "@fuzzy-waddle/probable-waffle-protocol";
-import { GameResultStatus } from "@fuzzy-waddle/platform-database-schema";
 import { getPlayersFromScene } from "@fuzzy-waddle/platform-game-host/phaser/scene/base.scene";
 import { isGameObjectActiveInActiveScene, isSceneActive } from "../../data/game-object-helper";
 import { getCurrentPlayerNumber } from "../../data/scene-data";

@@ -8,10 +8,10 @@ import { ScoreSubmissionService } from "../../services/score-submission.service"
 import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
 import {
   CampaignMissionOutcome,
+  GameResultStatus,
   type GameScoreSnapshotDto,
   ProbableWafflePlayerType
 } from "@fuzzy-waddle/probable-waffle-protocol";
-import { GameResultStatus } from "@fuzzy-waddle/platform-database-schema";
 import { CampaignProgressService } from "../campaign/campaign-progress.service";
 
 @Component({

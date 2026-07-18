@@ -4,6 +4,7 @@ export * from "./lib/game-instance";
 export * from "./lib/game-instance-metadata";
 export * from "./lib/game-mode";
 export * from "./lib/game-state";
+export * from "./lib/guid";
 export * from "./lib/player/player-controller";
 export * from "./lib/player/player-state";
 export * from "./lib/player/player";

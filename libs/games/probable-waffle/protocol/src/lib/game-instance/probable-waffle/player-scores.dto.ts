@@ -1,5 +1,5 @@
 import type { PlayerScoreData } from "./score-data";
-import { GameResultStatus } from "@fuzzy-waddle/platform-database-schema";
+import { GameResultStatus } from "./game-result-status";
 
 export class PlayerScoreDto implements Partial<PlayerScoreData> {
   playerNumber!: number;

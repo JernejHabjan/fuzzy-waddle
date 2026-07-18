@@ -1,6 +1,5 @@
 import { TestBed } from "@angular/core/testing";
-import { GameResultStatus } from "@fuzzy-waddle/platform-database-schema";
-import type { PlayerScoreData } from "@fuzzy-waddle/probable-waffle-protocol";
+import { GameResultStatus, type PlayerScoreData } from "@fuzzy-waddle/probable-waffle-protocol";
 import { GameInstanceClientService } from "../communicators/game-instance-client.service";
 import { ScoreDataService } from "./score-data.service";
 

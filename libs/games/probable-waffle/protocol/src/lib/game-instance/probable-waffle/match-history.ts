@@ -1,5 +1,5 @@
 import type { GameScoreSnapshotDto, PlayerScoreData } from "./score-data";
-import { GameResultStatus } from "@fuzzy-waddle/platform-database-schema";
+import { GameResultStatus } from "./game-result-status";
 
 /**
  * Player summary in match history

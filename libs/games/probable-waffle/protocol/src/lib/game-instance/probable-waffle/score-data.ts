@@ -1,5 +1,5 @@
 import type { PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
-import { GameResultStatus } from "@fuzzy-waddle/platform-database-schema";
+import { GameResultStatus } from "./game-result-status";
 
 /**
  * Core player score data structure
