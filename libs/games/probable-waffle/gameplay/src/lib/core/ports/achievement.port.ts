@@ -1,4 +1,4 @@
-import type { AchievementType } from "../achievement-type";
+import type { AchievementType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 export abstract class AchievementPort {
   abstract unlockAchievement(

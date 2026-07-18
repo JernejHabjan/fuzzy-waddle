@@ -1,4 +1,3 @@
-export * from "./lib/core/achievement-type";
 export * from "./lib/core/game-options.service";
 export * from "./lib/core/ngx-socket-io-access";
 export * from "./lib/core/ports/achievement.port";
