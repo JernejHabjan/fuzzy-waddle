@@ -1,11 +1,11 @@
+import type { ProbableWaffleGameInstanceData } from "../game-instance/probable-waffle/game-instance";
 import type {
   CampaignChapterId,
   CampaignMissionId,
   GameSaveKind,
   GameSaveRecord,
-  GameSaveScope,
-  ProbableWaffleGameInstanceData
-} from "@fuzzy-waddle/probable-waffle-protocol";
+  GameSaveScope
+} from "./campaign";
 
 /** Complete request required to create a local save record. */
 export interface SaveGameRequest {
