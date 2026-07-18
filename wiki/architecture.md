@@ -59,15 +59,17 @@ in `apps/probable-waffle-desktop/src-tauri`, and its frontend output is
 
 ## Phaser Editor
 
-Each gameplay project is independently openable in Phaser Editor:
+Each Phaser Editor project is independently openable:
 
-- `libs/games/probable-waffle/gameplay`
+- `libs/games/probable-waffle/phaser`
 - `libs/games/little-muncher/gameplay`
 - `libs/games/fly-squasher/gameplay`
 - `libs/games/dungeon-crawler/gameplay`
 
 The `.scene` files, generated TypeScript, metadata, assets, `.skip`, and
-`phasereditor2d.config.json` live together in the owning gameplay project.
+`phasereditor2d.config.json` live together in the owning Phaser Editor project.
+Probable Waffle keeps framework-free rules in its separate `gameplay` project,
+with dependency direction `interface -> phaser -> gameplay -> protocol`.
 Editor-only copies of shared prefab definitions use thin local TypeScript
 adapters, so the editor can resolve every prefab ID while runtime behaviour
 continues to come from `platform-game-host`.

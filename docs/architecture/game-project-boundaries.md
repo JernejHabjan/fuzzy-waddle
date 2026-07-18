@@ -15,12 +15,14 @@ and import aliases use these names throughout the migration.
 
 ## Libraries
 
-Each game owns an Angular `interface` and Phaser `gameplay` project. Networked
-games additionally own `protocol` and `server` projects.
+Each game owns an Angular `interface` and a Phaser runtime project. Probable
+Waffle additionally separates its framework-free `gameplay` rules from its
+Phaser Editor/runtime project. Networked games own `protocol` and `server`
+projects.
 
 | Domain          | Projects                                                                                                         |
 | --------------- | ---------------------------------------------------------------------------------------------------------------- |
-| Probable Waffle | `probable-waffle-gameplay`, `probable-waffle-interface`, `probable-waffle-protocol`, `probable-waffle-server`    |
+| Probable Waffle | `probable-waffle-gameplay`, `probable-waffle-phaser`, `probable-waffle-interface`, `probable-waffle-protocol`, `probable-waffle-server` |
 | Little Muncher  | `little-muncher-gameplay`, `little-muncher-interface`, `little-muncher-protocol`, `little-muncher-server`        |
 | Fly Squasher    | `fly-squasher-gameplay`, `fly-squasher-interface`, `fly-squasher-protocol`, `fly-squasher-server`                |
 | Dungeon Crawler | `dungeon-crawler-gameplay`, `dungeon-crawler-interface`                                                          |
@@ -29,11 +31,14 @@ games additionally own `protocol` and `server` projects.
 ## Tags and dependency direction
 
 Projects use `scope:<game-or-platform>` and one of `type:app`,
-`type:interface`, `type:gameplay`, `type:protocol`, `type:server`, or
+`type:interface`, `type:phaser`, `type:gameplay`, `type:protocol`, `type:server`, or
 `type:platform`.
 
 - Applications compose libraries.
-- An interface may import its own gameplay and protocol plus platform projects.
+- Probable Waffle follows `interface -> phaser -> gameplay -> protocol`.
+- Its Phaser project owns concrete scenes, prefabs, controllers, factories,
+  assets, and Editor metadata.
+- Other game interfaces may import their own gameplay and protocol plus platform projects.
 - Gameplay may import its own protocol and framework-independent platform types.
 - A server may import its own protocol and platform projects.
 - Protocol projects contain serializable values and boundary validation only.
@@ -50,13 +55,14 @@ constraints, so unmigrated source remains usable between staged commits.
 - Web routes: `/little-muncher`, `/fly-squasher`, `/dungeon-crawler`, and
   `/aota` for Probable Waffle.
 - API game modules: Little Muncher, Fly Squasher, and Probable Waffle.
-- Phaser Editor: one configuration and skip file per gameplay project.
+- Phaser Editor: one configuration and skip file per Phaser Editor project.
 - Tauri: isolated in `apps/probable-waffle-desktop/src-tauri` and configured to
   open `/aota`.
-- Game assets and metadata: owned by each game below
-  `libs/games/<game>/gameplay/src`.
-- Phaser scenes: Fly Squasher has 4 scene files and Probable Waffle has 454;
-  scene files and generated TypeScript remain in the same gameplay project.
+- Game assets and metadata: owned by each game's Phaser Editor project.
+- Probable Waffle assets, scenes, generated TypeScript, `.skip`,
+  `phasereditor2d.config.json`, and `src/publicroot` live together under
+  `libs/games/probable-waffle/phaser`.
+- Scene files and their generated TypeScript remain in the same Editor project.
 
 ## Contract ownership
 

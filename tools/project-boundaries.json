@@ -1,7 +1,7 @@
 {
   "tags": {
     "scopes": ["platform", "probable-waffle", "little-muncher", "fly-squasher", "dungeon-crawler"],
-    "types": ["app", "interface", "gameplay", "protocol", "server", "platform"]
+    "types": ["app", "interface", "phaser", "gameplay", "protocol", "server", "platform"]
   },
   "applications": {
     "portal": "apps/portal",

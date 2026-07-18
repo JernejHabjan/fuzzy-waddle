@@ -29,11 +29,11 @@ Reuse, redistribution, or commercial use outside of GitHub requires explicit wri
 
 ### Phaser Editor projects
 
-Open Phaser Editor in the `gameplay` directory for the game you want to edit. Do not open `libs/games` or the game’s parent directory as the editor project:
+Open Phaser Editor in the project directory listed for the game. Do not open `libs/games` or the game’s parent directory as the editor project:
 
 | Game | Phaser Editor project directory |
 | ---- | -------------------------------- |
-| Probable Waffle | `libs/games/probable-waffle/gameplay` |
+| Probable Waffle | `libs/games/probable-waffle/phaser` |
 | Little Muncher | `libs/games/little-muncher/gameplay` |
 | Fly Squasher | `libs/games/fly-squasher/gameplay` |
 | Dungeon Crawler | `libs/games/dungeon-crawler/gameplay` |
