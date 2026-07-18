@@ -4,9 +4,9 @@ import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { ProductionComponent } from "../../../entity/components/production/production-component";
 import { getCostForObjectName } from "../../../entity/components/production/cost-utils";
 import { GathererComponent } from "../../../entity/components/resource/gatherer-component";
-import { AI_CONFIG } from "../ai-config";
+import { AI_CONFIG } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/ai-config";
 import { State } from "mistreevous";
-import { QueueItemType } from "../../../entity/components/queue/queue-item";
+import { QueueItemType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/queue-item";
 
 /**
  * LogisticsManager

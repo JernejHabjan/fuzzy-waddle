@@ -6,7 +6,7 @@
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { RandomMovementComponent } from "../../../entity/components/movement/random-movement.component";
 import { onObjectReady } from "../../../data/game-object-helper";
-import type { RandomMovementDefinition } from "../../../entity/components/movement/random-movement-definition";
+import type { RandomMovementDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/random-movement-definition";
 /* END-USER-IMPORTS */
 
 export default class Fox extends Phaser.GameObjects.Sprite {

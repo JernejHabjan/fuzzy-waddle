@@ -8,7 +8,7 @@ import {
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { type Vector2Simple, type Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import type { MapAnalysis } from "./ai-behavior/map-analyzer";
-import { ReservationPool } from "./resource-reservations";
+import { ReservationPool } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/resource-reservations";
 import { getActorComponent } from "../../data/actor-component";
 import { PawnAiController } from "../../prefabs/ai-agents/pawn-ai-controller";
 import { RandomService } from "../../world/services/random.service";

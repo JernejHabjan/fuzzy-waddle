@@ -4,7 +4,7 @@ import { ContainerComponent } from "../building/container-component";
 import { Subject } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
 import { getGameObjectRenderedTransform } from "../../../data/game-object-helper";
-import type { ResourceSourceDefinition } from "./resource-source-definition";
+import type { ResourceSourceDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/resource/resource-source-definition";
 import { waitForSimulationDuration } from "../../../world/services/simulation-time";
 type GameObject = Phaser.GameObjects.GameObject;
 

@@ -8,7 +8,7 @@ import { BuilderComponent } from "../../entity/components/construction/builder-c
 import { environment } from "@fuzzy-waddle/environments/environment";
 import { shouldConsiderActorUnlocked } from "./actor-unlock-utils";
 import { FactionDefinitions } from "@fuzzy-waddle/probable-waffle-gameplay";
-import { researchDefinitions } from "../../entity/components/research/research-definitions";
+import { researchDefinitions } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/research/research-definitions";
 
 export class TechTreeService {
   private readonly graph: TechTreeGraph;

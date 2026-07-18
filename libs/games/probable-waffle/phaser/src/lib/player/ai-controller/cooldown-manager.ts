@@ -1,7 +1,7 @@
 // Centralize gating of expensive / high-level AI actions.
 // Existing direct timestamp comparisons can be refactored progressively to use this manager.
 
-import type { CooldownEntry } from "./cooldown-entry";
+import type { CooldownEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/cooldown-entry";
 import type { RandomService } from "../../world/services/random.service";
 
 export class CooldownManager {

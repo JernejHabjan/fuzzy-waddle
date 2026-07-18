@@ -10,7 +10,7 @@ import { AiPlayerHandler } from "../player/ai-controller/ai-player-handler";
 import { emitEventSelection, getSelectableSceneChildren } from "./scene-data";
 import { getActorComponent } from "./actor-component";
 import { SelectableComponent } from "../entity/components/selectable-component";
-import { IdComponent } from "../entity/components/id-component";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { AoeZoneManager } from "../entity/systems/aoe-zone-manager";
 import { TechTreeService } from "./tech-tree/tech-tree.service";
 import { CancelableSimDelay } from "../world/services/simulation-time";

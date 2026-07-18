@@ -15,7 +15,7 @@ import {
 import { tivaraWorkerDefinition } from "../tivara-worker.definition";
 import { ANIM_TIVARA_WORKER_MALE_DEFINITION } from "./tivara_worker_male_anims";
 import type { PrefabDefinition } from "../../../../definitions/prefab-definition";
-import { SoundType } from "../../../../../entity/components/actor-audio/sound-type";
+import { SoundType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/actor-audio/sound-type";
 
 export const tivaraWorkerMaleDefinition = {
   ...tivaraWorkerDefinition,

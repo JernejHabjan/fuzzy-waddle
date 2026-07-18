@@ -9,13 +9,13 @@ import { BehaviorSubject, Subscription } from "rxjs";
 import Phaser from "phaser";
 import { listenToSelectionEvents } from "../../data/scene-data";
 import { getActorComponent } from "../../data/actor-component";
-import { IdComponent } from "./id-component";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { ActorTranslateComponent } from "./movement/actor-translate-component";
 import { HealthComponent } from "./combat/components/health-component";
 import { ContainerComponent } from "./building/container-component";
 import { VisionComponent } from "./vision-component";
 import { type SelectableComponentData } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { SelectableDefinition } from "./selectable-definition";
+import type { SelectableDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/selectable-definition";
 
 export class SelectableComponent {
   private selected: boolean = false;

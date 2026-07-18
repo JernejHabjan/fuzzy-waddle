@@ -3,7 +3,7 @@ import { Subscription } from "rxjs";
 import { getActorComponent } from "../../data/actor-component";
 import { HealthComponent } from "../components/combat/components/health-component";
 import { PawnAiController } from "../../prefabs/ai-agents/pawn-ai-controller";
-import { IdComponent } from "../components/id-component";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { AttackComponent } from "../components/combat/components/attack-component";
 import { OrderData } from "../../ai/OrderData";
 import { OrderType } from "../../ai/order-type";

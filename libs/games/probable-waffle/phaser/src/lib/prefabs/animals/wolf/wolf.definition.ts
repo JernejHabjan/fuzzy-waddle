@@ -1,6 +1,6 @@
 import { ANIM_WOLF_DEFINITION } from "./anims-wolf";
 import type { PrefabDefinition } from "../../definitions/prefab-definition";
-import { ActorPhysicalType } from "../../../entity/components/combat/components/actor-physical-type";
+import { ActorPhysicalType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/components/actor-physical-type";
 import { weaponDefinitions } from "../../../entity/components/combat/weapon-definitions";
 
 export const wolfDefinition = {

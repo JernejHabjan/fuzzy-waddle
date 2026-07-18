@@ -9,7 +9,7 @@ import { getActorComponent } from "../../../data/actor-component";
 import { emitResource } from "../../../data/scene-data";
 import { onObjectReady } from "../../../data/game-object-helper";
 import { OwnerComponent } from "../owner-component";
-import type { ResourceDrainDefinition } from "./resource-drain-definition";
+import type { ResourceDrainDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/resource/resource-drain-definition";
 import { waitForSimulationDuration } from "../../../world/services/simulation-time";
 type GameObject = Phaser.GameObjects.GameObject;
 

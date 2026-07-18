@@ -3,7 +3,7 @@ import { isGameObjectActiveInActiveScene, onObjectReady } from "../../../data/ga
 import { HealthComponent } from "../combat/components/health-component";
 import { moveGameObjectToRandomTileInNavigableRadius, MovementSystem } from "../../systems/movement.system";
 import { getActorSystem } from "../../../data/actor-system";
-import type { RandomMovementDefinition } from "./random-movement-definition";
+import type { RandomMovementDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/random-movement-definition";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { RandomService } from "../../../world/services/random.service";

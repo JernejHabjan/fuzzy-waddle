@@ -1,5 +1,5 @@
 type GameObject = Phaser.GameObjects.GameObject;
-import type { RequirementsDefinition } from "./requirements-definition";
+import type { RequirementsDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/requirements-definition";
 
 export class RequirementsComponent {
   // todo should use techTreeComponent maybe?

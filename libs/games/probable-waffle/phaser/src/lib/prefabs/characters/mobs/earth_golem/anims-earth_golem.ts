@@ -1,5 +1,5 @@
-import type { AnimationDefinitionMap } from "../../../../entity/components/animation/animation-definition-map";
-import { AnimationType } from "../../../../entity/components/animation/animation-type";
+import type { AnimationDefinitionMap } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-definition-map";
+import { AnimationType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-type";
 
 const ANIM_GOLEM1_ATTACK_E = "Golem1/Attack/e";
 const ANIM_GOLEM1_ATTACK_N = "Golem1/Attack/n";

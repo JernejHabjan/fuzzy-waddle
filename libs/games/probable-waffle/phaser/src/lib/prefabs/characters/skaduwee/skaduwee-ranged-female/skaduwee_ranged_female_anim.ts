@@ -1,5 +1,5 @@
-import { AnimationType } from "../../../../entity/components/animation/animation-type";
-import type { AnimationDefinitionMap } from "../../../../entity/components/animation/animation-definition-map";
+import { AnimationType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-type";
+import type { AnimationDefinitionMap } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-definition-map";
 
 const ANIM_RANGED_FEMALE_LVL1_HURT = "ranged_female_lvl1_long_range_hurt";
 const ANIM_RANGED_FEMALE_LVL1_IDLE = "ranged_female_lvl1_long_range_idle";

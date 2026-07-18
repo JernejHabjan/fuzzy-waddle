@@ -1,4 +1,4 @@
-import type { NavigablePath } from "../../../entity/components/movement/navigable-path";
+import type { NavigablePath } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/navigable-path";
 
 /**
  * Shared tile-adjacency model for Tivara elevated structures.

@@ -5,8 +5,8 @@
 /* START-USER-IMPORTS */
 import { setActorData } from "../../../../data/actor-data";
 import { ColliderComponent } from "../../../../entity/components/movement/collider-component";
-import { ObjectDescriptorComponent } from "../../../../entity/components/object-descriptor-component";
-import type { ObjectDescriptorDefinition } from "../../../../entity/components/object-descriptor-definition";
+import { ObjectDescriptorComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/object-descriptor-component";
+import type { ObjectDescriptorDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/object-descriptor-definition";
 /* END-USER-IMPORTS */
 
 export default class FenceLeftCorner extends Phaser.GameObjects.Image {

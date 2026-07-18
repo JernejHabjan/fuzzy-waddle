@@ -3,7 +3,7 @@ import { throttle } from "../../library/throttle";
 import { VisionComponent } from "../../entity/components/vision-component";
 import { getActorComponent } from "../../data/actor-component";
 import { getCurrentPlayerNumber } from "../../data/scene-data";
-import { IdComponent } from "../../entity/components/id-component";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import {
   getGameObjectBounds,
   getGameObjectVisibility,

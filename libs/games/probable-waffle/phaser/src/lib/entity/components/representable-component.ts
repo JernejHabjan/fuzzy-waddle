@@ -5,7 +5,7 @@ import { getActorComponent } from "../../data/actor-component";
 import { FlyingComponent } from "./movement/flying-component";
 import { DepthHelper } from "../../world/services/depth.helper";
 import { TilemapComponent } from "../../world/tilemap/tilemap.component";
-import type { RepresentableDefinition } from "./representable-definition";
+import type { RepresentableDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/representable-definition";
 import { getPwActorDefinition } from "../../prefabs/definitions/actor-definitions";
 import { environment } from "@fuzzy-waddle/environments/environment";
 import { getResearchedLevelForActor } from "../../data/actor-level-utils";

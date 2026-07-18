@@ -1,7 +1,7 @@
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { ActorsStoneSfxOutOfResourcesSounds, ActorsStoneSfxSelectionSounds } from "./sfx-stone";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
-import { SoundType } from "../../../../entity/components/actor-audio/sound-type";
+import { SoundType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/actor-audio/sound-type";
 
 export const stonePileDefinition = {
   components: {

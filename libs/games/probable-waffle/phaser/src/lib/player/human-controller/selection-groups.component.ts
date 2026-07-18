@@ -4,7 +4,7 @@ import { isGameObjectActiveInActiveScene, onSceneInitialized } from "../../data/
 import { CrossSceneCommunicationService } from "../../world/services/CrossSceneCommunicationService";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { getActorComponent } from "../../data/actor-component";
-import { IdComponent } from "../../entity/components/id-component";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import type { AllScenesEventData, SelectionGroupData } from "@fuzzy-waddle/probable-waffle-protocol";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import type { Subscription } from "rxjs";

@@ -11,7 +11,7 @@ import Resource from "./Resource";
 import { getCurrentPlayerNumber, getPlayer } from "../../../data/scene-data";
 import { getPwActorDefinition } from "../../definitions/actor-definitions";
 import type { TooltipInfo } from "./tooltip-info";
-import { researchDefinitions } from "../../../entity/components/research/research-definitions";
+import { researchDefinitions } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/research/research-definitions";
 import { getGameObjectBounds } from "../../../data/game-object-helper";
 /* END-USER-IMPORTS */
 

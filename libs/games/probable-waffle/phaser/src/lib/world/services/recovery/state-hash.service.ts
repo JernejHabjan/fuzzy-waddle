@@ -8,7 +8,7 @@ import { getSceneService } from "../scene-component-helpers";
 import { SimulationTickService } from "../simulation-tick.service";
 import { ActorIndexSystem } from "../ActorIndexSystem";
 import { getActorComponent } from "../../../data/actor-component";
-import { IdComponent } from "../../../entity/components/id-component";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
 import { AttackComponent } from "../../../entity/components/combat/components/attack-component";
 import { HealingComponent } from "../../../entity/components/combat/components/healing-component";

@@ -1,6 +1,6 @@
-import type { AnimationDefinitionMap } from "../../../../entity/components/animation/animation-definition-map";
+import type { AnimationDefinitionMap } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-definition-map";
 
-import { AnimationType } from "../../../../entity/components/animation/animation-type";
+import { AnimationType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-type";
 
 export const ANIM_VIKING_BOAT_DEFINITION: AnimationDefinitionMap = {
   [AnimationType.Idle]: {

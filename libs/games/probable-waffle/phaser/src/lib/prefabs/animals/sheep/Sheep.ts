@@ -9,9 +9,9 @@ import { getActorComponent } from "../../../data/actor-component";
 import { AudioActorComponent } from "../../../entity/components/actor-audio/audio-actor-component";
 import { AnimationActorComponent } from "../../../entity/components/animation/animation-actor-component";
 import { OrderType } from "../../../ai/order-type";
-import { SoundType } from "../../../entity/components/actor-audio/sound-type";
+import { SoundType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/actor-audio/sound-type";
 import { RandomMovementComponent } from "../../../entity/components/movement/random-movement.component";
-import type { RandomMovementDefinition } from "../../../entity/components/movement/random-movement-definition";
+import type { RandomMovementDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/random-movement-definition";
 /* END-USER-IMPORTS */
 
 export default class Sheep extends Phaser.GameObjects.Sprite {

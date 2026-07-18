@@ -1,5 +1,5 @@
-import type { AnimationDefinitionMap } from "../../../../entity/components/animation/animation-definition-map";
-import { AnimationType } from "../../../../entity/components/animation/animation-type";
+import type { AnimationDefinitionMap } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-definition-map";
+import { AnimationType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-type";
 
 const BRANCH_FULL_ANIMATION = "mobs_forest_wendigo_branch - full animation";
 const ATTACK_1_E = "mobs_forest_wendigo_wendigo - attack 1/e";

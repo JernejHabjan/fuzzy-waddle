@@ -9,7 +9,7 @@ import { getSceneComponent, getSceneService } from "../../world/services/scene-c
 import { TilemapComponent } from "../../world/tilemap/tilemap.component";
 import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { getActorComponent } from "../../data/actor-component";
-import { ObjectDescriptorComponent } from "../../entity/components/object-descriptor-component";
+import { ObjectDescriptorComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/object-descriptor-component";
 import { getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { OwnerComponent } from "../../entity/components/owner-component";
 import HudProbableWaffle from "../../world/scenes/hud-scenes/HudProbableWaffle";

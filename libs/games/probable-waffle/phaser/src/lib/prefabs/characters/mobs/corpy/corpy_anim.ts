@@ -1,5 +1,5 @@
-import { AnimationType } from "../../../../entity/components/animation/animation-type";
-import type { AnimationDefinitionMap } from "../../../../entity/components/animation/animation-definition-map";
+import { AnimationType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-type";
+import type { AnimationDefinitionMap } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-definition-map";
 
 const ATTACK_CLAW_CLAW_ATTACK_BOTTOM_LEFT = "corpy/attack_claw/Corpio_claw_attack_bottom_left";
 const ATTACK_CLAW_CLAW_ATTACK_UP_RIGHT = "corpy/attack_claw/Corpio_claw_attack_up_right";

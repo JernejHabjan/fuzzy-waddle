@@ -23,7 +23,7 @@ import { MovementSystem } from "../../entity/systems/movement.system";
 import { setFullActorDataFromName } from "../../data/actor-data";
 import { getPwActorDefinition } from "../../prefabs/definitions/actor-definitions";
 import { getActorComponent } from "../../data/actor-component";
-import { IdComponent } from "../../entity/components/id-component";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { getSceneService } from "./scene-component-helpers";
 import { ActorIndexSystem } from "./ActorIndexSystem";
 import { LoadGame } from "../../data/load-game";

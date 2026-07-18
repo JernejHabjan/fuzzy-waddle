@@ -8,7 +8,7 @@ import { OwnerComponent } from "../owner-component";
 import { ConstructionGameObjectInterfaceComponent } from "../construction/construction-game-object-interface-component";
 import { ActorDataChangedEvent } from "../../../data/actor-data";
 import type { Subscription } from "rxjs";
-import type { HousingDefinition } from "./housing-definition";
+import type { HousingDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/building/housing-definition";
 type GameObject = Phaser.GameObjects.GameObject;
 
 /**

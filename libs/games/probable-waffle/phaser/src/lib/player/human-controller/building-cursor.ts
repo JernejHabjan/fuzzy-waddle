@@ -14,7 +14,7 @@ import { Subscription } from "rxjs";
 import { TilemapComponent } from "../../world/tilemap/tilemap.component";
 import { getActorComponent } from "../../data/actor-component";
 import { ConstructionGameObjectInterfaceComponent } from "../../entity/components/construction/construction-game-object-interface-component";
-import { IdComponent } from "../../entity/components/id-component";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { getSceneComponent, getSceneService } from "../../world/services/scene-component-helpers";
 import { getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { NavigationService } from "../../world/services/navigation.service";

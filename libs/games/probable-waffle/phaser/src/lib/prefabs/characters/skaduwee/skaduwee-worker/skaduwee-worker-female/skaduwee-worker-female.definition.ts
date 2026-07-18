@@ -15,7 +15,7 @@ import {
 import { ANIM_SKADUWEE_WORKER_FEMALE_DEFINITION } from "./skaduwee_worker_female_anims";
 
 import type { PrefabDefinition } from "../../../../definitions/prefab-definition";
-import { SoundType } from "../../../../../entity/components/actor-audio/sound-type";
+import { SoundType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/actor-audio/sound-type";
 
 export const skaduweeWorkerFemaleDefinition = {
   ...skaduweeWorkerDefinition,

@@ -5,7 +5,7 @@ import { getPwActorDefinition } from "../../prefabs/definitions/actor-definition
 import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { HealthComponent } from "../components/combat/components/health-component";
-import { IdComponent } from "../components/id-component";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import type {
   CancelProductionCommand,
   CancelResearchCommand,
@@ -14,7 +14,7 @@ import type {
 } from "../../data/commands/game-command";
 import { ProductionComponent } from "../components/production/production-component";
 import { QueueComponent } from "../components/queue/queue-component";
-import { SharedQueueItemType } from "../components/queue/shared-queue-item-type";
+import { SharedQueueItemType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/shared-queue-item-type";
 import { ResearchComponent } from "../components/research/research-component";
 import { ProbableWaffleGameCommandTypes } from "@fuzzy-waddle/probable-waffle-protocol";
 

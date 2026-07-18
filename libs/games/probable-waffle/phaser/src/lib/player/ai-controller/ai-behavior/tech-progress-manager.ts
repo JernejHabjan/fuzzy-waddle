@@ -3,8 +3,8 @@ import { State } from "mistreevous";
 import { getActorComponent } from "../../../data/actor-component";
 import { ResearchComponent } from "../../../entity/components/research/research-component";
 import { SpellComponent } from "../../../entity/components/combat/components/spell-component";
-import { researchDefinitions } from "../../../entity/components/research/research-definitions";
-import { SpellType } from "../../../entity/components/combat/spell-type";
+import { researchDefinitions } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/research/research-definitions";
+import { SpellType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/spell-type";
 import { ResearchType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { dispatchResearchCommand } from "../../../data/commands/queue-command-dispatch";
 

@@ -1,5 +1,5 @@
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
-import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
+import { ActorPhysicalType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/components/actor-physical-type";
 
 export const healingTotemDefinition = {
   components: {

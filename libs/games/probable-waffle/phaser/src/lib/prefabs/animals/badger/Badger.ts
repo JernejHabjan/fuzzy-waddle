@@ -11,10 +11,10 @@ import { getActorSystem } from "../../../data/actor-system";
 import { onObjectReady } from "../../../data/game-object-helper";
 import { ActorTranslateComponent } from "../../../entity/components/movement/actor-translate-component";
 import { OrderType } from "../../../ai/order-type";
-import type { AnimationOptions } from "../../../entity/components/animation/animation-options";
-import type { PathMoveConfig } from "../../../entity/systems/path-move-config";
+import type { AnimationOptions } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-options";
+import type { PathMoveConfig } from "@fuzzy-waddle/probable-waffle-gameplay/entity/systems/path-move-config";
 import { RandomMovementComponent } from "../../../entity/components/movement/random-movement.component";
-import type { RandomMovementDefinition } from "../../../entity/components/movement/random-movement-definition";
+import type { RandomMovementDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/random-movement-definition";
 /* END-USER-IMPORTS */
 
 export default class Badger extends Phaser.GameObjects.Sprite {

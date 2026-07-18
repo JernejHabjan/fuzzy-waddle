@@ -2,8 +2,8 @@ type GameObject = Phaser.GameObjects.GameObject;
 import { getActorComponent } from "../../../data/actor-component";
 import { HealthComponent } from "../combat/components/health-component";
 import { NavigationService } from "../../../world/services/navigation.service";
-import type { NavigablePath } from "./navigable-path";
-import type { HeightDirectionPortDefinition, NavigableDefinition } from "./navigable-definition";
+import type { NavigablePath } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/navigable-path";
+import type { HeightDirectionPortDefinition, NavigableDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/navigable-definition";
 
 const ALL_DIRECTIONS_OPEN: Required<NavigablePath> = {
   top: true,

@@ -2,7 +2,7 @@ import { ActorsSheepSfxBleatSounds, ActorsSheepSfxScissorsSounds, ActorsSheepSfx
 import { ANIM_SHEEP_DEFINITION } from "./anims-sheep";
 
 import type { PrefabDefinition } from "../../definitions/prefab-definition";
-import { SoundType } from "../../../entity/components/actor-audio/sound-type";
+import { SoundType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/actor-audio/sound-type";
 
 export const sheepDefinition = {
   components: {

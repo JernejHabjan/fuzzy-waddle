@@ -1,8 +1,8 @@
 import type { Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
-import type { NavigablePath } from "../../entity/components/movement/navigable-path";
-import { NavigablePathDirection } from "../../entity/components/movement/navigable-path-direction";
+import type { NavigablePath } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/navigable-path";
+import { NavigablePathDirection } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/navigable-path-direction";
 import { NavigableComponent } from "../../entity/components/movement/navigable-component";
-import type { HeightDirectionPortDefinition } from "../../entity/components/movement/navigable-definition";
+import type { HeightDirectionPortDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/navigable-definition";
 import { getActorComponent } from "../../data/actor-component";
 import { getTileCoordsUnderObject } from "../../library/tile-under-object";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";

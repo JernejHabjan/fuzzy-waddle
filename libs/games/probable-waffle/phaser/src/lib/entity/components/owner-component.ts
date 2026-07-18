@@ -14,7 +14,7 @@ import { ConstructionSiteComponent } from "./construction/construction-site-comp
 import { VisionComponent } from "./vision-component";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
-import type { OwnerDefinition } from "./owner-definition";
+import type { OwnerDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/owner-definition";
 import { markGameObjectAmbientResponsive } from "../../world/services/lighting/lighting-game-object-meta";
 import { SceneLightingService } from "../../world/services/lighting/scene-lighting.service";
 

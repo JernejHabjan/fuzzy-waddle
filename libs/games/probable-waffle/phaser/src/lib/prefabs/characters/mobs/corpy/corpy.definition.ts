@@ -1,9 +1,9 @@
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 import { ANIM_CORPY_DEFINITION } from "./corpy_anim";
-import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
+import { ActorPhysicalType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/components/actor-physical-type";
 import { weaponDefinitions } from "../../../../entity/components/combat/weapon-definitions";
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import { PaymentType } from "../../../../entity/components/production/payment-type";
+import { PaymentType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/payment-type";
 import { AiType } from "../../../ai-agents/ai-type";
 
 export const corpyDefinition = {

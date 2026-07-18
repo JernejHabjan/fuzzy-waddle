@@ -1,8 +1,8 @@
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { ANIM_ZOMBIE2_DEFINITION } from "./zombie2_anim";
 import { weaponDefinitions } from "../../../../../entity/components/combat/weapon-definitions";
-import { ActorPhysicalType } from "../../../../../entity/components/combat/components/actor-physical-type";
-import { PaymentType } from "../../../../../entity/components/production/payment-type";
+import { ActorPhysicalType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/components/actor-physical-type";
+import { PaymentType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/payment-type";
 import { AiType } from "../../../../ai-agents/ai-type";
 import { type PrefabDefinition } from "../../../../definitions/prefab-definition";
 

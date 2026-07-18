@@ -44,17 +44,17 @@ import {
 import {
   type ConstructableCategory,
   ConstructableDefinition
-} from "../../../entity/components/construction/constructable-category";
+} from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/construction/constructable-category";
 import { SelectionTabHandler } from "../../../player/human-controller/selection-tab-handler";
 import type { ActorActionSetup } from "./actor-action-setup";
 import { SpellComponent } from "../../../entity/components/combat/components/spell-component";
 import { spellDefinitions } from "../../../entity/components/combat/spell-definitions";
 import { SpellCursor } from "../../../player/human-controller/spell-cursor";
-import type { SpellType } from "../../../entity/components/combat/spell-type";
+import type { SpellType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/spell-type";
 import { ResearchComponent } from "../../../entity/components/research/research-component";
-import { researchDefinitions } from "../../../entity/components/research/research-definitions";
+import { researchDefinitions } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/research/research-definitions";
 import { QueueComponent } from "../../../entity/components/queue/queue-component";
-import { QueueItemType } from "../../../entity/components/queue/queue-item";
+import { QueueItemType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/queue-item";
 import { ContainerComponent } from "../../../entity/components/building/container-component";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { isWaterUnit } from "../../../data/game-object-helper";

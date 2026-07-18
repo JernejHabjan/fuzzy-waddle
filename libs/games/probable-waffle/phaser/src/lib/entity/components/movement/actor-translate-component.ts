@@ -10,8 +10,8 @@ import { getSceneService } from "../../../world/services/scene-component-helpers
 import { NavigationService } from "../../../world/services/navigation.service";
 import { getActorComponent } from "../../../data/actor-component";
 import { RepresentableComponent } from "../representable-component";
-import type { IsoDirection } from "./iso-directions";
-import type { ActorTranslateDefinition } from "./actor-translate-definition";
+import type { IsoDirection } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/iso-directions";
+import type { ActorTranslateDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/actor-translate-definition";
 
 export class ActorTranslateComponent {
   private _actorMovedLogicalPosition: Subject<Vector3Simple> = new Subject<Vector3Simple>();

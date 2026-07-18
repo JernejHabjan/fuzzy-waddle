@@ -2,7 +2,7 @@ import Phaser from "phaser";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 import { getActorComponent } from "../../data/actor-component";
-import { IdComponent } from "../../entity/components/id-component";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import type { OrderData } from "../../ai/OrderData";
 import type { PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";

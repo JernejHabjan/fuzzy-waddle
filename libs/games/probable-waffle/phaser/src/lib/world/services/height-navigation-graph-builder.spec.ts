@@ -1,5 +1,5 @@
 import { NavigableComponent } from "../../entity/components/movement/navigable-component";
-import { NavigablePathDirection } from "../../entity/components/movement/navigable-path-direction";
+import { NavigablePathDirection } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/navigable-path-direction";
 import { STAIRS_PREFAB_DEFINITIONS, STAIRS_PREFAB_KEYS } from "../../prefabs/buildings/tivara/stairs/Stairs";
 import { WALL_PREFAB_DEFINITIONS, WALL_PREFAB_KEYS } from "../../prefabs/buildings/tivara/wall/Wall";
 import { getDynamicBlockedTileKeysForHeightGraph } from "./height-navigation-dynamic-blockers";

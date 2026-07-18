@@ -1,7 +1,7 @@
 import { OrderType } from "./order-type";
 import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { getActorComponent } from "../data/actor-component";
-import { IdComponent } from "../entity/components/id-component";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { getSceneService } from "../world/services/scene-component-helpers";
 import { ActorIndexSystem } from "../world/services/ActorIndexSystem";
 import { SimulationTickService } from "../world/services/simulation-tick.service";

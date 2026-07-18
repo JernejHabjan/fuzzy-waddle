@@ -3,10 +3,10 @@ import {
   ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_ACTION,
   ANIM_BUILDING_ICON_ANIMS_TIVARA_TEMPLE_IDLE
 } from "../../../icon-animations";
-import { PaymentType } from "../../../../entity/components/production/payment-type";
+import { PaymentType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/payment-type";
 import { coreConstructionSiteDefinition } from "../../shared/core-construction-site.definition";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
-import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
+import { ActorPhysicalType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/components/actor-physical-type";
 
 export const templeDefinition = {
   components: {

@@ -5,9 +5,9 @@ import { getSceneService } from "../../../world/services/scene-component-helpers
 import { OrderType } from "../../../ai/order-type";
 import { getActorComponent } from "../../../data/actor-component";
 import { GathererComponent } from "../resource/gatherer-component";
-import { SoundType } from "./sound-type";
-import type { AudioDefinition } from "./audio-definition";
-import type { SoundDefinition } from "./sound-definition";
+import { SoundType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/actor-audio/sound-type";
+import type { AudioDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/actor-audio/audio-definition";
+import type { SoundDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/actor-audio/sound-definition";
 import type { AdditionalAudioConfig } from "../../../world/services/additionalAudioConfig";
 
 export class AudioActorComponent {

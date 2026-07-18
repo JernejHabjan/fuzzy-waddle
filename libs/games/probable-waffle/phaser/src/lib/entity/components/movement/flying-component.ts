@@ -3,7 +3,7 @@ import { HealthComponent } from "../combat/components/health-component";
 import { Subscription } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
 import { ActorTranslateComponent } from "./actor-translate-component";
-import type { FlightDefinition } from "./flight-definition";
+import type { FlightDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/flight-definition";
 import { markGameObjectAmbientResponsive } from "../../../world/services/lighting/lighting-game-object-meta";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { SceneLightingService } from "../../../world/services/lighting/scene-lighting.service";

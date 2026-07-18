@@ -5,13 +5,13 @@ import { type Vector2Simple, type Vector3Simple } from "@fuzzy-waddle/platform-g
 import { filter, first } from "rxjs";
 import { GameObjects } from "phaser";
 import { SelectableComponent } from "../entity/components/selectable-component";
-import { IdComponent } from "../entity/components/id-component";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { getActorComponent, getActorComponents } from "./actor-component";
 import { RepresentableComponent } from "../entity/components/representable-component";
 import { getPwActorDefinition } from "../prefabs/definitions/actor-definitions";
 import { getResearchedLevelForActor } from "./actor-level-utils";
 import { ActorTranslateComponent } from "../entity/components/movement/actor-translate-component";
-import { MovementTerrainType } from "../entity/components/movement/movement-terrain-type";
+import { MovementTerrainType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/movement-terrain-type";
 import { FlyingComponent } from "../entity/components/movement/flying-component";
 
 /**

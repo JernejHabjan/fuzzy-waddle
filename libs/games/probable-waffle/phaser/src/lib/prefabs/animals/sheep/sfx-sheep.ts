@@ -1,5 +1,5 @@
 import { AudioSprites } from "../../../sfx/audio-sprites";
-import type { SoundDefinition } from "../../../entity/components/actor-audio/sound-definition";
+import type { SoundDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/actor-audio/sound-definition";
 
 enum SheepSfx {
   SHEEP_BLEAT_1 = "sheep bleat 1",

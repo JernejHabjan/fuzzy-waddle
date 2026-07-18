@@ -1,4 +1,4 @@
-import { GatherData } from "./gather-data";
+import { GatherData } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/resource/gather-data";
 import { ResourceSourceComponent } from "./resource-source-component";
 import { DistanceHelper } from "../../../library/distance-helper";
 import { Subject, type Subscription } from "rxjs";
@@ -25,13 +25,13 @@ import {
   onObjectReady
 } from "../../../data/game-object-helper";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
-import { AnimationType } from "../animation/animation-type";
-import { SoundType } from "../actor-audio/sound-type";
+import { AnimationType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-type";
+import { SoundType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/actor-audio/sound-type";
 import { isCropResourceSource } from "../tendable/growth-stage.interface";
-import type { SoundDefinition } from "../actor-audio/sound-definition";
-import type { GathererDefinition } from "./gatherer-definition";
+import type { SoundDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/actor-audio/sound-definition";
+import type { GathererDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/resource/gatherer-definition";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
-import { IdComponent } from "../id-component";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 type GameObject = Phaser.GameObjects.GameObject;
 
 export class GathererComponent {

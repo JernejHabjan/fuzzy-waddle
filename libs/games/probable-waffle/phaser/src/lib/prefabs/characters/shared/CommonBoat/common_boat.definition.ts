@@ -1,10 +1,10 @@
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import { PaymentType } from "../../../../entity/components/production/payment-type";
+import { PaymentType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/payment-type";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
-import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
+import { ActorPhysicalType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/components/actor-physical-type";
 import { AiType } from "../../../ai-agents/ai-type";
 import { ANIM_COMMON_BOAT_DEFINITION } from "./common_boat_anims";
-import { MovementTerrainType } from "../../../../entity/components/movement/movement-terrain-type";
+import { MovementTerrainType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/movement-terrain-type";
 
 export const commonBoatDefinition = {
   components: {

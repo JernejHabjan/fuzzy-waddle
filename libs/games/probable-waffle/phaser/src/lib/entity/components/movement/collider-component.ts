@@ -2,7 +2,7 @@ import { HealthComponent } from "../combat/components/health-component";
 import { removeActorComponent } from "../../../data/actor-data";
 import { onObjectReady } from "../../../data/game-object-helper";
 import { NavigationService } from "../../../world/services/navigation.service";
-import type { ColliderDefinition } from "./collider-definition";
+import type { ColliderDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/collider-definition";
 
 export class ColliderComponent {
   constructor(

@@ -1,5 +1,5 @@
-import { AnimationType } from "../../../../entity/components/animation/animation-type";
-import type { AnimationDefinitionMap } from "../../../../entity/components/animation/animation-definition-map";
+import { AnimationType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-type";
+import type { AnimationDefinitionMap } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-definition-map";
 const ANIM_MACEMAN_MALE_LVL1_HURT = "maceman_male_lvl1_hurt";
 const ANIM_MACEMAN_MALE_LVL1_IDLE = "maceman_male_lvl1_idle";
 const ANIM_MACEMAN_MALE_LVL1_IDLE_1 = "maceman_male_lvl1_idle_1";

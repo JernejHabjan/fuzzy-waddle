@@ -14,7 +14,7 @@ import {
   SkaduweeWorkerMaleSfxSelectionSounds
 } from "./SkaduweeWorkerMaleSfx";
 import type { PrefabDefinition } from "../../../../definitions/prefab-definition";
-import { SoundType } from "../../../../../entity/components/actor-audio/sound-type";
+import { SoundType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/actor-audio/sound-type";
 
 export const skaduweeWorkerMaleDefinition = {
   ...skaduweeWorkerDefinition,

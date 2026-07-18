@@ -1,5 +1,5 @@
-import { AnimationType } from "../../../entity/components/animation/animation-type";
-import type { AnimationDefinitionMap } from "../../../entity/components/animation/animation-definition-map";
+import { AnimationType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-type";
+import type { AnimationDefinitionMap } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-definition-map";
 
 const ANIM_STAG_IDLE_NE = "stag/idle/ne";
 const ANIM_STAG_IDLE_NW = "stag/idle/nw";

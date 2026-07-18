@@ -8,18 +8,18 @@ import {
   SkaduweeMagicianSfxSelectionSounds
 } from "./SkaduweeMagicianSfx";
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import { PaymentType } from "../../../../entity/components/production/payment-type";
+import { PaymentType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/payment-type";
 import {
   ANIM_SKADUWEE_MAGICIAN_FEMALE_DEFINITION_LEVEL_1,
   ANIM_SKADUWEE_MAGICIAN_FEMALE_DEFINITION_LEVEL_2,
   ANIM_SKADUWEE_MAGICIAN_FEMALE_DEFINITION_LEVEL_3
 } from "./skaduwee_magician_female_anim";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
-import { SoundType } from "../../../../entity/components/actor-audio/sound-type";
-import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
+import { SoundType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/actor-audio/sound-type";
+import { ActorPhysicalType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/components/actor-physical-type";
 import { weaponDefinitions } from "../../../../entity/components/combat/weapon-definitions";
 import { AiType } from "../../../ai-agents/ai-type";
-import { SpellType } from "../../../../entity/components/combat/spell-type";
+import { SpellType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/spell-type";
 
 export const skaduweeMagicianFemaleDefinition = {
   components: {

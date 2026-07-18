@@ -11,7 +11,7 @@ import { Scene } from "phaser";
 import { ProbableWaffleScene } from "../core/probable-waffle.scene";
 import type { ProbableWaffleCommunicatorServiceInterface } from "../core/ports/probable-waffle-communicator";
 import { getActorComponent, hasActorComponent } from "./actor-component";
-import { IdComponent } from "../entity/components/id-component";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { Observable } from "rxjs";
 import GameProbableWaffleScene from "../world/scenes/GameProbableWaffleScene";
 import { BaseScene } from "@fuzzy-waddle/platform-game-host/phaser/scene/base.scene";

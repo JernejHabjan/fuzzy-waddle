@@ -1,6 +1,6 @@
 type GameObject = Phaser.GameObjects.GameObject;
 import { getActorComponent } from "../../data/actor-component";
-import { IdComponent } from "../../entity/components/id-component";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { OwnerComponent } from "../../entity/components/owner-component";
 import { ResourceSourceComponent } from "../../entity/components/resource/resource-source-component";
 import { ResourceDrainComponent } from "../../entity/components/resource/resource-drain-component";

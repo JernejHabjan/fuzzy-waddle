@@ -2,7 +2,7 @@ import { getActorComponent, hasActorComponent } from "../data/actor-component";
 import { ProductionComponent } from "../entity/components/production/production-component";
 import { ContainerComponent } from "../entity/components/building/container-component";
 import { OwnerComponent } from "../entity/components/owner-component";
-import { ObjectDescriptorComponent } from "../entity/components/object-descriptor-component";
+import { ObjectDescriptorComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/object-descriptor-component";
 type GameObject = Phaser.GameObjects.GameObject;
 import type { PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 

@@ -1,4 +1,4 @@
-import type { LevelDefinition } from "./level-definition";
+import type { LevelDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/level/level-definition";
 
 export class LevelComponent {
   static readonly LevelChangedEvent = "LevelChanged";

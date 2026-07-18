@@ -1,8 +1,8 @@
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import { PaymentType } from "../../../../entity/components/production/payment-type";
+import { PaymentType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/payment-type";
 import { ANIM_GENERAL_WARRIOR_DEFINITION } from "./warrior_anim";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
-import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
+import { ActorPhysicalType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/components/actor-physical-type";
 import { weaponDefinitions } from "../../../../entity/components/combat/weapon-definitions";
 import { AiType } from "../../../ai-agents/ai-type";
 

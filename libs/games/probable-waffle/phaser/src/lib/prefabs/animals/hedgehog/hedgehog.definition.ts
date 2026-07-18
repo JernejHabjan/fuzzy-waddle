@@ -2,7 +2,7 @@ import { ActorsHedgehogSfxAngrySounds, ActorsHedgehogSfxSelectionSounds } from "
 import { ANIM_HEDGEHOG_DEFINITION } from "./anims-hedgehog";
 
 import type { PrefabDefinition } from "../../definitions/prefab-definition";
-import { SoundType } from "../../../entity/components/actor-audio/sound-type";
+import { SoundType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/actor-audio/sound-type";
 
 export const hedgehogDefinition = {
   components: {

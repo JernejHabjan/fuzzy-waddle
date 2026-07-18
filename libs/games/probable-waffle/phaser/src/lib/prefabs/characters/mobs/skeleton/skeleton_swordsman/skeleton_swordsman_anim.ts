@@ -1,5 +1,5 @@
-import { type AnimationDefinitionMap } from "../../../../../entity/components/animation/animation-definition-map";
-import { AnimationType } from "../../../../../entity/components/animation/animation-type";
+import { type AnimationDefinitionMap } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-definition-map";
+import { AnimationType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-type";
 
 const ANIM_SKELETON_SWORDSMAN_HURT = "skeleton_swordsman_hurt";
 const ANIM_SKELETON_SWORDSMAN_IDLE = "skeleton_swordsman_idle";

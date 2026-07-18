@@ -22,7 +22,7 @@ import { HealthComponent } from "../../entity/components/combat/components/healt
 import HudProbableWaffle from "../../world/scenes/hud-scenes/HudProbableWaffle";
 import { OwnerComponent } from "../../entity/components/owner-component";
 import { findProductionBuildingWithLeastRemainingTime } from "../../entity/components/production/production-helpers";
-import { IdComponent } from "../../entity/components/id-component";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 import { NavigationService } from "../../world/services/navigation.service";
 import { dispatchProductionCommand } from "../../data/commands/queue-command-dispatch";

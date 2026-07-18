@@ -1,7 +1,7 @@
 import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
 import { getActorComponent } from "../../../data/actor-component";
 import { getGameObjectLogicalTransform } from "../../../data/game-object-helper";
-import { IdComponent } from "../../../entity/components/id-component";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { OwnerComponent } from "../../../entity/components/owner-component";
 import { SimulationTickService } from "../simulation-tick.service";
 import { getSceneService } from "../scene-component-helpers";

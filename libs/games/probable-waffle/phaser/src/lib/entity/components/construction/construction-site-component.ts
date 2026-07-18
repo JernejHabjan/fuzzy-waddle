@@ -1,4 +1,4 @@
-import { PaymentType } from "../production/payment-type";
+import { PaymentType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/payment-type";
 import {
   type ConstructionSiteComponentData,
   ConstructionStateEnum,
@@ -23,9 +23,9 @@ import {
   SharedActorActionsSfxSelectionSounds
 } from "../../../sfx/shared-actor-actions-sfx";
 import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller";
-import type { ConstructionSiteDefinition } from "./construction-site-definition";
-import type { ProductionCostDefinition } from "../production/production-cost-definition";
-import { IdComponent } from "../id-component";
+import type { ConstructionSiteDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/construction/construction-site-definition";
+import type { ProductionCostDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/production-cost-definition";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { ProbableWaffleSceneEventName } from "../../../world/services/recovery/probable-waffle-scene-events";

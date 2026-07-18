@@ -12,7 +12,7 @@ import { ActorIndexSystem } from "../ActorIndexSystem";
 import { SceneActorCreator } from "../scene-actor-creator";
 import { SelectionGroupsComponent } from "../../../player/human-controller/selection-groups.component";
 import { getActorComponent } from "../../../data/actor-component";
-import { IdComponent } from "../../../entity/components/id-component";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { OwnerComponent } from "../../../entity/components/owner-component";
 import { getGameObjectLogicalTransform } from "../../../data/game-object-helper";
 import { applyActorDefinitionToActor } from "../../../data/actor-data";

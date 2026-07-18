@@ -30,8 +30,8 @@ import GroundCarrot from "../../outside/crops/ground/carrot/GroundCarrot";
 import GroundBoletus from "../../outside/crops/ground/boletus/GroundBoletus";
 import GroundChampignons from "../../outside/crops/ground/champignons/GroundChampignons";
 import GroundTurnip from "../../outside/crops/ground/turnip/GroundTurnip";
-import type { AnimationType } from "../../../entity/components/animation/animation-type";
-import type { SoundType } from "../../../entity/components/actor-audio/sound-type";
+import type { AnimationType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-type";
+import type { SoundType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/actor-audio/sound-type";
 /* END-USER-IMPORTS */
 
 export default class Field extends Phaser.GameObjects.Container implements CropResourceSourceInterface {

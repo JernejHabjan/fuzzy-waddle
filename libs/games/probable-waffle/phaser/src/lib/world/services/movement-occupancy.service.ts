@@ -4,7 +4,7 @@ import { isGameObjectActiveInActiveScene } from "../../data/game-object-helper";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { ActorTranslateComponent } from "../../entity/components/movement/actor-translate-component";
 import { FlyingComponent } from "../../entity/components/movement/flying-component";
-import { IdComponent } from "../../entity/components/id-component";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { RepresentableComponent } from "../../entity/components/representable-component";
 import { getTileCoordsUnderObject, getTileCoordsUnderObjectAtTile } from "../../library/tile-under-object";
 import { TilemapComponent } from "../tilemap/tilemap.component";

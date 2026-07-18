@@ -1,5 +1,5 @@
-import { AnimationType } from "../../../../entity/components/animation/animation-type";
-import type { AnimationDefinitionMap } from "../../../../entity/components/animation/animation-definition-map";
+import { AnimationType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-type";
+import type { AnimationDefinitionMap } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-definition-map";
 
 const ANIM_CYCLOPS_HURT = "cyclops_hurt";
 const ANIM_CYCLOPS_IDLE_UP = "cyclops_idle";

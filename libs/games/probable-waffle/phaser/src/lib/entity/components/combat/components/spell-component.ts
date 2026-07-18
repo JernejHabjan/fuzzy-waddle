@@ -1,7 +1,7 @@
 import { GameEventEmitter as EventEmitter } from "@fuzzy-waddle/platform-game-host";
 import type { Subscription } from "rxjs";
-import { SpellType } from "../spell-type";
-import type { SpellData } from "../spell-data";
+import { SpellType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/spell-type";
+import type { SpellData } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/spell-data";
 import { spellDefinitions } from "../spell-definitions";
 import { type SpellComponentData } from "@fuzzy-waddle/probable-waffle-protocol";
 import Phaser from "phaser";

@@ -6,15 +6,15 @@ import { Subscription } from "rxjs";
 import { HealthComponent } from "../combat/components/health-component";
 import { AttackComponent } from "../combat/components/attack-component";
 import { GathererComponent } from "../resource/gatherer-component";
-import { AnimationType } from "./animation-type";
-import { AnimationVariant } from "./animation-variant";
-import type { IsoDirection } from "../movement/iso-directions";
-import { oneTimeAnimations } from "./one-time-animations";
-import type { ActorAnimationsDefinition } from "./actor-animations-definition";
-import type { AnimationOptions } from "./animation-options";
+import { AnimationType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-type";
+import { AnimationVariant } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-variant";
+import type { IsoDirection } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/iso-directions";
+import { oneTimeAnimations } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/one-time-animations";
+import type { ActorAnimationsDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/actor-animations-definition";
+import type { AnimationOptions } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-options";
 import { environment } from "@fuzzy-waddle/environments/environment";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { AnimationDefinitionMap } from "./animation-definition-map";
+import type { AnimationDefinitionMap } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-definition-map";
 
 export class AnimationActorComponent {
   private sprite?: Phaser.GameObjects.Sprite;

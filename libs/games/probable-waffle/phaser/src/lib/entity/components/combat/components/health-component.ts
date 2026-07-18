@@ -27,14 +27,14 @@ import {
   SharedActorActionsSfxBuildingDestroySounds
 } from "../../../../sfx/shared-actor-actions-sfx";
 import { VisionComponent } from "../../vision-component";
-import { AnimationType } from "../../animation/animation-type";
-import { SoundType } from "../../actor-audio/sound-type";
-import { ActorPhysicalType } from "./actor-physical-type";
-import type { SoundDefinition } from "../../actor-audio/sound-definition";
-import type { HealthDefinition } from "./health-definition";
+import { AnimationType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-type";
+import { SoundType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/actor-audio/sound-type";
+import { ActorPhysicalType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/components/actor-physical-type";
+import type { SoundDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/actor-audio/sound-definition";
+import type { HealthDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/components/health-definition";
 import { BuildingDestructionEffect } from "../../building/building-destruction-effect";
 import { FadeOutComponent } from "../../building/fade-out-component";
-import type { FadeOutDefinition } from "../../building/fade-out-definition";
+import type { FadeOutDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/building/fade-out-definition";
 import { SimulationTickService } from "../../../../world/services/simulation-tick.service";
 import { CancelableSimDelay, getSimulationNow } from "../../../../world/services/simulation-time";
 import { ProbableWaffleSceneEventName } from "../../../../world/services/recovery/probable-waffle-scene-events";

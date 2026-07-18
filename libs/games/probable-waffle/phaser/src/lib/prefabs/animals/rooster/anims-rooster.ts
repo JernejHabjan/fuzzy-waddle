@@ -1,5 +1,5 @@
-import { AnimationType } from "../../../entity/components/animation/animation-type";
-import type { AnimationDefinitionMap } from "../../../entity/components/animation/animation-definition-map";
+import { AnimationType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-type";
+import type { AnimationDefinitionMap } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-definition-map";
 
 const ANIM_ROOSTER_ROOSTER_IDLE_BACK_ROOSTER__BACK_IDLE = "Rooster/Rooster_Idle/back/Rooster__back_Idle";
 const ANIM_ROOSTER_ROOSTER_IDLE_FRONT_ROOSTER__FRONT_IDLE = "Rooster/Rooster_Idle/front/Rooster__front_Idle";

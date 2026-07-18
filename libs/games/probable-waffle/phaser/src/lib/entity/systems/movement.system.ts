@@ -30,13 +30,13 @@ import {
 } from "../../sfx/shared-actor-actions-sfx";
 import { AnimationActorComponent } from "../components/animation/animation-actor-component";
 import { FlyingComponent } from "../components/movement/flying-component";
-import { MovementTerrainType } from "../components/movement/movement-terrain-type";
+import { MovementTerrainType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/movement-terrain-type";
 import { RepresentableComponent } from "../components/representable-component";
-import { IdComponent } from "../components/id-component";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { StatusEffectComponent } from "../components/status-effect/status-effect-component";
 import { TilemapComponent } from "../../world/tilemap/tilemap.component";
-import type { IsoDirection } from "../components/movement/iso-directions";
-import type { PathMoveConfig } from "./path-move-config";
+import type { IsoDirection } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/iso-directions";
+import type { PathMoveConfig } from "@fuzzy-waddle/probable-waffle-gameplay/entity/systems/path-move-config";
 import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 import { getInterpolatedSimulationNow } from "../../world/services/simulation-time";
 import { MovementOccupancyService } from "../../world/services/movement-occupancy.service";

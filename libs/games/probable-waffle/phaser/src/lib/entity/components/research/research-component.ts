@@ -1,5 +1,5 @@
 import { GameEventEmitter as EventEmitter } from "@fuzzy-waddle/platform-game-host";
-import { researchDefinitions } from "./research-definitions";
+import { researchDefinitions } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/research/research-definitions";
 import { OwnerComponent } from "../owner-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { emitResource, getPlayer } from "../../../data/scene-data";
@@ -8,7 +8,7 @@ import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 import { onObjectReady } from "../../../data/game-object-helper";
 import { ObjectNames, type ResearchComponentData, type ResearchType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { QueueComponent } from "../queue/queue-component";
-import { QueueItemType, type UnifiedQueueItem } from "../queue/queue-item";
+import { QueueItemType, type UnifiedQueueItem } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/queue-item";
 import Phaser from "phaser";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { upgradeActorToLevel } from "../../../data/actor-level-utils";

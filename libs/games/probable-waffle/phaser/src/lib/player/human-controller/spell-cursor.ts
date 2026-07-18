@@ -1,7 +1,7 @@
 import { GameObjects, Input } from "phaser";
 import { isFullscreenTopEdgeExit } from "./fullscreen-edge-guard";
 import { GameEventEmitter as EventEmitter } from "@fuzzy-waddle/platform-game-host";
-import { SpellType } from "../../entity/components/combat/spell-type";
+import { SpellType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/spell-type";
 import { spellDefinitions } from "../../entity/components/combat/spell-definitions";
 import { TilemapComponent } from "../../world/tilemap/tilemap.component";
 import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";

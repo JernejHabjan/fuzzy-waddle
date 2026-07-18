@@ -7,7 +7,7 @@ import { getCostForObjectName } from "../../../entity/components/production/cost
 import { ProductionValidator } from "../../../data/tech-tree/production-validator";
 import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
-import { AI_CONFIG } from "../ai-config";
+import { AI_CONFIG } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/ai-config";
 import { FlyingComponent } from "../../../entity/components/movement/flying-component";
 import { AdaptiveThresholdManager } from "./adaptive-threshold-manager";
 import { getUnitStrength } from "../ai-utils";

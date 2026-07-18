@@ -1,7 +1,7 @@
-import { WeaponType } from "./weapon-type";
-import { ProjectileType } from "./projectile-type";
+import { WeaponType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/weapon-type";
+import { ProjectileType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/projectile-type";
 import { EffectsAnims } from "../../../animations/effects";
-import { AnimationType } from "../animation/animation-type";
+import { AnimationType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-type";
 import {
   SharedActorActionsSfxArrowHitSounds,
   SharedActorActionsSfxArrowShootMultipleSounds,

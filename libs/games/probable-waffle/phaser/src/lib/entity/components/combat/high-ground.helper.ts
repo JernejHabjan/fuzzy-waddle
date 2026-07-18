@@ -1,5 +1,5 @@
-import type { AttackData } from "./attack-data";
-import { HIGH_GROUND_THRESHOLD } from "./high-ground-constants";
+import type { AttackData } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/attack-data";
+import { HIGH_GROUND_THRESHOLD } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/high-ground-constants";
 import { getActorComponent } from "../../../data/actor-component";
 import { RepresentableComponent } from "../representable-component";
 

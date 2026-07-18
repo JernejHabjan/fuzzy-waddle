@@ -6,8 +6,8 @@
 /* START-USER-IMPORTS */
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { GrowthStageInterface } from "../../../../entity/components/tendable/growth-stage.interface";
-import { AnimationType } from "../../../../entity/components/animation/animation-type";
-import { SoundType } from "../../../../entity/components/actor-audio/sound-type";
+import { AnimationType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-type";
+import { SoundType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/actor-audio/sound-type";
 /* END-USER-IMPORTS */
 
 export default class CropsBeans extends Phaser.GameObjects.Image implements GrowthStageInterface {

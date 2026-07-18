@@ -1,4 +1,4 @@
-import type { ConstructionSiteDefinition } from "../../../entity/components/construction/construction-site-definition";
+import type { ConstructionSiteDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/construction/construction-site-definition";
 
 export const coreConstructionSiteDefinition: ConstructionSiteDefinition = {
   consumesBuilders: false,

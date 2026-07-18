@@ -2,7 +2,7 @@ import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { filter, Subscription } from "rxjs";
 import { getActorComponent } from "../../data/actor-component";
 import { getGameObjectBounds } from "../../data/game-object-helper";
-import { IdComponent } from "../../entity/components/id-component";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import {
   emitEventSelection,
   getCurrentPlayerNumber,
@@ -23,7 +23,7 @@ type GameObject = Phaser.GameObjects.GameObject;
 import { getPwActorDefinition, pwActorDefinitions } from "../../prefabs/definitions/actor-definitions";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { PlayerActionsHandler } from "./player-actions-handler";
-import { SoundType } from "../../entity/components/actor-audio/sound-type";
+import { SoundType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/actor-audio/sound-type";
 import { ContainableComponent } from "../../entity/components/building/containable-component";
 import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 

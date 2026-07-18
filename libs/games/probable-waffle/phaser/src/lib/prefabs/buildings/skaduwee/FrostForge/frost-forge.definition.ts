@@ -1,9 +1,9 @@
 import { ANIM_BUILDING_ICON_ANIMS_SKADUWEE_FROST_FORGE } from "../../../icon-animations";
 import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import { PaymentType } from "../../../../entity/components/production/payment-type";
+import { PaymentType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/payment-type";
 import { coreConstructionSiteDefinition } from "../../shared/core-construction-site.definition";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
-import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
+import { ActorPhysicalType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/components/actor-physical-type";
 
 export const frostForgeDefinition = {
   components: {

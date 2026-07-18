@@ -16,11 +16,11 @@ import { AnimationActorComponent } from "../animation/animation-actor-component"
 import { OrderType } from "../../../ai/order-type";
 import { ActorTranslateComponent } from "../movement/actor-translate-component";
 import { DistanceHelper } from "../../../library/distance-helper";
-import { IdComponent } from "../id-component";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
-import { ConstructableDefinition } from "./constructable-category";
-import type { AnimationOptions } from "../animation/animation-options";
-import type { BuilderDefinition } from "./builder-definition";
+import { ConstructableDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/construction/constructable-category";
+import type { AnimationOptions } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-options";
+import type { BuilderDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/construction/builder-definition";
 type GameObject = Phaser.GameObjects.GameObject;
 import { TilemapComponent } from "../../../world/tilemap/tilemap.component";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";

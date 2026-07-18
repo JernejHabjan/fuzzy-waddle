@@ -1,5 +1,5 @@
-import { AnimationType } from "../../../entity/components/animation/animation-type";
-import type { AnimationDefinitionMap } from "../../../entity/components/animation/animation-definition-map";
+import { AnimationType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-type";
+import type { AnimationDefinitionMap } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-definition-map";
 
 const ANIM_BOAR_ATTACK_BACK_BOAR_BACK_ATTACK = "Boar/Attack/back/Boar_back_Attack";
 const ANIM_BOAR_ATTACK_FRONT_BOAR_FRONT_ATTACK = "Boar/Attack/front/Boar_front_Attack";

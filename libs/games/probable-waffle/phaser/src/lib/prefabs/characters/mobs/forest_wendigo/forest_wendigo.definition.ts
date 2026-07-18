@@ -1,10 +1,10 @@
 import { ANIM_FOREST_WENDIGO_DEFINITION } from "./anims-forest_wendigo";
 import type { PrefabDefinition } from "../../../definitions/prefab-definition";
-import { ActorPhysicalType } from "../../../../entity/components/combat/components/actor-physical-type";
+import { ActorPhysicalType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/components/actor-physical-type";
 import { weaponDefinitions } from "../../../../entity/components/combat/weapon-definitions";
-import { SpellType } from "../../../../entity/components/combat/spell-type";
+import { SpellType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/spell-type";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import { PaymentType } from "../../../../entity/components/production/payment-type";
+import { PaymentType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/payment-type";
 import { AiType } from "../../../ai-agents/ai-type";
 
 export const wendigoDefinition = {

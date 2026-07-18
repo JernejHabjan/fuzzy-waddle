@@ -3,7 +3,7 @@ import { type PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 import { getActorComponent } from "../actor-component";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
-import { IdComponent } from "../../entity/components/id-component";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { findProductionBuildingGameObjectWithLeastRemainingTime } from "../../entity/components/production/production-helpers";
 
 function getCommandBus(scene: Phaser.Scene): CommandBusService | null {

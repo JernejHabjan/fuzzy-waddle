@@ -13,7 +13,7 @@ import { getActorComponent } from "../../../data/actor-component";
 import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
 import { getUnitStrength } from "../ai-utils";
 import { DistanceHelper } from "../../../library/distance-helper";
-import { AI_CONFIG } from "../ai-config";
+import { AI_CONFIG } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/ai-config";
 import { getResearchedLevelForActor } from "../../../data/actor-level-utils";
 import { ContainableComponent } from "../../../entity/components/building/containable-component";
 import { isSceneActive } from "../../../data/game-object-helper";

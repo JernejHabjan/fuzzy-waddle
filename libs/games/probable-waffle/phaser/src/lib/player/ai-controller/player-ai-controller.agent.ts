@@ -1,5 +1,5 @@
 import { State } from "mistreevous";
-import { type IPlayerControllerAgent } from "./player-ai-controller.agent.interface";
+import { type IPlayerControllerAgent } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/player-ai-controller.agent.interface";
 import { FactionType, ObjectNames, ProbableWafflePlayer, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { type Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { environment } from "@fuzzy-waddle/environments/environment";
@@ -21,11 +21,11 @@ import { DistanceHelper } from "../../library/distance-helper";
 import { MapAnalyzer } from "./ai-behavior/map-analyzer";
 import { BasePlanner } from "./ai-behavior/base-planner";
 import { CooldownManager } from "./cooldown-manager";
-import { makeHysteresisTracker } from "./hysteresis-threshold";
+import { makeHysteresisTracker } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/hysteresis-threshold";
 import { ForceMaintenanceManager } from "./ai-behavior/force-maintenance-manager";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import { ProductionValidator } from "../../data/tech-tree/production-validator";
-import { AI_CONFIG } from "./ai-config";
+import { AI_CONFIG } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/ai-config";
 import { RandomService } from "../../world/services/random.service";
 import { RepairManager } from "./ai-behavior/repair-manager";
 import { dispatchProductionCommand, dispatchResearchCommand } from "../../data/commands/queue-command-dispatch";
@@ -43,7 +43,7 @@ import { WorldStateSnapshotManager } from "./ai-behavior/world-state-snapshot-ma
 import { getUnitStrength } from "./ai-utils";
 import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 import { dispatchAiOrder } from "./dispatch-ai-order";
-import { IdComponent } from "../../entity/components/id-component";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 type GameObject = Phaser.GameObjects.GameObject;
 

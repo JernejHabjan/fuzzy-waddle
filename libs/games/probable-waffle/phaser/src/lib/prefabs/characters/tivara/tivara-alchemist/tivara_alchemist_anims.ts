@@ -1,5 +1,5 @@
-import { AnimationType } from "../../../../entity/components/animation/animation-type";
-import type { AnimationDefinitionMap } from "../../../../entity/components/animation/animation-definition-map";
+import { AnimationType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-type";
+import type { AnimationDefinitionMap } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-definition-map";
 
 const ANIM_ALCHEMIST_IDLE_UP = "idle_up";
 const ANIM_ALCHEMIST_IDLE_LEFT = "idle_left";

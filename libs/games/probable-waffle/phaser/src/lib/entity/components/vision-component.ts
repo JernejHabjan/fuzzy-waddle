@@ -5,8 +5,8 @@ import { OwnerComponent } from "./owner-component";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import { type VisionComponentData } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { VisionDefinition } from "./vision-definition";
-import { IdComponent } from "./id-component";
+import type { VisionDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/vision-definition";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 
 export class VisionComponent {
   private visibleEnemies?: GameObject[];

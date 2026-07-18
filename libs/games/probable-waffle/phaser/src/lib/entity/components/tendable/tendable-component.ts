@@ -2,7 +2,7 @@ import { Subject, type Subscription } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
 import { ResourceSourceComponent } from "../resource/resource-source-component";
 import { onObjectReady } from "../../../data/game-object-helper";
-import type { TendableDefinition } from "./tendable-definition";
+import type { TendableDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/tendable/tendable-definition";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 type GameObject = Phaser.GameObjects.GameObject;

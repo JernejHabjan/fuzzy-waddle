@@ -4,7 +4,7 @@ import { onObjectReady } from "../../../data/game-object-helper";
 import { HealthComponent } from "../combat/components/health-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "../owner-component";
-import type { HousingCostDefinition } from "./housing-cost-definition";
+import type { HousingCostDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/building/housing-cost-definition";
 
 /**
  * Component that provides housing capacity to buildings

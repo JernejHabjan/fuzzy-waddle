@@ -1,9 +1,9 @@
-import { PaymentType } from "./payment-type";
+import { PaymentType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/payment-type";
 import { OwnerComponent } from "../owner-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { emitResource, getPlayer } from "../../../data/scene-data";
 import { QueueComponent } from "../queue/queue-component";
-import { QueueItemType, type UnifiedQueueItem } from "../queue/queue-item";
+import { QueueItemType, type UnifiedQueueItem } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/queue-item";
 import {
   ProbableWaffleGameCommandTypes,
   type ProductionComponentData,
@@ -18,17 +18,17 @@ import { Subject, Subscription } from "rxjs";
 import RallyPoint from "../../../prefabs/buildings/misc/RallyPoint";
 import { ConstructionSiteComponent } from "../construction/construction-site-component";
 import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
-import type { ProductionProgressEvent, ProductionQueueChangeEvent } from "./production-events";
-import type { ProductionQueueItem } from "./game-object";
-import type { ProductionDefinition } from "./production-definition";
-import { AssignProductionErrorCode } from "./assign-production-error-code";
-import type { ProductionCostDefinition } from "./production-cost-definition";
+import type { ProductionProgressEvent, ProductionQueueChangeEvent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/production-events";
+import type { ProductionQueueItem } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/game-object";
+import type { ProductionDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/production-definition";
+import { AssignProductionErrorCode } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/assign-production-error-code";
+import type { ProductionCostDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/production-cost-definition";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { IsoHelper } from "../../../world/tilemap/iso-helper";
-import { MovementTerrainType } from "../movement/movement-terrain-type";
+import { MovementTerrainType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/movement-terrain-type";
 import { ProbableWaffleSceneEventName } from "../../../world/services/recovery/probable-waffle-scene-events";
 import { CommandBusService } from "../../../world/services/multiplayer/command-bus.service";
-import { IdComponent } from "../id-component";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { OrderType } from "../../../ai/order-type";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { getActorSystem } from "../../../data/actor-system";

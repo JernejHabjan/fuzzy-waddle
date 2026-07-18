@@ -5,7 +5,7 @@ import type { PrefabDefinition } from "../../../definitions/prefab-definition";
 import {
   ConstructableCategory,
   ConstructableDefinition
-} from "../../../../entity/components/construction/constructable-category";
+} from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/construction/constructable-category";
 
 export const tivaraWorkerDefinition: PrefabDefinition = {
   ...generalWorkerDefinitions,

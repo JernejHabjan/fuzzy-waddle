@@ -7,7 +7,7 @@ import { AudioService } from "../../../../world/services/audio.service";
 import { SimulationTickService } from "../../../../world/services/simulation-tick.service";
 import { SharedActorActionsSfxHealSounds } from "../../../../sfx/shared-actor-actions-sfx";
 import { type HealingComponentData } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { HealingDefinition } from "./healing-definition";
+import type { HealingDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/components/healing-definition";
 
 export class HealingComponent {
   // onCooldownReady: EventEmitter<GameObject> = new EventEmitter<GameObject>();

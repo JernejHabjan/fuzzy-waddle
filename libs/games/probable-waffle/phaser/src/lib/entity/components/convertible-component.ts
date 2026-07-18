@@ -6,7 +6,7 @@ import { onObjectReady } from "../../data/game-object-helper";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import { DistanceHelper } from "../../library/distance-helper";
-import type { ConvertibleDefinition } from "./convertible-definition";
+import type { ConvertibleDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/convertible-definition";
 import type { ConvertibleComponentData } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 import { SimulationTickService } from "../../world/services/simulation-tick.service";

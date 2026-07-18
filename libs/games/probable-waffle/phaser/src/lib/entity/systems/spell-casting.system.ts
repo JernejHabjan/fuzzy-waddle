@@ -1,5 +1,5 @@
-import { SpellType } from "../components/combat/spell-type";
-import type { SpellData } from "../components/combat/spell-data";
+import { SpellType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/spell-type";
+import type { SpellData } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/spell-data";
 import { spellDefinitions } from "../components/combat/spell-definitions";
 import { DamageType, type StatusEffectData, StatusEffectType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { type Vector2Simple, type Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
@@ -19,7 +19,7 @@ import { SceneActorCreator } from "../../world/services/scene-actor-creator";
 import { CancelableSimDelay } from "../../world/services/simulation-time";
 import { DistanceHelper } from "../../library/distance-helper";
 import FrostBolt from "../../prefabs/weapons/FrostBolt";
-import { ProjectileType } from "../components/combat/projectile-type";
+import { ProjectileType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/projectile-type";
 import { DepthHelper } from "../../world/services/depth.helper";
 import { IsoHelper } from "../../world/tilemap/iso-helper";
 import Phaser from "phaser";

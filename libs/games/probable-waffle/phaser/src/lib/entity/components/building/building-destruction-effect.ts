@@ -1,11 +1,11 @@
 import { getActorComponent } from "../../../data/actor-component";
 import { getGameObjectDepth } from "../../../data/game-object-helper";
 import { FadeOutComponent } from "./fade-out-component";
-import type { FadeOutDefinition } from "./fade-out-definition";
+import type { FadeOutDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/building/fade-out-definition";
 import { RepresentableComponent } from "../representable-component";
 import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { RepresentableDefinition } from "../representable-definition";
+import type { RepresentableDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/representable-definition";
 import { getResearchedLevelForActor } from "../../../data/actor-level-utils";
 type GameObject = Phaser.GameObjects.GameObject;
 

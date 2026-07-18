@@ -12,7 +12,7 @@ import { getActorComponent } from "../../../data/actor-component";
 import { GathererComponent } from "../../../entity/components/resource/gatherer-component";
 import { PawnAiController } from "../../ai-agents/pawn-ai-controller";
 import { emitEventSelection, getCurrentPlayerNumber } from "../../../data/scene-data";
-import { IdComponent } from "../../../entity/components/id-component";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 /* END-USER-IMPORTS */

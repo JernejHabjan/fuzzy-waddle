@@ -32,7 +32,7 @@ import { getActorComponent } from "./actor-component";
 import { OwnerComponent } from "../entity/components/owner-component";
 import { SelectableComponent } from "../entity/components/selectable-component";
 import WatchTower from "../prefabs/buildings/tivara/wall/WatchTower";
-import { IdComponent } from "../entity/components/id-component";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { setConstructingActorDataFromName, setCoreActorDataFromName, setFullActorDataFromName } from "./actor-data";
 import Minerals from "../prefabs/outside/resources/minerals/Minerals";
 import { ConstructionSiteComponent } from "../entity/components/construction/construction-site-component";

@@ -3,9 +3,9 @@ import { ActorTranslateComponent } from "../movement/actor-translate-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { Subscription } from "rxjs";
 import { HealthComponent } from "../combat/components/health-component";
-import { AnimationType } from "./animation-type";
-import type { IsoDirection } from "../movement/iso-directions";
-import type { ActorAnimationsDefinition } from "./actor-animations-definition";
+import { AnimationType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-type";
+import type { IsoDirection } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/iso-directions";
+import type { ActorAnimationsDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/actor-animations-definition";
 import { RepresentableComponent } from "../representable-component";
 
 /**

@@ -12,7 +12,7 @@ import {
   EnvironmentSfxSeagullsSounds,
   EnvironmentSfxWaterSounds
 } from "../../../sfx/environment-sfx";
-import type { SoundDefinition } from "../../../entity/components/actor-audio/sound-definition";
+import type { SoundDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/actor-audio/sound-definition";
 /* END-USER-IMPORTS */
 
 export default class SoundEffectMarker extends Phaser.GameObjects.Ellipse {

@@ -3,7 +3,7 @@ import { getPrimarySelectedActor } from "../../data/selection-helpers";
 import { getActorComponent } from "../../data/actor-component";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { AnimationActorComponent } from "../../entity/components/animation/animation-actor-component";
-import { AnimationType } from "../../entity/components/animation/animation-type";
+import { AnimationType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-type";
 import { environment } from "@fuzzy-waddle/environments/environment";
 import type { Subscription } from "rxjs";
 import { DamageType } from "@fuzzy-waddle/probable-waffle-protocol";

@@ -5,9 +5,9 @@
 /* START-USER-IMPORTS */
 import { setActorData } from "../../../../data/actor-data";
 import { NavigableComponent } from "../../../../entity/components/movement/navigable-component";
-import { ObjectDescriptorComponent } from "../../../../entity/components/object-descriptor-component";
-import type { ObjectDescriptorDefinition } from "../../../../entity/components/object-descriptor-definition";
-import type { NavigableDefinition } from "../../../../entity/components/movement/navigable-definition";
+import { ObjectDescriptorComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/object-descriptor-component";
+import type { ObjectDescriptorDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/object-descriptor-definition";
+import type { NavigableDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/navigable-definition";
 /* END-USER-IMPORTS */
 
 export default class BridgeStone extends Phaser.GameObjects.Image {

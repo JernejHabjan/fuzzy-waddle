@@ -1,5 +1,5 @@
-import { AnimationType } from "../../../entity/components/animation/animation-type";
-import type { AnimationDefinitionMap } from "../../../entity/components/animation/animation-definition-map";
+import { AnimationType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-type";
+import type { AnimationDefinitionMap } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-definition-map";
 
 const ANIM_FOX_IDLE_BACK_FOX_IDLE_BACK = "Fox/Idle/back/Fox_Idle_back";
 const ANIM_FOX_IDLE_FRONT_FOX_IDLE_FRONT = "Fox/Idle/front/Fox_Idle_front";

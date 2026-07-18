@@ -1,7 +1,7 @@
 import { ObjectNames, PreRequirement } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { PrefabDefinition } from "../../prefabs/definitions/prefab-definition";
 
-import type { TechNodeKind } from "./tech-node-kind";
+import type { TechNodeKind } from "@fuzzy-waddle/probable-waffle-gameplay/data/tech-tree/tech-node-kind";
 
 export interface TechTreeNode {
   id: ObjectNames; // Upgrades may be synthetic strings

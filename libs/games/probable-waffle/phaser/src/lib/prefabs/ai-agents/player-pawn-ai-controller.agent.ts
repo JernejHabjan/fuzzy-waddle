@@ -25,7 +25,7 @@ import { OrderData } from "../../ai/OrderData";
 import { HealingComponent } from "../../entity/components/combat/components/healing-component";
 import { ConstructionSiteComponent } from "../../entity/components/construction/construction-site-component";
 import { AnimationActorComponent } from "../../entity/components/animation/animation-actor-component";
-import type { PathMoveConfig } from "../../entity/systems/path-move-config";
+import type { PathMoveConfig } from "@fuzzy-waddle/probable-waffle-gameplay/entity/systems/path-move-config";
 import { StatusEffectComponent } from "../../entity/components/status-effect/status-effect-component";
 import { SpellComponent } from "../../entity/components/combat/components/spell-component";
 import { SpellCastingSystem } from "../../entity/systems/spell-casting.system";
@@ -33,14 +33,14 @@ import { spellDefinitions } from "../../entity/components/combat/spell-definitio
 import { RepresentableComponent } from "../../entity/components/representable-component";
 import { TendableComponent } from "../../entity/components/tendable/tendable-component";
 import { isCropResourceSource } from "../../entity/components/tendable/growth-stage.interface";
-import { AnimationType } from "../../entity/components/animation/animation-type";
+import { AnimationType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-type";
 import { getGameObjectTileInRadius } from "../../data/game-object-helper";
 import { NavigationService } from "../../world/services/navigation.service";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { isWaterUnit } from "../../data/game-object-helper";
 import { SimulationTickService } from "../../world/services/simulation-tick.service";
 import { getSimulationNow } from "../../world/services/simulation-time";
-import { IdComponent } from "../../entity/components/id-component";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 
 export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   constructor(

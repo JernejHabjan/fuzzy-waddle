@@ -1,10 +1,10 @@
 import { setActorData } from "../../../../../data/actor-data";
-import { ObjectDescriptorComponent } from "../../../../../entity/components/object-descriptor-component";
+import { ObjectDescriptorComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/object-descriptor-component";
 import { AudioActorComponent } from "../../../../../entity/components/actor-audio/audio-actor-component";
 import { ActorsFoliageSfxBushSounds } from "./sfx-bush";
-import { SoundType } from "../../../../../entity/components/actor-audio/sound-type";
-import type { ObjectDescriptorDefinition } from "../../../../../entity/components/object-descriptor-definition";
-import type { AudioDefinition } from "../../../../../entity/components/actor-audio/audio-definition";
+import { SoundType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/actor-audio/sound-type";
+import type { ObjectDescriptorDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/object-descriptor-definition";
+import type { AudioDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/actor-audio/audio-definition";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export class BushComponent {

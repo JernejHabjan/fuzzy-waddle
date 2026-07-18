@@ -1,10 +1,10 @@
 import { getPwActorDefinition } from "../prefabs/definitions/actor-definitions";
 import { type ActorDefinition } from "@fuzzy-waddle/probable-waffle-protocol";
 import { VisionComponent } from "../entity/components/vision-component";
-import { InfoComponent } from "../entity/components/info-component";
-import { ObjectDescriptorComponent } from "../entity/components/object-descriptor-component";
+import { InfoComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/info-component";
+import { ObjectDescriptorComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/object-descriptor-component";
 import { OwnerComponent } from "../entity/components/owner-component";
-import { IdComponent } from "../entity/components/id-component";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { SelectableComponent } from "../entity/components/selectable-component";
 import { HealthComponent } from "../entity/components/combat/components/health-component";
 import { AttackComponent } from "../entity/components/combat/components/attack-component";

@@ -1,7 +1,7 @@
-import { SpellType } from "./spell-type";
-import type { SpellData } from "./spell-data";
-import { ProjectileType } from "./projectile-type";
-import { AnimationType } from "../animation/animation-type";
+import { SpellType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/spell-type";
+import type { SpellData } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/spell-data";
+import { ProjectileType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/projectile-type";
+import { AnimationType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-type";
 import { DamageType, ObjectNames, ResearchType, SpellTargetType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { BansheeAnimationTypes } from "../../../prefabs/characters/mobs/banshee/anims-banshee";
 import { MedusaAnimationTypes } from "../../../prefabs/characters/mobs/medusa/anims-medusa";

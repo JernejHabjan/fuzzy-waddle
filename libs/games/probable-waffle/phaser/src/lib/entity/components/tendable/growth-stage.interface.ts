@@ -1,5 +1,5 @@
-import type { AnimationType } from "../animation/animation-type";
-import type { SoundType } from "../actor-audio/sound-type";
+import type { AnimationType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-type";
+import type { SoundType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/actor-audio/sound-type";
 
 export interface GrowthStageInterface {
   /** Set the visual growth stage. Stage 3 = depleted/cut (regular crops) or invisible (ground crops). */

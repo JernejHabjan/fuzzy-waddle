@@ -10,7 +10,7 @@ import { PlayerAiBlackboard } from "../player-ai-blackboard";
 import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 import { SupplyPlanner } from "./supply-planner";
 import { ProductionValidator } from "../../../data/tech-tree/production-validator";
-import { NeedType } from "./need-type";
+import { NeedType } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/ai-behavior/need-type";
 import { AdaptiveThresholdManager } from "./adaptive-threshold-manager";
 import { getActorComponent } from "../../../data/actor-component";
 import { ProductionComponent } from "../../../entity/components/production/production-component";
