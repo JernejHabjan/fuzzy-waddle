@@ -8,6 +8,6 @@
     "verbatimModuleSyntax": true
   },
   "files": ["src/main.ts", "../../libs/platform/game-host/src/lib/angular/polyfills.ts"],
-  "include": ["src/**/*.d.ts"],
+  "include": ["src/**/*.ts", "src/**/*.d.ts"],
   "exclude": ["**/*.test.ts", "**/*.spec.ts"]
 }
