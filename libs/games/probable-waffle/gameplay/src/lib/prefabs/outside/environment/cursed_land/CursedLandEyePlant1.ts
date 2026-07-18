@@ -3,7 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { initStaticActor } from "../../../../data/init-static-actor";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { RandomSpriteComponent } from "../../../../entity/components/random-sprite-component";
 /* END-USER-IMPORTS */
 
@@ -16,12 +16,12 @@ export default class CursedLandEyePlant1 extends Phaser.GameObjects.Image {
     this.setOrigin(0.5, 0.75);
 
     /* START-USER-CTR-CODE */
-    initStaticActor(this, null);
     new RandomSpriteComponent(this, ["cursed_land/Eye_plant_shadow1_1.png", "cursed_land/Eye_plant_shadow1_2.png", "cursed_land/Eye_plant_shadow1_3.png"]);
     /* END-USER-CTR-CODE */
   }
 
   /* START-USER-CODE */
+  override name = ObjectNames.CursedLandEyePlant1;
 
   // Write your code here.
 

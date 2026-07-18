@@ -3,7 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { initStaticActor } from "../../../../data/init-static-actor";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { RandomSpriteComponent } from "../../../../entity/components/random-sprite-component";
 /* END-USER-IMPORTS */
 
@@ -24,7 +24,6 @@ export default class UndeadLandGrave1 extends Phaser.GameObjects.Image {
     this.setOrigin(0.5274700589255896, 0.5796856346613444);
 
     /* START-USER-CTR-CODE */
-    initStaticActor(this, null);
     new RandomSpriteComponent(this, [
       "undead_land/Grave_shadow1_1.png",
       "undead_land/Grave_shadow1_2.png",
@@ -48,6 +47,7 @@ export default class UndeadLandGrave1 extends Phaser.GameObjects.Image {
   }
 
   /* START-USER-CODE */
+  override name = ObjectNames.UndeadLandGrave1;
 
   // Write your code here.
 

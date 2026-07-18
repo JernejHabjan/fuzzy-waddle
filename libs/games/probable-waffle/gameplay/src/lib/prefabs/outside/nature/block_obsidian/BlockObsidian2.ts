@@ -3,7 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { initStaticActor } from "../../../../data/init-static-actor";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 /* END-USER-IMPORTS */
 
 export default class BlockObsidian2 extends Phaser.GameObjects.Image {
@@ -19,13 +19,13 @@ export default class BlockObsidian2 extends Phaser.GameObjects.Image {
     this.setOrigin(0.5, 0.7522906265785319);
 
     /* START-USER-CTR-CODE */
-    initStaticActor(this, 0x49463c, true);
     /* END-USER-CTR-CODE */
   }
 
   public z: number = 0;
 
   /* START-USER-CODE */
+  override name = ObjectNames.BlockObsidian2;
 
   // Write your code here.
 

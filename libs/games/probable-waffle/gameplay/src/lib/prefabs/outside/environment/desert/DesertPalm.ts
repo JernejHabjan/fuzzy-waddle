@@ -3,7 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { initStaticActor } from "../../../../data/init-static-actor";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { RandomSpriteComponent } from "../../../../entity/components/random-sprite-component";
 /* END-USER-IMPORTS */
 
@@ -16,7 +16,6 @@ export default class DesertPalm extends Phaser.GameObjects.Sprite {
     this.setOrigin(0.5, 0.9158243241419852);
 
     /* START-USER-CTR-CODE */
-    initStaticActor(this, null);
     new RandomSpriteComponent(this, [
       "desert/palm/0.png",
       "desert/palm/1.png",
@@ -28,6 +27,7 @@ export default class DesertPalm extends Phaser.GameObjects.Sprite {
   }
 
   /* START-USER-CODE */
+  override name = ObjectNames.DesertPalm;
   // Write your code here.
 
   /* END-USER-CODE */

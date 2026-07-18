@@ -3,7 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { initStaticActor } from "../../../../data/init-static-actor";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 /* END-USER-IMPORTS */
 
 export default class FenceBottom extends Phaser.GameObjects.Image {
@@ -25,11 +25,11 @@ export default class FenceBottom extends Phaser.GameObjects.Image {
     this.setOrigin(0.5, 0.9565384869491129);
 
     /* START-USER-CTR-CODE */
-    initStaticActor(this, 0x6e4b1e, true);
     /* END-USER-CTR-CODE */
   }
 
   /* START-USER-CODE */
+  override name = ObjectNames.FenceBottom;
 
   // Write your code here.
 

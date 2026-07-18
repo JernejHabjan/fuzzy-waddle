@@ -3,7 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { initStaticActor } from "../../../../data/init-static-actor";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 /* END-USER-IMPORTS */
 
 export default class GoblinFire extends Phaser.GameObjects.Image {
@@ -15,11 +15,11 @@ export default class GoblinFire extends Phaser.GameObjects.Image {
     this.setOrigin(0.5, 0.8153818599791065);
 
     /* START-USER-CTR-CODE */
-    initStaticActor(this, null);
     /* END-USER-CTR-CODE */
   }
 
   /* START-USER-CODE */
+  override name = ObjectNames.GoblinFire;
 // todo note that this one also has GoblinFireLit sprite
   // Write your code here.
 

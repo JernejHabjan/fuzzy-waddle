@@ -3,7 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { initStaticActor } from "../../../../data/init-static-actor";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { RandomSpriteComponent } from "../../../../entity/components/random-sprite-component";
 /* END-USER-IMPORTS */
 
@@ -15,7 +15,6 @@ export default class DesertSandstone extends Phaser.GameObjects.Sprite {
     this.setOrigin(0.5, 0.75);
 
     /* START-USER-CTR-CODE */
-    initStaticActor(this, null);
     new RandomSpriteComponent(this, [
       "desert/sandstone/0.png",
       "desert/sandstone/1.png",
@@ -33,6 +32,7 @@ export default class DesertSandstone extends Phaser.GameObjects.Sprite {
   }
 
   /* START-USER-CODE */
+  override name = ObjectNames.DesertSandstone;
   // Write your code here.
 
   /* END-USER-CODE */

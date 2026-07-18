@@ -3,7 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { initStaticActor } from "../../../../data/init-static-actor";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 /* END-USER-IMPORTS */
 
 export default class Reeds1 extends Phaser.GameObjects.Image {
@@ -11,11 +11,11 @@ export default class Reeds1 extends Phaser.GameObjects.Image {
     super(scene, x ?? 32, y ?? 32, texture || "outside", frame ?? "nature/grass/reeds_1.png");
 
     /* START-USER-CTR-CODE */
-    initStaticActor(this, null);
     /* END-USER-CTR-CODE */
   }
 
   /* START-USER-CODE */
+  override name = ObjectNames.Reeds1;
 
   // Write your code here.
 

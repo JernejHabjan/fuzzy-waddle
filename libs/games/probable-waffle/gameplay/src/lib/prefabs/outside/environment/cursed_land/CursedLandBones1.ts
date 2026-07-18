@@ -3,7 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { initStaticActor } from "../../../../data/init-static-actor";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { RandomSpriteComponent } from "../../../../entity/components/random-sprite-component";
 /* END-USER-IMPORTS */
 
@@ -16,12 +16,12 @@ export default class CursedLandBones1 extends Phaser.GameObjects.Image {
     this.setOrigin(0.5, 0.75);
 
     /* START-USER-CTR-CODE */
-    initStaticActor(this, null);
     new RandomSpriteComponent(this, ["cursed_land/Bones_shadow1_2.png", "cursed_land/Bones_shadow1_3.png", "cursed_land/Bones_shadow1_4.png", "cursed_land/Bones_shadow1_5.png", "cursed_land/Bones_shadow1_6.png", "cursed_land/Bones_shadow1_7.png", "cursed_land/Bones_shadow1_8.png", "cursed_land/Bones_shadow1_9.png", "cursed_land/Bones_shadow1_10.png", "cursed_land/Bones_shadow1_11.png"]);
     /* END-USER-CTR-CODE */
   }
 
   /* START-USER-CODE */
+  override name = ObjectNames.CursedLandBones1;
 
   // Write your code here.
 

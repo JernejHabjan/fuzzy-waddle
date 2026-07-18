@@ -3,7 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { initStaticActor } from "../../../../data/init-static-actor";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 /* END-USER-IMPORTS */
 
 export default class GoblinCartTrack extends Phaser.GameObjects.Image {
@@ -15,11 +15,11 @@ export default class GoblinCartTrack extends Phaser.GameObjects.Image {
     this.setOrigin(0.5, 0.5480337464748444);
 
     /* START-USER-CTR-CODE */
-    initStaticActor(this, null);
     /* END-USER-CTR-CODE */
   }
 
   /* START-USER-CODE */
+  override name = ObjectNames.GoblinCartTrack;
 
   // Write your code here.
 

@@ -2,27 +2,25 @@
 """
 generate-prefabs.py
 
-This script does four things in order:
+This script does three things in order:
 
-1. Creates `initStaticActor` helper in a new TypeScript file
-   (`libs/games/probable-waffle/gameplay/src/lib/data/init-static-actor.ts`) so verbose inline
-   setActorData + ObjectDescriptorComponent calls have a clean wrapper.
+1. Migrates generated Sprite environment prefabs that represent visual variants
+   to Image + RandomSpriteComponent.
 
-2. Refactors every existing outside prefab .ts file that uses the
-   simple pattern (setActorData + ObjectDescriptorComponent + optional
-   ColliderComponent) to call initStaticActor instead.
-
-3. Generates .ts + .scene prefab pairs from crops.json.
+2. Generates .ts + .scene prefab pairs from crops.json.
    - Each crop type → one Image prefab using the lowest-numbered stage.
    - Multi-stage crops get a TODO comment listing the remaining stages.
 
-4. Generates .ts + .scene prefab pairs from environment.json.
+3. Generates .ts + .scene prefab pairs from environment.json.
    - Multi-frame items (trees / animated objects) → Sprite + TODO.
    - Single-frame items → Image.
-   - Items inside "goblin/tall tiles/" → Image + ColliderComponent (tiles).
+   - Items inside "goblin/tall tiles/" → Image; enable their collider in actor-definitions.ts.
+
+Generated classes use ObjectNames. Before using a newly generated prefab, add its
+ObjectNames entry, ActorManager constructor registration and actor definition.
 
 Run from the repository root:
-    python tools/generate-prefabs.py
+    python3 tools/generate-prefabs.py
 """
 
 import collections
@@ -37,7 +35,6 @@ from pathlib import Path
 REPO_ROOT        = Path(__file__).resolve().parent.parent
 GAME_ROOT        = REPO_ROOT / "libs" / "games" / "probable-waffle" / "gameplay" / "src" / "lib"
 PREFABS_ROOT     = GAME_ROOT / "prefabs"
-DATA_DIR         = GAME_ROOT / "data"
 
 CROPS_JSON       = REPO_ROOT / "libs" / "games" / "probable-waffle" / "gameplay" / "src" / "assets" / "probable-waffle" / "atlas" / "crops.json"
 ENV_JSON         = REPO_ROOT / "libs" / "games" / "probable-waffle" / "gameplay" / "src" / "assets" / "probable-waffle" / "atlas" / "environment.json"
@@ -45,77 +42,16 @@ ENV_JSON         = REPO_ROOT / "libs" / "games" / "probable-waffle" / "gameplay"
 CROPS_PREFABS_DIR = PREFABS_ROOT / "outside" / "crops"
 ENV_PREFABS_DIR   = PREFABS_ROOT / "outside" / "environment"
 
-INIT_STATIC_ACTOR_FILE    = DATA_DIR / "init-static-actor.ts"
 RANDOM_SPRITE_COMPONENT_FILE = GAME_ROOT / "entity" / "components" / "random-sprite-component.ts"
 
 # Default isometric-diamond polygon used for all generated prefabs
 DEFAULT_ISO_POLYGON = "0 16 32 0 64 16 64 48 32 64 0 48"
 
 
-# ─── Part 1 – initStaticActor helper ─────────────────────────────────────────
-
-INIT_STATIC_ACTOR_CONTENT = """\
-import { setActorData } from "./actor-data";
-import { ColliderComponent } from "../entity/components/movement/collider-component";
-import { ObjectDescriptorComponent } from "../entity/components/object-descriptor-component";
-import type { ObjectDescriptorDefinition } from "../entity/components/object-descriptor-definition";
-import GameObject = Phaser.GameObjects.GameObject;
-
-/**
- * Initialises a simple static actor with an ObjectDescriptorComponent
- * and an optional ColliderComponent.
- *
- * Replaces the verbose inline setActorData + ObjectDescriptorComponent
- * pattern that was duplicated across many prefab files.
- */
-export function initStaticActor(gameObject: GameObject, color: number | null, withCollider = false): void {
-  const components: unknown[] = [
-    new ObjectDescriptorComponent({ color } satisfies ObjectDescriptorDefinition)
-  ];
-  if (withCollider) {
-    components.push(new ColliderComponent(gameObject));
-  }
-  setActorData(gameObject, components as any[], []);
-}
-"""
-
-
-def create_init_static_actor() -> None:
-    INIT_STATIC_ACTOR_FILE.write_text(INIT_STATIC_ACTOR_CONTENT, encoding="utf-8")
-    print(f"  [CREATE] {INIT_STATIC_ACTOR_FILE.relative_to(REPO_ROOT)}")
-
-
-# ─── Part 2 – Refactor existing prefab files ─────────────────────────────────
-
-# Matches the simple setActorData block with only ObjectDescriptorComponent
-# and an optional ColliderComponent. Nothing else may be inside the array.
-_SETACTOR_RE = re.compile(
-    r"setActorData\(\s*this,\s*\[\s*"
-    r"new ObjectDescriptorComponent\(\{\s*color:\s*([^\n}]+?)\s*\}"
-    r"\s*satisfies\s*ObjectDescriptorDefinition\)"
-    r"(\s*,\s*new ColliderComponent\(this\))?"
-    r"\s*\],\s*\[\]\s*\)\s*;",
-    re.DOTALL,
-)
-
-_IMPORTS_RE = re.compile(
-    r"(/\* START-USER-IMPORTS \*/)(\n)(.*?)(\n)(/\* END-USER-IMPORTS \*/)",
-    re.DOTALL,
-)
-
 _CTR_RE = re.compile(
     r"(/\* START-USER-CTR-CODE \*/)(\n)(.*?)(\n)(\s*/\* END-USER-CTR-CODE \*/)",
     re.DOTALL,
 )
-
-# Imports that belong to the pattern we are removing
-_REMOVED_IMPORT_FRAGMENTS = (
-    "setActorData",
-    "ObjectDescriptorComponent",
-    "ObjectDescriptorDefinition",
-    "ColliderComponent",
-)
-
 
 def _rel_import(from_file: Path, to_file: Path) -> str:
     """Return a TypeScript-style relative import path (no .ts extension)."""
@@ -124,72 +60,6 @@ def _rel_import(from_file: Path, to_file: Path) -> str:
     if not rel.startswith("."):
         rel = "./" + rel
     return rel
-
-
-def refactor_file(ts_file: Path) -> None:
-    content = ts_file.read_text(encoding="utf-8")
-
-    # Only handle files that contain the exact simple pattern
-    m = _SETACTOR_RE.search(content)
-    if not m:
-        return
-
-    color_str      = m.group(1).strip()
-    has_collider   = m.group(2) is not None
-
-    # Bail out if the CTR block contains other component constructors
-    ctr_match = _CTR_RE.search(content)
-    if not ctr_match:
-        return
-    ctr_body = ctr_match.group(3)
-    other = [
-        c for c in re.findall(r"new (\w+Component)\(", ctr_body)
-        if c not in {"ObjectDescriptorComponent", "ColliderComponent"}
-    ]
-    if other:
-        print(f"  [SKIP]   {ts_file.name} – extra components: {other}")
-        return
-
-    rel = _rel_import(ts_file, INIT_STATIC_ACTOR_FILE)
-
-    # Rebuild imports block: strip removed lines, prepend new import
-    imp_match = _IMPORTS_RE.search(content)
-    if not imp_match:
-        return
-    kept_lines = [
-        line for line in imp_match.group(3).splitlines()
-        if not any(frag in line for frag in _REMOVED_IMPORT_FRAGMENTS)
-    ]
-    new_imports = f'import {{ initStaticActor }} from "{rel}";'
-    if kept_lines:
-        new_imports = new_imports + "\n" + "\n".join(kept_lines)
-
-    # Build the one-liner replacement (leading whitespace comes from surrounding text)
-    if has_collider:
-        new_call = f"initStaticActor(this, {color_str}, true);"
-    else:
-        new_call = f"initStaticActor(this, {color_str});"
-
-    # Apply substitutions
-    def replace_imports(mo: re.Match) -> str:
-        return mo.group(1) + mo.group(2) + new_imports + mo.group(4) + mo.group(5)
-
-    content = _IMPORTS_RE.sub(replace_imports, content)
-    # Replace only the setActorData call; any other code in the CTR block is preserved
-    content = _SETACTOR_RE.sub(new_call, content)
-
-    ts_file.write_text(content, encoding="utf-8")
-    print(f"  [REFACTOR] {ts_file.relative_to(REPO_ROOT)}")
-
-
-def refactor_all_prefab_files() -> None:
-    for ts_file in sorted(PREFABS_ROOT.rglob("*.ts")):
-        # Skip component / definition helper files
-        lower = ts_file.name.lower()
-        if "component" in lower or "definition" in lower or "sfx-" in lower:
-            continue
-        refactor_file(ts_file)
-
 
 # ─── Shared prefab-file generation ───────────────────────────────────────────
 
@@ -241,7 +111,7 @@ _TS_TMPL = """\
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import {{ initStaticActor }} from "{rel_helper}";
+import {{ ObjectNames }} from "@fuzzy-waddle/probable-waffle-protocol";
 {extra_imports}\
 /* END-USER-IMPORTS */
 
@@ -256,13 +126,14 @@ export default class {class_name} extends Phaser.GameObjects.{go_type} {{
     this.setOrigin(0.5, 0.75);
 
     /* START-USER-CTR-CODE */
-    initStaticActor(this, null{collider_arg});
 {extra_ctr}\
     /* END-USER-CTR-CODE */
   }}
 
   /* START-USER-CODE */
 {todo}
+  override name = ObjectNames.{class_name};
+
   // Write your code here.
 
   /* END-USER-CODE */
@@ -358,7 +229,6 @@ def _write_prefab(
     tex_frame: str,
     *,
     is_sprite: bool,
-    has_collider: bool,
     todo_lines: list[str],
     is_crop: bool = False,
     random_frames: list[str] | None = None,
@@ -369,7 +239,6 @@ def _write_prefab(
     scene_file = out_dir / f"{class_name}.scene"
 
     go_type      = "Sprite" if is_sprite else "Image"
-    collider_arg = ", true" if has_collider else ""
 
     # Build TODO block (indented inside /* START-USER-CODE */)
     if todo_lines:
@@ -386,8 +255,7 @@ def _write_prefab(
             todo=todo_block,
         )
     else:
-        rel_helper = _rel_import(ts_file, INIT_STATIC_ACTOR_FILE)
-        # Build RandomSpriteComponent extras when there are multiple static variants
+        # Build RandomSpriteComponent extras when there are multiple visual variants
         if random_frames:
             rel_random = _rel_import(ts_file, RANDOM_SPRITE_COMPONENT_FILE)
             frames_literal = ", ".join(f'"{f}"' for f in random_frames)
@@ -403,8 +271,6 @@ def _write_prefab(
             tex_key=tex_key,
             tex_frame=tex_frame,
             hit_area=DEFAULT_ISO_POLYGON,
-            rel_helper=rel_helper,
-            collider_arg=collider_arg,
             todo=todo_block,
             extra_imports=extra_imports,
             extra_ctr=extra_ctr,
@@ -426,7 +292,7 @@ def _write_prefab(
         print(f"  [CREATE] {rel}")
 
 
-# ─── Part 3 – Crop prefabs ────────────────────────────────────────────────────
+# ─── Crop prefab generation ───────────────────────────────────────────────────
 
 def _stage_num(filename: str) -> int:
     """Extract the numeric stage from a crop frame filename like 'crops/beans/10.png'."""
@@ -474,13 +340,12 @@ def generate_crop_prefabs() -> None:
             tex_key="crops",
             tex_frame=first["filename"],
             is_sprite=False,
-            has_collider=False,
             todo_lines=todo,
             is_crop=True,
         )
 
 
-# ─── Part 4 – Environment prefabs ────────────────────────────────────────────
+# ─── Environment prefab generation ───────────────────────────────────────────
 
 def _env_sort_key(filename: str) -> int:
     """Return trailing integer for numeric sorting of environment frames."""
@@ -499,7 +364,7 @@ def _group_env_frames(frames: list[dict]) -> tuple[dict[str, list[dict]], dict[s
     * 2-part paths  (category/file.png)             →  keyed by category/base_name
       where base_name strips a trailing _N or -N suffix so that
       "Bones_shadow1_2" … "Bones_shadow1_11" all end up in one group.
-      Multiple frames in one group = static visual variants → is_animation = False
+      Multiple frames in one group = non-animated visual variants → is_animation = False
 
     Returns (groups, is_animation_map).
     """
@@ -558,7 +423,7 @@ def generate_environment_prefabs() -> None:
             for fr in others:
                 todo.append(f"  - {fr['filename']}")
         elif not is_animation and is_multi:
-            # Multiple static variants: RandomSpriteComponent picks one at runtime
+            # Multiple visual variants: RandomSpriteComponent picks one at runtime
             random_frames = [fr["filename"] for fr in sorted_frames]
 
         _write_prefab(
@@ -567,7 +432,6 @@ def generate_environment_prefabs() -> None:
             tex_key="environment",
             tex_frame=first["filename"],
             is_sprite=is_sprite,
-            has_collider=False,
             todo_lines=todo,
             random_frames=random_frames,
         )
@@ -576,7 +440,7 @@ def generate_environment_prefabs() -> None:
 def _generate_goblin_tiles(tile_frames: list[dict]) -> None:
     """
     Goblin tall tiles are ground / wall tiles that block movement.
-    Each variant gets its own Image prefab with a ColliderComponent.
+    Each variant gets its own Image prefab; its actor definition enables collision.
     """
     print("  Generating goblin tall tiles …")
     out_dir = ENV_PREFABS_DIR / "goblin" / "tall_tiles"
@@ -592,22 +456,20 @@ def _generate_goblin_tiles(tile_frames: list[dict]) -> None:
             tex_key="environment",
             tex_frame=fn,
             is_sprite=False,
-            has_collider=True,
             todo_lines=[],
         )
 
 
-# ─── Part 2b – Migrate existing Sprite env prefabs to Image + RandomSprite ────
+# ─── Migrate Sprite env prefabs to Image + RandomSprite ───────────────────────
 
 _EXTENDS_SPRITE_RE     = re.compile(r"(extends\s+Phaser\.GameObjects\.)Sprite(\s*\{)")
 _SUPER_FRAME_RE        = re.compile(r'frame\s*\?\?\s*"([^"]+)"')
 _EMPTY_CTR_BODY        = re.compile(r"^\s*(?:// Write your code here\.)?\s*$")
-_INIT_STATIC_CTR_BODY  = re.compile(r"^\s*initStaticActor\(this,\s*null(?:,\s*true)?\);\s*$")
 
 
 def migrate_existing_sprite_prefabs_to_random_image() -> None:
     """
-    Converts previously-generated Sprite env prefabs that represent static
+    Converts previously-generated Sprite env prefabs that represent
     visual variants (not animation sequences) to Image + RandomSpriteComponent.
 
     Only touches files that still have empty/placeholder CTR code so that any
@@ -641,12 +503,12 @@ def migrate_existing_sprite_prefabs_to_random_image() -> None:
         if "Phaser.GameObjects.Sprite" not in content:
             continue
 
-        # Only migrate files with empty/placeholder CTR code or just initStaticActor
+        # Only migrate files with empty/placeholder CTR code.
         ctr_match = _CTR_RE.search(content)
         if not ctr_match:
             continue
         ctr_body = ctr_match.group(3)
-        if not (_EMPTY_CTR_BODY.match(ctr_body) or _INIT_STATIC_CTR_BODY.match(ctr_body)):
+        if not _EMPTY_CTR_BODY.match(ctr_body):
             print(f"  [SKIP-MIGRATE] {ts_file.name} – CTR code is customized")
             continue
 
@@ -660,18 +522,14 @@ def migrate_existing_sprite_prefabs_to_random_image() -> None:
             continue  # Not a multi-variant group – no migration needed
 
         all_frames = frame_to_all[tex_frame]
-        rel_helper = _rel_import(ts_file, INIT_STATIC_ACTOR_FILE)
         rel_random = _rel_import(ts_file, RANDOM_SPRITE_COMPONENT_FILE)
         frames_literal = ", ".join(f'"{f}"' for f in all_frames)
 
         new_imports_block = (
-            f'import {{ initStaticActor }} from "{rel_helper}";\n'
+            'import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";\n'
             f'import {{ RandomSpriteComponent }} from "{rel_random}";'
         )
-        new_ctr_block = (
-            f"    initStaticActor(this, null);\n"
-            f"    new RandomSpriteComponent(this, [{frames_literal}]);"
-        )
+        new_ctr_block = f"    new RandomSpriteComponent(this, [{frames_literal}]);"
 
         # Replace imports – use direct string splice to handle empty import sections
         start_imp = "/* START-USER-IMPORTS */"
@@ -707,6 +565,8 @@ def migrate_existing_sprite_prefabs_to_random_image() -> None:
                 if not re.match(r"^\s*//\s*(TODO:|  -\s)", line)
             ]
             cleaned = "".join(cleaned_lines)
+            if f"override name = ObjectNames.{ts_file.stem};" not in cleaned:
+                cleaned = f"\n  override name = ObjectNames.{ts_file.stem};\n" + cleaned
             content = content[:sc + len(start_code)] + cleaned + end_code + content[ec + len(end_code):]
 
         ts_file.write_text(content, encoding="utf-8")
@@ -719,19 +579,13 @@ def migrate_existing_sprite_prefabs_to_random_image() -> None:
 # ─── Entry point ──────────────────────────────────────────────────────────────
 
 def main() -> None:
-    print("=== Step 1: Creating initStaticActor helper ===")
-    create_init_static_actor()
-
-    print("\n=== Step 2: Refactoring existing prefab files ===")
-    refactor_all_prefab_files()
-
-    print("\n=== Step 2b: Migrating static-variant Sprite env prefabs ===")
+    print("=== Step 1: Migrating visual-variant Sprite env prefabs ===")
     migrate_existing_sprite_prefabs_to_random_image()
 
-    print("\n=== Step 3: Generating crop prefabs ===")
+    print("\n=== Step 2: Generating crop prefabs ===")
     generate_crop_prefabs()
 
-    print("\n=== Step 4: Generating environment prefabs ===")
+    print("\n=== Step 3: Generating environment prefabs ===")
     generate_environment_prefabs()
 
     print("\nDone!")

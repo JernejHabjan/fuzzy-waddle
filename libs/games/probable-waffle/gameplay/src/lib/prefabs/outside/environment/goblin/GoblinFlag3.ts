@@ -3,7 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { initStaticActor } from "../../../../data/init-static-actor";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 /* END-USER-IMPORTS */
 
 export default class GoblinFlag3 extends Phaser.GameObjects.Image {
@@ -15,11 +15,11 @@ export default class GoblinFlag3 extends Phaser.GameObjects.Image {
     this.setOrigin(0.4867921525149099, 0.41540119704438716);
 
     /* START-USER-CTR-CODE */
-    initStaticActor(this, null);
     /* END-USER-CTR-CODE */
   }
 
   /* START-USER-CODE */
+  override name = ObjectNames.GoblinFlag3;
 
   // Write your code here.
 

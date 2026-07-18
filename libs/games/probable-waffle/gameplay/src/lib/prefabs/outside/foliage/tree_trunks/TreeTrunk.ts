@@ -3,7 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { initStaticActor } from "../../../../data/init-static-actor";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 /* END-USER-IMPORTS */
 
 export default class TreeTrunk extends Phaser.GameObjects.Image {
@@ -13,11 +13,11 @@ export default class TreeTrunk extends Phaser.GameObjects.Image {
     this.setInteractive(new Phaser.Geom.Rectangle(24, 6, 16, 16), Phaser.Geom.Rectangle.Contains);
 
     /* START-USER-CTR-CODE */
-    initStaticActor(this, 0xaa865a);
     /* END-USER-CTR-CODE */
   }
 
   /* START-USER-CODE */
+  override name = ObjectNames.TreeTrunk;
 
   // Write your code here.
 

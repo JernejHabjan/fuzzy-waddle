@@ -3,7 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { initStaticActor } from "../../../../../data/init-static-actor";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 /* END-USER-IMPORTS */
 
 export default class RampStoneTopRight extends Phaser.GameObjects.Image {
@@ -18,11 +18,11 @@ export default class RampStoneTopRight extends Phaser.GameObjects.Image {
     );
 
     /* START-USER-CTR-CODE */
-    initStaticActor(this, 0x95a083, true);
     /* END-USER-CTR-CODE */
   }
 
   /* START-USER-CODE */
+  override name = ObjectNames.RampStoneTopRight;
 
   // Write your code here.
 

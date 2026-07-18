@@ -3,7 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { initStaticActor } from "../../../../data/init-static-actor";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { LavaParticles } from "../../../../world/scenes/effects/LavaParticles";
 /* END-USER-IMPORTS */
 
@@ -33,14 +33,14 @@ export default class BlockObsidianLava5 extends Phaser.GameObjects.Container {
     this.add(outside_nature_block_obsidian_lava_5);
 
     /* START-USER-CTR-CODE */
-    initStaticActor(this, 0xbd3c00, true);
-    this.particles = new LavaParticles(scene, this.x, this.y);
+    this.particles = new LavaParticles(scene, this);
     /* END-USER-CTR-CODE */
   }
 
   public override z: number = 0;
 
   /* START-USER-CODE */
+  override name = ObjectNames.BlockObsidianLava5;
 
   private particles: LavaParticles;
 

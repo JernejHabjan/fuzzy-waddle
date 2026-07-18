@@ -1,5 +1,6 @@
 import { ActorManager } from "./actor-manager";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
+import { getPwActorDefinition } from "../prefabs/definitions/actor-definitions";
 
 describe("ActorManager", () => {
   describe("actorMap", () => {
@@ -11,6 +12,7 @@ describe("ActorManager", () => {
         if (!ActorManager.actorMap[enumValue]) {
           missingActors.push(enumValue);
         }
+        expect(getPwActorDefinition(enumValue, null)).toBeDefined();
       });
 
       expect(missingActors).toEqual([]);

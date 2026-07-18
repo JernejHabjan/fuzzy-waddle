@@ -3,7 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { initStaticActor } from "../../../../data/init-static-actor";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 /* END-USER-IMPORTS */
 
 export default class BlockStoneWater4 extends Phaser.GameObjects.Container {
@@ -33,13 +33,13 @@ export default class BlockStoneWater4 extends Phaser.GameObjects.Container {
     this.add(outside_nature_block_stone_water_4);
 
     /* START-USER-CTR-CODE */
-    initStaticActor(this, 0x95a083, true);
     /* END-USER-CTR-CODE */
   }
 
   public override z: number = 0;
 
   /* START-USER-CODE */
+  override name = ObjectNames.BlockStoneWater4;
 
   // Write your code here.
 

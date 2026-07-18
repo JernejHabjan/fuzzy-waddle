@@ -3,7 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { initStaticActor } from "../../../../data/init-static-actor";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { RandomSpriteComponent } from "../../../../entity/components/random-sprite-component";
 /* END-USER-IMPORTS */
 
@@ -16,12 +16,12 @@ export default class GoblinFenceNwSe extends Phaser.GameObjects.Image {
     this.setOrigin(0.5, 0.75);
 
     /* START-USER-CTR-CODE */
-    initStaticActor(this, null);
     new RandomSpriteComponent(this, ["goblin/fence_nw_se.png", "goblin/fence_nw_se_2.png", "goblin/fence_nw_se_3.png", "goblin/fence_nw_se_4.png"]);
     /* END-USER-CTR-CODE */
   }
 
   /* START-USER-CODE */
+  override name = ObjectNames.GoblinFenceNwSe;
 
   // Write your code here.
 

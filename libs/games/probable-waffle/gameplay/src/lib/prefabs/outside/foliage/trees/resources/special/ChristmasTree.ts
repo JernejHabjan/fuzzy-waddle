@@ -3,7 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
-import { initStaticActor } from "../../../../../../data/init-static-actor";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 /* END-USER-IMPORTS */
 
 export default class ChristmasTree extends Phaser.GameObjects.Image {
@@ -25,11 +25,11 @@ export default class ChristmasTree extends Phaser.GameObjects.Image {
     this.setOrigin(0.5, 0.8475971974696084);
 
     /* START-USER-CTR-CODE */
-    initStaticActor(this, 0xc6c209, true);
     /* END-USER-CTR-CODE */
   }
 
   /* START-USER-CODE */
+  override name = ObjectNames.ChristmasTree;
 
   // Write your code here.
 
