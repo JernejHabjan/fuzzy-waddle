@@ -33,11 +33,11 @@ from pathlib import Path
 # ─── Paths ────────────────────────────────────────────────────────────────────
 
 REPO_ROOT        = Path(__file__).resolve().parent.parent
-GAME_ROOT        = REPO_ROOT / "libs" / "games" / "probable-waffle" / "gameplay" / "src" / "lib"
+GAME_ROOT        = REPO_ROOT / "libs" / "games" / "probable-waffle" / "phaser" / "src" / "lib"
 PREFABS_ROOT     = GAME_ROOT / "prefabs"
 
-CROPS_JSON       = REPO_ROOT / "libs" / "games" / "probable-waffle" / "gameplay" / "src" / "assets" / "probable-waffle" / "atlas" / "crops.json"
-ENV_JSON         = REPO_ROOT / "libs" / "games" / "probable-waffle" / "gameplay" / "src" / "assets" / "probable-waffle" / "atlas" / "environment.json"
+CROPS_JSON       = REPO_ROOT / "libs" / "games" / "probable-waffle" / "phaser" / "src" / "assets" / "probable-waffle" / "atlas" / "crops.json"
+ENV_JSON         = REPO_ROOT / "libs" / "games" / "probable-waffle" / "phaser" / "src" / "assets" / "probable-waffle" / "atlas" / "environment.json"
 
 CROPS_PREFABS_DIR = PREFABS_ROOT / "outside" / "crops"
 ENV_PREFABS_DIR   = PREFABS_ROOT / "outside" / "environment"

@@ -3,7 +3,7 @@ import { ProbableWaffleGameInstance, ProbableWaffleUserInfo } from "@fuzzy-waddl
 import { type BaseGameData } from "@fuzzy-waddle/platform-game-host/phaser/game/base-game-data";
 import { ProbableWaffleCommunicatorService } from "../../communicators/probable-waffle-communicator.service";
 import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
-import { probableWaffleGameConfig } from "@fuzzy-waddle/probable-waffle-gameplay/world/const/game-config";
+import { probableWaffleGameConfig } from "@fuzzy-waddle/probable-waffle-phaser/world/const/game-config";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import { GameContainerComponent } from "@fuzzy-waddle/platform-game-host/game-container/game-container.component";
 import { AngularHost } from "@fuzzy-waddle/platform-game-host/angular/consts";

@@ -44,6 +44,8 @@
       "@fuzzy-waddle/probable-waffle-server": ["libs/games/probable-waffle/server/src/index.ts"],
       "@fuzzy-waddle/probable-waffle-gameplay": ["libs/games/probable-waffle/gameplay/src/index.ts"],
       "@fuzzy-waddle/probable-waffle-gameplay/*": ["libs/games/probable-waffle/gameplay/src/lib/*"],
+      "@fuzzy-waddle/probable-waffle-phaser": ["libs/games/probable-waffle/phaser/src/index.ts"],
+      "@fuzzy-waddle/probable-waffle-phaser/*": ["libs/games/probable-waffle/phaser/src/lib/*"],
       "@fuzzy-waddle/probable-waffle-interface": ["libs/games/probable-waffle/interface/src/index.ts"],
       "@fuzzy-waddle/probable-waffle-interface/*": ["libs/games/probable-waffle/interface/src/lib/*"],
       "@fuzzy-waddle/environments/*": ["libs/platform/game-host/src/lib/environments/*"],

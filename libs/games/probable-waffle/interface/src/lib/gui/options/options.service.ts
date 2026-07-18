@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { GameOptionsService } from "@fuzzy-waddle/probable-waffle-gameplay";
+import { GameOptionsService } from "@fuzzy-waddle/probable-waffle-phaser";
 
 @Injectable({
   providedIn: "root"

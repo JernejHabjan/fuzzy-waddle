@@ -13,7 +13,7 @@ import { GameSaveSyncService } from "./game-save-sync.service";
 import { GameSaveCodecService } from "./game-save-codec.service";
 import { GameSaveServiceInterface } from "./game-save.service.interface";
 import type { SaveGameRequest } from "./save-game-request";
-import { GameSavePort } from "@fuzzy-waddle/probable-waffle-gameplay";
+import { GameSavePort } from "@fuzzy-waddle/probable-waffle-phaser";
 
 @Injectable({ providedIn: "root" })
 /** Owns decoded save operations while persistence and transport retain encoded payloads. */

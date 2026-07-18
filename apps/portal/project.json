@@ -51,7 +51,7 @@
           },
           {
             "glob": "**/*",
-            "input": "libs/games/probable-waffle/gameplay/src/assets",
+            "input": "libs/games/probable-waffle/phaser/src/assets",
             "output": "assets"
           }
         ],

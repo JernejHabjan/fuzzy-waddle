@@ -11,7 +11,7 @@ import { type AchievementServiceInterface } from "./achievement.service.interfac
 import { PROBABLE_WAFFLE_ACHIEVEMENTS } from "./PROBABLE_WAFFLE_ACHIEVEMENTS";
 import type { AchievementDefinition } from "./achievement-definition";
 import { AchievementType } from "./achievement-type";
-import { AchievementPort } from "@fuzzy-waddle/probable-waffle-gameplay";
+import { AchievementPort } from "@fuzzy-waddle/probable-waffle-phaser";
 import { environment } from "@fuzzy-waddle/environments/environment";
 
 interface AchievementRecord {

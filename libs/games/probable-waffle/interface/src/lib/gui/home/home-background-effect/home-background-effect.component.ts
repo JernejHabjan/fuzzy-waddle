@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal, type On
 import { ConstellationEffectComponent } from "../constellation-effect/constellation-effect.component";
 import { AshfallEffectComponent } from "../ashfall-effect/ashfall-effect.component";
 import { OptionsService } from "../../options/options.service";
-import { type HomeScreenBackground } from "@fuzzy-waddle/probable-waffle-gameplay/core/gameSettings";
+import { type HomeScreenBackground } from "@fuzzy-waddle/probable-waffle-phaser/core/gameSettings";
 
 @Component({
   selector: "probable-waffle-home-background-effect",

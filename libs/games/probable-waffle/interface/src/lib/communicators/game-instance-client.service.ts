@@ -45,7 +45,7 @@ import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { LoadComponent } from "../gui/load/load.component";
 import { OptionsComponent } from "../gui/options/options.component";
 import { InGameChatComponent } from "../gui/in-game-chat/in-game-chat.component";
-import type { SaveGamePayload } from "@fuzzy-waddle/probable-waffle-gameplay/data/save-game-payload";
+import type { SaveGamePayload } from "@fuzzy-waddle/probable-waffle-phaser/data/save-game-payload";
 import type { ProbableWaffleCommunicators } from "./probable-waffle.communicators";
 import type { MatchmakingOptions } from "../gui/online/matchmaking/matchmaking-options";
 import { GameSaveService } from "../services/game-save/game-save.service";

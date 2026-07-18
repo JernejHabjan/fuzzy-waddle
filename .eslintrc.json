@@ -63,7 +63,17 @@
               },
               {
                 "sourceTag": "type:interface",
-                "onlyDependOnLibsWithTags": ["type:interface", "type:gameplay", "type:protocol", "type:platform"]
+                "onlyDependOnLibsWithTags": [
+                  "type:interface",
+                  "type:phaser",
+                  "type:gameplay",
+                  "type:protocol",
+                  "type:platform"
+                ]
+              },
+              {
+                "sourceTag": "type:phaser",
+                "onlyDependOnLibsWithTags": ["type:phaser", "type:gameplay", "type:protocol", "type:platform"]
               },
               {
                 "sourceTag": "type:gameplay",

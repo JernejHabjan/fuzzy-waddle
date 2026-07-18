@@ -26,9 +26,9 @@ import { type GameInstanceId } from "@fuzzy-waddle/platform-game-sessions";
 import { TwoWayCommunicator } from "@fuzzy-waddle/platform-game-host/communicators/two-way-communicator";
 import { Socket } from "ngx-socket-io";
 import type { CommunicatorService } from "@fuzzy-waddle/platform-game-host/communicators/CommunicatorService";
-import { type ProbableWaffleCommunicatorServiceInterface } from "@fuzzy-waddle/probable-waffle-gameplay";
-import { createMultiplayerClientLogger } from "@fuzzy-waddle/probable-waffle-gameplay/world/services/multiplayer/multiplayer-client-logger";
-import { getNgxSocketIoRawSocket, type NgxSocketIoRawSocket } from "@fuzzy-waddle/probable-waffle-gameplay";
+import { type ProbableWaffleCommunicatorServiceInterface } from "@fuzzy-waddle/probable-waffle-phaser";
+import { createMultiplayerClientLogger } from "@fuzzy-waddle/probable-waffle-phaser/world/services/multiplayer/multiplayer-client-logger";
+import { getNgxSocketIoRawSocket, type NgxSocketIoRawSocket } from "@fuzzy-waddle/probable-waffle-phaser";
 
 @Injectable({
   providedIn: "root"

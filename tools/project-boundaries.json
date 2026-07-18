@@ -11,7 +11,7 @@
     "api-e2e": "apps/api-e2e"
   },
   "games": {
-    "probable-waffle": ["gameplay", "interface", "protocol", "server"],
+    "probable-waffle": ["gameplay", "interface", "phaser", "protocol", "server"],
     "little-muncher": ["gameplay", "interface", "protocol", "server"],
     "fly-squasher": ["gameplay", "interface", "protocol", "server"],
     "dungeon-crawler": ["gameplay", "interface"]

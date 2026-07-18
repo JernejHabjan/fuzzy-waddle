@@ -2,7 +2,7 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { basename, dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 
 const DEFAULT_PROJECTS = [
-  "libs/games/probable-waffle/gameplay",
+  "libs/games/probable-waffle/phaser",
   "libs/games/little-muncher/gameplay",
   "libs/games/fly-squasher/gameplay",
   "libs/games/dungeon-crawler/gameplay"

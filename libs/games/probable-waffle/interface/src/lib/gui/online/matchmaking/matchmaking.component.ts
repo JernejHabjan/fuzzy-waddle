@@ -1,5 +1,5 @@
 import { Component, HostListener, inject, type OnDestroy, type OnInit } from "@angular/core";
-import { FactionDefinitions } from "@fuzzy-waddle/probable-waffle-gameplay/player/faction-definitions";
+import { FactionDefinitions } from "@fuzzy-waddle/probable-waffle-phaser";
 import { RoomsService } from "../../../communicators/rooms/rooms.service";
 
 import { FormsModule } from "@angular/forms";

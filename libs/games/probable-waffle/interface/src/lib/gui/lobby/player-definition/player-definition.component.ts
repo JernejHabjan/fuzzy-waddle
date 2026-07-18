@@ -1,5 +1,5 @@
 import { Component, inject, signal, viewChild } from "@angular/core";
-import { FactionDefinitions } from "@fuzzy-waddle/probable-waffle-gameplay/player/faction-definitions";
+import { FactionDefinitions } from "@fuzzy-waddle/probable-waffle-phaser";
 import { faCheck, faSpinner, faTimes } from "@fortawesome/free-solid-svg-icons";
 import {
   GameSetupHelpers,

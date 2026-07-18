@@ -232,6 +232,6 @@
     "sourceLang": "TYPE_SCRIPT",
     "esModule": true,
     "generateCode": true,
-    "outputFolder": "fuzzy-waddle/libs/games/probable-waffle/gameplay/src/lib/prefabs/gui"
+    "outputFolder": "fuzzy-waddle/libs/games/probable-waffle/phaser/src/lib/prefabs/gui"
   }
 }
