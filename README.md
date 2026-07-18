@@ -27,6 +27,17 @@ Reuse, redistribution, or commercial use outside of GitHub requires explicit wri
 | Fly Squasher    | Arcade             | Active         |
 | Dungeon Crawler | RPG                | In development |
 
+### Phaser Editor projects
+
+Open Phaser Editor in the `gameplay` directory for the game you want to edit. Do not open `libs/games` or the game’s parent directory as the editor project:
+
+| Game | Phaser Editor project directory |
+| ---- | -------------------------------- |
+| Probable Waffle | `libs/games/probable-waffle/gameplay` |
+| Little Muncher | `libs/games/little-muncher/gameplay` |
+| Fly Squasher | `libs/games/fly-squasher/gameplay` |
+| Dungeon Crawler | `libs/games/dungeon-crawler/gameplay` |
+
 ---
 
 ## Tech Stack
@@ -45,6 +56,7 @@ Reuse, redistribution, or commercial use outside of GitHub requires explicit wri
 ## Quick Start
 
 ```bash
+git lfs install
 git clone https://github.com/JernejHabjan/fuzzy-waddle.git
 cd fuzzy-waddle
 pnpm install

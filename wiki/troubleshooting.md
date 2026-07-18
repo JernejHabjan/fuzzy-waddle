@@ -17,6 +17,21 @@ Some GPU drivers cause tiles to appear "chipped" or have pixel gaps at tile edge
 | Files being processed unexpectedly | Add a `.skip` file to the directory to exclude it from Phaser Editor 2D processing |
 | Unexpected editor behaviour        | Open DevTools with `Ctrl+Shift+I` to investigate console errors                    |
 
+## Phaser Audio Cannot Be Decoded
+
+Errors such as `Unable to decode audio data` and `File failed: audiosprite` usually mean Git LFS pointer
+files were checked out instead of the real audio assets.
+
+Install Git LFS for your operating system, then hydrate the checkout:
+
+```bash
+pnpm assets:hydrate
+pnpm assets:check
+```
+
+Dependency installation warns about missing assets, while portal and desktop build/serve targets fail early
+with the same repair command.
+
 ## pnpm — Wrong Package Manager
 
 This repo enforces pnpm via an `engines` field and a preinstall hook. Running `npm install` or `yarn` will fail.

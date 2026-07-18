@@ -7,14 +7,22 @@
 | Node.js | `>=24.13.0`                                         |
 | pnpm    | `>=10.0`; npm/yarn are not supported for installs   |
 | Git     | Latest stable                                       |
+| Git LFS | Required for playable audio assets                  |
 | Docker  | Required only when running the local Supabase stack |
 
 ## 1. Clone & Install
 
 ```bash
+git lfs install
 git clone https://github.com/JernejHabjan/fuzzy-waddle.git
 cd fuzzy-waddle
 pnpm install
+```
+
+If the repository was cloned before Git LFS was installed, hydrate the existing checkout:
+
+```bash
+pnpm assets:hydrate
 ```
 
 ## 2. Configure Environment

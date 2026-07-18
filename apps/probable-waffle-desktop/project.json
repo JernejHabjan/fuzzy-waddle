@@ -8,6 +8,7 @@
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:application",
+      "dependsOn": ["assets-check"],
       "outputs": ["{workspaceRoot}/dist/apps/probable-waffle-desktop"],
       "options": {
         "outputPath": {
@@ -98,6 +99,7 @@
     },
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
+      "dependsOn": ["assets-check"],
       "configurations": {
         "production": {
           "buildTarget": "probable-waffle-desktop:build:production"
@@ -115,6 +117,14 @@
         "proxyConfig": "apps/probable-waffle-desktop/proxy.conf.json"
       },
       "continuous": true
+    },
+    "assets-check": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "options": {
+        "command": "node tools/assets/check-git-lfs.mjs",
+        "cwd": "{workspaceRoot}"
+      }
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
@@ -138,6 +148,7 @@
     },
     "tauri-dev": {
       "executor": "nx:run-commands",
+      "dependsOn": ["assets-check"],
       "options": {
         "commands": [
           "nx serve probable-waffle-desktop --configuration=tauri",
@@ -149,6 +160,7 @@
     },
     "tauri-build": {
       "executor": "nx:run-commands",
+      "dependsOn": ["assets-check"],
       "options": {
         "commands": [
           "nx build probable-waffle-desktop --configuration=tauri",

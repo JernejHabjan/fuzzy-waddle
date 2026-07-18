@@ -370,9 +370,6 @@ importers:
       phaser-asset-pack-hashing:
         specifier: ^1.0.6
         version: 1.0.6
-      phasereditor2d-launcher:
-        specifier: ^3.67.0
-        version: 3.67.0
       prettier:
         specifier: ^3.6.2
         version: 3.6.2
@@ -4787,10 +4784,6 @@ packages:
     resolution: {integrity: sha512-OXwN5b9pCUXNQHJpwwD2qP40byEmSgzj8B4ydSN0uMNYWiFmJ6x6KwUllMmfk8Rwu/HJDFR7U8ubsWBoN0Xp0A==}
     engines: {node: '>=8.9'}
 
-  adm-zip@0.5.10:
-    resolution: {integrity: sha512-x0HvcHqVJNTPk/Bw8JbLWlWoo6Wwnsug0fnYYro1HBrjxZ3G7/AZk7Ahv8JwDe1uIcz8eBqvu86FuF1POiG7vQ==}
-    engines: {node: '>=6.0'}
-
   adm-zip@0.5.18:
     resolution: {integrity: sha512-ufJnssQGbxzLNS1Ho9bCtX4rQKCCvoVuDLHoJyc3F9dOGDB4BkWs2Ci0kv53lqocAEQ/Cbi+I2XCsNYGqVYqng==}
     engines: {node: '>=12.0'}
@@ -8352,10 +8345,6 @@ packages:
 
   phaser@4.1.0:
     resolution: {integrity: sha512-ZXv5Bhyg2BqJGAAxNI2xvmzGXW9q+TwUG1RLri5ZDBYGGtcma6aWUO/eJ7EbozeqRd5fKdpo4ycNMQt+Bi5iYg==}
-
-  phasereditor2d-launcher@3.67.0:
-    resolution: {integrity: sha512-3urX8KX19kIgyP8VpbTeeyfU8TISsBAopYY6BMLbEd7Y3aES3vfvUdwEo4CHwIvfR5iD+9ZNZ4tQdxy/300UYA==}
-    hasBin: true
 
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
@@ -15766,8 +15755,6 @@ snapshots:
       loader-utils: 2.0.4
       regex-parser: 2.2.11
 
-  adm-zip@0.5.10: {}
-
   adm-zip@0.5.18:
     optional: true
 
@@ -20345,10 +20332,6 @@ snapshots:
   phaser@4.1.0:
     dependencies:
       eventemitter3: 5.0.4
-
-  phasereditor2d-launcher@3.67.0:
-    dependencies:
-      adm-zip: 0.5.10
 
   picocolors@1.1.1: {}
 
