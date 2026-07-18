@@ -24,7 +24,7 @@ import FireArrow from "../../../../prefabs/weapons/FireArrow";
 import FireBall from "../../../../prefabs/weapons/FireBall";
 import FrostBolt from "../../../../prefabs/weapons/FrostBolt";
 import { DistanceHelper } from "../../../../library/distance-helper";
-import { EffectsAnims } from "../../../../animations/effects";
+import { EffectsAnims } from "@fuzzy-waddle/probable-waffle-effects";
 import SkaduweeOwlFurball from "../../../../prefabs/weapons/SkaduweeOwlFurball";
 import { FlyingComponent } from "../../movement/flying-component";
 import { type AttackComponentData } from "@fuzzy-waddle/probable-waffle-protocol";

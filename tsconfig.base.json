@@ -42,6 +42,7 @@
       "@fuzzy-waddle/little-muncher-server": ["libs/games/little-muncher/server/src/index.ts"],
       "@fuzzy-waddle/probable-waffle-protocol": ["libs/games/probable-waffle/protocol/src/index.ts"],
       "@fuzzy-waddle/probable-waffle-server": ["libs/games/probable-waffle/server/src/index.ts"],
+      "@fuzzy-waddle/probable-waffle-effects": ["libs/games/probable-waffle/effects/src/index.ts"],
       "@fuzzy-waddle/probable-waffle-gameplay": ["libs/games/probable-waffle/gameplay/src/index.ts"],
       "@fuzzy-waddle/probable-waffle-gameplay/*": ["libs/games/probable-waffle/gameplay/src/lib/*"],
       "@fuzzy-waddle/probable-waffle-interface": ["libs/games/probable-waffle/interface/src/index.ts"],

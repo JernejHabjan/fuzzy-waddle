@@ -18,7 +18,7 @@ import { OwnerComponent } from "../../owner-component";
 import { getCurrentPlayerNumber } from "../../../../data/scene-data";
 import { AudioActorComponent } from "../../actor-audio/audio-actor-component";
 import { AnimationActorComponent } from "../../animation/animation-actor-component";
-import { EffectsAnims } from "../../../../animations/effects";
+import { EffectsAnims } from "@fuzzy-waddle/probable-waffle-effects";
 import { ActorTranslateComponent } from "../../movement/actor-translate-component";
 import { getSceneService } from "../../../../world/services/scene-component-helpers";
 import { AudioService } from "../../../../world/services/audio.service";

@@ -1,0 +1,12 @@
+{
+  "name": "probable-waffle-effects",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/games/probable-waffle/effects/src",
+  "projectType": "library",
+  "tags": ["scope:probable-waffle", "type:gameplay"],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}
