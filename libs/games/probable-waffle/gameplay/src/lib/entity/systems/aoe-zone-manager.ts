@@ -9,7 +9,7 @@ import { HealthComponent } from "../components/combat/components/health-componen
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import Phaser from "phaser";
 import { TilemapComponent } from "../../world/tilemap/tilemap.component";
-import { EffectsAnims } from "@fuzzy-waddle/probable-waffle-effects";
+import { EffectsAnims } from "../../animations/effects";
 import { AudioService } from "../../world/services/audio.service";
 import { RepresentableComponent } from "../components/representable-component";
 import { getSimulationNow } from "../../world/services/simulation-time";

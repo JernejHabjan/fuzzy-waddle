@@ -1,6 +1,6 @@
 import { WeaponType } from "./weapon-type";
 import { ProjectileType } from "./projectile-type";
-import { EffectsAnims } from "@fuzzy-waddle/probable-waffle-effects";
+import { EffectsAnims } from "../../../animations/effects";
 import { AnimationType } from "../animation/animation-type";
 import {
   SharedActorActionsSfxArrowHitSounds,

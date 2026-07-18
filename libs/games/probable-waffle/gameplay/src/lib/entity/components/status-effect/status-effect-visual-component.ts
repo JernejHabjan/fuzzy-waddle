@@ -5,7 +5,7 @@ import { HealthComponent } from "../combat/components/health-component";
 import Phaser from "phaser";
 import { getGameObjectRenderedTransform, onObjectReady } from "../../../data/game-object-helper";
 import { getActorComponent } from "../../../data/actor-component";
-import { EffectsAnims } from "@fuzzy-waddle/probable-waffle-effects";
+import { EffectsAnims } from "../../../animations/effects";
 
 export class StatusEffectVisualComponent {
   private statusEffectComponent?: StatusEffectComponent;
