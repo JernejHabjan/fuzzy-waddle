@@ -1,3 +1,5 @@
-export const getPortalBrand = () => cy.get(".navbar-brand .title");
-export const getFeaturedGame = () => cy.get(".tile-featured");
-export const getGameTiles = () => cy.get(".tile-game");
+import type { Page } from "@playwright/test";
+
+export const getPortalBrand = (page: Page) => page.locator(".navbar-brand .title");
+export const getFeaturedGame = (page: Page) => page.locator(".tile-featured");
+export const getGameTiles = (page: Page) => page.locator(".tile-game");

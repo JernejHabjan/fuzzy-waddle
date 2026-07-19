@@ -86,7 +86,7 @@ pnpm start:api      # NestJS API     → http://localhost:3333
 | `pnpm test`      | Run all unit tests                               |
 | `pnpm lint`      | Lint all projects                                |
 | `pnpm lint-fix`  | Lint with auto-fix                               |
-| `pnpm e2e`       | Run Cypress end-to-end tests                     |
+| `pnpm e2e`       | Run Playwright end-to-end tests                  |
 | `pnpm format`    | Format code                                      |
 | `pnpm dep-graph` | Open Nx dependency graph                         |
 | `pnpm phaser-editor:check` | Validate all self-contained Phaser Editor projects |

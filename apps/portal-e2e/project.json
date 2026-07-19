@@ -4,19 +4,6 @@
   "sourceRoot": "apps/portal-e2e/src",
   "projectType": "application",
   "targets": {
-    "e2e": {
-      "executor": "@nx/cypress:cypress",
-      "options": {
-        "cypressConfig": "apps/portal-e2e/cypress.config.ts",
-        "devServerTarget": "portal:serve:development",
-        "testingType": "e2e"
-      },
-      "configurations": {
-        "production": {
-          "devServerTarget": "portal:serve:production"
-        }
-      }
-    },
     "lint": {
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],

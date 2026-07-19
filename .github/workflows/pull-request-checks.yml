@@ -98,6 +98,17 @@ jobs:
           NX_BRANCH: ${{ github.event.number }}
           NX_RUN_GROUP: ${{ github.run_id }}
 
+      - name: Install Playwright Chromium
+        if: github.base_ref == 'main'
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run end-to-end tests
+        if: github.base_ref == 'main'
+        run: pnpm nx affected -t e2e
+        env:
+          NX_BRANCH: ${{ github.event.number }}
+          NX_RUN_GROUP: ${{ github.run_id }}
+
       - name: Test build
         run: pnpm nx affected -t build --configuration=production
         env:
