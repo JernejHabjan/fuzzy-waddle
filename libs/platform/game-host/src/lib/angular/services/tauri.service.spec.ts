@@ -1,12 +1,7 @@
 import { TestBed } from "@angular/core/testing";
-import { listen } from "@tauri-apps/api/event";
 import { onOpenUrl } from "@tauri-apps/plugin-deep-link";
 import { openUrl } from "@tauri-apps/plugin-opener";
 import { TauriService } from "./tauri.service";
-
-jest.mock("@tauri-apps/api/event", () => ({
-  listen: jest.fn()
-}));
 
 jest.mock("@tauri-apps/plugin-deep-link", () => ({
   onOpenUrl: jest.fn()
@@ -17,14 +12,12 @@ jest.mock("@tauri-apps/plugin-opener", () => ({
 }));
 
 describe("TauriService", () => {
-  const listenMock = jest.mocked(listen);
   const onOpenUrlMock = jest.mocked(onOpenUrl);
   const openUrlMock = jest.mocked(openUrl);
 
   beforeEach(() => {
     jest.spyOn(console, "log").mockImplementation();
     delete (window as Window & { __TAURI_INTERNALS__?: unknown }).__TAURI_INTERNALS__;
-    listenMock.mockReset();
     onOpenUrlMock.mockReset();
     openUrlMock.mockReset();
   });
@@ -51,7 +44,6 @@ describe("TauriService", () => {
     await Promise.all([service.initDeepLinkListener(), service.initDeepLinkListener()]);
 
     expect(onOpenUrlMock).toHaveBeenCalledTimes(1);
-    expect(listenMock).toHaveBeenCalledTimes(1);
   });
 
   it("propagates native opener failures to the owning workflow", async () => {
@@ -68,16 +60,12 @@ describe("TauriService", () => {
     (window as Window & { __TAURI_INTERNALS__?: unknown }).__TAURI_INTERNALS__ = {};
     const listenerError = new Error("listener failed");
     jest.spyOn(console, "error").mockImplementation();
-    const unlistenOpenUrl = jest.fn();
-    onOpenUrlMock.mockResolvedValue(unlistenOpenUrl);
-    listenMock.mockRejectedValueOnce(listenerError).mockResolvedValue(jest.fn());
+    onOpenUrlMock.mockRejectedValueOnce(listenerError).mockResolvedValue(jest.fn());
     const service = TestBed.inject(TauriService);
 
     await expect(service.initDeepLinkListener()).rejects.toBe(listenerError);
     await expect(service.initDeepLinkListener()).resolves.toBeUndefined();
 
     expect(onOpenUrlMock).toHaveBeenCalledTimes(2);
-    expect(listenMock).toHaveBeenCalledTimes(2);
-    expect(unlistenOpenUrl).toHaveBeenCalledTimes(1);
   });
 });

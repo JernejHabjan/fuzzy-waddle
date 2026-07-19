@@ -83,10 +83,10 @@ Tauri's WebView cannot complete a standard browser OAuth redirect, so sign-in us
 2. The auth URL is opened in the **system browser** (Chrome / Edge / Safari).
 3. After the user authenticates, Google → Supabase → browser lands on `/assets/auth-callback.html` — a plain HTML file (no Angular, no Supabase) that:
 
-- Redirects to `com.fuzzywaddle.probablewaffle://auth/callback?...#...` to hand the full callback payload to the app.
+- Redirects to `com.fuzzywaddle.probablewaffle://auth/callback?...` with only the nonce and auth result needed by the app.
 - Tells the user to close the browser tab after the app handoff.
 
-4. OS triggers the registered deep-link → the single-instance plugin forwards it via `"deep-link-received"`.
+4. OS triggers the registered deep link → the single-instance plugin feeds it into Tauri's standard `onOpenUrl` event.
 5. `AuthService` accepts only the exact callback whose nonce matches the active sign-in attempt, then exchanges its
    short-lived PKCE `?code=...` for a session. Legacy implicit tokens remain supported for auth attempts started by an
    older client.
@@ -105,7 +105,8 @@ Supabase — see [supabase.md](supabase.md).
 
 ## CORS
 
-The Tauri app contacts the production API (`https://fuzzy-waddle-api.onrender.com`) from two different origins depending on how it runs:
+The Tauri app origin depends on how it runs. Local development uses the local API, while packaged builds use the
+production API:
 
 | Mode                             | Origin                   |
 | -------------------------------- | ------------------------ |

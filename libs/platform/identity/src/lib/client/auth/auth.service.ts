@@ -35,16 +35,15 @@ interface DesktopSignInAttempt {
  *
  * Points to a plain static HTML file (not Angular) so Supabase's `detectSessionInUrl`
  * cannot auto-establish a session in the browser tab.  The HTML page forwards the
- * tokens to the registered app scheme and tells the user when the tab can be closed.
+ * auth result to the registered app scheme and tells the user when the tab can be closed.
  *
  * In dev the Angular dev server serves the file from /assets/.
  * In prod the file is bundled into the Render deploy at the same path.
  */
 function tauriAuthRedirect(nonce: string): string {
-  // In `pnpm tauri:dev` the WebView loads the Angular dev server at localhost:4201.
-  // In a production Tauri build the origin is tauri://localhost or http://tauri.localhost.
-  // Check the actual runtime origin rather than isDevMode() (a compile-time constant).
-  const base = window.location.origin.includes("localhost") ? window.location.origin : environment.clientUrl;
+  // Packaged WebView origins are not reachable by the system browser, so only the
+  // local Tauri build may use its runtime origin as the hosted callback page.
+  const base = environment.production ? environment.clientUrl : window.location.origin;
   const redirectUrl = new URL("/assets/auth-callback.html", base);
   redirectUrl.searchParams.set(TAURI_AUTH_NONCE_PARAM, nonce);
   return redirectUrl.toString();
@@ -75,8 +74,7 @@ function parseTauriAuthCallback(callbackUrl: string, expectedNonce: string): URL
     }
 
     const hashParams = new URLSearchParams(parsedCallbackUrl.hash.slice(1));
-    const hasError =
-      parsedCallbackUrl.searchParams.has("error") || hashParams.has("error");
+    const hasError = parsedCallbackUrl.searchParams.has("error") || hashParams.has("error");
     const hasCode = parsedCallbackUrl.searchParams.has("code");
     const hasImplicitSession =
       (parsedCallbackUrl.searchParams.has("access_token") || hashParams.has("access_token")) &&
@@ -170,7 +168,7 @@ export class AuthService implements AuthServiceInterface {
    * 2. Open the URL in the system browser via tauri-plugin-opener.
    * 3. After the user authenticates, Google → Supabase → browser lands on
    *    `/assets/auth-callback.html` (plain HTML, no Angular/Supabase) which:
-   *      a. Redirects to `com.fuzzywaddle.probablewaffle://auth/callback#tokens`
+   *      a. Redirects to `com.fuzzywaddle.probablewaffle://auth/callback?code=...`
    *      b. Displays a close-tab instruction in the browser.
    * 4. Subscribe before opening the browser and wait for the first matching deep-link URL.
    * 5. `handleDeepLinkAuthCallback` exchanges the PKCE code, with implicit tokens supported

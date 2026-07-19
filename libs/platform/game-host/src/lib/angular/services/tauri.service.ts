@@ -52,12 +52,8 @@ export class TauriService {
    * Deep links arrive when the OS activates the registered URI scheme, e.g.
    * `com.fuzzywaddle.probablewaffle://auth/callback?code=…` after OAuth.
    *
-   * Two paths are covered:
-   *  1. `onOpenUrl` — fired by the deep-link plugin when the app is the first
-   *     process to receive the URL (initial launch or macOS URL events).
-   *  2. `deep-link-received` event — emitted by our Rust single-instance
-   *     callback when Windows spawns a second process for the protocol URL and
-   *     single-instance kills it, forwarding its argv to this running instance.
+   * `onOpenUrl` covers direct OS activations and URLs forwarded by the desktop
+   * single-instance plugin's `deep-link` integration.
    */
   async initDeepLinkListener(): Promise<void> {
     if (!this.isTauri) return;
@@ -79,12 +75,9 @@ export class TauriService {
 
   /** Registers the native event sources once, without blocking normal app startup. */
   private async registerDeepLinkListeners(): Promise<void> {
-    const [{ onOpenUrl }, { listen }] = await Promise.all([
-      import("@tauri-apps/plugin-deep-link"),
-      import("@tauri-apps/api/event")
-    ]);
+    const { onOpenUrl } = await import("@tauri-apps/plugin-deep-link");
 
-    const unlistenOpenUrl = await onOpenUrl((urls) => {
+    await onOpenUrl((urls) => {
       console.log("[TauriService] onOpenUrl fired");
       this.ngZone.run(() => {
         for (const url of urls) {
@@ -92,21 +85,6 @@ export class TauriService {
         }
       });
     });
-
-    try {
-      await listen<string>("deep-link-received", (event) => {
-        console.log("[TauriService] deep-link-received event");
-        if (event.payload) {
-          this.ngZone.run(() => {
-            this.deepLink$.next(event.payload);
-          });
-        }
-      });
-    } catch (err) {
-      // A partial initialization must not leave a duplicate plugin listener on retry.
-      unlistenOpenUrl();
-      throw err;
-    }
 
     console.log("[TauriService] deep-link listeners registered");
   }

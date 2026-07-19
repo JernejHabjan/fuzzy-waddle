@@ -18,7 +18,7 @@ export class DataAccessService implements DataAccessServiceInterface {
     return this._supabase;
   }
 
-  /** Uses PKCE so desktop deep links carry a short one-time code instead of session credentials. */
+  /** Uses PKCE so OAuth callbacks exchange a short one-time code instead of carrying session credentials. */
   private createSupabaseClient() {
     this._supabase = createClient<Database>(environment.supabase.url, environment.supabase.key, {
       auth: {

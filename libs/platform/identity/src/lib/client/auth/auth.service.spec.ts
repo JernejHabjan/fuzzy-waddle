@@ -83,6 +83,10 @@ describe("AuthService", () => {
 
     await service.signInWithGoogle();
 
+    if (!oauthRedirectUrl) throw new Error("OAuth redirect URL was not captured");
+    const parsedOAuthRedirectUrl = new URL(oauthRedirectUrl);
+    expect(parsedOAuthRedirectUrl.origin).toBe(window.location.origin);
+    expect(parsedOAuthRedirectUrl.pathname).toBe("/assets/auth-callback.html");
     expect(desktopAuthBridge.initDeepLinkListener).toHaveBeenCalled();
     expect(desktopAuthBridge.openInBrowser).toHaveBeenCalledWith("https://accounts.google.com/oauth");
     expect(supabase.auth.exchangeCodeForSession).toHaveBeenCalledWith("test");
