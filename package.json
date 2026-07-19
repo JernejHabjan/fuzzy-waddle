@@ -54,7 +54,7 @@
     "node": ">=24.13.0 <25",
     "pnpm": "10.34.5"
   },
-  "packageManager": "pnpm@10.34.5",
+  "packageManager": "pnpm@11.14.0",
   "private": true,
   "dependencies": {
     "@angular/cdk": "21.2.14",
