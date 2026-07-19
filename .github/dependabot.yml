@@ -15,7 +15,7 @@ updates:
     schedule:
       interval: weekly
   - package-ecosystem: "cargo"
-    directory: "/apps/client/src-tauri"
+    directory: "/apps/probable-waffle-desktop/src-tauri"
     schedule:
       interval: weekly
   - package-ecosystem: "devcontainers"

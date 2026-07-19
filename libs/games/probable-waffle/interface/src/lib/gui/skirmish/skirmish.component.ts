@@ -1,0 +1,29 @@
+import { Component, inject } from "@angular/core";
+import type { OnInit } from "@angular/core";
+import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
+import {
+  ProbableWaffleGameInstanceType,
+  ProbableWaffleGameInstanceVisibility
+} from "@fuzzy-waddle/probable-waffle-protocol";
+import { LoaderComponent } from "@fuzzy-waddle/platform-game-host/angular/loader/loader.component";
+import { AngularHost } from "@fuzzy-waddle/platform-game-host/angular/consts";
+
+@Component({
+  template: `<fuzzy-waddle-loader />`,
+  imports: [LoaderComponent],
+  host: AngularHost.contentFlexFullHeightCenter
+})
+export class SkirmishComponent implements OnInit {
+  private readonly gameInstanceClientService = inject(GameInstanceClientService);
+
+  async ngOnInit(): Promise<void> {
+    await this.gameInstanceClientService.createGameInstance(
+      "Skirmish",
+      ProbableWaffleGameInstanceVisibility.Private,
+      ProbableWaffleGameInstanceType.Skirmish
+    );
+    await this.gameInstanceClientService.addSelfAsPlayer();
+    await this.gameInstanceClientService.addAiPlayer();
+    await this.gameInstanceClientService.navigateToLobbyOrDirectlyToGame();
+  }
+}

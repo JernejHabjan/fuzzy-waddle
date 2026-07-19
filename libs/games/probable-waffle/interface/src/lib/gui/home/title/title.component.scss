@@ -1,0 +1,68 @@
+@use "variables" as *;
+
+:host {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-right: 4rem;
+}
+
+.game-title {
+  text-align: center;
+  padding: 2rem 2.5rem;
+  border: 1px solid rgba(111, 85, 52, 0.42);
+  background-color: rgba(19, 23, 28, 0.82);
+  box-shadow: 0 24px 40px rgba(0, 0, 0, 0.26);
+}
+
+.title-main {
+  font-size: clamp(3.5rem, 7vw, 7.2rem);
+  font-family: "Cinzel", $app-font-bold, serif;
+  color: #f5ecd9;
+  margin: 0;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-shadow: 0 8px 24px rgba(0, 0, 0, 0.42);
+  z-index: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+.title-tagline {
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  font-weight: 600;
+  color: #f0c46b;
+  margin-top: 1rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.92;
+  z-index: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+@media (max-width: 1200px) {
+  :host {
+    order: 1;
+    padding-right: 0;
+  }
+
+  .title-main {
+    font-size: clamp(3rem, 8vw, 6rem);
+  }
+}
+
+@media (max-width: 768px) {
+  .game-title {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .title-main {
+    font-size: clamp(2.5rem, 10vw, 4rem);
+  }
+
+  .title-tagline {
+    font-size: clamp(0.875rem, 3vw, 1.125rem);
+  }
+}

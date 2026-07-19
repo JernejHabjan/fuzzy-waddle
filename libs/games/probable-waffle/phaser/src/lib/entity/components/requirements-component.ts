@@ -1,0 +1,12 @@
+type GameObject = Phaser.GameObjects.GameObject;
+import type { RequirementsDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/requirements-definition";
+
+export class RequirementsComponent {
+  // todo should use techTreeComponent maybe?
+
+  // Types of actors the player needs to own in order to create this actor
+  constructor(
+    public readonly owner: GameObject,
+    public readonly requirementsDefinition: RequirementsDefinition
+  ) {}
+}

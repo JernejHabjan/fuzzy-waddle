@@ -1,0 +1,73 @@
+import { generalWorkerDefinitions } from "../../shared/worker/worker-shared.definition";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
+
+import type { PrefabDefinition } from "../../../definitions/prefab-definition";
+import {
+  ConstructableCategory,
+  ConstructableDefinition
+} from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/construction/constructable-category";
+
+export const tivaraWorkerDefinition: PrefabDefinition = {
+  ...generalWorkerDefinitions,
+  components: {
+    ...generalWorkerDefinitions.components,
+    info: {
+      name: "Tivara Scavenger",
+      description: "Guardian of forgotten secrets, laboring in shadow to uphold the ancient cycle",
+      tooltipDescription: ["Gathers resources", "Constructs buildings", "Weak in combat"],
+      smallImage: {
+        key: "factions",
+        frame: "character_icons/tivara/worker.png",
+        origin: { x: 0.5, y: 0.5 }
+      }
+    },
+    representable: {
+      width: 32,
+      height: 48,
+      origin: { x: 0.5, y: 0.5 }
+    },
+    objectDescriptor: {
+      color: 0xc2a080
+    },
+    owner: {
+      color: [
+        {
+          originalColor: 0x31770f,
+          epsilon: 0.25
+        }
+      ]
+    },
+    requirements: {
+      actors: [ObjectNames.Sandhold]
+    },
+    builder: {
+      constructionSiteOffset: 2,
+      enterConstructionSite: false,
+      constructableBuildings: new ConstructableDefinition(
+        [
+          // keep this in sync with actor-manager
+          ObjectNames.Sandhold,
+          ObjectNames.Olival,
+          ObjectNames.AnkGuard,
+          ObjectNames.Temple
+        ],
+        [
+          new ConstructableCategory("gui", "action_icons/category_resource_gathering.png", "Resource Gathering", [
+            new ConstructableDefinition([
+              ObjectNames.WorkMill,
+              ObjectNames.MiningCamp,
+              ObjectNames.Granary,
+              ObjectNames.Field
+            ])
+          ]),
+          new ConstructableCategory("gui", "action_icons/category_defensive_buildings.png", "Defensive Structures", [
+            new ConstructableDefinition([ObjectNames.WatchTower, ObjectNames.Wall, ObjectNames.Stairs])
+          ])
+        ]
+      )
+    }
+  },
+  meta: {
+    randomOfType: [ObjectNames.TivaraWorkerFemale, ObjectNames.TivaraWorkerMale]
+  }
+} satisfies PrefabDefinition;

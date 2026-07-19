@@ -2,7 +2,11 @@ name: Develop CI
 
 on:
   push:
-    branches: [ develop ]
+    branches: [develop]
+
+permissions:
+  actions: read
+  contents: read
 
 env:
   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
@@ -10,32 +14,40 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # This job validates code but does not publish its build output, so it can retain LFS pointers.
+    env:
+      FUZZY_WADDLE_ALLOW_LFS_POINTERS: "true"
     steps:
       - name: Checkout repository
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           lfs: false
-        #   fetch-depth: 50
+          fetch-depth: 0
 
       - name: Setup pnpm
         uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
         with:
-          version: 10.34.5
+          version: 11.14.0
 
       - name: Use Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version-file: .node-version
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Derive affected project SHAs
+        uses: nrwl/nx-set-shas@afb73a62d26e41464e9254689e1fd6122ee683c1 # v5.0.1
+        with:
+          main-branch-name: develop
+
       # Keep CI on a single GitHub runner for this repo. Recent Nx Agents trials did
       # not improve end-to-end time because the expensive work is concentrated in a
-      # small number of large client targets rather than many independent projects.
+      # small number of large frontend targets rather than many independent projects.
       - name: Run linter
-        run: pnpm run lint
+        run: pnpm nx affected -t lint
         env:
           NX_BRANCH: ${{ github.event.number }}
           NX_RUN_GROUP: ${{ github.run_id }}
@@ -43,13 +55,13 @@ jobs:
       # If the workspace structure changes and affected work becomes broadly
       # parallelizable, re-evaluate Nx Agents before adding the extra CI complexity.
       - name: Run tests
-        run: pnpm run test:ci
+        run: pnpm nx affected -t test --configuration=ci
         env:
           NX_BRANCH: ${{ github.event.number }}
           NX_RUN_GROUP: ${{ github.run_id }}
 
       - name: Build Packages
-        run: pnpm run build-gh-pages
+        run: pnpm nx affected -t build --configuration=production
         env:
           NX_BRANCH: ${{ github.event.number }}
           NX_RUN_GROUP: ${{ github.run_id }}
@@ -60,8 +72,8 @@ jobs:
       # - name: Upload artifact
       #   uses: actions/upload-pages-artifact@v3
       #   with:
-      #     # Upload dist/apps/client
-      #     path: 'dist/apps/client'
+      #     # Upload dist/apps/portal
+      #     path: 'dist/apps/portal'
 
   # Deploy job
   #deploy:

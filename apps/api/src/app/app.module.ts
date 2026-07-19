@@ -1,15 +1,15 @@
 import { Module } from "@nestjs/common";
 import { AppController } from "./app.controller";
-import { AuthModule } from "../auth/auth.module";
+import { AuthModule } from "@fuzzy-waddle/platform-identity/server/auth/auth.module";
 import { ConfigModule } from "@nestjs/config";
-import { ChatModule } from "./chat/chat.module";
-import { LittleMuncherModule } from "./little-muncher/little-muncher.module";
+import { ChatModule } from "@fuzzy-waddle/platform-chat/server/chat/chat.module";
+import { LittleMuncherModule } from "@fuzzy-waddle/little-muncher-server";
 import { APP_GUARD } from "@nestjs/core";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
-import { FlySquasherModule } from "./fly-squasher/fly-squasher.module";
-import { ProbableWaffleModule } from "./probable-waffle/probable-waffle.module";
+import { FlySquasherModule } from "@fuzzy-waddle/fly-squasher-server";
+import { ProbableWaffleModule } from "@fuzzy-waddle/probable-waffle-server";
 import { AchievementsModule } from "./achievements/achievements.module";
-import { UserProfilesModule } from "./user-profiles/user-profiles.module";
+import { UserProfilesModule } from "@fuzzy-waddle/platform-identity/server/user-profiles/user-profiles.module";
 
 @Module({
   imports: [

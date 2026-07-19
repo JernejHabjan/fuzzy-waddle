@@ -1,0 +1,29 @@
+import { Component, inject } from "@angular/core";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
+import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
+import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service";
+
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { RouterLink } from "@angular/router";
+import { AngularHost } from "@fuzzy-waddle/platform-game-host/angular/consts";
+import { HomeNavComponent } from "@fuzzy-waddle/platform-identity/client/home-nav/home-nav.component";
+import { CenterWrapperComponent } from "@fuzzy-waddle/platform-game-host/angular/components/center-wrapper/center-wrapper.component";
+
+@Component({
+  selector: "fly-squasher-home",
+  templateUrl: "./home.component.html",
+  styleUrls: ["./home.component.scss"],
+  imports: [FaIconComponent, RouterLink, HomeNavComponent, CenterWrapperComponent],
+  host: AngularHost.contentFlexFullHeight
+})
+export class HomeComponent {
+  protected readonly faExclamationTriangle = faExclamationTriangle;
+  protected readonly featureList = [
+    "Chain score runs across fly patterns and dirty kitchen layouts.",
+    "Push leaderboard attempts when you are signed in and the server is reachable.",
+    "Tune master, SFX, and music volume before you jump back into the swat zone."
+  ];
+
+  protected readonly authService = inject(AuthService);
+  protected readonly serverHealthService = inject(ServerHealthService);
+}

@@ -27,6 +27,20 @@ Reuse, redistribution, or commercial use outside of GitHub requires explicit wri
 | Fly Squasher    | Arcade             | Active         |
 | Dungeon Crawler | RPG                | In development |
 
+### Phaser Editor projects
+
+Open Phaser Editor in the project directory listed for the game. Do not open `libs/games` or the game’s parent directory as the editor project:
+
+| Game | Phaser Editor project directory |
+| ---- | -------------------------------- |
+| Probable Waffle | `libs/games/probable-waffle/phaser` |
+| Little Muncher | `libs/games/little-muncher/gameplay` |
+| Fly Squasher | `libs/games/fly-squasher/gameplay` |
+| Dungeon Crawler | `libs/games/dungeon-crawler/gameplay` |
+
+Run `pnpm phaser-editor:check` after changing scenes, prefabs, atlases, or asset packs. The check verifies
+that each editor project can resolve its own asset URLs, atlas frames, and prefab IDs.
+
 ---
 
 ## Tech Stack
@@ -45,6 +59,7 @@ Reuse, redistribution, or commercial use outside of GitHub requires explicit wri
 ## Quick Start
 
 ```bash
+git lfs install
 git clone https://github.com/JernejHabjan/fuzzy-waddle.git
 cd fuzzy-waddle
 pnpm install
@@ -82,7 +97,7 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_
 ## Attribution
 
 Some artwork is publicly available on [Pixilart](https://www.pixilart.com/darkneess10).
-Full attribution list: [attributions.json](apps/client/src/assets/general/attributions.json) · [Attributions page](https://fuzzy-waddle.onrender.com/attributions)
+Full attribution list: [attributions.json](apps/portal/src/assets/general/attributions.json) · [Attributions page](https://fuzzy-waddle.onrender.com/attributions)
 
 ---
 

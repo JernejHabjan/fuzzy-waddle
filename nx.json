@@ -61,6 +61,13 @@
         "previewTargetName": "webpack-preview",
         "serveStaticTargetName": "webpack-serve-static"
       }
+    },
+    {
+      "plugin": "@nx/playwright/plugin",
+      "options": {
+        "targetName": "e2e",
+        "ciTargetName": "e2e-ci"
+      }
     }
   ],
   "generators": {
@@ -68,7 +75,7 @@
       "style": "scss",
       "linter": "eslint",
       "unitTestRunner": "jest",
-      "e2eTestRunner": "cypress"
+      "e2eTestRunner": "playwright"
     },
     "@nx/angular:library": {
       "linter": "eslint",
@@ -130,7 +137,7 @@
       "typeSeparator": "."
     }
   },
-  "defaultProject": "client",
+  "defaultProject": "portal",
   "defaultBase": "develop",
   "nxCloudId": "67a8ed1f35fa9168f97724be",
   "analytics": false

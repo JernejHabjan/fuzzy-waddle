@@ -1,0 +1,16 @@
+import { AudioSprites } from "../../../sfx/audio-sprites";
+import type { SoundDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/actor-audio/sound-definition";
+
+enum HedgehogSfx {
+  HEDGEHOG_ANGRY = "hedgehog angry",
+  HEDGEHOG_SELECTION_1 = "hedgehog selection 1",
+  HEDGEHOG_SELECTION_2 = "hedgehog selection 2"
+}
+
+export const ActorsHedgehogSfxAngrySounds: SoundDefinition[] = [
+  { key: AudioSprites.ACTORS_ANIMALS, spriteName: HedgehogSfx.HEDGEHOG_ANGRY }
+];
+export const ActorsHedgehogSfxSelectionSounds: SoundDefinition[] = [
+  { key: AudioSprites.ACTORS_ANIMALS, spriteName: HedgehogSfx.HEDGEHOG_SELECTION_1 },
+  { key: AudioSprites.ACTORS_ANIMALS, spriteName: HedgehogSfx.HEDGEHOG_SELECTION_2 }
+];

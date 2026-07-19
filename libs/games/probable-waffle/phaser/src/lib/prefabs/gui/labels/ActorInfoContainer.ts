@@ -1,0 +1,332 @@
+// You can write more code here
+
+/* START OF COMPILED CODE */
+
+import OnPointerDownScript from "@fuzzy-waddle/platform-game-host/phaser/script-nodes-basic/OnPointerDownScript";
+import ActorInfoLabel from "./ActorInfoLabel";
+import ProgressBar from "../ProgressBar";
+import ActorDetails from "./ActorDetails";
+import ActorInfoLabels from "./ActorInfoLabels";
+/* START-USER-IMPORTS */
+import HudProbableWaffle from "../../../world/scenes/hud-scenes/HudProbableWaffle";
+import { Subscription } from "rxjs";
+import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
+import { getCurrentPlayerNumber, getSelectedActors, listenToSelectionEvents } from "../../../data/scene-data";
+import { getPwActorDefinition } from "../../definitions/actor-definitions";
+import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
+import { getActorComponent } from "../../../data/actor-component";
+import { HealthComponent } from "../../../entity/components/combat/components/health-component";
+import { ConstructionSiteComponent } from "../../../entity/components/construction/construction-site-component";
+import { OwnerComponent } from "../../../entity/components/owner-component";
+import type { PrefabDefinition } from "../../definitions/prefab-definition";
+import { getSceneComponent, getSceneService } from "../../../world/services/scene-component-helpers";
+import { SelectionTabHandler } from "../../../player/human-controller/selection-tab-handler";
+import { ResearchComponent } from "../../../entity/components/research/research-component";
+import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
+import { ContainerComponent } from "../../../entity/components/building/container-component";
+import { ActorTranslateComponent } from "../../../entity/components/movement/actor-translate-component";
+/* END-USER-IMPORTS */
+
+export default class ActorInfoContainer extends Phaser.GameObjects.Container {
+  constructor(scene: Phaser.Scene, x?: number, y?: number) {
+    super(scene, x ?? 215, y ?? 81);
+
+    // actor_info_bg
+    const actor_info_bg = scene.add.nineslice(
+      -214.40086364746094,
+      -80.93078633145431,
+      "gui",
+      "cryos_mini_gui/surfaces/surface_parchment.png",
+      64,
+      48,
+      3,
+      3,
+      3,
+      3
+    );
+    actor_info_bg.scaleX = 3.3669208029108955;
+    actor_info_bg.scaleY = 1.6660351475342665;
+    actor_info_bg.setOrigin(0, 0);
+    this.add(actor_info_bg);
+
+    // preventDefaultScript
+    new OnPointerDownScript(actor_info_bg);
+
+    // actorInfoLabel
+    const actorInfoLabel = new ActorInfoLabel(scene, -188, -68);
+    actorInfoLabel.scaleX = 0.5;
+    actorInfoLabel.scaleY = 0.5;
+    this.add(actorInfoLabel);
+    actorInfoLabel.text.setStyle({});
+
+    // progress_bar
+    const progress_bar = new ProgressBar(scene, -146, -50);
+    this.add(progress_bar);
+
+    // actorDetails
+    const actorDetails = new ActorDetails(scene, -196, -43);
+    this.add(actorDetails);
+
+    // actorInfoLabels
+    const actorInfoLabels = new ActorInfoLabels(scene, -206, -54);
+    this.add(actorInfoLabels);
+
+    this.actorInfoLabel = actorInfoLabel;
+    this.progress_bar = progress_bar;
+    this.actorDetails = actorDetails;
+    this.actorInfoLabels = actorInfoLabels;
+
+    /* START-USER-CTR-CODE */
+    this.mainSceneWithActors = (scene as HudProbableWaffle).probableWaffleScene!;
+    this.subscribeToPlayerSelection();
+    this.subscribeToActorInfoLabelEvents();
+    this.setupIconClickHandler();
+    this.hideAllLabels();
+    /* END-USER-CTR-CODE */
+  }
+
+  private actorInfoLabel: ActorInfoLabel;
+  private progress_bar: ProgressBar;
+  private actorDetails: ActorDetails;
+  private actorInfoLabels: ActorInfoLabels;
+
+  /* START-USER-CODE */
+  private actorKillSubscription?: Subscription;
+  private actorConstructionSubscription?: Subscription;
+  private selectionChangedSubscription?: Subscription;
+  private actorInfoLabelsVisibilitySubscription?: Subscription;
+  private tabHandlerSubscription?: Subscription;
+  private researchEventSubscriptions: Subscription[] = [];
+  private containerChangedSubscription?: Subscription;
+  /** Re-evaluates shore state when the container actor moves to a new tile. */
+  private containerMovementSubscription?: Subscription;
+  private readonly mainSceneWithActors: ProbableWaffleScene;
+
+  private subscribeToPlayerSelection() {
+    this.selectionChangedSubscription = listenToSelectionEvents(this.scene)?.subscribe(() => {
+      const selectedActors = getSelectedActors(this.mainSceneWithActors);
+
+      // Update tab handler with new selection
+      const tabHandler = getSceneComponent(this.mainSceneWithActors, SelectionTabHandler);
+      if (tabHandler) {
+        tabHandler.updateGroupedActors();
+      }
+
+      if (selectedActors.length === 0) {
+        this.hideAllLabels();
+        return;
+      }
+      const actor = selectedActors[0];
+      if (!actor) throw new Error("Actor not found");
+      const definition = getPwActorDefinition(actor.name, null);
+      if (definition) this.setActorInfoLabel(definition);
+      if (selectedActors.length === 1) {
+        this.setActorDetailLabels(actor);
+        this.subscribeToActorKillEvent(actor);
+        this.subscribeToActorConstructionEvent(actor);
+        this.subscribeToResearchChanges();
+        return;
+      }
+      // multi-selection - always show all actors, highlight current tab group
+      const currentTabActors = tabHandler?.currentTabActors || selectedActors;
+      this.actorInfoLabels.setLabelsForDisplayingActors(selectedActors, currentTabActors);
+      this.actorDetails.hideAll();
+      this.progress_bar.cleanActor();
+    });
+
+    // Subscribe to tab changes to update display
+    const tabHandler = getSceneComponent(this.mainSceneWithActors, SelectionTabHandler);
+    if (tabHandler) {
+      this.tabHandlerSubscription = tabHandler.currentTabIndex$.subscribe(() => {
+        this.updateDisplayForCurrentTab();
+      });
+    }
+  }
+
+  private updateDisplayForCurrentTab() {
+    const tabHandler = getSceneComponent(this.mainSceneWithActors, SelectionTabHandler);
+    if (!tabHandler) return;
+
+    const selectedActors = getSelectedActors(this.mainSceneWithActors);
+    const currentTabActors = tabHandler.currentTabActors;
+
+    if (selectedActors.length === 0 || currentTabActors.length === 0) {
+      this.hideAllLabels();
+      return;
+    }
+
+    const actor = currentTabActors[0];
+    if (!actor) return;
+
+    const definition = getPwActorDefinition(actor.name, null);
+    if (definition) this.setActorInfoLabel(definition);
+
+    if (currentTabActors.length === 1 && selectedActors.length === 1) {
+      this.setActorDetailLabels(actor);
+      this.subscribeToActorKillEvent(actor);
+      this.subscribeToActorConstructionEvent(actor);
+    } else {
+      // multi-selection - always show all actors, highlight current tab group
+      this.actorInfoLabels.setLabelsForDisplayingActors(selectedActors, currentTabActors);
+      this.actorDetails.hideAll();
+      this.progress_bar.cleanActor();
+    }
+  }
+
+  private setActorDetailLabels(actor: Phaser.GameObjects.GameObject) {
+    const definition = getPwActorDefinition(actor.name, null);
+    if (definition) this.actorDetails.showActorAttributes(actor, definition);
+    if (this.canShowIcons(actor)) {
+      this.progress_bar.setProgressBar(actor);
+      this.actorInfoLabels.setLabelsForDisplayingActorsQueues(actor);
+
+      // If actor has a container, overlay container contents in the labels area
+      const containerComponent = getActorComponent(actor, ContainerComponent);
+      if (containerComponent) {
+        this.actorInfoLabels.setLabelsForContainerContents(actor);
+
+        // Re-render when the container changes (unit loaded/unloaded)
+        this.containerChangedSubscription?.unsubscribe();
+        this.containerChangedSubscription = containerComponent.containerChanged.subscribe(() => {
+          this.actorInfoLabels.setLabelsForContainerContents(actor);
+        });
+
+        // Re-evaluate when the container actor moves between tiles (shore state may change for water units)
+        this.containerMovementSubscription?.unsubscribe();
+        const translateComponent = getActorComponent(actor, ActorTranslateComponent);
+        if (translateComponent) {
+          this.containerMovementSubscription = translateComponent.actorMovedLogicalPosition.subscribe(() => {
+            this.actorInfoLabels.setLabelsForContainerContents(actor);
+          });
+        }
+      }
+    }
+  }
+
+  private setActorInfoLabel(actorDefinition: PrefabDefinition) {
+    const infoDefinition = actorDefinition.components?.info;
+    this.actorInfoLabel.setText(infoDefinition?.name ?? "");
+    this.actorInfoLabel.setIcon(infoDefinition?.smallImage?.key, infoDefinition?.smallImage?.frame);
+    this.actorInfoLabel.visible = true;
+  }
+
+  /**
+   * Toggles the visibility of the actor info labels and the actor details.
+   * When actor is training or producing, the actor info labels are visible, otherwise the actor details are visible.
+   */
+  private subscribeToActorInfoLabelEvents() {
+    this.actorInfoLabelsVisibilitySubscription = this.actorInfoLabels.visibilityChangedObservable.subscribe(
+      (visible) => {
+        this.actorInfoLabels.visible = visible;
+        this.actorDetails.visible = !visible;
+      }
+    );
+  }
+
+  private setupIconClickHandler() {
+    this.actorInfoLabel.setIconClickHandler(() => {
+      this.centerCameraOnSelectedActor();
+    });
+  }
+
+  private centerCameraOnSelectedActor() {
+    const selectedActors = getSelectedActors(this.mainSceneWithActors);
+    if (selectedActors.length === 0) return;
+
+    const actor = selectedActors[0];
+    if (!actor) return;
+
+    // Get the actor's position
+    const actorX = (actor as any).x;
+    const actorY = (actor as any).y;
+
+    if (actorX === undefined || actorY === undefined) return;
+
+    // Get the main camera from the game scene
+    const camera = this.mainSceneWithActors.cameras.main;
+
+    // Center the camera on the actor
+    camera.scrollX = actorX - camera.width / 2;
+    camera.scrollY = actorY - camera.height / 2;
+  }
+
+  private hideAllLabels() {
+    this.actorInfoLabel.visible = false;
+    this.actorInfoLabels.cleanActor();
+    this.progress_bar.cleanActor();
+    this.actorDetails.hideAll();
+    this.containerChangedSubscription?.unsubscribe();
+    this.containerMovementSubscription?.unsubscribe();
+  }
+
+  private subscribeToActorKillEvent(actor: Phaser.GameObjects.GameObject) {
+    this.actorKillSubscription?.unsubscribe();
+    this.actorKillSubscription = getActorComponent(actor, HealthComponent)?.healthChanged.subscribe((newHealth) => {
+      if (newHealth <= 0) {
+        this.hideAllLabels();
+      }
+    });
+  }
+
+  private subscribeToActorConstructionEvent(actor: Phaser.GameObjects.GameObject) {
+    this.actorConstructionSubscription?.unsubscribe();
+    this.actorConstructionSubscription = getActorComponent(
+      actor,
+      ConstructionSiteComponent
+    )?.constructionProgressPercentageChanged.subscribe((progress) => {
+      if (progress === 100) {
+        // show actions again
+        this.setActorDetailLabels(actor);
+      }
+    });
+  }
+
+  private canShowIcons(actor: Phaser.GameObjects.GameObject) {
+    const currentPlayerNr = getCurrentPlayerNumber(this.mainSceneWithActors);
+    const actorPlayerNr = getActorComponent(actor, OwnerComponent)?.getOwner();
+    return actorPlayerNr === currentPlayerNr;
+  }
+
+  private subscribeToResearchChanges() {
+    // Unsubscribe from all previous research subscriptions
+    this.researchEventSubscriptions.forEach((sub) => sub.unsubscribe());
+    this.researchEventSubscriptions = [];
+
+    const playerNr = getCurrentPlayerNumber(this.mainSceneWithActors);
+    if (!playerNr) return;
+
+    // Get all owned actors with research components
+    const actorIndex = getSceneService(this.mainSceneWithActors, ActorIndexSystem);
+    if (!actorIndex) return;
+
+    const ownedActors = actorIndex.getOwnedActors(playerNr);
+
+    // Subscribe to research events for all owned buildings
+    ownedActors.forEach((actor) => {
+      const researchComponent = getActorComponent(actor, ResearchComponent);
+      if (researchComponent) {
+        // Research completed - refresh display
+        const completedSub = researchComponent.researchCompleted.subscribe(() => {
+          this.updateDisplayForCurrentTab();
+        });
+        this.researchEventSubscriptions.push(completedSub);
+      }
+    });
+  }
+
+  override destroy(fromScene?: boolean) {
+    super.destroy(fromScene);
+    this.selectionChangedSubscription?.unsubscribe();
+    this.actorKillSubscription?.unsubscribe();
+    this.actorConstructionSubscription?.unsubscribe();
+    this.actorInfoLabelsVisibilitySubscription?.unsubscribe();
+    this.tabHandlerSubscription?.unsubscribe();
+    this.researchEventSubscriptions.forEach((sub) => sub.unsubscribe());
+    this.containerChangedSubscription?.unsubscribe();
+  }
+  /* END-USER-CODE */
+}
+
+/* END OF COMPILED CODE */
+
+// You can write more code here

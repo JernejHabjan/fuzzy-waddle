@@ -1,0 +1,27 @@
+import { Component, type OnInit, output } from "@angular/core";
+import { ProbableWaffleLevels, ProbableWaffleMapEnum } from "@fuzzy-waddle/probable-waffle-protocol";
+
+@Component({
+  selector: "probable-waffle-map-filter",
+  templateUrl: "./map-filter.component.html",
+  styleUrls: ["./map-filter.component.scss"]
+})
+export class MapFilterComponent implements OnInit {
+  readonly filter = output<ProbableWaffleMapEnum[]>();
+  protected checkedMaps: { id: number; name: string; checked: boolean }[] = [];
+
+  ngOnInit(): void {
+    this.checkedMaps = Object.values(ProbableWaffleLevels).map((m) => ({
+      id: m.id,
+      name: m.name,
+      checked: true
+    }));
+  }
+
+  protected onLevelChange($event: Event, level: ProbableWaffleMapEnum) {
+    const isChecked = ($event.target as HTMLInputElement).checked;
+    const checkedLevelObject = this.checkedMaps.find((m) => m.id === level);
+    checkedLevelObject!.checked = isChecked;
+    this.filter.emit(this.checkedMaps.filter((m) => m.checked).map((m) => m.id));
+  }
+}

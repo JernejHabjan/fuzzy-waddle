@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 import { AchievementsController } from "./achievements.controller";
 import { AchievementsService } from "./achievements.service";
-import { AuthModule } from "../../auth/auth.module";
+import { AuthModule } from "@fuzzy-waddle/platform-identity/server/auth/auth.module";
 
 @Module({
   controllers: [AchievementsController],

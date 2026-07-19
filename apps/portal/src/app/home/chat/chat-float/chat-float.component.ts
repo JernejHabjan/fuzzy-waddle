@@ -1,0 +1,31 @@
+import type { OnInit } from "@angular/core";
+import { Component, inject } from "@angular/core";
+import { faWindowMaximize, faWindowMinimize } from "@fortawesome/free-solid-svg-icons";
+import { ChatService } from "@fuzzy-waddle/platform-chat/client/data-access/chat.service";
+
+import { ChatComponent } from "@fuzzy-waddle/platform-chat/client/components/chat.component";
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { Observable } from "rxjs";
+import type { ChatMessage } from "@fuzzy-waddle/platform-chat";
+
+@Component({
+  selector: "fuzzy-waddle-chat-float",
+  templateUrl: "./chat-float.component.html",
+  styleUrls: ["./chat-float.component.scss"],
+  imports: [ChatComponent, FaIconComponent]
+})
+export class ChatFloatComponent implements OnInit {
+  protected readonly faWindowMinimize = faWindowMinimize;
+  protected readonly faWindowMaximize = faWindowMaximize;
+  protected readonly chatService = inject(ChatService);
+  protected messageListener: Observable<ChatMessage> | undefined;
+  protected maximized = false;
+
+  protected toggleChatVisibility() {
+    this.maximized = !this.maximized;
+  }
+
+  async ngOnInit() {
+    this.messageListener = await this.chatService.getMessageListener();
+  }
+}

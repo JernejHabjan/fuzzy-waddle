@@ -1,0 +1,440 @@
+// You can write more code here
+
+/* START OF COMPILED CODE */
+
+/* START-USER-IMPORTS */
+import ActorIcon from "./ActorIcon";
+import { getPwActorDefinition } from "../../definitions/actor-definitions";
+import { getActorComponent } from "../../../data/actor-component";
+import { BehaviorSubject, Subscription } from "rxjs";
+import { SingleSelectionHandler } from "../../../player/human-controller/single-selection.handler";
+import { getSceneComponent, getSceneService } from "../../../world/services/scene-component-helpers";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
+import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
+import HudProbableWaffle from "../../../world/scenes/hud-scenes/HudProbableWaffle";
+import type { ActorIconClickAction } from "./actor-icon-click-action";
+import { ResearchComponent } from "../../../entity/components/research/research-component";
+import { QueueComponent } from "../../../entity/components/queue/queue-component";
+import { SharedQueueItemType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/shared-queue-item-type";
+import type { SharedQueueItem } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/shared-queue-item";
+import { ContainerComponent } from "../../../entity/components/building/container-component";
+import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
+import { NavigationService } from "../../../world/services/navigation.service";
+import { isWaterUnit } from "../../../data/game-object-helper";
+import {
+  dispatchCancelProductionCommand,
+  dispatchCancelResearchCommand
+} from "../../../data/commands/queue-command-dispatch";
+import { getCurrentPlayerNumber } from "../../../data/scene-data";
+/* END-USER-IMPORTS */
+
+export default class ActorInfoLabels extends Phaser.GameObjects.Container {
+  constructor(scene: Phaser.Scene, x?: number, y?: number) {
+    super(scene, x ?? 0, y ?? 0);
+
+    // actorIcon1
+    const actorIcon1 = new ActorIcon(scene, 10, 9);
+    this.add(actorIcon1);
+
+    // actorIcon
+    const actorIcon = new ActorIcon(scene, 32, 9);
+    this.add(actorIcon);
+
+    // actorIcon_1
+    const actorIcon_1 = new ActorIcon(scene, 54, 9);
+    this.add(actorIcon_1);
+
+    // actorIcon_2
+    const actorIcon_2 = new ActorIcon(scene, 76, 9);
+    this.add(actorIcon_2);
+
+    // actorIcon_3
+    const actorIcon_3 = new ActorIcon(scene, 98, 9);
+    this.add(actorIcon_3);
+
+    // actorIcon_4
+    const actorIcon_4 = new ActorIcon(scene, 120, 9);
+    this.add(actorIcon_4);
+
+    // actorIcon_5
+    const actorIcon_5 = new ActorIcon(scene, 144, 9);
+    this.add(actorIcon_5);
+
+    // actorIcon_6
+    const actorIcon_6 = new ActorIcon(scene, 166, 9);
+    this.add(actorIcon_6);
+
+    // actorIcon_7
+    const actorIcon_7 = new ActorIcon(scene, 10, 32);
+    this.add(actorIcon_7);
+
+    // actorIcon_8
+    const actorIcon_8 = new ActorIcon(scene, 32, 32);
+    this.add(actorIcon_8);
+
+    // actorIcon_9
+    const actorIcon_9 = new ActorIcon(scene, 54, 32);
+    this.add(actorIcon_9);
+
+    // actorIcon_10
+    const actorIcon_10 = new ActorIcon(scene, 76, 32);
+    this.add(actorIcon_10);
+
+    // actorIcon_11
+    const actorIcon_11 = new ActorIcon(scene, 98, 32);
+    this.add(actorIcon_11);
+
+    // actorIcon_12
+    const actorIcon_12 = new ActorIcon(scene, 120, 32);
+    this.add(actorIcon_12);
+
+    // actorIcon_13
+    const actorIcon_13 = new ActorIcon(scene, 144, 32);
+    this.add(actorIcon_13);
+
+    // actorIcon_14
+    const actorIcon_14 = new ActorIcon(scene, 166, 32);
+    this.add(actorIcon_14);
+
+    // lists
+    const icons = [
+      actorIcon1,
+      actorIcon,
+      actorIcon_1,
+      actorIcon_2,
+      actorIcon_3,
+      actorIcon_4,
+      actorIcon_5,
+      actorIcon_6,
+      actorIcon_7,
+      actorIcon_8,
+      actorIcon_9,
+      actorIcon_10,
+      actorIcon_11,
+      actorIcon_12,
+      actorIcon_13,
+      actorIcon_14
+    ];
+
+    this.icons = icons;
+
+    /* START-USER-CTR-CODE */
+    this.subscribeToClickEvents();
+    this.mainSceneWithActors = (scene as HudProbableWaffle).probableWaffleScene!;
+    /* END-USER-CTR-CODE */
+  }
+
+  private icons: ActorIcon[];
+
+  /* START-USER-CODE */
+  private readonly mainSceneWithActors?: ProbableWaffleScene;
+  private visibilityChanged = new BehaviorSubject<boolean>(false);
+  private queueChangedSubscription?: Subscription;
+  private containerChangedSubscription?: Subscription;
+  private clickSubscriptions: Subscription[] = [];
+  private actor?: Phaser.GameObjects.GameObject;
+  /** When true, icons show container contents rather than a production/research queue. */
+  private containerMode = false;
+
+  cleanActor() {
+    this.queueChangedSubscription?.unsubscribe();
+    this.containerChangedSubscription?.unsubscribe();
+    this.containerMode = false;
+    this.visible = false;
+    this.actor = undefined;
+  }
+
+  get visibilityChangedObservable() {
+    return this.visibilityChanged.asObservable();
+  }
+
+  override destroy(fromScene?: boolean) {
+    this.cleanActor();
+    this.clickSubscriptions.forEach((sub) => sub.unsubscribe());
+    super.destroy(fromScene);
+  }
+
+  /**
+   * Displays the units currently inside a container actor (e.g. transport boat).
+   * Each icon represents one contained unit and can be clicked to unload it.
+   * For water units, unloading is only allowed when docked at a shore tile.
+   * For ground containers (buildings), unloading is always allowed.
+   */
+  setLabelsForContainerContents(actor: Phaser.GameObjects.GameObject) {
+    this.actor = actor;
+    this.containerMode = true;
+
+    this.containerChangedSubscription?.unsubscribe();
+    const containerComponent = getActorComponent(actor, ContainerComponent);
+    if (containerComponent) {
+      this.containerChangedSubscription = containerComponent.containerChanged.subscribe(() => {
+        this.renderContainerIcons(actor, containerComponent);
+      });
+      this.renderContainerIcons(actor, containerComponent);
+    }
+  }
+
+  private renderContainerIcons(actor: Phaser.GameObjects.GameObject, containerComponent: ContainerComponent) {
+    if (!this.mainSceneWithActors) return;
+    const contained = containerComponent.getContainedGameObjects();
+    const capacity = containerComponent.containerDefinition.capacity;
+    const canUnload = this.canUnloadFromContainer(actor);
+
+    this.icons.forEach((icon, index) => {
+      if (index >= capacity) {
+        icon.visible = false;
+        return;
+      }
+      const containedUnit = contained[index];
+      if (containedUnit) {
+        const unitName = containedUnit.name;
+        const unitDef = getPwActorDefinition(unitName, null);
+        const info = unitDef?.components?.info;
+        const idComponent = getActorComponent(containedUnit, IdComponent);
+        if (info?.smallImage && idComponent) {
+          icon.setActorIcon(
+            { containedActorId: idComponent.id },
+            info.smallImage.key,
+            info.smallImage.frame,
+            info.smallImage.origin ?? { x: 0.5, y: 0.5 }
+          );
+          // Dim icon when unloading is not possible to indicate it is disabled
+          icon.setAlpha(canUnload ? 1 : 0.4);
+          icon.visible = true;
+        }
+      } else {
+        // Empty slot
+        icon.setNumber(index + 1);
+        icon.setAlpha(0.3);
+        icon.visible = true;
+      }
+    });
+
+    // Only show the label area when units are actually aboard (not when container is empty)
+    this.visibilityChanged.next(contained.length > 0);
+  }
+
+  setLabelsForDisplayingActorsQueues(actor: Phaser.GameObjects.GameObject) {
+    this.actor = actor;
+    // Clean up any existing subscriptions
+    this.queueChangedSubscription?.unsubscribe();
+
+    // Get the SharedQueueComponent that was registered by ProductionComponent/ResearchComponent
+    const sharedQueue = getActorComponent(actor, QueueComponent);
+    if (sharedQueue) {
+      // Subscribe to unified queue changes
+      this.queueChangedSubscription = sharedQueue.queueChangedObservable.subscribe((items) => {
+        this.handleQueueUpdate(items);
+      });
+
+      // Initial display
+      this.handleQueueUpdate(sharedQueue.items);
+    } else {
+      // Actor has no queue (e.g. a unit) - clear any previously displayed icons
+      this.handleQueueUpdate([]);
+    }
+  }
+
+  private handleQueueUpdate(items: SharedQueueItem[]) {
+    const actor = this.actor;
+    if (!actor) return;
+
+    // Get production component to determine max queue size
+    const queueComponent = getActorComponent(actor, QueueComponent);
+    const totalQueueSize = queueComponent
+      ? queueComponent.queueDefinition.queueCount * queueComponent.queueDefinition.capacityPerQueue
+      : items.length;
+
+    // Update icons based on unified queue items
+    let activeItems = 0;
+    this.icons.forEach((icon, index) => {
+      if (index >= totalQueueSize) {
+        icon.visible = false;
+        return;
+      }
+
+      const item = items[index];
+      if (item) {
+        // Set icon based on queue item type
+        if (item.type === SharedQueueItemType.Research) {
+          icon.setActorIcon(
+            {
+              iconIndex: index,
+              researchType: item.researchData
+            },
+            item.iconData.key,
+            item.iconData.frame,
+            item.iconData.origin ?? { x: 0.5, y: 0.5 }
+          );
+        } else if (item.type === SharedQueueItemType.Production) {
+          icon.setActorIcon(
+            {
+              iconIndex: index
+            },
+            item.iconData.key,
+            item.iconData.frame,
+            item.iconData.origin ?? { x: 0.5, y: 0.5 }
+          );
+        }
+        icon.setAlpha(1);
+        icon.visible = true;
+        activeItems++;
+      } else {
+        // Empty queue slot - show slot number
+        icon.setNumber(index + 1);
+        icon.setAlpha(1);
+        icon.visible = true;
+      }
+    });
+
+    this.visibilityChanged.next(activeItems > 0);
+  }
+
+  setLabelsForDisplayingActors(
+    selectedActors: Phaser.GameObjects.GameObject[],
+    highlightActors?: Phaser.GameObjects.GameObject[]
+  ) {
+    this.icons.forEach((icon, index) => {
+      if (index >= selectedActors.length) {
+        icon.visible = false;
+        icon.setHighlight(false);
+        return;
+      }
+      const actor = selectedActors[index];
+      if (!actor) throw new Error("Actor not found");
+      const actorName = actor.name;
+      const actorDefinition = getPwActorDefinition(actorName, null);
+      const infoComponent = actorDefinition?.components?.info;
+      const actorIdComponent = getActorComponent(actor, IdComponent);
+      if (!actorIdComponent || !infoComponent?.smallImage) return;
+      icon.setActorIcon(
+        {
+          actorObjectId: actorIdComponent.id
+        },
+        infoComponent.smallImage.key,
+        infoComponent.smallImage.frame,
+        infoComponent.smallImage.origin
+      );
+      icon.setAlpha(1);
+      icon.visible = true;
+
+      // Set highlight if this actor is in the highlight list
+      if (highlightActors) {
+        const isHighlighted = highlightActors.includes(actor);
+        icon.setHighlight(isHighlighted);
+      } else {
+        icon.setHighlight(false);
+      }
+    });
+
+    this.visibilityChanged.next(selectedActors.length > 0);
+  }
+
+  private subscribeToClickEvents() {
+    this.icons.forEach((icon) => {
+      const sub = icon.onClick.subscribe((action) => {
+        this.tryHandleIconClickActor(action);
+        this.tryHandleIconClickProduction(action);
+        this.tryHandleIconClickResearch(action);
+        this.tryHandleIconClickContainer(action);
+      });
+      this.clickSubscriptions.push(sub);
+    });
+  }
+
+  private tryHandleIconClickActor(action: ActorIconClickAction) {
+    if (!action.definition.actorObjectId) return;
+    if (!this.mainSceneWithActors) throw new Error("Main scene with actors not found");
+    const singleSelectionHandler = getSceneComponent(this.mainSceneWithActors, SingleSelectionHandler);
+    if (!singleSelectionHandler) throw new Error("SingleSelectionHandler not found");
+    singleSelectionHandler.sendSelection(
+      "left",
+      [action.definition.actorObjectId],
+      action.keys.shift,
+      action.keys.ctrl
+    );
+  }
+
+  private tryHandleIconClickProduction(action: ActorIconClickAction) {
+    if (action.definition.iconIndex === undefined) return;
+    const actor = this.actor;
+    if (!actor) return;
+
+    // Get the unified queue item at this index from SharedQueueComponent
+    const sharedQueue = getActorComponent(actor, QueueComponent);
+    const queueItem = sharedQueue?.items[action.definition.iconIndex];
+    if (!queueItem) return;
+
+    // Only handle production items
+    if (queueItem.type !== SharedQueueItemType.Production) return;
+    if (!queueItem.productionData) return;
+
+    const playerNumber = getCurrentPlayerNumber(actor.scene);
+    if (!playerNumber) return;
+    dispatchCancelProductionCommand(actor.scene, actor, playerNumber, action.definition.iconIndex);
+  }
+
+  private tryHandleIconClickResearch(action: ActorIconClickAction) {
+    if (action.definition.iconIndex === undefined) return;
+    const actor = this.actor;
+    if (!actor) return;
+
+    // Get the unified queue item at this index from SharedQueueComponent
+    const sharedQueue = getActorComponent(actor, QueueComponent);
+    const queueItem = sharedQueue?.items[action.definition.iconIndex];
+    if (!queueItem) return;
+
+    // Only handle research items
+    if (queueItem.type !== SharedQueueItemType.Research) return;
+    if (!queueItem.researchData) return;
+
+    const researchComponent = getActorComponent(actor, ResearchComponent);
+    const playerNumber = getCurrentPlayerNumber(actor.scene);
+    if (!researchComponent || !playerNumber) return;
+
+    // Cancel the research if it's currently in progress
+    if (researchComponent.currentResearchType === queueItem.researchData) {
+      dispatchCancelResearchCommand(actor.scene, actor, playerNumber);
+    }
+  }
+
+  /** Unloads the clicked unit from the container (only when unloading is permitted). */
+  private tryHandleIconClickContainer(action: ActorIconClickAction) {
+    if (!action.definition.containedActorId) return;
+    if (!this.containerMode) return;
+
+    const actor = this.actor;
+    if (!actor) return;
+    if (!this.canUnloadFromContainer(actor)) return; // disabled when shore check fails for water units
+
+    if (!this.mainSceneWithActors) return;
+
+    const containerComponent = getActorComponent(actor, ContainerComponent);
+    if (!containerComponent) return;
+
+    const actorIndex = getSceneService(this.mainSceneWithActors, ActorIndexSystem);
+    if (!actorIndex) return;
+
+    const containedActor = actorIndex.getActorById(action.definition.containedActorId);
+    if (containedActor) {
+      containerComponent.unloadGameObject(containedActor);
+    }
+  }
+
+  /** Returns true if unloading from the container actor is currently allowed. */
+  private canUnloadFromContainer(actor: Phaser.GameObjects.GameObject): boolean {
+    if (!isWaterUnit(actor)) return true;
+    // Water units require a shore tile to unload
+    if (!this.mainSceneWithActors) return false;
+    const navigationService = getSceneService(this.mainSceneWithActors, NavigationService);
+    if (!navigationService) return false;
+    const tile = navigationService.getCenterTileCoordUnderObject(actor);
+    if (!tile) return false;
+    return navigationService.isShoreTile(tile);
+  }
+  /* END-USER-CODE */
+}
+
+/* END OF COMPILED CODE */
+
+// You can write more code here

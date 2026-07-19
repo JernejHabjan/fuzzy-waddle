@@ -16,6 +16,22 @@ Some GPU drivers cause tiles to appear "chipped" or have pixel gaps at tile edge
 | ---------------------------------- | ---------------------------------------------------------------------------------- |
 | Files being processed unexpectedly | Add a `.skip` file to the directory to exclude it from Phaser Editor 2D processing |
 | Unexpected editor behaviour        | Open DevTools with `Ctrl+Shift+I` to investigate console errors                    |
+| Missing texture or prefab ID        | Run `pnpm phaser-editor:check`, repair the reported local reference, then reload the project with `Ctrl+Alt+R` |
+
+## Phaser Audio Cannot Be Decoded
+
+Errors such as `Unable to decode audio data` and `File failed: audiosprite` usually mean Git LFS pointer
+files were checked out instead of the real audio assets.
+
+Install Git LFS for your operating system, then hydrate the checkout:
+
+```bash
+pnpm assets:hydrate
+pnpm assets:check
+```
+
+Dependency installation warns about missing assets, while portal and desktop build/serve targets fail early
+with the same repair command.
 
 ## pnpm — Wrong Package Manager
 
@@ -61,7 +77,7 @@ http://127.0.0.1:54321/auth/v1/callback
 
 ## Angular Client Won't Start
 
-Ensure the API is running and the proxy is configured. The dev proxy config is at `apps/client/proxy.conf.json` and forwards `/api/*` to `http://localhost:3333`.
+Ensure the API is running and the proxy is configured. The dev proxy config is at `apps/portal/proxy.conf.json` and forwards `/api/*` to `http://localhost:3333`.
 
 ## Environment Variables Missing
 

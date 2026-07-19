@@ -2,101 +2,112 @@
 
 ## Tech Stack
 
-| Layer              | Technology                                      |
-|--------------------|-------------------------------------------------|
-| Frontend (web)     | Angular 21, Phaser 4, Bootstrap 5, Chart.js     |
-| Frontend (desktop) | Tauri 2 (Rust shell wrapping the Angular build) |
-| Backend            | NestJS 11, Socket.IO                            |
-| Database / Auth    | Supabase (PostgreSQL)                           |
-| Monorepo tooling   | Nx 23                                           |
-| Package manager    | pnpm                                            |
+| Layer              | Technology                                  |
+| ------------------ | ------------------------------------------- |
+| Frontend (web)     | Angular 21, Phaser 4, Bootstrap 5, Chart.js |
+| Frontend (desktop) | Angular 21 and Tauri 2                      |
+| Backend            | NestJS 11, Socket.IO                        |
+| Database / Auth    | Supabase (PostgreSQL)                       |
+| Monorepo tooling   | Nx 23, pnpm                                 |
 
 ## Monorepo Structure
 
-```
+```text
 fuzzy-waddle/
 ├── apps/
-│   ├── client/          # Angular SPA + all Phaser games (web + desktop)
-│   │   └── src-tauri/   # Tauri v2 Rust shell (Probable Waffle desktop)
-│   └── api/             # NestJS backend
+│   ├── portal/                     # Browser shell for all games
+│   ├── probable-waffle-desktop/    # Probable Waffle Angular/Tauri host
+│   └── api/                        # NestJS composition root
 ├── libs/
-│   └── api-interfaces/  # Shared TypeScript contracts (client ↔ server)
-└── supabase/            # Local Supabase config, migrations, schemas, and seeds
+│   ├── games/
+│   │   ├── probable-waffle/
+│   │   ├── little-muncher/
+│   │   ├── fly-squasher/
+│   │   └── dungeon-crawler/
+│   └── platform/
+│       ├── identity/
+│       ├── chat/
+│       ├── game-sessions/
+│       ├── database-schema/
+│       └── game-host/
+└── supabase/
 ```
 
-## Games
+Each game is split by game-facing responsibility:
 
-| Game            | Genre              | Directory                              |
-|-----------------|--------------------|----------------------------------------|
-| Probable Waffle | Real-time strategy | `apps/client/src/app/probable-waffle/` |
-| Fly Squasher    | Arcade             | `apps/client/src/app/fly-squasher/`    |
-| Little Muncher  | Platformer         | `apps/client/src/app/little-muncher/`  |
-| Dungeon Crawler | RPG                | `apps/client/src/app/dungeon-crawler/` |
+- `gameplay` owns Phaser scenes, prefabs, game rules, assets, and Phaser Editor configuration.
+- `interface` owns Angular routes, menus, HUD, browser networking, and UI orchestration.
+- `protocol` owns serializable multiplayer values and transport validation.
+- `server` owns the game's NestJS controllers, gateways, and server orchestration.
 
-Each game follows the same layout:
+Dungeon Crawler is local-only and currently needs only `gameplay` and `interface`.
+Applications compose libraries; game libraries do not import another game, and
+platform libraries do not import games.
 
-```
-{game}/
-├── game/       # Phaser scenes and game logic
-├── gui/        # Angular UI components (menus, HUD, etc.)
-└── services/   # Angular services bridging UI and game
-```
+See [Game project boundaries](../docs/architecture/game-project-boundaries.md)
+for the complete project list and dependency direction.
 
-## Client Architecture
+## Browser and Desktop Applications
 
-- **Phaser scenes** live in `game/` subdirectories and communicate with Angular via a shared registry pattern (`BaseGame` class)
-- **Shared Phaser abstractions** are in `apps/client/src/app/shared/game/phaser/`
-- **Asset packs** (Phaser Editor 2D metadata) are in `apps/client/src/metadata/{game-name}/`
-- **Assets** (sprites, audio, tilemaps) are in `apps/client/src/assets/{game-name}/`
+`apps/portal` lazy-loads the four game interfaces. Its production output is
+`dist/apps/portal`.
 
-## Desktop App Architecture (Tauri)
+`apps/probable-waffle-desktop` is a separate Angular application that composes
+only Probable Waffle and its required platform capabilities. Its Rust shell is
+in `apps/probable-waffle-desktop/src-tauri`, and its frontend output is
+`dist/apps/probable-waffle-desktop`.
 
-The Probable Waffle desktop app is built directly from `apps/client` — no separate wrapper app.
+## Phaser Editor
 
-- `apps/client/src-tauri/` contains the Tauri v2 Rust shell
-- `apps/client/project.json` has three build configs: `production` (web), `development`, and `tauri` (swaps `environment.ts` → `environment.prod.ts`, disables service worker)
-- `TauriService` (`apps/client/src/app/shared/services/tauri.service.ts`) and standalone `isTauri()` provide runtime Tauri detection — no-ops in browser builds
-- The Rust shell exposes desktop commands for cursor grab, fullscreen toggling, app version lookup, and quitting
-- On startup in Tauri, `AppComponent` automatically navigates to `/aota`
-- Connects to the same hosted NestJS API as the web app
+Each Phaser Editor project is independently openable:
 
-See [Tauri Desktop](tauri-desktop.md) for prerequisites and build instructions.
+- `libs/games/probable-waffle/phaser`
+- `libs/games/little-muncher/gameplay`
+- `libs/games/fly-squasher/gameplay`
+- `libs/games/dungeon-crawler/gameplay`
+
+The `.scene` files, generated TypeScript, metadata, assets, `.skip`, and
+`phasereditor2d.config.json` live together in the owning Phaser Editor project.
+Probable Waffle keeps framework-free rules in its separate `gameplay` project,
+with dependency direction `interface -> phaser -> gameplay -> protocol`.
+Editor-only copies of shared prefab definitions use thin local TypeScript
+adapters, so the editor can resolve every prefab ID while runtime behaviour
+continues to come from `platform-game-host`.
+
+Run `pnpm phaser-editor:check` to verify asset-pack URLs, multiatlas frames,
+and prefab references across all four editor projects.
 
 ## API Architecture
 
-- Game modules in `apps/api/src/app/{game-name}/`
-- Authentication via Supabase OAuth + JWT
-- WebSocket gateways (`@WebSocketGateway()`) handle real-time multiplayer state
+`apps/api` is the NestJS composition root. Game-specific backend code lives in
+the owning `server` project and is registered by the API application.
+Authentication, database setup, and cross-game infrastructure remain platform
+or application composition concerns.
+
+## Contracts
+
+There is no catch-all API interfaces package. Import contracts from their owner:
+
+- identity and UUID values: `@fuzzy-waddle/platform-identity`
+- chat values: `@fuzzy-waddle/platform-chat`
+- sessions, rooms, players, spectators, and vectors: `@fuzzy-waddle/platform-game-sessions`
+- generated database schema: `@fuzzy-waddle/platform-database-schema`
+- game-specific transport values: the owning `*-protocol` project
 
 ## Database Architecture
 
 - Supabase Auth owns login identity; `user_profiles` stores app profile data.
-- Game content lives in TypeScript and assets. Database rows store stable game, level, hill, and map keys.
-- Game history and scoring use shared session, participant, score, metric, and snapshot tables.
-- Chat uses shared channel and message tables for global lobby, game lobby, and in-game chat.
-- Private session chat is fetched through the Nest API service-role path, not direct client Supabase reads.
-- Moderation uses `user_profiles.app_role`; the client loads the current profile first and only requests moderation queues for `moderator` and `admin`.
-- Temporary restrictions use `user_profiles.account_status = limited` with `banned_until`; permanent bans use `account_status = disabled`.
-- Angular can use Supabase directly where RLS is sufficient; Nest API handles service-role, moderation, score submission, snapshots, and cross-user aggregation.
+- Game content lives in TypeScript and assets. Database rows store stable game,
+  level, hill, and map keys.
+- Game history and scoring use shared session, participant, score, metric, and
+  snapshot tables.
+- Chat uses shared channel and message tables.
+- NestJS handles service-role operations, moderation, score submission,
+  snapshots, and cross-user aggregation.
 
 ## Real-time Communication
 
-Socket.IO is used for multiplayer game state synchronization:
-
-- **Client**: `AuthenticatedSocketService` establishes a JWT-authenticated Socket.IO connection
-- **Server**: authenticated HTTP and WebSocket entrypoints validate JWTs, and online-only paths also check `user_profiles` so banned users cannot use chat or multiplayer features
-- **Event contracts**: defined in `libs/api-interfaces/src/lib/communicators/` — import these in both client and server to keep event names and payloads in sync
-- **AOTA multiplayer design**: see [AOTA Multiplayer Architecture](aota-multiplayer-architecture.md)
-
-## Shared Interfaces
-
-`libs/api-interfaces` is the single source of truth for all client-server contracts:
-
-```
-libs/api-interfaces/src/lib/
-├── communicators/    # Real-time Socket.IO event types
-├── game-instance/    # Game state and session types
-├── game/             # Base game types
-├── user-info/        # User profile types
-└── chat/             # Chat message types
-```
+Socket.IO carries multiplayer state. The Angular interface owns the browser
+socket adapter, each game protocol owns its event names and payloads, and the
+matching server project owns the NestJS gateway. Probable Waffle's detailed
+design is documented in [AOTA Multiplayer Architecture](aota-multiplayer-architecture.md).

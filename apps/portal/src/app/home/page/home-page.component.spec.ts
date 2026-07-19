@@ -1,0 +1,44 @@
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+
+import { HomePageComponent } from "./home-page.component";
+import { FontAwesomeTestingModule } from "@fortawesome/angular-fontawesome/testing";
+import { HomePageNavTestingComponent } from "./home-page-nav/home-page-nav.component.spec";
+import { provideRouter } from "@angular/router";
+import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
+import { authServiceStub } from "@fuzzy-waddle/platform-identity/client/auth/auth.service.stub";
+import { HomePageNavComponent } from "./home-page-nav/home-page-nav.component";
+import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service";
+import { serverHealthServiceStub } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service.stub";
+
+describe("HomePageComponent", () => {
+  let component: HomePageComponent;
+  let fixture: ComponentFixture<HomePageComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [HomePageComponent, FontAwesomeTestingModule],
+      providers: [
+        provideRouter([]),
+        { provide: AuthService, useValue: authServiceStub },
+        { provide: ServerHealthService, useValue: serverHealthServiceStub }
+      ]
+    })
+      .overrideComponent(HomePageComponent, {
+        remove: {
+          imports: [HomePageNavComponent]
+        },
+        add: {
+          imports: [HomePageNavTestingComponent]
+        }
+      })
+      .compileComponents();
+
+    fixture = TestBed.createComponent(HomePageComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it("should create", () => {
+    expect(component).toBeTruthy();
+  });
+});

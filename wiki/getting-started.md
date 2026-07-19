@@ -7,14 +7,22 @@
 | Node.js | `>=24.13.0`                                         |
 | pnpm    | `>=10.0`; npm/yarn are not supported for installs   |
 | Git     | Latest stable                                       |
+| Git LFS | Required for playable audio assets                  |
 | Docker  | Required only when running the local Supabase stack |
 
 ## 1. Clone & Install
 
 ```bash
+git lfs install
 git clone https://github.com/JernejHabjan/fuzzy-waddle.git
 cd fuzzy-waddle
 pnpm install
+```
+
+If the repository was cloned before Git LFS was installed, hydrate the existing checkout:
+
+```bash
+pnpm assets:hydrate
 ```
 
 ## 2. Configure Environment
@@ -72,22 +80,22 @@ pnpm start:api      # NestJS API     → http://localhost:3333
 
 ## Common Commands
 
-| Command          | Description                         |
-| ---------------- | ----------------------------------- |
-| `pnpm build`     | Build all projects                  |
-| `pnpm test`      | Run all unit tests                  |
-| `pnpm lint`      | Lint all projects                   |
-| `pnpm lint-fix`  | Lint with auto-fix                  |
-| `pnpm e2e`       | Run Cypress end-to-end tests        |
-| `pnpm format`    | Format code                         |
-| `pnpm dep-graph` | Open Nx dependency graph            |
-| `pnpm editor`    | Launch Phaser Editor 2D (port 1959) |
+| Command          | Description                                      |
+| ---------------- | ------------------------------------------------ |
+| `pnpm build`     | Build all projects                               |
+| `pnpm test`      | Run all unit tests                               |
+| `pnpm lint`      | Lint all projects                                |
+| `pnpm lint-fix`  | Lint with auto-fix                               |
+| `pnpm e2e`       | Run Playwright end-to-end tests                  |
+| `pnpm format`    | Format code                                      |
+| `pnpm dep-graph` | Open Nx dependency graph                         |
+| `pnpm phaser-editor:check` | Validate all self-contained Phaser Editor projects |
 
 To run a command for a single app:
 
 ```bash
-nx build client
+nx build portal
 nx test api
-nx lint client
-nx test client --testFile=apps/client/src/app/auth/auth.service.spec.ts
+nx lint portal
+nx test platform-identity --testFile=libs/platform/identity/src/lib/client/auth/auth.service.spec.ts
 ```
