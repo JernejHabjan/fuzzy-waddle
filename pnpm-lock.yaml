@@ -196,8 +196,8 @@ importers:
         specifier: ^1.0.0
         version: 1.0.0
       phaser:
-        specifier: 4.1.0
-        version: 4.1.0
+        specifier: 4.2.1
+        version: 4.2.1
       phaser3-rex-plugins:
         specifier: 1.80.20
         version: 1.80.20(encoding@0.1.13)(graphology-types@0.24.8)
@@ -6233,9 +6233,6 @@ packages:
   eventemitter3@4.0.7:
     resolution: {integrity: sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==}
 
-  eventemitter3@5.0.1:
-    resolution: {integrity: sha512-GWkBvjiSZK87ELrYOSESUYeVIc9mvLLf/nXalMOS5dYrgZq9o5OVkbZAVM06CVxYsCwH9BDZFPlQTlPA1j4ahA==}
-
   eventemitter3@5.0.4:
     resolution: {integrity: sha512-mlsTRyGaPBjPedk6Bvw+aqbsXDtoAyAzm5MO7JgU+yVRyMQ5O8bD4Kcci7BS85f93veegeCPkL8R4GLClnjLFw==}
 
@@ -8353,8 +8350,8 @@ packages:
   phaser3-rex-plugins@1.80.20:
     resolution: {integrity: sha512-XZLUy74r1jUaRWpGplRhhA+wEeOvnNb0qlhlyMtwdwZwIlCA7C7WtgvynOB/PyVrzS09cUBwEFyG+A3P5fL+Uw==}
 
-  phaser@4.1.0:
-    resolution: {integrity: sha512-ZXv5Bhyg2BqJGAAxNI2xvmzGXW9q+TwUG1RLri5ZDBYGGtcma6aWUO/eJ7EbozeqRd5fKdpo4ycNMQt+Bi5iYg==}
+  phaser@4.2.1:
+    resolution: {integrity: sha512-WUNwCPJpdjvZiuT6SgCfYVW8Qw/3j0jJ4ws7P2QkhFLFu74sbGuyHJcbFueGkY/AYO4Pi47bNQXn1OCJeLX//w==}
 
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
@@ -9654,10 +9651,6 @@ packages:
   tldts@6.1.76:
     resolution: {integrity: sha512-6U2ti64/nppsDxQs9hw8ephA3nO6nSQvVVfxwRw8wLQPFtLI1cFI1a1eP22g+LUP+1TA2pKKjUTwWB+K2coqmQ==}
     hasBin: true
-
-  tmp@0.2.5:
-    resolution: {integrity: sha512-voyz6MApa1rQGUxT3E+BK7/ROe8itEx7vD8/HEvt4xwXucvQ5G5oeEiHkmHZJuBO21RpOf+YYm9MOivj709jow==}
-    engines: {node: '>=14.14'}
 
   tmp@0.2.7:
     resolution: {integrity: sha512-e0votIpp4Uo2AJYSzVHV6xCcawuiez3DzqDAbrTc3YxBkplN6e+dM13ZeIcZnDg/QpSuU2zfZ3rzwY8ukEnaXw==}
@@ -16861,7 +16854,7 @@ snapshots:
       request-progress: 3.0.0
       supports-color: 8.1.1
       systeminformation: 5.31.6
-      tmp: 0.2.5
+      tmp: 0.2.7
       tree-kill: 1.2.2
       tslib: 1.14.1
       untildify: 4.0.0
@@ -17338,8 +17331,6 @@ snapshots:
   eventemitter3@3.1.2: {}
 
   eventemitter3@4.0.7: {}
-
-  eventemitter3@5.0.1: {}
 
   eventemitter3@5.0.4: {}
 
@@ -19278,7 +19269,7 @@ snapshots:
     dependencies:
       cli-truncate: 5.1.0
       colorette: 2.0.20
-      eventemitter3: 5.0.1
+      eventemitter3: 5.0.4
       log-update: 6.1.0
       rfdc: 1.4.1
       wrap-ansi: 9.0.0
@@ -20255,7 +20246,7 @@ snapshots:
       - encoding
       - graphology-types
 
-  phaser@4.1.0:
+  phaser@4.2.1:
     dependencies:
       eventemitter3: 5.0.4
 
@@ -21732,9 +21723,6 @@ snapshots:
   tldts@6.1.76:
     dependencies:
       tldts-core: 6.1.76
-
-  tmp@0.2.5:
-    optional: true
 
   tmp@0.2.7: {}
 
