@@ -90,9 +90,12 @@ describe("AuthService", () => {
     expect(desktopAuthBridge.initDeepLinkListener).toHaveBeenCalled();
     expect(desktopAuthBridge.openInBrowser).toHaveBeenCalledWith("https://accounts.google.com/oauth");
     expect(supabase.auth.exchangeCodeForSession).toHaveBeenCalledWith("test");
-    expect(desktopAuthBridge.initDeepLinkListener.mock.invocationCallOrder[0]).toBeLessThan(
-      desktopAuthBridge.openInBrowser.mock.invocationCallOrder[0]
-    );
+    const listenerCallOrder = desktopAuthBridge.initDeepLinkListener.mock.invocationCallOrder[0];
+    const openerCallOrder = desktopAuthBridge.openInBrowser.mock.invocationCallOrder[0];
+    if (listenerCallOrder === undefined || openerCallOrder === undefined) {
+      throw new Error("Expected deep-link listener initialization and browser opener calls");
+    }
+    expect(listenerCallOrder).toBeLessThan(openerCallOrder);
   });
 
   it("stops immediately when the system browser cannot be opened", async () => {

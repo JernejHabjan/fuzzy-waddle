@@ -38,7 +38,6 @@ describe("TauriService", () => {
   it("shares one deep-link listener initialization across concurrent callers", async () => {
     (window as Window & { __TAURI_INTERNALS__?: unknown }).__TAURI_INTERNALS__ = {};
     onOpenUrlMock.mockResolvedValue(jest.fn());
-    listenMock.mockResolvedValue(jest.fn());
     const service = TestBed.inject(TauriService);
 
     await Promise.all([service.initDeepLinkListener(), service.initDeepLinkListener()]);
