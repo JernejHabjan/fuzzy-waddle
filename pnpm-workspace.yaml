@@ -4,6 +4,7 @@ packages:
 strictDepBuilds: true
 allowBuilds:
   '@nestjs/core@11.1.18': true
+  '@ffmpeg-installer/linux-x64@4.1.0': true
   '@parcel/watcher@2.5.1': true
   '@scarf/scarf@1.4.0': true
   '@swc/core@1.15.43': true
