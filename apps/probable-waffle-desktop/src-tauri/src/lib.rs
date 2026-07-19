@@ -1,7 +1,7 @@
 use tauri::{
     menu::{MenuBuilder, MenuItemBuilder},
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
-    AppHandle, Emitter, Manager, Runtime,
+    AppHandle, Manager, Runtime,
 };
 
 /// Locks or unlocks the cursor to the application window.
@@ -61,33 +61,27 @@ fn toggle_fullscreen<R: Runtime>(app: AppHandle<R>) -> Result<bool, String> {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
-        .plugin(tauri_plugin_opener::init())
-        .plugin(tauri_plugin_deep_link::init())
         // Prevent multiple instances — focuses the existing window instead of opening another.
         // When Windows fires a protocol URL (e.g. OAuth callback), it spawns a new process with
-        // the URL in argv. Single-instance kills that process, so we must forward the URL to the
-        // running instance as a Tauri event so deep-link listeners can complete the OAuth flow.
-        .plugin(tauri_plugin_single_instance::init(|app, argv, _cwd| {
-            for arg in &argv {
-                if arg.contains("://") && !arg.starts_with('-') {
-                    let _ = app.emit("deep-link-received", arg.as_str());
-                }
-            }
+        // the URL in argv. The plugin's `deep-link` feature forwards it before this callback.
+        .plugin(tauri_plugin_single_instance::init(|app, _argv, _cwd| {
             if let Some(window) = app.get_webview_window("main") {
                 let _ = window.show();
                 let _ = window.unminimize();
                 let _ = window.set_focus();
             }
         }))
+        .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_deep_link::init())
         // Automatically saves and restores window position, size, maximized, and fullscreen state
         .plugin(tauri_plugin_window_state::Builder::default().build())
         // Native desktop notifications (game saved, match ready, etc.)
         .plugin(tauri_plugin_notification::init())
         .setup(|app| {
-            // ── Deep-link scheme registration (dev mode only) ─────────────────────
-            // In production the NSIS installer writes the registry entry.
-            // In dev mode (`tauri dev`) no installer runs, so register manually.
-            #[cfg(debug_assertions)]
+            // ── Deep-link scheme registration ──────────────────────────────────────
+            // Windows installers and macOS bundles register the scheme. Windows dev
+            // builds and Linux builds need runtime registration.
+            #[cfg(any(target_os = "linux", all(debug_assertions, windows)))]
             {
                 use tauri_plugin_deep_link::DeepLinkExt;
                 if let Err(e) = app.deep_link().register_all() {

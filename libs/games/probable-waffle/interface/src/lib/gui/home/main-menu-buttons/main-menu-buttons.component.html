@@ -70,14 +70,21 @@
       <div class="menu-section">
         <h3 class="menu-section-title">Account</h3>
         <div class="section-buttons">
-          @if (!authService.processing && !authService.isAuthenticated) {
-            <button class="menu-button" (click)="authService.signInWithGoogle()">
-              <span class="menu-button-text"><fa-icon [icon]="faGoogle" /> Sign In</span>
-              <span class="menu-button-description">Sign in with Google</span>
-            </button>
+          @if (!authService.isAuthenticated) {
+            @if (authService.isDesktopSignInPending()) {
+              <button class="menu-button" (click)="authService.cancelSignIn()">
+                <span class="menu-button-text">Cancel Sign In</span>
+                <span class="menu-button-description">Stop waiting for the browser</span>
+              </button>
+            } @else if (!authService.processing) {
+              <button class="menu-button" (click)="authService.signInWithGoogle()">
+                <span class="menu-button-text"><fa-icon [icon]="faGoogle" /> Sign In</span>
+                <span class="menu-button-description">Sign in with Google</span>
+              </button>
+            }
           }
           @if (!authService.processing && authService.isAuthenticated) {
-            <a class="menu-button" routerLink="/profile">
+            <a class="menu-button" routerLink="/aota/profile">
               <span class="menu-button-text">
                 <img alt="avatar" height="24" [src]="avatarProviderService.getAvatar(authService.userId!)" />
                 {{ authService.fullName! }}
