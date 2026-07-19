@@ -93,6 +93,12 @@
               "with": "libs/platform/game-host/src/lib/environments/environment.prod.ts"
             }
           ]
+        },
+        "tauri-local": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true
         }
       },
       "defaultConfiguration": "production"
@@ -109,6 +115,9 @@
         },
         "tauri": {
           "buildTarget": "probable-waffle-desktop:build:tauri"
+        },
+        "tauri-local": {
+          "buildTarget": "probable-waffle-desktop:build:tauri-local"
         }
       },
       "defaultConfiguration": "development",
@@ -151,7 +160,7 @@
       "dependsOn": ["assets-check"],
       "options": {
         "commands": [
-          "nx serve probable-waffle-desktop --configuration=tauri",
+          "nx serve probable-waffle-desktop --configuration=tauri-local",
           "cd apps/probable-waffle-desktop && pnpm exec tauri dev"
         ],
         "parallel": true,

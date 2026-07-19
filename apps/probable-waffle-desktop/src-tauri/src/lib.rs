@@ -61,8 +61,6 @@ fn toggle_fullscreen<R: Runtime>(app: AppHandle<R>) -> Result<bool, String> {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
-        .plugin(tauri_plugin_opener::init())
-        .plugin(tauri_plugin_deep_link::init())
         // Prevent multiple instances — focuses the existing window instead of opening another.
         // When Windows fires a protocol URL (e.g. OAuth callback), it spawns a new process with
         // the URL in argv. Single-instance kills that process, so we must forward the URL to the
@@ -79,6 +77,8 @@ pub fn run() {
                 let _ = window.set_focus();
             }
         }))
+        .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_deep_link::init())
         // Automatically saves and restores window position, size, maximized, and fullscreen state
         .plugin(tauri_plugin_window_state::Builder::default().build())
         // Native desktop notifications (game saved, match ready, etc.)

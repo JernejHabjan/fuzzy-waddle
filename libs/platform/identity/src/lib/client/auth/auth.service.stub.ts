@@ -1,11 +1,13 @@
 import { type AuthServiceInterface } from "./auth.service.interface";
 import { type Session } from "@supabase/supabase-js";
+import { signal } from "@angular/core";
 import { BehaviorSubject } from "rxjs";
 
 const sessionChanges = new BehaviorSubject<Session | null>(null);
 
 export const authServiceStub = {
   sessionChanges: sessionChanges.asObservable(),
+  isDesktopSignInPending: signal(false),
   get session(): Session | null {
     return null;
   },
@@ -33,5 +35,6 @@ export const authServiceStub = {
   signInWithGoogle(): Promise<void> {
     return Promise.resolve();
   },
+  cancelSignIn(): void {},
   processing: null
 } satisfies AuthServiceInterface;

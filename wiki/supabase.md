@@ -26,8 +26,8 @@ In your Supabase project under **Authentication → URL Configuration**:
 | Redirect URLs | `http://localhost:4200/`                                                                  |
 |               | `https://fuzzy-waddle.onrender.com/`                                                      |
 |               | `https://jernejhabjan.github.io/fuzzy-waddle/`                                            |
-|               | `http://localhost:4201/assets/auth-callback.html` ← Tauri dev OAuth callback              |
-|               | `https://fuzzy-waddle.onrender.com/assets/auth-callback.html` ← Tauri prod OAuth callback |
+|               | `http://localhost:4201/assets/auth-callback.html?desktop_auth_nonce=*` ← Tauri dev OAuth callback              |
+|               | `https://fuzzy-waddle.onrender.com/assets/auth-callback.html?desktop_auth_nonce=*` ← Tauri prod OAuth callback |
 |               | `com.fuzzywaddle.probablewaffle://auth/callback` ← Tauri deep-link (kept as fallback)     |
 
 ## Local Supabase Development
@@ -96,7 +96,7 @@ The local auth redirect allow-list in `supabase/config.toml` includes:
 
 - `http://localhost:4200`
 - `http://localhost:4200/`
-- `http://localhost:4201/assets/auth-callback.html`
+- `http://localhost:4201/assets/auth-callback.html?desktop_auth_nonce=*`
 - `http://127.0.0.1:4200`
 - `http://127.0.0.1:4200/`
 

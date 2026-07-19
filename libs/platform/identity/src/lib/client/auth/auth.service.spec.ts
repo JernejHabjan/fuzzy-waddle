@@ -103,6 +103,28 @@ describe("AuthService", () => {
     expect(consoleError).toHaveBeenCalledWith("[AuthService] Tauri sign-in failed:", openerError);
   });
 
+  it("cancels an active desktop sign-in and restores its idle state", async () => {
+    let browserOpenedResolve: (() => void) | undefined;
+    const browserOpened = new Promise<void>((resolve) => {
+      browserOpenedResolve = resolve;
+    });
+    desktopAuthBridge.openInBrowser.mockImplementation(async () => {
+      browserOpenedResolve?.();
+    });
+
+    const signInPromise = service.signInWithGoogle();
+    await browserOpened;
+
+    expect(service.isDesktopSignInPending()).toBe(true);
+    service.cancelSignIn();
+    await signInPromise;
+
+    expect(service.isDesktopSignInPending()).toBe(false);
+    expect(service.processing).toBeNull();
+    expect(supabase.auth.exchangeCodeForSession).not.toHaveBeenCalled();
+    expect(supabase.auth.setSession).not.toHaveBeenCalled();
+  });
+
   it("stops waiting when no OAuth callback arrives", async () => {
     jest.useFakeTimers();
     const consoleError = jest.spyOn(console, "error").mockImplementation();

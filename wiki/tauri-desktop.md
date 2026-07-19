@@ -87,11 +87,16 @@ Tauri's WebView cannot complete a standard browser OAuth redirect, so sign-in us
 - Tells the user to close the browser tab after the app handoff.
 
 4. OS triggers the registered deep-link → the single-instance plugin forwards it via `"deep-link-received"`.
-5. `AuthService` accepts only the exact callback whose nonce matches the active sign-in attempt, then either parses `access_token` + `refresh_token` from the URL hash and calls `supabase.auth.setSession()`, or exchanges a `?code=...` callback for a session.
+5. `AuthService` accepts only the exact callback whose nonce matches the active sign-in attempt, then exchanges its
+   short-lived PKCE `?code=...` for a session. Legacy implicit tokens remain supported for auth attempts started by an
+   older client.
 
 Using a plain HTML file (not an Angular page) prevents Supabase's `detectSessionInUrl` from accidentally establishing a session in the browser tab instead of the app.
+The callback forwards only the fields needed to complete authentication; provider credentials and unrelated response
+metadata are not copied into the native protocol URL.
 
-The `/assets/auth-callback.html` redirect URL must also be registered in Supabase — see [supabase.md](supabase.md).
+The nonce-bearing `/assets/auth-callback.html?desktop_auth_nonce=*` redirect URL pattern must also be registered in
+Supabase — see [supabase.md](supabase.md).
 
 ## Notes
 

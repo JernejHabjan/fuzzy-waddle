@@ -1,4 +1,4 @@
-import { inject, Injectable } from "@angular/core";
+import { inject, Injectable, signal } from "@angular/core";
 import { type Session } from "@supabase/supabase-js";
 import { DataAccessService } from "../data-access.service";
 import { type AuthServiceInterface } from "./auth.service.interface";
@@ -23,6 +23,12 @@ const TAURI_AUTH_CALLBACK_HOST = "auth";
 const TAURI_AUTH_CALLBACK_PATH = "/callback";
 const TAURI_AUTH_NONCE_PARAM = "desktop_auth_nonce";
 const TAURI_AUTH_CALLBACK_TIMEOUT_MS = 120_000;
+
+interface DesktopSignInAttempt {
+  readonly cancellation$: Subject<void>;
+  cancelled: boolean;
+  processing: Promise<void> | null;
+}
 
 /**
  * OAuth redirect target for the Tauri flow.
@@ -87,9 +93,11 @@ function parseTauriAuthCallback(callbackUrl: string, expectedNonce: string): URL
 })
 export class AuthService implements AuthServiceInterface {
   processing: Promise<unknown> | null = null;
+  readonly isDesktopSignInPending = signal(false);
 
   private readonly dataAccessService = inject(DataAccessService);
   private readonly desktopAuthBridge = inject(DESKTOP_AUTH_BRIDGE, { optional: true });
+  private desktopSignInAttempt: DesktopSignInAttempt | null = null;
 
   private _session: Session | null = null;
   private readonly sessionChangesSubject = new BehaviorSubject<Session | null>(null);
@@ -121,6 +129,8 @@ export class AuthService implements AuthServiceInterface {
   }
 
   async signInWithGoogle() {
+    if (this.processing) return;
+
     if (this.desktopAuthBridge?.isDesktop) {
       await this.signInWithGoogleTauri();
       return;
@@ -138,6 +148,20 @@ export class AuthService implements AuthServiceInterface {
     this.processing = null;
   }
 
+  /** Cancels only the active desktop OAuth wait; an already-open system browser remains user-owned. */
+  cancelSignIn(): void {
+    const attempt = this.desktopSignInAttempt;
+    if (!attempt) return;
+
+    attempt.cancelled = true;
+    attempt.cancellation$.next();
+    attempt.cancellation$.complete();
+    this.isDesktopSignInPending.set(false);
+    if (this.processing === attempt.processing) {
+      this.processing = null;
+    }
+  }
+
   /**
    * Tauri OAuth flow via deep link.
    *
@@ -149,16 +173,27 @@ export class AuthService implements AuthServiceInterface {
    *      a. Redirects to `com.fuzzywaddle.probablewaffle://auth/callback#tokens`
    *      b. Displays a close-tab instruction in the browser.
    * 4. Subscribe before opening the browser and wait for the first matching deep-link URL.
-   * 5. `handleDeepLinkAuthCallback` establishes the implicit or PKCE session.
+   * 5. `handleDeepLinkAuthCallback` exchanges the PKCE code, with implicit tokens supported
+   *    only as a compatibility fallback for an auth attempt started by an older client.
    */
   private async signInWithGoogleTauri() {
-    this.processing = (async () => {
+    const attempt: DesktopSignInAttempt = {
+      cancellation$: new Subject<void>(),
+      cancelled: false,
+      processing: null
+    };
+    this.desktopSignInAttempt = attempt;
+    this.isDesktopSignInPending.set(true);
+
+    const signInPromise = (async () => {
       const desktopAuthBridge = this.desktopAuthBridge;
       if (!desktopAuthBridge) return;
 
       // Listener setup belongs to the OAuth operation so startup remains independent
       // of native deep-link initialization and fast browser callbacks are not missed.
       await desktopAuthBridge.initDeepLinkListener();
+      if (attempt.cancelled) return;
+
       const authNonce = createTauriAuthNonce();
 
       const { data, error } = await this.dataAccessService.supabase.auth.signInWithOAuth({
@@ -168,6 +203,7 @@ export class AuthService implements AuthServiceInterface {
           skipBrowserRedirect: true
         }
       });
+      if (attempt.cancelled) return;
 
       if (error) {
         console.error("[AuthService] signInWithOAuth error:", error);
@@ -175,13 +211,12 @@ export class AuthService implements AuthServiceInterface {
       }
 
       if (data?.url) {
-        const callbackCancelled$ = new Subject<void>();
         const callbackPromise = firstValueFrom(
           desktopAuthBridge.deepLink$.pipe(
             map((url) => parseTauriAuthCallback(url, authNonce)),
             filter((url): url is URL => url !== null),
             take(1),
-            takeUntil(callbackCancelled$),
+            takeUntil(attempt.cancellation$),
             timeout({ first: TAURI_AUTH_CALLBACK_TIMEOUT_MS })
           )
         );
@@ -191,33 +226,45 @@ export class AuthService implements AuthServiceInterface {
         try {
           await desktopAuthBridge.openInBrowser(data.url);
           const parsedCallbackUrl = await callbackPromise;
+          if (attempt.cancelled) return;
+
           await this.handleDeepLinkAuthCallback(parsedCallbackUrl);
         } finally {
           // Opening failures must cancel the pending timeout/subscription immediately.
-          callbackCancelled$.next();
-          callbackCancelled$.complete();
+          attempt.cancellation$.next();
+          attempt.cancellation$.complete();
         }
       }
     })();
+    attempt.processing = signInPromise;
+    this.processing = signInPromise;
 
     try {
-      await this.processing;
+      await signInPromise;
     } catch (err) {
-      console.error("[AuthService] Tauri sign-in failed:", err);
+      if (!attempt.cancelled) {
+        console.error("[AuthService] Tauri sign-in failed:", err);
+      }
     } finally {
-      this.processing = null;
+      if (this.desktopSignInAttempt === attempt) {
+        this.desktopSignInAttempt = null;
+        this.isDesktopSignInPending.set(false);
+      }
+      if (this.processing === signInPromise) {
+        this.processing = null;
+      }
     }
   }
 
   /**
    * Completes the OAuth flow received via deep link.
    *
-   * Supabase may return either:
-   *  - Implicit flow: `...#access_token=<token>&refresh_token=<token>` → set session directly
-   *  - PKCE flow:     `...?code=<auth_code>` → exchange with exchangeCodeForSession
+   * Supabase returns either:
+   *  - PKCE flow: `...?code=<auth_code>` → exchange with exchangeCodeForSession
+   *  - Legacy implicit flow: `...#access_token=<token>&refresh_token=<token>` → set session directly
    *
-  * Google OAuth via Supabase typically uses the implicit flow, so both paths are handled.
-  */
+   * New clients request PKCE; implicit handling lets an auth attempt survive an app update.
+   */
   private async handleDeepLinkAuthCallback(parsedCallbackUrl: URL) {
     console.log("[AuthService] processing deep-link auth callback");
     try {

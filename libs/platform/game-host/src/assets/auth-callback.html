@@ -109,26 +109,30 @@
         }
 
         if (callbackParams && hasAuthResult) {
-          var deepLinkParams = new URLSearchParams(search ? search.slice(1) : "");
+          var deepLinkParams = new URLSearchParams();
+          var forwardedParamNames = [
+            "desktop_auth_nonce",
+            "error",
+            "error_code",
+            "error_description",
+            "code",
+            "access_token",
+            "refresh_token"
+          ];
 
-          // Some browsers / OS protocol handlers drop the hash fragment when launching
-          // a custom URI scheme, so copy hash params into the deep-link query as well.
-          if (hash) {
-            var hashParams = new URLSearchParams(hash.slice(1));
-            hashParams.forEach(function (value, key) {
-              deepLinkParams.set(key, value);
-            });
-          }
+          // Keep the Windows protocol URL short and avoid forwarding provider credentials
+          // that the desktop app neither needs nor stores.
+          forwardedParamNames.forEach(function (name) {
+            var value = allParams.get(name);
+            if (value) {
+              deepLinkParams.set(name, value);
+            }
+          });
 
           var deepLinkUrl = SCHEME + "://auth/callback";
           var serializedParams = deepLinkParams.toString();
           if (serializedParams) {
             deepLinkUrl += "?" + serializedParams;
-          }
-
-          // Preserve the original hash too for handlers that do receive it.
-          if (hash) {
-            deepLinkUrl += hash;
           }
 
           window.location.href = deepLinkUrl;
