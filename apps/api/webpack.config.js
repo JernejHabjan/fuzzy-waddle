@@ -1,4 +1,5 @@
 const { NxAppWebpackPlugin } = require("@nx/webpack/app-plugin");
+const path = require("path");
 
 const configValues = {
   build: {
@@ -27,5 +28,10 @@ const buildOptions = {
 };
 
 module.exports = {
-  plugins: [new NxAppWebpackPlugin(buildOptions)]
+  plugins: [new NxAppWebpackPlugin(buildOptions)],
+  output: {
+    clean: true,
+    filename: "main.js",
+    path: path.resolve(__dirname, "../../dist/apps/api")
+  }
 };
