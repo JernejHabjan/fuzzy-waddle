@@ -84,7 +84,7 @@
             }
           }
           @if (!authService.processing && authService.isAuthenticated) {
-            <a class="menu-button" routerLink="/profile">
+            <a class="menu-button" routerLink="/aota/profile">
               <span class="menu-button-text">
                 <img alt="avatar" height="24" [src]="avatarProviderService.getAvatar(authService.userId!)" />
                 {{ authService.fullName! }}

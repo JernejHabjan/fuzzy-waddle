@@ -13,6 +13,8 @@ describe("MainMenuButtonsComponent", () => {
   const authService = {
     processing: null,
     isAuthenticated: false,
+    userId: "user-1",
+    fullName: "Test Player",
     isDesktopSignInPending,
     signInWithGoogle: jest.fn(),
     cancelSignIn: jest.fn(() => isDesktopSignInPending.set(false))
@@ -20,6 +22,7 @@ describe("MainMenuButtonsComponent", () => {
 
   beforeEach(async () => {
     isDesktopSignInPending.set(false);
+    authService.isAuthenticated = false;
     authService.signInWithGoogle.mockClear();
     authService.cancelSignIn.mockClear();
 
@@ -63,5 +66,14 @@ describe("MainMenuButtonsComponent", () => {
 
     fixture.detectChanges();
     expect(fixture.nativeElement.textContent).toContain("Sign In");
+  });
+
+  it("links an authenticated desktop user to the in-game profile route", () => {
+    authService.isAuthenticated = true;
+    fixture.detectChanges();
+
+    const profileLink = fixture.nativeElement.querySelector("a.menu-button") as HTMLAnchorElement | null;
+    expect(profileLink?.getAttribute("href")).toBe("/aota/profile");
+    expect(profileLink?.textContent).toContain("View profile");
   });
 });
