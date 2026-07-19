@@ -132,7 +132,7 @@
     "@angular/platform-browser-dynamic": "21.2.18",
     "@nestjs/schematics": "11.1.0",
     "@nestjs/swagger": "11.4.3",
-    "@nestjs/testing": "11.1.21",
+    "@nestjs/testing": "11.1.28",
     "@nx/eslint": "23.0.1",
     "@nx/eslint-plugin": "23.0.1",
     "@nx/jest": "23.0.1",
