@@ -76,3 +76,4 @@ CLAUDE.md
 plugins
 docs/ai/
 .codex
+.pnpm-store
