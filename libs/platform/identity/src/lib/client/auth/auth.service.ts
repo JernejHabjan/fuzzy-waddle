@@ -1,55 +1,100 @@
-import { inject, Injectable, type OnDestroy } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { type Session } from "@supabase/supabase-js";
 import { DataAccessService } from "../data-access.service";
 import { type AuthServiceInterface } from "./auth.service.interface";
-import { BehaviorSubject, type Observable, type Subscription } from "rxjs";
+import {
+  BehaviorSubject,
+  filter,
+  firstValueFrom,
+  map,
+  Subject,
+  take,
+  takeUntil,
+  timeout,
+  type Observable
+} from "rxjs";
 import { environment } from "@fuzzy-waddle/environments/environment";
 import { DESKTOP_AUTH_BRIDGE } from "./desktop-auth-bridge";
 
 /** Deep-link scheme registered in tauri.conf.json → plugins.deep-link.desktop.schemes */
 const TAURI_DEEP_LINK_SCHEME = "com.fuzzywaddle.probablewaffle";
+const TAURI_DEEP_LINK_PROTOCOL = `${TAURI_DEEP_LINK_SCHEME}:`;
+const TAURI_AUTH_CALLBACK_HOST = "auth";
+const TAURI_AUTH_CALLBACK_PATH = "/callback";
+const TAURI_AUTH_NONCE_PARAM = "desktop_auth_nonce";
+const TAURI_AUTH_CALLBACK_TIMEOUT_MS = 120_000;
 
 /**
  * OAuth redirect target for the Tauri flow.
  *
  * Points to a plain static HTML file (not Angular) so Supabase's `detectSessionInUrl`
  * cannot auto-establish a session in the browser tab.  The HTML page forwards the
- * tokens to the registered app scheme and then closes itself.
+ * tokens to the registered app scheme and tells the user when the tab can be closed.
  *
  * In dev the Angular dev server serves the file from /assets/.
  * In prod the file is bundled into the Render deploy at the same path.
  */
-function tauriAuthRedirect(): string {
-  // In `pnpm tauri:dev` the WebView loads the Angular dev server at localhost:4200.
+function tauriAuthRedirect(nonce: string): string {
+  // In `pnpm tauri:dev` the WebView loads the Angular dev server at localhost:4201.
   // In a production Tauri build the origin is tauri://localhost or http://tauri.localhost.
   // Check the actual runtime origin rather than isDevMode() (a compile-time constant).
   const base = window.location.origin.includes("localhost") ? window.location.origin : environment.clientUrl;
-  return `${base}/assets/auth-callback.html`;
+  const redirectUrl = new URL("/assets/auth-callback.html", base);
+  redirectUrl.searchParams.set(TAURI_AUTH_NONCE_PARAM, nonce);
+  return redirectUrl.toString();
+}
+
+/** Generates an unguessable identifier that binds a deep link to one OAuth attempt. */
+function createTauriAuthNonce(): string {
+  const bytes = crypto.getRandomValues(new Uint8Array(16));
+  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
+/**
+ * Narrows an untrusted native deep link to the exact callback for the active OAuth attempt.
+ *
+ * Requiring both the registered URL shape and the per-attempt nonce prevents unrelated
+ * protocol activations from consuming the one-shot callback subscription.
+ */
+function parseTauriAuthCallback(callbackUrl: string, expectedNonce: string): URL | null {
+  try {
+    const parsedCallbackUrl = new URL(callbackUrl);
+    if (
+      parsedCallbackUrl.protocol !== TAURI_DEEP_LINK_PROTOCOL ||
+      parsedCallbackUrl.hostname !== TAURI_AUTH_CALLBACK_HOST ||
+      parsedCallbackUrl.pathname !== TAURI_AUTH_CALLBACK_PATH ||
+      parsedCallbackUrl.searchParams.get(TAURI_AUTH_NONCE_PARAM) !== expectedNonce
+    ) {
+      return null;
+    }
+
+    const hashParams = new URLSearchParams(parsedCallbackUrl.hash.slice(1));
+    const hasError =
+      parsedCallbackUrl.searchParams.has("error") || hashParams.has("error");
+    const hasCode = parsedCallbackUrl.searchParams.has("code");
+    const hasImplicitSession =
+      (parsedCallbackUrl.searchParams.has("access_token") || hashParams.has("access_token")) &&
+      (parsedCallbackUrl.searchParams.has("refresh_token") || hashParams.has("refresh_token"));
+
+    return hasError || hasCode || hasImplicitSession ? parsedCallbackUrl : null;
+  } catch {
+    return null;
+  }
 }
 
 @Injectable({
   providedIn: "root"
 })
-export class AuthService implements AuthServiceInterface, OnDestroy {
+export class AuthService implements AuthServiceInterface {
   processing: Promise<unknown> | null = null;
 
   private readonly dataAccessService = inject(DataAccessService);
   private readonly desktopAuthBridge = inject(DESKTOP_AUTH_BRIDGE, { optional: true });
-  private readonly tauriSubscription?: Subscription;
 
   private _session: Session | null = null;
   private readonly sessionChangesSubject = new BehaviorSubject<Session | null>(null);
   /** Emits after each local authentication transition so offline feature queues can resume safely. */
   readonly sessionChanges: Observable<Session | null> = this.sessionChangesSubject.asObservable();
-
-  constructor() {
-    // In Tauri, listen for deep-link callbacks to complete the OAuth PKCE flow.
-    // The OS fires the deep-link after Google redirects back to the registered scheme.
-    this.tauriSubscription = this.desktopAuthBridge?.deepLink$.subscribe((url) => {
-      // noinspection JSIgnoredPromiseFromCall
-      this.handleDeepLinkAuthCallback(url);
-    });
-  }
 
   get session() {
     return this._session;
@@ -94,7 +139,7 @@ export class AuthService implements AuthServiceInterface, OnDestroy {
   }
 
   /**
-   * Tauri OAuth flow (implicit) via deep link.
+   * Tauri OAuth flow via deep link.
    *
    * 1. Ask Supabase for the Google auth URL (skipBrowserRedirect prevents the WebView
    *    from navigating to the OAuth page itself).
@@ -102,16 +147,24 @@ export class AuthService implements AuthServiceInterface, OnDestroy {
    * 3. After the user authenticates, Google → Supabase → browser lands on
    *    `/assets/auth-callback.html` (plain HTML, no Angular/Supabase) which:
    *      a. Redirects to `com.fuzzywaddle.probablewaffle://auth/callback#tokens`
-   *      b. Attempts `window.close()` to shut the tab; falls back to a close button.
-   * 4. OS triggers the registered deep-link → the desktop bridge emits the URL.
-   * 5. `handleDeepLinkAuthCallback` calls `setSession()` with the implicit-flow tokens.
+   *      b. Displays a close-tab instruction in the browser.
+   * 4. Subscribe before opening the browser and wait for the first matching deep-link URL.
+   * 5. `handleDeepLinkAuthCallback` establishes the implicit or PKCE session.
    */
   private async signInWithGoogleTauri() {
     this.processing = (async () => {
+      const desktopAuthBridge = this.desktopAuthBridge;
+      if (!desktopAuthBridge) return;
+
+      // Listener setup belongs to the OAuth operation so startup remains independent
+      // of native deep-link initialization and fast browser callbacks are not missed.
+      await desktopAuthBridge.initDeepLinkListener();
+      const authNonce = createTauriAuthNonce();
+
       const { data, error } = await this.dataAccessService.supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: tauriAuthRedirect(),
+          redirectTo: tauriAuthRedirect(authNonce),
           skipBrowserRedirect: true
         }
       });
@@ -122,12 +175,38 @@ export class AuthService implements AuthServiceInterface, OnDestroy {
       }
 
       if (data?.url) {
-        await this.desktopAuthBridge?.openInBrowser(data.url);
+        const callbackCancelled$ = new Subject<void>();
+        const callbackPromise = firstValueFrom(
+          desktopAuthBridge.deepLink$.pipe(
+            map((url) => parseTauriAuthCallback(url, authNonce)),
+            filter((url): url is URL => url !== null),
+            take(1),
+            takeUntil(callbackCancelled$),
+            timeout({ first: TAURI_AUTH_CALLBACK_TIMEOUT_MS })
+          )
+        );
+
+        // Mark the promise as handled while the native opener is still in flight.
+        void callbackPromise.catch(() => undefined);
+        try {
+          await desktopAuthBridge.openInBrowser(data.url);
+          const parsedCallbackUrl = await callbackPromise;
+          await this.handleDeepLinkAuthCallback(parsedCallbackUrl);
+        } finally {
+          // Opening failures must cancel the pending timeout/subscription immediately.
+          callbackCancelled$.next();
+          callbackCancelled$.complete();
+        }
       }
     })();
 
-    await this.processing;
-    this.processing = null;
+    try {
+      await this.processing;
+    } catch (err) {
+      console.error("[AuthService] Tauri sign-in failed:", err);
+    } finally {
+      this.processing = null;
+    }
   }
 
   /**
@@ -137,17 +216,11 @@ export class AuthService implements AuthServiceInterface, OnDestroy {
    *  - Implicit flow: `...#access_token=<token>&refresh_token=<token>` → set session directly
    *  - PKCE flow:     `...?code=<auth_code>` → exchange with exchangeCodeForSession
    *
-   * Google OAuth via Supabase typically uses the implicit flow, so both paths are handled.
-   */
-  private async handleDeepLinkAuthCallback(callbackUrl: string) {
-    console.log("[AuthService] handleDeepLinkAuthCallback:", callbackUrl);
-    if (!callbackUrl.startsWith(TAURI_DEEP_LINK_SCHEME)) {
-      console.warn("[AuthService] URL did not match scheme, ignoring:", callbackUrl);
-      return;
-    }
-
+  * Google OAuth via Supabase typically uses the implicit flow, so both paths are handled.
+  */
+  private async handleDeepLinkAuthCallback(parsedCallbackUrl: URL) {
+    console.log("[AuthService] processing deep-link auth callback");
     try {
-      const parsedCallbackUrl = new URL(callbackUrl);
       const queryParams = parsedCallbackUrl.searchParams;
       const hashParams = new URLSearchParams(parsedCallbackUrl.hash.slice(1));
       const callbackError = queryParams.get("error") ?? hashParams.get("error");
@@ -170,7 +243,7 @@ export class AuthService implements AuthServiceInterface, OnDestroy {
           console.error("[AuthService] setSession error:", error);
           return;
         }
-        console.log("[AuthService] session established (implicit):", data.session?.user?.email);
+        console.log("[AuthService] session established (implicit)");
         this.updateSession(data.session);
         return;
       }
@@ -187,7 +260,7 @@ export class AuthService implements AuthServiceInterface, OnDestroy {
         console.error("[AuthService] exchangeCodeForSession error:", error);
         return;
       }
-      console.log("[AuthService] session established (pkce):", data.session?.user?.email);
+      console.log("[AuthService] session established (pkce)");
       this.updateSession(data.session);
     } catch (err) {
       console.error("[AuthService] deep-link auth callback failed:", err);
@@ -228,10 +301,6 @@ export class AuthService implements AuthServiceInterface, OnDestroy {
     }
 
     return this._session;
-  }
-
-  ngOnDestroy(): void {
-    this.tauriSubscription?.unsubscribe();
   }
 
   /** Keeps the session getter and reactive consumers in lockstep after every auth path. */

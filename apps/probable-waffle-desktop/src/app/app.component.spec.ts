@@ -11,8 +11,7 @@ describe("AppComponent", () => {
   const serverHealthService = { checkHealth: jest.fn() };
   const tauriService = {
     windowIsFullscreen: signal(true),
-    syncWindowState: jest.fn(),
-    initDeepLinkListener: jest.fn()
+    syncWindowState: jest.fn()
   };
 
   beforeEach(async () => {

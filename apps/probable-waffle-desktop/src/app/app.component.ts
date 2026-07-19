@@ -31,7 +31,6 @@ export class AppComponent implements OnInit {
     void this.authService.autoSignIn();
     if (isTauri()) {
       void this.tauriService.syncWindowState();
-      void this.tauriService.initDeepLinkListener();
     }
   }
 }

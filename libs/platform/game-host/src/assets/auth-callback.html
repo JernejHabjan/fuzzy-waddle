@@ -91,8 +91,12 @@
         var allParams = new URLSearchParams((search ? search.slice(1) + "&" : "") + (hash ? hash.slice(1) : ""));
         var error = allParams.get("error");
         var errorDescription = allParams.get("error_description");
+        var authCode = allParams.get("code");
+        var accessToken = allParams.get("access_token");
+        var refreshToken = allParams.get("refresh_token");
+        var hasAuthResult = Boolean(error || authCode || (accessToken && refreshToken));
 
-        if (!callbackParams) {
+        if (!callbackParams || !hasAuthResult) {
           statusEl.textContent = "This sign-in link is incomplete.";
           statusEl.className = "status error";
           hintEl.textContent = "Return to the app and try signing in again.";
@@ -104,7 +108,7 @@
           noteEl.textContent = "Close this tab and return to the app.";
         }
 
-        if (callbackParams) {
+        if (callbackParams && hasAuthResult) {
           var deepLinkParams = new URLSearchParams(search ? search.slice(1) : "");
 
           // Some browsers / OS protocol handlers drop the hash fragment when launching

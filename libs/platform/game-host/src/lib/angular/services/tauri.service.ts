@@ -20,6 +20,8 @@ export class TauriService {
   /** Emits URLs received via the registered deep-link scheme (`com.fuzzywaddle.probablewaffle://`). */
   readonly deepLink$ = new Subject<string>();
 
+  private deepLinkListenerPromise: Promise<void> | null = null;
+
   /**
    * Reactive fullscreen state for the main window.
    * Updated by `syncWindowState()` (called on init and after each toggle).
@@ -44,7 +46,8 @@ export class TauriService {
 
   /**
    * Registers a listener for deep-link URLs (desktop only).
-   * Called once during app bootstrap — resolves immediately in browser builds.
+   * Called by the desktop OAuth flow before opening the system browser.
+   * Resolves immediately in browser builds.
    *
    * Deep links arrive when the OS activates the registered URI scheme, e.g.
    * `com.fuzzywaddle.probablewaffle://auth/callback?code=…` after OAuth.
@@ -58,39 +61,60 @@ export class TauriService {
    */
   async initDeepLinkListener(): Promise<void> {
     if (!this.isTauri) return;
+
+    if (this.deepLinkListenerPromise) {
+      await this.deepLinkListenerPromise;
+      return;
+    }
+
+    this.deepLinkListenerPromise = this.registerDeepLinkListeners();
     try {
-      const [{ onOpenUrl }, { listen }] = await Promise.all([
-        import("@tauri-apps/plugin-deep-link"),
-        import("@tauri-apps/api/event")
-      ]);
+      await this.deepLinkListenerPromise;
+    } catch (err) {
+      this.deepLinkListenerPromise = null;
+      console.error("[TauriService] deep-link listener failed:", err);
+      throw err;
+    }
+  }
 
-      await onOpenUrl((urls) => {
-        console.log("[TauriService] onOpenUrl fired:", urls);
-        this.ngZone.run(() => {
-          for (const url of urls) {
-            this.deepLink$.next(url);
-          }
-        });
+  /** Registers the native event sources once, without blocking normal app startup. */
+  private async registerDeepLinkListeners(): Promise<void> {
+    const [{ onOpenUrl }, { listen }] = await Promise.all([
+      import("@tauri-apps/plugin-deep-link"),
+      import("@tauri-apps/api/event")
+    ]);
+
+    const unlistenOpenUrl = await onOpenUrl((urls) => {
+      console.log("[TauriService] onOpenUrl fired");
+      this.ngZone.run(() => {
+        for (const url of urls) {
+          this.deepLink$.next(url);
+        }
       });
+    });
 
+    try {
       await listen<string>("deep-link-received", (event) => {
-        console.log("[TauriService] deep-link-received event:", event.payload);
+        console.log("[TauriService] deep-link-received event");
         if (event.payload) {
           this.ngZone.run(() => {
             this.deepLink$.next(event.payload);
           });
         }
       });
-
-      console.log("[TauriService] deep-link listeners registered");
     } catch (err) {
-      console.error("[TauriService] deep-link listener failed:", err);
+      // A partial initialization must not leave a duplicate plugin listener on retry.
+      unlistenOpenUrl();
+      throw err;
     }
+
+    console.log("[TauriService] deep-link listeners registered");
   }
 
   /**
    * Opens a URL in the system default browser.
    * No-op in browser builds (URLs open directly in the same tab).
+   * Rejects when the native opener fails so callers can stop dependent workflows.
    */
   async openInBrowser(url: string): Promise<void> {
     if (!this.isTauri) return;
@@ -99,6 +123,7 @@ export class TauriService {
       await openUrl(url);
     } catch (err) {
       console.error("[TauriService] openInBrowser failed:", err);
+      throw err;
     }
   }
 

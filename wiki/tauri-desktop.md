@@ -79,7 +79,7 @@ A tray icon appears while the app is running with two actions:
 
 Tauri's WebView cannot complete a standard browser OAuth redirect, so sign-in uses a deep-link flow:
 
-1. The app calls `signInWithOAuth` with `skipBrowserRedirect: true` and `redirectTo` pointing to `/assets/auth-callback.html` on the web app.
+1. The app calls `signInWithOAuth` with `skipBrowserRedirect: true` and `redirectTo` pointing to `/assets/auth-callback.html` with a per-attempt nonce.
 2. The auth URL is opened in the **system browser** (Chrome / Edge / Safari).
 3. After the user authenticates, Google → Supabase → browser lands on `/assets/auth-callback.html` — a plain HTML file (no Angular, no Supabase) that:
 
@@ -87,7 +87,7 @@ Tauri's WebView cannot complete a standard browser OAuth redirect, so sign-in us
 - Tells the user to close the browser tab after the app handoff.
 
 4. OS triggers the registered deep-link → the single-instance plugin forwards it via `"deep-link-received"`.
-5. `AuthService` either parses `access_token` + `refresh_token` from the URL hash and calls `supabase.auth.setSession()`, or exchanges a `?code=...` callback for a session.
+5. `AuthService` accepts only the exact callback whose nonce matches the active sign-in attempt, then either parses `access_token` + `refresh_token` from the URL hash and calls `supabase.auth.setSession()`, or exchanges a `?code=...` callback for a session.
 
 Using a plain HTML file (not an Angular page) prevents Supabase's `detectSessionInUrl` from accidentally establishing a session in the browser tab instead of the app.
 
@@ -104,7 +104,7 @@ The Tauri app contacts the production API (`https://fuzzy-waddle-api.onrender.co
 
 | Mode                             | Origin                   |
 | -------------------------------- | ------------------------ |
-| `pnpm tauri:dev` (all platforms) | `http://localhost:4200`  |
+| `pnpm tauri:dev` (all platforms) | `http://localhost:4201`  |
 | Production — Windows (WebView2)  | `http://tauri.localhost` |
 | Production — macOS / Linux       | `tauri://localhost`      |
 

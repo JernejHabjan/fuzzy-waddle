@@ -29,7 +29,7 @@ Reference: [Render SPA routing](https://render.com/docs/deploy-create-react-app#
 | Health Check                | `/api/health`                                                                                                                     |
 | Env: `SUPABASE_URL`         | Supabase project URL                                                                                                              |
 | Env: `SUPABASE_SERVICE_KEY` | Supabase service-role key                                                                                                         |
-| Env: `CORS_ORIGIN`          | `https://fuzzy-waddle.onrender.com,https://jernejhabjan.github.io,http://localhost:4200,http://tauri.localhost,tauri://localhost` |
+| Env: `CORS_ORIGIN`          | `https://fuzzy-waddle.onrender.com,https://jernejhabjan.github.io,http://localhost:4200,http://localhost:4201,http://tauri.localhost,tauri://localhost` |
 
 ## GitHub Pages (portal mirror)
 
