@@ -1,6 +1,7 @@
 import { GameInstanceMetadata, type GameInstanceMetadataData } from "@fuzzy-waddle/platform-game-sessions";
 import type { GameCommand } from "./game-command";
 import type { CampaignChapterId, CampaignId, CampaignMissionId } from "../../probable-waffle/campaign";
+import type { CampaignMissionRuntimeState } from "../../probable-waffle/campaign-runtime";
 
 export enum ProbableWaffleGameInstanceType {
   Matchmaking,
@@ -52,6 +53,7 @@ export interface ProbableWaffleReplayDesyncDiagnostic {
   actorDiffs: string[];
   playerDiffs: string[];
   researchDiff?: string;
+  campaignMissionDiff?: string;
 }
 
 export interface ProbableWaffleReplayDebugData {
@@ -66,6 +68,8 @@ export interface ProbableWaffleReplayData {
   mapId?: number;
   players: ProbableWaffleReplayPlayerData[];
   commands: ProbableWaffleReplayCommandBatch[];
+  /** Initial deterministic mission snapshot for campaign replay identity and restore checks. */
+  campaignMissionInitialState?: CampaignMissionRuntimeState;
   /** Optional deterministic-debug payload used for replay verification and desync forensics. */
   debugData?: ProbableWaffleReplayDebugData;
 }

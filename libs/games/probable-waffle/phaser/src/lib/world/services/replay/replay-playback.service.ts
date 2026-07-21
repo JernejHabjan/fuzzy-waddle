@@ -8,6 +8,7 @@ import { getSceneService } from "../scene-component-helpers";
 import { CommandBusService } from "../multiplayer/command-bus.service";
 import { SimulationTickService } from "../simulation-tick.service";
 import { buildReplayTickDigest } from "./replay-debug-tools";
+import { serializeCampaignMissionRuntimeState } from "@fuzzy-waddle/probable-waffle-campaign";
 
 const SUPPORTED_REPLAY_COMPATIBILITY_VERSIONS = new Set(["lockstep-v1"]);
 
@@ -30,6 +31,17 @@ export class ReplayPlaybackService {
 
     if (!SUPPORTED_REPLAY_COMPATIBILITY_VERSIONS.has(replayData.compatibilityVersion)) {
       throw new Error(`Unsupported replay compatibility version: ${replayData.compatibilityVersion}`);
+    }
+
+    const expectedCampaignMission = replayData.campaignMissionInitialState;
+    const actualCampaignMission = scene.baseGameData.gameInstance.gameState?.data.campaignMission;
+    if (
+      expectedCampaignMission &&
+      (!actualCampaignMission ||
+        serializeCampaignMissionRuntimeState(expectedCampaignMission) !==
+          serializeCampaignMissionRuntimeState(actualCampaignMission))
+    ) {
+      throw new Error("Campaign replay mission state does not match its recorded initial snapshot");
     }
 
     for (const tickDigest of replayData.debugData?.tickDigests ?? []) {

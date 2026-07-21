@@ -10,7 +10,8 @@ export enum SimulationPauseReason {
   Desync = "desync",
   DesyncCorrection = "desync-correction",
   Player = "player",
-  ExternalModal = "external-modal"
+  ExternalModal = "external-modal",
+  CampaignRuntimeFailure = "campaign-runtime-failure"
 }
 
 /**

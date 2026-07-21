@@ -94,7 +94,10 @@ export class ReplayRecorderService {
           playerName: player.playerController.data.playerDefinition?.player.playerName,
           userId: player.playerController.data.userId
         })),
-      commands: structuredClone(this.recordedBatches)
+      commands: structuredClone(this.recordedBatches),
+      campaignMissionInitialState: this.initialGameInstanceData.gameStateData?.campaignMission
+        ? structuredClone(this.initialGameInstanceData.gameStateData.campaignMission)
+        : undefined
     };
     const tickDigests = this.buildTickDigests();
     if (tickDigests.length > 0 || this.desyncDiagnostics.length > 0) {

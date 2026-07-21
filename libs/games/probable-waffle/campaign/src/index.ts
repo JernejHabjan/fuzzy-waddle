@@ -24,5 +24,6 @@ export * from "./lib/registry/campaign-kind-registry";
 export * from "./lib/registry/campaign-registry-registration";
 export * from "./lib/registry/static-campaign-content-registry";
 export * from "./lib/registry/trusted-campaign-hook-registration";
+export * from "./lib/runtime/campaign-mission-runtime";
 export * from "./lib/validation/campaign-validation-issue";
 export * from "./lib/validation/validate-campaign-content";

@@ -25,6 +25,7 @@ import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller"
 import type { ReconnectSnapshotAppliedSceneEvent } from "./probable-waffle-scene-events";
 import { ProbableWaffleSceneEventName } from "./probable-waffle-scene-events";
 import { createMultiplayerClientLogger } from "../multiplayer/multiplayer-client-logger";
+import { serializeCampaignMissionRuntimeState } from "@fuzzy-waddle/probable-waffle-campaign";
 
 interface HashSnapshot {
   hash: string;
@@ -83,6 +84,7 @@ interface HashOrder {
  *
  * Hash scope per actor: {id, health, tileX, tileY, owner}. Actors sorted by ID
  * so every client produces an identical string for the same simulation state.
+ * Campaign scenes also append their canonical mission-runtime snapshot.
  * The service hashes once per HASH_INTERVAL_TICKS instead of every simulation tick:
  * full actor serialization is intentionally diagnostic-heavy, and per-tick hashing
  * would compete with lockstep command processing during large battles.
@@ -159,15 +161,18 @@ export class StateHashService {
    * Uses integer positions (Math.round) to avoid float divergence from display rounding.
    */
   private computeHashSnapshot(scene: Phaser.Scene, includeDiagnostics: boolean): HashSnapshot {
+    const campaignMission = (scene as ProbableWaffleScene).baseGameData.gameInstance.gameState?.data.campaignMission;
+    const campaignMissionDigest = campaignMission ? djb2(serializeCampaignMissionRuntimeState(campaignMission)) : "";
     const actorIndex = getSceneService(scene, ActorIndexSystem);
     if (!actorIndex) {
       return {
-        hash: "",
+        hash: djb2(`###${campaignMissionDigest}`),
         diagnostics: includeDiagnostics
           ? {
               actorDigests: {},
               playerDigests: [],
-              researchDigest: ""
+              researchDigest: "",
+              campaignMissionDigest
             }
           : undefined
       };
@@ -206,12 +211,15 @@ export class StateHashService {
     const playerStateEntries = this.serializePlayerStates(scene);
     const researchEntries = this.serializeResearchState(scene);
     return {
-      hash: djb2(`${entries.join("|")}#${playerStateEntries.join("|")}#${researchEntries.join("|")}`),
+      hash: djb2(
+        `${entries.join("|")}#${playerStateEntries.join("|")}#${researchEntries.join("|")}#${campaignMissionDigest}`
+      ),
       diagnostics: includeDiagnostics
         ? {
             actorDigests: actorDigests ?? {},
             playerDigests: playerStateEntries,
-            researchDigest: researchEntries.join("|")
+            researchDigest: researchEntries.join("|"),
+            campaignMissionDigest
           }
         : undefined
     };
@@ -307,7 +315,8 @@ export class StateHashService {
     if (
       diagnosticsDiff.actorDiffs.length > 0 ||
       diagnosticsDiff.playerDiffs.length > 0 ||
-      diagnosticsDiff.researchDiff
+      diagnosticsDiff.researchDiff ||
+      diagnosticsDiff.campaignMissionDiff
     ) {
       this.logger.warn(`[DESYNC][DIFF] tick=${event.tick} remotePlayer=${event.playerNumber ?? "unknown"}`, {
         authority: this.getHashEventAuthorityContext(scene, event.playerNumber, event.emitterUserId),
@@ -315,7 +324,8 @@ export class StateHashService {
         playerDiffCount: diagnosticsDiff.playerDiffs.length,
         actorDiffs: diagnosticsDiff.actorDiffs,
         playerDiffs: diagnosticsDiff.playerDiffs,
-        researchDiff: diagnosticsDiff.researchDiff ?? "none"
+        researchDiff: diagnosticsDiff.researchDiff ?? "none",
+        campaignMissionDiff: diagnosticsDiff.campaignMissionDiff ?? "none"
       });
     }
     if (classifiedMismatch) {
@@ -332,7 +342,8 @@ export class StateHashService {
       mismatchReason,
       actorDiffs: diagnosticsDiff.actorDiffs,
       playerDiffs: diagnosticsDiff.playerDiffs,
-      researchDiff: diagnosticsDiff.researchDiff
+      researchDiff: diagnosticsDiff.researchDiff,
+      campaignMissionDiff: diagnosticsDiff.campaignMissionDiff
     } satisfies ProbableWaffleReplayDesyncDiagnostic);
 
     if (event.playerNumber !== undefined) {
@@ -881,7 +892,7 @@ export class StateHashService {
   private collectDiagnosticsDiffs(
     localDiagnostics: ProbableWaffleStateHashDiagnostics | undefined,
     remoteDiagnostics: ProbableWaffleStateHashDiagnostics | undefined
-  ): { actorDiffs: string[]; playerDiffs: string[]; researchDiff?: string } {
+  ): { actorDiffs: string[]; playerDiffs: string[]; researchDiff?: string; campaignMissionDiff?: string } {
     if (!localDiagnostics || !remoteDiagnostics) {
       return {
         actorDiffs: [],
@@ -919,10 +930,17 @@ export class StateHashService {
       localResearch === remoteResearch
         ? undefined
         : `research local=${localResearch || "missing"} remote=${remoteResearch || "missing"}`;
+    const localCampaignMission = localDiagnostics.campaignMissionDigest ?? "";
+    const remoteCampaignMission = remoteDiagnostics.campaignMissionDigest ?? "";
+    const campaignMissionDiff =
+      localCampaignMission === remoteCampaignMission
+        ? undefined
+        : `campaign-mission local=${localCampaignMission || "missing"} remote=${remoteCampaignMission || "missing"}`;
     return {
       actorDiffs,
       playerDiffs,
-      researchDiff
+      researchDiff,
+      campaignMissionDiff
     };
   }
 

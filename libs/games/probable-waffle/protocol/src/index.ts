@@ -31,6 +31,7 @@ export * from "./lib/probable-waffle/achievement";
 export * from "./lib/probable-waffle/achievement-type";
 export * from "./lib/probable-waffle/save-game-request";
 export * from "./lib/probable-waffle/campaign";
+export * from "./lib/probable-waffle/campaign-runtime";
 export * from "./lib/probable-waffle/status-effect";
 export * from "./lib/probable-waffle/spell";
 export * from "./lib/transport-guards";

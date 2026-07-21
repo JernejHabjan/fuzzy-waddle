@@ -32,6 +32,7 @@ import type {
 } from "./component-data";
 import type { AoeZoneData } from "../../probable-waffle/spell";
 import type { PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
+import type { CampaignMissionRuntimeState } from "../../probable-waffle/campaign-runtime";
 
 export class ProbableWaffleGameState extends BaseGameState<ProbableWaffleGameStateData> {
   constructor(data?: ProbableWaffleGameStateData) {
@@ -60,7 +61,8 @@ export class ProbableWaffleGameState extends BaseGameState<ProbableWaffleGameSta
       score: data.score ?? 0,
       pause: data.pause ?? false,
       scoreData: this.normalizeScoreData(data.scoreData),
-      scoreSnapshots: this.normalizeScoreSnapshots(data.scoreSnapshots)
+      scoreSnapshots: this.normalizeScoreSnapshots(data.scoreSnapshots),
+      campaignMission: data.campaignMission ? structuredClone(data.campaignMission) : undefined
     };
   }
 
@@ -161,6 +163,8 @@ export interface ProbableWaffleGameStateData extends BaseData {
   aoeZones?: AoeZoneData[];
   /** Research state per player for save/load support */
   playerResearch?: Record<PlayerNumber, string[]>;
+  /** Present only while a campaign mission owns the scene's deterministic outcome flow. */
+  campaignMission?: CampaignMissionRuntimeState;
 }
 
 export interface ActorDefinition {

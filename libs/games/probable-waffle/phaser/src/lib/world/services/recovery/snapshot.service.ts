@@ -123,13 +123,16 @@ export class SnapshotService {
     // --- Research ---
     const rawResearch = scene.baseGameData.gameInstance.gameState?.data.playerResearch;
     const playerResearch = rawResearch ? structuredClone(rawResearch) : undefined;
+    const rawCampaignMission = scene.baseGameData.gameInstance.gameState?.data.campaignMission;
+    const campaignMission = rawCampaignMission ? structuredClone(rawCampaignMission) : undefined;
 
     this.latestSnapshot = {
       tick,
       actors,
       playerStates,
       playerSelectionGroups,
-      playerResearch
+      playerResearch,
+      campaignMission
     } satisfies ProbableWaffleSnapshotData;
   }
 

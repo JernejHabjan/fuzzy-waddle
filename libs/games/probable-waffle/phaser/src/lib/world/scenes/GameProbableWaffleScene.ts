@@ -49,6 +49,7 @@ import { isTauri } from "@fuzzy-waddle/platform-game-host/tauri";
 import { SceneLightingService } from "../services/lighting/scene-lighting.service";
 import { MovementOccupancyService } from "../services/movement-occupancy.service";
 import { NavigationDebugService } from "../services/navigation-debug.service";
+import { CampaignMissionDirector } from "../../campaign/campaign-mission-director";
 
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
   tilemap!: Phaser.Tilemaps.Tilemap;
@@ -72,7 +73,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     new GameObjectActionAssigner(this);
     new SaveGame(this);
     new RestartGame(this, hud);
-    new GameModeConditionChecker(this);
+    const gameModeConditionChecker = new GameModeConditionChecker(this);
     this.sceneGameData.systems.push(new ScoreTracker(this)); // Track player scores for score screen
     const creator = new SceneActorCreator(this);
     const actorIndex = new ActorIndexSystem(this);
@@ -110,6 +111,8 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       snapshotService
     );
     simTickService?.pauseTick(SimulationPauseReason.SceneBootstrap);
+    const campaignMissionDirector = CampaignMissionDirector.create(this, gameModeConditionChecker);
+    if (campaignMissionDirector) this.sceneGameData.services.push(campaignMissionDirector);
     new ActorDebugDamageSystem(this);
     if (!this.baseGameData.gameInstance.gameInstanceMetadata.isReplay()) {
       this.sceneGameData.systems.push(new AiPlayerHandler(this));
@@ -121,6 +124,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     creator.initInitialActors();
     // Populate the index after initial actors are in place
     actorIndex.scanExistingActors();
+    campaignMissionDirector?.startAfterActorIndexing();
     // Activate the multiplayer relay path when a socket is present
     commandBusService.tryInitMultiplayer();
 

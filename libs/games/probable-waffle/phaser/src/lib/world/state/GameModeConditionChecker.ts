@@ -56,10 +56,20 @@ export class GameModeConditionChecker {
     this.winConditions = gameModeData.winConditions;
     this.tieConditions = gameModeData.tieConditions;
 
-    this.currentDelay = new CancelableSimDelay(this.scene, 1000, () => this.startChecking());
+    if (!scene.baseGameData.gameInstance.gameInstanceMetadata.data.campaignContext) {
+      this.currentDelay = new CancelableSimDelay(this.scene, 1000, () => this.startChecking());
+      this.listenToPlayerLeftOrKilled();
+    }
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
     this.listenToPlayerQuit();
-    this.listenToPlayerLeftOrKilled();
+  }
+
+  /** Campaign missions use their statechart outcome while retaining the existing score/result transition. */
+  resolveCampaignMissionOutcome(outcome: "victory" | "defeat"): void {
+    if (this.stopped) return;
+    this.prepareOutcomeData();
+    if (outcome === "victory") this.winGame();
+    else this.loseGame();
   }
 
   private startChecking() {
@@ -90,6 +100,13 @@ export class GameModeConditionChecker {
   }
 
   private prepareData() {
+    this.prepareOutcomeData();
+    this.actorsByPlayer = ScenePlayerHelpers.getActorsByPlayer(this.scene).actorsByPlayer;
+
+    this.runChecksForSelfAndAiPlayers();
+  }
+
+  private prepareOutcomeData() {
     this.currentPlayerNumber = getCurrentPlayerNumber(this.scene)!;
     this.players = getPlayersFromScene<ProbableWafflePlayer>(this.scene);
     const currentPlayer = this.players.find((player) => player.playerNumber === this.currentPlayerNumber);
@@ -98,9 +115,6 @@ export class GameModeConditionChecker {
       throw new Error("Current player not found");
     }
     this.currentPlayer = currentPlayer;
-    this.actorsByPlayer = ScenePlayerHelpers.getActorsByPlayer(this.scene).actorsByPlayer;
-
-    this.runChecksForSelfAndAiPlayers();
   }
 
   private listenToPlayerQuit() {

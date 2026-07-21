@@ -312,6 +312,14 @@ export class ReconnectService {
         }
       }
 
+      // Restore the authoritative mission state before the director observes the snapshot-applied event.
+      const gameStateData = scene.baseGameData.gameInstance.gameState?.data;
+      if (gameStateData) {
+        gameStateData.campaignMission = snapshot.campaignMission
+          ? structuredClone(snapshot.campaignMission)
+          : undefined;
+      }
+
       // Advance sim clock to match the snapshot so command sequences stay coherent.
       simTick?.fastForwardTo(snapshot.tick);
       commandBus?.resetAfterSnapshot(

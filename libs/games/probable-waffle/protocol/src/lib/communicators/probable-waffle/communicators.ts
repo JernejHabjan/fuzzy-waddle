@@ -14,6 +14,7 @@ import type { GameInstanceId, PlayerNumber, UserId } from "@fuzzy-waddle/platfor
 import type { SelectionGroupData } from "../../game-instance/probable-waffle/component-data";
 import type { ProbableWaffleGameInstanceData } from "../../game-instance/probable-waffle/game-instance";
 import type { ProbableWaffleDoubleSelectionData, ProbableWaffleSelectionData } from "./communicator-game-events";
+import type { CampaignMissionRuntimeState } from "../../probable-waffle/campaign-runtime";
 
 export const ProbableWaffleGameCommunicatorTypes = {
   Selection: "selection"
@@ -211,6 +212,7 @@ export interface ProbableWaffleStateHashDiagnostics {
   actorDigests?: Record<string, string>;
   playerDigests?: string[];
   researchDigest?: string;
+  campaignMissionDigest?: string;
 }
 
 export interface ProbableWaffleStateHashEvent extends ProbableWaffleCommunicatorEvent {
@@ -218,6 +220,7 @@ export interface ProbableWaffleStateHashEvent extends ProbableWaffleCommunicator
   tick: number;
   playerNumber: PlayerNumber;
   /** djb2 hex hash of all actor states sorted by actor ID. */
+  /** Campaign scenes append the canonical mission-runtime digest to the same hash input. */
   hash: string;
   diagnostics?: ProbableWaffleStateHashDiagnostics;
 }
@@ -237,6 +240,8 @@ export interface ProbableWaffleSnapshotData {
   playerSelectionGroups?: Record<PlayerNumber, SelectionGroupData[]>;
   /** Research state keyed by playerNumber. */
   playerResearch?: Record<PlayerNumber, string[]>;
+  /** Mission runtime is restored before simulation tick processing resumes. */
+  campaignMission?: CampaignMissionRuntimeState;
 }
 
 /**
