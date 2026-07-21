@@ -1,5 +1,7 @@
 import type {
   CampaignId,
+  CampaignMissionOwnedResourceRuntimeState,
+  CampaignMissionRuntimeDiagnostic,
   CampaignMissionOutcome,
   CampaignMissionRuntimeEvent,
   CampaignMissionRuntimeJsonValue,
@@ -9,13 +11,35 @@ import type {
 import { CAMPAIGN_MISSION_RUNTIME_SCHEMA_VERSION } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { CampaignMissionContent } from "../contracts/campaign-mission-content";
 import type { MissionActionDefinition } from "../contracts/mission-action-definition";
-import type { MissionConditionDefinition, MissionNumericComparison } from "../contracts/mission-condition-definition";
+import type { MissionConditionDefinition } from "../contracts/mission-condition-definition";
 import type { MissionPhaseDefinition, MissionTransitionDefinition } from "../contracts/mission-phase-definition";
 import type { MissionTriggerDefinition } from "../contracts/mission-trigger-definition";
+import {
+  CampaignActionRunner,
+  createCampaignActionExecutorRegistry,
+  toContinuationRuntimeState,
+  type CampaignMissionActionCancelReason,
+  type CampaignMissionActionContext,
+  type CampaignMissionActionResult,
+  type CampaignWorldActionAdapter
+} from "./actions/campaign-action-runtime";
+import {
+  CampaignConditionRuntime,
+  createCampaignConditionEvaluatorRegistry,
+  type CampaignWorldConditionAdapter
+} from "./conditions/campaign-condition-evaluator";
 
 export interface CampaignMissionRuntimeEffect {
   readonly tick: number;
-  readonly kind: "action" | "phase-entered" | "phase-completed" | "objective-changed" | "outcome-requested";
+  readonly kind:
+    | "action"
+    | "action-waiting"
+    | "action-cancelled"
+    | "phase-entered"
+    | "phase-completed"
+    | "objective-changed"
+    | "encounter-changed"
+    | "outcome-requested";
   readonly sourceId: string;
   readonly detail?: CampaignMissionRuntimeJsonValue;
 }
@@ -28,11 +52,19 @@ export interface CampaignMissionRuntimeResult {
 export interface CampaignMissionRuntimeOptions {
   readonly maxActionsPerTick?: number;
   readonly maxTransitionsPerTick?: number;
+  readonly actionAdapter?: CampaignWorldActionAdapter;
+  readonly conditionAdapter?: CampaignWorldConditionAdapter;
 }
 
 interface TickBudget {
   actions: number;
   transitions: number;
+}
+
+interface ActionSourceContext {
+  readonly phaseId?: string;
+  readonly triggerId?: string;
+  readonly event?: CampaignMissionRuntimeEvent;
 }
 
 const DEFAULT_MAX_ACTIONS_PER_TICK = 256;
@@ -57,6 +89,10 @@ export class CampaignMissionRuntime {
   private readonly phasesById: ReadonlyMap<string, MissionPhaseDefinition>;
   private readonly predecessorsByPhaseId: ReadonlyMap<string, readonly string[]>;
   private readonly stateStore: CampaignMissionStateStore;
+  private readonly actionsById: ReadonlyMap<string, MissionActionDefinition>;
+  private readonly actionRunner: CampaignActionRunner;
+  private readonly conditionRuntime: CampaignConditionRuntime;
+  private readonly actionAdapter?: CampaignWorldActionAdapter;
   private readonly maxActionsPerTick: number;
   private readonly maxTransitionsPerTick: number;
 
@@ -68,12 +104,30 @@ export class CampaignMissionRuntime {
   ) {
     this.maxActionsPerTick = options.maxActionsPerTick ?? DEFAULT_MAX_ACTIONS_PER_TICK;
     this.maxTransitionsPerTick = options.maxTransitionsPerTick ?? DEFAULT_MAX_TRANSITIONS_PER_TICK;
+    this.actionAdapter = options.actionAdapter;
     this.phasesById = new Map(content.phases.map((phase) => [phase.id, phase] as const));
     this.predecessorsByPhaseId = this.buildPredecessors(content.phases);
+    this.actionsById = collectMissionActions(content);
+    this.actionRunner = new CampaignActionRunner(
+      createCampaignActionExecutorRegistry(options.actionAdapter),
+      options.actionAdapter
+    );
+    this.conditionRuntime = new CampaignConditionRuntime(
+      createCampaignConditionEvaluatorRegistry(options.conditionAdapter)
+    );
     const state = restoredState
       ? this.validateAndCloneRestoredState(restoredState)
       : createCampaignMissionRuntimeState(campaignId, content);
     this.stateStore = new CampaignMissionStateStore(state);
+    try {
+      this.actionAdapter?.restoreOwnedResources?.(Object.values(state.ownedResources));
+    } catch (error) {
+      this.fail(
+        "resource-leak",
+        `Failed to restore owned resources: ${deterministicErrorMessage(error)}`,
+        state.integrity.lastProcessedTick
+      );
+    }
     this.canonicalizeState();
   }
 
@@ -83,6 +137,12 @@ export class CampaignMissionRuntime {
 
   snapshot(): CampaignMissionRuntimeState {
     return this.stateStore.snapshot();
+  }
+
+  cancel(reason: CampaignMissionActionCancelReason = "mission-ended"): CampaignMissionRuntimeResult {
+    const effects: CampaignMissionRuntimeEffect[] = [];
+    this.cancelOwnedByPrefix("", reason, this.stateStore.current.integrity.lastProcessedTick, effects);
+    return this.result(effects);
   }
 
   /** Executes initial phase entry exactly once, after scene actors have been indexed. */
@@ -100,12 +160,11 @@ export class CampaignMissionRuntime {
     const budget: TickBudget = { actions: 0, transitions: 0 };
     for (const phaseId of [...state.activePhaseIds].sort()) {
       const phase = this.requirePhase(phaseId, tick);
-      if (!phase || !this.applyActions(phase.entryActions, tick, budget, effects)) break;
+      if (!phase || !this.applyActions(phase.entryActions, tick, budget, effects, { phaseId })) break;
       effects.push({ tick, kind: "phase-entered", sourceId: phaseId });
     }
     if (state.status === "running") {
-      this.evaluateObjectives(tick, effects);
-      this.drainTransitions(tick, budget, effects);
+      this.settleTick(tick, budget, effects, false);
     }
     this.finishTick(budget);
     return this.result(effects);
@@ -144,20 +203,49 @@ export class CampaignMissionRuntime {
     const state = this.stateStore.current;
     const effects: CampaignMissionRuntimeEffect[] = [];
     const budget: TickBudget = { actions: 0, transitions: 0 };
-    this.advanceTimers();
-
-    const readyEvents = state.pendingEvents.filter((event) => event.tick <= tick).sort(compareRuntimeEvents);
-    state.pendingEvents = state.pendingEvents.filter((event) => event.tick > tick);
-    for (const event of readyEvents) {
-      if (!this.processTriggers(tick, budget, effects, event)) break;
+    if (!this.processContinuations(tick, budget, effects)) {
+      state.integrity.lastProcessedTick = tick;
+      this.finishTick(budget);
+      return effects;
     }
-    if (state.status === "running") this.processTriggers(tick, budget, effects);
-    if (state.status === "running") this.evaluateObjectives(tick, effects);
-    if (state.status === "running") this.drainTransitions(tick, budget, effects);
+    this.advanceTimers(tick);
+
+    this.settleTick(tick, budget, effects, true);
 
     state.integrity.lastProcessedTick = tick;
     this.finishTick(budget);
     return effects;
+  }
+
+  private settleTick(
+    tick: number,
+    budget: TickBudget,
+    effects: CampaignMissionRuntimeEffect[],
+    pollConditions: boolean
+  ): void {
+    if (!this.drainReadyEvents(tick, budget, effects)) return;
+    if (pollConditions && !this.processTriggers(tick, budget, effects)) return;
+    while (this.stateStore.current.status === "running") {
+      this.evaluateObjectives(tick, effects);
+      this.drainTransitions(tick, budget, effects);
+      if (!this.hasReadyEvent(tick) || !this.drainReadyEvents(tick, budget, effects)) return;
+    }
+  }
+
+  private drainReadyEvents(tick: number, budget: TickBudget, effects: CampaignMissionRuntimeEffect[]): boolean {
+    while (this.hasReadyEvent(tick) && this.stateStore.current.status === "running") {
+      const state = this.stateStore.current;
+      const readyEvents = state.pendingEvents.filter((event) => event.tick <= tick).sort(compareRuntimeEvents);
+      state.pendingEvents = state.pendingEvents.filter((event) => event.tick > tick);
+      for (const event of readyEvents) {
+        if (!this.processTriggers(tick, budget, effects, event)) return false;
+      }
+    }
+    return this.stateStore.current.status === "running";
+  }
+
+  private hasReadyEvent(tick: number): boolean {
+    return this.stateStore.current.pendingEvents.some((event) => event.tick <= tick);
   }
 
   private processTriggers(
@@ -167,19 +255,27 @@ export class CampaignMissionRuntime {
     event?: CampaignMissionRuntimeEvent
   ): boolean {
     const triggers = this.activePhases()
-      .flatMap((phase) => phase.triggers)
-      .filter((trigger) => (event ? trigger.kind === "event" : trigger.kind === "condition"))
-      .filter((trigger) => !event || !trigger.eventKinds?.length || trigger.eventKinds.includes(event.kind))
-      .sort(comparePriorityAndId);
+      .flatMap((phase) => phase.triggers.map((trigger) => ({ phase, trigger })))
+      .filter(({ trigger }) => (event ? trigger.kind === "event" : trigger.kind === "condition"))
+      .filter(({ trigger }) => !event || !trigger.eventKinds?.length || trigger.eventKinds.includes(event.kind))
+      .sort((left, right) => comparePriorityAndId(left.trigger, right.trigger));
 
-    for (const trigger of triggers) {
-      const conditionMet = this.evaluateCondition(trigger.condition);
+    for (const { phase, trigger } of triggers) {
+      const conditionMet = this.evaluateCondition(trigger.condition, event);
       if (!this.shouldFireTrigger(trigger, conditionMet, tick)) continue;
       const runtimeState = this.getTriggerState(trigger);
       runtimeState.firedCount += 1;
       runtimeState.lastFiredTick = tick;
       if (trigger.firing.kind === "once") addSortedUnique(this.stateStore.current.claimedTriggerIds, trigger.id);
-      if (!this.applyActions(trigger.actions, tick, budget, effects)) return false;
+      if (
+        !this.applyActions(trigger.actions, tick, budget, effects, {
+          phaseId: phase.id,
+          triggerId: trigger.id,
+          event
+        })
+      ) {
+        return false;
+      }
       if (this.stateStore.current.status !== "running") return false;
     }
     return true;
@@ -228,17 +324,35 @@ export class CampaignMissionRuntime {
         runtime.status = "active";
         runtime.updatedAtTick = tick;
         effects.push({ tick, kind: "objective-changed", sourceId: objective.id, detail: "active" });
+        this.enqueueEvent({
+          tick,
+          kind: "objective.changed",
+          sourceId: objective.id,
+          payload: { objectiveId: objective.id, state: "active" }
+        });
       }
       if (runtime.status !== "active") continue;
       if (objective.fail && this.evaluateCondition(objective.fail)) {
         runtime.status = "failed";
         runtime.updatedAtTick = tick;
         effects.push({ tick, kind: "objective-changed", sourceId: objective.id, detail: "failed" });
+        this.enqueueEvent({
+          tick,
+          kind: "objective.changed",
+          sourceId: objective.id,
+          payload: { objectiveId: objective.id, state: "failed" }
+        });
       } else if (this.evaluateCondition(objective.complete)) {
         runtime.status = "completed";
         runtime.updatedAtTick = tick;
         for (const rewardId of objective.rewardIds ?? []) addSortedUnique(state.claimedRewardIds, rewardId);
         effects.push({ tick, kind: "objective-changed", sourceId: objective.id, detail: "completed" });
+        this.enqueueEvent({
+          tick,
+          kind: "objective.changed",
+          sourceId: objective.id,
+          payload: { objectiveId: objective.id, state: "completed" }
+        });
       }
     }
   }
@@ -271,14 +385,19 @@ export class CampaignMissionRuntime {
     for (const source of [...bySource.values()].sort((left, right) => left.phase.id.localeCompare(right.phase.id))) {
       if (!this.stateStore.current.activePhaseIds.includes(source.phase.id)) continue;
       if (!this.consumeTransitionBudget(source.transitions.length, tick, source.phase.id, budget)) return transitioned;
-      if (!this.applyActions(source.phase.exitActions, tick, budget, effects)) return transitioned;
+      if (!this.cancelOwnedByPhase(source.phase.id, "phase-exited", tick, effects)) return transitioned;
+      if (!this.applyActions(source.phase.exitActions, tick, budget, effects, { phaseId: source.phase.id })) {
+        return transitioned;
+      }
       removeValue(this.stateStore.current.activePhaseIds, source.phase.id);
       addSortedUnique(this.stateStore.current.completedPhaseIds, source.phase.id);
       effects.push({ tick, kind: "phase-completed", sourceId: source.phase.id });
       transitioned = true;
 
       for (const transition of source.transitions.sort(comparePriorityAndId)) {
-        if (!this.applyActions(transition.actions, tick, budget, effects)) return transitioned;
+        if (!this.applyActions(transition.actions, tick, budget, effects, { phaseId: source.phase.id })) {
+          return transitioned;
+        }
         for (const targetId of transition.targetPhaseIds)
           addSortedUnique(this.stateStore.current.pendingPhaseIds, targetId);
       }
@@ -307,7 +426,7 @@ export class CampaignMissionRuntime {
       const phase = this.requirePhase(targetId, tick);
       if (!phase) return false;
       addSortedUnique(state.activePhaseIds, targetId);
-      if (!this.applyActions(phase.entryActions, tick, budget, effects)) return false;
+      if (!this.applyActions(phase.entryActions, tick, budget, effects, { phaseId: targetId })) return false;
       effects.push({ tick, kind: "phase-entered", sourceId: targetId });
     }
     return true;
@@ -317,103 +436,388 @@ export class CampaignMissionRuntime {
     actions: readonly MissionActionDefinition[],
     tick: number,
     budget: TickBudget,
-    effects: CampaignMissionRuntimeEffect[]
+    effects: CampaignMissionRuntimeEffect[],
+    source: ActionSourceContext
   ): boolean {
     for (const action of actions) {
-      if (budget.actions >= this.maxActionsPerTick) {
+      const actionCost = countActionNodes(action);
+      if (budget.actions + actionCost > this.maxActionsPerTick) {
         this.fail("action-budget-exceeded", `Action budget ${this.maxActionsPerTick} exceeded`, tick, action.id);
         return false;
       }
-      budget.actions += 1;
-      this.applyAction(action, tick, effects);
+      budget.actions += actionCost;
+      this.stateStore.current.integrity.processedActionCount += actionCost;
+      this.applyAction(action, tick, effects, source);
       if (this.stateStore.current.status !== "running") return false;
     }
     return true;
   }
 
-  private applyAction(action: MissionActionDefinition, tick: number, effects: CampaignMissionRuntimeEffect[]): void {
-    const state = this.stateStore.current;
-    switch (action.kind) {
-      case "set-fact":
-        state.facts[action.factId] = action.value;
-        break;
-      case "set-counter":
-        state.counters[action.counterId] = action.value;
-        break;
-      case "increment-counter":
-        state.counters[action.counterId] = (state.counters[action.counterId] ?? 0) + action.amount;
-        break;
-      case "start-timer":
-        state.timers[action.timerId] = {
-          durationTicks: action.durationTicks,
-          remainingTicks: action.durationTicks,
-          status: "running",
-          startedAtTick: tick
-        };
-        break;
-      case "pause-timer": {
-        const timer = state.timers[action.timerId];
-        if (timer?.status === "running") timer.status = "paused";
-        break;
-      }
-      case "cancel-timer": {
-        const timer = state.timers[action.timerId];
-        if (timer) timer.status = "cancelled";
-        break;
-      }
-      case "request-outcome":
-        state.status = action.outcome;
-        effects.push({ tick, kind: "outcome-requested", sourceId: action.reasonId, detail: action.outcome });
-        break;
-      case "trusted-hook":
-        this.fail(
-          "invalid-runtime-state",
-          `Trusted hook '${action.hookId}' has no deterministic runtime adapter`,
-          tick,
-          action.hookId
-        );
-        break;
-    }
-    state.integrity.processedActionCount += 1;
-    effects.push({ tick, kind: "action", sourceId: action.id, detail: action.kind });
+  private applyAction(
+    action: MissionActionDefinition,
+    tick: number,
+    effects: CampaignMissionRuntimeEffect[],
+    source: ActionSourceContext
+  ): void {
+    const context = this.createActionContext(action, tick, source);
+    const result = this.executeActionSafely(context, action);
+    this.handleActionResult(action, context, result, effects);
   }
 
-  private evaluateCondition(condition: MissionConditionDefinition): boolean {
-    const state = this.stateStore.current;
-    switch (condition.kind) {
-      case "always":
-        return true;
-      case "never":
-        return false;
-      case "all":
-        return condition.conditions.every((child) => this.evaluateCondition(child));
-      case "any":
-        return condition.conditions.some((child) => this.evaluateCondition(child));
-      case "not":
-        return !this.evaluateCondition(condition.condition);
-      case "fact":
-        return state.facts[condition.factId] === condition.equals;
-      case "counter":
-        return compareNumber(state.counters[condition.counterId] ?? 0, condition.comparison, condition.value);
-      case "timer":
-        return state.timers[condition.timerId]?.status === condition.state;
-      case "objective":
-        return state.objectives[condition.objectiveId]?.status === condition.state;
-      case "phase":
-        return condition.state === "active"
-          ? state.activePhaseIds.includes(condition.phaseId)
-          : state.completedPhaseIds.includes(condition.phaseId);
-      case "encounter":
-        return (state.encounters[condition.encounterId] ?? "inactive") === condition.state;
-    }
+  private evaluateCondition(condition: MissionConditionDefinition, event?: CampaignMissionRuntimeEvent): boolean {
+    return this.conditionRuntime.evaluate({ state: this.stateStore.current, event }, condition);
   }
 
-  private advanceTimers(): void {
-    for (const timer of Object.values(this.stateStore.current.timers)) {
+  private advanceTimers(tick: number): void {
+    for (const [timerId, timer] of Object.entries(this.stateStore.current.timers)) {
       if (timer.status !== "running") continue;
       timer.remainingTicks = Math.max(0, timer.remainingTicks - 1);
-      if (timer.remainingTicks === 0) timer.status = "elapsed";
+      if (timer.remainingTicks === 0) {
+        timer.status = "elapsed";
+        this.enqueueEvent({ tick, kind: "timer.elapsed", sourceId: timerId, payload: { timerId } });
+      }
     }
+  }
+
+  private processContinuations(tick: number, budget: TickBudget, effects: CampaignMissionRuntimeEffect[]): boolean {
+    const continuations = Object.values(this.stateStore.current.actionContinuations).sort(
+      (left, right) => left.ownerToken.localeCompare(right.ownerToken) || left.actionId.localeCompare(right.actionId)
+    );
+    for (const continuation of continuations) {
+      const action = this.actionsById.get(continuation.actionId);
+      if (!action) {
+        this.fail(
+          "unresumable-action",
+          `Waiting action '${continuation.actionId}' no longer exists in mission content`,
+          tick,
+          continuation.actionId,
+          { actionId: continuation.actionId }
+        );
+        return false;
+      }
+      const actionCost = countActionNodes(action);
+      if (budget.actions + actionCost > this.maxActionsPerTick) {
+        this.fail("action-budget-exceeded", `Action budget ${this.maxActionsPerTick} exceeded`, tick, action.id);
+        return false;
+      }
+      budget.actions += actionCost;
+      this.stateStore.current.integrity.processedActionCount += actionCost;
+      const source = sourceFromOwnerToken(continuation.ownerToken);
+      const context: CampaignMissionActionContext = {
+        tick,
+        state: this.stateStore.current,
+        ownerToken: continuation.ownerToken,
+        phaseId: source.phaseId,
+        triggerId: source.triggerId
+      };
+      const result = this.resumeActionSafely(context, action, continuation.state);
+      this.handleActionResult(action, context, result, effects, continuation.startedAtTick);
+      if (this.stateStore.current.status !== "running") return false;
+    }
+    return true;
+  }
+
+  private createActionContext(
+    action: MissionActionDefinition,
+    tick: number,
+    source: ActionSourceContext
+  ): CampaignMissionActionContext {
+    const scope = action.scope ?? "phase";
+    const ownerToken =
+      scope === "mission" || !source.phaseId
+        ? `mission:${this.content.id}:${action.id}`
+        : `phase:${source.phaseId}:${source.triggerId ?? "direct"}:${action.id}`;
+    return {
+      tick,
+      state: this.stateStore.current,
+      ownerToken,
+      phaseId: source.phaseId,
+      triggerId: source.triggerId,
+      event: source.event
+    };
+  }
+
+  private handleActionResult(
+    action: MissionActionDefinition,
+    context: CampaignMissionActionContext,
+    result: CampaignMissionActionResult,
+    effects: CampaignMissionRuntimeEffect[],
+    startedAtTick = context.tick
+  ): void {
+    this.recordOwnedResources(context.ownerToken, result, context.tick, action.id);
+    if (this.stateStore.current.status === "failed") return;
+
+    if (result.status === "failed") {
+      if (result.code === "missing-reference") {
+        const policy = action.missingReferencePolicy ?? "fail-mission";
+        if (policy === "skip") {
+          delete this.stateStore.current.actionContinuations[action.id];
+          effects.push({
+            tick: context.tick,
+            kind: "action",
+            sourceId: action.id,
+            detail: { kind: action.kind, status: "skipped", reason: result.message }
+          });
+          return;
+        }
+        if (policy === "wait") {
+          this.storeContinuation(
+            action,
+            context,
+            result.continuationState ?? { retryMissingReference: true },
+            startedAtTick,
+            effects
+          );
+          return;
+        }
+        if (policy === "fallback" && action.fallbackAction) {
+          effects.push({
+            tick: context.tick,
+            kind: "action",
+            sourceId: action.id,
+            detail: { kind: action.kind, status: "fallback", reason: result.message }
+          });
+          const fallbackContext = {
+            ...context,
+            ownerToken: `${context.ownerToken}:fallback:${action.fallbackAction.id}`
+          };
+          this.handleActionResult(
+            action.fallbackAction,
+            fallbackContext,
+            this.executeActionSafely(fallbackContext, action.fallbackAction),
+            effects
+          );
+          return;
+        }
+      }
+      const code =
+        result.code === "missing-reference"
+          ? "missing-reference"
+          : result.code === "unresumable"
+            ? "unresumable-action"
+            : result.code === "resource-leak"
+              ? "resource-leak"
+              : "action-failed";
+      this.fail(code, result.message, context.tick, action.id, {
+        phaseId: context.phaseId,
+        triggerId: context.triggerId,
+        actionId: action.id
+      });
+      return;
+    }
+
+    if (result.status === "waiting") {
+      this.storeContinuation(action, context, result.continuationState, startedAtTick, effects);
+      return;
+    }
+
+    delete this.stateStore.current.actionContinuations[action.id];
+    effects.push({
+      tick: context.tick,
+      kind: "action",
+      sourceId: action.id,
+      detail: { kind: action.kind, status: result.status }
+    });
+    if (action.kind === "set-objective-state") {
+      effects.push({
+        tick: context.tick,
+        kind: "objective-changed",
+        sourceId: action.objectiveId,
+        detail: action.state
+      });
+      this.enqueueEvent({
+        tick: context.tick,
+        kind: "objective.changed",
+        sourceId: action.objectiveId,
+        payload: { objectiveId: action.objectiveId, state: action.state }
+      });
+    } else if (action.kind === "set-encounter-state") {
+      effects.push({
+        tick: context.tick,
+        kind: "encounter-changed",
+        sourceId: action.encounterId,
+        detail: action.state
+      });
+      this.enqueueEvent({
+        tick: context.tick,
+        kind: "encounter.changed",
+        sourceId: action.encounterId,
+        payload: { encounterId: action.encounterId, state: action.state }
+      });
+    } else if (action.kind === "request-outcome") {
+      effects.push({
+        tick: context.tick,
+        kind: "outcome-requested",
+        sourceId: action.reasonId,
+        detail: action.outcome
+      });
+      this.cancelOwnedByPrefix("", "mission-ended", context.tick, effects);
+    }
+  }
+
+  private storeContinuation(
+    action: MissionActionDefinition,
+    context: CampaignMissionActionContext,
+    continuationState: CampaignMissionRuntimeJsonValue,
+    startedAtTick: number,
+    effects: CampaignMissionRuntimeEffect[]
+  ): void {
+    this.stateStore.current.actionContinuations[action.id] = {
+      ...toContinuationRuntimeState(action, context, continuationState),
+      startedAtTick,
+      updatedAtTick: context.tick
+    };
+    effects.push({
+      tick: context.tick,
+      kind: "action-waiting",
+      sourceId: action.id,
+      detail: { kind: action.kind, ownerToken: context.ownerToken }
+    });
+  }
+
+  private executeActionSafely(
+    context: CampaignMissionActionContext,
+    action: MissionActionDefinition
+  ): CampaignMissionActionResult {
+    try {
+      return this.actionRunner.execute(context, action);
+    } catch (error) {
+      return {
+        status: "failed",
+        code: "execution-failed",
+        message: `Action '${action.id}' threw: ${deterministicErrorMessage(error)}`
+      };
+    }
+  }
+
+  private resumeActionSafely(
+    context: CampaignMissionActionContext,
+    action: MissionActionDefinition,
+    continuationState: CampaignMissionRuntimeJsonValue
+  ): CampaignMissionActionResult {
+    try {
+      return this.actionRunner.resume(context, action, continuationState);
+    } catch (error) {
+      return {
+        status: "failed",
+        code: "execution-failed",
+        message: `Action '${action.id}' resume threw: ${deterministicErrorMessage(error)}`
+      };
+    }
+  }
+
+  private recordOwnedResources(
+    ownerToken: string,
+    result: CampaignMissionActionResult,
+    tick: number,
+    actionId: string
+  ): void {
+    for (const resource of result.ownedResources ?? []) {
+      const existing = this.stateStore.current.ownedResources[resource.resourceId];
+      if (existing && existing.ownerToken !== ownerToken) {
+        this.fail(
+          "resource-leak",
+          `Owned resource '${resource.resourceId}' is already registered to '${existing.ownerToken}'`,
+          tick,
+          actionId,
+          { actionId }
+        );
+        return;
+      }
+      this.stateStore.current.ownedResources[resource.resourceId] = {
+        resourceId: resource.resourceId,
+        kind: resource.kind,
+        ownerToken,
+        state: resource.state
+      };
+    }
+  }
+
+  private cancelOwnedByPhase(
+    phaseId: string,
+    reason: CampaignMissionActionCancelReason,
+    tick: number,
+    effects: CampaignMissionRuntimeEffect[]
+  ): boolean {
+    return this.cancelOwnedByPrefix(`phase:${phaseId}:`, reason, tick, effects);
+  }
+
+  private cancelOwnedByPrefix(
+    ownerPrefix: string,
+    reason: CampaignMissionActionCancelReason,
+    tick: number,
+    effects: CampaignMissionRuntimeEffect[]
+  ): boolean {
+    const continuations = Object.values(this.stateStore.current.actionContinuations)
+      .filter((continuation) => continuation.ownerToken.startsWith(ownerPrefix))
+      .sort(
+        (left, right) => left.ownerToken.localeCompare(right.ownerToken) || left.actionId.localeCompare(right.actionId)
+      );
+    for (const continuation of continuations) {
+      const action = this.actionsById.get(continuation.actionId);
+      if (action) {
+        const source = sourceFromOwnerToken(continuation.ownerToken);
+        try {
+          this.actionRunner.cancel(
+            {
+              tick,
+              state: this.stateStore.current,
+              ownerToken: continuation.ownerToken,
+              phaseId: source.phaseId,
+              triggerId: source.triggerId
+            },
+            action,
+            continuation.state,
+            reason
+          );
+        } catch (error) {
+          this.fail(
+            "action-failed",
+            `Action '${action.id}' cancellation threw: ${deterministicErrorMessage(error)}`,
+            tick,
+            action.id,
+            { phaseId: source.phaseId, triggerId: source.triggerId, actionId: action.id }
+          );
+          return false;
+        }
+      }
+      delete this.stateStore.current.actionContinuations[continuation.actionId];
+      effects.push({ tick, kind: "action-cancelled", sourceId: continuation.actionId, detail: reason });
+    }
+
+    const resourcesByOwner = new Map<string, CampaignMissionOwnedResourceRuntimeState[]>();
+    for (const resource of Object.values(this.stateStore.current.ownedResources)) {
+      if (!resource.ownerToken.startsWith(ownerPrefix)) continue;
+      const resources = resourcesByOwner.get(resource.ownerToken) ?? [];
+      resources.push(resource);
+      resourcesByOwner.set(resource.ownerToken, resources);
+    }
+    for (const [ownerToken, resources] of [...resourcesByOwner].sort(([left], [right]) => left.localeCompare(right))) {
+      let leaked: readonly string[];
+      try {
+        leaked = this.actionAdapter?.releaseOwnedResources?.(ownerToken, resources, reason) ?? [];
+      } catch (error) {
+        leaked = resources.map((resource) => resource.resourceId);
+        this.fail(
+          "resource-leak",
+          `Owned resource cleanup threw for '${ownerToken}': ${deterministicErrorMessage(error)}`,
+          tick,
+          ownerToken
+        );
+      }
+      for (const resource of resources) delete this.stateStore.current.ownedResources[resource.resourceId];
+      if (this.stateStore.current.status === "failed") return false;
+      if (leaked.length > 0) {
+        this.fail(
+          "resource-leak",
+          `Owned resources failed cleanup: ${[...leaked].sort().join(", ")}`,
+          tick,
+          ownerToken
+        );
+        return false;
+      }
+    }
+    return true;
   }
 
   private activePhases(): MissionPhaseDefinition[] {
@@ -445,14 +849,15 @@ export class CampaignMissionRuntime {
   }
 
   private fail(
-    code: "action-budget-exceeded" | "transition-budget-exceeded" | "invalid-runtime-state",
+    code: CampaignMissionRuntimeDiagnostic["code"],
     message: string,
     tick: number,
-    sourceId?: string
+    sourceId?: string,
+    context: Pick<CampaignMissionRuntimeDiagnostic, "phaseId" | "triggerId" | "actionId"> = {}
   ): void {
     const state = this.stateStore.current;
     state.status = "failed";
-    state.integrity.diagnostic = { code, message, tick, sourceId };
+    state.integrity.diagnostic = { code, message, tick, sourceId, ...context };
   }
 
   private finishTick(budget: TickBudget): void {
@@ -476,6 +881,8 @@ export class CampaignMissionRuntime {
     state.objectives = sortRecord(state.objectives);
     state.encounters = sortRecord(state.encounters);
     state.triggerStates = sortRecord(state.triggerStates);
+    state.actionContinuations = sortRecord(state.actionContinuations);
+    state.ownedResources = sortRecord(state.ownedResources);
   }
 
   private result(effects: readonly CampaignMissionRuntimeEffect[]): CampaignMissionRuntimeResult {
@@ -535,6 +942,10 @@ export class CampaignMissionRuntime {
   }
 }
 
+function deterministicErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : typeof error === "string" ? error : "unknown error";
+}
+
 export function createCampaignMissionRuntimeState(
   campaignId: CampaignId,
   content: CampaignMissionContent
@@ -573,6 +984,8 @@ export function createCampaignMissionRuntimeState(
     triggerStates: {},
     claimedRewardIds: [],
     pendingEvents: [],
+    actionContinuations: {},
+    ownedResources: {},
     integrity: {
       lastProcessedTick: 0,
       lastQueuedEventSequence: 0,
@@ -589,23 +1002,6 @@ export function createCampaignMissionRuntimeState(
 /** Stable JSON serialization used for byte-level deterministic assertions and state hashing. */
 export function serializeCampaignMissionRuntimeState(state: CampaignMissionRuntimeState): string {
   return JSON.stringify(sortJsonValue(state as unknown as CampaignMissionRuntimeJsonValue));
-}
-
-function compareNumber(left: number, comparison: MissionNumericComparison, right: number): boolean {
-  switch (comparison) {
-    case "equal":
-      return left === right;
-    case "not-equal":
-      return left !== right;
-    case "less":
-      return left < right;
-    case "less-or-equal":
-      return left <= right;
-    case "greater":
-      return left > right;
-    case "greater-or-equal":
-      return left >= right;
-  }
 }
 
 function comparePriorityAndId<T extends { readonly priority: number; readonly id: string }>(left: T, right: T): number {
@@ -649,4 +1045,37 @@ function sortJsonValue(value: CampaignMissionRuntimeJsonValue): CampaignMissionR
     );
   }
   return value;
+}
+
+function countActionNodes(action: MissionActionDefinition): number {
+  const nested =
+    action.kind === "sequence" || action.kind === "parallel" || action.kind === "race"
+      ? action.actions.reduce((total, child) => total + countActionNodes(child), 0)
+      : 0;
+  return 1 + nested + (action.fallbackAction ? countActionNodes(action.fallbackAction) : 0);
+}
+
+function collectMissionActions(content: CampaignMissionContent): ReadonlyMap<string, MissionActionDefinition> {
+  const actions = new Map<string, MissionActionDefinition>();
+  const add = (action: MissionActionDefinition) => {
+    if (actions.has(action.id)) throw new Error(`Duplicate campaign action ID '${action.id}'`);
+    actions.set(action.id, action);
+    if (action.kind === "sequence" || action.kind === "parallel" || action.kind === "race") {
+      for (const child of action.actions) add(child);
+    }
+    if (action.fallbackAction) add(action.fallbackAction);
+  };
+  for (const phase of content.phases) {
+    for (const action of phase.entryActions) add(action);
+    for (const action of phase.exitActions) add(action);
+    for (const trigger of phase.triggers) for (const action of trigger.actions) add(action);
+    for (const transition of phase.transitions) for (const action of transition.actions) add(action);
+  }
+  for (const checkpoint of content.checkpoints) for (const action of checkpoint.requiredActions) add(action);
+  return actions;
+}
+
+function sourceFromOwnerToken(ownerToken: string): { phaseId?: string; triggerId?: string } {
+  const [scope, phaseId, triggerId] = ownerToken.split(":");
+  return scope === "phase" ? { phaseId, triggerId: triggerId === "direct" ? undefined : triggerId } : {};
 }

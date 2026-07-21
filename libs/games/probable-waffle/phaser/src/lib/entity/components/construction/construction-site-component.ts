@@ -332,6 +332,10 @@ export class ConstructionSiteComponent {
     this.gameObject.scene.events.emit(ProbableWaffleSceneEventName.ScoreBuildingConstructed, this.gameObject);
   }
 
+  completeConstruction(): void {
+    if (!this.isFinished) this.finishConstruction();
+  }
+
   private getProgressFraction() {
     const productionDefinition = this.productionDefinition;
     if (!productionDefinition) throw new Error("Production definition not found");

@@ -218,6 +218,7 @@ export class HealthComponent {
   }
 
   takeDamage(damage: number, damageType: DamageType, damageInitiator?: Phaser.GameObjects.GameObject) {
+    if (this.gameObject.getData("campaign.invulnerable") === true) return;
     const simulationTick = getSceneService(this.gameObject.scene, SimulationTickService)?.currentTick;
     this.latestDamage = {
       damage,

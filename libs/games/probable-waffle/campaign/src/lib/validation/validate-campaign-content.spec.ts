@@ -89,6 +89,44 @@ describe("validateCampaignContent", () => {
     expect(result.issues.map((issue) => issue.code)).toContain("missing-action-kind");
   });
 
+  it("validates nested actions, fallback declarations, and globally unique action IDs", () => {
+    const duplicateId = asCampaignContentId<"action">("duplicate-action");
+    const phase = {
+      id: phaseId,
+      mode: "sequential",
+      entryActions: [
+        {
+          id: asCampaignContentId<"action">("sequence"),
+          kind: "sequence",
+          actions: [
+            { id: duplicateId, kind: "set-fact", factId, value: true },
+            { id: duplicateId, kind: "set-counter", counterId: asCampaignContentId("count"), value: 1 }
+          ]
+        },
+        {
+          id: asCampaignContentId<"action">("missing-fallback"),
+          kind: "toggle-world-object",
+          actorId: asCampaignContentId("bridge"),
+          value: false,
+          missingReferencePolicy: "fallback"
+        }
+      ],
+      exitActions: [],
+      triggers: [],
+      transitions: []
+    } satisfies MissionPhaseDefinition;
+    const dreams = {
+      ...AOTA_CAMPAIGN_MISSIONS[0]!,
+      initialState: { ...AOTA_CAMPAIGN_MISSIONS[0]!.initialState, activePhaseIds: [phaseId] },
+      phases: [phase]
+    } satisfies CampaignMissionContent;
+
+    const codes = validate([dreams, ...AOTA_CAMPAIGN_MISSIONS.slice(1)]);
+
+    expect(codes).toContain("duplicate-action-id");
+    expect(codes).toContain("missing-fallback-action");
+  });
+
   function validate(missions: readonly CampaignMissionContent[]): readonly string[] {
     return validateCampaignContent({
       campaign: AOTA_CAMPAIGN_DEFINITION,

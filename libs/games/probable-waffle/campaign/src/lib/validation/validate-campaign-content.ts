@@ -137,6 +137,11 @@ function validateMission(
     "duplicate-checkpoint-id",
     issues
   );
+  const actionEntries = collectMissionActionEntries(mission);
+  for (const actionId of findDuplicates(actionEntries.map((entry) => String(entry.action.id)))) {
+    const entry = actionEntries.find((candidate) => String(candidate.action.id) === actionId)!;
+    addIssue(issues, sourcePath, entry.jsonPath, "duplicate-action-id", `Duplicate action id '${actionId}'`);
+  }
 
   for (const phaseId of mission.initialState.activePhaseIds) {
     if (!phaseIds.has(String(phaseId))) {
@@ -337,6 +342,21 @@ function validateActions(
         `Unknown trusted hook '${action.hookId}'`
       );
     }
+    if (action.missingReferencePolicy === "fallback" && !action.fallbackAction) {
+      addIssue(
+        issues,
+        sourcePath,
+        `${jsonPath}[${index}].fallbackAction`,
+        "missing-fallback-action",
+        `Action '${action.id}' declares fallback policy without a fallback action`
+      );
+    }
+    if (action.fallbackAction) {
+      validateActions([action.fallbackAction], sourcePath, `${jsonPath}[${index}].fallbackAction`, registries, issues);
+    }
+    if (action.kind === "sequence" || action.kind === "parallel" || action.kind === "race") {
+      validateActions(action.actions, sourcePath, `${jsonPath}[${index}].actions`, registries, issues);
+    }
   }
 }
 
@@ -398,17 +418,37 @@ function validatePrerequisiteCycles(
 }
 
 function collectActionIds(mission: CampaignMissionContent): Set<string> {
-  const ids = new Set<string>();
-  const addActions = (actions: readonly MissionActionDefinition[]) =>
-    actions.forEach((action) => ids.add(String(action.id)));
-  for (const phase of mission.phases) {
-    addActions(phase.entryActions);
-    addActions(phase.exitActions);
-    for (const trigger of phase.triggers) addActions(trigger.actions);
-    for (const transition of phase.transitions) addActions(transition.actions);
+  return new Set(collectMissionActionEntries(mission).map((entry) => String(entry.action.id)));
+}
+
+function collectMissionActionEntries(
+  mission: CampaignMissionContent
+): { readonly action: MissionActionDefinition; readonly jsonPath: string }[] {
+  const result: { action: MissionActionDefinition; jsonPath: string }[] = [];
+  const addActions = (actions: readonly MissionActionDefinition[], jsonPath: string): void => {
+    for (const [index, action] of actions.entries()) {
+      const actionPath = `${jsonPath}[${index}]`;
+      result.push({ action, jsonPath: actionPath });
+      if (action.fallbackAction) addActions([action.fallbackAction], `${actionPath}.fallbackAction`);
+      if (action.kind === "sequence" || action.kind === "parallel" || action.kind === "race") {
+        addActions(action.actions, `${actionPath}.actions`);
+      }
+    }
+  };
+  for (const [phaseIndex, phase] of mission.phases.entries()) {
+    addActions(phase.entryActions, `$.phases[${phaseIndex}].entryActions`);
+    addActions(phase.exitActions, `$.phases[${phaseIndex}].exitActions`);
+    for (const [triggerIndex, trigger] of phase.triggers.entries()) {
+      addActions(trigger.actions, `$.phases[${phaseIndex}].triggers[${triggerIndex}].actions`);
+    }
+    for (const [transitionIndex, transition] of phase.transitions.entries()) {
+      addActions(transition.actions, `$.phases[${phaseIndex}].transitions[${transitionIndex}].actions`);
+    }
   }
-  for (const checkpoint of mission.checkpoints) addActions(checkpoint.requiredActions);
-  return ids;
+  for (const [checkpointIndex, checkpoint] of mission.checkpoints.entries()) {
+    addActions(checkpoint.requiredActions, `$.checkpoints[${checkpointIndex}].requiredActions`);
+  }
+  return result;
 }
 
 function uniqueBy<TKey extends string, TValue>(

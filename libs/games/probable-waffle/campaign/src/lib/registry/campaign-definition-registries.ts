@@ -7,6 +7,7 @@ import type {
   CampaignRewardKind,
   CampaignTriggerKind
 } from "../contracts/campaign-content-kinds";
+import { CAMPAIGN_ACTION_KINDS, CAMPAIGN_CONDITION_KINDS } from "../contracts/campaign-content-kinds";
 import type { MissionTrustedHookId } from "../contracts/campaign-content-id";
 import { CampaignKindRegistry } from "./campaign-kind-registry";
 import type { CampaignRegistryRegistration } from "./campaign-registry-registration";
@@ -48,29 +49,8 @@ function registerKinds<TKind extends string>(
 /** Creates the schema-level registry set; runtime executors attach to the same stable kinds in their owning layer. */
 export function createDefaultCampaignDefinitionRegistries(): CampaignDefinitionRegistries {
   const registries = new CampaignDefinitionRegistries();
-  registerKinds(registries.actions, [
-    "set-fact",
-    "set-counter",
-    "increment-counter",
-    "start-timer",
-    "pause-timer",
-    "cancel-timer",
-    "request-outcome",
-    "trusted-hook"
-  ]);
-  registerKinds(registries.conditions, [
-    "always",
-    "never",
-    "all",
-    "any",
-    "not",
-    "fact",
-    "counter",
-    "timer",
-    "objective",
-    "phase",
-    "encounter"
-  ]);
+  registerKinds(registries.actions, CAMPAIGN_ACTION_KINDS);
+  registerKinds(registries.conditions, CAMPAIGN_CONDITION_KINDS);
   registerKinds(registries.objectives, ["primary", "secondary", "optional", "hidden", "tutorial", "failure"]);
   registerKinds(registries.triggers, ["event", "condition"]);
   registerKinds(registries.cinematics, ["gameplay", "directed", "paused"]);

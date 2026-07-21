@@ -26,6 +26,8 @@ export * from "./lib/registry/campaign-registry-registration";
 export * from "./lib/registry/static-campaign-content-registry";
 export * from "./lib/registry/trusted-campaign-hook-registration";
 export * from "./lib/runtime/campaign-mission-runtime";
+export * from "./lib/runtime/actions/campaign-action-runtime";
+export * from "./lib/runtime/conditions/campaign-condition-evaluator";
 export * from "./lib/validation/campaign-validation-issue";
 export * from "./lib/validation/validate-campaign-content";
 export * from "./lib/validation/validate-mission-scenario-references";

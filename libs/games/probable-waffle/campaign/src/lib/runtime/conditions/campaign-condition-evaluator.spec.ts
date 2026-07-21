@@ -1,0 +1,82 @@
+import { CAMPAIGN_MISSION_RUNTIME_SCHEMA_VERSION } from "@fuzzy-waddle/probable-waffle-protocol";
+import type { CampaignMissionRuntimeState } from "@fuzzy-waddle/probable-waffle-protocol";
+import { asCampaignContentId } from "../../contracts/campaign-content-id";
+import { CAMPAIGN_CONDITION_KINDS } from "../../contracts/campaign-content-kinds";
+import {
+  CampaignConditionEvaluatorRegistry,
+  CampaignConditionRuntime,
+  createCampaignConditionEvaluatorRegistry
+} from "./campaign-condition-evaluator";
+
+const id = asCampaignContentId;
+
+describe("campaign condition runtime", () => {
+  it("registers every leaf condition kind and rejects duplicates", () => {
+    const registry = createCampaignConditionEvaluatorRegistry({ evaluate: () => true });
+    expect(registry.kinds()).toEqual(
+      CAMPAIGN_CONDITION_KINDS.filter((kind) => kind !== "all" && kind !== "any" && kind !== "not").sort()
+    );
+    const duplicates = new CampaignConditionEvaluatorRegistry();
+    const evaluator = { kind: "always" as const, evaluate: () => true };
+    duplicates.register(evaluator);
+    expect(() => duplicates.register(evaluator)).toThrow("already registered");
+  });
+
+  it("composes pure state and delegated world reads without mutating state", () => {
+    const state = runtimeState();
+    state.facts["ready"] = true;
+    const before = structuredClone(state);
+    const adapter = { evaluate: jest.fn(() => true) };
+    const runtime = new CampaignConditionRuntime(createCampaignConditionEvaluatorRegistry(adapter));
+
+    expect(
+      runtime.evaluate(
+        { state },
+        {
+          kind: "all",
+          conditions: [
+            { kind: "fact", factId: id("ready"), equals: true },
+            { kind: "actor-exists", actorId: id("hero") }
+          ]
+        }
+      )
+    ).toBe(true);
+    expect(adapter.evaluate).toHaveBeenCalledWith({ state }, { kind: "actor-exists", actorId: "hero" });
+    expect(state).toEqual(before);
+  });
+});
+
+function runtimeState(): CampaignMissionRuntimeState {
+  return {
+    schemaVersion: CAMPAIGN_MISSION_RUNTIME_SCHEMA_VERSION,
+    campaignId: "ashes-of-the-ancients",
+    missionId: "dreams",
+    missionRevision: 1,
+    status: "running",
+    initialized: true,
+    activePhaseIds: ["test"],
+    completedPhaseIds: [],
+    pendingPhaseIds: [],
+    facts: {},
+    counters: {},
+    timers: {},
+    objectives: {},
+    encounters: {},
+    claimedTriggerIds: [],
+    triggerStates: {},
+    claimedRewardIds: [],
+    pendingEvents: [],
+    actionContinuations: {},
+    ownedResources: {},
+    integrity: {
+      lastProcessedTick: 0,
+      lastQueuedEventSequence: 0,
+      processedActionCount: 0,
+      processedTransitionCount: 0,
+      lastTickActionCount: 0,
+      lastTickTransitionCount: 0,
+      outcomeDispatched: false,
+      recentTrace: []
+    }
+  };
+}

@@ -6,7 +6,8 @@ import type {
   ScenarioPointId,
   ScenarioRegionId,
   ScenarioRouteId,
-  ScenarioSpawnSetId
+  ScenarioSpawnSetId,
+  ScenarioTagId
 } from "@fuzzy-waddle/probable-waffle-campaign";
 import { asCampaignContentId, isCampaignContentId } from "@fuzzy-waddle/probable-waffle-campaign";
 import { getActorComponent } from "../../data/actor-component";
@@ -68,6 +69,8 @@ export abstract class ScenarioReferenceRegistry {
   abstract registerActor(actor: GameObject): void;
   abstract claimActorRole(actor: GameObject, id: ScenarioActorId, tags?: readonly string[]): void;
   abstract actor(id: ScenarioActorId): GameObject | undefined;
+  abstract actorsWithTag(tag: ScenarioTagId): readonly GameObject[];
+  abstract allActors(): readonly GameObject[];
   abstract point(id: ScenarioPointId): Vector3Simple | undefined;
   abstract region(id: ScenarioRegionId): ScenarioRegionRuntime | undefined;
   abstract route(id: ScenarioRouteId): ScenarioRouteRuntime | undefined;
@@ -151,6 +154,16 @@ export class IndexedScenarioReferenceRegistry extends ScenarioReferenceRegistry 
 
   actor(id: ScenarioActorId): GameObject | undefined {
     return this.actors.get(id);
+  }
+
+  actorsWithTag(tag: ScenarioTagId): readonly GameObject[] {
+    return [...(this.actorsByTag.get(tag) ?? [])].sort((left, right) =>
+      String(this.actorRoles.get(left)).localeCompare(String(this.actorRoles.get(right)))
+    );
+  }
+
+  allActors(): readonly GameObject[] {
+    return [...this.actors.entries()].sort(([left], [right]) => left.localeCompare(right)).map(([, actor]) => actor);
   }
 
   point(id: ScenarioPointId): Vector3Simple | undefined {

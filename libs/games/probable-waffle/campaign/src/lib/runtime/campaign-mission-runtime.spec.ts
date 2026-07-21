@@ -6,6 +6,8 @@ import type { MissionObjectiveDefinition } from "../contracts/mission-objective-
 import type { MissionPhaseDefinition, MissionTransitionDefinition } from "../contracts/mission-phase-definition";
 import type { MissionTriggerDefinition } from "../contracts/mission-trigger-definition";
 import { CampaignMissionRuntime, serializeCampaignMissionRuntimeState } from "./campaign-mission-runtime";
+import type { CampaignWorldActionAdapter } from "./actions/campaign-action-runtime";
+import type { CampaignWorldConditionAdapter } from "./conditions/campaign-condition-evaluator";
 
 const id = asCampaignContentId;
 
@@ -263,6 +265,274 @@ describe("CampaignMissionRuntime", () => {
 
     expect(runtime.state.integrity.recentTrace).toHaveLength(128);
     expect(runtime.state.integrity.recentTrace.at(-1)).toMatchObject({ tick: 150, sourceId: "count" });
+  });
+
+  it("restores waiting action continuations without replaying their start", () => {
+    const content = mission([
+      phase("start", {
+        entryActions: [action("wait-ticks", "wait-for-beat", { durationTicks: 3 })]
+      })
+    ]);
+    const first = new CampaignMissionRuntime("ashes-of-the-ancients", content);
+    first.start(0);
+    expect(first.state.actionContinuations["wait-for-beat"]).toMatchObject({ startedAtTick: 0 });
+
+    const restored = new CampaignMissionRuntime("ashes-of-the-ancients", content, first.snapshot());
+    restored.advanceTo(2);
+    expect(restored.state.actionContinuations["wait-for-beat"]).toBeDefined();
+    restored.advanceTo(3);
+    expect(restored.state.actionContinuations).toEqual({});
+  });
+
+  it("releases only phase-owned resources when their phase exits", () => {
+    const releaseOwnedResources = jest.fn(() => []);
+    const adapter: CampaignWorldActionAdapter = {
+      execute: () => ({
+        status: "completed",
+        ownedResources: [{ resourceId: "bridge-lock", kind: "world-object", state: { value: false } }]
+      }),
+      releaseOwnedResources
+    };
+    const runtime = new CampaignMissionRuntime(
+      "ashes-of-the-ancients",
+      mission([
+        phase("start", {
+          entryActions: [action("toggle-world-object", "lock-bridge", { actorId: id("bridge"), value: false })],
+          transitions: [transition("leave", "finish")]
+        }),
+        phase("finish")
+      ]),
+      undefined,
+      { actionAdapter: adapter }
+    );
+
+    runtime.start(0);
+
+    expect(releaseOwnedResources).toHaveBeenCalledWith(
+      "phase:start:direct:lock-bridge",
+      [expect.objectContaining({ resourceId: "bridge-lock" })],
+      "phase-exited"
+    );
+    expect(runtime.state.ownedResources).toEqual({});
+  });
+
+  it("converts thrown world action errors into deterministic diagnostics", () => {
+    const adapter: CampaignWorldActionAdapter = {
+      execute: () => {
+        throw new Error("bridge authority unavailable");
+      }
+    };
+    const runtime = new CampaignMissionRuntime(
+      "ashes-of-the-ancients",
+      mission([
+        phase("start", {
+          entryActions: [action("toggle-world-object", "lock-bridge", { actorId: id("bridge"), value: false })]
+        })
+      ]),
+      undefined,
+      { actionAdapter: adapter }
+    );
+
+    expect(() => runtime.start(4)).not.toThrow();
+    expect(runtime.state).toMatchObject({
+      status: "failed",
+      integrity: {
+        diagnostic: {
+          code: "action-failed",
+          tick: 4,
+          actionId: "lock-bridge",
+          message: "Action 'lock-bridge' threw: bridge authority unavailable"
+        }
+      }
+    });
+  });
+
+  it("converts thrown continuation cancellation errors into deterministic diagnostics", () => {
+    const adapter: CampaignWorldActionAdapter = {
+      execute: () => ({ status: "waiting", continuationState: { pending: true } }),
+      cancel: () => {
+        throw new Error("bridge cancellation unavailable");
+      }
+    };
+    const runtime = new CampaignMissionRuntime(
+      "ashes-of-the-ancients",
+      mission([
+        phase("start", {
+          entryActions: [action("toggle-world-object", "lock-bridge", { actorId: id("bridge"), value: false })],
+          transitions: [transition("leave", "finish")]
+        }),
+        phase("finish")
+      ]),
+      undefined,
+      { actionAdapter: adapter }
+    );
+
+    expect(() => runtime.start(0)).not.toThrow();
+    expect(runtime.state).toMatchObject({
+      status: "failed",
+      integrity: {
+        diagnostic: {
+          code: "action-failed",
+          tick: 0,
+          phaseId: "start",
+          actionId: "lock-bridge",
+          message: "Action 'lock-bridge' cancellation threw: bridge cancellation unavailable"
+        }
+      }
+    });
+  });
+
+  it.each([
+    ["skip", "running", false],
+    ["wait", "running", true],
+    ["fail-mission", "failed", false]
+  ] as const)("applies the %s missing-reference policy", (policy, expectedStatus, waiting) => {
+    const adapter: CampaignWorldActionAdapter = {
+      execute: () => ({
+        status: "failed",
+        code: "missing-reference",
+        message: "Bridge is missing",
+        continuationState: { retryMissingReference: true }
+      }),
+      resume: () => ({ status: "waiting", continuationState: { retryMissingReference: true } })
+    };
+    const runtime = new CampaignMissionRuntime(
+      "ashes-of-the-ancients",
+      mission([
+        phase("start", {
+          entryActions: [
+            {
+              id: id("missing-bridge"),
+              kind: "toggle-world-object",
+              actorId: id("bridge"),
+              value: false,
+              missingReferencePolicy: policy
+            }
+          ]
+        })
+      ]),
+      undefined,
+      { actionAdapter: adapter }
+    );
+
+    runtime.start(0);
+
+    expect(runtime.state.status).toBe(expectedStatus);
+    expect(!!runtime.state.actionContinuations["missing-bridge"]).toBe(waiting);
+    if (policy === "fail-mission") {
+      expect(runtime.state.integrity.diagnostic).toMatchObject({
+        code: "missing-reference",
+        phaseId: "start",
+        actionId: "missing-bridge"
+      });
+    }
+  });
+
+  it("executes a declared fallback for a missing world reference", () => {
+    const adapter: CampaignWorldActionAdapter = {
+      execute: () => ({ status: "failed", code: "missing-reference", message: "Missing actor" })
+    };
+    const runtime = new CampaignMissionRuntime(
+      "ashes-of-the-ancients",
+      mission([
+        phase("start", {
+          entryActions: [
+            {
+              id: id("try-bridge"),
+              kind: "toggle-world-object",
+              actorId: id("bridge"),
+              value: false,
+              missingReferencePolicy: "fallback",
+              fallbackAction: action("set-fact", "mark-fallback", { factId: id("fallback-used"), value: true })
+            }
+          ]
+        })
+      ]),
+      undefined,
+      { actionAdapter: adapter }
+    );
+
+    runtime.start(0);
+
+    expect(runtime.state.facts["fallback-used"]).toBe(true);
+    expect(runtime.state.status).toBe("running");
+  });
+
+  it("passes deterministic co-op initiator context into event conditions", () => {
+    const evaluate = jest.fn(() => true);
+    const conditionAdapter: CampaignWorldConditionAdapter = { evaluate };
+    const runtime = new CampaignMissionRuntime(
+      "ashes-of-the-ancients",
+      mission([
+        phase("start", {
+          triggers: [
+            trigger("hero-created", {
+              kind: "event",
+              eventKinds: ["actor.created"],
+              condition: { kind: "actor-exists", actorId: id("hero") },
+              actions: [action("set-fact", "mark-created", { factId: id("created"), value: true })]
+            })
+          ]
+        })
+      ]),
+      undefined,
+      { conditionAdapter }
+    );
+    runtime.start(0);
+    runtime.enqueueEvent({
+      tick: 1,
+      kind: "actor.created",
+      sourceId: "hero",
+      initiatorPlayerNumber: 2,
+      initiatorFaction: "skaduwee"
+    });
+    runtime.advanceTo(1);
+
+    expect(runtime.state.facts["created"]).toBe(true);
+    expect(evaluate.mock.calls.some(([context]) => context.event?.initiatorPlayerNumber === 2)).toBe(true);
+  });
+
+  it("reacts to objective and encounter changes in their owning simulation tick", () => {
+    const objective: MissionObjectiveDefinition = {
+      id: id("survive"),
+      kind: "primary",
+      titleTextId: id("survive-title"),
+      reveal: { kind: "never" },
+      complete: { kind: "never" },
+      display: { announceReveal: false, announceCompletion: false, showInTracker: true }
+    };
+    const runtime = new CampaignMissionRuntime(
+      "ashes-of-the-ancients",
+      mission(
+        [
+          phase("start", {
+            entryActions: [
+              action("set-objective-state", "activate-objective", { objectiveId: id("survive"), state: "active" }),
+              action("set-encounter-state", "start-ambush", { encounterId: id("ambush"), state: "active" })
+            ],
+            triggers: [
+              trigger("objective-signal", {
+                kind: "event",
+                eventKinds: ["objective.changed"],
+                actions: [action("increment-counter", "objective-count", { counterId: id("signals"), amount: 1 })]
+              }),
+              trigger("encounter-signal", {
+                kind: "event",
+                eventKinds: ["encounter.changed"],
+                actions: [action("increment-counter", "encounter-count", { counterId: id("signals"), amount: 1 })]
+              })
+            ]
+          })
+        ],
+        [objective]
+      )
+    );
+
+    runtime.start(7);
+
+    expect(runtime.state.counters["signals"]).toBe(2);
+    expect(runtime.state.integrity.lastProcessedTick).toBe(7);
+    expect(runtime.state.pendingEvents).toEqual([]);
   });
 });
 

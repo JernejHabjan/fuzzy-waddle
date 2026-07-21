@@ -341,6 +341,83 @@
     }
   },
   "$defs": {
+    "campaignId": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "numericComparison": {
+      "enum": ["equal", "not-equal", "less", "less-or-equal", "greater", "greater-or-equal"]
+    },
+    "actorSelector": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "actorIds": { "$ref": "#/$defs/scenarioIdArray" },
+        "groupId": { "$ref": "#/$defs/campaignId" },
+        "tag": { "$ref": "#/$defs/campaignId" },
+        "ownerPlayerNumber": { "type": "integer", "minimum": 1 },
+        "actorType": { "type": "string", "minLength": 1 },
+        "alive": { "type": "boolean" }
+      }
+    },
+    "regionOccupancyPolicy": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind"],
+          "properties": { "kind": { "enum": ["any", "all-connected-players"] } }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "playerNumber"],
+          "properties": {
+            "kind": { "const": "specific-player" },
+            "playerNumber": { "type": "integer", "minimum": 1 }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "faction"],
+          "properties": {
+            "kind": { "const": "specific-faction" },
+            "faction": { "enum": ["tivara", "skaduwee"] }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "count"],
+          "properties": {
+            "kind": { "const": "at-least" },
+            "count": { "type": "integer", "minimum": 1 }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "groupId"],
+          "properties": {
+            "kind": { "const": "entire-group" },
+            "groupId": { "$ref": "#/$defs/campaignId" }
+          }
+        }
+      ]
+    },
+    "actorSpawn": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actorName"],
+      "properties": {
+        "actorName": { "type": "string", "minLength": 1 },
+        "ownerPlayerNumber": { "type": "integer", "minimum": 1 },
+        "scenarioRoleId": { "$ref": "#/$defs/campaignId" },
+        "tags": { "$ref": "#/$defs/scenarioIdArray" }
+      }
+    },
     "scenarioIdArray": {
       "type": "array",
       "uniqueItems": true,
@@ -534,6 +611,123 @@
               "enum": ["inactive", "active", "completed", "failed"]
             }
           }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind"],
+          "properties": {
+            "kind": {
+              "enum": [
+                "actor-exists",
+                "actor-alive",
+                "actor-owner",
+                "actor-type",
+                "actor-tag",
+                "actor-health",
+                "actor-construction",
+                "actor-count",
+                "produced-count",
+                "building-count",
+                "region-occupancy",
+                "player-resource",
+                "research",
+                "difficulty",
+                "player-count",
+                "content-cap"
+              ]
+            },
+            "actorId": { "$ref": "#/$defs/campaignId" },
+            "playerNumber": { "type": "integer", "minimum": 1 },
+            "actorType": { "type": "string", "minLength": 1 },
+            "tag": { "$ref": "#/$defs/campaignId" },
+            "comparison": { "$ref": "#/$defs/numericComparison" },
+            "value": { "type": "number" },
+            "percentage": { "type": "boolean" },
+            "state": { "enum": ["not-started", "constructing", "finished"] },
+            "selector": { "$ref": "#/$defs/actorSelector" },
+            "regionId": { "$ref": "#/$defs/campaignId" },
+            "policy": { "$ref": "#/$defs/regionOccupancyPolicy" },
+            "resourceType": { "type": "string", "minLength": 1 },
+            "researchType": { "type": "string", "minLength": 1 },
+            "values": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+            "connectedOnly": { "type": "boolean" },
+            "contentType": { "enum": ["actor", "research"] },
+            "contentId": { "type": "string", "minLength": 1 },
+            "allowed": { "type": "boolean" }
+          },
+          "allOf": [
+            {
+              "if": { "properties": { "kind": { "enum": ["actor-exists", "actor-alive"] } } },
+              "then": { "properties": { "actorId": true }, "required": ["actorId"] }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "actor-owner" } } },
+              "then": {
+                "properties": { "actorId": true, "playerNumber": true },
+                "required": ["actorId", "playerNumber"]
+              }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "actor-type" } } },
+              "then": { "properties": { "actorId": true, "actorType": true }, "required": ["actorId", "actorType"] }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "actor-tag" } } },
+              "then": { "properties": { "actorId": true, "tag": true }, "required": ["actorId", "tag"] }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "actor-health" } } },
+              "then": {
+                "properties": { "actorId": true, "comparison": true, "value": true },
+                "required": ["actorId", "comparison", "value"]
+              }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "actor-construction" } } },
+              "then": { "properties": { "actorId": true, "state": true }, "required": ["actorId", "state"] }
+            },
+            {
+              "if": { "properties": { "kind": { "enum": ["actor-count", "produced-count", "building-count"] } } },
+              "then": {
+                "properties": { "selector": true, "comparison": true, "value": true },
+                "required": ["selector", "comparison", "value"]
+              }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "region-occupancy" } } },
+              "then": { "properties": { "regionId": true, "policy": true }, "required": ["regionId", "policy"] }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "player-resource" } } },
+              "then": {
+                "properties": { "playerNumber": true, "resourceType": true, "comparison": true, "value": true },
+                "required": ["playerNumber", "resourceType", "comparison", "value"]
+              }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "research" } } },
+              "then": {
+                "properties": { "playerNumber": true, "researchType": true },
+                "required": ["playerNumber", "researchType"]
+              }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "difficulty" } } },
+              "then": { "properties": { "values": true }, "required": ["values"] }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "player-count" } } },
+              "then": { "properties": { "comparison": true, "value": true }, "required": ["comparison", "value"] }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "content-cap" } } },
+              "then": {
+                "properties": { "playerNumber": true, "contentType": true, "contentId": true, "allowed": true },
+                "required": ["playerNumber", "contentType", "contentId", "allowed"]
+              }
+            }
+          ]
         }
       ]
     },
@@ -769,6 +963,308 @@
               "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
             }
           }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "kind"],
+          "properties": {
+            "id": { "$ref": "#/$defs/campaignId" },
+            "kind": {
+              "enum": [
+                "wait-ticks",
+                "sequence",
+                "parallel",
+                "race",
+                "spawn-actor",
+                "spawn-set",
+                "despawn-actor",
+                "convert-owner",
+                "assign-scenario-role",
+                "move-along-route",
+                "issue-order",
+                "teleport-actor",
+                "face-actor",
+                "set-actor-flag",
+                "revive-actor",
+                "damage-actor",
+                "heal-actor",
+                "begin-attack",
+                "create-aoe",
+                "remove-aoe",
+                "construct-building",
+                "complete-construction",
+                "destroy-building",
+                "toggle-world-object",
+                "add-resource",
+                "remove-resource",
+                "transfer-resource",
+                "grant-research",
+                "update-alliance",
+                "set-content-allowance",
+                "grant-temporary-modifier",
+                "set-objective-state",
+                "set-encounter-state",
+                "start-dialogue",
+                "start-cinematic",
+                "create-checkpoint"
+              ]
+            },
+            "scope": { "enum": ["phase", "mission"] },
+            "missingReferencePolicy": { "enum": ["fail-mission", "skip", "wait", "fallback"] },
+            "fallbackAction": { "$ref": "#/$defs/action" },
+            "durationTicks": { "type": "integer", "minimum": 0 },
+            "actions": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/action" } },
+            "actor": { "$ref": "#/$defs/actorSpawn" },
+            "actors": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/actorSpawn" } },
+            "pointId": { "$ref": "#/$defs/campaignId" },
+            "spawnSetId": { "$ref": "#/$defs/campaignId" },
+            "actorId": { "$ref": "#/$defs/campaignId" },
+            "actorIds": { "$ref": "#/$defs/scenarioIdArray" },
+            "actorRuntimeId": { "type": "string", "minLength": 1 },
+            "scenarioRoleId": { "$ref": "#/$defs/campaignId" },
+            "tags": { "$ref": "#/$defs/scenarioIdArray" },
+            "ownerPlayerNumber": { "type": "integer", "minimum": 1 },
+            "routeId": { "$ref": "#/$defs/campaignId" },
+            "order": { "enum": ["move", "attack", "stop", "patrol"] },
+            "targetActorId": { "$ref": "#/$defs/campaignId" },
+            "targetPointId": { "$ref": "#/$defs/campaignId" },
+            "queue": { "type": "boolean" },
+            "angle": { "type": "number" },
+            "flag": { "enum": ["invulnerable", "selectable", "controllable"] },
+            "value": { "anyOf": [{ "type": "boolean" }, { "type": "number" }] },
+            "amount": { "type": "number", "minimum": 0 },
+            "damageType": {},
+            "sourceActorId": { "$ref": "#/$defs/campaignId" },
+            "effectId": { "$ref": "#/$defs/campaignId" },
+            "regionId": { "$ref": "#/$defs/campaignId" },
+            "spellType": { "type": "string", "minLength": 1 },
+            "radiusTiles": { "type": "number", "exclusiveMinimum": 0 },
+            "tickIntervalTicks": { "type": "integer", "minimum": 1 },
+            "sourcePlayerNumber": { "type": "integer", "minimum": 1 },
+            "affectsAllies": { "type": "boolean" },
+            "affectsEnemies": { "type": "boolean" },
+            "effectWhileInside": { "type": "object" },
+            "playerNumber": { "type": "integer", "minimum": 1 },
+            "otherPlayerNumber": { "type": "integer", "minimum": 1 },
+            "fromPlayerNumber": { "type": "integer", "minimum": 1 },
+            "toPlayerNumber": { "type": "integer", "minimum": 1 },
+            "resourceType": { "type": "string", "minLength": 1 },
+            "researchType": { "type": "string", "minLength": 1 },
+            "allied": { "type": "boolean" },
+            "contentType": { "enum": ["actor", "research"] },
+            "contentId": { "type": "string", "minLength": 1 },
+            "allowed": { "type": "boolean" },
+            "modifierId": { "$ref": "#/$defs/campaignId" },
+            "objectiveId": { "$ref": "#/$defs/campaignId" },
+            "encounterId": { "$ref": "#/$defs/campaignId" },
+            "state": { "enum": ["inactive", "active", "completed", "failed", "impossible"] },
+            "lineId": { "$ref": "#/$defs/campaignId" },
+            "waitForAcknowledgement": { "type": "boolean" },
+            "cinematicId": { "$ref": "#/$defs/campaignId" },
+            "waitForCompletion": { "type": "boolean" },
+            "checkpointId": { "$ref": "#/$defs/campaignId" }
+          },
+          "allOf": [
+            {
+              "if": { "properties": { "kind": { "const": "wait-ticks" } } },
+              "then": { "properties": { "durationTicks": true }, "required": ["durationTicks"] }
+            },
+            {
+              "if": { "properties": { "kind": { "enum": ["sequence", "parallel", "race"] } } },
+              "then": { "properties": { "actions": true }, "required": ["actions"] }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "spawn-actor" } } },
+              "then": { "properties": { "actor": true, "pointId": true }, "required": ["actor", "pointId"] }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "spawn-set" } } },
+              "then": { "properties": { "spawnSetId": true, "actors": true }, "required": ["spawnSetId", "actors"] }
+            },
+            {
+              "if": {
+                "properties": {
+                  "kind": { "enum": ["despawn-actor", "revive-actor", "complete-construction", "destroy-building"] }
+                }
+              },
+              "then": { "properties": { "actorId": true }, "required": ["actorId"] }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "convert-owner" } } },
+              "then": {
+                "properties": { "actorId": true, "ownerPlayerNumber": true },
+                "required": ["actorId", "ownerPlayerNumber"]
+              }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "assign-scenario-role" } } },
+              "then": {
+                "properties": { "actorRuntimeId": true, "scenarioRoleId": true },
+                "required": ["actorRuntimeId", "scenarioRoleId"]
+              }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "move-along-route" } } },
+              "then": { "properties": { "actorId": true, "routeId": true }, "required": ["actorId", "routeId"] }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "issue-order" } } },
+              "then": { "properties": { "actorIds": true, "order": true }, "required": ["actorIds", "order"] }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "teleport-actor" } } },
+              "then": { "properties": { "actorId": true, "pointId": true }, "required": ["actorId", "pointId"] }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "face-actor" } } },
+              "then": { "properties": { "actorId": true }, "required": ["actorId"] }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "set-actor-flag" } } },
+              "then": {
+                "properties": { "actorId": true, "flag": true, "value": { "type": "boolean" } },
+                "required": ["actorId", "flag", "value"]
+              }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "damage-actor" } } },
+              "then": {
+                "properties": { "actorId": true, "amount": true, "damageType": true },
+                "required": ["actorId", "amount", "damageType"]
+              }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "heal-actor" } } },
+              "then": { "properties": { "actorId": true, "amount": true }, "required": ["actorId", "amount"] }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "begin-attack" } } },
+              "then": {
+                "properties": { "actorId": true, "targetActorId": true },
+                "required": ["actorId", "targetActorId"]
+              }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "create-aoe" } } },
+              "then": {
+                "properties": {
+                  "effectId": true,
+                  "spellType": true,
+                  "radiusTiles": true,
+                  "durationTicks": true,
+                  "tickIntervalTicks": true,
+                  "sourcePlayerNumber": true,
+                  "affectsAllies": true,
+                  "affectsEnemies": true
+                },
+                "required": [
+                  "effectId",
+                  "spellType",
+                  "radiusTiles",
+                  "durationTicks",
+                  "tickIntervalTicks",
+                  "sourcePlayerNumber",
+                  "affectsAllies",
+                  "affectsEnemies"
+                ]
+              }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "remove-aoe" } } },
+              "then": { "properties": { "effectId": true }, "required": ["effectId"] }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "construct-building" } } },
+              "then": { "properties": { "actor": true, "pointId": true }, "required": ["actor", "pointId"] }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "toggle-world-object" } } },
+              "then": {
+                "properties": { "actorId": true, "value": { "type": "boolean" } },
+                "required": ["actorId", "value"]
+              }
+            },
+            {
+              "if": { "properties": { "kind": { "enum": ["add-resource", "remove-resource"] } } },
+              "then": {
+                "properties": { "playerNumber": true, "resourceType": true, "amount": true },
+                "required": ["playerNumber", "resourceType", "amount"]
+              }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "transfer-resource" } } },
+              "then": {
+                "properties": {
+                  "fromPlayerNumber": true,
+                  "toPlayerNumber": true,
+                  "resourceType": true,
+                  "amount": true
+                },
+                "required": ["fromPlayerNumber", "toPlayerNumber", "resourceType", "amount"]
+              }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "grant-research" } } },
+              "then": {
+                "properties": { "playerNumber": true, "researchType": true },
+                "required": ["playerNumber", "researchType"]
+              }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "update-alliance" } } },
+              "then": {
+                "properties": { "playerNumber": true, "otherPlayerNumber": true, "allied": true },
+                "required": ["playerNumber", "otherPlayerNumber", "allied"]
+              }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "set-content-allowance" } } },
+              "then": {
+                "properties": { "playerNumber": true, "contentType": true, "contentId": true, "allowed": true },
+                "required": ["playerNumber", "contentType", "contentId", "allowed"]
+              }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "grant-temporary-modifier" } } },
+              "then": {
+                "properties": { "modifierId": true, "value": { "type": "number" } },
+                "required": ["modifierId", "value"]
+              }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "set-objective-state" } } },
+              "then": {
+                "properties": {
+                  "objectiveId": true,
+                  "state": { "enum": ["active", "completed", "failed", "impossible"] }
+                },
+                "required": ["objectiveId", "state"]
+              }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "set-encounter-state" } } },
+              "then": {
+                "properties": {
+                  "encounterId": true,
+                  "state": { "enum": ["inactive", "active", "completed", "failed"] }
+                },
+                "required": ["encounterId", "state"]
+              }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "start-dialogue" } } },
+              "then": { "properties": { "lineId": true }, "required": ["lineId"] }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "start-cinematic" } } },
+              "then": { "properties": { "cinematicId": true }, "required": ["cinematicId"] }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "create-checkpoint" } } },
+              "then": { "properties": { "checkpointId": true }, "required": ["checkpointId"] }
+            }
+          ]
         }
       ]
     },

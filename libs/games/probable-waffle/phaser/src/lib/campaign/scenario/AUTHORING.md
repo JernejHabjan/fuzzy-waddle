@@ -26,6 +26,10 @@ The scene registry compiles static markers once after generated editor objects e
 
 Debug overlays should read `debugGeometry()` and developer-camera tools should use `debugFocus()` only in local development tooling. Mission runtime logic must use registry queries and logical transforms so camera movement, render offsets, and frame rate cannot affect results.
 
+## Trusted hooks
+
+Use declarative actions first. A `trusted-hook` is allowed only when its stable hook ID is registered in both the content registry and `CampaignTrustedHookRegistry`. Its content registration must document determinism, continuation serialization, cleanup ownership, and a focused test ID. An executor that can wait must serialize all continuation data and implement cancellation; it may not read wall-clock time, generate unsynchronized IDs, or mutate presentation as gameplay state. Missing registrations fail validation or mission execution instead of falling through to arbitrary code.
+
 ## Validation workflow
 
 After editing a scenario map:

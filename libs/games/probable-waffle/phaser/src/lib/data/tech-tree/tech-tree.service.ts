@@ -9,8 +9,10 @@ import { environment } from "@fuzzy-waddle/environments/environment";
 import { shouldConsiderActorUnlocked } from "./actor-unlock-utils";
 import { FactionDefinitions } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { researchDefinitions } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/research/research-definitions";
+import { GameEventEmitter } from "@fuzzy-waddle/platform-game-host";
 
 export class TechTreeService {
+  readonly researchCompleted = new GameEventEmitter<{ playerNumber: PlayerNumber; researchType: ResearchType }>();
   private readonly graph: TechTreeGraph;
   // Per-player unlock tracking (keyed by player number)
   private readonly playerUnlocks = new Map<number, Set<ObjectNames>>();
@@ -475,7 +477,9 @@ export class TechTreeService {
       research = new Set<ResearchType>();
       this.playerResearch.set(playerNumber, research);
     }
+    if (research.has(researchType)) return;
     research.add(researchType);
+    this.researchCompleted.emit({ playerNumber, researchType });
   }
 
   /**

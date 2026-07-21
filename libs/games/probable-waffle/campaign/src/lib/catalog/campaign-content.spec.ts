@@ -66,6 +66,25 @@ describe("Ashes of the Ancients campaign content", () => {
     ).toBe(true);
   });
 
+  it("strictly validates foundational world actions and conditions", () => {
+    const validateAction = ajv.compile({ $ref: `${missionSchema.$id}#/$defs/action` });
+    const validateCondition = ajv.compile({ $ref: `${missionSchema.$id}#/$defs/condition` });
+
+    expect(
+      validateAction({ id: "move-hero", kind: "move-along-route", actorId: "hero", routeId: "escape-route" })
+    ).toBe(true);
+    expect(validateAction({ id: "move-hero", kind: "move-along-route", actorId: "hero" })).toBe(false);
+    expect(
+      validateCondition({
+        kind: "region-occupancy",
+        regionId: "escape-zone",
+        selector: { groupId: "heroes" },
+        policy: { kind: "entire-group", groupId: "heroes" }
+      })
+    ).toBe(true);
+    expect(validateCondition({ kind: "region-occupancy", regionId: "escape-zone" })).toBe(false);
+  });
+
   it("passes whole-catalogue semantic validation in the authored mandatory order", () => {
     const result = validateCampaignContent({
       campaign: AOTA_CAMPAIGN_DEFINITION,

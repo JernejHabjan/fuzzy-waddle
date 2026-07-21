@@ -19,6 +19,7 @@ export interface CampaignGameContext {
   missionId: CampaignMissionId;
   missionRevision: number;
   runId: string;
+  difficulty?: "story" | "normal" | "hard";
 }
 
 export interface ProbableWaffleReplayPlayerData {

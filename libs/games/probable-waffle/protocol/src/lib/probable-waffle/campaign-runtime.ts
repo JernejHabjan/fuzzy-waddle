@@ -1,6 +1,6 @@
 import type { CampaignId, CampaignMissionId } from "./campaign";
 
-export const CAMPAIGN_MISSION_RUNTIME_SCHEMA_VERSION = 1 as const;
+export const CAMPAIGN_MISSION_RUNTIME_SCHEMA_VERSION = 2 as const;
 
 export type CampaignMissionRuntimeStatus = "initializing" | "running" | "victory" | "defeat" | "failed";
 export type CampaignMissionObjectiveStatus = "hidden" | "active" | "completed" | "failed" | "impossible";
@@ -21,7 +21,62 @@ export interface CampaignMissionRuntimeEvent {
   readonly sourceId: string;
   readonly sequence: number;
   readonly payload?: CampaignMissionRuntimeJsonValue;
+  readonly initiatorPlayerNumber?: number;
+  readonly initiatorFaction?: "tivara" | "skaduwee";
 }
+
+interface CampaignMissionEventBase<TKind extends string, TPayload extends CampaignMissionRuntimeJsonValue> {
+  readonly tick: number;
+  readonly kind: TKind;
+  readonly sourceId: string;
+  readonly sequence: number;
+  readonly payload: TPayload;
+  readonly initiatorPlayerNumber?: number;
+  readonly initiatorFaction?: "tivara" | "skaduwee";
+}
+
+export type CampaignMissionEvent =
+  | CampaignMissionEventBase<
+      "actor.created",
+      {
+        readonly actorRuntimeId: string;
+        readonly scenarioActorId?: string;
+        readonly actorType: string;
+        readonly owner?: number;
+      }
+    >
+  | CampaignMissionEventBase<
+      "actor.destroyed" | "actor.killed",
+      { readonly actorRuntimeId: string; readonly scenarioActorId?: string; readonly actorType: string }
+    >
+  | CampaignMissionEventBase<
+      "actor.owner-changed",
+      { readonly scenarioActorId?: string; readonly previousOwner?: number; readonly owner?: number }
+    >
+  | CampaignMissionEventBase<
+      "actor.entered-region" | "actor.left-region",
+      { readonly scenarioActorId: string; readonly regionId: string }
+    >
+  | CampaignMissionEventBase<
+      "construction.completed",
+      { readonly scenarioActorId?: string; readonly actorType: string; readonly owner?: number }
+    >
+  | CampaignMissionEventBase<"research.completed", { readonly playerNumber: number; readonly researchType: string }>
+  | CampaignMissionEventBase<
+      "resource.changed",
+      { readonly playerNumber: number; readonly resourceType: string; readonly delta: number; readonly total: number }
+    >
+  | CampaignMissionEventBase<"timer.elapsed", { readonly timerId: string }>
+  | CampaignMissionEventBase<
+      "encounter.changed",
+      { readonly encounterId: string; readonly state: CampaignMissionEncounterStatus }
+    >
+  | CampaignMissionEventBase<
+      "objective.changed",
+      { readonly objectiveId: string; readonly state: CampaignMissionObjectiveStatus }
+    >
+  | CampaignMissionEventBase<"dialogue.acknowledged", { readonly lineId: string }>
+  | CampaignMissionEventBase<"cinematic.finished", { readonly cinematicId: string; readonly skipped: boolean }>;
 
 export interface CampaignMissionTimerRuntimeState {
   durationTicks: number;
@@ -41,16 +96,52 @@ export interface CampaignMissionTriggerRuntimeState {
   lastFiredTick?: number;
 }
 
+export interface CampaignMissionActionContinuationState {
+  actionId: string;
+  kind: string;
+  ownerToken: string;
+  scope: "phase" | "mission";
+  startedAtTick: number;
+  updatedAtTick: number;
+  state: CampaignMissionRuntimeJsonValue;
+}
+
+export interface CampaignMissionOwnedResourceRuntimeState {
+  resourceId: string;
+  kind: string;
+  ownerToken: string;
+  state?: CampaignMissionRuntimeJsonValue;
+}
+
 export interface CampaignMissionRuntimeDiagnostic {
-  code: "action-budget-exceeded" | "transition-budget-exceeded" | "invalid-runtime-state";
+  code:
+    | "action-budget-exceeded"
+    | "transition-budget-exceeded"
+    | "invalid-runtime-state"
+    | "action-failed"
+    | "missing-reference"
+    | "unresumable-action"
+    | "resource-leak";
   message: string;
   tick: number;
   sourceId?: string;
+  phaseId?: string;
+  triggerId?: string;
+  actionId?: string;
 }
 
 export interface CampaignMissionRuntimeTraceEntry {
   tick: number;
-  kind: "action" | "phase-entered" | "phase-completed" | "objective-changed" | "outcome-requested" | "diagnostic";
+  kind:
+    | "action"
+    | "action-waiting"
+    | "action-cancelled"
+    | "phase-entered"
+    | "phase-completed"
+    | "objective-changed"
+    | "encounter-changed"
+    | "outcome-requested"
+    | "diagnostic";
   sourceId: string;
   detail?: CampaignMissionRuntimeJsonValue;
 }
@@ -87,5 +178,7 @@ export interface CampaignMissionRuntimeState {
   triggerStates: Record<string, CampaignMissionTriggerRuntimeState>;
   claimedRewardIds: string[];
   pendingEvents: CampaignMissionRuntimeEvent[];
+  actionContinuations: Record<string, CampaignMissionActionContinuationState>;
+  ownedResources: Record<string, CampaignMissionOwnedResourceRuntimeState>;
   integrity: CampaignMissionRuntimeIntegrity;
 }

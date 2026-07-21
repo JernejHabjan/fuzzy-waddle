@@ -300,7 +300,10 @@ export function getSelectedActors(scene: Phaser.Scene): Phaser.GameObjects.GameO
 
 export function getSelectableSceneChildren(scene: Phaser.Scene): Phaser.GameObjects.GameObject[] {
   return scene.children.list.filter(
-    (actor) => hasActorComponent(actor, SelectableComponent) && hasActorComponent(actor, IdComponent)
+    (actor) =>
+      hasActorComponent(actor, SelectableComponent) &&
+      hasActorComponent(actor, IdComponent) &&
+      actor.getData("campaign.selectable") !== false
   );
 }
 

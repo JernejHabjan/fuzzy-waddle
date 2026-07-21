@@ -252,6 +252,12 @@ export class CommandBusService {
     this.logQueuedWhileStalled(normalizedCommand.type, tick, stamped.playerNumber);
   }
 
+  /** Applies a campaign-owned deterministic command locally on every peer without relaying it as player input. */
+  dispatchDeterministic(command: GameCommandInput): void {
+    const tick = this.tickService?.currentTick ?? 0;
+    this._command$.next({ ...command, tick } as GameCommand);
+  }
+
   /**
    * Tick pipeline for lockstep:
    * 1) flush current committed commands,
@@ -845,7 +851,7 @@ export class CommandBusService {
     const actorIds = [...new Set(command.actorIds)].filter((actorId) => {
       const actor = actorIndex.getActorById(actorId);
       const owner = actor ? getActorComponent(actor, OwnerComponent)?.getOwner() : undefined;
-      return actor?.active && owner === command.playerNumber;
+      return actor?.active && actor.getData("campaign.controllable") !== false && owner === command.playerNumber;
     });
 
     if (actorIds.length === 0) {
