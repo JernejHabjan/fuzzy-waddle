@@ -5,3 +5,7 @@ export * from "./lib/core/ports/probable-waffle-communicator";
 export * from "./lib/core/probable-waffle-game-data";
 export * from "./lib/campaign/campaign-content";
 export * from "./lib/campaign/campaign-mission-director";
+export * from "./lib/campaign/scenario/scenario-actor-reference.component";
+export * from "./lib/campaign/scenario/scenario-reference-registry";
+export * from "./lib/campaign/scenario/scenario-region";
+export * from "./lib/campaign/scenario/scenario-editor-validation";

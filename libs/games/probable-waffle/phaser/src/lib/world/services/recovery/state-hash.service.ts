@@ -199,7 +199,10 @@ export class StateHashService {
         const economyState = this.serializeActorEconomyState(actor);
         const combatState = this.serializeActorCombatState(go);
         const orderState = this.serializeActorOrderState(go);
-        const actorDigest = `${id}:${go.name}:${Math.round(health)}:${Math.round(armour)}:${lx}:${ly}:${lz}:${owner}:${queueState}:${economyState}:${combatState}:${orderState}`;
+        const scenarioState = actor.scenario
+          ? this.stableSerialize({ roleId: actor.scenario.roleId, tags: actor.scenario.tags })
+          : "";
+        const actorDigest = `${id}:${go.name}:${Math.round(health)}:${Math.round(armour)}:${lx}:${ly}:${lz}:${owner}:${queueState}:${economyState}:${combatState}:${orderState}:${scenarioState}`;
         if (actorDigests) {
           actorDigests[id] = actorDigest;
         }

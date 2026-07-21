@@ -25,6 +25,7 @@ import type {
   ResourceDrainComponentData,
   ResourceSourceComponentData,
   SelectableComponentData,
+  ScenarioActorReferenceData,
   SpellComponentData,
   StatusEffectComponentData,
   VisionComponentData,
@@ -172,6 +173,7 @@ export interface ActorDefinition {
   name?: ObjectNames;
   owner?: Partial<OwnerComponentData>;
   id?: Partial<IdComponentData>;
+  scenario?: ScenarioActorReferenceData;
   health?: Partial<HealthComponentData>;
   housing?: Partial<HousingComponentData>;
   constructionSite?: Partial<ConstructionSiteComponentData>;

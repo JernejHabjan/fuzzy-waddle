@@ -88,6 +88,12 @@ export interface IdComponentData {
   id?: string;
 }
 
+/** Stable campaign role is independent from the deterministic runtime actor ID. */
+export interface ScenarioActorReferenceData {
+  roleId: string;
+  tags: string[];
+}
+
 export interface BackboardComponentData {
   blackboard: Record<string, any>;
 }

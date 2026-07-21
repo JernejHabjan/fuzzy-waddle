@@ -320,6 +320,19 @@
         }
       }
     },
+    "scenarioReferences": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "actors": { "$ref": "#/$defs/scenarioIdArray" },
+        "points": { "$ref": "#/$defs/scenarioIdArray" },
+        "regions": { "$ref": "#/$defs/scenarioIdArray" },
+        "routes": { "$ref": "#/$defs/scenarioIdArray" },
+        "groups": { "$ref": "#/$defs/scenarioIdArray" },
+        "cameraShots": { "$ref": "#/$defs/scenarioIdArray" },
+        "spawnSets": { "$ref": "#/$defs/scenarioIdArray" }
+      }
+    },
     "difficulty": {
       "$ref": "https://fuzzy-waddle.dev/schemas/probable-waffle/campaign/difficulty.schema.json"
     },
@@ -328,6 +341,15 @@
     }
   },
   "$defs": {
+    "scenarioIdArray": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+      }
+    },
     "condition": {
       "oneOf": [
         {

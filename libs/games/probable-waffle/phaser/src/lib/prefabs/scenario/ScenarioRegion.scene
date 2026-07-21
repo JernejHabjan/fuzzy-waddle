@@ -1,0 +1,54 @@
+{
+  "id": "d1000000-0000-4000-8000-000000000002",
+  "sceneType": "PREFAB",
+  "settings": {
+    "compilerInsertSpaces": true,
+    "compilerTabSize": 2,
+    "exportClass": true,
+    "autoImport": true,
+    "compilerOutputLanguage": "TYPE_SCRIPT",
+    "borderWidth": 128,
+    "borderHeight": 128
+  },
+  "displayList": [
+    {
+      "type": "Rectangle",
+      "id": "d1000000-0000-4000-8000-000000000012",
+      "label": "scenarioRegion",
+      "x": 64,
+      "y": 64,
+      "width": 128,
+      "height": 128,
+      "isFilled": true,
+      "fillColor": 65535,
+      "fillAlpha": 0.2,
+      "isStroked": true
+    }
+  ],
+  "plainObjects": [],
+  "meta": {
+    "app": "Phaser Editor - Scene Editor",
+    "url": "https://phaser.io/editor",
+    "contentType": "phasereditor2d.core.scene.SceneContentType",
+    "version": 5
+  },
+  "prefabProperties": [
+    { "name": "scenarioId", "label": "Stable Scenario ID", "defValue": "", "type": { "id": "string" } },
+    {
+      "name": "shape",
+      "label": "Shape",
+      "defValue": "rectangle",
+      "type": { "id": "option", "options": ["rectangle", "polygon"] }
+    },
+    { "name": "polygonPoints", "label": "Local Polygon Points", "defValue": "", "type": { "id": "string" } },
+    {
+      "name": "elevationPolicy",
+      "label": "Elevation Policy",
+      "defValue": "any",
+      "type": { "id": "option", "options": ["any", "same-level", "range"] }
+    },
+    { "name": "elevation", "label": "Logical Elevation", "defValue": 0, "type": { "id": "number" } },
+    { "name": "minimumElevation", "label": "Minimum Elevation", "defValue": 0, "type": { "id": "number" } },
+    { "name": "maximumElevation", "label": "Maximum Elevation", "defValue": 0, "type": { "id": "number" } }
+  ]
+}

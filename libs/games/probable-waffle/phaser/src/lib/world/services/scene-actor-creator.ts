@@ -12,6 +12,7 @@ import { getCommunicator, hasMultiplayerCommandRelay } from "../../data/scene-da
 import Spawn from "../../prefabs/buildings/misc/Spawn";
 import EditorOwner from "../scenes/editor-components/EditorOwner";
 import EditorActorLevel from "../scenes/editor-components/EditorActorLevel";
+import EditorScenarioReference from "../scenes/editor-components/EditorScenarioReference";
 import { FactionDefinitions } from "@fuzzy-waddle/probable-waffle-gameplay";
 import {
   getGameObjectBounds,
@@ -34,6 +35,11 @@ type GameObject = Phaser.GameObjects.GameObject;
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { upgradeActorToLevel } from "../../data/actor-level-utils";
 import { ActorIdAuthorityService } from "./multiplayer/actor-id-authority.service";
+import {
+  normalizeScenarioList,
+  ScenarioActorReferenceComponent
+} from "../../campaign/scenario/scenario-actor-reference.component";
+import { IndexedScenarioReferenceRegistry } from "../../campaign/scenario/scenario-reference-registry";
 
 export class SceneActorCreator {
   private readonly loadGame: LoadGame;
@@ -95,6 +101,13 @@ export class SceneActorCreator {
           if (editorLevel > 1) {
             upgradeActorToLevel(gameObject, editorLevel);
           }
+        }
+        const editorScenarioReference = EditorScenarioReference.getComponent(gameObject);
+        if (editorScenarioReference?.scenarioId.trim()) {
+          getActorComponent(gameObject, ScenarioActorReferenceComponent)?.setData({
+            roleId: editorScenarioReference.scenarioId,
+            tags: normalizeScenarioList(editorScenarioReference.tags)
+          });
         }
         // Register in the actor index after init
         this.registerAndSaveNewActor(gameObject);
@@ -213,6 +226,7 @@ export class SceneActorCreator {
 
     const actorIndex = getSceneService(this.scene, ActorIndexSystem);
     actorIndex?.registerActor(actor);
+    getSceneService(this.scene, IndexedScenarioReferenceRegistry)?.registerActor(actor);
     this.saveActorToGameState(actor);
     this.syncHostActorState();
   }

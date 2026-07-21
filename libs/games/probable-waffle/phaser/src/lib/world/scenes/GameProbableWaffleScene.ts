@@ -50,6 +50,7 @@ import { SceneLightingService } from "../services/lighting/scene-lighting.servic
 import { MovementOccupancyService } from "../services/movement-occupancy.service";
 import { NavigationDebugService } from "../services/navigation-debug.service";
 import { CampaignMissionDirector } from "../../campaign/campaign-mission-director";
+import { IndexedScenarioReferenceRegistry } from "../../campaign/scenario/scenario-reference-registry";
 
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
   tilemap!: Phaser.Tilemaps.Tilemap;
@@ -80,6 +81,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     const snapshotService = new SnapshotService();
     const commandBusService = new CommandBusService(this);
     const simTickService = new SimulationTickService(this);
+    const scenarioReferenceRegistry = new IndexedScenarioReferenceRegistry();
 
     this.sceneGameData.components.push(
       this.getCameraMovementHandler(),
@@ -104,12 +106,14 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       new DebuggingService(),
       new CrossSceneCommunicationService(),
       actorIndex,
+      scenarioReferenceRegistry,
       new TechTreeService(),
       new SpellCursor(this),
       new AoeZoneManager(this),
       new PauseSyncService(this),
       snapshotService
     );
+    scenarioReferenceRegistry.initialize(this);
     simTickService?.pauseTick(SimulationPauseReason.SceneBootstrap);
     const campaignMissionDirector = CampaignMissionDirector.create(this, gameModeConditionChecker);
     if (campaignMissionDirector) this.sceneGameData.services.push(campaignMissionDirector);

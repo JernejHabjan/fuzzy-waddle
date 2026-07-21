@@ -139,6 +139,7 @@ import GroundCarrot from "../prefabs/outside/crops/ground/carrot/GroundCarrot";
 import GroundChampignons from "../prefabs/outside/crops/ground/champignons/GroundChampignons";
 import GroundTurnip from "../prefabs/outside/crops/ground/turnip/GroundTurnip";
 import Corpy from "../prefabs/characters/mobs/corpy/Corpy";
+import { ScenarioActorReferenceComponent } from "../campaign/scenario/scenario-actor-reference.component";
 
 import BlockObsidian1 from "../prefabs/outside/nature/block_obsidian/BlockObsidian1";
 import BlockObsidian2 from "../prefabs/outside/nature/block_obsidian/BlockObsidian2";
@@ -613,6 +614,7 @@ export class ActorManager {
       owner: getActorComponent(actor, OwnerComponent)?.getData(),
       selected: getActorComponent(actor, SelectableComponent)?.getData(),
       id: getActorComponent(actor, IdComponent)?.getData(),
+      scenario: getActorComponent(actor, ScenarioActorReferenceComponent)?.getData(),
       constructionSite: getActorComponent(actor, ConstructionSiteComponent)?.getData(),
       health: getActorComponent(actor, HealthComponent)?.getData(),
       housing: getActorComponent(actor, HousingComponent)?.getData(),

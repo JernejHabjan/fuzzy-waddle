@@ -12,6 +12,7 @@ import type { MissionParticipantDefinition } from "./mission-participant-definit
 import type { MissionPhaseDefinition } from "./mission-phase-definition";
 import type { MissionProgressionAllowance } from "./mission-progression-allowance";
 import type { MissionRuntimeInitialState } from "./mission-runtime-initial-state";
+import type { MissionScenarioReferences } from "./mission-scenario-references";
 
 export interface MissionCatalogueDefinition {
   readonly order: number;
@@ -36,6 +37,7 @@ export interface CampaignMissionContent {
   readonly phases: readonly MissionPhaseDefinition[];
   readonly objectives: readonly MissionObjectiveDefinition[];
   readonly checkpoints: readonly MissionCheckpointDefinition[];
+  readonly scenarioReferences?: MissionScenarioReferences;
   readonly difficulty: MissionDifficultyDefinition;
   readonly contentStatus: CampaignContentStatus;
 }
