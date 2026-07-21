@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "time-rush",
+  "chapterId": "crystal-war",
+  "revision": 1,
+  "mapId": 3,
+  "prerequisites": ["the-siege"],
+  "catalogue": {
+    "order": 3,
+    "title": "Time Rush",
+    "faction": "both",
+    "environment": "Fractured valley",
+    "briefing": "The crystal's power destabilizes time itself.",
+    "objectiveSummaries": ["Reach the rift", "Stabilize the crystals"]
+  },
+  "participants": [],
+  "progressionAllowance": {
+    "loadoutSlotCount": 0
+  },
+  "initialState": {
+    "activePhaseIds": [],
+    "facts": [],
+    "counters": [],
+    "timers": []
+  },
+  "phases": [],
+  "objectives": [],
+  "checkpoints": [],
+  "difficulty": {
+    "story": {},
+    "normal": {},
+    "hard": {}
+  },
+  "contentStatus": "skeleton"
+}

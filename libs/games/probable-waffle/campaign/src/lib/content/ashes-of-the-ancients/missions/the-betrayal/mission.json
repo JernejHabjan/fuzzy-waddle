@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "the-betrayal",
+  "chapterId": "the-betrayal",
+  "revision": 1,
+  "mapId": 3,
+  "prerequisites": ["the-volcano"],
+  "catalogue": {
+    "order": 0,
+    "title": "The Betrayal",
+    "faction": "both",
+    "environment": "Volcanic heart",
+    "briefing": "A trusted companion reveals a hidden purpose.",
+    "objectiveSummaries": ["Escape the betrayal", "Protect the crystal"]
+  },
+  "participants": [],
+  "progressionAllowance": {
+    "loadoutSlotCount": 0
+  },
+  "initialState": {
+    "activePhaseIds": [],
+    "facts": [],
+    "counters": [],
+    "timers": []
+  },
+  "phases": [],
+  "objectives": [],
+  "checkpoints": [],
+  "difficulty": {
+    "story": {},
+    "normal": {},
+    "hard": {}
+  },
+  "contentStatus": "skeleton"
+}

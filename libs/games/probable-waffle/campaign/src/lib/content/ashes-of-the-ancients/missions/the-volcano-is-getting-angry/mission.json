@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "the-volcano-is-getting-angry",
+  "chapterId": "united-against-volcano",
+  "revision": 1,
+  "mapId": 3,
+  "prerequisites": ["mobster-or-friend"],
+  "catalogue": {
+    "order": 1,
+    "title": "The Volcano Is Getting Angry",
+    "faction": "both",
+    "environment": "Fire mountain",
+    "briefing": "The mountain begins to answer the crystal's call.",
+    "objectiveSummaries": ["Evacuate the valley", "Contain the eruption"]
+  },
+  "participants": [],
+  "progressionAllowance": {
+    "loadoutSlotCount": 0
+  },
+  "initialState": {
+    "activePhaseIds": [],
+    "facts": [],
+    "counters": [],
+    "timers": []
+  },
+  "phases": [],
+  "objectives": [],
+  "checkpoints": [],
+  "difficulty": {
+    "story": {},
+    "normal": {},
+    "hard": {}
+  },
+  "contentStatus": "skeleton"
+}

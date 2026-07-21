@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "sand-dunes-and-tivara-crystal",
+  "chapterId": "two-homelands",
+  "revision": 1,
+  "mapId": 3,
+  "prerequisites": ["owl-and-skaduwee-crystal"],
+  "catalogue": {
+    "order": 4,
+    "title": "Sand Dunes & Tivara Crystal",
+    "faction": "tivara",
+    "environment": "Tivara dunes",
+    "briefing": "Tivara's crystal is buried under shifting sand and old resentment.",
+    "objectiveSummaries": ["Cross the dunes", "Claim the crystal"]
+  },
+  "participants": [],
+  "progressionAllowance": {
+    "loadoutSlotCount": 0
+  },
+  "initialState": {
+    "activePhaseIds": [],
+    "facts": [],
+    "counters": [],
+    "timers": []
+  },
+  "phases": [],
+  "objectives": [],
+  "checkpoints": [],
+  "difficulty": {
+    "story": {},
+    "normal": {},
+    "hard": {}
+  },
+  "contentStatus": "skeleton"
+}

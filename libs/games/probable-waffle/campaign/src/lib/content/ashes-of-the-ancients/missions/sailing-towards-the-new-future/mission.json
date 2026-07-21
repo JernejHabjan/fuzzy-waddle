@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "sailing-towards-the-new-future",
+  "chapterId": "crystal-war",
+  "revision": 1,
+  "mapId": 3,
+  "prerequisites": ["we-had-enough"],
+  "catalogue": {
+    "order": 0,
+    "title": "Sailing Towards the New Future",
+    "faction": "both",
+    "environment": "Crystal coast",
+    "briefing": "Both factions sail toward a future neither fully trusts.",
+    "objectiveSummaries": ["Reach the coast", "Defend the fleet"]
+  },
+  "participants": [],
+  "progressionAllowance": {
+    "loadoutSlotCount": 0
+  },
+  "initialState": {
+    "activePhaseIds": [],
+    "facts": [],
+    "counters": [],
+    "timers": []
+  },
+  "phases": [],
+  "objectives": [],
+  "checkpoints": [],
+  "difficulty": {
+    "story": {},
+    "normal": {},
+    "hard": {}
+  },
+  "contentStatus": "skeleton"
+}

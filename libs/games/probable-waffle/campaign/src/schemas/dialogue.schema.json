@@ -1,0 +1,207 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fuzzy-waddle.dev/schemas/probable-waffle/campaign/dialogue.schema.json",
+  "title": "Probable Waffle mission dialogue",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "missionId", "speakers", "lines", "cinematics"],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "missionId": {
+      "enum": [
+        "dreams",
+        "cyclops-and-sheep",
+        "snow-wendigo-and-fire",
+        "slingshooters-and-wolves",
+        "owl-and-skaduwee-crystal",
+        "sand-dunes-and-tivara-crystal",
+        "we-had-enough",
+        "sailing-towards-the-new-future",
+        "the-first-and-last-dinner",
+        "the-siege",
+        "time-rush",
+        "joining-crystal",
+        "mobster-or-friend",
+        "the-volcano-is-getting-angry",
+        "cult-wars",
+        "the-volcano",
+        "the-betrayal",
+        "undead-and-cursed-lands",
+        "end-game",
+        "resolution"
+      ]
+    },
+    "speakers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "nameTextId"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "nameTextId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "portraitId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          }
+        }
+      }
+    },
+    "lines": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "speakerId", "textId", "text", "delivery"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "speakerId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "textId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "text": {
+            "type": "string"
+          },
+          "audioAssetKey": {
+            "type": "string",
+            "minLength": 1
+          },
+          "portraitId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "delivery": {
+            "enum": ["blocking", "non-blocking", "ambient", "tutorial"]
+          },
+          "minimumTicks": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "cinematics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "mode", "seenSkipPolicy", "timeline", "gameplayFinalizeActionIds"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "mode": {
+            "enum": ["gameplay", "directed", "paused"]
+          },
+          "seenSkipPolicy": {
+            "enum": ["hold", "tap"]
+          },
+          "timeline": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["kind", "lineId"],
+                  "properties": {
+                    "kind": {
+                      "const": "dialogue"
+                    },
+                    "lineId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["kind", "durationTicks"],
+                  "properties": {
+                    "kind": {
+                      "const": "wait"
+                    },
+                    "durationTicks": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["kind", "visible"],
+                  "properties": {
+                    "kind": {
+                      "const": "letterbox"
+                    },
+                    "visible": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["kind", "textId"],
+                  "properties": {
+                    "kind": {
+                      "const": "title"
+                    },
+                    "textId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "gameplayPreludeActionIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            }
+          },
+          "gameplayFinalizeActionIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            }
+          }
+        }
+      }
+    }
+  }
+}

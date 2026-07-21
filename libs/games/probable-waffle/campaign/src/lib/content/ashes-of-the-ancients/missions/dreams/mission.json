@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "id": "dreams",
+  "chapterId": "prologue",
+  "revision": 1,
+  "mapId": 3,
+  "prerequisites": [],
+  "catalogue": {
+    "order": 0,
+    "title": "Dreams",
+    "faction": "switching",
+    "environment": "Volcanic highlands",
+    "briefing": "A shared dream becomes a call to arms. Learn why both homelands are bound to the ancient crystal.",
+    "objectiveSummaries": [
+      "Explore the volcanic highlands",
+      "Discover the source of the visions",
+      "Protect the ancient crystal"
+    ]
+  },
+  "participants": [],
+  "progressionAllowance": {
+    "loadoutSlotCount": 0
+  },
+  "initialState": {
+    "activePhaseIds": [],
+    "facts": [],
+    "counters": [],
+    "timers": []
+  },
+  "phases": [],
+  "objectives": [],
+  "checkpoints": [],
+  "difficulty": {
+    "story": {},
+    "normal": {},
+    "hard": {}
+  },
+  "contentStatus": "skeleton"
+}

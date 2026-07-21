@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "snow-wendigo-and-fire",
+  "chapterId": "two-homelands",
+  "revision": 1,
+  "mapId": 2,
+  "prerequisites": ["cyclops-and-sheep"],
+  "catalogue": {
+    "order": 1,
+    "title": "Snow Wendigo & Fire",
+    "faction": "skaduwee",
+    "environment": "Skaduwee tundra",
+    "briefing": "A winter hunt reveals an ember that should not exist in the snow.",
+    "objectiveSummaries": ["Track the wendigo", "Recover the ember"]
+  },
+  "participants": [],
+  "progressionAllowance": {
+    "loadoutSlotCount": 0
+  },
+  "initialState": {
+    "activePhaseIds": [],
+    "facts": [],
+    "counters": [],
+    "timers": []
+  },
+  "phases": [],
+  "objectives": [],
+  "checkpoints": [],
+  "difficulty": {
+    "story": {},
+    "normal": {},
+    "hard": {}
+  },
+  "contentStatus": "skeleton"
+}

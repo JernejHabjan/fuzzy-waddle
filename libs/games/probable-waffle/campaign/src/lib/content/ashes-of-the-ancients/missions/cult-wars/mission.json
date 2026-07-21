@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "cult-wars",
+  "chapterId": "united-against-volcano",
+  "revision": 1,
+  "mapId": 3,
+  "prerequisites": ["the-volcano-is-getting-angry"],
+  "catalogue": {
+    "order": 2,
+    "title": "Cult Wars",
+    "faction": "both",
+    "environment": "Ashen ruins",
+    "briefing": "A cult turns chaos into an army.",
+    "objectiveSummaries": ["Expose the cult", "Defeat its leaders"]
+  },
+  "participants": [],
+  "progressionAllowance": {
+    "loadoutSlotCount": 0
+  },
+  "initialState": {
+    "activePhaseIds": [],
+    "facts": [],
+    "counters": [],
+    "timers": []
+  },
+  "phases": [],
+  "objectives": [],
+  "checkpoints": [],
+  "difficulty": {
+    "story": {},
+    "normal": {},
+    "hard": {}
+  },
+  "contentStatus": "skeleton"
+}

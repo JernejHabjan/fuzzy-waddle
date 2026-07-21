@@ -1,0 +1,986 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fuzzy-waddle.dev/schemas/probable-waffle/campaign/mission.schema.json",
+  "title": "Probable Waffle campaign mission",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "chapterId",
+    "revision",
+    "mapId",
+    "prerequisites",
+    "catalogue",
+    "participants",
+    "progressionAllowance",
+    "initialState",
+    "phases",
+    "objectives",
+    "checkpoints",
+    "difficulty",
+    "contentStatus"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "id": {
+      "enum": [
+        "dreams",
+        "cyclops-and-sheep",
+        "snow-wendigo-and-fire",
+        "slingshooters-and-wolves",
+        "owl-and-skaduwee-crystal",
+        "sand-dunes-and-tivara-crystal",
+        "we-had-enough",
+        "sailing-towards-the-new-future",
+        "the-first-and-last-dinner",
+        "the-siege",
+        "time-rush",
+        "joining-crystal",
+        "mobster-or-friend",
+        "the-volcano-is-getting-angry",
+        "cult-wars",
+        "the-volcano",
+        "the-betrayal",
+        "undead-and-cursed-lands",
+        "end-game",
+        "resolution"
+      ]
+    },
+    "chapterId": {
+      "enum": ["prologue", "two-homelands", "crystal-war", "united-against-volcano", "the-betrayal"]
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "mapId": {
+      "enum": [1, 2, 3]
+    },
+    "prerequisites": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "dreams",
+          "cyclops-and-sheep",
+          "snow-wendigo-and-fire",
+          "slingshooters-and-wolves",
+          "owl-and-skaduwee-crystal",
+          "sand-dunes-and-tivara-crystal",
+          "we-had-enough",
+          "sailing-towards-the-new-future",
+          "the-first-and-last-dinner",
+          "the-siege",
+          "time-rush",
+          "joining-crystal",
+          "mobster-or-friend",
+          "the-volcano-is-getting-angry",
+          "cult-wars",
+          "the-volcano",
+          "the-betrayal",
+          "undead-and-cursed-lands",
+          "end-game",
+          "resolution"
+        ]
+      }
+    },
+    "catalogue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["order", "title", "faction", "environment", "briefing", "objectiveSummaries"],
+      "properties": {
+        "order": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "faction": {
+          "enum": ["tivara", "skaduwee", "both", "switching"]
+        },
+        "environment": {
+          "type": "string",
+          "minLength": 1
+        },
+        "briefing": {
+          "type": "string",
+          "minLength": 1
+        },
+        "objectiveSummaries": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "participants": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["slotId", "controller", "faction", "teamId", "economy", "fogPolicy"],
+        "properties": {
+          "slotId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "controller": {
+            "enum": ["human", "full-ai", "scripted-ai", "passive"]
+          },
+          "faction": {
+            "enum": [1, 2]
+          },
+          "teamId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "economy": {
+            "enum": ["normal", "granted", "none"]
+          },
+          "fogPolicy": {
+            "enum": ["normal", "revealed", "omniscient-ai"]
+          }
+        }
+      }
+    },
+    "progressionAllowance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["loadoutSlotCount"],
+      "properties": {
+        "allowedUnlockIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          }
+        },
+        "deniedUnlockIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          }
+        },
+        "unitLevelCaps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["objectName", "maximumLevel"],
+            "properties": {
+              "objectName": {
+                "type": "string",
+                "minLength": 1
+              },
+              "maximumLevel": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        },
+        "loadoutSlotCount": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "initialState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["activePhaseIds", "facts", "counters", "timers"],
+      "properties": {
+        "activePhaseIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          }
+        },
+        "facts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "value"],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+              },
+              "value": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "counters": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "value"],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+              },
+              "value": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        "timers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "durationTicks", "state"],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+              },
+              "durationTicks": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "state": {
+                "enum": ["running", "paused"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "phases": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/phase"
+      }
+    },
+    "objectives": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/objective"
+      }
+    },
+    "checkpoints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "titleTextId", "trigger", "requiredActions", "savePolicy"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "titleTextId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "trigger": {
+            "$ref": "#/$defs/condition"
+          },
+          "requiredActions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/action"
+            }
+          },
+          "savePolicy": {
+            "enum": ["when-stable", "post-cinematic"]
+          }
+        }
+      }
+    },
+    "difficulty": {
+      "$ref": "https://fuzzy-waddle.dev/schemas/probable-waffle/campaign/difficulty.schema.json"
+    },
+    "contentStatus": {
+      "enum": ["skeleton", "playable", "complete"]
+    }
+  },
+  "$defs": {
+    "condition": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind"],
+          "properties": {
+            "kind": {
+              "const": "always"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind"],
+          "properties": {
+            "kind": {
+              "const": "never"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "conditions"],
+          "properties": {
+            "kind": {
+              "const": "all"
+            },
+            "conditions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/condition"
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "conditions"],
+          "properties": {
+            "kind": {
+              "const": "any"
+            },
+            "conditions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/condition"
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "condition"],
+          "properties": {
+            "kind": {
+              "const": "not"
+            },
+            "condition": {
+              "$ref": "#/$defs/condition"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "factId", "equals"],
+          "properties": {
+            "kind": {
+              "const": "fact"
+            },
+            "factId": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            },
+            "equals": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "counterId", "comparison", "value"],
+          "properties": {
+            "kind": {
+              "const": "counter"
+            },
+            "counterId": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            },
+            "comparison": {
+              "enum": ["equal", "not-equal", "less", "less-or-equal", "greater", "greater-or-equal"]
+            },
+            "value": {
+              "type": "number"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "timerId", "state"],
+          "properties": {
+            "kind": {
+              "const": "timer"
+            },
+            "timerId": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            },
+            "state": {
+              "enum": ["running", "paused", "elapsed"]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "objectiveId", "state"],
+          "properties": {
+            "kind": {
+              "const": "objective"
+            },
+            "objectiveId": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            },
+            "state": {
+              "enum": ["hidden", "active", "completed", "failed", "impossible"]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "phaseId", "state"],
+          "properties": {
+            "kind": {
+              "const": "phase"
+            },
+            "phaseId": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            },
+            "state": {
+              "enum": ["active", "completed"]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "encounterId", "state"],
+          "properties": {
+            "kind": {
+              "const": "encounter"
+            },
+            "encounterId": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            },
+            "state": {
+              "enum": ["inactive", "active", "completed", "failed"]
+            }
+          }
+        }
+      ]
+    },
+    "action": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "kind", "factId", "value"],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            },
+            "scope": {
+              "enum": ["phase", "mission"]
+            },
+            "missingReferencePolicy": {
+              "enum": ["fail-mission", "skip", "wait", "fallback"]
+            },
+            "kind": {
+              "const": "set-fact"
+            },
+            "factId": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            },
+            "value": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "kind", "counterId", "value"],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            },
+            "scope": {
+              "enum": ["phase", "mission"]
+            },
+            "missingReferencePolicy": {
+              "enum": ["fail-mission", "skip", "wait", "fallback"]
+            },
+            "kind": {
+              "const": "set-counter"
+            },
+            "counterId": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            },
+            "value": {
+              "type": "number"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "kind", "counterId", "amount"],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            },
+            "scope": {
+              "enum": ["phase", "mission"]
+            },
+            "missingReferencePolicy": {
+              "enum": ["fail-mission", "skip", "wait", "fallback"]
+            },
+            "kind": {
+              "const": "increment-counter"
+            },
+            "counterId": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            },
+            "amount": {
+              "type": "number"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "kind", "timerId", "durationTicks"],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            },
+            "scope": {
+              "enum": ["phase", "mission"]
+            },
+            "missingReferencePolicy": {
+              "enum": ["fail-mission", "skip", "wait", "fallback"]
+            },
+            "kind": {
+              "const": "start-timer"
+            },
+            "timerId": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            },
+            "durationTicks": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "kind", "timerId"],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            },
+            "scope": {
+              "enum": ["phase", "mission"]
+            },
+            "missingReferencePolicy": {
+              "enum": ["fail-mission", "skip", "wait", "fallback"]
+            },
+            "kind": {
+              "const": "pause-timer"
+            },
+            "timerId": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "kind", "timerId"],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            },
+            "scope": {
+              "enum": ["phase", "mission"]
+            },
+            "missingReferencePolicy": {
+              "enum": ["fail-mission", "skip", "wait", "fallback"]
+            },
+            "kind": {
+              "const": "cancel-timer"
+            },
+            "timerId": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "kind", "outcome", "reasonId"],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            },
+            "scope": {
+              "enum": ["phase", "mission"]
+            },
+            "missingReferencePolicy": {
+              "enum": ["fail-mission", "skip", "wait", "fallback"]
+            },
+            "kind": {
+              "const": "request-outcome"
+            },
+            "outcome": {
+              "enum": ["victory", "defeat"]
+            },
+            "reasonId": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "kind", "hookId"],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            },
+            "scope": {
+              "enum": ["phase", "mission"]
+            },
+            "missingReferencePolicy": {
+              "enum": ["fail-mission", "skip", "wait", "fallback"]
+            },
+            "kind": {
+              "const": "trusted-hook"
+            },
+            "hookId": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            }
+          }
+        }
+      ]
+    },
+    "phase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "mode", "entryActions", "exitActions", "triggers", "transitions"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "mode": {
+          "enum": ["sequential", "parallel"]
+        },
+        "entryActions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/action"
+          }
+        },
+        "exitActions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/action"
+          }
+        },
+        "triggers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "kind", "condition", "actions", "firing", "priority"],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+              },
+              "kind": {
+                "enum": ["event", "condition"]
+              },
+              "eventKinds": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "condition": {
+                "$ref": "#/$defs/condition"
+              },
+              "actions": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/action"
+                }
+              },
+              "firing": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["kind"],
+                    "properties": {
+                      "kind": {
+                        "const": "once"
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["kind", "cooldownTicks"],
+                    "properties": {
+                      "kind": {
+                        "const": "repeatable"
+                      },
+                      "cooldownTicks": {
+                        "type": "integer",
+                        "minimum": 0
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["kind"],
+                    "properties": {
+                      "kind": {
+                        "const": "edge"
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["kind", "cadenceTicks"],
+                    "properties": {
+                      "kind": {
+                        "const": "while"
+                      },
+                      "cadenceTicks": {
+                        "type": "integer",
+                        "minimum": 1
+                      }
+                    }
+                  }
+                ]
+              },
+              "priority": {
+                "type": "integer"
+              }
+            }
+          }
+        },
+        "transitions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "targetPhaseIds", "condition", "actions", "priority"],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+              },
+              "targetPhaseIds": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+                }
+              },
+              "condition": {
+                "$ref": "#/$defs/condition"
+              },
+              "actions": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/action"
+                }
+              },
+              "priority": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      }
+    },
+    "objective": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "titleTextId", "reveal", "complete", "display"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "kind": {
+          "enum": ["primary", "secondary", "optional", "hidden", "tutorial", "failure"]
+        },
+        "titleTextId": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "descriptionTextId": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "reveal": {
+          "$ref": "#/$defs/condition"
+        },
+        "complete": {
+          "$ref": "#/$defs/condition"
+        },
+        "fail": {
+          "$ref": "#/$defs/condition"
+        },
+        "checklist": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "textId", "complete"],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+              },
+              "textId": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+              },
+              "complete": {
+                "$ref": "#/$defs/condition"
+              }
+            }
+          }
+        },
+        "rewardIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          }
+        },
+        "display": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["announceReveal", "announceCompletion", "showInTracker"],
+          "properties": {
+            "announceReveal": {
+              "type": "boolean"
+            },
+            "announceCompletion": {
+              "type": "boolean"
+            },
+            "showInTracker": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    }
+  }
+}

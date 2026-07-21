@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fuzzy-waddle.dev/schemas/probable-waffle/campaign/difficulty.schema.json",
+  "title": "Probable Waffle mission difficulty",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["story", "normal", "hard"],
+  "properties": {
+    "story": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "startingResourceScale": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "waveSizeScale": {
+          "type": "number",
+          "minimum": 0
+        },
+        "warningTicks": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "damageScale": {
+          "type": "number",
+          "minimum": 0
+        },
+        "aiAggressionScale": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "normal": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "startingResourceScale": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "waveSizeScale": {
+          "type": "number",
+          "minimum": 0
+        },
+        "warningTicks": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "damageScale": {
+          "type": "number",
+          "minimum": 0
+        },
+        "aiAggressionScale": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "hard": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "startingResourceScale": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "waveSizeScale": {
+          "type": "number",
+          "minimum": 0
+        },
+        "warningTicks": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "damageScale": {
+          "type": "number",
+          "minimum": 0
+        },
+        "aiAggressionScale": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

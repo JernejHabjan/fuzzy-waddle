@@ -5,6 +5,10 @@ import {
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameInstanceVisibility
 } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  ASHES_OF_THE_ANCIENTS_CAMPAIGN_ID,
+  AOTA_CAMPAIGN_CONTENT_REGISTRY
+} from "@fuzzy-waddle/probable-waffle-campaign";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import { AOTA_CAMPAIGN_CATALOG } from "./campaign-catalog";
 import { CampaignProgressService } from "./campaign-progress.service";
@@ -33,6 +37,7 @@ export class CampaignLaunchService implements CampaignLaunchServiceInterface {
     }
     this.launchInProgress = true;
     try {
+      const missionContent = AOTA_CAMPAIGN_CONTENT_REGISTRY.getMission(mission.id);
       await this.gameInstanceClientService.createGameInstance(
         `Campaign: ${mission.title}`,
         ProbableWaffleGameInstanceVisibility.Private,
@@ -42,9 +47,11 @@ export class CampaignLaunchService implements CampaignLaunchServiceInterface {
       if (!metadata) throw new Error("Campaign game metadata is required");
       const runId = await this.campaignProgressService.startRun(mission.id);
       metadata.campaignContext = {
+        campaignId: ASHES_OF_THE_ANCIENTS_CAMPAIGN_ID,
         catalogVersion: AOTA_CAMPAIGN_CATALOG.version,
         chapterId: mission.chapterId,
         missionId: mission.id,
+        missionRevision: missionContent.revision,
         runId
       };
       await this.gameInstanceClientService.addSelfAsPlayer();

@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "we-had-enough",
+  "chapterId": "two-homelands",
+  "revision": 1,
+  "mapId": 3,
+  "prerequisites": ["sand-dunes-and-tivara-crystal"],
+  "catalogue": {
+    "order": 5,
+    "title": "We Had Enough",
+    "faction": "switching",
+    "environment": "Borderlands",
+    "briefing": "The two journeys collide at last.",
+    "objectiveSummaries": ["Meet both forces", "Survive the confrontation"]
+  },
+  "participants": [],
+  "progressionAllowance": {
+    "loadoutSlotCount": 0
+  },
+  "initialState": {
+    "activePhaseIds": [],
+    "facts": [],
+    "counters": [],
+    "timers": []
+  },
+  "phases": [],
+  "objectives": [],
+  "checkpoints": [],
+  "difficulty": {
+    "story": {},
+    "normal": {},
+    "hard": {}
+  },
+  "contentStatus": "skeleton"
+}

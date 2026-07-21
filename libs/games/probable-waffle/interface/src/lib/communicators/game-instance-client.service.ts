@@ -779,7 +779,13 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
         overwriteSaveId: requestedSave?.kind === "manual" ? requestedSave.overwriteSaveId : undefined,
         thumbnail: data.thumbnail,
         gameInstanceData,
-        campaign: { chapterId: campaign.chapterId, missionId: campaign.missionId, runId: campaign.runId }
+        campaign: {
+          campaignId: campaign.campaignId,
+          chapterId: campaign.chapterId,
+          missionId: campaign.missionId,
+          missionRevision: campaign.missionRevision,
+          runId: campaign.runId
+        }
       });
       return;
     }

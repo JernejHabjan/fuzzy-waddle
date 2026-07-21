@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "the-siege",
+  "chapterId": "crystal-war",
+  "revision": 1,
+  "mapId": 3,
+  "prerequisites": ["the-first-and-last-dinner"],
+  "catalogue": {
+    "order": 2,
+    "title": "The Siege",
+    "faction": "both",
+    "environment": "Crystal citadel",
+    "briefing": "The war reaches the gates.",
+    "objectiveSummaries": ["Break the siege", "Protect the civilians"]
+  },
+  "participants": [],
+  "progressionAllowance": {
+    "loadoutSlotCount": 0
+  },
+  "initialState": {
+    "activePhaseIds": [],
+    "facts": [],
+    "counters": [],
+    "timers": []
+  },
+  "phases": [],
+  "objectives": [],
+  "checkpoints": [],
+  "difficulty": {
+    "story": {},
+    "normal": {},
+    "hard": {}
+  },
+  "contentStatus": "skeleton"
+}

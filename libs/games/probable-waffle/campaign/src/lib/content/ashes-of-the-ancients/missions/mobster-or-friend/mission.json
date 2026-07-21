@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "mobster-or-friend",
+  "chapterId": "united-against-volcano",
+  "revision": 1,
+  "mapId": 3,
+  "prerequisites": ["joining-crystal"],
+  "catalogue": {
+    "order": 0,
+    "title": "Mobster or Friend?",
+    "faction": "both",
+    "environment": "Volcanic foothills",
+    "briefing": "An unlikely ally offers help at a cost.",
+    "objectiveSummaries": ["Meet the contact", "Choose whom to trust"]
+  },
+  "participants": [],
+  "progressionAllowance": {
+    "loadoutSlotCount": 0
+  },
+  "initialState": {
+    "activePhaseIds": [],
+    "facts": [],
+    "counters": [],
+    "timers": []
+  },
+  "phases": [],
+  "objectives": [],
+  "checkpoints": [],
+  "difficulty": {
+    "story": {},
+    "normal": {},
+    "hard": {}
+  },
+  "contentStatus": "skeleton"
+}

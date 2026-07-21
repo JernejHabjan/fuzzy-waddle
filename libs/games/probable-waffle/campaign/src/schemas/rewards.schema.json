@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fuzzy-waddle.dev/schemas/probable-waffle/campaign/rewards.schema.json",
+  "title": "Probable Waffle mission rewards",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "missionId", "rewards"],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "missionId": {
+      "enum": [
+        "dreams",
+        "cyclops-and-sheep",
+        "snow-wendigo-and-fire",
+        "slingshooters-and-wolves",
+        "owl-and-skaduwee-crystal",
+        "sand-dunes-and-tivara-crystal",
+        "we-had-enough",
+        "sailing-towards-the-new-future",
+        "the-first-and-last-dinner",
+        "the-siege",
+        "time-rush",
+        "joining-crystal",
+        "mobster-or-friend",
+        "the-volcano-is-getting-angry",
+        "cult-wars",
+        "the-volcano",
+        "the-betrayal",
+        "undead-and-cursed-lands",
+        "end-game",
+        "resolution"
+      ]
+    },
+    "rewards": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "titleTextId", "scope", "oneTime"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "kind": {
+            "enum": [
+              "currency",
+              "story-unlock",
+              "stat-tome",
+              "item",
+              "faction-unlock",
+              "unit-unlock",
+              "building-unlock",
+              "technology-unlock",
+              "temporary-boost"
+            ]
+          },
+          "titleTextId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "scope": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["kind"],
+                "properties": {
+                  "kind": {
+                    "const": "global"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["kind", "faction"],
+                "properties": {
+                  "kind": {
+                    "const": "faction"
+                  },
+                  "faction": {
+                    "enum": [1, 2]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["kind", "objectName"],
+                "properties": {
+                  "kind": {
+                    "const": "actor"
+                  },
+                  "objectName": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            ]
+          },
+          "oneTime": {
+            "type": "boolean"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "unlockId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          }
+        }
+      }
+    }
+  }
+}

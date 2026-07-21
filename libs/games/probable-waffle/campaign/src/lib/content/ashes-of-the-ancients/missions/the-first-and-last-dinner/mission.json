@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "the-first-and-last-dinner",
+  "chapterId": "crystal-war",
+  "revision": 1,
+  "mapId": 3,
+  "prerequisites": ["sailing-towards-the-new-future"],
+  "catalogue": {
+    "order": 1,
+    "title": "The First and Last Dinner",
+    "faction": "both",
+    "environment": "Harbor city",
+    "briefing": "A tense meal is the last chance for peace.",
+    "objectiveSummaries": ["Attend the summit", "Escape the ambush"]
+  },
+  "participants": [],
+  "progressionAllowance": {
+    "loadoutSlotCount": 0
+  },
+  "initialState": {
+    "activePhaseIds": [],
+    "facts": [],
+    "counters": [],
+    "timers": []
+  },
+  "phases": [],
+  "objectives": [],
+  "checkpoints": [],
+  "difficulty": {
+    "story": {},
+    "normal": {},
+    "hard": {}
+  },
+  "contentStatus": "skeleton"
+}

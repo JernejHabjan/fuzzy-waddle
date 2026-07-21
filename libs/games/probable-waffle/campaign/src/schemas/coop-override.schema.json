@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fuzzy-waddle.dev/schemas/probable-waffle/campaign/coop-override.schema.json",
+  "title": "Probable Waffle mission co-op override",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "participants", "playerCountDifficulty", "failurePolicy", "disconnectedPlayerPolicy"],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "participants": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["slotId"],
+        "properties": {
+          "slotId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "controller": {
+            "enum": ["human", "full-ai", "scripted-ai", "passive"]
+          },
+          "faction": {
+            "enum": [1, 2]
+          },
+          "teamId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "economy": {
+            "enum": ["normal", "granted", "none"]
+          },
+          "fogPolicy": {
+            "enum": ["normal", "revealed", "omniscient-ai"]
+          }
+        }
+      }
+    },
+    "playerCountDifficulty": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["participantCount"],
+        "properties": {
+          "participantCount": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "waveSizeScale": {
+            "type": "number",
+            "minimum": 0
+          },
+          "resourceScale": {
+            "type": "number",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "failurePolicy": {
+      "enum": ["any-required-hero", "all-required-heroes", "team-eliminated", "mission-defined"]
+    },
+    "disconnectedPlayerPolicy": {
+      "enum": ["pause-for-reconnect", "mission-defined"]
+    }
+  }
+}

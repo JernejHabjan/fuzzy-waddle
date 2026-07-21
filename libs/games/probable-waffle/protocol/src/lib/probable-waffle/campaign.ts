@@ -2,6 +2,7 @@ import type { ProbableWaffleMapEnum } from "./probable-waffle";
 import type { ProbableWaffleGameInstanceData } from "../game-instance/probable-waffle/game-instance";
 
 /** Permanent identifiers used by progress, saves, routes, and campaign runs. */
+export type CampaignId = "ashes-of-the-ancients";
 export type CampaignChapterId =
   | "prologue"
   | "two-homelands"
@@ -29,6 +30,8 @@ export type CampaignMissionId =
   | "undead-and-cursed-lands"
   | "end-game"
   | "resolution";
+
+export const CAMPAIGN_IDS: readonly CampaignId[] = ["ashes-of-the-ancients"];
 
 export const CAMPAIGN_CHAPTER_IDS: readonly CampaignChapterId[] = [
   "prologue",
@@ -89,6 +92,10 @@ export function isCampaignChapterId(value: string | null): value is CampaignChap
   return value !== null && (CAMPAIGN_CHAPTER_IDS as readonly string[]).includes(value);
 }
 
+export function isCampaignId(value: string | null): value is CampaignId {
+  return value !== null && (CAMPAIGN_IDS as readonly string[]).includes(value);
+}
+
 export function isCampaignMissionId(value: string | null): value is CampaignMissionId {
   return value !== null && (CAMPAIGN_MISSION_IDS as readonly string[]).includes(value);
 }
@@ -124,6 +131,8 @@ export enum CampaignAvailability {
   Hidden = "hidden"
 }
 
+export type CampaignContentStatus = "skeleton" | "playable" | "complete";
+
 export interface CampaignArtworkDefinition {
   /** Replaceable asset path; functional labels and controls are never part of the artwork. */
   desktopSrc: string;
@@ -140,6 +149,7 @@ export interface CampaignMissionDefinition {
   faction: CampaignFaction;
   contentType: CampaignContentType;
   availability: CampaignAvailability;
+  contentStatus: CampaignContentStatus;
   prerequisites: CampaignMissionId[];
   environment: string;
   briefing: string;
@@ -232,8 +242,12 @@ export interface GameSaveRecord {
   revision: number;
   syncState: GameSaveSyncState;
   campaign?: {
+    /** Absent only on legacy format-v1 campaign saves created before content identity was versioned. */
+    campaignId?: CampaignId;
     chapterId: CampaignChapterId;
     missionId: CampaignMissionId;
+    /** Absent only on legacy format-v1 campaign saves; migration policy is owned by campaign save restore. */
+    missionRevision?: number;
     runId: string;
   };
   thumbnail?: string;

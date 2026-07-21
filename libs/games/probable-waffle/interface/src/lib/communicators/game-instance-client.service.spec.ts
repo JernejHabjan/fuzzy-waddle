@@ -55,4 +55,41 @@ describe("GameInstanceClientService", () => {
       expect.objectContaining({ scope: GameSaveScope.Skirmish, name: "Instant save", thumbnail: "thumbnail" })
     );
   });
+
+  it("persists campaign content identity in the searchable save context", async () => {
+    service.gameInstance = {
+      data: {
+        gameInstanceMetadataData: {
+          name: "Dreams",
+          type: ProbableWaffleGameInstanceType.Campaign,
+          visibility: ProbableWaffleGameInstanceVisibility.Private,
+          startOptions: {},
+          rndSeed: 1,
+          campaignContext: {
+            campaignId: "ashes-of-the-ancients",
+            catalogVersion: 1,
+            chapterId: "prologue",
+            missionId: "dreams",
+            missionRevision: 1,
+            runId: "run-1"
+          }
+        }
+      }
+    } as ProbableWaffleGameInstance;
+
+    await service.saveGameInstance({ kind: "manual", name: "Dream checkpoint" });
+
+    expect(gameSaveService.save).toHaveBeenCalledWith(
+      expect.objectContaining({
+        scope: GameSaveScope.Campaign,
+        campaign: {
+          campaignId: "ashes-of-the-ancients",
+          chapterId: "prologue",
+          missionId: "dreams",
+          missionRevision: 1,
+          runId: "run-1"
+        }
+      })
+    );
+  });
 });

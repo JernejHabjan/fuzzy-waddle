@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "cyclops-and-sheep",
+  "chapterId": "two-homelands",
+  "revision": 1,
+  "mapId": 2,
+  "prerequisites": ["dreams"],
+  "catalogue": {
+    "order": 0,
+    "title": "Cyclops & Sheep",
+    "faction": "tivara",
+    "environment": "Tivara plains",
+    "briefing": "Tivara faces a growing threat close to home.",
+    "objectiveSummaries": ["Secure the settlement", "Defeat the invading force"]
+  },
+  "participants": [],
+  "progressionAllowance": {
+    "loadoutSlotCount": 0
+  },
+  "initialState": {
+    "activePhaseIds": [],
+    "facts": [],
+    "counters": [],
+    "timers": []
+  },
+  "phases": [],
+  "objectives": [],
+  "checkpoints": [],
+  "difficulty": {
+    "story": {},
+    "normal": {},
+    "hard": {}
+  },
+  "contentStatus": "skeleton"
+}

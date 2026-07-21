@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "undead-and-cursed-lands",
+  "chapterId": "the-betrayal",
+  "revision": 1,
+  "mapId": 3,
+  "prerequisites": ["the-betrayal"],
+  "catalogue": {
+    "order": 1,
+    "title": "Undead & Cursed Lands",
+    "faction": "both",
+    "environment": "Cursed lands",
+    "briefing": "The dead rise where the crystal has scarred the earth.",
+    "objectiveSummaries": ["Cross the cursed lands", "Cleanse the corruption"]
+  },
+  "participants": [],
+  "progressionAllowance": {
+    "loadoutSlotCount": 0
+  },
+  "initialState": {
+    "activePhaseIds": [],
+    "facts": [],
+    "counters": [],
+    "timers": []
+  },
+  "phases": [],
+  "objectives": [],
+  "checkpoints": [],
+  "difficulty": {
+    "story": {},
+    "normal": {},
+    "hard": {}
+  },
+  "contentStatus": "skeleton"
+}

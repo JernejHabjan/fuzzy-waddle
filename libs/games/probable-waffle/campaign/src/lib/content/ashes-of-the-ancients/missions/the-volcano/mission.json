@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "the-volcano",
+  "chapterId": "united-against-volcano",
+  "revision": 1,
+  "mapId": 3,
+  "prerequisites": ["cult-wars"],
+  "catalogue": {
+    "order": 3,
+    "title": "The Volcano",
+    "faction": "both",
+    "environment": "Volcanic heart",
+    "briefing": "The alliance reaches the source of the disaster.",
+    "objectiveSummaries": ["Enter the volcano", "Secure the ancient chamber"]
+  },
+  "participants": [],
+  "progressionAllowance": {
+    "loadoutSlotCount": 0
+  },
+  "initialState": {
+    "activePhaseIds": [],
+    "facts": [],
+    "counters": [],
+    "timers": []
+  },
+  "phases": [],
+  "objectives": [],
+  "checkpoints": [],
+  "difficulty": {
+    "story": {},
+    "normal": {},
+    "hard": {}
+  },
+  "contentStatus": "skeleton"
+}

@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "joining-crystal",
+  "chapterId": "crystal-war",
+  "revision": 1,
+  "mapId": 3,
+  "prerequisites": ["time-rush"],
+  "catalogue": {
+    "order": 4,
+    "title": "Joining Crystal",
+    "faction": "both",
+    "environment": "Ancient convergence",
+    "briefing": "Only a joined crystal can end the escalation.",
+    "objectiveSummaries": ["Unite the fragments", "Defend the ritual"]
+  },
+  "participants": [],
+  "progressionAllowance": {
+    "loadoutSlotCount": 0
+  },
+  "initialState": {
+    "activePhaseIds": [],
+    "facts": [],
+    "counters": [],
+    "timers": []
+  },
+  "phases": [],
+  "objectives": [],
+  "checkpoints": [],
+  "difficulty": {
+    "story": {},
+    "normal": {},
+    "hard": {}
+  },
+  "contentStatus": "skeleton"
+}

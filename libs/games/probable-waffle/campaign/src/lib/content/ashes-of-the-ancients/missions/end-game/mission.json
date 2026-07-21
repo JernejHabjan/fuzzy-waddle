@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "end-game",
+  "chapterId": "the-betrayal",
+  "revision": 1,
+  "mapId": 3,
+  "prerequisites": ["undead-and-cursed-lands"],
+  "catalogue": {
+    "order": 2,
+    "title": "End Game",
+    "faction": "both",
+    "environment": "Volcanic throne",
+    "briefing": "Everything leads back to the ancient power below.",
+    "objectiveSummaries": ["Confront the enemy", "Control the eruption"]
+  },
+  "participants": [],
+  "progressionAllowance": {
+    "loadoutSlotCount": 0
+  },
+  "initialState": {
+    "activePhaseIds": [],
+    "facts": [],
+    "counters": [],
+    "timers": []
+  },
+  "phases": [],
+  "objectives": [],
+  "checkpoints": [],
+  "difficulty": {
+    "story": {},
+    "normal": {},
+    "hard": {}
+  },
+  "contentStatus": "skeleton"
+}

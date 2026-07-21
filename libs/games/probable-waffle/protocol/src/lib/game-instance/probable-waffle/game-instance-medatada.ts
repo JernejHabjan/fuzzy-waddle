@@ -1,6 +1,6 @@
 import { GameInstanceMetadata, type GameInstanceMetadataData } from "@fuzzy-waddle/platform-game-sessions";
 import type { GameCommand } from "./game-command";
-import type { CampaignChapterId, CampaignMissionId } from "../../probable-waffle/campaign";
+import type { CampaignChapterId, CampaignId, CampaignMissionId } from "../../probable-waffle/campaign";
 
 export enum ProbableWaffleGameInstanceType {
   Matchmaking,
@@ -12,9 +12,11 @@ export enum ProbableWaffleGameInstanceType {
 }
 
 export interface CampaignGameContext {
+  campaignId: CampaignId;
   catalogVersion: number;
   chapterId: CampaignChapterId;
   missionId: CampaignMissionId;
+  missionRevision: number;
   runId: string;
 }
 
