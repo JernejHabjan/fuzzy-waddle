@@ -45,6 +45,8 @@ export const CAMPAIGN_ACTION_KINDS = [
   "set-objective-state",
   "set-objective-checklist-state",
   "set-encounter-state",
+  "set-dialogue-state",
+  "set-cinematic-stage",
   "start-dialogue",
   "start-cinematic",
   "create-checkpoint",

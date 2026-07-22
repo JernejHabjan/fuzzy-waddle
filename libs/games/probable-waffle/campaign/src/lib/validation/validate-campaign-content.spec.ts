@@ -1,6 +1,7 @@
 import type { CampaignMissionContent } from "../contracts/campaign-mission-content";
 import { asCampaignContentId } from "../contracts/campaign-content-id";
 import type { MissionActionDefinition } from "../contracts/mission-action-definition";
+import type { MissionDialogueBundle } from "../contracts/mission-dialogue-bundle";
 import type { MissionPhaseDefinition } from "../contracts/mission-phase-definition";
 import type { MissionObjectiveDefinition } from "../contracts/mission-objective-definition";
 import {
@@ -90,6 +91,34 @@ describe("validateCampaignContent", () => {
     expect(result.issues.map((issue) => issue.code)).toContain("missing-action-kind");
   });
 
+  it("rejects deterministic triggers driven by local presentation timing", () => {
+    const phase = {
+      id: phaseId,
+      mode: "sequential",
+      entryActions: [],
+      exitActions: [],
+      triggers: [
+        {
+          id: asCampaignContentId<"trigger">("presentation-cue-trigger"),
+          kind: "event",
+          eventKinds: ["cinematic.cue"],
+          condition: { kind: "always" },
+          actions: [typedActionFixture],
+          firing: { kind: "once" },
+          priority: 0
+        }
+      ],
+      transitions: []
+    } satisfies MissionPhaseDefinition;
+    const dreams = {
+      ...AOTA_CAMPAIGN_MISSIONS[0]!,
+      initialState: { ...AOTA_CAMPAIGN_MISSIONS[0]!.initialState, activePhaseIds: [phaseId] },
+      phases: [phase]
+    } satisfies CampaignMissionContent;
+
+    expect(validate([dreams, ...AOTA_CAMPAIGN_MISSIONS.slice(1)])).toContain("local-presentation-event-trigger");
+  });
+
   it("validates nested actions, fallback declarations, and globally unique action IDs", () => {
     const duplicateId = asCampaignContentId<"action">("duplicate-action");
     const phase = {
@@ -175,6 +204,85 @@ describe("validateCampaignContent", () => {
     expect(codes).toContain("duplicate-objective-checklist-id");
     expect(codes).toContain("missing-objective-checklist-reference");
     expect(codes).toContain("objective-dependency-cycle");
+  });
+
+  it("validates cinematic metadata, cues, inline actions, and safe resume markers", () => {
+    const introId = asCampaignContentId<"cinematic">("intro");
+    const speakerId = asCampaignContentId<"speaker">("guide");
+    const missingPortraitId = asCampaignContentId<"portrait">("missing-portrait");
+    const duplicatePortraitId = asCampaignContentId<"portrait">("duplicate-portrait");
+    const dialogue = {
+      schemaVersion: 1,
+      missionId: AOTA_CAMPAIGN_MISSIONS[0]!.id,
+      texts: [{ id: asCampaignContentId<"text">("guide-name"), text: "Guide" }],
+      portraits: [
+        { id: duplicatePortraitId, textureKey: "guide" },
+        { id: duplicatePortraitId, textureKey: "guide-alt" }
+      ],
+      speakers: [
+        {
+          id: speakerId,
+          nameTextId: asCampaignContentId<"text">("guide-name"),
+          portraitId: missingPortraitId
+        }
+      ],
+      lines: [
+        {
+          id: asCampaignContentId<"dialogue-line">("guide-line"),
+          speakerId,
+          textId: asCampaignContentId<"text">("guide-line-text"),
+          text: "Keep moving.",
+          portraitId: missingPortraitId,
+          delivery: "blocking"
+        }
+      ],
+      cinematics: [
+        {
+          id: introId,
+          mode: "directed",
+          seenSkipPolicy: "tap",
+          resumeCueIndexes: [99],
+          timeline: [
+            { kind: "dialogue", lineId: asCampaignContentId<"dialogue-line">("missing-line") },
+            { kind: "title", textId: asCampaignContentId<"text">("missing-title") },
+            {
+              kind: "camera-shot",
+              shotId: asCampaignContentId<"scenario-camera-shot">("missing-shot"),
+              fallbackPointId: asCampaignContentId<"scenario-point">("missing-point")
+            },
+            { kind: "camera-actor", actorId: asCampaignContentId<"scenario-actor">("missing-actor") }
+          ],
+          gameplayPrelude: [
+            {
+              id: asCampaignContentId<"action">("recursive-cinematic"),
+              kind: "start-cinematic",
+              cinematicId: introId
+            }
+          ],
+          gameplayFinalizeActionIds: []
+        }
+      ]
+    } satisfies MissionDialogueBundle;
+    const result = validateCampaignContent({
+      campaign: AOTA_CAMPAIGN_DEFINITION,
+      missions: AOTA_CAMPAIGN_MISSIONS,
+      dialogue: [dialogue, ...AOTA_CAMPAIGN_DIALOGUE.slice(1)],
+      rewards: AOTA_CAMPAIGN_REWARDS,
+      registries: createDefaultCampaignDefinitionRegistries()
+    });
+    const codes = result.issues.map((issue) => issue.code);
+
+    expect(codes).toEqual(
+      expect.arrayContaining([
+        "duplicate-portrait-id",
+        "missing-portrait-reference",
+        "missing-dialogue-reference",
+        "missing-text-reference",
+        "missing-scenario-reference",
+        "invalid-cinematic-resume-cue",
+        "cinematic-action-cycle"
+      ])
+    );
   });
 
   function validate(missions: readonly CampaignMissionContent[]): readonly string[] {

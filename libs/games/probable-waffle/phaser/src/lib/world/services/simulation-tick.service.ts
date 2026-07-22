@@ -11,6 +11,7 @@ export enum SimulationPauseReason {
   DesyncCorrection = "desync-correction",
   Player = "player",
   ExternalModal = "external-modal",
+  CampaignCinematic = "campaign-cinematic",
   CampaignRuntimeFailure = "campaign-runtime-failure"
 }
 

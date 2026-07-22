@@ -17,6 +17,7 @@ import ChatButton from "../../../prefabs/gui/buttons/ChatButton";
 import ChatNotification from "../../../prefabs/gui/labels/ChatNotification";
 import DayNightClockLabel from "../../../prefabs/gui/labels/DayNightClockLabel";
 import CampaignObjectivesHud from "../../../prefabs/gui/campaign/CampaignObjectivesHud";
+import CampaignCinematicHud from "../../../prefabs/gui/campaign/CampaignCinematicHud";
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { HudGameState } from "../../../hud/hud-game-state";
@@ -107,6 +108,10 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     const campaignObjectivesHud = new CampaignObjectivesHud(this, 920, 70);
     this.add.existing(campaignObjectivesHud);
 
+    // campaignCinematicHud
+    const campaignCinematicHud = new CampaignCinematicHud(this, 0, 0);
+    this.add.existing(campaignCinematicHud);
+
     // confirmationDialog
     const confirmationDialog = new ConfirmationDialog(this, 640, 360);
     this.add.existing(confirmationDialog);
@@ -133,6 +138,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.chatNotification = chatNotification;
     this.dayNightClockLabel = dayNightClockLabel;
     this.campaignObjectivesHud = campaignObjectivesHud;
+    this.campaignCinematicHud = campaignCinematicHud;
     this.confirmationDialog = confirmationDialog;
     this.surrenderDialog = surrenderDialog;
     this.hudElements = hudElements;
@@ -155,6 +161,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private chatNotification!: ChatNotification;
   private dayNightClockLabel!: DayNightClockLabel;
   private campaignObjectivesHud!: CampaignObjectivesHud;
+  private campaignCinematicHud!: CampaignCinematicHud;
   public confirmationDialog!: ConfirmationDialog;
   public surrenderDialog!: SurrenderDialog;
   private hudElements!: Array<any>;
@@ -166,6 +173,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private readonly dayNightClockBottomMargin = 14;
   private cursorHandler?: CursorHandler;
   private connectionRecovery?: ConnectionRecoveryService;
+  private readonly campaignSuppressedVisibility = new Map<Phaser.GameObjects.Components.Visible, boolean>();
 
   probableWaffleScene?: ProbableWaffleScene;
   override preload() {
@@ -214,6 +222,37 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
 
   initializeCampaignObjectives(director: CampaignMissionDirector): void {
     this.campaignObjectivesHud.setup(director);
+  }
+
+  initializeCampaignPresentation(director: CampaignMissionDirector): void {
+    this.campaignCinematicHud.setup(director);
+  }
+
+  setCampaignUiSuppressed(suppressed: boolean): void {
+    const elements: Phaser.GameObjects.Components.Visible[] = [
+      this.actor_actions_container,
+      this.actor_info_container,
+      this.minimap_container,
+      this.game_actions_container,
+      this.resources_container,
+      this.hudMessages,
+      this.groupContainer,
+      this.idleWorkersButton,
+      this.chatButton,
+      this.chatNotification,
+      this.dayNightClockLabel,
+      this.campaignObjectivesHud
+    ];
+    if (suppressed) {
+      if (this.campaignSuppressedVisibility.size > 0) return;
+      for (const element of elements) {
+        this.campaignSuppressedVisibility.set(element, element.visible);
+        element.setVisible(false);
+      }
+      return;
+    }
+    for (const [element, visible] of this.campaignSuppressedVisibility) element.setVisible(visible);
+    this.campaignSuppressedVisibility.clear();
   }
 
   private subscribeToSceneShutdown() {

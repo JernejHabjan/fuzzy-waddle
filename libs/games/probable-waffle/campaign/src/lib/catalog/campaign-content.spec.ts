@@ -127,6 +127,57 @@ describe("Ashes of the Ancients campaign content", () => {
     ).toBe(true);
   });
 
+  it("strictly validates portraits, every presentation cue, and inline deterministic cinematic actions", () => {
+    const bundle = {
+      schemaVersion: 1,
+      missionId: "dreams",
+      texts: [
+        { id: "guide-name", text: "Guide" },
+        { id: "chapter-title", text: "Awakening" }
+      ],
+      portraits: [{ id: "guide-portrait", textureKey: "campaign-portraits", frame: "guide" }],
+      speakers: [{ id: "guide", nameTextId: "guide-name", portraitId: "guide-portrait" }],
+      lines: [
+        {
+          id: "opening-line",
+          speakerId: "guide",
+          textId: "opening-text",
+          text: "Wake up.",
+          audioAssetKey: "voice-opening",
+          delivery: "blocking",
+          minimumTicks: 10
+        }
+      ],
+      cinematics: [
+        {
+          id: "intro",
+          mode: "paused",
+          seenSkipPolicy: "tap",
+          lockPlayerControl: true,
+          lockCamera: true,
+          resumeCueIndexes: [0, 4],
+          fallbackTimeoutTicks: 200,
+          timeline: [
+            { kind: "letterbox", visible: true },
+            { kind: "title", textId: "chapter-title" },
+            { kind: "dialogue", lineId: "opening-line" },
+            { kind: "wait", durationTicks: 5 },
+            { kind: "camera-shot", shotId: "opening-shot", fallbackPointId: "fallback", durationTicks: 10 },
+            { kind: "camera-actor", actorId: "hero", fallbackPointId: "fallback", durationTicks: 10 },
+            { kind: "audio", assetKey: "sting", waitForCompletion: true },
+            { kind: "ui-suppression", suppressed: false },
+            { kind: "actor-animation", actorId: "hero", animationKey: "celebrate" }
+          ],
+          gameplayPrelude: [{ id: "prepare-intro", kind: "set-fact", factId: "intro-prepared", value: true }],
+          gameplayFinalize: [{ id: "finish-intro", kind: "set-fact", factId: "intro-finished", value: true }]
+        }
+      ]
+    };
+
+    expect(validateDialogueSchema(bundle)).toBe(true);
+    expect(validateDialogueSchema({ ...bundle, unexpected: true })).toBe(false);
+  });
+
   it("passes whole-catalogue semantic validation in the authored mandatory order", () => {
     const result = validateCampaignContent({
       campaign: AOTA_CAMPAIGN_DEFINITION,

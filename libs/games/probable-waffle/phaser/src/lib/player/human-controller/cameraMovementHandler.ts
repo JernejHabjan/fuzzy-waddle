@@ -26,6 +26,7 @@ export class CameraMovementHandler {
   private readonly cameraMaxZoom = 0.3;
   private optionsChangedSubscription?: Subscription;
   private cameraStateSetFromData: boolean = false;
+  private enabled = true;
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -52,6 +53,14 @@ export class CameraMovementHandler {
     this.config = { ...this.config, ...config };
   }
 
+  setEnabled(enabled: boolean): void {
+    this.enabled = enabled;
+  }
+
+  get isEnabled(): boolean {
+    return this.enabled;
+  }
+
   /**
    * Detect if camera is out of bounds
    */
@@ -68,6 +77,7 @@ export class CameraMovementHandler {
   }
 
   updateFrameNonDeterministic(_: number, delta: number) {
+    if (!this.enabled) return;
     this.keyboardMovementControls?.update(delta);
     this.screenEdgeMovementUpdate();
   }
@@ -119,11 +129,13 @@ export class CameraMovementHandler {
   }
 
   private handlePointerDown(pointer: Input.Pointer) {
+    if (!this.enabled) return;
     if (!pointer.leftButtonDown()) return;
     this.input.on(Input.Events.POINTER_MOVE, this.handlePointerMove, this);
   }
 
   private handlePointerMove(pointer: Input.Pointer) {
+    if (!this.enabled) return;
     if (!pointer.isDown) return;
 
     // Calculate movement based on the difference between current and previous pointer positions
@@ -187,6 +199,7 @@ export class CameraMovementHandler {
     deltaY: number,
     deltaZ: number
   ) {
+    if (!this.enabled) return;
     if (deltaY > 0) {
       this.zoomOut();
     }

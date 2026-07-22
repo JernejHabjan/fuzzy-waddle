@@ -100,8 +100,21 @@ export class CampaignWorldEventAdapter {
     }
   }
 
-  dialogueAcknowledged(lineId: string, initiatorPlayerNumber?: number): void {
-    this.emit("dialogue.acknowledged", lineId, { lineId }, initiatorPlayerNumber);
+  dialogueAcknowledged(lineId: string, ownerToken?: string, initiatorPlayerNumber?: number): void {
+    this.emit(
+      "dialogue.acknowledged",
+      lineId,
+      { lineId, ...(ownerToken ? { ownerToken } : {}) },
+      initiatorPlayerNumber
+    );
+  }
+
+  dialoguePresented(lineId: string, ownerToken: string): void {
+    this.emit("dialogue.presented", lineId, { lineId, ownerToken });
+  }
+
+  cinematicCue(cinematicId: string, cueIndex: number): void {
+    this.emit("cinematic.cue", cinematicId, { cinematicId, cueIndex });
   }
 
   cinematicFinished(cinematicId: string, skipped: boolean, initiatorPlayerNumber?: number): void {

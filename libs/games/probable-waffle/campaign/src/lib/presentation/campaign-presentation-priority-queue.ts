@@ -42,7 +42,9 @@ export class CampaignPresentationPriorityQueue {
   }
 
   take(): CampaignPresentationMessage | undefined {
-    return this.queued.shift()?.message;
+    const message = this.queued.shift()?.message;
+    if (message) this.knownIds.delete(message.id);
+    return message;
   }
 
   peek(): CampaignPresentationMessage | undefined {

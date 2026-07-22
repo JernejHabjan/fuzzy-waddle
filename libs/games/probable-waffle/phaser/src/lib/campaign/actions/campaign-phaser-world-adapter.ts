@@ -61,7 +61,6 @@ export type CampaignPresentationRequest =
 export class CampaignPhaserWorldAdapter implements CampaignWorldActionAdapter, CampaignWorldConditionAdapter {
   readonly presentationRequests$ = new Subject<CampaignPresentationRequest>();
   private readonly resources = new CampaignOwnedResourceRegistry();
-  private readonly completedPresentationIds = new Set<string>();
   private readonly aoeZonesByEffectId = new Map<string, string>();
   private readonly contentAllowances = new Map<string, boolean>();
   private readonly temporaryModifiers = new Map<string, number>();
@@ -252,8 +251,11 @@ export class CampaignPhaserWorldAdapter implements CampaignWorldActionAdapter, C
         : { status: "waiting", continuationState };
     }
     if (definition.kind === "start-dialogue" || definition.kind === "start-cinematic") {
-      const id = definition.kind === "start-dialogue" ? definition.lineId : definition.cinematicId;
-      return this.completedPresentationIds.has(id) ? completed() : { status: "waiting", continuationState };
+      const completedInRuntime =
+        definition.kind === "start-dialogue"
+          ? context.state.dialoguePresentations[context.ownerToken]?.status === "acknowledged"
+          : !!context.state.cinematics[definition.cinematicId]?.finalizeRequested;
+      return completedInRuntime ? completed() : { status: "waiting", continuationState };
     }
     if (definition.kind === "trusted-hook") {
       return (
@@ -270,7 +272,6 @@ export class CampaignPhaserWorldAdapter implements CampaignWorldActionAdapter, C
     reason: CampaignMissionActionCancelReason
   ): void {
     if (definition.kind === "start-dialogue") {
-      this.completedPresentationIds.delete(definition.lineId);
       this.presentationRequests$.next({
         kind: "cancel",
         presentationKind: "dialogue",
@@ -279,7 +280,6 @@ export class CampaignPhaserWorldAdapter implements CampaignWorldActionAdapter, C
         reason
       });
     } else if (definition.kind === "start-cinematic") {
-      this.completedPresentationIds.delete(definition.cinematicId);
       this.presentationRequests$.next({
         kind: "cancel",
         presentationKind: "cinematic",
@@ -365,15 +365,11 @@ export class CampaignPhaserWorldAdapter implements CampaignWorldActionAdapter, C
     }
   }
 
-  completePresentation(kind: "dialogue" | "cinematic", id: string): void {
-    this.completedPresentationIds.add(id);
-  }
-
-  requestObjectiveNarration(lineId: string, objectiveId: string): void {
+  requestObjectiveNarration(lineId: string, notificationId: string): void {
     this.presentationRequests$.next({
       kind: "dialogue",
       id: lineId,
-      ownerToken: `mission:objective-narration:${objectiveId}`
+      ownerToken: `mission:objective-narration:${notificationId}`
     });
   }
 
@@ -414,7 +410,6 @@ export class CampaignPhaserWorldAdapter implements CampaignWorldActionAdapter, C
   destroy(): void {
     this.resources.destroy();
     this.presentationRequests$.complete();
-    this.completedPresentationIds.clear();
     this.aoeZonesByEffectId.clear();
     this.contentAllowances.clear();
     this.temporaryModifiers.clear();
@@ -757,7 +752,6 @@ export class CampaignPhaserWorldAdapter implements CampaignWorldActionAdapter, C
     id: string,
     wait: boolean | undefined
   ): CampaignMissionActionResult {
-    this.completedPresentationIds.delete(id);
     this.presentationRequests$.next({ kind, id, ownerToken: context.ownerToken });
     return wait ? { status: "waiting", continuationState: { presentationKind: kind, id } } : completed();
   }

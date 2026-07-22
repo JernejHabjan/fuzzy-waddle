@@ -2,6 +2,7 @@ import { CampaignFaction, type ProbableWaffleMapEnum } from "@fuzzy-waddle/proba
 import type { CampaignMissionContent } from "../contracts/campaign-mission-content";
 import { asCampaignContentId } from "../contracts/campaign-content-id";
 import type { MissionActionDefinition } from "../contracts/mission-action-definition";
+import type { MissionDialogueBundle } from "../contracts/mission-dialogue-bundle";
 import type { MissionObjectiveDefinition } from "../contracts/mission-objective-definition";
 import type { MissionPhaseDefinition, MissionTransitionDefinition } from "../contracts/mission-phase-definition";
 import type { MissionTriggerDefinition } from "../contracts/mission-trigger-definition";
@@ -592,7 +593,259 @@ describe("CampaignMissionRuntime", () => {
     expect(result.effects.filter((effect) => effect.kind === "objective-changed")).toHaveLength(2);
     expect(runtime.state.facts["tutorial-signalled"]).toBe(true);
   });
+
+  it.each([false, true])("runs the same deterministic cinematic finalize path when skipped is %s", (skipped) => {
+    const bundle = dialogueBundle({
+      gameplayPrelude: [action("set-fact", "cinematic-prelude", { factId: id("prepared"), value: true })],
+      gameplayFinalize: [
+        action("set-fact", "cinematic-finalize", { factId: id("finalized"), value: true }),
+        action("increment-counter", "count-cinematic-finalize", { counterId: id("finalize-count"), amount: 1 })
+      ]
+    });
+    const adapter = presentationAdapter();
+    const runtime = new CampaignMissionRuntime(
+      "ashes-of-the-ancients",
+      mission([
+        phase("start", {
+          entryActions: [
+            action("start-cinematic", "play-intro", {
+              cinematicId: id("intro"),
+              waitForCompletion: true
+            })
+          ]
+        })
+      ]),
+      undefined,
+      { actionAdapter: adapter, dialogue: bundle }
+    );
+
+    runtime.start(0);
+    expect(runtime.state.facts).toMatchObject({ prepared: true });
+    expect(runtime.state.facts["finalized"]).toBeUndefined();
+    expect(runtime.state.cinematics["intro"]).toMatchObject({ stage: "presenting", finalizeRequested: false });
+
+    runtime.enqueueEvent({
+      tick: 1,
+      kind: "cinematic.finished",
+      sourceId: "intro",
+      payload: { cinematicId: "intro", skipped }
+    });
+    runtime.enqueueEvent({
+      tick: 1,
+      kind: "cinematic.finished",
+      sourceId: "intro-racing-finish",
+      payload: { cinematicId: "intro", skipped: !skipped }
+    });
+    runtime.advanceTo(1);
+
+    expect(runtime.state.facts).toMatchObject({ prepared: true, finalized: true });
+    expect(runtime.state.counters["finalize-count"]).toBe(1);
+    expect(runtime.state.cinematics["intro"]).toMatchObject({
+      stage: "completed",
+      finalizeRequested: true,
+      finalized: true,
+      skipped
+    });
+    expect(runtime.state.activeCinematicId).toBeUndefined();
+    expect(runtime.state.actionContinuations).toEqual({});
+  });
+
+  it("fails closed when a cinematic action cannot be expanded", () => {
+    const runtime = new CampaignMissionRuntime(
+      "ashes-of-the-ancients",
+      mission([
+        phase("start", {
+          entryActions: [action("start-cinematic", "play-missing", { cinematicId: id("missing") })]
+        })
+      ])
+    );
+
+    expect(() => runtime.start(0)).not.toThrow();
+    expect(runtime.state.status).toBe("failed");
+    expect(runtime.state.integrity.diagnostic).toMatchObject({
+      code: "action-failed",
+      actionId: "play-missing"
+    });
+  });
+
+  it("restores cinematic prelude, presenting, and finalizing stages without replaying completed actions", () => {
+    const bundle = dialogueBundle({
+      gameplayPrelude: [
+        action("increment-counter", "count-prelude", { counterId: id("prelude-count"), amount: 1 }),
+        action("wait-ticks", "wait-prelude", { durationTicks: 2 })
+      ],
+      gameplayFinalize: [
+        action("increment-counter", "count-finalize", { counterId: id("finalize-count"), amount: 1 }),
+        action("wait-ticks", "wait-finalize", { durationTicks: 2 })
+      ]
+    });
+    const content = mission([
+      phase("start", {
+        entryActions: [action("start-cinematic", "play-intro", { cinematicId: id("intro") })]
+      })
+    ]);
+    const options = { actionAdapter: presentationAdapter(), dialogue: bundle };
+    const prelude = new CampaignMissionRuntime("ashes-of-the-ancients", content, undefined, options);
+    prelude.start(0);
+    expect(prelude.state.cinematics["intro"]?.stage).toBe("prelude");
+
+    const presenting = new CampaignMissionRuntime("ashes-of-the-ancients", content, prelude.snapshot(), options);
+    presenting.advanceTo(2);
+    expect(presenting.state.cinematics["intro"]?.stage).toBe("presenting");
+    expect(presenting.state.counters["prelude-count"]).toBe(1);
+    presenting.enqueueEvent({
+      tick: 3,
+      kind: "cinematic.finished",
+      sourceId: "intro",
+      payload: { cinematicId: "intro", skipped: false }
+    });
+    presenting.advanceTo(3);
+    expect(presenting.state.cinematics["intro"]?.stage).toBe("finalizing");
+
+    const finalizing = new CampaignMissionRuntime("ashes-of-the-ancients", content, presenting.snapshot(), options);
+    finalizing.advanceTo(5);
+    expect(finalizing.state.cinematics["intro"]?.stage).toBe("completed");
+    expect(finalizing.state.counters).toMatchObject({ "prelude-count": 1, "finalize-count": 1 });
+  });
+
+  it("restores a blocking dialogue acknowledgement by owner token without duplicating history", () => {
+    const content = mission([
+      phase("start", {
+        entryActions: [
+          action("start-dialogue", "play-greeting", {
+            lineId: id("greeting"),
+            waitForAcknowledgement: true
+          })
+        ]
+      })
+    ]);
+    const adapter: CampaignWorldActionAdapter = {
+      execute: (_context, definition) =>
+        definition.kind === "start-dialogue"
+          ? { status: "waiting", continuationState: { lineId: definition.lineId } }
+          : { status: "completed" },
+      resume: (context, definition, continuationState) =>
+        definition.kind === "start-dialogue" &&
+        context.state.dialoguePresentations[context.ownerToken]?.status === "acknowledged"
+          ? { status: "completed" }
+          : { status: "waiting", continuationState }
+    };
+    const dialogue: MissionDialogueBundle = {
+      schemaVersion: 1,
+      missionId: "dreams",
+      speakers: [{ id: id("narrator"), nameTextId: id("narrator-name") }],
+      texts: [{ id: id("narrator-name"), text: "Narrator" }],
+      lines: [
+        {
+          id: id("greeting"),
+          speakerId: id("narrator"),
+          textId: id("greeting-text"),
+          text: "Welcome.",
+          delivery: "blocking"
+        }
+      ],
+      cinematics: []
+    };
+    const first = new CampaignMissionRuntime("ashes-of-the-ancients", content, undefined, {
+      actionAdapter: adapter,
+      dialogue
+    });
+    first.start(0);
+    const ownerToken = "phase:start:direct:play-greeting";
+    expect(first.state.dialogueHistory).toEqual([{ sequence: 1, tick: 0, lineId: "greeting", ownerToken }]);
+
+    const restored = new CampaignMissionRuntime("ashes-of-the-ancients", content, first.snapshot(), {
+      actionAdapter: adapter,
+      dialogue
+    });
+    restored.enqueueEvent({
+      tick: 1,
+      kind: "dialogue.acknowledged",
+      sourceId: "greeting",
+      payload: { lineId: "greeting", ownerToken }
+    });
+    restored.advanceTo(1);
+
+    expect(restored.state.dialoguePresentations[ownerToken]).toMatchObject({
+      status: "acknowledged",
+      acknowledgedAtTick: 1
+    });
+    expect(restored.state.dialogueHistory).toHaveLength(1);
+    expect(restored.state.actionContinuations).toEqual({});
+  });
+
+  it("records local presentation progress without exposing it to deterministic mission triggers", () => {
+    const runtime = new CampaignMissionRuntime(
+      "ashes-of-the-ancients",
+      mission([
+        phase("start", {
+          triggers: [
+            trigger("local-cue-trigger", {
+              kind: "event",
+              eventKinds: ["dialogue.presented", "cinematic.cue"],
+              actions: [
+                action("set-fact", "mutate-from-local-cue", {
+                  factId: id("local-cue-mutated-gameplay"),
+                  value: true
+                })
+              ]
+            })
+          ]
+        })
+      ])
+    );
+    runtime.start(0);
+    runtime.enqueueEvent({
+      tick: 1,
+      kind: "dialogue.presented",
+      sourceId: "greeting",
+      payload: { lineId: "greeting", ownerToken: "mission:greeting" }
+    });
+    runtime.enqueueEvent({
+      tick: 1,
+      kind: "cinematic.cue",
+      sourceId: "intro",
+      payload: { cinematicId: "intro", cueIndex: 2 }
+    });
+    runtime.advanceTo(1);
+
+    expect(runtime.state.dialoguePresentations["mission:greeting"]?.status).toBe("presenting");
+    expect(runtime.state.facts["local-cue-mutated-gameplay"]).toBeUndefined();
+    expect(runtime.state.pendingEvents).toEqual([]);
+  });
 });
+
+function presentationAdapter(): CampaignWorldActionAdapter {
+  return {
+    execute: (_context, definition) =>
+      definition.kind === "start-cinematic"
+        ? { status: "waiting", continuationState: { cinematicId: definition.cinematicId } }
+        : { status: "completed" },
+    resume: (context, definition, continuationState) =>
+      definition.kind === "start-cinematic" && context.state.cinematics[definition.cinematicId]?.finalizeRequested
+        ? { status: "completed" }
+        : { status: "waiting", continuationState }
+  };
+}
+
+function dialogueBundle(overrides: Partial<MissionDialogueBundle["cinematics"][number]> = {}): MissionDialogueBundle {
+  return {
+    schemaVersion: 1,
+    missionId: "dreams",
+    speakers: [],
+    lines: [],
+    cinematics: [
+      {
+        id: id("intro"),
+        mode: "paused",
+        seenSkipPolicy: "tap",
+        timeline: [],
+        gameplayFinalizeActionIds: [],
+        ...overrides
+      }
+    ]
+  };
+}
 
 function mission(
   phases: readonly MissionPhaseDefinition[],

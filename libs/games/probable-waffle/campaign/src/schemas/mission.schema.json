@@ -1025,6 +1025,8 @@
                 "set-objective-state",
                 "set-objective-checklist-state",
                 "set-encounter-state",
+                "set-dialogue-state",
+                "set-cinematic-stage",
                 "start-dialogue",
                 "start-cinematic",
                 "create-checkpoint"
@@ -1080,7 +1082,19 @@
             "checklistId": { "$ref": "#/$defs/campaignId" },
             "reasonId": { "$ref": "#/$defs/campaignId" },
             "encounterId": { "$ref": "#/$defs/campaignId" },
-            "state": { "enum": ["pending", "inactive", "active", "completed", "failed", "impossible"] },
+            "state": {
+              "enum": [
+                "pending",
+                "inactive",
+                "active",
+                "completed",
+                "failed",
+                "impossible",
+                "presenting",
+                "acknowledged"
+              ]
+            },
+            "stage": { "enum": ["prelude", "presenting", "finalizing", "completed"] },
             "lineId": { "$ref": "#/$defs/campaignId" },
             "waitForAcknowledgement": { "type": "boolean" },
             "cinematicId": { "$ref": "#/$defs/campaignId" },
@@ -1283,6 +1297,26 @@
                   "state": { "enum": ["inactive", "active", "completed", "failed"] }
                 },
                 "required": ["encounterId", "state"]
+              }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "set-dialogue-state" } } },
+              "then": {
+                "properties": {
+                  "lineId": true,
+                  "state": { "enum": ["presenting", "acknowledged"] }
+                },
+                "required": ["lineId", "state"]
+              }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "set-cinematic-stage" } } },
+              "then": {
+                "properties": {
+                  "cinematicId": true,
+                  "stage": { "enum": ["prelude", "presenting", "finalizing", "completed"] }
+                },
+                "required": ["cinematicId", "stage"]
               }
             },
             {

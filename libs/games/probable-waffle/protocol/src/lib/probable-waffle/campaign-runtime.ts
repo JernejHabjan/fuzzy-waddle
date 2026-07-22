@@ -1,12 +1,16 @@
 import type { CampaignId, CampaignMissionId } from "./campaign";
 
-export const CAMPAIGN_MISSION_RUNTIME_SCHEMA_VERSION = 3 as const;
+export const CAMPAIGN_MISSION_RUNTIME_SCHEMA_VERSION = 4 as const;
+export const CAMPAIGN_LOCAL_PRESENTATION_EVENT_KINDS = ["dialogue.presented", "cinematic.cue"] as const;
 
 export type CampaignMissionRuntimeStatus = "initializing" | "running" | "victory" | "defeat" | "failed";
 export type CampaignMissionObjectiveStatus = "hidden" | "active" | "completed" | "failed" | "impossible";
 export type CampaignMissionObjectiveChecklistStatus = "pending" | "completed";
 export type CampaignMissionEncounterStatus = "inactive" | "active" | "completed" | "failed";
 export type CampaignMissionTimerStatus = "running" | "paused" | "elapsed" | "cancelled";
+export type CampaignMissionDialoguePresentationStatus = "presenting" | "acknowledged";
+export type CampaignMissionCinematicStage = "prelude" | "presenting" | "finalizing" | "completed";
+export type CampaignLocalPresentationEventKind = (typeof CAMPAIGN_LOCAL_PRESENTATION_EVENT_KINDS)[number];
 
 export type CampaignMissionRuntimeJsonValue =
   | string
@@ -83,7 +87,9 @@ export type CampaignMissionEvent =
         readonly target?: number;
       }
     >
-  | CampaignMissionEventBase<"dialogue.acknowledged", { readonly lineId: string }>
+  | CampaignMissionEventBase<"dialogue.presented", { readonly lineId: string; readonly ownerToken: string }>
+  | CampaignMissionEventBase<"dialogue.acknowledged", { readonly lineId: string; readonly ownerToken?: string }>
+  | CampaignMissionEventBase<"cinematic.cue", { readonly cinematicId: string; readonly cueIndex: number }>
   | CampaignMissionEventBase<"cinematic.finished", { readonly cinematicId: string; readonly skipped: boolean }>;
 
 export interface CampaignMissionTimerRuntimeState {
@@ -120,6 +126,35 @@ export interface CampaignMissionMessageHistoryEntry {
   sourceId: string;
   textId: string;
   state?: CampaignMissionObjectiveStatus | CampaignMissionObjectiveChecklistStatus;
+}
+
+export interface CampaignMissionDialoguePresentationRuntimeState {
+  lineId: string;
+  ownerToken: string;
+  status: CampaignMissionDialoguePresentationStatus;
+  startedAtTick: number;
+  updatedAtTick: number;
+  acknowledgedAtTick?: number;
+}
+
+export interface CampaignMissionDialogueHistoryEntry {
+  sequence: number;
+  tick: number;
+  lineId: string;
+  ownerToken: string;
+}
+
+export interface CampaignMissionCinematicRuntimeState {
+  cinematicId: string;
+  ownerToken: string;
+  stage: CampaignMissionCinematicStage;
+  startedAtTick: number;
+  updatedAtTick: number;
+  finishedAtTick?: number;
+  presentationCueIndex?: number;
+  finalizeRequested: boolean;
+  finalized: boolean;
+  skipped: boolean;
 }
 
 export interface CampaignMissionTriggerRuntimeState {
@@ -206,6 +241,10 @@ export interface CampaignMissionRuntimeState {
   timers: Record<string, CampaignMissionTimerRuntimeState>;
   objectives: Record<string, CampaignMissionObjectiveRuntimeState>;
   missionMessageHistory: CampaignMissionMessageHistoryEntry[];
+  dialoguePresentations: Record<string, CampaignMissionDialoguePresentationRuntimeState>;
+  dialogueHistory: CampaignMissionDialogueHistoryEntry[];
+  cinematics: Record<string, CampaignMissionCinematicRuntimeState>;
+  activeCinematicId?: string;
   encounters: Record<string, CampaignMissionEncounterStatus>;
   claimedTriggerIds: string[];
   triggerStates: Record<string, CampaignMissionTriggerRuntimeState>;

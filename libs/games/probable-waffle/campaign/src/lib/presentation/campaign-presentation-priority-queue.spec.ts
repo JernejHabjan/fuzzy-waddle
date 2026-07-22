@@ -17,5 +17,6 @@ describe("CampaignPresentationPriorityQueue", () => {
       "tutorial",
       "ambient"
     ]);
+    expect(queue.enqueue({ id: "ambient", category: "ambient", text: "Replay after interruption" })).toBe(true);
   });
 });

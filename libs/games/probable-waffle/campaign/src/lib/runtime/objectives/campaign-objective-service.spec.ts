@@ -142,6 +142,9 @@ function runtimeState(definitions: readonly MissionObjectiveDefinition[]): Campa
       definitions.map((definition) => [definition.id, createObjectiveRuntimeState(definition)])
     ),
     missionMessageHistory: [],
+    dialoguePresentations: {},
+    dialogueHistory: [],
+    cinematics: {},
     encounters: {},
     claimedTriggerIds: [],
     triggerStates: {},

@@ -226,14 +226,28 @@ export type MissionActionDefinition =
       readonly state: "active" | "completed" | "failed" | "inactive";
     })
   | (MissionActionDefinitionBase & {
+      readonly kind: "set-dialogue-state";
+      readonly lineId: MissionDialogueLineId;
+      readonly state: "presenting" | "acknowledged";
+    })
+  | (MissionActionDefinitionBase & {
+      readonly kind: "set-cinematic-stage";
+      readonly cinematicId: MissionCinematicId;
+      readonly stage: "prelude" | "presenting" | "finalizing" | "completed";
+    })
+  | (MissionActionDefinitionBase & {
       readonly kind: "start-dialogue";
       readonly lineId: MissionDialogueLineId;
       readonly waitForAcknowledgement?: boolean;
+      /** Runtime-generated presentation leaf; not part of authored JSON. */
+      readonly presentationOnly?: true;
     })
   | (MissionActionDefinitionBase & {
       readonly kind: "start-cinematic";
       readonly cinematicId: MissionCinematicId;
       readonly waitForCompletion?: boolean;
+      /** Runtime-generated presentation leaf; not part of authored JSON. */
+      readonly presentationOnly?: true;
     })
   | (MissionActionDefinitionBase & { readonly kind: "create-checkpoint"; readonly checkpointId: MissionCheckpointId })
   | (MissionActionDefinitionBase & {

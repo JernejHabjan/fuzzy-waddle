@@ -51,6 +51,7 @@ export interface CampaignMissionActionContext {
   readonly triggerId?: string;
   readonly event?: CampaignMissionRuntimeEvent;
   readonly objectiveActions?: CampaignObjectiveActionPort;
+  readonly presentationActions?: CampaignPresentationActionPort;
 }
 
 export interface CampaignObjectiveActionPort {
@@ -58,6 +59,17 @@ export interface CampaignObjectiveActionPort {
   setChecklistState(
     definition: Extract<MissionActionDefinition, { readonly kind: "set-objective-checklist-state" }>,
     tick: number
+  ): void;
+}
+
+export interface CampaignPresentationActionPort {
+  setDialogueState(
+    definition: Extract<MissionActionDefinition, { readonly kind: "set-dialogue-state" }>,
+    context: CampaignMissionActionContext
+  ): void;
+  setCinematicStage(
+    definition: Extract<MissionActionDefinition, { readonly kind: "set-cinematic-stage" }>,
+    context: CampaignMissionActionContext
   ): void;
 }
 
@@ -469,6 +481,20 @@ function registerStateExecutors(registry: CampaignActionExecutorRegistry): void 
     stateExecutor("set-encounter-state", (context, definition) => {
       if (definition.kind === "set-encounter-state")
         context.state.encounters[definition.encounterId] = definition.state;
+    })
+  );
+  registry.register(
+    stateExecutor("set-dialogue-state", (context, definition) => {
+      if (definition.kind === "set-dialogue-state") {
+        context.presentationActions?.setDialogueState(definition, context);
+      }
+    })
+  );
+  registry.register(
+    stateExecutor("set-cinematic-stage", (context, definition) => {
+      if (definition.kind === "set-cinematic-stage") {
+        context.presentationActions?.setCinematicStage(definition, context);
+      }
     })
   );
   registry.register(

@@ -8,10 +8,15 @@ import type {
   CampaignMissionRuntimeState,
   CampaignMissionTriggerRuntimeState
 } from "@fuzzy-waddle/probable-waffle-protocol";
-import { CAMPAIGN_MISSION_RUNTIME_SCHEMA_VERSION } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  CAMPAIGN_LOCAL_PRESENTATION_EVENT_KINDS,
+  CAMPAIGN_MISSION_RUNTIME_SCHEMA_VERSION
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import type { CampaignMissionContent } from "../contracts/campaign-mission-content";
+import { asCampaignContentId } from "../contracts/campaign-content-id";
 import type { MissionActionDefinition } from "../contracts/mission-action-definition";
 import type { MissionConditionDefinition } from "../contracts/mission-condition-definition";
+import type { MissionDialogueBundle } from "../contracts/mission-dialogue-bundle";
 import type { MissionPhaseDefinition, MissionTransitionDefinition } from "../contracts/mission-phase-definition";
 import type { MissionTriggerDefinition } from "../contracts/mission-trigger-definition";
 import {
@@ -22,6 +27,7 @@ import {
   type CampaignMissionActionContext,
   type CampaignMissionActionResult,
   type CampaignObjectiveActionPort,
+  type CampaignPresentationActionPort,
   type CampaignWorldActionAdapter
 } from "./actions/campaign-action-runtime";
 import {
@@ -60,6 +66,7 @@ export interface CampaignMissionRuntimeOptions {
   readonly maxTransitionsPerTick?: number;
   readonly actionAdapter?: CampaignWorldActionAdapter;
   readonly conditionAdapter?: CampaignWorldConditionAdapter;
+  readonly dialogue?: MissionDialogueBundle;
 }
 
 interface TickBudget {
@@ -76,6 +83,18 @@ interface ActionSourceContext {
 const DEFAULT_MAX_ACTIONS_PER_TICK = 256;
 const DEFAULT_MAX_TRANSITIONS_PER_TICK = 64;
 const MAX_RECENT_TRACE_ENTRIES = 128;
+
+function runtimeJsonObject(
+  value: CampaignMissionRuntimeJsonValue | undefined
+): Readonly<Record<string, CampaignMissionRuntimeJsonValue>> | undefined {
+  return typeof value === "object" && value !== null && !Array.isArray(value)
+    ? (value as Readonly<Record<string, CampaignMissionRuntimeJsonValue>>)
+    : undefined;
+}
+
+function isLocalPresentationEvent(kind: string): boolean {
+  return (CAMPAIGN_LOCAL_PRESENTATION_EVENT_KINDS as readonly string[]).includes(kind);
+}
 
 /** Owns the single mutable mission state while exposing cloned snapshots at integration boundaries. */
 export class CampaignMissionStateStore {
@@ -100,6 +119,7 @@ export class CampaignMissionRuntime {
   private readonly conditionRuntime: CampaignConditionRuntime;
   private readonly objectiveService: DefaultCampaignObjectiveService;
   private readonly actionAdapter?: CampaignWorldActionAdapter;
+  private readonly dialogue?: MissionDialogueBundle;
   private readonly maxActionsPerTick: number;
   private readonly maxTransitionsPerTick: number;
 
@@ -112,6 +132,7 @@ export class CampaignMissionRuntime {
     this.maxActionsPerTick = options.maxActionsPerTick ?? DEFAULT_MAX_ACTIONS_PER_TICK;
     this.maxTransitionsPerTick = options.maxTransitionsPerTick ?? DEFAULT_MAX_TRANSITIONS_PER_TICK;
     this.actionAdapter = options.actionAdapter;
+    this.dialogue = options.dialogue;
     this.phasesById = new Map(content.phases.map((phase) => [phase.id, phase] as const));
     this.predecessorsByPhaseId = this.buildPredecessors(content.phases);
     this.actionsById = collectMissionActions(content);
@@ -184,7 +205,9 @@ export class CampaignMissionRuntime {
     const state = this.stateStore.current;
     const sequence = event.sequence ?? state.integrity.lastQueuedEventSequence + 1;
     state.integrity.lastQueuedEventSequence = Math.max(state.integrity.lastQueuedEventSequence, sequence);
-    state.pendingEvents.push({ ...event, sequence });
+    const queuedEvent = { ...event, sequence } as CampaignMissionRuntimeEvent;
+    this.applyPresentationEvent(queuedEvent);
+    state.pendingEvents.push(queuedEvent);
     this.canonicalizeState();
     return sequence;
   }
@@ -247,6 +270,7 @@ export class CampaignMissionRuntime {
       const readyEvents = state.pendingEvents.filter((event) => event.tick <= tick).sort(compareRuntimeEvents);
       state.pendingEvents = state.pendingEvents.filter((event) => event.tick > tick);
       for (const event of readyEvents) {
+        if (isLocalPresentationEvent(event.kind)) continue;
         if (!this.processTriggers(tick, budget, effects, event)) return false;
       }
     }
@@ -405,7 +429,8 @@ export class CampaignMissionRuntime {
     source: ActionSourceContext
   ): boolean {
     for (const action of actions) {
-      const actionCost = countActionNodes(action);
+      const actionCost = this.presentationActionCost(action, tick);
+      if (actionCost === undefined) return false;
       if (budget.actions + actionCost > this.maxActionsPerTick) {
         this.fail("action-budget-exceeded", `Action budget ${this.maxActionsPerTick} exceeded`, tick, action.id);
         return false;
@@ -461,7 +486,8 @@ export class CampaignMissionRuntime {
         );
         return false;
       }
-      const actionCost = countActionNodes(action);
+      const actionCost = this.presentationActionCost(action, tick);
+      if (actionCost === undefined) return false;
       if (budget.actions + actionCost > this.maxActionsPerTick) {
         this.fail("action-budget-exceeded", `Action budget ${this.maxActionsPerTick} exceeded`, tick, action.id);
         return false;
@@ -475,7 +501,8 @@ export class CampaignMissionRuntime {
         ownerToken: continuation.ownerToken,
         phaseId: source.phaseId,
         triggerId: source.triggerId,
-        objectiveActions: this.objectiveActionPort()
+        objectiveActions: this.objectiveActionPort(),
+        presentationActions: this.presentationActionPort()
       };
       const result = this.resumeActionSafely(context, action, continuation.state);
       this.publishObjectiveChanges(this.objectiveService.drainChanges(), effects);
@@ -502,7 +529,8 @@ export class CampaignMissionRuntime {
       phaseId: source.phaseId,
       triggerId: source.triggerId,
       event: source.event,
-      objectiveActions: this.objectiveActionPort()
+      objectiveActions: this.objectiveActionPort(),
+      presentationActions: this.presentationActionPort()
     };
   }
 
@@ -633,13 +661,24 @@ export class CampaignMissionRuntime {
     action: MissionActionDefinition
   ): CampaignMissionActionResult {
     try {
-      return this.actionRunner.execute(context, action);
+      return this.actionRunner.execute(context, this.expandPresentationAction(action));
     } catch (error) {
       return {
         status: "failed",
         code: "execution-failed",
         message: `Action '${action.id}' threw: ${deterministicErrorMessage(error)}`
       };
+    }
+  }
+
+  private presentationActionCost(action: MissionActionDefinition, tick: number): number | undefined {
+    try {
+      return countActionNodes(this.expandPresentationAction(action));
+    } catch (error) {
+      this.fail("action-failed", error instanceof Error ? error.message : String(error), tick, action.id, {
+        actionId: action.id
+      });
+      return undefined;
     }
   }
 
@@ -656,6 +695,65 @@ export class CampaignMissionRuntime {
       },
       setChecklistState: (definition, tick) => {
         this.objectiveService.setChecklistState(definition.objectiveId, definition.checklistId, definition.state, tick);
+      }
+    };
+  }
+
+  private presentationActionPort(): CampaignPresentationActionPort {
+    return {
+      setDialogueState: (definition, context) => {
+        const existing = context.state.dialoguePresentations[context.ownerToken];
+        if (definition.state === "presenting") {
+          context.state.dialoguePresentations[context.ownerToken] = {
+            lineId: definition.lineId,
+            ownerToken: context.ownerToken,
+            status: "presenting",
+            startedAtTick: context.tick,
+            updatedAtTick: context.tick
+          };
+          context.state.dialogueHistory.push({
+            sequence: (context.state.dialogueHistory.at(-1)?.sequence ?? 0) + 1,
+            tick: context.tick,
+            lineId: definition.lineId,
+            ownerToken: context.ownerToken
+          });
+          return;
+        }
+        if (!existing || existing.status === "acknowledged") return;
+        existing.status = "acknowledged";
+        existing.updatedAtTick = context.tick;
+        existing.acknowledgedAtTick = context.tick;
+      },
+      setCinematicStage: (definition, context) => {
+        const existing = context.state.cinematics[definition.cinematicId];
+        if (definition.stage === "prelude") {
+          if (
+            context.state.activeCinematicId &&
+            context.state.activeCinematicId !== definition.cinematicId &&
+            !context.state.cinematics[context.state.activeCinematicId]?.finalized
+          ) {
+            throw new Error(`Cinematic '${context.state.activeCinematicId}' is already active`);
+          }
+          context.state.cinematics[definition.cinematicId] = {
+            cinematicId: definition.cinematicId,
+            ownerToken: context.ownerToken,
+            stage: "prelude",
+            startedAtTick: context.tick,
+            updatedAtTick: context.tick,
+            finalizeRequested: false,
+            finalized: false,
+            skipped: false
+          };
+          context.state.activeCinematicId = definition.cinematicId;
+          return;
+        }
+        if (!existing) throw new Error(`Cinematic '${definition.cinematicId}' has not entered its prelude`);
+        existing.stage = definition.stage;
+        existing.updatedAtTick = context.tick;
+        if (definition.stage === "completed") {
+          existing.finalized = true;
+          if (context.state.activeCinematicId === definition.cinematicId) delete context.state.activeCinematicId;
+        }
       }
     };
   }
@@ -710,7 +808,7 @@ export class CampaignMissionRuntime {
     continuationState: CampaignMissionRuntimeJsonValue
   ): CampaignMissionActionResult {
     try {
-      return this.actionRunner.resume(context, action, continuationState);
+      return this.actionRunner.resume(context, this.expandPresentationAction(action), continuationState);
     } catch (error) {
       return {
         status: "failed",
@@ -778,9 +876,11 @@ export class CampaignMissionRuntime {
               state: this.stateStore.current,
               ownerToken: continuation.ownerToken,
               phaseId: source.phaseId,
-              triggerId: source.triggerId
+              triggerId: source.triggerId,
+              objectiveActions: this.objectiveActionPort(),
+              presentationActions: this.presentationActionPort()
             },
-            action,
+            this.expandPresentationAction(action),
             continuation.state,
             reason
           );
@@ -898,6 +998,9 @@ export class CampaignMissionRuntime {
       objective.announcedStatuses.sort();
     }
     state.missionMessageHistory.sort((left, right) => left.sequence - right.sequence);
+    state.dialoguePresentations = sortRecord(state.dialoguePresentations);
+    state.dialogueHistory.sort((left, right) => left.sequence - right.sequence);
+    state.cinematics = sortRecord(state.cinematics);
     state.encounters = sortRecord(state.encounters);
     state.triggerStates = sortRecord(state.triggerStates);
     state.actionContinuations = sortRecord(state.actionContinuations);
@@ -939,6 +1042,171 @@ export class CampaignMissionRuntime {
       );
     }
     return structuredClone(restored);
+  }
+
+  private applyPresentationEvent(event: CampaignMissionRuntimeEvent): void {
+    if (event.kind === "dialogue.presented") {
+      const payload = runtimeJsonObject(event.payload);
+      const lineId = payload?.lineId;
+      const ownerToken = payload?.ownerToken;
+      if (typeof lineId !== "string" || typeof ownerToken !== "string") return;
+      if (this.stateStore.current.dialoguePresentations[ownerToken]) return;
+      this.stateStore.current.dialoguePresentations[ownerToken] = {
+        lineId,
+        ownerToken,
+        status: "presenting",
+        startedAtTick: event.tick,
+        updatedAtTick: event.tick
+      };
+      this.stateStore.current.dialogueHistory.push({
+        sequence: (this.stateStore.current.dialogueHistory.at(-1)?.sequence ?? 0) + 1,
+        tick: event.tick,
+        lineId,
+        ownerToken
+      });
+      return;
+    }
+    if (event.kind === "dialogue.acknowledged") {
+      const payload = runtimeJsonObject(event.payload);
+      const lineId = payload?.lineId;
+      const requestedOwnerToken = payload?.ownerToken;
+      if (
+        typeof lineId !== "string" ||
+        (requestedOwnerToken !== undefined && typeof requestedOwnerToken !== "string")
+      ) {
+        return;
+      }
+      const ownerToken = requestedOwnerToken ?? this.findPresentingDialogueOwner(lineId);
+      if (!ownerToken) return;
+      const presentation = this.stateStore.current.dialoguePresentations[ownerToken];
+      if (!presentation || presentation.status === "acknowledged") return;
+      presentation.status = "acknowledged";
+      presentation.updatedAtTick = event.tick;
+      presentation.acknowledgedAtTick = event.tick;
+      return;
+    }
+    if (event.kind === "cinematic.finished") {
+      const payload = runtimeJsonObject(event.payload);
+      const cinematicId = payload?.cinematicId;
+      const skipped = payload?.skipped;
+      if (typeof cinematicId !== "string" || typeof skipped !== "boolean") return;
+      const cinematic = this.stateStore.current.cinematics[cinematicId];
+      if (!cinematic || cinematic.finalizeRequested || cinematic.finalized) return;
+      cinematic.stage = "finalizing";
+      cinematic.updatedAtTick = event.tick;
+      cinematic.finishedAtTick = event.tick;
+      cinematic.finalizeRequested = true;
+      cinematic.skipped = skipped;
+      return;
+    }
+    if (event.kind === "cinematic.cue") {
+      const payload = runtimeJsonObject(event.payload);
+      const cinematicId = payload?.cinematicId;
+      const cueIndex = payload?.cueIndex;
+      if (typeof cinematicId !== "string" || typeof cueIndex !== "number" || !Number.isInteger(cueIndex)) return;
+      const cinematic = this.stateStore.current.cinematics[cinematicId];
+      if (!cinematic || cinematic.finalized) return;
+      cinematic.presentationCueIndex = cueIndex;
+      cinematic.updatedAtTick = event.tick;
+    }
+  }
+
+  private findPresentingDialogueOwner(lineId: string): string | undefined {
+    return Object.values(this.stateStore.current.dialoguePresentations)
+      .filter((presentation) => presentation.lineId === lineId && presentation.status === "presenting")
+      .sort(
+        (left, right) => right.startedAtTick - left.startedAtTick || right.ownerToken.localeCompare(left.ownerToken)
+      )[0]?.ownerToken;
+  }
+
+  private expandPresentationAction(
+    action: MissionActionDefinition,
+    cinematicStack: readonly string[] = []
+  ): MissionActionDefinition {
+    const fallbackAction = action.fallbackAction
+      ? this.expandPresentationAction(action.fallbackAction, cinematicStack)
+      : undefined;
+    if (action.kind === "sequence" || action.kind === "parallel" || action.kind === "race") {
+      return {
+        ...action,
+        ...(fallbackAction ? { fallbackAction } : {}),
+        actions: action.actions.map((child) => this.expandPresentationAction(child, cinematicStack))
+      };
+    }
+    if (action.kind === "start-dialogue" && !action.presentationOnly) {
+      const presentation = {
+        ...action,
+        id: syntheticActionId(action.id, "present"),
+        presentationOnly: true,
+        fallbackAction: undefined
+      } satisfies MissionActionDefinition;
+      return {
+        id: action.id,
+        kind: "sequence",
+        ...(action.scope ? { scope: action.scope } : {}),
+        ...(action.missingReferencePolicy ? { missingReferencePolicy: action.missingReferencePolicy } : {}),
+        ...(fallbackAction ? { fallbackAction } : {}),
+        actions: [
+          {
+            id: syntheticActionId(action.id, "mark-presenting"),
+            kind: "set-dialogue-state",
+            lineId: action.lineId,
+            state: "presenting"
+          },
+          presentation,
+          ...(action.waitForAcknowledgement
+            ? [
+                {
+                  id: syntheticActionId(action.id, "mark-acknowledged"),
+                  kind: "set-dialogue-state" as const,
+                  lineId: action.lineId,
+                  state: "acknowledged" as const
+                }
+              ]
+            : [])
+        ]
+      };
+    }
+    if (action.kind === "start-cinematic" && !action.presentationOnly) {
+      if (cinematicStack.includes(action.cinematicId)) {
+        throw new Error(`Cinematic action cycle: ${[...cinematicStack, action.cinematicId].join(" -> ")}`);
+      }
+      const cinematic = this.dialogue?.cinematics.find((candidate) => candidate.id === action.cinematicId);
+      if (!cinematic) throw new Error(`Unknown cinematic '${action.cinematicId}'`);
+      const nextStack = [...cinematicStack, action.cinematicId];
+      const actionsFor = (actionIds: readonly string[] | undefined): MissionActionDefinition[] =>
+        (actionIds ?? []).map((actionId) => {
+          const referenced = this.actionsById.get(actionId);
+          if (!referenced) throw new Error(`Unknown cinematic action '${actionId}'`);
+          return this.expandPresentationAction(referenced, nextStack);
+        });
+      const presentation = {
+        ...action,
+        id: syntheticActionId(action.id, "present"),
+        waitForCompletion: true,
+        presentationOnly: true,
+        fallbackAction: undefined
+      } satisfies MissionActionDefinition;
+      return {
+        id: action.id,
+        kind: "sequence",
+        ...(action.scope ? { scope: action.scope } : {}),
+        ...(action.missingReferencePolicy ? { missingReferencePolicy: action.missingReferencePolicy } : {}),
+        ...(fallbackAction ? { fallbackAction } : {}),
+        actions: [
+          cinematicStageAction(action, "prelude"),
+          ...(cinematic.gameplayPrelude ?? []).map((candidate) => this.expandPresentationAction(candidate, nextStack)),
+          ...actionsFor(cinematic.gameplayPreludeActionIds),
+          cinematicStageAction(action, "presenting"),
+          presentation,
+          cinematicStageAction(action, "finalizing"),
+          ...(cinematic.gameplayFinalize ?? []).map((candidate) => this.expandPresentationAction(candidate, nextStack)),
+          ...actionsFor(cinematic.gameplayFinalizeActionIds),
+          cinematicStageAction(action, "completed")
+        ]
+      };
+    }
+    return fallbackAction ? { ...action, fallbackAction } : action;
   }
 
   private buildPredecessors(phases: readonly MissionPhaseDefinition[]): ReadonlyMap<string, readonly string[]> {
@@ -999,6 +1267,9 @@ export function createCampaignMissionRuntimeState(
         .map((objective) => [objective.id, createObjectiveRuntimeState(objective)])
     ),
     missionMessageHistory: [],
+    dialoguePresentations: {},
+    dialogueHistory: [],
+    cinematics: {},
     encounters: {},
     claimedTriggerIds: [],
     triggerStates: {},
@@ -1073,6 +1344,22 @@ function countActionNodes(action: MissionActionDefinition): number {
       ? action.actions.reduce((total, child) => total + countActionNodes(child), 0)
       : 0;
   return 1 + nested + (action.fallbackAction ? countActionNodes(action.fallbackAction) : 0);
+}
+
+function syntheticActionId(id: string, suffix: string) {
+  return asCampaignContentId<"action">(`${id}-${suffix}`);
+}
+
+function cinematicStageAction(
+  action: Extract<MissionActionDefinition, { readonly kind: "start-cinematic" }>,
+  stage: Extract<MissionActionDefinition, { readonly kind: "set-cinematic-stage" }>["stage"]
+): Extract<MissionActionDefinition, { readonly kind: "set-cinematic-stage" }> {
+  return {
+    id: syntheticActionId(action.id, `mark-${stage}`),
+    kind: "set-cinematic-stage",
+    cinematicId: action.cinematicId,
+    stage
+  };
 }
 
 function collectMissionActions(content: CampaignMissionContent): ReadonlyMap<string, MissionActionDefinition> {

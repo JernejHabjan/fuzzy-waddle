@@ -52,6 +52,24 @@
         }
       }
     },
+    "portraits": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "textureKey"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "textureKey": { "type": "string", "minLength": 1 },
+          "frame": { "anyOf": [{ "type": "string" }, { "type": "number" }] },
+          "speakingAnimationKey": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
     "speakers": {
       "type": "array",
       "items": {
@@ -126,7 +144,14 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "mode", "seenSkipPolicy", "timeline", "gameplayFinalizeActionIds"],
+        "required": ["id", "mode", "seenSkipPolicy", "timeline"],
+        "anyOf": [
+          { "required": ["gameplayFinalize"], "properties": { "gameplayFinalize": true } },
+          {
+            "required": ["gameplayFinalizeActionIds"],
+            "properties": { "gameplayFinalizeActionIds": true }
+          }
+        ],
         "properties": {
           "id": {
             "type": "string",
@@ -199,8 +224,99 @@
                       "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
                     }
                   }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["kind", "shotId"],
+                  "properties": {
+                    "kind": { "const": "camera-shot" },
+                    "shotId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+                    },
+                    "fallbackPointId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+                    },
+                    "durationTicks": { "type": "integer", "minimum": 0 }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["kind", "actorId"],
+                  "properties": {
+                    "kind": { "const": "camera-actor" },
+                    "actorId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+                    },
+                    "fallbackPointId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+                    },
+                    "durationTicks": { "type": "integer", "minimum": 0 }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["kind", "assetKey"],
+                  "properties": {
+                    "kind": { "const": "audio" },
+                    "assetKey": { "type": "string", "minLength": 1 },
+                    "waitForCompletion": { "type": "boolean" }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["kind", "suppressed"],
+                  "properties": {
+                    "kind": { "const": "ui-suppression" },
+                    "suppressed": { "type": "boolean" }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["kind", "actorId", "animationKey"],
+                  "properties": {
+                    "kind": { "const": "actor-animation" },
+                    "actorId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+                    },
+                    "animationKey": { "type": "string", "minLength": 1 }
+                  }
                 }
               ]
+            }
+          },
+          "lockPlayerControl": { "type": "boolean" },
+          "lockCamera": { "type": "boolean" },
+          "resumeCueIndexes": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "type": "integer", "minimum": 0 }
+          },
+          "fallbackTimeoutTicks": { "type": "integer", "minimum": 1 },
+          "gameplayPrelude": {
+            "type": "array",
+            "items": {
+              "$ref": "https://fuzzy-waddle.dev/schemas/probable-waffle/campaign/mission.schema.json#/$defs/action"
+            }
+          },
+          "gameplayFinalize": {
+            "type": "array",
+            "items": {
+              "$ref": "https://fuzzy-waddle.dev/schemas/probable-waffle/campaign/mission.schema.json#/$defs/action"
             }
           },
           "gameplayPreludeActionIds": {

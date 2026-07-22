@@ -20,6 +20,7 @@ import { CampaignPhaserWorldAdapter } from "./actions/campaign-phaser-world-adap
 import { CampaignTrustedHookRegistry } from "./actions/campaign-trusted-hook-registry";
 import { CampaignWorldEventAdapter } from "./campaign-world-event-adapter";
 import { CampaignObjectiveProjectionStore } from "./objectives/campaign-objective-projection-store";
+import { PhaserCampaignCinematicPresentationService } from "./presentation/campaign-cinematic-presentation.service";
 import { IndexedScenarioReferenceRegistry } from "./scenario/scenario-reference-registry";
 
 export interface CampaignMissionOutcomeHandler {
@@ -30,6 +31,7 @@ export interface CampaignMissionOutcomeHandler {
 export class CampaignMissionDirector {
   readonly effects$ = new Subject<readonly CampaignMissionRuntimeEffect[]>();
   readonly objectiveProjection: CampaignObjectiveProjectionStore;
+  readonly cinematicPresentation: PhaserCampaignCinematicPresentationService;
   private runtime: CampaignMissionRuntime;
   private readonly worldAdapter: CampaignPhaserWorldAdapter;
   private readonly eventAdapter: CampaignWorldEventAdapter;
@@ -74,16 +76,30 @@ export class CampaignMissionDirector {
         ? "touch"
         : "keyboard-mouse"
     );
+    this.cinematicPresentation = new PhaserCampaignCinematicPresentationService(
+      scene,
+      context.campaignId,
+      AOTA_CAMPAIGN_CONTENT_REGISTRY.getDialogue(context.missionId),
+      this.runtime.snapshot(),
+      {
+        dialoguePresented: (lineId, ownerToken) => this.dialoguePresented(lineId, ownerToken),
+        dialogueAcknowledged: (lineId, ownerToken) => this.acknowledgeDialogue(lineId, ownerToken),
+        cinematicCue: (cinematicId, cueIndex) => this.cinematicCue(cinematicId, cueIndex),
+        cinematicFinished: (cinematicId, skipped) => this.finishCinematic(cinematicId, skipped)
+      }
+    );
     this.presentationSubscription = this.worldAdapter.presentationRequests$.subscribe((request) => {
       if (request.kind === "checkpoint") this.pendingCheckpointSaves += 1;
+      else this.cinematicPresentation.handleRequest(request);
     });
     this.objectiveNarrationSubscription = this.objectiveProjection.notifications$.subscribe((notification) => {
       if (notification.narrationLineId) {
-        this.worldAdapter.requestObjectiveNarration(notification.narrationLineId, notification.objectiveId);
+        this.worldAdapter.requestObjectiveNarration(notification.narrationLineId, notification.id);
       }
     });
     scene.events.on(ProbableWaffleSceneEventName.ReconnectSnapshotApplied, this.onSnapshotApplied, this);
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
+    this.cinematicPresentation.restoreRuntimePresentation(this.runtime.snapshot());
   }
 
   /** Called after initial actors have been indexed so fresh phase entry can safely resolve actor references. */
@@ -108,6 +124,8 @@ export class CampaignMissionDirector {
   queueEvent(event: Omit<CampaignMissionRuntimeEvent, "sequence"> & { readonly sequence?: number }): number {
     const sequence = this.runtime.enqueueEvent(event);
     this.syncGameState();
+    this.objectiveProjection.rebuild(this.runtime.snapshot());
+    this.cinematicPresentation.syncState(this.runtime.snapshot());
     return sequence;
   }
 
@@ -131,13 +149,13 @@ export class CampaignMissionDirector {
     return true;
   }
 
-  acknowledgeDialogue(lineId: string, initiatorPlayerNumber?: number): void {
-    this.worldAdapter.completePresentation("dialogue", lineId);
-    this.eventAdapter.dialogueAcknowledged(lineId, initiatorPlayerNumber);
+  acknowledgeDialogue(lineId: string, ownerToken?: string, initiatorPlayerNumber?: number): void {
+    if (this.isReplay()) return;
+    this.eventAdapter.dialogueAcknowledged(lineId, ownerToken, initiatorPlayerNumber);
   }
 
   finishCinematic(cinematicId: string, skipped = false, initiatorPlayerNumber?: number): void {
-    this.worldAdapter.completePresentation("cinematic", cinematicId);
+    if (this.isReplay()) return;
     this.eventAdapter.cinematicFinished(cinematicId, skipped, initiatorPlayerNumber);
   }
 
@@ -148,13 +166,15 @@ export class CampaignMissionDirector {
     const restored = this.scene.baseGameData.gameInstance.gameState?.data.campaignMission;
     return new CampaignMissionRuntime(context.campaignId, content, restored, {
       actionAdapter: this.worldAdapter,
-      conditionAdapter: this.worldAdapter
+      conditionAdapter: this.worldAdapter,
+      dialogue: AOTA_CAMPAIGN_CONTENT_REGISTRY.getDialogue(context.missionId)
     });
   }
 
   private publish(effects: readonly CampaignMissionRuntimeEffect[]): void {
     this.syncGameState();
     this.objectiveProjection.rebuild(this.runtime.snapshot());
+    this.cinematicPresentation.syncState(this.runtime.snapshot());
     this.objectiveProjection.presentEffects(effects);
     while (this.pendingCheckpointSaves > 0) {
       this.pendingCheckpointSaves -= 1;
@@ -187,6 +207,7 @@ export class CampaignMissionDirector {
     const tick = event.tick ?? getSceneService(this.scene, SimulationTickService)?.currentTick ?? 0;
     const result = this.started && !this.runtime.state.initialized ? this.runtime.start(tick) : { effects: [] };
     this.publish(result.effects);
+    this.cinematicPresentation.restoreRuntimePresentation(this.runtime.snapshot());
   }
 
   private destroy(): void {
@@ -197,7 +218,22 @@ export class CampaignMissionDirector {
     this.presentationSubscription.unsubscribe();
     this.objectiveNarrationSubscription.unsubscribe();
     this.objectiveProjection.destroy();
+    this.cinematicPresentation.destroy();
     this.scene.events.off(ProbableWaffleSceneEventName.ReconnectSnapshotApplied, this.onSnapshotApplied, this);
     this.effects$.complete();
+  }
+
+  private dialoguePresented(lineId: string, ownerToken: string): void {
+    if (this.isReplay() || this.runtime.state.dialoguePresentations[ownerToken]) return;
+    this.eventAdapter.dialoguePresented(lineId, ownerToken);
+  }
+
+  private cinematicCue(cinematicId: string, cueIndex: number): void {
+    if (this.isReplay()) return;
+    this.eventAdapter.cinematicCue(cinematicId, cueIndex);
+  }
+
+  private isReplay(): boolean {
+    return this.scene.baseGameData.gameInstance.gameInstanceMetadata.isReplay();
   }
 }

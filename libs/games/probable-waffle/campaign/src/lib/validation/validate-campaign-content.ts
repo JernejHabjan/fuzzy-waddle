@@ -1,4 +1,8 @@
-import { CAMPAIGN_MISSION_IDS, type CampaignMissionId } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  CAMPAIGN_LOCAL_PRESENTATION_EVENT_KINDS,
+  CAMPAIGN_MISSION_IDS,
+  type CampaignMissionId
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import type { CampaignDefinition } from "../contracts/campaign-definition";
 import type { CampaignMissionContent } from "../contracts/campaign-mission-content";
 import type { MissionActionDefinition } from "../contracts/mission-action-definition";
@@ -123,6 +127,7 @@ function validateMission(
     ...(dialogue?.lines ?? []).map((line) => String(line.textId))
   ]);
   const dialogueLineIds = new Set((dialogue?.lines ?? []).map((line) => String(line.id)));
+  const cinematicIds = new Set((dialogue?.cinematics ?? []).map((cinematic) => String(cinematic.id)));
   reportDuplicates(
     mission.phases.map((phase) => String(phase.id)),
     sourcePath,
@@ -146,6 +151,7 @@ function validateMission(
   );
   const actionEntries = collectMissionActionEntries(mission);
   validateObjectiveReferences(mission, actionEntries, sourcePath, issues);
+  validatePresentationActionReferences(actionEntries, dialogueLineIds, cinematicIds, sourcePath, issues);
   for (const actionId of findDuplicates(actionEntries.map((entry) => String(entry.action.id)))) {
     const entry = actionEntries.find((candidate) => String(candidate.action.id) === actionId)!;
     addIssue(issues, sourcePath, entry.jsonPath, "duplicate-action-id", `Duplicate action id '${actionId}'`);
@@ -167,29 +173,29 @@ function validateMission(
     validateActions(phase.entryActions, sourcePath, `${phasePath}.entryActions`, registries, issues);
     validateActions(phase.exitActions, sourcePath, `${phasePath}.exitActions`, registries, issues);
     for (const [triggerIndex, trigger] of phase.triggers.entries()) {
+      const triggerPath = `${phasePath}.triggers[${triggerIndex}]`;
       if (!registries.triggers.has(trigger.kind)) {
         addIssue(
           issues,
           sourcePath,
-          `${phasePath}.triggers[${triggerIndex}].kind`,
+          `${triggerPath}.kind`,
           "missing-trigger-kind",
           `Unknown trigger kind '${trigger.kind}'`
         );
       }
-      validateCondition(
-        trigger.condition,
-        sourcePath,
-        `${phasePath}.triggers[${triggerIndex}].condition`,
-        registries,
-        issues
-      );
-      validateActions(
-        trigger.actions,
-        sourcePath,
-        `${phasePath}.triggers[${triggerIndex}].actions`,
-        registries,
-        issues
-      );
+      for (const eventKind of trigger.eventKinds ?? []) {
+        if ((CAMPAIGN_LOCAL_PRESENTATION_EVENT_KINDS as readonly string[]).includes(eventKind)) {
+          addIssue(
+            issues,
+            sourcePath,
+            `${triggerPath}.eventKinds`,
+            "local-presentation-event-trigger",
+            `Local presentation event '${eventKind}' cannot drive deterministic mission actions`
+          );
+        }
+      }
+      validateCondition(trigger.condition, sourcePath, `${triggerPath}.condition`, registries, issues);
+      validateActions(trigger.actions, sourcePath, `${triggerPath}.actions`, registries, issues);
     }
     for (const [transitionIndex, transition] of phase.transitions.entries()) {
       const transitionPath = `${phasePath}.transitions[${transitionIndex}]`;
@@ -357,16 +363,40 @@ function validateDialogue(
   const sourcePath = dialoguePath(mission.id);
   const speakerIds = new Set(dialogue.speakers.map((speaker) => String(speaker.id)));
   const lineIds = new Set(dialogue.lines.map((line) => String(line.id)));
+  const portraitIds = new Set((dialogue.portraits ?? []).map((portrait) => String(portrait.id)));
   const textIds = new Set([
     ...(dialogue.texts ?? []).map((text) => String(text.id)),
     ...dialogue.lines.map((line) => String(line.textId))
   ]);
   const actionIds = collectActionIds(mission);
+  const dialogueActionEntries = collectDialogueActionEntries(dialogue);
+  validateObjectiveReferences(mission, dialogueActionEntries, sourcePath, issues);
+  validatePresentationActionReferences(
+    dialogueActionEntries,
+    lineIds,
+    new Set(dialogue.cinematics.map((item) => String(item.id))),
+    sourcePath,
+    issues
+  );
+  for (const actionId of findDuplicates([
+    ...collectMissionActionEntries(mission).map((entry) => String(entry.action.id)),
+    ...dialogueActionEntries.map((entry) => String(entry.action.id))
+  ])) {
+    const entry = dialogueActionEntries.find((candidate) => String(candidate.action.id) === actionId);
+    if (entry) addIssue(issues, sourcePath, entry.jsonPath, "duplicate-action-id", `Duplicate action id '${actionId}'`);
+  }
   reportDuplicates(
     (dialogue.texts ?? []).map((text) => String(text.id)),
     sourcePath,
     "$.texts",
     "duplicate-text-id",
+    issues
+  );
+  reportDuplicates(
+    (dialogue.portraits ?? []).map((portrait) => String(portrait.id)),
+    sourcePath,
+    "$.portraits",
+    "duplicate-portrait-id",
     issues
   );
   reportDuplicates(
@@ -400,6 +430,15 @@ function validateDialogue(
         `Unknown speaker '${line.speakerId}'`
       );
     }
+    if (line.portraitId && !portraitIds.has(String(line.portraitId))) {
+      addIssue(
+        issues,
+        sourcePath,
+        `$.lines[${lineIndex}].portraitId`,
+        "missing-portrait-reference",
+        `Unknown portrait '${line.portraitId}'`
+      );
+    }
   }
   for (const [speakerIndex, speaker] of dialogue.speakers.entries()) {
     if (!textIds.has(String(speaker.nameTextId))) {
@@ -411,9 +450,32 @@ function validateDialogue(
         `Unknown mission text '${speaker.nameTextId}'`
       );
     }
+    if (speaker.portraitId && !portraitIds.has(String(speaker.portraitId))) {
+      addIssue(
+        issues,
+        sourcePath,
+        `$.speakers[${speakerIndex}].portraitId`,
+        "missing-portrait-reference",
+        `Unknown portrait '${speaker.portraitId}'`
+      );
+    }
   }
   for (const [cinematicIndex, cinematic] of dialogue.cinematics.entries()) {
     const cinematicPath = `$.cinematics[${cinematicIndex}]`;
+    validateActions(
+      cinematic.gameplayPrelude ?? [],
+      sourcePath,
+      `${cinematicPath}.gameplayPrelude`,
+      registries,
+      issues
+    );
+    validateActions(
+      cinematic.gameplayFinalize ?? [],
+      sourcePath,
+      `${cinematicPath}.gameplayFinalize`,
+      registries,
+      issues
+    );
     if (!registries.cinematics.has(cinematic.mode)) {
       addIssue(
         issues,
@@ -442,11 +504,171 @@ function validateDialogue(
           `Unknown mission text '${cue.textId}'`
         );
       }
+      if (cue.kind === "camera-shot") {
+        validateDeclaredScenarioReference(
+          mission,
+          "cameraShots",
+          cue.shotId,
+          sourcePath,
+          `${cinematicPath}.timeline[${cueIndex}].shotId`,
+          issues
+        );
+        if (cue.fallbackPointId) {
+          validateDeclaredScenarioReference(
+            mission,
+            "points",
+            cue.fallbackPointId,
+            sourcePath,
+            `${cinematicPath}.timeline[${cueIndex}].fallbackPointId`,
+            issues
+          );
+        }
+      }
+      if (cue.kind === "camera-actor" || cue.kind === "actor-animation") {
+        validateDeclaredScenarioReference(
+          mission,
+          "actors",
+          cue.actorId,
+          sourcePath,
+          `${cinematicPath}.timeline[${cueIndex}].actorId`,
+          issues
+        );
+        if (cue.kind === "camera-actor" && cue.fallbackPointId) {
+          validateDeclaredScenarioReference(
+            mission,
+            "points",
+            cue.fallbackPointId,
+            sourcePath,
+            `${cinematicPath}.timeline[${cueIndex}].fallbackPointId`,
+            issues
+          );
+        }
+      }
     }
-    for (const actionId of [...(cinematic.gameplayPreludeActionIds ?? []), ...cinematic.gameplayFinalizeActionIds]) {
+    for (const resumeCueIndex of cinematic.resumeCueIndexes ?? []) {
+      if (resumeCueIndex >= cinematic.timeline.length) {
+        addIssue(
+          issues,
+          sourcePath,
+          `${cinematicPath}.resumeCueIndexes`,
+          "invalid-cinematic-resume-cue",
+          `Resume cue ${resumeCueIndex} is outside the ${cinematic.timeline.length}-cue timeline`
+        );
+      }
+    }
+    for (const actionId of [
+      ...(cinematic.gameplayPreludeActionIds ?? []),
+      ...(cinematic.gameplayFinalizeActionIds ?? [])
+    ]) {
       if (!actionIds.has(String(actionId))) {
         addIssue(issues, sourcePath, cinematicPath, "missing-action-reference", `Unknown action '${actionId}'`);
       }
+    }
+  }
+  validateCinematicActionCycles(dialogue, mission, sourcePath, issues);
+}
+
+function validateDeclaredScenarioReference(
+  mission: CampaignMissionContent,
+  kind: "actors" | "points" | "cameraShots",
+  id: string,
+  sourcePath: string,
+  jsonPath: string,
+  issues: CampaignValidationIssue[]
+): void {
+  if ((mission.scenarioReferences?.[kind] ?? []).some((candidate) => String(candidate) === String(id))) return;
+  addIssue(
+    issues,
+    sourcePath,
+    jsonPath,
+    "missing-scenario-reference",
+    `Mission does not declare ${kind} scenario reference '${id}'`
+  );
+}
+
+function validateCinematicActionCycles(
+  dialogue: MissionDialogueBundle,
+  mission: CampaignMissionContent,
+  sourcePath: string,
+  issues: CampaignValidationIssue[]
+): void {
+  const actionsById = new Map(
+    collectMissionActionEntries(mission).map((entry) => [String(entry.action.id), entry.action])
+  );
+  const dependencies = new Map<string, string[]>();
+  const collectCinematics = (action: MissionActionDefinition): string[] => {
+    const result = action.kind === "start-cinematic" ? [String(action.cinematicId)] : [];
+    if (action.kind === "sequence" || action.kind === "parallel" || action.kind === "race") {
+      for (const child of action.actions) result.push(...collectCinematics(child));
+    }
+    if (action.fallbackAction) result.push(...collectCinematics(action.fallbackAction));
+    return result;
+  };
+  for (const cinematic of dialogue.cinematics) {
+    const actionIds = [...(cinematic.gameplayPreludeActionIds ?? []), ...(cinematic.gameplayFinalizeActionIds ?? [])];
+    const inlineActions = [...(cinematic.gameplayPrelude ?? []), ...(cinematic.gameplayFinalize ?? [])];
+    dependencies.set(String(cinematic.id), [
+      ...inlineActions.flatMap(collectCinematics),
+      ...actionIds.flatMap((actionId) => {
+        const action = actionsById.get(String(actionId));
+        return action ? collectCinematics(action) : [];
+      })
+    ]);
+  }
+  const visiting = new Set<string>();
+  const visited = new Set<string>();
+  const visit = (cinematicId: string): void => {
+    if (visited.has(cinematicId)) return;
+    if (visiting.has(cinematicId)) {
+      addIssue(
+        issues,
+        sourcePath,
+        "$.cinematics",
+        "cinematic-action-cycle",
+        `Cinematic action cycle includes '${cinematicId}'`
+      );
+      return;
+    }
+    visiting.add(cinematicId);
+    for (const dependencyId of dependencies.get(cinematicId) ?? []) visit(dependencyId);
+    visiting.delete(cinematicId);
+    visited.add(cinematicId);
+  };
+  for (const cinematicId of [...dependencies.keys()].sort()) visit(cinematicId);
+}
+
+function validatePresentationActionReferences(
+  actionEntries: readonly { readonly action: MissionActionDefinition; readonly jsonPath: string }[],
+  dialogueLineIds: ReadonlySet<string>,
+  cinematicIds: ReadonlySet<string>,
+  sourcePath: string,
+  issues: CampaignValidationIssue[]
+): void {
+  for (const entry of actionEntries) {
+    const action = entry.action;
+    if (
+      (action.kind === "start-dialogue" || action.kind === "set-dialogue-state") &&
+      !dialogueLineIds.has(String(action.lineId))
+    ) {
+      addIssue(
+        issues,
+        sourcePath,
+        `${entry.jsonPath}.lineId`,
+        "missing-dialogue-reference",
+        `Unknown line '${action.lineId}'`
+      );
+    }
+    if (
+      (action.kind === "start-cinematic" || action.kind === "set-cinematic-stage") &&
+      !cinematicIds.has(String(action.cinematicId))
+    ) {
+      addIssue(
+        issues,
+        sourcePath,
+        `${entry.jsonPath}.cinematicId`,
+        "missing-cinematic-reference",
+        `Unknown cinematic '${action.cinematicId}'`
+      );
     }
   }
 }
@@ -661,6 +883,27 @@ function collectMissionActionEntries(
   }
   for (const [checkpointIndex, checkpoint] of mission.checkpoints.entries()) {
     addActions(checkpoint.requiredActions, `$.checkpoints[${checkpointIndex}].requiredActions`);
+  }
+  return result;
+}
+
+function collectDialogueActionEntries(
+  dialogue: MissionDialogueBundle
+): { readonly action: MissionActionDefinition; readonly jsonPath: string }[] {
+  const result: { action: MissionActionDefinition; jsonPath: string }[] = [];
+  const addActions = (actions: readonly MissionActionDefinition[], jsonPath: string): void => {
+    for (const [index, action] of actions.entries()) {
+      const actionPath = `${jsonPath}[${index}]`;
+      result.push({ action, jsonPath: actionPath });
+      if (action.fallbackAction) addActions([action.fallbackAction], `${actionPath}.fallbackAction`);
+      if (action.kind === "sequence" || action.kind === "parallel" || action.kind === "race") {
+        addActions(action.actions, `${actionPath}.actions`);
+      }
+    }
+  };
+  for (const [cinematicIndex, cinematic] of dialogue.cinematics.entries()) {
+    addActions(cinematic.gameplayPrelude ?? [], `$.cinematics[${cinematicIndex}].gameplayPrelude`);
+    addActions(cinematic.gameplayFinalize ?? [], `$.cinematics[${cinematicIndex}].gameplayFinalize`);
   }
   return result;
 }

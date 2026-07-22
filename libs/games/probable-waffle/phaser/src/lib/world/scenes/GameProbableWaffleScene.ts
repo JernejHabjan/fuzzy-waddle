@@ -119,6 +119,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     if (campaignMissionDirector) {
       this.sceneGameData.services.push(campaignMissionDirector);
       hud.initializeCampaignObjectives(campaignMissionDirector);
+      hud.initializeCampaignPresentation(campaignMissionDirector);
     }
     new ActorDebugDamageSystem(this);
     if (!this.baseGameData.gameInstance.gameInstanceMetadata.isReplay()) {

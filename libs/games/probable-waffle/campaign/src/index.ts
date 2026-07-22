@@ -30,6 +30,8 @@ export * from "./lib/runtime/actions/campaign-action-runtime";
 export * from "./lib/runtime/conditions/campaign-condition-evaluator";
 export * from "./lib/runtime/objectives/campaign-objective-service";
 export * from "./lib/presentation/campaign-input-prompt-registry";
+export * from "./lib/presentation/campaign-cinematic-presentation-service";
+export * from "./lib/presentation/campaign-dialogue-projection";
 export * from "./lib/presentation/campaign-objective-projection";
 export * from "./lib/presentation/campaign-presentation-priority-queue";
 export * from "./lib/validation/campaign-validation-issue";

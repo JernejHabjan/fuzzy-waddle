@@ -158,6 +158,15 @@
       "y": 70
     },
     {
+      "prefabId": "f21dbf40-591d-4b06-a28d-bf939a4a37de",
+      "id": "0d335bae-9de7-4500-ab15-4e79159a774e",
+      "unlock": ["x", "y"],
+      "label": "campaignCinematicHud",
+      "scope": "CLASS",
+      "x": 0,
+      "y": 0
+    },
+    {
       "prefabId": "8552f4bd-87ce-4bdf-aed4-b4c919b08b80",
       "id": "473c0138-5aa8-4f7a-bb12-6821eaaf02a9",
       "unlock": ["x", "y"],
