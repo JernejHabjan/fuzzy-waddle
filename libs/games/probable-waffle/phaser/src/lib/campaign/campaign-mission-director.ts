@@ -9,6 +9,7 @@ import type {
   CampaignMissionRuntimeEvent,
   CampaignMissionRuntimeState
 } from "@fuzzy-waddle/probable-waffle-protocol";
+import { ProbableWafflePlayerType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { ProbableWaffleScene } from "../core/probable-waffle.scene";
 import { getSceneService } from "../world/services/scene-component-helpers";
 import { SimulationPauseReason, SimulationTickService } from "../world/services/simulation-tick.service";
@@ -64,6 +65,7 @@ export class CampaignMissionDirector {
   ) {
     this.worldAdapter = new CampaignPhaserWorldAdapter(scene, trustedHooks);
     this.runtime = this.createRuntimeFromGameState();
+    this.worldAdapter.restoreParticipantTeams(this.runtime.state.participantTeams);
     this.eventAdapter = new CampaignWorldEventAdapter(scene, this);
     const context = scene.baseGameData.gameInstance.gameInstanceMetadata.data.campaignContext;
     if (!context) throw new Error("CampaignMissionDirector requires campaignContext");
@@ -167,6 +169,14 @@ export class CampaignMissionDirector {
     return new CampaignMissionRuntime(context.campaignId, content, restored, {
       actionAdapter: this.worldAdapter,
       conditionAdapter: this.worldAdapter,
+      encounterAdapter: this.worldAdapter,
+      difficulty: context.difficulty ?? "normal",
+      playerCount: Math.max(
+        1,
+        this.scene.players.filter(
+          (player) => player.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.Human
+        ).length
+      ),
       dialogue: AOTA_CAMPAIGN_CONTENT_REGISTRY.getDialogue(context.missionId)
     });
   }
@@ -203,6 +213,7 @@ export class CampaignMissionDirector {
   private onSnapshotApplied(event: ReconnectSnapshotAppliedSceneEvent): void {
     this.worldAdapter.resetOwnedResourcesForRestore();
     this.runtime = this.createRuntimeFromGameState();
+    this.worldAdapter.restoreParticipantTeams(this.runtime.state.participantTeams);
     this.worldAdapter.activateRestoredResources();
     const tick = event.tick ?? getSceneService(this.scene, SimulationTickService)?.currentTick ?? 0;
     const result = this.started && !this.runtime.state.initialized ? this.runtime.start(tick) : { effects: [] };

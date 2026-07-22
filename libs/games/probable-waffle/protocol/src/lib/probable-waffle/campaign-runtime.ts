@@ -1,6 +1,6 @@
 import type { CampaignId, CampaignMissionId } from "./campaign";
 
-export const CAMPAIGN_MISSION_RUNTIME_SCHEMA_VERSION = 4 as const;
+export const CAMPAIGN_MISSION_RUNTIME_SCHEMA_VERSION = 5 as const;
 export const CAMPAIGN_LOCAL_PRESENTATION_EVENT_KINDS = ["dialogue.presented", "cinematic.cue"] as const;
 
 export type CampaignMissionRuntimeStatus = "initializing" | "running" | "victory" | "defeat" | "failed";
@@ -56,7 +56,12 @@ export type CampaignMissionEvent =
     >
   | CampaignMissionEventBase<
       "actor.owner-changed",
-      { readonly scenarioActorId?: string; readonly previousOwner?: number; readonly owner?: number }
+      {
+        readonly actorRuntimeId: string;
+        readonly scenarioActorId?: string;
+        readonly previousOwner?: number;
+        readonly owner?: number;
+      }
     >
   | CampaignMissionEventBase<
       "actor.entered-region" | "actor.left-region",
@@ -75,6 +80,15 @@ export type CampaignMissionEvent =
   | CampaignMissionEventBase<
       "encounter.changed",
       { readonly encounterId: string; readonly state: CampaignMissionEncounterStatus }
+    >
+  | CampaignMissionEventBase<
+      "encounter.wave-warning" | "encounter.wave-spawned",
+      {
+        readonly encounterId: string;
+        readonly state: CampaignMissionEncounterStatus;
+        readonly waveId: string;
+        readonly detail: string | null;
+      }
     >
   | CampaignMissionEventBase<
       "objective.changed",
@@ -163,6 +177,29 @@ export interface CampaignMissionTriggerRuntimeState {
   lastFiredTick?: number;
 }
 
+export interface CampaignMissionEncounterRuntimeState {
+  status: CampaignMissionEncounterStatus;
+  waveIndex: number;
+  nextEligibleTick?: number;
+  livingSpawnedActorIds: string[];
+  spawnedActorOwners: Record<string, number>;
+  spawnCursor: number;
+  deterministicBranchIds: Record<string, string>;
+  warnedWaveIds: string[];
+  blockedAttempts: number;
+  failureReason?: string;
+}
+
+export interface CampaignMissionDifficultyRuntimeState {
+  difficulty: "story" | "normal" | "hard";
+  playerCount: number;
+  startingResourceScale?: number;
+  waveSizeScale?: number;
+  warningTicks?: number;
+  damageScale?: number;
+  aiAggressionScale?: number;
+}
+
 export interface CampaignMissionActionContinuationState {
   actionId: string;
   kind: string;
@@ -233,6 +270,7 @@ export interface CampaignMissionRuntimeState {
   missionRevision: number;
   status: CampaignMissionRuntimeStatus;
   initialized: boolean;
+  difficulty: CampaignMissionDifficultyRuntimeState;
   activePhaseIds: string[];
   completedPhaseIds: string[];
   pendingPhaseIds: string[];
@@ -245,7 +283,8 @@ export interface CampaignMissionRuntimeState {
   dialogueHistory: CampaignMissionDialogueHistoryEntry[];
   cinematics: Record<string, CampaignMissionCinematicRuntimeState>;
   activeCinematicId?: string;
-  encounters: Record<string, CampaignMissionEncounterStatus>;
+  participantTeams: Record<string, number>;
+  encounters: Record<string, CampaignMissionEncounterRuntimeState>;
   claimedTriggerIds: string[];
   triggerStates: Record<string, CampaignMissionTriggerRuntimeState>;
   claimedRewardIds: string[];

@@ -220,6 +220,7 @@ export interface PlayerAiBlackboardData {
 export interface AIBehaviorTreeStateData {
   blackboard: PlayerAiBlackboardData;
   telemetry?: unknown;
+  enabled?: boolean;
 }
 
 export interface ConvertibleComponentData {

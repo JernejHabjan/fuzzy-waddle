@@ -1,6 +1,8 @@
 import {
   CAMPAIGN_LOCAL_PRESENTATION_EVENT_KINDS,
   CAMPAIGN_MISSION_IDS,
+  ObjectNames,
+  ResearchType,
   type CampaignMissionId
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { CampaignDefinition } from "../contracts/campaign-definition";
@@ -11,6 +13,7 @@ import type { MissionDialogueBundle } from "../contracts/mission-dialogue-bundle
 import type { MissionRewardBundle } from "../contracts/mission-reward-bundle";
 import type { CampaignDefinitionRegistries } from "../registry/campaign-definition-registries";
 import type { CampaignValidationIssue, CampaignValidationResult } from "./campaign-validation-issue";
+import { validateCampaignParticipants } from "../runtime/campaign-participant-resolver";
 
 export interface CampaignValidationInput {
   readonly campaign: CampaignDefinition;
@@ -128,11 +131,30 @@ function validateMission(
   ]);
   const dialogueLineIds = new Set((dialogue?.lines ?? []).map((line) => String(line.id)));
   const cinematicIds = new Set((dialogue?.cinematics ?? []).map((cinematic) => String(cinematic.id)));
+  const encounterIds = new Set((mission.encounters ?? []).map((encounter) => String(encounter.id)));
+  for (const error of validateCampaignParticipants(mission.participants)) {
+    addIssue(issues, sourcePath, "$.participants", "invalid-participant", error);
+  }
+  validateAllowanceConflicts(mission, sourcePath, issues);
+  reportDuplicates(
+    (mission.difficulty.playerCountOverrides ?? []).map((override) => String(override.playerCount)),
+    sourcePath,
+    "$.difficulty.playerCountOverrides",
+    "duplicate-player-count-override",
+    issues
+  );
   reportDuplicates(
     mission.phases.map((phase) => String(phase.id)),
     sourcePath,
     "$.phases",
     "duplicate-phase-id",
+    issues
+  );
+  reportDuplicates(
+    (mission.encounters ?? []).map((encounter) => String(encounter.id)),
+    sourcePath,
+    "$.encounters",
+    "duplicate-encounter-id",
     issues
   );
   reportDuplicates(
@@ -150,6 +172,58 @@ function validateMission(
     issues
   );
   const actionEntries = collectMissionActionEntries(mission);
+  for (const entry of actionEntries) {
+    if (entry.action.kind === "set-encounter-state" && !encounterIds.has(String(entry.action.encounterId))) {
+      addIssue(
+        issues,
+        sourcePath,
+        `${entry.jsonPath}.encounterId`,
+        "missing-encounter-reference",
+        `Unknown encounter '${entry.action.encounterId}'`
+      );
+    }
+    if (entry.action.kind === "set-ai-enabled" || entry.action.kind === "ai-directive") {
+      const participant = mission.participants[entry.action.playerNumber - 1];
+      const validController =
+        entry.action.kind === "set-ai-enabled"
+          ? participant?.controller === "full-ai"
+          : participant?.controller === "full-ai" || participant?.controller === "scripted-ai";
+      if (!validController) {
+        addIssue(
+          issues,
+          sourcePath,
+          `${entry.jsonPath}.playerNumber`,
+          "invalid-ai-participant-reference",
+          `Action '${entry.action.id}' targets player ${entry.action.playerNumber} without a compatible AI controller`
+        );
+      }
+    }
+    if (
+      entry.action.kind === "ai-directive" &&
+      entry.action.directive !== "stop" &&
+      !entry.action.targetActorId &&
+      !entry.action.targetPointId
+    ) {
+      addIssue(
+        issues,
+        sourcePath,
+        entry.jsonPath,
+        "invalid-ai-directive-target",
+        `AI directive '${entry.action.id}' requires an actor or point target`
+      );
+    }
+  }
+  for (const entry of collectMissionConditionEntries(mission)) {
+    if (entry.condition.kind === "encounter" && !encounterIds.has(String(entry.condition.encounterId))) {
+      addIssue(
+        issues,
+        sourcePath,
+        `${entry.jsonPath}.encounterId`,
+        "missing-encounter-reference",
+        `Unknown encounter '${entry.condition.encounterId}'`
+      );
+    }
+  }
   validateObjectiveReferences(mission, actionEntries, sourcePath, issues);
   validatePresentationActionReferences(actionEntries, dialogueLineIds, cinematicIds, sourcePath, issues);
   for (const actionId of findDuplicates(actionEntries.map((entry) => String(entry.action.id)))) {
@@ -294,6 +368,54 @@ function validateMission(
           `${objectivePath}.rewardIds`,
           "missing-reward-reference",
           `Unknown reward '${rewardId}'`
+        );
+      }
+    }
+  }
+  for (const [encounterIndex, encounter] of (mission.encounters ?? []).entries()) {
+    const encounterPath = `$.encounters[${encounterIndex}]`;
+    validateCondition(encounter.start, sourcePath, `${encounterPath}.start`, registries, issues);
+    if (encounter.completion) {
+      validateCondition(encounter.completion, sourcePath, `${encounterPath}.completion`, registries, issues);
+    }
+    reportDuplicates(
+      encounter.waves.map((wave) => String(wave.id)),
+      sourcePath,
+      `${encounterPath}.waves`,
+      "duplicate-encounter-wave-id",
+      issues
+    );
+    reportDuplicates(
+      (encounter.playerCountOverrides ?? []).map((override) => String(override.playerCount)),
+      sourcePath,
+      `${encounterPath}.playerCountOverrides`,
+      "duplicate-player-count-override",
+      issues
+    );
+    for (const [waveIndex, wave] of encounter.waves.entries()) {
+      validateEncounterWave(mission, wave, sourcePath, `${encounterPath}.waves[${waveIndex}]`, registries, issues);
+    }
+    for (const [difficulty, override] of Object.entries(encounter.difficultyOverrides ?? {})) {
+      for (const [waveIndex, wave] of (override.waves ?? []).entries()) {
+        validateEncounterWave(
+          mission,
+          wave,
+          sourcePath,
+          `${encounterPath}.difficultyOverrides.${difficulty}.waves[${waveIndex}]`,
+          registries,
+          issues
+        );
+      }
+    }
+    for (const [overrideIndex, override] of (encounter.playerCountOverrides ?? []).entries()) {
+      for (const [waveIndex, wave] of (override.waves ?? []).entries()) {
+        validateEncounterWave(
+          mission,
+          wave,
+          sourcePath,
+          `${encounterPath}.playerCountOverrides[${overrideIndex}].waves[${waveIndex}]`,
+          registries,
+          issues
         );
       }
     }
@@ -570,7 +692,7 @@ function validateDialogue(
 
 function validateDeclaredScenarioReference(
   mission: CampaignMissionContent,
-  kind: "actors" | "points" | "cameraShots",
+  kind: "actors" | "points" | "cameraShots" | "spawnSets",
   id: string,
   sourcePath: string,
   jsonPath: string,
@@ -697,6 +819,15 @@ function validateActions(
         `${jsonPath}[${index}].hookId`,
         "missing-trusted-hook",
         `Unknown trusted hook '${action.hookId}'`
+      );
+    }
+    if (action.kind === "ai-directive" && !registries.aiDirectives.has(action.directive)) {
+      addIssue(
+        issues,
+        sourcePath,
+        `${jsonPath}[${index}].directive`,
+        "missing-ai-directive-kind",
+        `Unknown AI directive '${action.directive}'`
       );
     }
     if (action.missingReferencePolicy === "fallback" && !action.fallbackAction) {
@@ -854,6 +985,10 @@ function collectMissionConditionEntries(
   for (const [checkpointIndex, checkpoint] of mission.checkpoints.entries()) {
     addCondition(checkpoint.trigger, `$.checkpoints[${checkpointIndex}].trigger`);
   }
+  for (const [encounterIndex, encounter] of (mission.encounters ?? []).entries()) {
+    addCondition(encounter.start, `$.encounters[${encounterIndex}].start`);
+    if (encounter.completion) addCondition(encounter.completion, `$.encounters[${encounterIndex}].completion`);
+  }
   return result;
 }
 
@@ -884,7 +1019,144 @@ function collectMissionActionEntries(
   for (const [checkpointIndex, checkpoint] of mission.checkpoints.entries()) {
     addActions(checkpoint.requiredActions, `$.checkpoints[${checkpointIndex}].requiredActions`);
   }
+  for (const [encounterIndex, encounter] of (mission.encounters ?? []).entries()) {
+    const addWaves = (waves: typeof encounter.waves, jsonPath: string): void => {
+      for (const [waveIndex, wave] of waves.entries()) {
+        addActions(wave.actions ?? [], `${jsonPath}[${waveIndex}].actions`);
+      }
+    };
+    addWaves(encounter.waves, `$.encounters[${encounterIndex}].waves`);
+    for (const [difficulty, override] of Object.entries(encounter.difficultyOverrides ?? {})) {
+      addWaves(override.waves ?? [], `$.encounters[${encounterIndex}].difficultyOverrides.${difficulty}.waves`);
+    }
+    for (const [overrideIndex, override] of (encounter.playerCountOverrides ?? []).entries()) {
+      addWaves(override.waves ?? [], `$.encounters[${encounterIndex}].playerCountOverrides[${overrideIndex}].waves`);
+    }
+  }
   return result;
+}
+
+function validateEncounterWave(
+  mission: CampaignMissionContent,
+  wave: NonNullable<CampaignMissionContent["encounters"]>[number]["waves"][number],
+  sourcePath: string,
+  jsonPath: string,
+  registries: CampaignDefinitionRegistries,
+  issues: CampaignValidationIssue[]
+): void {
+  validateActions(wave.actions ?? [], sourcePath, `${jsonPath}.actions`, registries, issues);
+  reportDuplicates(
+    (wave.branches ?? []).map((branch) => String(branch.id)),
+    sourcePath,
+    `${jsonPath}.branches`,
+    "duplicate-encounter-branch-id",
+    issues
+  );
+  for (const [groupIndex, group] of [
+    ...wave.spawns,
+    ...(wave.branches ?? []).flatMap((branch) => branch.spawns)
+  ].entries()) {
+    const groupPath = `${jsonPath}.spawns[${groupIndex}]`;
+    validateDeclaredScenarioReference(
+      mission,
+      "spawnSets",
+      group.spawnSetId,
+      sourcePath,
+      `${groupPath}.spawnSetId`,
+      issues
+    );
+    if (group.fallbackSpawnSetId) {
+      validateDeclaredScenarioReference(
+        mission,
+        "spawnSets",
+        group.fallbackSpawnSetId,
+        sourcePath,
+        `${groupPath}.fallbackSpawnSetId`,
+        issues
+      );
+    } else if (wave.blockedSpawnPolicy === "fallback") {
+      addIssue(
+        issues,
+        sourcePath,
+        `${groupPath}.fallbackSpawnSetId`,
+        "missing-encounter-fallback",
+        `Wave '${wave.id}' requires a fallback spawn set`
+      );
+    }
+    for (const [actorIndex, actor] of group.actors.entries()) {
+      if (!Object.values(ObjectNames).includes(actor.actorName)) {
+        addIssue(
+          issues,
+          sourcePath,
+          `${groupPath}.actors[${actorIndex}].actorName`,
+          "invalid-encounter-composition",
+          `Unknown actor '${actor.actorName}'`
+        );
+      }
+      if (
+        actor.ownerPlayerNumber !== undefined &&
+        (actor.ownerPlayerNumber < 1 || actor.ownerPlayerNumber > mission.participants.length)
+      ) {
+        addIssue(
+          issues,
+          sourcePath,
+          `${groupPath}.actors[${actorIndex}].ownerPlayerNumber`,
+          "invalid-encounter-owner",
+          `Encounter actor targets missing player ${actor.ownerPlayerNumber}`
+        );
+      }
+    }
+  }
+}
+
+function validateAllowanceConflicts(
+  mission: CampaignMissionContent,
+  sourcePath: string,
+  issues: CampaignValidationIssue[]
+): void {
+  const allowance = mission.progressionAllowance;
+  for (const [allowed, denied, path] of [
+    [allowance.allowedUnlockIds, allowance.deniedUnlockIds, "UnlockIds"],
+    [allowance.allowedActorIds, allowance.deniedActorIds, "ActorIds"],
+    [allowance.allowedResearchIds, allowance.deniedResearchIds, "ResearchIds"]
+  ] as const) {
+    const deniedValues = new Set((denied ?? []).map(String));
+    for (const id of allowed ?? []) {
+      if (deniedValues.has(String(id))) {
+        addIssue(
+          issues,
+          sourcePath,
+          `$.progressionAllowance.allowed${path}`,
+          "conflicting-content-allowance",
+          `Content '${id}' is both allowed and denied`
+        );
+      }
+    }
+  }
+  for (const [values, validValues, path] of [
+    [
+      [...(allowance.allowedActorIds ?? []), ...(allowance.deniedActorIds ?? [])],
+      Object.values(ObjectNames),
+      "ActorIds"
+    ],
+    [
+      [...(allowance.allowedResearchIds ?? []), ...(allowance.deniedResearchIds ?? [])],
+      Object.values(ResearchType),
+      "ResearchIds"
+    ]
+  ] as const) {
+    for (const id of values) {
+      if (!validValues.includes(id as never)) {
+        addIssue(
+          issues,
+          sourcePath,
+          `$.progressionAllowance.allowed${path}`,
+          "invalid-content-allowance",
+          `Unknown content '${id}'`
+        );
+      }
+    }
+  }
 }
 
 function collectDialogueActionEntries(

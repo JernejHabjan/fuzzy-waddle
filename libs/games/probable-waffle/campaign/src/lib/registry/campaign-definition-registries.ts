@@ -54,7 +54,7 @@ export function createDefaultCampaignDefinitionRegistries(): CampaignDefinitionR
   registerKinds(registries.objectives, ["primary", "secondary", "optional", "hidden", "tutorial", "failure"]);
   registerKinds(registries.triggers, ["event", "condition"]);
   registerKinds(registries.cinematics, ["gameplay", "directed", "paused"]);
-  registerKinds(registries.aiDirectives, ["enable", "disable", "order", "attack", "retreat", "patrol"]);
+  registerKinds(registries.aiDirectives, ["enable", "disable", "order", "attack", "retreat", "patrol", "move", "stop"]);
   registerKinds(registries.rewards, [
     "currency",
     "story-unlock",

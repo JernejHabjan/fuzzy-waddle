@@ -479,8 +479,23 @@ function registerStateExecutors(registry: CampaignActionExecutorRegistry): void 
   );
   registry.register(
     stateExecutor("set-encounter-state", (context, definition) => {
-      if (definition.kind === "set-encounter-state")
-        context.state.encounters[definition.encounterId] = definition.state;
+      if (definition.kind === "set-encounter-state") {
+        const encounter = (context.state.encounters[definition.encounterId] ??= {
+          status: "inactive",
+          waveIndex: 0,
+          livingSpawnedActorIds: [],
+          spawnedActorOwners: {},
+          spawnCursor: 0,
+          deterministicBranchIds: {},
+          warnedWaveIds: [],
+          blockedAttempts: 0
+        });
+        encounter.status = definition.state;
+        if (definition.state === "completed" || definition.state === "failed") {
+          encounter.nextEligibleTick = undefined;
+        }
+        if (definition.state === "active") encounter.failureReason = undefined;
+      }
     })
   );
   registry.register(

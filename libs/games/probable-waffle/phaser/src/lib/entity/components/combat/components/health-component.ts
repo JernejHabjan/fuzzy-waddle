@@ -15,7 +15,7 @@ import {
 } from "../../../../data/game-object-helper";
 import { SelectableComponent } from "../../selectable-component";
 import { OwnerComponent } from "../../owner-component";
-import { getCurrentPlayerNumber } from "../../../../data/scene-data";
+import { getCurrentPlayerNumber, getPlayer } from "../../../../data/scene-data";
 import { AudioActorComponent } from "../../actor-audio/audio-actor-component";
 import { AnimationActorComponent } from "../../animation/animation-actor-component";
 import { EffectsAnims } from "../../../../animations/effects";
@@ -219,6 +219,10 @@ export class HealthComponent {
 
   takeDamage(damage: number, damageType: DamageType, damageInitiator?: Phaser.GameObjects.GameObject) {
     if (this.gameObject.getData("campaign.invulnerable") === true) return;
+    const sourceOwner = damageInitiator ? getActorComponent(damageInitiator, OwnerComponent)?.getOwner() : undefined;
+    const campaignDamageScale = getPlayer(this.gameObject.scene, sourceOwner)?.playerController.data.playerDefinition
+      ?.campaignDamageScale;
+    damage *= campaignDamageScale ?? 1;
     const simulationTick = getSceneService(this.gameObject.scene, SimulationTickService)?.currentTick;
     this.latestDamage = {
       damage,

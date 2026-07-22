@@ -1,17 +1,24 @@
 import { Subject } from "rxjs";
-import type {
-  CampaignMissionActionCancelReason,
-  CampaignMissionActionContext,
-  CampaignMissionActionResult,
-  CampaignMissionConditionContext,
-  CampaignWorldActionAdapter,
-  CampaignWorldConditionAdapter,
-  MissionActionDefinition,
-  MissionActorSelector,
-  MissionConditionDefinition,
-  ScenarioActorId,
-  ScenarioPointId,
-  ScenarioRouteId
+import {
+  CampaignContentAllowanceService,
+  updateCampaignParticipantTeams,
+  type CampaignAllowedContentId,
+  type CampaignEncounterSpawnResult,
+  type CampaignEncounterWorldAdapter,
+  type CampaignMissionActionCancelReason,
+  type CampaignMissionActionContext,
+  type CampaignMissionActionResult,
+  type CampaignMissionConditionContext,
+  type CampaignTemporaryContentGrant,
+  type CampaignWorldActionAdapter,
+  type CampaignWorldConditionAdapter,
+  type MissionActionDefinition,
+  type MissionActorSelector,
+  type MissionConditionDefinition,
+  type MissionEncounterSpawnGroupDefinition,
+  type ScenarioActorId,
+  type ScenarioPointId,
+  type ScenarioRouteId
 } from "@fuzzy-waddle/probable-waffle-campaign";
 import {
   ConstructionStateEnum,
@@ -19,7 +26,8 @@ import {
   ProbableWaffleGameCommandTypes,
   ProbableWafflePlayerType,
   type CampaignMissionOwnedResourceRuntimeState,
-  type CampaignMissionRuntimeJsonValue
+  type CampaignMissionRuntimeJsonValue,
+  type PositionPlayerDefinition
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
@@ -36,7 +44,7 @@ import { AoeZoneManager } from "../../entity/systems/aoe-zone-manager";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { getGameObjectLogicalTransform } from "../../data/game-object-helper";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
-import { getSceneService } from "../../world/services/scene-component-helpers";
+import { getSceneService, getSceneSystem } from "../../world/services/scene-component-helpers";
 import { SceneActorCreator } from "../../world/services/scene-actor-creator";
 import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 import { SimulationTickService } from "../../world/services/simulation-tick.service";
@@ -44,6 +52,7 @@ import { IndexedScenarioReferenceRegistry } from "../scenario/scenario-reference
 import { ScenarioActorReferenceComponent } from "../scenario/scenario-actor-reference.component";
 import { CampaignOwnedResourceRegistry } from "./campaign-owned-resource-registry";
 import { CampaignTrustedHookRegistry } from "./campaign-trusted-hook-registry";
+import { AiPlayerHandler } from "../../player/ai-controller/ai-player-handler";
 
 export type CampaignPresentationRequest =
   | { readonly kind: "dialogue"; readonly id: string; readonly ownerToken: string }
@@ -58,11 +67,12 @@ export type CampaignPresentationRequest =
     };
 
 /** The sole bridge from registry-driven campaign definitions into existing Phaser gameplay authorities. */
-export class CampaignPhaserWorldAdapter implements CampaignWorldActionAdapter, CampaignWorldConditionAdapter {
+export class CampaignPhaserWorldAdapter
+  implements CampaignWorldActionAdapter, CampaignWorldConditionAdapter, CampaignEncounterWorldAdapter
+{
   readonly presentationRequests$ = new Subject<CampaignPresentationRequest>();
   private readonly resources = new CampaignOwnedResourceRegistry();
   private readonly aoeZonesByEffectId = new Map<string, string>();
-  private readonly contentAllowances = new Map<string, boolean>();
   private readonly temporaryModifiers = new Map<string, number>();
   private readonly pendingRestoredResources: CampaignMissionOwnedResourceRuntimeState[] = [];
 
@@ -201,10 +211,18 @@ export class CampaignPhaserWorldAdapter implements CampaignWorldActionAdapter, C
       }
       case "update-alliance":
         return this.updateAlliance(definition.playerNumber, definition.otherPlayerNumber, definition.allied);
+      case "set-ai-enabled":
+        return this.setAiEnabled(context, definition);
+      case "ai-directive":
+        return this.executeAiDirective(definition);
       case "set-content-allowance":
         return this.setContentAllowance(context, definition);
       case "grant-temporary-modifier":
         return this.grantTemporaryModifier(context, definition);
+      case "grant-content":
+        return this.grantContent(context, definition);
+      case "revoke-content-grant":
+        return this.revokeContentGrant(context, definition.grantId);
       case "start-dialogue":
         return this.startPresentation(context, "dialogue", definition.lineId, definition.waitForAcknowledgement);
       case "start-cinematic":
@@ -356,8 +374,10 @@ export class CampaignPhaserWorldAdapter implements CampaignWorldActionAdapter, C
       }
       case "content-cap":
         return (
-          (this.contentAllowances.get(
-            allowanceKey(definition.playerNumber, definition.contentType, definition.contentId)
+          (getSceneService(this.scene, CampaignContentAllowanceService)?.isAllowed(
+            definition.playerNumber,
+            definition.contentType,
+            definition.contentId
           ) ?? true) === definition.allowed
         );
       default:
@@ -377,6 +397,16 @@ export class CampaignPhaserWorldAdapter implements CampaignWorldActionAdapter, C
     this.pendingRestoredResources.push(...resources);
   }
 
+  /** Reapplies synchronized participant teams after save/load or reconnect snapshot replacement. */
+  restoreParticipantTeams(participantTeams: Readonly<Record<string, number>>): void {
+    for (const player of this.scene.players) {
+      const playerNumber = player.playerNumber;
+      const team = playerNumber === undefined ? undefined : participantTeams[String(playerNumber)];
+      const definition = player.playerController.data.playerDefinition;
+      if (team !== undefined && definition) definition.team = team;
+    }
+  }
+
   /** Applies restored actor-owned state only after initial actors and stable references have been indexed. */
   activateRestoredResources(): void {
     for (const resource of this.pendingRestoredResources.sort((left, right) =>
@@ -391,7 +421,6 @@ export class CampaignPhaserWorldAdapter implements CampaignWorldActionAdapter, C
     this.resources.destroy();
     this.pendingRestoredResources.length = 0;
     this.aoeZonesByEffectId.clear();
-    this.contentAllowances.clear();
     this.temporaryModifiers.clear();
   }
 
@@ -411,8 +440,105 @@ export class CampaignPhaserWorldAdapter implements CampaignWorldActionAdapter, C
     this.resources.destroy();
     this.presentationRequests$.complete();
     this.aoeZonesByEffectId.clear();
-    this.contentAllowances.clear();
     this.temporaryModifiers.clear();
+  }
+
+  spawnWave(
+    _encounterId: string,
+    _waveId: string,
+    groups: readonly MissionEncounterSpawnGroupDefinition[],
+    spawnCursor: number
+  ): CampaignEncounterSpawnResult {
+    const created: Phaser.GameObjects.GameObject[] = [];
+    let cursor = spawnCursor;
+    try {
+      for (const group of groups) {
+        const set = this.scenarioRegistry?.spawnSet(group.spawnSetId);
+        const fallback = group.fallbackSpawnSetId
+          ? this.scenarioRegistry?.spawnSet(group.fallbackSpawnSetId)
+          : undefined;
+        const primaryPoints = rotate(this.availableSpawnPoints(set?.points ?? [], created), cursor);
+        const fallbackPoints = rotate(this.availableSpawnPoints(fallback?.points ?? [], created), cursor);
+        const selectedPoints =
+          primaryPoints.length >= group.actors.length
+            ? primaryPoints
+            : fallbackPoints.length >= group.actors.length
+              ? fallbackPoints
+              : undefined;
+        if (!selectedPoints) {
+          for (const actor of created) actor.destroy();
+          return {
+            status: "blocked",
+            reason: `Spawn set '${group.spawnSetId}' has ${primaryPoints.length} free points for ${group.actors.length} actors`
+          };
+        }
+        for (const [index, actorDefinition] of group.actors.entries()) {
+          const point = selectedPoints[index];
+          if (!point) {
+            for (const item of created) item.destroy();
+            return {
+              status: "failed",
+              reason: `Spawn point ${index} is unavailable for '${actorDefinition.actorName}'`
+            };
+          }
+          const actor = getSceneService(this.scene, SceneActorCreator)?.createFinishedActor(
+            actorDefinition.actorName,
+            point,
+            actorDefinition.ownerPlayerNumber
+          );
+          if (!actor) {
+            for (const item of created) item.destroy();
+            return { status: "failed", reason: `Failed to spawn '${actorDefinition.actorName}'` };
+          }
+          created.push(actor);
+          if (actorDefinition.scenarioRoleId) {
+            this.scenarioRegistry?.claimActorRole(actor, actorDefinition.scenarioRoleId, actorDefinition.tags);
+          }
+        }
+        cursor += group.actors.length;
+      }
+    } catch (error) {
+      for (const actor of created) actor.destroy();
+      return { status: "failed", reason: error instanceof Error ? error.message : "Encounter spawn failed" };
+    }
+    const actors: { actorRuntimeId: string; ownerPlayerNumber?: number }[] = [];
+    for (const actor of created) {
+      const actorRuntimeId = getActorComponent(actor, IdComponent)?.id;
+      if (!actorRuntimeId) {
+        for (const item of created) item.destroy();
+        return { status: "failed", reason: `Spawned actor '${actor.name}' has no runtime ID` };
+      }
+      actors.push({
+        actorRuntimeId,
+        ownerPlayerNumber: getActorComponent(actor, OwnerComponent)?.getOwner()
+      });
+    }
+    return {
+      status: "spawned",
+      actors
+    };
+  }
+
+  isActorAlive(actorRuntimeId: string): boolean {
+    const actor = getSceneService(this.scene, ActorIndexSystem)?.getActorById(actorRuntimeId);
+    if (!actor?.active) return false;
+    return getActorComponent(actor, HealthComponent)?.alive ?? true;
+  }
+
+  private availableSpawnPoints(
+    points: readonly Vector3Simple[],
+    created: readonly Phaser.GameObjects.GameObject[]
+  ): readonly Vector3Simple[] {
+    const actors = [...(getSceneService(this.scene, ActorIndexSystem)?.getAllIdActors() ?? []), ...created].filter(
+      (actor, index, values) => actor.active && values.indexOf(actor) === index
+    );
+    return points.filter(
+      (point) =>
+        !actors.some((actor) => {
+          const position = getGameObjectLogicalTransform(actor);
+          return position ? samePosition(position, point) : false;
+        })
+    );
   }
 
   private spawnActor(
@@ -481,13 +607,21 @@ export class CampaignPhaserWorldAdapter implements CampaignWorldActionAdapter, C
   private issueOrder(
     definition: Extract<MissionActionDefinition, { readonly kind: "issue-order" }>
   ): CampaignMissionActionResult {
-    const actors = definition.actorIds.map((id) => this.actor(id));
-    if (actors.some((actor) => !actor))
-      return missingReference(definition.actorIds[actors.findIndex((actor) => !actor)]!);
-    const runtimeIds = actors.map((actor) => getActorComponent(actor!, IdComponent)?.id).filter(Boolean) as string[];
-    const owner = getActorComponent(actors[0]!, OwnerComponent)?.getOwner();
+    const actors: Phaser.GameObjects.GameObject[] = [];
+    const runtimeIds: string[] = [];
+    for (const actorId of definition.actorIds) {
+      const actor = this.actor(actorId);
+      if (!actor) return missingReference(actorId);
+      const runtimeId = getActorComponent(actor, IdComponent)?.id;
+      if (!runtimeId) return executionFailed(`Campaign actor '${actorId}' has no runtime ID`);
+      actors.push(actor);
+      runtimeIds.push(runtimeId);
+    }
+    const firstActor = actors[0];
+    if (!firstActor) return executionFailed(`Campaign order '${definition.id}' has no actors`);
+    const owner = getActorComponent(firstActor, OwnerComponent)?.getOwner();
     const commandBus = getSceneService(this.scene, CommandBusService);
-    if (owner === undefined || !commandBus || runtimeIds.length !== actors.length) {
+    if (owner === undefined || !commandBus) {
       return executionFailed(`Campaign order '${definition.id}' has no command authority`);
     }
     if (definition.order === "stop") {
@@ -502,16 +636,79 @@ export class CampaignPhaserWorldAdapter implements CampaignWorldActionAdapter, C
     const targetPoint = definition.targetPointId ? this.point(definition.targetPointId) : undefined;
     if (definition.targetActorId && !targetActor) return missingReference(definition.targetActorId);
     if (definition.targetPointId && !targetPoint) return missingReference(definition.targetPointId);
+    const targetRuntimeId = targetActor ? getActorComponent(targetActor, IdComponent)?.id : undefined;
+    if (targetActor && !targetRuntimeId) {
+      return executionFailed(`Campaign target '${definition.targetActorId}' has no runtime ID`);
+    }
     commandBus.dispatchDeterministic({
       type: ProbableWaffleGameCommandTypes.ActorAction,
       playerNumber: owner,
       actorIds: runtimeIds,
       orderType: definition.order === "attack" ? OrderType.Attack : OrderType.Move,
-      targetObjectIds: targetActor ? [getActorComponent(targetActor, IdComponent)!.id] : undefined,
+      targetObjectIds: targetRuntimeId ? [targetRuntimeId] : undefined,
       tileVec3: targetPoint,
       queue: definition.queue ?? definition.order === "patrol"
     });
     return completed();
+  }
+
+  private executeAiDirective(
+    definition: Extract<MissionActionDefinition, { readonly kind: "ai-directive" }>
+  ): CampaignMissionActionResult {
+    const wrongOwner = definition.actorIds.find((actorId) => this.ownerOf(actorId) !== definition.playerNumber);
+    if (wrongOwner) return missingReference(`player-${definition.playerNumber}-actor-${wrongOwner}`);
+    const order =
+      definition.directive === "stop"
+        ? "stop"
+        : definition.directive === "attack"
+          ? "attack"
+          : definition.directive === "patrol"
+            ? "patrol"
+            : "move";
+    return this.issueOrder({
+      id: definition.id,
+      kind: "issue-order",
+      actorIds: definition.actorIds,
+      order,
+      targetActorId: definition.targetActorId,
+      targetPointId: definition.targetPointId,
+      queue: definition.queue ?? definition.directive === "patrol"
+    });
+  }
+
+  private setAiEnabled(
+    context: CampaignMissionActionContext,
+    definition: Extract<MissionActionDefinition, { readonly kind: "set-ai-enabled" }>
+  ): CampaignMissionActionResult {
+    const playerDefinition = this.scene.players.find((player) => player.playerNumber === definition.playerNumber)
+      ?.playerController.data.playerDefinition;
+    if (playerDefinition?.campaignController !== "full-ai") {
+      return missingReference(`full-ai-player-${definition.playerNumber}`);
+    }
+    const resourceId = `ai-enabled:${definition.playerNumber}`;
+    const existingState = context.state.ownedResources[resourceId]?.state;
+    const restoredPrevious = isRecord(existingState) ? existingState["previous"] : undefined;
+    const previous =
+      typeof restoredPrevious === "boolean" ? restoredPrevious : (playerDefinition.campaignAiEnabled ?? true);
+    const aiHandler = this.scene.isHost ? getSceneSystem(this.scene, AiPlayerHandler) : undefined;
+    if (this.scene.isHost && !aiHandler?.setPlayerEnabled(definition.playerNumber, definition.enabled)) {
+      return missingReference(`full-ai-player-${definition.playerNumber}`);
+    }
+    playerDefinition.campaignAiEnabled = definition.enabled;
+    this.resources.register(context.ownerToken, resourceId, () => {
+      playerDefinition.campaignAiEnabled = previous;
+      aiHandler?.setPlayerEnabled(definition.playerNumber, previous);
+    });
+    return {
+      status: "completed",
+      ownedResources: [
+        {
+          resourceId,
+          kind: "ai-enabled",
+          state: { playerNumber: definition.playerNumber, value: definition.enabled, previous }
+        }
+      ]
+    };
   }
 
   private faceActor(
@@ -697,13 +894,7 @@ export class CampaignPhaserWorldAdapter implements CampaignWorldActionAdapter, C
     const playerDefinition = player?.playerController.data.playerDefinition;
     const otherDefinition = other?.playerController.data.playerDefinition;
     if (!playerDefinition || !otherDefinition) return missingReference(`players-${playerNumber}-${otherPlayerNumber}`);
-    if (allied) {
-      const team = playerDefinition.team ?? otherDefinition.team ?? Math.min(playerNumber, otherPlayerNumber);
-      playerDefinition.team = team;
-      otherDefinition.team = team;
-    } else if (playerDefinition.team === otherDefinition.team) {
-      otherDefinition.team = otherPlayerNumber;
-    }
+    updateCampaignAllianceDefinitions(playerDefinition, otherDefinition, playerNumber, otherPlayerNumber, allied);
     return completed();
   }
 
@@ -711,14 +902,108 @@ export class CampaignPhaserWorldAdapter implements CampaignWorldActionAdapter, C
     context: CampaignMissionActionContext,
     definition: Extract<MissionActionDefinition, { readonly kind: "set-content-allowance" }>
   ): CampaignMissionActionResult {
-    const key = allowanceKey(definition.playerNumber, definition.contentType, definition.contentId);
-    const previous = this.contentAllowances.get(key) ?? true;
-    this.contentAllowances.set(key, definition.allowed);
+    const allowance = getSceneService(this.scene, CampaignContentAllowanceService);
+    if (!allowance) return executionFailed("Campaign content allowance authority is unavailable");
+    const key = `${definition.playerNumber}:${definition.contentType}:${definition.contentId}`;
     const resourceId = `content-allowance:${key}`;
-    this.resources.register(context.ownerToken, resourceId, () => this.contentAllowances.set(key, previous));
+    const existingState = context.state.ownedResources[resourceId]?.state;
+    const restoredPrevious = isRecord(existingState) ? existingState["previous"] : undefined;
+    const currentPrevious = allowance.getOverride(
+      definition.playerNumber,
+      definition.contentType,
+      definition.contentId
+    );
+    const previous =
+      restoredPrevious === null || typeof restoredPrevious === "boolean" ? restoredPrevious : (currentPrevious ?? null);
+    allowance.setOverride(definition.playerNumber, definition.contentType, definition.contentId, definition.allowed);
+    this.resources.register(context.ownerToken, resourceId, () => {
+      if (previous === null) {
+        allowance.clearOverride(definition.playerNumber, definition.contentType, definition.contentId);
+      } else {
+        allowance.setOverride(definition.playerNumber, definition.contentType, definition.contentId, previous);
+      }
+    });
     return {
       status: "completed",
-      ownedResources: [{ resourceId, kind: "content-allowance", state: { key, value: definition.allowed, previous } }]
+      ownedResources: [
+        {
+          resourceId,
+          kind: "content-allowance",
+          state: {
+            playerNumber: definition.playerNumber,
+            contentType: definition.contentType,
+            contentId: definition.contentId,
+            value: definition.allowed,
+            previous
+          }
+        }
+      ]
+    };
+  }
+
+  private grantContent(
+    context: CampaignMissionActionContext,
+    definition: Extract<MissionActionDefinition, { readonly kind: "grant-content" }>
+  ): CampaignMissionActionResult {
+    const allowance = getSceneService(this.scene, CampaignContentAllowanceService);
+    if (!allowance) return executionFailed("Campaign content allowance authority is unavailable");
+    const resourceId = `content-grant:${definition.grantId}`;
+    const existingState = context.state.ownedResources[resourceId]?.state;
+    const restoredPrevious = isRecord(existingState) ? existingState["previous"] : undefined;
+    const currentPrevious = allowance.getGrant(definition.grantId);
+    const previous = isRecord(restoredPrevious)
+      ? contentGrantFromState(restoredPrevious)
+      : restoredPrevious === null
+        ? undefined
+        : currentPrevious;
+    allowance.grant(definition);
+    this.resources.register(context.ownerToken, resourceId, () => {
+      if (previous) allowance.grant(previous);
+      else allowance.revoke(definition.grantId);
+    });
+    return {
+      status: "completed",
+      ownedResources: [
+        {
+          resourceId,
+          kind: "content-grant",
+          state: {
+            grantId: definition.grantId,
+            playerNumber: definition.playerNumber,
+            contentType: definition.contentType,
+            contentId: definition.contentId,
+            previous: previous ? contentGrantState(previous) : null
+          }
+        }
+      ]
+    };
+  }
+
+  private revokeContentGrant(context: CampaignMissionActionContext, grantId: string): CampaignMissionActionResult {
+    const allowance = getSceneService(this.scene, CampaignContentAllowanceService);
+    if (!allowance) return executionFailed("Campaign content allowance authority is unavailable");
+    const resourceId = `content-grant-revocation:${grantId}`;
+    const existingState = context.state.ownedResources[resourceId]?.state;
+    const restoredPrevious = isRecord(existingState) ? existingState["previous"] : undefined;
+    const currentPrevious = allowance.getGrant(grantId);
+    const previous = isRecord(restoredPrevious)
+      ? contentGrantFromState(restoredPrevious)
+      : restoredPrevious === null
+        ? undefined
+        : currentPrevious;
+    allowance.revoke(grantId);
+    this.resources.register(context.ownerToken, resourceId, () => {
+      if (previous) allowance.grant(previous);
+    });
+    return {
+      status: "completed",
+      ownedResources: [
+        {
+          resourceId,
+          kind: "content-grant-revocation",
+          state: { grantId, previous: previous ? contentGrantState(previous) : null }
+        }
+      ]
     };
   }
 
@@ -879,14 +1164,65 @@ export class CampaignPhaserWorldAdapter implements CampaignWorldActionAdapter, C
         this.aoeZonesByEffectId.delete(effectId);
       });
     } else if (resource.kind === "content-allowance") {
-      const key = resource.state["key"];
+      const playerNumber = resource.state["playerNumber"];
+      const contentType = resource.state["contentType"];
+      const contentId = resource.state["contentId"];
       const value = resource.state["value"];
       const previous = resource.state["previous"];
-      if (typeof key !== "string" || typeof value !== "boolean" || typeof previous !== "boolean") return;
-      this.contentAllowances.set(key, value);
-      this.resources.register(resource.ownerToken, resource.resourceId, () =>
-        this.contentAllowances.set(key, previous)
-      );
+      const allowance = getSceneService(this.scene, CampaignContentAllowanceService);
+      if (
+        typeof playerNumber !== "number" ||
+        (contentType !== "actor" && contentType !== "research") ||
+        typeof contentId !== "string" ||
+        typeof value !== "boolean" ||
+        (previous !== null && typeof previous !== "boolean") ||
+        !allowance
+      )
+        return;
+      const typedContentId = contentId as CampaignAllowedContentId;
+      allowance.setOverride(playerNumber, contentType, typedContentId, value);
+      this.resources.register(resource.ownerToken, resource.resourceId, () => {
+        if (previous === null) allowance.clearOverride(playerNumber, contentType, typedContentId);
+        else allowance.setOverride(playerNumber, contentType, typedContentId, previous);
+      });
+    } else if (resource.kind === "ai-enabled") {
+      const playerNumber = resource.state["playerNumber"];
+      const value = resource.state["value"];
+      const previous = resource.state["previous"];
+      if (typeof playerNumber !== "number" || typeof value !== "boolean" || typeof previous !== "boolean") return;
+      const playerDefinition = this.scene.players.find((player) => player.playerNumber === playerNumber)
+        ?.playerController.data.playerDefinition;
+      if (playerDefinition?.campaignController !== "full-ai") return;
+      const aiHandler = this.scene.isHost ? getSceneSystem(this.scene, AiPlayerHandler) : undefined;
+      if (this.scene.isHost && !aiHandler?.setPlayerEnabled(playerNumber, value)) return;
+      playerDefinition.campaignAiEnabled = value;
+      this.resources.register(resource.ownerToken, resource.resourceId, () => {
+        playerDefinition.campaignAiEnabled = previous;
+        aiHandler?.setPlayerEnabled(playerNumber, previous);
+      });
+    } else if (resource.kind === "content-grant") {
+      const grant = contentGrantFromState(resource.state);
+      const previous = isRecord(resource.state["previous"])
+        ? contentGrantFromState(resource.state["previous"])
+        : undefined;
+      const allowance = getSceneService(this.scene, CampaignContentAllowanceService);
+      if (!grant || !allowance) return;
+      allowance.grant(grant);
+      this.resources.register(resource.ownerToken, resource.resourceId, () => {
+        if (previous) allowance.grant(previous);
+        else allowance.revoke(grant.grantId);
+      });
+    } else if (resource.kind === "content-grant-revocation") {
+      const previous = isRecord(resource.state["previous"])
+        ? contentGrantFromState(resource.state["previous"])
+        : undefined;
+      const grantId = resource.state["grantId"];
+      const allowance = getSceneService(this.scene, CampaignContentAllowanceService);
+      if (typeof grantId !== "string" || !allowance) return;
+      allowance.revoke(grantId);
+      this.resources.register(resource.ownerToken, resource.resourceId, () => {
+        if (previous) allowance.grant(previous);
+      });
     } else if (resource.kind === "temporary-modifier") {
       const key = resource.state["key"];
       const value = resource.state["value"];
@@ -954,6 +1290,28 @@ function samePosition(left: Vector3Simple, right: Vector3Simple): boolean {
   return left.x === right.x && left.y === right.y && left.z === right.z;
 }
 
+function rotate<T>(values: readonly T[], offset: number): readonly T[] {
+  if (values.length === 0) return values;
+  const index = offset % values.length;
+  return [...values.slice(index), ...values.slice(0, index)];
+}
+
+export function updateCampaignAllianceDefinitions(
+  playerDefinition: PositionPlayerDefinition,
+  otherDefinition: PositionPlayerDefinition,
+  playerNumber: number,
+  otherPlayerNumber: number,
+  allied: boolean
+): void {
+  const participantTeams = {
+    [String(playerNumber)]: playerDefinition.team ?? playerNumber,
+    [String(otherPlayerNumber)]: otherDefinition.team ?? otherPlayerNumber
+  };
+  updateCampaignParticipantTeams(participantTeams, playerNumber, otherPlayerNumber, allied);
+  playerDefinition.team = participantTeams[String(playerNumber)];
+  otherDefinition.team = participantTeams[String(otherPlayerNumber)];
+}
+
 function compare(left: number, comparison: string, right: number): boolean {
   switch (comparison) {
     case "equal":
@@ -973,8 +1331,31 @@ function compare(left: number, comparison: string, right: number): boolean {
   }
 }
 
-function allowanceKey(playerNumber: number, contentType: string, contentId: string): string {
-  return `${playerNumber}:${contentType}:${contentId}`;
+function contentGrantFromState(
+  state: Readonly<Record<string, CampaignMissionRuntimeJsonValue>>
+): CampaignTemporaryContentGrant | undefined {
+  const grantId = state["grantId"];
+  const playerNumber = state["playerNumber"];
+  const contentType = state["contentType"];
+  const contentId = state["contentId"];
+  if (
+    typeof grantId !== "string" ||
+    typeof playerNumber !== "number" ||
+    (contentType !== "actor" && contentType !== "research") ||
+    typeof contentId !== "string"
+  ) {
+    return undefined;
+  }
+  return { grantId, playerNumber, contentType, contentId: contentId as CampaignAllowedContentId };
+}
+
+function contentGrantState(grant: CampaignTemporaryContentGrant): CampaignMissionRuntimeJsonValue {
+  return {
+    grantId: grant.grantId,
+    playerNumber: grant.playerNumber,
+    contentType: grant.contentType,
+    contentId: grant.contentId
+  };
 }
 
 function playerFaction(scene: ProbableWaffleScene, playerNumber: number): "tivara" | "skaduwee" | undefined {

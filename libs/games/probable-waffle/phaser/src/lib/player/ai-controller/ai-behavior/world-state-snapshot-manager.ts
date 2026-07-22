@@ -16,7 +16,8 @@ import { DistanceHelper } from "../../../library/distance-helper";
 import { AI_CONFIG } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/ai-config";
 import { getResearchedLevelForActor } from "../../../data/actor-level-utils";
 import { ContainableComponent } from "../../../entity/components/building/containable-component";
-import { isSceneActive } from "../../../data/game-object-helper";
+import { getGameObjectLogicalTransform, isSceneActive } from "../../../data/game-object-helper";
+import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 type GameObject = Phaser.GameObjects.GameObject;
 
 export class WorldStateSnapshotManager {
@@ -235,6 +236,19 @@ export class WorldStateSnapshotManager {
       return true;
     });
 
+    // Campaign normal fog uses a stable logical-radius view; skirmish keeps its existing behavior.
+    if (this.player.playerController.data.playerDefinition?.campaignFogPolicy === "normal") {
+      const visionSources = owned
+        .map((actor) => getGameObjectLogicalTransform(actor))
+        .filter((position): position is Vector3Simple => position !== null);
+      return candidates.filter((candidate) => {
+        const position = getGameObjectLogicalTransform(candidate);
+        return (
+          position !== null && isCampaignAiTargetVisible(position, visionSources, baseCenter ?? undefined, visionRadius)
+        );
+      });
+    }
+
     // ignore visibility checks atm
     // const visibilityChecks = candidates.map(async (obj) => {
     //   if (baseCenter) {
@@ -262,4 +276,20 @@ export class WorldStateSnapshotManager {
 
     return candidates;
   }
+}
+
+/** Pure campaign visibility rule used by host-owned AI snapshots. */
+export function isCampaignAiTargetVisible(
+  target: Vector3Simple,
+  visionSources: readonly Vector3Simple[],
+  baseCenter: Vector3Simple | undefined,
+  radius: number
+): boolean {
+  const radiusSquared = radius * radius;
+  return [baseCenter, ...visionSources].some((source) => {
+    if (!source) return false;
+    const deltaX = source.x - target.x;
+    const deltaY = source.y - target.y;
+    return deltaX * deltaX + deltaY * deltaY <= radiusSquared;
+  });
 }

@@ -58,6 +58,7 @@ export class CampaignWorldEventAdapter {
           "actor.owner-changed",
           identity.sourceId,
           {
+            actorRuntimeId: identity.actorRuntimeId,
             scenarioActorId: identity.scenarioActorId,
             previousOwner: oldOwner,
             owner: newOwner

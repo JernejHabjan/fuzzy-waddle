@@ -2,7 +2,7 @@ import { NavigationService } from "../services/navigation.service";
 import { throttle } from "../../library/throttle";
 import { VisionComponent } from "../../entity/components/vision-component";
 import { getActorComponent } from "../../data/actor-component";
-import { getCurrentPlayerNumber } from "../../data/scene-data";
+import { getCurrentPlayerNumber, getPlayer } from "../../data/scene-data";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import {
   getGameObjectBounds,
@@ -88,6 +88,12 @@ export class FogOfWarComponent {
     // Initialize actor tracking
     this.actorIndex = getSceneService(this.scene, ActorIndexSystem)!;
     this.scanForPlayerActors();
+    const currentPlayerNumber = getCurrentPlayerNumber(this.scene);
+    const fogPolicy =
+      currentPlayerNumber === undefined
+        ? undefined
+        : getPlayer(this.scene, currentPlayerNumber)?.playerController.data.playerDefinition?.campaignFogPolicy;
+    if (fogPolicy === "revealed" || fogPolicy === "omniscient-ai") this.fowMode = FogOfWarMode.ALL_VISIBLE;
 
     // Subscribe to navigation updates
     this.scene.events.on(

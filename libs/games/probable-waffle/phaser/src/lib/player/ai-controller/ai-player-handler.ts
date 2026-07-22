@@ -18,12 +18,17 @@ export class AiPlayerHandler {
     if (!this.scene.isHost) return;
     if (this.aiPlayerControllers.length > 0) return;
 
-    const aiPlayers = this.scene.players.filter(
-      (player) => player.playerController.data.playerDefinition!.playerType === ProbableWafflePlayerType.AI
-    );
+    const aiPlayers = this.scene.players.filter((player) => {
+      const definition = player.playerController.data.playerDefinition;
+      return (
+        definition?.playerType === ProbableWafflePlayerType.AI &&
+        (definition.campaignController ?? "full-ai") === "full-ai"
+      );
+    });
 
     aiPlayers.forEach((player) => {
       const aiPlayerController = new PlayerAiController(this.scene, player);
+      aiPlayerController.setEnabled(player.playerController.data.playerDefinition?.campaignAiEnabled ?? true);
       this.aiPlayerControllers.push(aiPlayerController);
     });
   }
@@ -34,5 +39,13 @@ export class AiPlayerHandler {
 
   getAiPlayerController(playerNumber: PlayerNumber) {
     return this.aiPlayerControllers.find((controller) => controller.player.playerNumber === playerNumber);
+  }
+
+  /** Changes host-owned strategic AI execution without creating controllers for scripted or passive slots. */
+  setPlayerEnabled(playerNumber: PlayerNumber, enabled: boolean): boolean {
+    const controller = this.getAiPlayerController(playerNumber);
+    if (!controller) return false;
+    controller.setEnabled(enabled);
+    return true;
   }
 }

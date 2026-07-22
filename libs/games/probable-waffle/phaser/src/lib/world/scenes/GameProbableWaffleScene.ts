@@ -51,6 +51,8 @@ import { MovementOccupancyService } from "../services/movement-occupancy.service
 import { NavigationDebugService } from "../services/navigation-debug.service";
 import { CampaignMissionDirector } from "../../campaign/campaign-mission-director";
 import { IndexedScenarioReferenceRegistry } from "../../campaign/scenario/scenario-reference-registry";
+import { CampaignContentAllowanceService } from "@fuzzy-waddle/probable-waffle-campaign";
+import { CampaignParticipantSceneAdapter } from "../../campaign/participants/campaign-participant-scene-adapter";
 
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
   tilemap!: Phaser.Tilemaps.Tilemap;
@@ -82,6 +84,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     const commandBusService = new CommandBusService(this);
     const simTickService = new SimulationTickService(this);
     const scenarioReferenceRegistry = new IndexedScenarioReferenceRegistry();
+    const campaignContentAllowances = new CampaignContentAllowanceService();
 
     this.sceneGameData.components.push(
       this.getCameraMovementHandler(),
@@ -107,13 +110,15 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       new CrossSceneCommunicationService(),
       actorIndex,
       scenarioReferenceRegistry,
-      new TechTreeService(),
+      campaignContentAllowances,
+      new TechTreeService(campaignContentAllowances),
       new SpellCursor(this),
       new AoeZoneManager(this),
       new PauseSyncService(this),
       snapshotService
     );
     scenarioReferenceRegistry.initialize(this);
+    CampaignParticipantSceneAdapter.configure(this, campaignContentAllowances);
     simTickService?.pauseTick(SimulationPauseReason.SceneBootstrap);
     const campaignMissionDirector = CampaignMissionDirector.create(this, gameModeConditionChecker);
     if (campaignMissionDirector) {

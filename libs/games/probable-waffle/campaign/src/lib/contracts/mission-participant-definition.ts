@@ -1,4 +1,4 @@
-import type { FactionType } from "@fuzzy-waddle/probable-waffle-protocol";
+import type { FactionType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { MissionParticipantSlotId, MissionTeamId } from "./campaign-content-id";
 
 export interface MissionParticipantDefinition {
@@ -8,4 +8,5 @@ export interface MissionParticipantDefinition {
   readonly teamId: MissionTeamId;
   readonly economy: "normal" | "granted" | "none";
   readonly fogPolicy: "normal" | "revealed" | "omniscient-ai";
+  readonly startingResources?: Readonly<Partial<Record<ResourceType, number>>>;
 }

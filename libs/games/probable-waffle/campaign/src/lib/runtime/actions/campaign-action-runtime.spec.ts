@@ -134,6 +134,7 @@ function runtimeState(): CampaignMissionRuntimeState {
     dialoguePresentations: {},
     dialogueHistory: [],
     cinematics: {},
+    participantTeams: {},
     encounters: {},
     claimedTriggerIds: [],
     triggerStates: {},

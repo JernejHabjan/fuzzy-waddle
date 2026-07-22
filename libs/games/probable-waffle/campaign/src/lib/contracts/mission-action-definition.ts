@@ -195,6 +195,20 @@ export type MissionActionDefinition =
       readonly allied: boolean;
     })
   | (MissionActionDefinitionBase & {
+      readonly kind: "set-ai-enabled";
+      readonly playerNumber: number;
+      readonly enabled: boolean;
+    })
+  | (MissionActionDefinitionBase & {
+      readonly kind: "ai-directive";
+      readonly playerNumber: number;
+      readonly directive: "attack" | "retreat" | "patrol" | "move" | "stop";
+      readonly actorIds: readonly ScenarioActorId[];
+      readonly targetActorId?: ScenarioActorId;
+      readonly targetPointId?: ScenarioPointId;
+      readonly queue?: boolean;
+    })
+  | (MissionActionDefinitionBase & {
       readonly kind: "set-content-allowance";
       readonly playerNumber: number;
       readonly contentType: "actor" | "research";
@@ -207,6 +221,17 @@ export type MissionActionDefinition =
       readonly playerNumber?: number;
       readonly actorId?: ScenarioActorId;
       readonly value: number;
+    })
+  | (MissionActionDefinitionBase & {
+      readonly kind: "grant-content";
+      readonly grantId: string;
+      readonly playerNumber: number;
+      readonly contentType: "actor" | "research";
+      readonly contentId: ObjectNames | ResearchType;
+    })
+  | (MissionActionDefinitionBase & {
+      readonly kind: "revoke-content-grant";
+      readonly grantId: string;
     })
   | (MissionActionDefinitionBase & {
       readonly kind: "set-objective-state";

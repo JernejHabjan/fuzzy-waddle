@@ -145,6 +145,7 @@ function runtimeState(definitions: readonly MissionObjectiveDefinition[]): Campa
     dialoguePresentations: {},
     dialogueHistory: [],
     cinematics: {},
+    participantTeams: {},
     encounters: {},
     claimedTriggerIds: [],
     triggerStates: {},

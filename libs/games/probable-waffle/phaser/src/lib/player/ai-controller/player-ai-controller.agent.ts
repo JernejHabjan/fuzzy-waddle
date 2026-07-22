@@ -880,7 +880,9 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       this.logDebugInfo(`[Strategy] Strategy locked for ${(remainingMs / 1000).toFixed(1)}s more`);
       return State.FAILED; // lock gate fixed
     }
-    const ratio = this.blackboard.getAttackPowerRatio(now);
+    const ratio =
+      this.blackboard.getAttackPowerRatio(now) *
+      (this.player.playerController.data.playerDefinition?.campaignAiAggressionScale ?? 1);
     const hysteresis = this.hysteresisAggressive(ratio);
     if (!hysteresis.entered) {
       this.logDebugInfo(

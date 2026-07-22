@@ -1,4 +1,4 @@
-import { CampaignFaction, type ProbableWaffleMapEnum } from "@fuzzy-waddle/probable-waffle-protocol";
+import { CampaignFaction, FactionType, type ProbableWaffleMapEnum } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { CampaignMissionContent } from "../contracts/campaign-mission-content";
 import { asCampaignContentId } from "../contracts/campaign-content-id";
 import type { MissionActionDefinition } from "../contracts/mission-action-definition";
@@ -118,6 +118,51 @@ describe("CampaignMissionRuntime", () => {
 
     expect(restored.state.counters["entries"]).toBe(1);
     expect(restored.state.integrity.lastProcessedTick).toBe(5);
+  });
+
+  it("persists deterministic alliance changes in synchronized mission state", () => {
+    const content = {
+      ...mission([
+        phase("start", {
+          entryActions: [
+            action("update-alliance", "join-teams", {
+              playerNumber: 1,
+              otherPlayerNumber: 2,
+              allied: true
+            })
+          ]
+        })
+      ]),
+      participants: [
+        {
+          slotId: id("commander"),
+          controller: "human" as const,
+          faction: FactionType.Tivara,
+          teamId: id("allies"),
+          economy: "normal" as const,
+          fogPolicy: "normal" as const
+        },
+        {
+          slotId: id("enemy"),
+          controller: "full-ai" as const,
+          faction: FactionType.Skaduwee,
+          teamId: id("enemy"),
+          economy: "normal" as const,
+          fogPolicy: "omniscient-ai" as const
+        }
+      ]
+    } satisfies CampaignMissionContent;
+    const adapter: CampaignWorldActionAdapter = { execute: () => ({ status: "completed" }) };
+    const runtime = new CampaignMissionRuntime("ashes-of-the-ancients", content, undefined, {
+      actionAdapter: adapter
+    });
+
+    runtime.start(0);
+    expect(runtime.state.participantTeams).toEqual({ "1": 1, "2": 1 });
+    const restored = new CampaignMissionRuntime("ashes-of-the-ancients", content, runtime.snapshot(), {
+      actionAdapter: adapter
+    });
+    expect(restored.state.participantTeams).toEqual({ "1": 1, "2": 1 });
   });
 
   it("applies cooldown and edge firing policies on simulation ticks", () => {

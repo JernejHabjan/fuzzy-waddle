@@ -58,6 +58,7 @@ import { QueueItemType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/com
 import { ContainerComponent } from "../../../entity/components/building/container-component";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { isWaterUnit } from "../../../data/game-object-helper";
+import { CampaignContentAllowanceService } from "@fuzzy-waddle/probable-waffle-campaign";
 /* END-USER-IMPORTS */
 
 /**
@@ -189,6 +190,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     this.audioService = getSceneService(this.mainSceneWithActors, AudioService)!;
     this.playerActionsHandler = getSceneService(this.mainSceneWithActors, PlayerActionsHandler)!;
     this.subscribeToPlayerSelection();
+    this.subscribeToContentAllowanceChanges();
     this.hideAllActions();
     this.mainSceneWithActors.events.on(
       PlayerActionsHandler.BUILDING_MODE_SHORTCUT_PRESSED,
@@ -226,10 +228,12 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   private spellUpdateTimer?: Phaser.Time.TimerEvent;
   /** Refreshes container Unload button when the container actor moves to/from shore. */
   private containerMovementSubscription?: Subscription;
+  private contentAllowanceUnsubscribe?: () => void;
 
   /** Subscribe to selection changes and update displayed actions accordingly */
   private subscribeToPlayerSelection() {
     this.selectionChangedSubscription = listenToSelectionEvents(this.scene)?.subscribe(() => {
+      this.subscribeToContentAllowanceChanges();
       // Update tab handler with new selection
       const tabHandler = getSceneComponent(this.mainSceneWithActors, SelectionTabHandler);
       if (tabHandler) {
@@ -277,6 +281,14 @@ export default class ActorActions extends Phaser.GameObjects.Container {
         }, 50);
       });
     }
+  }
+
+  private subscribeToContentAllowanceChanges(): void {
+    if (this.contentAllowanceUnsubscribe) return;
+    this.contentAllowanceUnsubscribe = getSceneService(
+      this.mainSceneWithActors,
+      CampaignContentAllowanceService
+    )?.subscribe(() => this.refreshForCurrentSelection());
   }
 
   /** Handle hotkey presses when in building mode to trigger corresponding action buttons */
@@ -1057,8 +1069,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
             // Start/queue research
             const playerNumber = getCurrentPlayerNumber(this.mainSceneWithActors);
             const success =
-              !!playerNumber &&
-              dispatchResearchCommand(this.mainSceneWithActors, actor, playerNumber, researchType);
+              !!playerNumber && dispatchResearchCommand(this.mainSceneWithActors, actor, playerNumber, researchType);
             if (success) {
               this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.BUTTON_CLICK);
             } else {
@@ -1372,6 +1383,10 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       disabledDescription = `Requires: ${requirementNames}`;
     }
 
+    if (validation.prereqs.campaignRestriction) {
+      disabledDescription = validation.prereqs.campaignRestriction;
+    }
+
     // Check for resource requirements
     const hasResourcePrereqs = Object.keys(validation.prereqs.resources).length > 0;
     if (hasResourcePrereqs && !disabledDescription) {
@@ -1526,6 +1541,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     this.buildingModeSubscription?.unsubscribe();
     this.resourceChangedSubscription?.unsubscribe();
     this.actorUnlockSubscription?.unsubscribe();
+    this.contentAllowanceUnsubscribe?.();
+    this.contentAllowanceUnsubscribe = undefined;
     this.researchEventSubscriptions.forEach((sub) => sub.unsubscribe());
     this.spellCooldownSubscriptions.forEach((sub) => sub.unsubscribe());
     this.stopSpellCooldownTimer();

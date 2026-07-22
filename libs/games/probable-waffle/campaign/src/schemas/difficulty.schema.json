@@ -83,6 +83,33 @@
           "minimum": 0
         }
       }
+    },
+    "playerCountOverrides": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["playerCount"],
+        "properties": {
+          "playerCount": { "type": "integer", "minimum": 1 },
+          "story": { "$ref": "#/$defs/overrides" },
+          "normal": { "$ref": "#/$defs/overrides" },
+          "hard": { "$ref": "#/$defs/overrides" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "overrides": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "startingResourceScale": { "type": "number", "exclusiveMinimum": 0 },
+        "waveSizeScale": { "type": "number", "minimum": 0 },
+        "warningTicks": { "type": "integer", "minimum": 0 },
+        "damageScale": { "type": "number", "minimum": 0 },
+        "aiAggressionScale": { "type": "number", "minimum": 0 }
+      }
     }
   }
 }

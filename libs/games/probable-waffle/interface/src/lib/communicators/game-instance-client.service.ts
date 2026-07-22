@@ -539,12 +539,13 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     console.log("joined game instance as player");
   }
 
-  async addSelfAsPlayer(): Promise<PositionPlayerDefinition> {
+  async addSelfAsPlayer(overrides: Partial<PositionPlayerDefinition> = {}): Promise<PositionPlayerDefinition> {
     const gameInstance = this.gameInstance;
     if (!gameInstance) throw new Error("Game instance not found in addSelfAsPlayer in GameInstanceClientService");
     const firstFreePlayerNumber = GameSetupHelpers.getFirstFreePlayerNumber(gameInstance.players);
     const firstFreePosition = GameSetupHelpers.getFirstFreePosition(gameInstance.players);
     const playerDefinition = {
+      ...overrides,
       player: createPlayerLobbyDefinition(firstFreePlayerNumber, firstFreePosition, await this.getCurrentPlayerName()),
       playerType: ProbableWafflePlayerType.Human
     } satisfies PositionPlayerDefinition;
@@ -553,12 +554,16 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     return playerDefinition;
   }
 
-  async addAiPlayer(position?: number): Promise<PositionPlayerDefinition> {
+  async addAiPlayer(
+    position?: number,
+    overrides: Partial<PositionPlayerDefinition> = {}
+  ): Promise<PositionPlayerDefinition> {
     const gameInstance = this.gameInstance;
     if (!gameInstance) throw new Error("Game instance not found in addAiPlayer in GameInstanceClientService");
     const firstFreePlayerNumber = GameSetupHelpers.getFirstFreePlayerNumber(gameInstance.players);
     const firstFreePosition = GameSetupHelpers.getFirstFreePosition(gameInstance.players);
     const playerDefinition = {
+      ...overrides,
       player: createPlayerLobbyDefinition(firstFreePlayerNumber, position ?? firstFreePosition),
       playerType: ProbableWafflePlayerType.AI,
       difficulty: ProbableWaffleAiDifficulty.Medium

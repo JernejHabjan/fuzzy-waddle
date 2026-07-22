@@ -147,6 +147,10 @@
           },
           "fogPolicy": {
             "enum": ["normal", "revealed", "omniscient-ai"]
+          },
+          "startingResources": {
+            "type": "object",
+            "additionalProperties": { "type": "number", "minimum": 0 }
           }
         }
       }
@@ -172,6 +176,10 @@
             "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
           }
         },
+        "allowedActorIds": { "type": "array", "uniqueItems": true, "items": { "type": "string" } },
+        "deniedActorIds": { "type": "array", "uniqueItems": true, "items": { "type": "string" } },
+        "allowedResearchIds": { "type": "array", "uniqueItems": true, "items": { "type": "string" } },
+        "deniedResearchIds": { "type": "array", "uniqueItems": true, "items": { "type": "string" } },
         "unitLevelCaps": {
           "type": "array",
           "items": {
@@ -320,6 +328,10 @@
         }
       }
     },
+    "encounters": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/encounter" }
+    },
     "scenarioReferences": {
       "type": "object",
       "additionalProperties": false,
@@ -416,6 +428,90 @@
         "ownerPlayerNumber": { "type": "integer", "minimum": 1 },
         "scenarioRoleId": { "$ref": "#/$defs/campaignId" },
         "tags": { "$ref": "#/$defs/scenarioIdArray" }
+      }
+    },
+    "encounterSpawnGroup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["spawnSetId", "actors"],
+      "properties": {
+        "spawnSetId": { "$ref": "#/$defs/campaignId" },
+        "fallbackSpawnSetId": { "$ref": "#/$defs/campaignId" },
+        "actors": { "type": "array", "items": { "$ref": "#/$defs/actorSpawn" } }
+      }
+    },
+    "encounterWave": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "delayTicks", "spawns"],
+      "properties": {
+        "id": { "$ref": "#/$defs/campaignId" },
+        "delayTicks": { "type": "integer", "minimum": 0 },
+        "warningTicks": { "type": "integer", "minimum": 0 },
+        "spawns": { "type": "array", "items": { "$ref": "#/$defs/encounterSpawnGroup" } },
+        "branches": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "spawns"],
+            "properties": {
+              "id": { "$ref": "#/$defs/campaignId" },
+              "spawns": { "type": "array", "items": { "$ref": "#/$defs/encounterSpawnGroup" } }
+            }
+          }
+        },
+        "actions": { "type": "array", "items": { "$ref": "#/$defs/action" } },
+        "blockedSpawnPolicy": { "enum": ["fallback", "delay", "skip", "fail"] },
+        "blockedRetryTicks": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "encounterOverride": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "initialDelayTicks": { "type": "integer", "minimum": 0 },
+        "waveSizeScale": { "type": "number", "minimum": 0 },
+        "warningTicks": { "type": "integer", "minimum": 0 },
+        "waves": { "type": "array", "items": { "$ref": "#/$defs/encounterWave" } }
+      }
+    },
+    "encounterPlayerCountOverride": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["playerCount"],
+      "properties": {
+        "playerCount": { "type": "integer", "minimum": 1 },
+        "initialDelayTicks": { "type": "integer", "minimum": 0 },
+        "waveSizeScale": { "type": "number", "minimum": 0 },
+        "warningTicks": { "type": "integer", "minimum": 0 },
+        "waves": { "type": "array", "items": { "$ref": "#/$defs/encounterWave" } }
+      }
+    },
+    "encounter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "start", "waves"],
+      "properties": {
+        "id": { "$ref": "#/$defs/campaignId" },
+        "start": { "$ref": "#/$defs/condition" },
+        "waves": { "type": "array", "items": { "$ref": "#/$defs/encounterWave" } },
+        "completion": { "$ref": "#/$defs/condition" },
+        "initialDelayTicks": { "type": "integer", "minimum": 0 },
+        "convertedActorPolicy": { "enum": ["retain", "release"] },
+        "difficultyOverrides": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "story": { "$ref": "#/$defs/encounterOverride" },
+            "normal": { "$ref": "#/$defs/encounterOverride" },
+            "hard": { "$ref": "#/$defs/encounterOverride" }
+          }
+        },
+        "playerCountOverrides": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/encounterPlayerCountOverride" }
+        }
       }
     },
     "scenarioIdArray": {
@@ -1020,8 +1116,12 @@
                 "transfer-resource",
                 "grant-research",
                 "update-alliance",
+                "set-ai-enabled",
+                "ai-directive",
                 "set-content-allowance",
                 "grant-temporary-modifier",
+                "grant-content",
+                "revoke-content-grant",
                 "set-objective-state",
                 "set-objective-checklist-state",
                 "set-encounter-state",
@@ -1074,9 +1174,12 @@
             "resourceType": { "type": "string", "minLength": 1 },
             "researchType": { "type": "string", "minLength": 1 },
             "allied": { "type": "boolean" },
+            "enabled": { "type": "boolean" },
+            "directive": { "enum": ["attack", "retreat", "patrol", "move", "stop"] },
             "contentType": { "enum": ["actor", "research"] },
             "contentId": { "type": "string", "minLength": 1 },
             "allowed": { "type": "boolean" },
+            "grantId": { "$ref": "#/$defs/campaignId" },
             "modifierId": { "$ref": "#/$defs/campaignId" },
             "objectiveId": { "$ref": "#/$defs/campaignId" },
             "checklistId": { "$ref": "#/$defs/campaignId" },
@@ -1255,6 +1358,20 @@
               }
             },
             {
+              "if": { "properties": { "kind": { "const": "set-ai-enabled" } } },
+              "then": {
+                "properties": { "playerNumber": true, "enabled": true },
+                "required": ["playerNumber", "enabled"]
+              }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "ai-directive" } } },
+              "then": {
+                "properties": { "playerNumber": true, "directive": true, "actorIds": true },
+                "required": ["playerNumber", "directive", "actorIds"]
+              }
+            },
+            {
               "if": { "properties": { "kind": { "const": "set-content-allowance" } } },
               "then": {
                 "properties": { "playerNumber": true, "contentType": true, "contentId": true, "allowed": true },
@@ -1267,6 +1384,17 @@
                 "properties": { "modifierId": true, "value": { "type": "number" } },
                 "required": ["modifierId", "value"]
               }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "grant-content" } } },
+              "then": {
+                "properties": { "grantId": true, "playerNumber": true, "contentType": true, "contentId": true },
+                "required": ["grantId", "playerNumber", "contentType", "contentId"]
+              }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "revoke-content-grant" } } },
+              "then": { "properties": { "grantId": true }, "required": ["grantId"] }
             },
             {
               "if": { "properties": { "kind": { "const": "set-objective-state" } } },

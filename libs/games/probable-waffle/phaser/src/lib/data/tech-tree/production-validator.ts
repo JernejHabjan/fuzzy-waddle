@@ -36,6 +36,9 @@ export class ProductionValidator {
     if (playerNumber === undefined) {
       throw new Error("Player number is undefined for production validation");
     }
+    if (techSvc && !techSvc.isContentAllowed(playerNumber, "actor", actorName)) {
+      result.prereqs.campaignRestriction = `Campaign does not allow ${actorName}`;
+    }
 
     // Tech checks using unified tech tree (supports multi-faction gameplay)
     ProductionValidator.validateTechPrerequisites(techSvc, playerNumber, actorName, result);
@@ -269,6 +272,9 @@ export class ProductionValidator {
 
     // Tech checks using unified tech tree (supports multi-faction gameplay)
     const techSvc = getSceneService(scene, TechTreeService);
+    if (techSvc && !techSvc.isContentAllowed(playerNumber, "actor", actorName)) {
+      result.prereqs.campaignRestriction = `Campaign does not allow ${actorName}`;
+    }
     ProductionValidator.validateTechPrerequisites(techSvc, playerNumber, actorName, result);
 
     // Check building prerequisites

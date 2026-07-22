@@ -9,6 +9,10 @@ import {
   ASHES_OF_THE_ANCIENTS_CAMPAIGN_ID,
   AOTA_CAMPAIGN_CONTENT_REGISTRY
 } from "@fuzzy-waddle/probable-waffle-campaign";
+import {
+  resolveCampaignParticipantLaunchSlots,
+  validateCampaignParticipants
+} from "@fuzzy-waddle/probable-waffle-campaign";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import { AOTA_CAMPAIGN_CATALOG } from "./campaign-catalog";
 import { CampaignProgressService } from "./campaign-progress.service";
@@ -54,8 +58,32 @@ export class CampaignLaunchService implements CampaignLaunchServiceInterface {
         missionRevision: missionContent.revision,
         runId
       };
-      await this.gameInstanceClientService.addSelfAsPlayer();
-      await this.gameInstanceClientService.addAiPlayer();
+      const participantErrors = validateCampaignParticipants(missionContent.participants);
+      if (participantErrors.length > 0) throw new Error(participantErrors.join("; "));
+      const launchSlots = resolveCampaignParticipantLaunchSlots(missionContent.participants);
+      if (launchSlots.length === 0) {
+        await this.gameInstanceClientService.addSelfAsPlayer();
+        await this.gameInstanceClientService.addAiPlayer();
+      } else {
+        for (const slot of launchSlots) {
+          const overrides = {
+            team: slot.teamNumber,
+            factionType: slot.participant.faction,
+            campaignController: slot.participant.controller === "human" ? undefined : slot.participant.controller,
+            campaignEconomy: slot.participant.economy,
+            campaignFogPolicy: slot.participant.fogPolicy,
+            campaignStartingResources: slot.participant.startingResources
+              ? { ...slot.participant.startingResources }
+              : undefined,
+            campaignAiEnabled: slot.participant.controller === "full-ai" ? true : undefined
+          } as const;
+          if (slot.participant.controller === "human") {
+            await this.gameInstanceClientService.addSelfAsPlayer(overrides);
+          } else {
+            await this.gameInstanceClientService.addAiPlayer(slot.playerPosition, overrides);
+          }
+        }
+      }
       if (!mission.mapId) throw new Error(`Campaign mission ${mission.id} does not define a map`);
       // Preload resolves its map scene and asset pack from game-mode data, so the map must be applied before navigation.
       await this.gameInstanceClientService.gameModeChanged("map", { map: mission.mapId });

@@ -6,7 +6,7 @@ import {
 import { ContainerComponent } from "../building/container-component";
 import { Subject } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
-import { emitResource } from "../../../data/scene-data";
+import { emitResource, getPlayer } from "../../../data/scene-data";
 import { onObjectReady } from "../../../data/game-object-helper";
 import { OwnerComponent } from "../owner-component";
 import type { ResourceDrainDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/resource/resource-drain-definition";
@@ -57,14 +57,17 @@ export class ResourceDrainComponent {
 
     const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
     const owner = ownerComponent?.getOwner();
-    emitResource(
-      this.gameObject.scene,
-      "resource.added",
-      {
-        [resourceType]: amount
-      } satisfies Partial<PlayerStateResources>,
-      owner
-    );
+    const economy = getPlayer(this.gameObject.scene, owner)?.playerController.data.playerDefinition?.campaignEconomy;
+    if (campaignEconomyAcceptsGatheredResources(economy)) {
+      emitResource(
+        this.gameObject.scene,
+        "resource.added",
+        {
+          [resourceType]: amount
+        } satisfies Partial<PlayerStateResources>,
+        owner
+      );
+    }
 
     // notify listeners
     this.onResourcesReturned.next([resourceType, amount, gatherer]);
@@ -97,4 +100,8 @@ export class ResourceDrainComponent {
       currentCapacity: this.currentCapacity
     } satisfies ResourceDrainComponentData;
   }
+}
+
+export function campaignEconomyAcceptsGatheredResources(economy: "normal" | "granted" | "none" | undefined): boolean {
+  return economy === undefined || economy === "normal";
 }

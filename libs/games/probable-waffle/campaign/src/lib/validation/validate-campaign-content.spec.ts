@@ -15,6 +15,7 @@ import {
   createDefaultCampaignDefinitionRegistries
 } from "../registry/campaign-definition-registries";
 import { validateCampaignContent } from "./validate-campaign-content";
+import { FactionType, ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 
 describe("validateCampaignContent", () => {
   const phaseId = asCampaignContentId<"phase">("fixture-phase");
@@ -155,6 +156,49 @@ describe("validateCampaignContent", () => {
 
     expect(codes).toContain("duplicate-action-id");
     expect(codes).toContain("missing-fallback-action");
+  });
+
+  it("reports participant, encounter spawn, and content allowance diagnostics", () => {
+    const dreams = {
+      ...AOTA_CAMPAIGN_MISSIONS[0]!,
+      participants: [
+        {
+          slotId: asCampaignContentId<"participant-slot">("commander"),
+          controller: "human" as const,
+          faction: FactionType.Tivara,
+          teamId: asCampaignContentId<"team">("allies"),
+          economy: "normal" as const,
+          fogPolicy: "normal" as const
+        }
+      ],
+      progressionAllowance: {
+        loadoutSlotCount: 0,
+        allowedActorIds: [ObjectNames.TivaraWorker],
+        deniedActorIds: [ObjectNames.TivaraWorker]
+      },
+      encounters: [
+        {
+          id: asCampaignContentId<"encounter">("ambush"),
+          start: { kind: "always" as const },
+          waves: [
+            {
+              id: asCampaignContentId<"encounter-wave">("ambush-one"),
+              delayTicks: 0,
+              spawns: [
+                {
+                  spawnSetId: asCampaignContentId<"scenario-spawn-set">("missing-spawns"),
+                  actors: [{ actorName: ObjectNames.TivaraWorker }]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    } satisfies CampaignMissionContent;
+
+    expect(validate([dreams, ...AOTA_CAMPAIGN_MISSIONS.slice(1)])).toEqual(
+      expect.arrayContaining(["conflicting-content-allowance", "missing-scenario-reference"])
+    );
   });
 
   it("validates objective text, checklist, and dependency references", () => {

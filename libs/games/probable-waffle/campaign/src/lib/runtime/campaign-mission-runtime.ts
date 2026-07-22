@@ -14,6 +14,7 @@ import {
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { CampaignMissionContent } from "../contracts/campaign-mission-content";
 import { asCampaignContentId } from "../contracts/campaign-content-id";
+import type { CampaignDifficulty } from "../contracts/mission-difficulty-definition";
 import type { MissionActionDefinition } from "../contracts/mission-action-definition";
 import type { MissionConditionDefinition } from "../contracts/mission-condition-definition";
 import type { MissionDialogueBundle } from "../contracts/mission-dialogue-bundle";
@@ -40,6 +41,17 @@ import {
   DefaultCampaignObjectiveService,
   type CampaignObjectiveChange
 } from "./objectives/campaign-objective-service";
+import {
+  resolveMissionDifficulty,
+  resolveMissionEncounter,
+  type ResolvedMissionDifficulty
+} from "./campaign-difficulty-resolver";
+import {
+  DefaultCampaignEncounterService,
+  type CampaignEncounterEffect,
+  type CampaignEncounterWorldAdapter
+} from "./encounters/campaign-encounter-service";
+import { resolveCampaignParticipantLaunchSlots, updateCampaignParticipantTeams } from "./campaign-participant-resolver";
 
 export interface CampaignMissionRuntimeEffect {
   readonly tick: number;
@@ -67,6 +79,9 @@ export interface CampaignMissionRuntimeOptions {
   readonly actionAdapter?: CampaignWorldActionAdapter;
   readonly conditionAdapter?: CampaignWorldConditionAdapter;
   readonly dialogue?: MissionDialogueBundle;
+  readonly difficulty?: CampaignDifficulty;
+  readonly playerCount?: number;
+  readonly encounterAdapter?: CampaignEncounterWorldAdapter;
 }
 
 interface TickBudget {
@@ -118,8 +133,10 @@ export class CampaignMissionRuntime {
   private readonly actionRunner: CampaignActionRunner;
   private readonly conditionRuntime: CampaignConditionRuntime;
   private readonly objectiveService: DefaultCampaignObjectiveService;
+  private readonly encounterService: DefaultCampaignEncounterService;
   private readonly actionAdapter?: CampaignWorldActionAdapter;
   private readonly dialogue?: MissionDialogueBundle;
+  private readonly encounterAdapter?: CampaignEncounterWorldAdapter;
   private readonly maxActionsPerTick: number;
   private readonly maxTransitionsPerTick: number;
 
@@ -132,6 +149,7 @@ export class CampaignMissionRuntime {
     this.maxActionsPerTick = options.maxActionsPerTick ?? DEFAULT_MAX_ACTIONS_PER_TICK;
     this.maxTransitionsPerTick = options.maxTransitionsPerTick ?? DEFAULT_MAX_TRANSITIONS_PER_TICK;
     this.actionAdapter = options.actionAdapter;
+    this.encounterAdapter = options.encounterAdapter;
     this.dialogue = options.dialogue;
     this.phasesById = new Map(content.phases.map((phase) => [phase.id, phase] as const));
     this.predecessorsByPhaseId = this.buildPredecessors(content.phases);
@@ -143,11 +161,24 @@ export class CampaignMissionRuntime {
     this.conditionRuntime = new CampaignConditionRuntime(
       createCampaignConditionEvaluatorRegistry(options.conditionAdapter)
     );
+    const resolvedDifficulty: ResolvedMissionDifficulty = restoredState
+      ? { ...restoredState.difficulty }
+      : resolveMissionDifficulty(
+          content.difficulty,
+          options.difficulty ?? "normal",
+          options.playerCount ??
+            Math.max(1, content.participants.filter((participant) => participant.controller === "human").length)
+        );
     const state = restoredState
       ? this.validateAndCloneRestoredState(restoredState)
-      : createCampaignMissionRuntimeState(campaignId, content);
+      : createCampaignMissionRuntimeState(campaignId, content, resolvedDifficulty);
     this.stateStore = new CampaignMissionStateStore(state);
     this.objectiveService = new DefaultCampaignObjectiveService(state, content.objectives);
+    this.encounterService = new DefaultCampaignEncounterService(
+      (content.encounters ?? []).map((encounter) => resolveMissionEncounter(encounter, resolvedDifficulty)),
+      state.encounters,
+      `${campaignId}:${content.id}:${content.revision}:${resolvedDifficulty.difficulty}:${resolvedDifficulty.playerCount}`
+    );
     try {
       this.actionAdapter?.restoreOwnedResources?.(Object.values(state.ownedResources));
     } catch (error) {
@@ -194,6 +225,7 @@ export class CampaignMissionRuntime {
       effects.push({ tick, kind: "phase-entered", sourceId: phaseId });
     }
     if (state.status === "running") {
+      this.advanceEncounters(tick, budget, effects);
       this.settleTick(tick, budget, effects, false);
     }
     this.finishTick(budget);
@@ -207,6 +239,7 @@ export class CampaignMissionRuntime {
     state.integrity.lastQueuedEventSequence = Math.max(state.integrity.lastQueuedEventSequence, sequence);
     const queuedEvent = { ...event, sequence } as CampaignMissionRuntimeEvent;
     this.applyPresentationEvent(queuedEvent);
+    this.encounterService.observeEvent(queuedEvent);
     state.pendingEvents.push(queuedEvent);
     this.canonicalizeState();
     return sequence;
@@ -241,6 +274,7 @@ export class CampaignMissionRuntime {
       return effects;
     }
     this.advanceTimers(tick);
+    this.advanceEncounters(tick, budget, effects);
 
     this.settleTick(tick, budget, effects, true);
 
@@ -344,6 +378,48 @@ export class CampaignMissionRuntime {
   private evaluateObjectives(tick: number, effects: CampaignMissionRuntimeEffect[]): void {
     this.objectiveService.evaluate(tick, { evaluate: (condition) => this.evaluateCondition(condition) });
     this.publishObjectiveChanges(this.objectiveService.drainChanges(), effects);
+  }
+
+  private advanceEncounters(tick: number, budget: TickBudget, effects: CampaignMissionRuntimeEffect[]): void {
+    const encounterEffects = this.encounterService.advance({
+      tick,
+      evaluate: (condition) => this.evaluateCondition(condition),
+      executeActions: (actions) => this.applyActions(actions, tick, budget, effects, {}),
+      world: this.encounterAdapter
+    });
+    for (const effect of encounterEffects) this.publishEncounterEffect(effect, effects);
+  }
+
+  private publishEncounterEffect(effect: CampaignEncounterEffect, effects: CampaignMissionRuntimeEffect[]): void {
+    const state = this.stateStore.current.encounters[effect.encounterId];
+    if (!state) return;
+    effects.push({
+      tick: effect.tick,
+      kind: "encounter-changed",
+      sourceId: effect.encounterId,
+      detail: {
+        status: state.status,
+        kind: effect.kind,
+        waveId: effect.waveId ?? null,
+        detail: effect.detail ?? null
+      }
+    });
+    this.enqueueEvent({
+      tick: effect.tick,
+      kind:
+        effect.kind === "wave-spawned"
+          ? "encounter.wave-spawned"
+          : effect.kind === "wave-warning"
+            ? "encounter.wave-warning"
+            : "encounter.changed",
+      sourceId: effect.encounterId,
+      payload: {
+        encounterId: effect.encounterId,
+        state: state.status,
+        waveId: effect.waveId ?? null,
+        detail: effect.detail ?? null
+      }
+    });
   }
 
   private drainTransitions(tick: number, budget: TickBudget, effects: CampaignMissionRuntimeEffect[]): void {
@@ -612,6 +688,14 @@ export class CampaignMissionRuntime {
       sourceId: action.id,
       detail: { kind: action.kind, status: result.status }
     });
+    if (action.kind === "update-alliance") {
+      updateCampaignParticipantTeams(
+        this.stateStore.current.participantTeams,
+        action.playerNumber,
+        action.otherPlayerNumber,
+        action.allied
+      );
+    }
     if (action.kind === "set-encounter-state") {
       effects.push({
         tick: context.tick,
@@ -1001,7 +1085,14 @@ export class CampaignMissionRuntime {
     state.dialoguePresentations = sortRecord(state.dialoguePresentations);
     state.dialogueHistory.sort((left, right) => left.sequence - right.sequence);
     state.cinematics = sortRecord(state.cinematics);
+    state.participantTeams = sortRecord(state.participantTeams);
     state.encounters = sortRecord(state.encounters);
+    for (const encounter of Object.values(state.encounters)) {
+      encounter.livingSpawnedActorIds.sort();
+      encounter.spawnedActorOwners = sortRecord(encounter.spawnedActorOwners);
+      encounter.deterministicBranchIds = sortRecord(encounter.deterministicBranchIds);
+      encounter.warnedWaveIds.sort();
+    }
     state.triggerStates = sortRecord(state.triggerStates);
     state.actionContinuations = sortRecord(state.actionContinuations);
     state.ownedResources = sortRecord(state.ownedResources);
@@ -1235,7 +1326,12 @@ function deterministicErrorMessage(error: unknown): string {
 
 export function createCampaignMissionRuntimeState(
   campaignId: CampaignId,
-  content: CampaignMissionContent
+  content: CampaignMissionContent,
+  resolvedDifficulty: ResolvedMissionDifficulty = resolveMissionDifficulty(
+    content.difficulty,
+    "normal",
+    Math.max(1, content.participants.filter((participant) => participant.controller === "human").length)
+  )
 ): CampaignMissionRuntimeState {
   return {
     schemaVersion: CAMPAIGN_MISSION_RUNTIME_SCHEMA_VERSION,
@@ -1244,6 +1340,7 @@ export function createCampaignMissionRuntimeState(
     missionRevision: content.revision,
     status: "initializing",
     initialized: false,
+    difficulty: { ...resolvedDifficulty },
     activePhaseIds: [...content.initialState.activePhaseIds].sort(),
     completedPhaseIds: [],
     pendingPhaseIds: [],
@@ -1270,6 +1367,12 @@ export function createCampaignMissionRuntimeState(
     dialoguePresentations: {},
     dialogueHistory: [],
     cinematics: {},
+    participantTeams: Object.fromEntries(
+      resolveCampaignParticipantLaunchSlots(content.participants).map((slot) => [
+        String(slot.playerNumber),
+        slot.teamNumber
+      ])
+    ),
     encounters: {},
     claimedTriggerIds: [],
     triggerStates: {},

@@ -209,6 +209,13 @@ export interface PositionPlayerDefinition {
   factionType?: FactionType;
   playerType: ProbableWafflePlayerType;
   difficulty?: ProbableWaffleAiDifficulty;
+  campaignController?: "full-ai" | "scripted-ai" | "passive";
+  campaignEconomy?: "normal" | "granted" | "none";
+  campaignFogPolicy?: "normal" | "revealed" | "omniscient-ai";
+  campaignStartingResources?: Partial<Record<ResourceType, number>>;
+  campaignDamageScale?: number;
+  campaignAiAggressionScale?: number;
+  campaignAiEnabled?: boolean;
 }
 
 export type PlayerStateResources = {

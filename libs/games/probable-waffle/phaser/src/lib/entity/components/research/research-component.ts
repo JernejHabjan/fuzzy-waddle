@@ -8,7 +8,10 @@ import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 import { onObjectReady } from "../../../data/game-object-helper";
 import { ObjectNames, type ResearchComponentData, type ResearchType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { QueueComponent } from "../queue/queue-component";
-import { QueueItemType, type UnifiedQueueItem } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/queue-item";
+import {
+  QueueItemType,
+  type UnifiedQueueItem
+} from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/queue-item";
 import Phaser from "phaser";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { upgradeActorToLevel } from "../../../data/actor-level-utils";
@@ -88,6 +91,10 @@ export class ResearchComponent {
     // Check if already researched
     if (this.techTreeService?.isResearched(owner, type)) {
       return { canStart: false, reason: "Already researched" };
+    }
+
+    if (this.techTreeService && !this.techTreeService.isContentAllowed(owner, "research", type)) {
+      return { canStart: false, reason: "Campaign progression limit" };
     }
 
     // Check if player has enough resources

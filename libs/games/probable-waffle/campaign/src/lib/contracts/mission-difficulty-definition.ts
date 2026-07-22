@@ -12,4 +12,12 @@ export interface MissionDifficultyDefinition {
   readonly story: MissionDifficultyOverrides;
   readonly normal: MissionDifficultyOverrides;
   readonly hard: MissionDifficultyOverrides;
+  readonly playerCountOverrides?: readonly MissionPlayerCountDifficultyOverride[];
+}
+
+export interface MissionPlayerCountDifficultyOverride {
+  readonly playerCount: number;
+  readonly story?: MissionDifficultyOverrides;
+  readonly normal?: MissionDifficultyOverrides;
+  readonly hard?: MissionDifficultyOverrides;
 }

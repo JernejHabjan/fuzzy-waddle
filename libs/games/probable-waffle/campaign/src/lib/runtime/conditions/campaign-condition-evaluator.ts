@@ -99,7 +99,7 @@ class StateCampaignConditionEvaluator implements CampaignConditionEvaluator {
           ? state.activePhaseIds.includes(definition.phaseId)
           : state.completedPhaseIds.includes(definition.phaseId);
       case "encounter":
-        return (state.encounters[definition.encounterId] ?? "inactive") === definition.state;
+        return (state.encounters[definition.encounterId]?.status ?? "inactive") === definition.state;
       default:
         throw new Error(`State condition evaluator '${this.kind}' received '${definition.kind}'`);
     }

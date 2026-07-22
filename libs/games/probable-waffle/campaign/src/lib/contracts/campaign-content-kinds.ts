@@ -40,8 +40,12 @@ export const CAMPAIGN_ACTION_KINDS = [
   "transfer-resource",
   "grant-research",
   "update-alliance",
+  "set-ai-enabled",
+  "ai-directive",
   "set-content-allowance",
   "grant-temporary-modifier",
+  "grant-content",
+  "revoke-content-grant",
   "set-objective-state",
   "set-objective-checklist-state",
   "set-encounter-state",
@@ -88,7 +92,15 @@ export const CAMPAIGN_CONDITION_KINDS = [
 export type CampaignObjectiveKind = "primary" | "secondary" | "optional" | "hidden" | "tutorial" | "failure";
 export type CampaignTriggerKind = "event" | "condition";
 export type CampaignCinematicKind = "gameplay" | "directed" | "paused";
-export type CampaignAiDirectiveKind = "enable" | "disable" | "order" | "attack" | "retreat" | "patrol";
+export type CampaignAiDirectiveKind =
+  | "enable"
+  | "disable"
+  | "order"
+  | "attack"
+  | "retreat"
+  | "patrol"
+  | "move"
+  | "stop";
 export type CampaignRewardKind =
   | "currency"
   | "story-unlock"

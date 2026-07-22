@@ -77,6 +77,19 @@
         },
         {
           "type": "Text",
+          "id": "c38c18cb-b118-4a80-8414-bb1500b034a2",
+          "label": "encounterDiagnosticsText",
+          "scope": "CLASS",
+          "x": 12,
+          "resolution": 4,
+          "fontFamily": "monospace",
+          "fontSize": "12px",
+          "color": "#82d9ff",
+          "lineSpacing": 2,
+          "wordWrapWidth": 316
+        },
+        {
+          "type": "Text",
           "id": "c9bcd2f7-4ace-4f36-83eb-a79e447052e3",
           "label": "notificationText",
           "scope": "CLASS",

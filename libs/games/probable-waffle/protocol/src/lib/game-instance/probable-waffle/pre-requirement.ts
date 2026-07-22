@@ -6,6 +6,7 @@ export type PreRequirementType = {
   researchTypes: ResearchType[];
   resources: Partial<Record<string, number>>;
   supply: number | null;
+  campaignRestriction?: string;
 };
 
 export class PreRequirement {
@@ -26,6 +27,7 @@ export class PreRequirement {
       this._prereqs.objectNames.length === 0 &&
       this._prereqs.researchTypes.length === 0 &&
       Object.keys(this._prereqs.resources).length === 0 &&
+      this._prereqs.campaignRestriction === undefined &&
       (this._prereqs.supply === null || this._prereqs.supply <= 0)
     );
   }

@@ -8,6 +8,8 @@ import type {
   CampaignObjectiveProjection,
   CampaignObjectiveProjectionItem
 } from "@fuzzy-waddle/probable-waffle-campaign";
+import type { CampaignMissionRuntimeState } from "@fuzzy-waddle/probable-waffle-protocol";
+import { environment } from "@fuzzy-waddle/environments/environment";
 import type { CampaignMissionDirector } from "../../../campaign/campaign-mission-director";
 import type { CampaignObjectiveNotification } from "../../../campaign/objectives/campaign-objective-projection-store";
 /* END-USER-IMPORTS */
@@ -52,6 +54,18 @@ export default class CampaignObjectivesHud extends Phaser.GameObjects.Container 
     });
     trackerBody.setWordWrapWidth(316);
     this.add(trackerBody);
+
+    // encounterDiagnosticsText
+    const encounterDiagnosticsText = scene.add.text(12, 0, "", {});
+    encounterDiagnosticsText.setStyle({
+      color: "#82d9ff",
+      fontFamily: "monospace",
+      fontSize: "12px",
+      lineSpacing: 2,
+      resolution: 4
+    });
+    encounterDiagnosticsText.setWordWrapWidth(316);
+    this.add(encounterDiagnosticsText);
 
     // notificationText
     const notificationText = scene.add.text(0, 0, "", {});
@@ -116,6 +130,7 @@ export default class CampaignObjectivesHud extends Phaser.GameObjects.Container 
     this.trackerTitle = trackerTitle;
     this.logButton = logButton;
     this.trackerBody = trackerBody;
+    this.encounterDiagnosticsText = encounterDiagnosticsText;
     this.notificationText = notificationText;
     this.questPanel = questPanel;
     this.questOverlay = questOverlay;
@@ -143,6 +158,7 @@ export default class CampaignObjectivesHud extends Phaser.GameObjects.Container 
   private trackerTitle: Phaser.GameObjects.Text;
   private logButton: Phaser.GameObjects.Text;
   private trackerBody: Phaser.GameObjects.Text;
+  private encounterDiagnosticsText: Phaser.GameObjects.Text;
   private notificationText: Phaser.GameObjects.Text;
   private questPanel: Phaser.GameObjects.Container;
   private questOverlay: Phaser.GameObjects.Rectangle;
@@ -163,6 +179,8 @@ export default class CampaignObjectivesHud extends Phaser.GameObjects.Container 
     this.setVisible(true);
     this.handleResize({ width: this.scene.scale.width, height: this.scene.scale.height });
     this.subscriptions.add(director.objectiveProjection.projection$.subscribe((projection) => this.render(projection)));
+    this.subscriptions.add(director.effects$.subscribe(() => this.renderEncounterDiagnostics(director.snapshot())));
+    this.renderEncounterDiagnostics(director.snapshot());
     this.subscriptions.add(
       director.objectiveProjection.notifications$.subscribe((notification) => {
         this.pendingNotifications.push(notification);
@@ -174,8 +192,22 @@ export default class CampaignObjectivesHud extends Phaser.GameObjects.Container 
   private render(projection: CampaignObjectiveProjection): void {
     this.currentProjection = projection;
     this.trackerBody.setText(projection.tracker.flatMap(formatTrackerObjective));
-    this.trackerBackground.height = Math.max(84, this.trackerBody.height + 58);
+    this.updateTrackerHeight();
     this.questBody.setText(formatQuestLog(projection));
+  }
+
+  private renderEncounterDiagnostics(state: CampaignMissionRuntimeState): void {
+    const lines = formatCampaignEncounterDiagnostics(state);
+    this.encounterDiagnosticsText
+      .setText(lines)
+      .setPosition(12, this.trackerBody.y + this.trackerBody.height + 8)
+      .setVisible(!environment.production && lines.length > 0);
+    this.updateTrackerHeight();
+  }
+
+  private updateTrackerHeight(): void {
+    const diagnosticsHeight = this.encounterDiagnosticsText.visible ? this.encounterDiagnosticsText.height + 8 : 0;
+    this.trackerBackground.height = Math.max(84, this.trackerBody.height + diagnosticsHeight + 58);
   }
 
   private showNextNotification(): void {
@@ -219,6 +251,7 @@ export default class CampaignObjectivesHud extends Phaser.GameObjects.Container 
     this.trackerTitle.setScale(scale);
     this.logButton.setScale(scale);
     this.trackerBody.setScale(scale);
+    this.encounterDiagnosticsText.setScale(scale);
   }
 
   override destroy(fromScene?: boolean): void {
@@ -258,6 +291,20 @@ function formatQuestLog(projection: CampaignObjectiveProjection): string[] {
   if (projection.history.length > 0) {
     lines.push("MISSION HISTORY");
     for (const entry of projection.history) lines.push(`• ${entry.text} — ${entry.state ?? entry.kind}`);
+  }
+  return lines;
+}
+
+export function formatCampaignEncounterDiagnostics(state: CampaignMissionRuntimeState): string[] {
+  const entries = Object.entries(state.encounters);
+  if (entries.length === 0) return [];
+  const lines = ["ENCOUNTERS"];
+  for (const [id, encounter] of entries) {
+    const timing = encounter.nextEligibleTick === undefined ? "" : ` next=${encounter.nextEligibleTick}`;
+    const failure = encounter.failureReason ? ` failure=${encounter.failureReason}` : "";
+    lines.push(
+      `${id}: ${encounter.status} wave=${encounter.waveIndex} living=${encounter.livingSpawnedActorIds.length} cursor=${encounter.spawnCursor} blocked=${encounter.blockedAttempts}${timing}${failure}`
+    );
   }
   return lines;
 }

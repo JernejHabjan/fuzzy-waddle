@@ -7,6 +7,7 @@ import type {
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { MissionCheckpointDefinition } from "./mission-checkpoint-definition";
 import type { MissionDifficultyDefinition } from "./mission-difficulty-definition";
+import type { MissionEncounterDefinition } from "./mission-encounter-definition";
 import type { MissionObjectiveDefinition } from "./mission-objective-definition";
 import type { MissionParticipantDefinition } from "./mission-participant-definition";
 import type { MissionPhaseDefinition } from "./mission-phase-definition";
@@ -37,6 +38,7 @@ export interface CampaignMissionContent {
   readonly phases: readonly MissionPhaseDefinition[];
   readonly objectives: readonly MissionObjectiveDefinition[];
   readonly checkpoints: readonly MissionCheckpointDefinition[];
+  readonly encounters?: readonly MissionEncounterDefinition[];
   readonly scenarioReferences?: MissionScenarioReferences;
   readonly difficulty: MissionDifficultyDefinition;
   readonly contentStatus: CampaignContentStatus;
