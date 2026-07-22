@@ -1,5 +1,6 @@
 import {
   asCampaignContentId,
+  AOTA_CAMPAIGN_MISSIONS,
   createCampaignMissionRuntimeState,
   type CampaignMissionContent,
   type MissionDialogueBundle,
@@ -85,6 +86,7 @@ function mission(objective: MissionObjectiveDefinition): CampaignMissionContent 
       briefing: "test",
       objectiveSummaries: []
     },
+    implementation: AOTA_CAMPAIGN_MISSIONS[0]!.implementation,
     participants: [],
     progressionAllowance: { loadoutSlotCount: 0 },
     initialState: { activePhaseIds: [], facts: [], counters: [], timers: [] },

@@ -5,6 +5,7 @@ import type { MissionObjectiveDefinition } from "../contracts/mission-objective-
 import { createCampaignMissionRuntimeState } from "../runtime/campaign-mission-runtime";
 import { createDefaultCampaignInputPromptRegistry } from "./campaign-input-prompt-registry";
 import { buildCampaignObjectiveProjection } from "./campaign-objective-projection";
+import { AOTA_CAMPAIGN_MISSIONS } from "../catalog/ashes-of-the-ancients-content";
 
 const id = asCampaignContentId;
 
@@ -136,6 +137,7 @@ function mission(objectives: readonly MissionObjectiveDefinition[]) {
       briefing: "test",
       objectiveSummaries: []
     },
+    implementation: AOTA_CAMPAIGN_MISSIONS[0]!.implementation,
     participants: [],
     progressionAllowance: { loadoutSlotCount: 0 },
     initialState: { activePhaseIds: [], facts: [], counters: [], timers: [] },

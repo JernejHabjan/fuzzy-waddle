@@ -201,6 +201,10 @@ export type MissionActionDefinition =
       readonly enabled: boolean;
     })
   | (MissionActionDefinitionBase & {
+      readonly kind: "set-control-perspective";
+      readonly playerNumber: number;
+    })
+  | (MissionActionDefinitionBase & {
       readonly kind: "ai-directive";
       readonly playerNumber: number;
       readonly directive: "attack" | "retreat" | "patrol" | "move" | "stop";

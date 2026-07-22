@@ -1287,6 +1287,7 @@
                 "grant-research",
                 "update-alliance",
                 "set-ai-enabled",
+                "set-control-perspective",
                 "ai-directive",
                 "set-content-allowance",
                 "grant-temporary-modifier",
@@ -1535,6 +1536,10 @@
                 "properties": { "playerNumber": true, "enabled": true },
                 "required": ["playerNumber", "enabled"]
               }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "set-control-perspective" } } },
+              "then": { "properties": { "playerNumber": true }, "required": ["playerNumber"] }
             },
             {
               "if": { "properties": { "kind": { "const": "ai-directive" } } },

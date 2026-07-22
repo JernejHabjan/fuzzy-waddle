@@ -2,6 +2,7 @@ import { CampaignFaction, type ProbableWaffleMapEnum } from "@fuzzy-waddle/proba
 import type { CampaignMissionContent } from "../contracts/campaign-mission-content";
 import { asCampaignContentId } from "../contracts/campaign-content-id";
 import { validateMissionScenarioReferences, type ScenarioMapManifest } from "./validate-mission-scenario-references";
+import { AOTA_CAMPAIGN_MISSIONS } from "../catalog/ashes-of-the-ancients-content";
 
 describe("validateMissionScenarioReferences", () => {
   const map: ScenarioMapManifest = {
@@ -85,6 +86,7 @@ function mission(): CampaignMissionContent {
       briefing: "Test",
       objectiveSummaries: []
     },
+    implementation: AOTA_CAMPAIGN_MISSIONS[0]!.implementation,
     participants: [],
     progressionAllowance: { loadoutSlotCount: 0 },
     initialState: { activePhaseIds: [], facts: [], counters: [], timers: [] },

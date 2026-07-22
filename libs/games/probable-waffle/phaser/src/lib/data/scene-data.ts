@@ -82,7 +82,10 @@ export function getCurrentPlayerNumber(scene: Scene): number | undefined {
     return undefined;
   }
   if (!(scene instanceof BaseScene)) throw new Error("scene is not instanceof BaseScene");
-  return scene.player.playerNumber;
+  return (
+    scene.baseGameData.gameInstance.gameState?.data.campaignMission?.activeControlPlayerNumber ??
+    scene.player.playerNumber
+  );
 }
 
 export function getCommunicator(scene: Scene): ProbableWaffleCommunicatorServiceInterface {

@@ -1,14 +1,23 @@
 import type { CampaignId, CampaignMissionRuntimeEvent, CampaignMissionRuntimeState } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { CampaignMissionContent } from "../contracts/campaign-mission-content";
-import { CampaignMissionRuntime, serializeCampaignMissionRuntimeState } from "../runtime/campaign-mission-runtime";
+import {
+  CampaignMissionRuntime,
+  serializeCampaignMissionRuntimeState,
+  type CampaignMissionRuntimeOptions
+} from "../runtime/campaign-mission-runtime";
 
 /** Rendering-free deterministic harness used by mission smoke tests and authored checkpoint fixtures. */
 export class CampaignMissionTestHarness {
   private tick = 0;
   private runtime: CampaignMissionRuntime;
 
-  constructor(campaignId: CampaignId, private readonly content: CampaignMissionContent, restored?: CampaignMissionRuntimeState) {
-    this.runtime = new CampaignMissionRuntime(campaignId, content, restored);
+  constructor(
+    private readonly campaignId: CampaignId,
+    private readonly content: CampaignMissionContent,
+    restored?: CampaignMissionRuntimeState,
+    private readonly options: CampaignMissionRuntimeOptions = {}
+  ) {
+    this.runtime = new CampaignMissionRuntime(campaignId, content, restored, options);
   }
 
   start(): CampaignMissionRuntimeState {
@@ -30,7 +39,7 @@ export class CampaignMissionTestHarness {
 
   roundTrip(): CampaignMissionRuntimeState {
     const snapshot = this.runtime.snapshot();
-    this.runtime = new CampaignMissionRuntime(snapshot.campaignId, this.content, snapshot);
+    this.runtime = new CampaignMissionRuntime(this.campaignId, this.content, snapshot, this.options);
     return this.runtime.snapshot();
   }
 

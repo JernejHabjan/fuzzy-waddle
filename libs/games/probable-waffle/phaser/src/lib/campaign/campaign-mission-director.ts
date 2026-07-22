@@ -43,6 +43,7 @@ export interface CampaignMissionOutcomeHandler {
 /** Phaser integration boundary for the pure campaign mission runtime. */
 export class CampaignMissionDirector {
   readonly effects$ = new Subject<readonly CampaignMissionRuntimeEffect[]>();
+  private activeControlPlayerNumber?: number;
   readonly events$ = new Subject<CampaignMissionRuntimeEvent>();
   readonly objectiveProjection: CampaignObjectiveProjectionStore;
   readonly cinematicPresentation: PhaserCampaignCinematicPresentationService;
@@ -250,6 +251,7 @@ export class CampaignMissionDirector {
 
   private publish(effects: readonly CampaignMissionRuntimeEffect[]): void {
     this.syncGameState();
+    this.syncControlPerspective();
     this.objectiveProjection.rebuild(this.runtime.snapshot());
     this.cinematicPresentation.syncState(this.runtime.snapshot());
     this.objectiveProjection.presentEffects(effects);
@@ -277,6 +279,13 @@ export class CampaignMissionDirector {
     const gameState = this.scene.baseGameData.gameInstance.gameState;
     if (!gameState) throw new Error("CampaignMissionDirector requires game state");
     gameState.data.campaignMission = this.runtime.snapshot();
+  }
+
+  private syncControlPerspective(): void {
+    const playerNumber = this.runtime.state.activeControlPlayerNumber;
+    if (playerNumber === undefined || playerNumber === this.activeControlPlayerNumber) return;
+    this.activeControlPlayerNumber = playerNumber;
+    this.scene.communicator.allScenes.emit({ name: "selection.deselect" });
   }
 
   private onSnapshotApplied(event: ReconnectSnapshotAppliedSceneEvent): void {

@@ -462,6 +462,13 @@ function registerStateExecutors(registry: CampaignActionExecutorRegistry): void 
       }
     })
   );
+  registry.register(
+    stateExecutor("set-control-perspective", (context, definition) => {
+      if (definition.kind === "set-control-perspective") {
+        context.state.activeControlPlayerNumber = definition.playerNumber;
+      }
+    })
+  );
   registry.register(new WaitTicksCampaignActionExecutor());
   registry.register(
     stateExecutor("discover-reward", (context, definition) => {

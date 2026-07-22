@@ -1608,6 +1608,9 @@ export function createCampaignMissionRuntimeState(
     dialoguePresentations: {},
     dialogueHistory: [],
     cinematics: {},
+    activeControlPlayerNumber: resolveCampaignParticipantLaunchSlots(participants).find(
+      (slot) => slot.participant.controller === "human"
+    )?.playerNumber,
     participantTeams: Object.fromEntries(
       resolveCampaignParticipantLaunchSlots(participants).map((slot) => [
         String(slot.playerNumber),
@@ -1660,6 +1663,7 @@ export function serializeCampaignMissionRuntimeStateFamilies(
       status: state.status,
       initialized: state.initialized,
       difficulty: state.difficulty,
+      activeControlPlayerNumber: state.activeControlPlayerNumber,
       participantTeams: state.participantTeams
     }),
     phases: serialize({

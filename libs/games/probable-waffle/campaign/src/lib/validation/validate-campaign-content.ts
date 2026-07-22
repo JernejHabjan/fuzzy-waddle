@@ -280,6 +280,18 @@ function validateMission(
       }
     }
     if (
+      entry.action.kind === "set-control-perspective" &&
+      !mission.participants[entry.action.playerNumber - 1]
+    ) {
+      addIssue(
+        issues,
+        sourcePath,
+        `${entry.jsonPath}.playerNumber`,
+        "invalid-control-participant-reference",
+        `Control perspective action '${entry.action.id}' targets missing player ${entry.action.playerNumber}`
+      );
+    }
+    if (
       entry.action.kind === "ai-directive" &&
       entry.action.directive !== "stop" &&
       !entry.action.targetActorId &&

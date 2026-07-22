@@ -1,6 +1,7 @@
 import { createCampaignMissionRuntimeState } from "../runtime/campaign-mission-runtime";
 import { CampaignRunIntegrityService } from "./campaign-run-integrity-service";
 import type { CampaignMissionContent } from "../contracts/campaign-mission-content";
+import { AOTA_CAMPAIGN_MISSIONS } from "../catalog/ashes-of-the-ancients-content";
 
 describe("CampaignRunIntegrityService", () => {
   it("invalidates monotonically and keeps pending discoveries synchronized with the launch snapshot", () => {
@@ -67,6 +68,7 @@ function mission(): CampaignMissionContent {
       briefing: "Test",
       objectiveSummaries: []
     },
+    implementation: AOTA_CAMPAIGN_MISSIONS[0]!.implementation,
     participants: [],
     progressionAllowance: { loadoutSlotCount: 0 },
     initialState: { activePhaseIds: [], facts: [], counters: [], timers: [] },

@@ -41,6 +41,7 @@ export const CAMPAIGN_ACTION_KINDS = [
   "grant-research",
   "update-alliance",
   "set-ai-enabled",
+  "set-control-perspective",
   "ai-directive",
   "set-content-allowance",
   "grant-temporary-modifier",

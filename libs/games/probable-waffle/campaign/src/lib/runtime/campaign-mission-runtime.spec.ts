@@ -9,6 +9,7 @@ import type { MissionTriggerDefinition } from "../contracts/mission-trigger-defi
 import { CampaignMissionRuntime, serializeCampaignMissionRuntimeState } from "./campaign-mission-runtime";
 import type { CampaignWorldActionAdapter } from "./actions/campaign-action-runtime";
 import type { CampaignWorldConditionAdapter } from "./conditions/campaign-condition-evaluator";
+import { AOTA_CAMPAIGN_MISSIONS } from "../catalog/ashes-of-the-ancients-content";
 
 const id = asCampaignContentId;
 
@@ -948,6 +949,7 @@ function mission(
       briefing: "test",
       objectiveSummaries: []
     },
+    implementation: AOTA_CAMPAIGN_MISSIONS[0]!.implementation,
     participants: [],
     progressionAllowance: { loadoutSlotCount: 0 },
     initialState: {

@@ -21,7 +21,14 @@ export const AOTA_PROGRESSION_DEFINITIONS: CampaignProgressionDefinitions = {
       faction: FactionType.Skaduwee
     }
   ],
-  unlocks: [],
+  unlocks: [
+    {
+      id: "mission-cyclops-and-sheep",
+      title: "Cyclops & Sheep",
+      kind: "starting-bonus",
+      chapterId: "two-homelands"
+    }
+  ],
   upgrades: [],
   items: [],
   temporaryBoosts: []

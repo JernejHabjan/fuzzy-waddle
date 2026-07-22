@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "dreams",
   "chapterId": "prologue",
-  "revision": 1,
+  "revision": 2,
   "mapId": 3,
   "prerequisites": [],
   "catalogue": {
@@ -22,57 +22,79 @@
       "slotId": "tivara-player",
       "controller": "human",
       "faction": 1,
-      "teamId": "alliance",
+      "teamId": "tivara-dream",
       "requiredForVictory": true,
       "profileOwnership": "independent",
-      "economy": "normal",
-      "fogPolicy": "normal"
+      "economy": "none",
+      "fogPolicy": "revealed"
     },
     {
-      "slotId": "skaduwee-player",
-      "controller": "human",
-      "singlePlayerSubstitution": "scripted-ai",
+      "slotId": "tivara-formation",
+      "controller": "scripted-ai",
+      "faction": 1,
+      "teamId": "tivara-dream",
+      "profileOwnership": "none",
+      "economy": "none",
+      "fogPolicy": "omniscient-ai"
+    },
+    {
+      "slotId": "skaduwee-formation",
+      "controller": "scripted-ai",
       "faction": 2,
-      "teamId": "alliance",
+      "teamId": "skaduwee-dream",
       "requiredForVictory": true,
-      "profileOwnership": "independent",
-      "economy": "normal",
-      "fogPolicy": "normal"
+      "profileOwnership": "none",
+      "economy": "none",
+      "fogPolicy": "omniscient-ai"
     }
   ],
   "progressionAllowance": {
     "maxStoryChapter": "prologue",
-    "loadoutSlotCount": 1
+    "allowedActorIds": [
+      "TivaraSlingshotFemale",
+      "TivaraWorkerFemale",
+      "TivaraWorkerMale",
+      "SkaduweeMagicianFemale",
+      "SkaduweeWorkerMale"
+    ],
+    "allowedResearchIds": [],
+    "loadoutSlotCount": 0
   },
   "initialState": {
     "activePhaseIds": [
-      "opening"
+      "dream-intro",
+      "mission-monitor"
     ],
     "facts": [
       {
+        "id": "intro-complete",
+        "value": false
+      },
+      {
+        "id": "faction-switched",
+        "value": false
+      },
+      {
+        "id": "volcano-complete",
+        "value": false
+      },
+      {
+        "id": "dream-witnessed",
+        "value": false
+      },
+      {
         "id": "mission-complete",
-        "value": false,
-        "debugMutable": true
+        "value": false
       },
       {
-        "id": "mission-failed",
-        "value": false,
-        "debugMutable": true
-      },
-      {
-        "id": "optional-complete",
-        "value": false,
-        "debugMutable": true
-      },
-      {
-        "id": "checkpoint-ready",
+        "id": "technical-failure",
         "value": false,
         "debugMutable": true
       }
     ],
     "counters": [
       {
-        "id": "mission-progress",
+        "id": "eruption-intensity",
         "value": 0,
         "debugMutable": true
       }
@@ -81,14 +103,135 @@
   },
   "phases": [
     {
-      "id": "opening",
+      "id": "dream-intro",
       "mode": "sequential",
       "entryActions": [
         {
-          "id": "show-opening-briefing",
-          "kind": "start-dialogue",
+          "id": "play-dream-intro",
+          "kind": "start-cinematic",
           "scope": "mission",
-          "lineId": "opening-briefing",
+          "cinematicId": "dream-intro-cinematic",
+          "waitForCompletion": true
+        }
+      ],
+      "exitActions": [],
+      "triggers": [],
+      "transitions": [
+        {
+          "id": "finish-dream-intro",
+          "targetPhaseIds": [
+            "tivara-rally"
+          ],
+          "condition": {
+            "kind": "fact",
+            "factId": "intro-complete",
+            "equals": true
+          },
+          "actions": [],
+          "priority": 10
+        }
+      ]
+    },
+    {
+      "id": "tivara-rally",
+      "mode": "sequential",
+      "entryActions": [
+        {
+          "id": "show-tivara-rally-line",
+          "kind": "start-dialogue",
+          "lineId": "tivara-rally-line",
+          "waitForAcknowledgement": false
+        },
+        {
+          "id": "start-tivara-reminder",
+          "kind": "start-timer",
+          "timerId": "tivara-reminder",
+          "durationTicks": 1200
+        }
+      ],
+      "exitActions": [
+        {
+          "id": "cancel-tivara-reminder",
+          "kind": "cancel-timer",
+          "timerId": "tivara-reminder"
+        }
+      ],
+      "triggers": [
+        {
+          "id": "remind-tivara-charge",
+          "kind": "condition",
+          "condition": {
+            "kind": "timer",
+            "timerId": "tivara-reminder",
+            "state": "elapsed"
+          },
+          "actions": [
+            {
+              "id": "show-tivara-reminder",
+              "kind": "start-dialogue",
+              "lineId": "tivara-reminder-line",
+              "waitForAcknowledgement": false
+            },
+            {
+              "id": "restart-tivara-reminder",
+              "kind": "start-timer",
+              "timerId": "tivara-reminder",
+              "durationTicks": 1200
+            }
+          ],
+          "firing": {
+            "kind": "repeatable",
+            "cooldownTicks": 600
+          },
+          "priority": 0
+        }
+      ],
+      "transitions": [
+        {
+          "id": "accept-tivara-command",
+          "targetPhaseIds": [
+            "tivara-charge"
+          ],
+          "condition": {
+            "kind": "objective",
+            "objectiveId": "direct-tivara-army",
+            "state": "completed"
+          },
+          "actions": [],
+          "priority": 10
+        }
+      ]
+    },
+    {
+      "id": "tivara-charge",
+      "mode": "sequential",
+      "entryActions": [
+        {
+          "id": "order-tivara-formation",
+          "kind": "ai-directive",
+          "playerNumber": 2,
+          "directive": "move",
+          "actorIds": [
+            "tivara-opposition-captain"
+          ],
+          "targetPointId": "battle-focus-point"
+        },
+        {
+          "id": "raise-first-eruption",
+          "kind": "increment-counter",
+          "counterId": "eruption-intensity",
+          "amount": 1
+        },
+        {
+          "id": "start-first-charge-window",
+          "kind": "start-timer",
+          "timerId": "first-charge-window",
+          "durationTicks": 90
+        },
+        {
+          "id": "show-first-charge-line",
+          "kind": "start-dialogue",
+          "lineId": "tivara-charge-line",
           "waitForAcknowledgement": false
         }
       ],
@@ -96,26 +239,420 @@
       "triggers": [],
       "transitions": [
         {
-          "id": "begin-operation",
+          "id": "handoff-after-tivara",
           "targetPhaseIds": [
-            "operation"
+            "switch-to-skaduwee"
           ],
           "condition": {
-            "kind": "always"
+            "kind": "timer",
+            "timerId": "first-charge-window",
+            "state": "elapsed"
           },
           "actions": [],
-          "priority": 0
+          "priority": 10
         }
       ]
     },
     {
-      "id": "operation",
-      "mode": "parallel",
+      "id": "switch-to-skaduwee",
+      "mode": "sequential",
+      "entryActions": [
+        {
+          "id": "play-faction-handoff",
+          "kind": "start-cinematic",
+          "scope": "mission",
+          "cinematicId": "faction-handoff-cinematic",
+          "waitForCompletion": true
+        }
+      ],
+      "exitActions": [],
+      "triggers": [],
+      "transitions": [
+        {
+          "id": "finish-faction-handoff",
+          "targetPhaseIds": [
+            "skaduwee-rally"
+          ],
+          "condition": {
+            "kind": "fact",
+            "factId": "faction-switched",
+            "equals": true
+          },
+          "actions": [],
+          "priority": 10
+        }
+      ]
+    },
+    {
+      "id": "skaduwee-rally",
+      "mode": "sequential",
+      "entryActions": [
+        {
+          "id": "show-skaduwee-rally-line",
+          "kind": "start-dialogue",
+          "lineId": "skaduwee-rally-line",
+          "waitForAcknowledgement": false
+        },
+        {
+          "id": "start-skaduwee-reminder",
+          "kind": "start-timer",
+          "timerId": "skaduwee-reminder",
+          "durationTicks": 1200
+        }
+      ],
+      "exitActions": [
+        {
+          "id": "cancel-skaduwee-reminder",
+          "kind": "cancel-timer",
+          "timerId": "skaduwee-reminder"
+        }
+      ],
+      "triggers": [
+        {
+          "id": "remind-skaduwee-charge",
+          "kind": "condition",
+          "condition": {
+            "kind": "timer",
+            "timerId": "skaduwee-reminder",
+            "state": "elapsed"
+          },
+          "actions": [
+            {
+              "id": "show-skaduwee-reminder",
+              "kind": "start-dialogue",
+              "lineId": "skaduwee-reminder-line",
+              "waitForAcknowledgement": false
+            },
+            {
+              "id": "restart-skaduwee-reminder",
+              "kind": "start-timer",
+              "timerId": "skaduwee-reminder",
+              "durationTicks": 1200
+            }
+          ],
+          "firing": {
+            "kind": "repeatable",
+            "cooldownTicks": 600
+          },
+          "priority": 0
+        }
+      ],
+      "transitions": [
+        {
+          "id": "accept-skaduwee-command",
+          "targetPhaseIds": [
+            "skaduwee-charge"
+          ],
+          "condition": {
+            "kind": "objective",
+            "objectiveId": "direct-skaduwee-army",
+            "state": "completed"
+          },
+          "actions": [],
+          "priority": 10
+        }
+      ]
+    },
+    {
+      "id": "skaduwee-charge",
+      "mode": "sequential",
+      "entryActions": [
+        {
+          "id": "raise-second-eruption",
+          "kind": "increment-counter",
+          "counterId": "eruption-intensity",
+          "amount": 1
+        },
+        {
+          "id": "start-second-charge-window",
+          "kind": "start-timer",
+          "timerId": "second-charge-window",
+          "durationTicks": 90
+        },
+        {
+          "id": "show-second-charge-line",
+          "kind": "start-dialogue",
+          "lineId": "skaduwee-charge-line",
+          "waitForAcknowledgement": false
+        }
+      ],
+      "exitActions": [],
+      "triggers": [],
+      "transitions": [
+        {
+          "id": "escalate-battle",
+          "targetPhaseIds": [
+            "battle-escalation"
+          ],
+          "condition": {
+            "kind": "timer",
+            "timerId": "second-charge-window",
+            "state": "elapsed"
+          },
+          "actions": [],
+          "priority": 10
+        }
+      ]
+    },
+    {
+      "id": "battle-escalation",
+      "mode": "sequential",
+      "entryActions": [
+        {
+          "id": "return-tivara-perspective",
+          "kind": "set-control-perspective",
+          "playerNumber": 1
+        },
+        {
+          "id": "order-tivara-attack",
+          "kind": "ai-directive",
+          "playerNumber": 2,
+          "directive": "attack",
+          "actorIds": [
+            "tivara-opposition-captain"
+          ],
+          "targetActorId": "skaduwee-dream-captain"
+        },
+        {
+          "id": "raise-final-eruption",
+          "kind": "increment-counter",
+          "counterId": "eruption-intensity",
+          "amount": 2
+        },
+        {
+          "id": "close-eruption-route",
+          "kind": "create-aoe",
+          "effectId": "eruption-route-hazard",
+          "regionId": "eruption-hazard-region",
+          "spellType": "volcanic-hazard",
+          "radiusTiles": 3,
+          "durationTicks": 180,
+          "tickIntervalTicks": 15,
+          "sourcePlayerNumber": 1,
+          "affectsAllies": true,
+          "affectsEnemies": true,
+          "effectWhileInside": {
+            "type": "slowed",
+            "duration": 500,
+            "remainingTime": 500,
+            "movementSpeedModifier": 0.2
+          }
+        },
+        {
+          "id": "close-lava-route",
+          "kind": "create-aoe",
+          "effectId": "lava-route-hazard",
+          "regionId": "lava-hazard-region",
+          "spellType": "volcanic-hazard",
+          "radiusTiles": 4,
+          "durationTicks": 180,
+          "tickIntervalTicks": 15,
+          "sourcePlayerNumber": 1,
+          "affectsAllies": true,
+          "affectsEnemies": true,
+          "effectWhileInside": {
+            "type": "slowed",
+            "duration": 500,
+            "remainingTime": 500,
+            "movementSpeedModifier": 0.2
+          }
+        },
+        {
+          "id": "start-battle-escalation",
+          "kind": "start-timer",
+          "timerId": "battle-escalation-window",
+          "durationTicks": 180
+        },
+        {
+          "id": "show-battle-escalation-line",
+          "kind": "start-dialogue",
+          "lineId": "battle-escalation-line",
+          "waitForAcknowledgement": false
+        }
+      ],
+      "exitActions": [],
+      "triggers": [
+        {
+          "id": "story-eruption-damage",
+          "kind": "condition",
+          "condition": {
+            "kind": "difficulty",
+            "values": [
+              "story"
+            ]
+          },
+          "actions": [
+            {
+              "id": "story-damage-tivara-fighter",
+              "kind": "damage-actor",
+              "actorId": "tivara-dream-fighter",
+              "amount": 5,
+              "damageType": 2,
+              "missingReferencePolicy": "skip"
+            },
+            {
+              "id": "story-damage-skaduwee-fighter",
+              "kind": "damage-actor",
+              "actorId": "skaduwee-dream-fighter",
+              "amount": 5,
+              "damageType": 2,
+              "missingReferencePolicy": "skip"
+            }
+          ],
+          "firing": {
+            "kind": "once"
+          },
+          "priority": 30
+        },
+        {
+          "id": "normal-eruption-damage",
+          "kind": "condition",
+          "condition": {
+            "kind": "difficulty",
+            "values": [
+              "normal"
+            ]
+          },
+          "actions": [
+            {
+              "id": "normal-damage-tivara-fighter",
+              "kind": "damage-actor",
+              "actorId": "tivara-dream-fighter",
+              "amount": 10,
+              "damageType": 2,
+              "missingReferencePolicy": "skip"
+            },
+            {
+              "id": "normal-damage-skaduwee-fighter",
+              "kind": "damage-actor",
+              "actorId": "skaduwee-dream-fighter",
+              "amount": 10,
+              "damageType": 2,
+              "missingReferencePolicy": "skip"
+            }
+          ],
+          "firing": {
+            "kind": "once"
+          },
+          "priority": 30
+        },
+        {
+          "id": "hard-eruption-damage",
+          "kind": "condition",
+          "condition": {
+            "kind": "difficulty",
+            "values": [
+              "hard"
+            ]
+          },
+          "actions": [
+            {
+              "id": "hard-damage-tivara-fighter",
+              "kind": "damage-actor",
+              "actorId": "tivara-dream-fighter",
+              "amount": 20,
+              "damageType": 2,
+              "missingReferencePolicy": "skip"
+            },
+            {
+              "id": "hard-damage-skaduwee-fighter",
+              "kind": "damage-actor",
+              "actorId": "skaduwee-dream-fighter",
+              "amount": 20,
+              "damageType": 2,
+              "missingReferencePolicy": "skip"
+            }
+          ],
+          "firing": {
+            "kind": "once"
+          },
+          "priority": 30
+        }
+      ],
+      "transitions": [
+        {
+          "id": "volcano-overwhelms-battle",
+          "targetPhaseIds": [
+            "volcano-overwhelms"
+          ],
+          "condition": {
+            "kind": "timer",
+            "timerId": "battle-escalation-window",
+            "state": "elapsed"
+          },
+          "actions": [],
+          "priority": 10
+        }
+      ]
+    },
+    {
+      "id": "volcano-overwhelms",
+      "mode": "sequential",
+      "entryActions": [
+        {
+          "id": "play-volcano-overwhelms",
+          "kind": "start-cinematic",
+          "scope": "mission",
+          "cinematicId": "volcano-overwhelms-cinematic",
+          "waitForCompletion": true
+        }
+      ],
+      "exitActions": [],
+      "triggers": [],
+      "transitions": [
+        {
+          "id": "cover-battlefield-in-ash",
+          "targetPhaseIds": [
+            "ashes-title"
+          ],
+          "condition": {
+            "kind": "fact",
+            "factId": "volcano-complete",
+            "equals": true
+          },
+          "actions": [],
+          "priority": 10
+        }
+      ]
+    },
+    {
+      "id": "ashes-title",
+      "mode": "sequential",
+      "entryActions": [
+        {
+          "id": "play-ashes-title",
+          "kind": "start-cinematic",
+          "scope": "mission",
+          "cinematicId": "ashes-title-cinematic",
+          "waitForCompletion": true
+        }
+      ],
+      "exitActions": [],
+      "triggers": [],
+      "transitions": [
+        {
+          "id": "complete-dream",
+          "targetPhaseIds": [
+            "victory"
+          ],
+          "condition": {
+            "kind": "fact",
+            "factId": "mission-complete",
+            "equals": true
+          },
+          "actions": [],
+          "priority": 10
+        }
+      ]
+    },
+    {
+      "id": "victory",
+      "mode": "sequential",
       "entryActions": [],
       "exitActions": [],
       "triggers": [
         {
-          "id": "resolve-authored-victory",
+          "id": "resolve-dream-victory",
           "kind": "condition",
           "condition": {
             "kind": "fact",
@@ -124,39 +661,48 @@
           },
           "actions": [
             {
-              "id": "request-authored-victory",
+              "id": "request-dream-victory",
               "kind": "request-outcome",
               "scope": "mission",
               "outcome": "victory",
-              "reasonId": "authored-victory"
+              "reasonId": "dream-complete"
             }
           ],
           "firing": {
             "kind": "once"
           },
           "priority": 100
-        },
+        }
+      ],
+      "transitions": []
+    },
+    {
+      "id": "mission-monitor",
+      "mode": "parallel",
+      "entryActions": [],
+      "exitActions": [],
+      "triggers": [
         {
-          "id": "resolve-authored-defeat",
+          "id": "resolve-technical-failure",
           "kind": "condition",
           "condition": {
             "kind": "fact",
-            "factId": "mission-failed",
+            "factId": "technical-failure",
             "equals": true
           },
           "actions": [
             {
-              "id": "request-authored-defeat",
+              "id": "request-technical-defeat",
               "kind": "request-outcome",
               "scope": "mission",
               "outcome": "defeat",
-              "reasonId": "authored-defeat"
+              "reasonId": "technical-invariant-failed"
             }
           ],
           "firing": {
             "kind": "once"
           },
-          "priority": 90
+          "priority": 100
         }
       ],
       "transitions": []
@@ -164,181 +710,451 @@
   ],
   "objectives": [
     {
-      "id": "primary-mission",
-      "kind": "primary",
+      "id": "direct-tivara-army",
+      "kind": "tutorial",
       "ownership": {
         "kind": "shared"
       },
-      "titleTextId": "primary-title",
-      "descriptionTextId": "primary-description",
+      "titleTextId": "direct-tivara-title",
+      "descriptionTextId": "direct-tivara-description",
       "reveal": {
-        "kind": "always"
+        "kind": "phase",
+        "phaseId": "tivara-rally",
+        "state": "active"
       },
       "complete": {
-        "kind": "fact",
-        "factId": "mission-complete",
-        "equals": true
+        "kind": "region-occupancy",
+        "regionId": "battle-region",
+        "selector": {
+          "actorIds": [
+            "tivara-dream-captain"
+          ],
+          "alive": true
+        },
+        "policy": {
+          "kind": "any"
+        }
       },
-      "display": {
-        "announceReveal": true,
-        "announceCompletion": true,
-        "showInTracker": true
-      }
-    },
-    {
-      "id": "optional-discovery",
-      "kind": "optional",
-      "ownership": {
-        "kind": "shared"
-      },
-      "titleTextId": "optional-title",
-      "descriptionTextId": "optional-description",
-      "reveal": {
-        "kind": "always"
-      },
-      "complete": {
-        "kind": "fact",
-        "factId": "optional-complete",
-        "equals": true
-      },
-      "display": {
-        "announceReveal": true,
-        "announceCompletion": true,
-        "showInTracker": true
-      }
-    },
-    {
-      "id": "mission-failure",
-      "kind": "failure",
-      "ownership": {
-        "kind": "shared"
-      },
-      "titleTextId": "failure-title",
-      "descriptionTextId": "failure-description",
-      "reveal": {
-        "kind": "always"
-      },
-      "complete": {
-        "kind": "fact",
-        "factId": "mission-failed",
-        "equals": true
-      },
+      "checklist": [
+        {
+          "id": "command-tivara-charge",
+          "textId": "command-tivara-charge-text",
+          "complete": {
+            "kind": "region-occupancy",
+            "regionId": "battle-region",
+            "selector": {
+              "actorIds": [
+                "tivara-dream-captain"
+              ],
+              "alive": true
+            },
+            "policy": {
+              "kind": "any"
+            }
+          },
+          "inputPrompt": {
+            "action": "command.attack",
+            "seenPolicy": "collapse"
+          }
+        }
+      ],
       "display": {
         "announceReveal": true,
         "announceCompletion": true,
         "showInTracker": true,
-        "announceFailure": true
+        "narration": {
+          "revealLineId": "tivara-rally-line",
+          "completionLineId": "tivara-charge-line"
+        },
+        "focus": {
+          "kind": "region",
+          "regionId": "battle-region"
+        }
+      }
+    },
+    {
+      "id": "direct-skaduwee-army",
+      "kind": "tutorial",
+      "ownership": {
+        "kind": "shared"
+      },
+      "titleTextId": "direct-skaduwee-title",
+      "descriptionTextId": "direct-skaduwee-description",
+      "reveal": {
+        "kind": "phase",
+        "phaseId": "skaduwee-rally",
+        "state": "active"
+      },
+      "complete": {
+        "kind": "region-occupancy",
+        "regionId": "battle-region",
+        "selector": {
+          "actorIds": [
+            "skaduwee-dream-captain"
+          ],
+          "alive": true
+        },
+        "policy": {
+          "kind": "any"
+        }
+      },
+      "checklist": [
+        {
+          "id": "command-skaduwee-charge",
+          "textId": "command-skaduwee-charge-text",
+          "complete": {
+            "kind": "region-occupancy",
+            "regionId": "battle-region",
+            "selector": {
+              "actorIds": [
+                "skaduwee-dream-captain"
+              ],
+              "alive": true
+            },
+            "policy": {
+              "kind": "any"
+            }
+          },
+          "inputPrompt": {
+            "action": "command.attack",
+            "seenPolicy": "collapse"
+          }
+        }
+      ],
+      "display": {
+        "announceReveal": true,
+        "announceCompletion": true,
+        "showInTracker": true,
+        "narration": {
+          "revealLineId": "skaduwee-rally-line",
+          "completionLineId": "skaduwee-charge-line"
+        },
+        "focus": {
+          "kind": "region",
+          "regionId": "battle-region"
+        }
+      }
+    },
+    {
+      "id": "witness-dream-outcome",
+      "kind": "primary",
+      "ownership": {
+        "kind": "shared"
+      },
+      "titleTextId": "witness-dream-title",
+      "descriptionTextId": "witness-dream-description",
+      "reveal": {
+        "kind": "always"
+      },
+      "complete": {
+        "kind": "fact",
+        "factId": "dream-witnessed",
+        "equals": true
+      },
+      "rewardIds": [
+        "unlock-cyclops-and-sheep"
+      ],
+      "display": {
+        "announceReveal": true,
+        "announceCompletion": true,
+        "showInTracker": true,
+        "narration": {
+          "completionLineId": "ashes-title-line"
+        },
+        "focus": {
+          "kind": "region",
+          "regionId": "volcano-hazard-region"
+        }
+      }
+    },
+    {
+      "id": "technical-failure",
+      "kind": "failure",
+      "ownership": {
+        "kind": "shared"
+      },
+      "titleTextId": "technical-failure-title",
+      "descriptionTextId": "technical-failure-description",
+      "reveal": {
+        "kind": "fact",
+        "factId": "technical-failure",
+        "equals": true
+      },
+      "complete": {
+        "kind": "fact",
+        "factId": "technical-failure",
+        "equals": true
+      },
+      "display": {
+        "announceReveal": true,
+        "announceCompletion": false,
+        "announceFailure": true,
+        "showInTracker": false
       }
     }
   ],
   "checkpoints": [
     {
-      "id": "after-first-shift",
-      "titleTextId": "after-first-shift-title",
+      "id": "after-dream-intro",
+      "titleTextId": "after-dream-intro-title",
       "trigger": {
-        "kind": "fact",
-        "factId": "checkpoint-ready",
-        "equals": true
+        "kind": "phase",
+        "phaseId": "tivara-rally",
+        "state": "active"
       },
       "requiredActions": [],
       "savePolicy": "when-stable",
       "resumePresentation": {
-        "textId": "after-first-shift-resume"
+        "textId": "after-dream-intro-resume"
+      }
+    },
+    {
+      "id": "after-tivara-charge",
+      "titleTextId": "after-tivara-charge-title",
+      "trigger": {
+        "kind": "phase",
+        "phaseId": "tivara-charge",
+        "state": "completed"
+      },
+      "requiredActions": [],
+      "savePolicy": "when-stable",
+      "resumePresentation": {
+        "textId": "after-tivara-charge-resume",
+        "cinematicId": "faction-handoff-cinematic"
+      }
+    },
+    {
+      "id": "after-faction-switch",
+      "titleTextId": "after-faction-switch-title",
+      "trigger": {
+        "kind": "phase",
+        "phaseId": "skaduwee-rally",
+        "state": "active"
+      },
+      "requiredActions": [],
+      "savePolicy": "when-stable",
+      "resumePresentation": {
+        "textId": "after-faction-switch-resume"
+      }
+    },
+    {
+      "id": "before-volcano-finale",
+      "titleTextId": "before-volcano-finale-title",
+      "trigger": {
+        "kind": "phase",
+        "phaseId": "battle-escalation",
+        "state": "completed"
+      },
+      "requiredActions": [],
+      "savePolicy": "when-stable",
+      "resumePresentation": {
+        "textId": "before-volcano-finale-resume",
+        "cinematicId": "volcano-overwhelms-cinematic"
       }
     }
   ],
   "difficulty": {
-    "story": {},
-    "normal": {},
-    "hard": {}
+    "story": {
+      "warningTicks": 180,
+      "damageScale": 0.5,
+      "waveSizeScale": 0.75,
+      "aiAggressionScale": 0.75
+    },
+    "normal": {
+      "warningTicks": 120,
+      "damageScale": 1,
+      "waveSizeScale": 1,
+      "aiAggressionScale": 1
+    },
+    "hard": {
+      "warningTicks": 60,
+      "damageScale": 1.5,
+      "waveSizeScale": 1.25,
+      "aiAggressionScale": 1.25
+    }
   },
-  "contentStatus": "skeleton",
+  "contentStatus": "playable",
   "implementation": {
-    "summary": "A shared volcanic battle dream teaches both factions basic command while revealing that their homelands depend on the same ancient crystal.",
+    "summary": "A shared volcanic battle dream teaches both factions basic command while revealing that their homelands are bound to the same ancient power.",
     "phasePlan": [
       {
-        "id": "shared-vision",
-        "description": "Introduce the dream, controls, and the mirrored Tivara and Skaduwee forces."
+        "id": "dream-intro",
+        "description": "Present the shared volcanic vision and establish the two marching factions."
       },
       {
-        "id": "battle-shifts",
-        "description": "Alternate control between both factions as eruptions and lava reshape the battlefield."
+        "id": "tivara-rally",
+        "description": "Teach the first semantic command as the Tivara formation enters battle."
       },
       {
-        "id": "crystal-revelation",
-        "description": "Reach the ancient crystal, survive the final vision, and reveal the campaign title."
+        "id": "switch-to-skaduwee",
+        "description": "Finalize a skip-safe control handoff without changing account identity."
+      },
+      {
+        "id": "skaduwee-rally",
+        "description": "Repeat the command lesson from the Skaduwee perspective."
+      },
+      {
+        "id": "battle-escalation",
+        "description": "Drive scripted formations and difficulty-scaled volcanic hazards."
+      },
+      {
+        "id": "ashes-title",
+        "description": "Resolve the dream, reveal the campaign title, and unlock the next mission."
       }
     ],
     "checkpointCandidates": [
       {
-        "id": "after-first-shift",
-        "after": "the first faction-control shift"
+        "id": "after-dream-intro",
+        "after": "the shared dream introduction finalizes"
       },
       {
-        "id": "before-crystal-revelation",
-        "after": "both dream armies reach the crystal approach"
+        "id": "after-tivara-charge",
+        "after": "the first faction charge completes"
+      },
+      {
+        "id": "after-faction-switch",
+        "after": "Skaduwee control is restored"
+      },
+      {
+        "id": "before-volcano-finale",
+        "after": "the battle escalation reaches the final volcanic sequence"
       }
     ],
     "plannedScenarioReferences": {
       "actors": [
-        "tivara-dream-leader",
-        "skaduwee-dream-leader",
-        "ancient-crystal"
+        "skaduwee-dream-captain",
+        "skaduwee-dream-fighter",
+        "tivara-dream-captain",
+        "tivara-dream-fighter",
+        "tivara-opposition-captain"
+      ],
+      "points": [
+        "ash-fallback-point",
+        "battle-focus-point",
+        "eruption-point",
+        "skaduwee-battle-point",
+        "skaduwee-rally-point",
+        "tivara-battle-point",
+        "tivara-rally-point",
+        "volcano-focus-point"
       ],
       "regions": [
-        "eruption-zone",
-        "crystal-sanctum"
+        "battle-region",
+        "eruption-hazard-region",
+        "lava-hazard-region",
+        "skaduwee-command-region",
+        "tivara-command-region",
+        "volcano-hazard-region"
       ],
       "routes": [
-        "tivara-dream-route",
-        "skaduwee-dream-route"
+        "skaduwee-charge-route",
+        "tivara-charge-route"
+      ],
+      "groups": [
+        "skaduwee-rally-group",
+        "tivara-rally-group"
       ],
       "cameraShots": [
-        "opening-volcano-shot",
-        "title-reveal-shot"
+        "ashes-title-shot",
+        "battle-focus-shot",
+        "dream-intro-shot",
+        "skaduwee-rally-shot",
+        "tivara-rally-shot",
+        "volcano-overwhelms-shot"
       ],
       "spawnSets": [
-        "dream-battle-wave"
+        "dream-reinforcement-wave"
       ]
     },
     "mechanics": [
-      "Basic selection, movement, and attack tutorial",
-      "Scripted faction-control switching",
-      "Telegraphed eruptions and advancing lava"
+      "Semantic selection and attack-command tutorial",
+      "Save-safe faction control perspective switching",
+      "Scripted formation orders and difficulty-scaled volcanic damage",
+      "Paused and directed skip-equivalent cinematics"
     ],
     "coopNotes": [
-      "Each human owns one faction; solo play substitutes scripted AI before control hand-offs.",
-      "Both players must reach the revelation before the shared ending starts."
+      "Playable co-op remains deferred; the control perspective is intentionally one synchronized solo slot.",
+      "Participant slots and ownership stay stable so a later co-op override can remove solo handoffs."
     ],
     "dependencies": [],
     "missingAssets": [
-      "Volcanic dream map dressing and crystal reveal camera shots",
-      "Dream battle unit and eruption spawn-set authoring"
+      "Final voice acting and finalized character names",
+      "Optional bespoke ash overlay and title-reveal art"
     ],
     "tests": [
-      "Complete the tutorial and crystal reveal in solo play",
-      "Verify co-op gating and skip-safe title reveal"
+      "Fresh full path and semantic tutorial completion",
+      "Round trip every checkpoint and active cinematic stage",
+      "Compare watched and skipped cinematic final state",
+      "Verify replay, difficulty, and one-time next-mission unlock behavior"
     ],
     "definitionOfDone": [
-      "A new player can finish the tutorial without developer facts",
-      "Victory, defeat, checkpoint resume, and cinematic skip produce deterministic state"
+      "The existing campaign launch path completes the prologue without developer mutations",
+      "Control switches, hazards, checkpoint state, replay state, and title finalization are deterministic",
+      "Cyclops & Sheep becomes available exactly once after an eligible victory"
     ],
     "implementationTodos": [
       {
-        "id": "author-scenario-contract",
-        "module": "scenario",
-        "description": "Author and validate the planned scenario references for Dreams."
+        "id": "replace-placeholder-character-names",
+        "module": "campaign-dialogue",
+        "description": "Replace stable captain labels only after narrative names receive final approval."
       },
       {
-        "id": "implement-mission-runtime",
-        "module": "campaign-runtime",
-        "description": "Replace scaffold facts with deterministic authored phase logic for Dreams."
-      },
-      {
-        "id": "finish-mission-presentation",
+        "id": "record-final-dream-voice",
         "module": "campaign-presentation",
-        "description": "Add final dialogue, cinematics, audio, and objective presentation for Dreams."
+        "description": "Attach final voice assets without changing deterministic dialogue or cinematic state."
       }
+    ]
+  },
+  "revisionMigrations": [
+    {
+      "fromRevision": 1,
+      "toRevision": 2
+    }
+  ],
+  "scenarioReferences": {
+    "actors": [
+      "skaduwee-dream-captain",
+      "skaduwee-dream-fighter",
+      "tivara-dream-captain",
+      "tivara-dream-fighter",
+      "tivara-opposition-captain"
+    ],
+    "points": [
+      "ash-fallback-point",
+      "battle-focus-point",
+      "eruption-point",
+      "skaduwee-battle-point",
+      "skaduwee-rally-point",
+      "tivara-battle-point",
+      "tivara-rally-point",
+      "volcano-focus-point"
+    ],
+    "regions": [
+      "battle-region",
+      "eruption-hazard-region",
+      "lava-hazard-region",
+      "skaduwee-command-region",
+      "tivara-command-region",
+      "volcano-hazard-region"
+    ],
+    "routes": [
+      "skaduwee-charge-route",
+      "tivara-charge-route"
+    ],
+    "groups": [
+      "skaduwee-rally-group",
+      "tivara-rally-group"
+    ],
+    "cameraShots": [
+      "ashes-title-shot",
+      "battle-focus-shot",
+      "dream-intro-shot",
+      "skaduwee-rally-shot",
+      "tivara-rally-shot",
+      "volcano-overwhelms-shot"
+    ],
+    "spawnSets": [
+      "dream-reinforcement-wave"
     ]
   }
 }

@@ -108,6 +108,18 @@ describe("campaign action runtime", () => {
 
     expect(actionContext.state.claimedRewardIds).toEqual(["secret-tome"]);
   });
+
+  it("persists authored control perspective changes in synchronized mission state", () => {
+    const actionContext = context(2);
+    const runner = new CampaignActionRunner(createCampaignActionExecutorRegistry());
+
+    runner.execute(
+      actionContext,
+      action("set-control-perspective", "control-skaduwee", { playerNumber: 3 })
+    );
+
+    expect(actionContext.state.activeControlPlayerNumber).toBe(3);
+  });
 });
 
 function action<TKind extends MissionActionDefinition["kind"]>(

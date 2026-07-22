@@ -296,6 +296,8 @@ export interface CampaignMissionRuntimeState {
   dialogueHistory: CampaignMissionDialogueHistoryEntry[];
   cinematics: Record<string, CampaignMissionCinematicRuntimeState>;
   activeCinematicId?: string;
+  /** Solo campaign perspective may move between authored participant players without changing account identity. */
+  activeControlPlayerNumber?: number;
   participantTeams: Record<string, number>;
   encounters: Record<string, CampaignMissionEncounterRuntimeState>;
   claimedTriggerIds: string[];

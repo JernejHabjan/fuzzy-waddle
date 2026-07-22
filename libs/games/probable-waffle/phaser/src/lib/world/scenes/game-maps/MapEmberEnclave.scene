@@ -1,398 +1,920 @@
 {
-    "id": "83b754e4-4d45-480d-923c-5b7fccee4e93",
-    "sceneType": "SCENE",
-    "settings": {
-        "compilerInsertSpaces": true,
-        "compilerTabSize": 2,
-        "snapEnabled": true,
-        "snapWidth": 32,
-        "exportClass": true,
-        "autoImport": true,
-        "superClassName": "GameProbableWaffleScene",
-        "preloadPackFiles": [],
-        "createMethodName": "editorCreate",
-        "sceneKey": "MapEmberEnclave",
-        "compilerOutputLanguage": "TYPE_SCRIPT",
-        "borderWidth": 1280,
-        "borderHeight": 720
+  "id": "83b754e4-4d45-480d-923c-5b7fccee4e93",
+  "sceneType": "SCENE",
+  "settings": {
+    "compilerInsertSpaces": true,
+    "compilerTabSize": 2,
+    "snapEnabled": true,
+    "snapWidth": 32,
+    "exportClass": true,
+    "autoImport": true,
+    "superClassName": "GameProbableWaffleScene",
+    "preloadPackFiles": [],
+    "createMethodName": "editorCreate",
+    "sceneKey": "MapEmberEnclave",
+    "compilerOutputLanguage": "TYPE_SCRIPT",
+    "borderWidth": 1280,
+    "borderHeight": 720
+  },
+  "displayList": [
+    {
+      "type": "TilemapLayer",
+      "id": "9cdf4f18-3323-43bf-b105-00fddbdbc7e6",
+      "label": "tilemap_level_1",
+      "tilemapId": "9cb0db04-e78b-4290-b950-d943f1631f3b",
+      "layerName": "TileMap_level_1",
+      "tilesets": [
+        "tiles",
+        "tiles_2"
+      ]
     },
-    "displayList": [
-        {
-            "type": "TilemapLayer",
-            "id": "9cdf4f18-3323-43bf-b105-00fddbdbc7e6",
-            "label": "tilemap_level_1",
-            "tilemapId": "9cb0db04-e78b-4290-b950-d943f1631f3b",
-            "layerName": "TileMap_level_1",
-            "tilesets": [
-                "tiles",
-                "tiles_2"
-            ]
-        },
-        {
-            "prefabId": "c91c72f2-a5b5-4fea-abde-27ebfc228ae5",
-            "id": "b9308898-4c1e-4969-8610-21207b1ffb79",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "spawn_2",
-            "components": [
-                "EditorOwner"
-            ],
-            "EditorOwner.owner_id": "3",
-            "x": -176,
-            "y": 1264
-        },
-        {
-            "prefabId": "c91c72f2-a5b5-4fea-abde-27ebfc228ae5",
-            "id": "1246bced-a902-4512-bfa9-9d101b0e53be",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "spawn_1",
-            "components": [
-                "EditorOwner"
-            ],
-            "EditorOwner.owner_id": "2",
-            "x": 464,
-            "y": 848
-        },
-        {
-            "prefabId": "c91c72f2-a5b5-4fea-abde-27ebfc228ae5",
-            "id": "8f62e5ec-f233-46f5-a38a-4ab83da26e02",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "spawn",
-            "components": [
-                "EditorOwner"
-            ],
-            "EditorOwner.owner_id": "1",
-            "x": -848,
-            "y": 576
-        },
-        {
-            "prefabId": "ec58b20e-e03e-4bd4-140e-156ffe433f29",
-            "id": "5f2a21e3-1bc1-4f9b-9aa8-f4f1c035ff36",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "blockObsidianLava5",
-            "x": -960,
-            "y": 800
-        },
-        {
-            "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f24",
-            "id": "d79386cf-ba61-42d8-8c8d-715db1cd97d7",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "bushDownwardsLarge",
-            "x": 32,
-            "y": 704
-        },
-        {
-            "prefabId": "ec58b20e-e03e-4bd4-140e-156ffe433f28",
-            "id": "10ef234e-96c6-4bd3-baf1-e49ab7c41f7e",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "blockObsidianLava4",
-            "x": 224,
-            "y": 544
-        },
-        {
-            "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f46",
-            "id": "a0dfb8e4-473a-46b0-85b6-d919fe2458f1",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "tree6",
-            "x": 0,
-            "y": 736
-        },
-        {
-            "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f27",
-            "id": "6c476ea2-631f-498b-8af5-d31c99b66da0",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "bushUpwardsLarge",
-            "x": -64,
-            "y": 768
-        },
-        {
-            "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f25",
-            "id": "d8349901-94f9-4008-8d8c-f8dc5d1f766b",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "bushDownwardsSmall",
-            "x": 64,
-            "y": 752
-        },
-        {
-            "prefabId": "ec58b20e-e03e-4bd4-140e-856ffe433f55",
-            "id": "16d280f1-366a-4065-8f04-61ef49129355",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "blockStoneWater4",
-            "x": 0,
-            "y": 816
-        },
-        {
-            "prefabId": "99a75a7c-60b5-4368-a9af-0f16ddb21bbc",
-            "id": "c65a1b78-d6b8-47e8-b765-9cc671e38a24",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "ankGuard",
-            "components": [
-                "EditorOwner"
-            ],
-            "EditorOwner.owner_id": "2",
-            "x": 704,
-            "y": 752
-        },
-        {
-            "prefabId": "562c6656-92bb-49f3-b9f3-cd63b0b72e68",
-            "id": "30204112-523e-4d1c-8953-5094f5d57fb8",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "sandhold",
-            "components": [
-                "EditorOwner"
-            ],
-            "EditorOwner.owner_id": "2",
-            "x": 480,
-            "y": 656
-        },
-        {
-            "prefabId": "562c6656-92bb-49f3-b9f3-cd63b0b72e68",
-            "id": "d62f8d92-119e-4967-9b17-818a760244be",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "sandhold_1",
-            "components": [
-                "EditorOwner"
-            ],
-            "EditorOwner.owner_id": "1",
-            "x": -576,
-            "y": 448
-        },
-        {
-            "prefabId": "b425696b-ec20-4f72-9aaf-a4f2aaf3e65b",
-            "id": "0ff3f098-08a2-4666-8763-c1afe79db6b5",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "temple",
-            "components": [
-                "EditorOwner"
-            ],
-            "EditorOwner.owner_id": "1",
-            "x": -1168,
-            "y": 688
-        },
-        {
-            "prefabId": "6c2cf0db-4461-4b32-b5d3-9882c5326e1b",
-            "id": "64572dc8-4d91-4fc7-8377-8faf3badd56c",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "tivaraSlingshotFemale",
-            "components": [
-                "EditorOwner"
-            ],
-            "EditorOwner.owner_id": "2",
-            "x": 672,
-            "y": 880
-        },
-        {
-            "prefabId": "004276d5-437a-44f5-b7ca-161086c4ad5e",
-            "id": "dc62e88e-34d7-4855-913d-3646dbc09c94",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "tivaraWorkerFemale",
-            "components": [
-                "EditorOwner"
-            ],
-            "EditorOwner.owner_id": "1",
-            "x": -992,
-            "y": 720
-        },
-        {
-            "prefabId": "edf32147-e546-4f6e-91ba-1720c6b75ac9",
-            "id": "a111638e-956b-4d8a-aa9a-23473ad399d6",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "tivaraWorkerMale",
-            "components": [
-                "EditorOwner"
-            ],
-            "EditorOwner.owner_id": "1",
-            "x": -576,
-            "y": 688
-        },
-        {
-            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f23",
-            "id": "f691c685-3bd9-4749-a260-d260f400e25f",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "workMill",
-            "components": [
-                "EditorOwner"
-            ],
-            "EditorOwner.owner_id": "1",
-            "x": -128,
-            "y": 736
-        },
-        {
-            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f23",
-            "id": "a870b52f-ae30-481a-a246-8f132deca998",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "workMill_1",
-            "components": [
-                "EditorOwner"
-            ],
-            "EditorOwner.owner_id": "2",
-            "x": 192,
-            "y": 704
-        },
-        {
-            "prefabId": "a07ac02b-e308-4dc3-94e7-722e0dd9a98c",
-            "id": "ee91f69b-8950-4608-8509-5caae0b5de76",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "skaduweeMagicianFemale",
-            "components": [
-                "EditorOwner"
-            ],
-            "EditorOwner.owner_id": "3",
-            "x": 48,
-            "y": 1328
-        },
-        {
-            "prefabId": "26b5870f-03c5-447e-8a4a-b1142f25ac1c",
-            "id": "1c6dcc57-107f-44e7-86c8-347d7dbbc939",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "skaduweeWorkerMale",
-            "components": [
-                "EditorOwner"
-            ],
-            "EditorOwner.owner_id": "3",
-            "x": -368,
-            "y": 1328
-        },
-        {
-            "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f23",
-            "id": "b2684970-131c-4a23-85b1-f61bc2abc2fb",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "workMill_2",
-            "components": [
-                "EditorOwner"
-            ],
-            "EditorOwner.owner_id": "3",
-            "x": -80,
-            "y": 864
-        },
-        {
-            "prefabId": "26690ab3-3a0b-47ef-a80a-de41a0f83a9e",
-            "id": "61115db3-7ed9-4fb7-9a95-53793ed2887d",
-            "unlock": [
-                "x",
-                "y",
-                "sfxType"
-            ],
-            "label": "lavaSfx",
-            "sfxType": "lava",
-            "x": -640,
-            "y": 656
-        },
-        {
-            "prefabId": "26690ab3-3a0b-47ef-a80a-de41a0f83a9e",
-            "id": "c3197d0c-c64e-4647-b819-da94f6ab5dae",
-            "unlock": [
-                "x",
-                "y",
-                "sfxType"
-            ],
-            "label": "lavaSfx_1",
-            "sfxType": "lava",
-            "x": -608,
-            "y": 912
-        },
-        {
-            "prefabId": "26690ab3-3a0b-47ef-a80a-de41a0f83a9e",
-            "id": "dcbe1f03-89ea-4a53-9320-e2230e161c8c",
-            "unlock": [
-                "x",
-                "y",
-                "sfxType"
-            ],
-            "label": "lavaSfx_2",
-            "sfxType": "lava",
-            "x": -1056,
-            "y": 816
-        }
-    ],
-    "plainObjects": [
-        {
-            "id": "9cb0db04-e78b-4290-b950-d943f1631f3b",
-            "type": "Tilemap",
-            "label": "tilemap",
-            "scope": "PUBLIC",
-            "key": "tiles_ember_enclave",
-            "tilesets": [
-                {
-                    "name": "tiles",
-                    "imageKey": "tiles_1"
-                },
-                {
-                    "name": "tiles_2",
-                    "imageKey": "tiles_2"
-                }
-            ]
-        }
-    ],
-    "meta": {
-        "app": "Phaser Editor - Scene Editor",
-        "url": "https://phaser.io/editor",
-        "contentType": "phasereditor2d.core.scene.SceneContentType",
-        "version": 5
+    {
+      "prefabId": "c91c72f2-a5b5-4fea-abde-27ebfc228ae5",
+      "id": "b9308898-4c1e-4969-8610-21207b1ffb79",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "spawn_2",
+      "components": [
+        "EditorOwner"
+      ],
+      "EditorOwner.owner_id": "3",
+      "x": -176,
+      "y": 1264
+    },
+    {
+      "prefabId": "c91c72f2-a5b5-4fea-abde-27ebfc228ae5",
+      "id": "1246bced-a902-4512-bfa9-9d101b0e53be",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "spawn_1",
+      "components": [
+        "EditorOwner"
+      ],
+      "EditorOwner.owner_id": "2",
+      "x": 464,
+      "y": 848
+    },
+    {
+      "prefabId": "c91c72f2-a5b5-4fea-abde-27ebfc228ae5",
+      "id": "8f62e5ec-f233-46f5-a38a-4ab83da26e02",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "spawn",
+      "components": [
+        "EditorOwner"
+      ],
+      "EditorOwner.owner_id": "1",
+      "x": -848,
+      "y": 576
+    },
+    {
+      "prefabId": "ec58b20e-e03e-4bd4-140e-156ffe433f29",
+      "id": "5f2a21e3-1bc1-4f9b-9aa8-f4f1c035ff36",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "blockObsidianLava5",
+      "x": -960,
+      "y": 800
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f24",
+      "id": "d79386cf-ba61-42d8-8c8d-715db1cd97d7",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "bushDownwardsLarge",
+      "x": 32,
+      "y": 704
+    },
+    {
+      "prefabId": "ec58b20e-e03e-4bd4-140e-156ffe433f28",
+      "id": "10ef234e-96c6-4bd3-baf1-e49ab7c41f7e",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "blockObsidianLava4",
+      "x": 224,
+      "y": 544
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856e1e433f46",
+      "id": "a0dfb8e4-473a-46b0-85b6-d919fe2458f1",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tree6",
+      "x": 0,
+      "y": 736
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f27",
+      "id": "6c476ea2-631f-498b-8af5-d31c99b66da0",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "bushUpwardsLarge",
+      "x": -64,
+      "y": 768
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd4-8401-856ffe433f25",
+      "id": "d8349901-94f9-4008-8d8c-f8dc5d1f766b",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "bushDownwardsSmall",
+      "x": 64,
+      "y": 752
+    },
+    {
+      "prefabId": "ec58b20e-e03e-4bd4-140e-856ffe433f55",
+      "id": "16d280f1-366a-4065-8f04-61ef49129355",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "blockStoneWater4",
+      "x": 0,
+      "y": 816
+    },
+    {
+      "prefabId": "99a75a7c-60b5-4368-a9af-0f16ddb21bbc",
+      "id": "c65a1b78-d6b8-47e8-b765-9cc671e38a24",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "ankGuard",
+      "components": [
+        "EditorOwner"
+      ],
+      "EditorOwner.owner_id": "2",
+      "x": 704,
+      "y": 752
+    },
+    {
+      "prefabId": "562c6656-92bb-49f3-b9f3-cd63b0b72e68",
+      "id": "30204112-523e-4d1c-8953-5094f5d57fb8",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "sandhold",
+      "components": [
+        "EditorOwner"
+      ],
+      "EditorOwner.owner_id": "2",
+      "x": 480,
+      "y": 656
+    },
+    {
+      "prefabId": "562c6656-92bb-49f3-b9f3-cd63b0b72e68",
+      "id": "d62f8d92-119e-4967-9b17-818a760244be",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "sandhold_1",
+      "components": [
+        "EditorOwner"
+      ],
+      "EditorOwner.owner_id": "1",
+      "x": -576,
+      "y": 448
+    },
+    {
+      "prefabId": "b425696b-ec20-4f72-9aaf-a4f2aaf3e65b",
+      "id": "0ff3f098-08a2-4666-8763-c1afe79db6b5",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "temple",
+      "components": [
+        "EditorOwner"
+      ],
+      "EditorOwner.owner_id": "1",
+      "x": -1168,
+      "y": 688
+    },
+    {
+      "prefabId": "6c2cf0db-4461-4b32-b5d3-9882c5326e1b",
+      "id": "64572dc8-4d91-4fc7-8377-8faf3badd56c",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tivaraSlingshotFemale",
+      "components": [
+        "EditorOwner",
+        "EditorScenarioReference"
+      ],
+      "EditorOwner.owner_id": "2",
+      "x": 672,
+      "y": 880,
+      "EditorScenarioReference.scenarioId": "tivara-opposition-captain",
+      "EditorScenarioReference.tags": "tivara-scripted-army,dream-captain"
+    },
+    {
+      "prefabId": "004276d5-437a-44f5-b7ca-161086c4ad5e",
+      "id": "dc62e88e-34d7-4855-913d-3646dbc09c94",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tivaraWorkerFemale",
+      "components": [
+        "EditorOwner",
+        "EditorScenarioReference"
+      ],
+      "EditorOwner.owner_id": "1",
+      "x": -992,
+      "y": 720,
+      "EditorScenarioReference.scenarioId": "tivara-dream-captain",
+      "EditorScenarioReference.tags": "tivara-dream-army,dream-captain"
+    },
+    {
+      "prefabId": "edf32147-e546-4f6e-91ba-1720c6b75ac9",
+      "id": "a111638e-956b-4d8a-aa9a-23473ad399d6",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "tivaraWorkerMale",
+      "components": [
+        "EditorOwner",
+        "EditorScenarioReference"
+      ],
+      "EditorOwner.owner_id": "1",
+      "x": -576,
+      "y": 688,
+      "EditorScenarioReference.scenarioId": "tivara-dream-fighter",
+      "EditorScenarioReference.tags": "tivara-dream-army"
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f23",
+      "id": "f691c685-3bd9-4749-a260-d260f400e25f",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "workMill",
+      "components": [
+        "EditorOwner"
+      ],
+      "EditorOwner.owner_id": "1",
+      "x": -128,
+      "y": 736
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f23",
+      "id": "a870b52f-ae30-481a-a246-8f132deca998",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "workMill_1",
+      "components": [
+        "EditorOwner"
+      ],
+      "EditorOwner.owner_id": "2",
+      "x": 192,
+      "y": 704
+    },
+    {
+      "prefabId": "a07ac02b-e308-4dc3-94e7-722e0dd9a98c",
+      "id": "ee91f69b-8950-4608-8509-5caae0b5de76",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "skaduweeMagicianFemale",
+      "components": [
+        "EditorOwner",
+        "EditorScenarioReference"
+      ],
+      "EditorOwner.owner_id": "3",
+      "x": 48,
+      "y": 1328,
+      "EditorScenarioReference.scenarioId": "skaduwee-dream-captain",
+      "EditorScenarioReference.tags": "skaduwee-dream-army,dream-captain"
+    },
+    {
+      "prefabId": "26b5870f-03c5-447e-8a4a-b1142f25ac1c",
+      "id": "1c6dcc57-107f-44e7-86c8-347d7dbbc939",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "skaduweeWorkerMale",
+      "components": [
+        "EditorOwner",
+        "EditorScenarioReference"
+      ],
+      "EditorOwner.owner_id": "3",
+      "x": -368,
+      "y": 1328,
+      "EditorScenarioReference.scenarioId": "skaduwee-dream-fighter",
+      "EditorScenarioReference.tags": "skaduwee-dream-army"
+    },
+    {
+      "prefabId": "ec58b20e-e04f-4bd3-840e-856ffe433f23",
+      "id": "b2684970-131c-4a23-85b1-f61bc2abc2fb",
+      "unlock": [
+        "x",
+        "y"
+      ],
+      "label": "workMill_2",
+      "components": [
+        "EditorOwner"
+      ],
+      "EditorOwner.owner_id": "3",
+      "x": -80,
+      "y": 864
+    },
+    {
+      "prefabId": "26690ab3-3a0b-47ef-a80a-de41a0f83a9e",
+      "id": "61115db3-7ed9-4fb7-9a95-53793ed2887d",
+      "unlock": [
+        "x",
+        "y",
+        "sfxType"
+      ],
+      "label": "lavaSfx",
+      "sfxType": "lava",
+      "x": -640,
+      "y": 656
+    },
+    {
+      "prefabId": "26690ab3-3a0b-47ef-a80a-de41a0f83a9e",
+      "id": "c3197d0c-c64e-4647-b819-da94f6ab5dae",
+      "unlock": [
+        "x",
+        "y",
+        "sfxType"
+      ],
+      "label": "lavaSfx_1",
+      "sfxType": "lava",
+      "x": -608,
+      "y": 912
+    },
+    {
+      "prefabId": "26690ab3-3a0b-47ef-a80a-de41a0f83a9e",
+      "id": "dcbe1f03-89ea-4a53-9320-e2230e161c8c",
+      "unlock": [
+        "x",
+        "y",
+        "sfxType"
+      ],
+      "label": "lavaSfx_2",
+      "sfxType": "lava",
+      "x": -1056,
+      "y": 816
+    },
+    {
+      "prefabId": "d1000000-0000-4000-8000-000000000001",
+      "id": "71500000-0000-4000-8000-000000000001",
+      "unlock": [
+        "x",
+        "y",
+        "scenarioId",
+        "z"
+      ],
+      "label": "tivaraRallyPoint",
+      "scenarioId": "tivara-rally-point",
+      "x": -992,
+      "y": 720,
+      "z": 0
+    },
+    {
+      "prefabId": "d1000000-0000-4000-8000-000000000001",
+      "id": "71500000-0000-4000-8000-000000000002",
+      "unlock": [
+        "x",
+        "y",
+        "scenarioId",
+        "z"
+      ],
+      "label": "tivaraBattlePoint",
+      "scenarioId": "tivara-battle-point",
+      "x": -352,
+      "y": 800,
+      "z": 0
+    },
+    {
+      "prefabId": "d1000000-0000-4000-8000-000000000001",
+      "id": "71500000-0000-4000-8000-000000000003",
+      "unlock": [
+        "x",
+        "y",
+        "scenarioId",
+        "z"
+      ],
+      "label": "skaduweeRallyPoint",
+      "scenarioId": "skaduwee-rally-point",
+      "x": -176,
+      "y": 1264,
+      "z": 0
+    },
+    {
+      "prefabId": "d1000000-0000-4000-8000-000000000001",
+      "id": "71500000-0000-4000-8000-000000000004",
+      "unlock": [
+        "x",
+        "y",
+        "scenarioId",
+        "z"
+      ],
+      "label": "skaduweeBattlePoint",
+      "scenarioId": "skaduwee-battle-point",
+      "x": -96,
+      "y": 896,
+      "z": 0
+    },
+    {
+      "prefabId": "d1000000-0000-4000-8000-000000000001",
+      "id": "71500000-0000-4000-8000-000000000005",
+      "unlock": [
+        "x",
+        "y",
+        "scenarioId",
+        "z"
+      ],
+      "label": "battleFocusPoint",
+      "scenarioId": "battle-focus-point",
+      "x": -160,
+      "y": 816,
+      "z": 0
+    },
+    {
+      "prefabId": "d1000000-0000-4000-8000-000000000001",
+      "id": "71500000-0000-4000-8000-000000000006",
+      "unlock": [
+        "x",
+        "y",
+        "scenarioId",
+        "z"
+      ],
+      "label": "volcanoFocusPoint",
+      "scenarioId": "volcano-focus-point",
+      "x": -640,
+      "y": 656,
+      "z": 0
+    },
+    {
+      "prefabId": "d1000000-0000-4000-8000-000000000001",
+      "id": "71500000-0000-4000-8000-000000000007",
+      "unlock": [
+        "x",
+        "y",
+        "scenarioId",
+        "z"
+      ],
+      "label": "ashFallbackPoint",
+      "scenarioId": "ash-fallback-point",
+      "x": -512,
+      "y": 768,
+      "z": 0
+    },
+    {
+      "prefabId": "d1000000-0000-4000-8000-000000000001",
+      "id": "71500000-0000-4000-8000-000000000008",
+      "unlock": [
+        "x",
+        "y",
+        "scenarioId",
+        "z"
+      ],
+      "label": "eruptionPoint",
+      "scenarioId": "eruption-point",
+      "x": -448,
+      "y": 736,
+      "z": 0
+    },
+    {
+      "prefabId": "d1000000-0000-4000-8000-000000000002",
+      "id": "71500000-0000-4000-8000-000000000009",
+      "unlock": [
+        "x",
+        "y",
+        "scenarioId",
+        "width",
+        "height",
+        "shape",
+        "polygonPoints",
+        "elevationPolicy",
+        "elevation",
+        "minimumElevation",
+        "maximumElevation"
+      ],
+      "label": "tivaraCommandRegion",
+      "scenarioId": "tivara-command-region",
+      "x": -1056,
+      "y": 640,
+      "width": 320,
+      "height": 256,
+      "shape": "rectangle",
+      "polygonPoints": "",
+      "elevationPolicy": "any",
+      "elevation": 0,
+      "minimumElevation": 0,
+      "maximumElevation": 0
+    },
+    {
+      "prefabId": "d1000000-0000-4000-8000-000000000002",
+      "id": "71500000-0000-4000-8000-000000000010",
+      "unlock": [
+        "x",
+        "y",
+        "scenarioId",
+        "width",
+        "height",
+        "shape",
+        "polygonPoints",
+        "elevationPolicy",
+        "elevation",
+        "minimumElevation",
+        "maximumElevation"
+      ],
+      "label": "skaduweeCommandRegion",
+      "scenarioId": "skaduwee-command-region",
+      "x": -352,
+      "y": 1120,
+      "width": 384,
+      "height": 320,
+      "shape": "rectangle",
+      "polygonPoints": "",
+      "elevationPolicy": "any",
+      "elevation": 0,
+      "minimumElevation": 0,
+      "maximumElevation": 0
+    },
+    {
+      "prefabId": "d1000000-0000-4000-8000-000000000002",
+      "id": "71500000-0000-4000-8000-000000000011",
+      "unlock": [
+        "x",
+        "y",
+        "scenarioId",
+        "width",
+        "height",
+        "shape",
+        "polygonPoints",
+        "elevationPolicy",
+        "elevation",
+        "minimumElevation",
+        "maximumElevation"
+      ],
+      "label": "battleRegion",
+      "scenarioId": "battle-region",
+      "x": -416,
+      "y": 704,
+      "width": 640,
+      "height": 352,
+      "shape": "rectangle",
+      "polygonPoints": "",
+      "elevationPolicy": "any",
+      "elevation": 0,
+      "minimumElevation": 0,
+      "maximumElevation": 0
+    },
+    {
+      "prefabId": "d1000000-0000-4000-8000-000000000002",
+      "id": "71500000-0000-4000-8000-000000000012",
+      "unlock": [
+        "x",
+        "y",
+        "scenarioId",
+        "width",
+        "height",
+        "shape",
+        "polygonPoints",
+        "elevationPolicy",
+        "elevation",
+        "minimumElevation",
+        "maximumElevation"
+      ],
+      "label": "eruptionHazardRegion",
+      "scenarioId": "eruption-hazard-region",
+      "x": -576,
+      "y": 576,
+      "width": 320,
+      "height": 320,
+      "shape": "rectangle",
+      "polygonPoints": "",
+      "elevationPolicy": "any",
+      "elevation": 0,
+      "minimumElevation": 0,
+      "maximumElevation": 0
+    },
+    {
+      "prefabId": "d1000000-0000-4000-8000-000000000002",
+      "id": "71500000-0000-4000-8000-000000000013",
+      "unlock": [
+        "x",
+        "y",
+        "scenarioId",
+        "width",
+        "height",
+        "shape",
+        "polygonPoints",
+        "elevationPolicy",
+        "elevation",
+        "minimumElevation",
+        "maximumElevation"
+      ],
+      "label": "lavaHazardRegion",
+      "scenarioId": "lava-hazard-region",
+      "x": -1120,
+      "y": 704,
+      "width": 576,
+      "height": 320,
+      "shape": "rectangle",
+      "polygonPoints": "",
+      "elevationPolicy": "any",
+      "elevation": 0,
+      "minimumElevation": 0,
+      "maximumElevation": 0
+    },
+    {
+      "prefabId": "d1000000-0000-4000-8000-000000000002",
+      "id": "71500000-0000-4000-8000-000000000014",
+      "unlock": [
+        "x",
+        "y",
+        "scenarioId",
+        "width",
+        "height",
+        "shape",
+        "polygonPoints",
+        "elevationPolicy",
+        "elevation",
+        "minimumElevation",
+        "maximumElevation"
+      ],
+      "label": "volcanoHazardRegion",
+      "scenarioId": "volcano-hazard-region",
+      "x": -960,
+      "y": 480,
+      "width": 1024,
+      "height": 704,
+      "shape": "rectangle",
+      "polygonPoints": "",
+      "elevationPolicy": "any",
+      "elevation": 0,
+      "minimumElevation": 0,
+      "maximumElevation": 0
+    },
+    {
+      "prefabId": "d1000000-0000-4000-8000-000000000003",
+      "id": "71500000-0000-4000-8000-000000000015",
+      "unlock": [
+        "x",
+        "y",
+        "scenarioId",
+        "pointIds",
+        "loop",
+        "facingAngles"
+      ],
+      "label": "tivaraChargeRoute",
+      "scenarioId": "tivara-charge-route",
+      "x": -672,
+      "y": 736,
+      "pointIds": "tivara-rally-point,tivara-battle-point",
+      "loop": false,
+      "facingAngles": "0,0"
+    },
+    {
+      "prefabId": "d1000000-0000-4000-8000-000000000003",
+      "id": "71500000-0000-4000-8000-000000000016",
+      "unlock": [
+        "x",
+        "y",
+        "scenarioId",
+        "pointIds",
+        "loop",
+        "facingAngles"
+      ],
+      "label": "skaduweeChargeRoute",
+      "scenarioId": "skaduwee-charge-route",
+      "x": -128,
+      "y": 1088,
+      "pointIds": "skaduwee-rally-point,skaduwee-battle-point",
+      "loop": false,
+      "facingAngles": "0,0"
+    },
+    {
+      "prefabId": "d1000000-0000-4000-8000-000000000004",
+      "id": "71500000-0000-4000-8000-000000000017",
+      "unlock": [
+        "x",
+        "y",
+        "scenarioId",
+        "memberActorIds",
+        "requiredTags"
+      ],
+      "label": "tivaraRallyGroup",
+      "scenarioId": "tivara-rally-group",
+      "x": -896,
+      "y": 672,
+      "memberActorIds": "tivara-dream-captain,tivara-dream-fighter",
+      "requiredTags": "tivara-dream-army"
+    },
+    {
+      "prefabId": "d1000000-0000-4000-8000-000000000004",
+      "id": "71500000-0000-4000-8000-000000000018",
+      "unlock": [
+        "x",
+        "y",
+        "scenarioId",
+        "memberActorIds",
+        "requiredTags"
+      ],
+      "label": "skaduweeRallyGroup",
+      "scenarioId": "skaduwee-rally-group",
+      "x": -240,
+      "y": 1216,
+      "memberActorIds": "skaduwee-dream-captain,skaduwee-dream-fighter",
+      "requiredTags": "skaduwee-dream-army"
+    },
+    {
+      "prefabId": "d1000000-0000-4000-8000-000000000005",
+      "id": "71500000-0000-4000-8000-000000000019",
+      "unlock": [
+        "x",
+        "y",
+        "scenarioId",
+        "z",
+        "zoom",
+        "durationTicks",
+        "letterbox"
+      ],
+      "label": "dreamIntroShot",
+      "scenarioId": "dream-intro-shot",
+      "x": -512,
+      "y": 768,
+      "z": 0,
+      "zoom": 0.75,
+      "durationTicks": 90,
+      "letterbox": true
+    },
+    {
+      "prefabId": "d1000000-0000-4000-8000-000000000005",
+      "id": "71500000-0000-4000-8000-000000000020",
+      "unlock": [
+        "x",
+        "y",
+        "scenarioId",
+        "z",
+        "zoom",
+        "durationTicks",
+        "letterbox"
+      ],
+      "label": "tivaraRallyShot",
+      "scenarioId": "tivara-rally-shot",
+      "x": -896,
+      "y": 704,
+      "z": 0,
+      "zoom": 1,
+      "durationTicks": 60,
+      "letterbox": false
+    },
+    {
+      "prefabId": "d1000000-0000-4000-8000-000000000005",
+      "id": "71500000-0000-4000-8000-000000000021",
+      "unlock": [
+        "x",
+        "y",
+        "scenarioId",
+        "z",
+        "zoom",
+        "durationTicks",
+        "letterbox"
+      ],
+      "label": "skaduweeRallyShot",
+      "scenarioId": "skaduwee-rally-shot",
+      "x": -176,
+      "y": 1216,
+      "z": 0,
+      "zoom": 1,
+      "durationTicks": 60,
+      "letterbox": false
+    },
+    {
+      "prefabId": "d1000000-0000-4000-8000-000000000005",
+      "id": "71500000-0000-4000-8000-000000000022",
+      "unlock": [
+        "x",
+        "y",
+        "scenarioId",
+        "z",
+        "zoom",
+        "durationTicks",
+        "letterbox"
+      ],
+      "label": "battleFocusShot",
+      "scenarioId": "battle-focus-shot",
+      "x": -160,
+      "y": 816,
+      "z": 0,
+      "zoom": 0.8,
+      "durationTicks": 90,
+      "letterbox": true
+    },
+    {
+      "prefabId": "d1000000-0000-4000-8000-000000000005",
+      "id": "71500000-0000-4000-8000-000000000023",
+      "unlock": [
+        "x",
+        "y",
+        "scenarioId",
+        "z",
+        "zoom",
+        "durationTicks",
+        "letterbox"
+      ],
+      "label": "volcanoOverwhelmsShot",
+      "scenarioId": "volcano-overwhelms-shot",
+      "x": -640,
+      "y": 656,
+      "z": 0,
+      "zoom": 0.7,
+      "durationTicks": 90,
+      "letterbox": true
+    },
+    {
+      "prefabId": "d1000000-0000-4000-8000-000000000005",
+      "id": "71500000-0000-4000-8000-000000000024",
+      "unlock": [
+        "x",
+        "y",
+        "scenarioId",
+        "z",
+        "zoom",
+        "durationTicks",
+        "letterbox"
+      ],
+      "label": "ashesTitleShot",
+      "scenarioId": "ashes-title-shot",
+      "x": -512,
+      "y": 768,
+      "z": 0,
+      "zoom": 0.6,
+      "durationTicks": 120,
+      "letterbox": true
+    },
+    {
+      "prefabId": "d1000000-0000-4000-8000-000000000006",
+      "id": "71500000-0000-4000-8000-000000000025",
+      "unlock": [
+        "x",
+        "y",
+        "scenarioId",
+        "pointIds"
+      ],
+      "label": "dreamReinforcementWave",
+      "scenarioId": "dream-reinforcement-wave",
+      "x": -448,
+      "y": 736,
+      "pointIds": "eruption-point,battle-focus-point"
     }
+  ],
+  "plainObjects": [
+    {
+      "id": "9cb0db04-e78b-4290-b950-d943f1631f3b",
+      "type": "Tilemap",
+      "label": "tilemap",
+      "scope": "PUBLIC",
+      "key": "tiles_ember_enclave",
+      "tilesets": [
+        {
+          "name": "tiles",
+          "imageKey": "tiles_1"
+        },
+        {
+          "name": "tiles_2",
+          "imageKey": "tiles_2"
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "app": "Phaser Editor - Scene Editor",
+    "url": "https://phaser.io/editor",
+    "contentType": "phasereditor2d.core.scene.SceneContentType",
+    "version": 5
+  }
 }
