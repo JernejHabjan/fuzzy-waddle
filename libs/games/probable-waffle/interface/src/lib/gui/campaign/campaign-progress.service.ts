@@ -69,5 +69,4 @@ export class CampaignProgressService implements CampaignProgressServiceInterface
       return { mission, state: unlocked ? "available" : "locked" };
     });
   }
-
 }

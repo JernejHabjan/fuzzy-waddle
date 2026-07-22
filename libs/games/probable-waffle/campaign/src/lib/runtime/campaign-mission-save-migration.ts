@@ -13,7 +13,8 @@ export function migrateCampaignMissionRevision(
     if (visited.has(state.missionRevision)) return undefined;
     visited.add(state.missionRevision);
     const migration = migrations.find((candidate) => candidate.fromRevision === state.missionRevision);
-    if (!migration || migration.toRevision <= migration.fromRevision || migration.toRevision > targetRevision) return undefined;
+    if (!migration || migration.toRevision <= migration.fromRevision || migration.toRevision > targetRevision)
+      return undefined;
     state = {
       ...state,
       missionRevision: migration.toRevision,
@@ -32,6 +33,9 @@ function renameList(values: readonly string[], renames?: Readonly<Record<string,
   return values.map((value) => renames?.[value] ?? value);
 }
 
-function renameRecord<T>(values: Readonly<Record<string, T>>, renames?: Readonly<Record<string, string>>): Record<string, T> {
+function renameRecord<T>(
+  values: Readonly<Record<string, T>>,
+  renames?: Readonly<Record<string, string>>
+): Record<string, T> {
   return Object.fromEntries(Object.entries(values).map(([key, value]) => [renames?.[key] ?? key, value]));
 }

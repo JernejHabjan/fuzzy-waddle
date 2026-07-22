@@ -182,7 +182,10 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
               await this.saveGameInstance(payload.data);
               break;
             case "save-game-rejected":
-              this.toastService.showWarning("Save unavailable", payload.data?.reason ?? "The mission cannot be saved yet.");
+              this.toastService.showWarning(
+                "Save unavailable",
+                payload.data?.reason ?? "The mission cannot be saved yet."
+              );
               break;
             case "campaign-restore-failed":
               this.toastService.showWarning(
@@ -821,10 +824,10 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
             campaign.progressionSnapshot?.baseProfileRevision ??
             0,
           selectedLoadoutIds: [...(campaign.selectedLoadoutIds ?? [])],
-            loadoutSnapshotHash: campaign.loadoutSnapshotHash ?? "",
-            ...(data.checkpointId ? { checkpointId: data.checkpointId } : {}),
-            participantCount: Math.max(1, gameInstanceData.players?.length ?? 1),
-            participantProgressionSnapshots: structuredClone(campaign.participantProgressionSnapshots ?? [])
+          loadoutSnapshotHash: campaign.loadoutSnapshotHash ?? "",
+          ...(data.checkpointId ? { checkpointId: data.checkpointId } : {}),
+          participantCount: Math.max(1, gameInstanceData.players?.length ?? 1),
+          participantProgressionSnapshots: structuredClone(campaign.participantProgressionSnapshots ?? [])
         }
       });
       return;

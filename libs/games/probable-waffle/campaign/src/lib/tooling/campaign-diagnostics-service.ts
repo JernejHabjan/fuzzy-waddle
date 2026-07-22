@@ -44,7 +44,10 @@ export interface CampaignDiagnosticsSnapshot {
   readonly phases: {
     readonly active: readonly string[];
     readonly completed: readonly string[];
-    readonly graph: { readonly nodes: readonly CampaignDiagnosticsGraphNode[]; readonly edges: readonly CampaignDiagnosticsGraphEdge[] };
+    readonly graph: {
+      readonly nodes: readonly CampaignDiagnosticsGraphNode[];
+      readonly edges: readonly CampaignDiagnosticsGraphEdge[];
+    };
   };
   readonly objectives: CampaignMissionRuntimeState["objectives"];
   readonly facts: CampaignMissionRuntimeState["facts"];
@@ -176,9 +179,7 @@ export function campaignProductionInvariantReport(
     missionRevision: state.missionRevision,
     status: state.status,
     activePhaseIds: [...state.activePhaseIds],
-    objectives: Object.fromEntries(
-      Object.entries(state.objectives).map(([id, objective]) => [id, objective.status])
-    ),
+    objectives: Object.fromEntries(Object.entries(state.objectives).map(([id, objective]) => [id, objective.status])),
     facts: { ...state.facts },
     counters: { ...state.counters },
     seed
@@ -238,16 +239,19 @@ function validateDeveloperCommand(
         ? undefined
         : `Encounter '${command.encounterId}' is not defined`;
     case "discover-reward":
-      return definitions.rewardIds?.includes(command.rewardId) ? undefined : `Reward '${command.rewardId}' is not defined`;
+      return definitions.rewardIds?.includes(command.rewardId)
+        ? undefined
+        : `Reward '${command.rewardId}' is not defined`;
     case "revive-hero":
       return content.scenarioReferences?.actors?.some((actorId) => actorId === command.actorId)
         ? undefined
         : `Actor '${command.actorId}' is not defined`;
-    case "request-outcome":
     case "focus-actor":
       return content.scenarioReferences?.actors?.some((actorId) => actorId === command.actorId)
         ? undefined
         : `Actor '${command.actorId}' is not defined`;
+    case "request-outcome":
+      return undefined;
     case "highlight-region":
       return content.scenarioReferences?.regions?.some((regionId) => regionId === command.regionId)
         ? undefined

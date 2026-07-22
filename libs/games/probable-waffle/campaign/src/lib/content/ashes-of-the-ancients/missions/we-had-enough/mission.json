@@ -4,19 +4,14 @@
   "chapterId": "two-homelands",
   "revision": 1,
   "mapId": 3,
-  "prerequisites": [
-    "sand-dunes-and-tivara-crystal"
-  ],
+  "prerequisites": ["sand-dunes-and-tivara-crystal"],
   "catalogue": {
     "order": 5,
     "title": "We Had Enough",
     "faction": "switching",
     "environment": "Borderlands",
     "briefing": "The two journeys collide at last.",
-    "objectiveSummaries": [
-      "Meet both forces",
-      "Survive the confrontation"
-    ]
+    "objectiveSummaries": ["Meet both forces", "Survive the confrontation"]
   },
   "participants": [
     {
@@ -46,9 +41,7 @@
     "loadoutSlotCount": 1
   },
   "initialState": {
-    "activePhaseIds": [
-      "opening"
-    ],
+    "activePhaseIds": ["opening"],
     "facts": [
       {
         "id": "mission-complete",
@@ -98,9 +91,7 @@
       "transitions": [
         {
           "id": "begin-operation",
-          "targetPhaseIds": [
-            "operation"
-          ],
+          "targetPhaseIds": ["operation"],
           "condition": {
             "kind": "always"
           },
@@ -281,21 +272,10 @@
       }
     ],
     "plannedScenarioReferences": {
-      "actors": [
-        "tivara-shipyard",
-        "skaduwee-shipyard",
-        "evacuation-ship"
-      ],
-      "regions": [
-        "tivara-shore",
-        "skaduwee-shore"
-      ],
-      "routes": [
-        "evacuation-route"
-      ],
-      "spawnSets": [
-        "shore-assault"
-      ]
+      "actors": ["tivara-shipyard", "skaduwee-shipyard", "evacuation-ship"],
+      "regions": ["tivara-shore", "skaduwee-shore"],
+      "routes": ["evacuation-route"],
+      "spawnSets": ["shore-assault"]
     },
     "mechanics": [
       "Sequential faction-control chapters",
@@ -307,14 +287,8 @@
       "Departure waits for both fleets while preserving independent profile rewards."
     ],
     "dependencies": [],
-    "missingAssets": [
-      "Faction shipyard and evacuation ship assets",
-      "Dual-shore assault and launch presentation"
-    ],
-    "tests": [
-      "Complete each solo control hand-off",
-      "Launch both co-op fleets without cross-profile ownership leaks"
-    ],
+    "missingAssets": ["Faction shipyard and evacuation ship assets", "Dual-shore assault and launch presentation"],
+    "tests": ["Complete each solo control hand-off", "Launch both co-op fleets without cross-profile ownership leaks"],
     "definitionOfDone": [
       "Solo and co-op preserve the same narrative order",
       "Every required civilian is accounted for at victory"

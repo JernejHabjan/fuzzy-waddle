@@ -4,19 +4,14 @@
   "chapterId": "united-against-volcano",
   "revision": 1,
   "mapId": 3,
-  "prerequisites": [
-    "mobster-or-friend"
-  ],
+  "prerequisites": ["mobster-or-friend"],
   "catalogue": {
     "order": 1,
     "title": "The Volcano Is Getting Angry",
     "faction": "both",
     "environment": "Fire mountain",
     "briefing": "The mountain begins to answer the crystal's call.",
-    "objectiveSummaries": [
-      "Evacuate the valley",
-      "Contain the eruption"
-    ]
+    "objectiveSummaries": ["Evacuate the valley", "Contain the eruption"]
   },
   "participants": [
     {
@@ -46,9 +41,7 @@
     "loadoutSlotCount": 1
   },
   "initialState": {
-    "activePhaseIds": [
-      "opening"
-    ],
+    "activePhaseIds": ["opening"],
     "facts": [
       {
         "id": "mission-complete",
@@ -98,9 +91,7 @@
       "transitions": [
         {
           "id": "begin-operation",
-          "targetPhaseIds": [
-            "operation"
-          ],
+          "targetPhaseIds": ["operation"],
           "condition": {
             "kind": "always"
           },
@@ -281,21 +272,10 @@
       }
     ],
     "plannedScenarioReferences": {
-      "actors": [
-        "crystal-temple-core",
-        "fire-wind-anchor"
-      ],
-      "regions": [
-        "earthquake-zone",
-        "lava-break",
-        "temple-interior"
-      ],
-      "routes": [
-        "investigation-route"
-      ],
-      "spawnSets": [
-        "fire-elemental-wave"
-      ]
+      "actors": ["crystal-temple-core", "fire-wind-anchor"],
+      "regions": ["earthquake-zone", "lava-break", "temple-interior"],
+      "routes": ["investigation-route"],
+      "spawnSets": ["fire-elemental-wave"]
     },
     "mechanics": [
       "Earthquake, lava, and spreading-fire hazards",
@@ -307,14 +287,8 @@
       "Temple interaction locks prevent simultaneous double activation."
     ],
     "dependencies": [],
-    "missingAssets": [
-      "Dynamic volcano hazard presentation",
-      "Crystal temple puzzles and fire-wind effects"
-    ],
-    "tests": [
-      "Evacuate through each hazard pattern",
-      "Solve the temple and survive all fire-wind directions"
-    ],
+    "missingAssets": ["Dynamic volcano hazard presentation", "Crystal temple puzzles and fire-wind effects"],
+    "tests": ["Evacuate through each hazard pattern", "Solve the temple and survive all fire-wind directions"],
     "definitionOfDone": [
       "Hazards never invalidate the only required route",
       "Puzzle and wind state restore correctly from checkpoint"

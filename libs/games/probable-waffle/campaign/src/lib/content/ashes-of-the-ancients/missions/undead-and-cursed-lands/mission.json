@@ -4,19 +4,14 @@
   "chapterId": "the-betrayal",
   "revision": 1,
   "mapId": 3,
-  "prerequisites": [
-    "the-betrayal"
-  ],
+  "prerequisites": ["the-betrayal"],
   "catalogue": {
     "order": 1,
     "title": "Undead & Cursed Lands",
     "faction": "both",
     "environment": "Cursed lands",
     "briefing": "The dead rise where the crystal has scarred the earth.",
-    "objectiveSummaries": [
-      "Cross the cursed lands",
-      "Cleanse the corruption"
-    ]
+    "objectiveSummaries": ["Cross the cursed lands", "Cleanse the corruption"]
   },
   "participants": [
     {
@@ -46,9 +41,7 @@
     "loadoutSlotCount": 1
   },
   "initialState": {
-    "activePhaseIds": [
-      "opening"
-    ],
+    "activePhaseIds": ["opening"],
     "facts": [
       {
         "id": "mission-complete",
@@ -98,9 +91,7 @@
       "transitions": [
         {
           "id": "begin-operation",
-          "targetPhaseIds": [
-            "operation"
-          ],
+          "targetPhaseIds": ["operation"],
           "condition": {
             "kind": "always"
           },
@@ -281,23 +272,10 @@
       }
     ],
     "plannedScenarioReferences": {
-      "actors": [
-        "medusa-ally",
-        "vampire-ally",
-        "healer-trainer",
-        "undead-lord"
-      ],
-      "regions": [
-        "cursed-farms",
-        "lava-scar",
-        "undead-stronghold"
-      ],
-      "routes": [
-        "cleansing-route"
-      ],
-      "spawnSets": [
-        "undead-wave"
-      ]
+      "actors": ["medusa-ally", "vampire-ally", "healer-trainer", "undead-lord"],
+      "regions": ["cursed-farms", "lava-scar", "undead-stronghold"],
+      "routes": ["cleansing-route"],
+      "spawnSets": ["undead-wave"]
     },
     "mechanics": [
       "Settlement rebuilding and crop cleansing",

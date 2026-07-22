@@ -4,19 +4,14 @@
   "chapterId": "two-homelands",
   "revision": 1,
   "mapId": 3,
-  "prerequisites": [
-    "owl-and-skaduwee-crystal"
-  ],
+  "prerequisites": ["owl-and-skaduwee-crystal"],
   "catalogue": {
     "order": 4,
     "title": "Sand Dunes & Tivara Crystal",
     "faction": "tivara",
     "environment": "Tivara dunes",
     "briefing": "Tivara's crystal is buried under shifting sand and old resentment.",
-    "objectiveSummaries": [
-      "Cross the dunes",
-      "Claim the crystal"
-    ]
+    "objectiveSummaries": ["Cross the dunes", "Claim the crystal"]
   },
   "participants": [
     {
@@ -35,9 +30,7 @@
     "loadoutSlotCount": 1
   },
   "initialState": {
-    "activePhaseIds": [
-      "opening"
-    ],
+    "activePhaseIds": ["opening"],
     "facts": [
       {
         "id": "mission-complete",
@@ -87,9 +80,7 @@
       "transitions": [
         {
           "id": "begin-operation",
-          "targetPhaseIds": [
-            "operation"
-          ],
+          "targetPhaseIds": ["operation"],
           "condition": {
             "kind": "always"
           },
@@ -270,22 +261,10 @@
       }
     ],
     "plannedScenarioReferences": {
-      "actors": [
-        "sand-worm",
-        "temple-minotaur",
-        "tivara-crystal"
-      ],
-      "regions": [
-        "worm-danger-zone",
-        "temple-puzzle-room",
-        "collapse-corridor"
-      ],
-      "routes": [
-        "temple-escape-route"
-      ],
-      "spawnSets": [
-        "mummy-awakening"
-      ]
+      "actors": ["sand-worm", "temple-minotaur", "tivara-crystal"],
+      "regions": ["worm-danger-zone", "temple-puzzle-room", "collapse-corridor"],
+      "routes": ["temple-escape-route"],
+      "spawnSets": ["mummy-awakening"]
     },
     "mechanics": [
       "Telegraphed sand-worm hazard zones",
@@ -306,10 +285,7 @@
       "Sand-worm warnings and buried temple environment",
       "Puzzle props, mummy waves, and Minotaur portal effects"
     ],
-    "tests": [
-      "Cross every worm zone using visible warnings",
-      "Solve, fail, retry, and resume the temple escape"
-    ],
+    "tests": ["Cross every worm zone using visible warnings", "Solve, fail, retry, and resume the temple escape"],
     "definitionOfDone": [
       "No worm strike occurs without a readable warning",
       "All party members leave the collapsing temple deterministically"

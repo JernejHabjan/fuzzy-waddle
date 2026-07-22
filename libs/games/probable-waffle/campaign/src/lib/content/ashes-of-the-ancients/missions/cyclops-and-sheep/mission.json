@@ -1096,9 +1096,7 @@
               }
             ]
           },
-          "actions": [
-            { "id": "reset-lost-tusks", "kind": "set-mission-item", "itemId": "boar-tusk", "amount": 2 }
-          ],
+          "actions": [{ "id": "reset-lost-tusks", "kind": "set-mission-item", "itemId": "boar-tusk", "amount": 2 }],
           "firing": { "kind": "repeatable", "cooldownTicks": 30 },
           "priority": 65
         },
@@ -1118,9 +1116,7 @@
               }
             ]
           },
-          "actions": [
-            { "id": "reset-lost-scissors", "kind": "set-mission-item", "itemId": "shears", "amount": 1 }
-          ],
+          "actions": [{ "id": "reset-lost-scissors", "kind": "set-mission-item", "itemId": "shears", "amount": 1 }],
           "firing": { "kind": "repeatable", "cooldownTicks": 30 },
           "priority": 65
         },
@@ -1140,9 +1136,7 @@
               }
             ]
           },
-          "actions": [
-            { "id": "reset-lost-wool", "kind": "set-mission-item", "itemId": "sheep-wool", "amount": 3 }
-          ],
+          "actions": [{ "id": "reset-lost-wool", "kind": "set-mission-item", "itemId": "sheep-wool", "amount": 3 }],
           "firing": { "kind": "repeatable", "cooldownTicks": 30 },
           "priority": 65
         }
@@ -1435,7 +1429,7 @@
               ]
             }
           ],
-          "blockedSpawnPolicy": "fallback",
+          "blockedSpawnPolicy": "delay",
           "blockedRetryTicks": 30
         }
       ],
@@ -1472,7 +1466,7 @@
               ]
             }
           ],
-          "blockedSpawnPolicy": "fallback",
+          "blockedSpawnPolicy": "delay",
           "blockedRetryTicks": 30
         }
       ],
@@ -1499,8 +1493,14 @@
       { "id": "cyclops-warning", "description": "Reveal the patrol and teach a recoverable stealth route." },
       { "id": "boar-tusks", "description": "Recover tusks and the lost shears from the boar clearing." },
       { "id": "find-and-shear-sheep", "description": "Shear the protected flock and secure enough wool." },
-      { "id": "corpy-nest-counterattack", "description": "Defend the disguise materials from a difficulty-scaled Corpy counterattack." },
-      { "id": "prepare-disguise", "description": "Consume the collected mission items and disguise the rescued party." },
+      {
+        "id": "corpy-nest-counterattack",
+        "description": "Defend the disguise materials from a difficulty-scaled Corpy counterattack."
+      },
+      {
+        "id": "prepare-disguise",
+        "description": "Consume the collected mission items and disguise the rescued party."
+      },
       { "id": "fool-cyclops", "description": "Cross the Cyclops detection zone safely and reach the far road." },
       { "id": "mission-outro", "description": "Remove the disguise, conclude the rescue, and unlock the next mission." }
     ],

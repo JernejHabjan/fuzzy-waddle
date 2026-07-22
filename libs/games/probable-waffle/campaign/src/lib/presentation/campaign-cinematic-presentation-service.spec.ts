@@ -47,8 +47,6 @@ describe("campaign cinematic skip policy", () => {
     newHost.restore(oldHost.snapshot());
     newHost.requestVote(cinematicId, "two", 1_100);
     const snapshot = newHost.snapshot();
-    expect(evaluateCinematicSkipConsensus(["one", "two"], snapshot?.votes ?? [], 1_000, 2_000).status).toBe(
-      "accepted"
-    );
+    expect(evaluateCinematicSkipConsensus(["one", "two"], snapshot?.votes ?? [], 1_000, 2_000).status).toBe("accepted");
   });
 });

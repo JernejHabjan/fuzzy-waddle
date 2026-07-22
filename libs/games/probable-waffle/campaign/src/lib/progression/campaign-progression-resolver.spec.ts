@@ -1,5 +1,8 @@
 import { FactionType, ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
-import { AOTA_CAMPAIGN_CRYSTAL_ID, AOTA_CAMPAIGN_PROGRESSION_REGISTRY } from "../catalog/ashes-of-the-ancients-progression";
+import {
+  AOTA_CAMPAIGN_CRYSTAL_ID,
+  AOTA_CAMPAIGN_PROGRESSION_REGISTRY
+} from "../catalog/ashes-of-the-ancients-progression";
 import type { CampaignProgressionDefinitions } from "../contracts/campaign-progression-definition";
 import { CampaignProgressionRegistry } from "../registry/campaign-progression-registry";
 import {
@@ -15,9 +18,7 @@ describe("campaign progression resolver", () => {
     const profile = createInitialCampaignProgressionProfile(AOTA_CAMPAIGN_PROGRESSION_REGISTRY);
 
     expect(profile.wallet.balances[AOTA_CAMPAIGN_CRYSTAL_ID]).toBe(1);
-    expect(AOTA_CAMPAIGN_PROGRESSION_REGISTRY.getHero("tivara-hero")?.actorName).toBe(
-      ObjectNames.TivaraMacemanMale
-    );
+    expect(AOTA_CAMPAIGN_PROGRESSION_REGISTRY.getHero("tivara-hero")?.actorName).toBe(ObjectNames.TivaraMacemanMale);
     expect(AOTA_CAMPAIGN_PROGRESSION_REGISTRY.getHero("skaduwee-hero")?.actorName).toBe(
       ObjectNames.SkaduweeWarriorMale
     );

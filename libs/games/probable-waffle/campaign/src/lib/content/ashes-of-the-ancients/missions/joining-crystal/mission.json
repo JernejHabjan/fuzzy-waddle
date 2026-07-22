@@ -4,19 +4,14 @@
   "chapterId": "crystal-war",
   "revision": 1,
   "mapId": 3,
-  "prerequisites": [
-    "time-rush"
-  ],
+  "prerequisites": ["time-rush"],
   "catalogue": {
     "order": 4,
     "title": "Joining Crystal",
     "faction": "both",
     "environment": "Ancient convergence",
     "briefing": "Only a joined crystal can end the escalation.",
-    "objectiveSummaries": [
-      "Unite the fragments",
-      "Defend the ritual"
-    ]
+    "objectiveSummaries": ["Unite the fragments", "Defend the ritual"]
   },
   "participants": [
     {
@@ -46,9 +41,7 @@
     "loadoutSlotCount": 1
   },
   "initialState": {
-    "activePhaseIds": [
-      "opening"
-    ],
+    "activePhaseIds": ["opening"],
     "facts": [
       {
         "id": "mission-complete",
@@ -98,9 +91,7 @@
       "transitions": [
         {
           "id": "begin-operation",
-          "targetPhaseIds": [
-            "operation"
-          ],
+          "targetPhaseIds": ["operation"],
           "condition": {
             "kind": "always"
           },
@@ -281,22 +272,10 @@
       }
     ],
     "plannedScenarioReferences": {
-      "actors": [
-        "tivara-mage",
-        "skaduwee-mage",
-        "joined-crystal"
-      ],
-      "regions": [
-        "tivara-defense",
-        "skaduwee-defense",
-        "ritual-circle"
-      ],
-      "routes": [
-        "wind-route"
-      ],
-      "spawnSets": [
-        "endless-ritual-wave"
-      ]
+      "actors": ["tivara-mage", "skaduwee-mage", "joined-crystal"],
+      "regions": ["tivara-defense", "skaduwee-defense", "ritual-circle"],
+      "routes": ["wind-route"],
+      "spawnSets": ["endless-ritual-wave"]
     },
     "mechanics": [
       "Dual-group defense and control switching",
@@ -308,14 +287,8 @@
       "Wave spawning and ritual progress remain host-authored lockstep state."
     ],
     "dependencies": [],
-    "missingAssets": [
-      "Joined-crystal ritual arena and wind anchors",
-      "Escalating wave tables and ritual effects"
-    ],
-    "tests": [
-      "Switch groups and recover either defense in solo play",
-      "Complete the ritual under co-op wave pressure"
-    ],
+    "missingAssets": ["Joined-crystal ritual arena and wind anchors", "Escalating wave tables and ritual effects"],
+    "tests": ["Switch groups and recover either defense in solo play", "Complete the ritual under co-op wave pressure"],
     "definitionOfDone": [
       "Endless waves stop exactly when the ritual finalizes",
       "Mage loss and retry cleanup cannot leave duplicate spawns"

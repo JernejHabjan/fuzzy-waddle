@@ -115,9 +115,7 @@ export class GameSaveSyncService implements GameSaveSyncServiceInterface {
               chapterId: remote.campaign_chapter_id,
               missionId: remote.campaign_mission_id,
               runId: remote.campaign_run_id,
-              ...(remote.campaign_mission_revision
-                ? { missionRevision: remote.campaign_mission_revision }
-                : {}),
+              ...(remote.campaign_mission_revision ? { missionRevision: remote.campaign_mission_revision } : {}),
               ...(remote.campaign_runtime_schema_version
                 ? { runtimeSchemaVersion: remote.campaign_runtime_schema_version }
                 : {}),
@@ -127,12 +125,8 @@ export class GameSaveSyncService implements GameSaveSyncServiceInterface {
               selectedLoadoutIds: [...(remote.campaign_loadout_ids ?? [])].sort(),
               loadoutSnapshotHash: remote.campaign_loadout_snapshot_hash ?? "",
               ...(remote.campaign_checkpoint_id ? { checkpointId: remote.campaign_checkpoint_id } : {}),
-                ...(remote.campaign_participant_count
-                  ? { participantCount: remote.campaign_participant_count }
-                  : {}),
-                participantProgressionSnapshots: structuredClone(
-                  remote.campaign_participant_progression_snapshots ?? []
-                )
+              ...(remote.campaign_participant_count ? { participantCount: remote.campaign_participant_count } : {}),
+              participantProgressionSnapshots: structuredClone(remote.campaign_participant_progression_snapshots ?? [])
             }
           : undefined;
       if (remote.scope === GameSaveScope.Campaign && !campaign) continue;

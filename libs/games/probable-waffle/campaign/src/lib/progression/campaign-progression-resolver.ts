@@ -197,22 +197,20 @@ export function resolveCampaignEffectiveProgression(
     : Number.POSITIVE_INFINITY;
   const unlockIds = uniqueSorted(selectedLoadouts.flatMap((loadout) => loadout.unlockIds)).filter((id) => {
     const definition = registry.getUnlock(id);
-    const chapterAllowed =
-      !definition?.chapterId || CHAPTER_ORDER.indexOf(definition.chapterId) <= maximumChapterIndex;
+    const chapterAllowed = !definition?.chapterId || CHAPTER_ORDER.indexOf(definition.chapterId) <= maximumChapterIndex;
     const allowed =
-      profileUnlocks.has(id) &&
-      !deniedUnlocks.has(id) &&
-      (!allowedUnlocks || allowedUnlocks.has(id)) &&
-      chapterAllowed;
+      profileUnlocks.has(id) && !deniedUnlocks.has(id) && (!allowedUnlocks || allowedUnlocks.has(id)) && chapterAllowed;
     if (!allowed) reasons.push(`Unlock '${id}' is disabled by this mission`);
     return allowed;
   });
   const inventoryIds = new Set(request.profile.inventory.map((item) => item.id));
-  const inventoryItemIds = uniqueSorted(selectedLoadouts.flatMap((loadout) => loadout.inventoryItemIds)).filter((id) => {
-    const allowed = inventoryIds.has(id);
-    if (!allowed) reasons.push(`Inventory item '${id}' is unavailable`);
-    return allowed;
-  });
+  const inventoryItemIds = uniqueSorted(selectedLoadouts.flatMap((loadout) => loadout.inventoryItemIds)).filter(
+    (id) => {
+      const allowed = inventoryIds.has(id);
+      if (!allowed) reasons.push(`Inventory item '${id}' is unavailable`);
+      return allowed;
+    }
+  );
   const itemModifiers = inventoryItemIds.flatMap((id) => {
     const item = request.profile.inventory.find((candidate) => candidate.id === id);
     return item ? (registry.getItem(item.definitionId)?.modifiers ?? []) : [];

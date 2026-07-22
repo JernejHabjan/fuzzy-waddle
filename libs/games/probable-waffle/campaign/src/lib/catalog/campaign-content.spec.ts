@@ -203,15 +203,19 @@ describe("Ashes of the Ancients campaign content", () => {
   it("keeps every authored mission brief production-locked until its runtime content is playable", () => {
     expect(AOTA_CAMPAIGN_MISSIONS).toHaveLength(20);
     for (const mission of AOTA_CAMPAIGN_MISSIONS) {
-      expect(mission.contentStatus).toBe("skeleton");
+      expect(mission.contentStatus).toBe(
+        ["dreams", "cyclops-and-sheep"].includes(mission.id) ? "playable" : "skeleton"
+      );
       expect(mission.implementation.phasePlan.length).toBeGreaterThanOrEqual(2);
       expect(mission.implementation.checkpointCandidates.length).toBeGreaterThanOrEqual(1);
       expect(Object.keys(mission.implementation.plannedScenarioReferences).length).toBeGreaterThan(0);
       expect(mission.implementation.implementationTodos.length).toBeGreaterThanOrEqual(2);
       expect(mission.participants.length).toBeGreaterThan(0);
       expect(mission.phases.length).toBeGreaterThan(0);
+      const requiredObjectiveKinds =
+        mission.contentStatus === "skeleton" ? ["primary", "optional", "failure"] : ["primary", "failure"];
       expect(mission.objectives.map((objective) => objective.kind)).toEqual(
-        expect.arrayContaining(["primary", "optional", "failure"])
+        expect.arrayContaining(requiredObjectiveKinds)
       );
       expect(mission.checkpoints.length).toBeGreaterThan(0);
     }

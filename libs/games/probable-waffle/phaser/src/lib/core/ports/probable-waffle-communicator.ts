@@ -31,7 +31,7 @@ export interface ProbableWaffleLocalEventBus<T> {
 }
 
 export type ProbableWaffleUtilityEventData = {
-  name: "save-game" | "load-game" | "settings" | "chat";
+  name: "save-game" | "save-game-rejected" | "campaign-restore-failed" | "load-game" | "settings" | "chat";
   data?: unknown;
 };
 

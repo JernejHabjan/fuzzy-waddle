@@ -4,19 +4,14 @@
   "chapterId": "united-against-volcano",
   "revision": 1,
   "mapId": 3,
-  "prerequisites": [
-    "cult-wars"
-  ],
+  "prerequisites": ["cult-wars"],
   "catalogue": {
     "order": 3,
     "title": "The Volcano",
     "faction": "both",
     "environment": "Volcanic heart",
     "briefing": "The alliance reaches the source of the disaster.",
-    "objectiveSummaries": [
-      "Enter the volcano",
-      "Secure the ancient chamber"
-    ]
+    "objectiveSummaries": ["Enter the volcano", "Secure the ancient chamber"]
   },
   "participants": [
     {
@@ -46,9 +41,7 @@
     "loadoutSlotCount": 1
   },
   "initialState": {
-    "activePhaseIds": [
-      "opening"
-    ],
+    "activePhaseIds": ["opening"],
     "facts": [
       {
         "id": "mission-complete",
@@ -98,9 +91,7 @@
       "transitions": [
         {
           "id": "begin-operation",
-          "targetPhaseIds": [
-            "operation"
-          ],
+          "targetPhaseIds": ["operation"],
           "condition": {
             "kind": "always"
           },
@@ -281,21 +272,10 @@
       }
     ],
     "plannedScenarioReferences": {
-      "actors": [
-        "ritual-wizard",
-        "tivara-crystal",
-        "skaduwee-crystal"
-      ],
-      "regions": [
-        "monster-valley",
-        "volcano-ritual-site"
-      ],
-      "routes": [
-        "wizard-escort-route"
-      ],
-      "spawnSets": [
-        "volcano-monster-wave"
-      ]
+      "actors": ["ritual-wizard", "tivara-crystal", "skaduwee-crystal"],
+      "regions": ["monster-valley", "volcano-ritual-site"],
+      "routes": ["wizard-escort-route"],
+      "spawnSets": ["volcano-monster-wave"]
     },
     "mechanics": [
       "Joint-faction army control",

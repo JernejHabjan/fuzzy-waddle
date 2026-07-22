@@ -246,10 +246,7 @@
       "seenSkipPolicy": "tap",
       "lockPlayerControl": true,
       "lockCamera": true,
-      "resumeCueIndexes": [
-        0,
-        3
-      ],
+      "resumeCueIndexes": [0, 3],
       "fallbackTimeoutTicks": 900,
       "timeline": [
         {
@@ -309,10 +306,7 @@
       "seenSkipPolicy": "tap",
       "lockPlayerControl": true,
       "lockCamera": true,
-      "resumeCueIndexes": [
-        0,
-        2
-      ],
+      "resumeCueIndexes": [0, 2],
       "fallbackTimeoutTicks": 600,
       "timeline": [
         {
@@ -368,10 +362,7 @@
       "seenSkipPolicy": "tap",
       "lockPlayerControl": true,
       "lockCamera": true,
-      "resumeCueIndexes": [
-        0,
-        3
-      ],
+      "resumeCueIndexes": [0, 3],
       "fallbackTimeoutTicks": 900,
       "timeline": [
         {
@@ -458,10 +449,7 @@
       "seenSkipPolicy": "tap",
       "lockPlayerControl": true,
       "lockCamera": true,
-      "resumeCueIndexes": [
-        0,
-        2
-      ],
+      "resumeCueIndexes": [0, 2],
       "fallbackTimeoutTicks": 600,
       "timeline": [
         {

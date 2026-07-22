@@ -1,4 +1,7 @@
-import { AOTA_CAMPAIGN_CONTENT_REGISTRY, ASHES_OF_THE_ANCIENTS_CAMPAIGN_ID } from "../catalog/ashes-of-the-ancients-content";
+import {
+  AOTA_CAMPAIGN_CONTENT_REGISTRY,
+  ASHES_OF_THE_ANCIENTS_CAMPAIGN_ID
+} from "../catalog/ashes-of-the-ancients-content";
 import {
   createCampaignMissionRuntimeState,
   serializeCampaignMissionRuntimeStateFamilies
@@ -29,8 +32,6 @@ describe("campaign mission state family serialization", () => {
     state.claimedTriggerIds.push("test-trigger");
     expect(serializeCampaignMissionRuntimeStateFamilies(state).triggersActions).not.toBe(baseline.triggersActions);
     state.claimedRewardIds.push("test-reward");
-    expect(serializeCampaignMissionRuntimeStateFamilies(state).rewardsIntegrity).not.toBe(
-      baseline.rewardsIntegrity
-    );
+    expect(serializeCampaignMissionRuntimeStateFamilies(state).rewardsIntegrity).not.toBe(baseline.rewardsIntegrity);
   });
 });

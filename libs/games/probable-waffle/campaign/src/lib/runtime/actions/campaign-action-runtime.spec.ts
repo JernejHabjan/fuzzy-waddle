@@ -113,10 +113,7 @@ describe("campaign action runtime", () => {
     const actionContext = context(2);
     const runner = new CampaignActionRunner(createCampaignActionExecutorRegistry());
 
-    runner.execute(
-      actionContext,
-      action("set-control-perspective", "control-skaduwee", { playerNumber: 3 })
-    );
+    runner.execute(actionContext, action("set-control-perspective", "control-skaduwee", { playerNumber: 3 }));
 
     expect(actionContext.state.activeControlPlayerNumber).toBe(3);
   });

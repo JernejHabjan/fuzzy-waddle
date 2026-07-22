@@ -8,6 +8,7 @@ import type {
 import { getActorComponent } from "../data/actor-component";
 import { getPlayer } from "../data/scene-data";
 import { OwnerComponent } from "../entity/components/owner-component";
+import type { ProbableWaffleScene } from "../core/probable-waffle.scene";
 
 /** Applies the synchronized launch snapshot only when a modifier scope matches the live actor. */
 export function applyCampaignProgressionModifiers(
@@ -15,7 +16,8 @@ export function applyCampaignProgressionModifiers(
   stat: CampaignProgressionModifierStat,
   baseValue: number
 ): number {
-  const campaignState = gameObject.scene.baseGameData.gameInstance.gameState?.data.campaignMission;
+  const campaignState = (gameObject.scene as ProbableWaffleScene).baseGameData.gameInstance.gameState?.data
+    .campaignMission;
   const modifiers = campaignState?.progression?.effectiveLoadout.modifiers ?? [];
   const owner = getActorComponent(gameObject, OwnerComponent)?.getOwner();
   const player = owner === undefined ? undefined : getPlayer(gameObject.scene, owner);

@@ -17,11 +17,7 @@ describe("CampaignProfileService", () => {
     localStorage.clear();
     auth.isAuthenticated = false;
     TestBed.configureTestingModule({
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        { provide: AuthService, useValue: auth }
-      ]
+      providers: [provideHttpClient(), provideHttpClientTesting(), { provide: AuthService, useValue: auth }]
     });
     http = TestBed.inject(HttpTestingController);
   });
@@ -49,10 +45,12 @@ describe("CampaignProfileService", () => {
     const profile = createInitialCampaignProfile(AOTA_CAMPAIGN_PROGRESSION_REGISTRY);
     const loading = service.load();
     http.expectOne((request) => request.url.endsWith("/campaign/profile")).flush({ profile, completedMissions: [] });
+    await Promise.resolve();
     http.expectOne((request) => request.url.endsWith("/campaign/merge")).flush({ profile, completedMissions: [] });
     await loading;
 
     const starting = service.startRun("dreams", "hard");
+    await Promise.resolve();
     const request = http.expectOne((candidate) => candidate.url.endsWith("/campaign/runs"));
     expect(request.request.body).toMatchObject({
       missionId: "dreams",

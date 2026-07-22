@@ -10,10 +10,7 @@ import {
   ProbableWaffleGameInstanceType,
   type UnsupportedGameSaveRecord
 } from "@fuzzy-waddle/probable-waffle-protocol";
-import {
-  AOTA_CAMPAIGN_CONTENT_REGISTRY,
-  migrateCampaignMissionRevision
-} from "@fuzzy-waddle/probable-waffle-campaign";
+import { AOTA_CAMPAIGN_CONTENT_REGISTRY, migrateCampaignMissionRevision } from "@fuzzy-waddle/probable-waffle-campaign";
 
 export type GameSaveMigrationResult =
   | { readonly status: "supported"; readonly record: GameSaveRecord; readonly migrated: boolean }
@@ -146,7 +143,10 @@ function resolveCampaignContext(
     missionRevision,
     runtimeSchemaVersion: runtime.schemaVersion,
     profileRevision:
-      stored.campaign?.profileRevision ?? runtime.progression?.baseProfileRevision ?? metadata?.progressionSnapshot?.baseProfileRevision ?? 0,
+      stored.campaign?.profileRevision ??
+      runtime.progression?.baseProfileRevision ??
+      metadata?.progressionSnapshot?.baseProfileRevision ??
+      0,
     selectedLoadoutIds: [...(stored.campaign?.selectedLoadoutIds ?? metadata?.selectedLoadoutIds ?? [])].sort(),
     loadoutSnapshotHash: stored.campaign?.loadoutSnapshotHash ?? metadata?.loadoutSnapshotHash ?? "",
     ...(stored.campaign?.checkpointId ? { checkpointId: stored.campaign.checkpointId } : {}),
@@ -171,10 +171,7 @@ function migrateCampaignRuntime(
   };
 }
 
-export function unsupportedGameSaveRecord(
-  stored: EncodedGameSaveRecord,
-  reason: string
-): GameSaveMigrationResult {
+export function unsupportedGameSaveRecord(stored: EncodedGameSaveRecord, reason: string): GameSaveMigrationResult {
   const { encodedGameInstanceData: _encodedGameInstanceData, ...metadata } = stored;
   return {
     status: "unsupported",

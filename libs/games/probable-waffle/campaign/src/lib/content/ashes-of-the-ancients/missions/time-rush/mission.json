@@ -4,19 +4,14 @@
   "chapterId": "crystal-war",
   "revision": 1,
   "mapId": 3,
-  "prerequisites": [
-    "the-siege"
-  ],
+  "prerequisites": ["the-siege"],
   "catalogue": {
     "order": 3,
     "title": "Time Rush",
     "faction": "both",
     "environment": "Fractured valley",
     "briefing": "The crystal's power destabilizes time itself.",
-    "objectiveSummaries": [
-      "Reach the rift",
-      "Stabilize the crystals"
-    ]
+    "objectiveSummaries": ["Reach the rift", "Stabilize the crystals"]
   },
   "participants": [
     {
@@ -46,9 +41,7 @@
     "loadoutSlotCount": 1
   },
   "initialState": {
-    "activePhaseIds": [
-      "opening"
-    ],
+    "activePhaseIds": ["opening"],
     "facts": [
       {
         "id": "mission-complete",
@@ -98,9 +91,7 @@
       "transitions": [
         {
           "id": "begin-operation",
-          "targetPhaseIds": [
-            "operation"
-          ],
+          "targetPhaseIds": ["operation"],
           "condition": {
             "kind": "always"
           },
@@ -281,23 +272,10 @@
       }
     ],
     "plannedScenarioReferences": {
-      "actors": [
-        "tivara-race-leader",
-        "skaduwee-race-leader",
-        "time-crystal"
-      ],
-      "regions": [
-        "mountain-pass",
-        "cavern-network",
-        "final-crystal-chamber"
-      ],
-      "routes": [
-        "tivara-race-route",
-        "skaduwee-race-route"
-      ],
-      "spawnSets": [
-        "tunnel-ambush"
-      ]
+      "actors": ["tivara-race-leader", "skaduwee-race-leader", "time-crystal"],
+      "regions": ["mountain-pass", "cavern-network", "final-crystal-chamber"],
+      "routes": ["tivara-race-route", "skaduwee-race-route"],
+      "spawnSets": ["tunnel-ambush"]
     },
     "mechanics": [
       "Symmetrical multi-faction race",
@@ -309,10 +287,7 @@
       "The finish resolves ties deterministically before presenting results."
     ],
     "dependencies": [],
-    "missingAssets": [
-      "Mirrored mountain and cavern route authoring",
-      "Time-distortion effects and ambush groups"
-    ],
+    "missingAssets": ["Mirrored mountain and cavern route authoring", "Time-distortion effects and ambush groups"],
     "tests": [
       "Complete every route branch without asymmetric blockers",
       "Resolve win, loss, and exact-tick tie finishes"

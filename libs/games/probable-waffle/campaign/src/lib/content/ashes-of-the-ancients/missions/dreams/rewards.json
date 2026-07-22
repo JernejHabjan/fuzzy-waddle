@@ -10,9 +10,7 @@
         "kind": "global"
       },
       "oneTime": true,
-      "objectiveIds": [
-        "witness-dream-outcome"
-      ],
+      "objectiveIds": ["witness-dream-outcome"],
       "unlockId": "mission-cyclops-and-sheep"
     }
   ]

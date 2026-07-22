@@ -4,19 +4,14 @@
   "chapterId": "united-against-volcano",
   "revision": 1,
   "mapId": 3,
-  "prerequisites": [
-    "joining-crystal"
-  ],
+  "prerequisites": ["joining-crystal"],
   "catalogue": {
     "order": 0,
     "title": "Mobster or Friend?",
     "faction": "both",
     "environment": "Volcanic foothills",
     "briefing": "An unlikely ally offers help at a cost.",
-    "objectiveSummaries": [
-      "Meet the contact",
-      "Choose whom to trust"
-    ]
+    "objectiveSummaries": ["Meet the contact", "Choose whom to trust"]
   },
   "participants": [
     {
@@ -46,9 +41,7 @@
     "loadoutSlotCount": 1
   },
   "initialState": {
-    "activePhaseIds": [
-      "opening"
-    ],
+    "activePhaseIds": ["opening"],
     "facts": [
       {
         "id": "mission-complete",
@@ -98,9 +91,7 @@
       "transitions": [
         {
           "id": "begin-operation",
-          "targetPhaseIds": [
-            "operation"
-          ],
+          "targetPhaseIds": ["operation"],
           "condition": {
             "kind": "always"
           },
@@ -281,21 +272,10 @@
       }
     ],
     "plannedScenarioReferences": {
-      "actors": [
-        "cyclops-envoy",
-        "banshee-envoy",
-        "monster-captain"
-      ],
-      "regions": [
-        "parley-ground",
-        "alliance-base"
-      ],
-      "routes": [
-        "recruitment-route"
-      ],
-      "spawnSets": [
-        "diplomacy-consequence-wave"
-      ]
+      "actors": ["cyclops-envoy", "banshee-envoy", "monster-captain"],
+      "regions": ["parley-ground", "alliance-base"],
+      "routes": ["recruitment-route"],
+      "spawnSets": ["diplomacy-consequence-wave"]
     },
     "mechanics": [
       "Branching monster diplomacy",
@@ -307,10 +287,7 @@
       "Recruited groups become scenario allies while rewards remain participant-scoped."
     ],
     "dependencies": [],
-    "missingAssets": [
-      "Monster delegation characters and parley staging",
-      "Choice-dependent ally and enemy spawn sets"
-    ],
+    "missingAssets": ["Monster delegation characters and parley staging", "Choice-dependent ally and enemy spawn sets"],
     "tests": [
       "Exercise every recruitment choice branch",
       "Resume after choice commitment without presenting the vote twice"

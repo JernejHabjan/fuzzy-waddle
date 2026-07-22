@@ -153,12 +153,24 @@ function validateMission(
     }
     for (const targetId of Object.values(migration.renamePhaseIds ?? {})) {
       if (!phaseIds.has(targetId)) {
-        addIssue(issues, sourcePath, `$.revisionMigrations[${migrationIndex}].renamePhaseIds`, "missing-phase-reference", `Unknown target phase '${targetId}'`);
+        addIssue(
+          issues,
+          sourcePath,
+          `$.revisionMigrations[${migrationIndex}].renamePhaseIds`,
+          "missing-phase-reference",
+          `Unknown target phase '${targetId}'`
+        );
       }
     }
     for (const targetId of Object.values(migration.renameObjectiveIds ?? {})) {
       if (!objectiveIds.has(targetId)) {
-        addIssue(issues, sourcePath, `$.revisionMigrations[${migrationIndex}].renameObjectiveIds`, "missing-objective-reference", `Unknown target objective '${targetId}'`);
+        addIssue(
+          issues,
+          sourcePath,
+          `$.revisionMigrations[${migrationIndex}].renameObjectiveIds`,
+          "missing-objective-reference",
+          `Unknown target objective '${targetId}'`
+        );
       }
     }
   }
@@ -167,7 +179,13 @@ function validateMission(
   }
   for (const [overrideIndex, override] of (mission.coop?.participants ?? []).entries()) {
     if (!participantSlotIds.has(String(override.slotId))) {
-      addIssue(issues, sourcePath, `$.coop.participants[${overrideIndex}].slotId`, "missing-participant-reference", `Unknown participant slot '${override.slotId}'`);
+      addIssue(
+        issues,
+        sourcePath,
+        `$.coop.participants[${overrideIndex}].slotId`,
+        "missing-participant-reference",
+        `Unknown participant slot '${override.slotId}'`
+      );
     }
   }
   validateAllowanceConflicts(mission, sourcePath, issues);
@@ -279,10 +297,7 @@ function validateMission(
         );
       }
     }
-    if (
-      entry.action.kind === "set-control-perspective" &&
-      !mission.participants[entry.action.playerNumber - 1]
-    ) {
+    if (entry.action.kind === "set-control-perspective" && !mission.participants[entry.action.playerNumber - 1]) {
       addIssue(
         issues,
         sourcePath,
@@ -363,10 +378,25 @@ function validateMission(
       }
       const participantPolicy = trigger.participantPolicy;
       if (participantPolicy?.kind === "specific-slot" && !participantSlotIds.has(String(participantPolicy.slotId))) {
-        addIssue(issues, sourcePath, `${triggerPath}.participantPolicy.slotId`, "missing-participant-reference", `Unknown participant slot '${participantPolicy.slotId}'`);
+        addIssue(
+          issues,
+          sourcePath,
+          `${triggerPath}.participantPolicy.slotId`,
+          "missing-participant-reference",
+          `Unknown participant slot '${participantPolicy.slotId}'`
+        );
       }
-      if (participantPolicy?.kind === "entire-required-group" && !scenarioGroupIds.has(String(participantPolicy.groupId))) {
-        addIssue(issues, sourcePath, `${triggerPath}.participantPolicy.groupId`, "missing-scenario-reference", `Unknown required group '${participantPolicy.groupId}'`);
+      if (
+        participantPolicy?.kind === "entire-required-group" &&
+        !scenarioGroupIds.has(String(participantPolicy.groupId))
+      ) {
+        addIssue(
+          issues,
+          sourcePath,
+          `${triggerPath}.participantPolicy.groupId`,
+          "missing-scenario-reference",
+          `Unknown required group '${participantPolicy.groupId}'`
+        );
       }
       validateCondition(trigger.condition, sourcePath, `${triggerPath}.condition`, registries, issues);
       validateActions(trigger.actions, sourcePath, `${triggerPath}.actions`, registries, issues);
@@ -400,7 +430,13 @@ function validateMission(
       );
     }
     if (objective.ownership?.kind === "individual" && !participantSlotIds.has(String(objective.ownership.slotId))) {
-      addIssue(issues, sourcePath, `${objectivePath}.ownership.slotId`, "missing-participant-reference", `Unknown participant slot '${objective.ownership.slotId}'`);
+      addIssue(
+        issues,
+        sourcePath,
+        `${objectivePath}.ownership.slotId`,
+        "missing-participant-reference",
+        `Unknown participant slot '${objective.ownership.slotId}'`
+      );
     }
     validateCondition(objective.reveal, sourcePath, `${objectivePath}.reveal`, registries, issues);
     validateCondition(objective.complete, sourcePath, `${objectivePath}.complete`, registries, issues);
@@ -526,7 +562,13 @@ function validateMission(
   validateObjectiveDependencyCycles(mission, issues);
   for (const [checkpointIndex, checkpoint] of mission.checkpoints.entries()) {
     const checkpointPath = `$.checkpoints[${checkpointIndex}]`;
-    validateObjectiveTextReference(checkpoint.titleTextId, `${checkpointPath}.titleTextId`, textIds, sourcePath, issues);
+    validateObjectiveTextReference(
+      checkpoint.titleTextId,
+      `${checkpointPath}.titleTextId`,
+      textIds,
+      sourcePath,
+      issues
+    );
     validateCondition(checkpoint.trigger, sourcePath, `${checkpointPath}.trigger`, registries, issues);
     validateActions(checkpoint.requiredActions, sourcePath, `${checkpointPath}.requiredActions`, registries, issues);
     validateActions(
@@ -569,7 +611,13 @@ function validateMission(
         `Unknown reward kind '${reward.kind}'`
       );
     }
-    validateObjectiveTextReference(reward.titleTextId, `${rewardPath}.titleTextId`, textIds, rewardsPath(mission.id), issues);
+    validateObjectiveTextReference(
+      reward.titleTextId,
+      `${rewardPath}.titleTextId`,
+      textIds,
+      rewardsPath(mission.id),
+      issues
+    );
     for (const objectiveId of reward.objectiveIds ?? []) {
       if (!objectiveIds.has(String(objectiveId))) {
         addIssue(

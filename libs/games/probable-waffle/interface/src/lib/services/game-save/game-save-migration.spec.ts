@@ -36,7 +36,7 @@ describe("migrateGameSaveRecord", () => {
         catalogVersion: 1,
         chapterId: "prologue",
         missionId: "dreams",
-        missionRevision: 1,
+        missionRevision: runtime.missionRevision,
         runId: "run-1"
       }
     },
@@ -50,7 +50,10 @@ describe("migrateGameSaveRecord", () => {
     if (result.status !== "supported") return;
     expect(result.migrated).toBe(true);
     expect(result.record.campaign).toEqual(
-      expect.objectContaining({ campaignId: ASHES_OF_THE_ANCIENTS_CAMPAIGN_ID, runtimeSchemaVersion: runtime.schemaVersion })
+      expect.objectContaining({
+        campaignId: ASHES_OF_THE_ANCIENTS_CAMPAIGN_ID,
+        runtimeSchemaVersion: runtime.schemaVersion
+      })
     );
   });
 

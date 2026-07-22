@@ -86,7 +86,9 @@ export class CampaignProfileService implements CampaignProfileServiceInterface {
       this.errorState.set(undefined);
       this.syncStateValue.set(CampaignProfileSyncState.Synced);
     } catch {
-      this.errorState.set("Campaign profile could not be synchronized. Reconnect before starting a reward-bearing run.");
+      this.errorState.set(
+        "Campaign profile could not be synchronized. Reconnect before starting a reward-bearing run."
+      );
       this.syncStateValue.set(CampaignProfileSyncState.Error);
     } finally {
       this.loadedState.set(true);
@@ -107,8 +109,7 @@ export class CampaignProfileService implements CampaignProfileServiceInterface {
     if (!mission) throw new Error(`Campaign mission ${missionId} is not in the catalogue`);
     const completed = new Set(this.data().completedMissions.map((completion) => completion.missionId));
     const requiresDeveloperOverride =
-      mission.availability !== "playable" ||
-      mission.prerequisites.some((prerequisite) => !completed.has(prerequisite));
+      mission.availability !== "playable" || mission.prerequisites.some((prerequisite) => !completed.has(prerequisite));
     if (environment.production && requiresDeveloperOverride) {
       throw new Error(`Campaign mission ${missionId} is locked or planned`);
     }
@@ -123,9 +124,7 @@ export class CampaignProfileService implements CampaignProfileServiceInterface {
       developerOverride: !environment.production && requiresDeveloperOverride
     };
     if (this.authService.isAuthenticated) {
-      await firstValueFrom(
-        this.httpClient.post(`${environment.api}api/probable-waffle/campaign/runs`, request)
-      );
+      await firstValueFrom(this.httpClient.post(`${environment.api}api/probable-waffle/campaign/runs`, request));
     }
     return request;
   }
@@ -306,7 +305,9 @@ export class CampaignProfileService implements CampaignProfileServiceInterface {
 
   private readGuestProfile(): CampaignProfileData {
     try {
-      const stored = JSON.parse(localStorage.getItem(GUEST_PROFILE_KEY) ?? "null") as Partial<CampaignProfileData> | null;
+      const stored = JSON.parse(
+        localStorage.getItem(GUEST_PROFILE_KEY) ?? "null"
+      ) as Partial<CampaignProfileData> | null;
       if (stored && isCampaignProfile(stored.profile) && Array.isArray(stored.completedMissions)) {
         return { profile: stored.profile, completedMissions: stored.completedMissions };
       }

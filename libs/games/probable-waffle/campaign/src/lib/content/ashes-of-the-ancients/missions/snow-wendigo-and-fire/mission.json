@@ -4,19 +4,14 @@
   "chapterId": "two-homelands",
   "revision": 1,
   "mapId": 2,
-  "prerequisites": [
-    "cyclops-and-sheep"
-  ],
+  "prerequisites": ["cyclops-and-sheep"],
   "catalogue": {
     "order": 1,
     "title": "Snow Wendigo & Fire",
     "faction": "skaduwee",
     "environment": "Skaduwee tundra",
     "briefing": "A winter hunt reveals an ember that should not exist in the snow.",
-    "objectiveSummaries": [
-      "Track the wendigo",
-      "Recover the ember"
-    ]
+    "objectiveSummaries": ["Track the wendigo", "Recover the ember"]
   },
   "participants": [
     {
@@ -35,9 +30,7 @@
     "loadoutSlotCount": 1
   },
   "initialState": {
-    "activePhaseIds": [
-      "opening"
-    ],
+    "activePhaseIds": ["opening"],
     "facts": [
       {
         "id": "mission-complete",
@@ -87,9 +80,7 @@
       "transitions": [
         {
           "id": "begin-operation",
-          "targetPhaseIds": [
-            "operation"
-          ],
+          "targetPhaseIds": ["operation"],
           "condition": {
             "kind": "always"
           },
@@ -270,22 +261,10 @@
       }
     ],
     "plannedScenarioReferences": {
-      "actors": [
-        "hermit",
-        "wendigo",
-        "worker-survivor"
-      ],
-      "regions": [
-        "cold-exposure-zone",
-        "hermit-refuge",
-        "settlement"
-      ],
-      "routes": [
-        "rescue-route"
-      ],
-      "spawnSets": [
-        "wendigo-pack"
-      ]
+      "actors": ["hermit", "wendigo", "worker-survivor"],
+      "regions": ["cold-exposure-zone", "hermit-refuge", "settlement"],
+      "routes": ["rescue-route"],
+      "spawnSets": ["wendigo-pack"]
     },
     "mechanics": [
       "Cold exposure and warmth zones",
@@ -301,10 +280,7 @@
       "Cold exposure feedback and shelter warmth effects",
       "Wendigo boss presentation and encounter tuning"
     ],
-    "tests": [
-      "Rescue workers before exposure expires",
-      "Resume after shelter completion and defeat the Wendigo"
-    ],
+    "tests": ["Rescue workers before exposure expires", "Resume after shelter completion and defeat the Wendigo"],
     "definitionOfDone": [
       "Warmth rules are visible and deterministic",
       "The mission supports survival recovery without soft-locking"

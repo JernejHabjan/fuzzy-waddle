@@ -4,19 +4,14 @@
   "chapterId": "crystal-war",
   "revision": 1,
   "mapId": 3,
-  "prerequisites": [
-    "the-first-and-last-dinner"
-  ],
+  "prerequisites": ["the-first-and-last-dinner"],
   "catalogue": {
     "order": 2,
     "title": "The Siege",
     "faction": "both",
     "environment": "Crystal citadel",
     "briefing": "The war reaches the gates.",
-    "objectiveSummaries": [
-      "Break the siege",
-      "Protect the civilians"
-    ]
+    "objectiveSummaries": ["Break the siege", "Protect the civilians"]
   },
   "participants": [
     {
@@ -46,9 +41,7 @@
     "loadoutSlotCount": 1
   },
   "initialState": {
-    "activePhaseIds": [
-      "opening"
-    ],
+    "activePhaseIds": ["opening"],
     "facts": [
       {
         "id": "mission-complete",
@@ -98,9 +91,7 @@
       "transitions": [
         {
           "id": "begin-operation",
-          "targetPhaseIds": [
-            "operation"
-          ],
+          "targetPhaseIds": ["operation"],
           "condition": {
             "kind": "always"
           },
@@ -281,23 +272,10 @@
       }
     ],
     "plannedScenarioReferences": {
-      "actors": [
-        "fortification-gate",
-        "siege-catapult",
-        "siege-ballista",
-        "siege-cannon",
-        "flower-monster"
-      ],
-      "regions": [
-        "outer-battlefield",
-        "inner-defense"
-      ],
-      "routes": [
-        "siege-approach"
-      ],
-      "spawnSets": [
-        "siege-wave"
-      ]
+      "actors": ["fortification-gate", "siege-catapult", "siege-ballista", "siege-cannon", "flower-monster"],
+      "regions": ["outer-battlefield", "inner-defense"],
+      "routes": ["siege-approach"],
+      "spawnSets": ["siege-wave"]
     },
     "mechanics": [
       "Scripted skirmish and tactical withdrawal",
@@ -309,10 +287,7 @@
       "Technology gates and boss phases are shared deterministic state."
     ],
     "dependencies": [],
-    "missingAssets": [
-      "Fortification map and siege-weapon placements",
-      "Flower Monster boss states and effects"
-    ],
+    "missingAssets": ["Fortification map and siege-weapon placements", "Flower Monster boss states and effects"],
     "tests": [
       "Recover from the opening skirmish and activate each weapon",
       "Defeat every boss stage after checkpoint resume"

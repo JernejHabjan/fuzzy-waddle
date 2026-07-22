@@ -4,19 +4,14 @@
   "chapterId": "two-homelands",
   "revision": 1,
   "mapId": 3,
-  "prerequisites": [
-    "snow-wendigo-and-fire"
-  ],
+  "prerequisites": ["snow-wendigo-and-fire"],
   "catalogue": {
     "order": 2,
     "title": "Slingshooters & Wolves",
     "faction": "tivara",
     "environment": "Tivara woodland",
     "briefing": "The road forward is guarded by more than wolves.",
-    "objectiveSummaries": [
-      "Train the slingshooters",
-      "Clear the pass"
-    ]
+    "objectiveSummaries": ["Train the slingshooters", "Clear the pass"]
   },
   "participants": [
     {
@@ -35,9 +30,7 @@
     "loadoutSlotCount": 1
   },
   "initialState": {
-    "activePhaseIds": [
-      "opening"
-    ],
+    "activePhaseIds": ["opening"],
     "facts": [
       {
         "id": "mission-complete",
@@ -87,9 +80,7 @@
       "transitions": [
         {
           "id": "begin-operation",
-          "targetPhaseIds": [
-            "operation"
-          ],
+          "targetPhaseIds": ["operation"],
           "condition": {
             "kind": "always"
           },
@@ -270,22 +261,10 @@
       }
     ],
     "plannedScenarioReferences": {
-      "actors": [
-        "stone-tower",
-        "slingshooter-captain",
-        "cyclops-attacker"
-      ],
-      "regions": [
-        "wolf-territory",
-        "tower-defense-zone"
-      ],
-      "routes": [
-        "cyclops-approach"
-      ],
-      "spawnSets": [
-        "wolf-pack",
-        "cyclops-assault"
-      ]
+      "actors": ["stone-tower", "slingshooter-captain", "cyclops-attacker"],
+      "regions": ["wolf-territory", "tower-defense-zone"],
+      "routes": ["cyclops-approach"],
+      "spawnSets": ["wolf-pack", "cyclops-assault"]
     },
     "mechanics": [
       "Wolf disguise traversal",
@@ -302,14 +281,8 @@
         "reason": "Terrain, faction, and stone-tower support are required for final authoring."
       }
     ],
-    "missingAssets": [
-      "Wolf disguise feedback and wind visualization",
-      "Stone tower and slingshooter encounter assets"
-    ],
-    "tests": [
-      "Capture the tower with the disguise route",
-      "Defend the recruited slingshooters through the final wave"
-    ],
+    "missingAssets": ["Wolf disguise feedback and wind visualization", "Stone tower and slingshooter encounter assets"],
+    "tests": ["Capture the tower with the disguise route", "Defend the recruited slingshooters through the final wave"],
     "definitionOfDone": [
       "Wind changes are communicated before they affect combat",
       "Tower ownership and recruitment survive checkpoint resume"

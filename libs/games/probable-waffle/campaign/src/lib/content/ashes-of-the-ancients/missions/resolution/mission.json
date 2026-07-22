@@ -4,19 +4,14 @@
   "chapterId": "the-betrayal",
   "revision": 1,
   "mapId": 3,
-  "prerequisites": [
-    "end-game"
-  ],
+  "prerequisites": ["end-game"],
   "catalogue": {
     "order": 3,
     "title": "Resolution",
     "faction": "both",
     "environment": "New dawn",
     "briefing": "The future is finally chosen.",
-    "objectiveSummaries": [
-      "Resolve the conflict",
-      "Shape the future"
-    ]
+    "objectiveSummaries": ["Resolve the conflict", "Shape the future"]
   },
   "participants": [
     {
@@ -46,9 +41,7 @@
     "loadoutSlotCount": 0
   },
   "initialState": {
-    "activePhaseIds": [
-      "opening"
-    ],
+    "activePhaseIds": ["opening"],
     "facts": [
       {
         "id": "mission-complete",
@@ -98,9 +91,7 @@
       "transitions": [
         {
           "id": "begin-operation",
-          "targetPhaseIds": [
-            "operation"
-          ],
+          "targetPhaseIds": ["operation"],
           "condition": {
             "kind": "always"
           },
@@ -281,17 +272,9 @@
       }
     ],
     "plannedScenarioReferences": {
-      "actors": [
-        "tivara-epilogue-leader",
-        "skaduwee-epilogue-leader"
-      ],
-      "regions": [
-        "epilogue-gathering"
-      ],
-      "cameraShots": [
-        "aftermath-shot",
-        "final-campaign-shot"
-      ]
+      "actors": ["tivara-epilogue-leader", "skaduwee-epilogue-leader"],
+      "regions": ["epilogue-gathering"],
+      "cameraShots": ["aftermath-shot", "final-campaign-shot"]
     },
     "mechanics": [
       "Choice-dependent epilogue callbacks",
@@ -307,10 +290,7 @@
       "Epilogue staging and final camera shots",
       "Choice callback dialogue and campaign-completion presentation"
     ],
-    "tests": [
-      "Render every supported callback combination",
-      "Compare watched and skipped epilogue final state"
-    ],
+    "tests": ["Render every supported callback combination", "Compare watched and skipped epilogue final state"],
     "definitionOfDone": [
       "All valid campaign histories produce a coherent epilogue",
       "Final completion is granted once and returns to the campaign shell"

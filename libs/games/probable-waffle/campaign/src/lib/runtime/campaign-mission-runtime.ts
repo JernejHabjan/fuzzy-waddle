@@ -55,7 +55,10 @@ import {
   type CampaignEncounterWorldAdapter
 } from "./encounters/campaign-encounter-service";
 import { resolveCampaignParticipantLaunchSlots, updateCampaignParticipantTeams } from "./campaign-participant-resolver";
-import { CampaignRunIntegrityService, createEligibleMissionRunIntegrity } from "../progression/campaign-run-integrity-service";
+import {
+  CampaignRunIntegrityService,
+  createEligibleMissionRunIntegrity
+} from "../progression/campaign-run-integrity-service";
 import type { CampaignDeveloperCommand } from "../tooling/campaign-diagnostics-service";
 import {
   evaluateMissionTriggerParticipantPolicy,
@@ -583,7 +586,11 @@ export class CampaignMissionRuntime {
       if (!state.pendingCheckpointIds.includes(checkpoint.id)) {
         if (!this.evaluateCondition(checkpoint.trigger)) continue;
         addSortedUnique(state.pendingCheckpointIds, checkpoint.id);
-        if (!this.applyActions(checkpoint.requiredActions, tick, budget, effects, { triggerId: `checkpoint-${checkpoint.id}` })) {
+        if (
+          !this.applyActions(checkpoint.requiredActions, tick, budget, effects, {
+            triggerId: `checkpoint-${checkpoint.id}`
+          })
+        ) {
           return;
         }
       }
@@ -1320,7 +1327,7 @@ export class CampaignMissionRuntime {
     state.dialogueHistory.sort((left, right) => left.sequence - right.sequence);
     state.cinematics = sortRecord(state.cinematics);
     state.participantTeams = sortRecord(state.participantTeams);
-    state.encounters = sortRecord(state.encounters);
+    sortRecordInPlace(state.encounters);
     for (const encounter of Object.values(state.encounters)) {
       encounter.livingSpawnedActorIds.sort();
       encounter.spawnedActorOwners = sortRecord(encounter.spawnedActorOwners);
@@ -1613,10 +1620,7 @@ export function createCampaignMissionRuntimeState(
       (slot) => slot.participant.controller === "human"
     )?.playerNumber,
     participantTeams: Object.fromEntries(
-      resolveCampaignParticipantLaunchSlots(participants).map((slot) => [
-        String(slot.playerNumber),
-        slot.teamNumber
-      ])
+      resolveCampaignParticipantLaunchSlots(participants).map((slot) => [String(slot.playerNumber), slot.teamNumber])
     ),
     encounters: {},
     claimedTriggerIds: [],
@@ -1626,7 +1630,9 @@ export function createCampaignMissionRuntimeState(
     claimedRewardIds: [],
     ...(progressionSnapshot ? { progression: structuredClone(progressionSnapshot) } : {}),
     ...(participantProgressionSnapshots?.length
-      ? { participantProgressionSnapshots: structuredClone(participantProgressionSnapshots) }
+      ? {
+          participantProgressionSnapshots: participantProgressionSnapshots.map((snapshot) => structuredClone(snapshot))
+        }
       : {}),
     rewardIntegrity: createEligibleMissionRunIntegrity(),
     pendingEvents: [],
@@ -1653,8 +1659,7 @@ export function serializeCampaignMissionRuntimeState(state: CampaignMissionRunti
 export function serializeCampaignMissionRuntimeStateFamilies(
   state: CampaignMissionRuntimeState
 ): Readonly<Record<string, string>> {
-  const serialize = (value: unknown): string =>
-    JSON.stringify(sortJsonValue(value as CampaignMissionRuntimeJsonValue));
+  const serialize = (value: unknown): string => JSON.stringify(sortJsonValue(value as CampaignMissionRuntimeJsonValue));
   return {
     identity: serialize({
       schemaVersion: state.schemaVersion,
@@ -1733,6 +1738,12 @@ function removeValue(values: string[], value: string): void {
 
 function sortRecord<T>(value: Record<string, T>): Record<string, T> {
   return Object.fromEntries(Object.entries(value).sort(([left], [right]) => left.localeCompare(right)));
+}
+
+function sortRecordInPlace<T>(value: Record<string, T>): void {
+  const entries = Object.entries(value).sort(([left], [right]) => left.localeCompare(right));
+  for (const key of Object.keys(value)) delete value[key];
+  for (const [key, entry] of entries) value[key] = entry;
 }
 
 function sortJsonValue(value: CampaignMissionRuntimeJsonValue): CampaignMissionRuntimeJsonValue {

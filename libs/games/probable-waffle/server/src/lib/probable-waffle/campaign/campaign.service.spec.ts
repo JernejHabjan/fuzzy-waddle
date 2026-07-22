@@ -19,9 +19,7 @@ describe("CampaignServerService", () => {
 
     const result = await new CampaignServerService(provider).profile("owner-1");
 
-    expect(result.completedMissions).toEqual([
-      { missionId: "dreams", completedAt: "2026-07-20T10:00:00.000Z" }
-    ]);
+    expect(result.completedMissions).toEqual([{ missionId: "dreams", completedAt: "2026-07-20T10:00:00.000Z" }]);
     expect(result.profile.missionMastery.dreams).toMatchObject({ completionCount: 1 });
     expect(profiles.upsert).toHaveBeenCalledTimes(1);
   });

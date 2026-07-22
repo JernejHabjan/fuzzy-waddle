@@ -25,10 +25,7 @@ export function createInitialCampaignProfile(registry: CampaignProgressionRegist
   };
 }
 
-export function campaignLoadoutSnapshotHash(
-  profileRevision: number,
-  selectedLoadoutIds: readonly string[]
-): string {
+export function campaignLoadoutSnapshotHash(profileRevision: number, selectedLoadoutIds: readonly string[]): string {
   const value = `${profileRevision}:${uniqueSorted(selectedLoadoutIds).join(",")}`;
   let hash = 5381;
   for (let index = 0; index < value.length; index += 1) hash = (hash * 33) ^ value.charCodeAt(index);
@@ -52,17 +49,13 @@ export function applyCampaignMissionMastery(
   if (request.outcome !== "victory") return profile;
   const current = profile.missionMastery[request.missionId];
   const next: CampaignMissionMastery = {
-    firstCompletedAt:
-      current && current.firstCompletedAt < completedAt ? current.firstCompletedAt : completedAt,
+    firstCompletedAt: current && current.firstCompletedAt < completedAt ? current.firstCompletedAt : completedAt,
     completionCount: (current?.completionCount ?? 0) + 1,
     bestDifficulty: harderDifficulty(current?.bestDifficulty, request.difficulty),
     ...(bestDuration(current?.bestDurationSeconds, durationSeconds) !== undefined
       ? { bestDurationSeconds: bestDuration(current?.bestDurationSeconds, durationSeconds) }
       : {}),
-    completedObjectiveIds: uniqueSorted([
-      ...(current?.completedObjectiveIds ?? []),
-      ...request.completedObjectiveIds
-    ])
+    completedObjectiveIds: uniqueSorted([...(current?.completedObjectiveIds ?? []), ...request.completedObjectiveIds])
   };
   return { ...profile, missionMastery: { ...profile.missionMastery, [request.missionId]: next } };
 }

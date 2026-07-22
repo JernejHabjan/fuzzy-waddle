@@ -73,7 +73,10 @@ export function evaluateMissionTriggerParticipantPolicy(
     case "all-connected-humans":
       return containsEvery(context.participatingPlayerNumbers ?? [], context.connectedHumanPlayerNumbers);
     case "at-least":
-      return unique(context.participatingPlayerNumbers ?? (initiator === undefined ? [] : [initiator])).length >= policy.count;
+      return (
+        unique(context.participatingPlayerNumbers ?? (initiator === undefined ? [] : [initiator])).length >=
+        policy.count
+      );
     case "entire-required-group":
       return containsEvery(
         context.participatingPlayerNumbers ?? [],
@@ -99,7 +102,7 @@ export function missionFailureReached(policy: MissionFailurePolicy, context: Mis
 
 /** Save ownership is host-scoped, but load rebinding intentionally depends on slots and count rather than account IDs. */
 export function rebindCampaignParticipants(
-  saved: readonly { readonly slotId: MissionParticipantSlotId; readonly playerNumber: number }[],
+  saved: readonly { readonly slotId: string; readonly playerNumber: number }[],
   current: readonly { readonly slotId: MissionParticipantSlotId; readonly playerNumber: number }[]
 ): readonly CampaignParticipantRebinding[] | undefined {
   if (saved.length !== current.length) return undefined;

@@ -20,7 +20,10 @@ describe("CampaignRewardCommitService", () => {
     const bundle = rewardBundle([
       reward({ kind: "currency", currencyId: "crystal", amount: 2 }),
       reward({ kind: "stat-tome", upgradeId: "health" }, "tome"),
-      reward({ kind: "unit-unlock", unlockId: asCampaignContentId("maceman"), objectName: ObjectNames.TivaraMacemanMale }, "unit"),
+      reward(
+        { kind: "unit-unlock", unlockId: asCampaignContentId("maceman"), objectName: ObjectNames.TivaraMacemanMale },
+        "unit"
+      ),
       reward({ kind: "item", itemDefinitionId: "relic", quantity: 1, consumable: false }, "item")
     ]);
     const request = victoryRequest(bundle.rewards.map((item) => item.id));
@@ -149,12 +152,7 @@ describe("CampaignRewardCommitService", () => {
     const bundle = rewardBundle([optional]);
 
     const stale = service.commit("profile-1", profile, victoryRequest([optional.id]), bundle);
-    const ineligible = service.commit(
-      "profile-2",
-      { ...profile, revision: 0 },
-      victoryRequest([optional.id]),
-      bundle
-    );
+    const ineligible = service.commit("profile-2", { ...profile, revision: 0 }, victoryRequest([optional.id]), bundle);
 
     expect(stale.rejectionReason).toContain("Profile revision changed");
     expect(ineligible.skippedRewardIds).toEqual(["optional"]);

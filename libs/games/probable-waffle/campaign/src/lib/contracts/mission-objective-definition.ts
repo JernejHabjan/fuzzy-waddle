@@ -63,7 +63,9 @@ export interface MissionObjectiveDefinition {
   readonly id: MissionObjectiveId;
   readonly kind: CampaignObjectiveKind;
   /** Objective state is synchronized and shared unless an owning participant slot is explicitly declared. */
-  readonly ownership?: { readonly kind: "shared" } | { readonly kind: "individual"; readonly slotId: MissionParticipantSlotId };
+  readonly ownership?:
+    | { readonly kind: "shared" }
+    | { readonly kind: "individual"; readonly slotId: MissionParticipantSlotId };
   readonly titleTextId: MissionTextId;
   readonly descriptionTextId?: MissionTextId;
   readonly reveal: MissionConditionDefinition;

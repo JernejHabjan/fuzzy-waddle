@@ -5,39 +5,34 @@ import { AOTA_CAMPAIGN_MISSIONS } from "../catalog/ashes-of-the-ancients-content
 
 describe("CampaignRunIntegrityService", () => {
   it("invalidates monotonically and keeps pending discoveries synchronized with the launch snapshot", () => {
-    const state = createCampaignMissionRuntimeState(
-      "ashes-of-the-ancients",
-      mission(),
-      undefined,
-      {
-        baseProfileRevision: 0,
-        profile: {
-          schemaVersion: 1,
-          revision: 0,
-          wallet: { balances: { crystal: 1 } },
-          discoveredUpgradeIds: [],
-          permanentUpgradeIds: [],
-          purchasedUpgradeIds: [],
-          unlockIds: [],
-          heroProgress: {},
-          factionProgress: {},
-          loadouts: {},
-          inventory: [],
-          rewardClaimIds: []
-        },
-        effectiveLoadout: {
-          selectedLoadoutIds: [],
-          upgradeIds: [],
-          unlockIds: [],
-          inventoryItemIds: [],
-          modifiers: [],
-          unitLevelCaps: {},
-          restrictionReasons: []
-        },
-        temporaryBoostIds: [],
-        pendingRewardIds: []
-      }
-    );
+    const state = createCampaignMissionRuntimeState("ashes-of-the-ancients", mission(), undefined, {
+      baseProfileRevision: 0,
+      profile: {
+        schemaVersion: 1,
+        revision: 0,
+        wallet: { balances: { crystal: 1 } },
+        discoveredUpgradeIds: [],
+        permanentUpgradeIds: [],
+        purchasedUpgradeIds: [],
+        unlockIds: [],
+        heroProgress: {},
+        factionProgress: {},
+        loadouts: {},
+        inventory: [],
+        rewardClaimIds: []
+      },
+      effectiveLoadout: {
+        selectedLoadoutIds: [],
+        upgradeIds: [],
+        unlockIds: [],
+        inventoryItemIds: [],
+        modifiers: [],
+        unitLevelCaps: {},
+        restrictionReasons: []
+      },
+      temporaryBoostIds: [],
+      pendingRewardIds: []
+    });
     const service = new CampaignRunIntegrityService(state);
 
     service.discoverReward("secret-tome");

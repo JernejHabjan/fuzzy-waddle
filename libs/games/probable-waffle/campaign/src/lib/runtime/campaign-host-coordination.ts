@@ -37,7 +37,8 @@ export class LocalCampaignHostCoordinationPort extends CampaignHostCoordinationP
   }
 
   hostMigrated(playerNumber: number): void {
-    if (!Number.isSafeInteger(playerNumber) || playerNumber < 1) throw new Error("Campaign host player number is invalid");
+    if (!Number.isSafeInteger(playerNumber) || playerNumber < 1)
+      throw new Error("Campaign host player number is invalid");
     this.host = playerNumber;
   }
 }

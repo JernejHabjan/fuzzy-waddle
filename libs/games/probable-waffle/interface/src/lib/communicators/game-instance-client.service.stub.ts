@@ -115,7 +115,10 @@ export const gameInstanceClientServiceStub = {
   ): Promise<void> {
     return Promise.resolve();
   },
-  async loadSavedGameData(gameInstanceData: ProbableWaffleGameInstanceData, _campaignSaveContext?: unknown): Promise<void> {
+  async loadSavedGameData(
+    gameInstanceData: ProbableWaffleGameInstanceData,
+    _campaignSaveContext?: unknown
+  ): Promise<void> {
     return Promise.resolve();
   },
   async saveGameInstance(data: Record<string, any>): Promise<void> {

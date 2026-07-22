@@ -4,19 +4,14 @@
   "chapterId": "two-homelands",
   "revision": 1,
   "mapId": 3,
-  "prerequisites": [
-    "slingshooters-and-wolves"
-  ],
+  "prerequisites": ["slingshooters-and-wolves"],
   "catalogue": {
     "order": 3,
     "title": "Owl & Skaduwee Crystal",
     "faction": "skaduwee",
     "environment": "Skaduwee ice fields",
     "briefing": "A watchful guide leads Skaduwee to a crystal beneath the ice.",
-    "objectiveSummaries": [
-      "Find the crystal",
-      "Hold the excavation"
-    ]
+    "objectiveSummaries": ["Find the crystal", "Hold the excavation"]
   },
   "participants": [
     {
@@ -35,9 +30,7 @@
     "loadoutSlotCount": 1
   },
   "initialState": {
-    "activePhaseIds": [
-      "opening"
-    ],
+    "activePhaseIds": ["opening"],
     "facts": [
       {
         "id": "mission-complete",
@@ -87,9 +80,7 @@
       "transitions": [
         {
           "id": "begin-operation",
-          "targetPhaseIds": [
-            "operation"
-          ],
+          "targetPhaseIds": ["operation"],
           "condition": {
             "kind": "always"
           },
@@ -270,23 +261,10 @@
       }
     ],
     "plannedScenarioReferences": {
-      "actors": [
-        "guide-owl",
-        "owlery",
-        "crystal-mage",
-        "ice-catapult"
-      ],
-      "regions": [
-        "icicle-pass",
-        "crystal-chamber",
-        "owlery-defense-zone"
-      ],
-      "routes": [
-        "owl-flight-route"
-      ],
-      "spawnSets": [
-        "owlery-attack-wave"
-      ]
+      "actors": ["guide-owl", "owlery", "crystal-mage", "ice-catapult"],
+      "regions": ["icicle-pass", "crystal-chamber", "owlery-defense-zone"],
+      "routes": ["owl-flight-route"],
+      "spawnSets": ["owlery-attack-wave"]
     },
     "mechanics": [
       "Catapult targeting against environmental icicles",

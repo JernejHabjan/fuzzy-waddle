@@ -30,20 +30,24 @@ export class GameSaveService extends GameSavePort implements GameSaveServiceInte
     const now = new Date().toISOString();
     const existing = await this.list();
     const overwrite = request.overwriteSaveId
-      ? existing.filter(isSupportedGameSaveRecord).find(
-          (record) =>
-            record.id === request.overwriteSaveId &&
-            record.scope === request.scope &&
-            record.kind === GameSaveKind.Manual &&
-            this.hasMatchingSaveScope(record, request)
-        )
-      : request.kind === GameSaveKind.Quicksave
-        ? existing.filter(isSupportedGameSaveRecord).find(
+      ? existing
+          .filter(isSupportedGameSaveRecord)
+          .find(
             (record) =>
-              record.kind === GameSaveKind.Quicksave &&
+              record.id === request.overwriteSaveId &&
               record.scope === request.scope &&
+              record.kind === GameSaveKind.Manual &&
               this.hasMatchingSaveScope(record, request)
           )
+      : request.kind === GameSaveKind.Quicksave
+        ? existing
+            .filter(isSupportedGameSaveRecord)
+            .find(
+              (record) =>
+                record.kind === GameSaveKind.Quicksave &&
+                record.scope === request.scope &&
+                this.hasMatchingSaveScope(record, request)
+            )
         : undefined;
     const record: GameSaveRecord = {
       id: overwrite?.id ?? crypto.randomUUID(),
@@ -81,7 +85,11 @@ export class GameSaveService extends GameSavePort implements GameSaveServiceInte
     const records = await this.repository.list();
     const decoded = await Promise.all(
       records.map(async (record) => {
-        if (record.formatVersion !== 1 && record.formatVersion !== 2 && record.formatVersion !== GAME_SAVE_FORMAT_VERSION) {
+        if (
+          record.formatVersion !== 1 &&
+          record.formatVersion !== 2 &&
+          record.formatVersion !== GAME_SAVE_FORMAT_VERSION
+        ) {
           return unsupportedGameSaveRecord(record, `Save format ${record.formatVersion} is not supported`).record;
         }
         try {
@@ -101,13 +109,15 @@ export class GameSaveService extends GameSavePort implements GameSaveServiceInte
   }
 
   async continueCampaignMission(missionId: CampaignMissionId): Promise<GameSaveRecord | undefined> {
-    return (await this.list()).filter(isSupportedGameSaveRecord).find(
-      (record) =>
-        record.scope === GameSaveScope.Campaign &&
-        record.kind !== GameSaveKind.Archive &&
-        record.campaign?.missionId === missionId &&
-        record.gameInstanceData.gameInstanceMetadataData?.type !== ProbableWaffleGameInstanceType.Replay
-    );
+    return (await this.list())
+      .filter(isSupportedGameSaveRecord)
+      .find(
+        (record) =>
+          record.scope === GameSaveScope.Campaign &&
+          record.kind !== GameSaveKind.Archive &&
+          record.campaign?.missionId === missionId &&
+          record.gameInstanceData.gameInstanceMetadataData?.type !== ProbableWaffleGameInstanceType.Replay
+      );
   }
 
   async rename(id: string, name: string): Promise<void> {
@@ -144,14 +154,16 @@ export class GameSaveService extends GameSavePort implements GameSaveServiceInte
       newest.scope === GameSaveScope.Campaign
         ? newest.campaign?.missionId
         : newest.gameInstanceData.gameInstanceMetadataData?.gameInstanceId;
-    const autosaves = (await this.list()).filter(isSupportedGameSaveRecord).filter(
-      (record) =>
-        record.kind === GameSaveKind.Autosave &&
-        record.scope === newest.scope &&
-        (record.scope === GameSaveScope.Campaign
-          ? record.campaign?.missionId === scopeKey && record.campaign?.runId === newest.campaign?.runId
-          : record.gameInstanceData.gameInstanceMetadataData?.gameInstanceId === scopeKey)
-    );
+    const autosaves = (await this.list())
+      .filter(isSupportedGameSaveRecord)
+      .filter(
+        (record) =>
+          record.kind === GameSaveKind.Autosave &&
+          record.scope === newest.scope &&
+          (record.scope === GameSaveScope.Campaign
+            ? record.campaign?.missionId === scopeKey && record.campaign?.runId === newest.campaign?.runId
+            : record.gameInstanceData.gameInstanceMetadataData?.gameInstanceId === scopeKey)
+      );
     await Promise.all(autosaves.slice(10).map((record) => this.delete(record.id)));
   }
 

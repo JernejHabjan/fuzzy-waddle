@@ -138,9 +138,7 @@ describe("CampaignMissionRuntime", () => {
           trigger: { kind: "always" },
           requiredActions: [action("set-fact", "checkpoint-ready", { factId: id("safe"), value: true })],
           savePolicy: "when-stable",
-          retryCleanupActions: [
-            action("set-fact", "checkpoint-retry-cleanup", { factId: id("safe"), value: false })
-          ]
+          retryCleanupActions: [action("set-fact", "checkpoint-retry-cleanup", { factId: id("safe"), value: false })]
         }
       ]
     };

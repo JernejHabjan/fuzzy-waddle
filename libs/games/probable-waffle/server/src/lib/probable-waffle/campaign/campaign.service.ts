@@ -156,8 +156,7 @@ export class CampaignServerService implements CampaignProfileServerServiceInterf
     }
     const completed = new Set(profile.completedMissions.map((completion) => completion.missionId));
     const requiresDeveloperOverride =
-      mission.availability !== "playable" ||
-      mission.prerequisites.some((prerequisite) => !completed.has(prerequisite));
+      mission.availability !== "playable" || mission.prerequisites.some((prerequisite) => !completed.has(prerequisite));
     if (requiresDeveloperOverride && !request.developerOverride) {
       throw new ConflictException("Campaign mission is locked or planned");
     }
@@ -170,24 +169,22 @@ export class CampaignServerService implements CampaignProfileServerServiceInterf
     if (existing && (existing.user_id !== userId || existing.mission_id !== request.missionId)) {
       throw new ConflictException("Campaign run ID belongs to another run");
     }
-    const { error } = await this.supabaseProviderService.supabaseClient
-      .from("probable_waffle_campaign_runs")
-      .upsert(
-        {
-          id: request.runId,
-          user_id: userId,
-          mission_id: request.missionId,
-          mission_revision: request.missionRevision,
-          difficulty: request.difficulty,
-          base_profile_revision: request.baseProfileRevision,
-          selected_loadout_ids: [...request.selectedLoadoutIds],
-          loadout_snapshot_hash: request.loadoutSnapshotHash,
-          integrity: request.developerOverride
-            ? { eligibleForRewards: false, invalidationReasons: ["developer-content-override"] }
-            : { eligibleForRewards: true, invalidationReasons: [] }
-        },
-        { onConflict: "id" }
-      );
+    const { error } = await this.supabaseProviderService.supabaseClient.from("probable_waffle_campaign_runs").upsert(
+      {
+        id: request.runId,
+        user_id: userId,
+        mission_id: request.missionId,
+        mission_revision: request.missionRevision,
+        difficulty: request.difficulty,
+        base_profile_revision: request.baseProfileRevision,
+        selected_loadout_ids: [...request.selectedLoadoutIds],
+        loadout_snapshot_hash: request.loadoutSnapshotHash,
+        integrity: request.developerOverride
+          ? { eligibleForRewards: false, invalidationReasons: ["developer-content-override"] }
+          : { eligibleForRewards: true, invalidationReasons: [] }
+      },
+      { onConflict: "id" }
+    );
     if (error) throw error;
   }
 
@@ -196,7 +193,9 @@ export class CampaignServerService implements CampaignProfileServerServiceInterf
     const client = this.supabaseProviderService.supabaseClient;
     const { data: run, error: readError } = await client
       .from("probable_waffle_campaign_runs")
-      .select("id, mission_id, mission_revision, base_profile_revision, outcome, integrity, commit_status, commit_result")
+      .select(
+        "id, mission_id, mission_revision, base_profile_revision, outcome, integrity, commit_status, commit_result"
+      )
       .eq("id", request.runId)
       .eq("user_id", userId)
       .maybeSingle();
@@ -406,11 +405,7 @@ function masteryMetadata(profile: CampaignProfile, missionId: CampaignMissionId)
   return (profile.missionMastery[missionId] ?? {}) as unknown as Json;
 }
 
-function progressionDelta(
-  before: CampaignProfile,
-  after: CampaignProfile,
-  appliedRewardIds: readonly string[]
-): Json {
+function progressionDelta(before: CampaignProfile, after: CampaignProfile, appliedRewardIds: readonly string[]): Json {
   return {
     beforeRevision: before.progression.revision,
     afterRevision: after.progression.revision,
@@ -463,9 +458,6 @@ function canonicalJson(value: unknown): string {
   return JSON.stringify(value) ?? "undefined";
 }
 
-function clientTable(
-  provider: SupabaseProviderService,
-  table: "probable_waffle_campaign_progress"
-) {
+function clientTable(provider: SupabaseProviderService, table: "probable_waffle_campaign_progress") {
   return provider.supabaseClient.from(table);
 }

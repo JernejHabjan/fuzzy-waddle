@@ -4,19 +4,14 @@
   "chapterId": "crystal-war",
   "revision": 1,
   "mapId": 3,
-  "prerequisites": [
-    "sailing-towards-the-new-future"
-  ],
+  "prerequisites": ["sailing-towards-the-new-future"],
   "catalogue": {
     "order": 1,
     "title": "The First and Last Dinner",
     "faction": "both",
     "environment": "Harbor city",
     "briefing": "A tense meal is the last chance for peace.",
-    "objectiveSummaries": [
-      "Attend the summit",
-      "Escape the ambush"
-    ]
+    "objectiveSummaries": ["Attend the summit", "Escape the ambush"]
   },
   "participants": [
     {
@@ -46,9 +41,7 @@
     "loadoutSlotCount": 1
   },
   "initialState": {
-    "activePhaseIds": [
-      "opening"
-    ],
+    "activePhaseIds": ["opening"],
     "facts": [
       {
         "id": "mission-complete",
@@ -98,9 +91,7 @@
       "transitions": [
         {
           "id": "begin-operation",
-          "targetPhaseIds": [
-            "operation"
-          ],
+          "targetPhaseIds": ["operation"],
           "condition": {
             "kind": "always"
           },
@@ -281,22 +272,10 @@
       }
     ],
     "plannedScenarioReferences": {
-      "actors": [
-        "tivara-delegate",
-        "skaduwee-delegate",
-        "captured-scout"
-      ],
-      "regions": [
-        "feast-ground",
-        "resource-race-area",
-        "crystal-dispute-site"
-      ],
-      "routes": [
-        "scouting-route"
-      ],
-      "spawnSets": [
-        "war-opening-forces"
-      ]
+      "actors": ["tivara-delegate", "skaduwee-delegate", "captured-scout"],
+      "regions": ["feast-ground", "resource-race-area", "crystal-dispute-site"],
+      "routes": ["scouting-route"],
+      "spawnSets": ["war-opening-forces"]
     },
     "mechanics": [
       "Parallel faction objectives",
@@ -308,14 +287,8 @@
       "Competitive counters affect narrative presentation but not profile progression fairness."
     ],
     "dependencies": [],
-    "missingAssets": [
-      "Feast props and diplomatic staging",
-      "Capture sequence and opening-war armies"
-    ],
-    "tests": [
-      "Finish both parallel scout chains in either order",
-      "Resolve tied and uneven resource-race outcomes"
-    ],
+    "missingAssets": ["Feast props and diplomatic staging", "Capture sequence and opening-war armies"],
+    "tests": ["Finish both parallel scout chains in either order", "Resolve tied and uneven resource-race outcomes"],
     "definitionOfDone": [
       "The transition from cooperation to conflict remains understandable",
       "Parallel completion order cannot skip the capture or crystal reveal"

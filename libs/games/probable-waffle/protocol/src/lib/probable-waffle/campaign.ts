@@ -304,12 +304,7 @@ export interface CampaignVictoryCommitResponse {
   readonly profileData: CampaignProfileData;
 }
 
-export type CampaignProgressionModifierStat =
-  | "maximum-health"
-  | "damage"
-  | "armor"
-  | "movement-speed"
-  | "cooldown";
+export type CampaignProgressionModifierStat = "maximum-health" | "damage" | "armor" | "movement-speed" | "cooldown";
 
 export interface CampaignProgressionModifier {
   readonly stat: CampaignProgressionModifierStat;
@@ -479,17 +474,16 @@ export interface EncodedGameSaveRecord extends Omit<GameSaveRecord, "gameInstanc
     runId: string;
     runtimeSchemaVersion?: number;
     profileRevision?: number;
-    selectedLoadoutIds?: CampaignLoadoutId[];
+    selectedLoadoutIds?: readonly CampaignLoadoutId[];
     loadoutSnapshotHash?: string;
     checkpointId?: string;
     participantCount?: number;
-    participantProgressionSnapshots?: CampaignParticipantProgressionSnapshot[];
+    participantProgressionSnapshots?: readonly CampaignParticipantProgressionSnapshot[];
   };
   encodedGameInstanceData: string;
 }
 
-export interface UnsupportedGameSaveRecord
-  extends Omit<EncodedGameSaveRecord, "encodedGameInstanceData"> {
+export interface UnsupportedGameSaveRecord extends Omit<EncodedGameSaveRecord, "encodedGameInstanceData"> {
   readonly compatibility: {
     readonly status: "unsupported";
     readonly reason: string;

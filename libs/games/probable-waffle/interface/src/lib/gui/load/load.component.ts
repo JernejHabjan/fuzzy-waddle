@@ -68,12 +68,14 @@ export class LoadComponent implements OnInit {
       .sort((a, b) => b.newestAt.localeCompare(a.newestAt));
   });
   protected readonly filteredSaves = computed(() =>
-    this.saves().filter(isSupportedGameSaveRecord).filter(
-      (save) =>
-        save.gameInstanceData.gameInstanceMetadataData?.type !== ProbableWaffleGameInstanceType.Replay &&
-        (!this.scopeFilter || save.scope === this.scopeFilter) &&
-        (!this.missionScopeId || save.campaign?.missionId === this.missionScopeId)
-    )
+    this.saves()
+      .filter(isSupportedGameSaveRecord)
+      .filter(
+        (save) =>
+          save.gameInstanceData.gameInstanceMetadataData?.type !== ProbableWaffleGameInstanceType.Replay &&
+          (!this.scopeFilter || save.scope === this.scopeFilter) &&
+          (!this.missionScopeId || save.campaign?.missionId === this.missionScopeId)
+      )
   );
   protected readonly skirmishSaves = computed(() =>
     this.filteredSaves().filter((save) => save.scope === GameSaveScope.Skirmish)

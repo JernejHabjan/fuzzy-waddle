@@ -73,7 +73,7 @@ export class CampaignMissionDirector {
     return new CampaignMissionDirector(scene, outcomeHandler, trustedHooks);
   }
 
-  private constructor(
+  constructor(
     private readonly scene: ProbableWaffleScene,
     private readonly outcomeHandler: CampaignMissionOutcomeHandler,
     trustedHooks: CampaignTrustedHookRegistry
@@ -113,7 +113,9 @@ export class CampaignMissionDirector {
         : "keyboard-mouse"
     );
     const seenCinematics = new LocalCampaignSeenCinematicStore();
-    for (const cinematicId of context.seenCinematicIds ?? []) seenCinematics.markSeen(context.campaignId, cinematicId);
+    for (const cinematicId of context.seenCinematicIds ?? []) {
+      seenCinematics.markSeen(context.campaignId, asCampaignContentId<"cinematic">(cinematicId));
+    }
     this.cinematicPresentation = new PhaserCampaignCinematicPresentationService(
       scene,
       context.campaignId,
@@ -151,8 +153,8 @@ export class CampaignMissionDirector {
     if (this.runtime.state.initialized) {
       tickService.fastForwardTo(this.runtime.state.integrity.lastProcessedTick);
     }
-    const checkpointId = this.scene.baseGameData.gameInstance.gameInstanceMetadata.data.campaignContext?.restoredSaveContext
-      ?.checkpointId;
+    const checkpointId =
+      this.scene.baseGameData.gameInstance.gameInstanceMetadata.data.campaignContext?.restoredSaveContext?.checkpointId;
     if (checkpointId) this.publish(this.runtime.retryFromCheckpoint(checkpointId, tickService.currentTick).effects);
     const initialResult = this.runtime.start(tickService.currentTick);
     this.publish(initialResult.effects);

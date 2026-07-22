@@ -215,11 +215,7 @@ function rewardClaimId(bundle: MissionRewardBundle, reward: MissionRewardDefinit
 }
 
 function isTemporaryReward(reward: MissionRewardDefinition): boolean {
-  return (
-    reward.kind === "temporary-boost" ||
-    reward.kind === "temporary-resource" ||
-    reward.kind === "temporary-unit"
-  );
+  return reward.kind === "temporary-boost" || reward.kind === "temporary-resource" || reward.kind === "temporary-unit";
 }
 
 function rewardRegistrationError(

@@ -28,7 +28,7 @@ describe("Dreams playable mission", () => {
     (difficulty) => {
       const result = completeDream({ difficulty, skipped: false, roundTripCheckpoints: true });
 
-      expect(result.status).toBe("awaiting-outcome");
+      expect(result.status).toBe("victory");
       expect(result.facts["dream-witnessed"]).toBe(true);
       expect(result.activeControlPlayerNumber).toBe(1);
       expect(result.claimedRewardIds).toEqual(["unlock-cyclops-and-sheep"]);
@@ -153,6 +153,7 @@ function completeDream(options: {
   expect(harness.snapshot().activeCinematicId).toBe("ashes-title-cinematic");
   if (options.roundTripCheckpoints) harness.roundTrip();
   finishCinematic(harness, "ashes-title-cinematic", options.skipped);
+  harness.advance(1);
   return harness.snapshot();
 }
 

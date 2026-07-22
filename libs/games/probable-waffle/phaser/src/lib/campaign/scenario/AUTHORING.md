@@ -43,6 +43,7 @@ After editing a scenario map:
 - Mutating commands must go through `CampaignDiagnosticsService.execute`; production rejects them and development invalidates reward integrity before execution. Facts and counters must opt in with `debugMutable`.
 - Use `CampaignMissionTestHarness` for rendering-free fixed-tick smoke paths. Advance explicit ticks/events, call `roundTrip()` at authored checkpoints, and compare `serialized()` output for deterministic continuation.
 - Keep map focus/highlight local. Mission conditions/actions must continue to query stable scenario references rather than debug geometry.
+
 3. Run `npx nx test probable-waffle-phaser --runInBand` to validate prefab/component pairs, both campaign maps, stable-ID extraction, region boundaries, and actor-role persistence.
 4. Run `npx nx lint probable-waffle-phaser` and the affected portal build.
 

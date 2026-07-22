@@ -4,19 +4,14 @@
   "chapterId": "crystal-war",
   "revision": 1,
   "mapId": 3,
-  "prerequisites": [
-    "we-had-enough"
-  ],
+  "prerequisites": ["we-had-enough"],
   "catalogue": {
     "order": 0,
     "title": "Sailing Towards the New Future",
     "faction": "both",
     "environment": "Crystal coast",
     "briefing": "Both factions sail toward a future neither fully trusts.",
-    "objectiveSummaries": [
-      "Reach the coast",
-      "Defend the fleet"
-    ]
+    "objectiveSummaries": ["Reach the coast", "Defend the fleet"]
   },
   "participants": [
     {
@@ -46,9 +41,7 @@
     "loadoutSlotCount": 1
   },
   "initialState": {
-    "activePhaseIds": [
-      "opening"
-    ],
+    "activePhaseIds": ["opening"],
     "facts": [
       {
         "id": "mission-complete",
@@ -98,9 +91,7 @@
       "transitions": [
         {
           "id": "begin-operation",
-          "targetPhaseIds": [
-            "operation"
-          ],
+          "targetPhaseIds": ["operation"],
           "condition": {
             "kind": "always"
           },
@@ -281,22 +272,10 @@
       }
     ],
     "plannedScenarioReferences": {
-      "actors": [
-        "tivara-flagship",
-        "skaduwee-flagship",
-        "tameable-shark"
-      ],
-      "regions": [
-        "pirate-blockade",
-        "tsunami-channel",
-        "dead-wind-zone"
-      ],
-      "routes": [
-        "fleet-route"
-      ],
-      "spawnSets": [
-        "pirate-fleet"
-      ]
+      "actors": ["tivara-flagship", "skaduwee-flagship", "tameable-shark"],
+      "regions": ["pirate-blockade", "tsunami-channel", "dead-wind-zone"],
+      "routes": ["fleet-route"],
+      "spawnSets": ["pirate-fleet"]
     },
     "mechanics": [
       "Naval faction-control switching",
@@ -312,10 +291,7 @@
       "Naval hazard presentation and fleet route",
       "Pirate ships, tsunami effects, and tameable shark behavior"
     ],
-    "tests": [
-      "Complete each naval hazard in solo control",
-      "Keep both co-op fleets synchronized through the tsunami"
-    ],
+    "tests": ["Complete each naval hazard in solo control", "Keep both co-op fleets synchronized through the tsunami"],
     "definitionOfDone": [
       "Every hazard has a deterministic telegraph and recovery path",
       "Fleet switching never strands commands on the inactive faction"

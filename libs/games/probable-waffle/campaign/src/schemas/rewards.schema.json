@@ -171,39 +171,48 @@
         "allOf": [
           {
             "if": { "properties": { "kind": { "const": "currency" } } },
-            "then": { "required": ["currencyId", "amount"] }
+            "then": { "properties": { "currencyId": true, "amount": true }, "required": ["currencyId", "amount"] }
           },
           {
             "if": { "properties": { "kind": { "enum": ["story-unlock", "faction-unlock"] } } },
-            "then": { "required": ["unlockId"] }
+            "then": { "properties": { "unlockId": true }, "required": ["unlockId"] }
           },
           {
             "if": { "properties": { "kind": { "const": "stat-tome" } } },
-            "then": { "required": ["upgradeId"] }
+            "then": { "properties": { "upgradeId": true }, "required": ["upgradeId"] }
           },
           {
             "if": { "properties": { "kind": { "const": "item" } } },
-            "then": { "required": ["itemDefinitionId", "quantity", "consumable"] }
+            "then": {
+              "properties": { "itemDefinitionId": true, "quantity": true, "consumable": true },
+              "required": ["itemDefinitionId", "quantity", "consumable"]
+            }
           },
           {
             "if": { "properties": { "kind": { "enum": ["unit-unlock", "building-unlock"] } } },
-            "then": { "required": ["unlockId", "objectName"] }
+            "then": { "properties": { "unlockId": true, "objectName": true }, "required": ["unlockId", "objectName"] }
           },
           {
             "if": { "properties": { "kind": { "const": "technology-unlock" } } },
-            "then": { "required": ["unlockId", "researchType"] }
+            "then": {
+              "properties": { "unlockId": true, "researchType": true },
+              "required": ["unlockId", "researchType"]
+            }
           },
           {
             "if": { "properties": { "kind": { "const": "temporary-boost" } } },
-            "then": { "required": ["temporaryBoostId"] }
+            "then": { "properties": { "temporaryBoostId": true }, "required": ["temporaryBoostId"] }
           },
           {
             "if": { "properties": { "kind": { "const": "temporary-resource" } } },
-            "then": { "required": ["resourceType", "amount"] }
+            "then": {
+              "properties": { "resourceType": true, "amount": true },
+              "required": ["resourceType", "amount"]
+            }
           },
           {
             "if": { "properties": { "kind": { "const": "temporary-unit" } } },
-            "then": { "required": ["objectName", "count"] }
+            "then": { "properties": { "objectName": true, "count": true }, "required": ["objectName", "count"] }
           }
         ]
       }

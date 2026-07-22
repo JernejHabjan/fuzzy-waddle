@@ -1125,11 +1125,7 @@ export class CampaignPhaserWorldAdapter
     return leaked.length > 0 ? executionFailed(`Disguise '${disguiseId}' failed cleanup`) : completed();
   }
 
-  private registerQuestCarry(
-    ownerToken: string,
-    resourceId: string,
-    state: CampaignMissionRuntimeJsonValue
-  ): void {
+  private registerQuestCarry(ownerToken: string, resourceId: string, state: CampaignMissionRuntimeJsonValue): void {
     if (!isRecord(state)) return;
     const actorId = state["actorId"];
     const previousPosition = vector3FromState(state["previousPosition"]);
@@ -1154,11 +1150,7 @@ export class CampaignPhaserWorldAdapter
     }
   }
 
-  private registerDisguise(
-    ownerToken: string,
-    resourceId: string,
-    state: CampaignMissionRuntimeJsonValue
-  ): void {
+  private registerDisguise(ownerToken: string, resourceId: string, state: CampaignMissionRuntimeJsonValue): void {
     if (!isRecord(state) || !Array.isArray(state["previous"])) return;
     const previous = state["previous"];
     this.resources.register(ownerToken, resourceId, () => {
@@ -1171,7 +1163,7 @@ export class CampaignPhaserWorldAdapter
         const actor = this.actor(actorId as ScenarioActorId);
         if (!actor) continue;
         if (typeof disguise === "string") actor.setData("campaign.disguise", disguise);
-        else actor.removeData("campaign.disguise");
+        else actor.data?.remove("campaign.disguise");
         (actor as unknown as Phaser.GameObjects.Components.Alpha).setAlpha?.(opacity);
       }
     });

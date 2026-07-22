@@ -30,7 +30,7 @@ describe("GameSaveService", () => {
     chapterId: "prologue",
     missionId: "dreams",
     runId,
-    missionRevision: 1,
+    missionRevision: runtime.missionRevision,
     runtimeSchemaVersion: runtime.schemaVersion,
     profileRevision: 0,
     participantCount: 1

@@ -34,7 +34,7 @@ describe("Cyclops & Sheep playable mission", () => {
     (difficulty) => {
       const result = completeRiverCrossing({ difficulty, skipped: false, roundTrip: true });
 
-      expect(result.state.status).toBe("awaiting-outcome");
+      expect(result.state.status).toBe("victory");
       expect(result.state.facts["mission-complete"]).toBe(true);
       expect(result.state.facts["cyclops-fooled"]).toBe(true);
       expect(result.state.missionItems).toEqual({ "boar-tusk": 0, shears: 0, "sheep-wool": 0 });
@@ -93,8 +93,8 @@ describe("Cyclops & Sheep playable mission", () => {
     harness.advance(1);
 
     expect(harness.snapshot().facts["mission-failed"]).toBe(true);
-    expect(harness.snapshot().status).toBe("awaiting-outcome");
-    expect(harness.snapshot().objectives["protagonist-survival"]?.status).toBe("completed");
+    expect(harness.snapshot().status).toBe("defeat");
+    expect(harness.snapshot().objectives["protagonist-survival"]?.status).toBe("active");
   });
 
   it("restores critical quest actors and acquired items instead of softlocking", () => {
@@ -115,7 +115,7 @@ describe("Cyclops & Sheep playable mission", () => {
     const damaged = boar.harness.snapshot();
     damaged.missionItems = { "boar-tusk": 1, shears: 0 };
     const restored = createHarness(boar.world, "normal", damaged);
-    restored.advance(damaged.integrity.lastProcessedTick + 1);
+    restored.advance(damaged.integrity.lastProcessedTick + 31);
 
     expect(restored.snapshot().missionItems).toMatchObject({ "boar-tusk": 2, shears: 1 });
   });
@@ -204,33 +204,37 @@ function completeRiverCrossing(options: {
   harness.advance(2);
   world.enter("captive-rescue-region");
   harness.advance(1);
+  advanceUntil(harness, (state) => state.activeCinematicId === "cyclops-warning-cinematic");
   expect(harness.snapshot().activeCinematicId).toBe("cyclops-warning-cinematic");
   roundTripActiveCinematic(harness, options.roundTrip);
   finishCinematic(harness, "cyclops-warning-cinematic", options.skipped);
+  advanceUntil(harness, (state) => state.activePhaseIds.includes("boar-tusks"));
 
   world.alive.set("tusk-boar", false);
-  harness.advance(1);
+  advanceUntil(harness, (state) => state.facts["tusks-acquired"] === true);
   world.enter("sheep-clearing-region");
-  harness.advance(1);
+  advanceUntil(harness, (state) => state.activeCinematicId === "sheep-clearing-cinematic");
   expect(harness.snapshot().activeCinematicId).toBe("sheep-clearing-cinematic");
   roundTripActiveCinematic(harness, options.roundTrip);
   finishCinematic(harness, "sheep-clearing-cinematic", options.skipped);
   harness.advance(220);
   world.killEncounter("corpy-counterattack");
-  harness.advance(2);
+  advanceUntil(harness, (state) => state.activePhaseIds.includes("prepare-disguise"));
 
   world.enter("disguise-preparation-region");
-  harness.advance(1);
+  advanceUntil(harness, (state) => state.facts["disguise-prepared"] === true);
   expect(harness.snapshot().ownedResources["disguise:party-sheep-disguise"]?.kind).toBe("disguise");
   if (options.roundTrip) harness.roundTrip();
   world.enter("cyclops-fool-region");
-  harness.advance(1);
+  advanceUntil(harness, (state) => state.activeCinematicId === "cyclops-fooled-cinematic");
   expect(harness.snapshot().activeCinematicId).toBe("cyclops-fooled-cinematic");
   roundTripActiveCinematic(harness, options.roundTrip);
   finishCinematic(harness, "cyclops-fooled-cinematic", options.skipped);
+  advanceUntil(harness, (state) => state.activeCinematicId === "mission-outro-cinematic");
   expect(harness.snapshot().activeCinematicId).toBe("mission-outro-cinematic");
   roundTripActiveCinematic(harness, options.roundTrip);
   finishCinematic(harness, "mission-outro-cinematic", options.skipped);
+  advanceUntil(harness, (state) => state.status === "victory");
 
   return { state: harness.snapshot(), world };
 }
@@ -255,7 +259,9 @@ function reachBoarPhase(difficulty: "story" | "normal" | "hard"): {
   harness.advance(2);
   world.enter("captive-rescue-region");
   harness.advance(1);
+  advanceUntil(harness, (state) => state.activeCinematicId === "cyclops-warning-cinematic");
   finishCinematic(harness, "cyclops-warning-cinematic", false);
+  advanceUntil(harness, (state) => state.activePhaseIds.includes("boar-tusks"));
   return { harness, world };
 }
 
@@ -264,18 +270,13 @@ function createHarness(
   difficulty: "story" | "normal" | "hard",
   restored?: CampaignMissionRuntimeState
 ): CampaignMissionTestHarness {
-  return new CampaignMissionTestHarness(
-    ASHES_OF_THE_ANCIENTS_CAMPAIGN_ID,
-    AOTA_CAMPAIGN_MISSIONS[1]!,
-    restored,
-    {
-      actionAdapter: world,
-      conditionAdapter: world,
-      encounterAdapter: world,
-      dialogue: AOTA_CAMPAIGN_CONTENT_REGISTRY.getDialogue("cyclops-and-sheep"),
-      difficulty
-    }
-  );
+  return new CampaignMissionTestHarness(ASHES_OF_THE_ANCIENTS_CAMPAIGN_ID, AOTA_CAMPAIGN_MISSIONS[1]!, restored, {
+    actionAdapter: world,
+    conditionAdapter: world,
+    encounterAdapter: world,
+    dialogue: AOTA_CAMPAIGN_CONTENT_REGISTRY.getDialogue("cyclops-and-sheep"),
+    difficulty
+  });
 }
 
 function finishCinematic(
@@ -295,6 +296,30 @@ function roundTripActiveCinematic(harness: CampaignMissionTestHarness, enabled: 
   const cinematicId = harness.snapshot().activeCinematicId;
   expect(cinematicId).toBeDefined();
   expect(harness.roundTrip().activeCinematicId).toBe(cinematicId);
+}
+
+function advanceUntil(
+  harness: CampaignMissionTestHarness,
+  predicate: (state: CampaignMissionRuntimeState) => boolean,
+  maximumTicks = 8
+): CampaignMissionRuntimeState {
+  for (let tick = 0; tick <= maximumTicks; tick += 1) {
+    const state = harness.snapshot();
+    if (predicate(state)) return state;
+    harness.advance(1);
+  }
+  const state = harness.snapshot();
+  throw new Error(
+    `Mission state did not settle within ${maximumTicks} ticks: ${JSON.stringify({
+      status: state.status,
+      activePhaseIds: state.activePhaseIds,
+      facts: state.facts,
+      encounters: state.encounters,
+      activeCinematicId: state.activeCinematicId,
+      actionContinuations: state.actionContinuations,
+      diagnostic: state.integrity.diagnostic
+    })}`
+  );
 }
 
 function gameplayProjection(state: CampaignMissionRuntimeState): unknown {
@@ -455,7 +480,10 @@ class RiverCrossingHarnessWorld
         return { actorRuntimeId, ownerPlayerNumber: actor.ownerPlayerNumber };
       })
     );
-    this.encounterActorIds.set(encounterId, actors.map((actor) => actor.actorRuntimeId));
+    this.encounterActorIds.set(
+      encounterId,
+      actors.map((actor) => actor.actorRuntimeId)
+    );
     return { status: "spawned", actors };
   }
 

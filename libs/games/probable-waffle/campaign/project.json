@@ -3,7 +3,7 @@
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/games/probable-waffle/campaign/src",
   "projectType": "library",
-  "tags": ["scope:probable-waffle", "type:gameplay"],
+  "tags": ["scope:probable-waffle", "type:protocol"],
   "targets": {
     "lint": {
       "executor": "@nx/eslint:lint"

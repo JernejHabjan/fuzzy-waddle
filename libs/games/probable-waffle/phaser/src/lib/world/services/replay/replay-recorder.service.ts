@@ -127,9 +127,7 @@ export class ReplayRecorderService {
               missionRevision: campaignContext.missionRevision,
               difficulty: campaignContext.difficulty ?? "normal",
               progressionSnapshot: structuredClone(progressionSnapshot),
-              participantProgressionSnapshots: structuredClone(
-                campaignContext.participantProgressionSnapshots ?? []
-              )
+              participantProgressionSnapshots: structuredClone(campaignContext.participantProgressionSnapshots ?? [])
             }
           : undefined
     };
@@ -175,9 +173,7 @@ export class ReplayRecorderService {
                 selectedLoadoutIds: [...(campaignContext.selectedLoadoutIds ?? [])],
                 loadoutSnapshotHash: campaignContext.loadoutSnapshotHash ?? "",
                 participantCount: Math.max(1, replayData.players.length),
-                participantProgressionSnapshots: structuredClone(
-                  campaignContext.participantProgressionSnapshots ?? []
-                )
+                participantProgressionSnapshots: structuredClone(campaignContext.participantProgressionSnapshots ?? [])
               }
             }
           : {})

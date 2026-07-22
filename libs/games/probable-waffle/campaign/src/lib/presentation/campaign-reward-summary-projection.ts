@@ -29,9 +29,7 @@ export function projectCampaignRewardSummary(
     .filter((reward) => applied.has(reward.id) || skipped.has(reward.id))
     .map((reward): CampaignRewardSummaryEntry => {
       const temporary =
-        reward.kind === "temporary-boost" ||
-        reward.kind === "temporary-resource" ||
-        reward.kind === "temporary-unit";
+        reward.kind === "temporary-boost" || reward.kind === "temporary-resource" || reward.kind === "temporary-unit";
       return {
         rewardId: reward.id,
         titleTextId: reward.titleTextId,

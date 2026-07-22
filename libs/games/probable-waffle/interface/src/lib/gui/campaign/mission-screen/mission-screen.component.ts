@@ -87,8 +87,7 @@ export class MissionScreenComponent implements OnInit {
       this.campaignProfileService.profileData().completedMissions.map((completion) => completion.missionId)
     );
     return (
-      mission.availability !== "playable" ||
-      mission.prerequisites.some((prerequisite) => !completed.has(prerequisite))
+      mission.availability !== "playable" || mission.prerequisites.some((prerequisite) => !completed.has(prerequisite))
     );
   });
   protected readonly effectiveLoadout = computed(() => {

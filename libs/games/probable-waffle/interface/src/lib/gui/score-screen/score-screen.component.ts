@@ -38,7 +38,9 @@ export class ScoreScreenComponent implements OnInit, OnDestroy {
   protected campaignContext?: CampaignGameContext;
   protected readonly rewardResult = this.campaignProfileService.lastCommitResult;
   protected readonly missionMastery = computed(() =>
-    this.campaignContext ? this.campaignProfileService.profile().missionMastery[this.campaignContext.missionId] : undefined
+    this.campaignContext
+      ? this.campaignProfileService.profile().missionMastery[this.campaignContext.missionId]
+      : undefined
   );
 
   protected changeTab = (scoreTable: string) => {
@@ -138,9 +140,7 @@ export class ScoreScreenComponent implements OnInit, OnDestroy {
     const context = this.campaignContext;
     await this.gameInstanceClientService.leaveScoreScreen(false);
     await this.router.navigate(
-      context && replayMission
-        ? ["/aota/campaign", context.chapterId, context.missionId]
-        : ["/aota/campaign"]
+      context && replayMission ? ["/aota/campaign", context.chapterId, context.missionId] : ["/aota/campaign"]
     );
   }
 

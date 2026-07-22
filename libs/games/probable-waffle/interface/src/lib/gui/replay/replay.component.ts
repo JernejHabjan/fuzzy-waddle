@@ -25,9 +25,11 @@ export class ReplayComponent implements OnInit {
   private readonly router = inject(Router);
   protected gameInstanceDataRecords: GameSaveRecord[] = [];
   async ngOnInit(): Promise<void> {
-    this.gameInstanceDataRecords = (await this.gameSaveService.list()).filter(isSupportedGameSaveRecord).filter(
-      (record) => record.gameInstanceData.gameInstanceMetadataData?.type === ProbableWaffleGameInstanceType.Replay
-    );
+    this.gameInstanceDataRecords = (await this.gameSaveService.list())
+      .filter(isSupportedGameSaveRecord)
+      .filter(
+        (record) => record.gameInstanceData.gameInstanceMetadataData?.type === ProbableWaffleGameInstanceType.Replay
+      );
   }
 
   protected getMapName(gameInstanceData: ProbableWaffleGameInstanceData): string {
@@ -45,8 +47,10 @@ export class ReplayComponent implements OnInit {
 
   protected async deleteReplay(save: GameSaveRecord) {
     await this.gameSaveService.delete(save.id);
-    this.gameInstanceDataRecords = (await this.gameSaveService.list()).filter(isSupportedGameSaveRecord).filter(
-      (record) => record.gameInstanceData.gameInstanceMetadataData?.type === ProbableWaffleGameInstanceType.Replay
-    );
+    this.gameInstanceDataRecords = (await this.gameSaveService.list())
+      .filter(isSupportedGameSaveRecord)
+      .filter(
+        (record) => record.gameInstanceData.gameInstanceMetadataData?.type === ProbableWaffleGameInstanceType.Replay
+      );
   }
 }

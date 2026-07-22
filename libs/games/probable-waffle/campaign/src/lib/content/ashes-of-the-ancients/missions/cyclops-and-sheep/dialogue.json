@@ -6,31 +6,61 @@
     { "id": "tivara-hero-name", "text": "Tivara Scout" },
     { "id": "rescued-warrior-name", "text": "Rescued Warrior" },
     { "id": "cyclops-name", "text": "Cyclops" },
-    { "id": "pond-intro-one-text", "text": "The river rose overnight, leaving two young frogs stranded beyond the dry bank." },
+    {
+      "id": "pond-intro-one-text",
+      "text": "The river rose overnight, leaving two young frogs stranded beyond the dry bank."
+    },
     { "id": "pond-intro-two-text", "text": "Bring them to the large pond. Their friends know a safe road home." },
-    { "id": "carry-frogs-text", "text": "Select the scout, collect both stranded frogs, then carry them to the large pond." },
+    {
+      "id": "carry-frogs-text",
+      "text": "Select the scout, collect both stranded frogs, then carry them to the large pond."
+    },
     { "id": "frogs-secured-text", "text": "Both are secure. Keep the scout moving toward the water." },
     { "id": "frogs-delivered-text", "text": "The frog party is together again. They point toward the old bridge." },
-    { "id": "bridge-reveal-text", "text": "Corpy raiders hold the crossing. Clear them before searching for the missing Tivara." },
+    {
+      "id": "bridge-reveal-text",
+      "text": "Corpy raiders hold the crossing. Clear them before searching for the missing Tivara."
+    },
     { "id": "bridge-fight-text", "text": "Attack the bridge blockers and open the road." },
     { "id": "rescue-captives-text", "text": "Two Tivara warriors are held nearby. Reach them before continuing." },
     { "id": "companions-rescued-text", "text": "We owe you our freedom. We will help you cross the riverlands." },
-    { "id": "cyclops-warning-text", "text": "A Cyclops patrols the canyon. Stay beyond its sight until you have a convincing disguise." },
+    {
+      "id": "cyclops-warning-text",
+      "text": "A Cyclops patrols the canyon. Stay beyond its sight until you have a convincing disguise."
+    },
     { "id": "boar-objective-text", "text": "The old boar carries curved tusks—and the shears lost by the shepherds." },
     { "id": "tools-acquired-text", "text": "Two tusks and the missing shears. Now find the sheep pasture." },
-    { "id": "sheep-objective-text", "text": "Approach the flock and use the shears to gather enough wool for the party." },
+    {
+      "id": "sheep-objective-text",
+      "text": "Approach the flock and use the shears to gather enough wool for the party."
+    },
     { "id": "sheep-clearing-text", "text": "The wool is ready, but the Corpy nest has sent a counterattack." },
     { "id": "counterattack-warning-text", "text": "Defend the clearing until the Corpy attackers are gone." },
     { "id": "prepare-disguise-text", "text": "Bring the tusks, shears, and wool to the sheltered preparation point." },
-    { "id": "disguise-ready-text", "text": "From a distance, even a Cyclops should mistake this party for a wandering sheep." },
+    {
+      "id": "disguise-ready-text",
+      "text": "From a distance, even a Cyclops should mistake this party for a wandering sheep."
+    },
     { "id": "fool-cyclops-text", "text": "Stay together and walk calmly through the Cyclops pass." },
     { "id": "cyclops-fooled-text", "text": "Hmph. Woolly things. Not worth chasing." },
-    { "id": "outro-text", "text": "The riverlands are behind us, and the rescued party carries word of a colder danger ahead." },
+    {
+      "id": "outro-text",
+      "text": "The riverlands are behind us, and the rescued party carries word of a colder danger ahead."
+    },
     { "id": "nest-destroyed-text", "text": "The Corpy nest is destroyed. The road will be safer for every traveler." },
-    { "id": "canyon-lore-text", "text": "Old carvings show fire walking through snow—a warning from another homeland." },
-    { "id": "cyclops-detected-text", "text": "The Cyclops spotted you. Fall back, regroup, and try the hidden route again." },
+    {
+      "id": "canyon-lore-text",
+      "text": "Old carvings show fire walking through snow—a warning from another homeland."
+    },
+    {
+      "id": "cyclops-detected-text",
+      "text": "The Cyclops spotted you. Fall back, regroup, and try the hidden route again."
+    },
     { "id": "primary-title", "text": "Cross the riverlands" },
-    { "id": "primary-description", "text": "Rescue the stranded party, assemble a sheep disguise, and pass the Cyclops." },
+    {
+      "id": "primary-description",
+      "text": "Rescue the stranded party, assemble a sheep disguise, and pass the Cyclops."
+    },
     { "id": "deliver-frogs-text", "text": "Carry both frogs to the large pond" },
     { "id": "rescue-companions-text", "text": "Free both captive Tivara" },
     { "id": "craft-disguise-text", "text": "Collect tusks, shears, and wool to craft the disguise" },
@@ -94,27 +124,153 @@
       "text": "Bring them to the large pond. Their friends know a safe road home.",
       "delivery": "blocking"
     },
-    { "id": "carry-frogs-line", "speakerId": "tivara-hero", "textId": "carry-frogs-text", "text": "Select the scout, collect both stranded frogs, then carry them to the large pond.", "delivery": "tutorial" },
-    { "id": "frogs-secured-line", "speakerId": "tivara-hero", "textId": "frogs-secured-text", "text": "Both are secure. Keep the scout moving toward the water.", "delivery": "non-blocking" },
-    { "id": "frogs-delivered-line", "speakerId": "mission-narrator", "textId": "frogs-delivered-text", "text": "The frog party is together again. They point toward the old bridge.", "delivery": "non-blocking" },
-    { "id": "bridge-reveal-line", "speakerId": "mission-narrator", "textId": "bridge-reveal-text", "text": "Corpy raiders hold the crossing. Clear them before searching for the missing Tivara.", "delivery": "blocking" },
-    { "id": "bridge-fight-line", "speakerId": "tivara-hero", "textId": "bridge-fight-text", "text": "Attack the bridge blockers and open the road.", "delivery": "tutorial" },
-    { "id": "rescue-captives-line", "speakerId": "mission-narrator", "textId": "rescue-captives-text", "text": "Two Tivara warriors are held nearby. Reach them before continuing.", "delivery": "tutorial" },
-    { "id": "companions-rescued-line", "speakerId": "rescued-warrior", "textId": "companions-rescued-text", "text": "We owe you our freedom. We will help you cross the riverlands.", "delivery": "non-blocking" },
-    { "id": "cyclops-warning-line", "speakerId": "mission-narrator", "textId": "cyclops-warning-text", "text": "A Cyclops patrols the canyon. Stay beyond its sight until you have a convincing disguise.", "delivery": "blocking" },
-    { "id": "boar-objective-line", "speakerId": "tivara-hero", "textId": "boar-objective-text", "text": "The old boar carries curved tusks—and the shears lost by the shepherds.", "delivery": "tutorial" },
-    { "id": "tools-acquired-line", "speakerId": "tivara-hero", "textId": "tools-acquired-text", "text": "Two tusks and the missing shears. Now find the sheep pasture.", "delivery": "non-blocking" },
-    { "id": "sheep-objective-line", "speakerId": "mission-narrator", "textId": "sheep-objective-text", "text": "Approach the flock and use the shears to gather enough wool for the party.", "delivery": "tutorial" },
-    { "id": "sheep-clearing-line", "speakerId": "mission-narrator", "textId": "sheep-clearing-text", "text": "The wool is ready, but the Corpy nest has sent a counterattack.", "delivery": "blocking" },
-    { "id": "counterattack-warning-line", "speakerId": "tivara-hero", "textId": "counterattack-warning-text", "text": "Defend the clearing until the Corpy attackers are gone.", "delivery": "non-blocking" },
-    { "id": "prepare-disguise-line", "speakerId": "tivara-hero", "textId": "prepare-disguise-text", "text": "Bring the tusks, shears, and wool to the sheltered preparation point.", "delivery": "tutorial" },
-    { "id": "disguise-ready-line", "speakerId": "rescued-warrior", "textId": "disguise-ready-text", "text": "From a distance, even a Cyclops should mistake this party for a wandering sheep.", "delivery": "non-blocking" },
-    { "id": "fool-cyclops-line", "speakerId": "tivara-hero", "textId": "fool-cyclops-text", "text": "Stay together and walk calmly through the Cyclops pass.", "delivery": "tutorial" },
-    { "id": "cyclops-fooled-line", "speakerId": "roaming-cyclops", "textId": "cyclops-fooled-text", "text": "Hmph. Woolly things. Not worth chasing.", "delivery": "blocking" },
-    { "id": "outro-line", "speakerId": "mission-narrator", "textId": "outro-text", "text": "The riverlands are behind us, and the rescued party carries word of a colder danger ahead.", "delivery": "blocking" },
-    { "id": "nest-destroyed-line", "speakerId": "tivara-hero", "textId": "nest-destroyed-text", "text": "The Corpy nest is destroyed. The road will be safer for every traveler.", "delivery": "non-blocking" },
-    { "id": "canyon-lore-line", "speakerId": "mission-narrator", "textId": "canyon-lore-text", "text": "Old carvings show fire walking through snow—a warning from another homeland.", "delivery": "non-blocking" },
-    { "id": "cyclops-detected-line", "speakerId": "mission-narrator", "textId": "cyclops-detected-text", "text": "The Cyclops spotted you. Fall back, regroup, and try the hidden route again.", "delivery": "non-blocking" }
+    {
+      "id": "carry-frogs-line",
+      "speakerId": "tivara-hero",
+      "textId": "carry-frogs-text",
+      "text": "Select the scout, collect both stranded frogs, then carry them to the large pond.",
+      "delivery": "tutorial"
+    },
+    {
+      "id": "frogs-secured-line",
+      "speakerId": "tivara-hero",
+      "textId": "frogs-secured-text",
+      "text": "Both are secure. Keep the scout moving toward the water.",
+      "delivery": "non-blocking"
+    },
+    {
+      "id": "frogs-delivered-line",
+      "speakerId": "mission-narrator",
+      "textId": "frogs-delivered-text",
+      "text": "The frog party is together again. They point toward the old bridge.",
+      "delivery": "non-blocking"
+    },
+    {
+      "id": "bridge-reveal-line",
+      "speakerId": "mission-narrator",
+      "textId": "bridge-reveal-text",
+      "text": "Corpy raiders hold the crossing. Clear them before searching for the missing Tivara.",
+      "delivery": "blocking"
+    },
+    {
+      "id": "bridge-fight-line",
+      "speakerId": "tivara-hero",
+      "textId": "bridge-fight-text",
+      "text": "Attack the bridge blockers and open the road.",
+      "delivery": "tutorial"
+    },
+    {
+      "id": "rescue-captives-line",
+      "speakerId": "mission-narrator",
+      "textId": "rescue-captives-text",
+      "text": "Two Tivara warriors are held nearby. Reach them before continuing.",
+      "delivery": "tutorial"
+    },
+    {
+      "id": "companions-rescued-line",
+      "speakerId": "rescued-warrior",
+      "textId": "companions-rescued-text",
+      "text": "We owe you our freedom. We will help you cross the riverlands.",
+      "delivery": "non-blocking"
+    },
+    {
+      "id": "cyclops-warning-line",
+      "speakerId": "mission-narrator",
+      "textId": "cyclops-warning-text",
+      "text": "A Cyclops patrols the canyon. Stay beyond its sight until you have a convincing disguise.",
+      "delivery": "blocking"
+    },
+    {
+      "id": "boar-objective-line",
+      "speakerId": "tivara-hero",
+      "textId": "boar-objective-text",
+      "text": "The old boar carries curved tusks—and the shears lost by the shepherds.",
+      "delivery": "tutorial"
+    },
+    {
+      "id": "tools-acquired-line",
+      "speakerId": "tivara-hero",
+      "textId": "tools-acquired-text",
+      "text": "Two tusks and the missing shears. Now find the sheep pasture.",
+      "delivery": "non-blocking"
+    },
+    {
+      "id": "sheep-objective-line",
+      "speakerId": "mission-narrator",
+      "textId": "sheep-objective-text",
+      "text": "Approach the flock and use the shears to gather enough wool for the party.",
+      "delivery": "tutorial"
+    },
+    {
+      "id": "sheep-clearing-line",
+      "speakerId": "mission-narrator",
+      "textId": "sheep-clearing-text",
+      "text": "The wool is ready, but the Corpy nest has sent a counterattack.",
+      "delivery": "blocking"
+    },
+    {
+      "id": "counterattack-warning-line",
+      "speakerId": "tivara-hero",
+      "textId": "counterattack-warning-text",
+      "text": "Defend the clearing until the Corpy attackers are gone.",
+      "delivery": "non-blocking"
+    },
+    {
+      "id": "prepare-disguise-line",
+      "speakerId": "tivara-hero",
+      "textId": "prepare-disguise-text",
+      "text": "Bring the tusks, shears, and wool to the sheltered preparation point.",
+      "delivery": "tutorial"
+    },
+    {
+      "id": "disguise-ready-line",
+      "speakerId": "rescued-warrior",
+      "textId": "disguise-ready-text",
+      "text": "From a distance, even a Cyclops should mistake this party for a wandering sheep.",
+      "delivery": "non-blocking"
+    },
+    {
+      "id": "fool-cyclops-line",
+      "speakerId": "tivara-hero",
+      "textId": "fool-cyclops-text",
+      "text": "Stay together and walk calmly through the Cyclops pass.",
+      "delivery": "tutorial"
+    },
+    {
+      "id": "cyclops-fooled-line",
+      "speakerId": "roaming-cyclops",
+      "textId": "cyclops-fooled-text",
+      "text": "Hmph. Woolly things. Not worth chasing.",
+      "delivery": "blocking"
+    },
+    {
+      "id": "outro-line",
+      "speakerId": "mission-narrator",
+      "textId": "outro-text",
+      "text": "The riverlands are behind us, and the rescued party carries word of a colder danger ahead.",
+      "delivery": "blocking"
+    },
+    {
+      "id": "nest-destroyed-line",
+      "speakerId": "tivara-hero",
+      "textId": "nest-destroyed-text",
+      "text": "The Corpy nest is destroyed. The road will be safer for every traveler.",
+      "delivery": "non-blocking"
+    },
+    {
+      "id": "canyon-lore-line",
+      "speakerId": "mission-narrator",
+      "textId": "canyon-lore-text",
+      "text": "Old carvings show fire walking through snow—a warning from another homeland.",
+      "delivery": "non-blocking"
+    },
+    {
+      "id": "cyclops-detected-line",
+      "speakerId": "mission-narrator",
+      "textId": "cyclops-detected-text",
+      "text": "The Cyclops spotted you. Fall back, regroup, and try the hidden route again.",
+      "delivery": "non-blocking"
+    }
   ],
   "cinematics": [
     {
@@ -129,7 +285,12 @@
         { "kind": "letterbox", "visible": true },
         { "kind": "camera-shot", "shotId": "pond-intro-shot", "fallbackPointId": "wake-point", "durationTicks": 90 },
         { "kind": "dialogue", "lineId": "pond-intro-one" },
-        { "kind": "camera-shot", "shotId": "pond-intro-shot", "fallbackPointId": "large-pond-drop-point", "durationTicks": 60 },
+        {
+          "kind": "camera-shot",
+          "shotId": "pond-intro-shot",
+          "fallbackPointId": "large-pond-drop-point",
+          "durationTicks": 60
+        },
         { "kind": "dialogue", "lineId": "pond-intro-two" },
         { "kind": "letterbox", "visible": false }
       ],
@@ -151,7 +312,12 @@
       "fallbackTimeoutTicks": 600,
       "timeline": [
         { "kind": "letterbox", "visible": true },
-        { "kind": "camera-shot", "shotId": "bridge-reveal-shot", "fallbackPointId": "bridge-crossing-point", "durationTicks": 90 },
+        {
+          "kind": "camera-shot",
+          "shotId": "bridge-reveal-shot",
+          "fallbackPointId": "bridge-crossing-point",
+          "durationTicks": 90
+        },
         { "kind": "dialogue", "lineId": "bridge-reveal-line" },
         { "kind": "letterbox", "visible": false }
       ],
@@ -172,15 +338,30 @@
       "fallbackTimeoutTicks": 750,
       "timeline": [
         { "kind": "letterbox", "visible": true },
-        { "kind": "camera-shot", "shotId": "cyclops-warning-shot", "fallbackPointId": "cyclops-approach-point", "durationTicks": 90 },
+        {
+          "kind": "camera-shot",
+          "shotId": "cyclops-warning-shot",
+          "fallbackPointId": "cyclops-approach-point",
+          "durationTicks": 90
+        },
         { "kind": "dialogue", "lineId": "cyclops-warning-line" },
         { "kind": "letterbox", "visible": false }
       ],
       "gameplayPrelude": [
-        { "id": "cinematic-mark-warning-started", "kind": "set-fact", "factId": "cyclops-warning-complete", "value": false }
+        {
+          "id": "cinematic-mark-warning-started",
+          "kind": "set-fact",
+          "factId": "cyclops-warning-complete",
+          "value": false
+        }
       ],
       "gameplayFinalize": [
-        { "id": "cinematic-mark-warning-complete", "kind": "set-fact", "factId": "cyclops-warning-complete", "value": true }
+        {
+          "id": "cinematic-mark-warning-complete",
+          "kind": "set-fact",
+          "factId": "cyclops-warning-complete",
+          "value": true
+        }
       ]
     },
     {
@@ -192,9 +373,19 @@
       "resumeCueIndexes": [0],
       "fallbackTimeoutTicks": 450,
       "timeline": [
-        { "kind": "camera-shot", "shotId": "sheep-clearing-shot", "fallbackPointId": "sheep-clearing-point", "durationTicks": 60 },
+        {
+          "kind": "camera-shot",
+          "shotId": "sheep-clearing-shot",
+          "fallbackPointId": "sheep-clearing-point",
+          "durationTicks": 60
+        },
         { "kind": "dialogue", "lineId": "sheep-clearing-line" },
-        { "kind": "camera-shot", "shotId": "counterattack-shot", "fallbackPointId": "counterattack-point-a", "durationTicks": 60 }
+        {
+          "kind": "camera-shot",
+          "shotId": "counterattack-shot",
+          "fallbackPointId": "counterattack-point-a",
+          "durationTicks": 60
+        }
       ],
       "gameplayPrelude": [],
       "gameplayFinalize": []
@@ -209,16 +400,31 @@
       "fallbackTimeoutTicks": 750,
       "timeline": [
         { "kind": "letterbox", "visible": true },
-        { "kind": "camera-shot", "shotId": "cyclops-fooled-shot", "fallbackPointId": "cyclops-approach-point", "durationTicks": 90 },
+        {
+          "kind": "camera-shot",
+          "shotId": "cyclops-fooled-shot",
+          "fallbackPointId": "cyclops-approach-point",
+          "durationTicks": 90
+        },
         { "kind": "dialogue", "lineId": "cyclops-fooled-line" },
-        { "kind": "camera-shot", "shotId": "cyclops-fooled-shot", "fallbackPointId": "cyclops-exit-point", "durationTicks": 60 },
+        {
+          "kind": "camera-shot",
+          "shotId": "cyclops-fooled-shot",
+          "fallbackPointId": "cyclops-exit-point",
+          "durationTicks": 60
+        },
         { "kind": "letterbox", "visible": false }
       ],
       "gameplayPrelude": [
         { "id": "cinematic-mark-cyclops-unfooled", "kind": "set-fact", "factId": "cyclops-fooled", "value": false }
       ],
       "gameplayFinalize": [
-        { "id": "cinematic-send-cyclops-away", "kind": "teleport-actor", "actorId": "roaming-cyclops", "pointId": "cyclops-exit-point" },
+        {
+          "id": "cinematic-send-cyclops-away",
+          "kind": "teleport-actor",
+          "actorId": "roaming-cyclops",
+          "pointId": "cyclops-exit-point"
+        },
         { "id": "cinematic-mark-cyclops-fooled", "kind": "set-fact", "factId": "cyclops-fooled", "value": true }
       ]
     },
@@ -232,15 +438,34 @@
       "fallbackTimeoutTicks": 750,
       "timeline": [
         { "kind": "letterbox", "visible": true },
-        { "kind": "camera-shot", "shotId": "mission-outro-shot", "fallbackPointId": "cyclops-exit-point", "durationTicks": 90 },
+        {
+          "kind": "camera-shot",
+          "shotId": "mission-outro-shot",
+          "fallbackPointId": "cyclops-exit-point",
+          "durationTicks": 90
+        },
         { "kind": "dialogue", "lineId": "outro-line" },
         { "kind": "letterbox", "visible": false }
       ],
       "gameplayPrelude": [],
       "gameplayFinalize": [
-        { "id": "cinematic-remove-party-disguise", "kind": "remove-disguise", "scope": "mission", "disguiseId": "party-sheep-disguise" },
-        { "id": "cinematic-discover-snow-unlock", "kind": "discover-reward", "rewardId": "unlock-snow-wendigo-and-fire" },
-        { "id": "cinematic-mark-river-crossing-complete", "kind": "set-fact", "factId": "mission-complete", "value": true }
+        {
+          "id": "cinematic-remove-party-disguise",
+          "kind": "remove-disguise",
+          "scope": "mission",
+          "disguiseId": "party-sheep-disguise"
+        },
+        {
+          "id": "cinematic-discover-snow-unlock",
+          "kind": "discover-reward",
+          "rewardId": "unlock-snow-wendigo-and-fire"
+        },
+        {
+          "id": "cinematic-mark-river-crossing-complete",
+          "kind": "set-fact",
+          "factId": "mission-complete",
+          "value": true
+        }
       ]
     }
   ]

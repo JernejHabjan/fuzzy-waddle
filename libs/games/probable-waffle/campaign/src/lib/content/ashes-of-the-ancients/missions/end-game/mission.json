@@ -4,19 +4,14 @@
   "chapterId": "the-betrayal",
   "revision": 1,
   "mapId": 3,
-  "prerequisites": [
-    "undead-and-cursed-lands"
-  ],
+  "prerequisites": ["undead-and-cursed-lands"],
   "catalogue": {
     "order": 2,
     "title": "End Game",
     "faction": "both",
     "environment": "Volcanic throne",
     "briefing": "Everything leads back to the ancient power below.",
-    "objectiveSummaries": [
-      "Confront the enemy",
-      "Control the eruption"
-    ]
+    "objectiveSummaries": ["Confront the enemy", "Control the eruption"]
   },
   "participants": [
     {
@@ -46,9 +41,7 @@
     "loadoutSlotCount": 1
   },
   "initialState": {
-    "activePhaseIds": [
-      "opening"
-    ],
+    "activePhaseIds": ["opening"],
     "facts": [
       {
         "id": "mission-complete",
@@ -98,9 +91,7 @@
       "transitions": [
         {
           "id": "begin-operation",
-          "targetPhaseIds": [
-            "operation"
-          ],
+          "targetPhaseIds": ["operation"],
           "condition": {
             "kind": "always"
           },
@@ -281,25 +272,11 @@
       }
     ],
     "plannedScenarioReferences": {
-      "actors": [
-        "ancient-boss",
-        "tivara-ritualist",
-        "skaduwee-ritualist"
-      ],
-      "regions": [
-        "boss-stronghold",
-        "ending-ritual-site"
-      ],
-      "routes": [
-        "final-assault-route"
-      ],
-      "cameraShots": [
-        "final-choice-shot",
-        "ritual-resolution-shot"
-      ],
-      "spawnSets": [
-        "boss-defense-wave"
-      ]
+      "actors": ["ancient-boss", "tivara-ritualist", "skaduwee-ritualist"],
+      "regions": ["boss-stronghold", "ending-ritual-site"],
+      "routes": ["final-assault-route"],
+      "cameraShots": ["final-choice-shot", "ritual-resolution-shot"],
+      "spawnSets": ["boss-defense-wave"]
     },
     "mechanics": [
       "Persistent final dialogue choice",
@@ -315,10 +292,7 @@
       "Ancient boss stages and stronghold arena",
       "Ending ritual effects and choice-dependent presentation"
     ],
-    "tests": [
-      "Complete every final-choice branch",
-      "Compare watched, skipped, solo, and co-op ritual outcomes"
-    ],
+    "tests": ["Complete every final-choice branch", "Compare watched, skipped, solo, and co-op ritual outcomes"],
     "definitionOfDone": [
       "Every supported choice reaches a valid resolution state",
       "Boss defeat and ritual completion are independently recoverable checkpoints"

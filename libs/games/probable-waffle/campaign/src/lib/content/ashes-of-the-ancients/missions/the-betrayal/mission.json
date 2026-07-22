@@ -4,19 +4,14 @@
   "chapterId": "the-betrayal",
   "revision": 1,
   "mapId": 3,
-  "prerequisites": [
-    "the-volcano"
-  ],
+  "prerequisites": ["the-volcano"],
   "catalogue": {
     "order": 0,
     "title": "The Betrayal",
     "faction": "both",
     "environment": "Volcanic heart",
     "briefing": "A trusted companion reveals a hidden purpose.",
-    "objectiveSummaries": [
-      "Escape the betrayal",
-      "Protect the crystal"
-    ]
+    "objectiveSummaries": ["Escape the betrayal", "Protect the crystal"]
   },
   "participants": [
     {
@@ -46,9 +41,7 @@
     "loadoutSlotCount": 1
   },
   "initialState": {
-    "activePhaseIds": [
-      "opening"
-    ],
+    "activePhaseIds": ["opening"],
     "facts": [
       {
         "id": "mission-complete",
@@ -98,9 +91,7 @@
       "transitions": [
         {
           "id": "begin-operation",
-          "targetPhaseIds": [
-            "operation"
-          ],
+          "targetPhaseIds": ["operation"],
           "condition": {
             "kind": "always"
           },
@@ -281,25 +272,11 @@
       }
     ],
     "plannedScenarioReferences": {
-      "actors": [
-        "betrayer",
-        "tivara-survivor",
-        "skaduwee-survivor"
-      ],
-      "regions": [
-        "ritual-aftermath",
-        "dream-mirror-escape"
-      ],
-      "routes": [
-        "collapse-escape-route"
-      ],
-      "cameraShots": [
-        "betrayal-reveal-shot",
-        "dreams-mirror-shot"
-      ],
-      "spawnSets": [
-        "escape-hazard-wave"
-      ]
+      "actors": ["betrayer", "tivara-survivor", "skaduwee-survivor"],
+      "regions": ["ritual-aftermath", "dream-mirror-escape"],
+      "routes": ["collapse-escape-route"],
+      "cameraShots": ["betrayal-reveal-shot", "dreams-mirror-shot"],
+      "spawnSets": ["escape-hazard-wave"]
     },
     "mechanics": [
       "Directed betrayal cinematic",
@@ -311,10 +288,7 @@
       "No named participant is forced dead; survivors rebind after the sequence."
     ],
     "dependencies": [],
-    "missingAssets": [
-      "Betrayal performance and Dreams-mirror shots",
-      "Collapsing escape route and survivor staging"
-    ],
+    "missingAssets": ["Betrayal performance and Dreams-mirror shots", "Collapsing escape route and survivor staging"],
     "tests": [
       "Compare watched and skipped reveal state",
       "Escape with every valid named-character survivor combination"

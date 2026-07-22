@@ -5,7 +5,7 @@ import type { CampaignMissionDirector } from "../../../campaign/campaign-mission
 /** Development-only scene-backed inspection surface; F9 toggles it without changing run integrity. */
 export default class CampaignDeveloperPanel extends Phaser.GameObjects.Container {
   private readonly background: Phaser.GameObjects.Rectangle;
-  private readonly body: Phaser.GameObjects.Text;
+  private readonly bodyText: Phaser.GameObjects.Text;
   private readonly subscriptions = new Subscription();
   private director?: CampaignMissionDirector;
   private toggleKey?: Phaser.Input.Keyboard.Key;
@@ -20,14 +20,14 @@ export default class CampaignDeveloperPanel extends Phaser.GameObjects.Container
       fontFamily: "monospace",
       fontSize: "16px"
     });
-    this.body = scene.add.text(12, 40, "", {
+    this.bodyText = scene.add.text(12, 40, "", {
       color: "#ffffff",
       fontFamily: "monospace",
       fontSize: "12px",
       lineSpacing: 2,
       wordWrap: { width: 536 }
     });
-    this.add([this.background, title, this.body]);
+    this.add([this.background, title, this.bodyText]);
   }
 
   setup(director: CampaignMissionDirector): void {
@@ -62,7 +62,7 @@ export default class CampaignDeveloperPanel extends Phaser.GameObjects.Container
       ([id, encounter]) => `${id}=${encounter.status}/wave-${encounter.waveIndex}`
     );
     const environment = director.diagnosticEnvironment();
-    this.body.setText([
+    this.bodyText.setText([
       `FLOW ${snapshot.missionId}@${snapshot.missionRevision} ${snapshot.status}`,
       `active: ${snapshot.phases.active.join(", ") || "none"}`,
       `candidates: ${graph.join(", ") || "none"}`,
@@ -83,9 +83,12 @@ export default class CampaignDeveloperPanel extends Phaser.GameObjects.Container
       `DIAGNOSTIC ${snapshot.diagnostic?.message ?? "none"}`,
       "",
       "TRACE",
-      ...director.diagnostics.trace().slice(-12).map((entry) => `${entry.tick} ${entry.kind} ${entry.sourceId}`)
+      ...director.diagnostics
+        .trace()
+        .slice(-12)
+        .map((entry) => `${entry.tick} ${entry.kind} ${entry.sourceId}`)
     ]);
-    this.background.height = Math.max(220, this.body.height + 56);
+    this.background.height = Math.max(220, this.bodyText.height + 56);
   }
 
   override destroy(fromScene?: boolean): void {

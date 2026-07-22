@@ -108,7 +108,7 @@ describe("CampaignLaunchService", () => {
       selectedLoadoutIds: [],
       humanParticipantCount: 1,
       participantProgressionSnapshots: [
-        expect.objectContaining({ slotId: "human", playerNumber: 1, progressionSnapshot: expect.any(Object) })
+        expect.objectContaining({ slotId: "commander", playerNumber: 1, progressionSnapshot: expect.any(Object) })
       ],
       progressionSnapshot: {
         baseProfileRevision: 0,

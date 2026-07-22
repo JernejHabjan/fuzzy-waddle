@@ -86,7 +86,10 @@
             <p>
               Heroes:
               @for (hero of heroes; track hero.id; let last = $last) {
-                <strong>{{ hero.title }}</strong>@if (!last) {, }
+                <strong>{{ hero.title }}</strong>
+                @if (!last) {
+                  ,
+                }
               }
               · Faction: <strong>{{ mission.faction }}</strong>
             </p>
@@ -123,9 +126,7 @@
                   Create Primary Loadout
                 </button>
               }
-              <button type="button" class="btn btn-sm btn-outline-secondary" (click)="freeRespec()">
-                Free Respec
-              </button>
+              <button type="button" class="btn btn-sm btn-outline-secondary" (click)="freeRespec()">Free Respec</button>
             </div>
             @if (upgradeOptions().length) {
               <div class="mission-screen__upgrades" aria-label="Discovered campaign upgrades">
@@ -160,8 +161,8 @@
             }
             @if (effectiveLoadout(); as effective) {
               <p>
-                Selected {{ effective.selectedLoadoutIds.length }} / loadout slot(s).
-                Active upgrades: {{ effective.upgradeIds.length }} · Unlocks: {{ effective.unlockIds.length }}
+                Selected {{ effective.selectedLoadoutIds.length }} / loadout slot(s). Active upgrades:
+                {{ effective.upgradeIds.length }} · Unlocks: {{ effective.unlockIds.length }}
               </p>
               @if (effective.restrictionReasons.length) {
                 <ul class="mission-screen__restrictions" aria-label="Mission-disabled choices">
@@ -185,7 +186,8 @@
             <section class="mission-screen__archive" aria-label="Mission archive and mastery">
               <h3>Mission Archive</h3>
               <p>
-                First completed {{ missionMastery.firstCompletedAt }} · {{ missionMastery.completionCount }} completion(s)
+                First completed {{ missionMastery.firstCompletedAt }} ·
+                {{ missionMastery.completionCount }} completion(s)
               </p>
               <p>
                 Mastery: {{ missionMastery.bestDifficulty }}

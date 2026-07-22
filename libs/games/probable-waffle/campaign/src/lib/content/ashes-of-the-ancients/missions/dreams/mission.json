@@ -61,10 +61,7 @@
     "loadoutSlotCount": 0
   },
   "initialState": {
-    "activePhaseIds": [
-      "dream-intro",
-      "mission-monitor"
-    ],
+    "activePhaseIds": ["dream-intro", "mission-monitor"],
     "facts": [
       {
         "id": "intro-complete",
@@ -119,9 +116,7 @@
       "transitions": [
         {
           "id": "finish-dream-intro",
-          "targetPhaseIds": [
-            "tivara-rally"
-          ],
+          "targetPhaseIds": ["tivara-rally"],
           "condition": {
             "kind": "fact",
             "factId": "intro-complete",
@@ -189,9 +184,7 @@
       "transitions": [
         {
           "id": "accept-tivara-command",
-          "targetPhaseIds": [
-            "tivara-charge"
-          ],
+          "targetPhaseIds": ["tivara-charge"],
           "condition": {
             "kind": "objective",
             "objectiveId": "direct-tivara-army",
@@ -211,9 +204,7 @@
           "kind": "ai-directive",
           "playerNumber": 2,
           "directive": "move",
-          "actorIds": [
-            "tivara-opposition-captain"
-          ],
+          "actorIds": ["tivara-opposition-captain"],
           "targetPointId": "battle-focus-point"
         },
         {
@@ -240,9 +231,7 @@
       "transitions": [
         {
           "id": "handoff-after-tivara",
-          "targetPhaseIds": [
-            "switch-to-skaduwee"
-          ],
+          "targetPhaseIds": ["switch-to-skaduwee"],
           "condition": {
             "kind": "timer",
             "timerId": "first-charge-window",
@@ -270,9 +259,7 @@
       "transitions": [
         {
           "id": "finish-faction-handoff",
-          "targetPhaseIds": [
-            "skaduwee-rally"
-          ],
+          "targetPhaseIds": ["skaduwee-rally"],
           "condition": {
             "kind": "fact",
             "factId": "faction-switched",
@@ -340,9 +327,7 @@
       "transitions": [
         {
           "id": "accept-skaduwee-command",
-          "targetPhaseIds": [
-            "skaduwee-charge"
-          ],
+          "targetPhaseIds": ["skaduwee-charge"],
           "condition": {
             "kind": "objective",
             "objectiveId": "direct-skaduwee-army",
@@ -381,9 +366,7 @@
       "transitions": [
         {
           "id": "escalate-battle",
-          "targetPhaseIds": [
-            "battle-escalation"
-          ],
+          "targetPhaseIds": ["battle-escalation"],
           "condition": {
             "kind": "timer",
             "timerId": "second-charge-window",
@@ -408,9 +391,7 @@
           "kind": "ai-directive",
           "playerNumber": 2,
           "directive": "attack",
-          "actorIds": [
-            "tivara-opposition-captain"
-          ],
+          "actorIds": ["tivara-opposition-captain"],
           "targetActorId": "skaduwee-dream-captain"
         },
         {
@@ -477,9 +458,7 @@
           "kind": "condition",
           "condition": {
             "kind": "difficulty",
-            "values": [
-              "story"
-            ]
+            "values": ["story"]
           },
           "actions": [
             {
@@ -509,9 +488,7 @@
           "kind": "condition",
           "condition": {
             "kind": "difficulty",
-            "values": [
-              "normal"
-            ]
+            "values": ["normal"]
           },
           "actions": [
             {
@@ -541,9 +518,7 @@
           "kind": "condition",
           "condition": {
             "kind": "difficulty",
-            "values": [
-              "hard"
-            ]
+            "values": ["hard"]
           },
           "actions": [
             {
@@ -572,9 +547,7 @@
       "transitions": [
         {
           "id": "volcano-overwhelms-battle",
-          "targetPhaseIds": [
-            "volcano-overwhelms"
-          ],
+          "targetPhaseIds": ["volcano-overwhelms"],
           "condition": {
             "kind": "timer",
             "timerId": "battle-escalation-window",
@@ -602,9 +575,7 @@
       "transitions": [
         {
           "id": "cover-battlefield-in-ash",
-          "targetPhaseIds": [
-            "ashes-title"
-          ],
+          "targetPhaseIds": ["ashes-title"],
           "condition": {
             "kind": "fact",
             "factId": "volcano-complete",
@@ -632,9 +603,7 @@
       "transitions": [
         {
           "id": "complete-dream",
-          "targetPhaseIds": [
-            "victory"
-          ],
+          "targetPhaseIds": ["victory"],
           "condition": {
             "kind": "fact",
             "factId": "mission-complete",
@@ -726,9 +695,7 @@
         "kind": "region-occupancy",
         "regionId": "battle-region",
         "selector": {
-          "actorIds": [
-            "tivara-dream-captain"
-          ],
+          "actorIds": ["tivara-dream-captain"],
           "alive": true
         },
         "policy": {
@@ -743,9 +710,7 @@
             "kind": "region-occupancy",
             "regionId": "battle-region",
             "selector": {
-              "actorIds": [
-                "tivara-dream-captain"
-              ],
+              "actorIds": ["tivara-dream-captain"],
               "alive": true
             },
             "policy": {
@@ -789,9 +754,7 @@
         "kind": "region-occupancy",
         "regionId": "battle-region",
         "selector": {
-          "actorIds": [
-            "skaduwee-dream-captain"
-          ],
+          "actorIds": ["skaduwee-dream-captain"],
           "alive": true
         },
         "policy": {
@@ -806,9 +769,7 @@
             "kind": "region-occupancy",
             "regionId": "battle-region",
             "selector": {
-              "actorIds": [
-                "skaduwee-dream-captain"
-              ],
+              "actorIds": ["skaduwee-dream-captain"],
               "alive": true
             },
             "policy": {
@@ -851,9 +812,7 @@
         "factId": "dream-witnessed",
         "equals": true
       },
-      "rewardIds": [
-        "unlock-cyclops-and-sheep"
-      ],
+      "rewardIds": ["unlock-cyclops-and-sheep"],
       "display": {
         "announceReveal": true,
         "announceCompletion": true,
@@ -1046,14 +1005,8 @@
         "tivara-command-region",
         "volcano-hazard-region"
       ],
-      "routes": [
-        "skaduwee-charge-route",
-        "tivara-charge-route"
-      ],
-      "groups": [
-        "skaduwee-rally-group",
-        "tivara-rally-group"
-      ],
+      "routes": ["skaduwee-charge-route", "tivara-charge-route"],
+      "groups": ["skaduwee-rally-group", "tivara-rally-group"],
       "cameraShots": [
         "ashes-title-shot",
         "battle-focus-shot",
@@ -1062,9 +1015,7 @@
         "tivara-rally-shot",
         "volcano-overwhelms-shot"
       ],
-      "spawnSets": [
-        "dream-reinforcement-wave"
-      ]
+      "spawnSets": ["dream-reinforcement-wave"]
     },
     "mechanics": [
       "Semantic selection and attack-command tutorial",
@@ -1137,14 +1088,8 @@
       "tivara-command-region",
       "volcano-hazard-region"
     ],
-    "routes": [
-      "skaduwee-charge-route",
-      "tivara-charge-route"
-    ],
-    "groups": [
-      "skaduwee-rally-group",
-      "tivara-rally-group"
-    ],
+    "routes": ["skaduwee-charge-route", "tivara-charge-route"],
+    "groups": ["skaduwee-rally-group", "tivara-rally-group"],
     "cameraShots": [
       "ashes-title-shot",
       "battle-focus-shot",
@@ -1153,8 +1098,6 @@
       "tivara-rally-shot",
       "volcano-overwhelms-shot"
     ],
-    "spawnSets": [
-      "dream-reinforcement-wave"
-    ]
+    "spawnSets": ["dream-reinforcement-wave"]
   }
 }

@@ -1,4 +1,8 @@
-import type { CampaignId, CampaignMissionRuntimeEvent, CampaignMissionRuntimeState } from "@fuzzy-waddle/probable-waffle-protocol";
+import type {
+  CampaignId,
+  CampaignMissionRuntimeEvent,
+  CampaignMissionRuntimeState
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import type { CampaignMissionContent } from "../contracts/campaign-mission-content";
 import {
   CampaignMissionRuntime,

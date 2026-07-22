@@ -1,4 +1,7 @@
-import { ASHES_OF_THE_ANCIENTS_CAMPAIGN_ID, AOTA_CAMPAIGN_CONTENT_REGISTRY } from "../catalog/ashes-of-the-ancients-content";
+import {
+  ASHES_OF_THE_ANCIENTS_CAMPAIGN_ID,
+  AOTA_CAMPAIGN_CONTENT_REGISTRY
+} from "../catalog/ashes-of-the-ancients-content";
 import { asCampaignContentId } from "../contracts/campaign-content-id";
 import { createCampaignMissionRuntimeState } from "../runtime/campaign-mission-runtime";
 import {

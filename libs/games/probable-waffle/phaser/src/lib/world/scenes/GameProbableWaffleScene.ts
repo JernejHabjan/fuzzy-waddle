@@ -124,8 +124,8 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     const restoreCoordinator =
       this.baseGameData.gameInstance.gameInstanceMetadata.data.startOptions.loadFromSave &&
       this.baseGameData.gameInstance.gameInstanceMetadata.data.campaignContext
-      ? new CampaignRestoreCoordinator(this)
-      : undefined;
+        ? new CampaignRestoreCoordinator(this)
+        : undefined;
     restoreCoordinator?.begin();
     const campaignMissionDirector = CampaignMissionDirector.create(this, gameModeConditionChecker);
     if (campaignMissionDirector) {
