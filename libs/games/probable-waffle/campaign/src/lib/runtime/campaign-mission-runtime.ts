@@ -56,6 +56,7 @@ import {
 } from "./encounters/campaign-encounter-service";
 import { resolveCampaignParticipantLaunchSlots, updateCampaignParticipantTeams } from "./campaign-participant-resolver";
 import { CampaignRunIntegrityService, createEligibleMissionRunIntegrity } from "../progression/campaign-run-integrity-service";
+import type { CampaignDeveloperCommand } from "../tooling/campaign-diagnostics-service";
 import {
   evaluateMissionTriggerParticipantPolicy,
   resolveMissionParticipants,
@@ -254,6 +255,108 @@ export class CampaignMissionRuntime {
   discoverReward(rewardId: string): void {
     new CampaignRunIntegrityService(this.stateStore.current).discoverReward(rewardId);
     this.canonicalizeState();
+  }
+
+  executeDeveloperCommand(command: CampaignDeveloperCommand): CampaignMissionRuntimeResult {
+    const effects: CampaignMissionRuntimeEffect[] = [];
+    const tick = this.stateStore.current.integrity.lastProcessedTick;
+    const budget: TickBudget = { actions: 0, transitions: 0 };
+    switch (command.kind) {
+      case "set-fact":
+        this.stateStore.current.facts[command.factId] = command.value;
+        break;
+      case "set-counter":
+        this.stateStore.current.counters[command.counterId] = command.value;
+        break;
+      case "set-objective": {
+        const objectiveId = asCampaignContentId<"objective">(command.objectiveId);
+        if (command.state === "completed") this.objectiveService.complete(objectiveId, tick);
+        else this.objectiveService.fail(objectiveId, tick);
+        this.publishObjectiveChanges(this.objectiveService.drainChanges(), effects);
+        break;
+      }
+      case "fire-trigger": {
+        const trigger = this.content.phases
+          .flatMap((phase) => phase.triggers)
+          .find((candidate) => candidate.id === command.triggerId);
+        if (trigger) this.applyActions(trigger.actions, tick, budget, effects, { triggerId: trigger.id });
+        break;
+      }
+      case "play-cinematic":
+        this.applyActions(
+          [
+            {
+              id: asCampaignContentId<"action">(`developer-cinematic-${command.cinematicId}`),
+              kind: "start-cinematic",
+              scope: "mission",
+              cinematicId: asCampaignContentId<"cinematic">(command.cinematicId)
+            }
+          ],
+          tick,
+          budget,
+          effects,
+          {}
+        );
+        break;
+      case "start-wave":
+        this.applyActions(
+          [
+            {
+              id: asCampaignContentId<"action">(`developer-encounter-${command.encounterId}`),
+              kind: "set-encounter-state",
+              scope: "mission",
+              encounterId: asCampaignContentId<"encounter">(command.encounterId),
+              state: "active"
+            }
+          ],
+          tick,
+          budget,
+          effects,
+          {}
+        );
+        break;
+      case "revive-hero":
+        this.applyActions(
+          [
+            {
+              id: asCampaignContentId<"action">(`developer-revive-${command.actorId}`),
+              kind: "revive-actor",
+              scope: "mission",
+              actorId: asCampaignContentId<"scenario-actor">(command.actorId)
+            }
+          ],
+          tick,
+          budget,
+          effects,
+          {}
+        );
+        break;
+      case "request-outcome":
+        this.applyActions(
+          [
+            {
+              id: asCampaignContentId<"action">(`developer-outcome-${command.outcome}`),
+              kind: "request-outcome",
+              scope: "mission",
+              outcome: command.outcome,
+              reasonId: asCampaignContentId<"reason">("developer-command")
+            }
+          ],
+          tick,
+          budget,
+          effects,
+          {}
+        );
+        break;
+      case "discover-reward":
+        this.discoverReward(command.rewardId);
+        break;
+      case "focus-actor":
+      case "highlight-region":
+        break;
+    }
+    this.canonicalizeState();
+    return this.result(effects);
   }
 
   cancel(reason: CampaignMissionActionCancelReason = "mission-ended"): CampaignMissionRuntimeResult {
@@ -1174,6 +1277,7 @@ export class CampaignMissionRuntime {
     const state = this.stateStore.current;
     state.status = "failed";
     state.integrity.diagnostic = { code, message, tick, sourceId, ...context };
+    if (code === "resource-leak") new CampaignRunIntegrityService(state).invalidate("resource-leak");
   }
 
   private finishTick(budget: TickBudget): void {

@@ -207,6 +207,22 @@ function validateMission(
     issues
   );
   const actionEntries = collectMissionActionEntries(mission);
+  if (mission.contentStatus !== "skeleton") {
+    const outcomes = new Set(
+      actionEntries.flatMap((entry) => (entry.action.kind === "request-outcome" ? [entry.action.outcome] : []))
+    );
+    for (const outcome of ["victory", "defeat"] as const) {
+      if (!outcomes.has(outcome)) {
+        addIssue(
+          issues,
+          sourcePath,
+          "$.phases",
+          "missing-terminal-path",
+          `Playable mission content must declare an authored ${outcome} outcome path`
+        );
+      }
+    }
+  }
   for (const entry of actionEntries) {
     if (entry.action.kind === "discover-reward" && !rewardIds.has(String(entry.action.rewardId))) {
       addIssue(

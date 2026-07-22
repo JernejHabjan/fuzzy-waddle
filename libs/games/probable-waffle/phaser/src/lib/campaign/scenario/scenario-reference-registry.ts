@@ -81,6 +81,7 @@ export abstract class ScenarioReferenceRegistry {
   abstract actorRegions(id: ScenarioActorId): readonly ScenarioRegionRuntime[];
   abstract debugGeometry(): readonly ScenarioReferenceDebugGeometry[];
   abstract debugFocus(id: string): Vector3Simple | undefined;
+  abstract debugHighlight(id: ScenarioRegionId): boolean;
   abstract destroy(): void;
 }
 
@@ -104,6 +105,8 @@ export class IndexedScenarioReferenceRegistry extends ScenarioReferenceRegistry 
   private readonly cameraShots = new Map<ScenarioCameraShotId, ScenarioCameraShotRuntime>();
   private readonly spawnSets = new Map<ScenarioSpawnSetId, ScenarioSpawnSetRuntime>();
   private readonly actorDestroyHandlers = new Map<GameObject, () => void>();
+  private debugHighlightGraphics?: Phaser.GameObjects.Graphics;
+  private debugHighlightTimer?: Phaser.Time.TimerEvent;
 
   initialize(scene: Phaser.Scene): void {
     if (this.initialized) return;
@@ -258,7 +261,34 @@ export class IndexedScenarioReferenceRegistry extends ScenarioReferenceRegistry 
     return groupPosition ? { ...groupPosition } : undefined;
   }
 
+  debugHighlight(id: ScenarioRegionId): boolean {
+    const region = this.regions.get(id);
+    if (!region || !this.scene) return false;
+    this.debugHighlightTimer?.destroy();
+    this.debugHighlightGraphics?.destroy();
+    const graphics = this.scene.add.graphics().setDepth(20_000);
+    const points = region.definition.points;
+    graphics.lineStyle(3, 0xffd35a, 1);
+    if (points.length > 1) {
+      graphics.beginPath();
+      graphics.moveTo(points[0]!.x, points[0]!.y);
+      for (const point of points.slice(1)) graphics.lineTo(point.x, point.y);
+      graphics.closePath().strokePath();
+    }
+    this.debugHighlightGraphics = graphics;
+    this.debugHighlightTimer = this.scene.time.delayedCall(3_000, () => {
+      graphics.destroy();
+      if (this.debugHighlightGraphics === graphics) this.debugHighlightGraphics = undefined;
+      this.debugHighlightTimer = undefined;
+    });
+    return true;
+  }
+
   destroy = (): void => {
+    this.debugHighlightTimer?.destroy();
+    this.debugHighlightGraphics?.destroy();
+    this.debugHighlightTimer = undefined;
+    this.debugHighlightGraphics = undefined;
     for (const [actor, handler] of this.actorDestroyHandlers) actor.off(Phaser.GameObjects.Events.DESTROY, handler);
     this.actorDestroyHandlers.clear();
     this.namespaceById.clear();

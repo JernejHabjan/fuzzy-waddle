@@ -33,6 +33,7 @@ import SurrenderDialog from "../../../prefabs/gui/SurrenderDialog";
 import { getPlayers } from "../../../data/scene-data";
 import { ConnectionRecoveryService } from "../../services/recovery/connection-recovery.service";
 import type { CampaignMissionDirector } from "../../../campaign/campaign-mission-director";
+import CampaignDeveloperPanel from "../../../prefabs/gui/campaign/CampaignDeveloperPanel";
 /* END-USER-IMPORTS */
 
 export default class HudProbableWaffle extends ProbableWaffleScene {
@@ -174,6 +175,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private cursorHandler?: CursorHandler;
   private connectionRecovery?: ConnectionRecoveryService;
   private readonly campaignSuppressedVisibility = new Map<Phaser.GameObjects.Components.Visible, boolean>();
+  private campaignDeveloperPanel?: CampaignDeveloperPanel;
 
   probableWaffleScene?: ProbableWaffleScene;
   override preload() {
@@ -222,6 +224,13 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
 
   initializeCampaignObjectives(director: CampaignMissionDirector): void {
     this.campaignObjectivesHud.setup(director);
+    if (!environment.production) {
+      if (!this.campaignDeveloperPanel) {
+        this.campaignDeveloperPanel = new CampaignDeveloperPanel(this);
+        this.add.existing(this.campaignDeveloperPanel);
+      }
+      this.campaignDeveloperPanel.setup(director);
+    }
   }
 
   initializeCampaignPresentation(director: CampaignMissionDirector): void {

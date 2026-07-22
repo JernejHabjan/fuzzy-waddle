@@ -1,6 +1,7 @@
 import { Subject, type Subscription } from "rxjs";
 import {
   AOTA_CAMPAIGN_CONTENT_REGISTRY,
+  asCampaignContentId,
   CampaignMissionRuntime,
   type CampaignMissionRuntimeEffect
 } from "@fuzzy-waddle/probable-waffle-campaign";
@@ -26,6 +27,14 @@ import {
   PhaserCampaignCinematicPresentationService
 } from "./presentation/campaign-cinematic-presentation.service";
 import { IndexedScenarioReferenceRegistry } from "./scenario/scenario-reference-registry";
+import {
+  DefaultCampaignDiagnosticsService,
+  type CampaignDeveloperCommand,
+  type CampaignDeveloperCommandResult,
+  type CampaignDiagnosticsService
+} from "@fuzzy-waddle/probable-waffle-campaign";
+import { environment } from "@fuzzy-waddle/environments/environment";
+import { evaluateCampaignSaveEligibility } from "../data/campaign-save-eligibility";
 
 export interface CampaignMissionOutcomeHandler {
   resolveCampaignMissionOutcome(outcome: Extract<CampaignMissionOutcome, "victory" | "defeat">): void;
@@ -37,6 +46,7 @@ export class CampaignMissionDirector {
   readonly events$ = new Subject<CampaignMissionRuntimeEvent>();
   readonly objectiveProjection: CampaignObjectiveProjectionStore;
   readonly cinematicPresentation: PhaserCampaignCinematicPresentationService;
+  readonly diagnostics: CampaignDiagnosticsService;
   private runtime: CampaignMissionRuntime;
   private readonly worldAdapter: CampaignPhaserWorldAdapter;
   private readonly eventAdapter: CampaignWorldEventAdapter;
@@ -78,9 +88,24 @@ export class CampaignMissionDirector {
       this.syncGameState();
     }
     const content = AOTA_CAMPAIGN_CONTENT_REGISTRY.getMission(context.missionId);
+    const dialogue = AOTA_CAMPAIGN_CONTENT_REGISTRY.getDialogue(context.missionId);
+    const rewards = AOTA_CAMPAIGN_CONTENT_REGISTRY.getRewards(context.missionId);
+    this.diagnostics = new DefaultCampaignDiagnosticsService(
+      content,
+      () => this.runtime.snapshot(),
+      {
+        invalidateRewards: (reason) => this.runtime.invalidateRewardIntegrity(reason),
+        execute: (command) => this.executeDeveloperCommand(command)
+      },
+      !environment.production,
+      {
+        cinematicIds: dialogue.cinematics.map((cinematic) => cinematic.id),
+        rewardIds: rewards.rewards.map((reward) => reward.id)
+      }
+    );
     this.objectiveProjection = new CampaignObjectiveProjectionStore(
       content.objectives,
-      AOTA_CAMPAIGN_CONTENT_REGISTRY.getDialogue(context.missionId),
+      dialogue,
       this.runtime.snapshot(),
       scene.game.device.os.android || scene.game.device.os.iOS || scene.game.device.input.touch
         ? "touch"
@@ -149,6 +174,25 @@ export class CampaignMissionDirector {
 
   snapshot(): CampaignMissionRuntimeState {
     return this.runtime.snapshot();
+  }
+
+  diagnosticEnvironment(): {
+    readonly pauseReasons: readonly string[];
+    readonly saveEligibility: ReturnType<typeof evaluateCampaignSaveEligibility>;
+    readonly references: ReadonlyArray<ReturnType<IndexedScenarioReferenceRegistry["debugGeometry"]>[number]>;
+  } {
+    const tickService = getSceneService(this.scene, SimulationTickService);
+    return {
+      pauseReasons: tickService?.getPauseReasons() ?? [],
+      saveEligibility: evaluateCampaignSaveEligibility({
+        sceneActive: this.scene.scene.isActive(),
+        sessionState: this.scene.baseGameData.gameInstance.gameInstanceMetadata.data.sessionState,
+        runtime: this.runtime.snapshot(),
+        pauseReasons: tickService?.getPauseReasons() ?? [],
+        request: { kind: "manual" }
+      }),
+      references: getSceneService(this.scene, IndexedScenarioReferenceRegistry)?.debugGeometry() ?? []
+    };
   }
 
   invalidateRewardIntegrity(reason: string): void {
@@ -272,6 +316,27 @@ export class CampaignMissionDirector {
 
   private isReplay(): boolean {
     return this.scene.baseGameData.gameInstance.gameInstanceMetadata.isReplay();
+  }
+
+  private executeDeveloperCommand(command: CampaignDeveloperCommand): CampaignDeveloperCommandResult {
+    const references = getSceneService(this.scene, IndexedScenarioReferenceRegistry);
+    if (command.kind === "focus-actor") {
+      const position = references?.debugFocus(command.actorId);
+      if (!position) return { accepted: false, invalidatedRewards: false, reason: "Actor is not resolved" };
+      this.scene.cameras.main.centerOn(position.x, position.y - position.z);
+      return { accepted: true, invalidatedRewards: false };
+    }
+    if (command.kind === "highlight-region") {
+      const accepted = references?.debugHighlight(asCampaignContentId<"scenario-region">(command.regionId)) ?? false;
+      return accepted
+        ? { accepted: true, invalidatedRewards: false }
+        : { accepted: false, invalidatedRewards: false, reason: "Region is not resolved" };
+    }
+    const result = this.runtime.executeDeveloperCommand(command);
+    this.publish(result.effects);
+    return this.runtime.state.status === "failed"
+      ? { accepted: false, invalidatedRewards: true, reason: this.runtime.state.integrity.diagnostic?.message }
+      : { accepted: true, invalidatedRewards: true };
   }
 
   private presentCheckpointResume(): void {

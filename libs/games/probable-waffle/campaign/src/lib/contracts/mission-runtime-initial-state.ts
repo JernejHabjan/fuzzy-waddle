@@ -3,11 +3,13 @@ import type { MissionCounterId, MissionFactId, MissionPhaseId, MissionTimerId } 
 export interface MissionInitialFact {
   readonly id: MissionFactId;
   readonly value: boolean | string;
+  readonly debugMutable?: boolean;
 }
 
 export interface MissionInitialCounter {
   readonly id: MissionCounterId;
   readonly value: number;
+  readonly debugMutable?: boolean;
 }
 
 export interface MissionInitialTimer {

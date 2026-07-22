@@ -36,6 +36,13 @@ After editing a scenario map:
 
 1. Regenerate the Phaser Editor TypeScript for changed scenes, prefabs, and user components.
 2. Run `npx nx test probable-waffle-campaign --runInBand` to validate mission JSON and map-reference diagnostics.
+
+## Developer diagnostics and mission harness
+
+- Press F9 in a development campaign scene to inspect flow, state, objectives, encounters, presentation, save state, integrity, and the bounded trace. Opening or focusing from the panel is read-only and does not affect rewards.
+- Mutating commands must go through `CampaignDiagnosticsService.execute`; production rejects them and development invalidates reward integrity before execution. Facts and counters must opt in with `debugMutable`.
+- Use `CampaignMissionTestHarness` for rendering-free fixed-tick smoke paths. Advance explicit ticks/events, call `roundTrip()` at authored checkpoints, and compare `serialized()` output for deterministic continuation.
+- Keep map focus/highlight local. Mission conditions/actions must continue to query stable scenario references rather than debug geometry.
 3. Run `npx nx test probable-waffle-phaser --runInBand` to validate prefab/component pairs, both campaign maps, stable-ID extraction, region boundaries, and actor-role persistence.
 4. Run `npx nx lint probable-waffle-phaser` and the affected portal build.
 

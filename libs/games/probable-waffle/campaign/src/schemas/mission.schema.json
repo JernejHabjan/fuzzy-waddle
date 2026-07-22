@@ -276,7 +276,8 @@
                     "type": "string"
                   }
                 ]
-              }
+              },
+              "debugMutable": { "type": "boolean" }
             }
           }
         },
@@ -294,7 +295,8 @@
               },
               "value": {
                 "type": "number"
-              }
+              },
+              "debugMutable": { "type": "boolean" }
             }
           }
         },

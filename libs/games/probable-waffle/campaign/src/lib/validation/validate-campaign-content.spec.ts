@@ -18,6 +18,18 @@ import { validateCampaignContent } from "./validate-campaign-content";
 import { FactionType, ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 
 describe("validateCampaignContent", () => {
+  it("rejects playable content without authored victory and defeat paths", () => {
+    const dreams = { ...AOTA_CAMPAIGN_MISSIONS[0]!, contentStatus: "playable" as const };
+    const result = validateCampaignContent({
+      campaign: AOTA_CAMPAIGN_DEFINITION,
+      missions: [dreams, ...AOTA_CAMPAIGN_MISSIONS.slice(1)],
+      dialogue: AOTA_CAMPAIGN_DIALOGUE,
+      rewards: AOTA_CAMPAIGN_REWARDS,
+      registries: createDefaultCampaignDefinitionRegistries()
+    });
+    expect(result.issues.filter((issue) => issue.code === "missing-terminal-path")).toHaveLength(2);
+  });
+
   const phaseId = asCampaignContentId<"phase">("fixture-phase");
   const missingPhaseId = asCampaignContentId<"phase">("missing-phase");
   const actionId = asCampaignContentId<"action">("fixture-action");
