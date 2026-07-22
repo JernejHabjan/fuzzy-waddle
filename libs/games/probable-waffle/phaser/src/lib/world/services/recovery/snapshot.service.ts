@@ -14,6 +14,7 @@ import type { UserId } from "@fuzzy-waddle/platform-game-sessions";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { CancelableSimDelay } from "../simulation-time";
 import { createMultiplayerClientLogger } from "../multiplayer/multiplayer-client-logger";
+import { RandomService } from "../random.service";
 
 /** How often the host refreshes its stored reconnect snapshot (in milliseconds). */
 const SNAPSHOT_REFRESH_INTERVAL_MS = 60_000;
@@ -125,6 +126,7 @@ export class SnapshotService {
     const playerResearch = rawResearch ? structuredClone(rawResearch) : undefined;
     const rawCampaignMission = scene.baseGameData.gameInstance.gameState?.data.campaignMission;
     const campaignMission = rawCampaignMission ? structuredClone(rawCampaignMission) : undefined;
+    const randomState = getSceneService(scene, RandomService)?.getState();
 
     this.latestSnapshot = {
       tick,
@@ -132,7 +134,8 @@ export class SnapshotService {
       playerStates,
       playerSelectionGroups,
       playerResearch,
-      campaignMission
+      campaignMission,
+      randomState
     } satisfies ProbableWaffleSnapshotData;
   }
 

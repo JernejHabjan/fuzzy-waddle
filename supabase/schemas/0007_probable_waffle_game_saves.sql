@@ -1,5 +1,5 @@
 create type public.probable_waffle_game_save_scope as enum ('campaign', 'skirmish');
-create type public.probable_waffle_game_save_kind as enum ('manual', 'autosave', 'quicksave');
+create type public.probable_waffle_game_save_kind as enum ('manual', 'autosave', 'quicksave', 'archive');
 
 create table public.probable_waffle_game_saves (
   id uuid primary key,

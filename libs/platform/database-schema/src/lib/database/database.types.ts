@@ -993,7 +993,7 @@ export type Database = {
         | "end-game"
         | "resolution";
       probable_waffle_campaign_outcome: "victory" | "defeat" | "abandoned";
-      probable_waffle_game_save_kind: "manual" | "autosave" | "quicksave";
+      probable_waffle_game_save_kind: "manual" | "autosave" | "quicksave" | "archive";
       probable_waffle_game_save_scope: "campaign" | "skirmish";
       user_account_status: "active" | "limited" | "disabled";
     };
@@ -1155,7 +1155,7 @@ export const Constants = {
         "resolution"
       ],
       probable_waffle_campaign_outcome: ["victory", "defeat", "abandoned"],
-      probable_waffle_game_save_kind: ["manual", "autosave", "quicksave"],
+      probable_waffle_game_save_kind: ["manual", "autosave", "quicksave", "archive"],
       probable_waffle_game_save_scope: ["campaign", "skirmish"],
       user_account_status: ["active", "limited", "disabled"]
     }

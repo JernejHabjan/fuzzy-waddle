@@ -8,7 +8,8 @@ import {
   type GameSaveRecord,
   GameSaveScope,
   GameSaveSyncState,
-  isSupportedGameSaveRecord
+  isSupportedGameSaveRecord,
+  ProbableWaffleGameInstanceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { GameSaveRepository } from "./game-save.repository";
 import { GameSaveSyncService } from "./game-save-sync.service";
@@ -80,7 +81,7 @@ export class GameSaveService extends GameSavePort implements GameSaveServiceInte
     const records = await this.repository.list();
     const decoded = await Promise.all(
       records.map(async (record) => {
-        if (record.formatVersion !== 1 && record.formatVersion !== GAME_SAVE_FORMAT_VERSION) {
+        if (record.formatVersion !== 1 && record.formatVersion !== 2 && record.formatVersion !== GAME_SAVE_FORMAT_VERSION) {
           return unsupportedGameSaveRecord(record, `Save format ${record.formatVersion} is not supported`).record;
         }
         try {
@@ -101,7 +102,11 @@ export class GameSaveService extends GameSavePort implements GameSaveServiceInte
 
   async continueCampaignMission(missionId: CampaignMissionId): Promise<GameSaveRecord | undefined> {
     return (await this.list()).filter(isSupportedGameSaveRecord).find(
-      (record) => record.scope === GameSaveScope.Campaign && record.campaign?.missionId === missionId
+      (record) =>
+        record.scope === GameSaveScope.Campaign &&
+        record.kind !== GameSaveKind.Archive &&
+        record.campaign?.missionId === missionId &&
+        record.gameInstanceData.gameInstanceMetadataData?.type !== ProbableWaffleGameInstanceType.Replay
     );
   }
 

@@ -37,6 +37,7 @@ import type {
   CampaignMissionRuntimeState,
   CampaignRestoreInvariantReport
 } from "../../probable-waffle/campaign-runtime";
+import type { DeterministicRandomState } from "../../probable-waffle/deterministic-random";
 
 export class ProbableWaffleGameState extends BaseGameState<ProbableWaffleGameStateData> {
   constructor(data?: ProbableWaffleGameStateData) {
@@ -67,7 +68,8 @@ export class ProbableWaffleGameState extends BaseGameState<ProbableWaffleGameSta
       scoreData: this.normalizeScoreData(data.scoreData),
       scoreSnapshots: this.normalizeScoreSnapshots(data.scoreSnapshots),
       campaignMission: data.campaignMission ? structuredClone(data.campaignMission) : undefined,
-      campaignRestore: data.campaignRestore ? structuredClone(data.campaignRestore) : undefined
+      campaignRestore: data.campaignRestore ? structuredClone(data.campaignRestore) : undefined,
+      randomState: data.randomState ? structuredClone(data.randomState) : undefined
     };
   }
 
@@ -172,6 +174,8 @@ export interface ProbableWaffleGameStateData extends BaseData {
   campaignMission?: CampaignMissionRuntimeState;
   /** Last load-time campaign invariant result; invalid restores remain paused for recovery. */
   campaignRestore?: CampaignRestoreInvariantReport;
+  /** Deterministic generator continuation shared by saves, snapshots, reconnects, and replays. */
+  randomState?: DeterministicRandomState;
 }
 
 export interface ActorDefinition {

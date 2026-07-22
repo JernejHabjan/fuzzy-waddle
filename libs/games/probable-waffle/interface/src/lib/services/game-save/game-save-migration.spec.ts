@@ -60,4 +60,16 @@ describe("migrateGameSaveRecord", () => {
     if (result.status !== "unsupported") return;
     expect(result.record.compatibility.recoveryOptions).toEqual(expect.arrayContaining(["export", "delete"]));
   });
+
+  it("rejects an advanced legacy campaign save without RNG continuation state", () => {
+    const advancedData = structuredClone(data);
+    const advancedRuntime = advancedData.gameStateData!.campaignMission!;
+    advancedRuntime.initialized = true;
+    advancedRuntime.status = "running";
+    advancedRuntime.integrity.lastProcessedTick = 1;
+    const result = migrateGameSaveRecord({ ...stored, formatVersion: 2 }, advancedData);
+    expect(result.status).toBe("unsupported");
+    if (result.status !== "unsupported") return;
+    expect(result.record.compatibility.reason).toContain("random continuation");
+  });
 });

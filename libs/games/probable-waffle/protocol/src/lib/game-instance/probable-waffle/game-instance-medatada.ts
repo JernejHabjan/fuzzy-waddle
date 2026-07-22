@@ -7,7 +7,8 @@ import type {
   CampaignMissionId,
   CampaignMissionProgressionSnapshot
 } from "../../probable-waffle/campaign";
-import type { CampaignMissionRuntimeState } from "../../probable-waffle/campaign-runtime";
+import type { CampaignMissionRuntimeEvent, CampaignMissionRuntimeState } from "../../probable-waffle/campaign-runtime";
+import type { DeterministicRandomState } from "../../probable-waffle/deterministic-random";
 
 export enum ProbableWaffleGameInstanceType {
   Matchmaking,
@@ -63,6 +64,16 @@ export interface ProbableWaffleReplayDesyncDiagnostic {
   playerDiffs: string[];
   researchDiff?: string;
   campaignMissionDiff?: string;
+  campaignMissionFamilyDiff?: string;
+  randomDiff?: string;
+}
+
+export interface CampaignReplayContext {
+  readonly campaignId: CampaignId;
+  readonly missionId: CampaignMissionId;
+  readonly missionRevision: number;
+  readonly difficulty: "story" | "normal" | "hard";
+  readonly progressionSnapshot: CampaignMissionProgressionSnapshot;
 }
 
 export interface ProbableWaffleReplayDebugData {
@@ -77,8 +88,12 @@ export interface ProbableWaffleReplayData {
   mapId?: number;
   players: ProbableWaffleReplayPlayerData[];
   commands: ProbableWaffleReplayCommandBatch[];
+  /** Non-world campaign inputs that cannot be regenerated from the command stream. */
+  campaignEvents?: CampaignMissionRuntimeEvent[];
   /** Initial deterministic mission snapshot for campaign replay identity and restore checks. */
   campaignMissionInitialState?: CampaignMissionRuntimeState;
+  randomInitialState?: DeterministicRandomState;
+  campaignContext?: CampaignReplayContext;
   /** Optional deterministic-debug payload used for replay verification and desync forensics. */
   debugData?: ProbableWaffleReplayDebugData;
 }

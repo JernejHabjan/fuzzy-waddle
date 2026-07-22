@@ -8,6 +8,7 @@ import {
 import { getSceneComponent, getSceneService } from "../scene-component-helpers";
 import { CommandBusService } from "../multiplayer/command-bus.service";
 import { SimulationPauseReason, SimulationTickService } from "../simulation-tick.service";
+import { RandomService } from "../random.service";
 import { ActorIndexSystem } from "../ActorIndexSystem";
 import { SceneActorCreator } from "../scene-actor-creator";
 import { SelectionGroupsComponent } from "../../../player/human-controller/selection-groups.component";
@@ -314,6 +315,13 @@ export class ReconnectService {
 
       // Restore the authoritative mission state before the director observes the snapshot-applied event.
       const gameStateData = scene.baseGameData.gameInstance.gameState?.data;
+      if (snapshot.randomState) {
+        getSceneService(scene, RandomService)?.restoreState(snapshot.randomState);
+        if (gameStateData) gameStateData.randomState = structuredClone(snapshot.randomState);
+      } else if (snapshot.campaignMission) {
+        throw new Error("Campaign reconnect snapshot is missing deterministic random state");
+      }
+
       if (gameStateData) {
         gameStateData.campaignMission = snapshot.campaignMission
           ? structuredClone(snapshot.campaignMission)

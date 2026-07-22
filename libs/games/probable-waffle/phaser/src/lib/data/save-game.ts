@@ -12,6 +12,7 @@ import { AiPlayerHandler } from "../player/ai-controller/ai-player-handler";
 import { SimulationTickService } from "../world/services/simulation-tick.service";
 import { evaluateCampaignSaveEligibility } from "./campaign-save-eligibility";
 import { GameSessionState } from "@fuzzy-waddle/platform-game-sessions";
+import { RandomService } from "../world/services/random.service";
 
 export class SaveGame {
   private saveGameSubscription: Subscription;
@@ -73,6 +74,8 @@ export class SaveGame {
 
       // Save research state
       this.saveResearchState();
+
+      this.saveRandomState();
 
       const thumbnail = await this.takeScreenshot();
       this.scene.communicator.utilityEvents.emit({
@@ -165,6 +168,12 @@ export class SaveGame {
       playerResearch[playerNumber] = researchTypes;
     }
     gameState.playerResearch = playerResearch;
+  }
+
+  private saveRandomState(): void {
+    const gameState = this.scene.baseGameData.gameInstance.gameState;
+    const randomService = getSceneService(this.scene, RandomService);
+    if (gameState && randomService) gameState.data.randomState = randomService.getState();
   }
 
   private async takeScreenshot() {

@@ -213,6 +213,8 @@ export interface ProbableWaffleStateHashDiagnostics {
   playerDigests?: string[];
   researchDigest?: string;
   campaignMissionDigest?: string;
+  campaignMissionFamilyDigests?: Record<string, string>;
+  randomDigest?: string;
 }
 
 export interface ProbableWaffleStateHashEvent extends ProbableWaffleCommunicatorEvent {
@@ -242,6 +244,8 @@ export interface ProbableWaffleSnapshotData {
   playerResearch?: Record<PlayerNumber, string[]>;
   /** Mission runtime is restored before simulation tick processing resumes. */
   campaignMission?: CampaignMissionRuntimeState;
+  /** Deterministic RNG continuation captured at the same simulation boundary. */
+  randomState?: import("../../probable-waffle/deterministic-random").DeterministicRandomState;
 }
 
 /**

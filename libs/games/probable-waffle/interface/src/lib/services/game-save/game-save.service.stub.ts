@@ -2,7 +2,9 @@ import {
   isSupportedGameSaveRecord,
   type CampaignMissionId,
   type GameSaveListEntry,
-  type GameSaveRecord
+  type GameSaveRecord,
+  GameSaveKind,
+  ProbableWaffleGameInstanceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { GameSaveServiceInterface } from "./game-save.service.interface";
 import type { SaveGameRequest } from "./save-game-request";
@@ -17,7 +19,14 @@ export class GameSaveServiceStub extends GameSaveServiceInterface {
     return this.records;
   }
   override async continueCampaignMission(missionId: CampaignMissionId): Promise<GameSaveRecord | undefined> {
-    return this.records.filter(isSupportedGameSaveRecord).find((record) => record.campaign?.missionId === missionId);
+    return this.records
+      .filter(isSupportedGameSaveRecord)
+      .find(
+        (record) =>
+          record.kind !== GameSaveKind.Archive &&
+          record.campaign?.missionId === missionId &&
+          record.gameInstanceData.gameInstanceMetadataData?.type !== ProbableWaffleGameInstanceType.Replay
+      );
   }
   override async rename(id: string, name: string): Promise<void> {
     this.records = this.records.map((record) => (record.id === id ? { ...record, name } : record));

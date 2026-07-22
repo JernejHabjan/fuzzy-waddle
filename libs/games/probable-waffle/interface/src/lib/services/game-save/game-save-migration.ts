@@ -7,6 +7,7 @@ import {
   type EncodedGameSaveRecord,
   type GameSaveRecord,
   type ProbableWaffleGameInstanceData,
+  ProbableWaffleGameInstanceType,
   type UnsupportedGameSaveRecord
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import {
@@ -23,7 +24,7 @@ export function migrateGameSaveRecord(
   stored: EncodedGameSaveRecord,
   gameInstanceData: ProbableWaffleGameInstanceData
 ): GameSaveMigrationResult {
-  if (stored.formatVersion !== 1 && stored.formatVersion !== GAME_SAVE_FORMAT_VERSION) {
+  if (stored.formatVersion !== 1 && stored.formatVersion !== 2 && stored.formatVersion !== GAME_SAVE_FORMAT_VERSION) {
     return unsupportedGameSaveRecord(stored, `Save format ${stored.formatVersion} is not supported`);
   }
   const migratedData = structuredClone(gameInstanceData);
@@ -35,6 +36,17 @@ export function migrateGameSaveRecord(
     );
   }
   if (campaignMission && migratedData.gameStateData) migratedData.gameStateData.campaignMission = campaignMission;
+  if (!migratedData.gameStateData?.randomState) {
+    const safeInitialCampaign =
+      campaignMission && !campaignMission.initialized && campaignMission.integrity.lastProcessedTick === 0;
+    const safeInitialSkirmishOrReplay =
+      !campaignMission &&
+      (migratedData.gameInstanceMetadataData?.type === ProbableWaffleGameInstanceType.Replay ||
+        (migratedData.gameStateData?.actors?.length ?? 0) === 0);
+    if (!safeInitialCampaign && !safeInitialSkirmishOrReplay) {
+      return unsupportedGameSaveRecord(stored, "Save is missing deterministic random continuation state");
+    }
+  }
   let campaign = resolveCampaignContext(stored, migratedData, campaignMission);
   if (stored.scope === GameSaveScope.Campaign && !campaign) {
     return unsupportedGameSaveRecord(stored, "Campaign identity or runtime metadata is incomplete");

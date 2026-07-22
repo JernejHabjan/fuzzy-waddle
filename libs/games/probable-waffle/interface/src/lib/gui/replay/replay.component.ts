@@ -1,6 +1,6 @@
 import { Component, inject } from "@angular/core";
 import type { OnInit } from "@angular/core";
-import { RouterLink } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import {
   type ProbableWaffleGameInstanceData,
@@ -22,6 +22,7 @@ import { DatePipe } from "@angular/common";
 export class ReplayComponent implements OnInit {
   private readonly gameSaveService = inject(GameSaveService);
   private readonly gameInstanceClientService = inject(GameInstanceClientService);
+  private readonly router = inject(Router);
   protected gameInstanceDataRecords: GameSaveRecord[] = [];
   async ngOnInit(): Promise<void> {
     this.gameInstanceDataRecords = (await this.gameSaveService.list()).filter(isSupportedGameSaveRecord).filter(
@@ -36,6 +37,11 @@ export class ReplayComponent implements OnInit {
   protected startReplay = async (save: GameSaveRecord): Promise<void> => {
     await this.gameInstanceClientService.startReplay(save.gameInstanceData);
   };
+
+  protected async replayCampaignMission(save: GameSaveRecord): Promise<void> {
+    if (!save.campaign) return;
+    await this.router.navigate(["/aota/campaign", save.campaign.chapterId, save.campaign.missionId]);
+  }
 
   protected async deleteReplay(save: GameSaveRecord) {
     await this.gameSaveService.delete(save.id);

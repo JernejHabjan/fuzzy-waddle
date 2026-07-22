@@ -1,7 +1,8 @@
 import { TestBed } from "@angular/core/testing";
 import {
   type CampaignGameSaveContext,
-  type ProbableWaffleGameInstanceData
+  type ProbableWaffleGameInstanceData,
+  ProbableWaffleGameInstanceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import {
   AOTA_CAMPAIGN_CONTENT_REGISTRY,
@@ -120,5 +121,20 @@ describe("GameSaveService", () => {
     expect(second.id).toBe(first.id);
     expect(second.revision).toBe(2);
     expect((await service.list()).filter((save) => save.kind === "quicksave")).toHaveLength(1);
+  });
+  it("does not offer a campaign replay archive as a continue save", async () => {
+    await service.save({
+      scope: "campaign",
+      kind: "archive",
+      gameInstanceData: {
+        ...data,
+        gameInstanceMetadataData: {
+          ...data.gameInstanceMetadataData,
+          type: ProbableWaffleGameInstanceType.Replay
+        }
+      } as ProbableWaffleGameInstanceData,
+      campaign: campaign()
+    });
+    expect(await service.continueCampaignMission("dreams")).toBeUndefined();
   });
 });

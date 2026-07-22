@@ -31,6 +31,7 @@ export interface CampaignMissionOutcomeHandler {
 /** Phaser integration boundary for the pure campaign mission runtime. */
 export class CampaignMissionDirector {
   readonly effects$ = new Subject<readonly CampaignMissionRuntimeEffect[]>();
+  readonly events$ = new Subject<CampaignMissionRuntimeEvent>();
   readonly objectiveProjection: CampaignObjectiveProjectionStore;
   readonly cinematicPresentation: PhaserCampaignCinematicPresentationService;
   private runtime: CampaignMissionRuntime;
@@ -129,6 +130,7 @@ export class CampaignMissionDirector {
 
   queueEvent(event: Omit<CampaignMissionRuntimeEvent, "sequence"> & { readonly sequence?: number }): number {
     const sequence = this.runtime.enqueueEvent(event);
+    this.events$.next({ ...event, sequence } as CampaignMissionRuntimeEvent);
     this.syncGameState();
     this.objectiveProjection.rebuild(this.runtime.snapshot());
     this.cinematicPresentation.syncState(this.runtime.snapshot());
@@ -137,6 +139,11 @@ export class CampaignMissionDirector {
 
   snapshot(): CampaignMissionRuntimeState {
     return this.runtime.snapshot();
+  }
+
+  invalidateRewardIntegrity(reason: string): void {
+    this.runtime.invalidateRewardIntegrity(reason);
+    this.syncGameState();
   }
 
   focusObjective(objectiveId: string): boolean {
@@ -239,6 +246,7 @@ export class CampaignMissionDirector {
     this.cinematicPresentation.destroy();
     this.scene.events.off(ProbableWaffleSceneEventName.ReconnectSnapshotApplied, this.onSnapshotApplied, this);
     this.effects$.complete();
+    this.events$.complete();
   }
 
   private dialoguePresented(lineId: string, ownerToken: string): void {

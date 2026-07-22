@@ -336,7 +336,12 @@ export interface CampaignMissionProgress {
   completedAt?: string;
 }
 
-export const GameSaveKind = { Manual: "manual", Autosave: "autosave", Quicksave: "quicksave" } as const;
+export const GameSaveKind = {
+  Manual: "manual",
+  Autosave: "autosave",
+  Quicksave: "quicksave",
+  Archive: "archive"
+} as const;
 export type GameSaveKind = (typeof GameSaveKind)[keyof typeof GameSaveKind];
 
 export const GameSaveScope = { Campaign: "campaign", Skirmish: "skirmish" } as const;
@@ -351,7 +356,7 @@ export const GameSaveSyncState = {
 } as const;
 export type GameSaveSyncState = (typeof GameSaveSyncState)[keyof typeof GameSaveSyncState];
 
-export const GAME_SAVE_FORMAT_VERSION = 2 as const;
+export const GAME_SAVE_FORMAT_VERSION = 3 as const;
 
 export interface CampaignGameSaveContext {
   readonly campaignId: CampaignId;

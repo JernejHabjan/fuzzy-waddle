@@ -1,16 +1,23 @@
 import type { Subscription } from "rxjs";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import {
+  type CampaignMissionRuntimeEvent,
   type ProbableWaffleReplayCommandBatch,
+  type ProbableWaffleReplayData,
   type ProbableWaffleReplayTickDigest
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { getSceneService } from "../scene-component-helpers";
 import { CommandBusService } from "../multiplayer/command-bus.service";
 import { SimulationTickService } from "../simulation-tick.service";
 import { buildReplayTickDigest } from "./replay-debug-tools";
-import { serializeCampaignMissionRuntimeState } from "@fuzzy-waddle/probable-waffle-campaign";
+import {
+  AOTA_CAMPAIGN_CONTENT_REGISTRY,
+  serializeCampaignMissionRuntimeState
+} from "@fuzzy-waddle/probable-waffle-campaign";
+import { CampaignMissionDirector } from "../../../campaign/campaign-mission-director";
 
-const SUPPORTED_REPLAY_COMPATIBILITY_VERSIONS = new Set(["lockstep-v1"]);
+const SUPPORTED_REPLAY_COMPATIBILITY_VERSIONS = new Set(["lockstep-v1", "campaign-lockstep-v2"]);
+const SUPPORTED_REPLAY_FORMAT_VERSIONS = new Set(["1", "2"]);
 
 /**
  * Replays recorded authoritative command batches deterministically by tick.
@@ -20,6 +27,7 @@ const SUPPORTED_REPLAY_COMPATIBILITY_VERSIONS = new Set(["lockstep-v1"]);
 export class ReplayPlaybackService {
   private tickSub?: Subscription;
   private readonly batchesByTick = new Map<number, ProbableWaffleReplayCommandBatch[]>();
+  private readonly campaignEventsByTick = new Map<number, Array<Omit<CampaignMissionRuntimeEvent, "sequence">>>();
   private readonly expectedTickDigests = new Map<number, ProbableWaffleReplayTickDigest>();
   private readonly authoritativeBatchPairs = new Set<string>();
 
@@ -32,6 +40,9 @@ export class ReplayPlaybackService {
     if (!SUPPORTED_REPLAY_COMPATIBILITY_VERSIONS.has(replayData.compatibilityVersion)) {
       throw new Error(`Unsupported replay compatibility version: ${replayData.compatibilityVersion}`);
     }
+    if (!SUPPORTED_REPLAY_FORMAT_VERSIONS.has(replayData.version)) {
+      throw new Error(`Unsupported replay format version: ${replayData.version}`);
+    }
 
     const expectedCampaignMission = replayData.campaignMissionInitialState;
     const actualCampaignMission = scene.baseGameData.gameInstance.gameState?.data.campaignMission;
@@ -42,6 +53,35 @@ export class ReplayPlaybackService {
           serializeCampaignMissionRuntimeState(actualCampaignMission))
     ) {
       throw new Error("Campaign replay mission state does not match its recorded initial snapshot");
+    }
+    if (expectedCampaignMission) {
+      const currentRevision = replayData.campaignContext
+        ? AOTA_CAMPAIGN_CONTENT_REGISTRY.getMission(replayData.campaignContext.missionId).revision
+        : undefined;
+      const compatibilityError = campaignReplayCompatibilityError(replayData, currentRevision);
+      if (compatibilityError) throw new Error(compatibilityError);
+      const configuredRandomState = scene.baseGameData.gameInstance.gameState?.data.randomState;
+      if (stableReplayValue(configuredRandomState) !== stableReplayValue(replayData.randomInitialState)) {
+        throw new Error("Campaign replay random state does not match its recorded initial snapshot");
+      }
+      const launchContext = scene.baseGameData.gameInstance.gameInstanceMetadata.data.campaignContext;
+      const archiveContext = replayData.campaignContext;
+      if (!archiveContext) throw new Error("Campaign replay context is missing");
+      if (
+        !launchContext ||
+        launchContext.campaignId !== archiveContext.campaignId ||
+        launchContext.missionId !== archiveContext.missionId
+      ) {
+        throw new Error("Campaign replay launch context does not match its archive metadata");
+      }
+      const director = getSceneService(scene, CampaignMissionDirector);
+      director?.invalidateRewardIntegrity("replay-playback");
+      for (const event of replayData.campaignEvents ?? []) {
+        const playbackTick = event.tick + 1;
+        const existing = this.campaignEventsByTick.get(playbackTick) ?? [];
+        existing.push(campaignEventWithoutSequence(event));
+        this.campaignEventsByTick.set(playbackTick, existing);
+      }
     }
 
     for (const tickDigest of replayData.debugData?.tickDigests ?? []) {
@@ -69,26 +109,26 @@ export class ReplayPlaybackService {
 
     this.tickSub = tickService.tick$.subscribe((tick) => {
       const tickBatches = this.batchesByTick.get(tick);
-      if (!tickBatches?.length) {
-        return;
-      }
+      if (tickBatches?.length) {
+        const computedDigest = buildReplayTickDigest(tick, tickBatches);
+        const expectedDigest = this.expectedTickDigests.get(tick);
+        if (expectedDigest && expectedDigest.digest !== computedDigest.digest) {
+          console.error(
+            `[ReplayPlayback] Deterministic digest mismatch at tick=${tick}. expected=${expectedDigest.digest} actual=${computedDigest.digest}`,
+            {
+              expectedPlayerDigests: expectedDigest.playerDigests,
+              actualPlayerDigests: computedDigest.playerDigests
+            }
+          );
+        }
 
-      const computedDigest = buildReplayTickDigest(tick, tickBatches);
-      const expectedDigest = this.expectedTickDigests.get(tick);
-      if (expectedDigest && expectedDigest.digest !== computedDigest.digest) {
-        console.error(
-          `[ReplayPlayback] Deterministic digest mismatch at tick=${tick}. expected=${expectedDigest.digest} actual=${computedDigest.digest}`,
-          {
-            expectedPlayerDigests: expectedDigest.playerDigests,
-            actualPlayerDigests: computedDigest.playerDigests
-          }
-        );
+        tickBatches
+          .slice()
+          .sort((a, b) => a.playerNumber - b.playerNumber)
+          .forEach((batch) => commandBus.playReplayBatch(batch));
       }
-
-      tickBatches
-        .slice()
-        .sort((a, b) => a.playerNumber - b.playerNumber)
-        .forEach((batch) => commandBus.playReplayBatch(batch));
+      const director = getSceneService(scene, CampaignMissionDirector);
+      for (const event of this.campaignEventsByTick.get(tick) ?? []) director?.queueEvent(structuredClone(event));
     });
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.destroy());
   }
@@ -97,4 +137,49 @@ export class ReplayPlaybackService {
   destroy(): void {
     this.tickSub?.unsubscribe();
   }
+}
+
+export function campaignReplayCompatibilityError(
+  replayData: ProbableWaffleReplayData,
+  currentMissionRevision: number | undefined
+): string | undefined {
+  const mission = replayData.campaignMissionInitialState;
+  if (!mission) return replayData.campaignContext ? "Campaign replay mission state is missing" : undefined;
+  const context = replayData.campaignContext;
+  if (replayData.version !== "2" || replayData.compatibilityVersion !== "campaign-lockstep-v2") {
+    return `Campaign replay format ${replayData.version}/${replayData.compatibilityVersion} is not supported`;
+  }
+  if (!context) return "Campaign replay context is missing";
+  if (!replayData.randomInitialState) return "Campaign replay deterministic random state is missing";
+  if (context.campaignId !== mission.campaignId || context.missionId !== mission.missionId) {
+    return "Campaign replay identity does not match its recorded mission state";
+  }
+  if (context.missionRevision !== mission.missionRevision) {
+    return "Campaign replay revision does not match its recorded mission state";
+  }
+  if (currentMissionRevision !== context.missionRevision) {
+    return `Campaign replay revision ${context.missionRevision} is incompatible with current revision ${currentMissionRevision ?? "missing"}`;
+  }
+  if (stableReplayValue(context.progressionSnapshot) !== stableReplayValue(mission.progression ?? null)) {
+    return "Campaign replay progression snapshot does not match its recorded mission state";
+  }
+  return undefined;
+}
+
+function stableReplayValue(value: unknown): string {
+  if (value === undefined) return "undefined";
+  if (value === null || typeof value !== "object") return JSON.stringify(value) ?? String(value);
+  if (Array.isArray(value)) return `[${value.map(stableReplayValue).join(",")}]`;
+  const record = value as Record<string, unknown>;
+  return `{${Object.keys(record)
+    .sort()
+    .map((key) => `${JSON.stringify(key)}:${stableReplayValue(record[key])}`)
+    .join(",")}}`;
+}
+
+function campaignEventWithoutSequence(
+  event: CampaignMissionRuntimeEvent
+): Omit<CampaignMissionRuntimeEvent, "sequence"> {
+  const { sequence: _sequence, ...input } = event;
+  return input;
 }

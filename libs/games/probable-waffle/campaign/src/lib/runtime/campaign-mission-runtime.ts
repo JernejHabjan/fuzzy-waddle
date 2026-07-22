@@ -1469,6 +1469,53 @@ export function serializeCampaignMissionRuntimeState(state: CampaignMissionRunti
   return JSON.stringify(sortJsonValue(state as unknown as CampaignMissionRuntimeJsonValue));
 }
 
+export function serializeCampaignMissionRuntimeStateFamilies(
+  state: CampaignMissionRuntimeState
+): Readonly<Record<string, string>> {
+  const serialize = (value: unknown): string =>
+    JSON.stringify(sortJsonValue(value as CampaignMissionRuntimeJsonValue));
+  return {
+    identity: serialize({
+      schemaVersion: state.schemaVersion,
+      campaignId: state.campaignId,
+      missionId: state.missionId,
+      missionRevision: state.missionRevision,
+      status: state.status,
+      initialized: state.initialized,
+      difficulty: state.difficulty,
+      participantTeams: state.participantTeams
+    }),
+    phases: serialize({
+      active: state.activePhaseIds,
+      completed: state.completedPhaseIds,
+      pending: state.pendingPhaseIds,
+      checkpoints: state.claimedCheckpointIds ?? [],
+      pendingCheckpoints: state.pendingCheckpointIds ?? []
+    }),
+    factsCountersTimers: serialize({ facts: state.facts, counters: state.counters, timers: state.timers }),
+    objectives: serialize({ objectives: state.objectives, messages: state.missionMessageHistory }),
+    triggersActions: serialize({
+      claimedTriggers: state.claimedTriggerIds,
+      triggerStates: state.triggerStates,
+      pendingEvents: state.pendingEvents,
+      actionContinuations: state.actionContinuations,
+      ownedResources: state.ownedResources
+    }),
+    encounters: serialize(state.encounters),
+    rewardsIntegrity: serialize({
+      claimedRewards: state.claimedRewardIds,
+      progression: state.progression ?? null,
+      rewardIntegrity: state.rewardIntegrity ?? null
+    }),
+    presentation: serialize({
+      dialoguePresentations: state.dialoguePresentations,
+      dialogueHistory: state.dialogueHistory,
+      cinematics: state.cinematics,
+      activeCinematicId: state.activeCinematicId ?? null
+    })
+  };
+}
+
 function comparePriorityAndId<T extends { readonly priority: number; readonly id: string }>(left: T, right: T): number {
   return right.priority - left.priority || left.id.localeCompare(right.id);
 }

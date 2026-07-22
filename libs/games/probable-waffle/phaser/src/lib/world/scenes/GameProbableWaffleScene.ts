@@ -144,6 +144,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     creator.initInitialActors();
     // Populate the index after initial actors are in place
     actorIndex.scanExistingActors();
+    new ReplayPlaybackService().init(this);
     campaignMissionDirector?.startAfterActorIndexing();
     restoreCoordinator?.complete();
     // Activate the multiplayer relay path when a socket is present
@@ -157,7 +158,6 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     new ReconnectService().init(this);
     new HostMigrationService().init(this);
     new ReplayRecorderService().init(this);
-    new ReplayPlaybackService().init(this);
 
     super.create();
 
@@ -190,7 +190,12 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
   private getRandomService(): RandomService {
     const seed = this.sys.game.config.seed?.[0];
     if (!seed) throw new Error("Game seed is not defined");
-    return new RandomService(seed);
+    const randomService = new RandomService(seed);
+    const restoredState = this.baseGameData.gameInstance.gameState?.data.randomState;
+    if (restoredState) randomService.restoreState(restoredState);
+    const gameState = this.baseGameData.gameInstance.gameState;
+    if (gameState) gameState.data.randomState = randomService.getState();
+    return randomService;
   }
 
   private cleanup() {
