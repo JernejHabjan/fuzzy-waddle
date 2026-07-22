@@ -163,6 +163,12 @@ export function campaignReplayCompatibilityError(
   if (stableReplayValue(context.progressionSnapshot) !== stableReplayValue(mission.progression ?? null)) {
     return "Campaign replay progression snapshot does not match its recorded mission state";
   }
+  if (
+    stableReplayValue(context.participantProgressionSnapshots ?? []) !==
+    stableReplayValue(mission.participantProgressionSnapshots ?? [])
+  ) {
+    return "Campaign replay participant progression snapshots do not match its recorded mission state";
+  }
   return undefined;
 }
 

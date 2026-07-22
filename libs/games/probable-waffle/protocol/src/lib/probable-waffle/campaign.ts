@@ -298,6 +298,8 @@ export interface CampaignProfileMergeRequest {
 }
 
 export interface CampaignVictoryCommitResponse {
+  /** Authenticated server authority supplies this value; clients never select another profile owner. */
+  readonly profileOwnerId: string;
   readonly result: CampaignRewardCommitResult;
   readonly profileData: CampaignProfileData;
 }
@@ -335,6 +337,13 @@ export interface CampaignMissionProgressionSnapshot {
   readonly effectiveLoadout: CampaignEffectiveLoadout;
   readonly temporaryBoostIds: readonly CampaignTemporaryBoostId[];
   readonly pendingRewardIds: readonly string[];
+}
+
+export interface CampaignParticipantProgressionSnapshot {
+  readonly slotId: string;
+  readonly playerNumber: number;
+  readonly profileOwnerId?: string;
+  readonly progressionSnapshot: CampaignMissionProgressionSnapshot;
 }
 
 export interface MissionRunIntegrityState {
@@ -431,6 +440,7 @@ export interface CampaignGameSaveContext {
   readonly loadoutSnapshotHash?: string;
   readonly checkpointId?: string;
   readonly participantCount: number;
+  readonly participantProgressionSnapshots?: readonly CampaignParticipantProgressionSnapshot[];
 }
 
 /**
@@ -473,6 +483,7 @@ export interface EncodedGameSaveRecord extends Omit<GameSaveRecord, "gameInstanc
     loadoutSnapshotHash?: string;
     checkpointId?: string;
     participantCount?: number;
+    participantProgressionSnapshots?: CampaignParticipantProgressionSnapshot[];
   };
   encodedGameInstanceData: string;
 }

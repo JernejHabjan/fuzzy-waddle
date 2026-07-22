@@ -2,6 +2,7 @@ import type {
   CampaignId,
   CampaignMissionId,
   CampaignMissionProgressionSnapshot,
+  CampaignParticipantProgressionSnapshot,
   MissionRunIntegrityState
 } from "./campaign";
 
@@ -306,6 +307,8 @@ export interface CampaignMissionRuntimeState {
   claimedRewardIds: string[];
   /** Present on progression-aware runs; optional only for typed legacy fixtures and migration boundaries. */
   progression?: CampaignMissionProgressionSnapshot;
+  /** Per-slot launch profiles remain independent; optional only for single-profile and legacy snapshots. */
+  participantProgressionSnapshots?: CampaignParticipantProgressionSnapshot[];
   /** Reward eligibility is separate from interpreter health and can only transition from valid to invalid. */
   rewardIntegrity?: MissionRunIntegrityState;
   pendingEvents: CampaignMissionRuntimeEvent[];

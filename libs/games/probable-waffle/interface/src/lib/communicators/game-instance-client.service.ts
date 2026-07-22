@@ -821,9 +821,10 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
             campaign.progressionSnapshot?.baseProfileRevision ??
             0,
           selectedLoadoutIds: [...(campaign.selectedLoadoutIds ?? [])],
-          loadoutSnapshotHash: campaign.loadoutSnapshotHash ?? "",
-          ...(data.checkpointId ? { checkpointId: data.checkpointId } : {}),
-          participantCount: Math.max(1, gameInstanceData.players?.length ?? 1)
+            loadoutSnapshotHash: campaign.loadoutSnapshotHash ?? "",
+            ...(data.checkpointId ? { checkpointId: data.checkpointId } : {}),
+            participantCount: Math.max(1, gameInstanceData.players?.length ?? 1),
+            participantProgressionSnapshots: structuredClone(campaign.participantProgressionSnapshots ?? [])
         }
       });
       return;

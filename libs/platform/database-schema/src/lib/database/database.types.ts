@@ -777,6 +777,7 @@ export type Database = {
           campaign_mission_id: Database["public"]["Enums"]["probable_waffle_campaign_mission_id"] | null;
           campaign_mission_revision: number | null;
           campaign_participant_count: number | null;
+          campaign_participant_progression_snapshots: Json | null;
           campaign_profile_revision: number | null;
           campaign_run_id: string | null;
           campaign_runtime_schema_version: number | null;
@@ -802,6 +803,7 @@ export type Database = {
           campaign_mission_id?: Database["public"]["Enums"]["probable_waffle_campaign_mission_id"] | null;
           campaign_mission_revision?: number | null;
           campaign_participant_count?: number | null;
+          campaign_participant_progression_snapshots?: Json | null;
           campaign_profile_revision?: number | null;
           campaign_run_id?: string | null;
           campaign_runtime_schema_version?: number | null;
@@ -827,6 +829,7 @@ export type Database = {
           campaign_mission_id?: Database["public"]["Enums"]["probable_waffle_campaign_mission_id"] | null;
           campaign_mission_revision?: number | null;
           campaign_participant_count?: number | null;
+          campaign_participant_progression_snapshots?: Json | null;
           campaign_profile_revision?: number | null;
           campaign_run_id?: string | null;
           campaign_runtime_schema_version?: number | null;

@@ -4,7 +4,8 @@ import {
   CAMPAIGN_CINEMATIC_VOTE_EXPIRY_MS,
   cinematicHoldProgress,
   cinematicSkipInputMode,
-  evaluateCinematicSkipConsensus
+  evaluateCinematicSkipConsensus,
+  InMemoryCampaignCinematicSkipVotePort
 } from "./campaign-cinematic-presentation-service";
 
 describe("campaign cinematic skip policy", () => {
@@ -36,5 +37,18 @@ describe("campaign cinematic skip policy", () => {
 
   it("keeps typed cinematic IDs compatible with the future vote port", () => {
     expect(asCampaignContentId<"cinematic">("intro")).toBe("intro");
+  });
+
+  it("restores vote state after host migration without changing consensus rules", () => {
+    const cinematicId = asCampaignContentId<"cinematic">("intro");
+    const oldHost = new InMemoryCampaignCinematicSkipVotePort();
+    oldHost.requestVote(cinematicId, "one", 1_000);
+    const newHost = new InMemoryCampaignCinematicSkipVotePort();
+    newHost.restore(oldHost.snapshot());
+    newHost.requestVote(cinematicId, "two", 1_100);
+    const snapshot = newHost.snapshot();
+    expect(evaluateCinematicSkipConsensus(["one", "two"], snapshot?.votes ?? [], 1_000, 2_000).status).toBe(
+      "accepted"
+    );
   });
 });

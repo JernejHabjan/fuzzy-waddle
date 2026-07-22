@@ -1,4 +1,9 @@
-import { AOTA_CAMPAIGN_CONTENT_REGISTRY, type CampaignMissionContent } from "@fuzzy-waddle/probable-waffle-campaign";
+import {
+  AOTA_CAMPAIGN_CONTENT_REGISTRY,
+  rebindCampaignParticipants,
+  resolveCampaignParticipantLaunchSlots,
+  type CampaignMissionContent
+} from "@fuzzy-waddle/probable-waffle-campaign";
 import type {
   CampaignGameContext,
   CampaignMissionRuntimeState,
@@ -65,6 +70,17 @@ export function validateCampaignRestore(
       }
       if (participantCount !== undefined && saved.participantCount !== participantCount) {
         issues.push("Campaign participant count does not match the loaded save.");
+      }
+      if (content && saved.participantProgressionSnapshots?.length) {
+        const currentParticipants = resolveCampaignParticipantLaunchSlots(content.participants, {
+          coop: content.coop,
+          humanParticipantCount: context.humanParticipantCount ?? 1
+        })
+          .filter((slot) => slot.participant.controller === "human")
+          .map((slot) => ({ slotId: slot.participant.slotId, playerNumber: slot.playerNumber }));
+        if (!rebindCampaignParticipants(saved.participantProgressionSnapshots, currentParticipants)) {
+          issues.push("Campaign participant slots cannot be rebound to the loaded save.");
+        }
       }
       if (saved.checkpointId && runtime.lastCheckpointId !== saved.checkpointId) {
         issues.push("Campaign checkpoint identity does not match the loaded runtime.");

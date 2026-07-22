@@ -44,7 +44,39 @@ export interface CampaignCinematicSkipConsensus {
 }
 
 export interface CampaignCinematicSkipVotePort {
-  requestVote(cinematicId: MissionCinematicId): void;
+  requestVote(cinematicId: MissionCinematicId, participantId: string, requestedAtMs: number): void;
+  snapshot(): CampaignCinematicSkipVoteSnapshot | undefined;
+  restore(snapshot: CampaignCinematicSkipVoteSnapshot | undefined): void;
+}
+
+export interface CampaignCinematicSkipVoteSnapshot {
+  readonly cinematicId: MissionCinematicId;
+  readonly requestedAtMs: number;
+  readonly votes: readonly CampaignCinematicSkipVote[];
+}
+
+/** Presentation-only vote state can move to a new host without entering deterministic mission state. */
+export class InMemoryCampaignCinematicSkipVotePort implements CampaignCinematicSkipVotePort {
+  private value?: CampaignCinematicSkipVoteSnapshot;
+
+  requestVote(cinematicId: MissionCinematicId, participantId: string, requestedAtMs: number): void {
+    const current = this.value?.cinematicId === cinematicId ? this.value : undefined;
+    const votes = new Map(current?.votes.map((vote) => [vote.participantId, vote]) ?? []);
+    votes.set(participantId, { participantId, requestedAtMs });
+    this.value = {
+      cinematicId,
+      requestedAtMs: current?.requestedAtMs ?? requestedAtMs,
+      votes: [...votes.values()].sort((left, right) => left.participantId.localeCompare(right.participantId))
+    };
+  }
+
+  snapshot(): CampaignCinematicSkipVoteSnapshot | undefined {
+    return this.value ? structuredClone(this.value) : undefined;
+  }
+
+  restore(snapshot: CampaignCinematicSkipVoteSnapshot | undefined): void {
+    this.value = snapshot ? structuredClone(snapshot) : undefined;
+  }
 }
 
 export function cinematicSkipInputMode(

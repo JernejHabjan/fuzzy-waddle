@@ -19,7 +19,10 @@ export class CampaignParticipantSceneAdapter {
     if (mission.participants.length === 0) return;
     const errors = validateCampaignParticipants(mission.participants);
     if (errors.length > 0) throw new Error(errors.join("; "));
-    const slots = resolveCampaignParticipantLaunchSlots(mission.participants);
+    const slots = resolveCampaignParticipantLaunchSlots(mission.participants, {
+      coop: mission.coop,
+      humanParticipantCount: context.humanParticipantCount ?? 1
+    });
     if (scene.players.length !== slots.length) {
       throw new Error(
         `Campaign mission '${mission.id}' requires ${slots.length} players; found ${scene.players.length}`

@@ -16,6 +16,7 @@ export const CampaignProfileServerServiceStub = {
   }),
   start: async (_userId: string, _request: StartCampaignRunDto) => undefined,
   result: async (_userId: string, result: CampaignResultDto) => ({
+    profileOwnerId: _userId,
     result: {
       runId: result.runId,
       status: "rejected" as const,

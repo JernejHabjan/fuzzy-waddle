@@ -150,6 +150,9 @@
           "controller": {
             "enum": ["human", "full-ai", "scripted-ai", "passive"]
           },
+          "singlePlayerSubstitution": {
+            "enum": ["absent", "scripted-ai", "full-ai"]
+          },
           "faction": {
             "enum": [1, 2]
           },
@@ -157,6 +160,12 @@
             "type": "string",
             "minLength": 1,
             "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "requiredForVictory": {
+            "type": "boolean"
+          },
+          "profileOwnership": {
+            "enum": ["independent", "none"]
           },
           "economy": {
             "enum": ["normal", "granted", "none"]
@@ -170,6 +179,9 @@
           }
         }
       }
+    },
+    "coop": {
+      "$ref": "https://fuzzy-waddle.dev/schemas/probable-waffle/campaign/coop-override.schema.json"
     },
     "progressionAllowance": {
       "type": "object",
@@ -1525,6 +1537,49 @@
         }
       ]
     },
+    "triggerParticipantPolicy": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind"],
+          "properties": { "kind": { "const": "any-player" } }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "slotId"],
+          "properties": { "kind": { "const": "specific-slot" }, "slotId": { "$ref": "#/$defs/campaignId" } }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "faction"],
+          "properties": { "kind": { "const": "specific-faction" }, "faction": { "enum": [1, 2] } }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind"],
+          "properties": { "kind": { "const": "all-connected-humans" } }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "count"],
+          "properties": { "kind": { "const": "at-least" }, "count": { "type": "integer", "minimum": 1 } }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "groupId"],
+          "properties": {
+            "kind": { "const": "entire-required-group" },
+            "groupId": { "$ref": "#/$defs/campaignId" }
+          }
+        }
+      ]
+    },
     "phase": {
       "type": "object",
       "additionalProperties": false,
@@ -1633,6 +1688,9 @@
                   }
                 ]
               },
+              "participantPolicy": {
+                "$ref": "#/$defs/triggerParticipantPolicy"
+              },
               "priority": {
                 "type": "integer"
               }
@@ -1688,6 +1746,25 @@
         },
         "kind": {
           "enum": ["primary", "secondary", "optional", "hidden", "tutorial", "failure"]
+        },
+        "ownership": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["kind"],
+              "properties": { "kind": { "const": "shared" } }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["kind", "slotId"],
+              "properties": {
+                "kind": { "const": "individual" },
+                "slotId": { "$ref": "#/$defs/campaignId" }
+              }
+            }
+          ]
         },
         "titleTextId": {
           "type": "string",

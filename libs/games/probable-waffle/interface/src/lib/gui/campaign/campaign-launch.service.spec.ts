@@ -106,6 +106,10 @@ describe("CampaignLaunchService", () => {
       difficulty: "normal",
       loadoutSnapshotHash: "12345678",
       selectedLoadoutIds: [],
+      humanParticipantCount: 1,
+      participantProgressionSnapshots: [
+        expect.objectContaining({ slotId: "human", playerNumber: 1, progressionSnapshot: expect.any(Object) })
+      ],
       progressionSnapshot: {
         baseProfileRevision: 0,
         profile: { wallet: { balances: { "campaign-crystal": 1 } } },

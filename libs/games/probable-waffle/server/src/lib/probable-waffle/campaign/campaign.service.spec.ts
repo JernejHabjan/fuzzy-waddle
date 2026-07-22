@@ -72,6 +72,7 @@ describe("CampaignServerService", () => {
     });
 
     expect(response.result.status).toBe("committed");
+    expect(response.profileOwnerId).toBe("owner-1");
     expect(runs.eq).toHaveBeenCalledWith("user_id", "owner-1");
     expect(rpc).toHaveBeenCalledWith(
       "commit_probable_waffle_campaign_victory",

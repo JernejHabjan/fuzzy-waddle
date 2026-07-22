@@ -15,6 +15,7 @@ import type { MissionProgressionAllowance } from "./mission-progression-allowanc
 import type { MissionRuntimeInitialState } from "./mission-runtime-initial-state";
 import type { MissionScenarioReferences } from "./mission-scenario-references";
 import type { MissionRevisionMigration } from "./mission-revision-migration";
+import type { MissionCoopOverride } from "./mission-coop-override";
 
 export interface MissionCatalogueDefinition {
   readonly order: number;
@@ -35,6 +36,7 @@ export interface CampaignMissionContent {
   readonly prerequisites: readonly CampaignMissionId[];
   readonly catalogue: MissionCatalogueDefinition;
   readonly participants: readonly MissionParticipantDefinition[];
+  readonly coop?: MissionCoopOverride;
   readonly progressionAllowance: MissionProgressionAllowance;
   readonly initialState: MissionRuntimeInitialState;
   readonly phases: readonly MissionPhaseDefinition[];

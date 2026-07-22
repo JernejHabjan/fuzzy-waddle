@@ -24,6 +24,9 @@
           "controller": {
             "enum": ["human", "full-ai", "scripted-ai", "passive"]
           },
+          "singlePlayerSubstitution": {
+            "enum": ["absent", "scripted-ai", "full-ai"]
+          },
           "faction": {
             "enum": [1, 2]
           },
@@ -32,11 +35,17 @@
             "minLength": 1,
             "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
           },
+          "requiredForVictory": { "type": "boolean" },
+          "profileOwnership": { "enum": ["independent", "none"] },
           "economy": {
             "enum": ["normal", "granted", "none"]
           },
           "fogPolicy": {
             "enum": ["normal", "revealed", "omniscient-ai"]
+          },
+          "startingResources": {
+            "type": "object",
+            "additionalProperties": { "type": "number", "minimum": 0 }
           }
         }
       }

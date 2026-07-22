@@ -132,6 +132,8 @@ function validateMission(
   const dialogueLineIds = new Set((dialogue?.lines ?? []).map((line) => String(line.id)));
   const cinematicIds = new Set((dialogue?.cinematics ?? []).map((cinematic) => String(cinematic.id)));
   const encounterIds = new Set((mission.encounters ?? []).map((encounter) => String(encounter.id)));
+  const participantSlotIds = new Set(mission.participants.map((participant) => String(participant.slotId)));
+  const scenarioGroupIds = new Set((mission.scenarioReferences?.groups ?? []).map(String));
   reportDuplicates(
     (mission.revisionMigrations ?? []).map((migration) => String(migration.fromRevision)),
     sourcePath,
@@ -162,6 +164,11 @@ function validateMission(
   }
   for (const error of validateCampaignParticipants(mission.participants)) {
     addIssue(issues, sourcePath, "$.participants", "invalid-participant", error);
+  }
+  for (const [overrideIndex, override] of (mission.coop?.participants ?? []).entries()) {
+    if (!participantSlotIds.has(String(override.slotId))) {
+      addIssue(issues, sourcePath, `$.coop.participants[${overrideIndex}].slotId`, "missing-participant-reference", `Unknown participant slot '${override.slotId}'`);
+    }
   }
   validateAllowanceConflicts(mission, sourcePath, issues);
   reportDuplicates(
@@ -305,6 +312,13 @@ function validateMission(
           );
         }
       }
+      const participantPolicy = trigger.participantPolicy;
+      if (participantPolicy?.kind === "specific-slot" && !participantSlotIds.has(String(participantPolicy.slotId))) {
+        addIssue(issues, sourcePath, `${triggerPath}.participantPolicy.slotId`, "missing-participant-reference", `Unknown participant slot '${participantPolicy.slotId}'`);
+      }
+      if (participantPolicy?.kind === "entire-required-group" && !scenarioGroupIds.has(String(participantPolicy.groupId))) {
+        addIssue(issues, sourcePath, `${triggerPath}.participantPolicy.groupId`, "missing-scenario-reference", `Unknown required group '${participantPolicy.groupId}'`);
+      }
       validateCondition(trigger.condition, sourcePath, `${triggerPath}.condition`, registries, issues);
       validateActions(trigger.actions, sourcePath, `${triggerPath}.actions`, registries, issues);
     }
@@ -335,6 +349,9 @@ function validateMission(
         "missing-objective-kind",
         `Unknown objective kind '${objective.kind}'`
       );
+    }
+    if (objective.ownership?.kind === "individual" && !participantSlotIds.has(String(objective.ownership.slotId))) {
+      addIssue(issues, sourcePath, `${objectivePath}.ownership.slotId`, "missing-participant-reference", `Unknown participant slot '${objective.ownership.slotId}'`);
     }
     validateCondition(objective.reveal, sourcePath, `${objectivePath}.reveal`, registries, issues);
     validateCondition(objective.complete, sourcePath, `${objectivePath}.complete`, registries, issues);

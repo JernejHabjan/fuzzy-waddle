@@ -5,7 +5,8 @@ import type {
   CampaignGameSaveContext,
   CampaignId,
   CampaignMissionId,
-  CampaignMissionProgressionSnapshot
+  CampaignMissionProgressionSnapshot,
+  CampaignParticipantProgressionSnapshot
 } from "../../probable-waffle/campaign";
 import type { CampaignMissionRuntimeEvent, CampaignMissionRuntimeState } from "../../probable-waffle/campaign-runtime";
 import type { DeterministicRandomState } from "../../probable-waffle/deterministic-random";
@@ -32,6 +33,8 @@ export interface CampaignGameContext {
   developerOverride?: boolean;
   seenCinematicIds?: readonly string[];
   progressionSnapshot?: CampaignMissionProgressionSnapshot;
+  humanParticipantCount?: number;
+  participantProgressionSnapshots?: readonly CampaignParticipantProgressionSnapshot[];
   restoredSaveContext?: CampaignGameSaveContext;
 }
 
@@ -78,6 +81,7 @@ export interface CampaignReplayContext {
   readonly missionRevision: number;
   readonly difficulty: "story" | "normal" | "hard";
   readonly progressionSnapshot: CampaignMissionProgressionSnapshot;
+  readonly participantProgressionSnapshots?: readonly CampaignParticipantProgressionSnapshot[];
 }
 
 export interface ProbableWaffleReplayDebugData {

@@ -20,11 +20,12 @@ import { validateCampaignContent } from "../validation/validate-campaign-content
 describe("Ashes of the Ancients campaign content", () => {
   const ajv = new Ajv2020({ allErrors: true, strict: true });
   ajv.addSchema(difficultySchema);
+  ajv.addSchema(coopOverrideSchema);
   const validateCampaignSchema = ajv.compile(campaignSchema);
   const validateMissionSchema = ajv.compile(missionSchema);
   const validateDialogueSchema = ajv.compile(dialogueSchema);
   const validateRewardsSchema = ajv.compile(rewardsSchema);
-  const validateCoopOverrideSchema = ajv.compile(coopOverrideSchema);
+  const validateCoopOverrideSchema = ajv.getSchema(coopOverrideSchema.$id)!;
 
   it("validates every first-party document against its JSON schema", () => {
     expect(validateCampaignSchema(AOTA_CAMPAIGN_DEFINITION)).toBe(true);

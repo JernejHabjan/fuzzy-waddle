@@ -67,7 +67,8 @@ export class GameSaveSyncService implements GameSaveSyncServiceInterface {
           campaignLoadoutIds: save.campaign?.selectedLoadoutIds,
           campaignLoadoutSnapshotHash: save.campaign?.loadoutSnapshotHash,
           campaignCheckpointId: save.campaign?.checkpointId,
-          campaignParticipantCount: save.campaign?.participantCount
+          campaignParticipantCount: save.campaign?.participantCount,
+          campaignParticipantProgressionSnapshots: save.campaign?.participantProgressionSnapshots
         });
         if (save.syncState === GameSaveSyncState.Deleted) await this.repository.remove(save.id);
         else await this.repository.upsert({ ...save, syncState: GameSaveSyncState.Synced });
@@ -126,9 +127,12 @@ export class GameSaveSyncService implements GameSaveSyncServiceInterface {
               selectedLoadoutIds: [...(remote.campaign_loadout_ids ?? [])].sort(),
               loadoutSnapshotHash: remote.campaign_loadout_snapshot_hash ?? "",
               ...(remote.campaign_checkpoint_id ? { checkpointId: remote.campaign_checkpoint_id } : {}),
-              ...(remote.campaign_participant_count
-                ? { participantCount: remote.campaign_participant_count }
-                : {})
+                ...(remote.campaign_participant_count
+                  ? { participantCount: remote.campaign_participant_count }
+                  : {}),
+                participantProgressionSnapshots: structuredClone(
+                  remote.campaign_participant_progression_snapshots ?? []
+                )
             }
           : undefined;
       if (remote.scope === GameSaveScope.Campaign && !campaign) continue;

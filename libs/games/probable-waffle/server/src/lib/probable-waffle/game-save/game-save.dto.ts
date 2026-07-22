@@ -1,9 +1,10 @@
-import { IsArray, IsBoolean, IsIn, IsInt, IsOptional, IsString, IsUUID, MaxLength, Min } from "class-validator";
+import { IsArray, IsBoolean, IsIn, IsInt, IsObject, IsOptional, IsString, IsUUID, MaxLength, Min } from "class-validator";
 import {
   CAMPAIGN_CHAPTER_IDS,
   CAMPAIGN_MISSION_IDS,
   type CampaignChapterId,
   type CampaignMissionId,
+  type CampaignParticipantProgressionSnapshot,
   GameSaveKind,
   GameSaveScope
 } from "@fuzzy-waddle/probable-waffle-protocol";
@@ -26,6 +27,8 @@ export class SyncGameSaveDto {
   @IsOptional() @IsString() @MaxLength(120) campaignLoadoutSnapshotHash?: string;
   @IsOptional() @IsString() @MaxLength(120) campaignCheckpointId?: string;
   @IsOptional() @IsInt() @Min(1) campaignParticipantCount?: number;
+  @IsOptional() @IsArray() @IsObject({ each: true })
+  campaignParticipantProgressionSnapshots?: CampaignParticipantProgressionSnapshot[];
   @IsInt() @Min(1) revision!: number;
   @IsInt() @Min(1) formatVersion!: number;
   @IsBoolean() isDeleted!: boolean;

@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { GameSaveScope, isCampaignMissionInChapter } from "@fuzzy-waddle/probable-waffle-protocol";
 import { SupabaseProviderService } from "@fuzzy-waddle/platform-database-schema/server/supabase-provider/supabase-provider.service";
+import type { Json } from "@fuzzy-waddle/platform-database-schema";
 import type { SyncGameSaveDto } from "./game-save.dto";
 import type { GameSaveServerServiceInterface } from "./game-save.service.interface";
 
@@ -50,6 +51,8 @@ export class GameSaveServerService implements GameSaveServerServiceInterface {
         campaign_loadout_snapshot_hash: dto.campaignLoadoutSnapshotHash ?? null,
         campaign_checkpoint_id: dto.campaignCheckpointId ?? null,
         campaign_participant_count: dto.campaignParticipantCount ?? null,
+        campaign_participant_progression_snapshots:
+          (dto.campaignParticipantProgressionSnapshots as unknown as Json) ?? null,
         revision: dto.revision,
         format_version: dto.formatVersion,
         is_deleted: dto.isDeleted,
@@ -76,7 +79,8 @@ export class GameSaveServerService implements GameSaveServerServiceInterface {
       dto.campaignLoadoutIds,
       dto.campaignLoadoutSnapshotHash,
       dto.campaignCheckpointId,
-      dto.campaignParticipantCount
+      dto.campaignParticipantCount,
+      dto.campaignParticipantProgressionSnapshots
     ];
     if (dto.scope === GameSaveScope.Campaign) {
       if (

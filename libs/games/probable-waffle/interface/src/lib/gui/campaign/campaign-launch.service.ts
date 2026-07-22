@@ -47,6 +47,12 @@ export class CampaignLaunchService implements CampaignLaunchServiceInterface {
     this.launchInProgress = true;
     try {
       const missionContent = AOTA_CAMPAIGN_CONTENT_REGISTRY.getMission(mission.id);
+      const participantErrors = validateCampaignParticipants(missionContent.participants);
+      if (participantErrors.length > 0) throw new Error(participantErrors.join("; "));
+      const launchSlots = resolveCampaignParticipantLaunchSlots(missionContent.participants, {
+        coop: missionContent.coop,
+        humanParticipantCount: 1
+      });
       await this.gameInstanceClientService.createGameInstance(
         `Campaign: ${mission.title}`,
         ProbableWaffleGameInstanceVisibility.Private,
@@ -55,6 +61,14 @@ export class CampaignLaunchService implements CampaignLaunchServiceInterface {
       const metadata = this.gameInstanceClientService.gameInstance?.gameInstanceMetadata.data;
       if (!metadata) throw new Error("Campaign game metadata is required");
       const run = await this.campaignProfileService.startRun(mission.id, difficulty);
+      const progressionSnapshot = createCampaignMissionProgressionSnapshot(
+        {
+          profile: this.campaignProfileService.profile().progression,
+          selectedLoadoutIds: run.selectedLoadoutIds,
+          allowance: missionContent.progressionAllowance
+        },
+        AOTA_CAMPAIGN_PROGRESSION_REGISTRY
+      );
       metadata.campaignContext = {
         campaignId: ASHES_OF_THE_ANCIENTS_CAMPAIGN_ID,
         catalogVersion: AOTA_CAMPAIGN_CATALOG.version,
@@ -67,18 +81,16 @@ export class CampaignLaunchService implements CampaignLaunchServiceInterface {
         loadoutSnapshotHash: run.loadoutSnapshotHash,
         ...(run.developerOverride ? { developerOverride: true } : {}),
         seenCinematicIds: this.campaignProfileService.profile().seenCinematicIds,
-        progressionSnapshot: createCampaignMissionProgressionSnapshot(
-          {
-            profile: this.campaignProfileService.profile().progression,
-            selectedLoadoutIds: run.selectedLoadoutIds,
-            allowance: missionContent.progressionAllowance
-          },
-          AOTA_CAMPAIGN_PROGRESSION_REGISTRY
-        )
+        progressionSnapshot,
+        humanParticipantCount: 1,
+        participantProgressionSnapshots: launchSlots
+          .filter((slot) => slot.participant.profileOwnership !== "none" && slot.participant.controller === "human")
+          .map((slot) => ({
+            slotId: slot.participant.slotId,
+            playerNumber: slot.playerNumber,
+            progressionSnapshot
+          }))
       };
-      const participantErrors = validateCampaignParticipants(missionContent.participants);
-      if (participantErrors.length > 0) throw new Error(participantErrors.join("; "));
-      const launchSlots = resolveCampaignParticipantLaunchSlots(missionContent.participants);
       if (launchSlots.length === 0) {
         await this.gameInstanceClientService.addSelfAsPlayer();
         await this.gameInstanceClientService.addAiPlayer();

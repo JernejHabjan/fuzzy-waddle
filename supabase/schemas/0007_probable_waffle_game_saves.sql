@@ -18,6 +18,7 @@ create table public.probable_waffle_game_saves (
   campaign_loadout_snapshot_hash text null,
   campaign_checkpoint_id text null,
   campaign_participant_count integer null check (campaign_participant_count is null or campaign_participant_count > 0),
+  campaign_participant_progression_snapshots jsonb null,
   format_version integer not null check (format_version > 0),
   revision integer not null check (revision > 0),
   is_deleted boolean not null default false,
@@ -28,7 +29,7 @@ create table public.probable_waffle_game_saves (
   constraint campaign_save_scope check (
     is_deleted
     or (scope = 'campaign' and campaign_id is not null and campaign_chapter_id is not null and campaign_mission_id is not null and campaign_run_id is not null and campaign_mission_revision is not null and campaign_runtime_schema_version is not null and campaign_profile_revision is not null and campaign_participant_count is not null)
-    or (scope = 'skirmish' and campaign_id is null and campaign_chapter_id is null and campaign_mission_id is null and campaign_run_id is null and campaign_mission_revision is null and campaign_runtime_schema_version is null and campaign_profile_revision is null and campaign_checkpoint_id is null and campaign_participant_count is null)
+    or (scope = 'skirmish' and campaign_id is null and campaign_chapter_id is null and campaign_mission_id is null and campaign_run_id is null and campaign_mission_revision is null and campaign_runtime_schema_version is null and campaign_profile_revision is null and campaign_checkpoint_id is null and campaign_participant_count is null and campaign_participant_progression_snapshots is null)
   )
 );
 

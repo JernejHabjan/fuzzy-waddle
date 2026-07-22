@@ -2,6 +2,7 @@ import {
   type CampaignChapterId,
   type CampaignId,
   type CampaignMissionId,
+  type CampaignParticipantProgressionSnapshot,
   type GameSaveRecord
 } from "@fuzzy-waddle/probable-waffle-protocol";
 
@@ -22,6 +23,7 @@ export interface RemoteGameSaveRecord {
   campaign_loadout_snapshot_hash: string | null;
   campaign_checkpoint_id: string | null;
   campaign_participant_count: number | null;
+  campaign_participant_progression_snapshots: CampaignParticipantProgressionSnapshot[] | null;
   revision: number;
   is_deleted: boolean;
   thumbnail: string | null;

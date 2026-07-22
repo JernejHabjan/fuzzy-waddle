@@ -33,6 +33,8 @@ export * from "./lib/registry/trusted-campaign-hook-registration";
 export * from "./lib/runtime/campaign-mission-runtime";
 export * from "./lib/runtime/campaign-mission-save-migration";
 export * from "./lib/runtime/campaign-content-allowance-service";
+export * from "./lib/runtime/campaign-coop-policy";
+export * from "./lib/runtime/campaign-host-coordination";
 export * from "./lib/runtime/campaign-difficulty-resolver";
 export * from "./lib/runtime/campaign-participant-resolver";
 export * from "./lib/runtime/actions/campaign-action-runtime";

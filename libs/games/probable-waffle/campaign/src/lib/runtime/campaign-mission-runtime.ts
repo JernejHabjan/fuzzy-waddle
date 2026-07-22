@@ -1,6 +1,7 @@
 import type {
   CampaignId,
   CampaignMissionProgressionSnapshot,
+  CampaignParticipantProgressionSnapshot,
   CampaignMissionOwnedResourceRuntimeState,
   CampaignMissionRuntimeDiagnostic,
   CampaignMissionOutcome,
@@ -14,12 +15,13 @@ import {
   CAMPAIGN_MISSION_RUNTIME_SCHEMA_VERSION
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { CampaignMissionContent } from "../contracts/campaign-mission-content";
-import { asCampaignContentId } from "../contracts/campaign-content-id";
+import { asCampaignContentId, type ScenarioGroupId } from "../contracts/campaign-content-id";
 import type { CampaignDifficulty } from "../contracts/mission-difficulty-definition";
 import type { MissionActionDefinition } from "../contracts/mission-action-definition";
 import type { MissionConditionDefinition } from "../contracts/mission-condition-definition";
 import type { MissionDialogueBundle } from "../contracts/mission-dialogue-bundle";
 import type { MissionPhaseDefinition, MissionTransitionDefinition } from "../contracts/mission-phase-definition";
+import type { MissionParticipantDefinition } from "../contracts/mission-participant-definition";
 import type { MissionTriggerDefinition } from "../contracts/mission-trigger-definition";
 import {
   CampaignActionRunner,
@@ -54,6 +56,11 @@ import {
 } from "./encounters/campaign-encounter-service";
 import { resolveCampaignParticipantLaunchSlots, updateCampaignParticipantTeams } from "./campaign-participant-resolver";
 import { CampaignRunIntegrityService, createEligibleMissionRunIntegrity } from "../progression/campaign-run-integrity-service";
+import {
+  evaluateMissionTriggerParticipantPolicy,
+  resolveMissionParticipants,
+  type ResolvedMissionParticipant
+} from "./campaign-coop-policy";
 
 export interface CampaignMissionRuntimeEffect {
   readonly tick: number;
@@ -85,6 +92,14 @@ export interface CampaignMissionRuntimeOptions {
   readonly playerCount?: number;
   readonly encounterAdapter?: CampaignEncounterWorldAdapter;
   readonly progressionSnapshot?: CampaignMissionProgressionSnapshot;
+  readonly participantProgressionSnapshots?: readonly CampaignParticipantProgressionSnapshot[];
+  /** Future co-op adapters must return synchronized slot state, never peer-local connection state. */
+  readonly participantPolicyState?: () => CampaignMissionParticipantPolicyState;
+}
+
+export interface CampaignMissionParticipantPolicyState {
+  readonly connectedHumanPlayerNumbers: readonly number[];
+  readonly requiredGroupPlayerNumbers?: Readonly<Partial<Record<ScenarioGroupId, readonly number[]>>>;
 }
 
 interface TickBudget {
@@ -108,6 +123,24 @@ function runtimeJsonObject(
   return typeof value === "object" && value !== null && !Array.isArray(value)
     ? (value as Readonly<Record<string, CampaignMissionRuntimeJsonValue>>)
     : undefined;
+}
+
+function runtimeNumberArray(value: CampaignMissionRuntimeJsonValue | undefined): number[] | undefined {
+  if (!Array.isArray(value)) return undefined;
+  return value.filter((entry): entry is number => typeof entry === "number" && Number.isSafeInteger(entry));
+}
+
+function runtimeGroupPlayerNumbers(
+  value: CampaignMissionRuntimeJsonValue | undefined
+): Readonly<Partial<Record<ScenarioGroupId, readonly number[]>>> | undefined {
+  const groups = runtimeJsonObject(value);
+  if (!groups) return undefined;
+  return Object.fromEntries(
+    Object.entries(groups).flatMap(([groupId, playerNumbers]) => {
+      const values = runtimeNumberArray(playerNumbers);
+      return values ? [[asCampaignContentId<"scenario-group">(groupId), values]] : [];
+    })
+  );
 }
 
 function isLocalPresentationEvent(kind: string): boolean {
@@ -142,6 +175,8 @@ export class CampaignMissionRuntime {
   private readonly encounterAdapter?: CampaignEncounterWorldAdapter;
   private readonly maxActionsPerTick: number;
   private readonly maxTransitionsPerTick: number;
+  private readonly participants: readonly ResolvedMissionParticipant[];
+  private readonly participantPolicyState?: () => CampaignMissionParticipantPolicyState;
 
   constructor(
     private readonly campaignId: CampaignId,
@@ -154,6 +189,7 @@ export class CampaignMissionRuntime {
     this.actionAdapter = options.actionAdapter;
     this.encounterAdapter = options.encounterAdapter;
     this.dialogue = options.dialogue;
+    this.participantPolicyState = options.participantPolicyState;
     this.phasesById = new Map(content.phases.map((phase) => [phase.id, phase] as const));
     this.predecessorsByPhaseId = this.buildPredecessors(content.phases);
     this.actionsById = collectMissionActions(content);
@@ -172,9 +208,17 @@ export class CampaignMissionRuntime {
           options.playerCount ??
             Math.max(1, content.participants.filter((participant) => participant.controller === "human").length)
         );
+    this.participants = resolveMissionParticipants(content.participants, content.coop, resolvedDifficulty.playerCount);
     const state = restoredState
       ? this.validateAndCloneRestoredState(restoredState)
-      : createCampaignMissionRuntimeState(campaignId, content, resolvedDifficulty, options.progressionSnapshot);
+      : createCampaignMissionRuntimeState(
+          campaignId,
+          content,
+          resolvedDifficulty,
+          options.progressionSnapshot,
+          this.participants,
+          options.participantProgressionSnapshots
+        );
     this.stateStore = new CampaignMissionStateStore(state);
     this.objectiveService = new DefaultCampaignObjectiveService(state, content.objectives);
     this.encounterService = new DefaultCampaignEncounterService(
@@ -353,6 +397,7 @@ export class CampaignMissionRuntime {
       .flatMap((phase) => phase.triggers.map((trigger) => ({ phase, trigger })))
       .filter(({ trigger }) => (event ? trigger.kind === "event" : trigger.kind === "condition"))
       .filter(({ trigger }) => !event || !trigger.eventKinds?.length || trigger.eventKinds.includes(event.kind))
+      .filter(({ trigger }) => this.participantPolicyAllows(trigger, event))
       .sort((left, right) => comparePriorityAndId(left.trigger, right.trigger));
 
     for (const { phase, trigger } of triggers) {
@@ -374,6 +419,24 @@ export class CampaignMissionRuntime {
       if (this.stateStore.current.status !== "running") return false;
     }
     return true;
+  }
+
+  private participantPolicyAllows(trigger: MissionTriggerDefinition, event?: CampaignMissionRuntimeEvent): boolean {
+    const payload = runtimeJsonObject(event?.payload);
+    const synchronizedPolicyState = this.participantPolicyState?.();
+    return evaluateMissionTriggerParticipantPolicy(trigger.participantPolicy, {
+      event,
+      participants: this.participants,
+      connectedHumanPlayerNumbers:
+        synchronizedPolicyState?.connectedHumanPlayerNumbers ??
+        this.participants
+          .filter((participant) => participant.controller === "human")
+          .map((participant) => participant.playerNumber),
+      participatingPlayerNumbers: runtimeNumberArray(payload?.["participatingPlayerNumbers"]),
+      requiredGroupPlayerNumbers:
+        synchronizedPolicyState?.requiredGroupPlayerNumbers ??
+        runtimeGroupPlayerNumbers(payload?.["requiredGroupPlayerNumbers"])
+    });
   }
 
   private shouldFireTrigger(trigger: MissionTriggerDefinition, conditionMet: boolean, tick: number): boolean {
@@ -1132,6 +1195,7 @@ export class CampaignMissionRuntime {
     if (state.progression) {
       state.progression = { ...state.progression, pendingRewardIds: [...state.claimedRewardIds] };
     }
+    state.participantProgressionSnapshots?.sort((left, right) => left.slotId.localeCompare(right.slotId));
     if (state.rewardIntegrity) {
       state.rewardIntegrity = {
         ...state.rewardIntegrity,
@@ -1398,7 +1462,13 @@ export function createCampaignMissionRuntimeState(
     "normal",
     Math.max(1, content.participants.filter((participant) => participant.controller === "human").length)
   ),
-  progressionSnapshot?: CampaignMissionProgressionSnapshot
+  progressionSnapshot?: CampaignMissionProgressionSnapshot,
+  participants: readonly MissionParticipantDefinition[] = resolveMissionParticipants(
+    content.participants,
+    content.coop,
+    resolvedDifficulty.playerCount
+  ),
+  participantProgressionSnapshots?: readonly CampaignParticipantProgressionSnapshot[]
 ): CampaignMissionRuntimeState {
   return {
     schemaVersion: CAMPAIGN_MISSION_RUNTIME_SCHEMA_VERSION,
@@ -1435,7 +1505,7 @@ export function createCampaignMissionRuntimeState(
     dialogueHistory: [],
     cinematics: {},
     participantTeams: Object.fromEntries(
-      resolveCampaignParticipantLaunchSlots(content.participants).map((slot) => [
+      resolveCampaignParticipantLaunchSlots(participants).map((slot) => [
         String(slot.playerNumber),
         slot.teamNumber
       ])
@@ -1447,6 +1517,9 @@ export function createCampaignMissionRuntimeState(
     triggerStates: {},
     claimedRewardIds: [],
     ...(progressionSnapshot ? { progression: structuredClone(progressionSnapshot) } : {}),
+    ...(participantProgressionSnapshots?.length
+      ? { participantProgressionSnapshots: structuredClone(participantProgressionSnapshots) }
+      : {}),
     rewardIntegrity: createEligibleMissionRunIntegrity(),
     pendingEvents: [],
     actionContinuations: {},
@@ -1505,6 +1578,7 @@ export function serializeCampaignMissionRuntimeStateFamilies(
     rewardsIntegrity: serialize({
       claimedRewards: state.claimedRewardIds,
       progression: state.progression ?? null,
+      participantProgressionSnapshots: state.participantProgressionSnapshots ?? [],
       rewardIntegrity: state.rewardIntegrity ?? null
     }),
     presentation: serialize({

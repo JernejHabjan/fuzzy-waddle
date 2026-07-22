@@ -1,5 +1,7 @@
 import type { MissionParticipantDefinition } from "../contracts/mission-participant-definition";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import type { MissionCoopOverride } from "../contracts/mission-coop-override";
+import { resolveMissionParticipants } from "./campaign-coop-policy";
 
 export interface CampaignParticipantLaunchSlot {
   readonly participant: MissionParticipantDefinition;
@@ -28,11 +30,15 @@ export function updateCampaignParticipantTeams(
 
 /** Produces stable lobby/player assignments before a campaign scene creates its initial actors. */
 export function resolveCampaignParticipantLaunchSlots(
-  participants: readonly MissionParticipantDefinition[]
+  participants: readonly MissionParticipantDefinition[],
+  options?: { readonly coop?: MissionCoopOverride; readonly humanParticipantCount?: number }
 ): readonly CampaignParticipantLaunchSlot[] {
-  const teamIds = [...new Set(participants.map((participant) => String(participant.teamId)))].sort();
+  const resolvedParticipants = options
+    ? resolveMissionParticipants(participants, options.coop, options.humanParticipantCount ?? 1)
+    : participants;
+  const teamIds = [...new Set(resolvedParticipants.map((participant) => String(participant.teamId)))].sort();
   const teamNumberById = new Map(teamIds.map((teamId, index) => [teamId, index + 1] as const));
-  return participants.map((participant, index) => {
+  return resolvedParticipants.map((participant, index) => {
     const teamNumber = teamNumberById.get(String(participant.teamId));
     if (teamNumber === undefined) throw new Error(`Campaign team '${participant.teamId}' was not resolved`);
     return {
@@ -64,8 +70,14 @@ export function validateCampaignParticipants(participants: readonly MissionParti
       if (!Number.isFinite(amount) || amount < 0) errors.push(`Invalid ${resource} grant for '${participant.slotId}'`);
     }
   }
-  if (participants.length > 0 && humanCount !== 1) {
-    errors.push(`A single-player campaign mission requires exactly one human participant; found ${humanCount}`);
+  if (participants.length > 0 && (humanCount < 1 || humanCount > 2)) {
+    errors.push(`Campaign missions require one or two human participant slots; found ${humanCount}`);
+  }
+  const humanParticipants = participants.filter((participant) => participant.controller === "human");
+  for (const participant of humanParticipants.slice(1)) {
+    if (!participant.singlePlayerSubstitution) {
+      errors.push(`Co-op participant '${participant.slotId}' requires a singlePlayerSubstitution`);
+    }
   }
   return errors;
 }

@@ -206,7 +206,11 @@ export class CampaignServerService implements CampaignProfileServerServiceInterf
       throw new ConflictException("Campaign run identity does not match its launch snapshot");
     }
     if (run.commit_status === "committed" && isRewardCommitResult(run.commit_result)) {
-      return { result: { ...run.commit_result, status: "already-committed" }, profileData: await this.profile(userId) };
+      return {
+        profileOwnerId: userId,
+        result: { ...run.commit_result, status: "already-committed" },
+        profileData: await this.profile(userId)
+      };
     }
     const current = await this.profile(userId);
     const runIntegrity = missionRunIntegrity(run.integrity);
@@ -256,7 +260,7 @@ export class CampaignServerService implements CampaignProfileServerServiceInterf
         .eq("id", request.runId)
         .eq("user_id", userId);
       if (error) throw error;
-      return { result, profileData: await this.profile(userId) };
+      return { profileOwnerId: userId, result, profileData: await this.profile(userId) };
     }
     const completedAt = new Date().toISOString();
     let profile = { ...current.profile, progression: result.profile };
@@ -286,7 +290,7 @@ export class CampaignServerService implements CampaignProfileServerServiceInterf
       p_commit_result: commitResult as unknown as Json
     });
     if (commitError) throw commitError;
-    return { result: commitResult, profileData: await this.profile(userId) };
+    return { profileOwnerId: userId, result: commitResult, profileData: await this.profile(userId) };
   }
 
   async merge(

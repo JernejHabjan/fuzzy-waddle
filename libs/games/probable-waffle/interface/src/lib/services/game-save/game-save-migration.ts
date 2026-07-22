@@ -119,7 +119,9 @@ function campaignMetadataChanged(
     JSON.stringify(stored.selectedLoadoutIds ?? []) !== JSON.stringify(migrated.selectedLoadoutIds ?? []) ||
     stored.loadoutSnapshotHash !== migrated.loadoutSnapshotHash ||
     stored.checkpointId !== migrated.checkpointId ||
-    stored.participantCount !== migrated.participantCount
+    stored.participantCount !== migrated.participantCount ||
+    JSON.stringify(stored.participantProgressionSnapshots ?? []) !==
+      JSON.stringify(migrated.participantProgressionSnapshots ?? [])
   );
 }
 
@@ -148,7 +150,10 @@ function resolveCampaignContext(
     selectedLoadoutIds: [...(stored.campaign?.selectedLoadoutIds ?? metadata?.selectedLoadoutIds ?? [])].sort(),
     loadoutSnapshotHash: stored.campaign?.loadoutSnapshotHash ?? metadata?.loadoutSnapshotHash ?? "",
     ...(stored.campaign?.checkpointId ? { checkpointId: stored.campaign.checkpointId } : {}),
-    participantCount: Math.max(1, stored.campaign?.participantCount ?? data.players?.length ?? 1)
+    participantCount: Math.max(1, stored.campaign?.participantCount ?? data.players?.length ?? 1),
+    participantProgressionSnapshots: structuredClone(
+      stored.campaign?.participantProgressionSnapshots ?? metadata?.participantProgressionSnapshots ?? []
+    )
   };
 }
 
