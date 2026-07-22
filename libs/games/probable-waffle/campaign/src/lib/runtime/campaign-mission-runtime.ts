@@ -1589,6 +1589,7 @@ export function createCampaignMissionRuntimeState(
     counters: Object.fromEntries(
       [...content.initialState.counters].sort(compareById).map((counter) => [counter.id, counter.value])
     ),
+    missionItems: {},
     timers: Object.fromEntries(
       [...content.initialState.timers].sort(compareById).map((timer) => [
         timer.id,
@@ -1673,7 +1674,12 @@ export function serializeCampaignMissionRuntimeStateFamilies(
       checkpoints: state.claimedCheckpointIds ?? [],
       pendingCheckpoints: state.pendingCheckpointIds ?? []
     }),
-    factsCountersTimers: serialize({ facts: state.facts, counters: state.counters, timers: state.timers }),
+    factsCountersTimers: serialize({
+      facts: state.facts,
+      counters: state.counters,
+      missionItems: state.missionItems ?? {},
+      timers: state.timers
+    }),
     objectives: serialize({ objectives: state.objectives, messages: state.missionMessageHistory }),
     triggersActions: serialize({
       claimedTriggers: state.claimedTriggerIds,

@@ -4,18 +4,17 @@
   "chapterId": "two-homelands",
   "revision": 1,
   "mapId": 2,
-  "prerequisites": [
-    "dreams"
-  ],
+  "prerequisites": ["dreams"],
   "catalogue": {
     "order": 0,
     "title": "Cyclops & Sheep",
     "faction": "tivara",
-    "environment": "Tivara plains",
-    "briefing": "Tivara faces a growing threat close to home.",
+    "environment": "Tivara riverlands",
+    "briefing": "Carry two stranded frogs to safety, rescue their companions, and outwit the Cyclops guarding the road home.",
     "objectiveSummaries": [
-      "Secure the settlement",
-      "Defeat the invading force"
+      "Carry the stranded frogs across the river",
+      "Rescue the captive Tivara",
+      "Craft a sheep disguise and fool the Cyclops"
     ]
   },
   "participants": [
@@ -23,62 +22,297 @@
       "slotId": "tivara-player",
       "controller": "human",
       "faction": 1,
-      "teamId": "alliance",
+      "teamId": "tivara-party",
       "requiredForVictory": true,
       "profileOwnership": "independent",
-      "economy": "normal",
+      "economy": "none",
       "fogPolicy": "normal"
+    },
+    {
+      "slotId": "riverland-hostiles",
+      "controller": "scripted-ai",
+      "faction": 2,
+      "teamId": "riverland-hostiles",
+      "profileOwnership": "none",
+      "economy": "none",
+      "fogPolicy": "omniscient-ai"
     }
   ],
   "progressionAllowance": {
     "maxStoryChapter": "two-homelands",
+    "allowedActorIds": ["TivaraMacemanMale"],
+    "allowedResearchIds": [],
     "loadoutSlotCount": 1
   },
   "initialState": {
-    "activePhaseIds": [
-      "opening"
-    ],
+    "activePhaseIds": ["wake-at-pond", "mission-monitor"],
     "facts": [
-      {
-        "id": "mission-complete",
-        "value": false,
-        "debugMutable": true
-      },
-      {
-        "id": "mission-failed",
-        "value": false,
-        "debugMutable": true
-      },
-      {
-        "id": "optional-complete",
-        "value": false,
-        "debugMutable": true
-      },
-      {
-        "id": "checkpoint-ready",
-        "value": false,
-        "debugMutable": true
-      }
+      { "id": "intro-complete", "value": false },
+      { "id": "frogs-carried", "value": false },
+      { "id": "frogs-delivered", "value": false },
+      { "id": "bridge-revealed", "value": false },
+      { "id": "bridge-encounter-started", "value": false },
+      { "id": "companions-rescued", "value": false },
+      { "id": "cyclops-warning-complete", "value": false },
+      { "id": "cyclops-detected", "value": false },
+      { "id": "tusks-acquired", "value": false },
+      { "id": "scissors-acquired", "value": false },
+      { "id": "sheep-shorn", "value": false },
+      { "id": "counterattack-started", "value": false },
+      { "id": "disguise-prepared", "value": false },
+      { "id": "cyclops-fooled", "value": false },
+      { "id": "nest-destroyed", "value": false },
+      { "id": "canyon-lore-found", "value": false },
+      { "id": "mission-complete", "value": false },
+      { "id": "mission-failed", "value": false }
     ],
-    "counters": [
-      {
-        "id": "mission-progress",
-        "value": 0,
-        "debugMutable": true
-      }
-    ],
+    "counters": [],
     "timers": []
   },
   "phases": [
     {
-      "id": "opening",
+      "id": "wake-at-pond",
       "mode": "sequential",
       "entryActions": [
         {
-          "id": "show-opening-briefing",
-          "kind": "start-dialogue",
+          "id": "convert-bridge-guardian-hostile",
+          "kind": "convert-owner",
+          "actorId": "bridge-guardian",
+          "ownerPlayerNumber": 2
+        },
+        {
+          "id": "convert-cyclops-hostile",
+          "kind": "convert-owner",
+          "actorId": "roaming-cyclops",
+          "ownerPlayerNumber": 2
+        },
+        {
+          "id": "convert-boar-hostile",
+          "kind": "convert-owner",
+          "actorId": "tusk-boar",
+          "ownerPlayerNumber": 2
+        },
+        {
+          "id": "convert-corpy-nest-hostile",
+          "kind": "convert-owner",
+          "actorId": "corpy-nest",
+          "ownerPlayerNumber": 2
+        },
+        {
+          "id": "protect-dry-frog-a",
+          "kind": "set-actor-flag",
           "scope": "mission",
-          "lineId": "opening-briefing",
+          "actorId": "dry-frog-a",
+          "flag": "invulnerable",
+          "value": true
+        },
+        {
+          "id": "protect-dry-frog-b",
+          "kind": "set-actor-flag",
+          "scope": "mission",
+          "actorId": "dry-frog-b",
+          "flag": "invulnerable",
+          "value": true
+        },
+        {
+          "id": "protect-sheep-a",
+          "kind": "set-actor-flag",
+          "scope": "mission",
+          "actorId": "mission-sheep-a",
+          "flag": "invulnerable",
+          "value": true
+        },
+        {
+          "id": "protect-sheep-b",
+          "kind": "set-actor-flag",
+          "scope": "mission",
+          "actorId": "mission-sheep-b",
+          "flag": "invulnerable",
+          "value": true
+        },
+        {
+          "id": "protect-sheep-c",
+          "kind": "set-actor-flag",
+          "scope": "mission",
+          "actorId": "mission-sheep-c",
+          "flag": "invulnerable",
+          "value": true
+        },
+        {
+          "id": "play-pond-intro",
+          "kind": "start-cinematic",
+          "scope": "mission",
+          "cinematicId": "pond-intro-cinematic",
+          "waitForCompletion": true
+        }
+      ],
+      "exitActions": [],
+      "triggers": [],
+      "transitions": [
+        {
+          "id": "begin-frog-rescue",
+          "targetPhaseIds": ["carry-frogs"],
+          "condition": { "kind": "fact", "factId": "intro-complete", "equals": true },
+          "actions": [],
+          "priority": 10
+        }
+      ]
+    },
+    {
+      "id": "carry-frogs",
+      "mode": "sequential",
+      "entryActions": [
+        {
+          "id": "show-carry-instruction",
+          "kind": "start-dialogue",
+          "lineId": "carry-frogs-line",
+          "waitForAcknowledgement": false
+        }
+      ],
+      "exitActions": [],
+      "triggers": [
+        {
+          "id": "pick-up-stranded-frogs",
+          "kind": "condition",
+          "condition": {
+            "kind": "all",
+            "conditions": [
+              {
+                "kind": "region-occupancy",
+                "regionId": "frog-pickup-region",
+                "selector": { "actorIds": ["tivara-protagonist"], "alive": true },
+                "policy": { "kind": "any" }
+              },
+              { "kind": "fact", "factId": "frogs-carried", "equals": false }
+            ]
+          },
+          "actions": [
+            {
+              "id": "carry-dry-frog-a",
+              "kind": "carry-actor",
+              "scope": "mission",
+              "actorId": "dry-frog-a",
+              "carrierActorId": "tivara-protagonist"
+            },
+            {
+              "id": "carry-dry-frog-b",
+              "kind": "carry-actor",
+              "scope": "mission",
+              "actorId": "dry-frog-b",
+              "carrierActorId": "tivara-protagonist"
+            },
+            {
+              "id": "mark-frogs-carried",
+              "kind": "set-fact",
+              "factId": "frogs-carried",
+              "value": true
+            },
+            {
+              "id": "show-frogs-secured",
+              "kind": "start-dialogue",
+              "lineId": "frogs-secured-line",
+              "waitForAcknowledgement": false
+            }
+          ],
+          "firing": { "kind": "once" },
+          "priority": 20
+        },
+        {
+          "id": "deliver-stranded-frogs",
+          "kind": "condition",
+          "condition": {
+            "kind": "all",
+            "conditions": [
+              { "kind": "fact", "factId": "frogs-carried", "equals": true },
+              {
+                "kind": "region-occupancy",
+                "regionId": "frog-drop-region",
+                "selector": { "actorIds": ["tivara-protagonist"], "alive": true },
+                "policy": { "kind": "any" }
+              }
+            ]
+          },
+          "actions": [
+            {
+              "id": "drop-dry-frog-a",
+              "kind": "drop-carried-actor",
+              "scope": "mission",
+              "actorId": "dry-frog-a",
+              "pointId": "large-pond-drop-point"
+            },
+            {
+              "id": "drop-dry-frog-b",
+              "kind": "drop-carried-actor",
+              "scope": "mission",
+              "actorId": "dry-frog-b",
+              "pointId": "large-pond-drop-point"
+            },
+            {
+              "id": "mark-frogs-delivered",
+              "kind": "set-fact",
+              "factId": "frogs-delivered",
+              "value": true
+            },
+            {
+              "id": "show-frogs-delivered",
+              "kind": "start-dialogue",
+              "lineId": "frogs-delivered-line",
+              "waitForAcknowledgement": false
+            }
+          ],
+          "firing": { "kind": "once" },
+          "priority": 10
+        }
+      ],
+      "transitions": [
+        {
+          "id": "reveal-bridge",
+          "targetPhaseIds": ["bridge-reveal"],
+          "condition": { "kind": "fact", "factId": "frogs-delivered", "equals": true },
+          "actions": [],
+          "priority": 10
+        }
+      ]
+    },
+    {
+      "id": "bridge-reveal",
+      "mode": "sequential",
+      "entryActions": [
+        {
+          "id": "play-bridge-reveal",
+          "kind": "start-cinematic",
+          "scope": "mission",
+          "cinematicId": "bridge-reveal-cinematic",
+          "waitForCompletion": true
+        }
+      ],
+      "exitActions": [],
+      "triggers": [],
+      "transitions": [
+        {
+          "id": "begin-bridge-fight",
+          "targetPhaseIds": ["corpy-bridge"],
+          "condition": { "kind": "fact", "factId": "bridge-revealed", "equals": true },
+          "actions": [
+            {
+              "id": "activate-bridge-encounter",
+              "kind": "set-fact",
+              "factId": "bridge-encounter-started",
+              "value": true
+            }
+          ],
+          "priority": 10
+        }
+      ]
+    },
+    {
+      "id": "corpy-bridge",
+      "mode": "sequential",
+      "entryActions": [
+        {
+          "id": "show-bridge-fight",
+          "kind": "start-dialogue",
+          "lineId": "bridge-fight-line",
           "waitForAcknowledgement": false
         }
       ],
@@ -86,67 +320,831 @@
       "triggers": [],
       "transitions": [
         {
-          "id": "begin-operation",
-          "targetPhaseIds": [
-            "operation"
-          ],
+          "id": "bridge-secured",
+          "targetPhaseIds": ["rescue-melee"],
           "condition": {
-            "kind": "always"
+            "kind": "all",
+            "conditions": [
+              { "kind": "encounter", "encounterId": "bridge-blockers", "state": "completed" },
+              { "kind": "not", "condition": { "kind": "actor-alive", "actorId": "bridge-guardian" } }
+            ]
           },
           "actions": [],
-          "priority": 0
+          "priority": 10
         }
       ]
     },
     {
-      "id": "operation",
-      "mode": "parallel",
+      "id": "rescue-melee",
+      "mode": "sequential",
+      "entryActions": [
+        {
+          "id": "spawn-captive-melee",
+          "kind": "spawn-set",
+          "scope": "mission",
+          "spawnSetId": "captive-spawn-set",
+          "actors": [
+            {
+              "actorName": "TivaraMacemanMale",
+              "ownerPlayerNumber": 2,
+              "scenarioRoleId": "captive-maceman-a",
+              "tags": ["rescued-companion", "disguise-target"]
+            },
+            {
+              "actorName": "TivaraMacemanMale",
+              "ownerPlayerNumber": 2,
+              "scenarioRoleId": "captive-maceman-b",
+              "tags": ["rescued-companion", "disguise-target"]
+            }
+          ]
+        },
+        {
+          "id": "show-captive-rescue",
+          "kind": "start-dialogue",
+          "lineId": "rescue-captives-line",
+          "waitForAcknowledgement": false
+        }
+      ],
+      "exitActions": [],
+      "triggers": [
+        {
+          "id": "free-captive-melee",
+          "kind": "condition",
+          "condition": {
+            "kind": "region-occupancy",
+            "regionId": "captive-rescue-region",
+            "selector": { "actorIds": ["tivara-protagonist"], "alive": true },
+            "policy": { "kind": "any" }
+          },
+          "actions": [
+            {
+              "id": "convert-captive-a",
+              "kind": "convert-owner",
+              "actorId": "captive-maceman-a",
+              "ownerPlayerNumber": 1
+            },
+            {
+              "id": "convert-captive-b",
+              "kind": "convert-owner",
+              "actorId": "captive-maceman-b",
+              "ownerPlayerNumber": 1
+            },
+            {
+              "id": "mark-companions-rescued",
+              "kind": "set-fact",
+              "factId": "companions-rescued",
+              "value": true
+            },
+            {
+              "id": "show-companions-rescued",
+              "kind": "start-dialogue",
+              "lineId": "companions-rescued-line",
+              "waitForAcknowledgement": false
+            }
+          ],
+          "firing": { "kind": "once" },
+          "priority": 10
+        }
+      ],
+      "transitions": [
+        {
+          "id": "warn-of-cyclops",
+          "targetPhaseIds": ["cyclops-warning"],
+          "condition": { "kind": "fact", "factId": "companions-rescued", "equals": true },
+          "actions": [],
+          "priority": 10
+        }
+      ]
+    },
+    {
+      "id": "cyclops-warning",
+      "mode": "sequential",
+      "entryActions": [
+        {
+          "id": "play-cyclops-warning",
+          "kind": "start-cinematic",
+          "scope": "mission",
+          "cinematicId": "cyclops-warning-cinematic",
+          "waitForCompletion": true
+        }
+      ],
+      "exitActions": [],
+      "triggers": [],
+      "transitions": [
+        {
+          "id": "seek-boar-tusks",
+          "targetPhaseIds": ["boar-tusks"],
+          "condition": { "kind": "fact", "factId": "cyclops-warning-complete", "equals": true },
+          "actions": [],
+          "priority": 10
+        }
+      ]
+    },
+    {
+      "id": "boar-tusks",
+      "mode": "sequential",
+      "entryActions": [
+        {
+          "id": "show-boar-objective",
+          "kind": "start-dialogue",
+          "lineId": "boar-objective-line",
+          "waitForAcknowledgement": false
+        }
+      ],
+      "exitActions": [],
+      "triggers": [
+        {
+          "id": "collect-boar-tools",
+          "kind": "condition",
+          "condition": {
+            "kind": "all",
+            "conditions": [
+              { "kind": "not", "condition": { "kind": "actor-alive", "actorId": "tusk-boar" } },
+              { "kind": "fact", "factId": "tusks-acquired", "equals": false }
+            ]
+          },
+          "actions": [
+            { "id": "add-boar-tusks", "kind": "add-mission-item", "itemId": "boar-tusk", "amount": 2 },
+            { "id": "add-lost-scissors", "kind": "add-mission-item", "itemId": "shears", "amount": 1 },
+            { "id": "mark-tusks-acquired", "kind": "set-fact", "factId": "tusks-acquired", "value": true },
+            {
+              "id": "mark-scissors-acquired",
+              "kind": "set-fact",
+              "factId": "scissors-acquired",
+              "value": true
+            },
+            {
+              "id": "show-tools-acquired",
+              "kind": "start-dialogue",
+              "lineId": "tools-acquired-line",
+              "waitForAcknowledgement": false
+            }
+          ],
+          "firing": { "kind": "once" },
+          "priority": 10
+        }
+      ],
+      "transitions": [
+        {
+          "id": "seek-sheep",
+          "targetPhaseIds": ["find-and-shear-sheep"],
+          "condition": {
+            "kind": "all",
+            "conditions": [
+              { "kind": "fact", "factId": "tusks-acquired", "equals": true },
+              { "kind": "fact", "factId": "scissors-acquired", "equals": true }
+            ]
+          },
+          "actions": [],
+          "priority": 10
+        }
+      ]
+    },
+    {
+      "id": "find-and-shear-sheep",
+      "mode": "sequential",
+      "entryActions": [
+        {
+          "id": "show-sheep-objective",
+          "kind": "start-dialogue",
+          "lineId": "sheep-objective-line",
+          "waitForAcknowledgement": false
+        }
+      ],
+      "exitActions": [],
+      "triggers": [
+        {
+          "id": "shear-mission-sheep",
+          "kind": "condition",
+          "condition": {
+            "kind": "region-occupancy",
+            "regionId": "sheep-clearing-region",
+            "selector": { "actorIds": ["tivara-protagonist"], "alive": true },
+            "policy": { "kind": "any" }
+          },
+          "actions": [
+            { "id": "add-sheep-wool", "kind": "add-mission-item", "itemId": "sheep-wool", "amount": 3 },
+            { "id": "mark-sheep-shorn", "kind": "set-fact", "factId": "sheep-shorn", "value": true },
+            {
+              "id": "activate-corpy-counterattack",
+              "kind": "set-fact",
+              "factId": "counterattack-started",
+              "value": true
+            },
+            {
+              "id": "play-sheep-clearing",
+              "kind": "start-cinematic",
+              "scope": "mission",
+              "cinematicId": "sheep-clearing-cinematic",
+              "waitForCompletion": false
+            }
+          ],
+          "firing": { "kind": "once" },
+          "priority": 10
+        }
+      ],
+      "transitions": [
+        {
+          "id": "meet-corpy-counterattack",
+          "targetPhaseIds": ["corpy-nest-counterattack"],
+          "condition": { "kind": "fact", "factId": "sheep-shorn", "equals": true },
+          "actions": [],
+          "priority": 10
+        }
+      ]
+    },
+    {
+      "id": "corpy-nest-counterattack",
+      "mode": "sequential",
+      "entryActions": [
+        {
+          "id": "show-counterattack-warning",
+          "kind": "start-dialogue",
+          "lineId": "counterattack-warning-line",
+          "waitForAcknowledgement": false
+        }
+      ],
+      "exitActions": [],
+      "triggers": [],
+      "transitions": [
+        {
+          "id": "prepare-sheep-disguise",
+          "targetPhaseIds": ["prepare-disguise"],
+          "condition": {
+            "kind": "encounter",
+            "encounterId": "corpy-counterattack",
+            "state": "completed"
+          },
+          "actions": [],
+          "priority": 10
+        }
+      ]
+    },
+    {
+      "id": "prepare-disguise",
+      "mode": "sequential",
+      "entryActions": [
+        {
+          "id": "show-disguise-instruction",
+          "kind": "start-dialogue",
+          "lineId": "prepare-disguise-line",
+          "waitForAcknowledgement": false
+        }
+      ],
+      "exitActions": [],
+      "triggers": [
+        {
+          "id": "craft-sheep-disguise",
+          "kind": "condition",
+          "condition": {
+            "kind": "all",
+            "conditions": [
+              {
+                "kind": "region-occupancy",
+                "regionId": "disguise-preparation-region",
+                "selector": { "actorIds": ["tivara-protagonist"], "alive": true },
+                "policy": { "kind": "any" }
+              },
+              {
+                "kind": "mission-item-count",
+                "itemId": "boar-tusk",
+                "comparison": "greater-or-equal",
+                "value": 2
+              },
+              {
+                "kind": "mission-item-count",
+                "itemId": "shears",
+                "comparison": "greater-or-equal",
+                "value": 1
+              },
+              {
+                "kind": "mission-item-count",
+                "itemId": "sheep-wool",
+                "comparison": "greater-or-equal",
+                "value": 3
+              }
+            ]
+          },
+          "actions": [
+            { "id": "consume-boar-tusks", "kind": "consume-mission-item", "itemId": "boar-tusk", "amount": 2 },
+            { "id": "consume-shears", "kind": "consume-mission-item", "itemId": "shears", "amount": 1 },
+            { "id": "consume-sheep-wool", "kind": "consume-mission-item", "itemId": "sheep-wool", "amount": 3 },
+            {
+              "id": "apply-party-sheep-disguise",
+              "kind": "apply-disguise",
+              "scope": "mission",
+              "disguiseId": "party-sheep-disguise",
+              "actorIds": ["tivara-protagonist", "captive-maceman-a", "captive-maceman-b"],
+              "opacity": 0.72
+            },
+            {
+              "id": "mark-disguise-prepared",
+              "kind": "set-fact",
+              "factId": "disguise-prepared",
+              "value": true
+            },
+            {
+              "id": "show-disguise-ready",
+              "kind": "start-dialogue",
+              "lineId": "disguise-ready-line",
+              "waitForAcknowledgement": false
+            }
+          ],
+          "firing": { "kind": "once" },
+          "priority": 10
+        }
+      ],
+      "transitions": [
+        {
+          "id": "approach-cyclops-in-disguise",
+          "targetPhaseIds": ["fool-cyclops"],
+          "condition": { "kind": "fact", "factId": "disguise-prepared", "equals": true },
+          "actions": [],
+          "priority": 10
+        }
+      ]
+    },
+    {
+      "id": "fool-cyclops",
+      "mode": "sequential",
+      "entryActions": [
+        {
+          "id": "show-fool-cyclops-instruction",
+          "kind": "start-dialogue",
+          "lineId": "fool-cyclops-line",
+          "waitForAcknowledgement": false
+        }
+      ],
+      "exitActions": [],
+      "triggers": [],
+      "transitions": [
+        {
+          "id": "present-cyclops-deception",
+          "targetPhaseIds": ["cyclops-deception"],
+          "condition": {
+            "kind": "all",
+            "conditions": [
+              { "kind": "fact", "factId": "disguise-prepared", "equals": true },
+              {
+                "kind": "region-occupancy",
+                "regionId": "cyclops-fool-region",
+                "selector": { "actorIds": ["tivara-protagonist"], "alive": true },
+                "policy": { "kind": "any" }
+              }
+            ]
+          },
+          "actions": [],
+          "priority": 10
+        }
+      ]
+    },
+    {
+      "id": "cyclops-deception",
+      "mode": "sequential",
+      "entryActions": [
+        {
+          "id": "play-cyclops-deception",
+          "kind": "start-cinematic",
+          "scope": "mission",
+          "cinematicId": "cyclops-fooled-cinematic",
+          "waitForCompletion": true
+        }
+      ],
+      "exitActions": [],
+      "triggers": [],
+      "transitions": [
+        {
+          "id": "leave-cyclops-behind",
+          "targetPhaseIds": ["mission-outro"],
+          "condition": { "kind": "fact", "factId": "cyclops-fooled", "equals": true },
+          "actions": [],
+          "priority": 10
+        }
+      ]
+    },
+    {
+      "id": "mission-outro",
+      "mode": "sequential",
+      "entryActions": [
+        {
+          "id": "play-river-crossing-outro",
+          "kind": "start-cinematic",
+          "scope": "mission",
+          "cinematicId": "mission-outro-cinematic",
+          "waitForCompletion": true
+        }
+      ],
+      "exitActions": [],
+      "triggers": [],
+      "transitions": [
+        {
+          "id": "complete-river-crossing",
+          "targetPhaseIds": ["victory"],
+          "condition": { "kind": "fact", "factId": "mission-complete", "equals": true },
+          "actions": [],
+          "priority": 10
+        }
+      ]
+    },
+    {
+      "id": "victory",
+      "mode": "sequential",
       "entryActions": [],
       "exitActions": [],
       "triggers": [
         {
-          "id": "resolve-authored-victory",
+          "id": "resolve-river-crossing-victory",
           "kind": "condition",
-          "condition": {
-            "kind": "fact",
-            "factId": "mission-complete",
-            "equals": true
-          },
+          "condition": { "kind": "fact", "factId": "mission-complete", "equals": true },
           "actions": [
             {
-              "id": "request-authored-victory",
+              "id": "request-river-crossing-victory",
               "kind": "request-outcome",
               "scope": "mission",
               "outcome": "victory",
-              "reasonId": "authored-victory"
+              "reasonId": "cyclops-fooled"
             }
           ],
-          "firing": {
-            "kind": "once"
-          },
+          "firing": { "kind": "once" },
           "priority": 100
-        },
+        }
+      ],
+      "transitions": []
+    },
+    {
+      "id": "mission-monitor",
+      "mode": "parallel",
+      "entryActions": [
         {
-          "id": "resolve-authored-defeat",
+          "id": "patrol-roaming-cyclops",
+          "kind": "issue-order",
+          "scope": "mission",
+          "actorIds": ["roaming-cyclops"],
+          "order": "patrol",
+          "targetPointId": "cyclops-approach-point",
+          "queue": true
+        }
+      ],
+      "exitActions": [],
+      "triggers": [
+        {
+          "id": "fail-on-protagonist-loss",
           "kind": "condition",
           "condition": {
-            "kind": "fact",
-            "factId": "mission-failed",
-            "equals": true
+            "kind": "not",
+            "condition": { "kind": "actor-alive", "actorId": "tivara-protagonist" }
           },
           "actions": [
+            { "id": "mark-protagonist-loss", "kind": "set-fact", "factId": "mission-failed", "value": true },
             {
-              "id": "request-authored-defeat",
+              "id": "request-protagonist-defeat",
               "kind": "request-outcome",
               "scope": "mission",
               "outcome": "defeat",
-              "reasonId": "authored-defeat"
+              "reasonId": "protagonist-lost"
             }
           ],
-          "firing": {
-            "kind": "once"
+          "firing": { "kind": "once" },
+          "priority": 100
+        },
+        {
+          "id": "record-early-nest-destruction",
+          "kind": "condition",
+          "condition": {
+            "kind": "all",
+            "conditions": [
+              { "kind": "not", "condition": { "kind": "actor-alive", "actorId": "corpy-nest" } },
+              { "kind": "fact", "factId": "nest-destroyed", "equals": false }
+            ]
           },
-          "priority": 90
+          "actions": [
+            { "id": "mark-nest-destroyed", "kind": "set-fact", "factId": "nest-destroyed", "value": true },
+            { "id": "discover-nest-reward", "kind": "discover-reward", "rewardId": "riverland-crystal" },
+            {
+              "id": "show-nest-destroyed",
+              "kind": "start-dialogue",
+              "lineId": "nest-destroyed-line",
+              "waitForAcknowledgement": false
+            }
+          ],
+          "firing": { "kind": "once" },
+          "priority": 60
+        },
+        {
+          "id": "record-canyon-lore",
+          "kind": "condition",
+          "condition": {
+            "kind": "all",
+            "conditions": [
+              { "kind": "fact", "factId": "canyon-lore-found", "equals": false },
+              {
+                "kind": "region-occupancy",
+                "regionId": "dry-canyon-lore-region",
+                "selector": { "actorIds": ["tivara-protagonist"], "alive": true },
+                "policy": { "kind": "any" }
+              }
+            ]
+          },
+          "actions": [
+            { "id": "mark-canyon-lore", "kind": "set-fact", "factId": "canyon-lore-found", "value": true },
+            {
+              "id": "show-canyon-lore",
+              "kind": "start-dialogue",
+              "lineId": "canyon-lore-line",
+              "waitForAcknowledgement": false
+            }
+          ],
+          "firing": { "kind": "once" },
+          "priority": 40
+        },
+        {
+          "id": "story-cyclops-detection",
+          "kind": "condition",
+          "condition": {
+            "kind": "all",
+            "conditions": [
+              { "kind": "difficulty", "values": ["story"] },
+              { "kind": "fact", "factId": "cyclops-warning-complete", "equals": true },
+              { "kind": "fact", "factId": "disguise-prepared", "equals": false },
+              {
+                "kind": "actor-distance",
+                "actorId": "tivara-protagonist",
+                "targetActorId": "roaming-cyclops",
+                "comparison": "less-or-equal",
+                "value": 128
+              }
+            ]
+          },
+          "actions": [
+            { "id": "mark-story-cyclops-detection", "kind": "set-fact", "factId": "cyclops-detected", "value": true },
+            {
+              "id": "recover-story-protagonist",
+              "kind": "teleport-actor",
+              "actorId": "tivara-protagonist",
+              "pointId": "hero-recovery-point"
+            },
+            {
+              "id": "warn-story-cyclops-detection",
+              "kind": "start-dialogue",
+              "lineId": "cyclops-detected-line",
+              "waitForAcknowledgement": false
+            }
+          ],
+          "firing": { "kind": "once" },
+          "priority": 80
+        },
+        {
+          "id": "normal-cyclops-detection",
+          "kind": "condition",
+          "condition": {
+            "kind": "all",
+            "conditions": [
+              { "kind": "difficulty", "values": ["normal"] },
+              { "kind": "fact", "factId": "cyclops-warning-complete", "equals": true },
+              { "kind": "fact", "factId": "disguise-prepared", "equals": false },
+              {
+                "kind": "actor-distance",
+                "actorId": "tivara-protagonist",
+                "targetActorId": "roaming-cyclops",
+                "comparison": "less-or-equal",
+                "value": 160
+              }
+            ]
+          },
+          "actions": [
+            { "id": "mark-normal-cyclops-detection", "kind": "set-fact", "factId": "cyclops-detected", "value": true },
+            {
+              "id": "recover-normal-protagonist",
+              "kind": "teleport-actor",
+              "actorId": "tivara-protagonist",
+              "pointId": "hero-recovery-point"
+            },
+            {
+              "id": "warn-normal-cyclops-detection",
+              "kind": "start-dialogue",
+              "lineId": "cyclops-detected-line",
+              "waitForAcknowledgement": false
+            }
+          ],
+          "firing": { "kind": "once" },
+          "priority": 80
+        },
+        {
+          "id": "hard-cyclops-detection",
+          "kind": "condition",
+          "condition": {
+            "kind": "all",
+            "conditions": [
+              { "kind": "difficulty", "values": ["hard"] },
+              { "kind": "fact", "factId": "cyclops-warning-complete", "equals": true },
+              { "kind": "fact", "factId": "disguise-prepared", "equals": false },
+              {
+                "kind": "actor-distance",
+                "actorId": "tivara-protagonist",
+                "targetActorId": "roaming-cyclops",
+                "comparison": "less-or-equal",
+                "value": 192
+              }
+            ]
+          },
+          "actions": [
+            { "id": "mark-hard-cyclops-detection", "kind": "set-fact", "factId": "cyclops-detected", "value": true },
+            {
+              "id": "recover-hard-protagonist",
+              "kind": "teleport-actor",
+              "actorId": "tivara-protagonist",
+              "pointId": "hero-recovery-point"
+            },
+            {
+              "id": "warn-hard-cyclops-detection",
+              "kind": "start-dialogue",
+              "lineId": "cyclops-detected-line",
+              "waitForAcknowledgement": false
+            }
+          ],
+          "firing": { "kind": "once" },
+          "priority": 80
+        },
+        {
+          "id": "restore-dry-frog-a",
+          "kind": "condition",
+          "condition": {
+            "kind": "all",
+            "conditions": [
+              { "kind": "fact", "factId": "frogs-delivered", "equals": false },
+              { "kind": "actor-exists", "actorId": "dry-frog-a" },
+              { "kind": "not", "condition": { "kind": "actor-alive", "actorId": "dry-frog-a" } }
+            ]
+          },
+          "actions": [
+            { "id": "revive-dry-frog-a", "kind": "revive-actor", "actorId": "dry-frog-a" },
+            {
+              "id": "teleport-dry-frog-a",
+              "kind": "teleport-actor",
+              "actorId": "dry-frog-a",
+              "pointId": "frog-fallback-point"
+            }
+          ],
+          "firing": { "kind": "repeatable", "cooldownTicks": 30 },
+          "priority": 70
+        },
+        {
+          "id": "restore-dry-frog-b",
+          "kind": "condition",
+          "condition": {
+            "kind": "all",
+            "conditions": [
+              { "kind": "fact", "factId": "frogs-delivered", "equals": false },
+              { "kind": "actor-exists", "actorId": "dry-frog-b" },
+              { "kind": "not", "condition": { "kind": "actor-alive", "actorId": "dry-frog-b" } }
+            ]
+          },
+          "actions": [
+            { "id": "revive-dry-frog-b", "kind": "revive-actor", "actorId": "dry-frog-b" },
+            {
+              "id": "teleport-dry-frog-b",
+              "kind": "teleport-actor",
+              "actorId": "dry-frog-b",
+              "pointId": "frog-fallback-point"
+            }
+          ],
+          "firing": { "kind": "repeatable", "cooldownTicks": 30 },
+          "priority": 70
+        },
+        {
+          "id": "restore-sheep-a",
+          "kind": "condition",
+          "condition": {
+            "kind": "all",
+            "conditions": [
+              { "kind": "fact", "factId": "sheep-shorn", "equals": false },
+              { "kind": "actor-exists", "actorId": "mission-sheep-a" },
+              { "kind": "not", "condition": { "kind": "actor-alive", "actorId": "mission-sheep-a" } }
+            ]
+          },
+          "actions": [
+            { "id": "revive-sheep-a", "kind": "revive-actor", "actorId": "mission-sheep-a" },
+            {
+              "id": "teleport-sheep-a",
+              "kind": "teleport-actor",
+              "actorId": "mission-sheep-a",
+              "pointId": "sheep-clearing-point"
+            }
+          ],
+          "firing": { "kind": "repeatable", "cooldownTicks": 30 },
+          "priority": 70
+        },
+        {
+          "id": "restore-sheep-b",
+          "kind": "condition",
+          "condition": {
+            "kind": "all",
+            "conditions": [
+              { "kind": "fact", "factId": "sheep-shorn", "equals": false },
+              { "kind": "actor-exists", "actorId": "mission-sheep-b" },
+              { "kind": "not", "condition": { "kind": "actor-alive", "actorId": "mission-sheep-b" } }
+            ]
+          },
+          "actions": [
+            { "id": "revive-sheep-b", "kind": "revive-actor", "actorId": "mission-sheep-b" },
+            {
+              "id": "teleport-sheep-b",
+              "kind": "teleport-actor",
+              "actorId": "mission-sheep-b",
+              "pointId": "sheep-clearing-point"
+            }
+          ],
+          "firing": { "kind": "repeatable", "cooldownTicks": 30 },
+          "priority": 70
+        },
+        {
+          "id": "restore-sheep-c",
+          "kind": "condition",
+          "condition": {
+            "kind": "all",
+            "conditions": [
+              { "kind": "fact", "factId": "sheep-shorn", "equals": false },
+              { "kind": "actor-exists", "actorId": "mission-sheep-c" },
+              { "kind": "not", "condition": { "kind": "actor-alive", "actorId": "mission-sheep-c" } }
+            ]
+          },
+          "actions": [
+            { "id": "revive-sheep-c", "kind": "revive-actor", "actorId": "mission-sheep-c" },
+            {
+              "id": "teleport-sheep-c",
+              "kind": "teleport-actor",
+              "actorId": "mission-sheep-c",
+              "pointId": "sheep-clearing-point"
+            }
+          ],
+          "firing": { "kind": "repeatable", "cooldownTicks": 30 },
+          "priority": 70
+        },
+        {
+          "id": "restore-lost-tusks",
+          "kind": "condition",
+          "condition": {
+            "kind": "all",
+            "conditions": [
+              { "kind": "fact", "factId": "tusks-acquired", "equals": true },
+              { "kind": "fact", "factId": "disguise-prepared", "equals": false },
+              {
+                "kind": "mission-item-count",
+                "itemId": "boar-tusk",
+                "comparison": "less",
+                "value": 2
+              }
+            ]
+          },
+          "actions": [
+            { "id": "reset-lost-tusks", "kind": "set-mission-item", "itemId": "boar-tusk", "amount": 2 }
+          ],
+          "firing": { "kind": "repeatable", "cooldownTicks": 30 },
+          "priority": 65
+        },
+        {
+          "id": "restore-lost-scissors",
+          "kind": "condition",
+          "condition": {
+            "kind": "all",
+            "conditions": [
+              { "kind": "fact", "factId": "scissors-acquired", "equals": true },
+              { "kind": "fact", "factId": "disguise-prepared", "equals": false },
+              {
+                "kind": "mission-item-count",
+                "itemId": "shears",
+                "comparison": "less",
+                "value": 1
+              }
+            ]
+          },
+          "actions": [
+            { "id": "reset-lost-scissors", "kind": "set-mission-item", "itemId": "shears", "amount": 1 }
+          ],
+          "firing": { "kind": "repeatable", "cooldownTicks": 30 },
+          "priority": 65
+        },
+        {
+          "id": "restore-lost-wool",
+          "kind": "condition",
+          "condition": {
+            "kind": "all",
+            "conditions": [
+              { "kind": "fact", "factId": "sheep-shorn", "equals": true },
+              { "kind": "fact", "factId": "disguise-prepared", "equals": false },
+              {
+                "kind": "mission-item-count",
+                "itemId": "sheep-wool",
+                "comparison": "less",
+                "value": 3
+              }
+            ]
+          },
+          "actions": [
+            { "id": "reset-lost-wool", "kind": "set-mission-item", "itemId": "sheep-wool", "amount": 3 }
+          ],
+          "firing": { "kind": "repeatable", "cooldownTicks": 30 },
+          "priority": 65
         }
       ],
       "transitions": []
@@ -154,181 +1152,531 @@
   ],
   "objectives": [
     {
-      "id": "primary-mission",
+      "id": "complete-river-crossing",
       "kind": "primary",
-      "ownership": {
-        "kind": "shared"
-      },
+      "ownership": { "kind": "shared" },
       "titleTextId": "primary-title",
       "descriptionTextId": "primary-description",
-      "reveal": {
-        "kind": "always"
-      },
-      "complete": {
-        "kind": "fact",
-        "factId": "mission-complete",
-        "equals": true
-      },
-      "display": {
-        "announceReveal": true,
-        "announceCompletion": true,
-        "showInTracker": true
-      }
-    },
-    {
-      "id": "optional-discovery",
-      "kind": "optional",
-      "ownership": {
-        "kind": "shared"
-      },
-      "titleTextId": "optional-title",
-      "descriptionTextId": "optional-description",
-      "reveal": {
-        "kind": "always"
-      },
-      "complete": {
-        "kind": "fact",
-        "factId": "optional-complete",
-        "equals": true
-      },
-      "display": {
-        "announceReveal": true,
-        "announceCompletion": true,
-        "showInTracker": true
-      }
-    },
-    {
-      "id": "mission-failure",
-      "kind": "failure",
-      "ownership": {
-        "kind": "shared"
-      },
-      "titleTextId": "failure-title",
-      "descriptionTextId": "failure-description",
-      "reveal": {
-        "kind": "always"
-      },
-      "complete": {
-        "kind": "fact",
-        "factId": "mission-failed",
-        "equals": true
-      },
+      "reveal": { "kind": "always" },
+      "complete": { "kind": "fact", "factId": "mission-complete", "equals": true },
+      "checklist": [
+        {
+          "id": "deliver-frogs",
+          "textId": "deliver-frogs-text",
+          "complete": { "kind": "fact", "factId": "frogs-delivered", "equals": true }
+        },
+        {
+          "id": "rescue-companions",
+          "textId": "rescue-companions-text",
+          "complete": { "kind": "fact", "factId": "companions-rescued", "equals": true }
+        },
+        {
+          "id": "craft-disguise",
+          "textId": "craft-disguise-text",
+          "complete": { "kind": "fact", "factId": "disguise-prepared", "equals": true }
+        },
+        {
+          "id": "pass-cyclops",
+          "textId": "pass-cyclops-text",
+          "complete": { "kind": "fact", "factId": "cyclops-fooled", "equals": true }
+        }
+      ],
+      "rewardIds": ["unlock-snow-wendigo-and-fire"],
       "display": {
         "announceReveal": true,
         "announceCompletion": true,
         "showInTracker": true,
-        "announceFailure": true
+        "narration": { "completionLineId": "outro-line" },
+        "focus": { "kind": "region", "regionId": "cyclops-exit-region" }
+      }
+    },
+    {
+      "id": "learn-carry",
+      "kind": "tutorial",
+      "ownership": { "kind": "shared" },
+      "titleTextId": "carry-title",
+      "descriptionTextId": "carry-description",
+      "reveal": { "kind": "phase", "phaseId": "carry-frogs", "state": "active" },
+      "complete": { "kind": "fact", "factId": "frogs-delivered", "equals": true },
+      "checklist": [
+        {
+          "id": "select-carrier",
+          "textId": "select-carrier-text",
+          "complete": { "kind": "fact", "factId": "frogs-carried", "equals": true },
+          "inputPrompt": { "action": "selection.primary", "seenPolicy": "collapse" }
+        },
+        {
+          "id": "carry-frog-party",
+          "textId": "carry-frog-party-text",
+          "complete": { "kind": "fact", "factId": "frogs-carried", "equals": true },
+          "inputPrompt": { "action": "command.carry", "seenPolicy": "collapse" }
+        },
+        {
+          "id": "move-to-pond",
+          "textId": "move-to-pond-text",
+          "complete": { "kind": "fact", "factId": "frogs-delivered", "equals": true },
+          "inputPrompt": { "action": "command.move", "seenPolicy": "collapse" }
+        }
+      ],
+      "display": {
+        "announceReveal": true,
+        "announceCompletion": true,
+        "showInTracker": true,
+        "focus": { "kind": "region", "regionId": "frog-pickup-region" }
+      }
+    },
+    {
+      "id": "learn-melee",
+      "kind": "tutorial",
+      "ownership": { "kind": "shared" },
+      "titleTextId": "melee-title",
+      "descriptionTextId": "melee-description",
+      "reveal": { "kind": "phase", "phaseId": "corpy-bridge", "state": "active" },
+      "complete": { "kind": "encounter", "encounterId": "bridge-blockers", "state": "completed" },
+      "checklist": [
+        {
+          "id": "defeat-bridge-blockers",
+          "textId": "defeat-bridge-blockers-text",
+          "complete": { "kind": "encounter", "encounterId": "bridge-blockers", "state": "completed" },
+          "inputPrompt": { "action": "command.attack", "seenPolicy": "collapse" }
+        }
+      ],
+      "display": {
+        "announceReveal": true,
+        "announceCompletion": true,
+        "showInTracker": true,
+        "focus": { "kind": "region", "regionId": "bridge-guardian-region" }
+      }
+    },
+    {
+      "id": "learn-shearing",
+      "kind": "tutorial",
+      "ownership": { "kind": "shared" },
+      "titleTextId": "shearing-title",
+      "descriptionTextId": "shearing-description",
+      "reveal": { "kind": "phase", "phaseId": "find-and-shear-sheep", "state": "active" },
+      "complete": { "kind": "fact", "factId": "sheep-shorn", "equals": true },
+      "checklist": [
+        {
+          "id": "interact-with-sheep",
+          "textId": "interact-with-sheep-text",
+          "complete": { "kind": "fact", "factId": "sheep-shorn", "equals": true },
+          "inputPrompt": { "action": "interaction.primary", "seenPolicy": "collapse" }
+        }
+      ],
+      "display": {
+        "announceReveal": true,
+        "announceCompletion": true,
+        "showInTracker": true,
+        "focus": { "kind": "region", "regionId": "sheep-clearing-region" }
+      }
+    },
+    {
+      "id": "learn-stealth",
+      "kind": "tutorial",
+      "ownership": { "kind": "shared" },
+      "titleTextId": "stealth-title",
+      "descriptionTextId": "stealth-description",
+      "reveal": { "kind": "phase", "phaseId": "cyclops-warning", "state": "completed" },
+      "complete": { "kind": "fact", "factId": "cyclops-fooled", "equals": true },
+      "display": {
+        "announceReveal": true,
+        "announceCompletion": true,
+        "showInTracker": true,
+        "focus": { "kind": "region", "regionId": "stealth-corridor-region" }
+      }
+    },
+    {
+      "id": "optional-save-every-frog",
+      "kind": "optional",
+      "ownership": { "kind": "shared" },
+      "titleTextId": "optional-frogs-title",
+      "descriptionTextId": "optional-frogs-description",
+      "reveal": { "kind": "always" },
+      "complete": { "kind": "fact", "factId": "frogs-delivered", "equals": true },
+      "display": {
+        "announceReveal": true,
+        "announceCompletion": true,
+        "showInTracker": true,
+        "focus": { "kind": "region", "regionId": "frog-drop-region" }
+      }
+    },
+    {
+      "id": "optional-rescue-every-companion",
+      "kind": "optional",
+      "ownership": { "kind": "shared" },
+      "titleTextId": "optional-companions-title",
+      "descriptionTextId": "optional-companions-description",
+      "reveal": { "kind": "phase", "phaseId": "rescue-melee", "state": "active" },
+      "complete": { "kind": "fact", "factId": "companions-rescued", "equals": true },
+      "display": {
+        "announceReveal": true,
+        "announceCompletion": true,
+        "showInTracker": true,
+        "focus": { "kind": "region", "regionId": "captive-rescue-region" }
+      }
+    },
+    {
+      "id": "optional-destroy-corpy-nest",
+      "kind": "optional",
+      "ownership": { "kind": "shared" },
+      "titleTextId": "optional-nest-title",
+      "descriptionTextId": "optional-nest-description",
+      "reveal": { "kind": "always" },
+      "complete": { "kind": "fact", "factId": "nest-destroyed", "equals": true },
+      "rewardIds": ["riverland-crystal"],
+      "display": {
+        "announceReveal": true,
+        "announceCompletion": true,
+        "showInTracker": true,
+        "focus": { "kind": "actor", "actorId": "corpy-nest" }
+      }
+    },
+    {
+      "id": "optional-find-canyon-lore",
+      "kind": "optional",
+      "ownership": { "kind": "shared" },
+      "titleTextId": "optional-lore-title",
+      "descriptionTextId": "optional-lore-description",
+      "reveal": { "kind": "always" },
+      "complete": { "kind": "fact", "factId": "canyon-lore-found", "equals": true },
+      "display": {
+        "announceReveal": true,
+        "announceCompletion": true,
+        "showInTracker": true,
+        "focus": { "kind": "region", "regionId": "dry-canyon-lore-region" }
+      }
+    },
+    {
+      "id": "protagonist-survival",
+      "kind": "failure",
+      "ownership": { "kind": "shared" },
+      "titleTextId": "failure-title",
+      "descriptionTextId": "failure-description",
+      "reveal": { "kind": "always" },
+      "complete": { "kind": "fact", "factId": "mission-failed", "equals": true },
+      "display": {
+        "announceReveal": false,
+        "announceCompletion": false,
+        "announceFailure": true,
+        "showInTracker": false
       }
     }
   ],
   "checkpoints": [
     {
-      "id": "after-bridge-crossing",
-      "titleTextId": "after-bridge-crossing-title",
-      "trigger": {
-        "kind": "fact",
-        "factId": "checkpoint-ready",
-        "equals": true
-      },
+      "id": "frogs-delivered",
+      "titleTextId": "checkpoint-frogs-title",
+      "trigger": { "kind": "fact", "factId": "frogs-delivered", "equals": true },
       "requiredActions": [],
       "savePolicy": "when-stable",
-      "resumePresentation": {
-        "textId": "after-bridge-crossing-resume"
+      "resumePresentation": { "textId": "checkpoint-frogs-resume", "cinematicId": "bridge-reveal-cinematic" }
+    },
+    {
+      "id": "bridge-won",
+      "titleTextId": "checkpoint-bridge-title",
+      "trigger": { "kind": "phase", "phaseId": "corpy-bridge", "state": "completed" },
+      "requiredActions": [],
+      "savePolicy": "when-stable",
+      "resumePresentation": { "textId": "checkpoint-bridge-resume" }
+    },
+    {
+      "id": "companions-rescued",
+      "titleTextId": "checkpoint-companions-title",
+      "trigger": { "kind": "fact", "factId": "companions-rescued", "equals": true },
+      "requiredActions": [],
+      "savePolicy": "when-stable",
+      "resumePresentation": { "textId": "checkpoint-companions-resume", "cinematicId": "cyclops-warning-cinematic" }
+    },
+    {
+      "id": "tusks-acquired",
+      "titleTextId": "checkpoint-tusks-title",
+      "trigger": { "kind": "fact", "factId": "tusks-acquired", "equals": true },
+      "requiredActions": [],
+      "savePolicy": "when-stable",
+      "resumePresentation": { "textId": "checkpoint-tusks-resume" }
+    },
+    {
+      "id": "before-counterattack",
+      "titleTextId": "checkpoint-counterattack-title",
+      "trigger": { "kind": "fact", "factId": "sheep-shorn", "equals": true },
+      "requiredActions": [],
+      "savePolicy": "when-stable",
+      "resumePresentation": { "textId": "checkpoint-counterattack-resume", "cinematicId": "sheep-clearing-cinematic" }
+    },
+    {
+      "id": "disguise-prepared",
+      "titleTextId": "checkpoint-disguise-title",
+      "trigger": { "kind": "fact", "factId": "disguise-prepared", "equals": true },
+      "requiredActions": [],
+      "savePolicy": "when-stable",
+      "resumePresentation": { "textId": "checkpoint-disguise-resume" }
+    }
+  ],
+  "encounters": [
+    {
+      "id": "bridge-blockers",
+      "start": { "kind": "fact", "factId": "bridge-encounter-started", "equals": true },
+      "waves": [
+        {
+          "id": "bridge-blocker-wave",
+          "delayTicks": 30,
+          "warningTicks": 60,
+          "spawns": [
+            {
+              "spawnSetId": "bridge-blocker-spawn-set",
+              "actors": [
+                {
+                  "actorName": "Corpy",
+                  "ownerPlayerNumber": 2,
+                  "scenarioRoleId": "bridge-attacker",
+                  "tags": ["bridge-blocker"]
+                }
+              ]
+            }
+          ],
+          "blockedSpawnPolicy": "fallback",
+          "blockedRetryTicks": 30
+        }
+      ],
+      "difficultyOverrides": {
+        "story": { "warningTicks": 90 },
+        "normal": { "warningTicks": 60 },
+        "hard": { "warningTicks": 30 }
+      }
+    },
+    {
+      "id": "corpy-counterattack",
+      "start": { "kind": "fact", "factId": "counterattack-started", "equals": true },
+      "waves": [
+        {
+          "id": "corpy-counterattack-wave",
+          "delayTicks": 45,
+          "warningTicks": 90,
+          "spawns": [
+            {
+              "spawnSetId": "corpy-counterattack-spawn-set",
+              "actors": [
+                {
+                  "actorName": "Corpy",
+                  "ownerPlayerNumber": 2,
+                  "scenarioRoleId": "counterattack-corpy-a",
+                  "tags": ["corpy-counterattacker"]
+                },
+                {
+                  "actorName": "Corpy",
+                  "ownerPlayerNumber": 2,
+                  "scenarioRoleId": "counterattack-corpy-b",
+                  "tags": ["corpy-counterattacker"]
+                }
+              ]
+            }
+          ],
+          "blockedSpawnPolicy": "fallback",
+          "blockedRetryTicks": 30
+        }
+      ],
+      "difficultyOverrides": {
+        "story": { "initialDelayTicks": 60, "warningTicks": 120, "waveSizeScale": 0.5 },
+        "normal": { "initialDelayTicks": 30, "warningTicks": 90, "waveSizeScale": 1 },
+        "hard": { "initialDelayTicks": 0, "warningTicks": 45, "waveSizeScale": 1 }
       }
     }
   ],
   "difficulty": {
-    "story": {},
-    "normal": {},
-    "hard": {}
+    "story": { "warningTicks": 180, "damageScale": 0.5, "waveSizeScale": 0.75, "aiAggressionScale": 0.75 },
+    "normal": { "warningTicks": 120, "damageScale": 1, "waveSizeScale": 1, "aiAggressionScale": 1 },
+    "hard": { "warningTicks": 60, "damageScale": 1.5, "waveSizeScale": 1.25, "aiAggressionScale": 1.25 }
   },
-  "contentStatus": "skeleton",
+  "contentStatus": "playable",
   "implementation": {
-    "summary": "Tivara frogs cross a dangerous bridge, evade a Cyclops, and assemble a sheep disguise from boar tusks, scissors, and wool.",
+    "summary": "Tivara carries two stranded frogs to a safe pond, rescues captive companions, survives Corpy attacks, and crafts a sheep disguise to pass a roaming Cyclops.",
     "phasePlan": [
-      {
-        "id": "frog-crossing",
-        "description": "Carry the frog party across the bridge while defending the exposed route."
-      },
-      {
-        "id": "cyclops-stealth",
-        "description": "Scout around the Cyclops and collect boar tusks and the lost scissors."
-      },
-      {
-        "id": "sheep-disguise",
-        "description": "Shear wool, complete the disguise, and pass the Cyclops safely."
-      }
+      { "id": "wake-at-pond", "description": "Introduce the riverland rescue and establish protected mission actors." },
+      { "id": "carry-frogs", "description": "Teach selection, movement, carrying, and safe drop-off." },
+      { "id": "corpy-bridge", "description": "Reveal and clear the guarded bridge." },
+      { "id": "rescue-melee", "description": "Free two captive Tivara and convert them into player companions." },
+      { "id": "cyclops-warning", "description": "Reveal the patrol and teach a recoverable stealth route." },
+      { "id": "boar-tusks", "description": "Recover tusks and the lost shears from the boar clearing." },
+      { "id": "find-and-shear-sheep", "description": "Shear the protected flock and secure enough wool." },
+      { "id": "corpy-nest-counterattack", "description": "Defend the disguise materials from a difficulty-scaled Corpy counterattack." },
+      { "id": "prepare-disguise", "description": "Consume the collected mission items and disguise the rescued party." },
+      { "id": "fool-cyclops", "description": "Cross the Cyclops detection zone safely and reach the far road." },
+      { "id": "mission-outro", "description": "Remove the disguise, conclude the rescue, and unlock the next mission." }
     ],
     "checkpointCandidates": [
-      {
-        "id": "after-bridge-crossing",
-        "after": "the full frog party crosses the bridge"
-      },
-      {
-        "id": "before-sheep-disguise",
-        "after": "the tusks and scissors have been recovered"
-      }
+      { "id": "frogs-delivered", "after": "both stranded frogs reach the large pond" },
+      { "id": "bridge-won", "after": "the bridge blockers are defeated" },
+      { "id": "companions-rescued", "after": "both captive Tivara join the player" },
+      { "id": "tusks-acquired", "after": "the tusks and lost shears are recovered" },
+      { "id": "before-counterattack", "after": "the sheep are shorn and the Corpy attack begins" },
+      { "id": "disguise-prepared", "after": "the party sheep disguise is equipped" }
     ],
     "plannedScenarioReferences": {
       "actors": [
-        "frog-carrier",
-        "cyclops-guard",
-        "boar",
-        "sheep"
+        "bridge-guardian",
+        "corpy-nest",
+        "dry-frog-a",
+        "dry-frog-b",
+        "mission-sheep-a",
+        "mission-sheep-b",
+        "mission-sheep-c",
+        "pond-frog-c",
+        "pond-frog-d",
+        "roaming-cyclops",
+        "tivara-protagonist",
+        "tusk-boar"
+      ],
+      "points": [
+        "boar-clearing-point",
+        "bridge-attacker-point",
+        "bridge-crossing-point",
+        "captive-rescue-point-a",
+        "captive-rescue-point-b",
+        "cave-fallback-point",
+        "corpy-nest-focus-point",
+        "counterattack-point-a",
+        "counterattack-point-b",
+        "cyclops-approach-point",
+        "cyclops-exit-point",
+        "disguise-preparation-point",
+        "frog-fallback-point",
+        "hero-recovery-point",
+        "large-pond-drop-point",
+        "sheep-clearing-point",
+        "wake-point"
       ],
       "regions": [
-        "bridge-crossing",
-        "cyclops-vision-zone",
-        "sheep-pasture"
+        "boar-clearing-region",
+        "bridge-guardian-region",
+        "captive-rescue-region",
+        "cave-fallback-region",
+        "counterattack-trigger-region",
+        "cyclops-detection-region",
+        "cyclops-exit-region",
+        "cyclops-fool-region",
+        "disguise-preparation-region",
+        "dry-canyon-lore-region",
+        "frog-drop-region",
+        "frog-pickup-region",
+        "sheep-clearing-region",
+        "stealth-corridor-region",
+        "wake-pond-region"
       ],
-      "routes": [
-        "stealth-route"
-      ],
+      "routes": ["bridge-attack-route", "counterattack-route", "cyclops-patrol-route", "stealth-route"],
+      "groups": ["captive-melee-group", "disguise-target-group", "mission-sheep-group", "required-frog-group"],
       "cameraShots": [
-        "cyclops-reveal-shot"
+        "bridge-reveal-shot",
+        "counterattack-shot",
+        "cyclops-fooled-shot",
+        "cyclops-warning-shot",
+        "mission-outro-shot",
+        "pond-intro-shot",
+        "sheep-clearing-shot"
       ],
-      "spawnSets": [
-        "bridge-attackers"
-      ]
+      "spawnSets": ["bridge-blocker-spawn-set", "captive-spawn-set", "corpy-counterattack-spawn-set"]
     },
     "mechanics": [
-      "Carry interactions with bridge melee pressure",
-      "Cyclops vision and stealth avoidance",
-      "Multi-step disguise crafting from tusks, scissors, and wool"
+      "Mission-scoped carry and safe drop interactions",
+      "Owner conversion for rescued quest actors",
+      "Difficulty-specific Cyclops proximity detection with fail-forward recovery",
+      "Protected and recoverable frogs, sheep, and mission items",
+      "Deterministic item consumption and reversible party disguise",
+      "Difficulty-scaled bridge and counterattack encounters"
     ],
     "coopNotes": [
-      "A second player controls an escort group while the host owns carry interactions.",
-      "The disguise objective is shared and cannot consume ingredients twice."
+      "The mission currently exposes one synchronized human participant slot.",
+      "Carry, rescue, item, objective, and disguise state are shared for a later co-op override."
     ],
     "dependencies": [],
-    "missingAssets": [
-      "Cyclops vision presentation and sheep-disguise visual state",
-      "Bridge attacker and boar encounter placement"
-    ],
+    "missingAssets": ["Final voice acting and bespoke sheep-disguise character art"],
     "tests": [
-      "Complete every ingredient route and pass the Cyclops",
-      "Retry from both checkpoints without duplicating carry items"
+      "Complete the main path on every difficulty and round trip all six checkpoints",
+      "Complete the nest objective before its story phase and retain the optional reward",
+      "Trigger Cyclops detection and recover without failing the mission",
+      "Verify protagonist defeat, cinematic skip equivalence, replay safety, item restoration, and disguise cleanup"
     ],
     "definitionOfDone": [
-      "The intended stealth and crafting route is readable without debug controls",
-      "Solo and co-op completion yield the same campaign outcome"
+      "The full authored route is playable without debug fact mutation",
+      "Critical quest actors and collected ingredients cannot permanently softlock progression",
+      "Checkpoint restoration preserves carry, conversion, encounters, items, disguise, cinematics, and rewards",
+      "The next story mission unlocks exactly once after an eligible victory"
     ],
     "implementationTodos": [
       {
-        "id": "author-scenario-contract",
-        "module": "scenario",
-        "description": "Author and validate the planned scenario references for Cyclops & Sheep."
-      },
-      {
-        "id": "implement-mission-runtime",
-        "module": "campaign-runtime",
-        "description": "Replace scaffold facts with deterministic authored phase logic for Cyclops & Sheep."
-      },
-      {
-        "id": "finish-mission-presentation",
+        "id": "record-final-riverland-voice",
         "module": "campaign-presentation",
-        "description": "Add final dialogue, cinematics, audio, and objective presentation for Cyclops & Sheep."
+        "description": "Attach final voice assets without changing deterministic dialogue or cinematic state."
+      },
+      {
+        "id": "replace-placeholder-disguise-visual",
+        "module": "campaign-phaser",
+        "description": "Replace the opacity treatment after bespoke sheep-disguise art is approved."
       }
     ]
+  },
+  "scenarioReferences": {
+    "actors": [
+      "bridge-guardian",
+      "corpy-nest",
+      "dry-frog-a",
+      "dry-frog-b",
+      "mission-sheep-a",
+      "mission-sheep-b",
+      "mission-sheep-c",
+      "pond-frog-c",
+      "pond-frog-d",
+      "roaming-cyclops",
+      "tivara-protagonist",
+      "tusk-boar"
+    ],
+    "points": [
+      "boar-clearing-point",
+      "bridge-attacker-point",
+      "bridge-crossing-point",
+      "captive-rescue-point-a",
+      "captive-rescue-point-b",
+      "cave-fallback-point",
+      "corpy-nest-focus-point",
+      "counterattack-point-a",
+      "counterattack-point-b",
+      "cyclops-approach-point",
+      "cyclops-exit-point",
+      "disguise-preparation-point",
+      "frog-fallback-point",
+      "hero-recovery-point",
+      "large-pond-drop-point",
+      "sheep-clearing-point",
+      "wake-point"
+    ],
+    "regions": [
+      "boar-clearing-region",
+      "bridge-guardian-region",
+      "captive-rescue-region",
+      "cave-fallback-region",
+      "counterattack-trigger-region",
+      "cyclops-detection-region",
+      "cyclops-exit-region",
+      "cyclops-fool-region",
+      "disguise-preparation-region",
+      "dry-canyon-lore-region",
+      "frog-drop-region",
+      "frog-pickup-region",
+      "sheep-clearing-region",
+      "stealth-corridor-region",
+      "wake-pond-region"
+    ],
+    "routes": ["bridge-attack-route", "counterattack-route", "cyclops-patrol-route", "stealth-route"],
+    "groups": ["captive-melee-group", "disguise-target-group", "mission-sheep-group", "required-frog-group"],
+    "cameraShots": [
+      "bridge-reveal-shot",
+      "counterattack-shot",
+      "cyclops-fooled-shot",
+      "cyclops-warning-shot",
+      "mission-outro-shot",
+      "pond-intro-shot",
+      "sheep-clearing-shot"
+    ],
+    "spawnSets": ["bridge-blocker-spawn-set", "captive-spawn-set", "corpy-counterattack-spawn-set"]
   }
 }

@@ -60,6 +60,7 @@ export function createCampaignConditionEvaluatorRegistry(
     "never",
     "fact",
     "counter",
+    "mission-item-count",
     "timer",
     "objective",
     "objective-checklist",
@@ -88,6 +89,12 @@ class StateCampaignConditionEvaluator implements CampaignConditionEvaluator {
         return state.facts[definition.factId] === definition.equals;
       case "counter":
         return compareMissionNumber(state.counters[definition.counterId] ?? 0, definition.comparison, definition.value);
+      case "mission-item-count":
+        return compareMissionNumber(
+          state.missionItems?.[definition.itemId] ?? 0,
+          definition.comparison,
+          definition.value
+        );
       case "timer":
         return state.timers[definition.timerId]?.status === definition.state;
       case "objective":

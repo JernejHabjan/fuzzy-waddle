@@ -120,6 +120,17 @@ describe("campaign action runtime", () => {
 
     expect(actionContext.state.activeControlPlayerNumber).toBe(3);
   });
+
+  it("adds and consumes saved mission-local quest items without underflow", () => {
+    const actionContext = context(2);
+    const runner = new CampaignActionRunner(createCampaignActionExecutorRegistry());
+
+    runner.execute(actionContext, action("add-mission-item", "find-wool", { itemId: "wool", amount: 2 }));
+    runner.execute(actionContext, action("consume-mission-item", "use-wool", { itemId: "wool", amount: 1 }));
+    runner.execute(actionContext, action("consume-mission-item", "use-extra-wool", { itemId: "wool", amount: 5 }));
+
+    expect(actionContext.state.missionItems).toEqual({ wool: 0 });
+  });
 });
 
 function action<TKind extends MissionActionDefinition["kind"]>(

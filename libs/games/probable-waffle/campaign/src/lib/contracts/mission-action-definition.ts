@@ -65,6 +65,11 @@ export type MissionActionDefinition =
       readonly amount: number;
     })
   | (MissionActionDefinitionBase & {
+      readonly kind: "add-mission-item" | "consume-mission-item" | "set-mission-item";
+      readonly itemId: string;
+      readonly amount: number;
+    })
+  | (MissionActionDefinitionBase & {
       readonly kind: "start-timer";
       readonly timerId: MissionTimerId;
       readonly durationTicks: number;
@@ -204,6 +209,23 @@ export type MissionActionDefinition =
       readonly kind: "set-control-perspective";
       readonly playerNumber: number;
     })
+  | (MissionActionDefinitionBase & {
+      readonly kind: "carry-actor";
+      readonly actorId: ScenarioActorId;
+      readonly carrierActorId: ScenarioActorId;
+    })
+  | (MissionActionDefinitionBase & {
+      readonly kind: "drop-carried-actor";
+      readonly actorId: ScenarioActorId;
+      readonly pointId: ScenarioPointId;
+    })
+  | (MissionActionDefinitionBase & {
+      readonly kind: "apply-disguise";
+      readonly disguiseId: string;
+      readonly actorIds: readonly ScenarioActorId[];
+      readonly opacity?: number;
+    })
+  | (MissionActionDefinitionBase & { readonly kind: "remove-disguise"; readonly disguiseId: string })
   | (MissionActionDefinitionBase & {
       readonly kind: "ai-directive";
       readonly playerNumber: number;

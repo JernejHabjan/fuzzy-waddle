@@ -213,6 +213,14 @@ export class CampaignPhaserWorldAdapter
         return this.updateAlliance(definition.playerNumber, definition.otherPlayerNumber, definition.allied);
       case "set-ai-enabled":
         return this.setAiEnabled(context, definition);
+      case "carry-actor":
+        return this.carryActor(context, definition);
+      case "drop-carried-actor":
+        return this.dropCarriedActor(context, definition.actorId, definition.pointId);
+      case "apply-disguise":
+        return this.applyDisguise(context, definition);
+      case "remove-disguise":
+        return this.removeDisguise(context, definition.disguiseId);
       case "ai-directive":
         return this.executeAiDirective(definition);
       case "set-content-allowance":
@@ -332,6 +340,18 @@ export class CampaignPhaserWorldAdapter
           ? (health.healthComponentData.health / health.healthDefinition.maxHealth) * 100
           : health.healthComponentData.health;
         return compare(value, definition.comparison, definition.value);
+      }
+      case "actor-distance": {
+        const actor = this.actor(definition.actorId);
+        const target = this.actor(definition.targetActorId);
+        const actorPosition = actor ? getGameObjectLogicalTransform(actor) : undefined;
+        const targetPosition = target ? getGameObjectLogicalTransform(target) : undefined;
+        if (!actorPosition || !targetPosition) return false;
+        return compare(
+          Math.hypot(actorPosition.x - targetPosition.x, actorPosition.y - targetPosition.y),
+          definition.comparison,
+          definition.value
+        );
       }
       case "actor-construction": {
         const actor = this.actor(definition.actorId);
@@ -1031,6 +1051,132 @@ export class CampaignPhaserWorldAdapter
     };
   }
 
+  private carryActor(
+    context: CampaignMissionActionContext,
+    definition: Extract<MissionActionDefinition, { readonly kind: "carry-actor" }>
+  ): CampaignMissionActionResult {
+    const actor = this.actor(definition.actorId);
+    const carrier = this.actor(definition.carrierActorId);
+    const previousPosition = actor ? getGameObjectLogicalTransform(actor) : undefined;
+    const carrierPosition = carrier ? getGameObjectLogicalTransform(carrier) : undefined;
+    const translate = actor ? getActorComponent(actor, ActorTranslateComponent) : undefined;
+    if (!actor || !carrier || !previousPosition || !carrierPosition || !translate) {
+      return missingReference(!actor ? definition.actorId : definition.carrierActorId);
+    }
+    const visible = (actor as unknown as Phaser.GameObjects.Components.Visible).visible;
+    translate.moveActorToLogicalPosition(carrierPosition);
+    (actor as unknown as Phaser.GameObjects.Components.Visible).setVisible?.(false);
+    const resourceId = `quest-carry:${definition.actorId}`;
+    const state = {
+      actorId: definition.actorId,
+      carrierActorId: definition.carrierActorId,
+      previousPosition: toRuntimeJsonValue(previousPosition),
+      previousVisible: visible
+    };
+    this.registerQuestCarry(context.ownerToken, resourceId, state);
+    return { status: "completed", ownedResources: [{ resourceId, kind: "quest-carry", state }] };
+  }
+
+  private dropCarriedActor(
+    context: CampaignMissionActionContext,
+    actorId: ScenarioActorId,
+    pointId: ScenarioPointId
+  ): CampaignMissionActionResult {
+    const resourceId = `quest-carry:${actorId}`;
+    const resource = context.state.ownedResources[resourceId];
+    const actor = this.actor(actorId);
+    const point = this.point(pointId);
+    const translate = actor ? getActorComponent(actor, ActorTranslateComponent) : undefined;
+    if (!resource || !actor || !point || !translate) return missingReference(!resource ? resourceId : actorId);
+    const leaked = this.resources.release(resource.ownerToken, [resourceId], "action-removed");
+    delete context.state.ownedResources[resourceId];
+    if (leaked.length > 0) return executionFailed(`Quest carry '${actorId}' failed cleanup`);
+    translate.moveActorToLogicalPosition(point);
+    (actor as unknown as Phaser.GameObjects.Components.Visible).setVisible?.(true);
+    return completed();
+  }
+
+  private applyDisguise(
+    context: CampaignMissionActionContext,
+    definition: Extract<MissionActionDefinition, { readonly kind: "apply-disguise" }>
+  ): CampaignMissionActionResult {
+    const actors = definition.actorIds.map((actorId) => ({ actorId, actor: this.actor(actorId) }));
+    const missing = actors.find((entry) => !entry.actor);
+    if (missing) return missingReference(missing.actorId);
+    const opacity = definition.opacity ?? 0.72;
+    const previous = actors.map(({ actorId, actor }) => ({
+      actorId,
+      opacity: (actor as unknown as Phaser.GameObjects.Components.Alpha).alpha,
+      disguise: typeof actor!.getData("campaign.disguise") === "string" ? actor!.getData("campaign.disguise") : null
+    }));
+    const state = { disguiseId: definition.disguiseId, actorIds: definition.actorIds, opacity, previous };
+    const resourceId = `disguise:${definition.disguiseId}`;
+    this.projectDisguise(definition.disguiseId, definition.actorIds, opacity);
+    this.registerDisguise(context.ownerToken, resourceId, state);
+    return { status: "completed", ownedResources: [{ resourceId, kind: "disguise", state }] };
+  }
+
+  private removeDisguise(context: CampaignMissionActionContext, disguiseId: string): CampaignMissionActionResult {
+    const resourceId = `disguise:${disguiseId}`;
+    const resource = context.state.ownedResources[resourceId];
+    if (!resource) return missingReference(resourceId);
+    const leaked = this.resources.release(resource.ownerToken, [resourceId], "action-removed");
+    delete context.state.ownedResources[resourceId];
+    return leaked.length > 0 ? executionFailed(`Disguise '${disguiseId}' failed cleanup`) : completed();
+  }
+
+  private registerQuestCarry(
+    ownerToken: string,
+    resourceId: string,
+    state: CampaignMissionRuntimeJsonValue
+  ): void {
+    if (!isRecord(state)) return;
+    const actorId = state["actorId"];
+    const previousPosition = vector3FromState(state["previousPosition"]);
+    const previousVisible = state["previousVisible"];
+    if (typeof actorId !== "string" || !previousPosition || typeof previousVisible !== "boolean") return;
+    const actor = this.actor(actorId as ScenarioActorId);
+    const translate = actor ? getActorComponent(actor, ActorTranslateComponent) : undefined;
+    if (!actor || !translate) return;
+    this.resources.register(ownerToken, resourceId, () => {
+      if (!actor.scene) return;
+      translate.moveActorToLogicalPosition(previousPosition);
+      (actor as unknown as Phaser.GameObjects.Components.Visible).setVisible?.(previousVisible);
+    });
+  }
+
+  private projectDisguise(disguiseId: string, actorIds: readonly ScenarioActorId[], opacity: number): void {
+    for (const actorId of actorIds) {
+      const actor = this.actor(actorId);
+      if (!actor) continue;
+      actor.setData("campaign.disguise", disguiseId);
+      (actor as unknown as Phaser.GameObjects.Components.Alpha).setAlpha?.(opacity);
+    }
+  }
+
+  private registerDisguise(
+    ownerToken: string,
+    resourceId: string,
+    state: CampaignMissionRuntimeJsonValue
+  ): void {
+    if (!isRecord(state) || !Array.isArray(state["previous"])) return;
+    const previous = state["previous"];
+    this.resources.register(ownerToken, resourceId, () => {
+      for (const entry of previous) {
+        if (!isRecord(entry)) continue;
+        const actorId = entry["actorId"];
+        const opacity = entry["opacity"];
+        const disguise = entry["disguise"];
+        if (typeof actorId !== "string" || typeof opacity !== "number") continue;
+        const actor = this.actor(actorId as ScenarioActorId);
+        if (!actor) continue;
+        if (typeof disguise === "string") actor.setData("campaign.disguise", disguise);
+        else actor.removeData("campaign.disguise");
+        (actor as unknown as Phaser.GameObjects.Components.Alpha).setAlpha?.(opacity);
+      }
+    });
+  }
+
   private startPresentation(
     context: CampaignMissionActionContext,
     kind: "dialogue" | "cinematic",
@@ -1233,6 +1379,31 @@ export class CampaignPhaserWorldAdapter
         if (typeof previous === "number") this.temporaryModifiers.set(key, previous);
         else this.temporaryModifiers.delete(key);
       });
+    } else if (resource.kind === "quest-carry") {
+      const actorId = resource.state["actorId"];
+      const carrierActorId = resource.state["carrierActorId"];
+      if (typeof actorId !== "string" || typeof carrierActorId !== "string") return;
+      const actor = this.actor(actorId as ScenarioActorId);
+      const carrier = this.actor(carrierActorId as ScenarioActorId);
+      const carrierPosition = carrier ? getGameObjectLogicalTransform(carrier) : undefined;
+      const translate = actor ? getActorComponent(actor, ActorTranslateComponent) : undefined;
+      if (!actor || !carrierPosition || !translate) return;
+      translate.moveActorToLogicalPosition(carrierPosition);
+      (actor as unknown as Phaser.GameObjects.Components.Visible).setVisible?.(false);
+      this.registerQuestCarry(resource.ownerToken, resource.resourceId, resource.state);
+    } else if (resource.kind === "disguise") {
+      const disguiseId = resource.state["disguiseId"];
+      const actorIds = resource.state["actorIds"];
+      const opacity = resource.state["opacity"];
+      if (
+        typeof disguiseId !== "string" ||
+        !Array.isArray(actorIds) ||
+        !actorIds.every((actorId): actorId is string => typeof actorId === "string") ||
+        typeof opacity !== "number"
+      )
+        return;
+      this.projectDisguise(disguiseId, actorIds as ScenarioActorId[], opacity);
+      this.registerDisguise(resource.ownerToken, resource.resourceId, resource.state);
     }
   }
 
@@ -1284,6 +1455,14 @@ function isRecord(
   value: CampaignMissionRuntimeJsonValue | undefined
 ): value is { readonly [key: string]: CampaignMissionRuntimeJsonValue } {
   return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function vector3FromState(value: CampaignMissionRuntimeJsonValue | undefined): Vector3Simple | undefined {
+  if (!isRecord(value)) return undefined;
+  const x = value["x"];
+  const y = value["y"];
+  const z = value["z"];
+  return typeof x === "number" && typeof y === "number" && typeof z === "number" ? { x, y, z } : undefined;
 }
 
 function samePosition(left: Vector3Simple, right: Vector3Simple): boolean {

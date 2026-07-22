@@ -103,6 +103,11 @@
                 "y"
             ],
             "label": "sheep_2",
+            "components": [
+                "EditorScenarioReference"
+            ],
+            "EditorScenarioReference.scenarioId": "mission-sheep-c",
+            "EditorScenarioReference.tags": "mission-sheep,disguise-source",
             "x": -184,
             "y": 1272
         },
@@ -168,9 +173,12 @@
             ],
             "label": "infantryInn",
             "components": [
-                "EditorOwner"
+                "EditorOwner",
+                "EditorScenarioReference"
             ],
             "EditorOwner.owner_id": "2",
+            "EditorScenarioReference.scenarioId": "corpy-nest",
+            "EditorScenarioReference.tags": "corpy-objective",
             "x": 1088,
             "y": 928
         },
@@ -1043,6 +1051,11 @@
                 "y"
             ],
             "label": "sheep",
+            "components": [
+                "EditorScenarioReference"
+            ],
+            "EditorScenarioReference.scenarioId": "mission-sheep-a",
+            "EditorScenarioReference.tags": "mission-sheep,disguise-source",
             "x": -152,
             "y": 1248
         },
@@ -1076,6 +1089,11 @@
                 "y"
             ],
             "label": "sheep_1",
+            "components": [
+                "EditorScenarioReference"
+            ],
+            "EditorScenarioReference.scenarioId": "mission-sheep-b",
+            "EditorScenarioReference.tags": "mission-sheep,disguise-source",
             "x": -192,
             "y": 1232
         },
@@ -2035,6 +2053,11 @@
                 "y"
             ],
             "label": "toxicFrog",
+            "components": [
+                "EditorScenarioReference"
+            ],
+            "EditorScenarioReference.scenarioId": "pond-frog-c",
+            "EditorScenarioReference.tags": "mission-frog,pond-frog",
             "x": 32,
             "y": 928
         },
@@ -2048,6 +2071,11 @@
                 "flipY"
             ],
             "label": "toxicFrog_1",
+            "components": [
+                "EditorScenarioReference"
+            ],
+            "EditorScenarioReference.scenarioId": "pond-frog-d",
+            "EditorScenarioReference.tags": "mission-frog,pond-frog",
             "x": 96,
             "y": 960,
             "flipX": true,
@@ -2061,6 +2089,11 @@
                 "y"
             ],
             "label": "toxicFrog_2",
+            "components": [
+                "EditorScenarioReference"
+            ],
+            "EditorScenarioReference.scenarioId": "dry-frog-a",
+            "EditorScenarioReference.tags": "mission-frog,required-frog",
             "x": -184,
             "y": 848
         },
@@ -2074,6 +2107,11 @@
                 "flipY"
             ],
             "label": "toxicFrog_3",
+            "components": [
+                "EditorScenarioReference"
+            ],
+            "EditorScenarioReference.scenarioId": "dry-frog-b",
+            "EditorScenarioReference.tags": "mission-frog,required-frog",
             "x": -224,
             "y": 808,
             "flipX": true,
@@ -2109,6 +2147,11 @@
                 "y"
             ],
             "label": "boar",
+            "components": [
+                "EditorScenarioReference"
+            ],
+            "EditorScenarioReference.scenarioId": "tusk-boar",
+            "EditorScenarioReference.tags": "quest-boar",
             "x": 224,
             "y": 1264
         },
@@ -2336,9 +2379,12 @@
             ],
             "label": "cyclops",
             "components": [
-                "EditorOwner"
+                "EditorOwner",
+                "EditorScenarioReference"
             ],
             "EditorOwner.owner_id": "1",
+            "EditorScenarioReference.scenarioId": "roaming-cyclops",
+            "EditorScenarioReference.tags": "cyclops-patrol,boss-avoidance",
             "x": -1257,
             "y": 910
         },
@@ -2576,9 +2622,12 @@
             ],
             "label": "tivaraMacemanMale",
             "components": [
-                "EditorOwner"
+                "EditorOwner",
+                "EditorScenarioReference"
             ],
             "EditorOwner.owner_id": "1",
+            "EditorScenarioReference.scenarioId": "tivara-protagonist",
+            "EditorScenarioReference.tags": "required-hero,disguise-target",
             "x": -32,
             "y": 272
         },
@@ -3068,12 +3117,65 @@
             ],
             "label": "corpy",
             "components": [
-                "EditorOwner"
+                "EditorOwner",
+                "EditorScenarioReference"
             ],
             "EditorOwner.owner_id": "1",
+            "EditorScenarioReference.scenarioId": "bridge-guardian",
+            "EditorScenarioReference.tags": "corpy-guardian",
             "x": -416,
             "y": 456
         },
+        {"prefabId":"d1000000-0000-4000-8000-000000000001","id":"71600000-0000-4000-8000-000000000001","unlock":["x","y","scenarioId","z"],"label":"wakePoint","scenarioId":"wake-point","x":-192,"y":816,"z":0},
+        {"prefabId":"d1000000-0000-4000-8000-000000000001","id":"71600000-0000-4000-8000-000000000002","unlock":["x","y","scenarioId","z"],"label":"largePondDropPoint","scenarioId":"large-pond-drop-point","x":64,"y":944,"z":0},
+        {"prefabId":"d1000000-0000-4000-8000-000000000001","id":"71600000-0000-4000-8000-000000000003","unlock":["x","y","scenarioId","z"],"label":"frogFallbackPoint","scenarioId":"frog-fallback-point","x":16,"y":912,"z":0},
+        {"prefabId":"d1000000-0000-4000-8000-000000000001","id":"71600000-0000-4000-8000-000000000004","unlock":["x","y","scenarioId","z"],"label":"bridgeCrossingPoint","scenarioId":"bridge-crossing-point","x":-416,"y":456,"z":0},
+        {"prefabId":"d1000000-0000-4000-8000-000000000001","id":"71600000-0000-4000-8000-000000000005","unlock":["x","y","scenarioId","z"],"label":"captiveRescuePointA","scenarioId":"captive-rescue-point-a","x":-672,"y":608,"z":0},
+        {"prefabId":"d1000000-0000-4000-8000-000000000001","id":"71600000-0000-4000-8000-000000000006","unlock":["x","y","scenarioId","z"],"label":"captiveRescuePointB","scenarioId":"captive-rescue-point-b","x":-720,"y":640,"z":0},
+        {"prefabId":"d1000000-0000-4000-8000-000000000001","id":"71600000-0000-4000-8000-000000000007","unlock":["x","y","scenarioId","z"],"label":"caveFallbackPoint","scenarioId":"cave-fallback-point","x":-976,"y":800,"z":0},
+        {"prefabId":"d1000000-0000-4000-8000-000000000001","id":"71600000-0000-4000-8000-000000000008","unlock":["x","y","scenarioId","z"],"label":"boarClearingPoint","scenarioId":"boar-clearing-point","x":224,"y":1264,"z":0},
+        {"prefabId":"d1000000-0000-4000-8000-000000000001","id":"71600000-0000-4000-8000-000000000009","unlock":["x","y","scenarioId","z"],"label":"sheepClearingPoint","scenarioId":"sheep-clearing-point","x":-176,"y":1248,"z":0},
+        {"prefabId":"d1000000-0000-4000-8000-000000000001","id":"71600000-0000-4000-8000-000000000010","unlock":["x","y","scenarioId","z"],"label":"disguisePreparationPoint","scenarioId":"disguise-preparation-point","x":-560,"y":1088,"z":0},
+        {"prefabId":"d1000000-0000-4000-8000-000000000001","id":"71600000-0000-4000-8000-000000000011","unlock":["x","y","scenarioId","z"],"label":"cyclopsApproachPoint","scenarioId":"cyclops-approach-point","x":-1056,"y":928,"z":0},
+        {"prefabId":"d1000000-0000-4000-8000-000000000001","id":"71600000-0000-4000-8000-000000000012","unlock":["x","y","scenarioId","z"],"label":"cyclopsExitPoint","scenarioId":"cyclops-exit-point","x":-1392,"y":960,"z":0},
+        {"prefabId":"d1000000-0000-4000-8000-000000000001","id":"71600000-0000-4000-8000-000000000013","unlock":["x","y","scenarioId","z"],"label":"corpyNestFocusPoint","scenarioId":"corpy-nest-focus-point","x":1088,"y":928,"z":0},
+        {"prefabId":"d1000000-0000-4000-8000-000000000001","id":"71600000-0000-4000-8000-000000000014","unlock":["x","y","scenarioId","z"],"label":"counterattackPointA","scenarioId":"counterattack-point-a","x":-32,"y":1184,"z":0},
+        {"prefabId":"d1000000-0000-4000-8000-000000000001","id":"71600000-0000-4000-8000-000000000015","unlock":["x","y","scenarioId","z"],"label":"counterattackPointB","scenarioId":"counterattack-point-b","x":-320,"y":1152,"z":0},
+        {"prefabId":"d1000000-0000-4000-8000-000000000001","id":"71600000-0000-4000-8000-000000000016","unlock":["x","y","scenarioId","z"],"label":"heroRecoveryPoint","scenarioId":"hero-recovery-point","x":-896,"y":832,"z":0},
+        {"prefabId":"d1000000-0000-4000-8000-000000000001","id":"71600000-0000-4000-8000-000000000017","unlock":["x","y","scenarioId","z"],"label":"bridgeAttackerPoint","scenarioId":"bridge-attacker-point","x":-496,"y":480,"z":0},
+        {"prefabId":"d1000000-0000-4000-8000-000000000002","id":"71600000-0000-4000-8000-000000000018","unlock":["x","y","scenarioId","width","height","shape","polygonPoints","elevationPolicy","elevation","minimumElevation","maximumElevation"],"label":"wakePondRegion","scenarioId":"wake-pond-region","x":-288,"y":736,"width":256,"height":224,"shape":"rectangle","polygonPoints":"","elevationPolicy":"any","elevation":0,"minimumElevation":0,"maximumElevation":0},
+        {"prefabId":"d1000000-0000-4000-8000-000000000002","id":"71600000-0000-4000-8000-000000000019","unlock":["x","y","scenarioId","width","height","shape","polygonPoints","elevationPolicy","elevation","minimumElevation","maximumElevation"],"label":"frogPickupRegion","scenarioId":"frog-pickup-region","x":-288,"y":736,"width":192,"height":176,"shape":"rectangle","polygonPoints":"","elevationPolicy":"any","elevation":0,"minimumElevation":0,"maximumElevation":0},
+        {"prefabId":"d1000000-0000-4000-8000-000000000002","id":"71600000-0000-4000-8000-000000000020","unlock":["x","y","scenarioId","width","height","shape","polygonPoints","elevationPolicy","elevation","minimumElevation","maximumElevation"],"label":"frogDropRegion","scenarioId":"frog-drop-region","x":-16,"y":880,"width":208,"height":176,"shape":"rectangle","polygonPoints":"","elevationPolicy":"any","elevation":0,"minimumElevation":0,"maximumElevation":0},
+        {"prefabId":"d1000000-0000-4000-8000-000000000002","id":"71600000-0000-4000-8000-000000000021","unlock":["x","y","scenarioId","width","height","shape","polygonPoints","elevationPolicy","elevation","minimumElevation","maximumElevation"],"label":"dryCanyonLoreRegion","scenarioId":"dry-canyon-lore-region","x":-448,"y":704,"width":320,"height":176,"shape":"rectangle","polygonPoints":"","elevationPolicy":"any","elevation":0,"minimumElevation":0,"maximumElevation":0},
+        {"prefabId":"d1000000-0000-4000-8000-000000000002","id":"71600000-0000-4000-8000-000000000022","unlock":["x","y","scenarioId","width","height","shape","polygonPoints","elevationPolicy","elevation","minimumElevation","maximumElevation"],"label":"bridgeGuardianRegion","scenarioId":"bridge-guardian-region","x":-544,"y":352,"width":288,"height":240,"shape":"rectangle","polygonPoints":"","elevationPolicy":"any","elevation":0,"minimumElevation":0,"maximumElevation":0},
+        {"prefabId":"d1000000-0000-4000-8000-000000000002","id":"71600000-0000-4000-8000-000000000023","unlock":["x","y","scenarioId","width","height","shape","polygonPoints","elevationPolicy","elevation","minimumElevation","maximumElevation"],"label":"captiveRescueRegion","scenarioId":"captive-rescue-region","x":-800,"y":512,"width":272,"height":240,"shape":"rectangle","polygonPoints":"","elevationPolicy":"any","elevation":0,"minimumElevation":0,"maximumElevation":0},
+        {"prefabId":"d1000000-0000-4000-8000-000000000002","id":"71600000-0000-4000-8000-000000000024","unlock":["x","y","scenarioId","width","height","shape","polygonPoints","elevationPolicy","elevation","minimumElevation","maximumElevation"],"label":"cyclopsDetectionRegion","scenarioId":"cyclops-detection-region","x":-1408,"y":704,"width":576,"height":416,"shape":"rectangle","polygonPoints":"","elevationPolicy":"any","elevation":0,"minimumElevation":0,"maximumElevation":0},
+        {"prefabId":"d1000000-0000-4000-8000-000000000002","id":"71600000-0000-4000-8000-000000000025","unlock":["x","y","scenarioId","width","height","shape","polygonPoints","elevationPolicy","elevation","minimumElevation","maximumElevation"],"label":"stealthCorridorRegion","scenarioId":"stealth-corridor-region","x":-1056,"y":1008,"width":416,"height":176,"shape":"rectangle","polygonPoints":"","elevationPolicy":"any","elevation":0,"minimumElevation":0,"maximumElevation":0},
+        {"prefabId":"d1000000-0000-4000-8000-000000000002","id":"71600000-0000-4000-8000-000000000026","unlock":["x","y","scenarioId","width","height","shape","polygonPoints","elevationPolicy","elevation","minimumElevation","maximumElevation"],"label":"caveFallbackRegion","scenarioId":"cave-fallback-region","x":-1056,"y":736,"width":224,"height":224,"shape":"rectangle","polygonPoints":"","elevationPolicy":"any","elevation":0,"minimumElevation":0,"maximumElevation":0},
+        {"prefabId":"d1000000-0000-4000-8000-000000000002","id":"71600000-0000-4000-8000-000000000027","unlock":["x","y","scenarioId","width","height","shape","polygonPoints","elevationPolicy","elevation","minimumElevation","maximumElevation"],"label":"boarClearingRegion","scenarioId":"boar-clearing-region","x":128,"y":1168,"width":256,"height":224,"shape":"rectangle","polygonPoints":"","elevationPolicy":"any","elevation":0,"minimumElevation":0,"maximumElevation":0},
+        {"prefabId":"d1000000-0000-4000-8000-000000000002","id":"71600000-0000-4000-8000-000000000028","unlock":["x","y","scenarioId","width","height","shape","polygonPoints","elevationPolicy","elevation","minimumElevation","maximumElevation"],"label":"sheepClearingRegion","scenarioId":"sheep-clearing-region","x":-320,"y":1120,"width":352,"height":256,"shape":"rectangle","polygonPoints":"","elevationPolicy":"any","elevation":0,"minimumElevation":0,"maximumElevation":0},
+        {"prefabId":"d1000000-0000-4000-8000-000000000002","id":"71600000-0000-4000-8000-000000000029","unlock":["x","y","scenarioId","width","height","shape","polygonPoints","elevationPolicy","elevation","minimumElevation","maximumElevation"],"label":"disguisePreparationRegion","scenarioId":"disguise-preparation-region","x":-672,"y":1008,"width":256,"height":224,"shape":"rectangle","polygonPoints":"","elevationPolicy":"any","elevation":0,"minimumElevation":0,"maximumElevation":0},
+        {"prefabId":"d1000000-0000-4000-8000-000000000002","id":"71600000-0000-4000-8000-000000000030","unlock":["x","y","scenarioId","width","height","shape","polygonPoints","elevationPolicy","elevation","minimumElevation","maximumElevation"],"label":"cyclopsFoolRegion","scenarioId":"cyclops-fool-region","x":-1168,"y":832,"width":288,"height":224,"shape":"rectangle","polygonPoints":"","elevationPolicy":"any","elevation":0,"minimumElevation":0,"maximumElevation":0},
+        {"prefabId":"d1000000-0000-4000-8000-000000000002","id":"71600000-0000-4000-8000-000000000031","unlock":["x","y","scenarioId","width","height","shape","polygonPoints","elevationPolicy","elevation","minimumElevation","maximumElevation"],"label":"cyclopsExitRegion","scenarioId":"cyclops-exit-region","x":-1488,"y":864,"width":224,"height":224,"shape":"rectangle","polygonPoints":"","elevationPolicy":"any","elevation":0,"minimumElevation":0,"maximumElevation":0},
+        {"prefabId":"d1000000-0000-4000-8000-000000000002","id":"71600000-0000-4000-8000-000000000032","unlock":["x","y","scenarioId","width","height","shape","polygonPoints","elevationPolicy","elevation","minimumElevation","maximumElevation"],"label":"counterattackTriggerRegion","scenarioId":"counterattack-trigger-region","x":-352,"y":1088,"width":448,"height":320,"shape":"rectangle","polygonPoints":"","elevationPolicy":"any","elevation":0,"minimumElevation":0,"maximumElevation":0},
+        {"prefabId":"d1000000-0000-4000-8000-000000000003","id":"71600000-0000-4000-8000-000000000033","unlock":["x","y","scenarioId","pointIds","loop","facingAngles"],"label":"cyclopsPatrolRoute","scenarioId":"cyclops-patrol-route","x":-1200,"y":928,"pointIds":"cyclops-approach-point,hero-recovery-point,cyclops-exit-point","loop":true,"facingAngles":"0,180,0"},
+        {"prefabId":"d1000000-0000-4000-8000-000000000003","id":"71600000-0000-4000-8000-000000000034","unlock":["x","y","scenarioId","pointIds","loop","facingAngles"],"label":"stealthRoute","scenarioId":"stealth-route","x":-832,"y":1056,"pointIds":"captive-rescue-point-a,cave-fallback-point,disguise-preparation-point","loop":false,"facingAngles":"0,0,0"},
+        {"prefabId":"d1000000-0000-4000-8000-000000000003","id":"71600000-0000-4000-8000-000000000035","unlock":["x","y","scenarioId","pointIds","loop","facingAngles"],"label":"bridgeAttackRoute","scenarioId":"bridge-attack-route","x":-448,"y":480,"pointIds":"bridge-attacker-point,bridge-crossing-point","loop":false,"facingAngles":"0,0"},
+        {"prefabId":"d1000000-0000-4000-8000-000000000003","id":"71600000-0000-4000-8000-000000000036","unlock":["x","y","scenarioId","pointIds","loop","facingAngles"],"label":"counterattackRoute","scenarioId":"counterattack-route","x":-160,"y":1184,"pointIds":"counterattack-point-a,counterattack-point-b,sheep-clearing-point","loop":false,"facingAngles":"0,0,0"},
+        {"prefabId":"d1000000-0000-4000-8000-000000000004","id":"71600000-0000-4000-8000-000000000037","unlock":["x","y","scenarioId","memberActorIds","requiredTags"],"label":"requiredFrogGroup","scenarioId":"required-frog-group","x":-208,"y":832,"memberActorIds":"dry-frog-a,dry-frog-b","requiredTags":"required-frog"},
+        {"prefabId":"d1000000-0000-4000-8000-000000000004","id":"71600000-0000-4000-8000-000000000038","unlock":["x","y","scenarioId","memberActorIds","requiredTags"],"label":"captiveMeleeGroup","scenarioId":"captive-melee-group","x":-696,"y":624,"memberActorIds":"captive-maceman-a,captive-maceman-b","requiredTags":"rescued-companion"},
+        {"prefabId":"d1000000-0000-4000-8000-000000000004","id":"71600000-0000-4000-8000-000000000039","unlock":["x","y","scenarioId","memberActorIds","requiredTags"],"label":"missionSheepGroup","scenarioId":"mission-sheep-group","x":-176,"y":1248,"memberActorIds":"mission-sheep-a,mission-sheep-b,mission-sheep-c","requiredTags":"mission-sheep"},
+        {"prefabId":"d1000000-0000-4000-8000-000000000004","id":"71600000-0000-4000-8000-000000000040","unlock":["x","y","scenarioId","memberActorIds","requiredTags"],"label":"disguiseTargetGroup","scenarioId":"disguise-target-group","x":-560,"y":1088,"memberActorIds":"tivara-protagonist,captive-maceman-a,captive-maceman-b","requiredTags":"disguise-target"},
+        {"prefabId":"d1000000-0000-4000-8000-000000000005","id":"71600000-0000-4000-8000-000000000041","unlock":["x","y","scenarioId","z","zoom","durationTicks","letterbox"],"label":"pondIntroShot","scenarioId":"pond-intro-shot","x":-160,"y":848,"z":0,"zoom":0.9,"durationTicks":90,"letterbox":true},
+        {"prefabId":"d1000000-0000-4000-8000-000000000005","id":"71600000-0000-4000-8000-000000000042","unlock":["x","y","scenarioId","z","zoom","durationTicks","letterbox"],"label":"bridgeRevealShot","scenarioId":"bridge-reveal-shot","x":-416,"y":456,"z":0,"zoom":0.85,"durationTicks":75,"letterbox":true},
+        {"prefabId":"d1000000-0000-4000-8000-000000000005","id":"71600000-0000-4000-8000-000000000043","unlock":["x","y","scenarioId","z","zoom","durationTicks","letterbox"],"label":"cyclopsWarningShot","scenarioId":"cyclops-warning-shot","x":-1257,"y":910,"z":0,"zoom":0.75,"durationTicks":90,"letterbox":true},
+        {"prefabId":"d1000000-0000-4000-8000-000000000005","id":"71600000-0000-4000-8000-000000000044","unlock":["x","y","scenarioId","z","zoom","durationTicks","letterbox"],"label":"sheepClearingShot","scenarioId":"sheep-clearing-shot","x":-176,"y":1248,"z":0,"zoom":0.85,"durationTicks":75,"letterbox":true},
+        {"prefabId":"d1000000-0000-4000-8000-000000000005","id":"71600000-0000-4000-8000-000000000045","unlock":["x","y","scenarioId","z","zoom","durationTicks","letterbox"],"label":"counterattackShot","scenarioId":"counterattack-shot","x":-160,"y":1184,"z":0,"zoom":0.8,"durationTicks":75,"letterbox":true},
+        {"prefabId":"d1000000-0000-4000-8000-000000000005","id":"71600000-0000-4000-8000-000000000046","unlock":["x","y","scenarioId","z","zoom","durationTicks","letterbox"],"label":"cyclopsFooledShot","scenarioId":"cyclops-fooled-shot","x":-1120,"y":928,"z":0,"zoom":0.72,"durationTicks":105,"letterbox":true},
+        {"prefabId":"d1000000-0000-4000-8000-000000000005","id":"71600000-0000-4000-8000-000000000047","unlock":["x","y","scenarioId","z","zoom","durationTicks","letterbox"],"label":"missionOutroShot","scenarioId":"mission-outro-shot","x":-1392,"y":960,"z":0,"zoom":0.8,"durationTicks":105,"letterbox":true},
+        {"prefabId":"d1000000-0000-4000-8000-000000000006","id":"71600000-0000-4000-8000-000000000048","unlock":["x","y","scenarioId","pointIds"],"label":"captiveSpawnSet","scenarioId":"captive-spawn-set","x":-696,"y":624,"pointIds":"captive-rescue-point-a,captive-rescue-point-b"},
+        {"prefabId":"d1000000-0000-4000-8000-000000000006","id":"71600000-0000-4000-8000-000000000049","unlock":["x","y","scenarioId","pointIds"],"label":"bridgeBlockerSpawnSet","scenarioId":"bridge-blocker-spawn-set","x":-496,"y":480,"pointIds":"bridge-attacker-point"},
+        {"prefabId":"d1000000-0000-4000-8000-000000000006","id":"71600000-0000-4000-8000-000000000050","unlock":["x","y","scenarioId","pointIds"],"label":"corpyCounterattackSpawnSet","scenarioId":"corpy-counterattack-spawn-set","x":-160,"y":1184,"pointIds":"counterattack-point-a,counterattack-point-b"},
         {
             "prefabId": "2da4ac72-30ff-4a63-a1c9-507ed4cda6ae",
             "id": "13662975-a67f-438c-a465-600709bb4c28",

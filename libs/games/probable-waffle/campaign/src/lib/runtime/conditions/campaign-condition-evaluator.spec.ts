@@ -68,6 +68,19 @@ describe("campaign condition runtime", () => {
       )
     ).toBe(true);
   });
+
+  it("reads mission-local quest item counts from synchronized state", () => {
+    const state = runtimeState();
+    state.missionItems = { wool: 2 };
+    const runtime = new CampaignConditionRuntime(createCampaignConditionEvaluatorRegistry());
+
+    expect(
+      runtime.evaluate(
+        { state },
+        { kind: "mission-item-count", itemId: "wool", comparison: "greater-or-equal", value: 2 }
+      )
+    ).toBe(true);
+  });
 });
 
 function runtimeState(): CampaignMissionRuntimeState {

@@ -915,6 +915,8 @@
                 "produced-count",
                 "building-count",
                 "region-occupancy",
+                "actor-distance",
+                "mission-item-count",
                 "player-resource",
                 "research",
                 "difficulty",
@@ -923,6 +925,8 @@
               ]
             },
             "actorId": { "$ref": "#/$defs/campaignId" },
+            "targetActorId": { "$ref": "#/$defs/campaignId" },
+            "itemId": { "$ref": "#/$defs/campaignId" },
             "playerNumber": { "type": "integer", "minimum": 1 },
             "actorType": { "type": "string", "minLength": 1 },
             "tag": { "$ref": "#/$defs/campaignId" },
@@ -966,6 +970,20 @@
               "then": {
                 "properties": { "actorId": true, "comparison": true, "value": true },
                 "required": ["actorId", "comparison", "value"]
+              }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "actor-distance" } } },
+              "then": {
+                "properties": { "actorId": true, "targetActorId": true, "comparison": true, "value": true },
+                "required": ["actorId", "targetActorId", "comparison", "value"]
+              }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "mission-item-count" } } },
+              "then": {
+                "properties": { "itemId": true, "comparison": true, "value": true },
+                "required": ["itemId", "comparison", "value"]
               }
             },
             {
@@ -1288,6 +1306,13 @@
                 "update-alliance",
                 "set-ai-enabled",
                 "set-control-perspective",
+                "carry-actor",
+                "drop-carried-actor",
+                "apply-disguise",
+                "remove-disguise",
+                "add-mission-item",
+                "consume-mission-item",
+                "set-mission-item",
                 "ai-directive",
                 "set-content-allowance",
                 "grant-temporary-modifier",
@@ -1314,6 +1339,7 @@
             "pointId": { "$ref": "#/$defs/campaignId" },
             "spawnSetId": { "$ref": "#/$defs/campaignId" },
             "actorId": { "$ref": "#/$defs/campaignId" },
+            "carrierActorId": { "$ref": "#/$defs/campaignId" },
             "actorIds": { "$ref": "#/$defs/scenarioIdArray" },
             "actorRuntimeId": { "type": "string", "minLength": 1 },
             "scenarioRoleId": { "$ref": "#/$defs/campaignId" },
@@ -1353,6 +1379,9 @@
             "allowed": { "type": "boolean" },
             "grantId": { "$ref": "#/$defs/campaignId" },
             "modifierId": { "$ref": "#/$defs/campaignId" },
+            "disguiseId": { "$ref": "#/$defs/campaignId" },
+            "itemId": { "$ref": "#/$defs/campaignId" },
+            "opacity": { "type": "number", "minimum": 0, "maximum": 1 },
             "rewardId": { "$ref": "#/$defs/campaignId" },
             "objectiveId": { "$ref": "#/$defs/campaignId" },
             "checklistId": { "$ref": "#/$defs/campaignId" },
@@ -1540,6 +1569,45 @@
             {
               "if": { "properties": { "kind": { "const": "set-control-perspective" } } },
               "then": { "properties": { "playerNumber": true }, "required": ["playerNumber"] }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "carry-actor" } } },
+              "then": {
+                "properties": { "actorId": true, "carrierActorId": true },
+                "required": ["actorId", "carrierActorId"]
+              }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "drop-carried-actor" } } },
+              "then": {
+                "properties": { "actorId": true, "pointId": true },
+                "required": ["actorId", "pointId"]
+              }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "apply-disguise" } } },
+              "then": {
+                "properties": { "disguiseId": true, "actorIds": true, "opacity": true },
+                "required": ["disguiseId", "actorIds"]
+              }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "remove-disguise" } } },
+              "then": { "properties": { "disguiseId": true }, "required": ["disguiseId"] }
+            },
+            {
+              "if": {
+                "properties": {
+                  "kind": { "enum": ["add-mission-item", "consume-mission-item", "set-mission-item"] }
+                }
+              },
+              "then": {
+                "properties": {
+                  "itemId": true,
+                  "amount": { "type": "integer", "minimum": 1 }
+                },
+                "required": ["itemId", "amount"]
+              }
             },
             {
               "if": { "properties": { "kind": { "const": "ai-directive" } } },

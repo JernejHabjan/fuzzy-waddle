@@ -51,6 +51,12 @@ export type MissionConditionDefinition =
       readonly comparison: MissionNumericComparison;
       readonly value: number;
     }
+  | {
+      readonly kind: "mission-item-count";
+      readonly itemId: string;
+      readonly comparison: MissionNumericComparison;
+      readonly value: number;
+    }
   | { readonly kind: "timer"; readonly timerId: MissionTimerId; readonly state: "running" | "paused" | "elapsed" }
   | {
       readonly kind: "objective";
@@ -79,6 +85,13 @@ export type MissionConditionDefinition =
       readonly comparison: MissionNumericComparison;
       readonly value: number;
       readonly percentage?: boolean;
+    }
+  | {
+      readonly kind: "actor-distance";
+      readonly actorId: ScenarioActorId;
+      readonly targetActorId: ScenarioActorId;
+      readonly comparison: MissionNumericComparison;
+      readonly value: number;
     }
   | {
       readonly kind: "actor-construction";

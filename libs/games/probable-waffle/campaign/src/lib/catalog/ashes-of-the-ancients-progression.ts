@@ -27,6 +27,12 @@ export const AOTA_PROGRESSION_DEFINITIONS: CampaignProgressionDefinitions = {
       title: "Cyclops & Sheep",
       kind: "starting-bonus",
       chapterId: "two-homelands"
+    },
+    {
+      id: "mission-snow-wendigo-and-fire",
+      title: "Snow Wendigo & Fire",
+      kind: "starting-bonus",
+      chapterId: "two-homelands"
     }
   ],
   upgrades: [],

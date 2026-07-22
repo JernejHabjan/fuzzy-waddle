@@ -436,6 +436,21 @@ function registerStateExecutors(registry: CampaignActionExecutorRegistry): void 
       }
     })
   );
+  for (const kind of ["add-mission-item", "consume-mission-item", "set-mission-item"] as const) {
+    registry.register(
+      stateExecutor(kind, (context, definition) => {
+        if (definition.kind !== kind) return;
+        const items = (context.state.missionItems ??= {});
+        const previous = items[definition.itemId] ?? 0;
+        items[definition.itemId] =
+          kind === "add-mission-item"
+            ? previous + definition.amount
+            : kind === "consume-mission-item"
+              ? Math.max(0, previous - definition.amount)
+              : definition.amount;
+      })
+    );
+  }
   registry.register(
     stateExecutor("start-timer", (context, definition) => {
       if (definition.kind === "start-timer") {

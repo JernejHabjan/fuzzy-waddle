@@ -289,6 +289,8 @@ export interface CampaignMissionRuntimeState {
   pendingPhaseIds: string[];
   facts: Record<string, boolean | string>;
   counters: Record<string, number>;
+  /** Mission-local quest inventory; optional only for snapshots created before campaign runtime schema 6. */
+  missionItems?: Record<string, number>;
   timers: Record<string, CampaignMissionTimerRuntimeState>;
   objectives: Record<string, CampaignMissionObjectiveRuntimeState>;
   missionMessageHistory: CampaignMissionMessageHistoryEntry[];

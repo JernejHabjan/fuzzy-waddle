@@ -1,5 +1,25 @@
 {
   "schemaVersion": 1,
   "missionId": "cyclops-and-sheep",
-  "rewards": []
+  "rewards": [
+    {
+      "id": "unlock-snow-wendigo-and-fire",
+      "kind": "story-unlock",
+      "titleTextId": "unlock-snow-title",
+      "scope": { "kind": "global" },
+      "oneTime": true,
+      "objectiveIds": ["complete-river-crossing"],
+      "unlockId": "mission-snow-wendigo-and-fire"
+    },
+    {
+      "id": "riverland-crystal",
+      "kind": "currency",
+      "titleTextId": "riverland-crystal-title",
+      "scope": { "kind": "global" },
+      "oneTime": true,
+      "objectiveIds": ["optional-destroy-corpy-nest"],
+      "currencyId": "campaign-crystal",
+      "amount": 1
+    }
+  ]
 }
