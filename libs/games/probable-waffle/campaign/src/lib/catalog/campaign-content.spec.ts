@@ -69,6 +69,7 @@ describe("Ashes of the Ancients campaign content", () => {
   it("strictly validates foundational world actions and conditions", () => {
     const validateAction = ajv.compile({ $ref: `${missionSchema.$id}#/$defs/action` });
     const validateCondition = ajv.compile({ $ref: `${missionSchema.$id}#/$defs/condition` });
+    const validateObjective = ajv.compile({ $ref: `${missionSchema.$id}#/$defs/objective` });
 
     expect(
       validateAction({ id: "move-hero", kind: "move-along-route", actorId: "hero", routeId: "escape-route" })
@@ -83,6 +84,47 @@ describe("Ashes of the Ancients campaign content", () => {
       })
     ).toBe(true);
     expect(validateCondition({ kind: "region-occupancy", regionId: "escape-zone" })).toBe(false);
+    expect(
+      validateAction({
+        id: "complete-step",
+        kind: "set-objective-checklist-state",
+        objectiveId: "tutorial",
+        checklistId: "select-unit",
+        state: "completed"
+      })
+    ).toBe(true);
+    expect(
+      validateCondition({
+        kind: "objective-checklist",
+        objectiveId: "tutorial",
+        checklistId: "select-unit",
+        state: "completed"
+      })
+    ).toBe(true);
+    expect(
+      validateObjective({
+        id: "tutorial",
+        kind: "tutorial",
+        titleTextId: "tutorial-title",
+        reveal: { kind: "always" },
+        complete: {
+          kind: "objective-checklist",
+          objectiveId: "tutorial",
+          checklistId: "select-unit",
+          state: "completed"
+        },
+        checklist: [
+          {
+            id: "select-unit",
+            textId: "select-unit-text",
+            complete: { kind: "fact", factId: "selected", equals: true },
+            progress: { counterId: "selected-count", target: 1, display: "count" },
+            inputPrompt: { action: "selection.primary", seenPolicy: "collapse" }
+          }
+        ],
+        display: { announceReveal: true, announceCompletion: true, showInTracker: true }
+      })
+    ).toBe(true);
   });
 
   it("passes whole-catalogue semantic validation in the authored mandatory order", () => {

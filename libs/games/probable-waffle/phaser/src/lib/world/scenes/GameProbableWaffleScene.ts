@@ -116,7 +116,10 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     scenarioReferenceRegistry.initialize(this);
     simTickService?.pauseTick(SimulationPauseReason.SceneBootstrap);
     const campaignMissionDirector = CampaignMissionDirector.create(this, gameModeConditionChecker);
-    if (campaignMissionDirector) this.sceneGameData.services.push(campaignMissionDirector);
+    if (campaignMissionDirector) {
+      this.sceneGameData.services.push(campaignMissionDirector);
+      hud.initializeCampaignObjectives(campaignMissionDirector);
+    }
     new ActorDebugDamageSystem(this);
     if (!this.baseGameData.gameInstance.gameInstanceMetadata.isReplay()) {
       this.sceneGameData.systems.push(new AiPlayerHandler(this));

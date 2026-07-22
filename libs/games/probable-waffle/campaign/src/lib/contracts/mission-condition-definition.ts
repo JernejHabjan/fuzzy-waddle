@@ -3,6 +3,7 @@ import type {
   MissionCounterId,
   MissionEncounterId,
   MissionFactId,
+  MissionObjectiveChecklistId,
   MissionObjectiveId,
   MissionPhaseId,
   MissionTimerId,
@@ -55,6 +56,12 @@ export type MissionConditionDefinition =
       readonly kind: "objective";
       readonly objectiveId: MissionObjectiveId;
       readonly state: "hidden" | "active" | "completed" | "failed" | "impossible";
+    }
+  | {
+      readonly kind: "objective-checklist";
+      readonly objectiveId: MissionObjectiveId;
+      readonly checklistId: MissionObjectiveChecklistId;
+      readonly state: "pending" | "completed";
     }
   | { readonly kind: "phase"; readonly phaseId: MissionPhaseId; readonly state: "active" | "completed" }
   | {

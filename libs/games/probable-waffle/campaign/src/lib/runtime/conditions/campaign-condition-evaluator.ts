@@ -62,6 +62,7 @@ export function createCampaignConditionEvaluatorRegistry(
     "counter",
     "timer",
     "objective",
+    "objective-checklist",
     "phase",
     "encounter"
   ];
@@ -91,6 +92,8 @@ class StateCampaignConditionEvaluator implements CampaignConditionEvaluator {
         return state.timers[definition.timerId]?.status === definition.state;
       case "objective":
         return state.objectives[definition.objectiveId]?.status === definition.state;
+      case "objective-checklist":
+        return state.objectives[definition.objectiveId]?.checklist[definition.checklistId]?.status === definition.state;
       case "phase":
         return definition.state === "active"
           ? state.activePhaseIds.includes(definition.phaseId)

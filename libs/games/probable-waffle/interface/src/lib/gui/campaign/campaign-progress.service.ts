@@ -73,6 +73,7 @@ export class CampaignProgressService implements CampaignProgressServiceInterface
     runId: string;
     missionId: CampaignMissionId;
     outcome: CampaignMissionOutcome;
+    completedObjectiveIds?: readonly string[];
   }): Promise<void> {
     if (result.outcome === CampaignMissionOutcome.Victory) {
       const merged = this.mergeProgress(this.progress(), {
@@ -83,7 +84,12 @@ export class CampaignProgressService implements CampaignProgressServiceInterface
     }
     if (this.authService.isAuthenticated) {
       try {
-        await firstValueFrom(this.httpClient.post(`${environment.api}api/probable-waffle/campaign/results`, result));
+        await firstValueFrom(
+          this.httpClient.post(`${environment.api}api/probable-waffle/campaign/results`, {
+            ...result,
+            completedObjectiveIds: [...(result.completedObjectiveIds ?? [])].sort()
+          })
+        );
       } catch {
         // Local completion is retained for the next merge opportunity.
       }

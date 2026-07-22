@@ -23,6 +23,7 @@ export class CampaignProgressServiceStub extends CampaignProgressServiceInterfac
     missionId: CampaignMissionId;
     outcome: CampaignMissionOutcome;
     runId: string;
+    completedObjectiveIds?: readonly string[];
   }): Promise<void> {
     return Promise.resolve();
   }

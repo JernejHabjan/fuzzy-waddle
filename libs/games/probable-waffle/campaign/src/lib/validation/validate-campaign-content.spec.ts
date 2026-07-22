@@ -2,6 +2,7 @@ import type { CampaignMissionContent } from "../contracts/campaign-mission-conte
 import { asCampaignContentId } from "../contracts/campaign-content-id";
 import type { MissionActionDefinition } from "../contracts/mission-action-definition";
 import type { MissionPhaseDefinition } from "../contracts/mission-phase-definition";
+import type { MissionObjectiveDefinition } from "../contracts/mission-objective-definition";
 import {
   AOTA_CAMPAIGN_DEFINITION,
   AOTA_CAMPAIGN_DIALOGUE,
@@ -125,6 +126,55 @@ describe("validateCampaignContent", () => {
 
     expect(codes).toContain("duplicate-action-id");
     expect(codes).toContain("missing-fallback-action");
+  });
+
+  it("validates objective text, checklist, and dependency references", () => {
+    const first = {
+      id: asCampaignContentId<"objective">("first"),
+      kind: "primary",
+      titleTextId: asCampaignContentId<"text">("missing-title"),
+      reveal: { kind: "always" },
+      complete: {
+        kind: "objective-checklist",
+        objectiveId: asCampaignContentId<"objective">("first"),
+        checklistId: asCampaignContentId<"objective-checklist">("missing-checklist"),
+        state: "completed"
+      },
+      dependsOnObjectiveIds: [asCampaignContentId<"objective">("second")],
+      checklist: [
+        {
+          id: asCampaignContentId<"objective-checklist">("duplicate"),
+          textId: asCampaignContentId<"text">("missing-checklist"),
+          complete: { kind: "never" }
+        },
+        {
+          id: asCampaignContentId<"objective-checklist">("duplicate"),
+          textId: asCampaignContentId<"text">("missing-checklist"),
+          complete: { kind: "never" }
+        }
+      ],
+      display: { announceReveal: true, announceCompletion: true, showInTracker: true }
+    } satisfies MissionObjectiveDefinition;
+    const second = {
+      ...first,
+      id: asCampaignContentId<"objective">("second"),
+      dependsOnObjectiveIds: [first.id],
+      checklist: []
+    } satisfies MissionObjectiveDefinition;
+    const dreams = { ...AOTA_CAMPAIGN_MISSIONS[0]!, objectives: [first, second] } satisfies CampaignMissionContent;
+    const result = validateCampaignContent({
+      campaign: AOTA_CAMPAIGN_DEFINITION,
+      missions: [dreams, ...AOTA_CAMPAIGN_MISSIONS.slice(1)],
+      dialogue: AOTA_CAMPAIGN_DIALOGUE,
+      rewards: AOTA_CAMPAIGN_REWARDS,
+      registries: createDefaultCampaignDefinitionRegistries()
+    });
+    const codes = result.issues.map((issue) => issue.code);
+
+    expect(codes).toContain("missing-text-reference");
+    expect(codes).toContain("duplicate-objective-checklist-id");
+    expect(codes).toContain("missing-objective-checklist-reference");
+    expect(codes).toContain("objective-dependency-cycle");
   });
 
   function validate(missions: readonly CampaignMissionContent[]): readonly string[] {

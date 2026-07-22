@@ -44,6 +44,30 @@ describe("campaign condition runtime", () => {
     expect(adapter.evaluate).toHaveBeenCalledWith({ state }, { kind: "actor-exists", actorId: "hero" });
     expect(state).toEqual(before);
   });
+
+  it("reads checklist state without mutating objective state", () => {
+    const state = runtimeState();
+    state.objectives["survive"] = {
+      status: "active",
+      updatedAtTick: 1,
+      earlyCompleted: false,
+      announcedStatuses: ["active"],
+      checklist: { "hold-line": { status: "completed", updatedAtTick: 2 } }
+    };
+    const runtime = new CampaignConditionRuntime(createCampaignConditionEvaluatorRegistry());
+
+    expect(
+      runtime.evaluate(
+        { state },
+        {
+          kind: "objective-checklist",
+          objectiveId: id("survive"),
+          checklistId: id("hold-line"),
+          state: "completed"
+        }
+      )
+    ).toBe(true);
+  });
 });
 
 function runtimeState(): CampaignMissionRuntimeState {
@@ -61,6 +85,7 @@ function runtimeState(): CampaignMissionRuntimeState {
     counters: {},
     timers: {},
     objectives: {},
+    missionMessageHistory: [],
     encounters: {},
     claimedTriggerIds: [],
     triggerStates: {},

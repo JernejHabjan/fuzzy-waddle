@@ -16,6 +16,7 @@ import IdleWorkersButton from "../../../prefabs/gui/buttons/IdleWorkersButton";
 import ChatButton from "../../../prefabs/gui/buttons/ChatButton";
 import ChatNotification from "../../../prefabs/gui/labels/ChatNotification";
 import DayNightClockLabel from "../../../prefabs/gui/labels/DayNightClockLabel";
+import CampaignObjectivesHud from "../../../prefabs/gui/campaign/CampaignObjectivesHud";
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { HudGameState } from "../../../hud/hud-game-state";
@@ -30,6 +31,7 @@ import ConfirmationDialog from "../../../prefabs/gui/dialogs/ConfirmationDialog"
 import SurrenderDialog from "../../../prefabs/gui/SurrenderDialog";
 import { getPlayers } from "../../../data/scene-data";
 import { ConnectionRecoveryService } from "../../services/recovery/connection-recovery.service";
+import type { CampaignMissionDirector } from "../../../campaign/campaign-mission-director";
 /* END-USER-IMPORTS */
 
 export default class HudProbableWaffle extends ProbableWaffleScene {
@@ -101,6 +103,10 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     const dayNightClockLabel = new DayNightClockLabel(this, 13, 692);
     this.add.existing(dayNightClockLabel);
 
+    // campaignObjectivesHud
+    const campaignObjectivesHud = new CampaignObjectivesHud(this, 920, 70);
+    this.add.existing(campaignObjectivesHud);
+
     // confirmationDialog
     const confirmationDialog = new ConfirmationDialog(this, 640, 360);
     this.add.existing(confirmationDialog);
@@ -126,6 +132,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.chatButton = chatButton;
     this.chatNotification = chatNotification;
     this.dayNightClockLabel = dayNightClockLabel;
+    this.campaignObjectivesHud = campaignObjectivesHud;
     this.confirmationDialog = confirmationDialog;
     this.surrenderDialog = surrenderDialog;
     this.hudElements = hudElements;
@@ -147,6 +154,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private chatButton!: ChatButton;
   private chatNotification!: ChatNotification;
   private dayNightClockLabel!: DayNightClockLabel;
+  private campaignObjectivesHud!: CampaignObjectivesHud;
   public confirmationDialog!: ConfirmationDialog;
   public surrenderDialog!: SurrenderDialog;
   private hudElements!: Array<any>;
@@ -202,6 +210,10 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     if (this.cursorHandler) {
       this.cursorHandler.initializeWithMainScene(probableWaffleScene);
     }
+  }
+
+  initializeCampaignObjectives(director: CampaignMissionDirector): void {
+    this.campaignObjectivesHud.setup(director);
   }
 
   private subscribeToSceneShutdown() {

@@ -19,6 +19,8 @@ import {
 import { CampaignPhaserWorldAdapter } from "./actions/campaign-phaser-world-adapter";
 import { CampaignTrustedHookRegistry } from "./actions/campaign-trusted-hook-registry";
 import { CampaignWorldEventAdapter } from "./campaign-world-event-adapter";
+import { CampaignObjectiveProjectionStore } from "./objectives/campaign-objective-projection-store";
+import { IndexedScenarioReferenceRegistry } from "./scenario/scenario-reference-registry";
 
 export interface CampaignMissionOutcomeHandler {
   resolveCampaignMissionOutcome(outcome: Extract<CampaignMissionOutcome, "victory" | "defeat">): void;
@@ -27,10 +29,12 @@ export interface CampaignMissionOutcomeHandler {
 /** Phaser integration boundary for the pure campaign mission runtime. */
 export class CampaignMissionDirector {
   readonly effects$ = new Subject<readonly CampaignMissionRuntimeEffect[]>();
+  readonly objectiveProjection: CampaignObjectiveProjectionStore;
   private runtime: CampaignMissionRuntime;
   private readonly worldAdapter: CampaignPhaserWorldAdapter;
   private readonly eventAdapter: CampaignWorldEventAdapter;
   private readonly presentationSubscription: Subscription;
+  private readonly objectiveNarrationSubscription: Subscription;
   private pendingCheckpointSaves = 0;
   private tickSubscription?: Subscription;
   private started = false;
@@ -59,8 +63,24 @@ export class CampaignMissionDirector {
     this.worldAdapter = new CampaignPhaserWorldAdapter(scene, trustedHooks);
     this.runtime = this.createRuntimeFromGameState();
     this.eventAdapter = new CampaignWorldEventAdapter(scene, this);
+    const context = scene.baseGameData.gameInstance.gameInstanceMetadata.data.campaignContext;
+    if (!context) throw new Error("CampaignMissionDirector requires campaignContext");
+    const content = AOTA_CAMPAIGN_CONTENT_REGISTRY.getMission(context.missionId);
+    this.objectiveProjection = new CampaignObjectiveProjectionStore(
+      content.objectives,
+      AOTA_CAMPAIGN_CONTENT_REGISTRY.getDialogue(context.missionId),
+      this.runtime.snapshot(),
+      scene.game.device.os.android || scene.game.device.os.iOS || scene.game.device.input.touch
+        ? "touch"
+        : "keyboard-mouse"
+    );
     this.presentationSubscription = this.worldAdapter.presentationRequests$.subscribe((request) => {
       if (request.kind === "checkpoint") this.pendingCheckpointSaves += 1;
+    });
+    this.objectiveNarrationSubscription = this.objectiveProjection.notifications$.subscribe((notification) => {
+      if (notification.narrationLineId) {
+        this.worldAdapter.requestObjectiveNarration(notification.narrationLineId, notification.objectiveId);
+      }
     });
     scene.events.on(ProbableWaffleSceneEventName.ReconnectSnapshotApplied, this.onSnapshotApplied, this);
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
@@ -95,6 +115,22 @@ export class CampaignMissionDirector {
     return this.runtime.snapshot();
   }
 
+  focusObjective(objectiveId: string): boolean {
+    const context = this.scene.baseGameData.gameInstance.gameInstanceMetadata.data.campaignContext;
+    if (!context) return false;
+    const objective = AOTA_CAMPAIGN_CONTENT_REGISTRY.getMission(context.missionId).objectives.find(
+      (candidate) => candidate.id === objectiveId
+    );
+    const focus = objective?.display.focus;
+    if (!focus) return false;
+    const position = getSceneService(this.scene, IndexedScenarioReferenceRegistry)?.debugFocus(
+      focus.kind === "actor" ? focus.actorId : focus.regionId
+    );
+    if (!position) return false;
+    this.scene.cameras.main.centerOn(position.x, position.y - position.z);
+    return true;
+  }
+
   acknowledgeDialogue(lineId: string, initiatorPlayerNumber?: number): void {
     this.worldAdapter.completePresentation("dialogue", lineId);
     this.eventAdapter.dialogueAcknowledged(lineId, initiatorPlayerNumber);
@@ -118,6 +154,8 @@ export class CampaignMissionDirector {
 
   private publish(effects: readonly CampaignMissionRuntimeEffect[]): void {
     this.syncGameState();
+    this.objectiveProjection.rebuild(this.runtime.snapshot());
+    this.objectiveProjection.presentEffects(effects);
     while (this.pendingCheckpointSaves > 0) {
       this.pendingCheckpointSaves -= 1;
       this.scene.communicator.allScenes.emit({ name: "save-game", data: { kind: "autosave" } });
@@ -157,6 +195,8 @@ export class CampaignMissionDirector {
     this.eventAdapter.destroy();
     this.worldAdapter.destroy();
     this.presentationSubscription.unsubscribe();
+    this.objectiveNarrationSubscription.unsubscribe();
+    this.objectiveProjection.destroy();
     this.scene.events.off(ProbableWaffleSceneEventName.ReconnectSnapshotApplied, this.onSnapshotApplied, this);
     this.effects$.complete();
   }

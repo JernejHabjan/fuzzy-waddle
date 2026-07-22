@@ -8,6 +8,7 @@ import { ScoreSubmissionService } from "../../services/score-submission.service"
 import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
 import {
   CampaignMissionOutcome,
+  type CampaignMissionRuntimeState,
   GameResultStatus,
   type GameScoreSnapshotDto,
   ProbableWafflePlayerType
@@ -55,7 +56,8 @@ export class ScoreScreenComponent implements OnInit, OnDestroy {
       await this.campaignProgressService.recordResult({
         runId: campaignContext.runId,
         missionId: campaignContext.missionId,
-        outcome
+        outcome,
+        completedObjectiveIds: completedCampaignObjectiveIds(gameInstance.gameState?.data.campaignMission)
       });
     }
 
@@ -126,4 +128,11 @@ export class ScoreScreenComponent implements OnInit, OnDestroy {
   async ngOnDestroy() {
     this.scoreSubmissionSub?.unsubscribe();
   }
+}
+
+export function completedCampaignObjectiveIds(state?: CampaignMissionRuntimeState): string[] {
+  return Object.entries(state?.objectives ?? {})
+    .filter(([, objective]) => objective.status === "completed")
+    .map(([objectiveId]) => objectiveId)
+    .sort();
 }

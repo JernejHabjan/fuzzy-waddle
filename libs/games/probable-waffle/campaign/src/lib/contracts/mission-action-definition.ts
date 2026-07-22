@@ -13,6 +13,7 @@ import type {
   MissionDialogueLineId,
   MissionEncounterId,
   MissionFactId,
+  MissionObjectiveChecklistId,
   MissionObjectiveId,
   MissionReasonId,
   MissionTimerId,
@@ -211,6 +212,13 @@ export type MissionActionDefinition =
       readonly kind: "set-objective-state";
       readonly objectiveId: MissionObjectiveId;
       readonly state: "active" | "completed" | "failed" | "impossible";
+      readonly reasonId?: MissionReasonId;
+    })
+  | (MissionActionDefinitionBase & {
+      readonly kind: "set-objective-checklist-state";
+      readonly objectiveId: MissionObjectiveId;
+      readonly checklistId: MissionObjectiveChecklistId;
+      readonly state: "pending" | "completed";
     })
   | (MissionActionDefinitionBase & {
       readonly kind: "set-encounter-state";

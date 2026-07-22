@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ScoreScreenComponent } from "./score-screen.component";
+import { completedCampaignObjectiveIds, ScoreScreenComponent } from "./score-screen.component";
 import { ScoreThroughTimeComponent } from "./chart/score-through-time.component";
 import { ScoreThroughTimeTestingComponent } from "./chart/score-through-time.component.spec";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
@@ -38,5 +38,17 @@ describe("ScoreScreenComponent", () => {
 
   it("should create", () => {
     expect(component).toBeTruthy();
+  });
+
+  it("projects completed campaign objectives into stable result order", () => {
+    expect(
+      completedCampaignObjectiveIds({
+        objectives: {
+          secondary: { status: "failed" },
+          primary: { status: "completed" },
+          optional: { status: "completed" }
+        }
+      } as never)
+    ).toEqual(["optional", "primary"]);
   });
 });

@@ -579,6 +579,25 @@
         {
           "type": "object",
           "additionalProperties": false,
+          "required": ["kind", "objectiveId", "checklistId", "state"],
+          "properties": {
+            "kind": {
+              "const": "objective-checklist"
+            },
+            "objectiveId": {
+              "$ref": "#/$defs/campaignId"
+            },
+            "checklistId": {
+              "$ref": "#/$defs/campaignId"
+            },
+            "state": {
+              "enum": ["pending", "completed"]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
           "required": ["kind", "phaseId", "state"],
           "properties": {
             "kind": {
@@ -1004,6 +1023,7 @@
                 "set-content-allowance",
                 "grant-temporary-modifier",
                 "set-objective-state",
+                "set-objective-checklist-state",
                 "set-encounter-state",
                 "start-dialogue",
                 "start-cinematic",
@@ -1057,8 +1077,10 @@
             "allowed": { "type": "boolean" },
             "modifierId": { "$ref": "#/$defs/campaignId" },
             "objectiveId": { "$ref": "#/$defs/campaignId" },
+            "checklistId": { "$ref": "#/$defs/campaignId" },
+            "reasonId": { "$ref": "#/$defs/campaignId" },
             "encounterId": { "$ref": "#/$defs/campaignId" },
-            "state": { "enum": ["inactive", "active", "completed", "failed", "impossible"] },
+            "state": { "enum": ["pending", "inactive", "active", "completed", "failed", "impossible"] },
             "lineId": { "$ref": "#/$defs/campaignId" },
             "waitForAcknowledgement": { "type": "boolean" },
             "cinematicId": { "$ref": "#/$defs/campaignId" },
@@ -1240,6 +1262,17 @@
                   "state": { "enum": ["active", "completed", "failed", "impossible"] }
                 },
                 "required": ["objectiveId", "state"]
+              }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "set-objective-checklist-state" } } },
+              "then": {
+                "properties": {
+                  "objectiveId": true,
+                  "checklistId": true,
+                  "state": { "enum": ["pending", "completed"] }
+                },
+                "required": ["objectiveId", "checklistId", "state"]
               }
             },
             {
@@ -1451,6 +1484,14 @@
         "fail": {
           "$ref": "#/$defs/condition"
         },
+        "impossible": {
+          "$ref": "#/$defs/condition"
+        },
+        "dependsOnObjectiveIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/campaignId" }
+        },
         "checklist": {
           "type": "array",
           "items": {
@@ -1470,6 +1511,34 @@
               },
               "complete": {
                 "$ref": "#/$defs/condition"
+              },
+              "progress": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["counterId", "target", "display"],
+                "properties": {
+                  "counterId": { "$ref": "#/$defs/campaignId" },
+                  "target": { "type": "number", "minimum": 0 },
+                  "display": { "enum": ["count", "percentage"] }
+                }
+              },
+              "inputPrompt": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["action"],
+                "properties": {
+                  "action": {
+                    "enum": [
+                      "camera.pan",
+                      "selection.primary",
+                      "command.move",
+                      "command.attack",
+                      "command.carry",
+                      "interaction.primary"
+                    ]
+                  },
+                  "seenPolicy": { "enum": ["show", "collapse"] }
+                }
               }
             }
           }
@@ -1493,8 +1562,45 @@
             "announceCompletion": {
               "type": "boolean"
             },
+            "announceFailure": {
+              "type": "boolean"
+            },
+            "announceImpossible": {
+              "type": "boolean"
+            },
             "showInTracker": {
               "type": "boolean"
+            },
+            "narration": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "revealLineId": { "$ref": "#/$defs/campaignId" },
+                "completionLineId": { "$ref": "#/$defs/campaignId" },
+                "failureLineId": { "$ref": "#/$defs/campaignId" }
+              }
+            },
+            "focus": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["kind", "actorId"],
+                  "properties": {
+                    "kind": { "const": "actor" },
+                    "actorId": { "$ref": "#/$defs/campaignId" }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["kind", "regionId"],
+                  "properties": {
+                    "kind": { "const": "region" },
+                    "regionId": { "$ref": "#/$defs/campaignId" }
+                  }
+                }
+              ]
             }
           }
         }

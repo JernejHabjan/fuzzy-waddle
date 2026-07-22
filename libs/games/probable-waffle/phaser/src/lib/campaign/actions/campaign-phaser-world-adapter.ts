@@ -369,6 +369,14 @@ export class CampaignPhaserWorldAdapter implements CampaignWorldActionAdapter, C
     this.completedPresentationIds.add(id);
   }
 
+  requestObjectiveNarration(lineId: string, objectiveId: string): void {
+    this.presentationRequests$.next({
+      kind: "dialogue",
+      id: lineId,
+      ownerToken: `mission:objective-narration:${objectiveId}`
+    });
+  }
+
   restoreOwnedResources(resources: readonly CampaignMissionOwnedResourceRuntimeState[]): void {
     this.pendingRestoredResources.push(...resources);
   }

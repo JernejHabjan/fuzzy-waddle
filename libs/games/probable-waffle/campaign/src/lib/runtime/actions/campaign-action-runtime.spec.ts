@@ -76,7 +76,36 @@ describe("campaign action runtime", () => {
     expect(runner.resume(context(6), definition, initial.continuationState).status).toBe("waiting");
     expect(runner.resume(context(7), definition, initial.continuationState)).toEqual({ status: "completed" });
   });
+
+  it("routes objective and checklist actions through the objective action port", () => {
+    const objectiveActions = { setState: jest.fn(), setChecklistState: jest.fn() };
+    const actionContext = { ...context(2), objectiveActions };
+    const runner = new CampaignActionRunner(createCampaignActionExecutorRegistry());
+    const objectiveAction = action("set-objective-state", "complete-objective", {
+      objectiveId: id("survive"),
+      state: "completed"
+    });
+    const checklistAction = action("set-objective-checklist-state", "complete-checklist", {
+      objectiveId: id("survive"),
+      checklistId: id("hold-line"),
+      state: "completed"
+    });
+
+    runner.execute(actionContext, objectiveAction);
+    runner.execute(actionContext, checklistAction);
+
+    expect(objectiveActions.setState).toHaveBeenCalledWith(objectiveAction, 2);
+    expect(objectiveActions.setChecklistState).toHaveBeenCalledWith(checklistAction, 2);
+  });
 });
+
+function action<TKind extends MissionActionDefinition["kind"]>(
+  kind: TKind,
+  actionId: string,
+  data: Omit<Extract<MissionActionDefinition, { kind: TKind }>, "id" | "kind">
+): Extract<MissionActionDefinition, { kind: TKind }> {
+  return { id: id(actionId), kind, ...data } as Extract<MissionActionDefinition, { kind: TKind }>;
+}
 
 function trustedHook(actionId: string): MissionActionDefinition {
   return { id: id(actionId), kind: "trusted-hook", hookId: id(`hook-${actionId}`) };
@@ -101,6 +130,7 @@ function runtimeState(): CampaignMissionRuntimeState {
     counters: {},
     timers: {},
     objectives: {},
+    missionMessageHistory: [],
     encounters: {},
     claimedTriggerIds: [],
     triggerStates: {},

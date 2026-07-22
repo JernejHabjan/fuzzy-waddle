@@ -21,6 +21,7 @@ import {
   type CampaignMissionActionCancelReason,
   type CampaignMissionActionContext,
   type CampaignMissionActionResult,
+  type CampaignObjectiveActionPort,
   type CampaignWorldActionAdapter
 } from "./actions/campaign-action-runtime";
 import {
@@ -28,6 +29,11 @@ import {
   createCampaignConditionEvaluatorRegistry,
   type CampaignWorldConditionAdapter
 } from "./conditions/campaign-condition-evaluator";
+import {
+  createObjectiveRuntimeState,
+  DefaultCampaignObjectiveService,
+  type CampaignObjectiveChange
+} from "./objectives/campaign-objective-service";
 
 export interface CampaignMissionRuntimeEffect {
   readonly tick: number;
@@ -92,6 +98,7 @@ export class CampaignMissionRuntime {
   private readonly actionsById: ReadonlyMap<string, MissionActionDefinition>;
   private readonly actionRunner: CampaignActionRunner;
   private readonly conditionRuntime: CampaignConditionRuntime;
+  private readonly objectiveService: DefaultCampaignObjectiveService;
   private readonly actionAdapter?: CampaignWorldActionAdapter;
   private readonly maxActionsPerTick: number;
   private readonly maxTransitionsPerTick: number;
@@ -119,6 +126,7 @@ export class CampaignMissionRuntime {
       ? this.validateAndCloneRestoredState(restoredState)
       : createCampaignMissionRuntimeState(campaignId, content);
     this.stateStore = new CampaignMissionStateStore(state);
+    this.objectiveService = new DefaultCampaignObjectiveService(state, content.objectives);
     try {
       this.actionAdapter?.restoreOwnedResources?.(Object.values(state.ownedResources));
     } catch (error) {
@@ -142,6 +150,7 @@ export class CampaignMissionRuntime {
   cancel(reason: CampaignMissionActionCancelReason = "mission-ended"): CampaignMissionRuntimeResult {
     const effects: CampaignMissionRuntimeEffect[] = [];
     this.cancelOwnedByPrefix("", reason, this.stateStore.current.integrity.lastProcessedTick, effects);
+    this.objectiveService.destroy();
     return this.result(effects);
   }
 
@@ -309,52 +318,8 @@ export class CampaignMissionRuntime {
   }
 
   private evaluateObjectives(tick: number, effects: CampaignMissionRuntimeEffect[]): void {
-    const state = this.stateStore.current;
-    for (const objective of [...this.content.objectives].sort(compareById)) {
-      const runtime = state.objectives[objective.id];
-      if (
-        !runtime ||
-        runtime.status === "completed" ||
-        runtime.status === "failed" ||
-        runtime.status === "impossible"
-      ) {
-        continue;
-      }
-      if (runtime.status === "hidden" && this.evaluateCondition(objective.reveal)) {
-        runtime.status = "active";
-        runtime.updatedAtTick = tick;
-        effects.push({ tick, kind: "objective-changed", sourceId: objective.id, detail: "active" });
-        this.enqueueEvent({
-          tick,
-          kind: "objective.changed",
-          sourceId: objective.id,
-          payload: { objectiveId: objective.id, state: "active" }
-        });
-      }
-      if (runtime.status !== "active") continue;
-      if (objective.fail && this.evaluateCondition(objective.fail)) {
-        runtime.status = "failed";
-        runtime.updatedAtTick = tick;
-        effects.push({ tick, kind: "objective-changed", sourceId: objective.id, detail: "failed" });
-        this.enqueueEvent({
-          tick,
-          kind: "objective.changed",
-          sourceId: objective.id,
-          payload: { objectiveId: objective.id, state: "failed" }
-        });
-      } else if (this.evaluateCondition(objective.complete)) {
-        runtime.status = "completed";
-        runtime.updatedAtTick = tick;
-        for (const rewardId of objective.rewardIds ?? []) addSortedUnique(state.claimedRewardIds, rewardId);
-        effects.push({ tick, kind: "objective-changed", sourceId: objective.id, detail: "completed" });
-        this.enqueueEvent({
-          tick,
-          kind: "objective.changed",
-          sourceId: objective.id,
-          payload: { objectiveId: objective.id, state: "completed" }
-        });
-      }
-    }
+    this.objectiveService.evaluate(tick, { evaluate: (condition) => this.evaluateCondition(condition) });
+    this.publishObjectiveChanges(this.objectiveService.drainChanges(), effects);
   }
 
   private drainTransitions(tick: number, budget: TickBudget, effects: CampaignMissionRuntimeEffect[]): void {
@@ -461,6 +426,7 @@ export class CampaignMissionRuntime {
   ): void {
     const context = this.createActionContext(action, tick, source);
     const result = this.executeActionSafely(context, action);
+    this.publishObjectiveChanges(this.objectiveService.drainChanges(), effects);
     this.handleActionResult(action, context, result, effects);
   }
 
@@ -508,9 +474,11 @@ export class CampaignMissionRuntime {
         state: this.stateStore.current,
         ownerToken: continuation.ownerToken,
         phaseId: source.phaseId,
-        triggerId: source.triggerId
+        triggerId: source.triggerId,
+        objectiveActions: this.objectiveActionPort()
       };
       const result = this.resumeActionSafely(context, action, continuation.state);
+      this.publishObjectiveChanges(this.objectiveService.drainChanges(), effects);
       this.handleActionResult(action, context, result, effects, continuation.startedAtTick);
       if (this.stateStore.current.status !== "running") return false;
     }
@@ -533,7 +501,8 @@ export class CampaignMissionRuntime {
       ownerToken,
       phaseId: source.phaseId,
       triggerId: source.triggerId,
-      event: source.event
+      event: source.event,
+      objectiveActions: this.objectiveActionPort()
     };
   }
 
@@ -581,12 +550,9 @@ export class CampaignMissionRuntime {
             ...context,
             ownerToken: `${context.ownerToken}:fallback:${action.fallbackAction.id}`
           };
-          this.handleActionResult(
-            action.fallbackAction,
-            fallbackContext,
-            this.executeActionSafely(fallbackContext, action.fallbackAction),
-            effects
-          );
+          const fallbackResult = this.executeActionSafely(fallbackContext, action.fallbackAction);
+          this.publishObjectiveChanges(this.objectiveService.drainChanges(), effects);
+          this.handleActionResult(action.fallbackAction, fallbackContext, fallbackResult, effects);
           return;
         }
       }
@@ -618,20 +584,7 @@ export class CampaignMissionRuntime {
       sourceId: action.id,
       detail: { kind: action.kind, status: result.status }
     });
-    if (action.kind === "set-objective-state") {
-      effects.push({
-        tick: context.tick,
-        kind: "objective-changed",
-        sourceId: action.objectiveId,
-        detail: action.state
-      });
-      this.enqueueEvent({
-        tick: context.tick,
-        kind: "objective.changed",
-        sourceId: action.objectiveId,
-        payload: { objectiveId: action.objectiveId, state: action.state }
-      });
-    } else if (action.kind === "set-encounter-state") {
+    if (action.kind === "set-encounter-state") {
       effects.push({
         tick: context.tick,
         kind: "encounter-changed",
@@ -687,6 +640,67 @@ export class CampaignMissionRuntime {
         code: "execution-failed",
         message: `Action '${action.id}' threw: ${deterministicErrorMessage(error)}`
       };
+    }
+  }
+
+  private objectiveActionPort(): CampaignObjectiveActionPort {
+    return {
+      setState: (definition, tick) => {
+        if (definition.state === "active") this.objectiveService.reveal(definition.objectiveId, tick);
+        else if (definition.state === "completed") this.objectiveService.complete(definition.objectiveId, tick);
+        else if (definition.state === "failed") {
+          this.objectiveService.fail(definition.objectiveId, tick, definition.reasonId);
+        } else {
+          this.objectiveService.markImpossible(definition.objectiveId, tick, definition.reasonId);
+        }
+      },
+      setChecklistState: (definition, tick) => {
+        this.objectiveService.setChecklistState(definition.objectiveId, definition.checklistId, definition.state, tick);
+      }
+    };
+  }
+
+  private publishObjectiveChanges(
+    changes: readonly CampaignObjectiveChange[],
+    effects: CampaignMissionRuntimeEffect[]
+  ): void {
+    for (const change of changes) {
+      effects.push({
+        tick: change.tick,
+        kind: "objective-changed",
+        sourceId: change.objectiveId,
+        detail: {
+          kind: change.kind,
+          previousStatus: change.previousStatus,
+          status: change.status,
+          earlyCompleted: change.earlyCompleted,
+          announce: change.announce,
+          checklistChanges: change.checklistChanges.map((item) => ({ ...item }))
+        }
+      });
+      if (change.kind === "status" && change.status === "completed") {
+        const objective = this.content.objectives.find((candidate) => candidate.id === change.objectiveId);
+        for (const rewardId of objective?.rewardIds ?? [])
+          addSortedUnique(this.stateStore.current.claimedRewardIds, rewardId);
+      }
+      const checklist = change.checklistChanges[0];
+      this.enqueueEvent({
+        tick: change.tick,
+        kind: "objective.changed",
+        sourceId: change.objectiveId,
+        payload: {
+          objectiveId: change.objectiveId,
+          state: change.status,
+          ...(checklist
+            ? {
+                checklistId: checklist.checklistId,
+                checklistState: checklist.status,
+                ...(checklist.current !== undefined ? { current: checklist.current } : {}),
+                ...(checklist.target !== undefined ? { target: checklist.target } : {})
+              }
+            : {})
+        }
+      });
     }
   }
 
@@ -879,6 +893,11 @@ export class CampaignMissionRuntime {
     state.counters = sortRecord(state.counters);
     state.timers = sortRecord(state.timers);
     state.objectives = sortRecord(state.objectives);
+    for (const objective of Object.values(state.objectives)) {
+      objective.checklist = sortRecord(objective.checklist);
+      objective.announcedStatuses.sort();
+    }
+    state.missionMessageHistory.sort((left, right) => left.sequence - right.sequence);
     state.encounters = sortRecord(state.encounters);
     state.triggerStates = sortRecord(state.triggerStates);
     state.actionContinuations = sortRecord(state.actionContinuations);
@@ -977,8 +996,9 @@ export function createCampaignMissionRuntimeState(
     objectives: Object.fromEntries(
       [...content.objectives]
         .sort(compareById)
-        .map((objective) => [objective.id, { status: "hidden" as const, updatedAtTick: 0 }])
+        .map((objective) => [objective.id, createObjectiveRuntimeState(objective)])
     ),
+    missionMessageHistory: [],
     encounters: {},
     claimedTriggerIds: [],
     triggerStates: {},

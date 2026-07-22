@@ -1,9 +1,10 @@
 import type { CampaignId, CampaignMissionId } from "./campaign";
 
-export const CAMPAIGN_MISSION_RUNTIME_SCHEMA_VERSION = 2 as const;
+export const CAMPAIGN_MISSION_RUNTIME_SCHEMA_VERSION = 3 as const;
 
 export type CampaignMissionRuntimeStatus = "initializing" | "running" | "victory" | "defeat" | "failed";
 export type CampaignMissionObjectiveStatus = "hidden" | "active" | "completed" | "failed" | "impossible";
+export type CampaignMissionObjectiveChecklistStatus = "pending" | "completed";
 export type CampaignMissionEncounterStatus = "inactive" | "active" | "completed" | "failed";
 export type CampaignMissionTimerStatus = "running" | "paused" | "elapsed" | "cancelled";
 
@@ -73,7 +74,14 @@ export type CampaignMissionEvent =
     >
   | CampaignMissionEventBase<
       "objective.changed",
-      { readonly objectiveId: string; readonly state: CampaignMissionObjectiveStatus }
+      {
+        readonly objectiveId: string;
+        readonly state: CampaignMissionObjectiveStatus;
+        readonly checklistId?: string;
+        readonly checklistState?: CampaignMissionObjectiveChecklistStatus;
+        readonly current?: number;
+        readonly target?: number;
+      }
     >
   | CampaignMissionEventBase<"dialogue.acknowledged", { readonly lineId: string }>
   | CampaignMissionEventBase<"cinematic.finished", { readonly cinematicId: string; readonly skipped: boolean }>;
@@ -88,6 +96,30 @@ export interface CampaignMissionTimerRuntimeState {
 export interface CampaignMissionObjectiveRuntimeState {
   status: CampaignMissionObjectiveStatus;
   updatedAtTick: number;
+  revealedAtTick?: number;
+  completedAtTick?: number;
+  failedAtTick?: number;
+  impossibleAtTick?: number;
+  reasonId?: string;
+  earlyCompleted: boolean;
+  checklist: Record<string, CampaignMissionObjectiveChecklistRuntimeState>;
+  announcedStatuses: CampaignMissionObjectiveStatus[];
+}
+
+export interface CampaignMissionObjectiveChecklistRuntimeState {
+  status: CampaignMissionObjectiveChecklistStatus;
+  updatedAtTick: number;
+  current?: number;
+  target?: number;
+}
+
+export interface CampaignMissionMessageHistoryEntry {
+  sequence: number;
+  tick: number;
+  kind: "objective" | "tutorial" | "warning";
+  sourceId: string;
+  textId: string;
+  state?: CampaignMissionObjectiveStatus | CampaignMissionObjectiveChecklistStatus;
 }
 
 export interface CampaignMissionTriggerRuntimeState {
@@ -173,6 +205,7 @@ export interface CampaignMissionRuntimeState {
   counters: Record<string, number>;
   timers: Record<string, CampaignMissionTimerRuntimeState>;
   objectives: Record<string, CampaignMissionObjectiveRuntimeState>;
+  missionMessageHistory: CampaignMissionMessageHistoryEntry[];
   encounters: Record<string, CampaignMissionEncounterStatus>;
   claimedTriggerIds: string[];
   triggerStates: Record<string, CampaignMissionTriggerRuntimeState>;

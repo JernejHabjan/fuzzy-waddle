@@ -50,6 +50,15 @@ export interface CampaignMissionActionContext {
   readonly phaseId?: string;
   readonly triggerId?: string;
   readonly event?: CampaignMissionRuntimeEvent;
+  readonly objectiveActions?: CampaignObjectiveActionPort;
+}
+
+export interface CampaignObjectiveActionPort {
+  setState(definition: Extract<MissionActionDefinition, { readonly kind: "set-objective-state" }>, tick: number): void;
+  setChecklistState(
+    definition: Extract<MissionActionDefinition, { readonly kind: "set-objective-checklist-state" }>,
+    tick: number
+  ): void;
 }
 
 export interface CampaignActionExecutor<TDefinition extends MissionActionDefinition = MissionActionDefinition> {
@@ -445,7 +454,14 @@ function registerStateExecutors(registry: CampaignActionExecutorRegistry): void 
   registry.register(
     stateExecutor("set-objective-state", (context, definition) => {
       if (definition.kind === "set-objective-state") {
-        context.state.objectives[definition.objectiveId] = { status: definition.state, updatedAtTick: context.tick };
+        context.objectiveActions?.setState(definition, context.tick);
+      }
+    })
+  );
+  registry.register(
+    stateExecutor("set-objective-checklist-state", (context, definition) => {
+      if (definition.kind === "set-objective-checklist-state") {
+        context.objectiveActions?.setChecklistState(definition, context.tick);
       }
     })
   );

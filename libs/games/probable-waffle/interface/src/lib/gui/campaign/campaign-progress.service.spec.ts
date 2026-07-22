@@ -2,16 +2,23 @@ import { TestBed } from "@angular/core/testing";
 import { CampaignProgressService } from "./campaign-progress.service";
 import { provideHttpClient } from "@angular/common/http";
 import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
+import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 
 describe("CampaignProgressService", () => {
   let service: CampaignProgressService;
+  let httpTesting: HttpTestingController;
+  const authService = { isAuthenticated: false };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), { provide: AuthService, useValue: { isAuthenticated: false } }]
+      providers: [provideHttpClient(), provideHttpClientTesting(), { provide: AuthService, useValue: authService }]
     });
     service = TestBed.inject(CampaignProgressService);
+    httpTesting = TestBed.inject(HttpTestingController);
+    authService.isAuthenticated = false;
   });
+
+  afterEach(() => httpTesting.verify());
 
   it("unlocks all missions in development for campaign iteration", () => {
     expect(service.getMissionProgress("dreams")?.state).toBe("available");
@@ -40,5 +47,20 @@ describe("CampaignProgressService", () => {
     });
 
     expect(service.getMissionProgress("sailing-towards-the-new-future")?.state).toBe("available");
+  });
+
+  it("submits completed objective IDs in stable order", async () => {
+    authService.isAuthenticated = true;
+    const result = service.recordResult({
+      runId: "run-1",
+      missionId: "dreams",
+      outcome: "defeat",
+      completedObjectiveIds: ["primary", "optional"]
+    });
+    const request = httpTesting.expectOne((candidate) => candidate.url.endsWith("/campaign/results"));
+    expect(request.request.body).toMatchObject({ completedObjectiveIds: ["optional", "primary"] });
+    request.flush({});
+
+    await result;
   });
 });

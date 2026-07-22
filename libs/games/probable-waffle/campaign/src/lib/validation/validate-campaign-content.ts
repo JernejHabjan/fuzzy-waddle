@@ -98,8 +98,8 @@ export function validateCampaignContent(input: CampaignValidationInput): Campaig
     if (!rewardsById.has(missionId)) {
       addIssue(issues, missionPath(missionId), "$", "missing-rewards", "Mission has no rewards.json");
     }
-    validateMission(mission, rewardsById.get(missionId), input.registries, issues);
     const dialogue = dialogueById.get(missionId);
+    validateMission(mission, dialogue, rewardsById.get(missionId), input.registries, issues);
     if (dialogue) validateDialogue(dialogue, mission, input.registries, issues);
   }
 
@@ -109,13 +109,20 @@ export function validateCampaignContent(input: CampaignValidationInput): Campaig
 
 function validateMission(
   mission: CampaignMissionContent,
+  dialogue: MissionDialogueBundle | undefined,
   rewards: MissionRewardBundle | undefined,
   registries: CampaignDefinitionRegistries,
   issues: CampaignValidationIssue[]
 ): void {
   const sourcePath = missionPath(mission.id);
   const phaseIds = new Set(mission.phases.map((phase) => String(phase.id)));
+  const objectiveIds = new Set(mission.objectives.map((objective) => String(objective.id)));
   const rewardIds = new Set((rewards?.rewards ?? []).map((reward) => String(reward.id)));
+  const textIds = new Set([
+    ...(dialogue?.texts ?? []).map((text) => String(text.id)),
+    ...(dialogue?.lines ?? []).map((line) => String(line.textId))
+  ]);
+  const dialogueLineIds = new Set((dialogue?.lines ?? []).map((line) => String(line.id)));
   reportDuplicates(
     mission.phases.map((phase) => String(phase.id)),
     sourcePath,
@@ -138,6 +145,7 @@ function validateMission(
     issues
   );
   const actionEntries = collectMissionActionEntries(mission);
+  validateObjectiveReferences(mission, actionEntries, sourcePath, issues);
   for (const actionId of findDuplicates(actionEntries.map((entry) => String(entry.action.id)))) {
     const entry = actionEntries.find((candidate) => String(candidate.action.id) === actionId)!;
     addIssue(issues, sourcePath, entry.jsonPath, "duplicate-action-id", `Duplicate action id '${actionId}'`);
@@ -214,6 +222,64 @@ function validateMission(
     validateCondition(objective.reveal, sourcePath, `${objectivePath}.reveal`, registries, issues);
     validateCondition(objective.complete, sourcePath, `${objectivePath}.complete`, registries, issues);
     if (objective.fail) validateCondition(objective.fail, sourcePath, `${objectivePath}.fail`, registries, issues);
+    if (objective.impossible) {
+      validateCondition(objective.impossible, sourcePath, `${objectivePath}.impossible`, registries, issues);
+    }
+    reportDuplicates(
+      (objective.checklist ?? []).map((checklist) => String(checklist.id)),
+      sourcePath,
+      `${objectivePath}.checklist`,
+      "duplicate-objective-checklist-id",
+      issues
+    );
+    validateObjectiveTextReference(objective.titleTextId, `${objectivePath}.titleTextId`, textIds, sourcePath, issues);
+    if (objective.descriptionTextId) {
+      validateObjectiveTextReference(
+        objective.descriptionTextId,
+        `${objectivePath}.descriptionTextId`,
+        textIds,
+        sourcePath,
+        issues
+      );
+    }
+    for (const [checklistIndex, checklist] of (objective.checklist ?? []).entries()) {
+      validateCondition(
+        checklist.complete,
+        sourcePath,
+        `${objectivePath}.checklist[${checklistIndex}].complete`,
+        registries,
+        issues
+      );
+      validateObjectiveTextReference(
+        checklist.textId,
+        `${objectivePath}.checklist[${checklistIndex}].textId`,
+        textIds,
+        sourcePath,
+        issues
+      );
+    }
+    for (const dependencyId of objective.dependsOnObjectiveIds ?? []) {
+      if (!objectiveIds.has(String(dependencyId))) {
+        addIssue(
+          issues,
+          sourcePath,
+          `${objectivePath}.dependsOnObjectiveIds`,
+          "missing-objective-reference",
+          `Unknown objective '${dependencyId}'`
+        );
+      }
+    }
+    for (const [field, lineId] of Object.entries(objective.display.narration ?? {})) {
+      if (!dialogueLineIds.has(String(lineId))) {
+        addIssue(
+          issues,
+          sourcePath,
+          `${objectivePath}.display.narration.${field}`,
+          "missing-dialogue-reference",
+          `Unknown line '${lineId}'`
+        );
+      }
+    }
     for (const rewardId of objective.rewardIds ?? []) {
       if (!rewardIds.has(String(rewardId))) {
         addIssue(
@@ -226,6 +292,7 @@ function validateMission(
       }
     }
   }
+  validateObjectiveDependencyCycles(mission, issues);
   for (const [checkpointIndex, checkpoint] of mission.checkpoints.entries()) {
     const checkpointPath = `$.checkpoints[${checkpointIndex}]`;
     validateCondition(checkpoint.trigger, sourcePath, `${checkpointPath}.trigger`, registries, issues);
@@ -244,6 +311,43 @@ function validateMission(
   }
 }
 
+function validateObjectiveTextReference(
+  textId: string,
+  jsonPath: string,
+  textIds: ReadonlySet<string>,
+  sourcePath: string,
+  issues: CampaignValidationIssue[]
+): void {
+  if (textIds.has(String(textId))) return;
+  addIssue(issues, sourcePath, jsonPath, "missing-text-reference", `Unknown mission text '${textId}'`);
+}
+
+function validateObjectiveDependencyCycles(mission: CampaignMissionContent, issues: CampaignValidationIssue[]): void {
+  const dependencies = new Map(
+    mission.objectives.map((objective) => [String(objective.id), (objective.dependsOnObjectiveIds ?? []).map(String)])
+  );
+  const visited = new Set<string>();
+  const visiting = new Set<string>();
+  const visit = (objectiveId: string): void => {
+    if (visited.has(objectiveId)) return;
+    if (visiting.has(objectiveId)) {
+      addIssue(
+        issues,
+        missionPath(mission.id),
+        "$.objectives",
+        "objective-dependency-cycle",
+        `Objective dependency cycle includes '${objectiveId}'`
+      );
+      return;
+    }
+    visiting.add(objectiveId);
+    for (const dependencyId of dependencies.get(objectiveId) ?? []) visit(dependencyId);
+    visiting.delete(objectiveId);
+    visited.add(objectiveId);
+  };
+  for (const objectiveId of [...dependencies.keys()].sort()) visit(objectiveId);
+}
+
 function validateDialogue(
   dialogue: MissionDialogueBundle,
   mission: CampaignMissionContent,
@@ -253,7 +357,18 @@ function validateDialogue(
   const sourcePath = dialoguePath(mission.id);
   const speakerIds = new Set(dialogue.speakers.map((speaker) => String(speaker.id)));
   const lineIds = new Set(dialogue.lines.map((line) => String(line.id)));
+  const textIds = new Set([
+    ...(dialogue.texts ?? []).map((text) => String(text.id)),
+    ...dialogue.lines.map((line) => String(line.textId))
+  ]);
   const actionIds = collectActionIds(mission);
+  reportDuplicates(
+    (dialogue.texts ?? []).map((text) => String(text.id)),
+    sourcePath,
+    "$.texts",
+    "duplicate-text-id",
+    issues
+  );
   reportDuplicates(
     dialogue.speakers.map((speaker) => String(speaker.id)),
     sourcePath,
@@ -286,6 +401,17 @@ function validateDialogue(
       );
     }
   }
+  for (const [speakerIndex, speaker] of dialogue.speakers.entries()) {
+    if (!textIds.has(String(speaker.nameTextId))) {
+      addIssue(
+        issues,
+        sourcePath,
+        `$.speakers[${speakerIndex}].nameTextId`,
+        "missing-text-reference",
+        `Unknown mission text '${speaker.nameTextId}'`
+      );
+    }
+  }
   for (const [cinematicIndex, cinematic] of dialogue.cinematics.entries()) {
     const cinematicPath = `$.cinematics[${cinematicIndex}]`;
     if (!registries.cinematics.has(cinematic.mode)) {
@@ -305,6 +431,15 @@ function validateDialogue(
           `${cinematicPath}.timeline[${cueIndex}].lineId`,
           "missing-dialogue-reference",
           `Unknown line '${cue.lineId}'`
+        );
+      }
+      if (cue.kind === "title" && !textIds.has(String(cue.textId))) {
+        addIssue(
+          issues,
+          sourcePath,
+          `${cinematicPath}.timeline[${cueIndex}].textId`,
+          "missing-text-reference",
+          `Unknown mission text '${cue.textId}'`
         );
       }
     }
@@ -419,6 +554,85 @@ function validatePrerequisiteCycles(
 
 function collectActionIds(mission: CampaignMissionContent): Set<string> {
   return new Set(collectMissionActionEntries(mission).map((entry) => String(entry.action.id)));
+}
+
+function validateObjectiveReferences(
+  mission: CampaignMissionContent,
+  actionEntries: readonly { readonly action: MissionActionDefinition; readonly jsonPath: string }[],
+  sourcePath: string,
+  issues: CampaignValidationIssue[]
+): void {
+  const checklistIdsByObjective = new Map(
+    mission.objectives.map((objective) => [
+      String(objective.id),
+      new Set((objective.checklist ?? []).map((checklist) => String(checklist.id)))
+    ])
+  );
+  const validateReference = (objectiveId: string, checklistId: string | undefined, jsonPath: string): void => {
+    const checklistIds = checklistIdsByObjective.get(objectiveId);
+    if (!checklistIds) {
+      addIssue(issues, sourcePath, jsonPath, "missing-objective-reference", `Unknown objective '${objectiveId}'`);
+      return;
+    }
+    if (checklistId !== undefined && !checklistIds.has(checklistId)) {
+      addIssue(
+        issues,
+        sourcePath,
+        jsonPath,
+        "missing-objective-checklist-reference",
+        `Unknown objective checklist '${objectiveId}/${checklistId}'`
+      );
+    }
+  };
+  for (const { action, jsonPath } of actionEntries) {
+    if (action.kind === "set-objective-state")
+      validateReference(action.objectiveId, undefined, `${jsonPath}.objectiveId`);
+    if (action.kind === "set-objective-checklist-state") {
+      validateReference(action.objectiveId, action.checklistId, `${jsonPath}.checklistId`);
+    }
+  }
+  for (const { condition, jsonPath } of collectMissionConditionEntries(mission)) {
+    if (condition.kind === "objective") validateReference(condition.objectiveId, undefined, `${jsonPath}.objectiveId`);
+    if (condition.kind === "objective-checklist") {
+      validateReference(condition.objectiveId, condition.checklistId, `${jsonPath}.checklistId`);
+    }
+  }
+}
+
+function collectMissionConditionEntries(
+  mission: CampaignMissionContent
+): { readonly condition: MissionConditionDefinition; readonly jsonPath: string }[] {
+  const result: { condition: MissionConditionDefinition; jsonPath: string }[] = [];
+  const addCondition = (condition: MissionConditionDefinition, jsonPath: string): void => {
+    result.push({ condition, jsonPath });
+    if (condition.kind === "all" || condition.kind === "any") {
+      for (const [index, child] of condition.conditions.entries()) {
+        addCondition(child, `${jsonPath}.conditions[${index}]`);
+      }
+    } else if (condition.kind === "not") addCondition(condition.condition, `${jsonPath}.condition`);
+  };
+  for (const [phaseIndex, phase] of mission.phases.entries()) {
+    for (const [triggerIndex, trigger] of phase.triggers.entries()) {
+      addCondition(trigger.condition, `$.phases[${phaseIndex}].triggers[${triggerIndex}].condition`);
+    }
+    for (const [transitionIndex, transition] of phase.transitions.entries()) {
+      addCondition(transition.condition, `$.phases[${phaseIndex}].transitions[${transitionIndex}].condition`);
+    }
+  }
+  for (const [objectiveIndex, objective] of mission.objectives.entries()) {
+    const objectivePath = `$.objectives[${objectiveIndex}]`;
+    addCondition(objective.reveal, `${objectivePath}.reveal`);
+    addCondition(objective.complete, `${objectivePath}.complete`);
+    if (objective.fail) addCondition(objective.fail, `${objectivePath}.fail`);
+    if (objective.impossible) addCondition(objective.impossible, `${objectivePath}.impossible`);
+    for (const [checklistIndex, checklist] of (objective.checklist ?? []).entries()) {
+      addCondition(checklist.complete, `${objectivePath}.checklist[${checklistIndex}].complete`);
+    }
+  }
+  for (const [checkpointIndex, checkpoint] of mission.checkpoints.entries()) {
+    addCondition(checkpoint.trigger, `$.checkpoints[${checkpointIndex}].trigger`);
+  }
+  return result;
 }
 
 function collectMissionActionEntries(

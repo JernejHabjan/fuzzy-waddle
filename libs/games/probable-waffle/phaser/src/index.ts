@@ -6,6 +6,7 @@ export * from "./lib/core/probable-waffle-game-data";
 export * from "./lib/campaign/campaign-content";
 export * from "./lib/campaign/campaign-mission-director";
 export * from "./lib/campaign/campaign-world-event-adapter";
+export * from "./lib/campaign/objectives/campaign-objective-projection-store";
 export * from "./lib/campaign/actions/campaign-owned-resource-registry";
 export * from "./lib/campaign/actions/campaign-phaser-world-adapter";
 export * from "./lib/campaign/actions/campaign-trusted-hook-registry";

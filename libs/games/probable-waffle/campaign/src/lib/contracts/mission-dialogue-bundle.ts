@@ -15,6 +15,11 @@ export interface MissionSpeakerDefinition {
   readonly portraitId?: MissionPortraitId;
 }
 
+export interface MissionTextDefinition {
+  readonly id: MissionTextId;
+  readonly text: string;
+}
+
 export interface MissionDialogueLine {
   readonly id: MissionDialogueLineId;
   readonly speakerId: MissionSpeakerId;
@@ -44,6 +49,7 @@ export interface MissionCinematicDefinition {
 export interface MissionDialogueBundle {
   readonly schemaVersion: 1;
   readonly missionId: CampaignMissionId;
+  readonly texts?: readonly MissionTextDefinition[];
   readonly speakers: readonly MissionSpeakerDefinition[];
   readonly lines: readonly MissionDialogueLine[];
   readonly cinematics: readonly MissionCinematicDefinition[];

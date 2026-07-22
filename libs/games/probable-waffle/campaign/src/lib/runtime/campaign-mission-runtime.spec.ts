@@ -534,6 +534,64 @@ describe("CampaignMissionRuntime", () => {
     expect(runtime.state.integrity.lastProcessedTick).toBe(7);
     expect(runtime.state.pendingEvents).toEqual([]);
   });
+
+  it("routes checklist actions and conditions through objective invariants in the same tick", () => {
+    const objective: MissionObjectiveDefinition = {
+      id: id("learn-selection"),
+      kind: "tutorial",
+      titleTextId: id("learn-selection-title"),
+      reveal: { kind: "always" },
+      complete: {
+        kind: "objective-checklist",
+        objectiveId: id("learn-selection"),
+        checklistId: id("select-unit"),
+        state: "completed"
+      },
+      checklist: [{ id: id("select-unit"), textId: id("select-unit-text"), complete: { kind: "never" } }],
+      display: { announceReveal: true, announceCompletion: true, showInTracker: true }
+    };
+    const runtime = new CampaignMissionRuntime(
+      "ashes-of-the-ancients",
+      mission(
+        [
+          phase("start", {
+            entryActions: [
+              action("set-objective-checklist-state", "finish-selection", {
+                objectiveId: id("learn-selection"),
+                checklistId: id("select-unit"),
+                state: "completed"
+              })
+            ],
+            triggers: [
+              trigger("checklist-event", {
+                kind: "event",
+                eventKinds: ["objective.changed"],
+                condition: {
+                  kind: "objective-checklist",
+                  objectiveId: id("learn-selection"),
+                  checklistId: id("select-unit"),
+                  state: "completed"
+                },
+                actions: [action("set-fact", "mark-tutorial-signal", { factId: id("tutorial-signalled"), value: true })]
+              })
+            ]
+          })
+        ],
+        [objective]
+      )
+    );
+
+    const result = runtime.start(9);
+
+    expect(runtime.state.objectives["learn-selection"]).toMatchObject({
+      status: "completed",
+      earlyCompleted: true,
+      completedAtTick: 9,
+      checklist: { "select-unit": { status: "completed", updatedAtTick: 9 } }
+    });
+    expect(result.effects.filter((effect) => effect.kind === "objective-changed")).toHaveLength(2);
+    expect(runtime.state.facts["tutorial-signalled"]).toBe(true);
+  });
 });
 
 function mission(

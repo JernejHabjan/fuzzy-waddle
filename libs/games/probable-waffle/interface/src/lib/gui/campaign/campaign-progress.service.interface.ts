@@ -17,6 +17,7 @@ export abstract class CampaignProgressServiceInterface {
     runId: string;
     missionId: CampaignMissionId;
     outcome: CampaignMissionOutcome;
+    completedObjectiveIds?: readonly string[];
   }): Promise<void>;
   abstract getMissionProgress(missionId: CampaignMissionId): CampaignMissionProgress | undefined;
 }
