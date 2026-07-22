@@ -8,6 +8,7 @@ import { provideRouter } from "@angular/router";
 import { provideHttpClient } from "@angular/common/http";
 import { GameSaveService } from "../services/game-save/game-save.service";
 import {
+  CAMPAIGN_MISSION_RUNTIME_SCHEMA_VERSION,
   GameSaveScope,
   type ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceType,
@@ -82,13 +83,16 @@ describe("GameInstanceClientService", () => {
     expect(gameSaveService.save).toHaveBeenCalledWith(
       expect.objectContaining({
         scope: GameSaveScope.Campaign,
-        campaign: {
+        campaign: expect.objectContaining({
           campaignId: "ashes-of-the-ancients",
           chapterId: "prologue",
           missionId: "dreams",
           missionRevision: 1,
-          runId: "run-1"
-        }
+          runId: "run-1",
+          runtimeSchemaVersion: CAMPAIGN_MISSION_RUNTIME_SCHEMA_VERSION,
+          profileRevision: 0,
+          participantCount: 1
+        })
       })
     );
   });

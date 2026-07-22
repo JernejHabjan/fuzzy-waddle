@@ -6,7 +6,8 @@ import {
   type ProbableWaffleGameInstanceData,
   ProbableWaffleGameInstanceType,
   ProbableWaffleLevels,
-  type GameSaveRecord
+  type GameSaveRecord,
+  isSupportedGameSaveRecord
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { GameSaveService } from "../../services/game-save/game-save.service";
 import { GameLengthPipe } from "../../pipes/game-length.pipe";
@@ -23,7 +24,7 @@ export class ReplayComponent implements OnInit {
   private readonly gameInstanceClientService = inject(GameInstanceClientService);
   protected gameInstanceDataRecords: GameSaveRecord[] = [];
   async ngOnInit(): Promise<void> {
-    this.gameInstanceDataRecords = (await this.gameSaveService.list()).filter(
+    this.gameInstanceDataRecords = (await this.gameSaveService.list()).filter(isSupportedGameSaveRecord).filter(
       (record) => record.gameInstanceData.gameInstanceMetadataData?.type === ProbableWaffleGameInstanceType.Replay
     );
   }
@@ -38,7 +39,7 @@ export class ReplayComponent implements OnInit {
 
   protected async deleteReplay(save: GameSaveRecord) {
     await this.gameSaveService.delete(save.id);
-    this.gameInstanceDataRecords = (await this.gameSaveService.list()).filter(
+    this.gameInstanceDataRecords = (await this.gameSaveService.list()).filter(isSupportedGameSaveRecord).filter(
       (record) => record.gameInstanceData.gameInstanceMetadataData?.type === ProbableWaffleGameInstanceType.Replay
     );
   }

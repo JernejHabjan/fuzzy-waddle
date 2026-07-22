@@ -5,7 +5,6 @@ import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.se
 import { environment } from "@fuzzy-waddle/environments/environment";
 import { GameSaveRepository } from "./game-save.repository";
 import {
-  GAME_SAVE_FORMAT_VERSION,
   GameSaveScope,
   GameSaveSyncState,
   type EncodedGameSaveRecord,
@@ -59,8 +58,14 @@ export class GameSaveSyncService implements GameSaveSyncServiceInterface {
           thumbnail: save.thumbnail,
           encodedGameInstanceData: save.encodedGameInstanceData,
           campaignChapterId: save.campaign?.chapterId,
+          campaignId: save.campaign?.campaignId,
           campaignMissionId: save.campaign?.missionId,
-          campaignRunId: save.campaign?.runId
+          campaignRunId: save.campaign?.runId,
+          campaignMissionRevision: save.campaign?.missionRevision,
+          campaignRuntimeSchemaVersion: save.campaign?.runtimeSchemaVersion,
+          campaignProfileRevision: save.campaign?.profileRevision,
+          campaignCheckpointId: save.campaign?.checkpointId,
+          campaignParticipantCount: save.campaign?.participantCount
         });
         if (save.syncState === GameSaveSyncState.Deleted) await this.repository.remove(save.id);
         else await this.repository.upsert({ ...save, syncState: GameSaveSyncState.Synced });
@@ -103,9 +108,23 @@ export class GameSaveSyncService implements GameSaveSyncServiceInterface {
         remote.campaign_mission_id &&
         remote.campaign_run_id
           ? {
+              ...(remote.campaign_id ? { campaignId: remote.campaign_id } : {}),
               chapterId: remote.campaign_chapter_id,
               missionId: remote.campaign_mission_id,
-              runId: remote.campaign_run_id
+              runId: remote.campaign_run_id,
+              ...(remote.campaign_mission_revision
+                ? { missionRevision: remote.campaign_mission_revision }
+                : {}),
+              ...(remote.campaign_runtime_schema_version
+                ? { runtimeSchemaVersion: remote.campaign_runtime_schema_version }
+                : {}),
+              ...(remote.campaign_profile_revision !== null
+                ? { profileRevision: remote.campaign_profile_revision }
+                : {}),
+              ...(remote.campaign_checkpoint_id ? { checkpointId: remote.campaign_checkpoint_id } : {}),
+              ...(remote.campaign_participant_count
+                ? { participantCount: remote.campaign_participant_count }
+                : {})
             }
           : undefined;
       if (remote.scope === GameSaveScope.Campaign && !campaign) continue;

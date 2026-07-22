@@ -39,9 +39,15 @@ export class GameSaveServerService implements GameSaveServerServiceInterface {
         scope: dto.scope,
         kind: dto.kind,
         name: dto.name ?? null,
+        campaign_id: dto.campaignId ?? null,
         campaign_chapter_id: dto.campaignChapterId ?? null,
         campaign_mission_id: dto.campaignMissionId ?? null,
         campaign_run_id: dto.campaignRunId ?? null,
+        campaign_mission_revision: dto.campaignMissionRevision ?? null,
+        campaign_runtime_schema_version: dto.campaignRuntimeSchemaVersion ?? null,
+        campaign_profile_revision: dto.campaignProfileRevision ?? null,
+        campaign_checkpoint_id: dto.campaignCheckpointId ?? null,
+        campaign_participant_count: dto.campaignParticipantCount ?? null,
         revision: dto.revision,
         format_version: dto.formatVersion,
         is_deleted: dto.isDeleted,
@@ -56,10 +62,30 @@ export class GameSaveServerService implements GameSaveServerServiceInterface {
 
   /** Ensures campaign metadata is complete, related, and absent from skirmish records before storage. */
   private validateScope(dto: SyncGameSaveDto): void {
-    const campaignFields = [dto.campaignChapterId, dto.campaignMissionId, dto.campaignRunId];
+    if (dto.isDeleted) return;
+    const campaignFields = [
+      dto.campaignId,
+      dto.campaignChapterId,
+      dto.campaignMissionId,
+      dto.campaignRunId,
+      dto.campaignMissionRevision,
+      dto.campaignRuntimeSchemaVersion,
+      dto.campaignProfileRevision,
+      dto.campaignCheckpointId,
+      dto.campaignParticipantCount
+    ];
     if (dto.scope === GameSaveScope.Campaign) {
-      if (!dto.campaignChapterId || !dto.campaignMissionId || !dto.campaignRunId) {
-        throw new BadRequestException("Campaign saves require chapter, mission, and run identifiers");
+      if (
+        !dto.campaignId ||
+        !dto.campaignChapterId ||
+        !dto.campaignMissionId ||
+        !dto.campaignRunId ||
+        !dto.campaignMissionRevision ||
+        !dto.campaignRuntimeSchemaVersion ||
+        dto.campaignProfileRevision === undefined ||
+        !dto.campaignParticipantCount
+      ) {
+        throw new BadRequestException("Campaign saves require complete campaign runtime metadata");
       }
       if (!isCampaignMissionInChapter(dto.campaignChapterId, dto.campaignMissionId)) {
         throw new BadRequestException("Campaign mission does not belong to the supplied chapter");

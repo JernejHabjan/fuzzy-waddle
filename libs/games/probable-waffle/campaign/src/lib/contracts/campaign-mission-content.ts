@@ -14,6 +14,7 @@ import type { MissionPhaseDefinition } from "./mission-phase-definition";
 import type { MissionProgressionAllowance } from "./mission-progression-allowance";
 import type { MissionRuntimeInitialState } from "./mission-runtime-initial-state";
 import type { MissionScenarioReferences } from "./mission-scenario-references";
+import type { MissionRevisionMigration } from "./mission-revision-migration";
 
 export interface MissionCatalogueDefinition {
   readonly order: number;
@@ -29,6 +30,7 @@ export interface CampaignMissionContent {
   readonly id: CampaignMissionId;
   readonly chapterId: CampaignChapterId;
   readonly revision: number;
+  readonly revisionMigrations?: readonly MissionRevisionMigration[];
   readonly mapId: ProbableWaffleMapEnum;
   readonly prerequisites: readonly CampaignMissionId[];
   readonly catalogue: MissionCatalogueDefinition;

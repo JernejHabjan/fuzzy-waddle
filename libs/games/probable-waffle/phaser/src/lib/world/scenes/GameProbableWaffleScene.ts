@@ -53,6 +53,7 @@ import { CampaignMissionDirector } from "../../campaign/campaign-mission-directo
 import { IndexedScenarioReferenceRegistry } from "../../campaign/scenario/scenario-reference-registry";
 import { CampaignContentAllowanceService } from "@fuzzy-waddle/probable-waffle-campaign";
 import { CampaignParticipantSceneAdapter } from "../../campaign/participants/campaign-participant-scene-adapter";
+import { CampaignRestoreCoordinator } from "../../campaign/campaign-restore-coordinator";
 
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
   tilemap!: Phaser.Tilemaps.Tilemap;
@@ -120,6 +121,12 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     scenarioReferenceRegistry.initialize(this);
     CampaignParticipantSceneAdapter.configure(this, campaignContentAllowances);
     simTickService?.pauseTick(SimulationPauseReason.SceneBootstrap);
+    const restoreCoordinator =
+      this.baseGameData.gameInstance.gameInstanceMetadata.data.startOptions.loadFromSave &&
+      this.baseGameData.gameInstance.gameInstanceMetadata.data.campaignContext
+      ? new CampaignRestoreCoordinator(this)
+      : undefined;
+    restoreCoordinator?.begin();
     const campaignMissionDirector = CampaignMissionDirector.create(this, gameModeConditionChecker);
     if (campaignMissionDirector) {
       this.sceneGameData.services.push(campaignMissionDirector);
@@ -138,6 +145,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     // Populate the index after initial actors are in place
     actorIndex.scanExistingActors();
     campaignMissionDirector?.startAfterActorIndexing();
+    restoreCoordinator?.complete();
     // Activate the multiplayer relay path when a socket is present
     commandBusService.tryInitMultiplayer();
 

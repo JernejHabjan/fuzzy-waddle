@@ -132,6 +132,34 @@ function validateMission(
   const dialogueLineIds = new Set((dialogue?.lines ?? []).map((line) => String(line.id)));
   const cinematicIds = new Set((dialogue?.cinematics ?? []).map((cinematic) => String(cinematic.id)));
   const encounterIds = new Set((mission.encounters ?? []).map((encounter) => String(encounter.id)));
+  reportDuplicates(
+    (mission.revisionMigrations ?? []).map((migration) => String(migration.fromRevision)),
+    sourcePath,
+    "$.revisionMigrations",
+    "duplicate-revision-migration",
+    issues
+  );
+  for (const [migrationIndex, migration] of (mission.revisionMigrations ?? []).entries()) {
+    if (migration.toRevision <= migration.fromRevision || migration.toRevision > mission.revision) {
+      addIssue(
+        issues,
+        sourcePath,
+        `$.revisionMigrations[${migrationIndex}].toRevision`,
+        "invalid-revision-migration",
+        `Revision migration ${migration.fromRevision} -> ${migration.toRevision} must advance toward current revision ${mission.revision}`
+      );
+    }
+    for (const targetId of Object.values(migration.renamePhaseIds ?? {})) {
+      if (!phaseIds.has(targetId)) {
+        addIssue(issues, sourcePath, `$.revisionMigrations[${migrationIndex}].renamePhaseIds`, "missing-phase-reference", `Unknown target phase '${targetId}'`);
+      }
+    }
+    for (const targetId of Object.values(migration.renameObjectiveIds ?? {})) {
+      if (!objectiveIds.has(targetId)) {
+        addIssue(issues, sourcePath, `$.revisionMigrations[${migrationIndex}].renameObjectiveIds`, "missing-objective-reference", `Unknown target objective '${targetId}'`);
+      }
+    }
+  }
   for (const error of validateCampaignParticipants(mission.participants)) {
     addIssue(issues, sourcePath, "$.participants", "invalid-participant", error);
   }
@@ -432,8 +460,37 @@ function validateMission(
   validateObjectiveDependencyCycles(mission, issues);
   for (const [checkpointIndex, checkpoint] of mission.checkpoints.entries()) {
     const checkpointPath = `$.checkpoints[${checkpointIndex}]`;
+    validateObjectiveTextReference(checkpoint.titleTextId, `${checkpointPath}.titleTextId`, textIds, sourcePath, issues);
     validateCondition(checkpoint.trigger, sourcePath, `${checkpointPath}.trigger`, registries, issues);
     validateActions(checkpoint.requiredActions, sourcePath, `${checkpointPath}.requiredActions`, registries, issues);
+    validateActions(
+      checkpoint.retryCleanupActions ?? [],
+      sourcePath,
+      `${checkpointPath}.retryCleanupActions`,
+      registries,
+      issues
+    );
+    if (checkpoint.resumePresentation?.textId) {
+      validateObjectiveTextReference(
+        checkpoint.resumePresentation.textId,
+        `${checkpointPath}.resumePresentation.textId`,
+        textIds,
+        sourcePath,
+        issues
+      );
+    }
+    if (
+      checkpoint.resumePresentation?.cinematicId &&
+      !cinematicIds.has(String(checkpoint.resumePresentation.cinematicId))
+    ) {
+      addIssue(
+        issues,
+        sourcePath,
+        `${checkpointPath}.resumePresentation.cinematicId`,
+        "missing-cinematic-reference",
+        `Unknown cinematic '${checkpoint.resumePresentation.cinematicId}'`
+      );
+    }
   }
   for (const [rewardIndex, reward] of (rewards?.rewards ?? []).entries()) {
     const rewardPath = `$.rewards[${rewardIndex}]`;
@@ -1047,6 +1104,7 @@ function collectMissionActionEntries(
   }
   for (const [checkpointIndex, checkpoint] of mission.checkpoints.entries()) {
     addActions(checkpoint.requiredActions, `$.checkpoints[${checkpointIndex}].requiredActions`);
+    addActions(checkpoint.retryCleanupActions ?? [], `$.checkpoints[${checkpointIndex}].retryCleanupActions`);
   }
   for (const [encounterIndex, encounter] of (mission.encounters ?? []).entries()) {
     const addWaves = (waves: typeof encounter.waves, jsonPath: string): void => {

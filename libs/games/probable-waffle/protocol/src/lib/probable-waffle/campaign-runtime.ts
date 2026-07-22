@@ -267,6 +267,13 @@ export interface CampaignMissionRuntimeIntegrity {
   diagnostic?: CampaignMissionRuntimeDiagnostic;
 }
 
+export interface CampaignRestoreInvariantReport {
+  readonly status: "valid" | "invalid";
+  readonly checkedAtTick: number;
+  readonly issues: readonly string[];
+  readonly recoveryOptions: readonly ("earlier-autosave" | "restart-mission" | "export" | "delete")[];
+}
+
 /** Canonical JSON-safe mission state included by saves, snapshots, hashes, reconnects, and replays. */
 export interface CampaignMissionRuntimeState {
   schemaVersion: typeof CAMPAIGN_MISSION_RUNTIME_SCHEMA_VERSION;
@@ -291,6 +298,10 @@ export interface CampaignMissionRuntimeState {
   participantTeams: Record<string, number>;
   encounters: Record<string, CampaignMissionEncounterRuntimeState>;
   claimedTriggerIds: string[];
+  /** Checkpoint claims are optional only for pre-checkpoint runtime snapshots. */
+  claimedCheckpointIds?: string[];
+  pendingCheckpointIds?: string[];
+  lastCheckpointId?: string;
   triggerStates: Record<string, CampaignMissionTriggerRuntimeState>;
   claimedRewardIds: string[];
   /** Present on progression-aware runs; optional only for typed legacy fixtures and migration boundaries. */

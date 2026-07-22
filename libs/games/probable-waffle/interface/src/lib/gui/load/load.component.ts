@@ -7,7 +7,10 @@ import {
   ProbableWaffleGameInstanceType,
   isCampaignMissionId,
   type CampaignMissionId,
-  type GameSaveRecord
+  type GameSaveListEntry,
+  type GameSaveRecord,
+  type UnsupportedGameSaveRecord,
+  isSupportedGameSaveRecord
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { ActivatedRoute, Router } from "@angular/router";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
@@ -36,7 +39,7 @@ export class LoadComponent implements OnInit {
   private readonly gameInstanceClientService = inject(GameInstanceClientService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
-  protected readonly saves = signal<GameSaveRecord[]>([]);
+  protected readonly saves = signal<GameSaveListEntry[]>([]);
   protected readonly renameSaveId = signal<string | undefined>(undefined);
   protected readonly renameValue = signal("");
   missionScopeId?: CampaignMissionId;
@@ -65,7 +68,7 @@ export class LoadComponent implements OnInit {
       .sort((a, b) => b.newestAt.localeCompare(a.newestAt));
   });
   protected readonly filteredSaves = computed(() =>
-    this.saves().filter(
+    this.saves().filter(isSupportedGameSaveRecord).filter(
       (save) =>
         save.gameInstanceData.gameInstanceMetadataData?.type !== ProbableWaffleGameInstanceType.Replay &&
         (!this.scopeFilter || save.scope === this.scopeFilter) &&
@@ -74,6 +77,9 @@ export class LoadComponent implements OnInit {
   );
   protected readonly skirmishSaves = computed(() =>
     this.filteredSaves().filter((save) => save.scope === GameSaveScope.Skirmish)
+  );
+  protected readonly unsupportedSaves = computed(() =>
+    this.saves().filter((save): save is UnsupportedGameSaveRecord => !isSupportedGameSaveRecord(save))
   );
   fromGame: boolean = false;
   dialogRef?: NgbModalRef;
@@ -95,17 +101,33 @@ export class LoadComponent implements OnInit {
       // if we are loading from the game, we need to stop the current game instance
       await this.gameInstanceClientService.stopGameInstance();
       setTimeout(async () => {
-        await this.gameInstanceClientService.loadSavedGameData(save.gameInstanceData);
+        await this.gameInstanceClientService.loadSavedGameData(save.gameInstanceData, save.campaign);
         this.gameInstanceClientService.gameInstanceToGameComponentCommunicator.next("refresh");
       }, 50);
     } else {
-      await this.gameInstanceClientService.loadSavedGameData(save.gameInstanceData);
+      await this.gameInstanceClientService.loadSavedGameData(save.gameInstanceData, save.campaign);
     }
   }
 
   protected async deleteSave(save: GameSaveRecord) {
     await this.gameSaveService.delete(save.id);
     await this.setData();
+  }
+
+  protected async deleteUnsupportedSave(save: UnsupportedGameSaveRecord): Promise<void> {
+    await this.gameSaveService.delete(save.id);
+    await this.setData();
+  }
+
+  protected async exportUnsupportedSave(save: UnsupportedGameSaveRecord): Promise<void> {
+    const content = await this.gameSaveService.exportSave(save.id);
+    if (!content) return;
+    const url = URL.createObjectURL(new Blob([content], { type: "application/json" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `probable-waffle-save-${save.id}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
   }
 
   protected beginRename(save: GameSaveRecord): void {

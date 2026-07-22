@@ -56,6 +56,22 @@
       "type": "integer",
       "minimum": 1
     },
+    "revisionMigrations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["fromRevision", "toRevision"],
+        "properties": {
+          "fromRevision": { "type": "integer", "minimum": 1 },
+          "toRevision": { "type": "integer", "minimum": 1 },
+          "renamePhaseIds": { "$ref": "#/$defs/idRenameMap" },
+          "renameObjectiveIds": { "$ref": "#/$defs/idRenameMap" },
+          "renameFactIds": { "$ref": "#/$defs/idRenameMap" },
+          "renameCounterIds": { "$ref": "#/$defs/idRenameMap" }
+        }
+      }
+    },
     "mapId": {
       "enum": [1, 2, 3]
     },
@@ -334,6 +350,28 @@
           },
           "savePolicy": {
             "enum": ["when-stable", "post-cinematic"]
+          },
+          "retryCleanupActions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/action"
+            }
+          },
+          "resumePresentation": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "textId": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+              },
+              "cinematicId": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+              }
+            }
           }
         }
       }
@@ -363,6 +401,14 @@
     }
   },
   "$defs": {
+    "idRenameMap": {
+      "type": "object",
+      "propertyNames": { "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+      }
+    },
     "campaignId": {
       "type": "string",
       "minLength": 1,

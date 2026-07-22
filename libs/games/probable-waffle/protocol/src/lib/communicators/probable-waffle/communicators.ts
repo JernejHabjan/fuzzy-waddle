@@ -325,7 +325,7 @@ export enum ProbableWaffleGatewayEvent {
 }
 
 export type AllScenesEventData =
-  | { name: "save-game"; data?: { kind: "manual" | "autosave" | "quicksave" } }
+  | { name: "save-game"; data?: { kind: "manual" | "autosave" | "quicksave"; checkpointId?: string } }
   | { name: "external-modal-pause-changed"; data: { paused: boolean } }
   | { name: "chat-message-received"; data: ChatMessage }
   | { name: "selection.singleSelect"; data: ProbableWaffleSelectionData }

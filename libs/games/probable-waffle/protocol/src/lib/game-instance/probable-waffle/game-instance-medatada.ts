@@ -2,6 +2,7 @@ import { GameInstanceMetadata, type GameInstanceMetadataData } from "@fuzzy-wadd
 import type { GameCommand } from "./game-command";
 import type {
   CampaignChapterId,
+  CampaignGameSaveContext,
   CampaignId,
   CampaignMissionId,
   CampaignMissionProgressionSnapshot
@@ -26,6 +27,7 @@ export interface CampaignGameContext {
   runId: string;
   difficulty?: "story" | "normal" | "hard";
   progressionSnapshot?: CampaignMissionProgressionSnapshot;
+  restoredSaveContext?: CampaignGameSaveContext;
 }
 
 export interface ProbableWaffleReplayPlayerData {

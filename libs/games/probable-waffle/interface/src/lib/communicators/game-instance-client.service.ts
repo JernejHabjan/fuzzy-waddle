@@ -4,6 +4,7 @@ import { environment } from "@fuzzy-waddle/environments/environment";
 import { HttpClient } from "@angular/common/http";
 import {
   createPlayerLobbyDefinition,
+  CAMPAIGN_MISSION_RUNTIME_SCHEMA_VERSION,
   type DifficultyModifiers,
   GameSetupHelpers,
   GameSaveKind,
@@ -51,6 +52,7 @@ import type { MatchmakingOptions } from "../gui/online/matchmaking/matchmaking-o
 import { GameSaveService } from "../services/game-save/game-save.service";
 import { SaveGameDialogComponent } from "../gui/save-game-dialog/save-game-dialog.component";
 import type { SaveGameDialogResult } from "../gui/save-game-dialog/save-game-dialog-result";
+import { ToastService } from "@fuzzy-waddle/platform-game-host/angular/services/toast.service";
 
 @Injectable({
   providedIn: "root"
@@ -74,6 +76,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   private readonly modalService = inject(NgbModal);
   private readonly router = inject(Router);
   private readonly ngZone = inject(NgZone);
+  private readonly toastService = inject(ToastService);
   private communicators?: ProbableWaffleCommunicators;
   private communicatorSubscriptions: Subscription[] = [];
   private externalModalOpen = false;
@@ -162,6 +165,8 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
           filter(
             (config) =>
               config.name === "save-game" ||
+              config.name === "save-game-rejected" ||
+              config.name === "campaign-restore-failed" ||
               config.name === "load-game" ||
               config.name === "settings" ||
               config.name === "chat"
@@ -175,6 +180,15 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
                 console.log("save game requested", payload.data);
               }
               await this.saveGameInstance(payload.data);
+              break;
+            case "save-game-rejected":
+              this.toastService.showWarning("Save unavailable", payload.data?.reason ?? "The mission cannot be saved yet.");
+              break;
+            case "campaign-restore-failed":
+              this.toastService.showWarning(
+                "Save recovery required",
+                `${payload.data?.issues?.join(" ") ?? "The save could not be restored safely."} Try an earlier autosave or restart the mission.`
+              );
               break;
             case "load-game":
               if (this.DEBUG) {
@@ -394,7 +408,10 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     )
       return;
     this.lastCheckpointAutosave = { checkpointId, savedAt: now };
-    this.probableWaffleCommunicatorService.allScenes.emit({ name: "save-game", data: { kind: "autosave" } });
+    this.probableWaffleCommunicatorService.allScenes.emit({
+      name: "save-game",
+      data: { kind: "autosave", checkpointId }
+    });
   }
 
   async startGame(): Promise<void> {
@@ -749,10 +766,17 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     await firstValueFrom(this.httpClient.delete<void>(url, {}));
   }
 
-  async loadSavedGameData(gameInstanceData: ProbableWaffleGameInstanceData): Promise<void> {
-    if (!gameInstanceData.gameInstanceMetadataData) throw new Error("Save metadata is required");
-    gameInstanceData.gameInstanceMetadataData.startOptions.loadFromSave = true;
-    this.gameInstance = new ProbableWaffleGameInstance(gameInstanceData);
+  async loadSavedGameData(
+    gameInstanceData: ProbableWaffleGameInstanceData,
+    campaignSaveContext?: import("@fuzzy-waddle/probable-waffle-protocol").CampaignGameSaveContext
+  ): Promise<void> {
+    const restoredData = structuredClone(gameInstanceData);
+    if (!restoredData.gameInstanceMetadataData) throw new Error("Save metadata is required");
+    restoredData.gameInstanceMetadataData.startOptions.loadFromSave = true;
+    if (restoredData.gameInstanceMetadataData.campaignContext && campaignSaveContext) {
+      restoredData.gameInstanceMetadataData.campaignContext.restoredSaveContext = structuredClone(campaignSaveContext);
+    }
+    this.gameInstance = new ProbableWaffleGameInstance(restoredData);
     this.syncCurrentPlayerNumberFromGameInstance();
     await this.startListeningToGameInstanceEvents();
     await this.navigateDirectlyToGame();
@@ -789,7 +813,15 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
           chapterId: campaign.chapterId,
           missionId: campaign.missionId,
           missionRevision: campaign.missionRevision,
-          runId: campaign.runId
+          runId: campaign.runId,
+          runtimeSchemaVersion:
+            gameInstanceData.gameStateData?.campaignMission?.schemaVersion ?? CAMPAIGN_MISSION_RUNTIME_SCHEMA_VERSION,
+          profileRevision:
+            gameInstanceData.gameStateData?.campaignMission?.progression?.baseProfileRevision ??
+            campaign.progressionSnapshot?.baseProfileRevision ??
+            0,
+          ...(data.checkpointId ? { checkpointId: data.checkpointId } : {}),
+          participantCount: Math.max(1, gameInstanceData.players?.length ?? 1)
         }
       });
       return;

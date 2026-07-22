@@ -7,10 +7,11 @@ import { TechTreeService } from "./tech-tree/tech-tree.service";
 import type { SaveGamePayload } from "./save-game-payload";
 import { SelectionGroupsComponent } from "../player/human-controller/selection-groups.component";
 import { CameraMovementHandler } from "../player/human-controller/cameraMovementHandler";
-import { GameSessionState } from "@fuzzy-waddle/platform-game-sessions";
 import { type AllScenesEventData, ProbableWafflePlayerType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { AiPlayerHandler } from "../player/ai-controller/ai-player-handler";
 import { SimulationTickService } from "../world/services/simulation-tick.service";
+import { evaluateCampaignSaveEligibility } from "./campaign-save-eligibility";
+import { GameSessionState } from "@fuzzy-waddle/platform-game-sessions";
 
 export class SaveGame {
   private saveGameSubscription: Subscription;
@@ -19,7 +20,7 @@ export class SaveGame {
   constructor(private scene: GameProbableWaffleScene) {
     this.saveGameSubscription = scene.communicator.allScenes
       .pipe(filter((event): event is Extract<AllScenesEventData, { name: "save-game" }> => event.name === "save-game"))
-      .subscribe((event) => this.onSaveGame(event.data?.kind));
+      .subscribe((event) => this.onSaveGame(event.data));
     scene.input.keyboard?.on("keydown", this.handleQuickSaveShortcut, this);
     scene.onShutdown.subscribe(() => this.destroy());
   }
@@ -37,8 +38,24 @@ export class SaveGame {
    * Automatic snapshots are rejected during pauses and while another save is running so they never
    * capture a modal-paused or partially serialized simulation.
    */
-  private async onSaveGame(kind: SaveGamePayload["kind"] = "manual") {
-    if (this.saveInProgress || (kind === "autosave" && !this.canAutosave())) return;
+  private async onSaveGame(request: Pick<SaveGamePayload, "kind" | "checkpointId"> = { kind: "manual" }) {
+    const kind = request.kind ?? "manual";
+    if (this.saveInProgress) return;
+    if (kind === "autosave" && !request.checkpointId && !this.canAutosave()) return;
+    const tickService = getSceneService(this.scene, SimulationTickService);
+    const eligibility = evaluateCampaignSaveEligibility({
+      sceneActive: this.scene.sys.isActive(),
+      sessionState: this.scene.baseGameData.gameInstance.gameInstanceMetadata.data.sessionState,
+      runtime: this.scene.baseGameData.gameInstance.gameState?.data.campaignMission,
+      pauseReasons: tickService?.getPauseReasons() ?? [],
+      request: { kind, checkpointId: request.checkpointId }
+    });
+    if (!eligibility.eligible) {
+      if (kind !== "autosave") {
+        this.scene.communicator.utilityEvents.emit({ name: "save-game-rejected", data: eligibility });
+      }
+      return;
+    }
     this.saveInProgress = true;
     try {
       const sceneActorCreator = getSceneService(this.scene, SceneActorCreator);
@@ -62,7 +79,8 @@ export class SaveGame {
         name: "save-game",
         data: {
           thumbnail,
-          kind
+          kind,
+          ...(request.checkpointId ? { checkpointId: request.checkpointId } : {})
         } satisfies SaveGamePayload
       });
     } finally {

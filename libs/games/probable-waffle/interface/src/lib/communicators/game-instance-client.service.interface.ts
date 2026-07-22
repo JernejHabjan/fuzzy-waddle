@@ -47,7 +47,10 @@ export interface GameInstanceClientServiceInterface {
   getGameInstanceData(gameInstanceId: GameInstanceId): Promise<ProbableWaffleGameInstanceData | null>;
   addAiPlayer(): Promise<PositionPlayerDefinition>;
   addSelfAsPlayer(): Promise<PositionPlayerDefinition>;
-  loadSavedGameData(gameInstanceData: ProbableWaffleGameInstanceData): Promise<void>;
+  loadSavedGameData(
+    gameInstanceData: ProbableWaffleGameInstanceData,
+    campaignSaveContext?: import("@fuzzy-waddle/probable-waffle-protocol").CampaignGameSaveContext
+  ): Promise<void>;
   saveGameInstance(data: Record<string, any>): Promise<void>;
   requestCheckpointAutosave(checkpointId: string): void;
   startReplay(gameInstanceData: ProbableWaffleGameInstanceData): Promise<void>;

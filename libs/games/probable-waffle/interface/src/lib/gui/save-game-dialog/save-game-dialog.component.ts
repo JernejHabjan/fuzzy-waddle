@@ -7,6 +7,7 @@ import {
   GameSaveScope,
   type CampaignMissionId,
   type GameSaveRecord,
+  isSupportedGameSaveRecord,
   ProbableWaffleGameInstanceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { GameSaveService } from "../../services/game-save/game-save.service";
@@ -42,7 +43,7 @@ export class SaveGameDialogComponent implements OnInit {
   /** Lists only named saves eligible to replace the current campaign mission or skirmish game. */
   private async refreshSaves(): Promise<void> {
     this.saves.set(
-      (await this.gameSaveService.list()).filter(
+      (await this.gameSaveService.list()).filter(isSupportedGameSaveRecord).filter(
         (save) =>
           save.kind === GameSaveKind.Manual &&
           save.gameInstanceData.gameInstanceMetadataData?.type !== ProbableWaffleGameInstanceType.Replay &&

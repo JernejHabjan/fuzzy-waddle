@@ -12,7 +12,8 @@ export enum SimulationPauseReason {
   Player = "player",
   ExternalModal = "external-modal",
   CampaignCinematic = "campaign-cinematic",
-  CampaignRuntimeFailure = "campaign-runtime-failure"
+  CampaignRuntimeFailure = "campaign-runtime-failure",
+  CampaignRestore = "campaign-restore"
 }
 
 /**

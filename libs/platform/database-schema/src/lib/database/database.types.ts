@@ -673,9 +673,15 @@ export type Database = {
       };
       probable_waffle_game_saves: {
         Row: {
+          campaign_checkpoint_id: string | null;
           campaign_chapter_id: Database["public"]["Enums"]["probable_waffle_campaign_chapter_id"] | null;
+          campaign_id: string | null;
           campaign_mission_id: Database["public"]["Enums"]["probable_waffle_campaign_mission_id"] | null;
+          campaign_mission_revision: number | null;
+          campaign_participant_count: number | null;
+          campaign_profile_revision: number | null;
           campaign_run_id: string | null;
+          campaign_runtime_schema_version: number | null;
           created_at: string;
           encoded_game_instance_data: string;
           format_version: number;
@@ -690,9 +696,15 @@ export type Database = {
           user_id: string;
         };
         Insert: {
+          campaign_checkpoint_id?: string | null;
           campaign_chapter_id?: Database["public"]["Enums"]["probable_waffle_campaign_chapter_id"] | null;
+          campaign_id?: string | null;
           campaign_mission_id?: Database["public"]["Enums"]["probable_waffle_campaign_mission_id"] | null;
+          campaign_mission_revision?: number | null;
+          campaign_participant_count?: number | null;
+          campaign_profile_revision?: number | null;
           campaign_run_id?: string | null;
+          campaign_runtime_schema_version?: number | null;
           created_at?: string;
           encoded_game_instance_data: string;
           format_version: number;
@@ -707,9 +719,15 @@ export type Database = {
           user_id: string;
         };
         Update: {
+          campaign_checkpoint_id?: string | null;
           campaign_chapter_id?: Database["public"]["Enums"]["probable_waffle_campaign_chapter_id"] | null;
+          campaign_id?: string | null;
           campaign_mission_id?: Database["public"]["Enums"]["probable_waffle_campaign_mission_id"] | null;
+          campaign_mission_revision?: number | null;
+          campaign_participant_count?: number | null;
+          campaign_profile_revision?: number | null;
           campaign_run_id?: string | null;
+          campaign_runtime_schema_version?: number | null;
           created_at?: string;
           encoded_game_instance_data?: string;
           format_version?: number;

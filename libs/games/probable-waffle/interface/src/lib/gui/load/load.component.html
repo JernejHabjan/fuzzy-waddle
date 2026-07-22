@@ -54,6 +54,20 @@
       <div class="text-center">No saved games found.</div>
     }
 
+    @if (unsupportedSaves().length) {
+      <h2 class="text-warning mt-4">Recovery</h2>
+      @for (save of unsupportedSaves(); track save.id) {
+        <div class="aota-save-row">
+          <span
+            ><strong>{{ save.name || "Unavailable save" }}</strong> · {{ save.updatedAt | date: "medium" }} ·
+            {{ save.compatibility.reason }}. Try an earlier autosave or restart the mission.</span
+          >
+          <button class="btn btn-secondary" (click)="exportUnsupportedSave(save)">Export</button>
+          <button class="btn btn-danger" (click)="deleteUnsupportedSave(save)">Delete</button>
+        </div>
+      }
+    }
+
     <div class="mt-4">
       <button class="btn btn-primary" (click)="handleLeave()">{{ fromGame ? "Back to game" : "Leave" }}</button>
     </div>

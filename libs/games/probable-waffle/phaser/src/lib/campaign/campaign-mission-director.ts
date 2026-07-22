@@ -38,7 +38,7 @@ export class CampaignMissionDirector {
   private readonly eventAdapter: CampaignWorldEventAdapter;
   private readonly presentationSubscription: Subscription;
   private readonly objectiveNarrationSubscription: Subscription;
-  private pendingCheckpointSaves = 0;
+  private readonly pendingCheckpointSaves: string[] = [];
   private tickSubscription?: Subscription;
   private started = false;
 
@@ -91,7 +91,7 @@ export class CampaignMissionDirector {
       }
     );
     this.presentationSubscription = this.worldAdapter.presentationRequests$.subscribe((request) => {
-      if (request.kind === "checkpoint") this.pendingCheckpointSaves += 1;
+      if (request.kind === "checkpoint") this.pendingCheckpointSaves.push(request.id);
       else this.cinematicPresentation.handleRequest(request);
     });
     this.objectiveNarrationSubscription = this.objectiveProjection.notifications$.subscribe((notification) => {
@@ -101,7 +101,6 @@ export class CampaignMissionDirector {
     });
     scene.events.on(ProbableWaffleSceneEventName.ReconnectSnapshotApplied, this.onSnapshotApplied, this);
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
-    this.cinematicPresentation.restoreRuntimePresentation(this.runtime.snapshot());
   }
 
   /** Called after initial actors have been indexed so fresh phase entry can safely resolve actor references. */
@@ -115,12 +114,17 @@ export class CampaignMissionDirector {
     if (this.runtime.state.initialized) {
       tickService.fastForwardTo(this.runtime.state.integrity.lastProcessedTick);
     }
+    const checkpointId = this.scene.baseGameData.gameInstance.gameInstanceMetadata.data.campaignContext?.restoredSaveContext
+      ?.checkpointId;
+    if (checkpointId) this.publish(this.runtime.retryFromCheckpoint(checkpointId, tickService.currentTick).effects);
     const initialResult = this.runtime.start(tickService.currentTick);
     this.publish(initialResult.effects);
     this.tickSubscription = tickService.tick$.subscribe((tick) => {
       const result = this.runtime.advanceTo(tick);
       this.publish(result.effects);
     });
+    this.cinematicPresentation.restoreRuntimePresentation(this.runtime.snapshot());
+    this.presentCheckpointResume();
   }
 
   queueEvent(event: Omit<CampaignMissionRuntimeEvent, "sequence"> & { readonly sequence?: number }): number {
@@ -187,9 +191,11 @@ export class CampaignMissionDirector {
     this.objectiveProjection.rebuild(this.runtime.snapshot());
     this.cinematicPresentation.syncState(this.runtime.snapshot());
     this.objectiveProjection.presentEffects(effects);
-    while (this.pendingCheckpointSaves > 0) {
-      this.pendingCheckpointSaves -= 1;
-      this.scene.communicator.allScenes.emit({ name: "save-game", data: { kind: "autosave" } });
+    while (this.pendingCheckpointSaves.length > 0) {
+      const checkpointId = this.pendingCheckpointSaves.shift();
+      if (checkpointId) {
+        this.scene.communicator.allScenes.emit({ name: "save-game", data: { kind: "autosave", checkpointId } });
+      }
     }
     if (effects.length > 0) this.effects$.next(effects);
     const state = this.runtime.state;
@@ -247,5 +253,24 @@ export class CampaignMissionDirector {
 
   private isReplay(): boolean {
     return this.scene.baseGameData.gameInstance.gameInstanceMetadata.isReplay();
+  }
+
+  private presentCheckpointResume(): void {
+    const context = this.scene.baseGameData.gameInstance.gameInstanceMetadata.data.campaignContext;
+    const checkpointId = context?.restoredSaveContext?.checkpointId;
+    if (!context || !checkpointId) return;
+    const checkpoint = AOTA_CAMPAIGN_CONTENT_REGISTRY.getMission(context.missionId).checkpoints.find(
+      (candidate) => candidate.id === checkpointId
+    );
+    if (checkpoint?.resumePresentation?.textId) {
+      this.worldAdapter.requestObjectiveNarration(checkpoint.resumePresentation.textId, `checkpoint-${checkpointId}`);
+    }
+    if (checkpoint?.resumePresentation?.cinematicId) {
+      this.cinematicPresentation.handleRequest({
+        kind: "cinematic",
+        id: checkpoint.resumePresentation.cinematicId,
+        ownerToken: `checkpoint-resume:${checkpointId}`
+      });
+    }
   }
 }

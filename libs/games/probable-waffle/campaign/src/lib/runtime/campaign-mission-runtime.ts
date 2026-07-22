@@ -219,6 +219,19 @@ export class CampaignMissionRuntime {
     return this.result(effects);
   }
 
+  /** Runs author-declared transient cleanup when a full checkpoint snapshot is retried. */
+  retryFromCheckpoint(checkpointId: string, tick: number): CampaignMissionRuntimeResult {
+    const checkpoint = this.content.checkpoints.find((candidate) => candidate.id === checkpointId);
+    if (!checkpoint?.retryCleanupActions?.length) return this.result([]);
+    const effects: CampaignMissionRuntimeEffect[] = [];
+    const budget: TickBudget = { actions: 0, transitions: 0 };
+    this.applyActions(checkpoint.retryCleanupActions, tick, budget, effects, {
+      triggerId: `checkpoint-retry-${checkpointId}`
+    });
+    this.finishTick(budget);
+    return this.result(effects);
+  }
+
   /** Executes initial phase entry exactly once, after scene actors have been indexed. */
   start(tick: number): CampaignMissionRuntimeResult {
     const state = this.stateStore.current;
@@ -240,6 +253,7 @@ export class CampaignMissionRuntime {
     if (state.status === "running") {
       this.advanceEncounters(tick, budget, effects);
       this.settleTick(tick, budget, effects, false);
+      this.processCheckpoints(tick, budget, effects);
     }
     this.finishTick(budget);
     return this.result(effects);
@@ -290,6 +304,7 @@ export class CampaignMissionRuntime {
     this.advanceEncounters(tick, budget, effects);
 
     this.settleTick(tick, budget, effects, true);
+    this.processCheckpoints(tick, budget, effects);
 
     state.integrity.lastProcessedTick = tick;
     this.finishTick(budget);
@@ -391,6 +406,34 @@ export class CampaignMissionRuntime {
   private evaluateObjectives(tick: number, effects: CampaignMissionRuntimeEffect[]): void {
     this.objectiveService.evaluate(tick, { evaluate: (condition) => this.evaluateCondition(condition) });
     this.publishObjectiveChanges(this.objectiveService.drainChanges(), effects);
+  }
+
+  private processCheckpoints(tick: number, budget: TickBudget, effects: CampaignMissionRuntimeEffect[]): void {
+    const state = this.stateStore.current;
+    state.claimedCheckpointIds ??= [];
+    state.pendingCheckpointIds ??= [];
+    for (const checkpoint of [...this.content.checkpoints].sort(compareById)) {
+      if (state.claimedCheckpointIds.includes(checkpoint.id)) continue;
+      if (!state.pendingCheckpointIds.includes(checkpoint.id)) {
+        if (!this.evaluateCondition(checkpoint.trigger)) continue;
+        addSortedUnique(state.pendingCheckpointIds, checkpoint.id);
+        if (!this.applyActions(checkpoint.requiredActions, tick, budget, effects, { triggerId: `checkpoint-${checkpoint.id}` })) {
+          return;
+        }
+      }
+      if (checkpoint.requiredActions.some((action) => state.actionContinuations[action.id])) continue;
+      if (checkpoint.savePolicy === "post-cinematic" && state.activeCinematicId) continue;
+      const saveAction: MissionActionDefinition = {
+        id: asCampaignContentId<"action">(`checkpoint-save-${checkpoint.id}`),
+        kind: "create-checkpoint",
+        scope: "mission",
+        checkpointId: checkpoint.id
+      };
+      if (!this.applyActions([saveAction], tick, budget, effects, { triggerId: `checkpoint-${checkpoint.id}` })) return;
+      removeValue(state.pendingCheckpointIds, checkpoint.id);
+      addSortedUnique(state.claimedCheckpointIds, checkpoint.id);
+      state.lastCheckpointId = checkpoint.id;
+    }
   }
 
   private advanceEncounters(tick: number, budget: TickBudget, effects: CampaignMissionRuntimeEffect[]): void {
@@ -1083,6 +1126,8 @@ export class CampaignMissionRuntime {
     state.completedPhaseIds.sort();
     state.pendingPhaseIds.sort();
     state.claimedTriggerIds.sort();
+    state.claimedCheckpointIds?.sort();
+    state.pendingCheckpointIds?.sort();
     state.claimedRewardIds.sort();
     if (state.progression) {
       state.progression = { ...state.progression, pendingRewardIds: [...state.claimedRewardIds] };
@@ -1397,6 +1442,8 @@ export function createCampaignMissionRuntimeState(
     ),
     encounters: {},
     claimedTriggerIds: [],
+    claimedCheckpointIds: [],
+    pendingCheckpointIds: [],
     triggerStates: {},
     claimedRewardIds: [],
     ...(progressionSnapshot ? { progression: structuredClone(progressionSnapshot) } : {}),
@@ -1505,7 +1552,10 @@ function collectMissionActions(content: CampaignMissionContent): ReadonlyMap<str
     for (const trigger of phase.triggers) for (const action of trigger.actions) add(action);
     for (const transition of phase.transitions) for (const action of transition.actions) add(action);
   }
-  for (const checkpoint of content.checkpoints) for (const action of checkpoint.requiredActions) add(action);
+  for (const checkpoint of content.checkpoints) {
+    for (const action of checkpoint.requiredActions) add(action);
+    for (const action of checkpoint.retryCleanupActions ?? []) add(action);
+  }
   return actions;
 }
 

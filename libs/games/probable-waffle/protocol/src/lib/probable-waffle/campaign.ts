@@ -351,7 +351,19 @@ export const GameSaveSyncState = {
 } as const;
 export type GameSaveSyncState = (typeof GameSaveSyncState)[keyof typeof GameSaveSyncState];
 
-export const GAME_SAVE_FORMAT_VERSION = 1 as const;
+export const GAME_SAVE_FORMAT_VERSION = 2 as const;
+
+export interface CampaignGameSaveContext {
+  readonly campaignId: CampaignId;
+  readonly chapterId: CampaignChapterId;
+  readonly missionId: CampaignMissionId;
+  readonly runId: string;
+  readonly missionRevision: number;
+  readonly runtimeSchemaVersion: number;
+  readonly profileRevision: number;
+  readonly checkpointId?: string;
+  readonly participantCount: number;
+}
 
 /**
  * This key is intentionally shipped in client code. It deters low-effort IndexedDB and network-payload editing;
@@ -370,6 +382,15 @@ export interface GameSaveRecord {
   updatedAt: string;
   revision: number;
   syncState: GameSaveSyncState;
+  campaign?: CampaignGameSaveContext;
+  thumbnail?: string;
+  gameInstanceData: ProbableWaffleGameInstanceData;
+}
+
+/** Wire/storage representation keeps the large game state encoded while retaining searchable save metadata. */
+export interface EncodedGameSaveRecord extends Omit<GameSaveRecord, "gameInstanceData" | "formatVersion" | "campaign"> {
+  /** Repository records may predate the current decoder and remain listable for recovery/export. */
+  formatVersion: number;
   campaign?: {
     /** Absent only on legacy format-v1 campaign saves created before content identity was versioned. */
     campaignId?: CampaignId;
@@ -378,12 +399,25 @@ export interface GameSaveRecord {
     /** Absent only on legacy format-v1 campaign saves; migration policy is owned by campaign save restore. */
     missionRevision?: number;
     runId: string;
+    runtimeSchemaVersion?: number;
+    profileRevision?: number;
+    checkpointId?: string;
+    participantCount?: number;
   };
-  thumbnail?: string;
-  gameInstanceData: ProbableWaffleGameInstanceData;
+  encodedGameInstanceData: string;
 }
 
-/** Wire/storage representation keeps the large game state encoded while retaining searchable save metadata. */
-export interface EncodedGameSaveRecord extends Omit<GameSaveRecord, "gameInstanceData"> {
-  encodedGameInstanceData: string;
+export interface UnsupportedGameSaveRecord
+  extends Omit<EncodedGameSaveRecord, "encodedGameInstanceData"> {
+  readonly compatibility: {
+    readonly status: "unsupported";
+    readonly reason: string;
+    readonly recoveryOptions: readonly ("earlier-autosave" | "restart-mission" | "export" | "delete")[];
+  };
+}
+
+export type GameSaveListEntry = GameSaveRecord | UnsupportedGameSaveRecord;
+
+export function isSupportedGameSaveRecord(entry: GameSaveListEntry): entry is GameSaveRecord {
+  return !("compatibility" in entry);
 }

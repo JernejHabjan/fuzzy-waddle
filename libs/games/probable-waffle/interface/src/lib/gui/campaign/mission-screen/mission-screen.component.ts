@@ -109,7 +109,7 @@ export class MissionScreenComponent implements OnInit {
     this.launchInProgress.set(true);
     this.launchError.set(undefined);
     try {
-      await this.gameInstanceClientService.loadSavedGameData(save.gameInstanceData);
+      await this.gameInstanceClientService.loadSavedGameData(save.gameInstanceData, save.campaign);
     } catch (error) {
       console.error("Unable to continue campaign mission", error);
       this.launchError.set("The save could not be loaded. Choose another save or start the mission again.");

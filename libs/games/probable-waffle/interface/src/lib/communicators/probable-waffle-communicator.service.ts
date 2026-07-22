@@ -82,7 +82,10 @@ export class ProbableWaffleCommunicatorService
   /**
    * utility events that are broadcast to game instance and other angular services - for example save game
    */
-  utilityEvents = new EventEmitter<{ name: "save-game" | "load-game" | "settings" | "chat"; data?: any }>();
+  utilityEvents = new EventEmitter<{
+    name: "save-game" | "save-game-rejected" | "campaign-restore-failed" | "load-game" | "settings" | "chat";
+    data?: any;
+  }>();
   /**
    * cross scene events - internal phaser events that are not related to game instance and are broadcast to all scenes
    */
@@ -256,7 +259,10 @@ export class ProbableWaffleCommunicatorService
   private resetLocalEventBuses(): void {
     this.utilityEvents.complete();
     this.allScenes.complete();
-    this.utilityEvents = new EventEmitter<{ name: "save-game" | "load-game" | "settings" | "chat"; data?: any }>();
+    this.utilityEvents = new EventEmitter<{
+      name: "save-game" | "save-game-rejected" | "campaign-restore-failed" | "load-game" | "settings" | "chat";
+      data?: any;
+    }>();
     this.allScenes = new EventEmitter<AllScenesEventData>();
   }
 

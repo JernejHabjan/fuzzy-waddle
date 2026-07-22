@@ -120,6 +120,43 @@ describe("CampaignMissionRuntime", () => {
     expect(restored.state.integrity.lastProcessedTick).toBe(5);
   });
 
+  it("claims a checkpoint only after its required actions settle and requests its identified save", () => {
+    const savedCheckpointIds: string[] = [];
+    const adapter: CampaignWorldActionAdapter = {
+      execute: (_context, definition) => {
+        if (definition.kind === "create-checkpoint") savedCheckpointIds.push(definition.checkpointId);
+        return { status: "completed" };
+      }
+    };
+    const content: CampaignMissionContent = {
+      ...mission([phase("start")]),
+      checkpoints: [
+        {
+          id: id("first-safe-point"),
+          titleTextId: id("first-safe-point-title"),
+          trigger: { kind: "always" },
+          requiredActions: [action("set-fact", "checkpoint-ready", { factId: id("safe"), value: true })],
+          savePolicy: "when-stable",
+          retryCleanupActions: [
+            action("set-fact", "checkpoint-retry-cleanup", { factId: id("safe"), value: false })
+          ]
+        }
+      ]
+    };
+    const runtime = new CampaignMissionRuntime("ashes-of-the-ancients", content, undefined, {
+      actionAdapter: adapter
+    });
+
+    runtime.start(0);
+
+    expect(runtime.state.facts["safe"]).toBe(true);
+    expect(runtime.state.claimedCheckpointIds).toEqual(["first-safe-point"]);
+    expect(runtime.state.lastCheckpointId).toBe("first-safe-point");
+    expect(savedCheckpointIds).toEqual(["first-safe-point"]);
+    runtime.retryFromCheckpoint("first-safe-point", 0);
+    expect(runtime.state.facts["safe"]).toBe(false);
+  });
+
   it("persists deterministic alliance changes in synchronized mission state", () => {
     const content = {
       ...mission([
