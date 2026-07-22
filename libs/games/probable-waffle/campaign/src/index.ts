@@ -40,6 +40,7 @@ export * from "./lib/runtime/conditions/campaign-condition-evaluator";
 export * from "./lib/runtime/encounters/campaign-encounter-service";
 export * from "./lib/runtime/objectives/campaign-objective-service";
 export * from "./lib/progression/campaign-progression-resolver";
+export * from "./lib/progression/campaign-profile";
 export * from "./lib/progression/campaign-reward-commit-service";
 export * from "./lib/progression/campaign-run-integrity-service";
 export * from "./lib/presentation/campaign-input-prompt-registry";

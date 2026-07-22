@@ -46,6 +46,8 @@ export class GameSaveServerService implements GameSaveServerServiceInterface {
         campaign_mission_revision: dto.campaignMissionRevision ?? null,
         campaign_runtime_schema_version: dto.campaignRuntimeSchemaVersion ?? null,
         campaign_profile_revision: dto.campaignProfileRevision ?? null,
+        campaign_loadout_ids: dto.campaignLoadoutIds ?? null,
+        campaign_loadout_snapshot_hash: dto.campaignLoadoutSnapshotHash ?? null,
         campaign_checkpoint_id: dto.campaignCheckpointId ?? null,
         campaign_participant_count: dto.campaignParticipantCount ?? null,
         revision: dto.revision,
@@ -71,6 +73,8 @@ export class GameSaveServerService implements GameSaveServerServiceInterface {
       dto.campaignMissionRevision,
       dto.campaignRuntimeSchemaVersion,
       dto.campaignProfileRevision,
+      dto.campaignLoadoutIds,
+      dto.campaignLoadoutSnapshotHash,
       dto.campaignCheckpointId,
       dto.campaignParticipantCount
     ];

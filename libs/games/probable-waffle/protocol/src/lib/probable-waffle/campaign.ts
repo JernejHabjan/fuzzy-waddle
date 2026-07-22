@@ -188,6 +188,16 @@ export interface CampaignProgressData {
   completedMissions: CampaignMissionCompletion[];
 }
 
+export type CampaignDifficulty = "story" | "normal" | "hard";
+
+export interface CampaignMissionMastery {
+  readonly firstCompletedAt: string;
+  readonly completionCount: number;
+  readonly bestDifficulty: CampaignDifficulty;
+  readonly bestDurationSeconds?: number;
+  readonly completedObjectiveIds: readonly string[];
+}
+
 export type CampaignCurrencyId = string;
 export type CampaignHeroId = string;
 export type CampaignInventoryItemDefinitionId = string;
@@ -242,6 +252,56 @@ export interface CampaignProgressionProfile {
   readonly rewardClaimIds: readonly CampaignRewardClaimId[];
 }
 
+/** One durable account or guest profile; progression remains reusable by the deterministic reward resolver. */
+export interface CampaignProfile {
+  readonly schemaVersion: 1;
+  readonly progression: CampaignProgressionProfile;
+  readonly activeLoadoutIds: readonly CampaignLoadoutId[];
+  readonly seenCinematicIds: readonly string[];
+  readonly committedRunIds: readonly string[];
+  readonly missionMastery: Readonly<Partial<Record<CampaignMissionId, CampaignMissionMastery>>>;
+}
+
+export interface CampaignProfileData {
+  readonly profile: CampaignProfile;
+  readonly completedMissions: readonly CampaignMissionCompletion[];
+}
+
+export const CampaignProfileSyncState = {
+  Guest: "guest",
+  Loading: "loading",
+  Synced: "synced",
+  Pending: "pending",
+  Error: "error"
+} as const;
+export type CampaignProfileSyncState = (typeof CampaignProfileSyncState)[keyof typeof CampaignProfileSyncState];
+
+export interface CampaignRunStartRequest {
+  readonly runId: string;
+  readonly missionId: CampaignMissionId;
+  readonly missionRevision: number;
+  readonly difficulty: CampaignDifficulty;
+  readonly baseProfileRevision: number;
+  readonly selectedLoadoutIds: readonly CampaignLoadoutId[];
+  readonly loadoutSnapshotHash: string;
+  readonly developerOverride: boolean;
+}
+
+export interface CampaignProfileUpdateRequest {
+  readonly baseProfileRevision: number;
+  readonly profile: CampaignProfile;
+}
+
+export interface CampaignProfileMergeRequest {
+  readonly profile: CampaignProfile;
+  readonly completedMissions: readonly CampaignMissionCompletion[];
+}
+
+export interface CampaignVictoryCommitResponse {
+  readonly result: CampaignRewardCommitResult;
+  readonly profileData: CampaignProfileData;
+}
+
 export type CampaignProgressionModifierStat =
   | "maximum-health"
   | "damage"
@@ -289,6 +349,7 @@ export interface CampaignVictoryCommitRequest {
   readonly baseProfileRevision: number;
   readonly discoveredRewardIds: readonly string[];
   readonly completedObjectiveIds: readonly string[];
+  readonly seenCinematicIds?: readonly string[];
   readonly difficulty: "story" | "normal" | "hard";
   readonly outcome: CampaignMissionOutcome;
   readonly replayPlayback: boolean;
@@ -366,6 +427,8 @@ export interface CampaignGameSaveContext {
   readonly missionRevision: number;
   readonly runtimeSchemaVersion: number;
   readonly profileRevision: number;
+  readonly selectedLoadoutIds?: readonly CampaignLoadoutId[];
+  readonly loadoutSnapshotHash?: string;
   readonly checkpointId?: string;
   readonly participantCount: number;
 }
@@ -406,6 +469,8 @@ export interface EncodedGameSaveRecord extends Omit<GameSaveRecord, "gameInstanc
     runId: string;
     runtimeSchemaVersion?: number;
     profileRevision?: number;
+    selectedLoadoutIds?: CampaignLoadoutId[];
+    loadoutSnapshotHash?: string;
     checkpointId?: string;
     participantCount?: number;
   };

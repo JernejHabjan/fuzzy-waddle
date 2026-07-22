@@ -38,5 +38,6 @@ describe("CampaignComponent", () => {
 
   it("renders the full campaign roadmap", () => {
     expect(fixture.nativeElement.querySelectorAll("fuzzy-waddle-campaign-chapter-card").length).toBe(5);
+    expect(fixture.nativeElement.textContent).toContain("Profile:");
   });
 });

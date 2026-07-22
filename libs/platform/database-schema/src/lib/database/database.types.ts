@@ -620,21 +620,66 @@ export type Database = {
           }
         ];
       };
+      probable_waffle_campaign_profiles: {
+        Row: {
+          active_loadout_ids: string[];
+          created_at: string;
+          profile_document: Json;
+          revision: number;
+          schema_version: number;
+          seen_cinematic_ids: string[];
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          active_loadout_ids?: string[];
+          created_at?: string;
+          profile_document: Json;
+          revision?: number;
+          schema_version?: number;
+          seen_cinematic_ids?: string[];
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          active_loadout_ids?: string[];
+          created_at?: string;
+          profile_document?: Json;
+          revision?: number;
+          schema_version?: number;
+          seen_cinematic_ids?: string[];
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       probable_waffle_campaign_progress: {
         Row: {
+          best_difficulty: Database["public"]["Enums"]["probable_waffle_campaign_difficulty"];
+          best_duration_seconds: number | null;
           completed_at: string;
+          completed_objective_ids: string[];
+          completion_count: number;
           mission_id: Database["public"]["Enums"]["probable_waffle_campaign_mission_id"];
           result_metadata: Json;
           user_id: string;
         };
         Insert: {
+          best_difficulty?: Database["public"]["Enums"]["probable_waffle_campaign_difficulty"];
+          best_duration_seconds?: number | null;
           completed_at?: string;
+          completed_objective_ids?: string[];
+          completion_count?: number;
           mission_id: Database["public"]["Enums"]["probable_waffle_campaign_mission_id"];
           result_metadata?: Json;
           user_id: string;
         };
         Update: {
+          best_difficulty?: Database["public"]["Enums"]["probable_waffle_campaign_difficulty"];
+          best_duration_seconds?: number | null;
           completed_at?: string;
+          completed_objective_ids?: string[];
+          completion_count?: number;
           mission_id?: Database["public"]["Enums"]["probable_waffle_campaign_mission_id"];
           result_metadata?: Json;
           user_id?: string;
@@ -643,30 +688,81 @@ export type Database = {
       };
       probable_waffle_campaign_runs: {
         Row: {
+          base_profile_revision: number;
+          commit_result: Json | null;
+          commit_status: Database["public"]["Enums"]["probable_waffle_campaign_commit_status"];
           completed_at: string | null;
+          difficulty: Database["public"]["Enums"]["probable_waffle_campaign_difficulty"];
           id: string;
+          integrity: Json;
+          loadout_snapshot_hash: string;
           mission_id: Database["public"]["Enums"]["probable_waffle_campaign_mission_id"];
+          mission_revision: number;
           outcome: Database["public"]["Enums"]["probable_waffle_campaign_outcome"] | null;
           result_metadata: Json;
+          selected_loadout_ids: string[];
           started_at: string;
           user_id: string;
         };
         Insert: {
+          base_profile_revision?: number;
+          commit_result?: Json | null;
+          commit_status?: Database["public"]["Enums"]["probable_waffle_campaign_commit_status"];
           completed_at?: string | null;
+          difficulty?: Database["public"]["Enums"]["probable_waffle_campaign_difficulty"];
           id: string;
+          integrity?: Json;
+          loadout_snapshot_hash?: string;
           mission_id: Database["public"]["Enums"]["probable_waffle_campaign_mission_id"];
+          mission_revision?: number;
           outcome?: Database["public"]["Enums"]["probable_waffle_campaign_outcome"] | null;
           result_metadata?: Json;
+          selected_loadout_ids?: string[];
           started_at?: string;
           user_id: string;
         };
         Update: {
+          base_profile_revision?: number;
+          commit_result?: Json | null;
+          commit_status?: Database["public"]["Enums"]["probable_waffle_campaign_commit_status"];
           completed_at?: string | null;
+          difficulty?: Database["public"]["Enums"]["probable_waffle_campaign_difficulty"];
           id?: string;
+          integrity?: Json;
+          loadout_snapshot_hash?: string;
           mission_id?: Database["public"]["Enums"]["probable_waffle_campaign_mission_id"];
+          mission_revision?: number;
           outcome?: Database["public"]["Enums"]["probable_waffle_campaign_outcome"] | null;
           result_metadata?: Json;
+          selected_loadout_ids?: string[];
           started_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
+      probable_waffle_campaign_reward_claims: {
+        Row: {
+          claim_id: string;
+          claimed_at: string;
+          committed_delta: Json;
+          mission_id: Database["public"]["Enums"]["probable_waffle_campaign_mission_id"];
+          run_id: string;
+          user_id: string;
+        };
+        Insert: {
+          claim_id: string;
+          claimed_at?: string;
+          committed_delta: Json;
+          mission_id: Database["public"]["Enums"]["probable_waffle_campaign_mission_id"];
+          run_id: string;
+          user_id: string;
+        };
+        Update: {
+          claim_id?: string;
+          claimed_at?: string;
+          committed_delta?: Json;
+          mission_id?: Database["public"]["Enums"]["probable_waffle_campaign_mission_id"];
+          run_id?: string;
           user_id?: string;
         };
         Relationships: [];
@@ -676,6 +772,8 @@ export type Database = {
           campaign_checkpoint_id: string | null;
           campaign_chapter_id: Database["public"]["Enums"]["probable_waffle_campaign_chapter_id"] | null;
           campaign_id: string | null;
+          campaign_loadout_ids: string[] | null;
+          campaign_loadout_snapshot_hash: string | null;
           campaign_mission_id: Database["public"]["Enums"]["probable_waffle_campaign_mission_id"] | null;
           campaign_mission_revision: number | null;
           campaign_participant_count: number | null;
@@ -699,6 +797,8 @@ export type Database = {
           campaign_checkpoint_id?: string | null;
           campaign_chapter_id?: Database["public"]["Enums"]["probable_waffle_campaign_chapter_id"] | null;
           campaign_id?: string | null;
+          campaign_loadout_ids?: string[] | null;
+          campaign_loadout_snapshot_hash?: string | null;
           campaign_mission_id?: Database["public"]["Enums"]["probable_waffle_campaign_mission_id"] | null;
           campaign_mission_revision?: number | null;
           campaign_participant_count?: number | null;
@@ -722,6 +822,8 @@ export type Database = {
           campaign_checkpoint_id?: string | null;
           campaign_chapter_id?: Database["public"]["Enums"]["probable_waffle_campaign_chapter_id"] | null;
           campaign_id?: string | null;
+          campaign_loadout_ids?: string[] | null;
+          campaign_loadout_snapshot_hash?: string | null;
           campaign_mission_id?: Database["public"]["Enums"]["probable_waffle_campaign_mission_id"] | null;
           campaign_mission_revision?: number | null;
           campaign_participant_count?: number | null;
@@ -945,6 +1047,20 @@ export type Database = {
       };
     };
     Functions: {
+      commit_probable_waffle_campaign_victory: {
+        Args: {
+          p_base_profile_revision: number;
+          p_commit_result: Json;
+          p_mission_id: Database["public"]["Enums"]["probable_waffle_campaign_mission_id"];
+          p_profile_document: Json;
+          p_progress_metadata: Json;
+          p_result_metadata: Json;
+          p_reward_claims: Json;
+          p_run_id: string;
+          p_user_id: string;
+        };
+        Returns: Json;
+      };
       refresh_game_score_records_full: { Args: never; Returns: undefined };
     };
     Enums: {
@@ -971,6 +1087,8 @@ export type Database = {
         | "crystal-war"
         | "united-against-volcano"
         | "the-betrayal";
+      probable_waffle_campaign_commit_status: "pending" | "committed" | "rejected";
+      probable_waffle_campaign_difficulty: "story" | "normal" | "hard";
       probable_waffle_campaign_mission_id:
         | "dreams"
         | "cyclops-and-sheep"
@@ -1132,6 +1250,8 @@ export const Constants = {
         "united-against-volcano",
         "the-betrayal"
       ],
+      probable_waffle_campaign_commit_status: ["pending", "committed", "rejected"],
+      probable_waffle_campaign_difficulty: ["story", "normal", "hard"],
       probable_waffle_campaign_mission_id: [
         "dreams",
         "cyclops-and-sheep",

@@ -1,9 +1,16 @@
 import { TestBed } from "@angular/core/testing";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import { CampaignProgressService } from "./campaign-progress.service";
+import { CampaignProfileService } from "./campaign-profile.service";
 import { AOTA_CAMPAIGN_CATALOG } from "./campaign-catalog";
 import { CampaignLaunchService } from "./campaign-launch.service";
-import { AOTA_CAMPAIGN_CONTENT_REGISTRY, asCampaignContentId } from "@fuzzy-waddle/probable-waffle-campaign";
+import {
+  AOTA_CAMPAIGN_CONTENT_REGISTRY,
+  AOTA_CAMPAIGN_PROGRESSION_REGISTRY,
+  asCampaignContentId,
+  createInitialCampaignProfile
+} from "@fuzzy-waddle/probable-waffle-campaign";
+import { signal } from "@angular/core";
 import { FactionType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 describe("CampaignLaunchService", () => {
@@ -21,6 +28,21 @@ describe("CampaignLaunchService", () => {
     getMissionProgress: jest.fn(),
     startRun: jest.fn().mockResolvedValue("run-1")
   };
+  const campaignProfile = createInitialCampaignProfile(AOTA_CAMPAIGN_PROGRESSION_REGISTRY);
+  const campaignProfileService = {
+    profile: signal(campaignProfile),
+    profileData: signal({ profile: campaignProfile, completedMissions: [] }),
+    startRun: jest.fn().mockResolvedValue({
+      runId: "run-1",
+      missionId: "dreams",
+      missionRevision: 1,
+      difficulty: "normal",
+      baseProfileRevision: 0,
+      selectedLoadoutIds: [],
+      loadoutSnapshotHash: "12345678",
+      developerOverride: true
+    })
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -28,7 +50,8 @@ describe("CampaignLaunchService", () => {
     TestBed.configureTestingModule({
       providers: [
         { provide: GameInstanceClientService, useValue: gameInstanceClientService },
-        { provide: CampaignProgressService, useValue: campaignProgressService }
+        { provide: CampaignProgressService, useValue: campaignProgressService },
+        { provide: CampaignProfileService, useValue: campaignProfileService }
       ]
     });
   });
@@ -80,6 +103,9 @@ describe("CampaignLaunchService", () => {
     );
     expect(metadataData.campaignContext).toMatchObject({
       runId: "run-1",
+      difficulty: "normal",
+      loadoutSnapshotHash: "12345678",
+      selectedLoadoutIds: [],
       progressionSnapshot: {
         baseProfileRevision: 0,
         profile: { wallet: { balances: { "campaign-crystal": 1 } } },

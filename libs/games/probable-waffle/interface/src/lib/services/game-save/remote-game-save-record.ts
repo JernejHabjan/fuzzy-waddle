@@ -18,6 +18,8 @@ export interface RemoteGameSaveRecord {
   campaign_mission_revision: number | null;
   campaign_runtime_schema_version: number | null;
   campaign_profile_revision: number | null;
+  campaign_loadout_ids: string[] | null;
+  campaign_loadout_snapshot_hash: string | null;
   campaign_checkpoint_id: string | null;
   campaign_participant_count: number | null;
   revision: number;

@@ -1,4 +1,4 @@
-import { IsBoolean, IsIn, IsInt, IsOptional, IsString, IsUUID, MaxLength, Min } from "class-validator";
+import { IsArray, IsBoolean, IsIn, IsInt, IsOptional, IsString, IsUUID, MaxLength, Min } from "class-validator";
 import {
   CAMPAIGN_CHAPTER_IDS,
   CAMPAIGN_MISSION_IDS,
@@ -22,6 +22,8 @@ export class SyncGameSaveDto {
   @IsOptional() @IsInt() @Min(1) campaignMissionRevision?: number;
   @IsOptional() @IsInt() @Min(1) campaignRuntimeSchemaVersion?: number;
   @IsOptional() @IsInt() @Min(0) campaignProfileRevision?: number;
+  @IsOptional() @IsArray() @IsString({ each: true }) campaignLoadoutIds?: string[];
+  @IsOptional() @IsString() @MaxLength(120) campaignLoadoutSnapshotHash?: string;
   @IsOptional() @IsString() @MaxLength(120) campaignCheckpointId?: string;
   @IsOptional() @IsInt() @Min(1) campaignParticipantCount?: number;
   @IsInt() @Min(1) revision!: number;

@@ -11,6 +11,8 @@ import { gameInstanceClientServiceStub } from "../../communicators/game-instance
 import { provideRouter } from "@angular/router";
 import { CampaignProgressService } from "../campaign/campaign-progress.service";
 import { CampaignProgressServiceStub } from "../campaign/campaign-progress.service.stub";
+import { CampaignProfileService } from "../campaign/campaign-profile.service";
+import { CampaignProfileServiceStub } from "../campaign/campaign-profile.service.stub";
 
 describe("ScoreScreenComponent", () => {
   let component: ScoreScreenComponent;
@@ -22,7 +24,8 @@ describe("ScoreScreenComponent", () => {
       providers: [
         provideRouter([]),
         { provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub },
-        { provide: CampaignProgressService, useValue: CampaignProgressServiceStub }
+        { provide: CampaignProgressService, useValue: CampaignProgressServiceStub },
+        { provide: CampaignProfileService, useValue: new CampaignProfileServiceStub() }
       ]
     })
       .overrideComponent(ScoreScreenComponent, {
@@ -69,6 +72,10 @@ describe("ScoreScreenComponent", () => {
       {
         difficulty: { difficulty: "hard" },
         claimedRewardIds: ["story", "secret"],
+        cinematics: {
+          intro: { cinematicId: "intro", stage: "completed" },
+          outro: { cinematicId: "outro", stage: "presenting" }
+        },
         progression: { baseProfileRevision: 7 },
         rewardIntegrity: { eligibleForRewards: false, invalidationReasons: ["developer-command"] },
         objectives: {}
@@ -81,6 +88,7 @@ describe("ScoreScreenComponent", () => {
       missionRevision: 2,
       baseProfileRevision: 7,
       discoveredRewardIds: ["secret", "story"],
+      seenCinematicIds: ["intro"],
       difficulty: "hard",
       integrity: { eligibleForRewards: false }
     });

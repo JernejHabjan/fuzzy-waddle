@@ -1,10 +1,22 @@
-import type { CampaignMissionId } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { CampaignResultDto } from "./campaign.dto";
+import type {
+  CampaignMissionId,
+  CampaignProfile,
+  CampaignProfileData,
+  CampaignVictoryCommitResponse
+} from "@fuzzy-waddle/probable-waffle-protocol";
+import type { CampaignResultDto, StartCampaignRunDto } from "./campaign.dto";
 
 /** Authenticated campaign run and progress persistence contract. */
-export interface CampaignServerServiceInterface {
-  progress(userId: string): Promise<unknown>;
-  start(userId: string, runId: string, missionId: CampaignMissionId): Promise<void>;
-  result(userId: string, result: CampaignResultDto): Promise<void>;
-  merge(userId: string, completions: Array<{ missionId: CampaignMissionId; completedAt: string }>): Promise<void>;
+export interface CampaignProfileServerServiceInterface {
+  profile(userId: string): Promise<CampaignProfileData>;
+  updateProfile(userId: string, baseProfileRevision: number, profile: CampaignProfile): Promise<CampaignProfileData>;
+  start(userId: string, request: StartCampaignRunDto): Promise<void>;
+  result(userId: string, result: CampaignResultDto): Promise<CampaignVictoryCommitResponse>;
+  merge(
+    userId: string,
+    profile: CampaignProfile,
+    completions: Array<{ missionId: CampaignMissionId; completedAt: string }>
+  ): Promise<CampaignProfileData>;
 }
+
+export type CampaignServerServiceInterface = CampaignProfileServerServiceInterface;

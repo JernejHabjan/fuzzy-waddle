@@ -1,7 +1,6 @@
 import type {
   CampaignMissionId,
   CampaignMissionProgress,
-  CampaignProgressData,
   CampaignVictoryCommitRequest
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { CampaignProgressServiceInterface } from "./campaign-progress.service.interface";
@@ -22,8 +21,6 @@ export class CampaignProgressServiceStub extends CampaignProgressServiceInterfac
   recordResult(result: CampaignVictoryCommitRequest): Promise<void> {
     return Promise.resolve();
   }
-
-  setProgress(progress: CampaignProgressData): void {}
 
   startRun(missionId: CampaignMissionId): Promise<string> {
     return Promise.resolve("");

@@ -1,29 +1,24 @@
-import { HttpClient } from "@angular/common/http";
-import { computed, inject, Injectable, signal } from "@angular/core";
-import { firstValueFrom } from "rxjs";
+import { computed, inject, Injectable } from "@angular/core";
 import {
   type CampaignCatalog,
   type CampaignMissionId,
-  CampaignMissionOutcome,
   type CampaignMissionProgress,
   type CampaignProgressData,
   type CampaignVictoryCommitRequest
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { AOTA_CAMPAIGN_CATALOG } from "./campaign-catalog";
-import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
 import { environment } from "@fuzzy-waddle/environments/environment";
 import { CampaignProgressServiceInterface } from "./campaign-progress.service.interface";
-
-const EMPTY_PROGRESS: CampaignProgressData = { completedMissions: [] };
-const GUEST_PROGRESS_KEY = "aota-campaign-progress-v1";
+import { CampaignProfileService } from "./campaign-profile.service";
 
 @Injectable({ providedIn: "root" })
 /** Resolves mission unlocks and reconciles guest progress with authenticated persistence. */
 export class CampaignProgressService implements CampaignProgressServiceInterface {
   private readonly catalog = AOTA_CAMPAIGN_CATALOG;
-  private readonly authService = inject(AuthService);
-  private readonly httpClient = inject(HttpClient);
-  private readonly progress = signal<CampaignProgressData>(this.readGuestProgress());
+  private readonly profileService = inject(CampaignProfileService);
+  private readonly progress = computed<CampaignProgressData>(() => ({
+    completedMissions: [...this.profileService.profileData().completedMissions]
+  }));
 
   readonly missionProgress = computed(() => this.resolveMissionProgress(this.catalog, this.progress()));
   readonly recommendedMission = computed(
@@ -32,69 +27,18 @@ export class CampaignProgressService implements CampaignProgressServiceInterface
       this.missionProgress().find((entry) => entry.state === "inProgress")
   );
 
-  setProgress(progress: CampaignProgressData): void {
-    this.progress.set(progress);
-  }
-
   async load(): Promise<void> {
-    const guest = this.readGuestProgress();
-    if (!this.authService.isAuthenticated) {
-      this.progress.set(guest);
-      return;
-    }
-    try {
-      const remote = await firstValueFrom(
-        this.httpClient.get<CampaignProgressData>(`${environment.api}api/probable-waffle/campaign/progress`)
-      );
-      const merged = this.mergeProgress(guest, remote);
-      this.progress.set(merged);
-      if (guest.completedMissions.length) {
-        await firstValueFrom(this.httpClient.post(`${environment.api}api/probable-waffle/campaign/merge`, guest));
-      }
-    } catch {
-      this.progress.set(guest);
-    }
+    await this.profileService.load();
   }
 
   async startRun(missionId: CampaignMissionId): Promise<string> {
-    const runId = crypto.randomUUID();
-    if (this.authService.isAuthenticated) {
-      try {
-        await firstValueFrom(
-          this.httpClient.post(`${environment.api}api/probable-waffle/campaign/runs`, { runId, missionId })
-        );
-      } catch {
-        // Keep the local run playable while offline.
-      }
-    }
-    return runId;
+    // Keep the local run playable while offline.
+    return (await this.profileService.startRun(missionId)).runId;
   }
 
   async recordResult(result: CampaignVictoryCommitRequest): Promise<void> {
-    if (result.outcome === CampaignMissionOutcome.Victory) {
-      const merged = this.mergeProgress(this.progress(), {
-        completedMissions: [{ missionId: result.missionId, completedAt: new Date().toISOString() }]
-      });
-      this.progress.set(merged);
-      localStorage.setItem(GUEST_PROGRESS_KEY, JSON.stringify(merged));
-    }
-    if (this.authService.isAuthenticated) {
-      try {
-        await firstValueFrom(
-          this.httpClient.post(`${environment.api}api/probable-waffle/campaign/results`, {
-            ...result,
-            completedObjectiveIds: [...result.completedObjectiveIds].sort(),
-            discoveredRewardIds: [...result.discoveredRewardIds].sort(),
-            integrity: {
-              ...result.integrity,
-              invalidationReasons: [...result.integrity.invalidationReasons].sort()
-            }
-          })
-        );
-      } catch {
-        // Local completion is retained for the next merge opportunity.
-      }
-    }
+    // Local completion is retained for the next merge opportunity.
+    await this.profileService.commitVictory(result);
   }
 
   getMissionProgress(missionId: CampaignMissionId): CampaignMissionProgress | undefined {
@@ -126,20 +70,4 @@ export class CampaignProgressService implements CampaignProgressServiceInterface
     });
   }
 
-  private mergeProgress(left: CampaignProgressData, right: CampaignProgressData): CampaignProgressData {
-    const completions = new Map<CampaignMissionId, string>();
-    for (const completion of [...left.completedMissions, ...right.completedMissions]) {
-      const current = completions.get(completion.missionId);
-      if (!current || completion.completedAt < current) completions.set(completion.missionId, completion.completedAt);
-    }
-    return { completedMissions: [...completions].map(([missionId, completedAt]) => ({ missionId, completedAt })) };
-  }
-
-  private readGuestProgress(): CampaignProgressData {
-    try {
-      return JSON.parse(localStorage.getItem(GUEST_PROGRESS_KEY) ?? "null") ?? EMPTY_PROGRESS;
-    } catch {
-      return EMPTY_PROGRESS;
-    }
-  }
 }

@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, type OnDestroy, type OnInit } from "@angular/core";
+import { Component, computed, HostListener, inject, type OnDestroy, type OnInit } from "@angular/core";
 import { Subscription } from "rxjs";
 import { ScoreTableComponent } from "./table/score-table.component";
 import { ScoreThroughTimeComponent } from "./chart/score-through-time.component";
@@ -17,6 +17,8 @@ import {
   ProbableWaffleGameInstanceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { CampaignProgressService } from "../campaign/campaign-progress.service";
+import { CampaignProfileService } from "../campaign/campaign-profile.service";
+import { Router } from "@angular/router";
 
 @Component({
   imports: [ScoreTableComponent, ScoreThroughTimeComponent],
@@ -30,7 +32,14 @@ export class ScoreScreenComponent implements OnInit, OnDestroy {
   private readonly scoreSubmissionService = inject(ScoreSubmissionService);
   private readonly authService = inject(AuthService);
   private readonly campaignProgressService = inject(CampaignProgressService);
+  private readonly campaignProfileService = inject(CampaignProfileService);
+  private readonly router = inject(Router);
   private scoreSubmissionSub?: Subscription;
+  protected campaignContext?: CampaignGameContext;
+  protected readonly rewardResult = this.campaignProfileService.lastCommitResult;
+  protected readonly missionMastery = computed(() =>
+    this.campaignContext ? this.campaignProfileService.profile().missionMastery[this.campaignContext.missionId] : undefined
+  );
 
   protected changeTab = (scoreTable: string) => {
     this.activeTab = scoreTable;
@@ -47,6 +56,7 @@ export class ScoreScreenComponent implements OnInit, OnDestroy {
 
     const campaignContext = gameInstance.gameInstanceMetadata.data.campaignContext;
     if (campaignContext) {
+      this.campaignContext = campaignContext;
       const campaignState = gameInstance.gameState?.data.campaignMission;
       const playerResult = this.scoreDataService
         .getAllPlayerScores()
@@ -124,6 +134,16 @@ export class ScoreScreenComponent implements OnInit, OnDestroy {
     }
   }
 
+  protected async returnToCampaign(replayMission: boolean): Promise<void> {
+    const context = this.campaignContext;
+    await this.gameInstanceClientService.leaveScoreScreen(false);
+    await this.router.navigate(
+      context && replayMission
+        ? ["/aota/campaign", context.chapterId, context.missionId]
+        : ["/aota/campaign"]
+    );
+  }
+
   @HostListener("window:beforeunload")
   async onBeforeUnload() {
     // Best-effort score-screen exit. This should remove only the current player
@@ -156,6 +176,10 @@ export function campaignResultCommitRequest(
     baseProfileRevision: state?.progression?.baseProfileRevision ?? 0,
     outcome,
     completedObjectiveIds: completedCampaignObjectiveIds(state),
+    seenCinematicIds: Object.values(state?.cinematics ?? {})
+      .filter((cinematic) => cinematic.stage === "completed")
+      .map((cinematic) => cinematic.cinematicId)
+      .sort(),
     discoveredRewardIds: [...(state?.claimedRewardIds ?? [])].sort(),
     difficulty: state?.difficulty.difficulty ?? context.difficulty ?? "normal",
     replayPlayback,

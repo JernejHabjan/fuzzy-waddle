@@ -27,6 +27,10 @@ export interface CampaignGameContext {
   missionRevision: number;
   runId: string;
   difficulty?: "story" | "normal" | "hard";
+  selectedLoadoutIds?: readonly string[];
+  loadoutSnapshotHash?: string;
+  developerOverride?: boolean;
+  seenCinematicIds?: readonly string[];
   progressionSnapshot?: CampaignMissionProgressionSnapshot;
   restoredSaveContext?: CampaignGameSaveContext;
 }

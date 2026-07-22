@@ -72,7 +72,9 @@ describe("GameInstanceClientService", () => {
             chapterId: "prologue",
             missionId: "dreams",
             missionRevision: 1,
-            runId: "run-1"
+            runId: "run-1",
+            selectedLoadoutIds: ["primary"],
+            loadoutSnapshotHash: "12345678"
           }
         }
       }
@@ -91,6 +93,8 @@ describe("GameInstanceClientService", () => {
           runId: "run-1",
           runtimeSchemaVersion: CAMPAIGN_MISSION_RUNTIME_SCHEMA_VERSION,
           profileRevision: 0,
+          selectedLoadoutIds: ["primary"],
+          loadoutSnapshotHash: "12345678",
           participantCount: 1
         })
       })

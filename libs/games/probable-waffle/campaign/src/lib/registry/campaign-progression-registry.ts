@@ -90,6 +90,14 @@ export class CampaignProgressionRegistry {
   heroDefinitions(): readonly CampaignHeroDefinition[] {
     return [...this.heroes.values()];
   }
+
+  upgradeDefinitions(): readonly CampaignProgressionUpgradeDefinition[] {
+    return [...this.upgrades.values()];
+  }
+
+  unlockDefinitions(): readonly CampaignUnlockDefinition[] {
+    return [...this.unlocks.values()];
+  }
 }
 
 function uniqueMap<TDefinition extends { readonly id: string }>(

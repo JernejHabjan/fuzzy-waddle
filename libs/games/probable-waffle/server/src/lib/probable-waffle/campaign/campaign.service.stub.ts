@@ -1,11 +1,37 @@
-import type { CampaignMissionId } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { CampaignResultDto } from "./campaign.dto";
-import type { CampaignServerServiceInterface } from "./campaign.service.interface";
+import type { CampaignMissionId, CampaignProfile } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  AOTA_CAMPAIGN_PROGRESSION_REGISTRY,
+  createInitialCampaignProfile
+} from "@fuzzy-waddle/probable-waffle-campaign";
+import type { CampaignResultDto, StartCampaignRunDto } from "./campaign.dto";
+import type { CampaignProfileServerServiceInterface } from "./campaign.service.interface";
 
-export const CampaignServerServiceStub = {
-  progress: async (_userId: string) => ({ completedMissions: [] }),
-  start: async (_userId: string, _runId: string, _missionId: CampaignMissionId) => undefined,
-  result: async (_userId: string, _result: CampaignResultDto) => undefined,
-  merge: async (_userId: string, _completions: Array<{ missionId: CampaignMissionId; completedAt: string }>) =>
-    undefined
-} satisfies CampaignServerServiceInterface;
+const stubProfile = createInitialCampaignProfile(AOTA_CAMPAIGN_PROGRESSION_REGISTRY);
+
+export const CampaignProfileServerServiceStub = {
+  profile: async (_userId: string) => ({ profile: stubProfile, completedMissions: [] }),
+  updateProfile: async (_userId: string, _baseProfileRevision: number, profile: CampaignProfile) => ({
+    profile,
+    completedMissions: []
+  }),
+  start: async (_userId: string, _request: StartCampaignRunDto) => undefined,
+  result: async (_userId: string, result: CampaignResultDto) => ({
+    result: {
+      runId: result.runId,
+      status: "rejected" as const,
+      profile: stubProfile.progression,
+      appliedRewardIds: [],
+      skippedRewardIds: [],
+      warnings: [],
+      rejectionReason: "stub"
+    },
+    profileData: { profile: stubProfile, completedMissions: [] }
+  }),
+  merge: async (
+    _userId: string,
+    profile: CampaignProfile,
+    completions: Array<{ missionId: CampaignMissionId; completedAt: string }>
+  ) => ({ profile, completedMissions: completions })
+} satisfies CampaignProfileServerServiceInterface;
+
+export const CampaignServerServiceStub = CampaignProfileServerServiceStub;

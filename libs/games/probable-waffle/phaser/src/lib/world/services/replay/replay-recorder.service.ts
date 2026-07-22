@@ -169,6 +169,8 @@ export class ReplayRecorderService {
                 missionRevision: campaignContext.missionRevision,
                 runtimeSchemaVersion: initialMission.schemaVersion,
                 profileRevision: progressionSnapshot?.baseProfileRevision ?? 0,
+                selectedLoadoutIds: [...(campaignContext.selectedLoadoutIds ?? [])],
+                loadoutSnapshotHash: campaignContext.loadoutSnapshotHash ?? "",
                 participantCount: Math.max(1, replayData.players.length)
               }
             }

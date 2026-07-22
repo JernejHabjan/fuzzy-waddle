@@ -820,6 +820,8 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
             gameInstanceData.gameStateData?.campaignMission?.progression?.baseProfileRevision ??
             campaign.progressionSnapshot?.baseProfileRevision ??
             0,
+          selectedLoadoutIds: [...(campaign.selectedLoadoutIds ?? [])],
+          loadoutSnapshotHash: campaign.loadoutSnapshotHash ?? "",
           ...(data.checkpointId ? { checkpointId: data.checkpointId } : {}),
           participantCount: Math.max(1, gameInstanceData.players?.length ?? 1)
         }

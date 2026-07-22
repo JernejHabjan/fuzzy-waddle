@@ -64,6 +64,8 @@ export class GameSaveSyncService implements GameSaveSyncServiceInterface {
           campaignMissionRevision: save.campaign?.missionRevision,
           campaignRuntimeSchemaVersion: save.campaign?.runtimeSchemaVersion,
           campaignProfileRevision: save.campaign?.profileRevision,
+          campaignLoadoutIds: save.campaign?.selectedLoadoutIds,
+          campaignLoadoutSnapshotHash: save.campaign?.loadoutSnapshotHash,
           campaignCheckpointId: save.campaign?.checkpointId,
           campaignParticipantCount: save.campaign?.participantCount
         });
@@ -121,6 +123,8 @@ export class GameSaveSyncService implements GameSaveSyncServiceInterface {
               ...(remote.campaign_profile_revision !== null
                 ? { profileRevision: remote.campaign_profile_revision }
                 : {}),
+              selectedLoadoutIds: [...(remote.campaign_loadout_ids ?? [])].sort(),
+              loadoutSnapshotHash: remote.campaign_loadout_snapshot_hash ?? "",
               ...(remote.campaign_checkpoint_id ? { checkpointId: remote.campaign_checkpoint_id } : {}),
               ...(remote.campaign_participant_count
                 ? { participantCount: remote.campaign_participant_count }

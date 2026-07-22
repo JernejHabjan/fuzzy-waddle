@@ -21,7 +21,10 @@ import { CampaignPhaserWorldAdapter } from "./actions/campaign-phaser-world-adap
 import { CampaignTrustedHookRegistry } from "./actions/campaign-trusted-hook-registry";
 import { CampaignWorldEventAdapter } from "./campaign-world-event-adapter";
 import { CampaignObjectiveProjectionStore } from "./objectives/campaign-objective-projection-store";
-import { PhaserCampaignCinematicPresentationService } from "./presentation/campaign-cinematic-presentation.service";
+import {
+  LocalCampaignSeenCinematicStore,
+  PhaserCampaignCinematicPresentationService
+} from "./presentation/campaign-cinematic-presentation.service";
 import { IndexedScenarioReferenceRegistry } from "./scenario/scenario-reference-registry";
 
 export interface CampaignMissionOutcomeHandler {
@@ -70,6 +73,10 @@ export class CampaignMissionDirector {
     this.eventAdapter = new CampaignWorldEventAdapter(scene, this);
     const context = scene.baseGameData.gameInstance.gameInstanceMetadata.data.campaignContext;
     if (!context) throw new Error("CampaignMissionDirector requires campaignContext");
+    if (context.developerOverride) {
+      this.runtime.invalidateRewardIntegrity("developer-content-override");
+      this.syncGameState();
+    }
     const content = AOTA_CAMPAIGN_CONTENT_REGISTRY.getMission(context.missionId);
     this.objectiveProjection = new CampaignObjectiveProjectionStore(
       content.objectives,
@@ -79,6 +86,8 @@ export class CampaignMissionDirector {
         ? "touch"
         : "keyboard-mouse"
     );
+    const seenCinematics = new LocalCampaignSeenCinematicStore();
+    for (const cinematicId of context.seenCinematicIds ?? []) seenCinematics.markSeen(context.campaignId, cinematicId);
     this.cinematicPresentation = new PhaserCampaignCinematicPresentationService(
       scene,
       context.campaignId,
@@ -89,7 +98,8 @@ export class CampaignMissionDirector {
         dialogueAcknowledged: (lineId, ownerToken) => this.acknowledgeDialogue(lineId, ownerToken),
         cinematicCue: (cinematicId, cueIndex) => this.cinematicCue(cinematicId, cueIndex),
         cinematicFinished: (cinematicId, skipped) => this.finishCinematic(cinematicId, skipped)
-      }
+      },
+      seenCinematics
     );
     this.presentationSubscription = this.worldAdapter.presentationRequests$.subscribe((request) => {
       if (request.kind === "checkpoint") this.pendingCheckpointSaves.push(request.id);

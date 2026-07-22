@@ -14,6 +14,8 @@ create table public.probable_waffle_game_saves (
   campaign_mission_revision integer null check (campaign_mission_revision is null or campaign_mission_revision > 0),
   campaign_runtime_schema_version integer null check (campaign_runtime_schema_version is null or campaign_runtime_schema_version > 0),
   campaign_profile_revision integer null check (campaign_profile_revision is null or campaign_profile_revision >= 0),
+  campaign_loadout_ids text[] null,
+  campaign_loadout_snapshot_hash text null,
   campaign_checkpoint_id text null,
   campaign_participant_count integer null check (campaign_participant_count is null or campaign_participant_count > 0),
   format_version integer not null check (format_version > 0),

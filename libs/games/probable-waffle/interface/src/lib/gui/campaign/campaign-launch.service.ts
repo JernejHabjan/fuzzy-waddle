@@ -1,6 +1,7 @@
 import { inject, Injectable } from "@angular/core";
 import {
   CampaignAvailability,
+  type CampaignDifficulty,
   type CampaignMissionDefinition,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameInstanceVisibility
@@ -9,8 +10,7 @@ import {
   ASHES_OF_THE_ANCIENTS_CAMPAIGN_ID,
   AOTA_CAMPAIGN_CONTENT_REGISTRY,
   AOTA_CAMPAIGN_PROGRESSION_REGISTRY,
-  createCampaignMissionProgressionSnapshot,
-  createInitialCampaignProgressionProfile
+  createCampaignMissionProgressionSnapshot
 } from "@fuzzy-waddle/probable-waffle-campaign";
 import {
   resolveCampaignParticipantLaunchSlots,
@@ -19,6 +19,7 @@ import {
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
 import { AOTA_CAMPAIGN_CATALOG } from "./campaign-catalog";
 import { CampaignProgressService } from "./campaign-progress.service";
+import { CampaignProfileService } from "./campaign-profile.service";
 import { CampaignLaunchServiceInterface } from "./campaign-launch.service.interface";
 import { environment } from "@fuzzy-waddle/environments/environment";
 
@@ -27,10 +28,11 @@ import { environment } from "@fuzzy-waddle/environments/environment";
 export class CampaignLaunchService implements CampaignLaunchServiceInterface {
   private readonly gameInstanceClientService = inject(GameInstanceClientService);
   private readonly campaignProgressService = inject(CampaignProgressService);
+  private readonly campaignProfileService = inject(CampaignProfileService);
   private launchInProgress = false;
 
   /** Creates a private one-player campaign run and bypasses the skirmish lobby. */
-  async startMission(mission: CampaignMissionDefinition): Promise<void> {
+  async startMission(mission: CampaignMissionDefinition, difficulty: CampaignDifficulty = "normal"): Promise<void> {
     if (this.launchInProgress) return;
     if (environment.production) {
       const missionProgress = this.campaignProgressService.getMissionProgress(mission.id);
@@ -52,18 +54,23 @@ export class CampaignLaunchService implements CampaignLaunchServiceInterface {
       );
       const metadata = this.gameInstanceClientService.gameInstance?.gameInstanceMetadata.data;
       if (!metadata) throw new Error("Campaign game metadata is required");
-      const runId = await this.campaignProgressService.startRun(mission.id);
+      const run = await this.campaignProfileService.startRun(mission.id, difficulty);
       metadata.campaignContext = {
         campaignId: ASHES_OF_THE_ANCIENTS_CAMPAIGN_ID,
         catalogVersion: AOTA_CAMPAIGN_CATALOG.version,
         chapterId: mission.chapterId,
         missionId: mission.id,
         missionRevision: missionContent.revision,
-        runId,
+        runId: run.runId,
+        difficulty: run.difficulty,
+        selectedLoadoutIds: run.selectedLoadoutIds,
+        loadoutSnapshotHash: run.loadoutSnapshotHash,
+        ...(run.developerOverride ? { developerOverride: true } : {}),
+        seenCinematicIds: this.campaignProfileService.profile().seenCinematicIds,
         progressionSnapshot: createCampaignMissionProgressionSnapshot(
           {
-            profile: createInitialCampaignProgressionProfile(AOTA_CAMPAIGN_PROGRESSION_REGISTRY),
-            selectedLoadoutIds: [],
+            profile: this.campaignProfileService.profile().progression,
+            selectedLoadoutIds: run.selectedLoadoutIds,
             allowance: missionContent.progressionAllowance
           },
           AOTA_CAMPAIGN_PROGRESSION_REGISTRY

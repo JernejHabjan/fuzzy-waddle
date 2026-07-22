@@ -2,7 +2,6 @@ import type { Signal } from "@angular/core";
 import type {
   CampaignMissionId,
   CampaignMissionProgress,
-  CampaignProgressData,
   CampaignVictoryCommitRequest
 } from "@fuzzy-waddle/probable-waffle-protocol";
 
@@ -10,7 +9,6 @@ import type {
 export abstract class CampaignProgressServiceInterface {
   abstract readonly missionProgress: Signal<CampaignMissionProgress[]>;
   abstract readonly recommendedMission: Signal<CampaignMissionProgress | undefined>;
-  abstract setProgress(progress: CampaignProgressData): void;
   abstract load(): Promise<void>;
   abstract startRun(missionId: CampaignMissionId): Promise<string>;
   abstract recordResult(result: CampaignVictoryCommitRequest): Promise<void>;
