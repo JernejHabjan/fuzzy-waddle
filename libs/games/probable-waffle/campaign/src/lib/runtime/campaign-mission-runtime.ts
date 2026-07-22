@@ -1,5 +1,6 @@
 import type {
   CampaignId,
+  CampaignMissionProgressionSnapshot,
   CampaignMissionOwnedResourceRuntimeState,
   CampaignMissionRuntimeDiagnostic,
   CampaignMissionOutcome,
@@ -52,6 +53,7 @@ import {
   type CampaignEncounterWorldAdapter
 } from "./encounters/campaign-encounter-service";
 import { resolveCampaignParticipantLaunchSlots, updateCampaignParticipantTeams } from "./campaign-participant-resolver";
+import { CampaignRunIntegrityService, createEligibleMissionRunIntegrity } from "../progression/campaign-run-integrity-service";
 
 export interface CampaignMissionRuntimeEffect {
   readonly tick: number;
@@ -82,6 +84,7 @@ export interface CampaignMissionRuntimeOptions {
   readonly difficulty?: CampaignDifficulty;
   readonly playerCount?: number;
   readonly encounterAdapter?: CampaignEncounterWorldAdapter;
+  readonly progressionSnapshot?: CampaignMissionProgressionSnapshot;
 }
 
 interface TickBudget {
@@ -171,7 +174,7 @@ export class CampaignMissionRuntime {
         );
     const state = restoredState
       ? this.validateAndCloneRestoredState(restoredState)
-      : createCampaignMissionRuntimeState(campaignId, content, resolvedDifficulty);
+      : createCampaignMissionRuntimeState(campaignId, content, resolvedDifficulty, options.progressionSnapshot);
     this.stateStore = new CampaignMissionStateStore(state);
     this.objectiveService = new DefaultCampaignObjectiveService(state, content.objectives);
     this.encounterService = new DefaultCampaignEncounterService(
@@ -197,6 +200,16 @@ export class CampaignMissionRuntime {
 
   snapshot(): CampaignMissionRuntimeState {
     return this.stateStore.snapshot();
+  }
+
+  invalidateRewardIntegrity(reason: string): void {
+    new CampaignRunIntegrityService(this.stateStore.current).invalidate(reason);
+    this.canonicalizeState();
+  }
+
+  discoverReward(rewardId: string): void {
+    new CampaignRunIntegrityService(this.stateStore.current).discoverReward(rewardId);
+    this.canonicalizeState();
   }
 
   cancel(reason: CampaignMissionActionCancelReason = "mission-ended"): CampaignMissionRuntimeResult {
@@ -862,8 +875,7 @@ export class CampaignMissionRuntime {
       });
       if (change.kind === "status" && change.status === "completed") {
         const objective = this.content.objectives.find((candidate) => candidate.id === change.objectiveId);
-        for (const rewardId of objective?.rewardIds ?? [])
-          addSortedUnique(this.stateStore.current.claimedRewardIds, rewardId);
+        for (const rewardId of objective?.rewardIds ?? []) this.discoverReward(rewardId);
       }
       const checklist = change.checklistChanges[0];
       this.enqueueEvent({
@@ -1072,6 +1084,15 @@ export class CampaignMissionRuntime {
     state.pendingPhaseIds.sort();
     state.claimedTriggerIds.sort();
     state.claimedRewardIds.sort();
+    if (state.progression) {
+      state.progression = { ...state.progression, pendingRewardIds: [...state.claimedRewardIds] };
+    }
+    if (state.rewardIntegrity) {
+      state.rewardIntegrity = {
+        ...state.rewardIntegrity,
+        invalidationReasons: [...state.rewardIntegrity.invalidationReasons].sort()
+      };
+    }
     state.pendingEvents.sort(compareRuntimeEvents);
     state.facts = sortRecord(state.facts);
     state.counters = sortRecord(state.counters);
@@ -1331,7 +1352,8 @@ export function createCampaignMissionRuntimeState(
     content.difficulty,
     "normal",
     Math.max(1, content.participants.filter((participant) => participant.controller === "human").length)
-  )
+  ),
+  progressionSnapshot?: CampaignMissionProgressionSnapshot
 ): CampaignMissionRuntimeState {
   return {
     schemaVersion: CAMPAIGN_MISSION_RUNTIME_SCHEMA_VERSION,
@@ -1377,6 +1399,8 @@ export function createCampaignMissionRuntimeState(
     claimedTriggerIds: [],
     triggerStates: {},
     claimedRewardIds: [],
+    ...(progressionSnapshot ? { progression: structuredClone(progressionSnapshot) } : {}),
+    rewardIntegrity: createEligibleMissionRunIntegrity(),
     pendingEvents: [],
     actionContinuations: {},
     ownedResources: {},

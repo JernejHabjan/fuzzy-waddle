@@ -1,5 +1,9 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { completedCampaignObjectiveIds, ScoreScreenComponent } from "./score-screen.component";
+import {
+  campaignResultCommitRequest,
+  completedCampaignObjectiveIds,
+  ScoreScreenComponent
+} from "./score-screen.component";
 import { ScoreThroughTimeComponent } from "./chart/score-through-time.component";
 import { ScoreThroughTimeTestingComponent } from "./chart/score-through-time.component.spec";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
@@ -50,5 +54,35 @@ describe("ScoreScreenComponent", () => {
         }
       } as never)
     ).toEqual(["optional", "primary"]);
+  });
+
+  it("projects the frozen progression revision, discoveries, and integrity into the commit request", () => {
+    const request = campaignResultCommitRequest(
+      {
+        campaignId: "ashes-of-the-ancients",
+        catalogVersion: 1,
+        chapterId: "prologue",
+        missionId: "dreams",
+        missionRevision: 2,
+        runId: "run-1"
+      },
+      {
+        difficulty: { difficulty: "hard" },
+        claimedRewardIds: ["story", "secret"],
+        progression: { baseProfileRevision: 7 },
+        rewardIntegrity: { eligibleForRewards: false, invalidationReasons: ["developer-command"] },
+        objectives: {}
+      } as never,
+      "victory",
+      false
+    );
+
+    expect(request).toMatchObject({
+      missionRevision: 2,
+      baseProfileRevision: 7,
+      discoveredRewardIds: ["secret", "story"],
+      difficulty: "hard",
+      integrity: { eligibleForRewards: false }
+    });
   });
 });

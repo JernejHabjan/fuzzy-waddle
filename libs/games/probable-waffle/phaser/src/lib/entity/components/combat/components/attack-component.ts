@@ -30,6 +30,7 @@ import { TilemapComponent } from "../../../../world/tilemap/tilemap.component";
 import { CancelableSimDelay } from "../../../../world/services/simulation-time";
 import { SimulationTickService } from "../../../../world/services/simulation-tick.service";
 import { PhaserProjectileFactory } from "../../../../combat/phaser-projectile-factory";
+import { applyCampaignProgressionModifiers } from "../../../../campaign/campaign-progression-modifier";
 type GameObject = Phaser.GameObjects.GameObject;
 
 export class AttackComponent {
@@ -178,7 +179,7 @@ export class AttackComponent {
       this.scheduleInstantAttackImpact(attack, enemy);
     }
 
-    this.remainingCooldown = attack.cooldown;
+    this.remainingCooldown = applyCampaignProgressionModifiers(this.gameObject, "cooldown", attack.cooldown);
     this.cooldownStartedTick = this.simulationTickService?.currentTick ?? null;
   }
 
@@ -189,7 +190,11 @@ export class AttackComponent {
     for (const target of targets) {
       const targetHealthComponent = getActorComponent(target, HealthComponent);
       if (!targetHealthComponent || targetHealthComponent.killed) continue;
-      targetHealthComponent.takeDamage(attack.damage, attack.damageType, this.gameObject);
+      targetHealthComponent.takeDamage(
+        applyCampaignProgressionModifiers(this.gameObject, "damage", attack.damage),
+        attack.damageType,
+        this.gameObject
+      );
     }
   }
 
@@ -542,7 +547,11 @@ export class AttackComponent {
   ) {
     const enemyHealthComponent = getActorComponent(enemy, HealthComponent);
     if (!enemyHealthComponent || enemyHealthComponent.killed) return;
-    enemyHealthComponent.takeDamage(attack.damage, attack.damageType, this.gameObject);
+    enemyHealthComponent.takeDamage(
+      applyCampaignProgressionModifiers(this.gameObject, "damage", attack.damage),
+      attack.damageType,
+      this.gameObject
+    );
 
     this.playHitSound(attack, enemy);
     stopProjectile();

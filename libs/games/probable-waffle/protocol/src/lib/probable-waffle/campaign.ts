@@ -1,5 +1,9 @@
 import type { ProbableWaffleMapEnum } from "./probable-waffle";
 import type { ProbableWaffleGameInstanceData } from "../game-instance/probable-waffle/game-instance";
+import type { FactionType } from "../game-instance/probable-waffle/player";
+import type { ObjectNames } from "../game-instance/probable-waffle/object-names";
+import type { ResearchType } from "../game-instance/probable-waffle/research-type";
+import type { ResourceType } from "./resource-type-definition";
 
 /** Permanent identifiers used by progress, saves, routes, and campaign runs. */
 export type CampaignId = "ashes-of-the-ancients";
@@ -184,6 +188,135 @@ export interface CampaignProgressData {
   completedMissions: CampaignMissionCompletion[];
 }
 
+export type CampaignCurrencyId = string;
+export type CampaignHeroId = string;
+export type CampaignInventoryItemDefinitionId = string;
+export type CampaignInventoryItemId = string;
+export type CampaignLoadoutId = string;
+export type CampaignProgressionUpgradeId = string;
+export type CampaignRewardClaimId = string;
+export type CampaignTemporaryBoostId = string;
+export type CampaignUnlockId = string;
+
+export interface CampaignWallet {
+  readonly balances: Readonly<Record<CampaignCurrencyId, number>>;
+}
+
+export interface CampaignHeroProgress {
+  readonly upgradeIds: readonly CampaignProgressionUpgradeId[];
+  readonly storySkillUnlockIds: readonly CampaignUnlockId[];
+}
+
+export interface CampaignFactionProgress {
+  readonly upgradeIds: readonly CampaignProgressionUpgradeId[];
+}
+
+export interface CampaignLoadout {
+  readonly id: CampaignLoadoutId;
+  readonly name: string;
+  readonly upgradeIds: readonly CampaignProgressionUpgradeId[];
+  readonly unlockIds: readonly CampaignUnlockId[];
+  readonly inventoryItemIds: readonly CampaignInventoryItemId[];
+}
+
+export interface CampaignInventoryItem {
+  readonly id: CampaignInventoryItemId;
+  readonly definitionId: CampaignInventoryItemDefinitionId;
+  readonly quantity: number;
+  readonly consumable: boolean;
+}
+
+/** Profile-owned progression. Mission runs receive an immutable launch snapshot instead of this live object. */
+export interface CampaignProgressionProfile {
+  readonly schemaVersion: 1;
+  readonly revision: number;
+  readonly wallet: CampaignWallet;
+  readonly discoveredUpgradeIds: readonly CampaignProgressionUpgradeId[];
+  readonly permanentUpgradeIds: readonly CampaignProgressionUpgradeId[];
+  readonly purchasedUpgradeIds: readonly CampaignProgressionUpgradeId[];
+  readonly unlockIds: readonly CampaignUnlockId[];
+  readonly heroProgress: Readonly<Record<CampaignHeroId, CampaignHeroProgress>>;
+  readonly factionProgress: Readonly<Partial<Record<FactionType, CampaignFactionProgress>>>;
+  readonly loadouts: Readonly<Record<CampaignLoadoutId, CampaignLoadout>>;
+  readonly inventory: readonly CampaignInventoryItem[];
+  readonly rewardClaimIds: readonly CampaignRewardClaimId[];
+}
+
+export type CampaignProgressionModifierStat =
+  | "maximum-health"
+  | "damage"
+  | "armor"
+  | "movement-speed"
+  | "cooldown";
+
+export interface CampaignProgressionModifier {
+  readonly stat: CampaignProgressionModifierStat;
+  readonly operation: "add" | "multiply";
+  readonly value: number;
+  readonly scope?:
+    | { readonly kind: "global" }
+    | { readonly kind: "faction"; readonly faction: FactionType }
+    | { readonly kind: "actor"; readonly objectName: ObjectNames };
+}
+
+export interface CampaignEffectiveLoadout {
+  readonly selectedLoadoutIds: readonly CampaignLoadoutId[];
+  readonly upgradeIds: readonly CampaignProgressionUpgradeId[];
+  readonly unlockIds: readonly CampaignUnlockId[];
+  readonly inventoryItemIds: readonly CampaignInventoryItemId[];
+  readonly modifiers: readonly CampaignProgressionModifier[];
+  readonly unitLevelCaps: Readonly<Record<string, number>>;
+  readonly restrictionReasons: readonly string[];
+}
+
+export interface CampaignMissionProgressionSnapshot {
+  readonly baseProfileRevision: number;
+  readonly profile: CampaignProgressionProfile;
+  readonly effectiveLoadout: CampaignEffectiveLoadout;
+  readonly temporaryBoostIds: readonly CampaignTemporaryBoostId[];
+  readonly pendingRewardIds: readonly string[];
+}
+
+export interface MissionRunIntegrityState {
+  readonly eligibleForRewards: boolean;
+  readonly invalidationReasons: readonly string[];
+}
+
+export interface CampaignVictoryCommitRequest {
+  readonly runId: string;
+  readonly missionId: CampaignMissionId;
+  readonly missionRevision: number;
+  readonly baseProfileRevision: number;
+  readonly discoveredRewardIds: readonly string[];
+  readonly completedObjectiveIds: readonly string[];
+  readonly difficulty: "story" | "normal" | "hard";
+  readonly outcome: CampaignMissionOutcome;
+  readonly replayPlayback: boolean;
+  readonly integrity: MissionRunIntegrityState;
+}
+
+export type CampaignRewardCommitStatus = "committed" | "already-committed" | "rejected";
+
+export interface CampaignRewardCommitResult {
+  readonly runId: string;
+  readonly status: CampaignRewardCommitStatus;
+  readonly profile: CampaignProgressionProfile;
+  readonly appliedRewardIds: readonly string[];
+  readonly skippedRewardIds: readonly string[];
+  readonly warnings: readonly string[];
+  readonly rejectionReason?: string;
+}
+
+export interface CampaignTemporaryResourceGrant {
+  readonly resourceType: ResourceType;
+  readonly amount: number;
+}
+
+export interface CampaignTemporaryUnitGrant {
+  readonly objectName: ObjectNames;
+  readonly count: number;
+}
+
 export const CampaignMissionOutcome = {
   Victory: "victory",
   Defeat: "defeat",
@@ -191,12 +324,8 @@ export const CampaignMissionOutcome = {
 } as const;
 export type CampaignMissionOutcome = (typeof CampaignMissionOutcome)[keyof typeof CampaignMissionOutcome];
 
-export interface CampaignMissionResult {
-  runId: string;
-  missionId: CampaignMissionId;
-  outcome: CampaignMissionOutcome;
+export interface CampaignMissionResult extends CampaignVictoryCommitRequest {
   durationSeconds?: number;
-  completedObjectiveIds?: string[];
 }
 
 export type CampaignMissionState = "locked" | "available" | "inProgress" | "completed" | "planned";

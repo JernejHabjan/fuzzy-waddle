@@ -9,9 +9,12 @@ import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.se
 import {
   CampaignMissionOutcome,
   type CampaignMissionRuntimeState,
+  type CampaignGameContext,
+  type CampaignVictoryCommitRequest,
   GameResultStatus,
   type GameScoreSnapshotDto,
-  ProbableWafflePlayerType
+  ProbableWafflePlayerType,
+  ProbableWaffleGameInstanceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { CampaignProgressService } from "../campaign/campaign-progress.service";
 
@@ -44,6 +47,7 @@ export class ScoreScreenComponent implements OnInit, OnDestroy {
 
     const campaignContext = gameInstance.gameInstanceMetadata.data.campaignContext;
     if (campaignContext) {
+      const campaignState = gameInstance.gameState?.data.campaignMission;
       const playerResult = this.scoreDataService
         .getAllPlayerScores()
         .find((score) => score.playerNumber === this.gameInstanceClientService.currentPlayerNumber)?.gameResult;
@@ -53,12 +57,14 @@ export class ScoreScreenComponent implements OnInit, OnDestroy {
           : playerResult === GameResultStatus.Quit
             ? CampaignMissionOutcome.Abandoned
             : CampaignMissionOutcome.Defeat;
-      await this.campaignProgressService.recordResult({
-        runId: campaignContext.runId,
-        missionId: campaignContext.missionId,
-        outcome,
-        completedObjectiveIds: completedCampaignObjectiveIds(gameInstance.gameState?.data.campaignMission)
-      });
+      await this.campaignProgressService.recordResult(
+        campaignResultCommitRequest(
+          campaignContext,
+          campaignState,
+          outcome,
+          gameInstance.gameInstanceMetadata.data.type === ProbableWaffleGameInstanceType.Replay
+        )
+      );
     }
 
     const gameInstanceId = gameInstance.gameInstanceMetadata.data.gameInstanceId!;
@@ -135,4 +141,24 @@ export function completedCampaignObjectiveIds(state?: CampaignMissionRuntimeStat
     .filter(([, objective]) => objective.status === "completed")
     .map(([objectiveId]) => objectiveId)
     .sort();
+}
+
+export function campaignResultCommitRequest(
+  context: CampaignGameContext,
+  state: CampaignMissionRuntimeState | undefined,
+  outcome: CampaignMissionOutcome,
+  replayPlayback: boolean
+): CampaignVictoryCommitRequest {
+  return {
+    runId: context.runId,
+    missionId: context.missionId,
+    missionRevision: context.missionRevision,
+    baseProfileRevision: state?.progression?.baseProfileRevision ?? 0,
+    outcome,
+    completedObjectiveIds: completedCampaignObjectiveIds(state),
+    discoveredRewardIds: [...(state?.claimedRewardIds ?? [])].sort(),
+    difficulty: state?.difficulty.difficulty ?? context.difficulty ?? "normal",
+    replayPlayback,
+    integrity: state?.rewardIntegrity ?? { eligibleForRewards: true, invalidationReasons: [] }
+  };
 }

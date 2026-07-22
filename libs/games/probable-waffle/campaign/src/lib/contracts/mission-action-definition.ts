@@ -16,6 +16,7 @@ import type {
   MissionObjectiveChecklistId,
   MissionObjectiveId,
   MissionReasonId,
+  MissionRewardId,
   MissionTimerId,
   MissionTrustedHookId,
   ScenarioActorId,
@@ -221,6 +222,10 @@ export type MissionActionDefinition =
       readonly playerNumber?: number;
       readonly actorId?: ScenarioActorId;
       readonly value: number;
+    })
+  | (MissionActionDefinitionBase & {
+      readonly kind: "discover-reward";
+      readonly rewardId: MissionRewardId;
     })
   | (MissionActionDefinitionBase & {
       readonly kind: "grant-content";

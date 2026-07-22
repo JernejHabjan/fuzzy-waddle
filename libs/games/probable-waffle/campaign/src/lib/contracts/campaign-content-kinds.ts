@@ -44,6 +44,7 @@ export const CAMPAIGN_ACTION_KINDS = [
   "ai-directive",
   "set-content-allowance",
   "grant-temporary-modifier",
+  "discover-reward",
   "grant-content",
   "revoke-content-grant",
   "set-objective-state",
@@ -110,5 +111,7 @@ export type CampaignRewardKind =
   | "unit-unlock"
   | "building-unlock"
   | "technology-unlock"
-  | "temporary-boost";
+  | "temporary-boost"
+  | "temporary-resource"
+  | "temporary-unit";
 export type CampaignTrustedHookKind = string & { readonly __campaignTrustedHookKind: true };

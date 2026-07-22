@@ -54,7 +54,8 @@ describe("CampaignLaunchService", () => {
         participant("neutral", "neutral", "passive")
       ]
     });
-    gameInstanceClientService.gameInstance = { gameInstanceMetadata: { data: {} } } as never;
+    const metadataData: { campaignContext?: unknown } = {};
+    gameInstanceClientService.gameInstance = { gameInstanceMetadata: { data: metadataData } } as never;
     const service = TestBed.inject(CampaignLaunchService);
 
     await service.startMission(mission!);
@@ -77,6 +78,14 @@ describe("CampaignLaunchService", () => {
       3,
       expect.objectContaining({ team: 3, campaignController: "passive", campaignEconomy: "none" })
     );
+    expect(metadataData.campaignContext).toMatchObject({
+      runId: "run-1",
+      progressionSnapshot: {
+        baseProfileRevision: 0,
+        profile: { wallet: { balances: { "campaign-crystal": 1 } } },
+        pendingRewardIds: []
+      }
+    });
   });
 });
 

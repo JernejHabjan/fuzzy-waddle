@@ -160,6 +160,9 @@
       "additionalProperties": false,
       "required": ["loadoutSlotCount"],
       "properties": {
+        "maxStoryChapter": {
+          "enum": ["prologue", "two-homelands", "crystal-war", "united-against-volcano", "the-betrayal"]
+        },
         "allowedUnlockIds": {
           "type": "array",
           "items": {
@@ -196,6 +199,13 @@
                 "minimum": 0
               }
             }
+          }
+        },
+        "maxUnitLevels": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
           }
         },
         "loadoutSlotCount": {
@@ -1120,6 +1130,7 @@
                 "ai-directive",
                 "set-content-allowance",
                 "grant-temporary-modifier",
+                "discover-reward",
                 "grant-content",
                 "revoke-content-grant",
                 "set-objective-state",
@@ -1181,6 +1192,7 @@
             "allowed": { "type": "boolean" },
             "grantId": { "$ref": "#/$defs/campaignId" },
             "modifierId": { "$ref": "#/$defs/campaignId" },
+            "rewardId": { "$ref": "#/$defs/campaignId" },
             "objectiveId": { "$ref": "#/$defs/campaignId" },
             "checklistId": { "$ref": "#/$defs/campaignId" },
             "reasonId": { "$ref": "#/$defs/campaignId" },
@@ -1384,6 +1396,10 @@
                 "properties": { "modifierId": true, "value": { "type": "number" } },
                 "required": ["modifierId", "value"]
               }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "discover-reward" } } },
+              "then": { "properties": { "rewardId": true }, "required": ["rewardId"] }
             },
             {
               "if": { "properties": { "kind": { "const": "grant-content" } } },

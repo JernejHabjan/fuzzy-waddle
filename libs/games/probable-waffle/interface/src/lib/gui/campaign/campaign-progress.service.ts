@@ -6,7 +6,8 @@ import {
   type CampaignMissionId,
   CampaignMissionOutcome,
   type CampaignMissionProgress,
-  type CampaignProgressData
+  type CampaignProgressData,
+  type CampaignVictoryCommitRequest
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { AOTA_CAMPAIGN_CATALOG } from "./campaign-catalog";
 import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
@@ -69,12 +70,7 @@ export class CampaignProgressService implements CampaignProgressServiceInterface
     return runId;
   }
 
-  async recordResult(result: {
-    runId: string;
-    missionId: CampaignMissionId;
-    outcome: CampaignMissionOutcome;
-    completedObjectiveIds?: readonly string[];
-  }): Promise<void> {
+  async recordResult(result: CampaignVictoryCommitRequest): Promise<void> {
     if (result.outcome === CampaignMissionOutcome.Victory) {
       const merged = this.mergeProgress(this.progress(), {
         completedMissions: [{ missionId: result.missionId, completedAt: new Date().toISOString() }]
@@ -87,7 +83,12 @@ export class CampaignProgressService implements CampaignProgressServiceInterface
         await firstValueFrom(
           this.httpClient.post(`${environment.api}api/probable-waffle/campaign/results`, {
             ...result,
-            completedObjectiveIds: [...(result.completedObjectiveIds ?? [])].sort()
+            completedObjectiveIds: [...result.completedObjectiveIds].sort(),
+            discoveredRewardIds: [...result.discoveredRewardIds].sort(),
+            integrity: {
+              ...result.integrity,
+              invalidationReasons: [...result.integrity.invalidationReasons].sort()
+            }
           })
         );
       } catch {

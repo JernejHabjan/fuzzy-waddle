@@ -1,6 +1,11 @@
 import { GameInstanceMetadata, type GameInstanceMetadataData } from "@fuzzy-waddle/platform-game-sessions";
 import type { GameCommand } from "./game-command";
-import type { CampaignChapterId, CampaignId, CampaignMissionId } from "../../probable-waffle/campaign";
+import type {
+  CampaignChapterId,
+  CampaignId,
+  CampaignMissionId,
+  CampaignMissionProgressionSnapshot
+} from "../../probable-waffle/campaign";
 import type { CampaignMissionRuntimeState } from "../../probable-waffle/campaign-runtime";
 
 export enum ProbableWaffleGameInstanceType {
@@ -20,6 +25,7 @@ export interface CampaignGameContext {
   missionRevision: number;
   runId: string;
   difficulty?: "story" | "normal" | "hard";
+  progressionSnapshot?: CampaignMissionProgressionSnapshot;
 }
 
 export interface ProbableWaffleReplayPlayerData {

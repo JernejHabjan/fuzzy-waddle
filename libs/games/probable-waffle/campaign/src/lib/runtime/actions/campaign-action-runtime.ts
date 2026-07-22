@@ -464,6 +464,21 @@ function registerStateExecutors(registry: CampaignActionExecutorRegistry): void 
   );
   registry.register(new WaitTicksCampaignActionExecutor());
   registry.register(
+    stateExecutor("discover-reward", (context, definition) => {
+      if (definition.kind !== "discover-reward") return;
+      if (!context.state.claimedRewardIds.includes(definition.rewardId)) {
+        context.state.claimedRewardIds.push(definition.rewardId);
+        context.state.claimedRewardIds.sort();
+      }
+      if (context.state.progression) {
+        context.state.progression = {
+          ...context.state.progression,
+          pendingRewardIds: [...context.state.claimedRewardIds]
+        };
+      }
+    })
+  );
+  registry.register(
     stateExecutor("set-objective-state", (context, definition) => {
       if (definition.kind === "set-objective-state") {
         context.objectiveActions?.setState(definition, context.tick);

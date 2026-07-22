@@ -173,6 +173,15 @@ function validateMission(
   );
   const actionEntries = collectMissionActionEntries(mission);
   for (const entry of actionEntries) {
+    if (entry.action.kind === "discover-reward" && !rewardIds.has(String(entry.action.rewardId))) {
+      addIssue(
+        issues,
+        sourcePath,
+        `${entry.jsonPath}.rewardId`,
+        "missing-reward-reference",
+        `Unknown reward '${entry.action.rewardId}'`
+      );
+    }
     if (entry.action.kind === "set-encounter-state" && !encounterIds.has(String(entry.action.encounterId))) {
       addIssue(
         issues,
@@ -427,6 +436,7 @@ function validateMission(
     validateActions(checkpoint.requiredActions, sourcePath, `${checkpointPath}.requiredActions`, registries, issues);
   }
   for (const [rewardIndex, reward] of (rewards?.rewards ?? []).entries()) {
+    const rewardPath = `$.rewards[${rewardIndex}]`;
     if (!registries.rewards.has(reward.kind)) {
       addIssue(
         issues,
@@ -436,7 +446,26 @@ function validateMission(
         `Unknown reward kind '${reward.kind}'`
       );
     }
+    validateObjectiveTextReference(reward.titleTextId, `${rewardPath}.titleTextId`, textIds, rewardsPath(mission.id), issues);
+    for (const objectiveId of reward.objectiveIds ?? []) {
+      if (!objectiveIds.has(String(objectiveId))) {
+        addIssue(
+          issues,
+          rewardsPath(mission.id),
+          `${rewardPath}.objectiveIds`,
+          "missing-objective-reference",
+          `Unknown objective '${objectiveId}'`
+        );
+      }
+    }
   }
+  reportDuplicates(
+    (rewards?.rewards ?? []).map((reward) => String(reward.id)),
+    rewardsPath(mission.id),
+    "$.rewards",
+    "duplicate-reward-id",
+    issues
+  );
 }
 
 function validateObjectiveTextReference(

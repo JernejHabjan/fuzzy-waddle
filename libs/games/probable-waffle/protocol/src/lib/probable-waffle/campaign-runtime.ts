@@ -1,6 +1,11 @@
-import type { CampaignId, CampaignMissionId } from "./campaign";
+import type {
+  CampaignId,
+  CampaignMissionId,
+  CampaignMissionProgressionSnapshot,
+  MissionRunIntegrityState
+} from "./campaign";
 
-export const CAMPAIGN_MISSION_RUNTIME_SCHEMA_VERSION = 5 as const;
+export const CAMPAIGN_MISSION_RUNTIME_SCHEMA_VERSION = 6 as const;
 export const CAMPAIGN_LOCAL_PRESENTATION_EVENT_KINDS = ["dialogue.presented", "cinematic.cue"] as const;
 
 export type CampaignMissionRuntimeStatus = "initializing" | "running" | "victory" | "defeat" | "failed";
@@ -288,6 +293,10 @@ export interface CampaignMissionRuntimeState {
   claimedTriggerIds: string[];
   triggerStates: Record<string, CampaignMissionTriggerRuntimeState>;
   claimedRewardIds: string[];
+  /** Present on progression-aware runs; optional only for typed legacy fixtures and migration boundaries. */
+  progression?: CampaignMissionProgressionSnapshot;
+  /** Reward eligibility is separate from interpreter health and can only transition from valid to invalid. */
+  rewardIntegrity?: MissionRunIntegrityState;
   pendingEvents: CampaignMissionRuntimeEvent[];
   actionContinuations: Record<string, CampaignMissionActionContinuationState>;
   ownedResources: Record<string, CampaignMissionOwnedResourceRuntimeState>;

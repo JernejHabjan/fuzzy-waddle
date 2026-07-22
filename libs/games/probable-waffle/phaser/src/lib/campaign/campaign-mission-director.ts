@@ -170,6 +170,7 @@ export class CampaignMissionDirector {
       actionAdapter: this.worldAdapter,
       conditionAdapter: this.worldAdapter,
       encounterAdapter: this.worldAdapter,
+      progressionSnapshot: context.progressionSnapshot,
       difficulty: context.difficulty ?? "normal",
       playerCount: Math.max(
         1,

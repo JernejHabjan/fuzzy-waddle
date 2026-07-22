@@ -97,6 +97,17 @@ describe("campaign action runtime", () => {
     expect(objectiveActions.setState).toHaveBeenCalledWith(objectiveAction, 2);
     expect(objectiveActions.setChecklistState).toHaveBeenCalledWith(checklistAction, 2);
   });
+
+  it("records explicit reward discovery once in deterministic pending state", () => {
+    const actionContext = context(2);
+    const runner = new CampaignActionRunner(createCampaignActionExecutorRegistry());
+    const discover = action("discover-reward", "find-secret", { rewardId: id("secret-tome") });
+
+    runner.execute(actionContext, discover);
+    runner.execute(actionContext, discover);
+
+    expect(actionContext.state.claimedRewardIds).toEqual(["secret-tome"]);
+  });
 });
 
 function action<TKind extends MissionActionDefinition["kind"]>(

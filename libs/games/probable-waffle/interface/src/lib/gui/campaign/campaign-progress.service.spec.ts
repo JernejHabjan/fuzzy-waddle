@@ -54,11 +54,20 @@ describe("CampaignProgressService", () => {
     const result = service.recordResult({
       runId: "run-1",
       missionId: "dreams",
+      missionRevision: 1,
+      baseProfileRevision: 0,
       outcome: "defeat",
-      completedObjectiveIds: ["primary", "optional"]
+      completedObjectiveIds: ["primary", "optional"],
+      discoveredRewardIds: ["secret", "story"],
+      difficulty: "normal",
+      replayPlayback: false,
+      integrity: { eligibleForRewards: true, invalidationReasons: [] }
     });
     const request = httpTesting.expectOne((candidate) => candidate.url.endsWith("/campaign/results"));
-    expect(request.request.body).toMatchObject({ completedObjectiveIds: ["optional", "primary"] });
+    expect(request.request.body).toMatchObject({
+      completedObjectiveIds: ["optional", "primary"],
+      discoveredRewardIds: ["secret", "story"]
+    });
     request.flush({});
 
     await result;

@@ -7,7 +7,10 @@ import {
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import {
   ASHES_OF_THE_ANCIENTS_CAMPAIGN_ID,
-  AOTA_CAMPAIGN_CONTENT_REGISTRY
+  AOTA_CAMPAIGN_CONTENT_REGISTRY,
+  AOTA_CAMPAIGN_PROGRESSION_REGISTRY,
+  createCampaignMissionProgressionSnapshot,
+  createInitialCampaignProgressionProfile
 } from "@fuzzy-waddle/probable-waffle-campaign";
 import {
   resolveCampaignParticipantLaunchSlots,
@@ -56,7 +59,15 @@ export class CampaignLaunchService implements CampaignLaunchServiceInterface {
         chapterId: mission.chapterId,
         missionId: mission.id,
         missionRevision: missionContent.revision,
-        runId
+        runId,
+        progressionSnapshot: createCampaignMissionProgressionSnapshot(
+          {
+            profile: createInitialCampaignProgressionProfile(AOTA_CAMPAIGN_PROGRESSION_REGISTRY),
+            selectedLoadoutIds: [],
+            allowance: missionContent.progressionAllowance
+          },
+          AOTA_CAMPAIGN_PROGRESSION_REGISTRY
+        )
       };
       const participantErrors = validateCampaignParticipants(missionContent.participants);
       if (participantErrors.length > 0) throw new Error(participantErrors.join("; "));

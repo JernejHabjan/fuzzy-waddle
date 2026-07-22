@@ -40,6 +40,7 @@ import type { PathMoveConfig } from "@fuzzy-waddle/probable-waffle-gameplay/enti
 import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 import { getInterpolatedSimulationNow } from "../../world/services/simulation-time";
 import { MovementOccupancyService } from "../../world/services/movement-occupancy.service";
+import { applyCampaignProgressionModifiers } from "../../campaign/campaign-progression-modifier";
 type GameObject = Phaser.GameObjects.GameObject;
 
 // When another actor is already stepping through the blocked tile, wait briefly
@@ -850,7 +851,9 @@ export class MovementSystem {
     }
 
     // Apply movement speed modifier from status effects (slow effects)
-    const speedModifier = this.statusEffectComponent?.getMovementSpeedModifier() ?? 1.0;
+    const speedModifier =
+      (this.statusEffectComponent?.getMovementSpeedModifier() ?? 1.0) *
+      applyCampaignProgressionModifiers(this.gameObject, "movement-speed", 1);
     // Higher modifier = faster = shorter duration
     // Lower modifier (e.g., 0.5 for 50% slow) = slower = longer duration
     if (speedModifier !== 1.0 && speedModifier > 0) {

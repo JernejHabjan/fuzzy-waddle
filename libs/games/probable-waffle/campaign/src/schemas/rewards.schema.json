@@ -55,7 +55,9 @@
               "unit-unlock",
               "building-unlock",
               "technology-unlock",
-              "temporary-boost"
+              "temporary-boost",
+              "temporary-resource",
+              "temporary-unit"
             ]
           },
           "titleTextId": {
@@ -107,6 +109,21 @@
           "oneTime": {
             "type": "boolean"
           },
+          "objectiveIds": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "hidden": {
+            "type": "boolean"
+          },
+          "currencyId": {
+            "type": "string",
+            "minLength": 1
+          },
           "amount": {
             "type": "number"
           },
@@ -114,8 +131,81 @@
             "type": "string",
             "minLength": 1,
             "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "upgradeId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "itemDefinitionId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "consumable": {
+            "type": "boolean"
+          },
+          "objectName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "researchType": {
+            "type": "string",
+            "minLength": 1
+          },
+          "temporaryBoostId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "resourceType": {
+            "type": "string",
+            "minLength": 1
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 1
           }
-        }
+        },
+        "allOf": [
+          {
+            "if": { "properties": { "kind": { "const": "currency" } } },
+            "then": { "required": ["currencyId", "amount"] }
+          },
+          {
+            "if": { "properties": { "kind": { "enum": ["story-unlock", "faction-unlock"] } } },
+            "then": { "required": ["unlockId"] }
+          },
+          {
+            "if": { "properties": { "kind": { "const": "stat-tome" } } },
+            "then": { "required": ["upgradeId"] }
+          },
+          {
+            "if": { "properties": { "kind": { "const": "item" } } },
+            "then": { "required": ["itemDefinitionId", "quantity", "consumable"] }
+          },
+          {
+            "if": { "properties": { "kind": { "enum": ["unit-unlock", "building-unlock"] } } },
+            "then": { "required": ["unlockId", "objectName"] }
+          },
+          {
+            "if": { "properties": { "kind": { "const": "technology-unlock" } } },
+            "then": { "required": ["unlockId", "researchType"] }
+          },
+          {
+            "if": { "properties": { "kind": { "const": "temporary-boost" } } },
+            "then": { "required": ["temporaryBoostId"] }
+          },
+          {
+            "if": { "properties": { "kind": { "const": "temporary-resource" } } },
+            "then": { "required": ["resourceType", "amount"] }
+          },
+          {
+            "if": { "properties": { "kind": { "const": "temporary-unit" } } },
+            "then": { "required": ["objectName", "count"] }
+          }
+        ]
       }
     }
   }

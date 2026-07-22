@@ -64,7 +64,9 @@ export function createDefaultCampaignDefinitionRegistries(): CampaignDefinitionR
     "unit-unlock",
     "building-unlock",
     "technology-unlock",
-    "temporary-boost"
+    "temporary-boost",
+    "temporary-resource",
+    "temporary-unit"
   ]);
   return registries;
 }
