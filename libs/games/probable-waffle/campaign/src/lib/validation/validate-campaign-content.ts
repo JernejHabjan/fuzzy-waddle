@@ -179,6 +179,27 @@ function validateMission(
     issues
   );
   reportDuplicates(
+    mission.implementation.phasePlan.map((phase) => phase.id),
+    sourcePath,
+    "$.implementation.phasePlan",
+    "duplicate-implementation-phase-id",
+    issues
+  );
+  reportDuplicates(
+    mission.implementation.checkpointCandidates.map((checkpoint) => checkpoint.id),
+    sourcePath,
+    "$.implementation.checkpointCandidates",
+    "duplicate-implementation-checkpoint-id",
+    issues
+  );
+  reportDuplicates(
+    mission.implementation.implementationTodos.map((todo) => todo.id),
+    sourcePath,
+    "$.implementation.implementationTodos",
+    "duplicate-implementation-todo-id",
+    issues
+  );
+  reportDuplicates(
     mission.phases.map((phase) => String(phase.id)),
     sourcePath,
     "$.phases",

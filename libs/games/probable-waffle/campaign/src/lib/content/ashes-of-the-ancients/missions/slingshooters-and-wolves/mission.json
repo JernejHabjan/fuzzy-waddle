@@ -4,32 +4,332 @@
   "chapterId": "two-homelands",
   "revision": 1,
   "mapId": 3,
-  "prerequisites": ["snow-wendigo-and-fire"],
+  "prerequisites": [
+    "snow-wendigo-and-fire"
+  ],
   "catalogue": {
     "order": 2,
     "title": "Slingshooters & Wolves",
     "faction": "tivara",
     "environment": "Tivara woodland",
     "briefing": "The road forward is guarded by more than wolves.",
-    "objectiveSummaries": ["Train the slingshooters", "Clear the pass"]
+    "objectiveSummaries": [
+      "Train the slingshooters",
+      "Clear the pass"
+    ]
   },
-  "participants": [],
+  "participants": [
+    {
+      "slotId": "tivara-player",
+      "controller": "human",
+      "faction": 1,
+      "teamId": "alliance",
+      "requiredForVictory": true,
+      "profileOwnership": "independent",
+      "economy": "normal",
+      "fogPolicy": "normal"
+    }
+  ],
   "progressionAllowance": {
-    "loadoutSlotCount": 0
+    "maxStoryChapter": "two-homelands",
+    "loadoutSlotCount": 1
   },
   "initialState": {
-    "activePhaseIds": [],
-    "facts": [],
-    "counters": [],
+    "activePhaseIds": [
+      "opening"
+    ],
+    "facts": [
+      {
+        "id": "mission-complete",
+        "value": false,
+        "debugMutable": true
+      },
+      {
+        "id": "mission-failed",
+        "value": false,
+        "debugMutable": true
+      },
+      {
+        "id": "optional-complete",
+        "value": false,
+        "debugMutable": true
+      },
+      {
+        "id": "checkpoint-ready",
+        "value": false,
+        "debugMutable": true
+      }
+    ],
+    "counters": [
+      {
+        "id": "mission-progress",
+        "value": 0,
+        "debugMutable": true
+      }
+    ],
     "timers": []
   },
-  "phases": [],
-  "objectives": [],
-  "checkpoints": [],
+  "phases": [
+    {
+      "id": "opening",
+      "mode": "sequential",
+      "entryActions": [
+        {
+          "id": "show-opening-briefing",
+          "kind": "start-dialogue",
+          "scope": "mission",
+          "lineId": "opening-briefing",
+          "waitForAcknowledgement": false
+        }
+      ],
+      "exitActions": [],
+      "triggers": [],
+      "transitions": [
+        {
+          "id": "begin-operation",
+          "targetPhaseIds": [
+            "operation"
+          ],
+          "condition": {
+            "kind": "always"
+          },
+          "actions": [],
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "id": "operation",
+      "mode": "parallel",
+      "entryActions": [],
+      "exitActions": [],
+      "triggers": [
+        {
+          "id": "resolve-authored-victory",
+          "kind": "condition",
+          "condition": {
+            "kind": "fact",
+            "factId": "mission-complete",
+            "equals": true
+          },
+          "actions": [
+            {
+              "id": "request-authored-victory",
+              "kind": "request-outcome",
+              "scope": "mission",
+              "outcome": "victory",
+              "reasonId": "authored-victory"
+            }
+          ],
+          "firing": {
+            "kind": "once"
+          },
+          "priority": 100
+        },
+        {
+          "id": "resolve-authored-defeat",
+          "kind": "condition",
+          "condition": {
+            "kind": "fact",
+            "factId": "mission-failed",
+            "equals": true
+          },
+          "actions": [
+            {
+              "id": "request-authored-defeat",
+              "kind": "request-outcome",
+              "scope": "mission",
+              "outcome": "defeat",
+              "reasonId": "authored-defeat"
+            }
+          ],
+          "firing": {
+            "kind": "once"
+          },
+          "priority": 90
+        }
+      ],
+      "transitions": []
+    }
+  ],
+  "objectives": [
+    {
+      "id": "primary-mission",
+      "kind": "primary",
+      "ownership": {
+        "kind": "shared"
+      },
+      "titleTextId": "primary-title",
+      "descriptionTextId": "primary-description",
+      "reveal": {
+        "kind": "always"
+      },
+      "complete": {
+        "kind": "fact",
+        "factId": "mission-complete",
+        "equals": true
+      },
+      "display": {
+        "announceReveal": true,
+        "announceCompletion": true,
+        "showInTracker": true
+      }
+    },
+    {
+      "id": "optional-discovery",
+      "kind": "optional",
+      "ownership": {
+        "kind": "shared"
+      },
+      "titleTextId": "optional-title",
+      "descriptionTextId": "optional-description",
+      "reveal": {
+        "kind": "always"
+      },
+      "complete": {
+        "kind": "fact",
+        "factId": "optional-complete",
+        "equals": true
+      },
+      "display": {
+        "announceReveal": true,
+        "announceCompletion": true,
+        "showInTracker": true
+      }
+    },
+    {
+      "id": "mission-failure",
+      "kind": "failure",
+      "ownership": {
+        "kind": "shared"
+      },
+      "titleTextId": "failure-title",
+      "descriptionTextId": "failure-description",
+      "reveal": {
+        "kind": "always"
+      },
+      "complete": {
+        "kind": "fact",
+        "factId": "mission-failed",
+        "equals": true
+      },
+      "display": {
+        "announceReveal": true,
+        "announceCompletion": true,
+        "showInTracker": true,
+        "announceFailure": true
+      }
+    }
+  ],
+  "checkpoints": [
+    {
+      "id": "tower-captured",
+      "titleTextId": "tower-captured-title",
+      "trigger": {
+        "kind": "fact",
+        "factId": "checkpoint-ready",
+        "equals": true
+      },
+      "requiredActions": [],
+      "savePolicy": "when-stable",
+      "resumePresentation": {
+        "textId": "tower-captured-resume"
+      }
+    }
+  ],
   "difficulty": {
     "story": {},
     "normal": {},
     "hard": {}
   },
-  "contentStatus": "skeleton"
+  "contentStatus": "skeleton",
+  "implementation": {
+    "summary": "Tivara uses a wolf disguise and favorable wind to take a stone tower, recruit slingshooters, and defend against a Cyclops attack.",
+    "phasePlan": [
+      {
+        "id": "wolf-road",
+        "description": "Cross wolf territory using the disguise and learn how wind changes ranged attacks."
+      },
+      {
+        "id": "tower-assault",
+        "description": "Capture the stone tower and persuade its slingshooters to join."
+      },
+      {
+        "id": "cyclops-defense",
+        "description": "Fortify the tower and repel the approaching Cyclops force."
+      }
+    ],
+    "checkpointCandidates": [
+      {
+        "id": "tower-captured",
+        "after": "the stone tower changes ownership"
+      },
+      {
+        "id": "slingshooters-joined",
+        "after": "the slingshooter company becomes controllable"
+      }
+    ],
+    "plannedScenarioReferences": {
+      "actors": [
+        "stone-tower",
+        "slingshooter-captain",
+        "cyclops-attacker"
+      ],
+      "regions": [
+        "wolf-territory",
+        "tower-defense-zone"
+      ],
+      "routes": [
+        "cyclops-approach"
+      ],
+      "spawnSets": [
+        "wolf-pack",
+        "cyclops-assault"
+      ]
+    },
+    "mechanics": [
+      "Wolf disguise traversal",
+      "Directional wind affecting projectiles",
+      "Tower capture and defensive wave combat"
+    ],
+    "coopNotes": [
+      "One player can manage the tower while the other controls the mobile defense.",
+      "Slingshooter recruitment is a shared unlock event."
+    ],
+    "dependencies": [
+      {
+        "issue": "#342",
+        "reason": "Terrain, faction, and stone-tower support are required for final authoring."
+      }
+    ],
+    "missingAssets": [
+      "Wolf disguise feedback and wind visualization",
+      "Stone tower and slingshooter encounter assets"
+    ],
+    "tests": [
+      "Capture the tower with the disguise route",
+      "Defend the recruited slingshooters through the final wave"
+    ],
+    "definitionOfDone": [
+      "Wind changes are communicated before they affect combat",
+      "Tower ownership and recruitment survive checkpoint resume"
+    ],
+    "implementationTodos": [
+      {
+        "id": "author-scenario-contract",
+        "module": "scenario",
+        "description": "Author and validate the planned scenario references for Slingshooters & Wolves."
+      },
+      {
+        "id": "implement-mission-runtime",
+        "module": "campaign-runtime",
+        "description": "Replace scaffold facts with deterministic authored phase logic for Slingshooters & Wolves."
+      },
+      {
+        "id": "finish-mission-presentation",
+        "module": "campaign-presentation",
+        "description": "Add final dialogue, cinematics, audio, and objective presentation for Slingshooters & Wolves."
+      }
+    ]
+  }
 }

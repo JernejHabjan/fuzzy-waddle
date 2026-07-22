@@ -4,32 +4,337 @@
   "chapterId": "united-against-volcano",
   "revision": 1,
   "mapId": 3,
-  "prerequisites": ["the-volcano-is-getting-angry"],
+  "prerequisites": [
+    "the-volcano-is-getting-angry"
+  ],
   "catalogue": {
     "order": 2,
     "title": "Cult Wars",
     "faction": "both",
     "environment": "Ashen ruins",
     "briefing": "A cult turns chaos into an army.",
-    "objectiveSummaries": ["Expose the cult", "Defeat its leaders"]
+    "objectiveSummaries": [
+      "Expose the cult",
+      "Defeat its leaders"
+    ]
   },
-  "participants": [],
+  "participants": [
+    {
+      "slotId": "tivara-player",
+      "controller": "human",
+      "faction": 1,
+      "teamId": "alliance",
+      "requiredForVictory": true,
+      "profileOwnership": "independent",
+      "economy": "normal",
+      "fogPolicy": "normal"
+    },
+    {
+      "slotId": "skaduwee-player",
+      "controller": "human",
+      "singlePlayerSubstitution": "scripted-ai",
+      "faction": 2,
+      "teamId": "alliance",
+      "requiredForVictory": true,
+      "profileOwnership": "independent",
+      "economy": "normal",
+      "fogPolicy": "normal"
+    }
+  ],
   "progressionAllowance": {
-    "loadoutSlotCount": 0
+    "maxStoryChapter": "united-against-volcano",
+    "loadoutSlotCount": 1
   },
   "initialState": {
-    "activePhaseIds": [],
-    "facts": [],
-    "counters": [],
+    "activePhaseIds": [
+      "opening"
+    ],
+    "facts": [
+      {
+        "id": "mission-complete",
+        "value": false,
+        "debugMutable": true
+      },
+      {
+        "id": "mission-failed",
+        "value": false,
+        "debugMutable": true
+      },
+      {
+        "id": "optional-complete",
+        "value": false,
+        "debugMutable": true
+      },
+      {
+        "id": "checkpoint-ready",
+        "value": false,
+        "debugMutable": true
+      }
+    ],
+    "counters": [
+      {
+        "id": "mission-progress",
+        "value": 0,
+        "debugMutable": true
+      }
+    ],
     "timers": []
   },
-  "phases": [],
-  "objectives": [],
-  "checkpoints": [],
+  "phases": [
+    {
+      "id": "opening",
+      "mode": "sequential",
+      "entryActions": [
+        {
+          "id": "show-opening-briefing",
+          "kind": "start-dialogue",
+          "scope": "mission",
+          "lineId": "opening-briefing",
+          "waitForAcknowledgement": false
+        }
+      ],
+      "exitActions": [],
+      "triggers": [],
+      "transitions": [
+        {
+          "id": "begin-operation",
+          "targetPhaseIds": [
+            "operation"
+          ],
+          "condition": {
+            "kind": "always"
+          },
+          "actions": [],
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "id": "operation",
+      "mode": "parallel",
+      "entryActions": [],
+      "exitActions": [],
+      "triggers": [
+        {
+          "id": "resolve-authored-victory",
+          "kind": "condition",
+          "condition": {
+            "kind": "fact",
+            "factId": "mission-complete",
+            "equals": true
+          },
+          "actions": [
+            {
+              "id": "request-authored-victory",
+              "kind": "request-outcome",
+              "scope": "mission",
+              "outcome": "victory",
+              "reasonId": "authored-victory"
+            }
+          ],
+          "firing": {
+            "kind": "once"
+          },
+          "priority": 100
+        },
+        {
+          "id": "resolve-authored-defeat",
+          "kind": "condition",
+          "condition": {
+            "kind": "fact",
+            "factId": "mission-failed",
+            "equals": true
+          },
+          "actions": [
+            {
+              "id": "request-authored-defeat",
+              "kind": "request-outcome",
+              "scope": "mission",
+              "outcome": "defeat",
+              "reasonId": "authored-defeat"
+            }
+          ],
+          "firing": {
+            "kind": "once"
+          },
+          "priority": 90
+        }
+      ],
+      "transitions": []
+    }
+  ],
+  "objectives": [
+    {
+      "id": "primary-mission",
+      "kind": "primary",
+      "ownership": {
+        "kind": "shared"
+      },
+      "titleTextId": "primary-title",
+      "descriptionTextId": "primary-description",
+      "reveal": {
+        "kind": "always"
+      },
+      "complete": {
+        "kind": "fact",
+        "factId": "mission-complete",
+        "equals": true
+      },
+      "display": {
+        "announceReveal": true,
+        "announceCompletion": true,
+        "showInTracker": true
+      }
+    },
+    {
+      "id": "optional-discovery",
+      "kind": "optional",
+      "ownership": {
+        "kind": "shared"
+      },
+      "titleTextId": "optional-title",
+      "descriptionTextId": "optional-description",
+      "reveal": {
+        "kind": "always"
+      },
+      "complete": {
+        "kind": "fact",
+        "factId": "optional-complete",
+        "equals": true
+      },
+      "display": {
+        "announceReveal": true,
+        "announceCompletion": true,
+        "showInTracker": true
+      }
+    },
+    {
+      "id": "mission-failure",
+      "kind": "failure",
+      "ownership": {
+        "kind": "shared"
+      },
+      "titleTextId": "failure-title",
+      "descriptionTextId": "failure-description",
+      "reveal": {
+        "kind": "always"
+      },
+      "complete": {
+        "kind": "fact",
+        "factId": "mission-failed",
+        "equals": true
+      },
+      "display": {
+        "announceReveal": true,
+        "announceCompletion": true,
+        "showInTracker": true,
+        "announceFailure": true
+      }
+    }
+  ],
+  "checkpoints": [
+    {
+      "id": "cult-identified",
+      "titleTextId": "cult-identified-title",
+      "trigger": {
+        "kind": "fact",
+        "factId": "checkpoint-ready",
+        "equals": true
+      },
+      "requiredActions": [],
+      "savePolicy": "when-stable",
+      "resumePresentation": {
+        "textId": "cult-identified-resume"
+      }
+    }
+  ],
   "difficulty": {
     "story": {},
     "normal": {},
     "hard": {}
   },
-  "contentStatus": "skeleton"
+  "contentStatus": "skeleton",
+  "implementation": {
+    "summary": "The alliance confronts rebel cults inside familiar factions, traces crystal corruption, and defeats leaders without treating every dissenter as an enemy.",
+    "phasePlan": [
+      {
+        "id": "rebel-signs",
+        "description": "Investigate same-faction raids and distinguish cult units from civilians."
+      },
+      {
+        "id": "corruption-network",
+        "description": "Break the cult's crystal network and expose its competing leaders."
+      },
+      {
+        "id": "leader-confrontation",
+        "description": "Defeat or capture the leaders and stabilize the divided alliance."
+      }
+    ],
+    "checkpointCandidates": [
+      {
+        "id": "cult-identified",
+        "after": "the alliance confirms the source of the raids"
+      },
+      {
+        "id": "network-broken",
+        "after": "the corruption network is disabled"
+      }
+    ],
+    "plannedScenarioReferences": {
+      "actors": [
+        "tivara-cult-leader",
+        "skaduwee-cult-leader",
+        "corruption-node"
+      ],
+      "regions": [
+        "rebel-village",
+        "cult-sanctum"
+      ],
+      "routes": [
+        "cult-supply-route"
+      ],
+      "spawnSets": [
+        "cult-raiders"
+      ]
+    },
+    "mechanics": [
+      "Same-faction hostile identification",
+      "Crystal-corruption network sabotage",
+      "Multiple cult-leader confrontation"
+    ],
+    "coopNotes": [
+      "Each player investigates corruption within their own faction.",
+      "Leader outcomes merge into one shared campaign decision record."
+    ],
+    "dependencies": [],
+    "missingAssets": [
+      "Corrupted faction variants and readable allegiance markers",
+      "Cult network props and leader encounter staging"
+    ],
+    "tests": [
+      "Protect civilians while defeating cult raiders",
+      "Resolve every leader order without duplicate campaign choices"
+    ],
+    "definitionOfDone": [
+      "Same-faction hostility is unambiguous before combat",
+      "Corruption cleanup produces a stable post-mission state"
+    ],
+    "implementationTodos": [
+      {
+        "id": "author-scenario-contract",
+        "module": "scenario",
+        "description": "Author and validate the planned scenario references for Cult Wars."
+      },
+      {
+        "id": "implement-mission-runtime",
+        "module": "campaign-runtime",
+        "description": "Replace scaffold facts with deterministic authored phase logic for Cult Wars."
+      },
+      {
+        "id": "finish-mission-presentation",
+        "module": "campaign-presentation",
+        "description": "Add final dialogue, cinematics, audio, and objective presentation for Cult Wars."
+      }
+    ]
+  }
 }

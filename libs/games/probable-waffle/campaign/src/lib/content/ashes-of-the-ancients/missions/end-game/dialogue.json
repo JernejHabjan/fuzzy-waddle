@@ -1,7 +1,62 @@
 {
   "schemaVersion": 1,
   "missionId": "end-game",
-  "speakers": [],
-  "lines": [],
+  "texts": [
+    {
+      "id": "narrator-name",
+      "text": "Narrator"
+    },
+    {
+      "id": "opening-briefing-text",
+      "text": "Everything leads back to the ancient power below."
+    },
+    {
+      "id": "primary-title",
+      "text": "Confront the enemy"
+    },
+    {
+      "id": "primary-description",
+      "text": "Confront the enemy; Control the eruption"
+    },
+    {
+      "id": "optional-title",
+      "text": "Discover an optional opportunity"
+    },
+    {
+      "id": "optional-description",
+      "text": "Explore the mission space for an optional story or tactical discovery."
+    },
+    {
+      "id": "failure-title",
+      "text": "Mission force lost"
+    },
+    {
+      "id": "failure-description",
+      "text": "Keep every mission-critical participant and structure operational."
+    },
+    {
+      "id": "final-choice-committed-title",
+      "text": "Checkpoint: the final dialogue choice is recorded"
+    },
+    {
+      "id": "final-choice-committed-resume",
+      "text": "Resume after the final dialogue choice is recorded."
+    }
+  ],
+  "speakers": [
+    {
+      "id": "mission-narrator",
+      "nameTextId": "narrator-name"
+    }
+  ],
+  "lines": [
+    {
+      "id": "opening-briefing",
+      "speakerId": "mission-narrator",
+      "textId": "opening-briefing-text",
+      "text": "Everything leads back to the ancient power below.",
+      "delivery": "non-blocking"
+    }
+  ],
   "cinematics": []
 }

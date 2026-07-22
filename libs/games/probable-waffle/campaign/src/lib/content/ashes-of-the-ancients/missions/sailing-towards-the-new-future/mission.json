@@ -4,32 +4,338 @@
   "chapterId": "crystal-war",
   "revision": 1,
   "mapId": 3,
-  "prerequisites": ["we-had-enough"],
+  "prerequisites": [
+    "we-had-enough"
+  ],
   "catalogue": {
     "order": 0,
     "title": "Sailing Towards the New Future",
     "faction": "both",
     "environment": "Crystal coast",
     "briefing": "Both factions sail toward a future neither fully trusts.",
-    "objectiveSummaries": ["Reach the coast", "Defend the fleet"]
+    "objectiveSummaries": [
+      "Reach the coast",
+      "Defend the fleet"
+    ]
   },
-  "participants": [],
+  "participants": [
+    {
+      "slotId": "tivara-player",
+      "controller": "human",
+      "faction": 1,
+      "teamId": "alliance",
+      "requiredForVictory": true,
+      "profileOwnership": "independent",
+      "economy": "normal",
+      "fogPolicy": "normal"
+    },
+    {
+      "slotId": "skaduwee-player",
+      "controller": "human",
+      "singlePlayerSubstitution": "scripted-ai",
+      "faction": 2,
+      "teamId": "alliance",
+      "requiredForVictory": true,
+      "profileOwnership": "independent",
+      "economy": "normal",
+      "fogPolicy": "normal"
+    }
+  ],
   "progressionAllowance": {
-    "loadoutSlotCount": 0
+    "maxStoryChapter": "crystal-war",
+    "loadoutSlotCount": 1
   },
   "initialState": {
-    "activePhaseIds": [],
-    "facts": [],
-    "counters": [],
+    "activePhaseIds": [
+      "opening"
+    ],
+    "facts": [
+      {
+        "id": "mission-complete",
+        "value": false,
+        "debugMutable": true
+      },
+      {
+        "id": "mission-failed",
+        "value": false,
+        "debugMutable": true
+      },
+      {
+        "id": "optional-complete",
+        "value": false,
+        "debugMutable": true
+      },
+      {
+        "id": "checkpoint-ready",
+        "value": false,
+        "debugMutable": true
+      }
+    ],
+    "counters": [
+      {
+        "id": "mission-progress",
+        "value": 0,
+        "debugMutable": true
+      }
+    ],
     "timers": []
   },
-  "phases": [],
-  "objectives": [],
-  "checkpoints": [],
+  "phases": [
+    {
+      "id": "opening",
+      "mode": "sequential",
+      "entryActions": [
+        {
+          "id": "show-opening-briefing",
+          "kind": "start-dialogue",
+          "scope": "mission",
+          "lineId": "opening-briefing",
+          "waitForAcknowledgement": false
+        }
+      ],
+      "exitActions": [],
+      "triggers": [],
+      "transitions": [
+        {
+          "id": "begin-operation",
+          "targetPhaseIds": [
+            "operation"
+          ],
+          "condition": {
+            "kind": "always"
+          },
+          "actions": [],
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "id": "operation",
+      "mode": "parallel",
+      "entryActions": [],
+      "exitActions": [],
+      "triggers": [
+        {
+          "id": "resolve-authored-victory",
+          "kind": "condition",
+          "condition": {
+            "kind": "fact",
+            "factId": "mission-complete",
+            "equals": true
+          },
+          "actions": [
+            {
+              "id": "request-authored-victory",
+              "kind": "request-outcome",
+              "scope": "mission",
+              "outcome": "victory",
+              "reasonId": "authored-victory"
+            }
+          ],
+          "firing": {
+            "kind": "once"
+          },
+          "priority": 100
+        },
+        {
+          "id": "resolve-authored-defeat",
+          "kind": "condition",
+          "condition": {
+            "kind": "fact",
+            "factId": "mission-failed",
+            "equals": true
+          },
+          "actions": [
+            {
+              "id": "request-authored-defeat",
+              "kind": "request-outcome",
+              "scope": "mission",
+              "outcome": "defeat",
+              "reasonId": "authored-defeat"
+            }
+          ],
+          "firing": {
+            "kind": "once"
+          },
+          "priority": 90
+        }
+      ],
+      "transitions": []
+    }
+  ],
+  "objectives": [
+    {
+      "id": "primary-mission",
+      "kind": "primary",
+      "ownership": {
+        "kind": "shared"
+      },
+      "titleTextId": "primary-title",
+      "descriptionTextId": "primary-description",
+      "reveal": {
+        "kind": "always"
+      },
+      "complete": {
+        "kind": "fact",
+        "factId": "mission-complete",
+        "equals": true
+      },
+      "display": {
+        "announceReveal": true,
+        "announceCompletion": true,
+        "showInTracker": true
+      }
+    },
+    {
+      "id": "optional-discovery",
+      "kind": "optional",
+      "ownership": {
+        "kind": "shared"
+      },
+      "titleTextId": "optional-title",
+      "descriptionTextId": "optional-description",
+      "reveal": {
+        "kind": "always"
+      },
+      "complete": {
+        "kind": "fact",
+        "factId": "optional-complete",
+        "equals": true
+      },
+      "display": {
+        "announceReveal": true,
+        "announceCompletion": true,
+        "showInTracker": true
+      }
+    },
+    {
+      "id": "mission-failure",
+      "kind": "failure",
+      "ownership": {
+        "kind": "shared"
+      },
+      "titleTextId": "failure-title",
+      "descriptionTextId": "failure-description",
+      "reveal": {
+        "kind": "always"
+      },
+      "complete": {
+        "kind": "fact",
+        "factId": "mission-failed",
+        "equals": true
+      },
+      "display": {
+        "announceReveal": true,
+        "announceCompletion": true,
+        "showInTracker": true,
+        "announceFailure": true
+      }
+    }
+  ],
+  "checkpoints": [
+    {
+      "id": "pirates-cleared",
+      "titleTextId": "pirates-cleared-title",
+      "trigger": {
+        "kind": "fact",
+        "factId": "checkpoint-ready",
+        "equals": true
+      },
+      "requiredActions": [],
+      "savePolicy": "when-stable",
+      "resumePresentation": {
+        "textId": "pirates-cleared-resume"
+      }
+    }
+  ],
   "difficulty": {
     "story": {},
     "normal": {},
     "hard": {}
   },
-  "contentStatus": "skeleton"
+  "contentStatus": "skeleton",
+  "implementation": {
+    "summary": "The two evacuation fleets navigate pirates, a tsunami, dead wind, and a tameable shark while their crews learn to cooperate.",
+    "phasePlan": [
+      {
+        "id": "open-water",
+        "description": "Teach fleet control and switch between ships while leaving the old shores."
+      },
+      {
+        "id": "pirates-and-tsunami",
+        "description": "Defeat pirates and choose safe channels through the incoming tsunami."
+      },
+      {
+        "id": "dead-wind",
+        "description": "Survive becalmed waters, tame the shark, and reach the new coast."
+      }
+    ],
+    "checkpointCandidates": [
+      {
+        "id": "pirates-cleared",
+        "after": "the pirate blockade is defeated"
+      },
+      {
+        "id": "tsunami-survived",
+        "after": "both fleets enter the dead-wind waters"
+      }
+    ],
+    "plannedScenarioReferences": {
+      "actors": [
+        "tivara-flagship",
+        "skaduwee-flagship",
+        "tameable-shark"
+      ],
+      "regions": [
+        "pirate-blockade",
+        "tsunami-channel",
+        "dead-wind-zone"
+      ],
+      "routes": [
+        "fleet-route"
+      ],
+      "spawnSets": [
+        "pirate-fleet"
+      ]
+    },
+    "mechanics": [
+      "Naval faction-control switching",
+      "Pirate combat and tsunami route hazards",
+      "No-wind survival and shark taming"
+    ],
+    "coopNotes": [
+      "Each player controls one fleet and must keep formation at shared hazards.",
+      "The shark becomes a shared scenario ally without changing profile ownership."
+    ],
+    "dependencies": [],
+    "missingAssets": [
+      "Naval hazard presentation and fleet route",
+      "Pirate ships, tsunami effects, and tameable shark behavior"
+    ],
+    "tests": [
+      "Complete each naval hazard in solo control",
+      "Keep both co-op fleets synchronized through the tsunami"
+    ],
+    "definitionOfDone": [
+      "Every hazard has a deterministic telegraph and recovery path",
+      "Fleet switching never strands commands on the inactive faction"
+    ],
+    "implementationTodos": [
+      {
+        "id": "author-scenario-contract",
+        "module": "scenario",
+        "description": "Author and validate the planned scenario references for Sailing Towards the New Future."
+      },
+      {
+        "id": "implement-mission-runtime",
+        "module": "campaign-runtime",
+        "description": "Replace scaffold facts with deterministic authored phase logic for Sailing Towards the New Future."
+      },
+      {
+        "id": "finish-mission-presentation",
+        "module": "campaign-presentation",
+        "description": "Add final dialogue, cinematics, audio, and objective presentation for Sailing Towards the New Future."
+      }
+    ]
+  }
 }

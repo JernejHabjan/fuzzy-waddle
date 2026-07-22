@@ -1,7 +1,62 @@
 {
   "schemaVersion": 1,
   "missionId": "undead-and-cursed-lands",
-  "speakers": [],
-  "lines": [],
+  "texts": [
+    {
+      "id": "narrator-name",
+      "text": "Narrator"
+    },
+    {
+      "id": "opening-briefing-text",
+      "text": "The dead rise where the crystal has scarred the earth."
+    },
+    {
+      "id": "primary-title",
+      "text": "Cross the cursed lands"
+    },
+    {
+      "id": "primary-description",
+      "text": "Cross the cursed lands; Cleanse the corruption"
+    },
+    {
+      "id": "optional-title",
+      "text": "Discover an optional opportunity"
+    },
+    {
+      "id": "optional-description",
+      "text": "Explore the mission space for an optional story or tactical discovery."
+    },
+    {
+      "id": "failure-title",
+      "text": "Mission force lost"
+    },
+    {
+      "id": "failure-description",
+      "text": "Keep every mission-critical participant and structure operational."
+    },
+    {
+      "id": "farms-cleansed-title",
+      "text": "Checkpoint: the first sustainable crops are restored"
+    },
+    {
+      "id": "farms-cleansed-resume",
+      "text": "Resume after the first sustainable crops are restored."
+    }
+  ],
+  "speakers": [
+    {
+      "id": "mission-narrator",
+      "nameTextId": "narrator-name"
+    }
+  ],
+  "lines": [
+    {
+      "id": "opening-briefing",
+      "speakerId": "mission-narrator",
+      "textId": "opening-briefing-text",
+      "text": "The dead rise where the crystal has scarred the earth.",
+      "delivery": "non-blocking"
+    }
+  ],
   "cinematics": []
 }

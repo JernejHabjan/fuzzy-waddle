@@ -4,32 +4,333 @@
   "chapterId": "two-homelands",
   "revision": 1,
   "mapId": 3,
-  "prerequisites": ["slingshooters-and-wolves"],
+  "prerequisites": [
+    "slingshooters-and-wolves"
+  ],
   "catalogue": {
     "order": 3,
     "title": "Owl & Skaduwee Crystal",
     "faction": "skaduwee",
     "environment": "Skaduwee ice fields",
     "briefing": "A watchful guide leads Skaduwee to a crystal beneath the ice.",
-    "objectiveSummaries": ["Find the crystal", "Hold the excavation"]
+    "objectiveSummaries": [
+      "Find the crystal",
+      "Hold the excavation"
+    ]
   },
-  "participants": [],
+  "participants": [
+    {
+      "slotId": "skaduwee-player",
+      "controller": "human",
+      "faction": 2,
+      "teamId": "alliance",
+      "requiredForVictory": true,
+      "profileOwnership": "independent",
+      "economy": "normal",
+      "fogPolicy": "normal"
+    }
+  ],
   "progressionAllowance": {
-    "loadoutSlotCount": 0
+    "maxStoryChapter": "two-homelands",
+    "loadoutSlotCount": 1
   },
   "initialState": {
-    "activePhaseIds": [],
-    "facts": [],
-    "counters": [],
+    "activePhaseIds": [
+      "opening"
+    ],
+    "facts": [
+      {
+        "id": "mission-complete",
+        "value": false,
+        "debugMutable": true
+      },
+      {
+        "id": "mission-failed",
+        "value": false,
+        "debugMutable": true
+      },
+      {
+        "id": "optional-complete",
+        "value": false,
+        "debugMutable": true
+      },
+      {
+        "id": "checkpoint-ready",
+        "value": false,
+        "debugMutable": true
+      }
+    ],
+    "counters": [
+      {
+        "id": "mission-progress",
+        "value": 0,
+        "debugMutable": true
+      }
+    ],
     "timers": []
   },
-  "phases": [],
-  "objectives": [],
-  "checkpoints": [],
+  "phases": [
+    {
+      "id": "opening",
+      "mode": "sequential",
+      "entryActions": [
+        {
+          "id": "show-opening-briefing",
+          "kind": "start-dialogue",
+          "scope": "mission",
+          "lineId": "opening-briefing",
+          "waitForAcknowledgement": false
+        }
+      ],
+      "exitActions": [],
+      "triggers": [],
+      "transitions": [
+        {
+          "id": "begin-operation",
+          "targetPhaseIds": [
+            "operation"
+          ],
+          "condition": {
+            "kind": "always"
+          },
+          "actions": [],
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "id": "operation",
+      "mode": "parallel",
+      "entryActions": [],
+      "exitActions": [],
+      "triggers": [
+        {
+          "id": "resolve-authored-victory",
+          "kind": "condition",
+          "condition": {
+            "kind": "fact",
+            "factId": "mission-complete",
+            "equals": true
+          },
+          "actions": [
+            {
+              "id": "request-authored-victory",
+              "kind": "request-outcome",
+              "scope": "mission",
+              "outcome": "victory",
+              "reasonId": "authored-victory"
+            }
+          ],
+          "firing": {
+            "kind": "once"
+          },
+          "priority": 100
+        },
+        {
+          "id": "resolve-authored-defeat",
+          "kind": "condition",
+          "condition": {
+            "kind": "fact",
+            "factId": "mission-failed",
+            "equals": true
+          },
+          "actions": [
+            {
+              "id": "request-authored-defeat",
+              "kind": "request-outcome",
+              "scope": "mission",
+              "outcome": "defeat",
+              "reasonId": "authored-defeat"
+            }
+          ],
+          "firing": {
+            "kind": "once"
+          },
+          "priority": 90
+        }
+      ],
+      "transitions": []
+    }
+  ],
+  "objectives": [
+    {
+      "id": "primary-mission",
+      "kind": "primary",
+      "ownership": {
+        "kind": "shared"
+      },
+      "titleTextId": "primary-title",
+      "descriptionTextId": "primary-description",
+      "reveal": {
+        "kind": "always"
+      },
+      "complete": {
+        "kind": "fact",
+        "factId": "mission-complete",
+        "equals": true
+      },
+      "display": {
+        "announceReveal": true,
+        "announceCompletion": true,
+        "showInTracker": true
+      }
+    },
+    {
+      "id": "optional-discovery",
+      "kind": "optional",
+      "ownership": {
+        "kind": "shared"
+      },
+      "titleTextId": "optional-title",
+      "descriptionTextId": "optional-description",
+      "reveal": {
+        "kind": "always"
+      },
+      "complete": {
+        "kind": "fact",
+        "factId": "optional-complete",
+        "equals": true
+      },
+      "display": {
+        "announceReveal": true,
+        "announceCompletion": true,
+        "showInTracker": true
+      }
+    },
+    {
+      "id": "mission-failure",
+      "kind": "failure",
+      "ownership": {
+        "kind": "shared"
+      },
+      "titleTextId": "failure-title",
+      "descriptionTextId": "failure-description",
+      "reveal": {
+        "kind": "always"
+      },
+      "complete": {
+        "kind": "fact",
+        "factId": "mission-failed",
+        "equals": true
+      },
+      "display": {
+        "announceReveal": true,
+        "announceCompletion": true,
+        "showInTracker": true,
+        "announceFailure": true
+      }
+    }
+  ],
+  "checkpoints": [
+    {
+      "id": "crystal-discovered",
+      "titleTextId": "crystal-discovered-title",
+      "trigger": {
+        "kind": "fact",
+        "factId": "checkpoint-ready",
+        "equals": true
+      },
+      "requiredActions": [],
+      "savePolicy": "when-stable",
+      "resumePresentation": {
+        "textId": "crystal-discovered-resume"
+      }
+    }
+  ],
   "difficulty": {
     "story": {},
     "normal": {},
     "hard": {}
   },
-  "contentStatus": "skeleton"
+  "contentStatus": "skeleton",
+  "implementation": {
+    "summary": "Skaduwee follows an owl through an icy ascent, uses catapults against icicles, discovers a crystal, and defends the Owlery.",
+    "phasePlan": [
+      {
+        "id": "icy-ascent",
+        "description": "Follow the owl and use catapults to clear dangerous icicles."
+      },
+      {
+        "id": "crystal-awakening",
+        "description": "Enter the crystal chamber and survive the mage's transformation."
+      },
+      {
+        "id": "owlery-defense",
+        "description": "Return to the Owlery and defend it with newly learned magic."
+      }
+    ],
+    "checkpointCandidates": [
+      {
+        "id": "crystal-discovered",
+        "after": "the Skaduwee crystal chamber opens"
+      },
+      {
+        "id": "owlery-reached",
+        "after": "the defending force returns to the Owlery"
+      }
+    ],
+    "plannedScenarioReferences": {
+      "actors": [
+        "guide-owl",
+        "owlery",
+        "crystal-mage",
+        "ice-catapult"
+      ],
+      "regions": [
+        "icicle-pass",
+        "crystal-chamber",
+        "owlery-defense-zone"
+      ],
+      "routes": [
+        "owl-flight-route"
+      ],
+      "spawnSets": [
+        "owlery-attack-wave"
+      ]
+    },
+    "mechanics": [
+      "Catapult targeting against environmental icicles",
+      "Crystal discovery and mage transformation",
+      "Owlery defense using area magic"
+    ],
+    "coopNotes": [
+      "Catapult and escort duties can be split between players.",
+      "Transformation and research rewards are granted to both profiles exactly once."
+    ],
+    "dependencies": [
+      {
+        "issue": "#524",
+        "reason": "Area-effect combat and research support are required for the magic-defense finale."
+      }
+    ],
+    "missingAssets": [
+      "Owlery structure and crystal chamber set dressing",
+      "Mage transformation and area-magic effects"
+    ],
+    "tests": [
+      "Clear the ascent without destroying the guide path",
+      "Defend the Owlery and verify shared research grants"
+    ],
+    "definitionOfDone": [
+      "Catapult objectives expose clear targets and failure recovery",
+      "The transformation and reward sequence is skip-safe"
+    ],
+    "implementationTodos": [
+      {
+        "id": "author-scenario-contract",
+        "module": "scenario",
+        "description": "Author and validate the planned scenario references for Owl & Skaduwee Crystal."
+      },
+      {
+        "id": "implement-mission-runtime",
+        "module": "campaign-runtime",
+        "description": "Replace scaffold facts with deterministic authored phase logic for Owl & Skaduwee Crystal."
+      },
+      {
+        "id": "finish-mission-presentation",
+        "module": "campaign-presentation",
+        "description": "Add final dialogue, cinematics, audio, and objective presentation for Owl & Skaduwee Crystal."
+      }
+    ]
+  }
 }

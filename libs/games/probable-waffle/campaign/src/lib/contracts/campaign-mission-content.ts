@@ -26,6 +26,24 @@ export interface MissionCatalogueDefinition {
   readonly objectiveSummaries: readonly string[];
 }
 
+export interface MissionImplementationBrief {
+  readonly summary: string;
+  readonly phasePlan: readonly { readonly id: string; readonly description: string }[];
+  readonly checkpointCandidates: readonly { readonly id: string; readonly after: string }[];
+  readonly plannedScenarioReferences: Readonly<Record<string, readonly string[]>>;
+  readonly mechanics: readonly string[];
+  readonly coopNotes: readonly string[];
+  readonly dependencies: readonly { readonly issue: string; readonly reason: string }[];
+  readonly missingAssets: readonly string[];
+  readonly tests: readonly string[];
+  readonly definitionOfDone: readonly string[];
+  readonly implementationTodos: readonly {
+    readonly id: string;
+    readonly module: string;
+    readonly description: string;
+  }[];
+}
+
 export interface CampaignMissionContent {
   readonly schemaVersion: 1;
   readonly id: CampaignMissionId;
@@ -35,6 +53,7 @@ export interface CampaignMissionContent {
   readonly mapId: ProbableWaffleMapEnum;
   readonly prerequisites: readonly CampaignMissionId[];
   readonly catalogue: MissionCatalogueDefinition;
+  readonly implementation: MissionImplementationBrief;
   readonly participants: readonly MissionParticipantDefinition[];
   readonly coop?: MissionCoopOverride;
   readonly progressionAllowance: MissionProgressionAllowance;

@@ -1,7 +1,62 @@
 {
   "schemaVersion": 1,
   "missionId": "cult-wars",
-  "speakers": [],
-  "lines": [],
+  "texts": [
+    {
+      "id": "narrator-name",
+      "text": "Narrator"
+    },
+    {
+      "id": "opening-briefing-text",
+      "text": "A cult turns chaos into an army."
+    },
+    {
+      "id": "primary-title",
+      "text": "Expose the cult"
+    },
+    {
+      "id": "primary-description",
+      "text": "Expose the cult; Defeat its leaders"
+    },
+    {
+      "id": "optional-title",
+      "text": "Discover an optional opportunity"
+    },
+    {
+      "id": "optional-description",
+      "text": "Explore the mission space for an optional story or tactical discovery."
+    },
+    {
+      "id": "failure-title",
+      "text": "Mission force lost"
+    },
+    {
+      "id": "failure-description",
+      "text": "Keep every mission-critical participant and structure operational."
+    },
+    {
+      "id": "cult-identified-title",
+      "text": "Checkpoint: the alliance confirms the source of the raids"
+    },
+    {
+      "id": "cult-identified-resume",
+      "text": "Resume after the alliance confirms the source of the raids."
+    }
+  ],
+  "speakers": [
+    {
+      "id": "mission-narrator",
+      "nameTextId": "narrator-name"
+    }
+  ],
+  "lines": [
+    {
+      "id": "opening-briefing",
+      "speakerId": "mission-narrator",
+      "textId": "opening-briefing-text",
+      "text": "A cult turns chaos into an army.",
+      "delivery": "non-blocking"
+    }
+  ],
   "cinematics": []
 }

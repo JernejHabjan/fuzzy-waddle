@@ -1,7 +1,62 @@
 {
   "schemaVersion": 1,
   "missionId": "slingshooters-and-wolves",
-  "speakers": [],
-  "lines": [],
+  "texts": [
+    {
+      "id": "narrator-name",
+      "text": "Narrator"
+    },
+    {
+      "id": "opening-briefing-text",
+      "text": "The road forward is guarded by more than wolves."
+    },
+    {
+      "id": "primary-title",
+      "text": "Train the slingshooters"
+    },
+    {
+      "id": "primary-description",
+      "text": "Train the slingshooters; Clear the pass"
+    },
+    {
+      "id": "optional-title",
+      "text": "Discover an optional opportunity"
+    },
+    {
+      "id": "optional-description",
+      "text": "Explore the mission space for an optional story or tactical discovery."
+    },
+    {
+      "id": "failure-title",
+      "text": "Mission force lost"
+    },
+    {
+      "id": "failure-description",
+      "text": "Keep every mission-critical participant and structure operational."
+    },
+    {
+      "id": "tower-captured-title",
+      "text": "Checkpoint: the stone tower changes ownership"
+    },
+    {
+      "id": "tower-captured-resume",
+      "text": "Resume after the stone tower changes ownership."
+    }
+  ],
+  "speakers": [
+    {
+      "id": "mission-narrator",
+      "nameTextId": "narrator-name"
+    }
+  ],
+  "lines": [
+    {
+      "id": "opening-briefing",
+      "speakerId": "mission-narrator",
+      "textId": "opening-briefing-text",
+      "text": "The road forward is guarded by more than wolves.",
+      "delivery": "non-blocking"
+    }
+  ],
   "cinematics": []
 }

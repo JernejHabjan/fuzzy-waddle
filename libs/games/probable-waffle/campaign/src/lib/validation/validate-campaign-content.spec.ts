@@ -19,7 +19,12 @@ import { FactionType, ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol
 
 describe("validateCampaignContent", () => {
   it("rejects playable content without authored victory and defeat paths", () => {
-    const dreams = { ...AOTA_CAMPAIGN_MISSIONS[0]!, contentStatus: "playable" as const };
+    const dreams = {
+      ...AOTA_CAMPAIGN_MISSIONS[0]!,
+      contentStatus: "playable" as const,
+      initialState: { ...AOTA_CAMPAIGN_MISSIONS[0]!.initialState, activePhaseIds: [] },
+      phases: []
+    };
     const result = validateCampaignContent({
       campaign: AOTA_CAMPAIGN_DEFINITION,
       missions: [dreams, ...AOTA_CAMPAIGN_MISSIONS.slice(1)],
@@ -53,6 +58,30 @@ describe("validateCampaignContent", () => {
 
     expect(issues).toContain("invalid-prerequisites");
     expect(issues).toContain("prerequisite-cycle");
+  });
+
+  it("reports duplicate authored implementation identifiers", () => {
+    const source = AOTA_CAMPAIGN_MISSIONS[0]!;
+    const duplicatePhase = source.implementation.phasePlan[0]!;
+    const duplicateCheckpoint = source.implementation.checkpointCandidates[0]!;
+    const duplicateTodo = source.implementation.implementationTodos[0]!;
+    const dreams = {
+      ...source,
+      implementation: {
+        ...source.implementation,
+        phasePlan: [...source.implementation.phasePlan, duplicatePhase],
+        checkpointCandidates: [...source.implementation.checkpointCandidates, duplicateCheckpoint],
+        implementationTodos: [...source.implementation.implementationTodos, duplicateTodo]
+      }
+    } satisfies CampaignMissionContent;
+
+    expect(validate([dreams, ...AOTA_CAMPAIGN_MISSIONS.slice(1)])).toEqual(
+      expect.arrayContaining([
+        "duplicate-implementation-phase-id",
+        "duplicate-implementation-checkpoint-id",
+        "duplicate-implementation-todo-id"
+      ])
+    );
   });
 
   it("reports missing phase references with a source path", () => {
