@@ -78,3 +78,5 @@ docs/ai/
 .codex
 .pnpm-store
 test-results/
+.agents
+.mcp.json
