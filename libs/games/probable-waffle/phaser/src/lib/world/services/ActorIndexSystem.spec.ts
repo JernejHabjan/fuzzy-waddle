@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { ProbableWaffleScene } from "../../core/probable-waffle.scene";

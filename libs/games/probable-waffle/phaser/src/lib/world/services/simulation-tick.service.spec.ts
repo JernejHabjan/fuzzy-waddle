@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { SimulationPauseReason, SimulationTickService } from "./simulation-tick.service";
 
 describe("SimulationTickService campaign cinematic pause ownership", () => {

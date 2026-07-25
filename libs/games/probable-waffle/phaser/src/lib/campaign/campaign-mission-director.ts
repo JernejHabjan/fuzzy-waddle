@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { Subject, type Subscription } from "rxjs";
 import {
   AOTA_CAMPAIGN_CONTENT_REGISTRY,

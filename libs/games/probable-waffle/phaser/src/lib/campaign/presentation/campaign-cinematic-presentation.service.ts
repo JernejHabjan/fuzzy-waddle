@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { BehaviorSubject } from "rxjs";
 import {
   buildCampaignDialogueProjection,

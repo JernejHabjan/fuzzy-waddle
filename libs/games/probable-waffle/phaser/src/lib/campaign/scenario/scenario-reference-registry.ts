@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import type {
   ScenarioActorId,

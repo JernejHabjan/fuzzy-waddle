@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { Subject } from "rxjs";
 import { GameEventEmitter } from "@fuzzy-waddle/platform-game-host";
 import {

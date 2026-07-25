@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { Subscription } from "rxjs";
 import type { ScenarioActorId, ScenarioRegionId } from "@fuzzy-waddle/probable-waffle-campaign";
 import type {

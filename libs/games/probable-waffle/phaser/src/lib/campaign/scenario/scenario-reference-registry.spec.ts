@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { asCampaignContentId } from "@fuzzy-waddle/probable-waffle-campaign";
 import { ActorData, ActorDataKey } from "../../data/actor-data";
 import { ProbableWaffleScene } from "../../core/probable-waffle.scene";

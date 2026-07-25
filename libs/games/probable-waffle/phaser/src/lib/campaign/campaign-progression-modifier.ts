@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { ProbableWafflePlayerType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type {
   CampaignProgressionModifier,

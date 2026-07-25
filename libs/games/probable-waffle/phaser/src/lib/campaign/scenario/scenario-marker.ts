@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 export type ScenarioMarkerKind = "point" | "region" | "route" | "group" | "camera-shot" | "spawn-set";
 
 export interface ScenarioMarker {

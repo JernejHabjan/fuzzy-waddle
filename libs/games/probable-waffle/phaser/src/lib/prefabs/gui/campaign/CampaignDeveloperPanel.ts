@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { Subscription } from "rxjs";
 import type { CampaignDeveloperCommand, CampaignDeveloperCommandResult } from "@fuzzy-waddle/probable-waffle-campaign";
 import type { CampaignMissionDirector } from "../../../campaign/campaign-mission-director";

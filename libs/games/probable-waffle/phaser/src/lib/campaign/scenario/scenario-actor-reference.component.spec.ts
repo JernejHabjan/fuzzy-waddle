@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { ObjectNames, type OwnerComponentData } from "@fuzzy-waddle/probable-waffle-protocol";
 import { ActorData, ActorDataKey, applyActorDefinitionToActor } from "../../data/actor-data";
 import { ActorManager } from "../../data/actor-manager";
