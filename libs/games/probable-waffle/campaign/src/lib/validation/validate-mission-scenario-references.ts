@@ -34,12 +34,12 @@ export function validateMissionScenarioReferences(
   sourcePath: string
 ): CampaignValidationResult {
   const issues: CampaignValidationIssue[] = [];
-  if (mission.mapId !== map.mapId) {
+  if (mission.mapKey !== map.sceneKey) {
     issues.push({
       sourcePath,
-      jsonPath: "$.mapId",
+      jsonPath: "$.mapKey",
       code: "scenario-map-mismatch",
-      message: `Mission map ${mission.mapId} does not match scenario manifest ${map.mapId} (${map.sceneKey})`
+      message: `Mission map ${mission.mapKey} does not match scenario manifest ${map.mapId} (${map.sceneKey})`
     });
   }
 

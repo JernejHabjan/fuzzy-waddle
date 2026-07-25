@@ -4,7 +4,7 @@
   "id": "joining-crystal",
   "chapterId": "crystal-war",
   "revision": 1,
-  "mapId": 3,
+  "mapKey": "MapEmberEnclave",
   "prerequisites": ["time-rush"],
   "catalogue": {
     "order": 4,

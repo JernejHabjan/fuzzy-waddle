@@ -1,4 +1,4 @@
-import { CampaignFaction, type ProbableWaffleMapEnum } from "@fuzzy-waddle/probable-waffle-protocol";
+import { CampaignFaction } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { CampaignMissionContent } from "../contracts/campaign-mission-content";
 import { asCampaignContentId } from "../contracts/campaign-content-id";
 import { type ScenarioMapManifest, validateMissionScenarioReferences } from "./validate-mission-scenario-references";
@@ -6,7 +6,7 @@ import { AOTA_CAMPAIGN_MISSIONS } from "../catalog/ashes-of-the-ancients-content
 
 describe("validateMissionScenarioReferences", () => {
   const map: ScenarioMapManifest = {
-    mapId: 3 as ProbableWaffleMapEnum,
+    mapKey: "MapEmberEnclave",
     sceneKey: "MapEmberEnclave",
     actors: ["hero"],
     points: ["arrival"],
@@ -76,7 +76,7 @@ function mission(): CampaignMissionContent {
     id: "dreams",
     chapterId: "prologue",
     revision: 1,
-    mapId: 3 as ProbableWaffleMapEnum,
+    mapKey: "MapEmberEnclave",
     prerequisites: [],
     catalogue: {
       order: 1,

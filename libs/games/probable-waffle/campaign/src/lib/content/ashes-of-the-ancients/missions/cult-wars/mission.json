@@ -4,7 +4,7 @@
   "id": "cult-wars",
   "chapterId": "united-against-volcano",
   "revision": 1,
-  "mapId": 3,
+  "mapKey": "MapEmberEnclave",
   "prerequisites": ["the-volcano-is-getting-angry"],
   "catalogue": {
     "order": 2,

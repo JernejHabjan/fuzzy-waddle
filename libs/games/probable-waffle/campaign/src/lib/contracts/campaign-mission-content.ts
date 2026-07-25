@@ -3,7 +3,7 @@ import type {
   CampaignContentStatus,
   CampaignFaction,
   CampaignMissionId,
-  ProbableWaffleMapEnum
+  ProbableWaffleMapKey
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { MissionCheckpointDefinition } from "./mission-checkpoint-definition";
 import type { MissionDifficultyDefinition } from "./mission-difficulty-definition";
@@ -30,7 +30,7 @@ export interface MissionImplementationBrief {
   readonly summary: string;
   readonly phasePlan: readonly { readonly id: string; readonly description: string }[];
   readonly checkpointCandidates: readonly { readonly id: string; readonly after: string }[];
-  readonly plannedScenarioReferences: Readonly<Record<string, readonly string[]>>;
+  readonly plannedScenarioReferences: MissionScenarioReferences;
   readonly mechanics: readonly string[];
   readonly coopNotes: readonly string[];
   readonly dependencies: readonly { readonly issue: string; readonly reason: string }[];
@@ -50,7 +50,7 @@ export interface CampaignMissionContent {
   readonly chapterId: CampaignChapterId;
   readonly revision: number;
   readonly revisionMigrations?: readonly MissionRevisionMigration[];
-  readonly mapId: ProbableWaffleMapEnum;
+  readonly mapKey: ProbableWaffleMapKey;
   readonly prerequisites: readonly CampaignMissionId[];
   readonly catalogue: MissionCatalogueDefinition;
   readonly implementation: MissionImplementationBrief;

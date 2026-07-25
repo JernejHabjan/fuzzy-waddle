@@ -4,7 +4,7 @@
   "id": "we-had-enough",
   "chapterId": "two-homelands",
   "revision": 1,
-  "mapId": 3,
+  "mapKey": "MapEmberEnclave",
   "prerequisites": ["sand-dunes-and-tivara-crystal"],
   "catalogue": {
     "order": 5,

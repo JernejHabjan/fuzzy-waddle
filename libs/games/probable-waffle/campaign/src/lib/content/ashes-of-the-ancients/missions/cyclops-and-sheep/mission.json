@@ -4,7 +4,7 @@
   "id": "cyclops-and-sheep",
   "chapterId": "two-homelands",
   "revision": 1,
-  "mapId": 2,
+  "mapKey": "MapRiverCrossing",
   "prerequisites": ["dreams"],
   "catalogue": {
     "order": 0,

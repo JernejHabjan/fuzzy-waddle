@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "./difficulty.schema.json",
+  "$id": "difficulty.schema.json",
   "title": "Probable Waffle mission difficulty",
   "type": "object",
   "additionalProperties": false,

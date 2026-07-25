@@ -4,7 +4,7 @@
   "id": "dreams",
   "chapterId": "prologue",
   "revision": 2,
-  "mapId": 3,
+  "mapKey": "MapEmberEnclave",
   "prerequisites": [],
   "catalogue": {
     "order": 0,

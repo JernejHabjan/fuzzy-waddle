@@ -4,7 +4,7 @@
   "id": "the-betrayal",
   "chapterId": "the-betrayal",
   "revision": 1,
-  "mapId": 3,
+  "mapKey": "MapEmberEnclave",
   "prerequisites": ["the-volcano"],
   "catalogue": {
     "order": 0,

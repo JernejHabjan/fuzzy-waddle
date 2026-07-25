@@ -4,7 +4,7 @@
   "id": "time-rush",
   "chapterId": "crystal-war",
   "revision": 1,
-  "mapId": 3,
+  "mapKey": "MapEmberEnclave",
   "prerequisites": ["the-siege"],
   "catalogue": {
     "order": 3,

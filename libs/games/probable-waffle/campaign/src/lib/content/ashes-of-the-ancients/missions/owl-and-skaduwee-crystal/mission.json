@@ -4,7 +4,7 @@
   "id": "owl-and-skaduwee-crystal",
   "chapterId": "two-homelands",
   "revision": 1,
-  "mapId": 3,
+  "mapKey": "MapEmberEnclave",
   "prerequisites": ["slingshooters-and-wolves"],
   "catalogue": {
     "order": 3,

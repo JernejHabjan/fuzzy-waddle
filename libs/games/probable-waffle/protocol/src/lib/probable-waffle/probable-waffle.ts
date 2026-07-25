@@ -6,6 +6,8 @@ export enum ProbableWaffleMapEnum {
   EmberEnclave = 3
 }
 
+export type ProbableWaffleMapKey = "MapSandbox" | "MapRiverCrossing" | "MapEmberEnclave";
+
 export type ProbableWaffleMapType = {
   [key in ProbableWaffleMapEnum]: ProbableWaffleMapData;
 };
@@ -126,7 +128,7 @@ export type ProbableWaffleMapData = {
   devOnly?: boolean;
   name: string;
   loader: {
-    mapSceneKey: string;
+    mapSceneKey: ProbableWaffleMapKey;
     mapLoaderAssetPackPath: string;
   };
   presentation: {

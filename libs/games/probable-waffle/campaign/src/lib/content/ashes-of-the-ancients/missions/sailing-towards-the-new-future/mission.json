@@ -4,7 +4,7 @@
   "id": "sailing-towards-the-new-future",
   "chapterId": "crystal-war",
   "revision": 1,
-  "mapId": 3,
+  "mapKey": "MapEmberEnclave",
   "prerequisites": ["we-had-enough"],
   "catalogue": {
     "order": 0,

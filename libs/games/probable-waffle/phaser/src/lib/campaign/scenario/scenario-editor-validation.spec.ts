@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { AOTA_CAMPAIGN_MISSIONS, validateMissionScenarioReferences } from "@fuzzy-waddle/probable-waffle-campaign";
-import { ProbableWaffleMapEnum } from "@fuzzy-waddle/probable-waffle-protocol";
+import { ProbableWaffleLevels, ProbableWaffleMapEnum } from "@fuzzy-waddle/probable-waffle-protocol";
 import {
   extractScenarioMapManifest,
   SCENARIO_PREFAB_IDS,
@@ -57,7 +57,9 @@ describe("scenario map manifests", () => {
   ] as const)("loads the existing %s scene and validates its campaign mission references", (sceneName, mapId) => {
     const document = readJson(join(__dirname, `../../world/scenes/game-maps/${sceneName}.scene`));
     const manifest = extractScenarioMapManifest(document, mapId);
-    const missions = AOTA_CAMPAIGN_MISSIONS.filter((mission) => mission.mapId === mapId);
+    const missions = AOTA_CAMPAIGN_MISSIONS.filter(
+      (mission) => ProbableWaffleLevels[mapId].loader.mapSceneKey === mission.mapKey
+    );
 
     expect(manifest.sceneKey).toBe(sceneName);
     expect(missions.length).toBeGreaterThan(0);
@@ -66,6 +68,40 @@ describe("scenario map manifests", () => {
         valid: true,
         issues: []
       });
+    }
+  });
+
+  it.each(AOTA_CAMPAIGN_MISSIONS.filter((mission) => mission.scenarioReferences))(
+    "validates declared scenario references for mission $id against its configured map source",
+    (mission) => {
+      const manifest = mapManifestFor(mission.mapKey);
+
+      expect(
+        validateMissionScenarioReferences(
+          mission,
+          manifest,
+          `content/ashes-of-the-ancients/missions/${mission.id}/mission.json`
+        )
+      ).toEqual({ valid: true, issues: [] });
+    }
+  );
+
+  // TODO(#703): Change this to `it` once every planned map marker is authored. It intentionally fails today.
+  it.failing("validates every mission's planned scenario references against its configured map source", () => {
+    for (const mission of AOTA_CAMPAIGN_MISSIONS) {
+      const manifest = mapManifestFor(mission.mapKey);
+      const missionWithPlannedReferences = {
+        ...mission,
+        scenarioReferences: mission.implementation.plannedScenarioReferences
+      };
+
+      expect(
+        validateMissionScenarioReferences(
+          missionWithPlannedReferences,
+          manifest,
+          `content/ashes-of-the-ancients/missions/${mission.id}/mission.json`
+        )
+      ).toEqual({ valid: true, issues: [] });
     }
   });
 
@@ -108,4 +144,12 @@ describe("scenario map manifests", () => {
 
 function readJson(path: string): Record<string, unknown> {
   return JSON.parse(readFileSync(path, "utf8")) as Record<string, unknown>;
+}
+
+function mapManifestFor(mapKey: string) {
+  const map = Object.values(ProbableWaffleLevels).find((candidate) => candidate.loader.mapSceneKey === mapKey);
+  if (!map) throw new Error(`Unknown map key '${mapKey}'`);
+  const sceneKey = map.loader.mapSceneKey;
+  const document = readJson(join(__dirname, `../../world/scenes/game-maps/${sceneKey}.scene`));
+  return extractScenarioMapManifest(document, map.id);
 }

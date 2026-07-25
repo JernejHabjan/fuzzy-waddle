@@ -3,6 +3,7 @@ import {
   CampaignAvailability,
   type CampaignDifficulty,
   type CampaignMissionDefinition,
+  ProbableWaffleLevels,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameInstanceVisibility
 } from "@fuzzy-waddle/probable-waffle-protocol";
@@ -114,9 +115,10 @@ export class CampaignLaunchService implements CampaignLaunchServiceInterface {
           }
         }
       }
-      if (!mission.mapId) throw new Error(`Campaign mission ${mission.id} does not define a map`);
+      const map = Object.values(ProbableWaffleLevels).find((level) => level.loader.mapSceneKey === mission.mapKey);
+      if (!map) throw new Error(`Campaign mission ${mission.id} references unknown map '${mission.mapKey}'`);
       // Preload resolves its map scene and asset pack from game-mode data, so the map must be applied before navigation.
-      await this.gameInstanceClientService.gameModeChanged("map", { map: mission.mapId });
+      await this.gameInstanceClientService.gameModeChanged("map", { map: map.id });
       await this.gameInstanceClientService.startGame();
       await this.gameInstanceClientService.navigateDirectlyToGame();
     } catch (error) {

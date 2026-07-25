@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "./mission.schema.json",
+  "$id": "mission.schema.json",
   "title": "Probable Waffle campaign mission",
   "type": "object",
   "additionalProperties": false,
@@ -9,7 +9,7 @@
     "id",
     "chapterId",
     "revision",
-    "mapId",
+    "mapKey",
     "prerequisites",
     "catalogue",
     "implementation",
@@ -76,8 +76,8 @@
         }
       }
     },
-    "mapId": {
-      "enum": [1, 2, 3]
+    "mapKey": {
+      "enum": ["MapSandbox", "MapRiverCrossing", "MapEmberEnclave"]
     },
     "prerequisites": {
       "type": "array",
@@ -188,7 +188,7 @@
       }
     },
     "coop": {
-      "$ref": "./coop-override.schema.json"
+      "$ref": "coop-override.schema.json"
     },
     "progressionAllowance": {
       "type": "object",
@@ -415,7 +415,7 @@
       }
     },
     "difficulty": {
-      "$ref": "./difficulty.schema.json"
+      "$ref": "difficulty.schema.json"
     },
     "contentStatus": {
       "enum": ["skeleton", "playable", "complete"]

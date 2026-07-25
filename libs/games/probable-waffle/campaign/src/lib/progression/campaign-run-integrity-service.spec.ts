@@ -53,7 +53,7 @@ function mission(): CampaignMissionContent {
     id: "dreams",
     chapterId: "prologue",
     revision: 1,
-    mapId: 3,
+    mapKey: "MapEmberEnclave",
     prerequisites: [],
     catalogue: {
       order: 0,

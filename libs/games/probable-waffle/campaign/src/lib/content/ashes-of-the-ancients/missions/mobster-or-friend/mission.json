@@ -4,7 +4,7 @@
   "id": "mobster-or-friend",
   "chapterId": "united-against-volcano",
   "revision": 1,
-  "mapId": 3,
+  "mapKey": "MapEmberEnclave",
   "prerequisites": ["joining-crystal"],
   "catalogue": {
     "order": 0,

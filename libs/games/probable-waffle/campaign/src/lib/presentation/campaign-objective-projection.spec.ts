@@ -1,4 +1,4 @@
-import { CampaignFaction, type ProbableWaffleMapEnum } from "@fuzzy-waddle/probable-waffle-protocol";
+import { CampaignFaction } from "@fuzzy-waddle/probable-waffle-protocol";
 import { asCampaignContentId } from "../contracts/campaign-content-id";
 import type { MissionDialogueBundle } from "../contracts/mission-dialogue-bundle";
 import type { MissionObjectiveDefinition } from "../contracts/mission-objective-definition";
@@ -127,7 +127,7 @@ function mission(objectives: readonly MissionObjectiveDefinition[]) {
     id: "dreams" as const,
     chapterId: "prologue" as const,
     revision: 1,
-    mapId: 1 as ProbableWaffleMapEnum,
+    mapKey: "MapSandbox",
     prerequisites: [],
     catalogue: {
       order: 1,

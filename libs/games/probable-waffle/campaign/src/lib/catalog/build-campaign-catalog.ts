@@ -58,6 +58,6 @@ function toLegacyMission(
     environment: mission.catalogue.environment,
     briefing: mission.catalogue.briefing,
     objectives: [...mission.catalogue.objectiveSummaries],
-    mapId: mission.mapId
+    mapKey: mission.mapKey
   };
 }

@@ -1,4 +1,4 @@
-import type { ProbableWaffleMapEnum } from "./probable-waffle";
+import type { ProbableWaffleMapKey } from "./probable-waffle";
 import type { ProbableWaffleGameInstanceData } from "../game-instance/probable-waffle/game-instance";
 import type { FactionType } from "../game-instance/probable-waffle/player";
 import type { ObjectNames } from "../game-instance/probable-waffle/object-names";
@@ -157,7 +157,7 @@ export interface CampaignMissionDefinition {
   environment: string;
   briefing: string;
   objectives: string[];
-  mapId: ProbableWaffleMapEnum;
+  mapKey: ProbableWaffleMapKey;
 }
 
 export interface CampaignChapterDefinition {

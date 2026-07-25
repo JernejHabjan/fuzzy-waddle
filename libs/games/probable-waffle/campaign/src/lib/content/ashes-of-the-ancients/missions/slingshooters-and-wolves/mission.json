@@ -4,7 +4,7 @@
   "id": "slingshooters-and-wolves",
   "chapterId": "two-homelands",
   "revision": 1,
-  "mapId": 3,
+  "mapKey": "MapEmberEnclave",
   "prerequisites": ["snow-wendigo-and-fire"],
   "catalogue": {
     "order": 2,

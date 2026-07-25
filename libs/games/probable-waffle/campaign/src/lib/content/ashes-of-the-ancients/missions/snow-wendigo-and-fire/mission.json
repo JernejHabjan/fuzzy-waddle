@@ -4,7 +4,7 @@
   "id": "snow-wendigo-and-fire",
   "chapterId": "two-homelands",
   "revision": 1,
-  "mapId": 2,
+  "mapKey": "MapRiverCrossing",
   "prerequisites": ["cyclops-and-sheep"],
   "catalogue": {
     "order": 1,

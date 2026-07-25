@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "./dialogue.schema.json",
+  "$id": "dialogue.schema.json",
   "title": "Probable Waffle mission dialogue",
   "type": "object",
   "additionalProperties": false,
@@ -313,13 +313,13 @@
           "gameplayPrelude": {
             "type": "array",
             "items": {
-              "$ref": "./mission.schema.json#/$defs/action"
+              "$ref": "mission.schema.json#/$defs/action"
             }
           },
           "gameplayFinalize": {
             "type": "array",
             "items": {
-              "$ref": "./mission.schema.json#/$defs/action"
+              "$ref": "mission.schema.json#/$defs/action"
             }
           },
           "gameplayPreludeActionIds": {

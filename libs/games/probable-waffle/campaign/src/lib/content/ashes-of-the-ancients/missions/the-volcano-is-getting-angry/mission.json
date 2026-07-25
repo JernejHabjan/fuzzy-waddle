@@ -4,7 +4,7 @@
   "id": "the-volcano-is-getting-angry",
   "chapterId": "united-against-volcano",
   "revision": 1,
-  "mapId": 3,
+  "mapKey": "MapEmberEnclave",
   "prerequisites": ["mobster-or-friend"],
   "catalogue": {
     "order": 1,

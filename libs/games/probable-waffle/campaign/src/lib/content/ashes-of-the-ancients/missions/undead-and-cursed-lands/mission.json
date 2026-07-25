@@ -4,7 +4,7 @@
   "id": "undead-and-cursed-lands",
   "chapterId": "the-betrayal",
   "revision": 1,
-  "mapId": 3,
+  "mapKey": "MapEmberEnclave",
   "prerequisites": ["the-betrayal"],
   "catalogue": {
     "order": 1,

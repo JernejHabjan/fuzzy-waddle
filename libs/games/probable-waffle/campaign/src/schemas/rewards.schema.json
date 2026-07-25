@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "./rewards.schema.json",
+  "$id": "rewards.schema.json",
   "title": "Probable Waffle mission rewards",
   "type": "object",
   "additionalProperties": false,

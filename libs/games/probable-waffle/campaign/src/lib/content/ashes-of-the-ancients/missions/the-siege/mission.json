@@ -4,7 +4,7 @@
   "id": "the-siege",
   "chapterId": "crystal-war",
   "revision": 1,
-  "mapId": 3,
+  "mapKey": "MapEmberEnclave",
   "prerequisites": ["the-first-and-last-dinner"],
   "catalogue": {
     "order": 2,

@@ -1,4 +1,4 @@
-import { CampaignFaction, FactionType, type ProbableWaffleMapEnum } from "@fuzzy-waddle/probable-waffle-protocol";
+import { CampaignFaction, FactionType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { CampaignMissionContent } from "../contracts/campaign-mission-content";
 import { asCampaignContentId } from "../contracts/campaign-content-id";
 import type { MissionActionDefinition } from "../contracts/mission-action-definition";
@@ -937,7 +937,7 @@ function mission(
     id: "dreams",
     chapterId: "prologue",
     revision: 1,
-    mapId: 1 as ProbableWaffleMapEnum,
+    mapKey: "MapSandbox",
     prerequisites: [],
     catalogue: {
       order: 1,
