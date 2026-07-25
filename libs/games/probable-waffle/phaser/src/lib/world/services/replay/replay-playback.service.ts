@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import type { Subscription } from "rxjs";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import {

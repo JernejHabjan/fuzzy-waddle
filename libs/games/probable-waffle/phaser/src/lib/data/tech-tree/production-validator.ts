@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 // Centralized production & queue validation using tech tree, supply & resource state.
 import {
   ObjectNames,

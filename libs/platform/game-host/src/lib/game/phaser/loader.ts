@@ -1,4 +1,5 @@
 import { BaseScene } from "./scene/base.scene";
+import Phaser from "phaser";
 
 export class Loader {
   constructor(scene: BaseScene) {

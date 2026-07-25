@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 export class EffectsAnims {
   private static readonly GroupKeyName = "effects_1";
 

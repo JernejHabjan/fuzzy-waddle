@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { BehaviorSubject, Observable } from "rxjs";
 import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { getSelectedActors } from "../../data/scene-data";

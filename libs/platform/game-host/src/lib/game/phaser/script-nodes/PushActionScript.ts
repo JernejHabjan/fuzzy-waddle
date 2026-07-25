@@ -4,6 +4,7 @@
 
 import ScriptNode from "../script-nodes-basic/ScriptNode";
 /* START-USER-IMPORTS */
+import Phaser from "phaser";
 /* END-USER-IMPORTS */
 
 export default class PushActionScript extends ScriptNode {

@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { GameObjects, Input } from "phaser";
 import { isFullscreenTopEdgeExit } from "./fullscreen-edge-guard";
 import { GameEventEmitter as EventEmitter } from "@fuzzy-waddle/platform-game-host";

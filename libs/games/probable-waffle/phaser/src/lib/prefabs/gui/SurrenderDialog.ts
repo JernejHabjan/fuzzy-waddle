@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 /* START OF COMPILED CODE */
 
 import ButtonSmall from "./buttons/ButtonSmall";

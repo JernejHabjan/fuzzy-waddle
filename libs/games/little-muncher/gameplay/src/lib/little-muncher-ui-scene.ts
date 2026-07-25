@@ -3,7 +3,7 @@ import { type CreateSceneFromObjectConfig } from "@fuzzy-waddle/platform-game-ho
 import { Scenes } from "./const/scenes";
 import { type UiCommunicatorData } from "./ui-communicator";
 import { Subscription } from "rxjs";
-
+import Phaser from "phaser";
 export class LittleMuncherUiScene extends Scene implements CreateSceneFromObjectConfig {
   private healthSubscription!: Subscription;
   private maxCharacterHealth!: number;

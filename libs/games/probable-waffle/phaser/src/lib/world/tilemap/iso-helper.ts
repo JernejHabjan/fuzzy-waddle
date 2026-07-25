@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import type { Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { getSceneComponent } from "../services/scene-component-helpers";
 import { TilemapComponent } from "./tilemap.component";

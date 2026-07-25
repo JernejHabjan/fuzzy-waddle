@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { getGameObjectBounds, onObjectReady } from "../../../data/game-object-helper";
 import { HealthComponent } from "../combat/components/health-component";
 import { Subscription } from "rxjs";

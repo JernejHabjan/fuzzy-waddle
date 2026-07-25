@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { type ResourceSourceComponentData, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { type Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { ContainerComponent } from "../building/container-component";

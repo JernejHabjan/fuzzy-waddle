@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import type { AttackData } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/attack-data";
 import { HIGH_GROUND_THRESHOLD } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/high-ground-constants";
 import { getActorComponent } from "../../../data/actor-component";

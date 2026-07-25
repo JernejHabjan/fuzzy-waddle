@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { type IFlyBase } from "../component.service";
 import { BaseScene } from "@fuzzy-waddle/platform-game-host/phaser/scene/base.scene";
 import { FlyRepresentableComponent } from "./fly-representable-component";

@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { Subject, Subscription } from "rxjs";
 import {
   type GameCommand,

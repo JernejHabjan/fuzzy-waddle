@@ -1,6 +1,7 @@
 import { LittleMuncherScene } from "./little-muncher-scene";
 import { Subscription } from "rxjs";
 import Swipe from "phaser3-rex-plugins/plugins/input/gestures/swipe/Swipe";
+import Phaser from "phaser";
 
 export class PlayerInputController {
   private subscriptions: Subscription[] = [];

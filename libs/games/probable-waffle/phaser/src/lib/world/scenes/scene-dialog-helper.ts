@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { LockedCursorHandler } from "../../player/human-controller/locked-cursor.handler";
 
 export class SceneDialogHelper {

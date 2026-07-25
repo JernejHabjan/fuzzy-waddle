@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { LockedCursorHandler } from "./locked-cursor.handler";
 import { Input } from "phaser";
 import { ProbableWaffleScene } from "../../core/probable-waffle.scene";

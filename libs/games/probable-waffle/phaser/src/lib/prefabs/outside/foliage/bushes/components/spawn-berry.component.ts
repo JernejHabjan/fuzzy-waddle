@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { getGameObjectBounds, isGameObjectActiveInActiveScene } from "../../../../../data/game-object-helper";
 import { DepthHelper } from "../../../../../world/services/depth.helper";
 import GameObject = Phaser.GameObjects.GameObject;

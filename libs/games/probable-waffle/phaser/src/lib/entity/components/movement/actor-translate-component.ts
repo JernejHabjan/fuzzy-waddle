@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { Observable, Subject } from "rxjs";
 import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { getGameObjectDirectionBetweenTiles } from "../../systems/movement.system";

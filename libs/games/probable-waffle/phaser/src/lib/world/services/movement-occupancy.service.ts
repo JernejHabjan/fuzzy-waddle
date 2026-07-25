@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import type { ActorId, Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { getActorComponent } from "../../data/actor-component";
 import { isGameObjectActiveInActiveScene } from "../../data/game-object-helper";

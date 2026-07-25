@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 
 export function getSceneComponent<T>(scene: Phaser.Scene, componentClass: new (...args: any[]) => T): T | undefined {

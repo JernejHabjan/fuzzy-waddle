@@ -1,13 +1,7 @@
 import type { Routes } from "@angular/router";
 import { environment } from "@fuzzy-waddle/environments/environment";
-import { ensurePhaserGlobal } from "@fuzzy-waddle/platform-game-host/phaser/ensure-phaser-global";
 import { AuthGuard } from "@fuzzy-waddle/platform-identity/client/auth/auth.guard";
 import { GameInstanceGuard } from "./gui/online/lobby-page/game-instance.guard";
-
-async function loadGameComponent<T>(loader: () => Promise<T>): Promise<T> {
-  await ensurePhaserGlobal();
-  return loader();
-}
 
 export const probableWaffleRoutes = [
   {
@@ -87,7 +81,9 @@ export const probableWaffleRoutes = [
           {
             path: "profile",
             loadComponent: () =>
-              import("@fuzzy-waddle/platform-identity/client/profile/profile.component").then((m) => m.ProfileComponent),
+              import("@fuzzy-waddle/platform-identity/client/profile/profile.component").then(
+                (m) => m.ProfileComponent
+              ),
             canActivate: [AuthGuard]
           },
           {
@@ -108,9 +104,7 @@ export const probableWaffleRoutes = [
           {
             path: "game",
             loadComponent: () =>
-              loadGameComponent(() => import("./gui/main/probable-waffle-game.component")).then(
-                (m) => m.ProbableWaffleGameComponent
-              ),
+              import("./gui/main/probable-waffle-game.component").then((m) => m.ProbableWaffleGameComponent),
             canActivate: [GameInstanceGuard]
           }
         ]

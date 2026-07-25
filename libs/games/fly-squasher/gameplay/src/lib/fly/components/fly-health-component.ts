@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { type FlyHealthBarOptions, FlyHealthUiComponent } from "./fly-health-ui-component";
 import { GameEventEmitter } from "@fuzzy-waddle/platform-game-host";
 import { type IFlyBase } from "../component.service";

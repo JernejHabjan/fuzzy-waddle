@@ -3,6 +3,7 @@ import Dungeon from "./scenes/Dungeon";
 import DungeonUi from "./scenes/DungeonUi";
 import { baseGameConfig } from "@fuzzy-waddle/platform-game-host/base-game.config";
 import VirtualJoystickPlugin from "phaser3-rex-plugins/plugins/virtualjoystick-plugin.js";
+import Phaser from "phaser";
 
 export const dungeonCrawlerGameConfig: Phaser.Types.Core.GameConfig = {
   ...baseGameConfig,

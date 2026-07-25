@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 type GameObject = Phaser.GameObjects.GameObject;
 import { emitHousing } from "../../../data/scene-data";
 import { onObjectReady } from "../../../data/game-object-helper";

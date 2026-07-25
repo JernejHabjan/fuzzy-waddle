@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import type { ProbableWaffleLightingAmbientKeyframe } from "@fuzzy-waddle/probable-waffle-protocol";
 import { Subscription } from "rxjs";
 import { GameSettings } from "../../../core/gameSettings";

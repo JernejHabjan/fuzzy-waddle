@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { NavigationService } from "../services/navigation.service";
 import { throttle } from "../../library/throttle";
 import { VisionComponent } from "../../entity/components/vision-component";

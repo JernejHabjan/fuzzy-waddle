@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { type HousingComponentData } from "@fuzzy-waddle/probable-waffle-protocol";
 import { HealthComponent } from "../combat/components/health-component";
 import { onObjectReady } from "../../../data/game-object-helper";

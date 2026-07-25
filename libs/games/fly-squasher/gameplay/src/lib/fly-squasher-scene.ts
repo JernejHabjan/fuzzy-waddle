@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { BaseScene } from "@fuzzy-waddle/platform-game-host/phaser/scene/base.scene";
 import {
   FlySquasherGameMode,

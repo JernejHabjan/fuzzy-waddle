@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { GameContainerComponent } from "./game-container.component";

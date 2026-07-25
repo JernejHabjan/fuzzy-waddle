@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { GameObjects } from "phaser";
 import { FlyHealthComponent } from "./fly-health-component";
 import { type IFlyBase } from "../component.service";

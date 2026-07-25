@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { Cameras, Scale, Structs } from "phaser";
 
 export class ScaleHandler {

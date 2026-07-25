@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { State } from "mistreevous";
 import type {
   IPlayerPawnControllerAgent,

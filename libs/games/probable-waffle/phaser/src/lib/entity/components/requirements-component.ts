@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 type GameObject = Phaser.GameObjects.GameObject;
 import type { RequirementsDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/requirements-definition";
 

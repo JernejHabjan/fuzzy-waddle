@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import type { PlayerNumber, Vector2Simple, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";

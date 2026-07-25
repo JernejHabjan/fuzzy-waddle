@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { GameObjects } from "phaser";
 import { ConstructionSiteComponent } from "./construction-site-component";
 import { getActorComponent } from "../../../data/actor-component";

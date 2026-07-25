@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { Input } from "phaser";
 import { CursorHandler, CursorType } from "./cursor.handler";
 import { Subscription } from "rxjs";

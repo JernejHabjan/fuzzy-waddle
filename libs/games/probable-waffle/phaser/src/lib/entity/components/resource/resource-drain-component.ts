@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import {
   type PlayerStateResources,
   type ResourceDrainComponentData,
