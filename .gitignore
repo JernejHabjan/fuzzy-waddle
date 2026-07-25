@@ -80,3 +80,4 @@ docs/ai/
 test-results/
 .agents
 .mcp.json
+.output.txt
