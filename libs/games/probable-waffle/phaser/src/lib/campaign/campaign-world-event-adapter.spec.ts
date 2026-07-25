@@ -2,9 +2,9 @@ import Phaser from "phaser";
 import { Subject } from "rxjs";
 import { GameEventEmitter } from "@fuzzy-waddle/platform-game-host";
 import {
+  type ProbableWafflePlayerDataChangeEvent,
   ResearchType,
-  ResourceType,
-  type ProbableWafflePlayerDataChangeEvent
+  ResourceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { ProbableWaffleScene } from "../core/probable-waffle.scene";
 import { TechTreeService } from "../data/tech-tree/tech-tree.service";

@@ -1,5 +1,5 @@
-import { CAMPAIGN_MISSION_RUNTIME_SCHEMA_VERSION } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { CampaignMissionRuntimeState } from "@fuzzy-waddle/probable-waffle-protocol";
+import { CAMPAIGN_MISSION_RUNTIME_SCHEMA_VERSION } from "@fuzzy-waddle/probable-waffle-protocol";
 import { asCampaignContentId } from "../../contracts/campaign-content-id";
 import { CAMPAIGN_CONDITION_KINDS } from "../../contracts/campaign-content-kinds";
 import {

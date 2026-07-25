@@ -1,9 +1,9 @@
 import {
   CAMPAIGN_LOCAL_PRESENTATION_EVENT_KINDS,
   CAMPAIGN_MISSION_IDS,
+  type CampaignMissionId,
   ObjectNames,
-  ResearchType,
-  type CampaignMissionId
+  ResearchType
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { CampaignDefinition } from "../contracts/campaign-definition";
 import type { CampaignMissionContent } from "../contracts/campaign-mission-content";

@@ -1,9 +1,9 @@
 import type {
   CampaignCurrencyId,
   CampaignInventoryItemDefinitionId,
+  CampaignMissionId,
   CampaignProgressionUpgradeId,
   CampaignTemporaryBoostId,
-  CampaignMissionId,
   FactionType,
   ObjectNames,
   ResearchType,

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://fuzzy-waddle.dev/schemas/probable-waffle/campaign/mission.schema.json",
+  "$id": "./mission.schema.json",
   "title": "Probable Waffle campaign mission",
   "type": "object",
   "additionalProperties": false,
@@ -25,6 +25,9 @@
   "properties": {
     "schemaVersion": {
       "const": 1
+    },
+    "$schema": {
+      "const": "../../../../../schemas/mission.schema.json"
     },
     "id": {
       "enum": [
@@ -185,7 +188,7 @@
       }
     },
     "coop": {
-      "$ref": "https://fuzzy-waddle.dev/schemas/probable-waffle/campaign/coop-override.schema.json"
+      "$ref": "./coop-override.schema.json"
     },
     "progressionAllowance": {
       "type": "object",
@@ -412,7 +415,7 @@
       }
     },
     "difficulty": {
-      "$ref": "https://fuzzy-waddle.dev/schemas/probable-waffle/campaign/difficulty.schema.json"
+      "$ref": "./difficulty.schema.json"
     },
     "contentStatus": {
       "enum": ["skeleton", "playable", "complete"]

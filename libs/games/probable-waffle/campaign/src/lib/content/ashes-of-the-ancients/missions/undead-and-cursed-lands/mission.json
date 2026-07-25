@@ -1,4 +1,5 @@
 {
+  "$schema": "../../../../../schemas/mission.schema.json",
   "schemaVersion": 1,
   "id": "undead-and-cursed-lands",
   "chapterId": "the-betrayal",

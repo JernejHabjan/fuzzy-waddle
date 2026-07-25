@@ -6,9 +6,9 @@ import type {
   MissionObjectiveId,
   MissionParticipantSlotId,
   MissionRewardId,
+  MissionTextId,
   ScenarioActorId,
-  ScenarioRegionId,
-  MissionTextId
+  ScenarioRegionId
 } from "./campaign-content-id";
 import type { CampaignObjectiveKind } from "./campaign-content-kinds";
 

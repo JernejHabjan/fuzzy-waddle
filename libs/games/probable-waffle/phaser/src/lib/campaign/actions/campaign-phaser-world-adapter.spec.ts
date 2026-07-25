@@ -2,9 +2,9 @@ import type { CampaignMissionActionContext } from "@fuzzy-waddle/probable-waffle
 import { asCampaignContentId } from "@fuzzy-waddle/probable-waffle-campaign";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import {
+  type CampaignMissionRuntimeState,
   createPlayerLobbyDefinition,
-  ProbableWafflePlayerType,
-  type CampaignMissionRuntimeState
+  ProbableWafflePlayerType
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { CampaignPhaserWorldAdapter, updateCampaignAllianceDefinitions } from "./campaign-phaser-world-adapter";
 

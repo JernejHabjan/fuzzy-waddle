@@ -1,4 +1,5 @@
 {
+  "$schema": "../../../../../schemas/mission.schema.json",
   "schemaVersion": 1,
   "id": "snow-wendigo-and-fire",
   "chapterId": "two-homelands",

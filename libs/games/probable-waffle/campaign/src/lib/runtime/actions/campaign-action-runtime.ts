@@ -8,8 +8,8 @@ import type {
 import { CAMPAIGN_ACTION_KINDS, type CampaignActionKind } from "../../contracts/campaign-content-kinds";
 import {
   isCompositeMissionAction,
-  type MissionCompositeActionDefinition,
-  type MissionActionDefinition
+  type MissionActionDefinition,
+  type MissionCompositeActionDefinition
 } from "../../contracts/mission-action-definition";
 
 export type CampaignMissionActionCancelReason =

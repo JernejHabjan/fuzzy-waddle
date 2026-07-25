@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://fuzzy-waddle.dev/schemas/probable-waffle/campaign/campaign.schema.json",
+  "$id": "./campaign.schema.json",
   "title": "Probable Waffle campaign",
   "type": "object",
   "additionalProperties": false,

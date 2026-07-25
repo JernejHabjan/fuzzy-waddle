@@ -1,11 +1,11 @@
 import Phaser from "phaser";
-import { ProbableWafflePlayerType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type {
   CampaignProgressionModifier,
   CampaignProgressionModifierStat,
   FactionType,
   ObjectNames
 } from "@fuzzy-waddle/probable-waffle-protocol";
+import { ProbableWafflePlayerType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { getActorComponent } from "../data/actor-component";
 import { getPlayer } from "../data/scene-data";
 import { OwnerComponent } from "../entity/components/owner-component";

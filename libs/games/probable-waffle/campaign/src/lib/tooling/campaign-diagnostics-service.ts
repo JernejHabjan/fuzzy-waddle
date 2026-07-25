@@ -1,6 +1,6 @@
 import type {
-  CampaignMissionRuntimeState,
-  CampaignMissionRuntimeJsonValue
+  CampaignMissionRuntimeJsonValue,
+  CampaignMissionRuntimeState
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { CampaignMissionContent } from "../contracts/campaign-mission-content";
 

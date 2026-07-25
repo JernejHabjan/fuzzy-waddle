@@ -1,4 +1,5 @@
 {
+  "$schema": "../../../../../schemas/mission.schema.json",
   "schemaVersion": 1,
   "id": "mobster-or-friend",
   "chapterId": "united-against-volcano",

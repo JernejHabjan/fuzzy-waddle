@@ -1,8 +1,8 @@
 import {
   AOTA_CAMPAIGN_CONTENT_REGISTRY,
+  type CampaignMissionContent,
   rebindCampaignParticipants,
-  resolveCampaignParticipantLaunchSlots,
-  type CampaignMissionContent
+  resolveCampaignParticipantLaunchSlots
 } from "@fuzzy-waddle/probable-waffle-campaign";
 import type {
   CampaignGameContext,

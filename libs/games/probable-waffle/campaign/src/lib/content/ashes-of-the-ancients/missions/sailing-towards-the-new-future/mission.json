@@ -1,4 +1,5 @@
 {
+  "$schema": "../../../../../schemas/mission.schema.json",
   "schemaVersion": 1,
   "id": "sailing-towards-the-new-future",
   "chapterId": "crystal-war",

@@ -2,7 +2,6 @@ import type { ProbableWaffleMapEnum } from "./probable-waffle";
 import type { ProbableWaffleGameInstanceData } from "../game-instance/probable-waffle/game-instance";
 import type { FactionType } from "../game-instance/probable-waffle/player";
 import type { ObjectNames } from "../game-instance/probable-waffle/object-names";
-import type { ResearchType } from "../game-instance/probable-waffle/research-type";
 import type { ResourceType } from "./resource-type-definition";
 
 /** Permanent identifiers used by progress, saves, routes, and campaign runs. */

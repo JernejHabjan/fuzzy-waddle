@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://fuzzy-waddle.dev/schemas/probable-waffle/campaign/coop-override.schema.json",
+  "$id": "./coop-override.schema.json",
   "title": "Probable Waffle mission co-op override",
   "type": "object",
   "additionalProperties": false,

@@ -19,10 +19,10 @@ import type { MissionEncounterSpawnGroupDefinition } from "../contracts/mission-
 import type { CampaignWorldConditionAdapter } from "../runtime/conditions/campaign-condition-evaluator";
 import { CampaignMissionTestHarness } from "../tooling/campaign-mission-test-harness";
 import {
-  ASHES_OF_THE_ANCIENTS_CAMPAIGN_ID,
   AOTA_CAMPAIGN_CONTENT_REGISTRY,
   AOTA_CAMPAIGN_MISSIONS,
-  AOTA_CAMPAIGN_REWARDS
+  AOTA_CAMPAIGN_REWARDS,
+  ASHES_OF_THE_ANCIENTS_CAMPAIGN_ID
 } from "./ashes-of-the-ancients-content";
 import { AOTA_CAMPAIGN_PROGRESSION_REGISTRY } from "./ashes-of-the-ancients-progression";
 import { createInitialCampaignProgressionProfile } from "../progression/campaign-progression-resolver";

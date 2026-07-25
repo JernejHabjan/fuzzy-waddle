@@ -1,7 +1,7 @@
 import { CampaignFaction, type ProbableWaffleMapEnum } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { CampaignMissionContent } from "../contracts/campaign-mission-content";
 import { asCampaignContentId } from "../contracts/campaign-content-id";
-import { validateMissionScenarioReferences, type ScenarioMapManifest } from "./validate-mission-scenario-references";
+import { type ScenarioMapManifest, validateMissionScenarioReferences } from "./validate-mission-scenario-references";
 import { AOTA_CAMPAIGN_MISSIONS } from "../catalog/ashes-of-the-ancients-content";
 
 describe("validateMissionScenarioReferences", () => {

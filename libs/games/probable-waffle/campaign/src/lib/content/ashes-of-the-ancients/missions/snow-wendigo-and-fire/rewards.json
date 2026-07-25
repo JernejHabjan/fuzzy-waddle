@@ -1,4 +1,5 @@
 {
+  "$schema": "../../../../../schemas/rewards.schema.json",
   "schemaVersion": 1,
   "missionId": "snow-wendigo-and-fire",
   "rewards": []

@@ -17,7 +17,6 @@ import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import type ScenarioCameraShotMarker from "../../prefabs/scenario/ScenarioCameraShot";
 import type ScenarioGroupMarker from "../../prefabs/scenario/ScenarioGroup";
-import type ScenarioPointMarker from "../../prefabs/scenario/ScenarioPoint";
 import type ScenarioRegionMarker from "../../prefabs/scenario/ScenarioRegion";
 import type ScenarioRouteMarker from "../../prefabs/scenario/ScenarioRoute";
 import type ScenarioSpawnSetMarker from "../../prefabs/scenario/ScenarioSpawnSet";

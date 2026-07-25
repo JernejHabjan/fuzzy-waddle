@@ -1,15 +1,15 @@
 import { BehaviorSubject, Subject } from "rxjs";
 import {
   buildCampaignObjectiveProjection,
+  type CampaignInputMode,
+  type CampaignMissionRuntimeEffect,
+  type CampaignObjectiveProjection,
   CampaignPresentationPriorityQueue,
   createDefaultCampaignInputPromptRegistry,
   createMissionTextResolver,
-  type CampaignInputMode,
-  type CampaignObjectiveProjection,
   type MissionDialogueBundle,
   type MissionObjectiveDefinition,
-  type MissionSemanticInputAction,
-  type CampaignMissionRuntimeEffect
+  type MissionSemanticInputAction
 } from "@fuzzy-waddle/probable-waffle-campaign";
 import type {
   CampaignMissionObjectiveStatus,

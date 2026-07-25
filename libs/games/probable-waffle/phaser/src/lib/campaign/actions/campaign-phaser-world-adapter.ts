@@ -1,9 +1,8 @@
 import Phaser from "phaser";
 import { Subject } from "rxjs";
 import {
-  CampaignContentAllowanceService,
-  updateCampaignParticipantTeams,
   type CampaignAllowedContentId,
+  CampaignContentAllowanceService,
   type CampaignEncounterSpawnResult,
   type CampaignEncounterWorldAdapter,
   type CampaignMissionActionCancelReason,
@@ -19,16 +18,17 @@ import {
   type MissionEncounterSpawnGroupDefinition,
   type ScenarioActorId,
   type ScenarioPointId,
-  type ScenarioRouteId
+  type ScenarioRouteId,
+  updateCampaignParticipantTeams
 } from "@fuzzy-waddle/probable-waffle-campaign";
 import {
-  ConstructionStateEnum,
-  OrderType,
-  ProbableWaffleGameCommandTypes,
-  ProbableWafflePlayerType,
   type CampaignMissionOwnedResourceRuntimeState,
   type CampaignMissionRuntimeJsonValue,
-  type PositionPlayerDefinition
+  ConstructionStateEnum,
+  OrderType,
+  type PositionPlayerDefinition,
+  ProbableWaffleGameCommandTypes,
+  ProbableWafflePlayerType
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
@@ -36,7 +36,6 @@ import { getActorComponent } from "../../data/actor-component";
 import { emitResource, getPlayer } from "../../data/scene-data";
 import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 import { ActorTranslateComponent } from "../../entity/components/movement/actor-translate-component";
-import { RepresentableComponent } from "../../entity/components/representable-component";
 import { OwnerComponent } from "../../entity/components/owner-component";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { AttackComponent } from "../../entity/components/combat/components/attack-component";

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://fuzzy-waddle.dev/schemas/probable-waffle/campaign/dialogue.schema.json",
+  "$id": "./dialogue.schema.json",
   "title": "Probable Waffle mission dialogue",
   "type": "object",
   "additionalProperties": false,
@@ -8,6 +8,9 @@
   "properties": {
     "schemaVersion": {
       "const": 1
+    },
+    "$schema": {
+      "const": "../../../../../schemas/dialogue.schema.json"
     },
     "missionId": {
       "enum": [
@@ -310,13 +313,13 @@
           "gameplayPrelude": {
             "type": "array",
             "items": {
-              "$ref": "https://fuzzy-waddle.dev/schemas/probable-waffle/campaign/mission.schema.json#/$defs/action"
+              "$ref": "./mission.schema.json#/$defs/action"
             }
           },
           "gameplayFinalize": {
             "type": "array",
             "items": {
-              "$ref": "https://fuzzy-waddle.dev/schemas/probable-waffle/campaign/mission.schema.json#/$defs/action"
+              "$ref": "./mission.schema.json#/$defs/action"
             }
           },
           "gameplayPreludeActionIds": {

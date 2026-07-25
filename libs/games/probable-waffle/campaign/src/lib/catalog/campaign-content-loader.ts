@@ -1,9 +1,9 @@
 import {
+  type CampaignId,
+  type CampaignMissionId,
   isCampaignChapterId,
   isCampaignId,
-  isCampaignMissionId,
-  type CampaignId,
-  type CampaignMissionId
+  isCampaignMissionId
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { CampaignDefinition } from "../contracts/campaign-definition";
 import type { CampaignMissionContent } from "../contracts/campaign-mission-content";

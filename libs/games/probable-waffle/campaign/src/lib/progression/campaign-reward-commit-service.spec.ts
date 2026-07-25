@@ -1,9 +1,9 @@
 import {
   CampaignMissionOutcome,
+  type CampaignVictoryCommitRequest,
   FactionType,
   ObjectNames,
-  ResourceType,
-  type CampaignVictoryCommitRequest
+  ResourceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { asCampaignContentId } from "../contracts/campaign-content-id";
 import type { CampaignProgressionDefinitions } from "../contracts/campaign-progression-definition";

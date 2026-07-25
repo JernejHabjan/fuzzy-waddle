@@ -3,8 +3,12 @@ import { Subject, type Subscription } from "rxjs";
 import {
   AOTA_CAMPAIGN_CONTENT_REGISTRY,
   asCampaignContentId,
+  type CampaignDeveloperCommand,
+  type CampaignDeveloperCommandResult,
+  type CampaignDiagnosticsService,
   CampaignMissionRuntime,
-  type CampaignMissionRuntimeEffect
+  type CampaignMissionRuntimeEffect,
+  DefaultCampaignDiagnosticsService
 } from "@fuzzy-waddle/probable-waffle-campaign";
 import type {
   CampaignMissionOutcome,
@@ -28,12 +32,6 @@ import {
   PhaserCampaignCinematicPresentationService
 } from "./presentation/campaign-cinematic-presentation.service";
 import { IndexedScenarioReferenceRegistry } from "./scenario/scenario-reference-registry";
-import {
-  DefaultCampaignDiagnosticsService,
-  type CampaignDeveloperCommand,
-  type CampaignDeveloperCommandResult,
-  type CampaignDiagnosticsService
-} from "@fuzzy-waddle/probable-waffle-campaign";
 import { environment } from "@fuzzy-waddle/environments/environment";
 import { evaluateCampaignSaveEligibility } from "../data/campaign-save-eligibility";
 

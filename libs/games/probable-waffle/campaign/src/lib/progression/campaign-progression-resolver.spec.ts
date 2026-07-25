@@ -8,8 +8,8 @@ import { CampaignProgressionRegistry } from "../registry/campaign-progression-re
 import {
   capCampaignProgressionModifiers,
   createInitialCampaignProgressionProfile,
-  respecCampaignProgression,
   resolveCampaignEffectiveProgression,
+  respecCampaignProgression,
   saveCampaignLoadout
 } from "./campaign-progression-resolver";
 

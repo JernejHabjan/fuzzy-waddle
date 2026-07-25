@@ -1,8 +1,8 @@
 import type { CampaignMissionRuntimeState } from "@fuzzy-waddle/probable-waffle-protocol";
 import type {
-  MissionPortraitDefinition,
   MissionDialogueBundle,
-  MissionDialogueLine
+  MissionDialogueLine,
+  MissionPortraitDefinition
 } from "../contracts/mission-dialogue-bundle";
 
 export interface CampaignDialogueLineProjection {

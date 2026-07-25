@@ -1,10 +1,10 @@
 import {
   CAMPAIGN_MISSION_IDS,
   type CampaignDifficulty,
+  type CampaignLoadout,
   type CampaignMissionCompletion,
   type CampaignMissionId,
   type CampaignMissionMastery,
-  type CampaignLoadout,
   type CampaignProfile,
   type CampaignProfileData,
   type CampaignProgressionProfile,

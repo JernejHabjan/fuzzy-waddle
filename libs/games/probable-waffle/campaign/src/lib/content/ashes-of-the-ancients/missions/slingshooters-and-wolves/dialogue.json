@@ -1,4 +1,5 @@
 {
+  "$schema": "../../../../../schemas/dialogue.schema.json",
   "schemaVersion": 1,
   "missionId": "slingshooters-and-wolves",
   "texts": [

@@ -1,7 +1,7 @@
-import { ObjectNames, type CampaignMissionEncounterRuntimeState } from "@fuzzy-waddle/probable-waffle-protocol";
+import { type CampaignMissionEncounterRuntimeState, ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { asCampaignContentId } from "../../contracts/campaign-content-id";
 import type { ResolvedMissionEncounterDefinition } from "../campaign-difficulty-resolver";
-import { DefaultCampaignEncounterService, type CampaignEncounterWorldAdapter } from "./campaign-encounter-service";
+import { type CampaignEncounterWorldAdapter, DefaultCampaignEncounterService } from "./campaign-encounter-service";
 
 describe("DefaultCampaignEncounterService", () => {
   it("uses simulation ticks for waves and restores actor membership and ownership", () => {
