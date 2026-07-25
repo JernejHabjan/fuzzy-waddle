@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { type AttackData } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/attack-data";
 import { HealthComponent } from "./health-component";
 import { getActorComponent } from "../../../../data/actor-component";

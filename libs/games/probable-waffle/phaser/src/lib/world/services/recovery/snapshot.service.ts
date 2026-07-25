@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import type { Subscription } from "rxjs";
 import { filter } from "rxjs";
 import { getSceneService } from "../scene-component-helpers";

@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { Game } from "phaser";
 import type { BaseGameData } from "./base-game-data";
 

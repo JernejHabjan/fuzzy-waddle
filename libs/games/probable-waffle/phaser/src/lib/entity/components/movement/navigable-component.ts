@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 type GameObject = Phaser.GameObjects.GameObject;
 import { getActorComponent } from "../../../data/actor-component";
 import { HealthComponent } from "../combat/components/health-component";

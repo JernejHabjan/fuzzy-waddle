@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { NavigableComponent } from "../../entity/components/movement/navigable-component";
 import { NavigablePathDirection } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/navigable-path-direction";
 import { STAIRS_PREFAB_DEFINITIONS, STAIRS_PREFAB_KEYS } from "../../prefabs/buildings/tivara/stairs/Stairs";

@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { ScaleHandler } from "../../player/human-controller/scale.handler";
 import { CameraMovementHandler } from "../../player/human-controller/cameraMovementHandler";

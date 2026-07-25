@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { PlayerAiBlackboard } from "../player-ai-blackboard";
 import { OrderData } from "../../../ai/OrderData";
 import { OrderType } from "../../../ai/order-type";

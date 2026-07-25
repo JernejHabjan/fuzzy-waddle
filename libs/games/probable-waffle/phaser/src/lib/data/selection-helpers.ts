@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { ProbableWaffleScene } from "../core/probable-waffle.scene";
 import { getSelectedActors, sortActorsByPriority } from "./scene-data";
 import { getSceneComponent } from "../world/services/scene-component-helpers";

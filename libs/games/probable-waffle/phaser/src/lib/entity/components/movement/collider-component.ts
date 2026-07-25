@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { HealthComponent } from "../combat/components/health-component";
 import { removeActorComponent } from "../../../data/actor-data";
 import { onObjectReady } from "../../../data/game-object-helper";

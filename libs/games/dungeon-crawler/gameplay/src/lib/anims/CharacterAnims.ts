@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { AnimationsFaune, AssetsDungeon } from "../assets";
 
 const createCharacterAnims = (anims: Phaser.Animations.AnimationManager) => {

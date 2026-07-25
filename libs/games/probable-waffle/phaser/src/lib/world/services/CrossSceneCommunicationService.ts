@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 export class CrossSceneCommunicationService {
   emitter = new Phaser.Events.EventEmitter();
 

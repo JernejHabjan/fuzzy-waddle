@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { Cameras, Geom, Input, type Types } from "phaser";
 import GameProbableWaffleScene from "../../world/scenes/GameProbableWaffleScene";
 import { Subscription } from "rxjs";

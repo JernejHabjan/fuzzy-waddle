@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { AnimationsLizard, AssetsDungeon } from "../assets";
 
 enum Direction {

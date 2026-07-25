@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { js as EasyStar } from "easystarjs";
 import type { Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { TerrainGridBuilder } from "./terrain-grid-builder";

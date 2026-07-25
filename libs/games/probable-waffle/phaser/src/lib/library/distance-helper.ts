@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { getGameObjectCurrentTile } from "../data/game-object-helper";
 import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { getSceneService } from "../world/services/scene-component-helpers";

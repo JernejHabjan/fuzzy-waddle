@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 /* eslint-disable @typescript-eslint/no-namespace */
 import { AnimationsFaune, AssetsDungeon, DungeonCrawlerSceneEventTypes } from "../assets";
 import { sceneEvents } from "../events/EventCenter";

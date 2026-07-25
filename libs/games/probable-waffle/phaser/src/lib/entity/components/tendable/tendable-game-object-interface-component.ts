@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { ActorDataChangedEvent } from "../../../data/actor-data";
 import { getActorComponent } from "../../../data/actor-component";
 import { TendableComponent, type TendablePhase } from "./tendable-component";

@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import type { FadeOutDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/building/fade-out-definition";
 import { CancelableSimDelay } from "../../../world/services/simulation-time";
 type GameObject = Phaser.GameObjects.GameObject;

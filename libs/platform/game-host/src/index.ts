@@ -4,7 +4,6 @@ export * from "./lib/game/communicators/two-way-communicator";
 export * from "./lib/game/game-container/game-container.component";
 export * from "./lib/game/game-container/game-container";
 export * from "./lib/game/phaser/components/fireworks";
-export * from "./lib/game/phaser/ensure-phaser-global";
 export * from "./lib/game/phaser/game/base-game-data";
 export * from "./lib/game/phaser/game/base-game";
 export * from "./lib/game/phaser/scene/base.scene";

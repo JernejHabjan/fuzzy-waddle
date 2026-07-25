@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { emitEventSelection, getSelectedActors, sanitizeOwnedActorIds } from "../../data/scene-data";
 import { isGameObjectActiveInActiveScene, onSceneInitialized } from "../../data/game-object-helper";

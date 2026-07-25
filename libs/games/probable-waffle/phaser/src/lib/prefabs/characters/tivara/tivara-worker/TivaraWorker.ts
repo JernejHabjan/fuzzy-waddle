@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 
 export class TivaraWorker extends Phaser.GameObjects.GameObject {

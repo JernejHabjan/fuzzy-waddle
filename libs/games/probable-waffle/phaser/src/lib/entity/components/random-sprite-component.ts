@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { RandomService } from "../../world/services/random.service";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 type GameObject = Phaser.GameObjects.GameObject;

@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { getTilesAroundGameObjectsOfShape } from "../../../data/tile-map-helpers";
 import { isGameObjectActiveInActiveScene } from "../../../data/game-object-helper";
 import { getSceneService } from "../../../world/services/scene-component-helpers";

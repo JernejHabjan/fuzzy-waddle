@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { State } from "mistreevous";
 import { type IPlayerControllerAgent } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/player-ai-controller.agent.interface";
 import { FactionType, ObjectNames, ProbableWafflePlayer, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";

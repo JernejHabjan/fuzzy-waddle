@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { getActorComponent } from "./actor-component";
 import { getGameObjectCurrentTile } from "./game-object-helper";
 import { HealthComponent } from "../entity/components/combat/components/health-component";

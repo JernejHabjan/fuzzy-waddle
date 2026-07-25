@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { GameObjects } from "phaser";
 import { StatusEffectComponent } from "./status-effect-component";
 import { getActorComponent } from "../../../data/actor-component";

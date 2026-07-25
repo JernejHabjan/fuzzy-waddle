@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { getSceneInitializers, getSceneService } from "../world/services/scene-component-helpers";
 import { NavigationService } from "../world/services/navigation.service";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";

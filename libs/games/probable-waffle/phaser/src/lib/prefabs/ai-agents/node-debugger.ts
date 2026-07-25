@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { getActorComponent } from "../../data/actor-component";
 import { ActorTranslateComponent } from "../../entity/components/movement/actor-translate-component";

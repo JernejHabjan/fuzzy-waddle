@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 export class LavaParticles {
   private particles: Phaser.GameObjects.Particles.ParticleEmitter;
 

@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import GameObject = Phaser.GameObjects.GameObject;
 import { AudioActorComponent } from "../../../../../entity/components/actor-audio/audio-actor-component";
 import { getActorComponent } from "../../../../../data/actor-component";

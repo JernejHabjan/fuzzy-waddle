@@ -4,6 +4,7 @@
 
 import ScriptNode from "./ScriptNode";
 /* START-USER-IMPORTS */
+import Phaser from "phaser";
 /* END-USER-IMPORTS */
 
 export default class ExecActionScript extends ScriptNode {

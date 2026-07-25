@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { type PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 import {

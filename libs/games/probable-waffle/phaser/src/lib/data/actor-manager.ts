@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import Hedgehog from "../prefabs/animals/hedgehog/Hedgehog";
 import Sheep from "../prefabs/animals/sheep/Sheep";
 import GeneralWarrior from "../prefabs/characters/general/general-warrior/GeneralWarrior";

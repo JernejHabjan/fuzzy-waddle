@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import type { PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 import type { ProbableWafflePlayerDisconnectedEvent } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { Subscription } from "rxjs";

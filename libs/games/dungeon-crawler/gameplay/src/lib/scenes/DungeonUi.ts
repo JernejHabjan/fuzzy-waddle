@@ -3,7 +3,7 @@ import { type CreateSceneFromObjectConfig } from "@fuzzy-waddle/platform-game-ho
 import { AssetsDungeon, DungeonCrawlerSceneEventTypes } from "../assets";
 import { sceneEvents } from "../events/EventCenter";
 import { DungeonCrawlerScenes } from "../dungeonCrawlerScenes";
-
+import Phaser from "phaser";
 export default class DungeonUi extends Scene implements CreateSceneFromObjectConfig {
   private hearts!: Phaser.GameObjects.Group;
 

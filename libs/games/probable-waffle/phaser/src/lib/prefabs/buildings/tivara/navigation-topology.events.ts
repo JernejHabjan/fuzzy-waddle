@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import type { Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { onObjectReady } from "../../../data/game-object-helper";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";

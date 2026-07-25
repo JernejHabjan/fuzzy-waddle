@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
 import { getActorComponent } from "../../../data/actor-component";
 import { getGameObjectLogicalTransform } from "../../../data/game-object-helper";
