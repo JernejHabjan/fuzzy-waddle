@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { ProbableWaffleScene } from "../core/probable-waffle.scene";
 import { GameSessionState } from "@fuzzy-waddle/platform-game-sessions";
 

@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { OrderType } from "./order-type";
 import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { getActorComponent } from "../data/actor-component";

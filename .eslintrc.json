@@ -1,11 +1,12 @@
 {
   "root": true,
   "ignorePatterns": ["**/*"],
-  "plugins": ["@nx"],
+  "plugins": ["@nx", "fuzzy-waddle"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
       "rules": {
+        "fuzzy-waddle/require-phaser-import": "error",
         "@nx/enforce-module-boundaries": [
           "error",
           {

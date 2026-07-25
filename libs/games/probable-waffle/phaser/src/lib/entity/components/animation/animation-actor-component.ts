@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { onObjectReady } from "../../../data/game-object-helper";
 import { OrderType } from "../../../ai/order-type";
 import { ActorTranslateComponent } from "../movement/actor-translate-component";

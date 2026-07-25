@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { environment } from "@fuzzy-waddle/environments/environment";
 import { MovementOccupancyService, type MovementOccupancyDebugEntry } from "./movement-occupancy.service";
 import { NavigationService } from "./navigation.service";

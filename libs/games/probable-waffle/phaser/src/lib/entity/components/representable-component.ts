@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import type { ObjectNames, RepresentableComponentData } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { getGameObjectBounds, getGameObjectVisibility, onObjectReady } from "../../data/game-object-helper";

@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 type GameObject = Phaser.GameObjects.GameObject;
 import { ActorData, ActorDataKey } from "./actor-data";
 

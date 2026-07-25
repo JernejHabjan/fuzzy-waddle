@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 export class IconHelper {
   static setIcon(
     image: Phaser.GameObjects.Image,

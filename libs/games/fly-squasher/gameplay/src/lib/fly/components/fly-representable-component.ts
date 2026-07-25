@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { type IFlyBase } from "../component.service";
 import { FlyPrefab } from "../fly-prefab";
 import { BaseScene } from "@fuzzy-waddle/platform-game-host/phaser/scene/base.scene";

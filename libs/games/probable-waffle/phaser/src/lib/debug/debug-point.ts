@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import type { Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { environment } from "@fuzzy-waddle/environments/environment";
 

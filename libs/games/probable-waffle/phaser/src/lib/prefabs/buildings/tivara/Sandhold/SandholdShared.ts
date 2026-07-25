@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { GameObjects } from "phaser";
 import { ANIM_TIVARA_BUILDINGS_OLIVAL_SMALL } from "../Olival/anims-olival";
 

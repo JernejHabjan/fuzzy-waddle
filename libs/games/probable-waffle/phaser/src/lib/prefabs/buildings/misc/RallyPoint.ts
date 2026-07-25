@@ -3,6 +3,7 @@
 /* START OF COMPILED CODE */
 
 /* START-USER-IMPORTS */
+import Phaser from "phaser";
 /* END-USER-IMPORTS */
 
 import { getActorSystem } from "../../../data/actor-system";
@@ -74,9 +75,10 @@ export default class RallyPoint extends Phaser.GameObjects.Image {
         this.handleVisibility();
       });
     }
-    this.ownerMovedSubscription = getActorComponent(owner, ActorTranslateComponent)?.actorMovedLogicalPosition.subscribe(
-      () => this.drawLine()
-    );
+    this.ownerMovedSubscription = getActorComponent(
+      owner,
+      ActorTranslateComponent
+    )?.actorMovedLogicalPosition.subscribe(() => this.drawLine());
     this.audioService = getSceneService(owner.scene, AudioService);
   }
 
@@ -221,12 +223,13 @@ export default class RallyPoint extends Phaser.GameObjects.Image {
   }
 
   private subscribeToActorTarget(gameObject: Phaser.GameObjects.GameObject) {
-    this.targetMovedSubscription = getActorComponent(gameObject, ActorTranslateComponent)?.actorMovedLogicalPosition.subscribe(
-      () => {
-        this.updatePositionFromActor();
-        this.handleVisibility();
-      }
-    );
+    this.targetMovedSubscription = getActorComponent(
+      gameObject,
+      ActorTranslateComponent
+    )?.actorMovedLogicalPosition.subscribe(() => {
+      this.updatePositionFromActor();
+      this.handleVisibility();
+    });
     this.targetDepletedSubscription = getActorComponent(gameObject, ResourceSourceComponent)?.onDepleted.subscribe(() =>
       this.reset()
     );

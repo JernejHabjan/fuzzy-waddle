@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { State } from "mistreevous";
 import { FactionType, ObjectNames, ProbableWafflePlayer } from "@fuzzy-waddle/probable-waffle-protocol";
 import { PlayerAiBlackboard } from "../player-ai-blackboard";

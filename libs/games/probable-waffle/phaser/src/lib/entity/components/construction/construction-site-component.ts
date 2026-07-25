@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { PaymentType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/payment-type";
 import {
   type ConstructionSiteComponentData,

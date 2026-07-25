@@ -16,7 +16,7 @@ import {
 } from "@fuzzy-waddle/platform-game-sessions";
 import { Loader } from "../loader";
 import type { CommunicatorService } from "../../communicators/CommunicatorService";
-
+import Phaser from "phaser";
 export const SceneGameDataKey = "SceneGameData";
 export class BaseScene<
     TGameData extends BaseGameData = BaseGameData,

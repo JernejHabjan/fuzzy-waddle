@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { PlayerAiBlackboard } from "../player-ai-blackboard";
 import { State } from "mistreevous";
 import { getActorComponent } from "../../../data/actor-component";

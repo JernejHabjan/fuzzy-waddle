@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { setActorData } from "../../../../../data/actor-data";
 import { ObjectDescriptorComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/object-descriptor-component";
 import { AudioActorComponent } from "../../../../../entity/components/actor-audio/audio-actor-component";

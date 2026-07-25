@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { GameObjects } from "phaser";
 import { HealthComponent } from "./health-component";
 import { getActorComponent } from "../../../../data/actor-component";

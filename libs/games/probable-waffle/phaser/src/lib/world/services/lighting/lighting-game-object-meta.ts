@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 export const SceneLightingDataKeys = {
   ignoreEffects: "sceneLightingIgnoreEffects",
   castsShadow: "sceneLightingCastsShadow",

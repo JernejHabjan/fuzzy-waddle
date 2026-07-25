@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { OrderData } from "../../../ai/OrderData";
 import { onObjectReady } from "../../../data/game-object-helper";
 import { AudioService } from "../../../world/services/audio.service";

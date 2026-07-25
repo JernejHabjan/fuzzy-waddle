@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { GameSessionState } from "@fuzzy-waddle/platform-game-sessions";
 import {
   GameSaveKind,

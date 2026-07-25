@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { Blackboard } from "../../ai/blackboard";
 import { OrderData } from "../../ai/OrderData";
 import { Subject } from "rxjs";

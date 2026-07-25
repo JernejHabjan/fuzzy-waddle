@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { GatherData } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/resource/gather-data";
 import { ResourceSourceComponent } from "./resource-source-component";
 import { DistanceHelper } from "../../../library/distance-helper";

@@ -334,6 +334,9 @@ importers:
       eslint-config-prettier:
         specifier: 10.1.8
         version: 10.1.8(eslint@9.37.0(jiti@2.6.1))
+      eslint-plugin-fuzzy-waddle:
+        specifier: file:tools/eslint-plugin-fuzzy-waddle
+        version: file:tools/eslint-plugin-fuzzy-waddle
       http-server:
         specifier: ^14.1.1
         version: 14.1.1
@@ -6168,6 +6171,9 @@ packages:
     hasBin: true
     peerDependencies:
       eslint: '>=7.0.0'
+
+  eslint-plugin-fuzzy-waddle@file:tools/eslint-plugin-fuzzy-waddle:
+    resolution: {directory: tools/eslint-plugin-fuzzy-waddle, type: directory}
 
   eslint-scope@5.1.1:
     resolution: {integrity: sha512-2NxwbF/hZ0KpepYN0cNbo+FN6XoK7GaHlQhgx/hIZl6Va0bF45RQOOwhLIy8lQDbuCiadSLCBnH2CFYquit5bw==}
@@ -17349,6 +17355,8 @@ snapshots:
   eslint-config-prettier@10.1.8(eslint@9.37.0(jiti@2.6.1)):
     dependencies:
       eslint: 9.37.0(jiti@2.6.1)
+
+  eslint-plugin-fuzzy-waddle@file:tools/eslint-plugin-fuzzy-waddle: {}
 
   eslint-scope@5.1.1:
     dependencies:

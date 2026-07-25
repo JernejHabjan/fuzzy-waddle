@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { type EnemyIntel, PlayerAiBlackboard } from "../player-ai-blackboard";
 import { ObjectNames, ProbableWafflePlayer } from "@fuzzy-waddle/probable-waffle-protocol";
 import { getSceneService } from "../../../world/services/scene-component-helpers";

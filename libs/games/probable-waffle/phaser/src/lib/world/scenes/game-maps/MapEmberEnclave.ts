@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 // You can write more code here
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
@@ -455,7 +456,7 @@ export default class MapEmberEnclave extends GameProbableWaffleScene {
     this.events.emit("scene-awake");
   }
 
-  public tilemap!: Phaser.Tilemaps.Tilemap;
+  public override tilemap!: Phaser.Tilemaps.Tilemap;
 
   /* START-USER-CODE */
 

@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { getActorComponent } from "./actor-component";
 import { OwnerComponent } from "../entity/components/owner-component";
 import { TechTreeService } from "./tech-tree/tech-tree.service";

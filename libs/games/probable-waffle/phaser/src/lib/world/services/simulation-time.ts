@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { getSceneService } from "./scene-component-helpers";
 import { SimulationTickService } from "./simulation-tick.service";
 import { isSceneActive } from "../../data/game-object-helper";

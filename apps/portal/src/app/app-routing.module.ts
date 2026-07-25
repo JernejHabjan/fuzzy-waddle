@@ -4,16 +4,10 @@ import { AuthGuard } from "@fuzzy-waddle/platform-identity/client/auth/auth.guar
 import { AppRoleGuard } from "@fuzzy-waddle/platform-identity/client/auth/app-role.guard";
 import { LevelGuard } from "@fuzzy-waddle/fly-squasher-interface/choose-level/level.guard";
 import { isTauri } from "@fuzzy-waddle/platform-game-host/tauri";
-import { ensurePhaserGlobal } from "@fuzzy-waddle/platform-game-host/phaser/ensure-phaser-global";
 import { probableWaffleRoutes } from "@fuzzy-waddle/probable-waffle-interface";
 
 /** In Tauri the only published game is Probable Waffle — redirect root to /aota. */
 const tauriHomeRedirect = () => (isTauri() ? inject(Router).createUrlTree(["/aota"]) : true);
-
-async function loadGameComponent<T>(loader: () => Promise<T>): Promise<T> {
-  await ensurePhaserGlobal();
-  return loader();
-}
 
 const littleMuncherRoutes = [
   {
@@ -22,7 +16,7 @@ const littleMuncherRoutes = [
       {
         path: "",
         loadComponent: () =>
-          loadGameComponent(() => import("@fuzzy-waddle/little-muncher-interface/little-muncher.component")).then(
+          import("@fuzzy-waddle/little-muncher-interface/little-muncher.component").then(
             (m) => m.LittleMuncherComponent
           )
       },
@@ -57,9 +51,7 @@ const flySquasherRoutes = [
       {
         path: "play/:level",
         loadComponent: () =>
-          loadGameComponent(() => import("@fuzzy-waddle/fly-squasher-interface/main/main.component")).then(
-            (m) => m.MainComponent
-          ),
+          import("@fuzzy-waddle/fly-squasher-interface/main/main.component").then((m) => m.MainComponent),
         canActivate: [LevelGuard]
       },
       {
@@ -86,7 +78,7 @@ const dungeonCrawlerRoutes = [
       {
         path: "",
         loadComponent: () =>
-          loadGameComponent(() => import("@fuzzy-waddle/dungeon-crawler-interface/dungeon-crawler.component")).then(
+          import("@fuzzy-waddle/dungeon-crawler-interface/dungeon-crawler.component").then(
             (m) => m.DungeonCrawlerComponent
           )
       },

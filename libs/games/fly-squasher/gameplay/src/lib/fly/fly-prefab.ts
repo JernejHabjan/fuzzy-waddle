@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { Subject } from "rxjs";
 
 // prefab combined in Phaser Editor 2D

@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { getActorComponent, hasActorComponent } from "../data/actor-component";
 import { ProductionComponent } from "../entity/components/production/production-component";
 import { ContainerComponent } from "../entity/components/building/container-component";

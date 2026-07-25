@@ -1,3 +1,4 @@
+import Phaser, { Scene } from "phaser";
 import { type PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 import {
   type PlayerStateHousing,
@@ -7,7 +8,6 @@ import {
   type ProbableWafflePlayerDataChangeEventPayload,
   type ProbableWafflePlayerDataChangeEventProperty
 } from "@fuzzy-waddle/probable-waffle-protocol";
-import { Scene } from "phaser";
 import { ProbableWaffleScene } from "../core/probable-waffle.scene";
 import type { ProbableWaffleCommunicatorServiceInterface } from "../core/ports/probable-waffle-communicator";
 import { getActorComponent, hasActorComponent } from "./actor-component";

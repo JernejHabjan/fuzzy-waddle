@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { ActorManager } from "./actor-manager";
 import { getSceneComponent, getSceneService, getSceneSystem } from "../world/services/scene-component-helpers";
 import { SceneActorCreator } from "../world/services/scene-actor-creator";

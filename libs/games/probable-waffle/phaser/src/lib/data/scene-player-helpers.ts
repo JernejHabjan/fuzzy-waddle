@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { getAllPlayers, getSelectableSceneChildren } from "./scene-data";
 import { getActorComponent } from "./actor-component";
 import { OwnerComponent } from "../entity/components/owner-component";

@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { OrderType } from "../../ai/order-type";
 import { CursorHandler, CursorType } from "./cursor.handler";

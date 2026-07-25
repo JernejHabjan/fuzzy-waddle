@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { Subject, type Subscription } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
 import { ResourceSourceComponent } from "../resource/resource-source-component";

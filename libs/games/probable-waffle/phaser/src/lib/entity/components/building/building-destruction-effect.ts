@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { getActorComponent } from "../../../data/actor-component";
 import { getGameObjectDepth } from "../../../data/game-object-helper";
 import { FadeOutComponent } from "./fade-out-component";

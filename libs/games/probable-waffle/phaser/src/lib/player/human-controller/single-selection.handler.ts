@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { GameObjects, Input } from "phaser";
 import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { getActorComponent } from "../../data/actor-component";

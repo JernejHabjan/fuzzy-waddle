@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { GameObjects } from "phaser";
 import { isGameObjectActiveInActiveScene, onObjectReady } from "../../../data/game-object-helper";
 import { HealthComponent } from "../combat/components/health-component";

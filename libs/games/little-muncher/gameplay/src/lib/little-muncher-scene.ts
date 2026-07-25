@@ -19,7 +19,7 @@ import { PlayerInputController } from "./player-input-controller";
 import { UiCommunicator, type UiCommunicatorData } from "./ui-communicator";
 import { Fireworks } from "@fuzzy-waddle/platform-game-host/phaser/components/fireworks";
 import { LittleMuncherCommunicator } from "./communicators/little-muncher-communicator";
-
+import Phaser from "phaser";
 export enum ObjectName {
   "obstacle" = "obstacle",
   "powerUp" = "powerUp"

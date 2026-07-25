@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { Subscription } from "rxjs";
 import { getActorComponent } from "../../data/actor-component";
 import { isGameObjectActiveInActiveScene } from "../../data/game-object-helper";

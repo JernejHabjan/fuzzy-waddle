@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { getPwActorDefinition } from "../prefabs/definitions/actor-definitions";
 import { type ActorDefinition } from "@fuzzy-waddle/probable-waffle-protocol";
 import { VisionComponent } from "../entity/components/vision-component";

@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { ConstructionSiteComponent } from "./construction-site-component";
 import { ContainerComponent } from "../building/container-component";
 import { Subject, type Subscription } from "rxjs";

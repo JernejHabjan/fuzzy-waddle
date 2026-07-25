@@ -5,6 +5,7 @@
 import OnEventScript from "./OnEventScript";
 import ScriptNode from "./ScriptNode";
 /* START-USER-IMPORTS */
+import Phaser from "phaser";
 /* END-USER-IMPORTS */
 
 export default class OnPointerUpScript extends OnEventScript {

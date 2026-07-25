@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { TerrainType } from "./navigation.service";
 
 /**

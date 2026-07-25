@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import type { LevelDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/level/level-definition";
 
 export class LevelComponent {

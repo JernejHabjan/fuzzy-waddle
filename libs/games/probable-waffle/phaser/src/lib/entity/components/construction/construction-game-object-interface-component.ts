@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { ActorDataChangedEvent } from "../../../data/actor-data";
 import { HealthComponent } from "../combat/components/health-component";
 import { getActorComponent } from "../../../data/actor-component";

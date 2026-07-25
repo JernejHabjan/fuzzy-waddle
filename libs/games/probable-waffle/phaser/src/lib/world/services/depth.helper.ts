@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { getGameObjectLogicalTransform, getGameObjectRenderedTransform } from "../../data/game-object-helper";
 import { getActorComponent } from "../../data/actor-component";
 import { FlyingComponent } from "../../entity/components/movement/flying-component";

@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { ObjectNames, ProbableWaffleGameCommandTypes, type ResearchType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { type PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 import { getActorComponent } from "../actor-component";

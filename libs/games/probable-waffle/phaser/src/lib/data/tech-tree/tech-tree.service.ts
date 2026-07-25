@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 // Runtime service that stores unified tech graph & per-player unlock state.
 import type { TechTreeGraph } from "./tech-tree-graph";
 import { FactionType, ObjectNames, PreRequirement, ResearchType } from "@fuzzy-waddle/probable-waffle-protocol";

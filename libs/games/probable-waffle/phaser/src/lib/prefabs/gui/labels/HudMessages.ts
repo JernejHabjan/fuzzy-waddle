@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { CrossSceneCommunicationService } from "../../../world/services/CrossSceneCommunicationService";
