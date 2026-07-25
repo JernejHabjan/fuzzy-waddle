@@ -1,8 +1,6 @@
 import Phaser from "phaser";
 // You can write more code here
-
 /* START OF COMPILED CODE */
-
 import ActorActions from "../../../prefabs/gui/buttons/ActorActions";
 import ActorInfoContainer from "../../../prefabs/gui/labels/ActorInfoContainer";
 import Minimap from "../../../prefabs/gui/Minimap";
@@ -177,6 +175,8 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private connectionRecovery?: ConnectionRecoveryService;
   private readonly campaignSuppressedVisibility = new Map<Phaser.GameObjects.Components.Visible, boolean>();
   private campaignDeveloperPanel?: CampaignDeveloperPanel;
+  private campaignMissionDirector?: CampaignMissionDirector;
+  private campaignUiInitializationScheduled = false;
 
   probableWaffleScene?: ProbableWaffleScene;
   override preload() {
@@ -221,10 +221,37 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     if (this.cursorHandler) {
       this.cursorHandler.initializeWithMainScene(probableWaffleScene);
     }
+
+    this.initializeCampaignUiWhenSceneReady();
   }
 
   initializeCampaignObjectives(director: CampaignMissionDirector): void {
+    this.campaignMissionDirector = director;
+    this.initializeCampaignUiWhenSceneReady();
+  }
+
+  initializeCampaignPresentation(director: CampaignMissionDirector): void {
+    this.campaignMissionDirector = director;
+    this.initializeCampaignUiWhenSceneReady();
+  }
+
+  /**
+   * Campaign HUD children are created asynchronously when the HUD scene starts.
+   * Wait for the parent scene's bootstrap signal before touching those children.
+   */
+  private initializeCampaignUiWhenSceneReady(): void {
+    if (!this.probableWaffleScene || !this.campaignMissionDirector || this.campaignUiInitializationScheduled) return;
+
+    this.campaignUiInitializationScheduled = true;
+    this.events.once("scene-awake", this.setupCampaignUi, this);
+  }
+
+  private setupCampaignUi(): void {
+    const director = this.campaignMissionDirector;
+    if (!director) return;
+
     this.campaignObjectivesHud.setup(director);
+    this.campaignCinematicHud.setup(director);
     if (!environment.production) {
       if (!this.campaignDeveloperPanel) {
         this.campaignDeveloperPanel = new CampaignDeveloperPanel(this);
@@ -232,10 +259,6 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
       }
       this.campaignDeveloperPanel.setup(director);
     }
-  }
-
-  initializeCampaignPresentation(director: CampaignMissionDirector): void {
-    this.campaignCinematicHud.setup(director);
   }
 
   setCampaignUiSuppressed(suppressed: boolean): void {
