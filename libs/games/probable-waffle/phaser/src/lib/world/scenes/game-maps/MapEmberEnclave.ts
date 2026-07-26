@@ -25,6 +25,13 @@ import WorkMill from "../../../prefabs/buildings/tivara/WorkMill";
 import SkaduweeMagicianFemale from "../../../prefabs/characters/skaduwee/skaduwee-magician-female/SkaduweeMagicianFemale";
 import SkaduweeWorkerMale from "../../../prefabs/characters/skaduwee/skaduwee-worker/skaduwee-worker-male/SkaduweeWorkerMale";
 import SoundEffectMarker from "../../../prefabs/buildings/misc/SoundEffectMarker";
+import EditorScenarioReference from "../editor-components/EditorScenarioReference";
+import ScenarioPoint from "../../../prefabs/scenario/ScenarioPoint";
+import ScenarioRegion from "../../../prefabs/scenario/ScenarioRegion";
+import ScenarioRoute from "../../../prefabs/scenario/ScenarioRoute";
+import ScenarioGroup from "../../../prefabs/scenario/ScenarioGroup";
+import ScenarioCameraShot from "../../../prefabs/scenario/ScenarioCameraShot";
+import ScenarioSpawnSet from "../../../prefabs/scenario/ScenarioSpawnSet";
 /* START-USER-IMPORTS */
 /* END-USER-IMPORTS */
 
@@ -37,6 +44,12 @@ export default class MapEmberEnclave extends GameProbableWaffleScene {
     /* END-USER-CTR-CODE */
   }
 
+  /**
+   * Materializes the Ember Enclave editor scene: map layers, navigation, authored
+   * scenario markers, actors, and campaign presentation anchors. The generated setup
+   * remains declarative; campaign code addresses these objects only through stable
+   * scenario IDs registered after the scene has finished creating them.
+   */
   editorCreate(): void {
     // tilemap
     const tilemap = this.add.tilemap("tiles_ember_enclave");
@@ -146,6 +159,210 @@ export default class MapEmberEnclave extends GameProbableWaffleScene {
     const lavaSfx_2 = new SoundEffectMarker(this, -1056, 816);
     this.add.existing(lavaSfx_2);
 
+    // tivaraRallyPoint
+    const tivaraRallyPoint = new ScenarioPoint(this, -992, 720);
+    this.add.existing(tivaraRallyPoint);
+    tivaraRallyPoint.z = 0;
+    tivaraRallyPoint.scenarioId = "tivara-rally-point";
+
+    // tivaraBattlePoint
+    const tivaraBattlePoint = new ScenarioPoint(this, -352, 800);
+    this.add.existing(tivaraBattlePoint);
+    tivaraBattlePoint.z = 0;
+    tivaraBattlePoint.scenarioId = "tivara-battle-point";
+
+    // skaduweeRallyPoint
+    const skaduweeRallyPoint = new ScenarioPoint(this, -176, 1264);
+    this.add.existing(skaduweeRallyPoint);
+    skaduweeRallyPoint.z = 0;
+    skaduweeRallyPoint.scenarioId = "skaduwee-rally-point";
+
+    // skaduweeBattlePoint
+    const skaduweeBattlePoint = new ScenarioPoint(this, -96, 896);
+    this.add.existing(skaduweeBattlePoint);
+    skaduweeBattlePoint.z = 0;
+    skaduweeBattlePoint.scenarioId = "skaduwee-battle-point";
+
+    // battleFocusPoint
+    const battleFocusPoint = new ScenarioPoint(this, -160, 816);
+    this.add.existing(battleFocusPoint);
+    battleFocusPoint.z = 0;
+    battleFocusPoint.scenarioId = "battle-focus-point";
+
+    // volcanoFocusPoint
+    const volcanoFocusPoint = new ScenarioPoint(this, -640, 656);
+    this.add.existing(volcanoFocusPoint);
+    volcanoFocusPoint.z = 0;
+    volcanoFocusPoint.scenarioId = "volcano-focus-point";
+
+    // ashFallbackPoint
+    const ashFallbackPoint = new ScenarioPoint(this, -512, 768);
+    this.add.existing(ashFallbackPoint);
+    ashFallbackPoint.z = 0;
+    ashFallbackPoint.scenarioId = "ash-fallback-point";
+
+    // eruptionPoint
+    const eruptionPoint = new ScenarioPoint(this, -448, 736);
+    this.add.existing(eruptionPoint);
+    eruptionPoint.z = 0;
+    eruptionPoint.scenarioId = "eruption-point";
+
+    // tivaraCommandRegion
+    const tivaraCommandRegion = new ScenarioRegion(this, -1056, 640, 320, 256);
+    this.add.existing(tivaraCommandRegion);
+    tivaraCommandRegion.shape = "rectangle";
+    tivaraCommandRegion.polygonPoints = "";
+    tivaraCommandRegion.elevationPolicy = "any";
+    tivaraCommandRegion.elevation = 0;
+    tivaraCommandRegion.minimumElevation = 0;
+    tivaraCommandRegion.maximumElevation = 0;
+    tivaraCommandRegion.scenarioId = "tivara-command-region";
+
+    // skaduweeCommandRegion
+    const skaduweeCommandRegion = new ScenarioRegion(this, -352, 1120, 384, 320);
+    this.add.existing(skaduweeCommandRegion);
+    skaduweeCommandRegion.shape = "rectangle";
+    skaduweeCommandRegion.polygonPoints = "";
+    skaduweeCommandRegion.elevationPolicy = "any";
+    skaduweeCommandRegion.elevation = 0;
+    skaduweeCommandRegion.minimumElevation = 0;
+    skaduweeCommandRegion.maximumElevation = 0;
+    skaduweeCommandRegion.scenarioId = "skaduwee-command-region";
+
+    // battleRegion
+    const battleRegion = new ScenarioRegion(this, -416, 704, 640, 352);
+    this.add.existing(battleRegion);
+    battleRegion.shape = "rectangle";
+    battleRegion.polygonPoints = "";
+    battleRegion.elevationPolicy = "any";
+    battleRegion.elevation = 0;
+    battleRegion.minimumElevation = 0;
+    battleRegion.maximumElevation = 0;
+    battleRegion.scenarioId = "battle-region";
+
+    // eruptionHazardRegion
+    const eruptionHazardRegion = new ScenarioRegion(this, -576, 576, 320, 320);
+    this.add.existing(eruptionHazardRegion);
+    eruptionHazardRegion.shape = "rectangle";
+    eruptionHazardRegion.polygonPoints = "";
+    eruptionHazardRegion.elevationPolicy = "any";
+    eruptionHazardRegion.elevation = 0;
+    eruptionHazardRegion.minimumElevation = 0;
+    eruptionHazardRegion.maximumElevation = 0;
+    eruptionHazardRegion.scenarioId = "eruption-hazard-region";
+
+    // lavaHazardRegion
+    const lavaHazardRegion = new ScenarioRegion(this, -1120, 704, 576, 320);
+    this.add.existing(lavaHazardRegion);
+    lavaHazardRegion.shape = "rectangle";
+    lavaHazardRegion.polygonPoints = "";
+    lavaHazardRegion.elevationPolicy = "any";
+    lavaHazardRegion.elevation = 0;
+    lavaHazardRegion.minimumElevation = 0;
+    lavaHazardRegion.maximumElevation = 0;
+    lavaHazardRegion.scenarioId = "lava-hazard-region";
+
+    // volcanoHazardRegion
+    const volcanoHazardRegion = new ScenarioRegion(this, -960, 480, 1024, 704);
+    this.add.existing(volcanoHazardRegion);
+    volcanoHazardRegion.shape = "rectangle";
+    volcanoHazardRegion.polygonPoints = "";
+    volcanoHazardRegion.elevationPolicy = "any";
+    volcanoHazardRegion.elevation = 0;
+    volcanoHazardRegion.minimumElevation = 0;
+    volcanoHazardRegion.maximumElevation = 0;
+    volcanoHazardRegion.scenarioId = "volcano-hazard-region";
+
+    // tivaraChargeRoute
+    const tivaraChargeRoute = new ScenarioRoute(this, -672, 736);
+    this.add.existing(tivaraChargeRoute);
+    tivaraChargeRoute.pointIds = "tivara-rally-point,tivara-battle-point";
+    tivaraChargeRoute.loop = false;
+    tivaraChargeRoute.facingAngles = "0,0";
+    tivaraChargeRoute.scenarioId = "tivara-charge-route";
+
+    // skaduweeChargeRoute
+    const skaduweeChargeRoute = new ScenarioRoute(this, -128, 1088);
+    this.add.existing(skaduweeChargeRoute);
+    skaduweeChargeRoute.pointIds = "skaduwee-rally-point,skaduwee-battle-point";
+    skaduweeChargeRoute.loop = false;
+    skaduweeChargeRoute.facingAngles = "0,0";
+    skaduweeChargeRoute.scenarioId = "skaduwee-charge-route";
+
+    // tivaraRallyGroup
+    const tivaraRallyGroup = new ScenarioGroup(this, -896, 672);
+    this.add.existing(tivaraRallyGroup);
+    tivaraRallyGroup.memberActorIds = "tivara-dream-captain,tivara-dream-fighter";
+    tivaraRallyGroup.requiredTags = "tivara-dream-army";
+    tivaraRallyGroup.scenarioId = "tivara-rally-group";
+
+    // skaduweeRallyGroup
+    const skaduweeRallyGroup = new ScenarioGroup(this, -240, 1216);
+    this.add.existing(skaduweeRallyGroup);
+    skaduweeRallyGroup.memberActorIds = "skaduwee-dream-captain,skaduwee-dream-fighter";
+    skaduweeRallyGroup.requiredTags = "skaduwee-dream-army";
+    skaduweeRallyGroup.scenarioId = "skaduwee-rally-group";
+
+    // dreamIntroShot
+    const dreamIntroShot = new ScenarioCameraShot(this, -512, 768);
+    this.add.existing(dreamIntroShot);
+    dreamIntroShot.z = 0;
+    dreamIntroShot.zoom = 0.75;
+    dreamIntroShot.durationTicks = 90;
+    dreamIntroShot.letterbox = true;
+    dreamIntroShot.scenarioId = "dream-intro-shot";
+
+    // tivaraRallyShot
+    const tivaraRallyShot = new ScenarioCameraShot(this, -896, 704);
+    this.add.existing(tivaraRallyShot);
+    tivaraRallyShot.z = 0;
+    tivaraRallyShot.zoom = 1;
+    tivaraRallyShot.durationTicks = 60;
+    tivaraRallyShot.letterbox = false;
+    tivaraRallyShot.scenarioId = "tivara-rally-shot";
+
+    // skaduweeRallyShot
+    const skaduweeRallyShot = new ScenarioCameraShot(this, -176, 1216);
+    this.add.existing(skaduweeRallyShot);
+    skaduweeRallyShot.z = 0;
+    skaduweeRallyShot.zoom = 1;
+    skaduweeRallyShot.durationTicks = 60;
+    skaduweeRallyShot.letterbox = false;
+    skaduweeRallyShot.scenarioId = "skaduwee-rally-shot";
+
+    // battleFocusShot
+    const battleFocusShot = new ScenarioCameraShot(this, -160, 816);
+    this.add.existing(battleFocusShot);
+    battleFocusShot.z = 0;
+    battleFocusShot.zoom = 0.8;
+    battleFocusShot.durationTicks = 90;
+    battleFocusShot.letterbox = true;
+    battleFocusShot.scenarioId = "battle-focus-shot";
+
+    // volcanoOverwhelmsShot
+    const volcanoOverwhelmsShot = new ScenarioCameraShot(this, -640, 656);
+    this.add.existing(volcanoOverwhelmsShot);
+    volcanoOverwhelmsShot.z = 0;
+    volcanoOverwhelmsShot.zoom = 0.7;
+    volcanoOverwhelmsShot.durationTicks = 90;
+    volcanoOverwhelmsShot.letterbox = true;
+    volcanoOverwhelmsShot.scenarioId = "volcano-overwhelms-shot";
+
+    // ashesTitleShot
+    const ashesTitleShot = new ScenarioCameraShot(this, -512, 768);
+    this.add.existing(ashesTitleShot);
+    ashesTitleShot.z = 0;
+    ashesTitleShot.zoom = 0.6;
+    ashesTitleShot.durationTicks = 120;
+    ashesTitleShot.letterbox = true;
+    ashesTitleShot.scenarioId = "ashes-title-shot";
+
+    // dreamReinforcementWave
+    const dreamReinforcementWave = new ScenarioSpawnSet(this, -448, 736);
+    this.add.existing(dreamReinforcementWave);
+    dreamReinforcementWave.pointIds = "eruption-point,battle-focus-point";
+    dreamReinforcementWave.scenarioId = "dream-reinforcement-wave";
+
     // spawn_2 (components)
     const spawn_2EditorOwner = new EditorOwner(spawn_2);
     spawn_2EditorOwner.owner_id = "3";
@@ -206,6 +423,31 @@ export default class MapEmberEnclave extends GameProbableWaffleScene {
     const workMill_2EditorOwner = new EditorOwner(workMill_2);
     workMill_2EditorOwner.owner_id = "3";
 
+    // tivaraWorkerFemale (components)
+    const tivaraWorkerFemaleEditorScenarioReference = new EditorScenarioReference(tivaraWorkerFemale);
+    tivaraWorkerFemaleEditorScenarioReference.scenarioId = "tivara-dream-captain";
+    tivaraWorkerFemaleEditorScenarioReference.tags = "tivara-dream-army,dream-captain";
+
+    // tivaraWorkerMale (components)
+    const tivaraWorkerMaleEditorScenarioReference = new EditorScenarioReference(tivaraWorkerMale);
+    tivaraWorkerMaleEditorScenarioReference.scenarioId = "tivara-dream-fighter";
+    tivaraWorkerMaleEditorScenarioReference.tags = "tivara-dream-army";
+
+    // tivaraSlingshotFemale (components)
+    const tivaraSlingshotFemaleEditorScenarioReference = new EditorScenarioReference(tivaraSlingshotFemale);
+    tivaraSlingshotFemaleEditorScenarioReference.scenarioId = "tivara-opposition-captain";
+    tivaraSlingshotFemaleEditorScenarioReference.tags = "tivara-scripted-army,dream-captain";
+
+    // skaduweeMagicianFemale (components)
+    const skaduweeMagicianFemaleEditorScenarioReference = new EditorScenarioReference(skaduweeMagicianFemale);
+    skaduweeMagicianFemaleEditorScenarioReference.scenarioId = "skaduwee-dream-captain";
+    skaduweeMagicianFemaleEditorScenarioReference.tags = "skaduwee-dream-army,dream-captain";
+
+    // skaduweeWorkerMale (components)
+    const skaduweeWorkerMaleEditorScenarioReference = new EditorScenarioReference(skaduweeWorkerMale);
+    skaduweeWorkerMaleEditorScenarioReference.scenarioId = "skaduwee-dream-fighter";
+    skaduweeWorkerMaleEditorScenarioReference.tags = "skaduwee-dream-army";
+
     // lavaSfx (prefab fields)
     lavaSfx.sfxType = "lava";
 
@@ -255,6 +497,10 @@ export default class MapEmberEnclave extends GameProbableWaffleScene {
     console.log("tinted for effect");
   }
 
+  /**
+   * Creates the decorative cloud layer after the authored map and gameplay anchors exist.
+   * The effect is local presentation only and is intentionally excluded from deterministic campaign state.
+   */
   private spawnClouds() {
     // Get tilemap dimensions
     const tilemapWidth = this.tilemap.widthInPixels;

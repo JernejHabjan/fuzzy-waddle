@@ -1,11 +1,12 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { GameSaveScope, isCampaignMissionInChapter } from "@fuzzy-waddle/probable-waffle-protocol";
 import { SupabaseProviderService } from "@fuzzy-waddle/platform-database-schema/server/supabase-provider/supabase-provider.service";
+import type { Json } from "@fuzzy-waddle/platform-database-schema";
 import type { SyncGameSaveDto } from "./game-save.dto";
 import type { GameSaveServerServiceInterface } from "./game-save.service.interface";
 
 @Injectable()
-/** Persists owner-scoped encoded saves without decoding client game state. */
+/** Defines the game save server service contract used by this module; its declared members form the compatible boundary for linked consumers. */
 export class GameSaveServerService implements GameSaveServerServiceInterface {
   constructor(private readonly supabaseProviderService: SupabaseProviderService) {}
 
@@ -19,7 +20,7 @@ export class GameSaveServerService implements GameSaveServerServiceInterface {
     return data;
   }
 
-  /** The user id is always supplied by the authenticated request, never by the client payload. */
+  /** Documents the upsert member and its declared contract at this boundary. */
   async upsert(userId: string, dto: SyncGameSaveDto) {
     this.validateScope(dto);
     const { data: existing, error: readError } = await this.supabaseProviderService.supabaseClient
@@ -39,9 +40,19 @@ export class GameSaveServerService implements GameSaveServerServiceInterface {
         scope: dto.scope,
         kind: dto.kind,
         name: dto.name ?? null,
+        campaign_id: dto.campaignId ?? null,
         campaign_chapter_id: dto.campaignChapterId ?? null,
         campaign_mission_id: dto.campaignMissionId ?? null,
         campaign_run_id: dto.campaignRunId ?? null,
+        campaign_mission_revision: dto.campaignMissionRevision ?? null,
+        campaign_runtime_schema_version: dto.campaignRuntimeSchemaVersion ?? null,
+        campaign_profile_revision: dto.campaignProfileRevision ?? null,
+        campaign_loadout_ids: dto.campaignLoadoutIds ?? null,
+        campaign_loadout_snapshot_hash: dto.campaignLoadoutSnapshotHash ?? null,
+        campaign_checkpoint_id: dto.campaignCheckpointId ?? null,
+        campaign_participant_count: dto.campaignParticipantCount ?? null,
+        campaign_participant_progression_snapshots:
+          (dto.campaignParticipantProgressionSnapshots as unknown as Json) ?? null,
         revision: dto.revision,
         format_version: dto.formatVersion,
         is_deleted: dto.isDeleted,
@@ -54,12 +65,35 @@ export class GameSaveServerService implements GameSaveServerServiceInterface {
     return data;
   }
 
-  /** Ensures campaign metadata is complete, related, and absent from skirmish records before storage. */
+  /** Documents the validate scope member and its declared contract at this boundary. */
   private validateScope(dto: SyncGameSaveDto): void {
-    const campaignFields = [dto.campaignChapterId, dto.campaignMissionId, dto.campaignRunId];
+    if (dto.isDeleted) return;
+    const campaignFields = [
+      dto.campaignId,
+      dto.campaignChapterId,
+      dto.campaignMissionId,
+      dto.campaignRunId,
+      dto.campaignMissionRevision,
+      dto.campaignRuntimeSchemaVersion,
+      dto.campaignProfileRevision,
+      dto.campaignLoadoutIds,
+      dto.campaignLoadoutSnapshotHash,
+      dto.campaignCheckpointId,
+      dto.campaignParticipantCount,
+      dto.campaignParticipantProgressionSnapshots
+    ];
     if (dto.scope === GameSaveScope.Campaign) {
-      if (!dto.campaignChapterId || !dto.campaignMissionId || !dto.campaignRunId) {
-        throw new BadRequestException("Campaign saves require chapter, mission, and run identifiers");
+      if (
+        !dto.campaignId ||
+        !dto.campaignChapterId ||
+        !dto.campaignMissionId ||
+        !dto.campaignRunId ||
+        !dto.campaignMissionRevision ||
+        !dto.campaignRuntimeSchemaVersion ||
+        dto.campaignProfileRevision === undefined ||
+        !dto.campaignParticipantCount
+      ) {
+        throw new BadRequestException("Campaign saves require complete campaign runtime metadata");
       }
       if (!isCampaignMissionInChapter(dto.campaignChapterId, dto.campaignMissionId)) {
         throw new BadRequestException("Campaign mission does not belong to the supplied chapter");

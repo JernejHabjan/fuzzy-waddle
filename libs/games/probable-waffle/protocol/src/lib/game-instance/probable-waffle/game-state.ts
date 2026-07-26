@@ -25,6 +25,7 @@ import type {
   ResourceDrainComponentData,
   ResourceSourceComponentData,
   SelectableComponentData,
+  ScenarioActorReferenceData,
   SpellComponentData,
   StatusEffectComponentData,
   VisionComponentData,
@@ -32,6 +33,11 @@ import type {
 } from "./component-data";
 import type { AoeZoneData } from "../../probable-waffle/spell";
 import type { PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
+import type {
+  CampaignMissionRuntimeState,
+  CampaignRestoreInvariantReport
+} from "../../probable-waffle/campaign-runtime";
+import type { DeterministicRandomState } from "../../probable-waffle/deterministic-random";
 
 export class ProbableWaffleGameState extends BaseGameState<ProbableWaffleGameStateData> {
   constructor(data?: ProbableWaffleGameStateData) {
@@ -60,7 +66,10 @@ export class ProbableWaffleGameState extends BaseGameState<ProbableWaffleGameSta
       score: data.score ?? 0,
       pause: data.pause ?? false,
       scoreData: this.normalizeScoreData(data.scoreData),
-      scoreSnapshots: this.normalizeScoreSnapshots(data.scoreSnapshots)
+      scoreSnapshots: this.normalizeScoreSnapshots(data.scoreSnapshots),
+      campaignMission: data.campaignMission ? structuredClone(data.campaignMission) : undefined,
+      campaignRestore: data.campaignRestore ? structuredClone(data.campaignRestore) : undefined,
+      randomState: data.randomState ? structuredClone(data.randomState) : undefined
     };
   }
 
@@ -151,43 +160,185 @@ export class ProbableWaffleGameState extends BaseGameState<ProbableWaffleGameSta
   }
 }
 
+/**
+ * Defines the structured probable waffle game state data contract for this module. Its declared surface makes
+ * actors, pause, score, score data, score snapshots explicit to every consumer. Use this shared shape rather
+ * than an ad-hoc object so adapters, persistence, and callers remain compatible.
+ */
 export interface ProbableWaffleGameStateData extends BaseData {
+  /**
+   * collection value on {@link ProbableWaffleGameStateData}. Its element type defines the records that may cross
+   * this boundary; preserve ordering or uniqueness whenever the owning workflow relies on it.
+   */
   actors: ActorDefinition[];
+  /**
+   * pause value carried by {@link ProbableWaffleGameStateData}. Its declared type is the compatibility boundary
+   * for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   pause: boolean;
+  /**
+   * numeric score carried by {@link ProbableWaffleGameStateData}. Its units and valid range are defined by
+   * {@link ProbableWaffleGameStateData} and must remain consistent across producers and consumers.
+   */
   score: number;
+  /**
+   * Optional score data value carried by {@link ProbableWaffleGameStateData}. Its declared type is the
+   * compatibility boundary for producers, validators, and consumers; do not replace it with a broader inferred
+   * shape.
+   */
   scoreData?: Map<PlayerNumber, PlayerScoreData>;
+  /**
+   * Optional collection value on {@link ProbableWaffleGameStateData}. Its element type defines the records that
+   * may cross this boundary; preserve ordering or uniqueness whenever the owning workflow relies on it.
+   */
   scoreSnapshots?: GameScoreSnapshot[];
-  /** Active AOE zones for save/load support */
+  /** Documents the aoe zones member and its declared contract at this boundary. */
   aoeZones?: AoeZoneData[];
-  /** Research state per player for save/load support */
+  /** Documents the player research member and its declared contract at this boundary. */
   playerResearch?: Record<PlayerNumber, string[]>;
+  /** Documents the campaign mission member and its declared contract at this boundary. */
+  campaignMission?: CampaignMissionRuntimeState;
+  /** Documents the campaign restore member and its declared contract at this boundary. */
+  campaignRestore?: CampaignRestoreInvariantReport;
+  /** Documents the random state member and its declared contract at this boundary. */
+  randomState?: DeterministicRandomState;
 }
 
+/**
+ * Defines the structured actor definition contract for this module. Its declared surface makes name, owner,
+ * id, scenario explicit to every consumer. Use this shared shape rather than an ad-hoc object so adapters,
+ * persistence, and callers remain compatible.
+ */
 export interface ActorDefinition {
   [key: string]: unknown;
+  /**
+   * Optional human-facing name for {@link ActorDefinition}. It supports UI, narration, or diagnostics and must
+   * not be used as the stable identity of the record.
+   */
   name?: ObjectNames;
+  /**
+   * Optional owner value carried by {@link ActorDefinition}. Its declared type is the compatibility boundary for
+   * producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   owner?: Partial<OwnerComponentData>;
+  /**
+   * Optional stable id used by {@link ActorDefinition} to correlate this value with related records, events, or
+   * authored content; it is not a display label.
+   */
   id?: Partial<IdComponentData>;
+  /**
+   * Optional scenario value carried by {@link ActorDefinition}. Its declared type is the compatibility boundary
+   * for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
+  scenario?: ScenarioActorReferenceData;
+  /**
+   * Optional health value carried by {@link ActorDefinition}. Its declared type is the compatibility boundary
+   * for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   health?: Partial<HealthComponentData>;
+  /**
+   * Optional housing value carried by {@link ActorDefinition}. Its declared type is the compatibility boundary
+   * for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   housing?: Partial<HousingComponentData>;
+  /**
+   * Optional construction site value carried by {@link ActorDefinition}. Its declared type is the compatibility
+   * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   constructionSite?: Partial<ConstructionSiteComponentData>;
+  /**
+   * Optional selected value carried by {@link ActorDefinition}. Its declared type is the compatibility boundary
+   * for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   selected?: Partial<SelectableComponentData>;
+  /**
+   * Optional vision value carried by {@link ActorDefinition}. Its declared type is the compatibility boundary
+   * for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   vision?: Partial<VisionComponentData>;
+  /**
+   * Optional attack value carried by {@link ActorDefinition}. Its declared type is the compatibility boundary
+   * for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   attack?: Partial<AttackComponentData>;
+  /**
+   * Optional healing value carried by {@link ActorDefinition}. Its declared type is the compatibility boundary
+   * for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   healing?: Partial<HealingComponentData>;
+  /**
+   * Optional builder value carried by {@link ActorDefinition}. Its declared type is the compatibility boundary
+   * for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   builder?: Partial<BuilderComponentData>;
+  /**
+   * Optional gatherer value carried by {@link ActorDefinition}. Its declared type is the compatibility boundary
+   * for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   gatherer?: Partial<GathererComponentData>;
+  /**
+   * Optional container value carried by {@link ActorDefinition}. Its declared type is the compatibility boundary
+   * for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   container?: Partial<ContainerComponentData>;
+  /**
+   * Optional resource drain value carried by {@link ActorDefinition}. Its declared type is the compatibility
+   * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   resourceDrain?: Partial<ResourceDrainComponentData>;
+  /**
+   * Optional resource source value carried by {@link ActorDefinition}. Its declared type is the compatibility
+   * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   resourceSource?: Partial<ResourceSourceComponentData>;
+  /**
+   * Optional production value carried by {@link ActorDefinition}. Its declared type is the compatibility
+   * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   production?: Partial<ProductionComponentData>;
+  /**
+   * Optional research value carried by {@link ActorDefinition}. Its declared type is the compatibility boundary
+   * for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   research?: Partial<ResearchComponentData>;
+  /**
+   * Optional translatable value carried by {@link ActorDefinition}. Its declared type is the compatibility
+   * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   translatable?: Partial<ActorTranslateComponentData>;
+  /**
+   * Optional navigable value carried by {@link ActorDefinition}. Its declared type is the compatibility boundary
+   * for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   navigable?: Partial<NavigableComponentData>;
+  /**
+   * Optional representable value carried by {@link ActorDefinition}. Its declared type is the compatibility
+   * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   representable?: Partial<RepresentableComponentData>;
+  /**
+   * Optional blackboard value carried by {@link ActorDefinition}. Its declared type is the compatibility
+   * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   blackboard?: Partial<BackboardComponentData>;
+  /**
+   * Optional convertible value carried by {@link ActorDefinition}. Its declared type is the compatibility
+   * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   convertible?: Partial<ConvertibleComponentData>;
+  /**
+   * Optional spell value carried by {@link ActorDefinition}. Its declared type is the compatibility boundary for
+   * producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   spell?: Partial<SpellComponentData>;
+  /**
+   * Optional status effects value carried by {@link ActorDefinition}. Its declared type is the compatibility
+   * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   statusEffects?: Partial<StatusEffectComponentData>;
+  /**
+   * Optional level value carried by {@link ActorDefinition}. Its declared type is the compatibility boundary for
+   * producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   level?: Partial<LevelComponentData>;
 }

@@ -1,16 +1,71 @@
 import { Subject } from "rxjs";
 import Phaser from "phaser";
 
+/**
+ * Defines the closed simulation pause reason classification. Use an explicit member rather than a free-form
+ * string so branching, persistence, and diagnostics share the same vocabulary.
+ */
 export enum SimulationPauseReason {
+  /**
+   * Selects the `Manual` case of {@link SimulationPauseReason}. Use this explicit member when the surrounding
+   * flow requires this distinct policy or state; never substitute a free-form string.
+   */
   Manual = "manual",
+  /**
+   * Selects the `SceneBootstrap` case of {@link SimulationPauseReason}. Use this explicit member when the
+   * surrounding flow requires this distinct policy or state; never substitute a free-form string.
+   */
   SceneBootstrap = "scene-bootstrap",
+  /**
+   * Selects the `Lockstep` case of {@link SimulationPauseReason}. Use this explicit member when the surrounding
+   * flow requires this distinct policy or state; never substitute a free-form string.
+   */
   Lockstep = "lockstep",
+  /**
+   * Selects the `Reconnect` case of {@link SimulationPauseReason}. Use this explicit member when the surrounding
+   * flow requires this distinct policy or state; never substitute a free-form string.
+   */
   Reconnect = "reconnect",
+  /**
+   * Selects the `SnapshotRestore` case of {@link SimulationPauseReason}. Use this explicit member when the
+   * surrounding flow requires this distinct policy or state; never substitute a free-form string.
+   */
   SnapshotRestore = "snapshot-restore",
+  /**
+   * Selects the `Desync` case of {@link SimulationPauseReason}. Use this explicit member when the surrounding
+   * flow requires this distinct policy or state; never substitute a free-form string.
+   */
   Desync = "desync",
+  /**
+   * Selects the `DesyncCorrection` case of {@link SimulationPauseReason}. Use this explicit member when the
+   * surrounding flow requires this distinct policy or state; never substitute a free-form string.
+   */
   DesyncCorrection = "desync-correction",
+  /**
+   * Selects the `Player` case of {@link SimulationPauseReason}. Use this explicit member when the surrounding
+   * flow requires this distinct policy or state; never substitute a free-form string.
+   */
   Player = "player",
-  ExternalModal = "external-modal"
+  /**
+   * Selects the `ExternalModal` case of {@link SimulationPauseReason}. Use this explicit member when the
+   * surrounding flow requires this distinct policy or state; never substitute a free-form string.
+   */
+  ExternalModal = "external-modal",
+  /**
+   * Selects the `CampaignCinematic` case of {@link SimulationPauseReason}. Use this explicit member when the
+   * surrounding flow requires this distinct policy or state; never substitute a free-form string.
+   */
+  CampaignCinematic = "campaign-cinematic",
+  /**
+   * Selects the `CampaignRuntimeFailure` case of {@link SimulationPauseReason}. Use this explicit member when
+   * the surrounding flow requires this distinct policy or state; never substitute a free-form string.
+   */
+  CampaignRuntimeFailure = "campaign-runtime-failure",
+  /**
+   * Selects the `CampaignRestore` case of {@link SimulationPauseReason}. Use this explicit member when the
+   * surrounding flow requires this distinct policy or state; never substitute a free-form string.
+   */
+  CampaignRestore = "campaign-restore"
 }
 
 /**
@@ -26,13 +81,13 @@ export enum SimulationPauseReason {
  * counter until all players' commands for the next tick have arrived.
  */
 export class SimulationTickService {
-  /** 20 Hz — one simulation step every 50 ms */
+  /** Documents the following declaration and its compatibility contract. */
   static readonly TICK_INTERVAL_MS = 50;
 
-  /** Total simulation ticks elapsed since the game started. */
+  /** Documents the following declaration and its compatibility contract. */
   currentTick = 0;
 
-  /** Fires with the new tick number each time the simulation advances. */
+  /** Documents the following declaration and its compatibility contract. */
   readonly tick$ = new Subject<number>();
 
   private accumulated = 0;
@@ -44,12 +99,12 @@ export class SimulationTickService {
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
   }
 
-  /** Called by CommandBusService in multiplayer when waiting for peers. */
+  /** Documents the pause tick member and its declared contract at this boundary. */
   pauseTick(reason: SimulationPauseReason = SimulationPauseReason.Manual): void {
     this.pauseReasons.add(reason);
   }
 
-  /** Called by CommandBusService when all peers' commands are buffered. */
+  /** Documents the resume tick member and its declared contract at this boundary. */
   resumeTick(reason: SimulationPauseReason = SimulationPauseReason.Manual): void {
     this.pauseReasons.delete(reason);
   }

@@ -1,7 +1,6 @@
+import Phaser from "phaser";
 // You can write more code here
-
 /* START OF COMPILED CODE */
-
 import ActorActions from "../../../prefabs/gui/buttons/ActorActions";
 import ActorInfoContainer from "../../../prefabs/gui/labels/ActorInfoContainer";
 import Minimap from "../../../prefabs/gui/Minimap";
@@ -16,6 +15,8 @@ import IdleWorkersButton from "../../../prefabs/gui/buttons/IdleWorkersButton";
 import ChatButton from "../../../prefabs/gui/buttons/ChatButton";
 import ChatNotification from "../../../prefabs/gui/labels/ChatNotification";
 import DayNightClockLabel from "../../../prefabs/gui/labels/DayNightClockLabel";
+import CampaignObjectivesHud from "../../../prefabs/gui/campaign/CampaignObjectivesHud";
+import CampaignCinematicHud from "../../../prefabs/gui/campaign/CampaignCinematicHud";
 /* START-USER-IMPORTS */
 import { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { HudGameState } from "../../../hud/hud-game-state";
@@ -30,6 +31,8 @@ import ConfirmationDialog from "../../../prefabs/gui/dialogs/ConfirmationDialog"
 import SurrenderDialog from "../../../prefabs/gui/SurrenderDialog";
 import { getPlayers } from "../../../data/scene-data";
 import { ConnectionRecoveryService } from "../../services/recovery/connection-recovery.service";
+import type { CampaignMissionDirector } from "../../../campaign/campaign-mission-director";
+import CampaignDeveloperPanel from "../../../prefabs/gui/campaign/CampaignDeveloperPanel";
 /* END-USER-IMPORTS */
 
 export default class HudProbableWaffle extends ProbableWaffleScene {
@@ -41,6 +44,10 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     /* END-USER-CTR-CODE */
   }
 
+  /**
+   * Builds the editor-authored HUD composition and registers campaign HUD prefabs alongside existing skirmish surfaces.
+   * It keeps the paired scene asset as the source of layout structure and delegates runtime state to projection stores.
+   */
   editorCreate(): void {
     // actor_actions_container
     const actor_actions_container = new ActorActions(this, 1280, 720);
@@ -101,6 +108,14 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     const dayNightClockLabel = new DayNightClockLabel(this, 13, 692);
     this.add.existing(dayNightClockLabel);
 
+    // campaignObjectivesHud
+    const campaignObjectivesHud = new CampaignObjectivesHud(this, 920, 70);
+    this.add.existing(campaignObjectivesHud);
+
+    // campaignCinematicHud
+    const campaignCinematicHud = new CampaignCinematicHud(this, 0, 0);
+    this.add.existing(campaignCinematicHud);
+
     // confirmationDialog
     const confirmationDialog = new ConfirmationDialog(this, 640, 360);
     this.add.existing(confirmationDialog);
@@ -126,6 +141,8 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.chatButton = chatButton;
     this.chatNotification = chatNotification;
     this.dayNightClockLabel = dayNightClockLabel;
+    this.campaignObjectivesHud = campaignObjectivesHud;
+    this.campaignCinematicHud = campaignCinematicHud;
     this.confirmationDialog = confirmationDialog;
     this.surrenderDialog = surrenderDialog;
     this.hudElements = hudElements;
@@ -147,6 +164,8 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private chatButton!: ChatButton;
   private chatNotification!: ChatNotification;
   private dayNightClockLabel!: DayNightClockLabel;
+  private campaignObjectivesHud!: CampaignObjectivesHud;
+  private campaignCinematicHud!: CampaignCinematicHud;
   public confirmationDialog!: ConfirmationDialog;
   public surrenderDialog!: SurrenderDialog;
   private hudElements!: Array<any>;
@@ -158,6 +177,10 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private readonly dayNightClockBottomMargin = 14;
   private cursorHandler?: CursorHandler;
   private connectionRecovery?: ConnectionRecoveryService;
+  private readonly campaignSuppressedVisibility = new Map<Phaser.GameObjects.Components.Visible, boolean>();
+  private campaignDeveloperPanel?: CampaignDeveloperPanel;
+  private campaignMissionDirector?: CampaignMissionDirector;
+  private campaignUiInitializationScheduled = false;
 
   probableWaffleScene?: ProbableWaffleScene;
   override preload() {
@@ -202,6 +225,71 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     if (this.cursorHandler) {
       this.cursorHandler.initializeWithMainScene(probableWaffleScene);
     }
+
+    this.initializeCampaignUiWhenSceneReady();
+  }
+
+  initializeCampaignObjectives(director: CampaignMissionDirector): void {
+    this.campaignMissionDirector = director;
+    this.initializeCampaignUiWhenSceneReady();
+  }
+
+  initializeCampaignPresentation(director: CampaignMissionDirector): void {
+    this.campaignMissionDirector = director;
+    this.initializeCampaignUiWhenSceneReady();
+  }
+
+  /**
+   * Campaign HUD children are created asynchronously when the HUD scene starts.
+   * Wait for the parent scene's bootstrap signal before touching those children.
+   */
+  private initializeCampaignUiWhenSceneReady(): void {
+    if (!this.probableWaffleScene || !this.campaignMissionDirector || this.campaignUiInitializationScheduled) return;
+
+    this.campaignUiInitializationScheduled = true;
+    this.events.once("scene-awake", this.setupCampaignUi, this);
+  }
+
+  private setupCampaignUi(): void {
+    const director = this.campaignMissionDirector;
+    if (!director) return;
+
+    this.campaignObjectivesHud.setup(director);
+    this.campaignCinematicHud.setup(director);
+    if (!environment.production) {
+      if (!this.campaignDeveloperPanel) {
+        this.campaignDeveloperPanel = new CampaignDeveloperPanel(this);
+        this.add.existing(this.campaignDeveloperPanel);
+      }
+      this.campaignDeveloperPanel.setup(director);
+    }
+  }
+
+  setCampaignUiSuppressed(suppressed: boolean): void {
+    const elements: Phaser.GameObjects.Components.Visible[] = [
+      this.actor_actions_container,
+      this.actor_info_container,
+      this.minimap_container,
+      this.game_actions_container,
+      this.resources_container,
+      this.hudMessages,
+      this.groupContainer,
+      this.idleWorkersButton,
+      this.chatButton,
+      this.chatNotification,
+      this.dayNightClockLabel,
+      this.campaignObjectivesHud
+    ];
+    if (suppressed) {
+      if (this.campaignSuppressedVisibility.size > 0) return;
+      for (const element of elements) {
+        this.campaignSuppressedVisibility.set(element, element.visible);
+        element.setVisible(false);
+      }
+      return;
+    }
+    for (const [element, visible] of this.campaignSuppressedVisibility) element.setVisible(visible);
+    this.campaignSuppressedVisibility.clear();
   }
 
   private subscribeToSceneShutdown() {
@@ -220,6 +308,10 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.updatePositionOfUiElements();
   }
 
+  /**
+   * Repositions HUD elements after viewport/camera changes while preserving safe playfield space and campaign overlays.
+   * It updates layout only; objective and cinematic data continue to come from their local projection services.
+   */
   private updatePositionOfUiElements() {
     const sceneWidth = this.scale.width;
 

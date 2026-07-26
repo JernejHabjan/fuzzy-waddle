@@ -1,0 +1,62 @@
+import type {
+  CampaignId,
+  CampaignMissionRuntimeEvent,
+  CampaignMissionRuntimeState
+} from "@fuzzy-waddle/probable-waffle-protocol";
+import type { CampaignMissionContent } from "../contracts/campaign-mission-content";
+import {
+  CampaignMissionRuntime,
+  type CampaignMissionRuntimeOptions,
+  serializeCampaignMissionRuntimeState
+} from "../runtime/campaign-mission-runtime";
+
+/**
+ * Rendering-free mission harness for authored smoke tests, checkpoint fixtures, and
+ * deterministic regressions. It drives injected simulation ticks, uses the same runtime
+ * serialization path as save/replay, and intentionally exposes effects rather than a
+ * fake Phaser world so tests verify domain behavior rather than UI timing.
+ */
+export class CampaignMissionTestHarness {
+  private tick = 0;
+  private runtime: CampaignMissionRuntime;
+
+  constructor(
+    private readonly campaignId: CampaignId,
+    private readonly content: CampaignMissionContent,
+    restored?: CampaignMissionRuntimeState,
+    private readonly options: CampaignMissionRuntimeOptions = {}
+  ) {
+    this.runtime = new CampaignMissionRuntime(campaignId, content, restored, options);
+  }
+
+  start(): CampaignMissionRuntimeState {
+    return this.runtime.start(this.tick).state;
+  }
+
+  emit(event: Omit<CampaignMissionRuntimeEvent, "tick" | "sequence">): CampaignMissionRuntimeState {
+    this.runtime.enqueueEvent({ ...event, tick: this.tick });
+    return this.advance(1);
+  }
+
+  advance(ticks: number): CampaignMissionRuntimeState {
+    for (let index = 0; index < ticks; index += 1) {
+      this.tick += 1;
+      this.runtime.advanceTo(this.tick);
+    }
+    return this.runtime.snapshot();
+  }
+
+  roundTrip(): CampaignMissionRuntimeState {
+    const snapshot = this.runtime.snapshot();
+    this.runtime = new CampaignMissionRuntime(this.campaignId, this.content, snapshot, this.options);
+    return this.runtime.snapshot();
+  }
+
+  serialized(): string {
+    return serializeCampaignMissionRuntimeState(this.runtime.snapshot());
+  }
+
+  snapshot(): CampaignMissionRuntimeState {
+    return this.runtime.snapshot();
+  }
+}

@@ -47,6 +47,11 @@ import { ResearchComponent } from "../entity/components/research/research-compon
 import { LevelComponent } from "../entity/components/level/level-component";
 import { TendableComponent } from "../entity/components/tendable/tendable-component";
 import { QueueCommandSystem } from "../entity/systems/queue-command.system";
+import { ScenarioActorReferenceComponent } from "../campaign/scenario/scenario-actor-reference.component";
+/**
+ * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
+ * storage boundaries do not drift into an unconstrained primitive.
+ */
 type GameObject = Phaser.GameObjects.GameObject;
 
 export const ActorDataKey = "actorData";
@@ -83,6 +88,8 @@ export function setActorData(
 export function applyActorDefinitionToActor(actor: GameObject, actorDefinition?: Partial<ActorDefinition>) {
   if (!actorDefinition) return;
   if (actorDefinition.id) getActorComponent(actor, IdComponent)?.setData(actorDefinition.id);
+  if (actorDefinition.scenario)
+    getActorComponent(actor, ScenarioActorReferenceComponent)?.setData(actorDefinition.scenario);
   if (actorDefinition.representable)
     getActorComponent(actor, RepresentableComponent)?.setData(actorDefinition.representable);
   if (actorDefinition.owner) getActorComponent(actor, OwnerComponent)?.setData(actorDefinition.owner);
@@ -123,6 +130,7 @@ function gatherCoreActorData(actor: Phaser.GameObjects.GameObject): { components
   const componentDefinitions = definition.components;
   const components = [
     new IdComponent(),
+    new ScenarioActorReferenceComponent(),
     ...(componentDefinitions?.objectDescriptor
       ? [new ObjectDescriptorComponent(componentDefinitions.objectDescriptor)]
       : []),

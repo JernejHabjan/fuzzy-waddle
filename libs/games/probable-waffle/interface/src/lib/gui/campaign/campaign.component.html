@@ -4,6 +4,10 @@
     <p class="campaign-overview__eyebrow">Campaign</p>
     <h1>Ashes of the Ancients</h1>
     <p>Choose a chapter to follow the story.</p>
+    <p>Profile: {{ profileSyncState() }}</p>
+    @if (profileError()) {
+      <p role="alert">{{ profileError() }}</p>
+    }
   </header>
 
   <section aria-label="Campaign chapters">

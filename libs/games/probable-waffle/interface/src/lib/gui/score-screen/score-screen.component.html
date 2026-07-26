@@ -20,6 +20,36 @@
       <probable-waffle-score-through-time />
     }
 
+    @if (campaignContext) {
+      <section class="mt-4" aria-label="Campaign result">
+        <h3>Campaign Result</h3>
+        @if (rewardResult(); as rewards) {
+          <p>Reward status: {{ rewards.status }}</p>
+          <p>Newly earned: {{ rewards.appliedRewardIds.length }}</p>
+          @if (rewards.appliedRewardIds.length) {
+            <ul>
+              @for (rewardId of rewards.appliedRewardIds; track rewardId) {
+                <li>{{ rewardId }}</li>
+              }
+            </ul>
+          }
+          @if (rewards.rejectionReason) {
+            <p role="alert">{{ rewards.rejectionReason }}</p>
+          }
+        } @else {
+          <p>Rewards are pending synchronization.</p>
+        }
+        @if (missionMastery(); as mastery) {
+          <p>
+            Mastery: {{ mastery.bestDifficulty }} · {{ mastery.completedObjectiveIds.length }} objective(s) ·
+            {{ mastery.completionCount }} completion(s)
+          </p>
+        }
+        <button type="button" class="btn btn-outline-secondary" (click)="returnToCampaign(true)">Replay Mission</button>
+        <button type="button" class="btn btn-primary ms-2" (click)="returnToCampaign(false)">Continue Journey</button>
+      </section>
+    }
+
     <div class="mt-4">
       <button class="btn btn-primary" (click)="leave()">Leave</button>
     </div>

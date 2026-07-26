@@ -1,0 +1,63 @@
+{
+  "$schema": "../../../../../schemas/dialogue.schema.json",
+  "schemaVersion": 1,
+  "missionId": "owl-and-skaduwee-crystal",
+  "texts": [
+    {
+      "id": "narrator-name",
+      "text": "Narrator"
+    },
+    {
+      "id": "opening-briefing-text",
+      "text": "A watchful guide leads Skaduwee to a crystal beneath the ice."
+    },
+    {
+      "id": "primary-title",
+      "text": "Find the crystal"
+    },
+    {
+      "id": "primary-description",
+      "text": "Find the crystal; Hold the excavation"
+    },
+    {
+      "id": "optional-title",
+      "text": "Discover an optional opportunity"
+    },
+    {
+      "id": "optional-description",
+      "text": "Explore the mission space for an optional story or tactical discovery."
+    },
+    {
+      "id": "failure-title",
+      "text": "Mission force lost"
+    },
+    {
+      "id": "failure-description",
+      "text": "Keep every mission-critical participant and structure operational."
+    },
+    {
+      "id": "crystal-discovered-title",
+      "text": "Checkpoint: the Skaduwee crystal chamber opens"
+    },
+    {
+      "id": "crystal-discovered-resume",
+      "text": "Resume after the Skaduwee crystal chamber opens."
+    }
+  ],
+  "speakers": [
+    {
+      "id": "mission-narrator",
+      "nameTextId": "narrator-name"
+    }
+  ],
+  "lines": [
+    {
+      "id": "opening-briefing",
+      "speakerId": "mission-narrator",
+      "textId": "opening-briefing-text",
+      "text": "A watchful guide leads Skaduwee to a crystal beneath the ice.",
+      "delivery": "non-blocking"
+    }
+  ],
+  "cinematics": []
+}

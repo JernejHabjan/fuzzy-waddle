@@ -1,0 +1,63 @@
+{
+  "$schema": "../../../../../schemas/dialogue.schema.json",
+  "schemaVersion": 1,
+  "missionId": "the-volcano-is-getting-angry",
+  "texts": [
+    {
+      "id": "narrator-name",
+      "text": "Narrator"
+    },
+    {
+      "id": "opening-briefing-text",
+      "text": "The mountain begins to answer the crystal's call."
+    },
+    {
+      "id": "primary-title",
+      "text": "Evacuate the valley"
+    },
+    {
+      "id": "primary-description",
+      "text": "Evacuate the valley; Contain the eruption"
+    },
+    {
+      "id": "optional-title",
+      "text": "Discover an optional opportunity"
+    },
+    {
+      "id": "optional-description",
+      "text": "Explore the mission space for an optional story or tactical discovery."
+    },
+    {
+      "id": "failure-title",
+      "text": "Mission force lost"
+    },
+    {
+      "id": "failure-description",
+      "text": "Keep every mission-critical participant and structure operational."
+    },
+    {
+      "id": "temple-entered-title",
+      "text": "Checkpoint: the rescue force reaches the crystal temple"
+    },
+    {
+      "id": "temple-entered-resume",
+      "text": "Resume after the rescue force reaches the crystal temple."
+    }
+  ],
+  "speakers": [
+    {
+      "id": "mission-narrator",
+      "nameTextId": "narrator-name"
+    }
+  ],
+  "lines": [
+    {
+      "id": "opening-briefing",
+      "speakerId": "mission-narrator",
+      "textId": "opening-briefing-text",
+      "text": "The mountain begins to answer the crystal's call.",
+      "delivery": "non-blocking"
+    }
+  ],
+  "cinematics": []
+}

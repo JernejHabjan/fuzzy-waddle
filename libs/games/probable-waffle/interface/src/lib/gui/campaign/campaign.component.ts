@@ -7,6 +7,7 @@ import { AOTA_CAMPAIGN_CATALOG } from "./campaign-catalog";
 import { ChapterCardComponent } from "./chapter-card/chapter-card.component";
 import type { CampaignChapterCardState } from "./chapter-card/campaign-chapter-card-state";
 import { CampaignProgressService } from "./campaign-progress.service";
+import { CampaignProfileService } from "./campaign-profile.service";
 
 @Component({
   selector: "fuzzy-waddle-campaign",
@@ -17,9 +18,12 @@ import { CampaignProgressService } from "./campaign-progress.service";
 })
 export class CampaignComponent implements OnInit {
   private readonly campaignProgressService = inject(CampaignProgressService);
+  private readonly campaignProfileService = inject(CampaignProfileService);
   private readonly router = inject(Router);
   protected readonly catalog = AOTA_CAMPAIGN_CATALOG;
   protected readonly recommendedMission = this.campaignProgressService.recommendedMission;
+  protected readonly profileSyncState = this.campaignProfileService.syncState;
+  protected readonly profileError = this.campaignProfileService.error;
   protected readonly chapterStates = computed(() =>
     this.catalog.chapters.map((chapter) => {
       const progress = this.campaignProgressService

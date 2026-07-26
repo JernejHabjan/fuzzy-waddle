@@ -1,0 +1,319 @@
+{
+  "$schema": "../../../../../schemas/mission.schema.json",
+  "schemaVersion": 1,
+  "id": "end-game",
+  "chapterId": "the-betrayal",
+  "revision": 1,
+  "mapKey": "MapEmberEnclave",
+  "prerequisites": ["undead-and-cursed-lands"],
+  "catalogue": {
+    "order": 2,
+    "title": "End Game",
+    "faction": "both",
+    "environment": "Volcanic throne",
+    "briefing": "Everything leads back to the ancient power below.",
+    "objectiveSummaries": ["Confront the enemy", "Control the eruption"]
+  },
+  "participants": [
+    {
+      "slotId": "tivara-player",
+      "controller": "human",
+      "faction": 1,
+      "teamId": "alliance",
+      "requiredForVictory": true,
+      "profileOwnership": "independent",
+      "economy": "normal",
+      "fogPolicy": "normal"
+    },
+    {
+      "slotId": "skaduwee-player",
+      "controller": "human",
+      "singlePlayerSubstitution": "scripted-ai",
+      "faction": 2,
+      "teamId": "alliance",
+      "requiredForVictory": true,
+      "profileOwnership": "independent",
+      "economy": "normal",
+      "fogPolicy": "normal"
+    }
+  ],
+  "progressionAllowance": {
+    "maxStoryChapter": "the-betrayal",
+    "loadoutSlotCount": 1
+  },
+  "initialState": {
+    "activePhaseIds": ["opening"],
+    "facts": [
+      {
+        "id": "mission-complete",
+        "value": false,
+        "debugMutable": true
+      },
+      {
+        "id": "mission-failed",
+        "value": false,
+        "debugMutable": true
+      },
+      {
+        "id": "optional-complete",
+        "value": false,
+        "debugMutable": true
+      },
+      {
+        "id": "checkpoint-ready",
+        "value": false,
+        "debugMutable": true
+      }
+    ],
+    "counters": [
+      {
+        "id": "mission-progress",
+        "value": 0,
+        "debugMutable": true
+      }
+    ],
+    "timers": []
+  },
+  "phases": [
+    {
+      "id": "opening",
+      "mode": "sequential",
+      "entryActions": [
+        {
+          "id": "show-opening-briefing",
+          "kind": "start-dialogue",
+          "scope": "mission",
+          "lineId": "opening-briefing",
+          "waitForAcknowledgement": false
+        }
+      ],
+      "exitActions": [],
+      "triggers": [],
+      "transitions": [
+        {
+          "id": "begin-operation",
+          "targetPhaseIds": ["operation"],
+          "condition": {
+            "kind": "always"
+          },
+          "actions": [],
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "id": "operation",
+      "mode": "parallel",
+      "entryActions": [],
+      "exitActions": [],
+      "triggers": [
+        {
+          "id": "resolve-authored-victory",
+          "kind": "condition",
+          "condition": {
+            "kind": "fact",
+            "factId": "mission-complete",
+            "equals": true
+          },
+          "actions": [
+            {
+              "id": "request-authored-victory",
+              "kind": "request-outcome",
+              "scope": "mission",
+              "outcome": "victory",
+              "reasonId": "authored-victory"
+            }
+          ],
+          "firing": {
+            "kind": "once"
+          },
+          "priority": 100
+        },
+        {
+          "id": "resolve-authored-defeat",
+          "kind": "condition",
+          "condition": {
+            "kind": "fact",
+            "factId": "mission-failed",
+            "equals": true
+          },
+          "actions": [
+            {
+              "id": "request-authored-defeat",
+              "kind": "request-outcome",
+              "scope": "mission",
+              "outcome": "defeat",
+              "reasonId": "authored-defeat"
+            }
+          ],
+          "firing": {
+            "kind": "once"
+          },
+          "priority": 90
+        }
+      ],
+      "transitions": []
+    }
+  ],
+  "objectives": [
+    {
+      "id": "primary-mission",
+      "kind": "primary",
+      "ownership": {
+        "kind": "shared"
+      },
+      "titleTextId": "primary-title",
+      "descriptionTextId": "primary-description",
+      "reveal": {
+        "kind": "always"
+      },
+      "complete": {
+        "kind": "fact",
+        "factId": "mission-complete",
+        "equals": true
+      },
+      "display": {
+        "announceReveal": true,
+        "announceCompletion": true,
+        "showInTracker": true
+      }
+    },
+    {
+      "id": "optional-discovery",
+      "kind": "optional",
+      "ownership": {
+        "kind": "shared"
+      },
+      "titleTextId": "optional-title",
+      "descriptionTextId": "optional-description",
+      "reveal": {
+        "kind": "always"
+      },
+      "complete": {
+        "kind": "fact",
+        "factId": "optional-complete",
+        "equals": true
+      },
+      "display": {
+        "announceReveal": true,
+        "announceCompletion": true,
+        "showInTracker": true
+      }
+    },
+    {
+      "id": "mission-failure",
+      "kind": "failure",
+      "ownership": {
+        "kind": "shared"
+      },
+      "titleTextId": "failure-title",
+      "descriptionTextId": "failure-description",
+      "reveal": {
+        "kind": "always"
+      },
+      "complete": {
+        "kind": "fact",
+        "factId": "mission-failed",
+        "equals": true
+      },
+      "display": {
+        "announceReveal": true,
+        "announceCompletion": true,
+        "showInTracker": true,
+        "announceFailure": true
+      }
+    }
+  ],
+  "checkpoints": [
+    {
+      "id": "final-choice-committed",
+      "titleTextId": "final-choice-committed-title",
+      "trigger": {
+        "kind": "fact",
+        "factId": "checkpoint-ready",
+        "equals": true
+      },
+      "requiredActions": [],
+      "savePolicy": "when-stable",
+      "resumePresentation": {
+        "textId": "final-choice-committed-resume"
+      }
+    }
+  ],
+  "difficulty": {
+    "story": {},
+    "normal": {},
+    "hard": {}
+  },
+  "contentStatus": "skeleton",
+  "implementation": {
+    "summary": "The alliance makes its final dialogue choice, assaults the ancient boss stronghold, and completes the magic ritual that resolves the crystal conflict.",
+    "phasePlan": [
+      {
+        "id": "final-choice",
+        "description": "Present the final strategic and moral dialogue choice."
+      },
+      {
+        "id": "boss-assault",
+        "description": "Break the stronghold defenses and defeat the ancient boss stages."
+      },
+      {
+        "id": "ending-ritual",
+        "description": "Protect the magic ritual and commit the selected ending state."
+      }
+    ],
+    "checkpointCandidates": [
+      {
+        "id": "final-choice-committed",
+        "after": "the final dialogue choice is recorded"
+      },
+      {
+        "id": "boss-defeated",
+        "after": "the ancient boss is defeated and the ritual site opens"
+      }
+    ],
+    "plannedScenarioReferences": {
+      "actors": ["ancient-boss", "tivara-ritualist", "skaduwee-ritualist"],
+      "regions": ["boss-stronghold", "ending-ritual-site"],
+      "routes": ["final-assault-route"],
+      "cameraShots": ["final-choice-shot", "ritual-resolution-shot"],
+      "spawnSets": ["boss-defense-wave"]
+    },
+    "mechanics": [
+      "Persistent final dialogue choice",
+      "Multi-stage boss assault",
+      "Protected magic ritual and ending-state commit"
+    ],
+    "coopNotes": [
+      "The final choice follows explicit vote policy before combat begins.",
+      "Boss and ritual completion use shared host-coordinated state."
+    ],
+    "dependencies": [],
+    "missingAssets": [
+      "Ancient boss stages and stronghold arena",
+      "Ending ritual effects and choice-dependent presentation"
+    ],
+    "tests": ["Complete every final-choice branch", "Compare watched, skipped, solo, and co-op ritual outcomes"],
+    "definitionOfDone": [
+      "Every supported choice reaches a valid resolution state",
+      "Boss defeat and ritual completion are independently recoverable checkpoints"
+    ],
+    "implementationTodos": [
+      {
+        "id": "author-scenario-contract",
+        "module": "scenario",
+        "description": "Author and validate the planned scenario references for End Game."
+      },
+      {
+        "id": "implement-mission-runtime",
+        "module": "campaign-runtime",
+        "description": "Replace scaffold facts with deterministic authored phase logic for End Game."
+      },
+      {
+        "id": "finish-mission-presentation",
+        "module": "campaign-presentation",
+        "description": "Add final dialogue, cinematics, audio, and objective presentation for End Game."
+      }
+    ]
+  }
+}

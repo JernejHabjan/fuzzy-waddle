@@ -1,4 +1,8 @@
 import Phaser from "phaser";
+/**
+ * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
+ * storage boundaries do not drift into an unconstrained primitive.
+ */
 type GameObject = Phaser.GameObjects.GameObject;
 import { getActorComponent } from "../../data/actor-component";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
@@ -24,6 +28,13 @@ import { shouldConsiderActorUnlocked } from "../../data/tech-tree/actor-unlock-u
 import { GameEventEmitter as EventEmitter } from "@fuzzy-waddle/platform-game-host";
 
 export class ActorIndexSystem {
+  readonly actorRegistered = new EventEmitter<GameObject>();
+  readonly actorUnregistered = new EventEmitter<GameObject>();
+  readonly actorOwnershipChanged = new EventEmitter<{
+    actor: GameObject;
+    oldOwner: PlayerNumber | undefined;
+    newOwner: PlayerNumber | undefined;
+  }>();
   // Event emitted when an actor unlock is registered for a player
   readonly actorUnlockRegistered = new EventEmitter<{ playerNumber: PlayerNumber; actorName: ObjectNames }>();
   private readonly idActors = new Set<GameObject>();
@@ -82,6 +93,7 @@ export class ActorIndexSystem {
       // Auto-unregister on destroy
       obj.once(HealthComponent.KilledEvent, () => this.unregisterActor(obj));
       obj.once(Phaser.GameObjects.Events.DESTROY, () => this.unregisterActor(obj));
+      this.actorRegistered.emit(obj);
     }
   };
 
@@ -143,6 +155,7 @@ export class ActorIndexSystem {
 
       this.resourceSources.delete(obj);
       this.resourceDrains.delete(obj);
+      this.actorUnregistered.emit(obj);
     }
   };
 
@@ -367,6 +380,10 @@ export class ActorIndexSystem {
     this.ownedActors.clear();
     this.resourceSources.clear();
     this.resourceDrains.clear();
+    this.actorRegistered.complete();
+    this.actorUnregistered.complete();
+    this.actorOwnershipChanged.complete();
+    this.actorUnlockRegistered.complete();
   }
 
   updateActorOwnership(
@@ -415,5 +432,6 @@ export class ActorIndexSystem {
         this.registerActorUnlockWithConstructionCheck(newOwner, canonicalName, gameObject, "ownership change");
       }
     }
+    this.actorOwnershipChanged.emit({ actor: gameObject, oldOwner, newOwner });
   }
 }

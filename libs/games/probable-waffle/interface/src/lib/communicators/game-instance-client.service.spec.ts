@@ -8,6 +8,7 @@ import { provideRouter } from "@angular/router";
 import { provideHttpClient } from "@angular/common/http";
 import { GameSaveService } from "../services/game-save/game-save.service";
 import {
+  CAMPAIGN_MISSION_RUNTIME_SCHEMA_VERSION,
   GameSaveScope,
   type ProbableWaffleGameInstance,
   ProbableWaffleGameInstanceType,
@@ -53,6 +54,50 @@ describe("GameInstanceClientService", () => {
 
     expect(gameSaveService.save).toHaveBeenCalledWith(
       expect.objectContaining({ scope: GameSaveScope.Skirmish, name: "Instant save", thumbnail: "thumbnail" })
+    );
+  });
+
+  it("persists campaign content identity in the searchable save context", async () => {
+    service.gameInstance = {
+      data: {
+        gameInstanceMetadataData: {
+          name: "Dreams",
+          type: ProbableWaffleGameInstanceType.Campaign,
+          visibility: ProbableWaffleGameInstanceVisibility.Private,
+          startOptions: {},
+          rndSeed: 1,
+          campaignContext: {
+            campaignId: "ashes-of-the-ancients",
+            catalogVersion: 1,
+            chapterId: "prologue",
+            missionId: "dreams",
+            missionRevision: 1,
+            runId: "run-1",
+            selectedLoadoutIds: ["primary"],
+            loadoutSnapshotHash: "12345678"
+          }
+        }
+      }
+    } as ProbableWaffleGameInstance;
+
+    await service.saveGameInstance({ kind: "manual", name: "Dream checkpoint" });
+
+    expect(gameSaveService.save).toHaveBeenCalledWith(
+      expect.objectContaining({
+        scope: GameSaveScope.Campaign,
+        campaign: expect.objectContaining({
+          campaignId: "ashes-of-the-ancients",
+          chapterId: "prologue",
+          missionId: "dreams",
+          missionRevision: 1,
+          runId: "run-1",
+          runtimeSchemaVersion: CAMPAIGN_MISSION_RUNTIME_SCHEMA_VERSION,
+          profileRevision: 0,
+          selectedLoadoutIds: ["primary"],
+          loadoutSnapshotHash: "12345678",
+          participantCount: 1
+        })
+      })
     );
   });
 });

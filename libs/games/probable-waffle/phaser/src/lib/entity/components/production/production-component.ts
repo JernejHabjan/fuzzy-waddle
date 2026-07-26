@@ -4,7 +4,10 @@ import { OwnerComponent } from "../owner-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { emitResource, getPlayer } from "../../../data/scene-data";
 import { QueueComponent } from "../queue/queue-component";
-import { QueueItemType, type UnifiedQueueItem } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/queue-item";
+import {
+  QueueItemType,
+  type UnifiedQueueItem
+} from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/queue-item";
 import {
   ProbableWaffleGameCommandTypes,
   type ProductionComponentData,
@@ -19,7 +22,10 @@ import { Subject, Subscription } from "rxjs";
 import RallyPoint from "../../../prefabs/buildings/misc/RallyPoint";
 import { ConstructionSiteComponent } from "../construction/construction-site-component";
 import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
-import type { ProductionProgressEvent, ProductionQueueChangeEvent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/production-events";
+import type {
+  ProductionProgressEvent,
+  ProductionQueueChangeEvent
+} from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/production-events";
 import type { ProductionQueueItem } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/game-object";
 import type { ProductionDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/production-definition";
 import { AssignProductionErrorCode } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/assign-production-error-code";
@@ -34,6 +40,11 @@ import { OrderType } from "../../../ai/order-type";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { getActorSystem } from "../../../data/actor-system";
 import { ActionSystem } from "../../systems/action.system";
+import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
+/**
+ * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
+ * storage boundaries do not drift into an unconstrained primitive.
+ */
 type GameObject = Phaser.GameObjects.GameObject;
 
 export class ProductionComponent {
@@ -80,6 +91,12 @@ export class ProductionComponent {
     return getActorComponent(this.gameObject, ConstructionSiteComponent)?.isFinished ?? true;
   }
 
+  /**
+   * Derives production-building rally points from the deterministic command stream, not
+   * local UI interaction. Every peer therefore observes the same move/actor target,
+   * while ownership and actor-ID checks prevent another player’s command from changing
+   * this building’s spawn destination.
+   */
   private listenToMoveEvents() {
     const commandBus = getSceneService(this.gameObject.scene, CommandBusService);
     if (!commandBus) {
@@ -393,6 +410,9 @@ export class ProductionComponent {
 
     const owner = this.ownerComponent?.getOwner();
     if (!owner) return AssignProductionErrorCode.NoOwner;
+    if (!getSceneService(this.gameObject.scene, TechTreeService)?.isContentAllowed(owner, "actor", item.actorName)) {
+      return AssignProductionErrorCode.InvalidProduct;
+    }
 
     // check if player has enough resources
     const player = getPlayer(this.gameObject.scene, owner);

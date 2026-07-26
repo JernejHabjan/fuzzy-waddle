@@ -5,7 +5,6 @@ import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.se
 import { environment } from "@fuzzy-waddle/environments/environment";
 import { GameSaveRepository } from "./game-save.repository";
 import {
-  GAME_SAVE_FORMAT_VERSION,
   GameSaveScope,
   GameSaveSyncState,
   type EncodedGameSaveRecord,
@@ -15,7 +14,7 @@ import { GameSaveSyncServiceInterface } from "./game-save-sync.service.interface
 import type { RemoteGameSaveRecord } from "./remote-game-save-record";
 
 @Injectable({ providedIn: "root" })
-/** Reconciles encoded offline saves with the authenticated backend using revisions and tombstones. */
+/** Defines the game save sync service contract used by this module; its declared members form the compatible boundary for linked consumers. */
 export class GameSaveSyncService implements GameSaveSyncServiceInterface {
   private readonly authService = inject(AuthService);
   private readonly httpClient = inject(HttpClient);
@@ -30,7 +29,7 @@ export class GameSaveSyncService implements GameSaveSyncServiceInterface {
     });
   }
 
-  /** Local writes always win availability; sync failures leave their records queued for the next attempt. */
+  /** Documents the flush member and its declared contract at this boundary. */
   async flush(): Promise<void> {
     if (!this.authService.isAuthenticated) return;
     if (this.flushInProgress) return this.flushInProgress;
@@ -42,7 +41,7 @@ export class GameSaveSyncService implements GameSaveSyncServiceInterface {
     }
   }
 
-  /** A single flush owns reconciliation so overlapping saves or reconnects cannot upload the same revision twice. */
+  /** Documents the flush queued saves member and its declared contract at this boundary. */
   private async flushQueuedSaves(): Promise<void> {
     await this.pullAndMerge();
     for (const save of await this.repository.listIncludingDeleted()) {
@@ -59,8 +58,17 @@ export class GameSaveSyncService implements GameSaveSyncServiceInterface {
           thumbnail: save.thumbnail,
           encodedGameInstanceData: save.encodedGameInstanceData,
           campaignChapterId: save.campaign?.chapterId,
+          campaignId: save.campaign?.campaignId,
           campaignMissionId: save.campaign?.missionId,
-          campaignRunId: save.campaign?.runId
+          campaignRunId: save.campaign?.runId,
+          campaignMissionRevision: save.campaign?.missionRevision,
+          campaignRuntimeSchemaVersion: save.campaign?.runtimeSchemaVersion,
+          campaignProfileRevision: save.campaign?.profileRevision,
+          campaignLoadoutIds: save.campaign?.selectedLoadoutIds,
+          campaignLoadoutSnapshotHash: save.campaign?.loadoutSnapshotHash,
+          campaignCheckpointId: save.campaign?.checkpointId,
+          campaignParticipantCount: save.campaign?.participantCount,
+          campaignParticipantProgressionSnapshots: save.campaign?.participantProgressionSnapshots
         });
         if (save.syncState === GameSaveSyncState.Deleted) await this.repository.remove(save.id);
         else await this.repository.upsert({ ...save, syncState: GameSaveSyncState.Synced });
@@ -74,7 +82,7 @@ export class GameSaveSyncService implements GameSaveSyncServiceInterface {
     void this.flush();
   };
 
-  /** Server revisions win only for the same save id; independent local saves are preserved. */
+  /** Documents the pull and merge member and its declared contract at this boundary. */
   private async pullAndMerge(): Promise<void> {
     let remoteRecords: RemoteGameSaveRecord[];
     try {
@@ -103,9 +111,22 @@ export class GameSaveSyncService implements GameSaveSyncServiceInterface {
         remote.campaign_mission_id &&
         remote.campaign_run_id
           ? {
+              ...(remote.campaign_id ? { campaignId: remote.campaign_id } : {}),
               chapterId: remote.campaign_chapter_id,
               missionId: remote.campaign_mission_id,
-              runId: remote.campaign_run_id
+              runId: remote.campaign_run_id,
+              ...(remote.campaign_mission_revision ? { missionRevision: remote.campaign_mission_revision } : {}),
+              ...(remote.campaign_runtime_schema_version
+                ? { runtimeSchemaVersion: remote.campaign_runtime_schema_version }
+                : {}),
+              ...(remote.campaign_profile_revision !== null
+                ? { profileRevision: remote.campaign_profile_revision }
+                : {}),
+              selectedLoadoutIds: [...(remote.campaign_loadout_ids ?? [])].sort(),
+              loadoutSnapshotHash: remote.campaign_loadout_snapshot_hash ?? "",
+              ...(remote.campaign_checkpoint_id ? { checkpointId: remote.campaign_checkpoint_id } : {}),
+              ...(remote.campaign_participant_count ? { participantCount: remote.campaign_participant_count } : {}),
+              participantProgressionSnapshots: structuredClone(remote.campaign_participant_progression_snapshots ?? [])
             }
           : undefined;
       if (remote.scope === GameSaveScope.Campaign && !campaign) continue;

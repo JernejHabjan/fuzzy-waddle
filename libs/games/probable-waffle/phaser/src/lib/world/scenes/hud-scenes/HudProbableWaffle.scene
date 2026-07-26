@@ -1,233 +1,201 @@
 {
-    "id": "04311eb6-ed91-4d74-b6e9-4bfe0fcfb458",
-    "sceneType": "SCENE",
-    "settings": {
-        "compilerInsertSpaces": true,
-        "compilerTabSize": 2,
-        "exportClass": true,
-        "autoImport": true,
-        "superClassName": "ProbableWaffleScene",
-        "preloadMethodName": "editorPreload",
-        "preloadPackFiles": [],
-        "createMethodName": "editorCreate",
-        "sceneKey": "HudProbableWaffle",
-        "compilerOutputLanguage": "TYPE_SCRIPT",
-        "borderWidth": 1280,
-        "borderHeight": 720
+  "id": "04311eb6-ed91-4d74-b6e9-4bfe0fcfb458",
+  "sceneType": "SCENE",
+  "settings": {
+    "compilerInsertSpaces": true,
+    "compilerTabSize": 2,
+    "exportClass": true,
+    "autoImport": true,
+    "superClassName": "ProbableWaffleScene",
+    "preloadMethodName": "editorPreload",
+    "preloadPackFiles": [],
+    "createMethodName": "editorCreate",
+    "sceneKey": "HudProbableWaffle",
+    "compilerOutputLanguage": "TYPE_SCRIPT",
+    "borderWidth": 1280,
+    "borderHeight": 720
+  },
+  "displayList": [
+    {
+      "prefabId": "32009169-5920-4763-9cb8-7472adc35410",
+      "id": "ef95f034-07f1-4b52-ba9a-5a6c151354b1",
+      "unlock": ["x", "y"],
+      "label": "actor_actions_container",
+      "displayName": "Actor actions",
+      "scope": "PUBLIC",
+      "x": 1280,
+      "y": 720
     },
-    "displayList": [
-        {
-            "prefabId": "32009169-5920-4763-9cb8-7472adc35410",
-            "id": "ef95f034-07f1-4b52-ba9a-5a6c151354b1",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "actor_actions_container",
-            "displayName": "Actor actions",
-            "scope": "PUBLIC",
-            "x": 1280,
-            "y": 720
-        },
-        {
-            "prefabId": "c590ce74-b1ec-473e-be60-f65b706cad9d",
-            "id": "f4a4f957-1a84-44e6-b92d-fdc15d0254d0",
-            "unlock": [
-                "x",
-                "y",
-                "scaleX",
-                "scaleY"
-            ],
-            "label": "actor_info_container",
-            "scope": "CLASS",
-            "x": 1024,
-            "y": 720,
-            "scaleX": 2.2,
-            "scaleY": 2.2
-        },
-        {
-            "prefabId": "427f5265-4bd1-4de9-900f-51854253c9c2",
-            "id": "b249fb29-409d-453c-bf16-b6bab734f665",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "minimap_container",
-            "displayName": "Minimap",
-            "scope": "CLASS",
-            "x": 0,
-            "y": 720
-        },
-        {
-            "prefabId": "8d138ace-33b5-46f9-a5f9-3f67e0b81b18",
-            "id": "c13694b4-d838-48d9-a1f4-b283a7f59a66",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "game_actions_container",
-            "displayName": "Game Actions",
-            "scope": "CLASS",
-            "x": 1280,
-            "y": 2
-        },
-        {
-            "prefabId": "f443a788-75a0-44bb-9f41-d24bf969c9b8",
-            "id": "4f5f9276-cc18-42d0-b1ca-16e7d6c09de8",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "resources_container",
-            "displayName": "Resources",
-            "scope": "CLASS",
-            "x": 16,
-            "y": 17
-        },
-        {
-            "prefabId": "48af587a-4ba6-4d39-ac86-8cc7d0a2c9e6",
-            "id": "a3584268-6223-4eec-8e05-21e852306e25",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "aiControllerDebugPanel",
-            "scope": "CLASS",
-            "x": 1276,
-            "y": 82
-        },
-        {
-            "prefabId": "2ea4981f-5143-494e-9789-96ca2a6116c7",
-            "id": "2fd93f0d-0a8d-4302-a234-8bc582396f20",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "navigationDebugToggle",
-            "scope": "CLASS",
-            "x": 1276,
-            "y": 51
-        },
-        {
-            "prefabId": "7dacf888-7495-4899-a649-366b6ff3bad5",
-            "id": "9cd1458e-4240-4b34-adae-ab6d1ec08f1b",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "gameSpeedModifier",
-            "scope": "CLASS",
-            "x": 13,
-            "y": 486
-        },
-        {
-            "prefabId": "98fbac9e-51c8-4577-ba5e-4f5aa45e9180",
-            "id": "b8898387-49f9-48fb-b62a-774309a6e689",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "hudMessages",
-            "scope": "CLASS",
-            "x": 6,
-            "y": 472
-        },
-        {
-            "prefabId": "20ff71f1-47d6-4bbe-89d7-2ecd728804fc",
-            "id": "47b0d040-d499-4715-9b23-0364ef8e41a4",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "groupContainer",
-            "scope": "CLASS",
-            "x": 552,
-            "y": 541
-        },
-        {
-            "prefabId": "c9b0f5d2-6115-4e8a-aeee-c7dd53a1ca8c",
-            "id": "c9238e68-65a0-442a-872c-9592b759f41c",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "idleWorkersButton",
-            "scope": "CLASS",
-            "x": 13,
-            "y": 520
-        },
-        {
-            "prefabId": "f6f59ad2-861b-4f66-87b1-f1f4b85fbcaa",
-            "id": "29ce484f-beb8-447d-9352-14d1f3fcb6fc",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "chatButton",
-            "scope": "CLASS",
-            "x": 386,
-            "y": 489
-        },
-        {
-            "prefabId": "b9194f0b-4f9f-45ca-a31a-881ffca5e16d",
-            "id": "427607b1-b9a5-4f5d-bd7d-b81e1bb5b967",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "chatNotification",
-            "scope": "CLASS",
-            "x": 7,
-            "y": 434
-        },
-        {
-            "prefabId": "b6ff5db8-fbfb-4b51-adfe-0bdad0cdedce",
-            "id": "9709419e-0bc8-4bfd-ab78-813b7f3108f6",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "dayNightClockLabel",
-            "scope": "CLASS",
-            "x": 13,
-            "y": 692
-        },
-        {
-            "prefabId": "8552f4bd-87ce-4bdf-aed4-b4c919b08b80",
-            "id": "473c0138-5aa8-4f7a-bb12-6821eaaf02a9",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "confirmationDialog",
-            "scope": "CLASS",
-            "x": 640,
-            "y": 360
-        },
-        {
-            "prefabId": "c2ecac06-c622-41d5-bd39-cbee463d067f",
-            "id": "3f31498d-7ba2-44c9-b525-fb2996673721",
-            "unlock": [
-                "x",
-                "y"
-            ],
-            "label": "surrenderDialog",
-            "scope": "CLASS",
-            "x": 640,
-            "y": 360
-        }
-    ],
-    "plainObjects": [],
-    "meta": {
-        "app": "Phaser Editor - Scene Editor",
-        "url": "https://phaser.io/editor",
-        "contentType": "phasereditor2d.core.scene.SceneContentType",
-        "version": 5
+    {
+      "prefabId": "c590ce74-b1ec-473e-be60-f65b706cad9d",
+      "id": "f4a4f957-1a84-44e6-b92d-fdc15d0254d0",
+      "unlock": ["x", "y", "scaleX", "scaleY"],
+      "label": "actor_info_container",
+      "scope": "CLASS",
+      "x": 1024,
+      "y": 720,
+      "scaleX": 2.2,
+      "scaleY": 2.2
     },
-    "lists": [
-        {
-            "id": "a9e1809e-2eca-4d40-8c83-7c158f629362",
-            "label": "hudElements"
-        }
-    ]
+    {
+      "prefabId": "427f5265-4bd1-4de9-900f-51854253c9c2",
+      "id": "b249fb29-409d-453c-bf16-b6bab734f665",
+      "unlock": ["x", "y"],
+      "label": "minimap_container",
+      "displayName": "Minimap",
+      "scope": "CLASS",
+      "x": 0,
+      "y": 720
+    },
+    {
+      "prefabId": "8d138ace-33b5-46f9-a5f9-3f67e0b81b18",
+      "id": "c13694b4-d838-48d9-a1f4-b283a7f59a66",
+      "unlock": ["x", "y"],
+      "label": "game_actions_container",
+      "displayName": "Game Actions",
+      "scope": "CLASS",
+      "x": 1280,
+      "y": 2
+    },
+    {
+      "prefabId": "f443a788-75a0-44bb-9f41-d24bf969c9b8",
+      "id": "4f5f9276-cc18-42d0-b1ca-16e7d6c09de8",
+      "unlock": ["x", "y"],
+      "label": "resources_container",
+      "displayName": "Resources",
+      "scope": "CLASS",
+      "x": 16,
+      "y": 17
+    },
+    {
+      "prefabId": "48af587a-4ba6-4d39-ac86-8cc7d0a2c9e6",
+      "id": "a3584268-6223-4eec-8e05-21e852306e25",
+      "unlock": ["x", "y"],
+      "label": "aiControllerDebugPanel",
+      "scope": "CLASS",
+      "x": 1276,
+      "y": 82
+    },
+    {
+      "prefabId": "2ea4981f-5143-494e-9789-96ca2a6116c7",
+      "id": "2fd93f0d-0a8d-4302-a234-8bc582396f20",
+      "unlock": ["x", "y"],
+      "label": "navigationDebugToggle",
+      "scope": "CLASS",
+      "x": 1276,
+      "y": 51
+    },
+    {
+      "prefabId": "7dacf888-7495-4899-a649-366b6ff3bad5",
+      "id": "9cd1458e-4240-4b34-adae-ab6d1ec08f1b",
+      "unlock": ["x", "y"],
+      "label": "gameSpeedModifier",
+      "scope": "CLASS",
+      "x": 13,
+      "y": 486
+    },
+    {
+      "prefabId": "98fbac9e-51c8-4577-ba5e-4f5aa45e9180",
+      "id": "b8898387-49f9-48fb-b62a-774309a6e689",
+      "unlock": ["x", "y"],
+      "label": "hudMessages",
+      "scope": "CLASS",
+      "x": 6,
+      "y": 472
+    },
+    {
+      "prefabId": "20ff71f1-47d6-4bbe-89d7-2ecd728804fc",
+      "id": "47b0d040-d499-4715-9b23-0364ef8e41a4",
+      "unlock": ["x", "y"],
+      "label": "groupContainer",
+      "scope": "CLASS",
+      "x": 552,
+      "y": 541
+    },
+    {
+      "prefabId": "c9b0f5d2-6115-4e8a-aeee-c7dd53a1ca8c",
+      "id": "c9238e68-65a0-442a-872c-9592b759f41c",
+      "unlock": ["x", "y"],
+      "label": "idleWorkersButton",
+      "scope": "CLASS",
+      "x": 13,
+      "y": 520
+    },
+    {
+      "prefabId": "f6f59ad2-861b-4f66-87b1-f1f4b85fbcaa",
+      "id": "29ce484f-beb8-447d-9352-14d1f3fcb6fc",
+      "unlock": ["x", "y"],
+      "label": "chatButton",
+      "scope": "CLASS",
+      "x": 386,
+      "y": 489
+    },
+    {
+      "prefabId": "b9194f0b-4f9f-45ca-a31a-881ffca5e16d",
+      "id": "427607b1-b9a5-4f5d-bd7d-b81e1bb5b967",
+      "unlock": ["x", "y"],
+      "label": "chatNotification",
+      "scope": "CLASS",
+      "x": 7,
+      "y": 434
+    },
+    {
+      "prefabId": "b6ff5db8-fbfb-4b51-adfe-0bdad0cdedce",
+      "id": "9709419e-0bc8-4bfd-ab78-813b7f3108f6",
+      "unlock": ["x", "y"],
+      "label": "dayNightClockLabel",
+      "scope": "CLASS",
+      "x": 13,
+      "y": 692
+    },
+    {
+      "prefabId": "8c3d94ab-98dc-4ee4-b9e4-2bb4a0e3f705",
+      "id": "459957e5-72b9-4798-a771-2896c4cb403d",
+      "unlock": ["x", "y"],
+      "label": "campaignObjectivesHud",
+      "scope": "CLASS",
+      "x": 920,
+      "y": 70
+    },
+    {
+      "prefabId": "f21dbf40-591d-4b06-a28d-bf939a4a37de",
+      "id": "0d335bae-9de7-4500-ab15-4e79159a774e",
+      "unlock": ["x", "y"],
+      "label": "campaignCinematicHud",
+      "scope": "CLASS",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "prefabId": "8552f4bd-87ce-4bdf-aed4-b4c919b08b80",
+      "id": "473c0138-5aa8-4f7a-bb12-6821eaaf02a9",
+      "unlock": ["x", "y"],
+      "label": "confirmationDialog",
+      "scope": "CLASS",
+      "x": 640,
+      "y": 360
+    },
+    {
+      "prefabId": "c2ecac06-c622-41d5-bd39-cbee463d067f",
+      "id": "3f31498d-7ba2-44c9-b525-fb2996673721",
+      "unlock": ["x", "y"],
+      "label": "surrenderDialog",
+      "scope": "CLASS",
+      "x": 640,
+      "y": 360
+    }
+  ],
+  "plainObjects": [],
+  "meta": {
+    "app": "Phaser Editor - Scene Editor",
+    "url": "https://phaser.io/editor",
+    "contentType": "phasereditor2d.core.scene.SceneContentType",
+    "version": 5
+  },
+  "lists": [
+    {
+      "id": "a9e1809e-2eca-4d40-8c83-7c158f629362",
+      "label": "hudElements"
+    }
+  ]
 }

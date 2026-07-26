@@ -3,7 +3,7 @@ import { NavigationService } from "../services/navigation.service";
 import { throttle } from "../../library/throttle";
 import { VisionComponent } from "../../entity/components/vision-component";
 import { getActorComponent } from "../../data/actor-component";
-import { getCurrentPlayerNumber } from "../../data/scene-data";
+import { getCurrentPlayerNumber, getPlayer } from "../../data/scene-data";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import {
   getGameObjectBounds,
@@ -17,11 +17,31 @@ import { HealthComponent } from "../../entity/components/combat/components/healt
 import { getSceneService } from "../services/scene-component-helpers";
 import { ActorIndexSystem } from "../services/ActorIndexSystem";
 import { ContainableComponent } from "../../entity/components/building/containable-component";
+/**
+ * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
+ * storage boundaries do not drift into an unconstrained primitive.
+ */
 type GameObject = Phaser.GameObjects.GameObject;
 
+/**
+ * Defines the closed fog of war mode classification. Use an explicit member rather than a free-form string so
+ * branching, persistence, and diagnostics share the same vocabulary.
+ */
 export enum FogOfWarMode {
+  /**
+   * Selects the `FULL_EXPLORATION` case of {@link FogOfWarMode}. Use this explicit member when the surrounding
+   * flow requires this distinct policy or state; never substitute a free-form string.
+   */
   FULL_EXPLORATION = "fullExploration",
+  /**
+   * Selects the `PRE_EXPLORED` case of {@link FogOfWarMode}. Use this explicit member when the surrounding flow
+   * requires this distinct policy or state; never substitute a free-form string.
+   */
   PRE_EXPLORED = "preExplored",
+  /**
+   * Selects the `ALL_VISIBLE` case of {@link FogOfWarMode}. Use this explicit member when the surrounding flow
+   * requires this distinct policy or state; never substitute a free-form string.
+   */
   ALL_VISIBLE = "allVisible"
 }
 
@@ -89,6 +109,12 @@ export class FogOfWarComponent {
     // Initialize actor tracking
     this.actorIndex = getSceneService(this.scene, ActorIndexSystem)!;
     this.scanForPlayerActors();
+    const currentPlayerNumber = getCurrentPlayerNumber(this.scene);
+    const fogPolicy =
+      currentPlayerNumber === undefined
+        ? undefined
+        : getPlayer(this.scene, currentPlayerNumber)?.playerController.data.playerDefinition?.campaignFogPolicy;
+    if (fogPolicy === "revealed" || fogPolicy === "omniscient-ai") this.fowMode = FogOfWarMode.ALL_VISIBLE;
 
     // Subscribe to navigation updates
     this.scene.events.on(
@@ -242,6 +268,10 @@ export class FogOfWarComponent {
 
   private throttleUpdateFogOfWarFrameNonDeterministic = throttle(this.updateFogOfWar.bind(this), 100);
 
+  /**
+   * Recomputes fog visibility from current actor ownership, sight, terrain, and campaign policy.
+   * It updates only local rendering/projection state and keeps campaign-specific fog overrides explicit so skirmish behavior is unchanged.
+   */
   public updateFogOfWar(): void {
     // Store previous state for dirty tile tracking
     this.previousVisibleTiles = new Set(this.visibleTiles);

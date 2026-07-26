@@ -1,0 +1,183 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "campaign.schema.json",
+  "title": "Probable Waffle campaign",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "catalogueVersion",
+    "chapters"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1,
+      "description": "Version of this document contract used to select compatible validation and migration rules."
+    },
+    "id": {
+      "const": "ashes-of-the-ancients",
+      "description": "Stable authored identifier used by references, validation, saves, and replay; it must not be derived from display text."
+    },
+    "catalogueVersion": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Numeric catalogue Version used when resolving this definition."
+    },
+    "chapters": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "order",
+          "title",
+          "subtitle",
+          "summary",
+          "layout",
+          "artwork",
+          "missionArtwork",
+          "missionIds"
+        ],
+        "properties": {
+          "id": {
+            "enum": [
+              "prologue",
+              "two-homelands",
+              "crystal-war",
+              "united-against-volcano",
+              "the-betrayal"
+            ],
+            "description": "Stable authored identifier used by references, validation, saves, and replay; it must not be derived from display text."
+          },
+          "order": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Numeric order used when resolving this definition."
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Player-facing title; localization-aware consumers resolve or present it without using it as identity."
+          },
+          "subtitle": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Subtitle used by this chapters definition."
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Summary used by this chapters definition."
+          },
+          "layout": {
+            "enum": [
+              "single",
+              "parallel",
+              "collision",
+              "united",
+              "finale"
+            ],
+            "description": "Selects the supported layout variant for this definition."
+          },
+          "artwork": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "desktopSrc",
+              "alt",
+              "focalPosition"
+            ],
+            "properties": {
+              "desktopSrc": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Desktop Src used by this artwork definition."
+              },
+              "mobileSrc": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Mobile Src used by this artwork definition."
+              },
+              "alt": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Alt used by this artwork definition."
+              },
+              "focalPosition": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Focal Position used by this artwork definition."
+              }
+            },
+            "description": "Nested artwork configuration owned by this chapters definition."
+          },
+          "missionArtwork": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "desktopSrc",
+              "alt",
+              "focalPosition"
+            ],
+            "properties": {
+              "desktopSrc": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Desktop Src used by this mission Artwork definition."
+              },
+              "mobileSrc": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Mobile Src used by this mission Artwork definition."
+              },
+              "alt": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Alt used by this mission Artwork definition."
+              },
+              "focalPosition": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Focal Position used by this mission Artwork definition."
+              }
+            },
+            "description": "Nested mission Artwork configuration owned by this chapters definition."
+          },
+          "missionIds": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "enum": [
+                "dreams",
+                "cyclops-and-sheep",
+                "snow-wendigo-and-fire",
+                "slingshooters-and-wolves",
+                "owl-and-skaduwee-crystal",
+                "sand-dunes-and-tivara-crystal",
+                "we-had-enough",
+                "sailing-towards-the-new-future",
+                "the-first-and-last-dinner",
+                "the-siege",
+                "time-rush",
+                "joining-crystal",
+                "mobster-or-friend",
+                "the-volcano-is-getting-angry",
+                "cult-wars",
+                "the-volcano",
+                "the-betrayal",
+                "undead-and-cursed-lands",
+                "end-game",
+                "resolution"
+              ]
+            },
+            "description": "Stable mission Ids that link this definition to authored campaign records."
+          }
+        }
+      },
+      "description": "Ordered chapters declared by this campaign definition."
+    }
+  }
+}

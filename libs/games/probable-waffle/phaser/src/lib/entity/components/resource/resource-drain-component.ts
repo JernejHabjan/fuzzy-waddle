@@ -7,11 +7,15 @@ import {
 import { ContainerComponent } from "../building/container-component";
 import { Subject } from "rxjs";
 import { getActorComponent } from "../../../data/actor-component";
-import { emitResource } from "../../../data/scene-data";
+import { emitResource, getPlayer } from "../../../data/scene-data";
 import { onObjectReady } from "../../../data/game-object-helper";
 import { OwnerComponent } from "../owner-component";
 import type { ResourceDrainDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/resource/resource-drain-definition";
 import { waitForSimulationDuration } from "../../../world/services/simulation-time";
+/**
+ * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
+ * storage boundaries do not drift into an unconstrained primitive.
+ */
 type GameObject = Phaser.GameObjects.GameObject;
 
 // this is to be applied to townHall/mine/lodge where resources can be returned to
@@ -58,14 +62,17 @@ export class ResourceDrainComponent {
 
     const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
     const owner = ownerComponent?.getOwner();
-    emitResource(
-      this.gameObject.scene,
-      "resource.added",
-      {
-        [resourceType]: amount
-      } satisfies Partial<PlayerStateResources>,
-      owner
-    );
+    const economy = getPlayer(this.gameObject.scene, owner)?.playerController.data.playerDefinition?.campaignEconomy;
+    if (campaignEconomyAcceptsGatheredResources(economy)) {
+      emitResource(
+        this.gameObject.scene,
+        "resource.added",
+        {
+          [resourceType]: amount
+        } satisfies Partial<PlayerStateResources>,
+        owner
+      );
+    }
 
     // notify listeners
     this.onResourcesReturned.next([resourceType, amount, gatherer]);
@@ -98,4 +105,8 @@ export class ResourceDrainComponent {
       currentCapacity: this.currentCapacity
     } satisfies ResourceDrainComponentData;
   }
+}
+
+export function campaignEconomyAcceptsGatheredResources(economy: "normal" | "granted" | "none" | undefined): boolean {
+  return economy === undefined || economy === "normal";
 }

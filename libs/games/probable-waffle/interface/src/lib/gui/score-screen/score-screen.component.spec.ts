@@ -1,5 +1,9 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ScoreScreenComponent } from "./score-screen.component";
+import {
+  campaignResultCommitRequest,
+  completedCampaignObjectiveIds,
+  ScoreScreenComponent
+} from "./score-screen.component";
 import { ScoreThroughTimeComponent } from "./chart/score-through-time.component";
 import { ScoreThroughTimeTestingComponent } from "./chart/score-through-time.component.spec";
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
@@ -7,6 +11,8 @@ import { gameInstanceClientServiceStub } from "../../communicators/game-instance
 import { provideRouter } from "@angular/router";
 import { CampaignProgressService } from "../campaign/campaign-progress.service";
 import { CampaignProgressServiceStub } from "../campaign/campaign-progress.service.stub";
+import { CampaignProfileService } from "../campaign/campaign-profile.service";
+import { CampaignProfileServiceStub } from "../campaign/campaign-profile.service.stub";
 
 describe("ScoreScreenComponent", () => {
   let component: ScoreScreenComponent;
@@ -18,7 +24,8 @@ describe("ScoreScreenComponent", () => {
       providers: [
         provideRouter([]),
         { provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub },
-        { provide: CampaignProgressService, useValue: CampaignProgressServiceStub }
+        { provide: CampaignProgressService, useValue: CampaignProgressServiceStub },
+        { provide: CampaignProfileService, useValue: new CampaignProfileServiceStub() }
       ]
     })
       .overrideComponent(ScoreScreenComponent, {
@@ -38,5 +45,52 @@ describe("ScoreScreenComponent", () => {
 
   it("should create", () => {
     expect(component).toBeTruthy();
+  });
+
+  it("projects completed campaign objectives into stable result order", () => {
+    expect(
+      completedCampaignObjectiveIds({
+        objectives: {
+          secondary: { status: "failed" },
+          primary: { status: "completed" },
+          optional: { status: "completed" }
+        }
+      } as never)
+    ).toEqual(["optional", "primary"]);
+  });
+
+  it("projects the frozen progression revision, discoveries, and integrity into the commit request", () => {
+    const request = campaignResultCommitRequest(
+      {
+        campaignId: "ashes-of-the-ancients",
+        catalogVersion: 1,
+        chapterId: "prologue",
+        missionId: "dreams",
+        missionRevision: 2,
+        runId: "run-1"
+      },
+      {
+        difficulty: { difficulty: "hard" },
+        claimedRewardIds: ["story", "secret"],
+        cinematics: {
+          intro: { cinematicId: "intro", stage: "completed" },
+          outro: { cinematicId: "outro", stage: "presenting" }
+        },
+        progression: { baseProfileRevision: 7 },
+        rewardIntegrity: { eligibleForRewards: false, invalidationReasons: ["developer-command"] },
+        objectives: {}
+      } as never,
+      "victory",
+      false
+    );
+
+    expect(request).toMatchObject({
+      missionRevision: 2,
+      baseProfileRevision: 7,
+      discoveredRewardIds: ["secret", "story"],
+      seenCinematicIds: ["intro"],
+      difficulty: "hard",
+      integrity: { eligibleForRewards: false }
+    });
   });
 });

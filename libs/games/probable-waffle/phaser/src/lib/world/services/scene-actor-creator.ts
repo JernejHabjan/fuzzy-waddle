@@ -13,6 +13,7 @@ import { getCommunicator, hasMultiplayerCommandRelay } from "../../data/scene-da
 import Spawn from "../../prefabs/buildings/misc/Spawn";
 import EditorOwner from "../scenes/editor-components/EditorOwner";
 import EditorActorLevel from "../scenes/editor-components/EditorActorLevel";
+import EditorScenarioReference from "../scenes/editor-components/EditorScenarioReference";
 import { FactionDefinitions } from "@fuzzy-waddle/probable-waffle-gameplay";
 import {
   getGameObjectBounds,
@@ -31,10 +32,19 @@ import { LoadGame } from "../../data/load-game";
 import type { InitialActorConfig } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { LevelComponent } from "../../entity/components/level/level-component";
 import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
+/**
+ * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
+ * storage boundaries do not drift into an unconstrained primitive.
+ */
 type GameObject = Phaser.GameObjects.GameObject;
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { upgradeActorToLevel } from "../../data/actor-level-utils";
 import { ActorIdAuthorityService } from "./multiplayer/actor-id-authority.service";
+import {
+  normalizeScenarioList,
+  ScenarioActorReferenceComponent
+} from "../../campaign/scenario/scenario-actor-reference.component";
+import { IndexedScenarioReferenceRegistry } from "../../campaign/scenario/scenario-reference-registry";
 
 export class SceneActorCreator {
   private readonly loadGame: LoadGame;
@@ -65,6 +75,14 @@ export class SceneActorCreator {
     }
   }
 
+  /**
+   * Consumes editor `Spawn` placeholders and normalizes direct editor actors into the
+   * same component/index/save path used by runtime-created actors. It applies authored
+   * owner/level/scenario-role metadata before registration, then destroys placeholders
+   * only after all required world objects have been materialized.
+   *
+   * @see {@link createActorFromDefinition} for the corresponding data-driven creation path.
+   */
   private spawnFromSpawnList() {
     const list = this.scene.children.getChildren();
     const toDestroy: Phaser.GameObjects.GameObject[] = [];
@@ -96,6 +114,13 @@ export class SceneActorCreator {
           if (editorLevel > 1) {
             upgradeActorToLevel(gameObject, editorLevel);
           }
+        }
+        const editorScenarioReference = EditorScenarioReference.getComponent(gameObject);
+        if (editorScenarioReference?.scenarioId.trim()) {
+          getActorComponent(gameObject, ScenarioActorReferenceComponent)?.setData({
+            roleId: editorScenarioReference.scenarioId,
+            tags: normalizeScenarioList(editorScenarioReference.tags)
+          });
         }
         // Register in the actor index after init
         this.registerAndSaveNewActor(gameObject);
@@ -214,6 +239,7 @@ export class SceneActorCreator {
 
     const actorIndex = getSceneService(this.scene, ActorIndexSystem);
     actorIndex?.registerActor(actor);
+    getSceneService(this.scene, IndexedScenarioReferenceRegistry)?.registerActor(actor);
     this.saveActorToGameState(actor);
     this.syncHostActorState();
   }

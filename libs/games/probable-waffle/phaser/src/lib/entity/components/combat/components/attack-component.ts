@@ -31,6 +31,11 @@ import { TilemapComponent } from "../../../../world/tilemap/tilemap.component";
 import { CancelableSimDelay } from "../../../../world/services/simulation-time";
 import { SimulationTickService } from "../../../../world/services/simulation-tick.service";
 import { PhaserProjectileFactory } from "../../../../combat/phaser-projectile-factory";
+import { applyCampaignProgressionModifiers } from "../../../../campaign/campaign-progression-modifier";
+/**
+ * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
+ * storage boundaries do not drift into an unconstrained primitive.
+ */
 type GameObject = Phaser.GameObjects.GameObject;
 
 export class AttackComponent {
@@ -179,7 +184,7 @@ export class AttackComponent {
       this.scheduleInstantAttackImpact(attack, enemy);
     }
 
-    this.remainingCooldown = attack.cooldown;
+    this.remainingCooldown = applyCampaignProgressionModifiers(this.gameObject, "cooldown", attack.cooldown);
     this.cooldownStartedTick = this.simulationTickService?.currentTick ?? null;
   }
 
@@ -190,7 +195,11 @@ export class AttackComponent {
     for (const target of targets) {
       const targetHealthComponent = getActorComponent(target, HealthComponent);
       if (!targetHealthComponent || targetHealthComponent.killed) continue;
-      targetHealthComponent.takeDamage(attack.damage, attack.damageType, this.gameObject);
+      targetHealthComponent.takeDamage(
+        applyCampaignProgressionModifiers(this.gameObject, "damage", attack.damage),
+        attack.damageType,
+        this.gameObject
+      );
     }
   }
 
@@ -324,6 +333,14 @@ export class AttackComponent {
     this.playAttackSound(attack, enemy);
   }
 
+  /**
+   * Schedules one ranged attack at a simulation-aligned fire boundary, then fans out its
+   * authored salvo from the attacker’s captured logical transform. The callback rechecks
+   * scene/activity/health before spawning, so a cancelled order or dead actor cannot
+   * materialize a stale projectile after the delay.
+   *
+   * @see {@link spawnSingleProjectile} for per-projectile visual and cancellation setup.
+   */
   private spawnProjectileAndFire(attack: AttackData, enemy: GameObject) {
     const projectile = attack.projectile;
     if (!projectile) return;
@@ -373,7 +390,7 @@ export class AttackComponent {
     });
   }
 
-  /** Spawns and animates a single projectile sprite. When `track` is true, stores references for cancellation. */
+  /** Documents the spawn single projectile member and its declared contract at this boundary. */
   private spawnSingleProjectile(
     projectile: ProjectileData,
     attack: AttackData,
@@ -478,6 +495,10 @@ export class AttackComponent {
     if (track) this.projectileTween = tween;
   }
 
+  /**
+   * Creates the visual/timing path for a projectile while preserving the combat system's deterministic damage authority.
+   * The tween only projects an already-decided attack and its completion path avoids applying a second gameplay result.
+   */
   private spawnParabolicTween(
     projectileSprite: Phaser.GameObjects.Image,
     startX: number,
@@ -543,7 +564,11 @@ export class AttackComponent {
   ) {
     const enemyHealthComponent = getActorComponent(enemy, HealthComponent);
     if (!enemyHealthComponent || enemyHealthComponent.killed) return;
-    enemyHealthComponent.takeDamage(attack.damage, attack.damageType, this.gameObject);
+    enemyHealthComponent.takeDamage(
+      applyCampaignProgressionModifiers(this.gameObject, "damage", attack.damage),
+      attack.damageType,
+      this.gameObject
+    );
 
     this.playHitSound(attack, enemy);
     stopProjectile();

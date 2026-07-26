@@ -1,23 +1,64 @@
 import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 
+/**
+ * Defines the closed probable waffle map enum classification. Use an explicit member rather than a free-form
+ * string so branching, persistence, and diagnostics share the same vocabulary.
+ */
 export enum ProbableWaffleMapEnum {
+  /**
+   * Selects the `Sandbox` case of {@link ProbableWaffleMapEnum}. Use this explicit member when the surrounding
+   * flow requires this distinct policy or state; never substitute a free-form string.
+   */
   Sandbox = 1,
+  /**
+   * Selects the `RiverCrossing` case of {@link ProbableWaffleMapEnum}. Use this explicit member when the
+   * surrounding flow requires this distinct policy or state; never substitute a free-form string.
+   */
   RiverCrossing = 2,
+  /**
+   * Selects the `EmberEnclave` case of {@link ProbableWaffleMapEnum}. Use this explicit member when the
+   * surrounding flow requires this distinct policy or state; never substitute a free-form string.
+   */
   EmberEnclave = 3
 }
 
+/**
+ * Defines the closed probable waffle map key value set. Keeping this union named preserves exhaustive handling
+ * and prevents incompatible free-form values at its boundaries.
+ */
+export type ProbableWaffleMapKey = "MapSandbox" | "MapRiverCrossing" | "MapEmberEnclave";
+
+/**
+ * Defines the probable waffle map type alias used by this module. Keep values in this named domain so linked
+ * APIs and storage boundaries do not drift into an unconstrained primitive.
+ */
 export type ProbableWaffleMapType = {
   [key in ProbableWaffleMapEnum]: ProbableWaffleMapData;
 };
 
+/**
+ * Defines the structural probable waffle lighting ambient keyframe contract. Its declared surface makes time,
+ * ambient color explicit to every consumer. This named alias keeps the boundary explicit without duplicating
+ * an anonymous object shape.
+ */
 export type ProbableWaffleLightingAmbientKeyframe = {
   /**
    * Normalized cycle position between 0 and 1.
    */
   time: number;
+  /**
+   * numeric ambient color carried by {@link ProbableWaffleLightingAmbientKeyframe}. Its units and valid range
+   * are defined by {@link ProbableWaffleLightingAmbientKeyframe} and must remain consistent across producers and
+   * consumers.
+   */
   ambientColor: number;
 };
 
+/**
+ * Defines the structural probable waffle lighting config contract. Its declared surface makes enabled, ambient
+ * color, self shadow, drop shadow, day night cycle explicit to every consumer. This named alias keeps the
+ * boundary explicit without duplicating an anonymous object shape.
+ */
 export type ProbableWaffleLightingConfig = {
   /**
    * Master per-map switch for the lighting system.
@@ -28,6 +69,10 @@ export type ProbableWaffleLightingConfig = {
    * Base ambient fallback color when day/night cycle is disabled.
    */
   ambientColor?: number;
+  /**
+   * Optional keyed/nested self shadow structure owned by {@link ProbableWaffleLightingConfig}. Keep its keys and
+   * value contract explicit so callers cannot smuggle a broader shape across this boundary.
+   */
   selfShadow?: {
     /**
      * Enables Phaser 4 self-shadowing on compatible lit objects.
@@ -44,6 +89,10 @@ export type ProbableWaffleLightingConfig = {
      */
     diffuseFlatThreshold?: number;
   };
+  /**
+   * Optional keyed/nested drop shadow structure owned by {@link ProbableWaffleLightingConfig}. Keep its keys and
+   * value contract explicit so callers cannot smuggle a broader shape across this boundary.
+   */
   dropShadow?: {
     /**
      * Enables dropped terrain-shadow behavior for this map when the runtime shadow path is active.
@@ -78,6 +127,10 @@ export type ProbableWaffleLightingConfig = {
      */
     maxOffset?: number;
   };
+  /**
+   * Optional collection value on {@link ProbableWaffleLightingConfig}. Its element type defines the records that
+   * may cross this boundary; preserve ordering or uniqueness whenever the owning workflow relies on it.
+   */
   dayNightCycle?: {
     /**
      * Enables animated ambient progression across the configured keyframes.
@@ -97,6 +150,10 @@ export type ProbableWaffleLightingConfig = {
      */
     keyframes?: ProbableWaffleLightingAmbientKeyframe[];
   };
+  /**
+   * Optional keyed/nested key light structure owned by {@link ProbableWaffleLightingConfig}. Keep its keys and
+   * value contract explicit so callers cannot smuggle a broader shape across this boundary.
+   */
   keyLight?: {
     /**
      * Enables the main moving directional-style scene light used to represent the sun or moon.
@@ -121,23 +178,84 @@ export type ProbableWaffleLightingConfig = {
   };
 };
 
+/**
+ * Defines the structural probable waffle map data contract. Its declared surface makes id, dev only, name,
+ * loader, presentation explicit to every consumer. This named alias keeps the boundary explicit without
+ * duplicating an anonymous object shape.
+ */
 export type ProbableWaffleMapData = {
+  /**
+   * stable id used by {@link ProbableWaffleMapData} to correlate this value with related records, events, or
+   * authored content; it is not a display label.
+   */
   id: ProbableWaffleMapEnum;
+  /**
+   * Optional dev only value carried by {@link ProbableWaffleMapData}. Its declared type is the compatibility
+   * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   devOnly?: boolean;
+  /**
+   * human-facing name for {@link ProbableWaffleMapData}. It supports UI, narration, or diagnostics and must not
+   * be used as the stable identity of the record.
+   */
   name: string;
+  /**
+   * keyed/nested loader structure owned by {@link ProbableWaffleMapData}. Keep its keys and value contract
+   * explicit so callers cannot smuggle a broader shape across this boundary.
+   */
   loader: {
-    mapSceneKey: string;
+    /**
+     * stable map scene key used by {@link ProbableWaffleMapData} to correlate this value with related records,
+     * events, or authored content; it is not a display label.
+     */
+    mapSceneKey: ProbableWaffleMapKey;
+    /**
+     * string map loader asset pack path carried by {@link ProbableWaffleMapData}. Treat it according to the owning
+     * contract’s validation and presentation rules rather than assuming it is a stable identifier.
+     */
     mapLoaderAssetPackPath: string;
   };
+  /**
+   * keyed/nested presentation structure owned by {@link ProbableWaffleMapData}. Keep its keys and value contract
+   * explicit so callers cannot smuggle a broader shape across this boundary.
+   */
   presentation: {
+    /**
+     * human-facing description for {@link ProbableWaffleMapData}. It supports UI, narration, or diagnostics and
+     * must not be used as the stable identity of the record.
+     */
     description: string;
+    /**
+     * string image path carried by {@link ProbableWaffleMapData}. Treat it according to the owning contract’s
+     * validation and presentation rules rather than assuming it is a stable identifier.
+     */
     imagePath: string;
   };
+  /**
+   * collection value on {@link ProbableWaffleMapData}. Its element type defines the records that may cross this
+   * boundary; preserve ordering or uniqueness whenever the owning workflow relies on it.
+   */
   mapInfo: {
+    /**
+     * collection value on {@link ProbableWaffleMapData}. Its element type defines the records that may cross this
+     * boundary; preserve ordering or uniqueness whenever the owning workflow relies on it.
+     */
     startPositionsOnTile: Vector3Simple[];
+    /**
+     * numeric width tiles carried by {@link ProbableWaffleMapData}. Its units and valid range are defined by
+     * {@link ProbableWaffleMapData} and must remain consistent across producers and consumers.
+     */
     widthTiles: number;
+    /**
+     * numeric height tiles carried by {@link ProbableWaffleMapData}. Its units and valid range are defined by
+     * {@link ProbableWaffleMapData} and must remain consistent across producers and consumers.
+     */
     heightTiles: number;
   };
+  /**
+   * Optional lighting value carried by {@link ProbableWaffleMapData}. Its declared type is the compatibility
+   * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   lighting?: ProbableWaffleLightingConfig;
 };
 

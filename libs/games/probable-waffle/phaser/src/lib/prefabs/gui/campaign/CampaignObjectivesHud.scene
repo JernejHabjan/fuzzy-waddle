@@ -1,0 +1,198 @@
+{
+  "id": "8c3d94ab-98dc-4ee4-b9e4-2bb4a0e3f705",
+  "sceneType": "PREFAB",
+  "settings": {
+    "compilerInsertSpaces": true,
+    "compilerTabSize": 2,
+    "exportClass": true,
+    "autoImport": true,
+    "preloadMethodName": "",
+    "preloadPackFiles": [],
+    "createMethodName": "",
+    "compilerOutputLanguage": "TYPE_SCRIPT",
+    "borderWidth": 1280,
+    "borderHeight": 720
+  },
+  "displayList": [
+    {
+      "type": "Container",
+      "id": "cdf0582c-235e-4018-8a10-5fe68142668a",
+      "label": "container_1",
+      "x": 920,
+      "y": 70,
+      "list": [
+        {
+          "type": "Rectangle",
+          "id": "2ccdcf68-a8b5-4655-870c-d630f635cff2",
+          "label": "trackerBackground",
+          "scope": "CLASS",
+          "originX": 0,
+          "originY": 0,
+          "fillColor": "#18130f",
+          "fillAlpha": 0.88,
+          "width": 340,
+          "height": 220
+        },
+        {
+          "type": "Text",
+          "id": "81740baa-326a-4796-885c-f96519455637",
+          "label": "trackerTitle",
+          "scope": "CLASS",
+          "x": 12,
+          "y": 10,
+          "text": "Objectives",
+          "resolution": 10,
+          "fontFamily": "disposabledroid",
+          "fontSize": "22px",
+          "color": "#f1d6a4",
+          "stroke": "#000000",
+          "strokeThickness": 2
+        },
+        {
+          "type": "Text",
+          "id": "07c783f9-d61f-489d-b00c-bc994ed2be41",
+          "label": "logButton",
+          "scope": "CLASS",
+          "x": 226,
+          "y": 13,
+          "text": "[ Mission log ]",
+          "resolution": 10,
+          "fontFamily": "disposabledroid",
+          "fontSize": "16px",
+          "color": "#e6c27a"
+        },
+        {
+          "type": "Text",
+          "id": "69938877-ee8d-4455-9a8e-eb734ce247d7",
+          "label": "trackerBody",
+          "scope": "CLASS",
+          "x": 12,
+          "y": 44,
+          "resolution": 10,
+          "fontFamily": "disposabledroid",
+          "fontSize": "17px",
+          "color": "#ffffff",
+          "lineSpacing": 3,
+          "wordWrapWidth": 316
+        },
+        {
+          "type": "Text",
+          "id": "c38c18cb-b118-4a80-8414-bb1500b034a2",
+          "label": "encounterDiagnosticsText",
+          "scope": "CLASS",
+          "x": 12,
+          "resolution": 4,
+          "fontFamily": "monospace",
+          "fontSize": "12px",
+          "color": "#82d9ff",
+          "lineSpacing": 2,
+          "wordWrapWidth": 316
+        },
+        {
+          "type": "Text",
+          "id": "c9bcd2f7-4ace-4f36-83eb-a79e447052e3",
+          "label": "notificationText",
+          "scope": "CLASS",
+          "originX": 0.5,
+          "originY": 0,
+          "resolution": 10,
+          "fontFamily": "disposabledroid",
+          "fontSize": "24px",
+          "color": "#f6dfad",
+          "backgroundColor": "#18130fee",
+          "align": "center",
+          "stroke": "#000000",
+          "strokeThickness": 2,
+          "wordWrapWidth": 520,
+          "padding": {
+            "left": 18,
+            "top": 10,
+            "right": 18,
+            "bottom": 10
+          }
+        },
+        {
+          "type": "Container",
+          "id": "8f4ef044-3434-473f-9a6b-2b2950f64aa8",
+          "label": "questPanel",
+          "scope": "CLASS",
+          "visible": false,
+          "list": [
+            {
+              "type": "Rectangle",
+              "id": "fb01f31c-d66b-49e7-9857-5a29a6c85a4e",
+              "label": "questOverlay",
+              "scope": "CLASS",
+              "fillColor": "#000000",
+              "fillAlpha": 0.72,
+              "width": 1280,
+              "height": 720
+            },
+            {
+              "type": "Rectangle",
+              "id": "b7564c73-9aab-491b-ac33-4e46033c082b",
+              "label": "questBackground",
+              "scope": "CLASS",
+              "fillColor": "#241c15",
+              "fillAlpha": 0.98,
+              "strokeColor": "#c89b53",
+              "strokeWidth": 3,
+              "width": 760,
+              "height": 560
+            },
+            {
+              "type": "Text",
+              "id": "d910a2ec-edf8-492a-9e91-c13d4c09dc71",
+              "label": "questTitle",
+              "scope": "CLASS",
+              "y": -252,
+              "originX": 0.5,
+              "originY": 0,
+              "text": "Mission objectives",
+              "resolution": 10,
+              "fontFamily": "disposabledroid",
+              "fontSize": "30px",
+              "color": "#f1d6a4"
+            },
+            {
+              "type": "Text",
+              "id": "b9275071-2d7f-4838-9c4b-1dd3aaff4714",
+              "label": "closeButton",
+              "scope": "CLASS",
+              "x": 315,
+              "y": -250,
+              "originX": 0.5,
+              "originY": 0,
+              "text": "[ Close ]",
+              "resolution": 10,
+              "fontFamily": "disposabledroid",
+              "fontSize": "18px",
+              "color": "#e6c27a"
+            },
+            {
+              "type": "Text",
+              "id": "0810522f-28a7-4913-a80b-49cca2d9a8db",
+              "label": "questBody",
+              "scope": "CLASS",
+              "x": -350,
+              "y": -210,
+              "resolution": 10,
+              "fontFamily": "disposabledroid",
+              "fontSize": "18px",
+              "color": "#ffffff",
+              "lineSpacing": 3,
+              "wordWrapWidth": 700
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "plainObjects": [],
+  "meta": {
+    "app": "Phaser Editor - Scene Editor",
+    "url": "https://phaser.io/editor",
+    "contentType": "phasereditor2d.core.scene.SceneContentType",
+    "version": 5
+  }
+}

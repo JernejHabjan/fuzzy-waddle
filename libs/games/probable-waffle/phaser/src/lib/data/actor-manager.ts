@@ -102,6 +102,10 @@ import Calf from "../prefabs/animals/calf/Calf";
 import Bull from "../prefabs/animals/bull/Bull";
 import Lamb from "../prefabs/animals/lamb/Lamb";
 import Piglet from "../prefabs/animals/piglet/Piglet";
+/**
+ * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
+ * storage boundaries do not drift into an unconstrained primitive.
+ */
 type GameObject = Phaser.GameObjects.GameObject;
 import Banshee from "../prefabs/characters/mobs/banshee/Banshee";
 import BigWaterSlime from "../prefabs/characters/mobs/big_water_slime/BigWaterSlime";
@@ -140,6 +144,7 @@ import GroundCarrot from "../prefabs/outside/crops/ground/carrot/GroundCarrot";
 import GroundChampignons from "../prefabs/outside/crops/ground/champignons/GroundChampignons";
 import GroundTurnip from "../prefabs/outside/crops/ground/turnip/GroundTurnip";
 import Corpy from "../prefabs/characters/mobs/corpy/Corpy";
+import { ScenarioActorReferenceComponent } from "../campaign/scenario/scenario-actor-reference.component";
 
 import BlockObsidian1 from "../prefabs/outside/nature/block_obsidian/BlockObsidian1";
 import BlockObsidian2 from "../prefabs/outside/nature/block_obsidian/BlockObsidian2";
@@ -284,6 +289,10 @@ import UndeadLandRuin1 from "../prefabs/outside/environment/undead_land/UndeadLa
 import UndeadLandThornPlant1 from "../prefabs/outside/environment/undead_land/UndeadLandThornPlant1";
 import UndeadLandTree1 from "../prefabs/outside/environment/undead_land/UndeadLandTree1";
 
+/**
+ * Defines the structural actor map contract. This named alias keeps the boundary explicit without duplicating
+ * an anonymous object shape.
+ */
 type ActorMap = { [name: string]: new (scene: Phaser.Scene) => GameObject };
 export class ActorManager {
   private static animals: ActorMap = {
@@ -614,6 +623,7 @@ export class ActorManager {
       owner: getActorComponent(actor, OwnerComponent)?.getData(),
       selected: getActorComponent(actor, SelectableComponent)?.getData(),
       id: getActorComponent(actor, IdComponent)?.getData(),
+      scenario: getActorComponent(actor, ScenarioActorReferenceComponent)?.getData(),
       constructionSite: getActorComponent(actor, ConstructionSiteComponent)?.getData(),
       health: getActorComponent(actor, HealthComponent)?.getData(),
       housing: getActorComponent(actor, HousingComponent)?.getData(),

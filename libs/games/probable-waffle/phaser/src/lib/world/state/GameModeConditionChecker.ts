@@ -57,10 +57,20 @@ export class GameModeConditionChecker {
     this.winConditions = gameModeData.winConditions;
     this.tieConditions = gameModeData.tieConditions;
 
-    this.currentDelay = new CancelableSimDelay(this.scene, 1000, () => this.startChecking());
+    if (!scene.baseGameData.gameInstance.gameInstanceMetadata.data.campaignContext) {
+      this.currentDelay = new CancelableSimDelay(this.scene, 1000, () => this.startChecking());
+      this.listenToPlayerLeftOrKilled();
+    }
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
     this.listenToPlayerQuit();
-    this.listenToPlayerLeftOrKilled();
+  }
+
+  /** Documents the resolve campaign mission outcome member and its declared contract at this boundary. */
+  resolveCampaignMissionOutcome(outcome: "victory" | "defeat"): void {
+    if (this.stopped) return;
+    this.prepareOutcomeData();
+    if (outcome === "victory") this.winGame();
+    else this.loseGame();
   }
 
   private startChecking() {
@@ -91,6 +101,13 @@ export class GameModeConditionChecker {
   }
 
   private prepareData() {
+    this.prepareOutcomeData();
+    this.actorsByPlayer = ScenePlayerHelpers.getActorsByPlayer(this.scene).actorsByPlayer;
+
+    this.runChecksForSelfAndAiPlayers();
+  }
+
+  private prepareOutcomeData() {
     this.currentPlayerNumber = getCurrentPlayerNumber(this.scene)!;
     this.players = getPlayersFromScene<ProbableWafflePlayer>(this.scene);
     const currentPlayer = this.players.find((player) => player.playerNumber === this.currentPlayerNumber);
@@ -99,9 +116,6 @@ export class GameModeConditionChecker {
       throw new Error("Current player not found");
     }
     this.currentPlayer = currentPlayer;
-    this.actorsByPlayer = ScenePlayerHelpers.getActorsByPlayer(this.scene).actorsByPlayer;
-
-    this.runChecksForSelfAndAiPlayers();
   }
 
   private listenToPlayerQuit() {
@@ -154,6 +168,10 @@ export class GameModeConditionChecker {
       });
   }
 
+  /**
+   * Evaluates AI surrender only under the mode's allowed ownership and timing rules.
+   * Campaign scenes can override generic elimination semantics so scripted losses do not accidentally end an authored mission.
+   */
   private checkAiSurrender(tick: number) {
     if (tick - this.lastSurrenderCheckTick < this.surrenderCheckIntervalTicks) return;
     this.lastSurrenderCheckTick = tick;
@@ -255,6 +273,10 @@ export class GameModeConditionChecker {
     }
   }
 
+  /**
+   * Evaluates terminal game conditions while respecting campaign-owned outcome dispatch.
+   * It avoids starting generic win/defeat paths for campaign scenes, allowing the mission runtime to decide scripted victory and failure transitions.
+   */
   private checkWinConditions(): boolean {
     const players = this.players;
     const currentPlayerNumber = this.currentPlayerNumber;

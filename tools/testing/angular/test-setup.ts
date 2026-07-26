@@ -4,6 +4,8 @@ import failOnConsole from "jest-fail-on-console";
 
 setupZoneTestEnv();
 
+globalThis.structuredClone ??= <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
+
 failOnConsole();
 
 // Mock Phaser for game-related tests

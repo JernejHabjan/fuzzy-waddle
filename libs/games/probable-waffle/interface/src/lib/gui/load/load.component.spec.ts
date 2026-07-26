@@ -11,6 +11,7 @@ import {
   GameSaveScope,
   GameSaveSyncState,
   type GameSaveRecord,
+  type UnsupportedGameSaveRecord,
   type ProbableWaffleGameInstanceData,
   ProbableWaffleGameInstanceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
@@ -65,6 +66,16 @@ describe("LoadComponent", () => {
 
     expect(fixture.nativeElement.textContent).not.toContain("Skirmish");
   });
+
+  it("lists unsupported saves with recovery actions instead of a load action", async () => {
+    gameSaveService.records = [createUnsupportedSave()];
+    await component.ngOnInit();
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain("Recovery");
+    expect(fixture.nativeElement.textContent).toContain("Save format 99 is not supported");
+    expect(fixture.nativeElement.textContent).not.toContain("Load");
+  });
 });
 
 function createReplaySave(): GameSaveRecord {
@@ -81,6 +92,19 @@ function createReplaySave(): GameSaveRecord {
     gameInstanceData: {
       gameInstanceMetadataData: { type: ProbableWaffleGameInstanceType.Replay }
     } as ProbableWaffleGameInstanceData
+  };
+}
+
+function createUnsupportedSave(): UnsupportedGameSaveRecord {
+  const { gameInstanceData: _gameInstanceData, ...record } = createSkirmishSave();
+  return {
+    ...record,
+    formatVersion: 99,
+    compatibility: {
+      status: "unsupported",
+      reason: "Save format 99 is not supported",
+      recoveryOptions: ["export", "delete"]
+    }
   };
 }
 

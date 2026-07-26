@@ -15,7 +15,7 @@ import {
 } from "../../../../data/game-object-helper";
 import { SelectableComponent } from "../../selectable-component";
 import { OwnerComponent } from "../../owner-component";
-import { getCurrentPlayerNumber } from "../../../../data/scene-data";
+import { getCurrentPlayerNumber, getPlayer } from "../../../../data/scene-data";
 import { AudioActorComponent } from "../../actor-audio/audio-actor-component";
 import { AnimationActorComponent } from "../../animation/animation-actor-component";
 import { EffectsAnims } from "../../../../animations/effects";
@@ -32,6 +32,7 @@ import { SoundType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/compone
 import { ActorPhysicalType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/components/actor-physical-type";
 import type { SoundDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/actor-audio/sound-definition";
 import type { HealthDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/components/health-definition";
+import { applyCampaignProgressionModifiers } from "../../../../campaign/campaign-progression-modifier";
 import { BuildingDestructionEffect } from "../../building/building-destruction-effect";
 import { FadeOutComponent } from "../../building/fade-out-component";
 import type { FadeOutDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/building/fade-out-definition";
@@ -70,7 +71,7 @@ export class HealthComponent {
   private actorTranslateComponent?: ActorTranslateComponent;
   private audioService?: AudioService;
   hidden: boolean = false;
-  /** Suppresses visual/audio damage reactions when set (e.g. during a silent kill). */
+  /** Documents the following declaration and its compatibility contract. */
   private suppressReactions = false;
 
   constructor(
@@ -147,6 +148,22 @@ export class HealthComponent {
   }
 
   private init() {
+    const maximumHealth = applyCampaignProgressionModifiers(
+      this.gameObject,
+      "maximum-health",
+      this.healthDefinition.maxHealth
+    );
+    const maximumArmour = applyCampaignProgressionModifiers(
+      this.gameObject,
+      "armor",
+      this.healthDefinition.maxArmour ?? 0
+    );
+    this.healthDefinition = { ...this.healthDefinition, maxHealth: maximumHealth, maxArmour: maximumArmour };
+    this.healthComponentData.health = maximumHealth;
+    this.healthComponentData.armour = maximumArmour;
+    if (maximumArmour > 0 && !this.armorUiComponent) {
+      this.armorUiComponent = new HealthUiComponent(this.gameObject, "armor");
+    }
     this.animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
     this.audioActorComponent = getActorComponent(this.gameObject, AudioActorComponent);
     this.audioService = getSceneService(this.gameObject.scene, AudioService);
@@ -218,6 +235,11 @@ export class HealthComponent {
   }
 
   takeDamage(damage: number, damageType: DamageType, damageInitiator?: Phaser.GameObjects.GameObject) {
+    if (this.gameObject.getData("campaign.invulnerable") === true) return;
+    const sourceOwner = damageInitiator ? getActorComponent(damageInitiator, OwnerComponent)?.getOwner() : undefined;
+    const campaignDamageScale = getPlayer(this.gameObject.scene, sourceOwner)?.playerController.data.playerDefinition
+      ?.campaignDamageScale;
+    damage *= campaignDamageScale ?? 1;
     const simulationTick = getSceneService(this.gameObject.scene, SimulationTickService)?.currentTick;
     this.latestDamage = {
       damage,
@@ -256,7 +278,7 @@ export class HealthComponent {
     this.setHealthValue(Math.min(this.healthComponentData.health + amount, this.healthDefinition.maxHealth));
   }
 
-  /** Destroys the actor immediately without playing death animations or sounds. */
+  /** Documents the destroy actor silently member and its declared contract at this boundary. */
   destroyActorSilently() {
     if (!isGameObjectActiveInActiveScene(this.gameObject)) return;
     this.suppressReactions = true;

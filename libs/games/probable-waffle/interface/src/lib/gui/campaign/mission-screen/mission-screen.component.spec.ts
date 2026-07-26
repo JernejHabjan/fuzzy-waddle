@@ -3,6 +3,8 @@ import { ActivatedRoute, convertToParamMap, provideRouter } from "@angular/route
 import { MissionScreenComponent } from "./mission-screen.component";
 import { CampaignLaunchService } from "../campaign-launch.service";
 import { CampaignLaunchServiceStub } from "../campaign-launch.service.stub";
+import { CampaignProfileService } from "../campaign-profile.service";
+import { CampaignProfileServiceStub } from "../campaign-profile.service.stub";
 import { GameSaveService } from "../../../services/game-save/game-save.service";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import { of } from "rxjs";
@@ -28,6 +30,7 @@ describe("MissionScreenComponent", () => {
           }
         },
         { provide: CampaignLaunchService, useValue: new CampaignLaunchServiceStub() },
+        { provide: CampaignProfileService, useValue: new CampaignProfileServiceStub() },
         { provide: GameSaveService, useValue: gameSaveService },
         { provide: GameInstanceClientService, useValue: { loadSavedGameData: async () => undefined } }
       ]
@@ -52,5 +55,15 @@ describe("MissionScreenComponent", () => {
     expect(fixture.nativeElement.textContent).toContain("Continue");
     expect(fixture.nativeElement.textContent).toContain("Load Game");
     expect(fixture.nativeElement.textContent).toContain("Start Fresh");
+  });
+
+  it("shows difficulty, owned progression, loadout, and discovery states before launch", async () => {
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain("Run Setup");
+    expect(fixture.nativeElement.textContent).toContain("campaign-crystal");
+    expect(fixture.nativeElement.textContent).toContain("Create Primary Loadout");
+    expect(fixture.nativeElement.textContent).toContain("No prior discoveries");
   });
 });

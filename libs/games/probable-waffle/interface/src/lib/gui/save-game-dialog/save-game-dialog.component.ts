@@ -7,6 +7,7 @@ import {
   GameSaveScope,
   type CampaignMissionId,
   type GameSaveRecord,
+  isSupportedGameSaveRecord,
   ProbableWaffleGameInstanceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { GameSaveService } from "../../services/game-save/game-save.service";
@@ -32,33 +33,35 @@ export class SaveGameDialogComponent implements OnInit {
     await this.refreshSaves();
   }
 
-  /** Configures the current game's save scope after NgbModal creates the component instance. */
+  /** Documents the configure member and its declared contract at this boundary. */
   async configure(scope: GameSaveScope, missionScopeId?: CampaignMissionId): Promise<void> {
     this.scope = scope;
     this.missionScopeId = missionScopeId;
     await this.refreshSaves();
   }
 
-  /** Lists only named saves eligible to replace the current campaign mission or skirmish game. */
+  /** Documents the refresh saves member and its declared contract at this boundary. */
   private async refreshSaves(): Promise<void> {
     this.saves.set(
-      (await this.gameSaveService.list()).filter(
-        (save) =>
-          save.kind === GameSaveKind.Manual &&
-          save.gameInstanceData.gameInstanceMetadataData?.type !== ProbableWaffleGameInstanceType.Replay &&
-          save.scope === this.scope &&
-          (save.scope === GameSaveScope.Skirmish || save.campaign?.missionId === this.missionScopeId)
-      )
+      (await this.gameSaveService.list())
+        .filter(isSupportedGameSaveRecord)
+        .filter(
+          (save) =>
+            save.kind === GameSaveKind.Manual &&
+            save.gameInstanceData.gameInstanceMetadataData?.type !== ProbableWaffleGameInstanceType.Replay &&
+            save.scope === this.scope &&
+            (save.scope === GameSaveScope.Skirmish || save.campaign?.missionId === this.missionScopeId)
+        )
     );
   }
 
-  /** Selects a same-scope named save to be replaced by this snapshot. */
+  /** Documents the select overwrite member and its declared contract at this boundary. */
   protected selectOverwrite(save: GameSaveRecord): void {
     this.overwriteSaveId.set(save.id);
     this.saveName.setValue(save.name ?? "");
   }
 
-  /** Clears the selected replacement and creates a new named save instead. */
+  /** Documents the create new save member and its declared contract at this boundary. */
   protected createNewSave(): void {
     this.overwriteSaveId.set(undefined);
     this.saveName.setValue("");
@@ -71,7 +74,7 @@ export class SaveGameDialogComponent implements OnInit {
     this.activeModal.close(result);
   }
 
-  /** Closes immediately with the one-slot quicksave action, avoiding an extra name prompt. */
+  /** Documents the quick save member and its declared contract at this boundary. */
   protected quickSave(): void {
     this.activeModal.close({ kind: "quicksave" } satisfies SaveGameDialogResult);
   }

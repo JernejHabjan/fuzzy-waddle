@@ -53,42 +53,45 @@ export class ProbableWaffleCommunicatorService
   spectatorChanged?: TwoWayCommunicator<ProbableWaffleSpectatorDataChangeEvent, ProbableWaffleCommunicatorType>;
   gameStateChanged?: TwoWayCommunicator<ProbableWaffleGameStateDataChangeEvent, ProbableWaffleCommunicatorType>;
   message?: TwoWayCommunicator<ProbableWaffleCommunicatorMessageEvent, ProbableWaffleCommunicatorType>;
-  /** Command relay communicator; only initialised in multiplayer sessions. */
+  /** Documents the game command changed member and its declared contract at this boundary. */
   gameCommandChanged?: TwoWayCommunicator<ProbableWaffleGameCommandEvent, ProbableWaffleCommunicatorType>;
-  /** Periodic state-hash exchange; only initialised in multiplayer sessions. */
+  /** Documents the state hash changed member and its declared contract at this boundary. */
   stateHashChanged?: TwoWayCommunicator<ProbableWaffleStateHashEvent, ProbableWaffleCommunicatorType>;
-  /** Snapshot request (reconnecting/spectating client → host); only in MP. */
+  /** Documents the snapshot requested member and its declared contract at this boundary. */
   snapshotRequested?: TwoWayCommunicator<ProbableWaffleSnapshotRequestEvent, ProbableWaffleCommunicatorType>;
-  /** Snapshot response (host → requesting client); only in MP. */
+  /** Documents the snapshot response member and its declared contract at this boundary. */
   snapshotResponse?: TwoWayCommunicator<ProbableWaffleSnapshotResponseEvent, ProbableWaffleCommunicatorType>;
-  /** Server-originated signal that game instance is missing and needs reseed. */
+  /** Documents the instance reseed required member and its declared contract at this boundary. */
   instanceReseedRequired?: TwoWayCommunicator<
     ProbableWaffleInstanceReseedRequiredEvent,
     ProbableWaffleCommunicatorType
   >;
-  /** Client-originated payload used to recreate missing server game instance. */
+  /** Documents the instance reseed member and its declared contract at this boundary. */
   instanceReseed?: TwoWayCommunicator<ProbableWaffleInstanceReseedEvent, ProbableWaffleCommunicatorType>;
-  /** Host-issued unresolved desync alert; only in MP. */
+  /** Documents the desync alert member and its declared contract at this boundary. */
   desyncAlert?: TwoWayCommunicator<ProbableWaffleDesyncAlertEvent, ProbableWaffleCommunicatorType>;
-  /** Multiplayer pause/resume relay; only in MP. */
+  /** Documents the pause changed member and its declared contract at this boundary. */
   pauseChanged?: TwoWayCommunicator<ProbableWafflePauseChangedEvent, ProbableWaffleCommunicatorType>;
-  /** Server-originated disconnect notification; only in MP. */
+  /** Documents the player disconnected member and its declared contract at this boundary. */
   playerDisconnected?: TwoWayCommunicator<ProbableWafflePlayerDisconnectedEvent, ProbableWaffleCommunicatorType>;
-  /** Server-originated reconnect notification; only in MP. */
+  /** Documents the player reconnected member and its declared contract at this boundary. */
   playerReconnected?: TwoWayCommunicator<ProbableWafflePlayerReconnectedEvent, ProbableWaffleCommunicatorType>;
-  /** Server-originated host migration event; only in MP. */
+  /** Documents the host migrated member and its declared contract at this boundary. */
   hostMigrated?: TwoWayCommunicator<ProbableWaffleHostMigratedEvent, ProbableWaffleCommunicatorType>;
 
   /**
    * utility events that are broadcast to game instance and other angular services - for example save game
    */
-  utilityEvents = new EventEmitter<{ name: "save-game" | "load-game" | "settings" | "chat"; data?: any }>();
+  utilityEvents = new EventEmitter<{
+    name: "save-game" | "save-game-rejected" | "campaign-restore-failed" | "load-game" | "settings" | "chat";
+    data?: any;
+  }>();
   /**
    * cross scene events - internal phaser events that are not related to game instance and are broadcast to all scenes
    */
   allScenes = new EventEmitter<AllScenesEventData>();
 
-  /** The active socket, if running in multiplayer. Exposed for reconnect handling. */
+  /** Documents the active socket member and its declared contract at this boundary. */
   activeSocket?: Socket;
   private activeGameInstanceId?: GameInstanceId;
   private socketConnectHandler?: () => void;
@@ -96,6 +99,10 @@ export class ProbableWaffleCommunicatorService
   private joinedGameInstanceId?: GameInstanceId;
   private rawSocket?: NgxSocketIoRawSocket;
 
+  /**
+   * Starts the transport subscriptions that bridge server events into the UI/game-instance authorities.
+   * It installs each listener once, scopes emissions to the active room, and owns teardown so reconnects do not duplicate side effects.
+   */
   startCommunication(gameInstanceId: GameInstanceId, socket?: Socket) {
     this.destroySubscriptions();
     this.activeSocket = socket;
@@ -256,7 +263,10 @@ export class ProbableWaffleCommunicatorService
   private resetLocalEventBuses(): void {
     this.utilityEvents.complete();
     this.allScenes.complete();
-    this.utilityEvents = new EventEmitter<{ name: "save-game" | "load-game" | "settings" | "chat"; data?: any }>();
+    this.utilityEvents = new EventEmitter<{
+      name: "save-game" | "save-game-rejected" | "campaign-restore-failed" | "load-game" | "settings" | "chat";
+      data?: any;
+    }>();
     this.allScenes = new EventEmitter<AllScenesEventData>();
   }
 

@@ -1,6 +1,7 @@
 import { TechTreeBuilder } from "./tech-tree.builder";
 import { TechTreeService } from "./tech-tree.service";
-import { FactionType, ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
+import { FactionType, ObjectNames, ResearchType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { CampaignContentAllowanceService } from "@fuzzy-waddle/probable-waffle-campaign";
 
 describe("TechTree", () => {
   describe("TechTreeBuilder", () => {
@@ -86,6 +87,30 @@ describe("TechTree", () => {
 
       // AnkGuard requires worker to build it, but prerequisites should not include self
       expect(prereqs.prereqs.objectNames.includes(ObjectNames.AnkGuard)).toBe(false);
+    });
+
+    it("blocks mission-denied actors without mutating the tech graph", () => {
+      const allowances = new CampaignContentAllowanceService();
+      allowances.configurePlayer(1, [
+        {
+          deniedActorIds: [ObjectNames.TivaraWorker],
+          unitLevelCaps: [{ objectName: ObjectNames.TivaraMacemanMale, maximumLevel: 1 }]
+        }
+      ]);
+      const campaignService = new TechTreeService(allowances);
+
+      expect(campaignService.isContentAllowed(1, "actor", ObjectNames.TivaraWorker)).toBe(false);
+      expect(campaignService.isAvailable(1, ObjectNames.TivaraWorker)).toBe(false);
+      expect(campaignService.isContentAllowed(1, "research", ResearchType.TivaraMacemanUpgradeLevel2)).toBe(false);
+      expect(campaignService.getNode(ObjectNames.TivaraWorker)).toBeDefined();
+    });
+
+    it("infers the existing full AI foundation from faction tech data", () => {
+      expect(service.getFullAiFoundation(FactionType.Tivara)).toEqual([ObjectNames.Sandhold, ObjectNames.TivaraWorker]);
+      expect(service.getFullAiFoundation(FactionType.Skaduwee)).toEqual([
+        ObjectNames.FrostForge,
+        ObjectNames.SkaduweeWorker
+      ]);
     });
 
     it("should get definition from tech tree", () => {

@@ -12,6 +12,11 @@
           <div>{{ rec.gameInstanceData | gameLength }}</div>
           <div style="text-align: right">
             <button class="btn btn-primary" type="button" (click)="startReplay(rec)">Replay</button>
+            @if (rec.kind === "archive" && rec.campaign) {
+              <button class="btn btn-secondary ms-2" type="button" (click)="replayCampaignMission(rec)">
+                Replay Mission
+              </button>
+            }
             <button class="btn btn-primary ms-2" type="button" (click)="deleteReplay(rec)">Delete</button>
           </div>
         }

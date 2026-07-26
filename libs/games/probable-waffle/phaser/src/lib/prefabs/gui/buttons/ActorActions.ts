@@ -59,6 +59,7 @@ import { QueueItemType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/com
 import { ContainerComponent } from "../../../entity/components/building/container-component";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { isWaterUnit } from "../../../data/game-object-helper";
+import { CampaignContentAllowanceService } from "@fuzzy-waddle/probable-waffle-campaign";
 /* END-USER-IMPORTS */
 
 /**
@@ -190,6 +191,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     this.audioService = getSceneService(this.mainSceneWithActors, AudioService)!;
     this.playerActionsHandler = getSceneService(this.mainSceneWithActors, PlayerActionsHandler)!;
     this.subscribeToPlayerSelection();
+    this.subscribeToContentAllowanceChanges();
     this.hideAllActions();
     this.mainSceneWithActors.events.on(
       PlayerActionsHandler.BUILDING_MODE_SHORTCUT_PRESSED,
@@ -210,9 +212,9 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   private readonly hudScene: HudProbableWaffle;
   private readonly audioService: AudioService;
   private readonly playerActionsHandler: PlayerActionsHandler;
-  /** If true, building icons are displayed with back button */
+  /** Documents the building mode member and its declared contract at this boundary. */
   private buildingMode: boolean = false;
-  /** Navigation stack for building categories. Empty array means root level. */
+  /** Documents the category navigation stack member and its declared contract at this boundary. */
   private categoryNavigationStack: ConstructableCategory[] = [];
 
   private get HOTKEYS(): readonly string[] {
@@ -225,12 +227,14 @@ export default class ActorActions extends Phaser.GameObjects.Container {
   private researchEventSubscriptions: Subscription[] = [];
   private spellCooldownSubscriptions: Subscription[] = [];
   private spellUpdateTimer?: Phaser.Time.TimerEvent;
-  /** Refreshes container Unload button when the container actor moves to/from shore. */
+  /** Documents the container movement subscription member and its declared contract at this boundary. */
   private containerMovementSubscription?: Subscription;
+  private contentAllowanceUnsubscribe?: () => void;
 
-  /** Subscribe to selection changes and update displayed actions accordingly */
+  /** Documents the subscribe to player selection member and its declared contract at this boundary. */
   private subscribeToPlayerSelection() {
     this.selectionChangedSubscription = listenToSelectionEvents(this.scene)?.subscribe(() => {
+      this.subscribeToContentAllowanceChanges();
       // Update tab handler with new selection
       const tabHandler = getSceneComponent(this.mainSceneWithActors, SelectionTabHandler);
       if (tabHandler) {
@@ -280,7 +284,15 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     }
   }
 
-  /** Handle hotkey presses when in building mode to trigger corresponding action buttons */
+  private subscribeToContentAllowanceChanges(): void {
+    if (this.contentAllowanceUnsubscribe) return;
+    this.contentAllowanceUnsubscribe = getSceneService(
+      this.mainSceneWithActors,
+      CampaignContentAllowanceService
+    )?.subscribe(() => this.refreshForCurrentSelection());
+  }
+
+  /** Documents the on build mode key down member and its declared contract at this boundary. */
   private onBuildModeKeyDown(hotkeyIndex: number) {
     if (!this.buildingMode) return;
 
@@ -415,7 +427,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     });
   }
 
-  /** Action definition for attack command */
+  /** Documents the actors member and its declared contract at this boundary. */
   private readonly attackAction = (actors: Phaser.GameObjects.GameObject[]) =>
     ({
       icon: {
@@ -585,7 +597,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       shortcut: "del"
     }) satisfies ActorActionSetup;
 
-  /** Main method to display action buttons based on selected actor's components */
+  /** Documents the show actor actions member and its declared contract at this boundary. */
   private showActorActions(actor: Phaser.GameObjects.GameObject, allActors: Phaser.GameObjects.GameObject[]) {
     this.hideAllIcons();
     let index = 0;
@@ -646,7 +658,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     }
   }
 
-  /** Check if the actor belongs to the current player */
+  /** Documents the can show icons member and its declared contract at this boundary. */
   private canShowIcons(actor: Phaser.GameObjects.GameObject) {
     const currentPlayerNr = getCurrentPlayerNumber(this.mainSceneWithActors);
     const actorPlayerNr = getActorComponent(actor, OwnerComponent)?.getOwner();
@@ -727,6 +739,10 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     return index;
   }
 
+  /**
+   * Rebuilds the relevant actor-action controls from the selected actor's current capabilities and requirements.
+   * It disposes obsolete controls, preserves existing command authorities, and keeps UI availability aligned with the shared production/research state.
+   */
   private showSpellIcons(
     actor: Phaser.GameObjects.GameObject,
     allActors: Phaser.GameObjects.GameObject[],
@@ -821,6 +837,10 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     return index;
   }
 
+  /**
+   * Rebuilds the relevant actor-action controls from the selected actor's current capabilities and requirements.
+   * It disposes obsolete controls, preserves existing command authorities, and keeps UI availability aligned with the shared production/research state.
+   */
   private showContainerIcons(
     actor: Phaser.GameObjects.GameObject,
     _allActors: Phaser.GameObjects.GameObject[],
@@ -891,6 +911,10 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     return index;
   }
 
+  /**
+   * Rebuilds the relevant actor-action controls from the selected actor's current capabilities and requirements.
+   * It disposes obsolete controls, preserves existing command authorities, and keeps UI availability aligned with the shared production/research state.
+   */
   private showProductionIcons(
     actor: Phaser.GameObjects.GameObject,
     allActors: Phaser.GameObjects.GameObject[],
@@ -996,6 +1020,10 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     );
   }
 
+  /**
+   * Rebuilds the relevant actor-action controls from the selected actor's current capabilities and requirements.
+   * It disposes obsolete controls, preserves existing command authorities, and keeps UI availability aligned with the shared production/research state.
+   */
   private showResearchIcons(
     actor: Phaser.GameObjects.GameObject,
     _allActors: Phaser.GameObjects.GameObject[],
@@ -1058,8 +1086,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
             // Start/queue research
             const playerNumber = getCurrentPlayerNumber(this.mainSceneWithActors);
             const success =
-              !!playerNumber &&
-              dispatchResearchCommand(this.mainSceneWithActors, actor, playerNumber, researchType);
+              !!playerNumber && dispatchResearchCommand(this.mainSceneWithActors, actor, playerNumber, researchType);
             if (success) {
               this.audioService.playAudioSprite(AudioSprites.UI_FEEDBACK, UiFeedbackSfx.BUTTON_CLICK);
             } else {
@@ -1084,7 +1111,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     return index;
   }
 
-  /** Check if a research type is currently queued in any owned building's queue */
+  /** Documents the is research type queued globally member and its declared contract at this boundary. */
   private isResearchTypeQueuedGlobally(researchType: ResearchType): boolean {
     const playerNr = getCurrentPlayerNumber(this.mainSceneWithActors);
     if (!playerNr) return false;
@@ -1165,7 +1192,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     }
   }
 
-  /** Show buildable structures and categories when in building mode */
+  /** Documents the show buildable icons member and its declared contract at this boundary. */
   private showBuildableIcons(
     actor: Phaser.GameObjects.GameObject,
     allActors: Phaser.GameObjects.GameObject[],
@@ -1310,7 +1337,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     return index;
   }
 
-  /** Get the constructable definition for the current navigation level */
+  /** Documents the get current constructable level member and its declared contract at this boundary. */
   private getCurrentConstructableLevel(builderComponent: BuilderComponent): ConstructableDefinition {
     let current = builderComponent.constructableBuildingsNested;
 
@@ -1348,7 +1375,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     return current;
   }
 
-  /** Check if an object can be produced/built, including tech tree and resource requirements */
+  /** Documents the get production validation state member and its declared contract at this boundary. */
   private getProductionValidationState(objectName: ObjectNames): {
     disabled: boolean;
     disabledDescription: string | null;
@@ -1373,6 +1400,10 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       disabledDescription = `Requires: ${requirementNames}`;
     }
 
+    if (validation.prereqs.campaignRestriction) {
+      disabledDescription = validation.prereqs.campaignRestriction;
+    }
+
     // Check for resource requirements
     const hasResourcePrereqs = Object.keys(validation.prereqs.resources).length > 0;
     if (hasResourcePrereqs && !disabledDescription) {
@@ -1387,7 +1418,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     return { disabled, disabledDescription, validation };
   }
 
-  /** Subscribe to the selected actor's spell cooldown events and drive a refresh timer */
+  /** Documents the subscribe to spell cooldowns member and its declared contract at this boundary. */
   private subscribeToSpellCooldowns(actor: Phaser.GameObjects.GameObject) {
     this.spellCooldownSubscriptions.forEach((sub) => sub.unsubscribe());
     this.spellCooldownSubscriptions = [];
@@ -1444,7 +1475,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     this.spellUpdateTimer = undefined;
   }
 
-  /** Check if a spell can be cast (cooldown, mana, research requirements) */
+  /** Documents the get spell validation state member and its declared contract at this boundary. */
   private getSpellValidationState(
     spellType: SpellType,
     spellComponent: SpellComponent
@@ -1476,7 +1507,7 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     return { disabled, disabledDescription, unmetRequirements };
   }
 
-  /** Check if research can be started (resources, prerequisites) */
+  /** Documents the get research validation state member and its declared contract at this boundary. */
   private getResearchValidationState(
     researchType: ResearchType,
     researchComponent: ResearchComponent
@@ -1527,6 +1558,8 @@ export default class ActorActions extends Phaser.GameObjects.Container {
     this.buildingModeSubscription?.unsubscribe();
     this.resourceChangedSubscription?.unsubscribe();
     this.actorUnlockSubscription?.unsubscribe();
+    this.contentAllowanceUnsubscribe?.();
+    this.contentAllowanceUnsubscribe = undefined;
     this.researchEventSubscriptions.forEach((sub) => sub.unsubscribe());
     this.spellCooldownSubscriptions.forEach((sub) => sub.unsubscribe());
     this.stopSpellCooldownTimer();

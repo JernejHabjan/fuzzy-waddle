@@ -19,6 +19,7 @@ export class PlayerAiController {
   private behaviourTree: BehaviourTree;
   private elapsedTime: number = 0;
   private static readonly AI_ENABLED = true;
+  private enabled = true;
   private readonly stepInterval: number = AI_CONFIG.controllerStepIntervalMs;
   telemetry = new TelemetrySink();
   private telemetryFrameModulo = AI_CONFIG.telemetryFrameModulo;
@@ -53,7 +54,7 @@ export class PlayerAiController {
   private async updateFrameNonDeterministicFallback(_: number, delta: number) {
     const deltaWithTimeScale = delta * this.scene.time.timeScale;
 
-    if (!PlayerAiController.AI_ENABLED) return;
+    if (!PlayerAiController.AI_ENABLED || !this.enabled) return;
     this.elapsedTime += deltaWithTimeScale;
     if (this.elapsedTime >= this.stepInterval) {
       await this.runScheduledStep();
@@ -61,7 +62,7 @@ export class PlayerAiController {
   }
 
   private async updateOnSimulationTick(): Promise<void> {
-    if (!PlayerAiController.AI_ENABLED) return;
+    if (!PlayerAiController.AI_ENABLED || !this.enabled) return;
     this.elapsedTime += SimulationTickService.TICK_INTERVAL_MS;
     if (this.elapsedTime >= this.stepInterval) {
       await this.runScheduledStep();
@@ -130,7 +131,8 @@ export class PlayerAiController {
   public getSaveState(): AIBehaviorTreeStateData {
     return {
       blackboard: this.blackboard.getData(),
-      telemetry: this.telemetry.snapshot()
+      telemetry: this.telemetry.snapshot(),
+      enabled: this.enabled
     };
   }
 
@@ -138,8 +140,20 @@ export class PlayerAiController {
    * Set the AI behavior tree state from saved data.
    */
   public setSaveState(state: AIBehaviorTreeStateData): void {
+    this.setEnabled(state.enabled ?? true);
     if (state.blackboard) {
       this.blackboard.setData(state.blackboard, this.scene);
     }
+  }
+
+  /** Documents the set enabled member and its declared contract at this boundary. */
+  setEnabled(enabled: boolean): void {
+    this.enabled = enabled;
+    const definition = this.player.playerController.data.playerDefinition;
+    if (definition) definition.campaignAiEnabled = enabled;
+  }
+
+  isEnabled(): boolean {
+    return this.enabled;
   }
 }

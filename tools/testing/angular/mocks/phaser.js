@@ -78,6 +78,40 @@ class Body {}
 class Tween {}
 class TimerEvent {}
 
+class RandomDataGenerator {
+  constructor(seeds = []) {
+    this.value = String(seeds[0] ?? "seed")
+      .split("")
+      .reduce((hash, character) => Math.imul(hash ^ character.charCodeAt(0), 16777619) >>> 0, 2166136261);
+  }
+
+  frac() {
+    this.value = (Math.imul(this.value, 1664525) + 1013904223) >>> 0;
+    return this.value / 4294967296;
+  }
+
+  between(min, max) {
+    return min + Math.floor(this.frac() * (max - min + 1));
+  }
+
+  pick(items) {
+    return items[this.between(0, items.length - 1)];
+  }
+
+  shuffle(items) {
+    for (let index = items.length - 1; index > 0; index -= 1) {
+      const selected = this.between(0, index);
+      [items[index], items[selected]] = [items[selected], items[index]];
+    }
+    return items;
+  }
+
+  state(value) {
+    if (typeof value === "string") this.value = Number(value.split(",")[1]) >>> 0;
+    return `!rnd,${this.value},0,0,0`;
+  }
+}
+
 class Circle {
   constructor(x, y, r) {
     this.x = x;
@@ -129,6 +163,7 @@ const MathUtils = {
   Angle: {
     Between: () => 0
   },
+  RandomDataGenerator,
   Vector2
 };
 

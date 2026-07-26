@@ -10,8 +10,11 @@ import { environment } from "@fuzzy-waddle/environments/environment";
 import { shouldConsiderActorUnlocked } from "./actor-unlock-utils";
 import { FactionDefinitions } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { researchDefinitions } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/research/research-definitions";
+import { GameEventEmitter } from "@fuzzy-waddle/platform-game-host";
+import type { CampaignContentAllowanceService } from "@fuzzy-waddle/probable-waffle-campaign";
 
 export class TechTreeService {
+  readonly researchCompleted = new GameEventEmitter<{ playerNumber: PlayerNumber; researchType: ResearchType }>();
   private readonly graph: TechTreeGraph;
   // Per-player unlock tracking (keyed by player number)
   private readonly playerUnlocks = new Map<number, Set<ObjectNames>>();
@@ -20,7 +23,7 @@ export class TechTreeService {
   // Faction membership cache to avoid recomputation
   private readonly factionCache = new Map<FactionType, Set<ObjectNames>>();
 
-  constructor() {
+  constructor(private readonly campaignAllowances?: CampaignContentAllowanceService) {
     this.graph = TechTreeBuilder.build();
     // Validate tech tree structure on initialization
     if (!environment.production) {
@@ -89,6 +92,15 @@ export class TechTreeService {
     const objectName = FactionDefinitions.factions.find((f) => f.type === factionType)?.value.mainBuildingActorName;
     if (objectName) return objectName;
     throw new Error(`Unknown faction type: ${factionType}`);
+  }
+
+  /** Documents the get full ai foundation member and its declared contract at this boundary. */
+  getFullAiFoundation(factionType: FactionType): readonly ObjectNames[] {
+    const mainBuilding = this.getMainBuildingForFaction(factionType);
+    const builder = this.graph.nodes[mainBuilding]?.produces.find(
+      (objectName) => (this.graph.nodes[objectName]?.constructs.length ?? 0) > 0
+    );
+    return builder ? [mainBuilding, builder] : [mainBuilding];
   }
 
   /**
@@ -221,9 +233,20 @@ export class TechTreeService {
   }
 
   isAvailable(playerNumber: PlayerNumber, id: ObjectNames): boolean {
+    if (!this.isContentAllowed(playerNumber, "actor", id)) return false;
     if (this.isUnlocked(playerNumber, id)) return true;
     const prereqs = this.getPrerequisites(playerNumber, id);
     return prereqs.canProduce;
+  }
+
+  isContentAllowed(playerNumber: PlayerNumber, type: "actor" | "research", id: ObjectNames | ResearchType): boolean {
+    if (!(this.campaignAllowances?.isAllowed(playerNumber, type, id) ?? true)) return false;
+    if (type === "research") {
+      const upgrade = researchDefinitions[id as ResearchType]?.upgradesUnit;
+      const cap = upgrade ? this.campaignAllowances?.getUnitLevelCap(playerNumber, upgrade.unitType) : undefined;
+      if (cap !== undefined && upgrade && upgrade.targetLevel > cap) return false;
+    }
+    return true;
   }
 
   /**
@@ -476,7 +499,9 @@ export class TechTreeService {
       research = new Set<ResearchType>();
       this.playerResearch.set(playerNumber, research);
     }
+    if (research.has(researchType)) return;
     research.add(researchType);
+    this.researchCompleted.emit({ playerNumber, researchType });
   }
 
   /**
@@ -521,7 +546,8 @@ export class TechTreeService {
       }
     });
 
-    return highestLevel;
+    const cap = this.campaignAllowances?.getUnitLevelCap(playerNumber, unitType);
+    return cap === undefined ? highestLevel : Math.min(highestLevel, cap);
   }
 
   /**

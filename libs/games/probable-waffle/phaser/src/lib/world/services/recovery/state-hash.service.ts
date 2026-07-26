@@ -26,9 +26,27 @@ import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller"
 import type { ReconnectSnapshotAppliedSceneEvent } from "./probable-waffle-scene-events";
 import { ProbableWaffleSceneEventName } from "./probable-waffle-scene-events";
 import { createMultiplayerClientLogger } from "../multiplayer/multiplayer-client-logger";
+import {
+  serializeCampaignMissionRuntimeState,
+  serializeCampaignMissionRuntimeStateFamilies
+} from "@fuzzy-waddle/probable-waffle-campaign";
+import { RandomService } from "../random.service";
 
+/**
+ * Defines the structured hash snapshot contract for this module. Its declared surface makes hash, diagnostics
+ * explicit to every consumer. Use this shared shape rather than an ad-hoc object so adapters, persistence, and
+ * callers remain compatible.
+ */
 interface HashSnapshot {
+  /**
+   * boolean policy/value on {@link HashSnapshot} that explicitly controls whether the associated behavior is
+   * active; do not infer it from unrelated state.
+   */
   hash: string;
+  /**
+   * Optional diagnostics value carried by {@link HashSnapshot}. Its declared type is the compatibility boundary
+   * for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   diagnostics?: ProbableWaffleStateHashDiagnostics;
 }
 
@@ -43,18 +61,52 @@ const HASH_INTERVAL_TICKS = 20;
  * In practice the peer hash arrives within 1–2 ticks of ours.
  */
 const HASH_STORE_TICKS = 120;
-/** Keep enabled so mismatch logs can always explain exactly what diverged. */
+/** Documents the following declaration and its compatibility contract. */
 const INCLUDE_HASH_DIAGNOSTICS_IN_STEADY_STATE = true;
 
+/**
+ * Defines the structured pending correction contract for this module. Its declared surface makes emitter user
+ * id, player number, first detected tick, last correction tick, correction attempts explicit to every
+ * consumer. Use this shared shape rather than an ad-hoc object so adapters, persistence, and callers remain
+ * compatible.
+ */
 interface PendingCorrection {
+  /**
+   * stable emitter user id used by {@link PendingCorrection} to correlate this value with related records,
+   * events, or authored content; it is not a display label.
+   */
   emitterUserId: string;
+  /**
+   * numeric player number carried by {@link PendingCorrection}. Its units and valid range are defined by {@link
+   * PendingCorrection} and must remain consistent across producers and consumers.
+   */
   playerNumber: number;
+  /**
+   * temporal value for {@link PendingCorrection}. It anchors ordering, expiry, or presentation timing and must
+   * use the time domain declared by the enclosing contract.
+   */
   firstDetectedTick: number;
+  /**
+   * temporal value for {@link PendingCorrection}. It anchors ordering, expiry, or presentation timing and must
+   * use the time domain declared by the enclosing contract.
+   */
   lastCorrectionTick: number;
+  /**
+   * numeric correction attempts carried by {@link PendingCorrection}. Its units and valid range are defined by
+   * {@link PendingCorrection} and must remain consistent across producers and consumers.
+   */
   correctionAttempts: number;
+  /**
+   * Optional string reason carried by {@link PendingCorrection}. Treat it according to the owning contract’s
+   * validation and presentation rules rather than assuming it is a stable identifier.
+   */
   reason?: string;
 }
 
+/**
+ * Defines the closed stable serializable value set. Keeping this union named preserves exhaustive handling and
+ * prevents incompatible free-form values at its boundaries.
+ */
 type StableSerializable =
   | string
   | number
@@ -64,8 +116,21 @@ type StableSerializable =
   | readonly StableSerializable[]
   | { readonly [key: string]: StableSerializable };
 
+/**
+ * Defines the structured hash order data contract for this module. Its declared surface makes target game
+ * object id, target tile location explicit to every consumer. Use this shared shape rather than an ad-hoc
+ * object so adapters, persistence, and callers remain compatible.
+ */
 interface HashOrderData {
+  /**
+   * Optional stable target game object id used by {@link HashOrderData} to correlate this value with related
+   * records, events, or authored content; it is not a display label.
+   */
   readonly targetGameObjectId?: StableSerializable;
+  /**
+   * Optional keyed/nested target tile location structure owned by {@link HashOrderData}. Keep its keys and value
+   * contract explicit so callers cannot smuggle a broader shape across this boundary.
+   */
   readonly targetTileLocation?: {
     readonly x?: number;
     readonly y?: number;
@@ -73,8 +138,21 @@ interface HashOrderData {
   } | null;
 }
 
+/**
+ * Defines the structured hash order contract for this module. Its declared surface makes order type, data
+ * explicit to every consumer. Use this shared shape rather than an ad-hoc object so adapters, persistence, and
+ * callers remain compatible.
+ */
 interface HashOrder {
+  /**
+   * Optional discriminator for {@link HashOrder}. It selects the valid branch and behavior, so producers and
+   * consumers must keep it synchronized with the accompanying fields.
+   */
   readonly orderType?: StableSerializable;
+  /**
+   * Optional typed data associated with {@link HashOrder}. Preserve its declared contract at serialization and
+   * adapter boundaries instead of weakening it to an unstructured record.
+   */
   readonly data?: HashOrderData | null;
 }
 
@@ -84,6 +162,7 @@ interface HashOrder {
  *
  * Hash scope per actor: {id, health, tileX, tileY, owner}. Actors sorted by ID
  * so every client produces an identical string for the same simulation state.
+ * Campaign scenes also append their canonical mission-runtime snapshot.
  * The service hashes once per HASH_INTERVAL_TICKS instead of every simulation tick:
  * full actor serialization is intentionally diagnostic-heavy, and per-tick hashing
  * would compete with lockstep command processing during large battles.
@@ -97,16 +176,16 @@ export class StateHashService {
   private tickSub?: Subscription;
   private hashReceivedSub?: Subscription;
   private scene?: ProbableWaffleScene;
-  /** Lightweight debug overlay; shown immediately on mismatch for quick visual feedback. */
+  /** Documents the desync text member and its declared contract at this boundary. */
   private desyncText?: Phaser.GameObjects.Text;
   private readonly pendingCorrections = new Map<number, PendingCorrection>();
-  /** Tracks current mismatch reason per remote player for log deduping and dialog auto-close signaling. */
+  /** Documents the following declaration and its compatibility contract. */
   private readonly activeMismatches = new Map<number, string>();
-  /** Emits periodic mismatch logs even when reason text stays unchanged. */
+  /** Documents the following declaration and its compatibility contract. */
   private readonly lastMismatchLogTickByPlayer = new Map<number, number>();
   private missingLocalHashLogSignature: string | null = null;
 
-  /** Subscribes to sim ticks and peer hash relay; disabled automatically in singleplayer. */
+  /** Documents the init member and its declared contract at this boundary. */
   init(scene: ProbableWaffleScene): void {
     this.scene = scene;
     const communicator = getCommunicator(scene);
@@ -128,7 +207,7 @@ export class StateHashService {
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.destroy());
   }
 
-  /** Emits local hash snapshots on a fixed tick interval and retains a short comparison history. */
+  /** Documents the on tick member and its declared contract at this boundary. */
   private onTick(tick: number, scene: ProbableWaffleScene): void {
     if (tick % HASH_INTERVAL_TICKS !== 0) return;
 
@@ -160,15 +239,32 @@ export class StateHashService {
    * Uses integer positions (Math.round) to avoid float divergence from display rounding.
    */
   private computeHashSnapshot(scene: Phaser.Scene, includeDiagnostics: boolean): HashSnapshot {
+    const campaignMission = (scene as ProbableWaffleScene).baseGameData.gameInstance.gameState?.data.campaignMission;
+    const campaignMissionDigest = campaignMission ? djb2(serializeCampaignMissionRuntimeState(campaignMission)) : "";
+    const campaignMissionFamilyDigests = campaignMission
+      ? Object.fromEntries(
+          Object.entries(serializeCampaignMissionRuntimeStateFamilies(campaignMission)).map(([family, value]) => [
+            family,
+            djb2(value)
+          ])
+        )
+      : {};
+    const randomState = getSceneService(scene, RandomService)?.getState();
+    const randomDigest = randomState
+      ? djb2(`${randomState.schemaVersion}:${randomState.generatorState}:${randomState.operationCount}`)
+      : "";
     const actorIndex = getSceneService(scene, ActorIndexSystem);
     if (!actorIndex) {
       return {
-        hash: "",
+        hash: djb2(`###${campaignMissionDigest}#${randomDigest}`),
         diagnostics: includeDiagnostics
           ? {
               actorDigests: {},
               playerDigests: [],
-              researchDigest: ""
+              researchDigest: "",
+              campaignMissionDigest,
+              campaignMissionFamilyDigests,
+              randomDigest
             }
           : undefined
       };
@@ -195,7 +291,10 @@ export class StateHashService {
         const economyState = this.serializeActorEconomyState(actor);
         const combatState = this.serializeActorCombatState(go);
         const orderState = this.serializeActorOrderState(go);
-        const actorDigest = `${id}:${go.name}:${Math.round(health)}:${Math.round(armour)}:${lx}:${ly}:${lz}:${owner}:${queueState}:${economyState}:${combatState}:${orderState}`;
+        const scenarioState = actor.scenario
+          ? this.stableSerialize({ roleId: actor.scenario.roleId, tags: actor.scenario.tags })
+          : "";
+        const actorDigest = `${id}:${go.name}:${Math.round(health)}:${Math.round(armour)}:${lx}:${ly}:${lz}:${owner}:${queueState}:${economyState}:${combatState}:${orderState}:${scenarioState}`;
         if (actorDigests) {
           actorDigests[id] = actorDigest;
         }
@@ -207,17 +306,28 @@ export class StateHashService {
     const playerStateEntries = this.serializePlayerStates(scene);
     const researchEntries = this.serializeResearchState(scene);
     return {
-      hash: djb2(`${entries.join("|")}#${playerStateEntries.join("|")}#${researchEntries.join("|")}`),
+      hash: djb2(
+        `${entries.join("|")}#${playerStateEntries.join("|")}#${researchEntries.join("|")}#${campaignMissionDigest}#${randomDigest}`
+      ),
       diagnostics: includeDiagnostics
         ? {
             actorDigests: actorDigests ?? {},
             playerDigests: playerStateEntries,
-            researchDigest: researchEntries.join("|")
+            researchDigest: researchEntries.join("|"),
+            campaignMissionDigest,
+            campaignMissionFamilyDigests,
+            randomDigest
           }
         : undefined
     };
   }
 
+  /**
+   * Compares a host/client hash at the same simulation tick and escalates only confirmed
+   * divergence. It ignores stale/out-of-order reports, tracks mismatch evidence for the
+   * diagnostic surface, and asks recovery for a snapshot rather than attempting a local
+   * repair that could make lockstep state less trustworthy.
+   */
   private compareRemoteHash(
     event: {
       tick: number;
@@ -308,7 +418,10 @@ export class StateHashService {
     if (
       diagnosticsDiff.actorDiffs.length > 0 ||
       diagnosticsDiff.playerDiffs.length > 0 ||
-      diagnosticsDiff.researchDiff
+      diagnosticsDiff.researchDiff ||
+      diagnosticsDiff.campaignMissionDiff ||
+      diagnosticsDiff.campaignMissionFamilyDiff ||
+      diagnosticsDiff.randomDiff
     ) {
       this.logger.warn(`[DESYNC][DIFF] tick=${event.tick} remotePlayer=${event.playerNumber ?? "unknown"}`, {
         authority: this.getHashEventAuthorityContext(scene, event.playerNumber, event.emitterUserId),
@@ -316,7 +429,10 @@ export class StateHashService {
         playerDiffCount: diagnosticsDiff.playerDiffs.length,
         actorDiffs: diagnosticsDiff.actorDiffs,
         playerDiffs: diagnosticsDiff.playerDiffs,
-        researchDiff: diagnosticsDiff.researchDiff ?? "none"
+        researchDiff: diagnosticsDiff.researchDiff ?? "none",
+        campaignMissionDiff: diagnosticsDiff.campaignMissionDiff ?? "none",
+        campaignMissionFamilyDiff: diagnosticsDiff.campaignMissionFamilyDiff ?? "none",
+        randomDiff: diagnosticsDiff.randomDiff ?? "none"
       });
     }
     if (classifiedMismatch) {
@@ -333,7 +449,10 @@ export class StateHashService {
       mismatchReason,
       actorDiffs: diagnosticsDiff.actorDiffs,
       playerDiffs: diagnosticsDiff.playerDiffs,
-      researchDiff: diagnosticsDiff.researchDiff
+      researchDiff: diagnosticsDiff.researchDiff,
+      campaignMissionDiff: diagnosticsDiff.campaignMissionDiff,
+      campaignMissionFamilyDiff: diagnosticsDiff.campaignMissionFamilyDiff,
+      randomDiff: diagnosticsDiff.randomDiff
     } satisfies ProbableWaffleReplayDesyncDiagnostic);
 
     if (event.playerNumber !== undefined) {
@@ -382,7 +501,7 @@ export class StateHashService {
     );
   };
 
-  /** Host-side escalation: send correction snapshot first, then alert room if mismatch persists past grace. */
+  /** Documents the handle host detected desync member and its declared contract at this boundary. */
   private handleHostDetectedDesync(
     tick: number,
     remotePlayerNumber: number,
@@ -498,7 +617,7 @@ export class StateHashService {
     return metadataData.currentHostUserId ?? metadataData.createdBy ?? null;
   }
 
-  /** Persistent on-screen overlay so the affected client immediately sees the desync. */
+  /** Documents the show desync indicator member and its declared contract at this boundary. */
   private showDesyncIndicator(tick: number, remotePlayer: number | undefined, scene: Phaser.Scene): void {
     this.desyncText?.destroy();
     this.desyncText = scene.add
@@ -517,7 +636,7 @@ export class StateHashService {
     this.desyncText = undefined;
   }
 
-  /** Serializes production/research queues into deterministic textual digest segments. */
+  /** Documents the serialize actor queue state member and its declared contract at this boundary. */
   private serializeActorQueueState(actor: Pick<ActorDefinition, "production" | "research">): string {
     const productionQueue = actor.production?.queue ?? [];
     const researchQueue = actor.research?.researches ?? [];
@@ -536,7 +655,7 @@ export class StateHashService {
     return `${serializedProduction};${serializedResearch}`;
   }
 
-  /** Serializes carrying/resource/container values that commonly diverge in economy bugs. */
+  /** Documents the serialize actor economy state member and its declared contract at this boundary. */
   private serializeActorEconomyState(
     actor: Pick<ActorDefinition, "gatherer" | "resourceSource" | "resourceDrain" | "container">
   ): string {
@@ -547,7 +666,7 @@ export class StateHashService {
     return `${gathered}:${source}:${drain}:${container}`;
   }
 
-  /** Serializes cooldown/runtime combat state that influences future command execution deterministically. */
+  /** Documents the serialize actor combat state member and its declared contract at this boundary. */
   private serializeActorCombatState(actor: Phaser.GameObjects.GameObject): string {
     const attackCooldown = Math.round(getActorComponent(actor, AttackComponent)?.remainingCooldown ?? -1);
     const healingCooldown = Math.round(getActorComponent(actor, HealingComponent)?.remainingCooldown ?? -1);
@@ -560,7 +679,7 @@ export class StateHashService {
     return `${attackCooldown}:${healingCooldown}:${builderCooldown}:${gathererCooldown}:${gatherSourceId}`;
   }
 
-  /** Serializes AI blackboard order state so path/order drift appears in hash diagnostics. */
+  /** Documents the serialize actor order state member and its declared contract at this boundary. */
   private serializeActorOrderState(actor: Phaser.GameObjects.GameObject): string {
     const blackboard = getActorComponent(actor, PawnAiController)?.getData().blackboard;
     if (!blackboard) {
@@ -614,7 +733,7 @@ export class StateHashService {
     return value === undefined ? null : String(value);
   }
 
-  /** Deterministic serializer with stable object-key ordering to avoid hash noise from key order. */
+  /** Documents the stable serialize member and its declared contract at this boundary. */
   private stableSerialize(value: StableSerializable): string {
     if (value === null) {
       return "null";
@@ -635,7 +754,7 @@ export class StateHashService {
     return String(value);
   }
 
-  /** Produces a human-readable first-difference explanation between local and remote hash diagnostics. */
+  /** Documents the describe diagnostics mismatch member and its declared contract at this boundary. */
   private describeDiagnosticsMismatch(
     localDiagnostics: ProbableWaffleStateHashDiagnostics | undefined,
     remoteDiagnostics: ProbableWaffleStateHashDiagnostics | undefined
@@ -672,6 +791,22 @@ export class StateHashService {
 
     if ((localDiagnostics.researchDigest ?? "") !== (remoteDiagnostics.researchDigest ?? "")) {
       return `research local=${localDiagnostics.researchDigest ?? "missing"} remote=${remoteDiagnostics.researchDigest ?? "missing"}`;
+    }
+
+    if ((localDiagnostics.randomDigest ?? "") !== (remoteDiagnostics.randomDigest ?? "")) {
+      return `random local=${localDiagnostics.randomDigest ?? "missing"} remote=${remoteDiagnostics.randomDigest ?? "missing"}`;
+    }
+
+    const localFamilies = localDiagnostics.campaignMissionFamilyDigests ?? {};
+    const remoteFamilies = remoteDiagnostics.campaignMissionFamilyDigests ?? {};
+    for (const family of [...new Set([...Object.keys(localFamilies), ...Object.keys(remoteFamilies)])].sort()) {
+      if (localFamilies[family] !== remoteFamilies[family]) {
+        return `campaign-family=${family} local=${localFamilies[family] ?? "missing"} remote=${remoteFamilies[family] ?? "missing"}`;
+      }
+    }
+
+    if ((localDiagnostics.campaignMissionDigest ?? "") !== (remoteDiagnostics.campaignMissionDigest ?? "")) {
+      return `campaign-mission local=${localDiagnostics.campaignMissionDigest ?? "missing"} remote=${remoteDiagnostics.campaignMissionDigest ?? "missing"}`;
     }
 
     return "hash mismatch without diagnostic delta";
@@ -882,7 +1017,14 @@ export class StateHashService {
   private collectDiagnosticsDiffs(
     localDiagnostics: ProbableWaffleStateHashDiagnostics | undefined,
     remoteDiagnostics: ProbableWaffleStateHashDiagnostics | undefined
-  ): { actorDiffs: string[]; playerDiffs: string[]; researchDiff?: string } {
+  ): {
+    actorDiffs: string[];
+    playerDiffs: string[];
+    researchDiff?: string;
+    campaignMissionDiff?: string;
+    campaignMissionFamilyDiff?: string;
+    randomDiff?: string;
+  } {
     if (!localDiagnostics || !remoteDiagnostics) {
       return {
         actorDiffs: [],
@@ -920,14 +1062,37 @@ export class StateHashService {
       localResearch === remoteResearch
         ? undefined
         : `research local=${localResearch || "missing"} remote=${remoteResearch || "missing"}`;
+    const localCampaignMission = localDiagnostics.campaignMissionDigest ?? "";
+    const remoteCampaignMission = remoteDiagnostics.campaignMissionDigest ?? "";
+    const campaignMissionDiff =
+      localCampaignMission === remoteCampaignMission
+        ? undefined
+        : `campaign-mission local=${localCampaignMission || "missing"} remote=${remoteCampaignMission || "missing"}`;
+    const localFamilies = localDiagnostics.campaignMissionFamilyDigests ?? {};
+    const remoteFamilies = remoteDiagnostics.campaignMissionFamilyDigests ?? {};
+    const changedFamily = [...new Set([...Object.keys(localFamilies), ...Object.keys(remoteFamilies)])]
+      .sort()
+      .find((family) => localFamilies[family] !== remoteFamilies[family]);
+    const campaignMissionFamilyDiff = changedFamily
+      ? `campaign-family=${changedFamily} local=${localFamilies[changedFamily] ?? "missing"} remote=${remoteFamilies[changedFamily] ?? "missing"}`
+      : undefined;
+    const localRandom = localDiagnostics.randomDigest ?? "";
+    const remoteRandom = remoteDiagnostics.randomDigest ?? "";
+    const randomDiff =
+      localRandom === remoteRandom
+        ? undefined
+        : `random local=${localRandom || "missing"} remote=${remoteRandom || "missing"}`;
     return {
       actorDiffs,
       playerDiffs,
-      researchDiff
+      researchDiff,
+      campaignMissionDiff,
+      campaignMissionFamilyDiff,
+      randomDiff
     };
   }
 
-  /** Serializes per-player resource state used in deterministic economy progression. */
+  /** Documents the serialize player states member and its declared contract at this boundary. */
   private serializePlayerStates(scene: Phaser.Scene): string[] {
     const probableWaffleScene = scene as ProbableWaffleScene;
     return [...probableWaffleScene.players]
@@ -939,7 +1104,7 @@ export class StateHashService {
       });
   }
 
-  /** Serializes sorted per-player research ownership to detect technology progression drift. */
+  /** Documents the serialize research state member and its declared contract at this boundary. */
   private serializeResearchState(scene: Phaser.Scene): string[] {
     const playerResearch =
       (scene as ProbableWaffleScene).baseGameData.gameInstance.gameState?.data.playerResearch ?? {};
@@ -948,7 +1113,7 @@ export class StateHashService {
       .map(([playerNumber, researches]) => `${playerNumber}:${[...(researches ?? [])].sort().join(",")}`);
   }
 
-  /** Drops old hash snapshots outside the rolling lookup window used for remote comparison. */
+  /** Documents the prune old hashes member and its declared contract at this boundary. */
   private pruneOldHashes(currentTick: number): void {
     const cutoff = currentTick - HASH_STORE_TICKS;
     for (const tick of this.localHashes.keys()) {
@@ -956,7 +1121,7 @@ export class StateHashService {
     }
   }
 
-  /** Unsubscribes and clears all desync UI/state caches on scene shutdown. */
+  /** Documents the destroy member and its declared contract at this boundary. */
   destroy(): void {
     this.tickSub?.unsubscribe();
     this.hashReceivedSub?.unsubscribe();

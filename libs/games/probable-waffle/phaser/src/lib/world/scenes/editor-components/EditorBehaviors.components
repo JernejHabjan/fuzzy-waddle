@@ -98,6 +98,44 @@
             ],
             "constraints": [],
             "constraintsCondition": "all"
+        },
+        {
+            "name": "EditorScenarioReference",
+            "displayName": "Scenario Reference",
+            "objectDisplayFormat": "{scenarioId}",
+            "baseClass": "",
+            "gameObjectType": "Phaser.GameObjects.GameObject",
+            "generateGameObjectField": true,
+            "properties": [
+                {
+                    "name": "scenarioId",
+                    "label": "Stable Scenario ID",
+                    "tooltip": "Human-readable campaign ID; do not use the editor UUID or variable label.",
+                    "defValue": "",
+                    "customDefinition": false,
+                    "editorOnly": false,
+                    "deprecated": false,
+                    "type": {
+                        "id": "string",
+                        "isArray": false
+                    }
+                },
+                {
+                    "name": "tags",
+                    "label": "Scenario Tags",
+                    "tooltip": "Comma-separated stable tags.",
+                    "defValue": "",
+                    "customDefinition": false,
+                    "editorOnly": false,
+                    "deprecated": false,
+                    "type": {
+                        "id": "string",
+                        "isArray": false
+                    }
+                }
+            ],
+            "constraints": [],
+            "constraintsCondition": "all"
         }
     ],
     "meta": {

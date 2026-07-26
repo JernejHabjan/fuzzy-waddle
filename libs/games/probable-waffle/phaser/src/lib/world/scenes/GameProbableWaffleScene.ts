@@ -50,6 +50,11 @@ import { isTauri } from "@fuzzy-waddle/platform-game-host/tauri";
 import { SceneLightingService } from "../services/lighting/scene-lighting.service";
 import { MovementOccupancyService } from "../services/movement-occupancy.service";
 import { NavigationDebugService } from "../services/navigation-debug.service";
+import { CampaignMissionDirector } from "../../campaign/campaign-mission-director";
+import { IndexedScenarioReferenceRegistry } from "../../campaign/scenario/scenario-reference-registry";
+import { CampaignContentAllowanceService } from "@fuzzy-waddle/probable-waffle-campaign";
+import { CampaignParticipantSceneAdapter } from "../../campaign/participants/campaign-participant-scene-adapter";
+import { CampaignRestoreCoordinator } from "../../campaign/campaign-restore-coordinator";
 
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
   tilemap!: Phaser.Tilemaps.Tilemap;
@@ -58,6 +63,21 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     super.init();
   }
 
+  /**
+   * Creates the scene's ordered authority graph and gameplay projections. Campaign
+   * services are registered only for campaign context and before actor-dependent work;
+   * restore/reconnect paths defer mission advancement until indexes and synchronized
+   * state are ready.
+   *
+   * ```text
+   * game state -> scene services -> actor/index bootstrap -> campaign director -> HUD
+   *      ^                |                   |                    |
+   *      +--- reconnect --+-------------------+---- snapshot -------+
+   * ```
+   *
+   * @see {@link CampaignMissionDirector} for deterministic mission lifecycle ownership.
+   * @see {@link ReconnectService} for the snapshot-before-resume restore boundary.
+   */
   override create() {
     const hud = this.scene.get<HudProbableWaffle>("HudProbableWaffle") as HudProbableWaffle;
     hud.scene.start();
@@ -73,13 +93,15 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     new GameObjectActionAssigner(this);
     new SaveGame(this);
     new RestartGame(this, hud);
-    new GameModeConditionChecker(this);
+    const gameModeConditionChecker = new GameModeConditionChecker(this);
     this.sceneGameData.systems.push(new ScoreTracker(this)); // Track player scores for score screen
     const creator = new SceneActorCreator(this);
     const actorIndex = new ActorIndexSystem(this);
     const snapshotService = new SnapshotService();
     const commandBusService = new CommandBusService(this);
     const simTickService = new SimulationTickService(this);
+    const scenarioReferenceRegistry = new IndexedScenarioReferenceRegistry();
+    const campaignContentAllowances = new CampaignContentAllowanceService();
 
     this.sceneGameData.components.push(
       this.getCameraMovementHandler(),
@@ -104,13 +126,29 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       new DebuggingService(),
       new CrossSceneCommunicationService(),
       actorIndex,
-      new TechTreeService(),
+      scenarioReferenceRegistry,
+      campaignContentAllowances,
+      new TechTreeService(campaignContentAllowances),
       new SpellCursor(this),
       new AoeZoneManager(this),
       new PauseSyncService(this),
       snapshotService
     );
+    scenarioReferenceRegistry.initialize(this);
+    CampaignParticipantSceneAdapter.configure(this, campaignContentAllowances);
     simTickService?.pauseTick(SimulationPauseReason.SceneBootstrap);
+    const restoreCoordinator =
+      this.baseGameData.gameInstance.gameInstanceMetadata.data.startOptions.loadFromSave &&
+      this.baseGameData.gameInstance.gameInstanceMetadata.data.campaignContext
+        ? new CampaignRestoreCoordinator(this)
+        : undefined;
+    restoreCoordinator?.begin();
+    const campaignMissionDirector = CampaignMissionDirector.create(this, gameModeConditionChecker);
+    if (campaignMissionDirector) {
+      this.sceneGameData.services.push(campaignMissionDirector);
+      hud.initializeCampaignObjectives(campaignMissionDirector);
+      hud.initializeCampaignPresentation(campaignMissionDirector);
+    }
     new ActorDebugDamageSystem(this);
     if (!this.baseGameData.gameInstance.gameInstanceMetadata.isReplay()) {
       this.sceneGameData.systems.push(new AiPlayerHandler(this));
@@ -122,6 +160,9 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     creator.initInitialActors();
     // Populate the index after initial actors are in place
     actorIndex.scanExistingActors();
+    new ReplayPlaybackService().init(this);
+    campaignMissionDirector?.startAfterActorIndexing();
+    restoreCoordinator?.complete();
     // Activate the multiplayer relay path when a socket is present
     commandBusService.tryInitMultiplayer();
 
@@ -133,7 +174,6 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     new ReconnectService().init(this);
     new HostMigrationService().init(this);
     new ReplayRecorderService().init(this);
-    new ReplayPlaybackService().init(this);
 
     super.create();
 
@@ -166,7 +206,12 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
   private getRandomService(): RandomService {
     const seed = this.sys.game.config.seed?.[0];
     if (!seed) throw new Error("Game seed is not defined");
-    return new RandomService(seed);
+    const randomService = new RandomService(seed);
+    const restoredState = this.baseGameData.gameInstance.gameState?.data.randomState;
+    if (restoredState) randomService.restoreState(restoredState);
+    const gameState = this.baseGameData.gameInstance.gameState;
+    if (gameState) gameState.data.randomState = randomService.getState();
+    return randomService;
   }
 
   private cleanup() {

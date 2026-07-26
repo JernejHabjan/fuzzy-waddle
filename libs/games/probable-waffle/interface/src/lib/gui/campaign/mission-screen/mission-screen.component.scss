@@ -180,10 +180,41 @@
 .mission-screen__briefing li {
   color: var(--aota-muted);
 }
+
+.mission-screen__profile,
+.mission-screen__archive {
+  margin-block: 1rem;
+  padding-block: 1rem;
+  border-block-start: 1px solid var(--aota-border-soft);
+}
+
+.mission-screen__difficulty,
+.mission-screen__loadouts,
+.mission-screen__upgrades {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-block: 0.75rem;
+}
+
+.mission-screen__restrictions {
+  padding: 0.75rem 0.75rem 0.75rem 2rem;
+  border: 1px solid #8b6d35;
+  border-radius: 0.5rem;
+  background: rgb(139 109 53 / 12%);
+}
 /* Action failure displayed near the mission controls. */
 .mission-screen__error {
   margin-block: 1rem 0;
   color: #ff9e9e !important;
+}
+
+.mission-screen__developer-warning {
+  padding: 0.75rem;
+  border: 1px solid #d39b3a;
+  border-radius: 0.5rem;
+  color: #f0c46b !important;
 }
 
 /* Phone and narrow-window layout stacks the journey above the briefing. */

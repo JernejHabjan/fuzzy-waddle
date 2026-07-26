@@ -8,11 +8,31 @@ import { GameSettings } from "../../core/gameSettings";
 import type { CameraStateData } from "@fuzzy-waddle/probable-waffle-protocol";
 import { FULLSCREEN_TOP_EDGE_PX, isFullscreenTopEdgeExit } from "./fullscreen-edge-guard";
 
+/**
+ * Defines the structured camera movement handler config contract for this module. Its declared surface makes
+ * camera edge movement speed, camera keyboard movement speed, enabled mouse corner movement, cursor over game
+ * explicit to every consumer. Use this shared shape rather than an ad-hoc object so adapters, persistence, and
+ * callers remain compatible.
+ */
 export interface CameraMovementHandlerConfig {
+  /**
+   * numeric camera edge movement speed carried by {@link CameraMovementHandlerConfig}. Its units and valid range
+   * are defined by {@link CameraMovementHandlerConfig} and must remain consistent across producers and
+   * consumers.
+   */
   cameraEdgeMovementSpeed: number;
+  /**
+   * numeric camera keyboard movement speed carried by {@link CameraMovementHandlerConfig}. Its units and valid
+   * range are defined by {@link CameraMovementHandlerConfig} and must remain consistent across producers and
+   * consumers.
+   */
   cameraKeyboardMovementSpeed: number;
+  /**
+   * Optional boolean policy/value on {@link CameraMovementHandlerConfig} that explicitly controls whether the
+   * associated behavior is active; do not infer it from unrelated state.
+   */
   enabledMouseCornerMovement?: boolean;
-  /** Set to true when the cursor is guaranteed to already be inside the game window at startup (e.g. Tauri desktop). */
+  /** Documents the cursor over game member and its declared contract at this boundary. */
   cursorOverGame?: boolean;
 }
 
@@ -27,6 +47,7 @@ export class CameraMovementHandler {
   private readonly cameraMaxZoom = 0.3;
   private optionsChangedSubscription?: Subscription;
   private cameraStateSetFromData: boolean = false;
+  private enabled = true;
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -53,6 +74,14 @@ export class CameraMovementHandler {
     this.config = { ...this.config, ...config };
   }
 
+  setEnabled(enabled: boolean): void {
+    this.enabled = enabled;
+  }
+
+  get isEnabled(): boolean {
+    return this.enabled;
+  }
+
   /**
    * Detect if camera is out of bounds
    */
@@ -69,6 +98,7 @@ export class CameraMovementHandler {
   }
 
   updateFrameNonDeterministic(_: number, delta: number) {
+    if (!this.enabled) return;
     this.keyboardMovementControls?.update(delta);
     this.screenEdgeMovementUpdate();
   }
@@ -120,11 +150,13 @@ export class CameraMovementHandler {
   }
 
   private handlePointerDown(pointer: Input.Pointer) {
+    if (!this.enabled) return;
     if (!pointer.leftButtonDown()) return;
     this.input.on(Input.Events.POINTER_MOVE, this.handlePointerMove, this);
   }
 
   private handlePointerMove(pointer: Input.Pointer) {
+    if (!this.enabled) return;
     if (!pointer.isDown) return;
 
     // Calculate movement based on the difference between current and previous pointer positions
@@ -188,6 +220,7 @@ export class CameraMovementHandler {
     deltaY: number,
     deltaZ: number
   ) {
+    if (!this.enabled) return;
     if (deltaY > 0) {
       this.zoomOut();
     }

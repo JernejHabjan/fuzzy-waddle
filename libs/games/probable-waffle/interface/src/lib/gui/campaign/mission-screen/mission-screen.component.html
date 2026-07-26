@@ -56,12 +56,157 @@
           <p class="mission-screen__eyebrow">{{ mission.environment }} · {{ mission.faction }}</p>
           <h2>{{ mission.title }}</h2>
           <p>{{ mission.briefing }}</p>
+          @if (developerOverride()) {
+            <p class="mission-screen__developer-warning" role="status">
+              Developer override: this locked or planned mission is available for testing, but rewards are disabled.
+            </p>
+          }
           <h3>Objectives</h3>
           <ul>
             @for (objective of mission.objectives; track objective) {
               <li>{{ objective }}</li>
             }
           </ul>
+
+          <section class="mission-screen__profile" aria-label="Campaign profile and loadout">
+            <h3>Run Setup</h3>
+            <div class="mission-screen__difficulty" aria-label="Difficulty">
+              @for (option of difficulties; track option) {
+                <button
+                  type="button"
+                  class="btn btn-sm"
+                  [class.btn-primary]="difficulty() === option"
+                  [class.btn-outline-secondary]="difficulty() !== option"
+                  (click)="selectDifficulty(option)"
+                >
+                  {{ option }}
+                </button>
+              }
+            </div>
+            <p>
+              Heroes:
+              @for (hero of heroes; track hero.id; let last = $last) {
+                <strong>{{ hero.title }}</strong>
+                @if (!last) {
+                  ,
+                }
+              }
+              · Faction: <strong>{{ mission.faction }}</strong>
+            </p>
+            <p>
+              Wallet:
+              @for (balance of walletEntries(); track balance[0]) {
+                <strong>{{ balance[1] }} {{ balance[0] }}</strong>
+              } @empty {
+                <span>No campaign currency</span>
+              }
+            </p>
+            <p>
+              Permanent bonuses:
+              @for (upgradeId of profile().progression.permanentUpgradeIds; track upgradeId) {
+                <strong>{{ upgradeId }}</strong>
+              } @empty {
+                <span>None earned yet</span>
+              }
+            </p>
+            <div class="mission-screen__loadouts">
+              <strong>Loadouts</strong>
+              @for (loadout of loadouts(); track loadout.id) {
+                <button
+                  type="button"
+                  class="btn btn-sm"
+                  [class.btn-primary]="profile().activeLoadoutIds.includes(loadout.id)"
+                  [class.btn-outline-secondary]="!profile().activeLoadoutIds.includes(loadout.id)"
+                  (click)="toggleLoadout(loadout.id)"
+                >
+                  {{ loadout.name }}
+                </button>
+              } @empty {
+                <button type="button" class="btn btn-sm btn-outline-secondary" (click)="createPrimaryLoadout()">
+                  Create Primary Loadout
+                </button>
+              }
+              <button type="button" class="btn btn-sm btn-outline-secondary" (click)="freeRespec()">Free Respec</button>
+            </div>
+            @if (upgradeOptions().length) {
+              <div class="mission-screen__upgrades" aria-label="Discovered campaign upgrades">
+                <strong>Upgrades</strong>
+                @for (upgrade of upgradeOptions(); track upgrade.id) {
+                  <button
+                    type="button"
+                    class="btn btn-sm"
+                    [class.btn-primary]="upgrade.purchased || upgrade.permanent"
+                    [class.btn-outline-secondary]="!upgrade.purchased && !upgrade.permanent"
+                    [disabled]="!upgrade.discovered || upgrade.permanent"
+                    [attr.title]="
+                      !upgrade.discovered
+                        ? 'Discover this upgrade in a mission first'
+                        : upgrade.permanent
+                          ? 'Permanent story bonus'
+                          : upgrade.scope.kind + ' upgrade · ' + upgrade.cost + ' ' + upgrade.currencyId
+                    "
+                    (click)="toggleUpgrade(upgrade.id)"
+                  >
+                    {{ upgrade.title }}
+                    @if (!upgrade.discovered) {
+                      · Undiscovered
+                    } @else if (upgrade.permanent) {
+                      · Permanent
+                    } @else if (upgrade.purchased) {
+                      · Selected
+                    }
+                  </button>
+                }
+              </div>
+            }
+            @if (effectiveLoadout(); as effective) {
+              <p>
+                Selected {{ effective.selectedLoadoutIds.length }} / loadout slot(s). Active upgrades:
+                {{ effective.upgradeIds.length }} · Unlocks: {{ effective.unlockIds.length }}
+              </p>
+              @if (effective.restrictionReasons.length) {
+                <ul class="mission-screen__restrictions" aria-label="Mission-disabled choices">
+                  @for (reason of effective.restrictionReasons; track reason) {
+                    <li>{{ reason }}</li>
+                  }
+                </ul>
+              }
+            }
+            <p>
+              Discoveries:
+              @for (claimId of profile().progression.rewardClaimIds; track claimId) {
+                <strong>{{ claimId }}</strong>
+              } @empty {
+                <span>No prior discoveries</span>
+              }
+            </p>
+          </section>
+
+          @if (mastery(); as missionMastery) {
+            <section class="mission-screen__archive" aria-label="Mission archive and mastery">
+              <h3>Mission Archive</h3>
+              <p>
+                First completed {{ missionMastery.firstCompletedAt }} ·
+                {{ missionMastery.completionCount }} completion(s)
+              </p>
+              <p>
+                Mastery: {{ missionMastery.bestDifficulty }}
+                @if (missionMastery.bestDurationSeconds !== undefined) {
+                  · Best time {{ missionMastery.bestDurationSeconds }}s
+                }
+              </p>
+              <p>Completed objectives: {{ missionMastery.completedObjectiveIds.length }}</p>
+              @if (archiveDialogueLines().length) {
+                <details>
+                  <summary>Briefing dialogue</summary>
+                  @for (line of archiveDialogueLines(); track line.id) {
+                    <p>{{ line.text }}</p>
+                  }
+                </details>
+              }
+              <p>Replays use current progression and never claim rewards.</p>
+            </section>
+          }
           @switch (missionProgress()?.state) {
             @case ("available") {
               @if (continueSaveAvailable()) {
@@ -152,6 +297,9 @@
           }
           @if (launchError()) {
             <p class="mission-screen__error" role="alert">{{ launchError() }}</p>
+          }
+          @if (profileError()) {
+            <p class="mission-screen__error" role="alert">{{ profileError() }}</p>
           }
         </article>
       </section>

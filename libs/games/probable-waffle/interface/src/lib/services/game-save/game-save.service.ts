@@ -4,9 +4,12 @@ import {
   type EncodedGameSaveRecord,
   GAME_SAVE_FORMAT_VERSION,
   GameSaveKind,
+  type GameSaveListEntry,
   type GameSaveRecord,
   GameSaveScope,
-  GameSaveSyncState
+  GameSaveSyncState,
+  isSupportedGameSaveRecord,
+  ProbableWaffleGameInstanceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { GameSaveRepository } from "./game-save.repository";
 import { GameSaveSyncService } from "./game-save-sync.service";
@@ -14,9 +17,10 @@ import { GameSaveCodecService } from "./game-save-codec.service";
 import { GameSaveServiceInterface } from "./game-save.service.interface";
 import type { SaveGameRequest } from "./save-game-request";
 import { GameSavePort } from "@fuzzy-waddle/probable-waffle-phaser";
+import { migrateGameSaveRecord, unsupportedGameSaveRecord } from "./game-save-migration";
 
 @Injectable({ providedIn: "root" })
-/** Owns decoded save operations while persistence and transport retain encoded payloads. */
+/** Defines the game save service contract used by this module; its declared members form the compatible boundary for linked consumers. */
 export class GameSaveService extends GameSavePort implements GameSaveServiceInterface {
   private readonly repository = inject(GameSaveRepository);
   private readonly syncService = inject(GameSaveSyncService);
@@ -24,21 +28,26 @@ export class GameSaveService extends GameSavePort implements GameSaveServiceInte
 
   async save(request: SaveGameRequest): Promise<GameSaveRecord> {
     const now = new Date().toISOString();
+    const existing = await this.list();
     const overwrite = request.overwriteSaveId
-      ? (await this.repository.list()).find(
-          (record) =>
-            record.id === request.overwriteSaveId &&
-            record.scope === request.scope &&
-            record.kind === GameSaveKind.Manual &&
-            this.hasMatchingSaveScope(record, request)
-        )
-      : request.kind === GameSaveKind.Quicksave
-        ? (await this.repository.list()).find(
+      ? existing
+          .filter(isSupportedGameSaveRecord)
+          .find(
             (record) =>
-              record.kind === GameSaveKind.Quicksave &&
+              record.id === request.overwriteSaveId &&
               record.scope === request.scope &&
+              record.kind === GameSaveKind.Manual &&
               this.hasMatchingSaveScope(record, request)
           )
+      : request.kind === GameSaveKind.Quicksave
+        ? existing
+            .filter(isSupportedGameSaveRecord)
+            .find(
+              (record) =>
+                record.kind === GameSaveKind.Quicksave &&
+                record.scope === request.scope &&
+                this.hasMatchingSaveScope(record, request)
+            )
         : undefined;
     const record: GameSaveRecord = {
       id: overwrite?.id ?? crypto.randomUUID(),
@@ -61,40 +70,58 @@ export class GameSaveService extends GameSavePort implements GameSaveServiceInte
     return record;
   }
 
-  /** Prevents an overwrite choice from another mission or skirmish scope replacing the current game's save. */
-  private hasMatchingSaveScope(record: EncodedGameSaveRecord, request: SaveGameRequest): boolean {
+  /** Documents the has matching save scope member and its declared contract at this boundary. */
+  private hasMatchingSaveScope(record: GameSaveRecord, request: SaveGameRequest): boolean {
     if (record.scope === GameSaveScope.Skirmish) return request.scope === GameSaveScope.Skirmish;
     return (
       request.scope === GameSaveScope.Campaign &&
       record.campaign?.chapterId === request.campaign?.chapterId &&
-      record.campaign?.missionId === request.campaign?.missionId
+      record.campaign?.missionId === request.campaign?.missionId &&
+      record.campaign?.runId === request.campaign?.runId
     );
   }
 
-  async list(): Promise<GameSaveRecord[]> {
+  async list(): Promise<GameSaveListEntry[]> {
     const records = await this.repository.list();
     const decoded = await Promise.all(
       records.map(async (record) => {
-        if (record.formatVersion !== GAME_SAVE_FORMAT_VERSION) return undefined;
+        if (
+          record.formatVersion !== 1 &&
+          record.formatVersion !== 2 &&
+          record.formatVersion !== GAME_SAVE_FORMAT_VERSION
+        ) {
+          return unsupportedGameSaveRecord(record, `Save format ${record.formatVersion} is not supported`).record;
+        }
         try {
-          return await this.decodeRecord(record);
+          const gameInstanceData = await this.codec.decode(record.encodedGameInstanceData);
+          const migration = migrateGameSaveRecord(record, gameInstanceData);
+          if (migration.status === "supported" && migration.migrated) {
+            await this.repository.upsert(await this.encodeRecord(migration.record));
+          }
+          return migration.record;
         } catch (error) {
           console.error(`Unable to decode save ${record.id}`, error);
-          return undefined;
+          return unsupportedGameSaveRecord(record, "Save payload could not be decoded").record;
         }
       })
     );
-    return decoded.filter((record): record is GameSaveRecord => Boolean(record));
+    return decoded;
   }
 
   async continueCampaignMission(missionId: CampaignMissionId): Promise<GameSaveRecord | undefined> {
-    return (await this.list()).find(
-      (record) => record.scope === GameSaveScope.Campaign && record.campaign?.missionId === missionId
-    );
+    return (await this.list())
+      .filter(isSupportedGameSaveRecord)
+      .find(
+        (record) =>
+          record.scope === GameSaveScope.Campaign &&
+          record.kind !== GameSaveKind.Archive &&
+          record.campaign?.missionId === missionId &&
+          record.gameInstanceData.gameInstanceMetadataData?.type !== ProbableWaffleGameInstanceType.Replay
+      );
   }
 
   async rename(id: string, name: string): Promise<void> {
-    const record = (await this.list()).find((candidate) => candidate.id === id);
+    const record = (await this.list()).filter(isSupportedGameSaveRecord).find((candidate) => candidate.id === id);
     if (!record || record.kind !== GameSaveKind.Manual) return;
     const encoded = (await this.repository.list()).find((candidate) => candidate.id === id);
     if (!encoded) return;
@@ -115,31 +142,33 @@ export class GameSaveService extends GameSavePort implements GameSaveServiceInte
     void this.syncService.flush();
   }
 
-  /** Caps automatic snapshots per mission/run while preserving all named manual saves. */
+  async exportSave(id: string): Promise<string | undefined> {
+    const record = (await this.repository.list()).find((candidate) => candidate.id === id);
+    return record ? JSON.stringify(record) : undefined;
+  }
+
+  /** Documents the retain autosaves member and its declared contract at this boundary. */
   private async retainAutosaves(newest: GameSaveRecord): Promise<void> {
     if (newest.kind !== GameSaveKind.Autosave) return;
     const scopeKey =
       newest.scope === GameSaveScope.Campaign
         ? newest.campaign?.missionId
         : newest.gameInstanceData.gameInstanceMetadataData?.gameInstanceId;
-    const autosaves = (await this.list()).filter(
-      (record) =>
-        record.kind === GameSaveKind.Autosave &&
-        record.scope === newest.scope &&
-        (record.scope === GameSaveScope.Campaign
-          ? record.campaign?.missionId === scopeKey
-          : record.gameInstanceData.gameInstanceMetadataData?.gameInstanceId === scopeKey)
-    );
+    const autosaves = (await this.list())
+      .filter(isSupportedGameSaveRecord)
+      .filter(
+        (record) =>
+          record.kind === GameSaveKind.Autosave &&
+          record.scope === newest.scope &&
+          (record.scope === GameSaveScope.Campaign
+            ? record.campaign?.missionId === scopeKey && record.campaign?.runId === newest.campaign?.runId
+            : record.gameInstanceData.gameInstanceMetadataData?.gameInstanceId === scopeKey)
+      );
     await Promise.all(autosaves.slice(10).map((record) => this.delete(record.id)));
   }
 
   private async encodeRecord(record: GameSaveRecord): Promise<EncodedGameSaveRecord> {
     const { gameInstanceData, ...metadata } = record;
     return { ...metadata, encodedGameInstanceData: await this.codec.encode(gameInstanceData) };
-  }
-
-  private async decodeRecord(record: EncodedGameSaveRecord): Promise<GameSaveRecord> {
-    const { encodedGameInstanceData, ...metadata } = record;
-    return { ...metadata, gameInstanceData: await this.codec.decode(encodedGameInstanceData) };
   }
 }
