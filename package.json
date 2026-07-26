@@ -181,7 +181,7 @@
     "typescript": "5.9.3",
     "webpack": "^5.108.4",
     "webpack-cli": "^7.0.0",
-    "webpack-dev-server": "^5.2.5"
+    "webpack-dev-server": "^5.2.6"
   },
   "lint-staged": {
     "*.{ts,js,json,css,scss,md}": "nx affected:lint"
