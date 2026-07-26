@@ -1,3 +1,46 @@
+/**
+ * Public campaign domain API. The package is intentionally split so authored JSON
+ * contracts and deterministic statecharts remain framework-free; Phaser, Angular,
+ * NestJS, SQL, replay, and save adapters depend on this authority instead of owning
+ * parallel campaign state.
+ *
+ * The current delivered scope covers content, deterministic runtime, scenario bindings,
+ * actions, objectives, presentation, AI encounters, progression, persistence, replay,
+ * profile UI, co-op extension points, validation, and the Dreams/Cyclops vertical
+ * slices. Co-op gameplay, graphical authoring, mods, and archive tooling remain
+ * deferred extension work rather than implicit runtime behavior.
+ *
+ * ```text
+ * authored JSON -> schema + semantic validation -> deterministic runtime
+ *                                               |              |
+ * Phaser scenario index <--- stable references -+              +-> effects -> local HUD/cinematics
+ *                                               |              |
+ * profile/rewards <--- save/replay/hash/reconnect snapshot <---+
+ * ```
+ *
+ * The flow intentionally has one-way authority boundaries: content never reaches a
+ * scene without validation, local presentation never writes mission state, and durable
+ * profile rewards are committed only after an eligible deterministic outcome.
+ *
+ * @see https://github.com/JernejHabjan/fuzzy-waddle/issues/700
+ * @see https://github.com/JernejHabjan/fuzzy-waddle/issues/701
+ * @see https://github.com/JernejHabjan/fuzzy-waddle/issues/702
+ * @see https://github.com/JernejHabjan/fuzzy-waddle/issues/703
+ * @see https://github.com/JernejHabjan/fuzzy-waddle/issues/704
+ * @see https://github.com/JernejHabjan/fuzzy-waddle/issues/705
+ * @see https://github.com/JernejHabjan/fuzzy-waddle/issues/706
+ * @see https://github.com/JernejHabjan/fuzzy-waddle/issues/707
+ * @see https://github.com/JernejHabjan/fuzzy-waddle/issues/708
+ * @see https://github.com/JernejHabjan/fuzzy-waddle/issues/709
+ * @see https://github.com/JernejHabjan/fuzzy-waddle/issues/710
+ * @see https://github.com/JernejHabjan/fuzzy-waddle/issues/711
+ * @see https://github.com/JernejHabjan/fuzzy-waddle/issues/712
+ * @see https://github.com/JernejHabjan/fuzzy-waddle/issues/713
+ * @see https://github.com/JernejHabjan/fuzzy-waddle/issues/714
+ * @see https://github.com/JernejHabjan/fuzzy-waddle/issues/715
+ * @see https://github.com/JernejHabjan/fuzzy-waddle/issues/716
+ * @see https://github.com/JernejHabjan/fuzzy-waddle/issues/717
+ */
 export * from "./lib/catalog/ashes-of-the-ancients-content";
 export * from "./lib/catalog/ashes-of-the-ancients-progression";
 export * from "./lib/catalog/build-campaign-catalog";

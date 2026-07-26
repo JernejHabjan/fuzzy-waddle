@@ -48,6 +48,10 @@ import { LevelComponent } from "../entity/components/level/level-component";
 import { TendableComponent } from "../entity/components/tendable/tendable-component";
 import { QueueCommandSystem } from "../entity/systems/queue-command.system";
 import { ScenarioActorReferenceComponent } from "../campaign/scenario/scenario-actor-reference.component";
+/**
+ * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
+ * storage boundaries do not drift into an unconstrained primitive.
+ */
 type GameObject = Phaser.GameObjects.GameObject;
 
 export const ActorDataKey = "actorData";

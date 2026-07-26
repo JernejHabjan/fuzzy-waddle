@@ -4,13 +4,19 @@
   "title": "Probable Waffle mission rewards",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schemaVersion", "missionId", "rewards"],
+  "required": [
+    "schemaVersion",
+    "missionId",
+    "rewards"
+  ],
   "properties": {
     "schemaVersion": {
-      "const": 1
+      "const": 1,
+      "description": "Version of this document contract used to select compatible validation and migration rules."
     },
     "$schema": {
-      "const": "../../../../../schemas/rewards.schema.json"
+      "const": "../../../../../schemas/rewards.schema.json",
+      "description": "$schema used by this campaign definition."
     },
     "missionId": {
       "enum": [
@@ -34,19 +40,27 @@
         "undead-and-cursed-lands",
         "end-game",
         "resolution"
-      ]
+      ],
+      "description": "Stable mission Id that links this definition to another authored campaign record."
     },
     "rewards": {
       "type": "array",
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "kind", "titleTextId", "scope", "oneTime"],
+        "required": [
+          "id",
+          "kind",
+          "titleTextId",
+          "scope",
+          "oneTime"
+        ],
         "properties": {
           "id": {
             "type": "string",
             "minLength": 1,
-            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Stable authored identifier used by references, validation, saves, and replay; it must not be derived from display text."
           },
           "kind": {
             "enum": [
@@ -61,56 +75,76 @@
               "temporary-boost",
               "temporary-resource",
               "temporary-unit"
-            ]
+            ],
+            "description": "Discriminator selecting the exact contract variant and its valid companion fields."
           },
           "titleTextId": {
             "type": "string",
             "minLength": 1,
-            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Stable title Text Id that links this definition to another authored campaign record."
           },
           "scope": {
             "oneOf": [
               {
                 "type": "object",
                 "additionalProperties": false,
-                "required": ["kind"],
+                "required": [
+                  "kind"
+                ],
                 "properties": {
                   "kind": {
-                    "const": "global"
+                    "const": "global",
+                    "description": "Discriminator selecting the exact contract variant and its valid companion fields."
                   }
                 }
               },
               {
                 "type": "object",
                 "additionalProperties": false,
-                "required": ["kind", "faction"],
+                "required": [
+                  "kind",
+                  "faction"
+                ],
                 "properties": {
                   "kind": {
-                    "const": "faction"
+                    "const": "faction",
+                    "description": "Discriminator selecting the exact contract variant and its valid companion fields."
                   },
                   "faction": {
-                    "enum": [1, 2]
+                    "enum": [
+                      1,
+                      2
+                    ],
+                    "description": "Selects the supported faction variant for this definition."
                   }
                 }
               },
               {
                 "type": "object",
                 "additionalProperties": false,
-                "required": ["kind", "objectName"],
+                "required": [
+                  "kind",
+                  "objectName"
+                ],
                 "properties": {
                   "kind": {
-                    "const": "actor"
+                    "const": "actor",
+                    "description": "Discriminator selecting the exact contract variant and its valid companion fields."
                   },
                   "objectName": {
                     "type": "string",
-                    "minLength": 1
+                    "minLength": 1,
+                    "description": "Object Name used by this scope definition."
                   }
                 }
               }
-            ]
+            ],
+            "description": "Scope used by this rewards definition."
           },
           "oneTime": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "Whether one Time applies when resolving this definition."
           },
           "objectiveIds": {
             "type": "array",
@@ -118,107 +152,291 @@
             "items": {
               "type": "string",
               "minLength": 1
-            }
+            },
+            "description": "Stable objective Ids that link this definition to authored campaign records."
           },
           "hidden": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "Whether hidden applies when resolving this definition."
           },
           "currencyId": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "description": "Stable currency Id that links this definition to another authored campaign record."
           },
           "amount": {
-            "type": "number"
+            "type": "number",
+            "description": "Numeric amount used when resolving this definition."
           },
           "unlockId": {
             "type": "string",
             "minLength": 1,
-            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Stable unlock Id that links this definition to another authored campaign record."
           },
           "upgradeId": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "description": "Stable upgrade Id that links this definition to another authored campaign record."
           },
           "itemDefinitionId": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "description": "Stable item Definition Id that links this definition to another authored campaign record."
           },
           "quantity": {
             "type": "integer",
-            "minimum": 1
+            "minimum": 1,
+            "description": "Numeric quantity used when resolving this definition."
           },
           "consumable": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "Whether consumable applies when resolving this definition."
           },
           "objectName": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "description": "Object Name used by this rewards definition."
           },
           "researchType": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "description": "Research Type used by this rewards definition."
           },
           "temporaryBoostId": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "description": "Stable temporary Boost Id that links this definition to another authored campaign record."
           },
           "resourceType": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "description": "Resource Type used by this rewards definition."
           },
           "count": {
             "type": "integer",
-            "minimum": 1
+            "minimum": 1,
+            "description": "Numeric count used when resolving this definition."
           }
         },
         "allOf": [
           {
-            "if": { "properties": { "kind": { "const": "currency" } } },
-            "then": { "properties": { "currencyId": true, "amount": true }, "required": ["currencyId", "amount"] }
-          },
-          {
-            "if": { "properties": { "kind": { "enum": ["story-unlock", "faction-unlock"] } } },
-            "then": { "properties": { "unlockId": true }, "required": ["unlockId"] }
-          },
-          {
-            "if": { "properties": { "kind": { "const": "stat-tome" } } },
-            "then": { "properties": { "upgradeId": true }, "required": ["upgradeId"] }
-          },
-          {
-            "if": { "properties": { "kind": { "const": "item" } } },
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "currency",
+                  "description": "Discriminator selecting the exact contract variant and its valid companion fields."
+                }
+              }
+            },
             "then": {
-              "properties": { "itemDefinitionId": true, "quantity": true, "consumable": true },
-              "required": ["itemDefinitionId", "quantity", "consumable"]
+              "properties": {
+                "currencyId": {
+                  "description": "Currency Id is required by this rewards variant when its discriminator selects the matching branch."
+                },
+                "amount": {
+                  "description": "Amount is required by this rewards variant when its discriminator selects the matching branch."
+                }
+              },
+              "required": [
+                "currencyId",
+                "amount"
+              ]
             }
           },
           {
-            "if": { "properties": { "kind": { "enum": ["unit-unlock", "building-unlock"] } } },
-            "then": { "properties": { "unlockId": true, "objectName": true }, "required": ["unlockId", "objectName"] }
-          },
-          {
-            "if": { "properties": { "kind": { "const": "technology-unlock" } } },
+            "if": {
+              "properties": {
+                "kind": {
+                  "enum": [
+                    "story-unlock",
+                    "faction-unlock"
+                  ],
+                  "description": "Discriminator selecting the exact contract variant and its valid companion fields."
+                }
+              }
+            },
             "then": {
-              "properties": { "unlockId": true, "researchType": true },
-              "required": ["unlockId", "researchType"]
+              "properties": {
+                "unlockId": {
+                  "description": "Unlock Id is required by this rewards variant when its discriminator selects the matching branch."
+                }
+              },
+              "required": [
+                "unlockId"
+              ]
             }
           },
           {
-            "if": { "properties": { "kind": { "const": "temporary-boost" } } },
-            "then": { "properties": { "temporaryBoostId": true }, "required": ["temporaryBoostId"] }
-          },
-          {
-            "if": { "properties": { "kind": { "const": "temporary-resource" } } },
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "stat-tome",
+                  "description": "Discriminator selecting the exact contract variant and its valid companion fields."
+                }
+              }
+            },
             "then": {
-              "properties": { "resourceType": true, "amount": true },
-              "required": ["resourceType", "amount"]
+              "properties": {
+                "upgradeId": {
+                  "description": "Upgrade Id is required by this rewards variant when its discriminator selects the matching branch."
+                }
+              },
+              "required": [
+                "upgradeId"
+              ]
             }
           },
           {
-            "if": { "properties": { "kind": { "const": "temporary-unit" } } },
-            "then": { "properties": { "objectName": true, "count": true }, "required": ["objectName", "count"] }
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "item",
+                  "description": "Discriminator selecting the exact contract variant and its valid companion fields."
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "itemDefinitionId": {
+                  "description": "Item Definition Id is required by this rewards variant when its discriminator selects the matching branch."
+                },
+                "quantity": {
+                  "description": "Quantity is required by this rewards variant when its discriminator selects the matching branch."
+                },
+                "consumable": {
+                  "description": "Consumable is required by this rewards variant when its discriminator selects the matching branch."
+                }
+              },
+              "required": [
+                "itemDefinitionId",
+                "quantity",
+                "consumable"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "enum": [
+                    "unit-unlock",
+                    "building-unlock"
+                  ],
+                  "description": "Discriminator selecting the exact contract variant and its valid companion fields."
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "unlockId": {
+                  "description": "Unlock Id is required by this rewards variant when its discriminator selects the matching branch."
+                },
+                "objectName": {
+                  "description": "Object Name is required by this rewards variant when its discriminator selects the matching branch."
+                }
+              },
+              "required": [
+                "unlockId",
+                "objectName"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "technology-unlock",
+                  "description": "Discriminator selecting the exact contract variant and its valid companion fields."
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "unlockId": {
+                  "description": "Unlock Id is required by this rewards variant when its discriminator selects the matching branch."
+                },
+                "researchType": {
+                  "description": "Research Type is required by this rewards variant when its discriminator selects the matching branch."
+                }
+              },
+              "required": [
+                "unlockId",
+                "researchType"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "temporary-boost",
+                  "description": "Discriminator selecting the exact contract variant and its valid companion fields."
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "temporaryBoostId": {
+                  "description": "Temporary Boost Id is required by this rewards variant when its discriminator selects the matching branch."
+                }
+              },
+              "required": [
+                "temporaryBoostId"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "temporary-resource",
+                  "description": "Discriminator selecting the exact contract variant and its valid companion fields."
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "resourceType": {
+                  "description": "Resource Type is required by this rewards variant when its discriminator selects the matching branch."
+                },
+                "amount": {
+                  "description": "Amount is required by this rewards variant when its discriminator selects the matching branch."
+                }
+              },
+              "required": [
+                "resourceType",
+                "amount"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "temporary-unit",
+                  "description": "Discriminator selecting the exact contract variant and its valid companion fields."
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "objectName": {
+                  "description": "Object Name is required by this rewards variant when its discriminator selects the matching branch."
+                },
+                "count": {
+                  "description": "Count is required by this rewards variant when its discriminator selects the matching branch."
+                }
+              },
+              "required": [
+                "objectName",
+                "count"
+              ]
+            }
           }
         ]
-      }
+      },
+      "description": "Ordered rewards declared by this campaign definition."
     }
   }
 }

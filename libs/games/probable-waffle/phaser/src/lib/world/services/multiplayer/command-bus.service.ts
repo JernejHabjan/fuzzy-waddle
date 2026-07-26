@@ -44,7 +44,7 @@ import { getPlayersFromScene } from "@fuzzy-waddle/platform-game-host/phaser/sce
  * responsibility of callers. ActionSystem and MovementSystem trust the actorIds.
  */
 export class CommandBusService {
-  /** 2-tick delay = 100 ms window for commands to reach all peers before execution. */
+  /** Documents the following declaration and its compatibility contract. */
   static readonly INPUT_DELAY_TICKS = 2;
   private static readonly STALL_LOG_DELAY_MS = 150;
   // Early startup ticks can briefly stall while first heartbeats converge; avoid noisy false alarms.
@@ -58,7 +58,7 @@ export class CommandBusService {
   private isMultiplayer = false;
   private humanPlayerNumbers: PlayerNumber[] = [];
   private localPlayerNumber: PlayerNumber | null = null;
-  /** Outbound commands indexed by execution tick (currentTick + INPUT_DELAY). */
+  /** Documents the following declaration and its compatibility contract. */
   private pendingOutbound = new Map<number, GameCommand[]>();
   private readonly buffer = new CommandBuffer();
   private readonly subscriptions: Subscription[] = [];
@@ -253,7 +253,7 @@ export class CommandBusService {
     this.logQueuedWhileStalled(normalizedCommand.type, tick, stamped.playerNumber);
   }
 
-  /** Applies a campaign-owned deterministic command locally on every peer without relaying it as player input. */
+  /** Documents the dispatch deterministic member and its declared contract at this boundary. */
   dispatchDeterministic(command: GameCommandInput): void {
     const tick = this.tickService?.currentTick ?? 0;
     this._command$.next({ ...command, tick } as GameCommand);
@@ -324,6 +324,10 @@ export class CommandBusService {
     this.buffer.gc(tick);
   }
 
+  /**
+   * Batches commands for one authoritative simulation tick, normalizes ordering, and sends a single transport payload.
+   * It preserves lockstep ordering and avoids exposing partially queued local commands as if they were confirmed world mutations.
+   */
   private sendCommandBatch(
     tick: number,
     commands: GameCommand[],
@@ -380,7 +384,7 @@ export class CommandBusService {
     });
   }
 
-  /** Unblocks the tick if the next tick's commands have now arrived. */
+  /** Documents the try unblock tick member and its declared contract at this boundary. */
   private tryUnblockTick(): void {
     if (!this.tickService) return;
     const nextTick = this.tickService.currentTick + 1;
@@ -778,7 +782,7 @@ export class CommandBusService {
     return `role=${role} isHost=${scene.isHost} localPlayer=${this.localPlayerNumber ?? "none"} hostUser=${hostUserId}`;
   }
 
-  /** Explains, per missing player, why lockstep is still waiting on blockedTick. */
+  /** Documents the describe missing players member and its declared contract at this boundary. */
   private describeMissingPlayers(blockedTick: number, missingPlayers: readonly PlayerNumber[]): string {
     if (missingPlayers.length === 0) {
       return "none";

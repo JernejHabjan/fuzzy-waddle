@@ -27,27 +27,92 @@ import type {
   ScenarioTagId
 } from "./campaign-content-id";
 
+/**
+ * Defines the closed mission action missing reference policy value set. Keeping this union named preserves
+ * exhaustive handling and prevents incompatible free-form values at its boundaries.
+ */
 export type MissionActionMissingReferencePolicy = "fail-mission" | "skip" | "wait" | "fallback";
 
+/**
+ * Defines the structured mission action definition base contract for this module. Its declared surface makes
+ * id, scope, missing reference policy, fallback action explicit to every consumer. Use this shared shape
+ * rather than an ad-hoc object so adapters, persistence, and callers remain compatible.
+ */
 export interface MissionActionDefinitionBase {
+  /**
+   * stable id used by {@link MissionActionDefinitionBase} to correlate this value with related records, events,
+   * or authored content; it is not a display label.
+   */
   readonly id: MissionActionId;
+  /**
+   * Optional discriminator for {@link MissionActionDefinitionBase}. It selects the valid branch and behavior, so
+   * producers and consumers must keep it synchronized with the accompanying fields.
+   */
   readonly scope?: "phase" | "mission";
+  /**
+   * Optional discriminator for {@link MissionActionDefinitionBase}. It selects the valid branch and behavior, so
+   * producers and consumers must keep it synchronized with the accompanying fields.
+   */
   readonly missingReferencePolicy?: MissionActionMissingReferencePolicy;
+  /**
+   * Optional fallback action value carried by {@link MissionActionDefinitionBase}. Its declared type is the
+   * compatibility boundary for producers, validators, and consumers; do not replace it with a broader inferred
+   * shape.
+   */
   readonly fallbackAction?: MissionActionDefinition;
 }
 
+/**
+ * Defines the structured mission actor spawn definition contract for this module. Its declared surface makes
+ * actor name, owner player number, scenario role id, tags explicit to every consumer. Use this shared shape
+ * rather than an ad-hoc object so adapters, persistence, and callers remain compatible.
+ */
 export interface MissionActorSpawnDefinition {
+  /**
+   * human-facing actor name for {@link MissionActorSpawnDefinition}. It supports UI, narration, or diagnostics
+   * and must not be used as the stable identity of the record.
+   */
   readonly actorName: ObjectNames;
+  /**
+   * Optional numeric owner player number carried by {@link MissionActorSpawnDefinition}. Its units and valid
+   * range are defined by {@link MissionActorSpawnDefinition} and must remain consistent across producers and
+   * consumers.
+   */
   readonly ownerPlayerNumber?: number;
+  /**
+   * Optional stable scenario role id used by {@link MissionActorSpawnDefinition} to correlate this value with
+   * related records, events, or authored content; it is not a display label.
+   */
   readonly scenarioRoleId?: ScenarioActorId;
+  /**
+   * Optional collection value on {@link MissionActorSpawnDefinition}. Its element type defines the records that
+   * may cross this boundary; preserve ordering or uniqueness whenever the owning workflow relies on it.
+   */
   readonly tags?: readonly ScenarioTagId[];
 }
 
+/**
+ * Defines the structured mission composite action definition contract for this module. Its declared surface
+ * makes kind, actions explicit to every consumer. Use this shared shape rather than an ad-hoc object so
+ * adapters, persistence, and callers remain compatible.
+ */
 export interface MissionCompositeActionDefinition extends MissionActionDefinitionBase {
+  /**
+   * discriminator for {@link MissionCompositeActionDefinition}. It selects the valid branch and behavior, so
+   * producers and consumers must keep it synchronized with the accompanying fields.
+   */
   readonly kind: "sequence" | "parallel" | "race";
+  /**
+   * collection owned by {@link MissionCompositeActionDefinition}. Preserve the declared element contract and any
+   * ordering/uniqueness semantics when reading, serializing, or extending it.
+   */
   readonly actions: readonly MissionActionDefinition[];
 }
 
+/**
+ * Defines the closed mission action definition value set. Keeping this union named preserves exhaustive
+ * handling and prevents incompatible free-form values at its boundaries.
+ */
 export type MissionActionDefinition =
   | (MissionActionDefinitionBase & {
       readonly kind: "set-fact";
@@ -295,14 +360,14 @@ export type MissionActionDefinition =
       readonly kind: "start-dialogue";
       readonly lineId: MissionDialogueLineId;
       readonly waitForAcknowledgement?: boolean;
-      /** Runtime-generated presentation leaf; not part of authored JSON. */
+      /** Documents the presentation only member and its declared contract at this boundary. */
       readonly presentationOnly?: true;
     })
   | (MissionActionDefinitionBase & {
       readonly kind: "start-cinematic";
       readonly cinematicId: MissionCinematicId;
       readonly waitForCompletion?: boolean;
-      /** Runtime-generated presentation leaf; not part of authored JSON. */
+      /** Documents the presentation only member and its declared contract at this boundary. */
       readonly presentationOnly?: true;
     })
   | (MissionActionDefinitionBase & { readonly kind: "create-checkpoint"; readonly checkpointId: MissionCheckpointId })

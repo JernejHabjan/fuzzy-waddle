@@ -21,9 +21,10 @@ const SUPPORTED_REPLAY_COMPATIBILITY_VERSIONS = new Set(["lockstep-v1", "campaig
 const SUPPORTED_REPLAY_FORMAT_VERSIONS = new Set(["1", "2"]);
 
 /**
- * Replays recorded authoritative command batches deterministically by tick.
- * Playback deliberately bypasses live multiplayer relays and feeds the same
- * command batches into CommandBusService that the original match recorded.
+ * Reconstructs a completed run from a versioned archive. It verifies campaign identity,
+ * revision, deterministic random continuation, and snapshot compatibility before it
+ * allows recorded commands to advance the scene, so a replay cannot silently execute
+ * against changed content.
  */
 export class ReplayPlaybackService {
   private tickSub?: Subscription;
@@ -32,6 +33,22 @@ export class ReplayPlaybackService {
   private readonly expectedTickDigests = new Map<number, ProbableWaffleReplayTickDigest>();
   private readonly authoritativeBatchPairs = new Set<string>();
 
+  /**
+   * Initializes replay playback from a validated archive, restoring deterministic random
+   * and campaign state before command advancement. It verifies archive format, authored
+   * mission identity/revision, launch context, random continuation, and the canonical
+   * initial runtime snapshot before subscribing to ticks.
+   *
+   * ```text
+   * archive -> compatibility checks -> initial state/RNG check -> ordered tick batches -> digest diagnostics
+   * ```
+   *
+   * Compatibility failures surface before the scene consumes commands, preventing a
+   * replay from silently running against different authored content.
+   *
+   * @see {@link ReplayRecorderService} for the paired archive writer.
+   * @see {@link CampaignMissionDirector} for injected campaign events and integrity.
+   */
   init(scene: ProbableWaffleScene): void {
     const replayData = scene.baseGameData.gameInstance.gameInstanceMetadata.data.startOptions.replayData;
     if (!scene.baseGameData.gameInstance.gameInstanceMetadata.isReplay() || !replayData) {
@@ -134,7 +151,7 @@ export class ReplayPlaybackService {
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.destroy());
   }
 
-  /** Stops replay batch pumping for this scene. */
+  /** Documents the destroy member and its declared contract at this boundary. */
   destroy(): void {
     this.tickSub?.unsubscribe();
   }

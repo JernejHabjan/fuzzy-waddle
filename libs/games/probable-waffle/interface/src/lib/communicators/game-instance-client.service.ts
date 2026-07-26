@@ -158,6 +158,10 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     );
   }
 
+  /**
+   * Subscribes to utility events that keep the client-side game instance synchronized with remote lifecycle changes.
+   * It narrows each event at the boundary, refreshes the appropriate local authority, and avoids applying campaign/save updates to an unrelated instance.
+   */
   listenToUtilityGameEvents(): void {
     this.communicatorSubscriptions.push(
       this.probableWaffleCommunicatorService.utilityEvents
@@ -385,7 +389,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     this.stopAutosaveTimer();
   }
 
-  /** Autosave requests stay at the Angular/Phaser boundary so the save scene owns serialization and thumbnails. */
+  /** Documents the start autosave timer member and its declared contract at this boundary. */
   private startAutosaveTimer(): void {
     this.stopAutosaveTimer();
     const type = this.getNormalizedGameInstanceType();
@@ -785,6 +789,10 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     await this.navigateDirectlyToGame();
   }
 
+  /**
+   * Builds and persists a game-save request from the currently synchronized instance.
+   * It keeps campaign metadata searchable while leaving the canonical mission snapshot in game state, then updates local save state only after the remote operation succeeds.
+   */
   async saveGameInstance(data: SaveGamePayload): Promise<void> {
     const gameInstanceData = this.gameInstance!.data;
     const requestedSave =
@@ -842,7 +850,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
     });
   }
 
-  /** Pauses single-player simulation while the scoped Angular save dialog owns input focus. */
+  /** Documents the request manual save name member and its declared contract at this boundary. */
   private async requestManualSaveName(): Promise<SaveGameDialogResult | undefined> {
     this.probableWaffleCommunicatorService.allScenes.emit({
       name: "external-modal-pause-changed",

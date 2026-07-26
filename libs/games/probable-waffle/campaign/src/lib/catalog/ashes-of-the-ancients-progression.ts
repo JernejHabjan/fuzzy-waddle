@@ -4,7 +4,7 @@ import { CampaignProgressionRegistry } from "../registry/campaign-progression-re
 
 export const AOTA_CAMPAIGN_CRYSTAL_ID = "campaign-crystal";
 
-/** Stable placeholder hero IDs remain valid when final narrative display names are authored later. */
+/** Documents the aota progression definitions member and its declared contract at this boundary. */
 export const AOTA_PROGRESSION_DEFINITIONS: CampaignProgressionDefinitions = {
   currencies: [{ id: AOTA_CAMPAIGN_CRYSTAL_ID, title: "Campaign Crystal", initialBalance: 1 }],
   heroes: [

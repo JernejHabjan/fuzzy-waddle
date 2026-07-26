@@ -12,11 +12,15 @@ import {
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { AOTA_CAMPAIGN_CONTENT_REGISTRY, migrateCampaignMissionRevision } from "@fuzzy-waddle/probable-waffle-campaign";
 
+/**
+ * Defines the closed game save migration result value set. Keeping this union named preserves exhaustive
+ * handling and prevents incompatible free-form values at its boundaries.
+ */
 export type GameSaveMigrationResult =
   | { readonly status: "supported"; readonly record: GameSaveRecord; readonly migrated: boolean }
   | { readonly status: "unsupported"; readonly record: UnsupportedGameSaveRecord };
 
-/** Explicitly migrates known save/runtime versions and never guesses mission-content renames. */
+/** Documents the migrate game save record member and its declared contract at this boundary. */
 export function migrateGameSaveRecord(
   stored: EncodedGameSaveRecord,
   gameInstanceData: ProbableWaffleGameInstanceData

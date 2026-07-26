@@ -41,7 +41,7 @@ export class AiPlayerHandler {
     return this.aiPlayerControllers.find((controller) => controller.player.playerNumber === playerNumber);
   }
 
-  /** Changes host-owned strategic AI execution without creating controllers for scripted or passive slots. */
+  /** Documents the set player enabled member and its declared contract at this boundary. */
   setPlayerEnabled(playerNumber: PlayerNumber, enabled: boolean): boolean {
     const controller = this.getAiPlayerController(playerNumber);
     if (!controller) return false;

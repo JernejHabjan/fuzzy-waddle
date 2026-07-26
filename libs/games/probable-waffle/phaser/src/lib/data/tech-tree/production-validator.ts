@@ -28,6 +28,10 @@ export class ProductionValidator {
     private readonly blackboard: PlayerAiBlackboard
   ) {}
 
+  /**
+   * Runs the complete production eligibility check, combining ownership, resource, queue, prerequisite, and campaign-allowance constraints.
+   * It returns structured reasons so UI and AI can explain a denial without reimplementing game rules.
+   */
   validate(actorName: ObjectNames): PreRequirement {
     const result: PreRequirement = new PreRequirement();
     const techSvc = getSceneService(this.scene, TechTreeService);
@@ -124,7 +128,7 @@ export class ProductionValidator {
     }
   }
 
-  /** Insert prerequisite tasks into blackboard production prereqQueue (order: earliest first). */
+  /** Documents the schedule prerequisites member and its declared contract at this boundary. */
   schedulePrerequisites(prereqs: PreRequirement, finalTarget: ObjectNames) {
     const insertedAt = getSceneService(this.scene, SimulationTickService)?.currentTick ?? 0;
     let queueIndex = this.blackboard.production.prereqQueue.length;
@@ -204,6 +208,10 @@ export class ProductionValidator {
     }
   }
 
+  /**
+   * Evaluates prerequisite closure without relying on live UI state.
+   * It resolves the static dependency graph and campaign grants in a deterministic order, returning the first actionable missing requirement set.
+   */
   private static validateBuildingPrerequisitesStatic(
     scene: Phaser.Scene,
     playerNumber: PlayerNumber,

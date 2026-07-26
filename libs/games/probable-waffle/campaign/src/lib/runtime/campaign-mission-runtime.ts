@@ -66,8 +66,24 @@ import {
   resolveMissionParticipants
 } from "./campaign-coop-policy";
 
+/**
+ * Deterministic, rendering-free mission statechart authority. It advances only from
+ * simulation ticks, serializes one canonical snapshot, and emits effects for adapters
+ * rather than mutating Phaser or UI state directly.
+ *
+ * @see CampaignMissionDirector for scene lifecycle ownership.
+ * @see https://github.com/JernejHabjan/fuzzy-waddle/issues/702
+ */
 export interface CampaignMissionRuntimeEffect {
+  /**
+   * temporal value for {@link CampaignMissionRuntimeEffect}. It anchors ordering, expiry, or presentation timing
+   * and must use the time domain declared by the enclosing contract.
+   */
   readonly tick: number;
+  /**
+   * discriminator for {@link CampaignMissionRuntimeEffect}. It selects the valid branch and behavior, so
+   * producers and consumers must keep it synchronized with the accompanying fields.
+   */
   readonly kind:
     | "action"
     | "action-waiting"
@@ -77,43 +93,161 @@ export interface CampaignMissionRuntimeEffect {
     | "objective-changed"
     | "encounter-changed"
     | "outcome-requested";
+  /**
+   * stable source id used by {@link CampaignMissionRuntimeEffect} to correlate this value with related records,
+   * events, or authored content; it is not a display label.
+   */
   readonly sourceId: string;
+  /**
+   * Optional detail value carried by {@link CampaignMissionRuntimeEffect}. Its declared type is the
+   * compatibility boundary for producers, validators, and consumers; do not replace it with a broader inferred
+   * shape.
+   */
   readonly detail?: CampaignMissionRuntimeJsonValue;
 }
 
+/**
+ * Defines the structured campaign mission runtime result contract for this module. Its declared surface makes
+ * state, effects explicit to every consumer. Use this shared shape rather than an ad-hoc object so adapters,
+ * persistence, and callers remain compatible.
+ */
 export interface CampaignMissionRuntimeResult {
+  /**
+   * discriminator for {@link CampaignMissionRuntimeResult}. It selects the valid branch and behavior, so
+   * producers and consumers must keep it synchronized with the accompanying fields.
+   */
   readonly state: CampaignMissionRuntimeState;
+  /**
+   * collection value on {@link CampaignMissionRuntimeResult}. Its element type defines the records that may
+   * cross this boundary; preserve ordering or uniqueness whenever the owning workflow relies on it.
+   */
   readonly effects: readonly CampaignMissionRuntimeEffect[];
 }
 
+/**
+ * Defines the structured campaign mission runtime options contract for this module. Its declared surface makes
+ * max actions per tick, max transitions per tick, action adapter, condition adapter, dialogue explicit to
+ * every consumer. Use this shared shape rather than an ad-hoc object so adapters, persistence, and callers
+ * remain compatible.
+ */
 export interface CampaignMissionRuntimeOptions {
+  /**
+   * Optional temporal value for {@link CampaignMissionRuntimeOptions}. It anchors ordering, expiry, or
+   * presentation timing and must use the time domain declared by the enclosing contract.
+   */
   readonly maxActionsPerTick?: number;
+  /**
+   * Optional temporal value for {@link CampaignMissionRuntimeOptions}. It anchors ordering, expiry, or
+   * presentation timing and must use the time domain declared by the enclosing contract.
+   */
   readonly maxTransitionsPerTick?: number;
+  /**
+   * Optional action adapter value carried by {@link CampaignMissionRuntimeOptions}. Its declared type is the
+   * compatibility boundary for producers, validators, and consumers; do not replace it with a broader inferred
+   * shape.
+   */
   readonly actionAdapter?: CampaignWorldActionAdapter;
+  /**
+   * Optional condition adapter value carried by {@link CampaignMissionRuntimeOptions}. Its declared type is the
+   * compatibility boundary for producers, validators, and consumers; do not replace it with a broader inferred
+   * shape.
+   */
   readonly conditionAdapter?: CampaignWorldConditionAdapter;
+  /**
+   * Optional dialogue value carried by {@link CampaignMissionRuntimeOptions}. Its declared type is the
+   * compatibility boundary for producers, validators, and consumers; do not replace it with a broader inferred
+   * shape.
+   */
   readonly dialogue?: MissionDialogueBundle;
+  /**
+   * Optional difficulty value carried by {@link CampaignMissionRuntimeOptions}. Its declared type is the
+   * compatibility boundary for producers, validators, and consumers; do not replace it with a broader inferred
+   * shape.
+   */
   readonly difficulty?: CampaignDifficulty;
+  /**
+   * Optional numeric bound or quantity carried by {@link CampaignMissionRuntimeOptions}. Interpret it in the
+   * owning contract’s units and preserve its validation constraints at boundaries.
+   */
   readonly playerCount?: number;
+  /**
+   * Optional encounter adapter value carried by {@link CampaignMissionRuntimeOptions}. Its declared type is the
+   * compatibility boundary for producers, validators, and consumers; do not replace it with a broader inferred
+   * shape.
+   */
   readonly encounterAdapter?: CampaignEncounterWorldAdapter;
+  /**
+   * Optional progression snapshot value carried by {@link CampaignMissionRuntimeOptions}. Its declared type is
+   * the compatibility boundary for producers, validators, and consumers; do not replace it with a broader
+   * inferred shape.
+   */
   readonly progressionSnapshot?: CampaignMissionProgressionSnapshot;
+  /**
+   * Optional collection value on {@link CampaignMissionRuntimeOptions}. Its element type defines the records
+   * that may cross this boundary; preserve ordering or uniqueness whenever the owning workflow relies on it.
+   */
   readonly participantProgressionSnapshots?: readonly CampaignParticipantProgressionSnapshot[];
-  /** Future co-op adapters must return synchronized slot state, never peer-local connection state. */
+  /** Documents the participant policy state member and its declared contract at this boundary. */
   readonly participantPolicyState?: () => CampaignMissionParticipantPolicyState;
 }
 
+/**
+ * Defines the structured campaign mission participant policy state contract for this module. Its declared
+ * surface makes connected human player numbers, required group player numbers explicit to every consumer. Use
+ * this shared shape rather than an ad-hoc object so adapters, persistence, and callers remain compatible.
+ */
 export interface CampaignMissionParticipantPolicyState {
+  /**
+   * collection value on {@link CampaignMissionParticipantPolicyState}. Its element type defines the records that
+   * may cross this boundary; preserve ordering or uniqueness whenever the owning workflow relies on it.
+   */
   readonly connectedHumanPlayerNumbers: readonly number[];
+  /**
+   * Optional collection value on {@link CampaignMissionParticipantPolicyState}. Its element type defines the
+   * records that may cross this boundary; preserve ordering or uniqueness whenever the owning workflow relies on
+   * it.
+   */
   readonly requiredGroupPlayerNumbers?: Readonly<Partial<Record<ScenarioGroupId, readonly number[]>>>;
 }
 
+/**
+ * Defines the structured tick budget contract for this module. Its declared surface makes actions, transitions
+ * explicit to every consumer. Use this shared shape rather than an ad-hoc object so adapters, persistence, and
+ * callers remain compatible.
+ */
 interface TickBudget {
+  /**
+   * collection owned by {@link TickBudget}. Preserve the declared element contract and any ordering/uniqueness
+   * semantics when reading, serializing, or extending it.
+   */
   actions: number;
+  /**
+   * numeric transitions carried by {@link TickBudget}. Its units and valid range are defined by {@link
+   * TickBudget} and must remain consistent across producers and consumers.
+   */
   transitions: number;
 }
 
+/**
+ * Defines the structured action source context contract for this module. Its declared surface makes phase id,
+ * trigger id, event explicit to every consumer. Use this shared shape rather than an ad-hoc object so
+ * adapters, persistence, and callers remain compatible.
+ */
 interface ActionSourceContext {
+  /**
+   * Optional stable phase id used by {@link ActionSourceContext} to correlate this value with related records,
+   * events, or authored content; it is not a display label.
+   */
   readonly phaseId?: string;
+  /**
+   * Optional stable trigger id used by {@link ActionSourceContext} to correlate this value with related records,
+   * events, or authored content; it is not a display label.
+   */
   readonly triggerId?: string;
+  /**
+   * Optional event value carried by {@link ActionSourceContext}. Its declared type is the compatibility boundary
+   * for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly event?: CampaignMissionRuntimeEvent;
 }
 
@@ -151,7 +285,7 @@ function isLocalPresentationEvent(kind: string): boolean {
   return (CAMPAIGN_LOCAL_PRESENTATION_EVENT_KINDS as readonly string[]).includes(kind);
 }
 
-/** Owns the single mutable mission state while exposing cloned snapshots at integration boundaries. */
+/** Defines the campaign mission state store contract used by this module; its declared members form the compatible boundary for linked consumers. */
 export class CampaignMissionStateStore {
   constructor(private readonly value: CampaignMissionRuntimeState) {}
 
@@ -164,7 +298,23 @@ export class CampaignMissionStateStore {
   }
 }
 
-/** Pure fixed-tick interpreter for campaign phase statecharts, triggers, timers, and objectives. */
+/**
+ * Authoritative deterministic interpreter for one authored mission. It owns the only
+ * mutable campaign snapshot and advances it in a fixed order: queued events, phase
+ * transitions, action continuations, objectives, encounters, checkpoints, and outcome.
+ * World/UI work is emitted as effects so a replay, headless harness, and Phaser scene
+ * observe identical state for the same tick stream.
+ *
+ * ```text
+ * continuation -> timers/encounters -> ready events -> triggers -> objectives
+ *       ^                                                        |
+ *       +---- persisted waiting action <- effects <- phases/checkpoints
+ * ```
+ *
+ * Each arrow is ordered within one simulation tick. A budget breach, invalid reference,
+ * or adapter exception takes the fail-closed path; local dialogue/cinematic events only
+ * update their persisted presentation acknowledgement and never start gameplay work.
+ */
 export class CampaignMissionRuntime {
   private readonly phasesById: ReadonlyMap<string, MissionPhaseDefinition>;
   private readonly predecessorsByPhaseId: ReadonlyMap<string, readonly string[]>;
@@ -260,6 +410,12 @@ export class CampaignMissionRuntime {
     this.canonicalizeState();
   }
 
+  /**
+   * Applies an allowed developer command through the same runtime paths as authored
+   * progression. Commands that mutate the run invalidate reward integrity first, while
+   * inspect-only commands leave the persisted eligibility state untouched. The returned
+   * effects still require a scene adapter to perform any world or presentation change.
+   */
   executeDeveloperCommand(command: CampaignDeveloperCommand): CampaignMissionRuntimeResult {
     const effects: CampaignMissionRuntimeEffect[] = [];
     const tick = this.stateStore.current.integrity.lastProcessedTick;
@@ -369,7 +525,7 @@ export class CampaignMissionRuntime {
     return this.result(effects);
   }
 
-  /** Runs author-declared transient cleanup when a full checkpoint snapshot is retried. */
+  /** Documents the retry from checkpoint member and its declared contract at this boundary. */
   retryFromCheckpoint(checkpointId: string, tick: number): CampaignMissionRuntimeResult {
     const checkpoint = this.content.checkpoints.find((candidate) => candidate.id === checkpointId);
     if (!checkpoint?.retryCleanupActions?.length) return this.result([]);
@@ -382,7 +538,7 @@ export class CampaignMissionRuntime {
     return this.result(effects);
   }
 
-  /** Executes initial phase entry exactly once, after scene actors have been indexed. */
+  /** Documents the start member and its declared contract at this boundary. */
   start(tick: number): CampaignMissionRuntimeResult {
     const state = this.stateStore.current;
     if (state.initialized) return this.result([]);
@@ -409,7 +565,7 @@ export class CampaignMissionRuntime {
     return this.result(effects);
   }
 
-  /** Adds a deterministic event to the persisted queue; sequence is assigned when omitted. */
+  /** Documents the enqueue event member and its declared contract at this boundary. */
   enqueueEvent(event: Omit<CampaignMissionRuntimeEvent, "sequence"> & { readonly sequence?: number }): number {
     const state = this.stateStore.current;
     const sequence = event.sequence ?? state.integrity.lastQueuedEventSequence + 1;
@@ -422,7 +578,7 @@ export class CampaignMissionRuntime {
     return sequence;
   }
 
-  /** Advances through every missing fixed tick so skip/fast-forward matches uninterrupted execution. */
+  /** Documents the advance to member and its declared contract at this boundary. */
   advanceTo(tick: number): CampaignMissionRuntimeResult {
     const effects: CampaignMissionRuntimeEffect[] = [];
     while (this.stateStore.current.status === "running" && this.stateStore.current.integrity.lastProcessedTick < tick) {
@@ -431,7 +587,7 @@ export class CampaignMissionRuntime {
     return this.result(effects);
   }
 
-  /** Claims a terminal outcome once; the dispatch marker is part of persisted mission state. */
+  /** Documents the claim outcome member and its declared contract at this boundary. */
   claimOutcome(): Extract<CampaignMissionOutcome, "victory" | "defeat"> | undefined {
     const state = this.stateStore.current;
     if (state.integrity.outcomeDispatched || (state.status !== "victory" && state.status !== "defeat")) {
@@ -441,6 +597,10 @@ export class CampaignMissionRuntime {
     return state.status;
   }
 
+  /**
+   * Runs one complete deterministic simulation tick.
+   * Continuations resume before new timers and encounters, then event/condition settlement and checkpoint capture run against the same tick; the processed-tick marker is written only after that ordered work completes.
+   */
   private processTick(tick: number): CampaignMissionRuntimeEffect[] {
     const state = this.stateStore.current;
     const effects: CampaignMissionRuntimeEffect[] = [];
@@ -461,6 +621,10 @@ export class CampaignMissionRuntime {
     return effects;
   }
 
+  /**
+   * Repeatedly settles work that can become immediately eligible at the current tick.
+   * It drains queued events before condition polling, evaluates objectives before transitions, and loops only while the mission remains running so a terminal action cannot leave later same-tick work partially applied.
+   */
   private settleTick(
     tick: number,
     budget: TickBudget,
@@ -476,6 +640,10 @@ export class CampaignMissionRuntime {
     }
   }
 
+  /**
+   * Consumes every event whose authored tick is now due in stable sequence order.
+   * Local presentation acknowledgements are already folded into state and deliberately skip trigger dispatch, keeping local UI timing from changing deterministic gameplay.
+   */
   private drainReadyEvents(tick: number, budget: TickBudget, effects: CampaignMissionRuntimeEffect[]): boolean {
     while (this.hasReadyEvent(tick) && this.stateStore.current.status === "running") {
       const state = this.stateStore.current;
@@ -493,6 +661,10 @@ export class CampaignMissionRuntime {
     return this.stateStore.current.pendingEvents.some((event) => event.tick <= tick);
   }
 
+  /**
+   * Selects triggers from active phases, filters them by event kind and participant policy, then evaluates them in priority/ID order.
+   * It records firing history before actions run so once, edge, cadence, and repeatable policies retain the same behavior after save/restore.
+   */
   private processTriggers(
     tick: number,
     budget: TickBudget,
@@ -527,6 +699,10 @@ export class CampaignMissionRuntime {
     return true;
   }
 
+  /**
+   * Resolves the authored participant policy using synchronized participant state when available, then event payload fallbacks.
+   * This keeps solo substitution and future co-op rules at one decision point instead of letting individual triggers infer connected players differently.
+   */
   private participantPolicyAllows(trigger: MissionTriggerDefinition, event?: CampaignMissionRuntimeEvent): boolean {
     const payload = runtimeJsonObject(event?.payload);
     const synchronizedPolicyState = this.participantPolicyState?.();
@@ -545,6 +721,10 @@ export class CampaignMissionRuntime {
     });
   }
 
+  /**
+   * Updates the persisted condition edge/history and applies the trigger's firing policy.
+   * The prior value and last-fire tick are stored even when no action follows, which is required for cooldown and rising-edge behavior to survive a snapshot.
+   */
   private shouldFireTrigger(trigger: MissionTriggerDefinition, conditionMet: boolean, tick: number): boolean {
     const runtimeState = this.getTriggerState(trigger);
     const wasMet = runtimeState.lastCondition;
@@ -577,6 +757,10 @@ export class CampaignMissionRuntime {
     this.publishObjectiveChanges(this.objectiveService.drainChanges(), effects);
   }
 
+  /**
+   * Claims authored checkpoints only after their trigger and prerequisite actions have settled.
+   * It keeps a pending marker while asynchronous actions or cinematics are active, then emits the canonical checkpoint-save action exactly once.
+   */
   private processCheckpoints(tick: number, budget: TickBudget, effects: CampaignMissionRuntimeEffect[]): void {
     const state = this.stateStore.current;
     state.claimedCheckpointIds ??= [];
@@ -609,6 +793,10 @@ export class CampaignMissionRuntime {
     }
   }
 
+  /**
+   * Delegates encounter/wave progress to the deterministic encounter service and converts its changes into runtime effects.
+   * Encounter spawning remains adapter-owned, while this method supplies the shared condition/action budget that prevents waves from bypassing mission ordering.
+   */
   private advanceEncounters(tick: number, budget: TickBudget, effects: CampaignMissionRuntimeEffect[]): void {
     const encounterEffects = this.encounterService.advance({
       tick,
@@ -619,6 +807,10 @@ export class CampaignMissionRuntime {
     for (const effect of encounterEffects) this.publishEncounterEffect(effect, effects);
   }
 
+  /**
+   * Projects one persisted encounter change into an external effect and a follow-up runtime event.
+   * Publishing both lets HUD/diagnostics react locally while subsequent authored triggers observe the same encounter transition on the deterministic event queue.
+   */
   private publishEncounterEffect(effect: CampaignEncounterEffect, effects: CampaignMissionRuntimeEffect[]): void {
     const state = this.stateStore.current.encounters[effect.encounterId];
     if (!state) return;
@@ -651,6 +843,10 @@ export class CampaignMissionRuntime {
     });
   }
 
+  /**
+   * Continues resolving transition waves until no active phase can advance at this tick.
+   * A separate loop is needed because an exit action can satisfy another transition immediately without waiting for a later simulation tick.
+   */
   private drainTransitions(tick: number, budget: TickBudget, effects: CampaignMissionRuntimeEffect[]): void {
     let transitioned = true;
     while (transitioned && this.stateStore.current.status === "running") {
@@ -658,6 +854,10 @@ export class CampaignMissionRuntime {
     }
   }
 
+  /**
+   * Resolves every eligible transition from the current active phases in stable priority order.
+   * Sequential phases choose one transition, parallel phases may choose several, and source phases are cancelled/completed before target entry actions are allowed to run.
+   */
   private processTransitionWave(tick: number, budget: TickBudget, effects: CampaignMissionRuntimeEffect[]): boolean {
     const candidates = this.activePhases()
       .flatMap((phase) => {
@@ -700,6 +900,10 @@ export class CampaignMissionRuntime {
     return transitioned;
   }
 
+  /**
+   * Promotes pending target phases only after all required predecessor phases complete.
+   * It guards against reactivation cycles and executes entry actions under the same budget as the transition that activated the phase.
+   */
   private activateReadyPhases(tick: number, budget: TickBudget, effects: CampaignMissionRuntimeEffect[]): boolean {
     const state = this.stateStore.current;
     for (const targetId of [...state.pendingPhaseIds].sort()) {
@@ -726,6 +930,10 @@ export class CampaignMissionRuntime {
     return true;
   }
 
+  /**
+   * Charges the complete authored action list against the per-tick action budget before each dispatch.
+   * It records processed cost and stops at the first terminal/failing result so one overly active content graph cannot make a tick unbounded.
+   */
   private applyActions(
     actions: readonly MissionActionDefinition[],
     tick: number,
@@ -748,6 +956,10 @@ export class CampaignMissionRuntime {
     return true;
   }
 
+  /**
+   * Creates the fully scoped action context, executes the interpreter safely, flushes objective changes, and reconciles the result.
+   * Keeping that sequence together ensures world adapters never see an action without its phase/trigger ownership token.
+   */
   private applyAction(
     action: MissionActionDefinition,
     tick: number,
@@ -764,6 +976,10 @@ export class CampaignMissionRuntime {
     return this.conditionRuntime.evaluate({ state: this.stateStore.current, event }, condition);
   }
 
+  /**
+   * Decrements only running deterministic timers and queues elapsed events at the tick that reached zero.
+   * Timer completion is event-driven rather than direct-trigger execution so it follows the normal event ordering path.
+   */
   private advanceTimers(tick: number): void {
     for (const [timerId, timer] of Object.entries(this.stateStore.current.timers)) {
       if (timer.status !== "running") continue;
@@ -775,6 +991,10 @@ export class CampaignMissionRuntime {
     }
   }
 
+  /**
+   * Resumes waiting actions in owner-token/action-ID order before new authored work.
+   * Missing actions are treated as an unresumable content revision error, while each resumed result reuses the original start tick and resource ownership semantics.
+   */
   private processContinuations(tick: number, budget: TickBudget, effects: CampaignMissionRuntimeEffect[]): boolean {
     const continuations = Object.values(this.stateStore.current.actionContinuations).sort(
       (left, right) => left.ownerToken.localeCompare(right.ownerToken) || left.actionId.localeCompare(right.actionId)
@@ -817,6 +1037,10 @@ export class CampaignMissionRuntime {
     return true;
   }
 
+  /**
+   * Builds the narrow capability object passed to an action executor.
+   * It exposes the canonical state plus scoped ownership and state-only ports, preventing an executor from reaching arbitrary runtime internals.
+   */
   private createActionContext(
     action: MissionActionDefinition,
     tick: number,
@@ -839,6 +1063,12 @@ export class CampaignMissionRuntime {
     };
   }
 
+  /**
+   * Reconciles an action result with the statechart after an adapter has attempted it.
+   * This is where waiting continuations become persisted, missing-reference policy is
+   * applied, fallbacks receive a distinct ownership token, and terminal failures are
+   * converted into deterministic diagnostics instead of leaking adapter exceptions.
+   */
   private handleActionResult(
     action: MissionActionDefinition,
     context: CampaignMissionActionContext,
@@ -882,7 +1112,7 @@ export class CampaignMissionRuntime {
           const fallbackContext = {
             ...context,
             ownerToken: `${context.ownerToken}:fallback:${action.fallbackAction.id}`
-          };
+          } satisfies CampaignMissionActionContext;
           const fallbackResult = this.executeActionSafely(fallbackContext, action.fallbackAction);
           this.publishObjectiveChanges(this.objectiveService.drainChanges(), effects);
           this.handleActionResult(action.fallbackAction, fallbackContext, fallbackResult, effects);
@@ -949,6 +1179,10 @@ export class CampaignMissionRuntime {
     }
   }
 
+  /**
+   * Persists a waiting action with its resumable interpreter state and deterministic timestamps.
+   * Updating this record is the boundary that makes long-running actions, cinematics, and composites safe across save, replay, and reconnect.
+   */
   private storeContinuation(
     action: MissionActionDefinition,
     context: CampaignMissionActionContext,
@@ -969,6 +1203,10 @@ export class CampaignMissionRuntime {
     });
   }
 
+  /**
+   * Executes an action without permitting adapter exceptions to escape the deterministic tick.
+   * Errors are converted to stable failure results so diagnostics, missing-reference policy, and mission outcome handling remain reproducible.
+   */
   private executeActionSafely(
     context: CampaignMissionActionContext,
     action: MissionActionDefinition
@@ -995,6 +1233,10 @@ export class CampaignMissionRuntime {
     }
   }
 
+  /**
+   * Provides action executors with the minimal objective mutation operations.
+   * The port prevents action code from manipulating raw objective records and ensures every state change is later emitted through the objective projection pipeline.
+   */
   private objectiveActionPort(): CampaignObjectiveActionPort {
     return {
       setState: (definition, tick) => {
@@ -1012,6 +1254,10 @@ export class CampaignMissionRuntime {
     };
   }
 
+  /**
+   * Builds the adapter boundary for presentation-only actions.
+   * It records acknowledgement/continuation state in the deterministic snapshot while leaving dialogue and cinematic rendering to the local presentation layer.
+   */
   private presentationActionPort(): CampaignPresentationActionPort {
     return {
       setDialogueState: (definition, context) => {
@@ -1071,6 +1317,10 @@ export class CampaignMissionRuntime {
     };
   }
 
+  /**
+   * Converts drained objective-service changes into ordered runtime effects.
+   * The service remains the state authority; effects are a projection channel for HUD/tutorial code and never feed a UI mutation back into objectives.
+   */
   private publishObjectiveChanges(
     changes: readonly CampaignObjectiveChange[],
     effects: CampaignMissionRuntimeEffect[]
@@ -1114,6 +1364,10 @@ export class CampaignMissionRuntime {
     }
   }
 
+  /**
+   * Resumes one persisted action continuation and converts unexpected adapter errors into a deterministic failure.
+   * It mirrors initial execution so restored actions cannot gain a different failure path than freshly started actions.
+   */
   private resumeActionSafely(
     context: CampaignMissionActionContext,
     action: MissionActionDefinition,
@@ -1130,6 +1384,10 @@ export class CampaignMissionRuntime {
     }
   }
 
+  /**
+   * Associates adapter-created resources with an action ownership token in the persisted snapshot.
+   * These records drive phase exit, cancellation, and restore projection cleanup instead of relying on transient scene object references.
+   */
   private recordOwnedResources(
     ownerToken: string,
     result: CampaignMissionActionResult,
@@ -1157,6 +1415,10 @@ export class CampaignMissionRuntime {
     }
   }
 
+  /**
+   * Cancels every action/resource owned by a phase when it exits.
+   * It derives a single phase ownership prefix so trigger and nested-action resources are cleaned consistently before successor phases begin.
+   */
   private cancelOwnedByPhase(
     phaseId: string,
     reason: CampaignMissionActionCancelReason,
@@ -1166,6 +1428,10 @@ export class CampaignMissionRuntime {
     return this.cancelOwnedByPrefix(`phase:${phaseId}:`, reason, tick, effects);
   }
 
+  /**
+   * Cancels a phase or mission ownership subtree without leaking its world resources.
+   * It removes continuations in stable order, calls the adapter cancellation hook, and preserves cleanup effects so restore and replay observe the same terminal state.
+   */
   private cancelOwnedByPrefix(
     ownerPrefix: string,
     reason: CampaignMissionActionCancelReason,
@@ -1253,6 +1519,10 @@ export class CampaignMissionRuntime {
       .sort(compareById);
   }
 
+  /**
+   * Reserves the transition budget before a transition wave mutates phase state.
+   * Exceeding the cap fails the mission deterministically, protecting the simulation from authored cycles or self-activating graphs.
+   */
   private consumeTransitionBudget(count: number, tick: number, sourceId: string, budget: TickBudget): boolean {
     if (budget.transitions + count > this.maxTransitionsPerTick) {
       this.fail(
@@ -1268,12 +1538,20 @@ export class CampaignMissionRuntime {
     return true;
   }
 
+  /**
+   * Resolves an authored phase ID and turns a missing reference into a deterministic runtime failure.
+   * Callers therefore never need a non-null assertion for content that may have changed across a save revision.
+   */
   private requirePhase(id: string, tick: number): MissionPhaseDefinition | undefined {
     const phase = this.phasesById.get(id);
     if (!phase) this.fail("invalid-runtime-state", `Unknown mission phase '${id}'`, tick, id);
     return phase;
   }
 
+  /**
+   * Moves the runtime to a terminal failed state and records a structured diagnostic/effect.
+   * This is the single fail-closed path for invalid content, budgets, missing references, and adapter errors.
+   */
   private fail(
     code: CampaignMissionRuntimeDiagnostic["code"],
     message: string,
@@ -1287,6 +1565,10 @@ export class CampaignMissionRuntime {
     if (code === "resource-leak") new CampaignRunIntegrityService(state).invalidate("resource-leak");
   }
 
+  /**
+   * Canonicalizes all persisted collections after a tick and records the observed action/transition budget.
+   * The snapshot is normalized before hashing, saving, or replay consumers can observe it.
+   */
   private finishTick(budget: TickBudget): void {
     const integrity = this.stateStore.current.integrity;
     integrity.lastTickActionCount = budget.actions;
@@ -1294,6 +1576,10 @@ export class CampaignMissionRuntime {
     this.canonicalizeState();
   }
 
+  /**
+   * Sorts map-like runtime collections and normalizes legacy optional fields into their current schema shape.
+   * It is called at mutation boundaries so equivalent execution histories serialize and hash identically.
+   */
   private canonicalizeState(): void {
     const state = this.stateStore.current;
     state.activePhaseIds.sort();
@@ -1339,6 +1625,12 @@ export class CampaignMissionRuntime {
     state.ownedResources = sortRecord(state.ownedResources);
   }
 
+  /**
+   * Packages effects with a cloned, canonical snapshot for integration boundaries. The
+   * clone prevents UI, replay, and scene adapters from mutating runtime authority after
+   * a tick, while diagnostics are copied with the result so callers can display failure
+   * context without inspecting the live mutable store.
+   */
   private result(effects: readonly CampaignMissionRuntimeEffect[]): CampaignMissionRuntimeResult {
     const integrity = this.stateStore.current.integrity;
     integrity.recentTrace.push(...effects.map((effect) => ({ ...effect })));
@@ -1362,6 +1654,10 @@ export class CampaignMissionRuntime {
     return { state: this.snapshot(), effects };
   }
 
+  /**
+   * Validates the restored snapshot against the current mission identity/schema, applies explicit migration-compatible defaults, and clones it before mutation.
+   * The live runtime never retains a caller-owned snapshot reference.
+   */
   private validateAndCloneRestoredState(restored: CampaignMissionRuntimeState): CampaignMissionRuntimeState {
     if (
       restored.schemaVersion !== CAMPAIGN_MISSION_RUNTIME_SCHEMA_VERSION ||
@@ -1376,6 +1672,10 @@ export class CampaignMissionRuntime {
     return structuredClone(restored);
   }
 
+  /**
+   * Folds local acknowledgement and cinematic progress events back into the deterministic mission snapshot.
+   * Events are validated against their owner token and ordered sequence so a stale UI event cannot advance a restored or replaced presentation.
+   */
   private applyPresentationEvent(event: CampaignMissionRuntimeEvent): void {
     if (event.kind === "dialogue.presented") {
       const payload = runtimeJsonObject(event.payload);
@@ -1443,6 +1743,10 @@ export class CampaignMissionRuntime {
     }
   }
 
+  /**
+   * Finds the unique active presentation owner for a dialogue line.
+   * It resolves ambiguous local acknowledgements conservatively rather than guessing which concurrent presentation should advance.
+   */
   private findPresentingDialogueOwner(lineId: string): string | undefined {
     return Object.values(this.stateStore.current.dialoguePresentations)
       .filter((presentation) => presentation.lineId === lineId && presentation.status === "presenting")
@@ -1451,6 +1755,12 @@ export class CampaignMissionRuntime {
       )[0]?.ownerToken;
   }
 
+  /**
+   * Converts authored dialogue/cinematic shorthand into executable presentation actions.
+   * Expansion is pure and cycle-safe: cinematic references are tracked as a stack, IDs
+   * are synthetic but stable, and gameplay-finalization work remains separate from the
+   * local-only UI action so saves and replay retain the correct continuation boundary.
+   */
   private expandPresentationAction(
     action: MissionActionDefinition,
     cinematicStack: readonly string[] = []
@@ -1541,6 +1851,10 @@ export class CampaignMissionRuntime {
     return fallbackAction ? { ...action, fallbackAction } : action;
   }
 
+  /**
+   * Builds the reverse phase graph used to enforce join semantics for parallel statecharts.
+   * Storing it once at runtime construction avoids recalculating graph relationships during every transition tick.
+   */
   private buildPredecessors(phases: readonly MissionPhaseDefinition[]): ReadonlyMap<string, readonly string[]> {
     const result = new Map<string, Set<string>>();
     for (const phase of phases) {
@@ -1555,6 +1869,10 @@ export class CampaignMissionRuntime {
     return new Map([...result].map(([id, predecessors]) => [id, [...predecessors].sort()] as const));
   }
 
+  /**
+   * Bounds diagnostic trace growth while retaining the most recent deterministic entries.
+   * The cap prevents a long mission from turning saved runtime state into an unbounded debug log.
+   */
   private trimTrace(): void {
     const trace = this.stateStore.current.integrity.recentTrace;
     if (trace.length > MAX_RECENT_TRACE_ENTRIES) trace.splice(0, trace.length - MAX_RECENT_TRACE_ENTRIES);
@@ -1565,6 +1883,12 @@ function deterministicErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : typeof error === "string" ? error : "unknown error";
 }
 
+/**
+ * Builds the complete JSON-safe initial snapshot from authored content and optional
+ * launch choices. Every collection is initialized here so later tick code never has to
+ * infer missing state, and stable ordering makes serialization/hash output independent
+ * of JavaScript insertion order.
+ */
 export function createCampaignMissionRuntimeState(
   campaignId: CampaignId,
   content: CampaignMissionContent,
@@ -1651,11 +1975,15 @@ export function createCampaignMissionRuntimeState(
   };
 }
 
-/** Stable JSON serialization used for byte-level deterministic assertions and state hashing. */
+/** Documents the serialize campaign mission runtime state member and its declared contract at this boundary. */
 export function serializeCampaignMissionRuntimeState(state: CampaignMissionRuntimeState): string {
   return JSON.stringify(sortJsonValue(state as unknown as CampaignMissionRuntimeJsonValue));
 }
 
+/**
+ * Serializes runtime state into stable state-family payloads for hashing, saves, replay, and diagnostics.
+ * It sorts map-like structures before encoding so equivalent mission state produces the same wire representation.
+ */
 export function serializeCampaignMissionRuntimeStateFamilies(
   state: CampaignMissionRuntimeState
 ): Readonly<Record<string, string>> {

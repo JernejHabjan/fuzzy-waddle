@@ -3,14 +3,35 @@ import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { MissionCoopOverride } from "../contracts/mission-coop-override";
 import { resolveMissionParticipants } from "./campaign-coop-policy";
 
+/**
+ * Defines the structured campaign participant launch slot contract for this module. Its declared surface makes
+ * participant, player number, player position, team number explicit to every consumer. Use this shared shape
+ * rather than an ad-hoc object so adapters, persistence, and callers remain compatible.
+ */
 export interface CampaignParticipantLaunchSlot {
+  /**
+   * participant value carried by {@link CampaignParticipantLaunchSlot}. Its declared type is the compatibility
+   * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly participant: MissionParticipantDefinition;
+  /**
+   * numeric player number carried by {@link CampaignParticipantLaunchSlot}. Its units and valid range are
+   * defined by {@link CampaignParticipantLaunchSlot} and must remain consistent across producers and consumers.
+   */
   readonly playerNumber: number;
+  /**
+   * numeric player position carried by {@link CampaignParticipantLaunchSlot}. Its units and valid range are
+   * defined by {@link CampaignParticipantLaunchSlot} and must remain consistent across producers and consumers.
+   */
   readonly playerPosition: number;
+  /**
+   * numeric team number carried by {@link CampaignParticipantLaunchSlot}. Its units and valid range are defined
+   * by {@link CampaignParticipantLaunchSlot} and must remain consistent across producers and consumers.
+   */
   readonly teamNumber: number;
 }
 
-/** Updates the synchronized team projection used to restore alliance changes on save or reconnect. */
+/** Documents the update campaign participant teams member and its declared contract at this boundary. */
 export function updateCampaignParticipantTeams(
   participantTeams: Record<string, number>,
   playerNumber: number,
@@ -28,7 +49,7 @@ export function updateCampaignParticipantTeams(
   }
 }
 
-/** Produces stable lobby/player assignments before a campaign scene creates its initial actors. */
+/** Documents the resolve campaign participant launch slots member and its declared contract at this boundary. */
 export function resolveCampaignParticipantLaunchSlots(
   participants: readonly MissionParticipantDefinition[],
   options?: { readonly coop?: MissionCoopOverride; readonly humanParticipantCount?: number }

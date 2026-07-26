@@ -10,8 +10,12 @@ import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 
-/** Applies authored teams, factions, economy, fog, and mission caps before initial actor creation. */
+/** Defines the campaign participant scene adapter contract used by this module; its declared members form the compatible boundary for linked consumers. */
 export class CampaignParticipantSceneAdapter {
+  /**
+   * Applies resolved campaign participant slots to the live scene before gameplay begins.
+   * It aligns player/team/controller state with the authored run context so downstream world actions and restore logic use one participant authority.
+   */
   static configure(scene: ProbableWaffleScene, allowances: CampaignContentAllowanceService): void {
     const context = scene.baseGameData.gameInstance.gameInstanceMetadata.data.campaignContext;
     if (!context) return;

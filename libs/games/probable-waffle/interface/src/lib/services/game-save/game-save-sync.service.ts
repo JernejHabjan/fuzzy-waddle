@@ -14,7 +14,7 @@ import { GameSaveSyncServiceInterface } from "./game-save-sync.service.interface
 import type { RemoteGameSaveRecord } from "./remote-game-save-record";
 
 @Injectable({ providedIn: "root" })
-/** Reconciles encoded offline saves with the authenticated backend using revisions and tombstones. */
+/** Defines the game save sync service contract used by this module; its declared members form the compatible boundary for linked consumers. */
 export class GameSaveSyncService implements GameSaveSyncServiceInterface {
   private readonly authService = inject(AuthService);
   private readonly httpClient = inject(HttpClient);
@@ -29,7 +29,7 @@ export class GameSaveSyncService implements GameSaveSyncServiceInterface {
     });
   }
 
-  /** Local writes always win availability; sync failures leave their records queued for the next attempt. */
+  /** Documents the flush member and its declared contract at this boundary. */
   async flush(): Promise<void> {
     if (!this.authService.isAuthenticated) return;
     if (this.flushInProgress) return this.flushInProgress;
@@ -41,7 +41,7 @@ export class GameSaveSyncService implements GameSaveSyncServiceInterface {
     }
   }
 
-  /** A single flush owns reconciliation so overlapping saves or reconnects cannot upload the same revision twice. */
+  /** Documents the flush queued saves member and its declared contract at this boundary. */
   private async flushQueuedSaves(): Promise<void> {
     await this.pullAndMerge();
     for (const save of await this.repository.listIncludingDeleted()) {
@@ -82,7 +82,7 @@ export class GameSaveSyncService implements GameSaveSyncServiceInterface {
     void this.flush();
   };
 
-  /** Server revisions win only for the same save id; independent local saves are preserved. */
+  /** Documents the pull and merge member and its declared contract at this boundary. */
   private async pullAndMerge(): Promise<void> {
     let remoteRecords: RemoteGameSaveRecord[];
     try {

@@ -16,7 +16,7 @@ import type {
   CampaignUnlockDefinition
 } from "../contracts/campaign-progression-definition";
 
-/** Immutable definition authority shared by launch, simulation adapters, UI, and reward commits. */
+/** Defines the campaign progression registry contract used by this module; its declared members form the compatible boundary for linked consumers. */
 export class CampaignProgressionRegistry {
   private readonly currencies: ReadonlyMap<CampaignCurrencyId, CampaignCurrencyDefinition>;
   private readonly heroes: ReadonlyMap<CampaignHeroId, CampaignHeroDefinition>;

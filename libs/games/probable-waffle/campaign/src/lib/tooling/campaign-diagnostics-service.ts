@@ -4,6 +4,13 @@ import type {
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { CampaignMissionContent } from "../contracts/campaign-mission-content";
 
+/**
+ * Developer-only inspection and mutation contracts. Mutations must invalidate run
+ * integrity before execution; inspect-only commands are deliberately side-effect free.
+ *
+ * @see CampaignRunIntegrityService
+ * @see https://github.com/JernejHabjan/fuzzy-waddle/issues/713
+ */
 export type CampaignDeveloperCommand =
   | { readonly kind: "set-fact"; readonly factId: string; readonly value: boolean | string }
   | { readonly kind: "set-counter"; readonly counterId: string; readonly value: number }
@@ -17,76 +24,287 @@ export type CampaignDeveloperCommand =
   | { readonly kind: "focus-actor"; readonly actorId: string }
   | { readonly kind: "highlight-region"; readonly regionId: string };
 
+/**
+ * Defines the structured campaign developer command result contract for this module. Its declared surface
+ * makes accepted, invalidated rewards, reason explicit to every consumer. Use this shared shape rather than an
+ * ad-hoc object so adapters, persistence, and callers remain compatible.
+ */
 export interface CampaignDeveloperCommandResult {
+  /**
+   * accepted value carried by {@link CampaignDeveloperCommandResult}. Its declared type is the compatibility
+   * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly accepted: boolean;
+  /**
+   * invalidated rewards value carried by {@link CampaignDeveloperCommandResult}. Its declared type is the
+   * compatibility boundary for producers, validators, and consumers; do not replace it with a broader inferred
+   * shape.
+   */
   readonly invalidatedRewards: boolean;
+  /**
+   * Optional string reason carried by {@link CampaignDeveloperCommandResult}. Treat it according to the owning
+   * contract’s validation and presentation rules rather than assuming it is a stable identifier.
+   */
   readonly reason?: string;
 }
 
+/**
+ * Defines the structured campaign diagnostics graph node contract for this module. Its declared surface makes
+ * id, active, completed explicit to every consumer. Use this shared shape rather than an ad-hoc object so
+ * adapters, persistence, and callers remain compatible.
+ */
 export interface CampaignDiagnosticsGraphNode {
+  /**
+   * stable id used by {@link CampaignDiagnosticsGraphNode} to correlate this value with related records, events,
+   * or authored content; it is not a display label.
+   */
   readonly id: string;
+  /**
+   * active value carried by {@link CampaignDiagnosticsGraphNode}. Its declared type is the compatibility
+   * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly active: boolean;
+  /**
+   * completed value carried by {@link CampaignDiagnosticsGraphNode}. Its declared type is the compatibility
+   * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly completed: boolean;
 }
 
+/**
+ * Defines the structured campaign diagnostics graph edge contract for this module. Its declared surface makes
+ * id, from, to, candidate explicit to every consumer. Use this shared shape rather than an ad-hoc object so
+ * adapters, persistence, and callers remain compatible.
+ */
 export interface CampaignDiagnosticsGraphEdge {
+  /**
+   * stable id used by {@link CampaignDiagnosticsGraphEdge} to correlate this value with related records, events,
+   * or authored content; it is not a display label.
+   */
   readonly id: string;
+  /**
+   * string from carried by {@link CampaignDiagnosticsGraphEdge}. Treat it according to the owning contract’s
+   * validation and presentation rules rather than assuming it is a stable identifier.
+   */
   readonly from: string;
+  /**
+   * string to carried by {@link CampaignDiagnosticsGraphEdge}. Treat it according to the owning contract’s
+   * validation and presentation rules rather than assuming it is a stable identifier.
+   */
   readonly to: string;
+  /**
+   * boolean policy/value on {@link CampaignDiagnosticsGraphEdge} that explicitly controls whether the associated
+   * behavior is active; do not infer it from unrelated state.
+   */
   readonly candidate: boolean;
 }
 
+/**
+ * Defines the structured campaign diagnostics snapshot contract for this module. Its declared surface makes
+ * schema version, mission id, mission revision, status, phases explicit to every consumer. Use this shared
+ * shape rather than an ad-hoc object so adapters, persistence, and callers remain compatible.
+ */
 export interface CampaignDiagnosticsSnapshot {
+  /**
+   * compatibility schema version for {@link CampaignDiagnosticsSnapshot}. Consumers use it to choose validation,
+   * migration, or conflict-handling rules instead of guessing the payload shape.
+   */
   readonly schemaVersion: 1;
+  /**
+   * stable mission id used by {@link CampaignDiagnosticsSnapshot} to correlate this value with related records,
+   * events, or authored content; it is not a display label.
+   */
   readonly missionId: string;
+  /**
+   * compatibility mission revision for {@link CampaignDiagnosticsSnapshot}. Consumers use it to choose
+   * validation, migration, or conflict-handling rules instead of guessing the payload shape.
+   */
   readonly missionRevision: number;
+  /**
+   * discriminator for {@link CampaignDiagnosticsSnapshot}. It selects the valid branch and behavior, so
+   * producers and consumers must keep it synchronized with the accompanying fields.
+   */
   readonly status: string;
+  /**
+   * collection owned by {@link CampaignDiagnosticsSnapshot}. Preserve the declared element contract and any
+   * ordering/uniqueness semantics when reading, serializing, or extending it.
+   */
   readonly phases: {
+    /**
+     * collection value on {@link CampaignDiagnosticsSnapshot}. Its element type defines the records that may cross
+     * this boundary; preserve ordering or uniqueness whenever the owning workflow relies on it.
+     */
     readonly active: readonly string[];
+    /**
+     * collection value on {@link CampaignDiagnosticsSnapshot}. Its element type defines the records that may cross
+     * this boundary; preserve ordering or uniqueness whenever the owning workflow relies on it.
+     */
     readonly completed: readonly string[];
+    /**
+     * collection value on {@link CampaignDiagnosticsSnapshot}. Its element type defines the records that may cross
+     * this boundary; preserve ordering or uniqueness whenever the owning workflow relies on it.
+     */
     readonly graph: {
+      /**
+       * collection value on {@link CampaignDiagnosticsSnapshot}. Its element type defines the records that may cross
+       * this boundary; preserve ordering or uniqueness whenever the owning workflow relies on it.
+       */
       readonly nodes: readonly CampaignDiagnosticsGraphNode[];
+      /**
+       * collection value on {@link CampaignDiagnosticsSnapshot}. Its element type defines the records that may cross
+       * this boundary; preserve ordering or uniqueness whenever the owning workflow relies on it.
+       */
       readonly edges: readonly CampaignDiagnosticsGraphEdge[];
     };
   };
+  /**
+   * collection owned by {@link CampaignDiagnosticsSnapshot}. Preserve the declared element contract and any
+   * ordering/uniqueness semantics when reading, serializing, or extending it.
+   */
   readonly objectives: CampaignMissionRuntimeState["objectives"];
+  /**
+   * facts value carried by {@link CampaignDiagnosticsSnapshot}. Its declared type is the compatibility boundary
+   * for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly facts: CampaignMissionRuntimeState["facts"];
+  /**
+   * counters value carried by {@link CampaignDiagnosticsSnapshot}. Its declared type is the compatibility
+   * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly counters: CampaignMissionRuntimeState["counters"];
+  /**
+   * timers value carried by {@link CampaignDiagnosticsSnapshot}. Its declared type is the compatibility boundary
+   * for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly timers: CampaignMissionRuntimeState["timers"];
+  /**
+   * encounters value carried by {@link CampaignDiagnosticsSnapshot}. Its declared type is the compatibility
+   * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly encounters: CampaignMissionRuntimeState["encounters"];
+  /**
+   * collection value on {@link CampaignDiagnosticsSnapshot}. Its element type defines the records that may cross
+   * this boundary; preserve ordering or uniqueness whenever the owning workflow relies on it.
+   */
   readonly world: {
+    /**
+     * collection owned by {@link CampaignDiagnosticsSnapshot}. Preserve the declared element contract and any
+     * ordering/uniqueness semantics when reading, serializing, or extending it.
+     */
     readonly participants: readonly {
       readonly slotId: string;
       readonly controller: string;
       readonly faction: number;
       readonly teamId: string;
     }[];
+    /**
+     * collection value on {@link CampaignDiagnosticsSnapshot}. Its element type defines the records that may cross
+     * this boundary; preserve ordering or uniqueness whenever the owning workflow relies on it.
+     */
     readonly references: Readonly<Record<string, readonly string[]>>;
   };
+  /**
+   * keyed/nested presentation structure owned by {@link CampaignDiagnosticsSnapshot}. Keep its keys and value
+   * contract explicit so callers cannot smuggle a broader shape across this boundary.
+   */
   readonly presentation: {
+    /**
+     * Optional stable active cinematic id used by {@link CampaignDiagnosticsSnapshot} to correlate this value with
+     * related records, events, or authored content; it is not a display label.
+     */
     readonly activeCinematicId?: string;
+    /**
+     * cinematics value carried by {@link CampaignDiagnosticsSnapshot}. Its declared type is the compatibility
+     * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
+     */
     readonly cinematics: CampaignMissionRuntimeState["cinematics"];
+    /**
+     * dialogue presentations value carried by {@link CampaignDiagnosticsSnapshot}. Its declared type is the
+     * compatibility boundary for producers, validators, and consumers; do not replace it with a broader inferred
+     * shape.
+     */
     readonly dialoguePresentations: CampaignMissionRuntimeState["dialoguePresentations"];
   };
+  /**
+   * collection value on {@link CampaignDiagnosticsSnapshot}. Its element type defines the records that may cross
+   * this boundary; preserve ordering or uniqueness whenever the owning workflow relies on it.
+   */
   readonly saveRecovery: {
+    /**
+     * Optional stable last checkpoint id used by {@link CampaignDiagnosticsSnapshot} to correlate this value with
+     * related records, events, or authored content; it is not a display label.
+     */
     readonly lastCheckpointId?: string;
+    /**
+     * collection owned by {@link CampaignDiagnosticsSnapshot}. Preserve the declared element contract and any
+     * ordering/uniqueness semantics when reading, serializing, or extending it.
+     */
     readonly pendingCheckpointIds: readonly string[];
   };
+  /**
+   * collection owned by {@link CampaignDiagnosticsSnapshot}. Preserve the declared element contract and any
+   * ordering/uniqueness semantics when reading, serializing, or extending it.
+   */
   readonly rewards: {
+    /**
+     * collection owned by {@link CampaignDiagnosticsSnapshot}. Preserve the declared element contract and any
+     * ordering/uniqueness semantics when reading, serializing, or extending it.
+     */
     readonly pendingRewardIds: readonly string[];
+    /**
+     * boolean policy/value on {@link CampaignDiagnosticsSnapshot} that explicitly controls whether the associated
+     * behavior is active; do not infer it from unrelated state.
+     */
     readonly eligible: boolean;
+    /**
+     * collection value on {@link CampaignDiagnosticsSnapshot}. Its element type defines the records that may cross
+     * this boundary; preserve ordering or uniqueness whenever the owning workflow relies on it.
+     */
     readonly invalidationReasons: readonly string[];
   };
+  /**
+   * Optional diagnostic value carried by {@link CampaignDiagnosticsSnapshot}. Its declared type is the
+   * compatibility boundary for producers, validators, and consumers; do not replace it with a broader inferred
+   * shape.
+   */
   readonly diagnostic?: CampaignMissionRuntimeState["integrity"]["diagnostic"];
 }
 
+/**
+ * Defines the structured campaign developer command executor contract for this module. Its declared surface
+ * makes execute, invalidate rewards explicit to every consumer. Use this shared shape rather than an ad-hoc
+ * object so adapters, persistence, and callers remain compatible.
+ */
 export interface CampaignDeveloperCommandExecutor {
+  /**
+   * operation exposed by {@link CampaignDeveloperCommandExecutor}. Its signature is the compatibility boundary
+   * for implementers and callers; keep ordering, return semantics, and error behavior aligned across
+   * implementations.
+   */
   execute(command: CampaignDeveloperCommand): CampaignDeveloperCommandResult;
+  /**
+   * operation exposed by {@link CampaignDeveloperCommandExecutor}. Its signature is the compatibility boundary
+   * for implementers and callers; keep ordering, return semantics, and error behavior aligned across
+   * implementations.
+   */
   invalidateRewards(reason: "developer-command"): void;
 }
 
+/**
+ * Defines the structured campaign developer command definitions contract for this module. Its declared surface
+ * makes cinematic ids, reward ids explicit to every consumer. Use this shared shape rather than an ad-hoc
+ * object so adapters, persistence, and callers remain compatible.
+ */
 export interface CampaignDeveloperCommandDefinitions {
+  /**
+   * Optional collection owned by {@link CampaignDeveloperCommandDefinitions}. Preserve the declared element
+   * contract and any ordering/uniqueness semantics when reading, serializing, or extending it.
+   */
   readonly cinematicIds?: readonly string[];
+  /**
+   * Optional collection owned by {@link CampaignDeveloperCommandDefinitions}. Preserve the declared element
+   * contract and any ordering/uniqueness semantics when reading, serializing, or extending it.
+   */
   readonly rewardIds?: readonly string[];
 }
 
@@ -96,6 +314,16 @@ export abstract class CampaignDiagnosticsService {
   abstract execute(command: CampaignDeveloperCommand): CampaignDeveloperCommandResult;
 }
 
+/**
+ * Read-only diagnostics and explicitly invalidating developer-command gateway. It builds
+ * a stable graph/snapshot from authored content plus runtime state, and validates every
+ * mutation against declared debug permissions before the executor is called.
+ *
+ * ```text
+ * content + runtime -> diagnostics graph/HUD (read-only)
+ * developer command -> validate -> invalidate integrity -> runtime executor
+ * ```
+ */
 export class DefaultCampaignDiagnosticsService extends CampaignDiagnosticsService {
   constructor(
     private readonly content: CampaignMissionContent,
@@ -107,6 +335,15 @@ export class DefaultCampaignDiagnosticsService extends CampaignDiagnosticsServic
     super();
   }
 
+  /**
+   * Materializes a deep-copied, read-only diagnostic view of the current authoritative
+   * mission state. The snapshot intentionally groups state by the maintainer questions it
+   * answers—statechart, world bindings, presentation, save recovery, and rewards—without
+   * exposing mutable runtime references to the developer HUD or graph tooling.
+   *
+   * @see {@link campaignDiagnosticsGraph} for deterministic phase-edge projection.
+   * @see {@link execute} for the separate, integrity-gated mutation path.
+   */
   snapshot(): CampaignDiagnosticsSnapshot {
     const state = this.state();
     return {
@@ -208,6 +445,10 @@ function campaignDiagnosticsGraph(
   return { nodes, edges };
 }
 
+/**
+ * Validates a developer command against authored debug permissions and current runtime state before it can execute.
+ * The result explains rejected commands and distinguishes inspect-only operations from mutations that must invalidate reward integrity.
+ */
 function validateDeveloperCommand(
   content: CampaignMissionContent,
   command: CampaignDeveloperCommand,

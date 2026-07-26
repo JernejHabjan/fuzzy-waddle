@@ -19,11 +19,36 @@ import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { GameSaveService } from "../../services/game-save/game-save.service";
 import { AOTA_CAMPAIGN_CATALOG } from "../campaign/campaign-catalog";
 
+/**
+ * Defines the structured campaign save group contract for this module. Its declared surface makes mission id,
+ * chapter label, mission title, newest at, saves explicit to every consumer. Use this shared shape rather than
+ * an ad-hoc object so adapters, persistence, and callers remain compatible.
+ */
 interface CampaignSaveGroup {
+  /**
+   * stable mission id used by {@link CampaignSaveGroup} to correlate this value with related records, events, or
+   * authored content; it is not a display label.
+   */
   missionId: CampaignMissionId;
+  /**
+   * human-facing chapter label for {@link CampaignSaveGroup}. It supports UI, narration, or diagnostics and must
+   * not be used as the stable identity of the record.
+   */
   chapterLabel: string;
+  /**
+   * human-facing mission title for {@link CampaignSaveGroup}. It supports UI, narration, or diagnostics and must
+   * not be used as the stable identity of the record.
+   */
   missionTitle: string;
+  /**
+   * temporal value for {@link CampaignSaveGroup}. It anchors ordering, expiry, or presentation timing and must
+   * use the time domain declared by the enclosing contract.
+   */
   newestAt: string;
+  /**
+   * collection value on {@link CampaignSaveGroup}. Its element type defines the records that may cross this
+   * boundary; preserve ordering or uniqueness whenever the owning workflow relies on it.
+   */
   saves: GameSaveRecord[];
 }
 

@@ -12,7 +12,7 @@ import type {
   CampaignVictoryCommitRequest
 } from "@fuzzy-waddle/probable-waffle-protocol";
 
-/** Single mutable campaign-profile authority for guest and authenticated Angular flows. */
+/** Defines the campaign profile service interface contract used by this module; its declared members form the compatible boundary for linked consumers. */
 export abstract class CampaignProfileServiceInterface {
   abstract readonly loaded: Signal<boolean>;
   abstract readonly profile: Signal<CampaignProfile>;

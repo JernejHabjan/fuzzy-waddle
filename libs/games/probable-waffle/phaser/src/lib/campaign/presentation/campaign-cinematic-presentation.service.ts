@@ -26,44 +26,167 @@ import { AudioService } from "../../world/services/audio.service";
 import { getSceneComponent, getSceneService } from "../../world/services/scene-component-helpers";
 import { SimulationPauseReason, SimulationTickService } from "../../world/services/simulation-tick.service";
 import type { CampaignPresentationRequest } from "../actions/campaign-phaser-world-adapter";
+
+/**
+ * Local-only cinematic and dialogue presenter. It consumes deterministic presentation
+ * requests while owning camera, input, audio, and pause cleanup so those transient
+ * choices never become synchronized mission state.
+ *
+ * @see CampaignCinematicPresentationService for the framework-free projection contract.
+ * @see https://github.com/JernejHabjan/fuzzy-waddle/issues/706
+ */
 import { IndexedScenarioReferenceRegistry } from "../scenario/scenario-reference-registry";
 
 const DEFAULT_LINE_TICKS = 40;
 const DEFAULT_CINEMATIC_TIMEOUT_TICKS = 2_400;
 const SEEN_CINEMATICS_KEY = "probable-waffle-campaign-seen-cinematics-v1";
 
+/**
+ * Defines the structured campaign cinematic view state contract for this module. Its declared surface makes
+ * active, cinematic id, title, subtitle, can acknowledge explicit to every consumer. Use this shared shape
+ * rather than an ad-hoc object so adapters, persistence, and callers remain compatible.
+ */
 export interface CampaignCinematicViewState {
+  /**
+   * active value carried by {@link CampaignCinematicViewState}. Its declared type is the compatibility boundary
+   * for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly active: boolean;
+  /**
+   * Optional stable cinematic id used by {@link CampaignCinematicViewState} to correlate this value with related
+   * records, events, or authored content; it is not a display label.
+   */
   readonly cinematicId?: string;
+  /**
+   * Optional human-facing title for {@link CampaignCinematicViewState}. It supports UI, narration, or
+   * diagnostics and must not be used as the stable identity of the record.
+   */
   readonly title?: string;
+  /**
+   * Optional human-facing subtitle for {@link CampaignCinematicViewState}. It supports UI, narration, or
+   * diagnostics and must not be used as the stable identity of the record.
+   */
   readonly subtitle?: CampaignDialogueLineProjection;
+  /**
+   * boolean policy/value on {@link CampaignCinematicViewState} that explicitly controls whether the associated
+   * behavior is active; do not infer it from unrelated state.
+   */
   readonly canAcknowledge: boolean;
+  /**
+   * letterbox value carried by {@link CampaignCinematicViewState}. Its declared type is the compatibility
+   * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly letterbox: boolean;
+  /**
+   * ui suppressed value carried by {@link CampaignCinematicViewState}. Its declared type is the compatibility
+   * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly uiSuppressed: boolean;
+  /**
+   * discriminator for {@link CampaignCinematicViewState}. It selects the valid branch and behavior, so producers
+   * and consumers must keep it synchronized with the accompanying fields.
+   */
   readonly skipMode: "hold" | "tap";
+  /**
+   * numeric skip progress carried by {@link CampaignCinematicViewState}. Its units and valid range are defined
+   * by {@link CampaignCinematicViewState} and must remain consistent across producers and consumers.
+   */
   readonly skipProgress: number;
+  /**
+   * collection value on {@link CampaignCinematicViewState}. Its element type defines the records that may cross
+   * this boundary; preserve ordering or uniqueness whenever the owning workflow relies on it.
+   */
   readonly dialogueLog: readonly CampaignDialogueLogProjectionItem[];
 }
 
+/**
+ * Defines the structured campaign cinematic presentation callbacks contract for this module. Its declared
+ * surface makes dialogue presented, dialogue acknowledged, cinematic cue, cinematic finished explicit to every
+ * consumer. Use this shared shape rather than an ad-hoc object so adapters, persistence, and callers remain
+ * compatible.
+ */
 export interface CampaignCinematicPresentationCallbacks {
+  /**
+   * operation exposed by {@link CampaignCinematicPresentationCallbacks}. Its signature is the compatibility
+   * boundary for implementers and callers; keep ordering, return semantics, and error behavior aligned across
+   * implementations.
+   */
   dialoguePresented(lineId: string, ownerToken: string): void;
+  /**
+   * operation exposed by {@link CampaignCinematicPresentationCallbacks}. Its signature is the compatibility
+   * boundary for implementers and callers; keep ordering, return semantics, and error behavior aligned across
+   * implementations.
+   */
   dialogueAcknowledged(lineId: string, ownerToken: string): void;
+  /**
+   * operation exposed by {@link CampaignCinematicPresentationCallbacks}. Its signature is the compatibility
+   * boundary for implementers and callers; keep ordering, return semantics, and error behavior aligned across
+   * implementations.
+   */
   cinematicCue(cinematicId: string, cueIndex: number): void;
+  /**
+   * operation exposed by {@link CampaignCinematicPresentationCallbacks}. Its signature is the compatibility
+   * boundary for implementers and callers; keep ordering, return semantics, and error behavior aligned across
+   * implementations.
+   */
   cinematicFinished(cinematicId: string, skipped: boolean): void;
 }
 
+/**
+ * Defines the structured pending dialogue contract for this module. Its declared surface makes message id,
+ * line, owner token explicit to every consumer. Use this shared shape rather than an ad-hoc object so
+ * adapters, persistence, and callers remain compatible.
+ */
 interface PendingDialogue {
+  /**
+   * stable message id used by {@link PendingDialogue} to correlate this value with related records, events, or
+   * authored content; it is not a display label.
+   */
   readonly messageId: string;
+  /**
+   * line value carried by {@link PendingDialogue}. Its declared type is the compatibility boundary for
+   * producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly line: MissionDialogueLine;
+  /**
+   * string owner token carried by {@link PendingDialogue}. Treat it according to the owning contract’s
+   * validation and presentation rules rather than assuming it is a stable identifier.
+   */
   readonly ownerToken: string;
 }
 
+/**
+ * Defines the structured active dialogue contract for this module. Its declared surface makes cinematic, on
+ * complete explicit to every consumer. Use this shared shape rather than an ad-hoc object so adapters,
+ * persistence, and callers remain compatible.
+ */
 interface ActiveDialogue extends PendingDialogue {
+  /**
+   * cinematic value carried by {@link ActiveDialogue}. Its declared type is the compatibility boundary for
+   * producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly cinematic: boolean;
+  /**
+   * Optional callback/hook supplied to {@link ActiveDialogue}. The owner controls when it runs; implementations
+   * must preserve the documented lifecycle and cleanup boundary.
+   */
   readonly onComplete?: () => void;
 }
 
-/** Local-only camera/UI/audio cue runner; deterministic state changes remain in CampaignMissionRuntime. */
+/**
+ * Local-only projection of deterministic dialogue and cinematic requests. It owns camera,
+ * input, subtitles, audio, queue priority, skip gestures, and cleanup, while emitting
+ * acknowledgements back through the event adapter rather than writing mission state.
+ *
+ * ```text
+ * runtime presentation effect -> local queue -> camera/UI/audio projection
+ *                                      |                 |
+ *                              skip/finish acknowledgement +-> deterministic event queue
+ * ```
+ *
+ * Directed cinematics may temporarily own local control/camera; paused cinematics add
+ * only their named simulation pause reason and always restore the prior local values.
+ */
 export class PhaserCampaignCinematicPresentationService extends CampaignCinematicPresentationService {
   private readonly viewSubject = new BehaviorSubject<CampaignCinematicViewState>(emptyView());
   private readonly queue = new CampaignPresentationPriorityQueue();
@@ -281,6 +404,11 @@ export class PhaserCampaignCinematicPresentationService extends CampaignCinemati
     this.startDialogue(pending.line, pending.ownerToken, false);
   }
 
+  /**
+   * Starts a local dialogue projection and reports its deterministic "presented" event
+   * before waiting for the authored minimum duration. Blocking lines require explicit
+   * acknowledgement; non-blocking lines acknowledge themselves after the timer.
+   */
   private startDialogue(
     line: MissionDialogueLine,
     ownerToken: string,
@@ -331,6 +459,11 @@ export class PhaserCampaignCinematicPresentationService extends CampaignCinemati
     if (invokeCompletion) active?.onComplete?.();
   }
 
+  /**
+   * Advances the ordered cinematic timeline one cue at a time. Every selected cue index
+   * is reported to the runtime before local playback, making a skipped, replayed, or
+   * restored cinematic converge on the same authored continuation point.
+   */
   private runNextCue(): void {
     const request = this.request;
     if (!request) return;
@@ -352,6 +485,11 @@ export class PhaserCampaignCinematicPresentationService extends CampaignCinemati
     }
   }
 
+  /**
+   * Interprets a single presentation cue without letting missing optional assets block
+   * mission progress. Each asynchronous cue must invoke `done` exactly once; pure view
+   * changes complete immediately and leave deterministic sequencing to `runNextCue`.
+   */
   private runCue(cue: MissionPresentationCue, done: () => void): void {
     switch (cue.kind) {
       case "dialogue": {
@@ -438,6 +576,11 @@ export class PhaserCampaignCinematicPresentationService extends CampaignCinemati
     });
   }
 
+  /**
+   * Plays an optional audio cue according to its authored wait policy. Unavailable audio
+   * is treated as a presentation-only skip, so asset loading differences cannot stall a
+   * mission or change its persisted runtime timeline.
+   */
   private runAudioCue(cue: Extract<MissionPresentationCue, { readonly kind: "audio" }>, done: () => void): void {
     const audio = getSceneService(this.scene, AudioService);
     const playback = campaignAudioCuePlayback(
@@ -500,6 +643,11 @@ export class PhaserCampaignCinematicPresentationService extends CampaignCinemati
     }
   }
 
+  /**
+   * Releases every local resource acquired by dialogue/cinematic playback and restores
+   * previous input, camera, and simulation ownership. It is intentionally idempotent so
+   * normal completion, skip, restore, and scene shutdown share one safe unwind path.
+   */
   private cleanupPresentation(showQueuedDialogue = true): void {
     const mode = this.request?.definition.mode;
     this.cueTimer?.destroy();

@@ -5,7 +5,7 @@ import type {
   CampaignVictoryCommitRequest
 } from "@fuzzy-waddle/probable-waffle-protocol";
 
-/** Read/write campaign progression contract used by the overview and mission lifecycle. */
+/** Defines the campaign progress service interface contract used by this module; its declared members form the compatible boundary for linked consumers. */
 export abstract class CampaignProgressServiceInterface {
   abstract readonly missionProgress: Signal<CampaignMissionProgress[]>;
   abstract readonly recommendedMission: Signal<CampaignMissionProgress | undefined>;

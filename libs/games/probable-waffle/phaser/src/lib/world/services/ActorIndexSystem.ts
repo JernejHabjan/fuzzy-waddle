@@ -1,4 +1,8 @@
 import Phaser from "phaser";
+/**
+ * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
+ * storage boundaries do not drift into an unconstrained primitive.
+ */
 type GameObject = Phaser.GameObjects.GameObject;
 import { getActorComponent } from "../../data/actor-component";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";

@@ -10,7 +10,12 @@ import {
   serializeCampaignMissionRuntimeState
 } from "../runtime/campaign-mission-runtime";
 
-/** Rendering-free deterministic harness used by mission smoke tests and authored checkpoint fixtures. */
+/**
+ * Rendering-free mission harness for authored smoke tests, checkpoint fixtures, and
+ * deterministic regressions. It drives injected simulation ticks, uses the same runtime
+ * serialization path as save/replay, and intentionally exposes effects rather than a
+ * fake Phaser world so tests verify domain behavior rather than UI timing.
+ */
 export class CampaignMissionTestHarness {
   private tick = 0;
   private runtime: CampaignMissionRuntime;

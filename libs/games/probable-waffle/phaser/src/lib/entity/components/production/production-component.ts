@@ -41,6 +41,10 @@ import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { getActorSystem } from "../../../data/actor-system";
 import { ActionSystem } from "../../systems/action.system";
 import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
+/**
+ * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
+ * storage boundaries do not drift into an unconstrained primitive.
+ */
 type GameObject = Phaser.GameObjects.GameObject;
 
 export class ProductionComponent {
@@ -87,6 +91,12 @@ export class ProductionComponent {
     return getActorComponent(this.gameObject, ConstructionSiteComponent)?.isFinished ?? true;
   }
 
+  /**
+   * Derives production-building rally points from the deterministic command stream, not
+   * local UI interaction. Every peer therefore observes the same move/actor target,
+   * while ownership and actor-ID checks prevent another player’s command from changing
+   * this building’s spawn destination.
+   */
   private listenToMoveEvents() {
     const commandBus = getSceneService(this.gameObject.scene, CommandBusService);
     if (!commandBus) {

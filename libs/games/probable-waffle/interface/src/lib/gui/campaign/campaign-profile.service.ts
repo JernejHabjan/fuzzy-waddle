@@ -40,7 +40,17 @@ const GUEST_PROFILE_KEY = "aota-campaign-profile-v1";
 const LEGACY_PROGRESS_KEY = "aota-campaign-progress-v1";
 
 @Injectable({ providedIn: "root" })
-/** Owns the versioned campaign profile and reconciles guest state with the authenticated account. */
+/**
+ * UI-facing authority for the versioned campaign profile. It exposes one reactive
+ * profile/availability view, reconciles guest and authenticated state through the
+ * server, and serializes victory commits so UI components cannot become a second mutable
+ * progression authority.
+ *
+ * ```text
+ * local guest profile --merge--> server profile --revision--> signals/catalogue UI
+ * completed run ------commit---> reward transaction ----------> persisted progress
+ * ```
+ */
 export class CampaignProfileService implements CampaignProfileServiceInterface {
   private readonly authService = inject(AuthService);
   private readonly httpClient = inject(HttpClient);
@@ -129,6 +139,12 @@ export class CampaignProfileService implements CampaignProfileServiceInterface {
     return request;
   }
 
+  /**
+   * Commits an eligible victory through a local optimistic transaction or the server's
+   * atomic profile/reward endpoint. It preserves the latest reactive profile on conflict,
+   * records the result for UI feedback, and never treats a failed or stale commit as a
+   * completed reward claim.
+   */
   async commitVictory(request: CampaignVictoryCommitRequest): Promise<CampaignRewardCommitResult | undefined> {
     await this.load();
     if (request.replayPlayback) {
@@ -200,7 +216,7 @@ export class CampaignProfileService implements CampaignProfileServiceInterface {
             completedMissions: [{ missionId: request.missionId, completedAt: new Date().toISOString() }]
           }).completedMissions
         : current.completedMissions;
-    const next = { profile, completedMissions };
+    const next = { profile, completedMissions } satisfies CampaignProfileData;
     this.data.set(next);
     this.writeGuestProfile(next);
     this.lastCommitResultValue.set(result);
@@ -262,7 +278,7 @@ export class CampaignProfileService implements CampaignProfileServiceInterface {
         ...current.profile,
         seenCinematicIds: [...current.profile.seenCinematicIds, cinematicId].sort()
       }
-    };
+    } satisfies CampaignProfileData;
     this.data.set(next);
     this.writeGuestProfile(next);
     if (this.authService.isAuthenticated) {
@@ -277,6 +293,12 @@ export class CampaignProfileService implements CampaignProfileServiceInterface {
     }
   }
 
+  /**
+   * Commits a profile edit through optimistic revision control when signed in, or stores
+   * it locally for a guest. A stale server revision intentionally leaves the current data
+   * untouched and reports a recoverable UI error, preventing one device from silently
+   * overwriting another device's progression or loadout.
+   */
   private async persistProfile(baseProfileRevision: number, next: CampaignProfileData): Promise<boolean> {
     if (this.authService.isAuthenticated) {
       this.syncStateValue.set(CampaignProfileSyncState.Pending);

@@ -9,7 +9,7 @@ import {
 import { GameSaveServiceInterface } from "./game-save.service.interface";
 import type { SaveGameRequest } from "./save-game-request";
 
-/** Configurable in-memory save service used by UI specs. */
+/** Defines the game save service stub contract used by this module; its declared members form the compatible boundary for linked consumers. */
 export class GameSaveServiceStub extends GameSaveServiceInterface {
   records: GameSaveListEntry[] = [];
   override async save(_request: SaveGameRequest): Promise<GameSaveRecord> {

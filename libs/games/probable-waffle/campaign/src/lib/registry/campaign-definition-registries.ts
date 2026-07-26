@@ -46,7 +46,7 @@ function registerKinds<TKind extends string>(
   for (const kind of kinds) registry.register({ kind, description: `Built-in campaign ${kind} definition` });
 }
 
-/** Creates the schema-level registry set; runtime executors attach to the same stable kinds in their owning layer. */
+/** Documents the create default campaign definition registries member and its declared contract at this boundary. */
 export function createDefaultCampaignDefinitionRegistries(): CampaignDefinitionRegistries {
   const registries = new CampaignDefinitionRegistries();
   registerKinds(registries.actions, CAMPAIGN_ACTION_KINDS);

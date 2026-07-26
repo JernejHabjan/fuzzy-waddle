@@ -1,5 +1,12 @@
+-- Canonical schema mirror of the campaign profile/reward transaction. Keep these object
+-- comments aligned with the migration because database introspection is documentation for
+-- server maintenance and recovery work as well as DDL.
+
 create type public.probable_waffle_campaign_difficulty as enum ('story', 'normal', 'hard');
 create type public.probable_waffle_campaign_commit_status as enum ('pending', 'committed', 'rejected');
+
+comment on type public.probable_waffle_campaign_difficulty is 'Stable campaign difficulty used by run resolution and encounter tuning.';
+comment on type public.probable_waffle_campaign_commit_status is 'Lifecycle of an idempotent campaign profile and reward commit.';
 
 create table public.probable_waffle_campaign_profiles (
   user_id uuid primary key references auth.users(id) on delete cascade,
@@ -11,6 +18,16 @@ create table public.probable_waffle_campaign_profiles (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+comment on table public.probable_waffle_campaign_profiles is 'Canonical versioned campaign profile per authenticated user.';
+comment on column public.probable_waffle_campaign_profiles.user_id is 'Authenticated profile owner.';
+comment on column public.probable_waffle_campaign_profiles.schema_version is 'Version of the canonical profile document.';
+comment on column public.probable_waffle_campaign_profiles.revision is 'Optimistic-concurrency revision for profile updates.';
+comment on column public.probable_waffle_campaign_profiles.profile_document is 'Canonical JSON campaign profile.';
+comment on column public.probable_waffle_campaign_profiles.active_loadout_ids is 'Indexed selected progression loadout IDs.';
+comment on column public.probable_waffle_campaign_profiles.seen_cinematic_ids is 'Indexed cinematics already seen by this profile.';
+comment on column public.probable_waffle_campaign_profiles.created_at is 'Profile creation time.';
+comment on column public.probable_waffle_campaign_profiles.updated_at is 'Most recent profile update time.';
 
 alter table public.probable_waffle_campaign_progress
   add column completion_count integer not null default 1 check (completion_count > 0),
@@ -37,6 +54,14 @@ create table public.probable_waffle_campaign_reward_claims (
   claimed_at timestamptz not null default now(),
   primary key (user_id, claim_id)
 );
+
+comment on table public.probable_waffle_campaign_reward_claims is 'Idempotency ledger for committed campaign rewards.';
+comment on column public.probable_waffle_campaign_reward_claims.user_id is 'Reward-claim owner.';
+comment on column public.probable_waffle_campaign_reward_claims.claim_id is 'Stable reward idempotency key.';
+comment on column public.probable_waffle_campaign_reward_claims.run_id is 'Run that produced the reward.';
+comment on column public.probable_waffle_campaign_reward_claims.mission_id is 'Mission that authored the reward.';
+comment on column public.probable_waffle_campaign_reward_claims.committed_delta is 'Canonical profile delta applied by the claim.';
+comment on column public.probable_waffle_campaign_reward_claims.claimed_at is 'Time the reward was committed.';
 
 alter table public.probable_waffle_campaign_profiles enable row level security;
 alter table public.probable_waffle_campaign_reward_claims enable row level security;
@@ -153,6 +178,9 @@ begin
   return p_commit_result;
 end;
 $$;
+
+comment on function public.commit_probable_waffle_campaign_victory(uuid, uuid, public.probable_waffle_campaign_mission_id, integer, jsonb, jsonb, jsonb, jsonb, jsonb) is
+  'Atomic victory transaction that validates revision, records reward claims, updates profile and mission progress, and returns an idempotent result.';
 
 revoke all on function public.commit_probable_waffle_campaign_victory(uuid, uuid, public.probable_waffle_campaign_mission_id, integer, jsonb, jsonb, jsonb, jsonb, jsonb) from public;
 grant execute on function public.commit_probable_waffle_campaign_victory(uuid, uuid, public.probable_waffle_campaign_mission_id, integer, jsonb, jsonb, jsonb, jsonb, jsonb) to service_role;

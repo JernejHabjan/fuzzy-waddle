@@ -46,6 +46,10 @@ import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 import { dispatchAiOrder } from "./dispatch-ai-order";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
+/**
+ * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
+ * storage boundaries do not drift into an unconstrained primitive.
+ */
 type GameObject = Phaser.GameObjects.GameObject;
 
 export class PlayerAiControllerAgent implements IPlayerControllerAgent {
@@ -130,7 +134,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     }
   }
 
-  /** Pre-tick lifecycle hook called by controller before behaviour tree step. */
+  /** Documents the pre tick member and its declared contract at this boundary. */
   async preTick(now: number): Promise<void> {
     await this.updateManagers(now);
   }
@@ -149,6 +153,10 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     }
   }
 
+  /**
+   * Drains planned prerequisites in priority order while rechecking live ownership, resources, and production availability.
+   * It prevents duplicate requests and leaves unresolved work queued for a later AI cadence rather than forcing an invalid build.
+   */
   private processPrerequisiteQueue() {
     const queue = this.blackboard.production.prereqQueue;
     if (!queue || queue.length === 0) return;
@@ -496,6 +504,10 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     return shortage;
   }
 
+  /**
+   * Updates the AI workforce plan from current indexed world state.
+   * It uses derived needs and existing commands rather than mutating campaign state directly, so host-owned AI remains replayable.
+   */
   async AssignWorkersToGather(): Promise<State> {
     const idleWorkers = this.blackboard.getIdleWorkers();
     if (idleWorkers.length === 0) {
@@ -566,6 +578,10 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     return hasEnough;
   }
 
+  /**
+   * Updates the AI workforce plan from current indexed world state.
+   * It uses derived needs and existing commands rather than mutating campaign state directly, so host-owned AI remains replayable.
+   */
   TrainWorker() {
     if (!this.HasEnoughResourcesForWorker()) {
       this.logDebugInfo("[Production] Insufficient resources for worker training");
@@ -713,6 +729,10 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     return State.FAILED;
   }
 
+  /**
+   * Selects and assigns a feasible building task from the AI plan.
+   * It balances capacity, placement, prerequisites, and current economy while preserving the controller's deterministic scheduling boundaries.
+   */
   private assignBuilding(buildingType: ObjectNames, preferredLocationTileXY?: Vector3Simple): State {
     // Preferred order:
     // 1. Explicit preferredLocationTileXY (reserved)

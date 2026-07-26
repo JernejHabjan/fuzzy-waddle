@@ -24,10 +24,9 @@ const REPLAY_COMPATIBILITY_VERSION = "lockstep-v1";
 const CAMPAIGN_REPLAY_COMPATIBILITY_VERSION = "campaign-lockstep-v2";
 
 /**
- * Captures authoritative lockstep command batches and persists a replay record
- * when the match ends. The initial game data plus command stream are enough to
- * reconstruct deterministic gameplay; optional debug data helps diagnose replay
- * drift without affecting playback behavior.
+ * Captures the canonical initial state and ordered command history needed to reproduce a
+ * run. Campaign metadata, deterministic random state, and desync diagnostics are stored
+ * alongside normal replay data, but profile mutation remains outside the archive.
  */
 export class ReplayRecorderService {
   private static readonly MAX_DESYNC_DIAGNOSTICS = 256;
@@ -75,6 +74,10 @@ export class ReplayRecorderService {
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.destroy());
   }
 
+  /**
+   * Persists a replay archive with the canonical command stream, initial snapshot, deterministic random continuation, and campaign metadata.
+   * It writes one self-consistent record so playback/reconnect diagnostics can reproduce the same run without querying live profile state.
+   */
   private async persistReplay(scene: ProbableWaffleScene): Promise<void> {
     if (this.replayPersistStarted || !this.initialGameInstanceData) {
       return;
@@ -184,14 +187,14 @@ export class ReplayRecorderService {
       });
   }
 
-  /** Releases subscriptions after replay capture lifecycle ends. */
+  /** Documents the destroy member and its declared contract at this boundary. */
   destroy(): void {
     this.batchSub?.unsubscribe();
     this.campaignEventSub?.unsubscribe();
     this.scene?.events.off(ProbableWaffleSceneEventName.DesyncDiagnostics, this.onDesyncDiagnostics);
   }
 
-  /** Builds deterministic per-tick digests for fast replay integrity checks. */
+  /** Documents the build tick digests member and its declared contract at this boundary. */
   private buildTickDigests() {
     const batchesByTick = new Map<number, ProbableWaffleReplayCommandBatch[]>();
     for (const batch of this.recordedBatches) {

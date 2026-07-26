@@ -30,6 +30,10 @@ import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/compo
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { ProbableWaffleSceneEventName } from "../../../world/services/recovery/probable-waffle-scene-events";
+/**
+ * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
+ * storage boundaries do not drift into an unconstrained primitive.
+ */
 type GameObject = Phaser.GameObjects.GameObject;
 
 export class ConstructionSiteComponent {
@@ -92,6 +96,10 @@ export class ConstructionSiteComponent {
     this.tryBuild(deltaWithTimeScale);
   }
 
+  /**
+   * Attempts construction only after ownership, resource, placement, and assigned-worker invariants have been checked.
+   * It performs the state transition and associated cleanup as one operation so partially built actors cannot leak into normal production flow.
+   */
   private tryBuild(deltaWithTimeScale: number) {
     if (this.state === ConstructionStateEnum.NotStarted && this.constructionSiteDefinition.startImmediately) {
       this.startConstruction();

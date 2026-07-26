@@ -188,6 +188,10 @@ function progressionRegistry(): CampaignProgressionRegistry {
   return new CampaignProgressionRegistry(definitions);
 }
 
+/**
+ * Defines the reward specific alias used by this module. Keep values in this named domain so linked APIs and
+ * storage boundaries do not drift into an unconstrained primitive.
+ */
 type RewardSpecific = MissionRewardDefinition extends infer TReward
   ? TReward extends MissionRewardDefinition
     ? Omit<TReward, "id" | "titleTextId" | "scope" | "oneTime" | "objectiveIds">

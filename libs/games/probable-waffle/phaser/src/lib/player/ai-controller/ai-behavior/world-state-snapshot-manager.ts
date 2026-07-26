@@ -19,6 +19,10 @@ import { getResearchedLevelForActor } from "../../../data/actor-level-utils";
 import { ContainableComponent } from "../../../entity/components/building/containable-component";
 import { getGameObjectLogicalTransform, isSceneActive } from "../../../data/game-object-helper";
 import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
+/**
+ * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
+ * storage boundaries do not drift into an unconstrained primitive.
+ */
 type GameObject = Phaser.GameObjects.GameObject;
 
 export class WorldStateSnapshotManager {
@@ -52,6 +56,12 @@ export class WorldStateSnapshotManager {
   // OWNED ACTORS
   // ---------------------------------------------------------------------------
 
+  /**
+   * Rebuilds AI-owned actor slices and their derived strength/supply totals from the
+   * indexed world. Main buildings are deliberately excluded from worker/gathering roles,
+   * avoiding distorted economy decisions while keeping production/defence classification
+   * aligned with the definition and tech-tree authorities.
+   */
   private refreshOwnedActors(owned: GameObject[]) {
     const workers: GameObject[] = [];
     const units: GameObject[] = [];
@@ -134,6 +144,13 @@ export class WorldStateSnapshotManager {
   // ENEMIES / VISIBILITY / DEFENSE
   // ---------------------------------------------------------------------------
 
+  /**
+   * Refreshes visible enemy intelligence and defensive assignments from indexed actors.
+   * It waits for path/distance queries before committing blackboard state, then verifies
+   * the scene is still active so a destroyed scene cannot receive late async results.
+   *
+   * @see {@link extractEnemyCandidates} for visibility-aware candidate selection.
+   */
   private async refreshEnemyState(owned: GameObject[], index: ActorIndexSystem) {
     const enemyCandidates = await this.extractEnemyCandidates(owned, index, this.blackboard.units);
 
@@ -279,7 +296,7 @@ export class WorldStateSnapshotManager {
   }
 }
 
-/** Pure campaign visibility rule used by host-owned AI snapshots. */
+/** Documents the is campaign ai target visible member and its declared contract at this boundary. */
 export function isCampaignAiTargetVisible(
   target: Vector3Simple,
   visionSources: readonly Vector3Simple[],

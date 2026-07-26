@@ -161,6 +161,12 @@ export default class MapRiverCrossing extends GameProbableWaffleScene {
     /* END-USER-CTR-CODE */
   }
 
+  /**
+   * Materializes the River Crossing editor scene, including the large Cyclops & Sheep
+   * scenario-reference manifest. Object names and display hierarchy are editor concerns;
+   * mission actions use the stable markers created here so content revisions remain
+   * resilient to map-layout changes.
+   */
   editorCreate(): void {
     // tilemap
     const tilemap = this.add.tilemap("tiles_river_crossing");

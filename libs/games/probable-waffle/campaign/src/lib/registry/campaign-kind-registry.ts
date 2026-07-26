@@ -1,4 +1,4 @@
-/** Deterministic definition-kind registry with duplicate guards and stable diagnostics. */
+/** Defines the campaign kind registry contract used by this module; its declared members form the compatible boundary for linked consumers. */
 export class CampaignKindRegistry<TKind extends string, TRegistration extends { readonly kind: TKind }> {
   private readonly registrations = new Map<TKind, TRegistration>();
 

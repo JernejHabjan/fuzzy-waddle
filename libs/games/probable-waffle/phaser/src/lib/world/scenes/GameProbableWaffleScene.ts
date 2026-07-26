@@ -63,6 +63,21 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     super.init();
   }
 
+  /**
+   * Creates the scene's ordered authority graph and gameplay projections. Campaign
+   * services are registered only for campaign context and before actor-dependent work;
+   * restore/reconnect paths defer mission advancement until indexes and synchronized
+   * state are ready.
+   *
+   * ```text
+   * game state -> scene services -> actor/index bootstrap -> campaign director -> HUD
+   *      ^                |                   |                    |
+   *      +--- reconnect --+-------------------+---- snapshot -------+
+   * ```
+   *
+   * @see {@link CampaignMissionDirector} for deterministic mission lifecycle ownership.
+   * @see {@link ReconnectService} for the snapshot-before-resume restore boundary.
+   */
   override create() {
     const hud = this.scene.get<HudProbableWaffle>("HudProbableWaffle") as HudProbableWaffle;
     hud.scene.start();

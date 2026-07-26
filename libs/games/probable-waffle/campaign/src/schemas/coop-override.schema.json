@@ -4,79 +4,145 @@
   "title": "Probable Waffle mission co-op override",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schemaVersion", "participants", "playerCountDifficulty", "failurePolicy", "disconnectedPlayerPolicy"],
+  "required": [
+    "schemaVersion",
+    "participants",
+    "playerCountDifficulty",
+    "failurePolicy",
+    "disconnectedPlayerPolicy"
+  ],
   "properties": {
     "schemaVersion": {
-      "const": 1
+      "const": 1,
+      "description": "Version of this document contract used to select compatible validation and migration rules."
     },
     "participants": {
       "type": "array",
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["slotId"],
+        "required": [
+          "slotId"
+        ],
         "properties": {
           "slotId": {
             "type": "string",
             "minLength": 1,
-            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Stable slot Id that links this definition to another authored campaign record."
           },
           "controller": {
-            "enum": ["human", "full-ai", "scripted-ai", "passive"]
+            "enum": [
+              "human",
+              "full-ai",
+              "scripted-ai",
+              "passive"
+            ],
+            "description": "Selects the supported controller variant for this definition."
           },
           "singlePlayerSubstitution": {
-            "enum": ["absent", "scripted-ai", "full-ai"]
+            "enum": [
+              "absent",
+              "scripted-ai",
+              "full-ai"
+            ],
+            "description": "Selects the supported single Player Substitution variant for this definition."
           },
           "faction": {
-            "enum": [1, 2]
+            "enum": [
+              1,
+              2
+            ],
+            "description": "Selects the supported faction variant for this definition."
           },
           "teamId": {
             "type": "string",
             "minLength": 1,
-            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "Stable team Id that links this definition to another authored campaign record."
           },
-          "requiredForVictory": { "type": "boolean" },
-          "profileOwnership": { "enum": ["independent", "none"] },
+          "requiredForVictory": {
+            "type": "boolean",
+            "description": "Whether required For Victory is enabled for this authored definition."
+          },
+          "profileOwnership": {
+            "enum": [
+              "independent",
+              "none"
+            ],
+            "description": "Selects the supported profile Ownership variant for this definition."
+          },
           "economy": {
-            "enum": ["normal", "granted", "none"]
+            "enum": [
+              "normal",
+              "granted",
+              "none"
+            ],
+            "description": "Selects the supported economy variant for this definition."
           },
           "fogPolicy": {
-            "enum": ["normal", "revealed", "omniscient-ai"]
+            "enum": [
+              "normal",
+              "revealed",
+              "omniscient-ai"
+            ],
+            "description": "Selects the supported fog Policy variant for this definition."
           },
           "startingResources": {
             "type": "object",
-            "additionalProperties": { "type": "number", "minimum": 0 }
+            "additionalProperties": {
+              "type": "number",
+              "minimum": 0
+            },
+            "description": "Nested starting Resources configuration owned by this participants definition."
           }
         }
-      }
+      },
+      "description": "Ordered participants declared by this campaign definition."
     },
     "playerCountDifficulty": {
       "type": "array",
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["participantCount"],
+        "required": [
+          "participantCount"
+        ],
         "properties": {
           "participantCount": {
             "type": "integer",
-            "minimum": 1
+            "minimum": 1,
+            "description": "Numeric participant Count used when resolving this definition."
           },
           "waveSizeScale": {
             "type": "number",
-            "minimum": 0
+            "minimum": 0,
+            "description": "Numeric wave Size Scale used when resolving this definition."
           },
           "resourceScale": {
             "type": "number",
-            "minimum": 0
+            "minimum": 0,
+            "description": "Numeric resource Scale used when resolving this definition."
           }
         }
-      }
+      },
+      "description": "Ordered player Count Difficulty declared by this campaign definition."
     },
     "failurePolicy": {
-      "enum": ["any-required-hero", "all-required-heroes", "team-eliminated", "mission-defined"]
+      "enum": [
+        "any-required-hero",
+        "all-required-heroes",
+        "team-eliminated",
+        "mission-defined"
+      ],
+      "description": "Selects the supported failure Policy variant for this definition."
     },
     "disconnectedPlayerPolicy": {
-      "enum": ["pause-for-reconnect", "mission-defined"]
+      "enum": [
+        "pause-for-reconnect",
+        "mission-defined"
+      ],
+      "description": "Selects the supported disconnected Player Policy variant for this definition."
     }
   }
 }

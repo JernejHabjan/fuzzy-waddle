@@ -17,27 +17,107 @@ import type {
   MissionObjectiveDefinition
 } from "../../contracts/mission-objective-definition";
 
+/**
+ * Objective state authority for the deterministic runtime. It translates authored
+ * conditions into persisted objective/checklist state and exposes projections without
+ * allowing the HUD to mutate mission state.
+ *
+ * @see buildCampaignObjectiveProjection for UI-ready data.
+ * @see https://github.com/JernejHabjan/fuzzy-waddle/issues/705
+ */
 export interface CampaignObjectiveChecklistChange {
+  /**
+   * stable checklist id used by {@link CampaignObjectiveChecklistChange} to correlate this value with related
+   * records, events, or authored content; it is not a display label.
+   */
   readonly checklistId: MissionObjectiveChecklistId;
+  /**
+   * discriminator for {@link CampaignObjectiveChecklistChange}. It selects the valid branch and behavior, so
+   * producers and consumers must keep it synchronized with the accompanying fields.
+   */
   readonly previousStatus: CampaignMissionObjectiveChecklistStatus;
+  /**
+   * discriminator for {@link CampaignObjectiveChecklistChange}. It selects the valid branch and behavior, so
+   * producers and consumers must keep it synchronized with the accompanying fields.
+   */
   readonly status: CampaignMissionObjectiveChecklistStatus;
+  /**
+   * Optional numeric current carried by {@link CampaignObjectiveChecklistChange}. Its units and valid range are
+   * defined by {@link CampaignObjectiveChecklistChange} and must remain consistent across producers and
+   * consumers.
+   */
   readonly current?: number;
+  /**
+   * Optional numeric bound or quantity carried by {@link CampaignObjectiveChecklistChange}. Interpret it in the
+   * owning contract’s units and preserve its validation constraints at boundaries.
+   */
   readonly target?: number;
 }
 
+/**
+ * Defines the structured campaign objective change contract for this module. Its declared surface makes
+ * objective id, kind, previous status, status, tick explicit to every consumer. Use this shared shape rather
+ * than an ad-hoc object so adapters, persistence, and callers remain compatible.
+ */
 export interface CampaignObjectiveChange {
+  /**
+   * stable objective id used by {@link CampaignObjectiveChange} to correlate this value with related records,
+   * events, or authored content; it is not a display label.
+   */
   readonly objectiveId: MissionObjectiveId;
+  /**
+   * discriminator for {@link CampaignObjectiveChange}. It selects the valid branch and behavior, so producers
+   * and consumers must keep it synchronized with the accompanying fields.
+   */
   readonly kind: "status" | "checklist" | "progress";
+  /**
+   * discriminator for {@link CampaignObjectiveChange}. It selects the valid branch and behavior, so producers
+   * and consumers must keep it synchronized with the accompanying fields.
+   */
   readonly previousStatus: CampaignMissionObjectiveStatus;
+  /**
+   * discriminator for {@link CampaignObjectiveChange}. It selects the valid branch and behavior, so producers
+   * and consumers must keep it synchronized with the accompanying fields.
+   */
   readonly status: CampaignMissionObjectiveStatus;
+  /**
+   * temporal value for {@link CampaignObjectiveChange}. It anchors ordering, expiry, or presentation timing and
+   * must use the time domain declared by the enclosing contract.
+   */
   readonly tick: number;
+  /**
+   * early completed value carried by {@link CampaignObjectiveChange}. Its declared type is the compatibility
+   * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly earlyCompleted: boolean;
+  /**
+   * announce value carried by {@link CampaignObjectiveChange}. Its declared type is the compatibility boundary
+   * for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly announce: boolean;
+  /**
+   * Optional stable reason id used by {@link CampaignObjectiveChange} to correlate this value with related
+   * records, events, or authored content; it is not a display label.
+   */
   readonly reasonId?: MissionReasonId;
+  /**
+   * collection value on {@link CampaignObjectiveChange}. Its element type defines the records that may cross
+   * this boundary; preserve ordering or uniqueness whenever the owning workflow relies on it.
+   */
   readonly checklistChanges: readonly CampaignObjectiveChecklistChange[];
 }
 
+/**
+ * Defines the structured campaign objective evaluation context contract for this module. Its declared surface
+ * makes evaluate explicit to every consumer. Use this shared shape rather than an ad-hoc object so adapters,
+ * persistence, and callers remain compatible.
+ */
 export interface CampaignObjectiveEvaluationContext {
+  /**
+   * operation exposed by {@link CampaignObjectiveEvaluationContext}. Its signature is the compatibility boundary
+   * for implementers and callers; keep ordering, return semantics, and error behavior aligned across
+   * implementations.
+   */
   evaluate(condition: MissionConditionDefinition): boolean;
 }
 
@@ -63,7 +143,17 @@ export abstract class CampaignObjectiveService {
   abstract destroy(): void;
 }
 
-/** Owns objective invariants and writes only the synchronized mission-state objective projection. */
+/**
+ * Owns the synchronized objective/checklist state and its legal transitions. Conditions
+ * may complete objectives before they are revealed, optional objectives may expire, and
+ * every change is buffered for a local projection rather than being rendered here.
+ *
+ * ```text
+ * authored condition -> objective state -> ordered change queue -> HUD/tutorial projection
+ *                         ^                                  |
+ *                         +---- action runtime ----------------+
+ * ```
+ */
 export class DefaultCampaignObjectiveService extends CampaignObjectiveService {
   private readonly definitionsById: ReadonlyMap<MissionObjectiveId, MissionObjectiveDefinition>;
   private readonly changes = new Subject<CampaignObjectiveChange>();
@@ -172,6 +262,14 @@ export class DefaultCampaignObjectiveService extends CampaignObjectiveService {
     this.pendingChanges = [];
   }
 
+  /**
+   * Applies one legal objective-status transition and emits the single canonical change
+   * record consumed by the runtime and HUD. Terminal objectives are deliberately
+   * immutable, while an objective completed before revelation preserves `earlyCompleted`
+   * so authoring and presentation can distinguish it from a normal visible completion.
+   *
+   * @see {@link evaluateChecklist} for the progress-only change path.
+   */
   private transition(
     id: MissionObjectiveId,
     status: Exclude<CampaignMissionObjectiveStatus, "hidden">,
@@ -199,6 +297,12 @@ export class DefaultCampaignObjectiveService extends CampaignObjectiveService {
     return this.emit(change);
   }
 
+  /**
+   * Re-evaluates every checklist item in declaration order after a world event. Counter
+   * progress can update without changing objective status; that produces a progress
+   * change rather than an announcement, which keeps HUD updates deterministic and
+   * prevents replays from inventing completion notifications.
+   */
   private evaluateChecklist(
     definition: MissionObjectiveDefinition,
     objective: CampaignMissionObjectiveRuntimeState,
@@ -236,6 +340,11 @@ export class DefaultCampaignObjectiveService extends CampaignObjectiveService {
     );
   }
 
+  /**
+   * Builds the immutable observation shared by queued and reactive objective consumers.
+   * Reading `earlyCompleted` from the stored state keeps every projection tied to the
+   * transition that actually committed, rather than to a later reconstructed state.
+   */
   private createChange(
     objectiveId: MissionObjectiveId,
     kind: CampaignObjectiveChange["kind"],

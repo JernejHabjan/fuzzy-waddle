@@ -54,6 +54,10 @@ import { CampaignOwnedResourceRegistry } from "./campaign-owned-resource-registr
 import { CampaignTrustedHookRegistry } from "./campaign-trusted-hook-registry";
 import { AiPlayerHandler } from "../../player/ai-controller/ai-player-handler";
 
+/**
+ * Defines the closed campaign presentation request value set. Keeping this union named preserves exhaustive
+ * handling and prevents incompatible free-form values at its boundaries.
+ */
 export type CampaignPresentationRequest =
   | { readonly kind: "dialogue"; readonly id: string; readonly ownerToken: string }
   | { readonly kind: "cinematic"; readonly id: string; readonly ownerToken: string }
@@ -66,7 +70,12 @@ export type CampaignPresentationRequest =
       readonly reason: CampaignMissionActionCancelReason;
     };
 
-/** The sole bridge from registry-driven campaign definitions into existing Phaser gameplay authorities. */
+/**
+ * Sole bridge from the deterministic action/condition contracts to a live Phaser world.
+ * It resolves stable scenario references, reuses existing gameplay services, and reports
+ * typed success/wait/failure outcomes; it must not add independent campaign state or
+ * bypass the runtime's ownership and missing-reference policies.
+ */
 export class CampaignPhaserWorldAdapter
   implements CampaignWorldActionAdapter, CampaignWorldConditionAdapter, CampaignEncounterWorldAdapter
 {
@@ -81,6 +90,12 @@ export class CampaignPhaserWorldAdapter
     private readonly trustedHooks = new CampaignTrustedHookRegistry()
   ) {}
 
+  /**
+   * Dispatches a non-state action to the existing scene systems. The switch deliberately
+   * centralizes world mutations so each action can return a resumable result, declare
+   * owned resources, and fail closed when an authored reference is absent rather than
+   * silently creating divergent scene state.
+   */
   execute(context: CampaignMissionActionContext, definition: MissionActionDefinition): CampaignMissionActionResult {
     switch (definition.kind) {
       case "spawn-actor":
@@ -318,6 +333,12 @@ export class CampaignPhaserWorldAdapter
     }
   }
 
+  /**
+   * Resolves world-backed conditions without mutating the scene. It translates authored
+   * selectors, scenario regions, actor state, and resource data into booleans for the
+   * pure condition runtime; absent dependencies evaluate predictably instead of throwing
+   * during a deterministic tick.
+   */
   evaluate(_context: CampaignMissionConditionContext, definition: MissionConditionDefinition): boolean {
     switch (definition.kind) {
       case "actor-exists":
@@ -362,8 +383,8 @@ export class CampaignPhaserWorldAdapter
           "not-started": ConstructionStateEnum.NotStarted,
           constructing: ConstructionStateEnum.Constructing,
           finished: ConstructionStateEnum.Finished
-        }[definition.state];
-        return state === expected;
+        } satisfies Record<"not-started" | "constructing" | "finished", ConstructionStateEnum>;
+        return state === expected[definition.state];
       }
       case "actor-count":
       case "produced-count":
@@ -417,7 +438,7 @@ export class CampaignPhaserWorldAdapter
     this.pendingRestoredResources.push(...resources);
   }
 
-  /** Reapplies synchronized participant teams after save/load or reconnect snapshot replacement. */
+  /** Documents the restore participant teams member and its declared contract at this boundary. */
   restoreParticipantTeams(participantTeams: Readonly<Record<string, number>>): void {
     for (const player of this.scene.players) {
       const playerNumber = player.playerNumber;
@@ -427,7 +448,7 @@ export class CampaignPhaserWorldAdapter
     }
   }
 
-  /** Applies restored actor-owned state only after initial actors and stable references have been indexed. */
+  /** Documents the activate restored resources member and its declared contract at this boundary. */
   activateRestoredResources(): void {
     for (const resource of this.pendingRestoredResources.sort((left, right) =>
       left.resourceId.localeCompare(right.resourceId)
@@ -463,6 +484,10 @@ export class CampaignPhaserWorldAdapter
     this.temporaryModifiers.clear();
   }
 
+  /**
+   * Spawns an authored encounter wave through stable scenario references and existing actor creation services.
+   * It reports blocked, failed, and completed outcomes explicitly so the deterministic encounter service—not Phaser timing—chooses retry or failure policy.
+   */
   spawnWave(
     _encounterId: string,
     _waveId: string,
@@ -598,6 +623,11 @@ export class CampaignPhaserWorldAdapter
     return completed();
   }
 
+  /**
+   * Dispatches deterministic move commands for the fully resolved route rather than
+   * tweening an actor locally. The returned continuation lets the runtime wait on world
+   * facts and keeps command history, replay, and reconnect authoritative.
+   */
   private moveAlongRoute(actorId: ScenarioActorId, routeId: string, queue: boolean): CampaignMissionActionResult {
     const actor = this.actor(actorId);
     const route = this.scenarioRegistry?.route(routeId as ScenarioRouteId);
@@ -858,6 +888,11 @@ export class CampaignPhaserWorldAdapter
     return completed();
   }
 
+  /**
+   * Changes an editor-authored object's active/visible state and registers the exact
+   * previous state as an owned resource. Phase cancellation or restore can therefore
+   * reverse a temporary map mutation without relying on a presentation-side guess.
+   */
   private toggleWorldObject(
     context: CampaignMissionActionContext,
     actorId: ScenarioActorId,
@@ -999,6 +1034,11 @@ export class CampaignPhaserWorldAdapter
     };
   }
 
+  /**
+   * Temporarily revokes a content grant while preserving the grant that existed before
+   * this action. The owned-resource finalizer restores only that prior value, which makes
+   * nested phases and restored actions safe to cancel in any deterministic order.
+   */
   private revokeContentGrant(context: CampaignMissionActionContext, grantId: string): CampaignMissionActionResult {
     const allowance = getSceneService(this.scene, CampaignContentAllowanceService);
     if (!allowance) return executionFailed("Campaign content allowance authority is unavailable");
@@ -1072,7 +1112,7 @@ export class CampaignPhaserWorldAdapter
       carrierActorId: definition.carrierActorId,
       previousPosition: toRuntimeJsonValue(previousPosition),
       previousVisible: visible
-    };
+    } satisfies CampaignMissionRuntimeJsonValue;
     this.registerQuestCarry(context.ownerToken, resourceId, state);
     return { status: "completed", ownedResources: [{ resourceId, kind: "quest-carry", state }] };
   }
@@ -1109,7 +1149,12 @@ export class CampaignPhaserWorldAdapter
       opacity: (actor as unknown as Phaser.GameObjects.Components.Alpha).alpha,
       disguise: typeof actor!.getData("campaign.disguise") === "string" ? actor!.getData("campaign.disguise") : null
     }));
-    const state = { disguiseId: definition.disguiseId, actorIds: definition.actorIds, opacity, previous };
+    const state = {
+      disguiseId: definition.disguiseId,
+      actorIds: definition.actorIds,
+      opacity,
+      previous
+    } satisfies CampaignMissionRuntimeJsonValue;
     const resourceId = `disguise:${definition.disguiseId}`;
     this.projectDisguise(definition.disguiseId, definition.actorIds, opacity);
     this.registerDisguise(context.ownerToken, resourceId, state);
@@ -1245,6 +1290,12 @@ export class CampaignPhaserWorldAdapter
       );
   }
 
+  /**
+   * Recreates the scene projection of a persisted mission-owned resource after restore.
+   * Only resources whose visual/world effect cannot be inferred from normal scene setup
+   * are reapplied here; malformed state is ignored safely because interpreter state
+   * remains authoritative and validation/recovery reports the real incompatibility.
+   */
   private restoreOwnedResource(resource: CampaignMissionOwnedResourceRuntimeState): void {
     if (!isRecord(resource.state)) return;
     if (resource.kind === "actor-flag") {
@@ -1477,7 +1528,7 @@ export function updateCampaignAllianceDefinitions(
   const participantTeams = {
     [String(playerNumber)]: playerDefinition.team ?? playerNumber,
     [String(otherPlayerNumber)]: otherDefinition.team ?? otherPlayerNumber
-  };
+  } satisfies Record<string, number>;
   updateCampaignParticipantTeams(participantTeams, playerNumber, otherPlayerNumber, allied);
   playerDefinition.team = participantTeams[String(playerNumber)];
   otherDefinition.team = participantTeams[String(otherPlayerNumber)];

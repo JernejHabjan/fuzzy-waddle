@@ -20,22 +20,77 @@ const MOVEMENT_SPEED_MULTIPLIER_FLOOR = 0.75;
 const COOLDOWN_MULTIPLIER_FLOOR = 0.75;
 const COOLDOWN_MULTIPLIER_CAP = 1.25;
 
+/**
+ * Defines the structured campaign respec result contract for this module. Its declared surface makes profile,
+ * accepted, reason explicit to every consumer. Use this shared shape rather than an ad-hoc object so adapters,
+ * persistence, and callers remain compatible.
+ */
 export interface CampaignRespecResult {
+  /**
+   * profile value carried by {@link CampaignRespecResult}. Its declared type is the compatibility boundary for
+   * producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly profile: CampaignProgressionProfile;
+  /**
+   * accepted value carried by {@link CampaignRespecResult}. Its declared type is the compatibility boundary for
+   * producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly accepted: boolean;
+  /**
+   * Optional string reason carried by {@link CampaignRespecResult}. Treat it according to the owning contract’s
+   * validation and presentation rules rather than assuming it is a stable identifier.
+   */
   readonly reason?: string;
 }
 
+/**
+ * Defines the structured campaign loadout update result contract for this module. Its declared surface makes
+ * profile, accepted, reason explicit to every consumer. Use this shared shape rather than an ad-hoc object so
+ * adapters, persistence, and callers remain compatible.
+ */
 export interface CampaignLoadoutUpdateResult {
+  /**
+   * profile value carried by {@link CampaignLoadoutUpdateResult}. Its declared type is the compatibility
+   * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly profile: CampaignProgressionProfile;
+  /**
+   * accepted value carried by {@link CampaignLoadoutUpdateResult}. Its declared type is the compatibility
+   * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly accepted: boolean;
+  /**
+   * Optional string reason carried by {@link CampaignLoadoutUpdateResult}. Treat it according to the owning
+   * contract’s validation and presentation rules rather than assuming it is a stable identifier.
+   */
   readonly reason?: string;
 }
 
+/**
+ * Defines the structured campaign effective progression request contract for this module. Its declared surface
+ * makes profile, selected loadout ids, temporary boost ids, allowance explicit to every consumer. Use this
+ * shared shape rather than an ad-hoc object so adapters, persistence, and callers remain compatible.
+ */
 export interface CampaignEffectiveProgressionRequest {
+  /**
+   * profile value carried by {@link CampaignEffectiveProgressionRequest}. Its declared type is the compatibility
+   * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly profile: CampaignProgressionProfile;
+  /**
+   * collection owned by {@link CampaignEffectiveProgressionRequest}. Preserve the declared element contract and
+   * any ordering/uniqueness semantics when reading, serializing, or extending it.
+   */
   readonly selectedLoadoutIds: readonly CampaignLoadoutId[];
+  /**
+   * Optional collection owned by {@link CampaignEffectiveProgressionRequest}. Preserve the declared element
+   * contract and any ordering/uniqueness semantics when reading, serializing, or extending it.
+   */
   readonly temporaryBoostIds?: readonly CampaignTemporaryBoostId[];
+  /**
+   * boolean policy/value on {@link CampaignEffectiveProgressionRequest} that explicitly controls whether the
+   * associated behavior is active; do not infer it from unrelated state.
+   */
   readonly allowance: MissionProgressionAllowance;
 }
 
@@ -75,7 +130,7 @@ export function createCampaignMissionProgressionSnapshot(
   };
 }
 
-/** Rebuilds spendable upgrades from the full refundable budget; story unlocks and earned items are untouched. */
+/** Documents the respec campaign progression member and its declared contract at this boundary. */
 export function respecCampaignProgression(
   profile: CampaignProgressionProfile,
   desiredUpgradeIds: readonly CampaignProgressionUpgradeId[],
@@ -163,7 +218,7 @@ export function saveCampaignLoadout(
   };
 }
 
-/** Intersects current progression with immutable mission restrictions without mutating the profile. */
+/** Documents the resolve campaign effective progression member and its declared contract at this boundary. */
 export function resolveCampaignEffectiveProgression(
   request: CampaignEffectiveProgressionRequest,
   registry: CampaignProgressionRegistry
@@ -245,7 +300,7 @@ export function resolveCampaignEffectiveProgression(
   };
 }
 
-/** Collapses modifier stacks and enforces the narrow cadence/pathing caps required by campaign progression. */
+/** Documents the cap campaign progression modifiers member and its declared contract at this boundary. */
 export function capCampaignProgressionModifiers(
   modifiers: readonly CampaignProgressionModifier[]
 ): readonly CampaignProgressionModifier[] {

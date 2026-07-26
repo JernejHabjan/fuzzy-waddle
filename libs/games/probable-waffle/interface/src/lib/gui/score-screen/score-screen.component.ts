@@ -51,6 +51,10 @@ export class ScoreScreenComponent implements OnInit, OnDestroy {
     await this.gameInstanceClientService.leaveScoreScreen();
   };
 
+  /**
+   * Initializes the score view from the completed game/campaign outcome and coordinates the asynchronous save, replay, and navigation affordances.
+   * It keeps presentation decisions local while relying on the game state and campaign services as authorities.
+   */
   async ngOnInit() {
     // Submit scores if this is an online game and user is last human player
     const gameInstance = this.gameInstanceClientService.gameInstance;

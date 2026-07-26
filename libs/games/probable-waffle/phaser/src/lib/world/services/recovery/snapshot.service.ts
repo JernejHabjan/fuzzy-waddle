@@ -17,7 +17,7 @@ import { CancelableSimDelay } from "../simulation-time";
 import { createMultiplayerClientLogger } from "../multiplayer/multiplayer-client-logger";
 import { RandomService } from "../random.service";
 
-/** How often the host refreshes its stored reconnect snapshot (in milliseconds). */
+/** Documents the following declaration and its compatibility contract. */
 const SNAPSHOT_REFRESH_INTERVAL_MS = 60_000;
 
 /**
@@ -39,6 +39,15 @@ export class SnapshotService {
   private requestSub?: Subscription;
   private readonly logger = createMultiplayerClientLogger("SnapshotService");
 
+  /**
+   * Starts the host-owned snapshot service only when multiplayer transport supports it.
+   * A warm periodic snapshot reduces reconnect latency, while every request refreshes
+   * immediately before responding so correction/catch-up clients receive the current
+   * authoritative tick rather than a stale cache entry.
+   *
+   * @see {@link captureSnapshot} for serialization ownership.
+   * @see {@link ReconnectService} for the requesting client lifecycle.
+   */
   init(scene: ProbableWaffleScene): void {
     // Only the host generates and serves snapshots.
     if (!scene.isHost) {
@@ -87,7 +96,7 @@ export class SnapshotService {
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.destroy());
   }
 
-  /** Returns the most recently captured snapshot, or null before the first capture. */
+  /** Documents the get latest snapshot member and its declared contract at this boundary. */
   getLatestSnapshot(): ProbableWaffleSnapshotData | null {
     return this.latestSnapshot;
   }

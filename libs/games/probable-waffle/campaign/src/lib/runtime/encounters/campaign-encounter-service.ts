@@ -12,44 +12,135 @@ import type {
 } from "../../contracts/mission-encounter-definition";
 import type { ResolvedMissionEncounterDefinition } from "../campaign-difficulty-resolver";
 
+/**
+ * Deterministic encounter/wave orchestration contract. Spawn placement and actor
+ * creation remain adapter responsibilities; this layer records reproducible wave
+ * progress and applies authored blocked-spawn policy.
+ *
+ * @see https://github.com/JernejHabjan/fuzzy-waddle/issues/707
+ */
 export interface CampaignEncounterSpawnedActor {
+  /**
+   * stable actor runtime id used by {@link CampaignEncounterSpawnedActor} to correlate this value with related
+   * records, events, or authored content; it is not a display label.
+   */
   readonly actorRuntimeId: string;
+  /**
+   * Optional numeric owner player number carried by {@link CampaignEncounterSpawnedActor}. Its units and valid
+   * range are defined by {@link CampaignEncounterSpawnedActor} and must remain consistent across producers and
+   * consumers.
+   */
   readonly ownerPlayerNumber?: number;
 }
 
+/**
+ * Defines the closed campaign encounter spawn result value set. Keeping this union named preserves exhaustive
+ * handling and prevents incompatible free-form values at its boundaries.
+ */
 export type CampaignEncounterSpawnResult =
   | { readonly status: "spawned"; readonly actors: readonly CampaignEncounterSpawnedActor[] }
   | { readonly status: "blocked"; readonly reason: string }
   | { readonly status: "failed"; readonly reason: string };
 
+/**
+ * Defines the structured campaign encounter world adapter contract for this module. Its declared surface makes
+ * spawn wave, is actor alive explicit to every consumer. Use this shared shape rather than an ad-hoc object so
+ * adapters, persistence, and callers remain compatible.
+ */
 export interface CampaignEncounterWorldAdapter {
+  /**
+   * operation exposed by {@link CampaignEncounterWorldAdapter}. Its signature is the compatibility boundary for
+   * implementers and callers; keep ordering, return semantics, and error behavior aligned across
+   * implementations.
+   */
   spawnWave(
     encounterId: string,
     waveId: string,
     groups: readonly MissionEncounterSpawnGroupDefinition[],
     spawnCursor: number
   ): CampaignEncounterSpawnResult;
+  /**
+   * operation exposed by {@link CampaignEncounterWorldAdapter}. Its signature is the compatibility boundary for
+   * implementers and callers; keep ordering, return semantics, and error behavior aligned across
+   * implementations.
+   */
   isActorAlive(actorRuntimeId: string): boolean;
 }
 
+/**
+ * Defines the structured campaign encounter advance context contract for this module. Its declared surface
+ * makes tick, evaluate, execute actions, world explicit to every consumer. Use this shared shape rather than
+ * an ad-hoc object so adapters, persistence, and callers remain compatible.
+ */
 export interface CampaignEncounterAdvanceContext {
+  /**
+   * temporal value for {@link CampaignEncounterAdvanceContext}. It anchors ordering, expiry, or presentation
+   * timing and must use the time domain declared by the enclosing contract.
+   */
   readonly tick: number;
+  /**
+   * evaluate value carried by {@link CampaignEncounterAdvanceContext}. Its declared type is the compatibility
+   * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly evaluate: (condition: MissionConditionDefinition) => boolean;
+  /**
+   * collection owned by {@link CampaignEncounterAdvanceContext}. Preserve the declared element contract and any
+   * ordering/uniqueness semantics when reading, serializing, or extending it.
+   */
   readonly executeActions: (actions: readonly MissionActionDefinition[]) => boolean;
+  /**
+   * Optional world value carried by {@link CampaignEncounterAdvanceContext}. Its declared type is the
+   * compatibility boundary for producers, validators, and consumers; do not replace it with a broader inferred
+   * shape.
+   */
   readonly world?: CampaignEncounterWorldAdapter;
 }
 
+/**
+ * Defines the structured campaign encounter effect contract for this module. Its declared surface makes
+ * encounter id, kind, tick, wave id, detail explicit to every consumer. Use this shared shape rather than an
+ * ad-hoc object so adapters, persistence, and callers remain compatible.
+ */
 export interface CampaignEncounterEffect {
+  /**
+   * stable encounter id used by {@link CampaignEncounterEffect} to correlate this value with related records,
+   * events, or authored content; it is not a display label.
+   */
   readonly encounterId: string;
+  /**
+   * discriminator for {@link CampaignEncounterEffect}. It selects the valid branch and behavior, so producers
+   * and consumers must keep it synchronized with the accompanying fields.
+   */
   readonly kind: "started" | "wave-warning" | "wave-spawned" | "wave-skipped" | "completed" | "failed";
+  /**
+   * temporal value for {@link CampaignEncounterEffect}. It anchors ordering, expiry, or presentation timing and
+   * must use the time domain declared by the enclosing contract.
+   */
   readonly tick: number;
+  /**
+   * Optional stable wave id used by {@link CampaignEncounterEffect} to correlate this value with related
+   * records, events, or authored content; it is not a display label.
+   */
   readonly waveId?: string;
+  /**
+   * Optional string detail carried by {@link CampaignEncounterEffect}. Treat it according to the owning
+   * contract’s validation and presentation rules rather than assuming it is a stable identifier.
+   */
   readonly detail?: string;
 }
 
+/**
+ * Defines the structured encounter stop policy contract for this module. Its declared surface makes status,
+ * spawned actors explicit to every consumer. Use this shared shape rather than an ad-hoc object so adapters,
+ * persistence, and callers remain compatible.
+ */
 export interface EncounterStopPolicy {
+  /**
+   * discriminator for {@link EncounterStopPolicy}. It selects the valid branch and behavior, so producers and
+   * consumers must keep it synchronized with the accompanying fields.
+   */
   readonly status: Extract<CampaignMissionEncounterStatus, "completed" | "failed">;
-  /** Releases encounter membership without destroying actors that a later story phase may own. */
+  /** Documents the spawned actors member and its declared contract at this boundary. */
   readonly spawnedActors?: "retain" | "release";
 }
 
@@ -62,7 +153,12 @@ export abstract class CampaignEncounterService {
   abstract restore(states: Readonly<Record<string, CampaignMissionEncounterRuntimeState>>): void;
 }
 
-/** Fixed-tick authored wave scheduler. It delegates spawning but owns all deterministic encounter state. */
+/**
+ * Advances authored encounter waves against a deterministic tick and mutable runtime
+ * snapshot. Spawn mechanics stay behind {@link CampaignEncounterWorldAdapter}; this
+ * service records delays, retries, completion, and trigger effects so restores can
+ * continue the same encounter without re-spawning earlier waves.
+ */
 export class DefaultCampaignEncounterService extends CampaignEncounterService {
   private readonly definitionsById: ReadonlyMap<string, ResolvedMissionEncounterDefinition>;
 
@@ -93,6 +189,11 @@ export class DefaultCampaignEncounterService extends CampaignEncounterService {
     }
   }
 
+  /**
+   * Advances every eligible encounter/wave once for the supplied tick. Ordering by
+   * authored ID makes concurrent wave starts reproducible, while blocked-spawn policies
+   * decide whether to retry, skip, or fail without letting adapter timing change state.
+   */
   advance(context: CampaignEncounterAdvanceContext): readonly CampaignEncounterEffect[] {
     const effects: CampaignEncounterEffect[] = [];
     for (const definition of [...this.definitionsById.values()].sort((left, right) =>
@@ -222,6 +323,11 @@ export class DefaultCampaignEncounterService extends CampaignEncounterService {
     return [...wave.spawns, ...(branch?.spawns ?? [])];
   }
 
+  /**
+   * Resolves a failed wave spawn according to its authored recovery policy. Delayed and
+   * skipped waves stay explicit in runtime state/effects; a failed wave remains terminal
+   * so save, replay, and recovery all observe the same encounter outcome.
+   */
   private handleBlockedSpawn(
     encounterId: string,
     wave: MissionEncounterWaveDefinition,

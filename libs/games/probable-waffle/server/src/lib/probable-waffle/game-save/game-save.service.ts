@@ -6,7 +6,7 @@ import type { SyncGameSaveDto } from "./game-save.dto";
 import type { GameSaveServerServiceInterface } from "./game-save.service.interface";
 
 @Injectable()
-/** Persists owner-scoped encoded saves without decoding client game state. */
+/** Defines the game save server service contract used by this module; its declared members form the compatible boundary for linked consumers. */
 export class GameSaveServerService implements GameSaveServerServiceInterface {
   constructor(private readonly supabaseProviderService: SupabaseProviderService) {}
 
@@ -20,7 +20,7 @@ export class GameSaveServerService implements GameSaveServerServiceInterface {
     return data;
   }
 
-  /** The user id is always supplied by the authenticated request, never by the client payload. */
+  /** Documents the upsert member and its declared contract at this boundary. */
   async upsert(userId: string, dto: SyncGameSaveDto) {
     this.validateScope(dto);
     const { data: existing, error: readError } = await this.supabaseProviderService.supabaseClient
@@ -65,7 +65,7 @@ export class GameSaveServerService implements GameSaveServerServiceInterface {
     return data;
   }
 
-  /** Ensures campaign metadata is complete, related, and absent from skirmish records before storage. */
+  /** Documents the validate scope member and its declared contract at this boundary. */
   private validateScope(dto: SyncGameSaveDto): void {
     if (dto.isDeleted) return;
     const campaignFields = [

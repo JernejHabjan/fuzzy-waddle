@@ -20,7 +20,7 @@ import { GameSavePort } from "@fuzzy-waddle/probable-waffle-phaser";
 import { migrateGameSaveRecord, unsupportedGameSaveRecord } from "./game-save-migration";
 
 @Injectable({ providedIn: "root" })
-/** Owns decoded save operations while persistence and transport retain encoded payloads. */
+/** Defines the game save service contract used by this module; its declared members form the compatible boundary for linked consumers. */
 export class GameSaveService extends GameSavePort implements GameSaveServiceInterface {
   private readonly repository = inject(GameSaveRepository);
   private readonly syncService = inject(GameSaveSyncService);
@@ -70,7 +70,7 @@ export class GameSaveService extends GameSavePort implements GameSaveServiceInte
     return record;
   }
 
-  /** Prevents an overwrite choice from another mission or skirmish scope replacing the current game's save. */
+  /** Documents the has matching save scope member and its declared contract at this boundary. */
   private hasMatchingSaveScope(record: GameSaveRecord, request: SaveGameRequest): boolean {
     if (record.scope === GameSaveScope.Skirmish) return request.scope === GameSaveScope.Skirmish;
     return (
@@ -147,7 +147,7 @@ export class GameSaveService extends GameSavePort implements GameSaveServiceInte
     return record ? JSON.stringify(record) : undefined;
   }
 
-  /** Caps automatic snapshots per mission/run while preserving all named manual saves. */
+  /** Documents the retain autosaves member and its declared contract at this boundary. */
   private async retainAutosaves(newest: GameSaveRecord): Promise<void> {
     if (newest.kind !== GameSaveKind.Autosave) return;
     const scopeKey =

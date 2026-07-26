@@ -12,6 +12,14 @@ import {
   type MissionCompositeActionDefinition
 } from "../../contracts/mission-action-definition";
 
+/**
+ * Pure action interpreter boundary. It orders and persists continuation state while a
+ * typed world adapter owns every Phaser/world mutation, keeping the campaign runtime
+ * deterministic and testable without a scene.
+ *
+ * @see CampaignPhaserWorldAdapter in the Phaser library.
+ * @see https://github.com/JernejHabjan/fuzzy-waddle/issues/704
+ */
 export type CampaignMissionActionCancelReason =
   | "phase-exited"
   | "mission-ended"
@@ -19,16 +27,46 @@ export type CampaignMissionActionCancelReason =
   | "race-lost"
   | "action-removed";
 
+/**
+ * Defines the structured campaign mission action owned resource contract for this module. Its declared surface
+ * makes resource id, kind, state explicit to every consumer. Use this shared shape rather than an ad-hoc
+ * object so adapters, persistence, and callers remain compatible.
+ */
 export interface CampaignMissionActionOwnedResource {
+  /**
+   * stable resource id used by {@link CampaignMissionActionOwnedResource} to correlate this value with related
+   * records, events, or authored content; it is not a display label.
+   */
   readonly resourceId: string;
+  /**
+   * discriminator for {@link CampaignMissionActionOwnedResource}. It selects the valid branch and behavior, so
+   * producers and consumers must keep it synchronized with the accompanying fields.
+   */
   readonly kind: string;
+  /**
+   * Optional discriminator for {@link CampaignMissionActionOwnedResource}. It selects the valid branch and
+   * behavior, so producers and consumers must keep it synchronized with the accompanying fields.
+   */
   readonly state?: CampaignMissionRuntimeJsonValue;
 }
 
+/**
+ * Defines the structured campaign mission action result base contract for this module. Its declared surface
+ * makes owned resources explicit to every consumer. Use this shared shape rather than an ad-hoc object so
+ * adapters, persistence, and callers remain compatible.
+ */
 interface CampaignMissionActionResultBase {
+  /**
+   * Optional collection value on {@link CampaignMissionActionResultBase}. Its element type defines the records
+   * that may cross this boundary; preserve ordering or uniqueness whenever the owning workflow relies on it.
+   */
   readonly ownedResources?: readonly CampaignMissionActionOwnedResource[];
 }
 
+/**
+ * Defines the closed campaign mission action result value set. Keeping this union named preserves exhaustive
+ * handling and prevents incompatible free-form values at its boundaries.
+ */
 export type CampaignMissionActionResult =
   | (CampaignMissionActionResultBase & { readonly status: "completed" })
   | (CampaignMissionActionResultBase & { readonly status: "skipped"; readonly reason: string })
@@ -43,44 +81,135 @@ export type CampaignMissionActionResult =
       readonly continuationState?: CampaignMissionRuntimeJsonValue;
     });
 
+/**
+ * Defines the structured campaign mission action context contract for this module. Its declared surface makes
+ * tick, state, owner token, phase id, trigger id explicit to every consumer. Use this shared shape rather than
+ * an ad-hoc object so adapters, persistence, and callers remain compatible.
+ */
 export interface CampaignMissionActionContext {
+  /**
+   * temporal value for {@link CampaignMissionActionContext}. It anchors ordering, expiry, or presentation timing
+   * and must use the time domain declared by the enclosing contract.
+   */
   readonly tick: number;
+  /**
+   * discriminator for {@link CampaignMissionActionContext}. It selects the valid branch and behavior, so
+   * producers and consumers must keep it synchronized with the accompanying fields.
+   */
   readonly state: CampaignMissionRuntimeState;
+  /**
+   * string owner token carried by {@link CampaignMissionActionContext}. Treat it according to the owning
+   * contract’s validation and presentation rules rather than assuming it is a stable identifier.
+   */
   readonly ownerToken: string;
+  /**
+   * Optional stable phase id used by {@link CampaignMissionActionContext} to correlate this value with related
+   * records, events, or authored content; it is not a display label.
+   */
   readonly phaseId?: string;
+  /**
+   * Optional stable trigger id used by {@link CampaignMissionActionContext} to correlate this value with related
+   * records, events, or authored content; it is not a display label.
+   */
   readonly triggerId?: string;
+  /**
+   * Optional event value carried by {@link CampaignMissionActionContext}. Its declared type is the compatibility
+   * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly event?: CampaignMissionRuntimeEvent;
+  /**
+   * Optional collection owned by {@link CampaignMissionActionContext}. Preserve the declared element contract
+   * and any ordering/uniqueness semantics when reading, serializing, or extending it.
+   */
   readonly objectiveActions?: CampaignObjectiveActionPort;
+  /**
+   * Optional collection owned by {@link CampaignMissionActionContext}. Preserve the declared element contract
+   * and any ordering/uniqueness semantics when reading, serializing, or extending it.
+   */
   readonly presentationActions?: CampaignPresentationActionPort;
 }
 
+/**
+ * Defines the structured campaign objective action port contract for this module. Its declared surface makes
+ * set state, set checklist state explicit to every consumer. Use this shared shape rather than an ad-hoc
+ * object so adapters, persistence, and callers remain compatible.
+ */
 export interface CampaignObjectiveActionPort {
+  /**
+   * operation exposed by {@link CampaignObjectiveActionPort}. Its signature is the compatibility boundary for
+   * implementers and callers; keep ordering, return semantics, and error behavior aligned across
+   * implementations.
+   */
   setState(definition: Extract<MissionActionDefinition, { readonly kind: "set-objective-state" }>, tick: number): void;
+  /**
+   * operation exposed by {@link CampaignObjectiveActionPort}. Its signature is the compatibility boundary for
+   * implementers and callers; keep ordering, return semantics, and error behavior aligned across
+   * implementations.
+   */
   setChecklistState(
     definition: Extract<MissionActionDefinition, { readonly kind: "set-objective-checklist-state" }>,
     tick: number
   ): void;
 }
 
+/**
+ * Defines the structured campaign presentation action port contract for this module. Its declared surface
+ * makes set dialogue state, set cinematic stage explicit to every consumer. Use this shared shape rather than
+ * an ad-hoc object so adapters, persistence, and callers remain compatible.
+ */
 export interface CampaignPresentationActionPort {
+  /**
+   * operation exposed by {@link CampaignPresentationActionPort}. Its signature is the compatibility boundary for
+   * implementers and callers; keep ordering, return semantics, and error behavior aligned across
+   * implementations.
+   */
   setDialogueState(
     definition: Extract<MissionActionDefinition, { readonly kind: "set-dialogue-state" }>,
     context: CampaignMissionActionContext
   ): void;
+  /**
+   * operation exposed by {@link CampaignPresentationActionPort}. Its signature is the compatibility boundary for
+   * implementers and callers; keep ordering, return semantics, and error behavior aligned across
+   * implementations.
+   */
   setCinematicStage(
     definition: Extract<MissionActionDefinition, { readonly kind: "set-cinematic-stage" }>,
     context: CampaignMissionActionContext
   ): void;
 }
 
+/**
+ * Defines the structured campaign action executor contract for this module. Its declared surface makes kind,
+ * execute, resume, cancel explicit to every consumer. Use this shared shape rather than an ad-hoc object so
+ * adapters, persistence, and callers remain compatible.
+ */
 export interface CampaignActionExecutor<TDefinition extends MissionActionDefinition = MissionActionDefinition> {
+  /**
+   * discriminator for {@link CampaignActionExecutor}. It selects the valid branch and behavior, so producers and
+   * consumers must keep it synchronized with the accompanying fields.
+   */
   readonly kind: TDefinition["kind"];
+  /**
+   * operation exposed by {@link CampaignActionExecutor}. Its signature is the compatibility boundary for
+   * implementers and callers; keep ordering, return semantics, and error behavior aligned across
+   * implementations.
+   */
   execute(context: CampaignMissionActionContext, definition: TDefinition): CampaignMissionActionResult;
+  /**
+   * Optional operation exposed by {@link CampaignActionExecutor}. Its signature is the compatibility boundary
+   * for implementers and callers; keep ordering, return semantics, and error behavior aligned across
+   * implementations.
+   */
   resume?(
     context: CampaignMissionActionContext,
     definition: TDefinition,
     continuationState: CampaignMissionRuntimeJsonValue
   ): CampaignMissionActionResult;
+  /**
+   * Optional operation exposed by {@link CampaignActionExecutor}. Its signature is the compatibility boundary
+   * for implementers and callers; keep ordering, return semantics, and error behavior aligned across
+   * implementations.
+   */
   cancel?(
     context: CampaignMissionActionContext,
     definition: TDefinition,
@@ -89,20 +218,50 @@ export interface CampaignActionExecutor<TDefinition extends MissionActionDefinit
   ): void;
 }
 
+/**
+ * Defines the structured campaign world action adapter contract for this module. Its declared surface makes
+ * execute, resume, cancel, restore owned resources, release owned resources explicit to every consumer. Use
+ * this shared shape rather than an ad-hoc object so adapters, persistence, and callers remain compatible.
+ */
 export interface CampaignWorldActionAdapter {
+  /**
+   * operation exposed by {@link CampaignWorldActionAdapter}. Its signature is the compatibility boundary for
+   * implementers and callers; keep ordering, return semantics, and error behavior aligned across
+   * implementations.
+   */
   execute(context: CampaignMissionActionContext, definition: MissionActionDefinition): CampaignMissionActionResult;
+  /**
+   * Optional operation exposed by {@link CampaignWorldActionAdapter}. Its signature is the compatibility
+   * boundary for implementers and callers; keep ordering, return semantics, and error behavior aligned across
+   * implementations.
+   */
   resume?(
     context: CampaignMissionActionContext,
     definition: MissionActionDefinition,
     continuationState: CampaignMissionRuntimeJsonValue
   ): CampaignMissionActionResult;
+  /**
+   * Optional operation exposed by {@link CampaignWorldActionAdapter}. Its signature is the compatibility
+   * boundary for implementers and callers; keep ordering, return semantics, and error behavior aligned across
+   * implementations.
+   */
   cancel?(
     context: CampaignMissionActionContext,
     definition: MissionActionDefinition,
     continuationState: CampaignMissionRuntimeJsonValue,
     reason: CampaignMissionActionCancelReason
   ): void;
+  /**
+   * Optional operation exposed by {@link CampaignWorldActionAdapter}. Its signature is the compatibility
+   * boundary for implementers and callers; keep ordering, return semantics, and error behavior aligned across
+   * implementations.
+   */
   restoreOwnedResources?(resources: readonly CampaignMissionOwnedResourceRuntimeState[]): void;
+  /**
+   * Optional operation exposed by {@link CampaignWorldActionAdapter}. Its signature is the compatibility
+   * boundary for implementers and callers; keep ordering, return semantics, and error behavior aligned across
+   * implementations.
+   */
   releaseOwnedResources?(
     ownerToken: string,
     resources: readonly CampaignMissionOwnedResourceRuntimeState[],
@@ -131,7 +290,19 @@ export class CampaignActionExecutorRegistry {
   }
 }
 
-/** Runs leaf executors plus serializable sequence/parallel/race action nodes. */
+/**
+ * Executes authored actions through a registry while preserving resumable composite
+ * state. It never mutates the world itself: the injected adapter reports a typed result
+ * and this runner turns it into deterministic continuation, ownership, cancellation,
+ * and resource-lifetime state for {@link CampaignMissionRuntime}.
+ *
+ * ```text
+ * authored action -> registry executor -> typed result
+ *       |                 |                  |
+ * composite state --------+---- continuation -+-> runtime owns cancellation/resources
+ * world action -------------------------------> Phaser adapter only
+ * ```
+ */
 export class CampaignActionRunner {
   constructor(
     private readonly registry: CampaignActionExecutorRegistry,
@@ -169,6 +340,11 @@ export class CampaignActionRunner {
     this.registry.getRequired(definition.kind).cancel?.(context, definition, continuationState, reason);
   }
 
+  /**
+   * Starts a composite action without leaking its structural mechanics to authored
+   * content. Parallel children all start in declaration order; only their serializable
+   * cursors and owned resources are retained when the composite must continue next tick.
+   */
   private executeComposite(
     context: CampaignMissionActionContext,
     definition: MissionCompositeActionDefinition
@@ -199,6 +375,11 @@ export class CampaignActionRunner {
         };
   }
 
+  /**
+   * Starts race branches in stable order and immediately cancels every already-waiting
+   * loser when a branch finishes. The companion resource cleanup is essential: world
+   * adapters may have created timers, tweens, or actors that a losing branch owns.
+   */
   private executeRace(
     context: CampaignMissionActionContext,
     definition: MissionCompositeActionDefinition
@@ -235,6 +416,11 @@ export class CampaignActionRunner {
     };
   }
 
+  /**
+   * Runs ordered children until one waits or fails, returning a precise resumable cursor.
+   * Accumulating resources before returning makes cleanup ownership survive a save taken
+   * in the middle of a sequence.
+   */
   private executeSequence(
     context: CampaignMissionActionContext,
     definition: MissionCompositeActionDefinition,
@@ -257,6 +443,12 @@ export class CampaignActionRunner {
     return { status: "completed", ownedResources: resources };
   }
 
+  /**
+   * Resumes a persisted sequence, parallel, race, or repeat composite from its exact
+   * child cursor/state. It enforces child ordering and resource cleanup rules before
+   * delegating work, which prevents a restored mission from replaying already-completed
+   * side effects or leaving a losing race branch alive.
+   */
   private resumeComposite(
     context: CampaignMissionActionContext,
     definition: MissionCompositeActionDefinition,
@@ -355,6 +547,12 @@ export class CampaignActionRunner {
     this.cancelStoredChildren(context, definition, children, -1, reason);
   }
 
+  /**
+   * Reconstructs the complete losing-resource set from persisted IDs and resources
+   * created this tick, releases it through the world boundary, then removes the owned
+   * state. A release mismatch becomes a deterministic failure instead of a hidden
+   * presentation leak.
+   */
   private releaseRaceResources(
     context: CampaignMissionActionContext,
     freshResources: readonly CampaignMissionActionOwnedResource[],
@@ -414,6 +612,11 @@ export function createCampaignActionExecutorRegistry(
   return registry;
 }
 
+/**
+ * Registers the action kinds that mutate only the deterministic mission snapshot.
+ * Keeping them here rather than in a Phaser adapter makes facts, counters, timers,
+ * objectives, and presentation requests executable in the headless test harness too.
+ */
 function registerStateExecutors(registry: CampaignActionExecutorRegistry): void {
   for (const kind of ["sequence", "parallel", "race"] as const) {
     registry.register(stateExecutor(kind, () => undefined));

@@ -76,6 +76,21 @@ export const AOTA_CAMPAIGN_DEFINITION = loadCampaignDefinition(
   "content/ashes-of-the-ancients/campaign.json"
 );
 
+/**
+ * Ordered mission source of truth shared by catalogue, launch validation, saves, and
+ * the deterministic runtime. Dreams and Cyclops & Sheep are authored vertical slices;
+ * later entries are deliberately labelled by their own content status rather than being
+ * inferred playable from their presence in this list.
+ * Dreams proves the directed prologue, control transfer, local cinematics, checkpoint,
+ * and authored victory path; Cyclops & Sheep proves carried quest actors, rescue/owner
+ * conversion, optional combat/stealth routing, encounters, disguise state, and a longer
+ * checkpointed objective chain. Those vertical slices are examples of the common
+ * contracts—not special runtime branches.
+ *
+ * @see https://github.com/JernejHabjan/fuzzy-waddle/issues/714
+ * @see https://github.com/JernejHabjan/fuzzy-waddle/issues/715
+ * @see https://github.com/JernejHabjan/fuzzy-waddle/issues/716
+ */
 export const AOTA_CAMPAIGN_MISSIONS = [
   loadMissionContent(mission01Document as unknown, "content/ashes-of-the-ancients/missions/dreams/mission.json"),
   loadMissionContent(

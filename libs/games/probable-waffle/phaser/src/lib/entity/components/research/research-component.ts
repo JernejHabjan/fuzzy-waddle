@@ -16,7 +16,16 @@ import Phaser from "phaser";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { upgradeActorToLevel } from "../../../data/actor-level-utils";
 
+/**
+ * Defines the structured research definition contract for this module. Its declared surface makes available
+ * research explicit to every consumer. Use this shared shape rather than an ad-hoc object so adapters,
+ * persistence, and callers remain compatible.
+ */
 export interface ResearchDefinition {
+  /**
+   * collection value on {@link ResearchDefinition}. Its element type defines the records that may cross this
+   * boundary; preserve ordering or uniqueness whenever the owning workflow relies on it.
+   */
   availableResearch: ResearchType[];
 }
 
@@ -78,6 +87,12 @@ export class ResearchComponent {
     return undefined;
   }
 
+  /**
+   * Performs the complete preflight for queuing research without mutating player state.
+   * Availability, ownership, campaign allowance, cost, and prerequisite checks stay in
+   * one ordered decision path so the UI can explain the first actionable failure and
+   * {@link startResearch} can safely reuse the same eligibility rule.
+   */
   canStartResearch(type: ResearchType): { canStart: boolean; reason?: string } {
     if (!this.availableResearch.includes(type)) {
       return { canStart: false, reason: "Research not available at this building" };

@@ -1,7 +1,7 @@
 import type { ScenarioActorReferenceData } from "@fuzzy-waddle/probable-waffle-protocol";
 import { isCampaignContentId } from "@fuzzy-waddle/probable-waffle-campaign";
 
-/** Persisted stable story role attached to an actor independently of ownership and runtime ID. */
+/** Defines the scenario actor reference component contract used by this module; its declared members form the compatible boundary for linked consumers. */
 export class ScenarioActorReferenceComponent {
   private roleId?: string;
   private tags: string[] = [];

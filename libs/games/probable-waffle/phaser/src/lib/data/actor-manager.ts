@@ -102,6 +102,10 @@ import Calf from "../prefabs/animals/calf/Calf";
 import Bull from "../prefabs/animals/bull/Bull";
 import Lamb from "../prefabs/animals/lamb/Lamb";
 import Piglet from "../prefabs/animals/piglet/Piglet";
+/**
+ * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
+ * storage boundaries do not drift into an unconstrained primitive.
+ */
 type GameObject = Phaser.GameObjects.GameObject;
 import Banshee from "../prefabs/characters/mobs/banshee/Banshee";
 import BigWaterSlime from "../prefabs/characters/mobs/big_water_slime/BigWaterSlime";
@@ -285,6 +289,10 @@ import UndeadLandRuin1 from "../prefabs/outside/environment/undead_land/UndeadLa
 import UndeadLandThornPlant1 from "../prefabs/outside/environment/undead_land/UndeadLandThornPlant1";
 import UndeadLandTree1 from "../prefabs/outside/environment/undead_land/UndeadLandTree1";
 
+/**
+ * Defines the structural actor map contract. This named alias keeps the boundary explicit without duplicating
+ * an anonymous object shape.
+ */
 type ActorMap = { [name: string]: new (scene: Phaser.Scene) => GameObject };
 export class ActorManager {
   private static animals: ActorMap = {

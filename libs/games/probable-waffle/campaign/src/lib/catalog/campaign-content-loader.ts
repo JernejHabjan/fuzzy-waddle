@@ -10,22 +10,77 @@ import type { CampaignMissionContent } from "../contracts/campaign-mission-conte
 import type { MissionDialogueBundle } from "../contracts/mission-dialogue-bundle";
 import type { MissionRewardBundle } from "../contracts/mission-reward-bundle";
 
+/**
+ * Defines the structured raw campaign envelope contract for this module. Its declared surface makes schema
+ * version, id, catalogue version, chapters explicit to every consumer. Use this shared shape rather than an
+ * ad-hoc object so adapters, persistence, and callers remain compatible.
+ */
 interface RawCampaignEnvelope {
+  /**
+   * Optional compatibility schema version for {@link RawCampaignEnvelope}. Consumers use it to choose
+   * validation, migration, or conflict-handling rules instead of guessing the payload shape.
+   */
   readonly schemaVersion?: unknown;
+  /**
+   * Optional stable id used by {@link RawCampaignEnvelope} to correlate this value with related records, events,
+   * or authored content; it is not a display label.
+   */
   readonly id?: unknown;
+  /**
+   * Optional compatibility catalogue version for {@link RawCampaignEnvelope}. Consumers use it to choose
+   * validation, migration, or conflict-handling rules instead of guessing the payload shape.
+   */
   readonly catalogueVersion?: unknown;
+  /**
+   * Optional chapters value carried by {@link RawCampaignEnvelope}. Its declared type is the compatibility
+   * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly chapters?: unknown;
 }
 
+/**
+ * Defines the structured raw mission envelope contract for this module. Its declared surface makes schema
+ * version, id, chapter id, revision explicit to every consumer. Use this shared shape rather than an ad-hoc
+ * object so adapters, persistence, and callers remain compatible.
+ */
 interface RawMissionEnvelope {
+  /**
+   * Optional compatibility schema version for {@link RawMissionEnvelope}. Consumers use it to choose validation,
+   * migration, or conflict-handling rules instead of guessing the payload shape.
+   */
   readonly schemaVersion?: unknown;
+  /**
+   * Optional stable id used by {@link RawMissionEnvelope} to correlate this value with related records, events,
+   * or authored content; it is not a display label.
+   */
   readonly id?: unknown;
+  /**
+   * Optional stable chapter id used by {@link RawMissionEnvelope} to correlate this value with related records,
+   * events, or authored content; it is not a display label.
+   */
   readonly chapterId?: unknown;
+  /**
+   * Optional compatibility revision for {@link RawMissionEnvelope}. Consumers use it to choose validation,
+   * migration, or conflict-handling rules instead of guessing the payload shape.
+   */
   readonly revision?: unknown;
 }
 
+/**
+ * Defines the structured raw mission bundle envelope contract for this module. Its declared surface makes
+ * schema version, mission id explicit to every consumer. Use this shared shape rather than an ad-hoc object so
+ * adapters, persistence, and callers remain compatible.
+ */
 interface RawMissionBundleEnvelope {
+  /**
+   * Optional compatibility schema version for {@link RawMissionBundleEnvelope}. Consumers use it to choose
+   * validation, migration, or conflict-handling rules instead of guessing the payload shape.
+   */
   readonly schemaVersion?: unknown;
+  /**
+   * Optional stable mission id used by {@link RawMissionBundleEnvelope} to correlate this value with related
+   * records, events, or authored content; it is not a display label.
+   */
   readonly missionId?: unknown;
 }
 
@@ -36,7 +91,7 @@ function requireObject(value: unknown, sourcePath: string): object {
   return value;
 }
 
-/** Performs only cheap identity/version checks; complete schema validation belongs in tests and CI. */
+/** Documents the load campaign definition member and its declared contract at this boundary. */
 export function loadCampaignDefinition(value: unknown, sourcePath: string): CampaignDefinition {
   const raw = requireObject(value, sourcePath) as RawCampaignEnvelope;
   if (raw.schemaVersion !== 1) throw new Error(`${sourcePath}: unsupported campaign schemaVersion`);

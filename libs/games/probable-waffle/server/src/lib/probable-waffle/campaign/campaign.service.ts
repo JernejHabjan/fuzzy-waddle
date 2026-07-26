@@ -26,7 +26,19 @@ import type { CampaignResultDto, StartCampaignRunDto } from "./campaign.dto";
 import type { CampaignProfileServerServiceInterface } from "./campaign.service.interface";
 
 @Injectable()
-/** Persists authenticated campaign runs and idempotent mission completion progress. */
+/**
+ * Server authority for authenticated campaign profiles, immutable run starts, and
+ * idempotent reward commits. It is the only layer allowed to translate a validated
+ * client request into Supabase profile/run records.
+ *
+ * ```text
+ * profile edit -> optimistic revision -> canonical profile
+ * run start    -> immutable profile/loadout snapshot -> later victory commit
+ * victory      -> shared resolver -> SQL claim ledger -> canonical profile/result
+ * ```
+ *
+ * @see {@link CampaignRewardCommitService} for pure reward resolution before persistence.
+ */
 export class CampaignServerService implements CampaignProfileServerServiceInterface {
   private readonly rewardCommitter = new CampaignRewardCommitService(AOTA_CAMPAIGN_PROGRESSION_REGISTRY);
 
@@ -82,6 +94,14 @@ export class CampaignServerService implements CampaignProfileServerServiceInterf
     return { profile, completedMissions };
   }
 
+  /**
+   * Updates a campaign profile through optimistic revision rules. The submitted document
+   * is narrowed first, then written only at the caller's expected revision; a conflict is
+   * returned rather than overwriting progress changed on another device. Server-owned
+   * completion records remain sourced from the campaign-run/reward path.
+   *
+   * @see {@link profile} for canonical profile reconstruction and legacy migration.
+   */
   async updateProfile(
     userId: string,
     baseProfileRevision: number,
@@ -134,6 +154,14 @@ export class CampaignServerService implements CampaignProfileServerServiceInterf
     return this.profile(userId);
   }
 
+  /**
+   * Creates a campaign run from a validated profile, mission, difficulty, and loadout
+   * snapshot. The immutable starting identity/version data lets saves/replays identify
+   * authored content precisely and lets victory commit reject stale progression rather
+   * than applying a reward to an unrelated profile revision.
+   *
+   * @see {@link result} for the matching idempotent terminal transaction.
+   */
   async start(userId: string, request: StartCampaignRunDto): Promise<void> {
     const profile = await this.profile(userId);
     if (profile.profile.progression.revision !== request.baseProfileRevision) {
@@ -188,7 +216,7 @@ export class CampaignServerService implements CampaignProfileServerServiceInterf
     if (error) throw error;
   }
 
-  /** Result writes are owner-scoped and idempotent; only victories add completion progress. */
+  /** Documents the result member and its declared contract at this boundary. */
   async result(userId: string, request: CampaignResultDto): Promise<CampaignVictoryCommitResponse> {
     const client = this.supabaseProviderService.supabaseClient;
     const { data: run, error: readError } = await client
@@ -292,6 +320,10 @@ export class CampaignServerService implements CampaignProfileServerServiceInterf
     return { profileOwnerId: userId, result: commitResult, profileData: await this.profile(userId) };
   }
 
+  /**
+   * Merges an authenticated or guest profile through the server authority.
+   * It validates the submitted profile shape, resolves revision conflicts, and returns the canonical stored result rather than trusting client-side progression state.
+   */
   async merge(
     userId: string,
     guestProfile: CampaignProfile,

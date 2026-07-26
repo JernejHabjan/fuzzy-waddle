@@ -65,7 +65,7 @@ export class GameModeConditionChecker {
     this.listenToPlayerQuit();
   }
 
-  /** Campaign missions use their statechart outcome while retaining the existing score/result transition. */
+  /** Documents the resolve campaign mission outcome member and its declared contract at this boundary. */
   resolveCampaignMissionOutcome(outcome: "victory" | "defeat"): void {
     if (this.stopped) return;
     this.prepareOutcomeData();
@@ -168,6 +168,10 @@ export class GameModeConditionChecker {
       });
   }
 
+  /**
+   * Evaluates AI surrender only under the mode's allowed ownership and timing rules.
+   * Campaign scenes can override generic elimination semantics so scripted losses do not accidentally end an authored mission.
+   */
   private checkAiSurrender(tick: number) {
     if (tick - this.lastSurrenderCheckTick < this.surrenderCheckIntervalTicks) return;
     this.lastSurrenderCheckTick = tick;
@@ -269,6 +273,10 @@ export class GameModeConditionChecker {
     }
   }
 
+  /**
+   * Evaluates terminal game conditions while respecting campaign-owned outcome dispatch.
+   * It avoids starting generic win/defeat paths for campaign scenes, allowing the mission runtime to decide scripted victory and failure transitions.
+   */
   private checkWinConditions(): boolean {
     const players = this.players;
     const currentPlayerNumber = this.currentPlayerNumber;

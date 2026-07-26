@@ -12,7 +12,7 @@ import { CampaignProgressServiceInterface } from "./campaign-progress.service.in
 import { CampaignProfileService } from "./campaign-profile.service";
 
 @Injectable({ providedIn: "root" })
-/** Resolves mission unlocks and reconciles guest progress with authenticated persistence. */
+/** Defines the campaign progress service contract used by this module; its declared members form the compatible boundary for linked consumers. */
 export class CampaignProgressService implements CampaignProgressServiceInterface {
   private readonly catalog = AOTA_CAMPAIGN_CATALOG;
   private readonly profileService = inject(CampaignProfileService);
@@ -45,7 +45,7 @@ export class CampaignProgressService implements CampaignProgressServiceInterface
     return this.missionProgress().find((entry) => entry.mission.id === missionId);
   }
 
-  /** Resolves unlocks only from stable mission IDs, so title edits cannot affect player progress. */
+  /** Documents the resolve mission progress member and its declared contract at this boundary. */
   private resolveMissionProgress(catalog: CampaignCatalog, progress: CampaignProgressData): CampaignMissionProgress[] {
     const completions = new Map(progress.completedMissions.map((completion) => [completion.missionId, completion]));
     const missions = catalog.chapters.flatMap((chapter) => chapter.missions);

@@ -14,6 +14,14 @@ import { getSceneService } from "../world/services/scene-component-helpers";
 import { SimulationPauseReason, SimulationTickService } from "../world/services/simulation-tick.service";
 import { IndexedScenarioReferenceRegistry } from "./scenario/scenario-reference-registry";
 
+/**
+ * Owns the campaign-specific restore pause, rebind, and invariant checks around the
+ * existing snapshot pipeline. Invalid state remains paused until recovery is chosen,
+ * preventing triggers from advancing a partially restored mission.
+ *
+ * @see validateCampaignRestore
+ * @see https://github.com/JernejHabjan/fuzzy-waddle/issues/709
+ */
 export class CampaignRestoreCoordinator {
   constructor(private readonly scene: ProbableWaffleScene) {}
 
@@ -37,6 +45,12 @@ export class CampaignRestoreCoordinator {
   }
 }
 
+/**
+ * Verifies that restored campaign metadata, deterministic runtime state, participant
+ * layout, and editor-authored scenario references still describe the same mission. The
+ * report is intentionally data-only so the caller can keep the restore pause active and
+ * offer recovery choices instead of advancing triggers on an incompatible scene.
+ */
 export function validateCampaignRestore(
   context: CampaignGameContext | undefined,
   runtime: CampaignMissionRuntimeState | undefined,

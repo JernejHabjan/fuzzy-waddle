@@ -11,7 +11,7 @@ import { getPlayer } from "../data/scene-data";
 import { OwnerComponent } from "../entity/components/owner-component";
 import type { ProbableWaffleScene } from "../core/probable-waffle.scene";
 
-/** Applies the synchronized launch snapshot only when a modifier scope matches the live actor. */
+/** Documents the apply campaign progression modifiers member and its declared contract at this boundary. */
 export function applyCampaignProgressionModifiers(
   gameObject: Phaser.GameObjects.GameObject,
   stat: CampaignProgressionModifierStat,

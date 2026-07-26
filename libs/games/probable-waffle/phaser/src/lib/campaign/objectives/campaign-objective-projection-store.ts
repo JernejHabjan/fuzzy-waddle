@@ -17,15 +17,40 @@ import type {
   CampaignMissionRuntimeState
 } from "@fuzzy-waddle/probable-waffle-protocol";
 
+/**
+ * Defines the structured campaign objective notification contract for this module. Its declared surface makes
+ * id, objective id, status, text, narration line id explicit to every consumer. Use this shared shape rather
+ * than an ad-hoc object so adapters, persistence, and callers remain compatible.
+ */
 export interface CampaignObjectiveNotification {
+  /**
+   * stable id used by {@link CampaignObjectiveNotification} to correlate this value with related records,
+   * events, or authored content; it is not a display label.
+   */
   readonly id: string;
+  /**
+   * stable objective id used by {@link CampaignObjectiveNotification} to correlate this value with related
+   * records, events, or authored content; it is not a display label.
+   */
   readonly objectiveId: string;
+  /**
+   * discriminator for {@link CampaignObjectiveNotification}. It selects the valid branch and behavior, so
+   * producers and consumers must keep it synchronized with the accompanying fields.
+   */
   readonly status: CampaignMissionObjectiveStatus;
+  /**
+   * human-facing text for {@link CampaignObjectiveNotification}. It supports UI, narration, or diagnostics and
+   * must not be used as the stable identity of the record.
+   */
   readonly text: string;
+  /**
+   * Optional stable narration line id used by {@link CampaignObjectiveNotification} to correlate this value with
+   * related records, events, or authored content; it is not a display label.
+   */
   readonly narrationLineId?: string;
 }
 
-/** Rebuildable local projection; snapshots never synthesize presentation notifications. */
+/** Defines the campaign objective projection store contract used by this module; its declared members form the compatible boundary for linked consumers. */
 export class CampaignObjectiveProjectionStore {
   private readonly inputPrompts = createDefaultCampaignInputPromptRegistry();
   private readonly seenInputActions = new Set<MissionSemanticInputAction>();

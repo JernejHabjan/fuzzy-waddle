@@ -8,9 +8,24 @@ import {
 import type { MissionRewardBundle, MissionRewardDefinition } from "../contracts/mission-reward-bundle";
 import type { CampaignProgressionRegistry } from "../registry/campaign-progression-registry";
 
+/**
+ * Defines the closed campaign profile revision policy value set. Keeping this union named preserves exhaustive
+ * handling and prevents incompatible free-form values at its boundaries.
+ */
 export type CampaignProfileRevisionPolicy = "reject" | "merge";
 
-/** Pure transaction resolver; #711 persists the request/result and idempotency record atomically. */
+/**
+ * Pure reward transaction resolver used before the server persists a victory. It checks
+ * mission/profile revision policy, applies only registered permanent rewards, and
+ * derives an idempotency key from the profile/run so replayed requests return the same
+ * result instead of duplicating unlocks or currency.
+ *
+ * ```text
+ * eligible victory + base profile -> resolve rewards -> commit request/result
+ *                                              |                 |
+ *                                      temporary allowance --X    +-> SQL transaction
+ * ```
+ */
 export class CampaignRewardCommitService {
   private readonly committedResults = new Map<string, CampaignRewardCommitResult>();
 
@@ -19,6 +34,10 @@ export class CampaignRewardCommitService {
     private readonly revisionPolicy: CampaignProfileRevisionPolicy = "reject"
   ) {}
 
+  /**
+   * Resolves one victory request as an idempotent profile transaction.
+   * It rejects stale profile revisions according to policy, reuses an earlier result for the same run, and returns the exact persisted delta that the server must commit atomically.
+   */
   commit(
     profileKey: string,
     profile: CampaignProgressionProfile,
@@ -96,6 +115,10 @@ export class CampaignRewardCommitService {
   }
 }
 
+/**
+ * Applies one authored reward to an isolated profile copy.
+ * It enforces registration and repeatability rules, records claim identity, and keeps temporary/invalid rewards from silently changing persistent progression.
+ */
 function applyReward(
   profile: CampaignProgressionProfile,
   runId: string,

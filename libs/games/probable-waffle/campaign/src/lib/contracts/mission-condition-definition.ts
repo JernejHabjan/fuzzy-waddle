@@ -13,6 +13,10 @@ import type {
   ScenarioTagId
 } from "./campaign-content-id";
 
+/**
+ * Defines the closed mission numeric comparison value set. Keeping this union named preserves exhaustive
+ * handling and prevents incompatible free-form values at its boundaries.
+ */
 export type MissionNumericComparison =
   | "equal"
   | "not-equal"
@@ -21,15 +25,48 @@ export type MissionNumericComparison =
   | "greater"
   | "greater-or-equal";
 
+/**
+ * Defines the structured mission actor selector contract for this module. Its declared surface makes actor
+ * ids, group id, tag, owner player number, actor type explicit to every consumer. Use this shared shape rather
+ * than an ad-hoc object so adapters, persistence, and callers remain compatible.
+ */
 export interface MissionActorSelector {
+  /**
+   * Optional collection owned by {@link MissionActorSelector}. Preserve the declared element contract and any
+   * ordering/uniqueness semantics when reading, serializing, or extending it.
+   */
   readonly actorIds?: readonly ScenarioActorId[];
+  /**
+   * Optional stable group id used by {@link MissionActorSelector} to correlate this value with related records,
+   * events, or authored content; it is not a display label.
+   */
   readonly groupId?: ScenarioGroupId;
+  /**
+   * Optional tag value carried by {@link MissionActorSelector}. Its declared type is the compatibility boundary
+   * for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly tag?: ScenarioTagId;
+  /**
+   * Optional numeric owner player number carried by {@link MissionActorSelector}. Its units and valid range are
+   * defined by {@link MissionActorSelector} and must remain consistent across producers and consumers.
+   */
   readonly ownerPlayerNumber?: number;
+  /**
+   * Optional discriminator for {@link MissionActorSelector}. It selects the valid branch and behavior, so
+   * producers and consumers must keep it synchronized with the accompanying fields.
+   */
   readonly actorType?: ObjectNames;
+  /**
+   * Optional alive value carried by {@link MissionActorSelector}. Its declared type is the compatibility
+   * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly alive?: boolean;
 }
 
+/**
+ * Defines the closed mission region occupancy policy value set. Keeping this union named preserves exhaustive
+ * handling and prevents incompatible free-form values at its boundaries.
+ */
 export type MissionRegionOccupancyPolicy =
   | { readonly kind: "any" }
   | { readonly kind: "specific-player"; readonly playerNumber: number }
@@ -38,6 +75,10 @@ export type MissionRegionOccupancyPolicy =
   | { readonly kind: "at-least"; readonly count: number }
   | { readonly kind: "entire-group"; readonly groupId: ScenarioGroupId };
 
+/**
+ * Defines the closed mission condition definition value set. Keeping this union named preserves exhaustive
+ * handling and prevents incompatible free-form values at its boundaries.
+ */
 export type MissionConditionDefinition =
   | { readonly kind: "always" }
   | { readonly kind: "never" }

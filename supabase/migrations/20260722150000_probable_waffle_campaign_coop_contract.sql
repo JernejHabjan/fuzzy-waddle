@@ -1,5 +1,12 @@
+-- Participant progression is stored with the campaign snapshot rather than inferred from
+-- currently connected clients. Restore/reconnect can therefore recreate the same solo
+-- control transfer or future co-op ownership layout before mission triggers resume.
+
 alter table public.probable_waffle_game_saves
   add column campaign_participant_progression_snapshots jsonb null;
+
+comment on column public.probable_waffle_game_saves.campaign_participant_progression_snapshots is
+  'Per-participant progression snapshots required to restore and reconnect a co-op campaign without inferring ownership from live clients.';
 
 alter table public.probable_waffle_game_saves
   drop constraint campaign_save_scope;

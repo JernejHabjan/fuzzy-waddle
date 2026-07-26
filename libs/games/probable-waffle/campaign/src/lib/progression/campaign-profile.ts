@@ -32,7 +32,7 @@ export function campaignLoadoutSnapshotHash(profileRevision: number, selectedLoa
   return (hash >>> 0).toString(16).padStart(8, "0");
 }
 
-/** Deterministically combines guest and remote ownership without adding balances or completion counts twice. */
+/** Documents the merge campaign profile data member and its declared contract at this boundary. */
 export function mergeCampaignProfileData(left: CampaignProfileData, right: CampaignProfileData): CampaignProfileData {
   return {
     profile: mergeCampaignProfiles(left.profile, right.profile),

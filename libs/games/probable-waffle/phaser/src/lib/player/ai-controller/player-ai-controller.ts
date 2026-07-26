@@ -146,7 +146,7 @@ export class PlayerAiController {
     }
   }
 
-  /** Mirrors campaign-owned enablement into player data so save/load and controller recreation agree. */
+  /** Documents the set enabled member and its declared contract at this boundary. */
   setEnabled(enabled: boolean): void {
     this.enabled = enabled;
     const definition = this.player.playerController.data.playerDefinition;

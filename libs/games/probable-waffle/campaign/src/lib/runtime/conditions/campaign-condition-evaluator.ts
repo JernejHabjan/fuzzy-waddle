@@ -5,17 +5,55 @@ import type {
   MissionNumericComparison
 } from "../../contracts/mission-condition-definition";
 
+/**
+ * Defines the structured campaign mission condition context contract for this module. Its declared surface
+ * makes state, event explicit to every consumer. Use this shared shape rather than an ad-hoc object so
+ * adapters, persistence, and callers remain compatible.
+ */
 export interface CampaignMissionConditionContext {
+  /**
+   * discriminator for {@link CampaignMissionConditionContext}. It selects the valid branch and behavior, so
+   * producers and consumers must keep it synchronized with the accompanying fields.
+   */
   readonly state: Readonly<CampaignMissionRuntimeState>;
+  /**
+   * Optional event value carried by {@link CampaignMissionConditionContext}. Its declared type is the
+   * compatibility boundary for producers, validators, and consumers; do not replace it with a broader inferred
+   * shape.
+   */
   readonly event?: CampaignMissionRuntimeEvent;
 }
 
+/**
+ * Defines the structured campaign world condition adapter contract for this module. Its declared surface makes
+ * evaluate explicit to every consumer. Use this shared shape rather than an ad-hoc object so adapters,
+ * persistence, and callers remain compatible.
+ */
 export interface CampaignWorldConditionAdapter {
+  /**
+   * operation exposed by {@link CampaignWorldConditionAdapter}. Its signature is the compatibility boundary for
+   * implementers and callers; keep ordering, return semantics, and error behavior aligned across
+   * implementations.
+   */
   evaluate(context: CampaignMissionConditionContext, definition: MissionConditionDefinition): boolean;
 }
 
+/**
+ * Defines the structured campaign condition evaluator contract for this module. Its declared surface makes
+ * kind, evaluate explicit to every consumer. Use this shared shape rather than an ad-hoc object so adapters,
+ * persistence, and callers remain compatible.
+ */
 export interface CampaignConditionEvaluator {
+  /**
+   * discriminator for {@link CampaignConditionEvaluator}. It selects the valid branch and behavior, so producers
+   * and consumers must keep it synchronized with the accompanying fields.
+   */
   readonly kind: CampaignConditionKind;
+  /**
+   * operation exposed by {@link CampaignConditionEvaluator}. Its signature is the compatibility boundary for
+   * implementers and callers; keep ordering, return semantics, and error behavior aligned across
+   * implementations.
+   */
   evaluate(context: CampaignMissionConditionContext, definition: MissionConditionDefinition): boolean;
 }
 

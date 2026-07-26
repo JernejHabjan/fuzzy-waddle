@@ -103,7 +103,7 @@ export class MissionScreenComponent implements OnInit {
     );
   });
 
-  /** Returns the authoritative unlock state used to style and disable each mission node. */
+  /** Documents the mission state member and its declared contract at this boundary. */
   protected missionState(missionId: CampaignMissionId) {
     return this.campaignProgressService.getMissionProgress(missionId)?.state ?? "locked";
   }
@@ -126,7 +126,7 @@ export class MissionScreenComponent implements OnInit {
     });
   }
 
-  /** Updates the briefing and continue state whenever Angular reuses this screen for another mission URL. */
+  /** Documents the resolve mission route member and its declared contract at this boundary. */
   private async resolveMissionRoute(): Promise<void> {
     const mission = this.selectedMission();
     if (!this.chapter() || !mission || (this.requestedMissionId() !== null && !this.missionId())) {

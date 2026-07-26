@@ -24,31 +24,115 @@ import { normalizeScenarioList, ScenarioActorReferenceComponent } from "./scenar
 import type { ScenarioMarker, ScenarioMarkerKind } from "./scenario-marker";
 import { ScenarioRegionRuntime } from "./scenario-region";
 
+/**
+ * Phaser-side index of stable editor-authored scenario IDs. Mission content refers to
+ * these IDs instead of display names or object paths so authored maps can evolve without
+ * changing deterministic campaign contracts.
+ *
+ * @see validateMissionScenarioReferences in the campaign library.
+ * @see https://github.com/JernejHabjan/fuzzy-waddle/issues/703
+ */
 type GameObject = Phaser.GameObjects.GameObject;
 
+/**
+ * Defines the structured scenario route runtime contract for this module. Its declared surface makes id,
+ * points, loop, facing angles explicit to every consumer. Use this shared shape rather than an ad-hoc object
+ * so adapters, persistence, and callers remain compatible.
+ */
 export interface ScenarioRouteRuntime {
+  /**
+   * stable id used by {@link ScenarioRouteRuntime} to correlate this value with related records, events, or
+   * authored content; it is not a display label.
+   */
   readonly id: ScenarioRouteId;
+  /**
+   * collection value on {@link ScenarioRouteRuntime}. Its element type defines the records that may cross this
+   * boundary; preserve ordering or uniqueness whenever the owning workflow relies on it.
+   */
   readonly points: readonly Vector3Simple[];
+  /**
+   * loop value carried by {@link ScenarioRouteRuntime}. Its declared type is the compatibility boundary for
+   * producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly loop: boolean;
+  /**
+   * collection value on {@link ScenarioRouteRuntime}. Its element type defines the records that may cross this
+   * boundary; preserve ordering or uniqueness whenever the owning workflow relies on it.
+   */
   readonly facingAngles: readonly number[];
 }
 
+/**
+ * Defines the structured scenario camera shot runtime contract for this module. Its declared surface makes id,
+ * center, zoom, duration ticks, letterbox explicit to every consumer. Use this shared shape rather than an
+ * ad-hoc object so adapters, persistence, and callers remain compatible.
+ */
 export interface ScenarioCameraShotRuntime {
+  /**
+   * stable id used by {@link ScenarioCameraShotRuntime} to correlate this value with related records, events, or
+   * authored content; it is not a display label.
+   */
   readonly id: ScenarioCameraShotId;
+  /**
+   * center value carried by {@link ScenarioCameraShotRuntime}. Its declared type is the compatibility boundary
+   * for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly center: Vector3Simple;
+  /**
+   * numeric zoom carried by {@link ScenarioCameraShotRuntime}. Its units and valid range are defined by {@link
+   * ScenarioCameraShotRuntime} and must remain consistent across producers and consumers.
+   */
   readonly zoom: number;
+  /**
+   * numeric duration ticks carried by {@link ScenarioCameraShotRuntime}. Its units and valid range are defined
+   * by {@link ScenarioCameraShotRuntime} and must remain consistent across producers and consumers.
+   */
   readonly durationTicks: number;
+  /**
+   * letterbox value carried by {@link ScenarioCameraShotRuntime}. Its declared type is the compatibility
+   * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly letterbox: boolean;
 }
 
+/**
+ * Defines the structured scenario spawn set runtime contract for this module. Its declared surface makes id,
+ * points explicit to every consumer. Use this shared shape rather than an ad-hoc object so adapters,
+ * persistence, and callers remain compatible.
+ */
 export interface ScenarioSpawnSetRuntime {
+  /**
+   * stable id used by {@link ScenarioSpawnSetRuntime} to correlate this value with related records, events, or
+   * authored content; it is not a display label.
+   */
   readonly id: ScenarioSpawnSetId;
+  /**
+   * collection value on {@link ScenarioSpawnSetRuntime}. Its element type defines the records that may cross
+   * this boundary; preserve ordering or uniqueness whenever the owning workflow relies on it.
+   */
   readonly points: readonly Vector3Simple[];
 }
 
+/**
+ * Defines the structured scenario reference debug geometry contract for this module. Its declared surface
+ * makes id, kind, points explicit to every consumer. Use this shared shape rather than an ad-hoc object so
+ * adapters, persistence, and callers remain compatible.
+ */
 export interface ScenarioReferenceDebugGeometry {
+  /**
+   * stable id used by {@link ScenarioReferenceDebugGeometry} to correlate this value with related records,
+   * events, or authored content; it is not a display label.
+   */
   readonly id: string;
+  /**
+   * discriminator for {@link ScenarioReferenceDebugGeometry}. It selects the valid branch and behavior, so
+   * producers and consumers must keep it synchronized with the accompanying fields.
+   */
   readonly kind: ScenarioMarkerKind | "actor";
+  /**
+   * collection value on {@link ScenarioReferenceDebugGeometry}. Its element type defines the records that may
+   * cross this boundary; preserve ordering or uniqueness whenever the owning workflow relies on it.
+   */
   readonly points: readonly Vector3Simple[];
 }
 
@@ -85,12 +169,35 @@ export abstract class ScenarioReferenceRegistry {
   abstract destroy(): void;
 }
 
+/**
+ * Defines the structured group definition contract for this module. Its declared surface makes member actor
+ * ids, required tags explicit to every consumer. Use this shared shape rather than an ad-hoc object so
+ * adapters, persistence, and callers remain compatible.
+ */
 interface GroupDefinition {
+  /**
+   * collection owned by {@link GroupDefinition}. Preserve the declared element contract and any
+   * ordering/uniqueness semantics when reading, serializing, or extending it.
+   */
   readonly memberActorIds: readonly ScenarioActorId[];
+  /**
+   * collection value on {@link GroupDefinition}. Its element type defines the records that may cross this
+   * boundary; preserve ordering or uniqueness whenever the owning workflow relies on it.
+   */
   readonly requiredTags: readonly string[];
 }
 
-/** One-time scene compiler plus indexed stable-reference queries for campaign gameplay. */
+/**
+ * Compiles Phaser Editor scenario markers into typed, stable-ID indexes at scene start.
+ * Lookup is read-only after construction so gameplay never depends on display hierarchy;
+ * duplicate/malformed IDs fail during registration where authoring validation can point
+ * back to the affected map asset.
+ *
+ * ```text
+ * Phaser Editor marker -> stable scenario ID -> typed index -> authored mission reference
+ *        map layout changes ------------------------------^ (identity remains stable)
+ * ```
+ */
 export class IndexedScenarioReferenceRegistry extends ScenarioReferenceRegistry {
   private scene?: Phaser.Scene;
   private initialized = false;
@@ -305,6 +412,11 @@ export class IndexedScenarioReferenceRegistry extends ScenarioReferenceRegistry 
     this.initialized = false;
   };
 
+  /**
+   * Inserts one editor marker into the appropriate stable-ID index and rejects duplicate
+   * IDs before any mission can resolve them. Marker-specific payload is normalized here,
+   * keeping route/group/region consumers free of Phaser Editor string parsing.
+   */
   private registerMarker(marker: ScenarioMarker): void {
     const id = marker.scenarioId.trim();
     if (!isCampaignContentId(id)) {
@@ -366,6 +478,11 @@ export class IndexedScenarioReferenceRegistry extends ScenarioReferenceRegistry 
     }
   }
 
+  /**
+   * Compiles an editor region into immutable world-space geometry. Polygon coordinates
+   * are marker-local while rectangles are authored by centre and dimensions; normalizing
+   * both here gives condition evaluation one stable shape independent of editor format.
+   */
   private registerRegion(marker: ScenarioRegionMarker): void {
     const id = asCampaignContentId<"scenario-region">(marker.scenarioId.trim());
     if (marker.elevationPolicy === "range" && marker.minimumElevation > marker.maximumElevation) {
@@ -401,6 +518,11 @@ export class IndexedScenarioReferenceRegistry extends ScenarioReferenceRegistry 
     );
   }
 
+  /**
+   * Resolves route and spawn-set point references only after every point is indexed.
+   * This second pass preserves stable IDs while producing actionable diagnostics for a
+   * missing point or a route whose optional facing data no longer matches its path.
+   */
   private compileRoutesAndSpawnSets(markers: readonly ScenarioMarker[]): void {
     for (const marker of markers) {
       if (marker.scenarioMarkerKind === "route") {
@@ -443,6 +565,11 @@ export class IndexedScenarioReferenceRegistry extends ScenarioReferenceRegistry 
     });
   }
 
+  /**
+   * Parses the compact Phaser Editor polygon property and rejects malformed or degenerate
+   * shapes at content-load time. Failing here avoids a later, ambiguous area-condition
+   * result in the deterministic mission runtime.
+   */
   private parsePolygonPoints(value: string, sourceId: string): { x: number; y: number }[] {
     const points = value
       .split(";")

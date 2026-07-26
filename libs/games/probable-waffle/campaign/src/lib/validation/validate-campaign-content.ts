@@ -15,15 +15,40 @@ import type { CampaignDefinitionRegistries } from "../registry/campaign-definiti
 import type { CampaignValidationIssue, CampaignValidationResult } from "./campaign-validation-issue";
 import { validateCampaignParticipants } from "../runtime/campaign-participant-resolver";
 
+/**
+ * Defines the structured campaign validation input contract for this module. Its declared surface makes
+ * campaign, missions, dialogue, rewards, registries explicit to every consumer. Use this shared shape rather
+ * than an ad-hoc object so adapters, persistence, and callers remain compatible.
+ */
 export interface CampaignValidationInput {
+  /**
+   * campaign value carried by {@link CampaignValidationInput}. Its declared type is the compatibility boundary
+   * for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly campaign: CampaignDefinition;
+  /**
+   * collection value on {@link CampaignValidationInput}. Its element type defines the records that may cross
+   * this boundary; preserve ordering or uniqueness whenever the owning workflow relies on it.
+   */
   readonly missions: readonly CampaignMissionContent[];
+  /**
+   * collection value on {@link CampaignValidationInput}. Its element type defines the records that may cross
+   * this boundary; preserve ordering or uniqueness whenever the owning workflow relies on it.
+   */
   readonly dialogue: readonly MissionDialogueBundle[];
+  /**
+   * collection owned by {@link CampaignValidationInput}. Preserve the declared element contract and any
+   * ordering/uniqueness semantics when reading, serializing, or extending it.
+   */
   readonly rewards: readonly MissionRewardBundle[];
+  /**
+   * registries value carried by {@link CampaignValidationInput}. Its declared type is the compatibility boundary
+   * for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly registries: CampaignDefinitionRegistries;
 }
 
-/** Performs full first-party semantic validation and is intentionally called only by tests/tooling. */
+/** Documents the validate campaign content member and its declared contract at this boundary. */
 export function validateCampaignContent(input: CampaignValidationInput): CampaignValidationResult {
   const issues: CampaignValidationIssue[] = [];
   const missionById = uniqueBy(input.missions, (mission) => mission.id, "missions", "duplicate-mission-id", issues);
@@ -114,6 +139,12 @@ export function validateCampaignContent(input: CampaignValidationInput): Campaig
   return { valid: issues.length === 0, issues };
 }
 
+/**
+ * Performs the cross-document semantic pass for one mission after JSON Schema shape
+ * validation. It validates references, statechart reachability, action/condition
+ * contracts, progression allowances, and authored completion paths while collecting
+ * every issue with a source path instead of failing at the first invalid field.
+ */
 function validateMission(
   mission: CampaignMissionContent,
   dialogue: MissionDialogueBundle | undefined,
@@ -676,6 +707,11 @@ function validateObjectiveDependencyCycles(mission: CampaignMissionContent, issu
   for (const objectiveId of [...dependencies.keys()].sort()) visit(objectiveId);
 }
 
+/**
+ * Validates dialogue independently of rendering. It checks line identity, text/cue
+ * references, cinematic action links, and graph constraints so presentation adapters
+ * can assume an authored bundle is internally consistent before it reaches a scene.
+ */
 function validateDialogue(
   dialogue: MissionDialogueBundle,
   mission: CampaignMissionContent,
@@ -908,6 +944,10 @@ function validateDeclaredScenarioReference(
   );
 }
 
+/**
+ * Walks the presentation-action graph to detect indirect cinematic recursion before runtime expansion.
+ * It reports every cycle with authored source paths so content authors can repair graph structure without reproducing a live scene.
+ */
 function validateCinematicActionCycles(
   dialogue: MissionDialogueBundle,
   mission: CampaignMissionContent,
@@ -995,6 +1035,10 @@ function validatePresentationActionReferences(
   }
 }
 
+/**
+ * Checks action IDs, registry support, nested composite structure, and references used by each authored action.
+ * Validation is collect-all and side-effect free, allowing one catalogue pass to expose all unsafe interpreter inputs.
+ */
 function validateActions(
   actions: readonly MissionActionDefinition[],
   sourcePath: string,
@@ -1237,6 +1281,10 @@ function collectMissionActionEntries(
   return result;
 }
 
+/**
+ * Checks each wave for stable IDs, spawn/source validity, ordering, and policies compatible with the encounter runtime.
+ * It catches authoring states that would otherwise create nondeterministic retries or unrecoverable blocked waves.
+ */
 function validateEncounterWave(
   mission: CampaignMissionContent,
   wave: NonNullable<CampaignMissionContent["encounters"]>[number]["waves"][number],

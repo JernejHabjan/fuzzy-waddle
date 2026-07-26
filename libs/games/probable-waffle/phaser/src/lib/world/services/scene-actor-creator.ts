@@ -32,6 +32,10 @@ import { LoadGame } from "../../data/load-game";
 import type { InitialActorConfig } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { LevelComponent } from "../../entity/components/level/level-component";
 import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
+/**
+ * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
+ * storage boundaries do not drift into an unconstrained primitive.
+ */
 type GameObject = Phaser.GameObjects.GameObject;
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { upgradeActorToLevel } from "../../data/actor-level-utils";
@@ -71,6 +75,14 @@ export class SceneActorCreator {
     }
   }
 
+  /**
+   * Consumes editor `Spawn` placeholders and normalizes direct editor actors into the
+   * same component/index/save path used by runtime-created actors. It applies authored
+   * owner/level/scenario-role metadata before registration, then destroys placeholders
+   * only after all required world objects have been materialized.
+   *
+   * @see {@link createActorFromDefinition} for the corresponding data-driven creation path.
+   */
   private spawnFromSpawnList() {
     const list = this.scene.children.getChildren();
     const toDestroy: Phaser.GameObjects.GameObject[] = [];

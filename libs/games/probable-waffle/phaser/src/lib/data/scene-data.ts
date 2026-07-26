@@ -25,8 +25,20 @@ import { ActorIndexSystem } from "../world/services/ActorIndexSystem";
 import { OwnerComponent } from "../entity/components/owner-component";
 import { getSceneService } from "../world/services/scene-component-helpers";
 
+/**
+ * Defines the closed probable waffle scene data key classification. Use an explicit member rather than a
+ * free-form string so branching, persistence, and diagnostics share the same vocabulary.
+ */
 export enum ProbableWaffleSceneDataKey {
+  /**
+   * Selects the `SnapshotApplyInProgress` case of {@link ProbableWaffleSceneDataKey}. Use this explicit member
+   * when the surrounding flow requires this distinct policy or state; never substitute a free-form string.
+   */
   SnapshotApplyInProgress = "snapshotApplyInProgress",
+  /**
+   * Optional temporal value for {@link ProbableWaffleSceneDataKey}. It anchors ordering, expiry, or presentation
+   * timing and must use the time domain declared by the enclosing contract.
+   */
   SnapshotApplySuppressedUntilTick = "snapshotApplySuppressedUntilTick"
 }
 

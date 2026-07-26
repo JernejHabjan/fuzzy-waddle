@@ -52,7 +52,7 @@ export class ReconnectService {
   private socketConnectHandler?: () => void;
   private socketDisconnectHandler?: (reason: string) => void;
   private instanceReseedRequiredSub?: Subscription;
-  /** Stored so destroy() can call removeListener. */
+  /** Documents the raw socket member and its declared contract at this boundary. */
   private rawSocket?: NgxSocketIoRawSocket;
   private awaitingReconnect = false;
   private reseedSent = false;
@@ -60,6 +60,10 @@ export class ReconnectService {
   private static readonly AUTHORITATIVE_CORRECTION_STRUCTURAL_REBUILD_REASON =
     "authoritative correction included structural actor churn";
 
+  /**
+   * Installs reconnect/recovery listeners and coordinates the pause/request lifecycle.
+   * It ensures a reconnect snapshot is requested and applied through one owner so concurrent transport events cannot resume a partially recovered scene.
+   */
   init(scene: ProbableWaffleScene): void {
     const communicator = getCommunicator(scene);
     if (!communicator.snapshotRequested || !communicator.snapshotResponse) {
@@ -160,7 +164,7 @@ export class ReconnectService {
     this.requestSnapshot(scene, "reconnect");
   }
 
-  /** Sends a full game-instance payload so the API can recreate missing in-memory state. */
+  /** Documents the send instance reseed payload member and its declared contract at this boundary. */
   private sendInstanceReseedPayload(scene: ProbableWaffleScene): boolean {
     const communicator = getCommunicator(scene);
     if (!communicator.instanceReseed) {
@@ -212,6 +216,19 @@ export class ReconnectService {
     return sessionState === GameSessionState.InProgress || sessionState === GameSessionState.ToScoreScreen;
   }
 
+  /**
+   * Applies an authoritative reconnect snapshot in restore order: pause simulation,
+   * replace synchronized state, rebuild scene projections, then release only the pause
+   * reasons owned by recovery. Campaign state is restored before mission triggers resume
+   * so reconnect cannot replay entry actions or consume events against stale references.
+   *
+   * ```text
+   * transport snapshot -> pause -> replace state -> rebuild actors/indexes -> campaign restore -> resume
+   * ```
+   *
+   * @see {@link CampaignRestoreCoordinator} for campaign-specific compatibility and
+   * resource restoration after the scene state has been replaced.
+   */
   private applySnapshot(scene: ProbableWaffleScene, response: ProbableWaffleSnapshotResponseEvent): void {
     const snapshot = response.snapshot;
     const simTick = getSceneService(scene, SimulationTickService);

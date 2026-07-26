@@ -41,14 +41,35 @@ export const ProbableWaffleCommunicators = {
   Selection: ProbableWaffleGameCommunicatorTypes.Selection
 } as const;
 
+/**
+ * Defines the probable waffle communicator type alias used by this module. Keep values in this named domain so
+ * linked APIs and storage boundaries do not drift into an unconstrained primitive.
+ */
 export type ProbableWaffleCommunicatorType =
   (typeof ProbableWaffleCommunicators)[keyof typeof ProbableWaffleCommunicators];
 
+/**
+ * Defines the structured probable waffle communicator event contract for this module. Its declared surface
+ * makes game instance id, emitter user id explicit to every consumer. Use this shared shape rather than an
+ * ad-hoc object so adapters, persistence, and callers remain compatible.
+ */
 export interface ProbableWaffleCommunicatorEvent {
+  /**
+   * stable game instance id used by {@link ProbableWaffleCommunicatorEvent} to correlate this value with related
+   * records, events, or authored content; it is not a display label.
+   */
   gameInstanceId: GameInstanceId;
+  /**
+   * stable emitter user id used by {@link ProbableWaffleCommunicatorEvent} to correlate this value with related
+   * records, events, or authored content; it is not a display label.
+   */
   emitterUserId: UserId | null;
 }
 
+/**
+ * Defines the recursive key of alias used by this module. Keep values in this named domain so linked APIs and
+ * storage boundaries do not drift into an unconstrained primitive.
+ */
 export type RecursiveKeyOf<TObj extends object> = {
   [TKey in keyof TObj & (string | number)]: TObj[TKey] extends unknown[]
     ? `${TKey}`
@@ -63,17 +84,53 @@ export type RecursiveKeyOf<TObj extends object> = {
   Exclude<keyof TObj, keyof string> &
   Exclude<keyof TObj, keyof Map<unknown, unknown>>];
 
+/**
+ * Defines the probable waffle all changed alias used by this module. Keep values in this named domain so
+ * linked APIs and storage boundaries do not drift into an unconstrained primitive.
+ */
 export type ProbableWaffleAllChanged = "all";
 
+/**
+ * Defines the closed probable waffle data change event property value set. Keeping this union named preserves
+ * exhaustive handling and prevents incompatible free-form values at its boundaries.
+ */
 export type ProbableWaffleDataChangeEventProperty<T extends object> = RecursiveKeyOf<T> | ProbableWaffleAllChanged;
 
+/**
+ * Defines the structured probable waffle game instance metadata change event contract for this module. Its
+ * declared surface makes property, data explicit to every consumer. Use this shared shape rather than an
+ * ad-hoc object so adapters, persistence, and callers remain compatible.
+ */
 export interface ProbableWaffleGameInstanceMetadataChangeEvent extends ProbableWaffleCommunicatorEvent {
+  /**
+   * property value carried by {@link ProbableWaffleGameInstanceMetadataChangeEvent}. Its declared type is the
+   * compatibility boundary for producers, validators, and consumers; do not replace it with a broader inferred
+   * shape.
+   */
   property: ProbableWaffleDataChangeEventProperty<ProbableWaffleGameInstanceMetadataData>;
+  /**
+   * typed data associated with {@link ProbableWaffleGameInstanceMetadataChangeEvent}. Preserve its declared
+   * contract at serialization and adapter boundaries instead of weakening it to an unstructured record.
+   */
   data: Partial<ProbableWaffleGameInstanceMetadataData>;
 }
 
+/**
+ * Defines the structured probable waffle game mode data change event contract for this module. Its declared
+ * surface makes property, data explicit to every consumer. Use this shared shape rather than an ad-hoc object
+ * so adapters, persistence, and callers remain compatible.
+ */
 export interface ProbableWaffleGameModeDataChangeEvent extends ProbableWaffleCommunicatorEvent {
+  /**
+   * property value carried by {@link ProbableWaffleGameModeDataChangeEvent}. Its declared type is the
+   * compatibility boundary for producers, validators, and consumers; do not replace it with a broader inferred
+   * shape.
+   */
   property: ProbableWaffleDataChangeEventProperty<ProbableWaffleGameModeData>;
+  /**
+   * typed data associated with {@link ProbableWaffleGameModeDataChangeEvent}. Preserve its declared contract at
+   * serialization and adapter boundaries instead of weakening it to an unstructured record.
+   */
   data: Partial<ProbableWaffleGameModeData>;
 }
 
@@ -98,6 +155,10 @@ export const ProbableWafflePlayerDataChangeProperties = {
   SelectionGroupsChanged: "playerController.data.selectionGroups"
 } as const;
 
+/**
+ * Defines the probable waffle player data change event payload alias used by this module. Keep values in this
+ * named domain so linked APIs and storage boundaries do not drift into an unconstrained primitive.
+ */
 export type ProbableWafflePlayerDataChangeEventPayload = Partial<{
   // provide player number only when updating player
   playerNumber?: PlayerNumber;
@@ -108,6 +169,10 @@ export type ProbableWafflePlayerDataChangeEventPayload = Partial<{
   data: Record<string, unknown>;
 }>;
 
+/**
+ * Defines the closed probable waffle player data change event property value set. Keeping this union named
+ * preserves exhaustive handling and prevents incompatible free-form values at its boundaries.
+ */
 export type ProbableWafflePlayerDataChangeEventProperty =
   | ProbableWaffleDataChangeEventProperty<ProbableWafflePlayer>
   | typeof ProbableWafflePlayerDataChangeProperties.Joined
@@ -129,24 +194,64 @@ export type ProbableWafflePlayerDataChangeEventProperty =
   // New lockstep multiplayer commands should use ProbableWaffleGameCommandEvent instead.
   | typeof ProbableWafflePlayerDataChangeProperties.CommandIssuedMove
   | typeof ProbableWafflePlayerDataChangeProperties.CommandIssuedActor;
+/**
+ * Defines the structured probable waffle player data change event contract for this module. Its declared
+ * surface makes property, data explicit to every consumer. Use this shared shape rather than an ad-hoc object
+ * so adapters, persistence, and callers remain compatible.
+ */
 export interface ProbableWafflePlayerDataChangeEvent extends ProbableWaffleCommunicatorEvent {
+  /**
+   * property value carried by {@link ProbableWafflePlayerDataChangeEvent}. Its declared type is the
+   * compatibility boundary for producers, validators, and consumers; do not replace it with a broader inferred
+   * shape.
+   */
   property: ProbableWafflePlayerDataChangeEventProperty;
+  /**
+   * typed data associated with {@link ProbableWafflePlayerDataChangeEvent}. Preserve its declared contract at
+   * serialization and adapter boundaries instead of weakening it to an unstructured record.
+   */
   data: ProbableWafflePlayerDataChangeEventPayload;
 }
 
+/**
+ * Defines the closed probable waffle spectator data change event property value set. Keeping this union named
+ * preserves exhaustive handling and prevents incompatible free-form values at its boundaries.
+ */
 export type ProbableWaffleSpectatorDataChangeEventProperty =
   | ProbableWaffleDataChangeEventProperty<ProbableWaffleSpectatorData>
   | "joined"
   | "left";
+/**
+ * Defines the structured probable waffle spectator data change event contract for this module. Its declared
+ * surface makes property, data explicit to every consumer. Use this shared shape rather than an ad-hoc object
+ * so adapters, persistence, and callers remain compatible.
+ */
 export interface ProbableWaffleSpectatorDataChangeEvent extends ProbableWaffleCommunicatorEvent {
+  /**
+   * property value carried by {@link ProbableWaffleSpectatorDataChangeEvent}. Its declared type is the
+   * compatibility boundary for producers, validators, and consumers; do not replace it with a broader inferred
+   * shape.
+   */
   property: ProbableWaffleSpectatorDataChangeEventProperty;
+  /**
+   * typed data associated with {@link ProbableWaffleSpectatorDataChangeEvent}. Preserve its declared contract at
+   * serialization and adapter boundaries instead of weakening it to an unstructured record.
+   */
   data: Partial<ProbableWaffleSpectatorData>;
 }
 
+/**
+ * Defines the closed probable waffle game state data change event property value set. Keeping this union named
+ * preserves exhaustive handling and prevents incompatible free-form values at its boundaries.
+ */
 export type ProbableWaffleGameStateDataChangeEventProperty =
   | ProbableWaffleDataChangeEventProperty<ProbableWaffleGameStateData>
   | RecursiveKeyOf<ActorDefinition>;
 
+/**
+ * Defines the probable waffle game state data payload alias used by this module. Keep values in this named
+ * domain so linked APIs and storage boundaries do not drift into an unconstrained primitive.
+ */
 export type ProbableWaffleGameStateDataPayload = Partial<{
   actorDefinition: Partial<
     {
@@ -156,32 +261,62 @@ export type ProbableWaffleGameStateDataPayload = Partial<{
   gameState: Partial<ProbableWaffleGameStateData>;
 }>;
 
+/**
+ * Defines the structured probable waffle game state data change event contract for this module. Its declared
+ * surface makes property, data explicit to every consumer. Use this shared shape rather than an ad-hoc object
+ * so adapters, persistence, and callers remain compatible.
+ */
 export interface ProbableWaffleGameStateDataChangeEvent extends ProbableWaffleCommunicatorEvent {
+  /**
+   * property value carried by {@link ProbableWaffleGameStateDataChangeEvent}. Its declared type is the
+   * compatibility boundary for producers, validators, and consumers; do not replace it with a broader inferred
+   * shape.
+   */
   property: ProbableWaffleGameStateDataChangeEventProperty;
+  /**
+   * typed data associated with {@link ProbableWaffleGameStateDataChangeEvent}. Preserve its declared contract at
+   * serialization and adapter boundaries instead of weakening it to an unstructured record.
+   */
   data: ProbableWaffleGameStateDataPayload;
 }
 
+/**
+ * Defines the structured probable waffle communicator message event contract for this module. Its declared
+ * surface makes chat message explicit to every consumer. Use this shared shape rather than an ad-hoc object so
+ * adapters, persistence, and callers remain compatible.
+ */
 export interface ProbableWaffleCommunicatorMessageEvent extends ProbableWaffleCommunicatorEvent {
+  /**
+   * chat message value carried by {@link ProbableWaffleCommunicatorMessageEvent}. Its declared type is the
+   * compatibility boundary for producers, validators, and consumers; do not replace it with a broader inferred
+   * shape.
+   */
   chatMessage: ChatMessage;
 }
 
+/**
+ * Defines the structured probable waffle game command transport meta contract for this module. Its declared
+ * surface makes client sequence, client sent at wall time ms, client observed tick, client acknowledged local
+ * tick, client source explicit to every consumer. Use this shared shape rather than an ad-hoc object so
+ * adapters, persistence, and callers remain compatible.
+ */
 export interface ProbableWaffleGameCommandTransportMeta {
   /**
    * Monotonic sequence assigned by the sending client. This lets us prove
    * whether command packets were emitted, relayed, or received out of order.
    */
   clientSequence: number;
-  /** Wall-clock timestamp captured on the sending client for diagnostics only. */
+  /** Documents the client sent at wall time ms member and its declared contract at this boundary. */
   clientSentAtWallTimeMs: number;
-  /** Simulation tick the sender was executing when it emitted this packet. */
+  /** Documents the client observed tick member and its declared contract at this boundary. */
   clientObservedTick: number;
-  /** Highest authoritative local tick the sender had already seen echoed back. */
+  /** Documents the client acknowledged local tick member and its declared contract at this boundary. */
   clientAcknowledgedLocalTick: number;
-  /** Which command-bus path emitted the packet. */
+  /** Documents the client source member and its declared contract at this boundary. */
   clientSource: "startup-seed" | "steady-state-tick" | "snapshot-reset";
-  /** Monotonic relay sequence assigned by the API per (game, player) stream. */
+  /** Documents the server relay sequence member and its declared contract at this boundary. */
   serverRelaySequence?: number;
-  /** Wall-clock timestamp captured by the API when it received/relayed the packet. */
+  /** Documents the server received at wall time ms member and its declared contract at this boundary. */
   serverReceivedAtWallTimeMs?: number;
 }
 
@@ -191,12 +326,17 @@ export interface ProbableWaffleGameCommandTransportMeta {
  * advance the lockstep barrier.
  */
 export interface ProbableWaffleGameCommandEvent extends ProbableWaffleCommunicatorEvent {
-  /** The simulation tick on which these commands should execute. */
+  /** Documents the tick member and its declared contract at this boundary. */
   tick: number;
+  /**
+   * player number value carried by {@link ProbableWaffleGameCommandEvent}. Its declared type is the
+   * compatibility boundary for producers, validators, and consumers; do not replace it with a broader inferred
+   * shape.
+   */
   playerNumber: PlayerNumber;
-  /** Serialised GameCommand objects. */
+  /** Documents the commands member and its declared contract at this boundary. */
   commands: GameCommand[];
-  /** Optional transport diagnostics for ordering and jitter investigation. */
+  /** Documents the transport meta member and its declared contract at this boundary. */
   transportMeta?: ProbableWaffleGameCommandTransportMeta;
   /**
    * Set by the server when a batch is rejected due to payload validation.
@@ -207,44 +347,84 @@ export interface ProbableWaffleGameCommandEvent extends ProbableWaffleCommunicat
   rejectionReason?: string;
 }
 
-/** Periodic state-hash snapshot. Each client broadcasts its own hash; peers compare. */
+/** Defines the probable waffle state hash diagnostics contract used by this module; its declared members form the compatible boundary for linked consumers. */
 export interface ProbableWaffleStateHashDiagnostics {
+  /**
+   * Optional keyed/nested actor digests structure owned by {@link ProbableWaffleStateHashDiagnostics}. Keep its
+   * keys and value contract explicit so callers cannot smuggle a broader shape across this boundary.
+   */
   actorDigests?: Record<string, string>;
+  /**
+   * Optional collection value on {@link ProbableWaffleStateHashDiagnostics}. Its element type defines the
+   * records that may cross this boundary; preserve ordering or uniqueness whenever the owning workflow relies on
+   * it.
+   */
   playerDigests?: string[];
+  /**
+   * Optional string research digest carried by {@link ProbableWaffleStateHashDiagnostics}. Treat it according to
+   * the owning contract’s validation and presentation rules rather than assuming it is a stable identifier.
+   */
   researchDigest?: string;
+  /**
+   * Optional string campaign mission digest carried by {@link ProbableWaffleStateHashDiagnostics}. Treat it
+   * according to the owning contract’s validation and presentation rules rather than assuming it is a stable
+   * identifier.
+   */
   campaignMissionDigest?: string;
+  /**
+   * Optional keyed/nested campaign mission family digests structure owned by {@link
+   * ProbableWaffleStateHashDiagnostics}. Keep its keys and value contract explicit so callers cannot smuggle a
+   * broader shape across this boundary.
+   */
   campaignMissionFamilyDigests?: Record<string, string>;
+  /**
+   * Optional string random digest carried by {@link ProbableWaffleStateHashDiagnostics}. Treat it according to
+   * the owning contract’s validation and presentation rules rather than assuming it is a stable identifier.
+   */
   randomDigest?: string;
 }
 
+/**
+ * Defines the structured probable waffle state hash event contract for this module. Its declared surface makes
+ * tick, player number, hash, diagnostics explicit to every consumer. Use this shared shape rather than an
+ * ad-hoc object so adapters, persistence, and callers remain compatible.
+ */
 export interface ProbableWaffleStateHashEvent extends ProbableWaffleCommunicatorEvent {
-  /** The simulation tick at which this hash was computed. */
+  /** Documents the tick member and its declared contract at this boundary. */
   tick: number;
+  /**
+   * player number value carried by {@link ProbableWaffleStateHashEvent}. Its declared type is the compatibility
+   * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   playerNumber: PlayerNumber;
-  /** djb2 hex hash of all actor states sorted by actor ID. */
-  /** Campaign scenes append the canonical mission-runtime digest to the same hash input. */
+  /** Documents the hash member and its declared contract at this boundary. */
   hash: string;
+  /**
+   * Optional diagnostics value carried by {@link ProbableWaffleStateHashEvent}. Its declared type is the
+   * compatibility boundary for producers, validators, and consumers; do not replace it with a broader inferred
+   * shape.
+   */
   diagnostics?: ProbableWaffleStateHashDiagnostics;
 }
 
-/** Full simulation snapshot for reconnect / spectator catch-up. Host → requesting client only. */
+/** Defines the probable waffle snapshot data contract used by this module; its declared members form the compatible boundary for linked consumers. */
 export interface ProbableWaffleSnapshotData {
-  /** Simulation tick at the moment the snapshot was taken. */
+  /** Documents the tick member and its declared contract at this boundary. */
   tick: number;
-  /** All live actors serialised via ActorManager.getActorDefinitionFromActor(). */
+  /** Documents the actors member and its declared contract at this boundary. */
   actors: ActorDefinition[];
   /**
    * Per-player state (resources, housing, summary, selection).
    * Keyed by playerNumber so receiver can restore each player independently.
    */
   playerStates: Record<PlayerNumber, ProbableWafflePlayerStateData>;
-  /** Player-local control group state keyed by playerNumber. */
+  /** Documents the player selection groups member and its declared contract at this boundary. */
   playerSelectionGroups?: Record<PlayerNumber, SelectionGroupData[]>;
-  /** Research state keyed by playerNumber. */
+  /** Documents the player research member and its declared contract at this boundary. */
   playerResearch?: Record<PlayerNumber, string[]>;
-  /** Mission runtime is restored before simulation tick processing resumes. */
+  /** Documents the campaign mission member and its declared contract at this boundary. */
   campaignMission?: CampaignMissionRuntimeState;
-  /** Deterministic RNG continuation captured at the same simulation boundary. */
+  /** Documents the random state member and its declared contract at this boundary. */
   randomState?: import("../../probable-waffle/deterministic-random").DeterministicRandomState;
 }
 
@@ -253,14 +433,28 @@ export interface ProbableWaffleSnapshotData {
  * The host responds with `ProbableWaffleSnapshotResponseEvent`.
  */
 export interface ProbableWaffleSnapshotRequestEvent extends ProbableWaffleCommunicatorEvent {
+  /**
+   * Optional reason value carried by {@link ProbableWaffleSnapshotRequestEvent}. Its declared type is the
+   * compatibility boundary for producers, validators, and consumers; do not replace it with a broader inferred
+   * shape.
+   */
   reason?: "reconnect" | "spectator-catch-up" | "desync-correction";
 }
 
-/** Host → requesting client: full simulation snapshot for catch-up. */
+/** Defines the probable waffle snapshot response event contract used by this module; its declared members form the compatible boundary for linked consumers. */
 export interface ProbableWaffleSnapshotResponseEvent extends ProbableWaffleCommunicatorEvent {
+  /**
+   * stable target user id used by {@link ProbableWaffleSnapshotResponseEvent} to correlate this value with
+   * related records, events, or authored content; it is not a display label.
+   */
   targetUserId: UserId;
+  /**
+   * snapshot value carried by {@link ProbableWaffleSnapshotResponseEvent}. Its declared type is the
+   * compatibility boundary for producers, validators, and consumers; do not replace it with a broader inferred
+   * shape.
+   */
   snapshot: ProbableWaffleSnapshotData;
-  /** Why this snapshot was pushed to the client. */
+  /** Documents the reason member and its declared contract at this boundary. */
   reason?: "reconnect" | "spectator-catch-up" | "desync-correction";
   /**
    * Short rolling tail of command batches committed after snapshot.tick.
@@ -276,58 +470,151 @@ export interface ProbableWaffleSnapshotResponseEvent extends ProbableWaffleCommu
  * (for example after backend restart) and a client should reseed it.
  */
 export interface ProbableWaffleInstanceReseedRequiredEvent extends ProbableWaffleCommunicatorEvent {
+  /**
+   * reason value carried by {@link ProbableWaffleInstanceReseedRequiredEvent}. Its declared type is the
+   * compatibility boundary for producers, validators, and consumers; do not replace it with a broader inferred
+   * shape.
+   */
   reason: "missing-game-instance";
 }
 
-/** Client → server: full in-memory game instance payload used to recreate missing match state. */
+/** Defines the probable waffle instance reseed event contract used by this module; its declared members form the compatible boundary for linked consumers. */
 export interface ProbableWaffleInstanceReseedEvent extends ProbableWaffleCommunicatorEvent {
+  /**
+   * game instance data value carried by {@link ProbableWaffleInstanceReseedEvent}. Its declared type is the
+   * compatibility boundary for producers, validators, and consumers; do not replace it with a broader inferred
+   * shape.
+   */
   gameInstanceData: ProbableWaffleGameInstanceData;
 }
 
-/** Broadcast by the host when a correction attempt failed and room-wide recovery must start. */
+/** Defines the probable waffle desync alert event contract used by this module; its declared members form the compatible boundary for linked consumers. */
 export interface ProbableWaffleDesyncAlertEvent extends ProbableWaffleCommunicatorEvent {
+  /**
+   * temporal value for {@link ProbableWaffleDesyncAlertEvent}. It anchors ordering, expiry, or presentation
+   * timing and must use the time domain declared by the enclosing contract.
+   */
   tick: number;
+  /**
+   * desynced player number value carried by {@link ProbableWaffleDesyncAlertEvent}. Its declared type is the
+   * compatibility boundary for producers, validators, and consumers; do not replace it with a broader inferred
+   * shape.
+   */
   desyncedPlayerNumber: PlayerNumber;
+  /**
+   * Optional string reason carried by {@link ProbableWaffleDesyncAlertEvent}. Treat it according to the owning
+   * contract’s validation and presentation rules rather than assuming it is a stable identifier.
+   */
   reason?: string;
 }
 
-/** Player-issued pause or resume request relayed to the whole room. */
+/** Defines the probable waffle pause changed event contract used by this module; its declared members form the compatible boundary for linked consumers. */
 export interface ProbableWafflePauseChangedEvent extends ProbableWaffleCommunicatorEvent {
+  /**
+   * player number value carried by {@link ProbableWafflePauseChangedEvent}. Its declared type is the
+   * compatibility boundary for producers, validators, and consumers; do not replace it with a broader inferred
+   * shape.
+   */
   playerNumber: PlayerNumber;
+  /**
+   * paused value carried by {@link ProbableWafflePauseChangedEvent}. Its declared type is the compatibility
+   * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   paused: boolean;
 }
 
-/** Broadcast by the server when a player's socket drops unexpectedly. */
+/** Defines the probable waffle player disconnected event contract used by this module; its declared members form the compatible boundary for linked consumers. */
 export interface ProbableWafflePlayerDisconnectedEvent extends ProbableWaffleCommunicatorEvent {
+  /**
+   * player number value carried by {@link ProbableWafflePlayerDisconnectedEvent}. Its declared type is the
+   * compatibility boundary for producers, validators, and consumers; do not replace it with a broader inferred
+   * shape.
+   */
   playerNumber: PlayerNumber;
-  /** Seconds remaining in the reconnect grace window. */
+  /** Documents the reconnect window seconds member and its declared contract at this boundary. */
   reconnectWindowSeconds: number;
 }
 
-/** Broadcast by the server when a disconnected player rejoins within the grace window. */
+/** Defines the probable waffle player reconnected event contract used by this module; its declared members form the compatible boundary for linked consumers. */
 export interface ProbableWafflePlayerReconnectedEvent extends ProbableWaffleCommunicatorEvent {
+  /**
+   * player number value carried by {@link ProbableWafflePlayerReconnectedEvent}. Its declared type is the
+   * compatibility boundary for producers, validators, and consumers; do not replace it with a broader inferred
+   * shape.
+   */
   playerNumber: PlayerNumber;
 }
 
-/** Broadcast by the server when host duties move to another player. */
+/** Defines the probable waffle host migrated event contract used by this module; its declared members form the compatible boundary for linked consumers. */
 export interface ProbableWaffleHostMigratedEvent extends ProbableWaffleCommunicatorEvent {
+  /**
+   * stable previous host user id used by {@link ProbableWaffleHostMigratedEvent} to correlate this value with
+   * related records, events, or authored content; it is not a display label.
+   */
   previousHostUserId: UserId | null;
+  /**
+   * stable current host user id used by {@link ProbableWaffleHostMigratedEvent} to correlate this value with
+   * related records, events, or authored content; it is not a display label.
+   */
   currentHostUserId: UserId;
+  /**
+   * current host player number value carried by {@link ProbableWaffleHostMigratedEvent}. Its declared type is
+   * the compatibility boundary for producers, validators, and consumers; do not replace it with a broader
+   * inferred shape.
+   */
   currentHostPlayerNumber: PlayerNumber;
 }
 
+/**
+ * Defines the structured probable waffle websocket room event contract for this module. Its declared surface
+ * makes game instance id, type explicit to every consumer. Use this shared shape rather than an ad-hoc object
+ * so adapters, persistence, and callers remain compatible.
+ */
 export interface ProbableWaffleWebsocketRoomEvent {
+  /**
+   * stable game instance id used by {@link ProbableWaffleWebsocketRoomEvent} to correlate this value with
+   * related records, events, or authored content; it is not a display label.
+   */
   gameInstanceId: GameInstanceId;
+  /**
+   * discriminator for {@link ProbableWaffleWebsocketRoomEvent}. It selects the valid branch and behavior, so
+   * producers and consumers must keep it synchronized with the accompanying fields.
+   */
   type: "join" | "leave";
 }
 
+/**
+ * Defines the closed probable waffle gateway event classification. Use an explicit member rather than a
+ * free-form string so branching, persistence, and diagnostics share the same vocabulary.
+ */
 export enum ProbableWaffleGatewayEvent {
+  /**
+   * Selects the `ProbableWaffleRoom` case of {@link ProbableWaffleGatewayEvent}. Use this explicit member when
+   * the surrounding flow requires this distinct policy or state; never substitute a free-form string.
+   */
   ProbableWaffleRoom = "probable-waffle-room",
+  /**
+   * Selects the `ProbableWaffleAction` case of {@link ProbableWaffleGatewayEvent}. Use this explicit member when
+   * the surrounding flow requires this distinct policy or state; never substitute a free-form string.
+   */
   ProbableWaffleAction = "probable-waffle-action",
+  /**
+   * Selects the `ProbableWaffleMessage` case of {@link ProbableWaffleGatewayEvent}. Use this explicit member
+   * when the surrounding flow requires this distinct policy or state; never substitute a free-form string.
+   */
   ProbableWaffleMessage = "probable-waffle-message",
+  /**
+   * Selects the `ProbableWaffleWebsocketRoom` case of {@link ProbableWaffleGatewayEvent}. Use this explicit
+   * member when the surrounding flow requires this distinct policy or state; never substitute a free-form
+   * string.
+   */
   ProbableWaffleWebsocketRoom = "probable-waffle-websocket-room"
 }
 
+/**
+ * Defines the closed all scenes event data value set. Keeping this union named preserves exhaustive handling
+ * and prevents incompatible free-form values at its boundaries.
+ */
 export type AllScenesEventData =
   | { name: "save-game"; data?: { kind: "manual" | "autosave" | "quicksave"; checkpointId?: string } }
   | { name: "external-modal-pause-changed"; data: { paused: boolean } }
@@ -350,32 +637,138 @@ export type AllScenesEventData =
       data?: undefined;
     };
 
+/**
+ * Defines the structured probable waffle communicator payload by type contract for this module. Its declared
+ * surface makes [probable waffle communicators.game instance metadata data change], [probable waffle
+ * communicators.game mode data change], [probable waffle communicators.player data change], [probable waffle
+ * communicators.spectator data change], [probable waffle communicators.game state data change] explicit to
+ * every consumer. Use this shared shape rather than an ad-hoc object so adapters, persistence, and callers
+ * remain compatible.
+ */
 export interface ProbableWaffleCommunicatorPayloadByType {
+  /**
+   * [probable waffle communicators.game instance metadata data change] value carried by {@link
+   * ProbableWaffleCommunicatorPayloadByType}. Its declared type is the compatibility boundary for producers,
+   * validators, and consumers; do not replace it with a broader inferred shape.
+   */
   [ProbableWaffleCommunicators.GameInstanceMetadataDataChange]: ProbableWaffleGameInstanceMetadataChangeEvent;
+  /**
+   * [probable waffle communicators.game mode data change] value carried by {@link
+   * ProbableWaffleCommunicatorPayloadByType}. Its declared type is the compatibility boundary for producers,
+   * validators, and consumers; do not replace it with a broader inferred shape.
+   */
   [ProbableWaffleCommunicators.GameModeDataChange]: ProbableWaffleGameModeDataChangeEvent;
+  /**
+   * [probable waffle communicators.player data change] value carried by {@link
+   * ProbableWaffleCommunicatorPayloadByType}. Its declared type is the compatibility boundary for producers,
+   * validators, and consumers; do not replace it with a broader inferred shape.
+   */
   [ProbableWaffleCommunicators.PlayerDataChange]: ProbableWafflePlayerDataChangeEvent;
+  /**
+   * [probable waffle communicators.spectator data change] value carried by {@link
+   * ProbableWaffleCommunicatorPayloadByType}. Its declared type is the compatibility boundary for producers,
+   * validators, and consumers; do not replace it with a broader inferred shape.
+   */
   [ProbableWaffleCommunicators.SpectatorDataChange]: ProbableWaffleSpectatorDataChangeEvent;
+  /**
+   * [probable waffle communicators.game state data change] value carried by {@link
+   * ProbableWaffleCommunicatorPayloadByType}. Its declared type is the compatibility boundary for producers,
+   * validators, and consumers; do not replace it with a broader inferred shape.
+   */
   [ProbableWaffleCommunicators.GameStateDataChange]: ProbableWaffleGameStateDataChangeEvent;
+  /**
+   * [probable waffle communicators.message] value carried by {@link ProbableWaffleCommunicatorPayloadByType}.
+   * Its declared type is the compatibility boundary for producers, validators, and consumers; do not replace it
+   * with a broader inferred shape.
+   */
   [ProbableWaffleCommunicators.Message]: ProbableWaffleCommunicatorMessageEvent;
+  /**
+   * [probable waffle communicators.game command] value carried by {@link
+   * ProbableWaffleCommunicatorPayloadByType}. Its declared type is the compatibility boundary for producers,
+   * validators, and consumers; do not replace it with a broader inferred shape.
+   */
   [ProbableWaffleCommunicators.GameCommand]: ProbableWaffleGameCommandEvent;
+  /**
+   * [probable waffle communicators.state hash] value carried by {@link ProbableWaffleCommunicatorPayloadByType}.
+   * Its declared type is the compatibility boundary for producers, validators, and consumers; do not replace it
+   * with a broader inferred shape.
+   */
   [ProbableWaffleCommunicators.StateHash]: ProbableWaffleStateHashEvent;
+  /**
+   * [probable waffle communicators.snapshot request] value carried by {@link
+   * ProbableWaffleCommunicatorPayloadByType}. Its declared type is the compatibility boundary for producers,
+   * validators, and consumers; do not replace it with a broader inferred shape.
+   */
   [ProbableWaffleCommunicators.SnapshotRequest]: ProbableWaffleSnapshotRequestEvent;
+  /**
+   * [probable waffle communicators.snapshot response] value carried by {@link
+   * ProbableWaffleCommunicatorPayloadByType}. Its declared type is the compatibility boundary for producers,
+   * validators, and consumers; do not replace it with a broader inferred shape.
+   */
   [ProbableWaffleCommunicators.SnapshotResponse]: ProbableWaffleSnapshotResponseEvent;
+  /**
+   * [probable waffle communicators.instance reseed required] value carried by {@link
+   * ProbableWaffleCommunicatorPayloadByType}. Its declared type is the compatibility boundary for producers,
+   * validators, and consumers; do not replace it with a broader inferred shape.
+   */
   [ProbableWaffleCommunicators.InstanceReseedRequired]: ProbableWaffleInstanceReseedRequiredEvent;
+  /**
+   * [probable waffle communicators.instance reseed] value carried by {@link
+   * ProbableWaffleCommunicatorPayloadByType}. Its declared type is the compatibility boundary for producers,
+   * validators, and consumers; do not replace it with a broader inferred shape.
+   */
   [ProbableWaffleCommunicators.InstanceReseed]: ProbableWaffleInstanceReseedEvent;
+  /**
+   * [probable waffle communicators.desync alert] value carried by {@link
+   * ProbableWaffleCommunicatorPayloadByType}. Its declared type is the compatibility boundary for producers,
+   * validators, and consumers; do not replace it with a broader inferred shape.
+   */
   [ProbableWaffleCommunicators.DesyncAlert]: ProbableWaffleDesyncAlertEvent;
+  /**
+   * [probable waffle communicators.pause changed] value carried by {@link
+   * ProbableWaffleCommunicatorPayloadByType}. Its declared type is the compatibility boundary for producers,
+   * validators, and consumers; do not replace it with a broader inferred shape.
+   */
   [ProbableWaffleCommunicators.PauseChanged]: ProbableWafflePauseChangedEvent;
+  /**
+   * [probable waffle communicators.player disconnected] value carried by {@link
+   * ProbableWaffleCommunicatorPayloadByType}. Its declared type is the compatibility boundary for producers,
+   * validators, and consumers; do not replace it with a broader inferred shape.
+   */
   [ProbableWaffleCommunicators.PlayerDisconnected]: ProbableWafflePlayerDisconnectedEvent;
+  /**
+   * [probable waffle communicators.player reconnected] value carried by {@link
+   * ProbableWaffleCommunicatorPayloadByType}. Its declared type is the compatibility boundary for producers,
+   * validators, and consumers; do not replace it with a broader inferred shape.
+   */
   [ProbableWaffleCommunicators.PlayerReconnected]: ProbableWafflePlayerReconnectedEvent;
+  /**
+   * [probable waffle communicators.host migrated] value carried by {@link
+   * ProbableWaffleCommunicatorPayloadByType}. Its declared type is the compatibility boundary for producers,
+   * validators, and consumers; do not replace it with a broader inferred shape.
+   */
   [ProbableWaffleCommunicators.HostMigrated]: ProbableWaffleHostMigratedEvent;
+  /**
+   * [probable waffle communicators.selection] value carried by {@link ProbableWaffleCommunicatorPayloadByType}.
+   * Its declared type is the compatibility boundary for producers, validators, and consumers; do not replace it
+   * with a broader inferred shape.
+   */
   [ProbableWaffleCommunicators.Selection]: unknown;
 }
 
+/**
+ * Defines the probable waffle communicator event by type alias used by this module. Keep values in this named
+ * domain so linked APIs and storage boundaries do not drift into an unconstrained primitive.
+ */
 export type ProbableWaffleCommunicatorEventByType<T extends ProbableWaffleCommunicatorType> = CommunicatorEvent<
   ProbableWaffleCommunicatorPayloadByType[T],
   T
 >;
 
+/**
+ * Defines the probable waffle communicator event union alias used by this module. Keep values in this named
+ * domain so linked APIs and storage boundaries do not drift into an unconstrained primitive.
+ */
 export type ProbableWaffleCommunicatorEventUnion = {
   [T in ProbableWaffleCommunicatorType]: ProbableWaffleCommunicatorEventByType<T>;
 }[ProbableWaffleCommunicatorType];

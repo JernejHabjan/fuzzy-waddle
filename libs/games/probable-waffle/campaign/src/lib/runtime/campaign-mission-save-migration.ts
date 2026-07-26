@@ -1,7 +1,7 @@
 import type { CampaignMissionRuntimeState } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { MissionRevisionMigration } from "../contracts/mission-revision-migration";
 
-/** Applies only author-declared identifier renames; missing revision links intentionally reject the save. */
+/** Documents the migrate campaign mission revision member and its declared contract at this boundary. */
 export function migrateCampaignMissionRevision(
   source: CampaignMissionRuntimeState,
   targetRevision: number,

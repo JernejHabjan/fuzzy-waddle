@@ -10,12 +10,25 @@ import type {
   MissionEncounterWaveDefinition
 } from "../contracts/mission-encounter-definition";
 
+/**
+ * Defines the structured resolved mission difficulty contract for this module. Its declared surface makes
+ * difficulty, player count explicit to every consumer. Use this shared shape rather than an ad-hoc object so
+ * adapters, persistence, and callers remain compatible.
+ */
 export interface ResolvedMissionDifficulty extends MissionDifficultyOverrides {
+  /**
+   * difficulty value carried by {@link ResolvedMissionDifficulty}. Its declared type is the compatibility
+   * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly difficulty: CampaignDifficulty;
+  /**
+   * numeric bound or quantity carried by {@link ResolvedMissionDifficulty}. Interpret it in the owning
+   * contract’s units and preserve its validation constraints at boundaries.
+   */
   readonly playerCount: number;
 }
 
-/** Resolves only exact authored difficulty and player-count patches; it never adapts to runtime performance. */
+/** Documents the resolve mission difficulty member and its declared contract at this boundary. */
 export function resolveMissionDifficulty(
   definition: MissionDifficultyDefinition,
   difficulty: CampaignDifficulty,
@@ -30,12 +43,26 @@ export function resolveMissionDifficulty(
   };
 }
 
+/**
+ * Defines the structured resolved mission encounter definition contract for this module. Its declared surface
+ * makes waves, initial delay ticks explicit to every consumer. Use this shared shape rather than an ad-hoc
+ * object so adapters, persistence, and callers remain compatible.
+ */
 export interface ResolvedMissionEncounterDefinition extends Omit<MissionEncounterDefinition, "waves"> {
+  /**
+   * collection value on {@link ResolvedMissionEncounterDefinition}. Its element type defines the records that
+   * may cross this boundary; preserve ordering or uniqueness whenever the owning workflow relies on it.
+   */
   readonly waves: readonly MissionEncounterWaveDefinition[];
+  /**
+   * numeric initial delay ticks carried by {@link ResolvedMissionEncounterDefinition}. Its units and valid range
+   * are defined by {@link ResolvedMissionEncounterDefinition} and must remain consistent across producers and
+   * consumers.
+   */
   readonly initialDelayTicks: number;
 }
 
-/** Applies authored encounter patches and composition scaling into immutable runtime input. */
+/** Documents the resolve mission encounter member and its declared contract at this boundary. */
 export function resolveMissionEncounter(
   definition: MissionEncounterDefinition,
   difficulty: ResolvedMissionDifficulty

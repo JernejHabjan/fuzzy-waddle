@@ -1,18 +1,64 @@
 import type { MissionSemanticInputAction } from "../contracts/mission-objective-definition";
 
+/**
+ * Defines the closed campaign input mode value set. Keeping this union named preserves exhaustive handling and
+ * prevents incompatible free-form values at its boundaries.
+ */
 export type CampaignInputMode = "keyboard-mouse" | "touch";
 
+/**
+ * Defines the structured campaign input prompt registration contract for this module. Its declared surface
+ * makes action, keyboard mouse, touch, collapsed explicit to every consumer. Use this shared shape rather than
+ * an ad-hoc object so adapters, persistence, and callers remain compatible.
+ */
 export interface CampaignInputPromptRegistration {
+  /**
+   * action value carried by {@link CampaignInputPromptRegistration}. Its declared type is the compatibility
+   * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly action: MissionSemanticInputAction;
+  /**
+   * string keyboard mouse carried by {@link CampaignInputPromptRegistration}. Treat it according to the owning
+   * contract’s validation and presentation rules rather than assuming it is a stable identifier.
+   */
   readonly keyboardMouse: string;
+  /**
+   * string touch carried by {@link CampaignInputPromptRegistration}. Treat it according to the owning contract’s
+   * validation and presentation rules rather than assuming it is a stable identifier.
+   */
   readonly touch: string;
+  /**
+   * string collapsed carried by {@link CampaignInputPromptRegistration}. Treat it according to the owning
+   * contract’s validation and presentation rules rather than assuming it is a stable identifier.
+   */
   readonly collapsed: string;
 }
 
+/**
+ * Defines the structured campaign input prompt presentation contract for this module. Its declared surface
+ * makes action, mode, text, collapsed explicit to every consumer. Use this shared shape rather than an ad-hoc
+ * object so adapters, persistence, and callers remain compatible.
+ */
 export interface CampaignInputPromptPresentation {
+  /**
+   * action value carried by {@link CampaignInputPromptPresentation}. Its declared type is the compatibility
+   * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly action: MissionSemanticInputAction;
+  /**
+   * discriminator for {@link CampaignInputPromptPresentation}. It selects the valid branch and behavior, so
+   * producers and consumers must keep it synchronized with the accompanying fields.
+   */
   readonly mode: CampaignInputMode;
+  /**
+   * human-facing text for {@link CampaignInputPromptPresentation}. It supports UI, narration, or diagnostics and
+   * must not be used as the stable identity of the record.
+   */
   readonly text: string;
+  /**
+   * collapsed value carried by {@link CampaignInputPromptPresentation}. Its declared type is the compatibility
+   * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly collapsed: boolean;
 }
 

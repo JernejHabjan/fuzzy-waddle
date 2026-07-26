@@ -10,29 +10,95 @@ export const SCENARIO_PREFAB_IDS = {
   spawnSets: "d1000000-0000-4000-8000-000000000006"
 } as const;
 
+/**
+ * Defines the marker manifest kind alias used by this module. Keep values in this named domain so linked APIs
+ * and storage boundaries do not drift into an unconstrained primitive.
+ */
 type MarkerManifestKind = keyof typeof SCENARIO_PREFAB_IDS;
 
+/**
+ * Defines the structured editor scene node contract for this module. Its declared surface makes prefab id,
+ * label, components, list, scenario id explicit to every consumer. Use this shared shape rather than an ad-hoc
+ * object so adapters, persistence, and callers remain compatible.
+ */
 interface EditorSceneNode {
+  /**
+   * Optional stable prefab id used by {@link EditorSceneNode} to correlate this value with related records,
+   * events, or authored content; it is not a display label.
+   */
   readonly prefabId?: unknown;
+  /**
+   * Optional human-facing label for {@link EditorSceneNode}. It supports UI, narration, or diagnostics and must
+   * not be used as the stable identity of the record.
+   */
   readonly label?: unknown;
+  /**
+   * Optional components value carried by {@link EditorSceneNode}. Its declared type is the compatibility
+   * boundary for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly components?: unknown;
+  /**
+   * Optional list value carried by {@link EditorSceneNode}. Its declared type is the compatibility boundary for
+   * producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly list?: unknown;
+  /**
+   * Optional stable scenario id used by {@link EditorSceneNode} to correlate this value with related records,
+   * events, or authored content; it is not a display label.
+   */
   readonly scenarioId?: unknown;
   readonly [key: string]: unknown;
 }
 
+/**
+ * Defines the structured editor scene document contract for this module. Its declared surface makes settings,
+ * display list, prefab properties explicit to every consumer. Use this shared shape rather than an ad-hoc
+ * object so adapters, persistence, and callers remain compatible.
+ */
 interface EditorSceneDocument {
-  readonly settings?: { readonly sceneKey?: unknown };
+  /**
+   * Optional keyed/nested settings structure owned by {@link EditorSceneDocument}. Keep its keys and value
+   * contract explicit so callers cannot smuggle a broader shape across this boundary.
+   */
+  readonly settings?: {
+    /**
+     * Optional stable scene key used by {@link EditorSceneDocument} to correlate this document with the paired
+     * runtime scene; it is not a display label and may be absent in older editor exports.
+     */
+    readonly sceneKey?: unknown;
+  };
+  /**
+   * Optional collection owned by {@link EditorSceneDocument}. Preserve the declared element contract and any
+   * ordering/uniqueness semantics when reading, serializing, or extending it.
+   */
   readonly displayList?: unknown;
+  /**
+   * Optional prefab properties value carried by {@link EditorSceneDocument}. Its declared type is the
+   * compatibility boundary for producers, validators, and consumers; do not replace it with a broader inferred
+   * shape.
+   */
   readonly prefabProperties?: unknown;
 }
 
+/**
+ * Defines the structured scenario editor pair issue contract for this module. Its declared surface makes code,
+ * message explicit to every consumer. Use this shared shape rather than an ad-hoc object so adapters,
+ * persistence, and callers remain compatible.
+ */
 export interface ScenarioEditorPairIssue {
+  /**
+   * code value carried by {@link ScenarioEditorPairIssue}. Its declared type is the compatibility boundary for
+   * producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly code: "missing-prefab-property" | "missing-generated-field" | "root-type-mismatch" | "missing-component";
+  /**
+   * string message carried by {@link ScenarioEditorPairIssue}. Treat it according to the owning contract’s
+   * validation and presentation rules rather than assuming it is a stable identifier.
+   */
   readonly message: string;
 }
 
-/** Extracts only explicit stable IDs; Phaser labels and internal UUIDs are deliberately ignored. */
+/** Documents the extract scenario map manifest member and its declared contract at this boundary. */
 export function extractScenarioMapManifest(
   document: EditorSceneDocument,
   mapId: ProbableWaffleMapEnum
@@ -71,7 +137,7 @@ export function extractScenarioMapManifest(
   };
 }
 
-/** Verifies that generated TypeScript still exposes every property authored in its paired prefab scene. */
+/** Documents the validate scenario prefab pair member and its declared contract at this boundary. */
 export function validateScenarioPrefabPair(
   sceneDocument: EditorSceneDocument,
   generatedSource: string,

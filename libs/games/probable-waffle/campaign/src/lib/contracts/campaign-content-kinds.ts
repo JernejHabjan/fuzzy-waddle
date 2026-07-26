@@ -1,7 +1,15 @@
 import type { MissionActionDefinition } from "./mission-action-definition";
 import type { MissionConditionDefinition } from "./mission-condition-definition";
 
+/**
+ * Defines the campaign action kind alias used by this module. Keep values in this named domain so linked APIs
+ * and storage boundaries do not drift into an unconstrained primitive.
+ */
 export type CampaignActionKind = MissionActionDefinition["kind"];
+/**
+ * Defines the campaign condition kind alias used by this module. Keep values in this named domain so linked
+ * APIs and storage boundaries do not drift into an unconstrained primitive.
+ */
 export type CampaignConditionKind = MissionConditionDefinition["kind"];
 
 export const CAMPAIGN_ACTION_KINDS = [
@@ -100,9 +108,25 @@ export const CAMPAIGN_CONDITION_KINDS = [
   "content-cap"
 ] as const satisfies readonly CampaignConditionKind[];
 
+/**
+ * Defines the closed campaign objective kind value set. Keeping this union named preserves exhaustive handling
+ * and prevents incompatible free-form values at its boundaries.
+ */
 export type CampaignObjectiveKind = "primary" | "secondary" | "optional" | "hidden" | "tutorial" | "failure";
+/**
+ * Defines the closed campaign trigger kind value set. Keeping this union named preserves exhaustive handling
+ * and prevents incompatible free-form values at its boundaries.
+ */
 export type CampaignTriggerKind = "event" | "condition";
+/**
+ * Defines the closed campaign cinematic kind value set. Keeping this union named preserves exhaustive handling
+ * and prevents incompatible free-form values at its boundaries.
+ */
 export type CampaignCinematicKind = "gameplay" | "directed" | "paused";
+/**
+ * Defines the closed campaign ai directive kind value set. Keeping this union named preserves exhaustive
+ * handling and prevents incompatible free-form values at its boundaries.
+ */
 export type CampaignAiDirectiveKind =
   | "enable"
   | "disable"
@@ -112,6 +136,10 @@ export type CampaignAiDirectiveKind =
   | "patrol"
   | "move"
   | "stop";
+/**
+ * Defines the closed campaign reward kind value set. Keeping this union named preserves exhaustive handling
+ * and prevents incompatible free-form values at its boundaries.
+ */
 export type CampaignRewardKind =
   | "currency"
   | "story-unlock"
@@ -124,4 +152,8 @@ export type CampaignRewardKind =
   | "temporary-boost"
   | "temporary-resource"
   | "temporary-unit";
+/**
+ * Defines the campaign trusted hook kind alias used by this module. Keep values in this named domain so linked
+ * APIs and storage boundaries do not drift into an unconstrained primitive.
+ */
 export type CampaignTrustedHookKind = string & { readonly __campaignTrustedHookKind: true };

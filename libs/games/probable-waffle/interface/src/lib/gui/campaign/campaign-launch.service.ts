@@ -3,6 +3,7 @@ import {
   CampaignAvailability,
   type CampaignDifficulty,
   type CampaignMissionDefinition,
+  type PositionPlayerDefinition,
   ProbableWaffleLevels,
   ProbableWaffleGameInstanceType,
   ProbableWaffleGameInstanceVisibility
@@ -25,14 +26,14 @@ import { CampaignLaunchServiceInterface } from "./campaign-launch.service.interf
 import { environment } from "@fuzzy-waddle/environments/environment";
 
 @Injectable({ providedIn: "root" })
-/** Coordinates campaign metadata, players, map selection, and direct game navigation. */
+/** Defines the campaign launch service contract used by this module; its declared members form the compatible boundary for linked consumers. */
 export class CampaignLaunchService implements CampaignLaunchServiceInterface {
   private readonly gameInstanceClientService = inject(GameInstanceClientService);
   private readonly campaignProgressService = inject(CampaignProgressService);
   private readonly campaignProfileService = inject(CampaignProfileService);
   private launchInProgress = false;
 
-  /** Creates a private one-player campaign run and bypasses the skirmish lobby. */
+  /** Documents the start mission member and its declared contract at this boundary. */
   async startMission(mission: CampaignMissionDefinition, difficulty: CampaignDifficulty = "normal"): Promise<void> {
     if (this.launchInProgress) return;
     if (environment.production) {
@@ -107,7 +108,7 @@ export class CampaignLaunchService implements CampaignLaunchServiceInterface {
               ? { ...slot.participant.startingResources }
               : undefined,
             campaignAiEnabled: slot.participant.controller === "full-ai" ? true : undefined
-          } as const;
+          } satisfies Partial<PositionPlayerDefinition>;
           if (slot.participant.controller === "human") {
             await this.gameInstanceClientService.addSelfAsPlayer(overrides);
           } else {

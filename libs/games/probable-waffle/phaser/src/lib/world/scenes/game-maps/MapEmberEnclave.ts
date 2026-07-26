@@ -44,6 +44,12 @@ export default class MapEmberEnclave extends GameProbableWaffleScene {
     /* END-USER-CTR-CODE */
   }
 
+  /**
+   * Materializes the Ember Enclave editor scene: map layers, navigation, authored
+   * scenario markers, actors, and campaign presentation anchors. The generated setup
+   * remains declarative; campaign code addresses these objects only through stable
+   * scenario IDs registered after the scene has finished creating them.
+   */
   editorCreate(): void {
     // tilemap
     const tilemap = this.add.tilemap("tiles_ember_enclave");
@@ -491,6 +497,10 @@ export default class MapEmberEnclave extends GameProbableWaffleScene {
     console.log("tinted for effect");
   }
 
+  /**
+   * Creates the decorative cloud layer after the authored map and gameplay anchors exist.
+   * The effect is local presentation only and is intentionally excluded from deterministic campaign state.
+   */
   private spawnClouds() {
     // Get tilemap dimensions
     const tilemapWidth = this.tilemap.widthInPixels;

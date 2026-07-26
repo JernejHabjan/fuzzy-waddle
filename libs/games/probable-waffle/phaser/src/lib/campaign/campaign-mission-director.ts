@@ -35,11 +35,21 @@ import { IndexedScenarioReferenceRegistry } from "./scenario/scenario-reference-
 import { environment } from "@fuzzy-waddle/environments/environment";
 import { evaluateCampaignSaveEligibility } from "../data/campaign-save-eligibility";
 
+/**
+ * Defines the structured campaign mission outcome handler contract for this module. Its declared surface makes
+ * resolve campaign mission outcome explicit to every consumer. Use this shared shape rather than an ad-hoc
+ * object so adapters, persistence, and callers remain compatible.
+ */
 export interface CampaignMissionOutcomeHandler {
+  /**
+   * operation exposed by {@link CampaignMissionOutcomeHandler}. Its signature is the compatibility boundary for
+   * implementers and callers; keep ordering, return semantics, and error behavior aligned across
+   * implementations.
+   */
   resolveCampaignMissionOutcome(outcome: Extract<CampaignMissionOutcome, "victory" | "defeat">): void;
 }
 
-/** Phaser integration boundary for the pure campaign mission runtime. */
+/** Defines the campaign mission director contract used by this module; its declared members form the compatible boundary for linked consumers. */
 export class CampaignMissionDirector {
   readonly effects$ = new Subject<readonly CampaignMissionRuntimeEffect[]>();
   private activeControlPlayerNumber?: number;
@@ -141,7 +151,7 @@ export class CampaignMissionDirector {
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
   }
 
-  /** Called after initial actors have been indexed so fresh phase entry can safely resolve actor references. */
+  /** Documents the start after actor indexing member and its declared contract at this boundary. */
   startAfterActorIndexing(): void {
     if (this.started) return;
     this.started = true;
@@ -228,6 +238,11 @@ export class CampaignMissionDirector {
     this.eventAdapter.cinematicFinished(cinematicId, skipped, initiatorPlayerNumber);
   }
 
+  /**
+   * Rebuilds the runtime from the authoritative game-state snapshot and launch context.
+   * Restore therefore uses the same constructor path as a fresh mission, while Phaser
+   * remains an adapter for actions, conditions, encounters, and local presentation.
+   */
   private createRuntimeFromGameState(): CampaignMissionRuntime {
     const context = this.scene.baseGameData.gameInstance.gameInstanceMetadata.data.campaignContext;
     if (!context) throw new Error("CampaignMissionDirector requires campaignContext");
@@ -250,6 +265,12 @@ export class CampaignMissionDirector {
     });
   }
 
+  /**
+   * Commits runtime consequences at the Phaser boundary in a fixed order: snapshot,
+   * local projections, checkpoint save requests, external observers, and terminal
+   * handling. This order prevents a UI or autosave from observing effects without the
+   * corresponding authoritative mission state.
+   */
   private publish(effects: readonly CampaignMissionRuntimeEffect[]): void {
     this.syncGameState();
     this.syncControlPerspective();
@@ -328,6 +349,11 @@ export class CampaignMissionDirector {
     return this.scene.baseGameData.gameInstance.gameInstanceMetadata.isReplay();
   }
 
+  /**
+   * Routes read-only map inspection locally and mutations through the runtime's integrity
+   * gate. A command that can alter mission state must invalidate reward eligibility,
+   * whereas camera focus/highlight may remain safe developer conveniences.
+   */
   private executeDeveloperCommand(command: CampaignDeveloperCommand): CampaignDeveloperCommandResult {
     const references = getSceneService(this.scene, IndexedScenarioReferenceRegistry);
     if (command.kind === "focus-actor") {

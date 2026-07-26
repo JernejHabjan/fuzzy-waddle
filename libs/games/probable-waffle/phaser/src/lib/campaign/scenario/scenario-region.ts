@@ -1,17 +1,50 @@
 import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import type { ScenarioRegionId } from "@fuzzy-waddle/probable-waffle-campaign";
 
+/**
+ * Defines the structured scenario region definition contract for this module. Its declared surface makes id,
+ * shape, points, elevation policy, elevation explicit to every consumer. Use this shared shape rather than an
+ * ad-hoc object so adapters, persistence, and callers remain compatible.
+ */
 export interface ScenarioRegionDefinition {
+  /**
+   * stable id used by {@link ScenarioRegionDefinition} to correlate this value with related records, events, or
+   * authored content; it is not a display label.
+   */
   readonly id: ScenarioRegionId;
+  /**
+   * shape value carried by {@link ScenarioRegionDefinition}. Its declared type is the compatibility boundary for
+   * producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly shape: "rectangle" | "polygon";
+  /**
+   * collection value on {@link ScenarioRegionDefinition}. Its element type defines the records that may cross
+   * this boundary; preserve ordering or uniqueness whenever the owning workflow relies on it.
+   */
   readonly points: readonly Vector2Simple[];
+  /**
+   * discriminator for {@link ScenarioRegionDefinition}. It selects the valid branch and behavior, so producers
+   * and consumers must keep it synchronized with the accompanying fields.
+   */
   readonly elevationPolicy: "any" | "same-level" | "range";
+  /**
+   * Optional numeric elevation carried by {@link ScenarioRegionDefinition}. Its units and valid range are
+   * defined by {@link ScenarioRegionDefinition} and must remain consistent across producers and consumers.
+   */
   readonly elevation?: number;
+  /**
+   * Optional numeric minimum elevation carried by {@link ScenarioRegionDefinition}. Its units and valid range
+   * are defined by {@link ScenarioRegionDefinition} and must remain consistent across producers and consumers.
+   */
   readonly minimumElevation?: number;
+  /**
+   * Optional numeric maximum elevation carried by {@link ScenarioRegionDefinition}. Its units and valid range
+   * are defined by {@link ScenarioRegionDefinition} and must remain consistent across producers and consumers.
+   */
   readonly maximumElevation?: number;
 }
 
-/** Deterministic logical-space region; display/camera bounds never participate in membership. */
+/** Defines the scenario region runtime contract used by this module; its declared members form the compatible boundary for linked consumers. */
 export class ScenarioRegionRuntime {
   constructor(readonly definition: ScenarioRegionDefinition) {
     if (definition.points.length < 3) {
@@ -64,13 +97,30 @@ export class ScenarioRegionRuntime {
   }
 }
 
+/**
+ * Defines the structured scenario region membership change contract for this module. Its declared surface
+ * makes subject id, region id, kind explicit to every consumer. Use this shared shape rather than an ad-hoc
+ * object so adapters, persistence, and callers remain compatible.
+ */
 export interface ScenarioRegionMembershipChange {
+  /**
+   * stable subject id used by {@link ScenarioRegionMembershipChange} to correlate this value with related
+   * records, events, or authored content; it is not a display label.
+   */
   readonly subjectId: string;
+  /**
+   * stable region id used by {@link ScenarioRegionMembershipChange} to correlate this value with related
+   * records, events, or authored content; it is not a display label.
+   */
   readonly regionId: ScenarioRegionId;
+  /**
+   * discriminator for {@link ScenarioRegionMembershipChange}. It selects the valid branch and behavior, so
+   * producers and consumers must keep it synchronized with the accompanying fields.
+   */
   readonly kind: "entered" | "left";
 }
 
-/** Tracks edge transitions from deterministic positions and emits changes in stable region-ID order. */
+/** Defines the scenario region membership tracker contract used by this module; its declared members form the compatible boundary for linked consumers. */
 export class ScenarioRegionMembershipTracker {
   private readonly membershipBySubject = new Map<string, Set<ScenarioRegionId>>();
 

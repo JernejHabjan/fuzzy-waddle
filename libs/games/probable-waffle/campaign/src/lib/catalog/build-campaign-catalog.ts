@@ -9,7 +9,7 @@ import {
 import type { CampaignDefinition } from "../contracts/campaign-definition";
 import type { CampaignMissionContent } from "../contracts/campaign-mission-content";
 
-/** Projects the declarative content authority into the legacy Angular catalogue contract. */
+/** Documents the build campaign catalog member and its declared contract at this boundary. */
 export function buildCampaignCatalog(
   campaign: CampaignDefinition,
   missionContent: readonly CampaignMissionContent[]

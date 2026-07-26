@@ -1,11 +1,24 @@
 import type { CampaignMissionActionCancelReason } from "@fuzzy-waddle/probable-waffle-campaign";
 
+/**
+ * Defines the structured owned resource registration contract for this module. Its declared surface makes
+ * owner token, cleanup explicit to every consumer. Use this shared shape rather than an ad-hoc object so
+ * adapters, persistence, and callers remain compatible.
+ */
 interface OwnedResourceRegistration {
+  /**
+   * string owner token carried by {@link OwnedResourceRegistration}. Treat it according to the owning contract’s
+   * validation and presentation rules rather than assuming it is a stable identifier.
+   */
   readonly ownerToken: string;
+  /**
+   * cleanup value carried by {@link OwnedResourceRegistration}. Its declared type is the compatibility boundary
+   * for producers, validators, and consumers; do not replace it with a broader inferred shape.
+   */
   readonly cleanup: (reason: CampaignMissionActionCancelReason) => void;
 }
 
-/** Owns non-stateful Phaser cleanup callbacks while runtime state persists the matching resource descriptors. */
+/** Defines the campaign owned resource registry contract used by this module; its declared members form the compatible boundary for linked consumers. */
 export class CampaignOwnedResourceRegistry {
   private readonly resources = new Map<string, OwnedResourceRegistration>();
 

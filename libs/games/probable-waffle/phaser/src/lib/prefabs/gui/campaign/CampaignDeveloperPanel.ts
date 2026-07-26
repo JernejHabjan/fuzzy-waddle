@@ -3,7 +3,7 @@ import { Subscription } from "rxjs";
 import type { CampaignDeveloperCommand, CampaignDeveloperCommandResult } from "@fuzzy-waddle/probable-waffle-campaign";
 import type { CampaignMissionDirector } from "../../../campaign/campaign-mission-director";
 
-/** Development-only scene-backed inspection surface; F9 toggles it without changing run integrity. */
+/** Defines the campaign developer panel contract used by this module; its declared members form the compatible boundary for linked consumers. */
 export default class CampaignDeveloperPanel extends Phaser.GameObjects.Container {
   private readonly background: Phaser.GameObjects.Rectangle;
   private readonly bodyText: Phaser.GameObjects.Text;

@@ -12,6 +12,10 @@ import { onObjectReady } from "../../../data/game-object-helper";
 import { OwnerComponent } from "../owner-component";
 import type { ResourceDrainDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/resource/resource-drain-definition";
 import { waitForSimulationDuration } from "../../../world/services/simulation-time";
+/**
+ * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
+ * storage boundaries do not drift into an unconstrained primitive.
+ */
 type GameObject = Phaser.GameObjects.GameObject;
 
 // this is to be applied to townHall/mine/lodge where resources can be returned to

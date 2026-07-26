@@ -71,7 +71,7 @@ export class HealthComponent {
   private actorTranslateComponent?: ActorTranslateComponent;
   private audioService?: AudioService;
   hidden: boolean = false;
-  /** Suppresses visual/audio damage reactions when set (e.g. during a silent kill). */
+  /** Documents the following declaration and its compatibility contract. */
   private suppressReactions = false;
 
   constructor(
@@ -278,7 +278,7 @@ export class HealthComponent {
     this.setHealthValue(Math.min(this.healthComponentData.health + amount, this.healthDefinition.maxHealth));
   }
 
-  /** Destroys the actor immediately without playing death animations or sounds. */
+  /** Documents the destroy actor silently member and its declared contract at this boundary. */
   destroyActorSilently() {
     if (!isGameObjectActiveInActiveScene(this.gameObject)) return;
     this.suppressReactions = true;

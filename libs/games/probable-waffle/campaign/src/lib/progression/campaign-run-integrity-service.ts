@@ -4,7 +4,7 @@ export function createEligibleMissionRunIntegrity(): MissionRunIntegrityState {
   return { eligibleForRewards: true, invalidationReasons: [] };
 }
 
-/** Monotonic reward-integrity authority used by developer and cheat mutation entry points. */
+/** Defines the campaign run integrity service contract used by this module; its declared members form the compatible boundary for linked consumers. */
 export class CampaignRunIntegrityService {
   constructor(private readonly state: CampaignMissionRuntimeState) {}
 

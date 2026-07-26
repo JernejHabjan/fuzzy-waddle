@@ -5,7 +5,7 @@ import type { MissionDialogueBundle } from "../contracts/mission-dialogue-bundle
 import type { MissionRewardBundle } from "../contracts/mission-reward-bundle";
 import { CampaignContentRegistry } from "./campaign-content-registry";
 
-/** Immutable first-party content registry shared by Angular and Phaser. */
+/** Defines the static campaign content registry contract used by this module; its declared members form the compatible boundary for linked consumers. */
 export class StaticCampaignContentRegistry extends CampaignContentRegistry {
   private readonly campaigns: ReadonlyMap<CampaignId, CampaignDefinition>;
   private readonly missions: ReadonlyMap<CampaignMissionId, CampaignMissionContent>;

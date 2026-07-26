@@ -44,6 +44,10 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     /* END-USER-CTR-CODE */
   }
 
+  /**
+   * Builds the editor-authored HUD composition and registers campaign HUD prefabs alongside existing skirmish surfaces.
+   * It keeps the paired scene asset as the source of layout structure and delegates runtime state to projection stores.
+   */
   editorCreate(): void {
     // actor_actions_container
     const actor_actions_container = new ActorActions(this, 1280, 720);
@@ -304,6 +308,10 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.updatePositionOfUiElements();
   }
 
+  /**
+   * Repositions HUD elements after viewport/camera changes while preserving safe playfield space and campaign overlays.
+   * It updates layout only; objective and cinematic data continue to come from their local projection services.
+   */
   private updatePositionOfUiElements() {
     const sceneWidth = this.scale.width;
 

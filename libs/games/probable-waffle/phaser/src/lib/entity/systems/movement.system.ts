@@ -42,6 +42,10 @@ import { CommandBusService } from "../../world/services/multiplayer/command-bus.
 import { getInterpolatedSimulationNow } from "../../world/services/simulation-time";
 import { MovementOccupancyService } from "../../world/services/movement-occupancy.service";
 import { applyCampaignProgressionModifiers } from "../../campaign/campaign-progression-modifier";
+/**
+ * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
+ * storage boundaries do not drift into an unconstrained primitive.
+ */
 type GameObject = Phaser.GameObjects.GameObject;
 
 // When another actor is already stepping through the blocked tile, wait briefly
@@ -62,9 +66,27 @@ const BLOCKED_STEP_FALLBACK_RADIUS = 6;
 // move groups do not flood-fill an entire platform while assigning destinations.
 const FORMATION_MAX_CONNECTED_CELLS = 96;
 
+/**
+ * Defines the structured blocked step recovery state contract for this module. Its declared surface makes wait
+ * attempts by tile, side step attempts, repath attempts explicit to every consumer. Use this shared shape
+ * rather than an ad-hoc object so adapters, persistence, and callers remain compatible.
+ */
 interface BlockedStepRecoveryState {
+  /**
+   * wait attempts by tile value carried by {@link BlockedStepRecoveryState}. Its declared type is the
+   * compatibility boundary for producers, validators, and consumers; do not replace it with a broader inferred
+   * shape.
+   */
   waitAttemptsByTile: Map<string, number>;
+  /**
+   * numeric side step attempts carried by {@link BlockedStepRecoveryState}. Its units and valid range are
+   * defined by {@link BlockedStepRecoveryState} and must remain consistent across producers and consumers.
+   */
   sideStepAttempts: number;
+  /**
+   * numeric repath attempts carried by {@link BlockedStepRecoveryState}. Its units and valid range are defined
+   * by {@link BlockedStepRecoveryState} and must remain consistent across producers and consumers.
+   */
   repathAttempts: number;
 }
 
@@ -725,6 +747,10 @@ export class MovementSystem {
     return this.startMovementTween(newLogicalTransform, pathMoveConfig, onComplete, onStop, tileDistanceMultiplier);
   }
 
+  /**
+   * Starts the scene tween for an already-authoritative movement decision.
+   * It converts deterministic path/tick state into visuals, owns cancellation and completion callbacks, and must not let rendering duration change simulation position.
+   */
   private startMovementTween(
     newLogicalTransform: Vector3Simple,
     config: PathMoveConfig | Partial<PathMoveConfig> | undefined,

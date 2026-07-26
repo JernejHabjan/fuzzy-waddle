@@ -26,7 +26,7 @@ export class SaveGame {
     scene.onShutdown.subscribe(() => this.destroy());
   }
 
-  /** Ctrl+S creates/replaces the current mission or skirmish quicksave without opening a dialog. */
+  /** Documents the event member and its declared contract at this boundary. */
   private readonly handleQuickSaveShortcut = (event: KeyboardEvent): void => {
     if (!event.ctrlKey || event.code !== "KeyS" || event.repeat) return;
     // Prevent the browser's Save Page action while the Phaser game owns the keyboard shortcut.
@@ -91,7 +91,7 @@ export class SaveGame {
     }
   }
 
-  /** Autosaves only run after gameplay is active and the deterministic simulation is advancing. */
+  /** Documents the can autosave member and its declared contract at this boundary. */
   private canAutosave(): boolean {
     const tickService = getSceneService(this.scene, SimulationTickService);
     return (

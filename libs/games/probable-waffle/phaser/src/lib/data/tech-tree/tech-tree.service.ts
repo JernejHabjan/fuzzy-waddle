@@ -94,7 +94,7 @@ export class TechTreeService {
     throw new Error(`Unknown faction type: ${factionType}`);
   }
 
-  /** Infers the main base and builder needed by the existing full-economy AI from the tech graph. */
+  /** Documents the get full ai foundation member and its declared contract at this boundary. */
   getFullAiFoundation(factionType: FactionType): readonly ObjectNames[] {
     const mainBuilding = this.getMainBuildingForFaction(factionType);
     const builder = this.graph.nodes[mainBuilding]?.produces.find(
