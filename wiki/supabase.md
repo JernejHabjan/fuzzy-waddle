@@ -20,15 +20,15 @@ See Supabase's current [Google OAuth guide](https://supabase.com/docs/guides/aut
 
 In your Supabase project under **Authentication → URL Configuration**:
 
-| Setting       | Value                                                                                     |
-| ------------- | ----------------------------------------------------------------------------------------- |
-| Site URL      | `https://fuzzy-waddle.onrender.com`                                                       |
-| Redirect URLs | `http://localhost:4200/`                                                                  |
-|               | `https://fuzzy-waddle.onrender.com/`                                                      |
-|               | `https://jernejhabjan.github.io/fuzzy-waddle/`                                            |
+| Setting       | Value                                                                                                          |
+|---------------|----------------------------------------------------------------------------------------------------------------|
+| Site URL      | `https://fuzzy-waddle.onrender.com`                                                                            |
+| Redirect URLs | `http://localhost:4200/`                                                                                       |
+|               | `https://fuzzy-waddle.onrender.com/`                                                                           |
+|               | `https://jernejhabjan.github.io/fuzzy-waddle/`                                                                 |
 |               | `http://localhost:4201/assets/auth-callback.html?desktop_auth_nonce=*` ← Tauri dev OAuth callback              |
 |               | `https://fuzzy-waddle.onrender.com/assets/auth-callback.html?desktop_auth_nonce=*` ← Tauri prod OAuth callback |
-|               | `com.fuzzywaddle.probablewaffle://auth/callback` ← Tauri deep-link (kept as fallback)     |
+|               | `com.fuzzywaddle.probablewaffle://auth/callback` ← Tauri deep-link (kept as fallback)                          |
 
 ## Local Supabase Development
 
@@ -84,7 +84,7 @@ supabase stop
 Default local endpoints in this repo:
 
 | Service  | URL / connection string                                   |
-| -------- | --------------------------------------------------------- |
+|----------|-----------------------------------------------------------|
 | API      | `http://127.0.0.1:54321`                                  |
 | Database | `postgresql://postgres:postgres@127.0.0.1:54322/postgres` |
 | Studio   | `http://127.0.0.1:54323`                                  |
@@ -105,7 +105,7 @@ The local auth redirect allow-list in `supabase/config.toml` includes:
 Env ownership in this repo:
 
 | File                                                           | Used by                  | Values                                                                                    |
-| -------------------------------------------------------------- | ------------------------ | ----------------------------------------------------------------------------------------- |
+|----------------------------------------------------------------|--------------------------|-------------------------------------------------------------------------------------------|
 | `.env`                                                         | Supabase CLI local stack | `SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID`, `SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET`         |
 | `apps/api/.env.local`                                          | Nest API                 | `CORS_ORIGIN`, `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`                                     |
 | `libs/platform/game-host/src/lib/environments/environment*.ts` | Angular applications     | public API URL, client URL, Supabase URL, Supabase anon/publishable key, Socket.IO config |

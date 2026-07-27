@@ -5,7 +5,7 @@ Both the portal and API are deployed on [Render](https://render.com).
 ## Portal
 
 | Setting           | Value                                                                   |
-| ----------------- | ----------------------------------------------------------------------- |
+|-------------------|-------------------------------------------------------------------------|
 | URL               | [https://fuzzy-waddle.onrender.com](https://fuzzy-waddle.onrender.com/) |
 | Build Command     | `pnpm install --frozen-lockfile; pnpm nx-build-portal`                  |
 | Publish Directory | `./dist/apps/portal`                                                    |
@@ -13,7 +13,7 @@ Both the portal and API are deployed on [Render](https://render.com).
 **Rewrite rule** — required for Angular client-side routing:
 
 | Field       | Value         |
-| ----------- | ------------- |
+|-------------|---------------|
 | Destination | `/index.html` |
 | Action      | `rewrite`     |
 
@@ -21,20 +21,19 @@ Reference: [Render SPA routing](https://render.com/docs/deploy-create-react-app#
 
 ## API
 
-| Setting                     | Value                                                                                                                             |
-| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| URL                         | [https://fuzzy-waddle-api.onrender.com](https://fuzzy-waddle-api.onrender.com/)                                                   |
-| Build Command               | `pnpm install --frozen-lockfile; pnpm nx build api`                                                                               |
-| Start Command               | `node dist/apps/api/main.js`                                                                                                      |
-| Health Check                | `/api/health`                                                                                                                     |
-| Env: `SUPABASE_URL`         | Supabase project URL                                                                                                              |
-| Env: `SUPABASE_SERVICE_KEY` | Supabase service-role key                                                                                                         |
+| Setting                     | Value                                                                                                                                                   |
+|-----------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
+| URL                         | [https://fuzzy-waddle-api.onrender.com](https://fuzzy-waddle-api.onrender.com/)                                                                         |
+| Build Command               | `pnpm install --frozen-lockfile; pnpm nx build api`                                                                                                     |
+| Start Command               | `node dist/apps/api/main.js`                                                                                                                            |
+| Health Check                | `/api/health`                                                                                                                                           |
+| Env: `SUPABASE_URL`         | Supabase project URL                                                                                                                                    |
+| Env: `SUPABASE_SERVICE_KEY` | Supabase service-role key                                                                                                                               |
 | Env: `CORS_ORIGIN`          | `https://fuzzy-waddle.onrender.com,https://jernejhabjan.github.io,http://localhost:4200,http://localhost:4201,http://tauri.localhost,tauri://localhost` |
 
 ## GitHub Pages (portal mirror)
 
-A second client deployment runs on GitHub Pages at [https://jernejhabjan.github.io/fuzzy-waddle/](https://jernejhabjan.github.io/fuzzy-waddle/).
-This is handled automatically after merges to `main`.
+A second client deployment runs on GitHub Pages at [https://jernejhabjan.github.io/fuzzy-waddle/](https://jernejhabjan.github.io/fuzzy-waddle/). This is handled automatically after merges to `main`.
 
 Automated release behavior after merging to `main` is documented in [releases.md](releases.md).
 
