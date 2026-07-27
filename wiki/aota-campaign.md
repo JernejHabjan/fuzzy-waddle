@@ -314,3 +314,26 @@ framework:
    profile transaction.
 8. Keep scaffolds, planned references, placeholders, and deferred features visibly
    separate from executable/launchable campaign content.
+
+---
+
+## 14. Existing RTS systems that campaign content must extend
+
+The campaign framework coordinates the existing RTS rather than rebuilding combat,
+economy, pathfinding, AI, persistence, or multiplayer under campaign-specific names.
+Mission authors and maintainers should start from the appropriate existing authority:
+
+| Existing capability | Campaign use |
+| --- | --- |
+| Two factions, tech trees, workers, resources, construction, production, research, population | Participant setup, mission allowances, tutorial pacing, scripted grants, and difficulty rules constrain or extend normal faction/tech authorities. |
+| Melee/ranged/spell/AoE combat, healing, towers, ships, flying actors, status effects | Encounters and world actions direct normal actors and combat systems; mission code must not duplicate damage or movement simulation. |
+| Ground/water/air terrain, navigation, collision, walls/stairs, boats, height-aware movement | Scenario points, regions, routes, escorts, transports, hazards, and scripted movement are authored against real map/navigation rules. |
+| Isometric maps, water, environment actors, fog of war, minimap, day/night lighting | Scenario markers and cinematic presentation bind mission flow to existing maps and local visual systems. |
+| HUD selection, action buttons, queues, resources, minimap, pause/end-game/reconnect dialogs | Objective/tutorial/cinematic projections add campaign surfaces without becoming a second gameplay UI authority. |
+| Computer-player economy, tech, logistics, base planning, force maintenance, map analysis | Campaign participants may use full AI, tactical/scripted encounter control, or a mixture of both. |
+| Game saves, cloud synchronization, score/history, replay recording/playback | Campaign save metadata and runtime state extend these paths with mission revision, checkpoint, profile, replay, and integrity context. |
+| Lockstep multiplayer, lobby, matchmaking, spectators, chat, reconnect/pause | The first delivery is single-player playable, but participant and restore contracts remain compatible with future campaign co-op. |
+
+This integration rule is deliberately conservative: a campaign-specific adapter may
+translate deterministic effects into an existing RTS service, but it must not bypass
+that service's ownership, validation, cleanup, or multiplayer semantics.

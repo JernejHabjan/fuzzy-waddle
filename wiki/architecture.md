@@ -111,3 +111,43 @@ Socket.IO carries multiplayer state. The Angular interface owns the browser
 socket adapter, each game protocol owns its event names and payloads, and the
 matching server project owns the NestJS gateway. Probable Waffle's detailed
 design is documented in [AOTA Multiplayer Architecture](aota-multiplayer-architecture.md).
+
+## Architecture evolution priorities
+
+Fuzzy Waddle is intentionally a modular monolith. The current Angular, NestJS, Nx,
+TypeScript, Tauri, shared-contract, and domain-library approach does not need a
+rewrite. As Probable Waffle grows, the material risks are dependency governance,
+reproducible tooling, and CI coverage rather than the baseline technology choice.
+
+### Dependency boundaries
+
+Use Nx project tags and enforceable dependency constraints before extracting many
+small libraries. At minimum, distinguish client, API, and shared scope; use feature,
+data-access, UI, and utility types where that makes a prohibited dependency obvious.
+Keep durable layers separate:
+
+```text
+route/UI + Phaser presentation
+             -> data access / transport / persistence adapters
+             -> pure deterministic simulation and domain contracts
+```
+
+The campaign package follows this direction: its deterministic content/runtime layer
+does not import Angular, Phaser, or NestJS, while those frameworks adapt it at their
+own boundaries.
+
+### Reproducibility and CI
+
+- Pin and document the supported pnpm/Node toolchain so local and CI installs use the
+  same package-manager behavior.
+- Include root toolchain/dependency configuration in Nx cache inputs; a cache must not
+  survive a relevant compiler, lockfile, or workspace configuration change.
+- Keep package-script policy coherent with dependency build allow-lists.
+- Expand dependency/security maintenance to npm packages, GitHub Actions, and Rust
+  where applicable; pin Actions deliberately and maintain those pins automatically.
+- Keep targeted browser/game smoke coverage and meaningful test reporting in PR CI in
+  addition to lint/unit/build checks.
+
+These are incremental guardrails. Apply them around clear ownership boundaries; do
+not turn every prefab, component, or helper into an independent library merely to add
+tags.
