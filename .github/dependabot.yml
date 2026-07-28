@@ -9,15 +9,27 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: weekly
+      interval: monthly
+    groups:
+      npm-dependencies:
+        patterns:
+          - "*"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: weekly
+      interval: monthly
+    groups:
+      github-actions:
+        patterns:
+          - "*"
   - package-ecosystem: "cargo"
     directory: "/apps/probable-waffle-desktop/src-tauri"
     schedule:
-      interval: weekly
+      interval: monthly
+    groups:
+      cargo-dependencies:
+        patterns:
+          - "*"
   - package-ecosystem: "devcontainers"
     directory: "/"
     schedule:

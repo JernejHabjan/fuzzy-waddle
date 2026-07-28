@@ -3,7 +3,7 @@
 ## Prerequisites
 
 | Tool    | Requirement                                         |
-| ------- | --------------------------------------------------- |
+|---------|-----------------------------------------------------|
 | Node.js | `>=24.13.0`                                         |
 | pnpm    | `>=10.0`; npm/yarn are not supported for installs   |
 | Git     | Latest stable                                       |
@@ -39,7 +39,7 @@ cp .env.example .env
 ```
 
 | Variable                                  | Local value / source                     |
-| ----------------------------------------- | ---------------------------------------- |
+|-------------------------------------------|------------------------------------------|
 | `SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID` | Google Cloud Console OAuth client ID     |
 | `SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET`    | Google Cloud Console OAuth client secret |
 
@@ -50,7 +50,7 @@ cp apps/api/.env.example apps/api/.env.local
 ```
 
 | Variable               | Local value / source                                                       |
-| ---------------------- | -------------------------------------------------------------------------- |
+|------------------------|----------------------------------------------------------------------------|
 | `CORS_ORIGIN`          | `http://localhost:4200`                                                    |
 | `SUPABASE_URL`         | Local Supabase API URL, usually `http://127.0.0.1:54321`                   |
 | `SUPABASE_SERVICE_KEY` | Local secret key from `supabase status` > `Authentication Keys` > `Secret` |
@@ -80,15 +80,15 @@ pnpm start:api      # NestJS API     → http://localhost:3333
 
 ## Common Commands
 
-| Command          | Description                                      |
-| ---------------- | ------------------------------------------------ |
-| `pnpm build`     | Build all projects                               |
-| `pnpm test`      | Run all unit tests                               |
-| `pnpm lint`      | Lint all projects                                |
-| `pnpm lint-fix`  | Lint with auto-fix                               |
-| `pnpm e2e`       | Run Playwright end-to-end tests                  |
-| `pnpm format`    | Format code                                      |
-| `pnpm dep-graph` | Open Nx dependency graph                         |
+| Command                    | Description                                        |
+|----------------------------|----------------------------------------------------|
+| `pnpm build`               | Build all projects                                 |
+| `pnpm test`                | Run all unit tests                                 |
+| `pnpm lint`                | Lint all projects                                  |
+| `pnpm lint-fix`            | Lint with auto-fix                                 |
+| `pnpm e2e`                 | Run Playwright end-to-end tests                    |
+| `pnpm format`              | Format code                                        |
+| `pnpm dep-graph`           | Open Nx dependency graph                           |
 | `pnpm phaser-editor:check` | Validate all self-contained Phaser Editor projects |
 
 To run a command for a single app:
