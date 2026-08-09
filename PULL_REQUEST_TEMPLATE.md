@@ -34,3 +34,20 @@ Please describe the tests that you ran to verify your changes. Provide instructi
 <!--
 Please add any screenshots that demonstrate the change, if applicable.
 -->
+
+## Agent decision log (if applicable)
+
+<!--
+Use this section for a decision-pr or an implementation blocked by a material product,
+UX, balance, networking, security, persistence, or licensing decision.
+
+For each question, include the recommended default, its consequences, and the exact
+continuation prompt the reviewer can send after answering.
+-->
+
+## Continuation prompt (if applicable)
+
+<!--
+Provide a copyable prompt that resumes this draft PR, names the next approved stage,
+and explicitly excludes unapproved decisions.
+-->
