@@ -16,6 +16,9 @@ description: "Use for repo workflow decisions in this repository: scope, verific
 - Do not start apps locally unless runtime validation is applicable to the request
 - Read complete errors, investigate every failure, fix implementation-related failures, rerun failed commands, then rerun the applicable suite
 - If a failure is proven pre-existing and unrelated, record the evidence and continue every remaining verification command
+- In a worktree, set `NX_DAEMON=false` for manual Nx validation and serialize package installation or heavy Nx commands across worktrees.
+- Treat a zero-discovered-test result as an invalid focused check. Correct the selection or run the owning project suite before reporting test coverage.
+- When a workspace-wide dependency/configuration edit makes CI build unrelated applications, run the matching affected production build locally before opening the PR. Create a separate tracked repair or decision item for any confirmed baseline failure.
 
 ## Stage gates
 
