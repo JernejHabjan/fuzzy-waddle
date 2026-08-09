@@ -33,6 +33,14 @@ description: Deliver a single well-scoped Fuzzy Waddle GitHub issue from investi
 - For every question, include the recommendation, rationale, deferral impact, and a reply format: `Accept recommendation`, `Use: <alternative>`, or `Defer`.
 - Add a copyable continuation prompt that says which stage to implement and treats answered questions as authoritative.
 
+## TODO triage
+
+- Inventory TODO, FIXME, XXX, and HACK markers outside generated files, dependencies, documentation, and tests unless the test explicitly records deferred behavior.
+- First map references such as `TODO #123` to their existing issues. Do not create duplicates for an open issue, a deliberately deferred roadmap item, or a comment whose behavior is already implemented.
+- Group untracked markers by the shared contract or owner: for example asset metadata, spell targeting, multiplayer authority, or scene-update architecture. Create one clear issue per group rather than one issue per comment.
+- Classify each group before implementation. Place gameplay rules, asset selection, persistence, networking, and performance-policy changes in a decision-pr or research lane.
+- Treat a stale TODO as agent-ready only after inspecting the actual authority path and adding a focused regression test when a meaningful harness exists. Remove the stale comment only when the user's TODO-cleanup request explicitly authorizes it.
+
 ## Safety boundaries
 
 - Never merge, deploy, change secrets, delete material data, or bypass required review.
