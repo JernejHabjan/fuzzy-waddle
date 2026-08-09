@@ -19,6 +19,7 @@ Use the smallest matching set.
 - Angular app work: `plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-angular/SKILL.md`
 - NestJS backend work: `plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-nestjs/SKILL.md`
 - Commit message request: `plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-commit-message/SKILL.md`
+- JetBrains/Junie commit-message workflow: `.junie/commit-prompt.md`
 - PR notes request: `plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-pr-notes/SKILL.md`
 - Autonomous issue delivery: `plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-autonomous-delivery/SKILL.md`
 
