@@ -73,8 +73,12 @@ export class SingleSelectionHandler {
           // Double-click detection for interactive objects
           const now = Date.now();
           const objectId = interactiveObjectIds[0]!;
+          // Only left-clicks select a viewport group. Right-clicks remain commands so a quick repeat never
+          // replaces selection.
           const isDoubleClick =
-            now - this.lastClickTime < this.doubleClickThreshold && this.lastClickedObjectId === objectId;
+            isLeftClick &&
+            now - this.lastClickTime < this.doubleClickThreshold &&
+            this.lastClickedObjectId === objectId;
           this.lastClickTime = now;
           this.lastClickedObjectId = objectId;
 
