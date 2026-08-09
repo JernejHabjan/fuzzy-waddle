@@ -7,6 +7,9 @@ import Phaser from "phaser";
 import { getCurrentPlayerNumber, getPlayer, listenToPlayerChangedChanged } from "../../../data/scene-data";
 import { Subscription } from "rxjs";
 import { ProbableWafflePlayer } from "@fuzzy-waddle/probable-waffle-protocol";
+import ActorDefinitionTooltip from "./ActorDefinitionTooltip";
+import { getGameObjectBounds } from "../../../data/game-object-helper";
+import type { TooltipInfo } from "./tooltip-info";
 /* END-USER-IMPORTS */
 
 export default class Resource extends Phaser.GameObjects.Container {
@@ -43,10 +46,22 @@ export default class Resource extends Phaser.GameObjects.Container {
   private readonly player: ProbableWafflePlayer | undefined;
   private resourceChangedSubscription?: Subscription;
   private housingChangedSubscription?: Subscription;
+  private housingTooltip?: ActorDefinitionTooltip;
+  private housingTooltipDelay?: Phaser.Time.TimerEvent;
+  private housingPointerIn = false;
+
+  private readonly housingTooltipInfo: TooltipInfo = {
+    iconKey: "gui",
+    iconFrame: "resource_icons/food.png",
+    iconOrigin: { x: 0.5, y: 0.5 },
+    title: "Housing",
+    description: "Housing determines your population limit. Build housing before training more units."
+  };
 
   private init = () => {
     this.assignResourceText();
     this.listenToResourceChanged();
+    if (this.type === "housing") this.enableHousingTooltip();
   };
 
   private listenToResourceChanged() {
@@ -91,7 +106,70 @@ export default class Resource extends Phaser.GameObjects.Container {
     this.resource_text.text = this.getPlayerResource();
   };
 
+  /**
+   * Makes the housing counter explain its supply-limit role without changing the existing HUD art.
+   * The hit area covers both the icon and the displayed current/maximum value, which are positioned
+   * around this container's origin by the editor-authored prefab.
+   */
+  private enableHousingTooltip(): void {
+    this.setInteractive(new Phaser.Geom.Rectangle(-96, -30, 144, 52), Phaser.Geom.Rectangle.Contains);
+    if (this.input) this.input.cursor = "pointer";
+    this.on(Phaser.Input.Events.POINTER_OVER, this.onHousingPointerOver);
+    this.on(Phaser.Input.Events.POINTER_OUT, this.onHousingPointerOut);
+  }
+
+  private readonly onHousingPointerOver = (): void => {
+    this.housingPointerIn = true;
+    this.housingTooltipDelay = this.scene.time.delayedCall(400, this.showHousingTooltip);
+  };
+
+  private readonly onHousingPointerOut = (): void => {
+    this.housingPointerIn = false;
+    this.destroyHousingTooltip();
+  };
+
+  /**
+   * Displays the shared definition-tooltip prefab underneath the top HUD, then clamps it to the viewport.
+   * Housing is positioned at the screen edge, so placing the tooltip above it would be clipped.
+   */
+  private readonly showHousingTooltip = (): void => {
+    this.housingTooltipDelay = undefined;
+    if (!this.housingPointerIn || this.housingTooltip) return;
+
+    const resourceBounds = getGameObjectBounds(this);
+    if (!resourceBounds) return;
+
+    const tooltip = new ActorDefinitionTooltip(this.scene, 0, 0);
+    tooltip.setup(this.housingTooltipInfo);
+    this.scene.add.existing(tooltip);
+
+    const tooltipBounds = tooltip.getBackgroundBounds();
+    if (!tooltipBounds) {
+      tooltip.destroy();
+      return;
+    }
+
+    const margin = 4;
+    const x = Phaser.Math.Clamp(
+      resourceBounds.centerX - tooltipBounds.centerX,
+      margin - tooltipBounds.left,
+      this.scene.scale.width - margin - tooltipBounds.right
+    );
+    tooltip.setPosition(x, resourceBounds.bottom - tooltipBounds.top + margin);
+    this.housingTooltip = tooltip;
+  };
+
+  private destroyHousingTooltip(): void {
+    this.housingTooltipDelay?.remove(false);
+    this.housingTooltipDelay = undefined;
+    this.housingTooltip?.destroy();
+    this.housingTooltip = undefined;
+  }
+
   override destroy(fromScene?: boolean) {
+    this.off(Phaser.Input.Events.POINTER_OVER, this.onHousingPointerOver);
+    this.off(Phaser.Input.Events.POINTER_OUT, this.onHousingPointerOut);
+    this.destroyHousingTooltip();
     super.destroy(fromScene);
     this.resourceChangedSubscription?.unsubscribe();
     this.housingChangedSubscription?.unsubscribe();
