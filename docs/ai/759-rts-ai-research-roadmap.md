@@ -26,6 +26,28 @@ visibility checks are disabled, so AI behavior can silently depend on hidden inf
    duration, invalid-order count, command count, game length/result, and deterministic replay/hash.
 5. Rank improvements by player value, complexity, desync risk, and testability.
 
+## Initial reference findings
+
+- The issue reference list correctly prioritizes deterministic decision making, hierarchical
+  strategy-to-unit ownership, scouting/intelligence, utility scoring, and bounded per-tick work.
+- [microRTS](https://github.com/Farama-Foundation/MicroRTS) is useful as an evaluation reference:
+  it explicitly supports deterministic and partially observable RTS experiments plus scripted and
+  search-based agents. It is GPL-3.0, so use concepts and measurements only; do not copy code.
+- [OpenRA](https://github.com/OpenRA/OpenRA) is useful as a production-scale ownership reference
+  for mod-aware RTS systems. It is GPL-3.0, so treat it as a pattern source only and retain no
+  copied implementation.
+- Two names in the supplied reference file could not be fetched at their listed repository URLs.
+  Verify their current locations and licenses before relying on them.
+
+## Proposed evidence backlog
+
+1. Add deterministic AI scenario fixtures before behavior changes.
+2. Record visibility, order validity, supply-block recovery, worker idleness, resource float, and
+   attack/retreat outcomes per scenario.
+3. Audit every manager's information source against fog-of-war policy.
+4. Create one narrow first implementation issue only after the baseline identifies the largest
+   player-visible failure.
+
 ## Candidate first issue
 
 Restore visibility-respecting enemy intelligence in skirmish with deterministic snapshot tests and
