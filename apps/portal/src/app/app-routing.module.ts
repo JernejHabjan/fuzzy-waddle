@@ -4,7 +4,7 @@ import { AuthGuard } from "@fuzzy-waddle/platform-identity/client/auth/auth.guar
 import { AppRoleGuard } from "@fuzzy-waddle/platform-identity/client/auth/app-role.guard";
 import { LevelGuard } from "@fuzzy-waddle/fly-squasher-interface/choose-level/level.guard";
 import { isTauri } from "@fuzzy-waddle/platform-game-host/tauri";
-import { probableWaffleRoutes } from "@fuzzy-waddle/probable-waffle-interface";
+import { probableWaffleRoutes } from "@fuzzy-waddle/probable-waffle-interface/probable-waffle.routes";
 
 /** In Tauri the only published game is Probable Waffle — redirect root to /aota. */
 const tauriHomeRedirect = () => (isTauri() ? inject(Router).createUrlTree(["/aota"]) : true);
