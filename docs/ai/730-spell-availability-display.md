@@ -1,4 +1,4 @@
-# Spell availability display decision
+# Spell availability display implementation plan
 
 Closes #730.
 
@@ -12,9 +12,11 @@ The spell HUD already has three separate mechanics:
 
 The issue screenshot identifies a spell button but does not state which state is incorrect or its expected visual treatment.
 
-## Decision required
+## Approved policy
 
-For each state, choose a visible policy:
+The reviewer accepted the recommended three-state treatment:
+
+The approved policy is:
 
 | State               | Recommended treatment                                                    | Why                                                                   |
 | ------------------- | ------------------------------------------------------------------------ | --------------------------------------------------------------------- |
@@ -22,21 +24,24 @@ For each state, choose a visible policy:
 | Cooldown            | Keep visible with a distinct cooldown overlay and numeric countdown      | Players need to predict when it becomes usable.                       |
 | Unresearched/locked | Keep visible but disabled with a lock treatment and prerequisite tooltip | Discoverability is better than hiding an available future capability. |
 
-Reply with one:
+## Implementation stages
 
-1. `Accept recommendation`.
-2. `Use: <expected treatment for ready, cooldown, locked>`.
-3. `Defer`.
+1. Add one explicit availability state (`ready`, `cooldown`, or `locked`) at the existing `ActorActions` setup boundary. Keep research and cooldown calculation in their current owners.
+2. Render locked actions instead of filtering them out. Disable pointer/hotkey casting, retain the icon and hotkey label, add a visually distinct lock treatment, and keep the prerequisite explanation in the tooltip.
+3. Preserve the existing cooldown mask, seconds countdown, right-click autocast behavior, and ready-state presentation. A locked action must never display as a cooldown action.
+4. Keep `ActorAction.ts` and its paired Phaser Editor scene asset synchronized if the lock treatment requires authored objects.
+5. Add focused coverage for state precedence and interaction guards, then validate the Phaser project and manually inspect all three states at desktop and narrow HUD widths.
 
-## Implementation after approval
+## Acceptance criteria
 
-1. Centralize the three-state visual contract in the existing `ActorAction`/`ActorActions` rendering path; keep paired Phaser Editor scene assets synchronized if authored style changes are needed.
-2. Preserve right-click autocast and hotkey behavior.
-3. Add focused state-rendering coverage where the current UI harness permits it.
-4. Validate the Phaser project and manually inspect ready, cooldown, and locked states at desktop and narrow HUD widths.
+- Every known spell remains discoverable in its normal action slot.
+- Locked spells cannot cast from click or hotkey and explain their prerequisite.
+- Cooldown spells remain visible with an updating numeric countdown.
+- Ready spells, hotkeys, and autocast behave exactly as before.
+- A transition caused by research completion or cooldown expiry updates without rebuilding or duplicating HUD controls.
 
 ## Continuation prompt
 
 ```text
-Continue the implementation for #730. The approved spell availability policy is: <paste reviewer response>. Update only ActorAction/ActorActions and any required paired scene assets, preserve cooldown countdown, hotkeys, and autocast behavior, then run Phaser validation plus focused tests and capture ready/cooldown/locked manual checks.
+Implement #730 from docs/ai/730-spell-availability-display.md. The three-state policy is approved. Update only ActorAction/ActorActions and any required paired scene assets, preserve cooldown countdown, hotkeys, and autocast behavior, then run Phaser validation plus focused tests and capture ready/cooldown/locked manual checks. Open a separate draft implementation PR.
 ```
