@@ -23,6 +23,7 @@ import { GameSaveServerService } from "./game-save/game-save.service";
 import { CampaignController } from "./campaign/campaign.controller";
 import { CampaignServerService } from "./campaign/campaign.service";
 import { ProbableWaffleGameChatAccessService } from "./chat/probable-waffle-game-chat-access.service";
+import { MinimapSignalValidatorService } from "./game-instance/multiplayer/minimap-signal-validator.service";
 
 @Module({
   imports: [AuthModule, ChatModule, GameSessionModule],
@@ -34,6 +35,7 @@ import { ProbableWaffleGameChatAccessService } from "./chat/probable-waffle-game
     GameStateServerService,
     GameCommandValidatorService,
     PauseStateValidatorService,
+    MinimapSignalValidatorService,
     PlayerStateValidatorService,
     MatchmakingService,
     TextSanitizationService,

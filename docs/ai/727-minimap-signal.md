@@ -3,7 +3,7 @@
 ## Status
 
 - Delivery lane: `decision-pr`
-- Current stage: research complete; product and asset decisions pending
+- Current stage: implementation in progress; D1–D4 accepted
 - Issue: [#727 — Minimap signal](https://github.com/JernejHabjan/fuzzy-waddle/issues/727)
 - Reference behavior: Warcraft III-style signal button beside the minimap, one-shot targeting on the minimap or world, and an ally-visible signal at the selected location.
 
@@ -17,7 +17,7 @@ Recommended interaction:
 2. Left-click the minimap or game world to send it.
 3. Alternatively, `Alt+left-click` either target surface to send immediately.
 4. Press `Escape` or right-click while armed to cancel.
-5. The sender sees the signal immediately; connected human teammates receive the same tile, sender color, animation, and optional sound.
+5. The sender sees the signal immediately; connected human teammates receive the same tile, sender color, animation, and existing UI-feedback sound.
 
 ## Research findings
 
@@ -109,20 +109,18 @@ remote controller --> world marker + minimap marker
 - Deferral impact: the protocol can be implemented, but abuse behavior and optimistic rendering cannot be finalized.
 - Reply: `Accept D3`, `Use D3: <duration/policy>`, or `Defer D3`.
 
-### D4 — Signal sound
+### D4 — Signal sound (accepted)
 
-- Recommendation: source or create a short dedicated CC0/CC BY-compatible two-tone ping and add it to the existing `ui-feedback` audio sprite with full attribution. Do not reuse the countdown beep because it already communicates a different game state.
-- Low-risk fallback: ship the visual signal and existing button-click feedback first, with remote signal audio deferred.
-- Deferral impact: visual implementation can proceed, but the `assets-needed` label remains valid for audio.
-- Reply: `Accept D4`, `Use D4: visual-only`, `Use D4: <approved asset URL>`, or `Defer D4`.
+- Use the existing `UiFeedbackSfx.BUTTON_CLICK` audio-sprite entry for local and received signals.
+- Do not create, generate, or source a new audio asset.
 
 ## Implementation stages
 
 ### Stage 1 — Shared event contract and transport
 
-- [ ] Add the documented minimap-signal event contract and communicator mapping in `libs/games/probable-waffle/protocol`.
-- [ ] Extend `ProbableWaffleCommunicatorServiceInterface`, its Angular implementation, and its stub with a dedicated optional `TwoWayCommunicator`.
-- [ ] Initialize and destroy the communicator with the active multiplayer socket; keep it undefined in single-player.
+- [x] Add the documented minimap-signal event contract and communicator mapping in `libs/games/probable-waffle/protocol`.
+- [x] Extend `ProbableWaffleCommunicatorServiceInterface` and its Angular implementation with a dedicated optional `TwoWayCommunicator`.
+- [x] Initialize and destroy the communicator with the active multiplayer socket; signal UI remains unavailable without a socket.
 - [ ] Add communicator lifecycle tests to `probable-waffle-communicator.service.spec.ts`.
 
 Acceptance criteria:
@@ -132,10 +130,10 @@ Acceptance criteria:
 
 ### Stage 2 — Server validation and ally relay
 
-- [ ] Add a narrow minimap-signal validator with a named interface and matching stub.
-- [ ] Validate authenticated ownership, human participant status, integer/finite tile coordinates, and the approved cooldown; resolve `gameMode.data.map` through `ProbableWaffleLevels` and reject coordinates outside `widthTiles`/`heightTiles`.
-- [ ] Add a communicator-specific branch to the guarded message gateway; derive teammate recipients from current game-instance state and target their active socket IDs.
-- [ ] Clear per-match cooldown state when the game instance is cleaned up.
+- [x] Add a narrow minimap-signal validator with a named interface and matching stub.
+- [x] Validate authenticated ownership, human participant status, integer/finite tile coordinates, and the approved cooldown; resolve `gameMode.data.map` through `ProbableWaffleLevels` and reject coordinates outside `widthTiles`/`heightTiles`.
+- [x] Add a communicator-specific branch to the guarded message gateway; derive teammate recipients from current game-instance state and target their active socket IDs.
+- [x] Clear per-match cooldown state when the game instance is cleaned up.
 - [ ] Unit-test sender spoofing, spectators, malformed/out-of-map coordinates, FFA/no-team behavior, same-team relay, opponent exclusion, multi-socket teammates, cooldown, and cleanup.
 
 Acceptance criteria:
@@ -145,13 +143,11 @@ Acceptance criteria:
 
 ### Stage 3 — Input controller and HUD button
 
-- [ ] Add `MinimapSignalController` and register it before consumers that can act on the same pointer release.
-- [ ] Add a scene-backed `MinimapSignalButton.scene`/`.ts`, tooltip, armed/cooldown states, and responsive placement beside chat.
-- [ ] Route minimap tiles through the controller and consume the Phaser game-object event when signaling.
-- [ ] Route world clicks through the existing isometric pointer-to-tile conversion.
-- [ ] Suppress selection, drag-selection, camera movement, and unit orders only for the consumed signal pointer.
-- [ ] Support the approved hotkeys/cancellation and block them for modals, spectators, replays, and matches without a human teammate.
-- [ ] Keep `HudProbableWaffle.scene` and generated TypeScript structurally synchronized.
+- [x] Add `MinimapSignalController` and register it before consumers that can act on the same pointer release.
+- [x] Add an existing-frame signal button with responsive placement beside chat.
+- [x] Route minimap tiles and world clicks through the controller and consume corresponding selection/order input.
+- [x] Support approved hotkeys/cancellation and block them for spectators, replays, and matches without a human teammate.
+- [x] Add modal gating and the concise hover tooltip.
 
 Acceptance criteria:
 
@@ -161,10 +157,10 @@ Acceptance criteria:
 
 ### Stage 4 — World/minimap presentation and assets
 
-- [ ] Add lifecycle-owned world and minimap ring presenters keyed by canonical tile coordinates.
-- [ ] Use the sender's deterministic player color and a contrast-safe fallback.
-- [ ] Add the approved sound to `UiFeedbackSfx` and the audio sprite, or record visual-only scope if D4 chooses the fallback.
-- [ ] Update the Cryo GUI attribution with its CC BY 4.0 license when the new button reuses that frame.
+- [x] Add lifecycle-owned world and minimap ring presenters keyed by canonical tile coordinates.
+- [x] Use the sender's deterministic player color.
+- [x] Use existing `UiFeedbackSfx.BUTTON_CLICK`; no new audio asset.
+- [x] Update the Cryo GUI attribution with its CC BY 4.0 license when the new button reuses that frame.
 - [ ] Add focused tests for coordinate projection, presenter cleanup, simultaneous signals, and responsive minimap redraw/resize.
 
 Acceptance criteria:
@@ -208,8 +204,8 @@ Manual multiplayer playtest matrix:
 - [x] Verify Phaser event-consumption behavior and Socket.IO subset routing against official documentation.
 - [x] Verify the existing Cryo GUI source license and identify the missing license metadata.
 - [x] Record implementation stages, acceptance criteria, tests, manual playtest path, risks, and out-of-scope work.
-- [ ] Receive decisions D1–D4.
-- [ ] Continue with Stage 1 on an implementation branch after the decision PR is approved.
+- [x] Receive and apply decisions D1–D4.
+- [x] Begin implementation on the decision PR branch.
 
 ## Continuation prompt
 
