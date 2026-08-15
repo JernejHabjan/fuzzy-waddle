@@ -4,10 +4,17 @@
 
 - [x] Current chat UI, transport, authorization, persistence, and game integrations inspected
 - [x] Recommended experience and channel visibility matrix defined
-- [ ] Product decisions below accepted or replaced
+- [x] Product decisions accepted on 2026-08-15
 - [ ] Implementation stages delivered and verified
 
-This is a `decision-pr`. Issue #637 asks for chat on all relevant screens, but the repository already has separate global, lobby, and in-game implementations and the issue does not define how their channels should interact. The plan therefore fixes the product and ownership boundaries before changing live multiplayer behavior.
+This plan began as a `decision-pr` because issue #637 asks for chat on all relevant screens while the repository already has separate global, lobby, and in-game implementations. The product and ownership decisions are now confirmed, so the plan is ready for staged implementation.
+
+## Confirmed decisions
+
+- **D1 — channel visibility:** accepted. Use Global outside rooms, Room + Global in a multiplayer lobby with Room selected, and Room only during gameplay.
+- **D2 — realtime ownership:** accepted. Move room delivery into authenticated platform-chat Socket.IO rooms while Probable Waffle remains the room-access authority.
+- **D3 — unread scope:** accepted. Keep unread/read state client-session-local and defer cross-device read receipts.
+- **Database authority:** schema and migration changes are permitted when implementation demonstrates a concrete need. Prefer the existing `global_lobby` and `game_session` model; do not create persistence work for session-local unread state.
 
 ## Recommendation
 
@@ -85,6 +92,7 @@ The application shell chooses whether to render the Global launcher from authent
 - [ ] Have the server authorize subscribe and send, join/leave Socket.IO rooms, persist before broadcast, and return typed errors without leaking private room existence.
 - [ ] Route Global events only to Global subscribers rather than all connected sockets.
 - [ ] Reuse `GameChatAccessRegistry` for game-session access and cover unauthorized subscribe, history, send, report, reconnect, and channel-switch cases.
+- [ ] Validate that existing channel constraints support the final typed identity and concurrency behavior; if they do not, update the canonical schema, generated migration, database types, and focused database tests together with documented SQL intent.
 - [ ] Migrate Probable Waffle chat off the general game communicator without altering unrelated lockstep/game events.
 
 Acceptance: two users in one room receive their persisted messages exactly once; an outsider and a user in another room receive nothing and cannot fetch or report that room's messages; Global delivery remains isolated from room delivery.
@@ -124,44 +132,44 @@ Acceptance: players and spectators with room access can communicate before and d
 
 ### 6. Verification and rollout
 
-- [ ] Run focused `platform-chat`, `probable-waffle-server`, `probable-waffle-interface`, `probable-waffle-phaser`, and `portal` tests and lint with `NX_DAEMON=false`, plus the Portal production build.
+- [ ] Run focused `platform-chat`, `probable-waffle-server`, `probable-waffle-interface`, `probable-waffle-phaser`, and `portal` tests and lint with `NX_DAEMON=false`, plus the Portal production build and database validation when schema or migration files change.
 - [ ] Manually playtest with two authorized users and one outsider across Home -> game menu -> room lobby -> match -> leave room, including refresh/reconnect, channel switches, narrow viewport, keyboard-only operation, report flow, and server unavailability.
 - [ ] Confirm no stale Home-only chat registration, duplicate transport, listener leak, debug output, placeholder, or outdated chat documentation remains.
 
-## Product decisions
+## Decision record
 
 ### Decision 1: channel visibility
 
-**Recommendation:** accept the matrix above: Global outside rooms, Room + Global in a lobby with Room selected, and Room only in game.
+**Status:** accepted on 2026-08-15.
+
+Use the matrix above: Global outside rooms, Room + Global in a lobby with Room selected, and Room only in game.
 
 **Why:** it matches player intent at each stage and protects the match from unrelated noise while keeping the wider community reachable during setup.
 
-**Deferral impact:** implementation cannot safely decide launcher visibility, subscriptions, unread behavior, or responsive layout ownership.
-
-Reply with `Accept recommendation`, `Use: <alternative matrix>`, or `Defer`.
-
 ### Decision 2: one platform chat transport
 
-**Recommendation:** migrate room chat from the Probable Waffle game communicator to authenticated, server-scoped platform chat rooms while retaining Probable Waffle as the access authority.
+**Status:** accepted on 2026-08-15.
+
+Migrate room chat from the Probable Waffle game communicator to authenticated, server-scoped platform chat rooms while retaining Probable Waffle as the access authority.
 
 **Why:** Global and room chat then share one typed delivery, persistence, moderation, reconnect, and error contract instead of accumulating fixes in two transports.
 
-**Deferral impact:** UI work can be prototyped, but shipping it would preserve duplicate realtime ownership and make exactly-once/unread behavior harder to guarantee.
-
-Reply with `Accept recommendation`, `Use: keep separate transports`, or `Defer`.
-
 ### Decision 3: unread scope
 
-**Recommendation:** keep unread counts and read position in the current client session for this issue; defer cross-device read receipts and database membership tracking.
+**Status:** accepted on 2026-08-15.
+
+Keep unread counts and read position in the current client session for this issue; defer cross-device read receipts and database membership tracking.
 
 **Why:** it delivers the expected navigation experience without adding read-receipt privacy, retention, and multi-device synchronization policy to a chat-availability issue.
 
-**Deferral impact:** the team must define read-state persistence and privacy before the coordinator contract and schema can be finalized.
+### Database changes
 
-Reply with `Accept recommendation`, `Use: persistent cross-device unread`, or `Defer`.
+**Status:** authorized when needed.
+
+The existing database already models unique Global and game-session channels, so no migration is required merely because database changes are allowed. If implementation exposes a missing constraint, index, channel field, or concurrency invariant, update the canonical schema and migration together, regenerate shared database types, document the SQL ownership and workflow, and add focused validation. Do not persist unread/read state under this issue.
 
 ## Continuation prompt
 
 ```text
-Implement issue #637 from docs/ai/637-contextual-chat.md, starting with Stage 1. Treat the reviewer's answers under Product decisions as authoritative. Complete one stage at a time with its tests, stage review, omission audit, and focused commit; stop for any new product, security, multiplayer-authority, or persistence decision. After all stages, run the listed verification and manual playtest, then update the draft PR without merging it.
+Implement issue #637 from docs/ai/637-contextual-chat.md, starting with Stage 1. D1, D2, and D3 in the Decision record are authoritative. Database changes are authorized only when a concrete implementation need is demonstrated; keep unread state client-session-local. Complete one stage at a time with its tests, stage review, omission audit, and focused commit; stop for any new product, security, multiplayer-authority, or persistence decision. After all stages, run the listed verification and manual playtest, then update the draft PR without merging it.
 ```
