@@ -1,3 +1,4 @@
+import type { HealthRegenerationDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/components/health-regeneration-definition";
 import type Phaser from "phaser";
 import type { Subscription } from "rxjs";
 import { getActorComponent } from "../../../../data/actor-component";
@@ -19,7 +20,10 @@ export class HealthRegenerationComponent {
   private healthComponent?: HealthComponent;
   private tickSubscription?: Subscription;
 
-  constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
+  constructor(
+    private readonly gameObject: Phaser.GameObjects.GameObject,
+    private healthRegenerationDefinition: HealthRegenerationDefinition
+  ) {
     gameObject.once("destroy", this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
     onObjectReady(gameObject, this.init, this);
@@ -38,9 +42,14 @@ export class HealthRegenerationComponent {
   private onSimulationTick(tick: number): void {
     if (tick % HealthRegenerationComponent.TICKS_PER_REGENERATION !== 0) return;
     if (!this.healthComponent?.isDamaged) return;
-    const regenerateHealthRate = this.healthComponent.healthDefinition.regenerateHealthRate ?? 0;
+    const { regenerateHealthRate } = this.healthRegenerationDefinition;
     if (regenerateHealthRate <= 0) return;
     this.healthComponent.heal(regenerateHealthRate);
+  }
+
+  /** Replaces passive-healing configuration when an actor's level definition changes. */
+  setDefinition(healthRegenerationDefinition: HealthRegenerationDefinition): void {
+    this.healthRegenerationDefinition = healthRegenerationDefinition;
   }
 
   /** Releases the deterministic tick subscription when death or destruction ends this behavior. */

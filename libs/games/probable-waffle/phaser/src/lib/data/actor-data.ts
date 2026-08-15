@@ -194,8 +194,8 @@ function gatherCompletedActorData(actor: Phaser.GameObjects.GameObject): { compo
       ? [new ResourceSourceComponent(actor, componentDefinitions.resourceSource)]
       : []),
     ...(componentDefinitions?.healing ? [new HealingComponent(actor, componentDefinitions.healing)] : []),
-    ...(componentDefinitions?.health?.regenerateHealthRate !== undefined
-      ? [new HealthRegenerationComponent(actor)]
+    ...(componentDefinitions?.healthRegeneration
+      ? [new HealthRegenerationComponent(actor, componentDefinitions.healthRegeneration)]
       : []),
     ...(componentDefinitions?.health
       ? [new StatusEffectComponent(actor), new StatusEffectVisualComponent(actor), new StatusEffectUiComponent(actor)]

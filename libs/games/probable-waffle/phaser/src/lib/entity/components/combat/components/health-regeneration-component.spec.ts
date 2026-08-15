@@ -17,7 +17,6 @@ describe("HealthRegenerationComponent", () => {
   let tick$: Subject<number>;
   const healthComponent = {
     isDamaged: true,
-    healthDefinition: { regenerateHealthRate: 4 },
     heal: jest.fn()
   };
   const eventHandlers = new Map<string, () => void>();
@@ -35,17 +34,16 @@ describe("HealthRegenerationComponent", () => {
     tick$ = new Subject<number>();
     eventHandlers.clear();
     healthComponent.isDamaged = true;
-    healthComponent.healthDefinition.regenerateHealthRate = 4;
     (getSceneService as jest.Mock).mockReturnValue({ tick$ } satisfies Partial<SimulationTickService>);
   });
 
   it("heals the actor once per deterministic simulation second", () => {
-    new HealthRegenerationComponent(actor);
+    const component = new HealthRegenerationComponent(actor, { regenerateHealthRate: 4 });
 
     tick$.next(19);
     tick$.next(20);
     tick$.next(21);
-    healthComponent.healthDefinition.regenerateHealthRate = 6;
+    component.setDefinition({ regenerateHealthRate: 6 });
     tick$.next(40);
 
     expect(healthComponent.heal).toHaveBeenCalledTimes(2);
@@ -55,7 +53,7 @@ describe("HealthRegenerationComponent", () => {
 
   it("does not regenerate actors that cannot currently be healed", () => {
     healthComponent.isDamaged = false;
-    new HealthRegenerationComponent(actor);
+    new HealthRegenerationComponent(actor, { regenerateHealthRate: 4 });
 
     tick$.next(20);
 
@@ -63,7 +61,7 @@ describe("HealthRegenerationComponent", () => {
   });
 
   it("stops regenerating when the actor is killed", () => {
-    new HealthRegenerationComponent(actor);
+    new HealthRegenerationComponent(actor, { regenerateHealthRate: 4 });
 
     eventHandlers.get(HealthComponent.KilledEvent)?.();
     tick$.next(20);
