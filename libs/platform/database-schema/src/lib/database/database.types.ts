@@ -3396,6 +3396,94 @@ export type Database = {
        * collection value on {@link Database}. Its element type defines the records that may cross this boundary;
        * preserve ordering or uniqueness whenever the owning workflow relies on it.
        */
+      friend_relationships: {
+        Row: {
+          accepted_at: string | null;
+          created_at: string;
+          id: string;
+          requester_id: string;
+          status: Database["public"]["Enums"]["friend_relationship_status"];
+          updated_at: string;
+          user_high_id: string;
+          user_low_id: string;
+        };
+        Insert: {
+          accepted_at?: string | null;
+          created_at?: string;
+          id?: string;
+          requester_id: string;
+          status?: Database["public"]["Enums"]["friend_relationship_status"];
+          updated_at?: string;
+          user_high_id: string;
+          user_low_id: string;
+        };
+        Update: {
+          accepted_at?: string | null;
+          created_at?: string;
+          id?: string;
+          requester_id?: string;
+          status?: Database["public"]["Enums"]["friend_relationship_status"];
+          updated_at?: string;
+          user_high_id?: string;
+          user_low_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "friend_relationships_requester_id_fkey";
+            columns: ["requester_id"];
+            isOneToOne: false;
+            referencedRelation: "user_profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "friend_relationships_user_high_id_fkey";
+            columns: ["user_high_id"];
+            isOneToOne: false;
+            referencedRelation: "user_profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "friend_relationships_user_low_id_fkey";
+            columns: ["user_low_id"];
+            isOneToOne: false;
+            referencedRelation: "user_profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      user_blocks: {
+        Row: {
+          blocked_user_id: string;
+          blocker_id: string;
+          created_at: string;
+        };
+        Insert: {
+          blocked_user_id: string;
+          blocker_id: string;
+          created_at?: string;
+        };
+        Update: {
+          blocked_user_id?: string;
+          blocker_id?: string;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "user_blocks_blocked_user_id_fkey";
+            columns: ["blocked_user_id"];
+            isOneToOne: false;
+            referencedRelation: "user_profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "user_blocks_blocker_id_fkey";
+            columns: ["blocker_id"];
+            isOneToOne: false;
+            referencedRelation: "user_profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
       user_profiles: {
         /**
          * keyed/nested row structure owned by {@link Database}. Keep its keys and value contract explicit so callers
@@ -3967,6 +4055,28 @@ export type Database = {
      * callers cannot smuggle a broader shape across this boundary.
      */
     Functions: {
+      social_apply_friend_action: {
+        Args: {
+          p_actor_user_id: string;
+          p_action: Database["public"]["Enums"]["social_friend_action"];
+          p_target_user_id?: string | null;
+          p_relationship_id?: string | null;
+        };
+        Returns: Json;
+      };
+      social_find_user_by_username: {
+        Args: {
+          p_actor_user_id: string;
+          p_username: string;
+        };
+        Returns: Json;
+      };
+      social_get_snapshot: {
+        Args: {
+          p_actor_user_id: string;
+        };
+        Returns: Json;
+      };
       /**
        * keyed/nested commit probable waffle campaign victory structure owned by {@link Database}. Keep its keys and
        * value contract explicit so callers cannot smuggle a broader shape across this boundary.
@@ -4045,6 +4155,17 @@ export type Database = {
      * cannot smuggle a broader shape across this boundary.
      */
     Enums: {
+      /** Durable lifecycle of the canonical friendship row. */
+      friend_relationship_status: "pending" | "accepted";
+      /** Closed mutation set enforced by the transactional social RPC. */
+      social_friend_action:
+        | "send_request"
+        | "accept_request"
+        | "decline_request"
+        | "cancel_request"
+        | "remove_friend"
+        | "block"
+        | "unblock";
       /**
        * achievement difficulty value carried by {@link Database}. Its declared type is the compatibility boundary
        * for producers, validators, and consumers; do not replace it with a broader inferred shape.
@@ -4322,6 +4443,16 @@ export const Constants = {
   public: {
     Enums: {
       achievement_difficulty: ["easy", "medium", "hard"],
+      friend_relationship_status: ["pending", "accepted"],
+      social_friend_action: [
+        "send_request",
+        "accept_request",
+        "decline_request",
+        "cancel_request",
+        "remove_friend",
+        "block",
+        "unblock"
+      ],
       app_user_role: ["user", "moderator", "admin"],
       chat_channel_type: ["global_lobby", "game_lobby", "game_session", "direct", "system"],
       chat_membership_role: ["owner", "moderator", "member"],
