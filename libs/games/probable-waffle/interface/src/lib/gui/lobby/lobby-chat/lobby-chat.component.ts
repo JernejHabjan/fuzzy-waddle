@@ -6,6 +6,7 @@ import { type ChatMessage } from "@fuzzy-waddle/platform-chat";
 import { ProbableWaffleGameInstanceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { Subject, Subscription } from "rxjs";
 import { ChatComponent } from "@fuzzy-waddle/platform-chat/client/components/chat.component";
+import { OptionsService } from "../../options/options.service";
 
 @Component({
   selector: "probable-waffle-lobby-chat",
@@ -17,13 +18,14 @@ export class LobbyChatComponent implements OnInit, OnDestroy {
   private readonly communicatorService = inject(ProbableWaffleCommunicatorService);
   protected readonly gameInstanceClientService = inject(GameInstanceClientService);
   private readonly authService = inject(AuthService);
+  private readonly optionsService = inject(OptionsService);
 
   private messagesSubscription: Subscription | undefined;
   protected listenToMessages: Subject<ChatMessage> = new Subject<ChatMessage>();
 
   ngOnInit(): void {
     this.messagesSubscription = this.communicatorService.message?.on.subscribe((msg) => {
-      this.listenToMessages.next(msg.chatMessage);
+      this.listenToMessages.next(this.optionsService.presentChatMessage(msg.chatMessage));
     });
   }
 

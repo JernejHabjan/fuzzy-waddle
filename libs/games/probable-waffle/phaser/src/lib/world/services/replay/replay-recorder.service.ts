@@ -18,6 +18,7 @@ import { CommandBusService } from "../multiplayer/command-bus.service";
 import { buildReplayTickDigest } from "./replay-debug-tools";
 import { ProbableWaffleSceneEventName } from "../recovery/probable-waffle-scene-events";
 import { CampaignMissionDirector } from "../../../campaign/campaign-mission-director";
+import { GameOptionsService } from "../../../core/game-options.service";
 
 const REPLAY_FORMAT_VERSION = "2";
 const REPLAY_COMPATIBILITY_VERSION = "lockstep-v1";
@@ -48,6 +49,10 @@ export class ReplayRecorderService {
 
   init(scene: ProbableWaffleScene): void {
     if (scene.baseGameData.gameInstance.gameInstanceMetadata.isReplay()) {
+      return;
+    }
+    // Autosave ownership is fixed at match initialization; changing the option applies to the next match.
+    if (!getSceneExternalComponent(scene, GameOptionsService)?.gameSettings.automaticallySaveReplays) {
       return;
     }
     this.scene = scene;

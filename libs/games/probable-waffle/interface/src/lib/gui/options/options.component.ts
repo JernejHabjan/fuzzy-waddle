@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, type OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, type OnInit } from "@angular/core";
 
 import { FormsModule } from "@angular/forms";
 import { RouterLink } from "@angular/router";
@@ -15,6 +15,7 @@ import { isTauri, TauriService } from "@fuzzy-waddle/platform-game-host/angular/
   templateUrl: "./options.component.html",
   styleUrls: ["./options.component.scss"],
   imports: [FormsModule, RouterLink, HomeNavComponent, CenterWrapperComponent, FaIconComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   host: AngularHost.contentFlexFullHeight
 })
 export class OptionsComponent implements OnInit {
@@ -28,10 +29,10 @@ export class OptionsComponent implements OnInit {
   protected readonly isFullscreen = this.tauriService.windowIsFullscreen;
 
   async ngOnInit() {
-    this.optionsService.init();
+    await this.optionsService.init();
   }
 
-  protected saveToLocalStorage(type: "volume" | "game") {
+  protected saveChanges(type: "volume" | "game") {
     this.optionsService.saveChanges(type);
     this.cdr.detectChanges();
   }

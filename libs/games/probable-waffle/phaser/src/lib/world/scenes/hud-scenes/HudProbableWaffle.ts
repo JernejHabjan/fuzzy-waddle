@@ -33,6 +33,7 @@ import { getPlayers } from "../../../data/scene-data";
 import { ConnectionRecoveryService } from "../../services/recovery/connection-recovery.service";
 import type { CampaignMissionDirector } from "../../../campaign/campaign-mission-director";
 import CampaignDeveloperPanel from "../../../prefabs/gui/campaign/CampaignDeveloperPanel";
+import HudDiagnostics from "../../../prefabs/gui/labels/HudDiagnostics";
 /* END-USER-IMPORTS */
 
 export default class HudProbableWaffle extends ProbableWaffleScene {
@@ -116,6 +117,10 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     const campaignCinematicHud = new CampaignCinematicHud(this, 0, 0);
     this.add.existing(campaignCinematicHud);
 
+    // hudDiagnostics
+    const hudDiagnostics = new HudDiagnostics(this, 1264, 92);
+    this.add.existing(hudDiagnostics);
+
     // confirmationDialog
     const confirmationDialog = new ConfirmationDialog(this, 640, 360);
     this.add.existing(confirmationDialog);
@@ -143,6 +148,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.dayNightClockLabel = dayNightClockLabel;
     this.campaignObjectivesHud = campaignObjectivesHud;
     this.campaignCinematicHud = campaignCinematicHud;
+    this.hudDiagnostics = hudDiagnostics;
     this.confirmationDialog = confirmationDialog;
     this.surrenderDialog = surrenderDialog;
     this.hudElements = hudElements;
@@ -166,6 +172,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private dayNightClockLabel!: DayNightClockLabel;
   private campaignObjectivesHud!: CampaignObjectivesHud;
   private campaignCinematicHud!: CampaignCinematicHud;
+  private hudDiagnostics!: HudDiagnostics;
   public confirmationDialog!: ConfirmationDialog;
   public surrenderDialog!: SurrenderDialog;
   private hudElements!: Array<any>;
@@ -206,6 +213,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.idleWorkersButton.setup(this.probableWaffleScene!);
     this.dayNightClockLabel.initializeWithParentScene(this.probableWaffleScene!);
     this.chatNotification.initializeWithParentScene(this.probableWaffleScene!, this.chatButton);
+    this.hudDiagnostics.setup(this.probableWaffleScene!);
 
     // Initialize cursor handler with main scene for hover detection
     if (this.probableWaffleScene && this.cursorHandler) {
@@ -360,6 +368,8 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
 
     // set AI controller debug panel to top right below game actions
     const gameActionsHeight = getGameObjectBounds(this.game_actions_container)!.height;
+    this.hudDiagnostics.x = this.scale.width - 16;
+    this.hudDiagnostics.y = gameActionsHeight + (environment.production ? 18 : 120);
     this.aiControllerDebugPanel.x = this.scale.width - 10;
     this.aiControllerDebugPanel.y = gameActionsHeight + 10;
     this.aiControllerDebugPanel.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.7;

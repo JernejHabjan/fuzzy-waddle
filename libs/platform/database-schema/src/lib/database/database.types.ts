@@ -3457,6 +3457,8 @@ export type Database = {
            * producers, validators, and consumers; do not replace it with a broader inferred shape.
            */
           moderation_note: string | null;
+          /** Versioned personal Probable Waffle preferences; never match-authoritative rules. */
+          probable_waffle_preferences: Json | null;
           /**
            * timezone value carried by {@link Database}. Its declared type is the compatibility boundary for producers,
            * validators, and consumers; do not replace it with a broader inferred shape.
@@ -3538,6 +3540,8 @@ export type Database = {
            * for producers, validators, and consumers; do not replace it with a broader inferred shape.
            */
           moderation_note?: string | null;
+          /** Versioned personal Probable Waffle preferences; never match-authoritative rules. */
+          probable_waffle_preferences?: Json | null;
           /**
            * Optional timezone value carried by {@link Database}. Its declared type is the compatibility boundary for
            * producers, validators, and consumers; do not replace it with a broader inferred shape.
@@ -3619,6 +3623,8 @@ export type Database = {
            * for producers, validators, and consumers; do not replace it with a broader inferred shape.
            */
           moderation_note?: string | null;
+          /** Versioned personal Probable Waffle preferences; never match-authoritative rules. */
+          probable_waffle_preferences?: Json | null;
           /**
            * Optional timezone value carried by {@link Database}. Its declared type is the compatibility boundary for
            * producers, validators, and consumers; do not replace it with a broader inferred shape.
@@ -4075,13 +4081,7 @@ export type Database = {
        * producers, validators, and consumers; do not replace it with a broader inferred shape.
        */
       chat_report_reason:
-        | "spam"
-        | "abuse"
-        | "harassment"
-        | "hate_speech"
-        | "cheating"
-        | "personal_information"
-        | "other";
+        "spam" | "abuse" | "harassment" | "hate_speech" | "cheating" | "personal_information" | "other";
       /**
        * discriminator for {@link Database}. It selects the valid branch and behavior, so producers and consumers
        * must keep it synchronized with the accompanying fields.
@@ -4108,11 +4108,7 @@ export type Database = {
        * shape.
        */
       probable_waffle_campaign_chapter_id:
-        | "prologue"
-        | "two-homelands"
-        | "crystal-war"
-        | "united-against-volcano"
-        | "the-betrayal";
+        "prologue" | "two-homelands" | "crystal-war" | "united-against-volcano" | "the-betrayal";
       /**
        * discriminator for {@link Database}. It selects the valid branch and behavior, so producers and consumers
        * must keep it synchronized with the accompanying fields.
@@ -4199,14 +4195,13 @@ type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
  */
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
-    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
-    | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+    keyof (DefaultSchema["Tables"] & DefaultSchema["Views"]) | { schema: keyof DatabaseWithoutInternals },
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals;
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never
+    : never) = never
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals;
 }
@@ -4230,11 +4225,11 @@ export type Tables<
  */
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"] | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals;
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never
+    : never) = never
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals;
 }
@@ -4257,11 +4252,11 @@ export type TablesInsert<
  */
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"] | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals;
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never
+    : never) = never
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals;
 }
@@ -4284,11 +4279,11 @@ export type TablesUpdate<
  */
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"] | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals;
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never
+    : never) = never
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals;
 }
@@ -4303,13 +4298,12 @@ export type Enums<
  */
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
-    | keyof DefaultSchema["CompositeTypes"]
-    | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    keyof DefaultSchema["CompositeTypes"] | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals;
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never
+    : never) = never
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals;
 }

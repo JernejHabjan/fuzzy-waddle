@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { Subject, Subscription } from "rxjs";
+import { BehaviorSubject, Subject, Subscription } from "rxjs";
 import {
   type GameCommand,
   type GameCommandInput,
@@ -54,6 +54,8 @@ export class CommandBusService {
   readonly command$ = this._command$.asObservable();
   private readonly _commandBatch$ = new Subject<ProbableWaffleReplayCommandBatch>();
   readonly commandBatch$ = this._commandBatch$.asObservable();
+  /** Latest command-relay round trip for the local player, or null outside multiplayer. */
+  readonly roundTripTimeMs$ = new BehaviorSubject<number | null>(null);
 
   private isMultiplayer = false;
   private humanPlayerNumbers: PlayerNumber[] = [];
@@ -159,6 +161,9 @@ export class CommandBusService {
           Math.max(this.lastReceivedTickByPlayer.get(event.playerNumber) ?? -1, event.tick)
         );
         if (event.playerNumber === this.localPlayerNumber) {
+          if (event.transportMeta?.clientSentAtWallTimeMs !== undefined) {
+            this.roundTripTimeMs$.next(Math.max(0, Date.now() - event.transportMeta.clientSentAtWallTimeMs));
+          }
           this.recordLocalTickStage(
             event.tick,
             event.rejectionReason ? `echo-empty(${event.rejectionReason})` : `echo(${event.commands.length})`
@@ -581,6 +586,7 @@ export class CommandBusService {
     this.clearPendingStallLog();
     this.subscriptions.forEach((s) => s.unsubscribe());
     this._commandBatch$.complete();
+    this.roundTripTimeMs$.complete();
     this._command$.complete();
   }
 

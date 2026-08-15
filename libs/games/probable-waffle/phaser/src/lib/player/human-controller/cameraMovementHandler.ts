@@ -34,6 +34,10 @@ export interface CameraMovementHandlerConfig {
   enabledMouseCornerMovement?: boolean;
   /** Documents the cursor over game member and its declared contract at this boundary. */
   cursorOverGame?: boolean;
+  /** Zoom used for fresh games before a save or authored camera takes ownership. */
+  defaultCameraDistance?: number;
+  /** Smallest permitted zoom value, which is the farthest allowed camera distance. */
+  maximumCameraDistance?: number;
 }
 
 export class CameraMovementHandler {
@@ -45,6 +49,7 @@ export class CameraMovementHandler {
   private readonly cameraEdgeMarginTop = FULLSCREEN_TOP_EDGE_PX;
   private readonly cameraMinZoom = 30;
   private readonly cameraMaxZoom = 0.3;
+  private readonly supportedZoomLevels = [0.5, 1, 2, 4, 8] as const;
   private optionsChangedSubscription?: Subscription;
   private cameraStateSetFromData: boolean = false;
   private enabled = true;
@@ -243,7 +248,8 @@ export class CameraMovementHandler {
     const newZoom = this.mainCamera.zoom * 0.5;
     const validZoom = this.findNearestValidZoom(newZoom);
 
-    if (validZoom >= this.cameraMaxZoom) {
+    const minimumZoom = this.config.maximumCameraDistance ?? this.cameraMaxZoom;
+    if (validZoom >= minimumZoom) {
       this.mainCamera.zoom = validZoom;
     }
     if (this.isCameraOutOfBounds) {
@@ -252,9 +258,8 @@ export class CameraMovementHandler {
   }
 
   private findNearestValidZoom(zoom: number): number {
-    const powersOfTwo = [0.5, 1, 2, 4, 8];
-    let nearest = powersOfTwo[0]!;
-    for (const power of powersOfTwo) {
+    let nearest: number = this.supportedZoomLevels[0];
+    for (const power of this.supportedZoomLevels) {
       if (Math.abs(zoom - power) < Math.abs(zoom - nearest)) {
         nearest = power;
       }
@@ -310,16 +315,26 @@ export class CameraMovementHandler {
     const optionsService = getSceneExternalComponent(this.scene, GameOptionsService);
     this.optionsChangedSubscription = optionsService?.settingsChanged.subscribe((change) => {
       if (change.type === "game") {
-        const newGameSettings = change.payload as GameSettings;
+        const newGameSettings = change.payload;
         this.setConfig({
-          enabledMouseCornerMovement: newGameSettings.enabledMouseCornerMovement
+          enabledMouseCornerMovement: newGameSettings.enabledMouseCornerMovement,
+          defaultCameraDistance: newGameSettings.defaultCameraDistance,
+          maximumCameraDistance: newGameSettings.maximumCameraDistance
         });
+        if (this.mainCamera.zoom < newGameSettings.maximumCameraDistance) {
+          this.mainCamera.zoom = newGameSettings.maximumCameraDistance;
+          this.clampCameraToBounds();
+        }
       }
     });
   }
 
   private create() {
     if (this.cameraStateSetFromData) return;
+    this.mainCamera.zoom = Math.max(
+      this.config.defaultCameraDistance ?? 1,
+      this.config.maximumCameraDistance ?? this.cameraMaxZoom
+    );
     this.centerCameraOnSpawnPoint();
   }
 
@@ -380,7 +395,9 @@ export class CameraMovementHandler {
   setCameraState(state: CameraStateData): void {
     if (state.scrollX !== undefined) this.mainCamera.scrollX = state.scrollX;
     if (state.scrollY !== undefined) this.mainCamera.scrollY = state.scrollY;
-    if (state.zoom !== undefined) this.mainCamera.zoom = state.zoom;
+    if (state.zoom !== undefined) {
+      this.mainCamera.zoom = Math.max(state.zoom, this.config.maximumCameraDistance ?? this.cameraMaxZoom);
+    }
     if (state.scrollX !== undefined || state.scrollY !== undefined) this.cameraStateSetFromData = true;
   }
 }

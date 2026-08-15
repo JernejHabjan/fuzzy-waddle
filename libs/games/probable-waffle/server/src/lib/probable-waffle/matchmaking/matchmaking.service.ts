@@ -18,6 +18,7 @@ import {
   ProbableWaffleMapEnum,
   type ProbableWafflePlayerControllerData,
   ProbableWafflePlayerType,
+  ProbableWaffleTerrainVisibility,
   type RequestGameSearchForMatchMakingDto
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { GameSessionState, type GameInstanceId, type UserId } from "@fuzzy-waddle/platform-game-sessions";
@@ -184,7 +185,8 @@ export class MatchmakingService implements MatchmakingServiceInterface {
           allBuildingsMustBeEliminated: true
         },
         mapTuning: { unitCap: 100 },
-        difficultyModifiers: {} satisfies DifficultyModifiers
+        difficultyModifiers: {} satisfies DifficultyModifiers,
+        terrainVisibility: ProbableWaffleTerrainVisibility.MapExplored
       } satisfies ProbableWaffleGameModeData,
       gameStateData: {} as ProbableWaffleGameStateData
     });
@@ -275,6 +277,7 @@ export class MatchmakingService implements MatchmakingServiceInterface {
   private getNewMatchmakingGameMode(mapId: ProbableWaffleMapEnum): ProbableWaffleGameMode {
     const gameModeData = {
       map: mapId,
+      terrainVisibility: ProbableWaffleTerrainVisibility.MapExplored,
       difficultyModifiers: {} satisfies DifficultyModifiers,
       tieConditions: {
         maximumTimeLimitInMinutes: 60

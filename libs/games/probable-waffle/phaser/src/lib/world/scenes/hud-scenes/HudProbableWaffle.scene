@@ -17,6 +17,15 @@
   },
   "displayList": [
     {
+      "prefabId": "21a54bea-159f-42d1-9211-32f3f733d001",
+      "id": "21a54bea-159f-42d1-9211-32f3f733d004",
+      "unlock": ["x", "y"],
+      "label": "hudDiagnostics",
+      "scope": "CLASS",
+      "x": 1264,
+      "y": 92
+    },
+    {
       "prefabId": "32009169-5920-4763-9cb8-7472adc35410",
       "id": "ef95f034-07f1-4b52-ba9a-5a6c151354b1",
       "unlock": ["x", "y"],

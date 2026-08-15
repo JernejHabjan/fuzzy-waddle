@@ -9,6 +9,7 @@ import { AchievementService } from "../../services/achievement/achievement.servi
 import { achievementServiceStub } from "../../services/achievement/achievement.service.stub";
 import { GameSaveService } from "../../services/game-save/game-save.service";
 import { GameSaveServiceStub } from "../../services/game-save/game-save.service.stub";
+import { OptionsService } from "../options/options.service";
 
 jest.mock("@fuzzy-waddle/probable-waffle-phaser/world/const/game-config", () => ({
   probableWaffleGameConfig: {}
@@ -17,13 +18,15 @@ jest.mock("@fuzzy-waddle/probable-waffle-phaser/world/const/game-config", () => 
 describe("ProbableWaffleGameComponent", () => {
   let component: ProbableWaffleGameComponent;
   let fixture: ComponentFixture<ProbableWaffleGameComponent>;
+  const optionsService = { init: jest.fn(() => Promise.resolve()) };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
         { provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub },
         { provide: AchievementService, useValue: achievementServiceStub },
-        { provide: GameSaveService, useValue: new GameSaveServiceStub() }
+        { provide: GameSaveService, useValue: new GameSaveServiceStub() },
+        { provide: OptionsService, useValue: optionsService }
       ],
       imports: [ProbableWaffleGameComponent]
     })
@@ -44,5 +47,6 @@ describe("ProbableWaffleGameComponent", () => {
 
   it("should create", () => {
     expect(component).toBeTruthy();
+    expect(optionsService.init).toHaveBeenCalled();
   });
 });
