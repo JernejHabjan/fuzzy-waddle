@@ -190,6 +190,10 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   override create() {
     this.editorCreate();
 
+    this.resources_container.setScenarioPresentationPolicy(
+      this.probableWaffleScene?.baseGameData.gameInstance.gameMode?.data.scenarioPresentation
+    );
+
     // resize the scene to match the screen size
     this.scale.on("resize", this.resize, this);
     this.resize({ height: this.scale.height, width: this.scale.width });
