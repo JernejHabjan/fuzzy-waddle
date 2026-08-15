@@ -3,7 +3,7 @@
 ## Status
 
 - Delivery lane: `decision-pr`
-- Current stage: planning complete; D1-D5 require review before implementation
+- Current stage: D1-D5 approved; plan is implementation-ready and implementation has not started
 - Issue: [#723 — Improve narrator tutorials](https://github.com/JernejHabjan/fuzzy-waddle/issues/723)
 - Reference behavior: explicit narrator guidance for selection, movement, attack-move, direct attacks, and mixed-selection subgroups.
 
@@ -11,7 +11,7 @@
 
 Improve the playable Dreams prologue so a new player is explicitly taught the unit-control flow already used by Probable Waffle. Keep the instruction inside the campaign dialogue/objective presentation boundary, preserve deterministic mission authority, and avoid copying artwork or presentation assets from the reference screenshots.
 
-Recommended teaching sequence:
+Approved teaching sequence:
 
 1. Select the Tivara formation and move it toward the highlighted battle area.
 2. After the faction handoff, select the Skaduwee formation and issue an attack-move toward the battle area.
@@ -29,7 +29,7 @@ Recommended teaching sequence:
 - Clicking a portrait in `ActorInfoLabels` currently sends a new single-actor selection. It does not activate that actor's subgroup while preserving the mixed selection, unlike the supplied reference behavior.
 - Mission progress currently observes world outcomes such as region occupancy. The campaign event adapter does not emit selection, order, or subgroup input events, and `CampaignObjectiveProjectionStore.markPromptSeen` has no caller.
 
-## Recommended experience
+## Approved experience
 
 - Use the Dreams prologue rather than adding a second tutorial mission. It already controls both factions, owns the first semantic command objectives, and contains mixed formations.
 - Make the narrator the instructional voice. Captain lines may retain story flavor, but every required control should appear in narrator dialogue and in the matching objective prompt.
@@ -37,48 +37,38 @@ Recommended teaching sequence:
 - Keep tutorial progress forgiving: arriving at the authored destination completes the step even if the player used another valid command. Use prompt-seen state only to shorten repeated guidance, never as mission authority.
 - Teach subgroup switching only when the selected formation contains more than one actor type. Do not display a dead `Tab` instruction for a homogeneous selection.
 
-## Decisions requested
+## Approved decisions
 
-### D1 — Tutorial placement and order
+### D1 — Tutorial placement and order (approved)
 
-- Recommendation: teach selection and movement during the Tivara rally, then teach attack-move, direct attack, and mixed-selection subgroups during the Skaduwee rally after the existing faction handoff.
+- Decision: teach selection and movement during the Tivara rally, then teach attack-move, direct attack, and mixed-selection subgroups during the Skaduwee rally after the existing faction handoff.
 - Rationale: this gives each controlled faction one focused lesson and avoids inserting a separate tutorial mission or delaying the story opening.
-- Deferral impact: dialogue ids, objective checklists, phase timing, and the manual playtest path cannot be finalized.
-- Reply: `Accept recommendation`, `Use: <alternative>`, or `Defer`.
 
-### D2 — Control wording
+### D2 — Control wording (approved)
 
-- Recommendation: narrator and objective prompts name both the shortcut/command-card path and the direct RTS shortcut: Move/`M` plus ground click or right-click ground; Attack/`A` plus ground click for attack-move; right-click enemy for direct attack. Touch copy remains mode-specific and omits keyboard terms.
+- Decision: narrator and objective prompts name both the shortcut/command-card path and the direct RTS shortcut: Move/`M` plus ground click or right-click ground; Attack/`A` plus ground click for attack-move; right-click enemy for direct attack. Touch copy remains mode-specific and omits keyboard terms.
 - Rationale: the wording matches the implemented Move and Attack actions while preserving the discoverable command card shown in the references.
-- Deferral impact: semantic prompt contracts and final narrator copy remain unsettled.
-- Reply: `Accept recommendation`, `Use: <alternative>`, or `Defer`.
 
-### D3 — Portrait subgroup behavior
+### D3 — Portrait subgroup behavior (approved)
 
-- Recommendation: in a mixed selection, an unmodified click on a non-active unit portrait activates that actor-type subgroup without replacing the full selection; `Tab` cycles the same groups. Preserve modifier-assisted selection editing and single-selection behavior.
+- Decision: in a mixed selection, an unmodified click on a non-active unit portrait activates that actor-type subgroup without replacing the full selection; `Tab` cycles the same groups. Preserve modifier-assisted selection editing and single-selection behavior.
 - Rationale: this makes the supplied subgroup instruction true, aligns portrait highlight with the active command card, and extends the existing `SelectionTabHandler` authority instead of introducing parallel state.
-- Deferral impact: the narrator can safely teach only `Tab`; portrait instructions and their tests must be omitted.
-- Reply: `Accept recommendation`, `Use: Tab only`, `Use: <alternative>`, or `Defer`.
 
-### D4 — Completion strictness
+### D4 — Completion strictness (approved)
 
-- Recommendation: retain outcome-based completion through `battle-region`; do not block mission progress on exact selection or order input. Mark observed semantic inputs as seen only to collapse prompts and suppress redundant reminders.
+- Decision: retain outcome-based completion through `battle-region`; do not block mission progress on exact selection or order input. Mark observed semantic inputs as seen only to collapse prompts and suppress redundant reminders.
 - Rationale: the tutorial remains accessible and save-safe, while the deterministic mission runtime does not need local input events as authoritative conditions.
-- Deferral impact: implementation cannot decide whether it needs a new campaign input-event contract and save-state migration.
-- Reply: `Accept recommendation`, `Use: require exact inputs`, or `Defer`.
 
-### D5 — Replay and reminders
+### D5 — Replay and reminders (approved)
 
-- Recommendation: show the full tutorial on every Dreams run, collapse each prompt after the corresponding action during that run, and retain the existing 20-second narrator reminder cadence while its objective is active.
+- Decision: show the full tutorial on every Dreams run, collapse each prompt after the corresponding action during that run, and retain the existing 20-second narrator reminder cadence while its objective is active.
 - Rationale: Dreams remains a dependable tutorial entry point without adding profile-level tutorial preferences or persistence.
-- Deferral impact: prompt-seen ownership, replay behavior, and reminder tests remain unsettled.
-- Reply: `Accept recommendation`, `Use: <alternative>`, or `Defer`.
 
 ## Implementation stages
 
 ### Stage 1 — Semantic tutorial prompt contract
 
-- [ ] Split the ambiguous attack prompt into explicit attack-move and direct-attack semantic actions; add subgroup-next and subgroup-portrait actions if D3 is accepted.
+- [ ] Split the ambiguous attack prompt into explicit attack-move and direct-attack semantic actions; add subgroup-next and subgroup-portrait actions.
 - [ ] Update the TypeScript contract, mission JSON schema, default keyboard/mouse and touch registrations, and exhaustive registration tests together.
 - [ ] Route observed move, attack-move, direct-attack, and subgroup changes to local prompt-seen presentation state without making them campaign-runtime completion conditions.
 - [ ] Document that seen state is local presentation state and is intentionally reset for a new mission run.
@@ -91,7 +81,7 @@ Acceptance criteria:
 
 ### Stage 2 — Mixed-selection subgroup interaction
 
-- [ ] If D3 is accepted, extend `SelectionTabHandler` with one typed activation path shared by `Tab` and portrait clicks.
+- [ ] Extend `SelectionTabHandler` with one typed activation path shared by `Tab` and portrait clicks.
 - [ ] In `ActorInfoLabels`, map a clicked mixed-selection portrait to its actor-type group while preserving the full selection; retain current modifier and single-selection semantics.
 - [ ] Keep `ActorInfoContainer`, `ActorActions`, portrait highlights, and primary-actor resolution synchronized with the active subgroup.
 - [ ] Add focused tests for Tab cycling, portrait activation, homogeneous selections, selection replacement, modifiers, selection changes, and shutdown cleanup.
@@ -143,7 +133,7 @@ Manual playtest matrix:
 
 - Tivara rally: select the formation, move via right-click, then repeat with Move/`M`; verify narrator copy, destination completion, and reminder cancellation.
 - Skaduwee rally: attack-move via Attack/`A` plus ground click; direct-attack an enemy by right-click; verify distinct guidance and forgiving destination completion.
-- Mixed selection: cycle every subgroup with `Tab`; if D3 is accepted, activate each type through portraits and verify selection preservation, highlight, and command-card changes.
+- Mixed selection: cycle every subgroup with `Tab`; activate each type through portraits and verify selection preservation, highlight, and command-card changes.
 - Homogeneous and single selection: no unusable subgroup prompt; portrait and command behavior remain unchanged.
 - Touch prompt mode: no keyboard-only language and accurate button/tap instructions.
 - Checkpoint/replay: restore before each rally, skip/watch cinematics, and complete on every difficulty without duplicated tutorial lines or changed rewards.
@@ -163,10 +153,10 @@ Manual playtest matrix:
 - A separate tutorial campaign, campaign-wide onboarding redesign, tutorial-skip profile preference, or global remappable-input framework.
 - New voice acting, bitmap UI assets, sound effects, cursor art, command-card redesign, or Warcraft asset reuse.
 - Changing unit orders, combat behavior, AI, faction balance, mission rewards, checkpoints, multiplayer authority, or save/replay semantics.
-- Strictly requiring exact input sequences unless D4 is explicitly changed.
+- Strictly requiring exact input sequences; D4 keeps campaign completion outcome-based.
 
 ## Continuation prompt
 
 ```text
-Implement issue #723 from docs/ai/723-improve-narrator-tutorials.md. Treat the reviewed answers to D1-D5 as authoritative and do not implement deferred alternatives. Start with Stage 1, keep the plan checklist current, preserve deterministic mission authority and paired Phaser .scene files, run the listed checks with NX_DAEMON=false, complete the manual playtest plus omission and closure audits, and update the draft PR with verification evidence. Do not merge.
+Implement issue #723 from docs/ai/723-improve-narrator-tutorials.md. D1-D5 are approved and authoritative; do not revisit them without a new explicit product decision. Start with Stage 1, keep the plan checklist current, preserve deterministic mission authority and paired Phaser .scene files, run the listed checks with NX_DAEMON=false, complete the manual playtest plus omission and closure audits, and update the draft PR with verification evidence. Do not merge.
 ```
