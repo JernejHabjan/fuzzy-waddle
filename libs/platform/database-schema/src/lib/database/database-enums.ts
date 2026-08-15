@@ -26,6 +26,25 @@ export const UserAccountStatus = {
 
 export type UserAccountStatus = Database["public"]["Enums"]["user_account_status"];
 
+export const FriendRelationshipStatus = {
+  Pending: "pending",
+  Accepted: "accepted"
+} as const satisfies Record<string, Database["public"]["Enums"]["friend_relationship_status"]>;
+
+export type FriendRelationshipStatus = Database["public"]["Enums"]["friend_relationship_status"];
+
+export const SocialFriendAction = {
+  SendRequest: "send_request",
+  AcceptRequest: "accept_request",
+  DeclineRequest: "decline_request",
+  CancelRequest: "cancel_request",
+  RemoveFriend: "remove_friend",
+  Block: "block",
+  Unblock: "unblock"
+} as const satisfies Record<string, Database["public"]["Enums"]["social_friend_action"]>;
+
+export type SocialFriendAction = Database["public"]["Enums"]["social_friend_action"];
+
 export const ChatChannelType = {
   GlobalLobby: "global_lobby",
   GameLobby: "game_lobby",

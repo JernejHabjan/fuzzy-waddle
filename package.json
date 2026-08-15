@@ -48,7 +48,7 @@
     "generate-audio-sprites": "pnpm assets:check && node ./apps/portal/src/metadata/sfx/generate-audio-sprites.js",
     "_docs_generate-supabase-types": "requires local Supabase stack; run supabase start first",
     "generate-supabase-types": "supabase gen types typescript --local --schema public > \"libs/platform/database-schema/src/lib/database/database.types.ts\"",
-    "generate-supabase-types:remote": "supabase gen types typescript --project-id \"bhzetyxjimpabioxoodz\" --schema public > \"libs/platform/database-schema/src/lib/database/database.types.ts\""
+    "generate-supabase-types:remote": "supabase gen types typescript --project-id \"elbsrggbpngjnsionszx\" --schema public > \"libs/platform/database-schema/src/lib/database/database.types.ts\""
   },
   "engines": {
     "node": ">=24.13.0 <25",
