@@ -19,6 +19,7 @@ import { getResearchedLevelForActor } from "../../../data/actor-level-utils";
 import { ContainableComponent } from "../../../entity/components/building/containable-component";
 import { getGameObjectLogicalTransform, isSceneActive } from "../../../data/game-object-helper";
 import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 /**
  * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
  * storage boundaries do not drift into an unconstrained primitive.
@@ -45,7 +46,7 @@ export class WorldStateSnapshotManager {
     const index = getSceneService(this.scene, ActorIndexSystem);
     if (!index) return;
 
-    const owned = index.getOwnedActors(this.player.playerNumber);
+    const owned = index.getOwnedActors(this.player.playerNumber).sort(compareAiActorsByStableId);
 
     this.refreshOwnedActors(owned);
     this.refreshEconomyAndSupply();
@@ -245,14 +246,16 @@ export class WorldStateSnapshotManager {
     const baseCenter = this.blackboard.baseCenterTile;
     const visionRadius = AI_CONFIG.enemyVisionRadiusTiles;
 
-    const candidates = allActors.filter((obj) => {
-      if (ownedSet.has(obj)) return false;
-      if (!getActorComponent(obj, OwnerComponent)) return false;
-      // Skip actors that are inside a container — they are not targetable
-      // noinspection RedundantIfStatementJS
-      if (getActorComponent(obj, ContainableComponent)?.isContained()) return false;
-      return true;
-    });
+    const candidates = allActors
+      .filter((obj) => {
+        if (ownedSet.has(obj)) return false;
+        if (!getActorComponent(obj, OwnerComponent)) return false;
+        // Skip actors that are inside a container — they are not targetable
+        // noinspection RedundantIfStatementJS
+        if (getActorComponent(obj, ContainableComponent)?.isContained()) return false;
+        return true;
+      })
+      .sort(compareAiActorsByStableId);
 
     // Campaign normal fog uses a stable logical-radius view; skirmish keeps its existing behavior.
     if (this.player.playerController.data.playerDefinition?.campaignFogPolicy === "normal") {
@@ -294,6 +297,21 @@ export class WorldStateSnapshotManager {
 
     return candidates;
   }
+}
+
+/**
+ * Orders indexed AI actors by the stable ID required by command and replay contracts.
+ * Snapshot inputs come from {@link ActorIndexSystem}, so a missing ID indicates a broken
+ * indexing invariant rather than a candidate that may be ordered by runtime insertion.
+ */
+export function compareAiActorsByStableId(left: GameObject, right: GameObject): number {
+  const leftId = getActorComponent(left, IdComponent)?.id;
+  const rightId = getActorComponent(right, IdComponent)?.id;
+  if (!leftId || !rightId) {
+    throw new Error("AI actor ordering requires indexed actors with stable IDs");
+  }
+  if (leftId === rightId) return 0;
+  return leftId < rightId ? -1 : 1;
 }
 
 /** Documents the is campaign ai target visible member and its declared contract at this boundary. */

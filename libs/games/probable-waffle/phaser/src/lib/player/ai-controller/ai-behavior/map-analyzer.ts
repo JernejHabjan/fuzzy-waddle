@@ -6,6 +6,7 @@ import { getSceneService } from "../../../world/services/scene-component-helpers
 import { NeedType } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/ai-behavior/need-type";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { getSimulationNow } from "../ai-time";
+import { compareScoredBuildSpots } from "./base-planner-selection";
 type GameObject = Phaser.GameObjects.GameObject;
 
 // Lightweight result of a map analysis pass
@@ -192,8 +193,13 @@ export class MapAnalyzer {
       if (spots.length >= maxSpots) break;
     }
 
-    // Sort by score (best first)
-    return spots.sort((a, b) => this.scoreBuildSpot(b, base) - this.scoreBuildSpot(a, base));
+    // Coordinate tie-breakers keep equal-score output independent of candidate insertion order.
+    return spots.sort((left, right) =>
+      compareScoredBuildSpots(
+        { tile: left, score: this.scoreBuildSpot(left, base) },
+        { tile: right, score: this.scoreBuildSpot(right, base) }
+      )
+    );
   }
 
   private manhattan(a: Vector2Simple, b: Vector2Simple): number {
