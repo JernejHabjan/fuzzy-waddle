@@ -3,7 +3,7 @@
 ## Status
 
 - Delivery lane: `decision-pr`
-- Current stage: investigation and plan complete; implementation awaits D1-D3
+- Current stage: implementation-ready; D1-D3 accepted
 - Issue: [#671 — Spectator AOTA](https://github.com/JernejHabjan/fuzzy-waddle/issues/671)
 - Goal: make an authenticated spectator able to join before or during a multiplayer match, catch up to the host, watch the live simulation, and leave cleanly without gaining player authority.
 
@@ -81,28 +81,22 @@ Angular join flow
 - Replace player economy/action surfaces with a small `Spectating` indicator and leave camera, minimap, clock, chat, and actor-information surfaces available.
 - Route spectators to the existing score screen with neutral wording and the authoritative all-player score table; never derive victory/defeat from a nonexistent local player.
 
-## Decisions requested
+## Confirmed decisions
 
-### D1 — Spectator visibility and inspection
+### D1 — Spectator visibility and inspection (accepted)
 
-- Recommendation: omniscient terrain and actors, with read-only selection/inspection of either team. Do not add player-perspective switching in the first delivery.
+- Decision: use omniscient terrain and actors, with read-only selection/inspection of either team. Do not add player-perspective switching in the first delivery.
 - Rationale: this matches the existing no-fog scaffold, keeps the role useful, and avoids coupling the first fix to perspective-specific fog/resource projections.
-- Deferral impact: scene composition, HUD visibility, and selection behavior cannot be finalized.
-- Reply: `Accept D1`, `Use D1: <alternative>`, or `Defer D1`.
 
-### D2 — Join policy
+### D2 — Join policy (accepted)
 
-- Recommendation: support public self-hosted matches before and during play; keep private-match spectator admission out of scope until an invitation/approval contract exists. Reject stopped matches and duplicate player/spectator membership.
+- Decision: support public self-hosted matches before and during play; keep private-match spectator admission out of scope until an invitation/approval contract exists. Reject stopped matches and duplicate player/spectator membership.
 - Rationale: the current read endpoint intentionally exposes public instances but provides no private spectator invitation token or host approval flow.
-- Deferral impact: server admission rules and lobby availability remain ambiguous.
-- Reply: `Accept D2`, `Use D2: <alternative>`, or `Defer D2`.
 
-### D3 — Match completion
+### D3 — Match completion (accepted)
 
-- Recommendation: send spectators to the existing score screen with neutral `Match complete` wording, all-player scores, and no personal victory/defeat state.
+- Decision: send spectators to the existing score screen with neutral `Match complete` wording, all-player scores, and no personal victory/defeat state.
 - Rationale: spectators should observe the full lifecycle, while player-specific outcome semantics must not be fabricated.
-- Deferral impact: end-of-match routing and cleanup cannot be considered complete.
-- Reply: `Accept D3`, `Use D3: <alternative>`, or `Defer D3`.
 
 ## Implementation stages
 
@@ -206,8 +200,10 @@ Manual multiplayer playtest matrix:
 - [x] Trace Angular join/navigation, protocol models, socket room membership, server auth/mutation, Phaser identity, HUD composition, lockstep, snapshot recovery, and score paths.
 - [x] Identify the throwing local-player invariant, rejected snapshot authority, and unsafe bootstrap ordering.
 - [x] Define staged implementation, acceptance criteria, verification, risks, and explicit out-of-scope work.
-- [ ] Receive and apply decisions D1-D3.
+- [x] Receive and apply decisions D1-D3.
 - [ ] Implement Stages 1-4 and keep this checklist current.
+
+Exact next action: implement Stage 1 — Role-safe identity and admission.
 
 ## Continuation prompt
 
