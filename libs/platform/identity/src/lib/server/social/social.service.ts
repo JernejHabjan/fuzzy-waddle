@@ -16,6 +16,17 @@ import type { SocialServiceInterface } from "./social.service.interface";
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
+/** User-facing text for known persistence error codes; the code itself remains available for clients. */
+const SOCIAL_ERROR_MESSAGES: Record<string, string> = {
+  social_self_action: "You cannot perform this action on yourself",
+  social_request_not_inbound: "This friend request is not awaiting your response",
+  social_request_not_outbound: "This friend request was not sent by you",
+  social_relationship_not_accepted: "You are not friends with this user",
+  social_interaction_blocked: "This action is not allowed between these users",
+  social_user_unavailable: "This user is not available",
+  social_relationship_not_found: "This relationship could not be found"
+};
+
 @Injectable()
 export class SocialService implements SocialServiceInterface {
   constructor(private readonly repository: SocialRepository) {}
@@ -107,17 +118,18 @@ export class SocialService implements SocialServiceInterface {
       return await operation();
     } catch (error: unknown) {
       if (!(error instanceof SocialRepositoryError)) throw error;
+      const message = SOCIAL_ERROR_MESSAGES[error.code] ?? "Social action could not be completed";
       switch (error.code) {
         case "social_self_action":
         case "social_request_not_inbound":
         case "social_request_not_outbound":
         case "social_relationship_not_accepted":
-          throw new BadRequestException(error.code);
+          throw new BadRequestException({ message, code: error.code });
         case "social_interaction_blocked":
-          throw new ForbiddenException(error.code);
+          throw new ForbiddenException({ message, code: error.code });
         case "social_user_unavailable":
         case "social_relationship_not_found":
-          throw new NotFoundException(error.code);
+          throw new NotFoundException({ message, code: error.code });
         default:
           throw new InternalServerErrorException("Social persistence failed");
       }

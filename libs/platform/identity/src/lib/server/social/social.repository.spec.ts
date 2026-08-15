@@ -48,7 +48,7 @@ describe("SocialRepository", () => {
       p_actor_user_id: actorId,
       p_action: SocialFriendAction.SendRequest,
       p_target_user_id: targetId,
-      p_relationship_id: null
+      p_relationship_id: undefined
     });
   });
 
@@ -56,5 +56,17 @@ describe("SocialRepository", () => {
     rpc.mockResolvedValue({ data: { relationships: "invalid", blocks: [] }, error: null });
 
     await expect(repository.getSnapshot(actorId)).rejects.toThrow("social_invalid_relationships");
+  });
+
+  it("propagates a raised social state-machine code", async () => {
+    rpc.mockResolvedValue({ data: null, error: { code: "P0001", message: "social_self_action" } });
+
+    await expect(repository.getSnapshot(actorId)).rejects.toThrow("social_self_action");
+  });
+
+  it("masks unknown persistence errors instead of guessing a code from free text", async () => {
+    rpc.mockResolvedValue({ data: null, error: { code: "08006", message: "connection refused" } });
+
+    await expect(repository.getSnapshot(actorId)).rejects.toThrow("social_persistence_failure");
   });
 });

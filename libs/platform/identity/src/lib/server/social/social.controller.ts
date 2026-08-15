@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Query, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Post, Query, UseGuards } from "@nestjs/common";
 import type { AuthUser } from "@supabase/supabase-js";
 import type { FriendRelationship, PublicSocialProfile, SocialSnapshot } from "../../social/friendship";
 import { CurrentUser } from "../auth/current-user";
@@ -29,23 +29,32 @@ export class SocialController {
   @Post("friend-requests/:relationshipId/accept")
   acceptFriendRequest(
     @CurrentUser() user: AuthUser,
-    @Param("relationshipId") relationshipId: string
+    @Param("relationshipId", new ParseUUIDPipe()) relationshipId: string
   ): Promise<FriendRelationship> {
     return this.socialService.acceptFriendRequest(user, relationshipId);
   }
 
   @Delete("friend-requests/:relationshipId/decline")
-  declineFriendRequest(@CurrentUser() user: AuthUser, @Param("relationshipId") relationshipId: string): Promise<void> {
+  declineFriendRequest(
+    @CurrentUser() user: AuthUser,
+    @Param("relationshipId", new ParseUUIDPipe()) relationshipId: string
+  ): Promise<void> {
     return this.socialService.declineFriendRequest(user, relationshipId);
   }
 
   @Delete("friend-requests/:relationshipId/cancel")
-  cancelFriendRequest(@CurrentUser() user: AuthUser, @Param("relationshipId") relationshipId: string): Promise<void> {
+  cancelFriendRequest(
+    @CurrentUser() user: AuthUser,
+    @Param("relationshipId", new ParseUUIDPipe()) relationshipId: string
+  ): Promise<void> {
     return this.socialService.cancelFriendRequest(user, relationshipId);
   }
 
   @Delete("friends/:relationshipId")
-  removeFriend(@CurrentUser() user: AuthUser, @Param("relationshipId") relationshipId: string): Promise<void> {
+  removeFriend(
+    @CurrentUser() user: AuthUser,
+    @Param("relationshipId", new ParseUUIDPipe()) relationshipId: string
+  ): Promise<void> {
     return this.socialService.removeFriend(user, relationshipId);
   }
 
@@ -55,7 +64,10 @@ export class SocialController {
   }
 
   @Delete("blocks/:targetUserId")
-  unblockUser(@CurrentUser() user: AuthUser, @Param("targetUserId") targetUserId: string): Promise<void> {
+  unblockUser(
+    @CurrentUser() user: AuthUser,
+    @Param("targetUserId", new ParseUUIDPipe()) targetUserId: string
+  ): Promise<void> {
     return this.socialService.unblockUser(user, targetUserId);
   }
 }

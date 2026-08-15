@@ -249,14 +249,13 @@ begin
     end if;
   end if;
 
-  -- Serialize every pair-targeted mutation on the same two profile rows. This closes the race where
-  -- a request could otherwise pass its block check while a concurrent block was being committed.
+  -- Serialize every pair-targeted mutation on the same two profile rows, always locking the
+  -- lexicographically lower id first. This closes both the race where a request could pass its
+  -- block check while a concurrent block was being committed, and cross-transaction deadlocks
+  -- that a single unordered "in (...) for update" statement cannot guarantee.
   if p_action in ('send_request', 'block', 'unblock') then
-    perform 1
-    from public.user_profiles
-    where id in (p_actor_user_id, p_target_user_id)
-    order by id
-    for update;
+    perform 1 from public.user_profiles where id = least(p_actor_user_id, p_target_user_id) for update;
+    perform 1 from public.user_profiles where id = greatest(p_actor_user_id, p_target_user_id) for update;
   end if;
 
   if p_action = 'send_request' then

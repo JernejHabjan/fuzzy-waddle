@@ -24,7 +24,7 @@ export class SocialRepository implements SocialRepositoryInterface {
       p_actor_user_id: actorUserId,
       p_username: username
     });
-    this.throwPersistenceError(error?.message);
+    this.throwPersistenceError(error);
     return data == null ? null : decodeProfile(data);
   }
 
@@ -32,7 +32,7 @@ export class SocialRepository implements SocialRepositoryInterface {
     const { data, error } = await this.supabaseProviderService.supabaseClient.rpc("social_get_snapshot", {
       p_actor_user_id: actorUserId
     });
-    this.throwPersistenceError(error?.message);
+    this.throwPersistenceError(error);
     return decodeSnapshot(data);
   }
 
@@ -45,18 +45,24 @@ export class SocialRepository implements SocialRepositoryInterface {
     const { data, error } = await this.supabaseProviderService.supabaseClient.rpc("social_apply_friend_action", {
       p_actor_user_id: actorUserId,
       p_action: action,
-      p_target_user_id: targetUserId ?? null,
-      p_relationship_id: relationshipId ?? null
+      p_target_user_id: targetUserId,
+      p_relationship_id: relationshipId
     });
-    this.throwPersistenceError(error?.message);
+    this.throwPersistenceError(error);
     return data == null ? null : decodeRelationship(data);
   }
 
-  /** Converts database-raised state-machine codes into a transport-independent repository error. */
-  private throwPersistenceError(message?: string): void {
-    if (!message) return;
-    const code = message.match(/social_[a-z_]+/)?.[0] ?? "social_persistence_failure";
-    throw new SocialRepositoryError(code);
+  /**
+   * Converts database-raised state-machine codes into a transport-independent repository error.
+   * Postgres `raise exception '<code>' using errcode = 'P0001'` surfaces as a PostgREST error with
+   * `code = 'P0001'` and `message = '<code>'`; only that pair is treated as a known social code, so
+   * genuine infrastructure failures (network, permissions, unexpected Postgres errors) surface as
+   * an opaque `social_persistence_failure` instead of being misread from arbitrary error text.
+   */
+  private throwPersistenceError(error?: { code?: string; message?: string } | null): void {
+    if (!error) return;
+    const isRaisedSocialCode = error.code === "P0001" && !!error.message && /^social_[a-z_]+$/.test(error.message);
+    throw new SocialRepositoryError(isRaisedSocialCode ? (error.message as string) : "social_persistence_failure");
   }
 }
 
