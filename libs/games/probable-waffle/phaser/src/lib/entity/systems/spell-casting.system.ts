@@ -11,7 +11,7 @@ import { OwnerComponent } from "../components/owner-component";
 import { ActorTranslateComponent } from "../components/movement/actor-translate-component";
 import { AnimationActorComponent } from "../components/animation/animation-actor-component";
 import { getGameObjectBounds, getGameObjectLogicalTransform, onObjectReady } from "../../data/game-object-helper";
-import { getSceneService } from "../../world/services/scene-component-helpers";
+import { getSceneComponent, getSceneService } from "../../world/services/scene-component-helpers";
 import { AudioService } from "../../world/services/audio.service";
 import { AoeZoneManager } from "./aoe-zone-manager";
 import { NavigationService } from "../../world/services/navigation.service";
@@ -23,6 +23,8 @@ import { DepthHelper } from "../../world/services/depth.helper";
 import { IsoHelper } from "../../world/tilemap/iso-helper";
 import Phaser from "phaser";
 import { PhaserProjectileFactory } from "../../combat/phaser-projectile-factory";
+import { FogOfWarComponent } from "../../world/tilemap/fog-of-war.component";
+import type { SoundDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/actor-audio/sound-definition";
 
 export class SpellCastingSystem {
   private spellComponent?: SpellComponent;
@@ -30,6 +32,7 @@ export class SpellCastingSystem {
   private animationActorComponent?: AnimationActorComponent;
   private ownerComponent?: OwnerComponent;
   private audioService?: AudioService;
+  private fogOfWarComponent?: FogOfWarComponent;
   private aoeZoneManager?: AoeZoneManager;
   private navigationService?: NavigationService;
   private projectileSprite?: Phaser.GameObjects.Image;
@@ -47,6 +50,7 @@ export class SpellCastingSystem {
     this.animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
     this.ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
     this.audioService = getSceneService(this.gameObject.scene, AudioService);
+    this.fogOfWarComponent = getSceneComponent(this.gameObject.scene, FogOfWarComponent);
     this.aoeZoneManager = getSceneService(this.gameObject.scene, AoeZoneManager);
     this.navigationService = getSceneService(this.gameObject.scene, NavigationService);
   }
@@ -231,12 +235,21 @@ export class SpellCastingSystem {
     }
 
     // Play impact sound
-    if (this.audioService && spellData.sounds?.impact) {
-      // TODO #649: Play impact sound
-    }
+    this.playImpactSound(spellData.sounds?.impact, targetTilePosition);
 
     // Apply spell effects
     this.applySpellEffects(spellData, targetTilePosition);
+  }
+
+  /**
+   * Plays cosmetic impact feedback from the projectile's resolved position when
+   * that tile is currently visible to the local player.
+   */
+  private playImpactSound(impactSound: SoundDefinition | undefined, targetTilePosition: Vector2Simple): void {
+    if (!impactSound || !this.audioService || !this.projectileSprite) return;
+    if (this.fogOfWarComponent?.getTileVisibility(targetTilePosition.x, targetTilePosition.y) !== "visible") return;
+
+    this.audioService.playSpatialAudioSprite(this.projectileSprite, impactSound.key, impactSound.spriteName);
   }
 
   private applySpellEffects(spellData: SpellData, targetPosition: Vector2Simple): void {
