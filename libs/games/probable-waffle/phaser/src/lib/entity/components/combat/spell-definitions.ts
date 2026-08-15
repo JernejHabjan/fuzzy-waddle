@@ -6,6 +6,17 @@ import { DamageType, ObjectNames, ResearchType, SpellTargetType } from "@fuzzy-w
 import { BansheeAnimationTypes } from "../../../prefabs/characters/mobs/banshee/anims-banshee";
 import { MedusaAnimationTypes } from "../../../prefabs/characters/mobs/medusa/anims-medusa";
 import { WendigoAnimationTypes } from "../../../prefabs/characters/mobs/forest_wendigo/anims-forest_wendigo";
+import {
+  SharedActorActionsSfxFireSpellSounds,
+  SharedActorActionsSfxFrostFireSounds,
+  SharedActorActionsSfxFrostImpactSounds,
+  SharedActorActionsSfxHealSounds
+} from "../../../sfx/shared-actor-actions-sfx";
+
+const frostCastSound = SharedActorActionsSfxFrostFireSounds[0]!;
+const frostImpactSound = SharedActorActionsSfxFrostImpactSounds[0]!;
+const fireCastSound = SharedActorActionsSfxFireSpellSounds[0]!;
+const healSound = SharedActorActionsSfxHealSounds[0]!;
 
 export const spellDefinitions: Record<SpellType, SpellData> = {
   // ========== SNOWSTORM - AOE Freeze + DoT ==========
@@ -38,6 +49,7 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
       }
     },
     castAnimation: AnimationType.Cast,
+    sounds: { cast: frostCastSound, impact: frostImpactSound },
     icon: { key: "factions", frame: "spell_icons/snowstorm.png" },
     autocastDefault: true,
     requiresResearch: ResearchType.SnowstormSpell
@@ -66,6 +78,7 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
     dotTickInterval: 1000,
     dotDuration: 2000,
     castAnimation: AnimationType.Cast,
+    sounds: { cast: fireCastSound },
     icon: { key: "factions", frame: "spell_icons/firestorm.png" },
     autocastDefault: false,
     requiresResearch: ResearchType.FirestormSpell
@@ -94,6 +107,7 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
       orientation: { randomizeOrientation: false, pointingOrientation: 270 }
     },
     castAnimation: AnimationType.Cast,
+    sounds: { cast: frostCastSound, impact: frostImpactSound },
     icon: { key: "factions", frame: "spell_icons/frost_nova.png" },
     autocastDefault: true,
     requiresResearch: ResearchType.FrostNovaSpell
@@ -114,6 +128,7 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
     instantHeal: 30,
     tintColor: 0x00ff88,
     castAnimation: AnimationType.Cast,
+    sounds: { cast: healSound, impact: healSound },
     icon: { key: "factions", frame: "spell_icons/healing_light.png" },
     autocastDefault: true,
     requiresResearch: ResearchType.HealingLightSpell
@@ -141,6 +156,7 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
     hotTickInterval: 1000,
     hotDuration: 0,
     castAnimation: AnimationType.Cast,
+    sounds: { cast: healSound },
     icon: { key: "factions", frame: "spell_icons/healing_rain.png" },
     autocastDefault: false,
     requiresResearch: ResearchType.HealingRainSpell
@@ -165,6 +181,7 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
       inheritOwner: true
     },
     castAnimation: AnimationType.Cast,
+    sounds: { cast: healSound },
     icon: { key: "factions", frame: "spell_icons/healing_totem.png" },
     autocastDefault: false,
     requiresResearch: ResearchType.HealingTotemSpell

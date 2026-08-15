@@ -1,9 +1,16 @@
 import type Phaser from "phaser";
 import type { SoundDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/actor-audio/sound-definition";
+import type { SpellData } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/spell-data";
 import { SpellCastingSystem } from "./spell-casting.system";
+import { EffectsAnims } from "../../animations/effects";
 
 type ImpactAudioHarness = {
   playImpactSound(impactSound: SoundDefinition | undefined, targetTilePosition: { x: number; y: number }): void;
+  playImpactEffect(
+    spellData: SpellData,
+    targetTilePosition: { x: number; y: number },
+    targetWorldPosition: { x: number; y: number }
+  ): void;
 };
 
 describe("SpellCastingSystem impact audio", () => {
@@ -46,5 +53,22 @@ describe("SpellCastingSystem impact audio", () => {
     system.playImpactSound(undefined, targetTilePosition);
 
     expect(playSpatialAudioSprite).not.toHaveBeenCalled();
+  });
+
+  it("creates and layers configured impact VFX at the resolved visible position", () => {
+    const impactSprite = { setDepth: jest.fn(), setTint: jest.fn() } as unknown as Phaser.GameObjects.Sprite;
+    const createImpactEffect = jest.spyOn(EffectsAnims, "createAndPlayEffectAnimation").mockReturnValue(impactSprite);
+    const { system } = createHarness("visible");
+    const gameObject = { scene: {} } as Phaser.GameObjects.GameObject;
+    Object.assign(system as object, { gameObject, projectileSprite: { depth: 12 } });
+    const spellData = {
+      projectile: { impactAnimation: { anims: [EffectsAnims.ANIM_IMPACT_1], tint: 0x99ccff } }
+    } as SpellData;
+
+    system.playImpactEffect(spellData, targetTilePosition, { x: 128, y: 256 });
+
+    expect(createImpactEffect).toHaveBeenCalledWith(gameObject.scene, EffectsAnims.ANIM_IMPACT_1, 128, 256);
+    expect(impactSprite.setDepth).toHaveBeenCalledWith(13);
+    expect(impactSprite.setTint).toHaveBeenCalledWith(0x99ccff);
   });
 });

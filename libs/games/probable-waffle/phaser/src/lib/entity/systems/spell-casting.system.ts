@@ -10,7 +10,13 @@ import { StatusEffectComponent } from "../components/status-effect/status-effect
 import { OwnerComponent } from "../components/owner-component";
 import { ActorTranslateComponent } from "../components/movement/actor-translate-component";
 import { AnimationActorComponent } from "../components/animation/animation-actor-component";
-import { getGameObjectBounds, getGameObjectLogicalTransform, onObjectReady } from "../../data/game-object-helper";
+import {
+  getGameObjectBounds,
+  getGameObjectCurrentTile,
+  getGameObjectDepth,
+  getGameObjectLogicalTransform,
+  onObjectReady
+} from "../../data/game-object-helper";
 import { getSceneComponent, getSceneService } from "../../world/services/scene-component-helpers";
 import { AudioService } from "../../world/services/audio.service";
 import { AoeZoneManager } from "./aoe-zone-manager";
@@ -25,6 +31,7 @@ import Phaser from "phaser";
 import { PhaserProjectileFactory } from "../../combat/phaser-projectile-factory";
 import { FogOfWarComponent } from "../../world/tilemap/fog-of-war.component";
 import type { SoundDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/actor-audio/sound-definition";
+import { EffectsAnims } from "../../animations/effects";
 
 export class SpellCastingSystem {
   private spellComponent?: SpellComponent;
@@ -121,10 +128,7 @@ export class SpellCastingSystem {
       });
     }
 
-    // Play cast sound
-    if (this.audioService && spellData.sounds?.cast) {
-      // TODO #647: Play cast sound
-    }
+    this.playCastSound(spellData.sounds?.cast);
 
     // Spawn projectile or apply effects immediately
     if (spellData.projectile) {
@@ -132,6 +136,7 @@ export class SpellCastingSystem {
     } else {
       // Instant cast - apply effects immediately
       this.applySpellEffects(spellData, targetTileXYZ);
+      if (worldXY) this.playInstantImpactFeedback(spellData, targetTileXYZ, worldXY);
     }
 
     // Start cooldown
@@ -229,10 +234,7 @@ export class SpellCastingSystem {
     targetTilePosition: Vector2Simple,
     targetWorldPosition: Vector2Simple
   ): void {
-    // Play impact animation
-    if (spellData.projectile?.impactAnimation) {
-      // TODO #648: Create impact animation at target position
-    }
+    this.playImpactEffect(spellData, targetTilePosition, targetWorldPosition);
 
     // Play impact sound
     this.playImpactSound(spellData.sounds?.impact, targetTilePosition);
@@ -247,9 +249,64 @@ export class SpellCastingSystem {
    */
   private playImpactSound(impactSound: SoundDefinition | undefined, targetTilePosition: Vector2Simple): void {
     if (!impactSound || !this.audioService || !this.projectileSprite) return;
-    if (this.fogOfWarComponent?.getTileVisibility(targetTilePosition.x, targetTilePosition.y) !== "visible") return;
+    if (!this.isTileVisible(targetTilePosition)) return;
 
     this.audioService.playSpatialAudioSprite(this.projectileSprite, impactSound.key, impactSound.spriteName);
+  }
+
+  /** Plays configured cast feedback only while the caster remains visible to the local player. */
+  private playCastSound(castSound: SoundDefinition | undefined): void {
+    const casterTilePosition = getGameObjectCurrentTile(this.gameObject);
+    if (!castSound || !this.audioService || !casterTilePosition || !this.isTileVisible(casterTilePosition)) return;
+
+    this.audioService.playSpatialAudioSprite(this.gameObject, castSound.key, castSound.spriteName);
+  }
+
+  /** Creates cosmetic impact VFX at a visible resolved position without affecting spell resolution. */
+  private playImpactEffect(
+    spellData: SpellData,
+    targetTilePosition: Vector2Simple,
+    targetWorldPosition: Vector2Simple
+  ): void {
+    const impactAnimation = spellData.projectile?.impactAnimation;
+    if (!impactAnimation || !this.isTileVisible(targetTilePosition)) return;
+
+    const animation = impactAnimation.anims[Math.floor(Math.random() * impactAnimation.anims.length)];
+    if (!animation) return;
+
+    const impactSprite = EffectsAnims.createAndPlayEffectAnimation(
+      this.gameObject.scene,
+      animation,
+      targetWorldPosition.x,
+      targetWorldPosition.y
+    );
+    const projectileDepth = this.projectileSprite ? getGameObjectDepth(this.projectileSprite) : null;
+    if (projectileDepth !== null) impactSprite.setDepth(projectileDepth + 1);
+    if (impactAnimation.tint !== undefined) impactSprite.setTint(impactAnimation.tint);
+  }
+
+  /** Plays the single resolved impact feedback for spells that apply without a projectile. */
+  private playInstantImpactFeedback(
+    spellData: SpellData,
+    targetTilePosition: Vector2Simple,
+    targetWorldPosition: Vector2Simple
+  ): void {
+    if (!spellData.sounds?.impact || !this.audioService || !this.isTileVisible(targetTilePosition)) return;
+
+    const impactSource = this.gameObject.scene.add.zone(targetWorldPosition.x, targetWorldPosition.y, 1, 1);
+    const playback = this.audioService.playSpatialAudioSprite(
+      impactSource,
+      spellData.sounds.impact.key,
+      spellData.sounds.impact.spriteName,
+      undefined,
+      { onComplete: () => impactSource.destroy() }
+    );
+    if (!playback) impactSource.destroy();
+  }
+
+  /** Treats fog absence, explored tiles, and unexplored tiles as non-visible cosmetic locations. */
+  private isTileVisible(tilePosition: Vector2Simple): boolean {
+    return this.fogOfWarComponent?.getTileVisibility(tilePosition.x, tilePosition.y) === "visible";
   }
 
   private applySpellEffects(spellData: SpellData, targetPosition: Vector2Simple): void {
