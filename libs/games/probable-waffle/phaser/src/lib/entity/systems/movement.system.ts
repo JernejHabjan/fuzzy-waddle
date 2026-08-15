@@ -42,6 +42,8 @@ import { CommandBusService } from "../../world/services/multiplayer/command-bus.
 import { getInterpolatedSimulationNow } from "../../world/services/simulation-time";
 import { MovementOccupancyService } from "../../world/services/movement-occupancy.service";
 import { applyCampaignProgressionModifiers } from "../../campaign/campaign-progression-modifier";
+import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
+import { allocateAirFormationDestinations } from "./air-formation";
 /**
  * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
  * storage boundaries do not drift into an unconstrained primitive.
@@ -118,6 +120,8 @@ export class MovementSystem {
   private animationActorComponent?: AnimationActorComponent;
   private statusEffectComponent?: StatusEffectComponent;
   private _movementOccupancyService?: MovementOccupancyService;
+  /** Reservation awaiting consumption by the next direct-flight movement start. */
+  private pendingAirDestinationReservation?: { destination: Vector3Simple; token: number };
 
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
     this.listenToMoveEvents();
@@ -691,6 +695,10 @@ export class MovementSystem {
     this._cancelCurrentMovement = undefined;
     const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
     if (actorId) this.movementOccupancyService?.releaseStep(actorId);
+    if (actorId && this.pendingAirDestinationReservation) {
+      this.movementOccupancyService?.releaseAirDestination(actorId, this.pendingAirDestinationReservation.token);
+      this.pendingAirDestinationReservation = undefined;
+    }
   }
 
   /**
@@ -714,12 +722,25 @@ export class MovementSystem {
     vec3: Vector3Simple,
     pathMoveConfig?: PathMoveConfig
   ): Promise<void> {
+    const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
+    const pendingReservation =
+      this.pendingAirDestinationReservation &&
+      this.pendingAirDestinationReservation.destination.x === vec3.x &&
+      this.pendingAirDestinationReservation.destination.y === vec3.y &&
+      this.pendingAirDestinationReservation.destination.z === vec3.z
+        ? this.pendingAirDestinationReservation
+        : undefined;
+    if (pendingReservation) this.pendingAirDestinationReservation = undefined;
+
     // don't use pathfinding
     // use worldXY to move directly to location
     this.cancelMovement();
 
     const tileWorldXY = this.navigationService?.getTileWorldCenter(vec3);
     if (!tileWorldXY) {
+      if (actorId && pendingReservation) {
+        this.movementOccupancyService?.releaseAirDestination(actorId, pendingReservation.token);
+      }
       return Promise.reject("No tile world xy to move to");
     }
 
@@ -735,16 +756,33 @@ export class MovementSystem {
       : 1;
 
     const onComplete = () => {
+      if (actorId && pendingReservation) {
+        this.movementOccupancyService?.releaseAirDestination(actorId, pendingReservation.token);
+      }
       pathMoveConfig?.onComplete?.();
       this.playMovementAnimation(false, pathMoveConfig);
     };
 
     const onStop = () => {
+      if (actorId && pendingReservation) {
+        this.movementOccupancyService?.releaseAirDestination(actorId, pendingReservation.token);
+      }
       pathMoveConfig?.onStop?.();
       if (!pathMoveConfig?.ignoreAnimations) this.playMovementAnimation(false, pathMoveConfig);
     };
 
-    return this.startMovementTween(newLogicalTransform, pathMoveConfig, onComplete, onStop, tileDistanceMultiplier);
+    return this.startMovementTween(
+      newLogicalTransform,
+      pathMoveConfig,
+      onComplete,
+      onStop,
+      tileDistanceMultiplier
+    ).catch((error) => {
+      if (actorId && pendingReservation) {
+        this.movementOccupancyService?.releaseAirDestination(actorId, pendingReservation.token);
+      }
+      throw error;
+    });
   }
 
   /**
@@ -973,8 +1011,10 @@ export class MovementSystem {
   }
 
   /**
-   * Prevents units from clumping up in the same point.
-   * It places units in a classic RTS game formation, arranging them in a grid around the target tile.
+   * Prevents command groups from converging on one point. Ground actors retain
+   * connected, navigable formation assignment; flying actors use the separate
+   * deterministic air spiral and never consult ground terrain or height.
+   *
    * Todo - this is not the most efficient way to do this:
    * Todo - instead of finding tileVec3 here, we should rework "command.issued.move"
    * Todo - to send the target tileVec3 for each actor
@@ -983,11 +1023,12 @@ export class MovementSystem {
     tileVec3: Vector3Simple,
     selectedActorObjectIds: ActorId[]
   ): Promise<Vector3Simple> {
+    if (getActorComponent(this.gameObject, FlyingComponent)) {
+      return this.reserveAirFormationDestination(tileVec3, selectedActorObjectIds);
+    }
+
     const unitCount = selectedActorObjectIds.length;
     if (unitCount < 2) {
-      return tileVec3;
-    }
-    if (getActorComponent(this.gameObject, FlyingComponent)) {
       return tileVec3;
     }
 
@@ -1078,6 +1119,57 @@ export class MovementSystem {
 
     // Fallback to original target if no suitable position is found
     return tileVec3;
+  }
+
+  /**
+   * Allocates a terrain-independent destination for a produced flyer heading to
+   * a location rally point. Sequential spawns observe active reservations, so
+   * they fill the same deterministic spiral without sharing its center.
+   */
+  getAirRallyFormationDestination(tileVec3: Vector3Simple): Vector3Simple {
+    const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
+    if (!actorId || !getActorComponent(this.gameObject, FlyingComponent)) return tileVec3;
+    return this.reserveAirFormationDestination(tileVec3, [actorId]);
+  }
+
+  /**
+   * Separates selected flyers from ground actors, assigns slots by stable ID,
+   * and records the reservation generation consumed by direct flight movement.
+   */
+  private reserveAirFormationDestination(tileVec3: Vector3Simple, selectedActorIds: readonly ActorId[]): Vector3Simple {
+    const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
+    const flyingComponent = getActorComponent(this.gameObject, FlyingComponent);
+    const movementOccupancy = this.movementOccupancyService;
+    // Production can issue a rally order in the same tick the actor is created,
+    // before the delayed object-ready callback populates `tileMapComponent`.
+    const tilemap =
+      this.tileMapComponent?.tilemap ?? getSceneComponent(this.gameObject.scene, TilemapComponent)?.tilemap;
+    if (!actorId || !flyingComponent || !movementOccupancy || !tilemap) return tileVec3;
+
+    const actorIndex = getSceneService(this.gameObject.scene, ActorIndexSystem);
+    const flyingActorIds = actorIndex
+      ? actorIndex
+          .getActorsByIds([...selectedActorIds])
+          .filter((actor) => !!getActorComponent(actor, FlyingComponent))
+          .map((actor) => getActorComponent(actor, IdComponent)?.id)
+          .filter((id): id is ActorId => id !== undefined)
+      : [actorId];
+    if (!flyingActorIds.includes(actorId)) flyingActorIds.push(actorId);
+
+    const flightLayer = flyingComponent.flightDefinition.height;
+    const reservedTiles = movementOccupancy.getUnavailableAirDestinations(flightLayer, flyingActorIds);
+    const assignments = allocateAirFormationDestinations(
+      tileVec3,
+      flyingActorIds,
+      { width: tilemap.width, height: tilemap.height },
+      reservedTiles
+    );
+    const destination = assignments.get(actorId) ?? tileVec3;
+    const token = movementOccupancy.reserveAirDestination(actorId, destination, flightLayer, flyingActorIds);
+    if (token !== undefined) {
+      this.pendingAirDestinationReservation = { destination, token };
+    }
+    return destination;
   }
 
   private getConnectedFormationPoints(tileVec3: Vector3Simple, unitCount: number): Vector2Simple[] {
