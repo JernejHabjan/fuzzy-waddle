@@ -15,7 +15,7 @@
         <input
           type="range"
           [(ngModel)]="optionsService.volumeSettings.masterVolume"
-          (change)="saveToLocalStorage('volume')"
+          (change)="saveChanges('volume')"
           class="form-range"
           id="masterVolume"
         />
@@ -27,7 +27,7 @@
         <input
           type="range"
           [(ngModel)]="optionsService.volumeSettings.sfxVolume"
-          (change)="saveToLocalStorage('volume')"
+          (change)="saveChanges('volume')"
           class="form-range"
           id="sfxVolume"
         />
@@ -39,7 +39,7 @@
         <input
           type="range"
           [(ngModel)]="optionsService.volumeSettings.musicVolume"
-          (change)="saveToLocalStorage('volume')"
+          (change)="saveChanges('volume')"
           class="form-range"
           id="musicVolume"
         />
@@ -77,7 +77,7 @@
           <input
             type="checkbox"
             [(ngModel)]="optionsService.gameSettings.lockToScreen"
-            (change)="saveToLocalStorage('game')"
+            (change)="saveChanges('game')"
             class="form-check-input"
             id="lockToScreen"
           />
@@ -95,7 +95,7 @@
         <input
           type="checkbox"
           [(ngModel)]="optionsService.gameSettings.enabledMouseCornerMovement"
-          (change)="saveToLocalStorage('game')"
+          (change)="saveChanges('game')"
           class="form-check-input"
           id="enabledMouseCornerMovement"
         />
@@ -105,7 +105,7 @@
         <input
           type="checkbox"
           [(ngModel)]="optionsService.gameSettings.enableSceneLightingEffects"
-          (change)="saveToLocalStorage('game')"
+          (change)="saveChanges('game')"
           class="form-check-input"
           id="enableSceneLightingEffects"
         />
@@ -119,11 +119,135 @@
           id="homeScreenBackground"
           class="form-select"
           [(ngModel)]="optionsService.gameSettings.homeScreenBackground"
-          (change)="saveToLocalStorage('game')"
+          (change)="saveChanges('game')"
         >
           <option value="ashfall">Ashfall</option>
           <option value="constellation">Constellation</option>
         </select>
+      </div>
+    </div>
+
+    <div class="card mt-3 p-3">
+      <h5 class="mb-3">Camera:</h5>
+      <div class="mb-3">
+        <label class="form-label form-label--select" for="defaultCameraDistance">Default camera distance</label>
+        <select
+          id="defaultCameraDistance"
+          class="form-select"
+          [(ngModel)]="optionsService.gameSettings.defaultCameraDistance"
+          (change)="saveChanges('game')"
+        >
+          <option [ngValue]="2">Near</option>
+          <option [ngValue]="1">Standard</option>
+          <option [ngValue]="0.5">Far</option>
+        </select>
+      </div>
+      <div>
+        <label class="form-label form-label--select" for="maximumCameraDistance">Maximum camera distance</label>
+        <select
+          id="maximumCameraDistance"
+          class="form-select"
+          [(ngModel)]="optionsService.gameSettings.maximumCameraDistance"
+          (change)="saveChanges('game')"
+        >
+          <option [ngValue]="1">Standard</option>
+          <option [ngValue]="0.5">Far</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card mt-3 p-3">
+      <h5 class="mb-3">Interface &amp; diagnostics:</h5>
+      <div class="preference-grid">
+        <label class="form-check"
+          ><input
+            class="form-check-input"
+            type="checkbox"
+            [(ngModel)]="optionsService.gameSettings.showPing"
+            (change)="saveChanges('game')"
+          />
+          Show ping</label
+        >
+        <label class="form-check"
+          ><input
+            class="form-check-input"
+            type="checkbox"
+            [(ngModel)]="optionsService.gameSettings.showActionsPerMinute"
+            (change)="saveChanges('game')"
+          />
+          Show actions per minute</label
+        >
+        <label class="form-check"
+          ><input
+            class="form-check-input"
+            type="checkbox"
+            [(ngModel)]="optionsService.gameSettings.showFps"
+            (change)="saveChanges('game')"
+          />
+          Show FPS</label
+        >
+        <label class="form-check"
+          ><input
+            class="form-check-input"
+            type="checkbox"
+            [(ngModel)]="optionsService.gameSettings.showTimeElapsed"
+            (change)="saveChanges('game')"
+          />
+          Show time elapsed</label
+        >
+      </div>
+    </div>
+
+    <div class="card mt-3 p-3">
+      <h5 class="mb-3">Gameplay:</h5>
+      <div class="mb-3 form-check">
+        <input
+          id="automaticallySaveReplays"
+          class="form-check-input"
+          type="checkbox"
+          [(ngModel)]="optionsService.gameSettings.automaticallySaveReplays"
+          (change)="saveChanges('game')"
+        />
+        <label for="automaticallySaveReplays" class="form-check-label">Automatically save replays</label>
+      </div>
+      <div class="mb-3">
+        <label class="form-label form-label--select" for="defaultSinglePlayerSpeed">Default single-player speed</label>
+        <select
+          id="defaultSinglePlayerSpeed"
+          class="form-select"
+          [(ngModel)]="optionsService.gameSettings.defaultSinglePlayerSpeed"
+          (change)="saveChanges('game')"
+        >
+          <option value="slow">Slow</option>
+          <option value="normal">Normal</option>
+          <option value="fast">Fast</option>
+        </select>
+        <div class="form-text">Multiplayer always uses Normal speed.</div>
+      </div>
+    </div>
+
+    <div class="card mt-3 p-3">
+      <h5 class="mb-3">Accessibility &amp; chat:</h5>
+      <div class="mb-3 form-check">
+        <input
+          id="profanityFilter"
+          class="form-check-input"
+          type="checkbox"
+          [(ngModel)]="optionsService.gameSettings.profanityFilter"
+          (change)="saveChanges('game')"
+        />
+        <label for="profanityFilter" class="form-check-label">Profanity filter</label>
+      </div>
+      <div class="form-check">
+        <input
+          id="enableSubtitles"
+          class="form-check-input"
+          type="checkbox"
+          [(ngModel)]="optionsService.gameSettings.enableSubtitles"
+          (change)="saveChanges('game')"
+        />
+        <label for="enableSubtitles" class="form-check-label">Enable subtitles</label>
+        <div class="form-text">Required campaign dialogue remains visible in either mode.</div>
       </div>
     </div>
 

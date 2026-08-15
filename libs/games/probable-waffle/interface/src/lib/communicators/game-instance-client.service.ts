@@ -28,6 +28,7 @@ import {
   type ProbableWafflePlayerDataChangeEventPayload,
   type ProbableWafflePlayerDataChangeEventProperty,
   ProbableWafflePlayerType,
+  ProbableWaffleTerrainVisibility,
   type ProbableWaffleSpectatorData,
   type ProbableWaffleSpectatorDataChangeEventProperty,
   type RequestGameSearchForMatchMakingDto
@@ -53,6 +54,7 @@ import { GameSaveService } from "../services/game-save/game-save.service";
 import { SaveGameDialogComponent } from "../gui/save-game-dialog/save-game-dialog.component";
 import type { SaveGameDialogResult } from "../gui/save-game-dialog/save-game-dialog-result";
 import { ToastService } from "@fuzzy-waddle/platform-game-host/angular/services/toast.service";
+import { OptionsService } from "../gui/options/options.service";
 
 @Injectable({
   providedIn: "root"
@@ -77,6 +79,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
   private readonly router = inject(Router);
   private readonly ngZone = inject(NgZone);
   private readonly toastService = inject(ToastService);
+  private readonly optionsService = inject(OptionsService);
   private communicators?: ProbableWaffleCommunicators;
   private communicatorSubscriptions: Subscription[] = [];
   private externalModalOpen = false;
@@ -112,7 +115,8 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
           allBuildingsMustBeEliminated: true
         },
         mapTuning: { unitCap: 100 } satisfies MapTuning,
-        difficultyModifiers: {} satisfies DifficultyModifiers
+        difficultyModifiers: {} satisfies DifficultyModifiers,
+        terrainVisibility: ProbableWaffleTerrainVisibility.MapExplored
       } satisfies ProbableWaffleGameModeData,
       gameStateData: {} as ProbableWaffleGameStateData
     });
@@ -268,7 +272,7 @@ export class GameInstanceClientService implements GameInstanceClientServiceInter
         // Emit to Phaser scene to show notification
         this.probableWaffleCommunicatorService.allScenes.emit({
           name: "chat-message-received",
-          data: msg.chatMessage
+          data: this.optionsService.presentChatMessage(msg.chatMessage)
         });
       }
     });

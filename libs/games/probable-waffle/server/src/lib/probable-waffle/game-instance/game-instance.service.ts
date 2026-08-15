@@ -10,6 +10,7 @@ import {
   ProbableWaffleGameInstanceVisibility,
   type ProbableWafflePlayerDataChangeEvent,
   type ProbableWaffleGameInstanceMetadataData,
+  ProbableWaffleTerrainVisibility,
   type ProbableWaffleGameModeData,
   type ProbableWaffleGameStateData,
   ProbableWafflePlayerType
@@ -54,7 +55,8 @@ export class GameInstanceService implements GameInstanceServiceInterface {
           allBuildingsMustBeEliminated: true
         },
         mapTuning: { unitCap: 100 } satisfies MapTuning,
-        difficultyModifiers: {} satisfies DifficultyModifiers
+        difficultyModifiers: {} satisfies DifficultyModifiers,
+        terrainVisibility: ProbableWaffleTerrainVisibility.MapExplored
       } satisfies ProbableWaffleGameModeData,
       gameStateData: {} as ProbableWaffleGameStateData
     });
@@ -215,6 +217,10 @@ export class GameInstanceService implements GameInstanceServiceInterface {
         }
         return;
       case "gameModeDataChange":
+        if (!gameInstance.isHost(user.id)) {
+          throw new ForbiddenException("Only the host can update match rules");
+        }
+        return;
       case "gameStateDataChange":
       case ProbableWaffleCommunicators.GameCommand:
       case ProbableWaffleCommunicators.StateHash:

@@ -7,6 +7,7 @@ import { Subject, Subscription } from "rxjs";
 import { ChatComponent } from "@fuzzy-waddle/platform-chat/client/components/chat.component";
 import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { AngularHost } from "@fuzzy-waddle/platform-game-host/angular/consts";
+import { OptionsService } from "../options/options.service";
 
 @Component({
   selector: "probable-waffle-in-game-chat",
@@ -19,6 +20,7 @@ export class InGameChatComponent implements OnInit, OnDestroy {
   private readonly communicatorService = inject(ProbableWaffleCommunicatorService);
   protected readonly gameInstanceClientService = inject(GameInstanceClientService);
   private readonly authService = inject(AuthService);
+  private readonly optionsService = inject(OptionsService);
 
   fromGame: boolean = false;
   dialogRef?: NgbModalRef;
@@ -28,7 +30,7 @@ export class InGameChatComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.messagesSubscription = this.communicatorService.message?.on.subscribe((msg) => {
-      this.listenToMessages.next(msg.chatMessage);
+      this.listenToMessages.next(this.optionsService.presentChatMessage(msg.chatMessage));
     });
   }
 

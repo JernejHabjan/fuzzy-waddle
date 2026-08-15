@@ -17,6 +17,8 @@ import { HealthComponent } from "../../entity/components/combat/components/healt
 import { getSceneService } from "../services/scene-component-helpers";
 import { ActorIndexSystem } from "../services/ActorIndexSystem";
 import { ContainableComponent } from "../../entity/components/building/containable-component";
+import { ProbableWaffleTerrainVisibility } from "@fuzzy-waddle/probable-waffle-protocol";
+import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 /**
  * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
  * storage boundaries do not drift into an unconstrained primitive.
@@ -115,6 +117,16 @@ export class FogOfWarComponent {
         ? undefined
         : getPlayer(this.scene, currentPlayerNumber)?.playerController.data.playerDefinition?.campaignFogPolicy;
     if (fogPolicy === "revealed" || fogPolicy === "omniscient-ai") this.fowMode = FogOfWarMode.ALL_VISIBLE;
+    if (!fogPolicy) {
+      const matchVisibility = (this.scene as ProbableWaffleScene).baseGameData.gameInstance.gameMode?.data
+        .terrainVisibility;
+      this.fowMode =
+        matchVisibility === ProbableWaffleTerrainVisibility.HideTerrain
+          ? FogOfWarMode.FULL_EXPLORATION
+          : matchVisibility === ProbableWaffleTerrainVisibility.AlwaysVisible
+            ? FogOfWarMode.ALL_VISIBLE
+            : FogOfWarMode.PRE_EXPLORED;
+    }
 
     // Subscribe to navigation updates
     this.scene.events.on(

@@ -25,6 +25,7 @@ import { SelectionGroupsComponent } from "../../player/human-controller/selectio
 import { GameModeConditionChecker } from "../state/GameModeConditionChecker";
 import { ScoreTracker } from "../state/ScoreTracker";
 import { getSceneExternalComponent } from "../services/scene-component-helpers";
+import { GameOptionsService } from "../../core/game-options.service";
 import { AchievementPort } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { AchievementType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { environment } from "@fuzzy-waddle/environments/environment";
@@ -55,6 +56,7 @@ import { IndexedScenarioReferenceRegistry } from "../../campaign/scenario/scenar
 import { CampaignContentAllowanceService } from "@fuzzy-waddle/probable-waffle-campaign";
 import { CampaignParticipantSceneAdapter } from "../../campaign/participants/campaign-participant-scene-adapter";
 import { CampaignRestoreCoordinator } from "../../campaign/campaign-restore-coordinator";
+import { hasMultiplayerCommandRelay } from "../../data/scene-data";
 
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
   tilemap!: Phaser.Tilemaps.Tilemap;
@@ -165,6 +167,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     restoreCoordinator?.complete();
     // Activate the multiplayer relay path when a socket is present
     commandBusService.tryInitMultiplayer();
+    this.applyDefaultSinglePlayerSpeed(simTickService);
 
     // Desync detection: hash state every 60 ticks and compare with peers (MP only).
     new StateHashService().init(this);
@@ -191,13 +194,28 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
   }
 
   private getCameraMovementHandler(): CameraMovementHandler {
-    const gameSettings = GameSettings.loadFromLocalStorage();
+    const gameSettings =
+      getSceneExternalComponent(this, GameOptionsService)?.gameSettings ?? GameSettings.loadFromLocalStorage();
     return new CameraMovementHandler(this, {
       cameraEdgeMovementSpeed: 30,
       cameraKeyboardMovementSpeed: 2,
       enabledMouseCornerMovement: gameSettings.enabledMouseCornerMovement,
+      defaultCameraDistance: gameSettings.defaultCameraDistance,
+      maximumCameraDistance: gameSettings.maximumCameraDistance,
       cursorOverGame: isTauri() // in Tauri the cursor is inside the window from startup; in browser let GAME_OVER set it
     });
+  }
+
+  /** Applies the personal default only when no multiplayer command relay owns cadence. */
+  private applyDefaultSinglePlayerSpeed(simulationTickService: SimulationTickService): void {
+    if (hasMultiplayerCommandRelay(this)) return;
+    const setting =
+      getSceneExternalComponent(this, GameOptionsService)?.gameSettings.defaultSinglePlayerSpeed ?? "normal";
+    const scale = setting === "slow" ? 0.75 : setting === "fast" ? 1.5 : 1;
+    simulationTickService.setSimulationTimeScale(scale);
+    this.time.timeScale = scale;
+    this.anims.globalTimeScale = scale;
+    this.tweens.timeScale = scale;
   }
 
   /**

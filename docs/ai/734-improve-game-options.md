@@ -2,12 +2,28 @@
 
 ## Status
 
-- [x] Classified as a decision/research change rather than runtime implementation.
+- [x] Classified as a decision/research change, then promoted to runtime delivery after product approval.
 - [x] Audited the existing settings UI, persistence, Phaser consumers, replay archive,
-  campaign dialogue, chat filtering, camera, HUD, lockstep clock, and fog of war.
+      campaign dialogue, chat filtering, camera, HUD, lockstep clock, and fog of war.
 - [x] Separated personal preferences from match-authoritative rules.
-- [ ] Confirm the product decisions below.
-- [ ] Implement the approved stages in order.
+- [x] Confirm D1–D7: deliver all; preserve required dialogue; preserve original chat text; SC2-style rolling APM;
+      discrete camera distances; single-player-only speed; host-owned visibility.
+- [x] Implement the approved runtime stages and focused automated verification.
+- [ ] Complete the two-client manual visibility/ping/reconnect smoke test in a configured multiplayer environment.
+
+## Implementation update (2026-08-15)
+
+- [x] Added versioned database-synchronized personal preferences with local storage only as the anonymous,
+      offline, and failed-sync fallback. Pending local changes upload after sign-in; otherwise the remote profile wins.
+- [x] Added typed live setting events and the expanded OnPush options surface.
+- [x] Wired camera defaults/limits, opt-in replay archives, and Slow/Normal/Fast single-player defaults.
+- [x] Added a Phaser Editor-backed diagnostics prefab owned by `HudProbableWaffle` for command-echo ping,
+      rolling 60-second committed-command APM, render FPS, and deterministic elapsed time.
+- [x] Preserved original chat text beside the server-filtered presentation field; the default-on client preference
+      selects the filtered copy without mutating the original transport message.
+- [x] Kept required campaign dialogue and progression UI visible regardless of the future voiced-subtitle preference.
+- [x] Added host-only terrain visibility rules and initialized fog from the resolved shared game-mode value.
+- [x] Kept multiplayer speed fixed at Normal.
 
 ## Goal
 
@@ -18,46 +34,47 @@ owners; controls that cannot safely affect the game must not be presented as wor
 
 ## Evidence from the current repository
 
-| Area | Current behavior | Consequence |
-| --- | --- | --- |
-| Settings persistence | `GameSettings` is a local-storage class with per-property fallback, and `GameOptionsService` publishes one broad `game` change event. | New personal preferences fit here, but payloads should become typed before adding several live consumers. |
-| Options UI | `OptionsComponent` edits volume, cursor lock, edge scrolling, lighting, and home background. | This is the owner for personal preferences, not match rules. |
-| Replays | `ReplayRecorderService` records every non-replay session and persists it on shutdown. | “Automatically save replays: false” changes today’s effective default and needs an explicit persistence gate. |
-| Profanity | `TextSanitizationService` cleans chat text on the server before clients receive it. | A client preference cannot disable filtering because the original message no longer reaches the client. |
-| Camera | `CameraMovementHandler` uses hard-coded zoom steps `[0.5, 1, 2, 4, 8]`, initializes independently of a preferred zoom, and restores save-game camera state. | Camera sliders need named bounds, an initial preference, and an explicit precedence rule for loaded saves and cinematics. |
-| HUD metrics | No player HUD surface currently owns ping, APM, FPS, or elapsed-time labels. Phaser exposes render FPS and the game exposes deterministic simulation ticks, but no round-trip latency provider exists. | One scene-backed diagnostics HUD should own the optional labels; ping needs transport instrumentation first. |
-| Subtitles | Campaign dialogue is projected into `CampaignCinematicHud` and is currently essential text, acknowledgement UI, and searchable history rather than a duplicate of voice audio. | Hiding it now can make campaign content inaccessible or impossible to advance. |
-| Game speed | `GameSpeedModifier` already offers 1x/3x/10x/100x. It scales deterministic ticks only in single-player; multiplayer is deliberately held at 1x. | A default speed preference can be single-player-only. Multiplayer game speed is a match rule and needs protocol/server authority. |
-| Visibility | `FogOfWarComponent` already supports full exploration, pre-explored terrain, and all-visible modes, with campaign overrides. | The WC3 choices map well to existing runtime modes, but visibility must be selected by the host/map and shared by the match, not stored as a personal preference. |
+| Area                 | Current behavior                                                                                                                                                                                       | Consequence                                                                                                                                                       |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Settings persistence | `GameSettings` is a local-storage class with per-property fallback, and `GameOptionsService` publishes one broad `game` change event.                                                                  | New personal preferences fit here, but payloads should become typed before adding several live consumers.                                                         |
+| Options UI           | `OptionsComponent` edits volume, cursor lock, edge scrolling, lighting, and home background.                                                                                                           | This is the owner for personal preferences, not match rules.                                                                                                      |
+| Replays              | `ReplayRecorderService` records every non-replay session and persists it on shutdown.                                                                                                                  | “Automatically save replays: false” changes today’s effective default and needs an explicit persistence gate.                                                     |
+| Profanity            | `TextSanitizationService` cleans chat text on the server before clients receive it.                                                                                                                    | A client preference cannot disable filtering because the original message no longer reaches the client.                                                           |
+| Camera               | `CameraMovementHandler` uses hard-coded zoom steps `[0.5, 1, 2, 4, 8]`, initializes independently of a preferred zoom, and restores save-game camera state.                                            | Camera sliders need named bounds, an initial preference, and an explicit precedence rule for loaded saves and cinematics.                                         |
+| HUD metrics          | No player HUD surface currently owns ping, APM, FPS, or elapsed-time labels. Phaser exposes render FPS and the game exposes deterministic simulation ticks, but no round-trip latency provider exists. | One scene-backed diagnostics HUD should own the optional labels; ping needs transport instrumentation first.                                                      |
+| Subtitles            | Campaign dialogue is projected into `CampaignCinematicHud` and is currently essential text, acknowledgement UI, and searchable history rather than a duplicate of voice audio.                         | Hiding it now can make campaign content inaccessible or impossible to advance.                                                                                    |
+| Game speed           | `GameSpeedModifier` already offers 1x/3x/10x/100x. It scales deterministic ticks only in single-player; multiplayer is deliberately held at 1x.                                                        | A default speed preference can be single-player-only. Multiplayer game speed is a match rule and needs protocol/server authority.                                 |
+| Visibility           | `FogOfWarComponent` already supports full exploration, pre-explored terrain, and all-visible modes, with campaign overrides.                                                                           | The WC3 choices map well to existing runtime modes, but visibility must be selected by the host/map and shared by the match, not stored as a personal preference. |
 
 ## Product model
 
 ### Personal persisted preferences
 
-These belong in the existing options screen and local settings storage.
+These belong in the existing options screen and the authenticated user profile. Local storage is only the
+anonymous/offline fallback and synchronization retry source.
 
-| Preference | Recommended default | Runtime owner |
-| --- | --- | --- |
-| Automatically save replays | Off | `ReplayRecorderService` persistence policy |
-| Profanity filter | On | Client chat presentation after the protocol can safely carry filterable text |
-| Show ping | Off | Diagnostics HUD plus a transport RTT provider |
-| Show actions per minute | Off | Diagnostics HUD plus a local committed-action counter |
-| Show FPS | Off | Diagnostics HUD using Phaser’s measured render FPS |
-| Show time elapsed | Off | Diagnostics HUD using deterministic simulation ticks |
-| Default camera distance | Current 1x view | `CameraMovementHandler` initial camera setup |
-| Maximum camera distance | Current farthest 0.5x view | `CameraMovementHandler` zoom clamp |
-| Enable subtitles | On | Campaign presentation, once dialogue and subtitles are distinct concepts |
-| Default single-player speed | Normal (1x) | Existing speed controller and deterministic tick service |
+| Preference                  | Recommended default        | Runtime owner                                                                |
+| --------------------------- | -------------------------- | ---------------------------------------------------------------------------- |
+| Automatically save replays  | Off                        | `ReplayRecorderService` persistence policy                                   |
+| Profanity filter            | On                         | Client chat presentation after the protocol can safely carry filterable text |
+| Show ping                   | Off                        | Diagnostics HUD plus a transport RTT provider                                |
+| Show actions per minute     | Off                        | Diagnostics HUD plus a local committed-action counter                        |
+| Show FPS                    | Off                        | Diagnostics HUD using Phaser’s measured render FPS                           |
+| Show time elapsed           | Off                        | Diagnostics HUD using deterministic simulation ticks                         |
+| Default camera distance     | Current 1x view            | `CameraMovementHandler` initial camera setup                                 |
+| Maximum camera distance     | Current farthest 0.5x view | `CameraMovementHandler` zoom clamp                                           |
+| Enable subtitles            | On                         | Campaign presentation, once dialogue and subtitles are distinct concepts     |
+| Default single-player speed | Normal (1x)                | Existing speed controller and deterministic tick service                     |
 
 ### Match-authoritative options
 
 These belong in host/lobby setup and game-instance metadata. Every participant must receive
 the same value before simulation starts.
 
-| Match option | Recommended values | Runtime mapping |
-| --- | --- | --- |
-| Game speed | Slow, Normal, Fast | One protocol enum mapped to an approved tick cadence for all peers; replays store the selected rule. |
-| Visibility | Default, Hide Terrain, Map Explored, Always Visible | Default resolves the map/campaign policy; Hide Terrain maps to full exploration; Map Explored maps to pre-explored; Always Visible maps to all-visible. |
+| Match option | Recommended values                                  | Runtime mapping                                                                                                                                         |
+| ------------ | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Game speed   | Slow, Normal, Fast                                  | One protocol enum mapped to an approved tick cadence for all peers; replays store the selected rule.                                                    |
+| Visibility   | Default, Hide Terrain, Map Explored, Always Visible | Default resolves the map/campaign policy; Hide Terrain maps to full exploration; Map Explored maps to pre-explored; Always Visible maps to all-visible. |
 
 “Default” must resolve to an explicit mode at launch so saves, reconnects, spectators, and
 replays do not depend on a later local default.
@@ -82,12 +99,13 @@ replays do not depend on a later local default.
 
 ### Stage 1: typed settings foundation and options UI
 
-- [ ] Define documented, typed personal-setting contracts and a closed change-event union.
-- [ ] Add defaults and backward-compatible local-storage hydration for all approved personal preferences.
+- [x] Define documented, typed personal-setting contracts and a closed change-event union.
+- [x] Add defaults and backward-compatible local-storage hydration for all approved personal preferences.
 - [ ] Move the options component to OnPush reactive state/forms while preserving its existing in-game modal contract.
-- [ ] Group options by gameplay, camera, interface/diagnostics, accessibility, and replay behavior without copying WC3 styling.
-- [ ] Use accessible checkboxes and range/select controls with visible values and help text where behavior is not obvious.
-- [ ] Add `GameSettings`, `GameOptionsService`, and `OptionsComponent` tests for defaults, legacy hydration, persistence, emitted changes, and rendered controls.
+- [x] Group options by gameplay, camera, interface/diagnostics, accessibility, and replay behavior without copying WC3 styling.
+- [x] Use accessible checkboxes and range/select controls with visible values and help text where behavior is not obvious.
+- [x] Add focused `GameSettings`, `OptionsService`, and `OptionsComponent` tests for defaults, legacy hydration,
+      local fallback, chat presentation, and rendered controls. Full event/HTTP integration coverage remains follow-up hardening.
 
 Acceptance criteria:
 
@@ -97,10 +115,10 @@ Acceptance criteria:
 
 ### Stage 2: camera preferences
 
-- [ ] Replace misleading hard-coded min/max names with documented zoom/distance constants.
-- [ ] Apply default distance only when starting a fresh game; a restored save camera state and an active authored cinematic take precedence.
-- [ ] Clamp wheel zoom and restored values to the configured maximum distance.
-- [ ] Apply changes live when safe, then recalculate/clamp camera bounds.
+- [x] Replace misleading hard-coded min/max names with documented zoom/distance configuration.
+- [x] Apply default distance only when starting a fresh game; restored save camera state takes precedence.
+- [x] Clamp wheel zoom and restored values to the configured maximum distance.
+- [x] Apply maximum-distance changes live, then recalculate/clamp camera bounds.
 - [ ] Add handler tests for initial preference, wheel limits, live changes, save restore, small-map bounds, and cleanup.
 
 Acceptance criteria:
@@ -111,9 +129,9 @@ Acceptance criteria:
 
 ### Stage 3: replay autosave
 
-- [ ] Inject/read the approved replay preference at recorder initialization.
-- [ ] Skip automatic archive persistence when disabled without affecting replay playback or deterministic diagnostics required elsewhere.
-- [ ] Decide whether changing the toggle during a match applies immediately or to the next match; recommend next match for predictable capture ownership.
+- [x] Inject/read the approved replay preference at recorder initialization.
+- [x] Skip automatic archive persistence when disabled without affecting replay playback.
+- [x] Apply replay preference changes to the next match for predictable capture ownership.
 - [ ] Add recorder tests for default-off, enabled persistence, replay playback sessions, missing save ports, and shutdown idempotence.
 
 Acceptance criteria:
@@ -123,12 +141,12 @@ Acceptance criteria:
 
 ### Stage 4: optional diagnostics HUD
 
-- [ ] Add one Phaser Editor-backed HUD prefab for enabled metrics; do not scatter labels through the main HUD scene.
-- [ ] Show elapsed time from `SimulationTickService.currentTick`, excluding paused/stalled simulation time.
-- [ ] Show FPS from Phaser’s measured render loop with a throttled display refresh.
-- [ ] Define APM as locally owned gameplay commands committed to the canonical command stream per rolling 60 seconds; exclude camera, selection-only, chat, and UI actions.
-- [ ] Introduce a transport RTT contract and Socket.IO implementation before exposing ping; display unavailable/disconnected states explicitly.
-- [ ] Subscribe to typed setting changes and release subscriptions/timers on HUD shutdown.
+- [x] Add one Phaser Editor-backed HUD prefab for enabled metrics; do not scatter labels through the main HUD scene.
+- [x] Show elapsed time from `SimulationTickService.currentTick`, excluding paused/stalled simulation time.
+- [x] Show FPS from Phaser’s measured render loop with a throttled display refresh.
+- [x] Define APM as locally owned gameplay commands committed to the canonical command stream per rolling 60 seconds; exclude camera, selection-only, chat, and UI actions.
+- [x] Measure transport RTT from the authoritative Socket.IO command echo and display unavailable states explicitly.
+- [x] Subscribe to typed setting changes and release subscriptions/timers on HUD shutdown.
 - [ ] Add unit tests for metric calculation, toggle changes, unavailable ping, reconnect, pause/stall behavior, and cleanup; add a scene smoke test for layout.
 
 Acceptance criteria:
@@ -140,8 +158,9 @@ Acceptance criteria:
 ### Stage 5: subtitles and profanity filtering
 
 - [ ] Split authored dialogue text from optional subtitles before allowing subtitle text to be hidden.
-- [ ] Keep required dialogue, acknowledgement, skip controls, and history accessible when subtitles are disabled.
-- [ ] Define a moderation-safe chat contract that preserves server policy while allowing an optional client display filter; never make unsafe text available merely by toggling a local preference.
+- [x] Keep required dialogue, acknowledgement, skip controls, and history accessible when subtitles are disabled.
+- [x] Define a dual-field chat contract that preserves the filtered default while carrying original text for the
+      explicitly disabled client filter, per D3.
 - [ ] Add campaign-presentation and chat tests for both preference values, keyboard/pointer progression, history, moderation policy, and live changes.
 
 Acceptance criteria:
@@ -151,10 +170,11 @@ Acceptance criteria:
 
 ### Stage 6: match speed and visibility
 
-- [ ] Add protocol enums and validated game-instance start options for speed and visibility.
-- [ ] Add host/lobby controls and carry resolved values through server creation, reconnect, save, spectator, and replay data.
-- [ ] Resolve visibility once at launch and initialize `FogOfWarComponent` from that value; campaign-authored overrides remain explicit.
-- [ ] Replace ad-hoc speed buttons with the same single-player speed policy; keep multiplayer at Normal until one authority applies cadence consistently to the server and every client.
+- [x] Add a protocol enum and shared game-mode value for visibility; speed remains deliberately personal and single-player-only.
+- [x] Add host-only lobby controls and carry resolved visibility through shared game-instance data used by reconnect,
+      save, spectator, and replay flows.
+- [x] Resolve visibility and initialize `FogOfWarComponent` from that value; campaign-authored overrides remain explicit.
+- [x] Replace production speed choices with Slow/Normal/Fast single-player cadence and keep multiplayer at Normal.
 - [ ] Add protocol, server, lobby, fog, simulation, save/reconnect, and replay compatibility tests.
 - [ ] Run a two-client manual playtest for every multiplayer rule before enabling it outside development.
 
@@ -169,17 +189,17 @@ Acceptance criteria:
 Do not create these issues until D1–D7 are answered. Each row is independently reviewable;
 later rows must consume the contracts created by their dependencies rather than duplicate them.
 
-| Order | Suggested issue | Dependencies | Completion boundary |
-| --- | --- | --- | --- |
-| 1 | Typed personal settings and WC3-like options controls | D1 | Persisted defaults, legacy hydration, typed live changes, Angular tests; no runtime claim for deferred controls. |
-| 2 | Wire default and maximum camera distance | 1, D5 | Fresh/load/cinematic precedence, bounds clamping, handler tests, manual zoom smoke test. |
-| 3 | Make replay autosave opt-in | 1 | Default-off shutdown behavior, one archive when enabled, recorder tests. |
-| 4 | Add FPS, elapsed-time, and APM HUD metrics | 1, D4 | Scene-backed HUD, metric tests, lifecycle cleanup, playfield-safe layout. |
-| 5 | Add transport RTT measurement and ping HUD | 1, 4 | Typed RTT provider, unavailable/reconnect states, throttling, transport and HUD tests. |
-| 6 | Separate optional subtitles from required campaign dialogue | 1, D2 | Accessible progression/history in both modes and campaign presentation tests. |
-| 7 | Define configurable profanity filtering without weakening moderation | 1, D3 | Approved authority/transport contract, server and client tests, accurate UI copy. |
-| 8 | Add match-authoritative visibility modes | D7 | Protocol/server/lobby/fog/save/reconnect/replay wiring and two-client playtest. |
-| 9 | Unify single-player speed and design multiplayer match speed | 1, D6 | Approved single-player defaults first; multiplayer only after shared cadence authority and two-client verification. |
+| Order | Suggested issue                                                      | Dependencies | Completion boundary                                                                                                 |
+| ----- | -------------------------------------------------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------- |
+| 1     | Typed personal settings and WC3-like options controls                | D1           | Persisted defaults, legacy hydration, typed live changes, Angular tests; no runtime claim for deferred controls.    |
+| 2     | Wire default and maximum camera distance                             | 1, D5        | Fresh/load/cinematic precedence, bounds clamping, handler tests, manual zoom smoke test.                            |
+| 3     | Make replay autosave opt-in                                          | 1            | Default-off shutdown behavior, one archive when enabled, recorder tests.                                            |
+| 4     | Add FPS, elapsed-time, and APM HUD metrics                           | 1, D4        | Scene-backed HUD, metric tests, lifecycle cleanup, playfield-safe layout.                                           |
+| 5     | Add transport RTT measurement and ping HUD                           | 1, 4         | Typed RTT provider, unavailable/reconnect states, throttling, transport and HUD tests.                              |
+| 6     | Separate optional subtitles from required campaign dialogue          | 1, D2        | Accessible progression/history in both modes and campaign presentation tests.                                       |
+| 7     | Define configurable profanity filtering without weakening moderation | 1, D3        | Approved authority/transport contract, server and client tests, accurate UI copy.                                   |
+| 8     | Add match-authoritative visibility modes                             | D7           | Protocol/server/lobby/fog/save/reconnect/replay wiring and two-client playtest.                                     |
+| 9     | Unify single-player speed and design multiplayer match speed         | 1, D6        | Approved single-player defaults first; multiplayer only after shared cadence authority and two-client verification. |
 
 ## Decisions required
 
@@ -233,6 +253,17 @@ later rows must consume the contracts created by their dependencies rather than 
 - Reply: `Accept recommendation`, `Use: <mapping/owner>`, or `Defer`.
 
 ## Verification plan
+
+Results (2026-08-15):
+
+- [x] Focused Angular, Phaser, and NestJS tests pass (18 tests across six suites).
+- [x] Lint passes for protocol, server, interface, Phaser, chat, and database-schema projects.
+- [x] Protocol and server TypeScript checks pass; changed client/Phaser code has no new type errors.
+- [x] Phaser Editor validation passes with 0 errors across 469 scenes and 563 prefab references.
+- [x] Portal production compilation and bundle generation complete when dependency tasks are excluded.
+- [ ] Standard production build remains blocked by 511 unhydrated Git LFS audio pointers; the generated bundle then
+      hits the repository's existing 2 MB initial budget (4.12 MB). Neither condition is introduced by issue #734.
+- [ ] Two-client manual visibility/ping/reconnect playtest requires a configured multiplayer runtime.
 
 - Focused unit tests for each owning project and changed service/component.
 - Type checking and lint for the probable-waffle interface, Phaser, protocol, and server projects touched by an approved stage.
