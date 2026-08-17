@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import type { ActorId, Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { getActorComponent } from "../../data/actor-component";
-import { isGameObjectActiveInActiveScene } from "../../data/game-object-helper";
+import { getGameObjectCurrentTile, isGameObjectActiveInActiveScene } from "../../data/game-object-helper";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { ActorTranslateComponent } from "../../entity/components/movement/actor-translate-component";
 import { FlyingComponent } from "../../entity/components/movement/flying-component";
@@ -11,6 +11,7 @@ import { getTileCoordsUnderObject, getTileCoordsUnderObjectAtTile } from "../../
 import { TilemapComponent } from "../tilemap/tilemap.component";
 import { ActorIndexSystem } from "./ActorIndexSystem";
 import { getSceneComponent, getSceneService } from "./scene-component-helpers";
+import { AirDestinationReservationStore } from "./air-destination-reservation-store";
 
 interface Reservation {
   actorId: ActorId;
@@ -57,6 +58,7 @@ export class MovementOccupancyService {
   private static readonly DISABLED = false;
   private readonly stepReservations = new Map<ActorId, Reservation>();
   private readonly destinationReservations = new Map<ActorId, Reservation>();
+  private readonly airDestinationReservations = new AirDestinationReservationStore();
 
   constructor(private readonly scene: Phaser.Scene) {
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
@@ -103,9 +105,49 @@ export class MovementOccupancyService {
     this.destinationReservations.delete(actorId);
   }
 
+  /** Reserves a terrain-independent horizontal destination for a flying actor. */
+  reserveAirDestination(
+    actorId: ActorId,
+    tile: Vector2Simple,
+    flightLayer: number,
+    ignoredActorIds: readonly ActorId[] = []
+  ): number | undefined {
+    return this.airDestinationReservations.reserve(actorId, tile, flightLayer, ignoredActorIds);
+  }
+
+  /**
+   * Returns reserved and live occupied air slots on one flight layer. Selected
+   * group members are excluded because their current positions are being replaced
+   * by one shared deterministic assignment.
+   */
+  getUnavailableAirDestinations(flightLayer: number, excludedActorIds: readonly ActorId[] = []): Vector2Simple[] {
+    const unavailable = this.airDestinationReservations.getReservedTiles(flightLayer, excludedActorIds);
+    const excluded = new Set(excludedActorIds);
+    const actorIndex = getSceneService(this.scene, ActorIndexSystem);
+    for (const actor of actorIndex?.getAllIdActors() ?? []) {
+      if (!isGameObjectActiveInActiveScene(actor)) continue;
+      if (getActorComponent(actor, HealthComponent)?.killed) continue;
+      const actorId = getActorComponent(actor, IdComponent)?.id;
+      const flying = getActorComponent(actor, FlyingComponent);
+      if (!actorId || excluded.has(actorId) || flying?.flightDefinition.height !== flightLayer) continue;
+      const tile = getGameObjectCurrentTile(actor);
+      if (tile) unavailable.push({ x: tile.x, y: tile.y });
+    }
+
+    return Array.from(new Map(unavailable.map((tile) => [`${tile.x},${tile.y}`, tile])).values()).sort((left, right) =>
+      left.y !== right.y ? left.y - right.y : left.x - right.x
+    );
+  }
+
+  /** Releases an air destination, optionally guarded by its movement-generation token. */
+  releaseAirDestination(actorId: ActorId, token?: number): void {
+    this.airDestinationReservations.release(actorId, token);
+  }
+
   releaseAll(actorId: ActorId): void {
     this.releaseStep(actorId);
     this.releaseDestination(actorId);
+    this.releaseAirDestination(actorId);
   }
 
   getBlockingActors(
@@ -296,5 +338,6 @@ export class MovementOccupancyService {
   private destroy(): void {
     this.stepReservations.clear();
     this.destinationReservations.clear();
+    this.airDestinationReservations.clear();
   }
 }
