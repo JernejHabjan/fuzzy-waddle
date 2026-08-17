@@ -116,6 +116,9 @@ describe("CampaignLaunchService", () => {
         pendingRewardIds: []
       }
     });
+    expect(gameInstanceClientService.gameModeChanged).toHaveBeenCalledWith("scenarioPresentation", {
+      scenarioPresentation: content.scenarioPresentation
+    });
   });
 });
 

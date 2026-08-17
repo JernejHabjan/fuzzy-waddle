@@ -18,6 +18,12 @@
       "Protect the ancient crystal"
     ]
   },
+  "scenarioPresentation": {
+    "resourceHud": {
+      "visibleResources": [],
+      "showHousing": false
+    }
+  },
   "participants": [
     {
       "slotId": "tivara-player",
