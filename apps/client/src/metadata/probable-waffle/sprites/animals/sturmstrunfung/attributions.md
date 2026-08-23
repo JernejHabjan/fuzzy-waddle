@@ -1,0 +1,1 @@
+Image was drawn by Manca Krivec Habjan
