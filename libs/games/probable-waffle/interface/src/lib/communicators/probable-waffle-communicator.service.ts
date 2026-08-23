@@ -2,7 +2,9 @@ import { EventEmitter, Injectable, type OnDestroy } from "@angular/core";
 import {
   type AllScenesEventData,
   type ProbableWaffleCommunicatorMessageEvent,
+  type ProbableWaffleMinimapSignalEvent,
   type ProbableWaffleCommunicatorType,
+  ProbableWaffleCommunicators,
   type ProbableWaffleDesyncAlertEvent,
   type ProbableWaffleGameCommandEvent,
   type ProbableWaffleGameInstanceMetadataChangeEvent,
@@ -53,6 +55,7 @@ export class ProbableWaffleCommunicatorService
   spectatorChanged?: TwoWayCommunicator<ProbableWaffleSpectatorDataChangeEvent, ProbableWaffleCommunicatorType>;
   gameStateChanged?: TwoWayCommunicator<ProbableWaffleGameStateDataChangeEvent, ProbableWaffleCommunicatorType>;
   message?: TwoWayCommunicator<ProbableWaffleCommunicatorMessageEvent, ProbableWaffleCommunicatorType>;
+  minimapSignal?: TwoWayCommunicator<ProbableWaffleMinimapSignalEvent, ProbableWaffleCommunicatorType>;
   /** Documents the game command changed member and its declared contract at this boundary. */
   gameCommandChanged?: TwoWayCommunicator<ProbableWaffleGameCommandEvent, ProbableWaffleCommunicatorType>;
   /** Documents the state hash changed member and its declared contract at this boundary. */
@@ -140,9 +143,14 @@ export class ProbableWaffleCommunicatorService
       gameInstanceId,
       socket
     );
-
     // Only initialise in multiplayer (socket present); single-player stays undefined.
     if (socket) {
+      this.minimapSignal = new TwoWayCommunicator<ProbableWaffleMinimapSignalEvent, ProbableWaffleCommunicatorType>(
+        ProbableWaffleGatewayEvent.ProbableWaffleMessage,
+        ProbableWaffleCommunicators.MinimapSignal,
+        gameInstanceId,
+        socket
+      );
       this.gameCommandChanged = new TwoWayCommunicator<ProbableWaffleGameCommandEvent, ProbableWaffleCommunicatorType>(
         ProbableWaffleGatewayEvent.ProbableWaffleAction,
         "game-command",
@@ -246,6 +254,8 @@ export class ProbableWaffleCommunicatorService
     this.spectatorChanged?.destroy();
     this.gameStateChanged?.destroy();
     this.message?.destroy();
+    this.minimapSignal?.destroy();
+    this.minimapSignal = undefined;
     this.gameCommandChanged?.destroy();
     this.stateHashChanged?.destroy();
     this.snapshotRequested?.destroy();

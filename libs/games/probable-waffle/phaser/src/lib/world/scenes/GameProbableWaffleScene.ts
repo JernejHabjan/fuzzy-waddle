@@ -55,6 +55,7 @@ import { IndexedScenarioReferenceRegistry } from "../../campaign/scenario/scenar
 import { CampaignContentAllowanceService } from "@fuzzy-waddle/probable-waffle-campaign";
 import { CampaignParticipantSceneAdapter } from "../../campaign/participants/campaign-participant-scene-adapter";
 import { CampaignRestoreCoordinator } from "../../campaign/campaign-restore-coordinator";
+import { MinimapSignalController } from "../../player/human-controller/minimap-signal-controller";
 
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
   tilemap!: Phaser.Tilemaps.Tilemap;
@@ -102,6 +103,8 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     const simTickService = new SimulationTickService(this);
     const scenarioReferenceRegistry = new IndexedScenarioReferenceRegistry();
     const campaignContentAllowances = new CampaignContentAllowanceService();
+    // Bind signal targeting before selection handlers so consumed clicks never become commands.
+    const minimapSignalController = new MinimapSignalController(this, hud);
 
     this.sceneGameData.components.push(
       this.getCameraMovementHandler(),
@@ -120,6 +123,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       new MovementOccupancyService(this),
       new NavigationDebugService(this, this.tilemap),
       new AudioService(this),
+      minimapSignalController,
       new PlayerActionsHandler(this, hud),
       lightingService,
       creator,

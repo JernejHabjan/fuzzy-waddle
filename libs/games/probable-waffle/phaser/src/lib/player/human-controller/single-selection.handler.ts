@@ -16,6 +16,7 @@ import { BuildingCursor } from "./building-cursor";
 type Pointer = Phaser.Input.Pointer;
 type GameObject = Phaser.GameObjects.GameObject;
 import { PlayerActionsHandler } from "./player-actions-handler";
+import { MinimapSignalController } from "./minimap-signal-controller";
 
 export class SingleSelectionHandler {
   private readonly debug = false;
@@ -53,6 +54,7 @@ export class SingleSelectionHandler {
     this.scene.input.on(
       Phaser.Input.Events.POINTER_UP,
       (pointer: Input.Pointer, gameObjectsUnderCursor: GameObjects.GameObject[]) => {
+        if (getSceneService(this.scene, MinimapSignalController)?.isPointerConsumed(pointer)) return;
         if (this.multiSelecting || this.playerActionsHandler.isHandlingActions()) return;
 
         const buildingCursor = getSceneComponent(this.scene, BuildingCursor);

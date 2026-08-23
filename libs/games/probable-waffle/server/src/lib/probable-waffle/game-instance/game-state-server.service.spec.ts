@@ -5,6 +5,7 @@ import { GameInstanceServiceStub } from "./game-instance.service.stub";
 import { GameCommandValidatorService } from "./multiplayer/game-command-validator.service";
 import { PauseStateValidatorService } from "./multiplayer/pause-state-validator.service";
 import { PlayerStateValidatorService } from "./multiplayer/player-state-validator.service";
+import { MinimapSignalValidatorService } from "./multiplayer/minimap-signal-validator.service";
 
 describe("GameStateServerService", () => {
   let service: GameStateServerService;
@@ -16,6 +17,7 @@ describe("GameStateServerService", () => {
         GameCommandValidatorService,
         PlayerStateValidatorService,
         PauseStateValidatorService,
+        MinimapSignalValidatorService,
         { provide: GameInstanceService, useValue: GameInstanceServiceStub }
       ]
     }).compile();
