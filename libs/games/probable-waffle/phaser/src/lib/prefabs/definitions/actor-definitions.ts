@@ -87,6 +87,7 @@ import { bullDefinition } from "../animals/bull/bull.definition";
 import { calfDefinition } from "../animals/calf/calf.definition";
 import { lambDefinition } from "../animals/lamb/lamb.definition";
 import { hareDefinition } from "../animals/hare/hare.definition";
+import { sharkDefinition } from "../animals/shark/shark.definition";
 import { sheep2Definition } from "../animals/sheep2/sheep2.definition";
 import { turkeyDefinition } from "../animals/turkey/turkey.definition";
 import { blackGrouseDefinition } from "../animals/black_grouse/black_grouse.definition";
@@ -157,6 +158,7 @@ export const pwActorDefinitions: {
   Deer: deerDefinition,
   Fox: foxDefinition,
   Hare: hareDefinition,
+  Shark: sharkDefinition,
   // Units - mobs and generic
   GeneralWarrior: generalWarriorDefinition,
   CommonBoat: commonBoatDefinition,
