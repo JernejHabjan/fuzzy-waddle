@@ -17,7 +17,12 @@ import { type Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { HealthComponent } from "../combat/components/health-component";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { SceneActorCreator } from "../../../world/services/scene-actor-creator";
-import { getGameObjectBounds, getGameObjectLogicalTransform, onObjectReady } from "../../../data/game-object-helper";
+import {
+  getGameObjectBounds,
+  getGameObjectCurrentTile,
+  getGameObjectLogicalTransform,
+  onObjectReady
+} from "../../../data/game-object-helper";
 import { Subject, Subscription } from "rxjs";
 import RallyPoint from "../../../prefabs/buildings/misc/RallyPoint";
 import { ConstructionSiteComponent } from "../construction/construction-site-component";
@@ -41,6 +46,7 @@ import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { getActorSystem } from "../../../data/actor-system";
 import { ActionSystem } from "../../systems/action.system";
 import { MovementSystem } from "../../systems/movement.system";
+import { FlyingComponent } from "../movement/flying-component";
 import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 /**
  * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
@@ -338,6 +344,16 @@ export class ProductionComponent {
 
     const targetGameObject = this.rallyPoint.getTargetGameObject();
     if (targetGameObject?.active) {
+      const movementSystem = getActorSystem<MovementSystem>(newGameObject, MovementSystem);
+      const targetTile = getGameObjectCurrentTile(targetGameObject);
+      if (getActorComponent(newGameObject, FlyingComponent) && movementSystem && targetTile) {
+        actionSystem.executeAction(
+          OrderType.Move,
+          undefined,
+          movementSystem.getAirFormationDestinationForSequentialRally(targetTile)
+        );
+        return;
+      }
       actionSystem.executeAction(undefined, targetGameObject);
       return;
     }

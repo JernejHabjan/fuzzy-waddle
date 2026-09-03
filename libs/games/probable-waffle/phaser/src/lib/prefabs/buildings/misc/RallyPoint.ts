@@ -102,6 +102,14 @@ export default class RallyPoint extends Phaser.GameObjects.Image {
       return;
     }
     if (this.actor) {
+      const flying = getActorComponent(newGameObject, FlyingComponent);
+      const targetTile = getGameObjectCurrentTile(this.actor);
+      if (flying && targetTile) {
+        await movementSystem.moveToLocationByFollowingStaticPath(
+          movementSystem.getAirFormationDestinationForSequentialRally(targetTile)
+        );
+        return;
+      }
       await movementSystem.moveToActorByAdjustingPathDynamically(this.actor);
     }
   }
