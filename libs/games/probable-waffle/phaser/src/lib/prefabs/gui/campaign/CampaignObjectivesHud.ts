@@ -15,6 +15,7 @@ import type { CampaignMissionRuntimeState } from "@fuzzy-waddle/probable-waffle-
 import { environment } from "@fuzzy-waddle/environments/environment";
 import type { CampaignMissionDirector } from "../../../campaign/campaign-mission-director";
 import type { CampaignObjectiveNotification } from "../../../campaign/objectives/campaign-objective-projection-store";
+import CampaignQuestLog from "./CampaignQuestLog";
 /* END-USER-IMPORTS */
 
 export default class CampaignObjectivesHud extends Phaser.GameObjects.Container {
@@ -159,6 +160,9 @@ export default class CampaignObjectivesHud extends Phaser.GameObjects.Container 
     this.closeButton.setStyle({ backgroundColor: "#2b170d", padding: { x: 46, y: 9 }, stroke: "#b8923b", strokeThickness: 2 });
     this.questDetailFrame = scene.add.rectangle(-5, 83, 680, 200, 0x080706, 0.92).setStrokeStyle(2, 0xb8923b, 1);
     this.questPanel.addAt(this.questDetailFrame, 2);
+    this.questLog = new CampaignQuestLog(scene);
+    scene.add.existing(this.questLog);
+    this.questLog.setDepth(9001);
     scene.scale.on("resize", this.handleResize, this);
     scene.input.keyboard?.on("keydown-ESC", this.hideQuestLog, this);
     /* END-USER-CTR-CODE */
@@ -186,6 +190,7 @@ export default class CampaignObjectivesHud extends Phaser.GameObjects.Container 
   private selectedQuestKey?: CampaignQuestLogPresentationKey;
   private readonly questRows: Phaser.GameObjects.GameObject[] = [];
   private questDetailFrame: Phaser.GameObjects.Rectangle;
+  private readonly questLog: CampaignQuestLog;
 
   setup(director: CampaignMissionDirector): void {
     this.director = director;
@@ -207,6 +212,7 @@ export default class CampaignObjectivesHud extends Phaser.GameObjects.Container 
     this.trackerBody.setText(projection.tracker.flatMap(formatTrackerObjective));
     this.updateTrackerHeight();
     this.renderQuestLog(projection);
+    this.questLog.setProjection(projection);
   }
 
   private renderEncounterDiagnostics(state: CampaignMissionRuntimeState): void {
@@ -236,15 +242,15 @@ export default class CampaignObjectivesHud extends Phaser.GameObjects.Container 
   }
 
   private toggleQuestLog(): void {
-    if (this.questPanel.visible) this.hideQuestLog();
+    if (this.questLog.visible) this.hideQuestLog();
     else {
-      this.questPanel.setVisible(true);
-      if (this.currentProjection) this.renderQuestLog(this.currentProjection);
+      this.questLog.show();
+      if (this.currentProjection) this.questLog.setProjection(this.currentProjection);
     }
   }
 
   private hideQuestLog(): void {
-    this.questPanel.setVisible(false);
+    this.questLog.hide();
   }
 
   /** Rebuilds local-only row objects; objective state remains owned by the projection store. */
@@ -318,6 +324,7 @@ export default class CampaignObjectivesHud extends Phaser.GameObjects.Container 
     const questScale = Math.max(0.55, Math.min(1, (gameSize.width - 24) / 760, (gameSize.height - 24) / 560));
     this.questPanel.setScale(questScale);
     this.questOverlay.setSize(gameSize.width / questScale, gameSize.height / questScale);
+    this.questLog.resize(gameSize.width, gameSize.height);
     this.notificationText.x = gameSize.width / 2 - this.x;
     this.notificationText.y = 8 - this.y;
     this.notificationText.setWordWrapWidth(Math.min(520, gameSize.width - 32));
@@ -338,6 +345,7 @@ export default class CampaignObjectivesHud extends Phaser.GameObjects.Container 
     this.questOverlay.off(Phaser.Input.Events.POINTER_UP, this.hideQuestLog, this);
     this.trackerBody.off(Phaser.Input.Events.POINTER_UP, this.focusFirstTrackedObjective, this);
     this.scene.input.keyboard?.off("keydown-ESC", this.hideQuestLog, this);
+    this.questLog.destroy();
     for (const row of this.questRows) row.destroy();
     super.destroy(fromScene);
   }
