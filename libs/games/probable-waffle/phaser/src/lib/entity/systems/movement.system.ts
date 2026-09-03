@@ -42,7 +42,11 @@ import { CommandBusService } from "../../world/services/multiplayer/command-bus.
 import { getInterpolatedSimulationNow } from "../../world/services/simulation-time";
 import { MovementOccupancyService } from "../../world/services/movement-occupancy.service";
 import { applyCampaignProgressionModifiers } from "../../campaign/campaign-progression-modifier";
-import { getAirFormationCandidates, type AirFormationBounds } from "../../world/services/air-formation";
+import {
+  getAirFormationCandidateForActor,
+  getAirFormationCandidates,
+  type AirFormationBounds
+} from "../../world/services/air-formation";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 /**
  * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
@@ -1117,8 +1121,9 @@ export class MovementSystem {
       const selectedActor = actorIndex?.getActorById(selectedActorId);
       return !!selectedActor && !!getActorComponent(selectedActor, FlyingComponent);
     });
-    const sortedActorIds = (flyingActorIds.length > 0 ? flyingActorIds : selectedActorIds).slice().sort();
-    const preferredIndex = Math.max(0, sortedActorIds.indexOf(actorId));
+    const commandFlyerIds = flyingActorIds.length > 0 ? flyingActorIds : selectedActorIds;
+    const preferredCandidate = getAirFormationCandidateForActor(actorId, commandFlyerIds, candidates);
+    const preferredIndex = Math.max(0, preferredCandidate ? candidates.indexOf(preferredCandidate) : 0);
     occupancy.releaseAirDestination(actorId);
 
     for (let offset = 0; offset < candidates.length; offset++) {

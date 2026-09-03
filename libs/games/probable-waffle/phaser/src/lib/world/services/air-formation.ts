@@ -51,6 +51,19 @@ export function getAirFormationCandidates(
   return candidates;
 }
 
+/**
+ * Resolves one simultaneous-command slot from stable actor ordering. The caller
+ * supplies only flyers, so mixed ground selections cannot consume air slots.
+ */
+export function getAirFormationCandidateForActor(
+  actorId: string,
+  flyingActorIds: readonly string[],
+  candidates: readonly Vector2Simple[]
+): Vector2Simple | undefined {
+  const index = [...flyingActorIds].sort().indexOf(actorId);
+  return index >= 0 ? candidates[index] : undefined;
+}
+
 /** Adds one bounds-clamped tile only once, retaining spiral order after clamping. */
 function addClampedCandidate(
   x: number,
