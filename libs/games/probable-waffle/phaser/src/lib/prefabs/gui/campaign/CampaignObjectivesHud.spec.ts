@@ -1,4 +1,5 @@
 import type { CampaignMissionRuntimeState } from "@fuzzy-waddle/probable-waffle-protocol";
+import { asCampaignContentId, type CampaignQuestLogSection } from "@fuzzy-waddle/probable-waffle-campaign";
 import { formatCampaignEncounterDiagnostics, selectQuestLogEntry } from "./CampaignObjectivesHud";
 
 describe("formatCampaignEncounterDiagnostics", () => {
@@ -30,9 +31,23 @@ describe("selectQuestLogEntry", () => {
   it("retains a discovered selection and falls back to the first active objective", () => {
     const entries = [
       { type: "undiscovered", presentationKey: "undiscovered:main:0", title: "Undiscovered quest" },
-      { type: "objective", presentationKey: "objective:completed", objective: { status: "completed" } },
-      { type: "objective", presentationKey: "objective:active", objective: { status: "active" } }
-    ] as never;
+      {
+        type: "objective",
+        presentationKey: "objective:completed",
+        objective: {
+          id: asCampaignContentId("completed"), kind: "primary", status: "completed", statusText: "Completed",
+          title: "Completed", earlyCompleted: false, checklist: []
+        }
+      },
+      {
+        type: "objective",
+        presentationKey: "objective:active",
+        objective: {
+          id: asCampaignContentId("active"), kind: "primary", status: "active", statusText: "Active",
+          title: "Active", earlyCompleted: false, checklist: []
+        }
+      }
+    ] satisfies CampaignQuestLogSection["entries"];
 
     expect(selectQuestLogEntry(entries, "objective:completed")).toBe("objective:completed");
     expect(selectQuestLogEntry(entries, "objective:removed")).toBe("objective:active");
