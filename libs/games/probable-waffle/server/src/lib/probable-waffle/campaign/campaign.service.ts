@@ -394,7 +394,7 @@ export class CampaignServerService implements CampaignProfileServerServiceInterf
 
 function addLegacyMastery(
   profile: CampaignProfile,
-  rows: readonly Array<{ mission_id: CampaignMissionId; completed_at: string; result_metadata: Json }>
+  rows: ReadonlyArray<{ mission_id: CampaignMissionId; completed_at: string; result_metadata: Json }>
 ): CampaignProfile {
   let result = profile;
   for (const row of rows) {
@@ -447,7 +447,7 @@ function progressionDelta(before: CampaignProfile, after: CampaignProfile, appli
   };
 }
 
-function isRewardCommitResult(value: Json | null): value is CampaignRewardCommitResult & Json {
+function isRewardCommitResult(value: Json | null): value is CampaignRewardCommitResult & JsonObject {
   const object = jsonObject(value);
   return Boolean(
     object &&
@@ -457,11 +457,11 @@ function isRewardCommitResult(value: Json | null): value is CampaignRewardCommit
   );
 }
 
-function jsonObject(value: Json | null | undefined): { [key: string]: Json | undefined } | undefined {
-  return value && typeof value === "object" && !Array.isArray(value)
-    ? (value as { [key: string]: Json | undefined })
-    : undefined;
+function jsonObject(value: Json | null | undefined): JsonObject | undefined {
+  return value && typeof value === "object" && !Array.isArray(value) ? (value as JsonObject) : undefined;
 }
+
+type JsonObject = { [key: string]: Json | undefined };
 
 function stringArray(value: Json | undefined): string[] {
   return Array.isArray(value) ? value.filter((entry): entry is string => typeof entry === "string").sort() : [];

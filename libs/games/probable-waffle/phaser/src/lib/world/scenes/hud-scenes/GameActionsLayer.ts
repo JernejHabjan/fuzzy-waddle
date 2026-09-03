@@ -67,12 +67,13 @@ export default class GameActionsLayer extends ProbableWaffleScene {
     );
     game_actions_quit_bg_3.scaleX = 2.3521289589041787;
     game_actions_quit_bg_3.scaleY = 1.5492262688240692;
+    game_actions_quit_bg_3.setTint(0xcc3333);
     game_action_quit.add(game_actions_quit_bg_3);
 
     // text_3
     const text_3 = this.add.text(-1, 0, "", {});
     text_3.setOrigin(0.5, 0.5);
-    text_3.text = "Quit";
+    text_3.text = "Exit";
     text_3.setStyle({
       align: "center",
       color: "#000000ff",

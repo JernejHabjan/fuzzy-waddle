@@ -48,6 +48,7 @@ import { LevelComponent } from "../entity/components/level/level-component";
 import { TendableComponent } from "../entity/components/tendable/tendable-component";
 import { QueueCommandSystem } from "../entity/systems/queue-command.system";
 import { ScenarioActorReferenceComponent } from "../campaign/scenario/scenario-actor-reference.component";
+import { HealthRegenerationComponent } from "../entity/components/combat/components/health-regeneration-component";
 /**
  * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
  * storage boundaries do not drift into an unconstrained primitive.
@@ -193,6 +194,9 @@ function gatherCompletedActorData(actor: Phaser.GameObjects.GameObject): { compo
       ? [new ResourceSourceComponent(actor, componentDefinitions.resourceSource)]
       : []),
     ...(componentDefinitions?.healing ? [new HealingComponent(actor, componentDefinitions.healing)] : []),
+    ...(componentDefinitions?.healthRegeneration
+      ? [new HealthRegenerationComponent(actor, componentDefinitions.healthRegeneration)]
+      : []),
     ...(componentDefinitions?.health
       ? [new StatusEffectComponent(actor), new StatusEffectVisualComponent(actor), new StatusEffectUiComponent(actor)]
       : []),
