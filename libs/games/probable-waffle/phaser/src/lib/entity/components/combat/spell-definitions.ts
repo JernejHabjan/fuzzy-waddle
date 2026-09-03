@@ -6,6 +6,17 @@ import { DamageType, ObjectNames, ResearchType, SpellTargetType } from "@fuzzy-w
 import { BansheeAnimationTypes } from "../../../prefabs/characters/mobs/banshee/anims-banshee";
 import { MedusaAnimationTypes } from "../../../prefabs/characters/mobs/medusa/anims-medusa";
 import { WendigoAnimationTypes } from "../../../prefabs/characters/mobs/forest_wendigo/anims-forest_wendigo";
+import {
+  SharedActorActionsSfxFireSpellSounds,
+  SharedActorActionsSfxFrostFireSounds,
+  SharedActorActionsSfxFrostImpactSounds,
+  SharedActorActionsSfxHealSounds
+} from "../../../sfx/shared-actor-actions-sfx";
+
+const frostCastSound = SharedActorActionsSfxFrostFireSounds[0]!;
+const frostImpactSound = SharedActorActionsSfxFrostImpactSounds[0]!;
+const fireCastSound = SharedActorActionsSfxFireSpellSounds[0]!;
+const healSound = SharedActorActionsSfxHealSounds[0]!;
 
 export const spellDefinitions: Record<SpellType, SpellData> = {
   // ========== SNOWSTORM - AOE Freeze + DoT ==========
@@ -31,7 +42,6 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
       type: ProjectileType.SnowstormProjectile,
       speed: 400,
       orientation: { randomizeOrientation: false, pointingOrientation: 270 },
-      impactAnimation: { anims: ["snowstorm_impact"], tint: 0x6666ff },
       spawnBehavior: {
         type: "fall",
         spawnOffsetY: -200, // Spawn 200 pixels above target
@@ -39,7 +49,7 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
       }
     },
     castAnimation: AnimationType.Cast,
-    sounds: { cast: "frost_cast", impact: "frost_impact" },
+    sounds: { cast: frostCastSound, impact: frostImpactSound },
     icon: { key: "factions", frame: "spell_icons/snowstorm.png" },
     autocastDefault: true,
     requiresResearch: ResearchType.SnowstormSpell
@@ -68,7 +78,7 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
     dotTickInterval: 1000,
     dotDuration: 2000,
     castAnimation: AnimationType.Cast,
-    sounds: { cast: "fire_cast", impact: "fire_ignite", loop: "fire_burning" },
+    sounds: { cast: fireCastSound },
     icon: { key: "factions", frame: "spell_icons/firestorm.png" },
     autocastDefault: false,
     requiresResearch: ResearchType.FirestormSpell
@@ -94,11 +104,10 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
     projectile: {
       type: ProjectileType.FrostBoltProjectile,
       speed: 500,
-      orientation: { randomizeOrientation: false, pointingOrientation: 270 },
-      impactAnimation: { anims: ["frost_nova_impact"], tint: 0x99ccff }
+      orientation: { randomizeOrientation: false, pointingOrientation: 270 }
     },
     castAnimation: AnimationType.Cast,
-    sounds: { cast: "frost_cast", impact: "frost_slow" },
+    sounds: { cast: frostCastSound, impact: frostImpactSound },
     icon: { key: "factions", frame: "spell_icons/frost_nova.png" },
     autocastDefault: true,
     requiresResearch: ResearchType.FrostNovaSpell
@@ -119,7 +128,7 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
     instantHeal: 30,
     tintColor: 0x00ff88,
     castAnimation: AnimationType.Cast,
-    sounds: { cast: "heal_cast", impact: "heal_apply" },
+    sounds: { cast: healSound, impact: healSound },
     icon: { key: "factions", frame: "spell_icons/healing_light.png" },
     autocastDefault: true,
     requiresResearch: ResearchType.HealingLightSpell
@@ -147,7 +156,7 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
     hotTickInterval: 1000,
     hotDuration: 0,
     castAnimation: AnimationType.Cast,
-    sounds: { cast: "heal_cast", loop: "rain_ambient" },
+    sounds: { cast: healSound },
     icon: { key: "factions", frame: "spell_icons/healing_rain.png" },
     autocastDefault: false,
     requiresResearch: ResearchType.HealingRainSpell
@@ -172,7 +181,7 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
       inheritOwner: true
     },
     castAnimation: AnimationType.Cast,
-    sounds: { cast: "totem_summon" },
+    sounds: { cast: healSound },
     icon: { key: "factions", frame: "spell_icons/healing_totem.png" },
     autocastDefault: false,
     requiresResearch: ResearchType.HealingTotemSpell
@@ -195,7 +204,6 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
     stunDuration: 30000,
     tintColor: 0x6666ff,
     castAnimation: MedusaAnimationTypes.GazeAttack,
-    sounds: { cast: "frost_cast", impact: "frost_impact" }, // todo
     icon: { key: "factions", frame: "spell_icons/snowstorm.png" }, // todo
     autocastDefault: true
   },
@@ -217,7 +225,6 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
     stunDuration: 5000,
     tintColor: 0x6666ff,
     castAnimation: BansheeAnimationTypes.Scream,
-    sounds: { cast: "frost_cast", impact: "frost_impact" }, // todo
     icon: { key: "factions", frame: "spell_icons/snowstorm.png" }, // todo
     autocastDefault: true
   },
@@ -235,7 +242,6 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
     targetEnemies: false, // TODO MAKE NULLABLE
     targetSelf: false, // TODO MAKE NULLABLE
     castAnimation: BansheeAnimationTypes.Disappear,
-    sounds: { cast: "frost_cast", impact: "frost_impact" }, // todo
     icon: { key: "factions", frame: "spell_icons/snowstorm.png" }, // todo
     autocastDefault: false,
     requiresResearch: ResearchType.BansheeTeleport
@@ -255,7 +261,6 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
     damageType: DamageType.Physical,
     instantDamage: 20,
     castAnimation: WendigoAnimationTypes.CastBranch,
-    sounds: { cast: "frost_cast", impact: "frost_slow" }, // todo
     icon: { key: "factions", frame: "spell_icons/frost_nova.png" }, // todo
     autocastDefault: true,
     requiresResearch: ResearchType.WendigoBranches
@@ -277,7 +282,6 @@ export const spellDefinitions: Record<SpellType, SpellData> = {
     stunDuration: 5000,
     tintColor: 0x6666ff,
     castAnimation: WendigoAnimationTypes.Stomp,
-    sounds: { cast: "frost_cast", impact: "frost_impact" }, // todo
     icon: { key: "factions", frame: "spell_icons/snowstorm.png" }, // todo
     autocastDefault: true
   }

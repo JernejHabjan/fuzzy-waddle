@@ -2,6 +2,20 @@ import { SpellType } from "./spell-type";
 import { DamageType, type ObjectNames, ResearchType, SpellTargetType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { ProjectileData } from "./projectile-data";
 import { AnimationType } from "../animation/animation-type";
+import type { SoundDefinition } from "../actor-audio/sound-definition";
+
+/**
+ * Optional cosmetic feedback for a spell. Roles remain absent until a real
+ * audio-sprite asset is registered; simulation must never depend on them.
+ */
+export interface SpellFeedbackSounds {
+  /** Sound played at the caster when casting starts. */
+  cast?: SoundDefinition;
+  /** Sound played at the resolved impact position. */
+  impact?: SoundDefinition;
+  /** Sound owned by a persistent spell zone, if any. */
+  loop?: SoundDefinition;
+}
 
 export interface SpellData {
   type: SpellType;
@@ -52,7 +66,8 @@ export interface SpellData {
   projectile?: ProjectileData;
   impactAnimation?: string;
   castAnimation?: AnimationType | string;
-  sounds?: { cast?: string; impact?: string; loop?: string };
+  /** Optional registered audio-sprite feedback. */
+  sounds?: SpellFeedbackSounds;
   icon: { key: string; frame: string };
 
   // Research & Autocast
