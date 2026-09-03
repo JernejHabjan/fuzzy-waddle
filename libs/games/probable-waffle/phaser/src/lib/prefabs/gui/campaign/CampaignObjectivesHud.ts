@@ -211,7 +211,6 @@ export default class CampaignObjectivesHud extends Phaser.GameObjects.Container 
     this.currentProjection = projection;
     this.trackerBody.setText(projection.tracker.flatMap(formatTrackerObjective));
     this.updateTrackerHeight();
-    this.renderQuestLog(projection);
     this.questLog.setProjection(projection);
   }
 
