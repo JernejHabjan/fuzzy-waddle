@@ -83,11 +83,11 @@ importers:
         specifier: 21.2.18
         version: 21.2.18(@angular/core@21.2.18(@angular/compiler@21.2.18)(rxjs@7.8.2)(zone.js@0.16.0))(rxjs@7.8.2)
       '@dicebear/core':
-        specifier: ^9.4.1
-        version: 9.4.1
+        specifier: ^9.4.3
+        version: 9.4.3
       '@dicebear/pixel-art':
         specifier: ^9.2.4
-        version: 9.2.4(@dicebear/core@9.4.1)
+        version: 9.2.4(@dicebear/core@9.4.3)
       '@fortawesome/angular-fontawesome':
         specifier: ^4.0.0
         version: 4.0.0(@angular/core@21.2.18(@angular/compiler@21.2.18)(rxjs@7.8.2)(zone.js@0.16.0))
@@ -1561,8 +1561,8 @@ packages:
   '@cypress/xvfb@1.2.4':
     resolution: {integrity: sha512-skbBzPggOVYCbnGgV+0dmBdW/s77ZkAOXIC1knS8NagwDjBrNC1LuXtQJeiN6l+m7lzmHtaoUw/ctJKdqkG57Q==}
 
-  '@dicebear/core@9.4.1':
-    resolution: {integrity: sha512-yzmoEhAc6CTaY9v0xz4MI3FTt5I5O+cvphpE+kd6Qz8XjW3/YveXEQcdO4CW0CTSUao88a8+/IMvnMGfUmDW1Q==}
+  '@dicebear/core@9.4.3':
+    resolution: {integrity: sha512-9ITrQI57k3p5hKuU8HZJ1d0kPdrmTKEJDOdlKQ8CpaChbtmnD1R+dtWmNz5IesYThXM8F64pJ0ZvJ2rsY8Hciw==}
     engines: {node: '>=18.0.0'}
 
   '@dicebear/pixel-art@9.2.4':
@@ -6210,6 +6210,7 @@ packages:
   eslint@9.37.0:
     resolution: {integrity: sha512-XyLmROnACWqSxiGYArdef1fItQd47weqB7iwtfr9JHwRrqIXZdcFMvvEcL9xHCmL0SNsOvF0c42lWyM1U5dgig==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
     peerDependencies:
       jiti: '*'
@@ -12131,13 +12132,13 @@ snapshots:
       - supports-color
     optional: true
 
-  '@dicebear/core@9.4.1':
+  '@dicebear/core@9.4.3':
     dependencies:
       '@types/json-schema': 7.0.15
 
-  '@dicebear/pixel-art@9.2.4(@dicebear/core@9.4.1)':
+  '@dicebear/pixel-art@9.2.4(@dicebear/core@9.4.3)':
     dependencies:
-      '@dicebear/core': 9.4.1
+      '@dicebear/core': 9.4.3
 
   '@discoveryjs/json-ext@0.6.3': {}
 
