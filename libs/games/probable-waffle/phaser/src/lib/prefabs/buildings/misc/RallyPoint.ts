@@ -28,6 +28,7 @@ import { ActorTranslateComponent } from "../../../entity/components/movement/act
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
 import { ResourceSourceComponent } from "../../../entity/components/resource/resource-source-component";
 import { OwnerComponent } from "../../../entity/components/owner-component";
+import { FlyingComponent } from "../../../entity/components/movement/flying-component";
 import GameObject = Phaser.GameObjects.GameObject;
 
 export default class RallyPoint extends Phaser.GameObjects.Image {
@@ -93,11 +94,22 @@ export default class RallyPoint extends Phaser.GameObjects.Image {
     const movementSystem = getActorSystem<MovementSystem>(newGameObject, MovementSystem);
     if (!movementSystem) return;
     if (this.tileVec3) {
-      const tileVec3 = (await movementSystem.getClosestUnoccupiedTileVec3(this.tileVec3)) ?? this.tileVec3;
+      const flying = getActorComponent(newGameObject, FlyingComponent);
+      const tileVec3 = flying
+        ? movementSystem.getAirFormationDestinationForSequentialRally(this.tileVec3)
+        : ((await movementSystem.getClosestUnoccupiedTileVec3(this.tileVec3)) ?? this.tileVec3);
       await movementSystem.moveToLocationByFollowingStaticPath(tileVec3);
       return;
     }
     if (this.actor) {
+      const flying = getActorComponent(newGameObject, FlyingComponent);
+      const targetTile = getGameObjectCurrentTile(this.actor);
+      if (flying && targetTile) {
+        await movementSystem.moveToLocationByFollowingStaticPath(
+          movementSystem.getAirFormationDestinationForSequentialRally(targetTile)
+        );
+        return;
+      }
       await movementSystem.moveToActorByAdjustingPathDynamically(this.actor);
     }
   }

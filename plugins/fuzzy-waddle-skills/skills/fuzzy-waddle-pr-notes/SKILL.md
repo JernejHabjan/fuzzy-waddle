@@ -12,6 +12,8 @@ description: Use when the user explicitly asks for concise PR notes or a short c
 - State verification and closure-audit status concisely
 - Do not add generic value statements
 - Mention follow-up risks only when they matter
+- When updating a PR body through a shell, pass real line breaks (for example, a PowerShell here-string); never rely on literal `\n` escapes.
+- Read the PR body back after an update to confirm Markdown headings and line breaks rendered as intended.
 
 ## Preferred shape
 
