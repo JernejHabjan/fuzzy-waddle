@@ -57,6 +57,10 @@ export class MovementOccupancyService {
   private static readonly DISABLED = false;
   private readonly stepReservations = new Map<ActorId, Reservation>();
   private readonly destinationReservations = new Map<ActorId, Reservation>();
+  // Air destinations deliberately do not participate in ground occupancy or
+  // navigation. They only keep flyers on the same logical flight layer from
+  // receiving the same final formation slot.
+  private readonly airDestinationReservations = new Map<ActorId, Reservation>();
 
   constructor(private readonly scene: Phaser.Scene) {
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
@@ -106,6 +110,27 @@ export class MovementOccupancyService {
   releaseAll(actorId: ActorId): void {
     this.releaseStep(actorId);
     this.releaseDestination(actorId);
+    this.releaseAirDestination(actorId);
+  }
+
+  /**
+   * Claims a single final tile for a flying actor without consulting terrain,
+   * ground footprints, or ground reservations. Reservations are layer-scoped so
+   * future altitude systems can safely reuse the same horizontal coordinate.
+   */
+  reserveAirDestination(actorId: ActorId, tile: Vector2Simple, heightLayer: number): boolean {
+    if (MovementOccupancyService.DISABLED) return true;
+    const key = this.toKey(tile, heightLayer);
+    for (const reservation of this.airDestinationReservations.values()) {
+      if (reservation.actorId !== actorId && reservation.keys.includes(key)) return false;
+    }
+    this.airDestinationReservations.set(actorId, { actorId, keys: [key] });
+    return true;
+  }
+
+  /** Releases the current air-formation slot when its order ends or is replaced. */
+  releaseAirDestination(actorId: ActorId): void {
+    this.airDestinationReservations.delete(actorId);
   }
 
   getBlockingActors(
@@ -296,5 +321,6 @@ export class MovementOccupancyService {
   private destroy(): void {
     this.stepReservations.clear();
     this.destinationReservations.clear();
+    this.airDestinationReservations.clear();
   }
 }
