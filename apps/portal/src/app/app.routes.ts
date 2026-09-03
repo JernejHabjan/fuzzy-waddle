@@ -1,5 +1,5 @@
-import { inject, NgModule } from "@angular/core";
-import { Router, RouterModule, type Routes } from "@angular/router";
+import { inject } from "@angular/core";
+import { Router, type Routes } from "@angular/router";
 import { AuthGuard } from "@fuzzy-waddle/platform-identity/client/auth/auth.guard";
 import { AppRoleGuard } from "@fuzzy-waddle/platform-identity/client/auth/app-role.guard";
 import { LevelGuard } from "@fuzzy-waddle/fly-squasher-interface/choose-level/level.guard";
@@ -87,7 +87,14 @@ const dungeonCrawlerRoutes = [
   }
 ] satisfies Routes;
 
-const routes = [
+// useHash: true // not needed
+// when deployed, set a rewrite rule for SPA application:
+// source: "/*"
+// destination: "/index.html"
+// action: "rewrite"
+// docs for render.com: https://render.com/docs/deploy-create-react-app#using-client-side-routing
+// docs for azure: https://learn.microsoft.com/en-us/azure/static-web-apps/configuration?WT.mc_id=javascript-17844-cxa#fallback-routes
+export const portalRoutes = [
   {
     path: "",
     loadComponent: () => import("./home/page/home-page.component").then((m) => m.HomePageComponent),
@@ -127,23 +134,3 @@ const routes = [
     redirectTo: ""
   }
 ] satisfies Routes;
-
-@NgModule({
-  imports: [
-    RouterModule.forRoot(
-      routes,
-      {
-        bindToComponentInputs: true
-        // useHash: true // not needed
-      }
-      // when deployed, set a rewrite rule for SPA application:
-      // source: "/*"
-      // destination: "/index.html"
-      // action: "rewrite"
-      // docs for render.com: https://render.com/docs/deploy-create-react-app#using-client-side-routing
-      // docs for azure: https://learn.microsoft.com/en-us/azure/static-web-apps/configuration?WT.mc_id=javascript-17844-cxa#fallback-routes
-    )
-  ],
-  exports: [RouterModule]
-})
-export class AppRoutingModule {}

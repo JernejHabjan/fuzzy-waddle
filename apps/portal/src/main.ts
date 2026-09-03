@@ -7,12 +7,13 @@ import { environment } from "@fuzzy-waddle/environments/environment";
 import { AppComponent } from "./app/app.component";
 import { SocketIoModule } from "ngx-socket-io";
 import { ServiceWorkerModule } from "@angular/service-worker";
-import { AppRoutingModule } from "./app/app-routing.module";
 import { bootstrapApplication, BrowserModule } from "@angular/platform-browser";
+import { provideRouter, withComponentInputBinding } from "@angular/router";
 import { accessTokenInterceptor } from "@fuzzy-waddle/platform-identity/client/auth/access-token.interceptor";
 import { provideHttpClient, withInterceptors } from "@angular/common/http";
 import { AuthGuard } from "@fuzzy-waddle/platform-identity/client/auth/auth.guard";
 import { authReadyInterceptor } from "@fuzzy-waddle/platform-identity/client/auth/auth-ready.interceptor";
+import { portalRoutes } from "./app/app.routes";
 
 if (environment.production) {
   enableProdMode();
@@ -21,10 +22,9 @@ if (environment.production) {
 bootstrapApplication(AppComponent, {
   providers: [
     provideZoneChangeDetection(),
+    provideRouter(portalRoutes, withComponentInputBinding()),
     importProvidersFrom(
       BrowserModule,
-      // app routing module must be included last, as it contains the wildcard route
-      AppRoutingModule,
       ServiceWorkerModule.register("ngsw-worker.js", {
         // Disable in dev mode and in Tauri — Tauri has no web server to serve
         // ngsw-worker.js from, so registration would always 404.
