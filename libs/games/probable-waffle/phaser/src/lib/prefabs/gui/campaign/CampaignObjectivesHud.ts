@@ -7,7 +7,9 @@ import Phaser from "phaser";
 import { Subscription } from "rxjs";
 import type {
   CampaignObjectiveProjection,
-  CampaignObjectiveProjectionItem
+  CampaignObjectiveProjectionItem,
+  CampaignQuestLogObjectiveEntry,
+  CampaignQuestLogPresentationKey
 } from "@fuzzy-waddle/probable-waffle-campaign";
 import type { CampaignMissionRuntimeState } from "@fuzzy-waddle/probable-waffle-protocol";
 import { environment } from "@fuzzy-waddle/environments/environment";
@@ -111,7 +113,7 @@ export default class CampaignObjectivesHud extends Phaser.GameObjects.Container 
     // closeButton
     const closeButton = scene.add.text(315, -250, "", {});
     closeButton.setOrigin(0.5, 0);
-    closeButton.text = "[ Close ]";
+    closeButton.text = "[ Done ]";
     closeButton.setStyle({ color: "#e6c27a", fontFamily: "disposabledroid", fontSize: "18px", resolution: 10 });
     questPanel.add(closeButton);
 
@@ -124,7 +126,7 @@ export default class CampaignObjectivesHud extends Phaser.GameObjects.Container 
       lineSpacing: 3,
       resolution: 10
     });
-    questBody.setWordWrapWidth(700);
+    questBody.setWordWrapWidth(350);
     questPanel.add(questBody);
 
     this.trackerBackground = trackerBackground;
@@ -150,8 +152,10 @@ export default class CampaignObjectivesHud extends Phaser.GameObjects.Container 
     this.trackerBody.setInteractive({ useHandCursor: true });
     this.logButton.on(Phaser.Input.Events.POINTER_UP, this.toggleQuestLog, this);
     this.closeButton.on(Phaser.Input.Events.POINTER_UP, this.hideQuestLog, this);
+    this.questOverlay.on(Phaser.Input.Events.POINTER_UP, this.hideQuestLog, this);
     this.trackerBody.on(Phaser.Input.Events.POINTER_UP, this.focusFirstTrackedObjective, this);
     scene.scale.on("resize", this.handleResize, this);
+    scene.input.keyboard?.on("keydown-ESC", this.hideQuestLog, this);
     /* END-USER-CTR-CODE */
   }
 
@@ -174,6 +178,8 @@ export default class CampaignObjectivesHud extends Phaser.GameObjects.Container 
   private notificationTimer?: Phaser.Time.TimerEvent;
   private director?: CampaignMissionDirector;
   private currentProjection?: CampaignObjectiveProjection;
+  private selectedQuestKey?: CampaignQuestLogPresentationKey;
+  private readonly questRows: Phaser.GameObjects.Text[] = [];
 
   setup(director: CampaignMissionDirector): void {
     this.director = director;
@@ -194,7 +200,7 @@ export default class CampaignObjectivesHud extends Phaser.GameObjects.Container 
     this.currentProjection = projection;
     this.trackerBody.setText(projection.tracker.flatMap(formatTrackerObjective));
     this.updateTrackerHeight();
-    this.questBody.setText(formatQuestLog(projection));
+    this.renderQuestLog(projection);
   }
 
   private renderEncounterDiagnostics(state: CampaignMissionRuntimeState): void {
@@ -224,11 +230,58 @@ export default class CampaignObjectivesHud extends Phaser.GameObjects.Container 
   }
 
   private toggleQuestLog(): void {
-    this.questPanel.setVisible(!this.questPanel.visible);
+    if (this.questPanel.visible) this.hideQuestLog();
+    else {
+      this.questPanel.setVisible(true);
+      if (this.currentProjection) this.renderQuestLog(this.currentProjection);
+    }
   }
 
   private hideQuestLog(): void {
     this.questPanel.setVisible(false);
+  }
+
+  /** Rebuilds local-only row objects; objective state remains owned by the projection store. */
+  private renderQuestLog(projection: CampaignObjectiveProjection): void {
+    const entries = projection.questLog.flatMap((section) => section.entries);
+    this.selectedQuestKey = selectQuestLogEntry(entries, this.selectedQuestKey);
+    for (const row of this.questRows) row.destroy();
+    this.questRows.length = 0;
+    const positions = { main: -345, optional: -155, guidance: -345 } as const;
+    const labelY = { main: -210, optional: -210, guidance: 100 } as const;
+    for (const section of projection.questLog) {
+      const heading = this.scene.add.text(positions[section.id], labelY[section.id], section.heading, questHeadingStyle);
+      this.questPanel.add(heading);
+      this.questRows.push(heading);
+      if (section.entries.length === 0) {
+        const empty = this.scene.add.text(positions[section.id], labelY[section.id] + 30, "No quests", questEmptyStyle);
+        this.questPanel.add(empty);
+        this.questRows.push(empty);
+      }
+      section.entries.forEach((entry, index) => {
+        const row = this.scene.add.text(
+          positions[section.id],
+          labelY[section.id] + 30 + index * 42,
+          formatQuestRow(entry, entry.presentationKey === this.selectedQuestKey),
+          questRowStyle
+        );
+        row.setWordWrapWidth(section.id === "guidance" ? 320 : 170);
+        if (entry.type === "objective") {
+          row.setInteractive({ useHandCursor: true });
+          row.on(Phaser.Input.Events.POINTER_UP, () => {
+            this.selectedQuestKey = entry.presentationKey;
+            this.renderQuestLog(projection);
+          });
+        }
+        this.questPanel.add(row);
+        this.questRows.push(row);
+      });
+    }
+    const selected = entries.find(
+      (entry): entry is CampaignQuestLogObjectiveEntry => entry.type === "objective" && entry.presentationKey === this.selectedQuestKey
+    );
+    this.questBody.setText(selected ? formatQuestDetail(selected.objective) : "Select a discovered quest to view its details.");
+    this.questBody.setPosition(40, -195);
   }
 
   private focusFirstTrackedObjective(): void {
@@ -261,7 +314,10 @@ export default class CampaignObjectivesHud extends Phaser.GameObjects.Container 
     this.scene.scale.off("resize", this.handleResize, this);
     this.logButton.off(Phaser.Input.Events.POINTER_UP, this.toggleQuestLog, this);
     this.closeButton.off(Phaser.Input.Events.POINTER_UP, this.hideQuestLog, this);
+    this.questOverlay.off(Phaser.Input.Events.POINTER_UP, this.hideQuestLog, this);
     this.trackerBody.off(Phaser.Input.Events.POINTER_UP, this.focusFirstTrackedObjective, this);
+    this.scene.input.keyboard?.off("keydown-ESC", this.hideQuestLog, this);
+    for (const row of this.questRows) row.destroy();
     super.destroy(fromScene);
   }
 
@@ -281,19 +337,44 @@ function formatTrackerObjective(objective: CampaignObjectiveProjectionItem): str
   return lines;
 }
 
-function formatQuestLog(projection: CampaignObjectiveProjection): string[] {
-  const lines: string[] = [];
-  for (const [kind, objectives] of Object.entries(projection.questLog)) {
-    if (objectives.length === 0) continue;
-    lines.push(kind.toUpperCase());
-    for (const objective of objectives) lines.push(...formatTrackerObjective(objective));
-    lines.push("");
+const questHeadingStyle: Phaser.Types.GameObjects.Text.TextStyle = {
+  color: "#f1d6a4", fontFamily: "disposabledroid", fontSize: "18px", resolution: 10
+};
+const questRowStyle: Phaser.Types.GameObjects.Text.TextStyle = {
+  color: "#ffffff", fontFamily: "disposabledroid", fontSize: "15px", lineSpacing: 2, resolution: 10
+};
+const questEmptyStyle: Phaser.Types.GameObjects.Text.TextStyle = {
+  color: "#9b8d7d", fontFamily: "disposabledroid", fontSize: "15px", resolution: 10
+};
+
+function formatQuestRow(
+  entry: CampaignObjectiveProjection["questLog"][number]["entries"][number],
+  selected: boolean
+): string {
+  if (entry.type === "undiscovered") return `? ${entry.title}`;
+  const glyph = entry.objective.status === "completed" ? "✓" : entry.objective.status === "failed" || entry.objective.status === "impossible" ? "✕" : "•";
+  return `${selected ? "▶" : glyph} ${entry.objective.title}\n  ${entry.objective.statusText}`;
+}
+
+function formatQuestDetail(objective: CampaignObjectiveProjectionItem): string[] {
+  const lines = [objective.title, objective.statusText, ""];
+  if (objective.description) lines.push(objective.description, "");
+  for (const item of objective.checklist) {
+    lines.push(`${item.status === "completed" ? "✓" : "○"} ${item.text}${item.progressText ? ` (${item.progressText})` : ""}`);
+    if (item.inputPrompt) lines.push(`  ${item.inputPrompt.text}`);
   }
-  if (projection.history.length > 0) {
-    lines.push("MISSION HISTORY");
-    for (const entry of projection.history) lines.push(`• ${entry.text} — ${entry.state ?? entry.kind}`);
-  }
+  if (objective.focus) lines.push("", "Select the tracker to focus this objective.");
   return lines;
+}
+
+/** Retains a valid local row selection, preferring active quests when the prior row disappears. */
+export function selectQuestLogEntry(
+  entries: readonly CampaignObjectiveProjection["questLog"][number]["entries"][number][],
+  selected?: CampaignQuestLogPresentationKey
+): CampaignQuestLogPresentationKey | undefined {
+  const objectives = entries.filter((entry): entry is CampaignQuestLogObjectiveEntry => entry.type === "objective");
+  if (selected && objectives.some((entry) => entry.presentationKey === selected)) return selected;
+  return objectives.find((entry) => entry.objective.status === "active")?.presentationKey ?? objectives[0]?.presentationKey;
 }
 
 export function formatCampaignEncounterDiagnostics(state: CampaignMissionRuntimeState): string[] {
