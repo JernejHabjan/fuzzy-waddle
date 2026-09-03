@@ -111,7 +111,7 @@ export default class CampaignObjectivesHud extends Phaser.GameObjects.Container 
     questPanel.add(questTitle);
 
     // closeButton
-    const closeButton = scene.add.text(315, -250, "", {});
+    const closeButton = scene.add.text(0, 222, "", {});
     closeButton.setOrigin(0.5, 0);
     closeButton.text = "[ Done ]";
     closeButton.setStyle({ color: "#e6c27a", fontFamily: "disposabledroid", fontSize: "18px", resolution: 10 });
@@ -154,6 +154,11 @@ export default class CampaignObjectivesHud extends Phaser.GameObjects.Container 
     this.closeButton.on(Phaser.Input.Events.POINTER_UP, this.hideQuestLog, this);
     this.questOverlay.on(Phaser.Input.Events.POINTER_UP, this.hideQuestLog, this);
     this.trackerBody.on(Phaser.Input.Events.POINTER_UP, this.focusFirstTrackedObjective, this);
+    this.questBackground.setFillStyle(0x15110e, 0.99).setStrokeStyle(4, 0xb8923b, 1);
+    this.questTitle.setStyle({ fontSize: "27px", stroke: "#060402", strokeThickness: 3 });
+    this.closeButton.setStyle({ backgroundColor: "#2b170d", padding: { x: 46, y: 9 }, stroke: "#b8923b", strokeThickness: 2 });
+    this.questDetailFrame = scene.add.rectangle(-5, 83, 680, 200, 0x080706, 0.92).setStrokeStyle(2, 0xb8923b, 1);
+    this.questPanel.addAt(this.questDetailFrame, 2);
     scene.scale.on("resize", this.handleResize, this);
     scene.input.keyboard?.on("keydown-ESC", this.hideQuestLog, this);
     /* END-USER-CTR-CODE */
@@ -179,7 +184,8 @@ export default class CampaignObjectivesHud extends Phaser.GameObjects.Container 
   private director?: CampaignMissionDirector;
   private currentProjection?: CampaignObjectiveProjection;
   private selectedQuestKey?: CampaignQuestLogPresentationKey;
-  private readonly questRows: Phaser.GameObjects.Text[] = [];
+  private readonly questRows: Phaser.GameObjects.GameObject[] = [];
+  private questDetailFrame: Phaser.GameObjects.Rectangle;
 
   setup(director: CampaignMissionDirector): void {
     this.director = director;
@@ -247,25 +253,33 @@ export default class CampaignObjectivesHud extends Phaser.GameObjects.Container 
     this.selectedQuestKey = selectQuestLogEntry(entries, this.selectedQuestKey);
     for (const row of this.questRows) row.destroy();
     this.questRows.length = 0;
-    const positions = { main: -345, optional: -155, guidance: -345 } as const;
-    const labelY = { main: -210, optional: -210, guidance: 100 } as const;
+    const positions = { main: -335, optional: -5, guidance: -335 } as const;
+    const labelY = { main: -205, optional: -205, guidance: -88 } as const;
     for (const section of projection.questLog) {
       const heading = this.scene.add.text(positions[section.id], labelY[section.id], section.heading, questHeadingStyle);
       this.questPanel.add(heading);
       this.questRows.push(heading);
       if (section.entries.length === 0) {
-        const empty = this.scene.add.text(positions[section.id], labelY[section.id] + 30, "No quests", questEmptyStyle);
+        const empty = this.scene.add.text(positions[section.id], labelY[section.id] + 34, "No quests", questEmptyStyle);
         this.questPanel.add(empty);
         this.questRows.push(empty);
       }
       section.entries.forEach((entry, index) => {
+        const rowY = labelY[section.id] + 30 + index * 46;
+        const rowBackground = this.scene.add
+          .rectangle(positions[section.id] + 150, rowY + 17, 300, 38, entry.presentationKey === this.selectedQuestKey ? 0x5a2114 : 0x17120f, 0.98)
+          .setStrokeStyle(2, entry.presentationKey === this.selectedQuestKey ? 0xf0c850 : 0x6d5426, 1);
+        const iconFrame = this.scene.add
+          .rectangle(positions[section.id] + 18, rowY + 17, 34, 34, 0x080706, 1)
+          .setStrokeStyle(2, 0xb8923b, 1);
+        const icon = this.scene.add.text(positions[section.id] + 18, rowY + 17, questGlyph(entry), questIconStyle).setOrigin(0.5);
         const row = this.scene.add.text(
-          positions[section.id],
-          labelY[section.id] + 30 + index * 42,
+          positions[section.id] + 42,
+          rowY + 4,
           formatQuestRow(entry, entry.presentationKey === this.selectedQuestKey),
           questRowStyle
         );
-        row.setWordWrapWidth(section.id === "guidance" ? 320 : 170);
+        row.setWordWrapWidth(245);
         if (entry.type === "objective") {
           row.setInteractive({ useHandCursor: true });
           row.on(Phaser.Input.Events.POINTER_UP, () => {
@@ -273,15 +287,22 @@ export default class CampaignObjectivesHud extends Phaser.GameObjects.Container 
             this.renderQuestLog(projection);
           });
         }
+        this.questPanel.addAt(rowBackground, 3);
+        this.questPanel.add(iconFrame);
+        this.questPanel.add(icon);
         this.questPanel.add(row);
-        this.questRows.push(row);
+        this.questRows.push(rowBackground, iconFrame, icon, row);
       });
     }
     const selected = entries.find(
       (entry): entry is CampaignQuestLogObjectiveEntry => entry.type === "objective" && entry.presentationKey === this.selectedQuestKey
     );
+    const detailTitle = this.scene.add.text(-335, -35, selected?.objective.title ?? "Quest details", questDetailTitleStyle);
+    this.questPanel.add(detailTitle);
+    this.questRows.push(detailTitle);
     this.questBody.setText(selected ? formatQuestDetail(selected.objective) : "Select a discovered quest to view its details.");
-    this.questBody.setPosition(40, -195);
+    this.questBody.setPosition(-335, 4);
+    this.questBody.setWordWrapWidth(630);
   }
 
   private focusFirstTrackedObjective(): void {
@@ -338,26 +359,31 @@ function formatTrackerObjective(objective: CampaignObjectiveProjectionItem): str
 }
 
 const questHeadingStyle: Phaser.Types.GameObjects.Text.TextStyle = {
-  color: "#f1d6a4", fontFamily: "disposabledroid", fontSize: "18px", resolution: 10
+  color: "#f4cf52", fontFamily: "disposabledroid", fontSize: "22px", stroke: "#000000", strokeThickness: 2, resolution: 10
 };
 const questRowStyle: Phaser.Types.GameObjects.Text.TextStyle = {
-  color: "#ffffff", fontFamily: "disposabledroid", fontSize: "15px", lineSpacing: 2, resolution: 10
+  color: "#f2e5c8", fontFamily: "disposabledroid", fontSize: "15px", lineSpacing: 1, resolution: 10
 };
 const questEmptyStyle: Phaser.Types.GameObjects.Text.TextStyle = {
   color: "#9b8d7d", fontFamily: "disposabledroid", fontSize: "15px", resolution: 10
+};
+const questIconStyle: Phaser.Types.GameObjects.Text.TextStyle = {
+  color: "#f4cf52", fontFamily: "disposabledroid", fontSize: "21px", stroke: "#000000", strokeThickness: 2, resolution: 10
+};
+const questDetailTitleStyle: Phaser.Types.GameObjects.Text.TextStyle = {
+  color: "#f4cf52", fontFamily: "disposabledroid", fontSize: "21px", stroke: "#000000", strokeThickness: 2, resolution: 10
 };
 
 function formatQuestRow(
   entry: CampaignObjectiveProjection["questLog"][number]["entries"][number],
   selected: boolean
 ): string {
-  if (entry.type === "undiscovered") return `? ${entry.title}`;
-  const glyph = entry.objective.status === "completed" ? "✓" : entry.objective.status === "failed" || entry.objective.status === "impossible" ? "✕" : "•";
-  return `${selected ? "▶" : glyph} ${entry.objective.title}\n  ${entry.objective.statusText}`;
+  if (entry.type === "undiscovered") return entry.title;
+  return `${selected ? "▶ " : ""}${entry.objective.title}\n${entry.objective.statusText}`;
 }
 
 function formatQuestDetail(objective: CampaignObjectiveProjectionItem): string[] {
-  const lines = [objective.title, objective.statusText, ""];
+  const lines = [objective.statusText, ""];
   if (objective.description) lines.push(objective.description, "");
   for (const item of objective.checklist) {
     lines.push(`${item.status === "completed" ? "✓" : "○"} ${item.text}${item.progressText ? ` (${item.progressText})` : ""}`);
@@ -365,6 +391,13 @@ function formatQuestDetail(objective: CampaignObjectiveProjectionItem): string[]
   }
   if (objective.focus) lines.push("", "Select the tracker to focus this objective.");
   return lines;
+}
+
+function questGlyph(entry: CampaignObjectiveProjection["questLog"][number]["entries"][number]): string {
+  if (entry.type === "undiscovered") return "?";
+  if (entry.objective.status === "completed") return "✓";
+  if (entry.objective.status === "failed" || entry.objective.status === "impossible") return "✕";
+  return entry.objective.kind === "optional" ? "◆" : "●";
 }
 
 /** Retains a valid local row selection, preferring active quests when the prior row disappears. */
