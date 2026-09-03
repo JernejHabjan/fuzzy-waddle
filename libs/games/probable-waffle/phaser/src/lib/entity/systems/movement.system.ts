@@ -127,6 +127,9 @@ export class MovementSystem {
   private animationActorComponent?: AnimationActorComponent;
   private statusEffectComponent?: StatusEffectComponent;
   private _movementOccupancyService?: MovementOccupancyService;
+  // Identifies the slot allocated for the currently executing air movement so
+  // a superseded tween cannot release the replacement command's reservation.
+  private activeAirDestinationReservationToken?: number;
 
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
     this.listenToMoveEvents();
@@ -204,12 +207,16 @@ export class MovementSystem {
     const flyingComponent = getActorComponent(this.gameObject, FlyingComponent);
     const usePathfinding = !flyingComponent;
     if (!usePathfinding) {
+      const airReservationToken = this.activeAirDestinationReservationToken;
       return this.moveDirectlyToLocationWithoutPathfinding(tileVec3, pathMoveConfig)
         .then(() => true)
         .catch(() => false)
         .finally(() => {
           const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
-          if (actorId) this.movementOccupancyService?.releaseAirDestination(actorId);
+          if (actorId) this.movementOccupancyService?.releaseAirDestination(actorId, airReservationToken);
+          if (this.activeAirDestinationReservationToken === airReservationToken) {
+            this.activeAirDestinationReservationToken = undefined;
+          }
         });
     }
 
@@ -709,7 +716,10 @@ export class MovementSystem {
     this._cancelCurrentMovement = undefined;
     const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
     if (actorId) this.movementOccupancyService?.releaseStep(actorId);
-    if (actorId && releaseAirDestination) this.movementOccupancyService?.releaseAirDestination(actorId);
+    if (actorId && releaseAirDestination) {
+      this.movementOccupancyService?.releaseAirDestination(actorId, this.activeAirDestinationReservationToken);
+      this.activeAirDestinationReservationToken = undefined;
+    }
   }
 
   /**
@@ -1124,11 +1134,14 @@ export class MovementSystem {
     const commandFlyerIds = flyingActorIds.length > 0 ? flyingActorIds : selectedActorIds;
     const preferredCandidate = getAirFormationCandidateForActor(actorId, commandFlyerIds, candidates);
     const preferredIndex = Math.max(0, preferredCandidate ? candidates.indexOf(preferredCandidate) : 0);
-    occupancy.releaseAirDestination(actorId);
+    occupancy.releaseAirDestination(actorId, this.activeAirDestinationReservationToken);
+    this.activeAirDestinationReservationToken = undefined;
 
     for (let offset = 0; offset < candidates.length; offset++) {
       const candidate = candidates[(preferredIndex + offset) % candidates.length]!;
-      if (occupancy.reserveAirDestination(actorId, candidate, tileVec3.z)) {
+      const token = occupancy.reserveAirDestination(actorId, candidate, tileVec3.z);
+      if (token !== undefined) {
+        this.activeAirDestinationReservationToken = token;
         return { x: candidate.x, y: candidate.y, z: tileVec3.z } satisfies Vector3Simple;
       }
     }

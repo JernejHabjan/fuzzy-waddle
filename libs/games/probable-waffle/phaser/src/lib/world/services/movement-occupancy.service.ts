@@ -17,6 +17,10 @@ interface Reservation {
   keys: string[];
 }
 
+interface AirReservation extends Reservation {
+  token: number;
+}
+
 export interface MovementOccupancyOptions {
   /**
    * Destination reservations reserve final formation slots, not traversable space.
@@ -60,7 +64,8 @@ export class MovementOccupancyService {
   // Air destinations deliberately do not participate in ground occupancy or
   // navigation. They only keep flyers on the same logical flight layer from
   // receiving the same final formation slot.
-  private readonly airDestinationReservations = new Map<ActorId, Reservation>();
+  private readonly airDestinationReservations = new Map<ActorId, AirReservation>();
+  private nextAirReservationToken = 1;
 
   constructor(private readonly scene: Phaser.Scene) {
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
@@ -118,18 +123,23 @@ export class MovementOccupancyService {
    * ground footprints, or ground reservations. Reservations are layer-scoped so
    * future altitude systems can safely reuse the same horizontal coordinate.
    */
-  reserveAirDestination(actorId: ActorId, tile: Vector2Simple, heightLayer: number): boolean {
-    if (MovementOccupancyService.DISABLED) return true;
+  reserveAirDestination(actorId: ActorId, tile: Vector2Simple, heightLayer: number): number | undefined {
+    if (MovementOccupancyService.DISABLED) return 0;
     const key = this.toKey(tile, heightLayer);
     for (const reservation of this.airDestinationReservations.values()) {
-      if (reservation.actorId !== actorId && reservation.keys.includes(key)) return false;
+      if (reservation.actorId !== actorId && reservation.keys.includes(key)) return undefined;
     }
-    this.airDestinationReservations.set(actorId, { actorId, keys: [key] });
-    return true;
+    const token = this.nextAirReservationToken++;
+    this.airDestinationReservations.set(actorId, { actorId, keys: [key], token });
+    return token;
   }
 
-  /** Releases the current air-formation slot when its order ends or is replaced. */
-  releaseAirDestination(actorId: ActorId): void {
+  /**
+   * Releases the current air-formation slot when its order ends or is replaced.
+   * A token prevents a cancelled older tween from clearing its replacement's slot.
+   */
+  releaseAirDestination(actorId: ActorId, token?: number): void {
+    if (token !== undefined && this.airDestinationReservations.get(actorId)?.token !== token) return;
     this.airDestinationReservations.delete(actorId);
   }
 
