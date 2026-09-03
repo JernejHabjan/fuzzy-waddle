@@ -90,6 +90,7 @@ import { RandomService } from "../world/services/random.service";
 import HealingTotem from "../prefabs/buildings/tivara/HealingTotem/HealingTotem";
 import TivaraAlchemist from "../prefabs/characters/tivara/tivara-alchemist/TivaraAlchemist";
 import Hare from "../prefabs/animals/hare/Hare";
+import Shark from "../prefabs/animals/shark/Shark";
 import Deer from "../prefabs/animals/deer/Deer";
 import Boar2 from "../prefabs/animals/boar2/Boar2";
 import Turkey from "../prefabs/animals/turkey/Turkey";
@@ -314,7 +315,8 @@ export class ActorManager {
     [ObjectNames.Boar2]: Boar2,
     [ObjectNames.Deer]: Deer,
     [ObjectNames.Fox]: Fox,
-    [ObjectNames.Hare]: Hare
+    [ObjectNames.Hare]: Hare,
+    [ObjectNames.Shark]: Shark
   };
 
   private static crops: ActorMap = {
