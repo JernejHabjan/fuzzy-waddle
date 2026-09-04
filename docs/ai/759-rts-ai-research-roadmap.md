@@ -6,7 +6,7 @@
 - **Research PR:** [#764 — docs: add RTS AI improvement roadmap](https://github.com/JernejHabjan/fuzzy-waddle/pull/764)
 - **Implementation dependency:** [#792 — fix(ai): make Stage 0 planner selection deterministic](https://github.com/JernejHabjan/fuzzy-waddle/pull/792)
 - **Target mode:** skirmish first; reuse the same contracts for campaign where the information policy permits it.
-- **Target experience:** a readable, fair, resilient casual/intermediate opponent that completes a classic RTS loop: establish an economy, avoid supply blocks, build a faction-valid army, scout, defend, pressure, expand, recover from disruption, and conclude the match.
+- **Target experience:** a readable, fair, resilient casual/intermediate opponent that completes a classic RTS loop: establish an economy, avoid supply blocks, build a faction-valid army, scout, fortify, defend, pressure, expand, recover from disruption, and conclude the match.
 - **Runtime technology:** deterministic, authored rules and utility scoring. Runtime ML/LLM inference and unbounded search are out of scope.
 - **Last research pass:** 2026-09-04 against `research/759-rts-ai-roadmap`, current `develop`, the supplied reference list, the issue milestone, and the open Stage 0 PR.
 
@@ -54,9 +54,10 @@ The roadmap is deliberately ordered so the first playable vertical slice arrives
 5. **Purposeful armies.** Units belong to defense, attack, scout, reserve, or reinforcement roles. The AI assembles at a rally point, attacks an objective rather than one arbitrary actor, reinforces without constantly dissolving squads, and regroups or retreats when an engagement is poor.
 6. **Legible tactics.** Units focus vulnerable or dangerous targets without extreme overkill, ranged units preserve distance when practical, damaged valuable units disengage, and defenders respond to threats before the main army resumes its plan.
 7. **Resilience.** A lost worker, blocked building location, destroyed production structure, depleted resource, failed path, proxy building, or temporary supply block triggers a bounded recovery path instead of permanent inactivity or command spam.
-8. **A complete match.** The AI wins through the normal victory rules and deterministically concedes only after a sustained unrecoverable position. Victory, defeat, or concession reaches the existing score screen with a valid final score.
-9. **Readable difficulty.** Easy, normal, and hard differ in reaction delay, planning breadth, intentional error, risk, and tactical repertoire. Strategy personality is separate from difficulty. Any rules bonus is explicit in the lobby and result data.
-10. **Fair and reproducible play.** The same seed and command stream produce the same decisions and state checkpoints. AI never bypasses shared validation, never acts on hidden IDs, and never uses render-frame timing as game time.
+8. **Purposeful fortifications.** When the map, faction, strategy, and threat justify the cost, the AI builds connected wall lines with towers at valuable coverage points, stairs on the protected side, accessible wall-top defenders, and deliberate openings reserved for future gates. It does not surround itself blindly or seal its own economy and army inside.
+9. **A complete match.** The AI wins through the normal victory rules and deterministically concedes only after a sustained unrecoverable position. Victory, defeat, or concession reaches the existing score screen with a valid final score.
+10. **Readable difficulty.** Easy, normal, and hard differ in reaction delay, planning breadth, intentional error, risk, and tactical repertoire. Strategy personality is separate from difficulty. Any rules bonus is explicit in the lobby and result data.
+11. **Fair and reproducible play.** The same seed and command stream produce the same decisions and state checkpoints. AI never bypasses shared validation, never acts on hidden IDs, and never uses render-frame timing as game time.
 
 ### Initial quality target
 
@@ -66,6 +67,7 @@ The first release target is not expert or tournament play. It is a normal-diffic
 - produces workers and army continuously unless a trace gives a valid blocking reason;
 - launches at least one purposeful attack or expansion in a stable 15-minute match;
 - responds to an observed base threat within its documented decision delay;
+- creates a connected, traversable defensive line in fortification fixtures without blocking required ground access;
 - recovers from each authored disruption fixture or records a terminal reason;
 - does not use hidden information or implicit economic/stat bonuses;
 - concludes won/lost matches through the ordinary result and score flow;
@@ -78,6 +80,7 @@ The first release target is not expert or tournament play. It is a normal-diffic
 - replacing the human input/selection controller;
 - runtime neural inference, LLM calls, imitation learning, or reinforcement learning;
 - a general GOAP framework or a wholesale behavior-tree rewrite;
+- a Stronghold-scale castle/city simulation or optimal full-map wall solver in the initial release;
 - expensive all-pairs combat simulation or per-unit pathfinding every AI step;
 - hidden-information, resource, build-speed, or damage cheats by default;
 - using win rate alone as proof of quality.
@@ -96,6 +99,7 @@ Shared order vocabulary such as attack-move, hold position, or patrol may need i
 - Save/replay infrastructure preserves initial state, random state, and ordered command batches.
 - `StateHashService` already builds a stable authoritative multiplayer projection with sorted actors, logical positions, ownership, health, queues, economy, combat/orders, player state, research, scenario data, and RNG state. Extend or extract this projection; do not create a competing world hash from scratch.
 - `GameModeConditionChecker` and `ScoreTracker` already own victory/loss/tie evaluation and the score transition. AI completion should integrate with those authorities.
+- `Wall`, `WatchTower`, and `Stairs` already provide the core fortification pieces. Walls are drag-placeable; walls and towers expose elevated navigation; stairs connect ground to wall height; `StructureTopologyService` refreshes adjacent structure topology; and the height-navigation graph already tests wall/tower connectivity. The AI should plan against these capabilities instead of recreating movement rules.
 
 ### Correctness and behavior defects
 
@@ -121,6 +125,7 @@ Shared order vocabulary such as attack-move, hold position, or patrol may need i
 20. **Telemetry cannot prove improvement.** It emphasizes wall-clock spans, counters, and an untyped event buffer. It does not explain observation age, chosen/rejected goals, command outcomes, supply blocks, idle economy, scouting coverage, engagement outcomes, path failures, or recovery.
 21. **State hashing exists but is not yet an AI evaluation harness.** It is multiplayer-oriented and its projection is private. It does not include AI knowledge, profile, plan, assignments, manager state, or decision cadence. The earlier claim that only commands are hashed is superseded by the inspected `StateHashService`; the implementation should reuse its canonical projection patterns.
 22. **Focused coverage is narrow.** Snapshot and AI-handler tests exist, and PR #792 adds planner regressions, but there is no layered pure-decision suite or complete skirmish outcome matrix.
+23. **Fortifications have mechanics but no strategic planner.** Workers can construct walls, watch towers, and stairs, and units can traverse connected elevated structures, but AI planning treats buildings as isolated candidates. It has no wall-line objective, protected-region model, tower coverage score, stair/access requirement, construction order, wall-top defender assignment, breach recovery, or future gate slot.
 
 ### Affected code map
 
@@ -137,6 +142,7 @@ Treat this as a discovery index, not a complete edit list. Search call sites bef
 | Canonical authoritative hashing | `libs/games/probable-waffle/phaser/src/lib/world/services/recovery/state-hash.service.ts` |
 | AI save/load | `libs/games/probable-waffle/phaser/src/lib/data/save-game.ts`, `load-game.ts`, protocol component data |
 | Lobby AI settings | probable-waffle interface player-definition components and protocol player definitions |
+| Walls, towers, stairs, and elevated topology | `libs/games/probable-waffle/phaser/src/lib/prefabs/buildings/tivara/`, `StructureTopologyService`, `HeightNavigationGraphBuilder`, and movement/navigation systems |
 
 ## Research findings and boundaries
 
@@ -266,6 +272,7 @@ Managers become proposal authorities and do not change the world:
 type AiIntentV1 =
   | AssignWorkerIntent
   | ConstructIntent
+  | ConstructFortificationPieceIntent
   | TrainIntent
   | ResearchIntent
   | SetRallyIntent
@@ -276,6 +283,9 @@ type AiIntentV1 =
   | AdvanceIntent
   | EngageIntent
   | RetreatIntent
+  | AssignRampartDefenderIntent
+  | RepairFortificationIntent
+  | OperateGateIntent
   | RecoverPathIntent
   | ConcedeIntent;
 
@@ -329,6 +339,8 @@ All accepted intents are revalidated and translated into shared `GameCommand` va
 
 Construction and concession need first-class authoritative paths. Attack-move, hold-position, and patrol should be added only if the tactical implementation proves existing move/attack orders cannot express the behavior safely. Do not encode AI-only world mutations behind a generic debug command.
 
+Connected fortification construction may be represented as an ordered group of ordinary construction commands with one shared plan ID; it does not need an unsafe “spawn wall line” shortcut. Future gate operation, if it changes passability, must be a first-class command whose application rebuilds or invalidates the same navigation/topology authority used by movement.
+
 After dispatch, a typed `AiCommandOutcome` reports accepted, rejected, applied, superseded, failed, or timed out. Managers use outcomes to recover; they do not infer success merely because a command was emitted.
 
 ### 7. Brain state and scheduler
@@ -338,6 +350,7 @@ Create a versioned, serializable `AiBrainStateV1` containing at least:
 - player/profile/archetype/opening identifiers and opening phase;
 - knowledge and scouting coverage;
 - base records and expansion candidates;
+- fortification plans, topology nodes, deliberate openings/gate slots, breaches, and defender posts;
 - worker, builder, producer, defender, scout, reserve, and squad assignments;
 - current goals, objectives, reservations, and intent counters;
 - manager cooldowns and failure/backoff state;
@@ -399,6 +412,70 @@ Placement is staged:
 8. revalidate at application time and record a cooldown/failure reason if rejected.
 
 Expansion selection compares resource life, access-region connectivity, distance band, defensive shape, threat/last-seen age, travel from a stable base anchor, and opportunity cost. An expansion plan has `proposed -> reserved -> establishing -> active -> evacuating/lost` lifecycle states.
+
+### Defensive layouts: walls, towers, stairs, and future gates
+
+Fortification must be planned as one topology-aware defensive project, not as many unrelated requests to construct the cheapest defensive building. The current runtime already supplies most of the mechanical substrate: wall segments update their appearance and navigable connections from adjacent structures, watch towers connect at wall height, stairs expose ground-to-elevated access, and units can move across the resulting height-navigation graph.
+
+Add a serializable plan that owns the whole layout:
+
+```ts
+type AiFortificationNodeRole = 'wall' | 'tower' | 'stairs' | 'gate-slot';
+
+interface AiFortificationPlanV1 {
+  readonly id: string;
+  readonly baseId: string;
+  readonly purpose: 'choke' | 'resource-screen' | 'base-front' | 'fallback-line';
+  readonly protectedAssetIds: readonly string[];
+  readonly interiorAccessRegion: string;
+  readonly approachRegionIds: readonly string[];
+  readonly nodes: readonly AiFortificationNodeV1[];
+  readonly constructionOrder: readonly string[];
+  readonly stoneBudget: number;
+  readonly lifecycle: 'proposed' | 'reserved' | 'building' | 'operational' | 'breached' | 'rebuilding' | 'abandoned';
+}
+```
+
+The planner should work in five high-level steps:
+
+1. **Choose what to protect.** Start from a stable base record and identify the town center, production exits, worker/resource lanes, vulnerable approach regions, and retreat/rally areas. A wall is useful only if it protects valuable space without sacrificing the base's operation.
+2. **Generate short defensive fronts.** Prefer a short line between terrain obstacles or across a high-traffic approach over a costly full ring. Candidate fronts come from chokepoints, navigation-region boundaries, threat arrival directions, and base/resource envelopes. Canonicalize candidates before scoring or seeded sampling.
+3. **Lay out one connected graph.** Place wall nodes along the front; use towers at endpoints, corners, intersections, or high-coverage positions; put stairs on the protected side; and reserve an intentional opening as a `gate-slot`. Validate every footprint and adjacency against the same topology and height-navigation rules used by runtime movement.
+4. **Validate both sides of the defense.** The plan must make hostile ground approach meaningfully longer or narrower while keeping a legal route from the base to resources, production exits, rally points, the stairs, the wall top, and the outside. Validate hypothetical occupancy of the entire plan, not only one segment at a time.
+5. **Build incrementally and reassess.** Reserve a total budget and segment count, construct in an order that remains useful while incomplete, and stop when the threat disappears, the economy needs the resources, or the layout becomes invalid. Recompute affected connectivity after completion, destruction, capture, or a neighboring topology change.
+
+Placement rules:
+
+- A fortification plan has one stable ID and one active intent per node, preventing the “build the same wall/tower twenty times” failure.
+- Existing, reserved, under-construction, completed, and recently failed nodes count toward the plan; managers cannot independently duplicate them.
+- Use definition/registry capabilities such as constructability, footprint, navigable ports, defensive attack, vision, and drag placement. Do not hard-code one prefab name into the pure planner.
+- Require at least one protected-side stair/access node for every wall-top connected component that receives defenders. Additional stairs may be justified by wall length, reinforcement time, or breach risk.
+- Towers are scored by threat-lane coverage, vision, support from the wall line, distance from other towers, protected asset value, and reachable wall-top reinforcement. Avoid overlapping towers with little added coverage.
+- Preserve a configurable minimum open/gated width for workers, army movement, construction access, and retreat. Until a real gate exists, the `gate-slot` remains an intentionally unbuilt gap that other construction plans reserve and cannot fill.
+- Reserve enough space around a future gate for its footprint, approach tiles, opening arc/animation if needed, and inside/outside waiting areas. This avoids redesigning every old wall plan when gates ship.
+- Cap total cost, wall length, towers, simultaneous builders, and path/topology queries by strategy/difficulty profile. Apply diminishing utility to additional segments so a turtle AI still builds an economy and army.
+- Use terrain as part of the barrier. Do not pay for walls along already impassable edges unless a segment is needed to close a verified gap.
+
+Wall-top defense:
+
+- Create persistent `rampart` posts from reachable wall/tower navigation nodes and their firing/vision coverage. A post is an assignment location, not a live Phaser reference.
+- Prefer suitable ranged units for posts while retaining a mobile ground reserve. Do not place the entire army on walls or use a unit that cannot legally reach the selected elevated component.
+- A wall-defense squad assembles through protected-side stairs, spreads across distinct posts, concentrates near an observed approach, and can withdraw through a known stair route before it is cut off.
+- Towers supply their own attack where defined; occupied wall/tower surfaces add unit fire and vision through normal combat rules rather than an AI-only bonus.
+- Defender commands use the shared movement/attack command path. Elevation, range, line-of-sight, and target legality remain runtime authorities.
+
+Future gate behavior:
+
+- Introduce a gate as a structure capability/role that can satisfy an existing `gate-slot`; do not make the planner depend on a `Gate` prefab before one exists.
+- Once gates are available, the plan can replace the deliberate gap with a gate only if friendly pathing and construction access remain valid.
+- Gate open/close state must be an authoritative, replayable command. A basic policy opens for an approved friendly crossing when no immediate hostile crossing is possible and closes on nearby observed threat, while avoiding trapping a retreating friendly squad.
+- Destroyed, captured, jammed, or unavailable gates become breaches and trigger the same defense/recovery lifecycle as a destroyed wall segment.
+
+Repair and breach recovery:
+
+- Prioritize repairs by whether the structure closes a critical route, supports an occupied elevated component, protects a high-value asset, or is likely to survive the repair attempt.
+- A destroyed segment creates a typed breach incident. The AI may assign a mobile defense squad, evacuate exposed workers, withdraw wall-top units whose stair route is threatened, rebuild the node, or abandon the line if the position is no longer economical.
+- Rebuilding reuses the plan/node identity and reservation state; it must not create an unbounded stream of new wall intents.
 
 ### Scouting and intelligence
 
@@ -491,6 +568,7 @@ Recommended fair profiles:
 | Information memory | shorter/noisier deterministic confidence | standard fair memory | longer fair memory |
 | Intent error | occasional seeded suboptimal legal choice | low | none/minimal |
 | Target-switch hysteresis | high | standard | tuned by engagement |
+| Fortification candidates per planning pass | few/simple fronts | standard bounded fronts | more alternatives, same legal rules |
 | Rules/resources/stats | identical | identical | identical by default |
 
 All profiles obey identical visibility, validation, and deterministic work limits. The existing `aiAdvantageResources` modifier should be audited and wired only as a separately named, explicitly displayed rules option if product wants it. Never hide it inside “Hard.”
@@ -571,6 +649,10 @@ Required fixtures:
 12. damage reservations reduce overkill deterministically;
 13. repeated command failure advances the recovery ladder;
 14. hopelessness must remain sustained before concession.
+15. one active fortification node cannot produce duplicate construction intents;
+16. wall-front selection preserves required interior/exterior and wall-top access;
+17. tower, stair, and future gate-slot constraints resolve deterministically;
+18. a destroyed segment transitions the existing plan to one bounded breach response.
 
 ### Level B — real runtime scenarios
 
@@ -591,6 +673,10 @@ Run authored fixed-seed scenarios through the simulation clock, command bus, and
 13. host-generated AI commands replayed/applied by another runtime;
 14. AI loss/concession through final score-screen state;
 15. pause and speed changes without decision-order changes.
+16. short connected wall line between terrain anchors with a deliberate opening;
+17. protected-side stairs and reachable ranged defenders across walls/towers;
+18. tower coverage without redundant tower or wall spam and without sealing production/resource lanes;
+19. wall breach, defender withdrawal/reinforcement, repair/rebuild, and plan abandonment when rebuilding is uneconomical.
 
 Run each focused fixture three times in normal CI and compare commands plus authoritative/AI digests. Use 20 repetitions across more seeds in an explicit/nightly soak.
 
@@ -628,6 +714,7 @@ Reviewers score fairness, legibility, challenge, repetition, recovery, suspected
 - every accepted/rejected intent and failed command has a reason;
 - deterministic per-step work quotas are never exceeded;
 - all match outcomes reach one final result and score flow exactly once.
+- no accepted fortification plan blocks required friendly base access, and every occupied rampart post has a valid protected-side route.
 
 ### Macro metrics
 
@@ -650,6 +737,16 @@ Reviewers score fairness, legibility, challenge, repetition, recovery, suspected
 - invalid/dropped/repeated commands and command-to-applied latency;
 - target switches, actor claim conflicts, stuck/no-progress incidents;
 - candidates and path queries consumed per decision.
+
+### Fortification metrics
+
+- protected asset value and hostile path-distance/approach-width change per resource spent;
+- planned/reserved/completed wall nodes, duplicate-node rejections, total wall length, and abandoned cost;
+- tower marginal coverage, overlap, observed damage, and active firing time;
+- wall-top post occupancy, defender travel/reinforcement time, and unreachable assignment attempts;
+- number and age of protected-side stairs, deliberate openings/gates, and valid inside/outside routes;
+- friendly worker/production/army path regressions caused by the plan (must remain zero in fixtures);
+- breach detection/response time, survivors withdrawn, repair/rebuild success, and repeated-failure backoff.
 
 ### Combat and outcome metrics
 
@@ -849,7 +946,28 @@ Release Gate B is the first end-to-end playable milestone. Do not postpone it fo
 - Base identity does not move when an army/scout crosses the map.
 - Placement candidates/path queries remain within profile budgets.
 
-#### Stage 10 — stuck detection, hostile blocker recovery, and robust economy
+#### Stage 10 — topology-aware walls, towers, stairs, and gate-ready defenses
+
+**Scope**
+
+- Add `AiFortificationPlanV1` with protected assets, approach regions, connected wall/tower/stair/gate-slot nodes, total budget, construction order, and lifecycle.
+- Generate bounded short wall fronts from terrain anchors, chokepoints, navigation regions, base envelopes, and observed threat directions.
+- Use building-definition capabilities and runtime topology/navigation validation rather than prefab-name-specific geometry in the pure planner.
+- Reserve the complete layout, then construct it incrementally with duplicate-node suppression, cost/length/tower limits, and economic cancellation rules.
+- Add protected-side stairs, reachable rampart posts, tower coverage scoring, wall-defense assignments, and breach/repair/rebuild transitions.
+- Keep an intentional opening that can later be satisfied by a first-class gate capability and authoritative gate-control command.
+
+**Acceptance**
+
+- Equivalent map/threat inputs always produce the same bounded fortification graph and construction order.
+- A turtle profile or sustained threat can complete a useful connected wall front, while an unjustified low-utility wall plan is rejected.
+- Every occupied elevated component is reachable from the protected ground side through a legal stair/topology path.
+- Towers add distinct approach coverage and do not repeat indefinitely; existing, planned, reserved, and under-construction nodes prevent duplicate intents.
+- The completed hypothetical and runtime layout preserves worker/resource, production/rally, construction, retreat, and deliberate opening/gate routes.
+- Destroying a segment creates one breach response and bounded repair/rebuild decision rather than a new duplicate fortification plan.
+- With no gate prefab, the reserved opening remains usable and cannot be filled accidentally; a gate-capable test double can satisfy the same slot without redesigning the plan.
+
+#### Stage 11 — stuck detection, hostile blocker recovery, and robust economy
 
 **Scope**
 
@@ -868,12 +986,13 @@ Release Gate B is the first end-to-end playable milestone. Do not postpone it fo
 
 ### Release Gate D — stronger combat, adaptation, and release evaluation
 
-#### Stage 11 — squads, engagement evaluation, and tactical scripts
+#### Stage 12 — squads, engagement evaluation, and tactical scripts
 
 **Scope**
 
-- Generalize squad ownership/lifecycle for defense, pressure, reserve, and reinforcement.
+- Generalize squad ownership/lifecycle for defense, pressure, reserve, reinforcement, and rampart defense.
 - Add bounded local engagement evaluation, safe rally/retreat, target hysteresis, focus-fire damage reservations, and initial script portfolio.
+- Add reachable wall/tower post assignment, protected-side stair reinforcement, concentration toward observed approaches, and withdrawal from threatened elevated components.
 - Migrate remaining legacy per-unit combat mutation and dead flank state.
 
 **Acceptance**
@@ -882,9 +1001,10 @@ Release Gate B is the first end-to-end playable milestone. Do not postpone it fo
 - Favorable engagement objective completion does not regress; unfavorable retreat survival improves or meets baseline-derived bands.
 - Target switches, repeated orders, and estimated overkill improve in focused fixtures.
 - Disconnected/slow units recover or leave squad state without stalling it.
+- Rampart defenders occupy distinct reachable posts, retain a mobile reserve, and can withdraw through a valid protected route.
 - Tactical work remains quota-bounded and deterministic.
 
-#### Stage 12 — observed composition adaptation, tech, and archetype breadth
+#### Stage 13 — observed composition adaptation, tech, and archetype breadth
 
 **Scope**
 
@@ -899,7 +1019,7 @@ Release Gate B is the first end-to-end playable milestone. Do not postpone it fo
 - Every exposed archetype completes its supported faction opening and recovers from a destroyed prerequisite.
 - Hidden enemy composition cannot influence the decision digest.
 
-#### Stage 13 — batch evaluation, tuning, performance, and host recovery
+#### Stage 14 — batch evaluation, tuning, performance, and host recovery
 
 **Scope**
 
@@ -916,9 +1036,9 @@ Release Gate B is the first end-to-end playable milestone. Do not postpone it fo
 - Performance report shows bounded work and no unreviewed regression on representative large matches.
 - Product-reviewed numerical thresholds and blind-playtest results support release.
 
-### Deferred Stage 14 — bounded tactical search or offline learning
+### Deferred Stage 15 — bounded tactical search or offline learning
 
-Only open this stage if Stage 11 metrics show a tactical ceiling and the pure engagement evaluator is fast and predictive enough to compare script outcomes. Any search must use deterministic work units, canonical inputs, and a small authored script portfolio. Offline build-order/opponent modeling also requires licensed/provenanced data, reproducible training, versioned artifacts, a deterministic runtime policy, and a demonstrated gain over authored rules. Runtime LLM/RL inference remains out of scope.
+Only open this stage if Stage 12 metrics show a tactical ceiling and the pure engagement evaluator is fast and predictive enough to compare script outcomes. Any search must use deterministic work units, canonical inputs, and a small authored script portfolio. Offline build-order/opponent modeling also requires licensed/provenanced data, reproducible training, versioned artifacts, a deterministic runtime policy, and a demonstrated gain over authored rules. Runtime LLM/RL inference remains out of scope.
 
 ## Release gates summary
 
@@ -926,7 +1046,7 @@ Only open this stage if Stage 11 metrics show a tactical ceiling and the pure en
 | --- | --- | --- |
 | A — trustworthy foundation | AI decisions become fair, command-routed, explainable, and saveable | deterministic fixtures, no hidden/allied targets, no direct mutation |
 | B — playable vertical slice | normal AI opens, produces, scouts, defends, attacks, concedes, and reaches scores | opening/visibility/threat/attack/concession runtime scenarios |
-| C — resilient skirmish | AI builds/expands safely and recovers from walls, proxies, depletion, and failures | anti-blocking and recovery fixtures, bounded retries |
+| C — resilient fortified skirmish | AI builds/expands safely, creates traversable wall/tower defenses, and recovers from breaches, hostile walls, proxies, depletion, and failures | fortification topology, anti-blocking, and recovery fixtures with bounded plans/retries |
 | D — stronger/releasable | squads, adaptation, real difficulty, batch evidence, host/save robustness | candidate/baseline matrix, blind playtest, performance and lifecycle gates |
 
 ## Risks and controls
@@ -937,6 +1057,7 @@ Only open this stage if Stage 11 metrics show a tactical ceiling and the pure en
 - **Metric gaming/overfitting:** use multiple probe opponents, mirrored sides, holdout seeds/maps, and baseline versioning.
 - **Determinism regression:** canonical inputs, complete tie-breaks, tick time, atomic generations, seeded RNG, command-only effects, state/decision digests, and save continuation are hard gates.
 - **Performance spikes:** use cached spatial summaries, stable cursors, candidate shortlists, and deterministic quotas. Never stop planning based on elapsed wall time.
+- **Walls make the AI weaker or trap it:** require whole-plan hypothetical connectivity, deliberate openings/gate slots, incremental cost limits, protected-side stairs, and post-build path assertions before a plan becomes operational.
 - **Command scope expands uncontrollably:** add only demonstrated shared capabilities and update all protocol/validator/application/replay consumers in the same stage.
 - **Difficulty feels like cheating:** keep strategy separate, enforce information parity, and surface any optional bonus in lobby, trace, replay, and result data.
 - **Surrender fires too early:** require sustained multi-signal hopelessness and cancel on recovery.
@@ -956,13 +1077,14 @@ These defaults allow implementation to begin without another research gate:
 7. **Technology:** deterministic rules/utility and squad state machines; search/learning deferred.
 8. **Evaluation:** correctness first, then baseline distributions and blind playtest; never one match.
 9. **Human controller:** no broad redesign; shared order capabilities may be added when AI execution demonstrates a need.
+10. **Fortifications:** walls/towers/stairs are a topology-aware strategic project used when valuable, especially by turtle/defensive plans—not a default ring around every base. Reserve a future gate slot now; implement gate mechanics separately when the structure exists.
 
 The following decisions are non-blocking until their named stage:
 
 - **Optional hard-mode rules bonus (Stage 6):** recommended `off`. If retained, expose it separately from difficulty and audit the existing `aiAdvantageResources` modifier end to end.
-- **Strategy selection UI (Stage 12):** recommended deterministic automatic archetype first; explicit lobby selection can follow after each exposed plan is supported.
-- **Attack-move/hold/patrol commands (Stage 3/11):** add the minimum shared semantics proven necessary by squad fixtures.
-- **Host migration support (Stage 13):** recommended required for networked AI; otherwise explicitly restrict unsupported lobbies and track removal of that restriction.
+- **Strategy selection UI (Stage 13):** recommended deterministic automatic archetype first; explicit lobby selection can follow after each exposed plan is supported.
+- **Attack-move/hold/patrol commands (Stage 3/12):** add the minimum shared semantics proven necessary by squad fixtures.
+- **Host migration support (Stage 14):** recommended required for networked AI; otherwise explicitly restrict unsupported lobbies and track removal of that restriction.
 
 ## Cold-start handoff for the next implementation agent
 
@@ -1007,6 +1129,7 @@ Use a branch such as `fix/759-ai-static-correctness-traces` from current `develo
 - `AIBehaviorTreeStateData`, save/load AI controller state
 - `ProbableWaffleAiDifficulty`, lobby player definition, `DifficultyModifiers`
 - `StateHashService`, `GameModeConditionChecker`, `ScoreTracker`, `AiPlayerHandler`
+- `Wall`, `WatchTower`, `Stairs`, their prefab definitions, `StructureTopologyService`, `HeightNavigationGraphBuilder`, and `NavigationService`
 
 ### Invariants not to violate
 
@@ -1019,6 +1142,7 @@ Use a branch such as `fix/759-ai-static-correctness-traces` from current `develo
 - never mark a behavior-tree action successful unless its intended effect completed or was already satisfied;
 - never tune from one playthrough or replace deterministic work quotas with time budgets;
 - never copy GPL/mixed-license reference code into this repository;
+- never approve a fortification node without whole-plan friendly ground access and protected-side elevated reachability;
 - never auto-merge a PR.
 
 ### Copyable next-agent prompt
@@ -1044,6 +1168,7 @@ draft PR. Never merge automatically.
 - [x] Fair observation includes team/diplomacy, not only fog of war.
 - [x] Difficulty, strategy archetype, and optional rules bonuses are separated.
 - [x] Economy, supply, production, tech, bases, expansion, scouting, memory, threats, squads, tactics, anti-blocking recovery, and concession all have staged acceptance criteria.
+- [x] Connected walls, tower coverage, protected-side stairs, wall-top defenders, breach recovery, duplicate suppression, and future gate slots have a dedicated topology-aware stage.
 - [x] Command-only mutation includes construction, repair/logistics, combat/scouting, and concession.
 - [x] Save/load, replay, state hash reuse, host ownership/migration, performance budgets, and first-divergence diagnostics are included.
 - [x] Pure fixtures, runtime scenarios, batch evaluation, manual playtest, metrics, and baseline policy are included.
@@ -1053,6 +1178,7 @@ draft PR. Never merge automatically.
 ## Final closure audit for the research task
 
 - [x] The roadmap has a measurable classic-RTS target instead of a generic “smarter AI” goal.
+- [x] Existing traversable wall/tower/stair mechanics are retained and given an AI planning, construction, defense, and recovery layer with future gate compatibility.
 - [x] Architecture recommendations follow confirmed repository seams and correct the earlier state-hash assumption.
 - [x] Stages form dependency-aware, reviewable increments with user-visible release gates.
 - [x] Product defaults unblock foundation work while isolating later decisions.
