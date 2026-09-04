@@ -16,6 +16,7 @@ import { getActorComponent } from "../../../data/actor-component";
 import { ProductionComponent } from "../../../entity/components/production/production-component";
 import { LogisticsManager } from "./logistics-manager";
 import { getSimulationNow } from "../ai-time";
+import { compareScoredBuildSpots, filterReachableBuildSpots } from "./base-planner-selection";
 
 interface PlannedBuilding {
   id: string;
@@ -134,7 +135,7 @@ export class BasePlanner {
           this.analyzer.scoreBuildSpot(t, analysis.baseCenterTile!, buildingType, resourceType) -
           this.distancePenalty(t)
       }))
-      .sort((a, b) => b.score - a.score);
+      .sort(compareScoredBuildSpots);
 
     if (scored.length === 0) return null;
 
@@ -450,15 +451,17 @@ export class BasePlanner {
   }
 
   /**
-   * Attempt to remove unreachable candidate spots  *
+   * Replaces the current candidate set with tiles proven reachable from the base.
+   * Path queries must resolve before filtering because `Array.filter` does not await
+   * asynchronous predicates and would otherwise retain every promise-backed candidate.
    */
-  private async refineAccessibility(navigation: NavigationService, origin: Vector2Simple) {
-    //
+  private async refineAccessibility(navigation: NavigationService, origin: Vector2Simple): Promise<void> {
     if (this.accessibilityChecked) return;
-    this.candidateSpots = this.candidateSpots.filter(async (t) => {
-      const path = await navigation.findPathBetweenTiles(origin, t); // small path limit
-      return Array.isArray(path) && path.length > 0;
-    });
+    this.candidateSpots = await filterReachableBuildSpots(
+      this.candidateSpots,
+      origin,
+      navigation.findPathBetweenTiles.bind(navigation)
+    );
     this.accessibilityChecked = true;
   }
 
