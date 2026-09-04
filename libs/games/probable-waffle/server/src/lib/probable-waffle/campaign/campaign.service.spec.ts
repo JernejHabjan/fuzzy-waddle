@@ -85,6 +85,46 @@ describe("CampaignServerService", () => {
       })
     );
   });
+
+  it("returns the stored committed result without issuing a second reward commit", async () => {
+    const initial = createInitialCampaignProfile(AOTA_CAMPAIGN_PROGRESSION_REGISTRY);
+    const profiles = queryWithSingle({ profile_document: initial });
+    const runs = queryWithSingle({
+      id: "00000000-0000-4000-8000-000000000001",
+      mission_id: "dreams",
+      mission_revision: 1,
+      base_profile_revision: 0,
+      outcome: "victory",
+      integrity: { eligibleForRewards: true, invalidationReasons: [] },
+      commit_status: "committed",
+      commit_result: { runId: "00000000-0000-4000-8000-000000000001", status: "committed", profile: initial }
+    });
+    const rpc = jest.fn();
+    const provider = providerFor(
+      {
+        probable_waffle_campaign_progress: queryWithRows([]),
+        probable_waffle_campaign_profiles: profiles,
+        probable_waffle_campaign_runs: runs
+      },
+      rpc
+    );
+
+    const response = await new CampaignServerService(provider).result("owner-1", {
+      runId: "00000000-0000-4000-8000-000000000001",
+      missionId: "dreams",
+      missionRevision: 1,
+      baseProfileRevision: 0,
+      outcome: "victory",
+      completedObjectiveIds: ["primary"],
+      discoveredRewardIds: [],
+      difficulty: "hard",
+      replayPlayback: false,
+      integrity: { eligibleForRewards: true, invalidationReasons: [] }
+    });
+
+    expect(response.result.status).toBe("already-committed");
+    expect(rpc).not.toHaveBeenCalled();
+  });
 });
 
 function queryWithRows(rows: unknown[]) {

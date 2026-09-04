@@ -6,7 +6,7 @@ import { bootstrapApplication, BrowserModule } from "@angular/platform-browser";
 import { provideRouter, type Routes, withComponentInputBinding } from "@angular/router";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { environment } from "@fuzzy-waddle/environments/environment";
-import { probableWaffleRoutes } from "@fuzzy-waddle/probable-waffle-interface";
+import { probableWaffleRoutes } from "@fuzzy-waddle/probable-waffle-interface/probable-waffle.routes";
 import { SocketIoModule } from "ngx-socket-io";
 import { accessTokenInterceptor } from "@fuzzy-waddle/platform-identity/client/auth/access-token.interceptor";
 import { AuthGuard } from "@fuzzy-waddle/platform-identity/client/auth/auth.guard";
