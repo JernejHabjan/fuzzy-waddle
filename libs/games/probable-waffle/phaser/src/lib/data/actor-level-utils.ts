@@ -11,6 +11,7 @@ import { LevelComponent } from "../entity/components/level/level-component";
 import { getPwActorDefinition } from "../prefabs/definitions/actor-definitions";
 import { VisionComponent } from "../entity/components/vision-component";
 import { ContainerComponent } from "../entity/components/building/container-component";
+import { HealthRegenerationComponent } from "../entity/components/combat/components/health-regeneration-component";
 type GameObject = Phaser.GameObjects.GameObject;
 
 /**
@@ -66,6 +67,12 @@ export function upgradeActorToLevel(actor: GameObject, newLevel: number) {
     if (healthComp) {
       healthComp.setHealthDefinition(components.health);
     }
+  }
+
+  // Update passive health regeneration if changed
+  if (components?.healthRegeneration) {
+    const healthRegenerationComponent = getActorComponent(actor, HealthRegenerationComponent);
+    healthRegenerationComponent?.setDefinition(components.healthRegeneration);
   }
 
   // Update vision range if changed

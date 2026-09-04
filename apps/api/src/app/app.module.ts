@@ -10,6 +10,7 @@ import { FlySquasherModule } from "@fuzzy-waddle/fly-squasher-server";
 import { ProbableWaffleModule } from "@fuzzy-waddle/probable-waffle-server";
 import { AchievementsModule } from "./achievements/achievements.module";
 import { UserProfilesModule } from "@fuzzy-waddle/platform-identity/server/user-profiles/user-profiles.module";
+import { SocialModule } from "@fuzzy-waddle/platform-identity/server/social/social.module";
 
 @Module({
   imports: [
@@ -28,7 +29,8 @@ import { UserProfilesModule } from "@fuzzy-waddle/platform-identity/server/user-
     FlySquasherModule,
     ProbableWaffleModule,
     AchievementsModule,
-    UserProfilesModule
+    UserProfilesModule,
+    SocialModule
   ],
   controllers: [AppController],
   providers: [
