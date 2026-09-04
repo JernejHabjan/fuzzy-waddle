@@ -492,12 +492,12 @@ root [Build] {
                     action [Stop, "Build - No Builder Component"]
                 }
 
-                /* if builder cannot be assigned, stop */
+                /* if the target is no longer assignable, replace it with a revalidated site */
                 sequence {
                     flip {
                         condition [CanAssignBuilder]
                     }
-                    action [Stop, "Build - Cannot Assign Builder"]
+                    action [RecoverNextBuildOrder]
                 }
 
                 /* exit current container */
@@ -513,14 +513,13 @@ root [Build] {
                     action [MoveToTarget, "construct"]
                 }
 
-                /* if target is unreachable (MoveToTarget failed), stop and try next construction site */
+                /* if target is unreachable (MoveToTarget failed), replace it with the next site */
                 sequence {
                     flip {
                       action [InRange, "construct"]
                     }
                     /* we're not in range and couldn't move there - target unreachable */
-                    action [Stop, "Build - Target Unreachable"]
-                    action [AssignNextBuildOrder]
+                    action [RecoverNextBuildOrder]
                 }
 
                 sequence {
@@ -546,7 +545,7 @@ root [Build] {
                             condition [CanAssignBuilder]
                         }
                     }
-                    action [Stop, "Build - Validation Failed"]
+                    action [RecoverNextBuildOrder]
                 }
 
                 succeed {
