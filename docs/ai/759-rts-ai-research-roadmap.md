@@ -6,7 +6,7 @@
 - **Research PR:** [#764 — docs: add RTS AI improvement roadmap](https://github.com/JernejHabjan/fuzzy-waddle/pull/764)
 - **Implementation dependency:** [#792 — fix(ai): make Stage 0 planner selection deterministic](https://github.com/JernejHabjan/fuzzy-waddle/pull/792)
 - **Target mode:** skirmish first; reuse the same contracts for campaign where the information policy permits it.
-- **Target experience:** a readable, fair, resilient casual/intermediate opponent that completes a classic RTS loop: establish an economy, avoid supply blocks, build a faction-valid army, scout, fortify, defend, pressure, expand, recover from disruption, and conclude the match.
+- **Target experience:** a readable, fair, resilient casual/intermediate opponent that completes a classic RTS loop: establish an economy, avoid supply blocks, build a faction-valid multi-domain army, scout, move forces across land/water/air access boundaries, fortify, defend, pressure, expand, recover from disruption, and conclude the match.
 - **Runtime technology:** deterministic, authored rules and utility scoring. Runtime ML/LLM inference and unbounded search are out of scope.
 - **Last research pass:** 2026-09-04 against `research/759-rts-ai-roadmap`, current `develop`, the supplied reference list, the issue milestone, and the open Stage 0 PR.
 
@@ -54,10 +54,11 @@ The roadmap is deliberately ordered so the first playable vertical slice arrives
 5. **Purposeful armies.** Units belong to defense, attack, scout, reserve, or reinforcement roles. The AI assembles at a rally point, attacks an objective rather than one arbitrary actor, reinforces without constantly dissolving squads, and regroups or retreats when an engagement is poor.
 6. **Legible tactics.** Units focus vulnerable or dangerous targets without extreme overkill, ranged units preserve distance when practical, damaged valuable units disengage, and defenders respond to threats before the main army resumes its plan.
 7. **Resilience.** A lost worker, blocked building location, destroyed production structure, depleted resource, failed path, proxy building, or temporary supply block triggers a bounded recovery path instead of permanent inactivity or command spam.
-8. **Purposeful fortifications.** When the map, faction, strategy, and threat justify the cost, the AI builds connected wall lines with towers at valuable coverage points, stairs on the protected side, accessible wall-top defenders, and deliberate openings reserved for future gates. It does not surround itself blindly or seal its own economy and army inside.
-9. **A complete match.** The AI wins through the normal victory rules and deterministically concedes only after a sustained unrecoverable position. Victory, defeat, or concession reaches the existing score screen with a valid final score.
-10. **Readable difficulty.** Easy, normal, and hard differ in reaction delay, planning breadth, intentional error, risk, and tactical repertoire. Strategy personality is separate from difficulty. Any rules bonus is explicit in the lobby and result data.
-11. **Fair and reproducible play.** The same seed and command stream produce the same decisions and state checkpoints. AI never bypasses shared validation, never acts on hidden IDs, and never uses render-frame timing as game time.
+8. **Multi-domain movement and warfare.** The AI distinguishes ground, water, air, elevated, and future amphibious access. It does not order ground armies toward unreachable islands. It can create a persistent water or air transport operation, choose safe boarding/landing points, escort cargo, contest air/water threats, and use only units or weapons capable of reaching and damaging a target.
+9. **Purposeful fortifications.** When the map, faction, strategy, and threat justify the cost, the AI builds connected wall lines with towers at valuable coverage points, stairs on the protected side, accessible wall-top defenders, and deliberate openings reserved for future gates. It does not surround itself blindly or seal its own economy and army inside.
+10. **A complete match.** The AI wins through the normal victory rules and deterministically concedes only after a sustained unrecoverable position. Victory, defeat, or concession reaches the existing score screen with a valid final score.
+11. **Readable difficulty.** Easy, normal, and hard differ in reaction delay, planning breadth, intentional error, risk, and tactical repertoire. Strategy personality is separate from difficulty. Any rules bonus is explicit in the lobby and result data.
+12. **Fair and reproducible play.** The same seed and command stream produce the same decisions and state checkpoints. AI never bypasses shared validation, never acts on hidden IDs, and never uses render-frame timing as game time.
 
 ### Initial quality target
 
@@ -68,6 +69,7 @@ The first release target is not expert or tournament play. It is a normal-diffic
 - launches at least one purposeful attack or expansion in a stable 15-minute match;
 - responds to an observed base threat within its documented decision delay;
 - creates a connected, traversable defensive line in fortification fixtures without blocking required ground access;
+- recognizes ground-disconnected objectives and either completes a legal transport/air/naval plan or selects a reachable alternative with an explained reason;
 - recovers from each authored disruption fixture or records a terminal reason;
 - does not use hidden information or implicit economic/stat bonuses;
 - concludes won/lost matches through the ordinary result and score flow;
@@ -100,6 +102,7 @@ Shared order vocabulary such as attack-move, hold position, or patrol may need i
 - `StateHashService` already builds a stable authoritative multiplayer projection with sorted actors, logical positions, ownership, health, queues, economy, combat/orders, player state, research, scenario data, and RNG state. Extend or extract this projection; do not create a competing world hash from scratch.
 - `GameModeConditionChecker` and `ScoreTracker` already own victory/loss/tie evaluation and the score transition. AI completion should integrate with those authorities.
 - `Wall`, `WatchTower`, and `Stairs` already provide the core fortification pieces. Walls are drag-placeable; walls and towers expose elevated navigation; stairs connect ground to wall height; `StructureTopologyService` refreshes adjacent structure topology; and the height-navigation graph already tests wall/tower connectivity. The AI should plan against these capabilities instead of recreating movement rules.
+- `MovementTerrainType` already distinguishes Ground, Water, Air, and future Amphibious traversal. `NavigationService` owns separate ground/water queries and shore helpers; flying actors bypass ground pathfinding; `ContainerComponent`/`ContainableComponent` support capacity and boarding; `CommonBoat` is a water transport; `VikingBoat` is a naval combat unit; and attacks expose `canTargetAir`. These are reusable runtime capabilities, but they are not yet a strategic route/transport/combat model.
 
 ### Correctness and behavior defects
 
@@ -126,6 +129,7 @@ Shared order vocabulary such as attack-move, hold position, or patrol may need i
 21. **State hashing exists but is not yet an AI evaluation harness.** It is multiplayer-oriented and its projection is private. It does not include AI knowledge, profile, plan, assignments, manager state, or decision cadence. The earlier claim that only commands are hashed is superseded by the inspected `StateHashService`; the implementation should reuse its canonical projection patterns.
 22. **Focused coverage is narrow.** Snapshot and AI-handler tests exist, and PR #792 adds planner regressions, but there is no layered pure-decision suite or complete skirmish outcome matrix.
 23. **Fortifications have mechanics but no strategic planner.** Workers can construct walls, watch towers, and stairs, and units can traverse connected elevated structures, but AI planning treats buildings as isolated candidates. It has no wall-line objective, protected-region model, tower coverage score, stair/access requirement, construction order, wall-top defender assignment, breach recovery, or future gate slot.
+24. **The strategic AI is effectively ground-only.** It has no access-region graph, naval/air force roles, transport operation, cargo/seat reservation, island expansion, shore/landing-site scoring, escort/interception, or domain-aware objective feasibility. Current production merely notices visible flight and asks for “ranged” infantry, which does not prove the selected weapon has `canTargetAir`. Existing pawn AI can coordinate boat boarding at a shore, but strategic AI does not own the full passenger/transport/destination lifecycle, and unloading is not represented as a shared strategic command. No current flying prefab combines flight and container capability, so air transport is a supported future capability rather than shipped behavior.
 
 ### Affected code map
 
@@ -143,6 +147,7 @@ Treat this as a discovery index, not a complete edit list. Search call sites bef
 | AI save/load | `libs/games/probable-waffle/phaser/src/lib/data/save-game.ts`, `load-game.ts`, protocol component data |
 | Lobby AI settings | probable-waffle interface player-definition components and protocol player definitions |
 | Walls, towers, stairs, and elevated topology | `libs/games/probable-waffle/phaser/src/lib/prefabs/buildings/tivara/`, `StructureTopologyService`, `HeightNavigationGraphBuilder`, and movement/navigation systems |
+| Ground/water/air access and transport | `MovementTerrainType`, `NavigationService`, `WaterNavigationHelper`, `FlyingComponent`, `ContainerComponent`, `ContainableComponent`, boat definitions, pawn `EnterContainer` behavior, production spawn/rally logic, and attack capability definitions |
 
 ## Research findings and boundaries
 
@@ -153,6 +158,7 @@ Treat this as a discovery index, not a complete edit list. Search call sites bef
 | [Blizzard s2client-api](https://github.com/Blizzard/s2client-api) and [SC2 protocol](https://github.com/Blizzard/s2client-proto/blob/master/s2clientprotocol/sc2api.proto) | A bot receives explicit observations and issues actions through a control protocol. SC2 also separates difficulty from AI build archetype and names cheat difficulties explicitly. | Use the observation/action seam and separate profile/personality model. Do not reproduce proprietary game behavior. Both repositories are reference interfaces, not dependencies. |
 | [OpenRA AI configuration](https://github.com/OpenRA/OpenRA/blob/bleed/mods/ra/rules/ai.yaml) and [bot modules](https://github.com/OpenRA/OpenRA/tree/bleed/OpenRA.Mods.Common/Traits/BotModules) | Production bots separate base building, harvesting, unit production, repair, expansion, and squads. Profiles tune delays, composition fractions, construction limits, squad sizes, target types, and expansion behavior. | GPL-3.0. Reuse responsibility and configuration ideas only; copy no code or YAML. |
 | [0 A.D. Petra BaseManager](https://docs.wildfiregames.com/javascript/petra/PETRA.BaseManager.html), [BasesManager](https://docs.wildfiregames.com/javascript/petra/basesManager.js.html), [AttackManager](https://docs.wildfiregames.com/javascript/petra/PETRA.AttackManager.html), and [construction plan](https://docs.wildfiregames.com/javascript/petra/queueplanBuilding.js.html) | Multiple bases have explicit state, territory/access regions, resource levels, serialization, recovery, and staged construction plans. Attack plans own objectives; construction revalidates prerequisites/builders/sites and delays repeatedly unbuildable plans. | 0 A.D. code is GPL-licensed/mixed by file. Adapt concepts only. The strongest lesson is to make base, attack, and construction lifecycle explicit and serializable. |
+| [0 A.D. Petra NavalManager](https://docs.wildfiregames.com/javascript/petra/navalManager.js.html) and [TransportPlan](https://docs.wildfiregames.com/javascript/petra/transportPlan.js.html) | Land and sea access regions, shore landing-zone maps, separate transport/war/fishing fleets, persistent boarding/sailing phases, cargo assignment, destination validation, escort risk, retry/split behavior, and serialization show that cross-water movement must be a plan—not an isolated board command. | GPL-licensed reference. Reuse only the domain separation, lifecycle, and evaluation questions; design an independent TypeScript contract around existing Fuzzy Waddle containers and commands. |
 | [microRTS](https://github.com/Farama-Foundation/MicroRTS) | Scripted agents, partial/full observation, deterministic experimentation, and standalone batch runs support evaluation over maps/seeds rather than anecdotal play. | GPL-3.0 and deprecated. Use experimental method/metrics only; add no dependency and copy no implementation. |
 | [UAlbertaBot](https://github.com/davechurchill/ualbertabot/tree/master/UAlbertaBot/Source) | Information, scouting, strategy, build-order, combat-command, and combat-simulation responsibilities are separated. | MIT. Still design independently around this repository's TypeScript and lockstep contracts. |
 | [Portfolio Greedy Search](https://doi.org/10.1109/CIG.2013.6633643) | Choosing among a small portfolio of tactical scripts can bound a huge unit-action space. | Research only. Defer until a deterministic squad evaluator exists; do not begin with search. |
@@ -202,6 +208,8 @@ Rules:
 
 - Collections are canonicalized by stable type then actor/player ID.
 - Positions are authoritative logical/simulation positions, never interpolated render positions.
+- The map summary contains stable ground, water, elevated, and air access regions plus legal transfer edges such as shore rendezvous, bridge/crossing, stairs, and container transport. Air reachability still considers map bounds, valid landing/unload space, and threat; it is not treated as cost-free teleportation.
+- Actor snapshots project movement domain, current access region, container/cargo capacity and occupancy, transport eligibility, weapons' target-domain capability (including `canTargetAir`), and legal producer/spawn domain from definitions.
 - Hostility comes from one diplomacy/team policy, not `owner !== self`.
 - `visibleHostiles` contains live target IDs only while currently permitted.
 - Map-derived summaries expose bounded regions/frontiers/access components rather than handing the pure brain a pathfinder.
@@ -247,6 +255,10 @@ Use a small goal set with normalized integer utility, documented inputs, hystere
 - `pressure_enemy`
 - `expand`
 - `tech_transition`
+- `establish_access_route`
+- `secure_transport_capacity`
+- `control_air`
+- `control_water`
 - `finish_match`
 
 An opening is data, not a long conditional chain. It should state faction capability requirements and checkpoints rather than hard-code a single exact sequence:
@@ -286,6 +298,11 @@ type AiIntentV1 =
   | AssignRampartDefenderIntent
   | RepairFortificationIntent
   | OperateGateIntent
+  | EstablishTransportRouteIntent
+  | BoardTransportIntent
+  | MoveTransportIntent
+  | UnloadTransportIntent
+  | EscortTransportIntent
   | RecoverPathIntent
   | ConcedeIntent;
 
@@ -316,13 +333,13 @@ Ordering:
 
 1. discard expired or false-precondition intents;
 2. sort by priority class, descending integer utility, then `stableKey`;
-3. allocate exclusive actor, producer-slot, builder, tile/footprint, and resource claims;
+3. allocate exclusive actor, producer-slot, builder, tile/footprint, resource, cargo-seat, rendezvous/landing-slot, and route claims;
 4. enforce per-profile work and command budgets;
 5. retain compatible reservations across steps until completed, invalidated, or timed out;
 6. emit accepted/rejected records with stable reason codes;
 7. produce one ordered execution list.
 
-Required rejection examples: `stale_observation`, `not_visible`, `not_hostile`, `actor_claimed`, `producer_busy`, `insufficient_unreserved_resources`, `prerequisite_missing`, `site_blocked`, `path_unavailable`, `budget_exhausted`, `objective_obsolete`, and `command_validation_failed`.
+Required rejection examples: `stale_observation`, `not_visible`, `not_hostile`, `actor_claimed`, `producer_busy`, `insufficient_unreserved_resources`, `prerequisite_missing`, `site_blocked`, `path_unavailable`, `movement_domain_mismatch`, `transport_capacity_unavailable`, `rendezvous_unreachable`, `landing_zone_unsafe`, `weapon_cannot_target_domain`, `budget_exhausted`, `objective_obsolete`, and `command_validation_failed`.
 
 Never rely on JavaScript sort stability alone. Every comparator ends with a unique stable domain key. Random choice occurs only after canonicalization and through a named deterministic RNG substream or recorded operation sequence.
 
@@ -341,6 +358,8 @@ Construction and concession need first-class authoritative paths. Attack-move, h
 
 Connected fortification construction may be represented as an ordered group of ordinary construction commands with one shared plan ID; it does not need an unsafe “spawn wall line” shortcut. Future gate operation, if it changes passability, must be a first-class command whose application rebuilds or invalidates the same navigation/topology authority used by movement.
 
+`EnterContainer` supplies part of the current pawn-level boarding path, but strategic transport also needs authoritative, replayable unload/disembark semantics and outcomes. Loading, moving, and unloading must validate ownership, capacity, cargo eligibility, movement domain, shore/landing accessibility, and destination occupancy. Air transports should use the same capability-driven plan/commands without inheriting boat-only shore assumptions.
+
 After dispatch, a typed `AiCommandOutcome` reports accepted, rejected, applied, superseded, failed, or timed out. Managers use outcomes to recover; they do not infer success merely because a command was emitted.
 
 ### 7. Brain state and scheduler
@@ -351,6 +370,7 @@ Create a versioned, serializable `AiBrainStateV1` containing at least:
 - knowledge and scouting coverage;
 - base records and expansion candidates;
 - fortification plans, topology nodes, deliberate openings/gate slots, breaches, and defender posts;
+- access-region graph version, transport plans, cargo/seat claims, rendezvous and landing reservations, fleet/air-wing assignments, and route failure state;
 - worker, builder, producer, defender, scout, reserve, and squad assignments;
 - current goals, objectives, reservations, and intent counters;
 - manager cooldowns and failure/backoff state;
@@ -412,6 +432,74 @@ Placement is staged:
 8. revalidate at application time and record a cooldown/failure reason if rejected.
 
 Expansion selection compares resource life, access-region connectivity, distance band, defensive shape, threat/last-seen age, travel from a stable base anchor, and opportunity cost. An expansion plan has `proposed -> reserved -> establishing -> active -> evacuating/lost` lifecycle states.
+
+### Access domains, transports, air power, and naval power
+
+Strategic reachability must answer “how can this force get there?” before target scoring. Euclidean distance or one ground path is insufficient when the map contains islands, separated shores, elevated structures, flying units, ships, or transports.
+
+#### Multi-domain access graph
+
+`MapAnalyzer` should derive a stable graph from existing navigation authorities:
+
+- **Ground regions:** mutually reachable ground tiles, including bridges/crossings when usable.
+- **Water regions:** mutually reachable water tiles with viable shore rendezvous/landing boundaries.
+- **Elevated regions:** connected wall/tower/stair surfaces linked to their ground access points.
+- **Air region:** bounded map airspace for actors with flight/air capability, annotated with legal destination/unload tiles and observed anti-air threat rather than obstacles alone.
+- **Future amphibious edges:** supported by the contract but enabled only when an actor definition actually exposes working amphibious movement.
+- **Transfer edges:** ground-to-water boarding at a compatible shore pair, water-to-ground unloading, ground-to-air loading/unloading for a flying container, stairs between ground/elevated regions, and any scenario-authored portals/crossings explicitly permitted by policy.
+
+Each actor and objective projects a current access node plus mobility/capability set. A pure route query returns one or more feasible route plans such as `ground`, `water_transport`, `air_transport`, `air_direct`, `naval_direct`, or `unreachable`, along with required assets, transfer points, risk, capacity, and deterministic cost bands. It must not issue commands or run unbounded pathfinding.
+
+Rules:
+
+- Ground squads may receive a direct objective only when source and destination ground access regions connect.
+- Flying combat units can cross terrain but still need a legal map-bounded destination, valid combat target, safe retreat/rally point, and sufficient survivability against observed anti-air.
+- Water units remain in their water region and need reachable water rally/attack points; they cannot be scored as ordinary ground reinforcements.
+- A mixed task force coordinates domain-specific sub-squads. Do not put ground, naval, and air actors into one formation that assumes a shared path.
+- When no route is feasible, reject the objective with `movement_domain_mismatch` or `transport_capacity_unavailable`; do not repeat an impossible move/attack order every AI step.
+
+#### Persistent transport operations
+
+Transport is a multi-actor transaction with explicit ownership and rollback:
+
+```text
+proposed -> reserving -> gathering passengers/transport/escort
+         -> rendezvous -> boarding -> transit -> landing
+         -> unloading -> regrouping -> objective handoff -> completed
+         -> recovering/rerouting/cancelled/failed
+```
+
+`AiTransportPlanV1` should record plan ID, source/destination access regions, transport mode, passenger squad and stable order, transports, capacity/seat assignments, escorts, rendezvous points, landing/unload points, final objective, phase, deadlines/backoff, command outcomes, and recovery state.
+
+- Choose passengers and transport capacity together. Never dispatch half an essential squad accidentally because remaining seats were double-booked.
+- Reserve passengers so attack/defense managers cannot steal them during boarding, while allowing emergency threat arbitration to cancel the whole transport plan safely.
+- For water transport, choose compatible water-side shore and adjacent ground rendezvous tiles reachable by both parties. Score room, route length, observed threat, naval control, congestion, and distance to the final ground objective.
+- For an air container, use the same plan but choose a legal ground pickup/drop zone. The current repository has flying units and containers but no inspected flying-container prefab; keep this path capability-driven and fixture it with a test definition until such a unit ships.
+- Begin transit only after the required passenger threshold boards or a documented partial-departure timeout wins. Record missing/dead/failed passengers and release their seat claims.
+- Do not unload until the destination still has valid space and risk is acceptable for the profile. After unload, verify passengers occupy the intended ground region before handing them to an attack/expansion squad.
+- If a transport dies, the destination becomes unsafe, boarding stalls, or the route closes, choose a bounded alternate shore/drop zone, split/reassign capacity, return surviving transports, or cancel. Never silently destroy or strand units to make plan state convenient.
+- Save/load during every phase must restore exactly one owner for each transport, passenger, seat, rendezvous, and objective.
+
+Transport objectives include island expansion (builder plus initial protection), reinforcement, evacuation, flanking assault, scouting insertion, and recovery of stranded units. The utility calculation includes transport production opportunity cost, cargo value-at-risk, escort requirement, extra travel time, and expected strategic value.
+
+#### Air and naval production/combat
+
+- Project unit roles from definitions/capabilities: movement domain, container capacity, attacks, range, damage/target type, `canTargetAir`, health/armour, vision, production requirements, and cost. Never equate “ranged” with “anti-air.”
+- Maintain domain-specific force demands: ground army roles, anti-air coverage, air scout/harassment/air-control roles, water transport capacity, naval escort/combat roles, and shore-defense coverage.
+- Only demand naval production when the map exposes a relevant reachable water region, valid spawn/producer path, and useful water objective. Only demand transport when a valuable destination is otherwise unreachable or the transport route clearly beats alternatives.
+- Air units may scout, intercept, harass, reinforce, or directly attack an otherwise ground-inaccessible objective when their weapons can legally damage it. They must account for observed anti-air and retain a safe retreat region.
+- Naval combat squads own water-region objectives: escort transports, secure a crossing/landing lane, intercept hostile transports, defend coast/producer assets, attack reachable naval targets, or provide shore fire only when weapon/range rules permit.
+- Target selection filters by both reachability and weapon capability before utility. An actor unable to attack air cannot be assigned to intercept a flyer; a ground-only attacker cannot chase a ship across water; a transport without weapons cannot count as combat strength.
+- Composition adaptation uses permitted observations: observed flyers raise actual `canTargetAir` demand; observed warships/transports and contested shores raise naval/shore-defense demand; absence/staleness decays the response with hysteresis.
+- Rally, retreat, regroup, reinforcement, and repair locations are selected in the actor's domain. Fleet and air-wing strength are evaluated separately from ground strength, then combined only for a shared objective with explicit support relationships.
+
+#### Interaction with bases and fortifications
+
+- Expansion feasibility uses the access graph. An island base requires a complete transport route, builder seat, safe unload/build site, and ongoing reinforcement/evacuation plan before reserving the expansion cost.
+- Base records track adjacent water regions, usable shores, air approach exposure, transport staging space, and domain-specific defense coverage.
+- Walls redirect ground movement but do not stop air and generally do not control open water. Fortification scoring must preserve anti-air and naval/shore coverage where those threats exist.
+- Towers contribute only the target-domain coverage their actual weapon exposes. A tower incapable of targeting air must not satisfy an anti-air defense requirement.
+- Gate/opening and shore staging areas must not conflict: a fortification cannot reserve the only legal transport rendezvous, landing, or reinforcement route.
 
 ### Defensive layouts: walls, towers, stairs, and future gates
 
@@ -480,6 +568,7 @@ Repair and breach recovery:
 ### Scouting and intelligence
 
 - Derive regions/sectors from map bounds and path-access components, not the world origin.
+- Track coverage separately for ground, shore/water, air-accessible, and elevated observation routes; choose a scout whose movement domain can legally complete the route.
 - Initialize deterministic enemy-start hypotheses from scenario start locations and eliminate them only through permitted exploration.
 - Score frontiers using coverage age, information value, route risk, distance band, strategic plan, and current threat. Canonicalize ties.
 - Assign explicit scout roles; do not steal a builder, critical defender, or entire army without an arbitration claim.
@@ -492,7 +581,7 @@ Repair and breach recovery:
 Create typed threat incidents from visible/remembered evidence:
 
 - location/region, first/last observed tick, confidence, hostile role/value, threatened base/asset, arrival estimate band, urgency, assigned squad, and resolution reason;
-- worker harassment, main-army pressure, hostile static defense, proxy production, blocking building, trapped exit, and unknown contact are distinct classifications.
+- worker harassment, main-army pressure, air raid, naval force, hostile transport/landing, hostile static defense, proxy production, blocking building, trapped exit, and unknown contact are distinct classifications.
 
 Defense chooses the smallest sufficient available squad plus reinforcements, preserves an economy evacuation path, and may preempt lower-priority pressure/scout intents through arbitration. It must not be limited to units that happen to be idle.
 
@@ -509,7 +598,7 @@ Never solve blocking by teleporting units, deleting hostile structures, targetin
 
 ### Armies, squads, and objectives
 
-Every combat unit has at most one primary assignment: base defense, threat response, attack squad, reserve/reinforcement, scout, or recovery. Squads contain ordered actor IDs and a stable lifecycle:
+Every combat unit has at most one primary assignment: base defense, threat response, ground/air/naval attack squad, transport escort, reserve/reinforcement, scout, rampart defense, or recovery. Squads contain actors that share a movement domain and ordered actor IDs; a cross-domain task force coordinates several squads without pretending they share one path. Their lifecycle is:
 
 ```text
 forming -> assembling -> rallying -> advancing -> engaging
@@ -522,13 +611,14 @@ objective invalid -> searching last-seen -> retarget/disbanded
 An objective is usually a location/asset class with evidence, not one immortal actor reference. Initial objective priorities:
 
 1. immediate threat to a base/economy;
-2. hostile blocker/proxy preventing normal operation;
-3. exposed army that can be engaged favorably;
-4. observed production/tech/economy target;
-5. last-seen base/search location;
-6. map-control or expansion denial point.
+2. hostile air/naval transport threatening a landing or stranded valuable cargo;
+3. hostile blocker/proxy preventing normal operation;
+4. exposed reachable army/fleet/air wing that can be engaged favorably;
+5. observed production/tech/economy target with a feasible route;
+6. last-seen base/search location;
+7. air corridor, water lane, shore landing, map-control, or expansion-denial point.
 
-The engagement evaluator should begin as deterministic integer/fixed-point heuristics over visible local value, health, range/mobility class, target access, static defense, reinforcements, objective value, retreat route safety, and confidence. Avoid pretending an inaccurate full combat simulator is ground truth.
+The engagement evaluator should begin as deterministic integer/fixed-point heuristics over visible local value, health, range/movement domain, weapon target-domain compatibility, target access, static/anti-air/shore defense, transports and cargo risk, reinforcements, objective value, retreat route safety, and confidence. Avoid pretending an inaccurate full combat simulator is ground truth.
 
 Initial squad scripts:
 
@@ -539,6 +629,10 @@ Initial squad scripts:
 - `retreat_to_safe_rally`
 - `search_last_seen`
 - `clear_blocker`
+- `escort_transport`
+- `intercept_air_or_transport`
+- `naval_control`
+- `land_and_regroup`
 
 Use damage reservations to reduce overkill: reserve estimated pending damage by target for the current decision window, then prefer the next legal target once lethal damage is covered. Apply target-switch hysteresis so a marginal score change does not churn commands. Units unable to follow a squad order enter a bounded recovery state instead of repeatedly receiving the same order.
 
@@ -552,10 +646,13 @@ type AiStrategyArchetype =
   | 'rush'
   | 'macro'
   | 'turtle'
-  | 'tech';
+  | 'tech'
+  | 'air-control'
+  | 'naval'
+  | 'expeditionary';
 ```
 
-Only expose archetypes that have faction-valid plans; a future air archetype depends on actual roster support. Selection may be explicit in the lobby later or deterministic from match seed and faction. The chosen archetype is visible in debug trace/result metadata, not silently changed mid-match.
+Only expose archetypes that have faction-valid plans and relevant map access. `naval` and `expeditionary` are invalid on a map without meaningful water/shore or disconnected objectives; `air-control` is invalid for a faction without the required producer/roster. `Expeditionary` means a transport-led combined-arms strategy, not that every unit has the future `Amphibious` movement capability. Selection may be explicit in the lobby later or deterministic from match seed, faction, and map capability. The chosen archetype is visible in debug trace/result metadata, not silently changed mid-match.
 
 Recommended fair profiles:
 
@@ -569,6 +666,7 @@ Recommended fair profiles:
 | Intent error | occasional seeded suboptimal legal choice | low | none/minimal |
 | Target-switch hysteresis | high | standard | tuned by engagement |
 | Fortification candidates per planning pass | few/simple fronts | standard bounded fronts | more alternatives, same legal rules |
+| Access/transport route candidates | few, safer routes | standard bounded alternatives | more route/landing alternatives, same legal rules |
 | Rules/resources/stats | identical | identical | identical by default |
 
 All profiles obey identical visibility, validation, and deterministic work limits. The existing `aiAdvantageResources` modifier should be audited and wired only as a separately named, explicitly displayed rules option if product wants it. Never hide it inside “Hard.”
@@ -577,7 +675,7 @@ All profiles obey identical visibility, validation, and deterministic work limit
 
 Replace dialog-veto AI surrender with a host-authoritative, replayable concession flow for skirmish:
 
-- calculate recoverability from surviving builders/workers, legal production paths, income access, army/defense value, queued completions, and known hostile pressure;
+- calculate recoverability from surviving builders/workers, legal production and cross-domain transport paths, income access, reachable resources/expansions, army/fleet/air defense value, queued completions, stranded recoverable units, and known hostile pressure;
 - require hopelessness for a sustained tick window and cancel the candidate if recovery evidence returns;
 - emit a typed reason such as `no_rebuild_path`, `no_economy_access`, `overwhelming_force`, or `all_assets_lost`;
 - revalidate on the host and apply through a shared match-state command/event;
@@ -653,6 +751,10 @@ Required fixtures:
 16. wall-front selection preserves required interior/exterior and wall-top access;
 17. tower, stair, and future gate-slot constraints resolve deterministically;
 18. a destroyed segment transitions the existing plan to one bounded breach response.
+19. a ground-disconnected objective is rejected or receives a feasible air/water transport route;
+20. anti-air production selects actual `canTargetAir` capability rather than the generic ranged label;
+21. cargo seats, passengers, transport, escort, rendezvous, and landing claims cannot be double-assigned;
+22. transport failure/reroute and save/restore preserve one deterministic lifecycle owner.
 
 ### Level B — real runtime scenarios
 
@@ -677,6 +779,12 @@ Run authored fixed-seed scenarios through the simulation clock, command bus, and
 17. protected-side stairs and reachable ranged defenders across walls/towers;
 18. tower coverage without redundant tower or wall spam and without sealing production/resource lanes;
 19. wall breach, defender withdrawal/reinforcement, repair/rebuild, and plan abandonment when rebuilding is uneconomical.
+20. water transport from one disconnected land region to another: gather, rendezvous, board, sail, unload, regroup, and continue the objective;
+21. transport loss or unsafe landing causes bounded reroute/cancellation without duplicate cargo ownership or stranded command spam;
+22. island expansion carries a builder and protection, establishes the base, and retains reinforcement/evacuation feasibility;
+23. air scout/harassment and anti-air response use legal targets and observed capability only;
+24. naval escort/interception and combat remain in reachable water regions and protect or attack transport objectives;
+25. save/load during boarding, transit, and unloading preserves passengers, seats, routes, commands, and digests.
 
 Run each focused fixture three times in normal CI and compare commands plus authoritative/AI digests. Use 20 repetitions across more seeds in an explicit/nightly soak.
 
@@ -695,7 +803,7 @@ After automated gates pass, compare labeled-only-as-A/B builds:
 
 - small/large and open/chokepoint maps;
 - every supported faction and mirrored start;
-- passive macro, early rush, turtle, worker harassment, hidden expansion, mixed mobility/air where roster support exists, proxy building, and wall/block exploitation;
+- passive macro, early rush, turtle, worker harassment, hidden/island expansion, mixed ground/air/naval forces, water and capability-available air transport, transport interception, proxy building, and wall/block exploitation;
 - easy/normal/hard and each supported archetype;
 - pause/speed changes, save/load near 5 and 15 minutes, reconnect/host migration once supported.
 
@@ -715,6 +823,7 @@ Reviewers score fairness, legibility, challenge, repetition, recovery, suspected
 - deterministic per-step work quotas are never exceeded;
 - all match outcomes reach one final result and score flow exactly once.
 - no accepted fortification plan blocks required friendly base access, and every occupied rampart post has a valid protected-side route.
+- zero direct movement/attack objectives across incompatible access domains; every cross-domain passenger, cargo seat, transport, escort, rendezvous, and landing slot has at most one plan owner.
 
 ### Macro metrics
 
@@ -726,6 +835,17 @@ Reviewers score fairness, legibility, challenge, repetition, recovery, suspected
 - supply-block ticks, forecast accuracy, recovery delay, and premature-housing cost;
 - prerequisite/site/order failure counts and recovery outcomes;
 - base resource-life estimate, saturation, and expansion establishment time.
+
+### Access, transport, air, and naval metrics
+
+- objectives by direct/transport/air/naval/unreachable route and impossible-order rejection count;
+- discovered ground/water/elevated access regions, viable shore/landing pairs, and route recomputation count;
+- transport capacity demanded/available/reserved/used, boarding and unload latency, utilization, and partial departures;
+- passenger travel/regroup time, stranded units, cargo value delivered/lost, and transport plan completion/cancellation reason;
+- landing-zone threat, reroute count, duplicate seat/plan conflicts, and save/restore continuation equality;
+- ground, anti-air, air, naval, transport, and shore-defense strength/production by capability rather than label;
+- air/naval objective completion, interception/escort success, retreat survival, and domain-invalid target attempts;
+- island expansion establishment, reinforcement latency, evacuation feasibility, and disconnected-base idle time.
 
 ### Intelligence and control metrics
 
@@ -899,6 +1019,7 @@ Each stage is a focused issue/PR. A stage may be subdivided when its protocol su
 - Implement demand-forecast worker allocation, minimum worker production, supply forecasting, producer construction/utilization, and prerequisite recovery.
 - Replace placeholder gather/upgrade behavior with intent-based execution.
 - Add a basic legal army-role composition before advanced counters.
+- Project movement, transport, cargo, weapon-target, and production capabilities from definitions. Produce air/naval/transport assets only when a legal map objective or observed threat creates demand.
 
 **Acceptance**
 
@@ -906,36 +1027,59 @@ Each stage is a focused issue/PR. A stage may be subdivided when its protocol su
 - AI neither remains supply-blocked nor queues redundant emergency housing in authored fixtures.
 - Idle workers, production idle time, and unexplained resource float improve versus baseline or meet reviewed bands.
 - Destroyed builder/producer/prerequisite recovers through a valid fallback.
+- Production never substitutes a generic ranged label for anti-air capability, counts transports as combat power, or builds naval assets for an irrelevant water region.
 - No stage acceptance depends on an enemy standing idle.
 
-#### Stage 8 — basic scouting, threat response, attack wave, and match completion
+#### Stage 8 — access-domain graph and transport operations
 
 **Scope**
 
-- Add map-bound/base-relative scouting, start hypotheses, last-seen search, and scout role.
-- Add threat incidents and one defense squad path.
-- Add one attack squad lifecycle with rally, advance, objective invalidation, and reinforcement.
+- Build a pure, versioned ground/water/elevated/air access graph from existing navigation authorities, including deterministic transfer edges and bounded route alternatives.
+- Add domain-aware objective feasibility before utility scoring or command emission.
+- Implement `AiTransportPlanV1`, exclusive passengers/seats/transports/escorts/rendezvous/landing claims, and the full gather/board/transit/unload/regroup/handoff lifecycle.
+- Add authoritative, replayable unload/disembark semantics and typed outcomes alongside existing boarding support.
+- Implement water transport first with `CommonBoat`; keep air transport capability-driven and verify it using a flying-container test definition until a real prefab exists.
+- Add bounded reroute, split, cancellation, stranded-unit recovery, and save/load continuation for every transport phase.
+
+**Acceptance**
+
+- Equivalent map state produces the same access graph, feasible route ordering, transfer points, and route reason codes.
+- A ground squad never receives a direct order into a disconnected ground region; it gets a complete feasible route plan or an explained unreachable result.
+- The water-transport fixture gathers, boards, sails, unloads, regroups, and hands the squad to its objective without duplicate or orphaned ownership.
+- Each passenger, cargo seat, transport, escort, rendezvous, landing slot, and destination has at most one compatible plan owner.
+- Transport loss, a dead passenger, a closed route, and an unsafe landing each reach one bounded recovery/cancellation outcome without repeated command spam.
+- Save/load during boarding, transit, and unloading preserves the next command batch, ownership, brain state, and digest.
+- A flying-container test definition uses the generic transport lifecycle with ground pickup/drop zones and no accidental boat-only shore requirement.
+
+#### Stage 9 — scouting, multi-domain threat response, attack wave, and match completion
+
+**Scope**
+
+- Add map-bound/base-relative scouting, per-domain coverage, start hypotheses, last-seen search, and ground/air/water-compatible scout roles.
+- Add threat incidents and one defense path per relevant movement/target domain, including real anti-air capability and hostile transport/landing detection.
+- Add one ground attack lifecycle plus basic air-wing and naval escort/interception lifecycles with rally, advance, objective invalidation, and reinforcement.
 - Integrate sustained AI concession with the existing result/score flow.
 
 **Acceptance**
 
 - Normal AI finds an unseen opponent through legal exploration.
 - An observed early threat receives a defense response within the profile delay.
-- A stable match produces a purposeful attack wave and retarget/search behavior.
+- An observed flyer creates a response that can actually target air; observed ships/transports create only reachable naval/shore responses.
+- A stable match produces a purposeful attack wave and retarget/search behavior, while a transport operation receives escort or interception when risk justifies it.
 - A hopeless AI concedes once through an authoritative event; recovery cancels pending concession.
 - Win/loss/concession reaches the score screen in the runtime fixture.
 
-Release Gate B is the first end-to-end playable milestone. Do not postpone it for sophisticated micro.
+Release Gate B is the first end-to-end playable multi-domain milestone. Do not postpone it for sophisticated micro.
 
 ### Release Gate C — resilience, bases, and anti-exploit behavior
 
-#### Stage 9 — explicit bases, safe placement, and expansion lifecycle
+#### Stage 10 — explicit bases, safe placement, and expansion lifecycle
 
 **Scope**
 
-- Replace moving average “base center” with stable base records/access regions.
+- Replace moving average “base center” with stable base records/access regions, adjacent water/shore access, air exposure, and transport staging space.
 - Add staged, footprint-aware placement, site reservations, failure memory, and egress checks.
-- Add resource-life/saturation-driven expansion selection and lifecycle.
+- Add resource-life/saturation-driven expansion selection and lifecycle, including disconnected/island candidates only when transport and reinforcement feasibility is complete.
 - Preserve production, worker, rally, and resource corridors.
 
 **Acceptance**
@@ -943,10 +1087,11 @@ Release Gate B is the first end-to-end playable milestone. Do not postpone it fo
 - Friendly construction does not trap authored worker/production lanes.
 - Rejected/blocked sites enter bounded cooldown and a legal alternate is selected.
 - Expansion establishes on a safe connected candidate before main resources cause permanent idle.
+- The island fixture transports a builder and protection, establishes the expansion, and retains a feasible reinforcement/evacuation route.
 - Base identity does not move when an army/scout crosses the map.
 - Placement candidates/path queries remain within profile budgets.
 
-#### Stage 10 — topology-aware walls, towers, stairs, and gate-ready defenses
+#### Stage 11 — topology-aware walls, towers, stairs, and gate-ready defenses
 
 **Scope**
 
@@ -955,6 +1100,7 @@ Release Gate B is the first end-to-end playable milestone. Do not postpone it fo
 - Use building-definition capabilities and runtime topology/navigation validation rather than prefab-name-specific geometry in the pure planner.
 - Reserve the complete layout, then construct it incrementally with duplicate-node suppression, cost/length/tower limits, and economic cancellation rules.
 - Add protected-side stairs, reachable rampart posts, tower coverage scoring, wall-defense assignments, and breach/repair/rebuild transitions.
+- Score defenses against relevant ground, air, and shore/naval approaches using actual weapon target capability; walls alone never satisfy air or water defense demand.
 - Keep an intentional opening that can later be satisfied by a first-class gate capability and authoritative gate-control command.
 
 **Acceptance**
@@ -963,11 +1109,12 @@ Release Gate B is the first end-to-end playable milestone. Do not postpone it fo
 - A turtle profile or sustained threat can complete a useful connected wall front, while an unjustified low-utility wall plan is rejected.
 - Every occupied elevated component is reachable from the protected ground side through a legal stair/topology path.
 - Towers add distinct approach coverage and do not repeat indefinitely; existing, planned, reserved, and under-construction nodes prevent duplicate intents.
+- Anti-air and shore-defense coverage is credited only to towers/units whose weapons can hit that target domain, and the layout preserves transport staging/landing access.
 - The completed hypothetical and runtime layout preserves worker/resource, production/rally, construction, retreat, and deliberate opening/gate routes.
 - Destroying a segment creates one breach response and bounded repair/rebuild decision rather than a new duplicate fortification plan.
 - With no gate prefab, the reserved opening remains usable and cannot be filled accidentally; a gate-capable test double can satisfy the same slot without redesigning the plan.
 
-#### Stage 11 — stuck detection, hostile blocker recovery, and robust economy
+#### Stage 12 — stuck detection, hostile blocker recovery, and robust economy
 
 **Scope**
 
@@ -986,30 +1133,31 @@ Release Gate B is the first end-to-end playable milestone. Do not postpone it fo
 
 ### Release Gate D — stronger combat, adaptation, and release evaluation
 
-#### Stage 12 — squads, engagement evaluation, and tactical scripts
+#### Stage 13 — domain-specific squads, engagement evaluation, and tactical scripts
 
 **Scope**
 
-- Generalize squad ownership/lifecycle for defense, pressure, reserve, reinforcement, and rampart defense.
-- Add bounded local engagement evaluation, safe rally/retreat, target hysteresis, focus-fire damage reservations, and initial script portfolio.
+- Generalize squad ownership/lifecycle for defense, pressure, reserve, reinforcement, transport escort, air wings, naval groups, and rampart defense. Coordinate mixed-domain task forces without forcing them into one path or formation.
+- Add bounded local engagement evaluation, domain-compatible safe rally/retreat, target hysteresis, focus-fire damage reservations, target capability filtering, and the initial ground/air/naval script portfolio.
 - Add reachable wall/tower post assignment, protected-side stair reinforcement, concentration toward observed approaches, and withdrawal from threatened elevated components.
 - Migrate remaining legacy per-unit combat mutation and dead flank state.
 
 **Acceptance**
 
 - Each combat actor has at most one primary squad assignment.
+- Every squad path, target, rally, repair, and retreat location is legal for its movement and weapon domains; transport passengers return to ordinary squad ownership only after verified regroup.
 - Favorable engagement objective completion does not regress; unfavorable retreat survival improves or meets baseline-derived bands.
 - Target switches, repeated orders, and estimated overkill improve in focused fixtures.
 - Disconnected/slow units recover or leave squad state without stalling it.
 - Rampart defenders occupy distinct reachable posts, retain a mobile reserve, and can withdraw through a valid protected route.
 - Tactical work remains quota-bounded and deterministic.
 
-#### Stage 13 — observed composition adaptation, tech, and archetype breadth
+#### Stage 14 — observed composition adaptation, tech, and archetype breadth
 
 **Scope**
 
 - Infer enemy capability from permitted observations and age/confidence.
-- Add role-deficit composition, legal tech timing, opening transitions/fallbacks, and reviewed faction-valid rush/macro/turtle/tech archetypes.
+- Add ground/anti-air/air/naval/transport role-deficit composition, legal tech timing, opening transitions/fallbacks, and reviewed faction- and map-valid rush/macro/turtle/tech/air-control/naval/expeditionary archetypes.
 - Add defensive/expansion adaptation without allowing per-tick personality thrash.
 
 **Acceptance**
@@ -1017,37 +1165,38 @@ Release Gate B is the first end-to-end playable milestone. Do not postpone it fo
 - Composition changes only from recorded permitted evidence and obeys hysteresis.
 - Tech spending does not violate survival/supply/prerequisite reservations.
 - Every exposed archetype completes its supported faction opening and recovers from a destroyed prerequisite.
+- Air/naval/expeditionary archetypes are unavailable when the faction, map access graph, producer path, or objectives cannot support them.
 - Hidden enemy composition cannot influence the decision digest.
 
-#### Stage 14 — batch evaluation, tuning, performance, and host recovery
+#### Stage 15 — batch evaluation, tuning, performance, and host recovery
 
 **Scope**
 
 - Add one-command Level C matrix, candidate/baseline report, retained failure artifacts, and reviewed promotion rules.
 - Tune profiles from metrics plus blind playtests, not individual wins.
-- Validate save/load, reconnect/host migration AI reconstruction, long-match work bounds, and result uniqueness.
+- Validate save/load and reconnect/host migration reconstruction during ordinary and transport operations, long-match work bounds, and result uniqueness.
 - Document supported maps/factions/archetypes and remaining limitations.
 
 **Acceptance**
 
 - Published matrix runs from a clean checkout and identifies candidate/baseline versions.
-- No deterministic, crash, hidden-information, anti-blocking, outcome, or score-screen gate fails.
+- No deterministic, crash, hidden-information, invalid-domain, transport-ownership, anti-blocking, outcome, or score-screen gate fails.
 - Host recovery creates exactly one AI controller per AI player and resumes the same brain state, or multiplayer AI is explicitly restricted with a tracked follow-up before release.
 - Performance report shows bounded work and no unreviewed regression on representative large matches.
 - Product-reviewed numerical thresholds and blind-playtest results support release.
 
-### Deferred Stage 15 — bounded tactical search or offline learning
+### Deferred Stage 16 — bounded tactical search or offline learning
 
-Only open this stage if Stage 12 metrics show a tactical ceiling and the pure engagement evaluator is fast and predictive enough to compare script outcomes. Any search must use deterministic work units, canonical inputs, and a small authored script portfolio. Offline build-order/opponent modeling also requires licensed/provenanced data, reproducible training, versioned artifacts, a deterministic runtime policy, and a demonstrated gain over authored rules. Runtime LLM/RL inference remains out of scope.
+Only open this stage if Stage 13 metrics show a tactical ceiling and the pure engagement evaluator is fast and predictive enough to compare script outcomes. Any search must use deterministic work units, canonical inputs, and a small authored script portfolio. Offline build-order/opponent modeling also requires licensed/provenanced data, reproducible training, versioned artifacts, a deterministic runtime policy, and a demonstrated gain over authored rules. Runtime LLM/RL inference remains out of scope.
 
 ## Release gates summary
 
 | Gate | User-visible result | Blocking evidence |
 | --- | --- | --- |
 | A — trustworthy foundation | AI decisions become fair, command-routed, explainable, and saveable | deterministic fixtures, no hidden/allied targets, no direct mutation |
-| B — playable vertical slice | normal AI opens, produces, scouts, defends, attacks, concedes, and reaches scores | opening/visibility/threat/attack/concession runtime scenarios |
-| C — resilient fortified skirmish | AI builds/expands safely, creates traversable wall/tower defenses, and recovers from breaches, hostile walls, proxies, depletion, and failures | fortification topology, anti-blocking, and recovery fixtures with bounded plans/retries |
-| D — stronger/releasable | squads, adaptation, real difficulty, batch evidence, host/save robustness | candidate/baseline matrix, blind playtest, performance and lifecycle gates |
+| B — playable multi-domain slice | normal AI opens, produces, discovers legal routes, transports when required, scouts, responds across air/water/ground, attacks, concedes, and reaches scores | opening/access/transport/visibility/threat/attack/concession runtime scenarios |
+| C — resilient fortified skirmish | AI builds/expands safely—including reachable islands—creates traversable domain-aware wall/tower defenses, and recovers from transport loss, breaches, hostile walls, proxies, depletion, and failures | base/access/fortification topology, anti-blocking, and recovery fixtures with bounded plans/retries |
+| D — stronger/releasable | domain-specific squads, combined task forces, adaptation, real difficulty, batch evidence, host/save robustness | ground/air/naval candidate/baseline matrix, blind playtest, performance and lifecycle gates |
 
 ## Risks and controls
 
@@ -1058,6 +1207,9 @@ Only open this stage if Stage 12 metrics show a tactical ceiling and the pure en
 - **Determinism regression:** canonical inputs, complete tie-breaks, tick time, atomic generations, seeded RNG, command-only effects, state/decision digests, and save continuation are hard gates.
 - **Performance spikes:** use cached spatial summaries, stable cursors, candidate shortlists, and deterministic quotas. Never stop planning based on elapsed wall time.
 - **Walls make the AI weaker or trap it:** require whole-plan hypothetical connectivity, deliberate openings/gate slots, incremental cost limits, protected-side stairs, and post-build path assertions before a plan becomes operational.
+- **Transports deadlock or strand valuable cargo:** make the journey one persistent owner with exclusive seat/rendezvous/landing claims, tick deadlines, typed outcomes, safe cancellation, bounded rerouting, and phase-by-phase save/load fixtures.
+- **Air/naval production wastes the economy:** unlock demand only from relevant access regions, legal producer/spawn paths, reachable objectives, and observed threats; decay stale demand with hysteresis.
+- **Mixed-domain forces become one incoherent blob:** keep ground, water, air, elevated, and passenger squads separate and coordinate them through a shared task-force objective and explicit support timing.
 - **Command scope expands uncontrollably:** add only demonstrated shared capabilities and update all protocol/validator/application/replay consumers in the same stage.
 - **Difficulty feels like cheating:** keep strategy separate, enforce information parity, and surface any optional bonus in lobby, trace, replay, and result data.
 - **Surrender fires too early:** require sustained multi-signal hopelessness and cancel on recovery.
@@ -1078,13 +1230,15 @@ These defaults allow implementation to begin without another research gate:
 8. **Evaluation:** correctness first, then baseline distributions and blind playtest; never one match.
 9. **Human controller:** no broad redesign; shared order capabilities may be added when AI execution demonstrates a need.
 10. **Fortifications:** walls/towers/stairs are a topology-aware strategic project used when valuable, especially by turtle/defensive plans—not a default ring around every base. Reserve a future gate slot now; implement gate mechanics separately when the structure exists.
+11. **Access domains:** every objective is filtered through the stable ground/water/elevated/air access graph before utility scoring; cross-domain travel is a persistent transport plan rather than a sequence of opportunistic unit orders.
+12. **Air transport:** use capability-driven container/flight contracts and test doubles now; do not advertise it as shipped until a real flying-container unit definition exists.
 
 The following decisions are non-blocking until their named stage:
 
 - **Optional hard-mode rules bonus (Stage 6):** recommended `off`. If retained, expose it separately from difficulty and audit the existing `aiAdvantageResources` modifier end to end.
-- **Strategy selection UI (Stage 13):** recommended deterministic automatic archetype first; explicit lobby selection can follow after each exposed plan is supported.
-- **Attack-move/hold/patrol commands (Stage 3/12):** add the minimum shared semantics proven necessary by squad fixtures.
-- **Host migration support (Stage 14):** recommended required for networked AI; otherwise explicitly restrict unsupported lobbies and track removal of that restriction.
+- **Strategy selection UI (Stage 14):** recommended deterministic automatic archetype first; explicit lobby selection can follow after each exposed plan is supported.
+- **Attack-move/hold/patrol commands (Stage 3/13):** add the minimum shared semantics proven necessary by squad fixtures.
+- **Host migration support (Stage 15):** recommended required for networked AI; otherwise explicitly restrict unsupported lobbies and track removal of that restriction.
 
 ## Cold-start handoff for the next implementation agent
 
@@ -1130,6 +1284,8 @@ Use a branch such as `fix/759-ai-static-correctness-traces` from current `develo
 - `ProbableWaffleAiDifficulty`, lobby player definition, `DifficultyModifiers`
 - `StateHashService`, `GameModeConditionChecker`, `ScoreTracker`, `AiPlayerHandler`
 - `Wall`, `WatchTower`, `Stairs`, their prefab definitions, `StructureTopologyService`, `HeightNavigationGraphBuilder`, and `NavigationService`
+- `MovementTerrainType`, `WaterNavigationHelper`, `FlyingComponent`, `ContainerComponent`, `ContainableComponent`, and pawn `EnterContainer`/shore behavior
+- `CommonBoat`, `VikingBoat`, flying unit definitions, `AttackData.canTargetAir`, water production spawn logic, and every command/save consumer of load/unload state
 
 ### Invariants not to violate
 
@@ -1143,6 +1299,9 @@ Use a branch such as `fix/759-ai-static-correctness-traces` from current `develo
 - never tune from one playthrough or replace deterministic work quotas with time budgets;
 - never copy GPL/mixed-license reference code into this repository;
 - never approve a fortification node without whole-plan friendly ground access and protected-side elevated reachability;
+- never score or order an objective before proving a movement-domain route and compatible weapon target capability;
+- never assign a passenger, cargo seat, transport, escort, rendezvous, landing slot, or destination to conflicting transport plans;
+- never treat “ranged” as anti-air without the selected attack's actual `canTargetAir` capability;
 - never auto-merge a PR.
 
 ### Copyable next-agent prompt
@@ -1169,6 +1328,7 @@ draft PR. Never merge automatically.
 - [x] Difficulty, strategy archetype, and optional rules bonuses are separated.
 - [x] Economy, supply, production, tech, bases, expansion, scouting, memory, threats, squads, tactics, anti-blocking recovery, and concession all have staged acceptance criteria.
 - [x] Connected walls, tower coverage, protected-side stairs, wall-top defenders, breach recovery, duplicate suppression, and future gate slots have a dedicated topology-aware stage.
+- [x] Ground/water/air/elevated access, water and future air transport, island expansion, air/naval combat, escorts/interception, and capability-correct counters have a dedicated staged design and fixtures.
 - [x] Command-only mutation includes construction, repair/logistics, combat/scouting, and concession.
 - [x] Save/load, replay, state hash reuse, host ownership/migration, performance budgets, and first-divergence diagnostics are included.
 - [x] Pure fixtures, runtime scenarios, batch evaluation, manual playtest, metrics, and baseline policy are included.
@@ -1179,6 +1339,7 @@ draft PR. Never merge automatically.
 
 - [x] The roadmap has a measurable classic-RTS target instead of a generic “smarter AI” goal.
 - [x] Existing traversable wall/tower/stair mechanics are retained and given an AI planning, construction, defense, and recovery layer with future gate compatibility.
+- [x] Existing flying, water-navigation, container, boat, and target-capability mechanics are retained and composed into a persistent strategic access/transport/combat design without claiming a nonexistent air-transport prefab.
 - [x] Architecture recommendations follow confirmed repository seams and correct the earlier state-hash assumption.
 - [x] Stages form dependency-aware, reviewable increments with user-visible release gates.
 - [x] Product defaults unblock foundation work while isolating later decisions.
