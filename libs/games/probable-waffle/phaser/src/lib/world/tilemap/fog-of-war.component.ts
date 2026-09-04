@@ -6,17 +6,22 @@ import { getActorComponent } from "../../data/actor-component";
 import { getCurrentPlayerNumber, getPlayer } from "../../data/scene-data";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import {
-  getGameObjectBounds,
   getGameObjectVisibility,
   getGameObjectCurrentTile,
   isGameObjectActiveInActiveScene
 } from "../../data/game-object-helper";
-import { IsoHelper } from "./iso-helper";
+import { getTileCoordsUnderObject } from "../../library/tile-under-object";
+import { isAnyActorBaseTileVisible } from "./fog-of-war-visibility";
 import { ResourceSourceComponent } from "../../entity/components/resource/resource-source-component";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { getSceneService } from "../services/scene-component-helpers";
 import { ActorIndexSystem } from "../services/ActorIndexSystem";
 import { ContainableComponent } from "../../entity/components/building/containable-component";
+import { OwnerComponent } from "../../entity/components/owner-component";
+import {
+  ProjectileFiredSceneEvent,
+  type ProjectileFiredSceneEventPayload
+} from "../../entity/components/combat/projectile-fired.scene-event";
 /**
  * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
  * storage boundaries do not drift into an unconstrained primitive.
@@ -44,6 +49,20 @@ export enum FogOfWarMode {
    */
   ALL_VISIBLE = "allVisible"
 }
+
+/** Reasons that can temporarily reveal an actor without changing simulation or persistence state. */
+export enum TemporaryActorVisibilityReason {
+  /** Reveals an unseen attacker after it creates a projectile targeting the current player's actor. */
+  ProjectileFiredAtCurrentPlayer = "projectile-fired-at-current-player"
+}
+
+/** Local presentation policy for temporary actor reveal triggers. */
+export const temporaryActorVisibilityPolicy = {
+  projectileFiredAtCurrentPlayer: {
+    enabled: true,
+    durationMs: 1500
+  }
+} as const;
 
 export class FogOfWarComponent {
   private fowMode: FogOfWarMode = FogOfWarMode.PRE_EXPLORED;
@@ -79,6 +98,9 @@ export class FogOfWarComponent {
   private previousExploredTiles: Set<number> = new Set();
 
   private actorIndex!: ActorIndexSystem;
+
+  /** Active local reveal expiry timers, grouped by actor identity and independent reveal reason. */
+  private readonly temporaryVisibilityTimers = new Map<string, Map<TemporaryActorVisibilityReason, Phaser.Time.TimerEvent>>();
 
   // Colors for different FOW states
   private readonly COLOR_UNEXPLORED = 0x333333;
@@ -124,6 +146,7 @@ export class FogOfWarComponent {
     ); // Navigation changes do not include actor XY movement or ownership and killed-state changes.
     // Keep this throttled frame update so visibility follows all actor state changes, not only navigation rebuilds.
     this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.throttleUpdateFogOfWarFrameNonDeterministic, this);
+    this.scene.events.on(ProjectileFiredSceneEvent, this.onProjectileFired, this);
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
 
     // Initial draw of fog
@@ -218,6 +241,7 @@ export class FogOfWarComponent {
     for (const [id, actor] of this.playerActors) {
       if (!currentActorIds.has(id) || !isGameObjectActiveInActiveScene(actor)) {
         this.playerActors.delete(id);
+        this.clearTemporaryActorVisibility(id);
         this.actorPositionCache.delete(id);
         this.dirtyActors.add(id); // Mark as dirty to recalculate vision
       }
@@ -260,6 +284,32 @@ export class FogOfWarComponent {
 
   public getMode(): FogOfWarMode {
     return this.fowMode;
+  }
+
+  /**
+   * Temporarily reveals an actor for a named local presentation reason. Repeating the same request replaces its
+   * timer, extending the reveal without accumulating callbacks; expiry immediately re-applies normal fog rules.
+   */
+  public requestTemporaryActorVisibility(
+    actor: GameObject,
+    reason: TemporaryActorVisibilityReason,
+    durationMs: number
+  ): void {
+    const actorId = getActorComponent(actor, IdComponent)?.id;
+    if (!actorId || durationMs <= 0 || !isGameObjectActiveInActiveScene(actor)) return;
+
+    const timersByReason = this.temporaryVisibilityTimers.get(actorId) ?? new Map();
+    timersByReason.get(reason)?.remove(false);
+    this.temporaryVisibilityTimers.set(actorId, timersByReason);
+    const timer = this.scene.time.delayedCall(durationMs, () => {
+      const activeTimers = this.temporaryVisibilityTimers.get(actorId);
+      if (!activeTimers || activeTimers.get(reason) !== timer) return;
+      activeTimers.delete(reason);
+      if (activeTimers.size === 0) this.temporaryVisibilityTimers.delete(actorId);
+      this.refreshActorVisibility(actor);
+    });
+    timersByReason.set(reason, timer);
+    this.refreshActorVisibility(actor);
   }
 
   private drawInitialFog(): void {
@@ -417,13 +467,15 @@ export class FogOfWarComponent {
   }
 
   /**
-   * Updates the visibility of actors with IdComponent based on fog of war
+   * Updates actor visibility from logical base-footprint tiles and active local temporary-reveal reasons.
+   * Rendered bounds and sprite altitude are deliberately excluded so tall and wide actors obey the same tile rule.
    */
   private updateActorsVisibility(): void {
     this.playerActors.forEach((actor, id) => {
       // Skip if actor is no longer valid
       if (!isGameObjectActiveInActiveScene(actor)) {
         this.playerActors.delete(id);
+        this.clearTemporaryActorVisibility(id);
         return;
       }
 
@@ -432,23 +484,50 @@ export class FogOfWarComponent {
         return;
       }
 
-      // Check if actor should be visible
-      const bounds = getGameObjectBounds(actor);
-      if (!bounds) return;
-
-      // Get tile position from the center of the actor
-      const centerX = bounds.centerX;
-      const centerY = bounds.centerY;
-
-      const tilePos = IsoHelper.isometricWorldToTileXY(this.scene, centerX, centerY, false);
-
-      if (!tilePos) return;
-
-      const tileKey = this.getTileKey(tilePos.x, tilePos.y);
-      const isVisible = this.visibleTiles.has(tileKey);
-
-      this.setActorVisibleByFow(actor, isVisible);
+      this.refreshActorVisibility(actor, id);
     });
+  }
+
+  /** Applies ordinary footprint visibility and any still-active local reveal reason to one actor. */
+  private refreshActorVisibility(actor: GameObject, knownActorId?: string): void {
+    const actorId = knownActorId ?? getActorComponent(actor, IdComponent)?.id;
+    if (!actorId || !isGameObjectActiveInActiveScene(actor)) return;
+    const isVisible =
+      this.fowMode === FogOfWarMode.ALL_VISIBLE ||
+      this.isActorBaseVisible(actor) ||
+      (this.temporaryVisibilityTimers.get(actorId)?.size ?? 0) > 0;
+    this.setActorVisibleByFow(actor, isVisible);
+  }
+
+  /** Returns whether at least one logical base tile currently belongs to the visible-tile set. */
+  private isActorBaseVisible(actor: GameObject): boolean {
+    return isAnyActorBaseTileVisible(getTileCoordsUnderObject(this.tilemap, actor), this.visibleTiles, (x, y) =>
+      this.getTileKey(x, y)
+    );
+  }
+
+  /** Handles the local projectile notification without introducing it into deterministic simulation state. */
+  private onProjectileFired(payload: ProjectileFiredSceneEventPayload): void {
+    const policy = temporaryActorVisibilityPolicy.projectileFiredAtCurrentPlayer;
+    if (!policy.enabled || !isGameObjectActiveInActiveScene(payload.attacker)) return;
+    const currentPlayerNumber = getCurrentPlayerNumber(this.scene);
+    const targetOwner = getActorComponent(payload.target, OwnerComponent)?.getOwner();
+    if (currentPlayerNumber === undefined || targetOwner !== currentPlayerNumber || this.isActorBaseVisible(payload.attacker)) {
+      return;
+    }
+    this.requestTemporaryActorVisibility(
+      payload.attacker,
+      TemporaryActorVisibilityReason.ProjectileFiredAtCurrentPlayer,
+      policy.durationMs
+    );
+  }
+
+  /** Cancels and removes every local temporary-reveal timer for an actor that left the scene. */
+  private clearTemporaryActorVisibility(actorId: string): void {
+    const timers = this.temporaryVisibilityTimers.get(actorId);
+    if (!timers) return;
+    timers.forEach((timer) => timer.remove(false));
+    this.temporaryVisibilityTimers.delete(actorId);
   }
 
   private setActorVisibleByFow(actor: GameObject, visible: boolean): void {
@@ -587,6 +666,7 @@ export class FogOfWarComponent {
       this
     );
     this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.throttleUpdateFogOfWarFrameNonDeterministic, this);
+    this.scene?.events.off(ProjectileFiredSceneEvent, this.onProjectileFired, this);
 
     // Clear all caches
     this.visionTilesCache.clear();
@@ -594,6 +674,7 @@ export class FogOfWarComponent {
     this.playerActors.clear();
     this.actorPositionCache.clear();
     this.dirtyActors.clear();
+    this.temporaryVisibilityTimers.forEach((_, actorId) => this.clearTemporaryActorVisibility(actorId));
 
     if (this.fowLayer) {
       this.fowLayer.destroy();

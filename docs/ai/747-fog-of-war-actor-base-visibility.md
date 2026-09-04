@@ -4,9 +4,15 @@ Tracks [#747](https://github.com/JernejHabjan/fuzzy-waddle/issues/747).
 
 ## Classification and scope
 
-- **Lane:** research/plan; this PR documents the implementation path and does not change runtime behavior.
+- **Lane:** implemented follow-up; this document preserves the approved implementation rationale.
 - **Goal:** reveal an actor when at least one tile under its logical base is currently visible, regardless of rendered sprite height, and briefly reveal an otherwise unseen attacker when it fires a projectile at a current-player unit.
 - **Out of scope:** changing vision radius, fog exploration state, actor footprints, multiplayer authority, minimap policy, or the existing hidden/contained actor overrides.
+
+## Implementation status
+
+The implementation now uses the complete logical base footprint, adds the local-only typed
+projectile-fired temporary reveal path, and includes focused footprint regressions. The remaining
+manual playtest items below remain useful release validation rather than unimplemented work.
 
 ## Research findings
 
