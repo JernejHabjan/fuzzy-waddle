@@ -1,464 +1,1060 @@
 # #759 RTS AI improvement research and implementation roadmap
 
-## Status and recommendation
+## Document status
 
-- [x] Inspect the current strategic AI, managers, blackboard, simulation clock, command path,
-      deterministic RNG, replay support, and focused tests.
-- [x] Review the supplied RTS references and record which ideas are useful and which source or
-      licensing boundaries prevent reuse.
-- [x] Define the target architecture, deterministic evaluation harness, metrics, staged work, and
-      acceptance criteria.
-- [ ] Capture numerical baselines after the evaluation harness exists.
-- [ ] Implement the stages below as separate, reviewable issues and PRs.
+- **Issue:** [#759 — Further improve AI](https://github.com/JernejHabjan/fuzzy-waddle/issues/759)
+- **Research PR:** [#764 — docs: add RTS AI improvement roadmap](https://github.com/JernejHabjan/fuzzy-waddle/pull/764)
+- **Implementation dependency:** [#792 — fix(ai): make Stage 0 planner selection deterministic](https://github.com/JernejHabjan/fuzzy-waddle/pull/792)
+- **Target mode:** skirmish first; reuse the same contracts for campaign where the information policy permits it.
+- **Target experience:** a readable, fair, resilient casual/intermediate opponent that completes a classic RTS loop: establish an economy, avoid supply blocks, build a faction-valid army, scout, defend, pressure, expand, recover from disruption, and conclude the match.
+- **Runtime technology:** deterministic, authored rules and utility scoring. Runtime ML/LLM inference and unbounded search are out of scope.
+- **Last research pass:** 2026-09-04 against `research/759-rts-ai-roadmap`, current `develop`, the supplied reference list, the issue milestone, and the open Stage 0 PR.
 
-**Recommendation:** improve the existing deterministic scripted AI rather than replacing it with
-runtime ML, an LLM, GOAP, or expensive search. Keep the current behavior tree as orchestration while
-introducing a typed, testable pipeline:
+### Research checklist
+
+- [x] Inspect the controller, behavior tree, managers, blackboard, command path, deterministic clock, RNG, replay/save support, state hashing, match lifecycle, difficulty selection, and focused tests.
+- [x] Compare the roadmap with the `Skirmish against AI` milestone acceptance criteria.
+- [x] Review suitable RTS reference architectures and record licensing boundaries.
+- [x] Define the classic-RTS behavior contract, target architecture, implementation sequence, deterministic evaluation harness, metrics, and release gates.
+- [x] Reconcile this plan with the already-open Stage 0 implementation PR.
+- [ ] Capture `baseline-v1` numbers after the fixture and batch harness exists.
+- [ ] Implement the stages below as focused issues and PRs.
+
+## Executive recommendation
+
+Evolve the existing AI instead of replacing it. The repository already has a host-owned AI controller, a simulation-tick cadence, seeded randomness, a behavior tree, domain managers, command transport, saves/replays, and an authoritative state hash. The primary problem is not absence of AI modules; it is that their data and authority boundaries are loose, several behaviors are placeholders, and there is no repeatable way to prove that a change makes the player stronger without making it unfair or nondeterministic.
+
+Use this end state:
 
 ```text
-permitted world state
-  -> immutable observation + remembered intelligence
-  -> goal/manager intent proposals
-  -> deterministic arbitration and reservations
-  -> validated CommandBus commands
-  -> replay trace, state digest, and metrics
+authoritative game state
+  -> atomic, permitted AiObservation
+  -> serializable AiKnowledgeState
+  -> strategic goals + manager proposals
+  -> deterministic intent arbitration and reservations
+  -> squad/base/economy execution intents
+  -> validated shared GameCommands
+  -> command outcomes, trace, metrics, and canonical state digest
 ```
 
-The first behavior milestone should be a credible casual/intermediate skirmish opponent that plays
-by the same information rules as a human. The first engineering milestone must be measurement and a
-single authoritative command path; otherwise a behavior change cannot be proved better or safe for
-lockstep.
+The behavior tree may remain as the coarse scheduler during migration. Managers must gradually stop mutating Phaser objects and instead produce typed intents. One arbitrator resolves conflicts and one adapter dispatches accepted work through shared commands. This creates a seam where macro, scouting, combat, and difficulty can improve independently and be evaluated from the same fixtures.
 
-## Repository findings
+The roadmap is deliberately ordered so the first playable vertical slice arrives before advanced micro. A normal AI that reliably produces, scouts, attacks, recovers, and concedes is more valuable than sophisticated focus fire attached to a brittle economy.
 
-### Existing foundations to retain
+## Classic RTS product contract
 
-- `PlayerAiController` advances from `SimulationTickService` at a one-second AI cadence. Multiplayer
-  therefore has a simulation-clock entry point instead of depending on render frame rate.
-- `RandomService` is seeded, counts operations, and can save/restore its generator state.
-- `PlayerAiControllerMdsl` already decomposes map analysis, base planning, production, repair,
-  strategy, defense, attack, economy, logistics, research, scouting, and combat tactics.
-- Specialized managers already cover economy sampling, supply, production, repair, technology,
-  scouting, targeting, base placement, adaptive thresholds, and combat micro.
-- `PlayerAiBlackboard` persists useful strategic state, reservations, cooldowns, and enemy summaries.
-- AI production, research, and many actor orders already enter the shared command system. The host is
-  the only runtime that creates strategic AI controllers.
-- Replays preserve the initial game state, seed/random state, and ordered command batches. Existing
-  tick digests normalize batches by player number.
+“Like Warcraft III or StarCraft II” is treated as a player-facing behavior contract, not as a request to clone either game's internals.
 
-These are valuable production foundations. A rewrite would add risk without first showing which
-decisions are weak.
+### What the skirmish player should observe
 
-### Correctness and evaluation gaps found
+1. **An opening with intent.** The AI continuously creates workers, secures housing/supply before it blocks, builds production, and fields a first fighting force. It does not idle with enough money for obvious prerequisites.
+2. **A coherent economy.** Workers are assigned by forecast demand, not merely current stockpile. Gatherers are replaced, unsafe workers retreat or transfer, depleted patches cause reassignment, and expansions are established when the main base cannot sustain the plan.
+3. **Faction-valid production.** Build plans use the actual tech tree and available producers. The AI keeps production active, makes a useful composition from observed enemy capabilities, and can rebuild a destroyed prerequisite.
+4. **Scouting under uncertainty.** The AI explores plausible enemy locations, updates remembered contacts when vision is gained, loses live targeting when vision is lost, and searches last-seen locations. Normal difficulty does not know hidden armies or bases.
+5. **Purposeful armies.** Units belong to defense, attack, scout, reserve, or reinforcement roles. The AI assembles at a rally point, attacks an objective rather than one arbitrary actor, reinforces without constantly dissolving squads, and regroups or retreats when an engagement is poor.
+6. **Legible tactics.** Units focus vulnerable or dangerous targets without extreme overkill, ranged units preserve distance when practical, damaged valuable units disengage, and defenders respond to threats before the main army resumes its plan.
+7. **Resilience.** A lost worker, blocked building location, destroyed production structure, depleted resource, failed path, proxy building, or temporary supply block triggers a bounded recovery path instead of permanent inactivity or command spam.
+8. **A complete match.** The AI wins through the normal victory rules and deterministically concedes only after a sustained unrecoverable position. Victory, defeat, or concession reaches the existing score screen with a valid final score.
+9. **Readable difficulty.** Easy, normal, and hard differ in reaction delay, planning breadth, intentional error, risk, and tactical repertoire. Strategy personality is separate from difficulty. Any rules bonus is explicit in the lobby and result data.
+10. **Fair and reproducible play.** The same seed and command stream produce the same decisions and state checkpoints. AI never bypasses shared validation, never acts on hidden IDs, and never uses render-frame timing as game time.
 
-1. **Skirmish AI has omniscient enemy candidates.** `WorldStateSnapshotManager` applies a logical
-   visibility radius only when campaign fog policy is `normal`; normal skirmish returns every owned
-   enemy actor. `TargetingManager` and combat scoring can therefore act on hidden information.
-2. **Observation updates are not atomic.** `WorldStateSnapshotManager.update()` starts an async
-   refresh without awaiting it. The same AI step then updates targeting from the previous/mid-refresh
-   blackboard. Async distance/path queries can finish later and overwrite newer decisions.
-3. **Not every AI action uses the authoritative command path.** Strategic gather/attack orders use
-   `dispatchAiOrder`, but scouting and combat micro write directly to pawn blackboards. Building
-   construction also calls the spawn path directly before ordering a worker. Those changes are not
-   uniformly validated, relayed, or represented in the replay command trace.
-4. **Deterministic iteration is implicit.** Actor-index arrays, equal-score sorts, object iteration,
-   and first-candidate selection do not consistently use stable actor-ID tie-breakers. Seeded RNG
-   cannot protect determinism if input ordering differs.
-5. **One accessibility check is ineffective.** `BasePlanner.refineAccessibility()` passes an async
-   callback to `Array.filter`; promises are truthy, so unreachable candidate spots are retained.
-6. **Scouting is map-origin based and forgets useful enemy knowledge.** Its fixed sector spiral is not
-   derived from map bounds or the AI base, tracks friendly military positions rather than actual
-   visibility, and has no typed last-seen enemy memory/confidence decay.
-7. **Combat micro is local and command-churn prone.** It scores per unit against all visible enemies,
-   has no squad ownership or engagement evaluator, and directly replaces pawn orders. Retreat always
-   uses the base center and focus-fire has no overkill/damage reservation.
-8. **Strategy has labels but no explainable goal competition.** Aggressive/defensive/economic
-   thresholds exist, but there is no normalized utility output showing why one goal beat another or
-   whether resources/actors conflict across managers.
-9. **Telemetry cannot establish gameplay improvement.** It records wall-clock spans, counters, and an
-   untyped `any` event buffer, but not command validity, observation age, resource float, supply-block
-   time, idle workers, scouting coverage, engagement outcomes, or decision reasons.
-10. **Replay digests hash commands, not authoritative simulation state.** Equal command streams can
-    still produce different state. There is no automated fixed-seed AI tournament or baseline report.
+### Initial quality target
 
-These findings make “add smarter tactics” the wrong first PR. Fixing only omniscience would be useful,
-but it could make the AI substantially weaker without the scouting memory and measurements needed to
-explain the result.
+The first release target is not expert or tournament play. It is a normal-difficulty opponent that:
 
-## Research evidence and reusable ideas
+- completes a faction-valid opening on every supported skirmish faction/map pairing;
+- produces workers and army continuously unless a trace gives a valid blocking reason;
+- launches at least one purposeful attack or expansion in a stable 15-minute match;
+- responds to an observed base threat within its documented decision delay;
+- recovers from each authored disruption fixture or records a terminal reason;
+- does not use hidden information or implicit economic/stat bonuses;
+- concludes won/lost matches through the ordinary result and score flow;
+- repeats exactly under the deterministic fixture matrix.
 
-### Primary references
+### Non-goals for the initial roadmap
 
-| Source | Evidence useful here | Decision and licensing boundary |
+- matching professional human micro or build-order optimization;
+- copying Warcraft III or StarCraft II balance, races, or proprietary algorithms;
+- replacing the human input/selection controller;
+- runtime neural inference, LLM calls, imitation learning, or reinforcement learning;
+- a general GOAP framework or a wholesale behavior-tree rewrite;
+- expensive all-pairs combat simulation or per-unit pathfinding every AI step;
+- hidden-information, resource, build-speed, or damage cheats by default;
+- using win rate alone as proof of quality.
+
+Shared order vocabulary such as attack-move, hold position, or patrol may need improvement for both human and AI players. That is a command-system dependency of this AI plan, not authorization for a broad human-controller redesign.
+
+## Confirmed repository findings
+
+### Foundations to retain
+
+- `PlayerAiController` advances from `SimulationTickService` at a one-second AI cadence and limits catch-up work. This is the correct clock boundary for deterministic decisions.
+- `RandomService` is seeded, counts operations, and can save/restore generator state.
+- `PlayerAiControllerMdsl` already schedules map analysis, planning, production, repair, strategy, defense, attack, economy, logistics, technology, scouting, and combat tactics.
+- Specialized managers already exist for economy, supply, production, repair, technology, scouting, targeting, base placement, adaptive thresholds, and combat micro.
+- `CommandBusService` and `GameCommand` already provide the common path for production, research, and several actor orders. `AiPlayerHandler` creates strategic AI only on the host.
+- Save/replay infrastructure preserves initial state, random state, and ordered command batches.
+- `StateHashService` already builds a stable authoritative multiplayer projection with sorted actors, logical positions, ownership, health, queues, economy, combat/orders, player state, research, scenario data, and RNG state. Extend or extract this projection; do not create a competing world hash from scratch.
+- `GameModeConditionChecker` and `ScoreTracker` already own victory/loss/tie evaluation and the score transition. AI completion should integrate with those authorities.
+
+### Correctness and behavior defects
+
+1. **Skirmish observation is omniscient.** `WorldStateSnapshotManager` applies a logical visibility radius only to a campaign fog policy. Normal skirmish gives targeting and combat code every non-owned actor.
+2. **Non-owned is not the same as hostile.** Snapshot filtering does not consistently apply team or diplomacy, so team allies or other owned neutral actors can enter enemy consideration.
+3. **Observation commits are not atomic.** `WorldStateSnapshotManager.update()` starts `refreshWorldState()` without awaiting it, advances its refresh timestamp, and lets the current step continue. Async path-distance results can expose mixed-age data or overwrite a later step.
+4. **AI effects have multiple authorities.** Scouting and combat micro write pawn blackboards directly. Construction calls the building spawn path directly. Repair/logistics also call worker behavior methods directly. These paths bypass uniform command validation, relay, replay, and rejection telemetry.
+5. **Deterministic ordering is incomplete.** Actor-index arrays, object iteration, equal-score sorts, random candidate selection, and “first” choices lack a universal stable-key rule.
+6. **The base accessibility check has an async-filter defect.** Promises passed to `Array.filter()` are truthy, so unreachable locations are not removed. PR #792 addresses this and some stable candidate ordering; it does not deliver the rest of this roadmap.
+7. **Difficulty is selected but unused by strategic AI.** `ProbableWaffleAiDifficulty` and lobby Easy/Normal/Hard choices exist, but the AI controller/managers do not consume the selected value. Today the three choices use the same behavior.
+8. **Strategy polarity is wrong in one condition.** `IsEnemyPlayerWeak()` compares whether the AI's military strength is lower than the enemy's, despite its name, and feeds an aggressive branch. This must be fixed with a regression fixture, not patched without traceability.
+9. **Some strategic actions are placeholders.** `GatherResources` and `StartUpgrade` can report behavior-tree success without completing the intended strategic action. The blackboard's `getMostNeededResource()` always returns `null`, disabling one logistics rebalance path.
+10. **Blackboard state is duplicated and mutable.** It combines live Phaser references, top-level arrays, and mirrored economy/army/production slices. Reassignment can make those views diverge; broad `any` values make persistence and trace compatibility difficult to verify.
+11. **Scouting has no useful information model.** Its fixed 32-unit spiral is centered on the map origin, not map bounds, bases, or plausible starts. It infers coverage from friendly military positions and has no typed last-seen contact, confidence, threat, route, or dedicated scout role.
+12. **Combat is individual and churn-prone.** The attack branch sends all idle units to one live actor. Defenders only claim idle units. “Focus fire” mostly replaces invalid targets rather than coordinating damage; flank state is reset by snapshot refresh; retreat uses base center or `(0, 0)`; and scoring is effectively all owned units by all visible enemies.
+13. **Production has no opening or demand forecast.** Force maintenance uses static/adaptive strength thresholds and queues at most one unit on a cooldown. It does not saturate producers, maintain worker/supply plans, reserve for prerequisites, or reason about time-to-completion.
+14. **Base planning is not a base model.** The “base center” averages all owned actors and can drift with scouts/armies. Placement samples a few random points near that center, does not preserve worker/resource/production egress, and does not remember failed sites. Expansion is not modeled.
+15. **Research is incomplete.** Spell research has a path, while the more general upgrade action is a no-op placeholder. There is no opportunity-cost or timing logic.
+16. **Surrender is not classic skirmish behavior.** The AI can offer surrender only in limited modes and a human dialog can reject it forever. The heuristic uses instantaneous unit/building/resource counts, can concede despite recovery potential, then directly marks/destroys state. It lacks a sustained hopelessness window, typed reason, shared command, and deterministic end-to-end test.
+17. **The milestone's anti-blocking requirement is not represented in current behavior.** A player can proxy or wall near AI production/resource lanes; placement and targeting do not reserve egress, validate post-build connectivity, prioritize hostile blockers, or recover from repeated failed movement/orders.
+18. **AI persistence is incomplete.** Current AI save data preserves blackboard, telemetry, and enabled state, but not controller cadence accumulation, behavior-tree running state, manager cooldowns, scout coverage, assignments, squads, knowledge generation, or deterministic decision counters. Save/load can therefore change the next decision.
+19. **Host migration ownership is not established.** Controllers are built when the initial scene is host. The inspected path does not prove that a new host reconstructs and resumes the exact AI brain state.
+20. **Telemetry cannot prove improvement.** It emphasizes wall-clock spans, counters, and an untyped event buffer. It does not explain observation age, chosen/rejected goals, command outcomes, supply blocks, idle economy, scouting coverage, engagement outcomes, path failures, or recovery.
+21. **State hashing exists but is not yet an AI evaluation harness.** It is multiplayer-oriented and its projection is private. It does not include AI knowledge, profile, plan, assignments, manager state, or decision cadence. The earlier claim that only commands are hashed is superseded by the inspected `StateHashService`; the implementation should reuse its canonical projection patterns.
+22. **Focused coverage is narrow.** Snapshot and AI-handler tests exist, and PR #792 adds planner regressions, but there is no layered pure-decision suite or complete skirmish outcome matrix.
+
+### Affected code map
+
+Treat this as a discovery index, not a complete edit list. Search call sites before changing a contract because protocol changes cross libraries and runtime/server consumers.
+
+| Concern | Current area |
+| --- | --- |
+| AI behavior tree, contracts, blackboard | `libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/` |
+| Phaser controller, agent, managers | `libs/games/probable-waffle/phaser/src/lib/player/ai-controller/` |
+| Player/difficulty/save contracts | `libs/games/probable-waffle/protocol/src/lib/` |
+| Game command union and transport | `libs/games/probable-waffle/protocol/src/lib/game-instance/probable-waffle/game-command.ts` and its consumers |
+| Command queuing/application | Phaser command queue/action systems and server command validation |
+| Match completion and scoring | `libs/games/probable-waffle/phaser/src/lib/world/state/GameModeConditionChecker.ts`, `ScoreTracker.ts` |
+| Canonical authoritative hashing | `libs/games/probable-waffle/phaser/src/lib/world/services/recovery/state-hash.service.ts` |
+| AI save/load | `libs/games/probable-waffle/phaser/src/lib/data/save-game.ts`, `load-game.ts`, protocol component data |
+| Lobby AI settings | probable-waffle interface player-definition components and protocol player definitions |
+
+## Research findings and boundaries
+
+### Primary evidence
+
+| Source | Useful transferable evidence | Decision / boundary |
 | --- | --- | --- |
-| [microRTS](https://github.com/Farama-Foundation/MicroRTS) | Its environment explicitly supports deterministic/non-deterministic and full/partial observation, scripted agents, search agents, and standalone batch execution. This supports evaluating one policy over a seed/map matrix rather than judging one playthrough. | GPL-3.0. Reuse the experimental method and metric ideas only; copy no implementation. The project is deprecated, so do not add it as a dependency. |
-| [OpenRA bot modules](https://github.com/OpenRA/OpenRA/tree/bleed/OpenRA.Mods.Common/Traits/BotModules) | Production AI is split into base building, harvesting, unit construction, repair, expansion, support power, and squad modules. Its [squad state machines](https://github.com/OpenRA/OpenRA/tree/bleed/OpenRA.Mods.Common/Traits/BotModules/Squads) reinforce strategy/manager/squad/unit ownership. | GPL-3.0. Adapt the responsibility boundaries, not code or configuration. |
-| [UAlbertaBot](https://github.com/davechurchill/ualbertabot/tree/master/UAlbertaBot/Source) | Separate information, scouting, strategy, build-order, combat-command, and combat-simulation authorities show how to keep remembered knowledge and strategic selection distinct from execution. | MIT, but this plan still recommends an independent TypeScript design matched to Fuzzy Waddle contracts. No source is copied. |
-| [Portfolio Greedy Search and Simulation for Large-Scale Combat in StarCraft](https://doi.org/10.1109/CIG.2013.6633643) | Searching assignments of a small portfolio of scripts reduces the enormous multi-unit action space and fits a bounded tactical evaluator better than raw action search. | Research result, not an implementation dependency. Consider only after squads, deterministic snapshots, and a fast combat abstraction exist. |
-| [Gym-microRTS](https://arxiv.org/abs/2105.13807) | Demonstrates the importance of fast batch environments and ablations, but also reports substantial training even for a small RTS environment. | Use its evaluation discipline. Runtime or trained RL is not justified for the current game/team. |
+| [Blizzard s2client-api](https://github.com/Blizzard/s2client-api) and [SC2 protocol](https://github.com/Blizzard/s2client-proto/blob/master/s2clientprotocol/sc2api.proto) | A bot receives explicit observations and issues actions through a control protocol. SC2 also separates difficulty from AI build archetype and names cheat difficulties explicitly. | Use the observation/action seam and separate profile/personality model. Do not reproduce proprietary game behavior. Both repositories are reference interfaces, not dependencies. |
+| [OpenRA AI configuration](https://github.com/OpenRA/OpenRA/blob/bleed/mods/ra/rules/ai.yaml) and [bot modules](https://github.com/OpenRA/OpenRA/tree/bleed/OpenRA.Mods.Common/Traits/BotModules) | Production bots separate base building, harvesting, unit production, repair, expansion, and squads. Profiles tune delays, composition fractions, construction limits, squad sizes, target types, and expansion behavior. | GPL-3.0. Reuse responsibility and configuration ideas only; copy no code or YAML. |
+| [0 A.D. Petra BaseManager](https://docs.wildfiregames.com/javascript/petra/PETRA.BaseManager.html), [BasesManager](https://docs.wildfiregames.com/javascript/petra/basesManager.js.html), [AttackManager](https://docs.wildfiregames.com/javascript/petra/PETRA.AttackManager.html), and [construction plan](https://docs.wildfiregames.com/javascript/petra/queueplanBuilding.js.html) | Multiple bases have explicit state, territory/access regions, resource levels, serialization, recovery, and staged construction plans. Attack plans own objectives; construction revalidates prerequisites/builders/sites and delays repeatedly unbuildable plans. | 0 A.D. code is GPL-licensed/mixed by file. Adapt concepts only. The strongest lesson is to make base, attack, and construction lifecycle explicit and serializable. |
+| [microRTS](https://github.com/Farama-Foundation/MicroRTS) | Scripted agents, partial/full observation, deterministic experimentation, and standalone batch runs support evaluation over maps/seeds rather than anecdotal play. | GPL-3.0 and deprecated. Use experimental method/metrics only; add no dependency and copy no implementation. |
+| [UAlbertaBot](https://github.com/davechurchill/ualbertabot/tree/master/UAlbertaBot/Source) | Information, scouting, strategy, build-order, combat-command, and combat-simulation responsibilities are separated. | MIT. Still design independently around this repository's TypeScript and lockstep contracts. |
+| [Portfolio Greedy Search](https://doi.org/10.1109/CIG.2013.6633643) | Choosing among a small portfolio of tactical scripts can bound a huge unit-action space. | Research only. Defer until a deterministic squad evaluator exists; do not begin with search. |
+| [A Benchmark for StarCraft Intelligent Agents](https://cdn.aaai.org/ojs/12810/12810-52-16327-1-2-20201228.pdf) and [Starcraft AI Tournament Manager](https://github.com/davechurchill/StarcraftAITournamentManager) | A win against one opponent can be an exploit rather than general skill. Scenario scripts, metrics, repeated games, map/side variation, and retained artifacts are needed. | Adopt evaluation discipline. The tournament manager is MIT, but integrating a foreign runner is unnecessary. |
+| [A Modular Multi-Scale Architecture for RTS Games](https://arxiv.org/abs/1811.03555) and [TStarBots](https://arxiv.org/abs/1809.07193) | Hierarchy and modular specialization reduce the decision space; learning can be confined to modules rather than owning the whole runtime. | Supports the architecture, not runtime learning. Rules remain easier to reproduce, inspect, and ship offline. |
+| [Mistreevous](https://github.com/nikkorn/mistreevous) | Promise-returning actions remain running until resolution, which makes async lifetime, cancellation/generation, and save semantics important. | Keep the existing library. Do not depend on unresolved async snapshot writes or assume a running action is trivially serializable. |
 
 ### Supplied references not selected for initial implementation
 
-- [Beyond All Reason](https://github.com/beyond-all-reason/Beyond-All-Reason) remains useful for
-  large-scale product observation, but its repository has mixed/asset-specific licensing and the
-  supplied BARbarIAn repository URL is no longer available through GitHub. Do not copy from it.
-- Steamhammer is a useful example of build selection and opponent memory, but the supplied GitHub URL
-  is not available. Its maintainer's [Steamhammer documentation](https://satirist.org/ai/starcraft/steamhammer/)
-  can inform terminology; do not reuse code unless a current source and license are verified.
-- [BWAPI](https://github.com/bwapi/bwapi) is an LGPL-3.0 integration API, not an AI architecture.
-  It is useful for discovering research bots, not as a dependency or code source.
-- [BehaviorTree.CPP](https://github.com/BehaviorTree/BehaviorTree.CPP),
-  [CrashKonijn GOAP](https://github.com/crashkonijn/GOAP), and
-  [gdx-ai](https://github.com/libgdx/gdx-ai) demonstrate mature general-purpose tools. The repository
-  already has a behavior tree and domain managers; replacing them would not address the measured gaps.
-- [StarData](https://github.com/TorchCraft/StarData) and the supplied
-  [LLM StarCraft project](https://github.com/histmeisah/Large-Language-Models-play-StarCraftII) do not
-  declare a GitHub-detected license. Treat them as research demonstrations only. Offline replay
-  analysis may become useful later, but nondeterministic network inference must not enter runtime
-  lockstep.
+- [Beyond All Reason](https://github.com/beyond-all-reason/Beyond-All-Reason) is useful for observing large-army behavior, but its repository contains mixed/asset-specific licensing. The supplied BARbarIAn repository URL was unavailable during research. Copy nothing from either without a new source/license review.
+- Steamhammer demonstrates build selection and opponent modeling, but the supplied source URL was unavailable. Its maintainer's [documentation](https://satirist.org/ai/starcraft/steamhammer/) may inform vocabulary, not implementation.
+- [BWAPI](https://github.com/bwapi/bwapi) is an LGPL-3.0 integration API and ecosystem index, not a directly suitable Fuzzy Waddle AI architecture.
+- [BehaviorTree.CPP](https://github.com/BehaviorTree/BehaviorTree.CPP), [CrashKonijn GOAP](https://github.com/crashkonijn/GOAP), and [gdx-ai](https://github.com/libgdx/gdx-ai) show mature general tools. Replacing the repository's scheduler would not fix authority, observation, persistence, or evaluation gaps.
+- [Gym-microRTS](https://arxiv.org/abs/2105.13807), [StarData](https://github.com/TorchCraft/StarData), and the supplied [LLM StarCraft project](https://github.com/histmeisah/Large-Language-Models-play-StarCraftII) are useful research context. Training/data provenance, reproducibility, and runtime determinism make them inappropriate for the initial product path.
 
 ### Research conclusion
 
-The most transferable pattern is hierarchical, explainable control with a strict information model:
+The common useful pattern is `strategy -> domain manager -> squad/base plan -> unit command`, backed by an explicit observation model and a repeatable match harness. Mature RTS bots do not become good merely by adding more behavior-tree branches. They preserve ownership: one system decides what is known, one owns a plan, one reserves the means, and one legal command path changes the world.
 
-- behavior tree or state machine for orchestration;
-- pure utility/rule scoring for frequent strategic choices;
-- managers that propose work without mutating the world;
-- squads that own units for a bounded objective;
-- stable arbitration of competing intents;
-- search only over a small script portfolio in an isolated tactical evaluator;
-- batch replay/scenario evaluation before and after every behavior change.
+## Target architecture and contracts
 
-## Proposed architecture
+### 1. Immutable permitted observation
 
-### 1. Observation and intelligence
+Create a pure, versioned `AiObservationV1` for one simulation tick. It contains no Phaser object, promise, render coordinate, wall-clock timestamp, callback, or mutable shared collection.
 
-Add a Phaser adapter that creates an immutable `AiObservation` at a specific simulation tick. Every
-collection is sorted by stable actor ID. It contains only information permitted by a shared
-`AiInformationPolicy`, independent of game mode:
-
-- owned actors, resources, housing, queues, research, cooldowns, and logical positions;
-- currently observable enemies and neutral/resource observations;
-- map bounds, passability/threat summaries, and known objectives;
-- no Phaser objects, wall-clock timestamps, promises, or render state.
-
-Maintain a separate serializable `AiKnowledgeState` with `lastSeenTick`, last logical position,
-observed type/owner/health band, and confidence. A hidden actor may inform a search location or threat
-estimate, but never be issued as a live target ID. Campaign/scripted omniscience must be an explicit
-policy capability, not a side effect of mode checks.
-
-The adapter must build a complete candidate snapshot, await any required bounded query, verify its
-generation/tick, and commit once. A newer generation invalidates older async results.
-
-### 2. Goal and manager proposals
-
-Keep managers, but make their decision portion pure where practical. They receive
-`AiDecisionContext { observation, knowledge, profile, previousPlan }` and return typed proposals such
-as:
+Suggested shape (names are illustrative and should follow existing conventions):
 
 ```ts
-type AiIntent =
-  | TrainIntent
-  | ResearchIntent
-  | ConstructIntent
-  | GatherIntent
-  | ScoutIntent
-  | FormSquadIntent
-  | EngageIntent
-  | RetreatIntent;
+interface AiObservationV1 {
+  readonly schemaVersion: 1;
+  readonly tick: number;
+  readonly playerId: string;
+  readonly teamId?: string;
+  readonly map: AiMapSummary;
+  readonly economy: AiEconomySnapshot;
+  readonly ownedActors: readonly AiOwnedActorSnapshot[];
+  readonly visibleHostiles: readonly AiVisibleActorSnapshot[];
+  readonly visibleAllies: readonly AiVisibleActorSnapshot[];
+  readonly visibleResources: readonly AiResourceSnapshot[];
+  readonly production: readonly AiProductionSnapshot[];
+  readonly research: readonly AiResearchSnapshot[];
+  readonly objectives: readonly AiObjectiveSnapshot[];
+}
 ```
 
-Each intent carries actor IDs, target ID or logical position, utility, reason code, preconditions,
-resource reservation, expiry tick, and stable tie-break key. It does not mutate Phaser state.
+Rules:
 
-Add a small goal layer above existing managers. Initial goals are `survive`, `recover-supply`,
-`stabilize-economy`, `grow-army`, `gain-intelligence`, `defend`, and `pressure`. Normalize scores to a
-documented range and record all winning/rejected reasons. The existing behavior tree can invoke the
-goal evaluator and execution stages; it need not be replaced.
+- Collections are canonicalized by stable type then actor/player ID.
+- Positions are authoritative logical/simulation positions, never interpolated render positions.
+- Hostility comes from one diplomacy/team policy, not `owner !== self`.
+- `visibleHostiles` contains live target IDs only while currently permitted.
+- Map-derived summaries expose bounded regions/frontiers/access components rather than handing the pure brain a pathfinder.
+- Expensive async queries execute into a candidate generation. Commit only when all required fields resolve and the generation is still current. An abandoned generation cannot mutate blackboard or knowledge.
+- Campaign omniscience, scripted reveals, shared team vision, and spectator state are explicit `AiInformationPolicy` capabilities with tests.
 
-### 3. Deterministic arbitration and command execution
+### 2. Serializable remembered knowledge
 
-An `AiIntentArbitrator` sorts by priority/utility and then stable key, enforces per-step budgets,
-reserves resources and actors, rejects stale/conflicting work, and returns an ordered accepted list.
-The command adapter revalidates ownership, visibility/knowledge rules, availability, resources,
-reachability, and target activity immediately before dispatch.
+`AiKnowledgeStateV1` is the only authority for information no longer visible:
 
-All gameplay effects must enter existing command contracts and `CommandBusService`, including scout,
-focus-fire, retreat, flank, and construction. Direct pawn-order mutation and direct building spawn are
-removed from strategic AI paths. AI commands then become replayable, host-relayed, sanitizable, and
-countable through one authority.
+```ts
+interface AiContactMemoryV1 {
+  readonly contactKey: string;
+  readonly observedOwnerId: string;
+  readonly observedType: string;
+  readonly lastSeenTick: number;
+  readonly lastSeenPosition: LogicalPoint;
+  readonly lastSeenHealthBand: 'low' | 'medium' | 'high' | 'unknown';
+  readonly confidence: number;
+  readonly classification: 'worker' | 'army' | 'production' | 'tech' | 'defense' | 'unknown';
+}
+```
 
-### 4. Squads and tactical policies
+- Hidden contacts may create a search/defend hypothesis at a position; they cannot supply a live actor ID to an attack command.
+- Confidence decays by simulation ticks using integer/fixed-point arithmetic where practical.
+- Destroyed contacts are removed only from permitted evidence (observed death, explored-empty last position, or authoritative mode-specific knowledge).
+- Enemy capabilities are inferred conservatively from observed types/production, with the evidence and age recorded.
+- Knowledge, scout coverage, and start-location hypotheses are saved, loaded, traced, and hashed.
 
-Introduce squads only after the pipeline is stable. A squad owns an ordered set of actor IDs, one
-objective, a rally/regroup point, stance, and lifecycle. Initial deterministic scripts should be:
+### 3. Strategic goals and authored plans
 
-- `hold`: remain in a defensible radius and intercept threats;
-- `advance`: move as a group toward a known location;
-- `focus-fire`: allocate damage without excessive overkill;
-- `kite-or-retreat`: preserve vulnerable/ranged units when local power is unfavorable;
-- `search-last-seen`: inspect remembered positions without targeting hidden IDs.
+Use a small goal set with normalized integer utility, documented inputs, hysteresis, and reason codes:
 
-Start with utility selection among these scripts. Do not add playout/search until the pure tactical
-evaluator is fast, deterministic, and demonstrably limited by fixed work units rather than wall time.
+- `survive_immediate_threat`
+- `restore_economy`
+- `restore_supply`
+- `restore_prerequisites`
+- `execute_opening`
+- `grow_economy`
+- `grow_army`
+- `gain_intelligence`
+- `defend_asset`
+- `pressure_enemy`
+- `expand`
+- `tech_transition`
+- `finish_match`
 
-### 5. Difficulty profiles
+An opening is data, not a long conditional chain. It should state faction capability requirements and checkpoints rather than hard-code a single exact sequence:
 
-Difficulty should configure decision quality transparently, not fork the architecture:
+```ts
+interface AiOpeningPlanV1 {
+  readonly id: string;
+  readonly factionId: string;
+  readonly archetype: AiStrategyArchetype;
+  readonly steps: readonly AiOpeningStep[];
+  readonly transitionConditions: readonly AiPlanCondition[];
+  readonly fallbackPlanId: string;
+}
+```
 
-- observation/response delay in simulation ticks;
-- maximum intents, squads, path queries, and tactical candidates per AI step;
-- enabled goals/scripts and planning horizon;
-- deterministic score noise/error rate from `RandomService`;
-- retreat/aggression/risk thresholds.
+Every step must answer: what capability is wanted, what prerequisites/resources/producer are needed, what may be reserved, when is it obsolete, and what fallback occurs if the site or producer is lost. Do not make plans depend on wall-clock completion or exact entity iteration order.
 
-Recommended default is no hidden information and no resource/stat bonuses. If bonuses are ever
-desired, define them as explicit game contracts visible in lobby/campaign configuration and metrics.
+### 4. Typed intent proposals
 
-## Deterministic evaluation and replay harness
+Managers become proposal authorities and do not change the world:
 
-Build three test levels so most iteration does not require rendering a full Phaser match.
+```ts
+type AiIntentV1 =
+  | AssignWorkerIntent
+  | ConstructIntent
+  | TrainIntent
+  | ResearchIntent
+  | SetRallyIntent
+  | ScoutIntent
+  | FormSquadIntent
+  | ReinforceSquadIntent
+  | DefendIntent
+  | AdvanceIntent
+  | EngageIntent
+  | RetreatIntent
+  | RecoverPathIntent
+  | ConcedeIntent;
 
-### Level A: pure decision fixtures
+interface AiIntentBaseV1 {
+  readonly schemaVersion: 1;
+  readonly intentId: string;
+  readonly family: string;
+  readonly createdTick: number;
+  readonly expiresTick: number;
+  readonly utility: number;
+  readonly priorityClass: AiPriorityClass;
+  readonly stableKey: string;
+  readonly reason: AiReasonCode;
+  readonly actorClaims: readonly string[];
+  readonly resourceClaim?: AiResourceClaim;
+  readonly tileClaim?: AiTileClaim;
+  readonly preconditions: readonly AiPrecondition[];
+}
+```
 
-Feed versioned `AiObservation` sequences to the decision core. Assert exact intent traces, rejection
-reasons, reservations, and knowledge transitions. Fixtures cover equal-score tie-breaking, hidden
-enemy transitions, stale observations, supply recovery, worker allocation, attack/retreat, and
-save/restore continuation.
+Intent IDs and stable keys must derive from stable domain identifiers and monotonic per-brain counters, not random UUIDs or object identity. A manager can propose multiple alternatives, but it cannot assume acceptance or decrement resources preemptively.
 
-### Level B: fixed-seed runtime scenarios
+### 5. Deterministic arbitration and reservations
 
-Run small authored scenarios through the real simulation clock and command bus:
+`AiIntentArbitrator` is a pure reducer over observation, profile, prior reservations, and proposals.
 
-1. opening economy and first production building;
-2. supply block and recovery;
-3. nearby rush defense;
-4. unseen enemy, scout discovery, loss of vision, and last-seen search;
-5. favorable attack and unfavorable retreat;
-6. blocked construction candidate;
-7. save/restore at an AI decision boundary;
-8. host-generated AI commands replayed by another runtime.
+Ordering:
 
-For each scenario run the same seed at least three times in the focused suite and compare command and
-state digests. A nightly/explicit soak can use 20 repetitions and more seeds.
+1. discard expired or false-precondition intents;
+2. sort by priority class, descending integer utility, then `stableKey`;
+3. allocate exclusive actor, producer-slot, builder, tile/footprint, and resource claims;
+4. enforce per-profile work and command budgets;
+5. retain compatible reservations across steps until completed, invalidated, or timed out;
+6. emit accepted/rejected records with stable reason codes;
+7. produce one ordered execution list.
 
-The existing command digest is retained. Add a canonical state projection at configured checkpoint
-ticks, sorted by stable IDs and keys, containing only authoritative state: player resources/housing,
-actor type/owner/logical transform/health/order, production/research queues, AI knowledge/plan state,
-simulation tick, and deterministic RNG state. Exclude object identity, render coordinates, wall time,
-logs, and performance spans.
+Required rejection examples: `stale_observation`, `not_visible`, `not_hostile`, `actor_claimed`, `producer_busy`, `insufficient_unreserved_resources`, `prerequisite_missing`, `site_blocked`, `path_unavailable`, `budget_exhausted`, `objective_obsolete`, and `command_validation_failed`.
 
-On mismatch, emit the first divergent tick plus normalized observation, accepted/rejected intents,
-commands, RNG operation count, and state projection. This makes a desync actionable instead of merely
-reporting a final hash.
+Never rely on JavaScript sort stability alone. Every comparator ends with a unique stable domain key. Random choice occurs only after canonicalization and through a named deterministic RNG substream or recorded operation sequence.
 
-### Level C: batch match evaluation
+### 6. Command adapter and outcome feedback
 
-Run candidate versus frozen baseline policies across a versioned map/seed/starting-side matrix.
-Archive JSON and a short Markdown summary as CI artifacts rather than committing large replay output.
-Compare distributions, not one match. Until enough samples exist, report win/loss/draw counts and
-Wilson intervals; do not claim improvement from a single win-rate percentage.
+All accepted intents are revalidated and translated into shared `GameCommand` values. Necessary new commands must update, together:
 
-## Metrics
+- the protocol discriminated union and serialization guards;
+- host/server validation and authorization;
+- Phaser queue/application systems;
+- replay, save, and recovery projections;
+- human input adapter where the same player capability should be available;
+- unit/integration tests for accept, reject, duplicate, stale, and replay behavior.
+
+Construction and concession need first-class authoritative paths. Attack-move, hold-position, and patrol should be added only if the tactical implementation proves existing move/attack orders cannot express the behavior safely. Do not encode AI-only world mutations behind a generic debug command.
+
+After dispatch, a typed `AiCommandOutcome` reports accepted, rejected, applied, superseded, failed, or timed out. Managers use outcomes to recover; they do not infer success merely because a command was emitted.
+
+### 7. Brain state and scheduler
+
+Create a versioned, serializable `AiBrainStateV1` containing at least:
+
+- player/profile/archetype/opening identifiers and opening phase;
+- knowledge and scouting coverage;
+- base records and expansion candidates;
+- worker, builder, producer, defender, scout, reserve, and squad assignments;
+- current goals, objectives, reservations, and intent counters;
+- manager cooldowns and failure/backoff state;
+- squad state/lifecycle and damage reservations;
+- difficulty error/cadence state;
+- controller cadence accumulator and last completed observation/decision tick;
+- required deterministic RNG state/substream counters;
+- schema version and migration/default rules.
+
+Do not serialize Phaser objects or unresolved promises. If the behavior tree has a running async action at save time, define an explicit safe-point policy: finish the current atomic decision before capturing, or cancel it and save a restartable phase. Save/load at a decision boundary must produce the same next observation, intent trace, command batch, and RNG operation count.
+
+The behavior tree can initially call explicit phases:
+
+```text
+observe -> update knowledge -> evaluate outcomes -> propose -> arbitrate -> dispatch -> trace
+```
+
+Once all legacy mutation branches are migrated, assess whether the behavior tree still adds clarity. Replacing it then is a small evidence-based cleanup, not a prerequisite.
+
+## Domain behavior design
+
+### Economy and worker allocation
+
+- Represent resource demand over a short deterministic horizon: next opening checkpoint, queued production, required supply, repair reserve, and desired expansion.
+- Allocate workers by marginal value using resource need, known gather capacity/travel bucket, safety, and saturation. Exact pathfinding is not required for every worker; use cached region or distance bands and validate only selected orders.
+- Preserve a minimum worker-production goal unless survival or supply recovery wins arbitration.
+- Detect idle, dead-target, depleted-patch, unreachable, and unsafe gather states from command outcomes/observation. Reassign with exponential tick-based backoff to avoid spam.
+- Reserve builders explicitly and return them to economy after completion/failure.
+- Track income, idle-worker ticks, reassignment count, travel bucket, and gathering failures per resource.
+
+### Supply, production, and technology
+
+- Forecast `used + queued demand` against `capacity + housing completing within horizon`.
+- Begin housing before expected block and escalate `restore_supply` only when the forecast or actual block crosses a threshold. Avoid repeated emergency housing when one valid structure is underway.
+- Build and saturate a producer set. Choose the next unit from army role deficits, observed enemy capability, plan phase, affordability time, and producer opportunity cost.
+- Keep at least a configurable defense floor before committing all production to a tech transition.
+- Research only when prerequisites exist, a plan/counter supplies a reason, production survival is protected, and the opportunity cost fits the profile.
+- On producer/prerequisite loss, invalidate affected reservations, create a restore intent, and fall back to a legal unit/plan rather than reporting success.
+
+### Bases, expansion, and safe construction
+
+Model a base as a serializable strategic object rather than the average position of all owned actors:
+
+- stable base ID, anchor, access region, territory/defense radius;
+- linked resources, estimated remaining resource life, saturation, and drop-off routes;
+- owned production/tech/defense structures and active construction plans;
+- worker count, rally/egress points, threat level, and evacuation state;
+- construction exclusion/reservation zones and known site failures.
+
+Placement is staged:
+
+1. derive legal bounded candidates from map/building footprint and base/expansion context;
+2. canonicalize candidates before any RNG sampling;
+3. reject overlap, terrain, resource obstruction, and reserved footprint conflicts;
+4. preserve minimum corridors between resource lines, worker spawn/drop-off, production exits, rally points, and the outside access region;
+5. run bounded connectivity checks for shortlisted candidates, including hypothetical occupancy;
+6. score strategic purpose, walking/access band, defense, clustering, future room, and threat;
+7. reserve site and builder, then issue a construction command;
+8. revalidate at application time and record a cooldown/failure reason if rejected.
+
+Expansion selection compares resource life, access-region connectivity, distance band, defensive shape, threat/last-seen age, travel from a stable base anchor, and opportunity cost. An expansion plan has `proposed -> reserved -> establishing -> active -> evacuating/lost` lifecycle states.
+
+### Scouting and intelligence
+
+- Derive regions/sectors from map bounds and path-access components, not the world origin.
+- Initialize deterministic enemy-start hypotheses from scenario start locations and eliminate them only through permitted exploration.
+- Score frontiers using coverage age, information value, route risk, distance band, strategic plan, and current threat. Canonicalize ties.
+- Assign explicit scout roles; do not steal a builder, critical defender, or entire army without an arbitration claim.
+- Use routes/checkpoints rather than continually retargeting a single point. Recall scouts when they discover a decisive threat, become too damaged, or complete the route.
+- Convert visible actors into contact memory and summarized capability evidence. Keep confidence and evidence age visible in traces.
+- Defense may react to remembered movement toward a base, but live attack commands still require a visible/legal target or an attack/search position supported by the command model.
+
+### Threats, defense, and anti-exploit recovery
+
+Create typed threat incidents from visible/remembered evidence:
+
+- location/region, first/last observed tick, confidence, hostile role/value, threatened base/asset, arrival estimate band, urgency, assigned squad, and resolution reason;
+- worker harassment, main-army pressure, hostile static defense, proxy production, blocking building, trapped exit, and unknown contact are distinct classifications.
+
+Defense chooses the smallest sufficient available squad plus reinforcements, preserves an economy evacuation path, and may preempt lower-priority pressure/scout intents through arbitration. It must not be limited to units that happen to be idle.
+
+The anti-blocking recovery ladder is a release requirement:
+
+1. detect repeated order/path failures, no-progress windows, trapped production/rally cells, and unreachable resource/base access;
+2. retry with a canonical alternate point or route after bounded backoff;
+3. reassign the actor, builder, resource, producer, target, or construction site;
+4. cancel/replace a friendly blocking plan through a legal command when recovery requires it;
+5. classify an observed hostile proxy/blocker as an urgent objective and form a clearing squad;
+6. if no legal recovery exists, downgrade/replace the strategic plan and trace the terminal reason.
+
+Never solve blocking by teleporting units, deleting hostile structures, targeting hidden IDs, or bypassing construction/order validation.
+
+### Armies, squads, and objectives
+
+Every combat unit has at most one primary assignment: base defense, threat response, attack squad, reserve/reinforcement, scout, or recovery. Squads contain ordered actor IDs and a stable lifecycle:
+
+```text
+forming -> assembling -> rallying -> advancing -> engaging
+                   \-> defending
+engaging -> regrouping -> advancing
+engaging -> retreating -> recovering -> reserve/disbanded
+objective invalid -> searching last-seen -> retarget/disbanded
+```
+
+An objective is usually a location/asset class with evidence, not one immortal actor reference. Initial objective priorities:
+
+1. immediate threat to a base/economy;
+2. hostile blocker/proxy preventing normal operation;
+3. exposed army that can be engaged favorably;
+4. observed production/tech/economy target;
+5. last-seen base/search location;
+6. map-control or expansion denial point.
+
+The engagement evaluator should begin as deterministic integer/fixed-point heuristics over visible local value, health, range/mobility class, target access, static defense, reinforcements, objective value, retreat route safety, and confidence. Avoid pretending an inaccurate full combat simulator is ground truth.
+
+Initial squad scripts:
+
+- `hold_and_intercept`
+- `assemble_and_advance`
+- `focus_priority_targets`
+- `kite_or_screen`
+- `retreat_to_safe_rally`
+- `search_last_seen`
+- `clear_blocker`
+
+Use damage reservations to reduce overkill: reserve estimated pending damage by target for the current decision window, then prefer the next legal target once lethal damage is covered. Apply target-switch hysteresis so a marginal score change does not churn commands. Units unable to follow a squad order enter a bounded recovery state instead of repeatedly receiving the same order.
+
+### Difficulty and strategy personality
+
+Do not overload `ProbableWaffleAiDifficulty` with opening style.
+
+```ts
+type AiStrategyArchetype =
+  | 'balanced'
+  | 'rush'
+  | 'macro'
+  | 'turtle'
+  | 'tech';
+```
+
+Only expose archetypes that have faction-valid plans; a future air archetype depends on actual roster support. Selection may be explicit in the lobby later or deterministic from match seed and faction. The chosen archetype is visible in debug trace/result metadata, not silently changed mid-match.
+
+Recommended fair profiles:
+
+| Knob | Easy | Normal | Hard |
+| --- | --- | --- | --- |
+| Strategic response | slower tick delay | current one-second class | faster but bounded |
+| Candidate/intent budget | small | standard | larger |
+| Opening set | one forgiving plan | several legal plans | several plans + adaptation |
+| Tactical scripts | hold/advance/basic retreat | full initial set | full set + better evaluation budget |
+| Information memory | shorter/noisier deterministic confidence | standard fair memory | longer fair memory |
+| Intent error | occasional seeded suboptimal legal choice | low | none/minimal |
+| Target-switch hysteresis | high | standard | tuned by engagement |
+| Rules/resources/stats | identical | identical | identical by default |
+
+All profiles obey identical visibility, validation, and deterministic work limits. The existing `aiAdvantageResources` modifier should be audited and wired only as a separately named, explicitly displayed rules option if product wants it. Never hide it inside “Hard.”
+
+### Match conclusion and score flow
+
+Replace dialog-veto AI surrender with a host-authoritative, replayable concession flow for skirmish:
+
+- calculate recoverability from surviving builders/workers, legal production paths, income access, army/defense value, queued completions, and known hostile pressure;
+- require hopelessness for a sustained tick window and cancel the candidate if recovery evidence returns;
+- emit a typed reason such as `no_rebuild_path`, `no_economy_access`, `overwhelming_force`, or `all_assets_lost`;
+- revalidate on the host and apply through a shared match-state command/event;
+- announce the concession without asking the opponent to approve it;
+- let normal `GameModeConditionChecker`/`ScoreTracker` finalize victory and reach the score screen;
+- preserve score/result/reason in replay/save where applicable.
+
+If product explicitly keeps the current offer dialog, rejection must not permanently disable later valid offers and the underlying state mutation still must become authoritative/replayable. The recommended default is automatic concession after a conservative sustained threshold.
+
+## Determinism, persistence, and observability
+
+### Canonical state and decision hashes
+
+Extract/share the stable serialization/projection machinery behind `StateHashService` where possible. Do not duplicate actor projection rules that can drift. The AI harness needs two related digests:
+
+1. **Authoritative state digest:** existing world/player/RNG projection, callable in single-player and headless fixtures at configured checkpoint ticks.
+2. **AI decision digest:** profile/archetype, permitted observation, knowledge, brain state, proposals, arbitration result, command outcomes, and deterministic counters.
+
+Exclude wall time, logging spans, render state, object identity, promises, stack traces, and unordered maps. Include schema/version IDs in projections. On divergence, report the first tick and first normalized path/value difference, not only two opaque hashes.
+
+### Decision trace
+
+One bounded `AiDecisionTraceV1` per decision tick should contain:
+
+- observation tick/generation/age and information policy;
+- active goals with scores, evidence, hysteresis, and winner;
+- proposed, accepted, and rejected intents with reason codes;
+- reservation delta and released claims;
+- dispatched commands and outcomes;
+- manager work counts and budget exhaustion;
+- RNG operation range/substream used;
+- knowledge contacts added/updated/expired;
+- recovery transitions and current plan/squad/base states.
+
+Use a bounded ring buffer in runtime and structured export in tests/debugging. Avoid free-form text as the only evidence; stable reason codes make regression assertions durable.
+
+### Performance budget
+
+Deterministic work quotas are correctness constraints:
+
+- maximum observations/contacts processed per step;
+- maximum goal and intent proposals;
+- maximum placement/path candidates and path queries;
+- maximum threat/engagement pairs;
+- maximum commands and target switches;
+- maximum trace events retained.
+
+Defer excess work by stable cursor/order to later simulation ticks. Wall-clock p50/p95 and memory are reported by benchmarks but must not decide which action wins or when runtime work stops.
+
+## Evaluation system
+
+### Level A — pure decision fixtures
+
+Run in the gameplay library without Phaser rendering. Feed versioned observations/outcomes into the brain and assert exact knowledge, goal, intent, arbitration, and state transitions.
+
+Required fixtures:
+
+1. permuted input produces identical trace and digest;
+2. equal utility resolves by stable key;
+3. ally/neutral/hostile classification is correct;
+4. hidden contact loses live ID and becomes a last-seen hypothesis;
+5. stale async generation cannot commit;
+6. worker demand changes allocation without double assignment;
+7. forecast supply block reserves one valid housing plan;
+8. destroyed prerequisite creates a rebuild fallback;
+9. resource and producer conflicts produce one explained winner;
+10. save/restore at a decision boundary preserves the next trace/RNG count;
+11. unfavorable engagement retreats; favorable engagement advances;
+12. damage reservations reduce overkill deterministically;
+13. repeated command failure advances the recovery ladder;
+14. hopelessness must remain sustained before concession.
+
+### Level B — real runtime scenarios
+
+Run authored fixed-seed scenarios through the simulation clock, command bus, and actual relevant systems:
+
+1. faction-valid opening to worker, housing, producer, and first squad;
+2. actual and forecast supply block recovery;
+3. early rush defense and worker preservation;
+4. unseen enemy, discovery, lost vision, last-seen search, rediscovery;
+5. favorable attack, reinforcement, objective destruction, retarget;
+6. unfavorable engagement, regroup, and survivor recovery;
+7. blocked construction candidate and alternate-site selection;
+8. friendly layout that could trap workers/production but is rejected;
+9. hostile proxy/wall blocking base egress and clearing response;
+10. depleted resource and gatherer reassignment/expansion;
+11. destroyed builder/producer/prerequisite and plan recovery;
+12. save/load at opening, squad, and concession-candidate boundaries;
+13. host-generated AI commands replayed/applied by another runtime;
+14. AI loss/concession through final score-screen state;
+15. pause and speed changes without decision-order changes.
+
+Run each focused fixture three times in normal CI and compare commands plus authoritative/AI digests. Use 20 repetitions across more seeds in an explicit/nightly soak.
+
+### Level C — batch candidate versus baseline
+
+- Freeze the pre-behavior current implementation as `baseline-v1`; record commit, schema, map, seed, side, faction, profile, archetype, and rules modifiers.
+- Run mirrored starting sides over a versioned seed/map/faction/opponent-style matrix.
+- Compare the candidate against baseline, scripted probes (rush/turtle/proxy/idle), and self-play where it answers a specific question.
+- Preserve compact JSON summary, first-divergence data, replay/trace references for failures, and a Markdown report as CI artifacts. Do not commit large generated replays.
+- Report counts and uncertainty (for example Wilson intervals) until sample size supports stronger statistical claims.
+- Promote a baseline only through an explicit reviewed process. Never silently compare a candidate with its own changed behavior.
+
+### Manual blind playtest
+
+After automated gates pass, compare labeled-only-as-A/B builds:
+
+- small/large and open/chokepoint maps;
+- every supported faction and mirrored start;
+- passive macro, early rush, turtle, worker harassment, hidden expansion, mixed mobility/air where roster support exists, proxy building, and wall/block exploitation;
+- easy/normal/hard and each supported archetype;
+- pause/speed changes, save/load near 5 and 15 minutes, reconnect/host migration once supported.
+
+Reviewers score fairness, legibility, challenge, repetition, recovery, suspected cheating, and match completion. Every report records build commit, seed, map, side, faction, profile, archetype, rules modifiers, outcome, and replay/trace reference.
+
+## Metrics and acceptance policy
 
 ### Hard correctness gates
 
-- deterministic command and state digest equality for repeated fixed-seed scenarios;
-- zero live target IDs for actors outside the permitted observation;
-- zero commands from non-host AI and zero strategic world mutations outside the command adapter;
-- zero invalid/dropped commands after arbitration in fixture scenarios;
-- stable save/restore continuation trace;
-- bounded work counters per AI step (observations, scored candidates, path queries, intents, commands).
+- repeated fixed-seed scenarios have identical command, authoritative-state, and AI-decision digests;
+- zero live target IDs outside permitted current observation;
+- zero ally/neutral targets unless an explicit scenario rule permits them;
+- zero AI commands from a non-authoritative host;
+- zero strategic world/order mutations outside the approved command/application authority;
+- stable save/restore continuation at documented safe points;
+- every accepted/rejected intent and failed command has a reason;
+- deterministic per-step work quotas are never exceeded;
+- all match outcomes reach one final result and score flow exactly once.
 
-Wall-clock p50/p95 decision duration is useful diagnostics but not a deterministic assertion. CI gates
-work counts; a benchmark job reports time and memory.
+### Macro metrics
 
-### Gameplay and readability metrics
+- tick of first worker, supply/housing, production building, military unit, scout, research, expansion, attack, and recovery completion;
+- worker idle ticks and allocation by resource;
+- income and spend by resource; unspent float area-under-curve;
+- reserved-but-unused value and reservation age;
+- producer idle ticks, queue utilization, and unit composition by role;
+- supply-block ticks, forecast accuracy, recovery delay, and premature-housing cost;
+- prerequisite/site/order failure counts and recovery outcomes;
+- base resource-life estimate, saturation, and expansion establishment time.
 
-- milestone ticks: first worker, housing, production building, military unit, scout, expansion,
-  attack, and research;
-- economy: worker idle ticks, gatherer allocation, income by resource, resource float area-under-curve,
-  reserved-but-unused value, and production idle ticks;
-- supply: blocked ticks, time to recovery, and housing built too early/late;
-- intelligence: explored-sector coverage, observation age, remembered contacts, and illegal target
-  attempts;
-- combat: army value committed/lost/destroyed, damage efficiency, retreat survival, overkill estimate,
-  regroup time, and objective completion;
-- control quality: accepted/rejected/invalid commands, repeated equivalent commands, target switches,
-  actor assignment conflicts, and path-query count;
-- outcome: win/loss/draw, game duration, remaining economy/army value, and surrender reason.
+### Intelligence and control metrics
 
-Capture the current AI as `baseline-v1` before behavior changes. Initial CI acceptance is deterministic
-correctness plus no material regression outside the scenario targeted by a PR. Numerical improvement
-thresholds are set in the relevant follow-up only after baseline variance is known.
+- explored coverage and coverage-age distribution;
+- contact count, age/confidence, capability inference, and rediscovery delay;
+- illegal hidden/ally target attempts (must remain zero after validation);
+- threats detected, response delay, false/obsolete threat count;
+- intents proposed/accepted/rejected by reason;
+- invalid/dropped/repeated commands and command-to-applied latency;
+- target switches, actor claim conflicts, stuck/no-progress incidents;
+- candidates and path queries consumed per decision.
 
-## Staged implementation issues
+### Combat and outcome metrics
 
-Each stage should be a separate issue/PR. Stages 0–3 are prerequisites; later behavior stages may then
-run in parallel when they own separate pure managers.
+- army value committed, destroyed, lost, surviving after retreat, and reinforcement latency;
+- damage/army-value efficiency and estimated overkill;
+- objective completion/abandonment, regroup time, base damage prevented;
+- win/loss/draw/concession reason, duration, final economy/army value, and score-screen completion;
+- crash, unhandled rejection, desync, stuck-match, and no-progress timeout counts.
 
-### Stage 0 — Fix known deterministic AI correctness defects
+### Merge policy for behavior changes
 
-**Scope:** fix async `Array.filter` in base accessibility, add stable actor-ID tie-breakers to touched
-selection/scoring paths, and add focused regression tests.
+The harness initially gates deterministic correctness and scenario-specific regressions. Numerical improvement thresholds must be set only after `baseline-v1` variance is measured. Every behavior PR states its primary metric, guardrails, fixture set, and observed candidate/baseline result. A single win, hand-picked seed, or subjective “looked smarter” playthrough is not sufficient.
 
-**Acceptance criteria:** unreachable sites are removed; equal-score candidates resolve identically
-under permuted input; no behavior expansion; Phaser AI tests pass.
+## Implementation roadmap
 
-### Stage 1 — Add typed AI traces and pure fixture contracts
+Each stage is a focused issue/PR. A stage may be subdivided when its protocol surface is too large, but acceptance criteria must not disappear. Branch every stage from current `develop` after required dependencies merge; do not stack undocumented behavior changes on the research branch.
 
-**Scope:** define versioned observation, knowledge, intent, rejection, trace, profile, and metric
-contracts; remove `any` from new boundaries; create stable serialization/digest helpers; add the pure
-fixture runner with no production behavior change.
+### Release Gate A — trustworthy decision foundation
 
-**Acceptance criteria:** a fixture produces byte-stable traces under permuted input; trace explains
-accepted and rejected choices; save/restore schemas are versioned; no Phaser object crosses the pure
-decision boundary.
+#### Stage 0 — land the existing deterministic planner fix
 
-### Stage 2 — Route every strategic AI effect through commands
+**Status:** implementation already exists in PR #792; do not duplicate it in a new branch.
 
-**Scope:** add/extend construction and actor-action command adapters; migrate scouting and combat
-micro away from pawn-blackboard mutation; migrate direct construction spawn; instrument validation
-and rejection.
+**Scope**
 
-**Acceptance criteria:** repository search finds no strategic AI world/order mutation outside the
-adapter; host commands appear in replay batches; a second runtime applies the same commands; invalid
-ownership/targets are rejected; focused multiplayer/replay tests pass.
+- Correct async base-site accessibility filtering.
+- Add stable coordinate/actor-ID tie-breakers to the selection paths touched by that PR.
+- Preserve behavior outside the defect.
 
-### Stage 3 — Build atomic permitted observations and remembered intelligence
+**Before continuing**
 
-**Scope:** shared information policy for skirmish/campaign/scenarios, atomic tick-stamped snapshots,
-generation cancellation, stable ordering, last-seen memory, confidence decay, and visibility tests.
+- Rebase/update PR #792 onto current `develop`; its historical build failure was the application bundle budget before PR #794's lazy-loading correction.
+- Review current diff and run the smallest relevant planner/AI checks plus repository-required build.
+- Repair only failures attributable to #792; do not merge automatically.
 
-**Acceptance criteria:** normal skirmish cannot target hidden actors; losing vision removes live IDs
-but retains permitted last-seen data; stale async generations cannot commit; explicit scripted
-omniscience is opt-in; save/restore preserves knowledge deterministically.
+**Acceptance**
 
-### Stage 4 — Add runtime state digests and scenario metrics
+- Unreachable sites are excluded after awaited evaluation.
+- Permuting equal-score candidates yields the same selected stable actor/coordinate.
+- Focused tests pass on current `develop`; PR is reviewable and green.
 
-**Scope:** canonical state projection/checkpoint digest, first-divergence report, the eight Level B
-scenarios, metric collector, and JSON/Markdown report generator.
+#### Stage 1 — correct static logic and introduce versioned trace contracts
 
-**Acceptance criteria:** three repeated runs per fixture match command/state digests; an injected
-state difference identifies the first divergent tick; baseline-v1 report is archived; work budgets
-are visible.
+**Dependencies:** Stage 0 can be reviewed in parallel, but reconcile overlapping planner tests before merge.
 
-### Stage 5 — Add goal utility, arbitration, and difficulty profiles
+**Scope**
 
-**Scope:** pure goal scoring, typed intent arbitration/reservations, reason codes, and easy/normal/hard
-profiles using cadence, budgets, scripts, thresholds, and deterministic error.
+- Add regression tests and correct `IsEnemyPlayerWeak()` polarity.
+- Turn no-op success in `GatherResources`, `StartUpgrade`, and always-null resource need into explicit unsupported/failure behavior or the smallest real legal implementation; never claim success for no effect.
+- Define stable reason codes and versioned trace/metric envelopes without changing all production manager boundaries yet.
+- Replace new `any` boundaries with typed values; document canonical comparison/key rules.
 
-**Acceptance criteria:** conflicts have one stable winner; no double resource/actor reservation;
-normal has no cheats; profile behavior is reproducible; UI/config displays any explicit bonus.
+**Acceptance**
 
-### Stage 6 — Improve scouting and threat intelligence
+- Each confirmed static defect has a failing-before/passing-after test.
+- Unsupported actions cannot return success and silently unblock a behavior branch.
+- Trace values serialize deterministically and bound their retained event count.
+- No intentional strategic expansion is bundled into this correctness PR.
 
-**Scope:** map-bound sectors, base-relative frontier choice, scout suitability/risk, last-seen search,
-threat grid, and defense triggers based on observed/remembered evidence.
+#### Stage 2 — pure observation, knowledge, intent, profile, and brain contracts
 
-**Acceptance criteria:** scouting coverage/age improves over baseline on the matrix; scouts do not
-target outside map bounds; hidden enemies are never live-targeted; defense responds within its
-profile delay; path-query budget is respected.
+**Scope**
 
-### Stage 7 — Add squads and engagement evaluation
+- Add `AiObservationV1`, `AiKnowledgeStateV1`, `AiIntentV1`, `AiDifficultyProfileV1`, `AiStrategyArchetype`, `AiBrainStateV1`, arbitration result, command outcome, and schema migration defaults.
+- Create canonical serialization/stable-key helpers and a minimal pure fixture runner.
+- Add adapters from a small existing snapshot subset but keep current production behavior active.
 
-**Scope:** squad ownership/lifecycle, objective assignment, local power evaluation, regroup/retreat,
-focus-fire damage reservation, and the initial script portfolio.
+**Acceptance**
 
-**Acceptance criteria:** every controlled combat unit has at most one squad owner; unfavorable fixture
-survival and favorable engagement completion do not regress; target churn/overkill improve; all
-orders use the command adapter.
+- No Phaser/live object crosses the pure boundary.
+- Permuted equivalent fixtures serialize and digest identically.
+- Save/default/migration tests reject unsupported future schemas clearly.
+- One fixture explains accepted and rejected dummy intents.
 
-### Stage 8 — Improve openings, production, and adaptation
+#### Stage 3 — single authoritative AI command path
 
-**Scope:** faction-valid opening plans, demand-driven composition, production utilization, expansion
-choice, and opponent-observation adaptations. Keep authored opening data separate from execution.
+**Scope**
 
-**Acceptance criteria:** opening milestones stay within baseline-derived bands; supply-block and
-resource-float metrics improve; plans recover from destroyed prerequisites and blocked sites; each
-faction passes the seed/map matrix.
+- Inventory every AI mutation and classify command/application ownership.
+- Add authoritative construction and concession command/event contracts.
+- Migrate scout, combat micro, repair, logistics, and construction effects from direct pawn/spawn calls to the shared command adapter.
+- Add outcome feedback, duplicate/stale rejection, replay projection, and host authorization.
+- Decide attack-move/hold/patrol individually from demonstrated executor needs.
 
-### Stage 9 — Add candidate-versus-baseline batch evaluation
+**Acceptance**
 
-**Scope:** frozen baseline policy selection, headless/accelerated batch runner, side/seed matrix,
-statistical summary, artifact retention, and an explicit update process for the baseline.
+- Exact repository search plus reviewed allowlist finds no strategic AI mutation outside the adapter.
+- Host emits and a second runtime/replay applies the same ordered commands.
+- Invalid ownership, ally/hidden targets, stale commands, illegal sites, and insufficient resources are rejected with stable outcomes.
+- Protocol, server/transport, Phaser application, replay, and tests change together.
 
-**Acceptance criteria:** one command runs the published matrix; candidate and baseline versions are
-recorded; failures retain replay/trace artifacts; policy regressions block only after variance-backed
-thresholds are approved.
+#### Stage 4 — atomic fair observation and diplomacy
 
-### Deferred research — bounded tactical search or offline learning
+**Scope**
 
-Only investigate script-portfolio search after Stage 7 shows a tactical ceiling and supplies a pure,
-fast combat evaluator. Offline build-order/opponent modelling may use licensed replay data after
-provenance, privacy, versioning, and reproducibility are designed. Runtime LLM/RL inference remains
-out of scope because it conflicts with lockstep determinism, latency/cost budgets, offline play, and
-explainability.
+- Build tick-stamped immutable snapshots with generation-safe async commit.
+- Apply team/diplomacy and shared `AiInformationPolicy` consistently across modes.
+- Add visible-now contacts and minimal serializable last-seen knowledge.
+- Remove live enemy Phaser references from decision-facing blackboard paths.
 
-## Manual playtest matrix
+**Acceptance**
 
-After automated gates pass, compare baseline and candidate without revealing which is which:
+- Normal skirmish cannot see/target hidden actors or allies.
+- Loss of vision removes live IDs while preserving permitted last-seen positions.
+- A late older async generation cannot commit or change the next decision.
+- Campaign/scripted omniscience is explicit and covered separately.
+- Save/load preserves knowledge and next observation deterministically.
 
-- small and large maps; each supported faction; mirrored starting sides;
-- passive opening, early rush, turtling, worker harassment, hidden expansion, and air/ground mix;
-- easy/normal/hard; pause/speed changes in single-player; save/load at 5 and 15 minutes;
-- host migration/reconnect when AI occupies a slot, once the multiplayer command migration exists.
+### Release Gate B — measurable classic RTS vertical slice
 
-Reviewers score perceived fairness, readability of intent, challenge, repetition, recovery from
-disruption, and obvious cheating. Attach replay IDs and seed/map/profile to every report.
+#### Stage 5 — deterministic harness, shared state projection, and baseline
+
+**Scope**
+
+- Extract/reuse `StateHashService` canonical projection for single-player/headless checkpoints.
+- Add AI decision projection, first-difference reporting, work counters, and structured trace export.
+- Implement Level A foundation and the initial Level B opening/supply/visibility/save/replay scenarios.
+- Freeze and run `baseline-v1`; archive JSON/Markdown artifacts.
+
+**Acceptance**
+
+- Three identical scenario runs match command/world/AI digests.
+- An injected actor and AI-state divergence reports the first tick and normalized field path.
+- Baseline report records commit, contract versions, map/seed/side/faction/rules.
+- CI gates work counts, not wall-clock timing.
+
+#### Stage 6 — goal scoring, arbitration, and real difficulty wiring
+
+**Scope**
+
+- Add the initial strategic goal utility/hysteresis/reason layer.
+- Add actor/resource/producer/site reservations and deterministic arbitration.
+- Map lobby difficulty to explicit fair profiles.
+- Separate deterministic archetype/opening selection from difficulty.
+- Keep legacy managers behind adapters until migrated.
+
+**Acceptance**
+
+- Conflicting intents have exactly one reproducible winner and explained losers.
+- Resources/actors/producers cannot be double-reserved.
+- Easy, normal, and hard produce documented reproducible differences.
+- All difficulties retain identical visibility and rules by default.
+- Any enabled rules bonus appears in configuration, trace, replay/result metadata, and UI.
+
+#### Stage 7 — reliable opening, workers, supply, and production
+
+**Scope**
+
+- Add at least one forgiving faction-valid opening per supported faction.
+- Implement demand-forecast worker allocation, minimum worker production, supply forecasting, producer construction/utilization, and prerequisite recovery.
+- Replace placeholder gather/upgrade behavior with intent-based execution.
+- Add a basic legal army-role composition before advanced counters.
+
+**Acceptance**
+
+- Every supported faction/map fixture reaches worker, housing, producer, and first-squad milestones.
+- AI neither remains supply-blocked nor queues redundant emergency housing in authored fixtures.
+- Idle workers, production idle time, and unexplained resource float improve versus baseline or meet reviewed bands.
+- Destroyed builder/producer/prerequisite recovers through a valid fallback.
+- No stage acceptance depends on an enemy standing idle.
+
+#### Stage 8 — basic scouting, threat response, attack wave, and match completion
+
+**Scope**
+
+- Add map-bound/base-relative scouting, start hypotheses, last-seen search, and scout role.
+- Add threat incidents and one defense squad path.
+- Add one attack squad lifecycle with rally, advance, objective invalidation, and reinforcement.
+- Integrate sustained AI concession with the existing result/score flow.
+
+**Acceptance**
+
+- Normal AI finds an unseen opponent through legal exploration.
+- An observed early threat receives a defense response within the profile delay.
+- A stable match produces a purposeful attack wave and retarget/search behavior.
+- A hopeless AI concedes once through an authoritative event; recovery cancels pending concession.
+- Win/loss/concession reaches the score screen in the runtime fixture.
+
+Release Gate B is the first end-to-end playable milestone. Do not postpone it for sophisticated micro.
+
+### Release Gate C — resilience, bases, and anti-exploit behavior
+
+#### Stage 9 — explicit bases, safe placement, and expansion lifecycle
+
+**Scope**
+
+- Replace moving average “base center” with stable base records/access regions.
+- Add staged, footprint-aware placement, site reservations, failure memory, and egress checks.
+- Add resource-life/saturation-driven expansion selection and lifecycle.
+- Preserve production, worker, rally, and resource corridors.
+
+**Acceptance**
+
+- Friendly construction does not trap authored worker/production lanes.
+- Rejected/blocked sites enter bounded cooldown and a legal alternate is selected.
+- Expansion establishes on a safe connected candidate before main resources cause permanent idle.
+- Base identity does not move when an army/scout crosses the map.
+- Placement candidates/path queries remain within profile budgets.
+
+#### Stage 10 — stuck detection, hostile blocker recovery, and robust economy
+
+**Scope**
+
+- Add command no-progress/failure aggregation and the recovery ladder.
+- Detect trapped exits, inaccessible resources, hostile proxy/blocking structures, and unsafe workers.
+- Form `clear_blocker` objectives and reassign workers/resources/builders after failure or depletion.
+- Add alternate rally/site/route selection and legal friendly-plan cancellation where required.
+
+**Acceptance**
+
+- The milestone proxy/wall fixture cannot leave the AI permanently inert.
+- Observed hostile blockers are prioritized without using hidden IDs.
+- Depleted/unreachable gather targets are replaced and idle workers recover.
+- Repeated failures back off and transition state; they do not emit equivalent commands forever.
+- No recovery teleports/deletes actors or bypasses validation.
+
+### Release Gate D — stronger combat, adaptation, and release evaluation
+
+#### Stage 11 — squads, engagement evaluation, and tactical scripts
+
+**Scope**
+
+- Generalize squad ownership/lifecycle for defense, pressure, reserve, and reinforcement.
+- Add bounded local engagement evaluation, safe rally/retreat, target hysteresis, focus-fire damage reservations, and initial script portfolio.
+- Migrate remaining legacy per-unit combat mutation and dead flank state.
+
+**Acceptance**
+
+- Each combat actor has at most one primary squad assignment.
+- Favorable engagement objective completion does not regress; unfavorable retreat survival improves or meets baseline-derived bands.
+- Target switches, repeated orders, and estimated overkill improve in focused fixtures.
+- Disconnected/slow units recover or leave squad state without stalling it.
+- Tactical work remains quota-bounded and deterministic.
+
+#### Stage 12 — observed composition adaptation, tech, and archetype breadth
+
+**Scope**
+
+- Infer enemy capability from permitted observations and age/confidence.
+- Add role-deficit composition, legal tech timing, opening transitions/fallbacks, and reviewed faction-valid rush/macro/turtle/tech archetypes.
+- Add defensive/expansion adaptation without allowing per-tick personality thrash.
+
+**Acceptance**
+
+- Composition changes only from recorded permitted evidence and obeys hysteresis.
+- Tech spending does not violate survival/supply/prerequisite reservations.
+- Every exposed archetype completes its supported faction opening and recovers from a destroyed prerequisite.
+- Hidden enemy composition cannot influence the decision digest.
+
+#### Stage 13 — batch evaluation, tuning, performance, and host recovery
+
+**Scope**
+
+- Add one-command Level C matrix, candidate/baseline report, retained failure artifacts, and reviewed promotion rules.
+- Tune profiles from metrics plus blind playtests, not individual wins.
+- Validate save/load, reconnect/host migration AI reconstruction, long-match work bounds, and result uniqueness.
+- Document supported maps/factions/archetypes and remaining limitations.
+
+**Acceptance**
+
+- Published matrix runs from a clean checkout and identifies candidate/baseline versions.
+- No deterministic, crash, hidden-information, anti-blocking, outcome, or score-screen gate fails.
+- Host recovery creates exactly one AI controller per AI player and resumes the same brain state, or multiplayer AI is explicitly restricted with a tracked follow-up before release.
+- Performance report shows bounded work and no unreviewed regression on representative large matches.
+- Product-reviewed numerical thresholds and blind-playtest results support release.
+
+### Deferred Stage 14 — bounded tactical search or offline learning
+
+Only open this stage if Stage 11 metrics show a tactical ceiling and the pure engagement evaluator is fast and predictive enough to compare script outcomes. Any search must use deterministic work units, canonical inputs, and a small authored script portfolio. Offline build-order/opponent modeling also requires licensed/provenanced data, reproducible training, versioned artifacts, a deterministic runtime policy, and a demonstrated gain over authored rules. Runtime LLM/RL inference remains out of scope.
+
+## Release gates summary
+
+| Gate | User-visible result | Blocking evidence |
+| --- | --- | --- |
+| A — trustworthy foundation | AI decisions become fair, command-routed, explainable, and saveable | deterministic fixtures, no hidden/allied targets, no direct mutation |
+| B — playable vertical slice | normal AI opens, produces, scouts, defends, attacks, concedes, and reaches scores | opening/visibility/threat/attack/concession runtime scenarios |
+| C — resilient skirmish | AI builds/expands safely and recovers from walls, proxies, depletion, and failures | anti-blocking and recovery fixtures, bounded retries |
+| D — stronger/releasable | squads, adaptation, real difficulty, batch evidence, host/save robustness | candidate/baseline matrix, blind playtest, performance and lifecycle gates |
 
 ## Risks and controls
 
-- **Smarter but less fun:** optimize scenario metrics and blind human ratings together; never use win
-  rate alone.
-- **Metric gaming:** keep outcome, economy, intelligence, combat, churn, and work-budget metrics; use
-  holdout seeds/maps for milestone decisions.
-- **Determinism regressions:** stable IDs/tie-breaks, tick-based expiry, seeded RNG, atomic snapshots,
-  state hashes, and command-only mutation are hard gates.
-- **Performance spikes:** deterministic work quotas and cached spatial summaries; avoid per-unit
-  pathfinding or full pairwise scoring every tick.
-- **Architecture migration stalls:** retain the behavior tree, migrate one intent family at a time,
-  and keep adapters compatible until each path has fixture and replay coverage.
-- **Difficulty feels like cheating:** default to information parity and surface every optional bonus.
-- **Reference contamination:** copy no GPL/mixed-license source; record provenance if any reusable
-  MIT/Apache input is later considered.
+- **Architecture migration stalls:** migrate one intent family at a time behind adapters; keep the behavior tree until all mutation paths have contract tests.
+- **AI becomes fair but too weak:** establish legal scouting/memory and basic macro in the same release gate; measure weakness rather than reintroducing omniscience.
+- **Smarter but less fun:** combine outcome/macro/combat metrics with blind human ratings and readable traces. Do not optimize only win rate.
+- **Metric gaming/overfitting:** use multiple probe opponents, mirrored sides, holdout seeds/maps, and baseline versioning.
+- **Determinism regression:** canonical inputs, complete tie-breaks, tick time, atomic generations, seeded RNG, command-only effects, state/decision digests, and save continuation are hard gates.
+- **Performance spikes:** use cached spatial summaries, stable cursors, candidate shortlists, and deterministic quotas. Never stop planning based on elapsed wall time.
+- **Command scope expands uncontrollably:** add only demonstrated shared capabilities and update all protocol/validator/application/replay consumers in the same stage.
+- **Difficulty feels like cheating:** keep strategy separate, enforce information parity, and surface any optional bonus in lobby, trace, replay, and result data.
+- **Surrender fires too early:** require sustained multi-signal hopelessness and cancel on recovery.
+- **Reference contamination:** copy no GPL/mixed-license code or data. Record provenance and license before considering any reusable MIT/Apache artifact.
+- **Plan drifts from product:** keep milestone gates user-visible and attach scenario/metric evidence to every behavior PR.
 
-## Product decisions
+## Product defaults and open decisions
 
-The user has asked for a practical improvement plan, not another research gate. The following defaults
-are therefore recorded as recommendations and do not block Stages 0–4:
+These defaults allow implementation to begin without another research gate:
 
-1. **Target:** credible casual/intermediate normal AI; easy and hard are profile variants.
-2. **Fairness:** normal AI uses human-equivalent information and no implicit resource/stat bonuses.
-3. **Mode order:** skirmish first, then reusable campaign integration; networked AI remains host-owned
-   and must pass replay/lockstep checks before wider matchmaking use.
-4. **Technology:** deterministic scripted/utility AI in runtime; offline learning and tactical search
-   are deferred evidence-driven experiments.
-5. **Regression policy:** establish baseline variance before choosing numeric merge thresholds.
+1. **Target:** credible casual/intermediate normal AI; easy/hard are fair quality profiles.
+2. **Fairness:** human-equivalent information and identical game rules on all difficulties by default.
+3. **Strategy:** archetype is independent from difficulty and deterministically selected until lobby UX explicitly exposes it.
+4. **Mode:** skirmish first; campaign uses the same core with an explicit information/objective policy.
+5. **Authority:** host-owned brain, shared validated commands, replayable outcomes.
+6. **Concession:** automatic after sustained unrecoverability; no opponent veto; existing match/score systems finalize the result.
+7. **Technology:** deterministic rules/utility and squad state machines; search/learning deferred.
+8. **Evaluation:** correctness first, then baseline distributions and blind playtest; never one match.
+9. **Human controller:** no broad redesign; shared order capabilities may be added when AI execution demonstrates a need.
 
-One product question remains before Stage 5, but not before infrastructure work:
+The following decisions are non-blocking until their named stage:
 
-### Explicit hard-mode bonuses
+- **Optional hard-mode rules bonus (Stage 6):** recommended `off`. If retained, expose it separately from difficulty and audit the existing `aiAdvantageResources` modifier end to end.
+- **Strategy selection UI (Stage 12):** recommended deterministic automatic archetype first; explicit lobby selection can follow after each exposed plan is supported.
+- **Attack-move/hold/patrol commands (Stage 3/11):** add the minimum shared semantics proven necessary by squad fixtures.
+- **Host migration support (Stage 13):** recommended required for networked AI; otherwise explicitly restrict unsupported lobbies and track removal of that restriction.
 
-**Question:** May hard difficulty offer an optional, clearly disclosed economy/stat bonus, or must all
-difficulties use identical game rules?
+## Cold-start handoff for the next implementation agent
 
-**Recommended default:** identical rules; scale decision cadence, budget, strategy breadth, and
-deterministic error instead.
+This section is intentionally operational. A new agent should be able to begin without repeating the research pass.
 
-**Deferral impact:** none for Stages 0–4. Stage 5 can ship easy/normal and leave the hard bonus field
-disabled until answered.
+### Repository and branch state at handoff
 
-**Reply:** `Accept recommendation`, `Use: <bonus policy>`, or `Defer`.
+- Research lives on `research/759-rts-ai-roadmap` in PR #764 and should contain documentation only.
+- Current implementation dependency is PR #792 on branch `fix/759-ai-stage-0-correctness`.
+- PR #792 fixes async planner accessibility and deterministic candidate selection; it does **not** fix atomic observation, omniscience, commands, difficulty, macro, squads, persistence, or evaluation.
+- At the 2026-09-04 research pass, PR #792's recorded build failure was the old application bundle budget. Current `develop` includes PR #794's lazy-loading/budget work, so rebase and verify before diagnosing it as an AI failure.
+- The research branch was behind current `develop`; do not implement by piling feature commits onto it. Start focused implementation branches from freshly updated `develop` after dependencies merge.
 
-## Copyable implementation prompt
+### Mandatory first actions
+
+1. Read repository `AGENTS.md`, then the smallest matching repo workflow, task-tracking/debugging, Phaser, Angular, or NestJS skills before changing code.
+2. Fetch remote state and inspect issue #759, research PR #764, Stage 0 PR #792, and this roadmap.
+3. Check whether #792 is merged:
+   - if open, update/rebase that branch on current `develop`, review its exact diff, run focused tests and the repository-required build, repair only task-owned failures, push it, and leave it for review—never merge automatically;
+   - if merged, update local `develop` and start Stage 1 on a new focused branch.
+4. Before Stage 1 edits, re-open the named symbols/call sites because paths may have moved. Confirm the defect still exists and write the failing regression first.
+5. Keep an internal numbered acceptance checklist. Inspect contracts, implementations, registrations, transport/application consumers, saves/replays, documentation, and tests for every touched symbol.
+6. Run the smallest applicable format/lint/type/test/build checks permitted by the issue lane. Repair task-caused failures and perform separate omission and final-closure audits.
+
+### Stage 1 first slice
+
+Use a branch such as `fix/759-ai-static-correctness-traces` from current `develop` after reconciling Stage 0. Keep it narrow:
+
+1. Add a regression fixture proving the existing `IsEnemyPlayerWeak()` polarity is wrong and correct it with unambiguous naming if call-site semantics permit.
+2. Audit the behavior-tree status of `GatherResources`, `StartUpgrade`, and `getMostNeededResource()`. No action may report success when it has no effect. Prefer explicit failure/unsupported status plus trace over a speculative large implementation in this PR.
+3. Define initial `AiReasonCode` and bounded/versioned decision trace envelope in the gameplay library; avoid Phaser references and `any`.
+4. Add deterministic serialization/order tests for the new trace values. Do not yet rewrite every manager or add tactical behavior.
+5. Update this roadmap only if implementation reveals a materially wrong assumption; record evidence and keep the stage acceptance intact.
+
+### High-value symbols to inspect first
+
+- `PlayerAiController`, `PlayerAiControllerAgent`, `PlayerAiControllerMdsl`
+- `PlayerAiBlackboard`, `WorldStateSnapshotManager`, `TargetingManager`
+- `BasePlanner`, `MapAnalyzer`, `ScoutingManager`, `CombatMicroManager`
+- `EconomyManager`, `LogisticsManager`, `RepairManager`, `TechProgressManager`, `ForceMaintenanceManager`
+- `GameCommand`, `CommandBusService`, `dispatchAiOrder`, command queue/application and server validators
+- `AIBehaviorTreeStateData`, save/load AI controller state
+- `ProbableWaffleAiDifficulty`, lobby player definition, `DifficultyModifiers`
+- `StateHashService`, `GameModeConditionChecker`, `ScoreTracker`, `AiPlayerHandler`
+
+### Invariants not to violate
+
+- use simulation ticks, authoritative logical positions, and seeded RNG only;
+- canonicalize before selection and finish every comparator with a stable unique key;
+- never target a hidden actor by remembered live ID;
+- never classify hostility from owner inequality alone;
+- never add a strategic mutation that bypasses the command/application authority;
+- never serialize live Phaser objects, promises, or wall-clock state;
+- never mark a behavior-tree action successful unless its intended effect completed or was already satisfied;
+- never tune from one playthrough or replace deterministic work quotas with time budgets;
+- never copy GPL/mixed-license reference code into this repository;
+- never auto-merge a PR.
+
+### Copyable next-agent prompt
 
 ```text
-Implement #759 Stage 0 and Stage 1 from docs/ai/759-rts-ai-research-roadmap.md as separate focused
-draft PRs. Treat the roadmap's confirmed architecture and product defaults as authoritative. First
-fix the base-planner async accessibility defect and deterministic tie-break coverage without changing
-AI behavior intentionally. Then add versioned pure AI observation/knowledge/intent/trace/profile
-contracts, stable serialization, and deterministic fixture tests without routing production behavior
-through the new pipeline yet. Use repository skills, inspect all call sites and persistence contracts,
-run focused formatting/lint/typecheck/tests, perform omission and closure audits, and do not merge.
+Continue issue #759 using docs/ai/759-rts-ai-research-roadmap.md and PR #764. Do not repeat broad AI
+research unless implementation invalidates a documented assumption. First inspect PR #792. If it is
+still open, update/rebase fix/759-ai-stage-0-correctness onto current develop, verify its exact
+planner tests and required build, repair only task-owned failures, push, and leave it unmerged. If it
+is already merged, branch from current develop and implement Stage 1 only: regression-test/fix
+IsEnemyPlayerWeak polarity; make GatherResources, StartUpgrade, and getMostNeededResource stop
+silently reporting success/no-op; add versioned bounded typed AI reason/trace contracts plus stable
+serialization tests. Preserve simulation-tick determinism, current comments, and shared command
+authority. Inspect all call sites/persistence/tests, use the required repository skills, run permitted
+focused verification, perform omission and closure audits, push a focused branch, and open/update a
+draft PR. Never merge automatically.
 ```
+
+## Omission audit for this roadmap
+
+- [x] Issue milestone requirements are represented: basic production/attacks, AI surrender, score screen, anti-building/block exploit resilience, and general playable stability.
+- [x] Current contracts, implementations, registrations/consumers, configuration/UI, persistence, replay/hash, lifecycle, and tests are mapped.
+- [x] Fair observation includes team/diplomacy, not only fog of war.
+- [x] Difficulty, strategy archetype, and optional rules bonuses are separated.
+- [x] Economy, supply, production, tech, bases, expansion, scouting, memory, threats, squads, tactics, anti-blocking recovery, and concession all have staged acceptance criteria.
+- [x] Command-only mutation includes construction, repair/logistics, combat/scouting, and concession.
+- [x] Save/load, replay, state hash reuse, host ownership/migration, performance budgets, and first-divergence diagnostics are included.
+- [x] Pure fixtures, runtime scenarios, batch evaluation, manual playtest, metrics, and baseline policy are included.
+- [x] Open Stage 0 work is acknowledged so the next agent will not duplicate it.
+- [x] External source/licensing boundaries and deferred ML/search conditions are recorded.
+
+## Final closure audit for the research task
+
+- [x] The roadmap has a measurable classic-RTS target instead of a generic “smarter AI” goal.
+- [x] Architecture recommendations follow confirmed repository seams and correct the earlier state-hash assumption.
+- [x] Stages form dependency-aware, reviewable increments with user-visible release gates.
+- [x] Product defaults unblock foundation work while isolating later decisions.
+- [x] The cold-start section identifies branch/PR state, first actions, first slice, symbols, invariants, and a copyable prompt.
+- [x] No runtime implementation or copied third-party code is included in this research PR.
