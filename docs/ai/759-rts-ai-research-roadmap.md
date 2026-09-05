@@ -1005,7 +1005,7 @@ The integration PR remains draft/not release-validated through Stages 0–14, wh
 
 ## Implementation roadmap
 
-The authoritative execution entry point is [00-start-here.md](759-skirmish-ai/00-start-here.md). Implement Stages 0–14 sequentially on one isolated integration branch, author/run focused tests and integration checks with each stage, then perform extensive builds/playtests/whole-solution review and full validation in Stage 15. This is the latest user-approved hardening policy. Do not stop after Stage 1 or wait for intermediate PR merges. Runtime command validation is always active.
+The authoritative execution entry point is [00-start-here.md](759-skirmish-ai/00-start-here.md). Implement Stages 0–14 sequentially on one isolated integration branch, author/run focused tests and integration checks with each stage, then perform extensive builds/playtests/whole-solution review and full validation in Stage 15. The latest boundary policy is one stage per user request: complete its requirement/evidence audits and focused checks, commit, push/verify and stop. Do not wait for intermediate PR merges or automatically enter the next stage. Runtime command validation is always active.
 
 The stage acceptance lists are retained and strengthened in the packets below, with source paths, contracts, algorithms, defaults, debug obligations and fixture instructions. Release Gates A–D are capability groupings; focused dependency gates run during implementation, and complete release evidence is collected at Stage 15.
 
@@ -1156,13 +1156,14 @@ The source/evidence in this roadmap describes the research checkout and its date
 
 ```text
 Start implementing docs/ai/759-skirmish-ai/00-start-here.md and resume its progress ledger.
-Complete Stages 0–15 sequentially on one isolated integration branch. Author and run focused
-tests, type/lint checks and integration smoke with each stage; repair failures before advancing.
+Implement only the selected/resumed stage on one isolated integration branch. Author and run
+its focused tests, type/lint checks and integration smoke; repair failures and audit all acceptance.
 Keep extensive builds, playtests and whole-solution review/validation at Stage 15. Apply H1–H9,
 the fault/continuous-match gates and purposeful duplicate capacity,
 faction build orders, composition/counters, multi-domain access, fortifications, all audited
-existing mechanics, and the full read-only AI debug panel. Continue between stages without
-asking. At Stage 15 run and repair the complete scenario/runtime/replay/baseline matrix,
+existing mechanics, and the full read-only AI debug panel. Use the stage-delivery skill, update
+evidence/progress, commit, push/verify and STOP after the stage. On its later user request,
+Stage 15 runs and repairs the complete scenario/runtime/replay/baseline matrix,
 update docs and relevant skills with proven learnings, and push for review. Preserve unrelated
 work, report real blockers, and never merge automatically. Use the model/effort guidance.
 ```

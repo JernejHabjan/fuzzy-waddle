@@ -15,19 +15,18 @@ Use the smallest matching set.
 - Repo workflow: `plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-repo-workflow/SKILL.md`
 - Debugging or regression work: `plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-debugging/SKILL.md`
 - Plan or progress file: `plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-task-tracking/SKILL.md`
+- Explicit stage/phase close and handoff: `plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-stage-delivery/SKILL.md`
 - Phaser gameplay or GUI: `plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-phaser/SKILL.md`
-- Angular app work: `plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-angular/SKILL.md`
-- NestJS backend work: `plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-nestjs/SKILL.md`
-- Commit message request: `plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-commit-message/SKILL.md`
-- PR notes request: `plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-pr-notes/SKILL.md`
 - Autonomous issue delivery: `plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-autonomous-delivery/SKILL.md`
+
+For source discovery, use the workflow skill's [source index](plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-repo-workflow/references/source-index.md). Angular/NestJS-specific skills are not bundled in this checkout: inspect owning app/library patterns and use available framework skills when relevant. Do not chase nonexistent skill paths. Commit/PR scope and evidence are covered by repo workflow and autonomous delivery.
 
 When multiple skills apply:
 
 1. Repo workflow or task tracking
 2. Debugging skill when the task is root-cause analysis, regression fixing, or behavior hardening
 3. Framework skill
-4. Commit or PR output skill
+4. Stage delivery or issue delivery when applicable
 
 ## Global Rules
 

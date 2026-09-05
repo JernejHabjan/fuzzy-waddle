@@ -10,7 +10,7 @@ Documentation review, 2026-09-05: added classic-RTS comparison, integrated C/D/D
 - Stage 0 PR #792 state/SHA/integration method: inspect at kickoff
 - Baseline source SHA / fixture manifest version: not captured
 - Current stage and exact next action: Stage 0; follow `00-start-here.md`
-- Execution policy: stages 0–14 author plus focused checks/review/smoke; extensive integrated release validation/builds/soaks/review in Stage 15 (supersedes all-checks-at-end)
+- Execution policy: one stage per user request; acceptance audit, focused checks/repairs, Omission and Final Closure audits, commit, push/remote verification, then stop. Extensive integrated release validation stays Stage 15. This supersedes automatic continuation.
 - Current actual model/effort: record at kickoff
 - Last task-owned commit: none
 - Known integration defects / external blockers: none established; research findings are not yet fixed
@@ -37,6 +37,18 @@ Documentation review, 2026-09-05: added classic-RTS comparison, integrated C/D/D
 For each stage append: implemented symbols and consumers, schema/config decisions, debug fields, authored test/fixture IDs, actual model/effort, pending issues, and exact next action. Allowed implementation states: `not_started`, `in_progress`, `implemented_unvalidated`, `stage_checked`, `validated`, `blocked`. Validation records need command, candidate SHA, fixture version/seed, outcome, artifact path, and any unrelated pre-existing failure. Keep code defects separate from infrastructure blockers.
 
 Use stage_checked only with passed focused gates, connected consumers and recorded evidence. Historical implemented_unvalidated/authored_not_run rows require their missing checks before dependent work. Final validation remains pending until Stage 15. If a shared contract changes, invalidate and rerun the affected prior focused evidence; don't blindly trust an old green row.
+
+## Per-stage closure and next-agent handoff
+
+Use the [stage-delivery skill](../../../plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-stage-delivery/SKILL.md). Before the closure commit, append the current stage's acceptance ID -> implemented symbols/consumers -> actual evidence -> status, including owning H/C/D/DBG cases. Record separate Omission and Final Closure audit findings/repairs, exact checks and tested source/diff provenance, actual model/effort, and any final-only deferred evidence.
+
+Record branch, next stage/substep, recommended model/effort from the runbook, blockers and a copyable one-stage prompt. Report final commit and verified remote SHA in the handoff; the next agent verifies the commit containing this ledger. A checked-but-unpushed stage is a publication blocker, not permission to begin the next stage. No self-referential commit SHA is required in its own file.
+
+Documentation/skill maintenance, 2026-09-05: canonical Phaser skill/source routes and reusable stage closure added. No runtime stage is implemented by this maintenance.
+
+Maintenance checks: all six skills passed the bundled skill schema validator; `node tools/skills/check-index.mjs` resolved six skills, nine reference links, 45 indexed source routes and four project definitions; `node --test tools/skills/check-index.test.mjs` passed both regressions (missing/escaping paths, target/name drift). The offline overview smoke still passes. Stage-policy review covered successful closure, failed required check, rejected push, already-satisfied prerequisite and interrupted resume; these are instruction reviews, not executed AI matches. Runtime stages remain not_started.
+
+Tooling follow-up, 2026-09-06: direct ESLint 9 invocation failed because this checkout has legacy .eslintrc.json rather than flat config; its root overrides do not cover standalone .mjs tools. The two new tools instead receive explicit `--no-config-lookup --no-ignore --global process --global console --rule 'no-unused-vars:error' --rule 'no-undef:error'` checks and Node syntax checks, plus their runtime regressions. This is focused tool coverage, not a passing repository-wide lint run. No lint configuration or game code was changed.
 
 ## Cross-stage hardening coverage
 

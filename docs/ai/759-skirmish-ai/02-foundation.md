@@ -1,6 +1,6 @@
 # Stages 0–6 — foundation, commands, knowledge, and purpose
 
-Follow [the runbook](00-start-here.md), [shared decisions](01-shared-decisions.md), [H1–H9 hardening](09-progress-and-hardening.md) and [verification ladder](10-integration-and-adversarial-tests.md). Write code/tests/debug together, run each focused gate and continue after repairs. Stage 15 reruns the complete final acceptance; it is not the first time the foundation executes.
+Follow [the runbook](00-start-here.md), [shared decisions](01-shared-decisions.md), [H1–H9 hardening](09-progress-and-hardening.md) and [verification ladder](10-integration-and-adversarial-tests.md). Write code/tests/debug together, run the current stage's focused gate and repair findings, then audit, commit, push/verify and stop at its boundary. Stage 15 reruns the complete final acceptance; it is not the first time the foundation executes.
 
 ## Stage 0
 

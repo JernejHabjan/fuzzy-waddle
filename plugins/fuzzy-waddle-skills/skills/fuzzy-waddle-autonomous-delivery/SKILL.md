@@ -13,6 +13,8 @@ description: Deliver a single well-scoped Fuzzy Waddle GitHub issue from investi
 
 ## Agent-ready workflow
 
+Read repo workflow for verification/ownership rules. For a user-approved staged integration plan, the plan's stage boundary and single-branch policy override generic whole-issue continuation: use [stage delivery](../fuzzy-waddle-stage-delivery/SKILL.md), publish the current authorized stage, and stop if requested. Do not create one PR per internal stage unless asked.
+
 1. Confirm the issue is self-contained and identify the owning code, contracts, registrations, tests, and manual playtest path.
 2. Stop before changing code if UX, balance, asset licensing, multiplayer authority, persistence, security, or scope is materially ambiguous.
 3. Implement the smallest complete change and update meaningful tests.

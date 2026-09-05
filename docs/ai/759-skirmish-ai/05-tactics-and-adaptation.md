@@ -52,7 +52,7 @@ Model: Terra / xhigh. Source anchors: TechProgressManager, ForceMaintenanceManag
 8. Ensure every mandatory component coverage entry has implementation, test ID, debug field, persistence owner and no unresolved required placeholder. Record concrete integration issues for Stage 15; do not falsely claim runtime validation. Write implementation architecture docs beside the owning AI modules now; refine verified learnings/skills at final closure.
 9. Finish H1–H9 ownership coverage and live debug fields, adapt/cancel commitments without forgetting causal history, and run H-31/32 save/host/second-match lifecycle smoke. All earlier focused gates must still be valid after shared contract changes; rerun affected ones before recording stage_checked.
 
-Output: completed connected behavior with focused gates passing. Mark 0–14 stage_checked, capture candidate SHA and next action Stage 15, then continue automatically. Do not proceed to deferred Stage 16.
+Output: completed connected behavior with focused gates passing. Confirm 0–14 stage_checked, capture candidate provenance, audit/commit/push this stage and stop. Hand off Stage 15 with Sol / xhigh; start it only on the next user request. Do not proceed to deferred Stage 16.
 
 ### Stage 14 retained final acceptance
 
