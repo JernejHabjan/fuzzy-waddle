@@ -1,0 +1,1049 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <meta
+      name="description"
+      content="Interactive, offline overview of the planned Fuzzy Waddle skirmish AI. Illustrative examples, not the game simulation."
+    />
+    <title>A skirmish opponent with a plan · Fuzzy Waddle</title>
+    <style>
+      :root {
+        --paper: #f5f4ee;
+        --panel: #fffefa;
+        --ink: #203638;
+        --muted: #526766;
+        --line: #cbd5cd;
+        --green: #166451;
+        --soft: #e2eee5;
+        --red: #aa4935;
+        --blue: #235d7a;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font:
+          16px/1.55 system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+      }
+      main {
+        max-width: 1180px;
+        margin: auto;
+        padding: 24px 32px 40px;
+      }
+      a {
+        color: var(--green);
+        text-underline-offset: 3px;
+      }
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+      button,
+      select {
+        min-height: 44px;
+        cursor: pointer;
+      }
+      button:focus-visible,
+      input:focus-visible,
+      select:focus-visible,
+      a:focus-visible,
+      summary:focus-visible {
+        outline: 3px solid var(--blue);
+        outline-offset: 4px;
+      }
+      .top,
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px;
+      }
+      .top {
+        justify-content: space-between;
+        padding-bottom: 18px;
+        border-bottom: 1px solid var(--line);
+      }
+      .eyebrow {
+        font-size: 12px;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+        font-weight: 700;
+      }
+      .status {
+        font-size: 12px;
+        color: var(--green);
+        background: var(--soft);
+        padding: 6px 12px;
+        border-radius: 4px;
+      }
+      .hero {
+        display: grid;
+        grid-template-columns: 0.9fr 1.1fr;
+        gap: 42px;
+        align-items: center;
+        padding: 32px 0;
+      }
+      h1 {
+        font-size: clamp(32px, 4.4vw, 52px);
+        line-height: 1.08;
+        letter-spacing: -0.04em;
+        margin: 10px 0 16px;
+        font-weight: 650;
+      }
+      h2 {
+        font-size: 23px;
+        line-height: 1.25;
+        letter-spacing: -0.025em;
+        margin: 0 0 10px;
+      }
+      h3 {
+        font-size: 17px;
+        margin: 0 0 8px;
+      }
+      p {
+        margin: 0 0 12px;
+      }
+      .muted,
+      .caption {
+        color: var(--muted);
+      }
+      .caption {
+        font-size: 13px;
+      }
+      .summary {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px 28px;
+        padding-left: 20px;
+        margin: 0;
+      }
+      .summary li::marker {
+        color: var(--green);
+      }
+      .summary strong {
+        display: block;
+      }
+      .summary li {
+        font-size: 14px;
+      }
+      .section {
+        border-top: 1px solid var(--line);
+        padding: 26px 0 0;
+        margin: 0 0 28px;
+      }
+      .section-head {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+      .controls {
+        display: flex;
+        align-items: end;
+        flex-wrap: wrap;
+        gap: 24px;
+        margin-bottom: 18px;
+      }
+      label,
+      .control-label {
+        display: block;
+        font-size: 13px;
+        font-weight: 650;
+        margin-bottom: 7px;
+      }
+      select,
+      input {
+        color: var(--ink);
+        background: var(--panel);
+        border: 1px solid #9dad9f;
+        border-radius: 5px;
+        padding: 9px 12px;
+        max-width: 100%;
+      }
+      .segments {
+        display: flex;
+        gap: 4px;
+        flex-wrap: wrap;
+      }
+      button {
+        color: var(--ink);
+        background: transparent;
+        border: 1px solid #9dad9f;
+        border-radius: 5px;
+        padding: 8px 16px;
+      }
+      button[aria-pressed="true"] {
+        color: white;
+        background: var(--green);
+        border-color: var(--green);
+      }
+      .board {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        overflow: hidden;
+        background: var(--panel);
+      }
+      .map-area {
+        min-width: 0;
+        padding: 16px;
+        background: #e8eee5;
+      }
+      .map {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      .map text {
+        font:
+          22px system-ui,
+          sans-serif;
+        fill: var(--ink);
+      }
+      .map .route {
+        fill: none;
+        stroke-width: 4;
+        stroke-linecap: round;
+        stroke-dasharray: 9 9;
+      }
+      .map .hidden {
+        display: none;
+      }
+      .legend {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        font-size: 12px;
+        margin: 8px 0 4px;
+      }
+      .legend span::before {
+        content: "";
+        display: inline-block;
+        width: 18px;
+        border-top: 3px solid var(--green);
+        margin-right: 6px;
+        vertical-align: middle;
+      }
+      .legend .threat::before {
+        border-color: var(--red);
+      }
+      .legend .water::before {
+        border-color: var(--blue);
+      }
+      .decision {
+        padding: 23px;
+        min-width: 0;
+      }
+      .decision h3 {
+        font-size: 23px;
+        line-height: 1.25;
+        margin: 9px 0 13px;
+      }
+      .decision ul {
+        padding-left: 19px;
+        margin: 12px 0;
+      }
+      .decision li {
+        margin-bottom: 7px;
+        font-size: 14px;
+      }
+      .profile {
+        padding: 9px 0;
+        border-top: 1px solid var(--line);
+        font-size: 13px;
+      }
+      .profile strong {
+        color: var(--green);
+      }
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 7px;
+        margin: 16px 0 10px;
+      }
+      .steps button {
+        font-size: 13px;
+        padding: 8px 4px;
+      }
+      .steps span {
+        font-size: 11px;
+        display: block;
+        opacity: 0.8;
+      }
+      .step-result {
+        padding: 13px 16px;
+        border-left: 3px solid var(--green);
+        background: var(--soft);
+        min-height: 74px;
+        font-size: 14px;
+      }
+      .step-result strong {
+        display: block;
+        margin-bottom: 3px;
+      }
+      .bottom-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+      }
+      .calculator {
+        padding: 20px;
+        border: 1px solid var(--line);
+        background: var(--panel);
+        border-radius: 8px;
+      }
+      .numbers {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin: 16px 0;
+      }
+      .numbers input {
+        width: 100%;
+      }
+      .result {
+        font-size: 21px;
+        font-weight: 650;
+        color: var(--green);
+      }
+      .debug-flow {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        list-style: none;
+        padding: 0;
+        margin: 18px 0;
+        counter-reset: flow;
+      }
+      .debug-flow li {
+        padding: 10px 8px;
+        border-top: 2px solid var(--green);
+        font-size: 13px;
+      }
+      .debug-flow li::before {
+        counter-increment: flow;
+        content: counter(flow) " / ";
+        color: var(--green);
+        font-weight: 700;
+      }
+      details {
+        border-top: 1px solid var(--line);
+        padding-top: 12px;
+        margin-top: 12px;
+      }
+      summary {
+        cursor: pointer;
+        font-weight: 650;
+        font-size: 14px;
+      }
+      pre {
+        padding: 12px;
+        background: #eaf0e9;
+        color: var(--ink);
+        border-radius: 4px;
+        overflow-wrap: anywhere;
+        white-space: pre-wrap;
+        font-size: 12px;
+        line-height: 1.6;
+      }
+      .delivery {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        font-size: 14px;
+      }
+      .delivery ul {
+        padding-left: 19px;
+        margin: 10px 0;
+      }
+      footer {
+        border-top: 1px solid var(--line);
+        padding-top: 18px;
+        font-size: 13px;
+      }
+      footer .row {
+        gap: 18px;
+        margin-top: 10px;
+      }
+      [hidden] {
+        display: none !important;
+      }
+      @media (max-width: 800px) {
+        .hero,
+        .board,
+        .bottom-grid {
+          grid-template-columns: 1fr;
+        }
+        .hero {
+          gap: 22px;
+        }
+        .decision {
+          border-top: 1px solid var(--line);
+        }
+      }
+      @media (max-width: 480px) {
+        main {
+          padding: 18px 18px 28px;
+        }
+        .summary,
+        .delivery {
+          grid-template-columns: 1fr;
+        }
+        .steps {
+          grid-template-columns: repeat(3, 1fr);
+        }
+        .controls {
+          display: block;
+        }
+        .controls > div {
+          margin-bottom: 14px;
+        }
+        select {
+          width: 100%;
+        }
+        .map text {
+          font-size: 27px;
+        }
+        .decision {
+          padding: 18px;
+        }
+        .numbers {
+          gap: 7px;
+        }
+        .numbers label {
+          font-size: 12px;
+        }
+        .numbers input {
+          padding: 9px;
+        }
+      }
+      @media print {
+        button,
+        select,
+        .controls {
+          display: none;
+        }
+        main {
+          max-width: none;
+        }
+        .board,
+        .calculator {
+          break-inside: avoid;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header class="top">
+        <div class="eyebrow">Fuzzy Waddle / Skirmish AI / #759</div>
+        <span class="status">PLANNED END STATE · NOT IMPLEMENTED GAMEPLAY</span>
+      </header>
+      <section class="hero" aria-labelledby="title">
+        <div>
+          <div class="eyebrow">The intended opponent</div>
+          <h1 id="title">An opponent<br />with a plan.</h1>
+          <p class="muted">
+            Classic RTS purpose, with this game's own units and terrain. Build an economy, create a useful army, contest
+            the map—and recover when things go wrong.
+          </p>
+          <p class="caption">
+            Explore the design below. These are illustrative explanations, not a running AI, measured match results, or
+            a promise of bug-free play.
+          </p>
+        </div>
+        <ul class="summary" aria-label="Planned end result">
+          <li>
+            <strong>An economy that works</strong>Gather for future needs. Add useful deposits and production capacity.
+          </li>
+          <li>
+            <strong>Armies with a purpose</strong>Build useful combinations, time attacks, reinforce and exploit
+            openings.
+          </li>
+          <li>
+            <strong>Reactions that make sense</strong>Scout, counter real threats and protect home without recalling
+            everyone.
+          </li>
+          <li>
+            <strong>Awareness of the map</strong>Use walls, towers, air, water and legal transport routes where useful.
+          </li>
+          <li>
+            <strong>Recovery, not repeat loops</strong>Detect stalled progress, resolve blocked plans and resume useful
+            work.
+          </li>
+          <li>
+            <strong>Fair, inspectable difficulty</strong>Easy, Normal and Hard change planning skill—not hidden
+            resources or vision.
+          </li>
+        </ul>
+      </section>
+
+      <section class="section" aria-labelledby="explore-title">
+        <div class="section-head">
+          <h2 id="explore-title">01 / See how decisions connect</h2>
+          <span class="caption">Schematic examples · not game balance data</span>
+        </div>
+        <div class="controls">
+          <div>
+            <label for="situation">Choose a situation</label>
+            <select id="situation">
+              <option value="growth">Increase military production</option>
+              <option value="raid">Small raid at home</option>
+              <option value="air">Enemy air technology spotted</option>
+              <option value="blocked">Construction is stuck</option>
+              <option value="island">Reach a distant island</option>
+            </select>
+          </div>
+          <div>
+            <span class="control-label" id="difficulty-label">Planned difficulty</span>
+            <div class="segments" role="group" aria-labelledby="difficulty-label">
+              <button type="button" data-difficulty="easy" aria-pressed="false">Easy</button>
+              <button type="button" data-difficulty="normal" aria-pressed="true">Normal</button>
+              <button type="button" data-difficulty="hard" aria-pressed="false">Hard</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="board">
+          <div class="map-area">
+            <svg class="map" viewBox="0 0 560 300" role="img" aria-labelledby="map-title map-description">
+              <title id="map-title">Illustrative skirmish map</title>
+              <desc id="map-description">
+                A home base, an enemy front and a water-separated island. The selected situation highlights the relevant
+                routes and threats.
+              </desc>
+              <defs>
+                <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse">
+                  <path d="M28 0H0V28" fill="none" stroke="#d3ddd0" stroke-width="1" />
+                </pattern>
+                <marker
+                  id="arrow-green"
+                  viewBox="0 0 10 10"
+                  refX="8"
+                  refY="5"
+                  markerWidth="5"
+                  markerHeight="5"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0 0L10 5L0 10Z" fill="#166451" />
+                </marker>
+                <marker
+                  id="arrow-red"
+                  viewBox="0 0 10 10"
+                  refX="8"
+                  refY="5"
+                  markerWidth="5"
+                  markerHeight="5"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0 0L10 5L0 10Z" fill="#aa4935" />
+                </marker>
+              </defs>
+              <rect width="560" height="300" fill="url(#grid)" />
+              <path d="M385 0C360 70 425 85 390 145S320 185 365 235S410 270 390 300H560V0Z" fill="#cfe1e4" />
+              <path d="M450 188Q502 170 533 208L522 267L434 268L423 224Z" fill="#dce8d4" stroke="#9aae9b" />
+              <path d="M55 79L89 52L103 93L130 57L143 109L63 121Z" fill="#b2c9ad" />
+              <rect x="60" y="166" width="65" height="55" rx="5" fill="#166451" />
+              <rect x="145" y="157" width="40" height="39" rx="4" fill="#689783" />
+              <rect
+                x="145"
+                y="210"
+                width="40"
+                height="39"
+                rx="4"
+                fill="none"
+                stroke="#166451"
+                stroke-width="3"
+                stroke-dasharray="6 4"
+              />
+              <rect x="405" y="60" width="60" height="43" rx="4" fill="#aa4935" />
+              <circle cx="214" cy="143" r="9" fill="#166451" />
+              <circle cx="238" cy="136" r="9" fill="#166451" />
+              <circle cx="225" cy="165" r="9" fill="#166451" />
+              <path
+                id="main-route"
+                class="route"
+                d="M235 145Q307 80 394 84"
+                stroke="#166451"
+                marker-end="url(#arrow-green)"
+              />
+              <path
+                id="raid-route"
+                class="route hidden"
+                d="M323 253Q223 269 133 205"
+                stroke="#aa4935"
+                marker-end="url(#arrow-red)"
+              />
+              <g id="flyers" class="hidden" fill="#aa4935">
+                <path d="M270 46L289 72L251 72Z" />
+                <path d="M313 58L331 83L295 83Z" />
+              </g>
+              <g id="blocked-mark" class="hidden" stroke="#aa4935" stroke-width="5">
+                <path d="M141 210L189 252M188 209L142 252" />
+              </g>
+              <path id="boat-route" class="route hidden" d="M233 217Q314 286 425 233" stroke="#235d7a" />
+              <text x="48" y="285">Home</text>
+              <text x="351" y="37">Main front</text>
+              <text x="425" y="287">Island</text>
+            </svg>
+            <div class="legend">
+              <span>Useful mission</span><span class="threat">Observed threat</span
+              ><span class="water">Transport route</span>
+            </div>
+            <p class="caption" id="map-note">Existing and planned producers contribute to the same capacity demand.</p>
+          </div>
+          <div class="decision" aria-live="polite" aria-atomic="true">
+            <div class="eyebrow">Illustrative AI overview</div>
+            <h3 id="decision-title">Scale production for an attack.</h3>
+            <p id="purpose" class="muted">A dated army plan needs more throughput, not just more buildings.</p>
+            <ul id="actions">
+              <li>Forecast unit, resource and supply needs together.</li>
+              <li>Count ready and in-flight producers before adding capacity.</li>
+              <li>Launch a useful force; don't wait forever for perfect composition.</li>
+            </ul>
+            <div class="profile">
+              <strong id="profile-name">Normal</strong> · <span id="profile-tempo">1 s decision interval</span> ·
+              <span id="profile-missions">up to 2 voluntary offensives</span>
+            </div>
+            <p class="caption" id="profile-detail">
+              Balanced planning breadth and the full authored tactical repertoire.
+            </p>
+            <p class="caption">
+              All levels keep legal economy, basic defense, recovery and ordinary visibility. These values are proposed
+              defaults.
+            </p>
+          </div>
+        </div>
+
+        <div class="steps" role="group" aria-label="Explore a decision stage">
+          <button type="button" data-step="0" aria-pressed="true"><span>01 →</span>Observe</button>
+          <button type="button" data-step="1" aria-pressed="false"><span>02 →</span>Plan</button>
+          <button type="button" data-step="2" aria-pressed="false"><span>03 →</span>Reserve</button>
+          <button type="button" data-step="3" aria-pressed="false"><span>04 →</span>Execute</button>
+          <button type="button" data-step="4" aria-pressed="false"><span>05 →</span>Measure</button>
+          <button type="button" data-step="5" aria-pressed="false"><span>06 ↺</span>Recover</button>
+        </div>
+        <div class="step-result" aria-live="polite">
+          <strong id="step-title">Observe · real capacity</strong
+          ><span id="step-text"
+            >Read current production, accepted queues, supply and delivered income—not just banked resources.</span
+          >
+        </div>
+      </section>
+
+      <section class="section bottom-grid" aria-label="Capacity and debugging">
+        <div class="calculator">
+          <h2>02 / Useful duplicates are good</h2>
+          <p class="caption">
+            Try a simplified count demand. Real planning also accounts for timing, resources, roles and queue
+            throughput.
+          </p>
+          <div class="numbers">
+            <div>
+              <label for="desired">Desired</label
+              ><input id="desired" type="number" min="0" max="8" step="1" value="2" />
+            </div>
+            <div>
+              <label for="ready">Ready</label><input id="ready" type="number" min="0" max="8" step="1" value="1" />
+            </div>
+            <div>
+              <label for="pending">In flight</label
+              ><input id="pending" type="number" min="0" max="8" step="1" value="1" />
+            </div>
+          </div>
+          <div aria-live="polite" aria-atomic="true">
+            <p class="result" id="capacity-result">0 additional producers needed</p>
+            <p class="caption" id="capacity-reason">
+              The desired capacity is already covered. Do not repeat the same purchase.
+            </p>
+          </div>
+          <p class="caption">
+            Several identical units, houses or deposits are allowed when demand justifies them. This illustration does
+            not cancel existing assets.
+          </p>
+        </div>
+        <div>
+          <h2>03 / Debug the cause, not the symptom</h2>
+          <p class="muted">
+            The planned tools should answer “Why did it do that?” and “Why didn't it attack?”—then reproduce the answer.
+          </p>
+          <ol class="debug-flow" aria-label="Debugging workflow">
+            <li>Inspect reason</li>
+            <li>Follow cause</li>
+            <li>Capture state</li>
+            <li>Replay offline</li>
+            <li>Find first diff</li>
+            <li>Verify repair</li>
+          </ol>
+          <details id="diagnostics">
+            <summary>Show an illustrative diagnostic record</summary>
+            <pre id="diagnostic-record">
+{
+  "example": true,
+  "goal": "prepare_pressure",
+  "profile": "normal",
+  "reason": "dated_throughput_demand",
+  "status": "planning"
+}</pre
+            >
+          </details>
+          <p class="caption" style="margin-top: 12px">
+            Live inspection stays read-only. Tick stepping, breakpoints and what-if comparisons run in an isolated
+            workbench—not your multiplayer match.
+          </p>
+        </div>
+      </section>
+
+      <section class="section delivery" aria-label="Delivery and boundaries">
+        <div>
+          <h2>What makes it believable?</h2>
+          <ul>
+            <li>Scouting answers strategic questions; repeated sightings aren't invented armies.</li>
+            <li>Timed attacks and sensible retreats—not endless preparation or reckless chasing.</li>
+            <li>Real progress deadlines: income delivered, forces ready, objectives contested.</li>
+            <li>121 planned scenario IDs, including faults and continuous matches; not 121 passing tests yet.</li>
+          </ul>
+        </div>
+        <div>
+          <h2>What is—and isn't—in scope?</h2>
+          <ul>
+            <li>16 implementation stages: focused checks throughout, extensive validation at Stage 15.</li>
+            <li>Both playable factions using their actual supported units and maps.</li>
+            <li>Walls, towers, stairs and legal boats/air combat. No imaginary naval roster.</li>
+            <li>Gates and flying cargo units stay future capabilities until real definitions exist.</li>
+          </ul>
+        </div>
+      </section>
+      <footer>
+        <strong>Blueprint, not a benchmark.</strong> The finished AI must prove these behaviors through actual gameplay
+        and reproducible tests.
+        <nav class="row" aria-label="Plan documents">
+          <a href="00-start-here.md">Implementation runbook</a>
+          <a href="11-classic-rts-and-difficulty.md">Classic RTS comparison &amp; difficulty</a>
+          <a href="12-debug-workbench.md">Debug workbench</a>
+          <a href="progress.md">Implementation status</a>
+        </nav>
+      </footer>
+      <noscript
+        ><p>
+          JavaScript is disabled. The planned-end-state summary and default example remain readable; interactive
+          comparisons need JavaScript.
+        </p></noscript
+      >
+    </main>
+    <script>
+      (function () {
+        "use strict";
+        var profiles = {
+          easy: {
+            name: "Easy",
+            seconds: "2 s",
+            missions: 1,
+            detail: "A forgiving opening and simpler tactical choices. Recovery and basic defense stay enabled."
+          },
+          normal: {
+            name: "Normal",
+            seconds: "1 s",
+            missions: 2,
+            detail: "Balanced planning breadth and the full authored tactical repertoire."
+          },
+          hard: {
+            name: "Hard",
+            seconds: "0.5 s",
+            missions: 3,
+            detail:
+              "Faster evidence-backed responses and more evaluated alternatives—not extra resources or hidden vision."
+          }
+        };
+        var scenes = {
+          growth: {
+            title: "Scale production for an attack.",
+            purpose: "A dated army plan needs more throughput, not just more buildings.",
+            goal: "prepare_pressure",
+            reason: "dated_throughput_demand",
+            status: "planning",
+            map: "Existing and planned producers contribute to the same capacity demand.",
+            actions: [
+              "Forecast unit, resource and supply needs together.",
+              "Count ready and in-flight producers before adding capacity.",
+              "Launch a useful force; don't wait forever for perfect composition."
+            ],
+            steps: [
+              [
+                "real capacity",
+                "Read current production, accepted queues, supply and delivered income—not just banked resources."
+              ],
+              ["a dated force", "Choose a useful army size, role mix and launch window supported by the economy."],
+              [
+                "only unmet demand",
+                "Reserve one compatible purchase per unmet commitment. Useful duplicate types remain legal."
+              ],
+              ["shared commands", "Build and train through normal validated game orders; receipt is not completion."],
+              [
+                "usable capacity",
+                "Confirm the producer completes, units appear and the force makes objective progress."
+              ],
+              [
+                "fix the bottleneck",
+                "If income or spawning stalls, fix that cause before proposing more empty production."
+              ]
+            ]
+          },
+          raid: {
+            title: "Protect home. Keep pressure.",
+            purpose: "A small observed raid is a local incident—not automatically a reason to recall the entire army.",
+            goal: "defend_workers",
+            reason: "local_raid_compatible_response",
+            status: "defending",
+            map: "A local response protects workers while the main force retains its mission.",
+            actions: [
+              "Send a sufficient compatible local defensive group.",
+              "Evacuate vulnerable workers and preserve the main objective.",
+              "Escalate the response if the raid becomes a genuine base-loss threat."
+            ],
+            steps: [
+              [
+                "threat severity",
+                "Distinguish a few raiders from a committed army using visible compatible strength and threatened assets."
+              ],
+              [
+                "two responsibilities",
+                "Keep the main front and home defense as separate missions with explicit owners."
+              ],
+              [
+                "appropriate defenders",
+                "Assign enough local force and safe worker routes; no actor can belong to conflicting squads."
+              ],
+              ["intercept safely", "Defend the asset, not a bait unit fleeing across the map. Pursuit has a leash."],
+              [
+                "economic safety",
+                "Verify workers survive and resume delivered income while the main front remains useful."
+              ],
+              [
+                "adapt to escalation",
+                "Recall more forces only when new evidence makes the local response insufficient."
+              ]
+            ]
+          },
+          air: {
+            title: "Prepare, then confirm.",
+            purpose: "Visible air technology is a clue. It is not proof of an enormous hidden air army.",
+            goal: "prepare_anti_air",
+            reason: "observed_air_capability",
+            status: "investigating",
+            map: "Scout the threat and prepare weapons that can actually target air.",
+            actions: [
+              "Raise useful anti-air preparedness without abandoning the whole composition.",
+              "Scout whether the technology becomes a real air commitment.",
+              "Scale future production to confirmed threat size and confidence."
+            ],
+            steps: [
+              [
+                "permitted evidence",
+                "Record the visible tech fact once. Re-reading it each tick does not create new sightings."
+              ],
+              [
+                "a specific question",
+                "Ask whether flyers are being committed and which exposed assets they could threaten."
+              ],
+              ["legal counter capacity", "Count useful existing dual-role anti-air units before requesting more."],
+              [
+                "produce and scout",
+                "Use only units with actual target-domain capability. A ranged label is not enough."
+              ],
+              [
+                "a useful response",
+                "Check that compatible defenders protect the threatened assets, not merely that a counter was queued."
+              ],
+              ["revise the plan", "Reduce obsolete demand if the threat changes; preserve useful paid-for commitments."]
+            ]
+          },
+          blocked: {
+            title: "Recover once. Don't repeat forever.",
+            purpose: "A construction request has stopped making useful progress. A new plan ID is not a solution.",
+            goal: "restore_construction",
+            reason: "progress_deadline_exceeded",
+            status: "recovering",
+            map: "The blocked footprint triggers a causal recovery episode, not repeated purchases.",
+            actions: [
+              "Find whether the cause is space, access, a worker, resources or an uncertain command.",
+              "Reconcile applied state before retrying any purchase.",
+              "Choose a legal alternate or release obsolete work and resume a useful goal."
+            ],
+            steps: [
+              [
+                "missing progress",
+                "Compare actual work with the due milestone; legitimate long construction is not a failure."
+              ],
+              [
+                "the root cause",
+                "Follow the site, builder, resource and command dependencies to the first unresolved blocker."
+              ],
+              [
+                "safe cleanup",
+                "Release reversible waiting claims, but never assume an unacknowledged command did not apply."
+              ],
+              [
+                "one safe recovery",
+                "Reassign or use a legal alternate; reconcile uncertain effects with the same identity."
+              ],
+              [
+                "work restored",
+                "Require actual construction or productive reassignment. Another 'waiting' message does not pass."
+              ],
+              [
+                "bounded escalation",
+                "Preserve cumulative failure age. Escalate a chronic cause instead of resetting its deadline."
+              ]
+            ]
+          },
+          island: {
+            title: "Plan the whole journey.",
+            purpose: "An island objective needs a legal route, useful cargo and a reason to go there.",
+            goal: "establish_island",
+            reason: "valuable_disconnected_objective",
+            status: "transport_planning",
+            map: "Water transport requires a supported faction and boat; flying containers remain a future capability.",
+            actions: [
+              "Compare the island's value with transport, protection and economic cost.",
+              "Reserve indispensable passengers, seats and a safe landing.",
+              "Unload, regroup and restore useful work; don't stop at the boat trip."
+            ],
+            steps: [
+              ["actual access", "Distinguish unknown, ground-disconnected and temporarily blocked routes."],
+              [
+                "end-to-end travel",
+                "Include pickup, compatible transport, landing clearance and the onward economy or combat mission."
+              ],
+              [
+                "cargo ownership",
+                "Reserve real seats and indispensable passengers; a stationary resource deposit is not a ship."
+              ],
+              [
+                "normal transport orders",
+                "Board, move and unload through supported runtime commands. No teleport or invented roster."
+              ],
+              ["the final handoff", "Confirm cargo resumes useful duty and the transport becomes reusable."],
+              [
+                "a safe alternative",
+                "Unsafe landing or loss triggers bounded rerouting, reassignment or a justified abort."
+              ]
+            ]
+          }
+        };
+        var state = { difficulty: "normal", situation: "growth", step: 0 };
+        var names = ["Observe", "Plan", "Reserve", "Execute", "Measure", "Recover"];
+        function element(id) {
+          return document.getElementById(id);
+        }
+        /** Render only authored illustrative data; this page never calls the game's AI or an external service. */
+        function render() {
+          var scene = scenes[state.situation],
+            profile = profiles[state.difficulty],
+            step = scene.steps[state.step];
+          element("decision-title").textContent = scene.title;
+          element("purpose").textContent = scene.purpose;
+          element("map-note").textContent = scene.map;
+          element("map-description").textContent = "Illustrative home base, main front and island. " + scene.map;
+          element("actions").replaceChildren.apply(
+            element("actions"),
+            scene.actions.map(function (text) {
+              var li = document.createElement("li");
+              li.textContent = text;
+              return li;
+            })
+          );
+          element("profile-name").textContent = profile.name;
+          element("profile-tempo").textContent = profile.seconds + " decision interval";
+          element("profile-missions").textContent =
+            "up to " + profile.missions + " voluntary offensive" + (profile.missions === 1 ? "" : "s");
+          element("profile-detail").textContent = profile.detail;
+          element("step-title").textContent = names[state.step] + " · " + step[0];
+          element("step-text").textContent = step[1];
+          document.querySelectorAll("[data-difficulty]").forEach(function (button) {
+            button.setAttribute("aria-pressed", String(button.dataset.difficulty === state.difficulty));
+          });
+          document.querySelectorAll("[data-step]").forEach(function (button) {
+            button.setAttribute("aria-pressed", String(Number(button.dataset.step) === state.step));
+          });
+          [
+            ["raid-route", "raid"],
+            ["flyers", "air"],
+            ["blocked-mark", "blocked"],
+            ["boat-route", "island"]
+          ].forEach(function (pair) {
+            element(pair[0]).classList.toggle("hidden", state.situation !== pair[1]);
+          });
+          element("main-route").classList.toggle(
+            "hidden",
+            state.situation === "island" || state.situation === "blocked"
+          );
+          element("diagnostic-record").textContent = JSON.stringify(
+            {
+              example: true,
+              not_live_gameplay: true,
+              goal: scene.goal,
+              profile: state.difficulty,
+              reason: scene.reason,
+              status: scene.status,
+              selected_stage: names[state.step],
+              next_evidence: step[1]
+            },
+            null,
+            2
+          );
+        }
+        /** Clamp the demonstration's count inputs; identity/capacity timing in the real plan is more detailed. */
+        function capacity() {
+          var values = ["desired", "ready", "pending"].map(function (id) {
+            var input = element(id),
+              n = Number(input.value);
+            n = Number.isFinite(n) ? Math.max(0, Math.min(8, Math.floor(n))) : 0;
+            input.value = String(n);
+            return n;
+          });
+          var need = Math.max(0, values[0] - values[1] - values[2]);
+          element("capacity-result").textContent = need + " additional producer" + (need === 1 ? "" : "s") + " needed";
+          element("capacity-reason").textContent = need
+            ? "Useful duplicates are allowed. Admit only this unmet demand when resources, timing and space support it."
+            : "The desired capacity is already covered. Do not repeat the same purchase.";
+        }
+        element("situation").addEventListener("change", function (event) {
+          state.situation = event.target.value;
+          render();
+        });
+        document.querySelectorAll("[data-difficulty]").forEach(function (button) {
+          button.addEventListener("click", function () {
+            state.difficulty = button.dataset.difficulty;
+            render();
+          });
+        });
+        document.querySelectorAll("[data-step]").forEach(function (button) {
+          button.addEventListener("click", function () {
+            state.step = Number(button.dataset.step);
+            render();
+          });
+        });
+        ["desired", "ready", "pending"].forEach(function (id) {
+          element(id).addEventListener("input", capacity);
+        });
+        render();
+        capacity();
+      })();
+    </script>
+  </body>
+</html>
