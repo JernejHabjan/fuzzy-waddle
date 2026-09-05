@@ -375,7 +375,7 @@ export class BasePlanner {
 
     switch (needType) {
       case NeedType.Housing:
-        candidates = techTree.getHousingBuildingsExcludingMain(this.factionType);
+        candidates = this.supplyPlanner.getHousingCandidates(techTree, this.factionType);
         break;
       case NeedType.Production:
         candidates = techTree.getProductionBuildingsExcludingMain(this.factionType);

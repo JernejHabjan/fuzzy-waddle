@@ -1,5 +1,6 @@
 import { PlayerAiBlackboard } from "../player-ai-blackboard";
-import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
+import { FactionType, ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
+import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 
 type SupplyUrgency = "none" | "normal" | "emergency";
 interface SupplyAssessment {
@@ -45,8 +46,23 @@ export class SupplyPlanner {
     return this.cached;
   }
 
-  /** Choose housing structure type to build. */
-  getHousingObjectName(): ObjectNames {
-    return ObjectNames.WorkMill;
+  /**
+   * Resolves the faction builder's constructible housing from the tech graph.
+   * Capability stays separate from affordability and prerequisites, which the
+   * production validator checks when a candidate is admitted for construction.
+   */
+  getHousingCandidates(techTree: TechTreeService, factionType: FactionType): ObjectNames[] {
+    const [, builder] = techTree.getFullAiFoundation(factionType);
+    if (!builder) return [];
+
+    return techTree
+      .getConstructableBuildings(builder)
+      .filter((objectName) => (techTree.getDefinition(objectName)?.components?.housing?.housingCapacity ?? 0) > 0)
+      .sort((left, right) => left.localeCompare(right));
+  }
+
+  /** Returns the stable first capability candidate, or no candidate when none is legal to construct. */
+  getHousingObjectName(techTree: TechTreeService, factionType: FactionType): ObjectNames | null {
+    return this.getHousingCandidates(techTree, factionType)[0] ?? null;
   }
 }

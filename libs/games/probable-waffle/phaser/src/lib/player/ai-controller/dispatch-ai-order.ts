@@ -6,6 +6,39 @@ import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/compo
 import type { OrderData } from "../../ai/OrderData";
 import type { PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
+import type { AiDecisionReasonCode } from "./ai-decision-trace";
+
+/** The observable result of routing one AI order through the shared command authority. */
+export type AiOrderDispatchResult =
+  | { readonly status: "dispatched"; readonly reason: "command_dispatched" }
+  | { readonly status: "dropped"; readonly reason: AiDecisionReasonCode };
+
+/** Inputs required to decide whether an order can reach the shared command bus. */
+export interface AiOrderDispatchPreconditions {
+  readonly isHost: boolean;
+  readonly hasCommandBus: boolean;
+  readonly actorId?: string;
+  readonly requiresTargetId: boolean;
+  readonly targetId?: string;
+}
+
+/**
+ * Validates the addressability boundary before dispatch. Keeping this pure makes
+ * every missing service/ID reason testable without constructing a Phaser scene.
+ */
+export function getAiOrderDispatchResult({
+  isHost,
+  hasCommandBus,
+  actorId,
+  requiresTargetId,
+  targetId
+}: AiOrderDispatchPreconditions): AiOrderDispatchResult {
+  if (!isHost) return { status: "dropped", reason: "non_host" };
+  if (!hasCommandBus) return { status: "dropped", reason: "missing_command_bus" };
+  if (!actorId) return { status: "dropped", reason: "missing_actor_id" };
+  if (requiresTargetId && !targetId) return { status: "dropped", reason: "missing_target_id" };
+  return { status: "dispatched", reason: "command_dispatched" };
+}
 
 /**
  * Converts an AI-generated OrderData into an ActorActionCommand and dispatches
@@ -19,34 +52,36 @@ import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
  * scene.isHost).  Non-host clients receive the command via the relay and apply
  * it through ActionSystem, just like any other command.
  *
- * Units or targets without an IdComponent are skipped silently — they cannot
- * be addressed over the network without a stable ID.
+ * Units or targets without an IdComponent produce a typed dropped result. They
+ * cannot be addressed over the network without a stable ID, and callers must
+ * not treat a dropped order as completed work.
  */
 export function dispatchAiOrder(
   scene: ProbableWaffleScene,
   unit: Phaser.GameObjects.GameObject,
   order: OrderData,
   playerNumber: PlayerNumber
-): void {
-  if (!scene.isHost) {
-    console.warn(`[AI] Skipping AI dispatch for player ${playerNumber} on non-host client.`);
-    return;
-  }
-
+): AiOrderDispatchResult {
   const commandBus = getSceneService(scene, CommandBusService);
-  if (!commandBus) return;
-
   const actorId = getActorComponent(unit, IdComponent)?.id;
-  if (!actorId) {
-    console.warn(`[AI] Missing actor ID for AI unit "${unit.name}" (player ${playerNumber}); command dropped.`);
-    return;
-  }
-
   const targetObject = order.data.targetGameObject;
-  let targetObjectIds: string[] | undefined;
-  if (targetObject) {
-    const targetId = getActorComponent(targetObject, IdComponent)?.id;
-    if (targetId) targetObjectIds = [targetId];
+  const targetId = targetObject ? getActorComponent(targetObject, IdComponent)?.id : undefined;
+  const result = getAiOrderDispatchResult({
+    isHost: scene.isHost,
+    hasCommandBus: !!commandBus,
+    actorId,
+    requiresTargetId: !!targetObject,
+    targetId
+  });
+  if (result.status === "dropped") {
+    console.warn(`[AI] Dropped AI order for player ${playerNumber}: ${result.reason}.`);
+    return result;
+  }
+  if (!commandBus || !actorId) {
+    return {
+      status: "dropped",
+      reason: commandBus ? "missing_actor_id" : "missing_command_bus"
+    };
   }
 
   commandBus.dispatch({
@@ -54,8 +89,9 @@ export function dispatchAiOrder(
     playerNumber,
     actorIds: [actorId],
     orderType: order.orderType,
-    targetObjectIds,
+    targetObjectIds: targetId ? [targetId] : undefined,
     tileVec3: order.data.targetTileLocation,
     queue: false
   });
+  return result;
 }

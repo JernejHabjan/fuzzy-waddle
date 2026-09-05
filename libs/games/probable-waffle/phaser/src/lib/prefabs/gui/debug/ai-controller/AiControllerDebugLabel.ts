@@ -102,6 +102,7 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
 
   private getCategoryTitle(category: string): string {
     const titles: Record<string, string> = {
+      overview: "Overview & Reasons",
       strategy: "Strategy & Combat",
       resources: "Resources & Economy",
       production: "Production & Tech",
@@ -126,6 +127,9 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
       lines.push(...this.getOverviewLines(controller, now));
     } else {
       switch (this.category) {
+        case "overview":
+          lines.push(...this.getOverviewLines(controller, now));
+          break;
         case "strategy":
           lines.push(...this.getStrategyLines(controller, now));
           break;
@@ -155,12 +159,20 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
 
   private getOverviewLines(controller: PlayerAiController, now: number): string[] {
     const bb = controller.blackboard;
+    const trace = controller.playerAiControllerAgent.getDebugSnapshot();
+    const lastDecision = trace.events.at(-1);
     const lines: string[] = [];
     lines.push(`--- Strategy: ${bb.currentStrategy} ---`);
     lines.push(`Base Size: ${bb.baseSize}`);
     lines.push(`Units: ${bb.units.length} (Workers: ${bb.workers.length})`);
     lines.push(`Military Str: ${bb.militaryStrength.toFixed(0)}`);
     lines.push(`Resources: ${bb.getTotalResources().toFixed(0)}`);
+    lines.push(`Decision Trace: ${trace.events.length}/${trace.eventLimit}`);
+    lines.push(
+      lastDecision
+        ? `Last Decision: ${lastDecision.action} → ${lastDecision.outcome} (${lastDecision.reason})`
+        : "Last Decision: not recorded"
+    );
     return lines;
   }
 

@@ -269,6 +269,7 @@ export default class AiControllerDebugPanel extends Phaser.GameObjects.Container
     this.categoryButtonsContainer.setVisible(true);
 
     const categories = [
+      { id: "overview", label: "Overview & Reasons" },
       { id: "strategy", label: "Strategy & Combat" },
       { id: "resources", label: "Resources & Economy" },
       { id: "production", label: "Production & Tech" },
