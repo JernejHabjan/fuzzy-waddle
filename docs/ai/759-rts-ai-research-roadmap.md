@@ -9,6 +9,7 @@
 - **Target experience:** a readable, fair, resilient casual/intermediate opponent that completes a classic RTS loop: establish an economy, avoid supply blocks, build a faction-valid multi-domain army, scout, move forces across land/water/air access boundaries, fortify, defend, pressure, expand, recover from disruption, and conclude the match.
 - **Runtime technology:** deterministic, authored rules and utility scoring. Runtime ML/LLM inference and unbounded search are out of scope.
 - **Last research pass:** 2026-09-04 against `research/759-rts-ai-roadmap`, current `develop`, the supplied reference list, the issue milestone, and the open Stage 0 PR.
+- **Component coverage audit:** 2026-09-05 on research-branch commit `d29d29c6`; evidence below describes this checkout. Recheck changed runtime contracts against current `develop` before implementing each slice.
 
 ### Research checklist
 
@@ -17,6 +18,7 @@
 - [x] Review suitable RTS reference architectures and record licensing boundaries.
 - [x] Define the classic-RTS behavior contract, target architecture, implementation sequence, deterministic evaluation harness, metrics, and release gates.
 - [x] Reconcile this plan with the already-open Stage 0 implementation PR.
+- [x] Audit registered prefab capabilities, runtime components/systems, pawn behavior, shared queues/orders, ownership, victory conditions, and persistence for additional AI responsibilities.
 - [ ] Capture `baseline-v1` numbers after the fixture and batch harness exists.
 - [ ] Implement the stages below as focused issues and PRs.
 
@@ -52,7 +54,7 @@ The roadmap is deliberately ordered so the first playable vertical slice arrives
 3. **Faction-valid production.** Build plans use the actual tech tree and available producers. The AI keeps production active, makes a useful composition from observed enemy capabilities, and can rebuild a destroyed prerequisite.
 4. **Scouting under uncertainty.** The AI explores plausible enemy locations, updates remembered contacts when vision is gained, loses live targeting when vision is lost, and searches last-seen locations. Normal difficulty does not know hidden armies or bases.
 5. **Purposeful armies.** Units belong to defense, attack, scout, reserve, or reinforcement roles. The AI assembles at a rally point, attacks an objective rather than one arbitrary actor, reinforces without constantly dissolving squads, and regroups or retreats when an engagement is poor.
-6. **Legible tactics.** Units focus vulnerable or dangerous targets without extreme overkill, ranged units preserve distance when practical, damaged valuable units disengage, and defenders respond to threats before the main army resumes its plan.
+6. **Legible tactics.** Units focus vulnerable or dangerous targets without extreme overkill, ranged units preserve distance when practical, damaged valuable units disengage or receive useful healing, spells support squad objectives, and units avoid observed harmful zones. Defenders respond to threats before the main army resumes its plan.
 7. **Resilience.** A lost worker, blocked building location, destroyed production structure, depleted resource, failed path, proxy building, or temporary supply block triggers a bounded recovery path instead of permanent inactivity or command spam.
 8. **Multi-domain movement and warfare.** The AI distinguishes ground, water, air, elevated, and future amphibious access. It does not order ground armies toward unreachable islands. It can create a persistent water or air transport operation, choose safe boarding/landing points, escort cargo, contest air/water threats, and use only units or weapons capable of reaching and damaging a target.
 9. **Purposeful fortifications.** When the map, faction, strategy, and threat justify the cost, the AI builds connected wall lines with towers at valuable coverage points, stairs on the protected side, accessible wall-top defenders, and deliberate openings reserved for future gates. It does not surround itself blindly or seal its own economy and army inside.
@@ -149,6 +151,33 @@ Treat this as a discovery index, not a complete edit list. Search call sites bef
 | Walls, towers, stairs, and elevated topology | `libs/games/probable-waffle/phaser/src/lib/prefabs/buildings/tivara/`, `StructureTopologyService`, `HeightNavigationGraphBuilder`, and movement/navigation systems |
 | Ground/water/air access and transport | `MovementTerrainType`, `NavigationService`, `WaterNavigationHelper`, `FlyingComponent`, `ContainerComponent`, `ContainableComponent`, boat definitions, pawn `EnterContainer` behavior, production spawn/rally logic, and attack capability definitions |
 
+### Additional component and system coverage audit
+
+This audit follows `ComponentsDefinition`/`SystemsDefinition`, `pwActorDefinitions`, `actor-data.ts` registration, executable component/system methods, pawn behavior, and their command/save consumers. A definition, scene prop, enum, or comment alone is insufficient evidence that a mechanic works. The stages in this table are mandatory additions to the existing stages, with detailed behavior and acceptance below.
+
+| Existing area and evidence | What AI must consider | Owning stages / boundary |
+| --- | --- | --- |
+| `SpellComponent`, `SpellCastingSystem`, `spellDefinitions`, pawn `CastAutocastSpell`, and `AoeZoneManager` | Researched spell availability, cooldowns, effect polarity, area coverage, friendly targeting, cast range, persistent hazards, summons, and coordinated casts. Existing autocast targets the closest enemy for ground spells; it does not coordinate area value or healing. `SpellTargetType.Actor` is used by Healing Light but has no matching autocast switch case. | 3–5 for execution/observation correctness; 13–14 for coordinated use and research value. Preserve useful pawn autocast with explicit ownership. |
+| `StatusEffectComponent`, `HealthComponent`, `HealingComponent`, worker healing, and Healing Totem | Stun/freeze/slow, damage/healing over time, current health/armour, regeneration, triage, repair capacity, and recovery time affect effective strength and whether an order can progress. | 4, 7, 12–14. Observe active runtime effects; do not invent mana, resistances, dispel, or immunity mechanics from familiar RTS games. |
+| `AttackData`, `AttackComponent`, `high-ground.helper.ts`, weapon/projectile definitions, and combat runtime | Minimum range, attack windup/fire/hit timing, projectile arrival, melee area shape, flight/elevation, and per-weapon high-ground range bonuses affect position and target value. `HealthComponent.takeDamage` currently consumes a separate armour pool before health; damage-type labels alone do not establish a Warcraft-style counter multiplier table. | 4–5, 11, 13–14. Reuse actual combat rules and prove evaluator agreement with runtime. |
+| `GatherData`, `ResourceSourceComponent`, `ResourceDrainComponent`, Granary/WorkMill/MiningCamp, and pawn gather/return behavior | Carry capacity, compatible resource type, gatherer slots, travel/deposit latency, drop-off occupancy, remaining/locked resources, and destruction of a return destination determine income. Despite its name and the misleading registry comment, `ResourceDrainComponent` deposits gathered resources into the player's economy; it is not upkeep consumption. | 4, 7, 10, 12. Separate economy deposit service slots from transport cargo. |
+| Field `resourceSource`/`tendable`, `TendableComponent`, and pawn tending behavior | A Field requires a Granary, a tender to grow in the current definition, harvesting, return trips, and repeated regrowth. It is walkable, has capped tender/gatherer slots, and is not immediately spendable food when constructed. | 4–5, 7, 10, 12. Use runtime growth calculation: current code applies one boost when any tender exists, despite a definition comment suggesting a per-tender multiplier. |
+| `QueueComponent`, `ProductionComponent`, `ResearchComponent`, `PaymentType`, and cancellation commands | Production and research share queue ownership; parallel queues, waiting items, ongoing payments, actual refunds, and prerequisite loss affect reservations and time-to-ready. | 3–7, 14. A producer is not simultaneously free for research and production in the same queue slot. |
+| `LevelComponent`, `applyLevelOverrides`, `TechTreeService`, `upgradeActorToLevel`, and research completion | Research can upgrade existing actors and future production, changing attacks, health, vision, and container capacity. Actor aliases and faction prerequisites must resolve through definitions. | 4, 7–8, 14. Distinguish player researched level from an individual actor's applied runtime level; no XP/hero-item system is implied. |
+| `ConstructionSiteDefinition`, `BuilderComponent`, and construction/repair execution | Automatic construction, builder/repairer caps, consumed-builder rules, initial vulnerability, completion time, and refunds change how much labor and protection a plan requires. | 3, 7, 10–12. In particular, current Field construction needs no assigned builder; a generic builder requirement would stall it. |
+| `ConvertibleComponent`, `OwnerComponent`, editor conversion settings, and actor index | An unowned convertible actor can become owned by proximity. Scout/claim utility, contested approach risk, and ownership changes matter; old targets and assignments must be invalidated on conversion. | 4–5, 9–10. This is proximity claiming of eligible unowned actors, not a general enemy mind-control or building-capture spell. |
+| Team definitions, vision queries, healing/spell effect filters, and `GameModeConditionChecker` | Legal ally assistance, contested fronts, existing team information policy, and actual victory/loss settings influence objectives and concessions. The checker implements elimination, time, kills, resource stockpile, actor-count/type, and maximum-time tie conditions. | 3–5, 9, 13. Read exact configured evaluation/precedence; do not assume every match is elimination or that teammates automatically share vision/orders. |
+| `ContainerComponent` on economy structures versus mobile boats; wall/tower elevated navigation | A container can service deposits, while a mobile transport carries squads. Walking on a tower is distinct from being contained inside it; the inspected watch-tower container declaration is commented out. | 4, 7–8, 11. Infer roles from combinations of executable capabilities, not the existence of `container` alone. |
+| `SceneLightingService`, scenery/animal/mob definitions, `PlacementRestrictionComponent`, and campaign registries | Audit exclusions explicitly: day/night is presently lighting; an animal/monster/ruin/catapult sprite does not by itself imply food, loot, creep rewards, siege, or a capturable objective. `PlacementRestrictionComponent.canPlace` is a TODO returning false and the inspected tree has no call-site registration. Campaign-only rules need a mode adapter. | Capability audit in 2–4; unsupported mechanics remain explicit limitations. Do not introduce stealth/detection, trade, upkeep, heroes/items, weather penalties, or neutral-camp rewards without executable evidence. |
+
+#### Additional correctness dependencies discovered during the audit
+
+- **Spell effects have authority seams beyond strategic commands.** Projectile spells call their gameplay impact from Phaser tween completion; target selection uses render bounds and owner equality for ally filtering. Route casting/autocast settings through validated shared semantics, apply impacts on simulation ticks using logical positions and team policy, and treat tweens as presentation. A tick-driven brain alone does not make these effects deterministic or team-safe.
+- **Persistence coverage must be expanded by mechanic.** Spells/status effects and area zones have existing save paths, but the inspected state hash's combat slice covers attack/heal/builder/gather cooldowns, not complete spell/status/zone state. `TendableComponent` has growth/tender state without a demonstrated serialization contract. In-flight spell effects, summon expiry, deposit work, and ownership transitions also require save-continuation audits. Reuse and extend existing authorities; do not declare persistence complete because a top-level save field exists.
+- **Conversion tie resolution needs a regression.** `ConvertibleComponent.checkProximity` takes the first qualifying indexed player/actor and returns early on an inactive actor. Simultaneous claims therefore need canonical arbitration and inactive-actor handling before AI claims depend on it. Keep the shared simulation as the owner of conversion; AI only issues legal approach orders and observes the result.
+
+These are research findings and required implementation dependencies, not fixes delivered by this PR. Keep the initial Stage 1 slice narrow; attach focused regressions to the owning later stages below.
+
 ## Research findings and boundaries
 
 ### Primary evidence
@@ -210,6 +239,7 @@ Rules:
 - Positions are authoritative logical/simulation positions, never interpolated render positions.
 - The map summary contains stable ground, water, elevated, and air access regions plus legal transfer edges such as shore rendezvous, bridge/crossing, stairs, and container transport. Air reachability still considers map bounds, valid landing/unload space, and threat; it is not treated as cost-free teleportation.
 - Actor snapshots project movement domain, current access region, container/cargo capacity and occupancy, transport eligibility, weapons' target-domain capability (including `canTargetAir`), and legal producer/spawn domain from definitions.
+- Extend permitted snapshots with applied level/capability version, owned shared queue/payment state, carried resources and deposit service occupancy, growth/tender/harvest state, health/armour, usable spells and cooldowns, active status/zone effects, temporary-object expiry, observed convertible opportunities, and configured match objectives. Enemy private cooldown/research/queue details remain unavailable unless the human information policy exposes them; unknown values stay unknown.
 - Hostility comes from one diplomacy/team policy, not `owner !== self`.
 - `visibleHostiles` contains live target IDs only while currently permitted.
 - Map-derived summaries expose bounded regions/frontiers/access components rather than handing the pure brain a pathfinder.
@@ -303,6 +333,11 @@ type AiIntentV1 =
   | MoveTransportIntent
   | UnloadTransportIntent
   | EscortTransportIntent
+  | CastSpellIntent
+  | SetAutocastIntent
+  | HealIntent
+  | AssignTenderIntent
+  | ClaimNeutralApproachIntent
   | RecoverPathIntent
   | ConcedeIntent;
 
@@ -371,6 +406,7 @@ Create a versioned, serializable `AiBrainStateV1` containing at least:
 - base records and expansion candidates;
 - fortification plans, topology nodes, deliberate openings/gate slots, breaches, and defender posts;
 - access-region graph version, transport plans, cargo/seat claims, rendezvous and landing reservations, fleet/air-wing assignments, and route failure state;
+- capability catalog version, crop/deposit service plans, support/ability claims and autocast policy, observed hazard summaries, neutral-claim and allied-support objectives, and mode-specific goal state;
 - worker, builder, producer, defender, scout, reserve, and squad assignments;
 - current goals, objectives, reservations, and intent counters;
 - manager cooldowns and failure/backoff state;
@@ -392,6 +428,14 @@ Once all legacy mutation branches are migrated, assess whether the behavior tree
 
 ## Domain behavior design
 
+### Capability coverage and runtime truth
+
+Create a versioned `AiCapabilityCatalogV1` projection from existing registries, tech-tree resolution, component registration, and current runtime state. Each gameplay-relevant capability must map to an observation field, proposing manager, execution authority, outcome, persistence projection, and regression fixture, or an explicit unsupported/not-applicable reason. This is a checked projection of the game, not a second balance database. Compare registered capabilities with this coverage map whenever a prefab, level override, command, or component changes.
+
+Resolve aliases deterministically and distinguish faction-producible units from scenario-only actors. Require a working component **and** its execution system before advertising a spell, production, movement, or interaction capability. Invalidate derived capabilities on research completion, actor level/owner change, construction completion/destruction, or relevant topology change. Capabilities observed on enemy actors must come from permitted information, not private research/queue state.
+
+The transport capability predicate must require a mobile, cargo-eligible container with valid load/unload behavior. Economy buildings with containers are deposit services; their workers and capacity belong to economic operations. Model physical seat ownership separately from the parent operation so economy and transport cannot allocate the same contained actor. An elevated defender standing on a wall is not garrisoned cargo. Add garrison combat bonuses only if a runtime rule later supplies them.
+
 ### Economy and worker allocation
 
 - Represent resource demand over a short deterministic horizon: next opening checkpoint, queued production, required supply, repair reserve, and desired expansion.
@@ -401,6 +445,14 @@ Once all legacy mutation branches are migrated, assess whether the behavior tree
 - Reserve builders explicitly and return them to economy after completion/failure.
 - Track income, idle-worker ticks, reassignment count, travel bucket, and gathering failures per resource.
 
+#### Deposits, renewable food, and worker service roles
+
+- Score expected **delivered** income from gather amount/cooldown, carry capacity, source gatherer cap, distance to a compatible drop-off, deposit delay/capacity, safety, and required return behavior. Sources that credit directly and sources that require returning are distinct. Carried or growing resources are forecast income, not spendable stockpile.
+- Reserve source and deposit service capacity without monopolizing a whole building. Re-evaluate WorkMill/MiningCamp/Granary placement by saved worker travel and throughput; one additional drop-off is justified by benefit and saturation, not a fixed repeated-building request. Losing a drop-off reroutes loaded workers or creates one replacement plan.
+- Give renewable food a persistent `grow -> harvest -> deliver -> regrow` plan, linked to Field, Granary, tender, gatherer, and service claims. Allocate only the working tender/gatherer capacity, anticipate growth delay, and bridge short-term food demand with legally available sources. Do not rebuild a depleted renewable Field or count its locked resources as available food.
+- Arbitrate each worker's primary task across gathering, tending, depositing, building, repairing/healing, scouting, and transport. Temporary pawn sub-actions inherit that owner. Interruptions must safely release/transfer claims; finished support work returns workers to a valid economic assignment.
+- Construction scheduling derives labor from the actual site: automatic progress, maximum builders/repairers, builder consumption, and current completion/health. Allocate scarce workers where their marginal completion benefit is useful. Repair and construction compete with harvesting and military spending explicitly.
+
 ### Supply, production, and technology
 
 - Forecast `used + queued demand` against `capacity + housing completing within horizon`.
@@ -409,6 +461,37 @@ Once all legacy mutation branches are migrated, assess whether the behavior tree
 - Keep at least a configurable defense floor before committing all production to a tech transition.
 - Research only when prerequisites exist, a plan/counter supplies a reason, production survival is protected, and the opportunity cost fits the profile.
 - On producer/prerequisite loss, invalidate affected reservations, create a restore intent, and fall back to a legal unit/plan rather than reporting success.
+
+Shared queue and research rules:
+
+- Forecast one timeline per actual queue, including research occupying the same queue, waiting work, parallel queues, payments still due, and population demand. Derive completion estimates from the existing payment/progress rules; a queued item is not completed capacity or combat strength.
+- Count existing, accepted/reserved, queued, and under-construction assets against demand exactly once. Expire abandoned plans and reconcile accepted-but-not-yet-observed commands before proposing replacements. This rule applies to farms, drop-offs, research, healers, transports, and military producers as well as housing/walls.
+- Use existing production/research cancellation commands only when the measured survival or strategic benefit exceeds the actual lost progress/refund cost. Credit a refund only after authoritative application; avoid cancel/requeue oscillation with stable item IDs and cooldowns.
+- Score research by its benefit to surviving actors, expected reinforcements, vision, transport capacity, and useful spell access versus its queue/resource opportunity cost. Recompute after completion using both applied runtime capabilities and player tech state. Never grant upgrade effects from the AI's prediction.
+- Reconcile newly created/replaced/upgraded/captured actors into assignments, supply, role deficits, queues, and transport capacity. Already full transports retain legal manifests if capacity changes; invalid changes trigger an explicit shared-rule outcome, not silent passenger loss.
+
+### Support, spells, effects, and combat geometry
+
+Create a bounded tactical ability proposer integrated with squad arbitration. It consumes permitted caster/target/effect observations and proposes `CastSpellIntent`, `SetAutocastIntent`, `HealIntent`, or a support-position/movement intent. Existing research and actor-action capabilities should be reused; add explicit shared spell payloads/settings only where the current command vocabulary is insufficient. Prove actor-target and ground-target coordinate semantics end to end.
+
+- Give each caster one cast owner per decision window. Coordinated mode reserves a spell/cooldown and target/effect window; pawn autocast operates under a documented fallback policy and cannot spend the same cooldown concurrently. Apply equivalent policy semantics to human commands and replay.
+- Choose targets from effect flags and runtime target rules as well as `SpellTargetType`. A ground-targeted healing zone still needs damaged allies. Evaluate useful healing capped by missing health, area damage/control over legal visible targets, existing effects, travel/impact time, cast opportunity cost, and safe caster positioning.
+- Coordinate heals and crowd control with expiring reservations. Respect the actual status rule that reapplying the same effect type refreshes it; do not assume repeated casts stack damage/control value. Reserve emergency support and avoid redundant full-health healing or unnecessary control refreshes.
+- Treat stuns/freeze as temporary inability, and slows as reduced travel speed, when estimating combat strength, rendezvous deadlines, retreat, or no-progress recovery. Avoid retrying an impossible movement action every tick while the unit is disabled. Re-evaluate after effect expiry.
+- Observe only permitted persistent zones and their ally/enemy eligibility, remaining lifetime, and damage/heal effects. Penalize harmful zones on rally/retreat/landing candidates and spread squads against observed area threats, using bounded candidate sampling. Beneficial zones can justify a safe recovery point; risk and visibility still apply.
+- Support units and worker repair/heal teams need protection, reachable patients, capped assignments, and a release-to-duty condition. Compare field recovery with retreat/replacement; do not pull every worker from food production to repair a low-value asset.
+- Summoned objects such as Healing Totem contribute support while their effects and remaining lifetime justify it. They are not permanent production, housing, expansion anchors, or a guaranteed rebuild path. Their destruction/expiry invalidates support reservations and objectives through normal outcomes.
+- Evaluate actual weapon choices, minimum/maximum range, high-ground bonus, attack cooldown/windup, projectile arrival, and melee area geometry. Preserve firing opportunities where sensible, avoid interrupting every windup with move orders, and release predicted damage claims on miss/failure/target loss. Counter values must reflect actual armour-pool and damage application rules; use no invented damage-type matrix.
+- Separate authoritative spell impact/effect/summon lifetime from visual animation. Stage 3–5 regression gates must prove equal results across rendering rates, pause/speed changes, save/replay, and teammate targets before the strategic ability proposer is enabled.
+
+### Ownership, neutral opportunities, allies, and match objectives
+
+- Expose observed proximity-convertible neutral opportunities separately from hostiles and harmless scenery. Score acquisition value, approach risk, competing visible claimants, and distraction from survival/economy. Move one eligible claimant through normal orders, await the authoritative owner transition, then assign the new asset. Do not issue a fictitious capture spell or assume enemy actors can be converted.
+- Ownership changes invalidate old attack/heal/repair targets, reservations, resource routes, squad membership, transport manifests, and contribution estimates. Revalidate at command application as well as proposal. An ally becoming hostile or a claimed neutral becoming friendly must not receive a stale effect based on old owner equality.
+- Help threatened teammates using a bounded allied-defense objective and safe reinforcement/escort roles when ownership, diplomacy, and information policy permit. Keep a local defense/economy floor. Allies retain command authority over their units; cross-AI cooperation uses permitted requests/claims, not pooled hidden observations or stealing each other's workers.
+- Prioritize surviving/winning under the configured game mode: protect the last required building, preserve required actors, accumulate a resource stockpile when that is the objective, pursue kills when legal, or survive until the configured time. A stockpile objective can deliberately retain resources that generic macro would spend. Match condition precedence and combination semantics come from `GameModeConditionChecker`, including its time/tie order.
+- Feed the same objective/recoverability projection into strategy and concession. A low army count does not imply hopelessness when a timed or stockpile win is feasible; a strong fleet does not prevent a configured building-elimination loss. Campaign economy modes, scripted restrictions, and objectives require the existing explicit campaign policy; they must not leak into ordinary skirmish.
+- Only treat visible wildlife/mobs as food, hazards, hostile combat targets, or claim opportunities when their runtime components and policy establish that role. The audit does not establish neutral-camp rewards, loot, hero XP, shops, or general scenery harvesting.
 
 ### Bases, expansion, and safe construction
 
@@ -755,6 +838,14 @@ Required fixtures:
 20. anti-air production selects actual `canTargetAir` capability rather than the generic ranged label;
 21. cargo seats, passengers, transport, escort, rendezvous, and landing claims cannot be double-assigned;
 22. transport failure/reroute and save/restore preserve one deterministic lifecycle owner.
+23. a container-backed deposit building never becomes a mobile transport and deposit workers cannot be stolen by boarding intents;
+24. a Field growing with locked resources forecasts future food, reserves legal tender capacity, and re-enters growth after harvest without a duplicate field plan;
+25. shared production/research queues, ongoing payment, cancellation/refund, and in-flight accepted commands cannot double-count resources, capacity, or demand;
+26. a heal or area-control reservation avoids redundant casts, handles target/effect flags, and coordinates with autocast;
+27. a stunned/slowed unit receives realistic progress/retreat estimates and is not classified as a permanent path failure;
+28. capability changes from research, runtime level, ownership, or temporary-object expiry invalidate affected plans and strength estimates;
+29. a stockpile/timed/last-building objective changes spend, defense, and concession decisions consistently with the configured match rules;
+30. equal neutral claims and allied support proposals resolve by stable keys without hidden information or foreign-unit control.
 
 ### Level B — real runtime scenarios
 
@@ -785,6 +876,13 @@ Run authored fixed-seed scenarios through the simulation clock, command bus, and
 23. air scout/harassment and anti-air response use legal targets and observed capability only;
 24. naval escort/interception and combat remain in reachable water regions and protect or attack transport objectives;
 25. save/load during boarding, transit, and unloading preserves passengers, seats, routes, commands, and digests.
+26. Field/Granary grow–harvest–deposit–regrow loop, tender interruption, source-slot saturation, drop-off destruction/replacement, and save/load preserve useful delivered income;
+27. production and research contend for a shared queue, cancel through existing commands, apply the actual refund once, and update existing/new actors after an upgrade;
+28. a wounded squad receives capped useful healing, avoids a hostile persistent zone, and resumes its objective when recovered; worker support does not starve the base;
+29. researched actor/ground-target spells, friendly area healing, autocast/manual arbitration, active stun/slow, projectile impact, and summon expiry behave identically at differing render rates and after save/replay;
+30. ranged units respect minimum range, actual high-ground bonuses, armour pools, and pending projectile damage; tactical orders do not repeatedly cancel their attacks;
+31. two simultaneous proximity claimants, inactive actors in the index, and an ownership change during a queued action produce one stable owner and reject stale actions;
+32. an allied base receives legal help without foreign-unit orders or hidden vision, while timed, resource-stockpile, and last-building modes finish through their actual result rules.
 
 Run each focused fixture three times in normal CI and compare commands plus authoritative/AI digests. Use 20 repetitions across more seeds in an explicit/nightly soak.
 
@@ -824,6 +922,9 @@ Reviewers score fairness, legibility, challenge, repetition, recovery, suspected
 - all match outcomes reach one final result and score flow exactly once.
 - no accepted fortification plan blocks required friendly base access, and every occupied rampart post has a valid protected-side route.
 - zero direct movement/attack objectives across incompatible access domains; every cross-domain passenger, cargo seat, transport, escort, rendezvous, and landing slot has at most one plan owner.
+- zero double-owned caster cooldowns, worker primary tasks, deposit/cargo slots, or production/research queue slots; authoritative refunds and ownership changes are applied exactly once.
+- active crop/deposit/spell/effect/temporary-object state continues deterministically across rendering, save/replay, and recovery boundaries for every advertised capability.
+- configured victory conditions, team relationships, and effective runtime capabilities agree across planning, execution, and concession.
 
 ### Macro metrics
 
@@ -846,6 +947,16 @@ Reviewers score fairness, legibility, challenge, repetition, recovery, suspected
 - ground, anti-air, air, naval, transport, and shore-defense strength/production by capability rather than label;
 - air/naval objective completion, interception/escort success, retreat survival, and domain-invalid target attempts;
 - island expansion establishment, reinforcement latency, evacuation feasibility, and disconnected-base idle time.
+
+### Component coverage and interaction metrics
+
+- registered executable capabilities covered by observation/intent/command/outcome/persistence/fixture, with explicit unsupported reasons for every remaining entry;
+- delivered versus forecast income, deposit waiting/travel time, loaded-worker idle time, crop growth/harvest idle time, and tender/gatherer utilization;
+- shared queue blocking by research/production, remaining payment obligations, wasted cancellations/refunds, duplicate demand, and time from upgrade to revised AI capability;
+- useful healing versus overheal, support worker time away from economy, casts by reason, cooldown conflicts, redundant control refreshes, area value, and damage taken in avoidable observed zones;
+- disabled-unit false stuck reports, interrupted attack windups, min-range violations, and evaluator/runtime outcome discrepancies;
+- neutral claim success/cost, stale ownership actions rejected, permitted allied assistance, and mode-specific objective progress/concession correctness;
+- save/replay equality during crop growth, deposits, active effects, in-flight spells, temporary support expiry, and ownership changes.
 
 ### Intelligence and control metrics
 
@@ -883,6 +994,27 @@ The harness initially gates deterministic correctness and scenario-specific regr
 ## Implementation roadmap
 
 Each stage is a focused issue/PR. A stage may be subdivided when its protocol surface is too large, but acceptance criteria must not disappear. Branch every stage from current `develop` after required dependencies merge; do not stack undocumented behavior changes on the research branch.
+
+### Mandatory component-audit slices within the stages
+
+Keep Stage 0–16 identifiers stable. The following are part of their completion criteria, not optional future suggestions. Split a large stage into focused PRs with these named slices when useful; complete its prerequisite slices before dependent AI behavior is enabled.
+
+| Stage | Additional slice and acceptance |
+| --- | --- |
+| 2 — contracts | Add capability coverage entries, typed service/ability/neutral-claim intents, status/zone/growth/queue observations, and mode objective contracts. Every registered gameplay capability maps to an owner or an explicit unsupported reason. Keep visual-only metadata outside decisions. |
+| 3 — shared commands | Audit cast/autocast, heal/repair, tend/gather/return, cancellation, and approach-to-claim paths through existing commands/application. Close missing spell payload/settings semantics and move gameplay spell impacts from tween completion to simulation ticks. Reject stale owners/targets and preserve applied-once outcomes. Automatic conversion remains a shared simulation event, not an AI owner setter. |
+| 4 — observation and diplomacy | Project effective actor level, resource/growth/service state, active permitted effects/zones, and match objectives. Apply team policy to runtime spell/heal/zone application as well as observations; regression-test effect polarity and actor-versus-tile coordinates. Unknown enemy capabilities/cooldowns remain unknown. |
+| 5 — harness and persistence | Add runtime regressions for spell render-rate independence, active effect/zone and summon expiry, crop growth/tender restore, deposit work, shared queue restore, and conversion ties. Extend the existing hash/save projection where absent. Do not enable downstream behavior on a failing lifecycle/authority fixture. |
+| 6 — arbitration | Extend claims to source/tender/deposit service slots, shared queue items, caster cooldown/effect windows, and neutral/allied objectives. Reconcile pending commands and authoritative completion/refund/ownership events before admitting new proposals; one physical resource cannot be claimed by conflicting parent plans. |
+| 7 — macro and labor | Implement renewable food and compatible deposits, shared production/research timelines, actual payment/refund semantics, builder/repairer caps and automatic construction. Field/Granary fixtures deliver repeatable income; automatic sites do not wait for nonexistent builders; duplicate accepted/queued work is suppressed. |
+| 8 — transport | Exclude stationary deposit containers from fleet supply. Respect passengers temporarily in deposit service, reconcile upgrade capacity and ownership changes, and choose unload sites outside observed harmful zones. |
+| 9 — exploration and match completion | Add bounded neutral acquisition and allied-defense objectives; read the configured win/loss/tie rules. Prove deterministic simultaneous claims, legitimate allied assistance, stockpile/timed decisions, and last-building-aware concession without changing authority. |
+| 10–12 — bases, fortification, recovery | Place renewable food/drop-offs for delivered throughput; score actual elevated firing range; separate economic, support, and transport service space. Repair/heal teams retain an economy floor; stunned units wait/re-evaluate rather than triggering path retries; no farm/deposit duplication after disruption. |
+| 13 — tactics and abilities | Add caster/autocast ownership, useful heal/control reservation, support protection, harmful-zone avoidance, temporary-support expiry, and actual min-range/windup/projectile/armour evaluation. Pass useful-heal, area-cast, stunned-retreat, elevated-range, and attack-interruption fixtures. |
+| 14 — technology and adaptation | Value actual actor-level upgrades and useful spell access against shared queue opportunity cost. Existing/upgraded/new actors produce consistent capability updates. No unsupported damage-type counter table, hero XP, or unregistered spell execution is assumed. |
+| 15 — release evaluation | Add the component interaction fixtures to candidate/baseline and save/host-recovery matrices. Publish capability support coverage and mode limitations; all mandatory runtime/fairness gates pass before claiming support. |
+
+Release Gates A/B therefore include the relevant shared execution, farming/deposit, and mode foundations; Gate D includes coordinated ability tactics. Advanced casting must not delay the basic playable slice once the underlying command and persistence contracts pass. Existing pawn autocast remains available under its validated baseline policy.
 
 ### Release Gate A — trustworthy decision foundation
 
@@ -1210,6 +1342,9 @@ Only open this stage if Stage 13 metrics show a tactical ceiling and the pure en
 - **Transports deadlock or strand valuable cargo:** make the journey one persistent owner with exclusive seat/rendezvous/landing claims, tick deadlines, typed outcomes, safe cancellation, bounded rerouting, and phase-by-phase save/load fixtures.
 - **Air/naval production wastes the economy:** unlock demand only from relevant access regions, legal producer/spawn paths, reachable objectives, and observed threats; decay stale demand with hysteresis.
 - **Mixed-domain forces become one incoherent blob:** keep ground, water, air, elevated, and passenger squads separate and coordinate them through a shared task-force objective and explicit support timing.
+- **The catalog promises unsupported mechanics:** verify definition, registration, runtime execution, command, and persistence together; record visual-only or unfinished capabilities explicitly. Current lighting, scenery names, and the placement-restriction stub are not strategic game rules.
+- **Micro competes with pawn autocast or starves economy:** reserve cast windows and support service slots, retain minimum economic assignments, and measure useful healing/control plus worker opportunity cost.
+- **New AI depends on old nondeterministic effects:** make shared spell impact, farming/deposit continuation, and ownership tie regressions prerequisites of their consumers, not optional cleanup after tactical tuning.
 - **Command scope expands uncontrollably:** add only demonstrated shared capabilities and update all protocol/validator/application/replay consumers in the same stage.
 - **Difficulty feels like cheating:** keep strategy separate, enforce information parity, and surface any optional bonus in lobby, trace, replay, and result data.
 - **Surrender fires too early:** require sustained multi-signal hopelessness and cancel on recovery.
@@ -1232,6 +1367,7 @@ These defaults allow implementation to begin without another research gate:
 10. **Fortifications:** walls/towers/stairs are a topology-aware strategic project used when valuable, especially by turtle/defensive plans—not a default ring around every base. Reserve a future gate slot now; implement gate mechanics separately when the structure exists.
 11. **Access domains:** every objective is filtered through the stable ground/water/elevated/air access graph before utility scoring; cross-domain travel is a persistent transport plan rather than a sequence of opportunistic unit orders.
 12. **Air transport:** use capability-driven container/flight contracts and test doubles now; do not advertise it as shipped until a real flying-container unit definition exists.
+13. **Existing mechanics coverage:** renewable food, deposits, shared queues, upgrades, support/spells/status effects, neutral claims, team support, and configured match objectives are mandatory within the stage slices above. Visual-only and unfinished systems stay explicitly unsupported until their runtime rules exist.
 
 The following decisions are non-blocking until their named stage:
 
@@ -1251,6 +1387,7 @@ This section is intentionally operational. A new agent should be able to begin w
 - PR #792 fixes async planner accessibility and deterministic candidate selection; it does **not** fix atomic observation, omniscience, commands, difficulty, macro, squads, persistence, or evaluation.
 - At the 2026-09-04 research pass, PR #792's recorded build failure was the old application bundle budget. Current `develop` includes PR #794's lazy-loading/budget work, so rebase and verify before diagnosing it as an AI failure.
 - The research branch was behind current `develop`; do not implement by piling feature commits onto it. Start focused implementation branches from freshly updated `develop` after dependencies merge.
+- The 2026-09-05 component audit is additional scope inside the numbered stages, not a new Stage 1 rewrite. Read its evidence/coverage table and mandatory stage slices before implementing a later stage; revalidate the named runtime seams on that branch.
 
 ### Mandatory first actions
 
@@ -1286,6 +1423,10 @@ Use a branch such as `fix/759-ai-static-correctness-traces` from current `develo
 - `Wall`, `WatchTower`, `Stairs`, their prefab definitions, `StructureTopologyService`, `HeightNavigationGraphBuilder`, and `NavigationService`
 - `MovementTerrainType`, `WaterNavigationHelper`, `FlyingComponent`, `ContainerComponent`, `ContainableComponent`, and pawn `EnterContainer`/shore behavior
 - `CommonBoat`, `VikingBoat`, flying unit definitions, `AttackData.canTargetAir`, water production spawn logic, and every command/save consumer of load/unload state
+- `ComponentsDefinition`, `SystemsDefinition`, `pwActorDefinitions`, `actor-data.ts`, `TechTreeService`, `applyLevelOverrides`, and `upgradeActorToLevel`
+- `GatherData`, `ResourceSourceComponent`, `ResourceDrainComponent`, `TendableComponent`, Field/Granary definitions, pawn tending/gather/return behavior, `QueueComponent`, `PaymentType`, and cancellation/refund handlers
+- `SpellComponent`, `SpellCastingSystem`, `spellDefinitions`, pawn `CastAutocastSpell`, `AoeZoneManager`, `StatusEffectComponent`, `HealingComponent`, `HealthComponent.takeDamage`, and `high-ground.helper.ts`
+- `ConvertibleComponent.checkProximity`, `OwnerComponent`, editor conversion registration, team/vision helpers, configured `WinConditions`/`LoseConditions`/`TieConditions`, and their result checker
 
 ### Invariants not to violate
 
@@ -1302,6 +1443,11 @@ Use a branch such as `fix/759-ai-static-correctness-traces` from current `develo
 - never score or order an objective before proving a movement-domain route and compatible weapon target capability;
 - never assign a passenger, cargo seat, transport, escort, rendezvous, landing slot, or destination to conflicting transport plans;
 - never treat “ranged” as anti-air without the selected attack's actual `canTargetAir` capability;
+- never confuse drop-off containers with mobile transports, growing/carried resources with spendable resources, or actor upgrade metadata with applied runtime capabilities;
+- never allow pawn autocast and a tactical caster plan to spend one cooldown concurrently, or let rendering determine a gameplay spell impact;
+- never assume damage-type multipliers, neutral loot/XP, garrison bonuses, night vision penalties, or other unimplemented rules from names or familiar RTS conventions;
+- never omit farming/deposit/effect/temporary-object continuation from saves and hashes once AI depends on those mechanics;
+- never evaluate a match's goals or concession using different victory/diplomacy rules from shared execution;
 - never auto-merge a PR.
 
 ### Copyable next-agent prompt
@@ -1329,6 +1475,8 @@ draft PR. Never merge automatically.
 - [x] Economy, supply, production, tech, bases, expansion, scouting, memory, threats, squads, tactics, anti-blocking recovery, and concession all have staged acceptance criteria.
 - [x] Connected walls, tower coverage, protected-side stairs, wall-top defenders, breach recovery, duplicate suppression, and future gate slots have a dedicated topology-aware stage.
 - [x] Ground/water/air/elevated access, water and future air transport, island expansion, air/naval combat, escorts/interception, and capability-correct counters have a dedicated staged design and fixtures.
+- [x] Registered component/system coverage includes crops/deposits, worker service roles, shared queues/payments/refunds, actor upgrades, healing/spells/autocast, status/zones, combat geometry, neutral ownership, teams, and alternate match objectives.
+- [x] Definition-only, visual-only, unregistered, and future mechanics are distinguished from executable behavior; newly found command/timing/persistence dependencies have owning stage gates.
 - [x] Command-only mutation includes construction, repair/logistics, combat/scouting, and concession.
 - [x] Save/load, replay, state hash reuse, host ownership/migration, performance budgets, and first-divergence diagnostics are included.
 - [x] Pure fixtures, runtime scenarios, batch evaluation, manual playtest, metrics, and baseline policy are included.
@@ -1340,6 +1488,7 @@ draft PR. Never merge automatically.
 - [x] The roadmap has a measurable classic-RTS target instead of a generic “smarter AI” goal.
 - [x] Existing traversable wall/tower/stair mechanics are retained and given an AI planning, construction, defense, and recovery layer with future gate compatibility.
 - [x] Existing flying, water-navigation, container, boat, and target-capability mechanics are retained and composed into a persistent strategic access/transport/combat design without claiming a nonexistent air-transport prefab.
+- [x] Component audit findings are connected to observations, shared effects, plan ownership, mandatory stage slices, runtime fixtures, metrics, and cold-start symbols without renumbering earlier stages.
 - [x] Architecture recommendations follow confirmed repository seams and correct the earlier state-hash assumption.
 - [x] Stages form dependency-aware, reviewable increments with user-visible release gates.
 - [x] Product defaults unblock foundation work while isolating later decisions.
