@@ -32,6 +32,8 @@ These names are confirmed discovery anchors, not permission to bypass the tech t
 
 ### Purposeful composition algorithm
 
+First implement [C1/C2 opening branches, dated force targets and affordability](11-classic-rts-and-difficulty.md). Total desired military population must come from useful mission demand, queue/resource forecasts and worker/supply obligations; percentages below do not create that total. Connect soft stance spending preferences without cash-hoarding quotas or double-counted mission tech. Author C-01/02/03 and D-04 now; Stage 14 extends supported branches rather than replacing their identities. Show total demand, deadline and opportunity cost in the debug view.
+
 Keep one composition plan per army/task force: objective/domain, desired military population budget, primary role shares, capability constraints, current/queued/accepted contributions and evidence. Initial balanced distribution is 60% frontline, 40% ranged; when a legal useful support option exists, use 50% frontline, 35% ranged, 15% support. Shares refer to military population, with largest-remainder integer allocation and stable role tie-break; workers and unarmed transports contribute zero combat allocation.
 
 Assign each unit a primary accounting role so a multi-role actor is not counted twice. Anti-air, detection-if-ever-supported, healing, shore fire and transport escort are capability constraints layered on that primary distribution, not extra fictitious units. Observed flyers require two legal anti-air attackers initially, or the affordable supported number if only fewer can exist. Useful existing dual-role actors satisfy the constraint once.
@@ -95,6 +97,8 @@ Output: legal reachability everywhere objectives are selected, water transportat
 - A flying-container test definition uses the generic transport lifecycle with ground pickup/drop zones and no accidental boat-only shore requirement.
 
 ## Stage 9
+
+Implement [C3/C4](11-classic-rts-and-difficulty.md): question-driven scouting, stable opponent/region focus, protected-asset pursuit leash and useful post-battle follow-up. Connect profile offensive mission caps without suppressing essential scouts, independent defense or rescue. Run C-04/05/06 and D-04/05; Stage 13 refines tactical scoring. Add causal mission/economy timelines and read-only bookmarks from packet 12. A generic exploration percentage or repeated nearest-enemy selection does not satisfy this stage.
 
 Model: Terra / xhigh. Source anchors: ScoutingManager, TargetingManager, CombatMicroManager, GameModeConditionChecker, ScoreTracker, Convertible/Owner and vision helpers.
 

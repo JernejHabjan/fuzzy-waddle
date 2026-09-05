@@ -33,6 +33,8 @@ Author fixtures: polarity, no false success, actual housing capability on both f
 
 Model: Sol / high. Create pure contracts under the shared source/destination map before moving runtime behavior.
 
+Include packet 12's AiReproBundleV1, completeness/privacy flags, causal indexes and validated parsing contracts now (DBG-05). Define packet 11's versioned difficulty fields and stable opening/evidence/question identities so downstream consumers share one authority.
+
 1. Define the full observation and brain slices listed in shared decisions. Required observation subtypes carry logical position/access node, owner/diplomacy, effective capabilities/level, queue/cost/supply, resource/growth/service state, visible effects/zones, and mode goals. Use optional or explicit unknown fields where information is unavailable, never fabricated zeroes.
 2. Define discriminated intent payloads per action family, typed preconditions/claims, command identity/outcomes, plan lifecycles, capability catalog entries, profile config, and debug snapshot. Shared ID/enum imports are the authority; define named IDs for plans/demands/claims.
    Include H1 progress/blocker/recovery contracts, H2 typed prerequisite/wait edges and reservation states, H3 authority/sequence reconciliation, H4 lane service debt, and H7 query health/revision contracts. Every stored deadline has a clock/unit and persistence policy; invalid numeric/schema inputs are rejected at boundaries.
@@ -83,7 +85,7 @@ Model: Terra / xhigh. Read snapshot/targeting/vision/diplomacy helpers, ActorInd
 2. Create separate current-visible contacts and remembered location hypotheses. Remove live IDs on loss of permitted visibility. Canonicalize before scoring/RNG; teams and neutrals are not inferred from owner inequality.
 3. Project map bounds/static knowledge/frontiers and known dynamic obstacles under the same human information policy. Region generation can remain pending until bounded inputs finish. Height/flight/shore/occupancy use existing runtime rules.
 4. Project effective runtime actor level/capabilities; source/growth/drop-off and shared queue state; status, permitted zones, temporary support and neutral opportunities; actual mode objectives. Never expose private enemy queue/research/cooldown fields.
-5. Update stable memory, decay/confidence, scouting coverage, and known threat summaries. Store evidence tick/source for every counter/goal input.
+5. Update stable memory, decay/confidence, scouting coverage, and known threat summaries. Store evidence tick/source for every counter/goal input. Apply C3/C-04 evidence identity: repeated reads of one sighting never inflate contact count or corroboration; memory facts remain shared across difficulty.
 6. Complete observation age/policy/unknown/error debug sections. UI does not query live hidden objects.
 7. Implement H7's bounded query products so optional navigation cannot block urgent local defense. Preserve atomic observations and deterministic logical work scheduling, distinguish unknown/blocked/service-failed, and handle invalidation storms with saved cursors instead of unbounded restarts.
 
@@ -102,6 +104,8 @@ Output: atomic knowledge/observation pipeline and authored fairness, stale-gener
 ## Stage 5
 
 Model: Sol / high. Implement and execute the harness bootstrap/oracle/small runtime gate now; broad comparative baseline batches remain Stage 15.
+
+Extend the same runner with [packet 12 capture/replay/compare/fixture-export](12-debug-workbench.md#cli-and-artifact-integration), using Stage 3's command/application checkpoint and Stage 4's permitted knowledge. Register C-01–06, D-01–06 and DBG-01–06 alongside existing cases. Implement and exercise the harness-side DBG-01/03/04/05 obligations now; Stage 13 adds UI controls, not another simulator. Record missing history/version incompatibility instead of claiming exact replay.
 
 1. Extract reusable canonical authoritative projection from `StateHashService`; add distinct pure AI digest and first-differing-path diagnostics. Keep current multiplayer consumers working.
 2. Complete brain save/load and runtime gaps for crop/tender, deposit sub-actions, spell cooldown/effects/zones/pending impacts, summon expiry, conversion, cargo, queue state, pending outcomes, RNG and cadence. Rebuild object references from stable IDs. Save-safe phases must not trigger duplicate opening or production after restore.
@@ -124,6 +128,8 @@ Output: exercised harness bootstrap and restore support, deterministic fixture d
 ## Stage 6
 
 Model: Terra / xhigh. Implement the shared decision algorithm and budgets exactly before tuning.
+
+Implement [packet 11 difficulty defaults](11-classic-rts-and-difficulty.md#d--difficulty-already-exists-make-it-real-and-testable), D-01–03, and packet 12's bounded recorded why-not explanations (DBG-02). Lower difficulty cannot disable survival/recovery, visibility fairness or local defense. Generator-not-serviced, not-recorded and outcome-unresolved must remain distinct in the debug projection.
 
 1. Add persistent stance/goal/opening suspension state and domain utility proposals. Apply shared priority classes, score breakdown, commitment window and switch hysteresis. All chosen actions link back to a goal.
 2. Implement demand ledger and lifecycle reconciliation before admitting new proposals. Track one physical commitment across accepted command, queue/site, and completion. Exclusive claims cover actors, source/tender/deposit services, resources, producer queues, cargo/landing, casts/effects and parent plans.

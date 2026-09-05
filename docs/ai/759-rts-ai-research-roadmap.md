@@ -64,7 +64,7 @@ The roadmap is deliberately ordered so the first playable vertical slice arrives
 8. **Multi-domain movement and warfare.** The AI distinguishes ground, water, air, elevated, and future amphibious access. It does not order ground armies toward unreachable islands. It can create a persistent water or air transport operation, choose safe boarding/landing points, escort cargo, contest air/water threats, and use only units or weapons capable of reaching and damaging a target.
 9. **Purposeful fortifications.** When the map, faction, strategy, and threat justify the cost, the AI builds connected wall lines with towers at valuable coverage points, stairs on the protected side, accessible wall-top defenders, and deliberate openings reserved for future gates. It does not surround itself blindly or seal its own economy and army inside.
 10. **A complete match.** The AI wins through the normal victory rules and deterministically concedes only after a sustained unrecoverable position. Victory, defeat, or concession reaches the existing score screen with a valid final score.
-11. **Readable difficulty.** Easy, normal, and hard differ in reaction delay, planning breadth, intentional error, risk, and tactical repertoire. Strategy personality is separate from difficulty. Any rules bonus is explicit in the lobby and result data.
+11. **Readable difficulty.** Easy, normal, and hard differ in reaction delay, planning breadth, mission concurrency and tactical repertoire. Initial intentional errors are off at every level; fair information and recovery safeguards are shared. Strategy personality is separate from difficulty. Any separately enabled rules bonus is explicit in the lobby and result data.
 12. **Fair and reproducible play.** The same seed and command stream produce the same decisions and state checkpoints. AI never bypasses shared validation, never acts on hidden IDs, and never uses render-frame timing as game time.
 
 ### Initial quality target
@@ -747,7 +747,7 @@ type AiStrategyArchetype =
 
 Only expose archetypes that have faction-valid plans and relevant map access. `naval` and `expeditionary` are invalid on a map without meaningful water/shore or disconnected objectives; `air-control` is invalid for a faction without the required producer/roster. `Expeditionary` means a transport-led combined-arms strategy, not that every unit has the future `Amphibious` movement capability. Selection may be explicit in the lobby later or deterministic from match seed, faction, and map capability. The chosen archetype is visible in debug trace/result metadata, not silently changed mid-match.
 
-Recommended fair profiles:
+Recommended fair profiles (exact current defaults and classic-RTS comparison are in [packet 11](759-skirmish-ai/11-classic-rts-and-difficulty.md); [packet 12](759-skirmish-ai/12-debug-workbench.md) extends debugging with isolated capture/replay/diff, and the [interactive overview](759-skirmish-ai/overview.html) explains the planned result):
 
 | Knob | Easy | Normal | Hard |
 | --- | --- | --- | --- |
@@ -755,9 +755,9 @@ Recommended fair profiles:
 | Candidate/intent budget | small | standard | larger |
 | Opening set | one forgiving plan | several legal plans | several plans + adaptation |
 | Tactical scripts | hold/advance/basic retreat | full initial set | full set + better evaluation budget |
-| Information memory | shorter/noisier deterministic confidence | standard fair memory | longer fair memory |
-| Intent error | occasional seeded suboptimal legal choice | low | none/minimal |
-| Target-switch hysteresis | high | standard | tuned by engagement |
+| Information memory | shared fair facts and decay | shared fair facts and decay | shared fair facts and decay |
+| Intent error | off initially | off | off |
+| Target-switch hysteresis | shared stable-target safety | shared stable-target safety | shared stable-target safety |
 | Fortification candidates per planning pass | few/simple fronts | standard bounded fronts | more alternatives, same legal rules |
 | Access/transport route candidates | few, safer routes | standard bounded alternatives | more route/landing alternatives, same legal rules |
 | Rules/resources/stats | identical | identical | identical by default |

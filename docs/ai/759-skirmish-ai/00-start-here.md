@@ -18,6 +18,8 @@ The user's follow-up (“Do that … more hardening across whole plan”) accept
 
 ## Start and continue algorithm
 
+Also read [classic RTS strategy and difficulty](11-classic-rts-and-difficulty.md) and [debug workbench](12-debug-workbench.md) before Stage 2; these are mandatory extensions with explicit owning-stage cases, not optional research. Their C/D/DBG cases bring acceptance to 121 named cases before variants. The [interactive overview](overview.html) explains the intended result but is not executable AI or validation evidence.
+
 1. Read repo `AGENTS.md` and applicable workflow/task-tracking/framework skills. Read this runbook, [shared decisions](01-shared-decisions.md), [hardening](09-progress-and-hardening.md), [verification ladder](10-integration-and-adversarial-tests.md), [debug](06-debug-panel.md), [scenario contract](08-deterministic-scenarios.md) and [progress](progress.md). Thereafter read the current stage plus its named cases/source sections. Broad external research is unnecessary.
 2. Inspect current branch/status, origin/develop and #792 using read-only git/GitHub queries; preserve unrelated work. Record base/research/prerequisite/baseline SHAs and actual toolchain in progress.
 3. Use the requested integration branch or create `feature/759-skirmish-ai` from current origin/develop in an isolated worktree. Don't implement on the research branch. Carry only this task-owned documentation package if not yet on develop.

@@ -1,5 +1,7 @@
 # Stages 10–12 — bases, fortifications, and recovery
 
+Extend [packet 12's recorded overlays](12-debug-workbench.md) with actual placement/route clearance, marginal tower coverage, protected approaches and construction recovery causes in their owning stages. Stage 12 must also run D-04: reduced Easy breadth preserves productive recovery and useful duplicate capacity. Unsupported future gates/air containers remain explicit capabilities, not assumed mechanics.
+
 Read [runbook](00-start-here.md), [shared decisions](01-shared-decisions.md), [debug contract](06-debug-panel.md), and the research sections for bases/fortification/component coverage. Dependencies: 0–9 stage_checked. Apply [H1–H9](09-progress-and-hardening.md), run the owning [focused gate](10-integration-and-adversarial-tests.md), and rerun complete final acceptance in Stage 15.
 
 ## Stage 10

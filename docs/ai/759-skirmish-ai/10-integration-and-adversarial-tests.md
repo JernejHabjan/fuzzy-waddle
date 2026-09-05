@@ -6,6 +6,8 @@ The user's follow-up approves hardening including lightweight checks during impl
 
 ## Verification ladder
 
+Include the owning-stage C/D cases from [packet 11](11-classic-rts-and-difficulty.md) and DBG cases from [packet 12](12-debug-workbench.md). Extend this same runner/coverage manifest; do not create a disconnected debug simulator or defer foundational capture contracts until final UI work. The combined catalog now contains 121 named cases before variants.
+
 ### Every implementation stage
 
 1. Read/review the changed code and immediate consumers, including errors, cleanup, defaults, docs and tests. Run scoped formatting/lint, actual-source type checks, and affected focused unit/contract regressions. Use the repository's actual current targets; Stage 2 supplies missing pure/protocol targets.

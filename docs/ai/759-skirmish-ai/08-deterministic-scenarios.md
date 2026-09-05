@@ -7,7 +7,7 @@ Required by the user's supplied “Deterministic AI Controller Scenarios” note
 - [ ] Stage 15 executes every mandatory case, its negative/control variants, determinism checks and runtime integration counterparts; repairs failures and publishes evidence.
 - [ ] Final docs explain adding/replaying scenarios; no required case is passed merely because a test file exists.
 
-The original 63 cases below are joined by H-01–32 and SEQ-01–08 in [the integration/fault packet](10-integration-and-adversarial-tests.md): 103 named cases before paired variants. Apply [H1–H9](09-progress-and-hardening.md) progress/safety contracts to their assertions. In particular, a blocker string, optional expansion or token order does not establish useful recovery or offensive play.
+The original 63 cases below are joined by H-01–32 and SEQ-01–08 in [the integration/fault packet](10-integration-and-adversarial-tests.md), C-01–06 and D-01–06 in [strategy/difficulty](11-classic-rts-and-difficulty.md), and DBG-01–06 in [debug workbench](12-debug-workbench.md): 121 named cases before paired variants. Apply [H1–H9](09-progress-and-hardening.md) progress/safety contracts to their assertions. In particular, a blocker string, optional expansion or token order does not establish useful recovery or offensive play.
 
 ## Two different questions, two kinds of assertions
 

@@ -1,5 +1,7 @@
 # Stage 15 — extensive review, validation, repair, and closure
 
+The mandatory catalog is **121 named cases before variants**: 63 strategic, H-01–32, SEQ-01–08, [C-01–06 and D-01–06](11-classic-rts-and-difficulty.md#added-cases-and-ownership), and [DBG-01–06](12-debug-workbench.md#ownership-usability-and-verification). Validate every owning-stage slice and integrated outcome; missing registrations fail coverage, not silently shrink the denominator. Future-capability cases retain explicit support status rather than fictitious passing runtime results.
+
 Model: `gpt-5.6-sol`, effort `xhigh`. [Runbook](00-start-here.md) policy: this is the final required stage; all deferred execution happens here. Stage 16 search/learning is excluded. Prior stages must be `stage_checked` with focused evidence, not falsely marked release-validated. Start with the complete progress/verification ledger and candidate commit. This stage reruns the final integrated checks; earlier green results do not replace them.
 
 ## 15A — integration and formal review
@@ -66,6 +68,8 @@ Real runtime means the actual SimulationTickService, command bus/application, mo
 
 ## 15D — baseline, batches, and tuning
 
+Execute packet 11's D-06 paired difficulty calibration (start 20 shared seeds, expand up to 100 per comparison if uncertain), keeping map/side/faction/rules/opponent controlled and publishing intervals and behavioral metrics. Separately prove D-01–05 fair information, survival/recovery and profile persistence. An indistinguishable challenge trend remains an explicit tuning failure, not a reason to add cheats. C-01–06 must demonstrate useful army-size/timing/scouting/pursuit outcomes, not just changed trace strings.
+
 Implement and run the Stage 5 CLI with this stable interface (it is a required new tool, not an existing command):
 
 ```sh
@@ -91,6 +95,8 @@ Initial acceptance targets (record tuned values before final rerun):
 Tune configuration using collected evidence, save profile/archetype version and rationale, and rerun affected deterministic/scenario/holdout cases. Do not implement cheating or hidden data access to improve scores. No product approval is needed merely to choose the initial documented defaults; genuinely new game mechanics remain out of scope.
 
 ## 15E — actual skirmish and debug UI review
+
+Execute packet 12's real incident round trip: inspect a repeated-build/stalled-attack cause, capture compatible inputs, replay offline to a safe breakpoint, compare the repaired first divergence, and rerun the independent semantic scenario. Exercise all DBG cases, including keyboard use, quotas/truncation, malformed import, privacy, scene disposal and unchanged gameplay when live debug is filtered/frozen/exported. Screenshots of the explanatory overview are not this runtime acceptance.
 
 Use the repository browser-playtest workflow/skill when performing browser QA. Start through real lobby selection: both factions, each difficulty, legal map, ordinary economy/visibility. Confirm AI opens, produces mixed purposeful forces, explores, reacts, expands/fortifies when justified, recovers, and wins/loses/concedes to the score screen. Include save/load, pause/speed, multiplayer reconnect/host migration, and a teammate scenario.
 

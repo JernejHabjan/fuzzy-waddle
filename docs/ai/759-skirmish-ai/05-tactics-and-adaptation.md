@@ -4,6 +4,8 @@ Read [runbook](00-start-here.md), [shared decisions](01-shared-decisions.md), [d
 
 ## Stage 13
 
+Complete [C2/C4 timing, bounded pursuit and post-battle exploitation](11-classic-rts-and-difficulty.md), including C-02/05/06 and D-05. Finish [packet 12's debug workbench](12-debug-workbench.md): isolated tick/decision stepping, named breakpoints, pure what-if, capture/replay/diff and DBG-01–06 using the Stage 5 runner/bridge. Live history navigation never steps or pauses a multiplayer match. Calibrate predicted versus actual local combat outcomes offline; do not make estimator confidence self-proving.
+
 Model: Sol / high. Source anchors: CombatMicroManager, TargetingManager, Attack/Healing/Health/Spell/Status components, attack/high-ground/projectile helpers, pawn behavior, squad/transport/fortification reducers.
 
 1. Generalize squad state to forming/assemble/rally/advance/engage/defend/regroup/retreat/recover/reserve with explicit transitions and one primary owner per actor. Coordinated ground/air/naval task forces contain domain-specific squads; passengers transfer ownership only after actual unloading/regroup.
@@ -41,7 +43,7 @@ Stage 9 owns initial squads/incidents; Stage 13 completes severity-scaled simult
 Model: Terra / xhigh. Source anchors: TechProgressManager, ForceMaintenanceManager, research definitions/QueueComponent, actor-level-utils, tech-tree and lobby/profile contracts.
 
 1. Extend Stage 7 composition with evidence-backed capability demands: observed flyers -> real anti-air; contested water/transport -> escort/intercept/shore fire; observed area damage -> spacing/ranged/support where useful; static fortified target -> legal range/air/alternate objective rather than a fictitious siege roster. Unknown capabilities stay unknown.
-2. Every evidence item stores type, observed tick, confidence, source contact and permitted facts. Use existing memory decay and require two consistent decision observations before non-emergency composition transition. Keep committed production unless cancellation utility exceeds real refund/progress cost.
+2. Every evidence item stores type, observed tick, confidence, source contact and permitted facts. Use existing memory decay and require support at two consecutive eligible decision evaluations before non-emergency composition transition, subject to the profile cooldown. Re-reading the same fact may establish persistence, never independent corroboration or additional enemy mass/confidence (C3/C-04). Keep committed production unless cancellation utility exceeds real refund/progress cost.
 3. Derive role targets from strategic objective and known available roster. Recompute planned strength across ready/queued/accepted assets; do not train redundant counters because one unit satisfies primary role and a capability constraint. Retain viable fallback when a producer/tech path is lost.
 4. Score research as estimated benefit over current useful army plus the next 1,200 ticks of likely production, minus resources, queue delay and survival cost. Only actor/spell upgrades actually available in the owning player's tech tree are candidates. Existing and newly produced actors use applied/runtime resolved level; update cargo and vision/attack capability after upgrade.
 5. Implement authored profiles for balanced/rush/macro/turtle/tech and capability-available air-control/naval/expeditionary. They share legal macro/ledger behavior; vary role budgets, timing, defense/expansion utility and supported opening branches. No archetype can skip essential worker/supply/prerequisite recovery.
@@ -53,6 +55,8 @@ Model: Terra / xhigh. Source anchors: TechProgressManager, ForceMaintenanceManag
 Output: completed connected behavior with focused gates passing. Mark 0–14 stage_checked, capture candidate SHA and next action Stage 15, then continue automatically. Do not proceed to deferred Stage 16.
 
 ### Stage 14 retained final acceptance
+
+Finish packet 11's supported branch/timing library, difficulty behavior and persisted profile provenance. Run C-01/02/04, D-02/03/05; prepare the paired D-06 calibration manifest for Stage 15. Distinct enum labels alone do not implement difficulty. Easy keeps essential counters, economy, legal transport, defense and recovery; no errors or hidden bonuses are enabled to manufacture a challenge gap.
 
 - Composition changes only from recorded permitted evidence and obeys hysteresis.
 - Tech spending does not violate survival/supply/prerequisite reservations.

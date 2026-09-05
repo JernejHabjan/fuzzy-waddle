@@ -37,7 +37,7 @@ Persist one strategic stance: `opening`, `stabilize`, `defend`, `pressure`, `exp
 
 Apply H4's fair service lanes first; priority resolves actual resource/actor conflicts, not which entire manager gets to execute. Urgency classes in descending order: imminent survival/mode loss; restore income/supply/prerequisites; resume opening; defend assets/ally; execute committed army/transport/expansion; improve economy/tech/intelligence. Inside a class use integer utility 0–1000. Initial generic score: clamp to 0–1000 the sum `4*urgency + 3*benefit + 2*confidence - 3*risk - 2*opportunityCost`, with each input 0–100 and component scores included in trace. Different goal scorers may use documented domain inputs, but cannot bypass classes/reservations.
 
-Commit a non-emergency strategic goal for 200 ticks (10 s). After that, switch only when a competitor exceeds incumbent utility by 100 for two consecutive decision steps, or when the goal completes/is impossible. Immediate danger/dead target can interrupt at once. Default opening ends once worker/economy infrastructure and first squad checkpoints are met; next stance uses threat, resource life, and feasible enemy/base objectives. No uniform random strategy/building/unit selection. Seeded variety is restricted to one canonical supported archetype choice at match start and explicit easy-mode legal error; save the choice and RNG use.
+Commit a non-emergency strategic goal for 200 ticks (10 s). After that, switch only when a competitor exceeds incumbent utility by 100 for two consecutive decision steps, or when the goal completes/is impossible. Immediate danger/dead target can interrupt at once. Default opening ends once worker/economy infrastructure and first squad checkpoints are met; next stance uses threat, resource life, and feasible enemy/base objectives. No uniform random strategy/building/unit selection. Initial seeded variety is restricted to one canonical supported archetype choice at match start; save the choice and RNG use. Intentional legal-error policies remain future opt-in work, off in this delivery.
 
 ## Demand ledger and idempotence — prevent building/unit spam
 
@@ -64,6 +64,10 @@ Failure retry defaults: 40, 80, 160, then 320 ticks for equivalent failed candid
 
 ## Initial profiles and budgets
 
+The [difficulty specification](11-classic-rts-and-difficulty.md#d--difficulty-already-exists-make-it-real-and-testable) owns exact behavioral differences, offensive mission caps, composition cooldowns and calibration. Keep its versioned profile connected to lobby, host, save/replay and results. Intentional errors stay off in initial delivery; a future opt-in policy is separate. Contact memory remains identical across profiles. Do not use historical research-table suggestions to override these defaults.
+
+Stage 7 derives total army demand and dated economic obligations using [C1/C2](11-classic-rts-and-difficulty.md#c2--desired-army-size-and-spending-have-a-source) before assigning role shares. Stage 2 includes [reproduction manifests and diagnostic completeness](12-debug-workbench.md); these cannot be retrofitted as untyped live-world debug queries.
+
 | Setting | Easy | Normal | Hard |
 | --- | --- | --- | --- |
 | Decision interval, ticks | 40 | 20 | 10 |
@@ -78,7 +82,7 @@ Failure retry defaults: 40, 80, 160, then 320 ticks for equivalent failed candid
 
 All loops have a quota and saved stable continuation cursor. Bound graph construction and spatial-index updates separately (initial 256 dirty cells per decision step); new region generations become usable atomically. Pending summaries must expose `not_ready` rather than an invented route. Cache local threat/region summaries and invalidate on relevant changes. UI formatting/wall time never affects work admitted to a decision.
 
-Reaction delays and budgets differ; visibility and game rules do not. Default intentional easy-mode error is off until Stage 15 can establish a useful legal-error rate. Default cheat/resource modifiers are off. Memory: mobile contact confidence decays linearly to zero over 1,200 ticks; buildings remain last-seen location hypotheses until explored empty, with diminishing confidence. These are planning guesses, never hidden live targets or proof of destruction.
+Reaction delays and budgets differ; visibility and game rules do not. Intentional easy-mode error remains off in initial delivery; a future opt-in policy needs separate evaluation. Default cheat/resource modifiers are off. Memory: mobile contact confidence decays linearly to zero over 1,200 ticks; buildings remain last-seen location hypotheses until explored empty, with diminishing confidence. These are planning guesses, never hidden live targets or proof of destruction.
 
 ## Observations, routes, targets, and runtime validation
 

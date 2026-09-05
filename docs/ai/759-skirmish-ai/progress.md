@@ -2,6 +2,8 @@
 
 This file records implementation, not completion of research. Update after every stage/interrupt. Do not check acceptance merely because code was authored.
 
+Documentation review, 2026-09-05: added classic-RTS comparison, integrated C/D/DBG requirements and offline overview. Documentation smoke passed with `AI_OVERVIEW_BROWSER=/usr/bin/google-chrome node docs/ai/759-skirmish-ai/overview.smoke.mjs`: 30 scenario/stage combinations, three keyboard-operated profiles, capacity boundaries, three viewport widths, offline fallback, local links and 121 unique scenario IDs. Desktop/mobile screenshots were visually reviewed; a clipped mobile map label was fixed and the smoke rerun. This is page/specification evidence only; every runtime stage below remains not started.
+
 - Integration branch/worktree: not started
 - Base develop SHA: record at kickoff
 - Research source SHA: record at kickoff
@@ -52,6 +54,12 @@ For H1–H9 and each H/SEQ ID record: stage owner, implemented symbols, debug fi
 - [ ] H-01–32 fault/progress cases and SEQ-01–08 continuous matches
 
 ## Final verification ledger
+
+The classic-RTS/difficulty/debug review adds mandatory [C/D](11-classic-rts-and-difficulty.md) and [DBG](12-debug-workbench.md) ownership. For each ID use the same symbol, persistence, focused/final evidence fields as H/SEQ. The 121-case catalog and [interactive overview](overview.html) are authored requirements/explanation, not implemented or passing AI tests.
+
+- [ ] C-01–06 opening/timing/army demand/scout evidence/pursuit/opponent focus
+- [ ] D-01–06 fair distinct difficulty, persistence, safety and paired calibration
+- [ ] DBG-01–06 why-not, capture/replay/step/diff, privacy and bounded lifecycle
 
 - [ ] Every deterministic strategic scenario ID and positive/negative variant: authored, exercised, semantic and replay assertions, real-runtime counterpart or explicit future-capability status
 - [ ] Legitimate duplicate production/deposits/units, advance throughput planning and suppression only after fulfilled demand
