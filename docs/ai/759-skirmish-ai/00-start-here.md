@@ -4,31 +4,32 @@ Status: implementation-ready specification, no runtime stages completed by this 
 
 The [deterministic scenario packet](08-deterministic-scenarios.md) is mandatory alongside each owning stage. It translates the user's realistic strategic situations into positive/negative acceptance cases and independent outcome assertions. Useful duplicate buildings and units are expressly allowed; only accidental over-fulfillment and repeated side effects are suppressed.
 
-## User-approved execution policy
+## User-approved execution policy — hardened revision
 
-The user's 2026-09-05 request explicitly chooses sequential implementation with testing, builds, validation, and extensive code review deferred to the final stage. This policy supersedes earlier per-stage test/build/merge instructions in the research roadmap and repository skills **for this #759 implementation only**. It does not weaken the final acceptance criteria or alter repository-wide policy.
+The user's follow-up (“Do that … more hardening across whole plan”) accepts the review recommendations, including lightweight verification during implementation. This supersedes the earlier 2026-09-05 request to defer **every** check. Sequential implementation and one integration branch remain; extensive validation, release builds, broad playtesting and formal whole-solution review remain Stage 15.
 
-- Implement Stages 0–14 in sequence in one isolated integration branch, with task-owned commits at natural boundaries. Do not wait for an intermediate stage PR to merge. Keep the integration PR draft and unvalidated until Stage 15 finishes.
-- Write regression tests, fixtures, harness code, and supporting docs alongside their owning feature. Mark them `authored_not_run`. Do not execute tests, builds, lint, type checks, formatting checks, benchmarks, browser playtests, or formal validation/review until Stage 15. Ordinary file inspection, git status/diff, and reading call sites remain necessary implementation work. Correct obvious errors encountered while authoring without claiming verification.
-- `implemented_unvalidated` means the feature and consumers are written, its contracts are connected, debug fields are populated, fixtures exist, and handoff state is saved. It does not mean tests pass. Continue to the next stage using implemented dependencies. All “Acceptance,” “pass,” “gate,” “regression,” or “verify” requirements in stage/research documents are evidence to produce in Stage 15 unless they describe runtime command validation (which must always execute in the game).
-- Stage 15 performs integration repairs, formal code review, exhaustive applicable verification, tuning, and learning/documentation closure. It may modify any earlier stage to repair findings and reruns affected checks. Never skip failing requirements, disable runtime validators, remove tests, or loosen assertions to finish.
-- Stage 16 (search/learning) is outside this requested implementation. Do not automatically start it after Stage 15.
-- Do not merge or deploy automatically. Push task-owned integration commits and keep the draft PR updated. Existing remote CI may run on pushes; do not disable or change CI to enforce the local deferred-execution policy. Record any CI output without claiming a local validation pass.
+- Implement Stages 0–14 sequentially with task-owned commits; do not wait for intermediate PR merges. Keep the integration PR draft and not release-validated until Stage 15 finishes.
+- Write tests with each feature. Run scoped lint/format, actual-source type checks, affected unit/contract regressions and the stage's small integration smoke before advancing. From Stage 5 use the real-runtime driver where relevant. Fix task-caused gate failures immediately. Read [the exact verification ladder](10-integration-and-adversarial-tests.md).
+- Perform a focused code/consumer review at each stage. Reserve extensive whole-diff review, full production/repository builds, large seed/holdout/soak matrices, tuning, full debug/UI review and learning closure for Stage 15. Earlier targeted builds are allowed when required to prove changed packaging/generated integration.
+- `stage_checked` means implemented, connected, documented and passing its recorded focused gate. It is **not** full release validation. `implemented_unvalidated` is a historical/partial state requiring missing focused checks before dependent work; do not silently skip it. `validated` requires final Stage 15 evidence.
+- Every stage must implement its [hardening obligations](09-progress-and-hardening.md): real progress/deadlines, deadlock prevention, safe command uncertainty, lane service, useful economy/offense and lifecycle cleanup. The [strategic scenarios](08-deterministic-scenarios.md) plus [H/SEQ cases](10-integration-and-adversarial-tests.md) are mandatory acceptance, not future suggestions.
+- Stage 15 reruns required checks over the final integrated revision, repairs findings in their owning modules, and publishes full evidence. Earlier green tests do not waive final reruns. Never disable runtime validators, omit required cases or loosen safety/progress assertions to finish.
+- Stage 16 search/learning remains outside scope. Never merge or deploy automatically. Push task-owned commits and maintain the draft integration PR; don't disable CI.
 
 ## Start and continue algorithm
 
-1. Read repo `AGENTS.md` and the applicable repo workflow/task-tracking/framework skills. Read this file, [shared implementation decisions](01-shared-decisions.md), [debug contract](06-debug-panel.md), [scenario contract and owning-stage cases](08-deterministic-scenarios.md), and [progress](progress.md). Read only the current stage packet plus its referenced source sections thereafter. Broad external AI research is unnecessary.
-2. Inspect status, current branch, and current `develop`/PR #792 using read-only git/GitHub queries. Preserve unrelated changes. Record the base SHA, research SHA, #792 head/merge state, and baseline SHA in `progress.md`.
-3. Use the user-requested integration branch, or create `feature/759-skirmish-ai` from current `origin/develop` in an isolated worktree if none exists. Do not implement on the research branch. Carry this documentation package into the integration branch if it is not yet on develop; copy only its task-owned documentation via a reviewed patch, not unrelated research-branch runtime history.
-4. Stage 0 reconciles #792. If merged, record the merge SHA and confirm the relevant code exists by reading it. If open, inspect the planner diff and integrate the equivalent exact fix into the integration branch (cherry-pick only clean, task-owned commits or apply a focused patch). Do not modify or merge the other PR, and do not block the entire sequence on its merge. Preserve its attribution/relationship in the integration PR. Tests are authored/inherited, not run yet.
-5. Pin `baselineSourceSha` before behavior changes. It must identify the prior AI implementation, not the candidate. Store a versioned fixture/scenario manifest and baseline compatibility notes in Stage 5; run both baseline and candidate only in Stage 15.
-6. Resume the first row not marked `implemented_unvalidated` or `validated`. Implement its ordered recipe and all component-audit obligations, add debug data and tests, record changed paths/contracts, unresolved defects, and next exact action, then commit only task-owned work. Continue automatically through the next stage without asking “continue?” or starting a new task.
-7. At context/usage boundaries, persist `progress.md` before ending. A resumed agent follows the recorded stage/step and must not recreate completed work. Never claim that a model or scheduler will continue after the task has actually stopped. No background automation is required by this plan.
-8. Enter Stage 15 only when 0–14 are implemented. Complete its review/validation/repair loop and docs/skills closure. Mark the whole plan complete only after every required gate has evidence; otherwise leave exact failures/blockers and the plan unfinished.
+1. Read repo `AGENTS.md` and applicable workflow/task-tracking/framework skills. Read this runbook, [shared decisions](01-shared-decisions.md), [hardening](09-progress-and-hardening.md), [verification ladder](10-integration-and-adversarial-tests.md), [debug](06-debug-panel.md), [scenario contract](08-deterministic-scenarios.md) and [progress](progress.md). Thereafter read the current stage plus its named cases/source sections. Broad external research is unnecessary.
+2. Inspect current branch/status, origin/develop and #792 using read-only git/GitHub queries; preserve unrelated work. Record base/research/prerequisite/baseline SHAs and actual toolchain in progress.
+3. Use the requested integration branch or create `feature/759-skirmish-ai` from current origin/develop in an isolated worktree. Don't implement on the research branch. Carry only this task-owned documentation package if not yet on develop.
+4. Reconcile #792 on the integration branch: reuse the existing merged fix, or integrate its equivalent clean task-owned change without modifying/merging the other PR or waiting on it. Preserve provenance. Run the narrow Stage 0 prerequisite regression gate.
+5. Pin baselineSourceSha before behavior changes. Stage 5 supplies baseline compatibility/manifest; comparative candidate/baseline batches remain Stage 15. Do not manufacture a candidate-derived baseline.
+6. Resume the first stage not `stage_checked`/`validated`, or the exact interrupted step. Implement its connected recipes/H-obligations, tests and debug data; run its focused gate, fix failures, update progress and commit task-owned work. Continue without asking “continue?” or opening new tasks.
+7. Preserve stage/step, check results, changed contracts, test IDs, defects and next command before interruption. A resumed agent must not recreate completed work or treat old `authored_not_run` records as passed. Model/scheduler continuation is not guaranteed after a task actually stops.
+8. Enter Stage 15 once 0–14 are `stage_checked`. Run the core continuous-match gate first as directed there, then all full review/validation/tuning/closure obligations. Mark complete only when required evidence exists; otherwise leave precise failures and blockers.
 
-Stop only for missing authority/credentials or a genuinely unresolved product/architecture choice that cannot be answered from these defaults. Missing prefab capabilities produce explicit supported-map/faction limitations, not new mechanics or an invented tech tree. A local path that moved calls for narrow symbol discovery, not a new research project.
+Stop for missing authority/credentials, a required gate blocked by unavailable infrastructure, or a genuinely unresolved material choice not answered by the defaults. First exhaust safe local fixes and available test alternatives. Missing prefab capabilities produce explicit support limitations, not invented mechanics. Moved code calls for narrow symbol discovery, not another broad research phase.
 
-At the research checkout the framework skill file is `plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-phaser3/SKILL.md`, although the router may name `fuzzy-waddle-phaser`. Use the present repo-local skill and current package/config versions; the historical skill name is not evidence that the current dependency is Phaser 3. No general framework migration is authorized by this plan.
+At the research checkout the framework skill is `plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-phaser3/SKILL.md`, although the router may name `fuzzy-waddle-phaser`. Use the present skill/current package versions; the historical skill name is not evidence of the current Phaser major. No general framework migration is authorized.
 
 ## Stage routing and model recommendations
 
@@ -58,13 +59,13 @@ For a single uninterrupted task, use Terra `high`/`xhigh` as the cost-conscious 
 ## One-message kickoff
 
 ```text
-Start implementing docs/ai/759-skirmish-ai/00-start-here.md for #759. Follow its sequential
-Stages 0–15 and progress.md. Implement in one isolated integration branch with task-owned
-commits, including all existing RTS mechanics and the full AI debug panel. Author tests and
-fixtures with each stage, but defer test execution, builds, lint/type/format checks, runtime
-playtests, formal code review, and extensive validation until Stage 15, as explicitly requested.
-Continue between stages without reconfirmation. In Stage 15 repair all task-caused findings,
-run the full applicable validation matrix, update affected docs/skills with proven learnings,
-and push the completed implementation for review. Preserve unrelated work; never merge
-automatically. Use the model/effort table as guidance and record actual settings and progress.
+Start implementing docs/ai/759-skirmish-ai/00-start-here.md for #759. Follow Stages 0–15,
+the hardening contracts and progress ledger in one isolated integration branch. Include the
+full AI debug panel, meaningful economy/offensive missions and every supported mechanic.
+Write tests alongside each stage and run its focused lint/type/unit/integration smoke gate;
+repair task-caused failures before advancing. This replaces the old all-checks-at-the-end rule.
+Continue automatically between stages. Keep extensive whole-solution review, full builds,
+broad scenario/holdout/soak validation, tuning and docs/skill learning closure in Stage 15.
+Run the continuous-match and fault-injection cases as well as the strategic scenarios.
+Preserve unrelated work, record actual model/effort and evidence, push for review, never merge.
 ```

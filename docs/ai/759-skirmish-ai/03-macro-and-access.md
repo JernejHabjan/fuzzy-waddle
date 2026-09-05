@@ -1,6 +1,6 @@
 # Stages 7–9 — build orders, composition, access, and a purposeful match
 
-Read [runbook](00-start-here.md), [shared decisions](01-shared-decisions.md), [debug contract](06-debug-panel.md). Dependencies: implemented Stages 0–6. Tests/fixtures are authored here and run in Stage 15.
+Read [runbook](00-start-here.md), [shared decisions](01-shared-decisions.md), [debug contract](06-debug-panel.md). Dependencies: Stages 0–6 stage_checked. Apply [hardening H1–H9](09-progress-and-hardening.md) and run [focused gates](10-integration-and-adversarial-tests.md) here; exhaustive acceptance reruns in Stage 15.
 
 ## Stage 7
 
@@ -53,6 +53,7 @@ Output: both faction openings, delivered-income economy, supply, shared queues, 
 - Estimate job capacity from actual source/service/path constraints and observed delivery cycles, not just count workers. Assign the next worker to the best marginal delivered income; transfer away from saturated or projected-surplus jobs with hysteresis. Do not treat 12 workers/base as an immutable population cap when useful demand grows.
 - Publish throughput target/deadline, predicted completion with/without another producer, queue utilization, resource bottleneck, marginal deposit travel savings, and any redundancy reason. Do not let a generic `strategic_need` string substitute for evidence.
 - Author the positive and negative duplicate cases in [the scenario specification](08-deterministic-scenarios.md), including two useful producers, two useful drop-offs, several same-type units, and suppression only after the requested capacity is fully committed.
+- Apply H5's player-wide optional reservation exposure, measured-income correction, viable recovery floors and spawn-clearance checks. Run H-11/13/16/17/18 and the Stage 7 actual-faction economic smoke. A completed producer must receive useful work or a bounded real blocker; empty buildings with impressive forecasts fail.
 
 ### Stage 7 retained final acceptance
 
@@ -77,6 +78,7 @@ Model: Sol / high. Source anchors: NavigationService, WaterNavigationHelper, hei
 6. Execute shared load/move/unload commands and consume outcomes; move passengers back to squad/economy ownership only after confirmed unload and regroup in intended access region. On transport death account for actual runtime cargo survival/death, then release/recover claims. No invented rescue/teleport.
 7. Save every phase, manifest, deadline, route generation and pending outcome. Reconcile upgrade capacity/ownership and deposit occupancy before boarding. Add live transport/route debug views and overlay.
 8. Add actual CommonBoat water fixture and a separately marked flying-container test definition proving no boat-only shore assumptions. No production roster changes to force faction symmetry.
+9. Apply H7/H8 route clearance, query isolation, phase progress and ownership cleanup. Run H-19–21/29 and the real boarding/unsafe-landing focused gate. Test actual duty after unloading and transport reuse, not just the unload animation.
 
 Output: legal reachability everywhere objectives are selected, water transportation and failure recovery, generic future air-transport contract, no impossible direct ground command loop.
 
@@ -98,14 +100,15 @@ Model: Terra / xhigh. Source anchors: ScoutingManager, TargetingManager, CombatM
 
 1. Choose deterministic reachable frontiers/start hypotheses relative to map/base, assigned scout role and information value. Use permitted air/water scouts where supported. Explore last-seen locations when vision is lost; no remembered live ID target.
 2. Build threat incidents keyed by base/region and hostile group evidence; distinguish worker harassment, army pressure, flyers, naval/transport landing, proxy/blocker and unknown contact. Incident expiry and escalation use ticks and confidence. Score defense with compatible weapons/routes.
-3. Form persistent defense, attack, reserve and reinforcement squads by role/domain. Initial attack: at least 6 assigned military population, ready fraction >=75%, legal objective/retreat route, and local estimated advantage >=1.2. After 1,200 assembly ticks choose an explained smaller safe probe, alternate objective, reinforcement request or cancellation; never wait indefinitely for an impossible roster.
+3. Form persistent defense, attack, reserve and reinforcement squads by role/domain. Initial full-engagement preference: at least 6 assigned military population, ready fraction >=75%, legal objective/retreat route, and local estimated advantage >=1.2. H6 supplies mission-specific launch/progress rules; uncertainty or this preferred threshold cannot block useful scouting, raids or pressure indefinitely. After 1,200 assembly ticks choose an explained smaller safe probe, alternate objective, reinforcement request or cancellation; never wait indefinitely for an impossible roster.
 4. Assign objective by urgency/value/feasibility: local threat -> blocker -> known reachable enemy economy/production -> search. Attack objective ownership outlives a single target actor. Invalid target causes legal search/retarget, not random full-army reassignment. Keep initial 25% home reserve when army size permits, but size each response by compatible threat strength, travel time and asset loss risk. Reserve percentage is an initial preference, not a reason to recall the whole army for a scout or retain an insufficient defense during a major raid. High imminent danger can recall main army through arbitration. Maintain independent objectives for concurrent fronts and reinforce the highest marginal useful engagement.
 5. Add basic air scout/intercept/harass and naval escort/intercept/shore fire only when weapon and path allow it. Coordinate task-force timing with transport; normal ground squad is not forced into the fleet's formation.
 6. Add one bounded neutral-approach claimant per opportunity, revalidate ownership and consume deterministic conversion outcome. Allied defense uses permitted information, own units and local survival floor; no remote teammate orders.
 7. Build a pure mode objective/recoverability evaluator using actual win/loss/tie settings. Require sustained hopelessness for 1,200 ticks before concession, interrupted immediately by a feasible recovery/win route. Preserve last-building/time/stockpile objectives. Dispatch authoritative concession; GameModeConditionChecker/ScoreTracker produce exactly one final result/score scene.
 8. Fill debug purpose/next actions, exploration/knowledge/threats, basic squad/mode/concession views and overlays.
+9. Implement H6's first complete mission lifecycle now: independently useful objective effect, assembly/launch deadlines, reinforcement/regroup and a next mission. Run H-22–24 and SEQ-01's supported land core path before Stage 10. The first offensive launch target is 10 simulated minutes on viable Normal fixtures; expansion is not a substitute. Recovery is already supervised by Stage 6, with detailed domain repair extended at Stage 12.
 
-Output: first complete skirmish loop implemented; author unseen-enemy, threat response, attack/retreat, neutral/team, victory/concession/score and island scenarios. Continue to Stage 10 without declaring the playable gate validated.
+Output: first complete skirmish loop connected; run the focused complete-land-match, income, first-attack/continuation and minor-raid gates before Stage 10. Author all unseen-enemy, neutral/team, victory/concession/score and island variants for Stage 15. A smoke pass is not final release validation.
 
 ### Stage 9 retained final acceptance
 

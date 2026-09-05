@@ -4,6 +4,8 @@
 
 **Implementation entry point:** [agent-ready runbook and stage packets](759-skirmish-ai/00-start-here.md). This file retains research evidence and design rationale. The runbook owns the latest execution policy; the [scenario catalog](759-skirmish-ai/08-deterministic-scenarios.md) incorporates the user's deterministic test requirements. Documentation readiness is not runtime completion.
 
+**Hardening revision:** the user's later approval supersedes the earlier all-checks-at-the-end policy. Run focused stage checks and integrated core-loop smoke during implementation; retain extensive release validation at Stage 15. [H1–H9](759-skirmish-ai/09-progress-and-hardening.md) and [fault/continuous-match gates](759-skirmish-ai/10-integration-and-adversarial-tests.md) strengthen all older acceptance wording. In particular, an explained blocker is not progress, an expansion is not an attack, and a pending command is not safe to retry under a new identity.
+
 - **Issue:** [#759 — Further improve AI](https://github.com/JernejHabjan/fuzzy-waddle/issues/759)
 - **Research PR:** [#764 — docs: add RTS AI improvement roadmap](https://github.com/JernejHabjan/fuzzy-waddle/pull/764)
 - **Implementation dependency:** [#792 — fix(ai): make Stage 0 planner selection deterministic](https://github.com/JernejHabjan/fuzzy-waddle/pull/792)
@@ -71,7 +73,7 @@ The first release target is not expert or tournament play. It is a normal-diffic
 
 - completes a faction-valid opening on every supported skirmish faction/map pairing;
 - produces workers and army continuously unless a trace gives a valid blocking reason;
-- launches at least one purposeful attack or expansion in a stable 15-minute match;
+- establishes useful income and launches a purposeful offensive mission by 10 simulated minutes in viable standard fixtures, with independent objective effect and continuing pressure in later viable windows; an expansion alone is not sufficient;
 - responds to an observed base threat within its documented decision delay;
 - creates a connected, traversable defensive line in fortification fixtures without blocking required ground access;
 - recognizes ground-disconnected objectives and either completes a legal transport/air/naval plan or selects a reachable alternative with an explained reason;
@@ -490,7 +492,7 @@ Create a bounded tactical ability proposer integrated with squad arbitration. It
 - Support units and worker repair/heal teams need protection, reachable patients, capped assignments, and a release-to-duty condition. Compare field recovery with retreat/replacement; do not pull every worker from food production to repair a low-value asset.
 - Summoned objects such as Healing Totem contribute support while their effects and remaining lifetime justify it. They are not permanent production, housing, expansion anchors, or a guaranteed rebuild path. Their destruction/expiry invalidates support reservations and objectives through normal outcomes.
 - Evaluate actual weapon choices, minimum/maximum range, high-ground bonus, attack cooldown/windup, projectile arrival, and melee area geometry. Preserve firing opportunities where sensible, avoid interrupting every windup with move orders, and release predicted damage claims on miss/failure/target loss. Counter values must reflect actual armour-pool and damage application rules; use no invented damage-type matrix.
-- Separate authoritative spell impact/effect/summon lifetime from visual animation. Author regression fixtures in Stages 3–5 and execute them in Stage 15 to prove equal results across rendering rates, pause/speed changes, save/replay, and teammate targets before claiming the strategic ability proposer release-ready.
+- Separate authoritative spell impact/effect/summon lifetime from visual animation. Author and run focused regressions in Stages 3–5, then execute the full matrix in Stage 15 to prove equal results across rendering rates, pause/speed changes, save/replay, and teammate targets before claiming the strategic ability proposer release-ready.
 
 ### Ownership, neutral opportunities, allies, and match objectives
 
@@ -820,7 +822,7 @@ Defer excess work by stable cursor/order to later simulation ticks. Wall-clock p
 
 ### Level A — pure decision fixtures
 
-Author these in their owning stages and execute them in Stage 15. The [deterministic scenario specification](759-skirmish-ai/08-deterministic-scenarios.md) adds independent semantic assertions, positive/negative paired cases and reproducibility requirements. Several sensible decisions may satisfy a scenario, but identical inputs to one version must still replay exactly.
+Author these in their owning stages, run focused cases there, and rerun the complete matrix in Stage 15. The [deterministic scenario specification](759-skirmish-ai/08-deterministic-scenarios.md) adds independent semantic assertions, positive/negative paired cases and reproducibility requirements; [packet 10](759-skirmish-ai/10-integration-and-adversarial-tests.md) adds progress/fault and continuous-match gates. Several sensible decisions may satisfy a scenario, but identical inputs to one version must still replay exactly.
 
 Run in the gameplay library without Phaser rendering. Feed versioned observations/outcomes into the brain and assert exact knowledge, goal, intent, arbitration, and state transitions.
 
@@ -999,13 +1001,13 @@ Reviewers score fairness, legibility, challenge, repetition, recovery, suspected
 
 ### Merge policy for behavior changes
 
-The integration PR remains draft/unvalidated through Stages 0–14. Stage 15 runs the authored harness, establishes baseline variance, reviews numerical thresholds and reports the primary metrics, guardrails, complete fixture coverage and candidate/baseline results. Intermediate task commits are implementation checkpoints, not passing releases. A single win, hand-picked seed, or subjective “looked smarter” playthrough is not sufficient. No automatic merge.
+The integration PR remains draft/not release-validated through Stages 0–14, while each stage must pass focused checks and relevant core smoke before dependent work proceeds. Stage 15 runs the complete integrated harness, establishes baseline variance, reviews predeclared numerical thresholds and reports primary metrics, guardrails, fixture coverage and candidate/baseline results. Intermediate green gates are not passing releases. A single win, hand-picked seed, or subjective “looked smarter” playthrough is not sufficient. No automatic merge.
 
 ## Implementation roadmap
 
-The authoritative execution entry point is [00-start-here.md](759-skirmish-ai/00-start-here.md). The user's latest policy replaces the older one-PR-per-stage workflow: implement Stages 0–14 sequentially in one isolated integration branch, author tests with each stage, and execute tests/builds/checks/playtests/formal review in Stage 15. Do not stop after Stage 1 or wait for intermediate PR merges. Runtime command validation is always active; only development verification execution is deferred.
+The authoritative execution entry point is [00-start-here.md](759-skirmish-ai/00-start-here.md). Implement Stages 0–14 sequentially on one isolated integration branch, author/run focused tests and integration checks with each stage, then perform extensive builds/playtests/whole-solution review and full validation in Stage 15. This is the latest user-approved hardening policy. Do not stop after Stage 1 or wait for intermediate PR merges. Runtime command validation is always active.
 
-The original stage acceptance lists are retained in the packets below, with concrete source paths, contracts, algorithms, defaults, debug obligations and fixture instructions. Release Gates A–D are capability groupings whose evidence is collected at Stage 15, not instructions to execute tests early.
+The stage acceptance lists are retained and strengthened in the packets below, with source paths, contracts, algorithms, defaults, debug obligations and fixture instructions. Release Gates A–D are capability groupings; focused dependency gates run during implementation, and complete release evidence is collected at Stage 15.
 
 | Read order | Contents |
 | --- | --- |
@@ -1018,11 +1020,13 @@ The original stage acceptance lists are retained in the packets below, with conc
 | [Debug panel](759-skirmish-ai/06-debug-panel.md) | Purpose/build-order/composition and all domain views, decision drilldown, overlays and read-only history/export |
 | [Stage 15](759-skirmish-ai/07-final-validation.md) | Extensive code review, automated/runtime checks, baseline matrix, tuning, docs/skill learning and closure |
 | [Deterministic scenarios](759-skirmish-ai/08-deterministic-scenarios.md) | User-requested positive/negative strategic cases, independent semantic oracles, deterministic replay, runtime counterparts and coverage gate |
+| [Cross-stage hardening](759-skirmish-ai/09-progress-and-hardening.md) | Measured progress, finite recovery, deadlock/uncertain-command handling, lane fairness, useful missions, access/cost/lifecycle safeguards and stage ownership |
+| [Integration/fault gates](759-skirmish-ai/10-integration-and-adversarial-tests.md) | Focused-check ladder, executable core slices, 32 fault/progress cases, 8 continuous-match sequences and stronger final acceptance |
 | [Progress](759-skirmish-ai/progress.md) | Persisted stage/step, actual model, implementation-versus-validation states and evidence ledger |
 
 ### Mandatory component-audit slices within the stages
 
-Keep Stage 0–16 identifiers stable. These are mandatory scope, not optional suggestions. Implement dependent slices sequentially on the integration branch, author their tests alongside them, and execute all final-evidence gates at Stage 15. A development implementation is not a validated release.
+Keep Stage 0–16 identifiers stable. These are mandatory scope, not optional suggestions. Implement dependent slices sequentially, run their focused checks and core smoke, then execute all final-evidence gates again at Stage 15. A stage_checked development implementation is not a validated release. Apply the H1–H9 stage table in addition to these component slices.
 
 | Stage | Additional slice and acceptance |
 | --- | --- |
@@ -1102,7 +1106,7 @@ The following decisions are non-blocking until their named stage:
 
 ## Cold-start handoff for the next implementation agent
 
-Start with [the execution runbook](759-skirmish-ai/00-start-here.md), [shared decisions](759-skirmish-ai/01-shared-decisions.md), [debug specification](759-skirmish-ai/06-debug-panel.md), [scenario specification](759-skirmish-ai/08-deterministic-scenarios.md), and [progress](759-skirmish-ai/progress.md). The runbook owns branch selection, current #792 reconciliation, model/effort guidance, implementation ordering and final-only validation. This research PR contains no shipped runtime implementation.
+Start with [the execution runbook](759-skirmish-ai/00-start-here.md), [shared decisions](759-skirmish-ai/01-shared-decisions.md), [hardening](759-skirmish-ai/09-progress-and-hardening.md), [integration gates](759-skirmish-ai/10-integration-and-adversarial-tests.md), [debug specification](759-skirmish-ai/06-debug-panel.md), [scenario specification](759-skirmish-ai/08-deterministic-scenarios.md), and [progress](759-skirmish-ai/progress.md). The runbook owns branch selection, current #792 reconciliation, model/effort guidance, ordering, focused stage gates and extensive final validation. This research PR contains no shipped runtime implementation.
 
 PR #792 fixes async planner accessibility and stable candidate selection only. It does not deliver observations, commands, macro, composition, squads or evaluation. Inspect its current state at kickoff; integrate equivalent task-owned prerequisites on the implementation branch without modifying or waiting on the other PR. The old instruction to update #792 separately or implement “Stage 1 only” is superseded.
 
@@ -1152,9 +1156,10 @@ The source/evidence in this roadmap describes the research checkout and its date
 
 ```text
 Start implementing docs/ai/759-skirmish-ai/00-start-here.md and resume its progress ledger.
-Complete Stages 0–15 sequentially on one isolated integration branch. Author tests and
-deterministic scenarios with their features; defer executing tests, builds, checks, playtests,
-formal review and extensive validation until Stage 15. Include purposeful duplicate capacity,
+Complete Stages 0–15 sequentially on one isolated integration branch. Author and run focused
+tests, type/lint checks and integration smoke with each stage; repair failures before advancing.
+Keep extensive builds, playtests and whole-solution review/validation at Stage 15. Apply H1–H9,
+the fault/continuous-match gates and purposeful duplicate capacity,
 faction build orders, composition/counters, multi-domain access, fortifications, all audited
 existing mechanics, and the full read-only AI debug panel. Continue between stages without
 asking. At Stage 15 run and repair the complete scenario/runtime/replay/baseline matrix,
@@ -1178,7 +1183,9 @@ work, report real blockers, and never merge automatically. Use the model/effort 
 - [x] Pure fixtures, runtime scenarios, batch evaluation, manual playtest, metrics, and baseline policy are included.
 - [x] User strategic scenarios include positive/negative capacity, economy, placement, scouting, multiple fronts, air/naval/transport, adaptation and recovery cases with independent semantic and replay assertions.
 - [x] Legitimate repeated buildings and units are explicitly distinguished from duplicate commitments; advance throughput, local drop-off efficiency and resilience are covered.
-- [x] Full debug panel ownership, cold-start packets, per-stage model/effort, sequential progress and final-only verification/learning closure are specified.
+- [x] Full debug panel ownership, cold-start packets, per-stage model/effort, sequential progress, focused stage gates and extensive final verification/learning closure are specified.
+- [x] Hardening covers causal progress/deadlines, resource wait cycles, uncertain commands/epochs, starvation, useful capacity, repeated missions, query isolation, real wall/transport effect, saved fault state and consecutive matches.
+- [x] Fault-injection and continuous-match gates require actual useful recovery, not a plausible explanation, optional expansion or token order.
 - [x] Open Stage 0 work is acknowledged so the next agent will not duplicate it.
 - [x] External source/licensing boundaries and deferred ML/search conditions are recorded.
 

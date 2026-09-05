@@ -1,11 +1,13 @@
 # Deterministic strategic scenarios — implementation and acceptance specification
 
-Required by the user's supplied “Deterministic AI Controller Scenarios” notes. This packet preserves their strategic outcomes and negative examples while resolving them against this game's actual capabilities. Read with [shared decisions](01-shared-decisions.md) and [final validation](07-final-validation.md). Model: Stage 5 harness on Sol/high; owning-stage fixtures on that stage's model; execution, review and repairs on Stage 15 Sol/xhigh.
+Required by the user's supplied “Deterministic AI Controller Scenarios” notes. This packet preserves their strategic outcomes and negative examples while resolving them against this game's actual capabilities. Read with [shared decisions](01-shared-decisions.md) and [final validation](07-final-validation.md). Model: Stage 5 harness on Sol/high; owning-stage fixtures on that stage's model; focused execution/repairs at each owning stage; extensive release review/validation on Stage 15 Sol/xhigh.
 
 - [ ] Stage 5 authors the schema, builders, independent assertion helpers, drivers, reporters and coverage manifest.
-- [ ] Stages 6–14 author the applicable cases below with real definition-derived units/costs and explicit expected bands.
+- [ ] Stages 6–14 author applicable cases with actual units/costs/bands and run the focused gates in [packet 10](10-integration-and-adversarial-tests.md). Include the mandatory [H1–H9 contracts](09-progress-and-hardening.md) and added H/SEQ cases.
 - [ ] Stage 15 executes every mandatory case, its negative/control variants, determinism checks and runtime integration counterparts; repairs failures and publishes evidence.
 - [ ] Final docs explain adding/replaying scenarios; no required case is passed merely because a test file exists.
+
+The original 63 cases below are joined by H-01–32 and SEQ-01–08 in [the integration/fault packet](10-integration-and-adversarial-tests.md): 103 named cases before paired variants. Apply [H1–H9](09-progress-and-hardening.md) progress/safety contracts to their assertions. In particular, a blocker string, optional expansion or token order does not establish useful recovery or offensive play.
 
 ## Two different questions, two kinds of assertions
 
@@ -60,7 +62,7 @@ A pure scenario may supply a permitted observation sequence and acknowledged out
 
 ## Scenario catalog
 
-Every ID below is mandatory coverage. A row describing paired worlds requires separate positive and negative case variants. Stage ownership means “author here”; execution remains Stage 15. These supplement, not replace, the root roadmap's low-level Level A/B cases.
+Every ID below is mandatory coverage. A row describing paired worlds requires separate positive and negative case variants. Stage ownership means author and run the focused subset here; the full matrix executes again in Stage 15. These supplement, not replace, the root roadmap's low-level Level A/B cases.
 
 ### Economy, production and legitimate duplicates
 

@@ -1,6 +1,6 @@
 # Stages 0–6 — foundation, commands, knowledge, and purpose
 
-Follow [the runbook](00-start-here.md) and [shared decisions](01-shared-decisions.md). Write code, fixtures, and debug integration in these stages; defer all execution/validation to Stage 15. Each stage receives the prior committed interfaces and returns implemented code plus updated progress. The final-evidence lists below are not permission to stop and run tests early.
+Follow [the runbook](00-start-here.md), [shared decisions](01-shared-decisions.md), [H1–H9 hardening](09-progress-and-hardening.md) and [verification ladder](10-integration-and-adversarial-tests.md). Write code/tests/debug together, run each focused gate and continue after repairs. Stage 15 reruns the complete final acceptance; it is not the first time the foundation executes.
 
 ## Stage 0
 
@@ -18,7 +18,7 @@ Model: Terra / high. Existing paths: Phaser `player-ai-controller.agent.ts`, `pl
 4. Introduce typed reason codes, trace envelope, stable serialization, and command-drop reasons for missing IDs/services. Trace IDs derive from player and monotonic decision counters.
 5. Start the debug snapshot/projector and reason-driven Overview using the debug packet. Keep existing UI entry/navigation.
 
-Author fixtures: polarity, no false success, actual housing capability on both factions, no candidate when no legal housing, stable reasons/serialization. Output: corrected static paths and trace/debug foundation; all fixtures remain authored_not_run.
+Author fixtures: polarity, no false success, actual housing capability on both factions, no candidate when no legal housing, stable reasons/serialization. Output: corrected static paths and trace/debug foundation; run focused regressions and record actual results.
 
 ### Stage 1 retained final acceptance
 
@@ -35,12 +35,13 @@ Model: Sol / high. Create pure contracts under the shared source/destination map
 
 1. Define the full observation and brain slices listed in shared decisions. Required observation subtypes carry logical position/access node, owner/diplomacy, effective capabilities/level, queue/cost/supply, resource/growth/service state, visible effects/zones, and mode goals. Use optional or explicit unknown fields where information is unavailable, never fabricated zeroes.
 2. Define discriminated intent payloads per action family, typed preconditions/claims, command identity/outcomes, plan lifecycles, capability catalog entries, profile config, and debug snapshot. Shared ID/enum imports are the authority; define named IDs for plans/demands/claims.
+   Include H1 progress/blocker/recovery contracts, H2 typed prerequisite/wait edges and reservation states, H3 authority/sequence reconciliation, H4 lane service debt, and H7 query health/revision contracts. Every stored deadline has a clock/unit and persistence policy; invalid numeric/schema inputs are rejected at boundaries.
 3. Implement pure defaults, canonical sort/serialize helpers and migrations from current legacy AI saves. A known legacy save starts new planning state from its current world, without replaying already satisfied opening steps; future schema versions reject explicitly.
 4. Define manager proposal interfaces and the pure `AiBrain.step` reducer contract. Add adapters translating legacy data into the new shapes without making legacy blackboard the owner of new state.
 5. Author capability coverage manifest linking each researched component family to observation/proposer/command/outcome/save/debug/fixture or explicit unsupported reason. Include scenario/editor-injected conversion, not only ordinary prefab properties.
 6. Add a gameplay Jest target/config using existing `tools/testing/jest-node-preset.cjs` if needed. Current gameplay project has lint but no test target. Add protocol test coverage in an appropriate owning test target or a dedicated node target; do not assume it exists.
 
-Output: exported and connected interfaces, migration/default fixtures, capability coverage, compile-ready imports. Local compilation is deferred.
+Output: exported and connected interfaces, migration/default fixtures, capability coverage, compile-ready imports. Run actual-source type/contract checks before downstream consumers depend on these interfaces.
 
 ### Stage 2 retained final acceptance
 
@@ -61,6 +62,7 @@ Model: Sol / xhigh. This is the largest cross-layer stage; implement internal sl
 4. Move spell gameplay impacts from tween completion to simulation-tick pending effects with logical positions and stable ordering. Retain animation as presentation. Apply spell/heal/zone eligibility through shared diplomacy, effect polarity, target type, range and domain checks. Cover Healing Light Actor targeting and ground healing zones. Save in-flight impact and summon expiry state.
 5. Add authoritative unload/cargo outcomes and conversion observation hooks; an AI approach can cause normal proximity conversion but cannot set owner. Make simultaneous conversion resolution canonical and skip inactive candidates correctly.
 6. Connect typed command outcomes into the brain adapter, debug drilldown, replay, save/recovery, and server validators. Network schema/version changes need explicit compatibility handling; no silent fallback to direct mutation.
+7. Implement H3's lost-outcome reconciliation, processed-sequence/watermark policy, bounded pending backlog, authority epoch fencing and technical-fault state. Exercise H-06–10 with completed/destroyed effects and late old-host events; actor absence is not proof a purchase never applied.
 
 Output: all effect paths wired and end-to-end fixtures authored. Do not leave the new brain mutating live blackboards or spawning actors directly. A missing game command is implementation work in this stage, not a reason to invent a debug shortcut.
 
@@ -83,6 +85,7 @@ Model: Terra / xhigh. Read snapshot/targeting/vision/diplomacy helpers, ActorInd
 4. Project effective runtime actor level/capabilities; source/growth/drop-off and shared queue state; status, permitted zones, temporary support and neutral opportunities; actual mode objectives. Never expose private enemy queue/research/cooldown fields.
 5. Update stable memory, decay/confidence, scouting coverage, and known threat summaries. Store evidence tick/source for every counter/goal input.
 6. Complete observation age/policy/unknown/error debug sections. UI does not query live hidden objects.
+7. Implement H7's bounded query products so optional navigation cannot block urgent local defense. Preserve atomic observations and deterministic logical work scheduling, distinguish unknown/blocked/service-failed, and handle invalidation storms with saved cursors instead of unbounded restarts.
 
 Output: atomic knowledge/observation pipeline and authored fairness, stale-generation, ownership-change, coordinate, and visibility fixtures.
 
@@ -98,7 +101,7 @@ Output: atomic knowledge/observation pipeline and authored fairness, stale-gener
 
 ## Stage 5
 
-Model: Sol / high. Author infrastructure now; its tests and baseline runs execute only in Stage 15.
+Model: Sol / high. Implement and execute the harness bootstrap/oracle/small runtime gate now; broad comparative baseline batches remain Stage 15.
 
 1. Extract reusable canonical authoritative projection from `StateHashService`; add distinct pure AI digest and first-differing-path diagnostics. Keep current multiplayer consumers working.
 2. Complete brain save/load and runtime gaps for crop/tender, deposit sub-actions, spell cooldown/effects/zones/pending impacts, summon expiry, conversion, cargo, queue state, pending outcomes, RNG and cadence. Rebuild object references from stable IDs. Save-safe phases must not trigger duplicate opening or production after restore.
@@ -107,7 +110,7 @@ Model: Sol / high. Author infrastructure now; its tests and baseline runs execut
 5. Create `tools/ai/run-skirmish-matrix.mjs` (or a narrow typed CLI entry with equivalent stable path), fixture manifest, report format, retained failure artifacts, baseline adapter seam and candidate source version. Add the invoked Nx/script targets now. Include single-scenario/seed/mode filters, stable catalog IDs and mandatory missing-coverage failure; register every scenario row and its owning-stage variants. Do not claim that the runner exists until implemented.
 6. Record pinned baseline source SHA and compatibility limitations; design Stage 15's isolated baseline checkout and run against the same scenario semantics. Never regenerate baseline from candidate behavior.
 
-Output: runnable-but-not-run harness and restore support, deterministic fixture definitions, debug export envelope, trace/digest comparators and baseline manifest. Propagate unresolved integration concerns into the final ledger without labelling acceptance passed.
+Output: exercised harness bootstrap and restore support, deterministic fixture definitions, debug envelope, comparators and baseline manifest. Execute deliberately broken oracle controls and one actual-world command/save continuation. Fix task-caused focused failures before advancing; report final-matrix coverage separately.
 
 ### Stage 5 retained final acceptance
 
@@ -128,6 +131,7 @@ Model: Terra / xhigh. Implement the shared decision algorithm and budgets exactl
 4. Wire actual lobby difficulty/profile and deterministic supported archetype selection into creation, saves, replay metadata and debug; ordinary rules bonuses remain off.
 5. Implement retry/backoff/cursor state and idle watchdog: every idle eligible worker/producer or stalled plan yields either a corrective intent or an explicit timed/terminal reason. The watchdog uses the same proposals/reservations and cannot bypass them.
 6. Finish purpose/next-three-actions, utility comparison, demand reconciliation, rejections and budget debug views.
+7. Implement the H1/H2/H4 supervisor now: causal progress age and workload-aware deadlines, provisional leases versus uncertain dispatched work, cycle detection/breaking, prerequisite bootstrap, and fair service lanes. Stage 12 extends this foundation rather than introducing stuck detection for the first time. Run H-01–05 and H-11–15 focused cases before macro depends on it.
 
 Output: purpose-driven brain with traceable ownership and no per-tick personality reset. Author numeric ledger examples and permutation/conflict/priority tests from shared decisions.
 

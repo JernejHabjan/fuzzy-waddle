@@ -2,7 +2,7 @@
 
 The player/developer must be able to answer: **What is this AI trying to do, why, what is stopping it, and what will it do next?** Implement this in the existing `AiControllerDebugPanel`/`AiControllerDebugLabel` entry point. It currently shows a strategy string and counts, has category/player selection, truncates telemetry to 12 lines, and passes `performance.now()` into some strategy time helpers. Replace those data dependencies with a read-only simulation snapshot. UI time is allowed only for refresh throttling.
 
-Read [the runbook](00-start-here.md) for execution timing. Implement this incrementally with Stages 1–14; author UI/projection fixtures then run them in Stage 15. Do not defer the actual panel implementation to testing.
+Read [the runbook](00-start-here.md) for execution timing. Implement this incrementally with Stages 1–14; run focused projection/cleanup regressions alongside changes, and the extensive UI matrix in Stage 15. Do not defer the actual panel implementation to testing.
 
 ## Projection contract and ownership
 
@@ -26,8 +26,10 @@ Data collection required for behavior is always on; expensive UI strings and ove
 | Squads/support | Squad/task-force ID, role/domain, members, state/objective/rally/retreat, local comparison, target-switch reason; heal/cast/autocast owner, effect claims, zone risk, temporary support expiry |
 | Transport | Plan phase, passengers/required threshold/seats/transport/escort, pickup and landing slots, route, deadline, missing boarders, cargo risk, reroute/cancel cause |
 | Bases/fortifications | Base identity, resource life/saturation, proposed footprint/access checks; wall graph nodes, budget, construction order, stairs/posts/opening/gate slot, tower coverage and breach response |
-| Decisions/recovery | Accepted and rejected intents, exact reason codes, utility components, reservation owner/lifetime, command sent/applied/rejected/pending, dedup hits, retry/backoff ladder, stale-generation drops |
+| Decisions/recovery | Accepted/rejected intents and score; last useful progress/expected milestone; causal blocked age and absolute deadline; dependency/cycle and lease owner; lane service delay; command uncertainty/epoch/reconciliation state; retry ladder and chosen effective recovery |
 | Runtime/limits | Decision generation/tick, profile quotas/consumption/cursors, ring size, authoritative/AI hashes, schema versions, feature support and saved/recovered state |
+
+Add a compact **Progress health** summary following [H1–H9](09-progress-and-hardening.md): last delivered income, latest useful production, active mission/last objective effect, longest unresolved causal blocker, reservation exposure/cycle, lane service delay, command authority health and next effective recovery. Drill down to the independent progress measurement and deadline; never present repeated “waiting” messages as healthy execution. Include status bands for healthy, legitimately waiting, recovering, failed optional goal, technical fault and actual strategic defeat. A technical incident is not a surrender reason.
 
 Use collapsible categories, bounded scroll/pagination, and explicit empty states. Long rows cannot disappear because of `maxLines: 12`. Retain player/category navigation and keyboard/pointer accessibility appropriate to existing Phaser UI. Show Overview immediately after choosing an AI. Preserve `.scene` compatibility and user-code regions; author generated layout changes via the repository's Phaser editor workflow where required, without deleting existing comments.
 
@@ -44,6 +46,8 @@ WOOD — second WorkMill serves East forest; projected round-trip saving 35%; We
 ARMY — frontline 4/6, ranged 3/4, anti-air 0/2; flyers seen 8 seconds ago.
 TRANSPORT — boarding 3/4; waiting for Worker 17; alternate shore reserved.
 BLOCKED — AnkGuard site occupied; retry 2/4 in 4 seconds, alternate site C.
+STALLED — wood income unchanged beyond expected delivery; cause 42 age 38s; release optional upgrade reservation, reopen supply route.
+MISSION — East raid reached economy; objective effect confirmed; regroup deadline 12s, reinforcements using South route.
 ```
 
 Each displayed reason must identify the input tick and IDs behind it. “Unknown,” “stale,” “unsupported,” “waiting for outcome,” and “not yet implemented” are distinct. Once Stage 14 is implemented, required sections must contain live data/valid empty states, never permanent placeholder values. Do not show a current enemy ID for a remembered hidden contact.

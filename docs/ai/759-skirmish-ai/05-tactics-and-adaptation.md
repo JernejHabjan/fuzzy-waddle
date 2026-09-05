@@ -1,6 +1,6 @@
 # Stages 13–14 — tactics, adaptation, and completed debug experience
 
-Read [runbook](00-start-here.md), [shared decisions](01-shared-decisions.md), [debug contract](06-debug-panel.md), and research sections on combat/support and difficulty/archetypes. Dependencies: implemented 0–12. Author all tests; execute them in Stage 15.
+Read [runbook](00-start-here.md), [shared decisions](01-shared-decisions.md), [debug contract](06-debug-panel.md), and research sections on combat/support and difficulty/archetypes. Dependencies: 0–12 stage_checked. Apply [hardening](09-progress-and-hardening.md), run [focused cases](10-integration-and-adversarial-tests.md), then rerun full acceptance in Stage 15.
 
 ## Stage 13
 
@@ -8,7 +8,7 @@ Model: Sol / high. Source anchors: CombatMicroManager, TargetingManager, Attack/
 
 1. Generalize squad state to forming/assemble/rally/advance/engage/defend/regroup/retreat/recover/reserve with explicit transitions and one primary owner per actor. Coordinated ground/air/naval task forces contain domain-specific squads; passengers transfer ownership only after actual unloading/regroup.
 2. Extract a bounded pure engagement estimator using runtime-consistent effective health/armour application, selected attack damage/cooldown/min-range/high-ground/arrival time, visible statuses, area shapes and nearby eligible support. Use local region shortlists and pair quota. Never use hidden current HP/cooldowns or a made-up damage multiplier table.
-3. Initial decision bands: advance at estimated local advantage >=1.2 with safe retreat; retreat below 0.8 or critical asset/health danger; hold/regroup in the middle. Missing/uncertain data reduces confidence and aggression. Use objective risk, not solely raw totals; transports/cargo and temporary support have distinct value.
+3. Initial full-engagement bands: attack at estimated local advantage >=1.2 with safe retreat; retreat below 0.8 or critical asset/health danger; hold/regroup or choose a limited mission in the middle. H6 prevents permanent holding/uncertainty and retreat/relaunch oscillation; mission progress and deadlines apply independently of this local micro preference. Missing/uncertain data reduces confidence and aggression. Use objective risk, not solely raw totals; transports/cargo and temporary support have distinct value.
 4. Choose among deterministic scripts: hold-front, advance/focus, ranged-distance, spread-against-area, protected retreat, intercept air/transport, naval control, escort, land/regroup, rampart defend/reinforce/withdraw. Score a small authored portfolio; no tactical search or online learning.
 5. Assign legal positions per domain and formation role using bounded spacing/occupancy candidates. Preserve weapon firing opportunities/windup, issue only materially changed orders, and avoid moving ranged units inside min range. Target changes need a >=20% useful-score improvement or invalid/dead target; persist existing target within commitment.
 6. Add damage reservations through expected impact. Release on rejection, death, expired shot, changed target and authoritative miss. Estimate actual armour absorption semantics, and avoid having every archer fire at a nearly dead target when enough damage is already pending.
@@ -16,6 +16,7 @@ Model: Sol / high. Source anchors: CombatMicroManager, TargetingManager, Attack/
 8. Avoid harmful observed zones on movement/rally/landing; use beneficial zones when safe. Stun/slow influence deadline and strength. Temporary summons have expiry and cannot become permanent economy/base/surrender evidence.
 9. Implement reachable elevated posts, protected stair reinforcement, observed approach concentration and evacuation on topology loss, while retaining a mobile reserve.
 10. Finish ALL debug panels, plan/command drilldown, scrolling/empty states, snapshot history/export and overlays in packet 06. Remove mutable live queries and wall-clock strategy calculations from the current labels.
+11. Complete H6/H9: mission-effect/loss accounting, false-progress/retreat oscillation, protected reinforcement routes, optional proposer isolation and finite numeric guards. Run H-23–26/30 plus the core match smoke; tactics cannot make an otherwise productive macro AI permanently hover outside a fight.
 
 Output: purposeful coordinated combat/support across actual domains, with every action explained and no actor/caster ownership conflicts. Author geometry/effect/cooldown/overkill/retreat/air/naval/rampart and UI projection fixtures. No required panel may remain a count-only placeholder.
 
@@ -47,8 +48,9 @@ Model: Terra / xhigh. Source anchors: TechProgressManager, ForceMaintenanceManag
 6. Initial variation: rush targets first safe smaller pressure force; macro raises worker/expansion utility; turtle raises justified fortification budget and home defense; tech values a legal upgrade after survival floor; air/naval/expeditionary requires relevant roster and map access. Unsupported selection falls back deterministically to balanced and explains why. Save archetype; ordinary threat response never rerolls it.
 7. Finish lifecycle integration: lobby selected difficulty -> host brain -> save/load/replay/host migration -> score metadata/debug. Clean up migrated legacy mutation paths, orphan timers/cooldowns and dead flank/currentStrategy state; adapters still in use must be explicitly named and single-authority. Preserve existing comments or request direction only for a genuine comment-preservation conflict.
 8. Ensure every mandatory component coverage entry has implementation, test ID, debug field, persistence owner and no unresolved required placeholder. Record concrete integration issues for Stage 15; do not falsely claim runtime validation. Write implementation architecture docs beside the owning AI modules now; refine verified learnings/skills at final closure.
+9. Finish H1–H9 ownership coverage and live debug fields, adapt/cancel commitments without forgetting causal history, and run H-31/32 save/host/second-match lifecycle smoke. All earlier focused gates must still be valid after shared contract changes; rerun affected ones before recording stage_checked.
 
-Output: completed behavior implementation ready for final review/validation. Mark 0–14 implemented_unvalidated, capture candidate SHA and next action Stage 15, then continue automatically. Do not proceed to deferred Stage 16.
+Output: completed connected behavior with focused gates passing. Mark 0–14 stage_checked, capture candidate SHA and next action Stage 15, then continue automatically. Do not proceed to deferred Stage 16.
 
 ### Stage 14 retained final acceptance
 
