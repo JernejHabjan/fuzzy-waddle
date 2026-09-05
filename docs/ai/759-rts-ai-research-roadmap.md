@@ -2,6 +2,8 @@
 
 ## Document status
 
+**Implementation entry point:** [agent-ready runbook and stage packets](759-skirmish-ai/00-start-here.md). This file retains research evidence and design rationale. The runbook owns the latest execution policy; the [scenario catalog](759-skirmish-ai/08-deterministic-scenarios.md) incorporates the user's deterministic test requirements. Documentation readiness is not runtime completion.
+
 - **Issue:** [#759 — Further improve AI](https://github.com/JernejHabjan/fuzzy-waddle/issues/759)
 - **Research PR:** [#764 — docs: add RTS AI improvement roadmap](https://github.com/JernejHabjan/fuzzy-waddle/pull/764)
 - **Implementation dependency:** [#792 — fix(ai): make Stage 0 planner selection deterministic](https://github.com/JernejHabjan/fuzzy-waddle/pull/792)
@@ -20,7 +22,8 @@
 - [x] Reconcile this plan with the already-open Stage 0 implementation PR.
 - [x] Audit registered prefab capabilities, runtime components/systems, pawn behavior, shared queues/orders, ownership, victory conditions, and persistence for additional AI responsibilities.
 - [ ] Capture `baseline-v1` numbers after the fixture and batch harness exists.
-- [ ] Implement the stages below as focused issues and PRs.
+- [x] Split the research into implementation-ready stage packets, model guidance, debug requirements and deterministic strategic scenarios.
+- [ ] Implement Stages 0–14 sequentially on the integration branch, then complete Stage 15 validation/repair/closure.
 
 ## Executive recommendation
 
@@ -132,6 +135,9 @@ Shared order vocabulary such as attack-move, hold position, or patrol may need i
 22. **Focused coverage is narrow.** Snapshot and AI-handler tests exist, and PR #792 adds planner regressions, but there is no layered pure-decision suite or complete skirmish outcome matrix.
 23. **Fortifications have mechanics but no strategic planner.** Workers can construct walls, watch towers, and stairs, and units can traverse connected elevated structures, but AI planning treats buildings as isolated candidates. It has no wall-line objective, protected-region model, tower coverage score, stair/access requirement, construction order, wall-top defender assignment, breach recovery, or future gate slot.
 24. **The strategic AI is effectively ground-only.** It has no access-region graph, naval/air force roles, transport operation, cargo/seat reservation, island expansion, shore/landing-site scoring, escort/interception, or domain-aware objective feasibility. Current production merely notices visible flight and asks for “ranged” infantry, which does not prove the selected weapon has `canTargetAir`. Existing pawn AI can coordinate boat boarding at a shore, but strategic AI does not own the full passenger/transport/destination lifecycle, and unloading is not represented as a shared strategic command. No current flying prefab combines flight and container capability, so air transport is a supported future capability rather than shipped behavior.
+
+25. **Housing requests select the wrong capability.** In the audited checkout, `SupplyPlanner.getHousingObjectName()` returns `WorkMill`, which is a wood drop-off without housing. This can leave the supply deficit unresolved despite repeated construction. Stage 1 resolves actual housing (`Olival`/`Emberstone`), and Stage 7 adds demand/commitment accounting so legitimate capacity is built once per need. This is a confirmed cause to address, not proof that every repeated-building report has the same cause.
+26. **The current debug UI is too shallow.** The existing AI controller panel/label provides limited categories and truncated lines; it cannot show the full strategic plan, demand lifecycle, alternatives, routes and failure ownership. The debug packet specifies read-only projections from committed brain state instead of independent live strategy calculations.
 
 ### Affected code map
 
@@ -455,6 +461,8 @@ The transport capability predicate must require a mobile, cargo-eligible contain
 
 ### Supply, production, and technology
 
+Multiple buildings or units of one type are allowed and often required. Suppress duplicate fulfillment of one commitment, not useful repeated types. Forecast throughput and construction lead time, local resource-service travel/congestion, production resilience and desired army composition justify additional capacity; existing/in-flight assets satisfy that demand once. See the [concrete macro algorithm](759-skirmish-ai/03-macro-and-access.md).
+
 - Forecast `used + queued demand` against `capacity + housing completing within horizon`.
 - Begin housing before expected block and escalate `restore_supply` only when the forecast or actual block crosses a threshold. Avoid repeated emergency housing when one valid structure is underway.
 - Build and saturate a producer set. Choose the next unit from army role deficits, observed enemy capability, plan phase, affordability time, and producer opportunity cost.
@@ -482,7 +490,7 @@ Create a bounded tactical ability proposer integrated with squad arbitration. It
 - Support units and worker repair/heal teams need protection, reachable patients, capped assignments, and a release-to-duty condition. Compare field recovery with retreat/replacement; do not pull every worker from food production to repair a low-value asset.
 - Summoned objects such as Healing Totem contribute support while their effects and remaining lifetime justify it. They are not permanent production, housing, expansion anchors, or a guaranteed rebuild path. Their destruction/expiry invalidates support reservations and objectives through normal outcomes.
 - Evaluate actual weapon choices, minimum/maximum range, high-ground bonus, attack cooldown/windup, projectile arrival, and melee area geometry. Preserve firing opportunities where sensible, avoid interrupting every windup with move orders, and release predicted damage claims on miss/failure/target loss. Counter values must reflect actual armour-pool and damage application rules; use no invented damage-type matrix.
-- Separate authoritative spell impact/effect/summon lifetime from visual animation. Stage 3–5 regression gates must prove equal results across rendering rates, pause/speed changes, save/replay, and teammate targets before the strategic ability proposer is enabled.
+- Separate authoritative spell impact/effect/summon lifetime from visual animation. Author regression fixtures in Stages 3–5 and execute them in Stage 15 to prove equal results across rendering rates, pause/speed changes, save/replay, and teammate targets before claiming the strategic ability proposer release-ready.
 
 ### Ownership, neutral opportunities, allies, and match objectives
 
@@ -812,6 +820,8 @@ Defer excess work by stable cursor/order to later simulation ticks. Wall-clock p
 
 ### Level A — pure decision fixtures
 
+Author these in their owning stages and execute them in Stage 15. The [deterministic scenario specification](759-skirmish-ai/08-deterministic-scenarios.md) adds independent semantic assertions, positive/negative paired cases and reproducibility requirements. Several sensible decisions may satisfy a scenario, but identical inputs to one version must still replay exactly.
+
 Run in the gameplay library without Phaser rendering. Feed versioned observations/outcomes into the brain and assert exact knowledge, goal, intent, arbitration, and state transitions.
 
 Required fixtures:
@@ -989,22 +999,37 @@ Reviewers score fairness, legibility, challenge, repetition, recovery, suspected
 
 ### Merge policy for behavior changes
 
-The harness initially gates deterministic correctness and scenario-specific regressions. Numerical improvement thresholds must be set only after `baseline-v1` variance is measured. Every behavior PR states its primary metric, guardrails, fixture set, and observed candidate/baseline result. A single win, hand-picked seed, or subjective “looked smarter” playthrough is not sufficient.
+The integration PR remains draft/unvalidated through Stages 0–14. Stage 15 runs the authored harness, establishes baseline variance, reviews numerical thresholds and reports the primary metrics, guardrails, complete fixture coverage and candidate/baseline results. Intermediate task commits are implementation checkpoints, not passing releases. A single win, hand-picked seed, or subjective “looked smarter” playthrough is not sufficient. No automatic merge.
 
 ## Implementation roadmap
 
-Each stage is a focused issue/PR. A stage may be subdivided when its protocol surface is too large, but acceptance criteria must not disappear. Branch every stage from current `develop` after required dependencies merge; do not stack undocumented behavior changes on the research branch.
+The authoritative execution entry point is [00-start-here.md](759-skirmish-ai/00-start-here.md). The user's latest policy replaces the older one-PR-per-stage workflow: implement Stages 0–14 sequentially in one isolated integration branch, author tests with each stage, and execute tests/builds/checks/playtests/formal review in Stage 15. Do not stop after Stage 1 or wait for intermediate PR merges. Runtime command validation is always active; only development verification execution is deferred.
+
+The original stage acceptance lists are retained in the packets below, with concrete source paths, contracts, algorithms, defaults, debug obligations and fixture instructions. Release Gates A–D are capability groupings whose evidence is collected at Stage 15, not instructions to execute tests early.
+
+| Read order | Contents |
+| --- | --- |
+| [Start here](759-skirmish-ai/00-start-here.md) | Cold start, branch/prerequisite reconciliation, sequential execution, per-stage Terra/Sol model and effort recommendations, copyable kickoff |
+| [Shared decisions](759-skirmish-ai/01-shared-decisions.md) | Source/destination map, pure brain lifecycle, purpose, demand ledger, legitimate duplicates, reservations, budgets, fairness and persistence |
+| [Stages 0–6](759-skirmish-ai/02-foundation.md) | Correctness, typed contracts, commands, observations, scenario harness and strategic arbitration |
+| [Stages 7–9](759-skirmish-ai/03-macro-and-access.md) | Actual faction openings, demand/throughput/composition, economy, routes/transports, scouts and a complete basic match |
+| [Stages 10–12](759-skirmish-ai/04-environment.md) | Bases, efficient field/drop-off placement, expansion, connected defenses and recovery |
+| [Stages 13–14](759-skirmish-ai/05-tactics-and-adaptation.md) | Tactics/support, threat-scaled fronts, counters/research/archetypes and integration cleanup |
+| [Debug panel](759-skirmish-ai/06-debug-panel.md) | Purpose/build-order/composition and all domain views, decision drilldown, overlays and read-only history/export |
+| [Stage 15](759-skirmish-ai/07-final-validation.md) | Extensive code review, automated/runtime checks, baseline matrix, tuning, docs/skill learning and closure |
+| [Deterministic scenarios](759-skirmish-ai/08-deterministic-scenarios.md) | User-requested positive/negative strategic cases, independent semantic oracles, deterministic replay, runtime counterparts and coverage gate |
+| [Progress](759-skirmish-ai/progress.md) | Persisted stage/step, actual model, implementation-versus-validation states and evidence ledger |
 
 ### Mandatory component-audit slices within the stages
 
-Keep Stage 0–16 identifiers stable. The following are part of their completion criteria, not optional future suggestions. Split a large stage into focused PRs with these named slices when useful; complete its prerequisite slices before dependent AI behavior is enabled.
+Keep Stage 0–16 identifiers stable. These are mandatory scope, not optional suggestions. Implement dependent slices sequentially on the integration branch, author their tests alongside them, and execute all final-evidence gates at Stage 15. A development implementation is not a validated release.
 
 | Stage | Additional slice and acceptance |
 | --- | --- |
 | 2 — contracts | Add capability coverage entries, typed service/ability/neutral-claim intents, status/zone/growth/queue observations, and mode objective contracts. Every registered gameplay capability maps to an owner or an explicit unsupported reason. Keep visual-only metadata outside decisions. |
 | 3 — shared commands | Audit cast/autocast, heal/repair, tend/gather/return, cancellation, and approach-to-claim paths through existing commands/application. Close missing spell payload/settings semantics and move gameplay spell impacts from tween completion to simulation ticks. Reject stale owners/targets and preserve applied-once outcomes. Automatic conversion remains a shared simulation event, not an AI owner setter. |
 | 4 — observation and diplomacy | Project effective actor level, resource/growth/service state, active permitted effects/zones, and match objectives. Apply team policy to runtime spell/heal/zone application as well as observations; regression-test effect polarity and actor-versus-tile coordinates. Unknown enemy capabilities/cooldowns remain unknown. |
-| 5 — harness and persistence | Add runtime regressions for spell render-rate independence, active effect/zone and summon expiry, crop growth/tender restore, deposit work, shared queue restore, and conversion ties. Extend the existing hash/save projection where absent. Do not enable downstream behavior on a failing lifecycle/authority fixture. |
+| 5 — harness and persistence | Add runtime regressions for spell render-rate independence, active effect/zone and summon expiry, crop growth/tender restore, deposit work, shared queue restore, and conversion ties. Extend the existing hash/save projection where absent. Author lifecycle/authority fixtures here; Stage 15 must repair failures before final release validation. |
 | 6 — arbitration | Extend claims to source/tender/deposit service slots, shared queue items, caster cooldown/effect windows, and neutral/allied objectives. Reconcile pending commands and authoritative completion/refund/ownership events before admitting new proposals; one physical resource cannot be claimed by conflicting parent plans. |
 | 7 — macro and labor | Implement renewable food and compatible deposits, shared production/research timelines, actual payment/refund semantics, builder/repairer caps and automatic construction. Field/Granary fixtures deliver repeatable income; automatic sites do not wait for nonexistent builders; duplicate accepted/queued work is suppressed. |
 | 8 — transport | Exclude stationary deposit containers from fleet supply. Respect passengers temporarily in deposit service, reconcile upgrade capacity and ownership changes, and choose unload sites outside observed harmful zones. |
@@ -1014,312 +1039,11 @@ Keep Stage 0–16 identifiers stable. The following are part of their completion
 | 14 — technology and adaptation | Value actual actor-level upgrades and useful spell access against shared queue opportunity cost. Existing/upgraded/new actors produce consistent capability updates. No unsupported damage-type counter table, hero XP, or unregistered spell execution is assumed. |
 | 15 — release evaluation | Add the component interaction fixtures to candidate/baseline and save/host-recovery matrices. Publish capability support coverage and mode limitations; all mandatory runtime/fairness gates pass before claiming support. |
 
-Release Gates A/B therefore include the relevant shared execution, farming/deposit, and mode foundations; Gate D includes coordinated ability tactics. Advanced casting must not delay the basic playable slice once the underlying command and persistence contracts pass. Existing pawn autocast remains available under its validated baseline policy.
-
-### Release Gate A — trustworthy decision foundation
-
-#### Stage 0 — land the existing deterministic planner fix
-
-**Status:** implementation already exists in PR #792; do not duplicate it in a new branch.
-
-**Scope**
-
-- Correct async base-site accessibility filtering.
-- Add stable coordinate/actor-ID tie-breakers to the selection paths touched by that PR.
-- Preserve behavior outside the defect.
-
-**Before continuing**
-
-- Rebase/update PR #792 onto current `develop`; its historical build failure was the application bundle budget before PR #794's lazy-loading correction.
-- Review current diff and run the smallest relevant planner/AI checks plus repository-required build.
-- Repair only failures attributable to #792; do not merge automatically.
-
-**Acceptance**
-
-- Unreachable sites are excluded after awaited evaluation.
-- Permuting equal-score candidates yields the same selected stable actor/coordinate.
-- Focused tests pass on current `develop`; PR is reviewable and green.
-
-#### Stage 1 — correct static logic and introduce versioned trace contracts
-
-**Dependencies:** Stage 0 can be reviewed in parallel, but reconcile overlapping planner tests before merge.
-
-**Scope**
-
-- Add regression tests and correct `IsEnemyPlayerWeak()` polarity.
-- Turn no-op success in `GatherResources`, `StartUpgrade`, and always-null resource need into explicit unsupported/failure behavior or the smallest real legal implementation; never claim success for no effect.
-- Define stable reason codes and versioned trace/metric envelopes without changing all production manager boundaries yet.
-- Replace new `any` boundaries with typed values; document canonical comparison/key rules.
-
-**Acceptance**
-
-- Each confirmed static defect has a failing-before/passing-after test.
-- Unsupported actions cannot return success and silently unblock a behavior branch.
-- Trace values serialize deterministically and bound their retained event count.
-- No intentional strategic expansion is bundled into this correctness PR.
-
-#### Stage 2 — pure observation, knowledge, intent, profile, and brain contracts
-
-**Scope**
-
-- Add `AiObservationV1`, `AiKnowledgeStateV1`, `AiIntentV1`, `AiDifficultyProfileV1`, `AiStrategyArchetype`, `AiBrainStateV1`, arbitration result, command outcome, and schema migration defaults.
-- Create canonical serialization/stable-key helpers and a minimal pure fixture runner.
-- Add adapters from a small existing snapshot subset but keep current production behavior active.
-
-**Acceptance**
-
-- No Phaser/live object crosses the pure boundary.
-- Permuted equivalent fixtures serialize and digest identically.
-- Save/default/migration tests reject unsupported future schemas clearly.
-- One fixture explains accepted and rejected dummy intents.
-
-#### Stage 3 — single authoritative AI command path
-
-**Scope**
-
-- Inventory every AI mutation and classify command/application ownership.
-- Add authoritative construction and concession command/event contracts.
-- Migrate scout, combat micro, repair, logistics, and construction effects from direct pawn/spawn calls to the shared command adapter.
-- Add outcome feedback, duplicate/stale rejection, replay projection, and host authorization.
-- Decide attack-move/hold/patrol individually from demonstrated executor needs.
-
-**Acceptance**
-
-- Exact repository search plus reviewed allowlist finds no strategic AI mutation outside the adapter.
-- Host emits and a second runtime/replay applies the same ordered commands.
-- Invalid ownership, ally/hidden targets, stale commands, illegal sites, and insufficient resources are rejected with stable outcomes.
-- Protocol, server/transport, Phaser application, replay, and tests change together.
-
-#### Stage 4 — atomic fair observation and diplomacy
-
-**Scope**
-
-- Build tick-stamped immutable snapshots with generation-safe async commit.
-- Apply team/diplomacy and shared `AiInformationPolicy` consistently across modes.
-- Add visible-now contacts and minimal serializable last-seen knowledge.
-- Remove live enemy Phaser references from decision-facing blackboard paths.
-
-**Acceptance**
-
-- Normal skirmish cannot see/target hidden actors or allies.
-- Loss of vision removes live IDs while preserving permitted last-seen positions.
-- A late older async generation cannot commit or change the next decision.
-- Campaign/scripted omniscience is explicit and covered separately.
-- Save/load preserves knowledge and next observation deterministically.
-
-### Release Gate B — measurable classic RTS vertical slice
-
-#### Stage 5 — deterministic harness, shared state projection, and baseline
-
-**Scope**
-
-- Extract/reuse `StateHashService` canonical projection for single-player/headless checkpoints.
-- Add AI decision projection, first-difference reporting, work counters, and structured trace export.
-- Implement Level A foundation and the initial Level B opening/supply/visibility/save/replay scenarios.
-- Freeze and run `baseline-v1`; archive JSON/Markdown artifacts.
-
-**Acceptance**
-
-- Three identical scenario runs match command/world/AI digests.
-- An injected actor and AI-state divergence reports the first tick and normalized field path.
-- Baseline report records commit, contract versions, map/seed/side/faction/rules.
-- CI gates work counts, not wall-clock timing.
-
-#### Stage 6 — goal scoring, arbitration, and real difficulty wiring
-
-**Scope**
-
-- Add the initial strategic goal utility/hysteresis/reason layer.
-- Add actor/resource/producer/site reservations and deterministic arbitration.
-- Map lobby difficulty to explicit fair profiles.
-- Separate deterministic archetype/opening selection from difficulty.
-- Keep legacy managers behind adapters until migrated.
-
-**Acceptance**
-
-- Conflicting intents have exactly one reproducible winner and explained losers.
-- Resources/actors/producers cannot be double-reserved.
-- Easy, normal, and hard produce documented reproducible differences.
-- All difficulties retain identical visibility and rules by default.
-- Any enabled rules bonus appears in configuration, trace, replay/result metadata, and UI.
-
-#### Stage 7 — reliable opening, workers, supply, and production
-
-**Scope**
-
-- Add at least one forgiving faction-valid opening per supported faction.
-- Implement demand-forecast worker allocation, minimum worker production, supply forecasting, producer construction/utilization, and prerequisite recovery.
-- Replace placeholder gather/upgrade behavior with intent-based execution.
-- Add a basic legal army-role composition before advanced counters.
-- Project movement, transport, cargo, weapon-target, and production capabilities from definitions. Produce air/naval/transport assets only when a legal map objective or observed threat creates demand.
-
-**Acceptance**
-
-- Every supported faction/map fixture reaches worker, housing, producer, and first-squad milestones.
-- AI neither remains supply-blocked nor queues redundant emergency housing in authored fixtures.
-- Idle workers, production idle time, and unexplained resource float improve versus baseline or meet reviewed bands.
-- Destroyed builder/producer/prerequisite recovers through a valid fallback.
-- Production never substitutes a generic ranged label for anti-air capability, counts transports as combat power, or builds naval assets for an irrelevant water region.
-- No stage acceptance depends on an enemy standing idle.
-
-#### Stage 8 — access-domain graph and transport operations
-
-**Scope**
-
-- Build a pure, versioned ground/water/elevated/air access graph from existing navigation authorities, including deterministic transfer edges and bounded route alternatives.
-- Add domain-aware objective feasibility before utility scoring or command emission.
-- Implement `AiTransportPlanV1`, exclusive passengers/seats/transports/escorts/rendezvous/landing claims, and the full gather/board/transit/unload/regroup/handoff lifecycle.
-- Add authoritative, replayable unload/disembark semantics and typed outcomes alongside existing boarding support.
-- Implement water transport first with `CommonBoat`; keep air transport capability-driven and verify it using a flying-container test definition until a real prefab exists.
-- Add bounded reroute, split, cancellation, stranded-unit recovery, and save/load continuation for every transport phase.
-
-**Acceptance**
-
-- Equivalent map state produces the same access graph, feasible route ordering, transfer points, and route reason codes.
-- A ground squad never receives a direct order into a disconnected ground region; it gets a complete feasible route plan or an explained unreachable result.
-- The water-transport fixture gathers, boards, sails, unloads, regroups, and hands the squad to its objective without duplicate or orphaned ownership.
-- Each passenger, cargo seat, transport, escort, rendezvous, landing slot, and destination has at most one compatible plan owner.
-- Transport loss, a dead passenger, a closed route, and an unsafe landing each reach one bounded recovery/cancellation outcome without repeated command spam.
-- Save/load during boarding, transit, and unloading preserves the next command batch, ownership, brain state, and digest.
-- A flying-container test definition uses the generic transport lifecycle with ground pickup/drop zones and no accidental boat-only shore requirement.
-
-#### Stage 9 — scouting, multi-domain threat response, attack wave, and match completion
-
-**Scope**
-
-- Add map-bound/base-relative scouting, per-domain coverage, start hypotheses, last-seen search, and ground/air/water-compatible scout roles.
-- Add threat incidents and one defense path per relevant movement/target domain, including real anti-air capability and hostile transport/landing detection.
-- Add one ground attack lifecycle plus basic air-wing and naval escort/interception lifecycles with rally, advance, objective invalidation, and reinforcement.
-- Integrate sustained AI concession with the existing result/score flow.
-
-**Acceptance**
-
-- Normal AI finds an unseen opponent through legal exploration.
-- An observed early threat receives a defense response within the profile delay.
-- An observed flyer creates a response that can actually target air; observed ships/transports create only reachable naval/shore responses.
-- A stable match produces a purposeful attack wave and retarget/search behavior, while a transport operation receives escort or interception when risk justifies it.
-- A hopeless AI concedes once through an authoritative event; recovery cancels pending concession.
-- Win/loss/concession reaches the score screen in the runtime fixture.
-
-Release Gate B is the first end-to-end playable multi-domain milestone. Do not postpone it for sophisticated micro.
-
-### Release Gate C — resilience, bases, and anti-exploit behavior
-
-#### Stage 10 — explicit bases, safe placement, and expansion lifecycle
-
-**Scope**
-
-- Replace moving average “base center” with stable base records/access regions, adjacent water/shore access, air exposure, and transport staging space.
-- Add staged, footprint-aware placement, site reservations, failure memory, and egress checks.
-- Add resource-life/saturation-driven expansion selection and lifecycle, including disconnected/island candidates only when transport and reinforcement feasibility is complete.
-- Preserve production, worker, rally, and resource corridors.
-
-**Acceptance**
-
-- Friendly construction does not trap authored worker/production lanes.
-- Rejected/blocked sites enter bounded cooldown and a legal alternate is selected.
-- Expansion establishes on a safe connected candidate before main resources cause permanent idle.
-- The island fixture transports a builder and protection, establishes the expansion, and retains a feasible reinforcement/evacuation route.
-- Base identity does not move when an army/scout crosses the map.
-- Placement candidates/path queries remain within profile budgets.
-
-#### Stage 11 — topology-aware walls, towers, stairs, and gate-ready defenses
-
-**Scope**
-
-- Add `AiFortificationPlanV1` with protected assets, approach regions, connected wall/tower/stair/gate-slot nodes, total budget, construction order, and lifecycle.
-- Generate bounded short wall fronts from terrain anchors, chokepoints, navigation regions, base envelopes, and observed threat directions.
-- Use building-definition capabilities and runtime topology/navigation validation rather than prefab-name-specific geometry in the pure planner.
-- Reserve the complete layout, then construct it incrementally with duplicate-node suppression, cost/length/tower limits, and economic cancellation rules.
-- Add protected-side stairs, reachable rampart posts, tower coverage scoring, wall-defense assignments, and breach/repair/rebuild transitions.
-- Score defenses against relevant ground, air, and shore/naval approaches using actual weapon target capability; walls alone never satisfy air or water defense demand.
-- Keep an intentional opening that can later be satisfied by a first-class gate capability and authoritative gate-control command.
-
-**Acceptance**
-
-- Equivalent map/threat inputs always produce the same bounded fortification graph and construction order.
-- A turtle profile or sustained threat can complete a useful connected wall front, while an unjustified low-utility wall plan is rejected.
-- Every occupied elevated component is reachable from the protected ground side through a legal stair/topology path.
-- Towers add distinct approach coverage and do not repeat indefinitely; existing, planned, reserved, and under-construction nodes prevent duplicate intents.
-- Anti-air and shore-defense coverage is credited only to towers/units whose weapons can hit that target domain, and the layout preserves transport staging/landing access.
-- The completed hypothetical and runtime layout preserves worker/resource, production/rally, construction, retreat, and deliberate opening/gate routes.
-- Destroying a segment creates one breach response and bounded repair/rebuild decision rather than a new duplicate fortification plan.
-- With no gate prefab, the reserved opening remains usable and cannot be filled accidentally; a gate-capable test double can satisfy the same slot without redesigning the plan.
-
-#### Stage 12 — stuck detection, hostile blocker recovery, and robust economy
-
-**Scope**
-
-- Add command no-progress/failure aggregation and the recovery ladder.
-- Detect trapped exits, inaccessible resources, hostile proxy/blocking structures, and unsafe workers.
-- Form `clear_blocker` objectives and reassign workers/resources/builders after failure or depletion.
-- Add alternate rally/site/route selection and legal friendly-plan cancellation where required.
-
-**Acceptance**
-
-- The milestone proxy/wall fixture cannot leave the AI permanently inert.
-- Observed hostile blockers are prioritized without using hidden IDs.
-- Depleted/unreachable gather targets are replaced and idle workers recover.
-- Repeated failures back off and transition state; they do not emit equivalent commands forever.
-- No recovery teleports/deletes actors or bypasses validation.
-
-### Release Gate D — stronger combat, adaptation, and release evaluation
-
-#### Stage 13 — domain-specific squads, engagement evaluation, and tactical scripts
-
-**Scope**
-
-- Generalize squad ownership/lifecycle for defense, pressure, reserve, reinforcement, transport escort, air wings, naval groups, and rampart defense. Coordinate mixed-domain task forces without forcing them into one path or formation.
-- Add bounded local engagement evaluation, domain-compatible safe rally/retreat, target hysteresis, focus-fire damage reservations, target capability filtering, and the initial ground/air/naval script portfolio.
-- Add reachable wall/tower post assignment, protected-side stair reinforcement, concentration toward observed approaches, and withdrawal from threatened elevated components.
-- Migrate remaining legacy per-unit combat mutation and dead flank state.
-
-**Acceptance**
-
-- Each combat actor has at most one primary squad assignment.
-- Every squad path, target, rally, repair, and retreat location is legal for its movement and weapon domains; transport passengers return to ordinary squad ownership only after verified regroup.
-- Favorable engagement objective completion does not regress; unfavorable retreat survival improves or meets baseline-derived bands.
-- Target switches, repeated orders, and estimated overkill improve in focused fixtures.
-- Disconnected/slow units recover or leave squad state without stalling it.
-- Rampart defenders occupy distinct reachable posts, retain a mobile reserve, and can withdraw through a valid protected route.
-- Tactical work remains quota-bounded and deterministic.
-
-#### Stage 14 — observed composition adaptation, tech, and archetype breadth
-
-**Scope**
-
-- Infer enemy capability from permitted observations and age/confidence.
-- Add ground/anti-air/air/naval/transport role-deficit composition, legal tech timing, opening transitions/fallbacks, and reviewed faction- and map-valid rush/macro/turtle/tech/air-control/naval/expeditionary archetypes.
-- Add defensive/expansion adaptation without allowing per-tick personality thrash.
-
-**Acceptance**
-
-- Composition changes only from recorded permitted evidence and obeys hysteresis.
-- Tech spending does not violate survival/supply/prerequisite reservations.
-- Every exposed archetype completes its supported faction opening and recovers from a destroyed prerequisite.
-- Air/naval/expeditionary archetypes are unavailable when the faction, map access graph, producer path, or objectives cannot support them.
-- Hidden enemy composition cannot influence the decision digest.
-
-#### Stage 15 — batch evaluation, tuning, performance, and host recovery
-
-**Scope**
-
-- Add one-command Level C matrix, candidate/baseline report, retained failure artifacts, and reviewed promotion rules.
-- Tune profiles from metrics plus blind playtests, not individual wins.
-- Validate save/load and reconnect/host migration reconstruction during ordinary and transport operations, long-match work bounds, and result uniqueness.
-- Document supported maps/factions/archetypes and remaining limitations.
-
-**Acceptance**
-
-- Published matrix runs from a clean checkout and identifies candidate/baseline versions.
-- No deterministic, crash, hidden-information, invalid-domain, transport-ownership, anti-blocking, outcome, or score-screen gate fails.
-- Host recovery creates exactly one AI controller per AI player and resumes the same brain state, or multiplayer AI is explicitly restricted with a tracked follow-up before release.
-- Performance report shows bounded work and no unreviewed regression on representative large matches.
-- Product-reviewed numerical thresholds and blind-playtest results support release.
+Release Gates A/B therefore include the relevant shared execution, farming/deposit, and mode foundations; Gate D includes coordinated ability tactics. Advanced casting follows the implemented command and persistence contracts. Existing pawn autocast remains available under its baseline policy; final validation proves compatibility and single-caster ownership.
 
 ### Deferred Stage 16 — bounded tactical search or offline learning
 
-Only open this stage if Stage 13 metrics show a tactical ceiling and the pure engagement evaluator is fast and predictive enough to compare script outcomes. Any search must use deterministic work units, canonical inputs, and a small authored script portfolio. Offline build-order/opponent modeling also requires licensed/provenanced data, reproducible training, versioned artifacts, a deterministic runtime policy, and a demonstrated gain over authored rules. Runtime LLM/RL inference remains out of scope.
+Stage 16 is explicitly outside this implementation. Reconsider only if Stage 13/15 evidence shows a tactical ceiling and a bounded pure evaluator can demonstrate a gain. Any future search uses deterministic work quotas and canonical inputs; offline learning requires licensed/provenanced data, reproducible training and versioned artifacts. Runtime LLM/RL inference remains out of scope.
 
 ## Release gates summary
 
@@ -1378,37 +1102,11 @@ The following decisions are non-blocking until their named stage:
 
 ## Cold-start handoff for the next implementation agent
 
-This section is intentionally operational. A new agent should be able to begin without repeating the research pass.
+Start with [the execution runbook](759-skirmish-ai/00-start-here.md), [shared decisions](759-skirmish-ai/01-shared-decisions.md), [debug specification](759-skirmish-ai/06-debug-panel.md), [scenario specification](759-skirmish-ai/08-deterministic-scenarios.md), and [progress](759-skirmish-ai/progress.md). The runbook owns branch selection, current #792 reconciliation, model/effort guidance, implementation ordering and final-only validation. This research PR contains no shipped runtime implementation.
 
-### Repository and branch state at handoff
+PR #792 fixes async planner accessibility and stable candidate selection only. It does not deliver observations, commands, macro, composition, squads or evaluation. Inspect its current state at kickoff; integrate equivalent task-owned prerequisites on the implementation branch without modifying or waiting on the other PR. The old instruction to update #792 separately or implement “Stage 1 only” is superseded.
 
-- Research lives on `research/759-rts-ai-roadmap` in PR #764 and should contain documentation only.
-- Current implementation dependency is PR #792 on branch `fix/759-ai-stage-0-correctness`.
-- PR #792 fixes async planner accessibility and deterministic candidate selection; it does **not** fix atomic observation, omniscience, commands, difficulty, macro, squads, persistence, or evaluation.
-- At the 2026-09-04 research pass, PR #792's recorded build failure was the old application bundle budget. Current `develop` includes PR #794's lazy-loading/budget work, so rebase and verify before diagnosing it as an AI failure.
-- The research branch was behind current `develop`; do not implement by piling feature commits onto it. Start focused implementation branches from freshly updated `develop` after dependencies merge.
-- The 2026-09-05 component audit is additional scope inside the numbered stages, not a new Stage 1 rewrite. Read its evidence/coverage table and mandatory stage slices before implementing a later stage; revalidate the named runtime seams on that branch.
-
-### Mandatory first actions
-
-1. Read repository `AGENTS.md`, then the smallest matching repo workflow, task-tracking/debugging, Phaser, Angular, or NestJS skills before changing code.
-2. Fetch remote state and inspect issue #759, research PR #764, Stage 0 PR #792, and this roadmap.
-3. Check whether #792 is merged:
-   - if open, update/rebase that branch on current `develop`, review its exact diff, run focused tests and the repository-required build, repair only task-owned failures, push it, and leave it for review—never merge automatically;
-   - if merged, update local `develop` and start Stage 1 on a new focused branch.
-4. Before Stage 1 edits, re-open the named symbols/call sites because paths may have moved. Confirm the defect still exists and write the failing regression first.
-5. Keep an internal numbered acceptance checklist. Inspect contracts, implementations, registrations, transport/application consumers, saves/replays, documentation, and tests for every touched symbol.
-6. Run the smallest applicable format/lint/type/test/build checks permitted by the issue lane. Repair task-caused failures and perform separate omission and final-closure audits.
-
-### Stage 1 first slice
-
-Use a branch such as `fix/759-ai-static-correctness-traces` from current `develop` after reconciling Stage 0. Keep it narrow:
-
-1. Add a regression fixture proving the existing `IsEnemyPlayerWeak()` polarity is wrong and correct it with unambiguous naming if call-site semantics permit.
-2. Audit the behavior-tree status of `GatherResources`, `StartUpgrade`, and `getMostNeededResource()`. No action may report success when it has no effect. Prefer explicit failure/unsupported status plus trace over a speculative large implementation in this PR.
-3. Define initial `AiReasonCode` and bounded/versioned decision trace envelope in the gameplay library; avoid Phaser references and `any`.
-4. Add deterministic serialization/order tests for the new trace values. Do not yet rewrite every manager or add tactical behavior.
-5. Update this roadmap only if implementation reveals a materially wrong assumption; record evidence and keep the stage acceptance intact.
+The source/evidence in this roadmap describes the research checkout and its dated audits. Reconcile moved symbols with narrow source inspection on current develop; do not rerun broad research. Keep these invariants while applying the concrete stage recipes:
 
 ### High-value symbols to inspect first
 
@@ -1453,17 +1151,15 @@ Use a branch such as `fix/759-ai-static-correctness-traces` from current `develo
 ### Copyable next-agent prompt
 
 ```text
-Continue issue #759 using docs/ai/759-rts-ai-research-roadmap.md and PR #764. Do not repeat broad AI
-research unless implementation invalidates a documented assumption. First inspect PR #792. If it is
-still open, update/rebase fix/759-ai-stage-0-correctness onto current develop, verify its exact
-planner tests and required build, repair only task-owned failures, push, and leave it unmerged. If it
-is already merged, branch from current develop and implement Stage 1 only: regression-test/fix
-IsEnemyPlayerWeak polarity; make GatherResources, StartUpgrade, and getMostNeededResource stop
-silently reporting success/no-op; add versioned bounded typed AI reason/trace contracts plus stable
-serialization tests. Preserve simulation-tick determinism, current comments, and shared command
-authority. Inspect all call sites/persistence/tests, use the required repository skills, run permitted
-focused verification, perform omission and closure audits, push a focused branch, and open/update a
-draft PR. Never merge automatically.
+Start implementing docs/ai/759-skirmish-ai/00-start-here.md and resume its progress ledger.
+Complete Stages 0–15 sequentially on one isolated integration branch. Author tests and
+deterministic scenarios with their features; defer executing tests, builds, checks, playtests,
+formal review and extensive validation until Stage 15. Include purposeful duplicate capacity,
+faction build orders, composition/counters, multi-domain access, fortifications, all audited
+existing mechanics, and the full read-only AI debug panel. Continue between stages without
+asking. At Stage 15 run and repair the complete scenario/runtime/replay/baseline matrix,
+update docs and relevant skills with proven learnings, and push for review. Preserve unrelated
+work, report real blockers, and never merge automatically. Use the model/effort guidance.
 ```
 
 ## Omission audit for this roadmap
@@ -1480,6 +1176,9 @@ draft PR. Never merge automatically.
 - [x] Command-only mutation includes construction, repair/logistics, combat/scouting, and concession.
 - [x] Save/load, replay, state hash reuse, host ownership/migration, performance budgets, and first-divergence diagnostics are included.
 - [x] Pure fixtures, runtime scenarios, batch evaluation, manual playtest, metrics, and baseline policy are included.
+- [x] User strategic scenarios include positive/negative capacity, economy, placement, scouting, multiple fronts, air/naval/transport, adaptation and recovery cases with independent semantic and replay assertions.
+- [x] Legitimate repeated buildings and units are explicitly distinguished from duplicate commitments; advance throughput, local drop-off efficiency and resilience are covered.
+- [x] Full debug panel ownership, cold-start packets, per-stage model/effort, sequential progress and final-only verification/learning closure are specified.
 - [x] Open Stage 0 work is acknowledged so the next agent will not duplicate it.
 - [x] External source/licensing boundaries and deferred ML/search conditions are recorded.
 
@@ -1492,5 +1191,5 @@ draft PR. Never merge automatically.
 - [x] Architecture recommendations follow confirmed repository seams and correct the earlier state-hash assumption.
 - [x] Stages form dependency-aware, reviewable increments with user-visible release gates.
 - [x] Product defaults unblock foundation work while isolating later decisions.
-- [x] The cold-start section identifies branch/PR state, first actions, first slice, symbols, invariants, and a copyable prompt.
+- [x] The cold-start runbook identifies branch/PR reconciliation, first actions, ordered packets, symbols, invariants, progress, model/effort guidance and a copyable full-plan prompt.
 - [x] No runtime implementation or copied third-party code is included in this research PR.
