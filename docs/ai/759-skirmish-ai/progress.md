@@ -6,7 +6,7 @@ Documentation review, 2026-09-05: added classic-RTS comparison, integrated C/D/D
 
 - Integration branch/worktree: `feature/759-skirmish-ai` in `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`
 - Base develop SHA: `de47f482889db30420692bf4406fba463d7db296`
-- Research source SHA: `1465f5a8943f19e79041dd9a5355958f214d38f4`; carried only #759 docs, reusable skills/index checks, and the matching `AGENTS.md` routes onto the integration branch
+- Research source SHA: `1465f5a8943f19e79041dd9a5355958f214d38f4`; its complete #759 research history is merged into this integration branch. The earlier documentation/skill import is therefore now represented both by the source commits and the merge ancestry.
 - Stage 0 PR #792 state/SHA/integration method: open PR #792, source `17789141366e197f388e5ac5ed5cbb64882858e0`; cherry-picked with `-x` as `c57023f2bb0b99e79847bde7bcbb898bc6bab299`, without merging or modifying #792
 - Baseline source SHA / fixture manifest version: `de47f482889db30420692bf4406fba463d7db296` / not yet applicable (Stage 5 owns the manifest)
 - Current stage and exact next action: Stage 2; define pure contracts and migrations from the checked Stage 1 runtime boundary
