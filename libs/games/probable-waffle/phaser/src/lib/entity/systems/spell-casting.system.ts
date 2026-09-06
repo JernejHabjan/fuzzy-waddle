@@ -1,7 +1,16 @@
 import { SpellType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/spell-type";
 import type { SpellData } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/spell-data";
 import { spellDefinitions } from "../components/combat/spell-definitions";
-import { DamageType, type StatusEffectData, StatusEffectType } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  type CastSpellCommand,
+  DamageType,
+  type GameCommandOutcome,
+  type PendingSpellImpactData,
+  ProbableWaffleGameCommandTypes,
+  SpellTargetType,
+  type StatusEffectData,
+  StatusEffectType
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { type Vector2Simple, type Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { getActorComponent } from "../../data/actor-component";
 import { SpellComponent } from "../components/combat/components/spell-component";
@@ -10,19 +19,31 @@ import { StatusEffectComponent } from "../components/status-effect/status-effect
 import { OwnerComponent } from "../components/owner-component";
 import { ActorTranslateComponent } from "../components/movement/actor-translate-component";
 import { AnimationActorComponent } from "../components/animation/animation-actor-component";
-import { getGameObjectBounds, getGameObjectLogicalTransform, onObjectReady } from "../../data/game-object-helper";
+import {
+  getGameObjectBounds,
+  getGameObjectLogicalTransform,
+  isWaterUnit,
+  onObjectReady
+} from "../../data/game-object-helper";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { AudioService } from "../../world/services/audio.service";
 import { AoeZoneManager } from "./aoe-zone-manager";
 import { NavigationService } from "../../world/services/navigation.service";
 import { SceneActorCreator } from "../../world/services/scene-actor-creator";
-import { CancelableSimDelay } from "../../world/services/simulation-time";
 import { DistanceHelper } from "../../library/distance-helper";
 import { ProjectileType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/projectile-type";
 import { DepthHelper } from "../../world/services/depth.helper";
 import { IsoHelper } from "../../world/tilemap/iso-helper";
 import Phaser from "phaser";
 import { PhaserProjectileFactory } from "../../combat/phaser-projectile-factory";
+import type { Subscription } from "rxjs";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
+import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
+import { SimulationTickService } from "../../world/services/simulation-tick.service";
+import { SummonExpiryService } from "./summon-expiry.service";
+import { getPlayerRelation } from "../../data/player-relation";
+import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
+import { FlyingComponent } from "../components/movement/flying-component";
 
 export class SpellCastingSystem {
   private spellComponent?: SpellComponent;
@@ -34,6 +55,8 @@ export class SpellCastingSystem {
   private navigationService?: NavigationService;
   private projectileSprite?: Phaser.GameObjects.Image;
   private projectileTween?: Phaser.Tweens.Tween;
+  private commandSubscription?: Subscription;
+  private impactTickSubscription?: Subscription;
 
   constructor(private readonly gameObject: Phaser.GameObjects.GameObject) {
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
@@ -49,10 +72,29 @@ export class SpellCastingSystem {
     this.audioService = getSceneService(this.gameObject.scene, AudioService);
     this.aoeZoneManager = getSceneService(this.gameObject.scene, AoeZoneManager);
     this.navigationService = getSceneService(this.gameObject.scene, NavigationService);
+    const commandBus = getSceneService(this.gameObject.scene, CommandBusService);
+    this.commandSubscription = commandBus?.command$.subscribe((command) => {
+      if (command.type !== ProbableWaffleGameCommandTypes.CastSpell) return;
+      const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
+      if (!actorId || !command.actorIds.includes(actorId)) return;
+      this.applyCastCommand(command, actorId);
+    });
+    this.impactTickSubscription = getSceneService(this.gameObject.scene, SimulationTickService)?.tick$.subscribe(
+      (tick) => this.applyDueImpacts(tick)
+    );
   }
 
   private destroy(): void {
     this.stopProjectile();
+    if (this.gameObject.scene.sys.isActive()) {
+      const tick = getSceneService(this.gameObject.scene, SimulationTickService)?.currentTick ?? 0;
+      const commandBus = getSceneService(this.gameObject.scene, CommandBusService);
+      for (const impact of this.spellComponent?.takeDueImpacts(Number.MAX_SAFE_INTEGER) ?? []) {
+        commandBus?.reportPersistedOutcome(this.outcomeFromImpact(impact, tick, false));
+      }
+    }
+    this.commandSubscription?.unsubscribe();
+    this.impactTickSubscription?.unsubscribe();
   }
 
   canCastSpell(spellType: SpellType): boolean {
@@ -91,7 +133,7 @@ export class SpellCastingSystem {
     return distance !== null && distance <= spellData.range;
   }
 
-  castSpell(spellType: SpellType, targetTileXYZ: Vector3Simple): boolean {
+  castSpell(spellType: SpellType, targetTileXYZ: Vector3Simple, command?: CastSpellCommand): boolean {
     if (!this.canCastSpell(spellType)) {
       return false;
     }
@@ -122,12 +164,34 @@ export class SpellCastingSystem {
       // TODO #647: Play cast sound
     }
 
-    // Spawn projectile or apply effects immediately
+    const effectId = command?.execution?.effectId ?? command?.execution?.commandId ?? `spell:${spellType}`;
+    // Projectile gameplay is scheduled on simulation ticks; the tween is presentation only.
     if (spellData.projectile) {
-      this.spawnProjectile(spellData, targetTileXYZ);
+      const flightDurationMs = this.spawnProjectile(spellData, targetTileXYZ);
+      const tickService = getSceneService(this.gameObject.scene, SimulationTickService);
+      const casterId = getActorComponent(this.gameObject, IdComponent)?.id;
+      if (flightDurationMs === null || !tickService || !command?.execution || !this.spellComponent || !casterId) {
+        return false;
+      }
+      this.spellComponent.enqueueImpact({
+        effectId,
+        commandId: command.execution.commandId,
+        commitmentKey: command.execution.commitmentKey,
+        playerNumber: command.playerNumber,
+        authorityEpoch: command.execution.authorityEpoch,
+        sequence: command.execution.sequence,
+        ...(command.execution.intentId ? { intentId: command.execution.intentId } : {}),
+        casterIds: [casterId],
+        spellType,
+        targetObjectId: command.targetObjectId,
+        targetTile: targetTileXYZ,
+        dueTick:
+          tickService.currentTick +
+          Math.max(1, Math.ceil(flightDurationMs / SimulationTickService.TICK_INTERVAL_MS))
+      });
     } else {
       // Instant cast - apply effects immediately
-      this.applySpellEffects(spellData, targetTileXYZ);
+      if (!this.applySpellEffects(spellData, targetTileXYZ, command)) return false;
     }
 
     // Start cooldown
@@ -138,23 +202,85 @@ export class SpellCastingSystem {
     return true;
   }
 
-  private spawnProjectile(spellData: SpellData, targetPosition: Vector2Simple): void {
+  private applyCastCommand(command: CastSpellCommand, actorId: string): void {
+    const commandBus = getSceneService(this.gameObject.scene, CommandBusService)!;
+    const spellType = command.spellType as SpellType;
+    if (!this.spellComponent?.availableSpells.includes(spellType)) {
+      commandBus.reportOutcome(command, "rejected", "unsupported_action", [actorId]);
+      return;
+    }
+    if (!this.spellComponent.canCastSpell(spellType)) {
+      commandBus.reportOutcome(command, "rejected", "cooldown_active", [actorId]);
+      return;
+    }
+    if (!this.isValidCommandTarget(command, actorId, spellDefinitions[spellType])) {
+      commandBus.reportOutcome(command, "rejected", "invalid_target", [actorId]);
+      return;
+    }
+    if (!this.castSpell(spellType, command.tileVec3, command)) {
+      commandBus.reportOutcome(command, "rejected", "invalid_target", [actorId]);
+      return;
+    }
+    const effectId = command.execution?.effectId ?? command.execution?.commandId ?? "spell";
+    commandBus.reportOutcome(command, "applied", "applied", [actorId], [effectId]);
+    commandBus.reportOutcome(
+      command,
+      spellDefinitions[spellType]?.projectile ? "active" : "completed",
+      "applied",
+      [actorId],
+      [effectId]
+    );
+  }
+
+  private applyDueImpacts(tick: number): void {
+    const impacts = this.spellComponent?.takeDueImpacts(tick) ?? [];
+    const commandBus = getSceneService(this.gameObject.scene, CommandBusService);
+    for (const impact of impacts) {
+      const spellData = spellDefinitions[impact.spellType as SpellType];
+      const targetWorld = this.navigationService?.getTileWorldCenter(impact.targetTile);
+      const applied =
+        !!spellData &&
+        !!targetWorld &&
+        this.onProjectileImpact(spellData, impact.targetTile, targetWorld, impact.targetObjectId);
+      commandBus?.reportPersistedOutcome(this.outcomeFromImpact(impact, tick, applied));
+    }
+  }
+
+  private outcomeFromImpact(impact: PendingSpellImpactData, tick: number, applied: boolean): GameCommandOutcome {
+    return {
+      schemaVersion: 1,
+      kind: applied ? "completed" : "failed",
+      reason: applied ? "applied" : "application_failed",
+      tick,
+      playerNumber: impact.playerNumber,
+      commandId: impact.commandId,
+      commitmentKey: impact.commitmentKey,
+      authorityEpoch: impact.authorityEpoch,
+      sequence: impact.sequence,
+      ...(impact.intentId ? { intentId: impact.intentId } : {}),
+      effectId: impact.effectId,
+      actorIds: [...impact.casterIds],
+      worldLinkIds: [impact.effectId]
+    };
+  }
+
+  private spawnProjectile(spellData: SpellData, targetPosition: Vector2Simple): number | null {
     const projectile = spellData.projectile;
-    if (!projectile) return;
+    if (!projectile) return null;
 
     const position = getGameObjectBounds(this.gameObject);
-    if (!position) return;
+    if (!position) return null;
 
     // Convert target tile position to world position
     const targetWorld = this.navigationService?.getTileWorldCenter(targetPosition);
-    if (!targetWorld) return;
+    if (!targetWorld) return null;
 
     // Create projectile sprite
     const projectileSprite =
       PhaserProjectileFactory.create(this.gameObject.scene, projectile.type) ??
       PhaserProjectileFactory.create(this.gameObject.scene, ProjectileType.FrostBoltProjectile); // Default to frost bolt
 
-    if (!projectileSprite) return;
+    if (!projectileSprite) return null;
 
     this.projectileSprite = projectileSprite;
     this.gameObject.scene.add.existing(projectileSprite);
@@ -186,10 +312,10 @@ export class SpellCastingSystem {
         duration: duration,
         ease: spawnBehavior.ease ?? "Cubic.easeIn", // Default to gravity-like acceleration
         onComplete: () => {
-          this.onProjectileImpact(spellData, targetPosition, targetWorld);
           this.stopProjectile();
         }
       });
+      return duration;
     } else {
       // Normal projectile behavior - launch from caster to target
       projectileSprite.setPosition(position.centerX, position.centerY);
@@ -213,18 +339,20 @@ export class SpellCastingSystem {
         duration: duration,
         ease: spawnBehavior.ease ?? "Linear", // Default to linear movement
         onComplete: () => {
-          this.onProjectileImpact(spellData, targetPosition, targetWorld);
           this.stopProjectile();
         }
       });
+      return duration;
     }
   }
 
   private onProjectileImpact(
     spellData: SpellData,
     targetTilePosition: Vector2Simple,
-    targetWorldPosition: Vector2Simple
-  ): void {
+    targetWorldPosition: Vector2Simple,
+    targetObjectId?: string
+  ): boolean {
+    if (!Number.isFinite(targetWorldPosition.x) || !Number.isFinite(targetWorldPosition.y)) return false;
     // Play impact animation
     if (spellData.projectile?.impactAnimation) {
       // TODO #648: Create impact animation at target position
@@ -236,34 +364,59 @@ export class SpellCastingSystem {
     }
 
     // Apply spell effects
-    this.applySpellEffects(spellData, targetTilePosition);
+    return this.applySpellEffects(spellData, targetTilePosition, undefined, targetObjectId);
   }
 
-  private applySpellEffects(spellData: SpellData, targetPosition: Vector2Simple): void {
+  private applySpellEffects(
+    spellData: SpellData,
+    targetPosition: Vector2Simple,
+    command?: CastSpellCommand,
+    targetObjectId?: string
+  ): boolean {
     // Handle persistent zone spells
     if (spellData.persistentZone) {
-      this.createPersistentZone(spellData, targetPosition);
-      return;
+      return this.createPersistentZone(spellData, targetPosition);
     }
 
     // Handle spawn prefab spells
     if (spellData.spawnPrefab) {
-      this.spawnPrefab(spellData, targetPosition);
-      return;
+      return this.spawnPrefab(spellData, targetPosition, command);
     }
 
     // Find actors in AOE
-    const affectedActors = this.findActorsInAoe(spellData, targetPosition);
+    const addressedTargetId = command?.targetObjectId ?? targetObjectId;
+    const affectedActors = this.findActorsInAoe(spellData, targetPosition, addressedTargetId);
+    if (addressedTargetId && affectedActors.length === 0) return false;
 
     // Apply effects to each affected actor
     for (const actor of affectedActors) {
       this.applyEffectsToActor(spellData, actor);
     }
+    return true;
   }
 
-  private findActorsInAoe(spellData: SpellData, targetPosition: Vector2Simple): Phaser.GameObjects.GameObject[] {
+  private findActorsInAoe(
+    spellData: SpellData,
+    targetPosition: Vector2Simple,
+    targetObjectId?: string
+  ): Phaser.GameObjects.GameObject[] {
     const actors: Phaser.GameObjects.GameObject[] = [];
-    const casterPlayerId = this.ownerComponent?.getOwner() ?? -1;
+    const casterPlayerId = this.ownerComponent?.getOwner();
+
+    if (targetObjectId) {
+      const target = getSceneService(this.gameObject.scene, ActorIndexSystem)?.getActorById(targetObjectId);
+      if (!target) return actors;
+      if (!this.isActorInSupportedDomain(target, spellData)) return actors;
+      const targetOwner = getActorComponent(target, OwnerComponent)?.getOwner();
+      const relation = getPlayerRelation(this.gameObject.scene, casterPlayerId, targetOwner);
+      const isSelf = target === this.gameObject;
+      const isAlly = relation === "self" || relation === "ally";
+      if (isSelf && !spellData.targetSelf) return actors;
+      if (isAlly && !isSelf && !spellData.targetAllies) return actors;
+      if (relation === "enemy" && !spellData.targetEnemies) return actors;
+      if (relation === "neutral") return actors;
+      return getActorComponent(target, HealthComponent)?.alive ? [target] : actors;
+    }
 
     // Convert AOE radius from tiles to world pixels (approximate)
     const aoeRadiusPixels = spellData.aoeRadius * 64; // Approximate tile size
@@ -276,6 +429,7 @@ export class SpellCastingSystem {
     for (const gameObject of this.gameObject.scene.children.list) {
       const healthComponent = getActorComponent(gameObject, HealthComponent);
       if (!healthComponent || !healthComponent.alive) continue;
+      if (!this.isActorInSupportedDomain(gameObject, spellData)) continue;
 
       // Get actor position
       const actorBounds = getGameObjectBounds(gameObject);
@@ -293,13 +447,15 @@ export class SpellCastingSystem {
 
       // Check ally/enemy targeting
       const actorOwner = getActorComponent(gameObject, OwnerComponent);
-      const actorPlayerId = actorOwner?.getOwner() ?? -1;
-      const isAlly = actorPlayerId === casterPlayerId;
+      const actorPlayerId = actorOwner?.getOwner();
+      const relation = getPlayerRelation(this.gameObject.scene, casterPlayerId, actorPlayerId);
+      const isAlly = relation === "self" || relation === "ally";
       const isSelf = gameObject === this.gameObject;
 
       if (isSelf && !spellData.targetSelf) continue;
       if (isAlly && !isSelf && !spellData.targetAllies) continue;
-      if (!isAlly && !spellData.targetEnemies) continue;
+      if (relation === "enemy" && !spellData.targetEnemies) continue;
+      if (relation === "neutral") continue;
 
       actors.push(gameObject);
     }
@@ -372,6 +528,38 @@ export class SpellCastingSystem {
     }
   }
 
+  private isValidCommandTarget(command: CastSpellCommand, actorId: string, spellData?: SpellData): boolean {
+    if (!spellData) return false;
+    if (spellData.targetType === SpellTargetType.Ground) return command.targetObjectId === undefined;
+    const targetId = spellData.targetType === SpellTargetType.Self ? actorId : command.targetObjectId;
+    if (!targetId) return false;
+    const actorIndex = getSceneService(this.gameObject.scene, ActorIndexSystem);
+    const target = actorIndex?.getActorById(targetId);
+    if (!target || !target.active || !getActorComponent(target, HealthComponent)?.alive) return false;
+    if (!this.isActorInSupportedDomain(target, spellData)) return false;
+    if (!actorIndex?.getActorsAtTile(command.tileVec3).includes(target)) return false;
+    const relation = getPlayerRelation(
+      this.gameObject.scene,
+      this.ownerComponent?.getOwner(),
+      getActorComponent(target, OwnerComponent)?.getOwner()
+    );
+    if (spellData.targetType === SpellTargetType.Self && target !== this.gameObject) return false;
+    if (spellData.targetType === SpellTargetType.EnemyUnit && relation !== "enemy") return false;
+    if (spellData.targetType === SpellTargetType.FriendlyUnit && relation !== "self" && relation !== "ally") {
+      return false;
+    }
+    if (relation === "neutral") return false;
+    if (target === this.gameObject) return spellData.targetSelf;
+    if (relation === "self" || relation === "ally") return spellData.targetAllies;
+    return spellData.targetEnemies;
+  }
+
+  private isActorInSupportedDomain(target: Phaser.GameObjects.GameObject, spellData: SpellData): boolean {
+    if (!spellData.targetDomains || spellData.targetDomains.length === 0) return true;
+    const domain = getActorComponent(target, FlyingComponent) ? "air" : isWaterUnit(target) ? "water" : "land";
+    return spellData.targetDomains.includes(domain);
+  }
+
   private getDotEffectType(spellData: SpellData): StatusEffectType {
     switch (spellData.damageType) {
       case DamageType.Fire:
@@ -396,17 +584,21 @@ export class SpellCastingSystem {
     }
   }
 
-  private createPersistentZone(spellData: SpellData, targetPosition: Vector2Simple): void {
-    if (!spellData.persistentZone || !this.aoeZoneManager) return;
+  private createPersistentZone(spellData: SpellData, targetPosition: Vector2Simple): boolean {
+    if (!spellData.persistentZone || !this.aoeZoneManager) return false;
 
     const targetWorld = this.navigationService?.getTileWorldCenter(targetPosition);
-    if (!targetWorld) return;
+    if (!targetWorld) return false;
 
     // Create the status effect that will be applied while inside the zone
+    const zoneEffectDuration = Math.max(
+      spellData.persistentZone.tickInterval,
+      spellData.dotDuration ?? spellData.hotDuration ?? spellData.persistentZone.tickInterval
+    );
     const effectWhileInside: StatusEffectData = {
       type: spellData.targetEnemies ? StatusEffectType.Burning : StatusEffectType.Regenerating,
-      duration: spellData.dotDuration ?? spellData.hotDuration ?? 2000,
-      remainingTime: spellData.dotDuration ?? spellData.hotDuration ?? 2000,
+      duration: zoneEffectDuration,
+      remainingTime: zoneEffectDuration,
       damagePerTick: spellData.dotDamage,
       healPerTick: spellData.hotHeal,
       tickInterval: spellData.dotTickInterval ?? spellData.hotTickInterval ?? 1000,
@@ -426,15 +618,16 @@ export class SpellCastingSystem {
       tintColor: spellData.tintColor,
       sourcePlayerId: this.ownerComponent?.getOwner() ?? -1
     });
+    return true;
   }
 
-  private spawnPrefab(spellData: SpellData, targetPosition: Vector2Simple): void {
-    if (!spellData.spawnPrefab) return;
+  private spawnPrefab(spellData: SpellData, targetPosition: Vector2Simple, command?: CastSpellCommand): boolean {
+    if (!spellData.spawnPrefab) return false;
 
     const sceneActorCreator = getSceneService(this.gameObject.scene, SceneActorCreator);
     if (!sceneActorCreator) {
       console.error("SceneActorCreator not found");
-      return;
+      return false;
     }
 
     // Convert tile position to world position
@@ -450,22 +643,28 @@ export class SpellCastingSystem {
       spellData.spawnPrefab.inheritOwner && this.ownerComponent ? this.ownerComponent.getOwner() : undefined;
 
     // Spawn the prefab using helper
-    const newGameObject = sceneActorCreator.createFinishedActor(spellData.spawnPrefab.prefabName, position, ownerId);
-
-    if (newGameObject) {
-      // If the prefab has a duration, schedule its destruction
-      if (spellData.spawnPrefab.duration) {
-        new CancelableSimDelay(this.gameObject.scene, spellData.spawnPrefab.duration, () => {
-          if (!newGameObject.active || !newGameObject.scene) return; // Already destroyed
-          const healthComponent = getActorComponent(newGameObject, HealthComponent);
-          if (healthComponent) {
-            healthComponent.killActor();
-          } else {
-            newGameObject.destroy();
-          }
-        });
-      }
+    let newGameObject: Phaser.GameObjects.GameObject | undefined;
+    try {
+      newGameObject = sceneActorCreator.createFinishedActor(spellData.spawnPrefab.prefabName, position, ownerId);
+    } catch {
+      return false;
     }
+    if (!newGameObject) return false;
+
+    const duration = spellData.spawnPrefab.duration;
+    const actorId = newGameObject ? getActorComponent(newGameObject, IdComponent)?.id : undefined;
+    const tickService = getSceneService(this.gameObject.scene, SimulationTickService);
+    const expiryService = getSceneService(this.gameObject.scene, SummonExpiryService);
+    if (duration && actorId && tickService && expiryService) {
+      const commandId = command?.execution?.commandId ?? `summon:${actorId}`;
+      expiryService.register({
+        actorId,
+        effectId: command?.execution?.effectId ?? commandId,
+        commandId,
+        dueTick: tickService.currentTick + Math.max(1, Math.ceil(duration / SimulationTickService.TICK_INTERVAL_MS))
+      });
+    }
+    return true;
   }
 
   private stopProjectile(): void {

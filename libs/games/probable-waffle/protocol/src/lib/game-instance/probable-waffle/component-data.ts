@@ -6,6 +6,7 @@ import type { PrerequisiteType } from "./prereque-type";
 import type { StatusEffectData } from "../../probable-waffle/status-effect";
 import type { PreRequirement } from "./pre-requirement";
 import type { ResearchType } from "./research-type";
+import type { GameCommandOutcome } from "./game-command";
 
 /**
  * Defines the structured vision component data contract for this module. Its declared surface makes visibility
@@ -685,6 +686,28 @@ export interface AIBehaviorTreeStateData {
    * associated behavior is active; do not infer it from unrelated state.
    */
   enabled?: boolean;
+  /**
+   * Bounded authoritative outcome frontier for the legacy-to-pure brain adapter.
+   * This survives save/load so an uncertain command is reconciled before retry.
+   */
+  commandReconciliation?: AiCommandReconciliationStateData;
+}
+
+/** Serializable H3 authority state owned by one AI player controller. */
+export interface AiCommandReconciliationStateData {
+  readonly schemaVersion: 1;
+  readonly authorityEpoch: number;
+  readonly processedSequenceWatermark: number;
+  readonly pendingCommandIds: readonly string[];
+  /** Full unresolved records; never evicted with recent history or refreshed on load. */
+  readonly pendingCommands?: readonly {
+    readonly dispatched: GameCommandOutcome;
+    readonly lastProgressTick: number;
+    readonly applicationObserved: boolean;
+    readonly terminalActorIds: readonly ActorId[];
+  }[];
+  readonly recentOutcomes: readonly GameCommandOutcome[];
+  readonly health: "healthy" | "reconciling" | "technical_fault";
 }
 
 /**
@@ -703,6 +726,10 @@ export interface ConvertibleComponentData {
    * defined by {@link ConvertibleComponentData} and must remain consistent across producers and consumers.
    */
   checkInterval?: number;
+  /** Accumulated simulation milliseconds toward the next proximity check. */
+  accumulatedTime?: number;
+  /** True after the canonical proximity winner has taken ownership. */
+  converted?: boolean;
 }
 
 /**
@@ -734,6 +761,24 @@ export interface SpellComponentData {
    * value contract explicit so callers cannot smuggle a broader shape across this boundary.
    */
   autocastEnabled?: Record<string, boolean>; // spellType -> enabled
+  /** In-flight spell impacts applied by simulation tick, never tween completion. */
+  pendingImpacts?: PendingSpellImpactData[];
+}
+
+/** Save-safe spell impact queued against the fixed simulation clock. */
+export interface PendingSpellImpactData {
+  readonly effectId: string;
+  readonly commandId: string;
+  readonly commitmentKey: string;
+  readonly playerNumber: number;
+  readonly authorityEpoch: number;
+  readonly sequence: number;
+  readonly intentId?: string;
+  readonly casterIds: readonly ActorId[];
+  readonly spellType: string;
+  readonly targetObjectId?: ActorId;
+  readonly targetTile: Vector3Simple;
+  readonly dueTick: number;
 }
 
 /**

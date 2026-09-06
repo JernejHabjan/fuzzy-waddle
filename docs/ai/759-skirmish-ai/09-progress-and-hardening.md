@@ -136,6 +136,8 @@ Economic placement: reserve corridors with actual clearance and destinations. Re
 
 ## Stage allocation and focused gates
 
+Under the latest runbook policy, “focused evidence before advancing” below means the owning stage must author the named fixture/oracle and record it as `authored_not_run`. Stage 15 executes every focused and integrated gate. Stages 3–14 close as `implemented_unvalidated` after manual audits, commit, and verified push.
+
 These additions extend existing stages, not postpone core recovery to Stage 12:
 
 | Stage | Required hardening increment | Focused evidence before advancing |

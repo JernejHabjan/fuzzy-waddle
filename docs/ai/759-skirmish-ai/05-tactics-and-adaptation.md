@@ -1,6 +1,6 @@
 # Stages 13–14 — tactics, adaptation, and completed debug experience
 
-Read [runbook](00-start-here.md), [shared decisions](01-shared-decisions.md), [debug contract](06-debug-panel.md), and research sections on combat/support and difficulty/archetypes. Dependencies: 0–12 stage_checked. Apply [hardening](09-progress-and-hardening.md), run [focused cases](10-integration-and-adversarial-tests.md), then rerun full acceptance in Stage 15.
+Read [runbook](00-start-here.md), [shared decisions](01-shared-decisions.md), [debug contract](06-debug-panel.md), and research sections on combat/support and difficulty/archetypes. Dependencies: Stages 0–12 at least `implemented_unvalidated`. Apply [hardening](09-progress-and-hardening.md) and author [focused cases](10-integration-and-adversarial-tests.md); Stage 15 executes full acceptance. Any older “run” or `stage_checked` wording below means author/defer or `implemented_unvalidated` under the runbook's latest policy.
 
 ## Stage 13
 
@@ -50,9 +50,9 @@ Model: Terra / xhigh. Source anchors: TechProgressManager, ForceMaintenanceManag
 6. Initial variation: rush targets first safe smaller pressure force; macro raises worker/expansion utility; turtle raises justified fortification budget and home defense; tech values a legal upgrade after survival floor; air/naval/expeditionary requires relevant roster and map access. Unsupported selection falls back deterministically to balanced and explains why. Save archetype; ordinary threat response never rerolls it.
 7. Finish lifecycle integration: lobby selected difficulty -> host brain -> save/load/replay/host migration -> score metadata/debug. Clean up migrated legacy mutation paths, orphan timers/cooldowns and dead flank/currentStrategy state; adapters still in use must be explicitly named and single-authority. Preserve existing comments or request direction only for a genuine comment-preservation conflict.
 8. Ensure every mandatory component coverage entry has implementation, test ID, debug field, persistence owner and no unresolved required placeholder. Record concrete integration issues for Stage 15; do not falsely claim runtime validation. Write implementation architecture docs beside the owning AI modules now; refine verified learnings/skills at final closure.
-9. Finish H1–H9 ownership coverage and live debug fields, adapt/cancel commitments without forgetting causal history, and run H-31/32 save/host/second-match lifecycle smoke. All earlier focused gates must still be valid after shared contract changes; rerun affected ones before recording stage_checked.
+9. Finish H1–H9 ownership coverage and live debug fields, adapt/cancel commitments without forgetting causal history, and author H-31/32 save/host/second-match lifecycle smoke. Record invalidated earlier evidence for mandatory Stage 15 reruns; close as `implemented_unvalidated`.
 
-Output: completed connected behavior with focused gates passing. Confirm 0–14 stage_checked, capture candidate provenance, audit/commit/push this stage and stop. Hand off Stage 15 with Sol / xhigh; start it only on the next user request. Do not proceed to deferred Stage 16.
+Output: completed connected behavior with focused gates authored but not run. Confirm Stages 0–14 are at least `implemented_unvalidated`, capture candidate provenance, audit/commit/push this stage and stop. Hand off Stage 15 with Sol / xhigh; start it only on the next user request. Do not proceed to deferred Stage 16.
 
 ### Stage 14 retained final acceptance
 

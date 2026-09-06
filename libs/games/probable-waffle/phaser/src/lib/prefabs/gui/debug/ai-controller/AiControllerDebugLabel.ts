@@ -106,6 +106,7 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
       strategy: "Strategy & Combat",
       resources: "Resources & Economy",
       production: "Production & Tech",
+      commands: "Command Authority",
       logistics: "Logistics & Workers",
       intel: "Enemy Intel & Scouting",
       thresholds: "Adaptive Thresholds"
@@ -139,6 +140,9 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
         case "production":
           lines.push(...this.getProductionLines(controller, now));
           break;
+        case "commands":
+          lines.push(...this.getCommandAuthorityLines(controller));
+          break;
         case "logistics":
           lines.push(...this.getLogisticsLines(controller, now));
           break;
@@ -168,11 +172,39 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
     lines.push(`Military Str: ${bb.militaryStrength.toFixed(0)}`);
     lines.push(`Resources: ${bb.getTotalResources().toFixed(0)}`);
     lines.push(`Decision Trace: ${trace.events.length}/${trace.eventLimit}`);
+    const reconciliation = controller.getCommandReconciliationSnapshot();
+    lines.push(
+      reconciliation
+        ? `Command Health: ${reconciliation.health} (${reconciliation.pendingCommandIds.length} pending)`
+        : "Command Health: unavailable"
+    );
     lines.push(
       lastDecision
         ? `Last Decision: ${lastDecision.action} → ${lastDecision.outcome} (${lastDecision.reason})`
         : "Last Decision: not recorded"
     );
+    return lines;
+  }
+
+  private getCommandAuthorityLines(controller: PlayerAiController): string[] {
+    const state = controller.getCommandReconciliationSnapshot();
+    if (!state) return ["=== COMMAND AUTHORITY ===", "Unavailable"];
+    const lines = [
+      "=== COMMAND AUTHORITY ===",
+      `Health: ${state.health}`,
+      `Epoch: ${state.authorityEpoch}`,
+      `Terminal Watermark: ${state.processedSequenceWatermark}`,
+      `Pending: ${state.pendingCommandIds.length}`
+    ];
+    for (const commandId of state.pendingCommandIds.slice(-6)) lines.push(`… ${commandId}`);
+    lines.push("", `Recent Outcomes: ${state.recentOutcomes.length}`);
+    for (const outcome of state.recentOutcomes.slice(-8)) {
+      lines.push(
+        `#${outcome.sequence} ${outcome.kind}/${outcome.reason} ${outcome.commandId} ` +
+          `[${outcome.actorIds.join(",") || "scene"}] → [${outcome.worldLinkIds.join(",") || "none"}]`
+      );
+      if (outcome.detail) lines.push(`  ${outcome.detail}`);
+    }
     return lines;
   }
 

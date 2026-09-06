@@ -16,7 +16,6 @@ import { BuilderComponent } from "../../entity/components/construction/builder-c
 import { PawnAiController } from "../../prefabs/ai-agents/pawn-ai-controller";
 import { OrderData } from "../../ai/OrderData";
 import { OrderType } from "../../ai/order-type";
-import { BuildingCursor } from "../human-controller/building-cursor";
 import { getGameObjectLogicalTransform, isGameObjectActiveInActiveScene } from "../../data/game-object-helper";
 import { DistanceHelper } from "../../library/distance-helper";
 import { MapAnalyzer } from "./ai-behavior/map-analyzer";
@@ -37,13 +36,13 @@ import { CombatMicroManager } from "./ai-behavior/combat-micro-manager";
 import { ScoutingManager } from "./ai-behavior/scouting-manager";
 import { TargetingManager } from "./ai-behavior/targeting-manager";
 import { SupplyPlanner } from "./ai-behavior/supply-planner";
-import { IsoHelper } from "../../world/tilemap/iso-helper";
 import { EconomyManager } from "./ai-behavior/economy-manager";
 import { PlayerAiBlackboard } from "./player-ai-blackboard";
 import { WorldStateSnapshotManager } from "./ai-behavior/world-state-snapshot-manager";
 import { getUnitStrength } from "./ai-utils";
 import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 import { dispatchAiOrder } from "./dispatch-ai-order";
+import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { AiDecisionTrace, type AiDecisionReasonCode, type AiDecisionTraceSnapshot } from "./ai-decision-trace";
@@ -453,11 +452,11 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
         });
         if (!closestEnemy) return;
         const newOrder = new OrderData(OrderType.Attack, { targetGameObject: closestEnemy });
-        dispatchAiOrder(this.scene, unit, newOrder, this.player.playerNumber!);
-        assignedCount++;
+        const result = dispatchAiOrder(this.scene, unit, newOrder, this.player.playerNumber!);
+        if (result.status === "dispatched") assignedCount++;
       });
       this.logDebugInfo(`[Defense] ${assignedCount} defenders assigned to targets`);
-      return State.SUCCEEDED;
+      return assignedCount > 0 ? State.SUCCEEDED : State.FAILED;
     }
     this.logDebugInfo("[Defense] No defenders available or no enemies to engage");
     return State.FAILED;
@@ -487,10 +486,11 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       if (!aiController) return;
       if (aiController.blackboard.getCurrentOrder()) return;
       const newOrder = new OrderData(OrderType.Attack, { targetGameObject: target });
-      dispatchAiOrder(this.scene, unit, newOrder, this.player.playerNumber!);
-      assignedCount++;
+      const result = dispatchAiOrder(this.scene, unit, newOrder, this.player.playerNumber!);
+      if (result.status === "dispatched") assignedCount++;
     });
     this.logDebugInfo(`[Attack] ${assignedCount} units assigned to attack ${target.name}`);
+    if (assignedCount === 0) return State.FAILED;
     this.cooldowns.markRun("attackTrigger", now);
     this.blackboard.cooldowns.attackTrigger = now;
     return State.SUCCEEDED;
@@ -714,6 +714,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       return gathererComponent.isGathering;
     });
     if (workers.length > 0 && criticalResource) {
+      let assigned = 0;
       for (const worker of workers) {
         const gathererComponent = getActorComponent(worker, GathererComponent);
         if (!gathererComponent) continue;
@@ -725,9 +726,11 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
         const aiController = getActorComponent(worker, PawnAiController);
         const newOrder = new OrderData(OrderType.Gather, { targetGameObject: closestResourceSource });
         if (aiController) {
-          dispatchAiOrder(this.scene, worker, newOrder, this.player.playerNumber!);
+          const result = dispatchAiOrder(this.scene, worker, newOrder, this.player.playerNumber!);
+          if (result.status === "dispatched") assigned += 1;
         }
       }
+      if (assigned === 0) return State.FAILED;
       this.logDebugInfo("Reassigned workers to gather the most critical resource.");
       return State.SUCCEEDED;
     }
@@ -821,7 +824,11 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       const aiController = getActorComponent(worker, PawnAiController);
       if (!aiController) return false;
       const builderComponent = getActorComponent(worker, BuilderComponent);
-      return !!builderComponent && builderComponent.isIdle();
+      return (
+        !!builderComponent &&
+        builderComponent.isIdle() &&
+        builderComponent.constructableBuildings.includes(buildingType)
+      );
     });
     if (validWorkers.length === 0) {
       // Release consumed plan if no workers available
@@ -829,24 +836,22 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       return State.FAILED;
     }
 
-    const worldXYZ = IsoHelper.isometricTileToWorldXY(this.scene, tileLocationXYZ.x, tileLocationXYZ.y);
-    if (!worldXYZ) {
+    const workerIds = validWorkers
+      .map((worker) => getActorComponent(worker, IdComponent)?.id)
+      .filter((actorId): actorId is string => actorId !== undefined);
+    const commandBus = getSceneService(this.scene, CommandBusService);
+    const dispatch = commandBus?.dispatch({
+      type: "CONSTRUCT",
+      playerNumber: this.player.playerNumber!,
+      actorIds: workerIds,
+      actorName: buildingType,
+      tileVec3: tileLocationXYZ,
+      siteKey: `${this.player.playerNumber}:${buildingType}:${tileLocationXYZ.x}:${tileLocationXYZ.y}`
+    });
+    if (!dispatch || dispatch.status !== "dispatched") {
       if (planConsumed) this.basePlanner.releasePlanAt(planConsumed.tile);
       return State.FAILED;
     }
-    const building = BuildingCursor.spawnBuildingForPlayer(
-      this.scene,
-      buildingType,
-      { x: worldXYZ.x, y: worldXYZ.y, z: 0 },
-      this.player.playerNumber
-    );
-
-    validWorkers.forEach((w) => {
-      const aiController = getActorComponent(w, PawnAiController);
-      if (!aiController) return;
-      const newOrder = new OrderData(OrderType.Build, { targetGameObject: building });
-      dispatchAiOrder(this.scene, w, newOrder, this.player.playerNumber!);
-    });
     // Mark reservation usage & release any lingering plan reservation reference
     this.basePlanner.markTileUsed({ x: tileLocationXYZ.x, y: tileLocationXYZ.y });
     this.basePlanner.releasePlanAt({ x: tileLocationXYZ.x, y: tileLocationXYZ.y });

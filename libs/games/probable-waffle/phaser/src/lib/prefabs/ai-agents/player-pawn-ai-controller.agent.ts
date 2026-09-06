@@ -42,6 +42,9 @@ import { isWaterUnit } from "../../data/game-object-helper";
 import { SimulationTickService } from "../../world/services/simulation-tick.service";
 import { getSimulationNow } from "../../world/services/simulation-time";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
+import { OwnerComponent } from "../../entity/components/owner-component";
+import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
+import { classifyPlayerPawnOrderTerminalOutcome } from "./player-pawn-order-terminal-outcome";
 
 export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
   constructor(
@@ -348,6 +351,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
       }
 
       this.blackboard.resetCurrentOrder(false);
+      this.reportOrderTerminalOutcome(currentOrder, fromNode);
       const animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
       if (animationActorComponent) {
         const healthComponent = getActorComponent(this.gameObject, HealthComponent);
@@ -360,6 +364,45 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     this.blackboard.popCurrentOrderFromQueue();
     return State.SUCCEEDED;
   };
+
+  private reportOrderTerminalOutcome(order: OrderData | undefined, reason: string): void {
+    const context = order?.data.commandContext;
+    if (!context) return;
+    const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
+    const tick = getSceneService(this.gameObject.scene, SimulationTickService)?.currentTick ?? 0;
+    const terminal = classifyPlayerPawnOrderTerminalOutcome(reason);
+    getSceneService(this.gameObject.scene, CommandBusService)?.reportPersistedOutcome({
+      schemaVersion: 1,
+      kind: terminal.kind,
+      reason: terminal.reason,
+      tick,
+      playerNumber: context.playerNumber,
+      commandId: context.execution.commandId,
+      commitmentKey: context.execution.commitmentKey,
+      authorityEpoch: context.execution.authorityEpoch,
+      sequence: context.execution.sequence,
+      ...(context.execution.intentId ? { intentId: context.execution.intentId } : {}),
+      ...(context.execution.effectId ? { effectId: context.execution.effectId } : {}),
+      actorIds: actorId ? [actorId] : [],
+      worldLinkIds: [],
+      detail: reason
+    });
+  }
+
+  /** Settles every still-addressed order before this actor leaves the world. */
+  reportInterruptedOrdersOnShutdown(): void {
+    if (!this.gameObject.scene.sys.isActive()) return;
+    const orders = [this.blackboard.getCurrentOrder(), ...this.blackboard.getQueuedOrders()].filter(
+      (order): order is OrderData => order !== undefined
+    );
+    const commandIds = new Set<string>();
+    for (const order of orders) {
+      const commandId = order.data.commandContext?.execution.commandId;
+      if (!commandId || commandIds.has(commandId)) continue;
+      commandIds.add(commandId);
+      this.reportOrderTerminalOutcome(order, "actor destroyed before order completion");
+    }
+  }
 
   // ─── Farm Tending ───────────────────────────────────────────────────────────
 
@@ -1264,6 +1307,8 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
 
       // Find target position based on spell target type
       let targetPosition: Vector3Simple | null = null;
+      let targetObjectId: string | undefined;
+      const navigationService = getSceneService(this.gameObject.scene, NavigationService);
 
       switch (spellData.targetType) {
         case SpellTargetType.EnemyUnit:
@@ -1271,10 +1316,9 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
           // For offensive spells, target closest enemy position
           const enemy = visionComponent.getClosestVisibleEnemy();
           if (enemy) {
-            const representableComponentEnemy = getActorComponent(enemy, RepresentableComponent);
-            if (enemy && representableComponentEnemy) {
-              targetPosition = representableComponentEnemy.logicalWorldTransform;
-            }
+            const enemyTile = navigationService?.getCenterTileCoordUnderObject(enemy);
+            if (enemyTile) targetPosition = { ...enemyTile, z: 0 };
+            targetObjectId = getActorComponent(enemy, IdComponent)?.id;
           }
           break;
         case SpellTargetType.FriendlyUnit:
@@ -1282,31 +1326,42 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
           const friendlies = visionComponent.getVisibleFriendlies();
           for (const friendly of friendlies) {
             const healthComponent = getActorComponent(friendly, HealthComponent);
-            const representableComponentFriendly = getActorComponent(friendly, RepresentableComponent);
+            const friendlyTile = navigationService?.getCenterTileCoordUnderObject(friendly);
             if (
               healthComponent &&
               !healthComponent.healthIsFull &&
               healthComponent.alive &&
-              representableComponentFriendly
+              friendlyTile
             ) {
-              targetPosition = representableComponentFriendly.logicalWorldTransform;
+              targetPosition = { ...friendlyTile, z: 0 };
+              targetObjectId = getActorComponent(friendly, IdComponent)?.id;
               break;
             }
           }
           break;
         case SpellTargetType.Self:
-          const representableComponentSelf = getActorComponent(this.gameObject, RepresentableComponent);
-          if (representableComponentSelf) {
-            targetPosition = representableComponentSelf.logicalWorldTransform;
-          }
+          const selfTile = navigationService?.getCenterTileCoordUnderObject(this.gameObject);
+          if (selfTile) targetPosition = { ...selfTile, z: 0 };
+          targetObjectId = getActorComponent(this.gameObject, IdComponent)?.id;
           break;
       }
 
       if (!targetPosition) continue;
 
       // Cast the spell
-      const success = spellCastingSystem.castSpell(spellType, targetPosition);
-      if (success) {
+      const commandBus = getSceneService(this.gameObject.scene, CommandBusService);
+      const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
+      const ownerId = getActorComponent(this.gameObject, OwnerComponent)?.getData().ownerId;
+      if (!commandBus || !actorId || ownerId === undefined) continue;
+      const receipt = commandBus.dispatch({
+        type: "CAST_SPELL",
+        playerNumber: ownerId,
+        actorIds: [actorId],
+        spellType,
+        targetObjectId,
+        tileVec3: targetPosition
+      });
+      if (receipt.status === "dispatched") {
         return State.SUCCEEDED;
       }
     }

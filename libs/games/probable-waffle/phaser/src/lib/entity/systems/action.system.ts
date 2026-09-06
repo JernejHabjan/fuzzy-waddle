@@ -26,6 +26,11 @@ import { NavigableComponent } from "../components/movement/navigable-component";
 import { FlyingComponent } from "../components/movement/flying-component";
 import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 import type { ActorActionCommand } from "../../data/commands/game-command";
+import type { GameCommandExecution, GameCommandOutcomeReason } from "@fuzzy-waddle/probable-waffle-protocol";
+import type { ActorId, PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
+import { getPlayerRelation } from "../../data/player-relation";
+import { VisionComponent } from "../components/vision-component";
+import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 
 export class ActionSystem {
   private commandBusSubscription?: Subscription;
@@ -65,35 +70,118 @@ export class ActionSystem {
       const actorId = myId ?? getActorComponent(this.gameObject, IdComponent)?.id;
       if (!actorId) return;
       if (!cmd.actorIds.includes(actorId)) return;
+      const owner = getActorComponent(this.gameObject, OwnerComponent)?.getOwner();
+      if (owner !== cmd.playerNumber) {
+        commandBus.reportOutcome(cmd, "rejected", "invalid_owner", [actorId]);
+        return;
+      }
 
       if (cmd.type === "ACTOR_ACTION") {
-        this.handleActorActionCommand(cmd);
+        const validationError = this.getActorActionValidationError(cmd);
+        if (validationError) {
+          commandBus.reportOutcome(cmd, "rejected", validationError, [actorId]);
+          return;
+        }
+        const result = this.handleActorActionCommand(cmd);
+        commandBus.reportOutcome(
+          cmd,
+          result ? "applied" : "rejected",
+          result ? "applied" : cmd.targetObjectIds?.length ? "invalid_target" : "unsupported_action",
+          [actorId]
+        );
       } else if (cmd.type === "STOP") {
         this.handleStopCommand();
+        commandBus.reportOutcome(cmd, "completed", "applied", [actorId]);
       }
     });
   }
 
-  private handleActorActionCommand(cmd: ActorActionCommand) {
+  private getActorActionValidationError(cmd: ActorActionCommand): GameCommandOutcomeReason | null {
+    const targetId = cmd.targetObjectIds?.[0];
+    const target = targetId
+      ? this.gameObject.scene.children.list.find(
+          (candidate) => getActorComponent(candidate, IdComponent)?.id === targetId
+        )
+      : undefined;
+    if (targetId && (!target || !target.active)) return "invalid_target";
+    const targetHealth = target ? getActorComponent(target, HealthComponent) : undefined;
+    if (targetHealth?.killed) return "invalid_target";
+    if (!cmd.orderType) return null;
+    const sourceOwner = getActorComponent(this.gameObject, OwnerComponent)?.getOwner();
+    const targetOwner = target ? getActorComponent(target, OwnerComponent)?.getOwner() : undefined;
+    const relation = getPlayerRelation(this.gameObject.scene, sourceOwner, targetOwner);
+    const allied = relation === "self" || relation === "ally";
+    switch (cmd.orderType) {
+      case OrderType.Attack: {
+        if (!getActorComponent(this.gameObject, AttackComponent)) return "unsupported_action";
+        if (!target) return cmd.tileVec3 ? null : "invalid_target";
+        if (relation !== "enemy") {
+          return "invalid_target";
+        }
+        const vision = getActorComponent(this.gameObject, VisionComponent);
+        return vision && !vision.getVisibleEnemies().includes(target) ? "hidden_target" : null;
+      }
+      case OrderType.Build:
+        return !target || !allied || !getActorComponent(this.gameObject, BuilderComponent) ||
+          getActorComponent(target, ConstructionSiteComponent)?.isFinished !== false
+          ? "invalid_target"
+          : null;
+      case OrderType.Repair:
+        return !target || !allied || !getActorComponent(this.gameObject, BuilderComponent) || !targetHealth?.isDamaged
+          ? "invalid_target"
+          : null;
+      case OrderType.Heal:
+        return !target || !allied || !getActorComponent(this.gameObject, HealingComponent) || !targetHealth?.isDamaged
+          ? "invalid_target"
+          : null;
+      case OrderType.Gather:
+        return !target || !getActorComponent(this.gameObject, GathererComponent) ||
+          !getActorComponent(target, ResourceSourceComponent)
+          ? "invalid_target"
+          : null;
+      case OrderType.ReturnResources:
+        return !target || !allied || !getActorComponent(this.gameObject, GathererComponent) ||
+          !getActorComponent(target, ResourceDrainComponent)
+          ? "invalid_target"
+          : null;
+      case OrderType.EnterContainer:
+        if (!target || !allied || !getActorComponent(this.gameObject, ContainableComponent)) return "invalid_target";
+        return getActorComponent(target, ContainerComponent)?.canLoadGameObject(this.gameObject)
+          ? null
+          : "capacity_full";
+      case OrderType.Move:
+        return cmd.tileVec3 || target ? null : "invalid_target";
+      case OrderType.Stop:
+        return null;
+    }
+  }
+
+  private handleActorActionCommand(cmd: ActorActionCommand): boolean {
     let targetGameObject: Phaser.GameObjects.GameObject | undefined;
 
     if (cmd.targetObjectIds) {
-      const clickedGameObjects = this.gameObject.scene.children.list.filter((go) =>
-        cmd.targetObjectIds!.includes(getActorComponent(go, IdComponent)?.id ?? "")
-      );
-      if (clickedGameObjects.length > 0) {
-        targetGameObject = clickedGameObjects[0];
-      }
+      const targetId = cmd.targetObjectIds[0];
+      targetGameObject = targetId
+        ? getSceneService(this.gameObject.scene, ActorIndexSystem)?.getActorById(targetId)
+        : undefined;
+      if (!targetGameObject) return false;
     }
 
-    this.executeAction(cmd.orderType, targetGameObject, cmd.tileVec3, cmd.queue);
+    return this.executeAction(
+      cmd.orderType,
+      targetGameObject,
+      cmd.tileVec3,
+      cmd.queue,
+      cmd.execution ? { execution: cmd.execution, playerNumber: cmd.playerNumber, actorIds: cmd.actorIds } : undefined
+    );
   }
 
   public executeAction(
     orderType?: OrderType,
     targetGameObject?: Phaser.GameObjects.GameObject,
     tileVec3?: ActorActionCommand["tileVec3"],
-    queue: boolean = false
+    queue: boolean = false,
+    commandContext?: { execution: GameCommandExecution; playerNumber: PlayerNumber; actorIds: readonly ActorId[] }
   ): boolean {
     const payerPawnAiController = getActorComponent(this.gameObject, PawnAiController);
     if (!payerPawnAiController) return false;
@@ -103,13 +191,16 @@ export class ActionSystem {
     if (orderType) {
       action = new OrderData(orderType, {
         targetGameObject,
-        targetTileLocation: tileVec3
+        targetTileLocation: tileVec3,
+        commandContext
       });
     } else if (targetGameObject) {
       action = this.findAction(targetGameObject);
+      if (action) action.data.commandContext = commandContext;
     } else if (tileVec3) {
       action = new OrderData(OrderType.Move, {
-        targetTileLocation: tileVec3
+        targetTileLocation: tileVec3,
+        commandContext
       });
     }
 
@@ -142,7 +233,8 @@ export class ActionSystem {
       const selfOwnerComponent = getActorComponent(this.gameObject, OwnerComponent);
       if (!selfOwnerComponent) throw new Error("OwnerComponent not found when trying to find action");
       const selfPlayerNumber = selfOwnerComponent.getOwner();
-      if (selfPlayerNumber === targetPlayerNumber) {
+      const relation = getPlayerRelation(this.gameObject.scene, selfPlayerNumber, targetPlayerNumber);
+      if (relation === "self" || relation === "ally") {
         // ally
 
         const targetIsNavigable = getActorComponent(targetGameObject, NavigableComponent);
@@ -227,7 +319,7 @@ export class ActionSystem {
             return new OrderData(OrderType.Gather, { targetGameObject });
           }
         }
-      } else {
+      } else if (relation === "enemy") {
         // enemy
 
         const selfAttackComponent = getActorComponent(this.gameObject, AttackComponent);

@@ -84,7 +84,7 @@ export function dispatchAiOrder(
     };
   }
 
-  commandBus.dispatch({
+  const receipt = commandBus.dispatch({
     type: "ACTOR_ACTION",
     playerNumber,
     actorIds: [actorId],
@@ -93,5 +93,8 @@ export function dispatchAiOrder(
     tileVec3: order.data.targetTileLocation,
     queue: false
   });
+  if (receipt.status === "rejected") {
+    return { status: "dropped", reason: "command_rejected" };
+  }
   return result;
 }

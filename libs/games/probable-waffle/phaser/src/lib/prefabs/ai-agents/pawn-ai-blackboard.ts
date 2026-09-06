@@ -39,6 +39,11 @@ export class PawnAiBlackboard extends Blackboard {
     return undefined;
   }
 
+  /** Returns a read-only snapshot used to settle command effects on actor teardown. */
+  getQueuedOrders(): readonly OrderData[] {
+    return [...this.orderQueue];
+  }
+
   getCurrentOrder(): OrderData | undefined {
     return this.currentOrder;
   }

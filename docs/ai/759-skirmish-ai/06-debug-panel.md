@@ -4,7 +4,7 @@
 
 The player/developer must be able to answer: **What is this AI trying to do, why, what is stopping it, and what will it do next?** Implement this in the existing `AiControllerDebugPanel`/`AiControllerDebugLabel` entry point. It currently shows a strategy string and counts, has category/player selection, truncates telemetry to 12 lines, and passes `performance.now()` into some strategy time helpers. Replace those data dependencies with a read-only simulation snapshot. UI time is allowed only for refresh throttling.
 
-Read [the runbook](00-start-here.md) for execution timing. Implement this incrementally with Stages 1–14; run focused projection/cleanup regressions alongside changes, and the extensive UI matrix in Stage 15. Do not defer the actual panel implementation to testing.
+Read [the runbook](00-start-here.md) for execution timing. Implement this incrementally with Stages 1–14 and author focused projection/cleanup regressions alongside changes; execute those regressions and the extensive UI matrix only in Stage 15. Do not defer the actual panel implementation to testing.
 
 ## Projection contract and ownership
 

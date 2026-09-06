@@ -16,6 +16,8 @@ import { getActorComponent } from "../../../data/actor-component";
 import { addActorComponent } from "../../../data/actor-data";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
+import { CommandBusService } from "../../../world/services/multiplayer/command-bus.service";
+import type { GameCommandOutcomeKind } from "@fuzzy-waddle/probable-waffle-protocol";
 
 /**
  * SharedQueueComponent is the queue owner and processor.
@@ -177,9 +179,16 @@ export class QueueComponent {
     queue.queuedItems.splice(0, 1);
 
     // Delegate to ProductionComponent for spawning logic
+    let producedActorId: string | null = null;
     if (this.productionComponent) {
-      await this.productionComponent.handleProductionComplete(item.productionData);
+      producedActorId = await this.productionComponent.handleProductionComplete(item.productionData);
     }
+    this.reportTerminalOutcome(
+      item,
+      producedActorId ? "completed" : "failed",
+      producedActorId ? [producedActorId] : [],
+      producedActorId ? undefined : "no_legal_spawn_location"
+    );
 
     // No need to reset queue - items are self-contained with their own remainingTime
 
@@ -208,6 +217,7 @@ export class QueueComponent {
     if (this.researchComponent) {
       this.researchComponent.handleResearchComplete(item.researchData);
     }
+    this.reportTerminalOutcome(item, "completed", [`research:${item.researchData}`]);
 
     // No need to reset queue - items are self-contained with their own remainingTime
 
@@ -268,6 +278,7 @@ export class QueueComponent {
 
         // Remove from queue
         queue.queuedItems.splice(index, 1);
+        this.reportTerminalOutcome(cancelledItem, "cancelled", [], "queue_item_cancelled");
 
         // Delegate refund to ProductionComponent
         if (this.productionComponent) {
@@ -310,6 +321,7 @@ export class QueueComponent {
 
         // Remove from queue
         queue.queuedItems.splice(0, 1);
+        this.reportTerminalOutcome(firstItem, "cancelled", [], "research_cancelled");
 
         // Emit cancellation
         if (this.researchComponent) {
@@ -526,11 +538,38 @@ export class QueueComponent {
     this.queueChangedSubject.next(this.items);
   }
 
+  private reportTerminalOutcome(
+    item: UnifiedQueueItem,
+    kind: Extract<GameCommandOutcomeKind, "completed" | "cancelled" | "failed">,
+    worldLinkIds: readonly string[],
+    detail?: string
+  ): void {
+    const context = item.commandContext;
+    if (!context) return;
+    const tick = getSceneService(this.gameObject.scene, SimulationTickService)?.currentTick ?? 0;
+    getSceneService(this.gameObject.scene, CommandBusService)?.reportPersistedOutcome({
+      schemaVersion: 1,
+      kind,
+      reason: kind === "cancelled" ? "cancelled" : kind === "failed" ? "application_failed" : "applied",
+      tick,
+      playerNumber: context.playerNumber,
+      commandId: context.execution.commandId,
+      commitmentKey: context.execution.commitmentKey,
+      authorityEpoch: context.execution.authorityEpoch,
+      sequence: context.execution.sequence,
+      ...(context.execution.intentId ? { intentId: context.execution.intentId } : {}),
+      ...(context.execution.effectId ? { effectId: context.execution.effectId } : {}),
+      actorIds: [...context.actorIds],
+      worldLinkIds: [...worldLinkIds],
+      detail
+    });
+  }
+
   /**
    * Get serialized data for save/load
    */
   getData(): UnifiedQueueItem[] {
-    return this.allItems;
+    return structuredClone(this.allItems);
   }
 
   /**
@@ -546,7 +585,7 @@ export class QueueComponent {
     items.forEach((item) => {
       const queue = this.findQueueWithLeastTime();
       if (queue) {
-        queue.queuedItems.push(item);
+        queue.queuedItems.push(structuredClone(item));
       }
     });
 
@@ -557,6 +596,11 @@ export class QueueComponent {
    * Cleanup
    */
   private destroy(): void {
+    if (this.gameObject.scene.sys.isActive()) {
+      for (const item of this.allItems) {
+        this.reportTerminalOutcome(item, "failed", [], "queue_owner_destroyed");
+      }
+    }
     this.simulationTickSub?.unsubscribe();
     this.productionComponent = undefined;
     this.researchComponent = undefined;

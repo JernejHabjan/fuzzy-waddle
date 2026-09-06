@@ -3,6 +3,7 @@ import type { Subscription } from "rxjs";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import {
   type CampaignMissionRuntimeEvent,
+  type GameCommandOutcome,
   type ProbableWaffleReplayCommandBatch,
   type ProbableWaffleReplayData,
   type ProbableWaffleReplayTickDigest
@@ -28,10 +29,13 @@ const SUPPORTED_REPLAY_FORMAT_VERSIONS = new Set(["1", "2"]);
  */
 export class ReplayPlaybackService {
   private tickSub?: Subscription;
+  private outcomeSub?: Subscription;
   private readonly batchesByTick = new Map<number, ProbableWaffleReplayCommandBatch[]>();
   private readonly campaignEventsByTick = new Map<number, Array<Omit<CampaignMissionRuntimeEvent, "sequence">>>();
   private readonly expectedTickDigests = new Map<number, ProbableWaffleReplayTickDigest>();
   private readonly authoritativeBatchPairs = new Set<string>();
+  private expectedCommandOutcomes: GameCommandOutcome[] = [];
+  private compareRecordedCommandOutcomes = false;
 
   /**
    * Initializes replay playback from a validated archive, restoring deterministic random
@@ -125,6 +129,12 @@ export class ReplayPlaybackService {
       throw new Error("ReplayPlaybackService requires CommandBusService and SimulationTickService");
     }
 
+    this.compareRecordedCommandOutcomes = replayData.commandOutcomes !== undefined;
+    this.expectedCommandOutcomes = (replayData.commandOutcomes ?? [])
+      .filter((outcome) => outcome.kind !== "dispatched")
+      .map((outcome) => structuredClone(outcome));
+    this.outcomeSub = commandBus.commandOutcome$.subscribe((actual) => this.compareCommandOutcome(actual));
+
     this.tickSub = tickService.tick$.subscribe((tick) => {
       const tickBatches = this.batchesByTick.get(tick);
       if (tickBatches?.length) {
@@ -154,6 +164,22 @@ export class ReplayPlaybackService {
   /** Documents the destroy member and its declared contract at this boundary. */
   destroy(): void {
     this.tickSub?.unsubscribe();
+    this.outcomeSub?.unsubscribe();
+    if (this.compareRecordedCommandOutcomes && this.expectedCommandOutcomes.length > 0) {
+      console.error(`[ReplayPlayback] ${this.expectedCommandOutcomes.length} recorded command outcomes were not observed`);
+    }
+  }
+
+  private compareCommandOutcome(actual: GameCommandOutcome): void {
+    if (actual.kind === "dispatched" || !this.compareRecordedCommandOutcomes) return;
+    const expected = this.expectedCommandOutcomes.shift();
+    if (!expected) {
+      console.error("[ReplayPlayback] Unexpected command outcome", { actual });
+      return;
+    }
+    if (stableReplayValue(expected) !== stableReplayValue(actual)) {
+      console.error("[ReplayPlayback] Command outcome mismatch", { expected, actual });
+    }
   }
 }
 

@@ -71,7 +71,7 @@ export function createAiBrainStateV1(input: CreateAiBrainStateV1Input): AiBrainS
     pendingOutcomes: [],
     authority: {
       authorityEpoch: 0,
-      processedSequenceWatermark: 0,
+      processedSequenceWatermark: -1,
       pendingCommandIds: [],
       pendingLimit: 256,
       reconciliationDeadline: null,

@@ -32,6 +32,7 @@ export type AiCommandOutcomeV1 =
       readonly identity: AiCommandIdentityV1;
       readonly tick: AiSimulationTick;
       readonly resultingActorIds: readonly ActorId[];
+      readonly worldLinkIds?: readonly string[];
     }
   | {
       readonly kind: "rejected" | "cancelled" | "failed";
@@ -43,6 +44,7 @@ export type AiCommandOutcomeV1 =
 /** Persisted reconciliation cursor and bounded unresolved command set. */
 export interface AiAuthorityStateV1 {
   readonly authorityEpoch: number;
+  /** Highest terminal sequence, or -1 before the first terminal command. */
   readonly processedSequenceWatermark: number;
   readonly pendingCommandIds: readonly AiCommandId[];
   readonly pendingLimit: number;

@@ -4,7 +4,10 @@ import { HealthComponent } from "../combat/components/health-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { VisionComponent } from "../vision-component";
 import { getGameObjectVisibility, isWaterUnit } from "../../../data/game-object-helper";
-import type { ContainerComponentData } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  type ContainerComponentData,
+  ProbableWaffleGameCommandTypes
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
@@ -16,6 +19,7 @@ import { RepresentableComponent } from "../representable-component";
 import { ActorTranslateComponent } from "../movement/actor-translate-component";
 import type { Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
+import { CommandBusService } from "../../../world/services/multiplayer/command-bus.service";
 
 /**
  * apply to resource source that needs gameObjects to enter to gather
@@ -36,6 +40,7 @@ export class ContainerComponent {
   // Fixes partial container restore when referenced units are not indexed yet at setData time.
   private pendingContainedIds?: string[];
   private simulationTickSub?: Subscription;
+  private commandSubscription?: Subscription;
 
   constructor(
     private readonly gameObject: GameObject,
@@ -45,6 +50,7 @@ export class ContainerComponent {
     this.simulationTickSub = getSceneService(gameObject.scene, SimulationTickService)?.tick$.subscribe(() =>
       this.tryResolveContainedActorReferences()
     );
+    this.listenToUnloadCommands();
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.onKilled, this);
   }
@@ -121,6 +127,7 @@ export class ContainerComponent {
   destroy() {
     this.onKilled();
     this.simulationTickSub?.unsubscribe();
+    this.commandSubscription?.unsubscribe();
     this.containerChanged.complete();
   }
 
@@ -137,6 +144,45 @@ export class ContainerComponent {
     // Use clearContainerReference() — not leaveContainer() — to avoid infinite recursion
     getActorComponent(gameObject, ContainableComponent)?.clearContainerReference();
     this.containerChanged.next();
+  }
+
+  private listenToUnloadCommands(): void {
+    const commandBus = getSceneService(this.gameObject.scene, CommandBusService);
+    if (!commandBus) return;
+    this.commandSubscription = commandBus.command$.subscribe((command) => {
+      if (command.type !== ProbableWaffleGameCommandTypes.Unload) return;
+      const containerId = getActorComponent(this.gameObject, IdComponent)?.id;
+      if (!containerId || !command.actorIds.includes(containerId)) return;
+      if (isWaterUnit(this.gameObject)) {
+        const navigationService = getSceneService(this.gameObject.scene, NavigationService);
+        const currentTile = navigationService?.getCenterTileCoordUnderObject(this.gameObject);
+        if (!currentTile || !navigationService?.isShoreTile(currentTile)) {
+          commandBus.reportOutcome(command, "rejected", "invalid_target", [containerId], [], "not_at_shore");
+          return;
+        }
+      }
+      const requested = command.passengerIds
+        ? this.getContainedGameObjects().filter((actor) => {
+            const actorId = getActorComponent(actor, IdComponent)?.id;
+            return actorId !== undefined && command.passengerIds?.includes(actorId);
+          })
+        : this.getContainedGameObjects();
+      if (command.passengerIds && requested.length !== new Set(command.passengerIds).size) {
+        commandBus.reportOutcome(command, "rejected", "invalid_target", [containerId], [], "cargo_not_found");
+        return;
+      }
+      if (requested.length === 0) {
+        commandBus.reportOutcome(command, "rejected", "invalid_target", [containerId], [], "cargo_not_found");
+        return;
+      }
+      const unloadedIds: string[] = [];
+      for (const actor of requested) {
+        const actorId = getActorComponent(actor, IdComponent)?.id;
+        this.unloadGameObject(actor);
+        if (actorId) unloadedIds.push(actorId);
+      }
+      commandBus.reportOutcome(command, "completed", "applied", [containerId], unloadedIds);
+    });
   }
 
   private repositionNearContainer(gameObject: GameObject) {

@@ -50,7 +50,12 @@ export function assertAiBrainStateV1(value: unknown): asserts value is AiBrainSt
   assertAiNonNegativeInteger(value.scheduler.decisionSequence, "scheduler.decisionSequence");
   assertAiNonNegativeInteger(value.scheduler.accumulatorTicks, "scheduler.accumulatorTicks");
   assertAiNonNegativeInteger(value.authority.authorityEpoch, "authority.authorityEpoch");
-  assertAiNonNegativeInteger(value.authority.processedSequenceWatermark, "authority.processedSequenceWatermark");
+  if (
+    !Number.isSafeInteger(value.authority.processedSequenceWatermark) ||
+    value.authority.processedSequenceWatermark < -1
+  ) {
+    throw new Error("invalid_ai_integer:authority.processedSequenceWatermark");
+  }
   assertDeadline(value.strategy.commitmentDeadline, "strategy.commitmentDeadline");
   if (value.authority.reconciliationDeadline !== null) {
     assertDeadline(value.authority.reconciliationDeadline, "authority.reconciliationDeadline");

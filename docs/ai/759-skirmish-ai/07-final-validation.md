@@ -2,7 +2,7 @@
 
 The mandatory catalog is **121 named cases before variants**: 63 strategic, H-01–32, SEQ-01–08, [C-01–06 and D-01–06](11-classic-rts-and-difficulty.md#added-cases-and-ownership), and [DBG-01–06](12-debug-workbench.md#ownership-usability-and-verification). Validate every owning-stage slice and integrated outcome; missing registrations fail coverage, not silently shrink the denominator. Future-capability cases retain explicit support status rather than fictitious passing runtime results.
 
-Model: `gpt-5.6-sol`, effort `xhigh`. [Runbook](00-start-here.md) policy: this is the final required stage; all deferred execution happens here. Stage 16 search/learning is excluded. Prior stages must be `stage_checked` with focused evidence, not falsely marked release-validated. Start with the complete progress/verification ledger and candidate commit. This stage reruns the final integrated checks; earlier green results do not replace them.
+Model: `gpt-5.6-sol`, effort `xhigh`. [Runbook](00-start-here.md) policy: this is the final required stage; all deferred execution happens here. Stage 16 search/learning is excluded. Prior stages must be at least `implemented_unvalidated` with their required checks/fixtures authored; historical Stage 0–2 focused evidence is not final evidence. Start with the complete progress/verification ledger and candidate commit. This stage executes the full integrated ladder; earlier green results do not replace it.
 
 ## 15A — integration and formal review
 

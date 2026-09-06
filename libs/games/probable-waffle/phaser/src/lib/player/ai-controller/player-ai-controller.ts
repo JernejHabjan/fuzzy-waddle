@@ -1,4 +1,8 @@
-import { type AIBehaviorTreeStateData, ProbableWafflePlayer } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  type AiCommandReconciliationStateData,
+  type AIBehaviorTreeStateData,
+  ProbableWafflePlayer
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { PlayerAiBlackboard } from "./player-ai-blackboard";
 import { PlayerAiControllerAgent } from "./player-ai-controller.agent";
 import { BehaviourTree } from "mistreevous";
@@ -11,6 +15,9 @@ import { getSceneService } from "../../world/services/scene-component-helpers";
 import { SimulationTickService } from "../../world/services/simulation-tick.service";
 import type { Subscription } from "rxjs";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
+import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
+import { AiCommandReconciliation } from "./ai-command-reconciliation";
+import type { AiAuthorityStateV1, AiCommandOutcomeV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
 
 export class PlayerAiController {
   private static readonly MAX_SCHEDULED_STEPS_PER_RUN = 5;
@@ -26,11 +33,16 @@ export class PlayerAiController {
   private tickSubscription?: Subscription;
   private stepInFlight = false;
   private stepQueued = false;
+  private readonly commandReconciliation?: AiCommandReconciliation;
   constructor(
     public readonly scene: ProbableWaffleScene,
     public readonly player: ProbableWafflePlayer
   ) {
     this.blackboard = new PlayerAiBlackboard(scene);
+    const commandBus = getSceneService(scene, CommandBusService);
+    if (commandBus && player.playerNumber !== undefined) {
+      this.commandReconciliation = new AiCommandReconciliation(player.playerNumber, commandBus);
+    }
     this.playerAiControllerAgent = new PlayerAiControllerAgent(this.scene, this.player, this.blackboard);
     this.behaviourTree = new BehaviourTree(PlayerAiControllerMdsl, this.playerAiControllerAgent);
     // expose telemetry snapshot container in diagnostics if absent
@@ -39,6 +51,7 @@ export class PlayerAiController {
     const simulationTickService = getSceneService(scene, SimulationTickService);
     if (simulationTickService) {
       this.tickSubscription = simulationTickService.tick$.subscribe(() => {
+        this.commandReconciliation?.observeTick(simulationTickService.currentTick);
         this.updateOnSimulationTick().catch((error: unknown) => {
           console.error(error, "Error updating AI on simulation tick");
         });
@@ -119,6 +132,7 @@ export class PlayerAiController {
   private onShutdown() {
     this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.updateFrameNonDeterministicFallback, this);
     this.tickSubscription?.unsubscribe();
+    this.commandReconciliation?.destroy();
   }
 
   public getTelemetrySnapshot() {
@@ -132,7 +146,8 @@ export class PlayerAiController {
     return {
       blackboard: this.blackboard.getData(),
       telemetry: this.telemetry.snapshot(),
-      enabled: this.enabled
+      enabled: this.enabled,
+      commandReconciliation: this.commandReconciliation?.getState()
     };
   }
 
@@ -143,6 +158,10 @@ export class PlayerAiController {
     this.setEnabled(state.enabled ?? true);
     if (state.blackboard) {
       this.blackboard.setData(state.blackboard, this.scene);
+    }
+    if (state.commandReconciliation) {
+      const tick = getSceneService(this.scene, SimulationTickService)?.currentTick ?? 0;
+      this.commandReconciliation?.setState(state.commandReconciliation, tick);
     }
   }
 
@@ -155,5 +174,20 @@ export class PlayerAiController {
 
   isEnabled(): boolean {
     return this.enabled;
+  }
+
+  getCommandReconciliationSnapshot(): AiCommandReconciliationStateData | undefined {
+    return this.commandReconciliation?.getState();
+  }
+
+  /** Read-only Stage 3 adapter consumed when the pure brain becomes live in Stage 6. */
+  getBrainCommandBridgeSnapshot():
+    | { readonly outcomes: readonly AiCommandOutcomeV1[]; readonly authority: AiAuthorityStateV1 }
+    | undefined {
+    if (!this.commandReconciliation) return undefined;
+    return {
+      outcomes: this.commandReconciliation.getBrainOutcomes(this.scene.gameInstanceId),
+      authority: this.commandReconciliation.getBrainAuthorityState()
+    };
   }
 }

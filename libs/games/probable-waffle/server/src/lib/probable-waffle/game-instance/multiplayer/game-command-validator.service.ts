@@ -218,7 +218,15 @@ export class GameCommandValidatorService {
     // 2c. Per-command payload checks.
     const actorIndex = this.getActorIndex(gameInstance);
     for (const command of commands) {
-      const payloadError = this.validateCommandPayload(command, tick, playerNumber, actorIndex, gameInstanceId);
+      const payloadError = this.validateCommandPayload(
+        command,
+        tick,
+        playerNumber,
+        actorIndex,
+        gameInstanceId,
+        gameInstance,
+        user
+      );
       if (payloadError !== null) {
         return { valid: false, relayEmpty: true, reason: payloadError };
       }
@@ -251,7 +259,9 @@ export class GameCommandValidatorService {
     expectedTick: number,
     playerNumber: number,
     actorIndex: Map<string, ActorDefinition>,
-    gameInstanceId: string
+    gameInstanceId: string,
+    gameInstance: ProbableWaffleGameInstance,
+    user: User
   ): string | null {
     if (!command || typeof command !== "object") {
       this.logger.warn(`[GameCommand] Non-object command in ${gameInstanceId}`);
@@ -264,15 +274,46 @@ export class GameCommandValidatorService {
       this.logger.warn(`[GameCommand] Unknown command type ${String(type)} in ${gameInstanceId}`);
       return `unknown command type "${String(type)}"`;
     }
-    if (payload.tick !== expectedTick || payload.playerNumber !== playerNumber) {
+    if (payload.tick !== expectedTick || !Number.isInteger(payload.playerNumber)) {
       this.logger.warn(`[GameCommand] Inner command metadata mismatch for player ${playerNumber} in ${gameInstanceId}`);
       return `command metadata mismatch (tick=${String(payload.tick)}, player=${String(payload.playerNumber)})`;
     }
+    const commandPlayerNumber = payload.playerNumber as number;
+    if (commandPlayerNumber !== playerNumber) {
+      const commandPlayer = gameInstance.getPlayerByNumber(commandPlayerNumber);
+      const hostUserId =
+        (gameInstance.gameInstanceMetadata.data as { currentHostUserId?: string | null }).currentHostUserId ??
+        gameInstance.gameInstanceMetadata.data.createdBy;
+      if (!commandPlayer || commandPlayer.playerController.data.userId !== null || hostUserId !== user.id) {
+        this.logger.warn(
+          `[GameCommand] Invalid delegated authority: outer player ${playerNumber} attempted command for ${commandPlayerNumber} in ${gameInstanceId}`
+        );
+        return `invalid delegated command authority for player ${commandPlayerNumber}`;
+      }
+    }
+
+    const executionError = this.validateExecutionMetadata(payload.execution, commandPlayerNumber);
+    if (executionError) return executionError;
+    if (payload.execution && typeof payload.execution === "object") {
+      const executionSource = (payload.execution as RawExecutionMetadata).source;
+      const commandPlayer = gameInstance.getPlayerByNumber(commandPlayerNumber);
+      if (commandPlayer?.playerController.data.userId === null && executionSource !== "ai") {
+        return `AI command source does not match delegated player authority`;
+      }
+      if (commandPlayer?.playerController.data.userId !== null && executionSource === "ai") {
+        return `AI command source cannot control a human player`;
+      }
+    }
 
     const actorIds = this.readActorIds(payload.actorIds);
-    if (!actorIds || actorIds.length === 0 || actorIds.length > GameCommandValidatorService.MAX_ACTOR_IDS_PER_COMMAND) {
-      this.logger.warn(`[GameCommand] Invalid actorIds for player ${playerNumber} in ${gameInstanceId}`);
-      return `invalid actorIds for player ${playerNumber}`;
+    const actorIdsMayBeEmpty = type === ProbableWaffleGameCommandTypes.Concede;
+    if (
+      !actorIds ||
+      (!actorIdsMayBeEmpty && actorIds.length === 0) ||
+      actorIds.length > GameCommandValidatorService.MAX_ACTOR_IDS_PER_COMMAND
+    ) {
+      this.logger.warn(`[GameCommand] Invalid actorIds for player ${commandPlayerNumber} in ${gameInstanceId}`);
+      return `invalid actorIds for player ${commandPlayerNumber}`;
     }
     const unknownActorIds: string[] = [];
     for (const actorId of actorIds) {
@@ -281,11 +322,11 @@ export class GameCommandValidatorService {
         unknownActorIds.push(actorId);
         continue;
       }
-      if (actor.owner?.ownerId !== playerNumber) {
+      if (actor.owner?.ownerId !== commandPlayerNumber) {
         this.logger.warn(
-          `[GameCommand] Ownership violation for actor ${actorId} by player ${playerNumber} in ${gameInstanceId}`
+          `[GameCommand] Ownership violation for actor ${actorId} by player ${commandPlayerNumber} in ${gameInstanceId}`
         );
-        return `actor "${actorId}" not owned by player ${playerNumber}`;
+        return `actor "${actorId}" not owned by player ${commandPlayerNumber}`;
       }
     }
     if (unknownActorIds.length > 0) {
@@ -362,7 +403,66 @@ export class GameCommandValidatorService {
         return null;
       case ProbableWaffleGameCommandTypes.CancelResearch:
         return null;
+      case ProbableWaffleGameCommandTypes.Construct:
+        if (!this.isKnownActorName(payload.actorName)) return `invalid actorName for CONSTRUCT`;
+        if (!this.isValidTileVector3(payload.tileVec3)) return `invalid tileVec3 for CONSTRUCT`;
+        if (!this.isSafeIdentifier(payload.siteKey)) return `invalid siteKey for CONSTRUCT`;
+        return null;
+      case ProbableWaffleGameCommandTypes.CastSpell:
+        if (!this.isSafeIdentifier(payload.spellType)) return `invalid spellType for CAST_SPELL`;
+        if (!this.isValidTileVector3(payload.tileVec3)) return `invalid tileVec3 for CAST_SPELL`;
+        if (payload.targetObjectId !== undefined && !this.isSafeIdentifier(payload.targetObjectId)) {
+          return `invalid targetObjectId for CAST_SPELL`;
+        }
+        return null;
+      case ProbableWaffleGameCommandTypes.Unload:
+        if (payload.passengerIds !== undefined) {
+          const passengerIds = this.readActorIds(payload.passengerIds);
+          if (!passengerIds || passengerIds.length > GameCommandValidatorService.MAX_TARGET_IDS_PER_COMMAND) {
+            return `invalid passengerIds for UNLOAD`;
+          }
+        }
+        if (payload.tileVec3 !== undefined && !this.isValidTileVector3(payload.tileVec3)) {
+          return `invalid tileVec3 for UNLOAD`;
+        }
+        return null;
+      case ProbableWaffleGameCommandTypes.SetRallyPoint:
+        if (!this.isValidTileVector3(payload.tileVec3) || !this.isValidWorldVector3(payload.worldVec3)) {
+          return `invalid vector payload for SET_RALLY_POINT`;
+        }
+        if (payload.targetObjectId !== undefined && !this.isSafeIdentifier(payload.targetObjectId)) {
+          return `invalid targetObjectId for SET_RALLY_POINT`;
+        }
+        return null;
+      case ProbableWaffleGameCommandTypes.Concede:
+        if (typeof payload.reason !== "string" || payload.reason.length === 0 || payload.reason.length > 160) {
+          return `invalid reason for CONCEDE`;
+        }
+        return null;
     }
+  }
+
+  private validateExecutionMetadata(value: unknown, playerNumber: number): string | null {
+    if (value === undefined) return null;
+    if (!value || typeof value !== "object") return `invalid command execution metadata`;
+    const execution = value as RawExecutionMetadata;
+    if (
+      execution.schemaVersion !== 1 ||
+      !this.isSafeIdentifier(execution.commandId) ||
+      !this.isSafeIdentifier(execution.commitmentKey) ||
+      !["human", "ai", "campaign", "replay"].includes(String(execution.source)) ||
+      !Number.isSafeInteger(execution.authorityEpoch) ||
+      (execution.authorityEpoch as number) < 0 ||
+      !Number.isSafeInteger(execution.sequence) ||
+      (execution.sequence as number) < 0
+    ) {
+      return `invalid command execution metadata`;
+    }
+    const expectedPrefix = `${playerNumber}:${execution.authorityEpoch}:${execution.sequence}:`;
+    if (!(execution.commandId as string).startsWith(expectedPrefix)) {
+      return `command identity does not match player/epoch/sequence`;
+    }
+    return null;
   }
 
   private isKnownCommandType(value: unknown): value is ProbableWaffleGameCommandType {
@@ -376,8 +476,8 @@ export class GameCommandValidatorService {
     if (!Array.isArray(value)) {
       return null;
     }
-    const actorIds = value.filter((actorId): actorId is string => typeof actorId === "string" && actorId.length > 0);
-    return actorIds.length === value.length ? actorIds : null;
+    const actorIds = value.filter((actorId): actorId is string => this.isSafeIdentifier(actorId));
+    return actorIds.length === value.length && new Set(actorIds).size === actorIds.length ? actorIds : null;
   }
 
   private getActorIndex(gameInstance: ProbableWaffleGameInstance): Map<string, ActorDefinition> {
@@ -432,6 +532,15 @@ export class GameCommandValidatorService {
     return typeof value === "number" && Number.isFinite(value) && Number.isInteger(value);
   }
 
+  private isSafeIdentifier(value: unknown): value is string {
+    return (
+      typeof value === "string" &&
+      value.length > 0 &&
+      value.length <= 256 &&
+      /^[a-zA-Z0-9_.:@/-]+$/.test(value)
+    );
+  }
+
   private describeTransportMeta(event: ProbableWaffleGameCommandEvent): string {
     const transportMeta = event.transportMeta;
     if (!transportMeta) {
@@ -455,6 +564,21 @@ type RawGameCommand = {
   actorName?: unknown;
   queueIndex?: unknown;
   researchType?: unknown;
+  execution?: unknown;
+  siteKey?: unknown;
+  spellType?: unknown;
+  targetObjectId?: unknown;
+  passengerIds?: unknown;
+  reason?: unknown;
+};
+
+type RawExecutionMetadata = {
+  schemaVersion?: unknown;
+  commandId?: unknown;
+  commitmentKey?: unknown;
+  source?: unknown;
+  authorityEpoch?: unknown;
+  sequence?: unknown;
 };
 
 type PartialVector3 = {

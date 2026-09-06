@@ -2,6 +2,7 @@
 export type AiDecisionReasonCode =
   | "already_gathering"
   | "command_dispatched"
+  | "command_rejected"
   | "enemy_not_weaker"
   | "enemy_weaker"
   | "missing_actor_id"

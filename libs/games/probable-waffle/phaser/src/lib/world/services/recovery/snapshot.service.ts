@@ -16,6 +16,9 @@ import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { CancelableSimDelay } from "../simulation-time";
 import { createMultiplayerClientLogger } from "../multiplayer/multiplayer-client-logger";
 import { RandomService } from "../random.service";
+import { CommandBusService } from "../multiplayer/command-bus.service";
+import { SummonExpiryService } from "../../../entity/systems/summon-expiry.service";
+import { AoeZoneManager } from "../../../entity/systems/aoe-zone-manager";
 
 /** Documents the following declaration and its compatibility contract. */
 const SNAPSHOT_REFRESH_INTERVAL_MS = 60_000;
@@ -137,6 +140,9 @@ export class SnapshotService {
     const rawCampaignMission = scene.baseGameData.gameInstance.gameState?.data.campaignMission;
     const campaignMission = rawCampaignMission ? structuredClone(rawCampaignMission) : undefined;
     const randomState = getSceneService(scene, RandomService)?.getState();
+    const commandAuthority = getSceneService(scene, CommandBusService)?.getAuthorityState();
+    const summonExpiries = getSceneService(scene, SummonExpiryService)?.getData();
+    const aoeZones = getSceneService(scene, AoeZoneManager)?.getData();
 
     this.latestSnapshot = {
       tick,
@@ -145,7 +151,10 @@ export class SnapshotService {
       playerSelectionGroups,
       playerResearch,
       campaignMission,
-      randomState
+      randomState,
+      commandAuthority,
+      summonExpiries,
+      aoeZones
     } satisfies ProbableWaffleSnapshotData;
   }
 

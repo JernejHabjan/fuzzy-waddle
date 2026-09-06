@@ -24,13 +24,13 @@ export function dispatchProductionCommand(
     return false;
   }
 
-  commandBus.dispatch({
+  const receipt = commandBus.dispatch({
     type: ProbableWaffleGameCommandTypes.Production,
     playerNumber,
     actorIds: [actorId],
     actorName
   });
-  return true;
+  return receipt.status === "dispatched";
 }
 
 export function dispatchResearchCommand(
@@ -45,13 +45,13 @@ export function dispatchResearchCommand(
     return false;
   }
 
-  commandBus.dispatch({
+  const receipt = commandBus.dispatch({
     type: ProbableWaffleGameCommandTypes.Research,
     playerNumber,
     actorIds: [actorId],
     researchType
   });
-  return true;
+  return receipt.status === "dispatched";
 }
 
 export function dispatchCancelProductionCommand(
@@ -66,13 +66,13 @@ export function dispatchCancelProductionCommand(
     return false;
   }
 
-  commandBus.dispatch({
+  const receipt = commandBus.dispatch({
     type: ProbableWaffleGameCommandTypes.CancelProduction,
     playerNumber,
     actorIds: [actorId],
     queueIndex
   });
-  return true;
+  return receipt.status === "dispatched";
 }
 
 export function dispatchCancelResearchCommand(
@@ -86,10 +86,10 @@ export function dispatchCancelResearchCommand(
     return false;
   }
 
-  commandBus.dispatch({
+  const receipt = commandBus.dispatch({
     type: ProbableWaffleGameCommandTypes.CancelResearch,
     playerNumber,
     actorIds: [actorId]
   });
-  return true;
+  return receipt.status === "dispatched";
 }

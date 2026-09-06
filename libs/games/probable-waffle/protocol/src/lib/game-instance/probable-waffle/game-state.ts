@@ -38,6 +38,15 @@ import type {
   CampaignRestoreInvariantReport
 } from "../../probable-waffle/campaign-runtime";
 import type { DeterministicRandomState } from "../../probable-waffle/deterministic-random";
+import type { GameCommandAuthorityState } from "./game-command";
+
+/** Save-safe lifetime for a spell-created actor. */
+export interface SummonExpiryData {
+  readonly actorId: string;
+  readonly effectId: string;
+  readonly commandId: string;
+  readonly dueTick: number;
+}
 
 export class ProbableWaffleGameState extends BaseGameState<ProbableWaffleGameStateData> {
   constructor(data?: ProbableWaffleGameStateData) {
@@ -69,7 +78,10 @@ export class ProbableWaffleGameState extends BaseGameState<ProbableWaffleGameSta
       scoreSnapshots: this.normalizeScoreSnapshots(data.scoreSnapshots),
       campaignMission: data.campaignMission ? structuredClone(data.campaignMission) : undefined,
       campaignRestore: data.campaignRestore ? structuredClone(data.campaignRestore) : undefined,
-      randomState: data.randomState ? structuredClone(data.randomState) : undefined
+      randomState: data.randomState ? structuredClone(data.randomState) : undefined,
+      commandAuthority: data.commandAuthority ? structuredClone(data.commandAuthority) : undefined,
+      summonExpiries: data.summonExpiries ? structuredClone(data.summonExpiries) : undefined,
+      aoeZones: data.aoeZones ? structuredClone(data.aoeZones) : undefined
     };
   }
 
@@ -202,6 +214,10 @@ export interface ProbableWaffleGameStateData extends BaseData {
   campaignRestore?: CampaignRestoreInvariantReport;
   /** Documents the random state member and its declared contract at this boundary. */
   randomState?: DeterministicRandomState;
+  /** Command deduplication/authority frontier used across save and host recovery. */
+  commandAuthority?: GameCommandAuthorityState;
+  /** Spell-created actor expiries evaluated against simulation ticks. */
+  summonExpiries?: SummonExpiryData[];
 }
 
 /**

@@ -2,7 +2,12 @@ import Phaser from "phaser";
 import { Subject, Subscription } from "rxjs";
 import {
   type GameCommand,
+  type GameCommandAuthorityState,
+  type GameCommandExecution,
   type GameCommandInput,
+  type GameCommandOutcome,
+  type GameCommandOutcomeKind,
+  type GameCommandOutcomeReason,
   type ProbableWaffleGameCommandEvent,
   ProbableWaffleGameCommandTypes,
   ProbableWafflePlayer,
@@ -22,6 +27,15 @@ import { isMultiplayerDebugEnabled } from "./multiplayer-debug";
 import { createMultiplayerClientLogger } from "./multiplayer-client-logger";
 import { getNgxSocketIoRawSocket } from "../../../core/ngx-socket-io-access";
 import { getPlayersFromScene } from "@fuzzy-waddle/platform-game-host/phaser/scene/base.scene";
+import {
+  advanceProcessedCommandSequence,
+  isProcessedCommandSequence
+} from "./command-authority-policy";
+
+/** Immediate result of admitting a command to the shared authority. */
+export type GameCommandDispatchReceipt =
+  | { readonly status: "dispatched"; readonly command: GameCommand }
+  | { readonly status: "rejected"; readonly reason: GameCommandOutcomeReason };
 
 /**
  * Central command bus for all player- and AI-issued simulation commands.
@@ -42,6 +56,8 @@ import { getPlayersFromScene } from "@fuzzy-waddle/platform-game-host/phaser/sce
  *
  * Ownership validation (only issue commands for your own actors) is the
  * responsibility of callers. ActionSystem and MovementSystem trust the actorIds.
+ * Stage 3 additionally revalidates ownership/addressability at bus admission and
+ * application, while actor-specific systems retain their capability/target checks.
  */
 export class CommandBusService {
   /** Documents the following declaration and its compatibility contract. */
@@ -54,6 +70,11 @@ export class CommandBusService {
   readonly command$ = this._command$.asObservable();
   private readonly _commandBatch$ = new Subject<ProbableWaffleReplayCommandBatch>();
   readonly commandBatch$ = this._commandBatch$.asObservable();
+  private readonly _commandOutcome$ = new Subject<GameCommandOutcome>();
+  readonly commandOutcome$ = this._commandOutcome$.asObservable();
+  private static readonly PROCESSED_COMMAND_LIMIT = 2048;
+  private static readonly OUTCOME_HISTORY_LIMIT = 512;
+  private static readonly ACTIVE_AI_COMMAND_LIMIT = 128;
 
   private isMultiplayer = false;
   private humanPlayerNumbers: PlayerNumber[] = [];
@@ -69,6 +90,7 @@ export class CommandBusService {
   private readonly localTickTimeline = new Map<number, string[]>();
   private readonly remoteReceiveTimeline = new Map<PlayerNumber, string[]>();
   private readonly sentTransportSequenceByTick = new Map<number, number>();
+  private readonly sentCommandsByTick = new Map<number, GameCommand[]>();
   private readonly lastReceivedRelaySequenceByPlayer = new Map<PlayerNumber, number>();
   private lastSentExecutionTick = 0;
   private nextOutboundTransportSequence = 1;
@@ -79,12 +101,22 @@ export class CommandBusService {
   private readonly lastReceivedTickByPlayer = new Map<PlayerNumber, number>();
   private lastSentTickByLocalPlayer: number | null = null;
   private lastLoggedStallTick: number | null = null;
+  private authorityEpoch = 0;
+  private readonly nextSequenceByPlayer = new Map<PlayerNumber, number>();
+  private readonly processedSequenceWatermarkByPlayer = new Map<PlayerNumber, number>();
+  private readonly processedCommandIds = new Map<string, number>();
+  private readonly activeCommitments = new Map<string, string>();
+  private readonly expectedActorIdsByCommand = new Map<string, readonly string[]>();
+  private readonly terminalActorIdsByCommand = new Map<string, Set<string>>();
+  private readonly recentOutcomes: GameCommandOutcome[] = [];
 
   constructor(private readonly scene: ProbableWaffleScene) {
     // Scene shutdown must always own bus teardown, even if multiplayer init never runs
     // or fails partway through bootstrap. Otherwise old completed subjects and
     // subscriptions can leak across leave/re-enter cycles.
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
+    const persisted = scene.baseGameData.gameInstance.gameState?.data.commandAuthority;
+    if (persisted) this.restoreAuthorityState(persisted);
   }
 
   tryInitMultiplayer(): void {
@@ -141,7 +173,11 @@ export class CommandBusService {
           this.logger.error(
             `[CommandBus] ${this.getMultiplayerLogContext()} Server rejected batch for tick=${event.tick} player=${event.playerNumber}: ${event.rejectionReason} recentLocalTicks={${this.describeRecentLocalTickTimeline()}}`
           );
+          for (const command of this.sentCommandsByTick.get(event.tick) ?? []) {
+            this.reportOutcome(command, "rejected", "application_failed", command.actorIds, [], event.rejectionReason);
+          }
         }
+        if (event.playerNumber === this.localPlayerNumber) this.sentCommandsByTick.delete(event.tick);
         if (event.commands.length > 0) {
           this.debugLog(
             `received batch tick=${event.tick} player=${event.playerNumber} commands=${event.commands.length} types=${this.describeCommandTypes(event.commands)}`
@@ -212,27 +248,35 @@ export class CommandBusService {
     this.tryUnblockTick();
   }
 
-  dispatch(command: GameCommandInput): void {
+  dispatch(command: GameCommandInput): GameCommandDispatchReceipt {
     if (this.scene?.isSpectator || this.scene?.baseGameData.gameInstance.gameInstanceMetadata.isReplay()) {
-      return;
+      return { status: "rejected", reason: "application_failed" };
+    }
+
+    const inputError = this.getInputAddressError(command);
+    if (inputError) {
+      const rejected = this.stampCommand({ ...command, actorIds: [...new Set(command.actorIds)] }, this.tickService?.currentTick ?? 0);
+      this.reportOutcome(rejected, "rejected", inputError);
+      return { status: "rejected", reason: inputError };
     }
 
     const normalizedCommand = this.normalizeCommand(command);
     if (!normalizedCommand) {
-      return;
+      return { status: "rejected", reason: "invalid_owner" };
     }
 
     if (!this.isMultiplayer) {
       // Single-player: stamp and emit immediately
       const tick = this.tickService?.currentTick ?? 0;
-      const stamped = { ...normalizedCommand, tick } as GameCommand;
+      const stamped = this.stampCommand(normalizedCommand, tick);
       this.emitRecordedBatch({
         tick,
         playerNumber: stamped.playerNumber,
         commands: [stamped]
       });
-      this._command$.next(stamped);
-      return;
+      this.reportOutcome(stamped, "dispatched", "accepted_for_dispatch");
+      this.emitForApplication(stamped);
+      return { status: "dispatched", command: stamped };
     }
 
     // Multiplayer: stamp with delay, but never target a batch tick that has already been sent.
@@ -242,7 +286,7 @@ export class CommandBusService {
     const acknowledgedLocalTick =
       this.localPlayerNumber !== null ? (this.lastReceivedTickByPlayer.get(this.localPlayerNumber) ?? -1) : -1;
     const tick = Math.max(requestedTick, this.lastSentExecutionTick + 1, acknowledgedLocalTick + 1);
-    const stamped = { ...normalizedCommand, tick } as GameCommand;
+    const stamped = this.stampCommand(normalizedCommand, tick);
     if (!this.pendingOutbound.has(tick)) {
       this.pendingOutbound.set(tick, []);
     }
@@ -251,12 +295,25 @@ export class CommandBusService {
       `queued command type=${normalizedCommand.type} executeTick=${tick} requestedTick=${requestedTick} player=${stamped.playerNumber} actors=${stamped.actorIds.length}`
     );
     this.logQueuedWhileStalled(normalizedCommand.type, tick, stamped.playerNumber);
+    this.reportOutcome(stamped, "dispatched", "accepted_for_dispatch");
+    return { status: "dispatched", command: stamped };
   }
 
   /** Documents the dispatch deterministic member and its declared contract at this boundary. */
-  dispatchDeterministic(command: GameCommandInput): void {
+  dispatchDeterministic(command: GameCommandInput): GameCommandDispatchReceipt {
     const tick = this.tickService?.currentTick ?? 0;
-    this._command$.next({ ...command, tick } as GameCommand);
+    const inputError = this.getInputAddressError(command);
+    if (inputError) {
+      const rejected = this.stampCommand({ ...command, actorIds: [...new Set(command.actorIds)] }, tick);
+      this.reportOutcome(rejected, "rejected", inputError);
+      return { status: "rejected", reason: inputError };
+    }
+    const normalized = this.normalizeCommand(command);
+    if (!normalized) return { status: "rejected", reason: "invalid_owner" };
+    const stamped = this.stampCommand(normalized, tick);
+    this.reportOutcome(stamped, "dispatched", "accepted_for_dispatch");
+    this.emitForApplication(stamped);
+    return { status: "dispatched", command: stamped };
   }
 
   /**
@@ -271,8 +328,8 @@ export class CommandBusService {
   private onTick(tick: number): void {
     // 1. Flush commands committed for this tick to command$ (in playerNumber order)
     const commands = this.buffer.flush(tick);
-    for (const cmd of commands) {
-      this._command$.next(cmd);
+    for (const [index, cmd] of commands.entries()) {
+      this.emitForApplication(cmd, index);
     }
 
     // 2. Commit our own commands for the future tick and send them to peers
@@ -353,6 +410,12 @@ export class CommandBusService {
     }
     const clientSequence = this.nextOutboundTransportSequence++;
     this.sentTransportSequenceByTick.set(tick, clientSequence);
+    this.sentCommandsByTick.set(tick, commands.map((command) => structuredClone(command)));
+    while (this.sentCommandsByTick.size > CommandBusService.PROCESSED_COMMAND_LIMIT) {
+      const oldestTick = this.sentCommandsByTick.keys().next().value as number | undefined;
+      if (oldestTick === undefined) break;
+      this.sentCommandsByTick.delete(oldestTick);
+    }
     this.recordLocalTickStage(tick, `${source}:${commands.length > 0 ? "send-batch" : "send-heartbeat"}`);
     this.recordLocalTickStage(tick, `client-seq(${clientSequence})`);
     if (tick <= acknowledgedLocalTick) {
@@ -458,9 +521,131 @@ export class CommandBusService {
   }
 
   playReplayBatch(batch: ProbableWaffleReplayCommandBatch): void {
-    for (const command of batch.commands) {
-      this._command$.next(command);
+    for (const [index, command] of batch.commands.entries()) {
+      this.emitForApplication(this.upgradeLegacyCommand(command, batch.playerNumber, index));
     }
+  }
+
+  /**
+   * Publishes a world-application result for AI reconciliation, replay diagnostics,
+   * and the debug workbench. Callers report the first terminal reason instead of
+   * silently returning from an invalid command.
+   */
+  reportOutcome(
+    command: GameCommand,
+    kind: GameCommandOutcomeKind,
+    reason: GameCommandOutcomeReason,
+    actorIds: readonly string[] = command.actorIds,
+    worldLinkIds: readonly string[] = [],
+    detail?: string
+  ): void {
+    const execution = command.execution;
+    if (!execution) return;
+    const observedTick =
+      kind === "dispatched" ? command.tick : (this.tickService?.currentTick ?? command.tick);
+    this.reportPersistedOutcome({
+      schemaVersion: 1,
+      kind,
+      reason,
+      tick: observedTick,
+      playerNumber: command.playerNumber,
+      commandId: execution.commandId,
+      commitmentKey: execution.commitmentKey,
+      authorityEpoch: execution.authorityEpoch,
+      sequence: execution.sequence,
+      ...(execution.intentId ? { intentId: execution.intentId } : {}),
+      ...(execution.effectId ? { effectId: execution.effectId } : {}),
+      actorIds: [...actorIds].sort(),
+      worldLinkIds: [...worldLinkIds].sort(),
+      ...(detail ? { detail } : {})
+    });
+  }
+
+  /** Publishes a completion whose originating command is represented by saved effect metadata. */
+  reportPersistedOutcome(outcome: GameCommandOutcome): void {
+    if (
+      outcome.kind === "completed" ||
+      outcome.kind === "rejected" ||
+      outcome.kind === "cancelled" ||
+      outcome.kind === "failed"
+    ) {
+      if (
+        outcome.reason !== "duplicate_command" &&
+        outcome.reason !== "lost_outcome" &&
+        outcome.reason !== "outcome_backlog_overflow" &&
+        this.activeCommitments.get(outcome.commitmentKey) === outcome.commandId
+      ) {
+        const terminalActorIds = this.terminalActorIdsByCommand.get(outcome.commandId) ?? new Set<string>();
+        outcome.actorIds.forEach((actorId) => terminalActorIds.add(actorId));
+        this.terminalActorIdsByCommand.set(outcome.commandId, terminalActorIds);
+        const expectedActorIds = this.expectedActorIdsByCommand.get(outcome.commandId) ?? outcome.actorIds;
+        const settled =
+          expectedActorIds.length === 0 || expectedActorIds.every((actorId) => terminalActorIds.has(actorId));
+        if (settled && this.activeCommitments.get(outcome.commitmentKey) === outcome.commandId) {
+          this.activeCommitments.delete(outcome.commitmentKey);
+          this.expectedActorIdsByCommand.delete(outcome.commandId);
+          this.terminalActorIdsByCommand.delete(outcome.commandId);
+        }
+      }
+    }
+    this.recentOutcomes.push(outcome);
+    if (this.recentOutcomes.length > CommandBusService.OUTCOME_HISTORY_LIMIT) {
+      this.recentOutcomes.splice(0, this.recentOutcomes.length - CommandBusService.OUTCOME_HISTORY_LIMIT);
+    }
+    this._commandOutcome$.next(outcome);
+  }
+
+  /** Snapshot of the bounded authority frontier persisted by saves and reconnects. */
+  getAuthorityState(): GameCommandAuthorityState {
+    const nextSequenceByPlayer: Record<number, number> = {};
+    for (const [playerNumber, sequence] of [...this.nextSequenceByPlayer.entries()].sort(
+      ([left], [right]) => left - right
+    )) {
+      nextSequenceByPlayer[playerNumber] = sequence;
+    }
+    const processedSequenceWatermarkByPlayer: Record<number, number> = {};
+    for (const [playerNumber, sequence] of [...this.processedSequenceWatermarkByPlayer.entries()].sort(
+      ([left], [right]) => left - right
+    )) {
+      processedSequenceWatermarkByPlayer[playerNumber] = sequence;
+    }
+    return {
+      schemaVersion: 1,
+      authorityEpoch: this.authorityEpoch,
+      nextSequenceByPlayer,
+      processedSequenceWatermarkByPlayer,
+      processedCommandIds: [...this.processedCommandIds.keys()],
+      activeCommitments: Object.fromEntries(
+        [...this.activeCommitments.entries()].sort(([left], [right]) => left.localeCompare(right))
+      ),
+      activeCommandProgress: Object.fromEntries(
+        [...this.expectedActorIdsByCommand.entries()]
+          .sort(([left], [right]) => left.localeCompare(right))
+          .map(([commandId, expectedActorIds]) => [
+            commandId,
+            {
+              expectedActorIds: [...expectedActorIds].sort(),
+              terminalActorIds: [...(this.terminalActorIdsByCommand.get(commandId) ?? [])].sort()
+            }
+          ])
+      ),
+      outcomes: structuredClone(this.recentOutcomes)
+    };
+  }
+
+  /**
+   * Advances the host fence. Late events from older hosts remain observable as
+   * stable rejections but can no longer mutate the world.
+   */
+  advanceAuthorityEpoch(nextEpoch: number): void {
+    if (!Number.isSafeInteger(nextEpoch) || nextEpoch <= this.authorityEpoch) return;
+    this.authorityEpoch = nextEpoch;
+    this.processedCommandIds.clear();
+    this.processedSequenceWatermarkByPlayer.clear();
+    this.activeCommitments.clear();
+    this.expectedActorIdsByCommand.clear();
+    this.terminalActorIdsByCommand.clear();
+    this.pendingOutbound.clear();
   }
 
   /**
@@ -470,15 +655,21 @@ export class CommandBusService {
    * local tick, and local command-tail tick so post-reset heartbeats do not
    * regress and get rejected as stale by the server.
    */
-  resetAfterSnapshot(snapshotTick: number, commandTail: readonly ProbableWaffleReplayCommandBatch[] = []): void {
+  resetAfterSnapshot(
+    snapshotTick: number,
+    commandTail: readonly ProbableWaffleReplayCommandBatch[] = [],
+    authorityState?: GameCommandAuthorityState
+  ): void {
     const preResetLastSentExecutionTick = this.lastSentExecutionTick;
     const commandTailLookup = new Set(commandTail.map((batch) => `${batch.tick}:${batch.playerNumber}`));
     this.buffer.clear();
     this.pendingOutbound.clear();
     this.sentTransportSequenceByTick.clear();
+    this.sentCommandsByTick.clear();
     this.clearPendingStallLog();
     this.stallSignature = null;
     this.lastLoggedStallTick = null;
+    if (authorityState) this.restoreAuthorityState(authorityState);
     // Snapshot tick can lag behind the server's already-accepted local batches.
     // If we blindly restart from snapshotTick+1 we can spam stale ticks after correction.
     // Use the highest known accepted local tick as the post-reset baseline.
@@ -552,6 +743,222 @@ export class CommandBusService {
     });
   }
 
+  private stampCommand(command: GameCommandInput, tick: number): GameCommand {
+    const supplied = command.execution;
+    const sequence = supplied?.sequence ?? this.allocateSequence(command.playerNumber);
+    const authorityEpoch = supplied?.authorityEpoch ?? this.authorityEpoch;
+    const commandId = supplied?.commandId ?? `${command.playerNumber}:${authorityEpoch}:${sequence}:${this.scene.gameInstanceId}`;
+    const source = supplied?.source ?? this.inferSource(command.playerNumber);
+    const execution: GameCommandExecution = {
+      schemaVersion: 1,
+      commandId,
+      commitmentKey: supplied?.commitmentKey ?? this.defaultCommitmentKey(command, commandId),
+      source,
+      authorityEpoch,
+      sequence,
+      ...(supplied?.intentId ? { intentId: supplied.intentId } : {}),
+      ...(supplied?.effectId ? { effectId: supplied.effectId } : {})
+    };
+    this.nextSequenceByPlayer.set(
+      command.playerNumber,
+      Math.max(this.nextSequenceByPlayer.get(command.playerNumber) ?? 0, sequence + 1)
+    );
+    return { ...command, tick, execution } as GameCommand;
+  }
+
+  private allocateSequence(playerNumber: PlayerNumber): number {
+    const sequence = this.nextSequenceByPlayer.get(playerNumber) ?? 0;
+    this.nextSequenceByPlayer.set(playerNumber, sequence + 1);
+    return sequence;
+  }
+
+  private inferSource(playerNumber: PlayerNumber): GameCommandExecution["source"] {
+    const player = this.scene.players.find((candidate) => candidate.playerNumber === playerNumber);
+    return player?.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.AI ? "ai" : "human";
+  }
+
+  private defaultCommitmentKey(command: GameCommandInput, commandId: string): string {
+    switch (command.type) {
+      case ProbableWaffleGameCommandTypes.Construct:
+        return `construct:${command.siteKey}`;
+      case ProbableWaffleGameCommandTypes.Production:
+        return `produce:${command.playerNumber}:${command.actorIds[0] ?? "missing"}:${command.actorName}:${commandId}`;
+      case ProbableWaffleGameCommandTypes.Research:
+        return `research:${command.playerNumber}:${command.researchType}`;
+      case ProbableWaffleGameCommandTypes.CastSpell:
+        return `spell:${command.playerNumber}:${command.actorIds[0] ?? "missing"}:${command.spellType}:${commandId}`;
+      default:
+        return commandId;
+    }
+  }
+
+  private emitForApplication(command: GameCommand, legacyIndex = 0): void {
+    const upgraded = command.execution
+      ? command
+      : this.upgradeLegacyCommand(command, command.playerNumber, legacyIndex);
+    const execution = upgraded.execution!;
+    if (execution.authorityEpoch < this.authorityEpoch) {
+      this.reportOutcome(upgraded, "rejected", "stale_authority_epoch");
+      return;
+    }
+    if (execution.authorityEpoch > this.authorityEpoch) {
+      this.advanceAuthorityEpoch(execution.authorityEpoch);
+    }
+    if (
+      isProcessedCommandSequence(
+        execution.sequence,
+        this.processedSequenceWatermarkByPlayer.get(upgraded.playerNumber) ?? -1
+      )
+    ) {
+      this.reportOutcome(upgraded, "rejected", "duplicate_command", upgraded.actorIds, [], "sequence_watermark");
+      return;
+    }
+    if (this.processedCommandIds.has(execution.commandId)) {
+      this.reportOutcome(upgraded, "rejected", "duplicate_command");
+      return;
+    }
+    if (
+      execution.source === "ai" &&
+      [...this.expectedActorIdsByCommand.keys()].filter((commandId) =>
+        commandId.startsWith(`${upgraded.playerNumber}:`)
+      ).length >= CommandBusService.ACTIVE_AI_COMMAND_LIMIT
+    ) {
+      this.reportOutcome(upgraded, "rejected", "outcome_backlog_overflow", upgraded.actorIds, [], "authority_backpressure");
+      return;
+    }
+    const activeCommandId = this.activeCommitments.get(execution.commitmentKey);
+    if (activeCommandId && activeCommandId !== execution.commandId) {
+      this.reportOutcome(upgraded, "rejected", "duplicate_command", upgraded.actorIds, [], `commitment:${activeCommandId}`);
+      return;
+    }
+    this.processedCommandIds.set(execution.commandId, upgraded.tick);
+    this.processedSequenceWatermarkByPlayer.set(
+      upgraded.playerNumber,
+      advanceProcessedCommandSequence(
+        this.processedSequenceWatermarkByPlayer.get(upgraded.playerNumber) ?? -1,
+        execution.sequence
+      )
+    );
+    this.activeCommitments.set(execution.commitmentKey, execution.commandId);
+    this.expectedActorIdsByCommand.set(execution.commandId, [...upgraded.actorIds].sort());
+    while (this.processedCommandIds.size > CommandBusService.PROCESSED_COMMAND_LIMIT) {
+      const oldest = this.processedCommandIds.keys().next().value as string | undefined;
+      if (!oldest) break;
+      this.processedCommandIds.delete(oldest);
+    }
+    const addressError = this.getApplicationAddressError(upgraded);
+    if (addressError) {
+      this.reportOutcome(upgraded, "rejected", addressError);
+      return;
+    }
+    this._command$.next(upgraded);
+  }
+
+  private getApplicationAddressError(command: GameCommand): GameCommandOutcomeReason | null {
+    if (command.type === ProbableWaffleGameCommandTypes.Concede) return null;
+    const actorIndex = getSceneService(this.scene, ActorIndexSystem);
+    if (!actorIndex) return "application_failed";
+    for (const actorId of command.actorIds) {
+      const actor = actorIndex.getActorById(actorId);
+      if (!actor) return "missing_actor";
+      if (!actor.active) return "inactive_actor";
+      if (getActorComponent(actor, OwnerComponent)?.getOwner() !== command.playerNumber) return "invalid_owner";
+    }
+    if (command.type === ProbableWaffleGameCommandTypes.ActorAction) {
+      if (command.targetObjectIds?.some((targetId) => !actorIndex.getActorById(targetId))) return "invalid_target";
+    }
+    if (
+      command.type === ProbableWaffleGameCommandTypes.CastSpell &&
+      command.targetObjectId &&
+      !actorIndex.getActorById(command.targetObjectId)
+    ) {
+      return "invalid_target";
+    }
+    if (
+      command.type === ProbableWaffleGameCommandTypes.SetRallyPoint &&
+      command.targetObjectId &&
+      !actorIndex.getActorById(command.targetObjectId)
+    ) {
+      return "invalid_target";
+    }
+    return null;
+  }
+
+  private upgradeLegacyCommand(command: GameCommand, batchPlayerNumber: PlayerNumber, index: number): GameCommand {
+    if (command.execution) return command;
+    const sequence = command.tick * 1000 + index;
+    return {
+      ...command,
+      execution: {
+        schemaVersion: 1,
+        commandId: `${command.playerNumber}:0:${sequence}:legacy-${batchPlayerNumber}`,
+        commitmentKey: `${command.playerNumber}:legacy:${command.tick}:${index}`,
+        source: "replay",
+        authorityEpoch: 0,
+        sequence
+      }
+    };
+  }
+
+  private restoreAuthorityState(state: GameCommandAuthorityState): void {
+    if (state.schemaVersion !== 1) throw new Error(`Unsupported command authority schema: ${state.schemaVersion}`);
+    if (state.authorityEpoch < this.authorityEpoch) return;
+    this.authorityEpoch = state.authorityEpoch;
+    this.nextSequenceByPlayer.clear();
+    for (const [playerNumber, sequence] of Object.entries(state.nextSequenceByPlayer)) {
+      this.nextSequenceByPlayer.set(Number(playerNumber), sequence);
+    }
+    this.processedSequenceWatermarkByPlayer.clear();
+    for (const [playerNumber, sequence] of Object.entries(state.processedSequenceWatermarkByPlayer ?? {})) {
+      this.processedSequenceWatermarkByPlayer.set(Number(playerNumber), sequence);
+      this.nextSequenceByPlayer.set(
+        Number(playerNumber),
+        Math.max(this.nextSequenceByPlayer.get(Number(playerNumber)) ?? 0, sequence + 1)
+      );
+    }
+    this.processedCommandIds.clear();
+    for (const commandId of state.processedCommandIds.slice(-CommandBusService.PROCESSED_COMMAND_LIMIT)) {
+      this.processedCommandIds.set(commandId, -1);
+    }
+    this.activeCommitments.clear();
+    for (const [commitmentKey, commandId] of Object.entries(state.activeCommitments ?? {})) {
+      this.activeCommitments.set(commitmentKey, commandId);
+    }
+    this.recentOutcomes.splice(
+      0,
+      this.recentOutcomes.length,
+      ...structuredClone(state.outcomes.slice(-CommandBusService.OUTCOME_HISTORY_LIMIT))
+    );
+    this.expectedActorIdsByCommand.clear();
+    this.terminalActorIdsByCommand.clear();
+    for (const [commandId, progress] of Object.entries(state.activeCommandProgress ?? {})) {
+      this.expectedActorIdsByCommand.set(commandId, [...progress.expectedActorIds].sort());
+      this.terminalActorIdsByCommand.set(commandId, new Set(progress.terminalActorIds));
+    }
+    const activeCommandIds = new Set(this.activeCommitments.values());
+    for (const outcome of this.recentOutcomes) {
+      if (
+        activeCommandIds.has(outcome.commandId) &&
+        outcome.kind === "dispatched" &&
+        !this.expectedActorIdsByCommand.has(outcome.commandId)
+      ) {
+        this.expectedActorIdsByCommand.set(outcome.commandId, [...outcome.actorIds].sort());
+      }
+      if (!activeCommandIds.has(outcome.commandId)) continue;
+      if (
+        outcome.kind !== "completed" &&
+        outcome.kind !== "rejected" &&
+        outcome.kind !== "cancelled" &&
+        outcome.kind !== "failed"
+      ) {
+        continue;
+      }
+      const terminalActorIds = this.terminalActorIdsByCommand.get(outcome.commandId) ?? new Set<string>();
+      outcome.actorIds.forEach((actorId) => terminalActorIds.add(actorId));
+      this.terminalActorIdsByCommand.set(outcome.commandId, terminalActorIds);
+    }
+  }
+
   /**
    * Removes a player from the blocking set used by the lockstep barrier.
    *
@@ -579,8 +986,10 @@ export class CommandBusService {
 
   destroy(): void {
     this.clearPendingStallLog();
+    this.sentCommandsByTick.clear();
     this.subscriptions.forEach((s) => s.unsubscribe());
     this._commandBatch$.complete();
+    this._commandOutcome$.complete();
     this._command$.complete();
   }
 
@@ -853,11 +1262,12 @@ export class CommandBusService {
       return command;
     }
 
-    const actorIds = [...new Set(command.actorIds)].filter((actorId) => {
-      const actor = actorIndex.getActorById(actorId);
-      const owner = actor ? getActorComponent(actor, OwnerComponent)?.getOwner() : undefined;
-      return actor?.active && actor.getData("campaign.controllable") !== false && owner === command.playerNumber;
-    });
+    if (command.type === ProbableWaffleGameCommandTypes.Concede) {
+      const playerExists = this.scene.players.some((player) => player.playerNumber === command.playerNumber);
+      return playerExists ? { ...command, actorIds: [] } : null;
+    }
+
+    const actorIds = [...new Set(command.actorIds)];
 
     if (actorIds.length === 0) {
       this.debugLog(`dropping command type=${command.type} because no valid owned actors remained after sanitization`);
@@ -883,6 +1293,49 @@ export class CommandBusService {
       ...command,
       actorIds
     };
+  }
+
+  private getInputAddressError(command: GameCommandInput): GameCommandOutcomeReason | null {
+    const player = this.scene.players.find((candidate) => candidate.playerNumber === command.playerNumber);
+    if (!player) return "invalid_owner";
+    const isAi = player.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.AI;
+    if (this.isMultiplayer && isAi && !this.scene.isHost) return "invalid_owner";
+    if (
+      this.isMultiplayer &&
+      !isAi &&
+      this.localPlayerNumber !== null &&
+      command.playerNumber !== this.localPlayerNumber
+    ) {
+      return "invalid_owner";
+    }
+    if (command.type === ProbableWaffleGameCommandTypes.Concede) return null;
+    const actorIndex = getSceneService(this.scene, ActorIndexSystem);
+    if (!actorIndex) return "application_failed";
+    for (const actorId of command.actorIds) {
+      const actor = actorIndex.getActorById(actorId);
+      if (!actor) return "missing_actor";
+      if (!actor.active) return "inactive_actor";
+      if (actor.getData("campaign.controllable") === false) return "invalid_owner";
+      if (getActorComponent(actor, OwnerComponent)?.getOwner() !== command.playerNumber) return "invalid_owner";
+    }
+    if (command.type === ProbableWaffleGameCommandTypes.ActorAction) {
+      if (command.targetObjectIds?.some((targetId) => !actorIndex.getActorById(targetId))) return "invalid_target";
+    }
+    if (
+      command.type === ProbableWaffleGameCommandTypes.CastSpell &&
+      command.targetObjectId &&
+      !actorIndex.getActorById(command.targetObjectId)
+    ) {
+      return "invalid_target";
+    }
+    if (
+      command.type === ProbableWaffleGameCommandTypes.SetRallyPoint &&
+      command.targetObjectId &&
+      !actorIndex.getActorById(command.targetObjectId)
+    ) {
+      return "invalid_target";
+    }
+    return null;
   }
 
   private get tickService(): SimulationTickService {

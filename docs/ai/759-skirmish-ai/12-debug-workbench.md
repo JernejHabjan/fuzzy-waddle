@@ -8,7 +8,7 @@ Required extension of [the existing debug-panel specification](06-debug-panel.md
 2. Locate the first overdue progress milestone, rejected prerequisite, exhausted resource/slot or changed evidence in the causal timeline.
 3. Capture a versioned reproduction bundle with its exact source/map/profile provenance.
 4. Replay in an isolated local test session; step by simulation tick or completed AI decision, set a safe named breakpoint and inspect actual applied outcomes.
-5. Compare the original and repaired run at the first divergent field/decision and rerun the owning scenario plus relevant continuous match.
+5. In Stage 15, compare the original and repaired run at the first divergent field/decision and rerun the owning scenario plus relevant continuous match. Earlier owning stages author the capture/replay fixtures without executing them.
 
 Steps 4–5 must never change the live match. This design transfers the observation/action/step and versioned replay principle from [Blizzard's SC2 API protocol documentation](https://github.com/Blizzard/s2client-proto/blob/master/docs/protocol.md), not its privileged debug execution into player controls.
 

@@ -14,11 +14,15 @@ import { getActorComponent } from "../../data/actor-component";
 import { SpellComponent } from "../../entity/components/combat/components/spell-component";
 import { IsoHelper } from "../../world/tilemap/iso-helper";
 import { DistanceHelper } from "../../library/distance-helper";
-import { SceneActorCreator } from "../../world/services/scene-actor-creator";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { getPwActorDefinition } from "../../prefabs/definitions/actor-definitions";
 import { OwnerComponent } from "../../entity/components/owner-component";
 import { Subscription } from "rxjs";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
+import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
+import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
+import { SpellTargetType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { getPlayerRelation } from "../../data/player-relation";
 
 export class SpellCursor {
   private aoeCircle?: GameObjects.Graphics;
@@ -249,14 +253,23 @@ export class SpellCursor {
 
     // Cast spell from each selected caster
     let castSuccess = false;
+    const commandBus = getSceneService(this.scene, CommandBusService);
     for (const caster of this.selectedCasters) {
-      const spellCastingSystem = getActorSystem(caster, SpellCastingSystem);
-      if (spellCastingSystem) {
-        const success = spellCastingSystem.castSpell(this.spellType, clickedTileXYZ);
-        if (success) {
-          castSuccess = true;
-        }
-      }
+      const actorId = getActorComponent(caster, IdComponent)?.id;
+      const ownerId = getActorComponent(caster, OwnerComponent)?.getData().ownerId;
+      if (!commandBus || !actorId || ownerId === undefined) continue;
+      const receipt = commandBus.dispatch({
+        type: "CAST_SPELL",
+        playerNumber: ownerId,
+        actorIds: [actorId],
+        spellType: this.spellType,
+        targetObjectId:
+          spellData.targetType === SpellTargetType.Self
+            ? actorId
+            : this.getTargetObjectId(clickedTileXYZ, spellData),
+        tileVec3: clickedTileXYZ
+      });
+      if (receipt.status === "dispatched") castSuccess = true;
     }
 
     if (castSuccess) {
@@ -273,7 +286,7 @@ export class SpellCursor {
   private handleSpawnPrefab(tileXYZ: Vector3Simple, spellData: (typeof spellDefinitions)[SpellType]): void {
     if (!spellData.spawnPrefab) return;
 
-    const { prefabName, inheritOwner } = spellData.spawnPrefab;
+    const { prefabName } = spellData.spawnPrefab;
     const prefabDefinition = getPwActorDefinition(prefabName, null);
     if (!prefabDefinition) {
       console.error(`Prefab definition not found: ${prefabName}`);
@@ -281,14 +294,8 @@ export class SpellCursor {
     }
 
     // Get owner from first caster
-    let ownerId: number | undefined;
-    if (inheritOwner && this.selectedCasters.length > 0) {
-      const firstCaster = this.selectedCasters[0];
-      if (firstCaster) {
-        const ownerComponent = getActorComponent(firstCaster, OwnerComponent);
-        ownerId = ownerComponent?.getData().ownerId;
-      }
-    }
+    const firstCaster = this.selectedCasters[0];
+    const ownerId = firstCaster ? getActorComponent(firstCaster, OwnerComponent)?.getData().ownerId : undefined;
 
     // Convert tile position to world position
     const worldPos = IsoHelper.isometricTileToWorldXY(this.scene, tileXYZ.x, tileXYZ.y);
@@ -299,20 +306,27 @@ export class SpellCursor {
     };
 
     // Spawn the prefab using helper
-    const sceneActorCreator = getSceneService(this.scene, SceneActorCreator);
-    if (!sceneActorCreator) {
-      console.error("SceneActorCreator not found");
+    const commandBus = getSceneService(this.scene, CommandBusService);
+    const casterId = firstCaster ? getActorComponent(firstCaster, IdComponent)?.id : undefined;
+    if (!commandBus || !casterId || ownerId === undefined || !Number.isFinite(position.x) || !Number.isFinite(position.y)) {
+      console.error("Spell command authority not found");
       return;
     }
 
-    const newGameObject = sceneActorCreator.createFinishedActor(prefabName, position, ownerId);
-    if (newGameObject) {
+    const receipt = commandBus.dispatch({
+      type: "CAST_SPELL",
+      playerNumber: ownerId,
+      actorIds: [casterId],
+      spellType: this.spellType!,
+      targetObjectId: this.getTargetObjectId(tileXYZ, spellData),
+      tileVec3: tileXYZ
+    });
+    if (receipt.status === "dispatched") {
       // Start cooldown on caster
+      // Shared command application starts it; the cursor only verifies the caster still has the capability.
       if (this.selectedCasters.length > 0 && this.spellType) {
-        const firstCaster = this.selectedCasters[0];
-        if (firstCaster) {
-          const spellComponent = getActorComponent(firstCaster, SpellComponent);
-          spellComponent?.startCooldown(this.spellType);
+        if (firstCaster && !getActorComponent(firstCaster, SpellComponent)) {
+          console.error("Spell caster component disappeared after command dispatch");
         }
       }
 
@@ -324,6 +338,32 @@ export class SpellCursor {
     if (!shiftKey?.isDown) {
       this.deactivate();
     }
+  }
+
+  private getTargetObjectId(
+    tileXYZ: Vector3Simple,
+    spellData: (typeof spellDefinitions)[SpellType]
+  ): string | undefined {
+    if (spellData.targetType === SpellTargetType.Ground) return undefined;
+    const caster = this.selectedCasters[0];
+    if (!caster) return undefined;
+    if (spellData.targetType === SpellTargetType.Self) return getActorComponent(caster, IdComponent)?.id;
+    const casterOwner = getActorComponent(caster, OwnerComponent)?.getOwner();
+    return getSceneService(this.scene, ActorIndexSystem)
+      ?.getActorsAtTile(tileXYZ)
+      .filter((actor) => {
+        const relation = getPlayerRelation(
+          this.scene,
+          casterOwner,
+          getActorComponent(actor, OwnerComponent)?.getOwner()
+        );
+        return spellData.targetType === SpellTargetType.EnemyUnit
+          ? relation === "enemy"
+          : relation === "self" || relation === "ally";
+      })
+      .map((actor) => getActorComponent(actor, IdComponent)?.id)
+      .filter((id): id is string => !!id)
+      .sort((left, right) => left.localeCompare(right))[0];
   }
 
   private isPositionInRange(tileXYZ: Vector3Simple): boolean {

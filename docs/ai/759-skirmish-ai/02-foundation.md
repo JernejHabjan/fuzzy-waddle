@@ -1,6 +1,6 @@
 # Stages 0–6 — foundation, commands, knowledge, and purpose
 
-Follow [the runbook](00-start-here.md), [shared decisions](01-shared-decisions.md), [H1–H9 hardening](09-progress-and-hardening.md) and [verification ladder](10-integration-and-adversarial-tests.md). Write code/tests/debug together, run the current stage's focused gate and repair findings, then audit, commit, push/verify and stop at its boundary. Stage 15 reruns the complete final acceptance; it is not the first time the foundation executes.
+Follow [the runbook](00-start-here.md), [shared decisions](01-shared-decisions.md), [H1–H9 hardening](09-progress-and-hardening.md) and [verification ladder](10-integration-and-adversarial-tests.md). Write code/tests/debug together, manually review the current stage, then audit, commit, push/verify and stop at its boundary. **Latest policy override:** do not execute tests, lint, formatting validation, type checks, builds, browser/runtime smokes or other validation in Stages 0–14; author their fixtures and defer every execution/repair gate to Stage 15. Any older “run/execute focused checks” wording below describes what must be authored for the final ladder, not permission to run it early.
 
 ## Stage 0
 
@@ -18,7 +18,7 @@ Model: Terra / high. Existing paths: Phaser `player-ai-controller.agent.ts`, `pl
 4. Introduce typed reason codes, trace envelope, stable serialization, and command-drop reasons for missing IDs/services. Trace IDs derive from player and monotonic decision counters.
 5. Start the debug snapshot/projector and reason-driven Overview using the debug packet. Keep existing UI entry/navigation.
 
-Author fixtures: polarity, no false success, actual housing capability on both factions, no candidate when no legal housing, stable reasons/serialization. Output: corrected static paths and trace/debug foundation; run focused regressions and record actual results.
+Author fixtures: polarity, no false success, actual housing capability on both factions, no candidate when no legal housing, stable reasons/serialization. Output: corrected static paths and trace/debug foundation; register focused regressions for Stage 15 and record them as `authored_not_run`.
 
 ### Stage 1 retained final acceptance
 
@@ -58,6 +58,8 @@ Output: exported and connected interfaces, migration/default fixtures, capabilit
 
 Model: Sol / xhigh. This is the largest cross-layer stage; implement internal slices in order and retain one command authority.
 
+Use [the Stage 3 shared-effect inventory](stage-3-effect-inventory.md) as the concrete cold-start route map, durable ownership ledger, and Stage 15 test handoff. Keep it synchronized when this stage changes a command or effect owner.
+
 1. Inventory every AI effect: production/research/cancellation, construction, move/attack/scout/rally, heal/repair/tend/return, board/unload, cast/autocast, and concession. Map each to protocol -> server validator/relay -> command bus/queue -> runtime apply -> outcome -> save/replay. Add typed shared payloads only where existing actor actions cannot represent required data. Preserve human queue/stop behavior.
 2. Introduce deterministic command/correlation identity and applied outcome mapping. Dispatch acceptance is not application. Reconcile pending command, production queue item, construction site, and actor by one commitment key. Reject duplicate effects, stale/missing actors, invalid player/host/owner, illegal targets, and invalid costs/sites/capacities/cooldowns with stable reasons.
 3. Migrate one action family at a time: production/research first; movement/combat; worker/construction; transport; spells; concession. Redirect every migrated manager/pawn entry that could duplicate strategic control. Automatic pawn execution remains shared local simulation driven by accepted orders.
@@ -66,7 +68,7 @@ Model: Sol / xhigh. This is the largest cross-layer stage; implement internal sl
 6. Connect typed command outcomes into the brain adapter, debug drilldown, replay, save/recovery, and server validators. Network schema/version changes need explicit compatibility handling; no silent fallback to direct mutation.
 7. Implement H3's lost-outcome reconciliation, processed-sequence/watermark policy, bounded pending backlog, authority epoch fencing and technical-fault state. Exercise H-06–10 with completed/destroyed effects and late old-host events; actor absence is not proof a purchase never applied.
 
-Output: all effect paths wired and end-to-end fixtures authored. Do not leave the new brain mutating live blackboards or spawning actors directly. A missing game command is implementation work in this stage, not a reason to invent a debug shortcut.
+Output: all effect paths wired and end-to-end fixtures authored as `authored_not_run`. Do not leave the new brain mutating live blackboards or spawning actors directly. A missing game command is implementation work in this stage, not a reason to invent a debug shortcut. Close this stage as `implemented_unvalidated`; Stage 15 executes its protocol/server/Phaser/replay/recovery test matrix.
 
 ### Stage 3 retained final acceptance
 
@@ -103,9 +105,9 @@ Output: atomic knowledge/observation pipeline and authored fairness, stale-gener
 
 ## Stage 5
 
-Model: Sol / high. Implement and execute the harness bootstrap/oracle/small runtime gate now; broad comparative baseline batches remain Stage 15.
+Model: Sol / high. Implement the harness bootstrap/oracle/small-runtime gate and register it for deferred execution; Stage 15 runs both the focused gate and broad comparative baseline batches.
 
-Extend the same runner with [packet 12 capture/replay/compare/fixture-export](12-debug-workbench.md#cli-and-artifact-integration), using Stage 3's command/application checkpoint and Stage 4's permitted knowledge. Register C-01–06, D-01–06 and DBG-01–06 alongside existing cases. Implement and exercise the harness-side DBG-01/03/04/05 obligations now; Stage 13 adds UI controls, not another simulator. Record missing history/version incompatibility instead of claiming exact replay.
+Extend the same runner with [packet 12 capture/replay/compare/fixture-export](12-debug-workbench.md#cli-and-artifact-integration), using Stage 3's command/application checkpoint and Stage 4's permitted knowledge. Register C-01–06, D-01–06 and DBG-01–06 alongside existing cases. Implement the harness-side DBG-01/03/04/05 obligations now but leave them `authored_not_run`; Stage 13 adds UI controls, not another simulator. Record missing history/version incompatibility instead of claiming exact replay.
 
 1. Extract reusable canonical authoritative projection from `StateHashService`; add distinct pure AI digest and first-differing-path diagnostics. Keep current multiplayer consumers working.
 2. Complete brain save/load and runtime gaps for crop/tender, deposit sub-actions, spell cooldown/effects/zones/pending impacts, summon expiry, conversion, cargo, queue state, pending outcomes, RNG and cadence. Rebuild object references from stable IDs. Save-safe phases must not trigger duplicate opening or production after restore.
@@ -114,7 +116,7 @@ Extend the same runner with [packet 12 capture/replay/compare/fixture-export](12
 5. Create `tools/ai/run-skirmish-matrix.mjs` (or a narrow typed CLI entry with equivalent stable path), fixture manifest, report format, retained failure artifacts, baseline adapter seam and candidate source version. Add the invoked Nx/script targets now. Include single-scenario/seed/mode filters, stable catalog IDs and mandatory missing-coverage failure; register every scenario row and its owning-stage variants. Do not claim that the runner exists until implemented.
 6. Record pinned baseline source SHA and compatibility limitations; design Stage 15's isolated baseline checkout and run against the same scenario semantics. Never regenerate baseline from candidate behavior.
 
-Output: exercised harness bootstrap and restore support, deterministic fixture definitions, debug envelope, comparators and baseline manifest. Execute deliberately broken oracle controls and one actual-world command/save continuation. Fix task-caused focused failures before advancing; report final-matrix coverage separately.
+Output: harness bootstrap and restore support, deterministic fixture definitions, debug envelope, comparators and baseline manifest implemented with deliberately broken oracle controls and one actual-world command/save-continuation case authored. Record all as `authored_not_run`; Stage 15 executes and repairs them with the final matrix.
 
 ### Stage 5 retained final acceptance
 

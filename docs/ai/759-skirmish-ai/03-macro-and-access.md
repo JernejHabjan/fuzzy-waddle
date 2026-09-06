@@ -1,6 +1,6 @@
 # Stages 7–9 — build orders, composition, access, and a purposeful match
 
-Read [runbook](00-start-here.md), [shared decisions](01-shared-decisions.md), [debug contract](06-debug-panel.md). Dependencies: Stages 0–6 stage_checked. Apply [hardening H1–H9](09-progress-and-hardening.md) and run [focused gates](10-integration-and-adversarial-tests.md) here; exhaustive acceptance reruns in Stage 15.
+Read [runbook](00-start-here.md), [shared decisions](01-shared-decisions.md), [debug contract](06-debug-panel.md). Dependencies: Stages 0–6 at least `implemented_unvalidated`. Apply [hardening H1–H9](09-progress-and-hardening.md) and author the owning [focused gates](10-integration-and-adversarial-tests.md) here; Stage 15 executes all validation. Any older “run” wording below means author and defer under the runbook's latest policy.
 
 ## Stage 7
 

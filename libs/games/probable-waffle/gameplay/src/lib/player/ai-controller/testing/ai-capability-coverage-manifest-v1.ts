@@ -30,17 +30,16 @@ function gameplayFamily(
   family: string,
   source: string,
   proposerStage: number,
-  fixtureStage: number,
-  commandStage = 3
+  fixtureStage: number
 ): AiCapabilityCoverageEntryV1 {
   return {
     family,
     source,
     observation: implemented("AiObservedActorV1/AiCapabilityCatalogEntryV1"),
     proposer: planned(proposerStage, `${family} proposer`),
-    command: planned(commandStage, "shared command adapter"),
-    outcome: planned(3, "AiCommandOutcomeV1 runtime mapping"),
-    save: planned(3, "AI state/runtime persistence adapter"),
+    command: implemented("GameCommand + CommandBusService shared application"),
+    outcome: implemented("adaptGameCommandOutcomeToBrain"),
+    save: implemented("command authority/effect save and recovery adapters"),
     debug: planned(Math.max(6, proposerStage), `${family} debug projection`),
     fixture: planned(fixtureStage, `${family} deterministic fixture`)
   };
@@ -78,8 +77,8 @@ export const AI_CAPABILITY_COVERAGE_MANIFEST_V1: readonly AiCapabilityCoverageEn
     observation: implemented("AiObservationV1 evidence/ownership contract"),
     proposer: planned(4, "knowledge/diplomacy reducer"),
     command: notApplicable("conversion is caused by ordinary runtime proximity, never an AI ownership command"),
-    outcome: planned(3, "authoritative conversion observation hook"),
-    save: planned(3, "runtime ownership/save linkage"),
+    outcome: implemented("ConvertibleComponent.ConvertedEvent"),
+    save: implemented("ConvertibleComponentData accumulatedTime/converted"),
     debug: planned(4, "conversion evidence projection"),
     fixture: planned(5, "scenario/editor injected conversion bridge")
   },

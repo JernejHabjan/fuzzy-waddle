@@ -37,7 +37,9 @@ import { LockedCursorHandler } from "../../player/human-controller/locked-cursor
 import { ActorDebugDamageSystem } from "../services/actor-debug-damage-system";
 import { SpellCursor } from "../../player/human-controller/spell-cursor";
 import { AoeZoneManager } from "../../entity/systems/aoe-zone-manager";
+import { SummonExpiryService } from "../../entity/systems/summon-expiry.service";
 import { CommandBusService } from "../services/multiplayer/command-bus.service";
+import { SharedCommandApplicationService } from "../services/multiplayer/shared-command-application.service";
 import { SimulationPauseReason, SimulationTickService } from "../services/simulation-tick.service";
 import { StateHashService } from "../services/recovery/state-hash.service";
 import { SnapshotService } from "../services/recovery/snapshot.service";
@@ -131,8 +133,12 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       new TechTreeService(campaignContentAllowances),
       new SpellCursor(this),
       new AoeZoneManager(this),
+      new SummonExpiryService(this),
       new PauseSyncService(this),
       snapshotService
+    );
+    this.sceneGameData.services.push(
+      new SharedCommandApplicationService(this, (playerNumber) => gameModeConditionChecker.applyConcession(playerNumber))
     );
     scenarioReferenceRegistry.initialize(this);
     CampaignParticipantSceneAdapter.configure(this, campaignContentAllowances);

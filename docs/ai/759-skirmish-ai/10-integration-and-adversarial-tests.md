@@ -2,33 +2,33 @@
 
 Read [the runbook](00-start-here.md), [scenario contract](08-deterministic-scenarios.md), [hardening rules](09-progress-and-hardening.md) and [Stage 15](07-final-validation.md). This packet is mandatory. It adds fault/progress cases and continuous match sequences to the original 63 strategic cases; it does not replace them.
 
-The user's follow-up approves hardening including lightweight checks during implementation. The earlier prohibition on all checks until Stage 15 is superseded. Extensive build/release review, broad seed matrices, tuning and long playtests remain Stage 15.
+The latest user instruction restores and broadens the prohibition on validation execution before Stage 15. Stages 0–14 must author the tests, fixtures, drivers, oracles and expected commands described here and manually audit their integration, but must not run tests, lint, formatting validation, type checks, builds, browser/runtime smokes, `git diff --check`, or equivalent validation. Earlier Stage 0–2 results remain historical evidence only. Stage 15 runs this entire ladder against the final integrated revision, repairs failures, and records actual evidence.
 
 ## Verification ladder
 
 Include the owning-stage C/D cases from [packet 11](11-classic-rts-and-difficulty.md) and DBG cases from [packet 12](12-debug-workbench.md). Extend this same runner/coverage manifest; do not create a disconnected debug simulator or defer foundational capture contracts until final UI work. The combined catalog now contains 121 named cases before variants.
 
-### Every implementation stage
+### Every implementation stage, Stages 0–14
 
-1. Read/review the changed code and immediate consumers, including errors, cleanup, defaults, docs and tests. Run scoped formatting/lint, actual-source type checks, and affected focused unit/contract regressions. Use the repository's actual current targets; Stage 2 supplies missing pure/protocol targets.
-2. Run the owning row's focused cases from packet 09. Before Stage 5's runtime driver exists, use existing narrow planner/command/application tests. Do not claim they prove a full match.
-3. From Stage 5 onward, run the small real-runtime smoke subset affected by the stage, plus the previously established core-loop smoke when shared behavior changes. Default seeds 1 and 2; same-seed repeat for determinism, not a broad balance sweep. Both factions for economy/opening changes; real supported roster for transport.
-4. Fix task-caused failures before dependent implementation proceeds. An unrelated base failure needs evidence and every remaining relevant check; a required unavailable check stays blocked. Record exact command, revision/dirty-diff digest, fixture/config version and outcome.
-5. Mark `stage_checked` only after the focused gate passes. This is not final release validation. A partially written stage or failed check remains `in_progress`/`blocked`; do not merely rename it to advance. After the gate and closure audits, commit, push/verify and stop; hand off the next stage/model/effort without executing it.
+1. Read/review the changed code and immediate consumers, including errors, cleanup, defaults, docs and tests. Author scoped formatting/lint, actual-source type, unit/contract and owning H/C/D/DBG checks, but do not execute them.
+2. From Stage 5 onward, implement the real-runtime driver and register the affected smoke subset, same-seed repeat, faction/domain variants and deliberately failing oracle controls without launching them.
+3. Record each deferred command or manifest entry, candidate paths, fixture/config version and expected semantic outcome as `authored_not_run`. Never claim a full match, pass, or green gate from source inspection.
+4. Repair defects found by manual code/consumer, Omission and Final Closure audits. Executable failures cannot exist yet because execution is prohibited; Stage 15 owns those repairs and reruns.
+5. Mark a completed pre-final stage `implemented_unvalidated`, then commit, push/verify and stop. Only Stage 15 may promote integrated behavior to `validated`; historical `stage_checked` entries from Stages 0–2 do not waive final reruns.
 
-Full production builds are final by default. Run a targeted earlier build when changed packaging, bundling, code generation or editor assets cannot be meaningfully checked otherwise. Such a build is an integration necessity, not a reason to run the full product matrix after every change. Never disable CI, runtime validators or relevant safety tests to preserve the old schedule.
+All builds are deferred, including targeted packaging, bundling, code-generation and editor-asset builds. Earlier stages must leave their exact Stage 15 commands and expected artifacts in the ledger. Never disable CI, runtime validators or relevant safety tests to preserve the schedule.
 
 ### Minimum executable vertical slices
 
 | Checkpoint | Must really work together before continuing |
 | --- | --- |
-| Stage 5 | Real-world creation -> host AI/adapter -> shared command apply -> observable outcome -> safe save/replay; oracle rejects a deliberately bad outcome |
+| Stage 5 | Author real-world creation -> host AI/adapter -> shared command apply -> observable outcome -> safe save/replay; oracle rejects a deliberately bad outcome |
 | Stage 7 | Actual faction start -> legal worker -> delivered income -> supply -> useful producer -> repeated useful unit production; no artificial fixture income to conceal a stall |
 | Stage 9 | Normal land skirmish -> scouting -> assembled attack -> route/objective effect -> reinforcement/retreat/next decision -> ordinary result; retain economy during a minor raid |
 | Stages 10–14 | The prior core loop still works while the new expansion/fortification/transport/tactics/adaptation behavior is connected |
 | Stage 15 | All supported contexts, interacting failures, long matches, human-facing launch/debug/results and release evidence |
 
-Stage 9 may need to repair earlier contracts to make the vertical slice work; do not record “integration later” for its basic economy/attack/recovery path. Sophisticated tactical refinement stays Stage 13. A short real-runtime focused match is permitted before Stage 15; extensive human review and large batches remain final.
+Stage 9 may need to repair earlier contracts so the vertical slice is implementation-complete; do not record “integration later” for its basic economy/attack/recovery path. Sophisticated tactical refinement stays Stage 13. Runtime execution, including the shortest focused match, remains prohibited until Stage 15.
 
 ## Harness integration and safe fault injection
 
@@ -38,7 +38,7 @@ Extend the Stage 5 CLI with explicit modes:
 - `--scenario <id> --seed <n> --mode pure|runtime|both`: reproduce a named scenario. Pure/runtime support is declared, not guessed.
 - `--suite release --candidate <sha> --baseline <sha>`: clean isolated candidate/baseline sources and versioned complete manifest; includes original strategic cases, H-cases and SEQ-cases below.
 
-These flags are required new tool work, not existing commands. Keep one runner/manifest and assertion library; do not build an unrelated smoke simulator. Report which implementation, real systems and assertion paths executed.
+These flags are required new tool work, not existing commands. Keep one runner/manifest and assertion library; do not build an unrelated smoke simulator. Stages 5–14 record which implementation, real systems and assertion paths each mode will execute; Stage 15 records what actually executed.
 
 Faults attach to explicit test-only seams: dropped/delayed acknowledgment after real apply; reordered deliveries before canonical apply; stale query completion; blocked service; authority replacement; topology/ownership changes through actual runtime effects. Label transport/network infrastructure injection separately from scripted opponent combat. Never expose arbitrary spawn/resource/kill/owner setters as ordinary multiplayer debug commands. Compile/developer-gate the bridge and enforce the same protections server-side.
 
@@ -46,7 +46,7 @@ Every event has a fixed tick or a deterministic milestone trigger, latest trigge
 
 ## Added hardening scenarios
 
-Each row gets independent semantic predicates, forbidden outcomes, resolved numeric deadlines and a failing-oracle control. Author in the owning stages from packet 09; run focused cases then and all applicable variants in Stage 15.
+Each row gets independent semantic predicates, forbidden outcomes, resolved numeric deadlines and a failing-oracle control. Author in the owning stages from packet 09; run every focused case and applicable variant in Stage 15.
 
 | ID | Setup / injection | Required result |
 | --- | --- | --- |

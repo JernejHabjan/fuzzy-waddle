@@ -191,7 +191,7 @@ export class ConstructionSiteComponent {
     if (productionDefinition.productionTime === PaymentType.PayImmediately) {
       const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
       const owner = ownerComponent?.getOwner();
-      if (!owner) throw new Error("Owner not found");
+      if (owner === undefined) throw new Error("Owner not found");
       const player = getPlayer(this.gameObject.scene, owner);
       if (!player) throw new Error("PlayerController not found");
 

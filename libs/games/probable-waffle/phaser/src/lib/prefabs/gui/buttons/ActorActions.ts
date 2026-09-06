@@ -60,6 +60,8 @@ import { ContainerComponent } from "../../../entity/components/building/containe
 import { NavigationService } from "../../../world/services/navigation.service";
 import { isWaterUnit } from "../../../data/game-object-helper";
 import { CampaignContentAllowanceService } from "@fuzzy-waddle/probable-waffle-campaign";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
+import { CommandBusService } from "../../../world/services/multiplayer/command-bus.service";
 /* END-USER-IMPORTS */
 
 /**
@@ -886,7 +888,15 @@ export default class ActorActions extends Phaser.GameObjects.Container {
       disabled: !canUnload,
       action: () => {
         if (!canUnload) return;
-        containerComponent.unloadAll();
+        const actorId = getActorComponent(actor, IdComponent)?.id;
+        const playerNumber = getCurrentPlayerNumber(this.mainSceneWithActors);
+        const commandBus = getSceneService(this.mainSceneWithActors, CommandBusService);
+        if (!actorId || playerNumber === undefined || !commandBus) return;
+        commandBus.dispatch({
+          type: "UNLOAD",
+          playerNumber,
+          actorIds: [actorId]
+        });
       },
       tooltipInfo: {
         title: "Unload All",

@@ -14,6 +14,7 @@ import { AudioService } from "../../world/services/audio.service";
 import { RepresentableComponent } from "../components/representable-component";
 import { getSimulationNow } from "../../world/services/simulation-time";
 import { SimulationTickService } from "../../world/services/simulation-tick.service";
+import { getPlayerRelation } from "../../data/player-relation";
 
 interface ZoneVisual {
   zoneId: string;
@@ -105,9 +106,11 @@ export class AoeZoneManager {
       const ownerComponent = getActorComponent(actor, OwnerComponent);
       const actorPlayerId = ownerComponent?.getOwner() ?? -1;
 
-      const isAlly = actorPlayerId === zone.sourcePlayerId;
-      const isEnemy = actorPlayerId !== zone.sourcePlayerId && actorPlayerId >= 0;
+      const relation = getPlayerRelation(this.scene, zone.sourcePlayerId, actorPlayerId >= 0 ? actorPlayerId : undefined);
+      const isAlly = relation === "self" || relation === "ally";
+      const isEnemy = relation === "enemy";
 
+      if (relation === "neutral") continue;
       if ((isAlly && !zone.affectsAllies) || (isEnemy && !zone.affectsEnemies)) {
         continue;
       }
@@ -354,7 +357,7 @@ export class AoeZoneManager {
   }
 
   getData(): AoeZoneData[] {
-    return this.activeZones.map((z) => ({ ...z }));
+    return this.activeZones.map((zone) => structuredClone(zone));
   }
 
   setData(zones: AoeZoneData[]): void {
@@ -364,12 +367,17 @@ export class AoeZoneManager {
     }
 
     // Restore zones from save data
+    this.nextZoneId = zones.reduce((nextId, zone) => {
+      const numericId = /^zone_(\d+)$/.exec(zone.id)?.[1];
+      return numericId === undefined ? nextId : Math.max(nextId, Number(numericId) + 1);
+    }, 0);
     for (const zone of zones) {
-      this.activeZones.push({
-        ...zone,
+      const restoredZone = {
+        ...structuredClone(zone),
         lastTickTime: getSimulationNow(this.scene)
-      });
-      this.createZoneVisual(zone);
+      };
+      this.activeZones.push(restoredZone);
+      this.createZoneVisual(restoredZone);
     }
   }
 

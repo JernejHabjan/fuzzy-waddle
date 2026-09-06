@@ -18,6 +18,7 @@ import { QueueComponent } from "../components/queue/queue-component";
 import { SharedQueueItemType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/shared-queue-item-type";
 import { ResearchComponent } from "../components/research/research-component";
 import { ProbableWaffleGameCommandTypes } from "@fuzzy-waddle/probable-waffle-protocol";
+import { OwnerComponent } from "../components/owner-component";
 
 export class QueueCommandSystem {
   private commandBusSubscription?: Subscription;
@@ -39,6 +40,11 @@ export class QueueCommandSystem {
       if (!isGameObjectActiveInActiveScene(this.gameObject)) return;
       const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
       if (!actorId || !cmd.actorIds.includes(actorId)) return;
+      const owner = getActorComponent(this.gameObject, OwnerComponent)?.getOwner();
+      if (owner !== cmd.playerNumber) {
+        commandBus.reportOutcome(cmd, "rejected", "invalid_owner", [actorId]);
+        return;
+      }
 
       switch (cmd.type) {
         case ProbableWaffleGameCommandTypes.Production:
@@ -58,44 +64,88 @@ export class QueueCommandSystem {
   }
 
   private handleProductionCommand(cmd: ProductionCommand) {
+    const commandBus = getSceneService(this.gameObject.scene, CommandBusService)!;
     const productionComponent = getActorComponent(this.gameObject, ProductionComponent);
-    if (!productionComponent) return;
+    if (!productionComponent) {
+      commandBus.reportOutcome(cmd, "rejected", "unsupported_action");
+      return;
+    }
 
     const actorDefinition = getPwActorDefinition(cmd.actorName, null);
     const costData = actorDefinition?.components?.productionCost;
     if (!costData) {
+      commandBus.reportOutcome(cmd, "rejected", "unsupported_action", cmd.actorIds, [], "missing_production_cost");
       return;
     }
 
-    productionComponent.startProduction({
+    const error = productionComponent.startProduction({
       actorName: cmd.actorName,
       costData
-    });
+    }, cmd.execution ? { execution: cmd.execution, playerNumber: cmd.playerNumber, actorIds: cmd.actorIds } : undefined);
+    if (error) {
+      const reason = String(error).toLowerCase().includes("resource") ? "insufficient_resources" : "application_failed";
+      commandBus.reportOutcome(cmd, "rejected", reason, cmd.actorIds, [], String(error));
+      return;
+    }
+    commandBus.reportOutcome(cmd, "applied", "applied", cmd.actorIds, [`queue:${cmd.actorIds[0]}:${cmd.execution?.commandId}`]);
+    commandBus.reportOutcome(cmd, "active", "applied", cmd.actorIds, [`queue:${cmd.actorIds[0]}:${cmd.execution?.commandId}`]);
   }
 
   private handleCancelProductionCommand(cmd: CancelProductionCommand) {
+    const commandBus = getSceneService(this.gameObject.scene, CommandBusService)!;
     const productionComponent = getActorComponent(this.gameObject, ProductionComponent);
     const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
-    if (!productionComponent || !sharedQueue) return;
+    if (!productionComponent || !sharedQueue) {
+      commandBus.reportOutcome(cmd, "rejected", "unsupported_action");
+      return;
+    }
 
     const queueItem = sharedQueue.items[cmd.queueIndex];
     if (!queueItem || queueItem.type !== SharedQueueItemType.Production || !queueItem.productionData) {
+      commandBus.reportOutcome(cmd, "rejected", "invalid_target", cmd.actorIds, [], "queue_item_missing");
       return;
     }
 
     productionComponent.cancelProduction(queueItem.productionData);
+    commandBus.reportOutcome(cmd, "cancelled", "cancelled");
   }
 
   private handleResearchCommand(cmd: ResearchCommand) {
+    const commandBus = getSceneService(this.gameObject.scene, CommandBusService)!;
     const researchComponent = getActorComponent(this.gameObject, ResearchComponent);
-    if (!researchComponent) return;
-    researchComponent.startResearch(cmd.researchType);
+    if (!researchComponent) {
+      commandBus.reportOutcome(cmd, "rejected", "unsupported_action");
+      return;
+    }
+    const eligibility = researchComponent.canStartResearch(cmd.researchType);
+    if (
+      !eligibility.canStart ||
+      !researchComponent.startResearch(
+        cmd.researchType,
+        cmd.execution ? { execution: cmd.execution, playerNumber: cmd.playerNumber, actorIds: cmd.actorIds } : undefined
+      )
+    ) {
+      const reason = eligibility.reason?.toLowerCase().includes("resource")
+        ? "insufficient_resources"
+        : eligibility.reason?.toLowerCase().includes("already")
+          ? "duplicate_command"
+          : "application_failed";
+      commandBus.reportOutcome(cmd, "rejected", reason, cmd.actorIds, [], eligibility.reason);
+      return;
+    }
+    commandBus.reportOutcome(cmd, "applied", "applied", cmd.actorIds, [`research:${cmd.researchType}`]);
+    commandBus.reportOutcome(cmd, "active", "applied", cmd.actorIds, [`research:${cmd.researchType}`]);
   }
 
-  private handleCancelResearchCommand(_cmd: CancelResearchCommand) {
+  private handleCancelResearchCommand(cmd: CancelResearchCommand) {
+    const commandBus = getSceneService(this.gameObject.scene, CommandBusService)!;
     const researchComponent = getActorComponent(this.gameObject, ResearchComponent);
-    if (!researchComponent) return;
+    if (!researchComponent || !researchComponent.isResearching) {
+      commandBus.reportOutcome(cmd, "rejected", "invalid_target");
+      return;
+    }
     researchComponent.cancelResearch();
+    commandBus.reportOutcome(cmd, "cancelled", "cancelled");
   }
 
   private destroy() {

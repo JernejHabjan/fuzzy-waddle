@@ -3,7 +3,10 @@ import type { Subscription } from "rxjs";
 import { SpellType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/spell-type";
 import type { SpellData } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/spell-data";
 import { spellDefinitions } from "../spell-definitions";
-import { type SpellComponentData } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  type PendingSpellImpactData,
+  type SpellComponentData
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import Phaser from "phaser";
 import { isGameObjectActiveInActiveScene, onObjectReady } from "../../../../data/game-object-helper";
 import { getActorComponent } from "../../../../data/actor-component";
@@ -30,6 +33,7 @@ export class SpellComponent {
   private cooldownTickSub?: Subscription;
   private simulationTickService?: SimulationTickService;
   private cooldownStartedTickBySpell = new Map<SpellType, number>();
+  private pendingImpacts: PendingSpellImpactData[] = [];
 
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
@@ -126,6 +130,22 @@ export class SpellComponent {
     }
   }
 
+  /** Adds one idempotent simulation-tick impact to the save-owned caster state. */
+  enqueueImpact(impact: PendingSpellImpactData): void {
+    if (this.pendingImpacts.some((candidate) => candidate.effectId === impact.effectId)) return;
+    this.pendingImpacts.push(structuredClone(impact));
+    this.pendingImpacts.sort(
+      (left, right) => left.dueTick - right.dueTick || left.effectId.localeCompare(right.effectId)
+    );
+  }
+
+  /** Removes and returns all effects due at or before the committed tick. */
+  takeDueImpacts(tick: number): PendingSpellImpactData[] {
+    const firstFuture = this.pendingImpacts.findIndex((impact) => impact.dueTick > tick);
+    const count = firstFuture === -1 ? this.pendingImpacts.length : firstFuture;
+    return this.pendingImpacts.splice(0, count).map((impact) => structuredClone(impact));
+  }
+
   getCooldownRemaining(type: SpellType): number {
     return this.spellCooldowns.get(type) ?? 0;
   }
@@ -178,7 +198,8 @@ export class SpellComponent {
 
     return {
       cooldowns,
-      autocastEnabled: autocast
+      autocastEnabled: autocast,
+      pendingImpacts: this.pendingImpacts.map((impact) => structuredClone(impact))
     };
   }
 
@@ -202,5 +223,8 @@ export class SpellComponent {
         this.autocastEnabled.set(type as SpellType, enabled);
       }
     }
+    this.pendingImpacts = (data.pendingImpacts ?? [])
+      .map((impact) => structuredClone(impact))
+      .sort((left, right) => left.dueTick - right.dueTick || left.effectId.localeCompare(right.effectId));
   }
 }
