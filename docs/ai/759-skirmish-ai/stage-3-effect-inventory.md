@@ -1,6 +1,6 @@
 # Stage 3 shared-effect inventory
 
-Status: `implemented_unvalidated` candidate. This is the cold-start map for the shared command/application work completed in Stage 3. All named tests are `authored_not_run`; the user-directed policy reserves every test, lint, type, build, format, browser, and runtime execution for Stage 15.
+Status: `implemented_unvalidated` at implementation commit `75dcbc3b`. This is the cold-start map for the shared command/application work completed in Stage 3. All named tests are `authored_not_run`; the user-directed policy reserves every test, lint, type, build, format, browser, and runtime execution for Stage 15.
 
 ## One authority and lifecycle
 
