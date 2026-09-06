@@ -2,37 +2,37 @@
 
 This file records implementation, not completion of research. Update after every stage/interrupt. Do not check acceptance merely because code was authored.
 
-Documentation review, 2026-09-05: added classic-RTS comparison, integrated C/D/DBG requirements and offline overview. Documentation smoke passed with `AI_OVERVIEW_BROWSER=/usr/bin/google-chrome node docs/ai/759-skirmish-ai/overview.smoke.mjs`: 30 scenario/stage combinations, three keyboard-operated profiles, capacity boundaries, three viewport widths, offline fallback, local links and 121 unique scenario IDs. Desktop/mobile screenshots were visually reviewed; a clipped mobile map label was fixed and the smoke rerun. This is page/specification evidence only; every runtime stage below remains not started.
+Documentation review, 2026-09-05: added classic-RTS comparison, integrated C/D/DBG requirements and offline overview. Documentation smoke passed with `AI_OVERVIEW_BROWSER=/usr/bin/google-chrome node docs/ai/759-skirmish-ai/overview.smoke.mjs`: 30 scenario/stage combinations, three keyboard-operated profiles, capacity boundaries, three viewport widths, offline fallback, local links and 121 unique scenario IDs. Desktop/mobile screenshots were visually reviewed; a clipped mobile map label was fixed and the smoke rerun. This was page/specification evidence only; at that review point every runtime stage remained not started.
 
 - Integration branch/worktree: `feature/759-skirmish-ai` in `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`
 - Base develop SHA: `de47f482889db30420692bf4406fba463d7db296`
 - Research source SHA: `1465f5a8943f19e79041dd9a5355958f214d38f4`; its complete #759 research history is merged into this integration branch. The earlier documentation/skill import is therefore now represented both by the source commits and the merge ancestry.
 - Stage 0 PR #792 state/SHA/integration method: open PR #792, source `17789141366e197f388e5ac5ed5cbb64882858e0`; cherry-picked with `-x` as `c57023f2bb0b99e79847bde7bcbb898bc6bab299`, without merging or modifying #792
 - Baseline source SHA / fixture manifest version: `de47f482889db30420692bf4406fba463d7db296` / not yet applicable (Stage 5 owns the manifest)
-- Current stage and exact next action: Stage 2; define pure contracts and migrations from the checked Stage 1 runtime boundary
+- Current stage and exact next action: Stage 3; connect shared command/application outcomes and persistence to the checked Stage 2 pure boundary
 - Execution policy: one stage per user request; acceptance audit, focused checks/repairs, Omission and Final Closure audits, commit, push/remote verification, then stop. Extensive integrated release validation stays Stage 15. This supersedes automatic continuation.
-- Current actual model/effort: host model/effort metadata was not exposed to this task; Stage 0 recommendation is Terra / high
-- Last task-owned commit: `273fca6886ab95783e267641fc5dbb195a4406ec` (published Stage 0 closure); Stage 1 closure is committed next
-- Known integration defects / external blockers: none established; research findings are not yet fixed
+- Current actual model/effort: host model/effort metadata was not exposed to this task; Stage 2 recommendation was Sol / high
+- Last task-owned commit: `a7dd660f7ca77ac2961e5ea51e71f75a95238f13` (published roadmap merge); Stage 2 closure is committed next
+- Known integration defects / external blockers: no Stage 2 defect; the 18 unrelated Phaser-library TypeScript baseline errors recorded in Stage 1 remain deferred to their owner/Stage 15
 
-| Stage | Implementation | Focused gate | Final validation | Commit / paths / next action |
-| --- | --- | --- | --- | --- |
-| 0 | stage_checked | passed | deferred_to_15 | `c57023f2` plus the pending Stage 0 evidence/docs closure commit; next: Stage 1 after remote verification |
-| 1 | stage_checked | passed | deferred_to_15 | pending Stage 1 closure commit; next: Stage 2 with Sol / high after remote verification |
-| 2 | not_started | not_run | deferred_to_15 | |
-| 3 | not_started | not_run | deferred_to_15 | |
-| 4 | not_started | not_run | deferred_to_15 | |
-| 5 | not_started | not_run | deferred_to_15 | |
-| 6 | not_started | not_run | deferred_to_15 | |
-| 7 | not_started | not_run | deferred_to_15 | |
-| 8 | not_started | not_run | deferred_to_15 | |
-| 9 | not_started | not_run | deferred_to_15 | |
-| 10 | not_started | not_run | deferred_to_15 | |
-| 11 | not_started | not_run | deferred_to_15 | |
-| 12 | not_started | not_run | deferred_to_15 | |
-| 13 | not_started | not_run | deferred_to_15 | |
-| 14 | not_started | not_run | deferred_to_15 | |
-| 15 | not_started | not_run | not_started | |
+| Stage | Implementation | Focused gate | Final validation | Commit / paths / next action                                                             |
+| ----- | -------------- | ------------ | ---------------- | ---------------------------------------------------------------------------------------- |
+| 0     | stage_checked  | passed       | deferred_to_15   | `c57023f2`, evidence published by `273fca68`                                             |
+| 1     | stage_checked  | passed       | deferred_to_15   | `39e3c95f`; static correctness and trace/debug foundation                                |
+| 2     | stage_checked  | passed       | deferred_to_15   | pending Stage 2 closure commit; next: Stage 3 with Sol / xhigh after remote verification |
+| 3     | not_started    | not_run      | deferred_to_15   |                                                                                          |
+| 4     | not_started    | not_run      | deferred_to_15   |                                                                                          |
+| 5     | not_started    | not_run      | deferred_to_15   |                                                                                          |
+| 6     | not_started    | not_run      | deferred_to_15   |                                                                                          |
+| 7     | not_started    | not_run      | deferred_to_15   |                                                                                          |
+| 8     | not_started    | not_run      | deferred_to_15   |                                                                                          |
+| 9     | not_started    | not_run      | deferred_to_15   |                                                                                          |
+| 10    | not_started    | not_run      | deferred_to_15   |                                                                                          |
+| 11    | not_started    | not_run      | deferred_to_15   |                                                                                          |
+| 12    | not_started    | not_run      | deferred_to_15   |                                                                                          |
+| 13    | not_started    | not_run      | deferred_to_15   |                                                                                          |
+| 14    | not_started    | not_run      | deferred_to_15   |                                                                                          |
+| 15    | not_started    | not_run      | not_started      |                                                                                          |
 
 For each stage append: implemented symbols and consumers, schema/config decisions, debug fields, authored test/fixture IDs, actual model/effort, pending issues, and exact next action. Allowed implementation states: `not_started`, `in_progress`, `implemented_unvalidated`, `stage_checked`, `validated`, `blocked`. Validation records need command, candidate SHA, fixture version/seed, outcome, artifact path, and any unrelated pre-existing failure. Keep code defects separate from infrastructure blockers.
 
@@ -66,6 +66,19 @@ Documentation/skill maintenance, 2026-09-05: canonical Phaser skill/source route
 - **Final Closure Audit:** reviewed all consumers of changed helper signatures and all `dispatchAiOrder` callers; ignored results remain behavior-compatible, while the worker path now treats a drop as failure. The Stage 1 diff is scoped to legacy correctness, bounded diagnostics, UI projection, and regressions. Runtime/real-match behavior, command application acknowledgements, persistence/migrations, pure brain contracts, and broad matrices are deliberately deferred to their owning stages and Stage 15.
 - **Publication / next stage:** this evidence is committed and pushed in the Stage 1 closure commit immediately after this update. Next: Stage 2, recommended `gpt-5.6-sol` / high. Resume prompt: `Implement Stage 2 only from docs/ai/759-skirmish-ai/00-start-here.md for #759. Verify Stage 1 remote publication, then define the pure AI contracts, defaults, migration fixtures, capability manifest and gameplay/protocol test seams; run its focused gate, record evidence, commit, push, verify the remote SHA, and stop.`
 
+## Stage 2 closure — pure contracts and capability coverage
+
+- **Acceptance 1 — observation/state boundary:** Added public gameplay contracts for immutable `AiObservationV1` and every required `AiBrainStateV1` slice: strategy/opening, knowledge, bases, economy/production demands, reservations/pending outcomes, squads, transport, fortifications, support, recovery, scheduler/RNG and monotonic identities. Actor observations carry explicit known/unknown logical position/access, owner/diplomacy, effective level/capabilities, queues/cost/supply, resource/growth/service state, effects/zones and mode goals. `assertAiObservationV1` and `assertAiBrainStateV1` reject invalid numeric, identity and persisted-deadline inputs. No Phaser/live-object import crosses this package boundary.
+- **Acceptance 2 — actions, plans and hardening:** Added discriminated `AiIntentV1` action families, typed preconditions/claims, demand/plan lifecycles, authority-fenced command/outcome identities, profile configuration and H1 progress/blocker/recovery, H2 dependency/reservation, H3 authority/watermark/backlog, H4 lane-service and H7 query-generation contracts. All persisted deadlines use `{clock: simulation, unit: tick, persistence: save}`. Stable wait-edge identity and guards reject direct self-dependency and duplicate edges.
+- **Acceptance 3 — defaults/migration/determinism:** `createAiBrainStateV1` initializes every named slice; `AI_BRAIN_SLICE_POLICIES_V1` assigns each exactly one reducer/default/migration/serializer owner. `adaptLegacyAiSaveToBrainState` is input-only and bootstraps from current-world satisfied opening IDs, so legacy loads do not replay satisfied steps or make the blackboard authoritative. `migrateAiBrainState` preserves checked V1 and explicitly rejects malformed/future schemas. Observation/state canonicalizers sort set-like collections, preserve the ordered RNG sequence, canonicalize outcome order, reject non-finite values, and produce stable serialization/FNV comparison digests.
+- **Acceptance 4 — pure reducer/debug:** `PureAiBrainV1.step` validates observation/state ownership and ordered outcomes, evaluates deterministic manager proposals, preconditions, exclusive/resource claims and proposal/acceptance budgets, and returns next state, accepted intents, full decisions/trace and `AiDebugSnapshotV1`. The projector exposes real Stage 2 decisions/recovery plus explicit typed `not_ready` ownership for later panels; bounded causal indexes and completeness flags prevent invented why-not explanations.
+- **Acceptance 5 — capabilities/difficulty/DBG-05:** `AiCapabilityCatalogV1` represents runtime-derived effective capabilities without copied balance data. `AI_CAPABILITY_COVERAGE_MANIFEST_V1` covers ownership, attack/heal/spell, economy, production/research, ground/water/air movement, container transport, fortification inputs, conversion and scenario/editor-injected conversion through observation/proposer/command/outcome/save/debug/fixture or an explicit not-applicable reason. Easy/Normal/Hard map from the existing lobby enum to versioned fair cadence/breadth/mission profiles with cheats and intentional errors off. `AiReproBundleV1` separates canonical replay inputs from display metadata; its parser rejects malformed, oversized, future-version, traversal and markup payloads and denies host-confidential runtime bundles to player access. The capture policy is one automatic capture per episode, five retained bundles and 64 MiB/session.
+- **Acceptance 6 — executable seams and coverage:** Added real Nx/Jest targets/configs for gameplay and protocol. Gameplay fixtures cover deterministic permutation/digest, state slice policies, legacy/default/future migration, numeric/deadline/dependency guards, all difficulty mappings, accepted/rejected dummy intents, capability coverage, DBG-05 parsing/privacy/capture limits and the H1–H9 ledger. `AI_HARDENING_COVERAGE_V1` maps every H-section to owner/persistence/debug/focused test and H-01–H-32 exactly once. Protocol coverage exercises the existing command/save/replay transport guard seam.
+- **Focused gate / provenance:** Candidate is based on `a7dd660f7ca77ac2961e5ea51e71f75a95238f13`; staged Stage 2 code/config patch ID before this ledger update is `47ac2448c42731440d92a23a29a94f5dbe5d20a1`. Node `v24.18.0`, pnpm `11.14.0`. `pnpm exec tsc --project libs/games/probable-waffle/gameplay/tsconfig.json --noEmit`, gameplay `tsconfig.spec.json`, protocol `tsconfig.json` and protocol `tsconfig.spec.json` all passed. `pnpm exec nx test probable-waffle-gameplay --runInBand --verbose` passed 8 suites / 25 tests; `pnpm exec nx test probable-waffle-protocol --runInBand --verbose` passed 1 suite / 5 tests. Both project lint targets passed, formatting was applied to task-owned files, and `git diff --check` passed. Nx daemon/cloud context warnings and deprecated executor notices did not fail a gate.
+- **Omission Audit:** Re-read all six Stage 2 requirements plus H1–H9/DBG-05 ownership. Repaired raw persisted deadline fields, implicit slice ownership, missing wait-edge identity, shallow untrusted-bundle validation, mixed display/replay metadata and the absent hardening ledger. Searched all new pure paths for Phaser imports, wall-clock/random calls, unsafe `any`/double assertions and untyped no-op placeholders; none remain. Later-stage debug sections use the required explicit typed `not_ready` state. Verified every new implementation is publicly exported or exercised by a registered test target. No runtime command adapter, live save mutation, copied roster table, second scheduler or strategic manager behavior was introduced.
+- **Final Closure Audit / deferred evidence:** Rechecked the repaired diff and immediate public consumers after the final green gate. Stage 2 is contract-complete and compile-ready. Runtime observation/catalog projection, shared applied-command reconciliation, actual save/replay/host integration and live adoption of the pure brain are deliberately owned by Stages 3–6; real-world scenario execution starts with Stage 5, and whole-match/build/UI/baseline validation remains Stage 15. DBG-05's pure parser/privacy cases pass now; its real capture round trip remains Stages 5/13. No current blocker.
+- **Publication / next stage:** this ledger is committed and pushed with the Stage 2 closure immediately after this update. Next: Stage 3, recommended `gpt-5.6-sol` / xhigh. Resume prompt: `Implement Stage 3 only from docs/ai/759-skirmish-ai/00-start-here.md for #759. Verify the Stage 2 remote SHA, then connect the pure command identities/outcomes through protocol, server authorization, Phaser application, persistence/replay and debug; migrate effect families in the specified order, implement H3 reconciliation/epoch fencing, run the focused gate, audit, commit, push, verify remote, and stop.`
+
 Maintenance checks: all six skills passed the bundled skill schema validator; `node tools/skills/check-index.mjs` resolved six skills, nine reference links, 45 indexed source routes and four project definitions; `node --test tools/skills/check-index.test.mjs` passed both regressions (missing/escaping paths, target/name drift). The offline overview smoke still passes. Stage-policy review covered successful closure, failed required check, rejected push, already-satisfied prerequisite and interrupted resume; these are instruction reviews, not executed AI matches. Runtime stages remain not_started.
 
 Tooling follow-up, 2026-09-06: direct ESLint 9 invocation failed because this checkout has legacy .eslintrc.json rather than flat config; its root overrides do not cover standalone .mjs tools. The two new tools instead receive explicit `--no-config-lookup --no-ignore --global process --global console --rule 'no-unused-vars:error' --rule 'no-undef:error'` checks and Node syntax checks, plus their runtime regressions. This is focused tool coverage, not a passing repository-wide lint run. No lint configuration or game code was changed.
@@ -73,6 +86,8 @@ Tooling follow-up, 2026-09-06: direct ESLint 9 invocation failed because this ch
 ## Cross-stage hardening coverage
 
 For H1–H9 and each H/SEQ ID record: stage owner, implemented symbols, debug fields, save/cleanup owner, focused command/result, final command/result, source/config/fixture digest, and unresolved causes. Claim scope, useful-progress predicate and deadline must be explicit. Use packet 09's stage table and packet 10's cases; do not mark coverage from a trace label alone.
+
+Stage 2 now supplies the typed `AI_HARDENING_COVERAGE_V1` ledger and validates that H-01–H-32 are each owned exactly once. The unchecked boxes below continue to represent completed runtime behavior and final evidence, not contract availability.
 
 - [ ] H1 measured progress and non-resettable causal recovery
 - [ ] H2 reservation dependencies, atomic grants and cycle recovery
