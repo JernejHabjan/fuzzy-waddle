@@ -88,7 +88,14 @@ function preconditionSatisfied(
             plan.phase !== "completed" &&
             plan.phase !== "cancelled" &&
             plan.phase !== "failed"
-        )
+        ) ||
+        state.squads.some(
+          (squad) =>
+            `plan:${squad.squadId}` === precondition.planId &&
+            squad.state !== "completed" &&
+            squad.state !== "cancelled"
+        ) ||
+        (precondition.planId === "plan:mode:concession" && state.skirmish.mode.state === "conceding")
       );
   }
 }
@@ -170,8 +177,25 @@ export class PureAiBrainV1 implements AiBrainV1 {
     // mutates the previous brain directly. Stable manager order makes competing
     // narrow projections deterministic; Stage 7 is currently the sole owner.
     // Stage 8 extends that established seam with its non-overlapping transport projection.
+    // Stage 9 appends only newly-created transport children after the owner has advanced them.
     const projectedState = proposalBatches.reduce<AiBrainStateV1>(
-      (state, batch) => ({ ...state, ...batch.statePatch }),
+      (state, batch) => {
+        const patch = batch.statePatch;
+        if (!patch) return state;
+        const { transportAppend, ...replacePatch } = patch;
+        return {
+          ...state,
+          ...replacePatch,
+          ...(transportAppend?.length
+            ? {
+                transport: [
+                  ...state.transport,
+                  ...transportAppend.filter((candidate) => !state.transport.some((current) => current.planId === candidate.planId))
+                ]
+              }
+            : {})
+        };
+      },
       planning.state
     );
     const intents = planning.proposals.sort(compareIntents);

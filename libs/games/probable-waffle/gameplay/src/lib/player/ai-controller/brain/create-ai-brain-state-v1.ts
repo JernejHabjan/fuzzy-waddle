@@ -65,6 +65,11 @@ export function createAiBrainStateV1(input: CreateAiBrainStateV1Input): AiBrainS
       }
     },
     knowledge: { revision: 0, evidence: [], questions: [] },
+    skirmish: {
+      incidents: [],
+      mode: { state: "active", hopelessSinceTick: null, concessionIntentId: null, lastReason: null },
+      timeline: []
+    },
     bases: [],
     economyProduction: { demands: [], forecasts: [] },
     reservations: [],

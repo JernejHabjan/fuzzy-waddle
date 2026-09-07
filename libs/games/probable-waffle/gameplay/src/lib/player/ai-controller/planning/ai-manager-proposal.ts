@@ -1,7 +1,7 @@
 import type { AiObservationV1 } from "../contracts/ai-observation-v1";
 import type { AiIntentV1 } from "../contracts/ai-intent-v1";
 import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiEconomyProductionStateV1, AiOpeningStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiEconomyProductionStateV1, AiOpeningStateV1, AiSkirmishStateV1, AiStrategyStateV1, AiSquadStateV1, AiTransportStateV1 } from "../contracts/ai-brain-state-v1";
 import type { AiServiceLaneV1 } from "../contracts/ai-lane-contracts";
 
 /** Deterministic proposal batch produced by one narrow manager. */
@@ -21,6 +21,12 @@ export interface AiManagerProposalV1 {
     opening?: AiOpeningStateV1;
     economyProduction?: AiEconomyProductionStateV1;
     transport?: AiBrainStateV1["transport"];
+    /** Appended after the transport owner advances its lifecycle, preventing route-plan races. */
+    transportAppend?: readonly AiTransportStateV1[];
+    knowledge?: AiBrainStateV1["knowledge"];
+    squads?: readonly AiSquadStateV1[];
+    strategy?: AiStrategyStateV1;
+    skirmish?: AiSkirmishStateV1;
   }>;
 }
 

@@ -78,11 +78,61 @@ export interface AiEconomyProductionStateV1 {
 /** Squad membership and objective ownership. */
 export interface AiSquadStateV1 {
   readonly squadId: AiSquadId;
-  readonly role: string;
+  /** Persistent duty; Stage 9 never reassigns the whole army because one contact is nearer. */
+  readonly role: "defense" | "attack" | "reserve" | "reinforcement" | "scout" | "escort";
   readonly domain: "ground" | "water" | "air" | "mixed";
   readonly actorIds: readonly ActorId[];
   readonly objectiveId: string | null;
-  readonly state: "forming" | "ready" | "moving" | "engaged" | "retreating" | "recovering";
+  readonly state: "forming" | "ready" | "moving" | "engaged" | "retreating" | "recovering" | "searching" | "completed" | "cancelled";
+  /** Mission-owned deadline and last independently observed useful effect. */
+  readonly lifecycle?: Readonly<{
+    readonly targetPlayerNumber: PlayerNumber | null;
+    readonly targetRegionId: string | null;
+    readonly protectedBaseId: AiBaseId | null;
+    readonly rallyNodeId: string | null;
+    readonly retreatNodeId: string | null;
+    readonly createdTick: AiSimulationTick;
+    readonly assemblyDeadline: AiDeadlineV1;
+    readonly effectDeadline: AiDeadlineV1;
+    readonly lastUsefulEffectTick: AiSimulationTick | null;
+    readonly recoveryAttempt: number;
+    readonly terminalReason: string | null;
+  }>;
+}
+
+/** A bounded, player-fair incident built only from permitted hostile evidence. */
+export interface AiThreatIncidentV1 {
+  readonly incidentId: string;
+  readonly baseId: AiBaseId | null;
+  readonly regionId: string | null;
+  readonly hostileActorIds: readonly ActorId[];
+  readonly kind: "worker_harassment" | "army_pressure" | "flyer" | "naval" | "transport_landing" | "proxy_blocker" | "unknown";
+  readonly confidencePermille: number;
+  readonly severity: number;
+  readonly createdTick: AiSimulationTick;
+  readonly expiresAt: AiDeadlineV1;
+}
+
+/** Mode evaluation is saved so a reload cannot forget a chronic loss or duplicate concession. */
+export interface AiModeStateV1 {
+  readonly state: "active" | "winning" | "hopeless" | "conceding" | "conceded" | "finished";
+  readonly hopelessSinceTick: AiSimulationTick | null;
+  readonly concessionIntentId: string | null;
+  readonly lastReason: string | null;
+}
+
+/** Stage-9 strategic state: questions, incidents and mission facts without live-world handles. */
+export interface AiSkirmishStateV1 {
+  readonly incidents: readonly AiThreatIncidentV1[];
+  readonly mode: AiModeStateV1;
+  /** Bounded causal event ledger used by the read-only debug timeline. */
+  readonly timeline: readonly {
+    readonly eventId: string;
+    readonly tick: AiSimulationTick;
+    readonly kind: "question" | "threat" | "mission" | "effect" | "mode";
+    readonly subjectId: string;
+    readonly detail: string;
+  }[];
 }
 
 /** Persisted transport phase without live actor references or promises. */
@@ -197,6 +247,7 @@ export interface AiBrainStateV1 {
   readonly strategy: AiStrategyStateV1;
   readonly opening: AiOpeningStateV1;
   readonly knowledge: AiKnowledgeStateV1;
+  readonly skirmish: AiSkirmishStateV1;
   readonly bases: readonly AiBaseStateV1[];
   readonly economyProduction: AiEconomyProductionStateV1;
   readonly reservations: readonly AiReservationV1[];

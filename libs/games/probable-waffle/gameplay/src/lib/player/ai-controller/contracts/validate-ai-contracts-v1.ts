@@ -22,7 +22,7 @@ function assertDeadline(value: unknown, field: string): void {
 /** Structural guard used before a persisted state is trusted as V1. */
 export function isAiBrainStateV1(value: unknown): value is AiBrainStateV1 {
   if (!isRecord(value) || value.schemaVersion !== 1) return false;
-  if (!isRecord(value.strategy) || !isRecord(value.opening) || !isRecord(value.knowledge)) return false;
+  if (!isRecord(value.strategy) || !isRecord(value.opening) || !isRecord(value.knowledge) || !isRecord(value.skirmish)) return false;
   if (!isRecord(value.economyProduction) || !isRecord(value.authority) || !isRecord(value.scheduler)) return false;
   if (!isRecord(value.identities)) return false;
   return [
@@ -114,6 +114,34 @@ export function assertAiBrainStateV1(value: unknown): asserts value is AiBrainSt
     ) {
       throw new Error(`invalid_ai_transport_assignment:${transport.planId}`);
     }
+  }
+  assertUnique(value.squads.map((squad) => squad.squadId), "squads.squadId");
+  for (const squad of value.squads) {
+    assertUnique([...squad.actorIds], `squads.${squad.squadId}.actorIds`);
+    if (!squad.lifecycle) continue;
+    assertAiNonNegativeInteger(squad.lifecycle.createdTick, `squads.${squad.squadId}.createdTick`);
+    assertAiNonNegativeInteger(squad.lifecycle.recoveryAttempt, `squads.${squad.squadId}.recoveryAttempt`);
+    assertDeadline(squad.lifecycle.assemblyDeadline, `squads.${squad.squadId}.assemblyDeadline`);
+    assertDeadline(squad.lifecycle.effectDeadline, `squads.${squad.squadId}.effectDeadline`);
+    if (squad.lifecycle.lastUsefulEffectTick !== null) {
+      assertAiNonNegativeInteger(squad.lifecycle.lastUsefulEffectTick, `squads.${squad.squadId}.lastUsefulEffectTick`);
+    }
+  }
+  if (!Array.isArray(value.skirmish.incidents) || !Array.isArray(value.skirmish.timeline)) {
+    throw new Error("malformed_ai_skirmish_state");
+  }
+  for (const incident of value.skirmish.incidents) {
+    assertAiNonNegativeInteger(incident.createdTick, `skirmish.${incident.incidentId}.createdTick`);
+    assertAiNonNegativeInteger(incident.confidencePermille, `skirmish.${incident.incidentId}.confidencePermille`);
+    assertAiNonNegativeInteger(incident.severity, `skirmish.${incident.incidentId}.severity`);
+    assertDeadline(incident.expiresAt, `skirmish.${incident.incidentId}.expiresAt`);
+    assertUnique([...incident.hostileActorIds], `skirmish.${incident.incidentId}.hostileActorIds`);
+  }
+  if (!["active", "winning", "hopeless", "conceding", "conceded", "finished"].includes(value.skirmish.mode.state)) {
+    throw new Error("invalid_ai_skirmish_mode");
+  }
+  if (value.skirmish.mode.hopelessSinceTick !== null) {
+    assertAiNonNegativeInteger(value.skirmish.mode.hopelessSinceTick, "skirmish.mode.hopelessSinceTick");
   }
   assertUnique(
     value.reservations.map((reservation) => reservation.claimId),

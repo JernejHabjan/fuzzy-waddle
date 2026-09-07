@@ -26,15 +26,25 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function validateV1(value: Record<string, unknown>): AiBrainStateV1 {
-  if (!isAiBrainStateV1(value)) {
+  const stage9Compatible = "skirmish" in value
+    ? value
+    : {
+        ...value,
+        skirmish: {
+          incidents: [],
+          mode: { state: "active", hopelessSinceTick: null, concessionIntentId: null, lastReason: null },
+          timeline: []
+        }
+      };
+  if (!isAiBrainStateV1(stage9Compatible)) {
     throw new AiBrainMigrationError("malformed_state", "missing_v1_slices");
   }
   try {
-    assertAiBrainStateV1(value);
+    assertAiBrainStateV1(stage9Compatible);
   } catch (error) {
     throw new AiBrainMigrationError("malformed_state", error instanceof Error ? error.message : "invalid_number");
   }
-  return value;
+  return stage9Compatible;
 }
 
 /**

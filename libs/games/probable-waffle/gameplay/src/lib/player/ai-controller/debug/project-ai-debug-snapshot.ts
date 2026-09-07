@@ -45,6 +45,33 @@ export function projectAiDebugSnapshot(
       landingPosition: landing?.passengerPosition ?? null
     };
   });
+  const skirmish = {
+    questions: state.knowledge.questions.slice(0, 16).map((question) => ({ ...question })),
+    incidents: state.skirmish.incidents.slice(0, 16).map((incident) => ({
+      incidentId: incident.incidentId,
+      kind: incident.kind,
+      severity: incident.severity,
+      confidencePermille: incident.confidencePermille,
+      expiresAtTick: incident.expiresAt.dueTick
+    })),
+    squads: state.squads.slice(0, 16).map((squad) => ({
+      squadId: squad.squadId,
+      role: squad.role,
+      state: squad.state,
+      members: squad.actorIds.length,
+      objectiveId: squad.objectiveId,
+      targetPlayerNumber: squad.lifecycle?.targetPlayerNumber ?? null,
+      assemblyDeadlineTick: squad.lifecycle?.assemblyDeadline.dueTick ?? null,
+      effectDeadlineTick: squad.lifecycle?.effectDeadline.dueTick ?? null
+    })),
+    mode: {
+      state: state.skirmish.mode.state,
+      hopelessSinceTick: state.skirmish.mode.hopelessSinceTick,
+      concessionIntentId: state.skirmish.mode.concessionIntentId,
+      reason: state.skirmish.mode.lastReason
+    },
+    timeline: state.skirmish.timeline.slice(-32).map((event) => ({ ...event }))
+  };
 
   return {
     schemaVersion: 1,
@@ -69,6 +96,7 @@ export function projectAiDebugSnapshot(
       reason: `${decision.reason}:${decision.detail}`
     })),
     transportOperations,
+    skirmish,
     progressHealth:
       state.authority.health === "technical_fault"
         ? "technical_fault"
@@ -113,8 +141,8 @@ export function projectAiDebugSnapshot(
         ownerStage: 7,
         reason: state.economyProduction.forecasts.length ? "600_tick_forecast_committed" : "no_macro_forecast"
       },
-      intelligenceEnvironment: later(9),
-      squadsSupport: later(13),
+      intelligenceEnvironment: { status: "ready", ownerStage: 9, reason: skirmish.questions[0]?.questionId ?? "no_open_question" },
+      squadsSupport: { status: "ready", ownerStage: 9, reason: skirmish.squads[0]?.squadId ?? "no_active_squad" },
       transport: {
         status: "ready",
         ownerStage: 8,

@@ -119,6 +119,14 @@ export function canonicalizeAiBrainStateV1(state: AiBrainStateV1): AiBrainStateV
       evidence: [...state.knowledge.evidence].sort((left, right) => left.evidenceId.localeCompare(right.evidenceId)),
       questions: [...state.knowledge.questions].sort((left, right) => left.questionId.localeCompare(right.questionId))
     },
+    skirmish: {
+      ...state.skirmish,
+      incidents: [...state.skirmish.incidents]
+        .map((incident) => ({ ...incident, hostileActorIds: [...incident.hostileActorIds].sort() }))
+        .sort((left, right) => left.incidentId.localeCompare(right.incidentId)),
+      timeline: [...state.skirmish.timeline]
+        .sort((left, right) => left.tick - right.tick || left.eventId.localeCompare(right.eventId))
+    },
     bases: [...state.bases]
       .map((base) => ({ ...base, memberActorIds: [...base.memberActorIds].sort() }))
       .sort((left, right) => left.baseId.localeCompare(right.baseId)),

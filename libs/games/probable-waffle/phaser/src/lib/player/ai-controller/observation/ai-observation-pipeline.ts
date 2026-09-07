@@ -1,7 +1,9 @@
 import type Phaser from "phaser";
+import { getGameModeFromScene } from "@fuzzy-waddle/platform-game-host/phaser/scene/base.scene";
 import type { ActorId, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import {
   ObjectNames,
+  type ProbableWaffleGameMode,
   ProbableWafflePlayer,
   ResourceType,
   type ResearchType,
@@ -268,7 +270,7 @@ export class AiObservationPipeline {
         resources,
         accessProducts,
         effects,
-        modeGoals: [],
+        modeGoals: this.projectModeGoals(actors),
         threatSummary: this.projectThreatSummary(actors, tick),
         map
       },
@@ -578,7 +580,12 @@ export class AiObservationPipeline {
       // Tilemap content is immutable for a loaded match; topology changes belong
       // to the independently versioned dynamic-query stream.
       staticRevision: tilemap ? 1 : 0,
-      frontierAccessNodeIds: ownedNodes,
+      // A frontier is an admitted static region outside currently covered vision, not
+      // merely the AI's own node. Dynamic unknowns remain absent from this fair input.
+      frontierAccessNodeIds: (accessGraph?.nodes ?? [])
+        .filter((candidate) => candidate.knowledge === "known_static" && !ownedNodes.includes(candidate.nodeId))
+        .map((candidate) => candidate.nodeId)
+        .sort(),
       scoutCoverageAccessNodeIds,
       dynamicObstacleActorIds,
       regionGeneration: {
@@ -654,6 +661,33 @@ export class AiObservationPipeline {
         .filter((family, index, values) => values.indexOf(family) === index)
         .sort()
     };
+  }
+
+  /** Projects public mode configuration and locally observable status; mode resolution stays authoritative. */
+  private projectModeGoals(actors: readonly AiObservedActorV1[]): AiObservationV1["modeGoals"] {
+    const data = getGameModeFromScene<ProbableWaffleGameMode>(this.scene).data;
+    const selfFailed = this.player.playerController.data.leftOrKilled === true;
+    const selfActors = actors.filter((actor) => actor.relation === "self").map((actor) => actor.actorId).sort();
+    const visibleEnemies = actors
+      .filter((actor) => actor.relation === "enemy" && actor.visibility === "visible")
+      .map((actor) => actor.actorId)
+      .sort();
+    const enemyNodes = actors
+      .filter((actor) => actor.relation === "enemy" && actor.visibility === "visible" && actor.accessNodeId.status === "known")
+      .map((actor) => actor.accessNodeId.status === "known" ? actor.accessNodeId.value : undefined)
+      .filter((node): node is NonNullable<typeof node> => node !== undefined)
+      .sort();
+    const goals: AiObservationV1["modeGoals"] = [];
+    if (data.winConditions.noEnemyPlayersLeft === true) {
+      goals.push({ id: "mode:win:no_enemy_players_left", kind: "destroy", owner: this.player.playerNumber!, targetActorIds: visibleEnemies, targetAccessNodeIds: enemyNodes, state: selfFailed ? "failed" : "active" });
+    }
+    if (data.loseConditions.allActorsMustBeEliminated === true || data.loseConditions.allBuildingsMustBeEliminated === true) {
+      goals.push({ id: "mode:survive:owned_assets", kind: "protect", owner: this.player.playerNumber!, targetActorIds: selfActors, targetAccessNodeIds: [], state: selfFailed ? "failed" : "active" });
+    }
+    if (data.tieConditions.maximumTimeLimitInMinutes !== undefined) {
+      goals.push({ id: "mode:tie:time_limit", kind: "survive", owner: this.player.playerNumber!, targetActorIds: [], targetAccessNodeIds: [], state: selfFailed ? "failed" : "active" });
+    }
+    return goals.sort((left, right) => left.id.localeCompare(right.id));
   }
 
   private countUnknownFacts(observation: AiObservationV1 | undefined): number {

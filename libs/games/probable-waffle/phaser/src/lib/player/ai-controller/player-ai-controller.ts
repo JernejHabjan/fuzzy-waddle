@@ -33,6 +33,7 @@ import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { selectAiOpeningArchetypeV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-opening-archetypes-v1";
 import { AiStage7MacroManagerV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-stage-7-macro-manager";
 import { AiStage8TransportManagerV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-stage-8-transport-manager";
+import { AiStage9SkirmishManagerV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-stage-9-skirmish-manager";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import { OrderType } from "../../ai/order-type";
 
@@ -66,7 +67,8 @@ export class PlayerAiController {
     this.pureBrain = this.profile
       ? new PureAiBrainV1(this.profile, [
           new AiStage7MacroManagerV1(() => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
-          new AiStage8TransportManagerV1(() => this.playerAiControllerAgent?.getCommittedCapabilityCatalog())
+          new AiStage8TransportManagerV1(() => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
+          new AiStage9SkirmishManagerV1(this.profile, () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog())
         ])
       : undefined;
     this.blackboard = new PlayerAiBlackboard(scene);
@@ -384,6 +386,29 @@ export class PlayerAiController {
           actorIds: [intent.transportId],
           passengerIds: [...intent.passengerIds],
           tileVec3: intent.logicalPosition
+        }, correlation);
+        continue;
+      }
+      if (intent.kind === "attack") {
+        const actors = actorIndex.getActorsByIds([...intent.actorIds]);
+        if (actors.length !== intent.actorIds.length) continue;
+        commandBus.dispatchAi({
+          type: "ACTOR_ACTION",
+          playerNumber: this.player.playerNumber,
+          actorIds: [...intent.actorIds],
+          orderType: OrderType.Attack,
+          ...(intent.targetActorId ? { targetObjectIds: [intent.targetActorId] } : {}),
+          ...(intent.targetPosition ? { tileVec3: intent.targetPosition } : {}),
+          queue: false
+        }, correlation);
+        continue;
+      }
+      if (intent.kind === "concede") {
+        commandBus.dispatchAi({
+          type: "CONCEDE",
+          playerNumber: this.player.playerNumber,
+          actorIds: [],
+          reason: intent.reason
         }, correlation);
       }
     }

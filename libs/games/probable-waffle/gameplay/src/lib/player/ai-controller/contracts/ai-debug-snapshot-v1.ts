@@ -73,6 +73,14 @@ export interface AiDebugSnapshotV1 {
     readonly pickupPosition: { readonly x: number; readonly y: number; readonly z: number } | null;
     readonly landingPosition: { readonly x: number; readonly y: number; readonly z: number } | null;
   }[];
+  /** Bounded Stage-9 strategic facts captured at the decision boundary. */
+  readonly skirmish: Readonly<{
+    readonly questions: readonly { readonly questionId: string; readonly kind: string; readonly state: string; readonly createdTick: AiSimulationTick }[];
+    readonly incidents: readonly { readonly incidentId: string; readonly kind: string; readonly severity: number; readonly confidencePermille: number; readonly expiresAtTick: AiSimulationTick }[];
+    readonly squads: readonly { readonly squadId: string; readonly role: string; readonly state: string; readonly members: number; readonly objectiveId: string | null; readonly targetPlayerNumber: PlayerNumber | null; readonly assemblyDeadlineTick: AiSimulationTick | null; readonly effectDeadlineTick: AiSimulationTick | null }[];
+    readonly mode: { readonly state: string; readonly hopelessSinceTick: AiSimulationTick | null; readonly concessionIntentId: string | null; readonly reason: string | null };
+    readonly timeline: readonly { readonly eventId: string; readonly tick: AiSimulationTick; readonly kind: string; readonly subjectId: string; readonly detail: string }[];
+  }>;
   readonly progressHealth:
     | "healthy"
     | "waiting"

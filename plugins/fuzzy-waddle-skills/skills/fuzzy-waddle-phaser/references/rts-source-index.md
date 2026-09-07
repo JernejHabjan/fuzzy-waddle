@@ -14,6 +14,7 @@ All paths in the following table are relative to libs/games/probable-waffle/phas
 | Cargo and transport runtime | entity/components/building/container-component.ts ; entity/components/building/containable-component.ts ; prefabs/characters/shared/CommonBoat/ |
 | Save/load and authoritative hash | data/save-game.ts ; data/load-game.ts ; world/services/recovery/state-hash.service.ts |
 | Match end conditions | world/state/GameModeConditionChecker.ts |
+| Purposeful skirmish loop | gameplay `player/ai-controller/planning/ai-stage-9-skirmish-manager.ts`; Phaser `player/ai-controller/player-ai-controller.ts` |
 | In-game AI panel | prefabs/gui/debug/ai-controller/AiControllerDebugPanel.ts |
 
 Cross-library paths (repository-relative):
@@ -33,5 +34,6 @@ Read adjacent specs and follow imports for the next consumer. For spells, contai
 - Debug projection is not gameplay authority. StateHashService is a multiplayer world projection, not an already-built AI evaluation harness.
 - Navigation height/edge snapshots include runtime surfaces from the whole scene. Player-fair AI topology must gate those cells through the committed observation policy; do not copy the global height graph directly into an AI observation.
 - The current plan's new pure brain, harness and debug workbench are destinations, not existing APIs.
+- Stage 9 may propose movement, attacks, transport children and concession, but each must travel through `CommandBusService.dispatchAi`; do not restore the legacy controller's direct actor mutation path.
 
 For #759 only, read docs/ai/759-skirmish-ai/00-start-here.md and its current stage. Its shared-decisions source/destination map owns planned additions and its ledger owns implementation status. Keep generic skills free of issue-specific tuning constants and model assignments.

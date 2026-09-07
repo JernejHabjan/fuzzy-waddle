@@ -553,6 +553,24 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
       );
       lines.push(`Scout coverage sources: ${observation.map?.scoutCoverageAccessNodeIds.length ?? "unknown"}`);
     }
+    const brain = controller.getBrainDebugSnapshot();
+    if (brain) {
+      lines.push(`--- Stage 9 Questions & Threats ---`);
+      for (const question of brain.skirmish.questions.slice(0, 3)) {
+        lines.push(`Question ${question.questionId}: ${question.kind} (${question.state})`);
+      }
+      if (!brain.skirmish.questions.length) lines.push("Question: none recorded");
+      for (const incident of brain.skirmish.incidents.slice(0, 3)) {
+        lines.push(`Threat ${incident.kind}: severity ${incident.severity}, confidence ${incident.confidencePermille}, expires ${incident.expiresAtTick}`);
+      }
+      if (!brain.skirmish.incidents.length) lines.push("Threat: none recorded");
+      lines.push(`Mode: ${brain.skirmish.mode.state}; ${brain.skirmish.mode.reason ?? "no mode reason"}`);
+      lines.push(`--- Missions ---`);
+      for (const squad of brain.skirmish.squads.slice(0, 4)) {
+        lines.push(`${squad.squadId}: ${squad.role}/${squad.state}, ${squad.members} members, target ${squad.objectiveId ?? "none"}`);
+      }
+      if (!brain.skirmish.squads.length) lines.push("Mission: none recorded");
+    }
 
     lines.push(`--- Map Exploration ---`);
     lines.push(`Fully Explored: ${bb.mapFullyExplored ? "Yes" : "No"}`);

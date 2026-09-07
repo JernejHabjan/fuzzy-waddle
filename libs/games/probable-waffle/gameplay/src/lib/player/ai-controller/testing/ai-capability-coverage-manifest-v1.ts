@@ -70,7 +70,17 @@ export const AI_CAPABILITY_COVERAGE_MANIFEST_V1: readonly AiCapabilityCoverageEn
   gameplayFamily("container_transport", "container + containable", 8, 8),
   gameplayFamily("level_overrides", "level + meta.levelOverrides", 14, 14),
   gameplayFamily("conversion", "convertible runtime component", 4, 4),
-  gameplayFamily("mode_goals_results", "GameModeConditionChecker", 9, 9),
+  {
+    family: "mode_goals_results",
+    source: "GameModeConditionChecker",
+    observation: implemented("AiObservationV1.modeGoals committed mode status"),
+    proposer: implemented("AiStage9SkirmishManagerV1 mode/recoverability evaluator"),
+    command: implemented("GameCommand CONCEDE through CommandBusService.dispatchAi"),
+    outcome: implemented("shared command outcome reconciliation"),
+    save: implemented("AiBrainStateV1.skirmish.mode canonical state"),
+    debug: implemented("AiDebugSnapshotV1.skirmish.mode"),
+    fixture: planned(15, "Stage 9 runtime score/concession fixture")
+  },
   {
     family: "scenario_editor_injected_conversion",
     source: "scenario/editor actor conversion and ownership events",

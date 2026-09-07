@@ -6,6 +6,7 @@ describe("AI_BRAIN_SLICE_POLICIES_V1", () => {
       "strategy",
       "opening",
       "knowledge",
+      "skirmish",
       "bases",
       "economyProduction",
       "reservations",
