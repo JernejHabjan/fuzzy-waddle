@@ -1,6 +1,7 @@
 import type { ActorId, PlayerNumber, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import type { FactionType, ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiAccessNodeId, AiEvidenceId, AiKnownValueV1, AiSimulationTick } from "./ai-core-types";
+import type { AiAccessGraphV1 } from "./ai-access-graph-v1";
 
 /** Relationship visible to the observing player; neutral is not treated as hostile. */
 export type AiDiplomacyRelationV1 = "self" | "ally" | "neutral" | "enemy";
@@ -34,6 +35,15 @@ export interface AiObservedResourceStateV1 {
   readonly serviceCapacity: AiKnownValueV1<number>;
 }
 
+/** Owned cargo facts needed to reconcile physical boarding without inspecting live objects in the brain. */
+export interface AiObservedContainerStateV1 {
+  readonly capacity: number;
+  readonly passengerIds: readonly ActorId[];
+  readonly pendingPassengerIds: readonly ActorId[];
+  /** Deposit containers have no movement domain and are never classified as troop transports. */
+  readonly mobileDomains: readonly AiDomainV1[];
+}
+
 /** One visible or remembered actor in an immutable observation generation. */
 export interface AiObservedActorV1 {
   readonly actorId: ActorId;
@@ -53,6 +63,10 @@ export interface AiObservedActorV1 {
   readonly housingCapacity: AiKnownValueV1<number>;
   readonly resourceState: AiKnownValueV1<AiObservedResourceStateV1>;
   readonly activeEffectIds: readonly string[];
+  /** Stable container owner when this actor is physically loaded; absent on pre-Stage-8 observations. */
+  readonly containedInActorId?: ActorId | null;
+  /** Known only for owned containers; opponent cargo remains private. */
+  readonly containerState?: AiKnownValueV1<AiObservedContainerStateV1>;
 }
 
 /** Permitted resource facts for the observing player. */
@@ -111,6 +125,8 @@ export interface AiObservedMapV1 {
     readonly status: "ready" | "not_ready" | "unknown" | "blocked" | "service_failed";
     readonly continuationCursor: number;
   };
+  /** Completed cached topology generation; optional for legacy observations and isolated fixtures. */
+  readonly accessGraph?: AiAccessGraphV1;
 }
 
 /** Canonical permitted threat evidence, isolated from the mutable actor index. */

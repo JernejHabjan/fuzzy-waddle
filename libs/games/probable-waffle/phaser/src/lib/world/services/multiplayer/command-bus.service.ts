@@ -37,6 +37,13 @@ export type GameCommandDispatchReceipt =
   | { readonly status: "dispatched"; readonly command: GameCommand }
   | { readonly status: "rejected"; readonly reason: GameCommandOutcomeReason };
 
+/** Correlation supplied by the pure AI while sequence/epoch authority remains bus-owned. */
+export interface AiGameCommandCorrelation {
+  readonly intentId: string;
+  readonly effectId: string;
+  readonly commitmentKey: string;
+}
+
 /**
  * Central command bus for all player- and AI-issued simulation commands.
  *
@@ -297,6 +304,26 @@ export class CommandBusService {
     this.logQueuedWhileStalled(normalizedCommand.type, tick, stamped.playerNumber);
     this.reportOutcome(stamped, "dispatched", "accepted_for_dispatch");
     return { status: "dispatched", command: stamped };
+  }
+
+  /** Admits an AI intent through the normal bus while preserving exact command/outcome correlation. */
+  dispatchAi(command: GameCommandInput, correlation: AiGameCommandCorrelation): GameCommandDispatchReceipt {
+    const sequence = this.allocateSequence(command.playerNumber);
+    const authorityEpoch = this.authorityEpoch;
+    const commandId = `${command.playerNumber}:${authorityEpoch}:${sequence}:${this.scene.gameInstanceId}`;
+    return this.dispatch({
+      ...command,
+      execution: {
+        schemaVersion: 1,
+        commandId,
+        commitmentKey: correlation.commitmentKey,
+        source: "ai",
+        authorityEpoch,
+        sequence,
+        intentId: correlation.intentId,
+        effectId: correlation.effectId
+      }
+    } as GameCommandInput);
   }
 
   /** Documents the dispatch deterministic member and its declared contract at this boundary. */

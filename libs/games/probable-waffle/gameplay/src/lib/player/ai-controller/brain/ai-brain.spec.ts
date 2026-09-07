@@ -71,9 +71,9 @@ describe("PureAiBrainV1", () => {
     ]);
     expect(result.nextState.scheduler.decisionSequence).toBe(1);
     expect(state.scheduler.decisionSequence).toBe(0);
-    expect(result.debugSnapshot.nextActions).toEqual(["stop"]);
+    expect(result.debugSnapshot.nextActions).toEqual(["stop:test_high"]);
     expect(result.debugSnapshot.mainBlockingReason).toBe("claim_conflict");
-    expect(result.debugSnapshot.sections.productionComposition.status).toBe("not_ready");
+    expect(result.debugSnapshot.sections.productionComposition.status).toBe("ready");
   });
 
   it("rejects invalid utility before it can rank as a winner", () => {

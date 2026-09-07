@@ -20,6 +20,7 @@ export interface AiManagerProposalV1 {
   readonly statePatch?: Readonly<{
     opening?: AiOpeningStateV1;
     economyProduction?: AiEconomyProductionStateV1;
+    transport?: AiBrainStateV1["transport"];
   }>;
 }
 

@@ -7,13 +7,14 @@ import Phaser from "phaser";
 import HudProbableWaffle from "../../../../world/scenes/hud-scenes/HudProbableWaffle";
 import { ProbableWaffleScene } from "../../../../core/probable-waffle.scene";
 import { getPlayer } from "../../../../data/scene-data";
-import { getSceneSystem } from "../../../../world/services/scene-component-helpers";
+import { getSceneService, getSceneSystem } from "../../../../world/services/scene-component-helpers";
 import { AiPlayerHandler } from "../../../../player/ai-controller/ai-player-handler";
 import { type PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { PlayerAiController } from "../../../../player/ai-controller/player-ai-controller";
 import { getActorComponent } from "../../../../data/actor-component";
 import { GathererComponent } from "../../../../entity/components/resource/gatherer-component";
+import { NavigationService } from "../../../../world/services/navigation.service";
 /* END-USER-IMPORTS */
 
 export default class AiControllerDebugLabel extends Phaser.GameObjects.Container {
@@ -69,6 +70,7 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
 
     /* START-USER-CTR-CODE */
     this.mainSceneWithActors = (this.scene as HudProbableWaffle).probableWaffleScene!;
+    this.once(Phaser.GameObjects.Events.DESTROY, this.destroyTransportOverlay, this);
     /* END-USER-CTR-CODE */
   }
 
@@ -107,6 +109,7 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
       resources: "Resources & Economy",
       production: "Production & Tech",
       commands: "Command Authority",
+      transport: "Routes & Transport",
       logistics: "Logistics & Workers",
       intel: "Enemy Intel & Scouting",
       thresholds: "Adaptive Thresholds"
@@ -123,6 +126,7 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
     if (!controller) return;
 
     const lines: string[] = [];
+    if (this.category !== "transport") this.clearTransportOverlay();
 
     if (!this.category) {
       lines.push(...this.getOverviewLines(controller, now));
@@ -143,6 +147,9 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
         case "commands":
           lines.push(...this.getCommandAuthorityLines(controller));
           break;
+        case "transport":
+          lines.push(...this.getTransportLines(controller));
+          break;
         case "logistics":
           lines.push(...this.getLogisticsLines(controller, now));
           break;
@@ -159,6 +166,64 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
 
     this.telemetryText.text = lines.join("\n");
     this.playerAction.text = controller?.blackboard.currentStrategy || "";
+  }
+
+  private getTransportLines(controller: PlayerAiController): string[] {
+    const brain = controller.getBrainDebugSnapshot();
+    const observation = controller.getCommittedObservation();
+    const graph = observation?.map?.accessGraph;
+    const lines = [
+      "=== ROUTES & TRANSPORT ===",
+      graph
+        ? `Graph: ${graph.status} g${graph.generation} s${graph.staticRevision}/d${graph.dynamicRevision}/t${graph.threatRevision}`
+        : "Graph: not committed",
+      graph ? `Regions: ${graph.nodes.length}, links: ${graph.links.length}, transfers: ${graph.transferPoints.length}` : "Regions: unavailable"
+    ];
+    if (!brain?.transportOperations.length) {
+      lines.push("", "No active or retained transport plans");
+      this.clearTransportOverlay();
+      return lines;
+    }
+    lines.push("");
+    for (const operation of brain.transportOperations) {
+      lines.push(`${operation.planId}: ${operation.phase} (${operation.routeKind})`);
+      lines.push(`  cargo ${operation.passengers}, carriers ${operation.transports}, seats ${operation.capacity}`);
+      lines.push(`  route g${operation.routeGeneration}/${operation.graphGeneration ?? "?"}, due ${operation.deadlineTick}, recovery ${operation.recoveryAttempt}`);
+      if (operation.terminalReason) lines.push(`  reason: ${operation.terminalReason}`);
+    }
+    this.renderTransportOverlay(brain.transportOperations);
+    return lines;
+  }
+
+  private transportOverlay?: Phaser.GameObjects.Graphics;
+
+  /** Draws only recorded transfer anchors; opening the panel never invokes route work. */
+  private renderTransportOverlay(
+    operations: NonNullable<ReturnType<PlayerAiController["getBrainDebugSnapshot"]>>["transportOperations"]
+  ): void {
+    this.clearTransportOverlay();
+    const navigation = getSceneService(this.mainSceneWithActors, NavigationService);
+    if (!navigation) return;
+    const graphics = this.mainSceneWithActors.add.graphics().setDepth(Number.MAX_SAFE_INTEGER);
+    for (const operation of operations) {
+      if (!operation.pickupPosition || !operation.landingPosition) continue;
+      const pickup = navigation.getTileWorldCenter(operation.pickupPosition);
+      const landing = navigation.getTileWorldCenter(operation.landingPosition);
+      if (!pickup || !landing) continue;
+      graphics.lineStyle(3, 0x40c4ff, 0.8).lineBetween(pickup.x, pickup.y, landing.x, landing.y);
+      graphics.fillStyle(0x4caf50, 0.9).fillCircle(pickup.x, pickup.y, 7);
+      graphics.fillStyle(0xff9800, 0.9).fillCircle(landing.x, landing.y, 7);
+    }
+    this.transportOverlay = graphics;
+  }
+
+  private clearTransportOverlay(): void {
+    this.transportOverlay?.destroy();
+    this.transportOverlay = undefined;
+  }
+
+  private destroyTransportOverlay(): void {
+    this.clearTransportOverlay();
   }
 
   private getOverviewLines(controller: PlayerAiController, now: number): string[] {

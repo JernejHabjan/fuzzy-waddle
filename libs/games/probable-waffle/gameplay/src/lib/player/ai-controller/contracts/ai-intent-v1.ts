@@ -87,6 +87,7 @@ export type AiIntentV1 =
   | (AiIntentBaseV1 & {
       readonly kind: "unload";
       readonly transportId: ActorId;
+      readonly passengerIds: readonly ActorId[];
       readonly logicalPosition: Vector3Simple;
     })
   | (AiIntentBaseV1 & {

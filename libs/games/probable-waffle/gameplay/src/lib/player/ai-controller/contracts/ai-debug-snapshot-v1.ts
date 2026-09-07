@@ -57,6 +57,22 @@ export interface AiDebugSnapshotV1 {
   readonly nextActions: readonly string[];
   readonly mainBlockingReason: string | null;
   readonly whyNot: readonly AiWhyNotExplanationV1[];
+  /** Bounded saved transport facts and recorded overlay anchors; never a live pathfinder query. */
+  readonly transportOperations: readonly {
+    readonly planId: string;
+    readonly phase: string;
+    readonly routeKind: string;
+    readonly routeGeneration: number;
+    readonly graphGeneration: number | null;
+    readonly passengers: number;
+    readonly transports: number;
+    readonly capacity: string;
+    readonly deadlineTick: AiSimulationTick;
+    readonly recoveryAttempt: number;
+    readonly terminalReason: string | null;
+    readonly pickupPosition: { readonly x: number; readonly y: number; readonly z: number } | null;
+    readonly landingPosition: { readonly x: number; readonly y: number; readonly z: number } | null;
+  }[];
   readonly progressHealth:
     | "healthy"
     | "waiting"

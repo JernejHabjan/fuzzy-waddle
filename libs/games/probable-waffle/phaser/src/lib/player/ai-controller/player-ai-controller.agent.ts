@@ -48,6 +48,7 @@ import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { AiDecisionTrace, type AiDecisionReasonCode, type AiDecisionTraceSnapshot } from "./ai-decision-trace";
 import { isEnemyPlayerWeak } from "./ai-static-decisions";
 import { AiObservationPipeline } from "./observation/ai-observation-pipeline";
+import { queryAiAccessRouteV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { SimulationTickService } from "../../world/services/simulation-tick.service";
 /**
  * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
@@ -516,6 +517,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       const aiController = getActorComponent(unit, PawnAiController);
       if (!aiController) return;
       if (aiController.blackboard.getCurrentOrder()) return;
+      if (!this.canIssueDirectObjectiveOrder(unit, target)) return;
       const newOrder = new OrderData(OrderType.Attack, { targetGameObject: target });
       const result = dispatchAiOrder(this.scene, unit, newOrder, this.player.playerNumber!);
       if (result.status === "dispatched") assignedCount++;
@@ -525,6 +527,39 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     this.cooldowns.markRun("attackTrigger", now);
     this.blackboard.cooldowns.attackTrigger = now;
     return State.SUCCEEDED;
+  }
+
+  /** Prevents the transitional legacy attacker from bypassing Stage-8 route feasibility. */
+  private canIssueDirectObjectiveOrder(unit: GameObject, target: GameObject): boolean {
+    const observation = this.observationPipeline.getObservation();
+    const graph = observation?.map?.accessGraph;
+    const unitId = getActorComponent(unit, IdComponent)?.id;
+    const targetId = getActorComponent(target, IdComponent)?.id;
+    const source = observation?.actors.find((actor) => actor.actorId === unitId);
+    const destination = observation?.actors.find((actor) => actor.actorId === targetId);
+    if (!graph || source?.accessNodeId.status !== "known" || destination?.accessNodeId.status !== "known") {
+      this.recordDecision("attackEnemyBase", "failed", "path_not_found");
+      return false;
+    }
+    const capabilities = source.capabilities;
+    const result = queryAiAccessRouteV1(graph, {
+      queryId: `query:legacy-direct:${unitId}:${targetId}`,
+      kind: "firing_position",
+      fromNodeId: source.accessNodeId.value,
+      toNodeId: destination.accessNodeId.value,
+      capabilities: {
+        moverDomains: capabilities.flatMap((capability) => capability.domains),
+        targetDomains: capabilities.flatMap((capability) => capability.targetDomains),
+        waterTransportSeats: 0,
+        airTransportSeats: 0,
+        requiredPassengerSeats: 1,
+        requiredClearance: 1
+      },
+      firingNodeIds: [destination.accessNodeId.value]
+    });
+    const direct = result.kind === "direct" || result.kind === "air_or_naval_objective";
+    if (!direct) this.recordDecision("attackEnemyBase", "failed", "path_not_found");
+    return direct;
   }
 
   NeedMoreResources() {

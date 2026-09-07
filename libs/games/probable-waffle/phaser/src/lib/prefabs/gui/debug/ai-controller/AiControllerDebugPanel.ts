@@ -274,6 +274,7 @@ export default class AiControllerDebugPanel extends Phaser.GameObjects.Container
       { id: "resources", label: "Resources & Economy" },
       { id: "production", label: "Production & Tech" },
       { id: "commands", label: "Command Authority" },
+      { id: "transport", label: "Routes & Transport" },
       { id: "logistics", label: "Logistics & Workers" },
       { id: "intel", label: "Enemy Intel & Scouting" },
       { id: "thresholds", label: "Adaptive Thresholds" }

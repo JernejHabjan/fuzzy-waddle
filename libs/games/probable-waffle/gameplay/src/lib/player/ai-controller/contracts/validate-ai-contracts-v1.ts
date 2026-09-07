@@ -76,6 +76,45 @@ export function assertAiBrainStateV1(value: unknown): asserts value is AiBrainSt
   for (const support of value.support) {
     if (support.expiresAt !== null) assertDeadline(support.expiresAt, `support.${support.planId}.expiresAt`);
   }
+  for (const transport of value.transport) {
+    if (!transport.lifecycle) continue;
+    if (!["island_establishment", "army_transfer", "evacuation"].includes(transport.lifecycle.missionKind)) {
+      throw new Error(`invalid_ai_transport_mission:${transport.planId}`);
+    }
+    assertDeadline(transport.lifecycle.phaseDeadline, `transport.${transport.planId}.phaseDeadline`);
+    assertAiNonNegativeInteger(transport.lifecycle.routeGeneration, `transport.${transport.planId}.routeGeneration`);
+    assertAiNonNegativeInteger(transport.lifecycle.assignedCapacity, `transport.${transport.planId}.assignedCapacity`);
+    assertAiNonNegativeInteger(transport.lifecycle.requiredCapacity, `transport.${transport.planId}.requiredCapacity`);
+    assertAiNonNegativeInteger(transport.lifecycle.departureCapacityPermille, `transport.${transport.planId}.departureCapacityPermille`);
+    assertAiNonNegativeInteger(transport.lifecycle.estimatedTravelTicks, `transport.${transport.planId}.estimatedTravelTicks`);
+    assertAiNonNegativeInteger(transport.lifecycle.recoveryAttempt, `transport.${transport.planId}.recoveryAttempt`);
+    assertAiNonNegativeInteger(transport.lifecycle.maxRecoveryAttempts, `transport.${transport.planId}.maxRecoveryAttempts`);
+    assertAiNonNegativeInteger(transport.lifecycle.lastProgressTick, `transport.${transport.planId}.lastProgressTick`);
+    if (transport.lifecycle.requiredCapacity === 0 || transport.lifecycle.departureCapacityPermille > 1000) {
+      throw new Error(`invalid_ai_transport_capacity:${transport.planId}`);
+    }
+    assertUnique(transport.lifecycle.manifest.map((passenger) => passenger.actorId), `transport.${transport.planId}.manifest`);
+    assertUnique([...transport.lifecycle.assignedTransportIds], `transport.${transport.planId}.assignedTransportIds`);
+    assertUnique(transport.lifecycle.seatAssignments.map((assignment) => assignment.transportId), `transport.${transport.planId}.seatAssignments`);
+    assertUnique(
+      transport.lifecycle.seatAssignments.flatMap((assignment) => [...assignment.passengerIds]),
+      `transport.${transport.planId}.assignedPassengers`
+    );
+    const manifestIds = new Set(transport.lifecycle.manifest.map((passenger) => passenger.actorId));
+    for (const passenger of transport.lifecycle.manifest) {
+      assertAiNonNegativeInteger(passenger.seats, `transport.${transport.planId}.${passenger.actorId}.seats`);
+      if (passenger.seats === 0) throw new Error(`invalid_ai_transport_seats:${transport.planId}:${passenger.actorId}`);
+    }
+    if (
+      transport.lifecycle.seatAssignments.some(
+        (assignment) =>
+          !transport.lifecycle?.assignedTransportIds.includes(assignment.transportId) ||
+          assignment.passengerIds.some((passengerId) => !manifestIds.has(passengerId))
+      )
+    ) {
+      throw new Error(`invalid_ai_transport_assignment:${transport.planId}`);
+    }
+  }
   assertUnique(
     value.reservations.map((reservation) => reservation.claimId),
     "reservations.claimId"
@@ -150,6 +189,15 @@ export function assertAiObservationV1(observation: AiObservationV1): void {
         throw new Error(`invalid_ai_queue_capacity:${actor.actorId}`);
       }
     }
+    if (actor.containerState?.status === "known") {
+      const container = actor.containerState.value;
+      assertAiNonNegativeInteger(container.capacity, `actors.${actor.actorId}.container.capacity`);
+      assertUnique([...container.passengerIds], `actors.${actor.actorId}.container.passengerIds`);
+      assertUnique([...container.pendingPassengerIds], `actors.${actor.actorId}.container.pendingPassengerIds`);
+      if (container.passengerIds.length > container.capacity) {
+        throw new Error(`invalid_ai_container_capacity:${actor.actorId}`);
+      }
+    }
   }
   if (observation.map) {
     assertAiNonNegativeInteger(observation.map.staticRevision, "map.staticRevision");
@@ -159,6 +207,35 @@ export function assertAiObservationV1(observation: AiObservationV1): void {
     if (observation.map.bounds.status === "known") {
       assertAiNonNegativeInteger(observation.map.bounds.value.width, "map.bounds.width");
       assertAiNonNegativeInteger(observation.map.bounds.value.height, "map.bounds.height");
+    }
+    const graph = observation.map.accessGraph;
+    if (graph) {
+      assertAiNonNegativeInteger(graph.generation, "map.accessGraph.generation");
+      assertAiNonNegativeInteger(graph.staticRevision, "map.accessGraph.staticRevision");
+      assertAiNonNegativeInteger(graph.dynamicRevision, "map.accessGraph.dynamicRevision");
+      assertAiNonNegativeInteger(graph.threatRevision, "map.accessGraph.threatRevision");
+      assertAiNonNegativeInteger(graph.builtTick, "map.accessGraph.builtTick");
+      assertUnique(graph.nodes.map((node) => node.nodeId), "map.accessGraph.nodeId");
+      assertUnique(graph.links.map((link) => link.linkId), "map.accessGraph.linkId");
+      assertUnique(graph.transferPoints.map((point) => point.transferId), "map.accessGraph.transferId");
+      const nodeIds = new Set(graph.nodes.map((node) => node.nodeId));
+      for (const node of graph.nodes) {
+        assertAiNonNegativeInteger(node.tileCount, `map.accessGraph.${node.nodeId}.tileCount`);
+        assertAiNonNegativeInteger(node.clearance, `map.accessGraph.${node.nodeId}.clearance`);
+      }
+      for (const transfer of graph.transferPoints) {
+        if (!nodeIds.has(transfer.fromNodeId) || !nodeIds.has(transfer.toNodeId)) {
+          throw new Error(`invalid_ai_access_transfer:${transfer.transferId}`);
+        }
+        assertAiNonNegativeInteger(transfer.clearance, `map.accessGraph.${transfer.transferId}.clearance`);
+      }
+      for (const link of graph.links) {
+        if (!nodeIds.has(link.fromNodeId) || !nodeIds.has(link.toNodeId)) {
+          throw new Error(`invalid_ai_access_link:${link.linkId}`);
+        }
+        assertAiNonNegativeInteger(link.clearance, `map.accessGraph.${link.linkId}.clearance`);
+        assertAiNonNegativeInteger(link.distanceCost, `map.accessGraph.${link.linkId}.distanceCost`);
+      }
     }
   }
 }

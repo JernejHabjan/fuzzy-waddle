@@ -80,7 +80,16 @@ function preconditionSatisfied(
         (actor) => actor.actorId === precondition.actorId && actor.visibility !== "last_seen"
       );
     case "plan_active":
-      return state.opening.plan.planId === precondition.planId && state.opening.plan.lifecycle === "active";
+      return (
+        (state.opening.plan.planId === precondition.planId && state.opening.plan.lifecycle === "active") ||
+        state.transport.some(
+          (plan) =>
+            `plan:${plan.planId}` === precondition.planId &&
+            plan.phase !== "completed" &&
+            plan.phase !== "cancelled" &&
+            plan.phase !== "failed"
+        )
+      );
   }
 }
 
@@ -160,6 +169,7 @@ export class PureAiBrainV1 implements AiBrainV1 {
     // A proposer may own a persisted projection (opening/demand state) but never
     // mutates the previous brain directly. Stable manager order makes competing
     // narrow projections deterministic; Stage 7 is currently the sole owner.
+    // Stage 8 extends that established seam with its non-overlapping transport projection.
     const projectedState = proposalBatches.reduce<AiBrainStateV1>(
       (state, batch) => ({ ...state, ...batch.statePatch }),
       planning.state
@@ -167,9 +177,14 @@ export class PureAiBrainV1 implements AiBrainV1 {
     const intents = planning.proposals.sort(compareIntents);
     const decisions: AiIntentDecisionV1[] = [...planning.preDecisions];
     const accepted: AiIntentV1[] = [];
-    const claimedKeys = new Set<string>(
-      planning.state.reservations.flatMap((reservation) => [reservation.claimId, reservation.subjectKey].filter(Boolean) as string[])
+    const existingClaimOwners = new Map<string, string>(
+      planning.state.reservations.flatMap((reservation) =>
+        [reservation.claimId, reservation.subjectKey]
+          .filter((key): key is string => key !== undefined)
+          .map((key) => [key, reservation.ownerPlanId] as const)
+      )
     );
+    const claimedThisStep = new Set<string>();
     const resourceClaims = new Map<ResourceType, number>();
 
     for (const intent of intents) {
@@ -194,7 +209,11 @@ export class PureAiBrainV1 implements AiBrainV1 {
       }
 
       const exclusiveConflict = intent.claims.find((claim) =>
-        claim.kind !== "resource" && (claimedKeys.has(claimKey(claim)) || claimedKeys.has(claim.claimId))
+        claim.kind !== "resource" &&
+        (claimedThisStep.has(claimKey(claim)) ||
+          claimedThisStep.has(claim.claimId) ||
+          (existingClaimOwners.has(claimKey(claim)) && existingClaimOwners.get(claimKey(claim)) !== intent.planId) ||
+          (existingClaimOwners.has(claim.claimId) && existingClaimOwners.get(claim.claimId) !== intent.planId))
       );
       if (exclusiveConflict) {
         decisions.push({ outcome: "rejected", intent, reason: "claim_conflict", detail: claimKey(exclusiveConflict) });
@@ -219,8 +238,8 @@ export class PureAiBrainV1 implements AiBrainV1 {
         if (claim.kind === "resource") {
           resourceClaims.set(claim.resourceType, (resourceClaims.get(claim.resourceType) ?? 0) + claim.amount);
         } else {
-          claimedKeys.add(claimKey(claim));
-          claimedKeys.add(claim.claimId);
+          claimedThisStep.add(claimKey(claim));
+          claimedThisStep.add(claim.claimId);
         }
       }
       accepted.push(intent);
@@ -239,7 +258,17 @@ export class PureAiBrainV1 implements AiBrainV1 {
     );
     const nextState: AiBrainStateV1 = {
       ...projectedState,
-      reservations: [...projectedState.reservations, ...acceptedReservations].sort((left, right) => left.claimId.localeCompare(right.claimId))
+      reservations: [
+        ...projectedState.reservations.filter(
+          (existing) =>
+            !acceptedReservations.some(
+              (acceptedReservation) =>
+                acceptedReservation.ownerPlanId === existing.ownerPlanId &&
+                (acceptedReservation.claimId === existing.claimId || acceptedReservation.subjectKey === existing.subjectKey)
+            )
+        ),
+        ...acceptedReservations
+      ].sort((left, right) => left.claimId.localeCompare(right.claimId))
     };
     const debugSnapshot = projectAiDebugSnapshot(observation, nextState, decisions);
     return { nextState, acceptedIntents: accepted, decisions, trace: decisions, debugSnapshot };

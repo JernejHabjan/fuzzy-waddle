@@ -32,8 +32,9 @@ import type { AiDebugSnapshotV1, AiProfileConfigV1 } from "@fuzzy-waddle/probabl
 import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { selectAiOpeningArchetypeV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-opening-archetypes-v1";
 import { AiStage7MacroManagerV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-stage-7-macro-manager";
+import { AiStage8TransportManagerV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-stage-8-transport-manager";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
-import { dispatchProductionCommand } from "../../data/commands/queue-command-dispatch";
+import { OrderType } from "../../ai/order-type";
 
 export class PlayerAiController {
   private static readonly MAX_SCHEDULED_STEPS_PER_RUN = 5;
@@ -63,7 +64,10 @@ export class PlayerAiController {
     this.stepInterval = (this.profile?.decisionIntervalTicks ?? AI_CONFIG.controllerStepIntervalMs / SimulationTickService.TICK_INTERVAL_MS) *
       SimulationTickService.TICK_INTERVAL_MS;
     this.pureBrain = this.profile
-      ? new PureAiBrainV1(this.profile, [new AiStage7MacroManagerV1(() => this.playerAiControllerAgent?.getCommittedCapabilityCatalog())])
+      ? new PureAiBrainV1(this.profile, [
+          new AiStage7MacroManagerV1(() => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
+          new AiStage8TransportManagerV1(() => this.playerAiControllerAgent?.getCommittedCapabilityCatalog())
+        ])
       : undefined;
     this.blackboard = new PlayerAiBlackboard(scene);
     const commandBus = getSceneService(scene, CommandBusService);
@@ -301,7 +305,7 @@ export class PlayerAiController {
     const bridge = this.getBrainCommandBridgeSnapshot();
     if (!observation || !this.brainState || !this.pureBrain) return;
     const result = this.pureBrain.step(observation, this.brainState, bridge?.outcomes ?? []);
-    this.dispatchAcceptedMacroIntents(result.acceptedIntents);
+    this.dispatchAcceptedIntents(result.acceptedIntents);
     this.brainState = structuredClone(canonicalizeAiBrainStateV1({
       ...result.nextState,
       authority: bridge?.authority ?? result.nextState.authority
@@ -309,33 +313,78 @@ export class PlayerAiController {
     this.latestBrainDebug = structuredClone(result.debugSnapshot);
   }
 
-  /**
-   * Translates the Stage 7 macro subset through the same shared command bus as
-   * a human. Unsupported later-stage intents deliberately remain un-dispatched
-   * rather than falling back to a private AI-only mutation path.
-   */
-  private dispatchAcceptedMacroIntents(intents: readonly AiIntentV1[]): void {
+  /** Translates accepted macro and transport intents through the shared player command authority. */
+  private dispatchAcceptedIntents(intents: readonly AiIntentV1[]): void {
     if (this.player.playerNumber === undefined) return;
     const actorIndex = getSceneService(this.scene, ActorIndexSystem);
     const commandBus = getSceneService(this.scene, CommandBusService);
     if (!actorIndex || !commandBus) return;
     for (const intent of intents) {
+      const correlation = {
+        intentId: intent.intentId.replace(/^intent:/, ""),
+        effectId: intent.effectId.replace(/^effect:/, ""),
+        commitmentKey: `ai:${intent.effectId}`
+      };
       if (intent.kind === "produce") {
         const producer = actorIndex.getActorById(intent.producerId);
-        if (producer) dispatchProductionCommand(this.scene, [producer], this.player.playerNumber, intent.objectName);
+        if (producer) {
+          commandBus.dispatchAi({
+            type: "PRODUCTION",
+            playerNumber: this.player.playerNumber,
+            actorIds: [intent.producerId],
+            actorName: intent.objectName
+          }, correlation);
+        }
         continue;
       }
       if (intent.kind === "construct") {
         const builders = actorIndex.getActorsByIds([...intent.builderIds]);
         if (builders.length !== intent.builderIds.length) continue;
-        commandBus.dispatch({
+        commandBus.dispatchAi({
           type: "CONSTRUCT",
           playerNumber: this.player.playerNumber,
           actorIds: [...intent.builderIds],
           actorName: intent.objectName,
           tileVec3: intent.logicalPosition,
           siteKey: intent.siteKey
-        });
+        }, correlation);
+        continue;
+      }
+      if (intent.kind === "move" || intent.kind === "scout") {
+        const actors = actorIndex.getActorsByIds([...intent.actorIds]);
+        if (actors.length !== intent.actorIds.length) continue;
+        commandBus.dispatchAi({
+          type: "ACTOR_ACTION",
+          playerNumber: this.player.playerNumber,
+          actorIds: [...intent.actorIds],
+          orderType: OrderType.Move,
+          tileVec3: intent.logicalPosition,
+          queue: false
+        }, correlation);
+        continue;
+      }
+      if (intent.kind === "board") {
+        const passengers = actorIndex.getActorsByIds([...intent.actorIds]);
+        if (passengers.length !== intent.actorIds.length || !actorIndex.getActorById(intent.transportId)) continue;
+        commandBus.dispatchAi({
+          type: "ACTOR_ACTION",
+          playerNumber: this.player.playerNumber,
+          actorIds: [...intent.actorIds],
+          orderType: OrderType.EnterContainer,
+          targetObjectIds: [intent.transportId],
+          queue: false
+        }, correlation);
+        continue;
+      }
+      if (intent.kind === "unload") {
+        if (!actorIndex.getActorById(intent.transportId)) continue;
+        commandBus.dispatchAi({
+          type: "UNLOAD",
+          playerNumber: this.player.playerNumber,
+          actorIds: [intent.transportId],
+          passengerIds: [...intent.passengerIds],
+          tileVec3: intent.logicalPosition
+        }, correlation);
       }
     }
   }

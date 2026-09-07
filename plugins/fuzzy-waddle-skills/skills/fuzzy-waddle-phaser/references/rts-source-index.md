@@ -10,7 +10,8 @@ All paths in the following table are relative to libs/games/probable-waffle/phas
 | Shared applied orders | world/services/multiplayer/command-bus.service.ts ; entity/systems/queue-command.system.ts ; entity/systems/action.system.ts |
 | Actor capabilities and faction tech | prefabs/definitions/actor-definitions.ts ; prefabs/definitions/prefab-definition.ts ; data/tech-tree/tech-tree.service.ts |
 | Indexed actors / fixed clock | world/services/ActorIndexSystem.ts ; world/services/simulation-tick.service.ts |
-| Access and topology | world/services/navigation.service.ts |
+| Access and topology | world/services/navigation.service.ts ; player/ai-controller/observation/ai-access-graph.adapter.ts |
+| Cargo and transport runtime | entity/components/building/container-component.ts ; entity/components/building/containable-component.ts ; prefabs/characters/shared/CommonBoat/ |
 | Save/load and authoritative hash | data/save-game.ts ; data/load-game.ts ; world/services/recovery/state-hash.service.ts |
 | Match end conditions | world/state/GameModeConditionChecker.ts |
 | In-game AI panel | prefabs/gui/debug/ai-controller/AiControllerDebugPanel.ts |
@@ -30,6 +31,7 @@ Read adjacent specs and follow imports for the next consumer. For spells, contai
 - Same-type capacity may be useful. Count causal commitments through dispatch/queue/site/completion, not just visible actors.
 - Ranged is not necessarily anti-air; component flags and effective runtime level matter.
 - Debug projection is not gameplay authority. StateHashService is a multiplayer world projection, not an already-built AI evaluation harness.
+- Navigation height/edge snapshots include runtime surfaces from the whole scene. Player-fair AI topology must gate those cells through the committed observation policy; do not copy the global height graph directly into an AI observation.
 - The current plan's new pure brain, harness and debug workbench are destinations, not existing APIs.
 
 For #759 only, read docs/ai/759-skirmish-ai/00-start-here.md and its current stage. Its shared-decisions source/destination map owns planned additions and its ledger owns implementation status. Keep generic skills free of issue-specific tuning constants and model assignments.

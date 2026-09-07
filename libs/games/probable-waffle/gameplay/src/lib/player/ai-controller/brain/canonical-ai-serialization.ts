@@ -38,7 +38,22 @@ export function canonicalizeAiObservationV1(observation: AiObservationV1): AiObs
             targetDomains: [...capability.targetDomains].sort()
           }))
           .sort((left, right) => left.id.localeCompare(right.id)),
-        activeEffectIds: [...actor.activeEffectIds].sort()
+        activeEffectIds: [...actor.activeEffectIds].sort(),
+        ...(actor.containerState?.status === "known"
+          ? {
+              containerState: {
+                ...actor.containerState,
+                value: {
+                  ...actor.containerState.value,
+                  passengerIds: [...actor.containerState.value.passengerIds].sort(),
+                  pendingPassengerIds: [...actor.containerState.value.pendingPassengerIds].sort(),
+                  mobileDomains: [...actor.containerState.value.mobileDomains].sort()
+                }
+              }
+            }
+          : actor.containerState
+            ? { containerState: actor.containerState }
+            : {})
       }))
       .sort((left, right) => left.actorId.localeCompare(right.actorId)),
     resources: [...observation.resources].sort((left, right) => left.resourceType.localeCompare(right.resourceType)),
@@ -65,7 +80,20 @@ export function canonicalizeAiObservationV1(observation: AiObservationV1): AiObs
             ...observation.map,
             frontierAccessNodeIds: [...observation.map.frontierAccessNodeIds].sort(),
             scoutCoverageAccessNodeIds: [...observation.map.scoutCoverageAccessNodeIds].sort(),
-            dynamicObstacleActorIds: [...observation.map.dynamicObstacleActorIds].sort()
+            dynamicObstacleActorIds: [...observation.map.dynamicObstacleActorIds].sort(),
+            ...(observation.map.accessGraph
+              ? {
+                  accessGraph: {
+                    ...observation.map.accessGraph,
+                    nodes: [...observation.map.accessGraph.nodes].sort((left, right) => left.nodeId.localeCompare(right.nodeId)),
+                    links: [...observation.map.accessGraph.links].sort((left, right) => left.linkId.localeCompare(right.linkId)),
+                    transferPoints: [...observation.map.accessGraph.transferPoints].sort((left, right) =>
+                      left.transferId.localeCompare(right.transferId)
+                    ),
+                    unknownNodeIds: [...observation.map.accessGraph.unknownNodeIds].sort()
+                  }
+                }
+              : {})
           }
         }
       : {})
@@ -133,7 +161,31 @@ export function canonicalizeAiBrainStateV1(state: AiBrainStateV1): AiBrainStateV
         ...plan,
         passengerIds: [...plan.passengerIds].sort(),
         transportIds: [...plan.transportIds].sort(),
-        queryIds: [...plan.queryIds].sort()
+        queryIds: [...plan.queryIds].sort(),
+        ...(plan.lifecycle
+          ? {
+              lifecycle: {
+                ...plan.lifecycle,
+                manifest: [...plan.lifecycle.manifest].sort((left, right) => left.actorId.localeCompare(right.actorId)),
+                assignedTransportIds: [...plan.lifecycle.assignedTransportIds].sort(),
+                seatAssignments: [...plan.lifecycle.seatAssignments]
+                  .map((assignment) => ({ ...assignment, passengerIds: [...assignment.passengerIds].sort() }))
+                  .sort((left, right) => left.transportId.localeCompare(right.transportId)),
+                escortIds: [...plan.lifecycle.escortIds].sort(),
+                pendingIntentIds: [...plan.lifecycle.pendingIntentIds].sort(),
+                capacityDemand: plan.lifecycle.capacityDemand
+                  ? {
+                      ...plan.lifecycle.capacityDemand,
+                      satisfiedActorIds: [...plan.lifecycle.capacityDemand.satisfiedActorIds].sort(),
+                      queuedIds: [...plan.lifecycle.capacityDemand.queuedIds].sort(),
+                      constructingIds: [...plan.lifecycle.capacityDemand.constructingIds].sort(),
+                      acceptedNotObservedEffectIds: [...plan.lifecycle.capacityDemand.acceptedNotObservedEffectIds].sort(),
+                      preferredObjectNames: [...plan.lifecycle.capacityDemand.preferredObjectNames].sort()
+                    }
+                  : null
+              }
+            }
+          : {})
       }))
       .sort((left, right) => left.planId.localeCompare(right.planId)),
     fortifications: [...state.fortifications]

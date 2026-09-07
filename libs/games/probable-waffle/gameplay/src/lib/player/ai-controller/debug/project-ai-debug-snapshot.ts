@@ -19,6 +19,32 @@ export function projectAiDebugSnapshot(
   const accepted = decisions.filter((decision) => decision.outcome === "accepted");
   const topReasons = [...new Set(decisions.map((decision) => decision.reason))].slice(0, 3);
   const blocker = state.blockers[0] ?? null;
+  const graph = observation.map?.accessGraph;
+  const transportOperations = state.transport.slice(0, 16).map((plan) => {
+    const lifecycle = plan.lifecycle;
+    const route = lifecycle?.route;
+    const pickup = route && (route.kind === "water_transport" || route.kind === "air_transport")
+      ? route.pickupCandidates.find((point) => point.transferId === lifecycle.pickupTransferId)
+      : undefined;
+    const landing = route && (route.kind === "water_transport" || route.kind === "air_transport")
+      ? route.landingCandidates.find((point) => point.transferId === lifecycle.landingTransferId)
+      : undefined;
+    return {
+      planId: plan.planId,
+      phase: plan.phase,
+      routeKind: route?.kind ?? "legacy",
+      routeGeneration: lifecycle?.routeGeneration ?? 0,
+      graphGeneration: graph?.generation ?? null,
+      passengers: plan.passengerIds.length,
+      transports: plan.transportIds.length,
+      capacity: lifecycle ? `${lifecycle.assignedCapacity}/${lifecycle.requiredCapacity}` : "unknown",
+      deadlineTick: lifecycle?.phaseDeadline.dueTick ?? observation.tick,
+      recoveryAttempt: lifecycle?.recoveryAttempt ?? 0,
+      terminalReason: lifecycle?.terminalReason ?? null,
+      pickupPosition: pickup?.passengerPosition ?? null,
+      landingPosition: landing?.passengerPosition ?? null
+    };
+  });
 
   return {
     schemaVersion: 1,
@@ -42,6 +68,7 @@ export function projectAiDebugSnapshot(
       status: "rejected" as const,
       reason: `${decision.reason}:${decision.detail}`
     })),
+    transportOperations,
     progressHealth:
       state.authority.health === "technical_fault"
         ? "technical_fault"
@@ -88,7 +115,11 @@ export function projectAiDebugSnapshot(
       },
       intelligenceEnvironment: later(9),
       squadsSupport: later(13),
-      transport: later(8),
+      transport: {
+        status: "ready",
+        ownerStage: 8,
+        reason: transportOperations.map((operation) => `${operation.planId}:${operation.phase}`).join(",") || "no_active_transport_plan"
+      },
       basesFortifications: later(10),
       decisionsRecovery: { status: "ready", ownerStage: 2, reason: null },
       runtimeLimits: later(6)

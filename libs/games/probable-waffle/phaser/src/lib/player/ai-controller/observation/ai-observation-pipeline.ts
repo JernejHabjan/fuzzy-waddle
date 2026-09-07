@@ -26,18 +26,21 @@ import {
   isSceneActive
 } from "../../../data/game-object-helper";
 import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
+import { getTileCoordsUnderObject } from "../../../library/tile-under-object";
 import { OwnerComponent } from "../../../entity/components/owner-component";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
 import { QueueComponent } from "../../../entity/components/queue/queue-component";
 import { ResourceSourceComponent } from "../../../entity/components/resource/resource-source-component";
 import { ResourceDrainComponent } from "../../../entity/components/resource/resource-drain-component";
 import { ContainableComponent } from "../../../entity/components/building/containable-component";
+import { ContainerComponent } from "../../../entity/components/building/container-component";
 import { BuilderComponent } from "../../../entity/components/construction/builder-component";
 import { StatusEffectComponent } from "../../../entity/components/status-effect/status-effect-component";
 import { VisionComponent } from "../../../entity/components/vision-component";
 import { AoeZoneManager } from "../../../entity/systems/aoe-zone-manager";
 import { ResearchComponent } from "../../../entity/components/research/research-component";
 import { ColliderComponent } from "../../../entity/components/movement/collider-component";
+import { NavigableComponent } from "../../../entity/components/movement/navigable-component";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { MovementTerrainType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/movement-terrain-type";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
@@ -47,6 +50,7 @@ import { getSceneService } from "../../../world/services/scene-component-helpers
 import { TilemapComponent } from "../../../world/tilemap/tilemap.component";
 import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 import { AiObservationVisibilityPolicy, type AiObservationInformationPolicy } from "./ai-observation-visibility-policy";
+import { AiAccessGraphAdapter } from "./ai-access-graph.adapter";
 
 type GameObject = Phaser.GameObjects.GameObject;
 
@@ -92,11 +96,13 @@ export class AiObservationPipeline {
   private latestCatalog?: AiCapabilityCatalogV1;
   private lastCommitError: string | null = null;
   private navigationInvalidationListener?: () => void;
+  private readonly accessGraphAdapter: AiAccessGraphAdapter;
 
   constructor(
     private readonly scene: Phaser.Scene,
     private readonly player: ProbableWafflePlayer
   ) {
+    this.accessGraphAdapter = new AiAccessGraphAdapter(scene);
     this.navigationInvalidationListener = () => {
       this.queryInputRevision += 1;
       this.invalidationDebt = accumulateObservationInvalidationDebt(this.invalidationDebt);
@@ -198,7 +204,7 @@ export class AiObservationPipeline {
     const liveActors = (index?.getAllIdActors() ?? [])
       .filter((actor) => this.isEligibleActor(actor))
       .sort(compareByActorId);
-    const projectedActors: AiObservedActorV1[] = [];
+    let projectedActors: AiObservedActorV1[] = [];
     const liveById = new Map<ActorId, GameObject>();
     const catalogEntries = new Map<string, AiCapabilityCatalogEntryV1>();
 
@@ -223,12 +229,24 @@ export class AiObservationPipeline {
 
     this.projectAvailableCatalogEntries(playerNumber, catalogEntries);
 
+    const permittedTopology = this.permittedTopology(projectedActors, liveById);
+    const accessGraph = this.accessGraphAdapter.advanceGraph(tick, this.knowledgeRevision, permittedTopology);
+    projectedActors = projectedActors.map((actor) => {
+      const liveActor = liveById.get(actor.actorId);
+      if (!liveActor) return actor;
+      const nodeId = this.accessGraphAdapter.resolveNodeId(
+        getGameObjectCurrentTile(liveActor),
+        actor.capabilities.flatMap((capability) => capability.domains).filter(uniqueDomain)
+      );
+      return { ...actor, accessNodeId: nodeId ? knownValue(nodeId, tick) : unknownValue("query_pending") };
+    });
+
     const visibleIds = new Set(projectedActors.map((actor) => actor.actorId));
     const rememberedActors = this.projectRememberedContacts(visibleIds, tick);
     const actors = [...projectedActors, ...rememberedActors];
     const accessProducts = this.projectAccessProducts(actors, liveById, tick);
     const effects = this.projectPermittedZones(policy, tick);
-    const map = this.projectMap(actors, liveById, tick);
+    const map = this.projectMap(actors, liveById, tick, accessGraph);
     const resources = Object.values(ResourceType)
       .sort()
       .map((resourceType) => ({
@@ -265,7 +283,7 @@ export class AiObservationPipeline {
 
   private isEligibleActor(actor: GameObject): boolean {
     const health = getActorComponent(actor, HealthComponent);
-    return !health?.killed && !getActorComponent(actor, ContainableComponent)?.isContained();
+    return !health?.killed;
   }
 
   private projectActor(
@@ -285,7 +303,34 @@ export class AiObservationPipeline {
     const statusEffects = getActorComponent(actor, StatusEffectComponent);
     const capabilities = this.projectActorCapabilities(actor.name as ObjectNames, definition, level);
     const logicalPosition = position ? knownValue({ ...position }, tick) : unknownValue("not_observed");
-    const accessNodeId = position ? knownValue(accessNodeFromPosition(position), tick) : unknownValue("not_observed");
+    const accessNode = this.accessGraphAdapter.resolveNodeId(
+      getGameObjectCurrentTile(actor),
+      capabilities.flatMap((capability) => capability.domains).filter(uniqueDomain)
+    );
+    const accessNodeId = accessNode ? knownValue(accessNode, tick) : unknownValue("query_pending");
+    const containable = getActorComponent(actor, ContainableComponent);
+    const container = getActorComponent(actor, ContainerComponent);
+    const containerOwner = containable?.getContainerOwner();
+    const containerOwnerId = owned && containerOwner ? getActorComponent(containerOwner, IdComponent)?.id ?? null : null;
+    const containerState = container && owned
+      ? knownValue(
+          {
+            capacity: container.containerDefinition.capacity,
+            passengerIds: container.getContainedGameObjects()
+              .map((passenger) => getActorComponent(passenger, IdComponent)?.id)
+              .filter((id): id is ActorId => id !== undefined)
+              .sort(),
+            pendingPassengerIds: container.getPendingBoarders()
+              .map((passenger) => getActorComponent(passenger, IdComponent)?.id)
+              .filter((id): id is ActorId => id !== undefined)
+              .sort(),
+            mobileDomains: capabilities.flatMap((capability) => capability.domains).filter(uniqueDomain)
+          },
+          tick
+        )
+      : container
+        ? unknownValue(owned ? "not_supported" : "not_observed")
+        : undefined;
     return {
       actorId,
       objectName: actor.name as ObjectNames,
@@ -341,7 +386,9 @@ export class AiObservationPipeline {
               tick
             )
           : unknownValue(owned ? "not_supported" : "not_observed"),
-      activeEffectIds: statusEffects?.getActiveEffects().map((effect) => `status:${effect.type}`).sort() ?? []
+      activeEffectIds: statusEffects?.getActiveEffects().map((effect) => `status:${effect.type}`).sort() ?? [],
+      containedInActorId: containerOwnerId,
+      ...(containerState ? { containerState } : {})
     };
   }
 
@@ -457,7 +504,7 @@ export class AiObservationPipeline {
           evidenceId: contact.evidenceId as AiObservedActorV1["evidenceId"],
           observedTick: contact.lastSeenTick,
           logicalPosition: position,
-          accessNodeId: contact.position ? knownValue(accessNodeFromPosition(contact.position), contact.lastSeenTick) : unknownValue("not_observed"),
+          accessNodeId: unknownValue("query_pending"),
           effectiveLevel: unknownValue("not_observed"),
           capabilities: [],
           queue: unknownValue("not_observed"),
@@ -499,7 +546,8 @@ export class AiObservationPipeline {
   private projectMap(
     actors: readonly AiObservedActorV1[],
     liveById: ReadonlyMap<ActorId, GameObject>,
-    tick: number
+    tick: number,
+    accessGraph: NonNullable<AiObservationV1["map"]>["accessGraph"]
   ): NonNullable<AiObservationV1["map"]> {
     const tilemap = getSceneService(this.scene, TilemapComponent)?.tilemap;
     const ownedNodes = actors
@@ -534,11 +582,58 @@ export class AiObservationPipeline {
       scoutCoverageAccessNodeIds,
       dynamicObstacleActorIds,
       regionGeneration: {
-        generation: this.requestedGeneration,
-        status: tilemap ? "not_ready" : "service_failed",
-        continuationCursor: this.queryContinuationCursor
-      }
+        generation: accessGraph?.generation ?? this.requestedGeneration,
+        status: accessGraph?.status === "ready" ? "ready" : tilemap ? "not_ready" : "service_failed",
+        continuationCursor: accessGraph?.continuationCursor ?? this.queryContinuationCursor
+      },
+      ...(accessGraph ? { accessGraph } : {})
     };
+  }
+
+  /** Hashes only owned/visible topology actors so hidden movement cannot invalidate the AI graph. */
+  private permittedTopology(
+    actors: readonly AiObservedActorV1[],
+    liveById: ReadonlyMap<ActorId, GameObject>
+  ): { readonly revision: number; readonly blockedTileKeys: ReadonlySet<string>; readonly navigableTileKeys: ReadonlySet<string> } {
+    const tilemap = getSceneService(this.scene, TilemapComponent)?.tilemap;
+    const blockedTileKeys = new Set<string>();
+    const navigableTileKeys = new Set<string>();
+    const input = actors
+      .filter((actor) => actor.visibility !== "last_seen")
+      .flatMap((actor) => {
+        const liveActor = liveById.get(actor.actorId);
+        if (!liveActor) return [];
+        const collider = getActorComponent(liveActor, ColliderComponent)?.colliderDefinition?.enabled === true;
+        const navigableComponent = getActorComponent(liveActor, NavigableComponent);
+        const navigable = navigableComponent !== undefined;
+        if (!collider && !navigable) return [];
+        const tile = getGameObjectCurrentTile(liveActor);
+        if (tilemap) {
+          for (const occupiedTile of getTileCoordsUnderObject(tilemap, liveActor)) {
+            const key = `${occupiedTile.x},${occupiedTile.y}`;
+            if (collider) blockedTileKeys.add(key);
+            if (navigable) navigableTileKeys.add(key);
+          }
+        }
+        const pathSignature = navigableComponent
+          ? (["top", "bottom", "left", "right", "topLeft", "topRight", "bottomLeft", "bottomRight"] as const)
+              .map((direction) => {
+                const port = navigableComponent.getDirectionPort(direction);
+                return `${direction}:${port?.enterHeight ?? "x"}:${port?.exitHeight ?? "x"}`;
+              })
+              .join(",")
+          : "";
+        return tile ? [`${actor.actorId}:${tile.x}:${tile.y}:${collider ? 1 : 0}:${navigable ? 1 : 0}:${pathSignature}`] : [];
+      })
+      .sort()
+      .join("|");
+    let hash = 0x811c9dc5;
+    const source = `${tilemap?.width ?? 0}:${tilemap?.height ?? 0}:${input}`;
+    for (let index = 0; index < source.length; index += 1) {
+      hash ^= source.charCodeAt(index);
+      hash = Math.imul(hash, 0x01000193);
+    }
+    return { revision: hash >>> 0, blockedTileKeys, navigableTileKeys };
   }
 
   private projectThreatSummary(actors: readonly AiObservedActorV1[], tick: number): AiObservationV1["threatSummary"] {
@@ -777,10 +872,6 @@ function unknownValue(reason: "not_observed" | "not_supported" | "query_pending"
 
 function compareByActorId(left: GameObject, right: GameObject): number {
   return (getActorComponent(left, IdComponent)?.id ?? "").localeCompare(getActorComponent(right, IdComponent)?.id ?? "");
-}
-
-function accessNodeFromPosition(position: Vector3Simple): `access:${string}` {
-  return `access:${Math.round(position.x)}:${Math.round(position.y)}:${Math.round(position.z)}`;
 }
 
 function movementDomains(definition: ReturnType<typeof getPwActorDefinition>): AiDomainV1[] {

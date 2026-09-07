@@ -12,6 +12,7 @@ export type AiDecisionReasonCode =
   | "no_idle_workers"
   | "no_legal_research"
   | "non_host"
+  | "path_not_found"
   | "research_started";
 
 export type AiDecisionOutcome = "dispatched" | "failed" | "succeeded";
