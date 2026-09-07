@@ -40,6 +40,7 @@ import { OrderType } from "../../../ai/order-type";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { getActorSystem } from "../../../data/actor-system";
 import { ActionSystem } from "../../systems/action.system";
+import { MovementSystem } from "../../systems/movement.system";
 import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 /**
  * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
@@ -343,7 +344,9 @@ export class ProductionComponent {
 
     const targetTile = this.rallyPoint.getTargetTileVec3();
     if (targetTile) {
-      actionSystem.executeAction(OrderType.Move, undefined, targetTile);
+      const movementSystem = getActorSystem<MovementSystem>(newGameObject, MovementSystem);
+      const formationTarget = movementSystem?.getAirRallyFormationDestination(targetTile) ?? targetTile;
+      actionSystem.executeAction(OrderType.Move, undefined, formationTarget);
     }
   }
 
