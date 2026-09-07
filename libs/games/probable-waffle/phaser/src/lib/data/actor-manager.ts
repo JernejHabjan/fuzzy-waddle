@@ -145,6 +145,8 @@ import GroundChampignons from "../prefabs/outside/crops/ground/champignons/Groun
 import GroundTurnip from "../prefabs/outside/crops/ground/turnip/GroundTurnip";
 import Corpy from "../prefabs/characters/mobs/corpy/Corpy";
 import { ScenarioActorReferenceComponent } from "../campaign/scenario/scenario-actor-reference.component";
+import { TendableComponent } from "../entity/components/tendable/tendable-component";
+import { ConvertibleComponent } from "../entity/components/convertible-component";
 
 import BlockObsidian1 from "../prefabs/outside/nature/block_obsidian/BlockObsidian1";
 import BlockObsidian2 from "../prefabs/outside/nature/block_obsidian/BlockObsidian2";
@@ -641,7 +643,9 @@ export class ActorManager {
       blackboard: getActorComponent(actor, PawnAiController)?.getData(),
       spell: getActorComponent(actor, SpellComponent)?.getData(),
       statusEffects: getActorComponent(actor, StatusEffectComponent)?.getData(),
-      level: getActorComponent(actor, LevelComponent)?.getData()
+      level: getActorComponent(actor, LevelComponent)?.getData(),
+      tendable: getActorComponent(actor, TendableComponent)?.getData(),
+      convertible: getActorComponent(actor, ConvertibleComponent)?.getData()
     } satisfies ActorDefinition;
 
     return actorDefinition;

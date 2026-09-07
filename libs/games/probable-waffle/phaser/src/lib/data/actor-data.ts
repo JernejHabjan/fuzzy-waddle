@@ -49,6 +49,7 @@ import { TendableComponent } from "../entity/components/tendable/tendable-compon
 import { QueueCommandSystem } from "../entity/systems/queue-command.system";
 import { ScenarioActorReferenceComponent } from "../campaign/scenario/scenario-actor-reference.component";
 import { HealthRegenerationComponent } from "../entity/components/combat/components/health-regeneration-component";
+import { ConvertibleComponent } from "../entity/components/convertible-component";
 /**
  * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
  * storage boundaries do not drift into an unconstrained primitive.
@@ -118,6 +119,8 @@ export function applyActorDefinitionToActor(actor: GameObject, actorDefinition?:
   if (actorDefinition.statusEffects)
     getActorComponent(actor, StatusEffectComponent)?.setData(actorDefinition.statusEffects);
   if (actorDefinition.level) getActorComponent(actor, LevelComponent)?.setData(actorDefinition.level);
+  if (actorDefinition.tendable) getActorComponent(actor, TendableComponent)?.setData(actorDefinition.tendable);
+  if (actorDefinition.convertible) getActorComponent(actor, ConvertibleComponent)?.setData(actorDefinition.convertible);
 
   DepthHelper.setActorDepth(actor);
 }
@@ -258,6 +261,14 @@ export function setFullActorDataFromName(
   actorDefinition?: Partial<ActorDefinition>
 ) {
   const actorData = gatherFullActorData(actor);
+  if (actorDefinition?.convertible) {
+    actorData.components.push(
+      new ConvertibleComponent(actor, {
+        detectionRange: actorDefinition.convertible.detectionRange ?? 8,
+        checkInterval: actorDefinition.convertible.checkInterval ?? 500
+      })
+    );
+  }
   setActorData(actor, actorData.components, actorData.systems, actorDefinition);
 }
 

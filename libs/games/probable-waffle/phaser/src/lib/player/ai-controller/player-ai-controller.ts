@@ -1,6 +1,7 @@
 import {
   type AiCommandReconciliationStateData,
   type AIBehaviorTreeStateData,
+  ProbableWaffleAiDifficulty,
   ProbableWafflePlayer
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { PlayerAiBlackboard } from "./player-ai-blackboard";
@@ -17,7 +18,15 @@ import type { Subscription } from "rxjs";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 import { AiCommandReconciliation } from "./ai-command-reconciliation";
-import type { AiAuthorityStateV1, AiCommandOutcomeV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type {
+  AiAuthorityStateV1,
+  AiBrainStateV1,
+  AiCommandOutcomeV1
+} from "@fuzzy-waddle/probable-waffle-gameplay";
+import { createAiBrainStateV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/create-ai-brain-state-v1";
+import { migrateAiBrainState } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/migrate-ai-brain-state";
+import { canonicalizeAiBrainStateV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/canonical-ai-serialization";
+import { createAiProfileConfigV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-profile-defaults";
 
 export class PlayerAiController {
   private static readonly MAX_SCHEDULED_STEPS_PER_RUN = 5;
@@ -34,6 +43,8 @@ export class PlayerAiController {
   private stepInFlight = false;
   private stepQueued = false;
   private readonly commandReconciliation?: AiCommandReconciliation;
+  private brainState?: AiBrainStateV1;
+  private completedDecisionSequence = 0;
   constructor(
     public readonly scene: ProbableWaffleScene,
     public readonly player: ProbableWafflePlayer
@@ -44,6 +55,7 @@ export class PlayerAiController {
       this.commandReconciliation = new AiCommandReconciliation(player.playerNumber, commandBus);
     }
     this.playerAiControllerAgent = new PlayerAiControllerAgent(this.scene, this.player, this.blackboard);
+    this.brainState = this.createInitialBrainState();
     this.behaviourTree = new BehaviourTree(PlayerAiControllerMdsl, this.playerAiControllerAgent);
     // expose telemetry snapshot container in diagnostics if absent
     this.blackboard.diagnostics.telemetry = this.telemetry.snapshot();
@@ -110,6 +122,7 @@ export class PlayerAiController {
           this.telemetry.recordEvent("bt.error", { message });
         }
         this.elapsedTime = Math.max(0, this.elapsedTime - this.stepInterval);
+        this.completedDecisionSequence = Math.min(Number.MAX_SAFE_INTEGER, this.completedDecisionSequence + 1);
         processedSteps++;
         if (processedSteps >= PlayerAiController.MAX_SCHEDULED_STEPS_PER_RUN) {
           this.stepQueued = this.stepQueued || this.elapsedTime >= this.stepInterval;
@@ -148,7 +161,14 @@ export class PlayerAiController {
       telemetry: this.telemetry.snapshot(),
       enabled: this.enabled,
       commandReconciliation: this.commandReconciliation?.getState(),
-      observationMemory: this.playerAiControllerAgent.getObservationMemoryState()
+      observationMemory: this.playerAiControllerAgent.getObservationMemoryState(),
+      brainState: this.brainState ? structuredClone(canonicalizeAiBrainStateV1(this.brainState)) : undefined,
+      controllerCadence: {
+        schemaVersion: 1,
+        elapsedMilliseconds: this.elapsedTime,
+        queuedAfterBoundary: this.stepQueued,
+        completedDecisionSequence: this.completedDecisionSequence
+      }
     };
   }
 
@@ -166,6 +186,27 @@ export class PlayerAiController {
     }
     if (state.observationMemory) {
       this.playerAiControllerAgent.setObservationMemoryState(state.observationMemory);
+    }
+    if (state.brainState) {
+      const context = this.getBrainMigrationContext();
+      if (context) this.brainState = structuredClone(canonicalizeAiBrainStateV1(migrateAiBrainState(state.brainState, context)));
+    } else {
+      const context = this.getBrainMigrationContext();
+      if (context) {
+        this.brainState = structuredClone(
+          canonicalizeAiBrainStateV1(
+            migrateAiBrainState(state, { ...context, legacyOpeningLifecycle: "completed" })
+          )
+        );
+      }
+    }
+    if (state.controllerCadence?.schemaVersion === 1) {
+      const elapsed = state.controllerCadence.elapsedMilliseconds;
+      this.elapsedTime = Number.isFinite(elapsed) && elapsed >= 0 ? Math.min(elapsed, this.stepInterval) : 0;
+      this.stepQueued = state.controllerCadence.queuedAfterBoundary === true;
+      this.completedDecisionSequence = Number.isSafeInteger(state.controllerCadence.completedDecisionSequence)
+        ? Math.max(0, state.controllerCadence.completedDecisionSequence)
+        : 0;
     }
   }
 
@@ -208,5 +249,43 @@ export class PlayerAiController {
       outcomes: this.commandReconciliation.getBrainOutcomes(this.scene.gameInstanceId),
       authority: this.commandReconciliation.getBrainAuthorityState()
     };
+  }
+
+  /** True only after asynchronous observation and behavior work has crossed its save-safe boundary. */
+  isDecisionBoundarySettled(): boolean {
+    return !this.stepInFlight && !this.stepQueued;
+  }
+
+  /** Canonical save-owned pure state prepared for Stage 6 live adoption and Stage 5 replay. */
+  getBrainState(): AiBrainStateV1 | undefined {
+    return this.brainState ? structuredClone(canonicalizeAiBrainStateV1(this.brainState)) : undefined;
+  }
+
+  /** Replaces state only through the checked V1 migration boundary. */
+  setBrainState(state: unknown): void {
+    const context = this.getBrainMigrationContext();
+    if (!context) throw new Error("ai_brain_identity_unavailable");
+    this.brainState = structuredClone(canonicalizeAiBrainStateV1(migrateAiBrainState(state, context)));
+  }
+
+  private createInitialBrainState(): AiBrainStateV1 | undefined {
+    const context = this.getBrainMigrationContext();
+    return context ? createAiBrainStateV1(context) : undefined;
+  }
+
+  private getBrainMigrationContext() {
+    const playerNumber = this.player.playerNumber;
+    const definition = this.player.playerController.data.playerDefinition;
+    const faction = definition?.factionType;
+    if (playerNumber === undefined || faction === undefined) return undefined;
+    const difficulty = definition.difficulty ?? ProbableWaffleAiDifficulty.Medium;
+    return {
+      playerNumber,
+      faction,
+      profile: createAiProfileConfigV1(difficulty),
+      tick: getSceneService(this.scene, SimulationTickService)?.currentTick ?? 0,
+      archetypeId: "opening:default",
+      satisfiedOpeningStepIds: []
+    } as const;
   }
 }

@@ -6,6 +6,8 @@ import { createAiBrainStateV1, type CreateAiBrainStateV1Input } from "./create-a
 /** Explicit context derived from the current world when upgrading a legacy save. */
 export interface AiLegacyMigrationContextV1 extends CreateAiBrainStateV1Input {
   readonly satisfiedOpeningStepIds: readonly AiPlanStepId[];
+  /** Existing runtime saves have already crossed their legacy opening boundary. */
+  readonly legacyOpeningLifecycle?: "active" | "completed";
 }
 
 /** Typed migration failure suitable for save/load diagnostics. */
@@ -55,8 +57,14 @@ export function migrateAiBrainState(input: unknown, context: AiLegacyMigrationCo
     throw new AiBrainMigrationError("malformed_state", "legacy_shape");
   }
 
-  return createAiBrainStateV1({
+  const migrated = createAiBrainStateV1({
     ...context,
     completedOpeningStepIds: context.satisfiedOpeningStepIds
   });
+  if (context.legacyOpeningLifecycle !== "completed") return migrated;
+  return {
+    ...migrated,
+    strategy: { ...migrated.strategy, stance: "stabilize", goalId: null },
+    opening: { ...migrated.opening, plan: { ...migrated.opening.plan, lifecycle: "completed" } }
+  };
 }

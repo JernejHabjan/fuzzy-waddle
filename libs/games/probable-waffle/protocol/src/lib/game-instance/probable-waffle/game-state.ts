@@ -28,6 +28,7 @@ import type {
   ScenarioActorReferenceData,
   SpellComponentData,
   StatusEffectComponentData,
+  TendableComponentData,
   VisionComponentData,
   NavigableComponentData
 } from "./component-data";
@@ -357,4 +358,6 @@ export interface ActorDefinition {
    * producers, validators, and consumers; do not replace it with a broader inferred shape.
    */
   level?: Partial<LevelComponentData>;
+  /** Current crop growth and assigned tender identities. */
+  tendable?: Partial<TendableComponentData>;
 }

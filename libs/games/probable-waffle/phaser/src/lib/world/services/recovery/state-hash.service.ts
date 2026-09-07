@@ -31,6 +31,10 @@ import {
   serializeCampaignMissionRuntimeStateFamilies
 } from "@fuzzy-waddle/probable-waffle-campaign";
 import { RandomService } from "../random.service";
+import {
+  digestAuthoritativeStateProjectionV1,
+  type AuthoritativeStateProjectionV1
+} from "./authoritative-state-projection";
 
 /**
  * Defines the structured hash snapshot contract for this module. Its declared surface makes hash, diagnostics
@@ -239,6 +243,31 @@ export class StateHashService {
    * Uses integer positions (Math.round) to avoid float divergence from display rounding.
    */
   private computeHashSnapshot(scene: Phaser.Scene, includeDiagnostics: boolean): HashSnapshot {
+    const projection = this.captureAuthoritativeProjection(scene);
+    const actorDigests = includeDiagnostics
+      ? Object.fromEntries(projection.actors.map((actor) => [actor.actorId, actor.digest]))
+      : undefined;
+    return {
+      hash: digestAuthoritativeStateProjectionV1(projection),
+      diagnostics: includeDiagnostics
+        ? {
+            actorDigests: actorDigests ?? {},
+            playerDigests: projection.players,
+            researchDigest: projection.research.join("|"),
+            campaignMissionDigest: projection.campaignMission,
+            campaignMissionFamilyDigests: projection.campaignMissionFamilies,
+            randomDigest: projection.random
+          }
+        : undefined
+    };
+  }
+
+  /**
+   * Captures the reusable authoritative projection at the caller's completed simulation boundary.
+   * Multiplayer and Stage 5 scenario reports therefore compare the same world facts while using
+   * distinct digest algorithms and retaining normalized field diagnostics.
+   */
+  captureAuthoritativeProjection(scene: Phaser.Scene): AuthoritativeStateProjectionV1 {
     const campaignMission = (scene as ProbableWaffleScene).baseGameData.gameInstance.gameState?.data.campaignMission;
     const campaignMissionDigest = campaignMission ? djb2(serializeCampaignMissionRuntimeState(campaignMission)) : "";
     const campaignMissionFamilyDigests = campaignMission
@@ -256,24 +285,18 @@ export class StateHashService {
     const actorIndex = getSceneService(scene, ActorIndexSystem);
     if (!actorIndex) {
       return {
-        hash: djb2(`###${campaignMissionDigest}#${randomDigest}`),
-        diagnostics: includeDiagnostics
-          ? {
-              actorDigests: {},
-              playerDigests: [],
-              researchDigest: "",
-              campaignMissionDigest,
-              campaignMissionFamilyDigests,
-              randomDigest
-            }
-          : undefined
+        schemaVersion: 1,
+        actors: [],
+        players: [],
+        research: [],
+        campaignMission: campaignMissionDigest,
+        campaignMissionFamilies: campaignMissionFamilyDigests,
+        random: randomDigest,
+        systems: this.serializeHarnessSystemState(scene)
       };
     }
 
-    const actorDigests: ProbableWaffleStateHashDiagnostics["actorDigests"] | undefined = includeDiagnostics
-      ? {}
-      : undefined;
-    const entries = actorIndex
+    const actors = actorIndex
       .getAllIdActors()
       .filter((go) => !this.shouldIgnoreForStateHash(go))
       .map((go) => {
@@ -295,30 +318,47 @@ export class StateHashService {
           ? this.stableSerialize({ roleId: actor.scenario.roleId, tags: actor.scenario.tags })
           : "";
         const actorDigest = `${id}:${go.name}:${Math.round(health)}:${Math.round(armour)}:${lx}:${ly}:${lz}:${owner}:${queueState}:${economyState}:${combatState}:${orderState}:${scenarioState}`;
-        if (actorDigests) {
-          actorDigests[id] = actorDigest;
-        }
-        return actorDigest;
+        const aiState = {
+          gatherer: actor.gatherer ?? null,
+          container: actor.container ?? null,
+          production: actor.production ?? null,
+          research: actor.research ?? null,
+          spell: actor.spell ?? null,
+          statusEffects: actor.statusEffects ?? null,
+          tendable: actor.tendable ?? null,
+          convertible: actor.convertible ?? null
+        };
+        return { actorId: id, digest: actorDigest, aiState };
       });
 
     // Sort by the ID prefix (first segment before ':') for deterministic ordering.
-    entries.sort();
+    actors.sort((left, right) => left.digest.localeCompare(right.digest));
     const playerStateEntries = this.serializePlayerStates(scene);
     const researchEntries = this.serializeResearchState(scene);
     return {
-      hash: djb2(
-        `${entries.join("|")}#${playerStateEntries.join("|")}#${researchEntries.join("|")}#${campaignMissionDigest}#${randomDigest}`
-      ),
-      diagnostics: includeDiagnostics
-        ? {
-            actorDigests: actorDigests ?? {},
-            playerDigests: playerStateEntries,
-            researchDigest: researchEntries.join("|"),
-            campaignMissionDigest,
-            campaignMissionFamilyDigests,
-            randomDigest
-          }
-        : undefined
+      schemaVersion: 1,
+      actors,
+      players: playerStateEntries,
+      research: researchEntries,
+      campaignMission: campaignMissionDigest,
+      campaignMissionFamilies: campaignMissionFamilyDigests,
+      random: randomDigest,
+      systems: this.serializeHarnessSystemState(scene)
+    };
+  }
+
+  /** Additional save-owned continuations used by AI harness reports without changing the multiplayer hash contract. */
+  private serializeHarnessSystemState(scene: Phaser.Scene): Readonly<Record<string, string>> {
+    const gameState = (scene as ProbableWaffleScene).baseGameData.gameInstance.gameState?.data;
+    const aiControllers = (scene as ProbableWaffleScene).players
+      .map((player) => [String(player.playerNumber ?? -1), player.playerState.data.aiBehaviorTreeState] as const)
+      .filter((entry) => entry[1] !== undefined)
+      .sort(([left], [right]) => left.localeCompare(right));
+    return {
+      aiControllers: this.stableSerialize(Object.fromEntries(aiControllers) as StableSerializable),
+      aoeZones: this.stableSerialize((gameState?.aoeZones ?? []) as StableSerializable),
+      commandAuthority: this.stableSerialize((gameState?.commandAuthority ?? null) as StableSerializable),
+      summonExpiries: this.stableSerialize((gameState?.summonExpiries ?? []) as StableSerializable)
     };
   }
 

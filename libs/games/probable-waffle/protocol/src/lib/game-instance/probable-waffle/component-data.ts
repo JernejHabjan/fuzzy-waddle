@@ -92,6 +92,18 @@ export interface GathererComponentData {
    * defined by {@link GathererComponentData} and must remain consistent across producers and consumers.
    */
   remainingCooldown?: number;
+  /** Stable source assignment restored after actors are indexed. */
+  currentResourceSourceId?: ActorId | null;
+  /** Last useful source retained for deterministic gather-loop continuation. */
+  previousResourceSourceId?: ActorId | null;
+  /** Resource family associated with the previous source. */
+  previousResourceType?: ResourceType | null;
+}
+
+/** Save-owned crop growth and tender assignment state. */
+export interface TendableComponentData {
+  readonly growthPercent: number;
+  readonly tenderIds: readonly ActorId[];
 }
 
 /**
@@ -669,6 +681,7 @@ export interface PlayerAiBlackboardData {
  * Defines the structured aibehavior tree state data contract for this module. Its declared surface makes
  * blackboard, telemetry, enabled explicit to every consumer. Use this shared shape rather than an ad-hoc
  * object so adapters, persistence, and callers remain compatible.
+ * Versioned command, observation, pure-brain and cadence extensions below complete the save boundary.
  */
 export interface AIBehaviorTreeStateData {
   /**
@@ -696,6 +709,21 @@ export interface AIBehaviorTreeStateData {
    * facts that the AI was permitted to observe, never a live-world reference.
    */
   observationMemory?: AiObservationMemoryStateData;
+  /**
+   * Versioned pure-brain state. Protocol keeps this structurally unknown to avoid
+   * depending on gameplay; the owning gameplay migration validates it before use.
+   */
+  brainState?: unknown;
+  /** Restartable cadence captured at the last completed controller boundary. */
+  controllerCadence?: AiControllerCadenceStateData;
+}
+
+/** Save-safe legacy/pure controller scheduling frontier. */
+export interface AiControllerCadenceStateData {
+  readonly schemaVersion: 1;
+  readonly elapsedMilliseconds: number;
+  readonly queuedAfterBoundary: boolean;
+  readonly completedDecisionSequence: number;
 }
 
 /**

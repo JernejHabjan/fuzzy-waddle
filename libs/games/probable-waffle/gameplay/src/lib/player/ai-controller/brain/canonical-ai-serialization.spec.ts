@@ -81,6 +81,16 @@ describe("Stage 2 canonical state and migration", () => {
     expect("blackboard" in migrated).toBe(false);
   });
 
+  it("marks an already-running legacy save past opening so restore cannot replay it", () => {
+    const migrated = migrateAiBrainState(
+      { blackboard: {}, enabled: true },
+      { ...migrationContext, legacyOpeningLifecycle: "completed" }
+    );
+    expect(migrated.strategy.stance).toBe("stabilize");
+    expect(migrated.strategy.goalId).toBeNull();
+    expect(migrated.opening.plan.lifecycle).toBe("completed");
+  });
+
   it("canonicalizes equivalent state sets without changing ordered RNG state", () => {
     const state = migrateAiBrainState({ blackboard: {} }, migrationContext);
     const permuted = {
