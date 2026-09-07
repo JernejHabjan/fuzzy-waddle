@@ -52,7 +52,23 @@ export function canonicalizeAiObservationV1(observation: AiObservationV1): AiObs
         targetActorIds: [...goal.targetActorIds].sort(),
         targetAccessNodeIds: [...goal.targetAccessNodeIds].sort()
       }))
-      .sort((left, right) => left.id.localeCompare(right.id))
+      .sort((left, right) => left.id.localeCompare(right.id)),
+    threatSummary: {
+      ...observation.threatSummary,
+      visibleEnemyActorIds: [...observation.threatSummary.visibleEnemyActorIds].sort(),
+      rememberedEnemyActorIds: [...observation.threatSummary.rememberedEnemyActorIds].sort(),
+      observedCapabilityFamilies: [...observation.threatSummary.observedCapabilityFamilies].sort()
+    },
+    ...(observation.map
+      ? {
+          map: {
+            ...observation.map,
+            frontierAccessNodeIds: [...observation.map.frontierAccessNodeIds].sort(),
+            scoutCoverageAccessNodeIds: [...observation.map.scoutCoverageAccessNodeIds].sort(),
+            dynamicObstacleActorIds: [...observation.map.dynamicObstacleActorIds].sort()
+          }
+        }
+      : {})
   };
 }
 

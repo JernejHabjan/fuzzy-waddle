@@ -48,6 +48,12 @@ export function createStage2Observation(): AiObservationV1 {
     ],
     accessProducts: [],
     effects: [],
-    modeGoals: []
+    modeGoals: [],
+    threatSummary: {
+      observedTick: 20,
+      visibleEnemyActorIds: [],
+      rememberedEnemyActorIds: [],
+      observedCapabilityFamilies: []
+    }
   };
 }

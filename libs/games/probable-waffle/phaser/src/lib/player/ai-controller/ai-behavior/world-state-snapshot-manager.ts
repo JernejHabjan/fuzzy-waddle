@@ -20,6 +20,7 @@ import { ContainableComponent } from "../../../entity/components/building/contai
 import { getGameObjectLogicalTransform, isSceneActive } from "../../../data/game-object-helper";
 import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
+import { AiObservationVisibilityPolicy } from "../observation/ai-observation-visibility-policy";
 /**
  * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
  * storage boundaries do not drift into an unconstrained primitive.
@@ -35,10 +36,9 @@ export class WorldStateSnapshotManager {
     private readonly blackboard: PlayerAiBlackboard
   ) {}
 
-  update(now: number) {
+  async update(now: number): Promise<void> {
     if (now - this.lastOwnedRefreshAt < AI_CONFIG.ownedRefreshIntervalMs) return;
-    // noinspection JSIgnoredPromiseFromCall
-    this.refreshWorldState(now);
+    await this.refreshWorldState(now);
     this.lastOwnedRefreshAt = now;
   }
 
@@ -182,6 +182,12 @@ export class WorldStateSnapshotManager {
     this.blackboard.enemyIntel = enemyIntel;
     this.blackboard.visibleEnemies = enemyCandidates;
     this.blackboard.enemyMilitaryStrength = totalEnemyStrength;
+    // A lost contact must not remain a live attack target until the targeter's
+    // independent scoring cooldown happens to elapse.
+    if (!this.blackboard.primaryTarget || !enemyCandidates.includes(this.blackboard.primaryTarget)) {
+      this.blackboard.primaryTarget = null;
+      this.blackboard.enemyBase = null;
+    }
 
     const baseCenter = this.blackboard.baseCenterTile;
     if (baseCenter) {
@@ -241,6 +247,7 @@ export class WorldStateSnapshotManager {
     index: ActorIndexSystem,
     units: GameObject[]
   ): Promise<GameObject[]> {
+    const visibilityPolicy = new AiObservationVisibilityPolicy(this.scene, this.player.playerNumber!);
     const ownedSet = new Set(owned);
     const allActors = index.getAllIdActors();
     const baseCenter = this.blackboard.baseCenterTile;
@@ -265,7 +272,9 @@ export class WorldStateSnapshotManager {
       return candidates.filter((candidate) => {
         const position = getGameObjectLogicalTransform(candidate);
         return (
-          position !== null && isCampaignAiTargetVisible(position, visionSources, baseCenter ?? undefined, visionRadius)
+          visibilityPolicy.relationTo(candidate) === "enemy" &&
+          position !== null &&
+          isCampaignAiTargetVisible(position, visionSources, baseCenter ?? undefined, visionRadius)
         );
       });
     }
@@ -295,7 +304,11 @@ export class WorldStateSnapshotManager {
     // const visible = await Promise.all(visibilityChecks);
     // return visible.filter((v): v is GameObject => v !== null);
 
-    return candidates;
+    // The disabled prototype above is historical only; the active fallback now
+    // applies the shared player-scoped policy before a live target can enter AI state.
+    return candidates.filter(
+      (candidate) => visibilityPolicy.relationTo(candidate) === "enemy" && visibilityPolicy.mayObserve(candidate)
+    );
   }
 }
 

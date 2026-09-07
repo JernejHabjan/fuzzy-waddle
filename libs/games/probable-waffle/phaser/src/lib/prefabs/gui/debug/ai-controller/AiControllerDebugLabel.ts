@@ -439,8 +439,32 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
   private getIntelLines(controller: PlayerAiController, now: number): string[] {
     const bb = controller.blackboard;
     const lines: string[] = [];
+    const observation = controller.getCommittedObservation();
+    const observationDebug = controller.getObservationDebugSnapshot();
 
     lines.push(`=== ENEMY INTEL & SCOUTING ===`);
+
+    lines.push(`--- Fair Observation ---`);
+    lines.push(`Policy: ${observationDebug.policy}`);
+    lines.push(
+      `Generation: ${observationDebug.committedGeneration}/${observationDebug.requestedGeneration} at tick ${observationDebug.committedTick ?? "pending"}; age ${observationDebug.observationAgeTicks ?? "unknown"}`
+    );
+    lines.push(`Visible / remembered: ${observationDebug.visibleContactCount} / ${observationDebug.rememberedContactCount}`);
+    lines.push(`Unknown facts: ${observationDebug.unknownFactCount}`);
+    lines.push(`Access revision / cursor: ${observationDebug.queryInputRevision} / ${observationDebug.queryContinuationCursor}`);
+    lines.push(`Invalidation debt: ${observationDebug.invalidationDebt}`);
+    if (observationDebug.lastCommitError) lines.push(`Observation error: ${observationDebug.lastCommitError}`);
+    if (observation) {
+      const accessStates = observation.accessProducts.reduce<Record<string, number>>((counts, product) => {
+        counts[product.status] = (counts[product.status] ?? 0) + 1;
+        return counts;
+      }, {});
+      lines.push(`Access products: ${Object.entries(accessStates).map(([status, count]) => `${status}:${count}`).join(", ") || "none"}`);
+      lines.push(
+        `Threat evidence: visible ${observation.threatSummary.visibleEnemyActorIds.length}, remembered ${observation.threatSummary.rememberedEnemyActorIds.length}; ${observation.threatSummary.observedCapabilityFamilies.join(", ") || "none"}`
+      );
+      lines.push(`Scout coverage sources: ${observation.map?.scoutCoverageAccessNodeIds.length ?? "unknown"}`);
+    }
 
     lines.push(`--- Map Exploration ---`);
     lines.push(`Fully Explored: ${bb.mapFullyExplored ? "Yes" : "No"}`);

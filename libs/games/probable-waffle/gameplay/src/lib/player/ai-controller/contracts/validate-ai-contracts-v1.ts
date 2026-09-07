@@ -126,6 +126,9 @@ export function assertAiObservationV1(observation: AiObservationV1): void {
     observation.resources.map((resource) => resource.resourceType),
     "observation.resourceType"
   );
+  assertAiNonNegativeInteger(observation.threatSummary.observedTick, "threatSummary.observedTick");
+  assertUnique([...observation.threatSummary.visibleEnemyActorIds], "threatSummary.visibleEnemyActorIds");
+  assertUnique([...observation.threatSummary.rememberedEnemyActorIds], "threatSummary.rememberedEnemyActorIds");
   for (const resource of observation.resources) {
     assertAiNonNegativeFinite(resource.stockpile, `resources.${resource.resourceType}.stockpile`);
     assertAiNonNegativeFinite(resource.reservedUnspent, `resources.${resource.resourceType}.reservedUnspent`);
@@ -146,6 +149,16 @@ export function assertAiObservationV1(observation: AiObservationV1): void {
       if (actor.queue.value.occupied > actor.queue.value.capacity) {
         throw new Error(`invalid_ai_queue_capacity:${actor.actorId}`);
       }
+    }
+  }
+  if (observation.map) {
+    assertAiNonNegativeInteger(observation.map.staticRevision, "map.staticRevision");
+    assertAiNonNegativeInteger(observation.map.regionGeneration.generation, "map.regionGeneration.generation");
+    assertAiNonNegativeInteger(observation.map.regionGeneration.continuationCursor, "map.regionGeneration.continuationCursor");
+    assertUnique([...observation.map.scoutCoverageAccessNodeIds], "map.scoutCoverageAccessNodeIds");
+    if (observation.map.bounds.status === "known") {
+      assertAiNonNegativeInteger(observation.map.bounds.value.width, "map.bounds.width");
+      assertAiNonNegativeInteger(observation.map.bounds.value.height, "map.bounds.height");
     }
   }
 }

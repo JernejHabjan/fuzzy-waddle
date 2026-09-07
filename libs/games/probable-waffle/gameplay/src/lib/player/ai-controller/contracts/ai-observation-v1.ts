@@ -96,6 +96,32 @@ export interface AiObservedModeGoalV1 {
 }
 
 /**
+ * Player-permitted map inputs. Dynamic obstacles only appear after the observing
+ * player could see them; expensive region work stays separately statused.
+ */
+export interface AiObservedMapV1 {
+  readonly bounds: AiKnownValueV1<{ readonly width: number; readonly height: number }>;
+  readonly staticRevision: number;
+  readonly frontierAccessNodeIds: readonly AiAccessNodeId[];
+  /** Centers of owned vision sources; evidence rather than hidden fog state. */
+  readonly scoutCoverageAccessNodeIds: readonly AiAccessNodeId[];
+  readonly dynamicObstacleActorIds: readonly ActorId[];
+  readonly regionGeneration: {
+    readonly generation: number;
+    readonly status: "ready" | "not_ready" | "unknown" | "blocked" | "service_failed";
+    readonly continuationCursor: number;
+  };
+}
+
+/** Canonical permitted threat evidence, isolated from the mutable actor index. */
+export interface AiObservedThreatSummaryV1 {
+  readonly observedTick: AiSimulationTick;
+  readonly visibleEnemyActorIds: readonly ActorId[];
+  readonly rememberedEnemyActorIds: readonly ActorId[];
+  readonly observedCapabilityFamilies: readonly string[];
+}
+
+/**
  * Immutable pure observation committed at one simulation tick. Arrays with set semantics are
  * canonicalized before the brain sees them; optional expensive access products may remain pending.
  */
@@ -110,4 +136,7 @@ export interface AiObservationV1 {
   readonly accessProducts: readonly AiObservedAccessProductV1[];
   readonly effects: readonly AiObservedEffectV1[];
   readonly modeGoals: readonly AiObservedModeGoalV1[];
+  readonly threatSummary: AiObservedThreatSummaryV1;
+  /** Stage 4 map projection; absent only for pre-Stage-4 save compatibility. */
+  readonly map?: AiObservedMapV1;
 }

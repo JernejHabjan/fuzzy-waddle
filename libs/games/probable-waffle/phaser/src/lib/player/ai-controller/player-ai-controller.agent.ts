@@ -47,6 +47,8 @@ import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/compo
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { AiDecisionTrace, type AiDecisionReasonCode, type AiDecisionTraceSnapshot } from "./ai-decision-trace";
 import { isEnemyPlayerWeak } from "./ai-static-decisions";
+import { AiObservationPipeline } from "./observation/ai-observation-pipeline";
+import { SimulationTickService } from "../../world/services/simulation-tick.service";
 /**
  * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
  * storage boundaries do not drift into an unconstrained primitive.
@@ -71,6 +73,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   public adaptiveThresholds: AdaptiveThresholdManager;
   private economyManager: EconomyManager;
   private worldStateSnapshotManager: WorldStateSnapshotManager;
+  private readonly observationPipeline: AiObservationPipeline;
 
   private combatMicro: CombatMicroManager;
   private scoutingManager: ScoutingManager;
@@ -124,6 +127,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     this.techManager = new TechProgressManager(this.blackboard, player.playerNumber!, this.logDebugInfo.bind(this));
     this.economyManager = new EconomyManager(this.blackboard);
     this.worldStateSnapshotManager = new WorldStateSnapshotManager(this.scene, this.player, this.blackboard);
+    this.observationPipeline = new AiObservationPipeline(this.scene, this.player);
     this.combatMicro = new CombatMicroManager(this.scene, this.blackboard, this.logDebugInfo.bind(this));
     this.scoutingManager = new ScoutingManager(this.scene, this.blackboard, this.logDebugInfo.bind(this));
     this.targetingManager = new TargetingManager(this.scene, this.blackboard);
@@ -158,8 +162,35 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     await this.updateManagers(now);
   }
 
+  /** Returns the last atomically committed fair observation for the future pure-brain adapter. */
+  getCommittedObservation() {
+    return this.observationPipeline.getObservation();
+  }
+
+  /** Returns the runtime-derived capability catalog paired with the committed observation generation. */
+  getCommittedCapabilityCatalog() {
+    return this.observationPipeline.getCapabilityCatalog();
+  }
+
+  /** Saves only player-permitted memory and bounded query cursors, never live actors. */
+  getObservationMemoryState() {
+    return this.observationPipeline.getState();
+  }
+
+  /** Restores fair memory before the next observation rebuilds current live references. */
+  setObservationMemoryState(state: Parameters<AiObservationPipeline["setState"]>[0]): void {
+    this.observationPipeline.setState(state);
+  }
+
+  /** Supplies the debug panel with already committed observation metadata only. */
+  getObservationDebugSnapshot() {
+    return this.observationPipeline.getDebugSnapshot();
+  }
+
   private async updateManagers(now: number): Promise<void> {
-    this.worldStateSnapshotManager.update(now);
+    const tick = getSceneService(this.scene, SimulationTickService)?.currentTick ?? Math.max(0, Math.floor(now / 50));
+    await this.observationPipeline.refresh(tick);
+    await this.worldStateSnapshotManager.update(now);
     this.economyManager.update(now);
     // Update scouting vision sampling
     this.scoutingManager.updateVisionSampling(now);

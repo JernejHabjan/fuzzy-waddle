@@ -1,4 +1,4 @@
-import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
+import type { PlayerNumber, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { ResourceType } from "../../probable-waffle/resource-type-definition";
 import { ObjectNames } from "./object-names";
 import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
@@ -691,6 +691,42 @@ export interface AIBehaviorTreeStateData {
    * This survives save/load so an uncertain command is reconciled before retry.
    */
   commandReconciliation?: AiCommandReconciliationStateData;
+  /**
+   * Player-scoped observation memory retained by the host AI. It contains only
+   * facts that the AI was permitted to observe, never a live-world reference.
+   */
+  observationMemory?: AiObservationMemoryStateData;
+}
+
+/**
+ * Serializable last-seen contact. A lost contact deliberately has no live
+ * target handle; consumers may reason about the remembered position only.
+ */
+export interface AiObservationRememberedContactData {
+  readonly actorId: ActorId;
+  readonly objectName: ObjectNames;
+  readonly owner: PlayerNumber | null;
+  readonly relation: "self" | "ally" | "neutral" | "enemy";
+  readonly evidenceId: string;
+  readonly lastSeenTick: number;
+  readonly confidencePermille: number;
+  readonly position: Vector3Simple | null;
+}
+
+/**
+ * Saved cursor and evidence state for the Stage 4 fair-observation pipeline.
+ * Query cursors prevent a navigation invalidation burst from restarting all
+ * optional work or changing the next committed observation.
+ */
+export interface AiObservationMemoryStateData {
+  readonly schemaVersion: 1;
+  readonly generation: number;
+  readonly committedTick: number;
+  readonly knowledgeRevision: number;
+  readonly queryInputRevision: number;
+  readonly queryContinuationCursor: number;
+  readonly invalidationDebt: number;
+  readonly contacts: readonly AiObservationRememberedContactData[];
 }
 
 /** Serializable H3 authority state owned by one AI player controller. */

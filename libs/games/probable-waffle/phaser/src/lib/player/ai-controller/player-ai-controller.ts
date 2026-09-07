@@ -147,7 +147,8 @@ export class PlayerAiController {
       blackboard: this.blackboard.getData(),
       telemetry: this.telemetry.snapshot(),
       enabled: this.enabled,
-      commandReconciliation: this.commandReconciliation?.getState()
+      commandReconciliation: this.commandReconciliation?.getState(),
+      observationMemory: this.playerAiControllerAgent.getObservationMemoryState()
     };
   }
 
@@ -162,6 +163,9 @@ export class PlayerAiController {
     if (state.commandReconciliation) {
       const tick = getSceneService(this.scene, SimulationTickService)?.currentTick ?? 0;
       this.commandReconciliation?.setState(state.commandReconciliation, tick);
+    }
+    if (state.observationMemory) {
+      this.playerAiControllerAgent.setObservationMemoryState(state.observationMemory);
     }
   }
 
@@ -178,6 +182,21 @@ export class PlayerAiController {
 
   getCommandReconciliationSnapshot(): AiCommandReconciliationStateData | undefined {
     return this.commandReconciliation?.getState();
+  }
+
+  /** Stage 4 fair observation consumed by the later pure brain and current read-only debug UI. */
+  getCommittedObservation() {
+    return this.playerAiControllerAgent.getCommittedObservation();
+  }
+
+  /** Runtime-derived, generation-paired capability catalog. */
+  getCommittedCapabilityCatalog() {
+    return this.playerAiControllerAgent.getCommittedCapabilityCatalog();
+  }
+
+  /** Read-only metadata; panel callers never query the live world for hidden information. */
+  getObservationDebugSnapshot() {
+    return this.playerAiControllerAgent.getObservationDebugSnapshot();
   }
 
   /** Read-only Stage 3 adapter consumed when the pure brain becomes live in Stage 6. */
