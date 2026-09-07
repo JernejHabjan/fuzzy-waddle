@@ -113,6 +113,17 @@ export function projectAiDebugSnapshot(
       .map(([resourceType, amount]) => ({ resourceType, amount }))
       .sort((left, right) => left.resourceType.localeCompare(right.resourceType))
   }));
+  const recovery = state.recovery.records.slice(0, 32).map((entry) => ({
+    recoveryKey: entry.recoveryKey,
+    domain: entry.domain,
+    cause: entry.cause,
+    attempt: entry.attempt,
+    state: entry.state,
+    nextRetryTick: entry.nextRetryTick,
+    phaseDeadlineTick: entry.phaseDeadline.dueTick,
+    alternate: entry.alternate,
+    releasedClaimCount: entry.releasedClaimIds.length
+  }));
 
   return {
     schemaVersion: 1,
@@ -140,6 +151,7 @@ export function projectAiDebugSnapshot(
     skirmish,
     bases,
     fortifications,
+    recovery,
     progressHealth:
       state.authority.health === "technical_fault"
         ? "technical_fault"
@@ -196,7 +208,7 @@ export function projectAiDebugSnapshot(
         ownerStage: 11,
         reason: [...bases.map((base) => `${base.baseId}:${base.lifecycle}`), ...fortifications.map((plan) => `${plan.planId}:${plan.lifecycle}`)].join(",") || "main_structure_not_observed"
       },
-      decisionsRecovery: { status: "ready", ownerStage: 2, reason: null },
+      decisionsRecovery: { status: "ready", ownerStage: 12, reason: recovery[0] ? `${recovery[0].domain}:${recovery[0].state}` : "no_active_recovery" },
       runtimeLimits: later(6)
     }
   };

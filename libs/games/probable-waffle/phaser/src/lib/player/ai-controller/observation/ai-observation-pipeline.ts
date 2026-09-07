@@ -303,6 +303,7 @@ export class AiObservationPipeline {
     const queue = getActorComponent(actor, QueueComponent);
     const source = getActorComponent(actor, ResourceSourceComponent);
     const drain = getActorComponent(actor, ResourceDrainComponent);
+    const health = getActorComponent(actor, HealthComponent);
     const statusEffects = getActorComponent(actor, StatusEffectComponent);
     const constructionSite = getActorComponent(actor, ConstructionSiteComponent);
     const capabilities = this.projectActorCapabilities(actor.name as ObjectNames, definition, level);
@@ -367,6 +368,9 @@ export class AiObservationPipeline {
       housingCapacity: definition?.components?.housing?.housingCapacity === undefined
         ? unknownValue("not_supported")
         : knownValue(definition.components.housing.housingCapacity, tick),
+      healthPermille: health && (owned || visibility === "visible")
+        ? knownValue(Math.max(0, Math.min(1000, Math.floor((health.healthComponentData.health / Math.max(1, health.healthDefinition.maxHealth)) * 1000))), tick)
+        : unknownValue(owned ? "not_supported" : "not_observed"),
       resourceState: source
         ? knownValue(
             {

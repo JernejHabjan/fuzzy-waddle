@@ -121,6 +121,18 @@ export interface AiDebugSnapshotV1 {
     readonly reachableDefenderPosts: number;
     readonly budgetRemaining: readonly { readonly resourceType: string; readonly amount: number }[];
   }[];
+  /** Saved Stage-12 recovery ladder facts; no panel may re-evaluate a live blocker. */
+  readonly recovery: readonly {
+    readonly recoveryKey: string;
+    readonly domain: string;
+    readonly cause: string;
+    readonly attempt: number;
+    readonly state: string;
+    readonly nextRetryTick: AiSimulationTick;
+    readonly phaseDeadlineTick: AiSimulationTick;
+    readonly alternate: string | null;
+    readonly releasedClaimCount: number;
+  }[];
   readonly progressHealth:
     | "healthy"
     | "waiting"

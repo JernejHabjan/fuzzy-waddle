@@ -158,6 +158,7 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
           break;
         case "logistics":
           lines.push(...this.getLogisticsLines(controller, now));
+          lines.push(...this.getRecoveryLines(controller));
           break;
         case "intel":
           lines.push(...this.getIntelLines(controller, now));
@@ -235,6 +236,18 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
       }
     }
     this.renderFortificationOverlay(fortifications);
+    return lines;
+  }
+
+  /** Stage-12 facts are read from the committed snapshot, so inspecting recovery cannot advance it. */
+  private getRecoveryLines(controller: PlayerAiController): string[] {
+    const recovery = controller.getBrainDebugSnapshot()?.recovery ?? [];
+    if (!recovery.length) return ["", "=== RECOVERY ===", "No active causal recovery episodes"];
+    const lines = ["", "=== RECOVERY ==="];
+    for (const entry of recovery) {
+      lines.push(`${entry.domain}:${entry.cause} — ${entry.state} #${entry.attempt}`);
+      lines.push(`  retry ${entry.nextRetryTick}, deadline ${entry.phaseDeadlineTick}, alternate ${entry.alternate ?? "none"}, released ${entry.releasedClaimCount}`);
+    }
     return lines;
   }
 

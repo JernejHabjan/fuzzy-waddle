@@ -61,6 +61,8 @@ export interface AiObservedActorV1 {
   readonly cost: AiKnownValueV1<Readonly<Partial<Record<ResourceType, number>>>>;
   readonly housingCost: AiKnownValueV1<number>;
   readonly housingCapacity: AiKnownValueV1<number>;
+  /** Owned/visible durability normalized to 0..1000; private opponents remain unknown. */
+  readonly healthPermille?: AiKnownValueV1<number>;
   readonly resourceState: AiKnownValueV1<AiObservedResourceStateV1>;
   /** Owned construction percentage; absent only for legacy observations. */
   readonly constructionProgress?: AiKnownValueV1<number>;

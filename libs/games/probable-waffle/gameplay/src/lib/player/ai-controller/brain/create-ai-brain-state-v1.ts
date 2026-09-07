@@ -72,6 +72,7 @@ export function createAiBrainStateV1(input: CreateAiBrainStateV1Input): AiBrainS
     },
     bases: [],
     economyProduction: { demands: [], forecasts: [] },
+    recovery: { records: [] },
     reservations: [],
     waitEdges: [],
     pendingOutcomes: [],

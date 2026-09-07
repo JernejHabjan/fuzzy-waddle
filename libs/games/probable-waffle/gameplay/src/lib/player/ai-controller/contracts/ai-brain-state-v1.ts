@@ -87,6 +87,25 @@ export interface AiEconomyProductionStateV1 {
   }[];
 }
 
+/** Stage-12 causal recovery facts. Entries are bounded, save-safe and never contain live runtime handles. */
+export interface AiRecoveryStateV1 {
+  readonly records: readonly {
+    readonly recoveryKey: string;
+    readonly domain: "economy" | "placement" | "blocker" | "repair" | "transport" | "fortification" | "squad";
+    readonly planId: AiPlanId | null;
+    readonly actorId: ActorId | null;
+    readonly cause: string;
+    readonly enteredTick: AiSimulationTick;
+    readonly lastProgressTick: AiSimulationTick;
+    readonly nextRetryTick: AiSimulationTick;
+    readonly phaseDeadline: AiDeadlineV1;
+    readonly attempt: number;
+    readonly state: "watching" | "backoff" | "recovering" | "abandoned" | "technical_fault";
+    readonly alternate: string | null;
+    readonly releasedClaimIds: readonly string[];
+  }[];
+}
+
 /** Squad membership and objective ownership. */
 export interface AiSquadStateV1 {
   readonly squadId: AiSquadId;
@@ -316,6 +335,7 @@ export interface AiBrainStateV1 {
   readonly skirmish: AiSkirmishStateV1;
   readonly bases: readonly AiBaseStateV1[];
   readonly economyProduction: AiEconomyProductionStateV1;
+  readonly recovery: AiRecoveryStateV1;
   readonly reservations: readonly AiReservationV1[];
   readonly waitEdges: readonly AiWaitEdgeV1[];
   readonly pendingOutcomes: readonly AiCommandOutcomeV1[];

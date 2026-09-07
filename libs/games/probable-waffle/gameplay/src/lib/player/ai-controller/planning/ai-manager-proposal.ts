@@ -20,6 +20,8 @@ export interface AiManagerProposalV1 {
   readonly statePatch?: Readonly<{
     opening?: AiOpeningStateV1;
     economyProduction?: AiEconomyProductionStateV1;
+    /** Stage 12 owns durable causal recovery, retry and release facts. */
+    recovery?: AiBrainStateV1["recovery"];
     transport?: AiBrainStateV1["transport"];
     /** Appended after the transport owner advances its lifecycle, preventing route-plan races. */
     transportAppend?: readonly AiTransportStateV1[];

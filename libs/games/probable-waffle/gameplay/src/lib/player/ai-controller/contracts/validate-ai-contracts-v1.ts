@@ -23,7 +23,7 @@ function assertDeadline(value: unknown, field: string): void {
 export function isAiBrainStateV1(value: unknown): value is AiBrainStateV1 {
   if (!isRecord(value) || value.schemaVersion !== 1) return false;
   if (!isRecord(value.strategy) || !isRecord(value.opening) || !isRecord(value.knowledge) || !isRecord(value.skirmish)) return false;
-  if (!isRecord(value.economyProduction) || !isRecord(value.authority) || !isRecord(value.scheduler)) return false;
+  if (!isRecord(value.economyProduction) || !isRecord(value.recovery) || !isRecord(value.authority) || !isRecord(value.scheduler)) return false;
   if (!isRecord(value.identities)) return false;
   return [
     "bases",
@@ -67,6 +67,15 @@ export function assertAiBrainStateV1(value: unknown): asserts value is AiBrainSt
   }
   for (const progress of value.progress) {
     assertDeadline(progress.milestoneDeadline, `progress.${progress.planId}.milestoneDeadline`);
+  }
+  if (!Array.isArray(value.recovery.records)) throw new Error("malformed_ai_recovery_state");
+  assertUnique(value.recovery.records.map((record) => record.recoveryKey), "recovery.records");
+  for (const record of value.recovery.records) {
+    assertAiNonNegativeInteger(record.enteredTick, `recovery.${record.recoveryKey}.enteredTick`);
+    assertAiNonNegativeInteger(record.lastProgressTick, `recovery.${record.recoveryKey}.lastProgressTick`);
+    assertAiNonNegativeInteger(record.nextRetryTick, `recovery.${record.recoveryKey}.nextRetryTick`);
+    assertAiNonNegativeInteger(record.attempt, `recovery.${record.recoveryKey}.attempt`);
+    assertDeadline(record.phaseDeadline, `recovery.${record.recoveryKey}.phaseDeadline`);
   }
   for (const blocker of value.blockers) assertDeadline(blocker.deadline, `blockers.${blocker.blockerId}.deadline`);
   for (const episode of value.recoveryEpisodes) {

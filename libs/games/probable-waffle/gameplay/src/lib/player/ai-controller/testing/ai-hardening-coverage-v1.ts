@@ -19,8 +19,8 @@ export const AI_HARDENING_COVERAGE_V1: readonly AiHardeningCoverageEntryV1[] = [
     contractOwner: "AiProgressContractV1/AiBlockerV1/AiRecoveryEpisodeV1",
     implementationStages: [6, 12],
     persistencePath: "AiBrainStateV1.progress/blockers/recoveryEpisodes",
-    debugField: "AiDebugSnapshotV1.progressHealth/mainBlockingReason",
-    focusedTest: "validate-ai-contracts-v1.spec.ts",
+    debugField: "AiDebugSnapshotV1.progressHealth/mainBlockingReason/recovery",
+    focusedTest: "ai-stage-12-recovery-manager.spec.ts",
     finalScenarioIds: ["H-01", "H-02", "H-03", "H-04", "H-05"]
   },
   {
@@ -56,7 +56,7 @@ export const AI_HARDENING_COVERAGE_V1: readonly AiHardeningCoverageEntryV1[] = [
     implementationStages: [7, 12],
     persistencePath: "AiBrainStateV1.economyProduction",
     debugField: "AiDebugSnapshotV1.sections.economyLabor",
-    focusedTest: "Stage 7 economy focused gate",
+    focusedTest: "ai-stage-12-recovery-manager.spec.ts",
     finalScenarioIds: ["H-16", "H-17", "H-18"]
   },
   {

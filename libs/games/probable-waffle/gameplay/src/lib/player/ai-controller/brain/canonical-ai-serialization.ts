@@ -154,6 +154,11 @@ export function canonicalizeAiBrainStateV1(state: AiBrainStateV1): AiBrainStateV
         (left, right) => left.resourceType.localeCompare(right.resourceType) || left.horizonTick - right.horizonTick
       )
     },
+    recovery: {
+      records: [...state.recovery.records]
+        .map((record) => ({ ...record, releasedClaimIds: [...record.releasedClaimIds].sort() }))
+        .sort((left, right) => left.recoveryKey.localeCompare(right.recoveryKey))
+    },
     reservations: [...state.reservations]
       .map((reservation) => ({
         ...reservation,

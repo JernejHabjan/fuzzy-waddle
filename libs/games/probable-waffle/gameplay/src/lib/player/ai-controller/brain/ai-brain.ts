@@ -280,11 +280,17 @@ export class PureAiBrainV1 implements AiBrainV1 {
         createdTick: observation.tick
       }))
     );
+    const releasedRecoveryClaims = new Set(
+      projectedState.recovery.records
+        .filter((record) => record.state === "abandoned")
+        .flatMap((record) => record.releasedClaimIds)
+    );
     const nextState: AiBrainStateV1 = {
       ...projectedState,
       reservations: [
         ...projectedState.reservations.filter(
           (existing) =>
+            !releasedRecoveryClaims.has(existing.claimId) &&
             !acceptedReservations.some(
               (acceptedReservation) =>
                 acceptedReservation.ownerPlanId === existing.ownerPlanId &&

@@ -36,6 +36,7 @@ import { AiStage8TransportManagerV1 } from "@fuzzy-waddle/probable-waffle-gamepl
 import { AiStage9SkirmishManagerV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-stage-9-skirmish-manager";
 import { AiStage10BaseManagerV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-stage-10-base-manager";
 import { AiStage11FortificationManagerV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-stage-11-fortification-manager";
+import { AiStage12RecoveryManagerV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-stage-12-recovery-manager";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import { OrderType } from "../../ai/order-type";
 
@@ -72,7 +73,8 @@ export class PlayerAiController {
           new AiStage8TransportManagerV1(() => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
           new AiStage9SkirmishManagerV1(this.profile, () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
           new AiStage10BaseManagerV1(this.profile, () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
-          new AiStage11FortificationManagerV1(this.profile, () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog())
+          new AiStage11FortificationManagerV1(this.profile, () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
+          new AiStage12RecoveryManagerV1(() => this.playerAiControllerAgent?.getCommittedCapabilityCatalog())
         ])
       : undefined;
     this.blackboard = new PlayerAiBlackboard(scene);

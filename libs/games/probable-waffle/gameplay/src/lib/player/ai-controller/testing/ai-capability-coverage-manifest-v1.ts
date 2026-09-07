@@ -74,6 +74,17 @@ export const AI_CAPABILITY_COVERAGE_MANIFEST_V1: readonly AiCapabilityCoverageEn
     debug: implemented("AiDebugSnapshotV1.fortifications and saved Bases & Placement overlay"),
     fixture: planned(15, "WALL-01..05, H-27/H-28 and real height-topology runtime fixtures")
   },
+  {
+    family: "causal_recovery_and_anti_blocking",
+    source: "committed outcomes, permitted topology and worker/source observations",
+    observation: implemented("AiObservedActorV1.healthPermille plus existing owned resource/access facts"),
+    proposer: implemented("AiStage12RecoveryManagerV1 bounded recovery ladder"),
+    command: implemented("shared gather/attack/repair commands through CommandBusService"),
+    outcome: implemented("AiCommandOutcomeV1 terminal outcome site backoff"),
+    save: implemented("AiBrainStateV1.recovery canonical records"),
+    debug: implemented("AiDebugSnapshotV1.recovery and Logistics & Workers panel"),
+    fixture: planned(15, "WALL-04, DOMAIN-04, FIGHT-05, H-01..05 and H-16..18 runtime fixtures")
+  },
   gameplayFamily("vision_visibility", "vision + visibility systems", 4, 4),
   gameplayFamily("health_regeneration", "health + healthRegeneration", 13, 13),
   gameplayFamily("attack_target_domains", "attack + effective level overrides", 13, 13),
