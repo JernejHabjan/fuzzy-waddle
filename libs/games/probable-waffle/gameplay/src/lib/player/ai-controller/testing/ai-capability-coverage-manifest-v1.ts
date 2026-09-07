@@ -52,6 +52,17 @@ function gameplayFamily(
 export const AI_CAPABILITY_COVERAGE_MANIFEST_V1: readonly AiCapabilityCoverageEntryV1[] = [
   gameplayFamily("ownership_diplomacy", "owner + player/team rules", 4, 4),
   gameplayFamily("logical_position_clearance", "representable + collider", 10, 10),
+  {
+    family: "base_identity_expansion_placement",
+    source: "main-building definition metadata + shared construction footprint authority",
+    observation: implemented("AiObservedActorV1.mainBuilding and committed logical/access facts"),
+    proposer: implemented("AiStage10BaseManagerV1 stable base/expansion lifecycle"),
+    command: implemented("CONSTRUCT through CommandBusService and SharedCommandApplicationService"),
+    outcome: implemented("shared construction outcome reconciliation"),
+    save: implemented("AiBrainStateV1.bases canonical lifecycle and site cooldowns"),
+    debug: implemented("AiDebugSnapshotV1.bases and Bases & Placement panel"),
+    fixture: planned(15, "PLACE-01..03, EXP-01..02 and multi-base runtime fixture")
+  },
   gameplayFamily("vision_visibility", "vision + visibility systems", 4, 4),
   gameplayFamily("health_regeneration", "health + healthRegeneration", 13, 13),
   gameplayFamily("attack_target_domains", "attack + effective level overrides", 13, 13),

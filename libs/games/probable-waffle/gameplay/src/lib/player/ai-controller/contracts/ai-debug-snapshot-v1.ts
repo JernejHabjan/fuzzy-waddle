@@ -81,6 +81,17 @@ export interface AiDebugSnapshotV1 {
     readonly mode: { readonly state: string; readonly hopelessSinceTick: AiSimulationTick | null; readonly concessionIntentId: string | null; readonly reason: string | null };
     readonly timeline: readonly { readonly eventId: string; readonly tick: AiSimulationTick; readonly kind: string; readonly subjectId: string; readonly detail: string }[];
   }>;
+  /** Saved Stage-10 base and placement facts; panel consumers never perform a fresh placement query. */
+  readonly bases: readonly {
+    readonly baseId: string;
+    readonly lifecycle: string;
+    readonly anchorActorId: string | null;
+    readonly memberCount: number;
+    readonly accessNodeId: string | null;
+    readonly reservedSiteKey: string | null;
+    readonly rejectedSiteCount: number;
+    readonly expansionTrigger: string | null;
+  }[];
   readonly progressHealth:
     | "healthy"
     | "waiting"

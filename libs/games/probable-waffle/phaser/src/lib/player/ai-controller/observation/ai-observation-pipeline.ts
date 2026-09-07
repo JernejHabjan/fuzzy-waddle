@@ -389,6 +389,7 @@ export class AiObservationPipeline {
             )
           : unknownValue(owned ? "not_supported" : "not_observed"),
       activeEffectIds: statusEffects?.getActiveEffects().map((effect) => `status:${effect.type}`).sort() ?? [],
+      ...(owned ? { mainBuilding: knownValue(definition?.meta?.isMainBuilding === true, tick) } : {}),
       containedInActorId: containerOwnerId,
       ...(containerState ? { containerState } : {})
     };

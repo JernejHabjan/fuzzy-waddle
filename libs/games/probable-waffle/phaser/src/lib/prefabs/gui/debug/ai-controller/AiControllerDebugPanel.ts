@@ -275,6 +275,7 @@ export default class AiControllerDebugPanel extends Phaser.GameObjects.Container
       { id: "production", label: "Production & Tech" },
       { id: "commands", label: "Command Authority" },
       { id: "transport", label: "Routes & Transport" },
+      { id: "bases", label: "Bases & Placement" },
       { id: "logistics", label: "Logistics & Workers" },
       { id: "intel", label: "Enemy Intel & Scouting" },
       { id: "thresholds", label: "Adaptive Thresholds" }

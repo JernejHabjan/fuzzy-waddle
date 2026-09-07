@@ -72,6 +72,16 @@ export function projectAiDebugSnapshot(
     },
     timeline: state.skirmish.timeline.slice(-32).map((event) => ({ ...event }))
   };
+  const bases = state.bases.slice(0, 16).map((base) => ({
+    baseId: base.baseId,
+    lifecycle: base.lifecycle ?? (base.active ? "active" : "lost"),
+    anchorActorId: base.anchorActorId,
+    memberCount: base.memberActorIds.length,
+    accessNodeId: base.accessNodeId ?? null,
+    reservedSiteKey: base.reservedSiteKey ?? null,
+    rejectedSiteCount: base.rejectedSiteKeys?.length ?? 0,
+    expansionTrigger: base.expansion?.trigger ?? null
+  }));
 
   return {
     schemaVersion: 1,
@@ -97,6 +107,7 @@ export function projectAiDebugSnapshot(
     })),
     transportOperations,
     skirmish,
+    bases,
     progressHealth:
       state.authority.health === "technical_fault"
         ? "technical_fault"
@@ -148,7 +159,7 @@ export function projectAiDebugSnapshot(
         ownerStage: 8,
         reason: transportOperations.map((operation) => `${operation.planId}:${operation.phase}`).join(",") || "no_active_transport_plan"
       },
-      basesFortifications: later(10),
+      basesFortifications: { status: "ready", ownerStage: 10, reason: bases.map((base) => `${base.baseId}:${base.lifecycle}`).join(",") || "main_structure_not_observed" },
       decisionsRecovery: { status: "ready", ownerStage: 2, reason: null },
       runtimeLimits: later(6)
     }

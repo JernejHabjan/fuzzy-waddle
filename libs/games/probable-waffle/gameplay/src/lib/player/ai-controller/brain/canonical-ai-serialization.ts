@@ -128,7 +128,13 @@ export function canonicalizeAiBrainStateV1(state: AiBrainStateV1): AiBrainStateV
         .sort((left, right) => left.tick - right.tick || left.eventId.localeCompare(right.eventId))
     },
     bases: [...state.bases]
-      .map((base) => ({ ...base, memberActorIds: [...base.memberActorIds].sort() }))
+      .map((base) => ({
+        ...base,
+        memberActorIds: [...base.memberActorIds].sort(),
+        ...(base.rejectedSiteKeys
+          ? { rejectedSiteKeys: [...base.rejectedSiteKeys].sort((left, right) => left.siteKey.localeCompare(right.siteKey)) }
+          : {})
+      }))
       .sort((left, right) => left.baseId.localeCompare(right.baseId)),
     economyProduction: {
       demands: [...state.economyProduction.demands]

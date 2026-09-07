@@ -34,6 +34,7 @@ import { selectAiOpeningArchetypeV1 } from "@fuzzy-waddle/probable-waffle-gamepl
 import { AiStage7MacroManagerV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-stage-7-macro-manager";
 import { AiStage8TransportManagerV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-stage-8-transport-manager";
 import { AiStage9SkirmishManagerV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-stage-9-skirmish-manager";
+import { AiStage10BaseManagerV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-stage-10-base-manager";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import { OrderType } from "../../ai/order-type";
 
@@ -68,7 +69,8 @@ export class PlayerAiController {
       ? new PureAiBrainV1(this.profile, [
           new AiStage7MacroManagerV1(() => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
           new AiStage8TransportManagerV1(() => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
-          new AiStage9SkirmishManagerV1(this.profile, () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog())
+          new AiStage9SkirmishManagerV1(this.profile, () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
+          new AiStage10BaseManagerV1(this.profile, () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog())
         ])
       : undefined;
     this.blackboard = new PlayerAiBlackboard(scene);

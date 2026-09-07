@@ -63,6 +63,8 @@ export interface AiObservedActorV1 {
   readonly housingCapacity: AiKnownValueV1<number>;
   readonly resourceState: AiKnownValueV1<AiObservedResourceStateV1>;
   readonly activeEffectIds: readonly string[];
+  /** Runtime-definition metadata exposed for owned actors; base identity never infers this from position. */
+  readonly mainBuilding?: AiKnownValueV1<boolean>;
   /** Stable container owner when this actor is physically loaded; absent on pre-Stage-8 observations. */
   readonly containedInActorId?: ActorId | null;
   /** Known only for owned containers; opponent cargo remains private. */

@@ -5,6 +5,7 @@ import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { NeedType } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/ai-behavior/need-type";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
 import { getSimulationNow } from "../ai-time";
 import { compareScoredBuildSpots } from "./base-planner-selection";
 type GameObject = Phaser.GameObjects.GameObject;
@@ -128,13 +129,22 @@ export class MapAnalyzer {
       return analysis;
     }
 
-    // 1) Estimate base center by averaging center tiles of owned buildings/units
+    // 1) A main structure is a stable base anchor.  Averaging every owned unit let
+    // a scout or army pull the legacy placement center across the map.
+    const mainBuilding = owned
+      .filter((object) => getPwActorDefinition(object.name, null)?.meta?.isMainBuilding === true)
+      .sort((left, right) => String(left.name).localeCompare(String(right.name)))[0];
+    const mainTile = mainBuilding ? navigation.getCenterTileCoordUnderObject(mainBuilding) : undefined;
+    if (mainTile) analysis.baseCenterTile = { x: mainTile.x, y: mainTile.y, z: 0 };
+
+    // Legacy saves/maps without a main-building definition retain a conservative
+    // building-only fallback; mobile actors never define a construction anchor.
     const ownedTiles: Vector3Simple[] = [];
-    owned.forEach((obj) => {
+    owned.filter((object) => getPwActorDefinition(object.name, null)?.components?.constructionSite !== undefined).forEach((obj) => {
       const tile = navigation.getCenterTileCoordUnderObject(obj);
       if (tile) ownedTiles.push({ x: tile.x, y: tile.y, z: 0 });
     });
-    if (ownedTiles.length > 0) {
+    if (!analysis.baseCenterTile && ownedTiles.length > 0) {
       analysis.baseCenterTile = this.averageTile(ownedTiles);
     }
 

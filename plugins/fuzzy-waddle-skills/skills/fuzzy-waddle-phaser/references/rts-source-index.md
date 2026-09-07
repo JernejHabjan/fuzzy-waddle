@@ -15,6 +15,7 @@ All paths in the following table are relative to libs/games/probable-waffle/phas
 | Save/load and authoritative hash | data/save-game.ts ; data/load-game.ts ; world/services/recovery/state-hash.service.ts |
 | Match end conditions | world/state/GameModeConditionChecker.ts |
 | Purposeful skirmish loop | gameplay `player/ai-controller/planning/ai-stage-9-skirmish-manager.ts`; Phaser `player/ai-controller/player-ai-controller.ts` |
+| Stable bases and expansion candidates | gameplay `player/ai-controller/planning/ai-stage-10-base-manager.ts`; Phaser observation `ai-observation-pipeline.ts`; shared construction `world/services/multiplayer/shared-command-application.service.ts` |
 | In-game AI panel | prefabs/gui/debug/ai-controller/AiControllerDebugPanel.ts |
 
 Cross-library paths (repository-relative):
@@ -35,5 +36,6 @@ Read adjacent specs and follow imports for the next consumer. For spells, contai
 - Navigation height/edge snapshots include runtime surfaces from the whole scene. Player-fair AI topology must gate those cells through the committed observation policy; do not copy the global height graph directly into an AI observation.
 - The current plan's new pure brain, harness and debug workbench are destinations, not existing APIs.
 - Stage 9 may propose movement, attacks, transport children and concession, but each must travel through `CommandBusService.dispatchAi`; do not restore the legacy controller's direct actor mutation path.
+- Base identity is definition-backed by an owned main structure, never an average of mobile actors. Candidate sites are advisory persisted facts; `SharedCommandApplicationService` owns final footprint, navigation, collision, resource and builder validation.
 
 For #759 only, read docs/ai/759-skirmish-ai/00-start-here.md and its current stage. Its shared-decisions source/destination map owns planned additions and its ledger owns implementation status. Keep generic skills free of issue-specific tuning constants and model assignments.

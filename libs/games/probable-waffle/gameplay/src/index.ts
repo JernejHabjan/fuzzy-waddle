@@ -24,6 +24,7 @@ export * from "./lib/player/ai-controller/planning/ai-stage-7-macro-manager";
 export * from "./lib/player/ai-controller/planning/ai-access-graph-v1";
 export * from "./lib/player/ai-controller/planning/ai-stage-8-transport-manager";
 export * from "./lib/player/ai-controller/planning/ai-stage-9-skirmish-manager";
+export * from "./lib/player/ai-controller/planning/ai-stage-10-base-manager";
 export * from "./lib/player/ai-controller/profiles/ai-profile-defaults";
 export * from "./lib/player/ai-controller/profiles/ai-opening-archetypes-v1";
 export * from "./lib/player/ai-controller/brain/create-ai-brain-state-v1";

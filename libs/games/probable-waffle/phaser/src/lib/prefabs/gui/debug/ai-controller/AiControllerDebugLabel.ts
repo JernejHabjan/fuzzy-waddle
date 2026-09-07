@@ -110,6 +110,7 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
       production: "Production & Tech",
       commands: "Command Authority",
       transport: "Routes & Transport",
+      bases: "Bases & Placement",
       logistics: "Logistics & Workers",
       intel: "Enemy Intel & Scouting",
       thresholds: "Adaptive Thresholds"
@@ -149,6 +150,9 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
           break;
         case "transport":
           lines.push(...this.getTransportLines(controller));
+          break;
+        case "bases":
+          lines.push(...this.getBaseLines(controller));
           break;
         case "logistics":
           lines.push(...this.getLogisticsLines(controller, now));
@@ -192,6 +196,19 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
       if (operation.terminalReason) lines.push(`  reason: ${operation.terminalReason}`);
     }
     this.renderTransportOverlay(brain.transportOperations);
+    return lines;
+  }
+
+  /** Renders only the saved Stage-10 base snapshot; it never asks the live scene to score placement. */
+  private getBaseLines(controller: PlayerAiController): string[] {
+    const brain = controller.getBrainDebugSnapshot();
+    const lines = ["=== BASES & PLACEMENT ==="];
+    if (!brain?.bases.length) return [...lines, "No committed main-structure base identity"];
+    for (const base of brain.bases) {
+      lines.push(`${base.baseId}: ${base.lifecycle}, anchor ${base.anchorActorId ?? "pending"}, members ${base.memberCount}`);
+      lines.push(`  access ${base.accessNodeId ?? "pending"}, reserved ${base.reservedSiteKey ?? "none"}, rejected ${base.rejectedSiteCount}`);
+      if (base.expansionTrigger) lines.push(`  expansion trigger: ${base.expansionTrigger}`);
+    }
     return lines;
   }
 
