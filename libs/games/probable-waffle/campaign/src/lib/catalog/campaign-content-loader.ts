@@ -3,7 +3,8 @@ import {
   type CampaignMissionId,
   isCampaignChapterId,
   isCampaignId,
-  isCampaignMissionId
+  isCampaignMissionId,
+  isScenarioPresentationPolicy
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { CampaignDefinition } from "../contracts/campaign-definition";
 import type { CampaignMissionContent } from "../contracts/campaign-mission-content";
@@ -64,6 +65,8 @@ interface RawMissionEnvelope {
    * migration, or conflict-handling rules instead of guessing the payload shape.
    */
   readonly revision?: unknown;
+  /** Optional reusable presentation policy authored by this mission. */
+  readonly scenarioPresentation?: unknown;
 }
 
 /**
@@ -111,6 +114,9 @@ export function loadMissionContent(value: unknown, sourcePath: string): Campaign
     throw new Error(`${sourcePath}: invalid chapter id`);
   }
   if (!Number.isInteger(raw.revision) || Number(raw.revision) < 1) throw new Error(`${sourcePath}: invalid revision`);
+  if (raw.scenarioPresentation !== undefined && !isScenarioPresentationPolicy(raw.scenarioPresentation)) {
+    throw new Error(`${sourcePath}: invalid scenarioPresentation`);
+  }
   return value as CampaignMissionContent;
 }
 

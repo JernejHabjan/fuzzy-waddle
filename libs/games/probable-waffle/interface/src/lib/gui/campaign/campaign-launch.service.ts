@@ -120,6 +120,11 @@ export class CampaignLaunchService implements CampaignLaunchServiceInterface {
       if (!map) throw new Error(`Campaign mission ${mission.id} references unknown map '${mission.mapKey}'`);
       // Preload resolves its map scene and asset pack from game-mode data, so the map must be applied before navigation.
       await this.gameInstanceClientService.gameModeChanged("map", { map: map.id });
+      if (missionContent.scenarioPresentation) {
+        await this.gameInstanceClientService.gameModeChanged("scenarioPresentation", {
+          scenarioPresentation: missionContent.scenarioPresentation
+        });
+      }
       await this.gameInstanceClientService.startGame();
       await this.gameInstanceClientService.navigateDirectlyToGame();
     } catch (error) {
