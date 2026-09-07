@@ -9,9 +9,10 @@ import {
   WebSocketServer
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
-import { GameSessionState } from "@fuzzy-waddle/platform-game-sessions";
+import { GameSessionState, type UserId } from "@fuzzy-waddle/platform-game-sessions";
 import {
   type ProbableWaffleCommunicatorMessageEvent,
+  type ProbableWaffleMinimapSignalEvent,
   ProbableWaffleCommunicators,
   type ProbableWaffleCommunicatorEventUnion,
   type ProbableWaffleGameCommandEvent,
@@ -39,6 +40,7 @@ import { ChatService } from "@fuzzy-waddle/platform-chat/server/chat/chat.servic
 import { PlayerDisconnectTrackerService } from "./multiplayer/player-disconnect-tracker.service";
 import { GameInstanceService } from "./game-instance.service";
 import { SocketConnectionAuthService } from "@fuzzy-waddle/platform-identity/server/auth/socket-connection-auth.service";
+import { MinimapSignalValidatorService } from "./multiplayer/minimap-signal-validator.service";
 
 @WebSocketGateway({
   cors: {
@@ -67,6 +69,7 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
     private readonly roomServerService: RoomServerService,
     private readonly chatService: ChatService,
     private readonly disconnectTracker: PlayerDisconnectTrackerService,
+    private readonly minimapSignalValidator: MinimapSignalValidatorService,
     private readonly gameInstanceService: GameInstanceService,
     private readonly socketConnectionAuthService: SocketConnectionAuthService
   ) {}
@@ -258,8 +261,54 @@ export class GameInstanceGateway implements OnGatewayConnection, OnGatewayDiscon
           .to(`${ProbableWaffleGatewayRoomTypes.ProbableWaffleGameInstance}${messagePayload.gameInstanceId}`)
           .emit(ProbableWaffleGatewayEvent.ProbableWaffleMessage, newPayload);
         break;
+      case "minimap-signal":
+        this.relayMinimapSignal(newPayload.payload as ProbableWaffleMinimapSignalEvent, user);
+        break;
       default:
         throw new Error("Ashes of the Ancients - Message broadcast - unknown communicator");
+    }
+  }
+
+  /**
+   * Relays an accepted signal to the sender's active human teammates only.
+   *
+   * The sender renders optimistically, so this deliberately targets socket IDs
+   * instead of the match room and never echoes the signal to its origin socket.
+   */
+  private relayMinimapSignal(signal: ProbableWaffleMinimapSignalEvent, user: AuthUser): void {
+    const gameInstance = this.gameInstanceService.findGameInstance(signal.gameInstanceId);
+    if (!gameInstance || !this.minimapSignalValidator.validate(signal, gameInstance, user)) return;
+
+    const sender = gameInstance.getPlayerByNumber(signal.playerNumber);
+    const senderTeam = sender?.playerController.data.playerDefinition?.team ?? signal.playerNumber;
+    const recipientUserIds = gameInstance.players
+      .filter((player) => {
+        const definition = player.playerController.data.playerDefinition;
+        const playerTeam = definition?.team ?? player.playerNumber;
+        return (
+          player.playerNumber !== signal.playerNumber &&
+          definition?.playerType === ProbableWafflePlayerType.Human &&
+          !player.playerController.data.leftOrKilled &&
+          playerTeam === senderTeam &&
+          player.playerController.data.userId !== null
+        );
+      })
+      .map((player) => player.playerController.data.userId)
+      .filter((userId): userId is UserId => userId !== null);
+
+    const relayedBody = {
+      gameInstanceId: signal.gameInstanceId,
+      communicator: ProbableWaffleCommunicators.MinimapSignal,
+      payload: {
+        ...signal,
+        emitterUserId: user.id
+      }
+    } satisfies ProbableWaffleCommunicatorEventUnion;
+
+    for (const recipientUserId of recipientUserIds) {
+      for (const socketId of this.disconnectTracker.getActiveSocketIdsForPlayer(recipientUserId, signal.gameInstanceId)) {
+        this.server.to(socketId).emit(ProbableWaffleGatewayEvent.ProbableWaffleMessage, relayedBody);
+      }
     }
   }
 

@@ -12,4 +12,12 @@ describe("ProbableWaffleCommunicatorService", () => {
   it("should be created", () => {
     expect(service).toBeTruthy();
   });
+
+  it("does not create a minimap signal communicator without a multiplayer socket", () => {
+    service.startCommunication("test-game" as never);
+
+    expect(service.minimapSignal).toBeUndefined();
+
+    service.stopCommunication("test-game" as never);
+  });
 });

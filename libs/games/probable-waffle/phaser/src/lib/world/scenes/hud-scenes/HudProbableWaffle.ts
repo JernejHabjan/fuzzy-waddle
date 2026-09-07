@@ -33,6 +33,9 @@ import { getPlayers } from "../../../data/scene-data";
 import { ConnectionRecoveryService } from "../../services/recovery/connection-recovery.service";
 import type { CampaignMissionDirector } from "../../../campaign/campaign-mission-director";
 import CampaignDeveloperPanel from "../../../prefabs/gui/campaign/CampaignDeveloperPanel";
+import type { Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
+import { MinimapSignalController } from "../../../player/human-controller/minimap-signal-controller";
+import { getSceneService } from "../../services/scene-component-helpers";
 /* END-USER-IMPORTS */
 
 export default class HudProbableWaffle extends ProbableWaffleScene {
@@ -181,6 +184,8 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   private campaignDeveloperPanel?: CampaignDeveloperPanel;
   private campaignMissionDirector?: CampaignMissionDirector;
   private campaignUiInitializationScheduled = false;
+  private minimapSignalButton?: Phaser.GameObjects.Container;
+  private minimapSignalTooltip?: Phaser.GameObjects.Text;
 
   probableWaffleScene?: ProbableWaffleScene;
   override preload() {
@@ -206,6 +211,8 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.idleWorkersButton.setup(this.probableWaffleScene!);
     this.dayNightClockLabel.initializeWithParentScene(this.probableWaffleScene!);
     this.chatNotification.initializeWithParentScene(this.probableWaffleScene!, this.chatButton);
+    this.createMinimapSignalButton();
+    this.updatePositionOfUiElements();
 
     // Initialize cursor handler with main scene for hover detection
     if (this.probableWaffleScene && this.cursorHandler) {
@@ -227,6 +234,14 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     }
 
     this.initializeCampaignUiWhenSceneReady();
+  }
+
+  displayMinimapSignal(tile: Vector2Simple, color: number): void {
+    this.minimap_container.displaySignal(tile, color);
+  }
+
+  refreshMinimapSignalButton(): void {
+    this.updatePositionOfUiElements();
   }
 
   initializeCampaignObjectives(director: CampaignMissionDirector): void {
@@ -276,6 +291,7 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
       this.groupContainer,
       this.idleWorkersButton,
       this.chatButton,
+      ...(this.minimapSignalButton ? [this.minimapSignalButton] : []),
       this.chatNotification,
       this.dayNightClockLabel,
       this.campaignObjectivesHud
@@ -410,6 +426,14 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
     this.chatButton.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.7;
     this.chatButton.visible = isChatVisible;
 
+    const minimapSignalController = getSceneService(this.probableWaffleScene!, MinimapSignalController);
+    if (this.minimapSignalButton) {
+      this.minimapSignalButton.x = minimapBounds.right - 118;
+      this.minimapSignalButton.y = this.scale.height - minimapHeight + 10;
+      this.minimapSignalButton.scale = sceneWidth > this.actorInfoSmallScreenBreakpoint ? 1 : 0.7;
+      this.minimapSignalButton.visible = isChatVisible && minimapSignalController?.canSignal() === true;
+    }
+
     // position chat notification above chat button on left side
     this.chatNotification.x = 10;
     this.chatNotification.y = this.chatButton.y - 10;
@@ -434,6 +458,43 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
 
   private get gameType() {
     return this.probableWaffleScene?.baseGameData.gameInstance.gameInstanceMetadata.data.type;
+  }
+
+  private createMinimapSignalButton(): void {
+    const button = this.add.container(0, 0);
+    const background = this.add.nineslice(24, 15, "gui", "cryos_mini_gui/buttons/button_small.png", 42, 24, 3, 3, 3, 3);
+    const label = this.add.text(24, 14, "Signal", {
+      color: "#000000ff",
+      fontFamily: "disposabledroid",
+      fontSize: "14px",
+      resolution: 10
+    });
+    label.setOrigin(0.5);
+    button.add([background, label]);
+    button.setSize(48, 28);
+    button.setInteractive(new Phaser.Geom.Rectangle(0, 0, 48, 28), Phaser.Geom.Rectangle.Contains);
+    button.on(Phaser.Input.Events.POINTER_UP, () => {
+      getSceneService(this.probableWaffleScene!, MinimapSignalController)?.toggle();
+    });
+    button.on(Phaser.Input.Events.POINTER_OVER, () => {
+      this.minimapSignalTooltip?.destroy();
+      this.minimapSignalTooltip = this.add.text(
+        button.x,
+        button.y - 18,
+        "Minimap Signal (Alt+G)\nClick a location, or Alt+click directly.",
+        {
+          backgroundColor: "#101010e8",
+          color: "#ffffffff",
+          fontFamily: "disposabledroid",
+          fontSize: "13px",
+          padding: { x: 6, y: 4 },
+          resolution: 10
+        }
+      );
+      this.minimapSignalTooltip.setDepth(20_000).setOrigin(1, 1);
+    });
+    button.on(Phaser.Input.Events.POINTER_OUT, () => this.minimapSignalTooltip?.destroy());
+    this.minimapSignalButton = button;
   }
 
   private subscribeToGameEvent(eventName: string, displayText: string) {
@@ -464,6 +525,8 @@ export default class HudProbableWaffle extends ProbableWaffleScene {
   override destroy() {
     this.saveGameSubscription?.unsubscribe();
     this.connectionRecovery?.destroy();
+    this.minimapSignalButton?.destroy();
+    this.minimapSignalTooltip?.destroy();
     super.destroy();
   }
 

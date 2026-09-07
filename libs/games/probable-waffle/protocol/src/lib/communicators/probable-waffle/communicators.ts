@@ -10,7 +10,7 @@ import {
 import type { ProbableWaffleSpectatorData } from "../../game-instance/probable-waffle/spectator";
 import type { ActorDefinition, ProbableWaffleGameStateData } from "../../game-instance/probable-waffle/game-state";
 import type { GameCommand } from "../../game-instance/probable-waffle/game-command";
-import type { GameInstanceId, PlayerNumber, UserId } from "@fuzzy-waddle/platform-game-sessions";
+import type { GameInstanceId, PlayerNumber, UserId, Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
 import type { SelectionGroupData } from "../../game-instance/probable-waffle/component-data";
 import type { ProbableWaffleGameInstanceData } from "../../game-instance/probable-waffle/game-instance";
 import type { ProbableWaffleDoubleSelectionData, ProbableWaffleSelectionData } from "./communicator-game-events";
@@ -27,6 +27,7 @@ export const ProbableWaffleCommunicators = {
   SpectatorDataChange: "spectatorDataChange",
   GameStateDataChange: "gameStateDataChange",
   Message: "message",
+  MinimapSignal: "minimap-signal",
   GameCommand: "game-command",
   StateHash: "state-hash",
   SnapshotRequest: "snapshot-request",
@@ -292,6 +293,20 @@ export interface ProbableWaffleCommunicatorMessageEvent extends ProbableWaffleCo
    * shape.
    */
   chatMessage: ChatMessage;
+}
+
+/**
+ * Transient teammate-facing location signal.
+ *
+ * Unlike a lockstep command, this event never changes simulation state, save
+ * data, or replay data. The server validates the claimed player and tile then
+ * relays it only to active human teammates.
+ */
+export interface ProbableWaffleMinimapSignalEvent extends ProbableWaffleCommunicatorEvent {
+  /** Player that authored the signal; the server verifies ownership against the authenticated socket user. */
+  playerNumber: PlayerNumber;
+  /** Integer tile coordinate shared by minimap and world presenters. */
+  tile: Vector2Simple;
 }
 
 /**
@@ -682,6 +697,8 @@ export interface ProbableWaffleCommunicatorPayloadByType {
    * with a broader inferred shape.
    */
   [ProbableWaffleCommunicators.Message]: ProbableWaffleCommunicatorMessageEvent;
+  /** Teammate-only transient minimap signal. */
+  [ProbableWaffleCommunicators.MinimapSignal]: ProbableWaffleMinimapSignalEvent;
   /**
    * [probable waffle communicators.game command] value carried by {@link
    * ProbableWaffleCommunicatorPayloadByType}. Its declared type is the compatibility boundary for producers,

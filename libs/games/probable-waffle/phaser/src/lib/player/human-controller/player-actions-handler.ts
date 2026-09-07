@@ -7,6 +7,7 @@ import { type Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { canActorTraverseTile } from "../../data/game-object-helper";
 import { getCurrentPlayerNumber, listenToSelectionEvents } from "../../data/scene-data";
 import { SingleSelectionHandler } from "./single-selection.handler";
+import { MinimapSignalController } from "./minimap-signal-controller";
 import { BehaviorSubject, Subscription } from "rxjs";
 import { getPrimarySelectedActor } from "../../data/selection-helpers";
 import { getActorComponent } from "../../data/actor-component";
@@ -253,6 +254,7 @@ export class PlayerActionsHandler {
   }
 
   private pointerHandler(pointer: Phaser.Input.Pointer, gameObjectsUnderCursor: GameObject[]) {
+    if (getSceneService(this.scene, MinimapSignalController)?.isPointerConsumed(pointer)) return;
     if (this.scene.isSpectator || this.scene.baseGameData.gameInstance.gameInstanceMetadata.isReplay()) return;
     if (!this.handlingActions) return;
 

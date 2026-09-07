@@ -24,6 +24,7 @@ import {
 } from "./multiplayer/game-command-validator.service";
 import { PlayerStateValidatorService } from "./multiplayer/player-state-validator.service";
 import { PauseStateValidatorService } from "./multiplayer/pause-state-validator.service";
+import { MinimapSignalValidatorService } from "./multiplayer/minimap-signal-validator.service";
 
 /**
  * Result of a game-state update.
@@ -62,7 +63,8 @@ export class GameStateServerService {
     private readonly gameInstanceService: GameInstanceService,
     private readonly commandValidator: GameCommandValidatorService,
     private readonly playerStateValidator: PlayerStateValidatorService,
-    private readonly pauseStateValidator: PauseStateValidatorService
+    private readonly pauseStateValidator: PauseStateValidatorService,
+    private readonly minimapSignalValidator: MinimapSignalValidatorService
   ) {}
 
   ensureAuthorizedMutation(body: ProbableWaffleCommunicatorEventUnion, user: User): void {
@@ -206,6 +208,7 @@ export class GameStateServerService {
     this.commandValidator.cleanup(gameInstanceId);
     this.playerStateValidator.cleanup(gameInstanceId);
     this.pauseStateValidator.cleanup(gameInstanceId);
+    this.minimapSignalValidator.cleanup(gameInstanceId);
     this.recentCommandHistory.delete(gameInstanceId);
     this.warnedCommandHistoryOverflow.delete(gameInstanceId);
   }
