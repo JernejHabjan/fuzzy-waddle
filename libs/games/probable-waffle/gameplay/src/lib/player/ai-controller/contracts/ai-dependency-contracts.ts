@@ -31,6 +31,8 @@ export type AiReservationStateV1 =
 /** One atomic resource/actor/service claim owned by a plan. */
 export interface AiReservationV1 {
   readonly claimId: AiClaimId;
+  /** Stable physical subject key for cross-decision exclusivity; absent only on migrated pre-Stage-6 saves. */
+  readonly subjectKey?: string;
   readonly ownerPlanId: AiPlanId;
   readonly state: AiReservationStateV1;
   readonly prerequisites: readonly AiPrerequisiteEdgeV1[];

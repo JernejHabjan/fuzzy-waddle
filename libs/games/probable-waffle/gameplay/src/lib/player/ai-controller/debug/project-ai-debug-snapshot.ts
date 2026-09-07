@@ -25,6 +25,7 @@ export function projectAiDebugSnapshot(
     playerNumber: state.playerNumber,
     faction: state.faction,
     profileVersion: state.profileVersion,
+    profileDifficulty: state.profileDifficulty ?? "unknown",
     archetypeId: state.opening.archetypeId,
     tick: observation.tick,
     generation: observation.generation,
@@ -36,6 +37,11 @@ export function projectAiDebugSnapshot(
     decisions,
     nextActions: accepted.slice(0, 3).map((decision) => decision.intent.kind),
     mainBlockingReason: blocker?.cause ?? rejected[0]?.reason ?? null,
+    whyNot: rejected.slice(0, 32).map((decision) => ({
+      subjectId: decision.intent.intentId,
+      status: "rejected" as const,
+      reason: `${decision.reason}:${decision.detail}`
+    })),
     progressHealth:
       state.authority.health === "technical_fault"
         ? "technical_fault"

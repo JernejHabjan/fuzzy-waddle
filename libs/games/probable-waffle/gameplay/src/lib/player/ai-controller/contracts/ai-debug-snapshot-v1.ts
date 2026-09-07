@@ -28,6 +28,13 @@ export interface AiDebugSectionStateV1 {
   readonly reason: string | null;
 }
 
+/** Recorded explanation status; absent evaluation is never presented as a rejected alternative. */
+export interface AiWhyNotExplanationV1 {
+  readonly subjectId: string;
+  readonly status: "not_evaluated" | "not_recorded" | "rejected" | "outcome_unresolved";
+  readonly reason: string | null;
+}
+
 /**
  * Read-only projection from the exact committed decision data. No UI consumer may invoke a
  * planner, pathfinder, RNG or world query to populate missing fields.
@@ -37,6 +44,7 @@ export interface AiDebugSnapshotV1 {
   readonly playerNumber: PlayerNumber;
   readonly faction: FactionType;
   readonly profileVersion: string;
+  readonly profileDifficulty: "easy" | "normal" | "hard" | "unknown";
   readonly archetypeId: string;
   readonly tick: AiSimulationTick;
   readonly generation: number;
@@ -48,6 +56,7 @@ export interface AiDebugSnapshotV1 {
   readonly decisions: readonly AiIntentDecisionV1[];
   readonly nextActions: readonly string[];
   readonly mainBlockingReason: string | null;
+  readonly whyNot: readonly AiWhyNotExplanationV1[];
   readonly progressHealth:
     | "healthy"
     | "waiting"

@@ -27,6 +27,9 @@ import { createAiBrainStateV1 } from "@fuzzy-waddle/probable-waffle-gameplay/pla
 import { migrateAiBrainState } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/migrate-ai-brain-state";
 import { canonicalizeAiBrainStateV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/canonical-ai-serialization";
 import { createAiProfileConfigV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-profile-defaults";
+import { PureAiBrainV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/ai-brain";
+import type { AiDebugSnapshotV1, AiProfileConfigV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import { selectAiOpeningArchetypeV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-opening-archetypes-v1";
 
 export class PlayerAiController {
   private static readonly MAX_SCHEDULED_STEPS_PER_RUN = 5;
@@ -36,7 +39,7 @@ export class PlayerAiController {
   private elapsedTime: number = 0;
   private static readonly AI_ENABLED = true;
   private enabled = true;
-  private readonly stepInterval: number = AI_CONFIG.controllerStepIntervalMs;
+  private readonly stepInterval: number;
   telemetry = new TelemetrySink();
   private telemetryFrameModulo = AI_CONFIG.telemetryFrameModulo;
   private tickSubscription?: Subscription;
@@ -44,11 +47,18 @@ export class PlayerAiController {
   private stepQueued = false;
   private readonly commandReconciliation?: AiCommandReconciliation;
   private brainState?: AiBrainStateV1;
+  private readonly profile: AiProfileConfigV1 | undefined;
+  private readonly pureBrain: PureAiBrainV1 | undefined;
+  private latestBrainDebug?: AiDebugSnapshotV1;
   private completedDecisionSequence = 0;
   constructor(
     public readonly scene: ProbableWaffleScene,
     public readonly player: ProbableWafflePlayer
   ) {
+    this.profile = this.resolveProfile();
+    this.stepInterval = (this.profile?.decisionIntervalTicks ?? AI_CONFIG.controllerStepIntervalMs / SimulationTickService.TICK_INTERVAL_MS) *
+      SimulationTickService.TICK_INTERVAL_MS;
+    this.pureBrain = this.profile ? new PureAiBrainV1(this.profile, []) : undefined;
     this.blackboard = new PlayerAiBlackboard(scene);
     const commandBus = getSceneService(scene, CommandBusService);
     if (commandBus && player.playerNumber !== undefined) {
@@ -112,6 +122,7 @@ export class PlayerAiController {
             "ai.preTick",
             async () => await this.playerAiControllerAgent.preTick(getSimulationNow(this.scene))
           );
+          this.stepPureBrain();
           this.telemetry.withSpan("ai.behaviourTreeStep", () => this.behaviourTree.step());
           if (this.telemetryFrameModulo && frameBeforeSnapshot % this.telemetryFrameModulo === 0) {
             this.blackboard.diagnostics.telemetry = this.telemetry.snapshot();
@@ -240,6 +251,11 @@ export class PlayerAiController {
     return this.playerAiControllerAgent.getObservationDebugSnapshot();
   }
 
+  /** Stage 6 committed planner view; callers receive facts captured at the decision boundary only. */
+  getBrainDebugSnapshot(): AiDebugSnapshotV1 | undefined {
+    return this.latestBrainDebug ? structuredClone(this.latestBrainDebug) : undefined;
+  }
+
   /** Read-only Stage 3 adapter consumed when the pure brain becomes live in Stage 6. */
   getBrainCommandBridgeSnapshot():
     | { readonly outcomes: readonly AiCommandOutcomeV1[]; readonly authority: AiAuthorityStateV1 }
@@ -273,18 +289,43 @@ export class PlayerAiController {
     return context ? createAiBrainStateV1(context) : undefined;
   }
 
+  /** Runs the persisted pure planner at the same boundary as transitional legacy execution. */
+  private stepPureBrain(): void {
+    const observation = this.playerAiControllerAgent.getCommittedObservation();
+    const bridge = this.getBrainCommandBridgeSnapshot();
+    if (!observation || !this.brainState || !this.pureBrain) return;
+    const result = this.pureBrain.step(observation, this.brainState, bridge?.outcomes ?? []);
+    this.brainState = structuredClone(canonicalizeAiBrainStateV1({
+      ...result.nextState,
+      authority: bridge?.authority ?? result.nextState.authority
+    }));
+    this.latestBrainDebug = structuredClone(result.debugSnapshot);
+  }
+
+  private resolveProfile(): AiProfileConfigV1 | undefined {
+    const definition = this.player.playerController.data.playerDefinition;
+    if (this.player.playerNumber === undefined || definition?.factionType === undefined) return undefined;
+    return createAiProfileConfigV1(definition.difficulty ?? ProbableWaffleAiDifficulty.Medium);
+  }
+
   private getBrainMigrationContext() {
     const playerNumber = this.player.playerNumber;
     const definition = this.player.playerController.data.playerDefinition;
     const faction = definition?.factionType;
     if (playerNumber === undefined || faction === undefined) return undefined;
-    const difficulty = definition.difficulty ?? ProbableWaffleAiDifficulty.Medium;
+    const profile = this.profile ?? createAiProfileConfigV1(definition.difficulty ?? ProbableWaffleAiDifficulty.Medium);
+    const archetype = selectAiOpeningArchetypeV1({
+      faction,
+      playerNumber,
+      profile,
+      seed: playerNumber
+    });
     return {
       playerNumber,
       faction,
-      profile: createAiProfileConfigV1(difficulty),
+      profile,
       tick: getSceneService(this.scene, SimulationTickService)?.currentTick ?? 0,
-      archetypeId: "opening:default",
+      archetypeId: archetype.id,
       satisfiedOpeningStepIds: []
     } as const;
   }

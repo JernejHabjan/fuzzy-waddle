@@ -34,6 +34,7 @@ export function createAiBrainStateV1(input: CreateAiBrainStateV1Input): AiBrainS
     playerNumber: input.playerNumber,
     faction: input.faction,
     profileVersion: input.profile.profileVersion,
+    profileDifficulty: input.profile.difficulty,
     lastCommittedTick: input.tick,
     strategy: {
       stance: "opening",

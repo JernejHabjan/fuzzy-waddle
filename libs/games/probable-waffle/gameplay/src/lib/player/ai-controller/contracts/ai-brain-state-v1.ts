@@ -141,6 +141,8 @@ export interface AiBrainStateV1 {
   readonly playerNumber: PlayerNumber;
   readonly faction: FactionType;
   readonly profileVersion: string;
+  /** Lobby-resolved fair difficulty persisted with the brain for replay and host-transfer provenance. */
+  readonly profileDifficulty?: "easy" | "normal" | "hard";
   readonly lastCommittedTick: AiSimulationTick;
   readonly strategy: AiStrategyStateV1;
   readonly opening: AiOpeningStateV1;

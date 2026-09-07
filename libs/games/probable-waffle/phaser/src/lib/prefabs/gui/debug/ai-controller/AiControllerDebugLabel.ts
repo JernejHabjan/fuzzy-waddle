@@ -164,6 +164,7 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
   private getOverviewLines(controller: PlayerAiController, now: number): string[] {
     const bb = controller.blackboard;
     const trace = controller.playerAiControllerAgent.getDebugSnapshot();
+    const brain = controller.getBrainDebugSnapshot();
     const lastDecision = trace.events.at(-1);
     const lines: string[] = [];
     lines.push(`--- Strategy: ${bb.currentStrategy} ---`);
@@ -172,6 +173,12 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
     lines.push(`Military Str: ${bb.militaryStrength.toFixed(0)}`);
     lines.push(`Resources: ${bb.getTotalResources().toFixed(0)}`);
     lines.push(`Decision Trace: ${trace.events.length}/${trace.eventLimit}`);
+    lines.push(
+      brain
+        ? `Purpose: ${brain.stance} → ${brain.goalId ?? "none"} (${brain.profileDifficulty})`
+        : "Purpose: planner not yet committed"
+    );
+    if (brain) lines.push(`Next: ${brain.nextActions.join(", ") || "awaiting domain proposal"}`);
     const reconciliation = controller.getCommandReconciliationSnapshot();
     lines.push(
       reconciliation
@@ -215,6 +222,12 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
 
     lines.push(`=== STRATEGY & COMBAT ===`);
     lines.push(`Current: ${bb.currentStrategy}`);
+    const brain = controller.getBrainDebugSnapshot();
+    if (brain) {
+      lines.push(`Planner stance: ${brain.stance}`);
+      lines.push(`Commitment until tick: ${brain.commitmentUntilTick}`);
+      lines.push(`Why not: ${brain.whyNot[0]?.reason ?? "not recorded"}`);
+    }
     const locked = bb.isStrategyLocked(now);
     if (locked) {
       const remainingMs = bb.strategy.modeLockedUntil - now;

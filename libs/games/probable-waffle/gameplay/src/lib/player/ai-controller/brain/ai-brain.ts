@@ -13,6 +13,9 @@ import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
 import { assertAiBrainStateV1, assertAiObservationV1 } from "../contracts/validate-ai-contracts-v1";
 import type { AiManagerProposalV1, AiProposalManagerV1 } from "../planning/ai-manager-proposal";
 import { projectAiDebugSnapshot } from "../debug/project-ai-debug-snapshot";
+import { planAiStage6V1 } from "../planning/ai-stage-6-planner";
+import { AI_PROVISIONAL_LEASE_DURATION_TICKS } from "./create-ai-brain-state-v1";
+import { aiDeadline } from "../contracts/ai-core-types";
 
 /** Result of one pure decision boundary. */
 export interface AiBrainStepResultV1 {
@@ -153,10 +156,13 @@ export class PureAiBrainV1 implements AiBrainV1 {
     const proposalBatches: AiManagerProposalV1[] = [...this.managers]
       .sort((left, right) => left.managerId.localeCompare(right.managerId))
       .map((manager) => manager.propose(observation, previousState));
-    const intents = proposalBatches.flatMap((batch) => batch.intents).sort(compareIntents);
-    const decisions: AiIntentDecisionV1[] = [];
+    const planning = planAiStage6V1(observation, previousState, orderedOutcomes, proposalBatches, this.profile);
+    const intents = planning.proposals.sort(compareIntents);
+    const decisions: AiIntentDecisionV1[] = [...planning.preDecisions];
     const accepted: AiIntentV1[] = [];
-    const claimedKeys = new Set<string>();
+    const claimedKeys = new Set<string>(
+      planning.state.reservations.flatMap((reservation) => [reservation.claimId, reservation.subjectKey].filter(Boolean) as string[])
+    );
     const resourceClaims = new Map<ResourceType, number>();
 
     for (const intent of intents) {
@@ -165,22 +171,23 @@ export class PureAiBrainV1 implements AiBrainV1 {
         continue;
       }
       if (
-        decisions.length >= this.profile.maxIntentProposalsPerStep ||
+        decisions.filter((decision) => decision.outcome === "accepted" || decision.reason !== "claim_conflict").length >=
+          this.profile.maxIntentProposalsPerStep ||
         accepted.length >= this.profile.maxAcceptedCommandBatchesPerStep
       ) {
         decisions.push({ outcome: "rejected", intent, reason: "profile_limit", detail: "step_budget" });
         continue;
       }
       const failed = intent.preconditions.find(
-        (precondition) => !preconditionSatisfied(precondition, observation, previousState)
+        (precondition) => !preconditionSatisfied(precondition, observation, planning.state)
       );
       if (failed) {
         decisions.push({ outcome: "rejected", intent, reason: "precondition_failed", detail: failed.kind });
         continue;
       }
 
-      const exclusiveConflict = intent.claims.find(
-        (claim) => claim.kind !== "resource" && claimedKeys.has(claimKey(claim))
+      const exclusiveConflict = intent.claims.find((claim) =>
+        claim.kind !== "resource" && (claimedKeys.has(claimKey(claim)) || claimedKeys.has(claim.claimId))
       );
       if (exclusiveConflict) {
         decisions.push({ outcome: "rejected", intent, reason: "claim_conflict", detail: claimKey(exclusiveConflict) });
@@ -206,19 +213,26 @@ export class PureAiBrainV1 implements AiBrainV1 {
           resourceClaims.set(claim.resourceType, (resourceClaims.get(claim.resourceType) ?? 0) + claim.amount);
         } else {
           claimedKeys.add(claimKey(claim));
+          claimedKeys.add(claim.claimId);
         }
       }
       accepted.push(intent);
       decisions.push({ outcome: "accepted", intent, reason: "accepted" });
     }
 
+    const acceptedReservations = accepted.flatMap((intent) =>
+      intent.claims.map((claim) => ({
+        claimId: claim.claimId,
+        subjectKey: claimKey(claim),
+        ownerPlanId: intent.planId,
+        state: { kind: "provisional" as const, expiresAt: aiDeadline(observation.tick + AI_PROVISIONAL_LEASE_DURATION_TICKS) },
+        prerequisites: [],
+        createdTick: observation.tick
+      }))
+    );
     const nextState: AiBrainStateV1 = {
-      ...previousState,
-      lastCommittedTick: observation.tick,
-      scheduler: {
-        ...previousState.scheduler,
-        decisionSequence: previousState.scheduler.decisionSequence + 1
-      }
+      ...planning.state,
+      reservations: [...planning.state.reservations, ...acceptedReservations].sort((left, right) => left.claimId.localeCompare(right.claimId))
     };
     const debugSnapshot = projectAiDebugSnapshot(observation, nextState, decisions);
     return { nextState, acceptedIntents: accepted, decisions, trace: decisions, debugSnapshot };
