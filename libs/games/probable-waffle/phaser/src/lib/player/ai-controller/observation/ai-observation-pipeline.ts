@@ -37,6 +37,7 @@ import { ResourceDrainComponent } from "../../../entity/components/resource/reso
 import { ContainableComponent } from "../../../entity/components/building/containable-component";
 import { ContainerComponent } from "../../../entity/components/building/container-component";
 import { BuilderComponent } from "../../../entity/components/construction/builder-component";
+import { ConstructionSiteComponent } from "../../../entity/components/construction/construction-site-component";
 import { StatusEffectComponent } from "../../../entity/components/status-effect/status-effect-component";
 import { VisionComponent } from "../../../entity/components/vision-component";
 import { AoeZoneManager } from "../../../entity/systems/aoe-zone-manager";
@@ -248,7 +249,7 @@ export class AiObservationPipeline {
     const actors = [...projectedActors, ...rememberedActors];
     const accessProducts = this.projectAccessProducts(actors, liveById, tick);
     const effects = this.projectPermittedZones(policy, tick);
-    const map = this.projectMap(actors, liveById, tick, accessGraph);
+    const map = this.projectMap(actors, liveById, tick, accessGraph, permittedTopology);
     const resources = Object.values(ResourceType)
       .sort()
       .map((resourceType) => ({
@@ -303,6 +304,7 @@ export class AiObservationPipeline {
     const source = getActorComponent(actor, ResourceSourceComponent);
     const drain = getActorComponent(actor, ResourceDrainComponent);
     const statusEffects = getActorComponent(actor, StatusEffectComponent);
+    const constructionSite = getActorComponent(actor, ConstructionSiteComponent);
     const capabilities = this.projectActorCapabilities(actor.name as ObjectNames, definition, level);
     const logicalPosition = position ? knownValue({ ...position }, tick) : unknownValue("not_observed");
     const accessNode = this.accessGraphAdapter.resolveNodeId(
@@ -388,6 +390,9 @@ export class AiObservationPipeline {
               tick
             )
           : unknownValue(owned ? "not_supported" : "not_observed"),
+      ...(owned && constructionSite
+        ? { constructionProgress: knownValue(constructionSite.progressPercentage, tick) }
+        : {}),
       activeEffectIds: statusEffects?.getActiveEffects().map((effect) => `status:${effect.type}`).sort() ?? [],
       ...(owned ? { mainBuilding: knownValue(definition?.meta?.isMainBuilding === true, tick) } : {}),
       containedInActorId: containerOwnerId,
@@ -466,7 +471,19 @@ export class AiObservationPipeline {
       gathers: [],
       housingCapacity: definition.components?.housing?.housingCapacity ?? null,
       housingCost: definition.components?.housingCost?.housingNeeded ?? null,
-      cargoCapacity: definition.components?.container?.capacity ?? null
+      cargoCapacity: definition.components?.container?.capacity ?? null,
+      constructionProfile: {
+        resourceCost: { ...(definition.components?.productionCost?.resources ?? {}) },
+        footprintRadiusTiles: Math.floor(
+          ((definition.components?.representable?.width ?? 0) * (definition.components?.collider?.colliderFactorReduction || 1)) /
+            (getSceneService(this.scene, TilemapComponent)?.tilemap?.tileWidth ?? TilemapComponent.tileWidth) /
+            2
+        ),
+        visionRange: definition.components?.vision?.range ?? null,
+        navigableHeight: definition.components?.navigable?.navigableHeight ?? null,
+        enterHeight: definition.components?.navigable?.enterHeight ?? null,
+        exitHeight: definition.components?.navigable?.exitHeight ?? null
+      }
     };
   }
 
@@ -550,9 +567,14 @@ export class AiObservationPipeline {
     actors: readonly AiObservedActorV1[],
     liveById: ReadonlyMap<ActorId, GameObject>,
     tick: number,
-    accessGraph: NonNullable<AiObservationV1["map"]>["accessGraph"]
+    accessGraph: NonNullable<AiObservationV1["map"]>["accessGraph"],
+    permittedTopology: {
+      readonly blockedTileKeys: ReadonlySet<string>;
+      readonly navigableTileKeys: ReadonlySet<string>;
+    }
   ): NonNullable<AiObservationV1["map"]> {
     const tilemap = getSceneService(this.scene, TilemapComponent)?.tilemap;
+    const navigation = getSceneService(this.scene, NavigationService);
     const ownedNodes = actors
       .filter((actor) => actor.visibility === "owned" && actor.accessNodeId.status === "known")
       .map((actor) => actor.accessNodeId.status === "known" ? actor.accessNodeId.value : null)
@@ -576,6 +598,39 @@ export class AiObservationPipeline {
         .map((actor) => actor.accessNodeId.status === "known" ? actor.accessNodeId.value : null)
         .filter((node): node is `access:${string}` => node !== null)
     )].sort();
+    const constructionCells: Array<NonNullable<NonNullable<AiObservationV1["map"]>["constructionCells"]>[number]> = [];
+    const anchors = actors
+      .filter((actor) => actor.visibility === "owned" && actor.mainBuilding?.status === "known" && actor.mainBuilding.value)
+      .filter((actor) => actor.logicalPosition.status === "known")
+      .map((actor) => actor.logicalPosition.status === "known"
+        ? { ...actor.logicalPosition.value, x: Math.round(actor.logicalPosition.value.x), y: Math.round(actor.logicalPosition.value.y) }
+        : null)
+      .filter((position): position is Vector3Simple => position !== null)
+      .sort((left, right) => left.y - right.y || left.x - right.x)
+      .slice(0, 4);
+    const included = new Set<string>();
+    if (tilemap && navigation) {
+      anchorCells: for (const anchor of anchors) {
+        for (let y = Math.max(0, anchor.y - 12); y <= Math.min(tilemap.height - 1, anchor.y + 12); y += 1) {
+          for (let x = Math.max(0, anchor.x - 12); x <= Math.min(tilemap.width - 1, anchor.x + 12); x += 1) {
+            if (constructionCells.length >= 2_048) break anchorCells;
+            const tileKey = `${x},${y}`;
+            if (included.has(tileKey)) continue;
+            included.add(tileKey);
+            const observedNavigable = permittedTopology.navigableTileKeys.has(tileKey);
+            const observedBlocked = permittedTopology.blockedTileKeys.has(tileKey);
+            constructionCells.push({
+              tileKey,
+              position: { x, y, z: 0 },
+              groundPassable: !observedBlocked && navigation.isTileGridWithoutBlockingObjectsNavigable({ x, y }),
+              waterPassable: navigation.isTileNavigable({ x, y }, MovementTerrainType.Water),
+              elevation: observedNavigable ? navigation.getNavigableHeightAtTile({ x, y }) ?? 0 : 0,
+              observedBlocked
+            });
+          }
+        }
+      }
+    }
     return {
       bounds: tilemap ? knownValue({ width: tilemap.width, height: tilemap.height }, tick) : unknownValue("not_supported"),
       // Tilemap content is immutable for a loaded match; topology changes belong
@@ -594,6 +649,7 @@ export class AiObservationPipeline {
         status: accessGraph?.status === "ready" ? "ready" : tilemap ? "not_ready" : "service_failed",
         continuationCursor: accessGraph?.continuationCursor ?? this.queryContinuationCursor
       },
+      constructionCells,
       ...(accessGraph ? { accessGraph } : {})
     };
   }

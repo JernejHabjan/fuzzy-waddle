@@ -63,6 +63,17 @@ export const AI_CAPABILITY_COVERAGE_MANIFEST_V1: readonly AiCapabilityCoverageEn
     debug: implemented("AiDebugSnapshotV1.bases and Bases & Placement panel"),
     fixture: planned(15, "PLACE-01..03, EXP-01..02 and multi-base runtime fixture")
   },
+  {
+    family: "fortification_topology",
+    source: "Wall/WatchTower/Stairs definitions + height navigation + shared construction authority",
+    observation: implemented("AiCapabilityCatalogEntryV1.constructionProfile and AiObservedMapV1.constructionCells"),
+    proposer: implemented("AiStage11FortificationManagerV1 persistent bounded graph"),
+    command: implemented("CONSTRUCT and breach MOVE through CommandBusService"),
+    outcome: implemented("stable node effect reconciliation and observed finished actor matching"),
+    save: implemented("AiBrainStateV1.fortifications canonical graph/budget/breach state"),
+    debug: implemented("AiDebugSnapshotV1.fortifications and saved Bases & Placement overlay"),
+    fixture: planned(15, "WALL-01..05, H-27/H-28 and real height-topology runtime fixtures")
+  },
   gameplayFamily("vision_visibility", "vision + visibility systems", 4, 4),
   gameplayFamily("health_regeneration", "health + healthRegeneration", 13, 13),
   gameplayFamily("attack_target_domains", "attack + effective level overrides", 13, 13),

@@ -1,5 +1,5 @@
 import type { ActorId, PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
-import type { FactionType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import type { FactionType, ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type {
   AiBaseId,
   AiDeadlineV1,
@@ -212,6 +212,60 @@ export interface AiFortificationStateV1 {
   readonly completedNodeIds: readonly string[];
   readonly protectedBaseIds: readonly AiBaseId[];
   readonly lifecycle: "planned" | "building" | "active" | "breached" | "abandoned";
+  /** Optional for migration; Stage 11 owns this executable, bounded graph description. */
+  readonly graph?: Readonly<{
+    readonly baseId: AiBaseId;
+    readonly createdTick: AiSimulationTick;
+    readonly terrainAnchorTileKeys: readonly string[];
+    readonly openingNodeId: string;
+    readonly protectedAssetIds: readonly ActorId[];
+    readonly wholeConnectivity: "preserved" | "rejected" | "unknown";
+    readonly incrementalConnectivity: "preserved" | "rejected" | "unknown";
+    readonly budget: Readonly<{
+      readonly spendPermille: number;
+      readonly committedByResource: Readonly<Partial<Record<ResourceType, number>>>;
+      readonly remainingByResource: Readonly<Partial<Record<ResourceType, number>>>;
+    }>;
+    readonly nodes: readonly AiFortificationNodeStateV1[];
+    /** Stable topological build order; unlike keyed node sets this sequence is not sorted during save. */
+    readonly constructionSequenceNodeIds: readonly string[];
+    readonly defenderPosts: readonly {
+      readonly nodeId: string;
+      readonly assignedActorIds: readonly ActorId[];
+      readonly reachable: boolean;
+    }[];
+    readonly breach: Readonly<{
+      readonly missingNodeIds: readonly string[];
+      readonly reason: string | null;
+      readonly risk: "none" | "low" | "medium" | "high";
+      readonly responseEffectId: string | null;
+      readonly recoveryAttempts: number;
+    }>;
+  }>;
+}
+
+/** Stable constructible or reserved-opening node within one fortification graph. */
+export interface AiFortificationNodeStateV1 {
+  readonly nodeId: string;
+  readonly kind: "wall" | "tower" | "stair" | "gate_slot";
+  readonly objectName: ObjectNames | null;
+  readonly position: { readonly x: number; readonly y: number; readonly z: number };
+  readonly footprintTileKeys: readonly string[];
+  readonly navigation: Readonly<{
+    readonly navigableHeight: number | null;
+    readonly enterHeight: number | null;
+    readonly exitHeight: number | null;
+  }> | null;
+  readonly componentId: string;
+  readonly dependsOnNodeId: string | null;
+  readonly lifecycle: "planned" | "requested" | "finished" | "destroyed" | "abandoned";
+  readonly completedActorId: ActorId | null;
+  readonly attempt: number;
+  readonly effectId: string | null;
+  readonly retryAfterTick: AiSimulationTick;
+  readonly marginalCoverage: number;
+  readonly targetDomains: readonly ("ground" | "water" | "air")[];
+  readonly defenderPostReachable: boolean;
 }
 
 /** Persisted support assignment and temporary-effect ownership. */

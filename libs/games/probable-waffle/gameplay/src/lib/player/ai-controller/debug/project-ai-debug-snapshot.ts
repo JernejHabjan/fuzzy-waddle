@@ -82,6 +82,37 @@ export function projectAiDebugSnapshot(
     rejectedSiteCount: base.rejectedSiteKeys?.length ?? 0,
     expansionTrigger: base.expansion?.trigger ?? null
   }));
+  const fortifications = state.fortifications.slice(0, 16).map((plan) => ({
+    planId: plan.planId,
+    baseId: plan.graph?.baseId ?? plan.protectedBaseIds[0] ?? null,
+    lifecycle: plan.lifecycle,
+    nodes: (plan.graph?.nodes ?? []).slice(0, 24).map((node) => ({
+      nodeId: node.nodeId,
+      kind: node.kind,
+      lifecycle: node.lifecycle,
+      position: node.position,
+      marginalCoverage: node.marginalCoverage,
+      targetDomains: node.targetDomains,
+      defenderPostReachable: node.defenderPostReachable,
+      componentId: node.componentId,
+      dependsOnNodeId: node.dependsOnNodeId
+    })),
+    terrainAnchorTileKeys: plan.graph?.terrainAnchorTileKeys ?? [],
+    protectedAssetCount: plan.graph?.protectedAssetIds.length ?? 0,
+    openingNodeId: plan.graph?.openingNodeId ?? null,
+    wholeConnectivity: plan.graph?.wholeConnectivity ?? "unknown",
+    incrementalConnectivity: plan.graph?.incrementalConnectivity ?? "unknown",
+    spendPermille: plan.graph?.budget.spendPermille ?? null,
+    breachReason: plan.graph?.breach.reason ?? null,
+    breachRisk: plan.graph?.breach.risk ?? "unknown",
+    recoveryAttempts: plan.graph?.breach.recoveryAttempts ?? 0,
+    defenderPosts: plan.graph?.defenderPosts.length ?? 0,
+    reachableDefenderPosts: plan.graph?.defenderPosts.filter((post) => post.reachable).length ?? 0,
+    budgetRemaining: Object.entries(plan.graph?.budget.remainingByResource ?? {})
+      .filter((entry): entry is [string, number] => entry[1] !== undefined)
+      .map(([resourceType, amount]) => ({ resourceType, amount }))
+      .sort((left, right) => left.resourceType.localeCompare(right.resourceType))
+  }));
 
   return {
     schemaVersion: 1,
@@ -108,6 +139,7 @@ export function projectAiDebugSnapshot(
     transportOperations,
     skirmish,
     bases,
+    fortifications,
     progressHealth:
       state.authority.health === "technical_fault"
         ? "technical_fault"
@@ -159,7 +191,11 @@ export function projectAiDebugSnapshot(
         ownerStage: 8,
         reason: transportOperations.map((operation) => `${operation.planId}:${operation.phase}`).join(",") || "no_active_transport_plan"
       },
-      basesFortifications: { status: "ready", ownerStage: 10, reason: bases.map((base) => `${base.baseId}:${base.lifecycle}`).join(",") || "main_structure_not_observed" },
+      basesFortifications: {
+        status: "ready",
+        ownerStage: 11,
+        reason: [...bases.map((base) => `${base.baseId}:${base.lifecycle}`), ...fortifications.map((plan) => `${plan.planId}:${plan.lifecycle}`)].join(",") || "main_structure_not_observed"
+      },
       decisionsRecovery: { status: "ready", ownerStage: 2, reason: null },
       runtimeLimits: later(6)
     }

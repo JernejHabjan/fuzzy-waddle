@@ -57,7 +57,7 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
       align: "right",
       fontFamily: "disposabledroid",
       fontSize: "20px",
-      maxLines: 12,
+      maxLines: 24,
       resolution: 10,
       lineSpacing: 4
     });
@@ -128,6 +128,7 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
 
     const lines: string[] = [];
     if (this.category !== "transport") this.clearTransportOverlay();
+    if (this.category !== "bases") this.clearFortificationOverlay();
 
     if (!this.category) {
       lines.push(...this.getOverviewLines(controller, now));
@@ -153,6 +154,7 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
           break;
         case "bases":
           lines.push(...this.getBaseLines(controller));
+          lines.push(...this.getFortificationLines(controller));
           break;
         case "logistics":
           lines.push(...this.getLogisticsLines(controller, now));
@@ -212,7 +214,51 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
     return lines;
   }
 
+  /** Reads only committed graph facts and renders no hidden or freshly queried topology. */
+  private getFortificationLines(controller: PlayerAiController): string[] {
+    const fortifications = controller.getBrainDebugSnapshot()?.fortifications ?? [];
+    if (!fortifications.length) {
+      this.clearFortificationOverlay();
+      return ["", "No justified fortification graph"];
+    }
+    const lines = ["", "=== FORTIFICATIONS ==="];
+    for (const plan of fortifications) {
+      const finished = plan.nodes.filter((node) => node.lifecycle === "finished").length;
+      lines.push(`${plan.planId}: ${plan.lifecycle}, ${finished}/${plan.nodes.length}`);
+      lines.push(`  paths whole=${plan.wholeConnectivity}, prefixes=${plan.incrementalConnectivity}, cap=${plan.spendPermille ?? "?"}‰`);
+      lines.push(`  anchors ${plan.terrainAnchorTileKeys.join(" ↔ ") || "unknown"}, protects ${plan.protectedAssetCount}`);
+      lines.push(`  budget ${plan.budgetRemaining.map((entry) => `${entry.resourceType}:${entry.amount}`).join(",") || "none"}`);
+      lines.push(`  opening ${plan.openingNodeId ?? "legacy"}, breach ${plan.breachReason ?? "none"} (${plan.breachRisk}), recovery ${plan.recoveryAttempts}`);
+      lines.push(`  defender posts ${plan.reachableDefenderPosts}/${plan.defenderPosts} reachable`);
+      for (const tower of plan.nodes.filter((node) => node.kind === "tower")) {
+        lines.push(`  tower +${tower.marginalCoverage} [${tower.targetDomains.join(",") || "none"}]`);
+      }
+    }
+    this.renderFortificationOverlay(fortifications);
+    return lines;
+  }
+
   private transportOverlay?: Phaser.GameObjects.Graphics;
+  private fortificationOverlay?: Phaser.GameObjects.Graphics;
+
+  /** Draws the saved graph, including a distinct green opening node. */
+  private renderFortificationOverlay(
+    plans: NonNullable<ReturnType<PlayerAiController["getBrainDebugSnapshot"]>>["fortifications"]
+  ): void {
+    this.clearFortificationOverlay();
+    const navigation = getSceneService(this.mainSceneWithActors, NavigationService);
+    if (!navigation) return;
+    const graphics = this.mainSceneWithActors.add.graphics().setDepth(Number.MAX_SAFE_INTEGER);
+    for (const plan of plans) {
+      for (const node of plan.nodes) {
+        const world = navigation.getTileWorldCenter(node.position);
+        if (!world) continue;
+        const color = node.kind === "gate_slot" ? 0x4caf50 : node.kind === "tower" ? 0xff9800 : node.kind === "stair" ? 0x40c4ff : 0xffffff;
+        graphics.fillStyle(color, node.lifecycle === "finished" ? 0.95 : 0.55).fillCircle(world.x, world.y, node.kind === "tower" ? 7 : 5);
+      }
+    }
+    this.fortificationOverlay = graphics;
+  }
 
   /** Draws only recorded transfer anchors; opening the panel never invokes route work. */
   private renderTransportOverlay(
@@ -239,8 +285,14 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
     this.transportOverlay = undefined;
   }
 
+  private clearFortificationOverlay(): void {
+    this.fortificationOverlay?.destroy();
+    this.fortificationOverlay = undefined;
+  }
+
   private destroyTransportOverlay(): void {
     this.clearTransportOverlay();
+    this.clearFortificationOverlay();
   }
 
   private getOverviewLines(controller: PlayerAiController, now: number): string[] {

@@ -62,6 +62,8 @@ export interface AiObservedActorV1 {
   readonly housingCost: AiKnownValueV1<number>;
   readonly housingCapacity: AiKnownValueV1<number>;
   readonly resourceState: AiKnownValueV1<AiObservedResourceStateV1>;
+  /** Owned construction percentage; absent only for legacy observations. */
+  readonly constructionProgress?: AiKnownValueV1<number>;
   readonly activeEffectIds: readonly string[];
   /** Runtime-definition metadata exposed for owned actors; base identity never infers this from position. */
   readonly mainBuilding?: AiKnownValueV1<boolean>;
@@ -127,6 +129,15 @@ export interface AiObservedMapV1 {
     readonly status: "ready" | "not_ready" | "unknown" | "blocked" | "service_failed";
     readonly continuationCursor: number;
   };
+  /** Bounded player-permitted local cells used for hypothetical construction connectivity. */
+  readonly constructionCells?: readonly {
+    readonly tileKey: string;
+    readonly position: Vector3Simple;
+    readonly groundPassable: boolean;
+    readonly waterPassable: boolean;
+    readonly elevation: number;
+    readonly observedBlocked: boolean;
+  }[];
   /** Completed cached topology generation; optional for legacy observations and isolated fixtures. */
   readonly accessGraph?: AiAccessGraphV1;
 }

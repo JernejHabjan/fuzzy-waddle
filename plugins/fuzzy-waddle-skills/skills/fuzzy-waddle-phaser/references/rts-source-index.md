@@ -16,6 +16,7 @@ All paths in the following table are relative to libs/games/probable-waffle/phas
 | Match end conditions | world/state/GameModeConditionChecker.ts |
 | Purposeful skirmish loop | gameplay `player/ai-controller/planning/ai-stage-9-skirmish-manager.ts`; Phaser `player/ai-controller/player-ai-controller.ts` |
 | Stable bases and expansion candidates | gameplay `player/ai-controller/planning/ai-stage-10-base-manager.ts`; Phaser observation `ai-observation-pipeline.ts`; shared construction `world/services/multiplayer/shared-command-application.service.ts` |
+| Fortification graph planning | gameplay `player/ai-controller/planning/ai-stage-11-fortification-manager.ts`; Phaser `prefabs/buildings/tivara/navigation-topology.events.ts`; `world/services/height-navigation-graph-builder.ts` |
 | In-game AI panel | prefabs/gui/debug/ai-controller/AiControllerDebugPanel.ts |
 
 Cross-library paths (repository-relative):

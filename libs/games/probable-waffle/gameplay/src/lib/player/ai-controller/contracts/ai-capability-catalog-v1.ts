@@ -16,6 +16,16 @@ export interface AiCapabilityCatalogEntryV1 {
   readonly housingCapacity: number | null;
   readonly housingCost: number | null;
   readonly cargoCapacity: number | null;
+  /** Definition-derived construction and elevated-navigation facts; absent for legacy catalogs. */
+  readonly constructionProfile?: Readonly<{
+    readonly resourceCost: Readonly<Partial<Record<ResourceType, number>>>;
+    /** Radius used by the runtime's square `getTileCoordsUnderObject` footprint rule. */
+    readonly footprintRadiusTiles: number;
+    readonly visionRange: number | null;
+    readonly navigableHeight: number | null;
+    readonly enterHeight: number | null;
+    readonly exitHeight: number | null;
+  }>;
 }
 
 /** Atomic capability generation projected by the Phaser definition adapter. */

@@ -92,6 +92,35 @@ export interface AiDebugSnapshotV1 {
     readonly rejectedSiteCount: number;
     readonly expansionTrigger: string | null;
   }[];
+  /** Saved Stage-11 graph facts, including the intentionally traversable opening. */
+  readonly fortifications: readonly {
+    readonly planId: string;
+    readonly baseId: string | null;
+    readonly lifecycle: string;
+    readonly nodes: readonly {
+      readonly nodeId: string;
+      readonly kind: string;
+      readonly lifecycle: string;
+      readonly position: { readonly x: number; readonly y: number; readonly z: number };
+      readonly marginalCoverage: number;
+      readonly targetDomains: readonly string[];
+      readonly defenderPostReachable: boolean;
+      readonly componentId: string;
+      readonly dependsOnNodeId: string | null;
+    }[];
+    readonly terrainAnchorTileKeys: readonly string[];
+    readonly protectedAssetCount: number;
+    readonly openingNodeId: string | null;
+    readonly wholeConnectivity: string;
+    readonly incrementalConnectivity: string;
+    readonly spendPermille: number | null;
+    readonly breachReason: string | null;
+    readonly breachRisk: string;
+    readonly recoveryAttempts: number;
+    readonly defenderPosts: number;
+    readonly reachableDefenderPosts: number;
+    readonly budgetRemaining: readonly { readonly resourceType: string; readonly amount: number }[];
+  }[];
   readonly progressHealth:
     | "healthy"
     | "waiting"

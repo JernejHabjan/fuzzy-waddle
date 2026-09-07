@@ -81,6 +81,9 @@ export function canonicalizeAiObservationV1(observation: AiObservationV1): AiObs
             frontierAccessNodeIds: [...observation.map.frontierAccessNodeIds].sort(),
             scoutCoverageAccessNodeIds: [...observation.map.scoutCoverageAccessNodeIds].sort(),
             dynamicObstacleActorIds: [...observation.map.dynamicObstacleActorIds].sort(),
+            ...(observation.map.constructionCells
+              ? { constructionCells: [...observation.map.constructionCells].sort((left, right) => left.tileKey.localeCompare(right.tileKey)) }
+              : {}),
             ...(observation.map.accessGraph
               ? {
                   accessGraph: {
@@ -207,7 +210,27 @@ export function canonicalizeAiBrainStateV1(state: AiBrainStateV1): AiBrainStateV
         ...plan,
         nodeIds: [...plan.nodeIds].sort(),
         completedNodeIds: [...plan.completedNodeIds].sort(),
-        protectedBaseIds: [...plan.protectedBaseIds].sort()
+        protectedBaseIds: [...plan.protectedBaseIds].sort(),
+        ...(plan.graph
+          ? {
+              graph: {
+                ...plan.graph,
+                terrainAnchorTileKeys: [...plan.graph.terrainAnchorTileKeys].sort(),
+                protectedAssetIds: [...plan.graph.protectedAssetIds].sort(),
+                nodes: [...plan.graph.nodes]
+                  .map((node) => ({
+                    ...node,
+                    footprintTileKeys: [...node.footprintTileKeys].sort(),
+                    targetDomains: [...node.targetDomains].sort()
+                  }))
+                  .sort((left, right) => left.nodeId.localeCompare(right.nodeId)),
+                defenderPosts: [...plan.graph.defenderPosts]
+                  .map((post) => ({ ...post, assignedActorIds: [...post.assignedActorIds].sort() }))
+                  .sort((left, right) => left.nodeId.localeCompare(right.nodeId)),
+                breach: { ...plan.graph.breach, missingNodeIds: [...plan.graph.breach.missingNodeIds].sort() }
+              }
+            }
+          : {})
       }))
       .sort((left, right) => left.planId.localeCompare(right.planId)),
     support: [...state.support]

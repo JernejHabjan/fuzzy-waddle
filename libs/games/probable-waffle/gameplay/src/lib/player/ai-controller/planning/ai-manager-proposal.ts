@@ -1,7 +1,7 @@
 import type { AiObservationV1 } from "../contracts/ai-observation-v1";
 import type { AiIntentV1 } from "../contracts/ai-intent-v1";
 import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiBaseStateV1, AiEconomyProductionStateV1, AiOpeningStateV1, AiSkirmishStateV1, AiStrategyStateV1, AiSquadStateV1, AiTransportStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiBaseStateV1, AiEconomyProductionStateV1, AiFortificationStateV1, AiOpeningStateV1, AiSkirmishStateV1, AiStrategyStateV1, AiSquadStateV1, AiTransportStateV1 } from "../contracts/ai-brain-state-v1";
 import type { AiServiceLaneV1 } from "../contracts/ai-lane-contracts";
 
 /** Deterministic proposal batch produced by one narrow manager. */
@@ -29,6 +29,8 @@ export interface AiManagerProposalV1 {
     skirmish?: AiSkirmishStateV1;
     /** Stage 10 is the only owner of stable base identity and expansion lifecycle. */
     bases?: readonly AiBaseStateV1[];
+    /** Stage 11 is the sole owner of persistent fortification graphs. */
+    fortifications?: readonly AiFortificationStateV1[];
   }>;
 }
 
