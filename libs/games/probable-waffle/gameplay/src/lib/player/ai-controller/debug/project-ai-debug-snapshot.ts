@@ -35,7 +35,7 @@ export function projectAiDebugSnapshot(
     commitmentUntilTick: state.strategy.commitmentDeadline.dueTick,
     topReasons,
     decisions,
-    nextActions: accepted.slice(0, 3).map((decision) => decision.intent.kind),
+    nextActions: accepted.slice(0, 3).map((decision) => `${decision.intent.kind}:${decision.intent.reasonCode}`),
     mainBlockingReason: blocker?.cause ?? rejected[0]?.reason ?? null,
     whyNot: rejected.slice(0, 32).map((decision) => ({
       subjectId: decision.intent.intentId,
@@ -71,9 +71,21 @@ export function projectAiDebugSnapshot(
       truncatedEventCount: Math.max(0, decisions.length - 64)
     },
     sections: {
-      buildOrder: later(7),
-      productionComposition: later(7),
-      economyLabor: later(7),
+      buildOrder: {
+        status: "ready",
+        ownerStage: 7,
+        reason: state.opening.plan.currentStepId ?? "opening_transition"
+      },
+      productionComposition: {
+        status: "ready",
+        ownerStage: 7,
+        reason: state.economyProduction.demands.map((demand) => `${demand.capabilityOrRole}:${demand.desired}`).join(",") || null
+      },
+      economyLabor: {
+        status: "ready",
+        ownerStage: 7,
+        reason: state.economyProduction.forecasts.length ? "600_tick_forecast_committed" : "no_macro_forecast"
+      },
       intelligenceEnvironment: later(9),
       squadsSupport: later(13),
       transport: later(8),

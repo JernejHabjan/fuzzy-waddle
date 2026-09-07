@@ -157,6 +157,13 @@ export class PureAiBrainV1 implements AiBrainV1 {
       .sort((left, right) => left.managerId.localeCompare(right.managerId))
       .map((manager) => manager.propose(observation, previousState));
     const planning = planAiStage6V1(observation, previousState, orderedOutcomes, proposalBatches, this.profile);
+    // A proposer may own a persisted projection (opening/demand state) but never
+    // mutates the previous brain directly. Stable manager order makes competing
+    // narrow projections deterministic; Stage 7 is currently the sole owner.
+    const projectedState = proposalBatches.reduce<AiBrainStateV1>(
+      (state, batch) => ({ ...state, ...batch.statePatch }),
+      planning.state
+    );
     const intents = planning.proposals.sort(compareIntents);
     const decisions: AiIntentDecisionV1[] = [...planning.preDecisions];
     const accepted: AiIntentV1[] = [];
@@ -179,7 +186,7 @@ export class PureAiBrainV1 implements AiBrainV1 {
         continue;
       }
       const failed = intent.preconditions.find(
-        (precondition) => !preconditionSatisfied(precondition, observation, planning.state)
+        (precondition) => !preconditionSatisfied(precondition, observation, projectedState)
       );
       if (failed) {
         decisions.push({ outcome: "rejected", intent, reason: "precondition_failed", detail: failed.kind });
@@ -231,8 +238,8 @@ export class PureAiBrainV1 implements AiBrainV1 {
       }))
     );
     const nextState: AiBrainStateV1 = {
-      ...planning.state,
-      reservations: [...planning.state.reservations, ...acceptedReservations].sort((left, right) => left.claimId.localeCompare(right.claimId))
+      ...projectedState,
+      reservations: [...projectedState.reservations, ...acceptedReservations].sort((left, right) => left.claimId.localeCompare(right.claimId))
     };
     const debugSnapshot = projectAiDebugSnapshot(observation, nextState, decisions);
     return { nextState, acceptedIntents: accepted, decisions, trace: decisions, debugSnapshot };

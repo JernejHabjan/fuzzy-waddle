@@ -320,9 +320,19 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
 
   private getProductionLines(controller: PlayerAiController, now: number): string[] {
     const bb = controller.blackboard;
+    const brainState = controller.getBrainState();
     const lines: string[] = [];
 
     lines.push(`=== PRODUCTION & TECH ===`);
+    if (brainState) {
+      lines.push(`--- Stage 7 Macro Plan ---`);
+      lines.push(`Opening step: ${brainState.opening.plan.currentStepId ?? "transition"}`);
+      for (const demand of brainState.economyProduction.demands.slice(0, 4)) {
+        lines.push(`  ${demand.purpose}: ${demand.satisfiedActorIds.length}/${demand.desired} ${demand.capabilityOrRole}`);
+      }
+      lines.push(`Macro reservations: ${brainState.reservations.length}`);
+      lines.push(``);
+    }
 
     lines.push(`--- Buildings ---`);
     lines.push(`Training: ${bb.trainingBuildings.length}`);

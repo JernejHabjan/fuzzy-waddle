@@ -19,6 +19,7 @@ export * from "./lib/player/ai-controller/contracts/ai-repro-bundle-v1";
 export * from "./lib/player/ai-controller/contracts/validate-ai-contracts-v1";
 export * from "./lib/player/ai-controller/planning/ai-manager-proposal";
 export * from "./lib/player/ai-controller/planning/ai-stage-6-planner";
+export * from "./lib/player/ai-controller/planning/ai-stage-7-macro-manager";
 export * from "./lib/player/ai-controller/profiles/ai-profile-defaults";
 export * from "./lib/player/ai-controller/profiles/ai-opening-archetypes-v1";
 export * from "./lib/player/ai-controller/brain/create-ai-brain-state-v1";
