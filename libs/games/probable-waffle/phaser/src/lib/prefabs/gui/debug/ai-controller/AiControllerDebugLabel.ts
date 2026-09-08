@@ -283,8 +283,13 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
     if (category === "production") {
       return [
         "=== PRODUCTION & TECH ===",
-        `Opening: ${state.opening.plan.currentStepId ?? "transition"}`,
+        `Opening: ${state.opening.archetypeId} / ${state.opening.plan.currentStepId ?? "transition"}`,
         ...state.economyProduction.demands.slice(0, 10).map((demand) => `${demand.purpose}: ${demand.satisfiedActorIds.length}/${demand.desired} ${demand.capabilityOrRole}`),
+        `Adaptation: ${brain.adaptation.lastTransitionReason ?? "no confirmed transition"} @ ${brain.adaptation.lastTransitionTick ?? "n/a"}`,
+        ...brain.adaptation.evidence.map((evidence) => `  evidence ${evidence.kind}: ${evidence.sourceContactId} ${evidence.consecutiveEvaluations}/2 (${evidence.permittedFacts.join(",")})`),
+        ...brain.adaptation.roleTargets.map((target) => `  counter ${target.role}: ${target.desired} (${target.evidenceIds.join(",")})`),
+        `Research: ${brain.adaptation.selectedResearchType ?? "no positive legal candidate"} (${brain.adaptation.selectedResearchScore ?? "n/a"})`,
+        `Committed production: ${brain.adaptation.cancellationPolicy}`,
         `Active reservations: ${state.reservations.length}`
       ];
     }
@@ -310,6 +315,7 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
     return [
       "=== ADAPTIVE THRESHOLDS ===",
       `Difficulty profile: ${brain.profileDifficulty} (${brain.profileVersion})`,
+      `Archetype: ${brain.archetypeId}; adaptation every ${this.historyOffset === 0 ? "committed eligible decision" : "recorded decision"}`,
       "Engage band: ≥1200‰ local estimate with sufficient confidence",
       "Retreat band: <800‰ local estimate or critical health",
       "Target switch: ≥20% score improvement",

@@ -13,6 +13,7 @@ export type AiDecisionReasonCode =
   | "no_legal_research"
   | "non_host"
   | "path_not_found"
+  | "pure_planner_authoritative"
   | "research_started";
 
 export type AiDecisionOutcome = "dispatched" | "failed" | "succeeded";

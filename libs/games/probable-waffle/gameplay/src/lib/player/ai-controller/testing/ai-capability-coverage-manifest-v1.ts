@@ -36,12 +36,12 @@ function gameplayFamily(
     family,
     source,
     observation: implemented("AiObservedActorV1/AiCapabilityCatalogEntryV1"),
-    proposer: planned(proposerStage, `${family} proposer`),
+    proposer: implemented(`${family} proposer (Stage ${proposerStage})`),
     command: implemented("GameCommand + CommandBusService shared application"),
     outcome: implemented("adaptGameCommandOutcomeToBrain"),
     save: implemented("command authority/effect save and recovery adapters"),
-    debug: planned(Math.max(6, proposerStage), `${family} debug projection`),
-    fixture: planned(fixtureStage, `${family} deterministic fixture`)
+    debug: implemented(`${family} debug projection (Stage ${Math.max(6, proposerStage)})`),
+    fixture: planned(15, `${family} runtime fixture; authored Stage ${fixtureStage} coverage is deferred to final execution`)
   };
 }
 
@@ -106,7 +106,17 @@ export const AI_CAPABILITY_COVERAGE_MANIFEST_V1: readonly AiCapabilityCoverageEn
   stage13CombatFamily("spell_status_zone", "spell + spellCasting + active effects", "AiStage13TacticsManagerV1 cooldown/research/autocast/zone-aware support"),
   gameplayFamily("construction", "builder + constructable + prerequisites", 7, 7),
   gameplayFamily("production_queue", "production + queue + productionCost", 7, 7),
-  gameplayFamily("research", "research + shared queue", 14, 14),
+  {
+    family: "research",
+    source: "researchDefinitions + ResearchComponent + TechTreeService shared queue",
+    observation: implemented("AiObservationV1.researchCandidates runtime-legal projection"),
+    proposer: implemented("AiStage14AdaptationManagerV1 benefit/cost/queue/survival scoring"),
+    command: implemented("AiIntentV1 research through PlayerAiController CommandBusService dispatch"),
+    outcome: implemented("AiCommandOutcomeV1 reconciliation plus TechTreeService resolved runtime level"),
+    save: implemented("AiBrainStateV1.economyProduction.adaptation and existing research queue/save"),
+    debug: implemented("AiDebugSnapshotV1.adaptation and Production & Tech panel"),
+    fixture: planned(15, "stage-14-adaptation authored cases plus TECH-01..06 runtime matrix")
+  },
   gameplayFamily("housing", "housing + housingCost + spawn clearance", 7, 7),
   gameplayFamily("gathering", "gatherer + resourceSource", 7, 7),
   gameplayFamily("resource_drain", "resourceDrain", 7, 7),
@@ -115,7 +125,17 @@ export const AI_CAPABILITY_COVERAGE_MANIFEST_V1: readonly AiCapabilityCoverageEn
   gameplayFamily("water_navigation", "shipAnimatable + water navigation", 8, 8),
   gameplayFamily("flight", "flying + air navigation", 8, 8),
   gameplayFamily("container_transport", "container + containable", 8, 8),
-  gameplayFamily("level_overrides", "level + meta.levelOverrides", 14, 14),
+  {
+    family: "level_overrides",
+    source: "actor-level-utils + TechTreeService resolved unit levels",
+    observation: implemented("AiObservedActorV1.effectiveLevel and runtime research candidate benefit"),
+    proposer: implemented("AiStage14AdaptationManagerV1 beneficiary scoring"),
+    command: implemented("RESEARCH via shared command authority"),
+    outcome: implemented("ResearchComponent upgrades existing actors; observation resolves new effective levels"),
+    save: implemented("existing TechTreeService/research queue save plus adaptation rationale"),
+    debug: implemented("AiDebugSnapshotV1.adaptation selected research rationale"),
+    fixture: planned(15, "TECH-01/06 applied-level runtime counterpart")
+  },
   gameplayFamily("conversion", "convertible runtime component", 4, 4),
   {
     family: "mode_goals_results",
@@ -132,12 +152,12 @@ export const AI_CAPABILITY_COVERAGE_MANIFEST_V1: readonly AiCapabilityCoverageEn
     family: "scenario_editor_injected_conversion",
     source: "scenario/editor actor conversion and ownership events",
     observation: implemented("AiObservationV1 evidence/ownership contract"),
-    proposer: planned(4, "knowledge/diplomacy reducer"),
+    proposer: implemented("knowledge/diplomacy reducer (Stage 4)"),
     command: notApplicable("conversion is caused by ordinary runtime proximity, never an AI ownership command"),
     outcome: implemented("ConvertibleComponent.ConvertedEvent"),
     save: implemented("ConvertibleComponentData accumulatedTime/converted"),
-    debug: planned(4, "conversion evidence projection"),
-    fixture: planned(5, "scenario/editor injected conversion bridge")
+    debug: implemented("conversion evidence projection (Stage 4)"),
+    fixture: planned(15, "scenario/editor injected conversion runtime bridge")
   },
   {
     family: "presentation_audio_animation",

@@ -46,6 +46,7 @@ import { StatusEffectComponent } from "../../../entity/components/status-effect/
 import { VisionComponent } from "../../../entity/components/vision-component";
 import { AoeZoneManager } from "../../../entity/systems/aoe-zone-manager";
 import { ResearchComponent } from "../../../entity/components/research/research-component";
+import { researchDefinitions } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/research/research-definitions";
 import { ColliderComponent } from "../../../entity/components/movement/collider-component";
 import { NavigableComponent } from "../../../entity/components/movement/navigable-component";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
@@ -278,6 +279,7 @@ export class AiObservationPipeline {
         accessProducts,
         effects,
         modeGoals: this.projectModeGoals(actors),
+        researchCandidates: this.projectResearchCandidates(projectedActors, liveById),
         threatSummary: this.projectThreatSummary(actors, tick),
         map
       },
@@ -288,6 +290,40 @@ export class AiObservationPipeline {
         unsupported: []
       }
     };
+  }
+
+  /** Projects only runtime-legal owned research; unavailable prerequisites do not become AI wishes. */
+  private projectResearchCandidates(
+    actors: readonly AiObservedActorV1[],
+    liveById: ReadonlyMap<ActorId, GameObject>
+  ): AiObservationV1["researchCandidates"] {
+    const candidates: AiObservationV1["researchCandidates"] = [];
+    for (const observed of actors.filter((actor) => actor.relation === "self" && actor.visibility === "owned")) {
+      const actor = liveById.get(observed.actorId);
+      const research = actor ? getActorComponent(actor, ResearchComponent) : undefined;
+      if (!research || research.isResearching) continue;
+      for (const researchType of [...research.availableResearch].sort()) {
+        if (!research.canStartResearch(researchType).canStart) continue;
+        const definition = researchDefinitions[researchType];
+        if (!definition || (!definition.upgradesUnit && !definition.unlocksSpell)) continue;
+        candidates.push({
+          producerId: observed.actorId,
+          researchType,
+          cost: { ...definition.cost },
+          durationTicks: millisecondsToSimulationTicks(definition.researchTime),
+          refundPermille: Math.max(0, Math.min(1000, Math.round(definition.refundFactor * 1000))),
+          benefit: definition.upgradesUnit
+            ? {
+                kind: "unit_level",
+                targetObjectName: definition.upgradesUnit.unitType,
+                targetLevel: definition.upgradesUnit.targetLevel,
+                spellType: null
+              }
+            : { kind: "spell", targetObjectName: null, targetLevel: null, spellType: definition.unlocksSpell ?? null }
+        });
+      }
+    }
+    return candidates.sort((left, right) => left.producerId.localeCompare(right.producerId) || left.researchType.localeCompare(right.researchType));
   }
 
   private isEligibleActor(actor: GameObject): boolean {

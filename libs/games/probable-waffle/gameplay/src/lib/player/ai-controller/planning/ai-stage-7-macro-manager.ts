@@ -58,6 +58,21 @@ function roleFor(objectName: ObjectNames, catalog: AiCapabilityCatalogV1): "fron
   return "frontline";
 }
 
+/** Archetypes vary a legal branch budget only; every profile still executes the shared essential checkpoints. */
+function openingBudget(archetypeId: string): { readonly firstForce: number; readonly supplyBuffer: number; readonly rangedPermille: number } {
+  const parts = archetypeId.split(":");
+  const purpose = parts[parts.length - 1];
+  switch (purpose) {
+    case "rush":
+    case "pressure": return { firstForce: 4, supplyBuffer: 3, rangedPermille: 300 };
+    case "macro": return { firstForce: 4, supplyBuffer: 5, rangedPermille: 400 };
+    case "tech": return { firstForce: 5, supplyBuffer: 4, rangedPermille: 500 };
+    case "turtle":
+    case "safe": return { firstForce: 6, supplyBuffer: 4, rangedPermille: 500 };
+    default: return { firstForce: 6, supplyBuffer: 3, rangedPermille: 400 };
+  }
+}
+
 /**
  * Stage 7 proposal owner. It derives opening, supply and composition demand
  * from one committed observation and the paired runtime capability catalog.
@@ -165,15 +180,16 @@ export class AiStage7MacroManagerV1 implements AiProposalManagerV1 {
     }
 
     const self = owned(observation);
+    const budget = openingBudget(state.opening.archetypeId);
     const housing = self.reduce((total, actor) => total + (actor.housingCapacity.status === "known" ? actor.housingCapacity.value : 0), 0);
     const used = self.reduce((total, actor) => total + (actor.housingCost.status === "known" ? actor.housingCost.value : 0), 0);
     const freeSupply = housing - used;
     const housingEntries = catalog.entries.filter((entry) => (entry.housingCapacity ?? 0) > 0).sort((a, b) => a.sourceObjectName.localeCompare(b.sourceObjectName));
-    const neededHousing = freeSupply < 3 ? Math.ceil((3 - freeSupply) / Math.max(1, housingEntries[0]?.housingCapacity ?? 1)) : 0;
+    const neededHousing = freeSupply < budget.supplyBuffer ? Math.ceil((budget.supplyBuffer - freeSupply) / Math.max(1, housingEntries[0]?.housingCapacity ?? 1)) : 0;
     if (neededHousing > 0 && housingEntries[0]) {
       const housingObject = housingEntries[0].sourceObjectName;
       demands.push({
-        demandId: "demand:supply:buffer" as AiDemandV1["demandId"], purpose: "supply_buffer", capabilityOrRole: "housing", unit: "population", desired: used + 3,
+        demandId: "demand:supply:buffer" as AiDemandV1["demandId"], purpose: "supply_buffer", capabilityOrRole: "housing", unit: "population", desired: used + budget.supplyBuffer,
         satisfiedActorIds: self.filter((actor) => actor.housingCapacity.status === "known" && actor.housingCapacity.value > 0).map((actor) => actor.actorId), queuedIds: [], constructingIds: [], acceptedNotObservedEffectIds: [], preferredObjectNames: [housingObject], resourceObligations: {}
       });
       const builder = self.find((actor) => catalog.entries.some((entry) => entry.sourceObjectName === actor.objectName && entry.constructs.includes(housingObject)));
@@ -185,20 +201,20 @@ export class AiStage7MacroManagerV1 implements AiProposalManagerV1 {
             ...ids, kind: "construct", planId: state.opening.plan.planId, demandId: "demand:supply:buffer" as AiDemandV1["demandId"], lane: "supply_production", proposedTick: observation.tick, urgencyClass: 1, utility: 850,
             preconditions: [{ kind: "actor_exists", actorId: builder.actorId }],
             claims: [{ claimId: ids.claimId, kind: "site", siteKey: `supply:${housingObject}:${position.x}:${position.y}` }, { claimId: `${ids.claimId}:effect` as AiIntentV1["claims"][number]["claimId"], kind: "effect", effectId: ids.effectId }],
-            reasonCode: `supply_buffer:deficit=${3 - freeSupply}`, builderIds: [builder.actorId], objectName: housingObject, logicalPosition: position, siteKey: `supply:${housingObject}:${position.x}:${position.y}`
+            reasonCode: `supply_buffer:${state.opening.archetypeId}:deficit=${budget.supplyBuffer - freeSupply}`, builderIds: [builder.actorId], objectName: housingObject, logicalPosition: position, siteKey: `supply:${housingObject}:${position.x}:${position.y}`
           });
         }
       }
     }
 
     const military = self.filter((actor) => actor.housingCost.status === "known" && actor.housingCost.value > 0 && !catalog.entries.some((entry) => entry.sourceObjectName === actor.objectName && entry.constructs.length > 0));
-    const targetMilitary = 6;
+    const targetMilitary = budget.firstForce;
     if (military.length < targetMilitary) {
       const producer = self.find((actor) => catalog.entries.some((entry) => entry.sourceObjectName === actor.objectName && entry.produces.length > 0) && queueFree(actor));
       const available = producer ? catalog.entries.find((entry) => entry.sourceObjectName === producer.objectName)?.produces ?? [] : [];
       const roleCounts = { frontline: 0, ranged: 0, support: 0 };
       for (const actor of military) roleCounts[roleFor(actor.objectName, catalog)] += 1;
-      const desiredRanged = Math.ceil(targetMilitary * 0.4);
+      const desiredRanged = Math.ceil((targetMilitary * budget.rangedPermille) / 1000);
       const candidate = [...available].sort((left, right) => {
         const leftDeficit = roleFor(left, catalog) === "ranged" ? desiredRanged - roleCounts.ranged : targetMilitary - desiredRanged - roleCounts.frontline;
         const rightDeficit = roleFor(right, catalog) === "ranged" ? desiredRanged - roleCounts.ranged : targetMilitary - desiredRanged - roleCounts.frontline;
@@ -210,17 +226,21 @@ export class AiStage7MacroManagerV1 implements AiProposalManagerV1 {
           ...ids, kind: "produce", planId: state.opening.plan.planId, demandId: "demand:composition:first-squad" as AiDemandV1["demandId"], lane: "supply_production", proposedTick: observation.tick, urgencyClass: 3, utility: 600,
           preconditions: [{ kind: "actor_exists", actorId: producer.actorId }],
           claims: [{ claimId: ids.claimId, kind: "production_slot", producerId: producer.actorId, slot: 0 }, { claimId: `${ids.claimId}:effect` as AiIntentV1["claims"][number]["claimId"], kind: "effect", effectId: ids.effectId }],
-          reasonCode: `composition:${roleFor(candidate, catalog)}:frontline=${roleCounts.frontline}:ranged=${roleCounts.ranged}`, producerId: producer.actorId, objectName: candidate
+          reasonCode: `composition:${state.opening.archetypeId}:${roleFor(candidate, catalog)}:frontline=${roleCounts.frontline}:ranged=${roleCounts.ranged}`, producerId: producer.actorId, objectName: candidate
         });
       }
     }
 
     const current = steps.find((step) => step.state !== "completed")?.stepId ?? null;
     return {
-      managerId: this.managerId, lane: "supply_production", evaluated: true, intents, reasons: [`opening_step:${current ?? "transition"}`, `supply_free:${freeSupply}`, `military:${military.length}/${targetMilitary}`],
+      managerId: this.managerId, lane: "supply_production", evaluated: true, intents, reasons: [`opening_step:${current ?? "transition"}`, `archetype:${state.opening.archetypeId}`, `supply_free:${freeSupply}/${budget.supplyBuffer}`, `military:${military.length}/${targetMilitary}`],
       statePatch: {
         opening: { ...state.opening, plan: { ...state.opening.plan, currentStepId: current, steps, lifecycle: current ? "active" : "completed" } },
-        economyProduction: { demands, forecasts: Object.values(ResourceType).sort().map((resourceType) => ({ resourceType, horizonTick: observation.tick + 600, amount: 0, confidencePermille: 0 })) }
+        economyProduction: {
+          demands,
+          forecasts: Object.values(ResourceType).sort().map((resourceType) => ({ resourceType, horizonTick: observation.tick + 600, amount: 0, confidencePermille: 0 })),
+          adaptation: state.economyProduction.adaptation
+        }
       }
     };
   }

@@ -52,6 +52,11 @@ function hasUnmetMacroFloor(state: AiBrainStateV1): boolean {
   });
 }
 
+/** Legacy `safe` saves retain the same defensive intent as the Stage-14 `turtle` profile. */
+function isDefensiveArchetype(archetypeId: string): boolean {
+  return archetypeId.endsWith(":safe") || archetypeId.endsWith(":turtle");
+}
+
 function reachable(
   cells: ReadonlyMap<string, ConstructionCell>,
   blocked: ReadonlySet<string>,
@@ -281,7 +286,7 @@ export class AiStage11FortificationManagerV1 implements AiProposalManagerV1 {
     }
 
     const defendedIncident = state.skirmish.incidents.some((candidate) => candidate.baseId === null || candidate.baseId === activeBase.baseId);
-    if (plan.lifecycle === "breached" && plan.graph && !defendedIncident && !state.opening.archetypeId.endsWith(":safe")) {
+    if (plan.lifecycle === "breached" && plan.graph && !defendedIncident && !isDefensiveArchetype(state.opening.archetypeId)) {
       const abandoned = {
         ...plan,
         lifecycle: "abandoned" as const,
@@ -336,7 +341,7 @@ export class AiStage11FortificationManagerV1 implements AiProposalManagerV1 {
     const incident = state.skirmish.incidents
       .filter((candidate) => candidate.baseId === null || candidate.baseId === baseId)
       .sort((left, right) => right.severity - left.severity || left.incidentId.localeCompare(right.incidentId))[0];
-    const defensiveProfile = state.opening.archetypeId.endsWith(":safe");
+    const defensiveProfile = isDefensiveArchetype(state.opening.archetypeId);
     if ((!incident || incident.severity < 100) && !defensiveProfile) return null;
     const enemy = threatPosition(observation, anchor);
     const target = enemy ?? (observation.map?.bounds.status === "known"

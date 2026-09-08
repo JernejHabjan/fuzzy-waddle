@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "scenarioId": "D-06",
+  "purpose": "Paired, fair runtime calibration for easy, normal and hard skirmish profiles after the complete Stage-15 validation ladder is available.",
+  "driver": "runtime",
+  "status": "authored_not_run",
+  "baseline": {
+    "manifest": "baseline-v1.json",
+    "sourceRevision": "de47f482889db30420692bf4406fba463d7db296",
+    "candidateFallbackProhibited": true
+  },
+  "pairedRuns": {
+    "seeds": [759061, 759062, 759063, 759064, 759065],
+    "factions": ["Tivara", "Skaduwee"],
+    "maps": ["land", "water-access", "transport-required"],
+    "opponentProfiles": ["balanced", "rush", "macro", "turtle", "tech"],
+    "sameSeedMapFactionOpponentAcrossDifficulties": true,
+    "minimumCompletedPairCount": 30
+  },
+  "fairnessInvariants": [
+    "same_starting_resources_and_population",
+    "same_unit_build_research_and_visibility_rules",
+    "no_hidden_enemy_state_or_extra_commands",
+    "difficulty_only_selects_profile_budgets_timing_and_reconsideration",
+    "runtime_command_outcomes_and_terminal_results_are_recorded"
+  ],
+  "requiredTelemetry": [
+    "profile_archetype_and_fallback_reason",
+    "economy_supply_production_and_research_timeline",
+    "counter_evidence_transition_and_commitment_history",
+    "missions_casualties_recovery_and_terminal_result",
+    "command_rejection_and_no_progress_counts",
+    "wall_clock_independent_simulation_ticks"
+  ],
+  "acceptance": {
+    "easy": "remains legal, productive and responsive without disabled counters, transport, defense or recovery",
+    "normal": "is the reference fair opponent and does not regress below easy on completion or stall safety",
+    "hard": "creates a measurable profile/timing challenge without resource, stat, visibility or command privileges",
+    "all": "no difficulty profile produces unresolved controllers, infinite duplicate production, orphaned reservations or cross-match actions"
+  },
+  "analysis": {
+    "compareAgainstPinnedBaseline": true,
+    "reportConfidenceIntervals": true,
+    "separateBalanceFindingFromCorrectnessFailure": true,
+    "failClosedOnMissingRuntimeEvidence": true
+  },
+  "runtimeCounterpart": "required_in_stage_15"
+}

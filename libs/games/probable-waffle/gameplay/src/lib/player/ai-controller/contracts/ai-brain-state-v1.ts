@@ -85,6 +85,29 @@ export interface AiEconomyProductionStateV1 {
     readonly amount: number;
     readonly confidencePermille: number;
   }[];
+  /** Bounded Stage-14 evidence, transition and technology rationale for save/replay/debug. */
+  readonly adaptation: Readonly<{
+    readonly evidence: readonly {
+      readonly evidenceId: AiEvidenceId;
+      readonly kind: "flyer" | "water_or_transport" | "area_damage" | "static_fortification";
+      readonly sourceContactId: string;
+      readonly observedTick: AiSimulationTick;
+      readonly confidencePermille: number;
+      /** Re-observation confirms persistence; it never adds invented enemy mass. */
+      readonly consecutiveEvaluations: number;
+      readonly permittedFacts: readonly string[];
+    }[];
+    readonly activeRoleTargets: readonly {
+      readonly role: "frontline" | "ranged" | "support" | "anti_air" | "water_control" | "fortification_breaker";
+      readonly desired: number;
+      readonly evidenceIds: readonly AiEvidenceId[];
+    }[];
+    readonly lastTransitionTick: AiSimulationTick | null;
+    readonly lastTransitionReason: string | null;
+    readonly selectedResearchType: string | null;
+    readonly selectedResearchScore: number | null;
+    readonly cancellationPolicy: "retain_committed_production";
+  }>;
 }
 
 /** Stage-12 causal recovery facts. Entries are bounded, save-safe and never contain live runtime handles. */

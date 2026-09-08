@@ -98,8 +98,9 @@ function invokeHarness(input) {
     return { row, fixture: reference ? readJson(join(fixtureDirectory, reference), 1024 * 1024) : null };
   })));
   const includesAuthoredTactics = input.rows.some((row) => row.authoredFixture === "stage-13-tactics.json");
-  const testPathPattern = includesAuthoredTactics
-    ? "(ai-(scenario-harness|runtime-scenario|repro-cli|stage-13-tactics-manager)|authoritative-state-projection|actor-manager-ai-save)\\.spec\\.ts$"
+  const includesAuthoredAdaptation = input.rows.some((row) => row.authoredFixture === "stage-14-adaptation.json");
+  const testPathPattern = includesAuthoredTactics || includesAuthoredAdaptation
+    ? "(ai-(brain|scenario-harness|runtime-scenario|repro-cli|stage-13-tactics-manager|stage-14-adaptation-manager)|authoritative-state-projection|actor-manager-ai-save|ai-profile-defaults|player-ai-controller\\.agent\\.static)\\.spec\\.ts$"
     : "(ai-(scenario-harness|runtime-scenario|repro-cli)|authoritative-state-projection|actor-manager-ai-save)\\.spec\\.ts$";
   const command = spawnSync(
     "pnpm",

@@ -79,6 +79,12 @@ export function canonicalizeAiObservationV1(observation: AiObservationV1): AiObs
     effects: [...observation.effects]
       .map((effect) => ({ ...effect, targetDomains: [...effect.targetDomains].sort() }))
       .sort((left, right) => left.effectId.localeCompare(right.effectId)),
+    researchCandidates: [...observation.researchCandidates]
+      .map((candidate) => ({
+        ...candidate,
+        cost: Object.fromEntries(Object.entries(candidate.cost).sort(([left], [right]) => left.localeCompare(right)))
+      }))
+      .sort((left, right) => left.producerId.localeCompare(right.producerId) || left.researchType.localeCompare(right.researchType)),
     modeGoals: [...observation.modeGoals]
       .map((goal) => ({
         ...goal,
@@ -170,7 +176,16 @@ export function canonicalizeAiBrainStateV1(state: AiBrainStateV1): AiBrainStateV
         .sort((left, right) => left.demandId.localeCompare(right.demandId)),
       forecasts: [...state.economyProduction.forecasts].sort(
         (left, right) => left.resourceType.localeCompare(right.resourceType) || left.horizonTick - right.horizonTick
-      )
+      ),
+      adaptation: {
+        ...state.economyProduction.adaptation,
+        evidence: [...state.economyProduction.adaptation.evidence]
+          .map((evidence) => ({ ...evidence, permittedFacts: [...evidence.permittedFacts].sort() }))
+          .sort((left, right) => left.evidenceId.localeCompare(right.evidenceId)),
+        activeRoleTargets: [...state.economyProduction.adaptation.activeRoleTargets]
+          .map((target) => ({ ...target, evidenceIds: [...target.evidenceIds].sort() }))
+          .sort((left, right) => left.role.localeCompare(right.role))
+      }
     },
     recovery: {
       records: [...state.recovery.records]

@@ -171,6 +171,24 @@ export interface AiDebugSnapshotV1 {
     readonly expiresAtTick: AiSimulationTick | null;
     readonly reason: string;
   }[];
+  /** Stage-14 recorded evidence, role targets and legal technology rationale. */
+  readonly adaptation: Readonly<{
+    readonly evidence: readonly {
+      readonly evidenceId: string;
+      readonly kind: string;
+      readonly sourceContactId: string;
+      readonly observedTick: AiSimulationTick;
+      readonly confidencePermille: number;
+      readonly consecutiveEvaluations: number;
+      readonly permittedFacts: readonly string[];
+    }[];
+    readonly roleTargets: readonly { readonly role: string; readonly desired: number; readonly evidenceIds: readonly string[] }[];
+    readonly lastTransitionTick: AiSimulationTick | null;
+    readonly lastTransitionReason: string | null;
+    readonly selectedResearchType: string | null;
+    readonly selectedResearchScore: number | null;
+    readonly cancellationPolicy: string;
+  }>;
   readonly runtimeLimits: Readonly<{
     readonly decisionSequence: number;
     readonly continuationCursors: readonly { readonly owner: string; readonly cursor: number }[];

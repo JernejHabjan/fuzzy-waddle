@@ -74,6 +74,7 @@ function observation(): AiObservationV1 {
     accessProducts: [],
     effects: [],
     modeGoals: [],
+    researchCandidates: [],
     threatSummary: {
       observedTick: 120,
       visibleEnemyActorIds: [],

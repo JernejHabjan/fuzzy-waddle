@@ -163,6 +163,15 @@ export function projectAiDebugSnapshot(
     expiresAtTick: plan.expiresAt?.dueTick ?? null,
     reason: plan.reason ?? "legacy_support_assignment"
   }));
+  const adaptation = {
+    evidence: state.economyProduction.adaptation.evidence.slice(0, 16).map((entry) => ({ ...entry, permittedFacts: [...entry.permittedFacts] })),
+    roleTargets: state.economyProduction.adaptation.activeRoleTargets.slice(0, 8).map((target) => ({ ...target, evidenceIds: [...target.evidenceIds] })),
+    lastTransitionTick: state.economyProduction.adaptation.lastTransitionTick,
+    lastTransitionReason: state.economyProduction.adaptation.lastTransitionReason,
+    selectedResearchType: state.economyProduction.adaptation.selectedResearchType,
+    selectedResearchScore: state.economyProduction.adaptation.selectedResearchScore,
+    cancellationPolicy: state.economyProduction.adaptation.cancellationPolicy
+  };
 
   return {
     schemaVersion: 1,
@@ -207,6 +216,7 @@ export function projectAiDebugSnapshot(
     fortifications,
     recovery,
     support,
+    adaptation,
     runtimeLimits: {
       decisionSequence: state.scheduler.decisionSequence,
       continuationCursors: state.scheduler.continuationCursors,
@@ -249,8 +259,8 @@ export function projectAiDebugSnapshot(
       },
       productionComposition: {
         status: "ready",
-        ownerStage: 7,
-        reason: state.economyProduction.demands.map((demand) => `${demand.capabilityOrRole}:${demand.desired}`).join(",") || null
+        ownerStage: 14,
+        reason: adaptation.lastTransitionReason ?? state.economyProduction.demands.map((demand) => `${demand.capabilityOrRole}:${demand.desired}`).join(",") || null
       },
       economyLabor: {
         status: "ready",

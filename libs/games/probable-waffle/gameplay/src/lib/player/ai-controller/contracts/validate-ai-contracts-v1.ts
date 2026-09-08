@@ -69,6 +69,29 @@ export function assertAiBrainStateV1(value: unknown): asserts value is AiBrainSt
     assertDeadline(progress.milestoneDeadline, `progress.${progress.planId}.milestoneDeadline`);
   }
   if (!Array.isArray(value.recovery.records)) throw new Error("malformed_ai_recovery_state");
+  if (!isRecord(value.economyProduction.adaptation) || !Array.isArray(value.economyProduction.adaptation.evidence) || !Array.isArray(value.economyProduction.adaptation.activeRoleTargets)) {
+    throw new Error("malformed_ai_adaptation_state");
+  }
+  assertUnique(value.economyProduction.adaptation.evidence.map((entry) => entry.evidenceId), "adaptation.evidence");
+  assertUnique(value.economyProduction.adaptation.activeRoleTargets.map((entry) => entry.role), "adaptation.activeRoleTargets");
+  for (const evidence of value.economyProduction.adaptation.evidence) {
+    assertAiNonNegativeInteger(evidence.observedTick, `adaptation.${evidence.evidenceId}.observedTick`);
+    assertAiNonNegativeInteger(evidence.confidencePermille, `adaptation.${evidence.evidenceId}.confidencePermille`);
+    assertAiNonNegativeInteger(evidence.consecutiveEvaluations, `adaptation.${evidence.evidenceId}.consecutiveEvaluations`);
+    if (evidence.confidencePermille > 1000 || evidence.consecutiveEvaluations > 2) throw new Error(`invalid_ai_adaptation_evidence:${evidence.evidenceId}`);
+    assertUnique([...evidence.permittedFacts], `adaptation.${evidence.evidenceId}.permittedFacts`);
+  }
+  for (const target of value.economyProduction.adaptation.activeRoleTargets) {
+    assertAiNonNegativeInteger(target.desired, `adaptation.${target.role}.desired`);
+    assertUnique([...target.evidenceIds], `adaptation.${target.role}.evidenceIds`);
+  }
+  if (value.economyProduction.adaptation.lastTransitionTick !== null) {
+    assertAiNonNegativeInteger(value.economyProduction.adaptation.lastTransitionTick, "adaptation.lastTransitionTick");
+  }
+  if (value.economyProduction.adaptation.selectedResearchScore !== null) {
+    assertAiNonNegativeInteger(value.economyProduction.adaptation.selectedResearchScore, "adaptation.selectedResearchScore");
+    if (value.economyProduction.adaptation.selectedResearchScore > 1000) throw new Error("invalid_ai_adaptation_research_score");
+  }
   assertUnique(value.recovery.records.map((record) => record.recoveryKey), "recovery.records");
   for (const record of value.recovery.records) {
     assertAiNonNegativeInteger(record.enteredTick, `recovery.${record.recoveryKey}.enteredTick`);
@@ -236,6 +259,18 @@ export function assertAiObservationV1(observation: AiObservationV1): void {
     observation.resources.map((resource) => resource.resourceType),
     "observation.resourceType"
   );
+  assertUnique(
+    observation.researchCandidates.map((candidate) => `${candidate.producerId}:${candidate.researchType}`),
+    "observation.researchCandidate"
+  );
+  for (const candidate of observation.researchCandidates) {
+    assertAiNonNegativeInteger(candidate.durationTicks, `research.${candidate.researchType}.durationTicks`);
+    assertAiNonNegativeInteger(candidate.refundPermille, `research.${candidate.researchType}.refundPermille`);
+    if (candidate.refundPermille > 1000) throw new Error(`invalid_ai_research_refund:${candidate.researchType}`);
+    for (const [resourceType, amount] of Object.entries(candidate.cost)) {
+      assertAiNonNegativeFinite(amount, `research.${candidate.researchType}.${resourceType}`);
+    }
+  }
   for (const effect of observation.effects) {
     if (effect.radius !== undefined) assertAiNonNegativeFinite(effect.radius, `effects.${effect.effectId}.radius`);
     if (effect.expiresAt.status === "known") assertAiNonNegativeInteger(effect.expiresAt.value, `effects.${effect.effectId}.expiresAt`);

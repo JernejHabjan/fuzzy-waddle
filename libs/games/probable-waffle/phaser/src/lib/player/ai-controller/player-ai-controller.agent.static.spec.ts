@@ -23,6 +23,14 @@ describe("PlayerAiControllerAgent static correctness", () => {
     expect(agent.StartUpgrade()).toBe(State.FAILED);
     expect(agent.getDebugSnapshot().events.at(-1)?.reason).toBe("no_legal_research");
   });
+
+  it("leaves research dispatch to the pure planner when skirmish planning is active", () => {
+    const agent = createAgent({}, State.SUCCEEDED);
+    agent.setPurePlannerOwnsResearch(true);
+
+    expect(agent.StartUpgrade()).toBe(State.FAILED);
+    expect(agent.getDebugSnapshot().events.at(-1)?.reason).toBe("pure_planner_authoritative");
+  });
 });
 
 function createAgent(

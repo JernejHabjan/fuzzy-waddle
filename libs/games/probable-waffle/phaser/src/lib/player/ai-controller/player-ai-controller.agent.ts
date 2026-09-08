@@ -81,6 +81,8 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   private targetingManager: TargetingManager;
   private productionValidator: ProductionValidator;
   private readonly decisionTrace: AiDecisionTrace;
+  /** The pure planner is the only mutation authority for research in skirmish mode. */
+  private purePlannerOwnsResearch = false;
 
   constructor(
     private readonly scene: ProbableWaffleScene,
@@ -138,6 +140,10 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   /** Returns the bounded immutable trace consumed by the read-only AI debug panel. */
   getDebugSnapshot(): AiDecisionTraceSnapshot {
     return this.decisionTrace.snapshot();
+  }
+
+  setPurePlannerOwnsResearch(enabled: boolean): void {
+    this.purePlannerOwnsResearch = enabled;
   }
 
   private recordDecision(
@@ -813,6 +819,10 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   }
 
   StartUpgrade() {
+    if (this.purePlannerOwnsResearch) {
+      this.recordDecision("startUpgrade", "failed", "pure_planner_authoritative");
+      return State.FAILED;
+    }
     const state = this.techManager.tryStartResearch();
     this.recordDecision(
       "startUpgrade",
@@ -1085,13 +1095,13 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     return this.logisticsManager.redirectToScarce();
   }
   ShouldPursueResearch(): boolean {
-    return this.techManager.shouldPursueResearch();
+    return !this.purePlannerOwnsResearch && this.techManager.shouldPursueResearch();
   }
   IsResearchInProgress(): boolean {
     return this.techManager.isResearchInProgress();
   }
   TryStartResearch(): State {
-    return this.techManager.tryStartResearch();
+    return this.purePlannerOwnsResearch ? State.FAILED : this.techManager.tryStartResearch();
   }
   ShouldReanalyzeMap(): boolean {
     if (!this.mapAnalyzer) return true;

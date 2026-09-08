@@ -38,6 +38,7 @@ import { AiStage10BaseManagerV1 } from "@fuzzy-waddle/probable-waffle-gameplay/p
 import { AiStage11FortificationManagerV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-stage-11-fortification-manager";
 import { AiStage12RecoveryManagerV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-stage-12-recovery-manager";
 import { AiStage13TacticsManagerV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-stage-13-tactics-manager";
+import { AiStage14AdaptationManagerV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-stage-14-adaptation-manager";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import { OrderType } from "../../ai/order-type";
 
@@ -77,7 +78,8 @@ export class PlayerAiController {
           new AiStage10BaseManagerV1(this.profile, () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
           new AiStage11FortificationManagerV1(this.profile, () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
           new AiStage12RecoveryManagerV1(() => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
-          new AiStage13TacticsManagerV1(this.profile)
+          new AiStage13TacticsManagerV1(this.profile),
+          new AiStage14AdaptationManagerV1(this.profile, () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog())
         ])
       : undefined;
     this.blackboard = new PlayerAiBlackboard(scene);
@@ -86,6 +88,7 @@ export class PlayerAiController {
       this.commandReconciliation = new AiCommandReconciliation(player.playerNumber, commandBus);
     }
     this.playerAiControllerAgent = new PlayerAiControllerAgent(this.scene, this.player, this.blackboard);
+    this.playerAiControllerAgent.setPurePlannerOwnsResearch(this.pureBrain !== undefined);
     this.brainState = this.createInitialBrainState();
     this.behaviourTree = new BehaviourTree(PlayerAiControllerMdsl, this.playerAiControllerAgent);
     // expose telemetry snapshot container in diagnostics if absent
@@ -359,6 +362,18 @@ export class PlayerAiController {
             playerNumber: this.player.playerNumber,
             actorIds: [intent.producerId],
             actorName: intent.objectName
+          }, correlation);
+        }
+        continue;
+      }
+      if (intent.kind === "research") {
+        const producer = actorIndex.getActorById(intent.producerId);
+        if (producer) {
+          commandBus.dispatchAi({
+            type: "RESEARCH",
+            playerNumber: this.player.playerNumber,
+            actorIds: [intent.producerId],
+            researchType: intent.researchType
           }, correlation);
         }
         continue;

@@ -19,6 +19,7 @@ All paths in the following table are relative to libs/games/probable-waffle/phas
 | Fortification graph planning | gameplay `player/ai-controller/planning/ai-stage-11-fortification-manager.ts`; Phaser `prefabs/buildings/tivara/navigation-topology.events.ts`; `world/services/height-navigation-graph-builder.ts` |
 | Causal recovery / anti-blocking | gameplay `player/ai-controller/planning/ai-stage-12-recovery-manager.ts`; Phaser observation `player/ai-controller/observation/ai-observation-pipeline.ts`; shared `CommandBusService` outcomes |
 | Tactical squads, combat estimates and support | gameplay `player/ai-controller/planning/ai-stage-13-tactics-manager.ts`; gameplay combat/debug contracts; Phaser `player/ai-controller/observation/ai-observation-pipeline.ts` and `player-ai-controller.ts` |
+| Adaptive counters, research and archetype rationale | gameplay `player/ai-controller/planning/ai-stage-14-adaptation-manager.ts` and adjacent architecture note; Phaser observation `ai-observation-pipeline.ts` (runtime-legal research candidates); controller shared `RESEARCH` dispatch/debug panel |
 | AI incident capture and offline investigation | gameplay `player/ai-controller/debug/ai-incident-capture-store-v1.ts`; `testing/ai-repro-runner-v1.ts`; Phaser `player/ai-controller/testing/ai-runtime-scenario-bridge.ts` |
 | In-game AI panel | prefabs/gui/debug/ai-controller/AiControllerDebugPanel.ts |
 

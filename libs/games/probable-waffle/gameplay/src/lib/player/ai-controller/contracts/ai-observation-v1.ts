@@ -1,5 +1,5 @@
 import type { ActorId, PlayerNumber, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
-import type { FactionType, ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import type { FactionType, ObjectNames, ResearchType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiAccessNodeId, AiEvidenceId, AiKnownValueV1, AiSimulationTick } from "./ai-core-types";
 import type { AiAccessGraphV1 } from "./ai-access-graph-v1";
 import type { SpellType } from "../../../entity/components/combat/spell-type";
@@ -176,6 +176,24 @@ export interface AiObservedModeGoalV1 {
 }
 
 /**
+ * A research command legal for the owning player at this observation boundary.
+ * It is derived by the runtime adapter, so the pure brain never reads a live tech tree.
+ */
+export interface AiObservedResearchCandidateV1 {
+  readonly producerId: ActorId;
+  readonly researchType: ResearchType;
+  readonly cost: Readonly<Partial<Record<ResourceType, number>>>;
+  readonly durationTicks: number;
+  readonly refundPermille: number;
+  readonly benefit: Readonly<{
+    readonly kind: "unit_level" | "spell";
+    readonly targetObjectName: ObjectNames | null;
+    readonly targetLevel: number | null;
+    readonly spellType: SpellType | null;
+  }>;
+}
+
+/**
  * Player-permitted map inputs. Dynamic obstacles only appear after the observing
  * player could see them; expensive region work stays separately statused.
  */
@@ -227,6 +245,7 @@ export interface AiObservationV1 {
   readonly accessProducts: readonly AiObservedAccessProductV1[];
   readonly effects: readonly AiObservedEffectV1[];
   readonly modeGoals: readonly AiObservedModeGoalV1[];
+  readonly researchCandidates: readonly AiObservedResearchCandidateV1[];
   readonly threatSummary: AiObservedThreatSummaryV1;
   /** Stage 4 map projection; absent only for pre-Stage-4 save compatibility. */
   readonly map?: AiObservedMapV1;

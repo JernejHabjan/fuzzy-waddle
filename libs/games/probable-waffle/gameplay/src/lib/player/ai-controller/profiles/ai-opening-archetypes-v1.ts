@@ -6,7 +6,7 @@ export interface AiOpeningArchetypeV1 {
   readonly id: string;
   readonly version: "opening-archetypes-v1";
   readonly faction: FactionType;
-  readonly purpose: "balanced" | "safe" | "pressure";
+  readonly purpose: "balanced" | "rush" | "macro" | "turtle" | "tech" | "air_control" | "naval" | "expeditionary";
 }
 
 /**
@@ -20,7 +20,11 @@ export function selectAiOpeningArchetypeV1(input: {
   readonly seed: number;
 }): AiOpeningArchetypeV1 {
   const variants: readonly AiOpeningArchetypeV1["purpose"][] =
-    input.profile.difficulty === "easy" ? ["safe"] : input.profile.difficulty === "hard" ? ["pressure", "balanced"] : ["balanced", "safe"];
+    input.profile.difficulty === "easy"
+      ? ["turtle", "balanced"]
+      : input.profile.difficulty === "hard"
+        ? ["rush", "macro", "tech", "air_control", "naval", "expeditionary"]
+        : ["balanced", "macro", "tech", "air_control"];
   const index = Math.abs((input.seed ^ input.playerNumber ^ input.faction) | 0) % variants.length;
   const purpose = variants[index] ?? "balanced";
   return { id: `opening:${input.faction}:${purpose}`, version: "opening-archetypes-v1", faction: input.faction, purpose };

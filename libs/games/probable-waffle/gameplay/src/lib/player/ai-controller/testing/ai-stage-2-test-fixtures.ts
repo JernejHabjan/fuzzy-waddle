@@ -49,6 +49,7 @@ export function createStage2Observation(): AiObservationV1 {
     accessProducts: [],
     effects: [],
     modeGoals: [],
+    researchCandidates: [],
     threatSummary: {
       observedTick: 20,
       visibleEnemyActorIds: [],

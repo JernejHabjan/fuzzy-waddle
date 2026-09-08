@@ -39,15 +39,27 @@ function validateV1(value: Record<string, unknown>): AiBrainStateV1 {
   const stage12Compatible = "recovery" in stage9Compatible
     ? stage9Compatible
     : { ...stage9Compatible, recovery: { records: [] } };
-  if (!isAiBrainStateV1(stage12Compatible)) {
+  const stage14Compatible = isRecord(stage12Compatible.economyProduction) && "adaptation" in stage12Compatible.economyProduction
+    ? stage12Compatible
+    : {
+        ...stage12Compatible,
+        economyProduction: {
+          ...(stage12Compatible.economyProduction as Record<string, unknown>),
+          adaptation: {
+            evidence: [], activeRoleTargets: [], lastTransitionTick: null, lastTransitionReason: null,
+            selectedResearchType: null, selectedResearchScore: null, cancellationPolicy: "retain_committed_production"
+          }
+        }
+      };
+  if (!isAiBrainStateV1(stage14Compatible)) {
     throw new AiBrainMigrationError("malformed_state", "missing_v1_slices");
   }
   try {
-    assertAiBrainStateV1(stage12Compatible);
+    assertAiBrainStateV1(stage14Compatible);
   } catch (error) {
     throw new AiBrainMigrationError("malformed_state", error instanceof Error ? error.message : "invalid_number");
   }
-  return stage12Compatible;
+  return stage14Compatible;
 }
 
 /**

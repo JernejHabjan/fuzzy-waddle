@@ -153,6 +153,7 @@ export class AiStage10BaseManagerV1 implements AiProposalManagerV1 {
       }
     }
     const expansion = bases.find((base) => base.lifecycle === "proposed" && base.anchorPosition && base.reservedSiteKey);
+    const macroOpening = state.opening.archetypeId.endsWith(":macro");
     const mainObject = anchors[0]?.objectName;
     const builder = mainObject
       ? owned.find((actor) => catalog.entries.some((entry) => entry.sourceObjectName === actor.objectName && entry.constructs.includes(mainObject)))
@@ -175,10 +176,10 @@ export class AiStage10BaseManagerV1 implements AiProposalManagerV1 {
           lane: "committed_operations",
           proposedTick: observation.tick,
           urgencyClass: 4,
-          utility: 520,
+          utility: macroOpening ? 660 : 520,
           preconditions: [{ kind: "actor_exists", actorId: builder.actorId }],
           claims: [{ claimId, kind: "site", siteKey: expansion.reservedSiteKey! }, { claimId: `${claimId}:builder` as AiIntentV1["claims"][number]["claimId"], kind: "actor", actorId: builder.actorId }, { claimId: `${claimId}:effect` as AiIntentV1["claims"][number]["claimId"], kind: "effect", effectId }],
-          reasonCode: `expansion:${expansion.expansion?.trigger ?? "unknown"}:candidate_reserved`,
+          reasonCode: `expansion:${expansion.expansion?.trigger ?? "unknown"}:${macroOpening ? "macro_priority" : "candidate_reserved"}`,
           builderIds: [builder.actorId],
           objectName: mainObject!,
           logicalPosition: expansion.anchorPosition,

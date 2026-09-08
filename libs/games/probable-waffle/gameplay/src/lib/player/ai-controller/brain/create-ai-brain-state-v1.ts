@@ -71,7 +71,13 @@ export function createAiBrainStateV1(input: CreateAiBrainStateV1Input): AiBrainS
       timeline: []
     },
     bases: [],
-    economyProduction: { demands: [], forecasts: [] },
+    economyProduction: {
+      demands: [], forecasts: [],
+      adaptation: {
+        evidence: [], activeRoleTargets: [], lastTransitionTick: null, lastTransitionReason: null,
+        selectedResearchType: null, selectedResearchScore: null, cancellationPolicy: "retain_committed_production"
+      }
+    },
     recovery: { records: [] },
     reservations: [],
     waitEdges: [],

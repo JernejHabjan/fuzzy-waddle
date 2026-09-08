@@ -55,6 +55,68 @@ class ThrowingOptionalManager implements AiProposalManagerV1 {
   }
 }
 
+class MacroLedgerManager implements AiProposalManagerV1 {
+  readonly managerId = "stage-7-macro";
+
+  propose(_: unknown, state: ReturnType<typeof createAiBrainStateV1>): AiManagerProposalV1 {
+    return {
+      managerId: this.managerId,
+      lane: "essential_economy",
+      evaluated: true,
+      intents: [],
+      reasons: ["fixture_macro_ledger"],
+      statePatch: {
+        economyProduction: {
+          ...state.economyProduction,
+          demands: [{
+            demandId: "demand:macro:worker" as const,
+            purpose: "fixture_macro",
+            capabilityOrRole: "worker",
+            unit: "actor_count",
+            desired: 1,
+            satisfiedActorIds: [],
+            queuedIds: [],
+            constructingIds: [],
+            acceptedNotObservedEffectIds: [],
+            preferredObjectNames: [],
+            resourceObligations: {}
+          }]
+        }
+      }
+    };
+  }
+}
+
+class AdaptationLedgerManager implements AiProposalManagerV1 {
+  readonly managerId = "stagez14.adaptation";
+
+  propose(_: unknown, state: ReturnType<typeof createAiBrainStateV1>): AiManagerProposalV1 {
+    return {
+      managerId: this.managerId,
+      lane: "optional_infrastructure_tech",
+      evaluated: true,
+      intents: [],
+      reasons: ["fixture_adaptation_ledger"],
+      statePatch: {
+        adaptation: { ...state.economyProduction.adaptation, lastTransitionTick: 20, lastTransitionReason: "anti_air" },
+        adaptationDemands: [{
+          demandId: "demand:adapt:anti_air" as const,
+          purpose: "fixture_adaptation",
+          capabilityOrRole: "anti_air",
+          unit: "actor_count",
+          desired: 1,
+          satisfiedActorIds: [],
+          queuedIds: [],
+          constructingIds: [],
+          acceptedNotObservedEffectIds: [],
+          preferredObjectNames: [],
+          resourceObligations: {}
+        }]
+      }
+    };
+  }
+}
+
 describe("PureAiBrainV1", () => {
   it("explains accepted and rejected intents with deterministic claim arbitration", () => {
     const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
@@ -112,5 +174,18 @@ describe("PureAiBrainV1", () => {
       status: "not_recorded",
       reason: null
     });
+  });
+
+  it("preserves the current macro ledger while Stage 14 replaces only adaptive demand rows", () => {
+    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainStateV1({ playerNumber: 1, faction: FactionType.Tivara, profile, tick: 0, archetypeId: "balanced" });
+    const result = new PureAiBrainV1(profile, [new AdaptationLedgerManager(), new MacroLedgerManager()])
+      .step(createStage2Observation(), state, []);
+
+    expect(result.nextState.economyProduction.demands.map((demand) => demand.demandId)).toEqual([
+      "demand:adapt:anti_air",
+      "demand:macro:worker"
+    ]);
+    expect(result.nextState.economyProduction.adaptation.lastTransitionReason).toBe("anti_air");
   });
 });

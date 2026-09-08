@@ -223,14 +223,27 @@ export class PureAiBrainV1 implements AiBrainV1 {
     // narrow projections deterministic; Stage 7 is currently the sole owner.
     // Stage 8 extends that established seam with its non-overlapping transport projection.
     // Stage 9 appends only newly-created transport children after the owner has advanced them.
+    // Stage 14 merges only its `demand:adapt:` rows and saved rationale after the macro ledger.
     const projectedState = proposalBatches.reduce<AiBrainStateV1>(
       (state, batch) => {
         const patch = batch.statePatch;
         if (!patch) return state;
-        const { transportAppend, squadUpdates, ...replacePatch } = patch;
+        const { transportAppend, squadUpdates, adaptation, adaptationDemands, ...replacePatch } = patch;
         return {
           ...state,
           ...replacePatch,
+          ...(adaptation || adaptationDemands ? {
+            economyProduction: {
+              ...state.economyProduction,
+              ...(adaptation ? { adaptation } : {}),
+              ...(adaptationDemands ? {
+                demands: [
+                  ...state.economyProduction.demands.filter((demand) => !demand.demandId.startsWith("demand:adapt:")),
+                  ...adaptationDemands
+                ].sort((left, right) => left.demandId.localeCompare(right.demandId))
+              } : {})
+            }
+          } : {}),
           ...(transportAppend?.length
             ? {
                 transport: [
