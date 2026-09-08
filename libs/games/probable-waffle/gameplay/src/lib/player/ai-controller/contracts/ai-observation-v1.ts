@@ -2,6 +2,7 @@ import type { ActorId, PlayerNumber, Vector3Simple } from "@fuzzy-waddle/platfor
 import type { FactionType, ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiAccessNodeId, AiEvidenceId, AiKnownValueV1, AiSimulationTick } from "./ai-core-types";
 import type { AiAccessGraphV1 } from "./ai-access-graph-v1";
+import type { SpellType } from "../../../entity/components/combat/spell-type";
 
 /** Relationship visible to the observing player; neutral is not treated as hostile. */
 export type AiDiplomacyRelationV1 = "self" | "ally" | "neutral" | "enemy";
@@ -44,6 +45,61 @@ export interface AiObservedContainerStateV1 {
   readonly mobileDomains: readonly AiDomainV1[];
 }
 
+/** Runtime-consistent combat facts available to the owning player or a currently visible opponent. */
+export interface AiObservedCombatProfileV1 {
+  readonly maxHealth: number;
+  readonly maxArmour: number;
+  readonly armourPermille: number;
+  readonly passiveRegenerationPerSecond: number;
+  readonly attacks: readonly {
+    readonly damage: number;
+    readonly cooldownTicks: number;
+    /** Owned current cooldown; null for opponents and absent in older captures. */
+    readonly remainingCooldownTicks?: number | null;
+    readonly range: number;
+    readonly minRange: number;
+    readonly highGroundRangeBonus: number;
+    readonly impactDelayTicks: number;
+    readonly areaRadius: number;
+    readonly targetDomains: readonly AiDomainV1[];
+  }[];
+  readonly healing: Readonly<{
+    readonly amount: number;
+    readonly cooldownTicks: number;
+    readonly remainingCooldownTicks: number;
+    readonly range: number;
+  }> | null;
+  readonly spells: readonly AiObservedSpellProfileV1[];
+  readonly statuses: readonly {
+    readonly type: string;
+    readonly remainingTicks: number;
+    readonly movementSpeedPermille: number;
+  }[];
+}
+
+/** Legal spell data and live ownership flags needed by the pure support proposer. */
+export interface AiObservedSpellProfileV1 {
+  readonly spellType: SpellType;
+  readonly ready: boolean;
+  readonly researched: boolean;
+  readonly autocast: boolean;
+  readonly range: number;
+  readonly areaRadius: number;
+  readonly targetAllies: boolean;
+  readonly targetEnemies: boolean;
+  readonly targetSelf: boolean;
+  readonly targetDomains: readonly AiDomainV1[];
+  readonly instantDamage: number;
+  readonly periodicDamage: number;
+  readonly instantHeal: number;
+  readonly periodicHeal: number;
+  readonly stunTicks: number;
+  readonly slowTicks: number;
+  readonly zoneDurationTicks: number;
+  readonly summons: boolean;
+  readonly summonDurationTicks: number | null;
+}
+
 /** One visible or remembered actor in an immutable observation generation. */
 export interface AiObservedActorV1 {
   readonly actorId: ActorId;
@@ -67,6 +123,8 @@ export interface AiObservedActorV1 {
   /** Owned construction percentage; absent only for legacy observations. */
   readonly constructionProgress?: AiKnownValueV1<number>;
   readonly activeEffectIds: readonly string[];
+  /** Effective combat/support facts; remembered actors intentionally never retain live cooldown or health data. */
+  readonly combatProfile?: AiKnownValueV1<AiObservedCombatProfileV1>;
   /** Runtime-definition metadata exposed for owned actors; base identity never infers this from position. */
   readonly mainBuilding?: AiKnownValueV1<boolean>;
   /** Stable container owner when this actor is physically loaded; absent on pre-Stage-8 observations. */
@@ -103,6 +161,8 @@ export interface AiObservedEffectV1 {
   readonly position: Vector3Simple;
   readonly targetDomains: readonly AiDomainV1[];
   readonly expiresAt: AiKnownValueV1<AiSimulationTick>;
+  readonly radius?: number;
+  readonly influence?: "harmful" | "beneficial" | "mixed";
 }
 
 /** Current game-mode objective as exposed by ordinary mode rules. */

@@ -39,6 +39,24 @@ export function canonicalizeAiObservationV1(observation: AiObservationV1): AiObs
           }))
           .sort((left, right) => left.id.localeCompare(right.id)),
         activeEffectIds: [...actor.activeEffectIds].sort(),
+        ...(actor.combatProfile?.status === "known"
+          ? {
+              combatProfile: {
+                ...actor.combatProfile,
+                value: {
+                  ...actor.combatProfile.value,
+                  attacks: [...actor.combatProfile.value.attacks]
+                    .map((attack) => ({ ...attack, targetDomains: [...attack.targetDomains].sort() }))
+                    .sort((left, right) => serializeCanonicalAiValue(left).localeCompare(serializeCanonicalAiValue(right))),
+                  spells: [...actor.combatProfile.value.spells]
+                    .map((spell) => ({ ...spell, targetDomains: [...spell.targetDomains].sort() }))
+                    .sort((left, right) => left.spellType.localeCompare(right.spellType)),
+                  statuses: [...actor.combatProfile.value.statuses]
+                    .sort((left, right) => left.type.localeCompare(right.type) || left.remainingTicks - right.remainingTicks)
+                }
+              }
+            }
+          : actor.combatProfile ? { combatProfile: actor.combatProfile } : {}),
         ...(actor.containerState?.status === "known"
           ? {
               containerState: {
@@ -176,7 +194,27 @@ export function canonicalizeAiBrainStateV1(state: AiBrainStateV1): AiBrainStateV
     ),
     authority: { ...state.authority, pendingCommandIds: [...state.authority.pendingCommandIds].sort() },
     squads: [...state.squads]
-      .map((squad) => ({ ...squad, actorIds: [...squad.actorIds].sort() }))
+      .map((squad) => ({
+        ...squad,
+        actorIds: [...squad.actorIds].sort(),
+        ...(squad.tactics
+          ? {
+              tactics: {
+                ...squad.tactics,
+                orderedActorIds: [...squad.tactics.orderedActorIds].sort(),
+                assignedPositions: [...squad.tactics.assignedPositions].sort((left, right) => left.actorId.localeCompare(right.actorId)),
+                damageReservations: [...squad.tactics.damageReservations].sort(
+                  (left, right) => left.impactTick - right.impactTick || left.actorId.localeCompare(right.actorId)
+                ),
+                protectedRouteNodeIds: [...squad.tactics.protectedRouteNodeIds].sort(),
+                mobileReserveActorIds: [...squad.tactics.mobileReserveActorIds].sort(),
+                objectiveAlternatives: [...squad.tactics.objectiveAlternatives].sort(
+                  (left, right) => right.score - left.score || left.objectiveId.localeCompare(right.objectiveId)
+                )
+              }
+            }
+          : {})
+      }))
       .sort((left, right) => left.squadId.localeCompare(right.squadId)),
     transport: [...state.transport]
       .map((plan) => ({

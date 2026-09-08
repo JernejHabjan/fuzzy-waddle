@@ -114,7 +114,7 @@ export interface AiSquadStateV1 {
   readonly domain: "ground" | "water" | "air" | "mixed";
   readonly actorIds: readonly ActorId[];
   readonly objectiveId: string | null;
-  readonly state: "forming" | "ready" | "moving" | "engaged" | "retreating" | "recovering" | "searching" | "completed" | "cancelled";
+  readonly state: "forming" | "assemble" | "rally" | "ready" | "advance" | "moving" | "engage" | "engaged" | "defend" | "regroup" | "retreat" | "retreating" | "recover" | "recovering" | "reserve" | "searching" | "completed" | "cancelled";
   /** Mission-owned deadline and last independently observed useful effect. */
   readonly lifecycle?: Readonly<{
     readonly targetPlayerNumber: PlayerNumber | null;
@@ -128,6 +128,30 @@ export interface AiSquadStateV1 {
     readonly lastUsefulEffectTick: AiSimulationTick | null;
     readonly recoveryAttempt: number;
     readonly terminalReason: string | null;
+  }>;
+  /** Stage-13 tactical commitment; saved fields prevent target thrash and retreat/relaunch loops. */
+  readonly tactics?: Readonly<{
+    readonly taskForceId: string;
+    readonly script: "hold_front" | "advance_focus" | "ranged_distance" | "spread_against_area" | "protected_retreat" | "intercept_air_transport" | "naval_control" | "escort" | "land_regroup" | "rampart_defend" | "rampart_reinforce" | "rampart_withdraw";
+    readonly targetActorId: ActorId | null;
+    readonly targetScore: number;
+    readonly engagementRatioPermille: number;
+    readonly confidencePermille: number;
+    readonly predictedFriendlyLossPermille: number;
+    readonly predictedEnemyLossPermille: number;
+    readonly lastObservedMemberCount: number;
+    readonly observedLossCount: number;
+    readonly lastTransitionTick: AiSimulationTick;
+    readonly nextReconsiderTick: AiSimulationTick;
+    readonly oscillationCount: number;
+    readonly orderSignature: string | null;
+    /** Actors already covered by the current order signature; large squads continue across quota-limited steps. */
+    readonly orderedActorIds: readonly ActorId[];
+    readonly assignedPositions: readonly { readonly actorId: ActorId; readonly position: { readonly x: number; readonly y: number; readonly z: number } }[];
+    readonly damageReservations: readonly { readonly actorId: ActorId; readonly targetActorId: ActorId; readonly expectedDamage: number; readonly impactTick: AiSimulationTick; readonly effectId?: string }[];
+    readonly protectedRouteNodeIds: readonly string[];
+    readonly mobileReserveActorIds: readonly ActorId[];
+    readonly objectiveAlternatives: readonly { readonly objectiveId: string; readonly score: number; readonly reason: string }[];
   }>;
 }
 
@@ -293,6 +317,12 @@ export interface AiSupportStateV1 {
   readonly actorIds: readonly ActorId[];
   readonly targetIds: readonly ActorId[];
   readonly expiresAt: AiDeadlineV1 | null;
+  readonly kind?: "heal" | "spell" | "temporary_support";
+  readonly spellType?: string | null;
+  readonly state?: "reserved" | "dispatched" | "active" | "completed" | "released";
+  readonly effectId?: string | null;
+  readonly usefulCapacity?: number;
+  readonly reason?: string;
 }
 
 /** Scheduler cursors and RNG state are saved so pauses/reloads do not change choices. */

@@ -45,6 +45,20 @@ function gameplayFamily(
   };
 }
 
+function stage13CombatFamily(family: string, source: string, proposer: string): AiCapabilityCoverageEntryV1 {
+  return {
+    family,
+    source,
+    observation: implemented("AiObservedActorV1.combatProfile from effective runtime definitions/components"),
+    proposer: implemented(proposer),
+    command: implemented("AiIntentV1 attack/heal/cast through PlayerAiController shared CommandBusService dispatch"),
+    outcome: implemented("AiCommandOutcomeV1 reconciliation and persisted effect identity"),
+    save: implemented("AiBrainStateV1.squads.tactics/support canonical state"),
+    debug: implemented("AiDebugSnapshotV1.skirmish.squads/support and Squads & Support panel"),
+    fixture: planned(15, `ai-stage-13-tactics-manager.spec.ts plus real ${family} runtime scenario`)
+  };
+}
+
 /**
  * Stage 2 coverage authority. It inventories prefab component/system families and explicit
  * scenario/editor injection so later stages cannot silently omit a mechanic.
@@ -86,10 +100,10 @@ export const AI_CAPABILITY_COVERAGE_MANIFEST_V1: readonly AiCapabilityCoverageEn
     fixture: planned(15, "WALL-04, DOMAIN-04, FIGHT-05, H-01..05 and H-16..18 runtime fixtures")
   },
   gameplayFamily("vision_visibility", "vision + visibility systems", 4, 4),
-  gameplayFamily("health_regeneration", "health + healthRegeneration", 13, 13),
-  gameplayFamily("attack_target_domains", "attack + effective level overrides", 13, 13),
-  gameplayFamily("healing", "healing", 13, 13),
-  gameplayFamily("spell_status_zone", "spell + spellCasting + active effects", 13, 13),
+  stage13CombatFamily("health_regeneration", "health + healthRegeneration", "estimateAiEngagementV1 passive sustain"),
+  stage13CombatFamily("attack_target_domains", "attack + effective level overrides", "AiStage13TacticsManagerV1 domain-compatible focus and damage reservations"),
+  stage13CombatFamily("healing", "healing", "AiStage13TacticsManagerV1 capped missing-health reservation"),
+  stage13CombatFamily("spell_status_zone", "spell + spellCasting + active effects", "AiStage13TacticsManagerV1 cooldown/research/autocast/zone-aware support"),
   gameplayFamily("construction", "builder + constructable + prerequisites", 7, 7),
   gameplayFamily("production_queue", "production + queue + productionCost", 7, 7),
   gameplayFamily("research", "research + shared queue", 14, 14),
@@ -133,7 +147,7 @@ export const AI_CAPABILITY_COVERAGE_MANIFEST_V1: readonly AiCapabilityCoverageEn
     command: notApplicable("presentation follows applied gameplay state"),
     outcome: notApplicable("presentation completion is not a gameplay outcome"),
     save: notApplicable("presentation is reconstructed from canonical world state"),
-    debug: planned(13, "human-readable object labels only"),
+    debug: implemented("AI debug panels render source-provided labels only as Phaser text"),
     fixture: planned(15, "debug label/render isolation")
   }
 ];

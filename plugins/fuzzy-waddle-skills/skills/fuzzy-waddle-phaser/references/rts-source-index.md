@@ -18,6 +18,8 @@ All paths in the following table are relative to libs/games/probable-waffle/phas
 | Stable bases and expansion candidates | gameplay `player/ai-controller/planning/ai-stage-10-base-manager.ts`; Phaser observation `ai-observation-pipeline.ts`; shared construction `world/services/multiplayer/shared-command-application.service.ts` |
 | Fortification graph planning | gameplay `player/ai-controller/planning/ai-stage-11-fortification-manager.ts`; Phaser `prefabs/buildings/tivara/navigation-topology.events.ts`; `world/services/height-navigation-graph-builder.ts` |
 | Causal recovery / anti-blocking | gameplay `player/ai-controller/planning/ai-stage-12-recovery-manager.ts`; Phaser observation `player/ai-controller/observation/ai-observation-pipeline.ts`; shared `CommandBusService` outcomes |
+| Tactical squads, combat estimates and support | gameplay `player/ai-controller/planning/ai-stage-13-tactics-manager.ts`; gameplay combat/debug contracts; Phaser `player/ai-controller/observation/ai-observation-pipeline.ts` and `player-ai-controller.ts` |
+| AI incident capture and offline investigation | gameplay `player/ai-controller/debug/ai-incident-capture-store-v1.ts`; `testing/ai-repro-runner-v1.ts`; Phaser `player/ai-controller/testing/ai-runtime-scenario-bridge.ts` |
 | In-game AI panel | prefabs/gui/debug/ai-controller/AiControllerDebugPanel.ts |
 
 Cross-library paths (repository-relative):
@@ -39,5 +41,7 @@ Read adjacent specs and follow imports for the next consumer. For spells, contai
 - The current plan's new pure brain, harness and debug workbench are destinations, not existing APIs.
 - Stage 9 may propose movement, attacks, transport children and concession, but each must travel through `CommandBusService.dispatchAi`; do not restore the legacy controller's direct actor mutation path.
 - Base identity is definition-backed by an owned main structure, never an average of mobile actors. Candidate sites are advisory persisted facts; `SharedCommandApplicationService` owns final footprint, navigation, collision, resource and builder validation.
+- Combat estimates must consume effective component/definition facts from the committed observation. Keep current opponent cooldowns private, filter weapons by actual target domain, and retain accepted damage/heal/effect reservations only through their bounded impact or terminal outcome.
+- In-game AI diagnostics may navigate committed history and saved overlays, but must not call a planner, mutable legacy strategy calculation or live pathfinder to fill a panel row.
 
 For #759 only, read docs/ai/759-skirmish-ai/00-start-here.md and its current stage. Its shared-decisions source/destination map owns planned additions and its ledger owns implementation status. Keep generic skills free of issue-specific tuning constants and model assignments.

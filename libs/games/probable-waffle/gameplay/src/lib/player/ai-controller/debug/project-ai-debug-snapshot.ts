@@ -1,23 +1,34 @@
 import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiDebugSnapshotV1, AiDebugSectionStateV1 } from "../contracts/ai-debug-snapshot-v1";
+import type { AiDebugSnapshotV1 } from "../contracts/ai-debug-snapshot-v1";
 import type { AiIntentDecisionV1 } from "../contracts/ai-intent-v1";
 import type { AiObservationV1 } from "../contracts/ai-observation-v1";
+import type { AiManagerProposalV1 } from "../planning/ai-manager-proposal";
 
-const later = (ownerStage: number): AiDebugSectionStateV1 => ({
-  status: "not_ready",
-  ownerStage,
-  reason: `owned_by_stage_${ownerStage}`
-});
+/** Exact recorded answer for a saved subject; absence is explicit and never recomputed from live state. */
+export function findAiWhyNotExplanationV1(
+  snapshot: AiDebugSnapshotV1,
+  subjectId: string
+): AiDebugSnapshotV1["whyNot"][number] {
+  return snapshot.whyNot.find((entry) => entry.subjectId === subjectId) ?? {
+    subjectId,
+    status: "not_recorded",
+    reason: null
+  };
+}
 
 /** Projects Stage 2 decision facts and honest typed not-ready sections for later owners. */
 export function projectAiDebugSnapshot(
   observation: AiObservationV1,
   state: AiBrainStateV1,
-  decisions: readonly AiIntentDecisionV1[]
+  decisions: readonly AiIntentDecisionV1[],
+  proposals: readonly AiManagerProposalV1[] = []
 ): AiDebugSnapshotV1 {
   const rejected = decisions.filter((decision) => decision.outcome === "rejected");
   const accepted = decisions.filter((decision) => decision.outcome === "accepted");
-  const topReasons = [...new Set(decisions.map((decision) => decision.reason))].slice(0, 3);
+  const topReasons = [...new Set([
+    ...decisions.map((decision) => decision.reason),
+    ...proposals.flatMap((proposal) => proposal.reasons)
+  ])].slice(0, 3);
   const blocker = state.blockers[0] ?? null;
   const graph = observation.map?.accessGraph;
   const transportOperations = state.transport.slice(0, 16).map((plan) => {
@@ -56,13 +67,29 @@ export function projectAiDebugSnapshot(
     })),
     squads: state.squads.slice(0, 16).map((squad) => ({
       squadId: squad.squadId,
+      taskForceId: squad.tactics?.taskForceId ?? null,
       role: squad.role,
+      domain: squad.domain,
       state: squad.state,
       members: squad.actorIds.length,
       objectiveId: squad.objectiveId,
+      targetActorId: squad.tactics?.targetActorId ?? null,
       targetPlayerNumber: squad.lifecycle?.targetPlayerNumber ?? null,
       assemblyDeadlineTick: squad.lifecycle?.assemblyDeadline.dueTick ?? null,
-      effectDeadlineTick: squad.lifecycle?.effectDeadline.dueTick ?? null
+      effectDeadlineTick: squad.lifecycle?.effectDeadline.dueTick ?? null,
+      script: squad.tactics?.script ?? null,
+      engagementRatioPermille: squad.tactics?.engagementRatioPermille ?? null,
+      confidencePermille: squad.tactics?.confidencePermille ?? null,
+      predictedFriendlyLossPermille: squad.tactics?.predictedFriendlyLossPermille ?? null,
+      observedLossCount: squad.tactics?.observedLossCount ?? 0,
+      lastUsefulEffectTick: squad.lifecycle?.lastUsefulEffectTick ?? null,
+      targetSwitchReason: squad.tactics?.targetActorId === squad.objectiveId ? "committed_or_best_by_20_percent" : "objective_target_differs",
+      damageReservationCount: squad.tactics?.damageReservations.length ?? 0,
+      orderedActorCount: squad.tactics?.orderedActorIds.length ?? 0,
+      oscillationCount: squad.tactics?.oscillationCount ?? 0,
+      mobileReserveCount: squad.tactics?.mobileReserveActorIds.length ?? 0,
+      assignedPositions: squad.tactics?.assignedPositions ?? [],
+      objectiveAlternatives: squad.tactics?.objectiveAlternatives ?? []
     })),
     mode: {
       state: state.skirmish.mode.state,
@@ -124,6 +151,18 @@ export function projectAiDebugSnapshot(
     alternate: entry.alternate,
     releasedClaimCount: entry.releasedClaimIds.length
   }));
+  const support = state.support.slice(0, 32).map((plan) => ({
+    planId: plan.planId,
+    kind: plan.kind ?? "legacy",
+    actorIds: [...plan.actorIds],
+    targetIds: [...plan.targetIds],
+    spellType: plan.spellType ?? null,
+    state: plan.state ?? "reserved",
+    effectId: plan.effectId ?? null,
+    usefulCapacity: plan.usefulCapacity ?? 0,
+    expiresAtTick: plan.expiresAt?.dueTick ?? null,
+    reason: plan.reason ?? "legacy_support_assignment"
+  }));
 
   return {
     schemaVersion: 1,
@@ -142,16 +181,38 @@ export function projectAiDebugSnapshot(
     decisions,
     nextActions: accepted.slice(0, 3).map((decision) => `${decision.intent.kind}:${decision.intent.reasonCode}`),
     mainBlockingReason: blocker?.cause ?? rejected[0]?.reason ?? null,
-    whyNot: rejected.slice(0, 32).map((decision) => ({
-      subjectId: decision.intent.intentId,
-      status: "rejected" as const,
-      reason: `${decision.reason}:${decision.detail}`
-    })),
+    whyNot: [
+      ...rejected.slice(0, 24).map((decision) => ({
+        subjectId: decision.intent.intentId,
+        status: "rejected" as const,
+        reason: `${decision.reason}:${decision.detail}`
+      })),
+      ...state.pendingOutcomes
+        .filter((outcome) => outcome.kind === "dispatched" || outcome.kind === "applied" || outcome.kind === "active")
+        .slice(0, 8)
+        .map((outcome) => ({
+          subjectId: outcome.identity.commandId,
+          status: "outcome_unresolved" as const,
+          reason: outcome.kind
+        })),
+      ...proposals.filter((proposal) => !proposal.evaluated).slice(0, 8).map((proposal) => ({
+        subjectId: proposal.managerId,
+        status: "not_evaluated" as const,
+        reason: proposal.reasons.join(",") || "not_recorded"
+      }))
+    ],
     transportOperations,
     skirmish,
     bases,
     fortifications,
     recovery,
+    support,
+    runtimeLimits: {
+      decisionSequence: state.scheduler.decisionSequence,
+      continuationCursors: state.scheduler.continuationCursors,
+      laneService: state.lanes.map((lane) => ({ lane: lane.lane, deficit: lane.deficit, lastServicedTick: lane.lastServicedTick })),
+      retainedTraceDecisions: decisions.length
+    },
     progressHealth:
       state.authority.health === "technical_fault"
         ? "technical_fault"
@@ -176,7 +237,7 @@ export function projectAiDebugSnapshot(
       observation: "complete",
       priorState: "complete",
       outcomes: "complete",
-      alternatives: "complete",
+      alternatives: proposals.every((proposal) => proposal.evaluated) ? "complete" : "not_recorded",
       missingRanges: [],
       truncatedEventCount: Math.max(0, decisions.length - 64)
     },
@@ -197,7 +258,7 @@ export function projectAiDebugSnapshot(
         reason: state.economyProduction.forecasts.length ? "600_tick_forecast_committed" : "no_macro_forecast"
       },
       intelligenceEnvironment: { status: "ready", ownerStage: 9, reason: skirmish.questions[0]?.questionId ?? "no_open_question" },
-      squadsSupport: { status: "ready", ownerStage: 9, reason: skirmish.squads[0]?.squadId ?? "no_active_squad" },
+      squadsSupport: { status: "ready", ownerStage: 13, reason: skirmish.squads[0]?.squadId ?? "no_active_squad" },
       transport: {
         status: "ready",
         ownerStage: 8,
@@ -209,7 +270,7 @@ export function projectAiDebugSnapshot(
         reason: [...bases.map((base) => `${base.baseId}:${base.lifecycle}`), ...fortifications.map((plan) => `${plan.planId}:${plan.lifecycle}`)].join(",") || "main_structure_not_observed"
       },
       decisionsRecovery: { status: "ready", ownerStage: 12, reason: recovery[0] ? `${recovery[0].domain}:${recovery[0].state}` : "no_active_recovery" },
-      runtimeLimits: later(6)
+      runtimeLimits: { status: "ready", ownerStage: 13, reason: `decision:${state.scheduler.decisionSequence}` }
     }
   };
 }

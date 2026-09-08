@@ -158,6 +158,29 @@ export type AiOfflineBreakpointV1 =
   | "command_rejected"
   | "decision_complete";
 
+/** Tests only recorded result/state facts; named breakpoints never evaluate imported code. */
+export function matchesAiOfflineBreakpointV1(
+  breakpoint: AiOfflineBreakpointV1,
+  result: AiBrainStepResultV1
+): boolean {
+  switch (breakpoint) {
+    case "decision_complete":
+      return true;
+    case "command_rejected":
+      return result.decisions.some((decision) => decision.outcome === "rejected");
+    case "duplicate_effect": {
+      const effectIds = result.acceptedIntents.map((intent) => intent.effectId);
+      return new Set(effectIds).size !== effectIds.length;
+    }
+    case "progress_overdue":
+      return result.nextState.progress.some(
+        (progress) => progress.milestoneDeadline.dueTick <= result.nextState.lastCommittedTick
+      );
+    case "mission_cancelled":
+      return result.nextState.squads.some((squad) => squad.state === "cancelled");
+  }
+}
+
 /** Bounded pure stepping cursor used by the Stage 13 workbench, never by a live match. */
 export class AiOfflineDecisionStepperV1 {
   private consumed = false;
@@ -180,12 +203,42 @@ export class AiOfflineDecisionStepperV1 {
       this.artifact.payload.priorState,
       this.artifact.payload.outcomes
     );
-    if (breakOn === "decision_complete") return { status: "breakpoint", breakpoint: breakOn, result };
-    if (breakOn === "command_rejected" && result.decisions.some((decision) => decision.outcome === "rejected")) {
-      return { status: "breakpoint", breakpoint: breakOn, result };
-    }
+    if (matchesAiOfflineBreakpointV1(breakOn, result)) return { status: "breakpoint", breakpoint: breakOn, result };
     return { status: "complete", result };
   }
+}
+
+/** Isolated pure counterfactual; original replay inputs, state and RNG remain byte-equivalent. */
+export function runAiOfflineWhatIfV1(
+  artifact: AiDecisionReproArtifactV1,
+  brain: AiBrainV1,
+  counterfactual: AiDecisionReproPayloadV1
+): Readonly<{
+  classification: "same" | "counterfactual_divergence";
+  originalDigest: string;
+  counterfactualDigest: string;
+  firstDifference: AiFirstDifferenceV1 | null;
+}> {
+  assertAiDecisionArtifactIntegrityV1(artifact);
+  const originalArtifactDigest = digestCanonicalAiValue(artifact);
+  const original = brain.step(
+    structuredClone(artifact.payload.observation),
+    structuredClone(artifact.payload.priorState),
+    structuredClone(artifact.payload.outcomes)
+  );
+  const hypothetical = brain.step(
+    structuredClone(counterfactual.observation),
+    structuredClone(counterfactual.priorState),
+    structuredClone(counterfactual.outcomes)
+  );
+  if (digestCanonicalAiValue(artifact) !== originalArtifactDigest) throw new Error("ai_what_if_mutated_original");
+  const firstDifference = findFirstAiDifferenceV1(original, hypothetical);
+  return {
+    classification: firstDifference ? "counterfactual_divergence" : "same",
+    originalDigest: digestCanonicalAiValue(original),
+    counterfactualDigest: digestCanonicalAiValue(hypothetical),
+    firstDifference
+  };
 }
 
 /** Creates a data-only draft; callers choose an explicit destination and review before committing. */

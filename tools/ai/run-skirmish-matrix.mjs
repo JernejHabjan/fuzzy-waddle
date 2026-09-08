@@ -44,7 +44,7 @@ function runSuite(options) {
     if (options["working-tree"] !== true) throw new Error("stage_smoke_requires_working_tree");
     const rows = manifest.rows.filter((row) => row.stages.includes(stage));
     if (rows.length === 0) throw new Error(`missing_stage_coverage:${stage}`);
-    const runnable = rows.filter((row) => typeof row.fixture === "string");
+    const runnable = rows.filter((row) => typeof fixtureReference(row) === "string");
     if (stage === 5 && runnable.length < 4) throw new Error("stage_5_harness_coverage_missing");
     return invokeHarness({ suite, stage, rows: runnable, options });
   }
@@ -63,9 +63,11 @@ function runSuite(options) {
 function runSelectedScenario(options) {
   const row = manifest.rows.find((candidate) => candidate.id === options.scenario);
   if (!row) throw new Error(`unknown_scenario:${options.scenario}`);
-  if (!row.fixture) throw new Error(`scenario_fixture_not_implemented:${row.id}`);
+  const authoredOnly = row.fixture === null && typeof row.authoredFixture === "string";
+  if (!row.fixture && !authoredOnly) throw new Error(`scenario_fixture_not_implemented:${row.id}`);
   const seed = requireInteger(options.seed ?? manifest.defaultSeeds[0], "seed", 0, Number.MAX_SAFE_INTEGER);
-  const mode = requireEnum(options.mode ?? "both", ["pure", "runtime", "both"], "mode");
+  const mode = requireEnum(options.mode ?? (authoredOnly ? "pure" : "both"), ["pure", "runtime", "both"], "mode");
+  if (authoredOnly && mode !== "pure") throw new Error(`scenario_runtime_fixture_deferred:${row.id}`);
   if (mode !== "both" && !row.drivers.includes(mode)) throw new Error(`scenario_driver_missing:${row.id}:${mode}`);
   return invokeHarness({ suite: "single", seed, mode, rows: [row], options });
 }
@@ -91,7 +93,14 @@ function invokeHarness(input) {
   };
   const workingTreeSource = input.suite === "stage-smoke" ? readWorkingTreeSource() : "";
   const workingTreeDigest = workingTreeSource.length > 0 ? digestString(workingTreeSource) : null;
-  const fixtureDigest = digestString(JSON.stringify(input.rows.map((row) => ({ row, fixture: row.fixture ? readJson(join(fixtureDirectory, row.fixture), 1024 * 1024) : null }))));
+  const fixtureDigest = digestString(JSON.stringify(input.rows.map((row) => {
+    const reference = fixtureReference(row);
+    return { row, fixture: reference ? readJson(join(fixtureDirectory, reference), 1024 * 1024) : null };
+  })));
+  const includesAuthoredTactics = input.rows.some((row) => row.authoredFixture === "stage-13-tactics.json");
+  const testPathPattern = includesAuthoredTactics
+    ? "(ai-(scenario-harness|runtime-scenario|repro-cli|stage-13-tactics-manager)|authoritative-state-projection|actor-manager-ai-save)\\.spec\\.ts$"
+    : "(ai-(scenario-harness|runtime-scenario|repro-cli)|authoritative-state-projection|actor-manager-ai-save)\\.spec\\.ts$";
   const command = spawnSync(
     "pnpm",
     [
@@ -101,7 +110,7 @@ function invokeHarness(input) {
       "--target=test",
       "--projects=probable-waffle-gameplay,probable-waffle-phaser",
       "--runInBand",
-      "--testPathPatterns=(ai-(scenario-harness|runtime-scenario|repro-cli)|authoritative-state-projection|actor-manager-ai-save)\\.spec\\.ts$"
+      `--testPathPatterns=${testPathPattern}`
     ],
     { cwd: workspaceRoot, env: environment, encoding: "utf8", maxBuffer: 16 * 1024 * 1024 }
   );
@@ -116,8 +125,8 @@ function invokeHarness(input) {
     baseline: input.baseline ?? null,
     rows: input.rows.map((row) => row.id),
     contexts: input.rows
-      .filter((row) => row.fixture)
-      .map((row) => ({ scenarioId: row.id, ...readJson(join(fixtureDirectory, row.fixture), 1024 * 1024).context })),
+      .filter((row) => fixtureReference(row))
+      .map((row) => ({ scenarioId: row.id, ...readJson(join(fixtureDirectory, fixtureReference(row)), 1024 * 1024).context })),
     workCounts: { scenarios: input.rows.length, decisions: 0, ticks: 0 },
     process: { exitCode: command.status, signal: command.signal, stdout: command.stdout, stderr: command.stderr }
   };
@@ -231,8 +240,19 @@ function validateManifest(value) {
         throw new Error(`fixture_identity_mismatch:${row.id}`);
       }
     }
+    if (row.authoredFixture !== undefined) {
+      if (!safeReference(row.authoredFixture)) throw new Error(`unsafe_authored_fixture_reference:${row.id}`);
+      const fixture = readJson(join(fixtureDirectory, row.authoredFixture), 1024 * 1024);
+      if (!Array.isArray(fixture.scenarioIds) || !fixture.scenarioIds.includes(row.id)) {
+        throw new Error(`authored_fixture_identity_mismatch:${row.id}`);
+      }
+    }
     ids.add(row.id);
   }
+}
+
+function fixtureReference(row) {
+  return row.fixture ?? row.authoredFixture ?? null;
 }
 
 function validateArtifact(value) {

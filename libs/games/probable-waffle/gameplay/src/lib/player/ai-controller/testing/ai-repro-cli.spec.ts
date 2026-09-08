@@ -8,6 +8,7 @@ import {
   captureAiDecisionBundleV1,
   compareAiDecisionBundlesV1,
   replayAiDecisionBundleV1,
+  runAiOfflineWhatIfV1,
   type AiDecisionReproArtifactV1
 } from "./ai-repro-runner-v1";
 import { readFileSync } from "node:fs";
@@ -102,6 +103,17 @@ describe("Stage 5 reproduction runner / DBG-01,03,04,05", () => {
     const stepper = new AiOfflineDecisionStepperV1(artifact(), brain);
     expect(stepper.stepDecision("decision_complete").status).toBe("breakpoint");
     expect(stepper.stepDecision().status).toBe("exhausted");
+  });
+
+  it("DBG-04 runs a pure what-if without mutating the captured observation, state or RNG", () => {
+    const original = artifact();
+    const before = JSON.stringify(original);
+    const result = runAiOfflineWhatIfV1(original, brain, {
+      ...original.payload,
+      observation: { ...original.payload.observation, tick: original.payload.observation.tick + 1 }
+    });
+    expect(result.classification).toBe("counterfactual_divergence");
+    expect(JSON.stringify(original)).toBe(before);
   });
 
   it("executes a CLI-requested pure artifact through the same validated replay boundary", () => {

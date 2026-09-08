@@ -1,11 +1,12 @@
 import type Phaser from "phaser";
-import type { PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
+import type { PlayerNumber, Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { getActorComponent } from "../../../data/actor-component";
 import { getPlayerRelation, type PlayerRelation } from "../../../data/player-relation";
 import { OwnerComponent } from "../../../entity/components/owner-component";
 import { VisionComponent } from "../../../entity/components/vision-component";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
+import { getGameObjectCurrentTile } from "../../../data/game-object-helper";
 
 type GameObject = Phaser.GameObjects.GameObject;
 
@@ -68,6 +69,19 @@ export class AiObservationVisibilityPolicy {
     return index.getOwnedActors(this.playerNumber).some((source) => {
       const vision = getActorComponent(source, VisionComponent);
       return vision?.isActorVisible(actor) ?? false;
+    });
+  }
+
+  /** Applies the same owned vision ranges to a map effect that has no actor handle. */
+  mayObserveTile(tile: Vector2Simple): boolean {
+    if (this.informationPolicy !== "skirmish") return true;
+    const index = getSceneService(this.scene, ActorIndexSystem);
+    if (!index) return false;
+    return index.getOwnedActors(this.playerNumber).some((source) => {
+      const sourceTile = getGameObjectCurrentTile(source);
+      const vision = getActorComponent(source, VisionComponent);
+      if (!sourceTile || !vision) return false;
+      return Math.floor(Math.hypot(sourceTile.x - tile.x, sourceTile.y - tile.y)) <= vision.range;
     });
   }
 }

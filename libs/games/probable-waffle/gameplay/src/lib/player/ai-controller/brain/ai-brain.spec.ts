@@ -5,6 +5,7 @@ import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
 import { createAiBrainStateV1 } from "./create-ai-brain-state-v1";
 import { PureAiBrainV1 } from "./ai-brain";
 import { createStage2Observation } from "../testing/ai-stage-2-test-fixtures";
+import { findAiWhyNotExplanationV1 } from "../debug/project-ai-debug-snapshot";
 
 function stopIntent(id: string, utility: number, actorId: string, wood: number): AiIntentV1 {
   return {
@@ -43,6 +44,14 @@ class DummyManager implements AiProposalManagerV1 {
       intents: this.intents,
       reasons: ["fixture"]
     };
+  }
+}
+
+class ThrowingOptionalManager implements AiProposalManagerV1 {
+  readonly managerId = "throwing.optional";
+
+  propose(): AiManagerProposalV1 {
+    throw new Error("fixture_failure");
   }
 }
 
@@ -88,5 +97,20 @@ describe("PureAiBrainV1", () => {
     const invalid = stopIntent("invalid", Number.NaN, "worker-1", 1);
     const result = new PureAiBrainV1(profile, [new DummyManager([invalid])]).step(createStage2Observation(), state, []);
     expect(result.decisions[0]).toMatchObject({ outcome: "rejected", reason: "invalid_numeric_input" });
+  });
+
+  it("H-30 isolates an optional proposer exception and records why it was not evaluated", () => {
+    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainStateV1({ playerNumber: 1, faction: FactionType.Tivara, profile, tick: 0, archetypeId: "balanced" });
+    const useful = stopIntent("useful", 900, "worker-1", 1);
+    const result = new PureAiBrainV1(profile, [new ThrowingOptionalManager(), new DummyManager([useful])])
+      .step(createStage2Observation(), state, []);
+    expect(result.acceptedIntents).toContainEqual(expect.objectContaining({ intentId: "intent:useful" }));
+    expect(result.debugSnapshot.whyNot).toContainEqual(expect.objectContaining({ subjectId: "throwing.optional", status: "not_evaluated", reason: "technical_fault:Error" }));
+    expect(findAiWhyNotExplanationV1(result.debugSnapshot, "unrecorded.alternative")).toEqual({
+      subjectId: "unrecorded.alternative",
+      status: "not_recorded",
+      reason: null
+    });
   });
 });

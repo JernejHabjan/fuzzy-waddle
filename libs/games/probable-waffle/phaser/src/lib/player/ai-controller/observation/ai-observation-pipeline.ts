@@ -31,6 +31,10 @@ import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definit
 import { getTileCoordsUnderObject } from "../../../library/tile-under-object";
 import { OwnerComponent } from "../../../entity/components/owner-component";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
+import { AttackComponent } from "../../../entity/components/combat/components/attack-component";
+import { HealingComponent } from "../../../entity/components/combat/components/healing-component";
+import { SpellComponent } from "../../../entity/components/combat/components/spell-component";
+import { spellDefinitions } from "../../../entity/components/combat/spell-definitions";
 import { QueueComponent } from "../../../entity/components/queue/queue-component";
 import { ResourceSourceComponent } from "../../../entity/components/resource/resource-source-component";
 import { ResourceDrainComponent } from "../../../entity/components/resource/resource-drain-component";
@@ -51,9 +55,11 @@ import { NavigationService } from "../../../world/services/navigation.service";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { TilemapComponent } from "../../../world/tilemap/tilemap.component";
+import { IsoHelper } from "../../../world/tilemap/iso-helper";
 import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 import { AiObservationVisibilityPolicy, type AiObservationInformationPolicy } from "./ai-observation-visibility-policy";
 import { AiAccessGraphAdapter } from "./ai-access-graph.adapter";
+import { getPlayerRelation } from "../../../data/player-relation";
 
 type GameObject = Phaser.GameObjects.GameObject;
 
@@ -304,6 +310,9 @@ export class AiObservationPipeline {
     const source = getActorComponent(actor, ResourceSourceComponent);
     const drain = getActorComponent(actor, ResourceDrainComponent);
     const health = getActorComponent(actor, HealthComponent);
+    const attack = getActorComponent(actor, AttackComponent);
+    const healing = getActorComponent(actor, HealingComponent);
+    const spell = getActorComponent(actor, SpellComponent);
     const statusEffects = getActorComponent(actor, StatusEffectComponent);
     const constructionSite = getActorComponent(actor, ConstructionSiteComponent);
     const capabilities = this.projectActorCapabilities(actor.name as ObjectNames, definition, level);
@@ -398,6 +407,76 @@ export class AiObservationPipeline {
         ? { constructionProgress: knownValue(constructionSite.progressPercentage, tick) }
         : {}),
       activeEffectIds: statusEffects?.getActiveEffects().map((effect) => `status:${effect.type}`).sort() ?? [],
+      combatProfile: health && (owned || visibility === "visible")
+        ? knownValue(
+            {
+              maxHealth: health.healthDefinition.maxHealth,
+              maxArmour: health.healthDefinition.maxArmour ?? 0,
+              passiveRegenerationPerSecond: definition?.components?.healthRegeneration?.regenerateHealthRate ?? 0,
+              armourPermille: Math.max(
+                0,
+                Math.min(1000, Math.floor((health.healthComponentData.armour / Math.max(1, health.healthDefinition.maxArmour ?? 0)) * 1000))
+              ),
+              attacks: (attack?.getAttacks() ?? definition?.components?.attack?.attacks ?? []).map((entry) => ({
+                damage: entry.damage,
+                cooldownTicks: millisecondsToSimulationTicks(entry.cooldown),
+                remainingCooldownTicks: owned && attack ? millisecondsToSimulationTicks(attack.remainingCooldown) : null,
+                range: entry.range,
+                minRange: entry.minRange,
+                highGroundRangeBonus: entry.highGroundRangeBonus ?? 0,
+                impactDelayTicks: millisecondsToSimulationTicks(entry.delays.hit),
+                areaRadius: entry.meleeAoe?.range ?? 0,
+                targetDomains: entry.canTargetAir ? ["ground", "water", "air"] as const : ["ground", "water"] as const
+              })),
+              healing: healing && owned
+                ? {
+                    amount: healing.healingDefinition.healPerCooldown,
+                    cooldownTicks: millisecondsToSimulationTicks(healing.healingDefinition.cooldown),
+                    remainingCooldownTicks: millisecondsToSimulationTicks(healing.remainingCooldown),
+                    range: healing.healingDefinition.range
+                  }
+                : null,
+              spells: spell && owned
+                ? spell.availableSpells
+                    .map((spellType) => {
+                      const data = spellDefinitions[spellType];
+                      if (!data) return undefined;
+                      return {
+                        spellType,
+                        ready: spell.canCastSpell(spellType),
+                        researched: spell.isSpellResearched(spellType),
+                        autocast: spell.isAutocastEnabled(spellType),
+                        range: data.range,
+                        areaRadius: data.aoeRadius,
+                        targetAllies: data.targetAllies,
+                        targetEnemies: data.targetEnemies,
+                        targetSelf: data.targetSelf,
+                        targetDomains: (data.targetDomains ?? ["land", "water", "air"])
+                          .map((domain): AiDomainV1 => domain === "land" ? "ground" : domain)
+                          .filter(uniqueDomain),
+                        instantDamage: data.instantDamage ?? 0,
+                        periodicDamage: Math.max(0, data.dotDamage ?? 0) * Math.max(1, Math.floor((data.dotDuration ?? 0) / Math.max(1, data.dotTickInterval ?? 1))),
+                        instantHeal: data.instantHeal ?? 0,
+                        periodicHeal: Math.max(0, data.hotHeal ?? 0) * Math.max(1, Math.floor((data.hotDuration ?? 0) / Math.max(1, data.hotTickInterval ?? 1))),
+                        stunTicks: millisecondsToSimulationTicks(data.stunDuration ?? 0),
+                        slowTicks: millisecondsToSimulationTicks(data.slowDuration ?? 0),
+                        zoneDurationTicks: millisecondsToSimulationTicks(data.persistentZone?.duration ?? 0),
+                        summons: data.spawnPrefab !== undefined,
+                        summonDurationTicks: data.spawnPrefab ? (data.spawnPrefab.duration === undefined ? null : millisecondsToSimulationTicks(data.spawnPrefab.duration)) : null
+                      };
+                    })
+                    .filter((entry): entry is NonNullable<typeof entry> => entry !== undefined)
+                    .sort((left, right) => left.spellType.localeCompare(right.spellType))
+                : [],
+              statuses: (statusEffects?.getActiveEffects() ?? []).map((effect) => ({
+                type: effect.type,
+                remainingTicks: millisecondsToSimulationTicks(effect.remainingTime),
+                movementSpeedPermille: Math.max(100, Math.min(2000, Math.floor((effect.movementSpeedModifier ?? 1) * 1000)))
+              })).sort((left, right) => left.type.localeCompare(right.type))
+            },
+            tick
+          )
+        : unknownValue(owned ? "not_supported" : "not_observed"),
       ...(owned ? { mainBuilding: knownValue(definition?.meta?.isMainBuilding === true, tick) } : {}),
       containedInActorId: containerOwnerId,
       ...(containerState ? { containerState } : {})
@@ -772,21 +851,38 @@ export class AiObservationPipeline {
   }
 
   /** Projects only self-owned or explicitly scripted-visible zones, never hidden enemy effects. */
+  /** Stage 13 additionally admits an enemy/allied zone only while ordinary owned vision covers its tile. */
   private projectPermittedZones(policy: AiObservationVisibilityPolicy, tick: number): AiObservationV1["effects"] {
     const zones = getSceneService(this.scene, AoeZoneManager)?.getData() ?? [];
     return zones
-      .filter(
-        (zone) =>
-          zone.sourcePlayerId === this.player.playerNumber || policy.informationPolicy !== "skirmish"
-      )
       .map((zone) => ({
-        effectId: `zone:${zone.id}`,
-        owner: zone.sourcePlayerId ?? null,
-        relation: zone.sourcePlayerId === this.player.playerNumber ? "self" : "enemy",
-        position: { x: zone.worldPosition.x, y: zone.worldPosition.y, z: 0 },
-        targetDomains: ["ground", "water", "air"],
-        expiresAt: knownValue(Math.max(tick, tick + Math.ceil(zone.remainingTime / 50)), tick)
+        zone,
+        tilePosition: IsoHelper.isometricWorldToTileXY(this.scene, zone.worldPosition.x, zone.worldPosition.y)
       }))
+      .filter(
+        ({ zone, tilePosition }) =>
+          zone.sourcePlayerId === this.player.playerNumber || policy.mayObserveTile(tilePosition)
+      )
+      .map(({ zone, tilePosition }) => {
+        const relation = getPlayerRelation(this.scene, this.player.playerNumber, zone.sourcePlayerId);
+        const friendlySource = relation === "self" || relation === "ally";
+        const effect = zone.effectWhileInside;
+        const beneficialEffect = (effect?.healPerTick ?? 0) > 0 || (effect?.instantHeal ?? 0) > 0 || (effect?.movementSpeedModifier ?? 1) > 1;
+        const harmfulEffect = (effect?.damagePerTick ?? 0) > 0 || (effect?.instantDamage ?? 0) > 0 || (effect?.movementSpeedModifier ?? 1) < 1;
+        const influencesSelf = friendlySource ? zone.affectsAllies : zone.affectsEnemies;
+        const influence = !influencesSelf ? "mixed" :
+          harmfulEffect && beneficialEffect ? "mixed" : harmfulEffect ? "harmful" : beneficialEffect ? "beneficial" : "mixed";
+        return {
+          effectId: `zone:${zone.id}`,
+          owner: zone.sourcePlayerId ?? null,
+          relation,
+          position: { x: tilePosition.x, y: tilePosition.y, z: 0 },
+          targetDomains: ["ground", "water", "air"],
+          expiresAt: knownValue(Math.max(tick, tick + millisecondsToSimulationTicks(zone.remainingTime)), tick),
+          radius: zone.radius,
+          influence
+        };
+      })
       .sort((left, right) => left.effectId.localeCompare(right.effectId));
   }
 
@@ -1007,4 +1103,9 @@ function capabilityFamilies(definition: ReturnType<typeof getPwActorDefinition>)
 
 function uniqueDomain(domain: AiDomainV1, index: number, values: readonly AiDomainV1[]): boolean {
   return values.indexOf(domain) === index;
+}
+
+/** Converts component millisecond timing to the simulation's fixed 20 Hz clock. */
+function millisecondsToSimulationTicks(milliseconds: number): number {
+  return Math.max(0, Math.ceil(milliseconds / SimulationTickService.TICK_INTERVAL_MS));
 }

@@ -37,6 +37,7 @@ import { AiStage9SkirmishManagerV1 } from "@fuzzy-waddle/probable-waffle-gamepla
 import { AiStage10BaseManagerV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-stage-10-base-manager";
 import { AiStage11FortificationManagerV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-stage-11-fortification-manager";
 import { AiStage12RecoveryManagerV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-stage-12-recovery-manager";
+import { AiStage13TacticsManagerV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-stage-13-tactics-manager";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import { OrderType } from "../../ai/order-type";
 
@@ -59,6 +60,7 @@ export class PlayerAiController {
   private readonly profile: AiProfileConfigV1 | undefined;
   private readonly pureBrain: PureAiBrainV1 | undefined;
   private latestBrainDebug?: AiDebugSnapshotV1;
+  private readonly brainDebugHistory: AiDebugSnapshotV1[] = [];
   private completedDecisionSequence = 0;
   constructor(
     public readonly scene: ProbableWaffleScene,
@@ -74,7 +76,8 @@ export class PlayerAiController {
           new AiStage9SkirmishManagerV1(this.profile, () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
           new AiStage10BaseManagerV1(this.profile, () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
           new AiStage11FortificationManagerV1(this.profile, () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
-          new AiStage12RecoveryManagerV1(() => this.playerAiControllerAgent?.getCommittedCapabilityCatalog())
+          new AiStage12RecoveryManagerV1(() => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
+          new AiStage13TacticsManagerV1(this.profile)
         ])
       : undefined;
     this.blackboard = new PlayerAiBlackboard(scene);
@@ -175,6 +178,7 @@ export class PlayerAiController {
     this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.updateFrameNonDeterministicFallback, this);
     this.tickSubscription?.unsubscribe();
     this.commandReconciliation?.destroy();
+    this.brainDebugHistory.length = 0;
   }
 
   public getTelemetrySnapshot() {
@@ -274,6 +278,16 @@ export class PlayerAiController {
     return this.latestBrainDebug ? structuredClone(this.latestBrainDebug) : undefined;
   }
 
+  /** Bounded immutable live history; navigating it never pauses or advances the match. */
+  getBrainDebugHistory(): readonly AiDebugSnapshotV1[] {
+    return this.brainDebugHistory.map((snapshot) => structuredClone(snapshot));
+  }
+
+  /** Explicit text export for developer tooling; callers own any user-initiated file download. */
+  exportBrainDebugHistory(): string {
+    return JSON.stringify(this.brainDebugHistory);
+  }
+
   /** Read-only Stage 3 adapter consumed when the pure brain becomes live in Stage 6. */
   getBrainCommandBridgeSnapshot():
     | { readonly outcomes: readonly AiCommandOutcomeV1[]; readonly authority: AiAuthorityStateV1 }
@@ -319,9 +333,13 @@ export class PlayerAiController {
       authority: bridge?.authority ?? result.nextState.authority
     }));
     this.latestBrainDebug = structuredClone(result.debugSnapshot);
+    this.brainDebugHistory.push(structuredClone(result.debugSnapshot));
+    const limit = this.profile?.traceHistoryDecisions ?? 128;
+    if (this.brainDebugHistory.length > limit) this.brainDebugHistory.splice(0, this.brainDebugHistory.length - limit);
   }
 
   /** Translates accepted macro and transport intents through the shared player command authority. */
+  /** Stage 13 also routes accepted tactical attack, recovery, healing and manual spell intents here. */
   private dispatchAcceptedIntents(intents: readonly AiIntentV1[]): void {
     if (this.player.playerNumber === undefined) return;
     const actorIndex = getSceneService(this.scene, ActorIndexSystem);
@@ -406,6 +424,31 @@ export class PlayerAiController {
           ...(intent.targetActorId ? { targetObjectIds: [intent.targetActorId] } : {}),
           ...(intent.targetPosition ? { tileVec3: intent.targetPosition } : {}),
           queue: false
+        }, correlation);
+        continue;
+      }
+      if (intent.kind === "heal" || intent.kind === "repair") {
+        const actors = actorIndex.getActorsByIds([...intent.actorIds]);
+        if (actors.length !== intent.actorIds.length || !actorIndex.getActorById(intent.targetActorId)) continue;
+        commandBus.dispatchAi({
+          type: "ACTOR_ACTION",
+          playerNumber: this.player.playerNumber,
+          actorIds: [...intent.actorIds],
+          orderType: intent.kind === "heal" ? OrderType.Heal : OrderType.Repair,
+          targetObjectIds: [intent.targetActorId],
+          queue: false
+        }, correlation);
+        continue;
+      }
+      if (intent.kind === "cast") {
+        if (!actorIndex.getActorById(intent.actorId) || !intent.targetPosition) continue;
+        commandBus.dispatchAi({
+          type: "CAST_SPELL",
+          playerNumber: this.player.playerNumber,
+          actorIds: [intent.actorId],
+          spellType: intent.spellType,
+          ...(intent.targetActorId ? { targetObjectId: intent.targetActorId } : {}),
+          tileVec3: intent.targetPosition
         }, correlation);
         continue;
       }

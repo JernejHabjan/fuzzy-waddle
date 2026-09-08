@@ -234,6 +234,7 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
 
     const intents: AiIntentV1[] = [];
     const nextSquads: AiSquadStateV1[] = [];
+    const primaryOwnedActors = new Set<ActorId>();
     const activeDefense = state.squads.find((squad) => squad.role === "defense" && squad.state !== "completed" && squad.state !== "cancelled");
     const activeAttack = state.squads.find((squad) => squad.role === "attack" && squad.state !== "completed" && squad.state !== "cancelled");
     const localThreat = home
@@ -245,6 +246,7 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
 
     if (localThreat && combat.length > 0) {
       const defenders = combat.slice(0, Math.max(1, Math.ceil(combat.length * 0.25)));
+      defenders.forEach((actor) => primaryOwnedActors.add(actor.actorId));
       const targetPosition = position(localThreat);
       const defenseId = activeDefense?.squadId ?? ("squad:defense:home" as AiSquadId);
       const defensePlanId = `plan:${defenseId}` as AiPlanId;
@@ -271,7 +273,7 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
         }
       };
       nextSquads.push(defense);
-      if (targetPosition && canTarget(defenders[0] ?? combat[0]!, localThreat)) {
+      if (!activeDefense?.tactics && targetPosition && canTarget(defenders[0] ?? combat[0]!, localThreat)) {
         intents.push({
           ...intentBase(state, defensePlanId, observation.tick, `defend:${localThreat.actorId}`, "army_threat", 940),
           kind: "attack",
@@ -279,7 +281,7 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
           targetActorId: localThreat.actorId,
           targetPosition: null
         });
-      } else if (targetPosition) {
+      } else if (!activeDefense?.tactics && targetPosition) {
         intents.push({
           ...intentBase(state, defensePlanId, observation.tick, `intercept:${localThreat.actorId}`, "army_threat", 900),
           kind: "move",
@@ -298,8 +300,9 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
         visibleEnemies[0] ?? rememberedEnemies[0];
     const minimumAttack = 6;
     const reserveCount = combat.length >= 8 ? Math.ceil(combat.length * 0.25) : 0;
-    const reserveMembers = combat.slice(0, reserveCount);
+    const reserveMembers = combat.filter((actor) => !primaryOwnedActors.has(actor.actorId)).slice(0, reserveCount);
     if (reserveMembers.length > 0) {
+      reserveMembers.forEach((actor) => primaryOwnedActors.add(actor.actorId));
       const reserveId = "squad:reserve:home" as AiSquadId;
       nextSquads.push({
         squadId: reserveId,
@@ -323,7 +326,7 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
         }
       });
     }
-    const attackers = combat.slice(reserveCount);
+    const attackers = combat.filter((actor) => !primaryOwnedActors.has(actor.actorId));
     const attackId = activeAttack?.squadId ?? ("squad:attack:primary" as AiSquadId);
     const attackPlanId = `plan:${attackId}` as AiPlanId;
     if (opponent && attackers.length > 0) {
@@ -408,7 +411,7 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
             }
           };
         }
-      } else if (attackState === "moving" && route && voluntaryMissions < this.profile.voluntaryOffensiveMissionLimit + 1) {
+      } else if (!activeAttack?.tactics && attackState === "moving" && route && voluntaryMissions < this.profile.voluntaryOffensiveMissionLimit + 1) {
         const targetPosition = position(opponent);
         if (opponent.visibility === "visible" && canTarget(attackers[0]!, opponent)) {
           intents.push({

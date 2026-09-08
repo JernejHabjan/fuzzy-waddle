@@ -271,6 +271,7 @@ export default class AiControllerDebugPanel extends Phaser.GameObjects.Container
     const categories = [
       { id: "overview", label: "Overview & Reasons" },
       { id: "strategy", label: "Strategy & Combat" },
+      { id: "squads", label: "Squads & Support" },
       { id: "resources", label: "Resources & Economy" },
       { id: "production", label: "Production & Tech" },
       { id: "commands", label: "Command Authority" },
@@ -278,7 +279,8 @@ export default class AiControllerDebugPanel extends Phaser.GameObjects.Container
       { id: "bases", label: "Bases & Placement" },
       { id: "logistics", label: "Logistics & Workers" },
       { id: "intel", label: "Enemy Intel & Scouting" },
-      { id: "thresholds", label: "Adaptive Thresholds" }
+      { id: "thresholds", label: "Adaptive Thresholds" },
+      { id: "runtime", label: "Runtime & Limits" }
     ];
 
     let currentY = 40;

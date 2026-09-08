@@ -8,6 +8,7 @@ import { SimulationTickService } from "../../../world/services/simulation-tick.s
 import { StateHashService } from "../../../world/services/recovery/state-hash.service";
 import { digestAiWorldProjectionV1 } from "../../../world/services/recovery/authoritative-state-projection";
 import type { AiReproBundleV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import { AiIncidentCaptureStoreV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
 
 const MAX_ADVANCE_TICKS = 20_000;
 
@@ -60,6 +61,7 @@ export interface AiRuntimeReproProvenanceV1 {
  */
 export class AiRuntimeScenarioBridgeV1 {
   private readonly maximumAdvanceTicks: number;
+  private readonly incidentCaptures = new AiIncidentCaptureStoreV1();
   private disposed = false;
 
   constructor(
@@ -134,7 +136,7 @@ export class AiRuntimeScenarioBridgeV1 {
     };
     const snapshotDigest = digestJson(payload);
     const inputDigest = digestJson({ observation: payload.observation, outcomes: payload.outcomes });
-    return {
+    const artifact: AiRuntimeReproArtifactV1 = {
       manifest: {
         schemaVersion: 1,
         kind: "runtime",
@@ -174,10 +176,18 @@ export class AiRuntimeScenarioBridgeV1 {
       },
       payload
     };
+    this.incidentCaptures.addAutomatic(provenance.scenarioId, artifact.manifest);
+    return artifact;
+  }
+
+  /** Bounded host-only manifests; confidential runtime payloads remain in the explicit artifact owner. */
+  getIncidentCaptureManifests() {
+    return this.incidentCaptures.snapshot();
   }
 
   dispose(): void {
     this.disposed = true;
+    this.incidentCaptures.dispose();
   }
 
   private requireTickService(): SimulationTickService {

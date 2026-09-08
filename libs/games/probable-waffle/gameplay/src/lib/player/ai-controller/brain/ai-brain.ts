@@ -129,6 +129,39 @@ function validateIntentNumbers(intent: AiIntentV1): boolean {
   });
 }
 
+function normalizePrimarySquadOwnership(squads: AiBrainStateV1["squads"]): AiBrainStateV1["squads"] {
+  const rolePriority: Record<AiBrainStateV1["squads"][number]["role"], number> = {
+    defense: 0,
+    escort: 1,
+    attack: 2,
+    reinforcement: 3,
+    reserve: 4,
+    scout: 5
+  };
+  const claimed = new Set<string>();
+  return [...squads]
+    .sort((left, right) => rolePriority[left.role] - rolePriority[right.role] || Number(right.squadId.includes(":domain:")) - Number(left.squadId.includes(":domain:")) || left.squadId.localeCompare(right.squadId))
+    .map((squad) => {
+      const actorIds = squad.actorIds.filter((actorId) => !claimed.has(actorId));
+      actorIds.forEach((actorId) => claimed.add(actorId));
+      const owned = new Set(actorIds);
+      return {
+        ...squad,
+        actorIds,
+        ...(squad.tactics ? {
+          tactics: {
+            ...squad.tactics,
+            orderedActorIds: squad.tactics.orderedActorIds.filter((actorId) => owned.has(actorId)),
+            assignedPositions: squad.tactics.assignedPositions.filter((entry) => owned.has(entry.actorId)),
+            damageReservations: squad.tactics.damageReservations.filter((entry) => owned.has(entry.actorId)),
+            mobileReserveActorIds: squad.tactics.mobileReserveActorIds.filter((actorId) => owned.has(actorId))
+          }
+        } : {})
+      };
+    })
+    .sort((left, right) => left.squadId.localeCompare(right.squadId));
+}
+
 function availableResource(observation: AiObservationV1, resourceType: ResourceType): number {
   const entry = observation.resources.find((resource) => resource.resourceType === resourceType);
   return entry ? entry.stockpile - entry.reservedUnspent - entry.obligationsDue : 0;
@@ -171,7 +204,19 @@ export class PureAiBrainV1 implements AiBrainV1 {
 
     const proposalBatches: AiManagerProposalV1[] = [...this.managers]
       .sort((left, right) => left.managerId.localeCompare(right.managerId))
-      .map((manager) => manager.propose(observation, previousState));
+      .map((manager) => {
+        try {
+          return manager.propose(observation, previousState);
+        } catch (error) {
+          return {
+            managerId: manager.managerId,
+            lane: "optional_infrastructure_tech",
+            evaluated: false,
+            intents: [],
+            reasons: [`technical_fault:${error instanceof Error ? error.name : "unknown"}`]
+          } satisfies AiManagerProposalV1;
+        }
+      });
     const planning = planAiStage6V1(observation, previousState, orderedOutcomes, proposalBatches, this.profile);
     // A proposer may own a persisted projection (opening/demand state) but never
     // mutates the previous brain directly. Stable manager order makes competing
@@ -182,7 +227,7 @@ export class PureAiBrainV1 implements AiBrainV1 {
       (state, batch) => {
         const patch = batch.statePatch;
         if (!patch) return state;
-        const { transportAppend, ...replacePatch } = patch;
+        const { transportAppend, squadUpdates, ...replacePatch } = patch;
         return {
           ...state,
           ...replacePatch,
@@ -192,6 +237,14 @@ export class PureAiBrainV1 implements AiBrainV1 {
                   ...state.transport,
                   ...transportAppend.filter((candidate) => !state.transport.some((current) => current.planId === candidate.planId))
                 ]
+              }
+            : {}),
+          ...(squadUpdates?.length
+            ? {
+                squads: [
+                  ...state.squads.filter((squad) => !squadUpdates.some((update) => update.squadId === squad.squadId)),
+                  ...squadUpdates
+                ].sort((left, right) => left.squadId.localeCompare(right.squadId))
               }
             : {})
         };
@@ -285,8 +338,39 @@ export class PureAiBrainV1 implements AiBrainV1 {
         .filter((record) => record.state === "abandoned")
         .flatMap((record) => record.releasedClaimIds)
     );
+    const acceptedEffectIds = new Set(accepted.map((intent) => intent.effectId));
+    const previousSupportIds = new Set(previousState.support.map((plan) => plan.planId));
+    const previousDamageEffectIds = new Set(previousState.squads.flatMap((squad) =>
+      squad.tactics?.damageReservations.map((reservation) => reservation.effectId).filter((effectId): effectId is string => effectId !== undefined) ?? []
+    ));
+    const normalizedSquads = normalizePrimarySquadOwnership(projectedState.squads);
     const nextState: AiBrainStateV1 = {
       ...projectedState,
+      support: projectedState.support.filter((plan) =>
+        previousSupportIds.has(plan.planId) || plan.effectId == null || acceptedEffectIds.has(plan.effectId as AiIntentV1["effectId"])
+      ),
+      squads: normalizedSquads.map((squad) => {
+        if (!squad.tactics) return squad;
+        const previousSquad = previousState.squads.find((candidate) => candidate.squadId === squad.squadId);
+        const retainedOrderedActorIds = previousSquad?.tactics?.orderSignature === squad.tactics.orderSignature
+          ? previousSquad.tactics.orderedActorIds
+          : [];
+        const acceptedOrderedActorIds = accepted
+          .filter((intent) => intent.planId === `plan:${squad.squadId}` && (intent.kind === "move" || intent.kind === "attack"))
+          .flatMap((intent) => "actorIds" in intent ? [...intent.actorIds] : []);
+        return {
+          ...squad,
+          tactics: {
+            ...squad.tactics,
+            orderedActorIds: [...new Set([...retainedOrderedActorIds, ...acceptedOrderedActorIds])]
+              .filter((actorId) => squad.actorIds.includes(actorId))
+              .sort(),
+            damageReservations: squad.tactics.damageReservations.filter((reservation) =>
+              reservation.effectId === undefined || previousDamageEffectIds.has(reservation.effectId) || acceptedEffectIds.has(reservation.effectId as AiIntentV1["effectId"])
+            )
+          }
+        };
+      }),
       reservations: [
         ...projectedState.reservations.filter(
           (existing) =>
@@ -300,7 +384,7 @@ export class PureAiBrainV1 implements AiBrainV1 {
         ...acceptedReservations
       ].sort((left, right) => left.claimId.localeCompare(right.claimId))
     };
-    const debugSnapshot = projectAiDebugSnapshot(observation, nextState, decisions);
+    const debugSnapshot = projectAiDebugSnapshot(observation, nextState, decisions, proposalBatches);
     return { nextState, acceptedIntents: accepted, decisions, trace: decisions, debugSnapshot };
   }
 }

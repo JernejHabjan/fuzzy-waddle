@@ -82,8 +82,11 @@ export function assertAiBrainStateV1(value: unknown): asserts value is AiBrainSt
     assertDeadline(episode.deadline, `recovery.${episode.episodeId}.deadline`);
   }
   for (const query of value.queries) assertDeadline(query.deadline, `queries.${query.queryId}.deadline`);
+  assertUnique(value.support.map((support) => support.planId), "support.planId");
+  assertUnique(value.support.map((support) => support.effectId).filter((effectId): effectId is string => effectId != null), "support.effectId");
   for (const support of value.support) {
     if (support.expiresAt !== null) assertDeadline(support.expiresAt, `support.${support.planId}.expiresAt`);
+    if (support.usefulCapacity !== undefined) assertAiNonNegativeFinite(support.usefulCapacity, `support.${support.planId}.usefulCapacity`);
   }
   for (const transport of value.transport) {
     if (!transport.lifecycle) continue;
@@ -125,15 +128,46 @@ export function assertAiBrainStateV1(value: unknown): asserts value is AiBrainSt
     }
   }
   assertUnique(value.squads.map((squad) => squad.squadId), "squads.squadId");
+  assertUnique(value.squads.filter((squad) => squad.tactics).flatMap((squad) => [...squad.actorIds]), "squads.primaryActorOwner");
   for (const squad of value.squads) {
     assertUnique([...squad.actorIds], `squads.${squad.squadId}.actorIds`);
-    if (!squad.lifecycle) continue;
-    assertAiNonNegativeInteger(squad.lifecycle.createdTick, `squads.${squad.squadId}.createdTick`);
-    assertAiNonNegativeInteger(squad.lifecycle.recoveryAttempt, `squads.${squad.squadId}.recoveryAttempt`);
-    assertDeadline(squad.lifecycle.assemblyDeadline, `squads.${squad.squadId}.assemblyDeadline`);
-    assertDeadline(squad.lifecycle.effectDeadline, `squads.${squad.squadId}.effectDeadline`);
-    if (squad.lifecycle.lastUsefulEffectTick !== null) {
-      assertAiNonNegativeInteger(squad.lifecycle.lastUsefulEffectTick, `squads.${squad.squadId}.lastUsefulEffectTick`);
+    if (squad.lifecycle) {
+      assertAiNonNegativeInteger(squad.lifecycle.createdTick, `squads.${squad.squadId}.createdTick`);
+      assertAiNonNegativeInteger(squad.lifecycle.recoveryAttempt, `squads.${squad.squadId}.recoveryAttempt`);
+      assertDeadline(squad.lifecycle.assemblyDeadline, `squads.${squad.squadId}.assemblyDeadline`);
+      assertDeadline(squad.lifecycle.effectDeadline, `squads.${squad.squadId}.effectDeadline`);
+      if (squad.lifecycle.lastUsefulEffectTick !== null) {
+        assertAiNonNegativeInteger(squad.lifecycle.lastUsefulEffectTick, `squads.${squad.squadId}.lastUsefulEffectTick`);
+      }
+    }
+    if (squad.tactics) {
+      assertAiNonNegativeInteger(squad.tactics.targetScore, `squads.${squad.squadId}.targetScore`);
+      assertAiNonNegativeInteger(squad.tactics.engagementRatioPermille, `squads.${squad.squadId}.engagementRatioPermille`);
+      assertAiNonNegativeInteger(squad.tactics.confidencePermille, `squads.${squad.squadId}.confidencePermille`);
+      assertAiNonNegativeInteger(squad.tactics.predictedFriendlyLossPermille, `squads.${squad.squadId}.predictedFriendlyLossPermille`);
+      assertAiNonNegativeInteger(squad.tactics.predictedEnemyLossPermille, `squads.${squad.squadId}.predictedEnemyLossPermille`);
+      assertAiNonNegativeInteger(squad.tactics.lastObservedMemberCount, `squads.${squad.squadId}.lastObservedMemberCount`);
+      assertAiNonNegativeInteger(squad.tactics.observedLossCount, `squads.${squad.squadId}.observedLossCount`);
+      assertAiNonNegativeInteger(squad.tactics.lastTransitionTick, `squads.${squad.squadId}.lastTransitionTick`);
+      assertAiNonNegativeInteger(squad.tactics.nextReconsiderTick, `squads.${squad.squadId}.nextReconsiderTick`);
+      assertAiNonNegativeInteger(squad.tactics.oscillationCount, `squads.${squad.squadId}.oscillationCount`);
+      if (
+        squad.tactics.targetScore > 1000 ||
+        squad.tactics.engagementRatioPermille > 4000 ||
+        squad.tactics.confidencePermille > 1000 ||
+        squad.tactics.predictedFriendlyLossPermille > 1000 ||
+        squad.tactics.predictedEnemyLossPermille > 1000
+      ) throw new Error(`invalid_ai_tactical_estimate:${squad.squadId}`);
+      assertUnique([...squad.tactics.orderedActorIds], `squads.${squad.squadId}.orderedActorIds`);
+      if (squad.tactics.orderedActorIds.some((actorId) => !squad.actorIds.includes(actorId))) {
+        throw new Error(`invalid_ai_tactical_order_owner:${squad.squadId}`);
+      }
+      assertUnique(squad.tactics.assignedPositions.map((entry) => entry.actorId), `squads.${squad.squadId}.assignedPositions`);
+      assertUnique(squad.tactics.damageReservations.map((entry) => entry.actorId), `squads.${squad.squadId}.damageReservations`);
+      for (const reservation of squad.tactics.damageReservations) {
+        assertAiNonNegativeFinite(reservation.expectedDamage, `squads.${squad.squadId}.expectedDamage`);
+        assertAiNonNegativeInteger(reservation.impactTick, `squads.${squad.squadId}.impactTick`);
+      }
     }
   }
   if (!Array.isArray(value.skirmish.incidents) || !Array.isArray(value.skirmish.timeline)) {
@@ -202,6 +236,10 @@ export function assertAiObservationV1(observation: AiObservationV1): void {
     observation.resources.map((resource) => resource.resourceType),
     "observation.resourceType"
   );
+  for (const effect of observation.effects) {
+    if (effect.radius !== undefined) assertAiNonNegativeFinite(effect.radius, `effects.${effect.effectId}.radius`);
+    if (effect.expiresAt.status === "known") assertAiNonNegativeInteger(effect.expiresAt.value, `effects.${effect.effectId}.expiresAt`);
+  }
   assertAiNonNegativeInteger(observation.threatSummary.observedTick, "threatSummary.observedTick");
   assertUnique([...observation.threatSummary.visibleEnemyActorIds], "threatSummary.visibleEnemyActorIds");
   assertUnique([...observation.threatSummary.rememberedEnemyActorIds], "threatSummary.rememberedEnemyActorIds");
@@ -233,6 +271,44 @@ export function assertAiObservationV1(observation: AiObservationV1): void {
       assertUnique([...container.pendingPassengerIds], `actors.${actor.actorId}.container.pendingPassengerIds`);
       if (container.passengerIds.length > container.capacity) {
         throw new Error(`invalid_ai_container_capacity:${actor.actorId}`);
+      }
+    }
+    if (actor.combatProfile?.status === "known") {
+      const profile = actor.combatProfile.value;
+      assertAiNonNegativeFinite(profile.maxHealth, `actors.${actor.actorId}.combat.maxHealth`);
+      assertAiNonNegativeFinite(profile.maxArmour, `actors.${actor.actorId}.combat.maxArmour`);
+      assertAiNonNegativeFinite(profile.passiveRegenerationPerSecond, `actors.${actor.actorId}.combat.passiveRegenerationPerSecond`);
+      assertAiNonNegativeInteger(profile.armourPermille, `actors.${actor.actorId}.combat.armourPermille`);
+      if (profile.maxHealth <= 0 || profile.armourPermille > 1000) throw new Error(`invalid_ai_combat_durability:${actor.actorId}`);
+      for (const attack of profile.attacks) {
+        assertAiNonNegativeFinite(attack.damage, `actors.${actor.actorId}.combat.damage`);
+        assertAiNonNegativeInteger(attack.cooldownTicks, `actors.${actor.actorId}.combat.cooldownTicks`);
+        if (attack.remainingCooldownTicks != null) assertAiNonNegativeInteger(attack.remainingCooldownTicks, `actors.${actor.actorId}.combat.remainingCooldownTicks`);
+        assertAiNonNegativeFinite(attack.range, `actors.${actor.actorId}.combat.range`);
+        assertAiNonNegativeFinite(attack.minRange, `actors.${actor.actorId}.combat.minRange`);
+        assertAiNonNegativeInteger(attack.impactDelayTicks, `actors.${actor.actorId}.combat.impactDelayTicks`);
+        if (attack.cooldownTicks === 0 || attack.minRange > attack.range) throw new Error(`invalid_ai_combat_attack:${actor.actorId}`);
+      }
+      if (profile.healing) {
+        assertAiNonNegativeFinite(profile.healing.amount, `actors.${actor.actorId}.combat.healing.amount`);
+        assertAiNonNegativeInteger(profile.healing.cooldownTicks, `actors.${actor.actorId}.combat.healing.cooldownTicks`);
+        assertAiNonNegativeInteger(profile.healing.remainingCooldownTicks, `actors.${actor.actorId}.combat.healing.remainingCooldownTicks`);
+      }
+      for (const spell of profile.spells) {
+        assertAiNonNegativeFinite(spell.range, `actors.${actor.actorId}.combat.spell.range`);
+        assertAiNonNegativeFinite(spell.areaRadius, `actors.${actor.actorId}.combat.spell.areaRadius`);
+        assertAiNonNegativeFinite(spell.instantDamage, `actors.${actor.actorId}.combat.spell.instantDamage`);
+        assertAiNonNegativeFinite(spell.periodicDamage, `actors.${actor.actorId}.combat.spell.periodicDamage`);
+        assertAiNonNegativeFinite(spell.instantHeal, `actors.${actor.actorId}.combat.spell.instantHeal`);
+        assertAiNonNegativeFinite(spell.periodicHeal, `actors.${actor.actorId}.combat.spell.periodicHeal`);
+        assertAiNonNegativeInteger(spell.stunTicks, `actors.${actor.actorId}.combat.spell.stunTicks`);
+        assertAiNonNegativeInteger(spell.slowTicks, `actors.${actor.actorId}.combat.spell.slowTicks`);
+        assertAiNonNegativeInteger(spell.zoneDurationTicks, `actors.${actor.actorId}.combat.spell.zoneDurationTicks`);
+        if (spell.summonDurationTicks !== null) assertAiNonNegativeInteger(spell.summonDurationTicks, `actors.${actor.actorId}.combat.spell.summonDurationTicks`);
+      }
+      for (const status of profile.statuses) {
+        assertAiNonNegativeInteger(status.remainingTicks, `actors.${actor.actorId}.combat.status.remainingTicks`);
+        assertAiNonNegativeInteger(status.movementSpeedPermille, `actors.${actor.actorId}.combat.status.movementSpeedPermille`);
       }
     }
   }

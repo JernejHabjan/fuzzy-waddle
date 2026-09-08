@@ -65,7 +65,7 @@ export const AI_HARDENING_COVERAGE_V1: readonly AiHardeningCoverageEntryV1[] = [
     implementationStages: [9, 13],
     persistencePath: "AiBrainStateV1.strategy/squads/progress",
     debugField: "AiDebugSnapshotV1.sections.squadsSupport",
-    focusedTest: "Stage 9 mission focused gate",
+    focusedTest: "ai-stage-13-tactics-manager.spec.ts",
     finalScenarioIds: ["H-23", "H-24", "H-25", "H-26"]
   },
   {
@@ -89,10 +89,10 @@ export const AI_HARDENING_COVERAGE_V1: readonly AiHardeningCoverageEntryV1[] = [
   {
     contractId: "H9",
     contractOwner: "assertAiBrainStateV1/AiReproBundleV1",
-    implementationStages: [2, 3, 5, 14],
+    implementationStages: [2, 3, 5, 13, 14],
     persistencePath: "all AiBrainStateV1 slices and AiReproBundleV1 completeness",
     debugField: "AiDebugSnapshotV1.completeness",
-    focusedTest: "parse-ai-repro-bundle.spec.ts",
+    focusedTest: "ai-brain.spec.ts + ai-repro-cli.spec.ts + ai-incident-capture-store-v1.spec.ts",
     finalScenarioIds: ["H-30", "H-31", "H-32"]
   }
 ];
