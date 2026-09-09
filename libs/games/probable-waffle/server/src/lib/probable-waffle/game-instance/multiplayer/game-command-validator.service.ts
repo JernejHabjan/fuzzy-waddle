@@ -533,12 +533,7 @@ export class GameCommandValidatorService {
   }
 
   private isSafeIdentifier(value: unknown): value is string {
-    return (
-      typeof value === "string" &&
-      value.length > 0 &&
-      value.length <= 256 &&
-      /^[a-zA-Z0-9_.:@/-]+$/.test(value)
-    );
+    return typeof value === "string" && value.length > 0 && value.length <= 256 && /^[a-zA-Z0-9_.:@/-]+$/.test(value);
   }
 
   private describeTransportMeta(event: ProbableWaffleGameCommandEvent): string {

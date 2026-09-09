@@ -60,10 +60,18 @@ export function findFirstAuthoritativeStateDifferenceV1(
   expected: AuthoritativeStateProjectionV1,
   actual: AuthoritativeStateProjectionV1
 ): { readonly path: string; readonly expected: unknown; readonly actual: unknown } | null {
-  return walk(canonicalizeAuthoritativeStateProjectionV1(expected), canonicalizeAuthoritativeStateProjectionV1(actual), "$");
+  return walk(
+    canonicalizeAuthoritativeStateProjectionV1(expected),
+    canonicalizeAuthoritativeStateProjectionV1(actual),
+    "$"
+  );
 }
 
-function walk(expected: unknown, actual: unknown, path: string): { path: string; expected: unknown; actual: unknown } | null {
+function walk(
+  expected: unknown,
+  actual: unknown,
+  path: string
+): { path: string; expected: unknown; actual: unknown } | null {
   if (Object.is(expected, actual)) return null;
   if (Array.isArray(expected) && Array.isArray(actual)) {
     for (let index = 0; index < Math.max(expected.length, actual.length); index += 1) {

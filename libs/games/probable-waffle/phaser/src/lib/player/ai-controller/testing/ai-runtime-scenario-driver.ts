@@ -35,7 +35,7 @@ export async function runAiRuntimeScenarioV1(
     const boundary = await bridge.advanceToCommittedObservation(recipe.playerNumber, tick);
     results.push(boundary);
     if (recipe.saveContinuationAfterTick === tick) {
-      bridge.restoreControllerBoundary(recipe.playerNumber, boundary.controllerState);
+      bridge.restoreControllerBoundary(recipe.playerNumber, structuredClone(boundary.controllerState));
     }
   }
   return results;

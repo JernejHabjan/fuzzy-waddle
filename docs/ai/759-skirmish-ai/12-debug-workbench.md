@@ -31,14 +31,14 @@ Map overlays include real clearance/route rejection, protected asset/pursuit lea
 
 ## Freeze, step and breakpoint semantics
 
-| Surface/action | Behavior |
-| --- | --- |
-| Live Freeze view / history step | Changes displayed snapshot only; simulation continues normally |
-| Live alert/bookmark | Records a diagnostic marker on a completed boundary; never globally pauses multiplayer |
-| Offline Step tick / Step decision | Advances the isolated test simulation through normal shared commands; awaits a safe completed boundary |
-| Offline breakpoint | Stops that isolated simulation on a named event/predicate, such as duplicate effect, progress overdue, mission cancelled or selected command rejection |
-| Offline what-if | Clones permitted observation/brain/RNG/config into a separate pure evaluation; compares proposals without dispatch; clearly labeled hypothetical |
-| Live profile/seed/resource editing | Not provided; profile choice remains lobby configuration and saved authority |
+| Surface/action                     | Behavior                                                                                                                                               |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Live Freeze view / history step    | Changes displayed snapshot only; simulation continues normally                                                                                         |
+| Live alert/bookmark                | Records a diagnostic marker on a completed boundary; never globally pauses multiplayer                                                                 |
+| Offline Step tick / Step decision  | Advances the isolated test simulation through normal shared commands; awaits a safe completed boundary                                                 |
+| Offline breakpoint                 | Stops that isolated simulation on a named event/predicate, such as duplicate effect, progress overdue, mission cancelled or selected command rejection |
+| Offline what-if                    | Clones permitted observation/brain/RNG/config into a separate pure evaluation; compares proposals without dispatch; clearly labeled hypothetical       |
+| Live profile/seed/resource editing | Not provided; profile choice remains lobby configuration and saved authority                                                                           |
 
 Breakpoint/filter configuration uses validated enums/typed comparisons over allowed fields, with count/work limits. Never eval arbitrary code from UI or imported JSON. Continuing an offline case must preserve its exact scheduler/order state; a counterfactual does not mutate the captured original or become proof of actual world outcomes.
 
@@ -77,13 +77,13 @@ For a repair, compare command and AI digests, authoritative outcomes and indepen
 
 Use the existing debug entry point; the isolated workbench may be a developer/test-only route backed by the Stage 5 bridge, not a new ordinary lobby feature. UI action labels must distinguish view history from simulation stepping. Expensive strings/indexes are lazy and bounded; diagnostic exceptions cannot stop the controller. Browser QA must demonstrate one real repeated-building or stalled-attack case from selection through capture, replay, comparison and a passing repaired scenario.
 
-| ID / stage | Required evidence |
-| --- | --- |
-| DBG-01 / 5,13 | Real incident captures and reproduces pure decision and applicable full runtime outcome with exact provenance; truncated capture cannot claim exactness |
-| DBG-02 / 6,13 | Why-not lookup distinguishes not evaluated/not recorded/rejected/unresolved; no live planner mutation or fabricated alternative |
-| DBG-03 / 5,13 | Offline tick/decision step and named breakpoint stop at safe reproducible boundaries; live history/bookmark never pauses/mutates multiplayer |
-| DBG-04 / 5,13 | Different input/config labeled correctly; same-input divergence reports first field; isolated what-if leaves original state/RNG unchanged |
-| DBG-05 / 2,5,13 | Malformed/oversized/version-mismatched/traversal/HTML payloads rejected or rendered safely; hidden runtime bundle is access-controlled |
-| DBG-06 / 13,15 | Capture quota/history truncation/scene disposal stay bounded; debug shown/hidden/exporting/filtering gives identical gameplay/AI outcomes |
+| ID / stage      | Required evidence                                                                                                                                       |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| DBG-01 / 5,13   | Real incident captures and reproduces pure decision and applicable full runtime outcome with exact provenance; truncated capture cannot claim exactness |
+| DBG-02 / 6,13   | Why-not lookup distinguishes not evaluated/not recorded/rejected/unresolved; no live planner mutation or fabricated alternative                         |
+| DBG-03 / 5,13   | Offline tick/decision step and named breakpoint stop at safe reproducible boundaries; live history/bookmark never pauses/mutates multiplayer            |
+| DBG-04 / 5,13   | Different input/config labeled correctly; same-input divergence reports first field; isolated what-if leaves original state/RNG unchanged               |
+| DBG-05 / 2,5,13 | Malformed/oversized/version-mismatched/traversal/HTML payloads rejected or rendered safely; hidden runtime bundle is access-controlled                  |
+| DBG-06 / 13,15  | Capture quota/history truncation/scene disposal stay bounded; debug shown/hidden/exporting/filtering gives identical gameplay/AI outcomes               |
 
 These six cases join packet 11's twelve and the prior 103: **121 named cases**, before paired/seed/runtime variants. Add implemented symbol, persistence owner, focused/final command and evidence to progress for each ID.

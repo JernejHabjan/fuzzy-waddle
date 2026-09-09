@@ -28,7 +28,9 @@ export function chooseConversionCandidate(candidates: readonly ConversionCandida
     .filter((candidate) => candidate.active && !candidate.killed && candidate.actorId.length > 0)
     .sort(
       (left, right) =>
-        left.distance - right.distance || left.playerNumber - right.playerNumber || left.actorId.localeCompare(right.actorId)
+        left.distance - right.distance ||
+        left.playerNumber - right.playerNumber ||
+        left.actorId.localeCompare(right.actorId)
     )[0];
 }
 
@@ -81,8 +83,13 @@ export class ConvertibleComponent {
     const candidates: ConversionCandidate[] = [];
     for (const [playerNumber, ownedActors] of ownedActorsByPlayers) {
       for (const ownedActor of ownedActors) {
-        // Skip dead actors
+        if (!ownedActor.active || ownedActor.scene !== this.gameObject.scene) continue;
+
         const health = getActorComponent(ownedActor, HealthComponent);
+        if (health?.killed) continue;
+
+        const actorId = getActorComponent(ownedActor, IdComponent)?.id;
+        if (!actorId) continue;
 
         const distance = DistanceHelper.getTileDistanceBetweenGameObjects(this.gameObject, ownedActor);
         if (distance !== null && distance <= this.convertibleDefinition.detectionRange) {
@@ -90,9 +97,9 @@ export class ConvertibleComponent {
             playerNumber,
             actor: ownedActor,
             distance,
-            actorId: getActorComponent(ownedActor, IdComponent)?.id ?? "",
-            active: ownedActor.active,
-            killed: health?.killed ?? false
+            actorId,
+            active: true,
+            killed: false
           });
         }
       }

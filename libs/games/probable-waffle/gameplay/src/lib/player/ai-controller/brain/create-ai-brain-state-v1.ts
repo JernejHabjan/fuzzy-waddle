@@ -72,10 +72,16 @@ export function createAiBrainStateV1(input: CreateAiBrainStateV1Input): AiBrainS
     },
     bases: [],
     economyProduction: {
-      demands: [], forecasts: [],
+      demands: [],
+      forecasts: [],
       adaptation: {
-        evidence: [], activeRoleTargets: [], lastTransitionTick: null, lastTransitionReason: null,
-        selectedResearchType: null, selectedResearchScore: null, cancellationPolicy: "retain_committed_production"
+        evidence: [],
+        activeRoleTargets: [],
+        lastTransitionTick: null,
+        lastTransitionReason: null,
+        selectedResearchType: null,
+        selectedResearchScore: null,
+        cancellationPolicy: "retain_committed_production"
       }
     },
     recovery: { records: [] },

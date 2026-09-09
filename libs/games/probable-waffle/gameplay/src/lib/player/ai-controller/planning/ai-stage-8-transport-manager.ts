@@ -123,7 +123,10 @@ function chooseTransfers(
 ): { pickup: AiAccessTransferPointV1; landing: AiAccessTransferPointV1 } | undefined {
   const pairs = route.pickupCandidates
     .flatMap((pickup) => route.landingCandidates.map((landing) => ({ pickup, landing })))
-    .map((pair) => ({ ...pair, score: scoreAiTransportTransferV1(pair.pickup, pair.landing, observation, requiredClearance) }))
+    .map((pair) => ({
+      ...pair,
+      score: scoreAiTransportTransferV1(pair.pickup, pair.landing, observation, requiredClearance)
+    }))
     .filter((pair) => pair.score !== Number.MIN_SAFE_INTEGER)
     .sort(
       (left, right) =>
@@ -142,7 +145,10 @@ function mobileTransportActors(
   const requiredDomain = routeKind === "water_transport" ? "water" : "air";
   return observation.actors
     .filter((actor) => actor.relation === "self" && actor.containerState?.status === "known")
-    .filter((actor) => actor.containerState?.status === "known" && actor.containerState.value.mobileDomains.includes(requiredDomain))
+    .filter(
+      (actor) =>
+        actor.containerState?.status === "known" && actor.containerState.value.mobileDomains.includes(requiredDomain)
+    )
     .filter(
       (actor) =>
         actor.containerState?.status === "known" &&
@@ -163,8 +169,10 @@ function assignSeats(
   for (const transport of transports) {
     if (capacity >= requiredCapacity) break;
     if (transport.containerState?.status !== "known") continue;
-    const assignedMembers = remaining.filter((member) =>
-      transport.containerState?.status === "known" && transport.containerState.value.passengerIds.includes(member.actorId)
+    const assignedMembers = remaining.filter(
+      (member) =>
+        transport.containerState?.status === "known" &&
+        transport.containerState.value.passengerIds.includes(member.actorId)
     );
     for (const member of assignedMembers) remaining.splice(remaining.indexOf(member), 1);
     let assignedSeats = assignedMembers.reduce((total, member) => total + member.seats, 0);
@@ -278,15 +286,22 @@ export class AiStage8TransportManagerV1 implements AiProposalManagerV1 {
         let plan: AiTransportPlanWithLifecycle = { ...original, lifecycle: original.lifecycle };
         if (plan.phase === "handoff") {
           return withPhase({ ...plan, passengerIds: [], transportIds: [] }, "completed", observation.tick, 1, {
-            assignedTransportIds: [], seatAssignments: [], assignedCapacity: 0, terminalReason: "handoff_complete"
+            assignedTransportIds: [],
+            seatAssignments: [],
+            assignedCapacity: 0,
+            terminalReason: "handoff_complete"
           });
         }
         const lifecycle = plan.lifecycle;
-        const transferSlot = (id: string | null) => id ? `${id}:${Math.floor(lifecycle.phaseDeadline.dueTick / 200)}` : null;
+        const transferSlot = (id: string | null) =>
+          id ? `${id}:${Math.floor(lifecycle.phaseDeadline.dueTick / 200)}` : null;
         const pickupSlot = transferSlot(lifecycle.pickupTransferId);
         const landingSlot = transferSlot(lifecycle.landingTransferId);
-        const conflicts = [...lifecycle.manifest.map((member) => member.actorId), ...lifecycle.assignedTransportIds, ...lifecycle.escortIds]
-          .some((actorId) => occupiedActors.has(actorId));
+        const conflicts = [
+          ...lifecycle.manifest.map((member) => member.actorId),
+          ...lifecycle.assignedTransportIds,
+          ...lifecycle.escortIds
+        ].some((actorId) => occupiedActors.has(actorId));
         if (
           conflicts ||
           [pickupSlot, landingSlot].some((id) => id && occupiedTransfers.has(id)) ||
@@ -328,9 +343,11 @@ export class AiStage8TransportManagerV1 implements AiProposalManagerV1 {
         const missionAlreadyArrived = plan.lifecycle.manifest.every((member) => {
           const actor = observation.actors.find((candidate) => candidate.actorId === member.actorId);
           if (!actor) return false;
-          return actor.containedInActorId === null &&
+          return (
+            actor.containedInActorId === null &&
             actor.accessNodeId.status === "known" &&
-            actor.accessNodeId.value === plan.lifecycle.route.destinationNodeId;
+            actor.accessNodeId.value === plan.lifecycle.route.destinationNodeId
+          );
         });
         if (missionAlreadyArrived && !["handoff", "completed"].includes(plan.phase)) {
           return withPhase(plan, "handoff", observation.tick, 1, { terminalReason: "cargo_survived_at_destination" });
@@ -345,7 +362,11 @@ export class AiStage8TransportManagerV1 implements AiProposalManagerV1 {
         );
         if (indispensableMissing || transportMissing || observation.tick >= plan.lifecycle.phaseDeadline.dueTick) {
           plan = withPhase(plan, "recovering", observation.tick, 200, {
-            terminalReason: indispensableMissing ? "indispensable_passenger_lost" : transportMissing ? "transport_lost" : "phase_timeout"
+            terminalReason: indispensableMissing
+              ? "indispensable_passenger_lost"
+              : transportMissing
+                ? "transport_lost"
+                : "phase_timeout"
           });
         }
         if (plan.phase === "recovering") {
@@ -354,11 +375,15 @@ export class AiStage8TransportManagerV1 implements AiProposalManagerV1 {
             const pendingAttempt = plan.lifecycle.recoveryAttempt + 1;
             if (pendingAttempt > plan.lifecycle.maxRecoveryAttempts) {
               return withPhase(plan, "cancelled", observation.tick, 1, {
-                assignedTransportIds: [], seatAssignments: [], assignedCapacity: 0, terminalReason: "route_pending_exhausted"
+                assignedTransportIds: [],
+                seatAssignments: [],
+                assignedCapacity: 0,
+                terminalReason: "route_pending_exhausted"
               });
             }
             return withPhase(plan, "recovering", observation.tick, 200, {
-              recoveryAttempt: pendingAttempt, terminalReason: "route_pending"
+              recoveryAttempt: pendingAttempt,
+              terminalReason: "route_pending"
             });
           }
           const route = queryAiAccessRouteV1(graph, plan.lifecycle.routeRequest);
@@ -369,7 +394,8 @@ export class AiStage8TransportManagerV1 implements AiProposalManagerV1 {
               return withPhase(plan, "cancelled", observation.tick, 1, { terminalReason: "route_pending_exhausted" });
             }
             return withPhase(plan, "recovering", observation.tick, 200, {
-              recoveryAttempt: pendingAttempt, terminalReason: `route_${route.reason}`
+              recoveryAttempt: pendingAttempt,
+              terminalReason: `route_${route.reason}`
             });
           }
           const attempt = plan.lifecycle.recoveryAttempt + 1;
@@ -403,18 +429,35 @@ export class AiStage8TransportManagerV1 implements AiProposalManagerV1 {
           return withPhase(plan, "reserving", observation.tick, AI_TRANSPORT_BOARDING_TIMEOUT_TICKS);
         }
         if (plan.phase === "reserving") {
-          const candidates = mobileTransportActors(observation, plan.lifecycle.route.kind, new Set(plan.passengerIds));
+          const route = plan.lifecycle.route;
+          if (route.kind !== "water_transport" && route.kind !== "air_transport") {
+            return withPhase(plan, "cancelled", observation.tick, 200, { terminalReason: `route_${route.kind}` });
+          }
+          const candidates = mobileTransportActors(observation, route.kind, new Set(plan.passengerIds));
           const assigned = assignSeats(candidates, plan.lifecycle.manifest, plan.lifecycle.requiredCapacity);
-          const transportEntries = catalog?.entries
-            .filter((entry) => entry.cargoCapacity !== null && entry.movementDomains.includes(plan.lifecycle.route.kind === "water_transport" ? "water" : "air"))
-            .sort((left, right) => left.sourceObjectName.localeCompare(right.sourceObjectName)) ?? [];
-          const demand = capacityDemand(plan, transportEntries.map((entry) => entry.sourceObjectName));
+          const transportEntries =
+            catalog?.entries
+              .filter(
+                (entry) =>
+                  entry.cargoCapacity !== null &&
+                  entry.movementDomains.includes(plan.lifecycle.route.kind === "water_transport" ? "water" : "air")
+              )
+              .sort((left, right) => left.sourceObjectName.localeCompare(right.sourceObjectName)) ?? [];
+          const demand = capacityDemand(
+            plan,
+            transportEntries.map((entry) => entry.sourceObjectName)
+          );
           if (assigned.capacity < plan.lifecycle.requiredCapacity) {
             const option = transportEntries[0];
             const producer = option
               ? observation.actors
                   .filter((actor) => actor.relation === "self" && actor.queue.status === "known")
-                  .find((actor) => catalog?.entries.some((entry) => entry.sourceObjectName === actor.objectName && entry.produces.includes(option.sourceObjectName)))
+                  .find((actor) =>
+                    catalog?.entries.some(
+                      (entry) =>
+                        entry.sourceObjectName === actor.objectName && entry.produces.includes(option.sourceObjectName)
+                    )
+                  )
               : undefined;
             if (option && producer) {
               const suffix = `capacity:${option.sourceObjectName}`;
@@ -428,21 +471,40 @@ export class AiStage8TransportManagerV1 implements AiProposalManagerV1 {
                   demandId: demand.demandId,
                   preconditions: [{ kind: "actor_exists", actorId: producer.actorId }],
                   claims: [
-                    { claimId: `claim:${plan.planId}:capacity:${producer.actorId}`, kind: "production_slot", producerId: producer.actorId, slot: 0 },
+                    {
+                      claimId: `claim:${plan.planId}:capacity:${producer.actorId}`,
+                      kind: "production_slot",
+                      producerId: producer.actorId,
+                      slot: 0
+                    },
                     { claimId: `claim:${plan.planId}:capacity-effect`, kind: "effect", effectId: base.effectId }
                   ]
                 });
               }
             }
-            reasons.push(`transport_capacity_wait:${plan.planId}:${assigned.capacity}/${plan.lifecycle.requiredCapacity}`);
+            reasons.push(
+              `transport_capacity_wait:${plan.planId}:${assigned.capacity}/${plan.lifecycle.requiredCapacity}`
+            );
             return {
               ...plan,
               transportIds: assigned.transportIds,
-              lifecycle: { ...plan.lifecycle, capacityDemand: demand, assignedCapacity: assigned.capacity, assignedTransportIds: assigned.transportIds, seatAssignments: assigned.assignments }
+              lifecycle: {
+                ...plan.lifecycle,
+                capacityDemand: demand,
+                assignedCapacity: assigned.capacity,
+                assignedTransportIds: assigned.transportIds,
+                seatAssignments: assigned.assignments
+              }
             };
           }
-          const transfers = chooseTransfers(plan.lifecycle.route, observation, plan.lifecycle.routeRequest.capabilities.requiredClearance, plan.lifecycle.recoveryAttempt);
-          if (!transfers) return withPhase(plan, "recovering", observation.tick, 200, { terminalReason: "no_safe_transfer" });
+          const transfers = chooseTransfers(
+            route,
+            observation,
+            plan.lifecycle.routeRequest.capabilities.requiredClearance,
+            plan.lifecycle.recoveryAttempt
+          );
+          if (!transfers)
+            return withPhase(plan, "recovering", observation.tick, 200, { terminalReason: "no_safe_transfer" });
           return withPhase(
             { ...plan, transportIds: assigned.transportIds },
             "gather",
@@ -463,32 +525,40 @@ export class AiStage8TransportManagerV1 implements AiProposalManagerV1 {
           return withPhase(plan, "failed", observation.tick, 1, { terminalReason: "invalid_transport_route" });
         }
         if (!graph || graph.status !== "ready" || graph.generation !== plan.lifecycle.routeGeneration) {
-          return withPhase(plan, "recovering", observation.tick, 200, { terminalReason: "route_generation_invalidated" });
+          return withPhase(plan, "recovering", observation.tick, 200, {
+            terminalReason: "route_generation_invalidated"
+          });
         }
         const pickup = route.pickupCandidates.find((point) => point.transferId === plan.lifecycle.pickupTransferId);
         const landing = route.landingCandidates.find((point) => point.transferId === plan.lifecycle.landingTransferId);
-        if (!pickup || !landing) return withPhase(plan, "recovering", observation.tick, 200, { terminalReason: "transfer_invalidated" });
+        if (!pickup || !landing)
+          return withPhase(plan, "recovering", observation.tick, 200, { terminalReason: "transfer_invalidated" });
         const actors = new Map(observation.actors.map((actor) => [actor.actorId, actor] as const));
         if (["gather", "rendezvous", "boarding"].includes(plan.phase)) {
           const invalidCarrier = plan.lifecycle.assignedTransportIds.some((actorId) => {
             const container = actors.get(actorId)?.containerState;
-            const assignedPassengerIds = plan.lifecycle.seatAssignments.find(
-              (assignment) => assignment.transportId === actorId
-            )?.passengerIds ?? [];
+            const assignedPassengerIds =
+              plan.lifecycle.seatAssignments.find((assignment) => assignment.transportId === actorId)?.passengerIds ??
+              [];
             const assignedSeats = plan.lifecycle.manifest
               .filter((member) => assignedPassengerIds.includes(member.actorId))
               .reduce((total, member) => total + member.seats, 0);
-            return container?.status !== "known" ||
+            return (
+              container?.status !== "known" ||
               container.value.capacity < assignedSeats ||
-              container.value.passengerIds.some((passengerId) => !plan.passengerIds.includes(passengerId));
+              container.value.passengerIds.some((passengerId) => !plan.passengerIds.includes(passengerId))
+            );
           });
           if (invalidCarrier) {
-            return withPhase(plan, "recovering", observation.tick, 200, { terminalReason: "carrier_capacity_or_ownership_changed" });
+            return withPhase(plan, "recovering", observation.tick, 200, {
+              terminalReason: "carrier_capacity_or_ownership_changed"
+            });
           }
         }
         if (plan.phase === "gather") {
           const waiting = plan.passengerIds.filter((actorId) => !near(actors.get(actorId), pickup.passengerPosition));
-          if (!waiting.length) return withPhase(plan, "rendezvous", observation.tick, AI_TRANSPORT_BOARDING_TIMEOUT_TICKS);
+          if (!waiting.length)
+            return withPhase(plan, "rendezvous", observation.tick, AI_TRANSPORT_BOARDING_TIMEOUT_TICKS);
           const suffix = `gather:${waiting.join("+")}`;
           const base = intentBase(plan, observation.tick, suffix);
           if (!hasNonTerminalOutcome(state, base.intentId)) {
@@ -498,14 +568,21 @@ export class AiStage8TransportManagerV1 implements AiProposalManagerV1 {
               actorIds: waiting,
               logicalPosition: pickup.passengerPosition,
               claims: [
-                ...waiting.map((actorId) => ({ claimId: `claim:${plan.planId}:passenger:${actorId}` as const, kind: "actor" as const, actorId })),
+                ...waiting.map((actorId) => ({
+                  claimId: `claim:${plan.planId}:passenger:${actorId}` as const,
+                  kind: "actor" as const,
+                  actorId
+                })),
                 { claimId: `claim:${plan.planId}:rendezvous`, kind: "site", siteKey: pickup.transferId }
               ]
             });
           }
         } else if (plan.phase === "rendezvous") {
-          const waiting = plan.lifecycle.assignedTransportIds.filter((actorId) => !near(actors.get(actorId), pickup.carrierPosition));
-          if (!waiting.length) return withPhase(plan, "boarding", observation.tick, AI_TRANSPORT_BOARDING_TIMEOUT_TICKS);
+          const waiting = plan.lifecycle.assignedTransportIds.filter(
+            (actorId) => !near(actors.get(actorId), pickup.carrierPosition)
+          );
+          if (!waiting.length)
+            return withPhase(plan, "boarding", observation.tick, AI_TRANSPORT_BOARDING_TIMEOUT_TICKS);
           const suffix = `rendezvous:${waiting.join("+")}`;
           const base = intentBase(plan, observation.tick, suffix);
           if (!hasNonTerminalOutcome(state, base.intentId)) {
@@ -514,7 +591,11 @@ export class AiStage8TransportManagerV1 implements AiProposalManagerV1 {
               kind: "move",
               actorIds: waiting,
               logicalPosition: pickup.carrierPosition,
-              claims: waiting.map((actorId) => ({ claimId: `claim:${plan.planId}:transport:${actorId}` as const, kind: "actor" as const, actorId }))
+              claims: waiting.map((actorId) => ({
+                claimId: `claim:${plan.planId}:transport:${actorId}` as const,
+                kind: "actor" as const,
+                actorId
+              }))
             });
           }
         } else if (plan.phase === "boarding") {
@@ -524,9 +605,16 @@ export class AiStage8TransportManagerV1 implements AiProposalManagerV1 {
               return containerState?.status === "known" ? containerState.value.passengerIds : [];
             })
           );
-          const indispensableReady = plan.lifecycle.manifest.filter((member) => member.indispensable).every((member) => onboardIds.has(member.actorId));
-          const boardedSeats = plan.lifecycle.manifest.filter((member) => onboardIds.has(member.actorId)).reduce((sum, member) => sum + member.seats, 0);
-          if (indispensableReady && boardedSeats * 1000 >= plan.lifecycle.requiredCapacity * plan.lifecycle.departureCapacityPermille) {
+          const indispensableReady = plan.lifecycle.manifest
+            .filter((member) => member.indispensable)
+            .every((member) => onboardIds.has(member.actorId));
+          const boardedSeats = plan.lifecycle.manifest
+            .filter((member) => onboardIds.has(member.actorId))
+            .reduce((sum, member) => sum + member.seats, 0);
+          if (
+            indispensableReady &&
+            boardedSeats * 1000 >= plan.lifecycle.requiredCapacity * plan.lifecycle.departureCapacityPermille
+          ) {
             return withPhase(plan, "transit", observation.tick, Math.max(600, 2 * plan.lifecycle.estimatedTravelTicks));
           }
           for (const assignment of plan.lifecycle.seatAssignments) {
@@ -544,14 +632,29 @@ export class AiStage8TransportManagerV1 implements AiProposalManagerV1 {
               actorIds: waiting,
               transportId: assignment.transportId,
               claims: [
-                ...waiting.map((actorId) => ({ claimId: `claim:${plan.planId}:passenger:${actorId}` as const, kind: "actor" as const, actorId })),
-                { claimId: `claim:${plan.planId}:transport:${assignment.transportId}`, kind: "actor", actorId: assignment.transportId },
-                { claimId: `claim:${plan.planId}:seats:${assignment.transportId}`, kind: "cargo_seat", transportId: assignment.transportId, seats: waitingSeats }
+                ...waiting.map((actorId) => ({
+                  claimId: `claim:${plan.planId}:passenger:${actorId}` as const,
+                  kind: "actor" as const,
+                  actorId
+                })),
+                {
+                  claimId: `claim:${plan.planId}:transport:${assignment.transportId}`,
+                  kind: "actor",
+                  actorId: assignment.transportId
+                },
+                {
+                  claimId: `claim:${plan.planId}:seats:${assignment.transportId}`,
+                  kind: "cargo_seat",
+                  transportId: assignment.transportId,
+                  seats: waitingSeats
+                }
               ]
             });
           }
         } else if (plan.phase === "transit") {
-          const waiting = plan.lifecycle.assignedTransportIds.filter((actorId) => !near(actors.get(actorId), landing.carrierPosition));
+          const waiting = plan.lifecycle.assignedTransportIds.filter(
+            (actorId) => !near(actors.get(actorId), landing.carrierPosition)
+          );
           if (!waiting.length) return withPhase(plan, "landing", observation.tick, 200);
           const suffix = `transit:${waiting.join("+")}`;
           const base = intentBase(plan, observation.tick, suffix);
@@ -561,12 +664,27 @@ export class AiStage8TransportManagerV1 implements AiProposalManagerV1 {
               kind: "move",
               actorIds: waiting,
               logicalPosition: landing.carrierPosition,
-              claims: waiting.map((actorId) => ({ claimId: `claim:${plan.planId}:transport:${actorId}` as const, kind: "actor" as const, actorId }))
+              claims: waiting.map((actorId) => ({
+                claimId: `claim:${plan.planId}:transport:${actorId}` as const,
+                kind: "actor" as const,
+                actorId
+              }))
             });
           }
         } else if (plan.phase === "landing") {
-          if (!graph || graph.generation !== plan.lifecycle.routeGeneration || scoreAiTransportTransferV1(pickup, landing, observation, plan.lifecycle.routeRequest.capabilities.requiredClearance) < 0) {
-            return withPhase(plan, "recovering", observation.tick, 200, { terminalReason: "landing_revalidation_failed" });
+          if (
+            !graph ||
+            graph.generation !== plan.lifecycle.routeGeneration ||
+            scoreAiTransportTransferV1(
+              pickup,
+              landing,
+              observation,
+              plan.lifecycle.routeRequest.capabilities.requiredClearance
+            ) < 0
+          ) {
+            return withPhase(plan, "recovering", observation.tick, 200, {
+              terminalReason: "landing_revalidation_failed"
+            });
           }
           return withPhase(plan, "unloading", observation.tick, AI_TRANSPORT_BOARDING_TIMEOUT_TICKS);
         } else if (plan.phase === "unloading") {
@@ -588,13 +706,20 @@ export class AiStage8TransportManagerV1 implements AiProposalManagerV1 {
               passengerIds: passengers,
               logicalPosition: landing.passengerPosition,
               claims: [
-                { claimId: `claim:${plan.planId}:transport:${assignment.transportId}`, kind: "actor", actorId: assignment.transportId },
+                {
+                  claimId: `claim:${plan.planId}:transport:${assignment.transportId}`,
+                  kind: "actor",
+                  actorId: assignment.transportId
+                },
                 { claimId: `claim:${plan.planId}:landing`, kind: "site", siteKey: landing.transferId }
               ]
             });
           }
         } else if (plan.phase === "regroup") {
-          const notArrived = plan.passengerIds.filter((actorId) => actors.get(actorId)?.accessNodeId.status !== "known" || actors.get(actorId)?.accessNodeId.value !== route.destinationNodeId);
+          const notArrived = plan.passengerIds.filter((actorId) => {
+            const accessNodeId = actors.get(actorId)?.accessNodeId;
+            return accessNodeId?.status !== "known" || accessNodeId.value !== route.destinationNodeId;
+          });
           if (!notArrived.length) return withPhase(plan, "handoff", observation.tick, 1);
           const suffix = `regroup:${notArrived.join("+")}`;
           const base = intentBase(plan, observation.tick, suffix);
@@ -604,12 +729,19 @@ export class AiStage8TransportManagerV1 implements AiProposalManagerV1 {
               kind: "move",
               actorIds: notArrived,
               logicalPosition: landing.passengerPosition,
-              claims: notArrived.map((actorId) => ({ claimId: `claim:${plan.planId}:regroup:${actorId}` as const, kind: "actor" as const, actorId }))
+              claims: notArrived.map((actorId) => ({
+                claimId: `claim:${plan.planId}:regroup:${actorId}` as const,
+                kind: "actor" as const,
+                actorId
+              }))
             });
           }
         }
         const pendingIntentIds = [
-          ...new Set([...plan.lifecycle.pendingIntentIds, ...intents.slice(intentStart).map((intent) => intent.intentId)])
+          ...new Set([
+            ...plan.lifecycle.pendingIntentIds,
+            ...intents.slice(intentStart).map((intent) => intent.intentId)
+          ])
         ].sort();
         return { ...plan, lifecycle: { ...plan.lifecycle, pendingIntentIds } };
       });

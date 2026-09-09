@@ -76,16 +76,14 @@ function assertValidAssertion(assertion: AiScenarioAssertionV1): void {
   if ("minimum" in assertion || "maximum" in assertion) {
     const minimum = "minimum" in assertion ? assertion.minimum : 0;
     const maximum = assertion.maximum;
-    if (
-      !Number.isSafeInteger(minimum) ||
-      !Number.isSafeInteger(maximum) ||
-      minimum < 0 ||
-      maximum < minimum
-    ) {
+    if (!Number.isSafeInteger(minimum) || !Number.isSafeInteger(maximum) || minimum < 0 || maximum < minimum) {
       throw new Error(`invalid_ai_assertion_band:${assertion.kind}`);
     }
   }
-  if (assertion.kind === "command_applied" && (!Number.isSafeInteger(assertion.deadlineTick) || assertion.deadlineTick < 0)) {
+  if (
+    assertion.kind === "command_applied" &&
+    (!Number.isSafeInteger(assertion.deadlineTick) || assertion.deadlineTick < 0)
+  ) {
     throw new Error("invalid_ai_assertion_deadline");
   }
 }

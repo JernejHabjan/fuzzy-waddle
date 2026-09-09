@@ -264,9 +264,7 @@ export class SpellCursor {
         actorIds: [actorId],
         spellType: this.spellType,
         targetObjectId:
-          spellData.targetType === SpellTargetType.Self
-            ? actorId
-            : this.getTargetObjectId(clickedTileXYZ, spellData),
+          spellData.targetType === SpellTargetType.Self ? actorId : this.getTargetObjectId(clickedTileXYZ, spellData),
         tileVec3: clickedTileXYZ
       });
       if (receipt.status === "dispatched") castSuccess = true;
@@ -308,7 +306,13 @@ export class SpellCursor {
     // Spawn the prefab using helper
     const commandBus = getSceneService(this.scene, CommandBusService);
     const casterId = firstCaster ? getActorComponent(firstCaster, IdComponent)?.id : undefined;
-    if (!commandBus || !casterId || ownerId === undefined || !Number.isFinite(position.x) || !Number.isFinite(position.y)) {
+    if (
+      !commandBus ||
+      !casterId ||
+      ownerId === undefined ||
+      !Number.isFinite(position.x) ||
+      !Number.isFinite(position.y)
+    ) {
       console.error("Spell command authority not found");
       return;
     }

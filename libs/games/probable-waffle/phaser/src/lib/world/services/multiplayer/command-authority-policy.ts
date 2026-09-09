@@ -4,9 +4,6 @@ export function isProcessedCommandSequence(sequence: number, processedSequenceWa
 }
 
 /** Advances a player frontier monotonically after deterministic application admission. */
-export function advanceProcessedCommandSequence(
-  processedSequenceWatermark: number,
-  sequence: number
-): number {
+export function advanceProcessedCommandSequence(processedSequenceWatermark: number, sequence: number): number {
   return Math.max(processedSequenceWatermark, sequence);
 }

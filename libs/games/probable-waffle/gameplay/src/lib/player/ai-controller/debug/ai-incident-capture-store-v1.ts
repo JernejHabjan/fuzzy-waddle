@@ -1,4 +1,8 @@
-import { AI_REPRO_CAPTURE_POLICY_V1, type AiReproBundleV1, type AiReproCapturePolicyV1 } from "../contracts/ai-repro-bundle-v1";
+import {
+  AI_REPRO_CAPTURE_POLICY_V1,
+  type AiReproBundleV1,
+  type AiReproCapturePolicyV1
+} from "../contracts/ai-repro-bundle-v1";
 
 /** One bounded capture entry; unresolved authoritative commands are intentionally owned elsewhere. */
 export interface AiIncidentCaptureEntryV1 {
@@ -13,10 +17,16 @@ export class AiIncidentCaptureStoreV1 {
   private readonly capturedEpisodes = new Set<string>();
 
   constructor(
-    private readonly policy: Pick<AiReproCapturePolicyV1, "maxRetainedIncidentBundles" | "sessionQuotaBytes"> = AI_REPRO_CAPTURE_POLICY_V1
+    private readonly policy: Pick<
+      AiReproCapturePolicyV1,
+      "maxRetainedIncidentBundles" | "sessionQuotaBytes"
+    > = AI_REPRO_CAPTURE_POLICY_V1
   ) {}
 
-  addAutomatic(causalEpisodeId: string, bundle: AiReproBundleV1): "captured" | "episode_already_captured" | "quota_exceeded" {
+  addAutomatic(
+    causalEpisodeId: string,
+    bundle: AiReproBundleV1
+  ): "captured" | "episode_already_captured" | "quota_exceeded" {
     if (this.capturedEpisodes.has(causalEpisodeId)) return "episode_already_captured";
     const byteLength = new TextEncoder().encode(JSON.stringify(bundle)).byteLength;
     const retainedBytes = this.entries.reduce((total, entry) => total + entry.byteLength, 0);

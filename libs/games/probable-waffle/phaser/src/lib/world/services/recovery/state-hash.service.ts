@@ -252,7 +252,7 @@ export class StateHashService {
       diagnostics: includeDiagnostics
         ? {
             actorDigests: actorDigests ?? {},
-            playerDigests: projection.players,
+            playerDigests: [...projection.players],
             researchDigest: projection.research.join("|"),
             campaignMissionDigest: projection.campaignMission,
             campaignMissionFamilyDigests: projection.campaignMissionFamilies,
@@ -355,11 +355,27 @@ export class StateHashService {
       .filter((entry) => entry[1] !== undefined)
       .sort(([left], [right]) => left.localeCompare(right));
     return {
-      aiControllers: this.stableSerialize(Object.fromEntries(aiControllers) as StableSerializable),
-      aoeZones: this.stableSerialize((gameState?.aoeZones ?? []) as StableSerializable),
-      commandAuthority: this.stableSerialize((gameState?.commandAuthority ?? null) as StableSerializable),
-      summonExpiries: this.stableSerialize((gameState?.summonExpiries ?? []) as StableSerializable)
+      aiControllers: this.stableSerialize(this.toStableSerializable(Object.fromEntries(aiControllers))),
+      aoeZones: this.stableSerialize(this.toStableSerializable(gameState?.aoeZones ?? [])),
+      commandAuthority: this.stableSerialize(this.toStableSerializable(gameState?.commandAuthority ?? null)),
+      summonExpiries: this.stableSerialize(this.toStableSerializable(gameState?.summonExpiries ?? []))
     };
+  }
+
+  private toStableSerializable(value: unknown): StableSerializable {
+    if (value === null || value === undefined) return value;
+    if (typeof value === "string" || typeof value === "boolean") return value;
+    if (typeof value === "number") return Number.isFinite(value) ? value : String(value);
+    if (Array.isArray(value)) return value.map((entry) => this.toStableSerializable(entry));
+    if (typeof value === "object") {
+      const record = value as Readonly<Record<string, unknown>>;
+      return Object.fromEntries(
+        Object.keys(record)
+          .sort()
+          .map((key) => [key, this.toStableSerializable(record[key])])
+      );
+    }
+    return String(value);
   }
 
   /**

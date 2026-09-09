@@ -36,9 +36,7 @@ export function evaluateAiScenarioAssertionV1(
     case "digest_differs":
       return facts.digests[assertion.surface] !== assertion.forbidden ? null : `digest_differs:${assertion.surface}`;
     case "work_count_at_most":
-      return (facts.workCounts[assertion.counter] ?? 0) <= assertion.maximum
-        ? null
-        : `work_count:${assertion.counter}`;
+      return (facts.workCounts[assertion.counter] ?? 0) <= assertion.maximum ? null : `work_count:${assertion.counter}`;
     case "work_count_between": {
       const count = facts.workCounts[assertion.counter] ?? 0;
       return inBand(count, assertion.minimum, assertion.maximum)
@@ -47,7 +45,9 @@ export function evaluateAiScenarioAssertionV1(
     }
     case "command_applied": {
       const command = facts.appliedCommands.find((entry) => entry.commandId === assertion.commandId);
-      return command && command.terminalTick <= assertion.deadlineTick ? null : `command_applied:${assertion.commandId}`;
+      return command && command.terminalTick <= assertion.deadlineTick
+        ? null
+        : `command_applied:${assertion.commandId}`;
     }
   }
 }
@@ -63,7 +63,10 @@ function equals(left: unknown, right: unknown): boolean {
 function readPath(value: unknown, path: string): unknown {
   if (!/^\$?(\.[A-Za-z0-9_-]+)*$/.test(path)) return undefined;
   let current = value;
-  for (const segment of path.replace(/^\$\.?/, "").split(".").filter(Boolean)) {
+  for (const segment of path
+    .replace(/^\$\.?/, "")
+    .split(".")
+    .filter(Boolean)) {
     if (typeof current !== "object" || current === null || Array.isArray(current)) return undefined;
     current = (current as Readonly<Record<string, unknown>>)[segment];
   }

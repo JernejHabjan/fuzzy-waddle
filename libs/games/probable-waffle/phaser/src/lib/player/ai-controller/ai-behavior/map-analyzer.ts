@@ -140,10 +140,12 @@ export class MapAnalyzer {
     // Legacy saves/maps without a main-building definition retain a conservative
     // building-only fallback; mobile actors never define a construction anchor.
     const ownedTiles: Vector3Simple[] = [];
-    owned.filter((object) => getPwActorDefinition(object.name, null)?.components?.constructionSite !== undefined).forEach((obj) => {
-      const tile = navigation.getCenterTileCoordUnderObject(obj);
-      if (tile) ownedTiles.push({ x: tile.x, y: tile.y, z: 0 });
-    });
+    owned
+      .filter((object) => getPwActorDefinition(object.name, null)?.components?.constructable !== undefined)
+      .forEach((obj) => {
+        const tile = navigation.getCenterTileCoordUnderObject(obj);
+        if (tile) ownedTiles.push({ x: tile.x, y: tile.y, z: 0 });
+      });
     if (!analysis.baseCenterTile && ownedTiles.length > 0) {
       analysis.baseCenterTile = this.averageTile(ownedTiles);
     }

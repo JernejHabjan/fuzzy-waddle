@@ -80,10 +80,7 @@ export class AiAccessGraphAdapter {
       : undefined;
   }
 
-  resolveNodeId(
-    tile: Vector2Simple | undefined,
-    domains: readonly AiDomainV1[]
-  ): AiAccessNodeId | undefined {
+  resolveNodeId(tile: Vector2Simple | undefined, domains: readonly AiDomainV1[]): AiAccessNodeId | undefined {
     if (!tile) return undefined;
     const built = this.cached;
     if (!built) return undefined;
@@ -109,7 +106,11 @@ export class AiAccessGraphAdapter {
       if (candidates.length) break;
     }
     return candidates.sort(
-      (left, right) => left.distance - right.distance || left.y - right.y || left.x - right.x || left.nodeId.localeCompare(right.nodeId)
+      (left, right) =>
+        left.distance - right.distance ||
+        left.y - right.y ||
+        left.x - right.x ||
+        left.nodeId.localeCompare(right.nodeId)
     )[0]?.nodeId;
   }
 
@@ -131,12 +132,15 @@ export class AiAccessGraphAdapter {
     // The runtime height graph includes all actors. Read its cells only where
     // the observation policy admitted the owning navigable surface.
     const heightCell = observedNavigable ? heightGraph?.cells[y]?.[x] : undefined;
-    const edges = observedNavigable ? heightGraph?.edgesByTileKey.get(tileKey) ?? [] : [];
+    const edges = observedNavigable ? (heightGraph?.edgesByTileKey.get(tileKey) ?? []) : [];
     const groundAt = (candidateX: number, candidateY: number) => {
       const candidateKey = `${candidateX},${candidateY}`;
       const navigable = permittedTopology.navigableTileKeys.has(candidateKey);
       const blocked = permittedTopology.blockedTileKeys.has(candidateKey) && !navigable;
-      return !blocked && (navigable || navigation.isTileGridWithoutBlockingObjectsNavigable({ x: candidateX, y: candidateY }));
+      return (
+        !blocked &&
+        (navigable || navigation.isTileGridWithoutBlockingObjectsNavigable({ x: candidateX, y: candidateY }))
+      );
     };
     let clearance = 1;
     for (let side = 2; side <= 4; side += 1) {
@@ -178,10 +182,8 @@ export class AiAccessGraphAdapter {
         const neighborKey = `${neighbor.x},${neighbor.y}`;
         const neighborNavigable = permittedTopology.navigableTileKeys.has(neighborKey);
         const neighborBlocked = permittedTopology.blockedTileKeys.has(neighborKey) && !neighborNavigable;
-        if (
-          neighborBlocked ||
-          (!neighborNavigable && !navigation.isTileGridWithoutBlockingObjectsNavigable(neighbor))
-        ) continue;
+        if (neighborBlocked || (!neighborNavigable && !navigation.isTileGridWithoutBlockingObjectsNavigable(neighbor)))
+          continue;
         const explicitEdge = edges.some((edge) => edge.to.x === neighbor.x && edge.to.y === neighbor.y);
         const sameHeight = navigation.getNavigableHeightAtTile(neighbor) === (heightCell?.navigableHeight ?? 0);
         if (explicitEdge || sameHeight) adjacentGroundKeys.push(`${neighbor.x},${neighbor.y}`);
@@ -196,7 +198,7 @@ export class AiAccessGraphAdapter {
       water: navigation.isTileNavigable(tile, MovementTerrainType.Water),
       elevation: heightCell?.navigableHeight ?? 0,
       groundNeighborKeys: adjacentGroundKeys.sort(),
-      knowledge: observedBlocked || observedNavigable ? "observed_dynamic" as const : "known_static" as const,
+      knowledge: observedBlocked || observedNavigable ? ("observed_dynamic" as const) : ("known_static" as const),
       clearance,
       waterClearance
     };

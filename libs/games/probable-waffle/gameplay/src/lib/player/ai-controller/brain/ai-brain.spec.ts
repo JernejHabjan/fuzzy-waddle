@@ -68,19 +68,21 @@ class MacroLedgerManager implements AiProposalManagerV1 {
       statePatch: {
         economyProduction: {
           ...state.economyProduction,
-          demands: [{
-            demandId: "demand:macro:worker" as const,
-            purpose: "fixture_macro",
-            capabilityOrRole: "worker",
-            unit: "actor_count",
-            desired: 1,
-            satisfiedActorIds: [],
-            queuedIds: [],
-            constructingIds: [],
-            acceptedNotObservedEffectIds: [],
-            preferredObjectNames: [],
-            resourceObligations: {}
-          }]
+          demands: [
+            {
+              demandId: "demand:macro:worker" as const,
+              purpose: "fixture_macro",
+              capabilityOrRole: "worker",
+              unit: "actor_count",
+              desired: 1,
+              satisfiedActorIds: [],
+              queuedIds: [],
+              constructingIds: [],
+              acceptedNotObservedEffectIds: [],
+              preferredObjectNames: [],
+              resourceObligations: {}
+            }
+          ]
         }
       }
     };
@@ -99,19 +101,21 @@ class AdaptationLedgerManager implements AiProposalManagerV1 {
       reasons: ["fixture_adaptation_ledger"],
       statePatch: {
         adaptation: { ...state.economyProduction.adaptation, lastTransitionTick: 20, lastTransitionReason: "anti_air" },
-        adaptationDemands: [{
-          demandId: "demand:adapt:anti_air" as const,
-          purpose: "fixture_adaptation",
-          capabilityOrRole: "anti_air",
-          unit: "actor_count",
-          desired: 1,
-          satisfiedActorIds: [],
-          queuedIds: [],
-          constructingIds: [],
-          acceptedNotObservedEffectIds: [],
-          preferredObjectNames: [],
-          resourceObligations: {}
-        }]
+        adaptationDemands: [
+          {
+            demandId: "demand:adapt:anti_air" as const,
+            purpose: "fixture_adaptation",
+            capabilityOrRole: "anti_air",
+            unit: "actor_count",
+            desired: 1,
+            satisfiedActorIds: [],
+            queuedIds: [],
+            constructingIds: [],
+            acceptedNotObservedEffectIds: [],
+            preferredObjectNames: [],
+            resourceObligations: {}
+          }
+        ]
       }
     };
   }
@@ -161,14 +165,70 @@ describe("PureAiBrainV1", () => {
     expect(result.decisions[0]).toMatchObject({ outcome: "rejected", reason: "invalid_numeric_input" });
   });
 
+  it("does not reacquire a live physical claim from the same plan on the next decision", () => {
+    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    });
+    const repeated = stopIntent("repeat", 900, "worker-1", 1);
+    const brain = new PureAiBrainV1(profile, [new DummyManager([repeated])]);
+    const first = brain.step(createStage2Observation(), state, []);
+
+    const second = brain.step(createStage2Observation(), first.nextState, []);
+
+    expect(first.acceptedIntents).toHaveLength(1);
+    expect(second.acceptedIntents).toHaveLength(0);
+    expect(second.decisions).toContainEqual(expect.objectContaining({ outcome: "rejected", reason: "claim_conflict" }));
+  });
+
+  it("does not reacquire a physical claim while the same plan still owns it", () => {
+    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
+    const initial = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    });
+    const intent = stopIntent("stable", 900, "worker-1", 1);
+    const brain = new PureAiBrainV1(profile, [new DummyManager([intent])]);
+    const first = brain.step(createStage2Observation(), initial, []);
+    const repeated = brain.step(createStage2Observation(), first.nextState, []);
+
+    expect(first.acceptedIntents).toHaveLength(1);
+    expect(repeated.acceptedIntents).toHaveLength(0);
+    expect(repeated.decisions).toContainEqual(
+      expect.objectContaining({ outcome: "rejected", reason: "claim_conflict" })
+    );
+  });
+
   it("H-30 isolates an optional proposer exception and records why it was not evaluated", () => {
     const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const state = createAiBrainStateV1({ playerNumber: 1, faction: FactionType.Tivara, profile, tick: 0, archetypeId: "balanced" });
+    const state = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    });
     const useful = stopIntent("useful", 900, "worker-1", 1);
-    const result = new PureAiBrainV1(profile, [new ThrowingOptionalManager(), new DummyManager([useful])])
-      .step(createStage2Observation(), state, []);
+    const result = new PureAiBrainV1(profile, [new ThrowingOptionalManager(), new DummyManager([useful])]).step(
+      createStage2Observation(),
+      state,
+      []
+    );
     expect(result.acceptedIntents).toContainEqual(expect.objectContaining({ intentId: "intent:useful" }));
-    expect(result.debugSnapshot.whyNot).toContainEqual(expect.objectContaining({ subjectId: "throwing.optional", status: "not_evaluated", reason: "technical_fault:Error" }));
+    expect(result.debugSnapshot.whyNot).toContainEqual(
+      expect.objectContaining({
+        subjectId: "throwing.optional",
+        status: "not_evaluated",
+        reason: "technical_fault:Error"
+      })
+    );
     expect(findAiWhyNotExplanationV1(result.debugSnapshot, "unrecorded.alternative")).toEqual({
       subjectId: "unrecorded.alternative",
       status: "not_recorded",
@@ -178,9 +238,18 @@ describe("PureAiBrainV1", () => {
 
   it("preserves the current macro ledger while Stage 14 replaces only adaptive demand rows", () => {
     const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-    const state = createAiBrainStateV1({ playerNumber: 1, faction: FactionType.Tivara, profile, tick: 0, archetypeId: "balanced" });
-    const result = new PureAiBrainV1(profile, [new AdaptationLedgerManager(), new MacroLedgerManager()])
-      .step(createStage2Observation(), state, []);
+    const state = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    });
+    const result = new PureAiBrainV1(profile, [new AdaptationLedgerManager(), new MacroLedgerManager()]).step(
+      createStage2Observation(),
+      state,
+      []
+    );
 
     expect(result.nextState.economyProduction.demands.map((demand) => demand.demandId)).toEqual([
       "demand:adapt:anti_air",

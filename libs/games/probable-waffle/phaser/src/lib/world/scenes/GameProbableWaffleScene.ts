@@ -138,7 +138,9 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       snapshotService
     );
     this.sceneGameData.services.push(
-      new SharedCommandApplicationService(this, (playerNumber) => gameModeConditionChecker.applyConcession(playerNumber))
+      new SharedCommandApplicationService(this, (playerNumber) =>
+        gameModeConditionChecker.applyConcession(playerNumber)
+      )
     );
     scenarioReferenceRegistry.initialize(this);
     CampaignParticipantSceneAdapter.configure(this, campaignContentAllowances);

@@ -166,7 +166,9 @@ export class ReplayPlaybackService {
     this.tickSub?.unsubscribe();
     this.outcomeSub?.unsubscribe();
     if (this.compareRecordedCommandOutcomes && this.expectedCommandOutcomes.length > 0) {
-      console.error(`[ReplayPlayback] ${this.expectedCommandOutcomes.length} recorded command outcomes were not observed`);
+      console.error(
+        `[ReplayPlayback] ${this.expectedCommandOutcomes.length} recorded command outcomes were not observed`
+      );
     }
   }
 

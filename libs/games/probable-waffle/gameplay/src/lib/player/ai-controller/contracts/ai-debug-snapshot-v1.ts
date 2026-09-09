@@ -75,8 +75,19 @@ export interface AiDebugSnapshotV1 {
   }[];
   /** Bounded Stage-9 strategic facts captured at the decision boundary. */
   readonly skirmish: Readonly<{
-    readonly questions: readonly { readonly questionId: string; readonly kind: string; readonly state: string; readonly createdTick: AiSimulationTick }[];
-    readonly incidents: readonly { readonly incidentId: string; readonly kind: string; readonly severity: number; readonly confidencePermille: number; readonly expiresAtTick: AiSimulationTick }[];
+    readonly questions: readonly {
+      readonly questionId: string;
+      readonly kind: string;
+      readonly state: string;
+      readonly createdTick: AiSimulationTick;
+    }[];
+    readonly incidents: readonly {
+      readonly incidentId: string;
+      readonly kind: string;
+      readonly severity: number;
+      readonly confidencePermille: number;
+      readonly expiresAtTick: AiSimulationTick;
+    }[];
     readonly squads: readonly {
       readonly squadId: string;
       readonly taskForceId: string | null;
@@ -100,11 +111,29 @@ export interface AiDebugSnapshotV1 {
       readonly orderedActorCount: number;
       readonly oscillationCount: number;
       readonly mobileReserveCount: number;
-      readonly assignedPositions: readonly { readonly actorId: string; readonly position: { readonly x: number; readonly y: number; readonly z: number } }[];
-      readonly objectiveAlternatives: readonly { readonly objectiveId: string; readonly score: number; readonly reason: string }[];
+      readonly assignedPositions: readonly {
+        readonly actorId: string;
+        readonly position: { readonly x: number; readonly y: number; readonly z: number };
+      }[];
+      readonly objectiveAlternatives: readonly {
+        readonly objectiveId: string;
+        readonly score: number;
+        readonly reason: string;
+      }[];
     }[];
-    readonly mode: { readonly state: string; readonly hopelessSinceTick: AiSimulationTick | null; readonly concessionIntentId: string | null; readonly reason: string | null };
-    readonly timeline: readonly { readonly eventId: string; readonly tick: AiSimulationTick; readonly kind: string; readonly subjectId: string; readonly detail: string }[];
+    readonly mode: {
+      readonly state: string;
+      readonly hopelessSinceTick: AiSimulationTick | null;
+      readonly concessionIntentId: string | null;
+      readonly reason: string | null;
+    };
+    readonly timeline: readonly {
+      readonly eventId: string;
+      readonly tick: AiSimulationTick;
+      readonly kind: string;
+      readonly subjectId: string;
+      readonly detail: string;
+    }[];
   }>;
   /** Saved Stage-10 base and placement facts; panel consumers never perform a fresh placement query. */
   readonly bases: readonly {
@@ -182,7 +211,11 @@ export interface AiDebugSnapshotV1 {
       readonly consecutiveEvaluations: number;
       readonly permittedFacts: readonly string[];
     }[];
-    readonly roleTargets: readonly { readonly role: string; readonly desired: number; readonly evidenceIds: readonly string[] }[];
+    readonly roleTargets: readonly {
+      readonly role: string;
+      readonly desired: number;
+      readonly evidenceIds: readonly string[];
+    }[];
     readonly lastTransitionTick: AiSimulationTick | null;
     readonly lastTransitionReason: string | null;
     readonly selectedResearchType: string | null;
@@ -192,7 +225,11 @@ export interface AiDebugSnapshotV1 {
   readonly runtimeLimits: Readonly<{
     readonly decisionSequence: number;
     readonly continuationCursors: readonly { readonly owner: string; readonly cursor: number }[];
-    readonly laneService: readonly { readonly lane: string; readonly deficit: number; readonly lastServicedTick: AiSimulationTick }[];
+    readonly laneService: readonly {
+      readonly lane: string;
+      readonly deficit: number;
+      readonly lastServicedTick: AiSimulationTick;
+    }[];
     readonly retainedTraceDecisions: number;
   }>;
   readonly progressHealth:

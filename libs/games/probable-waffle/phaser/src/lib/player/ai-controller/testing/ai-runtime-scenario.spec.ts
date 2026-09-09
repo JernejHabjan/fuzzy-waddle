@@ -65,7 +65,9 @@ describe("Stage 5 real runtime scenario bootstrap", () => {
     restoredScene.getSceneGameData().services.push(restoredBus);
     restoredBus.playReplayBatch({ tick: receipt.command.tick, playerNumber: 1, commands: [receipt.command] });
 
-    const outcomes = restoredBus.getAuthorityState().outcomes.filter((outcome) => outcome.commandId === "1:0:7:stage-5");
+    const outcomes = restoredBus
+      .getAuthorityState()
+      .outcomes.filter((outcome) => outcome.commandId === "1:0:7:stage-5");
     expect(outcomes.filter((outcome) => outcome.kind === "completed")).toHaveLength(1);
     expect(outcomes.at(-1)?.reason).toBe("duplicate_command");
   });

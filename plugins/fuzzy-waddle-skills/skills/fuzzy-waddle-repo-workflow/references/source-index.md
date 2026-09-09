@@ -1,18 +1,19 @@
 # Workspace source index
 
-Repository-relative routes, verified 2026-09-05. This is a maintained shortlist, not a full file catalog. Confirm moved paths against the current checkout; package.json, tsconfig.base.json and each project's project.json remain authoritative.
+Repository-relative routes, verified 2026-09-09. This is a maintained shortlist, not a full file catalog. Confirm moved paths against the current checkout; package.json, tsconfig.base.json and each project's project.json remain authoritative.
 
-| Need | Start here |
-| --- | --- |
-| Angular host/lobby UI | apps/portal/src/app/ |
-| NestJS application composition | apps/api/src/ |
-| Desktop host | apps/probable-waffle-desktop/ |
+| Need                                             | Start here                                                                                                                                                                            |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Angular host/lobby UI                            | apps/portal/src/app/                                                                                                                                                                  |
+| NestJS application composition                   | apps/api/src/                                                                                                                                                                         |
+| Desktop host                                     | apps/probable-waffle-desktop/                                                                                                                                                         |
 | RTS pure logic / runtime / shared wire / backend | libs/games/probable-waffle/gameplay/src/lib/ ; libs/games/probable-waffle/phaser/src/lib/ ; libs/games/probable-waffle/protocol/src/lib/ ; libs/games/probable-waffle/server/src/lib/ |
-| RTS shared models and campaigns | libs/games/probable-waffle/interface/src/lib/ ; libs/games/probable-waffle/campaign/src/ |
-| Shared identity, sessions, hosting, schema | libs/platform/identity/ ; libs/platform/game-sessions/ ; libs/platform/game-host/ ; libs/platform/database-schema/ |
-| Assets and authoring metadata | apps/portal/src/assets/ ; apps/portal/src/metadata/ |
-| Browser tests / backend e2e | apps/portal-e2e/ ; apps/api-e2e/ |
-| Jest presets / editor checks / asset checks | tools/testing/ ; tools/phaser-editor/validate-project.mjs ; tools/assets/check-git-lfs.mjs |
+| RTS shared models and campaigns                  | libs/games/probable-waffle/interface/src/lib/ ; libs/games/probable-waffle/campaign/src/                                                                                              |
+| Shared identity, sessions, hosting, schema       | libs/platform/identity/ ; libs/platform/game-sessions/ ; libs/platform/game-host/ ; libs/platform/database-schema/                                                                    |
+| Assets and authoring metadata                    | apps/portal/src/assets/ ; apps/portal/src/metadata/                                                                                                                                   |
+| Browser tests / backend e2e                      | apps/portal-e2e/ ; apps/api-e2e/                                                                                                                                                      |
+| Jest presets / editor checks / asset checks      | tools/testing/ ; tools/phaser-editor/validate-project.mjs ; tools/assets/check-git-lfs.mjs                                                                                            |
+| RTS AI manifests / release matrix                | tools/ai/fixtures/ ; tools/ai/run-skirmish-matrix.mjs                                                                                                                                 |
 
 For RTS internals, read [the focused source map](../../fuzzy-waddle-phaser/references/rts-source-index.md). For checks, read [verification routes](verification.md). Do not load both for an unrelated docs edit.
 

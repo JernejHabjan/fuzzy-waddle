@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "scenarioId": "D-06",
+  "scenarioIds": ["D-06"],
   "purpose": "Paired, fair runtime calibration for easy, normal and hard skirmish profiles after the complete Stage-15 validation ladder is available.",
   "driver": "runtime",
   "status": "authored_not_run",

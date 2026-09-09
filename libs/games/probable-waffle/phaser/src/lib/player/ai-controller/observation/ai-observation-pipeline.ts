@@ -1,4 +1,4 @@
-import type Phaser from "phaser";
+import Phaser from "phaser";
 import { getGameModeFromScene } from "@fuzzy-waddle/platform-game-host/phaser/scene/base.scene";
 import type { ActorId, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import {
@@ -17,6 +17,7 @@ import {
   type AiKnownValueV1,
   type AiObservedAccessProductV1,
   type AiObservedActorV1,
+  type AiObservedEffectV1,
   type AiObservationV1
 } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { getActorComponent } from "../../../data/actor-component";
@@ -61,6 +62,7 @@ import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 import { AiObservationVisibilityPolicy, type AiObservationInformationPolicy } from "./ai-observation-visibility-policy";
 import { AiAccessGraphAdapter } from "./ai-access-graph.adapter";
 import { getPlayerRelation } from "../../../data/player-relation";
+import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller";
 
 type GameObject = Phaser.GameObjects.GameObject;
 
@@ -110,7 +112,8 @@ export class AiObservationPipeline {
 
   constructor(
     private readonly scene: Phaser.Scene,
-    private readonly player: ProbableWafflePlayer
+    private readonly player: ProbableWafflePlayer,
+    private readonly getDeliveredIncomePerMinute?: (resourceType: ResourceType) => number | undefined
   ) {
     this.accessGraphAdapter = new AiAccessGraphAdapter(scene);
     this.navigationInvalidationListener = () => {
@@ -159,11 +162,15 @@ export class AiObservationPipeline {
     const actors = this.latestObservation?.actors ?? [];
     const currentTick = getSceneService(this.scene, SimulationTickService)?.currentTick;
     return {
-      policy: this.player.playerNumber === undefined ? "skirmish" : new AiObservationVisibilityPolicy(this.scene, this.player.playerNumber).informationPolicy,
+      policy:
+        this.player.playerNumber === undefined
+          ? "skirmish"
+          : new AiObservationVisibilityPolicy(this.scene, this.player.playerNumber).informationPolicy,
       requestedGeneration: this.requestedGeneration,
       committedGeneration: this.committedGeneration,
       committedTick: this.latestObservation ? this.committedTick : null,
-      observationAgeTicks: this.latestObservation && currentTick !== undefined ? Math.max(0, currentTick - this.committedTick) : null,
+      observationAgeTicks:
+        this.latestObservation && currentTick !== undefined ? Math.max(0, currentTick - this.committedTick) : null,
       visibleContactCount: actors.filter((actor) => actor.visibility === "visible").length,
       rememberedContactCount: actors.filter((actor) => actor.visibility === "last_seen").length,
       unknownFactCount: this.countUnknownFacts(this.latestObservation),
@@ -232,7 +239,10 @@ export class AiObservationPipeline {
       liveById.set(actorId, actor);
       if (!owned) this.remember(projection, tick);
       if (owned || visibility === "visible") {
-        const catalogEntry = this.projectCatalogEntry(actor, projection.effectiveLevel.status === "known" ? projection.effectiveLevel.value : 1);
+        const catalogEntry = this.projectCatalogEntry(
+          actor,
+          projection.effectiveLevel.status === "known" ? projection.effectiveLevel.value : 1
+        );
         if (catalogEntry) catalogEntries.set(catalogEntry.capabilityId, catalogEntry);
       }
     }
@@ -259,13 +269,19 @@ export class AiObservationPipeline {
     const map = this.projectMap(actors, liveById, tick, accessGraph, permittedTopology);
     const resources = Object.values(ResourceType)
       .sort()
-      .map((resourceType) => ({
-        resourceType,
-        stockpile: this.player.getResources()[resourceType] ?? 0,
-        reservedUnspent: 0,
-        obligationsDue: 0,
-        deliveredIncomePerMinute: unknownValue("not_supported")
-      }));
+      .map((resourceType) => {
+        const deliveredIncome = this.getDeliveredIncomePerMinute?.(resourceType);
+        return {
+          resourceType,
+          stockpile: this.player.getResources()[resourceType] ?? 0,
+          reservedUnspent: 0,
+          obligationsDue: 0,
+          deliveredIncomePerMinute:
+            deliveredIncome !== undefined && Number.isFinite(deliveredIncome)
+              ? knownValue(Math.max(0, deliveredIncome), tick)
+              : unknownValue("not_supported")
+        };
+      });
 
     return {
       observation: {
@@ -286,7 +302,9 @@ export class AiObservationPipeline {
       catalog: {
         schemaVersion: 1,
         generation,
-        entries: [...catalogEntries.values()].sort((left, right) => left.capabilityId.localeCompare(right.capabilityId)),
+        entries: [...catalogEntries.values()].sort((left, right) =>
+          left.capabilityId.localeCompare(right.capabilityId)
+        ),
         unsupported: []
       }
     };
@@ -297,7 +315,7 @@ export class AiObservationPipeline {
     actors: readonly AiObservedActorV1[],
     liveById: ReadonlyMap<ActorId, GameObject>
   ): AiObservationV1["researchCandidates"] {
-    const candidates: AiObservationV1["researchCandidates"] = [];
+    const candidates: AiObservationV1["researchCandidates"][number][] = [];
     for (const observed of actors.filter((actor) => actor.relation === "self" && actor.visibility === "owned")) {
       const actor = liveById.get(observed.actorId);
       const research = actor ? getActorComponent(actor, ResearchComponent) : undefined;
@@ -323,7 +341,10 @@ export class AiObservationPipeline {
         });
       }
     }
-    return candidates.sort((left, right) => left.producerId.localeCompare(right.producerId) || left.researchType.localeCompare(right.researchType));
+    return candidates.sort(
+      (left, right) =>
+        left.producerId.localeCompare(right.producerId) || left.researchType.localeCompare(right.researchType)
+    );
   }
 
   private isEligibleActor(actor: GameObject): boolean {
@@ -360,27 +381,37 @@ export class AiObservationPipeline {
     const accessNodeId = accessNode ? knownValue(accessNode, tick) : unknownValue("query_pending");
     const containable = getActorComponent(actor, ContainableComponent);
     const container = getActorComponent(actor, ContainerComponent);
+    const pawnAi = getActorComponent(actor, PawnAiController);
+    const currentOrder = pawnAi?.blackboard.getCurrentOrder();
+    const orderTarget = currentOrder?.data.targetGameObject;
+    const orderTargetId = orderTarget
+      ? (getActorComponent(orderTarget, IdComponent)?.id ?? null)
+      : (currentOrder?.data.targetGameObjectId ?? null);
     const containerOwner = containable?.getContainerOwner();
-    const containerOwnerId = owned && containerOwner ? getActorComponent(containerOwner, IdComponent)?.id ?? null : null;
-    const containerState = container && owned
-      ? knownValue(
-          {
-            capacity: container.containerDefinition.capacity,
-            passengerIds: container.getContainedGameObjects()
-              .map((passenger) => getActorComponent(passenger, IdComponent)?.id)
-              .filter((id): id is ActorId => id !== undefined)
-              .sort(),
-            pendingPassengerIds: container.getPendingBoarders()
-              .map((passenger) => getActorComponent(passenger, IdComponent)?.id)
-              .filter((id): id is ActorId => id !== undefined)
-              .sort(),
-            mobileDomains: capabilities.flatMap((capability) => capability.domains).filter(uniqueDomain)
-          },
-          tick
-        )
-      : container
-        ? unknownValue(owned ? "not_supported" : "not_observed")
-        : undefined;
+    const containerOwnerId =
+      owned && containerOwner ? (getActorComponent(containerOwner, IdComponent)?.id ?? null) : null;
+    const containerState =
+      container && owned
+        ? knownValue(
+            {
+              capacity: container.containerDefinition.capacity,
+              passengerIds: container
+                .getContainedGameObjects()
+                .map((passenger) => getActorComponent(passenger, IdComponent)?.id)
+                .filter((id): id is ActorId => id !== undefined)
+                .sort(),
+              pendingPassengerIds: container
+                .getPendingBoarders()
+                .map((passenger) => getActorComponent(passenger, IdComponent)?.id)
+                .filter((id): id is ActorId => id !== undefined)
+                .sort(),
+              mobileDomains: capabilities.flatMap((capability) => capability.domains).filter(uniqueDomain)
+            },
+            tick
+          )
+        : container
+          ? unknownValue(owned ? "not_supported" : "not_observed")
+          : undefined;
     return {
       actorId,
       objectName: actor.name as ObjectNames,
@@ -407,15 +438,29 @@ export class AiObservationPipeline {
       cost: definition?.components?.productionCost
         ? knownValue({ ...definition.components.productionCost.resources }, tick)
         : unknownValue("not_supported"),
-      housingCost: definition?.components?.housingCost?.housingNeeded === undefined
-        ? unknownValue("not_supported")
-        : knownValue(definition.components.housingCost.housingNeeded, tick),
-      housingCapacity: definition?.components?.housing?.housingCapacity === undefined
-        ? unknownValue("not_supported")
-        : knownValue(definition.components.housing.housingCapacity, tick),
-      healthPermille: health && (owned || visibility === "visible")
-        ? knownValue(Math.max(0, Math.min(1000, Math.floor((health.healthComponentData.health / Math.max(1, health.healthDefinition.maxHealth)) * 1000))), tick)
-        : unknownValue(owned ? "not_supported" : "not_observed"),
+      housingCost:
+        definition?.components?.housingCost?.housingNeeded === undefined
+          ? unknownValue("not_supported")
+          : knownValue(definition.components.housingCost.housingNeeded, tick),
+      housingCapacity:
+        definition?.components?.housing?.housingCapacity === undefined
+          ? unknownValue("not_supported")
+          : knownValue(definition.components.housing.housingCapacity, tick),
+      healthPermille:
+        health && (owned || visibility === "visible")
+          ? knownValue(
+              Math.max(
+                0,
+                Math.min(
+                  1000,
+                  Math.floor(
+                    (health.healthComponentData.health / Math.max(1, health.healthDefinition.maxHealth)) * 1000
+                  )
+                )
+              ),
+              tick
+            )
+          : unknownValue(owned ? "not_supported" : "not_observed"),
       resourceState: source
         ? knownValue(
             {
@@ -442,77 +487,117 @@ export class AiObservationPipeline {
       ...(owned && constructionSite
         ? { constructionProgress: knownValue(constructionSite.progressPercentage, tick) }
         : {}),
-      activeEffectIds: statusEffects?.getActiveEffects().map((effect) => `status:${effect.type}`).sort() ?? [],
-      combatProfile: health && (owned || visibility === "visible")
-        ? knownValue(
-            {
-              maxHealth: health.healthDefinition.maxHealth,
-              maxArmour: health.healthDefinition.maxArmour ?? 0,
-              passiveRegenerationPerSecond: definition?.components?.healthRegeneration?.regenerateHealthRate ?? 0,
-              armourPermille: Math.max(
-                0,
-                Math.min(1000, Math.floor((health.healthComponentData.armour / Math.max(1, health.healthDefinition.maxArmour ?? 0)) * 1000))
-              ),
-              attacks: (attack?.getAttacks() ?? definition?.components?.attack?.attacks ?? []).map((entry) => ({
-                damage: entry.damage,
-                cooldownTicks: millisecondsToSimulationTicks(entry.cooldown),
-                remainingCooldownTicks: owned && attack ? millisecondsToSimulationTicks(attack.remainingCooldown) : null,
-                range: entry.range,
-                minRange: entry.minRange,
-                highGroundRangeBonus: entry.highGroundRangeBonus ?? 0,
-                impactDelayTicks: millisecondsToSimulationTicks(entry.delays.hit),
-                areaRadius: entry.meleeAoe?.range ?? 0,
-                targetDomains: entry.canTargetAir ? ["ground", "water", "air"] as const : ["ground", "water"] as const
-              })),
-              healing: healing && owned
+      activeEffectIds:
+        statusEffects
+          ?.getActiveEffects()
+          .map((effect) => `status:${effect.type}`)
+          .sort() ?? [],
+      activeOrder:
+        owned && pawnAi
+          ? knownValue(
+              currentOrder
                 ? {
-                    amount: healing.healingDefinition.healPerCooldown,
-                    cooldownTicks: millisecondsToSimulationTicks(healing.healingDefinition.cooldown),
-                    remainingCooldownTicks: millisecondsToSimulationTicks(healing.remainingCooldown),
-                    range: healing.healingDefinition.range
+                    orderType: currentOrder.orderType,
+                    targetActorId: orderTargetId
                   }
                 : null,
-              spells: spell && owned
-                ? spell.availableSpells
-                    .map((spellType) => {
-                      const data = spellDefinitions[spellType];
-                      if (!data) return undefined;
-                      return {
-                        spellType,
-                        ready: spell.canCastSpell(spellType),
-                        researched: spell.isSpellResearched(spellType),
-                        autocast: spell.isAutocastEnabled(spellType),
-                        range: data.range,
-                        areaRadius: data.aoeRadius,
-                        targetAllies: data.targetAllies,
-                        targetEnemies: data.targetEnemies,
-                        targetSelf: data.targetSelf,
-                        targetDomains: (data.targetDomains ?? ["land", "water", "air"])
-                          .map((domain): AiDomainV1 => domain === "land" ? "ground" : domain)
-                          .filter(uniqueDomain),
-                        instantDamage: data.instantDamage ?? 0,
-                        periodicDamage: Math.max(0, data.dotDamage ?? 0) * Math.max(1, Math.floor((data.dotDuration ?? 0) / Math.max(1, data.dotTickInterval ?? 1))),
-                        instantHeal: data.instantHeal ?? 0,
-                        periodicHeal: Math.max(0, data.hotHeal ?? 0) * Math.max(1, Math.floor((data.hotDuration ?? 0) / Math.max(1, data.hotTickInterval ?? 1))),
-                        stunTicks: millisecondsToSimulationTicks(data.stunDuration ?? 0),
-                        slowTicks: millisecondsToSimulationTicks(data.slowDuration ?? 0),
-                        zoneDurationTicks: millisecondsToSimulationTicks(data.persistentZone?.duration ?? 0),
-                        summons: data.spawnPrefab !== undefined,
-                        summonDurationTicks: data.spawnPrefab ? (data.spawnPrefab.duration === undefined ? null : millisecondsToSimulationTicks(data.spawnPrefab.duration)) : null
-                      };
-                    })
-                    .filter((entry): entry is NonNullable<typeof entry> => entry !== undefined)
-                    .sort((left, right) => left.spellType.localeCompare(right.spellType))
-                : [],
-              statuses: (statusEffects?.getActiveEffects() ?? []).map((effect) => ({
-                type: effect.type,
-                remainingTicks: millisecondsToSimulationTicks(effect.remainingTime),
-                movementSpeedPermille: Math.max(100, Math.min(2000, Math.floor((effect.movementSpeedModifier ?? 1) * 1000)))
-              })).sort((left, right) => left.type.localeCompare(right.type))
-            },
-            tick
-          )
-        : unknownValue(owned ? "not_supported" : "not_observed"),
+              tick
+            )
+          : unknownValue(owned ? "not_supported" : "not_observed"),
+      combatProfile:
+        health && (owned || visibility === "visible")
+          ? knownValue(
+              {
+                maxHealth: health.healthDefinition.maxHealth,
+                maxArmour: health.healthDefinition.maxArmour ?? 0,
+                passiveRegenerationPerSecond: definition?.components?.healthRegeneration?.regenerateHealthRate ?? 0,
+                armourPermille: Math.max(
+                  0,
+                  Math.min(
+                    1000,
+                    Math.floor(
+                      (health.healthComponentData.armour / Math.max(1, health.healthDefinition.maxArmour ?? 0)) * 1000
+                    )
+                  )
+                ),
+                attacks: (attack?.getAttacks() ?? definition?.components?.attack?.attacks ?? []).map((entry) => ({
+                  damage: entry.damage,
+                  cooldownTicks: millisecondsToSimulationTicks(entry.cooldown),
+                  remainingCooldownTicks:
+                    owned && attack ? millisecondsToSimulationTicks(attack.remainingCooldown) : null,
+                  range: entry.range,
+                  minRange: entry.minRange,
+                  highGroundRangeBonus: entry.highGroundRangeBonus ?? 0,
+                  impactDelayTicks: millisecondsToSimulationTicks(entry.delays.hit),
+                  areaRadius: entry.meleeAoe?.range ?? 0,
+                  targetDomains: entry.canTargetAir
+                    ? (["ground", "water", "air"] as const)
+                    : (["ground", "water"] as const)
+                })),
+                healing:
+                  healing && owned
+                    ? {
+                        amount: healing.healingDefinition.healPerCooldown,
+                        cooldownTicks: millisecondsToSimulationTicks(healing.healingDefinition.cooldown),
+                        remainingCooldownTicks: millisecondsToSimulationTicks(healing.remainingCooldown),
+                        range: healing.healingDefinition.range
+                      }
+                    : null,
+                spells:
+                  spell && owned
+                    ? spell.availableSpells
+                        .map((spellType) => {
+                          const data = spellDefinitions[spellType];
+                          if (!data) return undefined;
+                          return {
+                            spellType,
+                            ready: spell.canCastSpell(spellType),
+                            researched: spell.isSpellResearched(spellType),
+                            autocast: spell.isAutocastEnabled(spellType),
+                            range: data.range,
+                            areaRadius: data.aoeRadius,
+                            targetAllies: data.targetAllies,
+                            targetEnemies: data.targetEnemies,
+                            targetSelf: data.targetSelf,
+                            targetDomains: (data.targetDomains ?? ["land", "water", "air"])
+                              .map((domain): AiDomainV1 => (domain === "land" ? "ground" : domain))
+                              .filter(uniqueDomain),
+                            instantDamage: data.instantDamage ?? 0,
+                            periodicDamage:
+                              Math.max(0, data.dotDamage ?? 0) *
+                              Math.max(1, Math.floor((data.dotDuration ?? 0) / Math.max(1, data.dotTickInterval ?? 1))),
+                            instantHeal: data.instantHeal ?? 0,
+                            periodicHeal:
+                              Math.max(0, data.hotHeal ?? 0) *
+                              Math.max(1, Math.floor((data.hotDuration ?? 0) / Math.max(1, data.hotTickInterval ?? 1))),
+                            stunTicks: millisecondsToSimulationTicks(data.stunDuration ?? 0),
+                            slowTicks: millisecondsToSimulationTicks(data.slowDuration ?? 0),
+                            zoneDurationTicks: millisecondsToSimulationTicks(data.persistentZone?.duration ?? 0),
+                            summons: data.spawnPrefab !== undefined,
+                            summonDurationTicks: data.spawnPrefab
+                              ? data.spawnPrefab.duration === undefined
+                                ? null
+                                : millisecondsToSimulationTicks(data.spawnPrefab.duration)
+                              : null
+                          };
+                        })
+                        .filter((entry): entry is NonNullable<typeof entry> => entry !== undefined)
+                        .sort((left, right) => left.spellType.localeCompare(right.spellType))
+                    : [],
+                statuses: (statusEffects?.getActiveEffects() ?? [])
+                  .map((effect) => ({
+                    type: effect.type,
+                    remainingTicks: millisecondsToSimulationTicks(effect.remainingTime),
+                    movementSpeedPermille: Math.max(
+                      100,
+                      Math.min(2000, Math.floor((effect.movementSpeedModifier ?? 1) * 1000))
+                    )
+                  }))
+                  .sort((left, right) => left.type.localeCompare(right.type))
+              },
+              tick
+            )
+          : unknownValue(owned ? "not_supported" : "not_observed"),
       ...(owned ? { mainBuilding: knownValue(definition?.meta?.isMainBuilding === true, tick) } : {}),
       containedInActorId: containerOwnerId,
       ...(containerState ? { containerState } : {})
@@ -527,13 +612,13 @@ export class AiObservationPipeline {
     if (!definition) return [];
     const families = capabilityFamilies(definition);
     const domains = movementDomains(definition);
-    const targetDomains = targetDomains(definition);
+    const supportedTargetDomains = targetDomains(definition);
     return families.map((family) => ({
       id: `${objectName}:${family}:${level}`,
       family,
       level,
       domains,
-      targetDomains,
+      targetDomains: supportedTargetDomains,
       capacity: knownValue(definition.components?.container?.capacity ?? 0, 0)
     }));
   }
@@ -564,7 +649,12 @@ export class AiObservationPipeline {
       const level = techTree.getResearchedLevelForUnit(playerNumber, objectName);
       const definition = getPwActorDefinition(objectName, level);
       if (!definition) continue;
-      const entry = this.projectCatalogDefinition(objectName, definition, level, definition.components?.research?.availableResearch ?? []);
+      const entry = this.projectCatalogDefinition(
+        objectName,
+        definition,
+        level,
+        definition.components?.research?.availableResearch ?? []
+      );
       catalogEntries.set(entry.capabilityId, entry);
     }
   }
@@ -584,17 +674,20 @@ export class AiObservationPipeline {
       targetDomains: targetDomains(definition),
       produces: [...(definition.components?.production?.availableProduceActors ?? [])].sort(),
       constructs: definition.components?.builder
-        ? [...BuilderComponent.getFlatConstructableBuildings(definition.components.builder.constructableBuildings)].sort()
+        ? [
+            ...BuilderComponent.getFlatConstructableBuildings(definition.components.builder.constructableBuildings)
+          ].sort()
         : [],
       researches: [...researches].sort(),
-      gathers: [],
+      gathers: normalizeGatherResourceTypes(definition.components?.gatherer?.resourceSourceGameObjectClasses),
       housingCapacity: definition.components?.housing?.housingCapacity ?? null,
       housingCost: definition.components?.housingCost?.housingNeeded ?? null,
       cargoCapacity: definition.components?.container?.capacity ?? null,
       constructionProfile: {
         resourceCost: { ...(definition.components?.productionCost?.resources ?? {}) },
         footprintRadiusTiles: Math.floor(
-          ((definition.components?.representable?.width ?? 0) * (definition.components?.collider?.colliderFactorReduction || 1)) /
+          ((definition.components?.representable?.width ?? 0) *
+            (definition.components?.collider?.colliderFactorReduction || 1)) /
             (getSceneService(this.scene, TilemapComponent)?.tilemap?.tileWidth ?? TilemapComponent.tileWidth) /
             2
         ),
@@ -623,38 +716,41 @@ export class AiObservationPipeline {
   }
 
   private projectRememberedContacts(visibleIds: ReadonlySet<ActorId>, tick: number): AiObservedActorV1[] {
-    return [...this.memory.values()]
-      .filter((contact) => !visibleIds.has(contact.actorId))
-      .map((contact) => {
-        const elapsed = Math.max(0, tick - contact.lastSeenTick);
-        if (isRememberedContactExpired(contact.lastSeenTick, tick)) {
-          this.memory.delete(contact.actorId);
-          return undefined;
-        }
-        const confidencePermille = decayObservationConfidence(contact.confidencePermille, elapsed);
-        this.memory.set(contact.actorId, { ...contact, confidencePermille });
-        const position = contact.position ? knownValue({ ...contact.position }, contact.lastSeenTick) : unknownValue("not_observed");
-        return {
-          actorId: contact.actorId,
-          objectName: contact.objectName,
-          owner: contact.owner,
-          relation: contact.relation,
-          visibility: "last_seen",
-          evidenceId: contact.evidenceId as AiObservedActorV1["evidenceId"],
-          observedTick: contact.lastSeenTick,
-          logicalPosition: position,
-          accessNodeId: unknownValue("query_pending"),
-          effectiveLevel: unknownValue("not_observed"),
-          capabilities: [],
-          queue: unknownValue("not_observed"),
-          cost: unknownValue("not_observed"),
-          housingCost: unknownValue("not_observed"),
-          housingCapacity: unknownValue("not_observed"),
-          resourceState: unknownValue("not_observed"),
-          activeEffectIds: []
-        } satisfies AiObservedActorV1;
-      })
-      .filter((actor): actor is AiObservedActorV1 => actor !== undefined && actor.relation !== "self")
+    const remembered: AiObservedActorV1[] = [];
+    for (const contact of this.memory.values()) {
+      if (visibleIds.has(contact.actorId)) continue;
+      const elapsed = Math.max(0, tick - contact.lastSeenTick);
+      if (isRememberedContactExpired(contact.lastSeenTick, tick)) {
+        this.memory.delete(contact.actorId);
+        continue;
+      }
+      const confidencePermille = decayObservationConfidence(contact.confidencePermille, elapsed);
+      this.memory.set(contact.actorId, { ...contact, confidencePermille });
+      const position = contact.position
+        ? knownValue({ ...contact.position }, contact.lastSeenTick)
+        : unknownValue("not_observed");
+      remembered.push({
+        actorId: contact.actorId,
+        objectName: contact.objectName,
+        owner: contact.owner,
+        relation: contact.relation,
+        visibility: "last_seen",
+        evidenceId: contact.evidenceId as AiObservedActorV1["evidenceId"],
+        observedTick: contact.lastSeenTick,
+        logicalPosition: position,
+        accessNodeId: unknownValue("query_pending"),
+        effectiveLevel: unknownValue("not_observed"),
+        capabilities: [],
+        queue: unknownValue("not_observed"),
+        cost: unknownValue("not_observed"),
+        housingCost: unknownValue("not_observed"),
+        housingCapacity: unknownValue("not_observed"),
+        resourceState: unknownValue("not_observed"),
+        activeEffectIds: []
+      });
+    }
+    return remembered
+      .filter((actor) => actor.relation !== "self")
       .sort((left, right) => left.actorId.localeCompare(right.actorId));
   }
 
@@ -667,8 +763,11 @@ export class AiObservationPipeline {
     const contacts = actors.filter(
       (actor) => actor.visibility === "visible" && actor.relation === "enemy" && actor.accessNodeId.status === "known"
     );
-    const candidates = owned.flatMap((source) => contacts.map((target) => ({ source, target })))
-      .sort((left, right) => `${left.source.actorId}:${left.target.actorId}`.localeCompare(`${right.source.actorId}:${right.target.actorId}`));
+    const candidates = owned
+      .flatMap((source) => contacts.map((target) => ({ source, target })))
+      .sort((left, right) =>
+        `${left.source.actorId}:${left.target.actorId}`.localeCompare(`${right.source.actorId}:${right.target.actorId}`)
+      );
     if (candidates.length === 0) return [];
     const scheduled = selectBoundedObservationWork(
       candidates,
@@ -696,34 +795,46 @@ export class AiObservationPipeline {
     const navigation = getSceneService(this.scene, NavigationService);
     const ownedNodes = actors
       .filter((actor) => actor.visibility === "owned" && actor.accessNodeId.status === "known")
-      .map((actor) => actor.accessNodeId.status === "known" ? actor.accessNodeId.value : null)
+      .map((actor) => (actor.accessNodeId.status === "known" ? actor.accessNodeId.value : null))
       .filter((node): node is `access:${string}` => node !== null)
       .sort();
     const dynamicObstacleActorIds = actors
       .filter((actor) => actor.visibility !== "last_seen")
       .filter((actor) => {
         const liveActor = liveById.get(actor.actorId);
-        return liveActor ? getActorComponent(liveActor, ColliderComponent)?.colliderDefinition?.enabled === true : false;
+        return liveActor
+          ? getActorComponent(liveActor, ColliderComponent)?.colliderDefinition?.enabled === true
+          : false;
       })
       .map((actor) => actor.actorId)
       .sort();
-    const scoutCoverageAccessNodeIds = [...new Set(
-      actors
-        .filter((actor) => actor.visibility === "owned" && actor.accessNodeId.status === "known")
-        .filter((actor) => {
-          const liveActor = liveById.get(actor.actorId);
-          return liveActor ? getActorComponent(liveActor, VisionComponent) !== undefined : false;
-        })
-        .map((actor) => actor.accessNodeId.status === "known" ? actor.accessNodeId.value : null)
-        .filter((node): node is `access:${string}` => node !== null)
-    )].sort();
+    const scoutCoverageAccessNodeIds = [
+      ...new Set(
+        actors
+          .filter((actor) => actor.visibility === "owned" && actor.accessNodeId.status === "known")
+          .filter((actor) => {
+            const liveActor = liveById.get(actor.actorId);
+            return liveActor ? getActorComponent(liveActor, VisionComponent) !== undefined : false;
+          })
+          .map((actor) => (actor.accessNodeId.status === "known" ? actor.accessNodeId.value : null))
+          .filter((node): node is `access:${string}` => node !== null)
+      )
+    ].sort();
     const constructionCells: Array<NonNullable<NonNullable<AiObservationV1["map"]>["constructionCells"]>[number]> = [];
     const anchors = actors
-      .filter((actor) => actor.visibility === "owned" && actor.mainBuilding?.status === "known" && actor.mainBuilding.value)
+      .filter(
+        (actor) => actor.visibility === "owned" && actor.mainBuilding?.status === "known" && actor.mainBuilding.value
+      )
       .filter((actor) => actor.logicalPosition.status === "known")
-      .map((actor) => actor.logicalPosition.status === "known"
-        ? { ...actor.logicalPosition.value, x: Math.round(actor.logicalPosition.value.x), y: Math.round(actor.logicalPosition.value.y) }
-        : null)
+      .map((actor) =>
+        actor.logicalPosition.status === "known"
+          ? {
+              ...actor.logicalPosition.value,
+              x: Math.round(actor.logicalPosition.value.x),
+              y: Math.round(actor.logicalPosition.value.y)
+            }
+          : null
+      )
       .filter((position): position is Vector3Simple => position !== null)
       .sort((left, right) => left.y - right.y || left.x - right.x)
       .slice(0, 4);
@@ -743,7 +854,7 @@ export class AiObservationPipeline {
               position: { x, y, z: 0 },
               groundPassable: !observedBlocked && navigation.isTileGridWithoutBlockingObjectsNavigable({ x, y }),
               waterPassable: navigation.isTileNavigable({ x, y }, MovementTerrainType.Water),
-              elevation: observedNavigable ? navigation.getNavigableHeightAtTile({ x, y }) ?? 0 : 0,
+              elevation: observedNavigable ? (navigation.getNavigableHeightAtTile({ x, y }) ?? 0) : 0,
               observedBlocked
             });
           }
@@ -751,7 +862,9 @@ export class AiObservationPipeline {
       }
     }
     return {
-      bounds: tilemap ? knownValue({ width: tilemap.width, height: tilemap.height }, tick) : unknownValue("not_supported"),
+      bounds: tilemap
+        ? knownValue({ width: tilemap.width, height: tilemap.height }, tick)
+        : unknownValue("not_supported"),
       // Tilemap content is immutable for a loaded match; topology changes belong
       // to the independently versioned dynamic-query stream.
       staticRevision: tilemap ? 1 : 0,
@@ -777,7 +890,11 @@ export class AiObservationPipeline {
   private permittedTopology(
     actors: readonly AiObservedActorV1[],
     liveById: ReadonlyMap<ActorId, GameObject>
-  ): { readonly revision: number; readonly blockedTileKeys: ReadonlySet<string>; readonly navigableTileKeys: ReadonlySet<string> } {
+  ): {
+    readonly revision: number;
+    readonly blockedTileKeys: ReadonlySet<string>;
+    readonly navigableTileKeys: ReadonlySet<string>;
+  } {
     const tilemap = getSceneService(this.scene, TilemapComponent)?.tilemap;
     const blockedTileKeys = new Set<string>();
     const navigableTileKeys = new Set<string>();
@@ -806,7 +923,9 @@ export class AiObservationPipeline {
               })
               .join(",")
           : "";
-        return tile ? [`${actor.actorId}:${tile.x}:${tile.y}:${collider ? 1 : 0}:${navigable ? 1 : 0}:${pathSignature}`] : [];
+        return tile
+          ? [`${actor.actorId}:${tile.x}:${tile.y}:${collider ? 1 : 0}:${navigable ? 1 : 0}:${pathSignature}`]
+          : [];
       })
       .sort()
       .join("|");
@@ -843,25 +962,54 @@ export class AiObservationPipeline {
   private projectModeGoals(actors: readonly AiObservedActorV1[]): AiObservationV1["modeGoals"] {
     const data = getGameModeFromScene<ProbableWaffleGameMode>(this.scene).data;
     const selfFailed = this.player.playerController.data.leftOrKilled === true;
-    const selfActors = actors.filter((actor) => actor.relation === "self").map((actor) => actor.actorId).sort();
+    const selfActors = actors
+      .filter((actor) => actor.relation === "self")
+      .map((actor) => actor.actorId)
+      .sort();
     const visibleEnemies = actors
       .filter((actor) => actor.relation === "enemy" && actor.visibility === "visible")
       .map((actor) => actor.actorId)
       .sort();
     const enemyNodes = actors
-      .filter((actor) => actor.relation === "enemy" && actor.visibility === "visible" && actor.accessNodeId.status === "known")
-      .map((actor) => actor.accessNodeId.status === "known" ? actor.accessNodeId.value : undefined)
+      .filter(
+        (actor) => actor.relation === "enemy" && actor.visibility === "visible" && actor.accessNodeId.status === "known"
+      )
+      .map((actor) => (actor.accessNodeId.status === "known" ? actor.accessNodeId.value : undefined))
       .filter((node): node is NonNullable<typeof node> => node !== undefined)
       .sort();
-    const goals: AiObservationV1["modeGoals"] = [];
+    const goals: AiObservationV1["modeGoals"][number][] = [];
     if (data.winConditions.noEnemyPlayersLeft === true) {
-      goals.push({ id: "mode:win:no_enemy_players_left", kind: "destroy", owner: this.player.playerNumber!, targetActorIds: visibleEnemies, targetAccessNodeIds: enemyNodes, state: selfFailed ? "failed" : "active" });
+      goals.push({
+        id: "mode:win:no_enemy_players_left",
+        kind: "destroy",
+        owner: this.player.playerNumber!,
+        targetActorIds: visibleEnemies,
+        targetAccessNodeIds: enemyNodes,
+        state: selfFailed ? "failed" : "active"
+      });
     }
-    if (data.loseConditions.allActorsMustBeEliminated === true || data.loseConditions.allBuildingsMustBeEliminated === true) {
-      goals.push({ id: "mode:survive:owned_assets", kind: "protect", owner: this.player.playerNumber!, targetActorIds: selfActors, targetAccessNodeIds: [], state: selfFailed ? "failed" : "active" });
+    if (
+      data.loseConditions.allActorsMustBeEliminated === true ||
+      data.loseConditions.allBuildingsMustBeEliminated === true
+    ) {
+      goals.push({
+        id: "mode:survive:owned_assets",
+        kind: "protect",
+        owner: this.player.playerNumber!,
+        targetActorIds: selfActors,
+        targetAccessNodeIds: [],
+        state: selfFailed ? "failed" : "active"
+      });
     }
     if (data.tieConditions.maximumTimeLimitInMinutes !== undefined) {
-      goals.push({ id: "mode:tie:time_limit", kind: "survive", owner: this.player.playerNumber!, targetActorIds: [], targetAccessNodeIds: [], state: selfFailed ? "failed" : "active" });
+      goals.push({
+        id: "mode:tie:time_limit",
+        kind: "survive",
+        owner: this.player.playerNumber!,
+        targetActorIds: [],
+        targetAccessNodeIds: [],
+        state: selfFailed ? "failed" : "active"
+      });
     }
     return goals.sort((left, right) => left.id.localeCompare(right.id));
   }
@@ -903,11 +1051,22 @@ export class AiObservationPipeline {
         const relation = getPlayerRelation(this.scene, this.player.playerNumber, zone.sourcePlayerId);
         const friendlySource = relation === "self" || relation === "ally";
         const effect = zone.effectWhileInside;
-        const beneficialEffect = (effect?.healPerTick ?? 0) > 0 || (effect?.instantHeal ?? 0) > 0 || (effect?.movementSpeedModifier ?? 1) > 1;
-        const harmfulEffect = (effect?.damagePerTick ?? 0) > 0 || (effect?.instantDamage ?? 0) > 0 || (effect?.movementSpeedModifier ?? 1) < 1;
+        const beneficialEffect =
+          (effect?.healPerTick ?? 0) > 0 || (effect?.instantHeal ?? 0) > 0 || (effect?.movementSpeedModifier ?? 1) > 1;
+        const harmfulEffect =
+          (effect?.damagePerTick ?? 0) > 0 ||
+          (effect?.instantDamage ?? 0) > 0 ||
+          (effect?.movementSpeedModifier ?? 1) < 1;
         const influencesSelf = friendlySource ? zone.affectsAllies : zone.affectsEnemies;
-        const influence = !influencesSelf ? "mixed" :
-          harmfulEffect && beneficialEffect ? "mixed" : harmfulEffect ? "harmful" : beneficialEffect ? "beneficial" : "mixed";
+        const influence = !influencesSelf
+          ? "mixed"
+          : harmfulEffect && beneficialEffect
+            ? "mixed"
+            : harmfulEffect
+              ? "harmful"
+              : beneficialEffect
+                ? "beneficial"
+                : "mixed";
         return {
           effectId: `zone:${zone.id}`,
           owner: zone.sourcePlayerId ?? null,
@@ -917,7 +1076,7 @@ export class AiObservationPipeline {
           expiresAt: knownValue(Math.max(tick, tick + millisecondsToSimulationTicks(zone.remainingTime)), tick),
           radius: zone.radius,
           influence
-        };
+        } satisfies AiObservedEffectV1;
       })
       .sort((left, right) => left.effectId.localeCompare(right.effectId));
   }
@@ -944,7 +1103,10 @@ export class AiObservationPipeline {
       const targetTile = getGameObjectCurrentTile(targetActor);
       if (!sourceTile || !targetTile) {
         status = "unknown";
-      } else if (!canActorTraverseTile(sourceActor, navigation, sourceTile) || !canActorTraverseTile(sourceActor, navigation, targetTile)) {
+      } else if (
+        !canActorTraverseTile(sourceActor, navigation, sourceTile) ||
+        !canActorTraverseTile(sourceActor, navigation, targetTile)
+      ) {
         status = "blocked";
       }
     }
@@ -1053,8 +1215,22 @@ function isValidRememberedContact(contact: unknown): contact is RememberedContac
 /** Normalizes persistence input so duplicate or malformed contacts cannot change a restored decision. */
 export function normalizeAiObservationMemoryState(value: unknown): AiObservationMemoryStateData | undefined {
   if (!isRecord(value) || value.schemaVersion !== 1) return undefined;
-  const { generation, committedTick, knowledgeRevision, queryInputRevision, queryContinuationCursor, invalidationDebt } = value;
-  const fields = [generation, committedTick, knowledgeRevision, queryInputRevision, queryContinuationCursor, invalidationDebt];
+  const {
+    generation,
+    committedTick,
+    knowledgeRevision,
+    queryInputRevision,
+    queryContinuationCursor,
+    invalidationDebt
+  } = value;
+  const fields = [
+    generation,
+    committedTick,
+    knowledgeRevision,
+    queryInputRevision,
+    queryContinuationCursor,
+    invalidationDebt
+  ];
   if (!fields.every((field) => typeof field === "number" && isNonNegativeInteger(field))) return undefined;
   if (!Array.isArray(value.contacts)) return undefined;
 
@@ -1098,7 +1274,9 @@ function unknownValue(reason: "not_observed" | "not_supported" | "query_pending"
 }
 
 function compareByActorId(left: GameObject, right: GameObject): number {
-  return (getActorComponent(left, IdComponent)?.id ?? "").localeCompare(getActorComponent(right, IdComponent)?.id ?? "");
+  return (getActorComponent(left, IdComponent)?.id ?? "").localeCompare(
+    getActorComponent(right, IdComponent)?.id ?? ""
+  );
 }
 
 function movementDomains(definition: ReturnType<typeof getPwActorDefinition>): AiDomainV1[] {
@@ -1135,6 +1313,12 @@ function capabilityFamilies(definition: ReturnType<typeof getPwActorDefinition>)
     components.resourceDrain ? "drop_off" : null,
     components.container ? "transport" : null
   ].filter((family): family is string => family !== null);
+}
+
+/** Keeps runtime gather capabilities inside the protocol's finite resource domain. */
+export function normalizeGatherResourceTypes(values: readonly string[] | undefined): ResourceType[] {
+  const resourceTypes = new Set(Object.values(ResourceType));
+  return (values ?? []).filter((value): value is ResourceType => resourceTypes.has(value as ResourceType)).sort();
 }
 
 function uniqueDomain(domain: AiDomainV1, index: number, values: readonly AiDomainV1[]): boolean {

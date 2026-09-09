@@ -27,8 +27,26 @@ describe("Stage 8 runtime domain fixtures", () => {
       continuationCursor: 0,
       includeAirRegion: true,
       cells: [
-        { x: 0, y: 0, ground: true, water: false, elevation: 0, groundNeighborKeys: [], knowledge: "known_static", clearance: 2 },
-        { x: 4, y: 0, ground: true, water: false, elevation: 0, groundNeighborKeys: [], knowledge: "known_static", clearance: 2 }
+        {
+          x: 0,
+          y: 0,
+          ground: true,
+          water: false,
+          elevation: 0,
+          groundNeighborKeys: [],
+          knowledge: "known_static",
+          clearance: 2
+        },
+        {
+          x: 4,
+          y: 0,
+          ground: true,
+          water: false,
+          elevation: 0,
+          groundNeighborKeys: [],
+          knowledge: "known_static",
+          clearance: 2
+        }
       ]
     });
     const result = queryAiAccessRouteV1(built.graph, {

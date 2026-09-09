@@ -10,13 +10,26 @@ import { AiStage13TacticsManagerV1 } from "./ai-stage-13-tactics-manager";
 
 const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
 
+function requireValue<T>(value: T | undefined, reason: string): T {
+  if (value === undefined) throw new Error(reason);
+  return value;
+}
+
 function combatActor(
   actorId: string,
   relation: "self" | "enemy",
   x: number,
   domain: AiDomainV1 = "ground",
   healthPermille = 1000,
-  options: { readonly damage?: number; readonly heal?: number; readonly spell?: boolean; readonly autocast?: boolean; readonly targetDomains?: readonly AiDomainV1[]; readonly capabilityFamilies?: readonly string[]; readonly mainBuilding?: boolean } = {}
+  options: {
+    readonly damage?: number;
+    readonly heal?: number;
+    readonly spell?: boolean;
+    readonly autocast?: boolean;
+    readonly targetDomains?: readonly AiDomainV1[];
+    readonly capabilityFamilies?: readonly string[];
+    readonly mainBuilding?: boolean;
+  } = {}
 ): AiObservedActorV1 {
   const damage = options.damage ?? 10;
   return {
@@ -26,7 +39,14 @@ function combatActor(
     relation,
     visibility: relation === "self" ? "owned" : "visible",
     logicalPosition: { status: "known", value: { x, y: 0, z: 0 }, observedTick: 100 },
-    capabilities: ["attack", ...(options.capabilityFamilies ?? [])].map((family) => ({ id: `${actorId}:${family}`, family, level: 1, domains: [domain], targetDomains: ["ground", "water", "air"], capacity: { status: "known" as const, value: 0, observedTick: 100 } })),
+    capabilities: ["attack", ...(options.capabilityFamilies ?? [])].map((family) => ({
+      id: `${actorId}:${family}`,
+      family,
+      level: 1,
+      domains: [domain],
+      targetDomains: ["ground", "water", "air"],
+      capacity: { status: "known" as const, value: 0, observedTick: 100 }
+    })),
     healthPermille: { status: "known", value: healthPermille, observedTick: 100 },
     combatProfile: {
       status: "known",
@@ -36,29 +56,44 @@ function combatActor(
         maxArmour: 20,
         armourPermille: 1000,
         passiveRegenerationPerSecond: 0,
-        attacks: [{ damage, cooldownTicks: 20, range: 5, minRange: 2, highGroundRangeBonus: 1, impactDelayTicks: 4, areaRadius: 0, targetDomains: options.targetDomains ?? ["ground", "water", "air"] }],
+        attacks: [
+          {
+            damage,
+            cooldownTicks: 20,
+            range: 5,
+            minRange: 2,
+            highGroundRangeBonus: 1,
+            impactDelayTicks: 4,
+            areaRadius: 0,
+            targetDomains: options.targetDomains ?? ["ground", "water", "air"]
+          }
+        ],
         healing: options.heal ? { amount: options.heal, cooldownTicks: 20, remainingCooldownTicks: 0, range: 5 } : null,
-        spells: options.spell ? [{
-          spellType: SpellType.Firestorm,
-          ready: true,
-          researched: true,
-          autocast: options.autocast ?? false,
-          range: 8,
-          areaRadius: 3,
-          targetAllies: false,
-          targetEnemies: true,
-          targetSelf: false,
-          targetDomains: ["ground"],
-          instantDamage: 5,
-          periodicDamage: 25,
-          instantHeal: 0,
-          periodicHeal: 0,
-          stunTicks: 0,
-          slowTicks: 0,
-          zoneDurationTicks: 100,
-          summons: false,
-          summonDurationTicks: null
-        }] : [],
+        spells: options.spell
+          ? [
+              {
+                spellType: SpellType.Firestorm,
+                ready: true,
+                researched: true,
+                autocast: options.autocast ?? false,
+                range: 8,
+                areaRadius: 3,
+                targetAllies: false,
+                targetEnemies: true,
+                targetSelf: false,
+                targetDomains: ["ground"],
+                instantDamage: 5,
+                periodicDamage: 25,
+                instantHeal: 0,
+                periodicHeal: 0,
+                stunTicks: 0,
+                slowTicks: 0,
+                zoneDurationTicks: 100,
+                summons: false,
+                summonDurationTicks: null
+              }
+            ]
+          : [],
         statuses: []
       }
     },
@@ -92,10 +127,24 @@ function squad(squadId: string, role: AiSquadStateV1["role"], actorIds: readonly
 }
 
 function fixtureState(squads: readonly AiSquadStateV1[]): AiBrainStateV1 {
-  const state = createAiBrainStateV1({ playerNumber: 1, faction: FactionType.Tivara, profile, tick: 0, archetypeId: "balanced" });
+  const state = createAiBrainStateV1({
+    playerNumber: 1,
+    faction: FactionType.Tivara,
+    profile,
+    tick: 0,
+    archetypeId: "balanced"
+  });
   return {
     ...state,
-    bases: [{ baseId: "base:home", anchorActorId: "main", memberActorIds: [], active: true, anchorPosition: { x: 0, y: 0, z: 0 } }],
+    bases: [
+      {
+        baseId: "base:home",
+        anchorActorId: "main",
+        memberActorIds: [],
+        active: true,
+        anchorPosition: { x: 0, y: 0, z: 0 }
+      }
+    ],
     squads
   };
 }
@@ -112,7 +161,16 @@ function observation(actors: readonly AiObservedActorV1[], tick = 100): AiObserv
       scoutCoverageAccessNodeIds: [],
       dynamicObstacleActorIds: [],
       regionGeneration: { generation: 1, status: "ready", continuationCursor: 0 },
-      constructionCells: [{ tileKey: "0,0", position: { x: 0, y: 0, z: 0 }, groundPassable: true, waterPassable: true, elevation: 0, observedBlocked: false }]
+      constructionCells: [
+        {
+          tileKey: "0,0",
+          position: { x: 0, y: 0, z: 0 },
+          groundPassable: true,
+          waterPassable: true,
+          elevation: 0,
+          observedBlocked: false
+        }
+      ]
     },
     threatSummary: {
       observedTick: tick,
@@ -129,19 +187,34 @@ describe("AiStage13TacticsManagerV1", () => {
   it("H-30 advances a quiet mission through assembly, rally and advance without skipping a boundary", () => {
     const guard = combatActor("guard", "self", 1);
     const initial = fixtureState([{ ...squad("squad:attack", "attack", ["guard"]), state: "forming" }]);
-    const assembled = manager.propose(observation([guard], 100), initial).statePatch?.squadUpdates?.[0]!;
-    const rallied = manager.propose(observation([guard], 120), { ...initial, squads: [assembled] }).statePatch?.squadUpdates?.[0]!;
-    const advanced = manager.propose(observation([guard], 140), { ...initial, squads: [rallied] }).statePatch?.squadUpdates?.[0]!;
+    const assembled = requireValue(
+      manager.propose(observation([guard], 100), initial).statePatch?.squadUpdates?.[0],
+      "missing_assembled_squad_update"
+    );
+    const rallied = requireValue(
+      manager.propose(observation([guard], 120), { ...initial, squads: [assembled] }).statePatch?.squadUpdates?.[0],
+      "missing_rallied_squad_update"
+    );
+    const advanced = requireValue(
+      manager.propose(observation([guard], 140), { ...initial, squads: [rallied] }).statePatch?.squadUpdates?.[0],
+      "missing_advanced_squad_update"
+    );
     expect([assembled.state, rallied.state, advanced.state]).toEqual(["assemble", "rally", "advance"]);
   });
 
   it("FIGHT-01 keeps a quiet defense in defend and regroups an uncertain engagement", () => {
     const guard = combatActor("guard", "self", 1, "ground", 1000, { damage: 10 });
-    const defended = manager.propose(observation([guard]), fixtureState([squad("squad:defense", "defense", ["guard"])]));
+    const defended = manager.propose(
+      observation([guard]),
+      fixtureState([squad("squad:defense", "defense", ["guard"])])
+    );
     expect(defended.statePatch?.squadUpdates?.[0]?.state).toBe("defend");
 
     const enemy = combatActor("enemy", "enemy", 3, "ground", 1000, { damage: 10 });
-    const regrouped = manager.propose(observation([guard, enemy]), fixtureState([squad("squad:attack", "attack", ["guard"])]));
+    const regrouped = manager.propose(
+      observation([guard, enemy]),
+      fixtureState([squad("squad:attack", "attack", ["guard"])])
+    );
     expect(regrouped.statePatch?.squadUpdates?.[0]?.state).toBe("regroup");
   });
 
@@ -150,23 +223,38 @@ describe("AiStage13TacticsManagerV1", () => {
       combatActor(`guard-${index.toString().padStart(2, "0")}`, "self", 5, "ground", 200, { damage: 1 })
     );
     const enemy = combatActor("enemy", "enemy", 7, "ground", 1000, { damage: 100 });
-    const current = fixtureState([squad("squad:attack", "attack", guards.map((actor) => actor.actorId))]);
+    const current = fixtureState([
+      squad(
+        "squad:attack",
+        "attack",
+        guards.map((actor) => actor.actorId)
+      )
+    ]);
     const first = manager.propose(observation([...guards, enemy]), current);
-    const firstUpdate = first.statePatch?.squadUpdates?.[0]!;
-    expect(first.intents.flatMap((intent) => "actorIds" in intent ? intent.actorIds : [])).toHaveLength(profile.maxActorOrdersPerStep);
+    const firstUpdate = requireValue(first.statePatch?.squadUpdates?.[0], "missing_retreat_squad_update");
+    expect(first.intents.flatMap((intent) => ("actorIds" in intent ? intent.actorIds : []))).toHaveLength(
+      profile.maxActorOrdersPerStep
+    );
     expect(firstUpdate.tactics?.orderedActorIds).toHaveLength(profile.maxActorOrdersPerStep);
 
     const second = manager.propose(observation([...guards, enemy], 120), { ...current, squads: [firstUpdate] });
-    expect(second.intents.flatMap((intent) => "actorIds" in intent ? intent.actorIds : [])).toHaveLength(3);
+    expect(second.intents.flatMap((intent) => ("actorIds" in intent ? intent.actorIds : []))).toHaveLength(3);
     expect(second.statePatch?.squadUpdates?.[0]?.tactics?.orderedActorIds).toHaveLength(guards.length);
   });
 
   it("H-23 gives each actor one primary owner and releases an absent straggler", () => {
-    const actors = [combatActor("guard-a", "self", 1), combatActor("guard-b", "self", 2), combatActor("enemy", "enemy", 6)];
-    const proposal = manager.propose(observation(actors), fixtureState([
-      squad("squad:defense", "defense", ["guard-a", "missing"]),
-      squad("squad:attack", "attack", ["guard-a", "guard-b", "missing"])
-    ]));
+    const actors = [
+      combatActor("guard-a", "self", 1),
+      combatActor("guard-b", "self", 2),
+      combatActor("enemy", "enemy", 6)
+    ];
+    const proposal = manager.propose(
+      observation(actors),
+      fixtureState([
+        squad("squad:defense", "defense", ["guard-a", "missing"]),
+        squad("squad:attack", "attack", ["guard-a", "guard-b", "missing"])
+      ])
+    );
     const updates = proposal.statePatch?.squadUpdates ?? [];
     expect(updates.find((entry) => entry.squadId === "squad:defense")?.actorIds).toEqual(["guard-a"]);
     expect(updates.find((entry) => entry.squadId === "squad:attack")?.actorIds).toEqual(["guard-b"]);
@@ -179,13 +267,15 @@ describe("AiStage13TacticsManagerV1", () => {
     const targetB = combatActor("target-b", "enemy", 6);
     const current = fixtureState([squad("squad:attack", "attack", ["guard-a", "guard-b"])]);
     const first = manager.propose(observation([guardA, guardB, targetA, targetB]), current);
-    const committed = first.statePatch?.squadUpdates?.[0]!;
+    const committed = requireValue(first.statePatch?.squadUpdates?.[0], "missing_casualty_squad_update");
     const second = manager.propose(observation([guardA, targetB], 120), { ...current, squads: [committed] });
-    expect(second.statePatch?.squadUpdates?.[0]?.tactics).toEqual(expect.objectContaining({
-      targetActorId: "target-b",
-      observedLossCount: 1,
-      lastObservedMemberCount: 1
-    }));
+    expect(second.statePatch?.squadUpdates?.[0]?.tactics).toEqual(
+      expect.objectContaining({
+        targetActorId: "target-b",
+        observedLossCount: 1,
+        lastObservedMemberCount: 1
+      })
+    );
   });
 
   it("H6 records independently observed useful effects on the owning mission", () => {
@@ -219,7 +309,10 @@ describe("AiStage13TacticsManagerV1", () => {
       combatActor("enemy-a", "enemy", 5, "ground", 50),
       combatActor("enemy-b", "enemy", 6, "ground", 50)
     ];
-    const proposal = manager.propose(observation(actors, 200), fixtureState([squad("squad:attack", "attack", ["archer-a", "archer-b", "archer-c", "archer-d"])]));
+    const proposal = manager.propose(
+      observation(actors, 200),
+      fixtureState([squad("squad:attack", "attack", ["archer-a", "archer-b", "archer-c", "archer-d"])])
+    );
     const reservations = proposal.statePatch?.squadUpdates?.[0]?.tactics?.damageReservations ?? [];
     expect(new Set(reservations.map((entry) => entry.targetActorId)).size).toBe(2);
     expect(reservations.every((entry) => entry.impactTick === 204)).toBe(true);
@@ -233,13 +326,16 @@ describe("AiStage13TacticsManagerV1", () => {
     ];
     const initialState = fixtureState([squad("squad:attack", "attack", ["guard"])]);
     const first = manager.propose(observation([guard, ...firstEnemies]), initialState);
-    const committed = first.statePatch?.squadUpdates?.[0]!;
+    const committed = requireValue(first.statePatch?.squadUpdates?.[0], "missing_target_squad_update");
     const second = manager.propose(
-      observation([
-        guard,
-        combatActor("enemy-a", "enemy", 5, "ground", 1000, { capabilityFamilies: ["produce"] }),
-        combatActor("enemy-b", "enemy", 4, "ground", 1000, { capabilityFamilies: ["produce"] })
-      ], 120),
+      observation(
+        [
+          guard,
+          combatActor("enemy-a", "enemy", 5, "ground", 1000, { capabilityFamilies: ["produce"] }),
+          combatActor("enemy-b", "enemy", 4, "ground", 1000, { capabilityFamilies: ["produce"] })
+        ],
+        120
+      ),
       { ...initialState, squads: [committed] }
     );
     expect(second.statePatch?.squadUpdates?.[0]?.tactics?.targetActorId).toBe("enemy-a");
@@ -249,29 +345,46 @@ describe("AiStage13TacticsManagerV1", () => {
   it("RAID-01/02 prioritizes an exposed economy or production objective over a generic combat contact", () => {
     const raider = combatActor("raider", "self", 1, "ground", 1000, { damage: 30 });
     const guard = combatActor("enemy-guard", "enemy", 4);
-    const production = combatActor("enemy-production", "enemy", 6, "ground", 1000, { capabilityFamilies: ["produce", "drop_off"] });
-    const proposal = manager.propose(observation([raider, guard, production]), fixtureState([squad("squad:raid", "attack", ["raider"])]));
+    const production = combatActor("enemy-production", "enemy", 6, "ground", 1000, {
+      capabilityFamilies: ["produce", "drop_off"]
+    });
+    const proposal = manager.propose(
+      observation([raider, guard, production]),
+      fixtureState([squad("squad:raid", "attack", ["raider"])])
+    );
     expect(proposal.statePatch?.squadUpdates?.[0]?.tactics?.targetActorId).toBe("enemy-production");
-    expect(proposal.statePatch?.squadUpdates?.[0]?.tactics?.objectiveAlternatives[0]?.reason).toBe("visible_value_route_not_recorded");
+    expect(proposal.statePatch?.squadUpdates?.[0]?.tactics?.objectiveAlternatives[0]?.reason).toBe(
+      "visible_value_route_not_recorded"
+    );
   });
 
   it("RAID-02/FIGHT-01/H-25 retreats a losing squad and converts rapid relaunch oscillation to hold-front", () => {
     const friend = combatActor("guard", "self", 5, "ground", 200, { damage: 2 });
-    const enemies = [combatActor("enemy-a", "enemy", 7, "ground", 1000, { damage: 30 }), combatActor("enemy-b", "enemy", 8, "ground", 1000, { damage: 30 })];
-    const initial = manager.propose(observation([friend, ...enemies]), fixtureState([squad("squad:attack", "attack", ["guard"])]));
+    const enemies = [
+      combatActor("enemy-a", "enemy", 7, "ground", 1000, { damage: 30 }),
+      combatActor("enemy-b", "enemy", 8, "ground", 1000, { damage: 30 })
+    ];
+    const initial = manager.propose(
+      observation([friend, ...enemies]),
+      fixtureState([squad("squad:attack", "attack", ["guard"])])
+    );
     expect(initial.statePatch?.squadUpdates?.[0]).toEqual(expect.objectContaining({ state: "retreat" }));
-    expect(initial.intents).toContainEqual(expect.objectContaining({ kind: "move", logicalPosition: { x: 0, y: 0, z: 0 } }));
-    const retreated = initial.statePatch?.squadUpdates?.[0]!;
+    expect(initial.intents).toContainEqual(
+      expect.objectContaining({ kind: "move", logicalPosition: { x: 0, y: 0, z: 0 } })
+    );
+    const retreated = requireValue(initial.statePatch?.squadUpdates?.[0], "missing_oscillation_retreat_update");
     const strongFriend = combatActor("guard", "self", 5, "ground", 1000, { damage: 100 });
     const weakEnemy = combatActor("enemy-a", "enemy", 7, "ground", 100, { damage: 1 });
     const relaunch = manager.propose(observation([strongFriend, weakEnemy], 110), {
       ...fixtureState([]),
       squads: [{ ...retreated, tactics: { ...retreated.tactics!, oscillationCount: 1 } }]
     });
-    expect(relaunch.statePatch?.squadUpdates?.[0]).toEqual(expect.objectContaining({
-      state: "regroup",
-      tactics: expect.objectContaining({ script: "hold_front", oscillationCount: 2 })
-    }));
+    expect(relaunch.statePatch?.squadUpdates?.[0]).toEqual(
+      expect.objectContaining({
+        state: "regroup",
+        tactics: expect.objectContaining({ script: "hold_front", oscillationCount: 2 })
+      })
+    );
     expect(relaunch.intents.some((intent) => intent.kind === "attack")).toBe(false);
   });
 
@@ -279,12 +392,25 @@ describe("AiStage13TacticsManagerV1", () => {
     const wounded = combatActor("wounded", "self", 2, "ground", 500);
     const healer = combatActor("healer", "self", 1, "ground", 1000, { heal: 80, spell: true, autocast: false });
     const enemy = combatActor("enemy", "enemy", 5);
-    const proposal = manager.propose(observation([healer, wounded, enemy]), fixtureState([squad("squad:defense", "defense", ["healer", "wounded"])]));
-    expect(proposal.intents).toEqual(expect.arrayContaining([expect.objectContaining({ kind: "heal", targetActorId: "wounded" }), expect.objectContaining({ kind: "cast", spellType: SpellType.Firestorm })]));
-    expect(proposal.statePatch?.support).toEqual(expect.arrayContaining([expect.objectContaining({ usefulCapacity: 50, reason: "bounded_missing_health" })]));
+    const proposal = manager.propose(
+      observation([healer, wounded, enemy]),
+      fixtureState([squad("squad:defense", "defense", ["healer", "wounded"])])
+    );
+    expect(proposal.intents).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ kind: "heal", targetActorId: "wounded" }),
+        expect.objectContaining({ kind: "cast", spellType: SpellType.Firestorm })
+      ])
+    );
+    expect(proposal.statePatch?.support).toEqual(
+      expect.arrayContaining([expect.objectContaining({ usefulCapacity: 50, reason: "bounded_missing_health" })])
+    );
 
     const autocastHealer = combatActor("healer", "self", 1, "ground", 1000, { heal: 80, spell: true, autocast: true });
-    const autocast = manager.propose(observation([autocastHealer, wounded, enemy]), fixtureState([squad("squad:defense", "defense", ["healer", "wounded"])]));
+    const autocast = manager.propose(
+      observation([autocastHealer, wounded, enemy]),
+      fixtureState([squad("squad:defense", "defense", ["healer", "wounded"])])
+    );
     expect(autocast.intents.some((intent) => intent.kind === "cast")).toBe(false);
   });
 
@@ -292,16 +418,24 @@ describe("AiStage13TacticsManagerV1", () => {
     const groundOnly = combatActor("ground", "self", 1, "ground", 1000, { targetDomains: ["ground"] });
     const interceptor = combatActor("interceptor", "self", 2, "ground", 1000, { targetDomains: ["air"] });
     const airEnemy = combatActor("flyer", "enemy", 5, "air");
-    const proposal = manager.propose(observation([groundOnly, interceptor, airEnemy], 200), fixtureState([squad("squad:defense", "defense", ["ground", "interceptor"])]));
+    const proposal = manager.propose(
+      observation([groundOnly, interceptor, airEnemy], 200),
+      fixtureState([squad("squad:defense", "defense", ["ground", "interceptor"])])
+    );
     expect(proposal.statePatch?.squadUpdates?.[0]?.tactics?.script).toBe("intercept_air_transport");
-    expect(proposal.statePatch?.squadUpdates?.[0]?.tactics?.damageReservations.map((entry) => entry.actorId)).toEqual(["interceptor"]);
+    expect(proposal.statePatch?.squadUpdates?.[0]?.tactics?.damageReservations.map((entry) => entry.actorId)).toEqual([
+      "interceptor"
+    ]);
   });
 
   it("DOMAIN-06 separates naval and air members into domain squads with one owner each", () => {
     const ship = combatActor("ship", "self", 1, "water");
     const flyer = combatActor("flyer", "self", 2, "air");
     const enemy = combatActor("enemy", "enemy", 5, "water");
-    const proposal = manager.propose(observation([ship, flyer, enemy]), fixtureState([squad("squad:mixed", "attack", ["ship", "flyer"])]));
+    const proposal = manager.propose(
+      observation([ship, flyer, enemy]),
+      fixtureState([squad("squad:mixed", "attack", ["ship", "flyer"])])
+    );
     const updates = proposal.statePatch?.squadUpdates ?? [];
     expect(updates.map((entry) => entry.domain).sort()).toEqual(["air", "water"]);
     expect(updates.flatMap((entry) => entry.actorIds).sort()).toEqual(["flyer", "ship"]);
@@ -318,17 +452,21 @@ describe("AiStage13TacticsManagerV1", () => {
       queryIds: ["query:landing"]
     } as AiBrainStateV1["transport"][number];
     const inTransit = manager.propose(observation([guard]), { ...current, transport: [transport] });
-    expect(inTransit.statePatch?.squadUpdates?.[0]).toEqual(expect.objectContaining({ actorIds: [], state: "recover" }));
+    expect(inTransit.statePatch?.squadUpdates?.[0]).toEqual(
+      expect.objectContaining({ actorIds: [], state: "recover" })
+    );
 
     const handedOff = manager.propose(observation([guard], 120), {
       ...current,
       transport: [{ ...transport, phase: "handoff" }]
     });
-    expect(handedOff.statePatch?.squadUpdates?.[0]).toEqual(expect.objectContaining({
-      actorIds: ["guard"],
-      state: "regroup",
-      tactics: expect.objectContaining({ script: "land_regroup" })
-    }));
+    expect(handedOff.statePatch?.squadUpdates?.[0]).toEqual(
+      expect.objectContaining({
+        actorIds: ["guard"],
+        state: "regroup",
+        tactics: expect.objectContaining({ script: "land_regroup" })
+      })
+    );
   });
 
   it("C-06 makes a bounded decision at the assembly deadline and recovers at the effect deadline", () => {
@@ -337,14 +475,16 @@ describe("AiStage13TacticsManagerV1", () => {
     const current = fixtureState([squad("squad:attack", "attack", ["guard"])]);
     const launch = manager.propose(observation([friend, enemy], 200), current);
     expect(launch.statePatch?.squadUpdates?.[0]?.state).toBe("engage");
-    const committed = launch.statePatch?.squadUpdates?.[0]!;
+    const committed = requireValue(launch.statePatch?.squadUpdates?.[0], "missing_deadline_launch_update");
     const expired = manager.propose(observation([friend, enemy], 1200), { ...current, squads: [committed] });
     expect(expired.statePatch?.squadUpdates?.[0]?.state).toBe("recover");
-    expect(expired.statePatch?.squadUpdates?.[0]?.lifecycle).toEqual(expect.objectContaining({
-      recoveryAttempt: 1,
-      terminalReason: "effect_deadline_recovery"
-    }));
-    const recovered = expired.statePatch?.squadUpdates?.[0]!;
+    expect(expired.statePatch?.squadUpdates?.[0]?.lifecycle).toEqual(
+      expect.objectContaining({
+        recoveryAttempt: 1,
+        terminalReason: "effect_deadline_recovery"
+      })
+    );
+    const recovered = requireValue(expired.statePatch?.squadUpdates?.[0], "missing_deadline_recovery_update");
     const relaunched = manager.propose(observation([friend], 1220), { ...current, squads: [recovered] });
     expect(relaunched.statePatch?.squadUpdates?.[0]?.state).toBe("rally");
   });
@@ -352,35 +492,64 @@ describe("AiStage13TacticsManagerV1", () => {
   it("WALL-03 assigns reachable rampart posts while retaining a mobile reserve", () => {
     const defenders = [0, 1, 2, 3].map((index) => combatActor(`guard-${index}`, "self", index));
     const enemy = combatActor("enemy", "enemy", 6);
-    const current = fixtureState([squad("squad:defense", "defense", defenders.map((actor) => actor.actorId))]);
+    const current = fixtureState([
+      squad(
+        "squad:defense",
+        "defense",
+        defenders.map((actor) => actor.actorId)
+      )
+    ]);
     const fortified: AiBrainStateV1 = {
       ...current,
-      fortifications: [{
-        planId: "fortification:home",
-        nodeIds: ["post:1"],
-        completedNodeIds: ["post:1"],
-        protectedBaseIds: ["base:home"],
-        lifecycle: "active",
-        graph: {
-          baseId: "base:home",
-          createdTick: 0,
-          terrainAnchorTileKeys: ["0,0", "2,0"],
-          openingNodeId: "opening",
-          protectedAssetIds: ["main"],
-          wholeConnectivity: "preserved",
-          incrementalConnectivity: "preserved",
-          budget: { spendPermille: 100, committedByResource: {}, remainingByResource: {} },
-          nodes: [{ nodeId: "post:1", kind: "tower", objectName: null, position: { x: 0, y: 0, z: 1 }, footprintTileKeys: ["0,0"], navigation: null, componentId: "front", dependsOnNodeId: null, lifecycle: "finished", completedActorId: null, attempt: 0, effectId: null, retryAfterTick: 0, marginalCoverage: 10, targetDomains: ["ground"], defenderPostReachable: true }],
-          constructionSequenceNodeIds: ["post:1"],
-          defenderPosts: [{ nodeId: "post:1", assignedActorIds: [], reachable: true }],
-          breach: { missingNodeIds: [], reason: null, risk: "none", responseEffectId: null, recoveryAttempts: 0 }
+      fortifications: [
+        {
+          planId: "fortification:home",
+          nodeIds: ["post:1"],
+          completedNodeIds: ["post:1"],
+          protectedBaseIds: ["base:home"],
+          lifecycle: "active",
+          graph: {
+            baseId: "base:home",
+            createdTick: 0,
+            terrainAnchorTileKeys: ["0,0", "2,0"],
+            openingNodeId: "opening",
+            protectedAssetIds: ["main"],
+            wholeConnectivity: "preserved",
+            incrementalConnectivity: "preserved",
+            budget: { spendPermille: 100, committedByResource: {}, remainingByResource: {} },
+            nodes: [
+              {
+                nodeId: "post:1",
+                kind: "tower",
+                objectName: null,
+                position: { x: 0, y: 0, z: 1 },
+                footprintTileKeys: ["0,0"],
+                navigation: null,
+                componentId: "front",
+                dependsOnNodeId: null,
+                lifecycle: "finished",
+                completedActorId: null,
+                attempt: 0,
+                effectId: null,
+                retryAfterTick: 0,
+                marginalCoverage: 10,
+                targetDomains: ["ground"],
+                defenderPostReachable: true
+              }
+            ],
+            constructionSequenceNodeIds: ["post:1"],
+            defenderPosts: [{ nodeId: "post:1", assignedActorIds: [], reachable: true }],
+            breach: { missingNodeIds: [], reason: null, risk: "none", responseEffectId: null, recoveryAttempts: 0 }
+          }
         }
-      }]
+      ]
     };
     const proposal = manager.propose(observation([...defenders, enemy]), fortified);
     const tactics = proposal.statePatch?.squadUpdates?.[0]?.tactics;
     expect(tactics).toEqual(expect.objectContaining({ script: "rampart_defend", mobileReserveActorIds: ["guard-3"] }));
-    expect(tactics?.assignedPositions.some((assignment) => tactics.mobileReserveActorIds.includes(assignment.actorId))).toBe(false);
+    expect(
+      tactics?.assignedPositions.some((assignment) => tactics.mobileReserveActorIds.includes(assignment.actorId))
+    ).toBe(false);
 
     const breached = manager.propose(observation([...defenders, enemy], 120), {
       ...fortified,
@@ -395,15 +564,19 @@ describe("AiStage13TacticsManagerV1", () => {
       ...fortified,
       fortifications: fortified.fortifications.map((plan) => ({
         ...plan,
-        graph: plan.graph ? {
-          ...plan.graph,
-          defenderPosts: plan.graph.defenderPosts.map((post) => ({ ...post, reachable: false }))
-        } : plan.graph
+        graph: plan.graph
+          ? {
+              ...plan.graph,
+              defenderPosts: plan.graph.defenderPosts.map((post) => ({ ...post, reachable: false }))
+            }
+          : plan.graph
       }))
     });
-    expect(topologyLost.statePatch?.squadUpdates?.[0]).toEqual(expect.objectContaining({
-      state: "retreat",
-      tactics: expect.objectContaining({ script: "rampart_withdraw" })
-    }));
+    expect(topologyLost.statePatch?.squadUpdates?.[0]).toEqual(
+      expect.objectContaining({
+        state: "retreat",
+        tactics: expect.objectContaining({ script: "rampart_withdraw" })
+      })
+    );
   });
 });

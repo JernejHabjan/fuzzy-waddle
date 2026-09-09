@@ -159,10 +159,7 @@ export type AiOfflineBreakpointV1 =
   | "decision_complete";
 
 /** Tests only recorded result/state facts; named breakpoints never evaluate imported code. */
-export function matchesAiOfflineBreakpointV1(
-  breakpoint: AiOfflineBreakpointV1,
-  result: AiBrainStepResultV1
-): boolean {
+export function matchesAiOfflineBreakpointV1(breakpoint: AiOfflineBreakpointV1, result: AiBrainStepResultV1): boolean {
   switch (breakpoint) {
     case "decision_complete":
       return true;
@@ -194,7 +191,11 @@ export class AiOfflineDecisionStepperV1 {
 
   stepDecision(breakOn: AiOfflineBreakpointV1 = "decision_complete"):
     | { readonly status: "complete"; readonly result: AiBrainStepResultV1 }
-    | { readonly status: "breakpoint"; readonly breakpoint: AiOfflineBreakpointV1; readonly result: AiBrainStepResultV1 }
+    | {
+        readonly status: "breakpoint";
+        readonly breakpoint: AiOfflineBreakpointV1;
+        readonly result: AiBrainStepResultV1;
+      }
     | { readonly status: "exhausted" } {
     if (this.consumed) return { status: "exhausted" };
     this.consumed = true;

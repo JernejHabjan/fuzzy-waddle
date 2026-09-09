@@ -1,7 +1,4 @@
-import {
-  advanceProcessedCommandSequence,
-  isProcessedCommandSequence
-} from "./command-authority-policy";
+import { advanceProcessedCommandSequence, isProcessedCommandSequence } from "./command-authority-policy";
 
 describe("command authority watermark policy", () => {
   it("rejects an old sequence even after its detailed command id was evicted", () => {

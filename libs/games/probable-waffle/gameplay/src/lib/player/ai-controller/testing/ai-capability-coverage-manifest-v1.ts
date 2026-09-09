@@ -41,7 +41,10 @@ function gameplayFamily(
     outcome: implemented("adaptGameCommandOutcomeToBrain"),
     save: implemented("command authority/effect save and recovery adapters"),
     debug: implemented(`${family} debug projection (Stage ${Math.max(6, proposerStage)})`),
-    fixture: planned(15, `${family} runtime fixture; authored Stage ${fixtureStage} coverage is deferred to final execution`)
+    fixture: planned(
+      15,
+      `${family} runtime fixture; authored Stage ${fixtureStage} coverage is deferred to final execution`
+    )
   };
 }
 
@@ -101,9 +104,17 @@ export const AI_CAPABILITY_COVERAGE_MANIFEST_V1: readonly AiCapabilityCoverageEn
   },
   gameplayFamily("vision_visibility", "vision + visibility systems", 4, 4),
   stage13CombatFamily("health_regeneration", "health + healthRegeneration", "estimateAiEngagementV1 passive sustain"),
-  stage13CombatFamily("attack_target_domains", "attack + effective level overrides", "AiStage13TacticsManagerV1 domain-compatible focus and damage reservations"),
+  stage13CombatFamily(
+    "attack_target_domains",
+    "attack + effective level overrides",
+    "AiStage13TacticsManagerV1 domain-compatible focus and damage reservations"
+  ),
   stage13CombatFamily("healing", "healing", "AiStage13TacticsManagerV1 capped missing-health reservation"),
-  stage13CombatFamily("spell_status_zone", "spell + spellCasting + active effects", "AiStage13TacticsManagerV1 cooldown/research/autocast/zone-aware support"),
+  stage13CombatFamily(
+    "spell_status_zone",
+    "spell + spellCasting + active effects",
+    "AiStage13TacticsManagerV1 cooldown/research/autocast/zone-aware support"
+  ),
   gameplayFamily("construction", "builder + constructable + prerequisites", 7, 7),
   gameplayFamily("production_queue", "production + queue + productionCost", 7, 7),
   {

@@ -32,9 +32,24 @@ describe("createAiProfileConfigV1", () => {
   it("D-02/D-03 selects a persisted fair personality from difficulty and stable seed only", () => {
     const easy = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Easy);
     const hard = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Hard);
-    const first = selectAiOpeningArchetypeV1({ faction: FactionType.Tivara, playerNumber: 1, profile: easy, seed: 759 });
-    const restored = selectAiOpeningArchetypeV1({ faction: FactionType.Tivara, playerNumber: 1, profile: easy, seed: 759 });
-    const hardArchetype = selectAiOpeningArchetypeV1({ faction: FactionType.Tivara, playerNumber: 1, profile: hard, seed: 759 });
+    const first = selectAiOpeningArchetypeV1({
+      faction: FactionType.Tivara,
+      playerNumber: 1,
+      profile: easy,
+      seed: 759
+    });
+    const restored = selectAiOpeningArchetypeV1({
+      faction: FactionType.Tivara,
+      playerNumber: 1,
+      profile: easy,
+      seed: 759
+    });
+    const hardArchetype = selectAiOpeningArchetypeV1({
+      faction: FactionType.Tivara,
+      playerNumber: 1,
+      profile: hard,
+      seed: 759
+    });
     expect(first).toEqual(restored);
     expect(["turtle", "balanced"]).toContain(first.purpose);
     expect(["rush", "macro", "tech", "air_control", "naval", "expeditionary"]).toContain(hardArchetype.purpose);

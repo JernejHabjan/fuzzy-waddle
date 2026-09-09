@@ -1,7 +1,17 @@
 import type { AiObservationV1 } from "../contracts/ai-observation-v1";
 import type { AiIntentV1 } from "../contracts/ai-intent-v1";
 import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiBaseStateV1, AiEconomyProductionStateV1, AiFortificationStateV1, AiOpeningStateV1, AiSkirmishStateV1, AiStrategyStateV1, AiSquadStateV1, AiSupportStateV1, AiTransportStateV1 } from "../contracts/ai-brain-state-v1";
+import type {
+  AiBaseStateV1,
+  AiEconomyProductionStateV1,
+  AiFortificationStateV1,
+  AiOpeningStateV1,
+  AiSkirmishStateV1,
+  AiStrategyStateV1,
+  AiSquadStateV1,
+  AiSupportStateV1,
+  AiTransportStateV1
+} from "../contracts/ai-brain-state-v1";
 import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
 import type { AiServiceLaneV1 } from "../contracts/ai-lane-contracts";
 

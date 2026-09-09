@@ -43,10 +43,7 @@ describe("AI command outcome adapter", () => {
 
   it("canonicalizes permuted runtime outcomes before the pure brain consumes them", () => {
     const ordered = adaptGameCommandOutcomesToBrain([outcome("completed", 2), outcome("dispatched", 1)], "match-a");
-    expect(ordered.map((entry) => `${entry.identity.sequence}:${entry.kind}`)).toEqual([
-      "1:dispatched",
-      "2:completed"
-    ]);
+    expect(ordered.map((entry) => `${entry.identity.sequence}:${entry.kind}`)).toEqual(["1:dispatched", "2:completed"]);
   });
 
   it("projects the bounded authority cursor with typed command identities", () => {

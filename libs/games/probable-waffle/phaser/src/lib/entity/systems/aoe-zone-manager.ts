@@ -106,7 +106,11 @@ export class AoeZoneManager {
       const ownerComponent = getActorComponent(actor, OwnerComponent);
       const actorPlayerId = ownerComponent?.getOwner() ?? -1;
 
-      const relation = getPlayerRelation(this.scene, zone.sourcePlayerId, actorPlayerId >= 0 ? actorPlayerId : undefined);
+      const relation = getPlayerRelation(
+        this.scene,
+        zone.sourcePlayerId,
+        actorPlayerId >= 0 ? actorPlayerId : undefined
+      );
       const isAlly = relation === "self" || relation === "ally";
       const isEnemy = relation === "enemy";
 

@@ -38,34 +38,54 @@ function actorCombatStrength(actor: AiObservedActorV1, opponents: readonly AiObs
   if (actor.combatProfile?.status !== "known" || actor.healthPermille?.status !== "known") return 0;
   const profile = actor.combatProfile.value;
   const statusPenalty = profile.statuses.reduce(
-    (penalty, status) => Math.min(penalty, status.type === "stunned" || status.type === "frozen" ? 200 : status.movementSpeedPermille),
+    (penalty, status) =>
+      Math.min(penalty, status.type === "stunned" || status.type === "frozen" ? 200 : status.movementSpeedPermille),
     1000
   );
   const actorPosition = knownPosition(actor);
   const bestDps = opponents.slice(0, MAX_LOCAL_ENEMIES).reduce((best, opponent) => {
     const targetPosition = knownPosition(opponent);
     const targetDomains = movementDomains(opponent);
-    const separation = actorPosition && targetPosition ? distance(actorPosition, targetPosition) : Number.POSITIVE_INFINITY;
+    const separation =
+      actorPosition && targetPosition ? distance(actorPosition, targetPosition) : Number.POSITIVE_INFINITY;
     const attackValue = profile.attacks
       .filter((attack) => targetDomains.some((domain) => attack.targetDomains.includes(domain)))
       .reduce((attackBest, attack) => {
-        const effectiveRange = attack.range + (actorPosition && targetPosition && actorPosition.z > targetPosition.z ? attack.highGroundRangeBonus : 0);
-        const rangePermille = separation < attack.minRange ? 350 : separation <= effectiveRange ? 1000 :
-          Math.max(200, Math.floor(1000 / (1 + (separation - effectiveRange) / 8)));
-        const areaTargets = attack.areaRadius <= 0 || !targetPosition ? 1 : Math.min(3, opponents.filter((candidate) => {
-          const position = knownPosition(candidate);
-          return position !== null && distance(position, targetPosition) <= attack.areaRadius;
-        }).length);
+        const effectiveRange =
+          attack.range +
+          (actorPosition && targetPosition && actorPosition.z > targetPosition.z ? attack.highGroundRangeBonus : 0);
+        const rangePermille =
+          separation < attack.minRange
+            ? 350
+            : separation <= effectiveRange
+              ? 1000
+              : Math.max(200, Math.floor(1000 / (1 + (separation - effectiveRange) / 8)));
+        const areaTargets =
+          attack.areaRadius <= 0 || !targetPosition
+            ? 1
+            : Math.min(
+                3,
+                opponents.filter((candidate) => {
+                  const position = knownPosition(candidate);
+                  return position !== null && distance(position, targetPosition) <= attack.areaRadius;
+                }).length
+              );
         const dps = (attack.damage * areaTargets * 1000) / Math.max(1, attack.cooldownTicks);
-        const readinessPermille = attack.remainingCooldownTicks == null ? 850 :
-          Math.max(200, 1000 - Math.floor((attack.remainingCooldownTicks * 800) / Math.max(1, attack.cooldownTicks)));
+        const readinessPermille =
+          attack.remainingCooldownTicks == null
+            ? 850
+            : Math.max(
+                200,
+                1000 - Math.floor((attack.remainingCooldownTicks * 800) / Math.max(1, attack.cooldownTicks))
+              );
         return Math.max(attackBest, (dps * rangePermille * readinessPermille) / 1_000_000);
       }, 0);
     return Math.max(best, attackValue);
   }, 0);
-  const effectiveDurability = (profile.maxHealth * actor.healthPermille.value) / 1000 +
-    (profile.maxArmour * profile.armourPermille) / 1000;
-  const support = profile.passiveRegenerationPerSecond +
+  const effectiveDurability =
+    (profile.maxHealth * actor.healthPermille.value) / 1000 + (profile.maxArmour * profile.armourPermille) / 1000;
+  const support =
+    profile.passiveRegenerationPerSecond +
     (profile.healing ? (profile.healing.amount * 1000) / Math.max(1, profile.healing.cooldownTicks) : 0);
   return Math.max(1, Math.floor(((bestDps + support) * effectiveDurability * statusPenalty) / 1_000_000));
 }
@@ -83,20 +103,36 @@ export function estimateAiEngagementV1(
 }> {
   const boundedFriendlies = friendly.slice(0, Math.max(1, pairQuota));
   const boundedHostiles = hostile.slice(0, Math.max(1, Math.floor(pairQuota / Math.max(1, boundedFriendlies.length))));
-  const friendlyStrength = boundedFriendlies.reduce((total, actor) => total + actorCombatStrength(actor, boundedHostiles), 0);
-  const hostileStrength = boundedHostiles.reduce((total, actor) => total + actorCombatStrength(actor, boundedFriendlies), 0);
+  const friendlyStrength = boundedFriendlies.reduce(
+    (total, actor) => total + actorCombatStrength(actor, boundedHostiles),
+    0
+  );
+  const hostileStrength = boundedHostiles.reduce(
+    (total, actor) => total + actorCombatStrength(actor, boundedFriendlies),
+    0
+  );
   const knownProfiles = [...boundedFriendlies, ...boundedHostiles].filter(
     (actor) => actor.combatProfile?.status === "known" && actor.healthPermille?.status === "known"
   ).length;
   const totalActors = boundedFriendlies.length + boundedHostiles.length;
   const confidencePermille = totalActors === 0 ? 0 : Math.floor((knownProfiles * 1000) / totalActors);
-  const ratioPermille = hostileStrength <= 0 ? (friendlyStrength > 0 ? 2000 : 1000) :
-    Math.max(0, Math.min(4000, Math.floor((friendlyStrength * 1000) / hostileStrength)));
+  const ratioPermille =
+    hostileStrength <= 0
+      ? friendlyStrength > 0
+        ? 2000
+        : 1000
+      : Math.max(0, Math.min(4000, Math.floor((friendlyStrength * 1000) / hostileStrength)));
   return {
     ratioPermille,
     confidencePermille,
-    predictedFriendlyLossPermille: Math.max(0, Math.min(1000, Math.floor((hostileStrength * 1000) / Math.max(1, friendlyStrength + hostileStrength)))),
-    predictedEnemyLossPermille: Math.max(0, Math.min(1000, Math.floor((friendlyStrength * 1000) / Math.max(1, friendlyStrength + hostileStrength))))
+    predictedFriendlyLossPermille: Math.max(
+      0,
+      Math.min(1000, Math.floor((hostileStrength * 1000) / Math.max(1, friendlyStrength + hostileStrength)))
+    ),
+    predictedEnemyLossPermille: Math.max(
+      0,
+      Math.min(1000, Math.floor((friendlyStrength * 1000) / Math.max(1, friendlyStrength + hostileStrength)))
+    )
   };
 }
 
@@ -106,12 +142,22 @@ function objectiveScore(
   routeStatus: AiObservationV1["accessProducts"][number]["status"] | "not_recorded"
 ): number {
   const families = new Set(actor.capabilities.map((capability) => capability.family));
-  const strategicValue = (actor.mainBuilding?.status === "known" && actor.mainBuilding.value ? 360 : 0) +
-    (families.has("produce") ? 220 : 0) + (families.has("drop_off") ? 180 : 0) +
-    (families.has("gather") ? 120 : 0) + (families.has("attack") ? 160 : 40);
+  const strategicValue =
+    (actor.mainBuilding?.status === "known" && actor.mainBuilding.value ? 360 : 0) +
+    (families.has("produce") ? 220 : 0) +
+    (families.has("drop_off") ? 180 : 0) +
+    (families.has("gather") ? 120 : 0) +
+    (families.has("attack") ? 160 : 40);
   const damaged = actor.healthPermille?.status === "known" ? 1000 - actor.healthPermille.value : 0;
   const travel = origin && knownPosition(actor) ? Math.min(300, distance(origin, knownPosition(actor)!) * 10) : 300;
-  const routeRisk = routeStatus === "blocked" || routeStatus === "service_failed" ? 500 : routeStatus === "not_ready" || routeStatus === "unknown" ? 180 : routeStatus === "not_recorded" ? 100 : 0;
+  const routeRisk =
+    routeStatus === "blocked" || routeStatus === "service_failed"
+      ? 500
+      : routeStatus === "not_ready" || routeStatus === "unknown"
+        ? 180
+        : routeStatus === "not_recorded"
+          ? 100
+          : 0;
   return Math.max(0, Math.min(1000, strategicValue + Math.floor(damaged / 4) - travel - routeRisk));
 }
 
@@ -121,15 +167,22 @@ function harmfulAt(position: Vector3Simple, observation: AiObservationV1): boole
   );
 }
 
-function legalForMembers(position: Vector3Simple, observation: AiObservationV1, members: readonly AiObservedActorV1[]): boolean {
+function legalForMembers(
+  position: Vector3Simple,
+  observation: AiObservationV1,
+  members: readonly AiObservedActorV1[]
+): boolean {
   if (harmfulAt(position, observation)) return false;
-  const cell = observation.map?.constructionCells?.find((candidate) =>
-    candidate.position.x === position.x && candidate.position.y === position.y
+  const cell = observation.map?.constructionCells?.find(
+    (candidate) => candidate.position.x === position.x && candidate.position.y === position.y
   );
   if (!cell) return members.every((member) => movementDomains(member).includes("air"));
-  return members.every((member) => movementDomains(member).some((domain) =>
-    domain === "air" || (domain === "water" ? cell.waterPassable : cell.groundPassable && !cell.observedBlocked)
-  ));
+  return members.every((member) =>
+    movementDomains(member).some(
+      (domain) =>
+        domain === "air" || (domain === "water" ? cell.waterPassable : cell.groundPassable && !cell.observedBlocked)
+    )
+  );
 }
 
 function safeRetreatPosition(
@@ -143,7 +196,10 @@ function safeRetreatPosition(
     .sort((left, right) => left.x - right.x || left.y - right.y);
   const cells = observation.map?.constructionCells ?? [];
   const candidates = anchors.slice(0, 4).flatMap((anchor) => [
-    ...cells.map((cell) => cell.position).sort((left, right) => distance(left, anchor) - distance(right, anchor)).slice(0, MAX_RETREAT_CANDIDATES),
+    ...cells
+      .map((cell) => cell.position)
+      .sort((left, right) => distance(left, anchor) - distance(right, anchor))
+      .slice(0, MAX_RETREAT_CANDIDATES),
     anchor
   ]);
   return candidates.find((candidate) => legalForMembers(candidate, observation, members)) ?? null;
@@ -157,19 +213,25 @@ function splitDomainSquads(
     const groups = new Map<AiDomainV1, ActorId[]>();
     for (const actorId of squad.actorIds) {
       const actor = actorById.get(actorId);
-      const domain = actor ? movementDomains(actor)[0] ?? "ground" : squad.domain === "mixed" ? "ground" : squad.domain;
+      const domain = actor
+        ? (movementDomains(actor)[0] ?? "ground")
+        : squad.domain === "mixed"
+          ? "ground"
+          : squad.domain;
       groups.set(domain, [...(groups.get(domain) ?? []), actorId]);
     }
     const ordered = [...groups.entries()].sort((left, right) => left[0].localeCompare(right[0]));
     if (ordered.length <= 1) return [squad];
     return ordered.map(([domain, actorIds], index) => ({
       ...squad,
-      squadId: index === 0 ? squad.squadId : `${squad.squadId}:domain:${domain}` as AiSquadStateV1["squadId"],
+      squadId: index === 0 ? squad.squadId : (`${squad.squadId}:domain:${domain}` as AiSquadStateV1["squadId"]),
       domain,
       actorIds
     }));
   });
-  return split.filter((squad, index, all) => all.findIndex((candidate) => candidate.squadId === squad.squadId) === index);
+  return split.filter(
+    (squad, index, all) => all.findIndex((candidate) => candidate.squadId === squad.squadId) === index
+  );
 }
 
 function intentBase(
@@ -177,7 +239,20 @@ function intentBase(
   squad: AiSquadStateV1,
   suffix: string,
   utility: number
-): Pick<AiIntentV1, "intentId" | "effectId" | "planId" | "demandId" | "lane" | "proposedTick" | "urgencyClass" | "utility" | "preconditions" | "claims" | "reasonCode"> {
+): Pick<
+  AiIntentV1,
+  | "intentId"
+  | "effectId"
+  | "planId"
+  | "demandId"
+  | "lane"
+  | "proposedTick"
+  | "urgencyClass"
+  | "utility"
+  | "preconditions"
+  | "claims"
+  | "reasonCode"
+> {
   const planId = `plan:${squad.squadId}` as AiPlanId;
   return {
     intentId: `intent:stage13:${observation.generation}:${squad.squadId}:${suffix}` as AiIntentV1["intentId"],
@@ -203,18 +278,23 @@ function assignDamage(
   targets: readonly AiObservedActorV1[],
   tick: number,
   squadId: AiSquadStateV1["squadId"],
-  previous: readonly NonNullable<AiSquadStateV1["tactics"]>["damageReservations"],
+  previous: NonNullable<AiSquadStateV1["tactics"]>["damageReservations"],
   outcomes: AiBrainStateV1["pendingOutcomes"]
 ): NonNullable<AiSquadStateV1["tactics"]>["damageReservations"] {
-  const remaining = new Map(targets.map((target) => {
-    const profile = target.combatProfile?.status === "known" ? target.combatProfile.value : null;
-    return [target.actorId, target.healthPermille?.status === "known" && profile
-      ? {
-          health: (profile.maxHealth * target.healthPermille.value) / 1000,
-          armour: (profile.maxArmour * profile.armourPermille) / 1000
-        }
-      : { health: Number.MAX_SAFE_INTEGER, armour: 0 }] as const;
-  }));
+  const remaining = new Map(
+    targets.map((target) => {
+      const profile = target.combatProfile?.status === "known" ? target.combatProfile.value : null;
+      return [
+        target.actorId,
+        target.healthPermille?.status === "known" && profile
+          ? {
+              health: (profile.maxHealth * target.healthPermille.value) / 1000,
+              armour: (profile.maxArmour * profile.armourPermille) / 1000
+            }
+          : { health: Number.MAX_SAFE_INTEGER, armour: 0 }
+      ] as const;
+    })
+  );
   const reserveDamage = (targetId: ActorId, damage: number): void => {
     const durability = remaining.get(targetId);
     if (!durability) return;
@@ -223,11 +303,19 @@ function assignDamage(
   };
   const targetIds = new Set(targets.map((target) => target.actorId));
   const attackerIds = new Set(attackers.map((attacker) => attacker.actorId));
-  const failedEffects = new Set(outcomes
-    .filter((outcome) => outcome.kind === "rejected" || outcome.kind === "cancelled" || outcome.kind === "failed")
-    .map((outcome) => outcome.identity.effectId));
+  const failedEffects = new Set(
+    outcomes
+      .filter((outcome) => outcome.kind === "rejected" || outcome.kind === "cancelled" || outcome.kind === "failed")
+      .map((outcome) => outcome.identity.effectId)
+  );
   const reservations: Array<NonNullable<AiSquadStateV1["tactics"]>["damageReservations"][number]> = previous
-    .filter((entry) => entry.impactTick >= tick && attackerIds.has(entry.actorId) && targetIds.has(entry.targetActorId) && (!entry.effectId || !failedEffects.has(entry.effectId as AiIntentV1["effectId"])))
+    .filter(
+      (entry) =>
+        entry.impactTick >= tick &&
+        attackerIds.has(entry.actorId) &&
+        targetIds.has(entry.targetActorId) &&
+        (!entry.effectId || !failedEffects.has(entry.effectId as AiIntentV1["effectId"]))
+    )
     .map((entry) => ({ ...entry }));
   for (const reservation of reservations) {
     reserveDamage(reservation.targetActorId, reservation.expectedDamage);
@@ -237,18 +325,28 @@ function assignDamage(
     if (reservedAttackers.has(attacker.actorId)) continue;
     const target = targets.find((candidate) => {
       const durability = remaining.get(candidate.actorId);
-      return canTarget(attacker, candidate) && durability !== undefined && (durability.armour > 0 || durability.health > 0);
+      return (
+        canTarget(attacker, candidate) && durability !== undefined && (durability.armour > 0 || durability.health > 0)
+      );
     });
     const targetMovement = target ? movementDomains(target) : [];
-    const attack = attacker.combatProfile?.status === "known"
-      ? [...attacker.combatProfile.value.attacks]
-          .filter((entry) => targetMovement.some((domain) => entry.targetDomains.includes(domain)))
-          .sort((left, right) => (right.damage / Math.max(1, right.cooldownTicks)) - (left.damage / Math.max(1, left.cooldownTicks)) || right.damage - left.damage)[0]
-      : undefined;
+    const attack =
+      attacker.combatProfile?.status === "known"
+        ? [...attacker.combatProfile.value.attacks]
+            .filter((entry) => targetMovement.some((domain) => entry.targetDomains.includes(domain)))
+            .sort(
+              (left, right) =>
+                right.damage / Math.max(1, right.cooldownTicks) - left.damage / Math.max(1, left.cooldownTicks) ||
+                right.damage - left.damage
+            )[0]
+        : undefined;
     if (!attack || !target) continue;
     const attackerPosition = knownPosition(attacker);
     const targetPosition = knownPosition(target);
-    const arrivalTicks = attackerPosition && targetPosition ? Math.max(0, Math.ceil(distance(attackerPosition, targetPosition) - attack.range)) : 0;
+    const arrivalTicks =
+      attackerPosition && targetPosition
+        ? Math.max(0, Math.ceil(distance(attackerPosition, targetPosition) - attack.range))
+        : 0;
     const impactTick = tick + arrivalTicks + attack.impactDelayTicks;
     reservations.push({
       actorId: attacker.actorId,
@@ -268,10 +366,24 @@ function formationPositions(
   observation: AiObservationV1
 ): NonNullable<AiSquadStateV1["tactics"]>["assignedPositions"] {
   if (!anchor) return [];
-  const spacing = Math.max(1, ...members.map((actor) => actor.combatProfile?.status === "known"
-    ? Math.ceil(Math.max(0, ...actor.combatProfile.value.attacks.map((attack) => attack.minRange))) + 1
-    : 1));
-  const offsets = [{ x: spacing, y: 0 }, { x: -spacing, y: 0 }, { x: 0, y: spacing }, { x: 0, y: -spacing }, { x: spacing, y: spacing }, { x: -spacing, y: spacing }, { x: spacing, y: -spacing }, { x: -spacing, y: -spacing }];
+  const spacing = Math.max(
+    1,
+    ...members.map((actor) =>
+      actor.combatProfile?.status === "known"
+        ? Math.ceil(Math.max(0, ...actor.combatProfile.value.attacks.map((attack) => attack.minRange))) + 1
+        : 1
+    )
+  );
+  const offsets = [
+    { x: spacing, y: 0 },
+    { x: -spacing, y: 0 },
+    { x: 0, y: spacing },
+    { x: 0, y: -spacing },
+    { x: spacing, y: spacing },
+    { x: -spacing, y: spacing },
+    { x: spacing, y: -spacing },
+    { x: -spacing, y: -spacing }
+  ];
   return members.slice(0, offsets.length).flatMap((actor, index) => {
     const offset = offsets[index]!;
     const candidate = { x: anchor.x + offset.x, y: anchor.y + offset.y, z: anchor.z };
@@ -282,7 +394,12 @@ function formationPositions(
 function boundedTacticalIntents(intents: readonly AiIntentV1[], actorOrderLimit: number): readonly AiIntentV1[] {
   const accepted: AiIntentV1[] = [];
   let actorOrders = 0;
-  for (const intent of [...intents].sort((left, right) => left.urgencyClass - right.urgencyClass || right.utility - left.utility || left.intentId.localeCompare(right.intentId))) {
+  for (const intent of [...intents].sort(
+    (left, right) =>
+      left.urgencyClass - right.urgencyClass ||
+      right.utility - left.utility ||
+      left.intentId.localeCompare(right.intentId)
+  )) {
     const count = "actorIds" in intent ? intent.actorIds.length : "actorId" in intent ? 1 : 0;
     if (actorOrders + count > Math.max(1, actorOrderLimit)) continue;
     accepted.push(intent);
@@ -299,37 +416,61 @@ export class AiStage13TacticsManagerV1 implements AiProposalManagerV1 {
 
   propose(observation: AiObservationV1, state: AiBrainStateV1): AiManagerProposalV1 {
     const actorById = new Map(observation.actors.map((actor) => [actor.actorId, actor]));
-    const transportOwned = new Set(state.transport
-      .filter((plan) => !["handoff", "completed", "cancelled", "failed"].includes(plan.phase))
-      .flatMap((plan) => [...plan.passengerIds]));
+    const transportOwned = new Set(
+      state.transport
+        .filter((plan) => !["handoff", "completed", "cancelled", "failed"].includes(plan.phase))
+        .flatMap((plan) => [...plan.passengerIds])
+    );
     const visibleEnemies = observation.actors
       .filter((actor) => actor.relation === "enemy" && actor.visibility === "visible" && knownPosition(actor))
       .sort((left, right) => left.actorId.localeCompare(right.actorId));
     const assignedBeforeReinforcement = new Set(state.squads.flatMap((squad) => [...squad.actorIds]));
-    const homeAnchors = state.bases.filter((base) => base.active && base.anchorPosition).map((base) => base.anchorPosition!);
-    const underLocalPressure = visibleEnemies.some((enemy) => homeAnchors.some((anchor) => distance(anchor, knownPosition(enemy)!) <= 12));
+    const homeAnchors = state.bases
+      .filter((base) => base.active && base.anchorPosition)
+      .map((base) => base.anchorPosition!);
+    const underLocalPressure = visibleEnemies.some((enemy) =>
+      homeAnchors.some((anchor) => distance(anchor, knownPosition(enemy)!) <= 12)
+    );
     const reinforcementActors = observation.actors
-      .filter((actor) => actor.relation === "self" && actor.containedInActorId == null && !transportOwned.has(actor.actorId))
+      .filter(
+        (actor) => actor.relation === "self" && actor.containedInActorId == null && !transportOwned.has(actor.actorId)
+      )
       .filter((actor) => actor.combatProfile?.status === "known" && actor.combatProfile.value.attacks.length > 0)
       .filter((actor) => !assignedBeforeReinforcement.has(actor.actorId))
       .sort((left, right) => left.actorId.localeCompare(right.actorId));
     const augmentedSquads = state.squads.map((squad) => ({ ...squad, actorIds: [...squad.actorIds] }));
     for (const actor of reinforcementActors) {
-      const destination = augmentedSquads.find((squad) => underLocalPressure && squad.role === "defense") ??
+      const destination =
+        augmentedSquads.find((squad) => underLocalPressure && squad.role === "defense") ??
         augmentedSquads.find((squad) => squad.role === "attack") ??
         augmentedSquads.find((squad) => squad.role === "reinforcement" || squad.role === "reserve");
       if (destination) destination.actorIds = [...destination.actorIds, actor.actorId];
     }
     const claimedActors = new Set<ActorId>();
-    const priority: Record<AiSquadStateV1["role"], number> = { defense: 0, escort: 1, attack: 2, reinforcement: 3, reserve: 4, scout: 5 };
+    const priority: Record<AiSquadStateV1["role"], number> = {
+      defense: 0,
+      escort: 1,
+      attack: 2,
+      reinforcement: 3,
+      reserve: 4,
+      scout: 5
+    };
     const squads = splitDomainSquads(augmentedSquads, actorById).sort(
       (left, right) => priority[left.role] - priority[right.role] || left.squadId.localeCompare(right.squadId)
     );
     const updates: AiSquadStateV1[] = [];
     const intents: AiIntentV1[] = [];
-    const terminalEffectIds = new Set(state.pendingOutcomes
-      .filter((outcome) => outcome.kind === "completed" || outcome.kind === "rejected" || outcome.kind === "cancelled" || outcome.kind === "failed")
-      .map((outcome) => outcome.identity.effectId));
+    const terminalEffectIds = new Set(
+      state.pendingOutcomes
+        .filter(
+          (outcome) =>
+            outcome.kind === "completed" ||
+            outcome.kind === "rejected" ||
+            outcome.kind === "cancelled" ||
+            outcome.kind === "failed"
+        )
+        .map((outcome) => outcome.identity.effectId)
+    );
     const support: AiSupportStateV1[] = state.support
       .filter((plan) => plan.expiresAt === null || plan.expiresAt.dueTick > observation.tick)
       .filter((plan) => plan.effectId == null || !terminalEffectIds.has(plan.effectId as AiIntentV1["effectId"]))
@@ -341,7 +482,10 @@ export class AiStage13TacticsManagerV1 implements AiProposalManagerV1 {
       const members = squad.actorIds
         .filter((actorId) => !claimedActors.has(actorId) && !transportOwned.has(actorId))
         .map((actorId) => actorById.get(actorId))
-        .filter((actor): actor is AiObservedActorV1 => actor !== undefined && actor.relation === "self" && actor.containedInActorId == null)
+        .filter(
+          (actor): actor is AiObservedActorV1 =>
+            actor !== undefined && actor.relation === "self" && actor.containedInActorId == null
+        )
         .sort((left, right) => left.actorId.localeCompare(right.actorId));
       members.forEach((actor) => claimedActors.add(actor.actorId));
       const origin = knownPosition(members[0]);
@@ -349,82 +493,178 @@ export class AiStage13TacticsManagerV1 implements AiProposalManagerV1 {
         .filter((enemy) => !origin || distance(origin, knownPosition(enemy)!) <= 18)
         .slice(0, MAX_LOCAL_ENEMIES);
       const sourceNodeId = members[0]?.accessNodeId.status === "known" ? members[0].accessNodeId.value : null;
-      const alternatives = visibleEnemies.slice(0, MAX_STRATEGIC_CONTACTS)
+      const alternatives = visibleEnemies
+        .slice(0, MAX_STRATEGIC_CONTACTS)
         .map((enemy) => {
           const targetNodeId = enemy.accessNodeId.status === "known" ? enemy.accessNodeId.value : null;
-          const routeStatus = sourceNodeId && targetNodeId
-            ? observation.accessProducts.find((product) => product.fromNodeId === sourceNodeId && product.toNodeId === targetNodeId)?.status ?? "not_recorded"
-            : "not_recorded";
-          return { objectiveId: enemy.actorId, score: objectiveScore(enemy, origin, routeStatus), reason: `visible_value_route_${routeStatus}` };
+          const routeStatus =
+            sourceNodeId && targetNodeId
+              ? (observation.accessProducts.find(
+                  (product) => product.fromNodeId === sourceNodeId && product.toNodeId === targetNodeId
+                )?.status ?? "not_recorded")
+              : "not_recorded";
+          return {
+            objectiveId: enemy.actorId,
+            score: objectiveScore(enemy, origin, routeStatus),
+            reason: `visible_value_route_${routeStatus}`
+          };
         })
         .filter((candidate) => candidate.score > 0)
         .sort((left, right) => right.score - left.score || left.objectiveId.localeCompare(right.objectiveId))
         .slice(0, MAX_OBJECTIVE_ALTERNATIVES);
       const previousTarget = squad.tactics?.targetActorId ? actorById.get(squad.tactics.targetActorId) : undefined;
       const bestTarget = alternatives[0];
-      const retainPrevious = Boolean(previousTarget && previousTarget.visibility === "visible" && squad.tactics && bestTarget &&
-        bestTarget.score * 1000 < squad.tactics.targetScore * (1000 + AI_STAGE_13_TARGET_SWITCH_IMPROVEMENT_PERMILLE));
-      const targetId = retainPrevious ? previousTarget.actorId : bestTarget?.objectiveId as ActorId | undefined;
+      const retainPrevious = Boolean(
+        previousTarget &&
+          previousTarget.visibility === "visible" &&
+          squad.tactics &&
+          bestTarget &&
+          bestTarget.score * 1000 < squad.tactics.targetScore * (1000 + AI_STAGE_13_TARGET_SWITCH_IMPROVEMENT_PERMILLE)
+      );
+      const targetId =
+        retainPrevious && previousTarget ? previousTarget.actorId : (bestTarget?.objectiveId as ActorId | undefined);
       const target = targetId ? actorById.get(targetId) : undefined;
       const estimate = estimateAiEngagementV1(members, localEnemies, this.profile.maxLocalEngagementPairsPerStep);
       const retreat = safeRetreatPosition(observation, state, members);
-      const fortificationPlan = squad.role === "defense"
-        ? state.fortifications.find((plan) => plan.lifecycle !== "abandoned" && squad.lifecycle?.protectedBaseId != null && plan.protectedBaseIds.includes(squad.lifecycle.protectedBaseId)) ??
-          state.fortifications.find((plan) => plan.lifecycle !== "abandoned")
-        : undefined;
+      const fortificationPlan =
+        squad.role === "defense"
+          ? (state.fortifications.find(
+              (plan) =>
+                plan.lifecycle !== "abandoned" &&
+                squad.lifecycle?.protectedBaseId != null &&
+                plan.protectedBaseIds.includes(squad.lifecycle.protectedBaseId)
+            ) ?? state.fortifications.find((plan) => plan.lifecycle !== "abandoned"))
+          : undefined;
       const reachableDefenderPosts = fortificationPlan?.graph?.defenderPosts.filter((post) => post.reachable) ?? [];
-      const topologyLost = Boolean(fortificationPlan?.graph?.defenderPosts.length && reachableDefenderPosts.length === 0);
-      const landedForRegroup = state.transport.some((plan) => plan.phase === "handoff" && plan.passengerIds.some((actorId) => squad.actorIds.includes(actorId)));
+      const topologyLost = Boolean(
+        fortificationPlan?.graph?.defenderPosts.length && reachableDefenderPosts.length === 0
+      );
+      const landedForRegroup = state.transport.some(
+        (plan) => plan.phase === "handoff" && plan.passengerIds.some((actorId) => squad.actorIds.includes(actorId))
+      );
       const previousRetreat = squad.state === "retreat" || squad.state === "retreating";
-      const favorable = estimate.ratioPermille >= AI_STAGE_13_ATTACK_RATIO_PERMILLE && estimate.confidencePermille >= 500;
-      const unfavorable = estimate.ratioPermille < AI_STAGE_13_RETREAT_RATIO_PERMILLE ||
+      const favorable =
+        estimate.ratioPermille >= AI_STAGE_13_ATTACK_RATIO_PERMILLE && estimate.confidencePermille >= 500;
+      const unfavorable =
+        estimate.ratioPermille < AI_STAGE_13_RETREAT_RATIO_PERMILLE ||
         members.some((actor) => actor.healthPermille?.status === "known" && actor.healthPermille.value <= 250);
       const awaitingLaunch = ["forming", "assemble", "rally", "ready", "advance", "moving"].includes(squad.state);
-      const forcedDecision = awaitingLaunch && (squad.lifecycle?.assemblyDeadline.dueTick ?? observation.tick) <= observation.tick;
-      const missionExpired = ["attack", "escort", "reinforcement", "scout"].includes(squad.role) &&
+      const forcedDecision =
+        awaitingLaunch && (squad.lifecycle?.assemblyDeadline.dueTick ?? observation.tick) <= observation.tick;
+      const missionExpired =
+        ["attack", "escort", "reinforcement", "scout"].includes(squad.role) &&
         (squad.lifecycle?.effectDeadline.dueTick ?? Number.MAX_SAFE_INTEGER) <= observation.tick;
-      const quietState: AiSquadStateV1["state"] = landedForRegroup ? "regroup" : squad.role === "reserve" ? "reserve" :
-        squad.role === "defense" ? "defend" : squad.state === "forming" ? "assemble" : squad.state === "assemble" ? "rally" :
-          squad.state === "rally" ? "advance" : previousRetreat ? "recover" : squad.state === "recover" || squad.state === "recovering" ? "rally" : "advance";
-      const nextState: AiSquadStateV1["state"] = members.length === 0 || missionExpired ? "recover" :
-        (unfavorable || topologyLost) && retreat ? "retreat" : localEnemies.length > 0 && (favorable || forcedDecision) ? "engage" :
-          localEnemies.length > 0 ? "regroup" : quietState;
+      const quietState: AiSquadStateV1["state"] = landedForRegroup
+        ? "regroup"
+        : squad.role === "reserve"
+          ? "reserve"
+          : squad.role === "defense"
+            ? "defend"
+            : squad.state === "forming"
+              ? "assemble"
+              : squad.state === "assemble"
+                ? "rally"
+                : squad.state === "rally"
+                  ? "advance"
+                  : previousRetreat
+                    ? "recover"
+                    : squad.state === "recover" || squad.state === "recovering"
+                      ? "rally"
+                      : "advance";
+      const nextState: AiSquadStateV1["state"] =
+        members.length === 0 || missionExpired
+          ? "recover"
+          : (unfavorable || topologyLost) && retreat
+            ? "retreat"
+            : localEnemies.length > 0 && (favorable || forcedDecision)
+              ? "engage"
+              : localEnemies.length > 0
+                ? "regroup"
+                : quietState;
       const nowRetreat = nextState === "retreat";
-      const oscillationCount = previousRetreat !== nowRetreat && squad.tactics && observation.tick <= squad.tactics.nextReconsiderTick
-        ? squad.tactics.oscillationCount + 1
-        : Math.max(0, (squad.tactics?.oscillationCount ?? 0) - 1);
-      const script: NonNullable<AiSquadStateV1["tactics"]>["script"] = oscillationCount >= 2 ? "hold_front" :
-        topologyLost ? "rampart_withdraw" : landedForRegroup ? "land_regroup" : nextState === "retreat" || nextState === "recover" ? "protected_retreat" :
-          fortificationPlan?.graph?.breach.missingNodeIds.length ? "rampart_reinforce" : reachableDefenderPosts.length > 0 ? "rampart_defend" :
-          squad.domain === "water" ? "naval_control" : localEnemies.some((enemy) => movementDomains(enemy).includes("air")) ? "intercept_air_transport" :
-            members.some((actor) => actor.combatProfile?.status === "known" && actor.combatProfile.value.attacks.some((attack) => attack.minRange > 0)) ? "ranged_distance" : "advance_focus";
-      const rampartPositions = reachableDefenderPosts
-        .flatMap((post) => fortificationPlan?.graph?.nodes.find((node) => node.nodeId === post.nodeId)?.position ?? []);
-      const recoveryPhase = nextState === "retreat" || nextState === "recover" || nextState === "assemble" || nextState === "rally" || nextState === "reserve";
-      const anchor = recoveryPhase ? retreat ?? origin : nextState === "regroup" ? origin : rampartPositions[0] ?? knownPosition(target) ?? origin;
+      const oscillationCount =
+        previousRetreat !== nowRetreat && squad.tactics && observation.tick <= squad.tactics.nextReconsiderTick
+          ? squad.tactics.oscillationCount + 1
+          : Math.max(0, (squad.tactics?.oscillationCount ?? 0) - 1);
+      const script: NonNullable<AiSquadStateV1["tactics"]>["script"] =
+        oscillationCount >= 2
+          ? "hold_front"
+          : topologyLost
+            ? "rampart_withdraw"
+            : landedForRegroup
+              ? "land_regroup"
+              : nextState === "retreat" || nextState === "recover"
+                ? "protected_retreat"
+                : fortificationPlan?.graph?.breach.missingNodeIds.length
+                  ? "rampart_reinforce"
+                  : reachableDefenderPosts.length > 0
+                    ? "rampart_defend"
+                    : squad.domain === "water"
+                      ? "naval_control"
+                      : localEnemies.some((enemy) => movementDomains(enemy).includes("air"))
+                        ? "intercept_air_transport"
+                        : members.some(
+                              (actor) =>
+                                actor.combatProfile?.status === "known" &&
+                                actor.combatProfile.value.attacks.some((attack) => attack.minRange > 0)
+                            )
+                          ? "ranged_distance"
+                          : "advance_focus";
+      const rampartPositions = reachableDefenderPosts.flatMap(
+        (post) => fortificationPlan?.graph?.nodes.find((node) => node.nodeId === post.nodeId)?.position ?? []
+      );
+      const recoveryPhase =
+        nextState === "retreat" ||
+        nextState === "recover" ||
+        nextState === "assemble" ||
+        nextState === "rally" ||
+        nextState === "reserve";
+      const anchor = recoveryPhase
+        ? (retreat ?? origin)
+        : nextState === "regroup"
+          ? origin
+          : (rampartPositions[0] ?? knownPosition(target) ?? origin);
       const mobileReserveCount = reachableDefenderPosts.length > 0 ? Math.max(1, Math.ceil(members.length * 0.25)) : 0;
-      const mobileReserveActorIds = members.slice(Math.max(0, members.length - mobileReserveCount)).map((actor) => actor.actorId);
+      const mobileReserveActorIds = members
+        .slice(Math.max(0, members.length - mobileReserveCount))
+        .map((actor) => actor.actorId);
       const postMembers = members.filter((actor) => !mobileReserveActorIds.includes(actor.actorId));
       const postAssignments = postMembers.slice(0, rampartPositions.length).flatMap((actor, index) => {
         const position = rampartPositions[index]!;
         return legalForMembers(position, observation, [actor]) ? [{ actorId: actor.actorId, position }] : [];
       });
       const postedActorIds = new Set(postAssignments.map((assignment) => assignment.actorId));
-      const assignedPositions = [...postAssignments, ...formationPositions(postMembers.filter((actor) => !postedActorIds.has(actor.actorId)), anchor, observation)];
-      const finalState: AiSquadStateV1["state"] = oscillationCount >= 2 && nextState === "engage" ? "regroup" : nextState;
-      const previousDamageEffectIds = new Set((squad.tactics?.damageReservations ?? []).map((reservation) => reservation.effectId).filter((effectId): effectId is string => effectId !== undefined));
-      const damageReservations = target && (finalState === "engage" || finalState === "advance") ? assignDamage(
-        members.slice(0, this.profile.maxActorOrdersPerStep),
-        [target, ...localEnemies.filter((enemy) => enemy.actorId !== target.actorId)],
-        observation.tick,
-        squad.squadId,
-        squad.tactics?.damageReservations ?? [],
-        state.pendingOutcomes
-      ) : [];
+      const assignedPositions = [
+        ...postAssignments,
+        ...formationPositions(
+          postMembers.filter((actor) => !postedActorIds.has(actor.actorId)),
+          anchor,
+          observation
+        )
+      ];
+      const finalState: AiSquadStateV1["state"] =
+        oscillationCount >= 2 && nextState === "engage" ? "regroup" : nextState;
+      const previousDamageEffectIds = new Set(
+        (squad.tactics?.damageReservations ?? [])
+          .map((reservation) => reservation.effectId)
+          .filter((effectId): effectId is string => effectId !== undefined)
+      );
+      const damageReservations =
+        target && (finalState === "engage" || finalState === "advance")
+          ? assignDamage(
+              members.slice(0, this.profile.maxActorOrdersPerStep),
+              [target, ...localEnemies.filter((enemy) => enemy.actorId !== target.actorId)],
+              observation.tick,
+              squad.squadId,
+              squad.tactics?.damageReservations ?? [],
+              state.pendingOutcomes
+            )
+          : [];
       const orderSignature = `${finalState}:${script}:${targetId ?? "none"}:${anchor ? `${anchor.x},${anchor.y},${anchor.z}` : "none"}`;
-      const previouslyOrderedActorIds = squad.tactics?.orderSignature === orderSignature
-        ? squad.tactics.orderedActorIds.filter((actorId) => members.some((member) => member.actorId === actorId))
-        : [];
+      const previouslyOrderedActorIds =
+        squad.tactics?.orderSignature === orderSignature
+          ? squad.tactics.orderedActorIds.filter((actorId) => members.some((member) => member.actorId === actorId))
+          : [];
       const actorsNeedingOrder = members
         .map((actor) => actor.actorId)
         .filter((actorId) => !previouslyOrderedActorIds.includes(actorId));
@@ -432,39 +672,52 @@ export class AiStage13TacticsManagerV1 implements AiProposalManagerV1 {
       const usefulEffectTick = state.pendingOutcomes
         .filter((outcome) => outcome.identity.effectId.startsWith(`effect:stage13:${squad.squadId}:`))
         .filter((outcome) => outcome.kind === "applied" || outcome.kind === "active" || outcome.kind === "completed")
-        .reduce<number | null>((latest, outcome) => latest === null ? outcome.tick : Math.max(latest, outcome.tick), squad.lifecycle?.lastUsefulEffectTick ?? null);
+        .reduce<number | null>(
+          (latest, outcome) => (latest === null ? outcome.tick : Math.max(latest, outcome.tick)),
+          squad.lifecycle?.lastUsefulEffectTick ?? null
+        );
       const previousMemberCount = squad.tactics?.lastObservedMemberCount ?? members.length;
       const updated: AiSquadStateV1 = {
         ...squad,
         actorIds: members.map((actor) => actor.actorId),
         objectiveId: targetId ?? squad.objectiveId,
         state: finalState,
-        ...(squad.lifecycle ? {
-          lifecycle: {
-            ...squad.lifecycle,
-            lastUsefulEffectTick: usefulEffectTick,
-            ...(missionExpired && squad.state !== "recover" && squad.state !== "recovering" ? {
-              effectDeadline: aiDeadline(observation.tick + Math.max(1, this.profile.compositionReconsiderationTicks)),
-              recoveryAttempt: squad.lifecycle.recoveryAttempt + 1,
-              terminalReason: "effect_deadline_recovery"
-            } : {}),
-            ...(!missionExpired && (squad.state === "recover" || squad.state === "recovering") && finalState !== "recover"
-              ? { terminalReason: null }
-              : {})
-          }
-        } : {}),
+        ...(squad.lifecycle
+          ? {
+              lifecycle: {
+                ...squad.lifecycle,
+                lastUsefulEffectTick: usefulEffectTick,
+                ...(missionExpired && squad.state !== "recover" && squad.state !== "recovering"
+                  ? {
+                      effectDeadline: aiDeadline(
+                        observation.tick + Math.max(1, this.profile.compositionReconsiderationTicks)
+                      ),
+                      recoveryAttempt: squad.lifecycle.recoveryAttempt + 1,
+                      terminalReason: "effect_deadline_recovery"
+                    }
+                  : {}),
+                ...(!missionExpired &&
+                (squad.state === "recover" || squad.state === "recovering") &&
+                finalState !== "recover"
+                  ? { terminalReason: null }
+                  : {})
+              }
+            }
+          : {}),
         tactics: {
           taskForceId: `task-force:${squad.lifecycle?.targetPlayerNumber ?? "local"}`,
           script,
           targetActorId: targetId ?? null,
-          targetScore: retainPrevious ? squad.tactics!.targetScore : bestTarget?.score ?? 0,
+          targetScore: retainPrevious ? squad.tactics!.targetScore : (bestTarget?.score ?? 0),
           engagementRatioPermille: estimate.ratioPermille,
           confidencePermille: estimate.confidencePermille,
           predictedFriendlyLossPermille: estimate.predictedFriendlyLossPermille,
           predictedEnemyLossPermille: estimate.predictedEnemyLossPermille,
           lastObservedMemberCount: members.length,
-          observedLossCount: (squad.tactics?.observedLossCount ?? 0) + Math.max(0, previousMemberCount - members.length),
-          lastTransitionTick: squad.state === finalState ? squad.tactics?.lastTransitionTick ?? observation.tick : observation.tick,
+          observedLossCount:
+            (squad.tactics?.observedLossCount ?? 0) + Math.max(0, previousMemberCount - members.length),
+          lastTransitionTick:
+            squad.state === finalState ? (squad.tactics?.lastTransitionTick ?? observation.tick) : observation.tick,
           nextReconsiderTick: observation.tick + TACTICAL_RECONSIDERATION_TICKS,
           oscillationCount,
           orderSignature,
@@ -485,12 +738,18 @@ export class AiStage13TacticsManagerV1 implements AiProposalManagerV1 {
 
       if (materiallyChanged && updated.state === "retreat" && retreat) {
         const batch = actorsNeedingOrder.slice(0, this.profile.maxActorOrdersPerStep);
-        if (batch.length > 0) intents.push({
-          ...intentBase(observation, { ...updated, actorIds: batch }, `protected_retreat:${batch[0]}:${batch[batch.length - 1]}`, 980),
-          kind: "move",
-          actorIds: batch,
-          logicalPosition: retreat
-        });
+        if (batch.length > 0)
+          intents.push({
+            ...intentBase(
+              observation,
+              { ...updated, actorIds: batch },
+              `protected_retreat:${batch[0]}:${batch[batch.length - 1]}`,
+              980
+            ),
+            kind: "move",
+            actorIds: batch,
+            logicalPosition: retreat
+          });
       } else if (materiallyChanged && (updated.state === "engage" || updated.state === "advance") && target) {
         for (const reservation of damageReservations) {
           if (reservation.effectId && previousDamageEffectIds.has(reservation.effectId)) continue;
@@ -516,7 +775,12 @@ export class AiStage13TacticsManagerV1 implements AiProposalManagerV1 {
           for (const assignment of assignedPositions.filter((entry) => actorsNeedingOrder.includes(entry.actorId))) {
             const positioned = { ...updated, actorIds: [assignment.actorId] };
             intents.push({
-              ...intentBase(observation, positioned, `position:${assignment.actorId}`, updated.role === "defense" ? 860 : 720),
+              ...intentBase(
+                observation,
+                positioned,
+                `position:${assignment.actorId}`,
+                updated.role === "defense" ? 860 : 720
+              ),
               kind: "move",
               actorIds: [assignment.actorId],
               logicalPosition: assignment.position
@@ -524,45 +788,73 @@ export class AiStage13TacticsManagerV1 implements AiProposalManagerV1 {
           }
         } else {
           const batch = actorsNeedingOrder.slice(0, this.profile.maxActorOrdersPerStep);
-          if (batch.length > 0) intents.push({
-            ...intentBase(observation, { ...updated, actorIds: batch }, `move:${updated.state}:${batch[0]}:${batch[batch.length - 1]}`, 720),
-            kind: "move",
-            actorIds: batch,
-            logicalPosition: anchor
-          });
+          if (batch.length > 0)
+            intents.push({
+              ...intentBase(
+                observation,
+                { ...updated, actorIds: batch },
+                `move:${updated.state}:${batch[0]}:${batch[batch.length - 1]}`,
+                720
+              ),
+              kind: "move",
+              actorIds: batch,
+              logicalPosition: anchor
+            });
         }
       }
 
-      this.proposeSupport(observation, updated, members.slice(0, this.profile.maxActorOrdersPerStep), localEnemies, support, intents);
+      this.proposeSupport(
+        observation,
+        updated,
+        members.slice(0, this.profile.maxActorOrdersPerStep),
+        localEnemies,
+        support,
+        intents
+      );
     }
 
     const boundedIntents = boundedTacticalIntents(intents, this.profile.maxActorOrdersPerStep);
     const issuedEffectIds = new Set(boundedIntents.map((intent) => intent.effectId));
-    const boundedSupport = support.filter((plan) => existingSupportIds.has(plan.planId) || (plan.effectId != null && issuedEffectIds.has(plan.effectId as AiIntentV1["effectId"]))).slice(-32);
+    const boundedSupport = support
+      .filter(
+        (plan) =>
+          existingSupportIds.has(plan.planId) ||
+          (plan.effectId != null && issuedEffectIds.has(plan.effectId as AiIntentV1["effectId"]))
+      )
+      .slice(-32);
     const issuedActorsByPlan = new Map<string, ActorId[]>();
     for (const intent of boundedIntents) {
       if (intent.kind !== "move" && intent.kind !== "attack") continue;
-      issuedActorsByPlan.set(intent.planId, [
-        ...(issuedActorsByPlan.get(intent.planId) ?? []),
-        ...intent.actorIds
-      ]);
+      issuedActorsByPlan.set(intent.planId, [...(issuedActorsByPlan.get(intent.planId) ?? []), ...intent.actorIds]);
     }
-    const committedUpdates = updates.map((squad) => squad.tactics ? {
-      ...squad,
-      tactics: {
-        ...squad.tactics,
-        orderedActorIds: [...new Set([
-          ...squad.tactics.orderedActorIds,
-          ...(issuedActorsByPlan.get(`plan:${squad.squadId}`) ?? [])
-        ])].filter((actorId) => squad.actorIds.includes(actorId)).sort()
-      }
-    } : squad);
+    const committedUpdates = updates.map((squad) =>
+      squad.tactics
+        ? {
+            ...squad,
+            tactics: {
+              ...squad.tactics,
+              orderedActorIds: [
+                ...new Set([
+                  ...squad.tactics.orderedActorIds,
+                  ...(issuedActorsByPlan.get(`plan:${squad.squadId}`) ?? [])
+                ])
+              ]
+                .filter((actorId) => squad.actorIds.includes(actorId))
+                .sort()
+            }
+          }
+        : squad
+    );
     return {
       managerId: this.managerId,
       lane: "army_threat",
       evaluated: true,
       intents: boundedIntents,
-      reasons: [`squads:${committedUpdates.length}`, `support:${boundedSupport.length}`, `orders:${boundedIntents.length}`],
+      reasons: [
+        `squads:${committedUpdates.length}`,
+        `support:${boundedSupport.length}`,
+        `orders:${boundedIntents.length}`
+      ],
       statePatch: { squadUpdates: committedUpdates, support: boundedSupport }
     };
   }
@@ -577,32 +869,61 @@ export class AiStage13TacticsManagerV1 implements AiProposalManagerV1 {
   ): void {
     const wounded = members
       .filter((actor) => actor.healthPermille?.status === "known" && actor.healthPermille.value < 900)
-      .sort((left, right) => (left.healthPermille?.status === "known" ? left.healthPermille.value : 1000) - (right.healthPermille?.status === "known" ? right.healthPermille.value : 1000) || left.actorId.localeCompare(right.actorId));
+      .sort(
+        (left, right) =>
+          (left.healthPermille?.status === "known" ? left.healthPermille.value : 1000) -
+            (right.healthPermille?.status === "known" ? right.healthPermille.value : 1000) ||
+          left.actorId.localeCompare(right.actorId)
+      );
     for (const healer of members) {
       const profile = healer.combatProfile?.status === "known" ? healer.combatProfile.value : null;
       const heal = profile?.healing;
       const healerPosition = knownPosition(healer);
       const target = wounded.find((candidate) => {
         const targetPosition = knownPosition(candidate);
-        return targetPosition !== null && (healerPosition === null || !heal || distance(healerPosition, targetPosition) <= heal.range);
+        return (
+          targetPosition !== null &&
+          (healerPosition === null || !heal || distance(healerPosition, targetPosition) <= heal.range)
+        );
       });
       if (heal && heal.remainingCooldownTicks === 0 && target) {
-        const missingHealth = target.combatProfile?.status === "known" && target.healthPermille?.status === "known"
-          ? Math.floor((target.combatProfile.value.maxHealth * (1000 - target.healthPermille.value)) / 1000)
-          : heal.amount;
+        const missingHealth =
+          target.combatProfile?.status === "known" && target.healthPermille?.status === "known"
+            ? Math.floor((target.combatProfile.value.maxHealth * (1000 - target.healthPermille.value)) / 1000)
+            : heal.amount;
         const pendingHealing = support
-          .filter((plan) => plan.kind === "heal" && plan.targetIds.includes(target.actorId) && plan.state !== "released" && plan.state !== "completed")
+          .filter(
+            (plan) =>
+              plan.kind === "heal" &&
+              plan.targetIds.includes(target.actorId) &&
+              plan.state !== "released" &&
+              plan.state !== "completed"
+          )
           .reduce((total, plan) => total + (plan.usefulCapacity ?? 0), 0);
         const usefulCapacity = Math.min(heal.amount, Math.max(0, missingHealth - pendingHealing));
         if (usefulCapacity <= 0) continue;
         const planId = `support:heal:${healer.actorId}` as AiSupportStateV1["planId"];
         if (!support.some((plan) => plan.planId === planId)) {
           const effectId = `effect:stage13:${squad.squadId}:heal:${healer.actorId}:${target.actorId}`;
-          support.push({ planId, actorIds: [healer.actorId], targetIds: [target.actorId], expiresAt: aiDeadline(observation.tick + Math.max(1, heal.cooldownTicks)), kind: "heal", spellType: null, state: "reserved", effectId, usefulCapacity, reason: "bounded_missing_health" });
+          support.push({
+            planId,
+            actorIds: [healer.actorId],
+            targetIds: [target.actorId],
+            expiresAt: aiDeadline(observation.tick + Math.max(1, heal.cooldownTicks)),
+            kind: "heal",
+            spellType: null,
+            state: "reserved",
+            effectId,
+            usefulCapacity,
+            reason: "bounded_missing_health"
+          });
           intents.push({
             ...intentBase(observation, { ...squad, actorIds: [healer.actorId] }, `heal:${target.actorId}`, 900),
             effectId: effectId as AiIntentV1["effectId"],
-            preconditions: [{ kind: "plan_active", planId: `plan:${squad.squadId}` as AiPlanId }, { kind: "actor_exists", actorId: target.actorId }],
+            preconditions: [
+              { kind: "plan_active", planId: `plan:${squad.squadId}` as AiPlanId },
+              { kind: "actor_exists", actorId: target.actorId }
+            ],
             kind: "heal",
             actorIds: [healer.actorId],
             targetActorId: target.actorId
@@ -613,7 +934,9 @@ export class AiStage13TacticsManagerV1 implements AiProposalManagerV1 {
         if (!spell.ready || !spell.researched || spell.autocast) continue;
         const casterPosition = knownPosition(healer);
         const clusterPool = spell.targetEnemies ? enemies : spell.targetAllies ? wounded : [healer];
-        const targets = (spell.targetEnemies ? enemies : spell.targetAllies ? wounded : spell.targetSelf ? [healer] : [])
+        const targets = (
+          spell.targetEnemies ? enemies : spell.targetAllies ? wounded : spell.targetSelf ? [healer] : []
+        )
           .filter((candidate) => movementDomains(candidate).some((domain) => spell.targetDomains.includes(domain)))
           .filter((candidate) => {
             const position = knownPosition(candidate);
@@ -623,21 +946,35 @@ export class AiStage13TacticsManagerV1 implements AiProposalManagerV1 {
             if (spell.areaRadius <= 0) return left.actorId.localeCompare(right.actorId);
             const leftPosition = knownPosition(left)!;
             const rightPosition = knownPosition(right)!;
-            const leftCluster = clusterPool.filter((candidate) => knownPosition(candidate) !== null && distance(knownPosition(candidate)!, leftPosition) <= spell.areaRadius).length;
-            const rightCluster = clusterPool.filter((candidate) => knownPosition(candidate) !== null && distance(knownPosition(candidate)!, rightPosition) <= spell.areaRadius).length;
+            const leftCluster = clusterPool.filter(
+              (candidate) =>
+                knownPosition(candidate) !== null &&
+                distance(knownPosition(candidate)!, leftPosition) <= spell.areaRadius
+            ).length;
+            const rightCluster = clusterPool.filter(
+              (candidate) =>
+                knownPosition(candidate) !== null &&
+                distance(knownPosition(candidate)!, rightPosition) <= spell.areaRadius
+            ).length;
             return rightCluster - leftCluster || left.actorId.localeCompare(right.actorId);
           });
         const target = targets[0];
         const targetPosition = knownPosition(target);
         if (!target || !targetPosition) continue;
-        const statusValue = target.activeEffectIds.length > 0
-          ? Math.floor((spell.stunTicks + spell.slowTicks) / 5)
-          : spell.stunTicks + spell.slowTicks;
-        const usefulCapacity = spell.summons ? Math.max(1, spell.summonDurationTicks ?? 1) : spell.targetEnemies
-          ? spell.instantDamage + spell.periodicDamage + statusValue
-          : Math.min(spell.instantHeal + spell.periodicHeal, target.combatProfile?.status === "known" && target.healthPermille?.status === "known"
-            ? Math.floor((target.combatProfile.value.maxHealth * (1000 - target.healthPermille.value)) / 1000)
-            : spell.instantHeal + spell.periodicHeal);
+        const statusValue =
+          target.activeEffectIds.length > 0
+            ? Math.floor((spell.stunTicks + spell.slowTicks) / 5)
+            : spell.stunTicks + spell.slowTicks;
+        const usefulCapacity = spell.summons
+          ? Math.max(1, spell.summonDurationTicks ?? 1)
+          : spell.targetEnemies
+            ? spell.instantDamage + spell.periodicDamage + statusValue
+            : Math.min(
+                spell.instantHeal + spell.periodicHeal,
+                target.combatProfile?.status === "known" && target.healthPermille?.status === "known"
+                  ? Math.floor((target.combatProfile.value.maxHealth * (1000 - target.healthPermille.value)) / 1000)
+                  : spell.instantHeal + spell.periodicHeal
+              );
         if (usefulCapacity <= 0) continue;
         const planId = `support:spell:${healer.actorId}:${spell.spellType}` as AiSupportStateV1["planId"];
         if (support.some((plan) => plan.planId === planId)) continue;
@@ -646,7 +983,9 @@ export class AiStage13TacticsManagerV1 implements AiProposalManagerV1 {
           planId,
           actorIds: [healer.actorId],
           targetIds: [target.actorId],
-          expiresAt: aiDeadline(observation.tick + Math.max(1, spell.zoneDurationTicks || spell.stunTicks || spell.slowTicks || 40)),
+          expiresAt: aiDeadline(
+            observation.tick + Math.max(1, spell.zoneDurationTicks || spell.stunTicks || spell.slowTicks || 40)
+          ),
           kind: spell.summons && spell.summonDurationTicks !== null ? "temporary_support" : "spell",
           spellType: spell.spellType,
           state: "reserved",
@@ -655,12 +994,25 @@ export class AiStage13TacticsManagerV1 implements AiProposalManagerV1 {
           reason: spell.areaRadius > 0 ? "bounded_observed_cluster" : "highest_useful_target"
         });
         intents.push({
-          ...intentBase(observation, { ...squad, actorIds: [healer.actorId] }, `cast:${spell.spellType}:${target.actorId}`, 880),
+          ...intentBase(
+            observation,
+            { ...squad, actorIds: [healer.actorId] },
+            `cast:${spell.spellType}:${target.actorId}`,
+            880
+          ),
           effectId: effectId as AiIntentV1["effectId"],
           preconditions: [{ kind: "plan_active", planId: `plan:${squad.squadId}` as AiPlanId }],
           claims: [
-            { claimId: `claim:stage13:caster:${healer.actorId}` as AiIntentV1["claims"][number]["claimId"], kind: "actor", actorId: healer.actorId },
-            { claimId: `claim:stage13:effect:${effectId}` as AiIntentV1["claims"][number]["claimId"], kind: "effect", effectId: effectId as AiIntentV1["effectId"] }
+            {
+              claimId: `claim:stage13:caster:${healer.actorId}` as AiIntentV1["claims"][number]["claimId"],
+              kind: "actor",
+              actorId: healer.actorId
+            },
+            {
+              claimId: `claim:stage13:effect:${effectId}` as AiIntentV1["claims"][number]["claimId"],
+              kind: "effect",
+              effectId: effectId as AiIntentV1["effectId"]
+            }
           ],
           kind: "cast",
           actorId: healer.actorId,

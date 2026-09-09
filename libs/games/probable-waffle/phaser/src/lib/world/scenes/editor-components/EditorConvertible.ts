@@ -33,7 +33,10 @@ export default class EditorConvertible {
   private init() {
     // Only add ConvertibleComponent if no owner is set
     const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
-    if ((!ownerComponent || ownerComponent.getOwner() === undefined) && !getActorComponent(this.gameObject, ConvertibleComponent)) {
+    if (
+      (!ownerComponent || ownerComponent.getOwner() === undefined) &&
+      !getActorComponent(this.gameObject, ConvertibleComponent)
+    ) {
       const convertibleComponent = new ConvertibleComponent(this.gameObject, {
         detectionRange: this.detection_range,
         checkInterval: this.check_interval

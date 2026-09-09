@@ -7,11 +7,13 @@ import { resolvePinnedBaselineSupport } from "./baseline-adapter-v1.mjs";
 
 const toolDirectory = dirname(fileURLToPath(import.meta.url));
 const workspaceRoot = resolve(toolDirectory, "../..");
-const fixtureDirectory = join(toolDirectory, "fixtures");
-const reportDirectory = join(workspaceRoot, "tmp/ai-skirmish-matrix");
-const manifestPath = join(fixtureDirectory, "skirmish-v1.json");
-const manifest = readJson(manifestPath, 4 * 1024 * 1024);
 const args = parseArguments(process.argv.slice(2));
+const manifestPath = args.manifest
+  ? resolveExplicitPath(args.manifest)
+  : join(toolDirectory, "fixtures", "skirmish-v1.json");
+const fixtureDirectory = dirname(manifestPath);
+const reportDirectory = args.output ? resolveExplicitPath(args.output) : join(workspaceRoot, "tmp/ai-skirmish-matrix");
+const manifest = readJson(manifestPath, 4 * 1024 * 1024);
 
 try {
   validateManifest(manifest);
@@ -34,13 +36,16 @@ function dispatch(options) {
   if (options["replay-bundle"]) return replayBundle(options);
   if (options.suite) return runSuite(options);
   if (options.scenario) return runSelectedScenario(options);
-  throw new Error("missing_mode: use --suite, --scenario, --replay-bundle or --compare-bundle");
+  if (options.candidate || options.baseline) return runSuite({ ...options, suite: "release" });
+  throw new Error(
+    "missing_mode: use --candidate with --baseline, --suite, --scenario, --replay-bundle or --compare-bundle"
+  );
 }
 
 function runSuite(options) {
   const suite = requireEnum(options.suite, ["stage-smoke", "release"], "suite");
   if (suite === "stage-smoke") {
-    const stage = requireInteger(options.stage, "stage", 0, 14);
+    const stage = requireInteger(options.stage, "stage", 0, 15);
     if (options["working-tree"] !== true) throw new Error("stage_smoke_requires_working_tree");
     const rows = manifest.rows.filter((row) => row.stages.includes(stage));
     if (rows.length === 0) throw new Error(`missing_stage_coverage:${stage}`);
@@ -54,10 +59,34 @@ function runSuite(options) {
   if (baseline !== baselineManifest.baselineSourceSha) throw new Error("baseline_not_pinned_manifest_sha");
   const missing = manifest.rows.filter((row) => row.fixture === null);
   if (missing.length > 0) throw new Error(`mandatory_coverage_missing:${missing.map((row) => row.id).join(",")}`);
-  const baselineSupport = manifest.rows.map((row) => ({ id: row.id, ...resolvePinnedBaselineSupport(row, baselineManifest) }));
-  throw new Error(
-    `release_execution_deferred_to_stage_15_isolated_runner:${candidate}:${baseline}:${baselineSupport.length}`
-  );
+  const baselineSupport = manifest.rows.map((row) => ({
+    id: row.id,
+    ...resolvePinnedBaselineSupport(row, baselineManifest)
+  }));
+  if (readHead() !== candidate) throw new Error(`candidate_source_not_checked_out:${candidate}`);
+  if (readWorkingTreeSource().length > 0) throw new Error("candidate_source_is_dirty");
+  const report = invokeHarness({
+    suite,
+    rows: manifest.rows,
+    options,
+    candidate,
+    baseline,
+    baselineSupport
+  });
+  const unexecutedBaselineRuntime = baselineSupport
+    .filter((support) => support.runtime.status === "supported")
+    .map((support) => support.id);
+  if (report.status === "passed" && unexecutedBaselineRuntime.length > 0) {
+    process.exitCode = 1;
+    return {
+      ...report,
+      status: "blocked",
+      reason: "baseline_runtime_adapter_not_implemented",
+      baselineSupport,
+      unexecutedBaselineRuntime
+    };
+  }
+  return { ...report, baselineSupport, unexecutedBaselineRuntime };
 }
 
 function runSelectedScenario(options) {
@@ -93,15 +122,20 @@ function invokeHarness(input) {
   };
   const workingTreeSource = input.suite === "stage-smoke" ? readWorkingTreeSource() : "";
   const workingTreeDigest = workingTreeSource.length > 0 ? digestString(workingTreeSource) : null;
-  const fixtureDigest = digestString(JSON.stringify(input.rows.map((row) => {
-    const reference = fixtureReference(row);
-    return { row, fixture: reference ? readJson(join(fixtureDirectory, reference), 1024 * 1024) : null };
-  })));
+  const fixtureDigest = digestString(
+    JSON.stringify(
+      input.rows.map((row) => {
+        const reference = fixtureReference(row);
+        return { row, fixture: reference ? readJson(join(fixtureDirectory, reference), 1024 * 1024) : null };
+      })
+    )
+  );
   const includesAuthoredTactics = input.rows.some((row) => row.authoredFixture === "stage-13-tactics.json");
   const includesAuthoredAdaptation = input.rows.some((row) => row.authoredFixture === "stage-14-adaptation.json");
-  const testPathPattern = includesAuthoredTactics || includesAuthoredAdaptation
-    ? "(ai-(brain|scenario-harness|runtime-scenario|repro-cli|stage-13-tactics-manager|stage-14-adaptation-manager)|authoritative-state-projection|actor-manager-ai-save|ai-profile-defaults|player-ai-controller\\.agent\\.static)\\.spec\\.ts$"
-    : "(ai-(scenario-harness|runtime-scenario|repro-cli)|authoritative-state-projection|actor-manager-ai-save)\\.spec\\.ts$";
+  const testPathPattern =
+    includesAuthoredTactics || includesAuthoredAdaptation
+      ? "(ai-(brain|scenario-harness|runtime-scenario|repro-cli|stage-13-tactics-manager|stage-14-adaptation-manager)|authoritative-state-projection|actor-manager-ai-save|ai-profile-defaults|player-ai-controller\\.agent\\.static)\\.spec\\.ts$"
+      : "(ai-(scenario-harness|runtime-scenario|repro-cli)|authoritative-state-projection|actor-manager-ai-save)\\.spec\\.ts$";
   const command = spawnSync(
     "pnpm",
     [
@@ -115,6 +149,7 @@ function invokeHarness(input) {
     ],
     { cwd: workspaceRoot, env: environment, encoding: "utf8", maxBuffer: 16 * 1024 * 1024 }
   );
+  const jestCounts = parseJestCounts(command.stdout);
   const report = {
     schemaVersion: 1,
     status: command.status === 0 ? "passed" : "failed",
@@ -127,8 +162,17 @@ function invokeHarness(input) {
     rows: input.rows.map((row) => row.id),
     contexts: input.rows
       .filter((row) => fixtureReference(row))
-      .map((row) => ({ scenarioId: row.id, ...readJson(join(fixtureDirectory, fixtureReference(row)), 1024 * 1024).context })),
-    workCounts: { scenarios: input.rows.length, decisions: 0, ticks: 0 },
+      .map((row) => ({
+        scenarioId: row.id,
+        ...readJson(join(fixtureDirectory, fixtureReference(row)), 1024 * 1024).context
+      })),
+    workCounts: {
+      scenarios: input.rows.length,
+      testSuites: jestCounts.testSuites,
+      tests: jestCounts.tests,
+      decisions: 0,
+      ticks: 0
+    },
     process: { exitCode: command.status, signal: command.signal, stdout: command.stdout, stderr: command.stderr }
   };
   if (command.error) throw command.error;
@@ -148,7 +192,10 @@ function replayBundle(options) {
   if (artifact.manifest.replayInputs.dirtySourceDigest !== currentDirtySourceDigest) {
     throw new Error("replay_dirty_source_not_checked_out");
   }
-  if (artifact.manifest.completeness.observation !== "complete" || artifact.manifest.completeness.priorState !== "complete") {
+  if (
+    artifact.manifest.completeness.observation !== "complete" ||
+    artifact.manifest.completeness.priorState !== "complete"
+  ) {
     throw new Error("replay_not_exact:missing_history");
   }
   if (artifact.manifest.kind === "runtime") {
@@ -163,15 +210,31 @@ function replayBundle(options) {
       throw new Error("replay_runtime_digest_mismatch");
     }
   }
-  const untilTick = options["until-tick"] === undefined ? null : requireInteger(options["until-tick"], "until-tick", 0, Number.MAX_SAFE_INTEGER);
+  const untilTick =
+    options["until-tick"] === undefined
+      ? null
+      : requireInteger(options["until-tick"], "until-tick", 0, Number.MAX_SAFE_INTEGER);
   const breakOn = options["break-on"] ?? null;
-  if (breakOn !== null) requireEnum(breakOn, ["duplicate_effect", "progress_overdue", "mission_cancelled", "command_rejected", "decision_complete"], "break-on");
+  if (breakOn !== null)
+    requireEnum(
+      breakOn,
+      ["duplicate_effect", "progress_overdue", "mission_cancelled", "command_rejected", "decision_complete"],
+      "break-on"
+    );
   if (options["emit-fixture"]) {
     const destination = resolveExplicitPath(options["emit-fixture"]);
     mkdirSync(dirname(destination), { recursive: true });
-    writeFileSync(destination, `${JSON.stringify({ schemaVersion: 1, provenance: artifact.manifest.replayInputs, payload: artifact.payload }, null, 2)}\n`, { flag: "wx" });
+    writeFileSync(
+      destination,
+      `${JSON.stringify({ schemaVersion: 1, provenance: artifact.manifest.replayInputs, payload: artifact.payload }, null, 2)}\n`,
+      { flag: "wx" }
+    );
   }
-  return invokeHarness({ suite: "replay", rows: [scenarioRow(artifact.manifest.replayInputs.scenarioId)], options: { ...options, untilTick, breakOn, artifactPath } });
+  return invokeHarness({
+    suite: "replay",
+    rows: [scenarioRow(artifact.manifest.replayInputs.scenarioId)],
+    options: { ...options, untilTick, breakOn, artifactPath }
+  });
 }
 
 function compareBundles(options) {
@@ -180,7 +243,9 @@ function compareBundles(options) {
   validateArtifact(original);
   validateArtifact(candidate);
   const inputDifference = firstDifference(original.manifest.replayInputs, candidate.manifest.replayInputs);
-  const outputDifference = inputDifference ? null : firstDifference(comparisonOutput(original), comparisonOutput(candidate));
+  const outputDifference = inputDifference
+    ? null
+    : firstDifference(comparisonOutput(original), comparisonOutput(candidate));
   return {
     schemaVersion: 1,
     status: "compared",
@@ -193,7 +258,7 @@ function compareBundles(options) {
 
 function comparisonOutput(artifact) {
   return artifact.manifest.kind === "decision"
-    ? artifact.payload.expectedResult ?? null
+    ? (artifact.payload.expectedResult ?? null)
     : {
         authoritativeProjection: artifact.payload.authoritativeProjection,
         outcomes: artifact.payload.outcomes,
@@ -218,12 +283,15 @@ function scenarioRow(id) {
 }
 
 function validateManifest(value) {
-  if (!value || value.schemaVersion !== 1 || value.manifestVersion !== "skirmish-v1" || !Array.isArray(value.rows)) throw new Error("malformed_manifest");
-  if (value.rows.length !== value.requiredCaseCount || value.requiredCaseCount !== 121) throw new Error(`manifest_case_count:${value.rows.length}`);
+  if (!value || value.schemaVersion !== 1 || value.manifestVersion !== "skirmish-v1" || !Array.isArray(value.rows))
+    throw new Error("malformed_manifest");
+  if (value.rows.length !== value.requiredCaseCount || value.requiredCaseCount !== 121)
+    throw new Error(`manifest_case_count:${value.rows.length}`);
   if (!safeReference(value.baseline)) throw new Error("unsafe_baseline_manifest_reference");
   const ids = new Set();
   for (const row of value.rows) {
-    if (!row || typeof row.id !== "string" || !/^[A-Z]+-[0-9]{2}$/.test(row.id) || ids.has(row.id)) throw new Error(`invalid_manifest_row:${row?.id ?? "unknown"}`);
+    if (!row || typeof row.id !== "string" || !/^[A-Z]+-[0-9]{2}$/.test(row.id) || ids.has(row.id))
+      throw new Error(`invalid_manifest_row:${row?.id ?? "unknown"}`);
     if (
       !Array.isArray(row.stages) ||
       row.stages.length === 0 ||
@@ -257,15 +325,30 @@ function fixtureReference(row) {
 }
 
 function validateArtifact(value) {
-  if (!value || typeof value !== "object" || !value.manifest || !value.payload) throw new Error("malformed_repro_artifact");
+  if (!value || typeof value !== "object" || !value.manifest || !value.payload)
+    throw new Error("malformed_repro_artifact");
   const bundle = value.manifest;
-  if (bundle.schemaVersion !== 1 || (bundle.kind !== "decision" && bundle.kind !== "runtime")) throw new Error("unsupported_repro_version");
-  if (!bundle.replayInputs || !safeReference(bundle.replayInputs.snapshotReference) || !safeReference(bundle.replayInputs.inputReference)) throw new Error("unsafe_repro_reference");
+  if (bundle.schemaVersion !== 1 || (bundle.kind !== "decision" && bundle.kind !== "runtime"))
+    throw new Error("unsupported_repro_version");
+  if (
+    !bundle.replayInputs ||
+    !safeReference(bundle.replayInputs.snapshotReference) ||
+    !safeReference(bundle.replayInputs.inputReference)
+  )
+    throw new Error("unsafe_repro_reference");
   if (containsMarkup(value)) throw new Error("unsafe_repro_markup");
 }
 
 function safeReference(value) {
-  return typeof value === "string" && value.length > 0 && value.length <= 512 && !value.startsWith("/") && !value.includes("..") && !value.includes("\\") && !value.includes(":");
+  return (
+    typeof value === "string" &&
+    value.length > 0 &&
+    value.length <= 512 &&
+    !value.startsWith("/") &&
+    !value.includes("..") &&
+    !value.includes("\\") &&
+    !value.includes(":")
+  );
 }
 
 function containsMarkup(value) {
@@ -307,6 +390,20 @@ function parseArguments(tokens) {
     }
   }
   return parsed;
+}
+
+function parseJestCounts(output) {
+  const normalized = output.replace(/\u001b\[[0-9;]*m/g, "");
+  return {
+    testSuites: parsePassedCount(normalized, "Test Suites"),
+    tests: parsePassedCount(normalized, "Tests")
+  };
+}
+
+function parsePassedCount(output, label) {
+  const line = output.split("\n").find((candidate) => candidate.trimStart().startsWith(`${label}:`));
+  const match = line?.match(/([0-9]+) passed/);
+  return match ? Number(match[1]) : 0;
 }
 
 function readJson(path, maxBytes) {

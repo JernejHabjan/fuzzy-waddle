@@ -47,16 +47,21 @@ export function canonicalizeAiObservationV1(observation: AiObservationV1): AiObs
                   ...actor.combatProfile.value,
                   attacks: [...actor.combatProfile.value.attacks]
                     .map((attack) => ({ ...attack, targetDomains: [...attack.targetDomains].sort() }))
-                    .sort((left, right) => serializeCanonicalAiValue(left).localeCompare(serializeCanonicalAiValue(right))),
+                    .sort((left, right) =>
+                      serializeCanonicalAiValue(left).localeCompare(serializeCanonicalAiValue(right))
+                    ),
                   spells: [...actor.combatProfile.value.spells]
                     .map((spell) => ({ ...spell, targetDomains: [...spell.targetDomains].sort() }))
                     .sort((left, right) => left.spellType.localeCompare(right.spellType)),
-                  statuses: [...actor.combatProfile.value.statuses]
-                    .sort((left, right) => left.type.localeCompare(right.type) || left.remainingTicks - right.remainingTicks)
+                  statuses: [...actor.combatProfile.value.statuses].sort(
+                    (left, right) => left.type.localeCompare(right.type) || left.remainingTicks - right.remainingTicks
+                  )
                 }
               }
             }
-          : actor.combatProfile ? { combatProfile: actor.combatProfile } : {}),
+          : actor.combatProfile
+            ? { combatProfile: actor.combatProfile }
+            : {}),
         ...(actor.containerState?.status === "known"
           ? {
               containerState: {
@@ -84,7 +89,10 @@ export function canonicalizeAiObservationV1(observation: AiObservationV1): AiObs
         ...candidate,
         cost: Object.fromEntries(Object.entries(candidate.cost).sort(([left], [right]) => left.localeCompare(right)))
       }))
-      .sort((left, right) => left.producerId.localeCompare(right.producerId) || left.researchType.localeCompare(right.researchType)),
+      .sort(
+        (left, right) =>
+          left.producerId.localeCompare(right.producerId) || left.researchType.localeCompare(right.researchType)
+      ),
     modeGoals: [...observation.modeGoals]
       .map((goal) => ({
         ...goal,
@@ -106,14 +114,22 @@ export function canonicalizeAiObservationV1(observation: AiObservationV1): AiObs
             scoutCoverageAccessNodeIds: [...observation.map.scoutCoverageAccessNodeIds].sort(),
             dynamicObstacleActorIds: [...observation.map.dynamicObstacleActorIds].sort(),
             ...(observation.map.constructionCells
-              ? { constructionCells: [...observation.map.constructionCells].sort((left, right) => left.tileKey.localeCompare(right.tileKey)) }
+              ? {
+                  constructionCells: [...observation.map.constructionCells].sort((left, right) =>
+                    left.tileKey.localeCompare(right.tileKey)
+                  )
+                }
               : {}),
             ...(observation.map.accessGraph
               ? {
                   accessGraph: {
                     ...observation.map.accessGraph,
-                    nodes: [...observation.map.accessGraph.nodes].sort((left, right) => left.nodeId.localeCompare(right.nodeId)),
-                    links: [...observation.map.accessGraph.links].sort((left, right) => left.linkId.localeCompare(right.linkId)),
+                    nodes: [...observation.map.accessGraph.nodes].sort((left, right) =>
+                      left.nodeId.localeCompare(right.nodeId)
+                    ),
+                    links: [...observation.map.accessGraph.links].sort((left, right) =>
+                      left.linkId.localeCompare(right.linkId)
+                    ),
                     transferPoints: [...observation.map.accessGraph.transferPoints].sort((left, right) =>
                       left.transferId.localeCompare(right.transferId)
                     ),
@@ -151,15 +167,20 @@ export function canonicalizeAiBrainStateV1(state: AiBrainStateV1): AiBrainStateV
       incidents: [...state.skirmish.incidents]
         .map((incident) => ({ ...incident, hostileActorIds: [...incident.hostileActorIds].sort() }))
         .sort((left, right) => left.incidentId.localeCompare(right.incidentId)),
-      timeline: [...state.skirmish.timeline]
-        .sort((left, right) => left.tick - right.tick || left.eventId.localeCompare(right.eventId))
+      timeline: [...state.skirmish.timeline].sort(
+        (left, right) => left.tick - right.tick || left.eventId.localeCompare(right.eventId)
+      )
     },
     bases: [...state.bases]
       .map((base) => ({
         ...base,
         memberActorIds: [...base.memberActorIds].sort(),
         ...(base.rejectedSiteKeys
-          ? { rejectedSiteKeys: [...base.rejectedSiteKeys].sort((left, right) => left.siteKey.localeCompare(right.siteKey)) }
+          ? {
+              rejectedSiteKeys: [...base.rejectedSiteKeys].sort((left, right) =>
+                left.siteKey.localeCompare(right.siteKey)
+              )
+            }
           : {})
       }))
       .sort((left, right) => left.baseId.localeCompare(right.baseId)),
@@ -217,7 +238,9 @@ export function canonicalizeAiBrainStateV1(state: AiBrainStateV1): AiBrainStateV
               tactics: {
                 ...squad.tactics,
                 orderedActorIds: [...squad.tactics.orderedActorIds].sort(),
-                assignedPositions: [...squad.tactics.assignedPositions].sort((left, right) => left.actorId.localeCompare(right.actorId)),
+                assignedPositions: [...squad.tactics.assignedPositions].sort((left, right) =>
+                  left.actorId.localeCompare(right.actorId)
+                ),
                 damageReservations: [...squad.tactics.damageReservations].sort(
                   (left, right) => left.impactTick - right.impactTick || left.actorId.localeCompare(right.actorId)
                 ),
@@ -254,7 +277,9 @@ export function canonicalizeAiBrainStateV1(state: AiBrainStateV1): AiBrainStateV
                       satisfiedActorIds: [...plan.lifecycle.capacityDemand.satisfiedActorIds].sort(),
                       queuedIds: [...plan.lifecycle.capacityDemand.queuedIds].sort(),
                       constructingIds: [...plan.lifecycle.capacityDemand.constructingIds].sort(),
-                      acceptedNotObservedEffectIds: [...plan.lifecycle.capacityDemand.acceptedNotObservedEffectIds].sort(),
+                      acceptedNotObservedEffectIds: [
+                        ...plan.lifecycle.capacityDemand.acceptedNotObservedEffectIds
+                      ].sort(),
                       preferredObjectNames: [...plan.lifecycle.capacityDemand.preferredObjectNames].sort()
                     }
                   : null

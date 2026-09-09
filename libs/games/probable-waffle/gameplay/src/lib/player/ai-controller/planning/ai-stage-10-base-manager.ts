@@ -38,8 +38,12 @@ function isMainBuilding(actor: AiObservedActorV1): boolean {
 function resourceActors(observation: AiObservationV1): AiObservedActorV1[] {
   return observation.actors
     .filter((actor) => actor.relation !== "enemy" && actor.visibility !== "last_seen")
-    .filter((actor) => actor.resourceState.status === "known" && actor.resourceState.value.available.status === "known")
-    .filter((actor) => actor.resourceState.status === "known" && actor.resourceState.value.available.value > 0)
+    .filter(
+      (actor) =>
+        actor.resourceState.status === "known" &&
+        actor.resourceState.value.available.status === "known" &&
+        actor.resourceState.value.available.value > 0
+    )
     .filter((actor) => position(actor) !== null)
     .sort((left, right) => left.actorId.localeCompare(right.actorId));
 }
@@ -48,7 +52,12 @@ function siteCandidates(anchor: Vector3Simple, profile: AiProfileConfigV1): Vect
   const rings = [4, 6, 8, 10];
   const candidates: Vector3Simple[] = [];
   for (const radius of rings) {
-    for (const [x, y] of [[radius, 0], [0, radius], [-radius, 0], [0, -radius]] as const) {
+    for (const [x, y] of [
+      [radius, 0],
+      [0, radius],
+      [-radius, 0],
+      [0, -radius]
+    ] as const) {
       candidates.push({ x: anchor.x + x, y: anchor.y + y, z: anchor.z });
       if (candidates.length >= profile.maxPlacementCandidatesPerStep) return candidates;
     }
@@ -72,12 +81,23 @@ export class AiStage10BaseManagerV1 implements AiProposalManagerV1 {
   propose(observation: AiObservationV1, state: AiBrainStateV1): AiManagerProposalV1 {
     const catalog = this.getCatalog();
     if (!catalog || catalog.generation !== observation.generation) {
-      return { managerId: this.managerId, lane: "essential_economy", evaluated: false, intents: [], reasons: ["catalog_not_ready"] };
+      return {
+        managerId: this.managerId,
+        lane: "essential_economy",
+        evaluated: false,
+        intents: [],
+        reasons: ["catalog_not_ready"]
+      };
     }
 
     const owned = selfOwned(observation);
-    const anchors = owned.filter(isMainBuilding).filter((actor) => position(actor) !== null).sort((left, right) => left.actorId.localeCompare(right.actorId));
-    const priorByAnchor = new Map(state.bases.filter((base) => base.anchorActorId).map((base) => [base.anchorActorId!, base]));
+    const anchors = owned
+      .filter(isMainBuilding)
+      .filter((actor) => position(actor) !== null)
+      .sort((left, right) => left.actorId.localeCompare(right.actorId));
+    const priorByAnchor = new Map(
+      state.bases.filter((base) => base.anchorActorId).map((base) => [base.anchorActorId!, base])
+    );
     const bases: AiBaseStateV1[] = anchors.map((anchor) => {
       const anchorPosition = position(anchor)!;
       const prior = priorByAnchor.get(anchor.actorId);
@@ -101,41 +121,66 @@ export class AiStage10BaseManagerV1 implements AiProposalManagerV1 {
         accessNodeId: anchor.accessNodeId.status === "known" ? anchor.accessNodeId.value : null,
         anchorPosition,
         reservedSiteKey: prior?.reservedSiteKey ?? establishedExpansion?.reservedSiteKey ?? null,
-        rejectedSiteKeys: (prior?.rejectedSiteKeys ?? establishedExpansion?.rejectedSiteKeys ?? []).filter((entry) => entry.retryAfterTick > observation.tick),
+        rejectedSiteKeys: (prior?.rejectedSiteKeys ?? establishedExpansion?.rejectedSiteKeys ?? []).filter(
+          (entry) => entry.retryAfterTick > observation.tick
+        ),
         expansion: prior?.expansion ?? establishedExpansion?.expansion
       };
     });
-    for (const prior of state.bases.filter((base) => base.anchorActorId && !anchors.some((anchor) => anchor.actorId === base.anchorActorId))) {
+    for (const prior of state.bases.filter(
+      (base) => base.anchorActorId && !anchors.some((anchor) => anchor.actorId === base.anchorActorId)
+    )) {
       bases.push({ ...prior, active: false, lifecycle: prior.lifecycle === "evacuating" ? "evacuating" : "lost" });
     }
 
     const primary = bases.find((base) => base.lifecycle === "active") ?? null;
     if (!primary || !primary.anchorPosition) {
-      return { managerId: this.managerId, lane: "essential_economy", evaluated: true, intents: [], reasons: ["main_structure_not_observed"], statePatch: { bases } };
+      return {
+        managerId: this.managerId,
+        lane: "essential_economy",
+        evaluated: true,
+        intents: [],
+        reasons: ["main_structure_not_observed"],
+        statePatch: { bases }
+      };
     }
 
-    const nearbyResources = resourceActors(observation).filter((resource) => distance(primary.anchorPosition!, position(resource)!) <= BASE_MEMBER_RADIUS);
+    const nearbyResources = resourceActors(observation).filter(
+      (resource) => distance(primary.anchorPosition!, position(resource)!) <= BASE_MEMBER_RADIUS
+    );
     const localResourceValue = nearbyResources.reduce(
-      (total, resource) => total + (resource.resourceState.status === "known" && resource.resourceState.value.available.status === "known" ? resource.resourceState.value.available.value : 0),
+      (total, resource) =>
+        total +
+        (resource.resourceState.status === "known" && resource.resourceState.value.available.status === "known"
+          ? resource.resourceState.value.available.value
+          : 0),
       0
     );
     const deliveredIncome = observation.resources.reduce(
-      (total, entry) => total + (entry.deliveredIncomePerMinute.status === "known" ? entry.deliveredIncomePerMinute.value : 0),
+      (total, entry) =>
+        total + (entry.deliveredIncomePerMinute.status === "known" ? entry.deliveredIncomePerMinute.value : 0),
       0
     );
-    const expansionTrigger = localResourceValue === 0
-      ? "resource_life"
-      : deliveredIncome === 0 && observation.tick >= AI_STAGE_10_EXPANSION_SATURATION_TICKS
-        ? "worker_capacity"
-        : null;
+    const expansionTrigger =
+      localResourceValue === 0
+        ? "resource_life"
+        : deliveredIncome === 0 && observation.tick >= AI_STAGE_10_EXPANSION_SATURATION_TICKS
+          ? "worker_capacity"
+          : null;
     const distantResource = resourceActors(observation)
       .filter((resource) => distance(primary.anchorPosition!, position(resource)!) > BASE_MEMBER_RADIUS)
-      .sort((left, right) => distance(primary.anchorPosition!, position(left)!) - distance(primary.anchorPosition!, position(right)!) || left.actorId.localeCompare(right.actorId))[0];
+      .sort(
+        (left, right) =>
+          distance(primary.anchorPosition!, position(left)!) - distance(primary.anchorPosition!, position(right)!) ||
+          left.actorId.localeCompare(right.actorId)
+      )[0];
     const intents: AiIntentV1[] = [];
     const existingExpansion = bases.find((base) => base.baseId.startsWith("base:expansion:"));
     if (expansionTrigger && distantResource && !existingExpansion) {
       const resourcePosition = position(distantResource)!;
-      const candidate = siteCandidates(resourcePosition, this.profile).find((entry) => !primary.rejectedSiteKeys?.some((rejected) => rejected.siteKey === stableSiteKey(primary, entry)));
+      const candidate = siteCandidates(resourcePosition, this.profile).find(
+        (entry) => !primary.rejectedSiteKeys?.some((rejected) => rejected.siteKey === stableSiteKey(primary, entry))
+      );
       if (candidate) {
         const siteKey = stableSiteKey(primary, candidate);
         bases.push({
@@ -148,20 +193,35 @@ export class AiStage10BaseManagerV1 implements AiProposalManagerV1 {
           anchorPosition: candidate,
           reservedSiteKey: siteKey,
           rejectedSiteKeys: [],
-          expansion: { trigger: expansionTrigger, requestedAtTick: observation.tick, transportPlanId: null, evacuationRouteNodeId: primary.accessNodeId ?? null }
+          expansion: {
+            trigger: expansionTrigger,
+            requestedAtTick: observation.tick,
+            transportPlanId: null,
+            evacuationRouteNodeId: primary.accessNodeId ?? null
+          }
         });
       }
     }
-    const expansion = bases.find((base) => base.lifecycle === "proposed" && base.anchorPosition && base.reservedSiteKey);
+    const expansion = bases.find(
+      (base) => base.lifecycle === "proposed" && base.anchorPosition && base.reservedSiteKey
+    );
     const macroOpening = state.opening.archetypeId.endsWith(":macro");
     const mainObject = anchors[0]?.objectName;
     const builder = mainObject
-      ? owned.find((actor) => catalog.entries.some((entry) => entry.sourceObjectName === actor.objectName && entry.constructs.includes(mainObject)))
+      ? owned.find((actor) =>
+          catalog.entries.some(
+            (entry) => entry.sourceObjectName === actor.objectName && entry.constructs.includes(mainObject)
+          )
+        )
       : undefined;
     if (expansion && builder && expansion.anchorPosition) {
       // Main-building construction capability is definition-derived. If the faction has no legal
       // expansion structure exposed, the saved proposal remains explicit rather than guessing one.
-      const canConstructMain = mainObject && catalog.entries.some((entry) => entry.sourceObjectName === builder.objectName && entry.constructs.includes(mainObject));
+      const canConstructMain =
+        mainObject &&
+        catalog.entries.some(
+          (entry) => entry.sourceObjectName === builder.objectName && entry.constructs.includes(mainObject)
+        );
       if (canConstructMain) {
         const ordinal = state.identities.nextIntent;
         const intentId = `intent:expansion:${ordinal}` as AiIntentV1["intentId"];
@@ -173,12 +233,20 @@ export class AiStage10BaseManagerV1 implements AiProposalManagerV1 {
           planId: `plan:expansion:${expansion.baseId}` as AiIntentV1["planId"],
           demandId: `demand:expansion:${expansion.baseId}` as AiDemandV1["demandId"],
           kind: "construct",
-          lane: "committed_operations",
+          lane: "optional_infrastructure_tech",
           proposedTick: observation.tick,
           urgencyClass: 4,
           utility: macroOpening ? 660 : 520,
           preconditions: [{ kind: "actor_exists", actorId: builder.actorId }],
-          claims: [{ claimId, kind: "site", siteKey: expansion.reservedSiteKey! }, { claimId: `${claimId}:builder` as AiIntentV1["claims"][number]["claimId"], kind: "actor", actorId: builder.actorId }, { claimId: `${claimId}:effect` as AiIntentV1["claims"][number]["claimId"], kind: "effect", effectId }],
+          claims: [
+            { claimId, kind: "site", siteKey: expansion.reservedSiteKey! },
+            {
+              claimId: `${claimId}:builder` as AiIntentV1["claims"][number]["claimId"],
+              kind: "actor",
+              actorId: builder.actorId
+            },
+            { claimId: `${claimId}:effect` as AiIntentV1["claims"][number]["claimId"], kind: "effect", effectId }
+          ],
           reasonCode: `expansion:${expansion.expansion?.trigger ?? "unknown"}:${macroOpening ? "macro_priority" : "candidate_reserved"}`,
           builderIds: [builder.actorId],
           objectName: mainObject!,

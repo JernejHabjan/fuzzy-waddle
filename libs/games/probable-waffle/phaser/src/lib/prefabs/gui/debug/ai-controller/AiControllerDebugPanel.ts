@@ -100,10 +100,16 @@ export default class AiControllerDebugPanel extends Phaser.GameObjects.Container
   private backButton?: Phaser.GameObjects.Container;
   private selectedCategory: string | null = null;
   private selectedPlayerNumber: PlayerNumber | null = null;
+  private panelBackdrop!: Phaser.GameObjects.Rectangle;
 
   private init() {
     this.button.on("action", this.toggleLabels, this);
     this.aiControllerDebugLabel.destroy();
+
+    this.panelBackdrop = this.scene.add.rectangle(-215, 205, 440, 350, 0x111827, 0.92);
+    this.panelBackdrop.setStrokeStyle(2, 0xd9c9a3, 0.9);
+    this.panelBackdrop.setVisible(false);
+    this.addAt(this.panelBackdrop, 0);
 
     this.labelsContainer = this.scene.add.container(0, 50);
     this.labelsContainer.setVisible(false);
@@ -127,6 +133,7 @@ export default class AiControllerDebugPanel extends Phaser.GameObjects.Container
   private toggleLabels() {
     this.enabled = !this.enabled;
     this.buttonText.text = this.enabled ? "Hide AI debugging" : "Show AI debugging";
+    this.panelBackdrop.setVisible(this.enabled);
     const aiDebuggingService = getSceneService(this.mainScene, DebuggingService);
     if (aiDebuggingService) {
       aiDebuggingService.debug = this.enabled;
@@ -283,15 +290,13 @@ export default class AiControllerDebugPanel extends Phaser.GameObjects.Container
       { id: "runtime", label: "Runtime & Limits" }
     ];
 
-    let currentY = 40;
-    categories.forEach((category) => {
-      const button = this.createCategoryButton(category.label, category.id, 0, currentY);
-      const buttonWidth = button.getBounds().width;
-      button.x = -(buttonWidth / 2 + buttonWidth / 4);
+    categories.forEach((category, index) => {
+      const column = index % 2;
+      const row = Math.floor(index / 2);
+      const button = this.createCategoryButton(category.label, category.id, column === 0 ? -386 : -166, 40 + row * 35);
 
       this.categoryButtonsContainer.add(button);
       this.categoryButtons.set(category.id, button);
-      currentY += 35;
     });
 
     if (this.playerBackButton) this.playerBackButton.destroy();

@@ -1,5 +1,5 @@
 import { aiDeadline, type AiPlanId } from "../contracts/ai-core-types";
-import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiBrainStateV1, AiStrategyStateV1 } from "../contracts/ai-brain-state-v1";
 import type { AiCommandOutcomeV1 } from "../contracts/ai-command-contracts";
 import type { AiIntentDecisionV1, AiIntentV1 } from "../contracts/ai-intent-v1";
 import type { AiObservationV1 } from "../contracts/ai-observation-v1";
@@ -27,7 +27,8 @@ function strategyFor(observation: AiObservationV1, state: AiBrainStateV1): AiStr
   const activeObjective = observation.modeGoals.find((goal) => goal.state === "active")?.id ?? null;
   const openingComplete = state.opening.plan.lifecycle === "completed";
   const candidate = visibleThreat ? "defend" : openingComplete ? "stabilize" : "opening";
-  const canInterrupt = candidate === "defend" || previous.goalId === null || observation.tick >= previous.commitmentDeadline.dueTick;
+  const canInterrupt =
+    candidate === "defend" || previous.goalId === null || observation.tick >= previous.commitmentDeadline.dueTick;
   if (candidate === previous.stance || !canInterrupt) return previous;
   return {
     stance: candidate,
@@ -41,7 +42,12 @@ function strategyFor(observation: AiObservationV1, state: AiBrainStateV1): AiStr
 }
 
 function isTerminal(outcome: AiCommandOutcomeV1): boolean {
-  return outcome.kind === "completed" || outcome.kind === "rejected" || outcome.kind === "cancelled" || outcome.kind === "failed";
+  return (
+    outcome.kind === "completed" ||
+    outcome.kind === "rejected" ||
+    outcome.kind === "cancelled" ||
+    outcome.kind === "failed"
+  );
 }
 
 function reconcileReservations(state: AiBrainStateV1, outcomes: readonly AiCommandOutcomeV1[], tick: number) {
@@ -54,7 +60,9 @@ function reconcileReservations(state: AiBrainStateV1, outcomes: readonly AiComma
 }
 
 function hasCycle(state: AiBrainStateV1, planId: AiPlanId): boolean {
-  const next = new Map(state.waitEdges.filter((edge) => edge.toPlanId !== null).map((edge) => [edge.fromPlanId, edge.toPlanId!]));
+  const next = new Map(
+    state.waitEdges.filter((edge) => edge.toPlanId !== null).map((edge) => [edge.fromPlanId, edge.toPlanId!])
+  );
   let cursor: AiPlanId | undefined = planId;
   const seen = new Set<AiPlanId>();
   while (cursor) {
@@ -84,7 +92,9 @@ export function planAiStage6V1(
     return {
       lane,
       deficit: wasConsidered ? 0 : Math.min(8, (existing?.deficit ?? 0) + 1),
-      lastConsideredTick: wasConsidered ? observation.tick : (existing?.lastConsideredTick ?? previous.lastCommittedTick),
+      lastConsideredTick: wasConsidered
+        ? observation.tick
+        : (existing?.lastConsideredTick ?? previous.lastCommittedTick),
       lastServicedTick: wasConsidered ? observation.tick : (existing?.lastServicedTick ?? previous.lastCommittedTick),
       continuationCursor: ((existing?.continuationCursor ?? 0) + 1) % Math.max(1, profile.maxIntentProposalsPerStep)
     };
@@ -93,7 +103,8 @@ export function planAiStage6V1(
   const overdue = previous.progress.filter((progress) => progress.milestoneDeadline.dueTick <= observation.tick);
   const blockers = [...previous.blockers];
   for (const progress of overdue) {
-    if (blockers.some((blocker) => blocker.planId === progress.planId && blocker.status !== "failed_optional")) continue;
+    if (blockers.some((blocker) => blocker.planId === progress.planId && blocker.status !== "failed_optional"))
+      continue;
     blockers.push({
       blockerId: `blocker:progress:${progress.planId}:${progress.milestoneDeadline.dueTick}`,
       planId: progress.planId,
@@ -104,7 +115,9 @@ export function planAiStage6V1(
       status: "recovering"
     });
   }
-  const cyclicPlan = [...new Set(previous.waitEdges.map((edge) => edge.fromPlanId))].sort().find((planId) => hasCycle(previous, planId));
+  const cyclicPlan = [...new Set(previous.waitEdges.map((edge) => edge.fromPlanId))]
+    .sort()
+    .find((planId) => hasCycle(previous, planId));
   const preDecisions: AiIntentDecisionV1[] = [];
   if (cyclicPlan) {
     const reversible = reservations
@@ -114,9 +127,19 @@ export function planAiStage6V1(
       preDecisions.push({
         outcome: "rejected",
         intent: sortedBatches.flatMap((batch) => batch.intents).find((intent) => intent.planId === cyclicPlan) ?? {
-          kind: "concede", intentId: "intent:supervisor:cycle", effectId: "effect:supervisor:cycle", planId: cyclicPlan,
-          demandId: null, lane: "essential_economy", proposedTick: observation.tick, urgencyClass: 0, utility: 0,
-          preconditions: [], claims: [], reasonCode: "dependency_cycle", reason: "dependency_cycle"
+          kind: "concede",
+          intentId: "intent:supervisor:cycle",
+          effectId: "effect:supervisor:cycle",
+          planId: cyclicPlan,
+          demandId: null,
+          lane: "essential_economy",
+          proposedTick: observation.tick,
+          urgencyClass: 0,
+          utility: 0,
+          preconditions: [],
+          claims: [],
+          reasonCode: "dependency_cycle",
+          reason: "dependency_cycle"
         },
         reason: "claim_conflict",
         detail: `dependency_cycle_released:${reversible.claimId}`
@@ -128,10 +151,19 @@ export function planAiStage6V1(
       ...previous,
       lastCommittedTick: observation.tick,
       strategy: strategyFor(observation, previous),
-      reservations: cyclicPlan ? reservations.filter((reservation) => !(reservation.ownerPlanId === cyclicPlan && reservation.state.kind === "provisional")) : reservations,
+      reservations: cyclicPlan
+        ? reservations.filter(
+            (reservation) => !(reservation.ownerPlanId === cyclicPlan && reservation.state.kind === "provisional")
+          )
+        : reservations,
       pendingOutcomes: outcomes.slice(-previous.authority.pendingLimit),
-      authority: { ...previous.authority, health: previous.authority.health === "technical_fault" ? "technical_fault" : "healthy" },
-      blockers: blockers.sort((left, right) => left.enteredTick - right.enteredTick || left.blockerId.localeCompare(right.blockerId)),
+      authority: {
+        ...previous.authority,
+        health: previous.authority.health === "technical_fault" ? "technical_fault" : "healthy"
+      },
+      blockers: blockers.sort(
+        (left, right) => left.enteredTick - right.enteredTick || left.blockerId.localeCompare(right.blockerId)
+      ),
       lanes,
       scheduler: { ...previous.scheduler, decisionSequence: previous.scheduler.decisionSequence + 1 }
     },

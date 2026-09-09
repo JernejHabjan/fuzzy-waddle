@@ -5,7 +5,10 @@ import { ProductionComponent } from "../production/production-component";
 import { ResearchComponent } from "../research/research-component";
 import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
 import { researchDefinitions } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/research/research-definitions";
-import { QueueItemType, type UnifiedQueueItem } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/queue-item";
+import {
+  QueueItemType,
+  type UnifiedQueueItem
+} from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/queue-item";
 import { SharedQueue } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/shared-queue";
 import { PaymentType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/payment-type";
 import type { ProductionQueueItem } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/game-object";

@@ -149,11 +149,21 @@ function routeCapability(observation: AiObservationV1, members: readonly AiObser
     (actor) => actor.relation === "self" && actor.containerState?.status === "known"
   );
   const waterTransportSeats = transports
-    .filter((actor) => actor.containerState?.status === "known" && actor.containerState.value.mobileDomains.includes("water"))
-    .reduce((total, actor) => total + (actor.containerState?.status === "known" ? actor.containerState.value.capacity : 0), 0);
+    .filter(
+      (actor) => actor.containerState?.status === "known" && actor.containerState.value.mobileDomains.includes("water")
+    )
+    .reduce(
+      (total, actor) => total + (actor.containerState?.status === "known" ? actor.containerState.value.capacity : 0),
+      0
+    );
   const airTransportSeats = transports
-    .filter((actor) => actor.containerState?.status === "known" && actor.containerState.value.mobileDomains.includes("air"))
-    .reduce((total, actor) => total + (actor.containerState?.status === "known" ? actor.containerState.value.capacity : 0), 0);
+    .filter(
+      (actor) => actor.containerState?.status === "known" && actor.containerState.value.mobileDomains.includes("air")
+    )
+    .reduce(
+      (total, actor) => total + (actor.containerState?.status === "known" ? actor.containerState.value.capacity : 0),
+      0
+    );
   return {
     moverDomains: [...new Set(members.flatMap(domains))].sort(),
     targetDomains: [...new Set(members.flatMap(targetDomains))].sort(),
@@ -174,12 +184,14 @@ function nextQuestion(
     .sort()[0];
   if (!frontier) return undefined;
   const questionId = `question:frontier:${frontier}` as AiKnowledgeStateV1["questions"][number]["questionId"];
-  return knowledge.questions.find((question) => question.questionId === questionId) ?? {
-    questionId,
-    kind: `safe_route:${frontier}`,
-    createdTick: observation.tick,
-    state: "open"
-  };
+  return (
+    knowledge.questions.find((question) => question.questionId === questionId) ?? {
+      questionId,
+      kind: `safe_route:${frontier}`,
+      createdTick: observation.tick,
+      state: "open"
+    }
+  );
 }
 
 /**
@@ -198,7 +210,13 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
   propose(observation: AiObservationV1, state: AiBrainStateV1): AiManagerProposalV1 {
     const catalog = this.getCatalog();
     if (!catalog || catalog.generation !== observation.generation) {
-      return { managerId: this.managerId, lane: "army_threat", evaluated: false, intents: [], reasons: ["catalog_not_ready"] };
+      return {
+        managerId: this.managerId,
+        lane: "army_threat",
+        evaluated: false,
+        intents: [],
+        reasons: ["catalog_not_ready"]
+      };
     }
 
     const combat = ownedCombat(observation);
@@ -206,37 +224,54 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
     const rememberedEnemies = hostileContacts(observation).filter((actor) => actor.visibility === "last_seen");
     const home = homePosition(observation);
     const homeAccess = homeNode(observation);
-    const incidents = visibleEnemies.map((enemy) => ({
-      incidentId: `incident:${baseId(state)}:${regionId(enemy) ?? enemy.actorId}`,
-      baseId: baseId(state),
-      regionId: regionId(enemy),
-      hostileActorIds: [enemy.actorId],
-      kind: incidentKind(enemy),
-      confidencePermille: 1000,
-      severity: Math.min(1000, canFight(enemy) ? 600 : 250),
-      createdTick: observation.tick,
-      expiresAt: aiDeadline(observation.tick + THREAT_EXPIRY_TICKS)
-    } satisfies AiThreatIncidentV1);
-    const liveIncidents = [
-      ...state.skirmish.incidents.filter((incident) => incident.expiresAt.dueTick > observation.tick),
-      ...incidents
-    ].sort((left, right) => left.incidentId.localeCompare(right.incidentId));
+    const incidents = visibleEnemies.map(
+      (enemy) =>
+        ({
+          incidentId: `incident:${baseId(state)}:${regionId(enemy) ?? enemy.actorId}`,
+          baseId: baseId(state),
+          regionId: regionId(enemy),
+          hostileActorIds: [enemy.actorId],
+          kind: incidentKind(enemy),
+          confidencePermille: 1000,
+          severity: Math.min(1000, canFight(enemy) ? 600 : 250),
+          createdTick: observation.tick,
+          expiresAt: aiDeadline(observation.tick + THREAT_EXPIRY_TICKS)
+        }) satisfies AiThreatIncidentV1
+    );
+    const incidentById = new Map(
+      state.skirmish.incidents
+        .filter((incident) => incident.expiresAt.dueTick > observation.tick)
+        .map((incident) => [incident.incidentId, incident] as const)
+    );
+    for (const incident of incidents) incidentById.set(incident.incidentId, incident);
+    const liveIncidents = [...incidentById.values()].sort((left, right) =>
+      left.incidentId.localeCompare(right.incidentId)
+    );
     const currentQuestion = nextQuestion(observation, state.knowledge);
     const questions = [
       ...state.knowledge.questions.filter((question) => question.state === "open" || question.state === "answered"),
       ...(currentQuestion ? [currentQuestion] : [])
-    ].filter((question, index, all) => all.findIndex((candidate) => candidate.questionId === question.questionId) === index)
+    ]
+      .filter(
+        (question, index, all) => all.findIndex((candidate) => candidate.questionId === question.questionId) === index
+      )
       .sort((left, right) => left.questionId.localeCompare(right.questionId));
 
-    let skirmish = { ...state.skirmish, incidents: liveIncidents } satisfies AiSkirmishStateV1;
-    for (const incident of incidents) skirmish = withTimeline(skirmish, observation.tick, "threat", incident.incidentId, incident.kind);
-    if (currentQuestion) skirmish = withTimeline(skirmish, observation.tick, "question", currentQuestion.questionId, currentQuestion.kind);
+    let skirmish: AiSkirmishStateV1 = { ...state.skirmish, incidents: liveIncidents };
+    for (const incident of incidents)
+      skirmish = withTimeline(skirmish, observation.tick, "threat", incident.incidentId, incident.kind);
+    if (currentQuestion)
+      skirmish = withTimeline(skirmish, observation.tick, "question", currentQuestion.questionId, currentQuestion.kind);
 
     const intents: AiIntentV1[] = [];
     const nextSquads: AiSquadStateV1[] = [];
     const primaryOwnedActors = new Set<ActorId>();
-    const activeDefense = state.squads.find((squad) => squad.role === "defense" && squad.state !== "completed" && squad.state !== "cancelled");
-    const activeAttack = state.squads.find((squad) => squad.role === "attack" && squad.state !== "completed" && squad.state !== "cancelled");
+    const activeDefense = state.squads.find(
+      (squad) => squad.role === "defense" && squad.state !== "completed" && squad.state !== "cancelled"
+    );
+    const activeAttack = state.squads.find(
+      (squad) => squad.role === "attack" && squad.state !== "completed" && squad.state !== "cancelled"
+    );
     const localThreat = home
       ? visibleEnemies.find((candidate) => {
           const candidatePosition = position(candidate);
@@ -265,7 +300,8 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
           rallyNodeId: homeAccess ?? null,
           retreatNodeId: homeAccess ?? null,
           createdTick: existingLifecycle?.createdTick ?? observation.tick,
-          assemblyDeadline: existingLifecycle?.assemblyDeadline ?? aiDeadline(observation.tick + AI_STAGE_9_ASSEMBLY_TIMEOUT_TICKS),
+          assemblyDeadline:
+            existingLifecycle?.assemblyDeadline ?? aiDeadline(observation.tick + AI_STAGE_9_ASSEMBLY_TIMEOUT_TICKS),
           effectDeadline: aiDeadline(observation.tick + AI_STAGE_9_PURSUIT_LEASH_TICKS),
           lastUsefulEffectTick: existingLifecycle?.lastUsefulEffectTick ?? null,
           recoveryAttempt: existingLifecycle?.recoveryAttempt ?? 0,
@@ -293,11 +329,13 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
     }
 
     const focusedPlayer = activeAttack?.lifecycle?.targetPlayerNumber;
-    const opponent = focusedPlayer === null || focusedPlayer === undefined
-      ? visibleEnemies[0] ?? rememberedEnemies[0]
-      : visibleEnemies.find((candidate) => candidate.owner === focusedPlayer) ??
-        rememberedEnemies.find((candidate) => candidate.owner === focusedPlayer) ??
-        visibleEnemies[0] ?? rememberedEnemies[0];
+    const opponent =
+      focusedPlayer === null || focusedPlayer === undefined
+        ? (visibleEnemies[0] ?? rememberedEnemies[0])
+        : (visibleEnemies.find((candidate) => candidate.owner === focusedPlayer) ??
+          rememberedEnemies.find((candidate) => candidate.owner === focusedPlayer) ??
+          visibleEnemies[0] ??
+          rememberedEnemies[0]);
     const minimumAttack = 6;
     const reserveCount = combat.length >= 8 ? Math.ceil(combat.length * 0.25) : 0;
     const reserveMembers = combat.filter((actor) => !primaryOwnedActors.has(actor.actorId)).slice(0, reserveCount);
@@ -307,7 +345,11 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
       nextSquads.push({
         squadId: reserveId,
         role: "reserve",
-        domain: domains(reserveMembers[0]!).includes("air") ? "air" : domains(reserveMembers[0]!).includes("water") ? "water" : "ground",
+        domain: domains(reserveMembers[0]!).includes("air")
+          ? "air"
+          : domains(reserveMembers[0]!).includes("water")
+            ? "water"
+            : "ground",
         actorIds: reserveMembers.map((actor) => actor.actorId),
         objectiveId: null,
         state: "ready",
@@ -317,7 +359,8 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
           protectedBaseId: baseId(state),
           rallyNodeId: homeAccess ?? null,
           retreatNodeId: homeAccess ?? null,
-          createdTick: state.squads.find((squad) => squad.squadId === reserveId)?.lifecycle?.createdTick ?? observation.tick,
+          createdTick:
+            state.squads.find((squad) => squad.squadId === reserveId)?.lifecycle?.createdTick ?? observation.tick,
           assemblyDeadline: aiDeadline(observation.tick + AI_STAGE_9_ASSEMBLY_TIMEOUT_TICKS),
           effectDeadline: aiDeadline(observation.tick + 2400),
           lastUsefulEffectTick: null,
@@ -332,27 +375,35 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
     if (opponent && attackers.length > 0) {
       const targetNode = node(opponent);
       const sourceNode = node(attackers[0]);
-      const route = sourceNode && targetNode && observation.map?.accessGraph
-        ? queryAiAccessRouteV1(observation.map.accessGraph, {
-            queryId: `query:mission:${attackId}:${observation.generation}`,
-            kind: "firing_position",
-            fromNodeId: sourceNode,
-            toNodeId: targetNode,
-            capabilities: routeCapability(observation, attackers),
-            firingNodeIds: [targetNode]
-          } satisfies AiRouteRequestV1)
-        : undefined;
+      const route =
+        sourceNode && targetNode && observation.map?.accessGraph
+          ? queryAiAccessRouteV1(observation.map.accessGraph, {
+              queryId: `query:mission:${attackId}:${observation.generation}`,
+              kind: "firing_position",
+              fromNodeId: sourceNode,
+              toNodeId: targetNode,
+              capabilities: routeCapability(observation, attackers),
+              firingNodeIds: [targetNode]
+            } satisfies AiRouteRequestV1)
+          : undefined;
       const isReachable = route?.kind === "direct" || route?.kind === "air_or_naval_objective";
-      const assemblyExpired = activeAttack?.lifecycle?.assemblyDeadline.dueTick !== undefined &&
+      const assemblyExpired =
+        activeAttack?.lifecycle?.assemblyDeadline.dueTick !== undefined &&
         activeAttack.lifecycle.assemblyDeadline.dueTick <= observation.tick;
       const readyCount = attackers.length;
       const requiredForVisibleThreat = Math.max(minimumAttack, Math.ceil(visibleEnemies.length * 1.2));
-      const fullEngagement = readyCount >= requiredForVisibleThreat && readyCount * 1000 >= requiredForVisibleThreat * 750;
-      const attackState: AiSquadStateV1["state"] = isReachable && (fullEngagement || assemblyExpired) ? "moving" : "forming";
+      const fullEngagement =
+        readyCount >= requiredForVisibleThreat && readyCount * 1000 >= requiredForVisibleThreat * 750;
+      const attackState: AiSquadStateV1["state"] =
+        isReachable && (fullEngagement || assemblyExpired) ? "moving" : "forming";
       const attack: AiSquadStateV1 = {
         squadId: attackId,
         role: "attack",
-        domain: domains(attackers[0]!).includes("air") ? "air" : domains(attackers[0]!).includes("water") ? "water" : "ground",
+        domain: domains(attackers[0]!).includes("air")
+          ? "air"
+          : domains(attackers[0]!).includes("water")
+            ? "water"
+            : "ground",
         actorIds: attackers.map((actor) => actor.actorId),
         objectiveId: opponent.visibility === "visible" ? opponent.actorId : `hypothesis:${opponent.evidenceId}`,
         state: attackState,
@@ -363,7 +414,9 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
           rallyNodeId: sourceNode ?? null,
           retreatNodeId: homeAccess ?? null,
           createdTick: activeAttack?.lifecycle?.createdTick ?? observation.tick,
-          assemblyDeadline: activeAttack?.lifecycle?.assemblyDeadline ?? aiDeadline(observation.tick + AI_STAGE_9_ASSEMBLY_TIMEOUT_TICKS),
+          assemblyDeadline:
+            activeAttack?.lifecycle?.assemblyDeadline ??
+            aiDeadline(observation.tick + AI_STAGE_9_ASSEMBLY_TIMEOUT_TICKS),
           effectDeadline: activeAttack?.lifecycle?.effectDeadline ?? aiDeadline(observation.tick + 2400),
           lastUsefulEffectTick: activeAttack?.lifecycle?.lastUsefulEffectTick ?? null,
           recoveryAttempt: activeAttack?.lifecycle?.recoveryAttempt ?? 0,
@@ -371,7 +424,9 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
         }
       };
       nextSquads.push(attack);
-      const voluntaryMissions = state.squads.filter((squad) => squad.role === "attack" && squad.state !== "completed").length;
+      const voluntaryMissions = state.squads.filter(
+        (squad) => squad.role === "attack" && squad.state !== "completed"
+      ).length;
       if (route?.kind === "water_transport" || route?.kind === "air_transport") {
         const transportPlanId = `transport:mission:${attackId}` as const;
         if (!state.transport.some((transport) => transport.planId === transportPlanId)) {
@@ -388,30 +443,46 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
             intents,
             reasons: ["transport_child_seeded", route.kind],
             statePatch: {
-              knowledge: { ...state.knowledge, questions, revision: state.knowledge.revision + (currentQuestion ? 1 : 0) },
+              knowledge: {
+                ...state.knowledge,
+                questions,
+                revision: state.knowledge.revision + (currentQuestion ? 1 : 0)
+              },
               squads: nextSquads,
-              strategy: { ...state.strategy, stance: "pressure", goalId: attackPlanId, objectiveId: attack.objectiveId },
+              strategy: {
+                ...state.strategy,
+                stance: "pressure",
+                goalId: attackPlanId,
+                objectiveId: attack.objectiveId
+              },
               skirmish: withTimeline(skirmish, observation.tick, "mission", attackId, `transport:${route.kind}`),
-              transportAppend: [createAiTransportPlanV1({
-                planId: transportPlanId,
-                routeRequest: {
-                  queryId: route.queryId,
-                  kind: "movement",
-                  fromNodeId: sourceNode!,
-                  toNodeId: targetNode!,
-                  capabilities: routeCapability(observation, attackers),
-                  firingNodeIds: []
-                },
-                route,
-                tick: observation.tick,
-                missionKind: "army_transfer",
-                estimatedTravelTicks: Math.max(1, route.distanceCost),
-                passengers
-              })]
+              transportAppend: [
+                createAiTransportPlanV1({
+                  planId: transportPlanId,
+                  routeRequest: {
+                    queryId: route.queryId,
+                    kind: "movement",
+                    fromNodeId: sourceNode!,
+                    toNodeId: targetNode!,
+                    capabilities: routeCapability(observation, attackers),
+                    firingNodeIds: []
+                  },
+                  route,
+                  tick: observation.tick,
+                  missionKind: "army_transfer",
+                  estimatedTravelTicks: Math.max(1, route.distanceCost),
+                  passengers
+                })
+              ]
             }
           };
         }
-      } else if (!activeAttack?.tactics && attackState === "moving" && route && voluntaryMissions < this.profile.voluntaryOffensiveMissionLimit + 1) {
+      } else if (
+        !activeAttack?.tactics &&
+        attackState === "moving" &&
+        route &&
+        voluntaryMissions < this.profile.voluntaryOffensiveMissionLimit + 1
+      ) {
         const targetPosition = position(opponent);
         if (opponent.visibility === "visible" && canTarget(attackers[0]!, opponent)) {
           intents.push({
@@ -434,10 +505,15 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
     }
 
     const neutral = observation.actors
-      .filter((actor) => actor.relation === "neutral" && actor.visibility === "visible" && position(actor) !== undefined)
+      .filter(
+        (actor) => actor.relation === "neutral" && actor.visibility === "visible" && position(actor) !== undefined
+      )
       .sort((left, right) => left.actorId.localeCompare(right.actorId))[0];
     const existingNeutralClaim = state.squads.find(
-      (squad) => squad.role === "scout" && squad.objectiveId === `neutral:${neutral?.actorId ?? "none"}` && squad.state !== "completed"
+      (squad) =>
+        squad.role === "scout" &&
+        squad.objectiveId === `neutral:${neutral?.actorId ?? "none"}` &&
+        squad.state !== "completed"
     );
     if (neutral && combat[0] && !existingNeutralClaim && !opponent) {
       const claimantId = "squad:scout:neutral" as AiSquadId;
@@ -445,7 +521,11 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
       const claimant: AiSquadStateV1 = {
         squadId: claimantId,
         role: "scout",
-        domain: domains(combat[0]!).includes("air") ? "air" : domains(combat[0]!).includes("water") ? "water" : "ground",
+        domain: domains(combat[0]!).includes("air")
+          ? "air"
+          : domains(combat[0]!).includes("water")
+            ? "water"
+            : "ground",
         actorIds: [combat[0].actorId],
         objectiveId: `neutral:${neutral.actorId}`,
         state: "moving",
@@ -469,13 +549,27 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
         kind: "move",
         actorIds: claimant.actorIds,
         logicalPosition: position(neutral)!,
-        claims: [{ claimId: `claim:neutral:${neutral.actorId}` as AiIntentV1["claims"][number]["claimId"], kind: "actor", actorId: claimant.actorIds[0]! }]
+        claims: [
+          {
+            claimId: `claim:neutral:${neutral.actorId}` as AiIntentV1["claims"][number]["claimId"],
+            kind: "actor",
+            actorId: claimant.actorIds[0]!
+          }
+        ]
       });
-      skirmish = withTimeline(skirmish, observation.tick, "mission", claimant.squadId, `neutral_claim:${neutral.actorId}`);
+      skirmish = withTimeline(
+        skirmish,
+        observation.tick,
+        "mission",
+        claimant.squadId,
+        `neutral_claim:${neutral.actorId}`
+      );
     }
 
     if (!opponent && currentQuestion && combat[0] && observation.map?.accessGraph) {
-      const target = observation.map.accessGraph.nodes.find((candidate) => candidate.nodeId === currentQuestion.kind.replace("safe_route:", ""));
+      const target = observation.map.accessGraph.nodes.find(
+        (candidate) => candidate.nodeId === currentQuestion.kind.replace("safe_route:", "")
+      );
       const scoutPosition = target?.representativePosition;
       if (scoutPosition) {
         const scoutId = "squad:scout:primary" as AiSquadId;
@@ -483,7 +577,11 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
         const scout: AiSquadStateV1 = {
           squadId: scoutId,
           role: "scout",
-          domain: domains(combat[0]!).includes("air") ? "air" : domains(combat[0]!).includes("water") ? "water" : "ground",
+          domain: domains(combat[0]!).includes("air")
+            ? "air"
+            : domains(combat[0]!).includes("water")
+              ? "water"
+              : "ground",
           actorIds: [combat[0].actorId],
           objectiveId: currentQuestion.questionId,
           state: "moving",
@@ -518,15 +616,30 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
       (goal) => goal.owner === observation.playerNumber && goal.state === "failed"
     );
     const hasRecovery = observation.actors.some((actor) => actor.relation === "self" && actor.visibility === "owned");
-    const hopelessSince = ownModeComplete || (hasRecovery && !ownModeFailed)
-      ? null
-      : state.skirmish.mode.hopelessSinceTick ?? observation.tick;
-    const concessionDue = hopelessSince !== null && observation.tick - hopelessSince >= AI_STAGE_9_CONCESSION_HOPELESS_TICKS;
+    const hopelessSince =
+      ownModeComplete || (hasRecovery && !ownModeFailed)
+        ? null
+        : (state.skirmish.mode.hopelessSinceTick ?? observation.tick);
+    const concessionDue =
+      hopelessSince !== null && observation.tick - hopelessSince >= AI_STAGE_9_CONCESSION_HOPELESS_TICKS;
     let mode = {
-      state: ownModeComplete || ownModeFailed ? "finished" : concessionDue ? "conceding" : hopelessSince !== null ? "hopeless" : "active",
+      state:
+        ownModeComplete || ownModeFailed
+          ? "finished"
+          : concessionDue
+            ? "conceding"
+            : hopelessSince !== null
+              ? "hopeless"
+              : "active",
       hopelessSinceTick: hopelessSince,
       concessionIntentId: state.skirmish.mode.concessionIntentId,
-      lastReason: ownModeComplete ? "authoritative_mode_completed" : ownModeFailed ? "authoritative_mode_failed" : hopelessSince !== null ? "no_recoverable_owned_asset" : "recovery_route_available"
+      lastReason: ownModeComplete
+        ? "authoritative_mode_completed"
+        : ownModeFailed
+          ? "authoritative_mode_failed"
+          : hopelessSince !== null
+            ? "no_recoverable_owned_asset"
+            : "recovery_route_available"
     } as const;
     if (!ownModeComplete && !ownModeFailed && concessionDue && mode.concessionIntentId === null) {
       const concedePlanId = "plan:mode:concession" as AiPlanId;
@@ -534,11 +647,20 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
       const concede: AiIntentV1 = { ...base, kind: "concede", reason: "sustained_no_recoverable_route" };
       intents.push(concede);
       mode = { ...mode, concessionIntentId: concede.intentId };
-      skirmish = withTimeline(skirmish, observation.tick, "mode", concede.intentId, "concede_after_sustained_hopelessness");
+      skirmish = withTimeline(
+        skirmish,
+        observation.tick,
+        "mode",
+        concede.intentId,
+        "concede_after_sustained_hopelessness"
+      );
     }
 
     const retainedSquads = state.squads.filter(
-      (squad) => !["defense", "attack", "reserve", "scout"].includes(squad.role) && squad.state !== "completed" && squad.state !== "cancelled"
+      (squad) =>
+        !["defense", "attack", "reserve", "scout"].includes(squad.role) &&
+        squad.state !== "completed" &&
+        squad.state !== "cancelled"
     );
     const squads = [...retainedSquads, ...nextSquads]
       .filter((squad, index, all) => all.findIndex((candidate) => candidate.squadId === squad.squadId) === index)
@@ -559,7 +681,12 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
         knowledge: { ...state.knowledge, questions, revision: state.knowledge.revision + (currentQuestion ? 1 : 0) },
         squads,
         strategy: opponent
-          ? { ...state.strategy, stance: localThreat ? "defend" : "pressure", goalId: attackPlanId, objectiveId: opponent.actorId }
+          ? {
+              ...state.strategy,
+              stance: localThreat ? "defend" : "pressure",
+              goalId: attackPlanId,
+              objectiveId: opponent.actorId
+            }
           : state.strategy,
         skirmish: resultSkirmish
       }

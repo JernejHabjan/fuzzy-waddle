@@ -83,6 +83,8 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   private readonly decisionTrace: AiDecisionTrace;
   /** The pure planner is the only mutation authority for research in skirmish mode. */
   private purePlannerOwnsResearch = false;
+  /** The pure planner owns all player commands while the new skirmish brain is available. */
+  private purePlannerOwnsCommands = false;
 
   constructor(
     private readonly scene: ProbableWaffleScene,
@@ -130,7 +132,9 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     this.techManager = new TechProgressManager(this.blackboard, player.playerNumber!, this.logDebugInfo.bind(this));
     this.economyManager = new EconomyManager(this.blackboard);
     this.worldStateSnapshotManager = new WorldStateSnapshotManager(this.scene, this.player, this.blackboard);
-    this.observationPipeline = new AiObservationPipeline(this.scene, this.player);
+    this.observationPipeline = new AiObservationPipeline(this.scene, this.player, (resourceType) =>
+      Math.max(0, (this.blackboard.economy.incomeSmoothed[resourceType] ?? 0) * 60)
+    );
     this.combatMicro = new CombatMicroManager(this.scene, this.blackboard, this.logDebugInfo.bind(this));
     this.scoutingManager = new ScoutingManager(this.scene, this.blackboard, this.logDebugInfo.bind(this));
     this.targetingManager = new TargetingManager(this.scene, this.blackboard);
@@ -144,6 +148,10 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
 
   setPurePlannerOwnsResearch(enabled: boolean): void {
     this.purePlannerOwnsResearch = enabled;
+  }
+
+  setPurePlannerOwnsCommands(enabled: boolean): void {
+    this.purePlannerOwnsCommands = enabled;
   }
 
   private recordDecision(
@@ -203,7 +211,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     this.scoutingManager.updateVisionSampling(now);
     // Update primary target cache
     await this.targetingManager.update(now);
-    this.processPrerequisiteQueue();
+    if (!this.purePlannerOwnsCommands) this.processPrerequisiteQueue();
     if (this.cooldowns.canRun("adaptiveThresholds", now)) {
       this.adaptiveThresholds.update();
       this.cooldowns.markRun("adaptiveThresholds", now);

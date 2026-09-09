@@ -46,7 +46,10 @@ export class WorldStateSnapshotManager {
     const index = getSceneService(this.scene, ActorIndexSystem);
     if (!index) return;
 
-    const owned = index.getOwnedActors(this.player.playerNumber).sort(compareAiActorsByStableId);
+    const owned = index
+      .getOwnedActors(this.player.playerNumber)
+      .filter(hasStableAiActorId)
+      .sort(compareAiActorsByStableId);
 
     this.refreshOwnedActors(owned);
     this.refreshEconomyAndSupply();
@@ -249,7 +252,7 @@ export class WorldStateSnapshotManager {
   ): Promise<GameObject[]> {
     const visibilityPolicy = new AiObservationVisibilityPolicy(this.scene, this.player.playerNumber!);
     const ownedSet = new Set(owned);
-    const allActors = index.getAllIdActors();
+    const allActors = index.getAllIdActors().filter(hasStableAiActorId);
     const baseCenter = this.blackboard.baseCenterTile;
     const visionRadius = AI_CONFIG.enemyVisionRadiusTiles;
 
@@ -325,6 +328,11 @@ export function compareAiActorsByStableId(left: GameObject, right: GameObject): 
   }
   if (leftId === rightId) return 0;
   return leftId < rightId ? -1 : 1;
+}
+
+/** Excludes stale/transitional index entries without allowing them to halt an AI decision boundary. */
+export function hasStableAiActorId(actor: GameObject): boolean {
+  return Boolean(getActorComponent(actor, IdComponent)?.id);
 }
 
 /** Documents the is campaign ai target visible member and its declared contract at this boundary. */

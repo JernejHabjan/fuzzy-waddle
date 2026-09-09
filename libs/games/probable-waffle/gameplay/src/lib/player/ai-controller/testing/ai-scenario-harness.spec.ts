@@ -114,11 +114,7 @@ describe("Stage 5 deterministic scenario harness", () => {
       reports[0]?.finalAiDigest,
       reports[0]?.finalAiDigest
     ]);
-    expect(reports.map((report) => report.finalWorldDigest)).toEqual([
-      "world:stable",
-      "world:stable",
-      "world:stable"
-    ]);
+    expect(reports.map((report) => report.finalWorldDigest)).toEqual(["world:stable", "world:stable", "world:stable"]);
   });
 
   it("reports the first canonical AI field when state diverges", () => {

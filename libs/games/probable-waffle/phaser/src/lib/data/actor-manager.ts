@@ -612,7 +612,6 @@ export class ActorManager {
     ...ActorManager.spells
   } as const;
 
-
   static getActorDefinitionFromActor(actor: GameObject): ActorDefinition | undefined {
     const actorName = actor.name as ObjectNames;
     if (!this.actorMap[actorName]) {

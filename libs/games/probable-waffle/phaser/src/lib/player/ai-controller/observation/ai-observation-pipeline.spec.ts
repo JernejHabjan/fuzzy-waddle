@@ -9,6 +9,7 @@ import {
   decayObservationConfidence,
   isCurrentObservationGeneration,
   isRememberedContactExpired,
+  normalizeGatherResourceTypes,
   normalizeAiObservationMemoryState,
   selectBoundedObservationWork
 } from "./ai-observation-pipeline";
@@ -104,6 +105,13 @@ describe("Stage 4 observation generation guards", () => {
     expect(decayObservationConfidence(20, 30)).toBe(0);
     expect(isRememberedContactExpired(0, 1200)).toBe(false);
     expect(isRememberedContactExpired(0, 1201)).toBe(true);
+  });
+
+  it("projects worker gather capability without admitting unknown resource strings", () => {
+    expect(normalizeGatherResourceTypes([ResourceType.Wood, "invalid", ResourceType.Food])).toEqual([
+      ResourceType.Food,
+      ResourceType.Wood
+    ]);
   });
 
   it("keeps map/frontier and last-seen data deterministic under input permutation", () => {

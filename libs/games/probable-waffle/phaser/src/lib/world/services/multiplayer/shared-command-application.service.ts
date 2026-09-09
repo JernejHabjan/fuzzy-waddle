@@ -67,11 +67,7 @@ export class SharedCommandApplicationService {
       commandBus.reportOutcome(command, "rejected", "missing_actor");
       return;
     }
-    if (
-      builders.some(
-        (builder) => getActorComponent(builder, OwnerComponent)?.getOwner() !== command.playerNumber
-      )
-    ) {
+    if (builders.some((builder) => getActorComponent(builder, OwnerComponent)?.getOwner() !== command.playerNumber)) {
       commandBus.reportOutcome(command, "rejected", "invalid_owner");
       return;
     }
@@ -81,8 +77,7 @@ export class SharedCommandApplicationService {
     }
     if (
       builders.some(
-        (builder) =>
-          !getActorComponent(builder, BuilderComponent)?.constructableBuildings.includes(command.actorName)
+        (builder) => !getActorComponent(builder, BuilderComponent)?.constructableBuildings.includes(command.actorName)
       )
     ) {
       commandBus.reportOutcome(command, "rejected", "unsupported_action");
@@ -134,7 +129,14 @@ export class SharedCommandApplicationService {
     const constructionSite = getActorComponent(site, ConstructionSiteComponent);
     if (!constructionSite) {
       site.destroy();
-      commandBus.reportOutcome(command, "failed", "unsupported_action", command.actorIds, [], "missing_construction_site");
+      commandBus.reportOutcome(
+        command,
+        "failed",
+        "unsupported_action",
+        command.actorIds,
+        [],
+        "missing_construction_site"
+      );
       return;
     }
     const tilemap = getSceneComponent(this.scene, TilemapComponent)?.tilemap;

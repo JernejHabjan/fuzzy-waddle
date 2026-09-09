@@ -34,11 +34,50 @@
     }
   },
   "authoredCases": [
-    { "case": "mission_lifecycle", "assertions": ["assemble", "rally", "advance", "defend", "regroup", "recover", "finite_assembly_deadline", "finite_effect_deadline", "large_squad_order_quota_continuation"] },
-    { "case": "domain_authority", "assertions": ["air_naval_split", "one_primary_owner", "transport_owns_until_handoff", "landing_regroup"] },
-    { "case": "fortification_tactics", "assertions": ["rampart_posts", "mobile_reserve", "breach_reinforcement", "topology_loss_withdrawal"] },
-    { "case": "combat_accounting", "assertions": ["useful_effect_tick", "casualty_count", "impact_reservation", "overkill_prevention", "target_hysteresis", "oscillation_damping"] },
-    { "case": "mission_quality", "assertions": ["economy_raid", "production_raid", "support_heal", "support_spell", "autocast_ownership", "deadline_forced_resolution"] }
+    {
+      "case": "mission_lifecycle",
+      "assertions": [
+        "assemble",
+        "rally",
+        "advance",
+        "defend",
+        "regroup",
+        "recover",
+        "finite_assembly_deadline",
+        "finite_effect_deadline",
+        "large_squad_order_quota_continuation"
+      ]
+    },
+    {
+      "case": "domain_authority",
+      "assertions": ["air_naval_split", "one_primary_owner", "transport_owns_until_handoff", "landing_regroup"]
+    },
+    {
+      "case": "fortification_tactics",
+      "assertions": ["rampart_posts", "mobile_reserve", "breach_reinforcement", "topology_loss_withdrawal"]
+    },
+    {
+      "case": "combat_accounting",
+      "assertions": [
+        "useful_effect_tick",
+        "casualty_count",
+        "impact_reservation",
+        "overkill_prevention",
+        "target_hysteresis",
+        "oscillation_damping"
+      ]
+    },
+    {
+      "case": "mission_quality",
+      "assertions": [
+        "economy_raid",
+        "production_raid",
+        "support_heal",
+        "support_spell",
+        "autocast_ownership",
+        "deadline_forced_resolution"
+      ]
+    }
   ],
   "forbiddenAssertions": [
     "actor_has_multiple_primary_squads",

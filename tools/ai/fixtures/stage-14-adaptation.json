@@ -1,6 +1,30 @@
 {
   "schemaVersion": 1,
-  "scenarioIds": ["PRO-06", "PRO-07", "TECH-01", "TECH-02", "TECH-03", "TECH-04", "TECH-05", "TECH-06", "SCOUT-05", "STRAT-05", "STRAT-06", "STRAT-09", "DOMAIN-01", "DOMAIN-02", "DOMAIN-05", "C-01", "C-02", "C-04", "D-02", "D-03", "D-05", "H-31", "H-32"],
+  "scenarioIds": [
+    "PRO-06",
+    "PRO-07",
+    "TECH-01",
+    "TECH-02",
+    "TECH-03",
+    "TECH-04",
+    "TECH-05",
+    "TECH-06",
+    "SCOUT-05",
+    "STRAT-05",
+    "STRAT-06",
+    "STRAT-09",
+    "DOMAIN-01",
+    "DOMAIN-02",
+    "DOMAIN-05",
+    "C-01",
+    "C-02",
+    "C-04",
+    "D-02",
+    "D-03",
+    "D-05",
+    "H-31",
+    "H-32"
+  ],
   "purpose": "Author deterministic Stage-14 evidence, adaptation, research, archetype and lifecycle cases before the Stage-15 real runtime matrix is executed.",
   "driver": "pure",
   "seeds": [759014, 759114, 759214],
@@ -13,13 +37,69 @@
     "contractVersions": { "scenario": 1, "brain": 1, "observation": 1, "command": 1, "repro": 1, "worldProjection": 1 }
   },
   "authoredCases": [
-    { "case": "counter_evidence_hysteresis", "assertions": ["permitted_visible_evidence_only", "source_contact_identity", "two_consecutive_eligible_evaluations", "profile_reconsideration_cooldown", "repeated_contact_no_mass_inflation", "future_production_only", "retain_committed_production"] },
-    { "case": "capability_adaptation", "assertions": ["flyer_to_real_anti_air", "water_transport_to_water_control", "area_damage_to_spacing_ranged_support", "static_fortification_to_legal_alternate_or_range", "unknown_capability_stays_unknown", "unavailable_counter_uses_valid_fallback"] },
-    { "case": "research_value", "assertions": ["runtime_legal_candidate_only", "beneficiary_current_and_1200_tick_production", "cost_queue_delay_survival_cost", "resource_and_shared_queue_reservations", "resolved_levels_update_observation", "no_cancel_requeue_loop"] },
-    { "case": "archetype_difficulty", "assertions": ["balanced_rush_macro_turtle_tech_profiles", "air_naval_expeditionary_capability_access_gating", "deterministic_balanced_fallback_reason", "worker_supply_prerequisite_recovery", "difficulty_profile_save_replay_host_provenance", "fair_observation_and_rules"] },
-    { "case": "lifecycle", "assertions": ["save_during_adaptation_preserves_evidence_cooldown_and_commitments", "host_transfer_preserves_profile_archetype_scheduler_and_plans", "second_match_disposes_old_controller_callbacks", "debug_snapshot_records_evidence_targets_research_and_cancellation_policy"] }
+    {
+      "case": "counter_evidence_hysteresis",
+      "assertions": [
+        "permitted_visible_evidence_only",
+        "source_contact_identity",
+        "two_consecutive_eligible_evaluations",
+        "profile_reconsideration_cooldown",
+        "repeated_contact_no_mass_inflation",
+        "future_production_only",
+        "retain_committed_production"
+      ]
+    },
+    {
+      "case": "capability_adaptation",
+      "assertions": [
+        "flyer_to_real_anti_air",
+        "water_transport_to_water_control",
+        "area_damage_to_spacing_ranged_support",
+        "static_fortification_to_legal_alternate_or_range",
+        "unknown_capability_stays_unknown",
+        "unavailable_counter_uses_valid_fallback"
+      ]
+    },
+    {
+      "case": "research_value",
+      "assertions": [
+        "runtime_legal_candidate_only",
+        "beneficiary_current_and_1200_tick_production",
+        "cost_queue_delay_survival_cost",
+        "resource_and_shared_queue_reservations",
+        "resolved_levels_update_observation",
+        "no_cancel_requeue_loop"
+      ]
+    },
+    {
+      "case": "archetype_difficulty",
+      "assertions": [
+        "balanced_rush_macro_turtle_tech_profiles",
+        "air_naval_expeditionary_capability_access_gating",
+        "deterministic_balanced_fallback_reason",
+        "worker_supply_prerequisite_recovery",
+        "difficulty_profile_save_replay_host_provenance",
+        "fair_observation_and_rules"
+      ]
+    },
+    {
+      "case": "lifecycle",
+      "assertions": [
+        "save_during_adaptation_preserves_evidence_cooldown_and_commitments",
+        "host_transfer_preserves_profile_archetype_scheduler_and_plans",
+        "second_match_disposes_old_controller_callbacks",
+        "debug_snapshot_records_evidence_targets_research_and_cancellation_policy"
+      ]
+    }
   ],
-  "forbiddenAssertions": ["hidden_enemy_composition_changes_digest", "same_contact_counts_as_independent_corrobation", "unsupported_counter_or_tech_invented", "useful_queue_cancelled_without_real_refund_value", "difficulty_grants_resource_stat_or_visibility_bonus", "old_match_controller_acts_in_new_match"],
+  "forbiddenAssertions": [
+    "hidden_enemy_composition_changes_digest",
+    "same_contact_counts_as_independent_corrobation",
+    "unsupported_counter_or_tech_invented",
+    "useful_queue_cancelled_without_real_refund_value",
+    "difficulty_grants_resource_stat_or_visibility_bonus",
+    "old_match_controller_acts_in_new_match"
+  ],
   "runtimeCounterpart": "required_in_stage_15",
   "status": "authored_not_run"
 }

@@ -91,9 +91,7 @@ describe("probable-waffle protocol transport guards", () => {
       }
     };
     expect(isProbableWaffleGameCommand(command)).toBe(true);
-    expect(isProbableWaffleGameCommand({ ...command, execution: { ...command.execution, sequence: -1 } })).toBe(
-      false
-    );
+    expect(isProbableWaffleGameCommand({ ...command, execution: { ...command.execution, sequence: -1 } })).toBe(false);
   });
 
   it("validates persisted command outcomes carried by replay artifacts", () => {
@@ -113,9 +111,7 @@ describe("probable-waffle protocol transport guards", () => {
       worldLinkIds: ["worker-1"]
     };
     expect(isProbableWaffleGameCommandOutcome(commandOutcome)).toBe(true);
-    expect(isProbableWaffleReplayPayload({ version: 1, commands: [], commandOutcomes: [commandOutcome] })).toBe(
-      true
-    );
+    expect(isProbableWaffleReplayPayload({ version: 1, commands: [], commandOutcomes: [commandOutcome] })).toBe(true);
     expect(
       isProbableWaffleReplayPayload({
         version: 1,

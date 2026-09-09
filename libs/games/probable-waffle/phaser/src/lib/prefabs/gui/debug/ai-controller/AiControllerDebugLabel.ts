@@ -73,6 +73,15 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
     this.once(Phaser.GameObjects.Events.DESTROY, this.destroyTransportOverlay, this);
     this.telemetryText.setInteractive();
     this.telemetryText.on("wheel", this.onTelemetryWheel, this);
+    const panelBackground = scene.add.rectangle(-210, 0, 420, 290, 0x111827, 0.74);
+    panelBackground.setOrigin(0.5, 0);
+    this.addAt(panelBackground, 0);
+    this.playerName.setPosition(-410, 8).setOrigin(0, 0).setWordWrapWidth(400, true);
+    this.playerName.setStyle({ align: "left", color: "#fff1cc", fontSize: "18px" });
+    this.playerAction.setPosition(-410, 34).setOrigin(0, 0).setWordWrapWidth(400, true);
+    this.playerAction.setStyle({ align: "left", color: "#d8e6ff", fontSize: "16px", maxLines: 2 });
+    this.telemetryText.setPosition(-410, 78).setOrigin(0, 0).setWordWrapWidth(400, true);
+    this.telemetryText.setStyle({ align: "left", color: "#ffffff", fontSize: "15px", lineSpacing: 2, maxLines: 12 });
     // Preserve generated-label compatibility references without executing the legacy mutable readers.
     void [
       this.getOverviewLines,
@@ -108,7 +117,9 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
       const aiHandlerSystem = getSceneSystem(this.mainSceneWithActors, AiPlayerHandler);
       const controller = aiHandlerSystem?.getAiPlayerController(playerNumber);
       const brain = controller ? this.getSelectedBrainSnapshot(controller) : undefined;
-      this.playerAction.text = brain ? `${brain.stance} → ${brain.goalId ?? "no goal"}` : "Awaiting committed planner snapshot";
+      this.playerAction.text = brain
+        ? `${brain.stance} → ${brain.goalId ?? "no goal"}`
+        : "Awaiting committed planner snapshot";
       this.refreshTelemetry(performance.now());
     } else {
       this.playerName.text = "No Player";
@@ -202,14 +213,18 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
       ...page,
       pages > 1 ? `Page ${this.pageIndex + 1}/${pages} — mouse wheel to scroll` : "",
       `Snapshot ${this.historyOffset === 0 ? "latest" : `-${this.historyOffset}`} — Shift+wheel changes history`
-    ].filter(Boolean).join("\n");
+    ]
+      .filter(Boolean)
+      .join("\n");
     const brain = this.getSelectedBrainSnapshot(controller);
-    this.playerAction.text = brain ? `${brain.stance} → ${brain.goalId ?? "no goal"}` : "Awaiting committed planner snapshot";
+    this.playerAction.text = brain
+      ? `${brain.stance} → ${brain.goalId ?? "no goal"}`
+      : "Awaiting committed planner snapshot";
   }
 
   private pageIndex = 0;
   private historyOffset = 0;
-  private readonly linesPerPage = 21;
+  private readonly linesPerPage = 9;
 
   private onTelemetryWheel(
     pointer: Phaser.Input.Pointer,
@@ -267,16 +282,29 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
         `Stance: ${brain.stance}; goal ${brain.goalId ?? "none"}`,
         `Commitment until tick: ${brain.commitmentUntilTick}`,
         `Squads: ${brain.skirmish.squads.length}; incidents: ${brain.skirmish.incidents.length}`,
-        ...brain.skirmish.squads.slice(0, 6).map((squad) => `${squad.squadId}: ${squad.role}/${squad.state}/${squad.script ?? "basic"} → ${squad.objectiveId ?? "none"}`),
+        ...brain.skirmish.squads
+          .slice(0, 6)
+          .map(
+            (squad) =>
+              `${squad.squadId}: ${squad.role}/${squad.state}/${squad.script ?? "basic"} → ${squad.objectiveId ?? "none"}`
+          ),
         `Why not: ${brain.whyNot[0]?.reason ?? "no rejected or unevaluated alternative recorded"}`
       ];
     }
     if (category === "resources") {
       return [
         "=== RESOURCES & ECONOMY ===",
-        ...observation.resources.map((resource) => `${resource.resourceType}: stock ${resource.stockpile}, reserved ${resource.reservedUnspent}, due ${resource.obligationsDue}`),
+        ...observation.resources.map(
+          (resource) =>
+            `${resource.resourceType}: stock ${resource.stockpile}, reserved ${resource.reservedUnspent}, due ${resource.obligationsDue}`
+        ),
         `Macro forecasts: ${state.economyProduction.forecasts.length}`,
-        ...state.economyProduction.forecasts.slice(0, 6).map((forecast) => `${forecast.resourceType}: ${forecast.amount} by tick ${forecast.horizonTick} @ ${forecast.confidencePermille}‰`),
+        ...state.economyProduction.forecasts
+          .slice(0, 6)
+          .map(
+            (forecast) =>
+              `${forecast.resourceType}: ${forecast.amount} by tick ${forecast.horizonTick} @ ${forecast.confidencePermille}‰`
+          ),
         `Reservations: ${state.reservations.length}`
       ];
     }
@@ -284,22 +312,36 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
       return [
         "=== PRODUCTION & TECH ===",
         `Opening: ${state.opening.archetypeId} / ${state.opening.plan.currentStepId ?? "transition"}`,
-        ...state.economyProduction.demands.slice(0, 10).map((demand) => `${demand.purpose}: ${demand.satisfiedActorIds.length}/${demand.desired} ${demand.capabilityOrRole}`),
+        ...state.economyProduction.demands
+          .slice(0, 10)
+          .map(
+            (demand) =>
+              `${demand.purpose}: ${demand.satisfiedActorIds.length}/${demand.desired} ${demand.capabilityOrRole}`
+          ),
         `Adaptation: ${brain.adaptation.lastTransitionReason ?? "no confirmed transition"} @ ${brain.adaptation.lastTransitionTick ?? "n/a"}`,
-        ...brain.adaptation.evidence.map((evidence) => `  evidence ${evidence.kind}: ${evidence.sourceContactId} ${evidence.consecutiveEvaluations}/2 (${evidence.permittedFacts.join(",")})`),
-        ...brain.adaptation.roleTargets.map((target) => `  counter ${target.role}: ${target.desired} (${target.evidenceIds.join(",")})`),
+        ...brain.adaptation.evidence.map(
+          (evidence) =>
+            `  evidence ${evidence.kind}: ${evidence.sourceContactId} ${evidence.consecutiveEvaluations}/2 (${evidence.permittedFacts.join(",")})`
+        ),
+        ...brain.adaptation.roleTargets.map(
+          (target) => `  counter ${target.role}: ${target.desired} (${target.evidenceIds.join(",")})`
+        ),
         `Research: ${brain.adaptation.selectedResearchType ?? "no positive legal candidate"} (${brain.adaptation.selectedResearchScore ?? "n/a"})`,
         `Committed production: ${brain.adaptation.cancellationPolicy}`,
         `Active reservations: ${state.reservations.length}`
       ];
     }
     if (category === "logistics") {
-      const workers = observation.actors.filter((actor) => actor.relation === "self" && actor.capabilities.some((capability) => capability.family === "gather"));
+      const workers = observation.actors.filter(
+        (actor) => actor.relation === "self" && actor.capabilities.some((capability) => capability.family === "gather")
+      );
       return [
         "=== LOGISTICS & WORKERS ===",
         `Observed workers: ${workers.length}`,
         `Recovery records: ${brain.recovery.length}`,
-        ...brain.recovery.slice(0, 8).map((record) => `${record.domain}:${record.cause} attempt ${record.attempt} → ${record.state}`)
+        ...brain.recovery
+          .slice(0, 8)
+          .map((record) => `${record.domain}:${record.cause} attempt ${record.attempt} → ${record.state}`)
       ];
     }
     if (category === "intel") {
@@ -308,8 +350,14 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
         `Generation ${observation.generation}, tick ${observation.tick}`,
         `Visible: ${observation.threatSummary.visibleEnemyActorIds.length}; remembered: ${observation.threatSummary.rememberedEnemyActorIds.length}`,
         `Capabilities: ${observation.threatSummary.observedCapabilityFamilies.join(", ") || "none observed"}`,
-        ...brain.skirmish.questions.slice(0, 5).map((question) => `${question.kind}: ${question.state} (${question.questionId})`),
-        ...brain.skirmish.incidents.slice(0, 5).map((incident) => `${incident.kind}: severity ${incident.severity}, confidence ${incident.confidencePermille}`)
+        ...brain.skirmish.questions
+          .slice(0, 5)
+          .map((question) => `${question.kind}: ${question.state} (${question.questionId})`),
+        ...brain.skirmish.incidents
+          .slice(0, 5)
+          .map(
+            (incident) => `${incident.kind}: severity ${incident.severity}, confidence ${incident.confidencePermille}`
+          )
       ];
     }
     return [
@@ -329,18 +377,29 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
     if (!brain?.skirmish.squads.length) lines.push("No active squads");
     for (const squad of brain?.skirmish.squads ?? []) {
       lines.push(`${squad.squadId}: ${squad.state}/${squad.script ?? "basic"} [${squad.domain}] ${squad.members}`);
-      lines.push(`  task force ${squad.taskForceId ?? "none"}, objective ${squad.objectiveId ?? "none"}, target ${squad.targetActorId ?? "none"}`);
-      lines.push(`  local ${squad.engagementRatioPermille ?? "?"}‰ @ ${squad.confidencePermille ?? "?"}‰; predicted loss ${squad.predictedFriendlyLossPermille ?? "?"}‰`);
-      lines.push(`  observed losses ${squad.observedLossCount}; last useful effect ${squad.lastUsefulEffectTick ?? "none"}`);
-      lines.push(`  orders ${squad.orderedActorCount}/${squad.members}, damage claims ${squad.damageReservationCount}, reserve ${squad.mobileReserveCount}, oscillation ${squad.oscillationCount}`);
+      lines.push(
+        `  task force ${squad.taskForceId ?? "none"}, objective ${squad.objectiveId ?? "none"}, target ${squad.targetActorId ?? "none"}`
+      );
+      lines.push(
+        `  local ${squad.engagementRatioPermille ?? "?"}‰ @ ${squad.confidencePermille ?? "?"}‰; predicted loss ${squad.predictedFriendlyLossPermille ?? "?"}‰`
+      );
+      lines.push(
+        `  observed losses ${squad.observedLossCount}; last useful effect ${squad.lastUsefulEffectTick ?? "none"}`
+      );
+      lines.push(
+        `  orders ${squad.orderedActorCount}/${squad.members}, damage claims ${squad.damageReservationCount}, reserve ${squad.mobileReserveCount}, oscillation ${squad.oscillationCount}`
+      );
       const alternative = squad.objectiveAlternatives[0];
-      if (alternative) lines.push(`  best alternative ${alternative.objectiveId}=${alternative.score} (${alternative.reason})`);
+      if (alternative)
+        lines.push(`  best alternative ${alternative.objectiveId}=${alternative.score} (${alternative.reason})`);
     }
     lines.push("", "--- Support windows ---");
     if (!brain?.support.length) lines.push("No manual support window (autocast may remain runtime-owned)");
     for (const plan of brain?.support ?? []) {
       lines.push(`${plan.planId}: ${plan.kind}/${plan.state}, useful ${plan.usefulCapacity}`);
-      lines.push(`  ${plan.spellType ?? "heal"} ${plan.actorIds.join(",")} → ${plan.targetIds.join(",")} until ${plan.expiresAtTick ?? "outcome"}`);
+      lines.push(
+        `  ${plan.spellType ?? "heal"} ${plan.actorIds.join(",")} → ${plan.targetIds.join(",")} until ${plan.expiresAtTick ?? "outcome"}`
+      );
       lines.push(`  ${plan.reason}; effect ${plan.effectId ?? "none"}`);
     }
     this.renderTacticalOverlay(brain?.skirmish.squads ?? []);
@@ -359,7 +418,8 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
       `Truncated events ${brain.completeness.truncatedEventCount}`,
       "--- Lane service ---"
     ];
-    for (const lane of brain.runtimeLimits.laneService) lines.push(`${lane.lane}: deficit ${lane.deficit}, serviced ${lane.lastServicedTick}`);
+    for (const lane of brain.runtimeLimits.laneService)
+      lines.push(`${lane.lane}: deficit ${lane.deficit}, serviced ${lane.lastServicedTick}`);
     lines.push("--- Cursors ---");
     for (const cursor of brain.runtimeLimits.continuationCursors) lines.push(`${cursor.owner}: ${cursor.cursor}`);
     lines.push("JSON export: PlayerAiController.exportBrainDebugHistory() (explicit developer action)");
@@ -376,7 +436,9 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
       graph
         ? `Graph: ${graph.status} g${graph.generation} s${graph.staticRevision}/d${graph.dynamicRevision}/t${graph.threatRevision}`
         : "Graph: not committed",
-      graph ? `Regions: ${graph.nodes.length}, links: ${graph.links.length}, transfers: ${graph.transferPoints.length}` : "Regions: unavailable"
+      graph
+        ? `Regions: ${graph.nodes.length}, links: ${graph.links.length}, transfers: ${graph.transferPoints.length}`
+        : "Regions: unavailable"
     ];
     if (!brain?.transportOperations.length) {
       lines.push("", "No active or retained transport plans");
@@ -387,7 +449,9 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
     for (const operation of brain.transportOperations) {
       lines.push(`${operation.planId}: ${operation.phase} (${operation.routeKind})`);
       lines.push(`  cargo ${operation.passengers}, carriers ${operation.transports}, seats ${operation.capacity}`);
-      lines.push(`  route g${operation.routeGeneration}/${operation.graphGeneration ?? "?"}, due ${operation.deadlineTick}, recovery ${operation.recoveryAttempt}`);
+      lines.push(
+        `  route g${operation.routeGeneration}/${operation.graphGeneration ?? "?"}, due ${operation.deadlineTick}, recovery ${operation.recoveryAttempt}`
+      );
       if (operation.terminalReason) lines.push(`  reason: ${operation.terminalReason}`);
     }
     this.renderTransportOverlay(brain.transportOperations);
@@ -400,8 +464,12 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
     const lines = ["=== BASES & PLACEMENT ==="];
     if (!brain?.bases.length) return [...lines, "No committed main-structure base identity"];
     for (const base of brain.bases) {
-      lines.push(`${base.baseId}: ${base.lifecycle}, anchor ${base.anchorActorId ?? "pending"}, members ${base.memberCount}`);
-      lines.push(`  access ${base.accessNodeId ?? "pending"}, reserved ${base.reservedSiteKey ?? "none"}, rejected ${base.rejectedSiteCount}`);
+      lines.push(
+        `${base.baseId}: ${base.lifecycle}, anchor ${base.anchorActorId ?? "pending"}, members ${base.memberCount}`
+      );
+      lines.push(
+        `  access ${base.accessNodeId ?? "pending"}, reserved ${base.reservedSiteKey ?? "none"}, rejected ${base.rejectedSiteCount}`
+      );
       if (base.expansionTrigger) lines.push(`  expansion trigger: ${base.expansionTrigger}`);
     }
     return lines;
@@ -418,10 +486,18 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
     for (const plan of fortifications) {
       const finished = plan.nodes.filter((node) => node.lifecycle === "finished").length;
       lines.push(`${plan.planId}: ${plan.lifecycle}, ${finished}/${plan.nodes.length}`);
-      lines.push(`  paths whole=${plan.wholeConnectivity}, prefixes=${plan.incrementalConnectivity}, cap=${plan.spendPermille ?? "?"}‰`);
-      lines.push(`  anchors ${plan.terrainAnchorTileKeys.join(" ↔ ") || "unknown"}, protects ${plan.protectedAssetCount}`);
-      lines.push(`  budget ${plan.budgetRemaining.map((entry) => `${entry.resourceType}:${entry.amount}`).join(",") || "none"}`);
-      lines.push(`  opening ${plan.openingNodeId ?? "legacy"}, breach ${plan.breachReason ?? "none"} (${plan.breachRisk}), recovery ${plan.recoveryAttempts}`);
+      lines.push(
+        `  paths whole=${plan.wholeConnectivity}, prefixes=${plan.incrementalConnectivity}, cap=${plan.spendPermille ?? "?"}‰`
+      );
+      lines.push(
+        `  anchors ${plan.terrainAnchorTileKeys.join(" ↔ ") || "unknown"}, protects ${plan.protectedAssetCount}`
+      );
+      lines.push(
+        `  budget ${plan.budgetRemaining.map((entry) => `${entry.resourceType}:${entry.amount}`).join(",") || "none"}`
+      );
+      lines.push(
+        `  opening ${plan.openingNodeId ?? "legacy"}, breach ${plan.breachReason ?? "none"} (${plan.breachRisk}), recovery ${plan.recoveryAttempts}`
+      );
       lines.push(`  defender posts ${plan.reachableDefenderPosts}/${plan.defenderPosts} reachable`);
       for (const tower of plan.nodes.filter((node) => node.kind === "tower")) {
         lines.push(`  tower +${tower.marginalCoverage} [${tower.targetDomains.join(",") || "none"}]`);
@@ -438,7 +514,9 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
     const lines = ["", "=== RECOVERY ==="];
     for (const entry of recovery) {
       lines.push(`${entry.domain}:${entry.cause} — ${entry.state} #${entry.attempt}`);
-      lines.push(`  retry ${entry.nextRetryTick}, deadline ${entry.phaseDeadlineTick}, alternate ${entry.alternate ?? "none"}, released ${entry.releasedClaimCount}`);
+      lines.push(
+        `  retry ${entry.nextRetryTick}, deadline ${entry.phaseDeadlineTick}, alternate ${entry.alternate ?? "none"}, released ${entry.releasedClaimCount}`
+      );
     }
     return lines;
   }
@@ -478,8 +556,17 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
       for (const node of plan.nodes) {
         const world = navigation.getTileWorldCenter(node.position);
         if (!world) continue;
-        const color = node.kind === "gate_slot" ? 0x4caf50 : node.kind === "tower" ? 0xff9800 : node.kind === "stair" ? 0x40c4ff : 0xffffff;
-        graphics.fillStyle(color, node.lifecycle === "finished" ? 0.95 : 0.55).fillCircle(world.x, world.y, node.kind === "tower" ? 7 : 5);
+        const color =
+          node.kind === "gate_slot"
+            ? 0x4caf50
+            : node.kind === "tower"
+              ? 0xff9800
+              : node.kind === "stair"
+                ? 0x40c4ff
+                : 0xffffff;
+        graphics
+          .fillStyle(color, node.lifecycle === "finished" ? 0.95 : 0.55)
+          .fillCircle(world.x, world.y, node.kind === "tower" ? 7 : 5);
       }
     }
     this.fortificationOverlay = graphics;
@@ -565,12 +652,16 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
       if (!brain) return ["=== COMMAND AUTHORITY ===", "Historical decision not retained"];
       return [
         "=== RECORDED PLAN / COMMAND DRILLDOWN ===",
-        ...brain.decisions.slice(-10).flatMap((decision) => [
-          `${decision.outcome}: ${decision.intent.intentId}`,
-          `  plan ${decision.intent.planId}; effect ${decision.intent.effectId}`,
-          `  ${decision.reason}${decision.outcome === "rejected" ? `:${decision.detail}` : ""}; claims ${decision.intent.claims.length}`
-        ]),
-        ...brain.whyNot.slice(0, 5).map((entry) => `why-not ${entry.subjectId}: ${entry.status}/${entry.reason ?? "not recorded"}`)
+        ...brain.decisions
+          .slice(-10)
+          .flatMap((decision) => [
+            `${decision.outcome}: ${decision.intent.intentId}`,
+            `  plan ${decision.intent.planId}; effect ${decision.intent.effectId}`,
+            `  ${decision.reason}${decision.outcome === "rejected" ? `:${decision.detail}` : ""}; claims ${decision.intent.claims.length}`
+          ]),
+        ...brain.whyNot
+          .slice(0, 5)
+          .map((entry) => `why-not ${entry.subjectId}: ${entry.status}/${entry.reason ?? "not recorded"}`)
       ];
     }
     const state = controller.getCommandReconciliationSnapshot();
@@ -711,7 +802,9 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
       lines.push(`--- Stage 7 Macro Plan ---`);
       lines.push(`Opening step: ${brainState.opening.plan.currentStepId ?? "transition"}`);
       for (const demand of brainState.economyProduction.demands.slice(0, 4)) {
-        lines.push(`  ${demand.purpose}: ${demand.satisfiedActorIds.length}/${demand.desired} ${demand.capabilityOrRole}`);
+        lines.push(
+          `  ${demand.purpose}: ${demand.satisfiedActorIds.length}/${demand.desired} ${demand.capabilityOrRole}`
+        );
       }
       lines.push(`Macro reservations: ${brainState.reservations.length}`);
       lines.push(``);
@@ -855,9 +948,13 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
     lines.push(
       `Generation: ${observationDebug.committedGeneration}/${observationDebug.requestedGeneration} at tick ${observationDebug.committedTick ?? "pending"}; age ${observationDebug.observationAgeTicks ?? "unknown"}`
     );
-    lines.push(`Visible / remembered: ${observationDebug.visibleContactCount} / ${observationDebug.rememberedContactCount}`);
+    lines.push(
+      `Visible / remembered: ${observationDebug.visibleContactCount} / ${observationDebug.rememberedContactCount}`
+    );
     lines.push(`Unknown facts: ${observationDebug.unknownFactCount}`);
-    lines.push(`Access revision / cursor: ${observationDebug.queryInputRevision} / ${observationDebug.queryContinuationCursor}`);
+    lines.push(
+      `Access revision / cursor: ${observationDebug.queryInputRevision} / ${observationDebug.queryContinuationCursor}`
+    );
     lines.push(`Invalidation debt: ${observationDebug.invalidationDebt}`);
     if (observationDebug.lastCommitError) lines.push(`Observation error: ${observationDebug.lastCommitError}`);
     if (observation) {
@@ -865,7 +962,13 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
         counts[product.status] = (counts[product.status] ?? 0) + 1;
         return counts;
       }, {});
-      lines.push(`Access products: ${Object.entries(accessStates).map(([status, count]) => `${status}:${count}`).join(", ") || "none"}`);
+      lines.push(
+        `Access products: ${
+          Object.entries(accessStates)
+            .map(([status, count]) => `${status}:${count}`)
+            .join(", ") || "none"
+        }`
+      );
       lines.push(
         `Threat evidence: visible ${observation.threatSummary.visibleEnemyActorIds.length}, remembered ${observation.threatSummary.rememberedEnemyActorIds.length}; ${observation.threatSummary.observedCapabilityFamilies.join(", ") || "none"}`
       );
@@ -879,13 +982,17 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
       }
       if (!brain.skirmish.questions.length) lines.push("Question: none recorded");
       for (const incident of brain.skirmish.incidents.slice(0, 3)) {
-        lines.push(`Threat ${incident.kind}: severity ${incident.severity}, confidence ${incident.confidencePermille}, expires ${incident.expiresAtTick}`);
+        lines.push(
+          `Threat ${incident.kind}: severity ${incident.severity}, confidence ${incident.confidencePermille}, expires ${incident.expiresAtTick}`
+        );
       }
       if (!brain.skirmish.incidents.length) lines.push("Threat: none recorded");
       lines.push(`Mode: ${brain.skirmish.mode.state}; ${brain.skirmish.mode.reason ?? "no mode reason"}`);
       lines.push(`--- Missions ---`);
       for (const squad of brain.skirmish.squads.slice(0, 4)) {
-        lines.push(`${squad.squadId}: ${squad.role}/${squad.state}, ${squad.members} members, target ${squad.objectiveId ?? "none"}`);
+        lines.push(
+          `${squad.squadId}: ${squad.role}/${squad.state}, ${squad.members} members, target ${squad.objectiveId ?? "none"}`
+        );
       }
       if (!brain.skirmish.squads.length) lines.push("Mission: none recorded");
     }

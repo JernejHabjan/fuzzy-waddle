@@ -1,7 +1,4 @@
-import type {
-  AiCommandReconciliationStateData,
-  GameCommandOutcome
-} from "@fuzzy-waddle/probable-waffle-protocol";
+import type { AiCommandReconciliationStateData, GameCommandOutcome } from "@fuzzy-waddle/probable-waffle-protocol";
 import { aiDeadline, type AiAuthorityStateV1, type AiCommandOutcomeV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
 import type { GameInstanceId } from "@fuzzy-waddle/platform-game-sessions";
 import type { Subscription } from "rxjs";
@@ -108,7 +105,8 @@ export class AiCommandReconciliation {
   /** Supplies the pure brain with the same authority fence used by live application. */
   getBrainAuthorityState(): AiAuthorityStateV1 {
     const oldestPending = [...this.pending.values()].sort(
-      (left, right) => left.lastProgressTick - right.lastProgressTick || left.dispatched.sequence - right.dispatched.sequence
+      (left, right) =>
+        left.lastProgressTick - right.lastProgressTick || left.dispatched.sequence - right.dispatched.sequence
     )[0];
     const reconciliationDeadline = oldestPending
       ? aiDeadline(
@@ -165,8 +163,7 @@ export class AiCommandReconciliation {
           applicationObserved:
             savedPending?.applicationObserved ??
             state.recentOutcomes.some(
-              (outcome) =>
-                outcome.commandId === commandId && (outcome.kind === "applied" || outcome.kind === "active")
+              (outcome) => outcome.commandId === commandId && (outcome.kind === "applied" || outcome.kind === "active")
             ),
           terminalActorIds
         });
@@ -199,8 +196,8 @@ export class AiCommandReconciliation {
         applicationObserved: false,
         terminalActorIds: new Set()
       });
+      if (this.health !== "technical_fault") this.health = "reconciling";
       this.enforcePendingBound(outcome.tick);
-      this.health = "reconciling";
       return;
     }
     if (outcome.kind === "applied" || outcome.kind === "active") {

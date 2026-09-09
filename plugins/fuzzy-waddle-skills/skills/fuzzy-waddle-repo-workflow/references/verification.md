@@ -6,20 +6,22 @@ Read only when selecting or running checks. The task/lane supplies authority and
 
 Read package.json (Node/pnpm/Phaser versions), the owning project.json and Jest/TypeScript config before invoking a target. Use existing dependencies; do not replace lockfiles or install unrelated tools. Current explicit targets:
 
-| Project | Definition | Available relevant targets |
-| --- | --- | --- |
-| probable-waffle-phaser | libs/games/probable-waffle/phaser/project.json | lint, test |
-| probable-waffle-server | libs/games/probable-waffle/server/project.json | lint, test |
-| probable-waffle-gameplay | libs/games/probable-waffle/gameplay/project.json | lint; no test target yet |
-| probable-waffle-protocol | libs/games/probable-waffle/protocol/project.json | lint; no test target yet |
+| Project                  | Definition                                       | Available relevant targets  |
+| ------------------------ | ------------------------------------------------ | --------------------------- |
+| probable-waffle-phaser   | libs/games/probable-waffle/phaser/project.json   | lint, test                  |
+| probable-waffle-server   | libs/games/probable-waffle/server/project.json   | lint, test                  |
+| probable-waffle-gameplay | libs/games/probable-waffle/gameplay/project.json | lint, test, skirmish-matrix |
+| probable-waffle-protocol | libs/games/probable-waffle/protocol/project.json | lint, test                  |
 
-This snapshot is not an excuse to omit needed tests. #759 Stage 2 supplies missing pure/protocol targets. Discover other project targets locally; do not assume every library has test/build.
+This snapshot is not an excuse to omit needed tests. Discover other project targets locally; do not assume every library has test/build.
 
 - Focus a supported Jest target with pnpm exec nx test followed by the owning project and its supported test filter. Verify the filter selected the intended spec and a nonzero test count.
 - This checkout uses legacy .eslintrc.json and project-scoped Nx lint. A bare ESLint 9 invocation expects flat config and is not the equivalent route; root ignore rules and extensions may exclude standalone .mjs tools. Use the owning target, or explicitly scoped syntax/rule checks for a tool with no target, and label that narrower coverage. Do not migrate repository lint configuration for an unrelated task.
 - Type-check actual source through the owning TypeScript config; a passing empty/include-excluded target proves nothing.
 - Use tools/testing/jest-node-preset.cjs or tools/testing/jest-angular-preset.cjs where appropriate; keep production imports and real consumer contracts represented.
 - Editor wiring: package script phaser-editor:check. Assets/LFS: assets:check. Broad production builds are not a substitute for focused regressions.
+- For skirmish AI release evidence, distinguish pure authored scenarios, runtime-backed scenarios and browser matches. Count only scenarios that actually execute the claimed layer; a non-null name or metadata row is not runtime coverage. The release runner must fail closed on missing mandatory fixtures, zero selected tests, an unavailable baseline adapter, non-finite metrics or a candidate/baseline revision mismatch.
+- Accelerated browser smoke should verify simulation ticks continue, planner/build-order state advances, commands are accepted, and no AI-step error is logged. This catches lifecycle and data-projection faults that isolated planner tests cannot represent.
 - Read full errors, fix task-caused failures and rerun affected checks. Record unrelated failures with evidence; unavailable required infrastructure remains blocked.
 
 ## Documentation/skill changes

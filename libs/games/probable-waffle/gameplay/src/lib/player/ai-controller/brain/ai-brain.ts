@@ -140,7 +140,12 @@ function normalizePrimarySquadOwnership(squads: AiBrainStateV1["squads"]): AiBra
   };
   const claimed = new Set<string>();
   return [...squads]
-    .sort((left, right) => rolePriority[left.role] - rolePriority[right.role] || Number(right.squadId.includes(":domain:")) - Number(left.squadId.includes(":domain:")) || left.squadId.localeCompare(right.squadId))
+    .sort(
+      (left, right) =>
+        rolePriority[left.role] - rolePriority[right.role] ||
+        Number(right.squadId.includes(":domain:")) - Number(left.squadId.includes(":domain:")) ||
+        left.squadId.localeCompare(right.squadId)
+    )
     .map((squad) => {
       const actorIds = squad.actorIds.filter((actorId) => !claimed.has(actorId));
       actorIds.forEach((actorId) => claimed.add(actorId));
@@ -148,15 +153,17 @@ function normalizePrimarySquadOwnership(squads: AiBrainStateV1["squads"]): AiBra
       return {
         ...squad,
         actorIds,
-        ...(squad.tactics ? {
-          tactics: {
-            ...squad.tactics,
-            orderedActorIds: squad.tactics.orderedActorIds.filter((actorId) => owned.has(actorId)),
-            assignedPositions: squad.tactics.assignedPositions.filter((entry) => owned.has(entry.actorId)),
-            damageReservations: squad.tactics.damageReservations.filter((entry) => owned.has(entry.actorId)),
-            mobileReserveActorIds: squad.tactics.mobileReserveActorIds.filter((actorId) => owned.has(actorId))
-          }
-        } : {})
+        ...(squad.tactics
+          ? {
+              tactics: {
+                ...squad.tactics,
+                orderedActorIds: squad.tactics.orderedActorIds.filter((actorId) => owned.has(actorId)),
+                assignedPositions: squad.tactics.assignedPositions.filter((entry) => owned.has(entry.actorId)),
+                damageReservations: squad.tactics.damageReservations.filter((entry) => owned.has(entry.actorId)),
+                mobileReserveActorIds: squad.tactics.mobileReserveActorIds.filter((actorId) => owned.has(actorId))
+              }
+            }
+          : {})
       };
     })
     .sort((left, right) => left.squadId.localeCompare(right.squadId));
@@ -224,54 +231,57 @@ export class PureAiBrainV1 implements AiBrainV1 {
     // Stage 8 extends that established seam with its non-overlapping transport projection.
     // Stage 9 appends only newly-created transport children after the owner has advanced them.
     // Stage 14 merges only its `demand:adapt:` rows and saved rationale after the macro ledger.
-    const projectedState = proposalBatches.reduce<AiBrainStateV1>(
-      (state, batch) => {
-        const patch = batch.statePatch;
-        if (!patch) return state;
-        const { transportAppend, squadUpdates, adaptation, adaptationDemands, ...replacePatch } = patch;
-        return {
-          ...state,
-          ...replacePatch,
-          ...(adaptation || adaptationDemands ? {
-            economyProduction: {
-              ...state.economyProduction,
-              ...(adaptation ? { adaptation } : {}),
-              ...(adaptationDemands ? {
-                demands: [
-                  ...state.economyProduction.demands.filter((demand) => !demand.demandId.startsWith("demand:adapt:")),
-                  ...adaptationDemands
-                ].sort((left, right) => left.demandId.localeCompare(right.demandId))
-              } : {})
+    const projectedState = proposalBatches.reduce<AiBrainStateV1>((state, batch) => {
+      const patch = batch.statePatch;
+      if (!patch) return state;
+      const { transportAppend, squadUpdates, adaptation, adaptationDemands, ...replacePatch } = patch;
+      return {
+        ...state,
+        ...replacePatch,
+        ...(adaptation || adaptationDemands
+          ? {
+              economyProduction: {
+                ...state.economyProduction,
+                ...(adaptation ? { adaptation } : {}),
+                ...(adaptationDemands
+                  ? {
+                      demands: [
+                        ...state.economyProduction.demands.filter(
+                          (demand) => !demand.demandId.startsWith("demand:adapt:")
+                        ),
+                        ...adaptationDemands
+                      ].sort((left, right) => left.demandId.localeCompare(right.demandId))
+                    }
+                  : {})
+              }
             }
-          } : {}),
-          ...(transportAppend?.length
-            ? {
-                transport: [
-                  ...state.transport,
-                  ...transportAppend.filter((candidate) => !state.transport.some((current) => current.planId === candidate.planId))
-                ]
-              }
-            : {}),
-          ...(squadUpdates?.length
-            ? {
-                squads: [
-                  ...state.squads.filter((squad) => !squadUpdates.some((update) => update.squadId === squad.squadId)),
-                  ...squadUpdates
-                ].sort((left, right) => left.squadId.localeCompare(right.squadId))
-              }
-            : {})
-        };
-      },
-      planning.state
-    );
-    const intents = planning.proposals.sort(compareIntents);
+          : {}),
+        ...(transportAppend?.length
+          ? {
+              transport: [
+                ...state.transport,
+                ...transportAppend.filter(
+                  (candidate) => !state.transport.some((current) => current.planId === candidate.planId)
+                )
+              ]
+            }
+          : {}),
+        ...(squadUpdates?.length
+          ? {
+              squads: [
+                ...state.squads.filter((squad) => !squadUpdates.some((update) => update.squadId === squad.squadId)),
+                ...squadUpdates
+              ].sort((left, right) => left.squadId.localeCompare(right.squadId))
+            }
+          : {})
+      };
+    }, planning.state);
+    const intents = [...planning.proposals].sort(compareIntents);
     const decisions: AiIntentDecisionV1[] = [...planning.preDecisions];
     const accepted: AiIntentV1[] = [];
-    const existingClaimOwners = new Map<string, string>(
+    const existingClaims = new Set<string>(
       planning.state.reservations.flatMap((reservation) =>
-        [reservation.claimId, reservation.subjectKey]
-          .filter((key): key is string => key !== undefined)
-          .map((key) => [key, reservation.ownerPlanId] as const)
+        [reservation.claimId, reservation.subjectKey].filter((key): key is string => key !== undefined)
       )
     );
     const claimedThisStep = new Set<string>();
@@ -283,8 +293,8 @@ export class PureAiBrainV1 implements AiBrainV1 {
         continue;
       }
       if (
-        decisions.filter((decision) => decision.outcome === "accepted" || decision.reason !== "claim_conflict").length >=
-          this.profile.maxIntentProposalsPerStep ||
+        decisions.filter((decision) => decision.outcome === "accepted" || decision.reason !== "claim_conflict")
+          .length >= this.profile.maxIntentProposalsPerStep ||
         accepted.length >= this.profile.maxAcceptedCommandBatchesPerStep
       ) {
         decisions.push({ outcome: "rejected", intent, reason: "profile_limit", detail: "step_budget" });
@@ -298,12 +308,13 @@ export class PureAiBrainV1 implements AiBrainV1 {
         continue;
       }
 
-      const exclusiveConflict = intent.claims.find((claim) =>
-        claim.kind !== "resource" &&
-        (claimedThisStep.has(claimKey(claim)) ||
-          claimedThisStep.has(claim.claimId) ||
-          (existingClaimOwners.has(claimKey(claim)) && existingClaimOwners.get(claimKey(claim)) !== intent.planId) ||
-          (existingClaimOwners.has(claim.claimId) && existingClaimOwners.get(claim.claimId) !== intent.planId))
+      const exclusiveConflict = intent.claims.find(
+        (claim) =>
+          claim.kind !== "resource" &&
+          (claimedThisStep.has(claimKey(claim)) ||
+            claimedThisStep.has(claim.claimId) ||
+            existingClaims.has(claimKey(claim)) ||
+            existingClaims.has(claim.claimId))
       );
       if (exclusiveConflict) {
         decisions.push({ outcome: "rejected", intent, reason: "claim_conflict", detail: claimKey(exclusiveConflict) });
@@ -341,7 +352,10 @@ export class PureAiBrainV1 implements AiBrainV1 {
         claimId: claim.claimId,
         subjectKey: claimKey(claim),
         ownerPlanId: intent.planId,
-        state: { kind: "provisional" as const, expiresAt: aiDeadline(observation.tick + AI_PROVISIONAL_LEASE_DURATION_TICKS) },
+        state: {
+          kind: "provisional" as const,
+          expiresAt: aiDeadline(observation.tick + AI_PROVISIONAL_LEASE_DURATION_TICKS)
+        },
         prerequisites: [],
         createdTick: observation.tick
       }))
@@ -353,24 +367,36 @@ export class PureAiBrainV1 implements AiBrainV1 {
     );
     const acceptedEffectIds = new Set(accepted.map((intent) => intent.effectId));
     const previousSupportIds = new Set(previousState.support.map((plan) => plan.planId));
-    const previousDamageEffectIds = new Set(previousState.squads.flatMap((squad) =>
-      squad.tactics?.damageReservations.map((reservation) => reservation.effectId).filter((effectId): effectId is string => effectId !== undefined) ?? []
-    ));
+    const previousDamageEffectIds = new Set(
+      previousState.squads.flatMap(
+        (squad) =>
+          squad.tactics?.damageReservations
+            .map((reservation) => reservation.effectId)
+            .filter((effectId): effectId is string => effectId !== undefined) ?? []
+      )
+    );
     const normalizedSquads = normalizePrimarySquadOwnership(projectedState.squads);
     const nextState: AiBrainStateV1 = {
       ...projectedState,
-      support: projectedState.support.filter((plan) =>
-        previousSupportIds.has(plan.planId) || plan.effectId == null || acceptedEffectIds.has(plan.effectId as AiIntentV1["effectId"])
+      support: projectedState.support.filter(
+        (plan) =>
+          previousSupportIds.has(plan.planId) ||
+          plan.effectId == null ||
+          acceptedEffectIds.has(plan.effectId as AiIntentV1["effectId"])
       ),
       squads: normalizedSquads.map((squad) => {
         if (!squad.tactics) return squad;
         const previousSquad = previousState.squads.find((candidate) => candidate.squadId === squad.squadId);
-        const retainedOrderedActorIds = previousSquad?.tactics?.orderSignature === squad.tactics.orderSignature
-          ? previousSquad.tactics.orderedActorIds
-          : [];
+        const retainedOrderedActorIds =
+          previousSquad?.tactics?.orderSignature === squad.tactics.orderSignature
+            ? previousSquad.tactics.orderedActorIds
+            : [];
         const acceptedOrderedActorIds = accepted
-          .filter((intent) => intent.planId === `plan:${squad.squadId}` && (intent.kind === "move" || intent.kind === "attack"))
-          .flatMap((intent) => "actorIds" in intent ? [...intent.actorIds] : []);
+          .filter(
+            (intent) =>
+              intent.planId === `plan:${squad.squadId}` && (intent.kind === "move" || intent.kind === "attack")
+          )
+          .flatMap((intent) => ("actorIds" in intent ? [...intent.actorIds] : []));
         return {
           ...squad,
           tactics: {
@@ -378,8 +404,11 @@ export class PureAiBrainV1 implements AiBrainV1 {
             orderedActorIds: [...new Set([...retainedOrderedActorIds, ...acceptedOrderedActorIds])]
               .filter((actorId) => squad.actorIds.includes(actorId))
               .sort(),
-            damageReservations: squad.tactics.damageReservations.filter((reservation) =>
-              reservation.effectId === undefined || previousDamageEffectIds.has(reservation.effectId) || acceptedEffectIds.has(reservation.effectId as AiIntentV1["effectId"])
+            damageReservations: squad.tactics.damageReservations.filter(
+              (reservation) =>
+                reservation.effectId === undefined ||
+                previousDamageEffectIds.has(reservation.effectId) ||
+                acceptedEffectIds.has(reservation.effectId as AiIntentV1["effectId"])
             )
           }
         };
@@ -391,7 +420,8 @@ export class PureAiBrainV1 implements AiBrainV1 {
             !acceptedReservations.some(
               (acceptedReservation) =>
                 acceptedReservation.ownerPlanId === existing.ownerPlanId &&
-                (acceptedReservation.claimId === existing.claimId || acceptedReservation.subjectKey === existing.subjectKey)
+                (acceptedReservation.claimId === existing.claimId ||
+                  acceptedReservation.subjectKey === existing.subjectKey)
             )
         ),
         ...acceptedReservations

@@ -3,10 +3,7 @@ import type { Subscription } from "rxjs";
 import { SpellType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/spell-type";
 import type { SpellData } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/spell-data";
 import { spellDefinitions } from "../spell-definitions";
-import {
-  type PendingSpellImpactData,
-  type SpellComponentData
-} from "@fuzzy-waddle/probable-waffle-protocol";
+import { type PendingSpellImpactData, type SpellComponentData } from "@fuzzy-waddle/probable-waffle-protocol";
 import Phaser from "phaser";
 import { isGameObjectActiveInActiveScene, onObjectReady } from "../../../../data/game-object-helper";
 import { getActorComponent } from "../../../../data/actor-component";

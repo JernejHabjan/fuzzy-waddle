@@ -20,13 +20,13 @@ All builds are deferred, including targeted packaging, bundling, code-generation
 
 ### Minimum executable vertical slices
 
-| Checkpoint | Must really work together before continuing |
-| --- | --- |
-| Stage 5 | Author real-world creation -> host AI/adapter -> shared command apply -> observable outcome -> safe save/replay; oracle rejects a deliberately bad outcome |
-| Stage 7 | Actual faction start -> legal worker -> delivered income -> supply -> useful producer -> repeated useful unit production; no artificial fixture income to conceal a stall |
-| Stage 9 | Normal land skirmish -> scouting -> assembled attack -> route/objective effect -> reinforcement/retreat/next decision -> ordinary result; retain economy during a minor raid |
-| Stages 10–14 | The prior core loop still works while the new expansion/fortification/transport/tactics/adaptation behavior is connected |
-| Stage 15 | All supported contexts, interacting failures, long matches, human-facing launch/debug/results and release evidence |
+| Checkpoint   | Must really work together before continuing                                                                                                                                  |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Stage 5      | Author real-world creation -> host AI/adapter -> shared command apply -> observable outcome -> safe save/replay; oracle rejects a deliberately bad outcome                   |
+| Stage 7      | Actual faction start -> legal worker -> delivered income -> supply -> useful producer -> repeated useful unit production; no artificial fixture income to conceal a stall    |
+| Stage 9      | Normal land skirmish -> scouting -> assembled attack -> route/objective effect -> reinforcement/retreat/next decision -> ordinary result; retain economy during a minor raid |
+| Stages 10–14 | The prior core loop still works while the new expansion/fortification/transport/tactics/adaptation behavior is connected                                                     |
+| Stage 15     | All supported contexts, interacting failures, long matches, human-facing launch/debug/results and release evidence                                                           |
 
 Stage 9 may need to repair earlier contracts so the vertical slice is implementation-complete; do not record “integration later” for its basic economy/attack/recovery path. Sophisticated tactical refinement stays Stage 13. Runtime execution, including the shortest focused match, remains prohibited until Stage 15.
 
@@ -48,55 +48,55 @@ Every event has a fixed tick or a deterministic milestone trigger, latest trigge
 
 Each row gets independent semantic predicates, forbidden outcomes, resolved numeric deadlines and a failing-oracle control. Author in the owning stages from packet 09; run every focused case and applicable variant in Stage 15.
 
-| ID | Setup / injection | Required result |
-| --- | --- | --- |
-| H-01 | Same recoverable blocker persists while its displayed next-check tick is renewed | Cumulative episode deadline still escalates and restores useful duty; no infinite explained inactivity |
-| H-02 | Worker/army circles, flips state or changes plan ID without advancing purpose | Best-progress/cause tracker detects false progress; renamed plans cannot clear failure age |
-| H-03 | Legitimate long training, crop growth or journey exceeds 200 ticks | Healthy work is retained with observed progress/expected milestone; watchdog does not repeatedly cancel it |
-| H-04 | One child makes unrelated progress while parent income/attack remains stalled | Parent deadline still fires; unrelated chores cannot keep it alive |
-| H-05 | Optional goal becomes infeasible while other useful work exists | Atomic safe release and bounded reassignment; no orphan actors or global concession |
-| H-06 | Missing authoritative outcome after effect already applied | Same effect identity reconciles to actual state exactly once; no duplicate/refund assumption |
-| H-07 | Effect completed and resulting actor was consumed/destroyed before reconciliation | Authoritative history proves application; absence of actor cannot cause second purchase |
-| H-08 | Old outcome arrives after timeout, cancellation request or new host | Canonical epoch/sequence fencing and correct lifecycle; no resurrection of obsolete plans |
-| H-09 | Duplicate command arrives after detailed dedup entry eviction/save restore | Safe watermark rejects stale reapplication; unresolved records were not evicted |
-| H-10 | Outcome backlog reaches configured capacity | Backpressure preserves required records and unrelated safe progress; explicit bounded technical recovery if needed |
-| H-11 | Food/worker/Granary/Field prerequisite cycle under scarcity | Cheapest legal feasible recovery chain or independently confirmed strategic infeasibility; no circular reservation wait |
-| H-12 | Two projects each hold one resource needed by the other | Cycle detected, reversible reservation chosen deterministically, feasible work proceeds |
-| H-13 | Many bases start optional projects and evade per-base caps | Player-wide exposure remains bounded; legitimate committed military/essential economy retains funding |
-| H-14 | Repeated minor scouts or supply forecasts monopolize priorities | Emergency decays; feasible scouting/production/army lanes receive bounded service |
-| H-15 | Genuine lethal attack competes with normal lane service | Survival preempts appropriate actors/resources while observation/reconciliation continue; no artificial “fairness” suicide |
-| H-16 | Forecast shows high income but congested unsafe workers deliver little | Forecast corrected, optional commitments reduced, alternate useful jobs restored |
-| H-17 | Producer completes but spawn is blocked or its planned unit demand vanished | Clear/reassign/cancel useful future obligation; don't build an endless series of empty producers |
-| H-18 | Supply drops while high-cost military purchases are reserved | Reconcile queued/active supply and reversible reservations; legal recovery funded, no double subtraction |
-| H-19 | Optional path never completes during an observed nearby attack | Local permitted defense still executes; query failure cannot freeze the whole brain |
-| H-20 | Frequent topology changes invalidate generations | Bounded backlog/cursors, eventual stable-route publication and unrelated progress |
-| H-21 | Region connected but actual unit/formation cannot clear corridor | Correct footprint/service route, alternate or bounded failure; no impossible mission loop |
-| H-22 | Last enemy contact becomes stale; vacated region is explored | Hypothesis retired, legal search progresses; no permanent fear of nonexistent current enemy |
-| H-23 | One straggler/optional support unit never reaches assembly | Useful force launches or changes to feasible mission by deadline; indispensable cargo rules remain respected |
-| H-24 | No favorable full-army certainty, but safe raid/scout/denial opportunity exists | Bounded useful probe/mission, not permanent assembly or forced suicide |
-| H-25 | Squad repeatedly retreats and relaunches at same choke | Detect oscillation, alter objective/force/route and achieve recovery/progress |
-| H-26 | Reinforcement stream would feed isolated units into lethal route | Reachable grouping/alternate route or stop feeding; preserve useful main-front decision |
-| H-27 | Wall opening gives direct hostile access; towers/posts are ineffective | Planner cannot claim sealed defense; improve measured coverage/topology or reject the layout |
-| H-28 | Repeated short fortification prefixes bypass single-plan budget | Cumulative base/player commitments counted; stop unjustified new nodes |
-| H-29 | Boat succeeds but cargo workers never resume income or boat remains reserved | Handoff releases/reassigns both passenger and transport roles; delivered-income/next-mission progress |
-| H-30 | Optional proposer/debug throws or produces NaN/invalid utility | Boundary guards isolate faulty output, preserve valid orders and surface incident; no best-score corruption |
-| H-31 | Save/load occurs during chronic block, lease expiry and authority reconciliation | Failure age, debt, claims, epoch and next legitimate decisions preserved; no reset exploit |
-| H-32 | Second match starts in same app after disposal/host replacement | Exactly one current controller/player; old callbacks cannot act or leak state across matches |
+| ID   | Setup / injection                                                                 | Required result                                                                                                            |
+| ---- | --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| H-01 | Same recoverable blocker persists while its displayed next-check tick is renewed  | Cumulative episode deadline still escalates and restores useful duty; no infinite explained inactivity                     |
+| H-02 | Worker/army circles, flips state or changes plan ID without advancing purpose     | Best-progress/cause tracker detects false progress; renamed plans cannot clear failure age                                 |
+| H-03 | Legitimate long training, crop growth or journey exceeds 200 ticks                | Healthy work is retained with observed progress/expected milestone; watchdog does not repeatedly cancel it                 |
+| H-04 | One child makes unrelated progress while parent income/attack remains stalled     | Parent deadline still fires; unrelated chores cannot keep it alive                                                         |
+| H-05 | Optional goal becomes infeasible while other useful work exists                   | Atomic safe release and bounded reassignment; no orphan actors or global concession                                        |
+| H-06 | Missing authoritative outcome after effect already applied                        | Same effect identity reconciles to actual state exactly once; no duplicate/refund assumption                               |
+| H-07 | Effect completed and resulting actor was consumed/destroyed before reconciliation | Authoritative history proves application; absence of actor cannot cause second purchase                                    |
+| H-08 | Old outcome arrives after timeout, cancellation request or new host               | Canonical epoch/sequence fencing and correct lifecycle; no resurrection of obsolete plans                                  |
+| H-09 | Duplicate command arrives after detailed dedup entry eviction/save restore        | Safe watermark rejects stale reapplication; unresolved records were not evicted                                            |
+| H-10 | Outcome backlog reaches configured capacity                                       | Backpressure preserves required records and unrelated safe progress; explicit bounded technical recovery if needed         |
+| H-11 | Food/worker/Granary/Field prerequisite cycle under scarcity                       | Cheapest legal feasible recovery chain or independently confirmed strategic infeasibility; no circular reservation wait    |
+| H-12 | Two projects each hold one resource needed by the other                           | Cycle detected, reversible reservation chosen deterministically, feasible work proceeds                                    |
+| H-13 | Many bases start optional projects and evade per-base caps                        | Player-wide exposure remains bounded; legitimate committed military/essential economy retains funding                      |
+| H-14 | Repeated minor scouts or supply forecasts monopolize priorities                   | Emergency decays; feasible scouting/production/army lanes receive bounded service                                          |
+| H-15 | Genuine lethal attack competes with normal lane service                           | Survival preempts appropriate actors/resources while observation/reconciliation continue; no artificial “fairness” suicide |
+| H-16 | Forecast shows high income but congested unsafe workers deliver little            | Forecast corrected, optional commitments reduced, alternate useful jobs restored                                           |
+| H-17 | Producer completes but spawn is blocked or its planned unit demand vanished       | Clear/reassign/cancel useful future obligation; don't build an endless series of empty producers                           |
+| H-18 | Supply drops while high-cost military purchases are reserved                      | Reconcile queued/active supply and reversible reservations; legal recovery funded, no double subtraction                   |
+| H-19 | Optional path never completes during an observed nearby attack                    | Local permitted defense still executes; query failure cannot freeze the whole brain                                        |
+| H-20 | Frequent topology changes invalidate generations                                  | Bounded backlog/cursors, eventual stable-route publication and unrelated progress                                          |
+| H-21 | Region connected but actual unit/formation cannot clear corridor                  | Correct footprint/service route, alternate or bounded failure; no impossible mission loop                                  |
+| H-22 | Last enemy contact becomes stale; vacated region is explored                      | Hypothesis retired, legal search progresses; no permanent fear of nonexistent current enemy                                |
+| H-23 | One straggler/optional support unit never reaches assembly                        | Useful force launches or changes to feasible mission by deadline; indispensable cargo rules remain respected               |
+| H-24 | No favorable full-army certainty, but safe raid/scout/denial opportunity exists   | Bounded useful probe/mission, not permanent assembly or forced suicide                                                     |
+| H-25 | Squad repeatedly retreats and relaunches at same choke                            | Detect oscillation, alter objective/force/route and achieve recovery/progress                                              |
+| H-26 | Reinforcement stream would feed isolated units into lethal route                  | Reachable grouping/alternate route or stop feeding; preserve useful main-front decision                                    |
+| H-27 | Wall opening gives direct hostile access; towers/posts are ineffective            | Planner cannot claim sealed defense; improve measured coverage/topology or reject the layout                               |
+| H-28 | Repeated short fortification prefixes bypass single-plan budget                   | Cumulative base/player commitments counted; stop unjustified new nodes                                                     |
+| H-29 | Boat succeeds but cargo workers never resume income or boat remains reserved      | Handoff releases/reassigns both passenger and transport roles; delivered-income/next-mission progress                      |
+| H-30 | Optional proposer/debug throws or produces NaN/invalid utility                    | Boundary guards isolate faulty output, preserve valid orders and surface incident; no best-score corruption                |
+| H-31 | Save/load occurs during chronic block, lease expiry and authority reconciliation  | Failure age, debt, claims, epoch and next legitimate decisions preserved; no reset exploit                                 |
+| H-32 | Second match starts in same app after disposal/host replacement                   | Exactly one current controller/player; old callbacks cannot act or leak state across matches                               |
 
 ## Continuous match sequences
 
 These are skirmish soak/interaction tests, not a new campaign game mode. Each uses one continuous world and brain without resetting between disruptions. Require economy, military and authority progress together. Individual paired unit cases cannot substitute for them.
 
-| ID | Sequence | Measured acceptance |
-| --- | --- | --- |
-| SEQ-01 | Ordinary legal start -> opening -> scouting -> first attack -> retreat/regroup or success -> reinforcement -> second mission -> enemy core finish | Both factions, Normal, supported land map; first offensive launch by 10 min, objective effect within fixed travel/combat bound, continuing pressure in subsequent viable windows, normal victory/score |
-| SEQ-02 | SEQ-01 first attack away -> small boat/air raid at home -> raid grows -> workers flee -> defense stabilizes -> offense resumes | Limited initial recall then severity-scaled response, productive workers restored, no permanent defense stance after threat clears |
-| SEQ-03 | Income established -> resource depletion + local congestion -> loaded-worker drop-off destroyed -> safe alternate source -> sustainable food -> expansion | Delivered income recovers within independent service/build bounds; useful duplicate deposits allowed; no farm/worker dependency cycle |
-| SEQ-04 | Military transition -> partial queued spending -> supply structure and critical producer lost -> optional upgrade waiting -> rebuild -> new force | No ghost reservations/double spending; recovery essentials outrank optional research; productive capacity and military mission return |
-| SEQ-05 | Island builder/combat transport -> unsafe landing -> reroute -> unload -> economy established -> return trip/escort loss | Actual supported transport faction; all ownership phases reconcile, useful delivered island income and later mission/evacuation, no stranded hidden backlog |
-| SEQ-06 | Fortified front with deliberate opening -> hostile ground approach -> wall/stair breach -> post withdrawal -> repair/alternate defense -> outside counterattack | Measured defense value, friendly clearance throughout, bounded repair spend, mobile force still fights outside; air threat not credited as blocked by walls |
-| SEQ-07 | Initial enemy composition -> stale sightings -> confirmed tech/counter transition -> failed assault -> revised composition -> alternate objective | Proportionate evidence response, no queue churn, useful retained units, bounded tactical recovery and meaningful new pressure |
-| SEQ-08 | Active economy/attack + pending command -> save -> reload -> host transfer -> late old events -> finish -> second match | Exact saved continuation for equivalent logical inputs, applied-once effects, no duplicated brain/claims/results, clean new match |
+| ID     | Sequence                                                                                                                                                        | Measured acceptance                                                                                                                                                                                    |
+| ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| SEQ-01 | Ordinary legal start -> opening -> scouting -> first attack -> retreat/regroup or success -> reinforcement -> second mission -> enemy core finish               | Both factions, Normal, supported land map; first offensive launch by 10 min, objective effect within fixed travel/combat bound, continuing pressure in subsequent viable windows, normal victory/score |
+| SEQ-02 | SEQ-01 first attack away -> small boat/air raid at home -> raid grows -> workers flee -> defense stabilizes -> offense resumes                                  | Limited initial recall then severity-scaled response, productive workers restored, no permanent defense stance after threat clears                                                                     |
+| SEQ-03 | Income established -> resource depletion + local congestion -> loaded-worker drop-off destroyed -> safe alternate source -> sustainable food -> expansion       | Delivered income recovers within independent service/build bounds; useful duplicate deposits allowed; no farm/worker dependency cycle                                                                  |
+| SEQ-04 | Military transition -> partial queued spending -> supply structure and critical producer lost -> optional upgrade waiting -> rebuild -> new force               | No ghost reservations/double spending; recovery essentials outrank optional research; productive capacity and military mission return                                                                  |
+| SEQ-05 | Island builder/combat transport -> unsafe landing -> reroute -> unload -> economy established -> return trip/escort loss                                        | Actual supported transport faction; all ownership phases reconcile, useful delivered island income and later mission/evacuation, no stranded hidden backlog                                            |
+| SEQ-06 | Fortified front with deliberate opening -> hostile ground approach -> wall/stair breach -> post withdrawal -> repair/alternate defense -> outside counterattack | Measured defense value, friendly clearance throughout, bounded repair spend, mobile force still fights outside; air threat not credited as blocked by walls                                            |
+| SEQ-07 | Initial enemy composition -> stale sightings -> confirmed tech/counter transition -> failed assault -> revised composition -> alternate objective               | Proportionate evidence response, no queue churn, useful retained units, bounded tactical recovery and meaningful new pressure                                                                          |
+| SEQ-08 | Active economy/attack + pending command -> save -> reload -> host transfer -> late old events -> finish -> second match                                         | Exact saved continuation for equivalent logical inputs, applied-once effects, no duplicated brain/claims/results, clean new match                                                                      |
 
 Fixed disturbance timing must preserve the scenario's declared feasibility. For losses modeled by an opponent, use deterministic legal attacks; for lifecycle faults, use labeled test transport seams. Report damage and assets removed. A fixture that destroys every recovery route cannot demand normal recovery and then fault the AI for obeying defeat rules.
 

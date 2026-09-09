@@ -1,8 +1,4 @@
-import type {
-  AiAuthorityStateV1,
-  AiCommandOutcomeV1,
-  AiDeadlineV1
-} from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiAuthorityStateV1, AiCommandOutcomeV1, AiDeadlineV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
 import type { GameCommandOutcome } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { GameInstanceId } from "@fuzzy-waddle/platform-game-sessions";
 

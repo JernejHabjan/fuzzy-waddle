@@ -1,5 +1,11 @@
 import type { ActorId, PlayerNumber, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
-import type { FactionType, ObjectNames, ResearchType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import type {
+  FactionType,
+  ObjectNames,
+  OrderType,
+  ResearchType,
+  ResourceType
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiAccessNodeId, AiEvidenceId, AiKnownValueV1, AiSimulationTick } from "./ai-core-types";
 import type { AiAccessGraphV1 } from "./ai-access-graph-v1";
 import type { SpellType } from "../../../entity/components/combat/spell-type";
@@ -34,6 +40,12 @@ export interface AiObservedResourceStateV1 {
   readonly carried: AiKnownValueV1<number>;
   readonly growthReadyTick: AiKnownValueV1<AiSimulationTick>;
   readonly serviceCapacity: AiKnownValueV1<number>;
+}
+
+/** Current owned pawn order; opponent and remembered orders are never exposed. */
+export interface AiObservedOrderV1 {
+  readonly orderType: OrderType;
+  readonly targetActorId: ActorId | null;
 }
 
 /** Owned cargo facts needed to reconcile physical boarding without inspecting live objects in the brain. */
@@ -123,6 +135,8 @@ export interface AiObservedActorV1 {
   /** Owned construction percentage; absent only for legacy observations. */
   readonly constructionProgress?: AiKnownValueV1<number>;
   readonly activeEffectIds: readonly string[];
+  /** Optional only for compatibility with observations captured before Stage 15. */
+  readonly activeOrder?: AiKnownValueV1<AiObservedOrderV1 | null>;
   /** Effective combat/support facts; remembered actors intentionally never retain live cooldown or health data. */
   readonly combatProfile?: AiKnownValueV1<AiObservedCombatProfileV1>;
   /** Runtime-definition metadata exposed for owned actors; base identity never infers this from position. */

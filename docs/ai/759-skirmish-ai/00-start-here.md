@@ -39,24 +39,24 @@ The canonical framework skill is now [fuzzy-waddle-phaser](../../../plugins/fuzz
 
 These are engineering recommendations for the implementing coding agent, not models running inside the RTS. Official documentation describes [Terra](https://developers.openai.com/api/docs/models/gpt-5.6-terra) as balancing intelligence and cost, [Sol](https://developers.openai.com/api/docs/models/gpt-5.6-sol) for complex work, and [Luna](https://developers.openai.com/api/docs/models/gpt-5.6-luna) for cost-sensitive work. The listed `high`/`xhigh` efforts are supported by the currently exposed Codex host model metadata and public model docs (checked 2026-09-05). Stage-specific choices below are recommendations, not published performance guarantees. Model availability and quota can change.
 
-| Stage | Deliverable | Model | Effort | Packet |
-| --- | --- | --- | --- | --- |
-| 0 | Integrate/reconcile planner prerequisite | `gpt-5.6-terra` | high | [Foundation](02-foundation.md#stage-0) |
-| 1 | Static correctness and reason/trace envelope | `gpt-5.6-terra` | high | [Foundation](02-foundation.md#stage-1) |
-| 2 | Pure contracts and capability coverage | `gpt-5.6-sol` | high | [Foundation](02-foundation.md#stage-2) |
-| 3 | Shared commands, spell effects, persistence seams | `gpt-5.6-sol` | xhigh | [Foundation](02-foundation.md#stage-3) |
-| 4 | Atomic observation, knowledge, diplomacy | `gpt-5.6-terra` | xhigh | [Foundation](02-foundation.md#stage-4) |
-| 5 | Author harness, save/hash projections, baseline manifest | `gpt-5.6-sol` | high | [Foundation](02-foundation.md#stage-5) |
-| 6 | Purpose, goal scoring, reservations, difficulty | `gpt-5.6-terra` | xhigh | [Foundation](02-foundation.md#stage-6) |
-| 7 | Build orders, economy, production composition | `gpt-5.6-terra` | xhigh | [Macro and access](03-macro-and-access.md#stage-7) |
-| 8 | Multi-domain routes and transport lifecycle | `gpt-5.6-sol` | high | [Macro and access](03-macro-and-access.md#stage-8) |
-| 9 | Scouting, threats, basic squads, win/loss flow | `gpt-5.6-terra` | xhigh | [Macro and access](03-macro-and-access.md#stage-9) |
-| 10 | Bases, placement, expansion | `gpt-5.6-terra` | high | [Environment](04-environment.md#stage-10) |
-| 11 | Connected walls, stairs, towers, future gates | `gpt-5.6-sol` | high | [Environment](04-environment.md#stage-11) |
-| 12 | Economy recovery and anti-blocking | `gpt-5.6-terra` | high | [Environment](04-environment.md#stage-12) |
-| 13 | Tactical squads, support, spells, debug completion | `gpt-5.6-sol` | high | [Tactics](05-tactics-and-adaptation.md#stage-13) |
-| 14 | Counters, research, archetypes, migration cleanup | `gpt-5.6-terra` | xhigh | [Tactics](05-tactics-and-adaptation.md#stage-14) |
-| 15 | Full integration, code review, tests/builds, tuning, docs | `gpt-5.6-sol` | xhigh | [Final validation](07-final-validation.md) |
+| Stage | Deliverable                                               | Model           | Effort | Packet                                             |
+| ----- | --------------------------------------------------------- | --------------- | ------ | -------------------------------------------------- |
+| 0     | Integrate/reconcile planner prerequisite                  | `gpt-5.6-terra` | high   | [Foundation](02-foundation.md#stage-0)             |
+| 1     | Static correctness and reason/trace envelope              | `gpt-5.6-terra` | high   | [Foundation](02-foundation.md#stage-1)             |
+| 2     | Pure contracts and capability coverage                    | `gpt-5.6-sol`   | high   | [Foundation](02-foundation.md#stage-2)             |
+| 3     | Shared commands, spell effects, persistence seams         | `gpt-5.6-sol`   | xhigh  | [Foundation](02-foundation.md#stage-3)             |
+| 4     | Atomic observation, knowledge, diplomacy                  | `gpt-5.6-terra` | xhigh  | [Foundation](02-foundation.md#stage-4)             |
+| 5     | Author harness, save/hash projections, baseline manifest  | `gpt-5.6-sol`   | high   | [Foundation](02-foundation.md#stage-5)             |
+| 6     | Purpose, goal scoring, reservations, difficulty           | `gpt-5.6-terra` | xhigh  | [Foundation](02-foundation.md#stage-6)             |
+| 7     | Build orders, economy, production composition             | `gpt-5.6-terra` | xhigh  | [Macro and access](03-macro-and-access.md#stage-7) |
+| 8     | Multi-domain routes and transport lifecycle               | `gpt-5.6-sol`   | high   | [Macro and access](03-macro-and-access.md#stage-8) |
+| 9     | Scouting, threats, basic squads, win/loss flow            | `gpt-5.6-terra` | xhigh  | [Macro and access](03-macro-and-access.md#stage-9) |
+| 10    | Bases, placement, expansion                               | `gpt-5.6-terra` | high   | [Environment](04-environment.md#stage-10)          |
+| 11    | Connected walls, stairs, towers, future gates             | `gpt-5.6-sol`   | high   | [Environment](04-environment.md#stage-11)          |
+| 12    | Economy recovery and anti-blocking                        | `gpt-5.6-terra` | high   | [Environment](04-environment.md#stage-12)          |
+| 13    | Tactical squads, support, spells, debug completion        | `gpt-5.6-sol`   | high   | [Tactics](05-tactics-and-adaptation.md#stage-13)   |
+| 14    | Counters, research, archetypes, migration cleanup         | `gpt-5.6-terra` | xhigh  | [Tactics](05-tactics-and-adaptation.md#stage-14)   |
+| 15    | Full integration, code review, tests/builds, tuning, docs | `gpt-5.6-sol`   | xhigh  | [Final validation](07-final-validation.md)         |
 
 Start Stage 0 with **gpt-5.6-terra / high**. The table is the recommended owner for each complete stage, including its implementation and manual self-review; Stage 15 owns execution of every deferred gate. Select the next model/effort in the app when starting that stage; no automatic switching or delegation is promised. If unavailable, report it and record the actual selected setting rather than claiming the recommendation was used. For a repeatedly unresolved cross-system issue, recommend Sol with the reproduction and attempts attached. Luna may assist mechanical fixture/docs work after contracts are fixed, but is not the recommended owner for these end-to-end stages.
 

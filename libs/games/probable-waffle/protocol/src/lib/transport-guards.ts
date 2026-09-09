@@ -63,6 +63,8 @@ export const isProbableWaffleGameCommand = (value: unknown): value is GameComman
       );
     case ProbableWaffleGameCommandTypes.Concede:
       return typeof value.reason === "string" && value.reason.length > 0 && value.reason.length <= 160;
+    default:
+      return false;
   }
 };
 
@@ -73,7 +75,8 @@ const isSafeId = (value: unknown): value is string =>
   typeof value === "string" && value.length > 0 && value.length <= 256 && /^[a-zA-Z0-9_.:@/-]+$/.test(value);
 
 const isVector3 = (value: unknown): boolean =>
-  isPayload(value) && [value.x, value.y, value.z].every((coordinate) => typeof coordinate === "number" && Number.isFinite(coordinate));
+  isPayload(value) &&
+  [value.x, value.y, value.z].every((coordinate) => typeof coordinate === "number" && Number.isFinite(coordinate));
 
 const isGameCommandExecution = (value: unknown): value is GameCommandExecution =>
   isPayload(value) &&

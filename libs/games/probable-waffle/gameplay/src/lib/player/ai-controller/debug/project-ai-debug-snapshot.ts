@@ -9,11 +9,13 @@ export function findAiWhyNotExplanationV1(
   snapshot: AiDebugSnapshotV1,
   subjectId: string
 ): AiDebugSnapshotV1["whyNot"][number] {
-  return snapshot.whyNot.find((entry) => entry.subjectId === subjectId) ?? {
-    subjectId,
-    status: "not_recorded",
-    reason: null
-  };
+  return (
+    snapshot.whyNot.find((entry) => entry.subjectId === subjectId) ?? {
+      subjectId,
+      status: "not_recorded",
+      reason: null
+    }
+  );
 }
 
 /** Projects Stage 2 decision facts and honest typed not-ready sections for later owners. */
@@ -25,21 +27,22 @@ export function projectAiDebugSnapshot(
 ): AiDebugSnapshotV1 {
   const rejected = decisions.filter((decision) => decision.outcome === "rejected");
   const accepted = decisions.filter((decision) => decision.outcome === "accepted");
-  const topReasons = [...new Set([
-    ...decisions.map((decision) => decision.reason),
-    ...proposals.flatMap((proposal) => proposal.reasons)
-  ])].slice(0, 3);
+  const topReasons = [
+    ...new Set([...decisions.map((decision) => decision.reason), ...proposals.flatMap((proposal) => proposal.reasons)])
+  ].slice(0, 3);
   const blocker = state.blockers[0] ?? null;
   const graph = observation.map?.accessGraph;
   const transportOperations = state.transport.slice(0, 16).map((plan) => {
     const lifecycle = plan.lifecycle;
     const route = lifecycle?.route;
-    const pickup = route && (route.kind === "water_transport" || route.kind === "air_transport")
-      ? route.pickupCandidates.find((point) => point.transferId === lifecycle.pickupTransferId)
-      : undefined;
-    const landing = route && (route.kind === "water_transport" || route.kind === "air_transport")
-      ? route.landingCandidates.find((point) => point.transferId === lifecycle.landingTransferId)
-      : undefined;
+    const pickup =
+      route && (route.kind === "water_transport" || route.kind === "air_transport")
+        ? route.pickupCandidates.find((point) => point.transferId === lifecycle.pickupTransferId)
+        : undefined;
+    const landing =
+      route && (route.kind === "water_transport" || route.kind === "air_transport")
+        ? route.landingCandidates.find((point) => point.transferId === lifecycle.landingTransferId)
+        : undefined;
     return {
       planId: plan.planId,
       phase: plan.phase,
@@ -83,7 +86,10 @@ export function projectAiDebugSnapshot(
       predictedFriendlyLossPermille: squad.tactics?.predictedFriendlyLossPermille ?? null,
       observedLossCount: squad.tactics?.observedLossCount ?? 0,
       lastUsefulEffectTick: squad.lifecycle?.lastUsefulEffectTick ?? null,
-      targetSwitchReason: squad.tactics?.targetActorId === squad.objectiveId ? "committed_or_best_by_20_percent" : "objective_target_differs",
+      targetSwitchReason:
+        squad.tactics?.targetActorId === squad.objectiveId
+          ? "committed_or_best_by_20_percent"
+          : "objective_target_differs",
       damageReservationCount: squad.tactics?.damageReservations.length ?? 0,
       orderedActorCount: squad.tactics?.orderedActorIds.length ?? 0,
       oscillationCount: squad.tactics?.oscillationCount ?? 0,
@@ -164,8 +170,12 @@ export function projectAiDebugSnapshot(
     reason: plan.reason ?? "legacy_support_assignment"
   }));
   const adaptation = {
-    evidence: state.economyProduction.adaptation.evidence.slice(0, 16).map((entry) => ({ ...entry, permittedFacts: [...entry.permittedFacts] })),
-    roleTargets: state.economyProduction.adaptation.activeRoleTargets.slice(0, 8).map((target) => ({ ...target, evidenceIds: [...target.evidenceIds] })),
+    evidence: state.economyProduction.adaptation.evidence
+      .slice(0, 16)
+      .map((entry) => ({ ...entry, permittedFacts: [...entry.permittedFacts] })),
+    roleTargets: state.economyProduction.adaptation.activeRoleTargets
+      .slice(0, 8)
+      .map((target) => ({ ...target, evidenceIds: [...target.evidenceIds] })),
     lastTransitionTick: state.economyProduction.adaptation.lastTransitionTick,
     lastTransitionReason: state.economyProduction.adaptation.lastTransitionReason,
     selectedResearchType: state.economyProduction.adaptation.selectedResearchType,
@@ -204,11 +214,14 @@ export function projectAiDebugSnapshot(
           status: "outcome_unresolved" as const,
           reason: outcome.kind
         })),
-      ...proposals.filter((proposal) => !proposal.evaluated).slice(0, 8).map((proposal) => ({
-        subjectId: proposal.managerId,
-        status: "not_evaluated" as const,
-        reason: proposal.reasons.join(",") || "not_recorded"
-      }))
+      ...proposals
+        .filter((proposal) => !proposal.evaluated)
+        .slice(0, 8)
+        .map((proposal) => ({
+          subjectId: proposal.managerId,
+          status: "not_evaluated" as const,
+          reason: proposal.reasons.join(",") || "not_recorded"
+        }))
     ],
     transportOperations,
     skirmish,
@@ -220,7 +233,11 @@ export function projectAiDebugSnapshot(
     runtimeLimits: {
       decisionSequence: state.scheduler.decisionSequence,
       continuationCursors: state.scheduler.continuationCursors,
-      laneService: state.lanes.map((lane) => ({ lane: lane.lane, deficit: lane.deficit, lastServicedTick: lane.lastServicedTick })),
+      laneService: state.lanes.map((lane) => ({
+        lane: lane.lane,
+        deficit: lane.deficit,
+        lastServicedTick: lane.lastServicedTick
+      })),
       retainedTraceDecisions: decisions.length
     },
     progressHealth:
@@ -260,26 +277,43 @@ export function projectAiDebugSnapshot(
       productionComposition: {
         status: "ready",
         ownerStage: 14,
-        reason: adaptation.lastTransitionReason ?? state.economyProduction.demands.map((demand) => `${demand.capabilityOrRole}:${demand.desired}`).join(",") || null
+        reason:
+          adaptation.lastTransitionReason ??
+          (state.economyProduction.demands.map((demand) => `${demand.capabilityOrRole}:${demand.desired}`).join(",") ||
+            null)
       },
       economyLabor: {
         status: "ready",
         ownerStage: 7,
         reason: state.economyProduction.forecasts.length ? "600_tick_forecast_committed" : "no_macro_forecast"
       },
-      intelligenceEnvironment: { status: "ready", ownerStage: 9, reason: skirmish.questions[0]?.questionId ?? "no_open_question" },
+      intelligenceEnvironment: {
+        status: "ready",
+        ownerStage: 9,
+        reason: skirmish.questions[0]?.questionId ?? "no_open_question"
+      },
       squadsSupport: { status: "ready", ownerStage: 13, reason: skirmish.squads[0]?.squadId ?? "no_active_squad" },
       transport: {
         status: "ready",
         ownerStage: 8,
-        reason: transportOperations.map((operation) => `${operation.planId}:${operation.phase}`).join(",") || "no_active_transport_plan"
+        reason:
+          transportOperations.map((operation) => `${operation.planId}:${operation.phase}`).join(",") ||
+          "no_active_transport_plan"
       },
       basesFortifications: {
         status: "ready",
         ownerStage: 11,
-        reason: [...bases.map((base) => `${base.baseId}:${base.lifecycle}`), ...fortifications.map((plan) => `${plan.planId}:${plan.lifecycle}`)].join(",") || "main_structure_not_observed"
+        reason:
+          [
+            ...bases.map((base) => `${base.baseId}:${base.lifecycle}`),
+            ...fortifications.map((plan) => `${plan.planId}:${plan.lifecycle}`)
+          ].join(",") || "main_structure_not_observed"
       },
-      decisionsRecovery: { status: "ready", ownerStage: 12, reason: recovery[0] ? `${recovery[0].domain}:${recovery[0].state}` : "no_active_recovery" },
+      decisionsRecovery: {
+        status: "ready",
+        ownerStage: 12,
+        reason: recovery[0] ? `${recovery[0].domain}:${recovery[0].state}` : "no_active_recovery"
+      },
       runtimeLimits: { status: "ready", ownerStage: 13, reason: `decision:${state.scheduler.decisionSequence}` }
     }
   };

@@ -1327,12 +1327,7 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
           for (const friendly of friendlies) {
             const healthComponent = getActorComponent(friendly, HealthComponent);
             const friendlyTile = navigationService?.getCenterTileCoordUnderObject(friendly);
-            if (
-              healthComponent &&
-              !healthComponent.healthIsFull &&
-              healthComponent.alive &&
-              friendlyTile
-            ) {
+            if (healthComponent && !healthComponent.healthIsFull && healthComponent.alive && friendlyTile) {
               targetPosition = { ...friendlyTile, z: 0 };
               targetObjectId = getActorComponent(friendly, IdComponent)?.id;
               break;

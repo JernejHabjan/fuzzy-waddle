@@ -22,8 +22,15 @@ function assertDeadline(value: unknown, field: string): void {
 /** Structural guard used before a persisted state is trusted as V1. */
 export function isAiBrainStateV1(value: unknown): value is AiBrainStateV1 {
   if (!isRecord(value) || value.schemaVersion !== 1) return false;
-  if (!isRecord(value.strategy) || !isRecord(value.opening) || !isRecord(value.knowledge) || !isRecord(value.skirmish)) return false;
-  if (!isRecord(value.economyProduction) || !isRecord(value.recovery) || !isRecord(value.authority) || !isRecord(value.scheduler)) return false;
+  if (!isRecord(value.strategy) || !isRecord(value.opening) || !isRecord(value.knowledge) || !isRecord(value.skirmish))
+    return false;
+  if (
+    !isRecord(value.economyProduction) ||
+    !isRecord(value.recovery) ||
+    !isRecord(value.authority) ||
+    !isRecord(value.scheduler)
+  )
+    return false;
   if (!isRecord(value.identities)) return false;
   return [
     "bases",
@@ -69,16 +76,30 @@ export function assertAiBrainStateV1(value: unknown): asserts value is AiBrainSt
     assertDeadline(progress.milestoneDeadline, `progress.${progress.planId}.milestoneDeadline`);
   }
   if (!Array.isArray(value.recovery.records)) throw new Error("malformed_ai_recovery_state");
-  if (!isRecord(value.economyProduction.adaptation) || !Array.isArray(value.economyProduction.adaptation.evidence) || !Array.isArray(value.economyProduction.adaptation.activeRoleTargets)) {
+  if (
+    !isRecord(value.economyProduction.adaptation) ||
+    !Array.isArray(value.economyProduction.adaptation.evidence) ||
+    !Array.isArray(value.economyProduction.adaptation.activeRoleTargets)
+  ) {
     throw new Error("malformed_ai_adaptation_state");
   }
-  assertUnique(value.economyProduction.adaptation.evidence.map((entry) => entry.evidenceId), "adaptation.evidence");
-  assertUnique(value.economyProduction.adaptation.activeRoleTargets.map((entry) => entry.role), "adaptation.activeRoleTargets");
+  assertUnique(
+    value.economyProduction.adaptation.evidence.map((entry) => entry.evidenceId),
+    "adaptation.evidence"
+  );
+  assertUnique(
+    value.economyProduction.adaptation.activeRoleTargets.map((entry) => entry.role),
+    "adaptation.activeRoleTargets"
+  );
   for (const evidence of value.economyProduction.adaptation.evidence) {
     assertAiNonNegativeInteger(evidence.observedTick, `adaptation.${evidence.evidenceId}.observedTick`);
     assertAiNonNegativeInteger(evidence.confidencePermille, `adaptation.${evidence.evidenceId}.confidencePermille`);
-    assertAiNonNegativeInteger(evidence.consecutiveEvaluations, `adaptation.${evidence.evidenceId}.consecutiveEvaluations`);
-    if (evidence.confidencePermille > 1000 || evidence.consecutiveEvaluations > 2) throw new Error(`invalid_ai_adaptation_evidence:${evidence.evidenceId}`);
+    assertAiNonNegativeInteger(
+      evidence.consecutiveEvaluations,
+      `adaptation.${evidence.evidenceId}.consecutiveEvaluations`
+    );
+    if (evidence.confidencePermille > 1000 || evidence.consecutiveEvaluations > 2)
+      throw new Error(`invalid_ai_adaptation_evidence:${evidence.evidenceId}`);
     assertUnique([...evidence.permittedFacts], `adaptation.${evidence.evidenceId}.permittedFacts`);
   }
   for (const target of value.economyProduction.adaptation.activeRoleTargets) {
@@ -89,10 +110,17 @@ export function assertAiBrainStateV1(value: unknown): asserts value is AiBrainSt
     assertAiNonNegativeInteger(value.economyProduction.adaptation.lastTransitionTick, "adaptation.lastTransitionTick");
   }
   if (value.economyProduction.adaptation.selectedResearchScore !== null) {
-    assertAiNonNegativeInteger(value.economyProduction.adaptation.selectedResearchScore, "adaptation.selectedResearchScore");
-    if (value.economyProduction.adaptation.selectedResearchScore > 1000) throw new Error("invalid_ai_adaptation_research_score");
+    assertAiNonNegativeInteger(
+      value.economyProduction.adaptation.selectedResearchScore,
+      "adaptation.selectedResearchScore"
+    );
+    if (value.economyProduction.adaptation.selectedResearchScore > 1000)
+      throw new Error("invalid_ai_adaptation_research_score");
   }
-  assertUnique(value.recovery.records.map((record) => record.recoveryKey), "recovery.records");
+  assertUnique(
+    value.recovery.records.map((record) => record.recoveryKey),
+    "recovery.records"
+  );
   for (const record of value.recovery.records) {
     assertAiNonNegativeInteger(record.enteredTick, `recovery.${record.recoveryKey}.enteredTick`);
     assertAiNonNegativeInteger(record.lastProgressTick, `recovery.${record.recoveryKey}.lastProgressTick`);
@@ -105,11 +133,18 @@ export function assertAiBrainStateV1(value: unknown): asserts value is AiBrainSt
     assertDeadline(episode.deadline, `recovery.${episode.episodeId}.deadline`);
   }
   for (const query of value.queries) assertDeadline(query.deadline, `queries.${query.queryId}.deadline`);
-  assertUnique(value.support.map((support) => support.planId), "support.planId");
-  assertUnique(value.support.map((support) => support.effectId).filter((effectId): effectId is string => effectId != null), "support.effectId");
+  assertUnique(
+    value.support.map((support) => support.planId),
+    "support.planId"
+  );
+  assertUnique(
+    value.support.map((support) => support.effectId).filter((effectId): effectId is string => effectId != null),
+    "support.effectId"
+  );
   for (const support of value.support) {
     if (support.expiresAt !== null) assertDeadline(support.expiresAt, `support.${support.planId}.expiresAt`);
-    if (support.usefulCapacity !== undefined) assertAiNonNegativeFinite(support.usefulCapacity, `support.${support.planId}.usefulCapacity`);
+    if (support.usefulCapacity !== undefined)
+      assertAiNonNegativeFinite(support.usefulCapacity, `support.${support.planId}.usefulCapacity`);
   }
   for (const transport of value.transport) {
     if (!transport.lifecycle) continue;
@@ -120,17 +155,32 @@ export function assertAiBrainStateV1(value: unknown): asserts value is AiBrainSt
     assertAiNonNegativeInteger(transport.lifecycle.routeGeneration, `transport.${transport.planId}.routeGeneration`);
     assertAiNonNegativeInteger(transport.lifecycle.assignedCapacity, `transport.${transport.planId}.assignedCapacity`);
     assertAiNonNegativeInteger(transport.lifecycle.requiredCapacity, `transport.${transport.planId}.requiredCapacity`);
-    assertAiNonNegativeInteger(transport.lifecycle.departureCapacityPermille, `transport.${transport.planId}.departureCapacityPermille`);
-    assertAiNonNegativeInteger(transport.lifecycle.estimatedTravelTicks, `transport.${transport.planId}.estimatedTravelTicks`);
+    assertAiNonNegativeInteger(
+      transport.lifecycle.departureCapacityPermille,
+      `transport.${transport.planId}.departureCapacityPermille`
+    );
+    assertAiNonNegativeInteger(
+      transport.lifecycle.estimatedTravelTicks,
+      `transport.${transport.planId}.estimatedTravelTicks`
+    );
     assertAiNonNegativeInteger(transport.lifecycle.recoveryAttempt, `transport.${transport.planId}.recoveryAttempt`);
-    assertAiNonNegativeInteger(transport.lifecycle.maxRecoveryAttempts, `transport.${transport.planId}.maxRecoveryAttempts`);
+    assertAiNonNegativeInteger(
+      transport.lifecycle.maxRecoveryAttempts,
+      `transport.${transport.planId}.maxRecoveryAttempts`
+    );
     assertAiNonNegativeInteger(transport.lifecycle.lastProgressTick, `transport.${transport.planId}.lastProgressTick`);
     if (transport.lifecycle.requiredCapacity === 0 || transport.lifecycle.departureCapacityPermille > 1000) {
       throw new Error(`invalid_ai_transport_capacity:${transport.planId}`);
     }
-    assertUnique(transport.lifecycle.manifest.map((passenger) => passenger.actorId), `transport.${transport.planId}.manifest`);
+    assertUnique(
+      transport.lifecycle.manifest.map((passenger) => passenger.actorId),
+      `transport.${transport.planId}.manifest`
+    );
     assertUnique([...transport.lifecycle.assignedTransportIds], `transport.${transport.planId}.assignedTransportIds`);
-    assertUnique(transport.lifecycle.seatAssignments.map((assignment) => assignment.transportId), `transport.${transport.planId}.seatAssignments`);
+    assertUnique(
+      transport.lifecycle.seatAssignments.map((assignment) => assignment.transportId),
+      `transport.${transport.planId}.seatAssignments`
+    );
     assertUnique(
       transport.lifecycle.seatAssignments.flatMap((assignment) => [...assignment.passengerIds]),
       `transport.${transport.planId}.assignedPassengers`
@@ -150,8 +200,14 @@ export function assertAiBrainStateV1(value: unknown): asserts value is AiBrainSt
       throw new Error(`invalid_ai_transport_assignment:${transport.planId}`);
     }
   }
-  assertUnique(value.squads.map((squad) => squad.squadId), "squads.squadId");
-  assertUnique(value.squads.filter((squad) => squad.tactics).flatMap((squad) => [...squad.actorIds]), "squads.primaryActorOwner");
+  assertUnique(
+    value.squads.map((squad) => squad.squadId),
+    "squads.squadId"
+  );
+  assertUnique(
+    value.squads.filter((squad) => squad.tactics).flatMap((squad) => [...squad.actorIds]),
+    "squads.primaryActorOwner"
+  );
   for (const squad of value.squads) {
     assertUnique([...squad.actorIds], `squads.${squad.squadId}.actorIds`);
     if (squad.lifecycle) {
@@ -160,16 +216,31 @@ export function assertAiBrainStateV1(value: unknown): asserts value is AiBrainSt
       assertDeadline(squad.lifecycle.assemblyDeadline, `squads.${squad.squadId}.assemblyDeadline`);
       assertDeadline(squad.lifecycle.effectDeadline, `squads.${squad.squadId}.effectDeadline`);
       if (squad.lifecycle.lastUsefulEffectTick !== null) {
-        assertAiNonNegativeInteger(squad.lifecycle.lastUsefulEffectTick, `squads.${squad.squadId}.lastUsefulEffectTick`);
+        assertAiNonNegativeInteger(
+          squad.lifecycle.lastUsefulEffectTick,
+          `squads.${squad.squadId}.lastUsefulEffectTick`
+        );
       }
     }
     if (squad.tactics) {
       assertAiNonNegativeInteger(squad.tactics.targetScore, `squads.${squad.squadId}.targetScore`);
-      assertAiNonNegativeInteger(squad.tactics.engagementRatioPermille, `squads.${squad.squadId}.engagementRatioPermille`);
+      assertAiNonNegativeInteger(
+        squad.tactics.engagementRatioPermille,
+        `squads.${squad.squadId}.engagementRatioPermille`
+      );
       assertAiNonNegativeInteger(squad.tactics.confidencePermille, `squads.${squad.squadId}.confidencePermille`);
-      assertAiNonNegativeInteger(squad.tactics.predictedFriendlyLossPermille, `squads.${squad.squadId}.predictedFriendlyLossPermille`);
-      assertAiNonNegativeInteger(squad.tactics.predictedEnemyLossPermille, `squads.${squad.squadId}.predictedEnemyLossPermille`);
-      assertAiNonNegativeInteger(squad.tactics.lastObservedMemberCount, `squads.${squad.squadId}.lastObservedMemberCount`);
+      assertAiNonNegativeInteger(
+        squad.tactics.predictedFriendlyLossPermille,
+        `squads.${squad.squadId}.predictedFriendlyLossPermille`
+      );
+      assertAiNonNegativeInteger(
+        squad.tactics.predictedEnemyLossPermille,
+        `squads.${squad.squadId}.predictedEnemyLossPermille`
+      );
+      assertAiNonNegativeInteger(
+        squad.tactics.lastObservedMemberCount,
+        `squads.${squad.squadId}.lastObservedMemberCount`
+      );
       assertAiNonNegativeInteger(squad.tactics.observedLossCount, `squads.${squad.squadId}.observedLossCount`);
       assertAiNonNegativeInteger(squad.tactics.lastTransitionTick, `squads.${squad.squadId}.lastTransitionTick`);
       assertAiNonNegativeInteger(squad.tactics.nextReconsiderTick, `squads.${squad.squadId}.nextReconsiderTick`);
@@ -180,13 +251,20 @@ export function assertAiBrainStateV1(value: unknown): asserts value is AiBrainSt
         squad.tactics.confidencePermille > 1000 ||
         squad.tactics.predictedFriendlyLossPermille > 1000 ||
         squad.tactics.predictedEnemyLossPermille > 1000
-      ) throw new Error(`invalid_ai_tactical_estimate:${squad.squadId}`);
+      )
+        throw new Error(`invalid_ai_tactical_estimate:${squad.squadId}`);
       assertUnique([...squad.tactics.orderedActorIds], `squads.${squad.squadId}.orderedActorIds`);
       if (squad.tactics.orderedActorIds.some((actorId) => !squad.actorIds.includes(actorId))) {
         throw new Error(`invalid_ai_tactical_order_owner:${squad.squadId}`);
       }
-      assertUnique(squad.tactics.assignedPositions.map((entry) => entry.actorId), `squads.${squad.squadId}.assignedPositions`);
-      assertUnique(squad.tactics.damageReservations.map((entry) => entry.actorId), `squads.${squad.squadId}.damageReservations`);
+      assertUnique(
+        squad.tactics.assignedPositions.map((entry) => entry.actorId),
+        `squads.${squad.squadId}.assignedPositions`
+      );
+      assertUnique(
+        squad.tactics.damageReservations.map((entry) => entry.actorId),
+        `squads.${squad.squadId}.damageReservations`
+      );
       for (const reservation of squad.tactics.damageReservations) {
         assertAiNonNegativeFinite(reservation.expectedDamage, `squads.${squad.squadId}.expectedDamage`);
         assertAiNonNegativeInteger(reservation.impactTick, `squads.${squad.squadId}.impactTick`);
@@ -273,7 +351,8 @@ export function assertAiObservationV1(observation: AiObservationV1): void {
   }
   for (const effect of observation.effects) {
     if (effect.radius !== undefined) assertAiNonNegativeFinite(effect.radius, `effects.${effect.effectId}.radius`);
-    if (effect.expiresAt.status === "known") assertAiNonNegativeInteger(effect.expiresAt.value, `effects.${effect.effectId}.expiresAt`);
+    if (effect.expiresAt.status === "known")
+      assertAiNonNegativeInteger(effect.expiresAt.value, `effects.${effect.effectId}.expiresAt`);
   }
   assertAiNonNegativeInteger(observation.threatSummary.observedTick, "threatSummary.observedTick");
   assertUnique([...observation.threatSummary.visibleEnemyActorIds], "threatSummary.visibleEnemyActorIds");
@@ -312,22 +391,37 @@ export function assertAiObservationV1(observation: AiObservationV1): void {
       const profile = actor.combatProfile.value;
       assertAiNonNegativeFinite(profile.maxHealth, `actors.${actor.actorId}.combat.maxHealth`);
       assertAiNonNegativeFinite(profile.maxArmour, `actors.${actor.actorId}.combat.maxArmour`);
-      assertAiNonNegativeFinite(profile.passiveRegenerationPerSecond, `actors.${actor.actorId}.combat.passiveRegenerationPerSecond`);
+      assertAiNonNegativeFinite(
+        profile.passiveRegenerationPerSecond,
+        `actors.${actor.actorId}.combat.passiveRegenerationPerSecond`
+      );
       assertAiNonNegativeInteger(profile.armourPermille, `actors.${actor.actorId}.combat.armourPermille`);
-      if (profile.maxHealth <= 0 || profile.armourPermille > 1000) throw new Error(`invalid_ai_combat_durability:${actor.actorId}`);
+      if (profile.maxHealth <= 0 || profile.armourPermille > 1000)
+        throw new Error(`invalid_ai_combat_durability:${actor.actorId}`);
       for (const attack of profile.attacks) {
         assertAiNonNegativeFinite(attack.damage, `actors.${actor.actorId}.combat.damage`);
         assertAiNonNegativeInteger(attack.cooldownTicks, `actors.${actor.actorId}.combat.cooldownTicks`);
-        if (attack.remainingCooldownTicks != null) assertAiNonNegativeInteger(attack.remainingCooldownTicks, `actors.${actor.actorId}.combat.remainingCooldownTicks`);
+        if (attack.remainingCooldownTicks != null)
+          assertAiNonNegativeInteger(
+            attack.remainingCooldownTicks,
+            `actors.${actor.actorId}.combat.remainingCooldownTicks`
+          );
         assertAiNonNegativeFinite(attack.range, `actors.${actor.actorId}.combat.range`);
         assertAiNonNegativeFinite(attack.minRange, `actors.${actor.actorId}.combat.minRange`);
         assertAiNonNegativeInteger(attack.impactDelayTicks, `actors.${actor.actorId}.combat.impactDelayTicks`);
-        if (attack.cooldownTicks === 0 || attack.minRange > attack.range) throw new Error(`invalid_ai_combat_attack:${actor.actorId}`);
+        if (attack.cooldownTicks === 0 || attack.minRange > attack.range)
+          throw new Error(`invalid_ai_combat_attack:${actor.actorId}`);
       }
       if (profile.healing) {
         assertAiNonNegativeFinite(profile.healing.amount, `actors.${actor.actorId}.combat.healing.amount`);
-        assertAiNonNegativeInteger(profile.healing.cooldownTicks, `actors.${actor.actorId}.combat.healing.cooldownTicks`);
-        assertAiNonNegativeInteger(profile.healing.remainingCooldownTicks, `actors.${actor.actorId}.combat.healing.remainingCooldownTicks`);
+        assertAiNonNegativeInteger(
+          profile.healing.cooldownTicks,
+          `actors.${actor.actorId}.combat.healing.cooldownTicks`
+        );
+        assertAiNonNegativeInteger(
+          profile.healing.remainingCooldownTicks,
+          `actors.${actor.actorId}.combat.healing.remainingCooldownTicks`
+        );
       }
       for (const spell of profile.spells) {
         assertAiNonNegativeFinite(spell.range, `actors.${actor.actorId}.combat.spell.range`);
@@ -339,18 +433,28 @@ export function assertAiObservationV1(observation: AiObservationV1): void {
         assertAiNonNegativeInteger(spell.stunTicks, `actors.${actor.actorId}.combat.spell.stunTicks`);
         assertAiNonNegativeInteger(spell.slowTicks, `actors.${actor.actorId}.combat.spell.slowTicks`);
         assertAiNonNegativeInteger(spell.zoneDurationTicks, `actors.${actor.actorId}.combat.spell.zoneDurationTicks`);
-        if (spell.summonDurationTicks !== null) assertAiNonNegativeInteger(spell.summonDurationTicks, `actors.${actor.actorId}.combat.spell.summonDurationTicks`);
+        if (spell.summonDurationTicks !== null)
+          assertAiNonNegativeInteger(
+            spell.summonDurationTicks,
+            `actors.${actor.actorId}.combat.spell.summonDurationTicks`
+          );
       }
       for (const status of profile.statuses) {
         assertAiNonNegativeInteger(status.remainingTicks, `actors.${actor.actorId}.combat.status.remainingTicks`);
-        assertAiNonNegativeInteger(status.movementSpeedPermille, `actors.${actor.actorId}.combat.status.movementSpeedPermille`);
+        assertAiNonNegativeInteger(
+          status.movementSpeedPermille,
+          `actors.${actor.actorId}.combat.status.movementSpeedPermille`
+        );
       }
     }
   }
   if (observation.map) {
     assertAiNonNegativeInteger(observation.map.staticRevision, "map.staticRevision");
     assertAiNonNegativeInteger(observation.map.regionGeneration.generation, "map.regionGeneration.generation");
-    assertAiNonNegativeInteger(observation.map.regionGeneration.continuationCursor, "map.regionGeneration.continuationCursor");
+    assertAiNonNegativeInteger(
+      observation.map.regionGeneration.continuationCursor,
+      "map.regionGeneration.continuationCursor"
+    );
     assertUnique([...observation.map.scoutCoverageAccessNodeIds], "map.scoutCoverageAccessNodeIds");
     if (observation.map.bounds.status === "known") {
       assertAiNonNegativeInteger(observation.map.bounds.value.width, "map.bounds.width");
@@ -363,9 +467,18 @@ export function assertAiObservationV1(observation: AiObservationV1): void {
       assertAiNonNegativeInteger(graph.dynamicRevision, "map.accessGraph.dynamicRevision");
       assertAiNonNegativeInteger(graph.threatRevision, "map.accessGraph.threatRevision");
       assertAiNonNegativeInteger(graph.builtTick, "map.accessGraph.builtTick");
-      assertUnique(graph.nodes.map((node) => node.nodeId), "map.accessGraph.nodeId");
-      assertUnique(graph.links.map((link) => link.linkId), "map.accessGraph.linkId");
-      assertUnique(graph.transferPoints.map((point) => point.transferId), "map.accessGraph.transferId");
+      assertUnique(
+        graph.nodes.map((node) => node.nodeId),
+        "map.accessGraph.nodeId"
+      );
+      assertUnique(
+        graph.links.map((link) => link.linkId),
+        "map.accessGraph.linkId"
+      );
+      assertUnique(
+        graph.transferPoints.map((point) => point.transferId),
+        "map.accessGraph.transferId"
+      );
       const nodeIds = new Set(graph.nodes.map((node) => node.nodeId));
       for (const node of graph.nodes) {
         assertAiNonNegativeInteger(node.tileCount, `map.accessGraph.${node.nodeId}.tileCount`);

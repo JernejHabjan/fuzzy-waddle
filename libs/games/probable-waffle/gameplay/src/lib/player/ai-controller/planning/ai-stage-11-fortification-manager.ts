@@ -69,7 +69,12 @@ function reachable(
     const [xText = "0", yText = "0"] = queue[cursor]?.split(",") ?? [];
     const x = Number(xText);
     const y = Number(yText);
-    for (const [dx, dy] of [[0, -1], [0, 1], [-1, 0], [1, 0]] as const) {
+    for (const [dx, dy] of [
+      [0, -1],
+      [0, 1],
+      [-1, 0],
+      [1, 0]
+    ] as const) {
       const next = `${x + dx},${y + dy}`;
       if (visited.has(next) || blocked.has(next) || !cells.get(next)?.groundPassable) continue;
       visited.add(next);
@@ -86,9 +91,17 @@ function nearestPassableKey(
 ): string | null {
   const candidates = [...cells.values()]
     .filter((cell) => cell.groundPassable && !blocked.has(cell.tileKey))
-    .map((cell) => ({ cell, distance: Math.abs(cell.position.x - position.x) + Math.abs(cell.position.y - position.y) }))
+    .map((cell) => ({
+      cell,
+      distance: Math.abs(cell.position.x - position.x) + Math.abs(cell.position.y - position.y)
+    }))
     .filter((candidate) => candidate.distance <= 2)
-    .sort((left, right) => left.distance - right.distance || left.cell.position.y - right.cell.position.y || left.cell.position.x - right.cell.position.x);
+    .sort(
+      (left, right) =>
+        left.distance - right.distance ||
+        left.cell.position.y - right.cell.position.y ||
+        left.cell.position.x - right.cell.position.x
+    );
   return candidates[0]?.cell.tileKey ?? null;
 }
 
@@ -116,21 +129,31 @@ export function fortificationPreservesConnectivityV1(input: {
 }
 
 function threatPosition(observation: AiObservationV1, anchor: Vector3Simple): Vector3Simple | null {
-  return observation.actors
-    .filter((actor) => actor.relation === "enemy" && actor.visibility === "visible")
-    .map((actor) => positionOf(actor))
-    .filter((position): position is Vector3Simple => position !== null)
-    .sort((left, right) =>
-      Math.abs(left.x - anchor.x) + Math.abs(left.y - anchor.y) -
-        (Math.abs(right.x - anchor.x) + Math.abs(right.y - anchor.y)) ||
-      left.y - right.y || left.x - right.x
-    )[0] ?? null;
+  return (
+    observation.actors
+      .filter((actor) => actor.relation === "enemy" && actor.visibility === "visible")
+      .map((actor) => positionOf(actor))
+      .filter((position): position is Vector3Simple => position !== null)
+      .sort(
+        (left, right) =>
+          Math.abs(left.x - anchor.x) +
+            Math.abs(left.y - anchor.y) -
+            (Math.abs(right.x - anchor.x) + Math.abs(right.y - anchor.y)) ||
+          left.y - right.y ||
+          left.x - right.x
+      )[0] ?? null
+  );
 }
 
 function constructionEntry(catalog: AiCapabilityCatalogV1, objectName: ObjectNames): AiCapabilityCatalogEntryV1 | null {
-  return catalog.entries
-    .filter((entry) => entry.sourceObjectName === objectName)
-    .sort((left, right) => right.effectiveLevel - left.effectiveLevel || left.capabilityId.localeCompare(right.capabilityId))[0] ?? null;
+  return (
+    catalog.entries
+      .filter((entry) => entry.sourceObjectName === objectName)
+      .sort(
+        (left, right) =>
+          right.effectiveLevel - left.effectiveLevel || left.capabilityId.localeCompare(right.capabilityId)
+      )[0] ?? null
+  );
 }
 
 function node(
@@ -186,7 +209,8 @@ function sumCost(
   for (const current of nodes) {
     if (!current.objectName) continue;
     const cost = entries.get(current.objectName)?.constructionProfile?.resourceCost ?? {};
-    for (const [resourceType, amount] of resourceEntries(cost)) result[resourceType] = (result[resourceType] ?? 0) + amount;
+    for (const [resourceType, amount] of resourceEntries(cost))
+      result[resourceType] = (result[resourceType] ?? 0) + amount;
   }
   return result;
 }
@@ -200,7 +224,12 @@ function reconcileNode(
   if (!current.objectName) return current;
   const observed = observation.actors.find((actor) => {
     const position = positionOf(actor);
-    return actor.relation === "self" && actor.objectName === current.objectName && position !== null && tileKey(position) === tileKey(current.position);
+    return (
+      actor.relation === "self" &&
+      actor.objectName === current.objectName &&
+      position !== null &&
+      tileKey(position) === tileKey(current.position)
+    );
   });
   if (observed) {
     const finished = observed.constructionProgress?.status !== "known" || observed.constructionProgress.value >= 100;
@@ -213,7 +242,13 @@ function reconcileNode(
     };
   }
   if (current.lifecycle === "finished" && observation.tick >= current.retryAfterTick) {
-    return { ...current, lifecycle: "destroyed", completedActorId: null, effectId: null, retryAfterTick: observation.tick + BREACH_RETRY_TICKS };
+    return {
+      ...current,
+      lifecycle: "destroyed",
+      completedActorId: null,
+      effectId: null,
+      retryAfterTick: observation.tick
+    };
   }
   const outcome = current.effectId
     ? [...outcomes].reverse().find((candidate) => candidate.identity.effectId === current.effectId)
@@ -270,33 +305,56 @@ export class AiStage11FortificationManagerV1 implements AiProposalManagerV1 {
     const activeBases = state.bases
       .filter((base) => base.active && base.anchorPosition && base.lifecycle !== "lost")
       .sort((left, right) => left.baseId.localeCompare(right.baseId));
-    const planNeedingWork = reconciled.find((candidate) => candidate.lifecycle !== "active" && candidate.lifecycle !== "abandoned" && candidate.graph);
+    const planNeedingWork = reconciled.find(
+      (candidate) => candidate.lifecycle !== "active" && candidate.lifecycle !== "abandoned" && candidate.graph
+    );
     const planBaseId = planNeedingWork?.graph?.baseId;
     const activeBase = planNeedingWork
       ? activeBases.find((base) => base.baseId === planBaseId)
       : activeBases.find((base) => !reconciled.some((candidate) => candidate.graph?.baseId === base.baseId));
-    if (!activeBase?.anchorPosition) return this.result(reconciled, [], [activeBases.length ? "fortifications_stable" : "active_base_not_ready"]);
+    if (!activeBase?.anchorPosition)
+      return this.result(reconciled, [], [activeBases.length ? "fortifications_stable" : "active_base_not_ready"]);
 
     let plan = planNeedingWork;
     if (!plan) {
       if (hasUnmetMacroFloor(state)) return this.result(reconciled, [], ["macro_survival_or_supply_floor_unmet"]);
-      plan = this.createPlan(observation, { ...state, fortifications: reconciled }, activeBase.baseId, activeBase.anchorPosition, catalog);
-      if (!plan) return this.result(reconciled, [], ["no_justified_connected_choke"]);
+      const createdPlan = this.createPlan(
+        observation,
+        { ...state, fortifications: reconciled },
+        activeBase.baseId,
+        activeBase.anchorPosition,
+        catalog
+      );
+      if (!createdPlan) return this.result(reconciled, [], ["no_justified_connected_choke"]);
+      plan = createdPlan;
       reconciled.push(plan);
     }
 
-    const defendedIncident = state.skirmish.incidents.some((candidate) => candidate.baseId === null || candidate.baseId === activeBase.baseId);
-    if (plan.lifecycle === "breached" && plan.graph && !defendedIncident && !isDefensiveArchetype(state.opening.archetypeId)) {
+    const defendedIncident = state.skirmish.incidents.some(
+      (candidate) => candidate.baseId === null || candidate.baseId === activeBase.baseId
+    );
+    if (
+      plan.lifecycle === "breached" &&
+      plan.graph &&
+      !defendedIncident &&
+      !isDefensiveArchetype(state.opening.archetypeId)
+    ) {
       const abandoned = {
         ...plan,
         lifecycle: "abandoned" as const,
         graph: {
           ...plan.graph,
-          nodes: plan.graph.nodes.map((current) => current.lifecycle === "destroyed" ? { ...current, lifecycle: "abandoned" as const } : current),
+          nodes: plan.graph.nodes.map((current) =>
+            current.lifecycle === "destroyed" ? { ...current, lifecycle: "abandoned" as const } : current
+          ),
           breach: { ...plan.graph.breach, reason: "protected_value_no_longer_justifies_rebuild" }
         }
       };
-      return this.result(reconciled.map((candidate) => candidate.planId === abandoned.planId ? abandoned : candidate), [], ["breach_abandoned_low_value"]);
+      return this.result(
+        reconciled.map((candidate) => (candidate.planId === abandoned.planId ? abandoned : candidate)),
+        [],
+        ["breach_abandoned_low_value"]
+      );
     }
 
     const intents = [
@@ -304,7 +362,11 @@ export class AiStage11FortificationManagerV1 implements AiProposalManagerV1 {
       ...this.createBreachResponse(plan, observation, state)
     ];
     const selectedPlan = plan;
-    const plans = reconciled.map((candidate) => candidate.planId === selectedPlan.planId ? this.markProposedEffects(candidate, intents, observation.tick) : candidate);
+    const plans = reconciled.map((candidate) =>
+      candidate.planId === selectedPlan.planId
+        ? this.markProposedEffects(candidate, intents, observation.tick)
+        : candidate
+    );
     return this.result(plans, intents, [
       `plan:${plan.planId}:${plan.lifecycle}`,
       `nodes:${plan.completedNodeIds.length}/${plan.nodeIds.length}`,
@@ -313,7 +375,13 @@ export class AiStage11FortificationManagerV1 implements AiProposalManagerV1 {
   }
 
   private empty(reason: string, evaluated: boolean): AiManagerProposalV1 {
-    return { managerId: this.managerId, lane: "optional_infrastructure_tech", evaluated, intents: [], reasons: [reason] };
+    return {
+      managerId: this.managerId,
+      lane: "optional_infrastructure_tech",
+      evaluated,
+      intents: [],
+      reasons: [reason]
+    };
   }
 
   private result(
@@ -344,9 +412,11 @@ export class AiStage11FortificationManagerV1 implements AiProposalManagerV1 {
     const defensiveProfile = isDefensiveArchetype(state.opening.archetypeId);
     if ((!incident || incident.severity < 100) && !defensiveProfile) return null;
     const enemy = threatPosition(observation, anchor);
-    const target = enemy ?? (observation.map?.bounds.status === "known"
-      ? { x: observation.map.bounds.value.width / 2, y: observation.map.bounds.value.height / 2, z: 0 }
-      : null);
+    const target =
+      enemy ??
+      (observation.map?.bounds.status === "known"
+        ? { x: observation.map.bounds.value.width / 2, y: observation.map.bounds.value.height / 2, z: 0 }
+        : null);
     if (!target) return null;
 
     const wallEntry = constructionEntry(catalog, ObjectNames.Wall);
@@ -354,15 +424,29 @@ export class AiStage11FortificationManagerV1 implements AiProposalManagerV1 {
     const stairEntry = constructionEntry(catalog, ObjectNames.Stairs);
     const builders = observation.actors
       .filter((actor) => actor.relation === "self" && actor.visibility === "owned")
-      .filter((actor) => catalog.entries.some((entry) => entry.sourceObjectName === actor.objectName &&
-        [ObjectNames.Wall, ObjectNames.WatchTower, ObjectNames.Stairs].every((objectName) => entry.constructs.includes(objectName))));
-    if (!wallEntry?.constructionProfile || !towerEntry?.constructionProfile || !stairEntry?.constructionProfile || builders.length < 2) return null;
+      .filter((actor) =>
+        catalog.entries.some(
+          (entry) =>
+            entry.sourceObjectName === actor.objectName &&
+            [ObjectNames.Wall, ObjectNames.WatchTower, ObjectNames.Stairs].every((objectName) =>
+              entry.constructs.includes(objectName)
+            )
+        )
+      );
+    if (
+      !wallEntry?.constructionProfile ||
+      !towerEntry?.constructionProfile ||
+      !stairEntry?.constructionProfile ||
+      builders.length < 2
+    )
+      return null;
     if (
       stairEntry.constructionProfile.enterHeight !== 0 ||
       stairEntry.constructionProfile.exitHeight === null ||
       stairEntry.constructionProfile.exitHeight !== wallEntry.constructionProfile.enterHeight ||
       stairEntry.constructionProfile.exitHeight !== towerEntry.constructionProfile.enterHeight
-    ) return null;
+    )
+      return null;
 
     const byKey = new Map((observation.map?.constructionCells ?? []).map((cell) => [cell.tileKey, cell]));
     const dx = target.x - anchor.x;
@@ -370,7 +454,11 @@ export class AiStage11FortificationManagerV1 implements AiProposalManagerV1 {
     const frontAxis: Axis = Math.abs(dx) >= Math.abs(dy) ? "x" : "y";
     const crossAxis: Axis = frontAxis === "x" ? "y" : "x";
     const direction = (frontAxis === "x" ? dx : dy) >= 0 ? 1 : -1;
-    const center = { ...anchor, [frontAxis]: Math.round(anchor[frontAxis]) + 4 * direction, [crossAxis]: Math.round(anchor[crossAxis]) };
+    const center = {
+      ...anchor,
+      [frontAxis]: Math.round(anchor[frontAxis]) + 4 * direction,
+      [crossAxis]: Math.round(anchor[crossAxis])
+    };
     const atOffset = (offset: number, frontOffset = 0): Vector3Simple => ({
       ...center,
       [frontAxis]: center[frontAxis] + frontOffset * direction,
@@ -381,8 +469,10 @@ export class AiStage11FortificationManagerV1 implements AiProposalManagerV1 {
       const cell = byKey.get(tileKey(position));
       if (cell) return !cell.groundPassable || cell.waterPassable || cell.observedBlocked;
       const bounds = observation.map?.bounds;
-      return bounds?.status === "known" &&
-        (position.x < 0 || position.y < 0 || position.x >= bounds.value.width || position.y >= bounds.value.height);
+      return (
+        bounds?.status === "known" &&
+        (position.x < 0 || position.y < 0 || position.x >= bounds.value.width || position.y >= bounds.value.height)
+      );
     };
     let negativeAnchor: number | null = null;
     let positiveAnchor: number | null = null;
@@ -391,20 +481,34 @@ export class AiStage11FortificationManagerV1 implements AiProposalManagerV1 {
       if (positiveAnchor === null && isAnchor(offset)) positiveAnchor = offset;
     }
     if (negativeAnchor === null || positiveAnchor === null) return null;
-    const offsets = Array.from({ length: positiveAnchor - negativeAnchor - 1 }, (_, index) => negativeAnchor + index + 1)
-      .filter((offset) => offset !== 0);
-    if (offsets.length < 4 || offsets.length > AI_STAGE_11_GRAPH_CAPS.walls + AI_STAGE_11_GRAPH_CAPS.towers) return null;
+    const offsets = Array.from(
+      { length: positiveAnchor - negativeAnchor - 1 },
+      (_, index) => negativeAnchor + index + 1
+    ).filter((offset) => offset !== 0);
+    if (offsets.length < 4 || offsets.length > AI_STAGE_11_GRAPH_CAPS.walls + AI_STAGE_11_GRAPH_CAPS.towers)
+      return null;
     if (offsets.some((offset) => !byKey.get(tileKey(atOffset(offset)))?.groundPassable)) return null;
 
     const planId = `fortification:${baseId}` as AiFortificationStateV1["planId"];
     const gateEntry = this.gateObjectName ? constructionEntry(catalog, this.gateObjectName) : null;
     if (this.gateObjectName && !gateEntry?.constructionProfile) return null;
-    const gate = node(planId, "gate_slot", this.gateObjectName, atOffset(0), "opening", null, gateEntry?.constructionProfile ?? null, 0, gateEntry?.targetDomains ?? []);
+    const gate = node(
+      planId,
+      "gate_slot",
+      this.gateObjectName,
+      atOffset(0),
+      "opening",
+      null,
+      gateEntry?.constructionProfile ?? null,
+      0,
+      gateEntry?.targetDomains ?? []
+    );
     const negativeOffsets = offsets.filter((offset) => offset < 0).reverse();
     const positiveOffsets = offsets.filter((offset) => offset > 0);
     const firstOffset = offsets[0];
     const lastOffset = offsets.at(-1);
-    if (!negativeOffsets.length || !positiveOffsets.length || firstOffset === undefined || lastOffset === undefined) return null;
+    if (!negativeOffsets.length || !positiveOffsets.length || firstOffset === undefined || lastOffset === undefined)
+      return null;
     const towerOffsets = [firstOffset, lastOffset];
     const covered = new Set<string>();
     const nodes: AiFortificationNodeStateV1[] = [gate];
@@ -417,7 +521,9 @@ export class AiStage11FortificationManagerV1 implements AiProposalManagerV1 {
         const isTower = towerOffsets.includes(offset);
         const position = atOffset(offset);
         const range = towerEntry.constructionProfile?.visionRange ?? 0;
-        const laneTiles = Array.from({ length: Math.max(0, Math.floor(range)) }, (_, index) => tileKey(atOffset(offset, index + 1)));
+        const laneTiles = Array.from({ length: Math.max(0, Math.floor(range)) }, (_, index) =>
+          tileKey(atOffset(offset, index + 1))
+        );
         const marginalCoverage = isTower ? laneTiles.filter((key) => !covered.has(key)).length : 0;
         if (isTower) laneTiles.forEach((key) => covered.add(key));
         const current = node(
@@ -437,21 +543,40 @@ export class AiStage11FortificationManagerV1 implements AiProposalManagerV1 {
       const stairPosition = atOffset(rootOffset, -1);
       if (byKey.get(tileKey(stairPosition))?.groundPassable) {
         const rootPosition = atOffset(rootOffset);
-        const rootNodeId = nodes.find((candidate) => candidate.position.x === rootPosition.x && candidate.position.y === rootPosition.y)?.nodeId ?? null;
-        nodes.push(node(planId, "stair", ObjectNames.Stairs, stairPosition, componentId, rootNodeId, stairEntry.constructionProfile ?? null, 0, []));
+        const rootNodeId =
+          nodes.find((candidate) => candidate.position.x === rootPosition.x && candidate.position.y === rootPosition.y)
+            ?.nodeId ?? null;
+        nodes.push(
+          node(
+            planId,
+            "stair",
+            ObjectNames.Stairs,
+            stairPosition,
+            componentId,
+            rootNodeId,
+            stairEntry.constructionProfile ?? null,
+            0,
+            []
+          )
+        );
       }
     }
-    const stairComponents = new Set(nodes.filter((candidate) => candidate.kind === "stair").map((candidate) => candidate.componentId));
+    const stairComponents = new Set(
+      nodes.filter((candidate) => candidate.kind === "stair").map((candidate) => candidate.componentId)
+    );
     const routedNodes = nodes.map((candidate) =>
       candidate.kind === "wall" || candidate.kind === "tower"
         ? { ...candidate, defenderPostReachable: stairComponents.has(candidate.componentId) }
         : candidate
     );
-    if (routedNodes.length > this.profile.maxPlacementCandidatesPerStep ||
-        routedNodes.filter((candidate) => candidate.kind === "wall").length > AI_STAGE_11_GRAPH_CAPS.walls ||
-        routedNodes.filter((candidate) => candidate.kind === "tower").length > AI_STAGE_11_GRAPH_CAPS.towers ||
-        routedNodes.filter((candidate) => candidate.kind === "stair").length > AI_STAGE_11_GRAPH_CAPS.stairs ||
-        routedNodes.some((candidate) => candidate.kind !== "gate_slot" && !candidate.defenderPostReachable)) return null;
+    if (
+      routedNodes.length > this.profile.maxPlacementCandidatesPerStep ||
+      routedNodes.filter((candidate) => candidate.kind === "wall").length > AI_STAGE_11_GRAPH_CAPS.walls ||
+      routedNodes.filter((candidate) => candidate.kind === "tower").length > AI_STAGE_11_GRAPH_CAPS.towers ||
+      routedNodes.filter((candidate) => candidate.kind === "stair").length > AI_STAGE_11_GRAPH_CAPS.stairs ||
+      routedNodes.some((candidate) => candidate.kind !== "gate_slot" && !candidate.defenderPostReachable)
+    )
+      return null;
     const occupiedFootprints = new Set<string>();
     for (const candidate of routedNodes) {
       if (candidate.footprintTileKeys.some((key) => !byKey.get(key)?.groundPassable)) return null;
@@ -462,26 +587,53 @@ export class AiStage11FortificationManagerV1 implements AiProposalManagerV1 {
     const shorePositions = (observation.map?.accessGraph?.transferPoints ?? [])
       .filter((point) => point.kind === "shore")
       .flatMap((point) => [point.passengerPosition, point.carrierPosition]);
-    if (routedNodes.some((candidate) => candidate.kind !== "gate_slot" && candidate.footprintTileKeys.some((key) => {
-      const [xText = "0", yText = "0"] = key.split(",");
-      const x = Number(xText);
-      const y = Number(yText);
-      return shorePositions.some((shore) => Math.abs(shore.x - x) + Math.abs(shore.y - y) <= 2);
-    }))) return null;
-    const blocked = routedNodes.filter((candidate) => candidate.kind !== "gate_slot").flatMap((candidate) => candidate.footprintTileKeys);
+    if (
+      routedNodes.some(
+        (candidate) =>
+          candidate.kind !== "gate_slot" &&
+          candidate.footprintTileKeys.some((key) => {
+            const [xText = "0", yText = "0"] = key.split(",");
+            const x = Number(xText);
+            const y = Number(yText);
+            return shorePositions.some((shore) => Math.abs(shore.x - x) + Math.abs(shore.y - y) <= 2);
+          })
+      )
+    )
+      return null;
+    const blocked = routedNodes
+      .filter((candidate) => candidate.kind !== "gate_slot")
+      .flatMap((candidate) => candidate.footprintTileKeys);
     const requiredPositions = observation.actors
-      .filter((actor) => actor.relation === "self" || (actor.relation !== "enemy" && actor.resourceState.status === "known"))
+      .filter(
+        (actor) => actor.relation === "self" || (actor.relation !== "enemy" && actor.resourceState.status === "known")
+      )
       .map(positionOf)
       .filter((position): position is Vector3Simple => position !== null)
       .filter((position) => Math.abs(position.x - anchor.x) + Math.abs(position.y - anchor.y) <= 12);
     const protectedPosition = atOffset(0, -1);
     const exteriorPosition = atOffset(0, 1);
-    if (!fortificationPreservesConnectivityV1({ cells: observation.map?.constructionCells ?? [], blockedTileKeys: blocked, protectedPosition, openingPosition: gate.position, exteriorPosition, requiredPositions })) return null;
+    if (
+      !fortificationPreservesConnectivityV1({
+        cells: observation.map?.constructionCells ?? [],
+        blockedTileKeys: blocked,
+        protectedPosition,
+        openingPosition: gate.position,
+        exteriorPosition,
+        requiredPositions
+      })
+    )
+      return null;
 
-    const entries = new Map([[ObjectNames.Wall, wallEntry], [ObjectNames.WatchTower, towerEntry], [ObjectNames.Stairs, stairEntry]]);
+    const entries = new Map([
+      [ObjectNames.Wall, wallEntry],
+      [ObjectNames.WatchTower, towerEntry],
+      [ObjectNames.Stairs, stairEntry]
+    ]);
     const committedByResource = sumCost(routedNodes, entries);
     const priorCommittedByResource: Partial<Record<ResourceType, number>> = {};
-    for (const existing of state.fortifications.filter((candidate) => candidate.graph?.baseId !== baseId && candidate.lifecycle !== "abandoned")) {
+    for (const existing of state.fortifications.filter(
+      (candidate) => candidate.graph?.baseId !== baseId && candidate.lifecycle !== "abandoned"
+    )) {
       for (const [resourceType, amount] of resourceEntries(existing.graph?.budget.committedByResource ?? {})) {
         priorCommittedByResource[resourceType] = (priorCommittedByResource[resourceType] ?? 0) + amount;
       }
@@ -490,8 +642,11 @@ export class AiStage11FortificationManagerV1 implements AiProposalManagerV1 {
     const remainingByResource: Partial<Record<ResourceType, number>> = {};
     for (const [resourceType, amount] of resourceEntries(committedByResource)) {
       const ledger = observation.resources.find((entry) => entry.resourceType === resourceType);
-      const available = Math.max(0, (ledger?.stockpile ?? 0) - (ledger?.reservedUnspent ?? 0) - (ledger?.obligationsDue ?? 0));
-      const ceiling = Math.floor(available * spendPermille / 1000);
+      const available = Math.max(
+        0,
+        (ledger?.stockpile ?? 0) - (ledger?.reservedUnspent ?? 0) - (ledger?.obligationsDue ?? 0)
+      );
+      const ceiling = Math.floor((available * spendPermille) / 1000);
       const prior = priorCommittedByResource[resourceType] ?? 0;
       if (prior + amount > ceiling) return null;
       remainingByResource[resourceType] = ceiling - prior - amount;
@@ -503,13 +658,17 @@ export class AiStage11FortificationManagerV1 implements AiProposalManagerV1 {
       .filter((actor) => Math.abs(actor.position.x - anchor.x) + Math.abs(actor.position.y - anchor.y) <= 12)
       .map((actor) => actor.actorId)
       .sort();
-    const eligibleDefenderIds = [...new Set(
-      state.squads
-        .filter((squad) => squad.role === "defense" || squad.role === "reserve")
-        .filter((squad) => squad.domain === "ground" || squad.domain === "mixed")
-        .flatMap((squad) => squad.actorIds)
-        .filter((actorId) => observation.actors.some((actor) => actor.actorId === actorId && actor.relation === "self"))
-    )].sort();
+    const eligibleDefenderIds = [
+      ...new Set(
+        state.squads
+          .filter((squad) => squad.role === "defense" || squad.role === "reserve")
+          .filter((squad) => squad.domain === "ground" || squad.domain === "mixed")
+          .flatMap((squad) => squad.actorIds)
+          .filter((actorId) =>
+            observation.actors.some((actor) => actor.actorId === actorId && actor.relation === "self")
+          )
+      )
+    ].sort();
     return {
       planId,
       nodeIds: routedNodes.map((candidate) => candidate.nodeId),
@@ -528,7 +687,9 @@ export class AiStage11FortificationManagerV1 implements AiProposalManagerV1 {
         nodes: routedNodes,
         constructionSequenceNodeIds: [
           ...routedNodes.filter((candidate) => candidate.kind !== "gate_slot").map((candidate) => candidate.nodeId),
-          ...routedNodes.filter((candidate) => candidate.kind === "gate_slot" && candidate.objectName !== null).map((candidate) => candidate.nodeId)
+          ...routedNodes
+            .filter((candidate) => candidate.kind === "gate_slot" && candidate.objectName !== null)
+            .map((candidate) => candidate.nodeId)
         ],
         defenderPosts: routedNodes
           .filter((candidate) => candidate.kind === "tower")
@@ -549,16 +710,22 @@ export class AiStage11FortificationManagerV1 implements AiProposalManagerV1 {
     if (!plan.graph) return plan;
     const nodes = plan.graph.nodes.map((current) => {
       const effectClaimId = `claim:fortification:${current.nodeId}:effect`;
-      const reserved = state.reservations.some((reservation) =>
-        reservation.claimId === effectClaimId &&
-        (reservation.state.kind !== "provisional" || reservation.state.expiresAt.dueTick > observation.tick)
+      const reserved = state.reservations.some(
+        (reservation) =>
+          reservation.claimId === effectClaimId &&
+          (reservation.state.kind !== "provisional" || reservation.state.expiresAt.dueTick > observation.tick)
       );
       return reconcileNode(current, observation, state.pendingOutcomes, reserved);
     });
-    const missing = nodes.filter((current) => current.lifecycle === "destroyed").map((current) => current.nodeId).sort();
+    const missing = nodes
+      .filter((current) => current.lifecycle === "destroyed")
+      .map((current) => current.nodeId)
+      .sort();
     const missingKinds = nodes.filter((current) => current.lifecycle === "destroyed").map((current) => current.kind);
     const liveStairComponents = new Set(
-      nodes.filter((current) => current.kind === "stair" && current.lifecycle === "finished").map((current) => current.componentId)
+      nodes
+        .filter((current) => current.kind === "stair" && current.lifecycle === "finished")
+        .map((current) => current.componentId)
     );
     const risk = missingKinds.some((kind) => kind === "stair" || kind === "tower")
       ? "high"
@@ -572,7 +739,10 @@ export class AiStage11FortificationManagerV1 implements AiProposalManagerV1 {
         )
       : plan.graph.breach.recoveryAttempts;
     const abandoned = recoveryAttempts > MAX_BREACH_RECOVERY_ATTEMPTS;
-    const completedNodeIds = nodes.filter((current) => current.lifecycle === "finished").map((current) => current.nodeId).sort();
+    const completedNodeIds = nodes
+      .filter((current) => current.lifecycle === "finished")
+      .map((current) => current.nodeId)
+      .sort();
     const lifecycle = abandoned
       ? "abandoned"
       : missing.length
@@ -588,10 +758,17 @@ export class AiStage11FortificationManagerV1 implements AiProposalManagerV1 {
       lifecycle,
       graph: {
         ...plan.graph,
-        nodes: abandoned ? nodes.map((current) => current.lifecycle === "destroyed" ? { ...current, lifecycle: "abandoned" as const } : current) : nodes,
+        nodes: abandoned
+          ? nodes.map((current) =>
+              current.lifecycle === "destroyed" ? { ...current, lifecycle: "abandoned" as const } : current
+            )
+          : nodes,
         defenderPosts: plan.graph.defenderPosts.map((post) => {
           const postNode = nodes.find((current) => current.nodeId === post.nodeId);
-          return { ...post, reachable: postNode?.lifecycle === "finished" && liveStairComponents.has(postNode.componentId) };
+          return {
+            ...post,
+            reachable: postNode?.lifecycle === "finished" && liveStairComponents.has(postNode.componentId)
+          };
         }),
         breach: {
           ...plan.graph.breach,
@@ -612,14 +789,21 @@ export class AiStage11FortificationManagerV1 implements AiProposalManagerV1 {
   ): AiIntentV1[] {
     if (!plan.graph || plan.lifecycle === "abandoned") return [];
     const graph = plan.graph;
-    const finished = new Set(graph.nodes.filter((current) => current.lifecycle === "finished").map((current) => current.nodeId));
+    const finished = new Set(
+      graph.nodes.filter((current) => current.lifecycle === "finished").map((current) => current.nodeId)
+    );
     const candidates = graph.nodes
       .filter((current) => current.objectName !== null)
-      .filter((current) => (current.lifecycle === "planned" || current.lifecycle === "destroyed") && current.retryAfterTick <= observation.tick)
+      .filter(
+        (current) =>
+          (current.lifecycle === "planned" || current.lifecycle === "destroyed") &&
+          current.retryAfterTick <= observation.tick
+      )
       .filter((current) => current.dependsOnNodeId === null || finished.has(current.dependsOnNodeId))
-      .sort((left, right) =>
-        graph.constructionSequenceNodeIds.indexOf(left.nodeId) - graph.constructionSequenceNodeIds.indexOf(right.nodeId) ||
-        left.nodeId.localeCompare(right.nodeId)
+      .sort(
+        (left, right) =>
+          graph.constructionSequenceNodeIds.indexOf(left.nodeId) -
+            graph.constructionSequenceNodeIds.indexOf(right.nodeId) || left.nodeId.localeCompare(right.nodeId)
       )
       .slice(0, Math.min(2, this.profile.maxAcceptedCommandBatchesPerStep));
     return candidates.flatMap((current, index): AiIntentV1[] => {
@@ -628,44 +812,72 @@ export class AiStage11FortificationManagerV1 implements AiProposalManagerV1 {
       const entry = constructionEntry(catalog, objectName);
       const builder = observation.actors
         .filter((actor) => actor.relation === "self" && actor.visibility === "owned")
-        .find((actor) => catalog.entries.some((candidate) =>
-          candidate.sourceObjectName === actor.objectName && candidate.constructs.includes(objectName)
-        ));
+        .find((actor) =>
+          catalog.entries.some(
+            (candidate) => candidate.sourceObjectName === actor.objectName && candidate.constructs.includes(objectName)
+          )
+        );
       if (!builder) return [];
-      const effectId = `effect:fortification:${plan.planId}:${current.nodeId}:${current.attempt}` as AiIntentV1["effectId"];
-      const intentId = `intent:fortification:${plan.planId}:${current.nodeId}:${current.attempt}` as AiIntentV1["intentId"];
-      const resourceClaims = resourceEntries(entry?.constructionProfile?.resourceCost ?? {}).map(([resourceType, amount], claimIndex) => ({
-        claimId: `claim:fortification:${current.nodeId}:resource:${claimIndex}` as AiIntentV1["claims"][number]["claimId"],
-        kind: "resource" as const,
-        resourceType,
-        amount
-      }));
-      return {
-        kind: "construct" as const,
-        intentId,
-        effectId,
-        planId: `plan:${plan.planId}` as AiIntentV1["planId"],
-        demandId: null,
-        lane: "optional_infrastructure_tech" as const,
-        proposedTick: observation.tick,
-        urgencyClass: current.lifecycle === "destroyed" ? 1 : 4,
-        utility: Math.min(900, 500 + current.marginalCoverage * 10 + (current.lifecycle === "destroyed" ? 200 : 0)),
-        preconditions: [
-          { kind: "actor_exists" as const, actorId: builder.actorId },
-          ...resourceClaims.map((claim) => ({ kind: "resource_at_least" as const, resourceType: claim.resourceType, amount: claim.amount }))
-        ],
-        claims: [
-          { claimId: `claim:fortification:${current.nodeId}:builder` as AiIntentV1["claims"][number]["claimId"], kind: "actor" as const, actorId: builder.actorId },
-          { claimId: `claim:fortification:${current.nodeId}:site` as AiIntentV1["claims"][number]["claimId"], kind: "site" as const, siteKey: `fortification:${current.nodeId}` },
-          { claimId: `claim:fortification:${current.nodeId}:effect` as AiIntentV1["claims"][number]["claimId"], kind: "effect" as const, effectId },
-          ...resourceClaims
-        ],
-        reasonCode: current.lifecycle === "destroyed" ? `fortification:breach_rebuild:${current.nodeId}` : `fortification:connected_prefix:${current.componentId}:${index}`,
-        builderIds: [builder.actorId],
-        objectName,
-        logicalPosition: current.position,
-        siteKey: `fortification:${current.nodeId}`
-      };
+      const effectId =
+        `effect:fortification:${plan.planId}:${current.nodeId}:${current.attempt}` as AiIntentV1["effectId"];
+      const intentId =
+        `intent:fortification:${plan.planId}:${current.nodeId}:${current.attempt}` as AiIntentV1["intentId"];
+      const resourceClaims = resourceEntries(entry?.constructionProfile?.resourceCost ?? {}).map(
+        ([resourceType, amount], claimIndex) => ({
+          claimId:
+            `claim:fortification:${current.nodeId}:resource:${claimIndex}` as AiIntentV1["claims"][number]["claimId"],
+          kind: "resource" as const,
+          resourceType,
+          amount
+        })
+      );
+      return [
+        {
+          kind: "construct" as const,
+          intentId,
+          effectId,
+          planId: `plan:${plan.planId}` as AiIntentV1["planId"],
+          demandId: null,
+          lane: "optional_infrastructure_tech" as const,
+          proposedTick: observation.tick,
+          urgencyClass: current.lifecycle === "destroyed" ? 1 : 4,
+          utility: Math.min(900, 500 + current.marginalCoverage * 10 + (current.lifecycle === "destroyed" ? 200 : 0)),
+          preconditions: [
+            { kind: "actor_exists" as const, actorId: builder.actorId },
+            ...resourceClaims.map((claim) => ({
+              kind: "resource_at_least" as const,
+              resourceType: claim.resourceType,
+              amount: claim.amount
+            }))
+          ],
+          claims: [
+            {
+              claimId: `claim:fortification:${current.nodeId}:builder` as AiIntentV1["claims"][number]["claimId"],
+              kind: "actor" as const,
+              actorId: builder.actorId
+            },
+            {
+              claimId: `claim:fortification:${current.nodeId}:site` as AiIntentV1["claims"][number]["claimId"],
+              kind: "site" as const,
+              siteKey: `fortification:${current.nodeId}`
+            },
+            {
+              claimId: `claim:fortification:${current.nodeId}:effect` as AiIntentV1["claims"][number]["claimId"],
+              kind: "effect" as const,
+              effectId
+            },
+            ...resourceClaims
+          ],
+          reasonCode:
+            current.lifecycle === "destroyed"
+              ? `fortification:breach_rebuild:${current.nodeId}`
+              : `fortification:connected_prefix:${current.componentId}:${index}`,
+          builderIds: [builder.actorId],
+          objectName,
+          logicalPosition: current.position,
+          siteKey: `fortification:${current.nodeId}`
+        }
+      ];
     });
   }
 
@@ -689,7 +901,11 @@ export class AiStage11FortificationManagerV1 implements AiProposalManagerV1 {
     const squad = state.squads
       .filter((candidate) => candidate.domain === "ground" || candidate.domain === "mixed")
       .filter((candidate) => candidate.state !== "completed" && candidate.state !== "cancelled")
-      .sort((left, right) => (left.role === "defense" ? -1 : 0) - (right.role === "defense" ? -1 : 0) || left.squadId.localeCompare(right.squadId))[0];
+      .sort(
+        (left, right) =>
+          (left.role === "defense" ? -1 : 0) - (right.role === "defense" ? -1 : 0) ||
+          left.squadId.localeCompare(right.squadId)
+      )[0];
     const actorIds = [...new Set([...assignedDisconnectedDefenders, ...(squad?.actorIds ?? [])])]
       .filter((actorId) => observation.actors.some((actor) => actor.actorId === actorId && actor.relation === "self"))
       .slice(0, this.profile.maxActorOrdersPerStep);
@@ -700,26 +916,38 @@ export class AiStage11FortificationManagerV1 implements AiProposalManagerV1 {
     const dx = Math.sign(base.anchorPosition.x - opening.position.x);
     const dy = Math.sign(base.anchorPosition.y - opening.position.y);
     const logicalPosition = { ...opening.position, x: opening.position.x + dx, y: opening.position.y + dy };
-    const effectId = `effect:fortification:${plan.planId}:breach:${plan.graph.breach.recoveryAttempts}` as AiIntentV1["effectId"];
-    return [{
-      kind: "move",
-      intentId: `intent:fortification:${plan.planId}:breach:${plan.graph.breach.recoveryAttempts}` as AiIntentV1["intentId"],
-      effectId,
-      planId: `plan:${plan.planId}` as AiIntentV1["planId"],
-      demandId: null,
-      lane: "army_threat",
-      proposedTick: observation.tick,
-      urgencyClass: 0,
-      utility: 900,
-      preconditions: actorIds.map((actorId) => ({ kind: "actor_exists" as const, actorId })),
-      claims: [
-        ...actorIds.map((actorId, index) => ({ claimId: `claim:fortification:${plan.planId}:defender:${index}` as AiIntentV1["claims"][number]["claimId"], kind: "actor" as const, actorId })),
-        { claimId: `claim:fortification:${plan.planId}:breach-effect` as AiIntentV1["claims"][number]["claimId"], kind: "effect", effectId }
-      ],
-      reasonCode: `fortification:breach_defenders:${plan.graph.breach.reason}`,
-      actorIds,
-      logicalPosition
-    }];
+    const effectId =
+      `effect:fortification:${plan.planId}:breach:${plan.graph.breach.recoveryAttempts}` as AiIntentV1["effectId"];
+    return [
+      {
+        kind: "move",
+        intentId:
+          `intent:fortification:${plan.planId}:breach:${plan.graph.breach.recoveryAttempts}` as AiIntentV1["intentId"],
+        effectId,
+        planId: `plan:${plan.planId}` as AiIntentV1["planId"],
+        demandId: null,
+        lane: "army_threat",
+        proposedTick: observation.tick,
+        urgencyClass: 0,
+        utility: 900,
+        preconditions: actorIds.map((actorId) => ({ kind: "actor_exists" as const, actorId })),
+        claims: [
+          ...actorIds.map((actorId, index) => ({
+            claimId: `claim:fortification:${plan.planId}:defender:${index}` as AiIntentV1["claims"][number]["claimId"],
+            kind: "actor" as const,
+            actorId
+          })),
+          {
+            claimId: `claim:fortification:${plan.planId}:breach-effect` as AiIntentV1["claims"][number]["claimId"],
+            kind: "effect",
+            effectId
+          }
+        ],
+        reasonCode: `fortification:breach_defenders:${plan.graph.breach.reason}`,
+        actorIds,
+        logicalPosition
+      }
+    ];
   }
 
   private markProposedEffects(
@@ -728,15 +956,22 @@ export class AiStage11FortificationManagerV1 implements AiProposalManagerV1 {
     tick: number
   ): AiFortificationStateV1 {
     if (!plan.graph) return plan;
-    const effects = new Map(intents.filter((intent) => intent.kind === "construct").map((intent) => [intent.siteKey.replace(/^fortification:/, ""), intent.effectId]));
-    const breachEffect = intents.find((intent) => intent.kind === "move" && intent.reasonCode.startsWith("fortification:breach_defenders:"))?.effectId ?? null;
+    const effects = new Map(
+      intents
+        .filter((intent) => intent.kind === "construct")
+        .map((intent) => [intent.siteKey.replace(/^fortification:/, ""), intent.effectId])
+    );
+    const breachEffect =
+      intents.find(
+        (intent) => intent.kind === "move" && intent.reasonCode.startsWith("fortification:breach_defenders:")
+      )?.effectId ?? null;
     return {
       ...plan,
       graph: {
         ...plan.graph,
         nodes: plan.graph.nodes.map((current) => {
           const effectId = effects.get(current.nodeId);
-          return effectId ? { ...current, effectId, retryAfterTick: tick + 80 } : current;
+          return effectId ? { ...current, effectId } : current;
         }),
         breach: breachEffect ? { ...plan.graph.breach, responseEffectId: breachEffect } : plan.graph.breach
       }

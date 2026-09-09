@@ -1,7 +1,11 @@
 import Phaser from "phaser";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { ActorData, ActorDataKey } from "../../../data/actor-data";
-import { compareAiActorsByStableId, isCampaignAiTargetVisible } from "./world-state-snapshot-manager";
+import {
+  compareAiActorsByStableId,
+  hasStableAiActorId,
+  isCampaignAiTargetVisible
+} from "./world-state-snapshot-manager";
 
 function actorWithId(id: string): Phaser.GameObjects.GameObject {
   const idComponent = Object.assign(Object.create(IdComponent.prototype), { id });
@@ -39,6 +43,7 @@ describe("AI actor ordering", () => {
     expect(() => compareAiActorsByStableId(actorWithoutId, actorWithId("actor-a"))).toThrow(
       "AI actor ordering requires indexed actors with stable IDs"
     );
+    expect([actorWithoutId, actorWithId("actor-a")].filter(hasStableAiActorId)).toHaveLength(1);
   });
 });
 

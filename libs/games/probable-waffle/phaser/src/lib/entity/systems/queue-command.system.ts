@@ -78,17 +78,24 @@ export class QueueCommandSystem {
       return;
     }
 
-    const error = productionComponent.startProduction({
-      actorName: cmd.actorName,
-      costData
-    }, cmd.execution ? { execution: cmd.execution, playerNumber: cmd.playerNumber, actorIds: cmd.actorIds } : undefined);
+    const error = productionComponent.startProduction(
+      {
+        actorName: cmd.actorName,
+        costData
+      },
+      cmd.execution ? { execution: cmd.execution, playerNumber: cmd.playerNumber, actorIds: cmd.actorIds } : undefined
+    );
     if (error) {
       const reason = String(error).toLowerCase().includes("resource") ? "insufficient_resources" : "application_failed";
       commandBus.reportOutcome(cmd, "rejected", reason, cmd.actorIds, [], String(error));
       return;
     }
-    commandBus.reportOutcome(cmd, "applied", "applied", cmd.actorIds, [`queue:${cmd.actorIds[0]}:${cmd.execution?.commandId}`]);
-    commandBus.reportOutcome(cmd, "active", "applied", cmd.actorIds, [`queue:${cmd.actorIds[0]}:${cmd.execution?.commandId}`]);
+    commandBus.reportOutcome(cmd, "applied", "applied", cmd.actorIds, [
+      `queue:${cmd.actorIds[0]}:${cmd.execution?.commandId}`
+    ]);
+    commandBus.reportOutcome(cmd, "active", "applied", cmd.actorIds, [
+      `queue:${cmd.actorIds[0]}:${cmd.execution?.commandId}`
+    ]);
   }
 
   private handleCancelProductionCommand(cmd: CancelProductionCommand) {

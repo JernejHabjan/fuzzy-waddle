@@ -67,7 +67,11 @@ export interface AiBaseStateV1 {
   readonly accessNodeId?: string | null;
   readonly anchorPosition?: { readonly x: number; readonly y: number; readonly z: number } | null;
   readonly reservedSiteKey?: string | null;
-  readonly rejectedSiteKeys?: readonly { readonly siteKey: string; readonly retryAfterTick: AiSimulationTick; readonly reason: string }[];
+  readonly rejectedSiteKeys?: readonly {
+    readonly siteKey: string;
+    readonly retryAfterTick: AiSimulationTick;
+    readonly reason: string;
+  }[];
   readonly expansion?: Readonly<{
     readonly trigger: "resource_life" | "worker_capacity" | "manual";
     readonly requestedAtTick: AiSimulationTick;
@@ -137,7 +141,25 @@ export interface AiSquadStateV1 {
   readonly domain: "ground" | "water" | "air" | "mixed";
   readonly actorIds: readonly ActorId[];
   readonly objectiveId: string | null;
-  readonly state: "forming" | "assemble" | "rally" | "ready" | "advance" | "moving" | "engage" | "engaged" | "defend" | "regroup" | "retreat" | "retreating" | "recover" | "recovering" | "reserve" | "searching" | "completed" | "cancelled";
+  readonly state:
+    | "forming"
+    | "assemble"
+    | "rally"
+    | "ready"
+    | "advance"
+    | "moving"
+    | "engage"
+    | "engaged"
+    | "defend"
+    | "regroup"
+    | "retreat"
+    | "retreating"
+    | "recover"
+    | "recovering"
+    | "reserve"
+    | "searching"
+    | "completed"
+    | "cancelled";
   /** Mission-owned deadline and last independently observed useful effect. */
   readonly lifecycle?: Readonly<{
     readonly targetPlayerNumber: PlayerNumber | null;
@@ -155,7 +177,19 @@ export interface AiSquadStateV1 {
   /** Stage-13 tactical commitment; saved fields prevent target thrash and retreat/relaunch loops. */
   readonly tactics?: Readonly<{
     readonly taskForceId: string;
-    readonly script: "hold_front" | "advance_focus" | "ranged_distance" | "spread_against_area" | "protected_retreat" | "intercept_air_transport" | "naval_control" | "escort" | "land_regroup" | "rampart_defend" | "rampart_reinforce" | "rampart_withdraw";
+    readonly script:
+      | "hold_front"
+      | "advance_focus"
+      | "ranged_distance"
+      | "spread_against_area"
+      | "protected_retreat"
+      | "intercept_air_transport"
+      | "naval_control"
+      | "escort"
+      | "land_regroup"
+      | "rampart_defend"
+      | "rampart_reinforce"
+      | "rampart_withdraw";
     readonly targetActorId: ActorId | null;
     readonly targetScore: number;
     readonly engagementRatioPermille: number;
@@ -170,11 +204,24 @@ export interface AiSquadStateV1 {
     readonly orderSignature: string | null;
     /** Actors already covered by the current order signature; large squads continue across quota-limited steps. */
     readonly orderedActorIds: readonly ActorId[];
-    readonly assignedPositions: readonly { readonly actorId: ActorId; readonly position: { readonly x: number; readonly y: number; readonly z: number } }[];
-    readonly damageReservations: readonly { readonly actorId: ActorId; readonly targetActorId: ActorId; readonly expectedDamage: number; readonly impactTick: AiSimulationTick; readonly effectId?: string }[];
+    readonly assignedPositions: readonly {
+      readonly actorId: ActorId;
+      readonly position: { readonly x: number; readonly y: number; readonly z: number };
+    }[];
+    readonly damageReservations: readonly {
+      readonly actorId: ActorId;
+      readonly targetActorId: ActorId;
+      readonly expectedDamage: number;
+      readonly impactTick: AiSimulationTick;
+      readonly effectId?: string;
+    }[];
     readonly protectedRouteNodeIds: readonly string[];
     readonly mobileReserveActorIds: readonly ActorId[];
-    readonly objectiveAlternatives: readonly { readonly objectiveId: string; readonly score: number; readonly reason: string }[];
+    readonly objectiveAlternatives: readonly {
+      readonly objectiveId: string;
+      readonly score: number;
+      readonly reason: string;
+    }[];
   }>;
 }
 
@@ -184,7 +231,14 @@ export interface AiThreatIncidentV1 {
   readonly baseId: AiBaseId | null;
   readonly regionId: string | null;
   readonly hostileActorIds: readonly ActorId[];
-  readonly kind: "worker_harassment" | "army_pressure" | "flyer" | "naval" | "transport_landing" | "proxy_blocker" | "unknown";
+  readonly kind:
+    | "worker_harassment"
+    | "army_pressure"
+    | "flyer"
+    | "naval"
+    | "transport_landing"
+    | "proxy_blocker"
+    | "unknown";
   readonly confidencePermille: number;
   readonly severity: number;
   readonly createdTick: AiSimulationTick;

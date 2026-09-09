@@ -122,7 +122,9 @@ export class ActionSystem {
         return vision && !vision.getVisibleEnemies().includes(target) ? "hidden_target" : null;
       }
       case OrderType.Build:
-        return !target || !allied || !getActorComponent(this.gameObject, BuilderComponent) ||
+        return !target ||
+          !allied ||
+          !getActorComponent(this.gameObject, BuilderComponent) ||
           getActorComponent(target, ConstructionSiteComponent)?.isFinished !== false
           ? "invalid_target"
           : null;
@@ -135,12 +137,15 @@ export class ActionSystem {
           ? "invalid_target"
           : null;
       case OrderType.Gather:
-        return !target || !getActorComponent(this.gameObject, GathererComponent) ||
+        return !target ||
+          !getActorComponent(this.gameObject, GathererComponent) ||
           !getActorComponent(target, ResourceSourceComponent)
           ? "invalid_target"
           : null;
       case OrderType.ReturnResources:
-        return !target || !allied || !getActorComponent(this.gameObject, GathererComponent) ||
+        return !target ||
+          !allied ||
+          !getActorComponent(this.gameObject, GathererComponent) ||
           !getActorComponent(target, ResourceDrainComponent)
           ? "invalid_target"
           : null;
@@ -162,7 +167,7 @@ export class ActionSystem {
     if (cmd.targetObjectIds) {
       const targetId = cmd.targetObjectIds[0];
       targetGameObject = targetId
-        ? getSceneService(this.gameObject.scene, ActorIndexSystem)?.getActorById(targetId)
+        ? (getSceneService(this.gameObject.scene, ActorIndexSystem)?.getActorById(targetId) ?? undefined)
         : undefined;
       if (!targetGameObject) return false;
     }

@@ -18,11 +18,7 @@ import type { Subscription } from "rxjs";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 import { AiCommandReconciliation } from "./ai-command-reconciliation";
-import type {
-  AiAuthorityStateV1,
-  AiBrainStateV1,
-  AiCommandOutcomeV1
-} from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiAuthorityStateV1, AiBrainStateV1, AiCommandOutcomeV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { createAiBrainStateV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/create-ai-brain-state-v1";
 import { migrateAiBrainState } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/migrate-ai-brain-state";
 import { canonicalizeAiBrainStateV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/canonical-ai-serialization";
@@ -41,6 +37,9 @@ import { AiStage13TacticsManagerV1 } from "@fuzzy-waddle/probable-waffle-gamepla
 import { AiStage14AdaptationManagerV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-stage-14-adaptation-manager";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import { OrderType } from "../../ai/order-type";
+import { getActorComponent } from "../../data/actor-component";
+import { QueueComponent } from "../../entity/components/queue/queue-component";
+import { SharedQueueItemType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/shared-queue-item-type";
 
 export class PlayerAiController {
   private static readonly MAX_SCHEDULED_STEPS_PER_RUN = 5;
@@ -68,18 +67,26 @@ export class PlayerAiController {
     public readonly player: ProbableWafflePlayer
   ) {
     this.profile = this.resolveProfile();
-    this.stepInterval = (this.profile?.decisionIntervalTicks ?? AI_CONFIG.controllerStepIntervalMs / SimulationTickService.TICK_INTERVAL_MS) *
+    this.stepInterval =
+      (this.profile?.decisionIntervalTicks ??
+        AI_CONFIG.controllerStepIntervalMs / SimulationTickService.TICK_INTERVAL_MS) *
       SimulationTickService.TICK_INTERVAL_MS;
     this.pureBrain = this.profile
       ? new PureAiBrainV1(this.profile, [
           new AiStage7MacroManagerV1(() => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
           new AiStage8TransportManagerV1(() => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
-          new AiStage9SkirmishManagerV1(this.profile, () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
+          new AiStage9SkirmishManagerV1(this.profile, () =>
+            this.playerAiControllerAgent?.getCommittedCapabilityCatalog()
+          ),
           new AiStage10BaseManagerV1(this.profile, () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
-          new AiStage11FortificationManagerV1(this.profile, () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
+          new AiStage11FortificationManagerV1(this.profile, () =>
+            this.playerAiControllerAgent?.getCommittedCapabilityCatalog()
+          ),
           new AiStage12RecoveryManagerV1(() => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
           new AiStage13TacticsManagerV1(this.profile),
-          new AiStage14AdaptationManagerV1(this.profile, () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog())
+          new AiStage14AdaptationManagerV1(this.profile, () =>
+            this.playerAiControllerAgent?.getCommittedCapabilityCatalog()
+          )
         ])
       : undefined;
     this.blackboard = new PlayerAiBlackboard(scene);
@@ -88,6 +95,7 @@ export class PlayerAiController {
       this.commandReconciliation = new AiCommandReconciliation(player.playerNumber, commandBus);
     }
     this.playerAiControllerAgent = new PlayerAiControllerAgent(this.scene, this.player, this.blackboard);
+    this.playerAiControllerAgent.setPurePlannerOwnsCommands(this.pureBrain !== undefined);
     this.playerAiControllerAgent.setPurePlannerOwnsResearch(this.pureBrain !== undefined);
     this.brainState = this.createInitialBrainState();
     this.behaviourTree = new BehaviourTree(PlayerAiControllerMdsl, this.playerAiControllerAgent);
@@ -146,8 +154,7 @@ export class PlayerAiController {
             "ai.preTick",
             async () => await this.playerAiControllerAgent.preTick(getSimulationNow(this.scene))
           );
-          this.stepPureBrain();
-          this.telemetry.withSpan("ai.behaviourTreeStep", () => this.behaviourTree.step());
+          this.stepDecisionPlanner();
           if (this.telemetryFrameModulo && frameBeforeSnapshot % this.telemetryFrameModulo === 0) {
             this.blackboard.diagnostics.telemetry = this.telemetry.snapshot();
           }
@@ -225,14 +232,13 @@ export class PlayerAiController {
     }
     if (state.brainState) {
       const context = this.getBrainMigrationContext();
-      if (context) this.brainState = structuredClone(canonicalizeAiBrainStateV1(migrateAiBrainState(state.brainState, context)));
+      if (context)
+        this.brainState = structuredClone(canonicalizeAiBrainStateV1(migrateAiBrainState(state.brainState, context)));
     } else {
       const context = this.getBrainMigrationContext();
       if (context) {
         this.brainState = structuredClone(
-          canonicalizeAiBrainStateV1(
-            migrateAiBrainState(state, { ...context, legacyOpeningLifecycle: "completed" })
-          )
+          canonicalizeAiBrainStateV1(migrateAiBrainState(state, { ...context, legacyOpeningLifecycle: "completed" }))
         );
       }
     }
@@ -325,20 +331,31 @@ export class PlayerAiController {
   }
 
   /** Runs the persisted pure planner at the same boundary as transitional legacy execution. */
+  /** Stage 15 makes the two planners exclusive so legacy commands cannot conflict with accepted pure intents. */
   private stepPureBrain(): void {
     const observation = this.playerAiControllerAgent.getCommittedObservation();
     const bridge = this.getBrainCommandBridgeSnapshot();
     if (!observation || !this.brainState || !this.pureBrain) return;
     const result = this.pureBrain.step(observation, this.brainState, bridge?.outcomes ?? []);
     this.dispatchAcceptedIntents(result.acceptedIntents);
-    this.brainState = structuredClone(canonicalizeAiBrainStateV1({
-      ...result.nextState,
-      authority: bridge?.authority ?? result.nextState.authority
-    }));
+    this.brainState = structuredClone(
+      canonicalizeAiBrainStateV1({
+        ...result.nextState,
+        authority: bridge?.authority ?? result.nextState.authority
+      })
+    );
     this.latestBrainDebug = structuredClone(result.debugSnapshot);
     this.brainDebugHistory.push(structuredClone(result.debugSnapshot));
     const limit = this.profile?.traceHistoryDecisions ?? 128;
     if (this.brainDebugHistory.length > limit) this.brainDebugHistory.splice(0, this.brainDebugHistory.length - limit);
+  }
+
+  private stepDecisionPlanner(): void {
+    if (this.pureBrain) {
+      this.telemetry.withSpan("ai.pureBrainStep", () => this.stepPureBrain());
+      return;
+    }
+    this.telemetry.withSpan("ai.behaviourTreeStep", () => this.behaviourTree.step());
   }
 
   /** Translates accepted macro and transport intents through the shared player command authority. */
@@ -354,126 +371,217 @@ export class PlayerAiController {
         effectId: intent.effectId.replace(/^effect:/, ""),
         commitmentKey: `ai:${intent.effectId}`
       };
+      if (intent.kind === "assign_gatherers") {
+        const actors = actorIndex.getActorsByIds([...intent.actorIds]);
+        if (
+          actors.length !== intent.actorIds.length ||
+          !intent.sourceActorId ||
+          !actorIndex.getActorById(intent.sourceActorId)
+        )
+          continue;
+        commandBus.dispatchAi(
+          {
+            type: "ACTOR_ACTION",
+            playerNumber: this.player.playerNumber,
+            actorIds: [...intent.actorIds],
+            orderType: OrderType.Gather,
+            targetObjectIds: [intent.sourceActorId],
+            queue: false
+          },
+          correlation
+        );
+        continue;
+      }
       if (intent.kind === "produce") {
         const producer = actorIndex.getActorById(intent.producerId);
         if (producer) {
-          commandBus.dispatchAi({
-            type: "PRODUCTION",
-            playerNumber: this.player.playerNumber,
-            actorIds: [intent.producerId],
-            actorName: intent.objectName
-          }, correlation);
+          commandBus.dispatchAi(
+            {
+              type: "PRODUCTION",
+              playerNumber: this.player.playerNumber,
+              actorIds: [intent.producerId],
+              actorName: intent.objectName
+            },
+            correlation
+          );
         }
         continue;
       }
       if (intent.kind === "research") {
         const producer = actorIndex.getActorById(intent.producerId);
         if (producer) {
-          commandBus.dispatchAi({
-            type: "RESEARCH",
-            playerNumber: this.player.playerNumber,
-            actorIds: [intent.producerId],
-            researchType: intent.researchType
-          }, correlation);
+          commandBus.dispatchAi(
+            {
+              type: "RESEARCH",
+              playerNumber: this.player.playerNumber,
+              actorIds: [intent.producerId],
+              researchType: intent.researchType
+            },
+            correlation
+          );
         }
         continue;
       }
       if (intent.kind === "construct") {
         const builders = actorIndex.getActorsByIds([...intent.builderIds]);
         if (builders.length !== intent.builderIds.length) continue;
-        commandBus.dispatchAi({
-          type: "CONSTRUCT",
-          playerNumber: this.player.playerNumber,
-          actorIds: [...intent.builderIds],
-          actorName: intent.objectName,
-          tileVec3: intent.logicalPosition,
-          siteKey: intent.siteKey
-        }, correlation);
+        commandBus.dispatchAi(
+          {
+            type: "CONSTRUCT",
+            playerNumber: this.player.playerNumber,
+            actorIds: [...intent.builderIds],
+            actorName: intent.objectName,
+            tileVec3: intent.logicalPosition,
+            siteKey: intent.siteKey
+          },
+          correlation
+        );
         continue;
       }
       if (intent.kind === "move" || intent.kind === "scout") {
         const actors = actorIndex.getActorsByIds([...intent.actorIds]);
         if (actors.length !== intent.actorIds.length) continue;
-        commandBus.dispatchAi({
-          type: "ACTOR_ACTION",
-          playerNumber: this.player.playerNumber,
-          actorIds: [...intent.actorIds],
-          orderType: OrderType.Move,
-          tileVec3: intent.logicalPosition,
-          queue: false
-        }, correlation);
+        commandBus.dispatchAi(
+          {
+            type: "ACTOR_ACTION",
+            playerNumber: this.player.playerNumber,
+            actorIds: [...intent.actorIds],
+            orderType: OrderType.Move,
+            tileVec3: intent.logicalPosition,
+            queue: false
+          },
+          correlation
+        );
         continue;
       }
       if (intent.kind === "board") {
         const passengers = actorIndex.getActorsByIds([...intent.actorIds]);
         if (passengers.length !== intent.actorIds.length || !actorIndex.getActorById(intent.transportId)) continue;
-        commandBus.dispatchAi({
-          type: "ACTOR_ACTION",
-          playerNumber: this.player.playerNumber,
-          actorIds: [...intent.actorIds],
-          orderType: OrderType.EnterContainer,
-          targetObjectIds: [intent.transportId],
-          queue: false
-        }, correlation);
+        commandBus.dispatchAi(
+          {
+            type: "ACTOR_ACTION",
+            playerNumber: this.player.playerNumber,
+            actorIds: [...intent.actorIds],
+            orderType: OrderType.EnterContainer,
+            targetObjectIds: [intent.transportId],
+            queue: false
+          },
+          correlation
+        );
         continue;
       }
       if (intent.kind === "unload") {
         if (!actorIndex.getActorById(intent.transportId)) continue;
-        commandBus.dispatchAi({
-          type: "UNLOAD",
-          playerNumber: this.player.playerNumber,
-          actorIds: [intent.transportId],
-          passengerIds: [...intent.passengerIds],
-          tileVec3: intent.logicalPosition
-        }, correlation);
+        commandBus.dispatchAi(
+          {
+            type: "UNLOAD",
+            playerNumber: this.player.playerNumber,
+            actorIds: [intent.transportId],
+            passengerIds: [...intent.passengerIds],
+            tileVec3: intent.logicalPosition
+          },
+          correlation
+        );
         continue;
       }
       if (intent.kind === "attack") {
         const actors = actorIndex.getActorsByIds([...intent.actorIds]);
         if (actors.length !== intent.actorIds.length) continue;
-        commandBus.dispatchAi({
-          type: "ACTOR_ACTION",
-          playerNumber: this.player.playerNumber,
-          actorIds: [...intent.actorIds],
-          orderType: OrderType.Attack,
-          ...(intent.targetActorId ? { targetObjectIds: [intent.targetActorId] } : {}),
-          ...(intent.targetPosition ? { tileVec3: intent.targetPosition } : {}),
-          queue: false
-        }, correlation);
+        commandBus.dispatchAi(
+          {
+            type: "ACTOR_ACTION",
+            playerNumber: this.player.playerNumber,
+            actorIds: [...intent.actorIds],
+            orderType: OrderType.Attack,
+            ...(intent.targetActorId ? { targetObjectIds: [intent.targetActorId] } : {}),
+            ...(intent.targetPosition ? { tileVec3: intent.targetPosition } : {}),
+            queue: false
+          },
+          correlation
+        );
         continue;
       }
-      if (intent.kind === "heal" || intent.kind === "repair") {
+      if (intent.kind === "heal" || intent.kind === "repair" || intent.kind === "tend") {
         const actors = actorIndex.getActorsByIds([...intent.actorIds]);
         if (actors.length !== intent.actorIds.length || !actorIndex.getActorById(intent.targetActorId)) continue;
-        commandBus.dispatchAi({
-          type: "ACTOR_ACTION",
-          playerNumber: this.player.playerNumber,
-          actorIds: [...intent.actorIds],
-          orderType: intent.kind === "heal" ? OrderType.Heal : OrderType.Repair,
-          targetObjectIds: [intent.targetActorId],
-          queue: false
-        }, correlation);
+        commandBus.dispatchAi(
+          {
+            type: "ACTOR_ACTION",
+            playerNumber: this.player.playerNumber,
+            actorIds: [...intent.actorIds],
+            orderType:
+              intent.kind === "heal" ? OrderType.Heal : intent.kind === "repair" ? OrderType.Repair : OrderType.Gather,
+            targetObjectIds: [intent.targetActorId],
+            queue: false
+          },
+          correlation
+        );
+        continue;
+      }
+      if (intent.kind === "stop") {
+        const actors = actorIndex.getActorsByIds([...intent.actorIds]);
+        if (actors.length !== intent.actorIds.length) continue;
+        commandBus.dispatchAi(
+          {
+            type: "STOP",
+            playerNumber: this.player.playerNumber,
+            actorIds: [...intent.actorIds]
+          },
+          correlation
+        );
+        continue;
+      }
+      if (intent.kind === "cancel") {
+        const actor = actorIndex.getActorById(intent.actorId);
+        const item = actor ? getActorComponent(actor, QueueComponent)?.items[intent.queueIndex] : undefined;
+        if (!item) continue;
+        if (item.type === SharedQueueItemType.Production) {
+          commandBus.dispatchAi(
+            {
+              type: "CANCEL_PRODUCTION",
+              playerNumber: this.player.playerNumber,
+              actorIds: [intent.actorId],
+              queueIndex: intent.queueIndex
+            },
+            correlation
+          );
+        } else if (item.type === SharedQueueItemType.Research) {
+          commandBus.dispatchAi(
+            {
+              type: "CANCEL_RESEARCH",
+              playerNumber: this.player.playerNumber,
+              actorIds: [intent.actorId]
+            },
+            correlation
+          );
+        }
         continue;
       }
       if (intent.kind === "cast") {
         if (!actorIndex.getActorById(intent.actorId) || !intent.targetPosition) continue;
-        commandBus.dispatchAi({
-          type: "CAST_SPELL",
-          playerNumber: this.player.playerNumber,
-          actorIds: [intent.actorId],
-          spellType: intent.spellType,
-          ...(intent.targetActorId ? { targetObjectId: intent.targetActorId } : {}),
-          tileVec3: intent.targetPosition
-        }, correlation);
+        commandBus.dispatchAi(
+          {
+            type: "CAST_SPELL",
+            playerNumber: this.player.playerNumber,
+            actorIds: [intent.actorId],
+            spellType: intent.spellType,
+            ...(intent.targetActorId ? { targetObjectId: intent.targetActorId } : {}),
+            tileVec3: intent.targetPosition
+          },
+          correlation
+        );
         continue;
       }
       if (intent.kind === "concede") {
-        commandBus.dispatchAi({
-          type: "CONCEDE",
-          playerNumber: this.player.playerNumber,
-          actorIds: [],
-          reason: intent.reason
-        }, correlation);
+        commandBus.dispatchAi(
+          {
+            type: "CONCEDE",
+            playerNumber: this.player.playerNumber,
+            actorIds: [],
+            reason: intent.reason
+          },
+          correlation
+        );
       }
     }
   }
@@ -489,7 +597,8 @@ export class PlayerAiController {
     const definition = this.player.playerController.data.playerDefinition;
     const faction = definition?.factionType;
     if (playerNumber === undefined || faction === undefined) return undefined;
-    const profile = this.profile ?? createAiProfileConfigV1(definition.difficulty ?? ProbableWaffleAiDifficulty.Medium);
+    const profile =
+      this.profile ?? createAiProfileConfigV1(definition?.difficulty ?? ProbableWaffleAiDifficulty.Medium);
     const archetype = selectAiOpeningArchetypeV1({
       faction,
       playerNumber,

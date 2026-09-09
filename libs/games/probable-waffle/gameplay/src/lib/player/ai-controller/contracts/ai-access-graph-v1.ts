@@ -84,7 +84,13 @@ interface AiRouteResultBaseV1 {
   readonly destinationNodeId: AiAccessNodeId;
   readonly distanceCost: number;
   readonly riskCost: number;
-  readonly requiredAssets: readonly ("ground_force" | "water_transport" | "air_transport" | "naval_force" | "air_force")[];
+  readonly requiredAssets: readonly (
+    | "ground_force"
+    | "water_transport"
+    | "air_transport"
+    | "naval_force"
+    | "air_force"
+  )[];
 }
 
 /** Typed route result; callers cannot turn pending knowledge or service failure into unreachable terrain. */

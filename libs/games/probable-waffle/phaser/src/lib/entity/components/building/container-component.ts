@@ -4,10 +4,7 @@ import { HealthComponent } from "../combat/components/health-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { VisionComponent } from "../vision-component";
 import { getGameObjectVisibility, isWaterUnit } from "../../../data/game-object-helper";
-import {
-  type ContainerComponentData,
-  ProbableWaffleGameCommandTypes
-} from "@fuzzy-waddle/probable-waffle-protocol";
+import { type ContainerComponentData, ProbableWaffleGameCommandTypes } from "@fuzzy-waddle/probable-waffle-protocol";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";

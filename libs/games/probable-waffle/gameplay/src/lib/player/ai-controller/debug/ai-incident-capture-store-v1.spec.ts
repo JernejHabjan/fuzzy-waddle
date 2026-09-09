@@ -29,7 +29,14 @@ function bundle(id: number): AiReproBundleV1 {
       expectedCheckpoints: [],
       scenarioId: "DBG-06"
     },
-    completeness: { observation: "complete", priorState: "complete", outcomes: "complete", alternatives: "not_recorded", missingRanges: [], truncatedEventCount: 0 },
+    completeness: {
+      observation: "complete",
+      priorState: "complete",
+      outcomes: "complete",
+      alternatives: "not_recorded",
+      missingRanges: [],
+      truncatedEventCount: 0
+    },
     privacy: "permitted_player_data",
     display: { label: `<b>incident ${id}</b>` }
   };

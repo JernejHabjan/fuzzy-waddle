@@ -27,10 +27,7 @@ import { isMultiplayerDebugEnabled } from "./multiplayer-debug";
 import { createMultiplayerClientLogger } from "./multiplayer-client-logger";
 import { getNgxSocketIoRawSocket } from "../../../core/ngx-socket-io-access";
 import { getPlayersFromScene } from "@fuzzy-waddle/platform-game-host/phaser/scene/base.scene";
-import {
-  advanceProcessedCommandSequence,
-  isProcessedCommandSequence
-} from "./command-authority-policy";
+import { advanceProcessedCommandSequence, isProcessedCommandSequence } from "./command-authority-policy";
 
 /** Immediate result of admitting a command to the shared authority. */
 export type GameCommandDispatchReceipt =
@@ -262,7 +259,10 @@ export class CommandBusService {
 
     const inputError = this.getInputAddressError(command);
     if (inputError) {
-      const rejected = this.stampCommand({ ...command, actorIds: [...new Set(command.actorIds)] }, this.tickService?.currentTick ?? 0);
+      const rejected = this.stampCommand(
+        { ...command, actorIds: [...new Set(command.actorIds)] },
+        this.tickService?.currentTick ?? 0
+      );
       this.reportOutcome(rejected, "rejected", inputError);
       return { status: "rejected", reason: inputError };
     }
@@ -437,7 +437,10 @@ export class CommandBusService {
     }
     const clientSequence = this.nextOutboundTransportSequence++;
     this.sentTransportSequenceByTick.set(tick, clientSequence);
-    this.sentCommandsByTick.set(tick, commands.map((command) => structuredClone(command)));
+    this.sentCommandsByTick.set(
+      tick,
+      commands.map((command) => structuredClone(command))
+    );
     while (this.sentCommandsByTick.size > CommandBusService.PROCESSED_COMMAND_LIMIT) {
       const oldestTick = this.sentCommandsByTick.keys().next().value as number | undefined;
       if (oldestTick === undefined) break;
@@ -568,8 +571,7 @@ export class CommandBusService {
   ): void {
     const execution = command.execution;
     if (!execution) return;
-    const observedTick =
-      kind === "dispatched" ? command.tick : (this.tickService?.currentTick ?? command.tick);
+    const observedTick = kind === "dispatched" ? command.tick : (this.tickService?.currentTick ?? command.tick);
     this.reportPersistedOutcome({
       schemaVersion: 1,
       kind,
@@ -774,7 +776,8 @@ export class CommandBusService {
     const supplied = command.execution;
     const sequence = supplied?.sequence ?? this.allocateSequence(command.playerNumber);
     const authorityEpoch = supplied?.authorityEpoch ?? this.authorityEpoch;
-    const commandId = supplied?.commandId ?? `${command.playerNumber}:${authorityEpoch}:${sequence}:${this.scene.gameInstanceId}`;
+    const commandId =
+      supplied?.commandId ?? `${command.playerNumber}:${authorityEpoch}:${sequence}:${this.scene.gameInstanceId}`;
     const source = supplied?.source ?? this.inferSource(command.playerNumber);
     const execution: GameCommandExecution = {
       schemaVersion: 1,
@@ -850,12 +853,26 @@ export class CommandBusService {
         commandId.startsWith(`${upgraded.playerNumber}:`)
       ).length >= CommandBusService.ACTIVE_AI_COMMAND_LIMIT
     ) {
-      this.reportOutcome(upgraded, "rejected", "outcome_backlog_overflow", upgraded.actorIds, [], "authority_backpressure");
+      this.reportOutcome(
+        upgraded,
+        "rejected",
+        "outcome_backlog_overflow",
+        upgraded.actorIds,
+        [],
+        "authority_backpressure"
+      );
       return;
     }
     const activeCommandId = this.activeCommitments.get(execution.commitmentKey);
     if (activeCommandId && activeCommandId !== execution.commandId) {
-      this.reportOutcome(upgraded, "rejected", "duplicate_command", upgraded.actorIds, [], `commitment:${activeCommandId}`);
+      this.reportOutcome(
+        upgraded,
+        "rejected",
+        "duplicate_command",
+        upgraded.actorIds,
+        [],
+        `commitment:${activeCommandId}`
+      );
       return;
     }
     this.processedCommandIds.set(execution.commandId, upgraded.tick);

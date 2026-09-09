@@ -19,7 +19,7 @@ describe("Stage 5 AI-relevant actor continuation", () => {
     const tending = { growthPercent: 77, tenderIds: ["worker-2", "worker-1"] };
     const conversion = { detectionRange: 8, checkInterval: 500, accumulatedTime: 250, converted: false };
     const source = fakeActor(
-      new Map([
+      new Map<any, any>([
         [GathererComponent, dataComponent(gathering)],
         [TendableComponent, dataComponent(tending)],
         [ConvertibleComponent, dataComponent(conversion)]
@@ -36,7 +36,7 @@ describe("Stage 5 AI-relevant actor continuation", () => {
     const restoredConvertible = restoreComponent();
     applyActorDefinitionToActor(
       fakeActor(
-        new Map([
+        new Map<any, any>([
           [GathererComponent, restoredGatherer],
           [TendableComponent, restoredTendable],
           [ConvertibleComponent, restoredConvertible]

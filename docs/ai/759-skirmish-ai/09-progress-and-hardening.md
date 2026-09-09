@@ -14,16 +14,16 @@ Add typed `AiProgressContract`, `AiBlocker`, `AiProgressEvidence` and `AiRecover
 - typed blockers with observed supporting facts, dependency IDs and resolving action;
 - retry/escalation level, cumulative failure age, permitted fallback and claim-release policy.
 
-| Work | Meaningful evidence | Not evidence |
-| --- | --- | --- |
-| Economy | Resource delivered, useful harvest/growth/service progress, improved reachable income route | Gather order reissued, worker circling, predicted income with no delivery |
-| Construction | Legal site applied, actual build progress, completed usable capacity with access | New plan ID, repeated placement proposal, abandoned foundations accumulating |
-| Production | Queue item applied and advances, legal unit spawns and joins useful duty | Repeated train request, indefinitely reserved resources, blocked spawn reported as success |
-| Scouting | Newly permitted information or a reached information objective | Orbiting explored terrain, resetting frontier list |
-| Army | Advance along feasible mission route, objective effect, effective defense/denial, orderly recovery | Rally/retreat oscillation, repeated target changes, a cosmetic “attack” stance |
-| Transport | Required passengers board, route advances, cargo unloads and resumes duty | Boat motion without cargo progress, manifest resets, empty voyages |
-| Fortification | Useful reachable prefix/post completed; breach actually repaired or safe withdrawal achieved | More wall length alone, repeated planning of an unusable ring |
-| Recovery | Cause removed, productive role restored, genuinely infeasible option abandoned for useful alternative | Deadline reset, same blocker renamed, new parent plan with identical failed purpose |
+| Work          | Meaningful evidence                                                                                   | Not evidence                                                                               |
+| ------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Economy       | Resource delivered, useful harvest/growth/service progress, improved reachable income route           | Gather order reissued, worker circling, predicted income with no delivery                  |
+| Construction  | Legal site applied, actual build progress, completed usable capacity with access                      | New plan ID, repeated placement proposal, abandoned foundations accumulating               |
+| Production    | Queue item applied and advances, legal unit spawns and joins useful duty                              | Repeated train request, indefinitely reserved resources, blocked spawn reported as success |
+| Scouting      | Newly permitted information or a reached information objective                                        | Orbiting explored terrain, resetting frontier list                                         |
+| Army          | Advance along feasible mission route, objective effect, effective defense/denial, orderly recovery    | Rally/retreat oscillation, repeated target changes, a cosmetic “attack” stance             |
+| Transport     | Required passengers board, route advances, cargo unloads and resumes duty                             | Boat motion without cargo progress, manifest resets, empty voyages                         |
+| Fortification | Useful reachable prefix/post completed; breach actually repaired or safe withdrawal achieved          | More wall length alone, repeated planning of an unusable ring                              |
+| Recovery      | Cause removed, productive role restored, genuinely infeasible option abandoned for useful alternative | Deadline reset, same blocker renamed, new parent plan with identical failed purpose        |
 
 Measure route progress as best validated distance/waypoint advancement, not arbitrary position change. Phase changes count only when authoritative prerequisites for the new phase hold. Aggregate child progress at the parent only when it advances that parent's objective. Completed irrelevant chores cannot keep a failed attack or income plan alive.
 
@@ -140,23 +140,23 @@ Under the latest runbook policy, “focused evidence before advancing” below m
 
 These additions extend existing stages, not postpone core recovery to Stage 12:
 
-| Stage | Required hardening increment | Focused evidence before advancing |
-| --- | --- | --- |
-| 0 | Preserve planner prerequisite and pinned source provenance | Existing accessibility/permutation regressions |
-| 1 | Real success predicates, invalid-capability reasons | Polarity, housing, no-op and reason tests |
-| 2 | Typed H1–H4 contracts, invariant guards, units/defaults | Serialization/migration, numeric guards, dependency identity |
-| 3 | H3 applied-once reconciliation/epoch fencing | Lost/late/duplicate outcomes, stale host, applied-versus-completed |
-| 4 | H7 generation/query isolation and fair evidence | Delayed query/local defense, invalidation storm, hidden-world equivalence |
-| 5 | Real-runtime driver, progress/oracle assertions and restart artifacts | One real-world bootstrap/command/save replay plus deliberately failing oracle controls |
-| 6 | H1/H2/H4 supervisor, wait cycles, lane fairness and basic recovery | Starvation, atomic grants, false progress, lease versus uncertain command |
-| 7 | H5 economy and dated military capacity | Both-faction opening/income/supply smoke, circular bootstrap and idle producer recovery |
-| 8 | H7/H8 journey progress/cleanup | Actual boat trip and failed landing/boarding recovery |
-| 9 | H6 initial mission lifecycle and strategic supervisor | First complete supported land match; attack continuation and minor-raid/main-front smoke |
-| 10 | Clearance, multi-base exposure and economic fallback | Spawn/corridor blockage, useful duplicate deposits, safe expansion |
-| 11 | Actual wall defensive effect and bounded cumulative budget | Hostile route through opening, stairs/post access, prefix-budget bypass |
-| 12 | Complete causal recovery across all domains | Cascaded losses and unchanged blocker/deadline evasion |
-| 13 | H6 mission completion, loss limits and reinforcement safety | Retreat/relaunch oscillation, stragglers, local-versus-global strength |
-| 14 | Counter evidence stability, adapted commitments and full integration | Stale-tech overreaction, reservation release, same-app second match |
-| 15 | Complete fault/longitudinal/stress/holdout coverage | All packets, full review/builds, evidence-based closure |
+| Stage | Required hardening increment                                          | Focused evidence before advancing                                                        |
+| ----- | --------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| 0     | Preserve planner prerequisite and pinned source provenance            | Existing accessibility/permutation regressions                                           |
+| 1     | Real success predicates, invalid-capability reasons                   | Polarity, housing, no-op and reason tests                                                |
+| 2     | Typed H1–H4 contracts, invariant guards, units/defaults               | Serialization/migration, numeric guards, dependency identity                             |
+| 3     | H3 applied-once reconciliation/epoch fencing                          | Lost/late/duplicate outcomes, stale host, applied-versus-completed                       |
+| 4     | H7 generation/query isolation and fair evidence                       | Delayed query/local defense, invalidation storm, hidden-world equivalence                |
+| 5     | Real-runtime driver, progress/oracle assertions and restart artifacts | One real-world bootstrap/command/save replay plus deliberately failing oracle controls   |
+| 6     | H1/H2/H4 supervisor, wait cycles, lane fairness and basic recovery    | Starvation, atomic grants, false progress, lease versus uncertain command                |
+| 7     | H5 economy and dated military capacity                                | Both-faction opening/income/supply smoke, circular bootstrap and idle producer recovery  |
+| 8     | H7/H8 journey progress/cleanup                                        | Actual boat trip and failed landing/boarding recovery                                    |
+| 9     | H6 initial mission lifecycle and strategic supervisor                 | First complete supported land match; attack continuation and minor-raid/main-front smoke |
+| 10    | Clearance, multi-base exposure and economic fallback                  | Spawn/corridor blockage, useful duplicate deposits, safe expansion                       |
+| 11    | Actual wall defensive effect and bounded cumulative budget            | Hostile route through opening, stairs/post access, prefix-budget bypass                  |
+| 12    | Complete causal recovery across all domains                           | Cascaded losses and unchanged blocker/deadline evasion                                   |
+| 13    | H6 mission completion, loss limits and reinforcement safety           | Retreat/relaunch oscillation, stragglers, local-versus-global strength                   |
+| 14    | Counter evidence stability, adapted commitments and full integration  | Stale-tech overreaction, reservation release, same-app second match                      |
+| 15    | Complete fault/longitudinal/stress/holdout coverage                   | All packets, full review/builds, evidence-based closure                                  |
 
 Use the existing source/destination map: pure contracts/reducers and assertion helpers belong in gameplay AI; authority, path/actor adapters and actual outcomes belong in shared protocol/server/Phaser ownership seams. Do not implement a second global scheduler or simulation engine solely for hardening. Every H-section needs a named implementation owner, debug field, persistence policy, focused test ID and final runtime case in the coverage ledger.

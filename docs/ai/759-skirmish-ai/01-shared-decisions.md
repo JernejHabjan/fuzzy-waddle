@@ -6,18 +6,18 @@ Read after [the runbook](00-start-here.md), together with mandatory [progress an
 
 All paths below are repository-relative. Resolve against the checkout, not a fixed machine path. Existing symbols are discovery anchors; target directories are deliberate new code destinations.
 
-| Area | Existing authority | New code destination / responsibility |
-| --- | --- | --- |
-| Pure AI | `libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/` | `contracts/`, `brain/`, `planning/`, `profiles/`, `debug/`, `testing/`; no Phaser imports |
-| Runtime AI | `libs/games/probable-waffle/phaser/src/lib/player/ai-controller/` and `ai-behavior/` | `observation/`, `execution/`, `persistence/`; adapters around existing controller/managers |
-| Definitions | Phaser `prefabs/definitions/actor-definitions.ts`, `prefab-definition.ts`, `data/tech-tree/tech-tree.service.ts` | Runtime capability projection into pure catalog; no copied balance table |
-| Commands | `libs/games/probable-waffle/protocol/src/lib/game-instance/probable-waffle/game-command.ts` | Explicit command payloads and serialization guards, shared by human/AI execution |
-| Authorization | `libs/games/probable-waffle/server/src/lib/probable-waffle/game-instance/multiplayer/game-command-validator.service.ts`, gateway/state-server consumers | Transport/schema/player authorization; world preconditions also checked at runtime apply |
-| Application | Phaser `world/services/multiplayer/command-bus.service.ts`, `entity/systems/{queue-command,action}.system.ts`, `dispatch-ai-order.ts` | Typed dispatch/outcomes and application identity; eliminate silent drops |
-| Saves/hashes | Phaser `data/{save-game,load-game,actor-data}.ts`, `world/services/recovery/{state-hash,snapshot,host-migration}.service.ts` | Reuse canonical world projection plus versioned AI brain/knowledge/outcome projection |
-| Navigation | Phaser `world/services/navigation.service.ts`, water/height graph and occupancy helpers | Cached region/route inputs; pure brain gets data, not mutable pathfinder |
-| Debug | Phaser `prefabs/gui/debug/ai-controller/AiControllerDebugPanel.ts`, `AiControllerDebugLabel.ts`, associated `.scene` files, `world/services/DebuggingService.ts` | Read-only view model and bounded UI/overlay adapters; see debug packet |
-| Final harness | existing Phaser/server/interface Jest configs, `tools/testing/jest-node-preset.cjs`, `apps/portal-e2e/` | Pure Jest target, real runtime scenario bridge, deterministic batch runner/report |
+| Area          | Existing authority                                                                                                                                               | New code destination / responsibility                                                      |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Pure AI       | `libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/`                                                                                              | `contracts/`, `brain/`, `planning/`, `profiles/`, `debug/`, `testing/`; no Phaser imports  |
+| Runtime AI    | `libs/games/probable-waffle/phaser/src/lib/player/ai-controller/` and `ai-behavior/`                                                                             | `observation/`, `execution/`, `persistence/`; adapters around existing controller/managers |
+| Definitions   | Phaser `prefabs/definitions/actor-definitions.ts`, `prefab-definition.ts`, `data/tech-tree/tech-tree.service.ts`                                                 | Runtime capability projection into pure catalog; no copied balance table                   |
+| Commands      | `libs/games/probable-waffle/protocol/src/lib/game-instance/probable-waffle/game-command.ts`                                                                      | Explicit command payloads and serialization guards, shared by human/AI execution           |
+| Authorization | `libs/games/probable-waffle/server/src/lib/probable-waffle/game-instance/multiplayer/game-command-validator.service.ts`, gateway/state-server consumers          | Transport/schema/player authorization; world preconditions also checked at runtime apply   |
+| Application   | Phaser `world/services/multiplayer/command-bus.service.ts`, `entity/systems/{queue-command,action}.system.ts`, `dispatch-ai-order.ts`                            | Typed dispatch/outcomes and application identity; eliminate silent drops                   |
+| Saves/hashes  | Phaser `data/{save-game,load-game,actor-data}.ts`, `world/services/recovery/{state-hash,snapshot,host-migration}.service.ts`                                     | Reuse canonical world projection plus versioned AI brain/knowledge/outcome projection      |
+| Navigation    | Phaser `world/services/navigation.service.ts`, water/height graph and occupancy helpers                                                                          | Cached region/route inputs; pure brain gets data, not mutable pathfinder                   |
+| Debug         | Phaser `prefabs/gui/debug/ai-controller/AiControllerDebugPanel.ts`, `AiControllerDebugLabel.ts`, associated `.scene` files, `world/services/DebuggingService.ts` | Read-only view model and bounded UI/overlay adapters; see debug packet                     |
+| Final harness | existing Phaser/server/interface Jest configs, `tools/testing/jest-node-preset.cjs`, `apps/portal-e2e/`                                                          | Pure Jest target, real runtime scenario bridge, deterministic batch runner/report          |
 
 Use one exported substantive type/class per file and existing path aliases. Reuse `PlayerNumber`, actor ID, `ObjectNames`, `ResourceType`, faction/order/command types rather than copying the illustrative string IDs from the research document. Add named plan/squad/claim IDs where needed. Stable collections serialize as sorted arrays; convert to lookup maps inside pure reducers if useful.
 
@@ -68,17 +68,17 @@ The [difficulty specification](11-classic-rts-and-difficulty.md#d--difficulty-al
 
 Stage 7 derives total army demand and dated economic obligations using [C1/C2](11-classic-rts-and-difficulty.md#c2--desired-army-size-and-spending-have-a-source) before assigning role shares. Stage 2 includes [reproduction manifests and diagnostic completeness](12-debug-workbench.md); these cannot be retrofitted as untyped live-world debug queries.
 
-| Setting | Easy | Normal | Hard |
-| --- | --- | --- | --- |
-| Decision interval, ticks | 40 | 20 | 10 |
-| New intent proposals / step | 16 | 32 | 64 |
-| Accepted command batches / step | 4 | 8 | 12 |
-| Total actor orders / step | 16 | 32 | 48 |
-| Placement candidates / step | 8 | 16 | 24 |
-| New detailed path queries / step | 2 | 4 | 8 |
-| Local engagement pairs / step | 32 | 64 | 128 |
-| Route/landing alternatives / operation | 2 | 4 | 6 |
-| Trace history, decisions | 128 | 256 | 256 |
+| Setting                                | Easy | Normal | Hard |
+| -------------------------------------- | ---- | ------ | ---- |
+| Decision interval, ticks               | 40   | 20     | 10   |
+| New intent proposals / step            | 16   | 32     | 64   |
+| Accepted command batches / step        | 4    | 8      | 12   |
+| Total actor orders / step              | 16   | 32     | 48   |
+| Placement candidates / step            | 8    | 16     | 24   |
+| New detailed path queries / step       | 2    | 4      | 8    |
+| Local engagement pairs / step          | 32   | 64     | 128  |
+| Route/landing alternatives / operation | 2    | 4      | 6    |
+| Trace history, decisions               | 128  | 256    | 256  |
 
 All loops have a quota and saved stable continuation cursor. Bound graph construction and spatial-index updates separately (initial 256 dirty cells per decision step); new region generations become usable atomically. Pending summaries must expose `not_ready` rather than an invented route. Cache local threat/region summaries and invalidate on relevant changes. UI formatting/wall time never affects work admitted to a decision.
 

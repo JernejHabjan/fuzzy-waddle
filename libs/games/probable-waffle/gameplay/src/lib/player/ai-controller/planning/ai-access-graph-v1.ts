@@ -52,7 +52,7 @@ function compareCells(left: AiAccessCellV1, right: AiAccessCellV1): number {
 }
 
 function clearanceFor(cell: AiAccessCellV1, domain: "ground" | "water"): number {
-  return domain === "water" ? cell.waterClearance ?? cell.clearance : cell.clearance;
+  return domain === "water" ? (cell.waterClearance ?? cell.clearance) : cell.clearance;
 }
 
 function buildRegions(
@@ -81,9 +81,15 @@ function buildRegions(
       const current = eligible.get(currentKey);
       if (!current) continue;
       members.push(current);
-      const neighbors = domain === "ground"
-        ? current.groundNeighborKeys
-        : [keyOf(current.x, current.y - 1), keyOf(current.x - 1, current.y), keyOf(current.x + 1, current.y), keyOf(current.x, current.y + 1)];
+      const neighbors =
+        domain === "ground"
+          ? current.groundNeighborKeys
+          : [
+              keyOf(current.x, current.y - 1),
+              keyOf(current.x - 1, current.y),
+              keyOf(current.x + 1, current.y),
+              keyOf(current.x, current.y + 1)
+            ];
       for (const neighborKey of [...neighbors].sort()) {
         const neighbor = eligible.get(neighborKey);
         if (
@@ -91,14 +97,16 @@ function buildRegions(
           !neighbor ||
           clearanceFor(neighbor, domain) !== clearanceFor(current, domain) ||
           neighbor.elevation !== current.elevation
-        ) continue;
+        )
+          continue;
         visited.add(neighborKey);
         queue.push(neighborKey);
       }
     }
     members.sort(compareCells);
     const representative = members[0]!;
-    const nodeId = `access:region:${domain}:${representative.x}:${representative.y}:${representative.elevation}` as const;
+    const nodeId =
+      `access:region:${domain}:${representative.x}:${representative.y}:${representative.elevation}` as const;
     for (const member of members) lookup.set(keyOf(member.x, member.y), nodeId);
     regions.push({
       nodeId,
@@ -130,12 +138,11 @@ export function buildAiAccessGraphV1(input: BuildAiAccessGraphV1Input): BuiltAiA
   const links = new Map<string, AiAccessLinkV1>();
   for (const domain of ["ground", "water"] as const) {
     const lookup = domain === "ground" ? groundNodeByTileKey : waterNodeByTileKey;
-    for (const cell of cells.filter((candidate) => domain === "ground" ? candidate.ground : candidate.water)) {
+    for (const cell of cells.filter((candidate) => (domain === "ground" ? candidate.ground : candidate.water))) {
       const fromNodeId = lookup.get(keyOf(cell.x, cell.y));
       if (!fromNodeId) continue;
-      const neighborKeys = domain === "ground"
-        ? cell.groundNeighborKeys
-        : [keyOf(cell.x + 1, cell.y), keyOf(cell.x, cell.y + 1)];
+      const neighborKeys =
+        domain === "ground" ? cell.groundNeighborKeys : [keyOf(cell.x + 1, cell.y), keyOf(cell.x, cell.y + 1)];
       for (const neighborKey of neighborKeys) {
         const toNodeId = lookup.get(neighborKey);
         if (!toNodeId || toNodeId === fromNodeId) continue;
@@ -143,18 +150,24 @@ export function buildAiAccessGraphV1(input: BuildAiAccessGraphV1Input): BuiltAiA
         const right = left === fromNodeId ? toNodeId : fromNodeId;
         const linkId = `access:link:${domain}:${left}:${right}`;
         const neighbor = cellByKey.get(neighborKey);
-        const clearance = Math.min(
-          clearanceFor(cell, domain),
-          neighbor ? clearanceFor(neighbor, domain) : 1
-        );
-        const knowledge = cell.knowledge === "unknown" || neighbor?.knowledge === "unknown"
-          ? "unknown"
-          : cell.knowledge === "observed_dynamic" || neighbor?.knowledge === "observed_dynamic"
-            ? "observed_dynamic"
-            : "known_static";
+        const clearance = Math.min(clearanceFor(cell, domain), neighbor ? clearanceFor(neighbor, domain) : 1);
+        const knowledge =
+          cell.knowledge === "unknown" || neighbor?.knowledge === "unknown"
+            ? "unknown"
+            : cell.knowledge === "observed_dynamic" || neighbor?.knowledge === "observed_dynamic"
+              ? "observed_dynamic"
+              : "known_static";
         const existing = links.get(linkId);
         if (!existing || clearance > existing.clearance) {
-          links.set(linkId, { linkId, fromNodeId: left, toNodeId: right, domain, clearance, distanceCost: 1, knowledge });
+          links.set(linkId, {
+            linkId,
+            fromNodeId: left,
+            toNodeId: right,
+            domain,
+            clearance,
+            distanceCost: 1,
+            knowledge
+          });
         }
       }
     }
@@ -197,7 +210,10 @@ export function buildAiAccessGraphV1(input: BuildAiAccessGraphV1Input): BuiltAiA
       });
     }
   }
-  const unknownNodeIds = nodes.filter((node) => node.knowledge === "unknown").map((node) => node.nodeId).sort();
+  const unknownNodeIds = nodes
+    .filter((node) => node.knowledge === "unknown")
+    .map((node) => node.nodeId)
+    .sort();
   return {
     graph: {
       schemaVersion: 1,
@@ -254,7 +270,7 @@ function findDomainRoute(
           link.clearance >= requiredClearance &&
           (link.fromNodeId === current || link.toNodeId === current)
       )
-      .map((link) => link.fromNodeId === current ? link.toNodeId : link.fromNodeId)
+      .map((link) => (link.fromNodeId === current ? link.toNodeId : link.fromNodeId))
       .sort();
     for (const neighbor of neighbors) {
       if (visited.has(neighbor)) continue;
@@ -284,13 +300,20 @@ export function queryAiAccessRouteV1(graph: AiAccessGraphV1, request: AiRouteReq
     return { ...base, kind: "pending", reason: "graph_pending", requiredAssets: [] };
   }
   const source = graph.nodes.find((node) => node.nodeId === request.fromNodeId);
-  const requestedDestinations = request.kind === "firing_position" && request.firingNodeIds.length
-    ? [...request.firingNodeIds].sort()
-    : [request.toNodeId];
-  const destination = requestedDestinations.map((nodeId) => graph.nodes.find((node) => node.nodeId === nodeId)).find(Boolean);
+  const requestedDestinations =
+    request.kind === "firing_position" && request.firingNodeIds.length
+      ? [...request.firingNodeIds].sort()
+      : [request.toNodeId];
+  const destination = requestedDestinations
+    .map((nodeId) => graph.nodes.find((node) => node.nodeId === nodeId))
+    .find(Boolean);
   if (!source) return { ...base, kind: "impossible", reason: "missing_source_region", requiredAssets: [] };
   if (!destination) return { ...base, kind: "impossible", reason: "missing_destination_region", requiredAssets: [] };
-  const measuredBase = { ...base, destinationNodeId: destination.nodeId, distanceCost: routeDistance(source, destination) };
+  const measuredBase = {
+    ...base,
+    destinationNodeId: destination.nodeId,
+    distanceCost: routeDistance(source, destination)
+  };
   if (source.knowledge === "unknown" || destination.knowledge === "unknown") {
     return { ...measuredBase, kind: "pending", reason: "unknown_region", requiredAssets: [] };
   }
@@ -312,7 +335,9 @@ export function queryAiAccessRouteV1(graph: AiAccessGraphV1, request: AiRouteReq
         domain: directDomain,
         routeNodeIds,
         firingNodeId: request.kind === "firing_position" ? destination.nodeId : null,
-        requiredAssets: [directDomain === "ground" ? "ground_force" : directDomain === "water" ? "naval_force" : "air_force"]
+        requiredAssets: [
+          directDomain === "ground" ? "ground_force" : directDomain === "water" ? "naval_force" : "air_force"
+        ]
       };
     }
   }
@@ -327,8 +352,8 @@ export function queryAiAccessRouteV1(graph: AiAccessGraphV1, request: AiRouteReq
     };
   }
   if (request.kind === "firing_position") {
-    const objectiveDomain = (["air", "water"] as const).find((domain) =>
-      request.capabilities.targetDomains.includes(domain) && destination.domain === domain
+    const objectiveDomain = (["air", "water"] as const).find(
+      (domain) => request.capabilities.targetDomains.includes(domain) && destination.domain === domain
     );
     if (objectiveDomain) {
       return {
@@ -341,28 +366,35 @@ export function queryAiAccessRouteV1(graph: AiAccessGraphV1, request: AiRouteReq
     }
   }
   const pickup = graph.transferPoints.filter((point) => point.kind === "shore" && point.fromNodeId === source.nodeId);
-  const landing = graph.transferPoints.filter((point) => point.kind === "shore" && point.fromNodeId === destination.nodeId);
+  const landing = graph.transferPoints.filter(
+    (point) => point.kind === "shore" && point.fromNodeId === destination.nodeId
+  );
   const compatiblePair = pickup
     .flatMap((left) => landing.map((right) => ({ left, right })))
     .filter(({ left, right }) => {
       const leftWater = graph.nodes.find((node) => node.nodeId === left.toNodeId);
       const rightWater = graph.nodes.find((node) => node.nodeId === right.toNodeId);
-      return leftWater && rightWater && findDomainRoute(graph, leftWater, rightWater, request.capabilities.requiredClearance);
-    })
-    .sort((a, b) => a.left.transferId.localeCompare(b.left.transferId) || a.right.transferId.localeCompare(b.right.transferId))[0];
-  const unknownWaterPair = !compatiblePair && pickup.some((left) =>
-    landing.some((right) => {
-      const leftWater = graph.nodes.find((node) => node.nodeId === left.toNodeId);
-      const rightWater = graph.nodes.find((node) => node.nodeId === right.toNodeId);
-      return leftWater && rightWater && findDomainRoute(
-        graph,
-        leftWater,
-        rightWater,
-        request.capabilities.requiredClearance,
-        true
+      return (
+        leftWater && rightWater && findDomainRoute(graph, leftWater, rightWater, request.capabilities.requiredClearance)
       );
     })
-  );
+    .sort(
+      (a, b) =>
+        a.left.transferId.localeCompare(b.left.transferId) || a.right.transferId.localeCompare(b.right.transferId)
+    )[0];
+  const unknownWaterPair =
+    !compatiblePair &&
+    pickup.some((left) =>
+      landing.some((right) => {
+        const leftWater = graph.nodes.find((node) => node.nodeId === left.toNodeId);
+        const rightWater = graph.nodes.find((node) => node.nodeId === right.toNodeId);
+        return (
+          leftWater &&
+          rightWater &&
+          findDomainRoute(graph, leftWater, rightWater, request.capabilities.requiredClearance, true)
+        );
+      })
+    );
   if (unknownWaterPair) {
     return { ...measuredBase, kind: "pending", reason: "unknown_region", requiredAssets: [] };
   }

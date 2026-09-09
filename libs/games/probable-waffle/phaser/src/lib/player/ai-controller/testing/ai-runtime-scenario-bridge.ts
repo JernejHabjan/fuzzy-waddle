@@ -76,10 +76,14 @@ export class AiRuntimeScenarioBridgeV1 {
   }
 
   /** Advances normal fixed ticks and waits until the selected AI publishes that committed observation. */
-  async advanceToCommittedObservation(playerNumber: PlayerNumber, targetTick: number): Promise<AiRuntimeScenarioBoundaryV1> {
+  async advanceToCommittedObservation(
+    playerNumber: PlayerNumber,
+    targetTick: number
+  ): Promise<AiRuntimeScenarioBoundaryV1> {
     this.assertUsable();
     const tickService = this.requireTickService();
-    if (!Number.isSafeInteger(targetTick) || targetTick < tickService.currentTick) throw new Error("invalid_target_tick");
+    if (!Number.isSafeInteger(targetTick) || targetTick < tickService.currentTick)
+      throw new Error("invalid_target_tick");
     const required = targetTick - tickService.currentTick;
     if (required > this.maximumAdvanceTicks) throw new Error("ai_runtime_tick_budget_exceeded");
     for (let index = 0; index < required; index += 1) {
@@ -88,7 +92,8 @@ export class AiRuntimeScenarioBridgeV1 {
     }
     const controller = this.requireController(playerNumber);
     for (let turn = 0; turn < 64; turn += 1) {
-      if ((controller.getCommittedObservation()?.tick ?? -1) >= targetTick && controller.isDecisionBoundarySettled()) break;
+      if ((controller.getCommittedObservation()?.tick ?? -1) >= targetTick && controller.isDecisionBoundarySettled())
+        break;
       await Promise.resolve();
     }
     const observation = controller.getCommittedObservation();

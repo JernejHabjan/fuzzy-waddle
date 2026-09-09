@@ -186,8 +186,7 @@ export class SpellCastingSystem {
         targetObjectId: command.targetObjectId,
         targetTile: targetTileXYZ,
         dueTick:
-          tickService.currentTick +
-          Math.max(1, Math.ceil(flightDurationMs / SimulationTickService.TICK_INTERVAL_MS))
+          tickService.currentTick + Math.max(1, Math.ceil(flightDurationMs / SimulationTickService.TICK_INTERVAL_MS))
       });
     } else {
       // Instant cast - apply effects immediately

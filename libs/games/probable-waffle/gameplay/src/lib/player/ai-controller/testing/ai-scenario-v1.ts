@@ -15,7 +15,12 @@ export type AiScenarioAssertionV1 =
   | { readonly kind: "digest_equals"; readonly surface: "command" | "ai" | "world"; readonly expected: string }
   | { readonly kind: "digest_differs"; readonly surface: "command" | "ai" | "world"; readonly forbidden: string }
   | { readonly kind: "work_count_at_most"; readonly counter: string; readonly maximum: number }
-  | { readonly kind: "work_count_between"; readonly counter: string; readonly minimum: number; readonly maximum: number }
+  | {
+      readonly kind: "work_count_between";
+      readonly counter: string;
+      readonly minimum: number;
+      readonly maximum: number;
+    }
   | { readonly kind: "command_applied"; readonly commandId: string; readonly deadlineTick: number }
   | { readonly kind: "world_path_equals"; readonly path: string; readonly expected: string | number | boolean | null };
 

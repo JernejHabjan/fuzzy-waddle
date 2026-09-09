@@ -27,5 +27,10 @@ export function selectAiOpeningArchetypeV1(input: {
         : ["balanced", "macro", "tech", "air_control"];
   const index = Math.abs((input.seed ^ input.playerNumber ^ input.faction) | 0) % variants.length;
   const purpose = variants[index] ?? "balanced";
-  return { id: `opening:${input.faction}:${purpose}`, version: "opening-archetypes-v1", faction: input.faction, purpose };
+  return {
+    id: `opening:${input.faction}:${purpose}`,
+    version: "opening-archetypes-v1",
+    faction: input.faction,
+    purpose
+  };
 }
