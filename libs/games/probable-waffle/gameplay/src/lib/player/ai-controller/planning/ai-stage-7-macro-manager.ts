@@ -1,4 +1,4 @@
-import { FactionType, ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { FactionType, ObjectNames, OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import type { AiDemandV1, AiPlanStepV1 } from "../contracts/ai-plan-contracts";
@@ -48,13 +48,40 @@ function checkpointActors(
   });
 }
 
+function isFinishedActor(actor: AiObservationV1["actors"][number]): boolean {
+  return actor.constructionProgress?.status !== "known" || actor.constructionProgress.value >= 100;
+}
+
 function queueFree(actor: AiObservationV1["actors"][number]): boolean {
   return actor.queue.status !== "known" || actor.queue.value.occupied === 0;
 }
 
-function desiredWorkerCount(state: AiBrainStateV1): number {
-  const activeBases = state.bases.filter((base) => base.active && base.lifecycle === "active").length;
-  return Math.min(18, 6 + Math.max(0, activeBases - 1) * 2);
+/** Historical opening progress must not regress when a later expansion becomes active. */
+const OPENING_WORKER_COUNT = 6;
+
+function queuedObjectIds(observation: AiObservationV1, objectName: ObjectNames): string[] {
+  return owned(observation)
+    .flatMap((actor) =>
+      actor.queue.status === "known"
+        ? (actor.queue.value.items ?? [])
+            .filter((item) => item.kind === "production" && item.objectName === objectName)
+            .map((item) => item.itemId)
+        : []
+    )
+    .sort();
+}
+
+function isAvailableBuilder(actor: AiObservationV1["actors"][number]): boolean {
+  return actor.activeOrder?.status !== "known" || actor.activeOrder.value?.orderType !== OrderType.Build;
+}
+
+function hasAssignedBuilder(observation: AiObservationV1, siteActorId: string): boolean {
+  return owned(observation).some(
+    (actor) =>
+      actor.activeOrder?.status === "known" &&
+      actor.activeOrder.value?.orderType === OrderType.Build &&
+      actor.activeOrder.value.targetActorId === siteActorId
+  );
 }
 
 function selectConstructionPosition(
@@ -151,13 +178,40 @@ export class AiStage7MacroManagerV1 implements AiProposalManagerV1 {
     const intents: AiIntentV1[] = [];
     const steps: AiPlanStepV1[] = [];
     const selectedConstructionTileKeys = new Set<string>();
+    const reservedActorIds = new Set(
+      state.reservations
+        .map((reservation) => reservation.subjectKey)
+        .filter((subjectKey): subjectKey is string => subjectKey?.startsWith("actor:") === true)
+        .map((subjectKey) => subjectKey.slice("actor:".length))
+    );
     let ordinal = 0;
+    const checkpointStatus = checkpoints.map((checkpoint) => {
+      const matchingActors = checkpointActors(observation, checkpoint, catalog);
+      const desired = checkpoint.id === "bootstrap-worker" ? OPENING_WORKER_COUNT : checkpoint.desired;
+      const previousStep = state.opening.plan.steps.find((step) => step.stepId === `step:opening:${checkpoint.id}`);
+      const satisfiedActors = matchingActors.filter(isFinishedActor);
+      return {
+        checkpoint,
+        desired,
+        satisfiedActors,
+        constructingActors: matchingActors.filter((actor) => !isFinishedActor(actor)),
+        queuedIds: queuedObjectIds(observation, checkpoint.requiredObject),
+        fulfilled: previousStep?.state === "completed" || satisfiedActors.length >= desired,
+        completedTick: previousStep?.completedTick ?? null
+      };
+    });
+    const activeCheckpointId = checkpointStatus.find(({ fulfilled }) => !fulfilled)?.checkpoint.id;
 
-    for (const checkpoint of checkpoints) {
-      const desired = checkpoint.id === "bootstrap-worker" ? desiredWorkerCount(state) : checkpoint.desired;
-      const satisfiedActors = checkpointActors(observation, checkpoint, catalog);
+    for (const {
+      checkpoint,
+      desired,
+      satisfiedActors,
+      constructingActors,
+      queuedIds,
+      fulfilled,
+      completedTick
+    } of checkpointStatus) {
       const count = satisfiedActors.length;
-      const fulfilled = count >= desired;
       const demandId = `demand:opening:${checkpoint.id}` as AiDemandV1["demandId"];
       demands.push({
         demandId,
@@ -166,20 +220,76 @@ export class AiStage7MacroManagerV1 implements AiProposalManagerV1 {
         unit: "actor_count",
         desired,
         satisfiedActorIds: satisfiedActors.map((actor) => actor.actorId),
-        queuedIds: [],
-        constructingIds: [],
+        queuedIds,
+        constructingIds: constructingActors.map((actor) => actor.actorId),
         acceptedNotObservedEffectIds: [],
         preferredObjectNames: [checkpoint.requiredObject],
         resourceObligations: {}
       });
       steps.push({
         stepId: `step:opening:${checkpoint.id}` as AiPlanStepV1["stepId"],
-        state: fulfilled ? "completed" : "pending",
+        state: fulfilled ? "completed" : checkpoint.id === activeCheckpointId ? "current" : "pending",
         demandIds: [demandId],
         deadline: null,
-        completedTick: fulfilled ? observation.tick : null
+        completedTick: fulfilled ? (completedTick ?? observation.tick) : null
       });
-      if (fulfilled) continue;
+      if (fulfilled || checkpoint.id !== activeCheckpointId || satisfiedActors.length + queuedIds.length >= desired)
+        continue;
+
+      const stalledSite = [...constructingActors]
+        .sort((left, right) => left.actorId.localeCompare(right.actorId))
+        .find((site) => !hasAssignedBuilder(observation, site.actorId));
+      if (stalledSite) {
+        const builder = owned(observation)
+          .filter(isAvailableBuilder)
+          .filter((actor) => !reservedActorIds.has(actor.actorId))
+          .sort((left, right) => left.actorId.localeCompare(right.actorId))
+          .find((actor) =>
+            catalog.entries.some(
+              (entry) =>
+                entry.sourceObjectName === actor.objectName && entry.constructs.includes(checkpoint.requiredObject)
+            )
+          );
+        if (builder) {
+          const ids = nextIds(state, `resume-construction:${stalledSite.actorId}`, ordinal++);
+          intents.push({
+            ...ids,
+            kind: "resume_construct",
+            planId: state.opening.plan.planId,
+            demandId,
+            lane: "supply_production",
+            proposedTick: observation.tick,
+            urgencyClass: 1,
+            utility: 900,
+            preconditions: [
+              { kind: "actor_exists", actorId: builder.actorId },
+              { kind: "actor_exists", actorId: stalledSite.actorId }
+            ],
+            claims: [
+              {
+                claimId: `${ids.claimId}:builder` as AiIntentV1["claims"][number]["claimId"],
+                kind: "actor",
+                actorId: builder.actorId
+              },
+              {
+                claimId: `${ids.claimId}:site` as AiIntentV1["claims"][number]["claimId"],
+                kind: "site",
+                siteKey: `observed-site:${stalledSite.actorId}`
+              },
+              {
+                claimId: `${ids.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
+                kind: "effect",
+                effectId: ids.effectId
+              }
+            ],
+            reasonCode: `opening:${checkpoint.id}:resume_stalled_construction`,
+            actorIds: [builder.actorId],
+            targetActorId: stalledSite.actorId
+          });
+        }
+        continue;
+      }
+      if (constructingActors.length > 0) continue;
 
       const producer = owned(observation).find((actor) => {
         const entry = catalog.entries.find((candidate) => candidate.sourceObjectName === actor.objectName);
@@ -210,12 +320,15 @@ export class AiStage7MacroManagerV1 implements AiProposalManagerV1 {
           objectName: checkpoint.requiredObject
         });
       } else {
-        const builder = owned(observation).find((actor) =>
-          catalog.entries.some(
-            (entry) =>
-              entry.sourceObjectName === actor.objectName && entry.constructs.includes(checkpoint.requiredObject)
-          )
-        );
+        const builder = owned(observation)
+          .filter(isAvailableBuilder)
+          .filter((actor) => !reservedActorIds.has(actor.actorId))
+          .find((actor) =>
+            catalog.entries.some(
+              (entry) =>
+                entry.sourceObjectName === actor.objectName && entry.constructs.includes(checkpoint.requiredObject)
+            )
+          );
         if (builder?.logicalPosition.status === "known") {
           const position = selectConstructionPosition(
             observation,
@@ -237,6 +350,11 @@ export class AiStage7MacroManagerV1 implements AiProposalManagerV1 {
             utility: checkpoint.id === "bootstrap-worker" ? 950 : 700,
             preconditions: [{ kind: "actor_exists", actorId: builder.actorId }],
             claims: [
+              {
+                claimId: `${ids.claimId}:builder` as AiIntentV1["claims"][number]["claimId"],
+                kind: "actor",
+                actorId: builder.actorId
+              },
               { claimId: ids.claimId, kind: "site", siteKey: `opening:${checkpoint.id}:${position.x}:${position.y}` },
               {
                 claimId: `${ids.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
@@ -256,10 +374,19 @@ export class AiStage7MacroManagerV1 implements AiProposalManagerV1 {
 
     const self = owned(observation);
     const budget = openingBudget(state.opening.archetypeId);
+    const openingBuilderIds = new Set(
+      intents.flatMap((intent) => {
+        if (intent.kind === "construct") return [...intent.builderIds];
+        if (intent.kind === "resume_construct") return [...intent.actorIds];
+        return [];
+      })
+    );
     const idleWorkers = self
       .filter((actor) =>
         catalog.entries.some((entry) => entry.sourceObjectName === actor.objectName && entry.gathers.length > 0)
       )
+      .filter((actor) => !openingBuilderIds.has(actor.actorId))
+      .filter((actor) => !reservedActorIds.has(actor.actorId))
       .filter((actor) => actor.activeOrder?.status === "known" && actor.activeOrder.value === null)
       .sort((left, right) => left.actorId.localeCompare(right.actorId));
     const gatherSources = observation.actors
@@ -340,7 +467,8 @@ export class AiStage7MacroManagerV1 implements AiProposalManagerV1 {
       freeSupply < budget.supplyBuffer
         ? Math.ceil((budget.supplyBuffer - freeSupply) / Math.max(1, housingEntries[0]?.housingCapacity ?? 1))
         : 0;
-    if (neededHousing > 0 && housingEntries[0]) {
+    const openingComplete = activeCheckpointId === undefined;
+    if (openingComplete && neededHousing > 0 && housingEntries[0]) {
       const housingObject = housingEntries[0].sourceObjectName;
       demands.push({
         demandId: "demand:supply:buffer" as AiDemandV1["demandId"],
@@ -357,13 +485,18 @@ export class AiStage7MacroManagerV1 implements AiProposalManagerV1 {
         preferredObjectNames: [housingObject],
         resourceObligations: {}
       });
-      const builder = self.find((actor) =>
-        catalog.entries.some(
-          (entry) => entry.sourceObjectName === actor.objectName && entry.constructs.includes(housingObject)
-        )
-      );
-      if (builder && builder.logicalPosition.status === "known") {
-        for (let index = 0; index < neededHousing; index += 1) {
+      const builders = self
+        .filter(isAvailableBuilder)
+        .filter((actor) => !reservedActorIds.has(actor.actorId))
+        .filter((actor) =>
+          catalog.entries.some(
+            (entry) => entry.sourceObjectName === actor.objectName && entry.constructs.includes(housingObject)
+          )
+        );
+      if (builders.length > 0) {
+        for (let index = 0; index < Math.min(neededHousing, builders.length); index += 1) {
+          const builder = builders[index];
+          if (!builder || builder.logicalPosition.status !== "known") continue;
           const position = selectConstructionPosition(
             observation,
             builder,
@@ -384,6 +517,11 @@ export class AiStage7MacroManagerV1 implements AiProposalManagerV1 {
             utility: 850,
             preconditions: [{ kind: "actor_exists", actorId: builder.actorId }],
             claims: [
+              {
+                claimId: `${ids.claimId}:builder` as AiIntentV1["claims"][number]["claimId"],
+                kind: "actor",
+                actorId: builder.actorId
+              },
               { claimId: ids.claimId, kind: "site", siteKey: `supply:${housingObject}:${position.x}:${position.y}` },
               {
                 claimId: `${ids.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
@@ -418,7 +556,12 @@ export class AiStage7MacroManagerV1 implements AiProposalManagerV1 {
           queueFree(actor)
       );
       const available = producer
-        ? (catalog.entries.find((entry) => entry.sourceObjectName === producer.objectName)?.produces ?? [])
+        ? (catalog.entries.find((entry) => entry.sourceObjectName === producer.objectName)?.produces ?? []).filter(
+            (objectName) => {
+              const entry = catalog.entries.find((candidate) => candidate.sourceObjectName === objectName);
+              return entry !== undefined && entry.gathers.length === 0 && entry.targetDomains.length > 0;
+            }
+          )
         : [];
       const roleCounts = { frontline: 0, ranged: 0, support: 0 };
       for (const actor of military) roleCounts[roleFor(actor.objectName, catalog)] += 1;

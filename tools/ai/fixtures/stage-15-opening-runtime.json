@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "evidenceKind": "runtime",
+  "scenarioIds": ["ECO-08"],
+  "purpose": "Run both real faction starts from the ordinary lobby, prove the no-worker bootstrap reaches delivered income, and retain completed opening checkpoints without command duplication.",
+  "driver": "runtime",
+  "status": "ready_for_runtime_execution",
+  "context": {
+    "mapId": "EmberEnclave+RiverCrossing",
+    "mapDigest": "resolved_from_candidate_assets",
+    "side": 2,
+    "rulesVersion": "probable-waffle-rules-v1"
+  },
+  "recipe": {
+    "mapLabel": "Ember Enclave",
+    "aiPlayerNumber": 2,
+    "simulationTimeScale": 100,
+    "checkpointTicks": [20, 400, 900, 1600, 3000],
+    "variants": [
+      {
+        "id": "tivara-no-worker-opening",
+        "seed": 759081,
+        "mapLabel": "Ember Enclave",
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal"
+      },
+      {
+        "id": "skaduwee-opening",
+        "seed": 759082,
+        "mapLabel": "River Crossing",
+        "aiFaction": "Skaduwee",
+        "humanFaction": "Tivara",
+        "difficulty": "Normal"
+      }
+    ]
+  },
+  "assertions": {
+    "ECO-08": {
+      "minimumDecisions": 20,
+      "minimumAppliedCommands": 4,
+      "requiredOpeningSteps": [
+        "step:opening:bootstrap-worker",
+        "step:opening:supply-safety",
+        "step:opening:first-producer",
+        "step:opening:sustainable-food"
+      ],
+      "requireNoInitialWorker": true,
+      "requireDeliveredIncome": true,
+      "requiredAiFactions": ["Tivara", "Skaduwee"]
+    }
+  },
+  "deliberatelyBrokenOracle": "require_initial_worker_before_the_first_production_can_complete"
+}

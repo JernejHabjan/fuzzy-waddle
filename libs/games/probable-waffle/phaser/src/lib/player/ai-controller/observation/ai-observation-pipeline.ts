@@ -55,7 +55,7 @@ import { MovementTerrainType } from "@fuzzy-waddle/probable-waffle-gameplay/enti
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
-import { getSceneService } from "../../../world/services/scene-component-helpers";
+import { getSceneComponent, getSceneService } from "../../../world/services/scene-component-helpers";
 import { TilemapComponent } from "../../../world/tilemap/tilemap.component";
 import { IsoHelper } from "../../../world/tilemap/iso-helper";
 import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
@@ -362,7 +362,8 @@ export class AiObservationPipeline {
   ): AiObservedActorV1 {
     const level = getResearchedLevelForActor(actor) ?? 1;
     const definition = getPwActorDefinition(actor.name, level);
-    const position = getGameObjectLogicalTransform(actor);
+    const worldPosition = getGameObjectLogicalTransform(actor);
+    const tilePosition = getGameObjectCurrentTile(actor);
     const queue = getActorComponent(actor, QueueComponent);
     const source = getActorComponent(actor, ResourceSourceComponent);
     const drain = getActorComponent(actor, ResourceDrainComponent);
@@ -373,7 +374,9 @@ export class AiObservationPipeline {
     const statusEffects = getActorComponent(actor, StatusEffectComponent);
     const constructionSite = getActorComponent(actor, ConstructionSiteComponent);
     const capabilities = this.projectActorCapabilities(actor.name as ObjectNames, definition, level);
-    const logicalPosition = position ? knownValue({ ...position }, tick) : unknownValue("not_observed");
+    const logicalPosition = tilePosition
+      ? knownValue({ x: tilePosition.x, y: tilePosition.y, z: worldPosition?.z ?? 0 }, tick)
+      : unknownValue("not_observed");
     const accessNode = this.accessGraphAdapter.resolveNodeId(
       getGameObjectCurrentTile(actor),
       capabilities.flatMap((capability) => capability.domains).filter(uniqueDomain)
@@ -430,7 +433,15 @@ export class AiObservationPipeline {
               {
                 capacity: queue.queueDefinition.queueCount * queue.queueDefinition.capacityPerQueue,
                 occupied: queue.allItems.length,
-                itemIds: queue.allItems.map((item, index) => `${actorId}:${index}:${item.type}`).sort()
+                itemIds: queue.allItems.map((item, index) => `${actorId}:${index}:${item.type}`).sort(),
+                items: queue.allItems
+                  .map((item, index) => ({
+                    itemId: `${actorId}:${index}:${item.type}`,
+                    kind: item.productionData ? ("production" as const) : ("research" as const),
+                    objectName: item.productionData?.actorName ?? null,
+                    researchType: item.researchData ?? null
+                  }))
+                  .sort((left, right) => left.itemId.localeCompare(right.itemId))
               },
               tick
             )
@@ -688,7 +699,7 @@ export class AiObservationPipeline {
         footprintRadiusTiles: Math.floor(
           ((definition.components?.representable?.width ?? 0) *
             (definition.components?.collider?.colliderFactorReduction || 1)) /
-            (getSceneService(this.scene, TilemapComponent)?.tilemap?.tileWidth ?? TilemapComponent.tileWidth) /
+            (getSceneComponent(this.scene, TilemapComponent)?.tilemap?.tileWidth ?? TilemapComponent.tileWidth) /
             2
         ),
         visionRange: definition.components?.vision?.range ?? null,
@@ -791,7 +802,7 @@ export class AiObservationPipeline {
       readonly navigableTileKeys: ReadonlySet<string>;
     }
   ): NonNullable<AiObservationV1["map"]> {
-    const tilemap = getSceneService(this.scene, TilemapComponent)?.tilemap;
+    const tilemap = getSceneComponent(this.scene, TilemapComponent)?.tilemap;
     const navigation = getSceneService(this.scene, NavigationService);
     const ownedNodes = actors
       .filter((actor) => actor.visibility === "owned" && actor.accessNodeId.status === "known")
@@ -895,7 +906,7 @@ export class AiObservationPipeline {
     readonly blockedTileKeys: ReadonlySet<string>;
     readonly navigableTileKeys: ReadonlySet<string>;
   } {
-    const tilemap = getSceneService(this.scene, TilemapComponent)?.tilemap;
+    const tilemap = getSceneComponent(this.scene, TilemapComponent)?.tilemap;
     const blockedTileKeys = new Set<string>();
     const navigableTileKeys = new Set<string>();
     const input = actors

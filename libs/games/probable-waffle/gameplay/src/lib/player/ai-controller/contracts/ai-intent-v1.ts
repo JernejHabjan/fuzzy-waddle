@@ -70,6 +70,12 @@ export type AiIntentV1 =
       readonly logicalPosition: Vector3Simple;
       readonly siteKey: string;
     })
+  | (AiIntentBaseV1 & {
+      /** Reassigns displaced builders to an already observed unfinished site. */
+      readonly kind: "resume_construct";
+      readonly actorIds: readonly ActorId[];
+      readonly targetActorId: ActorId;
+    })
   | (AiIntentBaseV1 & { readonly kind: "produce"; readonly producerId: ActorId; readonly objectName: ObjectNames })
   | (AiIntentBaseV1 & { readonly kind: "research"; readonly producerId: ActorId; readonly researchType: ResearchType })
   | (AiIntentBaseV1 & {

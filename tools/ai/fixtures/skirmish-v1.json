@@ -19,7 +19,13 @@
     { "id": "ECO-05", "stages": [7], "group": "economy", "fixture": null, "drivers": ["pure", "runtime"] },
     { "id": "ECO-06", "stages": [7, 12], "group": "economy", "fixture": null, "drivers": ["pure", "runtime"] },
     { "id": "ECO-07", "stages": [7], "group": "economy", "fixture": null, "drivers": ["pure", "runtime"] },
-    { "id": "ECO-08", "stages": [7], "group": "economy", "fixture": null, "drivers": ["pure", "runtime"] },
+    {
+      "id": "ECO-08",
+      "stages": [7],
+      "group": "economy",
+      "fixture": "stage-15-opening-runtime.json",
+      "drivers": ["pure", "runtime"]
+    },
     { "id": "PRO-01", "stages": [7], "group": "production", "fixture": null, "drivers": ["pure", "runtime"] },
     { "id": "PRO-02", "stages": [7], "group": "production", "fixture": null, "drivers": ["pure", "runtime"] },
     { "id": "PRO-03", "stages": [7], "group": "production", "fixture": null, "drivers": ["pure", "runtime"] },
@@ -390,7 +396,8 @@
       "id": "DBG-01",
       "stages": [5, 13],
       "group": "debug",
-      "fixture": "stage-5-bootstrap.json",
+      "fixture": null,
+      "authoredFixture": "stage-5-bootstrap.json",
       "drivers": ["pure", "runtime"]
     },
     { "id": "DBG-02", "stages": [6, 13], "group": "debug", "fixture": null, "drivers": ["pure"] },
@@ -398,21 +405,24 @@
       "id": "DBG-03",
       "stages": [5, 13],
       "group": "debug",
-      "fixture": "stage-5-bootstrap.json",
+      "fixture": null,
+      "authoredFixture": "stage-5-bootstrap.json",
       "drivers": ["pure", "runtime"]
     },
     {
       "id": "DBG-04",
       "stages": [5, 13],
       "group": "debug",
-      "fixture": "stage-5-bootstrap.json",
+      "fixture": null,
+      "authoredFixture": "stage-5-bootstrap.json",
       "drivers": ["pure", "runtime"]
     },
     {
       "id": "DBG-05",
       "stages": [2, 5, 13],
       "group": "debug",
-      "fixture": "stage-5-bootstrap.json",
+      "fixture": null,
+      "authoredFixture": "stage-5-bootstrap.json",
       "drivers": ["pure", "runtime"]
     },
     { "id": "DBG-06", "stages": [13, 15], "group": "debug", "fixture": null, "drivers": ["runtime"] }

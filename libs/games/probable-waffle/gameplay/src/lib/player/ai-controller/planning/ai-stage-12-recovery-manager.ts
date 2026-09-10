@@ -1,5 +1,5 @@
 import type { ActorId, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
-import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiBaseStateV1, AiBrainStateV1, AiRecoveryStateV1 } from "../contracts/ai-brain-state-v1";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import { aiDeadline } from "../contracts/ai-core-types";
@@ -176,13 +176,16 @@ export class AiStage12RecoveryManagerV1 implements AiProposalManagerV1 {
 
     // H5: a zero-delivery economy with legal sources receives one bounded reassignment. A worker
     // already in a transport stays owned by that plan, preventing rescue from stealing cargo.
-    const lowIncome = observation.resources.some(
-      (entry) => entry.deliveredIncomePerMinute.status === "known" && entry.deliveredIncomePerMinute.value <= 0
-    );
+    const knownIncome = observation.resources
+      .map((entry) => entry.deliveredIncomePerMinute)
+      .filter((entry) => entry.status === "known");
+    const lowIncome = knownIncome.length > 0 && knownIncome.reduce((total, entry) => total + entry.value, 0) <= 0;
     const source = sourceActors(observation)[0];
     const workers = self.filter(
       (actor) =>
-        isGatherer(actor, catalog) && (actor.containedInActorId === null || actor.containedInActorId === undefined)
+        isGatherer(actor, catalog) &&
+        (actor.containedInActorId === null || actor.containedInActorId === undefined) &&
+        (actor.activeOrder?.status !== "known" || actor.activeOrder.value?.orderType !== OrderType.Build)
     );
     if (lowIncome && source && workers.length > 0) {
       const key = `economy:source:${source.actorId}`;

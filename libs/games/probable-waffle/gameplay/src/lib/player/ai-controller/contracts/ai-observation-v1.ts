@@ -31,6 +31,13 @@ export interface AiObservedQueueV1 {
   readonly capacity: number;
   readonly occupied: number;
   readonly itemIds: readonly string[];
+  /** Typed owned queue contents. Optional only for captures made before Stage 15. */
+  readonly items?: readonly {
+    readonly itemId: string;
+    readonly kind: "production" | "research";
+    readonly objectName: ObjectNames | null;
+    readonly researchType: ResearchType | null;
+  }[];
 }
 
 /** Resource or growth state when the actor exposes that component. */

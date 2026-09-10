@@ -1,5 +1,6 @@
 {
   "schemaVersion": 1,
+  "evidenceKind": "authored",
   "scenarioIds": ["DBG-01", "DBG-03", "DBG-04", "DBG-05"],
   "purpose": "Exercise one deterministic decision capture and one command/save continuation boundary.",
   "driver": "both",

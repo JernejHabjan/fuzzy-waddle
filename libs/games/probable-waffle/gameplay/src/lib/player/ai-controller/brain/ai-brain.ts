@@ -234,10 +234,12 @@ export class PureAiBrainV1 implements AiBrainV1 {
     const projectedState = proposalBatches.reduce<AiBrainStateV1>((state, batch) => {
       const patch = batch.statePatch;
       if (!patch) return state;
-      const { transportAppend, squadUpdates, adaptation, adaptationDemands, ...replacePatch } = patch;
+      const { transportAppend, squadUpdates, adaptation, adaptationDemands, openingArchetypeId, ...replacePatch } =
+        patch;
       return {
         ...state,
         ...replacePatch,
+        ...(openingArchetypeId ? { opening: { ...state.opening, archetypeId: openingArchetypeId } } : {}),
         ...(adaptation || adaptationDemands
           ? {
               economyProduction: {

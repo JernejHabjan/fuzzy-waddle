@@ -1,4 +1,9 @@
-import { FactionType, ObjectNames, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  FactionType,
+  ObjectNames,
+  ProbableWaffleAiDifficulty,
+  ResourceType
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import type { AiObservedActorV1, AiObservationV1 } from "../contracts/ai-observation-v1";
@@ -157,6 +162,41 @@ describe("AiStage9SkirmishManagerV1", () => {
     expect(second.statePatch?.skirmish?.incidents[0]).toEqual(
       expect.objectContaining({ confidencePermille: 1000, hostileActorIds: ["enemy-1"] })
     );
+  });
+
+  it("keeps armed gatherers out of standing attack and scout squads", () => {
+    const workerCatalog: AiCapabilityCatalogV1 = {
+      ...catalog,
+      entries: [
+        ...catalog.entries,
+        {
+          ...catalog.entries[0]!,
+          capabilityId: "worker",
+          sourceObjectName: ObjectNames.TivaraWorker,
+          gathers: [ResourceType.Wood]
+        }
+      ]
+    };
+    const workerManager = new AiStage9SkirmishManagerV1(profile, () => workerCatalog);
+    const initial = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    });
+    const worker = { ...unit("worker", homeNode, 0), objectName: ObjectNames.TivaraWorker };
+    const enemy = {
+      ...unit("enemy", enemyNode, 1),
+      owner: 2,
+      relation: "enemy" as const,
+      visibility: "visible" as const
+    };
+    const proposal = workerManager.propose(observation(20, [worker, enemy]), initial);
+
+    expect(proposal.statePatch?.squads).toEqual([]);
+    expect(proposal.intents.some((intent) => "actorIds" in intent && intent.actorIds.includes("worker"))).toBe(false);
+    expect(proposal.reasons).toContain("combat:0");
   });
 
   it("launches a bounded smaller mission after an impossible full assembly wait", () => {

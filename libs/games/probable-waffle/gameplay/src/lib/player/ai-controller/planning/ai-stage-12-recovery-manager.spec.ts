@@ -1,6 +1,7 @@
 import {
   FactionType,
   ObjectNames,
+  OrderType,
   ProbableWaffleAiDifficulty,
   ResourceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
@@ -153,6 +154,48 @@ describe("AiStage12RecoveryManagerV1", () => {
     expect(next.statePatch?.recovery?.records[0]?.nextRetryTick).toBeGreaterThanOrEqual(
       100 + AI_STAGE_12_NO_PROGRESS_TICKS
     );
+  });
+
+  it("does not declare total economy failure when another resource has delivered income", () => {
+    const current = observation();
+    const proposal = manager.propose(
+      {
+        ...current,
+        resources: [
+          ...current.resources,
+          {
+            resourceType: ResourceType.Wood,
+            stockpile: 100,
+            reservedUnspent: 0,
+            obligationsDue: 0,
+            deliveredIncomePerMinute: { status: "known", value: 10, observedTick: current.tick }
+          }
+        ]
+      },
+      state()
+    );
+
+    expect(proposal.intents.some((intent) => intent.kind === "assign_gatherers")).toBe(false);
+    expect(proposal.reasons).toEqual(["recovery:watching"]);
+  });
+
+  it("does not interrupt an opening builder when recovering zero income", () => {
+    const current = observation().actors.map((entry) =>
+      entry.actorId === "worker-a"
+        ? {
+            ...entry,
+            activeOrder: {
+              status: "known" as const,
+              value: { orderType: OrderType.Build, targetActorId: "opening-site" },
+              observedTick: 100
+            }
+          }
+        : entry
+    );
+    const proposal = manager.propose({ ...observation(), actors: current }, state());
+    const reassignment = proposal.intents.find((intent) => intent.kind === "assign_gatherers");
+
+    expect(reassignment).toEqual(expect.objectContaining({ actorIds: ["worker-b"] }));
   });
 
   it("REC-03 prioritizes an observed blocker without targeting an unseen hostile ID", () => {

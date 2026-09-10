@@ -30,6 +30,8 @@ export interface AiManagerProposalV1 {
    */
   readonly statePatch?: Readonly<{
     opening?: AiOpeningStateV1;
+    /** Stage 14 may change only the opening archetype; Stage 7 remains the plan/progress owner. */
+    openingArchetypeId?: AiOpeningStateV1["archetypeId"];
     economyProduction?: AiEconomyProductionStateV1;
     /** Stage 14 replaces only its durable adaptation rationale after macro has projected the current ledger. */
     adaptation?: AiEconomyProductionStateV1["adaptation"];

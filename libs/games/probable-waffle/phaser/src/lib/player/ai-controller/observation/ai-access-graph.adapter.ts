@@ -10,7 +10,7 @@ import { MovementTerrainType } from "@fuzzy-waddle/probable-waffle-gameplay/enti
 import type { Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { TilemapComponent } from "../../../world/tilemap/tilemap.component";
-import { getSceneService } from "../../../world/services/scene-component-helpers";
+import { getSceneComponent, getSceneService } from "../../../world/services/scene-component-helpers";
 
 /**
  * Caches a pure region graph per navigation revision. Actor-to-region lookup stays
@@ -36,7 +36,7 @@ export class AiAccessGraphAdapter {
     }
   ): AiAccessGraphV1 | undefined {
     const navigation = getSceneService(this.scene, NavigationService);
-    const tilemap = getSceneService(this.scene, TilemapComponent)?.tilemap;
+    const tilemap = getSceneComponent(this.scene, TilemapComponent)?.tilemap;
     if (!navigation || !tilemap) return undefined;
     const revision = permittedTopology.revision;
     if (revision === this.cachedRevision && this.pendingRevision === -1 && this.cached) {

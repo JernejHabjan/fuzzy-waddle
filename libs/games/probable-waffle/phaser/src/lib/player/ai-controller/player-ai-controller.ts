@@ -83,7 +83,9 @@ export class PlayerAiController {
             this.playerAiControllerAgent?.getCommittedCapabilityCatalog()
           ),
           new AiStage12RecoveryManagerV1(() => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
-          new AiStage13TacticsManagerV1(this.profile),
+          new AiStage13TacticsManagerV1(this.profile, () =>
+            this.playerAiControllerAgent?.getCommittedCapabilityCatalog()
+          ),
           new AiStage14AdaptationManagerV1(this.profile, () =>
             this.playerAiControllerAgent?.getCommittedCapabilityCatalog()
           )
@@ -433,6 +435,22 @@ export class PlayerAiController {
             actorName: intent.objectName,
             tileVec3: intent.logicalPosition,
             siteKey: intent.siteKey
+          },
+          correlation
+        );
+        continue;
+      }
+      if (intent.kind === "resume_construct") {
+        const builders = actorIndex.getActorsByIds([...intent.actorIds]);
+        if (builders.length !== intent.actorIds.length || !actorIndex.getActorById(intent.targetActorId)) continue;
+        commandBus.dispatchAi(
+          {
+            type: "ACTOR_ACTION",
+            playerNumber: this.player.playerNumber,
+            actorIds: [...intent.actorIds],
+            orderType: OrderType.Build,
+            targetObjectIds: [intent.targetActorId],
+            queue: false
           },
           correlation
         );

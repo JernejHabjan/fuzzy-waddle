@@ -1,8 +1,14 @@
-import { FactionType, ObjectNames, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  FactionType,
+  ObjectNames,
+  ProbableWaffleAiDifficulty,
+  ResourceType
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { SpellType } from "../../../entity/components/combat/spell-type";
 import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
 import { aiDeadline } from "../contracts/ai-core-types";
 import type { AiBrainStateV1, AiSquadStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import type { AiDomainV1, AiObservedActorV1, AiObservationV1 } from "../contracts/ai-observation-v1";
 import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
 import { createStage2Observation, createStage2OwnedActor } from "../testing/ai-stage-2-test-fixtures";
@@ -200,6 +206,40 @@ describe("AiStage13TacticsManagerV1", () => {
       "missing_advanced_squad_update"
     );
     expect([assembled.state, rallied.state, advanced.state]).toEqual(["assemble", "rally", "advance"]);
+  });
+
+  it("releases an armed gatherer from a tactical squad instead of interrupting its economy work", () => {
+    const workerCatalog: AiCapabilityCatalogV1 = {
+      schemaVersion: 1,
+      generation: 1,
+      unsupported: [],
+      entries: [
+        {
+          capabilityId: "worker",
+          family: "worker",
+          sourceObjectName: ObjectNames.TivaraWorker,
+          effectiveLevel: 1,
+          movementDomains: ["ground"],
+          targetDomains: ["ground"],
+          produces: [],
+          constructs: [ObjectNames.Olival],
+          researches: [],
+          gathers: [ResourceType.Wood],
+          housingCapacity: null,
+          housingCost: 1,
+          cargoCapacity: null
+        }
+      ]
+    };
+    const workerManager = new AiStage13TacticsManagerV1(profile, () => workerCatalog);
+    const worker = { ...combatActor("worker", "self", 1), objectName: ObjectNames.TivaraWorker };
+    const current = fixtureState([squad("squad:attack", "attack", [worker.actorId])]);
+    const proposal = workerManager.propose(observation([worker]), current);
+
+    expect(proposal.statePatch?.squadUpdates?.[0]).toEqual(expect.objectContaining({ actorIds: [], state: "recover" }));
+    expect(proposal.intents.some((intent) => "actorIds" in intent && intent.actorIds.includes(worker.actorId))).toBe(
+      false
+    );
   });
 
   it("FIGHT-01 keeps a quiet defense in defend and regroups an uncertain engagement", () => {

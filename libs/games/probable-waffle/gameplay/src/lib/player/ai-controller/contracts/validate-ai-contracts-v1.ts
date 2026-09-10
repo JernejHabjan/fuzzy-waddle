@@ -377,6 +377,9 @@ export function assertAiObservationV1(observation: AiObservationV1): void {
       if (actor.queue.value.occupied > actor.queue.value.capacity) {
         throw new Error(`invalid_ai_queue_capacity:${actor.actorId}`);
       }
+      if (actor.queue.value.items && actor.queue.value.items.length !== actor.queue.value.occupied) {
+        throw new Error(`invalid_ai_queue_item_count:${actor.actorId}`);
+      }
     }
     if (actor.containerState?.status === "known") {
       const container = actor.containerState.value;

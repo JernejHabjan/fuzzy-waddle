@@ -1,6 +1,7 @@
 import type { ActorId, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { aiDeadline, type AiPlanId } from "../contracts/ai-core-types";
 import type { AiBrainStateV1, AiSquadStateV1, AiSupportStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import type { AiIntentV1 } from "../contracts/ai-intent-v1";
 import type { AiDomainV1, AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
 import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
@@ -32,6 +33,12 @@ function canTarget(attacker: AiObservedActorV1, target: AiObservedActorV1): bool
   const targetMovement = movementDomains(target);
   const attacks = attacker.combatProfile?.status === "known" ? attacker.combatProfile.value.attacks : [];
   return attacks.some((attack) => targetMovement.some((domain) => attack.targetDomains.includes(domain)));
+}
+
+function isEconomicActor(actor: AiObservedActorV1, catalog: AiCapabilityCatalogV1 | undefined): boolean {
+  return (
+    catalog?.entries.some((entry) => entry.sourceObjectName === actor.objectName && entry.gathers.length > 0) ?? false
+  );
 }
 
 function actorCombatStrength(actor: AiObservedActorV1, opponents: readonly AiObservedActorV1[]): number {
@@ -256,7 +263,7 @@ function intentBase(
   const planId = `plan:${squad.squadId}` as AiPlanId;
   return {
     intentId: `intent:stage13:${observation.generation}:${squad.squadId}:${suffix}` as AiIntentV1["intentId"],
-    effectId: `effect:stage13:${squad.squadId}:${suffix}` as AiIntentV1["effectId"],
+    effectId: `effect:stage13:${squad.squadId}:${suffix}:${observation.tick}` as AiIntentV1["effectId"],
     planId,
     demandId: null,
     lane: "army_threat",
@@ -412,9 +419,13 @@ function boundedTacticalIntents(intents: readonly AiIntentV1[], actorOrderLimit:
 export class AiStage13TacticsManagerV1 implements AiProposalManagerV1 {
   readonly managerId = "stagez13.tactics";
 
-  constructor(private readonly profile: AiProfileConfigV1) {}
+  constructor(
+    private readonly profile: AiProfileConfigV1,
+    private readonly getCatalog?: () => AiCapabilityCatalogV1 | undefined
+  ) {}
 
   propose(observation: AiObservationV1, state: AiBrainStateV1): AiManagerProposalV1 {
+    const catalog = this.getCatalog?.();
     const actorById = new Map(observation.actors.map((actor) => [actor.actorId, actor]));
     const transportOwned = new Set(
       state.transport
@@ -435,6 +446,7 @@ export class AiStage13TacticsManagerV1 implements AiProposalManagerV1 {
       .filter(
         (actor) => actor.relation === "self" && actor.containedInActorId == null && !transportOwned.has(actor.actorId)
       )
+      .filter((actor) => !isEconomicActor(actor, catalog))
       .filter((actor) => actor.combatProfile?.status === "known" && actor.combatProfile.value.attacks.length > 0)
       .filter((actor) => !assignedBeforeReinforcement.has(actor.actorId))
       .sort((left, right) => left.actorId.localeCompare(right.actorId));
@@ -484,7 +496,10 @@ export class AiStage13TacticsManagerV1 implements AiProposalManagerV1 {
         .map((actorId) => actorById.get(actorId))
         .filter(
           (actor): actor is AiObservedActorV1 =>
-            actor !== undefined && actor.relation === "self" && actor.containedInActorId == null
+            actor !== undefined &&
+            actor.relation === "self" &&
+            actor.containedInActorId == null &&
+            !isEconomicActor(actor, catalog)
         )
         .sort((left, right) => left.actorId.localeCompare(right.actorId));
       members.forEach((actor) => claimedActors.add(actor.actorId));
@@ -904,7 +919,7 @@ export class AiStage13TacticsManagerV1 implements AiProposalManagerV1 {
         if (usefulCapacity <= 0) continue;
         const planId = `support:heal:${healer.actorId}` as AiSupportStateV1["planId"];
         if (!support.some((plan) => plan.planId === planId)) {
-          const effectId = `effect:stage13:${squad.squadId}:heal:${healer.actorId}:${target.actorId}`;
+          const effectId = `effect:stage13:${squad.squadId}:heal:${healer.actorId}:${target.actorId}:${observation.tick}`;
           support.push({
             planId,
             actorIds: [healer.actorId],
@@ -978,7 +993,7 @@ export class AiStage13TacticsManagerV1 implements AiProposalManagerV1 {
         if (usefulCapacity <= 0) continue;
         const planId = `support:spell:${healer.actorId}:${spell.spellType}` as AiSupportStateV1["planId"];
         if (support.some((plan) => plan.planId === planId)) continue;
-        const effectId = `effect:stage13:${squad.squadId}:spell:${healer.actorId}:${spell.spellType}:${target.actorId}`;
+        const effectId = `effect:stage13:${squad.squadId}:spell:${healer.actorId}:${spell.spellType}:${target.actorId}:${observation.tick}`;
         support.push({
           planId,
           actorIds: [healer.actorId],

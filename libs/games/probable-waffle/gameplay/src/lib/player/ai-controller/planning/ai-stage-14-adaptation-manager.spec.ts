@@ -270,7 +270,7 @@ describe("AiStage14AdaptationManagerV1", () => {
       archetypeId: "opening:1:naval"
     });
     const fallback = manager.propose(observation(100, [main]), naval);
-    expect(fallback.statePatch?.opening?.archetypeId).toBe(`opening:${FactionType.Tivara}:balanced`);
+    expect(fallback.statePatch?.openingArchetypeId).toBe(`opening:${FactionType.Tivara}:balanced`);
     const balanced = createAiBrainStateV1({
       playerNumber: 1,
       faction: FactionType.Tivara,
@@ -278,6 +278,6 @@ describe("AiStage14AdaptationManagerV1", () => {
       tick: 0,
       archetypeId: "opening:1:balanced"
     });
-    expect(manager.propose(observation(100, [main]), balanced).statePatch?.opening).toBeUndefined();
+    expect(manager.propose(observation(100, [main]), balanced).statePatch?.openingArchetypeId).toBeUndefined();
   });
 });

@@ -1,5 +1,5 @@
 import type { ActorId, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
-import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { ObjectNames, OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type {
   AiBrainStateV1,
   AiFortificationNodeStateV1,
@@ -812,6 +812,9 @@ export class AiStage11FortificationManagerV1 implements AiProposalManagerV1 {
       const entry = constructionEntry(catalog, objectName);
       const builder = observation.actors
         .filter((actor) => actor.relation === "self" && actor.visibility === "owned")
+        .filter(
+          (actor) => actor.activeOrder?.status !== "known" || actor.activeOrder.value?.orderType !== OrderType.Build
+        )
         .find((actor) =>
           catalog.entries.some(
             (candidate) => candidate.sourceObjectName === actor.objectName && candidate.constructs.includes(objectName)

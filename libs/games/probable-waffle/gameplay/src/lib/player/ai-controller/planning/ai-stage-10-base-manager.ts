@@ -1,4 +1,5 @@
 import type { ActorId, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
+import { OrderType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiBaseStateV1, AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
@@ -161,8 +162,10 @@ export class AiStage10BaseManagerV1 implements AiProposalManagerV1 {
         total + (entry.deliveredIncomePerMinute.status === "known" ? entry.deliveredIncomePerMinute.value : 0),
       0
     );
-    const expansionTrigger =
-      localResourceValue === 0
+    const openingComplete = state.opening.plan.lifecycle === "completed";
+    const expansionTrigger = !openingComplete
+      ? null
+      : localResourceValue === 0
         ? "resource_life"
         : deliveredIncome === 0 && observation.tick >= AI_STAGE_10_EXPANSION_SATURATION_TICKS
           ? "worker_capacity"
@@ -208,11 +211,15 @@ export class AiStage10BaseManagerV1 implements AiProposalManagerV1 {
     const macroOpening = state.opening.archetypeId.endsWith(":macro");
     const mainObject = anchors[0]?.objectName;
     const builder = mainObject
-      ? owned.find((actor) =>
-          catalog.entries.some(
-            (entry) => entry.sourceObjectName === actor.objectName && entry.constructs.includes(mainObject)
+      ? owned
+          .filter(
+            (actor) => actor.activeOrder?.status !== "known" || actor.activeOrder.value?.orderType !== OrderType.Build
           )
-        )
+          .find((actor) =>
+            catalog.entries.some(
+              (entry) => entry.sourceObjectName === actor.objectName && entry.constructs.includes(mainObject)
+            )
+          )
       : undefined;
     if (expansion && builder && expansion.anchorPosition) {
       // Main-building construction capability is definition-derived. If the faction has no legal

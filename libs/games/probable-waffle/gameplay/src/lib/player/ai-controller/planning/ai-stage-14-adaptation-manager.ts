@@ -428,7 +428,7 @@ export class AiStage14AdaptationManagerV1 implements AiProposalManagerV1 {
         fallback?.reason ?? `archetype:${state.opening.archetypeId}`
       ],
       statePatch: {
-        ...(fallback ? { opening: { ...state.opening, archetypeId: fallback.id } } : {}),
+        ...(fallback ? { openingArchetypeId: fallback.id } : {}),
         adaptationDemands,
         adaptation: {
           evidence,

@@ -95,6 +95,84 @@ describe("AiStage7MacroManagerV1", () => {
     ).toBe(6);
   });
 
+  it("does not regress the opening workforce checkpoint after later bases appear", () => {
+    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
+    const initial = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    });
+    const state = {
+      ...initial,
+      bases: Array.from({ length: 3 }, (_, index) => ({
+        baseId: `base:${index}`,
+        anchorActorId: `base-actor-${index}`,
+        memberActorIds: [],
+        active: true,
+        lifecycle: "active" as const
+      }))
+    };
+    const workers = Array.from({ length: 6 }, (_, index) => createStage2OwnedActor(`worker-${index}`));
+    const proposal = new AiStage7MacroManagerV1(() => catalog).propose(
+      { ...createStage2Observation(), actors: workers },
+      state
+    );
+
+    expect(
+      proposal.statePatch?.economyProduction?.demands.find((demand) => demand.purpose === "bootstrap_worker")
+    ).toMatchObject({ desired: 6, satisfiedActorIds: expect.arrayContaining(workers.map((worker) => worker.actorId)) });
+    expect(
+      proposal.statePatch?.opening?.plan.steps.find((step) => step.stepId === "step:opening:bootstrap-worker")?.state
+    ).toBe("completed");
+  });
+
+  it("counts typed queued workers before requesting more production", () => {
+    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    });
+    const workers = Array.from({ length: 5 }, (_, index) => createStage2OwnedActor(`worker-${index}`));
+    const main = {
+      ...createStage2OwnedActor("main"),
+      objectName: ObjectNames.Sandhold,
+      queue: {
+        status: "known" as const,
+        value: {
+          capacity: 5,
+          occupied: 1,
+          itemIds: ["main:0:Production"],
+          items: [
+            {
+              itemId: "main:0:Production",
+              kind: "production" as const,
+              objectName: ObjectNames.TivaraWorker,
+              researchType: null
+            }
+          ]
+        },
+        observedTick: 20
+      }
+    };
+    const proposal = new AiStage7MacroManagerV1(() => catalog).propose(
+      { ...createStage2Observation(), actors: [...workers, main] },
+      state
+    );
+    const demand = proposal.statePatch?.economyProduction?.demands.find(
+      (candidate) => candidate.purpose === "bootstrap_worker"
+    );
+
+    expect(demand?.queuedIds).toEqual(["main:0:Production"]);
+    expect(
+      proposal.intents.some((intent) => intent.kind === "produce" && intent.objectName === ObjectNames.TivaraWorker)
+    ).toBe(false);
+  });
+
   it("assigns idle workers to the scarcest visible resource without reordering active workers", () => {
     const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
     const state = createAiBrainStateV1({
@@ -170,10 +248,13 @@ describe("AiStage7MacroManagerV1", () => {
     };
     const observation = {
       ...createStage2Observation(),
-      actors: Array.from({ length: 6 }, (_, index) => ({
-        ...createStage2OwnedActor(`worker-variant-${index}`),
-        objectName: ObjectNames.TivaraWorkerFemale
-      }))
+      actors: [
+        ...Array.from({ length: 6 }, (_, index) => ({
+          ...createStage2OwnedActor(`worker-variant-${index}`),
+          objectName: ObjectNames.TivaraWorkerFemale
+        })),
+        { ...createStage2OwnedActor("main"), objectName: ObjectNames.Sandhold }
+      ]
     };
 
     const proposal = new AiStage7MacroManagerV1(() => variantCatalog).propose(observation, state);
@@ -253,5 +334,185 @@ describe("AiStage7MacroManagerV1", () => {
 
     expect(constructionPositions.length).toBeGreaterThan(0);
     expect(constructionPositions.every((position) => cells.some((cell) => cell.position === position))).toBe(true);
+  });
+
+  it("executes the opening in order and gives one builder only one construction commitment", () => {
+    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    });
+    const workers = Array.from({ length: 6 }, (_, index) => createStage2OwnedActor(`worker-${index}`));
+    const cells = [
+      {
+        tileKey: "8,8",
+        position: { x: 8, y: 8, z: 0 },
+        groundPassable: true,
+        waterPassable: false,
+        elevation: 0,
+        observedBlocked: false
+      }
+    ];
+    const manager = new AiStage7MacroManagerV1(() => catalog);
+    const supply = manager.propose(
+      {
+        ...createStage2Observation(),
+        actors: workers,
+        map: { ...createStage2Observation().map!, constructionCells: cells }
+      },
+      state
+    );
+    const supplyConstructs = supply.intents.filter((intent) => intent.kind === "construct");
+
+    expect(supplyConstructs).toHaveLength(1);
+    expect(supplyConstructs[0]).toEqual(
+      expect.objectContaining({
+        objectName: ObjectNames.Olival,
+        claims: expect.arrayContaining([expect.objectContaining({ kind: "actor", actorId: "worker-0" })])
+      })
+    );
+
+    const openingAfterSupply = supply.statePatch?.opening;
+    expect(openingAfterSupply).toBeDefined();
+    const house = {
+      ...createStage2OwnedActor("house"),
+      objectName: ObjectNames.Olival,
+      housingCapacity: { status: "known" as const, value: 8, observedTick: 40 }
+    };
+    const producer = manager.propose(
+      {
+        ...createStage2Observation(),
+        tick: 40,
+        actors: [...workers, house],
+        map: { ...createStage2Observation().map!, constructionCells: cells }
+      },
+      { ...state, opening: openingAfterSupply! }
+    );
+
+    expect(producer.intents.filter((intent) => intent.kind === "construct").map((intent) => intent.objectName)).toEqual(
+      [ObjectNames.AnkGuard]
+    );
+    expect(
+      producer.statePatch?.opening?.plan.steps.find((step) => step.stepId === "step:opening:supply-safety")
+        ?.completedTick
+    ).toBe(40);
+  });
+
+  it("waits for an actively staffed construction site instead of issuing duplicate buildings", () => {
+    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    });
+    const workers = Array.from({ length: 6 }, (_, index) => createStage2OwnedActor(`worker-${index}`));
+    const constructionSite = {
+      ...createStage2OwnedActor("olival-site"),
+      objectName: ObjectNames.Olival,
+      constructionProgress: { status: "known" as const, value: 50, observedTick: 20 }
+    };
+    const assignedWorkers = workers.map((worker, index) =>
+      index === 0
+        ? {
+            ...worker,
+            activeOrder: {
+              status: "known" as const,
+              value: { orderType: OrderType.Build, targetActorId: constructionSite.actorId },
+              observedTick: 20
+            }
+          }
+        : worker
+    );
+    const proposal = new AiStage7MacroManagerV1(() => catalog).propose(
+      { ...createStage2Observation(), actors: [...assignedWorkers, constructionSite] },
+      state
+    );
+
+    expect(proposal.intents.some((intent) => intent.kind === "construct")).toBe(false);
+    expect(proposal.intents.some((intent) => intent.kind === "resume_construct")).toBe(false);
+    expect(
+      proposal.statePatch?.economyProduction?.demands.find((demand) => demand.purpose === "supply_buffer")
+        ?.constructingIds
+    ).toEqual(["olival-site"]);
+  });
+
+  it("resumes an observed construction site after its builder is displaced", () => {
+    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    });
+    const workers = Array.from({ length: 6 }, (_, index) => ({
+      ...createStage2OwnedActor(`worker-${index}`),
+      activeOrder: { status: "known" as const, value: null, observedTick: 20 }
+    }));
+    const constructionSite = {
+      ...createStage2OwnedActor("olival-site"),
+      objectName: ObjectNames.Olival,
+      constructionProgress: { status: "known" as const, value: 54, observedTick: 20 }
+    };
+    const proposal = new AiStage7MacroManagerV1(() => catalog).propose(
+      { ...createStage2Observation(), actors: [...workers, constructionSite] },
+      state
+    );
+    const resume = proposal.intents.find((intent) => intent.kind === "resume_construct");
+
+    expect(resume).toMatchObject({ targetActorId: "olival-site", actorIds: ["worker-0"] });
+    expect(proposal.intents.some((intent) => intent.kind === "construct")).toBe(false);
+    expect(
+      proposal.intents.some((intent) => intent.kind === "assign_gatherers" && intent.actorIds.includes("worker-0"))
+    ).toBe(false);
+  });
+
+  it("does not reassign a worker that is already constructing", () => {
+    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    });
+    const workers = Array.from({ length: 6 }, (_, index) => ({
+      ...createStage2OwnedActor(`worker-${index}`),
+      ...(index === 0
+        ? {
+            activeOrder: {
+              status: "known" as const,
+              value: { orderType: OrderType.Build, targetActorId: "existing-site" },
+              observedTick: 20
+            }
+          }
+        : {})
+    }));
+    const cells = [
+      {
+        tileKey: "8,8",
+        position: { x: 8, y: 8, z: 0 },
+        groundPassable: true,
+        waterPassable: false,
+        elevation: 0,
+        observedBlocked: false
+      }
+    ];
+    const proposal = new AiStage7MacroManagerV1(() => catalog).propose(
+      {
+        ...createStage2Observation(),
+        actors: workers,
+        map: { ...createStage2Observation().map!, constructionCells: cells }
+      },
+      state
+    );
+    const construct = proposal.intents.find((intent) => intent.kind === "construct");
+
+    expect(construct).toEqual(expect.objectContaining({ builderIds: ["worker-1"] }));
   });
 });

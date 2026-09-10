@@ -50,7 +50,7 @@ function canTarget(attacker: AiObservedActorV1, target: AiObservedActorV1): bool
   return domains(target).some((domain) => supported.has(domain));
 }
 
-function ownedCombat(observation: AiObservationV1): AiObservedActorV1[] {
+function ownedCombat(observation: AiObservationV1, catalog: AiCapabilityCatalogV1): AiObservedActorV1[] {
   return observation.actors
     .filter(
       (actor) =>
@@ -59,6 +59,10 @@ function ownedCombat(observation: AiObservationV1): AiObservedActorV1[] {
         (actor.containedInActorId === undefined || actor.containedInActorId === null)
     )
     .filter(canFight)
+    .filter(
+      (actor) =>
+        !catalog.entries.some((entry) => entry.sourceObjectName === actor.objectName && entry.gathers.length > 0)
+    )
     .sort((left, right) => left.actorId.localeCompare(right.actorId));
 }
 
@@ -219,7 +223,7 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
       };
     }
 
-    const combat = ownedCombat(observation);
+    const combat = ownedCombat(observation, catalog);
     const visibleEnemies = hostileContacts(observation).filter((actor) => actor.visibility === "visible");
     const rememberedEnemies = hostileContacts(observation).filter((actor) => actor.visibility === "last_seen");
     const home = homePosition(observation);

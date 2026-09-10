@@ -63,6 +63,13 @@ function observation(tick: number, actors: readonly AiObservedActorV1[], deliver
   };
 }
 
+function withCompletedOpening(state: ReturnType<typeof createAiBrainStateV1>) {
+  return {
+    ...state,
+    opening: { ...state.opening, plan: { ...state.opening.plan, lifecycle: "completed" as const } }
+  };
+}
+
 describe("AiStage10BaseManagerV1", () => {
   const manager = new AiStage10BaseManagerV1(profile, () => catalog);
 
@@ -112,6 +119,7 @@ describe("AiStage10BaseManagerV1", () => {
         observedTick: AI_STAGE_10_EXPANSION_SATURATION_TICKS
       }
     } satisfies AiObservedActorV1;
+    const completedState = withCompletedOpening(state);
     const first = manager.propose(
       observation(
         AI_STAGE_10_EXPANSION_SATURATION_TICKS,
@@ -122,7 +130,7 @@ describe("AiStage10BaseManagerV1", () => {
         ],
         0
       ),
-      state
+      completedState
     );
     const second = manager.propose(
       observation(
@@ -134,10 +142,48 @@ describe("AiStage10BaseManagerV1", () => {
         ],
         0
       ),
-      { ...state, bases: first.statePatch!.bases! }
+      { ...completedState, bases: first.statePatch!.bases! }
     );
 
     expect(first.statePatch?.bases?.filter((base) => base.baseId.startsWith("base:expansion:"))).toHaveLength(1);
     expect(second.statePatch?.bases?.filter((base) => base.baseId.startsWith("base:expansion:"))).toHaveLength(1);
+  });
+
+  it("defers expansion until the committed opening is complete", () => {
+    const state = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    });
+    const remote = {
+      ...actor("wood-remote", ObjectNames.Tree1, 50),
+      owner: null,
+      relation: "neutral" as const,
+      visibility: "visible" as const,
+      resourceState: {
+        status: "known" as const,
+        value: {
+          resourceType: ResourceType.Wood,
+          available: { status: "known" as const, value: 200, observedTick: 900 },
+          carried: { status: "unknown" as const, reason: "not_supported" as const },
+          growthReadyTick: { status: "unknown" as const, reason: "not_supported" as const },
+          serviceCapacity: { status: "known" as const, value: 4, observedTick: 900 }
+        },
+        observedTick: 900
+      }
+    } satisfies AiObservedActorV1;
+    const proposal = manager.propose(
+      observation(
+        900,
+        [actor("sandhold", ObjectNames.Sandhold, 4, true), actor("worker", ObjectNames.TivaraWorker, 5), remote],
+        0
+      ),
+      state
+    );
+
+    expect(proposal.statePatch?.bases?.some((base) => base.baseId.startsWith("base:expansion:"))).toBe(false);
+    expect(proposal.intents.some((intent) => intent.kind === "construct")).toBe(false);
   });
 });
