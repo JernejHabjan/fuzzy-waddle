@@ -1,12 +1,12 @@
-# Cross-stage hardening — progress, safety and integration contracts
+# Progress, safety and integration oracles
 
-This packet is mandatory implementation scope, not optional polish and not a new stage. It strengthens [shared decisions](01-shared-decisions.md) and every Stage 0–15 acceptance list. Where earlier wording permits a blocked reason without a bounded recovery obligation, or strict priority without service guarantees, this packet is authoritative. Keep the model/effort assigned to the owning stage.
+These are mandatory behavioral contracts, not optional polish. They strengthen [contracts and tuning](../architecture/contracts-and-tuning.md). Where another description permits a blocker without bounded recovery, or strict priority without service guarantees, this document is authoritative.
 
 Goal: the AI must turn decisions into delivered income, usable forces, completed missions and recoveries. A valid-looking trace, busy units, many commands or an expanding queue do not prove useful play. Safety means no illegal effects; progress means useful feasible work eventually executes. A safe but permanently idle AI fails.
 
 ## H1 — progress is a measured contract
 
-Add typed `AiProgressContract`, `AiBlocker`, `AiProgressEvidence` and `AiRecoveryEpisode` to the Stage 2 contracts. Reuse existing plan IDs and tick types. Every active goal/child plan/order has:
+Typed `AiProgressContract`, `AiBlocker`, `AiProgressEvidence` and `AiRecoveryEpisode` reuse existing plan IDs and tick types. Every active goal/child plan/order has:
 
 - owner and parent; stable causal failure key; state and entered tick;
 - independent progress measurement, prior/best value, last meaningful progress tick;
@@ -50,7 +50,7 @@ Bound prerequisite expansion depth and candidate count. A definition cycle, unav
 
 ## H3 — uncertain commands and host changes have one answer
 
-Extend Stage 3's shared command/outcome protocol, not an AI-only side channel. Use match/authority epoch, player, monotonic sequence and stable effect/correlation identity with explicit compatibility rules. Reuse existing IDs where they already guarantee these properties.
+Use the shared command/outcome protocol, not an AI-only side channel. Use match/authority epoch, player, monotonic sequence and stable effect/correlation identity with explicit compatibility rules. Reuse existing IDs where they already guarantee these properties.
 
 1. Sent is not applied; applied is not completed. Store the lifecycle and link it to queue/site/actor/service state.
 2. If a receipt/outcome is absent for two decision intervals, schedule bounded authoritative reconciliation through the existing command/application/state-recovery seam. Do not generate a new effect ID.
@@ -134,29 +134,6 @@ Economic placement: reserve corridors with actual clearance and destinations. Re
 - Debug shows last **useful** progress, due milestone, blocker age, dependency/cycle, service starvation, reserved exposure, command uncertainty and mission outcome. Differentiate waiting legitimately, recovering, failed optional goal, technical fault and strategic defeat.
 - Keep bounded data/history per player and scenario; reports/logs must not reveal hidden current enemy state to ordinary players. Debug export and detailed world diagnostics remain authorized developer/host tooling.
 
-## Stage allocation and focused gates
+## Ownership and focused gates
 
-Under the latest runbook policy, “focused evidence before advancing” below means the owning stage must author the named fixture/oracle and record it as `authored_not_run`. Stage 15 executes every focused and integrated gate. Stages 3–14 close as `implemented_unvalidated` after manual audits, commit, and verified push.
-
-These additions extend existing stages, not postpone core recovery to Stage 12:
-
-| Stage | Required hardening increment                                          | Focused evidence before advancing                                                        |
-| ----- | --------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| 0     | Preserve planner prerequisite and pinned source provenance            | Existing accessibility/permutation regressions                                           |
-| 1     | Real success predicates, invalid-capability reasons                   | Polarity, housing, no-op and reason tests                                                |
-| 2     | Typed H1–H4 contracts, invariant guards, units/defaults               | Serialization/migration, numeric guards, dependency identity                             |
-| 3     | H3 applied-once reconciliation/epoch fencing                          | Lost/late/duplicate outcomes, stale host, applied-versus-completed                       |
-| 4     | H7 generation/query isolation and fair evidence                       | Delayed query/local defense, invalidation storm, hidden-world equivalence                |
-| 5     | Real-runtime driver, progress/oracle assertions and restart artifacts | One real-world bootstrap/command/save replay plus deliberately failing oracle controls   |
-| 6     | H1/H2/H4 supervisor, wait cycles, lane fairness and basic recovery    | Starvation, atomic grants, false progress, lease versus uncertain command                |
-| 7     | H5 economy and dated military capacity                                | Both-faction opening/income/supply smoke, circular bootstrap and idle producer recovery  |
-| 8     | H7/H8 journey progress/cleanup                                        | Actual boat trip and failed landing/boarding recovery                                    |
-| 9     | H6 initial mission lifecycle and strategic supervisor                 | First complete supported land match; attack continuation and minor-raid/main-front smoke |
-| 10    | Clearance, multi-base exposure and economic fallback                  | Spawn/corridor blockage, useful duplicate deposits, safe expansion                       |
-| 11    | Actual wall defensive effect and bounded cumulative budget            | Hostile route through opening, stairs/post access, prefix-budget bypass                  |
-| 12    | Complete causal recovery across all domains                           | Cascaded losses and unchanged blocker/deadline evasion                                   |
-| 13    | H6 mission completion, loss limits and reinforcement safety           | Retreat/relaunch oscillation, stragglers, local-versus-global strength                   |
-| 14    | Counter evidence stability, adapted commitments and full integration  | Stale-tech overreaction, reservation release, same-app second match                      |
-| 15    | Complete fault/longitudinal/stress/holdout coverage                   | All packets, full review/builds, evidence-based closure                                  |
-
-Use the existing source/destination map: pure contracts/reducers and assertion helpers belong in gameplay AI; authority, path/actor adapters and actual outcomes belong in shared protocol/server/Phaser ownership seams. Do not implement a second global scheduler or simulation engine solely for hardening. Every H-section needs a named implementation owner, debug field, persistence policy, focused test ID and final runtime case in the coverage ledger.
+Pure contracts/reducers and assertion helpers belong in gameplay AI. Authority, path/actor adapters and actual outcomes belong in shared protocol/server/Phaser seams. Do not implement a second global scheduler or simulation engine solely for hardening. Every H-section needs a named responsibility owner, debug field, persistence policy, focused test ID and real runtime case in the coverage manifest.

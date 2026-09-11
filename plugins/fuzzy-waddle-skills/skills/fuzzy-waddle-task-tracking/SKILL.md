@@ -12,6 +12,7 @@ description: Write or maintain requested Fuzzy Waddle plans and cold-start progr
 - Each stage names dependencies, existing source anchors versus new destinations, contracts/consumers, debug/save/cleanup duties where relevant, numbered acceptance, checks and out-of-scope work.
 - Record the latest explicit user policy in one authoritative runbook. When it changes, reconcile kickoff prompts, stage endings, progress and overviews; an isolated “supersedes” note is insufficient.
 - Define execution granularity separately from verification timing: one stage versus continuous work, focused versus final checks, and publication authority. Do not impose one task's schedule on unrelated issues.
+- Treat stage and phase labels as execution-only vocabulary. Do not carry them into production filenames, symbols, persisted identifiers or durable product-doc titles; use stable responsibilities and record historical sequencing only in the task handoff/Git history.
 - When requested, record recommended model/effort per stage and actual model/effort in progress. Recommendations are not automatic model switching or task creation.
 - For a stop/review/commit/push stage boundary, read [stage delivery](../fuzzy-waddle-stage-delivery/SKILL.md). Use its requirement-to-evidence closure record rather than another unchecked checklist.
 

@@ -1,6 +1,6 @@
 # Shared implementation decisions
 
-Read after [the runbook](00-start-here.md), together with mandatory [progress and hardening contracts](09-progress-and-hardening.md). These defaults close design choices for all stages. Numbers are initial authored tuning values, not measured optimal balance; Stage 15 evaluates and tunes them with recorded evidence. Preserve actual game costs, damage, capacity, and faction rules from definitions.
+These are the shared implementation defaults for the controller. Read them with the [decision cycle](decision-cycle.md) and [progress/recovery oracles](../testing/progress-and-recovery-oracles.md). Numbers are initial authored tuning values, not measured optimal balance; calibration must evaluate them with recorded evidence. Preserve actual game costs, damage, capacity and faction rules from definitions.
 
 ## Source and destination map
 
@@ -64,9 +64,9 @@ Failure retry defaults: 40, 80, 160, then 320 ticks for equivalent failed candid
 
 ## Initial profiles and budgets
 
-The [difficulty specification](11-classic-rts-and-difficulty.md#d--difficulty-already-exists-make-it-real-and-testable) owns exact behavioral differences, offensive mission caps, composition cooldowns and calibration. Keep its versioned profile connected to lobby, host, save/replay and results. Intentional errors stay off in initial delivery; a future opt-in policy is separate. Contact memory remains identical across profiles. Do not use historical research-table suggestions to override these defaults.
+The [difficulty specification](../testing/classic-rts-and-difficulty-scenarios.md#d--difficulty-already-exists-make-it-real-and-testable) owns exact behavioral differences, offensive mission caps, composition cooldowns and calibration. Keep its versioned profile connected to lobby, host, save/replay and results. Intentional errors stay off in initial delivery; a future opt-in policy is separate. Contact memory remains identical across profiles.
 
-Stage 7 derives total army demand and dated economic obligations using [C1/C2](11-classic-rts-and-difficulty.md#c2--desired-army-size-and-spending-have-a-source) before assigning role shares. Stage 2 includes [reproduction manifests and diagnostic completeness](12-debug-workbench.md); these cannot be retrofitted as untyped live-world debug queries.
+The macro manager derives total army demand and dated economic obligations using [C1/C2](../testing/classic-rts-and-difficulty-scenarios.md#c2--desired-army-size-and-spending-have-a-source) before assigning role shares. Reproduction manifests and diagnostic completeness are typed contracts; they cannot be retrofitted as untyped live-world debug queries.
 
 | Setting                                | Easy | Normal | Hard |
 | -------------------------------------- | ---- | ------ | ---- |
@@ -88,7 +88,7 @@ Reaction delays and budgets differ; visibility and game rules do not. Intentiona
 
 Expose owned state fully, visible permitted hostile/ally state, known map terrain according to the mode's human information policy, and separate last-seen hypotheses. Unknown map cells are unknown; initial access components must not leak hidden dynamic blockers. Reuse static terrain knowledge only if humans receive it. Confirm passability at application. Attack feasibility means a reachable firing position with a compatible weapon and range, not necessarily reaching the target's occupied tile: shore fire and attacks between elevations remain legal where runtime allows them.
 
-Observation filters are not authorization. Server validates envelope/version, player/host rights, cardinality, ID syntax, finite bounded coordinates, and allowed action kinds; runtime validates ownership, visibility/target policy, costs, prerequisites, collision/topology, capacities, cooldowns, and current target/effect eligibility. Preserve supported human queue/stop semantics and order cancellation. Protocol changes update producers, validators, relays, clients, saves, replays, and tests in one integration stage.
+Observation filters are not authorization. Server validates envelope/version, player/host rights, cardinality, ID syntax, finite bounded coordinates, and allowed action kinds; runtime validates ownership, visibility/target policy, costs, prerequisites, collision/topology, capacities, cooldowns, and current target/effect eligibility. Preserve supported human queue/stop semantics and order cancellation. Protocol changes update producers, validators, relays, clients, saves, replays, and tests together.
 
 Saves capture a safe completed decision boundary plus pending shared commands, counters, RNG, plan/claim state, knowledge, current assignments, effects/zones, growth/deposit work, and summon/transport state. Mid-phase operations save a restartable phase and acknowledged progress, not a Promise. On load rebuild actor references by stable IDs and revalidate once without restarting opening/production. New host reconstructs exactly one brain, restores scheduler/RNG, and observes pending shared commands before issuing anything new.
 

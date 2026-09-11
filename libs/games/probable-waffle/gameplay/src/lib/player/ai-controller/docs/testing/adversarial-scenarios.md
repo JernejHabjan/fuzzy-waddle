@@ -1,44 +1,29 @@
 # Integration gates and adversarial match testing
 
-Read [the runbook](00-start-here.md), [scenario contract](08-deterministic-scenarios.md), [hardening rules](09-progress-and-hardening.md) and [Stage 15](07-final-validation.md). This packet is mandatory. It adds fault/progress cases and continuous match sequences to the original 63 strategic cases; it does not replace them.
-
-The latest user instruction restores and broadens the prohibition on validation execution before Stage 15. Stages 0–14 must author the tests, fixtures, drivers, oracles and expected commands described here and manually audit their integration, but must not run tests, lint, formatting validation, type checks, builds, browser/runtime smokes, `git diff --check`, or equivalent validation. Earlier Stage 0–2 results remain historical evidence only. Stage 15 runs this entire ladder against the final integrated revision, repairs failures, and records actual evidence.
+These mandatory cases add fault/progress coverage and continuous match sequences to the [63 strategic scenarios](strategic-scenarios.md). They use the shared [progress and recovery oracles](progress-and-recovery-oracles.md).
 
 ## Verification ladder
 
-Include the owning-stage C/D cases from [packet 11](11-classic-rts-and-difficulty.md) and DBG cases from [packet 12](12-debug-workbench.md). Extend this same runner/coverage manifest; do not create a disconnected debug simulator or defer foundational capture contracts until final UI work. The combined catalog now contains 121 named cases before variants.
-
-### Every implementation stage, Stages 0–14
-
-1. Read/review the changed code and immediate consumers, including errors, cleanup, defaults, docs and tests. Author scoped formatting/lint, actual-source type, unit/contract and owning H/C/D/DBG checks, but do not execute them.
-2. From Stage 5 onward, implement the real-runtime driver and register the affected smoke subset, same-seed repeat, faction/domain variants and deliberately failing oracle controls without launching them.
-3. Record each deferred command or manifest entry, candidate paths, fixture/config version and expected semantic outcome as `authored_not_run`. Never claim a full match, pass, or green gate from source inspection.
-4. Repair defects found by manual code/consumer, Omission and Final Closure audits. Executable failures cannot exist yet because execution is prohibited; Stage 15 owns those repairs and reruns.
-5. Mark a completed pre-final stage `implemented_unvalidated`, then commit, push/verify and stop. Only Stage 15 may promote integrated behavior to `validated`; historical `stage_checked` entries from Stages 0–2 do not waive final reruns.
-
-All builds are deferred, including targeted packaging, bundling, code-generation and editor-asset builds. Earlier stages must leave their exact Stage 15 commands and expected artifacts in the ledger. Never disable CI, runtime validators or relevant safety tests to preserve the schedule.
+Include the C/D cases from [classic RTS and difficulty](classic-rts-and-difficulty-scenarios.md) and DBG cases from [debugging scenarios](debugging-scenarios.md) in the same runner and coverage manifest. Do not create a disconnected debug simulator. The combined catalog contains 121 named cases before variants.
 
 ### Minimum executable vertical slices
 
-| Checkpoint   | Must really work together before continuing                                                                                                                                  |
-| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Stage 5      | Author real-world creation -> host AI/adapter -> shared command apply -> observable outcome -> safe save/replay; oracle rejects a deliberately bad outcome                   |
-| Stage 7      | Actual faction start -> legal worker -> delivered income -> supply -> useful producer -> repeated useful unit production; no artificial fixture income to conceal a stall    |
-| Stage 9      | Normal land skirmish -> scouting -> assembled attack -> route/objective effect -> reinforcement/retreat/next decision -> ordinary result; retain economy during a minor raid |
-| Stages 10–14 | The prior core loop still works while the new expansion/fortification/transport/tactics/adaptation behavior is connected                                                     |
-| Stage 15     | All supported contexts, interacting failures, long matches, human-facing launch/debug/results and release evidence                                                           |
-
-Stage 9 may need to repair earlier contracts so the vertical slice is implementation-complete; do not record “integration later” for its basic economy/attack/recovery path. Sophisticated tactical refinement stays Stage 13. Runtime execution, including the shortest focused match, remains prohibited until Stage 15.
+| Slice                  | Must really work together                                                                                                                                               |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Runtime authority      | Real-world creation -> host AI/adapter -> shared command apply -> observable outcome -> safe save/replay; oracle rejects a deliberately bad outcome                     |
+| Economy and production | Actual faction start -> legal worker -> delivered income -> supply -> useful producer -> repeated useful unit production; no artificial fixture income conceals a stall |
+| Core land match        | Scouting -> assembled attack -> route/objective effect -> reinforcement/retreat/next decision -> ordinary result; retain economy during a minor raid                    |
+| Integrated environment | The core loop still works with expansion, fortification, transport, tactics and adaptation connected                                                                    |
+| Release                | All supported contexts, interacting failures, long matches, human-facing launch/debug/results and reproducible evidence                                                 |
 
 ## Harness integration and safe fault injection
 
-Extend the Stage 5 CLI with explicit modes:
+The shared CLI supports explicit modes:
 
-- `--suite stage-smoke --stage <0..14> --working-tree`: run an implemented smoke manifest against the current task tree; report HEAD plus changed-source/fixture digest. No baseline required. Unsupported stage or missing required driver fails rather than becoming a no-op.
 - `--scenario <id> --seed <n> --mode pure|runtime|both`: reproduce a named scenario. Pure/runtime support is declared, not guessed.
 - `--suite release --candidate <sha> --baseline <sha>`: clean isolated candidate/baseline sources and versioned complete manifest; includes original strategic cases, H-cases and SEQ-cases below.
 
-These flags are required new tool work, not existing commands. Keep one runner/manifest and assertion library; do not build an unrelated smoke simulator. Stages 5–14 record which implementation, real systems and assertion paths each mode will execute; Stage 15 records what actually executed.
+Keep one runner/manifest and assertion library; do not build an unrelated smoke simulator. Reports record the actual implementation, systems, assertion paths and provenance executed.
 
 Faults attach to explicit test-only seams: dropped/delayed acknowledgment after real apply; reordered deliveries before canonical apply; stale query completion; blocked service; authority replacement; topology/ownership changes through actual runtime effects. Label transport/network infrastructure injection separately from scripted opponent combat. Never expose arbitrary spawn/resource/kill/owner setters as ordinary multiplayer debug commands. Compile/developer-gate the bridge and enforce the same protections server-side.
 
@@ -46,7 +31,7 @@ Every event has a fixed tick or a deterministic milestone trigger, latest trigge
 
 ## Added hardening scenarios
 
-Each row gets independent semantic predicates, forbidden outcomes, resolved numeric deadlines and a failing-oracle control. Author in the owning stages from packet 09; run every focused case and applicable variant in Stage 15.
+Each row gets independent semantic predicates, forbidden outcomes, resolved numeric deadlines and a failing-oracle control. Run every focused case and applicable variant in the release matrix.
 
 | ID   | Setup / injection                                                                 | Required result                                                                                                            |
 | ---- | --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
@@ -87,20 +72,20 @@ Each row gets independent semantic predicates, forbidden outcomes, resolved nume
 
 These are skirmish soak/interaction tests, not a new campaign game mode. Each uses one continuous world and brain without resetting between disruptions. Require economy, military and authority progress together. Individual paired unit cases cannot substitute for them.
 
-| ID     | Sequence                                                                                                                                                        | Measured acceptance                                                                                                                                                                                    |
-| ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| SEQ-01 | Ordinary legal start -> opening -> scouting -> first attack -> retreat/regroup or success -> reinforcement -> second mission -> enemy core finish               | Both factions, Normal, supported land map; first offensive launch by 10 min, objective effect within fixed travel/combat bound, continuing pressure in subsequent viable windows, normal victory/score |
-| SEQ-02 | SEQ-01 first attack away -> small boat/air raid at home -> raid grows -> workers flee -> defense stabilizes -> offense resumes                                  | Limited initial recall then severity-scaled response, productive workers restored, no permanent defense stance after threat clears                                                                     |
-| SEQ-03 | Income established -> resource depletion + local congestion -> loaded-worker drop-off destroyed -> safe alternate source -> sustainable food -> expansion       | Delivered income recovers within independent service/build bounds; useful duplicate deposits allowed; no farm/worker dependency cycle                                                                  |
-| SEQ-04 | Military transition -> partial queued spending -> supply structure and critical producer lost -> optional upgrade waiting -> rebuild -> new force               | No ghost reservations/double spending; recovery essentials outrank optional research; productive capacity and military mission return                                                                  |
-| SEQ-05 | Island builder/combat transport -> unsafe landing -> reroute -> unload -> economy established -> return trip/escort loss                                        | Actual supported transport faction; all ownership phases reconcile, useful delivered island income and later mission/evacuation, no stranded hidden backlog                                            |
-| SEQ-06 | Fortified front with deliberate opening -> hostile ground approach -> wall/stair breach -> post withdrawal -> repair/alternate defense -> outside counterattack | Measured defense value, friendly clearance throughout, bounded repair spend, mobile force still fights outside; air threat not credited as blocked by walls                                            |
-| SEQ-07 | Initial enemy composition -> stale sightings -> confirmed tech/counter transition -> failed assault -> revised composition -> alternate objective               | Proportionate evidence response, no queue churn, useful retained units, bounded tactical recovery and meaningful new pressure                                                                          |
-| SEQ-08 | Active economy/attack + pending command -> save -> reload -> host transfer -> late old events -> finish -> second match                                         | Exact saved continuation for equivalent logical inputs, applied-once effects, no duplicated brain/claims/results, clean new match                                                                      |
+| ID     | Sequence                                                                                                                                                        | Measured acceptance                                                                                                                                                                                         |
+| ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| SEQ-01 | Ordinary legal start -> opening -> scouting -> first attack -> retreat/regroup or success -> reinforcement -> second mission -> enemy core finish               | Both factions, Normal, supported land map; first offensive launch by 10 min, objective effect within fixed travel/combat bound, continuing pressure in subsequent viable windows, normal victory/score      |
+| SEQ-02 | SEQ-01 first attack away -> small boat/air raid at home -> raid grows -> workers flee -> defense stabilizes -> offense resumes                                  | Limited initial recall then severity-scaled response, productive workers restored, no permanent defense stance after threat clears                                                                          |
+| SEQ-03 | Income established -> resource depletion + local congestion -> loaded-worker drop-off destroyed -> safe alternate source -> sustainable food -> expansion       | Delivered income recovers within independent service/build bounds; useful duplicate deposits allowed; no farm/worker dependency cycle                                                                       |
+| SEQ-04 | Military transition -> partial queued spending -> supply structure and critical producer lost -> optional upgrade waiting -> rebuild -> new force               | No ghost reservations/double spending; recovery essentials outrank optional research; productive capacity and military mission return                                                                       |
+| SEQ-05 | Island builder/combat transport -> unsafe landing -> reroute -> unload -> economy established -> return trip/escort loss                                        | Blocked for real-map E2E until an island map exists; pure transport phases remain required. When supported, all ownership phases reconcile, delivered island income is useful and no hidden backlog remains |
+| SEQ-06 | Fortified front with deliberate opening -> hostile ground approach -> wall/stair breach -> post withdrawal -> repair/alternate defense -> outside counterattack | Measured defense value, friendly clearance throughout, bounded repair spend, mobile force still fights outside; air threat not credited as blocked by walls                                                 |
+| SEQ-07 | Initial enemy composition -> stale sightings -> confirmed tech/counter transition -> failed assault -> revised composition -> alternate objective               | Proportionate evidence response, no queue churn, useful retained units, bounded tactical recovery and meaningful new pressure                                                                               |
+| SEQ-08 | Active economy/attack + pending command -> save -> reload -> host transfer -> late old events -> finish -> second match                                         | Exact saved continuation for equivalent logical inputs, applied-once effects, no duplicated brain/claims/results, clean new match                                                                           |
 
 Fixed disturbance timing must preserve the scenario's declared feasibility. For losses modeled by an opponent, use deterministic legal attacks; for lifecycle faults, use labeled test transport seams. Report damage and assets removed. A fixture that destroys every recovery route cannot demand normal recovery and then fault the AI for obeying defeat rules.
 
-For core SEQ-01/02/03/04/07 start with 20–30 simulated-minute bounds, derive milestone sub-deadlines from actual costs/routes, and allow early victory. Transport/fortification/lifecycle sequences get explicit workload-derived bounds. Stage 15 includes three 60-minute soaks from these sequences with sustained legal adversarial events; avoid extending a match by disabling victory or spawning hidden reinforcements unless that variant is explicitly a non-victory stress test.
+For core SEQ-01/02/03/04/07 start with 20–30 simulated-minute bounds, derive milestone sub-deadlines from actual costs/routes, and allow early victory. Transport/fortification/lifecycle sequences get explicit workload-derived bounds. Release validation includes three 60-minute soaks from these sequences with sustained legal adversarial events; avoid extending a match by disabling victory or spawning hidden reinforcements unless that variant is explicitly a non-victory stress test.
 
 ## Stronger final acceptance and evidence discipline
 
@@ -113,4 +98,4 @@ For core SEQ-01/02/03/04/07 start with 20–30 simulated-minute bounds, derive m
 - Include multiple opponents/two AI players in focused contention/lifecycle variants and standard supported player counts in release coverage. Player-local IDs, quotas and claims must not collide.
 - Human blind A/B feedback remains explicitly pending if unavailable; automated gates must stand on their own evidence. Never claim human validation happened when only a scripted match ran.
 
-Record the exact stage smoke/final command and source/config/fixture versions in progress. Every H/SEQ ID needs owning symbols, debug evidence, pure/runtime status and retained reproduction. Missing required runtime support is a blocker, not an empty green test.
+Record the exact command and source/config/fixture versions in the report. Every H/SEQ ID needs responsible symbols, debug evidence, pure/runtime status and retained reproduction. Missing required runtime support is a blocker, not an empty green test.

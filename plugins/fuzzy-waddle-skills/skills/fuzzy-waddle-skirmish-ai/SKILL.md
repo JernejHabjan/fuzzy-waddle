@@ -7,8 +7,8 @@ description: Implement, diagnose or validate the Probable Waffle skirmish AI, de
 
 ## Load the minimum state
 
-1. Read the top resume block and current Stage 15 section of `docs/ai/759-skirmish-ai/progress.md`; do not reread its completed stage history unless a dependency is implicated.
-2. Read the current stage packet and named scenario rows only. Use the [RTS source index](../fuzzy-waddle-phaser/references/rts-source-index.md) once, then navigate exact symbols and adjacent specs.
+1. Read the [AI documentation index](../../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/README.md). For unfinished #759 work, read only [HANDOFF.md](../../../../docs/ai/759-skirmish-ai/HANDOFF.md).
+2. Read only the named manifest rows/fixtures implicated by the task. Use the [RTS source index](../fuzzy-waddle-phaser/references/rts-source-index.md) once, then navigate exact symbols and adjacent specs.
 3. Treat files already read in the current logical turn as cached knowledge. Reopen only changed or missing ranges; prefer `git diff` for edits.
 
 ## Work efficiently
@@ -20,4 +20,4 @@ description: Implement, diagnose or validate the Probable Waffle skirmish AI, de
 - Do not weaken a liveness, authority, fairness or useful-effect oracle to make a run pass. A balance threshold may change only with recorded workload evidence and a fresh affected run.
 - Same-type units, producers and deposits are legal when dated demand/throughput/service value requires them. Suppress fulfilled causal commitments and duplicate side effects, not object-name repetition.
 
-For stable commands, IDE entry points and evidence layers, read the [Stage 15 operator guide](../../../../docs/ai/759-skirmish-ai/13-stage-15-operator-guide.md). When a runtime row fails, read [runtime triage](references/runtime-triage.md).
+For stable commands and evidence layers, read the [testing guide](../../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/README.md). When a runtime row fails, read [runtime triage](references/runtime-triage.md).

@@ -20,6 +20,11 @@ description: Apply Fuzzy Waddle scope, verification, source-discovery and git ow
 4. Review the changed stage as another engineer would: actual call path, edge cases, cleanup, error handling, compatibility, bounded work and documentation. Repair task-caused failures and rerun affected authorized checks.
 5. Perform an Omission Audit against every acceptance item, then a separate Final Closure Audit after repairs/checks. An authored file, successful dispatch, or green unrelated test is not evidence of the required outcome.
 
+## Maintainable names and size
+
+- Name production files, symbols and durable docs after stable responsibilities. Issue-specific stage/phase numbers belong only in temporary plans and handoffs.
+- New text source files must stay at or below 400 non-comment lines, and new or materially rewritten methods at or below 200 non-comment lines. Split by responsibility before committing; generated/vendor artifacts are not hand-maintained source.
+
 ## Files and delivery
 
 - Put one-off artifacts in ignored tmp/. Create durable plan files only when requested, beside feature docs; execution-only plans go in tmp/ai-plans/. Task tracking owns plan structure.

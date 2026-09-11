@@ -14,6 +14,7 @@ Repository-relative routes, verified 2026-09-09. This is a maintained shortlist,
 | Browser tests / backend e2e                      | apps/portal-e2e/ ; apps/api-e2e/                                                                                                                                                      |
 | Jest presets / editor checks / asset checks      | tools/testing/ ; tools/phaser-editor/validate-project.mjs ; tools/assets/check-git-lfs.mjs                                                                                            |
 | RTS AI manifests / release matrix                | tools/ai/fixtures/ ; tools/ai/run-skirmish-matrix.mjs                                                                                                                                 |
+| RTS AI architecture / testing / debugging docs   | libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/                                                                                                                |
 
 For RTS internals, read [the focused source map](../../fuzzy-waddle-phaser/references/rts-source-index.md). For checks, read [verification routes](verification.md). Do not load both for an unrelated docs edit.
 

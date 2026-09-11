@@ -1,6 +1,6 @@
 # Classic RTS comparison, strategic depth and difficulty
 
-This review extends the existing 16 stages; it does not replace H1–H9 or add runtime ML. Read [runbook](00-start-here.md), [macro](03-macro-and-access.md), [tactics](05-tactics-and-adaptation.md) and [debug workbench](12-debug-workbench.md). All numbers below are proposed tuning defaults, not measured results.
+These requirements complement H1–H9 without adding runtime machine learning. Read the [economy/production](../architecture/economy-and-production.md), [combat/strategy](../architecture/combat-and-strategy.md) and [debug workbench](../debugging/README.md) documentation. All numbers below are tuning defaults, not measured results.
 
 ## Evidence and transfer boundaries
 
@@ -15,11 +15,11 @@ These are primary sources. Historical Blizzard material describes the named game
 | [PETRA AttackManager documentation](https://docs.wildfiregames.com/javascript/petra/PETRA.AttackManager.html)                          | Separate attack lifecycle, target-player choice and diplomacy-aware cancellation                 | Add stable opponent focus and complete mission transitions without whole-army target churn                                               |
 | [SC2 API protocol usage](https://github.com/Blizzard/s2client-proto/blob/master/docs/protocol.md)                                      | Observation/action/step workflow and version-sensitive replays                                   | Add an offline step/replay/diff workbench with exact map/config/engine provenance; don't confuse it with live multiplayer controls       |
 
-The plan already covers coherent economy, useful duplicate capacity, squads, access/transport, defenses and recovery. The gaps below concern strategic depth, difficulty calibration and reproducible diagnosis—not more unrelated mechanics.
+The controller covers coherent economy, useful duplicate capacity, squads, access/transport, defenses and recovery. These requirements focus on strategic depth, difficulty calibration and reproducible diagnosis—not unrelated mechanics.
 
 ## C1 — opening branches and timing plans
 
-Stages 7/14: author a small versioned opening/transition library for **each registered faction**, resolved from its real tech tree. Start with balanced pressure and safer economic development branches. Emergency recovery is shared, not a separate random opening. Air/naval/expeditionary branches require actual roster and map usefulness.
+The macro/adaptation owners maintain a small versioned opening/transition library for **each registered faction**, resolved from its real tech tree. Start with balanced pressure and safer economic development branches. Emergency recovery is shared, not a separate random opening. Air/naval/expeditionary branches require actual roster and map usefulness.
 
 Each branch stores ID/version, entry conditions, critical versus optional steps, resource obligations, dated army role/capability targets, launch milestone, optional upgrade/tech timing, invalidation evidence and a fallback branch. Reuse stable checkpoint and demand identities across transitions. Existing assets can satisfy either branch; never rebuild just to conform to the selected script.
 
@@ -29,7 +29,7 @@ A timing mission links a useful ready force to a bounded opportunity: newly avai
 
 ## C2 — desired army size and spending have a source
 
-Stage 7 must compute **total military demand before role percentages**. A 60/40 composition alone cannot determine whether to build six or sixty population.
+The macro manager computes **total military demand before role percentages**. A 60/40 composition alone cannot determine whether to build six or sixty population.
 
 1. Calculate per-resource spendable budget and conservative delivered income over the planning horizon after essential recovery and due obligations.
 2. Calculate usable population: actual cap, timely housing, workers required for useful income, existing combat and accepted queues, plus indispensable transport/support population where the runtime charges it.
@@ -42,7 +42,7 @@ Display the source of total army demand, role split, affordability horizon, oppo
 
 ## C3 — scouting asks questions; repeated facts are not new evidence
 
-Stages 4/9/14: attach a decision question to each information mission: where can the enemy expand, where is the missing army, is air production yielding actual flyers, which route is safe, or where can economic pressure succeed? Rank bounded reachable scout objectives by expected decision impact, uncertainty, freshness and scout risk. Coverage percentage alone is not success.
+Attach a decision question to each information mission: where can the enemy expand, where is the missing army, is air production yielding actual flyers, which route is safe, or where can economic pressure succeed? Rank bounded reachable scout objectives by expected decision impact, uncertainty, freshness and scout risk. Coverage percentage alone is not success.
 
 Keep evidence identity/source/tick and distinct-contact counts. Re-reading one sighting on five decision ticks does not prove five independent sightings or a growing army. Confidence changes on permitted new facts, corroboration or elapsed decay; no private queues or hidden current actor IDs. Keep memory representation consistent across difficulty; profile-specific planning delay must not mutate historical facts.
 
@@ -50,7 +50,7 @@ A question expires when answered, obsolete or too costly. Reuse a safe scout and
 
 ## C4 — opponent focus, pursuit and post-battle exploitation
 
-Stages 9/13: persistent missions track target player/region and protected asset, not only the nearest hostile actor. In multi-opponent games compare feasible value without switching the entire army every time a closer enemy appears. Diplomacy/defeat invalidates target ownership through shared rules; secondary local defense can still address another opponent.
+Persistent missions track target player/region and protected asset, not only the nearest hostile actor. In multi-opponent games compare feasible value without switching the entire army every time a closer enemy appears. Diplomacy/defeat invalidates target ownership through shared rules; secondary local defense can still address another opponent.
 
 Defenders use an asset-relative interception leash and pursuit budget. Initially allow at most 200 ticks of pursuit beyond the defended approach unless a re-evaluated interception mission proves value and retains home safety. Derive approach distances from actual movement/asset geography, not fixed pixels. A retreating scout cannot drag the army through towers or across the map. Offensive chase is likewise subordinate to the mission; expensive pursuit must beat attacking the exposed economy.
 
@@ -58,7 +58,7 @@ After a won engagement, compare immediate pressure on the exposed core/expansion
 
 ## D — difficulty already exists; make it real and testable
 
-Stages 6/14/15 own the full path: lobby selection -> versioned profile -> host brain -> save/replay/host transfer -> debug/results. There are three initial fair levels. They vary planning tempo and breadth, not access to hidden state or economic legality. No adaptive rubber-banding or silent mid-match difficulty switching.
+The profile lifecycle spans lobby selection -> versioned profile -> host brain -> save/replay/host transfer -> debug/results. There are three initial fair levels. They vary planning tempo and breadth, not access to hidden state or economic legality. No adaptive rubber-banding or silent mid-match difficulty switching.
 
 | Policy                                            | Easy                                                                  | Normal                                  | Hard                                                  |
 | ------------------------------------------------- | --------------------------------------------------------------------- | --------------------------------------- | ----------------------------------------------------- |
@@ -79,27 +79,21 @@ The Normal 10-minute viable-offense gate remains mandatory. Set Easy/Hard milest
 
 Calibration: use mirrored same-faction/profile-only comparisons, standard probe opponents and shared seeds/maps. Publish decision delay, mission concurrency, reaction/composition latency, macro continuity and outcome distributions. Start with 20 paired seeds; expand to at most 100 per comparison when uncertainty is material. Seek a reliably ordered challenge trend across the tested set, not a guarantee that Hard wins every game. If the bands remain indistinguishable, report calibration unfinished and tune authored choices/budgets without cheats; don't relabel equivalent behavior. Human ratings of predictability/fairness/challenge are separate from automated correctness.
 
-## Added cases and ownership
+## Required cases
 
-Run focused cases at the owning stage and all cases at Stage 15. These add 12 cases to the prior 103; packet 12 adds 6 more, for 121 named cases before variants.
+Run focused cases while developing their responsible subsystem and all cases in the release matrix. These add 12 cases to the prior 103; the debugging group adds 6 more, for 121 named cases before variants.
 
-| ID / stage     | Required evidence                                                                                                                                        |
-| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| C-01 / 7,14    | Both faction branches preserve completed assets/commitments during evidence-backed transition; no opening restart spam                                   |
-| C-02 / 7,13,14 | Upgrade/batch timing launches within the viable window, or explicitly changes plan when it closes; no perfect-roster wait                                |
-| C-03 / 7       | Army total grows with useful affordable mission demand, respects worker/supply obligations and stops at fulfilled demand                                 |
-| C-04 / 4,9,14  | Question-driven scouting changes a real decision; repeated reading of the same contact does not inflate enemy mass/confidence                            |
-| C-05 / 9,13    | Bait retreat cannot pull asset defenders into a bad pursuit; won battle creates useful follow-up pressure                                                |
-| C-06 / 9,13    | Multiple opponents retain coherent mission focus; diplomacy/defeat cleanly retargets without ignoring local threats                                      |
-| D-01 / 6       | Every lobby difficulty selects the exact versioned profile and expected cadence/quotas with no fallback to identical defaults                            |
-| D-02 / 6,14    | Save/load/replay/host transfer preserves difficulty, archetype, scheduling and active plans; no silent profile drift                                     |
-| D-03 / 6,14    | Equal permitted observations/rules across profiles; no hidden current state or unadvertised resource/stat bonuses                                        |
-| D-04 / 7,9,12  | Easy still opens, produces useful copies, counters legal threats, retreats and recovers; reduced breadth is not broken behavior                          |
-| D-05 / 9,13,14 | Caps and reconsideration cadence affect eligible voluntary activity while independent defense/rescue remains serviced                                    |
-| D-06 / 15      | Paired calibration report identifies versions, sample counts/uncertainty and challenge trend; indistinguishable levels remain an explicit tuning failure |
-
-## HTML overview scope
-
-[overview.html](overview.html) is a self-contained, offline-readable explanation of the **planned** end state. Its interactive examples are illustrative, not the real AiBrain or performance evidence. It must remain usable without external libraries/network, show supported/future capability boundaries, link to owning packets and expose no game/debug mutation controls. Commit the page and its focused browser smoke alongside the plan.
-
-Stage 15 runs the documentation-only smoke with `node docs/ai/759-skirmish-ai/overview.smoke.mjs` from the repository root, after installing the repository dependencies and Playwright Chromium. To use an existing local browser, set `AI_OVERVIEW_BROWSER` to its executable path. Screenshots go to ignored `tmp/ai-overview-smoke/`. This checks interactions, responsive overflow/label bounds, no-script readability, local links and the unique 121-case catalog; it is not a replacement for Stage 15 gameplay tests.
+| ID   | Required evidence                                                                                                                                        |
+| ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| C-01 | Both faction branches preserve completed assets/commitments during evidence-backed transition; no opening restart spam                                   |
+| C-02 | Upgrade/batch timing launches within the viable window, or explicitly changes plan when it closes; no perfect-roster wait                                |
+| C-03 | Army total grows with useful affordable mission demand, respects worker/supply obligations and stops at fulfilled demand                                 |
+| C-04 | Question-driven scouting changes a real decision; repeated reading of the same contact does not inflate enemy mass/confidence                            |
+| C-05 | Bait retreat cannot pull asset defenders into a bad pursuit; won battle creates useful follow-up pressure                                                |
+| C-06 | Multiple opponents retain coherent mission focus; diplomacy/defeat cleanly retargets without ignoring local threats                                      |
+| D-01 | Every lobby difficulty selects the exact versioned profile and expected cadence/quotas with no fallback to identical defaults                            |
+| D-02 | Save/load/replay/host transfer preserves difficulty, archetype, scheduling and active plans; no silent profile drift                                     |
+| D-03 | Equal permitted observations/rules across profiles; no hidden current state or unadvertised resource/stat bonuses                                        |
+| D-04 | Easy still opens, produces useful copies, counters legal threats, retreats and recovers; reduced breadth is not broken behavior                          |
+| D-05 | Caps and reconsideration cadence affect eligible voluntary activity while independent defense/rescue remains serviced                                    |
+| D-06 | Paired calibration report identifies versions, sample counts/uncertainty and challenge trend; indistinguishable levels remain an explicit tuning failure |

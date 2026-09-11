@@ -1,6 +1,6 @@
 # Debug workbench — explain, capture, replay and compare
 
-Required extension of [the existing debug-panel specification](06-debug-panel.md). The panel stays read-only in ordinary matches. This packet gives developers a reproducible investigation workflow; it is not permission to add arbitrary network mutation commands.
+The panel stays read-only in ordinary matches. These requirements give developers a reproducible investigation workflow; they do not permit arbitrary network mutation commands. See the [debugging workbench](../debugging/README.md).
 
 ## One workflow for a bad decision
 
@@ -8,7 +8,7 @@ Required extension of [the existing debug-panel specification](06-debug-panel.md
 2. Locate the first overdue progress milestone, rejected prerequisite, exhausted resource/slot or changed evidence in the causal timeline.
 3. Capture a versioned reproduction bundle with its exact source/map/profile provenance.
 4. Replay in an isolated local test session; step by simulation tick or completed AI decision, set a safe named breakpoint and inspect actual applied outcomes.
-5. In Stage 15, compare the original and repaired run at the first divergent field/decision and rerun the owning scenario plus relevant continuous match. Earlier owning stages author the capture/replay fixtures without executing them.
+5. Compare the original and repaired run at the first divergent field/decision and rerun the responsible scenario plus relevant continuous match.
 
 Steps 4–5 must never change the live match. This design transfers the observation/action/step and versioned replay principle from [Blizzard's SC2 API protocol documentation](https://github.com/Blizzard/s2client-proto/blob/master/docs/protocol.md), not its privileged debug execution into player controls.
 
@@ -16,7 +16,7 @@ Steps 4–5 must never change the live match. This design transfers the observat
 
 Extend AiDebugSnapshotV1 with bounded causal summary indexes and diagnostic completeness flags. Support filters for player, base, goal, demand, actor, command, reason/severity and tick range. Selecting a plan links its economic obligation, prerequisite chain, squad/route, command outcome and useful progress.
 
-“Why not attack/build/counter?” must identify the actual stage of rejection: no permitted evidence; no useful candidate; generator not serviced; prerequisite/route pending; demand already fulfilled; resource/actor conflict; profile/mission limit; utility loss; application rejected; or outcome unresolved. Use recorded facts and proposer counters, not a second live planner call. If the bounded trace omitted an alternative, display **not recorded**, not an invented explanation.
+“Why not attack/build/counter?” must identify the actual rejection boundary: no permitted evidence; no useful candidate; generator not serviced; prerequisite/route pending; demand already fulfilled; resource/actor conflict; profile/mission limit; utility loss; application rejected; or outcome unresolved. Use recorded facts and proposer counters, not a second live planner call. If the bounded trace omitted an alternative, display **not recorded**, not an invented explanation.
 
 Add timelines for:
 
@@ -69,21 +69,21 @@ For a repair, compare command and AI digests, authoritative outcomes and indepen
 
 ## Ownership, usability and verification
 
-- Stage 2: typed manifests, trace completeness/cause indexes and safe parsing contracts.
-- Stages 3–5: capture/replay/apply boundaries, fixture export and first-divergence CLI; real-runtime bootstrap and invalid-bundle tests.
-- Stages 6–9: why-not explanations, difficulty/profile provenance, progress/missions/economy timelines and live bookmarks.
-- Stages 10–14: environment/pursuit/fortification/support overlays, offline stepping/breakpoint/what-if controls and complete cleanup.
-- Stage 15: real reproduction round trip, all debug-on/off equivalence, large/invalid data, keyboard/overflow/player switch, two-match lifecycle and maintainer documentation.
+- Pure debug contracts own typed manifests, trace completeness, cause indexes and parsing.
+- Runtime adapters own capture/replay/application boundaries and real-world checkpoints.
+- Planning managers own recorded why-not alternatives and domain-specific causal facts.
+- Phaser UI owns bounded presentation, overlays, keyboard behavior and cleanup.
+- Playwright owns reproduction round trips, debug parity, overflow/player switching and two-match lifecycle.
 
-Use the existing debug entry point; the isolated workbench may be a developer/test-only route backed by the Stage 5 bridge, not a new ordinary lobby feature. UI action labels must distinguish view history from simulation stepping. Expensive strings/indexes are lazy and bounded; diagnostic exceptions cannot stop the controller. Browser QA must demonstrate one real repeated-building or stalled-attack case from selection through capture, replay, comparison and a passing repaired scenario.
+Use the existing debug entry point; the isolated workbench may be a developer/test-only route backed by the runtime scenario bridge, not a new ordinary lobby feature. UI action labels must distinguish view history from simulation stepping. Expensive strings/indexes are lazy and bounded; diagnostic exceptions cannot stop the controller. Browser QA must demonstrate one real repeated-building or stalled-attack case from selection through capture, replay, comparison and a passing repaired scenario.
 
-| ID / stage      | Required evidence                                                                                                                                       |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| DBG-01 / 5,13   | Real incident captures and reproduces pure decision and applicable full runtime outcome with exact provenance; truncated capture cannot claim exactness |
-| DBG-02 / 6,13   | Why-not lookup distinguishes not evaluated/not recorded/rejected/unresolved; no live planner mutation or fabricated alternative                         |
-| DBG-03 / 5,13   | Offline tick/decision step and named breakpoint stop at safe reproducible boundaries; live history/bookmark never pauses/mutates multiplayer            |
-| DBG-04 / 5,13   | Different input/config labeled correctly; same-input divergence reports first field; isolated what-if leaves original state/RNG unchanged               |
-| DBG-05 / 2,5,13 | Malformed/oversized/version-mismatched/traversal/HTML payloads rejected or rendered safely; hidden runtime bundle is access-controlled                  |
-| DBG-06 / 13,15  | Capture quota/history truncation/scene disposal stay bounded; debug shown/hidden/exporting/filtering gives identical gameplay/AI outcomes               |
+| ID     | Required evidence                                                                                                                                       |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| DBG-01 | Real incident captures and reproduces pure decision and applicable full runtime outcome with exact provenance; truncated capture cannot claim exactness |
+| DBG-02 | Why-not lookup distinguishes not evaluated/not recorded/rejected/unresolved; no live planner mutation or fabricated alternative                         |
+| DBG-03 | Offline tick/decision step and named breakpoint stop at safe reproducible boundaries; live history/bookmark never pauses/mutates multiplayer            |
+| DBG-04 | Different input/config labeled correctly; same-input divergence reports first field; isolated what-if leaves original state/RNG unchanged               |
+| DBG-05 | Malformed/oversized/version-mismatched/traversal/HTML payloads rejected or rendered safely; hidden runtime bundle is access-controlled                  |
+| DBG-06 | Capture quota/history truncation/scene disposal stay bounded; debug shown/hidden/exporting/filtering gives identical gameplay/AI outcomes               |
 
-These six cases join packet 11's twelve and the prior 103: **121 named cases**, before paired/seed/runtime variants. Add implemented symbol, persistence owner, focused/final command and evidence to progress for each ID.
+These six cases join the twelve classic RTS/difficulty cases and the prior 103: **121 named cases**, before paired/seed/runtime variants. Record responsible symbol, persistence owner, command and evidence for each ID in the executable manifest/report.
