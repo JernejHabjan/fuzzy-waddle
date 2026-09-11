@@ -8,6 +8,10 @@ import { resolvePinnedBaselineSupport } from "./baseline-adapter-v1.mjs";
 const toolDirectory = dirname(fileURLToPath(import.meta.url));
 const workspaceRoot = resolve(toolDirectory, "../..");
 const args = parseArguments(process.argv.slice(2));
+if (args.help === true) {
+  process.stdout.write(helpText());
+  process.exit(0);
+}
 const manifestPath = args.manifest
   ? resolveExplicitPath(args.manifest)
   : join(toolDirectory, "fixtures", "skirmish-v1.json");
@@ -35,10 +39,11 @@ function dispatch(options) {
   if (options["compare-bundle"]) return compareBundles(options);
   if (options["replay-bundle"]) return replayBundle(options);
   if (options.suite) return runSuite(options);
+  if (options.scenarios) return runSelectedScenarios(options);
   if (options.scenario) return runSelectedScenario(options);
   if (options.candidate || options.baseline) return runSuite({ ...options, suite: "release" });
   throw new Error(
-    "missing_mode: use --candidate with --baseline, --suite, --scenario, --replay-bundle or --compare-bundle"
+    "missing_mode: use --candidate with --baseline, --suite, --scenario, --scenarios, --replay-bundle or --compare-bundle"
   );
 }
 
@@ -100,12 +105,27 @@ function runSuite(options) {
 }
 
 function runSelectedScenario(options) {
-  const row = manifest.rows.find((candidate) => candidate.id === options.scenario);
-  if (!row) throw new Error(`unknown_scenario:${options.scenario}`);
-  const hasPureFixture = typeof pureFixtureReference(row) === "string";
-  const hasRuntimeFixture = typeof runtimeFixtureReference(row) === "string";
-  if (!hasPureFixture && !hasRuntimeFixture) throw new Error(`scenario_fixture_not_implemented:${row.id}`);
-  const defaultMode = hasRuntimeFixture && hasPureFixture ? "both" : hasRuntimeFixture ? "runtime" : "pure";
+  return runSelectedScenarios({ ...options, scenarios: options.scenario });
+}
+
+function runSelectedScenarios(options) {
+  const scenarioIds = String(options.scenarios)
+    .split(",")
+    .map((id) => id.trim())
+    .filter(Boolean);
+  if (scenarioIds.length === 0) throw new Error("missing_scenarios");
+  if (new Set(scenarioIds).size !== scenarioIds.length) throw new Error("duplicate_scenarios");
+  const rows = scenarioIds.map((scenarioId) => {
+    const row = manifest.rows.find((candidate) => candidate.id === scenarioId);
+    if (!row) throw new Error(`unknown_scenario:${scenarioId}`);
+    if (pureFixtureReference(row) === null && runtimeFixtureReference(row) === null) {
+      throw new Error(`scenario_fixture_not_implemented:${row.id}`);
+    }
+    return row;
+  });
+  const allHavePure = rows.every((row) => pureFixtureReference(row) !== null);
+  const allHaveRuntime = rows.every((row) => runtimeFixtureReference(row) !== null);
+  const defaultMode = allHaveRuntime && allHavePure ? "both" : allHaveRuntime ? "runtime" : "pure";
   const mode = requireEnum(options.mode ?? defaultMode, ["pure", "runtime", "both"], "mode");
   const seed =
     options.seed === undefined
@@ -113,14 +133,17 @@ function runSelectedScenario(options) {
         ? null
         : requireInteger(manifest.defaultSeeds[0], "seed", 0, Number.MAX_SAFE_INTEGER)
       : requireInteger(options.seed, "seed", 0, Number.MAX_SAFE_INTEGER);
-  if ((mode === "pure" || mode === "both") && !hasPureFixture) {
-    throw new Error(`scenario_pure_fixture_deferred:${row.id}`);
+  const missingPure = rows.filter((row) => pureFixtureReference(row) === null);
+  if ((mode === "pure" || mode === "both") && missingPure.length > 0) {
+    throw new Error(`scenario_pure_fixture_deferred:${missingPure.map((row) => row.id).join(",")}`);
   }
-  if ((mode === "runtime" || mode === "both") && !hasRuntimeFixture) {
-    throw new Error(`scenario_runtime_fixture_deferred:${row.id}`);
+  const missingRuntime = rows.filter((row) => runtimeFixtureReference(row) === null);
+  if ((mode === "runtime" || mode === "both") && missingRuntime.length > 0) {
+    throw new Error(`scenario_runtime_fixture_deferred:${missingRuntime.map((row) => row.id).join(",")}`);
   }
-  if (mode !== "both" && !row.drivers.includes(mode)) throw new Error(`scenario_driver_missing:${row.id}:${mode}`);
-  return invokeSelectedHarness({ suite: "single", seed, mode, rows: [row], options });
+  const missingDriver = rows.find((row) => mode !== "both" && !row.drivers.includes(mode));
+  if (missingDriver) throw new Error(`scenario_driver_missing:${missingDriver.id}:${mode}`);
+  return invokeSelectedHarness({ suite: scenarioIds.length === 1 ? "single" : "selection", seed, mode, rows, options });
 }
 
 function invokeSelectedHarness(input) {
@@ -504,25 +527,64 @@ function validateRuntimeFixture(fixture, scenarioId) {
         !variant ||
         typeof variant.id !== "string" ||
         variant.id.length === 0 ||
+        (variant.scenarioIds !== undefined &&
+          (!Array.isArray(variant.scenarioIds) ||
+            variant.scenarioIds.length === 0 ||
+            variant.scenarioIds.some((id) => !fixture.scenarioIds.includes(id)))) ||
         !Number.isSafeInteger(variant.seed) ||
         variant.seed < 0 ||
         !["Tivara", "Skaduwee"].includes(variant.aiFaction) ||
         !["Tivara", "Skaduwee"].includes(variant.humanFaction) ||
         !["Easy", "Normal", "Hard"].includes(variant.difficulty) ||
-        (variant.mapLabel !== undefined && typeof variant.mapLabel !== "string")
+        (variant.mapLabel !== undefined && typeof variant.mapLabel !== "string") ||
+        (variant.perturbations !== undefined &&
+          (!Array.isArray(variant.perturbations) ||
+            variant.perturbations.some(
+              (perturbation) =>
+                !perturbation ||
+                typeof perturbation.id !== "string" ||
+                !Number.isSafeInteger(perturbation.tick) ||
+                perturbation.tick < 0 ||
+                perturbation.kind !== "human_attack_ai_home" ||
+                !Number.isSafeInteger(perturbation.maximumAttackers) ||
+                perturbation.maximumAttackers <= 0
+            )))
     ) ||
     !assertion ||
     !Number.isSafeInteger(assertion.minimumDecisions) ||
     assertion.minimumDecisions <= 0 ||
     !Number.isSafeInteger(assertion.minimumAppliedCommands) ||
     assertion.minimumAppliedCommands <= 0 ||
-    !Array.isArray(assertion.requiredOpeningSteps) ||
-    assertion.requiredOpeningSteps.length === 0 ||
-    typeof assertion.requireNoInitialWorker !== "boolean" ||
-    typeof assertion.requireDeliveredIncome !== "boolean" ||
+    (assertion.requiredOpeningSteps !== undefined &&
+      (!Array.isArray(assertion.requiredOpeningSteps) || assertion.requiredOpeningSteps.length === 0)) ||
+    (assertion.requireNoInitialWorker !== undefined && typeof assertion.requireNoInitialWorker !== "boolean") ||
+    (assertion.requireDeliveredIncome !== undefined && typeof assertion.requireDeliveredIncome !== "boolean") ||
     !Array.isArray(assertion.requiredAiFactions) ||
     assertion.requiredAiFactions.length === 0 ||
-    assertion.requiredAiFactions.some((faction) => !["Tivara", "Skaduwee"].includes(faction))
+    assertion.requiredAiFactions.some((faction) => !["Tivara", "Skaduwee"].includes(faction)) ||
+    [
+      "maximumTick",
+      "minimumMilitaryCount",
+      "minimumMilitaryTypeCount",
+      "minimumRepeatedMilitaryTypeCount",
+      "minimumMilitaryProducerCount",
+      "maximumMilitaryProducerCount",
+      "maximumQueueOccupancyPerProducer",
+      "firstOffensiveLaunchByTick",
+      "minimumOffensiveLaunchCount",
+      "minimumDamageDealt",
+      "minimumEnemyLosses"
+    ].some(
+      (field) => assertion[field] !== undefined && (!Number.isSafeInteger(assertion[field]) || assertion[field] < 0)
+    ) ||
+    [
+      "requireCompositionDemand",
+      "requireCapacityDemand",
+      "requireProductionStopsAtTarget",
+      "requireMissionContinuation",
+      "requireTerminalResult",
+      "requireRaidDefenseRecovery"
+    ].some((field) => assertion[field] !== undefined && typeof assertion[field] !== "boolean")
   ) {
     throw new Error(`malformed_runtime_fixture:${scenarioId}`);
   }
@@ -594,6 +656,10 @@ function parseArguments(tokens) {
     }
   }
   return parsed;
+}
+
+function helpText() {
+  return `Run deterministic or real-runtime skirmish AI scenarios.\n\nUsage:\n  node tools/ai/run-skirmish-matrix.mjs --scenario ID [--mode pure|runtime|both]\n  node tools/ai/run-skirmish-matrix.mjs --scenarios ID,ID [--mode pure|runtime|both]\n  node tools/ai/run-skirmish-matrix.mjs --suite stage-smoke --stage N --working-tree\n  node tools/ai/run-skirmish-matrix.mjs --candidate SHA --baseline SHA\n\nOptions:\n  --manifest PATH       Override tools/ai/fixtures/skirmish-v1.json\n  --output DIRECTORY    Store the JSON artifact in this directory\n  --seed INTEGER        Override the pure-scenario seed\n  --help                Show this help without creating a failure artifact\n\nUse tools/ai/summarize-skirmish-report.mjs on the emitted artifact. Group compatible runtime IDs with --scenarios so Playwright starts once.\n`;
 }
 
 function parseJestCounts(output) {

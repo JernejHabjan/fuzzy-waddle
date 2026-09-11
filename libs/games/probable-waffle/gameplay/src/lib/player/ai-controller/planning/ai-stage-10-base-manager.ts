@@ -96,10 +96,18 @@ export class AiStage10BaseManagerV1 implements AiProposalManagerV1 {
       .filter(isMainBuilding)
       .filter((actor) => position(actor) !== null)
       .sort((left, right) => left.actorId.localeCompare(right.actorId));
+    const activeRejectedSiteHistory = state.bases
+      .flatMap((base) => base.rejectedSiteKeys ?? [])
+      .filter((entry) => entry.retryAfterTick > observation.tick)
+      .filter(
+        (entry, index, all) =>
+          all.findIndex((candidate) => candidate.siteKey === entry.siteKey) === index
+      )
+      .sort((left, right) => left.siteKey.localeCompare(right.siteKey));
     const priorByAnchor = new Map(
       state.bases.filter((base) => base.anchorActorId).map((base) => [base.anchorActorId!, base])
     );
-    const bases: AiBaseStateV1[] = anchors.map((anchor) => {
+    const bases: AiBaseStateV1[] = anchors.map((anchor, anchorIndex) => {
       const anchorPosition = position(anchor)!;
       const prior = priorByAnchor.get(anchor.actorId);
       const establishedExpansion = state.bases
@@ -122,9 +130,12 @@ export class AiStage10BaseManagerV1 implements AiProposalManagerV1 {
         accessNodeId: anchor.accessNodeId.status === "known" ? anchor.accessNodeId.value : null,
         anchorPosition,
         reservedSiteKey: prior?.reservedSiteKey ?? establishedExpansion?.reservedSiteKey ?? null,
-        rejectedSiteKeys: (prior?.rejectedSiteKeys ?? establishedExpansion?.rejectedSiteKeys ?? []).filter(
-          (entry) => entry.retryAfterTick > observation.tick
-        ),
+        rejectedSiteKeys:
+          anchorIndex === 0
+            ? activeRejectedSiteHistory
+            : (prior?.rejectedSiteKeys ?? establishedExpansion?.rejectedSiteKeys ?? []).filter(
+                (entry) => entry.retryAfterTick > observation.tick
+              ),
         expansion: prior?.expansion ?? establishedExpansion?.expansion
       };
     });
@@ -132,6 +143,17 @@ export class AiStage10BaseManagerV1 implements AiProposalManagerV1 {
       (base) => base.anchorActorId && !anchors.some((anchor) => anchor.actorId === base.anchorActorId)
     )) {
       bases.push({ ...prior, active: false, lifecycle: prior.lifecycle === "evacuating" ? "evacuating" : "lost" });
+    }
+    for (const prior of state.bases.filter((base) => base.anchorActorId === null)) {
+      if (bases.some((base) => base.baseId === prior.baseId)) continue;
+      // Stage 12 transfers a rejected site's backoff history to the next Stage 10
+      // decision by clearing its reservation. The primary base now owns that global
+      // history, so the terminal shell must not accumulate as a fake reserved base.
+      if (prior.lifecycle === "reserved" && !prior.reservedSiteKey) continue;
+      bases.push({
+        ...prior,
+        rejectedSiteKeys: (prior.rejectedSiteKeys ?? []).filter((entry) => entry.retryAfterTick > observation.tick)
+      });
     }
 
     const primary = bases.find((base) => base.lifecycle === "active") ?? null;
@@ -178,11 +200,18 @@ export class AiStage10BaseManagerV1 implements AiProposalManagerV1 {
           left.actorId.localeCompare(right.actorId)
       )[0];
     const intents: AiIntentV1[] = [];
-    const existingExpansion = bases.find((base) => base.baseId.startsWith("base:expansion:"));
+    const existingExpansion = bases.find(
+      (base) =>
+        base.baseId.startsWith("base:expansion:") &&
+        (base.lifecycle === "proposed" || base.lifecycle === "active" || base.lifecycle === "evacuating")
+    );
+    const rejectedSiteKeys = new Set(
+      bases.flatMap((base) => base.rejectedSiteKeys?.map((entry) => entry.siteKey) ?? [])
+    );
     if (expansionTrigger && distantResource && !existingExpansion) {
       const resourcePosition = position(distantResource)!;
       const candidate = siteCandidates(resourcePosition, this.profile).find(
-        (entry) => !primary.rejectedSiteKeys?.some((rejected) => rejected.siteKey === stableSiteKey(primary, entry))
+        (entry) => !rejectedSiteKeys.has(stableSiteKey(primary, entry))
       );
       if (candidate) {
         const siteKey = stableSiteKey(primary, candidate);
@@ -210,6 +239,15 @@ export class AiStage10BaseManagerV1 implements AiProposalManagerV1 {
     );
     const macroOpening = state.opening.archetypeId.endsWith(":macro");
     const mainObject = anchors[0]?.objectName;
+    const observedExpansionSite =
+      expansion && mainObject
+        ? owned.some(
+            (actor) =>
+              actor.objectName === mainObject &&
+              position(actor) !== null &&
+              distance(position(actor)!, expansion.anchorPosition!) <= 3
+          )
+        : false;
     const builder = mainObject
       ? owned
           .filter(
@@ -221,7 +259,7 @@ export class AiStage10BaseManagerV1 implements AiProposalManagerV1 {
             )
           )
       : undefined;
-    if (expansion && builder && expansion.anchorPosition) {
+    if (expansion && builder && expansion.anchorPosition && !observedExpansionSite) {
       // Main-building construction capability is definition-derived. If the faction has no legal
       // expansion structure exposed, the saved proposal remains explicit rather than guessing one.
       const canConstructMain =

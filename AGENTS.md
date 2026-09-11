@@ -9,6 +9,7 @@ Before substantial work, inspect repo-local skills under:
 - `plugins/fuzzy-waddle-skills/skills/*/SKILL.md`
 
 Use the smallest matching set.
+Read each selected `SKILL.md` once per logical turn. After compaction, trust the continuation summary that records a complete skill read; reopen only a changed skill or a specifically needed reference.
 
 ## Required Skill Routing
 
@@ -17,16 +18,18 @@ Use the smallest matching set.
 - Plan or progress file: `plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-task-tracking/SKILL.md`
 - Explicit stage/phase close and handoff: `plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-stage-delivery/SKILL.md`
 - Phaser gameplay or GUI: `plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-phaser/SKILL.md`
+- Skirmish AI implementation, runtime matrix, or calibration: `plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-skirmish-ai/SKILL.md`
 - Autonomous issue delivery: `plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-autonomous-delivery/SKILL.md`
 
-For source discovery, use the workflow skill's [source index](plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-repo-workflow/references/source-index.md). Angular/NestJS-specific skills are not bundled in this checkout: inspect owning app/library patterns and use available framework skills when relevant. Do not chase nonexistent skill paths. Commit/PR scope and evidence are covered by repo workflow and autonomous delivery.
+For source discovery, use the workflow skill's [source index](plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-repo-workflow/references/source-index.md). Use the repo-local Angular or NestJS skill only when that framework owns the change. Commit/PR scope and evidence are covered by repo workflow and autonomous delivery.
 
 When multiple skills apply:
 
 1. Repo workflow or task tracking
 2. Debugging skill when the task is root-cause analysis, regression fixing, or behavior hardening
 3. Framework skill
-4. Stage delivery or issue delivery when applicable
+4. Skirmish AI skill when applicable
+5. Stage delivery or issue delivery when applicable
 
 ## Global Rules
 

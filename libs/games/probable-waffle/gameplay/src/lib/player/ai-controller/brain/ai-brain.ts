@@ -278,7 +278,12 @@ export class PureAiBrainV1 implements AiBrainV1 {
           : {})
       };
     }, planning.state);
-    const intents = [...planning.proposals].sort(compareIntents);
+    const modeIsTerminal = observation.modeGoals.some(
+      (goal) => goal.owner === observation.playerNumber && (goal.state === "completed" || goal.state === "failed")
+    );
+    // Once authoritative mode rules have resolved the player, keep projecting the
+    // final debug/state snapshot but never enqueue post-game economy or combat work.
+    const intents = modeIsTerminal ? [] : [...planning.proposals].sort(compareIntents);
     const decisions: AiIntentDecisionV1[] = [...planning.preDecisions];
     const accepted: AiIntentV1[] = [];
     const existingClaims = new Set<string>(

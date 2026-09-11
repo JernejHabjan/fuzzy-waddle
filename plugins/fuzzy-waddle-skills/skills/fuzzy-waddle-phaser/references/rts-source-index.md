@@ -31,7 +31,7 @@ Cross-library paths (repository-relative):
 - Wire commands: libs/games/probable-waffle/protocol/src/lib/game-instance/probable-waffle/game-command.ts
 - Server authorization: libs/games/probable-waffle/server/src/lib/probable-waffle/game-instance/multiplayer/game-command-validator.service.ts
 - Browser harness host: apps/portal-e2e/
-- AI matrix manifest and release runner: tools/ai/fixtures/ ; tools/ai/run-skirmish-matrix.mjs
+- AI matrix manifest, release runner and compact report: tools/ai/fixtures/ ; tools/ai/run-skirmish-matrix.mjs ; tools/ai/summarize-skirmish-report.mjs
 
 Read adjacent specs and follow imports for the next consumer. For spells, containers, gathering, housing or target-domain changes, start at the definition registry, then follow the specific component implementation; do not infer behavior from a familiar RTS name.
 

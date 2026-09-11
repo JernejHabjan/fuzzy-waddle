@@ -1,6 +1,7 @@
 import {
   FactionType,
   ObjectNames,
+  OrderType,
   ProbableWaffleAiDifficulty,
   ResourceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
@@ -97,7 +98,8 @@ function unit(actorId: string, accessNodeId: typeof homeNode, x: number): AiObse
 function observation(
   tick: number,
   actors: readonly AiObservedActorV1[],
-  frontiers: readonly (typeof homeNode)[] = [enemyNode]
+  frontiers: readonly (typeof homeNode)[] = [enemyNode],
+  coverage: readonly (typeof homeNode)[] = []
 ): AiObservationV1 {
   return {
     ...createStage2Observation(),
@@ -108,7 +110,7 @@ function observation(
       bounds: { status: "known", value: { width: 2, height: 1 }, observedTick: tick },
       staticRevision: 1,
       frontierAccessNodeIds: frontiers,
-      scoutCoverageAccessNodeIds: [],
+      scoutCoverageAccessNodeIds: coverage,
       dynamicObstacleActorIds: [],
       regionGeneration: { generation: 1, status: "ready", continuationCursor: 0 },
       accessGraph: graphInput.graph
@@ -138,6 +140,36 @@ describe("AiStage9SkirmishManagerV1", () => {
     );
   });
 
+  it("advances an existing scout to the next uncovered frontier and closes the prior question", () => {
+    const state = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    });
+    const first = manager.propose(observation(20, [unit("guard-1", homeNode, 0)]), state);
+    const priorScout = first.statePatch!.squads!.find((squad) => squad.role === "scout")!;
+    const continued = manager.propose(
+      observation(40, [unit("guard-1", enemyNode, 1)], [enemyNode, homeNode], [enemyNode]),
+      {
+        ...state,
+        knowledge: first.statePatch!.knowledge!,
+        squads: [{ ...priorScout, tactics: {} as never }]
+      }
+    );
+
+    expect(continued.statePatch?.knowledge?.questions).toContainEqual(
+      expect.objectContaining({ kind: `safe_route:${enemyNode}`, state: "answered" })
+    );
+    expect(continued.intents).toContainEqual(
+      expect.objectContaining({ kind: "scout", logicalPosition: { x: 0, y: 0, z: 0 } })
+    );
+    expect(continued.statePatch?.squads?.find((squad) => squad.role === "scout")?.objectiveId).toBe(
+      `question:frontier:${homeNode}`
+    );
+  });
+
   it("keeps a repeated visible contact as one incident rather than inflating enemy confidence", () => {
     const state = createAiBrainStateV1({
       playerNumber: 1,
@@ -162,6 +194,131 @@ describe("AiStage9SkirmishManagerV1", () => {
     expect(second.statePatch?.skirmish?.incidents[0]).toEqual(
       expect.objectContaining({ confidencePermille: 1000, hostileActorIds: ["enemy-1"] })
     );
+    expect(second.statePatch?.skirmish?.timeline.filter((event) => event.kind === "threat")).toHaveLength(1);
+  });
+
+  it("retires an old last-seen objective and sends a bounded scout to the next frontier", () => {
+    const state = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    });
+    const staleEnemy = {
+      ...unit("stale-enemy", enemyNode, 30),
+      owner: 2,
+      relation: "enemy" as const,
+      visibility: "last_seen" as const,
+      observedTick: 0
+    };
+
+    const proposal = manager.propose(
+      observation(AI_STAGE_9_ASSEMBLY_TIMEOUT_TICKS + 1, [
+        unit("guard-1", homeNode, 0),
+        unit("guard-2", homeNode, 0),
+        staleEnemy
+      ]),
+      state
+    );
+
+    expect(proposal.statePatch?.squads?.some((squad) => squad.role === "attack")).toBe(false);
+    expect(proposal.statePatch?.squads?.find((squad) => squad.role === "scout")?.actorIds).toEqual([
+      "guard-1",
+      "guard-2"
+    ]);
+    expect(proposal.intents).toContainEqual(expect.objectContaining({ kind: "scout" }));
+  });
+
+  it("anchors local defense to the main building instead of a distant roaming combat unit", () => {
+    const state = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    });
+    const main = {
+      ...unit("main", homeNode, 0),
+      housingCost: { status: "known" as const, value: 0, observedTick: 0 },
+      capabilities: [],
+      mainBuilding: { status: "known" as const, value: true, observedTick: 0 }
+    };
+    const raider = unit("raider", enemyNode, 30);
+    const enemy = {
+      ...unit("enemy", enemyNode, 31),
+      owner: 2,
+      relation: "enemy" as const,
+      visibility: "visible" as const
+    };
+
+    const proposal = manager.propose(observation(20, [raider, main, enemy]), state);
+
+    expect(proposal.statePatch?.squads?.some((squad) => squad.role === "defense")).toBe(false);
+  });
+
+  it("forms a defense squad for a visible raider explicitly ordered against a protected base", () => {
+    const state = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    });
+    const main = {
+      ...unit("main", homeNode, 0),
+      housingCost: { status: "known" as const, value: 0, observedTick: 0 },
+      capabilities: [],
+      mainBuilding: { status: "known" as const, value: true, observedTick: 0 }
+    };
+    const guard = unit("guard", homeNode, 0);
+    const raider = {
+      ...unit("raider", enemyNode, 30),
+      owner: 2,
+      relation: "enemy" as const,
+      visibility: "visible" as const,
+      activeOrder: {
+        status: "known" as const,
+        value: { orderType: OrderType.Attack, targetActorId: main.actorId },
+        observedTick: 20
+      }
+    };
+
+    const proposal = manager.propose(observation(20, [main, guard, raider]), state);
+
+    expect(proposal.statePatch?.squads).toContainEqual(
+      expect.objectContaining({ role: "defense", objectiveId: "raider", actorIds: ["guard"] })
+    );
+  });
+
+  it("does not classify a nearby static enemy building as a home raid", () => {
+    const state = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    });
+    const main = {
+      ...unit("main", homeNode, 0),
+      housingCost: { status: "known" as const, value: 0, observedTick: 0 },
+      capabilities: [],
+      mainBuilding: { status: "known" as const, value: true, observedTick: 0 }
+    };
+    const guard = unit("guard", homeNode, 0);
+    const enemyBuilding = {
+      ...unit("enemy-building", enemyNode, 5),
+      owner: 2,
+      relation: "enemy" as const,
+      visibility: "visible" as const,
+      housingCost: { status: "known" as const, value: 0, observedTick: 0 },
+      capabilities: []
+    };
+
+    const proposal = manager.propose(observation(20, [main, guard, enemyBuilding]), state);
+
+    expect(proposal.statePatch?.squads?.some((candidate) => candidate.role === "defense")).toBe(false);
+    expect(proposal.statePatch?.strategy?.stance).toBe("pressure");
   });
 
   it("keeps armed gatherers out of standing attack and scout squads", () => {
@@ -245,7 +402,8 @@ describe("AiStage9SkirmishManagerV1", () => {
             lastUsefulEffectTick: null,
             recoveryAttempt: 0,
             terminalReason: null
-          }
+          },
+          tactics: {} as never
         }
       ]
     };
@@ -258,6 +416,22 @@ describe("AiStage9SkirmishManagerV1", () => {
       expect.objectContaining({ kind: "attack", actorIds: ["guard-1"], targetActorId: "enemy-1" })
     );
     expect(proposal.statePatch?.squads?.find((squad) => squad.role === "attack")?.state).toBe("moving");
+    expect(proposal.statePatch?.skirmish?.timeline).toContainEqual(
+      expect.objectContaining({ subjectId: "squad:attack:primary", detail: "launch:direct" })
+    );
+
+    const repeated = manager.propose(
+      observation(AI_STAGE_9_ASSEMBLY_TIMEOUT_TICKS + 20, [unit("guard-1", homeNode, 0), enemy]),
+      {
+        ...state,
+        skirmish: proposal.statePatch!.skirmish!,
+        squads: proposal.statePatch!.squads!
+      }
+    );
+    expect(repeated.intents.some((intent) => intent.kind === "attack")).toBe(false);
+    expect(repeated.statePatch?.skirmish?.timeline.filter((event) => event.detail.startsWith("launch:"))).toHaveLength(
+      1
+    );
   });
 
   it("keeps the chosen opponent focus and does not recall a defender for a distant bait contact", () => {

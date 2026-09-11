@@ -198,6 +198,55 @@ describe("AiStage12RecoveryManagerV1", () => {
     expect(reassignment).toEqual(expect.objectContaining({ actorIds: ["worker-b"] }));
   });
 
+  it("does not issue repair orders against an unfinished construction site", () => {
+    const unfinished = {
+      ...actor("unfinished", ObjectNames.Sandhold, 7, 7),
+      healthPermille: { status: "known" as const, value: 500, observedTick: 100 },
+      constructionProgress: { status: "known" as const, value: 60, observedTick: 100 }
+    };
+
+    const proposal = manager.propose(observation([unfinished]), state());
+
+    expect(proposal.intents.some((intent) => intent.kind === "repair" && intent.targetActorId === "unfinished")).toBe(
+      false
+    );
+  });
+
+  it("does not interrupt resource delivery or duplicate an active repair order", () => {
+    const damaged = {
+      ...actor("damaged", ObjectNames.Sandhold, 7, 7),
+      healthPermille: { status: "known" as const, value: 500, observedTick: 100 },
+      constructionProgress: { status: "known" as const, value: 100, observedTick: 100 }
+    };
+    const actors = observation([damaged]).actors.map((entry) => {
+      if (entry.actorId === "worker-a") {
+        return {
+          ...entry,
+          activeOrder: {
+            status: "known" as const,
+            value: { orderType: OrderType.Repair, targetActorId: damaged.actorId },
+            observedTick: 100
+          }
+        };
+      }
+      if (entry.actorId === "worker-b") {
+        return {
+          ...entry,
+          activeOrder: {
+            status: "known" as const,
+            value: { orderType: OrderType.ReturnResources, targetActorId: "main" },
+            observedTick: 100
+          }
+        };
+      }
+      return entry;
+    });
+
+    const proposal = manager.propose({ ...observation([damaged]), actors }, state());
+
+    expect(proposal.intents.some((intent) => intent.kind === "repair")).toBe(false);
+  });
+
   it("REC-03 prioritizes an observed blocker without targeting an unseen hostile ID", () => {
     const visible = manager.propose(observation([actor("proxy", ObjectNames.Olival, 7, 5, "enemy")]), {
       ...state(),
@@ -242,6 +291,37 @@ describe("AiStage12RecoveryManagerV1", () => {
     expect(unseen.intents.some((intent) => intent.kind === "attack" && intent.targetActorId === "hidden-proxy")).toBe(
       false
     );
+  });
+
+  it("does not order a defender against an incompatible or locally unseen blocker", () => {
+    const distantAir = {
+      ...actor("air-blocker", ObjectNames.Olival, 30, 5, "enemy"),
+      capabilities: [
+        {
+          id: "air-blocker:movement",
+          family: "attack",
+          level: 1,
+          domains: ["air" as const],
+          targetDomains: ["ground" as const],
+          capacity: { status: "known" as const, value: 0, observedTick: 100 }
+        }
+      ]
+    };
+    const proposal = manager.propose(observation([distantAir]), {
+      ...state(),
+      squads: [
+        {
+          squadId: "squad:defend",
+          role: "defense",
+          domain: "ground",
+          actorIds: ["worker-a"],
+          objectiveId: null,
+          state: "ready"
+        }
+      ]
+    });
+
+    expect(proposal.intents.some((intent) => intent.kind === "attack")).toBe(false);
   });
 
   it("REC-04 records rejected placement cooldowns and releases only terminal optional recovery claims", () => {

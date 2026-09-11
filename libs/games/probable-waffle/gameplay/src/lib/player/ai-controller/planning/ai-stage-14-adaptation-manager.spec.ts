@@ -48,7 +48,15 @@ const catalog: AiCapabilityCatalogV1 = {
       gathers: [],
       housingCapacity: null,
       housingCost: 1,
-      cargoCapacity: null
+      cargoCapacity: null,
+      constructionProfile: {
+        resourceCost: { [ResourceType.Wood]: 40 },
+        footprintRadiusTiles: 0,
+        visionRange: 8,
+        navigableHeight: null,
+        enterHeight: null,
+        exitHeight: null
+      }
     },
     {
       capabilityId: "boat",
@@ -138,11 +146,49 @@ describe("AiStage14AdaptationManagerV1", () => {
       economyProduction: { ...initial.economyProduction, adaptation: first.statePatch!.adaptation! }
     });
     expect(second.intents).toContainEqual(
-      expect.objectContaining({ kind: "produce", objectName: ObjectNames.TivaraSlingshotFemale })
+      expect.objectContaining({
+        kind: "produce",
+        objectName: ObjectNames.TivaraSlingshotFemale,
+        claims: expect.arrayContaining([
+          expect.objectContaining({ kind: "resource", resourceType: ResourceType.Wood, amount: 40 })
+        ])
+      })
     );
     expect(second.statePatch?.adaptation?.activeRoleTargets).toContainEqual(
       expect.objectContaining({ role: "anti_air", desired: 1 })
     );
+  });
+
+  it("does not propose an evidence-backed counter that the current resource ledger cannot afford", () => {
+    const main = actor("main", ObjectNames.Sandhold, "self", []);
+    const flyer = actor("flyer", ObjectNames.TivaraSlingshotFemale, "enemy", ["air"]);
+    const initial = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "opening:1:balanced"
+    });
+    const first = manager.propose(observation(100, [main, flyer]), initial);
+    const poor: AiObservationV1 = {
+      ...observation(140, [main, flyer]),
+      resources: [
+        {
+          resourceType: ResourceType.Wood,
+          stockpile: 50,
+          reservedUnspent: 20,
+          obligationsDue: 10,
+          deliveredIncomePerMinute: { status: "known", value: 0, observedTick: 140 }
+        }
+      ]
+    };
+
+    const second = manager.propose(poor, {
+      ...initial,
+      economyProduction: { ...initial.economyProduction, adaptation: first.statePatch!.adaptation! }
+    });
+
+    expect(second.intents.some((intent) => intent.kind === "produce")).toBe(false);
   });
 
   it("TECH-04 decays last-seen evidence without treating memory as another sighting", () => {
@@ -170,6 +216,30 @@ describe("AiStage14AdaptationManagerV1", () => {
         consecutiveEvaluations: 0
       })
     );
+  });
+
+  it("does not classify a stationary container-bearing structure as naval transport evidence", () => {
+    const main = actor("main", ObjectNames.Sandhold, "self", []);
+    const structure = {
+      ...actor("structure", ObjectNames.Sandhold, "enemy", ["water"]),
+      housingCost: { status: "known" as const, value: 0, observedTick: 100 },
+      containerState: {
+        status: "known" as const,
+        value: { capacity: 8, passengerIds: [], pendingPassengerIds: [], mobileDomains: [] },
+        observedTick: 100
+      }
+    };
+    const initial = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "opening:1:balanced"
+    });
+
+    const proposal = manager.propose(observation(100, [main, structure]), initial);
+
+    expect(proposal.statePatch?.adaptation?.evidence.some((entry) => entry.kind === "water_or_transport")).toBe(false);
   });
 
   it("TECH-01/02 scores only a legal upgrade and preserves survival over optional technology", () => {

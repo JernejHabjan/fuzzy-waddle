@@ -26,16 +26,46 @@
       "fixture": "stage-15-opening-runtime.json",
       "drivers": ["pure", "runtime"]
     },
-    { "id": "PRO-01", "stages": [7], "group": "production", "fixture": null, "drivers": ["pure", "runtime"] },
-    { "id": "PRO-02", "stages": [7], "group": "production", "fixture": null, "drivers": ["pure", "runtime"] },
-    { "id": "PRO-03", "stages": [7], "group": "production", "fixture": null, "drivers": ["pure", "runtime"] },
-    { "id": "PRO-04", "stages": [7], "group": "production", "fixture": null, "drivers": ["pure", "runtime"] },
-    { "id": "PRO-05", "stages": [6, 7], "group": "production", "fixture": null, "drivers": ["pure", "runtime"] },
+    {
+      "id": "PRO-01",
+      "stages": [7],
+      "group": "production",
+      "fixture": "stage-15-land-loop-runtime.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "PRO-02",
+      "stages": [7],
+      "group": "production",
+      "fixture": "stage-15-land-loop-runtime.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "PRO-03",
+      "stages": [7],
+      "group": "production",
+      "fixture": "stage-15-land-loop-runtime.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "PRO-04",
+      "stages": [7],
+      "group": "production",
+      "fixture": "stage-15-land-loop-runtime.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "PRO-05",
+      "stages": [6, 7],
+      "group": "production",
+      "fixture": "stage-15-land-loop-runtime.json",
+      "drivers": ["pure", "runtime"]
+    },
     {
       "id": "PRO-06",
       "stages": [7, 12, 14],
       "group": "production",
-      "fixture": null,
+      "fixture": "stage-15-land-loop-runtime.json",
       "authoredFixture": "stage-14-adaptation.json",
       "drivers": ["pure", "runtime"]
     },
@@ -43,7 +73,7 @@
       "id": "PRO-07",
       "stages": [7, 14],
       "group": "production",
-      "fixture": null,
+      "fixture": "stage-15-land-loop-runtime.json",
       "authoredFixture": "stage-14-adaptation.json",
       "drivers": ["pure", "runtime"]
     },
@@ -316,8 +346,20 @@
       "authoredFixture": "stage-14-adaptation.json",
       "drivers": ["pure", "runtime"]
     },
-    { "id": "SEQ-01", "stages": [15], "group": "continuous", "fixture": null, "drivers": ["runtime"] },
-    { "id": "SEQ-02", "stages": [15], "group": "continuous", "fixture": null, "drivers": ["runtime"] },
+    {
+      "id": "SEQ-01",
+      "stages": [15],
+      "group": "continuous",
+      "fixture": "stage-15-land-loop-runtime.json",
+      "drivers": ["runtime"]
+    },
+    {
+      "id": "SEQ-02",
+      "stages": [15],
+      "group": "continuous",
+      "fixture": "stage-15-land-loop-runtime.json",
+      "drivers": ["runtime"]
+    },
     { "id": "SEQ-03", "stages": [15], "group": "continuous", "fixture": null, "drivers": ["runtime"] },
     { "id": "SEQ-04", "stages": [15], "group": "continuous", "fixture": null, "drivers": ["runtime"] },
     { "id": "SEQ-05", "stages": [15], "group": "continuous", "fixture": null, "drivers": ["runtime"] },

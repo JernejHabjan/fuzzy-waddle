@@ -56,6 +56,27 @@ function queueFree(actor: AiObservationV1["actors"][number]): boolean {
   return actor.queue.status !== "known" || actor.queue.value.occupied === 0;
 }
 
+function claimedActorIds(intents: readonly AiIntentV1[]): ReadonlySet<string> {
+  return new Set(
+    intents.flatMap((intent) => intent.claims.flatMap((claim) => (claim.kind === "actor" ? [claim.actorId] : [])))
+  );
+}
+
+function queuedProduction(observation: AiObservationV1, objectNames: ReadonlySet<ObjectNames>) {
+  return owned(observation)
+    .flatMap((actor) =>
+      actor.queue.status === "known"
+        ? (actor.queue.value.items ?? [])
+            .filter(
+              (item): item is typeof item & { readonly objectName: ObjectNames } =>
+                item.kind === "production" && item.objectName !== null && objectNames.has(item.objectName)
+            )
+            .map((item) => ({ producerId: actor.actorId, itemId: item.itemId, objectName: item.objectName }))
+        : []
+    )
+    .sort((left, right) => left.itemId.localeCompare(right.itemId));
+}
+
 /** Historical opening progress must not regress when a later expansion becomes active. */
 const OPENING_WORKER_COUNT = 6;
 
@@ -89,12 +110,35 @@ function selectConstructionPosition(
   builder: AiObservationV1["actors"][number],
   decisionSequence: number,
   ordinal: number,
-  selectedTileKeys: Set<string>
+  selectedTileKeys: Set<string>,
+  footprintRadiusTiles = 0
 ) {
   if (builder.logicalPosition.status !== "known") return undefined;
   const origin = builder.logicalPosition.value;
-  const candidates = (observation.map?.constructionCells ?? [])
-    .filter((cell) => cell.groundPassable && !cell.observedBlocked && !selectedTileKeys.has(cell.tileKey))
+  const cells = observation.map?.constructionCells ?? [];
+  const byKey = new Map(cells.map((cell) => [cell.tileKey, cell]));
+  const footprintKeys = (x: number, y: number) => {
+    const keys: string[] = [];
+    for (let offsetY = -footprintRadiusTiles; offsetY <= footprintRadiusTiles; offsetY += 1) {
+      for (let offsetX = -footprintRadiusTiles; offsetX <= footprintRadiusTiles; offsetX += 1) {
+        keys.push(`${x + offsetX},${y + offsetY}`);
+      }
+    }
+    return keys;
+  };
+  const candidates = cells
+    .filter((cell) => {
+      const keys = footprintKeys(cell.position.x, cell.position.y);
+      return keys.every((key) => {
+        const footprintCell = byKey.get(key);
+        return (
+          footprintCell !== undefined &&
+          footprintCell.groundPassable &&
+          !footprintCell.observedBlocked &&
+          !selectedTileKeys.has(key)
+        );
+      });
+    })
     .sort(
       (left, right) =>
         Math.abs(left.position.x - origin.x) +
@@ -105,7 +149,7 @@ function selectConstructionPosition(
   if (candidates.length === 0) return undefined;
   const selected = candidates[(decisionSequence + ordinal) % candidates.length];
   if (!selected) return undefined;
-  selectedTileKeys.add(selected.tileKey);
+  for (const key of footprintKeys(selected.position.x, selected.position.y)) selectedTileKeys.add(key);
   return selected.position;
 }
 
@@ -124,6 +168,28 @@ function roleFor(objectName: ObjectNames, catalog: AiCapabilityCatalogV1): "fron
   if (family.includes("heal") || family.includes("support")) return "support";
   if (family.includes("range")) return "ranged";
   return "frontline";
+}
+
+function isMilitaryCatalogEntry(entry: AiCapabilityCatalogV1["entries"][number]): boolean {
+  return entry.gathers.length === 0 && entry.targetDomains.length > 0;
+}
+
+function producerMilitaryProducts(
+  objectName: ObjectNames,
+  catalog: AiCapabilityCatalogV1,
+  movementDomain?: "ground" | "air" | "water"
+): readonly ObjectNames[] {
+  const producer = catalog.entries.find((entry) => entry.sourceObjectName === objectName);
+  return (producer?.produces ?? [])
+    .filter((candidate) => {
+      const product = catalog.entries.find((entry) => entry.sourceObjectName === candidate);
+      return (
+        product !== undefined &&
+        isMilitaryCatalogEntry(product) &&
+        (movementDomain === undefined || product.movementDomains.includes(movementDomain))
+      );
+    })
+    .sort();
 }
 
 /** Archetypes vary a legal branch budget only; every profile still executes the shared essential checkpoints. */
@@ -335,7 +401,9 @@ export class AiStage7MacroManagerV1 implements AiProposalManagerV1 {
             builder,
             state.scheduler.decisionSequence,
             ordinal,
-            selectedConstructionTileKeys
+            selectedConstructionTileKeys,
+            catalog.entries.find((entry) => entry.sourceObjectName === checkpoint.requiredObject)?.constructionProfile
+              ?.footprintRadiusTiles ?? 0
           );
           if (!position) continue;
           const ids = nextIds(state, checkpoint.id, ordinal++);
@@ -502,7 +570,8 @@ export class AiStage7MacroManagerV1 implements AiProposalManagerV1 {
             builder,
             state.scheduler.decisionSequence,
             ordinal + index,
-            selectedConstructionTileKeys
+            selectedConstructionTileKeys,
+            housingEntries[0].constructionProfile?.footprintRadiusTiles ?? 0
           );
           if (!position) continue;
           const ids = nextIds(state, "supply", ordinal++);
@@ -539,48 +608,391 @@ export class AiStage7MacroManagerV1 implements AiProposalManagerV1 {
       }
     }
 
+    // A granary is only a drop-off point. Sustained reinforcement needs actual
+    // renewable food sources plus workers assigned to them; otherwise a faction
+    // can spend its starting food and permanently stop replacing combat losses.
+    const foodSourceEntry = catalog.entries.find((entry) => entry.sourceObjectName === ObjectNames.Field);
+    const readyFoodSources = self
+      .filter((actor) => actor.objectName === ObjectNames.Field && isFinishedActor(actor))
+      .sort((left, right) => left.actorId.localeCompare(right.actorId));
+    const constructingFoodSources = self
+      .filter((actor) => actor.objectName === ObjectNames.Field && !isFinishedActor(actor))
+      .sort((left, right) => left.actorId.localeCompare(right.actorId));
+    const acceptedFoodSourceEffectIds = state.reservations
+      .map((reservation) => reservation.subjectKey)
+      .filter(
+        (subjectKey): subjectKey is string => subjectKey?.startsWith("effect:food-capacity:Field:effect:") === true
+      )
+      .map((subjectKey) => subjectKey.slice("effect:".length) as AiIntentV1["effectId"])
+      .sort();
+    const foodStockpile =
+      observation.resources.find((resource) => resource.resourceType === ResourceType.Food)?.stockpile ?? 0;
+    const foodCapableWorkerCount = self.filter((actor) =>
+      catalog.entries.some(
+        (entry) => entry.sourceObjectName === actor.objectName && entry.gathers.includes(ResourceType.Food)
+      )
+    ).length;
+    const desiredFoodSources =
+      openingComplete && foodSourceEntry
+        ? Math.min(foodStockpile < 600 ? 6 : 2, Math.max(1, foodCapableWorkerCount))
+        : 0;
+    if (desiredFoodSources > 0 && foodSourceEntry) {
+      demands.push({
+        demandId: "demand:economy:sustainable-food" as AiDemandV1["demandId"],
+        purpose: "renewable_food_capacity",
+        capabilityOrRole: ObjectNames.Field,
+        unit: "actor_count",
+        desired: desiredFoodSources,
+        satisfiedActorIds: readyFoodSources.map((actor) => actor.actorId),
+        queuedIds: [],
+        constructingIds: constructingFoodSources.map((actor) => actor.actorId),
+        acceptedNotObservedEffectIds: acceptedFoodSourceEffectIds,
+        preferredObjectNames: [ObjectNames.Field],
+        resourceObligations: foodSourceEntry.constructionProfile?.resourceCost ?? {}
+      });
+      const committedFoodSources =
+        readyFoodSources.length + constructingFoodSources.length + acceptedFoodSourceEffectIds.length;
+      if (committedFoodSources < desiredFoodSources) {
+        const alreadyClaimed = claimedActorIds(intents);
+        const builder = self
+          .filter(isAvailableBuilder)
+          .filter((actor) => !reservedActorIds.has(actor.actorId) && !alreadyClaimed.has(actor.actorId))
+          .filter((actor) =>
+            catalog.entries.some(
+              (entry) => entry.sourceObjectName === actor.objectName && entry.constructs.includes(ObjectNames.Field)
+            )
+          )
+          .sort((left, right) => {
+            const leftIdle = left.activeOrder?.status === "known" && left.activeOrder.value === null ? 0 : 1;
+            const rightIdle = right.activeOrder?.status === "known" && right.activeOrder.value === null ? 0 : 1;
+            return leftIdle - rightIdle || left.actorId.localeCompare(right.actorId);
+          })[0];
+        if (builder) {
+          const position = selectConstructionPosition(
+            observation,
+            builder,
+            state.scheduler.decisionSequence,
+            ordinal,
+            selectedConstructionTileKeys,
+            foodSourceEntry.constructionProfile?.footprintRadiusTiles ?? 0
+          );
+          if (position) {
+            const next = nextIds(state, `food-capacity:${ObjectNames.Field}`, ordinal++);
+            intents.push({
+              ...next,
+              kind: "construct",
+              planId: state.opening.plan.planId,
+              demandId: "demand:economy:sustainable-food" as AiDemandV1["demandId"],
+              lane: "essential_economy",
+              proposedTick: observation.tick,
+              urgencyClass: 1,
+              utility: 880,
+              preconditions: [{ kind: "actor_exists", actorId: builder.actorId }],
+              claims: [
+                {
+                  claimId: `${next.claimId}:builder` as AiIntentV1["claims"][number]["claimId"],
+                  kind: "actor",
+                  actorId: builder.actorId
+                },
+                {
+                  claimId: next.claimId,
+                  kind: "site",
+                  siteKey: `food-capacity:${ObjectNames.Field}:${position.x}:${position.y}`
+                },
+                {
+                  claimId: `${next.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
+                  kind: "effect",
+                  effectId: next.effectId
+                }
+              ],
+              reasonCode: `food_capacity:ready=${readyFoodSources.length}:committed=${committedFoodSources}/${desiredFoodSources}`,
+              builderIds: [builder.actorId],
+              objectName: ObjectNames.Field,
+              logicalPosition: position,
+              siteKey: `food-capacity:${ObjectNames.Field}:${position.x}:${position.y}`
+            });
+          }
+        }
+      }
+
+      const staffedFoodSourceIds = new Set(
+        self.flatMap((actor) => {
+          const order = actor.activeOrder?.status === "known" ? actor.activeOrder.value : null;
+          return order?.orderType === OrderType.Gather && order.targetActorId ? [order.targetActorId] : [];
+        })
+      );
+      // A returning worker is still part of a renewable-food labor cycle even
+      // though its transient target is the drop-off. Account for it against a
+      // stable unclaimed Field so another decision does not overstaff the source.
+      const returningWorkerCount = self.filter((actor) => {
+        const order = actor.activeOrder?.status === "known" ? actor.activeOrder.value : null;
+        return order?.orderType === OrderType.ReturnResources;
+      }).length;
+      readyFoodSources
+        .filter((source) => !staffedFoodSourceIds.has(source.actorId))
+        .slice(0, returningWorkerCount)
+        .forEach((source) => staffedFoodSourceIds.add(source.actorId));
+      const unstaffedFoodSource = readyFoodSources.find((source) => !staffedFoodSourceIds.has(source.actorId));
+      if (unstaffedFoodSource) {
+        const alreadyClaimed = claimedActorIds(intents);
+        const worker = self
+          .filter((actor) =>
+            catalog.entries.some(
+              (entry) => entry.sourceObjectName === actor.objectName && entry.gathers.includes(ResourceType.Food)
+            )
+          )
+          .filter((actor) => !reservedActorIds.has(actor.actorId) && !alreadyClaimed.has(actor.actorId))
+          .filter((actor) => {
+            const order = actor.activeOrder?.status === "known" ? actor.activeOrder.value : null;
+            // Returning food is part of the Field's durable labor assignment. Replacing
+            // that order strands the carried food and causes every decision to bounce a
+            // worker between otherwise healthy Fields.
+            return (
+              order === null ||
+              (order.orderType === OrderType.Gather &&
+                (order.targetActorId === null || !readyFoodSources.some((source) => source.actorId === order.targetActorId)))
+            );
+          })
+          .sort((left, right) => {
+            const leftIdle = left.activeOrder?.status === "known" && left.activeOrder.value === null ? 0 : 1;
+            const rightIdle = right.activeOrder?.status === "known" && right.activeOrder.value === null ? 0 : 1;
+            return leftIdle - rightIdle || left.actorId.localeCompare(right.actorId);
+          })[0];
+        if (worker) {
+          const next = nextIds(state, "food-labor", ordinal++);
+          intents.push({
+            ...next,
+            kind: "assign_gatherers",
+            planId: state.opening.plan.planId,
+            demandId: "demand:economy:sustainable-food" as AiDemandV1["demandId"],
+            lane: "essential_economy",
+            proposedTick: observation.tick,
+            urgencyClass: 1,
+            utility: 870,
+            preconditions: [
+              { kind: "actor_exists", actorId: worker.actorId },
+              { kind: "actor_exists", actorId: unstaffedFoodSource.actorId }
+            ],
+            claims: [
+              { claimId: next.claimId, kind: "actor", actorId: worker.actorId },
+              {
+                claimId: `${next.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
+                kind: "effect",
+                effectId: next.effectId
+              }
+            ],
+            reasonCode: `food_labor:source=${unstaffedFoodSource.actorId}`,
+            actorIds: [worker.actorId],
+            resourceType: ResourceType.Food,
+            sourceActorId: unstaffedFoodSource.actorId
+          });
+        }
+      }
+    }
+
     const military = self.filter(
       (actor) =>
         actor.housingCost.status === "known" &&
         actor.housingCost.value > 0 &&
-        !catalog.entries.some(
+        catalog.entries.some(
           (entry) =>
-            entry.sourceObjectName === actor.objectName && (entry.constructs.length > 0 || entry.gathers.length > 0)
+            entry.sourceObjectName === actor.objectName &&
+            isMilitaryCatalogEntry(entry) &&
+            entry.movementDomains.includes("ground")
         )
     );
-    const targetMilitary = budget.firstForce;
-    if (military.length < targetMilitary) {
-      const producer = self.find(
-        (actor) =>
-          catalog.entries.some((entry) => entry.sourceObjectName === actor.objectName && entry.produces.length > 0) &&
-          queueFree(actor)
-      );
-      const available = producer
-        ? (catalog.entries.find((entry) => entry.sourceObjectName === producer.objectName)?.produces ?? []).filter(
-            (objectName) => {
-              const entry = catalog.entries.find((candidate) => candidate.sourceObjectName === objectName);
-              return entry !== undefined && entry.gathers.length === 0 && entry.targetDomains.length > 0;
-            }
+    const militaryProducts = new Set(
+      catalog.entries
+        .filter((entry) => isMilitaryCatalogEntry(entry) && entry.movementDomains.includes("ground"))
+        .map((entry) => entry.sourceObjectName)
+    );
+    const queuedMilitary = queuedProduction(observation, militaryProducts);
+    const targetMilitary = openingComplete ? 12 : budget.firstForce;
+    const rawAcceptedMilitaryEffectIds = state.reservations
+      .map((reservation) => reservation.subjectKey)
+      .filter((subjectKey): subjectKey is string => subjectKey?.startsWith("effect:composition:effect:") === true)
+      .map((subjectKey) => subjectKey.slice("effect:".length) as AiIntentV1["effectId"])
+      .sort();
+    // The opening force is enough to survive and scout. A completed opening commits
+    // to a dated 12-unit transition so the land loop can launch and reinforce rather
+    // than permanently hovering below the six-unit mission threshold.
+    // Queue observation and accepted leases can briefly describe the same command.
+    // Clamp accepted-not-observed identities to the genuinely unobserved remainder
+    // so the demand ledger stays disjoint and does not report false overproduction.
+    const acceptedMilitaryEffectIds = rawAcceptedMilitaryEffectIds.slice(
+      0,
+      Math.max(0, targetMilitary - military.length - queuedMilitary.length)
+    );
+    demands.push({
+      demandId: "demand:composition:first-squad" as AiDemandV1["demandId"],
+      purpose: openingComplete ? "dated_land_pressure" : "opening_force",
+      capabilityOrRole: "ground_combat_composition",
+      unit: "actor_count",
+      desired: targetMilitary,
+      satisfiedActorIds: military.map((actor) => actor.actorId).sort(),
+      queuedIds: queuedMilitary.map((item) => item.itemId),
+      constructingIds: [],
+      acceptedNotObservedEffectIds: acceptedMilitaryEffectIds,
+      preferredObjectNames: [...militaryProducts].sort(),
+      resourceObligations: {}
+    });
+
+    const militaryProducers = self
+      .filter(isFinishedActor)
+      .filter((actor) => producerMilitaryProducts(actor.objectName, catalog, "ground").length > 0)
+      .sort((left, right) => left.actorId.localeCompare(right.actorId));
+    const primaryProducerObjectName = militaryProducers[0]?.objectName;
+    const desiredProducerCount = openingComplete && targetMilitary >= 12 ? 2 : 1;
+    if (primaryProducerObjectName) {
+      const constructingProducers = self
+        .filter((actor) => actor.objectName === primaryProducerObjectName && !isFinishedActor(actor))
+        .sort((left, right) => left.actorId.localeCompare(right.actorId));
+      const acceptedCapacityEffectIds = state.reservations
+        .map((reservation) => reservation.subjectKey)
+        .filter(
+          (subjectKey): subjectKey is string =>
+            subjectKey?.startsWith(`effect:capacity:${primaryProducerObjectName}:effect:`) === true
+        )
+        .map((subjectKey) => subjectKey.slice("effect:".length) as AiIntentV1["effectId"])
+        .sort();
+      const producerEntry = catalog.entries.find((entry) => entry.sourceObjectName === primaryProducerObjectName);
+      demands.push({
+        demandId: "demand:capacity:first-army" as AiDemandV1["demandId"],
+        purpose: "dated_military_throughput",
+        capabilityOrRole: primaryProducerObjectName,
+        unit: "work_per_horizon",
+        desired: desiredProducerCount,
+        satisfiedActorIds: militaryProducers.map((actor) => actor.actorId),
+        queuedIds: [],
+        constructingIds: constructingProducers.map((actor) => actor.actorId),
+        acceptedNotObservedEffectIds: acceptedCapacityEffectIds,
+        preferredObjectNames: [primaryProducerObjectName],
+        resourceObligations: producerEntry?.constructionProfile?.resourceCost ?? {}
+      });
+      const committedCapacity =
+        militaryProducers.length + constructingProducers.length + acceptedCapacityEffectIds.length;
+      if (openingComplete && committedCapacity < desiredProducerCount) {
+        const alreadyClaimed = claimedActorIds(intents);
+        const builder = self
+          .filter(isAvailableBuilder)
+          .filter((actor) => !reservedActorIds.has(actor.actorId) && !alreadyClaimed.has(actor.actorId))
+          .filter((actor) =>
+            catalog.entries.some(
+              (entry) =>
+                entry.sourceObjectName === actor.objectName && entry.constructs.includes(primaryProducerObjectName)
+            )
           )
-        : [];
+          .sort((left, right) => {
+            const leftIdle = left.activeOrder?.status === "known" && left.activeOrder.value === null ? 1 : 0;
+            const rightIdle = right.activeOrder?.status === "known" && right.activeOrder.value === null ? 1 : 0;
+            return leftIdle - rightIdle || left.actorId.localeCompare(right.actorId);
+          })[0];
+        if (builder) {
+          const position = selectConstructionPosition(
+            observation,
+            builder,
+            state.scheduler.decisionSequence,
+            ordinal,
+            selectedConstructionTileKeys,
+            producerEntry?.constructionProfile?.footprintRadiusTiles ?? 0
+          );
+          if (position) {
+            const next = nextIds(state, `capacity:${primaryProducerObjectName}`, ordinal++);
+            intents.push({
+              ...next,
+              kind: "construct",
+              planId: state.opening.plan.planId,
+              demandId: "demand:capacity:first-army" as AiDemandV1["demandId"],
+              lane: "supply_production",
+              proposedTick: observation.tick,
+              urgencyClass: 3,
+              utility: 640,
+              preconditions: [{ kind: "actor_exists", actorId: builder.actorId }],
+              claims: [
+                {
+                  claimId: `${next.claimId}:builder` as AiIntentV1["claims"][number]["claimId"],
+                  kind: "actor",
+                  actorId: builder.actorId
+                },
+                {
+                  claimId: next.claimId,
+                  kind: "site",
+                  siteKey: `capacity:${primaryProducerObjectName}:${position.x}:${position.y}`
+                },
+                {
+                  claimId: `${next.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
+                  kind: "effect",
+                  effectId: next.effectId
+                }
+              ],
+              reasonCode: `capacity:dated_target=${targetMilitary}:ready=${militaryProducers.length}:committed=${committedCapacity}/${desiredProducerCount}`,
+              builderIds: [builder.actorId],
+              objectName: primaryProducerObjectName,
+              logicalPosition: position,
+              siteKey: `capacity:${primaryProducerObjectName}:${position.x}:${position.y}`
+            });
+          }
+        }
+      }
+    }
+
+    const projectedCount = military.length + queuedMilitary.length + acceptedMilitaryEffectIds.length;
+    if (projectedCount < targetMilitary) {
       const roleCounts = { frontline: 0, ranged: 0, support: 0 };
       for (const actor of military) roleCounts[roleFor(actor.objectName, catalog)] += 1;
+      for (const item of queuedMilitary) roleCounts[roleFor(item.objectName, catalog)] += 1;
       const desiredRanged = Math.ceil((targetMilitary * budget.rangedPermille) / 1000);
-      const candidate = [...available].sort((left, right) => {
-        const leftDeficit =
-          roleFor(left, catalog) === "ranged"
-            ? desiredRanged - roleCounts.ranged
-            : targetMilitary - desiredRanged - roleCounts.frontline;
-        const rightDeficit =
-          roleFor(right, catalog) === "ranged"
-            ? desiredRanged - roleCounts.ranged
-            : targetMilitary - desiredRanged - roleCounts.frontline;
-        return rightDeficit - leftDeficit || left.localeCompare(right);
-      })[0];
-      if (producer && candidate) {
-        const ids = nextIds(state, "composition", ordinal++);
+      const remainingProductionResources = new Map(
+        observation.resources.map(
+          (resource) =>
+            [resource.resourceType, resource.stockpile - resource.reservedUnspent - resource.obligationsDue] as const
+        )
+      );
+      let remaining = targetMilitary - projectedCount;
+      for (const producer of militaryProducers.filter(queueFree)) {
+        if (remaining <= 0) break;
+        const candidate = [...producerMilitaryProducts(producer.objectName, catalog, "ground")]
+          .filter((objectName) => {
+            const cost = catalog.entries.find((entry) => entry.sourceObjectName === objectName)?.constructionProfile
+              ?.resourceCost;
+            return Object.entries(cost ?? {}).every(
+              ([resourceType, amount]) =>
+                (remainingProductionResources.get(resourceType as ResourceType) ?? 0) >= (amount ?? 0)
+            );
+          })
+          .sort((left, right) => {
+            const leftRole = roleFor(left, catalog);
+            const rightRole = roleFor(right, catalog);
+            const leftDeficit =
+              leftRole === "ranged"
+                ? desiredRanged - roleCounts.ranged
+                : targetMilitary - desiredRanged - roleCounts.frontline;
+            const rightDeficit =
+              rightRole === "ranged"
+                ? desiredRanged - roleCounts.ranged
+                : targetMilitary - desiredRanged - roleCounts.frontline;
+            const totalCost = (objectName: ObjectNames) =>
+              Object.values(
+                catalog.entries.find((entry) => entry.sourceObjectName === objectName)?.constructionProfile
+                  ?.resourceCost ?? {}
+              ).reduce<number>((total, amount) => total + (amount ?? 0), 0);
+            return rightDeficit - leftDeficit || totalCost(left) - totalCost(right) || left.localeCompare(right);
+          })[0];
+        if (!candidate) continue;
+        const next = nextIds(state, "composition", ordinal++);
+        const resourceCost =
+          catalog.entries.find((entry) => entry.sourceObjectName === candidate)?.constructionProfile?.resourceCost ?? {};
+        const resourceClaims = Object.entries(resourceCost)
+          .filter((entry): entry is [ResourceType, number] => entry[1] !== undefined && entry[1] > 0)
+          .sort(([left], [right]) => left.localeCompare(right))
+          .map(([resourceType, amount]) => ({
+            claimId: `${next.claimId}:${resourceType}` as AiIntentV1["claims"][number]["claimId"],
+            kind: "resource" as const,
+            resourceType,
+            amount
+          }));
         intents.push({
-          ...ids,
+          ...next,
           kind: "produce",
           planId: state.opening.plan.planId,
           demandId: "demand:composition:first-squad" as AiDemandV1["demandId"],
@@ -590,17 +1002,26 @@ export class AiStage7MacroManagerV1 implements AiProposalManagerV1 {
           utility: 600,
           preconditions: [{ kind: "actor_exists", actorId: producer.actorId }],
           claims: [
-            { claimId: ids.claimId, kind: "production_slot", producerId: producer.actorId, slot: 0 },
+            { claimId: next.claimId, kind: "production_slot", producerId: producer.actorId, slot: 0 },
+            ...resourceClaims,
             {
-              claimId: `${ids.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
+              claimId: `${next.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
               kind: "effect",
-              effectId: ids.effectId
+              effectId: next.effectId
             }
           ],
-          reasonCode: `composition:${state.opening.archetypeId}:${roleFor(candidate, catalog)}:frontline=${roleCounts.frontline}:ranged=${roleCounts.ranged}`,
+          reasonCode: `composition:${state.opening.archetypeId}:${roleFor(candidate, catalog)}:frontline=${roleCounts.frontline}:ranged=${roleCounts.ranged}:projected=${projectedCount + intents.filter((intent) => intent.kind === "produce" && intent.demandId === "demand:composition:first-squad").length}/${targetMilitary}`,
           producerId: producer.actorId,
           objectName: candidate
         });
+        for (const [resourceType, amount] of Object.entries(resourceCost)) {
+          remainingProductionResources.set(
+            resourceType as ResourceType,
+            Math.max(0, (remainingProductionResources.get(resourceType as ResourceType) ?? 0) - (amount ?? 0))
+          );
+        }
+        roleCounts[roleFor(candidate, catalog)] += 1;
+        remaining -= 1;
       }
     }
 

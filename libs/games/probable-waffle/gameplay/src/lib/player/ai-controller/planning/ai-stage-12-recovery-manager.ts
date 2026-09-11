@@ -29,6 +29,30 @@ function distance(left: Vector3Simple, right: Vector3Simple): number {
   return Math.abs(left.x - right.x) + Math.abs(left.y - right.y) + Math.abs(left.z - right.z);
 }
 
+function movementDomains(actor: AiObservedActorV1): readonly ("ground" | "water" | "air")[] {
+  const result = [...new Set(actor.capabilities.flatMap((capability) => capability.domains))].sort();
+  return result.length > 0 ? result : ["ground"];
+}
+
+function canTarget(attacker: AiObservedActorV1, target: AiObservedActorV1): boolean {
+  const supported = new Set(attacker.capabilities.flatMap((capability) => capability.targetDomains));
+  return movementDomains(target).some((domain) => supported.has(domain));
+}
+
+function canSee(
+  attacker: AiObservedActorV1,
+  target: AiObservedActorV1,
+  catalog: AiCapabilityCatalogV1
+): boolean {
+  const attackerPosition = position(attacker);
+  const targetPosition = position(target);
+  if (!attackerPosition || !targetPosition) return false;
+  const range =
+    catalog.entries.find((entry) => entry.sourceObjectName === attacker.objectName)?.constructionProfile
+      ?.visionRange ?? 8;
+  return distance(attackerPosition, targetPosition) <= range;
+}
+
 function ids(
   state: AiBrainStateV1,
   key: string
@@ -250,15 +274,13 @@ export class AiStage12RecoveryManagerV1 implements AiProposalManagerV1 {
       if (!blocker) continue;
       const squad = state.squads
         .filter((candidate) => candidate.role === "defense" && candidate.actorIds.length > 0)
-        .filter((candidate) =>
-          candidate.actorIds.some((actorId) =>
-            self
-              .find((actor) => actor.actorId === actorId)
-              ?.capabilities.some((capability) => capability.targetDomains.includes("ground"))
-          )
-        )
         .sort((a, b) => a.squadId.localeCompare(b.squadId))[0];
       if (!squad) continue;
+      const capableDefenders = squad.actorIds
+        .map((actorId) => self.find((actor) => actor.actorId === actorId))
+        .filter((actor): actor is AiObservedActorV1 => actor !== undefined)
+        .filter((actor) => canTarget(actor, blocker) && canSee(actor, blocker, catalog));
+      if (capableDefenders.length === 0) continue;
       const key = `blocker:${base.baseId}:${blocker.actorId}`;
       const old = prior.get(key);
       if (old && observation.tick < old.nextRetryTick) continue;
@@ -273,9 +295,16 @@ export class AiStage12RecoveryManagerV1 implements AiProposalManagerV1 {
         urgencyClass: 0,
         utility: 930,
         preconditions: [{ kind: "target_visible", actorId: blocker.actorId }],
-        claims: [{ claimId: actionIds.claimId, kind: "effect", effectId: actionIds.effectId }],
+        claims: [
+          ...capableDefenders.map((actor, index) => ({
+            claimId: `${actionIds.claimId}:actor:${index}` as AiIntentV1["claims"][number]["claimId"],
+            kind: "actor" as const,
+            actorId: actor.actorId
+          })),
+          { claimId: actionIds.claimId, kind: "effect", effectId: actionIds.effectId }
+        ],
         reasonCode: "recovery:visible_proxy_or_egress_blocker",
-        actorIds: squad.actorIds,
+        actorIds: capableDefenders.map((actor) => actor.actorId),
         targetActorId: blocker.actorId,
         targetPosition: null
       });
@@ -298,13 +327,31 @@ export class AiStage12RecoveryManagerV1 implements AiProposalManagerV1 {
     // definition support remains the final repair validator and absence simply produces no order.
     const damaged = self
       .filter((actor) => actor.healthPermille?.status === "known" && actor.healthPermille.value < 700)
+      .filter((actor) => actor.constructionProgress?.status === "known" && actor.constructionProgress.value >= 100)
       .sort((a, b) => a.actorId.localeCompare(b.actorId))[0];
     const repairerLimit =
       damaged?.mainBuilding?.status === "known" && damaged.mainBuilding.value
         ? Math.max(1, Math.min(2, workers.length))
         : Math.min(2, Math.floor(workers.length / 4));
-    const repairers = workers.slice(0, repairerLimit);
-    if (damaged && repairers.length > 0) {
+    const alreadyBeingRepaired =
+      damaged !== undefined &&
+      workers.some(
+        (actor) =>
+          actor.activeOrder?.status === "known" &&
+          actor.activeOrder.value?.orderType === OrderType.Repair &&
+          actor.activeOrder.value.targetActorId === damaged.actorId
+      );
+    const repairers = workers
+      .filter((actor) => actor.activeOrder?.status !== "known" || actor.activeOrder.value === null)
+      .slice(0, repairerLimit);
+    const repairKey = damaged ? `repair:${damaged.actorId}` : null;
+    const priorRepair = repairKey ? prior.get(repairKey) : undefined;
+    if (
+      damaged &&
+      repairers.length > 0 &&
+      !alreadyBeingRepaired &&
+      (!priorRepair || observation.tick >= priorRepair.nextRetryTick)
+    ) {
       const actionIds = ids(state, `repair:${damaged.actorId}`);
       intents.push({
         ...actionIds,
@@ -333,7 +380,7 @@ export class AiStage12RecoveryManagerV1 implements AiProposalManagerV1 {
         targetActorId: damaged.actorId
       });
       records.push(
-        record(prior.get(`repair:${damaged.actorId}`), {
+        record(priorRepair, {
           recoveryKey: `repair:${damaged.actorId}`,
           domain: "repair",
           planId: "plan:recovery:repair" as RecoveryRecord["planId"],

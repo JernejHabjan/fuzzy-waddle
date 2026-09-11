@@ -44,6 +44,29 @@ export async function checkProjectRows(root, markdown) {
   return count;
 }
 
+/** Keep shared AI IDE launchers tied to real package scripts. */
+export async function checkAiRunConfigurations(root) {
+  const runDirectory = resolve(root, ".run");
+  const packageJson = JSON.parse(await readFile(resolve(root, "package.json"), "utf8"));
+  let count = 0;
+  for (const entry of await readdir(runDirectory, { withFileTypes: true })) {
+    if (!entry.isFile() || !entry.name.startsWith("AI ") || !entry.name.endsWith(".run.xml")) continue;
+    const text = await readFile(resolve(runDirectory, entry.name), "utf8");
+    if (
+      !text.startsWith('<component name="ProjectRunConfigurationManager">') ||
+      !text.trimEnd().endsWith("</component>")
+    ) {
+      throw new Error(`Malformed AI run configuration: ${entry.name}`);
+    }
+    const script = /<script value="([^"]+)"\s*\/>/.exec(text)?.[1];
+    if (!script || !Object.hasOwn(packageJson.scripts ?? {}, script)) {
+      throw new Error(`Missing package script for AI run configuration: ${entry.name}:${script ?? "none"}`);
+    }
+    count += 1;
+  }
+  return count;
+}
+
 /** Validate links, folder/name identity, source anchors and explicit test-target claims. */
 export async function checkIndex(root) {
   const skillRoot = resolve(root, "plugins/fuzzy-waddle-skills/skills");
@@ -98,10 +121,11 @@ export async function checkIndex(root) {
   }
   await checkPaths(
     root,
-    [...runtimeText.matchAll(/\b(?:apps|libs|docs)\/[\w./-]+/g)].map((match) => match[0])
+    [...runtimeText.matchAll(/\b(?:apps|libs|docs|tools)\/[\w./-]+/g)].map((match) => match[0])
   );
   const projects = await checkProjectRows(root, await readFile(resolve(referenceRoot, "verification.md"), "utf8"));
-  return { skills, links, sourceRoutes, projects };
+  const aiRunConfigurations = await checkAiRunConfigurations(root);
+  return { skills, links, sourceRoutes, projects, aiRunConfigurations };
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

@@ -25,9 +25,9 @@ const catalog: AiCapabilityCatalogV1 = {
       movementDomains: ["ground"],
       targetDomains: [],
       produces: [],
-      constructs: [ObjectNames.Olival, ObjectNames.AnkGuard, ObjectNames.Granary],
+      constructs: [ObjectNames.Olival, ObjectNames.AnkGuard, ObjectNames.Granary, ObjectNames.Field],
       researches: [],
-      gathers: [ResourceType.Wood],
+      gathers: [ResourceType.Wood, ResourceType.Food],
       housingCapacity: null,
       housingCost: 1,
       cargoCapacity: null
@@ -61,9 +61,102 @@ const catalog: AiCapabilityCatalogV1 = {
       housingCapacity: 8,
       housingCost: null,
       cargoCapacity: null
+    },
+    {
+      capabilityId: "field",
+      family: "resource_source",
+      sourceObjectName: ObjectNames.Field,
+      effectiveLevel: 1,
+      movementDomains: [],
+      targetDomains: [],
+      produces: [],
+      constructs: [],
+      researches: [],
+      gathers: [],
+      housingCapacity: null,
+      housingCost: null,
+      cargoCapacity: null,
+      constructionProfile: {
+        resourceCost: { [ResourceType.Wood]: 60 },
+        footprintRadiusTiles: 0,
+        visionRange: 2,
+        navigableHeight: null,
+        enterHeight: null,
+        exitHeight: null
+      }
+    },
+    {
+      capabilityId: "barracks",
+      family: "producer",
+      sourceObjectName: ObjectNames.AnkGuard,
+      effectiveLevel: 1,
+      movementDomains: [],
+      targetDomains: [],
+      produces: [ObjectNames.TivaraMacemanMale, ObjectNames.TivaraSlingshotFemale],
+      constructs: [],
+      researches: [],
+      gathers: [],
+      housingCapacity: null,
+      housingCost: null,
+      cargoCapacity: null,
+      constructionProfile: {
+        resourceCost: { [ResourceType.Wood]: 200 },
+        footprintRadiusTiles: 1,
+        visionRange: 6,
+        navigableHeight: null,
+        enterHeight: null,
+        exitHeight: null
+      }
+    },
+    {
+      capabilityId: "frontline",
+      family: "frontline",
+      sourceObjectName: ObjectNames.TivaraMacemanMale,
+      effectiveLevel: 1,
+      movementDomains: ["ground"],
+      targetDomains: ["ground"],
+      produces: [],
+      constructs: [],
+      researches: [],
+      gathers: [],
+      housingCapacity: null,
+      housingCost: 1,
+      cargoCapacity: null
+    },
+    {
+      capabilityId: "ranged",
+      family: "ranged",
+      sourceObjectName: ObjectNames.TivaraSlingshotFemale,
+      effectiveLevel: 1,
+      movementDomains: ["ground"],
+      targetDomains: ["ground"],
+      produces: [],
+      constructs: [],
+      researches: [],
+      gathers: [],
+      housingCapacity: null,
+      housingCost: 1,
+      cargoCapacity: null
     }
   ]
 };
+
+function completedOpeningState() {
+  const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
+  return createAiBrainStateV1({
+    playerNumber: 1,
+    faction: FactionType.Tivara,
+    profile,
+    tick: 200,
+    archetypeId: "balanced",
+    completedOpeningStepIds: [
+      "step:opening:bootstrap-worker",
+      "step:opening:supply-safety",
+      "step:opening:first-producer",
+      "step:opening:sustainable-food"
+    ]
+  });
+}
 
 describe("AiStage7MacroManagerV1", () => {
   it("keeps bootstrap demand stable and proposes the legal missing worker", () => {
@@ -346,16 +439,18 @@ describe("AiStage7MacroManagerV1", () => {
       archetypeId: "balanced"
     });
     const workers = Array.from({ length: 6 }, (_, index) => createStage2OwnedActor(`worker-${index}`));
-    const cells = [
-      {
-        tileKey: "8,8",
-        position: { x: 8, y: 8, z: 0 },
+    const cells = Array.from({ length: 9 }, (_, index) => {
+      const x = 7 + (index % 3);
+      const y = 7 + Math.floor(index / 3);
+      return {
+        tileKey: `${x},${y}`,
+        position: { x, y, z: 0 },
         groundPassable: true,
         waterPassable: false,
         elevation: 0,
         observedBlocked: false
-      }
-    ];
+      };
+    });
     const manager = new AiStage7MacroManagerV1(() => catalog);
     const supply = manager.propose(
       {
@@ -514,5 +609,392 @@ describe("AiStage7MacroManagerV1", () => {
     const construct = proposal.intents.find((intent) => intent.kind === "construct");
 
     expect(construct).toEqual(expect.objectContaining({ builderIds: ["worker-1"] }));
+  });
+
+  it("prebuilds one justified duplicate producer for the dated post-opening force", () => {
+    const state = completedOpeningState();
+    const workers = Array.from({ length: 6 }, (_, index) => ({
+      ...createStage2OwnedActor(`worker-${index}`),
+      activeOrder: {
+        status: "known" as const,
+        value: { orderType: OrderType.Gather, targetActorId: "wood" },
+        observedTick: 200
+      }
+    }));
+    const producer = { ...createStage2OwnedActor("producer-1"), objectName: ObjectNames.AnkGuard };
+    const housing = {
+      ...createStage2OwnedActor("housing"),
+      objectName: ObjectNames.Olival,
+      housingCapacity: { status: "known" as const, value: 20, observedTick: 200 }
+    };
+    const observation = {
+      ...createStage2Observation(),
+      tick: 200,
+      actors: [...workers, producer, housing],
+      map: {
+        ...createStage2Observation().map!,
+        constructionCells: Array.from({ length: 49 }, (_, index) => {
+          const x = 7 + (index % 7);
+          const y = 7 + Math.floor(index / 7);
+          return {
+            tileKey: `${x},${y}`,
+            position: { x, y, z: 0 },
+            groundPassable: true,
+            waterPassable: false,
+            elevation: 0,
+            observedBlocked: false
+          };
+        })
+      }
+    };
+
+    const proposal = new AiStage7MacroManagerV1(() => catalog).propose(observation, state);
+
+    expect(proposal.statePatch?.economyProduction?.demands).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ purpose: "dated_land_pressure", desired: 12 }),
+        expect.objectContaining({ purpose: "dated_military_throughput", desired: 2 })
+      ])
+    );
+    expect(proposal.intents).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ kind: "construct", objectName: ObjectNames.AnkGuard }),
+        expect.objectContaining({ kind: "produce", producerId: "producer-1" })
+      ])
+    );
+  });
+
+  it("uses every free producer and permits repeated useful unit types", () => {
+    const state = completedOpeningState();
+    const oneTypeCatalog: AiCapabilityCatalogV1 = {
+      ...catalog,
+      entries: catalog.entries.map((entry) =>
+        entry.sourceObjectName === ObjectNames.AnkGuard
+          ? { ...entry, produces: [ObjectNames.TivaraMacemanMale] }
+          : entry
+      )
+    };
+    const actors = [
+      ...Array.from({ length: 6 }, (_, index) => createStage2OwnedActor(`worker-${index}`)),
+      { ...createStage2OwnedActor("producer-1"), objectName: ObjectNames.AnkGuard },
+      { ...createStage2OwnedActor("producer-2"), objectName: ObjectNames.AnkGuard }
+    ];
+
+    const proposal = new AiStage7MacroManagerV1(() => oneTypeCatalog).propose(
+      { ...createStage2Observation(), tick: 200, actors },
+      state
+    );
+    const composition = proposal.intents.filter(
+      (intent) => intent.kind === "produce" && intent.demandId === "demand:composition:first-squad"
+    );
+
+    expect(composition).toHaveLength(2);
+    expect(composition.map((intent) => (intent.kind === "produce" ? intent.objectName : null))).toEqual([
+      ObjectNames.TivaraMacemanMale,
+      ObjectNames.TivaraMacemanMale
+    ]);
+    expect(
+      proposal.intents.some((intent) => intent.kind === "construct" && intent.objectName === ObjectNames.AnkGuard)
+    ).toBe(false);
+  });
+
+  it("stops production and capacity admission after ready and queued commitments satisfy demand", () => {
+    const state = completedOpeningState();
+    const military = Array.from({ length: 10 }, (_, index) => ({
+      ...createStage2OwnedActor(`military-${index}`),
+      objectName: ObjectNames.TivaraMacemanMale
+    }));
+    const queuedProducer = (id: string) => ({
+      ...createStage2OwnedActor(id),
+      objectName: ObjectNames.AnkGuard,
+      queue: {
+        status: "known" as const,
+        value: {
+          capacity: 2,
+          occupied: 1,
+          itemIds: [`${id}:queue`],
+          items: [
+            {
+              itemId: `${id}:queue`,
+              kind: "production" as const,
+              objectName: ObjectNames.TivaraMacemanMale,
+              researchType: null
+            }
+          ]
+        },
+        observedTick: 200
+      }
+    });
+    const proposal = new AiStage7MacroManagerV1(() => catalog).propose(
+      {
+        ...createStage2Observation(),
+        tick: 200,
+        actors: [queuedProducer("producer-1"), queuedProducer("producer-2"), ...military]
+      },
+      state
+    );
+
+    expect(proposal.intents.some((intent) => intent.kind === "produce")).toBe(false);
+    expect(
+      proposal.intents.some((intent) => intent.kind === "construct" && intent.objectName === ObjectNames.AnkGuard)
+    ).toBe(false);
+  });
+
+  it("creates bounded renewable food capacity after the opening instead of treating the granary as food", () => {
+    const state = completedOpeningState();
+    const workers = Array.from({ length: 6 }, (_, index) => ({
+      ...createStage2OwnedActor(`worker-${index}`),
+      activeOrder: {
+        status: "known" as const,
+        value: { orderType: OrderType.Gather, targetActorId: "wood" },
+        observedTick: 200
+      }
+    }));
+    const cells = Array.from({ length: 25 }, (_, index) => {
+      const x = 8 + (index % 5);
+      const y = 8 + Math.floor(index / 5);
+      return {
+        tileKey: `${x},${y}`,
+        position: { x, y, z: 0 },
+        groundPassable: true,
+        waterPassable: false,
+        elevation: 0,
+        observedBlocked: false
+      };
+    });
+    const proposal = new AiStage7MacroManagerV1(() => catalog).propose(
+      {
+        ...createStage2Observation(),
+        tick: 200,
+        actors: workers,
+        map: { ...createStage2Observation().map!, constructionCells: cells }
+      },
+      state
+    );
+
+    expect(proposal.statePatch?.economyProduction?.demands).toEqual(
+      expect.arrayContaining([expect.objectContaining({ purpose: "renewable_food_capacity", desired: 6 })])
+    );
+    expect(proposal.intents).toEqual(
+      expect.arrayContaining([expect.objectContaining({ kind: "construct", objectName: ObjectNames.Field })])
+    );
+  });
+
+  it("staffs completed renewable food sources and does not request a third Field", () => {
+    const state = completedOpeningState();
+    const workers = Array.from({ length: 2 }, (_, index) => createStage2OwnedActor(`worker-${index}`));
+    const fields = ["field-1", "field-2"].map((id) => ({
+      ...createStage2OwnedActor(id),
+      objectName: ObjectNames.Field
+    }));
+    const proposal = new AiStage7MacroManagerV1(() => catalog).propose(
+      {
+        ...createStage2Observation(),
+        tick: 200,
+        actors: [...workers, ...fields],
+        resources: createStage2Observation().resources.map((resource) =>
+          resource.resourceType === ResourceType.Food ? { ...resource, stockpile: 1000 } : resource
+        )
+      },
+      state
+    );
+
+    expect(
+      proposal.intents.some((intent) => intent.kind === "construct" && intent.objectName === ObjectNames.Field)
+    ).toBe(false);
+    expect(proposal.intents).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          kind: "assign_gatherers",
+          resourceType: ResourceType.Food,
+          sourceActorId: "field-1"
+        })
+      ])
+    );
+  });
+
+  it("does not interrupt a busy food worker to cover another Field", () => {
+    const state = completedOpeningState();
+    const worker = {
+      ...createStage2OwnedActor("worker"),
+      activeOrder: {
+        status: "known" as const,
+        value: { orderType: OrderType.ReturnResources, targetActorId: "granary" },
+        observedTick: 200
+      }
+    };
+    const fields = ["field-1", "field-2"].map((id) => ({
+      ...createStage2OwnedActor(id),
+      objectName: ObjectNames.Field
+    }));
+
+    const proposal = new AiStage7MacroManagerV1(() => catalog).propose(
+      { ...createStage2Observation(), tick: 200, actors: [worker, ...fields] },
+      state
+    );
+
+    expect(
+      proposal.intents.some(
+        (intent) => intent.kind === "assign_gatherers" && intent.resourceType === ResourceType.Food
+      )
+    ).toBe(false);
+    expect(
+      proposal.statePatch?.economyProduction?.demands.find((demand) => demand.purpose === "renewable_food_capacity")
+    ).toMatchObject({ desired: 1 });
+  });
+
+  it("moves a worker from a generic food source onto authored renewable Field capacity", () => {
+    const state = completedOpeningState();
+    const worker = {
+      ...createStage2OwnedActor("worker"),
+      activeOrder: {
+        status: "known" as const,
+        value: { orderType: OrderType.Gather, targetActorId: "wild-food" },
+        observedTick: 200
+      }
+    };
+    const field = { ...createStage2OwnedActor("field"), objectName: ObjectNames.Field };
+
+    const proposal = new AiStage7MacroManagerV1(() => catalog).propose(
+      { ...createStage2Observation(), tick: 200, actors: [worker, field] },
+      state
+    );
+
+    expect(proposal.intents).toContainEqual(
+      expect.objectContaining({ kind: "assign_gatherers", actorIds: ["worker"], sourceActorId: "field" })
+    );
+  });
+
+  it("selects an affordable composition unit and reserves its resources for the decision", () => {
+    const state = completedOpeningState();
+    const resourceCatalog: AiCapabilityCatalogV1 = {
+      ...catalog,
+      entries: catalog.entries.map((entry) => {
+        if (entry.sourceObjectName === ObjectNames.TivaraMacemanMale)
+          return {
+            ...entry,
+            family: "frontline",
+            constructionProfile: {
+              resourceCost: { [ResourceType.Food]: 100 },
+              footprintRadiusTiles: 0,
+              visionRange: 8,
+              navigableHeight: null,
+              enterHeight: null,
+              exitHeight: null
+            }
+          };
+        if (entry.sourceObjectName === ObjectNames.TivaraSlingshotFemale)
+          return {
+            ...entry,
+            family: "frontline",
+            constructionProfile: {
+              resourceCost: { [ResourceType.Food]: 50 },
+              footprintRadiusTiles: 0,
+              visionRange: 8,
+              navigableHeight: null,
+              enterHeight: null,
+              exitHeight: null
+            }
+          };
+        return entry;
+      })
+    };
+    const resources = [
+      ...createStage2Observation().resources,
+      {
+        resourceType: ResourceType.Food,
+        stockpile: 60,
+        reservedUnspent: 0,
+        obligationsDue: 0,
+        deliveredIncomePerMinute: { status: "known" as const, value: 0, observedTick: 200 }
+      }
+    ];
+    const proposal = new AiStage7MacroManagerV1(() => resourceCatalog).propose(
+      {
+        ...createStage2Observation(),
+        tick: 200,
+        resources,
+        actors: [
+          { ...createStage2OwnedActor("producer-1"), objectName: ObjectNames.AnkGuard },
+          { ...createStage2OwnedActor("producer-2"), objectName: ObjectNames.AnkGuard }
+        ]
+      },
+      state
+    );
+    const composition = proposal.intents.filter((intent) => intent.kind === "produce");
+
+    expect(composition).toHaveLength(1);
+    expect(composition[0]).toEqual(
+      expect.objectContaining({ objectName: ObjectNames.TivaraSlingshotFemale, producerId: "producer-1" })
+    );
+  });
+
+  it("keeps land-force demand and throughput separate from air and naval production", () => {
+    const state = completedOpeningState();
+    const domainCatalog: AiCapabilityCatalogV1 = {
+      ...catalog,
+      entries: [
+        ...catalog.entries.map((entry) =>
+          entry.sourceObjectName === ObjectNames.Sandhold
+            ? { ...entry, produces: [...entry.produces, ObjectNames.VikingBoat] }
+            : entry
+        ),
+        {
+          capabilityId: "naval",
+          family: "naval",
+          sourceObjectName: ObjectNames.VikingBoat,
+          effectiveLevel: 1,
+          movementDomains: ["water"],
+          targetDomains: ["ground", "water"],
+          produces: [],
+          constructs: [],
+          researches: [],
+          gathers: [],
+          housingCapacity: null,
+          housingCost: 1,
+          cargoCapacity: null
+        },
+        {
+          capabilityId: "air",
+          family: "air",
+          sourceObjectName: ObjectNames.SkaduweeOwl,
+          effectiveLevel: 1,
+          movementDomains: ["air"],
+          targetDomains: ["ground", "air"],
+          produces: [],
+          constructs: [],
+          researches: [],
+          gathers: [],
+          housingCapacity: null,
+          housingCost: 1,
+          cargoCapacity: null
+        }
+      ]
+    };
+    const military = Array.from({ length: 10 }, (_, index) => ({
+      ...createStage2OwnedActor(`military-${index}`),
+      objectName: ObjectNames.TivaraMacemanMale
+    }));
+    const proposal = new AiStage7MacroManagerV1(() => domainCatalog).propose(
+      {
+        ...createStage2Observation(),
+        tick: 200,
+        actors: [
+          ...military,
+          { ...createStage2OwnedActor("producer"), objectName: ObjectNames.AnkGuard },
+          { ...createStage2OwnedActor("main"), objectName: ObjectNames.Sandhold },
+          { ...createStage2OwnedActor("air-unit"), objectName: ObjectNames.SkaduweeOwl },
+          { ...createStage2OwnedActor("naval-unit"), objectName: ObjectNames.VikingBoat }
+        ]
+      },
+      state
+    );
+
+    expect(
+      proposal.statePatch?.economyProduction?.demands.find((demand) => demand.purpose === "dated_land_pressure")
+    ).toMatchObject({ desired: 12, satisfiedActorIds: expect.arrayContaining(military.map((actor) => actor.actorId)) });
+    expect(
+      proposal.statePatch?.economyProduction?.demands.find((demand) => demand.purpose === "dated_military_throughput")
+    ).toMatchObject({ desired: 2, satisfiedActorIds: ["producer"] });
   });
 });

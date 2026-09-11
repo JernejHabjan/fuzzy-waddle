@@ -41,8 +41,10 @@ function enemyEvidence(observation: AiObservationV1): readonly {
         kinds.push({ kind: "flyer", facts: ["visible_air_movement"] });
       }
       if (
-        actor.capabilities.some((capability) => capability.domains.includes("water")) ||
-        actor.containerState !== undefined
+        (actor.housingCost.status === "known" &&
+          actor.housingCost.value > 0 &&
+          actor.capabilities.some((capability) => capability.domains.includes("water"))) ||
+        (actor.containerState?.status === "known" && actor.containerState.value.mobileDomains.length > 0)
       ) {
         kinds.push({ kind: "water_or_transport", facts: ["visible_water_or_container"] });
       }
@@ -192,20 +194,44 @@ function pendingRoleEffectIds(state: AiBrainStateV1, role: AdaptationRole): read
 function producerForRole(
   observation: AiObservationV1,
   catalog: AiCapabilityCatalogV1,
-  role: AdaptationRole
-): { readonly producerId: ActorId; readonly objectName: ObjectNames } | undefined {
+  role: AdaptationRole,
+  remainingResources: ReadonlyMap<ResourceType, number>
+):
+  | {
+      readonly producerId: ActorId;
+      readonly objectName: ObjectNames;
+      readonly resourceCost: Readonly<Partial<Record<ResourceType, number>>>;
+    }
+  | undefined {
   for (const producer of owned(observation).sort((left, right) => left.actorId.localeCompare(right.actorId))) {
     if (producer.queue.status === "known" && producer.queue.value.occupied >= producer.queue.value.capacity) continue;
     const producerEntry = entryFor(catalog, producer.objectName);
-    const objectName = producerEntry?.produces
+    const product = producerEntry?.produces
       .map((candidate) => ({ candidate, entry: entryFor(catalog, candidate) }))
       .filter(
         (candidate): candidate is { candidate: ObjectNames; entry: AiCapabilityCatalogEntryV1 } =>
           candidate.entry !== undefined
       )
       .filter((candidate) => matchesRole(candidate.entry, role))
-      .sort((left, right) => left.candidate.localeCompare(right.candidate))[0]?.candidate;
-    if (objectName) return { producerId: producer.actorId, objectName };
+      .filter((candidate) =>
+        Object.entries(candidate.entry.constructionProfile?.resourceCost ?? {}).every(
+          ([resourceType, amount]) => (remainingResources.get(resourceType as ResourceType) ?? 0) >= (amount ?? 0)
+        )
+      )
+      .sort((left, right) => {
+        const totalCost = (entry: AiCapabilityCatalogEntryV1) =>
+          Object.values(entry.constructionProfile?.resourceCost ?? {}).reduce<number>(
+            (total, amount) => total + (amount ?? 0),
+            0
+          );
+        return totalCost(left.entry) - totalCost(right.entry) || left.candidate.localeCompare(right.candidate);
+      })[0];
+    if (product)
+      return {
+        producerId: producer.actorId,
+        objectName: product.candidate,
+        resourceCost: product.entry.constructionProfile?.resourceCost ?? {}
+      };
   }
   return undefined;
 }
@@ -313,6 +339,11 @@ export class AiStage14AdaptationManagerV1 implements AiProposalManagerV1 {
       observation.tick - prior.lastTransitionTick >= this.profile.compositionReconsiderationTicks;
     const adaptationDemands: AiDemandV1[] = [];
     const intents: AiIntentV1[] = [];
+    const remainingResources = new Map(
+      observation.resources.map(
+        (resource) => [resource.resourceType, resource.stockpile - resource.reservedUnspent - resource.obligationsDue] as const
+      )
+    );
     let ordinal = 0;
 
     for (const target of targets) {
@@ -334,9 +365,18 @@ export class AiStage14AdaptationManagerV1 implements AiProposalManagerV1 {
         resourceObligations: {}
       });
       if (!canTransition || current + committed >= target.desired) continue;
-      const producer = producerForRole(observation, catalog, target.role);
+      const producer = producerForRole(observation, catalog, target.role, remainingResources);
       if (!producer) continue;
       const next = ids(state, target.role, ordinal++);
+      const resourceClaims = Object.entries(producer.resourceCost)
+        .filter((entry): entry is [ResourceType, number] => entry[1] !== undefined && entry[1] > 0)
+        .sort(([left], [right]) => left.localeCompare(right))
+        .map(([resourceType, amount]) => ({
+          claimId: `${next.claimId}:${resourceType}` as AiIntentV1["claims"][number]["claimId"],
+          kind: "resource" as const,
+          resourceType,
+          amount
+        }));
       intents.push({
         ...next,
         kind: "produce",
@@ -349,6 +389,7 @@ export class AiStage14AdaptationManagerV1 implements AiProposalManagerV1 {
         preconditions: [{ kind: "actor_exists", actorId: producer.producerId }],
         claims: [
           { claimId: next.claimId, kind: "production_slot", producerId: producer.producerId, slot: 0 },
+          ...resourceClaims,
           {
             claimId: `${next.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
             kind: "effect",
@@ -359,6 +400,12 @@ export class AiStage14AdaptationManagerV1 implements AiProposalManagerV1 {
         producerId: producer.producerId,
         objectName: producer.objectName
       });
+      for (const [resourceType, amount] of Object.entries(producer.resourceCost)) {
+        remainingResources.set(
+          resourceType as ResourceType,
+          Math.max(0, (remainingResources.get(resourceType as ResourceType) ?? 0) - (amount ?? 0))
+        );
+      }
     }
 
     const pendingResearch = state.reservations.some(

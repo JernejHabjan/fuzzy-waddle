@@ -149,6 +149,106 @@ describe("AiStage10BaseManagerV1", () => {
     expect(second.statePatch?.bases?.filter((base) => base.baseId.startsWith("base:expansion:"))).toHaveLength(1);
   });
 
+  it("does not reissue expansion construction after the reserved site is observed", () => {
+    const state = withCompletedOpening(
+      createAiBrainStateV1({
+        playerNumber: 1,
+        faction: FactionType.Tivara,
+        profile,
+        tick: 0,
+        archetypeId: "balanced"
+      })
+    );
+    const remote = {
+      ...actor("wood-remote", ObjectNames.Tree1, 50),
+      owner: null,
+      relation: "neutral" as const,
+      visibility: "visible" as const,
+      resourceState: {
+        status: "known" as const,
+        value: {
+          resourceType: ResourceType.Wood,
+          available: { status: "known" as const, value: 200, observedTick: 600 },
+          carried: { status: "unknown" as const, reason: "not_supported" as const },
+          growthReadyTick: { status: "unknown" as const, reason: "not_supported" as const },
+          serviceCapacity: { status: "known" as const, value: 4, observedTick: 600 }
+        },
+        observedTick: 600
+      }
+    } satisfies AiObservedActorV1;
+    const initialActors = [
+      actor("sandhold", ObjectNames.Sandhold, 4, true),
+      actor("worker", ObjectNames.TivaraWorker, 5),
+      remote
+    ];
+    const proposed = manager.propose(observation(600, initialActors, 0), state);
+    const observedSite = actor("expansion-site", ObjectNames.Sandhold, 54, false);
+
+    const reconciled = manager.propose(observation(620, [...initialActors, observedSite], 0), {
+      ...state,
+      bases: proposed.statePatch!.bases!
+    });
+
+    expect(proposed.intents).toContainEqual(expect.objectContaining({ kind: "construct" }));
+    expect(reconciled.intents.some((intent) => intent.kind === "construct")).toBe(false);
+  });
+
+  it("retains rejected expansion history and chooses a different deterministic site", () => {
+    const state = withCompletedOpening(
+      createAiBrainStateV1({
+        playerNumber: 1,
+        faction: FactionType.Tivara,
+        profile,
+        tick: 0,
+        archetypeId: "balanced"
+      })
+    );
+    const remote = {
+      ...actor("wood-remote", ObjectNames.Tree1, 50),
+      owner: null,
+      relation: "neutral" as const,
+      visibility: "visible" as const,
+      resourceState: {
+        status: "known" as const,
+        value: {
+          resourceType: ResourceType.Wood,
+          available: { status: "known" as const, value: 200, observedTick: 600 },
+          carried: { status: "unknown" as const, reason: "not_supported" as const },
+          growthReadyTick: { status: "unknown" as const, reason: "not_supported" as const },
+          serviceCapacity: { status: "known" as const, value: 4, observedTick: 600 }
+        },
+        observedTick: 600
+      }
+    } satisfies AiObservedActorV1;
+    const actors = [
+      actor("sandhold", ObjectNames.Sandhold, 4, true),
+      actor("worker", ObjectNames.TivaraWorker, 5),
+      remote
+    ];
+    const first = manager.propose(observation(600, actors, 0), state);
+    const firstExpansion = first.statePatch!.bases!.find((base) => base.baseId.startsWith("base:expansion:"))!;
+    const rejected = {
+      ...firstExpansion,
+      lifecycle: "reserved" as const,
+      reservedSiteKey: null,
+      rejectedSiteKeys: [{ siteKey: firstExpansion.reservedSiteKey!, retryAfterTick: 1000, reason: "outcome_rejected" }]
+    };
+    const next = manager.propose(observation(620, actors, 0), {
+      ...state,
+      bases: [...first.statePatch!.bases!.filter((base) => base.baseId !== firstExpansion.baseId), rejected]
+    });
+
+    expect(next.intents).toContainEqual(
+      expect.objectContaining({ kind: "construct", logicalPosition: { x: 50, y: 4, z: 0 } })
+    );
+    expect(next.statePatch?.bases?.some((base) => base.baseId === rejected.baseId)).toBe(false);
+    expect(
+      next.statePatch?.bases
+        ?.find((base) => base.anchorActorId === "sandhold")
+        ?.rejectedSiteKeys?.map((entry) => entry.siteKey)
+    ).toContain(firstExpansion.reservedSiteKey);
+  });
+
   it("defers expansion until the committed opening is complete", () => {
     const state = createAiBrainStateV1({
       playerNumber: 1,

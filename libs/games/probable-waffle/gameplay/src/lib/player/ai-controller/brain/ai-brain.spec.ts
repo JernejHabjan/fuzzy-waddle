@@ -257,4 +257,37 @@ describe("PureAiBrainV1", () => {
     ]);
     expect(result.nextState.economyProduction.adaptation.lastTransitionReason).toBe("anti_air");
   });
+
+  it("does not accept new commands after an authoritative player goal resolves", () => {
+    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    });
+    const terminalObservation = {
+      ...createStage2Observation(),
+      modeGoals: [
+        {
+          id: "mode:win:no_enemy_players_left",
+          kind: "destroy" as const,
+          owner: 1,
+          targetActorIds: [],
+          targetAccessNodeIds: [],
+          state: "completed" as const
+        }
+      ]
+    };
+    const result = new PureAiBrainV1(profile, [new DummyManager([stopIntent("post-game", 900, "worker-1", 1)])]).step(
+      terminalObservation,
+      state,
+      []
+    );
+
+    expect(result.acceptedIntents).toEqual([]);
+    expect(result.decisions).toEqual([]);
+    expect(result.debugSnapshot.nextActions).toEqual([]);
+  });
 });

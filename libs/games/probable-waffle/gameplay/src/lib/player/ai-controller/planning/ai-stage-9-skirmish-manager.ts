@@ -21,6 +21,7 @@ export const AI_STAGE_9_CONCESSION_HOPELESS_TICKS = 1200;
 export const AI_STAGE_9_PURSUIT_LEASH_TICKS = 200;
 const MAX_TIMELINE_ENTRIES = 128;
 const THREAT_EXPIRY_TICKS = 240;
+const LAST_SEEN_PURSUIT_TICKS = 1200;
 
 type MissionRole = AiSquadStateV1["role"];
 
@@ -47,7 +48,10 @@ function canFight(actor: AiObservedActorV1): boolean {
 /** Both sides of the domain check are required: a ranged ground unit is not anti-air by name alone. */
 function canTarget(attacker: AiObservedActorV1, target: AiObservedActorV1): boolean {
   const supported = new Set(targetDomains(attacker));
-  return domains(target).some((domain) => supported.has(domain));
+  const targetMovementDomains = domains(target);
+  const effectiveTargetDomains: readonly AiDomainV1[] =
+    targetMovementDomains.length > 0 ? targetMovementDomains : ["ground"];
+  return effectiveTargetDomains.some((domain) => supported.has(domain));
 }
 
 function ownedCombat(observation: AiObservationV1, catalog: AiCapabilityCatalogV1): AiObservedActorV1[] {
@@ -89,18 +93,22 @@ function baseId(state: AiBrainStateV1): `base:${string}` {
   return state.bases.find((base) => base.active)?.baseId ?? "base:home";
 }
 
-function homePosition(observation: AiObservationV1): Vector3Simple | undefined {
+function homeActor(observation: AiObservationV1): AiObservedActorV1 | undefined {
   return observation.actors
     .filter((actor) => actor.relation === "self" && actor.visibility === "owned")
-    .map(position)
-    .find((candidate): candidate is Vector3Simple => candidate !== undefined);
+    .sort((left, right) => {
+      const leftMain = left.mainBuilding?.status === "known" && left.mainBuilding.value ? 0 : 1;
+      const rightMain = right.mainBuilding?.status === "known" && right.mainBuilding.value ? 0 : 1;
+      return leftMain - rightMain || left.actorId.localeCompare(right.actorId);
+    })[0];
+}
+
+function homePosition(observation: AiObservationV1): Vector3Simple | undefined {
+  return position(homeActor(observation));
 }
 
 function homeNode(observation: AiObservationV1): AiAccessNodeId | undefined {
-  return observation.actors
-    .filter((actor) => actor.relation === "self" && actor.visibility === "owned")
-    .map(node)
-    .find((candidate): candidate is AiAccessNodeId => candidate !== undefined);
+  return node(homeActor(observation));
 }
 
 function distance(left: Vector3Simple, right: Vector3Simple): number {
@@ -142,7 +150,14 @@ function withTimeline(
   const event = { eventId, tick, kind, subjectId, detail } as const;
   return {
     ...current,
-    timeline: [...current.timeline.filter((candidate) => candidate.eventId !== eventId), event]
+    timeline: [
+      ...current.timeline.filter(
+        (candidate) =>
+          candidate.eventId !== eventId &&
+          (candidate.kind !== kind || candidate.subjectId !== subjectId || candidate.detail !== detail)
+      ),
+      event
+    ]
       .sort((left, right) => left.tick - right.tick || left.eventId.localeCompare(right.eventId))
       .slice(-MAX_TIMELINE_ENTRIES)
   };
@@ -225,8 +240,15 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
 
     const combat = ownedCombat(observation, catalog);
     const visibleEnemies = hostileContacts(observation).filter((actor) => actor.visibility === "visible");
-    const rememberedEnemies = hostileContacts(observation).filter((actor) => actor.visibility === "last_seen");
-    const home = homePosition(observation);
+    const rememberedEnemies = hostileContacts(observation).filter(
+      (actor) =>
+        actor.visibility === "last_seen" &&
+        observation.tick -
+          (actor.logicalPosition.status === "known" ? actor.logicalPosition.observedTick : actor.observedTick) <=
+          LAST_SEEN_PURSUIT_TICKS
+    );
+    const homeBaseActor = homeActor(observation);
+    const home = position(homeBaseActor);
     const homeAccess = homeNode(observation);
     const incidents = visibleEnemies.map(
       (enemy) =>
@@ -252,8 +274,16 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
       left.incidentId.localeCompare(right.incidentId)
     );
     const currentQuestion = nextQuestion(observation, state.knowledge);
+    const coveredScoutNodes = new Set(observation.map?.scoutCoverageAccessNodeIds ?? []);
     const questions = [
-      ...state.knowledge.questions.filter((question) => question.state === "open" || question.state === "answered"),
+      ...state.knowledge.questions
+        .filter((question) => question.state === "open" || question.state === "answered")
+        .map((question) => {
+          const nodeId = question.kind.startsWith("safe_route:")
+            ? (question.kind.slice("safe_route:".length) as AiAccessNodeId)
+            : null;
+          return nodeId && coveredScoutNodes.has(nodeId) ? { ...question, state: "answered" as const } : question;
+        }),
       ...(currentQuestion ? [currentQuestion] : [])
     ]
       .filter(
@@ -276,10 +306,29 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
     const activeAttack = state.squads.find(
       (squad) => squad.role === "attack" && squad.state !== "completed" && squad.state !== "cancelled"
     );
+    const activeScout = state.squads.find(
+      (squad) => squad.role === "scout" && squad.state !== "completed" && squad.state !== "cancelled"
+    );
+    const protectedActorIds = new Set([
+      ...(homeBaseActor ? [homeBaseActor.actorId] : []),
+      ...state.bases
+        .filter((base) => base.active)
+        .flatMap((base) => [base.anchorActorId, ...base.memberActorIds])
+        .filter((actorId): actorId is ActorId => actorId !== null)
+    ]);
     const localThreat = home
       ? visibleEnemies.find((candidate) => {
           const candidatePosition = position(candidate);
-          return candidatePosition !== undefined && distance(home, candidatePosition) <= 12;
+          const targetsProtectedAsset =
+            candidate.activeOrder?.status === "known" &&
+            candidate.activeOrder.value?.targetActorId !== null &&
+            candidate.activeOrder.value?.targetActorId !== undefined &&
+            protectedActorIds.has(candidate.activeOrder.value.targetActorId);
+          const mobileThreat = candidate.housingCost.status === "known" && candidate.housingCost.value > 0;
+          return (
+            targetsProtectedAsset ||
+            (mobileThreat && candidatePosition !== undefined && distance(home, candidatePosition) <= 12)
+          );
         })
       : undefined;
 
@@ -425,12 +474,16 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
           lastUsefulEffectTick: activeAttack?.lifecycle?.lastUsefulEffectTick ?? null,
           recoveryAttempt: activeAttack?.lifecycle?.recoveryAttempt ?? 0,
           terminalReason: route?.kind === "impossible" ? route.reason : null
-        }
+        },
+        ...(activeAttack?.tactics ? { tactics: activeAttack.tactics } : {})
       };
       nextSquads.push(attack);
       const voluntaryMissions = state.squads.filter(
         (squad) => squad.role === "attack" && squad.state !== "completed"
       ).length;
+      const launchRecorded = state.skirmish.timeline.some(
+        (event) => event.kind === "mission" && event.subjectId === attackId && event.detail.startsWith("launch:")
+      );
       if (route?.kind === "water_transport" || route?.kind === "air_transport") {
         const transportPlanId = `transport:mission:${attackId}` as const;
         if (!state.transport.some((transport) => transport.planId === transportPlanId)) {
@@ -482,7 +535,7 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
           };
         }
       } else if (
-        !activeAttack?.tactics &&
+        !launchRecorded &&
         attackState === "moving" &&
         route &&
         voluntaryMissions < this.profile.voluntaryOffensiveMissionLimit + 1
@@ -576,17 +629,25 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
       );
       const scoutPosition = target?.representativePosition;
       if (scoutPosition) {
-        const scoutId = "squad:scout:primary" as AiSquadId;
+        const scoutId = activeScout?.squadId ?? ("squad:scout:primary" as AiSquadId);
         const scoutPlanId = `plan:${scoutId}` as AiPlanId;
+        const continuingScout = activeScout?.objectiveId === currentQuestion.questionId;
+        const retainedScoutMembers = continuingScout && activeScout
+          ? combat.filter((actor) => activeScout.actorIds.includes(actor.actorId))
+          : [];
+        const scoutMembers =
+          retainedScoutMembers.length > 0
+            ? retainedScoutMembers
+            : combat.slice(0, Math.min(3, combat.length));
         const scout: AiSquadStateV1 = {
           squadId: scoutId,
           role: "scout",
-          domain: domains(combat[0]!).includes("air")
+          domain: domains(scoutMembers[0] ?? combat[0]!).includes("air")
             ? "air"
-            : domains(combat[0]!).includes("water")
+            : domains(scoutMembers[0] ?? combat[0]!).includes("water")
               ? "water"
               : "ground",
-          actorIds: [combat[0].actorId],
+          actorIds: scoutMembers.map((actor) => actor.actorId),
           objectiveId: currentQuestion.questionId,
           state: "moving",
           lifecycle: {
@@ -595,21 +656,25 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
             protectedBaseId: baseId(state),
             rallyNodeId: node(combat[0]!) ?? null,
             retreatNodeId: homeAccess ?? null,
-            createdTick: observation.tick,
-            assemblyDeadline: aiDeadline(observation.tick + 200),
-            effectDeadline: aiDeadline(observation.tick + 800),
-            lastUsefulEffectTick: null,
-            recoveryAttempt: 0,
+            createdTick: continuingScout ? (activeScout?.lifecycle?.createdTick ?? observation.tick) : observation.tick,
+            assemblyDeadline:
+              continuingScout ? (activeScout?.lifecycle?.assemblyDeadline ?? aiDeadline(observation.tick + 200)) : aiDeadline(observation.tick + 200),
+            effectDeadline:
+              continuingScout ? (activeScout?.lifecycle?.effectDeadline ?? aiDeadline(observation.tick + 800)) : aiDeadline(observation.tick + 800),
+            lastUsefulEffectTick: continuingScout ? (activeScout?.lifecycle?.lastUsefulEffectTick ?? null) : null,
+            recoveryAttempt: continuingScout ? (activeScout?.lifecycle?.recoveryAttempt ?? 0) : 0,
             terminalReason: null
-          }
+          },
+          ...(continuingScout && activeScout?.tactics ? { tactics: activeScout.tactics } : {})
         };
         nextSquads.push(scout);
-        intents.push({
-          ...intentBase(state, scoutPlanId, observation.tick, `scout:${currentQuestion.questionId}`, "scouting", 700),
-          kind: "scout",
-          actorIds: scout.actorIds,
-          logicalPosition: scoutPosition
-        });
+        if (!continuingScout || !activeScout?.tactics)
+          intents.push({
+            ...intentBase(state, scoutPlanId, observation.tick, `scout:${currentQuestion.questionId}`, "scouting", 700),
+            kind: "scout",
+            actorIds: scout.actorIds,
+            logicalPosition: scoutPosition
+          });
       }
     }
 

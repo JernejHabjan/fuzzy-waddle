@@ -19,6 +19,8 @@ description: Write or maintain requested Fuzzy Waddle plans and cold-start progr
 
 Before interruption or handoff, preserve branch/worktree, base and source provenance, current stage/substep, decisions and implemented symbols, acceptance evidence, exact check commands/results, unresolved defects versus infrastructure blockers, and the next action.
 
+Keep a bounded quick-resume block at the top of a long ledger: current provenance/ownership, last meaningful pass/failure artifacts, repairs made after that evidence, and one exact next command. Leave completed stage history below it so a cold agent need not load the whole file.
+
 Use explicit states such as not_started, in_progress, stage_checked, validated and blocked. The plan defines their meaning; “code authored” never silently becomes “tests passed.” Invalidate affected evidence when shared inputs/contracts change. A cold agent must be able to resume from files and git without earlier conversation history.
 
 Keep transferable implementation learnings in owning docs/contracts as they are proven. Update reusable skills only for demonstrated general lessons; do not encode speculative AI tuning as a global rule.

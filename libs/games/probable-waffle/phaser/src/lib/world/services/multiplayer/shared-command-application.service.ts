@@ -167,12 +167,14 @@ export class SharedCommandApplicationService {
 
     this.appliedSiteKeys.set(command.siteKey, siteId);
     let assignedBuilderCount = 0;
-    for (const builder of builders) {
-      if (getActorSystem(builder, ActionSystem)?.executeAction(OrderType.Build, site, undefined, false)) {
-        assignedBuilderCount += 1;
+    if (!constructionSite.buildsWithoutAssignedWorkers) {
+      for (const builder of builders) {
+        if (getActorSystem(builder, ActionSystem)?.executeAction(OrderType.Build, site, undefined, false)) {
+          assignedBuilderCount += 1;
+        }
       }
     }
-    if (assignedBuilderCount !== builders.length) {
+    if (!constructionSite.buildsWithoutAssignedWorkers && assignedBuilderCount !== builders.length) {
       this.appliedSiteKeys.delete(command.siteKey);
       site.destroy();
       commandBus.reportOutcome(

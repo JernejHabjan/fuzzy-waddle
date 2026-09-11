@@ -1,6 +1,7 @@
 import {
   FactionType,
   ObjectNames,
+  OrderType,
   ProbableWaffleAiDifficulty,
   ResourceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
@@ -258,6 +259,31 @@ describe("AiStage13TacticsManagerV1", () => {
     expect(regrouped.statePatch?.squadUpdates?.[0]?.state).toBe("regroup");
   });
 
+  it("keeps new reinforcements on offense when only a static enemy building is near home", () => {
+    const defender = combatActor("defender", "self", 1);
+    const attacker = combatActor("attacker", "self", 2);
+    const reinforcement = combatActor("reinforcement", "self", 3);
+    const enemyBuilding = {
+      ...combatActor("enemy-building", "enemy", 5),
+      housingCost: { status: "known" as const, value: 0, observedTick: 100 },
+      capabilities: []
+    };
+    const proposal = manager.propose(
+      observation([defender, attacker, reinforcement, enemyBuilding]),
+      fixtureState([
+        squad("squad:defense", "defense", [defender.actorId]),
+        squad("squad:attack", "attack", [attacker.actorId])
+      ])
+    );
+    const updates = proposal.statePatch?.squadUpdates ?? [];
+
+    expect(updates.find((candidate) => candidate.squadId === "squad:defense")?.actorIds).toEqual(["defender"]);
+    expect(updates.find((candidate) => candidate.squadId === "squad:attack")?.actorIds).toEqual([
+      "attacker",
+      "reinforcement"
+    ]);
+  });
+
   it("H-30 drains a large retreat across the actor-order quota instead of dropping the mission order", () => {
     const guards = Array.from({ length: profile.maxActorOrdersPerStep + 3 }, (_, index) =>
       combatActor(`guard-${index.toString().padStart(2, "0")}`, "self", 5, "ground", 200, { damage: 1 })
@@ -321,9 +347,9 @@ describe("AiStage13TacticsManagerV1", () => {
   it("H6 records independently observed useful effects on the owning mission", () => {
     const guard = combatActor("guard", "self", 1);
     const current = fixtureState([squad("squad:attack", "attack", ["guard"])]);
-    const effectId = "effect:stage13:squad:attack:focus:enemy:guard";
+    const effectId = "effect:stage13:squad:attack:damage:guard:enemy:115";
     const applied = {
-      kind: "applied",
+      kind: "completed",
       tick: 115,
       worldLinkIds: ["world:attack"],
       identity: {
@@ -367,10 +393,18 @@ describe("AiStage13TacticsManagerV1", () => {
     const initialState = fixtureState([squad("squad:attack", "attack", ["guard"])]);
     const first = manager.propose(observation([guard, ...firstEnemies]), initialState);
     const committed = requireValue(first.statePatch?.squadUpdates?.[0], "missing_target_squad_update");
+    const guardStillAttacking = {
+      ...guard,
+      activeOrder: {
+        status: "known" as const,
+        value: { orderType: OrderType.Attack, targetActorId: "enemy-a" },
+        observedTick: 120
+      }
+    };
     const second = manager.propose(
       observation(
         [
-          guard,
+          guardStillAttacking,
           combatActor("enemy-a", "enemy", 5, "ground", 1000, { capabilityFamilies: ["produce"] }),
           combatActor("enemy-b", "enemy", 4, "ground", 1000, { capabilityFamilies: ["produce"] })
         ],
@@ -525,8 +559,143 @@ describe("AiStage13TacticsManagerV1", () => {
       })
     );
     const recovered = requireValue(expired.statePatch?.squadUpdates?.[0], "missing_deadline_recovery_update");
-    const relaunched = manager.propose(observation([friend], 1220), { ...current, squads: [recovered] });
-    expect(relaunched.statePatch?.squadUpdates?.[0]?.state).toBe("rally");
+    const exhausted = manager.propose(observation([friend, enemy], 3600), { ...current, squads: [recovered] });
+    expect(exhausted.statePatch?.squadUpdates?.[0]).toEqual(
+      expect.objectContaining({
+        actorIds: [],
+        state: "completed",
+        lifecycle: expect.objectContaining({ terminalReason: "effect_deadline_exhausted" })
+      })
+    );
+  });
+
+  it("extends a mission deadline when a completed damage effect proves progress", () => {
+    const friend = combatActor("guard", "self", 1, "ground", 1000, { damage: 10 });
+    const currentSquad = squad("squad:attack", "attack", [friend.actorId]);
+    const current = fixtureState([currentSquad]);
+    const progressed = manager.propose(observation([friend], 1200), {
+      ...current,
+      pendingOutcomes: [
+        {
+          identity: {
+            commandId: "command:progress",
+            intentId: "intent:progress",
+            effectId: "effect:stage13:squad:attack:damage:guard:enemy:1100"
+          },
+          kind: "completed",
+          tick: 1100,
+          reason: null
+        }
+      ]
+    });
+
+    expect(progressed.statePatch?.squadUpdates?.[0]).toEqual(
+      expect.objectContaining({
+        state: "advance",
+        lifecycle: expect.objectContaining({
+          lastUsefulEffectTick: 1100,
+          effectDeadline: expect.objectContaining({ dueTick: 3600 }),
+          recoveryAttempt: 0,
+          terminalReason: null
+        })
+      })
+    );
+  });
+
+  it("does not treat a movement acknowledgement as useful mission progress", () => {
+    const friend = combatActor("guard", "self", 1, "ground", 1000, { damage: 10 });
+    const currentSquad = squad("squad:attack", "attack", [friend.actorId]);
+    const current = fixtureState([currentSquad]);
+    const proposal = manager.propose(observation([friend], 1200), {
+      ...current,
+      pendingOutcomes: [
+        {
+          identity: {
+            commandId: "command:movement",
+            intentId: "intent:movement",
+            effectId: "effect:stage13:squad:attack:position:guard:1100"
+          },
+          kind: "completed",
+          tick: 1100,
+          reason: null
+        }
+      ]
+    });
+
+    expect(proposal.statePatch?.squadUpdates?.[0]).toEqual(
+      expect.objectContaining({
+        state: "recover",
+        lifecycle: expect.objectContaining({
+          lastUsefulEffectTick: null,
+          recoveryAttempt: 1,
+          terminalReason: "effect_deadline_recovery"
+        })
+      })
+    );
+  });
+
+  it("moves toward a player-visible target until the member has local vision to attack", () => {
+    const friend = combatActor("guard", "self", 1, "ground", 1000, { damage: 10 });
+    const enemy = combatActor("enemy", "enemy", 20, "ground", 1000, { damage: 10 });
+    const current = fixtureState([squad("squad:attack", "attack", [friend.actorId])]);
+
+    const proposal = manager.propose(observation([friend, enemy], 200), current);
+
+    expect(proposal.intents.some((intent) => intent.kind === "attack")).toBe(false);
+    expect(proposal.intents).toContainEqual(
+      expect.objectContaining({ kind: "move", actorIds: [friend.actorId] })
+    );
+  });
+
+  it("continues advancing toward a remembered objective while it is outside current vision", () => {
+    const friend = combatActor("guard", "self", 1, "ground", 1000, { damage: 10 });
+    const rememberedEnemy = {
+      ...combatActor("enemy", "enemy", 8, "ground", 1000, { damage: 10 }),
+      visibility: "last_seen" as const
+    };
+    const attack = { ...squad("squad:attack", "attack", [friend.actorId]), objectiveId: rememberedEnemy.actorId };
+
+    const proposal = manager.propose(observation([friend, rememberedEnemy], 300), fixtureState([attack]));
+
+    expect(proposal.statePatch?.squadUpdates?.[0]).toEqual(
+      expect.objectContaining({ state: "advance", objectiveId: rememberedEnemy.actorId })
+    );
+    expect(proposal.intents).toContainEqual(expect.objectContaining({ kind: "move" }));
+    expect(proposal.intents.some((intent) => intent.kind === "attack")).toBe(false);
+  });
+
+  it("releases a mission whose last-known objective has remained stale past its pursuit bound", () => {
+    const friend = combatActor("guard", "self", 1, "ground", 1000, { damage: 10 });
+    const staleEnemy = {
+      ...combatActor("enemy", "enemy", 8, "ground", 1000, { damage: 10 }),
+      visibility: "last_seen" as const,
+      observedTick: 1400,
+      logicalPosition: { status: "known" as const, value: { x: 8, y: 0, z: 0 }, observedTick: 100 }
+    };
+    const attack = { ...squad("squad:attack", "attack", [friend.actorId]), objectiveId: staleEnemy.actorId };
+
+    const proposal = manager.propose(observation([friend, staleEnemy], 1400), fixtureState([attack]));
+
+    expect(proposal.statePatch?.squadUpdates?.[0]).toEqual(
+      expect.objectContaining({
+        actorIds: [],
+        state: "completed",
+        lifecycle: expect.objectContaining({ terminalReason: "stale_contact_released" })
+      })
+    );
+    expect(proposal.intents).toEqual([]);
+  });
+
+  it("releases a mission after its concrete objective disappears from permitted observation", () => {
+    const friend = combatActor("guard", "self", 1, "ground", 1000, { damage: 10 });
+    const attack = { ...squad("squad:attack", "attack", [friend.actorId]), objectiveId: "missing-enemy" };
+
+    const proposal = manager.propose(observation([friend], 1400), fixtureState([attack]));
+
+    expect(proposal.statePatch?.squadUpdates?.[0]).toEqual(
+      expect.objectContaining({ actorIds: [], state: "completed" })
+    );
+    expect(proposal.intents).toEqual([]);
   });
 
   it("WALL-03 assigns reachable rampart posts while retaining a mobile reserve", () => {

@@ -4,6 +4,8 @@ Status: implementation-ready specification, no runtime stages completed by this 
 
 The [deterministic scenario packet](08-deterministic-scenarios.md) is mandatory alongside each owning stage. It translates the user's realistic strategic situations into positive/negative acceptance cases and independent outcome assertions. Useful duplicate buildings and units are expressly allowed; only accidental over-fulfillment and repeated side effects are suppressed.
 
+Stage 15 agents and developers should use the compact [operator guide](13-stage-15-operator-guide.md) for commands, IDE entry points, evidence layers, batching and artifact triage. It is an execution index, not a replacement for the requirements below.
+
 ## User-approved execution policy — one stage per handoff
 
 The latest user instruction requires **one implementation stage per run: implement, manually audit, commit, push, then stop** and explicitly prohibits running validation before the final stage. This supersedes both earlier automatic-continuation prompts and earlier permission for focused checks. Through Stage 14, author the required tests/fixtures and inspect code/diffs manually, but do **not** execute tests, lint, formatting validation, type checks, builds, browser/runtime smokes, `git diff --check`, or equivalent validation. Stage 15 executes and repairs the complete verification ladder. Keep one integration branch; no intermediate merge is required.
