@@ -22,23 +22,66 @@ const inspection = {
 };
 
 test("parses only supported bounded commands", () => {
-  assert.deepEqual(parseArguments(["doctor"]), { command: "doctor", issue: null, output: null });
-  assert.deepEqual(parseArguments(["context", "--issue", "824"]), { command: "context", issue: "824", output: null });
+  assert.deepEqual(parseArguments(["doctor"]), {
+    adapter: "generic",
+    base: null,
+    command: "doctor",
+    issue: null,
+    output: null,
+    targetBranch: null,
+    verificationMode: null
+  });
+  assert.deepEqual(parseArguments(["context", "--issue", "824"]), {
+    adapter: "generic",
+    base: null,
+    command: "context",
+    issue: "824",
+    output: null,
+    targetBranch: null,
+    verificationMode: null
+  });
+  assert.deepEqual(parseArguments(["verify", "--required", "--base", "develop", "--target-branch", "main"]), {
+    adapter: "generic",
+    base: "develop",
+    command: "verify",
+    issue: null,
+    output: null,
+    targetBranch: "main",
+    verificationMode: "required"
+  });
   assert.throws(() => parseArguments(["context"]), /missing_issue/u);
-  assert.throws(() => parseArguments(["verify"]), /unknown_command/u);
+  assert.throws(() => parseArguments(["verify"]), /missing_verification_mode/u);
+  assert.throws(() => parseArguments(["verify", "--changed", "--issue", "824"]), /unexpected_issue/u);
+  assert.throws(() => parseArguments(["verify", "--changed", "--required"]), /duplicate_verification_mode/u);
 });
 
 test("produces validated doctor and issue-context packets with deterministic next commands", () => {
-  const doctor = runAgentCommand("/workspace", { command: "doctor", issue: null }, { inspect: () => inspection });
+  const doctor = runAgentCommand("/workspace", parseArguments(["doctor"]), { inspect: () => inspection });
   assert.equal(doctor.result.status, "passed");
   assert.match(doctor.result.output.summary, /NEXT pnpm agent:context/u);
-  const context = runAgentCommand(
-    "/workspace",
-    { command: "context", issue: "824" },
-    { inspect: () => inspection, resolvePlan: () => "docs/ai/824.md" }
-  );
+  const context = runAgentCommand("/workspace", parseArguments(["context", "--issue", "824"]), {
+    inspect: () => inspection,
+    resolvePlan: () => "docs/ai/824.md"
+  });
   assert.deepEqual(context.result.selection.plans, ["docs/ai/824.md"]);
   assert.match(context.result.output.summary, /--issue 824/u);
+});
+
+test("produces a validated verification-selection packet", () => {
+  const verification = runAgentCommand("/workspace", parseArguments(["verify", "--changed"]), {
+    inspect: () => inspection,
+    select: () => ({
+      configured: true,
+      mode: "changed",
+      base: "develop",
+      targetBranch: "develop",
+      changedFiles: ["tools/agent/run-agent-command.mjs"],
+      projects: ["portal"],
+      checks: [{ id: "agent-tools", projects: [], commands: [["pnpm", "agent:tools:test"]] }]
+    })
+  });
+  assert.equal(verification.result.commandId, "verify");
+  assert.match(verification.result.output.summary, /VERIFY mode=changed/u);
 });
 
 test("writes explicit packets inside the workspace only", async (t) => {

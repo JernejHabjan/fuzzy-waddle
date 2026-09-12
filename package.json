@@ -23,6 +23,7 @@
     "agent:measure": "node tools/agent/measure-workflows.mjs",
     "agent:doctor": "node tools/agent/run-agent-command.mjs doctor",
     "agent:context": "node tools/agent/run-agent-command.mjs context",
+    "agent:verify": "node tools/agent/run-agent-command.mjs verify",
     "lint:source-structure:baseline": "node tools/source-quality/generate-source-structure-baseline.mjs",
     "skills:check": "node tools/skills/check-index.mjs",
     "tauri:dev": "nx run probable-waffle-desktop:tauri-dev",
