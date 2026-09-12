@@ -4,9 +4,12 @@ Each open subissue has one cold-start plan. The GitHub issue owns status and dis
 implementation route, source anchors, evidence, and completion boundary. Product behavior remains documented beside the
 AI controller.
 
+The completed #824 repository-tooling prerequisite is deliberately not retained as a follow-up plan. Its durable command
+routes are in the repository workflow skill and its completion evidence is in the parent handoff. #816 owns the remaining
+manifest support classification and CI shard policy.
+
 | Issue                                                           | Responsibility                 | Plan                                                            | Dependency                                      |
 | --------------------------------------------------------------- | ------------------------------ | --------------------------------------------------------------- | ----------------------------------------------- |
-| [#824](https://github.com/JernejHabjan/fuzzy-waddle/issues/824) | Repository agent tooling       | [Efficiency and verification](agent-verification-tooling.md)    | First: baseline, generic core, AI adapter       |
 | [#825](https://github.com/JernejHabjan/fuzzy-waddle/issues/825) | Domain and transport coverage  | [Domain/transport](domain-transport-coverage.md)                | #824; coordinate #815/#816 family slices        |
 | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | Pure scenario coverage         | [Deterministic scenarios](deterministic-scenarios.md)           | #824                                            |
 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | Runtime matrix and CI          | [Runtime matrix and CI](runtime-matrix-ci.md)                   | #824; #815 by scenario family                   |

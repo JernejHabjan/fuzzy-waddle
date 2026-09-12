@@ -36,8 +36,10 @@ running its IDE gutter entry without `AI_SKIRMISH_RUNTIME_REQUEST` is not scenar
 4. Cover both factions and representative sides/seeds on currently authored maps. Consume #825 domain/transport cases.
    Island-only variants remain visible `deferred_content` under optional #822; never claim them or synthetic
    flying-container coverage without registered capabilities.
-5. Create isolated CI shards by family. A clean worker may run one Phaser/Playwright process at a time; separate workers
-   may run shards concurrently.
+5. First record each row as supported or explicitly deferred with its owner. Then derive isolated CI shards by stable
+   manifest family from that status; do not copy scenario IDs into workflow YAML. Fail the selector when a supported
+   runtime-required row has no recipe, no shard, or no runnable command. A clean worker may run one Phaser/Playwright
+   process at a time; separate workers may run shards concurrently.
 6. Publish compact JSON for every shard and retain trace/repro, browser logs, screenshots/video on failure.
 
 ## Evidence
@@ -57,5 +59,7 @@ terminal results fail the shard.
 
 - Every supported runtime-required row has real Playwright evidence.
 - Required PR/merge-queue shards run from clean sources and retain artifacts.
+- CI shard output is derived from the manifest support status, assigns every supported runtime-required row exactly once,
+  and fails closed for missing/unrunnable assignments rather than reducing the required denominator.
 - Optional island-content rows remain explicit, visible, non-passing, and outside the supported core gate.
 - Run omission/final closure audits, update coverage counts and operator docs, commit, push, and close #816.
