@@ -144,7 +144,8 @@ function validateRetainedArtifact(path, workspaceRoot) {
   if (isAbsolute(path)) throw new Error("absolute_retained_artifact");
   const root = resolve(workspaceRoot);
   const target = resolve(root, path);
-  if (relative(root, target).startsWith(`..${sep}`) || target === root)
+  const relativePath = relative(root, target);
+  if (relativePath === ".." || relativePath.startsWith(`..${sep}`) || target === root)
     throw new Error("retained_artifact_escapes_workspace");
 }
 

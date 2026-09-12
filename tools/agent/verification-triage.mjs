@@ -22,7 +22,8 @@ function resolveReportPath(root, reportPath) {
     throw new Error("invalid_triage_report_path");
   const workspace = resolve(root);
   const target = resolve(workspace, reportPath);
-  if (relative(workspace, target).startsWith(`..${sep}`) || target === workspace)
+  const relativePath = relative(workspace, target);
+  if (relativePath === ".." || relativePath.startsWith(`..${sep}`) || target === workspace)
     throw new Error("triage_report_escapes_workspace");
   return target;
 }
@@ -101,7 +102,8 @@ function validateArtifactPath(root, artifactPath) {
     throw new Error("invalid_triage_artifact_path");
   const workspace = resolve(root);
   const target = resolve(workspace, artifactPath);
-  if (relative(workspace, target).startsWith(`..${sep}`) || target === workspace)
+  const relativePath = relative(workspace, target);
+  if (relativePath === ".." || relativePath.startsWith(`..${sep}`) || target === workspace)
     throw new Error("triage_artifact_escapes_workspace");
 }
 

@@ -12,6 +12,7 @@ export async function manageProcess(root, definition, action, dependencies = {})
   const operations = createOperations(root, dependencies);
   operations.statePath = statePath(operations.directory, definition);
   const existing = readState(operations.statePath);
+  if (!existing && existsSync(operations.statePath)) removeState(operations.statePath);
   if (action === "status") return status(definition, existing, operations);
   if (action === "stop") return stop(definition, existing, operations);
   return start(definition, existing, operations);
@@ -157,7 +158,8 @@ function validateDefinition(root, definition) {
     throw new Error("invalid_managed_process_definition");
   const workspace = resolve(root);
   const cwd = resolve(workspace, definition.cwd);
-  if (relative(workspace, cwd).startsWith(`..${sep}`) || (cwd === workspace && definition.cwd !== "."))
+  const relativeCwd = relative(workspace, cwd);
+  if (relativeCwd === ".." || relativeCwd.startsWith(`..${sep}`) || (cwd === workspace && definition.cwd !== "."))
     throw new Error("managed_process_cwd_escapes_workspace");
 }
 

@@ -49,6 +49,7 @@ test("triages the first failed retained command with its exact replay", async (t
 
 test("rejects missing, escaping, and malformed reports", () => {
   assert.throws(() => triageVerification("/workspace", "../report.json"), /triage_report_escapes_workspace/u);
+  assert.throws(() => triageVerification("/workspace", ".."), /triage_report_escapes_workspace/u);
   assert.throws(() => triageVerification("/workspace", "missing.json"), /unreadable_triage_report/u);
 });
 

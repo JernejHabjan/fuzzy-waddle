@@ -33,7 +33,8 @@ When the user says `continue implementing` on draft PR #814 without naming a sub
 
 Use the model named by the selected issue's primary slice. Terra is the default for bounded implementation, authored
 fixtures, UI, content, and mechanical cleanup. Sol is reserved for the explicitly named cross-system first slices:
-runtime/CI ownership, calibrated baseline comparison, multi-peer authority, and save/replay lifecycle. Return to Terra
+cross-domain authority, runtime/CI ownership, calibrated baseline comparison, multi-peer authority, and save/replay
+lifecycle. Return to Terra
 for repeatable registration and repair after that contract is known. Ask the user before changing models; a
 recommendation never switches the active model. Ask for Astra only for an unresolved architecture/authority problem after
 a bounded Sol investigation produces compact reproducible evidence.
@@ -46,13 +47,13 @@ commit it separately, and then resume the issue. Never refresh the legacy source
 | Order             | Issue                                                           | State         | Dependency / next boundary                            | Recommended primary slice |
 | ----------------- | --------------------------------------------------------------- | ------------- | ----------------------------------------------------- | ------------------------- |
 | 1                 | [#825](https://github.com/JernejHabjan/fuzzy-waddle/issues/825) | `not_started` | Current-content domain contracts                      | Sol high → Terra medium   |
-| 3                 | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `not_started` | After #824; pair pure families with #816              | Terra medium              |
-| 3                 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `not_started` | After #824; pair runtime families with #815           | Sol high → Terra medium   |
-| 4                 | [#818](https://github.com/JernejHabjan/fuzzy-waddle/issues/818) | `not_started` | After #824; semantic debug usability/parity           | Terra medium              |
-| 5                 | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `not_started` | After stable SEQ/runtime tooling                      | Sol high → Terra medium   |
-| 6                 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `not_started` | After runtime matrix infrastructure                   | Sol high → Terra high     |
-| 7                 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `not_started` | After runtime tooling; MP portion uses #819           | Sol high → Terra medium   |
-| 8                 | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | `not_started` | Last, after #816/#819/#823 parity                     | Terra high → Terra medium |
+| 2                 | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `not_started` | After #824; pair pure families with #816              | Terra medium              |
+| 2                 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `not_started` | After #824; pair runtime families with #815           | Sol high → Terra medium   |
+| 3                 | [#818](https://github.com/JernejHabjan/fuzzy-waddle/issues/818) | `not_started` | After #824; semantic debug usability/parity           | Terra medium              |
+| 4                 | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `not_started` | After stable SEQ/runtime tooling                      | Sol high → Terra medium   |
+| 5                 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `not_started` | After runtime matrix infrastructure                   | Sol high → Terra high     |
+| 6                 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `not_started` | After runtime tooling; MP portion uses #819           | Sol high → Terra medium   |
+| 7                 | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | `not_started` | Last, after #816/#819/#823 parity                     | Terra high → Terra medium |
 | As needed / final | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `not_started` | Bounded slices early; final AI cleanup after behavior | Terra medium              |
 
 Update this grid only from GitHub state and current evidence. `Code authored` is not `validated`; use the state vocabulary
@@ -218,9 +219,12 @@ The parameterized Playwright spec is not a complete scenario run without the mat
   `pnpm agent:context -- --issue 824`, and both `agent:verify` modes passed. A `main` delivery target selected version,
   lint, CI test, production build, and affected E2E without running them. Prettier, source-structure tests, and
   `git diff --check` passed for this slice.
-- Current focused evidence after the new owners: `pnpm agent:tools:test` passed 35 Node tests; agent doctor, scenario dry
+- Current focused evidence after the new owners and follow-up contract review: `pnpm agent:tools:test` passed 38 Node tests;
+  agent doctor, scenario dry
   selection, metrics, both retained scenario executions, triage, and lifecycle stop/status passed. Full lint/build and
   the broader matrix remain deliberately deferred to their owning delivery boundaries.
+- The follow-up review made retained paths reject exact-parent escapes, made malformed metrics and corrupt process state
+  fail safely, and requires selected pure/runtime fixtures to prove their driver and scenario identity.
 - Final audit decision: #824 owns manifest-validated single/batched scenario selection, retained evidence, safe local
   process reuse, and generic verification contracts. #816 owns content support classification and CI-family sharding,
   because the current manifest has 110 runtime rows without a recipe. Inferring a required CI shard now would either hide

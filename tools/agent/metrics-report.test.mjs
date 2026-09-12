@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 import test from "node:test";
@@ -62,4 +62,22 @@ test("fails closed if a comparison changes the declared workload", async (t) => 
 test("rejects reports that only claim measurement without matching evidence", async (t) => {
   const root = await fixture(t, { after: { workflows: [] } });
   assert.throws(() => compareMeasurements(root, "before.json", "after.json"), /invalid_metrics_report/u);
+});
+
+test("rejects missing totals, malformed command metrics, and exact-parent paths", async (t) => {
+  const missingTotalsRoot = await fixture(t, { after: { totals: {} } });
+  assert.throws(() => compareMeasurements(missingTotalsRoot, "before.json", "after.json"), /invalid_metrics_report/u);
+
+  const malformedCommandRoot = await fixture(t);
+  const malformed = JSON.parse(await readFile(resolve(malformedCommandRoot, "after.json"), "utf8"));
+  delete malformed.workflows[0].commands[0].elapsedMilliseconds;
+  await writeFile(resolve(malformedCommandRoot, "after.json"), JSON.stringify(malformed));
+  assert.throws(
+    () => compareMeasurements(malformedCommandRoot, "before.json", "after.json"),
+    /invalid_metrics_report/u
+  );
+  assert.throws(
+    () => compareMeasurements(malformedCommandRoot, "..", "after.json"),
+    /metrics_report_escapes_workspace/u
+  );
 });

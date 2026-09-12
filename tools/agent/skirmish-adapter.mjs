@@ -45,7 +45,8 @@ function findScenario(manifest, id) {
 }
 
 function validateMode(manifest, rows, mode) {
-  const deferred = rows.filter((row) => !row.drivers.includes(mode) && mode !== "both");
+  const requiredDrivers = mode === "both" ? ["pure", "runtime"] : [mode];
+  const deferred = rows.filter((row) => requiredDrivers.some((driver) => !row.drivers.includes(driver)));
   if (deferred.length > 0) throw new Error(`skirmish_driver_deferred:${deferred.map((row) => row.id).join(",")}`);
   const missingFixture = rows.filter((row) => missingFixtureForMode(manifest, row, mode));
   if (missingFixture.length > 0)
@@ -55,14 +56,25 @@ function validateMode(manifest, rows, mode) {
 function missingFixtureForMode(manifest, row, mode) {
   const wantsPure = mode === "pure" || mode === "both";
   const wantsRuntime = mode === "runtime" || mode === "both";
-  return (wantsPure && !hasPureFixture(manifest, row)) || (wantsRuntime && typeof row.fixture !== "string");
+  return (wantsPure && !hasPureFixture(manifest, row)) || (wantsRuntime && !hasRuntimeFixture(manifest, row));
 }
 
 function hasPureFixture(manifest, row) {
-  if (typeof row.authoredFixture === "string") return true;
-  if (typeof row.fixture !== "string") return false;
+  return (
+    fixtureMatches(manifest, row.authoredFixture, row.id, "pure") ||
+    fixtureMatches(manifest, row.fixture, row.id, "pure")
+  );
+}
+
+function hasRuntimeFixture(manifest, row) {
+  return fixtureMatches(manifest, row.fixture, row.id, "runtime");
+}
+
+function fixtureMatches(manifest, fixturePath, scenarioId, driver) {
+  if (typeof fixturePath !== "string") return false;
   try {
-    return JSON.parse(readFileSync(resolve(manifest.root, "tools/ai/fixtures", row.fixture), "utf8")).driver === "pure";
+    const fixture = JSON.parse(readFileSync(resolve(manifest.root, "tools/ai/fixtures", fixturePath), "utf8"));
+    return fixture.driver === driver && Array.isArray(fixture.scenarioIds) && fixture.scenarioIds.includes(scenarioId);
   } catch {
     return false;
   }

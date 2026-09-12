@@ -143,4 +143,14 @@ test("rejects oversized summaries and retained-artifact escapes", () => {
       }),
     /retained_artifact_escapes_workspace/u
   );
+  assert.throws(
+    () =>
+      validateCommandResult({
+        command,
+        adapters: [adapter],
+        workspaceRoot: "/workspace",
+        result: result({ output: { summary: "cut", truncated: true, retainedArtifact: ".." } })
+      }),
+    /retained_artifact_escapes_workspace/u
+  );
 });

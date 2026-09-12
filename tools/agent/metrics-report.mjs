@@ -1,6 +1,15 @@
 import { readFileSync } from "node:fs";
 import { isAbsolute, relative, resolve, sep } from "node:path";
 
+const TOTAL_METRICS = [
+  "wallMilliseconds",
+  "directProcessStarts",
+  "contextBytes",
+  "outputBytes",
+  "outputLines",
+  "retainedLogBytes"
+];
+
 /** Compares two compatible measured workflow reports without changing workflow selection or evidence. */
 export function compareMeasurements(root, beforePath, afterPath) {
   const before = readMeasurement(root, beforePath);
@@ -39,7 +48,8 @@ function resolveReportPath(root, reportPath) {
     throw new Error("invalid_metrics_report_path");
   const workspace = resolve(root);
   const target = resolve(workspace, reportPath);
-  if (relative(workspace, target).startsWith(`..${sep}`) || target === workspace)
+  const relativePath = relative(workspace, target);
+  if (relativePath === ".." || relativePath.startsWith(`..${sep}`) || target === workspace)
     throw new Error("metrics_report_escapes_workspace");
   return target;
 }
@@ -55,7 +65,8 @@ function validateMeasurement(report) {
     report.qualityInvariants.length === 0 ||
     !Array.isArray(report.workflows) ||
     report.workflows.length === 0 ||
-    !numericRecord(report.totals)
+    !numericRecord(report.totals) ||
+    TOTAL_METRICS.some((metric) => !nonNegativeNumber(report.totals[metric]))
   )
     throw new Error("invalid_metrics_report");
   const workflowIds = new Set();
@@ -68,7 +79,13 @@ function validateMeasurement(report) {
     )
       throw new Error("invalid_metrics_report");
     workflowIds.add(workflow.id);
-    if (workflow.matchesExpectedOutcome !== true || !Array.isArray(workflow.commands) || workflow.commands.length === 0)
+    if (
+      workflow.matchesExpectedOutcome !== true ||
+      !validDeclaredStarts(workflow.declaredStarts) ||
+      !Array.isArray(workflow.commands) ||
+      workflow.commands.length === 0 ||
+      workflow.commands.some((command) => !validMeasuredCommand(command))
+    )
       throw new Error("invalid_metrics_report");
   }
 }
@@ -85,15 +102,7 @@ function validateComparable(before, after) {
 }
 
 function compareTotals(before, after) {
-  const metrics = [
-    "wallMilliseconds",
-    "directProcessStarts",
-    "contextBytes",
-    "outputBytes",
-    "outputLines",
-    "retainedLogBytes"
-  ];
-  return Object.fromEntries(metrics.map((metric) => [metric, delta(before[metric], after[metric])]));
+  return Object.fromEntries(TOTAL_METRICS.map((metric) => [metric, delta(before[metric], after[metric])]));
 }
 
 function compareCache(before, after) {
@@ -159,7 +168,27 @@ function numericRecord(value) {
 }
 
 function validContext(context) {
-  return record(context) && typeof context.bytes === "number" && Number.isFinite(context.bytes);
+  return record(context) && nonNegativeNumber(context.bytes);
+}
+
+function validDeclaredStarts(starts) {
+  return (
+    record(starts) && ["server", "browser", "worker"].every((key) => Number.isInteger(starts[key]) && starts[key] >= 0)
+  );
+}
+
+function validMeasuredCommand(command) {
+  return (
+    record(command) &&
+    nonNegativeNumber(command.elapsedMilliseconds) &&
+    record(command.output) &&
+    nonNegativeNumber(command.output.stdoutBytes) &&
+    nonNegativeNumber(command.output.stderrBytes)
+  );
+}
+
+function nonNegativeNumber(value) {
+  return typeof value === "number" && Number.isFinite(value) && value >= 0;
 }
 
 function canonicalInvariantIds(report) {

@@ -44,8 +44,8 @@ the optional island-map implementation unless #822 is separately selected.
 1. **Sol/high boundary:** audit registered land/water/air/container capabilities, current maps, and authority handoffs.
    Commit a compact capability-to-evidence/status matrix that names the first causal contract and excludes unsupported
    runtime claims. Stop the Sol slice once the contract and its first failing or passing path are reproducible.
-2. **Terra/medium delivery:** audit registered land/water/air/container capabilities and current maps. Record what can produce real runtime evidence;
-   never infer capability from a type name or manufacture a shipping feature in the fixture.
+2. **Terra/medium delivery:** apply the committed capability matrix to fixture and runtime registration. Record only what
+   can produce real evidence; never infer capability from a type name or manufacture a shipping feature in the fixture.
 3. Add typed pure fixtures and semantic oracles for the owned rows. Cover positive, rejection, loss, retry, abort, release,
    and ordering cases while preserving fair observations.
 4. Add focused Phaser observation/access integration tests for topology generations, footprints, transfer points, and

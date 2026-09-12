@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtemp, rm } from "node:fs/promises";
+import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 import test from "node:test";
@@ -87,4 +87,22 @@ test("rejects definitions outside the adapter-owned local process boundary", asy
     () => manageProcess(root, { ...definition, readyUrl: "https://example.com" }, "status"),
     /invalid_managed_process_definition/u
   );
+  await assert.rejects(
+    () => manageProcess(root, { ...definition, cwd: ".." }, "status"),
+    /managed_process_cwd_escapes_workspace/u
+  );
+});
+
+test("clears corrupt ownership state before starting a replacement", async (t) => {
+  const root = await fixture(t);
+  await mkdir(resolve(root, "tmp/agent-processes"), { recursive: true });
+  await writeFile(resolve(root, "tmp/agent-processes/skirmish-ai-portal-runtime.json"), "not-json");
+  const started = await manageProcess(root, definition, "start", {
+    spawn: () => ({ pid: 42, unref() {} }),
+    isLive: (pid) => pid === 42,
+    readArguments: () => ["node", "server.mjs"],
+    waitForReady: async () => {},
+    kill: () => {}
+  });
+  assert.equal(started.state, "started");
 });
