@@ -43,7 +43,7 @@ commit it separately, and then resume the issue. Never refresh the legacy source
 
 | Order             | Issue                                                           | State         | Dependency / next boundary                            | Default model |
 | ----------------- | --------------------------------------------------------------- | ------------- | ----------------------------------------------------- | ------------- |
-| 1                 | [#824](https://github.com/JernejHabjan/fuzzy-waddle/issues/824) | `not_started` | Implement and prove the tooling/skill gate            | Terra high    |
+| 1                 | [#824](https://github.com/JernejHabjan/fuzzy-waddle/issues/824) | `not_started` | Baseline cost; prove repo tooling and AI adapter      | Terra high    |
 | 2                 | [#825](https://github.com/JernejHabjan/fuzzy-waddle/issues/825) | `not_started` | After #824; current-content domain contracts          | Terra high    |
 | 3                 | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `not_started` | After #824; pair pure families with #816              | Terra medium  |
 | 3                 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `not_started` | After #824; pair runtime families with #815           | Terra high    |
@@ -59,18 +59,18 @@ defined by the task-tracking and stage-delivery skills.
 
 ## Open work
 
-| Issue                                                           | Responsibility                   | Current boundary                                                      |
-| --------------------------------------------------------------- | -------------------------------- | --------------------------------------------------------------------- |
-| [#824](https://github.com/JernejHabjan/fuzzy-waddle/issues/824) | Agent verification tooling       | First prerequisite; commands and execution gate not implemented       |
-| [#825](https://github.com/JernejHabjan/fuzzy-waddle/issues/825) | Domain and transport coverage    | Current-content pure/integration/runtime proof remains                |
-| [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | Deterministic pure scenarios     | 40/111 pure-required rows mapped at closeout; recalculate first       |
-| [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | Playwright runtime matrix and CI | 10/120 runtime-required rows mapped; no required CI shard yet         |
-| [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | Continuous play and difficulty   | SEQ rerun, isolated baseline, D-06, and soaks remain                  |
-| [#818](https://github.com/JernejHabjan/fuzzy-waddle/issues/818) | Strategic debugging              | First semantic summary exists; usability, split, and parity remain    |
-| [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | Real multiplayer AI E2E          | Current Playwright AI runtime is local skirmish, not socket lockstep  |
-| [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | Legacy controller retirement     | Remove fallback only after runtime/save/multiplayer parity            |
-| [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | Source structure and naming      | Main planner names migrated; persisted IDs and large-file debt remain |
-| [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | Save/replay/reconnect lifecycle  | Cross-phase and repeated-match runtime evidence remains               |
+| Issue                                                           | Responsibility                    | Current boundary                                                      |
+| --------------------------------------------------------------- | --------------------------------- | --------------------------------------------------------------------- |
+| [#824](https://github.com/JernejHabjan/fuzzy-waddle/issues/824) | Repository agent-efficiency tools | First: measure cost; build generic tools plus the AI adapter          |
+| [#825](https://github.com/JernejHabjan/fuzzy-waddle/issues/825) | Domain and transport coverage     | Current-content pure/integration/runtime proof remains                |
+| [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | Deterministic pure scenarios      | 40/111 pure-required rows mapped at closeout; recalculate first       |
+| [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | Playwright runtime matrix and CI  | 10/120 runtime-required rows mapped; no required CI shard yet         |
+| [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | Continuous play and difficulty    | SEQ rerun, isolated baseline, D-06, and soaks remain                  |
+| [#818](https://github.com/JernejHabjan/fuzzy-waddle/issues/818) | Strategic debugging               | First semantic summary exists; usability, split, and parity remain    |
+| [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | Real multiplayer AI E2E           | Current Playwright AI runtime is local skirmish, not socket lockstep  |
+| [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | Legacy controller retirement      | Remove fallback only after runtime/save/multiplayer parity            |
+| [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | Source structure and naming       | Main planner names migrated; persisted IDs and large-file debt remain |
+| [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | Save/replay/reconnect lifecycle   | Cross-phase and repeated-match runtime evidence remains               |
 
 Each issue description links its cold-start plan. The plan records exact source anchors, dependency order, commands,
 evidence requirements, model/effort guidance, and completion boundary.
@@ -81,13 +81,13 @@ be proven with current content.
 
 ## Reviewed execution shape and effort
 
-The reviewer pass confirmed one manifest authority, a tooling-first gate, family-paired pure/runtime coverage, separate
+The reviewer pass confirmed a measured repository-wide tooling-first gate, one AI manifest authority, family-paired pure/runtime coverage, separate
 multiplayer and lifecycle proof, calibration after stable runtime, and legacy removal last. Estimates assume a stable
 local/CI environment and one bounded agent session per coherent commit/evidence slice; they are ranges, not guarantees.
 
 | Issue | Size     | Estimated agent-assisted engineering time | Main cost                                               |
 | ----- | -------- | ----------------------------------------- | ------------------------------------------------------- |
-| #824  | XL       | 3–6 sessions / 2–5 days                   | Unified CLI, lifecycle reuse, triage, CI contracts      |
+| #824  | XXL      | 5–9 sessions / 4–8 days                   | Cost baseline, repo CLI/core, adapters, reuse, triage   |
 | #825  | L        | 2–4 sessions / 1–3 days                   | Domain fixtures, integration, supported runtime split   |
 | #815  | XL       | 6–12 sessions / 4–8 days                  | About 71 currently unmapped pure-required rows          |
 | #816  | XXL      | 10–20 sessions / 8–15 days                | About 110 runtime mappings plus fail-closed CI shards   |

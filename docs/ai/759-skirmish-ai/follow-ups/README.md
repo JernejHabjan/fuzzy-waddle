@@ -6,7 +6,7 @@ AI controller.
 
 | Issue                                                           | Responsibility                 | Plan                                                            | Dependency                                      |
 | --------------------------------------------------------------- | ------------------------------ | --------------------------------------------------------------- | ----------------------------------------------- |
-| [#824](https://github.com/JernejHabjan/fuzzy-waddle/issues/824) | Agent verification tooling     | [Verification tooling](agent-verification-tooling.md)           | First prerequisite                              |
+| [#824](https://github.com/JernejHabjan/fuzzy-waddle/issues/824) | Repository agent tooling       | [Efficiency and verification](agent-verification-tooling.md)    | First: baseline, generic core, AI adapter       |
 | [#825](https://github.com/JernejHabjan/fuzzy-waddle/issues/825) | Domain and transport coverage  | [Domain/transport](domain-transport-coverage.md)                | #824; coordinate #815/#816 family slices        |
 | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | Pure scenario coverage         | [Deterministic scenarios](deterministic-scenarios.md)           | #824                                            |
 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | Runtime matrix and CI          | [Runtime matrix and CI](runtime-matrix-ci.md)                   | #824; #815 by scenario family                   |

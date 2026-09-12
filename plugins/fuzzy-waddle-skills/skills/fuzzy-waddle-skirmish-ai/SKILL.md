@@ -9,7 +9,7 @@ description: Implement, diagnose or validate the Probable Waffle skirmish AI, de
 
 1. Read the [AI documentation index](../../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/README.md). For unfinished #759 work, read only [HANDOFF.md](../../../../docs/ai/759-skirmish-ai/HANDOFF.md).
    When a #759 subissue has a linked cold-start plan, read that plan instead of reconstructing its scope from the parent handoff.
-   A generic request to continue draft PR #814 starts/resumes #824 until its tooling gate is complete, then follows the handoff progress grid.
+   A generic request to continue draft PR #814 starts/resumes #824 until its repository-wide efficiency/tooling gate is complete, then follows the handoff progress grid.
    #825 owns current-content domain/transport completion. Optional island-map issue #822 is not a core dependency or merge gate.
 2. Read only the named manifest rows/fixtures implicated by the task. Use the [RTS source index](../fuzzy-waddle-phaser/references/rts-source-index.md) once, then navigate exact symbols and adjacent specs.
 3. Treat files already read in the current logical turn as cached knowledge. Reopen only changed or missing ranges; prefer `git diff` for edits.
@@ -18,7 +18,7 @@ description: Implement, diagnose or validate the Probable Waffle skirmish AI, de
 
 - Keep an internal acceptance list keyed by scenario ID and invariant. Repair the first causal disagreement: observation -> demand/mission -> intent/claim -> shared application -> outcome -> cleanup.
 - Batch related focused Jest specs and independent TypeScript/build checks. Run only one accelerated Phaser/Playwright match process at a time; group compatible runtime IDs with `--scenarios` so the browser starts once.
-- After #824, use its doctor/context/verify/triage entrypoints instead of rediscovering commands or manually rebuilding coverage. Until #824 proves those commands, treat their names as planned interfaces rather than evidence.
+- #824 begins by measuring representative repository workflows, then builds generic `agent:*` doctor/context/verify/triage/metrics contracts with skirmish AI as the first adapter. After it is proven, use those entrypoints instead of rediscovering commands or manually rebuilding coverage; until then, treat the names as planned interfaces rather than evidence.
 - Use `pnpm ai:skirmish:report -- --details` after a matrix run. Never print a full runtime artifact unless one compact field is insufficient.
 - A dispatch, debug label or authored fixture is not outcome evidence. Preserve fixture/source/seed digests and fail closed when a required runtime or pinned-baseline path is absent.
 - Do not weaken a liveness, authority, fairness or useful-effect oracle to make a run pass. A balance threshold may change only with recorded workload evidence and a fresh affected run.
