@@ -2,6 +2,12 @@
 
 Read only when selecting or running checks. The task/lane supplies authority and required scope; this reference is not blanket approval.
 
+## Verification cadence
+
+- Do not stop after every small edit to rerun full tests, lint, type checking, and builds. Batch coherent repairs, use the smallest focused check when it can change the next implementation decision, then run the required broader set at a stable delivery boundary.
+- Repeat a passed broad check only when later changes affect what it proved, a failure needs confirmation, or the task explicitly requires repeated evidence. Do not rerun it merely for reassurance.
+- When testing, validation, calibration, or regression reproduction is the task itself, the necessary repeated focused/runtime runs are primary work rather than avoidable verification overhead.
+
 ## Discover real targets
 
 Read package.json (Node/pnpm/Phaser versions), the owning project.json and Jest/TypeScript config before invoking a target. Use existing dependencies; do not replace lockfiles or install unrelated tools. Current explicit targets:

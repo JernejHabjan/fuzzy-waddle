@@ -26,7 +26,10 @@ When the user says `continue implementing` on draft PR #814 without naming a sub
    pure mappings finish. Read only the selected plan, generated context packet, and named source anchors.
 4. Work one issue boundary at a time. A sequential agent may commit directly to this integration branch. Parallel agents
    use isolated worktrees/branches and sub-PRs targeting `feature/759-skirmish-ai`; never share one writable worktree.
-5. Report the refreshed grid at every stop, followed by the recommended next model/effort and one sentence explaining
+5. Batch coherent implementation and repairs. Use focused checks only when their result guides the next change; defer the
+   broader required tests/lint/build to the stable issue boundary unless later changes invalidate them. Testing,
+   calibration, and validation issues run their planned evidence as primary work.
+6. Report the refreshed grid at every stop, followed by the recommended next model/effort and one sentence explaining
    why. A recommendation never changes the active model automatically.
 
 Default to `gpt-5.6-terra` at the plan's stated effort. Ask the user before a bounded Sol investigation only when compact,
