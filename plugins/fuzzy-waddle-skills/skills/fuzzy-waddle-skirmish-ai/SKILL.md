@@ -8,6 +8,7 @@ description: Implement, diagnose or validate the Probable Waffle skirmish AI, de
 ## Load the minimum state
 
 1. Read the [AI documentation index](../../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/README.md). For unfinished #759 work, read only [HANDOFF.md](../../../../docs/ai/759-skirmish-ai/HANDOFF.md).
+   When a #759 subissue has a linked cold-start plan, read that plan instead of reconstructing its scope from the parent handoff.
 2. Read only the named manifest rows/fixtures implicated by the task. Use the [RTS source index](../fuzzy-waddle-phaser/references/rts-source-index.md) once, then navigate exact symbols and adjacent specs.
 3. Treat files already read in the current logical turn as cached knowledge. Reopen only changed or missing ranges; prefer `git diff` for edits.
 

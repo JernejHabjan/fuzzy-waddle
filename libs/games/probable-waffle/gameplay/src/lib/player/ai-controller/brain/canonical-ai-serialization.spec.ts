@@ -7,7 +7,7 @@ import {
 } from "./canonical-ai-serialization";
 import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
 import { migrateAiBrainState, AiBrainMigrationError } from "./migrate-ai-brain-state";
-import { createStage2Observation } from "../testing/ai-stage-2-test-fixtures";
+import { createAiTestObservation } from "../testing/ai-test-fixtures";
 
 describe("Stage 2 canonical state and migration", () => {
   const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
@@ -21,7 +21,7 @@ describe("Stage 2 canonical state and migration", () => {
   };
 
   it("serializes and digests equivalent permuted observations identically", () => {
-    const first = createStage2Observation();
+    const first = createAiTestObservation();
     const second = {
       ...first,
       resources: [

@@ -2,10 +2,10 @@ import { FactionType, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-
 import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
 import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
 import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
-import { createStage2Observation } from "../testing/ai-stage-2-test-fixtures";
-import { planAiStage6V1 } from "./ai-stage-6-planner";
+import { createAiTestObservation } from "../testing/ai-test-fixtures";
+import { planAiDecisions } from "./ai-decision-planner";
 
-describe("planAiStage6V1", () => {
+describe("planAiDecisions", () => {
   const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
 
   it("services every lane deterministically even when no manager can dispatch work", () => {
@@ -16,7 +16,7 @@ describe("planAiStage6V1", () => {
       tick: 0,
       archetypeId: "opening:balanced"
     });
-    const result = planAiStage6V1(createStage2Observation(), state, [], [], profile);
+    const result = planAiDecisions(createAiTestObservation(), state, [], [], profile);
     expect(result.state.lanes.map((lane) => lane.lane)).toEqual([
       "essential_economy",
       "supply_production",
@@ -64,7 +64,7 @@ describe("planAiStage6V1", () => {
         }
       ]
     };
-    const result = planAiStage6V1({ ...createStage2Observation(), tick: 20 }, withReservations, [], [], profile);
+    const result = planAiDecisions({ ...createAiTestObservation(), tick: 20 }, withReservations, [], [], profile);
     expect(result.state.reservations.map((reservation) => reservation.claimId)).toEqual(["claim:spent"]);
   });
 });

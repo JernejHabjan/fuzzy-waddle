@@ -7,7 +7,7 @@ import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
 import type { AiManagerProposalV1 } from "./ai-manager-proposal";
 
 /** The shared, deterministic Stage 6 reducer result. It owns only durable planning state. */
-export interface AiStage6PlanningResultV1 {
+export interface AiDecisionPlanningResult {
   readonly state: AiBrainStateV1;
   readonly proposals: readonly AiIntentV1[];
   readonly preDecisions: readonly AiIntentDecisionV1[];
@@ -77,13 +77,13 @@ function hasCycle(state: AiBrainStateV1, planId: AiPlanId): boolean {
  * Applies the Stage 6 fair-lane, stance, reservation and progress-supervision invariants before arbitration.
  * It deliberately does not invent domain actions: Stage 7+ managers supply those proposals through this boundary.
  */
-export function planAiStage6V1(
+export function planAiDecisions(
   observation: AiObservationV1,
   previous: AiBrainStateV1,
   outcomes: readonly AiCommandOutcomeV1[],
   batches: readonly AiManagerProposalV1[],
   profile: AiProfileConfigV1
-): AiStage6PlanningResultV1 {
+): AiDecisionPlanningResult {
   const sortedBatches = [...batches].sort((left, right) => left.managerId.localeCompare(right.managerId));
   const considered = new Set(sortedBatches.filter((batch) => batch.evaluated).map((batch) => batch.lane));
   const lanes = LANE_ORDER.map((lane) => {

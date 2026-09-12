@@ -9,8 +9,8 @@ import type { AiObservedActorV1 } from "../contracts/ai-observation-v1";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
 import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
-import { createStage2Observation, createStage2OwnedActor } from "../testing/ai-stage-2-test-fixtures";
-import { AiStage7MacroManagerV1 } from "./ai-stage-7-macro-manager";
+import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
+import { AiMacroManager } from "./ai-macro-manager";
 
 const catalog: AiCapabilityCatalogV1 = {
   schemaVersion: 1,
@@ -158,7 +158,7 @@ function completedOpeningState() {
   });
 }
 
-describe("AiStage7MacroManagerV1", () => {
+describe("AiMacroManager", () => {
   it("keeps bootstrap demand stable and proposes the legal missing worker", () => {
     const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
     const state = createAiBrainStateV1({
@@ -169,16 +169,16 @@ describe("AiStage7MacroManagerV1", () => {
       archetypeId: "balanced"
     });
     const observation = {
-      ...createStage2Observation(),
+      ...createAiTestObservation(),
       actors: [
         {
-          ...createStage2OwnedActor("main"),
+          ...createAiTestOwnedActor("main"),
           objectName: ObjectNames.Sandhold,
           housingCost: { status: "known" as const, value: 0, observedTick: 20 }
         }
       ]
     };
-    const proposal = new AiStage7MacroManagerV1(() => catalog).propose(observation, state);
+    const proposal = new AiMacroManager(() => catalog).propose(observation, state);
 
     expect(proposal.intents).toContainEqual(
       expect.objectContaining({ kind: "produce", objectName: ObjectNames.TivaraWorker })
@@ -207,9 +207,9 @@ describe("AiStage7MacroManagerV1", () => {
         lifecycle: "active" as const
       }))
     };
-    const workers = Array.from({ length: 6 }, (_, index) => createStage2OwnedActor(`worker-${index}`));
-    const proposal = new AiStage7MacroManagerV1(() => catalog).propose(
-      { ...createStage2Observation(), actors: workers },
+    const workers = Array.from({ length: 6 }, (_, index) => createAiTestOwnedActor(`worker-${index}`));
+    const proposal = new AiMacroManager(() => catalog).propose(
+      { ...createAiTestObservation(), actors: workers },
       state
     );
 
@@ -230,9 +230,9 @@ describe("AiStage7MacroManagerV1", () => {
       tick: 0,
       archetypeId: "balanced"
     });
-    const workers = Array.from({ length: 5 }, (_, index) => createStage2OwnedActor(`worker-${index}`));
+    const workers = Array.from({ length: 5 }, (_, index) => createAiTestOwnedActor(`worker-${index}`));
     const main = {
-      ...createStage2OwnedActor("main"),
+      ...createAiTestOwnedActor("main"),
       objectName: ObjectNames.Sandhold,
       queue: {
         status: "known" as const,
@@ -252,8 +252,8 @@ describe("AiStage7MacroManagerV1", () => {
         observedTick: 20
       }
     };
-    const proposal = new AiStage7MacroManagerV1(() => catalog).propose(
-      { ...createStage2Observation(), actors: [...workers, main] },
+    const proposal = new AiMacroManager(() => catalog).propose(
+      { ...createAiTestObservation(), actors: [...workers, main] },
       state
     );
     const demand = proposal.statePatch?.economyProduction?.demands.find(
@@ -276,11 +276,11 @@ describe("AiStage7MacroManagerV1", () => {
       archetypeId: "balanced"
     });
     const idleWorker: AiObservedActorV1 = {
-      ...createStage2OwnedActor("worker-idle"),
+      ...createAiTestOwnedActor("worker-idle"),
       activeOrder: { status: "known", value: null, observedTick: 20 }
     };
     const activeWorker: AiObservedActorV1 = {
-      ...createStage2OwnedActor("worker-active"),
+      ...createAiTestOwnedActor("worker-active"),
       activeOrder: {
         status: "known",
         value: { orderType: OrderType.Gather, targetActorId: "wood-source" },
@@ -288,7 +288,7 @@ describe("AiStage7MacroManagerV1", () => {
       }
     };
     const source: AiObservedActorV1 = {
-      ...createStage2OwnedActor("wood-source"),
+      ...createAiTestOwnedActor("wood-source"),
       owner: null,
       relation: "neutral",
       visibility: "visible",
@@ -304,8 +304,8 @@ describe("AiStage7MacroManagerV1", () => {
         observedTick: 20
       }
     };
-    const proposal = new AiStage7MacroManagerV1(() => catalog).propose(
-      { ...createStage2Observation(), actors: [idleWorker, activeWorker, source] },
+    const proposal = new AiMacroManager(() => catalog).propose(
+      { ...createAiTestObservation(), actors: [idleWorker, activeWorker, source] },
       state
     );
 
@@ -340,17 +340,17 @@ describe("AiStage7MacroManagerV1", () => {
       ]
     };
     const observation = {
-      ...createStage2Observation(),
+      ...createAiTestObservation(),
       actors: [
         ...Array.from({ length: 6 }, (_, index) => ({
-          ...createStage2OwnedActor(`worker-variant-${index}`),
+          ...createAiTestOwnedActor(`worker-variant-${index}`),
           objectName: ObjectNames.TivaraWorkerFemale
         })),
-        { ...createStage2OwnedActor("main"), objectName: ObjectNames.Sandhold }
+        { ...createAiTestOwnedActor("main"), objectName: ObjectNames.Sandhold }
       ]
     };
 
-    const proposal = new AiStage7MacroManagerV1(() => variantCatalog).propose(observation, state);
+    const proposal = new AiMacroManager(() => variantCatalog).propose(observation, state);
     const workerDemand = proposal.statePatch?.economyProduction?.demands.find(
       (demand) => demand.purpose === "bootstrap_worker"
     );
@@ -371,16 +371,16 @@ describe("AiStage7MacroManagerV1", () => {
       archetypeId: "balanced"
     });
     const observation = {
-      ...createStage2Observation(),
+      ...createAiTestObservation(),
       actors: [
         {
-          ...createStage2OwnedActor("house"),
+          ...createAiTestOwnedActor("house"),
           objectName: ObjectNames.Olival,
           housingCapacity: { status: "known" as const, value: 8, observedTick: 20 }
         }
       ]
     };
-    const proposal = new AiStage7MacroManagerV1(() => catalog).propose(observation, state);
+    const proposal = new AiMacroManager(() => catalog).propose(observation, state);
 
     expect(
       proposal.intents.some((intent) => intent.kind === "construct" && intent.objectName === ObjectNames.Olival)
@@ -415,12 +415,12 @@ describe("AiStage7MacroManagerV1", () => {
       }
     ];
     const observation = {
-      ...createStage2Observation(),
-      actors: Array.from({ length: 6 }, (_, index) => createStage2OwnedActor(`worker-${index}`)),
-      map: { ...createStage2Observation().map!, constructionCells: cells }
+      ...createAiTestObservation(),
+      actors: Array.from({ length: 6 }, (_, index) => createAiTestOwnedActor(`worker-${index}`)),
+      map: { ...createAiTestObservation().map!, constructionCells: cells }
     };
 
-    const proposal = new AiStage7MacroManagerV1(() => catalog).propose(observation, state);
+    const proposal = new AiMacroManager(() => catalog).propose(observation, state);
     const constructionPositions = proposal.intents
       .filter((intent) => intent.kind === "construct")
       .map((intent) => intent.logicalPosition);
@@ -438,7 +438,7 @@ describe("AiStage7MacroManagerV1", () => {
       tick: 0,
       archetypeId: "balanced"
     });
-    const workers = Array.from({ length: 6 }, (_, index) => createStage2OwnedActor(`worker-${index}`));
+    const workers = Array.from({ length: 6 }, (_, index) => createAiTestOwnedActor(`worker-${index}`));
     const cells = Array.from({ length: 9 }, (_, index) => {
       const x = 7 + (index % 3);
       const y = 7 + Math.floor(index / 3);
@@ -451,12 +451,12 @@ describe("AiStage7MacroManagerV1", () => {
         observedBlocked: false
       };
     });
-    const manager = new AiStage7MacroManagerV1(() => catalog);
+    const manager = new AiMacroManager(() => catalog);
     const supply = manager.propose(
       {
-        ...createStage2Observation(),
+        ...createAiTestObservation(),
         actors: workers,
-        map: { ...createStage2Observation().map!, constructionCells: cells }
+        map: { ...createAiTestObservation().map!, constructionCells: cells }
       },
       state
     );
@@ -473,16 +473,16 @@ describe("AiStage7MacroManagerV1", () => {
     const openingAfterSupply = supply.statePatch?.opening;
     expect(openingAfterSupply).toBeDefined();
     const house = {
-      ...createStage2OwnedActor("house"),
+      ...createAiTestOwnedActor("house"),
       objectName: ObjectNames.Olival,
       housingCapacity: { status: "known" as const, value: 8, observedTick: 40 }
     };
     const producer = manager.propose(
       {
-        ...createStage2Observation(),
+        ...createAiTestObservation(),
         tick: 40,
         actors: [...workers, house],
-        map: { ...createStage2Observation().map!, constructionCells: cells }
+        map: { ...createAiTestObservation().map!, constructionCells: cells }
       },
       { ...state, opening: openingAfterSupply! }
     );
@@ -505,9 +505,9 @@ describe("AiStage7MacroManagerV1", () => {
       tick: 0,
       archetypeId: "balanced"
     });
-    const workers = Array.from({ length: 6 }, (_, index) => createStage2OwnedActor(`worker-${index}`));
+    const workers = Array.from({ length: 6 }, (_, index) => createAiTestOwnedActor(`worker-${index}`));
     const constructionSite = {
-      ...createStage2OwnedActor("olival-site"),
+      ...createAiTestOwnedActor("olival-site"),
       objectName: ObjectNames.Olival,
       constructionProgress: { status: "known" as const, value: 50, observedTick: 20 }
     };
@@ -523,8 +523,8 @@ describe("AiStage7MacroManagerV1", () => {
           }
         : worker
     );
-    const proposal = new AiStage7MacroManagerV1(() => catalog).propose(
-      { ...createStage2Observation(), actors: [...assignedWorkers, constructionSite] },
+    const proposal = new AiMacroManager(() => catalog).propose(
+      { ...createAiTestObservation(), actors: [...assignedWorkers, constructionSite] },
       state
     );
 
@@ -546,16 +546,16 @@ describe("AiStage7MacroManagerV1", () => {
       archetypeId: "balanced"
     });
     const workers = Array.from({ length: 6 }, (_, index) => ({
-      ...createStage2OwnedActor(`worker-${index}`),
+      ...createAiTestOwnedActor(`worker-${index}`),
       activeOrder: { status: "known" as const, value: null, observedTick: 20 }
     }));
     const constructionSite = {
-      ...createStage2OwnedActor("olival-site"),
+      ...createAiTestOwnedActor("olival-site"),
       objectName: ObjectNames.Olival,
       constructionProgress: { status: "known" as const, value: 54, observedTick: 20 }
     };
-    const proposal = new AiStage7MacroManagerV1(() => catalog).propose(
-      { ...createStage2Observation(), actors: [...workers, constructionSite] },
+    const proposal = new AiMacroManager(() => catalog).propose(
+      { ...createAiTestObservation(), actors: [...workers, constructionSite] },
       state
     );
     const resume = proposal.intents.find((intent) => intent.kind === "resume_construct");
@@ -577,7 +577,7 @@ describe("AiStage7MacroManagerV1", () => {
       archetypeId: "balanced"
     });
     const workers = Array.from({ length: 6 }, (_, index) => ({
-      ...createStage2OwnedActor(`worker-${index}`),
+      ...createAiTestOwnedActor(`worker-${index}`),
       ...(index === 0
         ? {
             activeOrder: {
@@ -598,11 +598,11 @@ describe("AiStage7MacroManagerV1", () => {
         observedBlocked: false
       }
     ];
-    const proposal = new AiStage7MacroManagerV1(() => catalog).propose(
+    const proposal = new AiMacroManager(() => catalog).propose(
       {
-        ...createStage2Observation(),
+        ...createAiTestObservation(),
         actors: workers,
-        map: { ...createStage2Observation().map!, constructionCells: cells }
+        map: { ...createAiTestObservation().map!, constructionCells: cells }
       },
       state
     );
@@ -614,25 +614,25 @@ describe("AiStage7MacroManagerV1", () => {
   it("prebuilds one justified duplicate producer for the dated post-opening force", () => {
     const state = completedOpeningState();
     const workers = Array.from({ length: 6 }, (_, index) => ({
-      ...createStage2OwnedActor(`worker-${index}`),
+      ...createAiTestOwnedActor(`worker-${index}`),
       activeOrder: {
         status: "known" as const,
         value: { orderType: OrderType.Gather, targetActorId: "wood" },
         observedTick: 200
       }
     }));
-    const producer = { ...createStage2OwnedActor("producer-1"), objectName: ObjectNames.AnkGuard };
+    const producer = { ...createAiTestOwnedActor("producer-1"), objectName: ObjectNames.AnkGuard };
     const housing = {
-      ...createStage2OwnedActor("housing"),
+      ...createAiTestOwnedActor("housing"),
       objectName: ObjectNames.Olival,
       housingCapacity: { status: "known" as const, value: 20, observedTick: 200 }
     };
     const observation = {
-      ...createStage2Observation(),
+      ...createAiTestObservation(),
       tick: 200,
       actors: [...workers, producer, housing],
       map: {
-        ...createStage2Observation().map!,
+        ...createAiTestObservation().map!,
         constructionCells: Array.from({ length: 49 }, (_, index) => {
           const x = 7 + (index % 7);
           const y = 7 + Math.floor(index / 7);
@@ -648,7 +648,7 @@ describe("AiStage7MacroManagerV1", () => {
       }
     };
 
-    const proposal = new AiStage7MacroManagerV1(() => catalog).propose(observation, state);
+    const proposal = new AiMacroManager(() => catalog).propose(observation, state);
 
     expect(proposal.statePatch?.economyProduction?.demands).toEqual(
       expect.arrayContaining([
@@ -675,13 +675,13 @@ describe("AiStage7MacroManagerV1", () => {
       )
     };
     const actors = [
-      ...Array.from({ length: 6 }, (_, index) => createStage2OwnedActor(`worker-${index}`)),
-      { ...createStage2OwnedActor("producer-1"), objectName: ObjectNames.AnkGuard },
-      { ...createStage2OwnedActor("producer-2"), objectName: ObjectNames.AnkGuard }
+      ...Array.from({ length: 6 }, (_, index) => createAiTestOwnedActor(`worker-${index}`)),
+      { ...createAiTestOwnedActor("producer-1"), objectName: ObjectNames.AnkGuard },
+      { ...createAiTestOwnedActor("producer-2"), objectName: ObjectNames.AnkGuard }
     ];
 
-    const proposal = new AiStage7MacroManagerV1(() => oneTypeCatalog).propose(
-      { ...createStage2Observation(), tick: 200, actors },
+    const proposal = new AiMacroManager(() => oneTypeCatalog).propose(
+      { ...createAiTestObservation(), tick: 200, actors },
       state
     );
     const composition = proposal.intents.filter(
@@ -701,11 +701,11 @@ describe("AiStage7MacroManagerV1", () => {
   it("stops production and capacity admission after ready and queued commitments satisfy demand", () => {
     const state = completedOpeningState();
     const military = Array.from({ length: 10 }, (_, index) => ({
-      ...createStage2OwnedActor(`military-${index}`),
+      ...createAiTestOwnedActor(`military-${index}`),
       objectName: ObjectNames.TivaraMacemanMale
     }));
     const queuedProducer = (id: string) => ({
-      ...createStage2OwnedActor(id),
+      ...createAiTestOwnedActor(id),
       objectName: ObjectNames.AnkGuard,
       queue: {
         status: "known" as const,
@@ -725,9 +725,9 @@ describe("AiStage7MacroManagerV1", () => {
         observedTick: 200
       }
     });
-    const proposal = new AiStage7MacroManagerV1(() => catalog).propose(
+    const proposal = new AiMacroManager(() => catalog).propose(
       {
-        ...createStage2Observation(),
+        ...createAiTestObservation(),
         tick: 200,
         actors: [queuedProducer("producer-1"), queuedProducer("producer-2"), ...military]
       },
@@ -743,7 +743,7 @@ describe("AiStage7MacroManagerV1", () => {
   it("creates bounded renewable food capacity after the opening instead of treating the granary as food", () => {
     const state = completedOpeningState();
     const workers = Array.from({ length: 6 }, (_, index) => ({
-      ...createStage2OwnedActor(`worker-${index}`),
+      ...createAiTestOwnedActor(`worker-${index}`),
       activeOrder: {
         status: "known" as const,
         value: { orderType: OrderType.Gather, targetActorId: "wood" },
@@ -762,12 +762,12 @@ describe("AiStage7MacroManagerV1", () => {
         observedBlocked: false
       };
     });
-    const proposal = new AiStage7MacroManagerV1(() => catalog).propose(
+    const proposal = new AiMacroManager(() => catalog).propose(
       {
-        ...createStage2Observation(),
+        ...createAiTestObservation(),
         tick: 200,
         actors: workers,
-        map: { ...createStage2Observation().map!, constructionCells: cells }
+        map: { ...createAiTestObservation().map!, constructionCells: cells }
       },
       state
     );
@@ -782,17 +782,17 @@ describe("AiStage7MacroManagerV1", () => {
 
   it("staffs completed renewable food sources and does not request a third Field", () => {
     const state = completedOpeningState();
-    const workers = Array.from({ length: 2 }, (_, index) => createStage2OwnedActor(`worker-${index}`));
+    const workers = Array.from({ length: 2 }, (_, index) => createAiTestOwnedActor(`worker-${index}`));
     const fields = ["field-1", "field-2"].map((id) => ({
-      ...createStage2OwnedActor(id),
+      ...createAiTestOwnedActor(id),
       objectName: ObjectNames.Field
     }));
-    const proposal = new AiStage7MacroManagerV1(() => catalog).propose(
+    const proposal = new AiMacroManager(() => catalog).propose(
       {
-        ...createStage2Observation(),
+        ...createAiTestObservation(),
         tick: 200,
         actors: [...workers, ...fields],
-        resources: createStage2Observation().resources.map((resource) =>
+        resources: createAiTestObservation().resources.map((resource) =>
           resource.resourceType === ResourceType.Food ? { ...resource, stockpile: 1000 } : resource
         )
       },
@@ -816,7 +816,7 @@ describe("AiStage7MacroManagerV1", () => {
   it("does not interrupt a busy food worker to cover another Field", () => {
     const state = completedOpeningState();
     const worker = {
-      ...createStage2OwnedActor("worker"),
+      ...createAiTestOwnedActor("worker"),
       activeOrder: {
         status: "known" as const,
         value: { orderType: OrderType.ReturnResources, targetActorId: "granary" },
@@ -824,19 +824,17 @@ describe("AiStage7MacroManagerV1", () => {
       }
     };
     const fields = ["field-1", "field-2"].map((id) => ({
-      ...createStage2OwnedActor(id),
+      ...createAiTestOwnedActor(id),
       objectName: ObjectNames.Field
     }));
 
-    const proposal = new AiStage7MacroManagerV1(() => catalog).propose(
-      { ...createStage2Observation(), tick: 200, actors: [worker, ...fields] },
+    const proposal = new AiMacroManager(() => catalog).propose(
+      { ...createAiTestObservation(), tick: 200, actors: [worker, ...fields] },
       state
     );
 
     expect(
-      proposal.intents.some(
-        (intent) => intent.kind === "assign_gatherers" && intent.resourceType === ResourceType.Food
-      )
+      proposal.intents.some((intent) => intent.kind === "assign_gatherers" && intent.resourceType === ResourceType.Food)
     ).toBe(false);
     expect(
       proposal.statePatch?.economyProduction?.demands.find((demand) => demand.purpose === "renewable_food_capacity")
@@ -846,17 +844,17 @@ describe("AiStage7MacroManagerV1", () => {
   it("moves a worker from a generic food source onto authored renewable Field capacity", () => {
     const state = completedOpeningState();
     const worker = {
-      ...createStage2OwnedActor("worker"),
+      ...createAiTestOwnedActor("worker"),
       activeOrder: {
         status: "known" as const,
         value: { orderType: OrderType.Gather, targetActorId: "wild-food" },
         observedTick: 200
       }
     };
-    const field = { ...createStage2OwnedActor("field"), objectName: ObjectNames.Field };
+    const field = { ...createAiTestOwnedActor("field"), objectName: ObjectNames.Field };
 
-    const proposal = new AiStage7MacroManagerV1(() => catalog).propose(
-      { ...createStage2Observation(), tick: 200, actors: [worker, field] },
+    const proposal = new AiMacroManager(() => catalog).propose(
+      { ...createAiTestObservation(), tick: 200, actors: [worker, field] },
       state
     );
 
@@ -900,7 +898,7 @@ describe("AiStage7MacroManagerV1", () => {
       })
     };
     const resources = [
-      ...createStage2Observation().resources,
+      ...createAiTestObservation().resources,
       {
         resourceType: ResourceType.Food,
         stockpile: 60,
@@ -909,14 +907,14 @@ describe("AiStage7MacroManagerV1", () => {
         deliveredIncomePerMinute: { status: "known" as const, value: 0, observedTick: 200 }
       }
     ];
-    const proposal = new AiStage7MacroManagerV1(() => resourceCatalog).propose(
+    const proposal = new AiMacroManager(() => resourceCatalog).propose(
       {
-        ...createStage2Observation(),
+        ...createAiTestObservation(),
         tick: 200,
         resources,
         actors: [
-          { ...createStage2OwnedActor("producer-1"), objectName: ObjectNames.AnkGuard },
-          { ...createStage2OwnedActor("producer-2"), objectName: ObjectNames.AnkGuard }
+          { ...createAiTestOwnedActor("producer-1"), objectName: ObjectNames.AnkGuard },
+          { ...createAiTestOwnedActor("producer-2"), objectName: ObjectNames.AnkGuard }
         ]
       },
       state
@@ -972,19 +970,19 @@ describe("AiStage7MacroManagerV1", () => {
       ]
     };
     const military = Array.from({ length: 10 }, (_, index) => ({
-      ...createStage2OwnedActor(`military-${index}`),
+      ...createAiTestOwnedActor(`military-${index}`),
       objectName: ObjectNames.TivaraMacemanMale
     }));
-    const proposal = new AiStage7MacroManagerV1(() => domainCatalog).propose(
+    const proposal = new AiMacroManager(() => domainCatalog).propose(
       {
-        ...createStage2Observation(),
+        ...createAiTestObservation(),
         tick: 200,
         actors: [
           ...military,
-          { ...createStage2OwnedActor("producer"), objectName: ObjectNames.AnkGuard },
-          { ...createStage2OwnedActor("main"), objectName: ObjectNames.Sandhold },
-          { ...createStage2OwnedActor("air-unit"), objectName: ObjectNames.SkaduweeOwl },
-          { ...createStage2OwnedActor("naval-unit"), objectName: ObjectNames.VikingBoat }
+          { ...createAiTestOwnedActor("producer"), objectName: ObjectNames.AnkGuard },
+          { ...createAiTestOwnedActor("main"), objectName: ObjectNames.Sandhold },
+          { ...createAiTestOwnedActor("air-unit"), objectName: ObjectNames.SkaduweeOwl },
+          { ...createAiTestOwnedActor("naval-unit"), objectName: ObjectNames.VikingBoat }
         ]
       },
       state

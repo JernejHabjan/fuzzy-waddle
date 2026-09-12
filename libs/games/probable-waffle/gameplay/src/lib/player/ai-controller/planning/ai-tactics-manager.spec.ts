@@ -12,8 +12,8 @@ import type { AiBrainStateV1, AiSquadStateV1 } from "../contracts/ai-brain-state
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import type { AiDomainV1, AiObservedActorV1, AiObservationV1 } from "../contracts/ai-observation-v1";
 import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
-import { createStage2Observation, createStage2OwnedActor } from "../testing/ai-stage-2-test-fixtures";
-import { AiStage13TacticsManagerV1 } from "./ai-stage-13-tactics-manager";
+import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
+import { AiTacticsManager } from "./ai-tactics-manager";
 
 const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
 
@@ -40,7 +40,7 @@ function combatActor(
 ): AiObservedActorV1 {
   const damage = options.damage ?? 10;
   return {
-    ...createStage2OwnedActor(actorId),
+    ...createAiTestOwnedActor(actorId),
     objectName: ObjectNames.TivaraMacemanMale,
     owner: relation === "self" ? 1 : 2,
     relation,
@@ -158,7 +158,7 @@ function fixtureState(squads: readonly AiSquadStateV1[]): AiBrainStateV1 {
 
 function observation(actors: readonly AiObservedActorV1[], tick = 100): AiObservationV1 {
   return {
-    ...createStage2Observation(),
+    ...createAiTestObservation(),
     tick,
     actors,
     map: {
@@ -188,8 +188,8 @@ function observation(actors: readonly AiObservedActorV1[], tick = 100): AiObserv
   };
 }
 
-describe("AiStage13TacticsManagerV1", () => {
-  const manager = new AiStage13TacticsManagerV1(profile);
+describe("AiTacticsManager", () => {
+  const manager = new AiTacticsManager(profile);
 
   it("H-30 advances a quiet mission through assembly, rally and advance without skipping a boundary", () => {
     const guard = combatActor("guard", "self", 1);
@@ -232,7 +232,7 @@ describe("AiStage13TacticsManagerV1", () => {
         }
       ]
     };
-    const workerManager = new AiStage13TacticsManagerV1(profile, () => workerCatalog);
+    const workerManager = new AiTacticsManager(profile, () => workerCatalog);
     const worker = { ...combatActor("worker", "self", 1), objectName: ObjectNames.TivaraWorker };
     const current = fixtureState([squad("squad:attack", "attack", [worker.actorId])]);
     const proposal = workerManager.propose(observation([worker]), current);
@@ -642,9 +642,7 @@ describe("AiStage13TacticsManagerV1", () => {
     const proposal = manager.propose(observation([friend, enemy], 200), current);
 
     expect(proposal.intents.some((intent) => intent.kind === "attack")).toBe(false);
-    expect(proposal.intents).toContainEqual(
-      expect.objectContaining({ kind: "move", actorIds: [friend.actorId] })
-    );
+    expect(proposal.intents).toContainEqual(expect.objectContaining({ kind: "move", actorIds: [friend.actorId] }));
   });
 
   it("continues advancing toward a remembered objective while it is outside current vision", () => {

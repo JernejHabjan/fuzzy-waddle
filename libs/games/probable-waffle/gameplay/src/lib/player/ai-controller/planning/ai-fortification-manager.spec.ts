@@ -11,8 +11,8 @@ import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v
 import { aiDeadline } from "../contracts/ai-core-types";
 import type { AiObservedActorV1, AiObservationV1 } from "../contracts/ai-observation-v1";
 import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
-import { createStage2Observation, createStage2OwnedActor } from "../testing/ai-stage-2-test-fixtures";
-import { AiStage11FortificationManagerV1 } from "./ai-stage-11-fortification-manager";
+import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
+import { AiFortificationManager } from "./ai-fortification-manager";
 
 const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
 
@@ -139,7 +139,7 @@ function actor(
   relation: "self" | "enemy" = "self"
 ): AiObservedActorV1 {
   return {
-    ...createStage2OwnedActor(actorId),
+    ...createAiTestOwnedActor(actorId),
     objectName,
     owner: relation === "self" ? 1 : 2,
     relation,
@@ -168,7 +168,7 @@ function observation(extraActors: readonly AiObservedActorV1[] = [], tick = 100)
     }
   }
   return {
-    ...createStage2Observation(),
+    ...createAiTestObservation(),
     generation: 1,
     tick,
     actors: [
@@ -244,8 +244,8 @@ function threatenedState(): AiBrainStateV1 {
   };
 }
 
-describe("AiStage11FortificationManagerV1", () => {
-  const manager = new AiStage11FortificationManagerV1(profile, () => catalog);
+describe("AiFortificationManager", () => {
+  const manager = new AiFortificationManager(profile, () => catalog);
 
   it("WALL-01/02 creates a deterministic bounded front with a permanently empty opening", () => {
     const first = manager.propose(observation(), threatenedState());
@@ -334,7 +334,7 @@ describe("AiStage11FortificationManagerV1", () => {
   });
 
   it("reuses the reserved opening node for a future gate-capable definition without redesigning the graph", () => {
-    const gateManager = new AiStage11FortificationManagerV1(profile, () => catalog, ObjectNames.Olival);
+    const gateManager = new AiFortificationManager(profile, () => catalog, ObjectNames.Olival);
     const proposal = gateManager.propose(observation(), threatenedState());
     const graph = proposal.statePatch?.fortifications?.[0]?.graph;
     const opening = graph?.nodes.find((node) => node.nodeId === graph?.openingNodeId);

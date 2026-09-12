@@ -2,6 +2,7 @@ import type { PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 import type { FactionType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiIntentDecisionV1 } from "./ai-intent-v1";
 import type { AiSimulationTick } from "./ai-core-types";
+import type { AiStrategicIntentSummary } from "./ai-strategic-intent-summary";
 
 /** Explicit completeness flags prevent partial traces from being presented as exact explanations. */
 export interface AiDiagnosticCompletenessV1 {
@@ -24,7 +25,7 @@ export interface AiCausalIndexEntryV1 {
 /** Typed placeholder for a panel owned by a later implementation stage. */
 export interface AiDebugSectionStateV1 {
   readonly status: "ready" | "not_ready" | "unsupported";
-  readonly ownerStage: number;
+  readonly ownerSubsystem: string;
   readonly reason: string | null;
 }
 
@@ -56,6 +57,7 @@ export interface AiDebugSnapshotV1 {
   readonly decisions: readonly AiIntentDecisionV1[];
   readonly nextActions: readonly string[];
   readonly mainBlockingReason: string | null;
+  readonly strategicIntentSummary: AiStrategicIntentSummary;
   readonly whyNot: readonly AiWhyNotExplanationV1[];
   /** Bounded saved transport facts and recorded overlay anchors; never a live pathfinder query. */
   readonly transportOperations: readonly {

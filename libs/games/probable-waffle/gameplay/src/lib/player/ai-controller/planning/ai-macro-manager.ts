@@ -222,7 +222,7 @@ function openingBudget(archetypeId: string): {
  * It never assumes that an object is buildable merely because its name appears
  * in a faction recipe: the catalog must expose the matching producer/builder.
  */
-export class AiStage7MacroManagerV1 implements AiProposalManagerV1 {
+export class AiMacroManager implements AiProposalManagerV1 {
   readonly managerId = "stage-7-macro";
 
   constructor(private readonly getCatalog: () => AiCapabilityCatalogV1 | undefined) {}
@@ -750,7 +750,8 @@ export class AiStage7MacroManagerV1 implements AiProposalManagerV1 {
             return (
               order === null ||
               (order.orderType === OrderType.Gather &&
-                (order.targetActorId === null || !readyFoodSources.some((source) => source.actorId === order.targetActorId)))
+                (order.targetActorId === null ||
+                  !readyFoodSources.some((source) => source.actorId === order.targetActorId)))
             );
           })
           .sort((left, right) => {
@@ -981,7 +982,8 @@ export class AiStage7MacroManagerV1 implements AiProposalManagerV1 {
         if (!candidate) continue;
         const next = nextIds(state, "composition", ordinal++);
         const resourceCost =
-          catalog.entries.find((entry) => entry.sourceObjectName === candidate)?.constructionProfile?.resourceCost ?? {};
+          catalog.entries.find((entry) => entry.sourceObjectName === candidate)?.constructionProfile?.resourceCost ??
+          {};
         const resourceClaims = Object.entries(resourceCost)
           .filter((entry): entry is [ResourceType, number] => entry[1] !== undefined && entry[1] > 0)
           .sort(([left], [right]) => left.localeCompare(right))

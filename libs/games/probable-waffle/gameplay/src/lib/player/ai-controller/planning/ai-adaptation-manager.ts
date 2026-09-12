@@ -312,7 +312,7 @@ function researchScore(
  * runtime-legal tech candidates, preserving useful production commitments while
  * adding bounded counter roles or a demonstrably valuable upgrade.
  */
-export class AiStage14AdaptationManagerV1 implements AiProposalManagerV1 {
+export class AiAdaptationManager implements AiProposalManagerV1 {
   readonly managerId = "stagez14.adaptation";
 
   constructor(
@@ -341,7 +341,8 @@ export class AiStage14AdaptationManagerV1 implements AiProposalManagerV1 {
     const intents: AiIntentV1[] = [];
     const remainingResources = new Map(
       observation.resources.map(
-        (resource) => [resource.resourceType, resource.stockpile - resource.reservedUnspent - resource.obligationsDue] as const
+        (resource) =>
+          [resource.resourceType, resource.stockpile - resource.reservedUnspent - resource.obligationsDue] as const
       )
     );
     let ordinal = 0;

@@ -23,18 +23,18 @@ import { createAiBrainStateV1 } from "@fuzzy-waddle/probable-waffle-gameplay/pla
 import { migrateAiBrainState } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/migrate-ai-brain-state";
 import { canonicalizeAiBrainStateV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/canonical-ai-serialization";
 import { createAiProfileConfigV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-profile-defaults";
-import { PureAiBrainV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/ai-brain";
+import { PureAiBrain } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/ai-brain";
 import type { AiDebugSnapshotV1, AiProfileConfigV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
 import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { selectAiOpeningArchetypeV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-opening-archetypes-v1";
-import { AiStage7MacroManagerV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-stage-7-macro-manager";
-import { AiStage8TransportManagerV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-stage-8-transport-manager";
-import { AiStage9SkirmishManagerV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-stage-9-skirmish-manager";
-import { AiStage10BaseManagerV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-stage-10-base-manager";
-import { AiStage11FortificationManagerV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-stage-11-fortification-manager";
-import { AiStage12RecoveryManagerV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-stage-12-recovery-manager";
-import { AiStage13TacticsManagerV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-stage-13-tactics-manager";
-import { AiStage14AdaptationManagerV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-stage-14-adaptation-manager";
+import { AiMacroManager } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-macro-manager";
+import { AiTransportManager } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-transport-manager";
+import { AiSkirmishManager } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-skirmish-manager";
+import { AiBaseManager } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-base-manager";
+import { AiFortificationManager } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-fortification-manager";
+import { AiRecoveryManager } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-recovery-manager";
+import { AiTacticsManager } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-tactics-manager";
+import { AiAdaptationManager } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-adaptation-manager";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import { OrderType } from "../../ai/order-type";
 import { getActorComponent } from "../../data/actor-component";
@@ -58,7 +58,7 @@ export class PlayerAiController {
   private readonly commandReconciliation?: AiCommandReconciliation;
   private brainState?: AiBrainStateV1;
   private readonly profile: AiProfileConfigV1 | undefined;
-  private readonly pureBrain: PureAiBrainV1 | undefined;
+  private readonly pureBrain: PureAiBrain | undefined;
   private latestBrainDebug?: AiDebugSnapshotV1;
   private readonly brainDebugHistory: AiDebugSnapshotV1[] = [];
   private completedDecisionSequence = 0;
@@ -72,23 +72,15 @@ export class PlayerAiController {
         AI_CONFIG.controllerStepIntervalMs / SimulationTickService.TICK_INTERVAL_MS) *
       SimulationTickService.TICK_INTERVAL_MS;
     this.pureBrain = this.profile
-      ? new PureAiBrainV1(this.profile, [
-          new AiStage7MacroManagerV1(() => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
-          new AiStage8TransportManagerV1(() => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
-          new AiStage9SkirmishManagerV1(this.profile, () =>
-            this.playerAiControllerAgent?.getCommittedCapabilityCatalog()
-          ),
-          new AiStage10BaseManagerV1(this.profile, () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
-          new AiStage11FortificationManagerV1(this.profile, () =>
-            this.playerAiControllerAgent?.getCommittedCapabilityCatalog()
-          ),
-          new AiStage12RecoveryManagerV1(() => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
-          new AiStage13TacticsManagerV1(this.profile, () =>
-            this.playerAiControllerAgent?.getCommittedCapabilityCatalog()
-          ),
-          new AiStage14AdaptationManagerV1(this.profile, () =>
-            this.playerAiControllerAgent?.getCommittedCapabilityCatalog()
-          )
+      ? new PureAiBrain(this.profile, [
+          new AiMacroManager(() => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
+          new AiTransportManager(() => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
+          new AiSkirmishManager(this.profile, () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
+          new AiBaseManager(this.profile, () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
+          new AiFortificationManager(this.profile, () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
+          new AiRecoveryManager(() => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
+          new AiTacticsManager(this.profile, () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
+          new AiAdaptationManager(this.profile, () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog())
         ])
       : undefined;
     this.blackboard = new PlayerAiBlackboard(scene);

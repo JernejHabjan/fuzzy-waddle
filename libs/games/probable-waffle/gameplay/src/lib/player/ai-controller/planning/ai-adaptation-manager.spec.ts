@@ -11,8 +11,8 @@ import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v
 import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
 import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
 import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
-import { createStage2Observation, createStage2OwnedActor } from "../testing/ai-stage-2-test-fixtures";
-import { AiStage14AdaptationManagerV1 } from "./ai-stage-14-adaptation-manager";
+import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
+import { AiAdaptationManager } from "./ai-adaptation-manager";
 
 const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
 
@@ -84,7 +84,7 @@ function actor(
   domains: readonly ("ground" | "water" | "air")[]
 ): AiObservedActorV1 {
   return {
-    ...createStage2OwnedActor(id),
+    ...createAiTestOwnedActor(id),
     objectName,
     owner: relation === "self" ? 1 : 2,
     relation,
@@ -109,7 +109,7 @@ function observation(
   researchCandidates: AiObservationV1["researchCandidates"] = []
 ): AiObservationV1 {
   return {
-    ...createStage2Observation(),
+    ...createAiTestObservation(),
     tick,
     actors,
     researchCandidates,
@@ -122,8 +122,8 @@ function observation(
   };
 }
 
-describe("AiStage14AdaptationManagerV1", () => {
-  const manager = new AiStage14AdaptationManagerV1(profile, () => catalog);
+describe("AiAdaptationManager", () => {
+  const manager = new AiAdaptationManager(profile, () => catalog);
 
   it("TECH-03/04 records one visible flyer as persisted evidence before it changes composition", () => {
     const main = actor("main", ObjectNames.Sandhold, "self", []);

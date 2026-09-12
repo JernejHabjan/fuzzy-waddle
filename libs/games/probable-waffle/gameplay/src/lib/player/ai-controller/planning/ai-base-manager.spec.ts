@@ -8,8 +8,8 @@ import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import type { AiObservedActorV1, AiObservationV1 } from "../contracts/ai-observation-v1";
 import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
-import { createStage2Observation, createStage2OwnedActor } from "../testing/ai-stage-2-test-fixtures";
-import { AI_STAGE_10_EXPANSION_SATURATION_TICKS, AiStage10BaseManagerV1 } from "./ai-stage-10-base-manager";
+import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
+import { AI_EXPANSION_SATURATION_TICKS, AiBaseManager } from "./ai-base-manager";
 
 const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
 const catalog: AiCapabilityCatalogV1 = {
@@ -37,7 +37,7 @@ const catalog: AiCapabilityCatalogV1 = {
 
 function actor(actorId: string, objectName: ObjectNames, x: number, main = false): AiObservedActorV1 {
   return {
-    ...createStage2OwnedActor(actorId),
+    ...createAiTestOwnedActor(actorId),
     objectName,
     logicalPosition: { status: "known", value: { x, y: 0, z: 0 }, observedTick: 0 },
     accessNodeId: { status: "known", value: `access:${x},0`, observedTick: 0 },
@@ -47,7 +47,7 @@ function actor(actorId: string, objectName: ObjectNames, x: number, main = false
 
 function observation(tick: number, actors: readonly AiObservedActorV1[], deliveredIncome = 5): AiObservationV1 {
   return {
-    ...createStage2Observation(),
+    ...createAiTestObservation(),
     tick,
     generation: 1,
     actors,
@@ -70,8 +70,8 @@ function withCompletedOpening(state: ReturnType<typeof createAiBrainStateV1>) {
   };
 }
 
-describe("AiStage10BaseManagerV1", () => {
-  const manager = new AiStage10BaseManagerV1(profile, () => catalog);
+describe("AiBaseManager", () => {
+  const manager = new AiBaseManager(profile, () => catalog);
 
   it("anchors the base to the main structure rather than moving it with a distant scout", () => {
     const state = createAiBrainStateV1({
@@ -111,18 +111,18 @@ describe("AiStage10BaseManagerV1", () => {
         status: "known" as const,
         value: {
           resourceType: ResourceType.Wood,
-          available: { status: "known" as const, value: 200, observedTick: AI_STAGE_10_EXPANSION_SATURATION_TICKS },
+          available: { status: "known" as const, value: 200, observedTick: AI_EXPANSION_SATURATION_TICKS },
           carried: { status: "unknown" as const, reason: "not_supported" as const },
           growthReadyTick: { status: "unknown" as const, reason: "not_supported" as const },
-          serviceCapacity: { status: "known" as const, value: 4, observedTick: AI_STAGE_10_EXPANSION_SATURATION_TICKS }
+          serviceCapacity: { status: "known" as const, value: 4, observedTick: AI_EXPANSION_SATURATION_TICKS }
         },
-        observedTick: AI_STAGE_10_EXPANSION_SATURATION_TICKS
+        observedTick: AI_EXPANSION_SATURATION_TICKS
       }
     } satisfies AiObservedActorV1;
     const completedState = withCompletedOpening(state);
     const first = manager.propose(
       observation(
-        AI_STAGE_10_EXPANSION_SATURATION_TICKS,
+        AI_EXPANSION_SATURATION_TICKS,
         [
           actor("sandhold", ObjectNames.Sandhold, 4, true),
           actor("worker", ObjectNames.TivaraWorker, 5),
@@ -134,7 +134,7 @@ describe("AiStage10BaseManagerV1", () => {
     );
     const second = manager.propose(
       observation(
-        AI_STAGE_10_EXPANSION_SATURATION_TICKS + 20,
+        AI_EXPANSION_SATURATION_TICKS + 20,
         [
           actor("sandhold", ObjectNames.Sandhold, 4, true),
           actor("worker", ObjectNames.TivaraWorker, 5),

@@ -11,8 +11,8 @@ import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v
 import { aiDeadline } from "../contracts/ai-core-types";
 import type { AiObservedActorV1, AiObservationV1 } from "../contracts/ai-observation-v1";
 import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
-import { createStage2Observation, createStage2OwnedActor } from "../testing/ai-stage-2-test-fixtures";
-import { AI_STAGE_12_NO_PROGRESS_TICKS, AiStage12RecoveryManagerV1 } from "./ai-stage-12-recovery-manager";
+import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
+import { AI_RECOVERY_NO_PROGRESS_TICKS, AiRecoveryManager } from "./ai-recovery-manager";
 
 const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
 const catalog: AiCapabilityCatalogV1 = {
@@ -46,7 +46,7 @@ function actor(
   relation: "self" | "enemy" = "self"
 ): AiObservedActorV1 {
   return {
-    ...createStage2OwnedActor(id),
+    ...createAiTestOwnedActor(id),
     objectName,
     owner: relation === "self" ? 1 : 2,
     relation,
@@ -82,7 +82,7 @@ function observation(extra: readonly AiObservedActorV1[] = [], tick = 100): AiOb
     }
   };
   return {
-    ...createStage2Observation(),
+    ...createAiTestObservation(),
     generation: 1,
     tick,
     actors: [
@@ -134,8 +134,8 @@ function state(): AiBrainStateV1 {
   };
 }
 
-describe("AiStage12RecoveryManagerV1", () => {
-  const manager = new AiStage12RecoveryManagerV1(() => catalog);
+describe("AiRecoveryManager", () => {
+  const manager = new AiRecoveryManager(() => catalog);
 
   it("REC-01/H-16 replaces a depleted or unproductive source with bounded worker reassignment", () => {
     const proposal = manager.propose(observation(), state());
@@ -152,7 +152,7 @@ describe("AiStage12RecoveryManagerV1", () => {
     const next = manager.propose(observation([], 110), { ...state(), recovery: initial.statePatch!.recovery! });
     expect(next.intents.filter((intent) => intent.kind === "assign_gatherers")).toHaveLength(0);
     expect(next.statePatch?.recovery?.records[0]?.nextRetryTick).toBeGreaterThanOrEqual(
-      100 + AI_STAGE_12_NO_PROGRESS_TICKS
+      100 + AI_RECOVERY_NO_PROGRESS_TICKS
     );
   });
 

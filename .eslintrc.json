@@ -4,8 +4,9 @@
   "plugins": ["@nx", "fuzzy-waddle"],
   "overrides": [
     {
-      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "files": ["*.ts", "*.tsx", "*.js", "*.jsx", "*.mjs"],
       "rules": {
+        "fuzzy-waddle/source-structure-limits": "error",
         "fuzzy-waddle/require-phaser-import": "error",
         "@nx/enforce-module-boundaries": [
           "error",
@@ -116,7 +117,7 @@
       }
     },
     {
-      "files": ["*.js", "*.jsx"],
+      "files": ["*.js", "*.jsx", "*.mjs"],
       "extends": ["plugin:@nx/javascript"],
       "rules": {
         "no-extra-semi": "off"

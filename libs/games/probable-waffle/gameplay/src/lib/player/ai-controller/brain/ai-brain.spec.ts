@@ -3,8 +3,8 @@ import type { AiIntentV1 } from "../contracts/ai-intent-v1";
 import type { AiManagerProposalV1, AiProposalManagerV1 } from "../planning/ai-manager-proposal";
 import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
 import { createAiBrainStateV1 } from "./create-ai-brain-state-v1";
-import { PureAiBrainV1 } from "./ai-brain";
-import { createStage2Observation } from "../testing/ai-stage-2-test-fixtures";
+import { PureAiBrain } from "./ai-brain";
+import { createAiTestObservation } from "../testing/ai-test-fixtures";
 import { findAiWhyNotExplanationV1 } from "../debug/project-ai-debug-snapshot";
 
 function stopIntent(id: string, utility: number, actorId: string, wood: number): AiIntentV1 {
@@ -121,7 +121,7 @@ class AdaptationLedgerManager implements AiProposalManagerV1 {
   }
 }
 
-describe("PureAiBrainV1", () => {
+describe("PureAiBrain", () => {
   it("explains accepted and rejected intents with deterministic claim arbitration", () => {
     const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
     const state = createAiBrainStateV1({
@@ -134,9 +134,9 @@ describe("PureAiBrainV1", () => {
     const high = stopIntent("high", 900, "worker-1", 40);
     const conflict = stopIntent("conflict", 800, "worker-1", 20);
     const unavailable = stopIntent("missing", 700, "missing-worker", 10);
-    const brain = new PureAiBrainV1(profile, [new DummyManager([unavailable, conflict, high])]);
+    const brain = new PureAiBrain(profile, [new DummyManager([unavailable, conflict, high])]);
 
-    const result = brain.step(createStage2Observation(), state, []);
+    const result = brain.step(createAiTestObservation(), state, []);
 
     expect(result.acceptedIntents.map((intent) => intent.intentId)).toEqual(["intent:high"]);
     expect(result.decisions.map((decision) => [decision.intent.intentId, decision.outcome, decision.reason])).toEqual([
@@ -148,6 +148,12 @@ describe("PureAiBrainV1", () => {
     expect(state.scheduler.decisionSequence).toBe(0);
     expect(result.debugSnapshot.nextActions).toEqual(["stop:test_high"]);
     expect(result.debugSnapshot.mainBlockingReason).toBe("claim_conflict");
+    expect(result.debugSnapshot.strategicIntentSummary).toMatchObject({
+      production: "Production goals currently satisfied",
+      nextAction: "Stop"
+    });
+    expect(result.debugSnapshot.strategicIntentSummary.headline).toContain("Opening");
+    expect(result.debugSnapshot.strategicIntentSummary.blocker).toContain("Claim conflict");
     expect(result.debugSnapshot.sections.productionComposition.status).toBe("ready");
   });
 
@@ -161,7 +167,7 @@ describe("PureAiBrainV1", () => {
       archetypeId: "safe"
     });
     const invalid = stopIntent("invalid", Number.NaN, "worker-1", 1);
-    const result = new PureAiBrainV1(profile, [new DummyManager([invalid])]).step(createStage2Observation(), state, []);
+    const result = new PureAiBrain(profile, [new DummyManager([invalid])]).step(createAiTestObservation(), state, []);
     expect(result.decisions[0]).toMatchObject({ outcome: "rejected", reason: "invalid_numeric_input" });
   });
 
@@ -175,10 +181,10 @@ describe("PureAiBrainV1", () => {
       archetypeId: "balanced"
     });
     const repeated = stopIntent("repeat", 900, "worker-1", 1);
-    const brain = new PureAiBrainV1(profile, [new DummyManager([repeated])]);
-    const first = brain.step(createStage2Observation(), state, []);
+    const brain = new PureAiBrain(profile, [new DummyManager([repeated])]);
+    const first = brain.step(createAiTestObservation(), state, []);
 
-    const second = brain.step(createStage2Observation(), first.nextState, []);
+    const second = brain.step(createAiTestObservation(), first.nextState, []);
 
     expect(first.acceptedIntents).toHaveLength(1);
     expect(second.acceptedIntents).toHaveLength(0);
@@ -195,9 +201,9 @@ describe("PureAiBrainV1", () => {
       archetypeId: "balanced"
     });
     const intent = stopIntent("stable", 900, "worker-1", 1);
-    const brain = new PureAiBrainV1(profile, [new DummyManager([intent])]);
-    const first = brain.step(createStage2Observation(), initial, []);
-    const repeated = brain.step(createStage2Observation(), first.nextState, []);
+    const brain = new PureAiBrain(profile, [new DummyManager([intent])]);
+    const first = brain.step(createAiTestObservation(), initial, []);
+    const repeated = brain.step(createAiTestObservation(), first.nextState, []);
 
     expect(first.acceptedIntents).toHaveLength(1);
     expect(repeated.acceptedIntents).toHaveLength(0);
@@ -216,8 +222,8 @@ describe("PureAiBrainV1", () => {
       archetypeId: "balanced"
     });
     const useful = stopIntent("useful", 900, "worker-1", 1);
-    const result = new PureAiBrainV1(profile, [new ThrowingOptionalManager(), new DummyManager([useful])]).step(
-      createStage2Observation(),
+    const result = new PureAiBrain(profile, [new ThrowingOptionalManager(), new DummyManager([useful])]).step(
+      createAiTestObservation(),
       state,
       []
     );
@@ -245,8 +251,8 @@ describe("PureAiBrainV1", () => {
       tick: 0,
       archetypeId: "balanced"
     });
-    const result = new PureAiBrainV1(profile, [new AdaptationLedgerManager(), new MacroLedgerManager()]).step(
-      createStage2Observation(),
+    const result = new PureAiBrain(profile, [new AdaptationLedgerManager(), new MacroLedgerManager()]).step(
+      createAiTestObservation(),
       state,
       []
     );
@@ -268,7 +274,7 @@ describe("PureAiBrainV1", () => {
       archetypeId: "balanced"
     });
     const terminalObservation = {
-      ...createStage2Observation(),
+      ...createAiTestObservation(),
       modeGoals: [
         {
           id: "mode:win:no_enemy_players_left",
@@ -280,7 +286,7 @@ describe("PureAiBrainV1", () => {
         }
       ]
     };
-    const result = new PureAiBrainV1(profile, [new DummyManager([stopIntent("post-game", 900, "worker-1", 1)])]).step(
+    const result = new PureAiBrain(profile, [new DummyManager([stopIntent("post-game", 900, "worker-1", 1)])]).step(
       terminalObservation,
       state,
       []

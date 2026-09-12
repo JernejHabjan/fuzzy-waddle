@@ -264,7 +264,7 @@ function withPhase(
 }
 
 /** Advances saved transport operations and emits only shared command intents. */
-export class AiStage8TransportManagerV1 implements AiProposalManagerV1 {
+export class AiTransportManager implements AiProposalManagerV1 {
   readonly managerId = "stage8.transport";
 
   constructor(private readonly getCatalog: () => AiCapabilityCatalogV1 | undefined) {}

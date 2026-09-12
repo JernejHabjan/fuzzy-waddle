@@ -1,8 +1,8 @@
 import { FactionType, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
-import { PureAiBrainV1 } from "../brain/ai-brain";
+import { PureAiBrain } from "../brain/ai-brain";
 import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
 import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
-import { createStage2Observation } from "./ai-stage-2-test-fixtures";
+import { createAiTestObservation } from "./ai-test-fixtures";
 import {
   AiOfflineDecisionStepperV1,
   captureAiDecisionBundleV1,
@@ -25,7 +25,7 @@ const priorState = createAiBrainStateV1({
 
 function artifact(sourceRevision = "source-a"): AiDecisionReproArtifactV1 {
   return captureAiDecisionBundleV1(
-    { observation: createStage2Observation(), priorState, outcomes: [] },
+    { observation: createAiTestObservation(), priorState, outcomes: [] },
     {
       sourceRevision,
       dirtySourceDigest: null,
@@ -50,7 +50,7 @@ function artifact(sourceRevision = "source-a"): AiDecisionReproArtifactV1 {
 }
 
 describe("Stage 5 reproduction runner / DBG-01,03,04,05", () => {
-  const brain = new PureAiBrainV1(profile, []);
+  const brain = new PureAiBrain(profile, []);
 
   it("blocks incomplete history and incompatible source instead of claiming exact replay", () => {
     const incomplete = artifact();
@@ -93,7 +93,7 @@ describe("Stage 5 reproduction runner / DBG-01,03,04,05", () => {
       ...artifact(),
       payload: {
         ...artifact().payload,
-        expectedResult: brain.step(createStage2Observation(), priorState, [])
+        expectedResult: brain.step(createAiTestObservation(), priorState, [])
       }
     };
     expect(compareAiDecisionBundlesV1(original, candidate).classification).toBe("same_input_divergence");

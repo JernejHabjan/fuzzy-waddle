@@ -9,7 +9,7 @@ import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
 import type { AiManagerProposalV1, AiProposalManagerV1 } from "./ai-manager-proposal";
 
 /** Sustained saturated local service before an expansion becomes a candidate. */
-export const AI_STAGE_10_EXPANSION_SATURATION_TICKS = 600;
+export const AI_EXPANSION_SATURATION_TICKS = 600;
 const BASE_MEMBER_RADIUS = 12;
 
 function selfOwned(observation: AiObservationV1): AiObservedActorV1[] {
@@ -71,7 +71,7 @@ function siteCandidates(anchor: Vector3Simple, profile: AiProfileConfigV1): Vect
  * creates only deterministic candidate reservations; the shared construction application
  * remains the authoritative footprint, terrain, collision and builder revalidation owner.
  */
-export class AiStage10BaseManagerV1 implements AiProposalManagerV1 {
+export class AiBaseManager implements AiProposalManagerV1 {
   readonly managerId = "stage-10-bases";
 
   constructor(
@@ -99,10 +99,7 @@ export class AiStage10BaseManagerV1 implements AiProposalManagerV1 {
     const activeRejectedSiteHistory = state.bases
       .flatMap((base) => base.rejectedSiteKeys ?? [])
       .filter((entry) => entry.retryAfterTick > observation.tick)
-      .filter(
-        (entry, index, all) =>
-          all.findIndex((candidate) => candidate.siteKey === entry.siteKey) === index
-      )
+      .filter((entry, index, all) => all.findIndex((candidate) => candidate.siteKey === entry.siteKey) === index)
       .sort((left, right) => left.siteKey.localeCompare(right.siteKey));
     const priorByAnchor = new Map(
       state.bases.filter((base) => base.anchorActorId).map((base) => [base.anchorActorId!, base])
@@ -189,7 +186,7 @@ export class AiStage10BaseManagerV1 implements AiProposalManagerV1 {
       ? null
       : localResourceValue === 0
         ? "resource_life"
-        : deliveredIncome === 0 && observation.tick >= AI_STAGE_10_EXPANSION_SATURATION_TICKS
+        : deliveredIncome === 0 && observation.tick >= AI_EXPANSION_SATURATION_TICKS
           ? "worker_capacity"
           : null;
     const distantResource = resourceActors(observation)

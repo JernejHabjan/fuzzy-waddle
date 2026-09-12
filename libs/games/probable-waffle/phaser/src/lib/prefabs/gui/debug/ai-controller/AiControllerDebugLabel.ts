@@ -117,9 +117,7 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
       const aiHandlerSystem = getSceneSystem(this.mainSceneWithActors, AiPlayerHandler);
       const controller = aiHandlerSystem?.getAiPlayerController(playerNumber);
       const brain = controller ? this.getSelectedBrainSnapshot(controller) : undefined;
-      this.playerAction.text = brain
-        ? `${brain.stance} → ${brain.goalId ?? "no goal"}`
-        : "Awaiting committed planner snapshot";
+      this.playerAction.text = brain ? brain.strategicIntentSummary.headline : "Awaiting committed planner snapshot";
       this.refreshTelemetry(performance.now());
     } else {
       this.playerName.text = "No Player";
@@ -217,9 +215,7 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
       .filter(Boolean)
       .join("\n");
     const brain = this.getSelectedBrainSnapshot(controller);
-    this.playerAction.text = brain
-      ? `${brain.stance} → ${brain.goalId ?? "no goal"}`
-      : "Awaiting committed planner snapshot";
+    this.playerAction.text = brain ? brain.strategicIntentSummary.headline : "Awaiting committed planner snapshot";
   }
 
   private pageIndex = 0;
@@ -268,10 +264,13 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
     if (category === "overview") {
       return [
         "=== OVERVIEW & REASONS ===",
-        `Purpose: ${brain.stance} → ${brain.goalId ?? "none"} (${brain.profileDifficulty})`,
+        `Purpose: ${brain.strategicIntentSummary.objective} (${brain.profileDifficulty})`,
+        `Force: ${brain.strategicIntentSummary.force}`,
+        `Production: ${brain.strategicIntentSummary.production}`,
+        `Economy: ${brain.strategicIntentSummary.economy}`,
         `Tick ${brain.tick}; commitment through ${brain.commitmentUntilTick}; health ${brain.progressHealth}`,
-        `Next: ${brain.nextActions.join(", ") || "awaiting proposal"}`,
-        `Blocker: ${brain.mainBlockingReason ?? "none"}`,
+        `Next: ${brain.strategicIntentSummary.nextAction}`,
+        `Blocker: ${brain.strategicIntentSummary.blocker ?? "none"}`,
         ...brain.topReasons.slice(0, 6).map((reason) => `Reason: ${reason}`),
         `Recorded decisions: ${brain.decisions.length}; why-not entries: ${brain.whyNot.length}`
       ];

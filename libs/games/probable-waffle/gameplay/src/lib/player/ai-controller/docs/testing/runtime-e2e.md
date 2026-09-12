@@ -16,6 +16,11 @@ Recommended CI tiers:
 
 The required tier is not yet wired into repository CI. This is a release blocker recorded in the handoff.
 
+The current browser driver starts a local skirmish with one human and AI players. It exercises the real lobby, Phaser
+world, command bus, and shared command application, but it does not activate socket-backed multiplayer lockstep because
+that path requires a relay and multiple human clients. Real peer relay, reconnect, and host-migration E2E belongs to
+[#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819).
+
 ## Repetition and seed policy
 
 - Repeat each focused deterministic fixture three times and compare ordered decisions, authoritative hash, AI digest and first differing normalized path.

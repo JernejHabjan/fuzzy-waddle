@@ -8,8 +8,8 @@ import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observa
 import type { AiManagerProposalV1, AiProposalManagerV1 } from "./ai-manager-proposal";
 
 /** The H1 default is shared by every Stage-12 domain; it is a backoff floor, never a deadline reset. */
-export const AI_STAGE_12_NO_PROGRESS_TICKS = 200;
-const AI_STAGE_12_PHASE_DEADLINE_TICKS = 1200;
+export const AI_RECOVERY_NO_PROGRESS_TICKS = 200;
+const AI_RECOVERY_PHASE_DEADLINE_TICKS = 1200;
 const MAX_RECOVERY_RECORDS = 64;
 const MAX_RECOVERY_ATTEMPTS = 2;
 
@@ -39,17 +39,13 @@ function canTarget(attacker: AiObservedActorV1, target: AiObservedActorV1): bool
   return movementDomains(target).some((domain) => supported.has(domain));
 }
 
-function canSee(
-  attacker: AiObservedActorV1,
-  target: AiObservedActorV1,
-  catalog: AiCapabilityCatalogV1
-): boolean {
+function canSee(attacker: AiObservedActorV1, target: AiObservedActorV1, catalog: AiCapabilityCatalogV1): boolean {
   const attackerPosition = position(attacker);
   const targetPosition = position(target);
   if (!attackerPosition || !targetPosition) return false;
   const range =
-    catalog.entries.find((entry) => entry.sourceObjectName === attacker.objectName)?.constructionProfile
-      ?.visionRange ?? 8;
+    catalog.entries.find((entry) => entry.sourceObjectName === attacker.objectName)?.constructionProfile?.visionRange ??
+    8;
   return distance(attackerPosition, targetPosition) <= range;
 }
 
@@ -73,7 +69,7 @@ function record(
     ...input,
     enteredTick: prior?.enteredTick ?? input.nextRetryTick,
     lastProgressTick: prior?.lastProgressTick ?? input.nextRetryTick,
-    phaseDeadline: prior?.phaseDeadline ?? aiDeadline(input.nextRetryTick + AI_STAGE_12_PHASE_DEADLINE_TICKS),
+    phaseDeadline: prior?.phaseDeadline ?? aiDeadline(input.nextRetryTick + AI_RECOVERY_PHASE_DEADLINE_TICKS),
     attempt: prior && prior.state !== "watching" ? prior.attempt + 1 : (prior?.attempt ?? 0),
     releasedClaimIds: prior?.releasedClaimIds ?? []
   };
@@ -107,7 +103,7 @@ function isTerminalOutcomeFor(outcomes: AiBrainStateV1["pendingOutcomes"], effec
  * mutates actors or invents placement authority: it records observed failure, backs off stable
  * effects, chooses a legal alternative and releases only its own provisional claims.
  */
-export class AiStage12RecoveryManagerV1 implements AiProposalManagerV1 {
+export class AiRecoveryManager implements AiProposalManagerV1 {
   readonly managerId = "stage-12-recovery";
 
   constructor(private readonly getCatalog: () => AiCapabilityCatalogV1 | undefined) {}
@@ -136,7 +132,7 @@ export class AiStage12RecoveryManagerV1 implements AiProposalManagerV1 {
       const key = `progress:${progress.planId}`;
       const old = prior.get(key);
       const evidenceTick = progress.lastUsefulProgress?.tick ?? old?.lastProgressTick ?? state.lastCommittedTick;
-      if (observation.tick - evidenceTick < AI_STAGE_12_NO_PROGRESS_TICKS) continue;
+      if (observation.tick - evidenceTick < AI_RECOVERY_NO_PROGRESS_TICKS) continue;
       const domain: RecoveryRecord["domain"] = state.transport.some((plan) => `plan:${plan.planId}` === progress.planId)
         ? "transport"
         : state.fortifications.some((plan) => `plan:${plan.planId}` === progress.planId)
@@ -152,8 +148,8 @@ export class AiStage12RecoveryManagerV1 implements AiProposalManagerV1 {
         cause: "overdue_useful_progress",
         enteredTick: old?.enteredTick ?? observation.tick,
         lastProgressTick: evidenceTick,
-        nextRetryTick: observation.tick + AI_STAGE_12_NO_PROGRESS_TICKS,
-        phaseDeadline: old?.phaseDeadline ?? aiDeadline(observation.tick + AI_STAGE_12_PHASE_DEADLINE_TICKS),
+        nextRetryTick: observation.tick + AI_RECOVERY_NO_PROGRESS_TICKS,
+        phaseDeadline: old?.phaseDeadline ?? aiDeadline(observation.tick + AI_RECOVERY_PHASE_DEADLINE_TICKS),
         attempt: old ? old.attempt + 1 : 1,
         state: "backoff",
         alternate: "owning_domain_alternate",
@@ -172,7 +168,7 @@ export class AiStage12RecoveryManagerV1 implements AiProposalManagerV1 {
       if (!rejected) return base;
       const key = `placement:${base.reservedSiteKey}`;
       const old = prior.get(key);
-      const retryAfterTick = observation.tick + AI_STAGE_12_NO_PROGRESS_TICKS * Math.min(4, (old?.attempt ?? 0) + 1);
+      const retryAfterTick = observation.tick + AI_RECOVERY_NO_PROGRESS_TICKS * Math.min(4, (old?.attempt ?? 0) + 1);
       records.push(
         record(old, {
           recoveryKey: key,
@@ -255,7 +251,7 @@ export class AiStage12RecoveryManagerV1 implements AiProposalManagerV1 {
             planId: "plan:recovery:economy" as RecoveryRecord["planId"],
             actorId: source.actorId,
             cause: "zero_delivered_income",
-            nextRetryTick: observation.tick + AI_STAGE_12_NO_PROGRESS_TICKS,
+            nextRetryTick: observation.tick + AI_RECOVERY_NO_PROGRESS_TICKS,
             state: "recovering",
             alternate: "eligible_visible_source"
           })
@@ -315,7 +311,7 @@ export class AiStage12RecoveryManagerV1 implements AiProposalManagerV1 {
           planId: `plan:${squad.squadId}` as RecoveryRecord["planId"],
           actorId: blocker.actorId,
           cause: "visible_hostile_egress_blocker",
-          nextRetryTick: observation.tick + AI_STAGE_12_NO_PROGRESS_TICKS,
+          nextRetryTick: observation.tick + AI_RECOVERY_NO_PROGRESS_TICKS,
           state: "recovering",
           alternate: "compatible_defense_squad"
         })
@@ -386,7 +382,7 @@ export class AiStage12RecoveryManagerV1 implements AiProposalManagerV1 {
           planId: "plan:recovery:repair" as RecoveryRecord["planId"],
           actorId: damaged.actorId,
           cause: "observed_damage",
-          nextRetryTick: observation.tick + AI_STAGE_12_NO_PROGRESS_TICKS,
+          nextRetryTick: observation.tick + AI_RECOVERY_NO_PROGRESS_TICKS,
           state: "recovering",
           alternate: "return_workers_to_economy_after_completion"
         })
@@ -398,7 +394,7 @@ export class AiStage12RecoveryManagerV1 implements AiProposalManagerV1 {
       if (records.some((entry) => entry.recoveryKey === old.recoveryKey)) continue;
       const overdue =
         observation.tick >= old.phaseDeadline.dueTick ||
-        observation.tick - old.lastProgressTick >= AI_STAGE_12_PHASE_DEADLINE_TICKS;
+        observation.tick - old.lastProgressTick >= AI_RECOVERY_PHASE_DEADLINE_TICKS;
       if (overdue && old.attempt >= MAX_RECOVERY_ATTEMPTS) {
         records.push({
           ...old,

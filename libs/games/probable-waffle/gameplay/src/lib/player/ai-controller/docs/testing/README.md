@@ -11,6 +11,10 @@
 
 An authored fixture or planner trace is not runtime evidence. A runtime case must launch the actual game world and measure authoritative outcomes independently of the planner's explanation.
 
+Fixture JSON and typed builders are inert data until a Jest or matrix/Playwright runner registers and executes them.
+Their assertions are deterministic code and require no LLM evaluation or manual judgment. Unmapped fixture metadata is
+not automated coverage.
+
 ## Stable commands
 
 ```bash

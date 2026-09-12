@@ -1,9 +1,9 @@
 import { FactionType, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
-import { PureAiBrainV1 } from "../brain/ai-brain";
+import { PureAiBrain } from "../brain/ai-brain";
 import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
 import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
 import type { AiProposalManagerV1 } from "../planning/ai-manager-proposal";
-import { createStage2Observation } from "./ai-stage-2-test-fixtures";
+import { createAiTestObservation } from "./ai-test-fixtures";
 import { compareAiScenarioReportsV1, findFirstAiDifferenceV1 } from "./ai-first-difference-v1";
 import { assertPairedAiScenariosV1, buildAiScenarioV1 } from "./ai-scenario-builder-v1";
 import { runPureAiScenarioV1 } from "./ai-pure-scenario-runner-v1";
@@ -66,7 +66,7 @@ function scenario(expectedMinimum = 1): AiScenarioV1 {
     },
     catalogIds: ["TivaraWorker"],
     initialState: state,
-    frames: [{ observation: createStage2Observation(), outcomes: [] }],
+    frames: [{ observation: createAiTestObservation(), outcomes: [] }],
     nonVacuity: [
       { kind: "intent_count", minimum: 1, maximum: 8 },
       { kind: "work_count_between", counter: "decisions", minimum: 1, maximum: 1 }
@@ -100,7 +100,7 @@ describe("Stage 5 deterministic scenario harness", () => {
   });
 
   it("produces identical command and AI digests for three identical repetitions", () => {
-    const brain = new PureAiBrainV1(profile, [manager]);
+    const brain = new PureAiBrain(profile, [manager]);
     const reports = [0, 1, 2].map(() =>
       runPureAiScenarioV1(scenario(), brain, { sourceRevision: "candidate", worldDigest: "world:stable" })
     );
@@ -126,7 +126,7 @@ describe("Stage 5 deterministic scenario harness", () => {
   });
 
   it("reports the first divergent tick and retained normalized field path", () => {
-    const report = runPureAiScenarioV1(scenario(), new PureAiBrainV1(profile, [manager]), {
+    const report = runPureAiScenarioV1(scenario(), new PureAiBrain(profile, [manager]), {
       sourceRevision: "candidate"
     });
     const changed = {
@@ -141,7 +141,7 @@ describe("Stage 5 deterministic scenario harness", () => {
   });
 
   it("rejects a deliberately broken semantic oracle instead of trusting planner trace", () => {
-    const report = runPureAiScenarioV1(scenario(2), new PureAiBrainV1(profile, [manager]), {
+    const report = runPureAiScenarioV1(scenario(2), new PureAiBrain(profile, [manager]), {
       sourceRevision: "candidate"
     });
     expect(report.assertionResults[0]?.passed).toBe(false);

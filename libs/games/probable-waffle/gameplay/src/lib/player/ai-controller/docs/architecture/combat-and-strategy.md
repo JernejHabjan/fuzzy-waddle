@@ -23,6 +23,20 @@ After a favorable engagement, the AI applies useful pressure to an exposed econo
 - Casualties, damage, position progress and objective effects are independently measured.
 - Reinforcements assemble or choose a safe alternate route instead of feeding singly into danger.
 
+## Adaptation and technology
+
+The adaptation manager alone owns counter-composition demand and optional technology rationale. It consumes only
+committed visible evidence and legal research candidates projected by the runtime adapter. A normal role transition
+requires repeated evidence plus the profile cooldown; remembered contacts cannot independently trigger it.
+
+Counter demand is limited to capabilities that exist in the current faction catalog. Ready actors and unresolved
+accepted effects count toward fulfillment, so duplicate units remain useful while a real deficit exists and production
+stops when the commitment is satisfied. Existing production is retained rather than cancelled speculatively.
+
+Research scoring weighs current and likely beneficiaries against cost, queue delay, and survival needs. The shared
+research command remains the final authority. Adaptation evidence, targets, research rationale, and cancellation policy
+are saved and projected into the debug snapshot without live replanning.
+
 ## Difficulty
 
 Difficulty changes decision cadence, voluntary activity breadth, uncertainty use and commitment budgets. It does not grant hidden information, free resources, stat bonuses or exemptions from survival/recovery correctness. Easy must still open, produce, defend, retreat and recover; Hard must remain bounded and rules-compliant.

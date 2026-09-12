@@ -6,7 +6,7 @@ import type { AiObservedActorV1, AiObservationV1 } from "../contracts/ai-observa
 export const unknownAiValue = { status: "unknown", reason: "not_observed" } as const;
 
 /** Creates a fully shaped owned actor without inventing unavailable capability values. */
-export function createStage2OwnedActor(actorId: ActorId): AiObservedActorV1 {
+export function createAiTestOwnedActor(actorId: ActorId): AiObservedActorV1 {
   return {
     actorId,
     objectName: ObjectNames.TivaraWorker,
@@ -29,14 +29,14 @@ export function createStage2OwnedActor(actorId: ActorId): AiObservedActorV1 {
 }
 
 /** Creates a canonical Stage 2 observation with one worker and a wood budget. */
-export function createStage2Observation(): AiObservationV1 {
+export function createAiTestObservation(): AiObservationV1 {
   return {
     schemaVersion: 1,
     generation: 1,
     tick: 20,
     playerNumber: 1,
     faction: FactionType.Tivara,
-    actors: [createStage2OwnedActor("worker-1")],
+    actors: [createAiTestOwnedActor("worker-1")],
     resources: [
       {
         resourceType: ResourceType.Wood,

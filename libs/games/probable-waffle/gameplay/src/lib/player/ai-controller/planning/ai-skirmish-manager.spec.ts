@@ -9,13 +9,13 @@ import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import type { AiObservedActorV1, AiObservationV1 } from "../contracts/ai-observation-v1";
 import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
-import { createStage2Observation, createStage2OwnedActor } from "../testing/ai-stage-2-test-fixtures";
+import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
 import { buildAiAccessGraphV1 } from "./ai-access-graph-v1";
 import {
-  AI_STAGE_9_ASSEMBLY_TIMEOUT_TICKS,
-  AI_STAGE_9_CONCESSION_HOPELESS_TICKS,
-  AiStage9SkirmishManagerV1
-} from "./ai-stage-9-skirmish-manager";
+  AI_SKIRMISH_ASSEMBLY_TIMEOUT_TICKS,
+  AI_CONCESSION_HOPELESS_TICKS,
+  AiSkirmishManager
+} from "./ai-skirmish-manager";
 
 const graphInput = buildAiAccessGraphV1({
   generation: 1,
@@ -76,7 +76,7 @@ const catalog: AiCapabilityCatalogV1 = {
 
 function unit(actorId: string, accessNodeId: typeof homeNode, x: number): AiObservedActorV1 {
   return {
-    ...createStage2OwnedActor(actorId),
+    ...createAiTestOwnedActor(actorId),
     objectName: ObjectNames.TivaraMacemanMale,
     logicalPosition: { status: "known", value: { x, y: 0, z: 0 }, observedTick: 0 },
     accessNodeId: { status: "known", value: accessNodeId, observedTick: 0 },
@@ -102,7 +102,7 @@ function observation(
   coverage: readonly (typeof homeNode)[] = []
 ): AiObservationV1 {
   return {
-    ...createStage2Observation(),
+    ...createAiTestObservation(),
     generation: 1,
     tick,
     actors,
@@ -118,9 +118,9 @@ function observation(
   };
 }
 
-describe("AiStage9SkirmishManagerV1", () => {
+describe("AiSkirmishManager", () => {
   const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-  const manager = new AiStage9SkirmishManagerV1(profile, () => catalog);
+  const manager = new AiSkirmishManager(profile, () => catalog);
 
   it("asks a reachable question and sends a legal scout instead of treating coverage as success", () => {
     const state = createAiBrainStateV1({
@@ -214,7 +214,7 @@ describe("AiStage9SkirmishManagerV1", () => {
     };
 
     const proposal = manager.propose(
-      observation(AI_STAGE_9_ASSEMBLY_TIMEOUT_TICKS + 1, [
+      observation(AI_SKIRMISH_ASSEMBLY_TIMEOUT_TICKS + 1, [
         unit("guard-1", homeNode, 0),
         unit("guard-2", homeNode, 0),
         staleEnemy
@@ -334,7 +334,7 @@ describe("AiStage9SkirmishManagerV1", () => {
         }
       ]
     };
-    const workerManager = new AiStage9SkirmishManagerV1(profile, () => workerCatalog);
+    const workerManager = new AiSkirmishManager(profile, () => workerCatalog);
     const initial = createAiBrainStateV1({
       playerNumber: 1,
       faction: FactionType.Tivara,
@@ -391,7 +391,7 @@ describe("AiStage9SkirmishManagerV1", () => {
               clock: "simulation" as const,
               unit: "tick" as const,
               persistence: "save" as const,
-              dueTick: AI_STAGE_9_ASSEMBLY_TIMEOUT_TICKS
+              dueTick: AI_SKIRMISH_ASSEMBLY_TIMEOUT_TICKS
             },
             effectDeadline: {
               clock: "simulation" as const,
@@ -408,7 +408,7 @@ describe("AiStage9SkirmishManagerV1", () => {
       ]
     };
     const proposal = manager.propose(
-      observation(AI_STAGE_9_ASSEMBLY_TIMEOUT_TICKS, [unit("guard-1", homeNode, 0), enemy]),
+      observation(AI_SKIRMISH_ASSEMBLY_TIMEOUT_TICKS, [unit("guard-1", homeNode, 0), enemy]),
       state
     );
 
@@ -421,7 +421,7 @@ describe("AiStage9SkirmishManagerV1", () => {
     );
 
     const repeated = manager.propose(
-      observation(AI_STAGE_9_ASSEMBLY_TIMEOUT_TICKS + 20, [unit("guard-1", homeNode, 0), enemy]),
+      observation(AI_SKIRMISH_ASSEMBLY_TIMEOUT_TICKS + 20, [unit("guard-1", homeNode, 0), enemy]),
       {
         ...state,
         skirmish: proposal.statePatch!.skirmish!,
@@ -511,7 +511,7 @@ describe("AiStage9SkirmishManagerV1", () => {
         mode: { ...initial.skirmish.mode, state: "hopeless" as const, hopelessSinceTick: 0 }
       }
     };
-    const proposal = manager.propose(observation(AI_STAGE_9_CONCESSION_HOPELESS_TICKS, [], []), state);
+    const proposal = manager.propose(observation(AI_CONCESSION_HOPELESS_TICKS, [], []), state);
 
     expect(proposal.intents).toContainEqual(
       expect.objectContaining({ kind: "concede", reason: "sustained_no_recoverable_route" })

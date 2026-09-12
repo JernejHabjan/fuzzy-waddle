@@ -2,8 +2,9 @@
 
 Read for implementation or migration of code/contracts, not routine git/status work.
 
-- Prefer one existing authority/helper over parallel implementations. Export one substantial type/class per file; colocate only tightly coupled trivial types.
-- Keep each new hand-maintained text source file at or below 400 non-comment lines and each new or materially rewritten method/function at or below 200 non-comment lines. Comments do not consume the limit, but moving executable code into comments or compressed formatting does not satisfy it. Split by stable responsibility; generated, vendored and machine-authored artifacts are exempt.
+- Prefer one existing authority/helper over parallel implementations. Keep one substantive top-level class, interface, type alias or enum per file; colocate only tightly coupled trivial values and functions.
+- Keep each new hand-maintained TypeScript, JavaScript and MJS file at or below 400 non-comment lines, each new or materially rewritten method/function at or below 200 non-comment lines, and every line at or below 140 columns. Comments do not consume the file/function limits, but moving executable code into comments or compressed formatting does not satisfy them. Split by stable responsibility; generated, vendored and machine-authored artifacts are exempt.
+- The source-structure lint rule content-hash baselines existing violations. A changed baseline file must become compliant or receive an explicit, reviewed baseline update with a linked cleanup owner; never regenerate the baseline as a routine fix.
 - Use stable responsibility/domain names for production files, symbols, tests and durable documentation. A pull request's stage or phase number may appear in its temporary plan/handoff, never as new permanent architecture naming. When removing an existing stage-labelled persisted identifier, provide compatibility or an explicit migration.
 - Use shared IDs, literal unions, enums and discriminated payloads for relationships. Avoid internal any, non-null assertions, string-key probes or unstructured records when an exact contract exists. Accept unknown at untrusted boundaries, validate immediately, then pass typed values.
 - Use satisfies for new/changed inline data with an existing exact contract, not a type assertion to bypass checking. Remove nearby avoidable unsafe types only when local and in scope.

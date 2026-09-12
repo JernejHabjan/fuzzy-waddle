@@ -1,13 +1,13 @@
 import { FactionType, ProbableWaffleAiDifficulty, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { aiDeadline } from "./ai-core-types";
 import { assertAiBrainStateV1, assertAiObservationV1, assertAiWaitEdgesV1 } from "./validate-ai-contracts-v1";
-import { createStage2Observation } from "../testing/ai-stage-2-test-fixtures";
+import { createAiTestObservation } from "../testing/ai-test-fixtures";
 import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
 import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
 
 describe("Stage 2 AI invariant guards", () => {
   it("rejects non-finite resource state at the observation boundary", () => {
-    const observation = createStage2Observation();
+    const observation = createAiTestObservation();
     const wood = observation.resources[0];
     if (!wood) throw new Error("fixture_missing_wood");
     expect(() =>

@@ -14,11 +14,11 @@ import type { AiDomainV1, AiObservationV1, AiObservedActorV1 } from "../contract
 import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
 import type { AiManagerProposalV1, AiProposalManagerV1 } from "./ai-manager-proposal";
 import { queryAiAccessRouteV1 } from "./ai-access-graph-v1";
-import { createAiTransportPlanV1 } from "./ai-stage-8-transport-manager";
+import { createAiTransportPlanV1 } from "./ai-transport-manager";
 
-export const AI_STAGE_9_ASSEMBLY_TIMEOUT_TICKS = 1200;
-export const AI_STAGE_9_CONCESSION_HOPELESS_TICKS = 1200;
-export const AI_STAGE_9_PURSUIT_LEASH_TICKS = 200;
+export const AI_SKIRMISH_ASSEMBLY_TIMEOUT_TICKS = 1200;
+export const AI_CONCESSION_HOPELESS_TICKS = 1200;
+export const AI_PURSUIT_LEASH_TICKS = 200;
 const MAX_TIMELINE_ENTRIES = 128;
 const THREAT_EXPIRY_TICKS = 240;
 const LAST_SEEN_PURSUIT_TICKS = 1200;
@@ -218,7 +218,7 @@ function nextQuestion(
  * durable squad missions, and a mode-safe concession proposal. Tactical target scoring remains
  * intentionally small until Stage 13, but every emitted action already has a persisted purpose.
  */
-export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
+export class AiSkirmishManager implements AiProposalManagerV1 {
   readonly managerId = "stage9.skirmish";
 
   constructor(
@@ -354,8 +354,8 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
           retreatNodeId: homeAccess ?? null,
           createdTick: existingLifecycle?.createdTick ?? observation.tick,
           assemblyDeadline:
-            existingLifecycle?.assemblyDeadline ?? aiDeadline(observation.tick + AI_STAGE_9_ASSEMBLY_TIMEOUT_TICKS),
-          effectDeadline: aiDeadline(observation.tick + AI_STAGE_9_PURSUIT_LEASH_TICKS),
+            existingLifecycle?.assemblyDeadline ?? aiDeadline(observation.tick + AI_SKIRMISH_ASSEMBLY_TIMEOUT_TICKS),
+          effectDeadline: aiDeadline(observation.tick + AI_PURSUIT_LEASH_TICKS),
           lastUsefulEffectTick: existingLifecycle?.lastUsefulEffectTick ?? null,
           recoveryAttempt: existingLifecycle?.recoveryAttempt ?? 0,
           terminalReason: null
@@ -414,7 +414,7 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
           retreatNodeId: homeAccess ?? null,
           createdTick:
             state.squads.find((squad) => squad.squadId === reserveId)?.lifecycle?.createdTick ?? observation.tick,
-          assemblyDeadline: aiDeadline(observation.tick + AI_STAGE_9_ASSEMBLY_TIMEOUT_TICKS),
+          assemblyDeadline: aiDeadline(observation.tick + AI_SKIRMISH_ASSEMBLY_TIMEOUT_TICKS),
           effectDeadline: aiDeadline(observation.tick + 2400),
           lastUsefulEffectTick: null,
           recoveryAttempt: 0,
@@ -469,7 +469,7 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
           createdTick: activeAttack?.lifecycle?.createdTick ?? observation.tick,
           assemblyDeadline:
             activeAttack?.lifecycle?.assemblyDeadline ??
-            aiDeadline(observation.tick + AI_STAGE_9_ASSEMBLY_TIMEOUT_TICKS),
+            aiDeadline(observation.tick + AI_SKIRMISH_ASSEMBLY_TIMEOUT_TICKS),
           effectDeadline: activeAttack?.lifecycle?.effectDeadline ?? aiDeadline(observation.tick + 2400),
           lastUsefulEffectTick: activeAttack?.lifecycle?.lastUsefulEffectTick ?? null,
           recoveryAttempt: activeAttack?.lifecycle?.recoveryAttempt ?? 0,
@@ -632,13 +632,10 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
         const scoutId = activeScout?.squadId ?? ("squad:scout:primary" as AiSquadId);
         const scoutPlanId = `plan:${scoutId}` as AiPlanId;
         const continuingScout = activeScout?.objectiveId === currentQuestion.questionId;
-        const retainedScoutMembers = continuingScout && activeScout
-          ? combat.filter((actor) => activeScout.actorIds.includes(actor.actorId))
-          : [];
+        const retainedScoutMembers =
+          continuingScout && activeScout ? combat.filter((actor) => activeScout.actorIds.includes(actor.actorId)) : [];
         const scoutMembers =
-          retainedScoutMembers.length > 0
-            ? retainedScoutMembers
-            : combat.slice(0, Math.min(3, combat.length));
+          retainedScoutMembers.length > 0 ? retainedScoutMembers : combat.slice(0, Math.min(3, combat.length));
         const scout: AiSquadStateV1 = {
           squadId: scoutId,
           role: "scout",
@@ -657,10 +654,12 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
             rallyNodeId: node(combat[0]!) ?? null,
             retreatNodeId: homeAccess ?? null,
             createdTick: continuingScout ? (activeScout?.lifecycle?.createdTick ?? observation.tick) : observation.tick,
-            assemblyDeadline:
-              continuingScout ? (activeScout?.lifecycle?.assemblyDeadline ?? aiDeadline(observation.tick + 200)) : aiDeadline(observation.tick + 200),
-            effectDeadline:
-              continuingScout ? (activeScout?.lifecycle?.effectDeadline ?? aiDeadline(observation.tick + 800)) : aiDeadline(observation.tick + 800),
+            assemblyDeadline: continuingScout
+              ? (activeScout?.lifecycle?.assemblyDeadline ?? aiDeadline(observation.tick + 200))
+              : aiDeadline(observation.tick + 200),
+            effectDeadline: continuingScout
+              ? (activeScout?.lifecycle?.effectDeadline ?? aiDeadline(observation.tick + 800))
+              : aiDeadline(observation.tick + 800),
             lastUsefulEffectTick: continuingScout ? (activeScout?.lifecycle?.lastUsefulEffectTick ?? null) : null,
             recoveryAttempt: continuingScout ? (activeScout?.lifecycle?.recoveryAttempt ?? 0) : 0,
             terminalReason: null
@@ -689,8 +688,7 @@ export class AiStage9SkirmishManagerV1 implements AiProposalManagerV1 {
       ownModeComplete || (hasRecovery && !ownModeFailed)
         ? null
         : (state.skirmish.mode.hopelessSinceTick ?? observation.tick);
-    const concessionDue =
-      hopelessSince !== null && observation.tick - hopelessSince >= AI_STAGE_9_CONCESSION_HOPELESS_TICKS;
+    const concessionDue = hopelessSince !== null && observation.tick - hopelessSince >= AI_CONCESSION_HOPELESS_TICKS;
     let mode = {
       state:
         ownModeComplete || ownModeFailed

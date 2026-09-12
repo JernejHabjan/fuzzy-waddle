@@ -13,7 +13,7 @@ import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
 import { assertAiBrainStateV1, assertAiObservationV1 } from "../contracts/validate-ai-contracts-v1";
 import type { AiManagerProposalV1, AiProposalManagerV1 } from "../planning/ai-manager-proposal";
 import { projectAiDebugSnapshot } from "../debug/project-ai-debug-snapshot";
-import { planAiStage6V1 } from "../planning/ai-stage-6-planner";
+import { planAiDecisions } from "../planning/ai-decision-planner";
 import { AI_PROVISIONAL_LEASE_DURATION_TICKS } from "./create-ai-brain-state-v1";
 import { aiDeadline } from "../contracts/ai-core-types";
 
@@ -178,7 +178,7 @@ function availableResource(observation: AiObservationV1, resourceType: ResourceT
  * Minimal deterministic Stage 2 reducer. It collects read-only manager proposals, applies
  * observation preconditions and claims, and publishes one immutable decision/debug result.
  */
-export class PureAiBrainV1 implements AiBrainV1 {
+export class PureAiBrain implements AiBrainV1 {
   constructor(
     private readonly profile: AiProfileConfigV1,
     private readonly managers: readonly AiProposalManagerV1[]
@@ -224,7 +224,7 @@ export class PureAiBrainV1 implements AiBrainV1 {
           } satisfies AiManagerProposalV1;
         }
       });
-    const planning = planAiStage6V1(observation, previousState, orderedOutcomes, proposalBatches, this.profile);
+    const planning = planAiDecisions(observation, previousState, orderedOutcomes, proposalBatches, this.profile);
     // A proposer may own a persisted projection (opening/demand state) but never
     // mutates the previous brain directly. Stable manager order makes competing
     // narrow projections deterministic; Stage 7 is currently the sole owner.

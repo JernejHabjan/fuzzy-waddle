@@ -20,7 +20,7 @@ export const AI_HARDENING_COVERAGE_V1: readonly AiHardeningCoverageEntryV1[] = [
     implementationStages: [6, 12],
     persistencePath: "AiBrainStateV1.progress/blockers/recoveryEpisodes",
     debugField: "AiDebugSnapshotV1.progressHealth/mainBlockingReason/recovery",
-    focusedTest: "ai-stage-12-recovery-manager.spec.ts",
+    focusedTest: "ai-recovery-manager.spec.ts",
     finalScenarioIds: ["H-01", "H-02", "H-03", "H-04", "H-05"]
   },
   {
@@ -56,7 +56,7 @@ export const AI_HARDENING_COVERAGE_V1: readonly AiHardeningCoverageEntryV1[] = [
     implementationStages: [7, 12],
     persistencePath: "AiBrainStateV1.economyProduction",
     debugField: "AiDebugSnapshotV1.sections.economyLabor",
-    focusedTest: "ai-stage-12-recovery-manager.spec.ts",
+    focusedTest: "ai-recovery-manager.spec.ts",
     finalScenarioIds: ["H-16", "H-17", "H-18"]
   },
   {
@@ -65,7 +65,7 @@ export const AI_HARDENING_COVERAGE_V1: readonly AiHardeningCoverageEntryV1[] = [
     implementationStages: [9, 13],
     persistencePath: "AiBrainStateV1.strategy/squads/progress",
     debugField: "AiDebugSnapshotV1.sections.squadsSupport",
-    focusedTest: "ai-stage-13-tactics-manager.spec.ts",
+    focusedTest: "ai-tactics-manager.spec.ts",
     finalScenarioIds: ["H-23", "H-24", "H-25", "H-26"]
   },
   {

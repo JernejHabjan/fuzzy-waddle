@@ -23,7 +23,8 @@ description: Apply Fuzzy Waddle scope, verification, source-discovery and git ow
 ## Maintainable names and size
 
 - Name production files, symbols and durable docs after stable responsibilities. Issue-specific stage/phase numbers belong only in temporary plans and handoffs.
-- New text source files must stay at or below 400 non-comment lines, and new or materially rewritten methods at or below 200 non-comment lines. Split by responsibility before committing; generated/vendor artifacts are not hand-maintained source.
+- New TypeScript, JavaScript and MJS files must stay at or below 400 non-comment lines, new or materially rewritten methods at or below 200 non-comment lines, and lines at or below 140 columns. Keep one substantive top-level class, interface, type or enum per file. Split by responsibility before committing; generated/vendor artifacts are not hand-maintained source.
+- Repository lint owns enforcement. Existing violating files are content-hash baselined: editing one invalidates its exemption, so split it or make any baseline update explicit and reviewable. Never refresh the baseline merely to pass lint.
 
 ## Files and delivery
 

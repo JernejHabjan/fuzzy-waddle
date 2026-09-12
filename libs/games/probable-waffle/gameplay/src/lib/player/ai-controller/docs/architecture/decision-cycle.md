@@ -32,6 +32,10 @@ The Phaser bridge converts accepted intents to the same command path used by oth
 - Destroyed, cross-scene or incompletely initialized actors are excluded from observations.
 - Terminal match state stops new strategic intents and releases controller lifecycle resources.
 
+Configured skirmishes use the pure brain. The runtime currently retains a legacy behavior-tree fallback only when player
+identity or faction resolution fails; this is a transitional compatibility path, not a second strategy layer. Its
+evidence-backed removal is tracked by [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820).
+
 ## Source anchors
 
 - Pure contracts and brain: `gameplay/src/lib/player/ai-controller/contracts/` and `brain/`

@@ -8,9 +8,9 @@ import type { AiDomainV1, AiObservationV1, AiObservedActorV1 } from "../contract
 import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
 import type { AiManagerProposalV1, AiProposalManagerV1 } from "./ai-manager-proposal";
 
-export const AI_STAGE_13_ATTACK_RATIO_PERMILLE = 1200;
-export const AI_STAGE_13_RETREAT_RATIO_PERMILLE = 800;
-export const AI_STAGE_13_TARGET_SWITCH_IMPROVEMENT_PERMILLE = 200;
+export const AI_TACTICS_ATTACK_RATIO_PERMILLE = 1200;
+export const AI_TACTICS_RETREAT_RATIO_PERMILLE = 800;
+export const AI_TACTICS_TARGET_SWITCH_IMPROVEMENT_PERMILLE = 200;
 const TACTICAL_RECONSIDERATION_TICKS = 40;
 const MAX_LOCAL_ENEMIES = 16;
 const MAX_OBJECTIVE_ALTERNATIVES = 6;
@@ -433,7 +433,7 @@ function boundedTacticalIntents(intents: readonly AiIntentV1[], actorOrderLimit:
 }
 
 /** Owns deterministic local combat preservation, focus reservations, support windows and tactical recovery. */
-export class AiStage13TacticsManagerV1 implements AiProposalManagerV1 {
+export class AiTacticsManager implements AiProposalManagerV1 {
   readonly managerId = "stagez13.tactics";
 
   constructor(
@@ -456,10 +456,11 @@ export class AiStage13TacticsManagerV1 implements AiProposalManagerV1 {
     const homeAnchors = state.bases
       .filter((base) => base.active && base.anchorPosition)
       .map((base) => base.anchorPosition!);
-    const underLocalPressure = visibleEnemies.some((enemy) =>
-      enemy.housingCost.status === "known" &&
-      enemy.housingCost.value > 0 &&
-      homeAnchors.some((anchor) => distance(anchor, knownPosition(enemy)!) <= 12)
+    const underLocalPressure = visibleEnemies.some(
+      (enemy) =>
+        enemy.housingCost.status === "known" &&
+        enemy.housingCost.value > 0 &&
+        homeAnchors.some((anchor) => distance(anchor, knownPosition(enemy)!) <= 12)
     );
     const reinforcementActors = observation.actors
       .filter(
@@ -583,7 +584,7 @@ export class AiStage13TacticsManagerV1 implements AiProposalManagerV1 {
           previousTarget.visibility === "visible" &&
           squad.tactics &&
           bestTarget &&
-          bestTarget.score * 1000 < squad.tactics.targetScore * (1000 + AI_STAGE_13_TARGET_SWITCH_IMPROVEMENT_PERMILLE)
+          bestTarget.score * 1000 < squad.tactics.targetScore * (1000 + AI_TACTICS_TARGET_SWITCH_IMPROVEMENT_PERMILLE)
       );
       const targetId = retainPrevious
         ? previousTarget?.actorId
@@ -613,9 +614,9 @@ export class AiStage13TacticsManagerV1 implements AiProposalManagerV1 {
       );
       const previousRetreat = squad.state === "retreat" || squad.state === "retreating";
       const favorable =
-        estimate.ratioPermille >= AI_STAGE_13_ATTACK_RATIO_PERMILLE && estimate.confidencePermille >= 500;
+        estimate.ratioPermille >= AI_TACTICS_ATTACK_RATIO_PERMILLE && estimate.confidencePermille >= 500;
       const unfavorable =
-        estimate.ratioPermille < AI_STAGE_13_RETREAT_RATIO_PERMILLE ||
+        estimate.ratioPermille < AI_TACTICS_RETREAT_RATIO_PERMILLE ||
         members.filter((actor) => actor.healthPermille?.status === "known" && actor.healthPermille.value <= 250)
           .length >= Math.max(1, Math.ceil(members.length / 3));
       const awaitingLaunch = ["forming", "assemble", "rally", "ready", "advance", "moving"].includes(squad.state);
@@ -665,14 +666,14 @@ export class AiStage13TacticsManagerV1 implements AiProposalManagerV1 {
         emptyRecoveryExhausted || missionRecoveryExhausted
           ? "completed"
           : members.length === 0 || missionExpired
-          ? "recover"
-          : (unfavorable || topologyLost) && retreat
-            ? "retreat"
-            : localEnemies.length > 0 && (favorable || forcedDecision)
-              ? "engage"
-              : localEnemies.length > 0
-                ? "regroup"
-                : quietState;
+            ? "recover"
+            : (unfavorable || topologyLost) && retreat
+              ? "retreat"
+              : localEnemies.length > 0 && (favorable || forcedDecision)
+                ? "engage"
+                : localEnemies.length > 0
+                  ? "regroup"
+                  : quietState;
       const nowRetreat = nextState === "retreat";
       const oscillationCount =
         previousRetreat !== nowRetreat && squad.tactics && observation.tick <= squad.tactics.nextReconsiderTick
@@ -797,8 +798,7 @@ export class AiStage13TacticsManagerV1 implements AiProposalManagerV1 {
                     : {}),
                 ...(finalState === "completed"
                   ? {
-                      terminalReason:
-                        members.length === 0 ? "no_members_released" : "effect_deadline_exhausted"
+                      terminalReason: members.length === 0 ? "no_members_released" : "effect_deadline_exhausted"
                     }
                   : {}),
                 ...(!missionExpired &&

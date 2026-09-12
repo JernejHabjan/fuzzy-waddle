@@ -13,9 +13,9 @@ import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
 import type { AiManagerProposalV1, AiProposalManagerV1 } from "./ai-manager-proposal";
 
 /** Initial graph caps prevent a new plan identity from turning fortification into unbounded work. */
-export const AI_STAGE_11_GRAPH_CAPS = { walls: 16, towers: 3, stairs: 2 } as const;
-export const AI_STAGE_11_STANDARD_SPEND_PERMILLE = 200;
-export const AI_STAGE_11_TURTLE_SPEND_PERMILLE = 300;
+export const AI_FORTIFICATION_GRAPH_CAPS = { walls: 16, towers: 3, stairs: 2 } as const;
+export const AI_STANDARD_FORTIFICATION_SPEND_PERMILLE = 200;
+export const AI_TURTLE_FORTIFICATION_SPEND_PERMILLE = 300;
 const BREACH_RETRY_TICKS = 100;
 const MAX_BREACH_RECOVERY_ATTEMPTS = 2;
 
@@ -286,7 +286,7 @@ function reconcileNode(
  * Owns one bounded, persistent fortification graph per base. All candidates come from the
  * committed local topology, while shared construction remains final placement authority.
  */
-export class AiStage11FortificationManagerV1 implements AiProposalManagerV1 {
+export class AiFortificationManager implements AiProposalManagerV1 {
   readonly managerId = "stage-11-fortifications";
 
   constructor(
@@ -485,7 +485,7 @@ export class AiStage11FortificationManagerV1 implements AiProposalManagerV1 {
       { length: positiveAnchor - negativeAnchor - 1 },
       (_, index) => negativeAnchor + index + 1
     ).filter((offset) => offset !== 0);
-    if (offsets.length < 4 || offsets.length > AI_STAGE_11_GRAPH_CAPS.walls + AI_STAGE_11_GRAPH_CAPS.towers)
+    if (offsets.length < 4 || offsets.length > AI_FORTIFICATION_GRAPH_CAPS.walls + AI_FORTIFICATION_GRAPH_CAPS.towers)
       return null;
     if (offsets.some((offset) => !byKey.get(tileKey(atOffset(offset)))?.groundPassable)) return null;
 
@@ -571,9 +571,9 @@ export class AiStage11FortificationManagerV1 implements AiProposalManagerV1 {
     );
     if (
       routedNodes.length > this.profile.maxPlacementCandidatesPerStep ||
-      routedNodes.filter((candidate) => candidate.kind === "wall").length > AI_STAGE_11_GRAPH_CAPS.walls ||
-      routedNodes.filter((candidate) => candidate.kind === "tower").length > AI_STAGE_11_GRAPH_CAPS.towers ||
-      routedNodes.filter((candidate) => candidate.kind === "stair").length > AI_STAGE_11_GRAPH_CAPS.stairs ||
+      routedNodes.filter((candidate) => candidate.kind === "wall").length > AI_FORTIFICATION_GRAPH_CAPS.walls ||
+      routedNodes.filter((candidate) => candidate.kind === "tower").length > AI_FORTIFICATION_GRAPH_CAPS.towers ||
+      routedNodes.filter((candidate) => candidate.kind === "stair").length > AI_FORTIFICATION_GRAPH_CAPS.stairs ||
       routedNodes.some((candidate) => candidate.kind !== "gate_slot" && !candidate.defenderPostReachable)
     )
       return null;
@@ -638,7 +638,9 @@ export class AiStage11FortificationManagerV1 implements AiProposalManagerV1 {
         priorCommittedByResource[resourceType] = (priorCommittedByResource[resourceType] ?? 0) + amount;
       }
     }
-    const spendPermille = defensiveProfile ? AI_STAGE_11_TURTLE_SPEND_PERMILLE : AI_STAGE_11_STANDARD_SPEND_PERMILLE;
+    const spendPermille = defensiveProfile
+      ? AI_TURTLE_FORTIFICATION_SPEND_PERMILLE
+      : AI_STANDARD_FORTIFICATION_SPEND_PERMILLE;
     const remainingByResource: Partial<Record<ResourceType, number>> = {};
     for (const [resourceType, amount] of resourceEntries(committedByResource)) {
       const ledger = observation.resources.find((entry) => entry.resourceType === resourceType);

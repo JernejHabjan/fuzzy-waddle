@@ -58,7 +58,7 @@ function stage13CombatFamily(family: string, source: string, proposer: string): 
     outcome: implemented("AiCommandOutcomeV1 reconciliation and persisted effect identity"),
     save: implemented("AiBrainStateV1.squads.tactics/support canonical state"),
     debug: implemented("AiDebugSnapshotV1.skirmish.squads/support and Squads & Support panel"),
-    fixture: planned(15, `ai-stage-13-tactics-manager.spec.ts plus real ${family} runtime scenario`)
+    fixture: planned(15, `ai-tactics-manager.spec.ts plus real ${family} runtime scenario`)
   };
 }
 
@@ -73,7 +73,7 @@ export const AI_CAPABILITY_COVERAGE_MANIFEST_V1: readonly AiCapabilityCoverageEn
     family: "base_identity_expansion_placement",
     source: "main-building definition metadata + shared construction footprint authority",
     observation: implemented("AiObservedActorV1.mainBuilding and committed logical/access facts"),
-    proposer: implemented("AiStage10BaseManagerV1 stable base/expansion lifecycle"),
+    proposer: implemented("AiBaseManager stable base/expansion lifecycle"),
     command: implemented("CONSTRUCT through CommandBusService and SharedCommandApplicationService"),
     outcome: implemented("shared construction outcome reconciliation"),
     save: implemented("AiBrainStateV1.bases canonical lifecycle and site cooldowns"),
@@ -84,7 +84,7 @@ export const AI_CAPABILITY_COVERAGE_MANIFEST_V1: readonly AiCapabilityCoverageEn
     family: "fortification_topology",
     source: "Wall/WatchTower/Stairs definitions + height navigation + shared construction authority",
     observation: implemented("AiCapabilityCatalogEntryV1.constructionProfile and AiObservedMapV1.constructionCells"),
-    proposer: implemented("AiStage11FortificationManagerV1 persistent bounded graph"),
+    proposer: implemented("AiFortificationManager persistent bounded graph"),
     command: implemented("CONSTRUCT and breach MOVE through CommandBusService"),
     outcome: implemented("stable node effect reconciliation and observed finished actor matching"),
     save: implemented("AiBrainStateV1.fortifications canonical graph/budget/breach state"),
@@ -95,7 +95,7 @@ export const AI_CAPABILITY_COVERAGE_MANIFEST_V1: readonly AiCapabilityCoverageEn
     family: "causal_recovery_and_anti_blocking",
     source: "committed outcomes, permitted topology and worker/source observations",
     observation: implemented("AiObservedActorV1.healthPermille plus existing owned resource/access facts"),
-    proposer: implemented("AiStage12RecoveryManagerV1 bounded recovery ladder"),
+    proposer: implemented("AiRecoveryManager bounded recovery ladder"),
     command: implemented("shared gather/attack/repair commands through CommandBusService"),
     outcome: implemented("AiCommandOutcomeV1 terminal outcome site backoff"),
     save: implemented("AiBrainStateV1.recovery canonical records"),
@@ -107,13 +107,13 @@ export const AI_CAPABILITY_COVERAGE_MANIFEST_V1: readonly AiCapabilityCoverageEn
   stage13CombatFamily(
     "attack_target_domains",
     "attack + effective level overrides",
-    "AiStage13TacticsManagerV1 domain-compatible focus and damage reservations"
+    "AiTacticsManager domain-compatible focus and damage reservations"
   ),
-  stage13CombatFamily("healing", "healing", "AiStage13TacticsManagerV1 capped missing-health reservation"),
+  stage13CombatFamily("healing", "healing", "AiTacticsManager capped missing-health reservation"),
   stage13CombatFamily(
     "spell_status_zone",
     "spell + spellCasting + active effects",
-    "AiStage13TacticsManagerV1 cooldown/research/autocast/zone-aware support"
+    "AiTacticsManager cooldown/research/autocast/zone-aware support"
   ),
   gameplayFamily("construction", "builder + constructable + prerequisites", 7, 7),
   gameplayFamily("production_queue", "production + queue + productionCost", 7, 7),
@@ -121,7 +121,7 @@ export const AI_CAPABILITY_COVERAGE_MANIFEST_V1: readonly AiCapabilityCoverageEn
     family: "research",
     source: "researchDefinitions + ResearchComponent + TechTreeService shared queue",
     observation: implemented("AiObservationV1.researchCandidates runtime-legal projection"),
-    proposer: implemented("AiStage14AdaptationManagerV1 benefit/cost/queue/survival scoring"),
+    proposer: implemented("AiAdaptationManager benefit/cost/queue/survival scoring"),
     command: implemented("AiIntentV1 research through PlayerAiController CommandBusService dispatch"),
     outcome: implemented("AiCommandOutcomeV1 reconciliation plus TechTreeService resolved runtime level"),
     save: implemented("AiBrainStateV1.economyProduction.adaptation and existing research queue/save"),
@@ -140,7 +140,7 @@ export const AI_CAPABILITY_COVERAGE_MANIFEST_V1: readonly AiCapabilityCoverageEn
     family: "level_overrides",
     source: "actor-level-utils + TechTreeService resolved unit levels",
     observation: implemented("AiObservedActorV1.effectiveLevel and runtime research candidate benefit"),
-    proposer: implemented("AiStage14AdaptationManagerV1 beneficiary scoring"),
+    proposer: implemented("AiAdaptationManager beneficiary scoring"),
     command: implemented("RESEARCH via shared command authority"),
     outcome: implemented("ResearchComponent upgrades existing actors; observation resolves new effective levels"),
     save: implemented("existing TechTreeService/research queue save plus adaptation rationale"),
@@ -152,7 +152,7 @@ export const AI_CAPABILITY_COVERAGE_MANIFEST_V1: readonly AiCapabilityCoverageEn
     family: "mode_goals_results",
     source: "GameModeConditionChecker",
     observation: implemented("AiObservationV1.modeGoals committed mode status"),
-    proposer: implemented("AiStage9SkirmishManagerV1 mode/recoverability evaluator"),
+    proposer: implemented("AiSkirmishManager mode/recoverability evaluator"),
     command: implemented("GameCommand CONCEDE through CommandBusService.dispatchAi"),
     outcome: implemented("shared command outcome reconciliation"),
     save: implemented("AiBrainStateV1.skirmish.mode canonical state"),

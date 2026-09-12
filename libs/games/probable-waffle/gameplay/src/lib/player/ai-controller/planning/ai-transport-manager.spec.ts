@@ -5,9 +5,9 @@ import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v
 import type { AiObservedActorV1, AiObservationV1 } from "../contracts/ai-observation-v1";
 import { assertAiBrainStateV1 } from "../contracts/validate-ai-contracts-v1";
 import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
-import { createStage2Observation, createStage2OwnedActor, unknownAiValue } from "../testing/ai-stage-2-test-fixtures";
+import { createAiTestObservation, createAiTestOwnedActor, unknownAiValue } from "../testing/ai-test-fixtures";
 import { buildAiAccessGraphV1, queryAiAccessRouteV1 } from "./ai-access-graph-v1";
-import { AiStage8TransportManagerV1, createAiTransportPlanV1 } from "./ai-stage-8-transport-manager";
+import { AiTransportManager, createAiTransportPlanV1 } from "./ai-transport-manager";
 
 const built = buildAiAccessGraphV1({
   generation: 1,
@@ -115,7 +115,7 @@ const catalog: AiCapabilityCatalogV1 = {
 
 function actor(actorId: string, objectName: ObjectNames, nodeId: typeof fromNodeId, x: number): AiObservedActorV1 {
   return {
-    ...createStage2OwnedActor(actorId),
+    ...createAiTestOwnedActor(actorId),
     objectName,
     logicalPosition: { status: "known", value: { x, y: 0, z: 0 }, observedTick: 20 },
     accessNodeId: { status: "known", value: nodeId, observedTick: 20 },
@@ -125,7 +125,7 @@ function actor(actorId: string, objectName: ObjectNames, nodeId: typeof fromNode
 
 function observation(actors: readonly AiObservedActorV1[], tick: number): AiObservationV1 {
   return {
-    ...createStage2Observation(),
+    ...createAiTestObservation(),
     tick,
     actors,
     map: {
@@ -140,7 +140,7 @@ function observation(actors: readonly AiObservedActorV1[], tick: number): AiObse
   };
 }
 
-describe("AiStage8TransportManagerV1 CommonBoat lifecycle", () => {
+describe("AiTransportManager CommonBoat lifecycle", () => {
   it("reserves, gathers, boards, travels, unloads, regroups and releases mission ownership", () => {
     const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
     let state = createAiBrainStateV1({
@@ -163,7 +163,7 @@ describe("AiStage8TransportManagerV1 CommonBoat lifecycle", () => {
       ]
     });
     state = { ...state, transport: [plan] };
-    const manager = new AiStage8TransportManagerV1(() => catalog);
+    const manager = new AiTransportManager(() => catalog);
     const boat = {
       ...actor("boat-1", ObjectNames.CommonBoat, built.waterNodeByTileKey.get("1,0")!, 1),
       capabilities: [
@@ -274,7 +274,7 @@ describe("AiStage8TransportManagerV1 CommonBoat lifecycle", () => {
       estimatedTravelTicks: 40,
       passengers: [{ actorId: "worker-dead", role: "combat", indispensable: true, handoff: "squad" }]
     });
-    const manager = new AiStage8TransportManagerV1(() => catalog);
+    const manager = new AiTransportManager(() => catalog);
     const result = manager.propose(observation([], 21), {
       ...initial,
       transport: [{ ...plan, phase: "reserving", lifecycle: { ...plan.lifecycle!, recoveryAttempt: 3 } }]
@@ -313,7 +313,7 @@ describe("AiStage8TransportManagerV1 CommonBoat lifecycle", () => {
       estimatedTravelTicks: 40,
       passengers
     });
-    const result = new AiStage8TransportManagerV1(() => catalog).propose(
+    const result = new AiTransportManager(() => catalog).propose(
       observation([actor("worker-1", ObjectNames.TivaraWorker, fromNodeId, 0)], 20),
       { ...initial, transport: [second, first] }
     );
@@ -360,7 +360,7 @@ describe("AiStage8TransportManagerV1 CommonBoat lifecycle", () => {
       owner: 2,
       visibility: "visible" as const
     }));
-    const result = new AiStage8TransportManagerV1(() => catalog).propose(
+    const result = new AiTransportManager(() => catalog).propose(
       observation(
         [
           actor("guard-1", ObjectNames.TivaraMacemanMale, fromNodeId, 1),
@@ -420,7 +420,7 @@ describe("AiStage8TransportManagerV1 CommonBoat lifecycle", () => {
       ...actor("guard-1", ObjectNames.TivaraMacemanMale, toNodeId, 4),
       containedInActorId: null
     };
-    const manager = new AiStage8TransportManagerV1(() => catalog);
+    const manager = new AiTransportManager(() => catalog);
     let result = manager.propose(observation([survivor], 21), { ...initial, transport: [plan] });
     expect(result.statePatch?.transport?.[0]?.phase).toBe("handoff");
     result = manager.propose(observation([survivor], 22), { ...initial, transport: result.statePatch!.transport! });
@@ -479,7 +479,7 @@ describe("AiStage8TransportManagerV1 CommonBoat lifecycle", () => {
       ],
       21
     );
-    const result = new AiStage8TransportManagerV1(() => catalog).propose(
+    const result = new AiTransportManager(() => catalog).propose(
       { ...staleObservation, map: { ...staleObservation.map!, accessGraph: { ...built.graph, generation: 2 } } },
       { ...initial, transport: [plan] }
     );
@@ -552,7 +552,7 @@ describe("AiStage8TransportManagerV1 CommonBoat lifecycle", () => {
         observedTick: 21
       }
     };
-    const manager = new AiStage8TransportManagerV1(() => catalog);
+    const manager = new AiTransportManager(() => catalog);
     expect(manager.propose(observation([passenger, boat], 21), restored)).toEqual(
       manager.propose(observation([passenger, boat], 21), state)
     );

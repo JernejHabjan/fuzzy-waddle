@@ -3,6 +3,7 @@ import type { AiDebugSnapshotV1 } from "../contracts/ai-debug-snapshot-v1";
 import type { AiIntentDecisionV1 } from "../contracts/ai-intent-v1";
 import type { AiObservationV1 } from "../contracts/ai-observation-v1";
 import type { AiManagerProposalV1 } from "../planning/ai-manager-proposal";
+import { projectAiStrategicIntentSummary } from "./project-ai-strategic-intent-summary";
 
 /** Exact recorded answer for a saved subject; absence is explicit and never recomputed from live state. */
 export function findAiWhyNotExplanationV1(
@@ -200,6 +201,7 @@ export function projectAiDebugSnapshot(
     decisions,
     nextActions: accepted.slice(0, 3).map((decision) => `${decision.intent.kind}:${decision.intent.reasonCode}`),
     mainBlockingReason: blocker?.cause ?? rejected[0]?.reason ?? null,
+    strategicIntentSummary: projectAiStrategicIntentSummary(observation, state, decisions),
     whyNot: [
       ...rejected.slice(0, 24).map((decision) => ({
         subjectId: decision.intent.intentId,
@@ -271,12 +273,12 @@ export function projectAiDebugSnapshot(
     sections: {
       buildOrder: {
         status: "ready",
-        ownerStage: 7,
+        ownerSubsystem: "macro",
         reason: state.opening.plan.currentStepId ?? "opening_transition"
       },
       productionComposition: {
         status: "ready",
-        ownerStage: 14,
+        ownerSubsystem: "adaptation",
         reason:
           adaptation.lastTransitionReason ??
           (state.economyProduction.demands.map((demand) => `${demand.capabilityOrRole}:${demand.desired}`).join(",") ||
@@ -284,25 +286,29 @@ export function projectAiDebugSnapshot(
       },
       economyLabor: {
         status: "ready",
-        ownerStage: 7,
+        ownerSubsystem: "macro",
         reason: state.economyProduction.forecasts.length ? "600_tick_forecast_committed" : "no_macro_forecast"
       },
       intelligenceEnvironment: {
         status: "ready",
-        ownerStage: 9,
+        ownerSubsystem: "skirmish",
         reason: skirmish.questions[0]?.questionId ?? "no_open_question"
       },
-      squadsSupport: { status: "ready", ownerStage: 13, reason: skirmish.squads[0]?.squadId ?? "no_active_squad" },
+      squadsSupport: {
+        status: "ready",
+        ownerSubsystem: "tactics",
+        reason: skirmish.squads[0]?.squadId ?? "no_active_squad"
+      },
       transport: {
         status: "ready",
-        ownerStage: 8,
+        ownerSubsystem: "transport",
         reason:
           transportOperations.map((operation) => `${operation.planId}:${operation.phase}`).join(",") ||
           "no_active_transport_plan"
       },
       basesFortifications: {
         status: "ready",
-        ownerStage: 11,
+        ownerSubsystem: "fortification",
         reason:
           [
             ...bases.map((base) => `${base.baseId}:${base.lifecycle}`),
@@ -311,10 +317,14 @@ export function projectAiDebugSnapshot(
       },
       decisionsRecovery: {
         status: "ready",
-        ownerStage: 12,
+        ownerSubsystem: "recovery",
         reason: recovery[0] ? `${recovery[0].domain}:${recovery[0].state}` : "no_active_recovery"
       },
-      runtimeLimits: { status: "ready", ownerStage: 13, reason: `decision:${state.scheduler.decisionSequence}` }
+      runtimeLimits: {
+        status: "ready",
+        ownerSubsystem: "scheduler",
+        reason: `decision:${state.scheduler.decisionSequence}`
+      }
     }
   };
 }
