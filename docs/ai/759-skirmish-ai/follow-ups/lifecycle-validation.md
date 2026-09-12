@@ -5,8 +5,9 @@
 Persistent AI commitments survive supported lifecycle boundaries exactly once, restore deterministic authority, and leave
 no state behind after a match ends.
 
-Recommended agent: `gpt-5.6-terra`, high effort for diagnosis and medium effort for isolated repairs. Ask for Sol or
-Astra only for a bounded investigation of reproducible cross-system nondeterminism.
+Recommended agent: `gpt-5.6-sol`, high effort, for the first save/replay/reconnect authority and deterministic-lifecycle
+contract. Hand isolated restoration paths and focused repairs to `gpt-5.6-terra`, medium effort. Reserve Astra for a
+bounded unresolved cross-system nondeterminism investigation after compact Sol evidence.
 
 Estimated effort: **XL**, about 4–8 focused agent sessions or 3–7 engineering days.
 
@@ -29,14 +30,16 @@ multiplayer reconnect proof.
 
 ## Implementation order
 
-1. Enumerate restartable AI phases: economy delivery, construction, production/research, squad mission, transport,
+1. **Sol/high boundary:** trace one active commitment across save/load, replay, and reconnect authority. Commit the
+   canonical before/after state, exact-once boundary, and first deterministic reproduction before enumerating every phase.
+2. **Terra/medium delivery:** enumerate restartable AI phases: economy delivery, construction, production/research, squad mission, transport,
    fortification, recovery, and accepted useful-effect reservation.
-2. For each, save before application, during active work, and after application-before-reconciliation. Reload and prove
+3. For each, save before application, during active work, and after application-before-reconciliation. Reload and prove
    exactly-once continuation or correct terminal cleanup.
-3. Record canonical before/after state and expected migration behavior for older supported saves/repro bundles.
-4. Replay the same command/outcome stream without running a new planner and compare authoritative hashes.
-5. Test reconnect snapshot and host migration during active commitments with authority fencing and no duplicates.
-6. Destroy the scene, start a second match, and inspect timers, subscriptions, communicators, caches, histories, pending
+4. Record canonical before/after state and expected migration behavior for older supported saves/repro bundles.
+5. Replay the same command/outcome stream without running a new planner and compare authoritative hashes.
+6. Test reconnect snapshot and host migration during active commitments with authority fencing and no duplicates.
+7. Destroy the scene, start a second match, and inspect timers, subscriptions, communicators, caches, histories, pending
    outcomes, claims, and incident stores for leakage.
 
 ## Completion

@@ -5,8 +5,9 @@
 Continuous skirmish behavior is purposeful and bounded, candidate/baseline comparison is isolated, and Easy/Normal/Hard
 ordering is supported by paired-seed evidence rather than anecdotes.
 
-Recommended agent: `gpt-5.6-terra`, high effort. Ask for `gpt-5.6-sol`, high effort, only for a bounded reproducible
-baseline/statistical investigation; reserve `gpt-6-astra` for an exceptional unresolved cross-system design problem.
+Recommended agent: `gpt-5.6-sol`, high effort, for the isolated baseline adapter, statistical calibration contract, and
+first reproducible SEQ disagreement. Hand seed expansion, report registration, and localized repair to
+`gpt-5.6-terra`, medium effort. Reserve `gpt-6-astra` for an exceptional unresolved cross-system design problem.
 
 Estimated effort: **XL**, about 4–8 focused agent sessions or 3–7 engineering days, plus required soak runtime.
 
@@ -27,16 +28,19 @@ baseline checkout/adapter fails.
 
 ## Implementation order
 
-1. Rerun SEQ-01/02 and repair only the earliest causal failure. Preserve finite mission deadlines and authoritative
+1. **Sol/high boundary:** reproduce the first SEQ disagreement from clean candidate and baseline inputs, then commit the
+   workload definition, provenance gate, and first causal classification. Stop before seed expansion or tuning; no
+   calibration threshold may be changed in this slice.
+2. **Terra/medium delivery:** rerun SEQ-01/02 and repair only the earliest causal failure. Preserve finite mission deadlines and authoritative
    terminal rules; do not loosen recovery or liveness oracles.
-2. Execute candidate and pinned baseline from isolated clean worktrees/processes. Validate source and fixture provenance
+3. Execute candidate and pinned baseline from isolated clean worktrees/processes. Validate source and fixture provenance
    before comparing results.
-3. Define paired measurements for opening reliability, economy, army composition, first useful attack, damage/losses,
+4. Define paired measurements for opening reliability, economy, army composition, first useful attack, damage/losses,
    recovery, terminal result, decision work, and fairness invariants.
-4. Run identical map/faction/side/opponent seeds across profiles. Start at 20 paired seeds; expand toward 100 only when
+5. Run identical map/faction/side/opponent seeds across profiles. Start at 20 paired seeds; expand toward 100 only when
    uncertainty remains decision-relevant.
-5. Run at least three 60-minute-simulation soaks and verify bounded memory, histories, queues, claims, and decision work.
-6. Record human challenge/predictability observations separately; they cannot replace automated correctness.
+6. Run at least three 60-minute-simulation soaks and verify bounded memory, histories, queues, claims, and decision work.
+7. Record human challenge/predictability observations separately; they cannot replace automated correctness.
 
 ## Evidence and completion
 

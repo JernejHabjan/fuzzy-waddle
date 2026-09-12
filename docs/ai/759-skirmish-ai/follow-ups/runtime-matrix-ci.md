@@ -5,8 +5,9 @@
 All supported runtime-required scenarios launch a real lobby-created Phaser match, observe authoritative effects, and run
 as fail-closed required pre-merge shards with useful retained artifacts.
 
-Recommended agent: `gpt-5.6-terra`, high effort for runtime repair and medium effort for mechanical recipe registration
-after a family contract is proven. Ask for Sol only for a bounded reproducible runner/runtime investigation.
+Recommended agent: `gpt-5.6-sol`, high effort for the first runtime runner, CI-shard, and authoritative-outcome contract.
+Hand proven family recipes and repeatable repairs to `gpt-5.6-terra`, medium effort. Reserve Astra for an unresolved
+runner/authority architecture question after compact Sol evidence.
 
 Estimated effort: **XXL**, about 10–20 focused agent sessions or 8–15 engineering days at the current unmapped count.
 
@@ -28,19 +29,22 @@ running its IDE gutter entry without `AI_SKIRMISH_RUNTIME_REQUEST` is not scenar
 
 ## Implementation order
 
-1. Finish and rerun the land sequence slice before broadening the matrix.
-2. Convert one compatible family at a time to an authored recipe with finite checkpoints, deterministic perturbations,
+1. **Sol/high boundary:** establish the runner-to-Playwright-to-authoritative-outcome contract on the first failing land
+   sequence or missing CI-family assignment. Commit the compact reproduction, fail-closed selector rule, and one proven
+   family boundary; do not register broad families before this path is understood.
+2. **Terra/medium delivery:** finish and rerun the land sequence slice before broadening the matrix.
+3. Convert one compatible family at a time to an authored recipe with finite checkpoints, deterministic perturbations,
    authoritative assertions, and bounded deadlines.
-3. Diagnose the earliest disagreement in this order: observation, demand/mission, intent/claim, shared application,
+4. Diagnose the earliest disagreement in this order: observation, demand/mission, intent/claim, shared application,
    outcome, cleanup. Batch related repairs and run focused Jest before one grouped browser rerun.
-4. Cover both factions and representative sides/seeds on currently authored maps. Consume #825 domain/transport cases.
+5. Cover both factions and representative sides/seeds on currently authored maps. Consume #825 domain/transport cases.
    Island-only variants remain visible `deferred_content` under optional #822; never claim them or synthetic
    flying-container coverage without registered capabilities.
-5. First record each row as supported or explicitly deferred with its owner. Then derive isolated CI shards by stable
+6. First record each row as supported or explicitly deferred with its owner. Then derive isolated CI shards by stable
    manifest family from that status; do not copy scenario IDs into workflow YAML. Fail the selector when a supported
    runtime-required row has no recipe, no shard, or no runnable command. A clean worker may run one Phaser/Playwright
    process at a time; separate workers may run shards concurrently.
-6. Publish compact JSON for every shard and retain trace/repro, browser logs, screenshots/video on failure.
+7. Publish compact JSON for every shard and retain trace/repro, browser logs, screenshots/video on failure.
 
 ## Evidence
 

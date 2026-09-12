@@ -31,26 +31,29 @@ When the user says `continue implementing` on draft PR #814 without naming a sub
 5. Report the refreshed grid at every stop, followed by the recommended next model/effort and one sentence explaining
    why. A recommendation never changes the active model automatically.
 
-Default to `gpt-5.6-terra` at the plan's stated effort. Ask the user before a bounded Sol investigation only when compact,
-reproducible evidence shows Terra is stuck on a cross-system cause. Ask for Astra exceptionally, for unresolved
-architecture/authority problems after Sol-level investigation. Return to Terra for implementation once the cause is known.
+Use the model named by the selected issue's primary slice. Terra is the default for bounded implementation, authored
+fixtures, UI, content, and mechanical cleanup. Sol is reserved for the explicitly named cross-system first slices:
+runtime/CI ownership, calibrated baseline comparison, multi-peer authority, and save/replay lifecycle. Return to Terra
+for repeatable registration and repair after that contract is known. Ask the user before changing models; a
+recommendation never switches the active model. Ask for Astra only for an unresolved architecture/authority problem after
+a bounded Sol investigation produces compact reproducible evidence.
 
 If structural lint would block an issue, run the smallest behavior-neutral #821 cleanup slice first with Terra medium,
 commit it separately, and then resume the issue. Never refresh the legacy source-structure baseline merely to pass lint.
 
 ## Progress grid
 
-| Order             | Issue                                                           | State         | Dependency / next boundary                            | Default model |
-| ----------------- | --------------------------------------------------------------- | ------------- | ----------------------------------------------------- | ------------- |
-| 1                 | [#825](https://github.com/JernejHabjan/fuzzy-waddle/issues/825) | `not_started` | Current-content domain contracts                      | Terra high    |
-| 3                 | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `not_started` | After #824; pair pure families with #816              | Terra medium  |
-| 3                 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `not_started` | After #824; pair runtime families with #815           | Terra high    |
-| 4                 | [#818](https://github.com/JernejHabjan/fuzzy-waddle/issues/818) | `not_started` | After #824; semantic debug usability/parity           | Terra medium  |
-| 5                 | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `not_started` | After stable SEQ/runtime tooling                      | Terra high    |
-| 6                 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `not_started` | After runtime matrix infrastructure                   | Terra high    |
-| 7                 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `not_started` | After runtime tooling; MP portion uses #819           | Terra high    |
-| 8                 | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | `not_started` | Last, after #816/#819/#823 parity                     | Terra high    |
-| As needed / final | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `not_started` | Bounded slices early; final AI cleanup after behavior | Terra medium  |
+| Order             | Issue                                                           | State         | Dependency / next boundary                            | Recommended primary slice |
+| ----------------- | --------------------------------------------------------------- | ------------- | ----------------------------------------------------- | ------------------------- |
+| 1                 | [#825](https://github.com/JernejHabjan/fuzzy-waddle/issues/825) | `not_started` | Current-content domain contracts                      | Sol high → Terra medium   |
+| 3                 | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `not_started` | After #824; pair pure families with #816              | Terra medium              |
+| 3                 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `not_started` | After #824; pair runtime families with #815           | Sol high → Terra medium   |
+| 4                 | [#818](https://github.com/JernejHabjan/fuzzy-waddle/issues/818) | `not_started` | After #824; semantic debug usability/parity           | Terra medium              |
+| 5                 | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `not_started` | After stable SEQ/runtime tooling                      | Sol high → Terra medium   |
+| 6                 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `not_started` | After runtime matrix infrastructure                   | Sol high → Terra high     |
+| 7                 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `not_started` | After runtime tooling; MP portion uses #819           | Sol high → Terra medium   |
+| 8                 | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | `not_started` | Last, after #816/#819/#823 parity                     | Terra high → Terra medium |
+| As needed / final | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `not_started` | Bounded slices early; final AI cleanup after behavior | Terra medium              |
 
 Update this grid only from GitHub state and current evidence. `Code authored` is not `validated`; use the state vocabulary
 defined by the task-tracking and stage-delivery skills.

@@ -5,8 +5,9 @@
 A real socket-backed multi-client match proves that host-owned AI commands are relayed and applied identically by every
 peer through production, combat, lifecycle interruptions, and termination.
 
-Recommended agent: `gpt-5.6-terra`, high effort. Ask for `gpt-5.6-sol` only after a deterministic cross-peer divergence is
-captured; reserve Astra for a rare unresolved authority/lockstep design question.
+Recommended agent: `gpt-5.6-sol`, high effort, for the first multi-peer authority, relay, and deterministic-divergence
+contract. Hand proven scenario expansion and focused repairs to `gpt-5.6-terra`, high effort. Reserve Astra for a rare
+unresolved authority/lockstep design question.
 
 Estimated effort: **XL**, about 4–8 focused agent sessions or 3–7 engineering days with a stable test server.
 
@@ -29,14 +30,16 @@ activate `CommandBusService` multiplayer mode, which requires a relay and more t
 
 ## Implementation order
 
-1. Add a deterministic test lobby with two authenticated browser clients, one authoritative host, and at least one AI.
-2. Prove only the host plans/dispatches AI commands; non-host clients receive ordered relay batches and never create a
+1. **Sol/high boundary:** trace one host-owned AI command through relay, shared application, peer projection, and retained
+   provenance. Commit a deterministic two-peer reproduction and the authority fence before adding interruption cases.
+2. **Terra/high delivery:** add a deterministic test lobby with two authenticated browser clients, one authoritative host, and at least one AI.
+3. Prove only the host plans/dispatches AI commands; non-host clients receive ordered relay batches and never create a
    second AI authority.
-3. Compare peer hashes and command/effect timelines at bounded checkpoints through economy, production, combat,
+4. Compare peer hashes and command/effect timelines at bounded checkpoints through economy, production, combat,
    concession, and terminal result.
-4. Interrupt one client, reconnect it from snapshot, then verify catch-up without duplicate commands/effects.
-5. Transfer host ownership during an active AI commitment and verify fencing, continuation, and identical peers.
-6. Leave/re-enter a second match and prove no communicator, timer, history, or claim leakage.
+5. Interrupt one client, reconnect it from snapshot, then verify catch-up without duplicate commands/effects.
+6. Transfer host ownership during an active AI commitment and verify fencing, continuation, and identical peers.
+7. Leave/re-enter a second match and prove no communicator, timer, history, or claim leakage.
 
 ## Completion
 

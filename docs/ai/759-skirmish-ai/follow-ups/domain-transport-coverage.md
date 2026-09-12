@@ -5,8 +5,9 @@
 Core skirmish AI understands and tests land, water, air, access queries, transport ownership, and recovery using current
 registered game capabilities. A future island map improves runtime breadth but is not required for core #759 readiness.
 
-Recommended agent: `gpt-5.6-terra`, high effort for the first contract/runtime slice and medium effort for proven fixture
-mapping. Ask for Sol only for a bounded reproducible cross-domain ownership failure.
+Recommended agent: `gpt-5.6-sol`, high effort for the first cross-domain contract and runtime-ownership slice. Hand the
+proven contract to `gpt-5.6-terra`, medium effort, for fixture mapping and focused repairs. Reserve Astra for an
+unresolved topology/transport architecture question after compact Sol evidence.
 
 Estimated effort: **L**, about 2–4 focused agent sessions or 1–3 engineering days after #824, assuming current map and unit
 registrations behave as documented.
@@ -40,17 +41,20 @@ the optional island-map implementation unless #822 is separately selected.
 
 ## Implementation order
 
-1. Audit registered land/water/air/container capabilities and current maps. Record what can produce real runtime evidence;
+1. **Sol/high boundary:** audit registered land/water/air/container capabilities, current maps, and authority handoffs.
+   Commit a compact capability-to-evidence/status matrix that names the first causal contract and excludes unsupported
+   runtime claims. Stop the Sol slice once the contract and its first failing or passing path are reproducible.
+2. **Terra/medium delivery:** audit registered land/water/air/container capabilities and current maps. Record what can produce real runtime evidence;
    never infer capability from a type name or manufacture a shipping feature in the fixture.
-2. Add typed pure fixtures and semantic oracles for the owned rows. Cover positive, rejection, loss, retry, abort, release,
+3. Add typed pure fixtures and semantic oracles for the owned rows. Cover positive, rejection, loss, retry, abort, release,
    and ordering cases while preserving fair observations.
-3. Add focused Phaser observation/access integration tests for topology generations, footprints, transfer points, and
+4. Add focused Phaser observation/access integration tests for topology generations, footprints, transfer points, and
    capability projection.
-4. Add Playwright recipes only where existing maps and registered units genuinely exercise the contract. Route these
+5. Add Playwright recipes only where existing maps and registered units genuinely exercise the contract. Route these
    recipes through #824 tooling and #816 shards.
-5. Extend the manifest/report status model so `required_supported` work fails closed while `deferred_content` names #822,
+6. Extend the manifest/report status model so `required_supported` work fails closed while `deferred_content` names #822,
    stays visible, is never counted as passed, and does not block the core merge gate.
-6. Update code-adjacent world-access/testing docs with proven behavior and ownership. Do not move scenario TODOs into
+7. Update code-adjacent world-access/testing docs with proven behavior and ownership. Do not move scenario TODOs into
    product architecture documentation.
 
 ## Evidence and completion
