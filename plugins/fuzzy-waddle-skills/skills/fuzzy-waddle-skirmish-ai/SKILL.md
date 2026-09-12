@@ -18,7 +18,9 @@ description: Implement, diagnose or validate the Probable Waffle skirmish AI, de
 
 - Keep an internal acceptance list keyed by scenario ID and invariant. Repair the first causal disagreement: observation -> demand/mission -> intent/claim -> shared application -> outcome -> cleanup.
 - Batch related focused Jest specs and independent TypeScript/build checks. Run only one accelerated Phaser/Playwright match process at a time; group compatible runtime IDs with `--scenarios` so the browser starts once.
-- #824 begins by measuring representative repository workflows, then builds generic `agent:*` doctor/context/verify/triage/metrics contracts with skirmish AI as the first adapter. After it is proven, use those entrypoints instead of rediscovering commands or manually rebuilding coverage; until then, treat the names as planned interfaces rather than evidence.
+- #824 has implemented `pnpm agent:doctor` and `pnpm agent:context -- --issue <number>` for bounded repository and
+  cold-start facts. Run those first for unfinished #759 work; verify/triage/metrics remain planned interfaces until their
+  own tests and adapter evidence exist. Do not manually rebuild their output from chat history.
 - Use `pnpm ai:skirmish:report -- --details` after a matrix run. Never print a full runtime artifact unless one compact field is insufficient.
 - A dispatch, debug label or authored fixture is not outcome evidence. Preserve fixture/source/seed digests and fail closed when a required runtime or pinned-baseline path is absent.
 - Do not weaken a liveness, authority, fairness or useful-effect oracle to make a run pass. A balance threshold may change only with recorded workload evidence and a fresh affected run.

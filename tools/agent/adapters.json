@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "indexes": [
+    "plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-repo-workflow/references/source-index.md",
+    "plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-repo-workflow/references/verification.md"
+  ],
+  "adapters": [
+    {
+      "id": "generic",
+      "schemaVersion": 1,
+      "commands": ["doctor", "context", "verify", "triage", "metrics"],
+      "metadata": { "sourcePaths": ["package.json", "nx.json"] }
+    },
+    {
+      "id": "skirmish-ai",
+      "schemaVersion": 1,
+      "commands": ["doctor", "context", "verify", "triage", "metrics"],
+      "metadata": {
+        "project": "portal-e2e",
+        "ports": [4200],
+        "sourcePaths": ["tools/ai/fixtures/skirmish-v1.json", "tools/ai/run-skirmish-matrix.mjs"]
+      }
+    }
+  ]
+}

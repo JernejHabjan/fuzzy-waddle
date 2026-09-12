@@ -190,9 +190,14 @@ The parameterized Playwright spec is not a complete scenario run without the mat
 - Generic contracts now live in `tools/agent/command-contracts.mjs`: versioned command/adapter ownership, valid Git
   provenance, required configured selection, bounded output, and retained truncated evidence all fail closed. The stable
   narrow checks are `pnpm agent:tools:test` and `pnpm agent:measure`.
-- Next exact action: implement `agent:doctor` and `agent:context` over Git, Nx ownership, source indexes,
-  source-structure risk, and adapter metadata. Do not call the initial collector the completed `agent:metrics` contract;
-  that broader command remains #824 work.
+- `pnpm agent:doctor` and `pnpm agent:context -- --issue <number>` now derive Git provenance, pinned Node/pnpm/Nx
+  compatibility, project ownership, source-index health, source-structure baseline risk, configured adapter metadata,
+  and the one issue-plan header. Their outputs are bounded contract packets; full explicit packets only write when
+  `--output` is supplied. Focused command evidence: #824 reports 26 Nx projects, two healthy indexes, two adapters, and
+  674 content-hash-baselined legacy files.
+- Next exact action: implement changed/required verification selection, then triage/metrics, log retention, cache
+  reporting, and lifecycle ownership. Do not call the initial collector the completed `agent:metrics` contract; that
+  broader command remains #824 work.
 
 ## Publication and closure
 
