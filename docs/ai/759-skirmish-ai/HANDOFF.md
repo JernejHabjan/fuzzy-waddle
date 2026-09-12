@@ -187,9 +187,12 @@ The parameterized Playwright spec is not a complete scenario run without the mat
 - `skirmish-runtime-scenario` consumed 101.17 seconds (89.78% of measured command wall time). The completed first
   improvement replaces the unavailable discovery provider with an indexed `rg --files` profile query: 11.86 ms, 3 lines,
   and 199 bytes. This restores required discovery; it is not presented as a speed comparison against an unavailable tool.
-- Next exact action: define generic command/adapter/result contracts and deterministic output budgets, then implement
-  doctor/context. Do not call the initial collector the completed `agent:metrics` contract; that broader command remains
-  #824 work.
+- Generic contracts now live in `tools/agent/command-contracts.mjs`: versioned command/adapter ownership, valid Git
+  provenance, required configured selection, bounded output, and retained truncated evidence all fail closed. The stable
+  narrow checks are `pnpm agent:tools:test` and `pnpm agent:measure`.
+- Next exact action: implement `agent:doctor` and `agent:context` over Git, Nx ownership, source indexes,
+  source-structure risk, and adapter metadata. Do not call the initial collector the completed `agent:metrics` contract;
+  that broader command remains #824 work.
 
 ## Publication and closure
 

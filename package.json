@@ -19,6 +19,8 @@
     "ai:skirmish:report": "node tools/ai/summarize-skirmish-report.mjs",
     "ai:skirmish:report:failures": "node tools/ai/summarize-skirmish-report.mjs --failures-only --details",
     "ai:tools:test": "node --test tools/ai/*.test.mjs tools/eslint-plugin-fuzzy-waddle/*.test.mjs tools/skills/*.test.mjs",
+    "agent:tools:test": "node --test tools/agent/*.test.mjs",
+    "agent:measure": "node tools/agent/measure-workflows.mjs",
     "lint:source-structure:baseline": "node tools/source-quality/generate-source-structure-baseline.mjs",
     "skills:check": "node tools/skills/check-index.mjs",
     "tauri:dev": "nx run probable-waffle-desktop:tauri-dev",
