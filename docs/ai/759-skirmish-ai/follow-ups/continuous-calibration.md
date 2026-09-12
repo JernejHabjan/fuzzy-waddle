@@ -8,6 +8,8 @@ ordering is supported by paired-seed evidence rather than anecdotes.
 Recommended agent: `gpt-5.6-terra`, high effort. Ask for `gpt-5.6-sol`, high effort, only for a bounded reproducible
 baseline/statistical investigation; reserve `gpt-6-astra` for an exceptional unresolved cross-system design problem.
 
+Estimated effort: **XL**, about 4–8 focused agent sessions or 3–7 engineering days, plus required soak runtime.
+
 Dependency: complete #824 and stabilize the required SEQ runtime path before calibration.
 
 ## Cold start

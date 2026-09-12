@@ -8,6 +8,9 @@ crosses time/process boundaries, and lint prevents new structural debt.
 Recommended agent: `gpt-5.6-terra`, medium effort. Treat this as mechanical migration batches; do not mix AI behavior
 changes into them.
 
+Estimated effort: **variable**, about 1–6 focused agent sessions or 1–5 engineering days for required blocking batches;
+full repository debt removal is outside core #759 readiness.
+
 Dependency: complete #824 before broad cleanup. A narrowly scoped behavior-neutral slice may run earlier only when it is
 required to unblock #824 itself.
 
@@ -48,6 +51,7 @@ large files, stage-labelled persisted IDs/fixtures, and ordinary implementation 
 
 - Production source contains no PR-stage vocabulary except explicitly versioned migrated data.
 - No ordinary implementation has an unjustified version suffix.
-- All hand-maintained files pass structural lint with a materially reduced or empty baseline.
+- All in-scope AI files pass structural lint and the AI-owned baseline debt is materially reduced or empty; unrelated
+  repository legacy debt is not pulled into #759.
 - Old saves/repro bundles remain supported through the documented cutoff.
 - Audit names/exports/docs, run affected checks, commit, push, and close #821.

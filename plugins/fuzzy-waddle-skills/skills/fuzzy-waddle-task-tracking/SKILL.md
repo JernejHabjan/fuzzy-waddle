@@ -35,3 +35,11 @@ Keep a bounded quick-resume block at the top of a long ledger: current provenanc
 Use explicit states such as not_started, in_progress, stage_checked, validated and blocked. The plan defines their meaning; “code authored” never silently becomes “tests passed.” Invalidate affected evidence when shared inputs/contracts change. A cold agent must be able to resume from files and git without earlier conversation history.
 
 Keep transferable implementation learnings in owning docs/contracts as they are proven. Update reusable skills only for demonstrated general lessons; do not encode speculative AI tuning as a global rule.
+
+## Retire execution artifacts
+
+- Plans, progress ledgers, handoffs, and cold-start packets are temporary coordination artifacts. At each task close, triage every section as unresolved, durable, or historical instead of preserving the file by default.
+- Move proven behavior and ownership into code/contracts; test invariants into typed fixtures/tests; operator guidance into focused code-adjacent documentation; and only demonstrated cross-repository workflow lessons into skills.
+- Keep unresolved work in an open issue with a bounded cold-start plan. Remove completed TODOs and stage narration; Git and PR history preserve chronology.
+- Before deleting a resolved plan, replace issue/PR/wiki/skill links with the owning durable docs, evidence, or commit. Delete the parent handoff and plan directory when no active consumer depends on them.
+- Product source and durable documentation must not depend on a temporary roadmap file. At final closure, search for backlinks, stale issue states, duplicated rules, and completed plan vocabulary.

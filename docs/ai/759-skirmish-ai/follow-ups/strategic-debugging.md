@@ -8,6 +8,8 @@ while detailed IDs remain available for causal drilldown.
 Recommended agent: `gpt-5.6-terra`, medium effort. Use the Phaser skill because panel lifecycle and generated/user-owned
 regions matter.
 
+Estimated effort: **M**, about 2–4 focused agent sessions or 1–3 engineering days.
+
 Dependency: complete #824 first so debug parity is checked through the same context, scenario, and triage evidence.
 
 ## Cold start

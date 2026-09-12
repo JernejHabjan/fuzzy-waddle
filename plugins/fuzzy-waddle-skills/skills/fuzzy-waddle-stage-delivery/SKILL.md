@@ -19,7 +19,7 @@ The user's plan owns the stage boundary, required checks and git authority. This
 2. **Omission Audit:** revisit the original stage text and all linked obligations. For each item record implemented path/symbol, evidence and status. Search for unused new code, no-op adapters, unregistered tests, placeholders, stale docs/comments and missing negative/recovery cases. Explain genuine not-applicable items; do not silently drop requirements.
 3. **Verification/repair:** run the user/lane-authorized stage checks, repair task-caused failures, then rerun affected checks. Preserve source/config/fixture provenance. Explicitly deferred final tests stay deferred; a required unavailable check blocks stage readiness.
 4. **Final Closure Audit:** after repairs/checks, recheck the acceptance map, immediate consumers and staged scope. Every mandatory item needs implemented-and-evidenced status or an explicit blocker. A green partial test set does not close missing behavior.
-5. **Durable handoff:** update the existing progress ledger with acceptance evidence, exact commands/results, actual model/effort, known limitations, proven docs/skill learnings, next stage/model/effort and copyable resume prompt. Do not create a new plan unless requested.
+5. **Artifact triage and handoff:** move proven behavior, tests, ownership, and operator guidance from the stage plan into their owning code or focused durable docs. Remove resolved TODO/history, update external backlinks before deleting a plan, then keep only unresolved state, evidence, known limitations, next stage/model/effort, and a copyable resume prompt in the existing ledger. Do not create a new plan unless requested.
 6. **Publish when authorized:** inspect and commit exact task-owned changes; push the selected branch normally and verify the remote branch SHA matches the intended commit. Keep any integration PR draft until final validation. A failed/rejected push is a delivery blocker; do not force-push or claim publication.
 7. **Stop at the requested boundary:** return the stage result and handoff, then end the turn. No implementation of the next stage or automatic follow-up task. If continuous execution was explicitly requested instead, follow that policy; never infer it from a numbered roadmap.
 
@@ -30,6 +30,7 @@ The user's plan owns the stage boundary, required checks and git authority. This
 - Record tested source revision or dirty-diff digest before the closure commit. Report the final commit/remote SHA in the handoff; the next agent verifies the commit containing the ledger. Do not invent a self-referential commit SHA inside its own contents.
 - Record remaining blockers honestly. If already satisfied by existing code, prove equivalence and checks, then commit the task-owned evidence update when authorized; do not invent runtime changes.
 - For a multi-issue roadmap, return the refreshed dependency-ordered progress grid and the next recommended model/effort with one sentence of rationale. Escalation is a user choice, not an automatic stage action.
+- At final roadmap closure, delete temporary handoff/plan artifacts after backlink and durable-knowledge audits. Preserve chronology in Git/PR history rather than permanent product documentation.
 
 ## Resume
 

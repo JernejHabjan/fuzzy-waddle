@@ -10,10 +10,12 @@ Recommended agent: `gpt-5.6-terra`, high effort. Ask before using `gpt-5.6-sol` 
 reproducible runner, lifecycle, or CI failure remains unexplained. Reserve `gpt-6-astra` for an exceptional unresolved
 cross-system design problem, then return to Terra for implementation.
 
+Estimated effort: **XL**, about 3–6 focused agent sessions or 2–5 engineering days.
+
 ## Dependency and start rule
 
-This is the first unfinished #759 subissue. Complete it before expanding #815–#823 unless the user explicitly changes
-the order or this issue records a genuine blocker. It may reorganize tooling but must not change AI balance or scenario
+This is the first unfinished #759 subissue. Complete it before expanding the remaining core issues unless the user
+explicitly changes the order or this issue records a genuine blocker. It may reorganize tooling but must not change AI balance or scenario
 oracles merely to make execution easier.
 
 ## Cold start
@@ -49,7 +51,8 @@ scripts remain compatible or receive an explicit migration.
 ## Implementation order
 
 1. Define typed command/result contracts and one manifest-derived selection path. Missing rows, empty selection, invalid
-   provenance, and unsupported required work fail closed.
+   provenance, and unsupported required work fail closed. Explicit optional `deferred_content` rows remain visible with
+   an owning issue, are never counted as passed, and do not block the supported core gate.
 2. Implement doctor/context output with stable ordering and strict size bounds. Derive facts from source and Git; never
    copy mutable counts into another hand-maintained authority.
 3. Unify single-scenario, changed-scope, and required execution over the existing matrix runner and runtime request.

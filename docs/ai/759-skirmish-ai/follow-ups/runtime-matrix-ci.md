@@ -8,6 +8,8 @@ as fail-closed required pre-merge shards with useful retained artifacts.
 Recommended agent: `gpt-5.6-terra`, high effort for runtime repair and medium effort for mechanical recipe registration
 after a family contract is proven. Ask for Sol only for a bounded reproducible runner/runtime investigation.
 
+Estimated effort: **XXL**, about 10–20 focused agent sessions or 8–15 engineering days at the current unmapped count.
+
 Dependency: complete #824 first and consume its verified orchestration, context, triage, and server-reuse contracts. Do
 not build duplicate command wrappers in this issue.
 
@@ -31,8 +33,9 @@ running its IDE gutter entry without `AI_SKIRMISH_RUNTIME_REQUEST` is not scenar
    authoritative assertions, and bounded deadlines.
 3. Diagnose the earliest disagreement in this order: observation, demand/mission, intent/claim, shared application,
    outcome, cleanup. Batch related repairs and run focused Jest before one grouped browser rerun.
-4. Cover both factions and representative sides/seeds on currently authored maps. Never claim island coverage before
-   #822 or synthetic flying-container coverage without a registered capability.
+4. Cover both factions and representative sides/seeds on currently authored maps. Consume #825 domain/transport cases.
+   Island-only variants remain visible `deferred_content` under optional #822; never claim them or synthetic
+   flying-container coverage without registered capabilities.
 5. Create isolated CI shards by family. A clean worker may run one Phaser/Playwright process at a time; separate workers
    may run shards concurrently.
 6. Publish compact JSON for every shard and retain trace/repro, browser logs, screenshots/video on failure.
@@ -54,5 +57,5 @@ terminal results fail the shard.
 
 - Every supported runtime-required row has real Playwright evidence.
 - Required PR/merge-queue shards run from clean sources and retain artifacts.
-- Island/content-blocked rows remain explicit and visible.
+- Optional island-content rows remain explicit, visible, non-passing, and outside the supported core gate.
 - Run omission/final closure audits, update coverage counts and operator docs, commit, push, and close #816.

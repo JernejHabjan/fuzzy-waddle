@@ -8,6 +8,8 @@ to the old behavior tree, and legacy runtime code is removed after compatibility
 Recommended agent: `gpt-5.6-terra`, high effort for parity and medium effort for proven mechanical cleanup. Ask for Sol
 or Astra only when reproducible cross-system parity evidence remains unexplained.
 
+Estimated effort: **L**, about 2–4 focused agent sessions or 1–3 engineering days after all parity dependencies pass.
+
 Dependency: complete #824, #816, #819, and #823 before removing the fallback.
 
 ## Cold start

@@ -8,17 +8,21 @@ peer through production, combat, lifecycle interruptions, and termination.
 Recommended agent: `gpt-5.6-terra`, high effort. Ask for `gpt-5.6-sol` only after a deterministic cross-peer divergence is
 captured; reserve Astra for a rare unresolved authority/lockstep design question.
 
+Estimated effort: **XL**, about 4–8 focused agent sessions or 3–7 engineering days with a stable test server.
+
 Dependency: complete #824 and establish the runtime matrix infrastructure in #816 first.
 
 ## Cold start
 
 Read only:
 
-1. `world/services/multiplayer/command-bus.service.ts` and `shared-command-application.service.ts`
-2. `data/scene-data.ts` relay predicates
-3. server multiplayer command validation and communicator paths from the RTS source index
-4. existing online lobby E2E setup
+1. Phaser `world/services/multiplayer/command-bus.service.ts` and `shared-command-application.service.ts`
+2. Phaser `data/scene-data.ts` relay predicates and `core/ports/probable-waffle-communicator.ts`
+3. server `game-instance/multiplayer/game-command-validator.service.ts` and its spec
+4. interface `communicators/probable-waffle-communicator.service.ts` plus protocol communicator events/listeners
 5. `apps/portal-e2e/src/e2e/skirmish-ai-runtime.spec.ts` for reusable reporting patterns, not as proof of multiplayer
+
+Library-relative prefixes are discoverable from the repo workflow source index. Do not load unrelated game communicators.
 
 The current AI runtime uses one human plus AI in a local skirmish. It exercises shared command application but does not
 activate `CommandBusService` multiplayer mode, which requires a relay and more than one human player.

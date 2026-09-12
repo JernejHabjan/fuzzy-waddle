@@ -8,17 +8,21 @@ no state behind after a match ends.
 Recommended agent: `gpt-5.6-terra`, high effort for diagnosis and medium effort for isolated repairs. Ask for Sol or
 Astra only for a bounded investigation of reproducible cross-system nondeterminism.
 
+Estimated effort: **XL**, about 4–8 focused agent sessions or 3–7 engineering days.
+
 Dependency: complete #824 first; multiplayer lifecycle rows also depend on #819.
 
 ## Cold start
 
 Read only:
 
-1. AI resilience docs and command/effect ownership docs
-2. `phaser/src/lib/data/save-game.ts` and `load-game.ts`
-3. `world/services/recovery/` snapshot, reconnect, host migration, state hash, and authoritative projection owners
-4. AI brain migration/canonical serialization and controller disposal/history code
-5. lifecycle rows in the scenario manifest and existing save/runtime specs
+1. AI `docs/architecture/resilience-and-lifecycle.md` and `command-effect-ownership.md`
+2. Phaser `src/lib/data/save-game.ts`, `save-game-payload.ts`, and `load-game.ts`
+3. Phaser `world/services/recovery/` snapshot, reconnect, host migration, state hash, and authoritative projection files
+4. gameplay AI brain migration/canonical serialization and Phaser controller disposal/history code
+5. lifecycle rows in `tools/ai/fixtures/skirmish-v1.json` and adjacent save/runtime specs
+
+AI doc paths are relative to the gameplay AI-controller directory; Phaser paths are relative to the Phaser library.
 
 Coordinate socket-backed cases with #819. Pure serialization or local second-match evidence must not be presented as
 multiplayer reconnect proof.

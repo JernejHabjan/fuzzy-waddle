@@ -7,6 +7,8 @@ semantic assertions. Missing work must fail closed; a fixture filename alone is 
 
 Recommended agent: `gpt-5.6-terra`, medium effort. Raise effort only for a proven cross-manager contract disagreement.
 
+Estimated effort: **XL**, about 6–12 focused agent sessions or 4–8 engineering days at the current unmapped count.
+
 Dependency: complete #824 first so fixture selection, context, focused verification, and failure triage use the shared
 tooling contract.
 
@@ -34,7 +36,9 @@ logic. Keep same-type units/buildings legal when causal demand remains.
 4. Register the fixture in the manifest without changing the required denominator or driver.
 5. Repeat the scenario three times and compare decisions, state, and hash. Add ordering permutations where inputs have
    set semantics.
-6. Commit and push each coherent family batch; update #815 with the recalculated mapped/required counts.
+6. Pair each completed family with its #816 runtime slice before moving too far ahead. #825 owns the domain/transport
+   family but contributes its mapped pure rows to this issue's denominator.
+7. Commit and push each coherent family batch; update #815 with the recalculated mapped/required counts.
 
 ## Evidence
 
