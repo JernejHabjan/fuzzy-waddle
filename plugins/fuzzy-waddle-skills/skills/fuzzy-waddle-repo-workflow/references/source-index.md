@@ -22,7 +22,8 @@ For RTS internals, read [the focused source map](../../fuzzy-waddle-phaser/refer
 ## Fast discovery
 
 - Exact path/symbol known: read it, then rg within its owning directory for callers/tests. Follow imports/path aliases rather than assuming the Angular app owns gameplay.
-- Ownership genuinely unknown: use the repository's jbcontext search workflow with one focused semantic question. If unavailable, report the limitation and use bounded rg/rg --files in the most likely library.
+- Ownership genuinely unknown: use this index to choose the narrowest likely owner, then use bounded `rg --files` and exact
+  `rg` inside it. Inspect the first useful result before broadening.
 - Inspect the first useful result before broadening. Stop discovery when authority, consumers and focused test route are established.
 - Existing .scene files are authoring inputs; inspect generated ownership before GUI edits.
 - Update only the moved/touched index row when code moves. Do not maintain a second exhaustive symbol registry or store line numbers that immediately drift.

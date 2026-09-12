@@ -3,7 +3,8 @@
   "benchmark": {
     "id": "repository-workflows",
     "version": 1,
-    "definitionDigest": "8987bc044068c25c666dfd7e900f092379ad3270138d07893517f9035cd8c228"
+    "beforeDefinitionDigest": "8987bc044068c25c666dfd7e900f092379ad3270138d07893517f9035cd8c228",
+    "currentDefinitionDigest": "c9a02adfb2069cc10d0aebe1807225b1889a01d2cffc8e39234b92fc26478dae"
   },
   "recordedOn": "2026-09-12",
   "provenance": {
@@ -52,7 +53,7 @@
       "id": "unfamiliar-source-discovery",
       "outcome": "unavailable",
       "expectedOutcome": "unavailable",
-      "reason": "jbcontext executable is not installed in this environment.",
+      "reason": "The initial external discovery provider was unavailable in this environment.",
       "contextBytes": 6203,
       "commandWallMilliseconds": 2.46,
       "outputBytes": 0,
@@ -96,8 +97,18 @@
   },
   "observations": [
     "The runtime scenario used 89.78 percent of measured command wall time; process reuse is a candidate for later evidence-led work.",
-    "Semantic discovery is explicitly unavailable rather than silently replaced by a weaker command.",
+    "The initial discovery provider was unavailable; a repository-native indexed replacement is measured separately below.",
     "Cache indicators are text occurrences only; this baseline does not claim Nx cache hit or miss counts."
   ],
-  "nextBoundary": "Review this before-baseline, rank evidence-backed bottlenecks, select one bounded generic improvement, then rerun the same declaration without reducing required evidence."
+  "replacementRemeasurement": {
+    "workflowId": "unfamiliar-source-discovery",
+    "outcome": "passed",
+    "contextBytes": 4566,
+    "commandWallMilliseconds": 11.86,
+    "outputBytes": 199,
+    "outputLines": 3,
+    "cacheTextIndicators": 0,
+    "declaredStarts": { "directProcess": 1, "server": 0, "browser": 0, "worker": 0 }
+  },
+  "nextBoundary": "Define generic command/adapter/result contracts and deterministic output budgets before implementing doctor/context."
 }

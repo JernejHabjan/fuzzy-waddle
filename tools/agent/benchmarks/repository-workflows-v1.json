@@ -111,18 +111,20 @@
     },
     {
       "id": "unfamiliar-source-discovery",
-      "description": "Semantic discovery of the owner and tests for a deterministic RTS AI profile change.",
-      "contextFiles": [
-        "plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-repo-workflow/references/source-index.md",
-        ".agents/skills/context-search/SKILL.md"
-      ],
+      "description": "Indexed source discovery of the owner and tests for a deterministic RTS AI profile change.",
+      "contextFiles": ["plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-repo-workflow/references/source-index.md"],
       "requiredSelections": { "projects": [], "tests": [] },
       "commands": [
         {
-          "executable": "jbcontext",
-          "arguments": ["search", "Find the owner and tests for a small deterministic RTS AI default profile change"],
-          "expectedOutcome": "unavailable",
-          "outputIncludes": []
+          "executable": "rg",
+          "arguments": [
+            "--files",
+            "-g",
+            "*ai-profile-defaults*",
+            "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller"
+          ],
+          "expectedOutcome": "passed",
+          "outputIncludes": ["profiles/ai-profile-defaults.ts"]
         }
       ],
       "declaredStarts": { "server": 0, "browser": 0, "worker": 0 }

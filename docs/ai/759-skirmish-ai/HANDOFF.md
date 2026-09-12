@@ -178,16 +178,18 @@ The parameterized Playwright spec is not a complete scenario run without the mat
 
 ## Current #824 baseline
 
-- Definition: `tools/agent/benchmarks/repository-workflows-v1.json`; stable result:
-  `tools/agent/benchmarks/repository-workflows-baseline-v1.json`.
+- Definition: `tools/agent/benchmarks/repository-workflows-v1.json`; stable before-result and measured review:
+  `tools/agent/benchmarks/repository-workflows-baseline-v1.json` and
+  `tools/agent/benchmarks/repository-workflows-review-v1.json`.
 - The 2026-09-12 before-baseline ran six representative workflows against `417ef777b8426591326a91484edd481189bdf1b3`.
   It measured 112.69 seconds of command wall time, 194,757 selected context bytes, 2,438 output bytes, and one declared
   server/browser/worker start. These are execution proxies; stable model token telemetry was unavailable.
-- `skirmish-runtime-scenario` consumed 101.17 seconds (89.78% of measured command wall time). `jbcontext` was absent, so
-  unfamiliar semantic discovery is recorded as an expected `unavailable` result rather than silently falling back.
-- Next exact action: review the versioned result, rank its bottlenecks, select one bounded generic improvement, and rerun
-  the same manifest with all quality invariants intact. Do not call the initial collector the completed `agent:metrics`
-  contract; that broader command remains #824 work.
+- `skirmish-runtime-scenario` consumed 101.17 seconds (89.78% of measured command wall time). The completed first
+  improvement replaces the unavailable discovery provider with an indexed `rg --files` profile query: 11.86 ms, 3 lines,
+  and 199 bytes. This restores required discovery; it is not presented as a speed comparison against an unavailable tool.
+- Next exact action: define generic command/adapter/result contracts and deterministic output budgets, then implement
+  doctor/context. Do not call the initial collector the completed `agent:metrics` contract; that broader command remains
+  #824 work.
 
 ## Publication and closure
 
