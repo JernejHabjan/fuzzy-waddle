@@ -1,6 +1,7 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { relative, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
+import { inspectCacheEvidence } from "./cache-evidence.mjs";
 
 /**
  * Runs an already validated verification selection and retains every command stream outside model context.
@@ -39,7 +40,9 @@ function executeCheck(root, directory, check, checkIndex, execute) {
 }
 
 function executeCommand(root, directory, check, checkIndex, command, commandIndex, execute) {
+  const startedAt = process.hrtime.bigint();
   const result = execute(command.executable, command.arguments, root, command.environment ?? {});
+  const elapsedMilliseconds = Number(process.hrtime.bigint() - startedAt) / 1_000_000;
   const name = `${pad(checkIndex)}-${safeName(check.id)}-${pad(commandIndex)}`;
   const stdoutPath = writeLog(root, directory, `${name}.stdout.log`, result.stdout);
   const stderrPath = writeLog(root, directory, `${name}.stderr.log`, result.stderr);
@@ -49,6 +52,8 @@ function executeCommand(root, directory, check, checkIndex, command, commandInde
     ...(command.environment ? { environment: command.environment } : {}),
     status: result.status === 0 ? "passed" : "failed",
     exitCode: Number.isInteger(result.status) ? result.status : null,
+    elapsedMilliseconds: Number(elapsedMilliseconds.toFixed(2)),
+    cache: inspectCacheEvidence(`${result.stdout ?? ""}\n${result.stderr ?? ""}`),
     stdoutPath,
     stderrPath
   };

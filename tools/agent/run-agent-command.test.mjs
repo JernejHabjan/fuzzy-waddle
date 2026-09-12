@@ -24,34 +24,49 @@ const inspection = {
 test("parses only supported bounded commands", () => {
   assert.deepEqual(parseArguments(["doctor"]), {
     adapter: "generic",
+    after: null,
     base: null,
+    before: null,
     command: "doctor",
     execute: false,
     issue: null,
     output: null,
     report: null,
+    scenarioIds: [],
+    scenarioMode: null,
+    seed: null,
     targetBranch: null,
     verificationMode: null
   });
   assert.deepEqual(parseArguments(["context", "--issue", "824"]), {
     adapter: "generic",
+    after: null,
     base: null,
+    before: null,
     command: "context",
     execute: false,
     issue: "824",
     output: null,
     report: null,
+    scenarioIds: [],
+    scenarioMode: null,
+    seed: null,
     targetBranch: null,
     verificationMode: null
   });
   assert.deepEqual(parseArguments(["verify", "--required", "--base", "develop", "--target-branch", "main"]), {
     adapter: "generic",
+    after: null,
     base: "develop",
+    before: null,
     command: "verify",
     execute: false,
     issue: null,
     output: null,
     report: null,
+    scenarioIds: [],
+    scenarioMode: null,
+    seed: null,
     targetBranch: "main",
     verificationMode: "required"
   });

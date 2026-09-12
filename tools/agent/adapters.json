@@ -14,11 +14,26 @@
     {
       "id": "skirmish-ai",
       "schemaVersion": 1,
-      "commands": ["doctor", "context", "verify", "triage", "metrics"],
+      "commands": ["doctor", "context", "verify", "triage", "metrics", "scenario"],
       "metadata": {
         "project": "portal-e2e",
         "ports": [4200],
-        "sourcePaths": ["tools/ai/fixtures/skirmish-v1.json", "tools/ai/run-skirmish-matrix.mjs"]
+        "sourcePaths": ["tools/ai/fixtures/skirmish-v1.json", "tools/ai/run-skirmish-matrix.mjs"],
+        "persistentProcess": {
+          "id": "portal-runtime",
+          "executable": "node",
+          "arguments": [
+            "../../node_modules/nx/dist/bin/nx.js",
+            "serve",
+            "portal",
+            "--configuration=development",
+            "--host",
+            "127.0.0.1"
+          ],
+          "cwd": "apps/portal-e2e",
+          "readyUrl": "http://127.0.0.1:4200",
+          "timeoutMilliseconds": 180000
+        }
       }
     }
   ]

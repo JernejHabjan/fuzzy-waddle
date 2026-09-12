@@ -2,7 +2,7 @@ import { isAbsolute, relative, resolve, sep } from "node:path";
 
 export const DEFAULT_OUTPUT_BUDGET = Object.freeze({ maxBytes: 12_000, maxLines: 160 });
 
-const COMMAND_IDS = new Set(["doctor", "context", "verify", "triage", "metrics"]);
+const COMMAND_IDS = new Set(["doctor", "context", "verify", "triage", "metrics", "scenario"]);
 const RESULT_STATUSES = new Set(["passed", "failed"]);
 
 export function validateCommandDefinition(command) {

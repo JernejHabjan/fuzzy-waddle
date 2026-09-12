@@ -33,6 +33,7 @@ test("retains every command stream and reports the first failed check without st
   assert.equal(report.status, "failed");
   assert.equal(report.checks[0].status, "failed");
   assert.equal(report.checks[1].status, "passed");
+  assert.equal(report.checks[0].commands[0].cache.status, "not_reported");
   assert.match(await readFile(resolve(root, report.checks[0].commands[0].stderrPath), "utf8"), /first error/u);
   const persisted = JSON.parse(await readFile(resolve(root, report.reportPath), "utf8"));
   assert.equal(persisted.status, "failed");

@@ -47,6 +47,8 @@ test("measures context, bounded output proxies, and matching command outcomes", 
   assert.equal(report.workflows[0].commands[0].elapsedMilliseconds, 1);
   assert.equal(report.totals.directProcessStarts, 1);
   assert.equal(report.totals.cacheTextIndicators, 1);
+  assert.equal(report.totals.cacheHitCount, 0);
+  assert.equal(report.workflows[0].commands[0].output.cache.status, "not_reported");
   assert.equal(report.tokenTelemetry.status, "unavailable");
 });
 
@@ -79,4 +81,5 @@ test("rejects malformed benchmark declarations and arguments", () => {
   invalid.workflows[0].id = "";
   assert.throws(() => validateBenchmark(invalid), /invalid_workflow_id/u);
   assert.throws(() => parseArguments(["--workflow"]), /missing_workflow/u);
+  assert.deepEqual(parseArguments(["--", "--workflow", "workflow"]), { workflowIds: ["workflow"] });
 });

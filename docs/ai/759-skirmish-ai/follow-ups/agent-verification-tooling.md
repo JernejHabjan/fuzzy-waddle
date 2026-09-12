@@ -71,8 +71,14 @@ global skills. Promote only repeated, demonstrated workflow lessons into skills.
   and exact replay command without rerunning it. It rejects corrupted, escaping, or internally inconsistent reports.
 - `agent:metrics`: compare benchmark runs for time, cache/runtime reuse, context/output volume, and exact token fields only
   when supplied by supported telemetry; emit evidence-linked bottlenecks and candidate owners for the next improvement.
-- AI adapter: preserve `ai:scenario`, manifest coverage, seeded replay, compact intent/state differences, and required
-  runtime shards by composing the generic commands rather than forking their behavior.
+  Compatible reports must preserve benchmark digest, invariant IDs, and workflow IDs. Generic cache mentions never count as
+  a hit or miss.
+- `agent:process --adapter <ID> --action start|status|stop`: start only a registry-declared loopback process, persist its
+  command fingerprint and logs under ignored `tmp/agent-processes/`, reuse only its live matching PID, and refuse to kill a
+  changed or unowned PID.
+- `agent:scenario --adapter skirmish-ai --scenario <ID> --mode <pure|runtime|both> [--seed <integer>] [--execute]`:
+  validate current manifest/fixture eligibility and compose the existing matrix runner with generic retained evidence.
+  Scenario selection is not CI coverage accounting; #816 owns required row/shard policy and optional-content treatment.
 
 Equivalent cohesive names are acceptable only when one documented entrypoint exposes these responsibilities. Existing
 scripts remain compatible or receive an explicit migration; generic tools must not import gameplay-specific modules.
@@ -95,6 +101,14 @@ scripts remain compatible or receive an explicit migration; generic tools must n
    ineffective complexity, and report tradeoffs without relaxing quality or selecting less required evidence.
 9. Update repository operator docs and skills only with proven command names, extension contracts, budgets, and repeated
    general lessons; keep run-specific observations in metrics artifacts rather than permanent instructions.
+
+## Current implementation boundary
+
+The generic metrics/cache, lifecycle, and first skirmish adapter slices are implemented. They prove one fast measured
+workflow, one manifest-backed pure scenario, and one manifest-backed runtime scenario through the common retained-report
+path. They do not claim a meaningful speed improvement from two noisy discovery samples, replace Playwright's own server
+policy, or promote optional/deferred scenarios to CI coverage. The next closure review must decide whether #824 needs only
+its final generic audit or whether manifest-derived CI sharding belongs with #816.
 
 ## Structural preflight
 

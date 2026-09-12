@@ -41,36 +41,36 @@ commit it separately, and then resume the issue. Never refresh the legacy source
 
 ## Progress grid
 
-| Order             | Issue                                                           | State         | Dependency / next boundary                                    | Default model |
-| ----------------- | --------------------------------------------------------------- | ------------- | ------------------------------------------------------------- | ------------- |
-| 1                 | [#824](https://github.com/JernejHabjan/fuzzy-waddle/issues/824) | `in_progress` | Review baseline, improve, remeasure; prove tools + AI adapter | Terra high    |
-| 2                 | [#825](https://github.com/JernejHabjan/fuzzy-waddle/issues/825) | `not_started` | After #824; current-content domain contracts                  | Terra high    |
-| 3                 | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `not_started` | After #824; pair pure families with #816                      | Terra medium  |
-| 3                 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `not_started` | After #824; pair runtime families with #815                   | Terra high    |
-| 4                 | [#818](https://github.com/JernejHabjan/fuzzy-waddle/issues/818) | `not_started` | After #824; semantic debug usability/parity                   | Terra medium  |
-| 5                 | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `not_started` | After stable SEQ/runtime tooling                              | Terra high    |
-| 6                 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `not_started` | After runtime matrix infrastructure                           | Terra high    |
-| 7                 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `not_started` | After runtime tooling; MP portion uses #819                   | Terra high    |
-| 8                 | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | `not_started` | Last, after #816/#819/#823 parity                             | Terra high    |
-| As needed / final | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `not_started` | Bounded slices early; final AI cleanup after behavior         | Terra medium  |
+| Order             | Issue                                                           | State         | Dependency / next boundary                               | Default model |
+| ----------------- | --------------------------------------------------------------- | ------------- | -------------------------------------------------------- | ------------- |
+| 1                 | [#824](https://github.com/JernejHabjan/fuzzy-waddle/issues/824) | `in_progress` | Final generic audit; decide CI-shard ownership with #816 | Terra high    |
+| 2                 | [#825](https://github.com/JernejHabjan/fuzzy-waddle/issues/825) | `not_started` | After #824; current-content domain contracts             | Terra high    |
+| 3                 | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `not_started` | After #824; pair pure families with #816                 | Terra medium  |
+| 3                 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `not_started` | After #824; pair runtime families with #815              | Terra high    |
+| 4                 | [#818](https://github.com/JernejHabjan/fuzzy-waddle/issues/818) | `not_started` | After #824; semantic debug usability/parity              | Terra medium  |
+| 5                 | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `not_started` | After stable SEQ/runtime tooling                         | Terra high    |
+| 6                 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `not_started` | After runtime matrix infrastructure                      | Terra high    |
+| 7                 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `not_started` | After runtime tooling; MP portion uses #819              | Terra high    |
+| 8                 | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | `not_started` | Last, after #816/#819/#823 parity                        | Terra high    |
+| As needed / final | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `not_started` | Bounded slices early; final AI cleanup after behavior    | Terra medium  |
 
 Update this grid only from GitHub state and current evidence. `Code authored` is not `validated`; use the state vocabulary
 defined by the task-tracking and stage-delivery skills.
 
 ## Open work
 
-| Issue                                                           | Responsibility                    | Current boundary                                                                       |
-| --------------------------------------------------------------- | --------------------------------- | -------------------------------------------------------------------------------------- |
-| [#824](https://github.com/JernejHabjan/fuzzy-waddle/issues/824) | Repository agent-efficiency tools | Before-baseline captured; review, improve tools/skills/docs, remeasure; add AI adapter |
-| [#825](https://github.com/JernejHabjan/fuzzy-waddle/issues/825) | Domain and transport coverage     | Current-content pure/integration/runtime proof remains                                 |
-| [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | Deterministic pure scenarios      | 40/111 pure-required rows mapped at closeout; recalculate first                        |
-| [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | Playwright runtime matrix and CI  | 10/120 runtime-required rows mapped; no required CI shard yet                          |
-| [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | Continuous play and difficulty    | SEQ rerun, isolated baseline, D-06, and soaks remain                                   |
-| [#818](https://github.com/JernejHabjan/fuzzy-waddle/issues/818) | Strategic debugging               | First semantic summary exists; usability, split, and parity remain                     |
-| [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | Real multiplayer AI E2E           | Current Playwright AI runtime is local skirmish, not socket lockstep                   |
-| [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | Legacy controller retirement      | Remove fallback only after runtime/save/multiplayer parity                             |
-| [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | Source structure and naming       | Main planner names migrated; persisted IDs and large-file debt remain                  |
-| [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | Save/replay/reconnect lifecycle   | Cross-phase and repeated-match runtime evidence remains                                |
+| Issue                                                           | Responsibility                    | Current boundary                                                                      |
+| --------------------------------------------------------------- | --------------------------------- | ------------------------------------------------------------------------------------- |
+| [#824](https://github.com/JernejHabjan/fuzzy-waddle/issues/824) | Repository agent-efficiency tools | Core tools, metrics/cache, lifecycle, and first AI adapter exist; final audit remains |
+| [#825](https://github.com/JernejHabjan/fuzzy-waddle/issues/825) | Domain and transport coverage     | Current-content pure/integration/runtime proof remains                                |
+| [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | Deterministic pure scenarios      | 40/111 pure-required rows mapped at closeout; recalculate first                       |
+| [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | Playwright runtime matrix and CI  | 10/120 runtime-required rows mapped; no required CI shard yet                         |
+| [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | Continuous play and difficulty    | SEQ rerun, isolated baseline, D-06, and soaks remain                                  |
+| [#818](https://github.com/JernejHabjan/fuzzy-waddle/issues/818) | Strategic debugging               | First semantic summary exists; usability, split, and parity remain                    |
+| [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | Real multiplayer AI E2E           | Current Playwright AI runtime is local skirmish, not socket lockstep                  |
+| [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | Legacy controller retirement      | Remove fallback only after runtime/save/multiplayer parity                            |
+| [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | Source structure and naming       | Main planner names migrated; persisted IDs and large-file debt remain                 |
+| [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | Save/replay/reconnect lifecycle   | Cross-phase and repeated-match runtime evidence remains                               |
 
 Each issue description links its cold-start plan. The plan records exact source anchors, dependency order, commands,
 evidence requirements, model/effort guidance, and completion boundary.
@@ -203,12 +203,26 @@ The parameterized Playwright spec is not a complete scenario run without the mat
 - `pnpm agent:triage -- --report <path>` reads a retained report without replaying it and prints only the first failing
   check, exact replay command, exit code, and stdout/stderr paths. Corrupted or escaping reports fail closed.
   It fails closed on unavailable Git/Nx provenance, unknown affected projects, empty changed ownership, or absent checks.
+- `pnpm agent:metrics -- --before <measurement> --after <measurement>` now compares only compatible measured workloads,
+  reports context/process/output deltas, and ranks candidate owners. Cache hits/misses are counted only from explicit
+  diagnostics; cache reuse otherwise remains `unknown`. A focused repeated discovery measurement preserved every quality
+  invariant and emitted no cache diagnostic; its 1.59 ms wall-time difference is noise, not a claimed optimization.
+- `pnpm agent:process -- --adapter skirmish-ai --action start|status|stop` owns the declared local portal process by
+  command fingerprint and PID, writes ignored logs/state, refuses identity mismatches, and cleanly releases the process.
+  An ownership edge case for a bare `node` executable was repaired during this evidence run.
+- `pnpm agent:scenario -- --adapter skirmish-ai --scenario <ID> --mode <pure|runtime|both> [--seed <integer>] [--execute]`
+  validates a current manifest row then routes the established matrix runner through generic log retention. It passed
+  TECH-01 pure evidence and ECO-08 runtime evidence; the latter used the reusable local portal process and retained an
+  80.23-second command record. This is one-scenario proof, not full CI-matrix coverage.
 - Verification-selection focused evidence: `pnpm agent:tools:test` passed 23 Node tests; `pnpm agent:doctor`,
   `pnpm agent:context -- --issue 824`, and both `agent:verify` modes passed. A `main` delivery target selected version,
   lint, CI test, production build, and affected E2E without running them. Prettier, source-structure tests, and
   `git diff --check` passed for this slice.
-- Next exact action: implement metrics, cache reporting, lifecycle ownership, and the skirmish adapter. Do not call the
-  initial collector the completed `agent:metrics` contract; that broader command remains #824 work.
+- Current focused evidence after the new owners: `pnpm agent:tools:test` passed 35 Node tests; agent doctor, scenario dry
+  selection, metrics, both retained scenario executions, triage, and lifecycle stop/status passed. Full lint/build and
+  the broader matrix remain deliberately deferred to their owning delivery boundaries.
+- Next exact action: perform the #824 final generic audit and decide whether fail-closed manifest-derived CI sharding is a
+  small tooling completion or belongs with #816's required-row policy. Do not hand-write a scenario list in CI.
 
 ## Publication and closure
 

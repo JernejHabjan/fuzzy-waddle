@@ -28,6 +28,11 @@ This snapshot is not an excuse to omit needed tests. Discover other project targ
 - Editor wiring: package script phaser-editor:check. Assets/LFS: assets:check. Broad production builds are not a substitute for focused regressions.
 - For skirmish AI release evidence, distinguish pure authored scenarios, runtime-backed scenarios and browser matches. Count only scenarios that actually execute the claimed layer; a non-null name or metadata row is not runtime coverage. The release runner must fail closed on missing mandatory fixtures, zero selected tests, an unavailable baseline adapter, non-finite metrics or a candidate/baseline revision mismatch.
 - Skirmish AI runtime entry points are `pnpm ai:skirmish:opening`, `pnpm ai:skirmish:production` and `pnpm ai:skirmish:land-sequences`. Summarize the emitted artifact with `pnpm ai:skirmish:report -- --failures-only --details`; do not dump the full JSON before narrowing to a scenario. See the AI runtime E2E guide for batching details; optional IDE launch profiles are not test authority.
+- For retained tool evidence, use `pnpm agent:scenario -- --adapter skirmish-ai --scenario <ID> --mode <pure|runtime|both> --execute`.
+  It delegates to the existing matrix runner, retains its streams, and can be reduced with `agent:triage`; it does not make an
+  unmapped manifest row runtime-covered. `agent:metrics` compares two compatible `agent:measure` reports and treats cache
+  reuse as unknown unless explicit hit/miss diagnostics were emitted. Start a reusable local adapter process only with
+  `agent:process -- --adapter <ID> --action start`, then always finish with `--action stop`; the tool refuses unowned PIDs.
 - Accelerated browser smoke should verify simulation ticks continue, planner/build-order state advances, commands are accepted, and no AI-step error is logged. This catches lifecycle and data-projection faults that isolated planner tests cannot represent.
 - Read full errors, fix task-caused failures and rerun affected checks. Record unrelated failures with evidence; unavailable required infrastructure remains blocked.
 

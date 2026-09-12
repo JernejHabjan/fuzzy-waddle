@@ -4,6 +4,7 @@ import { mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import { inspectCacheEvidence } from "./cache-evidence.mjs";
 
 const scriptDirectory = dirname(fileURLToPath(import.meta.url));
 const workspaceRoot = resolve(scriptDirectory, "../..");
@@ -12,6 +13,7 @@ export function parseArguments(args) {
   const options = { workflowIds: [] };
   for (let index = 0; index < args.length; index += 1) {
     const argument = args[index];
+    if (argument === "--") continue;
     if (argument === "--help") options.help = true;
     else if (argument === "--workflow") options.workflowIds.push(requiredValue(args[++index], "workflow"));
     else if (argument === "--output") options.output = requiredValue(args[++index], "output");
@@ -106,7 +108,7 @@ function measureWorkflow({ root, workflow, outputDirectory, execute, now }) {
         stderrBytes: Buffer.byteLength(stderr),
         stdoutLines: lineCount(stdout),
         stderrLines: lineCount(stderr),
-        cacheTextIndicators: countCacheIndicators(`${stdout}\n${stderr}`),
+        cache: inspectCacheEvidence(`${stdout}\n${stderr}`),
         retainedLogs: [relative(root, stdoutPath), relative(root, stderrPath)]
       },
       errorCode: result.errorCode ?? null
@@ -173,7 +175,9 @@ function summarizeWorkflows(workflows) {
     contextBytes: sum(workflows, (workflow) => workflow.context.bytes),
     outputBytes: sum(commands, (command) => command.output.stdoutBytes + command.output.stderrBytes),
     outputLines: sum(commands, (command) => command.output.stdoutLines + command.output.stderrLines),
-    cacheTextIndicators: sum(commands, (command) => command.output.cacheTextIndicators),
+    cacheTextIndicators: sum(commands, (command) => command.output.cache.mentionCount),
+    cacheHitCount: sum(commands, (command) => command.output.cache.hitCount),
+    cacheMissCount: sum(commands, (command) => command.output.cache.missCount),
     retainedLogBytes: sum(commands, (command) => command.output.stdoutBytes + command.output.stderrBytes)
   };
 }
@@ -186,10 +190,6 @@ function readProvenance(root) {
     worktreeStatus: status.status === 0 ? status.stdout.trim().split("\n").filter(Boolean) : ["unavailable"],
     nodeVersion: process.version
   };
-}
-
-function countCacheIndicators(output) {
-  return (output.match(/\bcache\b/giu) ?? []).length;
 }
 
 function resolveInside(root, path) {

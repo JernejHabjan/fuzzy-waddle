@@ -5,6 +5,8 @@ import { fileURLToPath } from "node:url";
 import { compactOutput, validateCommandResult } from "./command-contracts.mjs";
 import { findIssuePlan, inspectRepository } from "./repository-inspection.mjs";
 import { executeVerification } from "./verification-execution.mjs";
+import { compareMeasurements } from "./metrics-report.mjs";
+import { selectSkirmishScenarios } from "./skirmish-adapter.mjs";
 import { selectVerification } from "./verification-selection.mjs";
 import { triageVerification } from "./verification-triage.mjs";
 
@@ -34,18 +36,35 @@ const commands = {
     id: "triage",
     description: "Summarize a retained verification report without replaying it.",
     selection: { requireConfiguredWork: true, required: ["reports"] }
+  },
+  metrics: {
+    schemaVersion: 1,
+    id: "metrics",
+    description: "Compare compatible measured workflow reports and rank evidence-backed bottlenecks.",
+    selection: { requireConfiguredWork: true, required: ["reports"] }
+  },
+  scenario: {
+    schemaVersion: 1,
+    id: "scenario",
+    description: "Run manifest-backed skirmish evidence through the generic retained verification contract.",
+    selection: { requireConfiguredWork: true, required: ["manifest", "scenarios", "checks"] }
   }
 };
 
 export function parseArguments(tokens) {
   const options = {
     adapter: "generic",
+    after: null,
     base: null,
+    before: null,
     command: null,
     execute: false,
     issue: null,
     output: null,
     report: null,
+    scenarioIds: [],
+    scenarioMode: null,
+    seed: null,
     targetBranch: null,
     verificationMode: null
   };
@@ -53,14 +72,19 @@ export function parseArguments(tokens) {
     const token = tokens[index];
     if (token === "--") continue;
     if (token === "--help") options.help = true;
+    else if (token === "--after") options.after = requiredValue(tokens[++index], "after");
     else if (token === "--adapter") options.adapter = requiredValue(tokens[++index], "adapter");
     else if (token === "--base") options.base = requiredValue(tokens[++index], "base");
+    else if (token === "--before") options.before = requiredValue(tokens[++index], "before");
     else if (token === "--execute") options.execute = true;
     else if (token === "--changed")
       options.verificationMode = selectVerificationMode(options.verificationMode, "changed");
     else if (token === "--issue") options.issue = requiredValue(tokens[++index], "issue");
     else if (token === "--output") options.output = requiredValue(tokens[++index], "output");
     else if (token === "--report") options.report = requiredValue(tokens[++index], "report");
+    else if (token === "--scenario") options.scenarioIds.push(requiredValue(tokens[++index], "scenario"));
+    else if (token === "--mode") options.scenarioMode = requiredValue(tokens[++index], "mode");
+    else if (token === "--seed") options.seed = parseSeed(requiredValue(tokens[++index], "seed"));
     else if (token === "--required")
       options.verificationMode = selectVerificationMode(options.verificationMode, "required");
     else if (token === "--target-branch") options.targetBranch = requiredValue(tokens[++index], "target_branch");
@@ -72,15 +96,28 @@ export function parseArguments(tokens) {
   if (options.command !== "context" && options.issue !== null) throw new Error("unexpected_issue");
   if (options.command === "triage" && options.report === null) throw new Error("missing_triage_report");
   if (options.command !== "triage" && options.report !== null) throw new Error("unexpected_triage_report");
+  if (options.command === "metrics" && (options.before === null || options.after === null))
+    throw new Error("missing_metrics_report");
+  if (options.command !== "metrics" && (options.before !== null || options.after !== null))
+    throw new Error("unexpected_metrics_report");
+  if (options.command === "scenario" && (options.adapter !== "skirmish-ai" || options.scenarioIds.length === 0))
+    throw new Error("missing_skirmish_scenario");
+  if (options.command === "scenario" && options.scenarioMode === null) throw new Error("missing_skirmish_mode");
+  if (
+    options.command !== "scenario" &&
+    (options.scenarioIds.length > 0 || options.scenarioMode !== null || options.seed !== null)
+  )
+    throw new Error("unexpected_scenario_option");
   if (
     options.command !== "verify" &&
     (options.base !== null || options.targetBranch !== null || options.verificationMode !== null)
   )
     throw new Error("unexpected_verification_option");
   if (options.command === "verify" && !options.verificationMode) throw new Error("missing_verification_mode");
-  if (options.command !== "verify" && options.command !== "triage" && options.adapter !== "generic")
+  if (!["verify", "triage", "metrics", "scenario"].includes(options.command) && options.adapter !== "generic")
     throw new Error("unexpected_adapter");
-  if (options.command !== "verify" && options.execute) throw new Error("unexpected_execution_request");
+  if (options.command !== "verify" && options.command !== "scenario" && options.execute)
+    throw new Error("unexpected_execution_request");
   return options;
 }
 
@@ -92,31 +129,38 @@ export function runAgentCommand(
     resolvePlan = findIssuePlan,
     select = selectVerification,
     executeSelection = executeVerification,
-    triage = triageVerification
+    triage = triageVerification,
+    metrics = compareMeasurements,
+    selectScenarios = selectSkirmishScenarios
   } = {}
 ) {
   const inspection = inspect(root);
   const plan = options.command === "context" ? resolvePlan(root, Number(options.issue)) : null;
   const triageResult = options.command === "triage" ? triage(root, options.report) : null;
+  const metricsResult = options.command === "metrics" ? metrics(root, options.before, options.after) : null;
   const selection =
-    options.command === "verify"
-      ? select(root, {
-          adapterId: options.adapter,
-          base: options.base,
-          inspection,
-          mode: options.verificationMode,
-          targetBranch: options.targetBranch
-        })
-      : (triageResult ?? standardSelection(inspection, plan, options));
+    options.command === "scenario"
+      ? selectScenarios(root, { mode: options.scenarioMode, scenarioIds: options.scenarioIds, seed: options.seed })
+      : options.command === "verify"
+        ? select(root, {
+            adapterId: options.adapter,
+            base: options.base,
+            inspection,
+            mode: options.verificationMode,
+            targetBranch: options.targetBranch
+          })
+        : (metricsResult ?? triageResult ?? standardSelection(inspection, plan, options));
   const execution =
-    options.command === "verify" && options.execute ? executeSelection(root, selection, inspection.provenance) : null;
+    (options.command === "verify" || options.command === "scenario") && options.execute
+      ? executeSelection(root, selection, inspection.provenance)
+      : null;
   const summary = summarize(options, inspection, plan, selection, execution);
   const output = compactOutput(summary);
   const result = {
     schemaVersion: 1,
     commandId: options.command,
     adapterId: options.adapter,
-    status: execution?.status ?? "passed",
+    status: execution?.status ?? metricsResult?.status ?? "passed",
     provenance: inspection.provenance,
     selection,
     output: { summary: output.text, truncated: output.truncated }
@@ -163,9 +207,11 @@ function summarize(options, inspection, plan, selection, execution) {
     `OWNERS projects=${inspection.projects.length} indexes=${inspection.indexes.length} adapters=${adapterSummary}`,
     `STRUCTURE ${structureSummary}`
   ];
-  if (command === "verify") {
+  if (command === "verify" || command === "scenario") {
     lines.push(
-      `VERIFY mode=${selection.mode} base=${selection.base} target=${selection.targetBranch} changedFiles=${selection.changedFiles.length}`
+      command === "scenario"
+        ? `SCENARIO ids=${selection.scenarios.join(",")} manifest=${selection.manifest[0]}`
+        : `VERIFY mode=${selection.mode} base=${selection.base} target=${selection.targetBranch} changedFiles=${selection.changedFiles.length}`
     );
     lines.push(
       `VERIFY projects=${selection.projects.length} checks=${selection.checks.map((check) => check.id).join(",")}`
@@ -177,9 +223,11 @@ function summarize(options, inspection, plan, selection, execution) {
       );
     else
       lines.push(
-        selection.mode === "changed"
-          ? `NEXT pnpm agent:verify -- --required --base ${selection.base}`
-          : "NEXT pnpm agent:verify -- --required --execute [--base <branch>]"
+        command === "scenario"
+          ? `NEXT pnpm agent:scenario -- --adapter skirmish-ai --scenario ${options.scenarioIds.join(" --scenario ")} --mode ${options.scenarioMode} --execute`
+          : selection.mode === "changed"
+            ? `NEXT pnpm agent:verify -- --required --base ${selection.base}`
+            : "NEXT pnpm agent:verify -- --required --execute [--base <branch>]"
       );
   } else if (command === "triage") {
     lines.push(
@@ -188,6 +236,12 @@ function summarize(options, inspection, plan, selection, execution) {
     if (selection.failedCheck)
       lines.push(`CAUSE check=${selection.failedCheck} exit=${selection.exitCode} replay=${selection.replay}`);
     else lines.push("CAUSE none; retained execution passed");
+  } else if (command === "metrics") {
+    lines.push(
+      `METRICS quality=${selection.quality.status} wallDelta=${selection.comparison.wallMilliseconds.delta}`,
+      `CACHE hits=${selection.cache.after.hitCount} misses=${selection.cache.after.missCount} observed=${selection.cache.after.observedCommands}`,
+      `NEXT inspect owner=${selection.bottlenecks[0]?.owner ?? "none"} before changing tools`
+    );
   } else if (plan)
     lines.push(`ISSUE plan=${plan}`, `NEXT pnpm agent:doctor && pnpm agent:context -- --issue ${options.issue}`);
   else lines.push("NEXT pnpm agent:context -- --issue <number>");
@@ -204,6 +258,13 @@ function selectVerificationMode(existing, next) {
   return next;
 }
 
+function parseSeed(value) {
+  if (!/^\d+$/u.test(value)) throw new Error("invalid_skirmish_seed");
+  const seed = Number(value);
+  if (!Number.isSafeInteger(seed)) throw new Error("invalid_skirmish_seed");
+  return seed;
+}
+
 function helpText() {
   return [
     "Run bounded repository doctor/context/verify commands.",
@@ -214,6 +275,9 @@ function helpText() {
     "  node tools/agent/run-agent-command.mjs verify --changed|--required [--base BRANCH]",
     "    [--target-branch BRANCH] [--adapter ID] [--execute] [--output PATH]",
     "  node tools/agent/run-agent-command.mjs triage --report PATH [--adapter ID] [--output PATH]",
+    "  node tools/agent/run-agent-command.mjs metrics --before PATH --after PATH [--adapter ID] [--output PATH]",
+    "  node tools/agent/run-agent-command.mjs scenario --adapter skirmish-ai --scenario ID --mode pure|runtime|both",
+    "    [--seed INTEGER] [--execute] [--output PATH]",
     ""
   ].join("\n");
 }
