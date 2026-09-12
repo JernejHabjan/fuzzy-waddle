@@ -4,7 +4,8 @@
 
 Repository work starts from a measured, bounded context and uses cohesive project-aware commands for environment checks,
 affected verification, failure triage, cache/runtime reuse, and compact evidence. Skirmish AI is the first domain adapter,
-not the architecture of the generic tooling.
+not the architecture of the generic tooling. The measurements form a closed improvement loop: agents inspect them,
+improve the owning tools/skills/docs, and rerun the same benchmark before retaining an optimization.
 
 Recommended agent: `gpt-5.6-terra`, high effort. Ask before using `gpt-5.6-sol` for a bounded investigation only after a
 reproducible runner, lifecycle, or CI failure remains unexplained. Reserve `gpt-6-astra` for an exceptional unresolved
@@ -49,6 +50,12 @@ Store noisy run reports in ignored `tmp/agent-efficiency/`. Commit only a small 
 before/after summary when it remains useful. Define quality invariants first: the optimized path must select the same
 required evidence, fail closed, retain provenance, and surface the same seeded failure.
 
+The agent must turn each baseline into a short, evidence-ranked bottleneck list, select one bounded improvement, update
+the responsible generic script/tool/skill/documentation, and rerun the affected benchmark. Retain the change only when
+the result improves or deliberately trades one measured cost for another without violating a quality invariant. Do not
+auto-edit from raw metrics, tune from one noisy run, weaken checks, hide failures, or encode feature-specific anecdotes in
+global skills. Promote only repeated, demonstrated workflow lessons into skills.
+
 ## Repository command responsibilities
 
 - `agent:doctor`: validate repository/runtime prerequisites, Git ownership, ports, tool availability, indexes, project
@@ -60,7 +67,7 @@ required evidence, fail closed, retain provenance, and surface the same seeded f
 - `agent:triage`: reduce supported test/lint/type/build/runtime reports to the first actionable cause, provenance, retained
   artifacts, and exact replay command while storing full logs outside model context.
 - `agent:metrics`: compare benchmark runs for time, cache/runtime reuse, context/output volume, and exact token fields only
-  when supplied by supported telemetry.
+  when supplied by supported telemetry; emit evidence-linked bottlenecks and candidate owners for the next improvement.
 - AI adapter: preserve `ai:scenario`, manifest coverage, seeded replay, compact intent/state differences, and required
   runtime shards by composing the generic commands rather than forking their behavior.
 
@@ -70,19 +77,21 @@ scripts remain compatible or receive an explicit migration; generic tools must n
 ## Implementation order
 
 1. Capture the versioned benchmark definition and current baseline with the quality invariants above.
-2. Define small generic command/adapter/result contracts and deterministic output budgets. Missing configured work, empty
+2. Review that baseline, record evidence-ranked waste and its likely owner, and choose the first bounded improvement.
+3. Define small generic command/adapter/result contracts and deterministic output budgets. Missing configured work, empty
    required selection, invalid provenance, and unknown adapter results fail closed.
-3. Implement doctor/context over Git, Nx project ownership, source indexes, structural lint, and adapter metadata. Derive
+4. Implement doctor/context over Git, Nx project ownership, source indexes, structural lint, and adapter metadata. Derive
    mutable facts rather than copying them into another authority.
-4. Implement changed/required verification, triage, metrics, log retention, cache reporting, and safe persistent-process
+5. Implement changed/required verification, triage, metrics, log retention, cache reporting, and safe persistent-process
    lifecycle as separable generic owners.
-5. Adapt the skirmish matrix, one-scenario replay, manifest statuses, portal/browser reuse, and CI shards. Explicit optional
+6. Adapt the skirmish matrix, one-scenario replay, manifest statuses, portal/browser reuse, and CI shards. Explicit optional
    `deferred_content` remains visible with an owner, never counts as passed, and does not block the supported core gate.
-6. Add negative tests for empty work, stale provenance, cache-key/source changes, failed startup, interrupted cleanup,
+7. Add negative tests for empty work, stale provenance, cache-key/source changes, failed startup, interrupted cleanup,
    corrupted reports, output truncation, first-cause selection, and replay stability.
-7. Repeat the representative benchmark. Report improvements and regressions without relaxing quality or selecting less
-   required evidence.
-8. Update repository operator docs and skills only with proven command names, extension contracts, budgets, and results.
+8. Repeat the representative benchmark after each coherent optimization batch. Keep evidence-backed improvements, revert
+   ineffective complexity, and report tradeoffs without relaxing quality or selecting less required evidence.
+9. Update repository operator docs and skills only with proven command names, extension contracts, budgets, and repeated
+   general lessons; keep run-specific observations in metrics artifacts rather than permanent instructions.
 
 ## Structural preflight
 
@@ -107,6 +116,8 @@ never regenerate the baseline merely to pass lint.
 - Generic doctor/context/verify/triage/metrics responsibilities are implemented, tested, documented, and cheap to invoke
   from a cold task; at least one non-AI path proves they are repository-wide.
 - The AI scenario/matrix adapter composes the generic contracts without weakening current evidence.
+- At least one measured review -> tool/skill/doc improvement -> remeasurement cycle is proven on a non-AI workflow, and
+  its result identifies the next highest-value bottleneck without automatically mutating the repository.
 - The handoff progress grid and generic `continue implementing` route use the generated context and tooling gate.
 - CI can consume fail-closed shard output without manual scenario lists.
 - Run omission and final closure audits, update current evidence, commit only owned files, push, verify the remote SHA,

@@ -20,6 +20,10 @@ description: Apply Fuzzy Waddle scope, verification, source-discovery and git ow
 4. Review the changed stage as another engineer would: actual call path, edge cases, cleanup, error handling, compatibility, bounded work and documentation. Repair task-caused failures and rerun affected authorized checks.
 5. Perform an Omission Audit against every acceptance item, then a separate Final Closure Audit after repairs/checks. An authored file, successful dispatch, or green unrelated test is not evidence of the required outcome.
 
+For an agent-efficiency task, treat metrics as feedback rather than a report-only artifact: inspect evidence-ranked waste,
+improve the owning generic tool/script/skill/docs in a bounded change, rerun the same workload, and keep the change only
+when quality is preserved. Never allow raw metrics to trigger uncontrolled edits or fewer required checks.
+
 ## Maintainable names and size
 
 - Name production files, symbols and durable docs after stable responsibilities. Issue-specific stage/phase numbers belong only in temporary plans and handoffs.
