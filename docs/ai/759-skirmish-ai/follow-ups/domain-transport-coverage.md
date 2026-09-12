@@ -29,6 +29,62 @@ Read only:
 Paths under `docs/`, `contracts/`, and `planning/` are relative to the gameplay AI-controller directory. Do not inspect
 the optional island-map implementation unless #822 is separately selected.
 
+## Audited capability boundary
+
+This matrix records only capability proven from registered definitions and current tests. `Runtime candidate` means the
+shipping game has the required content, not that Playwright evidence exists yet.
+
+| Contract                                 | Registered capability                                                                    | Evidence now                                                                | Status / next owner                                                 |
+| ---------------------------------------- | ---------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| DOMAIN-01: water alone creates no demand | Water topology and water units exist                                                     | Authored pure fixture plus macro/adaptation unit coverage                   | Pure mapped; runtime recipe remains #816                            |
+| DOMAIN-02: useful naval objective        | Tivara `Sandhold` produces `VikingBoat`; River Crossing registers naval content          | Authored pure fixture and adaptation coverage                               | Runtime candidate; do not claim Skaduwee naval production           |
+| DOMAIN-03: transport route               | Tivara `Sandhold` produces `CommonBoat`; River Crossing registers one                    | Access-query and transport-lifecycle unit coverage                          | Blocked at the live capability projection described below           |
+| DOMAIN-04 / H-29: loss and handoff       | `CommonBoat` has four seats and uses shared board/unload commands                        | Transport-manager loss, recovery, conflict, unload, and save-identity tests | Pure fixture mapping and runtime recipe remain                      |
+| DOMAIN-05: useful air and anti-air       | `TivaraAlchemist` and `SkaduweeOwl` are registered flyers                                | Authored pure fixture and adaptation coverage                               | Runtime candidate; paired rejection evidence remains                |
+| DOMAIN-06: compatible squads/counters    | Observations expose movement and target domains                                          | Authored pure fixture and tactics unit coverage                             | Pure mapped; runtime recipe remains #816                            |
+| H-19/20/21: bounded access               | Adapter builds at most 512 cells per observation; graph carries generation and clearance | Pending, generation, narrow-route, and clearance unit coverage              | H-19 progress oracle and live mission clearance projection remain   |
+| Air transport                            | No registered flying container                                                           | Synthetic observation test only                                             | Unsupported runtime capability; never count it as shipping evidence |
+| Island-only runtime                      | No island map is registered                                                              | No valid runtime evidence                                                   | Optional `deferred_content` owned by #822; never blocks #759        |
+
+The currently usable authority chain is:
+
+1. the Phaser observation pipeline derives a generation-paired capability catalog and access graph;
+2. `AiSkirmishManager` queries access and seeds a child transport plan;
+3. `AiTransportManager` exclusively owns carrier production, boarding, transit, unloading, recovery, and handoff;
+4. `PlayerAiController` sends board/unload through the shared command bus and normal game command handlers.
+
+### First causal contract: producible carrier discovery
+
+Given a current-generation catalog where an owned producer can produce a water carrier, a ground squad with no existing
+carrier must still receive a `water_transport` route. The skirmish manager must seed exactly one transport plan; only then
+may the transport manager request carrier production and take passenger ownership.
+
+The path currently breaks before plan creation:
+
+- `queryAiAccessRouteV1` already accepts `canProduceWaterTransport` and its focused test returns a transport route with
+  zero existing seats;
+- `AiTransportManager` can request a catalog entry with water movement and cargo capacity after a plan exists;
+- `AiSkirmishManager.routeCapability` projects only observed seats and never projects either producible-carrier flag, so
+  the access query reports the route impossible and no child plan can exist.
+
+This is the first Terra repair. Both the skirmish and transport manager files are content-hash-baselined above the
+400-line source limit. First extract their route-capability and mission-transport responsibilities into focused files,
+without changing behavior, and commit that #821 cleanup separately. Then add a failing skirmish routing test, project
+producibility from the owned producer/catalog relationship, and prove that exactly one child plan is seeded. Do not
+refresh the legacy baseline.
+
+Focused audit evidence:
+
+```bash
+pnpm exec nx test probable-waffle-gameplay --runInBand \
+  --testPathPatterns='(ai-access-graph-v1|ai-transport-manager|ai-skirmish-manager).spec.ts$'
+pnpm exec nx test probable-waffle-phaser --runInBand \
+  --testPathPatterns='ai-domain-observation-fixtures.spec.ts$'
+```
+
+The 2026-09-12 boundary passed 3 gameplay suites / 26 tests and 1 Phaser suite / 2 tests. These results prove the existing
+lower-layer contracts; they do not claim that the missing live projection or any runtime recipe passed.
+
 ## Owned scenarios
 
 - DOMAIN-01/02: water alone creates no naval demand; valuable supported route/escort/intercept objectives may.

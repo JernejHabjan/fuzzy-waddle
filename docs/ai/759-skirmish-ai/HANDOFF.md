@@ -46,7 +46,7 @@ commit it separately, and then resume the issue. Never refresh the legacy source
 
 | Order             | Issue                                                           | State         | Dependency / next boundary                            | Recommended primary slice |
 | ----------------- | --------------------------------------------------------------- | ------------- | ----------------------------------------------------- | ------------------------- |
-| 1                 | [#825](https://github.com/JernejHabjan/fuzzy-waddle/issues/825) | `not_started` | Current-content domain contracts                      | Sol high → Terra medium   |
+| 1                 | [#825](https://github.com/JernejHabjan/fuzzy-waddle/issues/825) | `in_progress` | Producible-carrier bridge after bounded #821 split    | Terra medium              |
 | 2                 | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `not_started` | After #824; pair pure families with #816              | Terra medium              |
 | 2                 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `not_started` | After #824; pair runtime families with #815           | Sol high → Terra medium   |
 | 3                 | [#818](https://github.com/JernejHabjan/fuzzy-waddle/issues/818) | `not_started` | After #824; semantic debug usability/parity           | Terra medium              |
@@ -63,7 +63,7 @@ defined by the task-tracking and stage-delivery skills.
 
 | Issue                                                           | Responsibility                   | Current boundary                                                      |
 | --------------------------------------------------------------- | -------------------------------- | --------------------------------------------------------------------- |
-| [#825](https://github.com/JernejHabjan/fuzzy-waddle/issues/825) | Domain and transport coverage    | Current-content pure/integration/runtime proof remains                |
+| [#825](https://github.com/JernejHabjan/fuzzy-waddle/issues/825) | Domain and transport coverage    | Capability matrix complete; split, carrier bridge, fixtures remain    |
 | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | Deterministic pure scenarios     | 40/111 pure-required rows mapped at closeout; recalculate first       |
 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | Playwright runtime matrix and CI | 10/120 runtime-required rows mapped; no required CI shard yet         |
 | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | Continuous play and difficulty   | SEQ rerun, isolated baseline, D-06, and soaks remain                  |
@@ -135,6 +135,10 @@ completed roadmap or TODO ledger.
   5 tests; AI/tooling Node tests 9 tests; gameplay/Phaser/portal-E2E lint passed; portal development build passed.
 - Source-structure baseline initially records 674 legacy source hashes. New files are strict; editing a baselined violating
   file invalidates its exemption.
+- #825's Sol/high audit proved the registered current-content boundary and the first causal gap: the access graph and
+  transport manager support producible water carriers, but the skirmish route-capability projection supplies only
+  existing seats. The next Terra/medium slice starts with a bounded #821 structural split, then adds and repairs that
+  exact contract. Focused domain evidence passed 3 gameplay suites / 26 tests and 1 Phaser suite / 2 tests.
 
 Evidence is source-sensitive. Raw `tmp/` artifacts are ignored and may be absent later. Future CI must retain compact
 provenance plus failure traces/logs/screenshots as artifacts.
