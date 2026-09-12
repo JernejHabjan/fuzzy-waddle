@@ -8,6 +8,9 @@ crosses time/process boundaries, and lint prevents new structural debt.
 Recommended agent: `gpt-5.6-terra`, medium effort. Treat this as mechanical migration batches; do not mix AI behavior
 changes into them.
 
+Dependency: complete #824 before broad cleanup. A narrowly scoped behavior-neutral slice may run earlier only when it is
+required to unblock #824 itself.
+
 ## Cold start
 
 Read only:

@@ -29,6 +29,7 @@ The user's plan owns the stage boundary, required checks and git authority. This
 - Separate implementation readiness from delivery: checked, commit created, remote verified. If a push fails after checks pass, resume publication, not implementation.
 - Record tested source revision or dirty-diff digest before the closure commit. Report the final commit/remote SHA in the handoff; the next agent verifies the commit containing the ledger. Do not invent a self-referential commit SHA inside its own contents.
 - Record remaining blockers honestly. If already satisfied by existing code, prove equivalence and checks, then commit the task-owned evidence update when authorized; do not invent runtime changes.
+- For a multi-issue roadmap, return the refreshed dependency-ordered progress grid and the next recommended model/effort with one sentence of rationale. Escalation is a user choice, not an automatic stage action.
 
 ## Resume
 

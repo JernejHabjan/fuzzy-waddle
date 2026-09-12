@@ -5,8 +5,10 @@
 Configured skirmish AI always uses the pure brain. Invalid configuration fails visibly instead of silently falling back
 to the old behavior tree, and legacy runtime code is removed after compatibility evidence exists.
 
-Recommended agent: `gpt-6-astra`, high effort for parity/removal; use `gpt-5.6-terra`, medium effort for mechanical dead
-code cleanup after the boundary is proven.
+Recommended agent: `gpt-5.6-terra`, high effort for parity and medium effort for proven mechanical cleanup. Ask for Sol
+or Astra only when reproducible cross-system parity evidence remains unexplained.
+
+Dependency: complete #824, #816, #819, and #823 before removing the fallback.
 
 ## Cold start
 

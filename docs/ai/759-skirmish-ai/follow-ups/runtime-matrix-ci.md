@@ -5,8 +5,11 @@
 All supported runtime-required scenarios launch a real lobby-created Phaser match, observe authoritative effects, and run
 as fail-closed required pre-merge shards with useful retained artifacts.
 
-Recommended agent: `gpt-5.6-terra`, high effort for runtime repair; `gpt-5.6-luna`, medium effort for mechanical recipe
-registration after a family contract is proven.
+Recommended agent: `gpt-5.6-terra`, high effort for runtime repair and medium effort for mechanical recipe registration
+after a family contract is proven. Ask for Sol only for a bounded reproducible runner/runtime investigation.
+
+Dependency: complete #824 first and consume its verified orchestration, context, triage, and server-reuse contracts. Do
+not build duplicate command wrappers in this issue.
 
 ## Cold start
 

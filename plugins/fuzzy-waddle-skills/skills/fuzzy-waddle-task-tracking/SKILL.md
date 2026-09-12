@@ -17,6 +17,15 @@ description: Write or maintain requested Fuzzy Waddle plans and cold-start progr
 - When requested, record recommended model/effort per stage and actual model/effort in progress. Recommendations are not automatic model switching or task creation.
 - For a stop/review/commit/push stage boundary, read [stage delivery](../fuzzy-waddle-stage-delivery/SKILL.md). Use its requirement-to-evidence closure record rather than another unchecked checklist.
 
+## Long roadmap controller
+
+- Give a multi-issue roadmap one explicit entry issue and a dependency-ordered progress grid. A generic `continue implementing` request resumes an in-progress issue or selects the first dependency-ready issue; it never reconstructs order from chat.
+- Before repeated expensive implementation/testing, define a tooling prerequisite when deterministic context, execution, triage, or report scripts will materially reduce later work. Finish and prove that gate before dependent work unless the user changes the order or it is genuinely blocked.
+- Prefer generated bounded context and manifest-derived test selection over another hand-maintained index. Keep mutable counts, scenario registration, and status in one authority.
+- Detect file-size, method-size, line-length, and ownership blockers before behavior changes. Route necessary behavior-neutral restructuring through a separate bounded lower-cost pass and commit; do not hide violations by refreshing a baseline.
+- Default to the least expensive model/effort recommended for the known implementation. Ask before escalating to a higher-cost model only for a bounded investigation backed by a compact reproducible failure; make this rare, explain why, and return to the lower-cost model after isolating the cause.
+- At each stop, report a compact grid with issue/stage, state, evidence or blocker, and dependency. Then recommend the next model/effort with one brief reason. Do not claim a recommendation changed the active model.
+
 ## Resume record
 
 Before interruption or handoff, preserve branch/worktree, base and source provenance, current stage/substep, decisions and implemented symbols, acceptance evidence, exact check commands/results, unresolved defects versus infrastructure blockers, and the next action.

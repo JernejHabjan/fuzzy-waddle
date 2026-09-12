@@ -8,6 +8,8 @@ while detailed IDs remain available for causal drilldown.
 Recommended agent: `gpt-5.6-terra`, medium effort. Use the Phaser skill because panel lifecycle and generated/user-owned
 regions matter.
 
+Dependency: complete #824 first so debug parity is checked through the same context, scenario, and triage evidence.
+
 ## Cold start
 
 Read only:

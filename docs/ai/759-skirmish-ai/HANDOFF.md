@@ -8,19 +8,56 @@ file.
 
 - Branch: `feature/759-skirmish-ai`
 - Draft PR: [#814](https://github.com/JernejHabjan/fuzzy-waddle/pull/814), targeting `develop`
-- Last published SHA before wrap-up: `bd6d3e4f0e1a5545299aa1ee4ddf291e202f57f2`
+- Wrap-up content anchor: `cd91c321a27fee9464fc03389a04d97e774b5c86`; always verify the current remote tip
 - Pinned pre-change baseline: `de47f482889db30420692bf4406fba463d7db296`
 - Manifest: `tools/ai/fixtures/skirmish-v1.json`, 121 named scenarios before variants
 - Follow-up index: [subissue implementation plans](follow-ups/README.md)
 - Unrelated local file: `.run/start_portal.run.xml`; do not stage it with AI work
 
-To resume, choose one open subissue from the table below, read its linked plan first, verify current branch/SHA/status,
-and execute only that responsibility. Do not reconstruct old PR stages from Git history.
+## Continue implementing protocol
+
+When the user says `continue implementing` on draft PR #814 without naming a subissue:
+
+1. Verify the branch/remote SHA, PR and subissue state; recalculate mutable coverage rather than trusting this snapshot.
+2. Start or resume #824. Do not expand #815–#823 until its tooling and skill gate is complete unless the user explicitly
+   changes the order or #824 records a genuine blocker.
+3. After #824, resume an `in_progress` issue; otherwise select the first dependency-ready issue from the grid. Read only
+   its linked plan, generated context packet, and named source anchors.
+4. Work one issue boundary at a time. A sequential agent may commit directly to this integration branch. Parallel agents
+   use isolated worktrees/branches and sub-PRs targeting `feature/759-skirmish-ai`; never share one writable worktree.
+5. Report the refreshed grid at every stop, followed by the recommended next model/effort and one sentence explaining
+   why. A recommendation never changes the active model automatically.
+
+Default to `gpt-5.6-terra` at the plan's stated effort. Ask the user before a bounded Sol investigation only when compact,
+reproducible evidence shows Terra is stuck on a cross-system cause. Ask for Astra exceptionally, for unresolved
+architecture/authority problems after Sol-level investigation. Return to Terra for implementation once the cause is known.
+
+If structural lint would block an issue, run the smallest behavior-neutral #821 cleanup slice first with Terra medium,
+commit it separately, and then resume the issue. Never refresh the legacy source-structure baseline merely to pass lint.
+
+## Progress grid
+
+| Order     | Issue                                                           | State         | Dependency / next boundary                      | Default model |
+| --------- | --------------------------------------------------------------- | ------------- | ----------------------------------------------- | ------------- |
+| 1         | [#824](https://github.com/JernejHabjan/fuzzy-waddle/issues/824) | `not_started` | Implement and prove the tooling/skill gate      | Terra high    |
+| 2         | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `not_started` | After #824; complete pure mappings              | Terra medium  |
+| 3         | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `not_started` | After #824; consume #815 by family              | Terra high    |
+| 4         | [#818](https://github.com/JernejHabjan/fuzzy-waddle/issues/818) | `not_started` | After #824; semantic debug usability/parity     | Terra medium  |
+| 5         | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `not_started` | After stable SEQ/runtime tooling                | Terra high    |
+| 6         | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `not_started` | After runtime matrix infrastructure             | Terra high    |
+| 7         | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `not_started` | After runtime tooling; MP portion uses #819     | Terra high    |
+| 8         | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | `not_started` | Last, after #816/#819/#823 parity               | Terra high    |
+| As needed | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `not_started` | Bounded structural slices may unblock any issue | Terra medium  |
+| Content   | [#822](https://github.com/JernejHabjan/fuzzy-waddle/issues/822) | `blocked`     | Requires an authored island map                 | Terra high    |
+
+Update this grid only from GitHub state and current evidence. `Code authored` is not `validated`; use the state vocabulary
+defined by the task-tracking and stage-delivery skills.
 
 ## Open work
 
 | Issue                                                           | Responsibility                   | Current boundary                                                      |
 | --------------------------------------------------------------- | -------------------------------- | --------------------------------------------------------------------- |
+| [#824](https://github.com/JernejHabjan/fuzzy-waddle/issues/824) | Agent verification tooling       | First prerequisite; commands and execution gate not implemented       |
 | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | Deterministic pure scenarios     | 40/111 pure-required rows mapped at closeout; recalculate first       |
 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | Playwright runtime matrix and CI | 10/120 runtime-required rows mapped; no required CI shard yet         |
 | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | Continuous play and difficulty   | SEQ rerun, isolated baseline, D-06, and soaks remain                  |

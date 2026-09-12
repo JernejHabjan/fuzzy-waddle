@@ -7,6 +7,9 @@ semantic assertions. Missing work must fail closed; a fixture filename alone is 
 
 Recommended agent: `gpt-5.6-terra`, medium effort. Raise effort only for a proven cross-manager contract disagreement.
 
+Dependency: complete #824 first so fixture selection, context, focused verification, and failure triage use the shared
+tooling contract.
+
 ## Cold start
 
 Read only:

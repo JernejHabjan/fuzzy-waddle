@@ -5,8 +5,11 @@
 A shipped representative island skirmish map makes disconnected-land expansion and transport-required combat testable in
 the real runtime. Until then, island-only rows remain explicitly content-blocked.
 
-Recommended agent: `gpt-6-astra`, high effort for map/gameplay/test integration. Use the Phaser skill and preserve
-Phaser Editor authored/generated boundaries.
+Recommended agent: `gpt-5.6-terra`, high effort. Use the Phaser skill and preserve Phaser Editor authored/generated
+boundaries. Ask for Sol or Astra only for a bounded unresolved topology/transport investigation.
+
+Dependency: complete #824 first. Runtime implementation remains blocked until a representative island map is authored
+and registered; do not replace that content dependency with a synthetic runtime claim.
 
 ## Cold start
 

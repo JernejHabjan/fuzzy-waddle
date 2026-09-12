@@ -5,8 +5,10 @@
 Persistent AI commitments survive supported lifecycle boundaries exactly once, restore deterministic authority, and leave
 no state behind after a match ends.
 
-Recommended agent: `gpt-6-astra`, high effort for cross-system lifecycle diagnosis; use `gpt-5.6-terra`, medium effort
-for focused serializer/cleanup repairs after the cause is isolated.
+Recommended agent: `gpt-5.6-terra`, high effort for diagnosis and medium effort for isolated repairs. Ask for Sol or
+Astra only for a bounded investigation of reproducible cross-system nondeterminism.
+
+Dependency: complete #824 first; multiplayer lifecycle rows also depend on #819.
 
 ## Cold start
 

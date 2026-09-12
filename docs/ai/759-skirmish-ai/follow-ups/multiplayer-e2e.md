@@ -5,8 +5,10 @@
 A real socket-backed multi-client match proves that host-owned AI commands are relayed and applied identically by every
 peer through production, combat, lifecycle interruptions, and termination.
 
-Recommended agent: `gpt-6-astra`, high effort because browser, server authority, lockstep, reconnect, and host migration
-cross several ownership boundaries.
+Recommended agent: `gpt-5.6-terra`, high effort. Ask for `gpt-5.6-sol` only after a deterministic cross-peer divergence is
+captured; reserve Astra for a rare unresolved authority/lockstep design question.
+
+Dependency: complete #824 and establish the runtime matrix infrastructure in #816 first.
 
 ## Cold start
 
