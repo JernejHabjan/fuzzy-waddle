@@ -17,18 +17,20 @@ export function selectVerification(
 ) {
   validateRequest({ adapterId, mode, inspection });
   const resolvedBase = base ?? readDefaultBase(root);
+  const resolvedTargetBranch = targetBranch ?? resolvedBase;
+  if (mode === "required") validateDeliveryTarget(resolvedTargetBranch);
   const changedFiles = readChangedFiles(root, resolvedBase, execute);
   if (changedFiles.length === 0) throw new Error("empty_changed_files");
   const checks = [
     ...selectWorkspaceChecks(changedFiles, resolvedBase),
-    ...selectTargetChecks(root, resolvedBase, targetBranch ?? resolvedBase, mode, inspection.projects, execute)
+    ...selectTargetChecks(root, resolvedBase, resolvedTargetBranch, mode, inspection.projects, execute)
   ];
   if (checks.length === 0) throw new Error("empty_verification_checks");
   return {
     configured: true,
     mode,
     base: resolvedBase,
-    targetBranch: targetBranch ?? resolvedBase,
+    targetBranch: resolvedTargetBranch,
     changedFiles,
     projects: unique(checks.flatMap((check) => check.projects ?? [])),
     checks
@@ -40,6 +42,10 @@ function validateRequest({ adapterId, mode, inspection }) {
   const adapter = inspection.adapters.find((candidate) => candidate.id === adapterId);
   if (!adapter) throw new Error(`unknown_adapter:${adapterId ?? "missing"}`);
   if (!adapter.commands.includes("verify")) throw new Error(`unsupported_adapter_command:${adapterId}`);
+}
+
+function validateDeliveryTarget(targetBranch) {
+  if (!new Set(["develop", "main"]).has(targetBranch)) throw new Error(`unsupported_delivery_target:${targetBranch}`);
 }
 
 function readDefaultBase(root) {
@@ -64,9 +70,9 @@ function selectWorkspaceChecks(changedFiles, base) {
       id: "git-diff-check",
       projects: [],
       commands: [
-        ["git", "diff", "--check", `${base}...HEAD`],
-        ["git", "diff", "--cached", "--check"],
-        ["git", "diff", "--check"]
+        command("git", ["diff", "--check", `${base}...HEAD`]),
+        command("git", ["diff", "--cached", "--check"]),
+        command("git", ["diff", "--check"])
       ]
     }
   ];
@@ -75,23 +81,40 @@ function selectWorkspaceChecks(changedFiles, base) {
       (path) => path.startsWith("plugins/fuzzy-waddle-skills/") || path === "tools/skills/check-index.mjs"
     )
   )
-    checks.push({ id: "skills-index", projects: [], commands: [["pnpm", "skills:check"]] });
+    checks.push({ id: "skills-index", projects: [], commands: [command("pnpm", ["skills:check"])] });
   if (changedFiles.some((path) => path.startsWith("tools/agent/") || path === "package.json"))
-    checks.push({ id: "agent-tools", projects: [], commands: [["pnpm", "agent:tools:test"]] });
+    checks.push({ id: "agent-tools", projects: [], commands: [command("pnpm", ["agent:tools:test"])] });
   return checks;
 }
 
 function selectTargetChecks(root, base, targetBranch, mode, projects, execute) {
   const targetDefinitions = mode === "changed" ? FOCUSED_TARGETS : deliveryTargets(targetBranch);
-  return targetDefinitions.flatMap((definition) => {
+  const targetChecks = targetDefinitions.flatMap((definition) => {
     const selectedProjects = readAffectedProjects(root, base, definition.target, projects, execute);
     if (selectedProjects.length === 0) return [];
     return [createTargetCheck(definition, selectedProjects)];
   });
+  return mode === "required" ? [...selectVersionChecks(targetBranch), ...targetChecks] : targetChecks;
 }
 
-function deliveryTargets(base) {
-  return base === "main" || base.endsWith("/main") ? [...DELIVERY_TARGETS, { target: "e2e" }] : DELIVERY_TARGETS;
+function deliveryTargets(targetBranch) {
+  return isMainBranch(targetBranch) ? [...DELIVERY_TARGETS, { target: "e2e" }] : DELIVERY_TARGETS;
+}
+
+function selectVersionChecks(targetBranch) {
+  const checks = [{ id: "version-sync", projects: [], commands: [command("pnpm", ["run", "version:check"])] }];
+  if (isMainBranch(targetBranch)) {
+    checks.push({
+      id: "version-pr-bump",
+      projects: [],
+      commands: [command("node", ["tools/ci/check-version.mjs", "pr-bump"], { GITHUB_BASE_REF: targetBranch })]
+    });
+  }
+  return checks;
+}
+
+function isMainBranch(branch) {
+  return branch === "main";
 }
 
 function readAffectedProjects(root, base, target, projects, execute) {
@@ -120,8 +143,12 @@ function createTargetCheck(definition, projects) {
   return {
     id: `nx-${definition.target}${definition.configuration ? `-${definition.configuration}` : ""}`,
     projects,
-    commands: [["pnpm", ...arguments_]]
+    commands: [command("pnpm", arguments_)]
   };
+}
+
+function command(executable, arguments_, environment) {
+  return { executable, arguments: arguments_, ...(environment ? { environment } : {}) };
 }
 
 function parseLines(value) {

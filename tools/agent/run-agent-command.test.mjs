@@ -26,8 +26,10 @@ test("parses only supported bounded commands", () => {
     adapter: "generic",
     base: null,
     command: "doctor",
+    execute: false,
     issue: null,
     output: null,
+    report: null,
     targetBranch: null,
     verificationMode: null
   });
@@ -35,8 +37,10 @@ test("parses only supported bounded commands", () => {
     adapter: "generic",
     base: null,
     command: "context",
+    execute: false,
     issue: "824",
     output: null,
+    report: null,
     targetBranch: null,
     verificationMode: null
   });
@@ -44,8 +48,10 @@ test("parses only supported bounded commands", () => {
     adapter: "generic",
     base: "develop",
     command: "verify",
+    execute: false,
     issue: null,
     output: null,
+    report: null,
     targetBranch: "main",
     verificationMode: "required"
   });
@@ -53,6 +59,8 @@ test("parses only supported bounded commands", () => {
   assert.throws(() => parseArguments(["verify"]), /missing_verification_mode/u);
   assert.throws(() => parseArguments(["verify", "--changed", "--issue", "824"]), /unexpected_issue/u);
   assert.throws(() => parseArguments(["verify", "--changed", "--required"]), /duplicate_verification_mode/u);
+  assert.throws(() => parseArguments(["triage"]), /missing_triage_report/u);
+  assert.throws(() => parseArguments(["doctor", "--execute"]), /unexpected_execution_request/u);
 });
 
 test("produces validated doctor and issue-context packets with deterministic next commands", () => {
@@ -77,11 +85,42 @@ test("produces a validated verification-selection packet", () => {
       targetBranch: "develop",
       changedFiles: ["tools/agent/run-agent-command.mjs"],
       projects: ["portal"],
-      checks: [{ id: "agent-tools", projects: [], commands: [["pnpm", "agent:tools:test"]] }]
+      checks: [{ id: "agent-tools", projects: [], commands: [{ executable: "pnpm", arguments: ["agent:tools:test"] }] }]
     })
   });
   assert.equal(verification.result.commandId, "verify");
   assert.match(verification.result.output.summary, /VERIFY mode=changed/u);
+});
+
+test("retains a failed execution report and exposes it to triage without rerunning commands", () => {
+  const verification = runAgentCommand("/workspace", parseArguments(["verify", "--changed", "--execute"]), {
+    inspect: () => inspection,
+    select: () => ({
+      configured: true,
+      mode: "changed",
+      base: "develop",
+      targetBranch: "develop",
+      changedFiles: ["tools/agent/example.mjs"],
+      projects: [],
+      checks: [{ id: "agent-tools", projects: [], commands: [{ executable: "pnpm", arguments: ["agent:tools:test"] }] }]
+    }),
+    executeSelection: () => ({ status: "failed", reportPath: "tmp/agent-verification/report.json" })
+  });
+  assert.equal(verification.result.status, "failed");
+  assert.match(verification.result.output.summary, /report=tmp\/agent-verification\/report.json/u);
+  const triage = runAgentCommand("/workspace", parseArguments(["triage", "--report", "tmp/report.json"]), {
+    inspect: () => inspection,
+    triage: () => ({
+      configured: true,
+      reports: ["tmp/report.json"],
+      executionStatus: "failed",
+      reportProvenance: { revision: "b".repeat(40), worktreeStatus: [] },
+      failedCheck: "agent-tools",
+      exitCode: 1,
+      replay: "pnpm agent:tools:test"
+    })
+  });
+  assert.match(triage.result.output.summary, /CAUSE check=agent-tools/u);
 });
 
 test("writes explicit packets inside the workspace only", async (t) => {

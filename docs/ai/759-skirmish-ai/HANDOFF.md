@@ -196,17 +196,19 @@ The parameterized Playwright spec is not a complete scenario run without the mat
   `--output` is supplied. Focused command evidence: #824 reports 26 Nx projects, two healthy indexes, two adapters, and
   674 content-hash-baselined legacy files.
 - `pnpm agent:verify -- --changed [--base <branch>]` now uses the Nx affected graph for focused lint/test ownership.
-  `pnpm agent:verify -- --required --base <diff-base> --target-branch <develop|main>` emits the CI-shaped lint/test/build
-  selection and includes affected E2E only for a `main` delivery target. It selects only; the next owner must execute
-  selected commands through retained logs.
+  `pnpm agent:verify -- --required --base <diff-base> --target-branch <develop|main>` emits the CI-shaped version,
+  lint/test/build selection and includes affected E2E plus PR version-bump coverage only for a `main` delivery target.
+  Base comparison and delivery policy are separate; `origin/main` is not a delivery target. Selection remains dry unless
+  `--execute` is explicit, which retains every command stream and a report under `tmp/agent-verification/`.
+- `pnpm agent:triage -- --report <path>` reads a retained report without replaying it and prints only the first failing
+  check, exact replay command, exit code, and stdout/stderr paths. Corrupted or escaping reports fail closed.
   It fails closed on unavailable Git/Nx provenance, unknown affected projects, empty changed ownership, or absent checks.
-- Verification-selection focused evidence: `pnpm agent:tools:test` passed 17 Node tests; `pnpm agent:doctor`,
-  `pnpm agent:context -- --issue 824`, and both `agent:verify` modes passed. A `main` delivery target selected lint,
-  CI test, production build, and affected E2E without running them. `pnpm skills:check`, source-structure tests,
-  Prettier, and `git diff --check` passed for this slice.
-- Next exact action: implement retained-log execution and triage over the selected checks, then metrics, cache reporting,
-  lifecycle ownership, and the skirmish adapter. Do not call the initial collector the completed `agent:metrics` contract;
-  that broader command remains #824 work.
+- Verification-selection focused evidence: `pnpm agent:tools:test` passed 23 Node tests; `pnpm agent:doctor`,
+  `pnpm agent:context -- --issue 824`, and both `agent:verify` modes passed. A `main` delivery target selected version,
+  lint, CI test, production build, and affected E2E without running them. Prettier, source-structure tests, and
+  `git diff --check` passed for this slice.
+- Next exact action: implement metrics, cache reporting, lifecycle ownership, and the skirmish adapter. Do not call the
+  initial collector the completed `agent:metrics` contract; that broader command remains #824 work.
 
 ## Publication and closure
 

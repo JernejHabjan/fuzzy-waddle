@@ -25,7 +25,11 @@ function result(overrides = {}) {
     adapterId: "generic",
     status: "passed",
     provenance: { revision: "a".repeat(40), worktreeStatus: [] },
-    selection: { configured: true, projects: ["portal"], checks: ["lint"] },
+    selection: {
+      configured: true,
+      projects: ["portal"],
+      checks: [{ id: "lint", projects: ["portal"], commands: [{ executable: "pnpm", arguments: ["lint"] }] }]
+    },
     output: { summary: "selected portal", truncated: false },
     ...overrides
   };
@@ -75,7 +79,7 @@ test("fails closed for absent configured work, empty required work, and unretain
       validateCommandResult({
         command,
         adapters: [adapter],
-        result: result({ selection: { configured: false, projects: ["portal"], checks: ["lint"] } })
+        result: result({ selection: { configured: false, projects: ["portal"], checks: result().selection.checks } })
       }),
     /missing_configured_work/u
   );
@@ -84,7 +88,7 @@ test("fails closed for absent configured work, empty required work, and unretain
       validateCommandResult({
         command,
         adapters: [adapter],
-        result: result({ selection: { configured: true, projects: [], checks: ["lint"] } })
+        result: result({ selection: { configured: true, projects: [], checks: result().selection.checks } })
       }),
     /empty_required_selection/u
   );

@@ -63,9 +63,12 @@ global skills. Promote only repeated, demonstrated workflow lessons into skills.
 - `agent:context --issue <number>`: emit a bounded, stable current-state packet with provenance, source routes,
   dependencies, changed ownership, structural blockers, last evidence, and exact next commands.
 - `agent:verify --changed|--required`: use the project graph and adapter contracts to select focused implementation checks
-  or fail-closed delivery checks without conflating the two evidence levels.
-- `agent:triage`: reduce supported test/lint/type/build/runtime reports to the first actionable cause, provenance, retained
-  artifacts, and exact replay command while storing full logs outside model context.
+  or fail-closed delivery checks without conflating the two evidence levels. Selection is dry by default; `--execute` is
+  explicit and retains every stdout/stderr stream plus a structured report under ignored `tmp/agent-verification/`.
+  Required delivery policy accepts only `develop` or `main`; use `--base <diff-base>` independently from
+  `--target-branch <develop|main>`.
+- `agent:triage --report <path>`: reduce a retained report to the first actionable cause, provenance, retained artifacts,
+  and exact replay command without rerunning it. It rejects corrupted, escaping, or internally inconsistent reports.
 - `agent:metrics`: compare benchmark runs for time, cache/runtime reuse, context/output volume, and exact token fields only
   when supplied by supported telemetry; emit evidence-linked bottlenecks and candidate owners for the next improvement.
 - AI adapter: preserve `ai:scenario`, manifest coverage, seeded replay, compact intent/state differences, and required

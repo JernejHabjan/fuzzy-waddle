@@ -100,6 +100,33 @@ function validateSelection(selection, requirement) {
     if (!Array.isArray(selection[key])) throw new Error(`missing_required_selection:${key}`);
     if (selection[key].length === 0) throw new Error(`empty_required_selection:${key}`);
   }
+  if (Array.isArray(selection.checks)) selection.checks.forEach(validateCheck);
+}
+
+function validateCheck(check) {
+  requireRecord(check, "invalid_verification_check");
+  requireString(check.id, "missing_verification_check_id");
+  if (!Array.isArray(check.projects) || check.projects.some((project) => typeof project !== "string"))
+    throw new Error(`invalid_verification_check_projects:${check.id}`);
+  if (!Array.isArray(check.commands) || check.commands.length === 0)
+    throw new Error(`missing_verification_check_commands:${check.id}`);
+  check.commands.forEach((command) => validateReplayCommand(command, check.id));
+}
+
+function validateReplayCommand(command, checkId) {
+  requireRecord(command, `invalid_replay_command:${checkId}`);
+  requireString(command.executable, `missing_replay_executable:${checkId}`);
+  if (!Array.isArray(command.arguments) || command.arguments.some((argument) => typeof argument !== "string"))
+    throw new Error(`invalid_replay_arguments:${checkId}`);
+  if (command.environment !== undefined) validateEnvironment(command.environment, checkId);
+}
+
+function validateEnvironment(environment, checkId) {
+  requireRecord(environment, `invalid_replay_environment:${checkId}`);
+  for (const [key, value] of Object.entries(environment)) {
+    if (!/^[A-Z_][A-Z0-9_]*$/u.test(key) || typeof value !== "string")
+      throw new Error(`invalid_replay_environment:${checkId}`);
+  }
 }
 
 function validateOutput(output, budget, workspaceRoot) {

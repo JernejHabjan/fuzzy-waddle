@@ -4,7 +4,9 @@ import { dirname, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { compactOutput, validateCommandResult } from "./command-contracts.mjs";
 import { findIssuePlan, inspectRepository } from "./repository-inspection.mjs";
+import { executeVerification } from "./verification-execution.mjs";
 import { selectVerification } from "./verification-selection.mjs";
+import { triageVerification } from "./verification-triage.mjs";
 
 const scriptDirectory = dirname(fileURLToPath(import.meta.url));
 const workspaceRoot = resolve(scriptDirectory, "../..");
@@ -24,8 +26,14 @@ const commands = {
   verify: {
     schemaVersion: 1,
     id: "verify",
-    description: "Select project-aware focused or delivery verification without running it.",
+    description: "Select project-aware verification and optionally run it with retained logs.",
     selection: { requireConfiguredWork: true, required: ["changedFiles", "checks"] }
+  },
+  triage: {
+    schemaVersion: 1,
+    id: "triage",
+    description: "Summarize a retained verification report without replaying it.",
+    selection: { requireConfiguredWork: true, required: ["reports"] }
   }
 };
 
@@ -34,8 +42,10 @@ export function parseArguments(tokens) {
     adapter: "generic",
     base: null,
     command: null,
+    execute: false,
     issue: null,
     output: null,
+    report: null,
     targetBranch: null,
     verificationMode: null
   };
@@ -45,10 +55,12 @@ export function parseArguments(tokens) {
     if (token === "--help") options.help = true;
     else if (token === "--adapter") options.adapter = requiredValue(tokens[++index], "adapter");
     else if (token === "--base") options.base = requiredValue(tokens[++index], "base");
+    else if (token === "--execute") options.execute = true;
     else if (token === "--changed")
       options.verificationMode = selectVerificationMode(options.verificationMode, "changed");
     else if (token === "--issue") options.issue = requiredValue(tokens[++index], "issue");
     else if (token === "--output") options.output = requiredValue(tokens[++index], "output");
+    else if (token === "--report") options.report = requiredValue(tokens[++index], "report");
     else if (token === "--required")
       options.verificationMode = selectVerificationMode(options.verificationMode, "required");
     else if (token === "--target-branch") options.targetBranch = requiredValue(tokens[++index], "target_branch");
@@ -58,23 +70,34 @@ export function parseArguments(tokens) {
   if (!options.help && !commands[options.command]) throw new Error(`unknown_command:${options.command ?? "missing"}`);
   if (options.command === "context" && !/^\d+$/u.test(options.issue ?? "")) throw new Error("missing_issue");
   if (options.command !== "context" && options.issue !== null) throw new Error("unexpected_issue");
+  if (options.command === "triage" && options.report === null) throw new Error("missing_triage_report");
+  if (options.command !== "triage" && options.report !== null) throw new Error("unexpected_triage_report");
   if (
     options.command !== "verify" &&
     (options.base !== null || options.targetBranch !== null || options.verificationMode !== null)
   )
     throw new Error("unexpected_verification_option");
   if (options.command === "verify" && !options.verificationMode) throw new Error("missing_verification_mode");
-  if (options.command !== "verify" && options.adapter !== "generic") throw new Error("unexpected_adapter");
+  if (options.command !== "verify" && options.command !== "triage" && options.adapter !== "generic")
+    throw new Error("unexpected_adapter");
+  if (options.command !== "verify" && options.execute) throw new Error("unexpected_execution_request");
   return options;
 }
 
 export function runAgentCommand(
   root,
   options,
-  { inspect = inspectRepository, resolvePlan = findIssuePlan, select = selectVerification } = {}
+  {
+    inspect = inspectRepository,
+    resolvePlan = findIssuePlan,
+    select = selectVerification,
+    executeSelection = executeVerification,
+    triage = triageVerification
+  } = {}
 ) {
   const inspection = inspect(root);
   const plan = options.command === "context" ? resolvePlan(root, Number(options.issue)) : null;
+  const triageResult = options.command === "triage" ? triage(root, options.report) : null;
   const selection =
     options.command === "verify"
       ? select(root, {
@@ -84,14 +107,16 @@ export function runAgentCommand(
           mode: options.verificationMode,
           targetBranch: options.targetBranch
         })
-      : standardSelection(inspection, plan, options);
-  const summary = summarize(options, inspection, plan, selection);
+      : (triageResult ?? standardSelection(inspection, plan, options));
+  const execution =
+    options.command === "verify" && options.execute ? executeSelection(root, selection, inspection.provenance) : null;
+  const summary = summarize(options, inspection, plan, selection, execution);
   const output = compactOutput(summary);
   const result = {
     schemaVersion: 1,
     commandId: options.command,
     adapterId: options.adapter,
-    status: "passed",
+    status: execution?.status ?? "passed",
     provenance: inspection.provenance,
     selection,
     output: { summary: output.text, truncated: output.truncated }
@@ -123,7 +148,7 @@ function standardSelection(inspection, plan, options) {
   };
 }
 
-function summarize(options, inspection, plan, selection) {
+function summarize(options, inspection, plan, selection, execution) {
   const command = options.command;
   const adapterSummary = inspection.adapters.map((adapter) => adapter.id).join(",");
   const sourceStructure = inspection.sourceStructure;
@@ -145,11 +170,24 @@ function summarize(options, inspection, plan, selection) {
     lines.push(
       `VERIFY projects=${selection.projects.length} checks=${selection.checks.map((check) => check.id).join(",")}`
     );
+    if (execution)
+      lines.push(
+        `EXECUTION status=${execution.status} report=${execution.reportPath}`,
+        "NEXT pnpm agent:triage -- --report <path>"
+      );
+    else
+      lines.push(
+        selection.mode === "changed"
+          ? `NEXT pnpm agent:verify -- --required --base ${selection.base}`
+          : "NEXT pnpm agent:verify -- --required --execute [--base <branch>]"
+      );
+  } else if (command === "triage") {
     lines.push(
-      selection.mode === "changed"
-        ? `NEXT pnpm agent:verify -- --required --base ${selection.base}`
-        : "NEXT execute selected checks with retained logs"
+      `TRIAGE execution=${selection.executionStatus} revision=${selection.reportProvenance.revision} report=${selection.reports[0]}`
     );
+    if (selection.failedCheck)
+      lines.push(`CAUSE check=${selection.failedCheck} exit=${selection.exitCode} replay=${selection.replay}`);
+    else lines.push("CAUSE none; retained execution passed");
   } else if (plan)
     lines.push(`ISSUE plan=${plan}`, `NEXT pnpm agent:doctor && pnpm agent:context -- --issue ${options.issue}`);
   else lines.push("NEXT pnpm agent:context -- --issue <number>");
@@ -174,7 +212,8 @@ function helpText() {
     "  node tools/agent/run-agent-command.mjs doctor [--output PATH]",
     "  node tools/agent/run-agent-command.mjs context --issue NUMBER [--output PATH]",
     "  node tools/agent/run-agent-command.mjs verify --changed|--required [--base BRANCH]",
-    "    [--target-branch BRANCH] [--adapter ID] [--output PATH]",
+    "    [--target-branch BRANCH] [--adapter ID] [--execute] [--output PATH]",
+    "  node tools/agent/run-agent-command.mjs triage --report PATH [--adapter ID] [--output PATH]",
     ""
   ].join("\n");
 }
@@ -187,6 +226,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
       const packet = runAgentCommand(workspaceRoot, options);
       if (options.output) writePacket(workspaceRoot, packet, options.output);
       process.stdout.write(`${packet.result.output.summary}\n`);
+      if (packet.result.status === "failed") process.exitCode = 1;
     }
   } catch (error) {
     process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`);

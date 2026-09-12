@@ -19,7 +19,7 @@ test("selects focused Nx targets and local tool checks from changed ownership", 
     result.checks.map((check) => check.id),
     ["git-diff-check", "agent-tools", "nx-lint", "nx-test"]
   );
-  assert.match(result.checks.at(-1).commands[0].join(" "), /--projects=portal,probable-waffle-gameplay/u);
+  assert.match(result.checks.at(-1).commands[0].arguments.join(" "), /--projects=portal,probable-waffle-gameplay/u);
 });
 
 test("selects CI-facing delivery targets and main-only browser coverage", () => {
@@ -30,9 +30,19 @@ test("selects CI-facing delivery targets and main-only browser coverage", () => 
   );
   assert.deepEqual(
     result.checks.map((check) => check.id),
-    ["git-diff-check", "agent-tools", "nx-lint", "nx-test-ci", "nx-build-production", "nx-e2e"]
+    [
+      "git-diff-check",
+      "agent-tools",
+      "version-sync",
+      "version-pr-bump",
+      "nx-lint",
+      "nx-test-ci",
+      "nx-build-production",
+      "nx-e2e"
+    ]
   );
-  assert.match(result.checks[3].commands[0].join(" "), /--configuration=ci/u);
+  assert.deepEqual(result.checks[3].commands[0].environment, { GITHUB_BASE_REF: "main" });
+  assert.match(result.checks[5].commands[0].arguments.join(" "), /--configuration=ci/u);
 });
 
 test("keeps docs-only selection actionable and fails closed for no changes or unknown ownership", () => {
@@ -63,6 +73,15 @@ test("keeps docs-only selection actionable and fails closed for no changes or un
         { execute: executor({ lint: ["missing"], test: [] }) }
       ),
     /unknown_affected_project:lint/u
+  );
+  assert.throws(
+    () =>
+      selectVerification(
+        "/workspace",
+        { adapterId: "generic", base: "develop", mode: "required", inspection, targetBranch: "origin/main" },
+        { execute: executor({}) }
+      ),
+    /unsupported_delivery_target:origin\/main/u
   );
 });
 
