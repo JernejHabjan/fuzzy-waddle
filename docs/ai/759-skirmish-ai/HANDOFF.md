@@ -41,36 +41,36 @@ commit it separately, and then resume the issue. Never refresh the legacy source
 
 ## Progress grid
 
-| Order             | Issue                                                           | State         | Dependency / next boundary                             | Default model |
-| ----------------- | --------------------------------------------------------------- | ------------- | ------------------------------------------------------ | ------------- |
-| 1                 | [#824](https://github.com/JernejHabjan/fuzzy-waddle/issues/824) | `not_started` | Baseline, improve, remeasure; prove tools + AI adapter | Terra high    |
-| 2                 | [#825](https://github.com/JernejHabjan/fuzzy-waddle/issues/825) | `not_started` | After #824; current-content domain contracts           | Terra high    |
-| 3                 | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `not_started` | After #824; pair pure families with #816               | Terra medium  |
-| 3                 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `not_started` | After #824; pair runtime families with #815            | Terra high    |
-| 4                 | [#818](https://github.com/JernejHabjan/fuzzy-waddle/issues/818) | `not_started` | After #824; semantic debug usability/parity            | Terra medium  |
-| 5                 | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `not_started` | After stable SEQ/runtime tooling                       | Terra high    |
-| 6                 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `not_started` | After runtime matrix infrastructure                    | Terra high    |
-| 7                 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `not_started` | After runtime tooling; MP portion uses #819            | Terra high    |
-| 8                 | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | `not_started` | Last, after #816/#819/#823 parity                      | Terra high    |
-| As needed / final | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `not_started` | Bounded slices early; final AI cleanup after behavior  | Terra medium  |
+| Order             | Issue                                                           | State         | Dependency / next boundary                                    | Default model |
+| ----------------- | --------------------------------------------------------------- | ------------- | ------------------------------------------------------------- | ------------- |
+| 1                 | [#824](https://github.com/JernejHabjan/fuzzy-waddle/issues/824) | `in_progress` | Review baseline, improve, remeasure; prove tools + AI adapter | Terra high    |
+| 2                 | [#825](https://github.com/JernejHabjan/fuzzy-waddle/issues/825) | `not_started` | After #824; current-content domain contracts                  | Terra high    |
+| 3                 | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `not_started` | After #824; pair pure families with #816                      | Terra medium  |
+| 3                 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `not_started` | After #824; pair runtime families with #815                   | Terra high    |
+| 4                 | [#818](https://github.com/JernejHabjan/fuzzy-waddle/issues/818) | `not_started` | After #824; semantic debug usability/parity                   | Terra medium  |
+| 5                 | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `not_started` | After stable SEQ/runtime tooling                              | Terra high    |
+| 6                 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `not_started` | After runtime matrix infrastructure                           | Terra high    |
+| 7                 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `not_started` | After runtime tooling; MP portion uses #819                   | Terra high    |
+| 8                 | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | `not_started` | Last, after #816/#819/#823 parity                             | Terra high    |
+| As needed / final | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `not_started` | Bounded slices early; final AI cleanup after behavior         | Terra medium  |
 
 Update this grid only from GitHub state and current evidence. `Code authored` is not `validated`; use the state vocabulary
 defined by the task-tracking and stage-delivery skills.
 
 ## Open work
 
-| Issue                                                           | Responsibility                    | Current boundary                                                      |
-| --------------------------------------------------------------- | --------------------------------- | --------------------------------------------------------------------- |
-| [#824](https://github.com/JernejHabjan/fuzzy-waddle/issues/824) | Repository agent-efficiency tools | Measure, review, improve tools/skills/docs, remeasure; add AI adapter |
-| [#825](https://github.com/JernejHabjan/fuzzy-waddle/issues/825) | Domain and transport coverage     | Current-content pure/integration/runtime proof remains                |
-| [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | Deterministic pure scenarios      | 40/111 pure-required rows mapped at closeout; recalculate first       |
-| [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | Playwright runtime matrix and CI  | 10/120 runtime-required rows mapped; no required CI shard yet         |
-| [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | Continuous play and difficulty    | SEQ rerun, isolated baseline, D-06, and soaks remain                  |
-| [#818](https://github.com/JernejHabjan/fuzzy-waddle/issues/818) | Strategic debugging               | First semantic summary exists; usability, split, and parity remain    |
-| [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | Real multiplayer AI E2E           | Current Playwright AI runtime is local skirmish, not socket lockstep  |
-| [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | Legacy controller retirement      | Remove fallback only after runtime/save/multiplayer parity            |
-| [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | Source structure and naming       | Main planner names migrated; persisted IDs and large-file debt remain |
-| [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | Save/replay/reconnect lifecycle   | Cross-phase and repeated-match runtime evidence remains               |
+| Issue                                                           | Responsibility                    | Current boundary                                                                       |
+| --------------------------------------------------------------- | --------------------------------- | -------------------------------------------------------------------------------------- |
+| [#824](https://github.com/JernejHabjan/fuzzy-waddle/issues/824) | Repository agent-efficiency tools | Before-baseline captured; review, improve tools/skills/docs, remeasure; add AI adapter |
+| [#825](https://github.com/JernejHabjan/fuzzy-waddle/issues/825) | Domain and transport coverage     | Current-content pure/integration/runtime proof remains                                 |
+| [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | Deterministic pure scenarios      | 40/111 pure-required rows mapped at closeout; recalculate first                        |
+| [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | Playwright runtime matrix and CI  | 10/120 runtime-required rows mapped; no required CI shard yet                          |
+| [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | Continuous play and difficulty    | SEQ rerun, isolated baseline, D-06, and soaks remain                                   |
+| [#818](https://github.com/JernejHabjan/fuzzy-waddle/issues/818) | Strategic debugging               | First semantic summary exists; usability, split, and parity remain                     |
+| [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | Real multiplayer AI E2E           | Current Playwright AI runtime is local skirmish, not socket lockstep                   |
+| [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | Legacy controller retirement      | Remove fallback only after runtime/save/multiplayer parity                             |
+| [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | Source structure and naming       | Main planner names migrated; persisted IDs and large-file debt remain                  |
+| [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | Save/replay/reconnect lifecycle   | Cross-phase and repeated-match runtime evidence remains                                |
 
 Each issue description links its cold-start plan. The plan records exact source anchors, dependency order, commands,
 evidence requirements, model/effort guidance, and completion boundary.
@@ -153,6 +153,7 @@ provenance plus failure traces/logs/screenshots as artifacts.
 Stable commands:
 
 ```bash
+node tools/agent/measure-workflows.mjs
 pnpm ai:skirmish:opening
 pnpm ai:skirmish:production
 pnpm ai:skirmish:land-sequences
@@ -174,6 +175,19 @@ The parameterized Playwright spec is not a complete scenario run without the mat
   and planner implementations should not carry version/stage names.
 - Existing source-structure violations are content-hash baselined. New or changed violating files must be split or receive
   an explicit reviewed baseline decision linked to #821; never regenerate the baseline as a routine lint fix.
+
+## Current #824 baseline
+
+- Definition: `tools/agent/benchmarks/repository-workflows-v1.json`; stable result:
+  `tools/agent/benchmarks/repository-workflows-baseline-v1.json`.
+- The 2026-09-12 before-baseline ran six representative workflows against `417ef777b8426591326a91484edd481189bdf1b3`.
+  It measured 112.69 seconds of command wall time, 194,757 selected context bytes, 2,438 output bytes, and one declared
+  server/browser/worker start. These are execution proxies; stable model token telemetry was unavailable.
+- `skirmish-runtime-scenario` consumed 101.17 seconds (89.78% of measured command wall time). `jbcontext` was absent, so
+  unfamiliar semantic discovery is recorded as an expected `unavailable` result rather than silently falling back.
+- Next exact action: review the versioned result, rank its bottlenecks, select one bounded generic improvement, and rerun
+  the same manifest with all quality invariants intact. Do not call the initial collector the completed `agent:metrics`
+  contract; that broader command remains #824 work.
 
 ## Publication and closure
 

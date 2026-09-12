@@ -13,6 +13,7 @@ Repository-relative routes, verified 2026-09-09. This is a maintained shortlist,
 | Assets and authoring metadata                    | apps/portal/src/assets/ ; apps/portal/src/metadata/                                                                                                                                   |
 | Browser tests / backend e2e                      | apps/portal-e2e/ ; apps/api-e2e/                                                                                                                                                      |
 | Jest presets / editor checks / asset checks      | tools/testing/ ; tools/phaser-editor/validate-project.mjs ; tools/assets/check-git-lfs.mjs                                                                                            |
+| Agent efficiency benchmark/tooling               | tools/agent/                                                                                                                                                                          |
 | RTS AI manifests / release matrix                | tools/ai/fixtures/ ; tools/ai/run-skirmish-matrix.mjs                                                                                                                                 |
 | RTS AI architecture / testing / debugging docs   | libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/                                                                                                                |
 
