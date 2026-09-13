@@ -151,9 +151,30 @@ export function withTimeline(
   };
 }
 
+function canProduceTransport(
+  observation: AiObservationV1,
+  catalog: AiCapabilityCatalogV1,
+  domain: "water" | "air"
+): boolean {
+  const carrierNames = new Set(
+    catalog.entries
+      .filter((entry) => entry.cargoCapacity !== null && entry.movementDomains.includes(domain))
+      .map((entry) => entry.sourceObjectName)
+  );
+  return observation.actors.some(
+    (actor) =>
+      actor.relation === "self" &&
+      actor.visibility === "owned" &&
+      catalog.entries.some(
+        (entry) => entry.sourceObjectName === actor.objectName && entry.produces.some((name) => carrierNames.has(name))
+      )
+  );
+}
+
 export function routeCapability(
   observation: AiObservationV1,
-  members: readonly AiObservedActorV1[]
+  members: readonly AiObservedActorV1[],
+  catalog: AiCapabilityCatalogV1
 ): AiRouteCapabilityV1 {
   const transports = observation.actors.filter(
     (actor) => actor.relation === "self" && actor.containerState?.status === "known"
@@ -172,6 +193,8 @@ export function routeCapability(
     targetDomains: [...new Set(members.flatMap(targetDomains))].sort(),
     waterTransportSeats: seats("water"),
     airTransportSeats: seats("air"),
+    canProduceWaterTransport: canProduceTransport(observation, catalog, "water"),
+    canProduceAirTransport: canProduceTransport(observation, catalog, "air"),
     requiredPassengerSeats: Math.max(1, members.length),
     requiredClearance: 1
   };

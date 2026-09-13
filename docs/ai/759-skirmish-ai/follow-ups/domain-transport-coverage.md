@@ -69,11 +69,11 @@ The path currently breaks before plan creation:
 
 This is the first Terra repair. The skirmish manager, transport manager, and Phaser `PlayerAiController` composition
 root were content-hash-baselined above the 400-line source limit. The controller command dispatcher and skirmish
-responsibilities are now extracted and focused tests preserve their behavior. Finish the remaining transport lifecycle
-split (route selection, reservation, recovery, movement, and handoff) without refreshing the legacy baseline. The
-composition split is required because a new manager cannot enter the real runtime without editing that protected root.
-Then add a failing skirmish routing test, project producibility from the owned producer/catalog relationship, and prove
-that exactly one child plan is seeded.
+responsibilities are now extracted and focused tests preserve their behavior. The skirmish route-capability projection
+now derives buildable water/air carrier flags from the current-generation catalog and owned producers; its focused
+contract proves one water child plan is seeded before a boat exists. Finish the remaining transport lifecycle split
+(route selection, reservation, recovery, movement, and handoff) without refreshing the legacy baseline. The composition
+split is required because a new manager cannot enter the real runtime without editing that protected root.
 
 Focused audit evidence:
 
@@ -105,10 +105,9 @@ lower-layer contracts; they do not claim that the missing live projection or any
 2. **Terra/high structural boundary:** finish the transport ownership-root split after the completed controller and
    skirmish splits. Preserve behavior with focused tests and no baseline refresh. Verify the source-structure rule
    before the bridge implementation.
-3. **Terra/high delivery:** add the failing route/child-plan test, project buildable carrier capability from the owned
-   producer/catalog relationship, wire the focused manager through the extracted composition root, and prove one child
-   plan plus the existing transport-manager production intent. Record only what can produce real evidence; never infer
-   capability from a type name or manufacture a shipping feature in the fixture.
+3. **Terra/high delivery:** route/child-plan projection is complete. After the transport split, prove the child plan
+   yields the existing transport-manager production intent in one integrated focused contract. Record only what can
+   produce real evidence; never infer capability from a type name or manufacture a shipping feature in the fixture.
 4. Add typed pure fixtures and semantic oracles for the owned rows. Cover positive, rejection, loss, retry, abort, release,
    and ordering cases while preserving fair observations.
 5. Add focused Phaser observation/access integration tests for topology generations, footprints, transfer points, and

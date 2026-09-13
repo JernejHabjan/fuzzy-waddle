@@ -125,14 +125,12 @@ function transportProposal(
 ): AiManagerProposalV1 | undefined {
   const transportPlanId = `transport:mission:${attack.squadId}` as const;
   if (context.state.transport.some((transport) => transport.planId === transportPlanId)) return undefined;
-  const passengers = attackers
-    .slice(0, Math.max(1, Math.min(attackers.length, 6)))
-    .map((actor, index) => ({
-      actorId: actor.actorId,
-      role: "combat" as const,
-      indispensable: index === 0,
-      handoff: "squad" as const
-    }));
+  const passengers = attackers.slice(0, Math.max(1, Math.min(attackers.length, 6))).map((actor, index) => ({
+    actorId: actor.actorId,
+    role: "combat" as const,
+    indispensable: index === 0,
+    handoff: "squad" as const
+  }));
   return {
     managerId: "stage9.skirmish",
     lane: "army_threat",
@@ -167,7 +165,7 @@ function transportProposal(
             kind: "movement",
             fromNodeId: sourceNode,
             toNodeId: targetNode,
-            capabilities: routeCapability(context.observation, attackers),
+            capabilities: routeCapability(context.observation, attackers, context.catalog),
             firingNodeIds: []
           },
           route,
@@ -200,7 +198,7 @@ export function advanceAiSkirmishOffense(
           kind: "firing_position",
           fromNodeId: sourceNode,
           toNodeId: targetNode,
-          capabilities: routeCapability(context.observation, attackers),
+          capabilities: routeCapability(context.observation, attackers, context.catalog),
           firingNodeIds: [targetNode]
         } satisfies AiRouteRequestV1)
       : undefined;
