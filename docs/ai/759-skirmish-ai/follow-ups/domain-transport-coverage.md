@@ -67,11 +67,12 @@ The path currently breaks before plan creation:
 - `AiSkirmishManager.routeCapability` projects only observed seats and never projects either producible-carrier flag, so
   the access query reports the route impossible and no child plan can exist.
 
-This is the first Terra repair. Both the skirmish and transport manager files are content-hash-baselined above the
-400-line source limit. First extract their route-capability and mission-transport responsibilities into focused files,
-without changing behavior, and commit that #821 cleanup separately. Then add a failing skirmish routing test, project
-producibility from the owned producer/catalog relationship, and prove that exactly one child plan is seeded. Do not
-refresh the legacy baseline.
+This is the first Terra repair. The skirmish manager, transport manager, and Phaser `PlayerAiController` composition
+root are content-hash-baselined above the 400-line source limit. First extract their route-capability,
+mission-transport, and pure-brain composition responsibilities into focused files without changing behavior, and commit
+that #821 cleanup separately. The composition split is required because a new manager cannot enter the real runtime
+without editing that protected root. Then add a failing skirmish routing test, project producibility from the owned
+producer/catalog relationship, and prove that exactly one child plan is seeded. Do not refresh the legacy baseline.
 
 Focused audit evidence:
 
@@ -100,17 +101,21 @@ lower-layer contracts; they do not claim that the missing live projection or any
 1. **Sol/high boundary:** audit registered land/water/air/container capabilities, current maps, and authority handoffs.
    Commit a compact capability-to-evidence/status matrix that names the first causal contract and excludes unsupported
    runtime claims. Stop the Sol slice once the contract and its first failing or passing path are reproducible.
-2. **Terra/medium delivery:** apply the committed capability matrix to fixture and runtime registration. Record only what
-   can produce real evidence; never infer capability from a type name or manufacture a shipping feature in the fixture.
-3. Add typed pure fixtures and semantic oracles for the owned rows. Cover positive, rejection, loss, retry, abort, release,
+2. **Terra/medium structural boundary:** split the three protected ownership roots above with behavior-preserving,
+   focused tests and no baseline refresh. Verify the source-structure rule before the bridge implementation.
+3. **Terra/medium delivery:** add the failing route/child-plan test, project buildable carrier capability from the owned
+   producer/catalog relationship, wire the focused manager through the extracted composition root, and prove one child
+   plan plus the existing transport-manager production intent. Record only what can produce real evidence; never infer
+   capability from a type name or manufacture a shipping feature in the fixture.
+4. Add typed pure fixtures and semantic oracles for the owned rows. Cover positive, rejection, loss, retry, abort, release,
    and ordering cases while preserving fair observations.
-4. Add focused Phaser observation/access integration tests for topology generations, footprints, transfer points, and
+5. Add focused Phaser observation/access integration tests for topology generations, footprints, transfer points, and
    capability projection.
-5. Add Playwright recipes only where existing maps and registered units genuinely exercise the contract. Route these
+6. Add Playwright recipes only where existing maps and registered units genuinely exercise the contract. Route these
    recipes through #824 tooling and #816 shards.
-6. Extend the manifest/report status model so `required_supported` work fails closed while `deferred_content` names #822,
+7. Extend the manifest/report status model so `required_supported` work fails closed while `deferred_content` names #822,
    stays visible, is never counted as passed, and does not block the core merge gate.
-7. Update code-adjacent world-access/testing docs with proven behavior and ownership. Do not move scenario TODOs into
+8. Update code-adjacent world-access/testing docs with proven behavior and ownership. Do not move scenario TODOs into
    product architecture documentation.
 
 ## Evidence and completion
