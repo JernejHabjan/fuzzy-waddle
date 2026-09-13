@@ -46,7 +46,7 @@ commit it separately, and then resume the issue. Never refresh the legacy source
 
 | Order             | Issue                                                           | State         | Dependency / next boundary                            | Recommended primary slice |
 | ----------------- | --------------------------------------------------------------- | ------------- | ----------------------------------------------------- | ------------------------- |
-| 1                 | [#825](https://github.com/JernejHabjan/fuzzy-waddle/issues/825) | `in_progress` | Finish transport split, then carrier bridge           | Terra high                |
+| 1                 | [#825](https://github.com/JernejHabjan/fuzzy-waddle/issues/825) | `in_progress` | Add current-content transport runtime evidence         | Sol high → Terra medium   |
 | 2                 | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `not_started` | After #824; pair pure families with #816              | Terra medium              |
 | 2                 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `not_started` | After #824; pair runtime families with #815           | Sol high → Terra medium   |
 | 3                 | [#818](https://github.com/JernejHabjan/fuzzy-waddle/issues/818) | `not_started` | After #824; semantic debug usability/parity           | Terra medium              |
@@ -63,7 +63,7 @@ defined by the task-tracking and stage-delivery skills.
 
 | Issue                                                           | Responsibility                   | Current boundary                                                               |
 | --------------------------------------------------------------- | -------------------------------- | ------------------------------------------------------------------------------ |
-| [#825](https://github.com/JernejHabjan/fuzzy-waddle/issues/825) | Domain and transport coverage    | Carrier production chain complete; transport split and runtime evidence remain |
+| [#825](https://github.com/JernejHabjan/fuzzy-waddle/issues/825) | Domain and transport coverage    | Carrier chain and lifecycle split complete; runtime evidence remains           |
 | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | Deterministic pure scenarios     | 40/111 pure-required rows mapped at closeout; recalculate first                |
 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | Playwright runtime matrix and CI | 10/120 runtime-required rows mapped; no required CI shard yet                  |
 | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | Continuous play and difficulty   | SEQ rerun, isolated baseline, D-06, and soaks remain                           |
@@ -139,9 +139,10 @@ completed roadmap or TODO ledger.
   transport manager support producible water carriers, but the skirmish route-capability projection supplies only
   existing seats. Terra completed behavior-preserving controller command-dispatch and skirmish responsibility splits,
   then added the owned-producer/catalog route-capability projection. The pure contract proves a no-boat water route
-  seeds exactly one child plan and, through the existing transport manager, requests `CommonBoat` from the same owned
-  `Sandhold`; the focused access/skirmish/transport batch passed 4 suites / 29 tests. Finish the transport lifecycle
-  split, then add current-content runtime evidence.
+  seeds exactly one child plan and, through the transport manager, requests `CommonBoat` from the same owned
+  `Sandhold`. The transport lifecycle now has focused creation, ownership/preflight, reservation, recovery, loading,
+  landing, and handoff modules behind the stable manager façade; the focused access/skirmish/transport batch passed
+  4 suites / 29 tests. Add current-content runtime evidence next.
 
 Evidence is source-sensitive. Raw `tmp/` artifacts are ignored and may be absent later. Future CI must retain compact
 provenance plus failure traces/logs/screenshots as artifacts.

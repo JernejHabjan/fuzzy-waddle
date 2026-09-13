@@ -71,9 +71,10 @@ This is the first Terra repair. The skirmish manager, transport manager, and Pha
 root were content-hash-baselined above the 400-line source limit. The controller command dispatcher and skirmish
 responsibilities are now extracted and focused tests preserve their behavior. The skirmish route-capability projection
 now derives buildable water/air carrier flags from the current-generation catalog and owned producers; its focused
-contract proves one water child plan is seeded before a boat exists. Finish the remaining transport lifecycle split
-(route selection, reservation, recovery, movement, and handoff) without refreshing the legacy baseline. The composition
-split is required because a new manager cannot enter the real runtime without editing that protected root.
+contract proves one water child plan is seeded before a boat exists. The protected transport root is now a stable
+44-line façade over focused creation, ownership/preflight, reservation, recovery, loading, landing, and handoff
+modules; no legacy-baseline refresh was needed. The next work is current-content runtime evidence, not another
+structural split.
 
 Focused audit evidence:
 
@@ -102,11 +103,10 @@ lower-layer contracts; they do not claim that the missing live projection or any
 1. **Sol/high boundary:** audit registered land/water/air/container capabilities, current maps, and authority handoffs.
    Commit a compact capability-to-evidence/status matrix that names the first causal contract and excludes unsupported
    runtime claims. Stop the Sol slice once the contract and its first failing or passing path are reproducible.
-2. **Terra/high structural boundary:** finish the transport ownership-root split after the completed controller and
-   skirmish splits. Preserve behavior with focused tests and no baseline refresh. Verify the source-structure rule
-   before the bridge implementation.
-3. **Terra/high delivery:** route/child-plan projection and the focused child-plan-to-production contract are complete.
-   After the transport split, add runtime evidence using current registered content. Record only what can produce real
+2. **Terra/high structural boundary:** controller, skirmish, and transport ownership-root splits are complete.
+   Focused tests and source-structure lint preserved behavior without a baseline refresh.
+3. **Terra/high delivery:** route/child-plan projection, carrier-production chain, and lifecycle split are complete.
+   Add runtime evidence using current registered content. Record only what can produce real
    evidence; never infer capability from a type name or manufacture a shipping feature in the fixture.
 4. Add typed pure fixtures and semantic oracles for the owned rows. Cover positive, rejection, loss, retry, abort, release,
    and ordering cases while preserving fair observations.
