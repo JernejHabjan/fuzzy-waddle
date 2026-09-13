@@ -105,9 +105,9 @@ lower-layer contracts; they do not claim that the missing live projection or any
 2. **Terra/high structural boundary:** finish the transport ownership-root split after the completed controller and
    skirmish splits. Preserve behavior with focused tests and no baseline refresh. Verify the source-structure rule
    before the bridge implementation.
-3. **Terra/high delivery:** route/child-plan projection is complete. After the transport split, prove the child plan
-   yields the existing transport-manager production intent in one integrated focused contract. Record only what can
-   produce real evidence; never infer capability from a type name or manufacture a shipping feature in the fixture.
+3. **Terra/high delivery:** route/child-plan projection and the focused child-plan-to-production contract are complete.
+   After the transport split, add runtime evidence using current registered content. Record only what can produce real
+   evidence; never infer capability from a type name or manufacture a shipping feature in the fixture.
 4. Add typed pure fixtures and semantic oracles for the owned rows. Cover positive, rejection, loss, retry, abort, release,
    and ordering cases while preserving fair observations.
 5. Add focused Phaser observation/access integration tests for topology generations, footprints, transfer points, and

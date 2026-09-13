@@ -61,17 +61,17 @@ defined by the task-tracking and stage-delivery skills.
 
 ## Open work
 
-| Issue                                                           | Responsibility                   | Current boundary                                                                        |
-| --------------------------------------------------------------- | -------------------------------- | --------------------------------------------------------------------------------------- |
-| [#825](https://github.com/JernejHabjan/fuzzy-waddle/issues/825) | Domain and transport coverage    | Carrier child-plan bridge complete; transport split and production-chain fixture remain |
-| [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | Deterministic pure scenarios     | 40/111 pure-required rows mapped at closeout; recalculate first                         |
-| [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | Playwright runtime matrix and CI | 10/120 runtime-required rows mapped; no required CI shard yet                           |
-| [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | Continuous play and difficulty   | SEQ rerun, isolated baseline, D-06, and soaks remain                                    |
-| [#818](https://github.com/JernejHabjan/fuzzy-waddle/issues/818) | Strategic debugging              | First semantic summary exists; usability, split, and parity remain                      |
-| [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | Real multiplayer AI E2E          | Current Playwright AI runtime is local skirmish, not socket lockstep                    |
-| [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | Legacy controller retirement     | Remove fallback only after runtime/save/multiplayer parity                              |
-| [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | Source structure and naming      | Main planner names migrated; persisted IDs and large-file debt remain                   |
-| [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | Save/replay/reconnect lifecycle  | Cross-phase and repeated-match runtime evidence remains                                 |
+| Issue                                                           | Responsibility                   | Current boundary                                                               |
+| --------------------------------------------------------------- | -------------------------------- | ------------------------------------------------------------------------------ |
+| [#825](https://github.com/JernejHabjan/fuzzy-waddle/issues/825) | Domain and transport coverage    | Carrier production chain complete; transport split and runtime evidence remain |
+| [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | Deterministic pure scenarios     | 40/111 pure-required rows mapped at closeout; recalculate first                |
+| [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | Playwright runtime matrix and CI | 10/120 runtime-required rows mapped; no required CI shard yet                  |
+| [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | Continuous play and difficulty   | SEQ rerun, isolated baseline, D-06, and soaks remain                           |
+| [#818](https://github.com/JernejHabjan/fuzzy-waddle/issues/818) | Strategic debugging              | First semantic summary exists; usability, split, and parity remain             |
+| [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | Real multiplayer AI E2E          | Current Playwright AI runtime is local skirmish, not socket lockstep           |
+| [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | Legacy controller retirement     | Remove fallback only after runtime/save/multiplayer parity                     |
+| [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | Source structure and naming      | Main planner names migrated; persisted IDs and large-file debt remain          |
+| [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | Save/replay/reconnect lifecycle  | Cross-phase and repeated-match runtime evidence remains                        |
 
 Each issue description links its cold-start plan. The plan records exact source anchors, dependency order, commands,
 evidence requirements, model/effort guidance, and completion boundary.
@@ -139,8 +139,9 @@ completed roadmap or TODO ledger.
   transport manager support producible water carriers, but the skirmish route-capability projection supplies only
   existing seats. Terra completed behavior-preserving controller command-dispatch and skirmish responsibility splits,
   then added the owned-producer/catalog route-capability projection. The pure contract proves a no-boat water route
-  seeds exactly one child plan; the focused access/skirmish/transport batch passed 4 suites / 29 tests. Finish the
-  transport lifecycle split and add one integrated child-plan-to-production fixture next.
+  seeds exactly one child plan and, through the existing transport manager, requests `CommonBoat` from the same owned
+  `Sandhold`; the focused access/skirmish/transport batch passed 4 suites / 29 tests. Finish the transport lifecycle
+  split, then add current-content runtime evidence.
 
 Evidence is source-sensitive. Raw `tmp/` artifacts are ignored and may be absent later. Future CI must retain compact
 provenance plus failure traces/logs/screenshots as artifacts.

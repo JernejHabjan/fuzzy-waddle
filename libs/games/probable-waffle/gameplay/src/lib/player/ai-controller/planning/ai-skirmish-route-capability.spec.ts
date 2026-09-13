@@ -6,6 +6,7 @@ import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-t
 import { buildAiAccessGraphV1, queryAiAccessRouteV1, type AiAccessCellV1 } from "./ai-access-graph-v1";
 import { AiSkirmishManager } from "./ai-skirmish-manager";
 import { routeCapability } from "./ai-skirmish-support";
+import { AiTransportManager } from "./ai-transport-manager";
 
 const catalog: AiCapabilityCatalogV1 = {
   schemaVersion: 1,
@@ -182,6 +183,22 @@ describe("skirmish route capability", () => {
     expect(proposal.statePatch?.transportAppend).toHaveLength(1);
     expect(proposal.statePatch?.transportAppend?.[0]).toEqual(
       expect.objectContaining({ phase: "proposed", passengerIds: ["guard"] })
+    );
+
+    const plannedState = { ...state, transport: proposal.statePatch!.transportAppend! };
+    const producerWithQueue = {
+      ...producer,
+      queue: { status: "known" as const, value: { capacity: 1, occupied: 0, itemIds: [] }, observedTick: 20 }
+    };
+    const transportObservation = { ...observation, tick: 21, actors: [guard, producerWithQueue, enemy] };
+    const reserved = new AiTransportManager(() => catalog).propose(transportObservation, plannedState);
+    const production = new AiTransportManager(() => catalog).propose(transportObservation, {
+      ...plannedState,
+      transport: reserved.statePatch!.transport!
+    });
+
+    expect(production.intents).toContainEqual(
+      expect.objectContaining({ kind: "produce", producerId: "sandhold", objectName: ObjectNames.CommonBoat })
     );
   });
 });
