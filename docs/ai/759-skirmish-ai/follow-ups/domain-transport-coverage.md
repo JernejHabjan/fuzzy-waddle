@@ -68,11 +68,12 @@ The path currently breaks before plan creation:
   the access query reports the route impossible and no child plan can exist.
 
 This is the first Terra repair. The skirmish manager, transport manager, and Phaser `PlayerAiController` composition
-root are content-hash-baselined above the 400-line source limit. First extract their route-capability,
-mission-transport, and pure-brain composition responsibilities into focused files without changing behavior, and commit
-that #821 cleanup separately. The composition split is required because a new manager cannot enter the real runtime
-without editing that protected root. Then add a failing skirmish routing test, project producibility from the owned
-producer/catalog relationship, and prove that exactly one child plan is seeded. Do not refresh the legacy baseline.
+root were content-hash-baselined above the 400-line source limit. The controller command dispatcher and skirmish
+responsibilities are now extracted and focused tests preserve their behavior. Finish the remaining transport lifecycle
+split (route selection, reservation, recovery, movement, and handoff) without refreshing the legacy baseline. The
+composition split is required because a new manager cannot enter the real runtime without editing that protected root.
+Then add a failing skirmish routing test, project producibility from the owned producer/catalog relationship, and prove
+that exactly one child plan is seeded.
 
 Focused audit evidence:
 
@@ -101,9 +102,10 @@ lower-layer contracts; they do not claim that the missing live projection or any
 1. **Sol/high boundary:** audit registered land/water/air/container capabilities, current maps, and authority handoffs.
    Commit a compact capability-to-evidence/status matrix that names the first causal contract and excludes unsupported
    runtime claims. Stop the Sol slice once the contract and its first failing or passing path are reproducible.
-2. **Terra/medium structural boundary:** split the three protected ownership roots above with behavior-preserving,
-   focused tests and no baseline refresh. Verify the source-structure rule before the bridge implementation.
-3. **Terra/medium delivery:** add the failing route/child-plan test, project buildable carrier capability from the owned
+2. **Terra/high structural boundary:** finish the transport ownership-root split after the completed controller and
+   skirmish splits. Preserve behavior with focused tests and no baseline refresh. Verify the source-structure rule
+   before the bridge implementation.
+3. **Terra/high delivery:** add the failing route/child-plan test, project buildable carrier capability from the owned
    producer/catalog relationship, wire the focused manager through the extracted composition root, and prove one child
    plan plus the existing transport-manager production intent. Record only what can produce real evidence; never infer
    capability from a type name or manufacture a shipping feature in the fixture.
