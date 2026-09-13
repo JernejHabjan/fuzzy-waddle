@@ -152,6 +152,7 @@ export class PawnAiController {
   }
 
   private onShutdown() {
+    this.agent.reportInterruptedOrdersOnShutdown();
     this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.updateFrameNonDeterministicFallback, this);
     this.tickSubscription?.unsubscribe();
     this.aiDebuggingSubscription?.unsubscribe();

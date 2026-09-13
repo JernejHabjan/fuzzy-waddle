@@ -3,10 +3,11 @@ import type { Subscription } from "rxjs";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { type ProbableWaffleHostMigratedEvent } from "@fuzzy-waddle/probable-waffle-protocol";
 import { getCommunicator } from "../../../data/scene-data";
-import { getSceneSystem } from "../scene-component-helpers";
+import { getSceneService, getSceneSystem } from "../scene-component-helpers";
 import { SnapshotService } from "./snapshot.service";
 import { AiPlayerHandler } from "../../../player/ai-controller/ai-player-handler";
 import { createMultiplayerClientLogger } from "../multiplayer/multiplayer-client-logger";
+import { CommandBusService } from "../multiplayer/command-bus.service";
 
 /** Handles ownership handoff so a newly promoted host immediately starts serving snapshots. */
 export class HostMigrationService {
@@ -21,6 +22,9 @@ export class HostMigrationService {
     }
 
     this.hostMigrationSub = communicator.hostMigrated.on.subscribe((event: ProbableWaffleHostMigratedEvent) => {
+      const commandBus = getSceneService(scene, CommandBusService);
+      const authorityEpoch = commandBus?.getAuthorityState().authorityEpoch ?? 0;
+      commandBus?.advanceAuthorityEpoch(authorityEpoch + 1);
       if (event.currentHostUserId !== scene.userId) {
         return;
       }

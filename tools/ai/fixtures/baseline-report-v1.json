@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "status": "authored_not_run",
+  "sourceRevision": "de47f482889db30420692bf4406fba463d7db296",
+  "fixtureManifestVersion": "skirmish-v1",
+  "contractVersions": {
+    "scenario": 1,
+    "brain": 1,
+    "observation": 1,
+    "command": 1,
+    "repro": 1,
+    "worldProjection": 1
+  },
+  "contexts": [
+    {
+      "scenarioId": "DBG-01",
+      "mapId": "stage-5-runtime-bootstrap",
+      "mapDigest": "authored-at-runtime-bootstrap",
+      "seed": 759001,
+      "side": 1,
+      "faction": "Tivara",
+      "rulesVersion": "probable-waffle-rules-v1"
+    },
+    {
+      "scenarioId": "DBG-03",
+      "mapId": "stage-5-runtime-bootstrap",
+      "mapDigest": "authored-at-runtime-bootstrap",
+      "seed": 759001,
+      "side": 1,
+      "faction": "Tivara",
+      "rulesVersion": "probable-waffle-rules-v1"
+    },
+    {
+      "scenarioId": "DBG-04",
+      "mapId": "stage-5-runtime-bootstrap",
+      "mapDigest": "authored-at-runtime-bootstrap",
+      "seed": 759001,
+      "side": 1,
+      "faction": "Tivara",
+      "rulesVersion": "probable-waffle-rules-v1"
+    },
+    {
+      "scenarioId": "DBG-05",
+      "mapId": "stage-5-runtime-bootstrap",
+      "mapDigest": "authored-at-runtime-bootstrap",
+      "seed": 759001,
+      "side": 1,
+      "faction": "Tivara",
+      "rulesVersion": "probable-waffle-rules-v1"
+    }
+  ],
+  "compatibilityLimitations": [
+    "The pinned source predates PureAiBrainV1 and cannot produce a pure-brain baseline.",
+    "Runtime comparison must use the legacy command/world adapter and the same frozen semantic fixture.",
+    "No result is recorded until Stage 15 executes the isolated candidate/baseline matrix."
+  ]
+}

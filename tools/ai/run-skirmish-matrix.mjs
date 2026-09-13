@@ -1,0 +1,757 @@
+#!/usr/bin/env node
+import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { dirname, isAbsolute, join, relative, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import { spawnSync } from "node:child_process";
+import { resolvePinnedBaselineSupport } from "./baseline-adapter-v1.mjs";
+
+const toolDirectory = dirname(fileURLToPath(import.meta.url));
+const workspaceRoot = resolve(toolDirectory, "../..");
+const args = parseArguments(process.argv.slice(2));
+if (args.help === true) {
+  process.stdout.write(helpText());
+  process.exit(0);
+}
+const manifestPath = args.manifest
+  ? resolveExplicitPath(args.manifest)
+  : join(toolDirectory, "fixtures", "skirmish-v1.json");
+const fixtureDirectory = dirname(manifestPath);
+const reportDirectory = args.output ? resolveExplicitPath(args.output) : join(workspaceRoot, "tmp/ai-skirmish-matrix");
+const manifest = readJson(manifestPath, 4 * 1024 * 1024);
+
+try {
+  validateManifest(manifest);
+  const result = dispatch(args);
+  if (result) writeReport(result);
+} catch (error) {
+  const report = {
+    schemaVersion: 1,
+    status: "failed",
+    reason: error instanceof Error ? error.message : String(error),
+    workCounts: { scenarios: 0, decisions: 0, ticks: 0 }
+  };
+  writeReport(report);
+  process.stderr.write(`${report.reason}\n`);
+  process.exitCode = 1;
+}
+
+function dispatch(options) {
+  if (options["compare-bundle"]) return compareBundles(options);
+  if (options["replay-bundle"]) return replayBundle(options);
+  if (options.suite) return runSuite(options);
+  if (options.scenarios) return runSelectedScenarios(options);
+  if (options.scenario) return runSelectedScenario(options);
+  if (options.candidate || options.baseline) return runSuite({ ...options, suite: "release" });
+  throw new Error(
+    "missing_mode: use --candidate with --baseline, --suite, --scenario, --scenarios, --replay-bundle or --compare-bundle"
+  );
+}
+
+function runSuite(options) {
+  const suite = requireEnum(options.suite, ["stage-smoke", "release"], "suite");
+  if (suite === "stage-smoke") {
+    const stage = requireInteger(options.stage, "stage", 0, 15);
+    if (options["working-tree"] !== true) throw new Error("stage_smoke_requires_working_tree");
+    const rows = manifest.rows.filter((row) => row.stages.includes(stage));
+    if (rows.length === 0) throw new Error(`missing_stage_coverage:${stage}`);
+    const runnable = rows.filter((row) => typeof fixtureReference(row) === "string");
+    if (stage === 5 && runnable.length < 4) throw new Error("stage_5_harness_coverage_missing");
+    return invokeSelectedHarness({ suite, stage, rows: runnable, mode: "both", options });
+  }
+  const candidate = requireSha(options.candidate, "candidate");
+  const baseline = requireSha(options.baseline, "baseline");
+  const baselineManifest = readJson(join(fixtureDirectory, manifest.baseline), 64 * 1024);
+  if (baseline !== baselineManifest.baselineSourceSha) throw new Error("baseline_not_pinned_manifest_sha");
+  const missingRuntime = manifest.rows.filter(
+    (row) => row.drivers.includes("runtime") && runtimeFixtureReference(row) === null
+  );
+  const missingPure = manifest.rows.filter((row) => row.drivers.includes("pure") && pureFixtureReference(row) === null);
+  if (missingRuntime.length > 0 || missingPure.length > 0) {
+    throw new Error(
+      `mandatory_coverage_missing:runtime=${missingRuntime.map((row) => row.id).join(",")};pure=${missingPure
+        .map((row) => row.id)
+        .join(",")}`
+    );
+  }
+  const baselineSupport = manifest.rows.map((row) => ({
+    id: row.id,
+    ...resolvePinnedBaselineSupport(row, baselineManifest)
+  }));
+  if (readHead() !== candidate) throw new Error(`candidate_source_not_checked_out:${candidate}`);
+  if (readWorkingTreeSource().length > 0) throw new Error("candidate_source_is_dirty");
+  const report = invokeSelectedHarness({
+    suite,
+    mode: "both",
+    rows: manifest.rows,
+    options,
+    candidate,
+    baseline,
+    baselineSupport
+  });
+  const unexecutedBaselineRuntime = baselineSupport
+    .filter((support) => support.runtime.status === "supported")
+    .map((support) => support.id);
+  if (report.status === "passed" && unexecutedBaselineRuntime.length > 0) {
+    process.exitCode = 1;
+    return {
+      ...report,
+      status: "blocked",
+      reason: "baseline_runtime_adapter_not_implemented",
+      baselineSupport,
+      unexecutedBaselineRuntime
+    };
+  }
+  return { ...report, baselineSupport, unexecutedBaselineRuntime };
+}
+
+function runSelectedScenario(options) {
+  return runSelectedScenarios({ ...options, scenarios: options.scenario });
+}
+
+function runSelectedScenarios(options) {
+  const scenarioIds = String(options.scenarios)
+    .split(",")
+    .map((id) => id.trim())
+    .filter(Boolean);
+  if (scenarioIds.length === 0) throw new Error("missing_scenarios");
+  if (new Set(scenarioIds).size !== scenarioIds.length) throw new Error("duplicate_scenarios");
+  const rows = scenarioIds.map((scenarioId) => {
+    const row = manifest.rows.find((candidate) => candidate.id === scenarioId);
+    if (!row) throw new Error(`unknown_scenario:${scenarioId}`);
+    if (pureFixtureReference(row) === null && runtimeFixtureReference(row) === null) {
+      throw new Error(`scenario_fixture_not_implemented:${row.id}`);
+    }
+    return row;
+  });
+  const allHavePure = rows.every((row) => pureFixtureReference(row) !== null);
+  const allHaveRuntime = rows.every((row) => runtimeFixtureReference(row) !== null);
+  const defaultMode = allHaveRuntime && allHavePure ? "both" : allHaveRuntime ? "runtime" : "pure";
+  const mode = requireEnum(options.mode ?? defaultMode, ["pure", "runtime", "both"], "mode");
+  const seed =
+    options.seed === undefined
+      ? mode === "runtime"
+        ? null
+        : requireInteger(manifest.defaultSeeds[0], "seed", 0, Number.MAX_SAFE_INTEGER)
+      : requireInteger(options.seed, "seed", 0, Number.MAX_SAFE_INTEGER);
+  const missingPure = rows.filter((row) => pureFixtureReference(row) === null);
+  if ((mode === "pure" || mode === "both") && missingPure.length > 0) {
+    throw new Error(`scenario_pure_fixture_deferred:${missingPure.map((row) => row.id).join(",")}`);
+  }
+  const missingRuntime = rows.filter((row) => runtimeFixtureReference(row) === null);
+  if ((mode === "runtime" || mode === "both") && missingRuntime.length > 0) {
+    throw new Error(`scenario_runtime_fixture_deferred:${missingRuntime.map((row) => row.id).join(",")}`);
+  }
+  const missingDriver = rows.find((row) => mode !== "both" && !row.drivers.includes(mode));
+  if (missingDriver) throw new Error(`scenario_driver_missing:${missingDriver.id}:${mode}`);
+  return invokeSelectedHarness({ suite: scenarioIds.length === 1 ? "single" : "selection", seed, mode, rows, options });
+}
+
+function invokeSelectedHarness(input) {
+  const requestedPure = input.mode !== "runtime";
+  const requestedRuntime = input.mode !== "pure";
+  const pureRows = requestedPure
+    ? input.rows.filter((row) => row.drivers.includes("pure") && pureFixtureReference(row))
+    : [];
+  const runtimeRows = requestedRuntime
+    ? input.rows.filter((row) => row.drivers.includes("runtime") && runtimeFixtureReference(row))
+    : [];
+  const pure = pureRows.length > 0 ? invokeHarness({ ...input, rows: pureRows, mode: "pure" }) : null;
+  const runtime =
+    runtimeRows.length > 0 ? invokeRuntimeHarness({ ...input, rows: runtimeRows, mode: "runtime" }) : null;
+  if (!pure) return runtime;
+  if (!runtime) return pure;
+  return {
+    schemaVersion: 1,
+    status: pure.status === "passed" && runtime.status === "passed" ? "passed" : "failed",
+    suite: input.suite,
+    manifestVersion: manifest.manifestVersion,
+    candidate: input.candidate ?? readHead(),
+    baseline: input.baseline ?? null,
+    rows: input.rows.map((row) => row.id),
+    workCounts: {
+      scenarios: input.rows.length,
+      testSuites: pure.workCounts.testSuites + runtime.workCounts.testSuites,
+      tests: pure.workCounts.tests + runtime.workCounts.tests,
+      decisions: pure.workCounts.decisions + runtime.workCounts.decisions,
+      ticks: pure.workCounts.ticks + runtime.workCounts.ticks
+    },
+    pure,
+    runtime
+  };
+}
+
+function invokeHarness(input) {
+  const environment = {
+    ...process.env,
+    AI_SKIRMISH_MATRIX_REQUEST: JSON.stringify({
+      schemaVersion: 1,
+      manifestVersion: manifest.manifestVersion,
+      suite: input.suite,
+      stage: input.stage ?? null,
+      candidate: input.candidate ?? null,
+      baseline: input.baseline ?? null,
+      seed: input.seed ?? null,
+      mode: input.mode ?? "both",
+      scenarioIds: input.rows.map((row) => row.id),
+      replayArtifactPath: input.options?.artifactPath ?? null,
+      untilTick: input.options?.untilTick ?? null,
+      breakOn: input.options?.breakOn ?? null,
+      baselineSupport: input.baselineSupport ?? null
+    })
+  };
+  const workingTreeSource = input.suite === "stage-smoke" ? readWorkingTreeSource() : "";
+  const workingTreeDigest = workingTreeSource.length > 0 ? digestString(workingTreeSource) : null;
+  const fixtureDigest = digestString(
+    JSON.stringify(
+      input.rows.map((row) => {
+        const reference = pureFixtureReference(row);
+        return { row, fixture: reference ? readJson(join(fixtureDirectory, reference), 1024 * 1024) : null };
+      })
+    )
+  );
+  const includesAuthoredTactics = input.rows.some((row) => row.authoredFixture === "stage-13-tactics.json");
+  const includesAuthoredAdaptation = input.rows.some((row) => row.authoredFixture === "stage-14-adaptation.json");
+  const testPathPattern =
+    includesAuthoredTactics || includesAuthoredAdaptation
+      ? "(ai-(brain|scenario-harness|runtime-scenario|repro-cli|stage-13-tactics-manager|stage-14-adaptation-manager)|authoritative-state-projection|actor-manager-ai-save|ai-profile-defaults|player-ai-controller\\.agent\\.static)\\.spec\\.ts$"
+      : "(ai-(scenario-harness|runtime-scenario|repro-cli)|authoritative-state-projection|actor-manager-ai-save)\\.spec\\.ts$";
+  const command = spawnSync(
+    "pnpm",
+    [
+      "exec",
+      "nx",
+      "run-many",
+      "--target=test",
+      "--projects=probable-waffle-gameplay,probable-waffle-phaser",
+      "--runInBand",
+      `--testPathPatterns=${testPathPattern}`
+    ],
+    { cwd: workspaceRoot, env: environment, encoding: "utf8", maxBuffer: 16 * 1024 * 1024 }
+  );
+  const jestCounts = parseJestCounts(command.stdout);
+  const report = {
+    schemaVersion: 1,
+    status: command.status === 0 ? "passed" : "failed",
+    suite: input.suite,
+    manifestVersion: manifest.manifestVersion,
+    candidate: input.candidate ?? readHead(),
+    dirtySourceDigest: workingTreeDigest,
+    fixtureDigest,
+    baseline: input.baseline ?? null,
+    rows: input.rows.map((row) => row.id),
+    contexts: input.rows
+      .filter((row) => pureFixtureReference(row))
+      .map((row) => ({
+        scenarioId: row.id,
+        ...readJson(join(fixtureDirectory, pureFixtureReference(row)), 1024 * 1024).context
+      })),
+    workCounts: {
+      scenarios: input.rows.length,
+      testSuites: jestCounts.testSuites,
+      tests: jestCounts.tests,
+      decisions: 0,
+      ticks: 0
+    },
+    process: { exitCode: command.status, signal: command.signal, stdout: command.stdout, stderr: command.stderr }
+  };
+  if (command.error) throw command.error;
+  if (command.status !== 0) process.exitCode = 1;
+  return report;
+}
+
+function invokeRuntimeHarness(input) {
+  const fixtures = [
+    ...new Map(
+      input.rows.map((row) => {
+        const reference = runtimeFixtureReference(row);
+        return [reference, readJson(join(fixtureDirectory, reference), 1024 * 1024)];
+      })
+    ).values()
+  ];
+  const workingTreeSource = readWorkingTreeSource();
+  const workingTreeDigest = workingTreeSource.length > 0 ? digestString(workingTreeSource) : null;
+  const fixtureDigest = digestString(JSON.stringify(fixtures));
+  const environment = {
+    ...process.env,
+    AI_SKIRMISH_RUNTIME_REQUEST: JSON.stringify({
+      schemaVersion: 1,
+      sourceRevision: input.candidate ?? readHead(),
+      dirtySourceDigest: workingTreeDigest,
+      fixtureDigest,
+      seed: input.seed ?? null,
+      scenarioIds: input.rows.map((row) => row.id),
+      fixtures
+    })
+  };
+  const command = spawnSync(
+    "pnpm",
+    [
+      "exec",
+      "playwright",
+      "test",
+      "apps/portal-e2e/src/e2e/skirmish-ai-runtime.spec.ts",
+      "--config=apps/portal-e2e/playwright.config.ts",
+      "--workers=1"
+    ],
+    { cwd: workspaceRoot, env: environment, encoding: "utf8", maxBuffer: 32 * 1024 * 1024 }
+  );
+  if (command.error) throw command.error;
+  const runtimeReport = parseRuntimeReport(`${command.stdout}\n${command.stderr}`);
+  const report = {
+    schemaVersion: 1,
+    status: command.status === 0 && runtimeReport?.status === "passed" ? "passed" : "failed",
+    suite: input.suite,
+    manifestVersion: manifest.manifestVersion,
+    candidate: input.candidate ?? readHead(),
+    dirtySourceDigest: workingTreeDigest,
+    fixtureDigest,
+    baseline: input.baseline ?? null,
+    rows: input.rows.map((row) => row.id),
+    contexts: input.rows.map((row) => ({
+      scenarioId: row.id,
+      ...readJson(join(fixtureDirectory, runtimeFixtureReference(row)), 1024 * 1024).context
+    })),
+    workCounts: {
+      scenarios: input.rows.length,
+      testSuites: runtimeReport ? 1 : 0,
+      tests: runtimeReport ? 1 : 0,
+      decisions: runtimeReport?.workCounts?.decisions ?? 0,
+      ticks: runtimeReport?.workCounts?.ticks ?? 0
+    },
+    runtime: runtimeReport,
+    process: { exitCode: command.status, signal: command.signal, stdout: command.stdout, stderr: command.stderr }
+  };
+  if (report.workCounts.decisions <= 0 || report.workCounts.ticks <= 0) {
+    report.status = "failed";
+  }
+  if (report.status !== "passed") process.exitCode = 1;
+  return report;
+}
+
+function parseRuntimeReport(output) {
+  const prefix = "AI_SKIRMISH_RUNTIME_RESULT_V1:";
+  const start = output.lastIndexOf(prefix);
+  if (start < 0) return null;
+  const line = output
+    .slice(start + prefix.length)
+    .split("\n", 1)[0]
+    ?.replace(/\u001b\[[0-9;]*m/g, "")
+    .trim();
+  if (!line) return null;
+  try {
+    const value = JSON.parse(line);
+    return value?.schemaVersion === 1 ? value : null;
+  } catch {
+    return null;
+  }
+}
+
+function replayBundle(options) {
+  const artifactPath = resolveExplicitPath(options["replay-bundle"]);
+  const artifact = readJson(artifactPath, 16 * 1024 * 1024);
+  validateArtifact(artifact);
+  if (artifact.manifest.replayInputs.sourceRevision !== readHead()) {
+    throw new Error(`replay_source_not_checked_out:${artifact.manifest.replayInputs.sourceRevision}`);
+  }
+  const currentWorkingTreeSource = readWorkingTreeSource();
+  const currentDirtySourceDigest = currentWorkingTreeSource.length > 0 ? digestString(currentWorkingTreeSource) : null;
+  if (artifact.manifest.replayInputs.dirtySourceDigest !== currentDirtySourceDigest) {
+    throw new Error("replay_dirty_source_not_checked_out");
+  }
+  if (
+    artifact.manifest.completeness.observation !== "complete" ||
+    artifact.manifest.completeness.priorState !== "complete"
+  ) {
+    throw new Error("replay_not_exact:missing_history");
+  }
+  if (artifact.manifest.kind === "runtime") {
+    const snapshotDigest = digestString(JSON.stringify(artifact.payload));
+    const inputDigest = digestString(
+      JSON.stringify({ observation: artifact.payload.observation, outcomes: artifact.payload.outcomes })
+    );
+    if (
+      artifact.manifest.replayInputs.snapshotDigest !== snapshotDigest ||
+      artifact.manifest.replayInputs.inputDigest !== inputDigest
+    ) {
+      throw new Error("replay_runtime_digest_mismatch");
+    }
+  }
+  const untilTick =
+    options["until-tick"] === undefined
+      ? null
+      : requireInteger(options["until-tick"], "until-tick", 0, Number.MAX_SAFE_INTEGER);
+  const breakOn = options["break-on"] ?? null;
+  if (breakOn !== null)
+    requireEnum(
+      breakOn,
+      ["duplicate_effect", "progress_overdue", "mission_cancelled", "command_rejected", "decision_complete"],
+      "break-on"
+    );
+  if (options["emit-fixture"]) {
+    const destination = resolveExplicitPath(options["emit-fixture"]);
+    mkdirSync(dirname(destination), { recursive: true });
+    writeFileSync(
+      destination,
+      `${JSON.stringify({ schemaVersion: 1, provenance: artifact.manifest.replayInputs, payload: artifact.payload }, null, 2)}\n`,
+      { flag: "wx" }
+    );
+  }
+  return invokeHarness({
+    suite: "replay",
+    rows: [scenarioRow(artifact.manifest.replayInputs.scenarioId)],
+    options: { ...options, untilTick, breakOn, artifactPath }
+  });
+}
+
+function compareBundles(options) {
+  const original = readJson(resolveExplicitPath(options["compare-bundle"]), 16 * 1024 * 1024);
+  const candidate = readJson(resolveExplicitPath(required(options["with-bundle"], "with-bundle")), 16 * 1024 * 1024);
+  validateArtifact(original);
+  validateArtifact(candidate);
+  const inputDifference = firstDifference(original.manifest.replayInputs, candidate.manifest.replayInputs);
+  const outputDifference = inputDifference
+    ? null
+    : firstDifference(comparisonOutput(original), comparisonOutput(candidate));
+  return {
+    schemaVersion: 1,
+    status: "compared",
+    classification: inputDifference ? "changed_input" : outputDifference ? "same_input_divergence" : "same",
+    firstDifference: inputDifference ?? outputDifference,
+    firstTick: firstCheckpointDifferenceTick(original, candidate) ?? original.manifest.replayInputs.tick ?? null,
+    workCounts: { scenarios: 1, decisions: 0, ticks: 0 }
+  };
+}
+
+function comparisonOutput(artifact) {
+  return artifact.manifest.kind === "decision"
+    ? (artifact.payload.expectedResult ?? null)
+    : {
+        authoritativeProjection: artifact.payload.authoritativeProjection,
+        outcomes: artifact.payload.outcomes,
+        controllerState: artifact.payload.controllerState
+      };
+}
+
+function firstCheckpointDifferenceTick(original, candidate) {
+  const left = original.manifest.replayInputs.expectedCheckpoints ?? [];
+  const right = candidate.manifest.replayInputs.expectedCheckpoints ?? [];
+  for (let index = 0; index < Math.max(left.length, right.length); index += 1) {
+    if (firstDifference(left[index], right[index])) return left[index]?.tick ?? right[index]?.tick ?? null;
+  }
+  return null;
+}
+
+function scenarioRow(id) {
+  if (id === null) throw new Error("bundle_has_no_scenario_id");
+  const row = manifest.rows.find((candidate) => candidate.id === id);
+  if (!row) throw new Error(`unknown_scenario:${id}`);
+  return row;
+}
+
+function validateManifest(value) {
+  if (!value || value.schemaVersion !== 1 || value.manifestVersion !== "skirmish-v1" || !Array.isArray(value.rows))
+    throw new Error("malformed_manifest");
+  if (value.rows.length !== value.requiredCaseCount || value.requiredCaseCount !== 121)
+    throw new Error(`manifest_case_count:${value.rows.length}`);
+  if (!safeReference(value.baseline)) throw new Error("unsafe_baseline_manifest_reference");
+  const ids = new Set();
+  for (const row of value.rows) {
+    if (!row || typeof row.id !== "string" || !/^[A-Z]+-[0-9]{2}$/.test(row.id) || ids.has(row.id))
+      throw new Error(`invalid_manifest_row:${row?.id ?? "unknown"}`);
+    if (
+      !Array.isArray(row.stages) ||
+      row.stages.length === 0 ||
+      row.stages.some((stage) => !Number.isSafeInteger(stage) || stage < 0 || stage > 15) ||
+      !Array.isArray(row.drivers) ||
+      row.drivers.length === 0 ||
+      row.drivers.some((driver) => driver !== "pure" && driver !== "runtime")
+    ) {
+      throw new Error(`incomplete_manifest_row:${row.id}`);
+    }
+    if (row.fixture !== null) {
+      if (!safeReference(row.fixture)) throw new Error(`unsafe_fixture_reference:${row.id}`);
+      const fixture = readJson(join(fixtureDirectory, row.fixture), 1024 * 1024);
+      if (!Array.isArray(fixture.scenarioIds) || !fixture.scenarioIds.includes(row.id)) {
+        throw new Error(`fixture_identity_mismatch:${row.id}`);
+      }
+      if (fixture.evidenceKind !== "runtime" || fixture.driver !== "runtime") {
+        throw new Error(`fixture_not_runtime_evidence:${row.id}`);
+      }
+      validateRuntimeFixture(fixture, row.id);
+    }
+    if (row.authoredFixture !== undefined) {
+      if (!safeReference(row.authoredFixture)) throw new Error(`unsafe_authored_fixture_reference:${row.id}`);
+      const fixture = readJson(join(fixtureDirectory, row.authoredFixture), 1024 * 1024);
+      if (!Array.isArray(fixture.scenarioIds) || !fixture.scenarioIds.includes(row.id)) {
+        throw new Error(`authored_fixture_identity_mismatch:${row.id}`);
+      }
+    }
+    ids.add(row.id);
+  }
+}
+
+function fixtureReference(row) {
+  return row.fixture ?? row.authoredFixture ?? null;
+}
+
+function pureFixtureReference(row) {
+  return (
+    row.authoredFixture ??
+    (row.fixture && readJson(join(fixtureDirectory, row.fixture), 1024 * 1024).driver === "pure" ? row.fixture : null)
+  );
+}
+
+function runtimeFixtureReference(row) {
+  return row.fixture;
+}
+
+function validateRuntimeFixture(fixture, scenarioId) {
+  const recipe = fixture.recipe;
+  const assertion = fixture.assertions?.[scenarioId];
+  if (
+    !recipe ||
+    typeof recipe.mapLabel !== "string" ||
+    !Number.isSafeInteger(recipe.aiPlayerNumber) ||
+    recipe.aiPlayerNumber <= 0 ||
+    !Number.isFinite(recipe.simulationTimeScale) ||
+    recipe.simulationTimeScale <= 0 ||
+    !Array.isArray(recipe.checkpointTicks) ||
+    recipe.checkpointTicks.length < 2 ||
+    recipe.checkpointTicks.some((tick) => !Number.isSafeInteger(tick) || tick < 0) ||
+    recipe.checkpointTicks.some((tick, index) => index > 0 && tick <= recipe.checkpointTicks[index - 1]) ||
+    !Array.isArray(recipe.variants) ||
+    recipe.variants.length === 0 ||
+    new Set(recipe.variants.map((variant) => variant.id)).size !== recipe.variants.length ||
+    recipe.variants.some(
+      (variant) =>
+        !variant ||
+        typeof variant.id !== "string" ||
+        variant.id.length === 0 ||
+        (variant.scenarioIds !== undefined &&
+          (!Array.isArray(variant.scenarioIds) ||
+            variant.scenarioIds.length === 0 ||
+            variant.scenarioIds.some((id) => !fixture.scenarioIds.includes(id)))) ||
+        !Number.isSafeInteger(variant.seed) ||
+        variant.seed < 0 ||
+        !["Tivara", "Skaduwee"].includes(variant.aiFaction) ||
+        !["Tivara", "Skaduwee"].includes(variant.humanFaction) ||
+        !["Easy", "Normal", "Hard"].includes(variant.difficulty) ||
+        (variant.mapLabel !== undefined && typeof variant.mapLabel !== "string") ||
+        (variant.perturbations !== undefined &&
+          (!Array.isArray(variant.perturbations) ||
+            variant.perturbations.some(
+              (perturbation) =>
+                !perturbation ||
+                typeof perturbation.id !== "string" ||
+                !Number.isSafeInteger(perturbation.tick) ||
+                perturbation.tick < 0 ||
+                perturbation.kind !== "human_attack_ai_home" ||
+                !Number.isSafeInteger(perturbation.maximumAttackers) ||
+                perturbation.maximumAttackers <= 0
+            )))
+    ) ||
+    !assertion ||
+    !Number.isSafeInteger(assertion.minimumDecisions) ||
+    assertion.minimumDecisions <= 0 ||
+    !Number.isSafeInteger(assertion.minimumAppliedCommands) ||
+    assertion.minimumAppliedCommands <= 0 ||
+    (assertion.requiredOpeningSteps !== undefined &&
+      (!Array.isArray(assertion.requiredOpeningSteps) || assertion.requiredOpeningSteps.length === 0)) ||
+    (assertion.requireNoInitialWorker !== undefined && typeof assertion.requireNoInitialWorker !== "boolean") ||
+    (assertion.requireDeliveredIncome !== undefined && typeof assertion.requireDeliveredIncome !== "boolean") ||
+    !Array.isArray(assertion.requiredAiFactions) ||
+    assertion.requiredAiFactions.length === 0 ||
+    assertion.requiredAiFactions.some((faction) => !["Tivara", "Skaduwee"].includes(faction)) ||
+    [
+      "maximumTick",
+      "minimumMilitaryCount",
+      "minimumMilitaryTypeCount",
+      "minimumRepeatedMilitaryTypeCount",
+      "minimumMilitaryProducerCount",
+      "maximumMilitaryProducerCount",
+      "maximumQueueOccupancyPerProducer",
+      "firstOffensiveLaunchByTick",
+      "minimumOffensiveLaunchCount",
+      "minimumDamageDealt",
+      "minimumEnemyLosses"
+    ].some(
+      (field) => assertion[field] !== undefined && (!Number.isSafeInteger(assertion[field]) || assertion[field] < 0)
+    ) ||
+    [
+      "requireCompositionDemand",
+      "requireCapacityDemand",
+      "requireProductionStopsAtTarget",
+      "requireMissionContinuation",
+      "requireTerminalResult",
+      "requireRaidDefenseRecovery"
+    ].some((field) => assertion[field] !== undefined && typeof assertion[field] !== "boolean")
+  ) {
+    throw new Error(`malformed_runtime_fixture:${scenarioId}`);
+  }
+}
+
+function validateArtifact(value) {
+  if (!value || typeof value !== "object" || !value.manifest || !value.payload)
+    throw new Error("malformed_repro_artifact");
+  const bundle = value.manifest;
+  if (bundle.schemaVersion !== 1 || (bundle.kind !== "decision" && bundle.kind !== "runtime"))
+    throw new Error("unsupported_repro_version");
+  if (
+    !bundle.replayInputs ||
+    !safeReference(bundle.replayInputs.snapshotReference) ||
+    !safeReference(bundle.replayInputs.inputReference)
+  )
+    throw new Error("unsafe_repro_reference");
+  if (containsMarkup(value)) throw new Error("unsafe_repro_markup");
+}
+
+function safeReference(value) {
+  return (
+    typeof value === "string" &&
+    value.length > 0 &&
+    value.length <= 512 &&
+    !value.startsWith("/") &&
+    !value.includes("..") &&
+    !value.includes("\\") &&
+    !value.includes(":")
+  );
+}
+
+function containsMarkup(value) {
+  if (typeof value === "string") return /<\/?[a-z]|on[a-z]+\s*=|javascript:/i.test(value);
+  if (Array.isArray(value)) return value.some(containsMarkup);
+  return value && typeof value === "object" ? Object.values(value).some(containsMarkup) : false;
+}
+
+function firstDifference(expected, actual, path = "$") {
+  if (Object.is(expected, actual)) return null;
+  if (Array.isArray(expected) && Array.isArray(actual)) {
+    for (let index = 0; index < Math.max(expected.length, actual.length); index += 1) {
+      const difference = firstDifference(expected[index], actual[index], `${path}[${index}]`);
+      if (difference) return difference;
+    }
+    return null;
+  }
+  if (isRecord(expected) && isRecord(actual)) {
+    for (const key of [...new Set([...Object.keys(expected), ...Object.keys(actual)])].sort()) {
+      const difference = firstDifference(expected[key], actual[key], `${path}.${key}`);
+      if (difference) return difference;
+    }
+    return null;
+  }
+  return { path, expected, actual };
+}
+
+function parseArguments(tokens) {
+  const parsed = {};
+  for (let index = 0; index < tokens.length; index += 1) {
+    const token = tokens[index];
+    if (!token.startsWith("--")) throw new Error(`unexpected_argument:${token}`);
+    const key = token.slice(2);
+    const next = tokens[index + 1];
+    if (!next || next.startsWith("--")) parsed[key] = true;
+    else {
+      parsed[key] = next;
+      index += 1;
+    }
+  }
+  return parsed;
+}
+
+function helpText() {
+  return `Run deterministic or real-runtime skirmish AI scenarios.\n\nUsage:\n  node tools/ai/run-skirmish-matrix.mjs --scenario ID [--mode pure|runtime|both]\n  node tools/ai/run-skirmish-matrix.mjs --scenarios ID,ID [--mode pure|runtime|both]\n  node tools/ai/run-skirmish-matrix.mjs --suite stage-smoke --stage N --working-tree\n  node tools/ai/run-skirmish-matrix.mjs --candidate SHA --baseline SHA\n\nOptions:\n  --manifest PATH       Override tools/ai/fixtures/skirmish-v1.json\n  --output DIRECTORY    Store the JSON artifact in this directory\n  --seed INTEGER        Override the pure-scenario seed\n  --help                Show this help without creating a failure artifact\n\nUse tools/ai/summarize-skirmish-report.mjs on the emitted artifact. Group compatible runtime IDs with --scenarios so Playwright starts once.\n`;
+}
+
+function parseJestCounts(output) {
+  const normalized = output.replace(/\u001b\[[0-9;]*m/g, "");
+  return {
+    testSuites: parsePassedCount(normalized, "Test Suites"),
+    tests: parsePassedCount(normalized, "Tests")
+  };
+}
+
+function parsePassedCount(output, label) {
+  const line = output.split("\n").find((candidate) => candidate.trimStart().startsWith(`${label}:`));
+  const match = line?.match(/([0-9]+) passed/);
+  return match ? Number(match[1]) : 0;
+}
+
+function readJson(path, maxBytes) {
+  const text = readFileSync(path, "utf8");
+  if (Buffer.byteLength(text) > maxBytes) throw new Error(`oversized_json:${path}`);
+  return JSON.parse(text);
+}
+
+function resolveExplicitPath(value) {
+  const supplied = required(value, "path");
+  if (supplied.includes("\0")) throw new Error("invalid_path");
+  return isAbsolute(supplied) ? resolve(supplied) : resolve(process.cwd(), supplied);
+}
+
+function requireInteger(value, label, minimum, maximum) {
+  const number = Number(value);
+  if (!Number.isSafeInteger(number) || number < minimum || number > maximum) throw new Error(`invalid_${label}`);
+  return number;
+}
+
+function requireSha(value, label) {
+  const sha = required(value, label);
+  if (!/^[a-f0-9]{40}$/.test(sha)) throw new Error(`invalid_${label}_sha`);
+  return sha;
+}
+
+function requireEnum(value, choices, label) {
+  if (!choices.includes(value)) throw new Error(`invalid_${label}:${value}`);
+  return value;
+}
+
+function required(value, label) {
+  if (typeof value !== "string" || value.length === 0) throw new Error(`missing_${label}`);
+  return value;
+}
+
+function readHead() {
+  const result = spawnSync("git", ["rev-parse", "HEAD"], { cwd: workspaceRoot, encoding: "utf8" });
+  return result.status === 0 ? result.stdout.trim() : "working-tree";
+}
+
+function readGitText(arguments_) {
+  const result = spawnSync("git", arguments_, { cwd: workspaceRoot, encoding: "utf8" });
+  if (result.status !== 0) throw new Error(`git_inspection_failed:${arguments_.join("_")}`);
+  return result.stdout;
+}
+
+function readWorkingTreeSource() {
+  const tracked = readGitText(["diff", "--no-ext-diff", "HEAD", "--"]);
+  const untrackedPaths = readGitText(["ls-files", "--others", "--exclude-standard", "-z"])
+    .split("\0")
+    .filter(Boolean)
+    .sort();
+  const untracked = untrackedPaths.map((path) => {
+    const absolutePath = resolve(workspaceRoot, path);
+    if (relative(workspaceRoot, absolutePath).startsWith("..")) throw new Error(`unsafe_untracked_path:${path}`);
+    return `${path}\0${readFileSync(absolutePath).toString("base64")}`;
+  });
+  return tracked.length > 0 || untracked.length > 0 ? `${tracked}\0${untracked.join("\0")}` : "";
+}
+
+function digestString(input) {
+  let hash = 0x811c9dc5;
+  for (let index = 0; index < input.length; index += 1) {
+    hash ^= input.charCodeAt(index);
+    hash = Math.imul(hash, 0x01000193);
+  }
+  return `fnv1a32:${(hash >>> 0).toString(16).padStart(8, "0")}`;
+}
+
+function writeReport(report) {
+  mkdirSync(reportDirectory, { recursive: true });
+  const name = `${Date.now()}-${report.status ?? "report"}.json`;
+  const path = join(reportDirectory, name);
+  writeFileSync(path, `${JSON.stringify(report, null, 2)}\n`);
+  process.stdout.write(`${relative(workspaceRoot, path)}\n`);
+}
+
+function isRecord(value) {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}

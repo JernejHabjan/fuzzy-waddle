@@ -9,11 +9,12 @@ import {
   type UnifiedQueueItem
 } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/queue-item";
 import {
+  type GameCommandExecution,
   ProbableWaffleGameCommandTypes,
   type ProductionComponentData,
   ResourceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
-import { type Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
+import type { ActorId, PlayerNumber, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { HealthComponent } from "../combat/components/health-component";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { SceneActorCreator } from "../../../world/services/scene-actor-creator";
@@ -114,10 +115,29 @@ export class ProductionComponent {
         return;
       }
 
+      if (command.type === ProbableWaffleGameCommandTypes.SetRallyPoint) {
+        if (command.targetObjectId) {
+          const actorIndex = getSceneService(this.gameObject.scene, ActorIndexSystem);
+          const targetActor = actorIndex?.getActorById(command.targetObjectId);
+          if (!targetActor?.active) {
+            commandBus.reportOutcome(command, "rejected", "invalid_target", [actorId]);
+            return;
+          }
+          this.rallyPoint.setActor(
+            targetActor as Phaser.GameObjects.GameObject & Phaser.GameObjects.Components.Transform
+          );
+        } else {
+          this.rallyPoint.setLocation(command.tileVec3, command.worldVec3);
+        }
+        commandBus.reportOutcome(command, "completed", "applied", [actorId], ["rally-point"]);
+        return;
+      }
+
       if (command.type === ProbableWaffleGameCommandTypes.Move) {
         // Rally-point assignment is a deterministic MOVE command targeting production buildings.
         // Apply it on every client from the command bus stream, not local UI events.
         this.rallyPoint.setLocation(command.tileVec3, command.worldVec3);
+        commandBus.reportOutcome(command, "completed", "applied", [actorId], ["rally-point"]);
         return;
       }
 
@@ -185,7 +205,10 @@ export class ProductionComponent {
   /**
    * Start production - delegates to SharedQueueComponent
    */
-  startProduction(queueItem: ProductionQueueItem): AssignProductionErrorCode | null {
+  startProduction(
+    queueItem: ProductionQueueItem,
+    commandContext?: { execution: GameCommandExecution; playerNumber: PlayerNumber; actorIds: readonly ActorId[] }
+  ): AssignProductionErrorCode | null {
     if (!this.isFinished) return AssignProductionErrorCode.NotFinished;
 
     const productionState = this.canAssignProduction(queueItem);
@@ -205,7 +228,8 @@ export class ProductionComponent {
       type: QueueItemType.Production,
       productionData: queueItem,
       totalTime: queueItem.costData.productionTime,
-      remainingTime: queueItem.costData.productionTime
+      remainingTime: queueItem.costData.productionTime,
+      commandContext
     };
 
     sharedQueue.addItem(unifiedItem);
@@ -253,7 +277,7 @@ export class ProductionComponent {
    * Called by SharedQueueComponent when production completes.
    * Handles spawning logic only - queue manipulation is handled by SharedQueue.
    */
-  async handleProductionComplete(item: ProductionQueueItem): Promise<void> {
+  async handleProductionComplete(item: ProductionQueueItem): Promise<string | null> {
     const { actorName } = item;
 
     const logicalTransform = getGameObjectLogicalTransform(this.gameObject);
@@ -307,7 +331,7 @@ export class ProductionComponent {
 
     // If no valid spawn location found, don't spawn (item stays completed in queue logic)
     if (!validSpawnLocationFound) {
-      return;
+      return null;
     }
 
     // Spawn gameObject using helper
@@ -325,6 +349,7 @@ export class ProductionComponent {
         this.executeSpawnRallyAction(newGameObject);
       }
     }
+    return newGameObject ? (getActorComponent(newGameObject, IdComponent)?.id ?? null) : null;
   }
 
   private executeSpawnRallyAction(newGameObject: Phaser.GameObjects.GameObject) {

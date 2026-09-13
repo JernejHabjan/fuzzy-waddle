@@ -7,6 +7,21 @@
   "targets": {
     "lint": {
       "executor": "@nx/eslint:lint"
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/games/probable-waffle/gameplay/jest.config.cts"
+      }
+    },
+    "skirmish-matrix": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/ai/run-skirmish-matrix.mjs",
+        "cwd": "{workspaceRoot}",
+        "forwardAllArgs": true
+      }
     }
   }
 }

@@ -149,20 +149,36 @@ export class MovementSystem {
       const actorId = myId ?? getActorComponent(this.gameObject, IdComponent)?.id;
       if (!actorId || !cmd.actorIds.includes(actorId)) return;
 
-      this.movementOccupancyService?.releaseDestination(actorId);
-      const newWorldVec3 = await this.getTileVec3ByDynamicFlocking(cmd.tileVec3, cmd.actorIds as ActorId[]);
-      const payerPawnAiController = getActorComponent(this.gameObject, PawnAiController);
-      if (payerPawnAiController) {
-        const newOrder = new OrderData(OrderType.Move, { targetTileLocation: newWorldVec3 });
-        if (cmd.queue) {
-          payerPawnAiController.blackboard.addOrder(newOrder);
-        } else {
-          payerPawnAiController.blackboard.overrideOrderQueueAndActiveOrder(newOrder);
-        }
+      try {
+        this.movementOccupancyService?.releaseDestination(actorId);
+        const newWorldVec3 = await this.getTileVec3ByDynamicFlocking(cmd.tileVec3, cmd.actorIds as ActorId[]);
+        const payerPawnAiController = getActorComponent(this.gameObject, PawnAiController);
+        if (payerPawnAiController) {
+          const newOrder = new OrderData(OrderType.Move, {
+            targetTileLocation: newWorldVec3,
+            commandContext: cmd.execution
+              ? { execution: cmd.execution, playerNumber: cmd.playerNumber, actorIds: cmd.actorIds }
+              : undefined
+          });
+          if (cmd.queue) {
+            payerPawnAiController.blackboard.addOrder(newOrder);
+          } else {
+            payerPawnAiController.blackboard.overrideOrderQueueAndActiveOrder(newOrder);
+          }
 
-        this.playOrderSound(payerPawnAiController.blackboard.peekNextPlayerOrder()!);
-      } else {
-        this.moveToLocationByFollowingStaticPath(newWorldVec3);
+          this.playOrderSound(payerPawnAiController.blackboard.peekNextPlayerOrder()!);
+          commandBus.reportOutcome(cmd, "applied", "applied", [actorId]);
+        } else {
+          const accepted = await this.moveToLocationByFollowingStaticPath(newWorldVec3);
+          commandBus.reportOutcome(
+            cmd,
+            accepted ? "completed" : "failed",
+            accepted ? "applied" : "application_failed",
+            [actorId]
+          );
+        }
+      } catch {
+        commandBus.reportOutcome(cmd, "failed", "application_failed", [actorId], [], "movement_application_failed");
       }
     });
   }

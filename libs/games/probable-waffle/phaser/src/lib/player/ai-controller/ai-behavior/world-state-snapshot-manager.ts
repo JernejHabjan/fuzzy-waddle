@@ -19,6 +19,8 @@ import { getResearchedLevelForActor } from "../../../data/actor-level-utils";
 import { ContainableComponent } from "../../../entity/components/building/containable-component";
 import { getGameObjectLogicalTransform, isSceneActive } from "../../../data/game-object-helper";
 import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
+import { AiObservationVisibilityPolicy } from "../observation/ai-observation-visibility-policy";
 /**
  * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
  * storage boundaries do not drift into an unconstrained primitive.
@@ -34,10 +36,9 @@ export class WorldStateSnapshotManager {
     private readonly blackboard: PlayerAiBlackboard
   ) {}
 
-  update(now: number) {
+  async update(now: number): Promise<void> {
     if (now - this.lastOwnedRefreshAt < AI_CONFIG.ownedRefreshIntervalMs) return;
-    // noinspection JSIgnoredPromiseFromCall
-    this.refreshWorldState(now);
+    await this.refreshWorldState(now);
     this.lastOwnedRefreshAt = now;
   }
 
@@ -45,7 +46,10 @@ export class WorldStateSnapshotManager {
     const index = getSceneService(this.scene, ActorIndexSystem);
     if (!index) return;
 
-    const owned = index.getOwnedActors(this.player.playerNumber);
+    const owned = index
+      .getOwnedActors(this.player.playerNumber)
+      .filter(hasStableAiActorId)
+      .sort(compareAiActorsByStableId);
 
     this.refreshOwnedActors(owned);
     this.refreshEconomyAndSupply();
@@ -181,6 +185,12 @@ export class WorldStateSnapshotManager {
     this.blackboard.enemyIntel = enemyIntel;
     this.blackboard.visibleEnemies = enemyCandidates;
     this.blackboard.enemyMilitaryStrength = totalEnemyStrength;
+    // A lost contact must not remain a live attack target until the targeter's
+    // independent scoring cooldown happens to elapse.
+    if (!this.blackboard.primaryTarget || !enemyCandidates.includes(this.blackboard.primaryTarget)) {
+      this.blackboard.primaryTarget = null;
+      this.blackboard.enemyBase = null;
+    }
 
     const baseCenter = this.blackboard.baseCenterTile;
     if (baseCenter) {
@@ -240,19 +250,22 @@ export class WorldStateSnapshotManager {
     index: ActorIndexSystem,
     units: GameObject[]
   ): Promise<GameObject[]> {
+    const visibilityPolicy = new AiObservationVisibilityPolicy(this.scene, this.player.playerNumber!);
     const ownedSet = new Set(owned);
-    const allActors = index.getAllIdActors();
+    const allActors = index.getAllIdActors().filter(hasStableAiActorId);
     const baseCenter = this.blackboard.baseCenterTile;
     const visionRadius = AI_CONFIG.enemyVisionRadiusTiles;
 
-    const candidates = allActors.filter((obj) => {
-      if (ownedSet.has(obj)) return false;
-      if (!getActorComponent(obj, OwnerComponent)) return false;
-      // Skip actors that are inside a container — they are not targetable
-      // noinspection RedundantIfStatementJS
-      if (getActorComponent(obj, ContainableComponent)?.isContained()) return false;
-      return true;
-    });
+    const candidates = allActors
+      .filter((obj) => {
+        if (ownedSet.has(obj)) return false;
+        if (!getActorComponent(obj, OwnerComponent)) return false;
+        // Skip actors that are inside a container — they are not targetable
+        // noinspection RedundantIfStatementJS
+        if (getActorComponent(obj, ContainableComponent)?.isContained()) return false;
+        return true;
+      })
+      .sort(compareAiActorsByStableId);
 
     // Campaign normal fog uses a stable logical-radius view; skirmish keeps its existing behavior.
     if (this.player.playerController.data.playerDefinition?.campaignFogPolicy === "normal") {
@@ -262,7 +275,9 @@ export class WorldStateSnapshotManager {
       return candidates.filter((candidate) => {
         const position = getGameObjectLogicalTransform(candidate);
         return (
-          position !== null && isCampaignAiTargetVisible(position, visionSources, baseCenter ?? undefined, visionRadius)
+          visibilityPolicy.relationTo(candidate) === "enemy" &&
+          position !== null &&
+          isCampaignAiTargetVisible(position, visionSources, baseCenter ?? undefined, visionRadius)
         );
       });
     }
@@ -292,8 +307,32 @@ export class WorldStateSnapshotManager {
     // const visible = await Promise.all(visibilityChecks);
     // return visible.filter((v): v is GameObject => v !== null);
 
-    return candidates;
+    // The disabled prototype above is historical only; the active fallback now
+    // applies the shared player-scoped policy before a live target can enter AI state.
+    return candidates.filter(
+      (candidate) => visibilityPolicy.relationTo(candidate) === "enemy" && visibilityPolicy.mayObserve(candidate)
+    );
   }
+}
+
+/**
+ * Orders indexed AI actors by the stable ID required by command and replay contracts.
+ * Snapshot inputs come from {@link ActorIndexSystem}, so a missing ID indicates a broken
+ * indexing invariant rather than a candidate that may be ordered by runtime insertion.
+ */
+export function compareAiActorsByStableId(left: GameObject, right: GameObject): number {
+  const leftId = getActorComponent(left, IdComponent)?.id;
+  const rightId = getActorComponent(right, IdComponent)?.id;
+  if (!leftId || !rightId) {
+    throw new Error("AI actor ordering requires indexed actors with stable IDs");
+  }
+  if (leftId === rightId) return 0;
+  return leftId < rightId ? -1 : 1;
+}
+
+/** Excludes stale/transitional index entries without allowing them to halt an AI decision boundary. */
+export function hasStableAiActorId(actor: GameObject): boolean {
+  return Boolean(getActorComponent(actor, IdComponent)?.id);
 }
 
 /** Documents the is campaign ai target visible member and its declared contract at this boundary. */

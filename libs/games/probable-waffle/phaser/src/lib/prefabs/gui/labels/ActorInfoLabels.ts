@@ -27,6 +27,7 @@ import {
   dispatchCancelResearchCommand
 } from "../../../data/commands/queue-command-dispatch";
 import { getCurrentPlayerNumber } from "../../../data/scene-data";
+import { CommandBusService } from "../../../world/services/multiplayer/command-bus.service";
 /* END-USER-IMPORTS */
 
 export default class ActorInfoLabels extends Phaser.GameObjects.Container {
@@ -417,9 +418,16 @@ export default class ActorInfoLabels extends Phaser.GameObjects.Container {
     if (!actorIndex) return;
 
     const containedActor = actorIndex.getActorById(action.definition.containedActorId);
-    if (containedActor) {
-      containerComponent.unloadGameObject(containedActor);
-    }
+    const containerId = getActorComponent(actor, IdComponent)?.id;
+    const playerNumber = getCurrentPlayerNumber(this.mainSceneWithActors);
+    const commandBus = getSceneService(this.mainSceneWithActors, CommandBusService);
+    if (!containedActor || !containerId || playerNumber === undefined || !commandBus) return;
+    commandBus.dispatch({
+      type: "UNLOAD",
+      playerNumber,
+      actorIds: [containerId],
+      passengerIds: [action.definition.containedActorId]
+    });
   }
 
   /** Returns true if unloading from the container actor is currently allowed. */

@@ -20,6 +20,11 @@ export class ContainableComponent {
     return !!this.containerOwner;
   }
 
+  /** Returns the physical container for observation adapters; callers must persist only its stable ID. */
+  getContainerOwner(): GameObject | null {
+    return this.containerOwner;
+  }
+
   leaveContainer() {
     if (!this.containerOwner) return;
     const owner = this.containerOwner;
