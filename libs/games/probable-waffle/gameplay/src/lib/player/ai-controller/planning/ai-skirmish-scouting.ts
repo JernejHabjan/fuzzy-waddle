@@ -1,4 +1,4 @@
-import { aiDeadline, type AiPlanId, type AiSquadId } from "../contracts/ai-core-types";
+import { aiDeadline, type AiClaimId, type AiPlanId, type AiSquadId } from "../contracts/ai-core-types";
 import type { AiSquadStateV1 } from "../contracts/ai-brain-state-v1";
 import type { AiSkirmishProposalContext } from "./ai-skirmish-proposal-context";
 import { baseId, domains, intentBase, node, position, regionId, withTimeline } from "./ai-skirmish-support";
@@ -56,7 +56,7 @@ function appendNeutralClaim(context: AiSkirmishProposalContext): void {
     logicalPosition: position(neutral)!,
     claims: [
       {
-        claimId: `claim:neutral:${neutral.actorId}` as AiSquadStateV1["squadId"],
+        claimId: `claim:neutral:${neutral.actorId}` as AiClaimId,
         kind: "actor",
         actorId: claimant.actorIds[0]!
       }

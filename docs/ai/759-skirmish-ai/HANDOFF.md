@@ -19,8 +19,8 @@ file.
 When the user says `continue implementing` on draft PR #814 without naming a subissue:
 
 1. Verify the branch/remote SHA, PR and subissue state; recalculate mutable coverage rather than trusting this snapshot.
-2. The #824 repository tooling gate is complete. Resume an `in_progress` issue; otherwise start #825, the first
-   dependency-ready slice in the grid. Advance
+2. The #824 repository tooling gate and #825 current-content transport foundation are complete. Resume an `in_progress`
+   issue; otherwise start a coherent #815 pure family paired with its #816 runtime family. Advance
    #815 pure fixtures and #816 runtime recipes by coherent behavior family so runtime feedback is not postponed until all
    pure mappings finish. Read only the selected plan, generated context packet, and named source anchors.
 3. Work one issue boundary at a time. A sequential agent may commit directly to this integration branch. Parallel agents
@@ -44,41 +44,40 @@ commit it separately, and then resume the issue. Never refresh the legacy source
 
 ## Progress grid
 
-| Order             | Issue                                                           | State         | Dependency / next boundary                            | Recommended primary slice |
-| ----------------- | --------------------------------------------------------------- | ------------- | ----------------------------------------------------- | ------------------------- |
-| 1                 | [#825](https://github.com/JernejHabjan/fuzzy-waddle/issues/825) | `in_progress` | Add current-content transport runtime evidence         | Sol high → Terra medium   |
-| 2                 | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `not_started` | After #824; pair pure families with #816              | Terra medium              |
-| 2                 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `not_started` | After #824; pair runtime families with #815           | Sol high → Terra medium   |
-| 3                 | [#818](https://github.com/JernejHabjan/fuzzy-waddle/issues/818) | `not_started` | After #824; semantic debug usability/parity           | Terra medium              |
-| 4                 | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `not_started` | After stable SEQ/runtime tooling                      | Sol high → Terra medium   |
-| 5                 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `not_started` | After runtime matrix infrastructure                   | Sol high → Terra high     |
-| 6                 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `not_started` | After runtime tooling; MP portion uses #819           | Sol high → Terra medium   |
-| 7                 | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | `not_started` | Last, after #816/#819/#823 parity                     | Terra high → Terra medium |
-| As needed / final | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `not_started` | Bounded slices early; final AI cleanup after behavior | Terra medium              |
+| Order             | Issue                                                           | State         | Dependency / next boundary                              | Recommended primary slice |
+| ----------------- | --------------------------------------------------------------- | ------------- | ------------------------------------------------------- | ------------------------- |
+| 1                 | [#825](https://github.com/JernejHabjan/fuzzy-waddle/issues/825) | `complete`    | Current-content foundation done; natural E2E is #822    | —                         |
+| 2                 | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `next`        | Select one pure family and pair it with #816            | Terra medium              |
+| 2                 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `next`        | Pair runtime family with #815; transport waits for #822 | Terra medium              |
+| 3                 | [#818](https://github.com/JernejHabjan/fuzzy-waddle/issues/818) | `not_started` | After #824; semantic debug usability/parity             | Terra medium              |
+| 4                 | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `not_started` | After stable SEQ/runtime tooling                        | Sol high → Terra medium   |
+| 5                 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `not_started` | After runtime matrix infrastructure                     | Sol high → Terra high     |
+| 6                 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `not_started` | After runtime tooling; MP portion uses #819             | Sol high → Terra medium   |
+| 7                 | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | `not_started` | Last, after #816/#819/#823 parity                       | Terra high → Terra medium |
+| As needed / final | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `not_started` | Bounded slices early; final AI cleanup after behavior   | Terra medium              |
 
 Update this grid only from GitHub state and current evidence. `Code authored` is not `validated`; use the state vocabulary
 defined by the task-tracking and stage-delivery skills.
 
 ## Open work
 
-| Issue                                                           | Responsibility                   | Current boundary                                                               |
-| --------------------------------------------------------------- | -------------------------------- | ------------------------------------------------------------------------------ |
-| [#825](https://github.com/JernejHabjan/fuzzy-waddle/issues/825) | Domain and transport coverage    | Carrier chain and lifecycle split complete; runtime evidence remains           |
-| [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | Deterministic pure scenarios     | 40/111 pure-required rows mapped at closeout; recalculate first                |
-| [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | Playwright runtime matrix and CI | 10/120 runtime-required rows mapped; no required CI shard yet                  |
-| [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | Continuous play and difficulty   | SEQ rerun, isolated baseline, D-06, and soaks remain                           |
-| [#818](https://github.com/JernejHabjan/fuzzy-waddle/issues/818) | Strategic debugging              | First semantic summary exists; usability, split, and parity remain             |
-| [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | Real multiplayer AI E2E          | Current Playwright AI runtime is local skirmish, not socket lockstep           |
-| [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | Legacy controller retirement     | Remove fallback only after runtime/save/multiplayer parity                     |
-| [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | Source structure and naming      | Main planner names migrated; persisted IDs and large-file debt remain          |
-| [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | Save/replay/reconnect lifecycle  | Cross-phase and repeated-match runtime evidence remains                        |
+| Issue                                                           | Responsibility                   | Current boundary                                                      |
+| --------------------------------------------------------------- | -------------------------------- | --------------------------------------------------------------------- |
+| [#825](https://github.com/JernejHabjan/fuzzy-waddle/issues/825) | Domain and transport coverage    | Current-content implementation and focused contracts complete         |
+| [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | Deterministic pure scenarios     | 40/111 pure-required rows mapped at closeout; recalculate first       |
+| [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | Playwright runtime matrix and CI | 10/120 runtime-required rows mapped; no required CI shard yet         |
+| [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | Continuous play and difficulty   | SEQ rerun, isolated baseline, D-06, and soaks remain                  |
+| [#818](https://github.com/JernejHabjan/fuzzy-waddle/issues/818) | Strategic debugging              | First semantic summary exists; usability, split, and parity remain    |
+| [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | Real multiplayer AI E2E          | Current Playwright AI runtime is local skirmish, not socket lockstep  |
+| [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | Legacy controller retirement     | Remove fallback only after runtime/save/multiplayer parity            |
+| [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | Source structure and naming      | Main planner names migrated; persisted IDs and large-file debt remain |
+| [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | Save/replay/reconnect lifecycle  | Cross-phase and repeated-match runtime evidence remains               |
 
 Each issue description links its cold-start plan. The plan records exact source anchors, dependency order, commands,
 evidence requirements, model/effort guidance, and completion boundary.
 
-Optional future enhancement: [#822](https://github.com/JernejHabjan/fuzzy-waddle/issues/822) may add an island map and
-island-specific runtime scenarios later. It is detached from #759 and does not block PR #814; #825 owns all work that can
-be proven with current content.
+Optional future enhancement: [#822](https://github.com/JernejHabjan/fuzzy-waddle/issues/822) owns the island map and the
+natural DOMAIN-03/04/H-29 transport-required runtime scenarios. It is detached from #759 and does not block PR #814.
 
 ## Reviewed execution shape and effort
 
@@ -142,7 +141,9 @@ completed roadmap or TODO ledger.
   seeds exactly one child plan and, through the transport manager, requests `CommonBoat` from the same owned
   `Sandhold`. The transport lifecycle now has focused creation, ownership/preflight, reservation, recovery, loading,
   landing, and handoff modules behind the stable manager façade; the focused access/skirmish/transport batch passed
-  4 suites / 29 tests. Add current-content runtime evidence next.
+  4 suites / 29 tests. Runtime discovery then proved River Crossing does not consistently require a transport mission.
+  The reusable Playwright capture now exposes real topology, carrier/container state, lifecycle, decisions, and command
+  outcomes without retaining test-side brain injection. Natural transport-required E2E is deferred to #822.
 
 Evidence is source-sensitive. Raw `tmp/` artifacts are ignored and may be absent later. Future CI must retain compact
 provenance plus failure traces/logs/screenshots as artifacts.
@@ -174,7 +175,7 @@ The parameterized Playwright spec is not a complete scenario run without the mat
 
 ## Known boundaries
 
-- No island map ships today. #825 owns current-content topology/transport evidence. Island-only runtime variants remain
+- No registered map reliably creates a transport-required objective. DOMAIN-03/04/H-29 natural runtime variants remain
   visible as an optional `deferred_content` upgrade under #822 and do not block core readiness.
 - No registered flying container currently provides shipping runtime evidence. Do not substitute a synthetic capability.
 - The current browser runtime uses the shared command/application path but not a real multiplayer relay or peer lockstep.

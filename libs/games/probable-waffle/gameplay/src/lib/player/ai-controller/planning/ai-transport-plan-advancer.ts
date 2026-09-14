@@ -1,5 +1,6 @@
 import type { AiTransportPlanContext } from "./ai-transport-plan-context";
 import type { AiTransportPlanWithLifecycle } from "./ai-transport-plan-lifecycle";
+import { queryAiAccessRouteV1 } from "./ai-access-graph-v1";
 import { advanceAiTransportLanding } from "./ai-transport-plan-landing";
 import { advanceAiTransportLoading } from "./ai-transport-plan-loading";
 import { claimAiTransportPlanOwnership } from "./ai-transport-plan-ownership";
@@ -54,17 +55,37 @@ export function advanceAiTransportPlan(
       terminalReason: "invalid_transport_route"
     });
   }
-  if (
-    !context.graph ||
-    context.graph.status !== "ready" ||
-    context.graph.generation !== plan.lifecycle.routeGeneration
-  ) {
+  if (!context.graph || context.graph.status !== "ready") {
+    if (context.observation.tick < plan.lifecycle.phaseDeadline.dueTick) return plan;
     return withAiTransportPhase(plan, "recovering", context.observation.tick, 200, {
       terminalReason: "route_generation_invalidated"
     });
   }
-  const pickup = route.pickupCandidates.find((point) => point.transferId === plan.lifecycle.pickupTransferId);
-  const landing = route.landingCandidates.find((point) => point.transferId === plan.lifecycle.landingTransferId);
+  if (context.graph.generation !== plan.lifecycle.routeGeneration) {
+    const refreshedRoute = queryAiAccessRouteV1(context.graph, plan.lifecycle.routeRequest);
+    if (refreshedRoute.kind !== route.kind) {
+      return withAiTransportPhase(plan, "recovering", context.observation.tick, 200, {
+        terminalReason: "route_generation_invalidated"
+      });
+    }
+    plan = {
+      ...plan,
+      lifecycle: {
+        ...plan.lifecycle,
+        route: refreshedRoute,
+        routeGeneration: refreshedRoute.graphGeneration,
+        terminalReason: null
+      }
+    };
+  }
+  const activeRoute = plan.lifecycle.route;
+  if (activeRoute.kind !== "water_transport" && activeRoute.kind !== "air_transport") {
+    return withAiTransportPhase(plan, "failed", context.observation.tick, 1, {
+      terminalReason: "invalid_transport_route"
+    });
+  }
+  const pickup = activeRoute.pickupCandidates.find((point) => point.transferId === plan.lifecycle.pickupTransferId);
+  const landing = activeRoute.landingCandidates.find((point) => point.transferId === plan.lifecycle.landingTransferId);
   if (!pickup || !landing) {
     return withAiTransportPhase(plan, "recovering", context.observation.tick, 200, {
       terminalReason: "transfer_invalidated"

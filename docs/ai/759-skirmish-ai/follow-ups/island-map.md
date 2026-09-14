@@ -37,10 +37,15 @@ objective while leaving valid local openings and recovery options.
    assembly, boarding, voyage, landing, handoff, expansion/attack, carrier loss, reroute, and recovery.
 5. Cover both factions and representative mirrored sides. Test air/naval combat only where real registered units support
    it; a synthetic flying container is not shipping evidence.
+6. Map DOMAIN-03, DOMAIN-04, and H-29 runtime rows only after the normal AI independently recognizes the disconnected
+   objective. Use the existing runtime checkpoint capture for topology, carrier catalog, containers, lifecycle phases,
+   decisions, and command outcomes. Do not inject a transport plan or mutate the brain from the Playwright test.
 
 ## Completion
 
 - The map is playable by a human and exposes deterministic transfer/access facts.
 - Ground-only AI cannot reach all objectives and chooses a valid supported transport plan.
 - Runtime scenarios pass for successful transfer plus loss/recovery cases.
+- At least one deterministic variant proves the unmodified AI creates the mission from observed topology, produces or
+  reserves a real carrier, boards through shared commands, crosses water, unloads, and hands the passengers back.
 - Editor/project/assets checks, focused tests, E2E, omission/closure audits pass; commit, push, and close #822.

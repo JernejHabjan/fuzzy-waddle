@@ -3,7 +3,8 @@
 ## Outcome
 
 Core skirmish AI understands and tests land, water, air, access queries, transport ownership, and recovery using current
-registered game capabilities. A future island map improves runtime breadth but is not required for core #759 readiness.
+registered game capabilities. The current-content implementation and focused contracts are complete. Natural Playwright
+proof of transport-required play is deferred to #822 because no authored map currently requires a transport route.
 
 Recommended agent: `gpt-5.6-sol`, high effort for the first cross-domain contract and runtime-ownership slice. Hand the
 proven contract to `gpt-5.6-terra`, medium effort, for fixture mapping and focused repairs. Reserve Astra for an
@@ -38,13 +39,13 @@ shipping game has the required content, not that Playwright evidence exists yet.
 | ---------------------------------------- | ---------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------- |
 | DOMAIN-01: water alone creates no demand | Water topology and water units exist                                                     | Authored pure fixture plus macro/adaptation unit coverage                   | Pure mapped; runtime recipe remains #816                            |
 | DOMAIN-02: useful naval objective        | Tivara `Sandhold` produces `VikingBoat`; River Crossing registers naval content          | Authored pure fixture and adaptation coverage                               | Runtime candidate; do not claim Skaduwee naval production           |
-| DOMAIN-03: transport route               | Tivara `Sandhold` produces `CommonBoat`; River Crossing registers one                    | Access-query and transport-lifecycle unit coverage                          | Blocked at the live capability projection described below           |
+| DOMAIN-03: transport route               | Tivara `Sandhold` produces `CommonBoat`; River Crossing registers one                    | Access-query, carrier-production, lifecycle, and generation-refresh tests   | Natural runtime proof deferred to #822                              |
 | DOMAIN-04 / H-29: loss and handoff       | `CommonBoat` has four seats and uses shared board/unload commands                        | Transport-manager loss, recovery, conflict, unload, and save-identity tests | Pure fixture mapping and runtime recipe remain                      |
 | DOMAIN-05: useful air and anti-air       | `TivaraAlchemist` and `SkaduweeOwl` are registered flyers                                | Authored pure fixture and adaptation coverage                               | Runtime candidate; paired rejection evidence remains                |
 | DOMAIN-06: compatible squads/counters    | Observations expose movement and target domains                                          | Authored pure fixture and tactics unit coverage                             | Pure mapped; runtime recipe remains #816                            |
 | H-19/20/21: bounded access               | Adapter builds at most 512 cells per observation; graph carries generation and clearance | Pending, generation, narrow-route, and clearance unit coverage              | H-19 progress oracle and live mission clearance projection remain   |
 | Air transport                            | No registered flying container                                                           | Synthetic observation test only                                             | Unsupported runtime capability; never count it as shipping evidence |
-| Island-only runtime                      | No island map is registered                                                              | No valid runtime evidence                                                   | Optional `deferred_content` owned by #822; never blocks #759        |
+| Transport-required runtime               | No registered map consistently requires transport for a meaningful objective             | Reusable topology/carrier/boarding/handoff checkpoint capture exists        | Optional `deferred_content` owned by #822; never blocks #759        |
 
 The currently usable authority chain is:
 
@@ -59,7 +60,7 @@ Given a current-generation catalog where an owned producer can produce a water c
 carrier must still receive a `water_transport` route. The skirmish manager must seed exactly one transport plan; only then
 may the transport manager request carrier production and take passenger ownership.
 
-The path currently breaks before plan creation:
+The original path broke before plan creation:
 
 - `queryAiAccessRouteV1` already accepts `canProduceWaterTransport` and its focused test returns a transport route with
   zero existing seats;
@@ -67,14 +68,20 @@ The path currently breaks before plan creation:
 - `AiSkirmishManager.routeCapability` projects only observed seats and never projects either producible-carrier flag, so
   the access query reports the route impossible and no child plan can exist.
 
-This is the first Terra repair. The skirmish manager, transport manager, and Phaser `PlayerAiController` composition
+The skirmish manager, transport manager, and Phaser `PlayerAiController` composition
 root were content-hash-baselined above the 400-line source limit. The controller command dispatcher and skirmish
 responsibilities are now extracted and focused tests preserve their behavior. The skirmish route-capability projection
 now derives buildable water/air carrier flags from the current-generation catalog and owned producers; its focused
 contract proves one water child plan is seeded before a boat exists. The protected transport root is now a stable
 44-line façade over focused creation, ownership/preflight, reservation, recovery, loading, landing, and handoff
-modules; no legacy-baseline refresh was needed. The next work is current-content runtime evidence, not another
-structural split.
+modules; no legacy-baseline refresh was needed. Runtime discovery also found that a ready replacement access-graph
+generation could cancel a still-valid transport route. The plan advancer now refreshes a same-kind route in place and
+waits through transient pending graphs until the phase deadline. Focused lifecycle regressions preserve both rules.
+
+River Crossing can expose real water topology and producible boats, but ordinary play does not reliably create a
+transport-required objective. A long natural run can therefore complete without any transport mission. The runtime
+harness now records real topology, carrier catalog, physical container state, transport plans, decisions, and command
+outcomes, but no authored brain-state injection is retained and DOMAIN-03 is not mapped as passing runtime evidence.
 
 Focused audit evidence:
 
@@ -91,8 +98,8 @@ lower-layer contracts; they do not claim that the missing live projection or any
 ## Owned scenarios
 
 - DOMAIN-01/02: water alone creates no naval demand; valuable supported route/escort/intercept objectives may.
-- DOMAIN-03: prove disconnected/costed-route and transport planning in pure fixtures; defer only the real island-map
-  runtime variant to #822.
+- DOMAIN-03: preserve disconnected/costed-route and transport-planning unit/pure contracts; #815 owns any remaining pure
+  manifest mapping and #822 owns natural transport-required runtime proof.
 - DOMAIN-04 and H-29: transport loss, capacity change, passenger ownership, landing handoff, release, and recovery.
 - DOMAIN-05/06: useful air selection, paired anti-air rejection, domain-compatible squads, counters, and targets.
 - H-19/20/21: bounded optional access work, topology-generation invalidation, footprint-aware routes, and progress when a
@@ -105,25 +112,16 @@ lower-layer contracts; they do not claim that the missing live projection or any
    runtime claims. Stop the Sol slice once the contract and its first failing or passing path are reproducible.
 2. **Terra/high structural boundary:** controller, skirmish, and transport ownership-root splits are complete.
    Focused tests and source-structure lint preserved behavior without a baseline refresh.
-3. **Terra/high delivery:** route/child-plan projection, carrier-production chain, and lifecycle split are complete.
-   Add runtime evidence using current registered content. Record only what can produce real
-   evidence; never infer capability from a type name or manufacture a shipping feature in the fixture.
-4. Add typed pure fixtures and semantic oracles for the owned rows. Cover positive, rejection, loss, retry, abort, release,
-   and ordering cases while preserving fair observations.
-5. Add focused Phaser observation/access integration tests for topology generations, footprints, transfer points, and
-   capability projection.
-6. Add Playwright recipes only where existing maps and registered units genuinely exercise the contract. Route these
-   recipes through #824 tooling and #816 shards.
-7. Extend the manifest/report status model so `required_supported` work fails closed while `deferred_content` names #822,
-   stays visible, is never counted as passed, and does not block the core merge gate.
-8. Update code-adjacent world-access/testing docs with proven behavior and ownership. Do not move scenario TODOs into
-   product architecture documentation.
+3. **Terra/high delivery:** route/child-plan projection, carrier-production chain, lifecycle split, access-generation
+   hardening, and reusable runtime checkpoint capture are complete.
+4. #815 owns remaining typed pure manifest mappings; #816 owns non-transport supported runtime and fail-closed status/CI.
+5. #822 owns natural transport-required Playwright recipes after a suitable island map exists. Never manufacture a brain
+   plan or shipping capability merely to turn a runtime row green.
 
 ## Evidence and completion
 
 - All owned content-independent pure/integration cases pass deterministically with canonical provenance.
-- Every currently supportable runtime case uses a real lobby-created Phaser match and registered capabilities.
-- Island-only runtime variants are explicit `deferred_content` owned by #822; no supported core row is hidden behind it.
+- Transport-required runtime remains visible and unmapped until #822 supplies a real topology-driven objective.
 - Access work remains bounded; transport/passenger/squad ownership is exclusive and terminal cleanup releases claims.
-- Run focused tests plus #824 changed/required accounting, omission/final closure audits, plan-artifact triage, commit,
-  push, update #825, and report the refreshed roadmap grid.
+- Focused transport lifecycle and source checks pass; update #825 and retain this file only until the parent handoff is
+  finally triaged.
