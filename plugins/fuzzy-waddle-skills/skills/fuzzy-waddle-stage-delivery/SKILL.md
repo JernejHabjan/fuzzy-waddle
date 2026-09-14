@@ -20,8 +20,12 @@ The user's plan owns the stage boundary, required checks and git authority. This
 3. **Verification/repair:** run the user/lane-authorized stage checks, repair task-caused failures, then rerun affected checks. Preserve source/config/fixture provenance. Explicitly deferred final tests stay deferred; a required unavailable check blocks stage readiness.
 4. **Final Closure Audit:** after repairs/checks, recheck the acceptance map, immediate consumers and staged scope. Every mandatory item needs implemented-and-evidenced status or an explicit blocker. A green partial test set does not close missing behavior.
 5. **Artifact triage and handoff:** move proven behavior, tests, ownership, and operator guidance from the stage plan into their owning code or focused durable docs. Remove resolved TODO/history, update external backlinks before deleting a plan, then keep only unresolved state, evidence, known limitations, next stage/model/effort, and a copyable resume prompt in the existing ledger. Do not create a new plan unless requested.
-6. **Publish when authorized:** inspect and commit exact task-owned changes; push the selected branch normally and verify the remote branch SHA matches the intended commit. Keep any integration PR draft until final validation. A failed/rejected push is a delivery blocker; do not force-push or claim publication.
-7. **Stop at the requested boundary:** return the stage result and handoff, then end the turn. No implementation of the next stage or automatic follow-up task. If continuous execution was explicitly requested instead, follow that policy; never infer it from a numbered roadmap.
+6. **Learning audit when in scope:** if the user requested self-improvement or retained evidence shows repeated material
+   workflow friction, use [post-task agent learning](../fuzzy-waddle-repo-workflow/references/task-learning.md). Make only
+   a bounded, evidenced improvement; otherwise record no skill/tool change. Do not churn shared skills after every
+   ordinary task.
+7. **Publish when authorized:** inspect and commit exact task-owned changes; push the selected branch normally and verify the remote branch SHA matches the intended commit. Keep any integration PR draft until final validation. A failed/rejected push is a delivery blocker; do not force-push or claim publication.
+8. **Stop at the requested boundary:** return the stage result and handoff, then end the turn. No implementation of the next stage or automatic follow-up task. If continuous execution was explicitly requested instead, follow that policy; never infer it from a numbered roadmap.
 
 ## Evidence record (in the owning progress file)
 

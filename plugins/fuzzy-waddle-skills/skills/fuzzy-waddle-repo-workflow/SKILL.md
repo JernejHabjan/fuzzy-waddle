@@ -10,6 +10,7 @@ description: Apply Fuzzy Waddle scope, verification, source-discovery and git ow
 - Unknown ownership: [source index](references/source-index.md). Known file/symbol: open it directly; do not rediscover the repository.
 - Code, contracts or documentation migration: [coding and documentation](references/coding-contracts.md).
 - Running checks or diagnosing tooling: [verification routes](references/verification.md).
+- Explicit self-improvement or repeated measurable workflow friction: [post-task learning](references/task-learning.md).
 - Plan/progress work: use the task-tracking skill. A requested stage boundary uses the stage-delivery skill. Issue-lane delivery uses autonomous-delivery; neither grants authority beyond the request.
 
 ## Scope and evidence
