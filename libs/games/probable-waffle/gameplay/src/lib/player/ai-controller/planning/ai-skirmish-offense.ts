@@ -20,13 +20,21 @@ import {
 
 function selectOpponent(context: AiSkirmishProposalContext) {
   const focusedPlayer = context.activeAttack?.lifecycle?.targetPlayerNumber;
+  const prioritizeStrategicTarget = (candidates: readonly AiSkirmishProposalContext["visibleEnemies"][number][]) =>
+    [...candidates].sort((left, right) => {
+      const leftMain = left.mainBuilding?.status === "known" && left.mainBuilding.value ? 1 : 0;
+      const rightMain = right.mainBuilding?.status === "known" && right.mainBuilding.value ? 1 : 0;
+      return rightMain - leftMain || left.actorId.localeCompare(right.actorId);
+    });
+  const visible = prioritizeStrategicTarget(context.visibleEnemies);
+  const remembered = prioritizeStrategicTarget(context.rememberedEnemies);
   if (focusedPlayer === null || focusedPlayer === undefined)
-    return context.visibleEnemies[0] ?? context.rememberedEnemies[0];
+    return visible[0] ?? remembered[0];
   return (
-    context.visibleEnemies.find((candidate) => candidate.owner === focusedPlayer) ??
-    context.rememberedEnemies.find((candidate) => candidate.owner === focusedPlayer) ??
-    context.visibleEnemies[0] ??
-    context.rememberedEnemies[0]
+    visible.find((candidate) => candidate.owner === focusedPlayer) ??
+    remembered.find((candidate) => candidate.owner === focusedPlayer) ??
+    visible[0] ??
+    remembered[0]
   );
 }
 

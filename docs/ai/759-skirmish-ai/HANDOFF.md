@@ -131,6 +131,12 @@ completed roadmap or TODO ledger.
   three repetitions compare canonical proposal/state digests, then assert capacity, no-extra-capacity, prebuild,
   useful same-unit production, and post-loss replacement controls. Focused evidence: 5 tests passed; the pure matrix
   selection passed with fixture digest `fnv1a32:d8311bd1`. This advances pure mapping to 45/111; runtime stays 10/120.
+- Production runtime reran successfully at `dbdecbb7`: PRO-01–07 passed both factions with 1,442 decisions and 24,040
+  ticks. The subsequent SEQ-01/02 runtime report `1789409819087-failed.json` recorded 7,172 decisions and 120,092 ticks:
+  Skaduwee SEQ-01 targeted a non-terminal FrostForge after its opening contact, made no enemy kills, and had no terminal
+  result. `ai-skirmish-offense.ts` now prioritizes an observed enemy main building; focused offense evidence passes.
+  A full rerun is still required. Independently, SEQ-02 still has duplicate-effect, raid-recovery, and Skaduwee worker
+  bootstrap failures; investigate those from the retained report after the target-selection rerun.
 - The pinned-baseline adapter is metadata-only; isolated baseline execution and D-06 calibration are not implemented.
 - Wrap-up migrated the main planner/manager filenames and implementation symbols to responsibility names, added the
   committed strategic intent summary, removed four optional AI IDE profiles, and established source-structure lint.
