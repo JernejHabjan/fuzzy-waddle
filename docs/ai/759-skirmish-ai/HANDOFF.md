@@ -47,7 +47,7 @@ commit it separately, and then resume the issue. Never refresh the legacy source
 | Order             | Issue                                                           | State         | Dependency / next boundary                              | Recommended primary slice |
 | ----------------- | --------------------------------------------------------------- | ------------- | ------------------------------------------------------- | ------------------------- |
 | 1                 | [#825](https://github.com/JernejHabjan/fuzzy-waddle/issues/825) | `complete`    | Current-content foundation done; natural E2E is #822    | —                         |
-| 2                 | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `next`        | Select one pure family and pair it with #816            | Terra medium              |
+| 2                 | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `in_progress` | PRO-01–05 typed pure family; pair existing #816 runtime | Terra medium              |
 | 2                 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `next`        | Pair runtime family with #815; transport waits for #822 | Terra medium              |
 | 3                 | [#818](https://github.com/JernejHabjan/fuzzy-waddle/issues/818) | `not_started` | After #824; semantic debug usability/parity             | Terra medium              |
 | 4                 | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `not_started` | After stable SEQ/runtime tooling                        | Sol high → Terra medium   |
@@ -64,7 +64,7 @@ defined by the task-tracking and stage-delivery skills.
 | Issue                                                           | Responsibility                   | Current boundary                                                      |
 | --------------------------------------------------------------- | -------------------------------- | --------------------------------------------------------------------- |
 | [#825](https://github.com/JernejHabjan/fuzzy-waddle/issues/825) | Domain and transport coverage    | Current-content implementation and focused contracts complete         |
-| [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | Deterministic pure scenarios     | 40/111 pure-required rows mapped at closeout; recalculate first       |
+| [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | Deterministic pure scenarios     | Recalculated 40/111; PRO-01–05 is the first typed family              |
 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | Playwright runtime matrix and CI | 10/120 runtime-required rows mapped; no required CI shard yet         |
 | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | Continuous play and difficulty   | SEQ rerun, isolated baseline, D-06, and soaks remain                  |
 | [#818](https://github.com/JernejHabjan/fuzzy-waddle/issues/818) | Strategic debugging              | First semantic summary exists; usability, split, and parity remain    |
