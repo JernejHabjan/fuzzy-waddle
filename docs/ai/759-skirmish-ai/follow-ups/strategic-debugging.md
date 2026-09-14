@@ -5,8 +5,9 @@
 The AI panel explains, at a glance, what the AI is trying to achieve, with what force/resources, why, and what blocks it,
 while detailed IDs remain available for causal drilldown.
 
-Recommended agent: `gpt-5.6-terra`, medium effort. Use the Phaser skill because panel lifecycle and generated/user-owned
-regions matter.
+Recommended agent: `gpt-5.6-sol`, high effort for the intent vocabulary, prioritisation, and cross-projection contract;
+hand panel splitting and already-specified presentation work to `gpt-5.6-terra`, medium effort. Use the Phaser skill
+because panel lifecycle and generated/user-owned regions matter.
 
 Estimated effort: **M**, about 2–4 focused agent sessions or 1–3 engineering days.
 

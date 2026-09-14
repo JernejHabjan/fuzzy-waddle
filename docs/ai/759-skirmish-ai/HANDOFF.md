@@ -33,23 +33,23 @@ until one clean replacement run is necessary; do not reconstruct or dump the old
 
 ## Remaining execution order
 
-| Order             | Issue                                                           | State         | Next boundary                                                    | Model / effort              |
-| ----------------- | --------------------------------------------------------------- | ------------- | ---------------------------------------------------------------- | --------------------------- |
-| 1                 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Finish current SEQ-02 causal repair                              | Terra, medium               |
-| 2                 | [#826](https://github.com/JernejHabjan/fuzzy-waddle/issues/826) | `not_started` | Authoritative preset-world E2E bridge and representative proof   | Sol, high → Terra, medium   |
-| 3                 | [#818](https://github.com/JernejHabjan/fuzzy-waddle/issues/818) | `not_started` | Strategy/debug usability before strategy expansion               | Terra, medium               |
-| 4                 | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `not_started` | Fastest-credible-victory policy and sustained pressure           | Sol, high → Terra, high     |
-| 5                 | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `in_progress` | Recalculate from 45/111; complete pure families paired with #816 | Terra, medium               |
-| 5                 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Recalculate from 10/120; runtime families and required CI shards | Terra, medium               |
-| 6                 | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `not_started` | Isolated baseline, D-06, paired difficulty and soaks after #827  | Sol, high → Terra, medium   |
-| 7                 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `not_started` | Real multiplayer relay/lockstep AI evidence                      | Sol, high → Terra, high     |
-| 8                 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `not_started` | Save/replay/reconnect/repeated-match evidence                    | Sol, high → Terra, medium   |
-| 9                 | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | `not_started` | Retire legacy controller after parity dependencies               | Terra, high → Terra, medium |
-| As needed / final | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `not_started` | Bounded blockers, then final naming/structure cleanup            | Terra, medium               |
+| Order             | Issue                                                           | State         | Next boundary                                                    | Model / effort            |
+| ----------------- | --------------------------------------------------------------- | ------------- | ---------------------------------------------------------------- | ------------------------- |
+| 1                 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Finish current SEQ-02 causal repair                              | Sol, high → Terra, medium |
+| 2                 | [#826](https://github.com/JernejHabjan/fuzzy-waddle/issues/826) | `not_started` | Authoritative preset-world E2E bridge and representative proof   | Sol, high → Terra, medium |
+| 3                 | [#818](https://github.com/JernejHabjan/fuzzy-waddle/issues/818) | `not_started` | Strategy/debug usability before strategy expansion               | Sol, high → Terra, medium |
+| 4                 | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `not_started` | Fastest-credible-victory policy and sustained pressure           | Sol, high → Terra, high   |
+| 5                 | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `in_progress` | Recalculate from 45/111; complete pure families paired with #816 | Sol, high → Terra, medium |
+| 5                 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Recalculate from 10/120; runtime families and required CI shards | Sol, high → Terra, medium |
+| 6                 | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `not_started` | Isolated baseline, D-06, paired difficulty and soaks after #827  | Sol, high → Terra, medium |
+| 7                 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `not_started` | Real multiplayer relay/lockstep AI evidence                      | Sol, high → Terra, high   |
+| 8                 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `not_started` | Save/replay/reconnect/repeated-match evidence                    | Sol, high → Terra, medium |
+| 9                 | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | `not_started` | Retire legacy controller after parity dependencies               | Sol, high → Terra, medium |
+| As needed / final | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `not_started` | Bounded blockers, then final naming/structure cleanup            | Terra, medium             |
 
-Dependencies remain authoritative over model grouping. Where evidence permits, keep the same Terra delivery context for
-#826 then #818, and for #827 then the paired #815/#816 families. Use Sol only for the named authority/design boundaries;
-do not reorder dependent work merely to avoid a model switch.
+Dependencies remain authoritative over model grouping. Every planning, authority, architecture, strategy, or causal-diagnosis
+boundary starts on Sol/high; Terra resumes only once that boundary has a compact contract and focused acceptance evidence.
+Do not reorder dependent work merely to avoid a model switch or downgrade a deep-reasoning boundary for cost.
 
 Optional [#822](https://github.com/JernejHabjan/fuzzy-waddle/issues/822) owns a future island map and natural
 transport-required runtime. It is detached from #759 and does not block core readiness.

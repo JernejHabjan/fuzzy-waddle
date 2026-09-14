@@ -5,7 +5,8 @@
 Every supported pure-required row in `tools/ai/fixtures/skirmish-v1.json` executes a typed deterministic scenario with
 semantic assertions. Missing work must fail closed; a fixture filename alone is not coverage.
 
-Recommended agent: `gpt-5.6-terra`, medium effort. Raise effort only for a proven cross-manager contract disagreement.
+Recommended agent: `gpt-5.6-sol`, high effort for each new scenario-family contract and cross-manager diagnosis; hand
+mechanical scenario expansion with an already-proven fixture recipe to `gpt-5.6-terra`, medium effort.
 
 Estimated effort: **XL**, about 6–12 focused agent sessions or 4–8 engineering days at the current unmapped count.
 
