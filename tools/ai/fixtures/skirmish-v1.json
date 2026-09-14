@@ -31,6 +31,7 @@
       "stages": [7],
       "group": "production",
       "fixture": "stage-15-land-loop-runtime.json",
+      "authoredFixture": "production-scenarios.json",
       "drivers": ["pure", "runtime"]
     },
     {
@@ -38,6 +39,7 @@
       "stages": [7],
       "group": "production",
       "fixture": "stage-15-land-loop-runtime.json",
+      "authoredFixture": "production-scenarios.json",
       "drivers": ["pure", "runtime"]
     },
     {
@@ -45,6 +47,7 @@
       "stages": [7],
       "group": "production",
       "fixture": "stage-15-land-loop-runtime.json",
+      "authoredFixture": "production-scenarios.json",
       "drivers": ["pure", "runtime"]
     },
     {
@@ -52,6 +55,7 @@
       "stages": [7],
       "group": "production",
       "fixture": "stage-15-land-loop-runtime.json",
+      "authoredFixture": "production-scenarios.json",
       "drivers": ["pure", "runtime"]
     },
     {
@@ -59,6 +63,7 @@
       "stages": [6, 7],
       "group": "production",
       "fixture": "stage-15-land-loop-runtime.json",
+      "authoredFixture": "production-scenarios.json",
       "drivers": ["pure", "runtime"]
     },
     {

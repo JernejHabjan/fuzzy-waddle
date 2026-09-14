@@ -22,8 +22,8 @@ Read only:
 4. the owning manager and adjacent spec
 5. scenario builders/runners under `gameplay/src/lib/player/ai-controller/testing/`
 
-Current closeout count was 40 of 111 pure-required rows mapped. Recalculate before editing; never copy that number into
-logic. Keep same-type units/buildings legal when causal demand remains.
+The latest completed family maps PRO-01–05, yielding 45 of 111 pure-required rows mapped. Recalculate before editing;
+never copy that number into logic. Keep same-type units/buildings legal when causal demand remains.
 
 ## Implementation order
 

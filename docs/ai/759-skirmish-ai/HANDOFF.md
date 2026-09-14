@@ -64,7 +64,7 @@ defined by the task-tracking and stage-delivery skills.
 | Issue                                                           | Responsibility                   | Current boundary                                                      |
 | --------------------------------------------------------------- | -------------------------------- | --------------------------------------------------------------------- |
 | [#825](https://github.com/JernejHabjan/fuzzy-waddle/issues/825) | Domain and transport coverage    | Current-content implementation and focused contracts complete         |
-| [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | Deterministic pure scenarios     | Recalculated 40/111; PRO-01–05 is the first typed family              |
+| [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | Deterministic pure scenarios     | Recalculated 45/111; next pure family pairs with #816 runtime evidence |
 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | Playwright runtime matrix and CI | 10/120 runtime-required rows mapped; no required CI shard yet         |
 | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | Continuous play and difficulty   | SEQ rerun, isolated baseline, D-06, and soaks remain                  |
 | [#818](https://github.com/JernejHabjan/fuzzy-waddle/issues/818) | Strategic debugging              | First semantic summary exists; usability, split, and parity remain    |
@@ -127,6 +127,10 @@ completed roadmap or TODO ledger.
   victory to satisfy post-raid recovery; focused manager tests passed, but Playwright has not rerun those repairs.
 - A wider focused gameplay batch passed 7 suites / 82 tests; the portal development build passed.
 - Closeout coverage was 10/120 runtime-required and 40/111 pure-required. These are mapped counts, not pass counts.
+- PRO-01–05 now map to `production-scenarios.json` and execute through the typed deterministic production suite:
+  three repetitions compare canonical proposal/state digests, then assert capacity, no-extra-capacity, prebuild,
+  useful same-unit production, and post-loss replacement controls. Focused evidence: 5 tests passed; the pure matrix
+  selection passed with fixture digest `fnv1a32:d8311bd1`. This advances pure mapping to 45/111; runtime stays 10/120.
 - The pinned-baseline adapter is metadata-only; isolated baseline execution and D-06 calibration are not implemented.
 - Wrap-up migrated the main planner/manager filenames and implementation symbols to responsibility names, added the
   committed strategic intent summary, removed four optional AI IDE profiles, and established source-structure lint.
