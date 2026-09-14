@@ -14,7 +14,10 @@ export function parseSummaryArguments(tokens) {
     if (token === "--details") options.details = true;
     else if (token === "--failures-only") options.failuresOnly = true;
     else if (token === "--scenario") options.scenario = requiredValue(tokens[++index], "scenario");
-    else if (token === "--help") options.help = true;
+    else if (token === "--report") {
+      if (options.input !== null) throw new Error("duplicate_report_input");
+      options.input = requiredValue(tokens[++index], "report");
+    } else if (token === "--help") options.help = true;
     else if (token.startsWith("--")) throw new Error(`unknown_option:${token}`);
     else if (options.input === null) options.input = token;
     else throw new Error(`unexpected_argument:${token}`);
@@ -54,12 +57,23 @@ export function summarizeReport(report, options = {}) {
   if (report.reason) lines.push(`REASON ${report.reason}`);
   const work = report.workCounts ?? runtime?.workCounts;
   if (work) {
-    lines.push(
-      `WORK scenarios=${work.scenarios ?? 0} suites=${work.testSuites ?? 0} tests=${work.tests ?? 0} decisions=${work.decisions ?? 0} ticks=${work.ticks ?? 0}`
-    );
+    const workSummary = [
+      `scenarios=${work.scenarios ?? 0}`,
+      `suites=${work.testSuites ?? 0}`,
+      `tests=${work.tests ?? 0}`,
+      `decisions=${work.decisions ?? 0}`,
+      `ticks=${work.ticks ?? 0}`
+    ];
+    lines.push(`WORK ${workSummary.join(" ")}`);
   }
 
   const scenarios = runtime?.scenarios ?? [];
+  const noExecutedWork =
+    (work?.testSuites ?? 0) === 0 &&
+    (work?.tests ?? 0) === 0 &&
+    (work?.decisions ?? 0) === 0 &&
+    (work?.ticks ?? 0) === 0;
+  if (!runtime && noExecutedWork) lines.push("INFRASTRUCTURE no_runtime_payload");
   const selected = scenarios.filter((scenario) => !options.scenario || scenario.scenarioId === options.scenario);
   if (options.scenario && selected.length === 0) lines.push(`SCENARIO ${options.scenario} missing`);
   for (const scenario of selected) {
@@ -162,7 +176,22 @@ function finite(value) {
 }
 
 function helpText() {
-  return `Summarize a skirmish matrix artifact without dumping its full runtime payload.\n\nUsage:\n  node tools/ai/summarize-skirmish-report.mjs [artifact-or-directory] [options]\n\nOptions:\n  --scenario ID       Show one scenario\n  --details           Add compact resources, worker orders, queues, squads and missions\n  --failures-only     Hide passing scenarios\n  --help              Show this help\n\nWith no path, the newest JSON report in tmp/ai-skirmish-matrix is selected.\n`;
+  return [
+    "Summarize a skirmish matrix artifact without dumping its full runtime payload.",
+    "",
+    "Usage:",
+    "  node tools/ai/summarize-skirmish-report.mjs [artifact-or-directory] [options]",
+    "",
+    "Options:",
+    "  --report PATH       Read an explicit artifact or report directory",
+    "  --scenario ID       Show one scenario",
+    "  --details           Add compact resources, worker orders, queues, squads and missions",
+    "  --failures-only     Hide passing scenarios",
+    "  --help              Show this help",
+    "",
+    "With no path, the newest JSON report in tmp/ai-skirmish-matrix is selected.",
+    ""
+  ].join("\n");
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

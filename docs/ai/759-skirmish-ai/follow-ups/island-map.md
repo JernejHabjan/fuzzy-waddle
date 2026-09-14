@@ -3,8 +3,8 @@
 ## Outcome
 
 A shipped representative island skirmish map makes disconnected-land expansion and transport-required combat testable in
-the real runtime. This is an optional future content upgrade, not a #759/PR #814 dependency or merge gate. #825 owns all
-domain and transport behavior that can be proven with current content.
+the real runtime. This is an optional future content upgrade, not a #759/PR #814 dependency or merge gate. Current-content
+domain and transport behavior is already owned by the code-adjacent AI architecture and testing contracts.
 
 Recommended agent: `gpt-5.6-terra`, high effort. Use the Phaser skill and preserve Phaser Editor authored/generated
 boundaries. Ask for Sol or Astra only for a bounded unresolved topology/transport investigation.
@@ -33,7 +33,7 @@ objective while leaving valid local openings and recovery options.
    legal transfer points, base footprints, and representative naval/air lanes.
 2. Register the map end to end: enum/protocol, assets, scene, lobby metadata, thumbnail, and server/room filters.
 3. Validate terrain, collision, navigation, placement, fog, spawn ownership, shore boarding/unloading, and match victory.
-4. Reuse #825 pure/current-content coverage, then add island-specific Playwright recipes for transport acquisition,
+4. Reuse existing pure/current-content coverage, then add island-specific Playwright recipes for transport acquisition,
    assembly, boarding, voyage, landing, handoff, expansion/attack, carrier loss, reroute, and recovery.
 5. Cover both factions and representative mirrored sides. Test air/naval combat only where real registered units support
    it; a synthetic flying container is not shipping evidence.

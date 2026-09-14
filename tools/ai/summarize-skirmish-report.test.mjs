@@ -11,6 +11,15 @@ test("parses compact triage flags", () => {
   });
 });
 
+test("accepts an explicit report option used by retained-tool workflows", () => {
+  assert.deepEqual(parseSummaryArguments(["--report", "artifact.json", "--failures-only"]), {
+    input: "artifact.json",
+    scenario: null,
+    details: false,
+    failuresOnly: true
+  });
+});
+
 test("summarizes runtime failures and final variant evidence", () => {
   const text = summarizeReport({
     status: "failed",
@@ -77,4 +86,24 @@ test("failure-only output omits unrelated variants from shared fixture reports",
 
   assert.match(text, /VARIANT failing/);
   assert.doesNotMatch(text, /VARIANT unrelated/);
+});
+
+test("classifies a missing runtime payload as infrastructure evidence", () => {
+  const text = summarizeReport({
+    status: "failed",
+    workCounts: { scenarios: 1, testSuites: 0, tests: 0, decisions: 0, ticks: 0 },
+    process: { stderr: "Test timeout exceeded" }
+  });
+
+  assert.match(text, /INFRASTRUCTURE no_runtime_payload/);
+  assert.match(text, /PROCESS STDERR/);
+});
+
+test("does not classify an executed pure report as missing runtime infrastructure", () => {
+  const text = summarizeReport({
+    status: "passed",
+    workCounts: { scenarios: 1, testSuites: 2, tests: 12, decisions: 0, ticks: 0 }
+  });
+
+  assert.doesNotMatch(text, /INFRASTRUCTURE/);
 });

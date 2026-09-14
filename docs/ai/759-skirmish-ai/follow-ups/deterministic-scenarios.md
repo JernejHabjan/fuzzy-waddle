@@ -36,8 +36,8 @@ never copy that number into logic. Keep same-type units/buildings legal when cau
 4. Register the fixture in the manifest without changing the required denominator or driver.
 5. Repeat the scenario three times and compare decisions, state, and hash. Add ordering permutations where inputs have
    set semantics.
-6. Pair each completed family with its #816 runtime slice before moving too far ahead. #825 owns the domain/transport
-   family but contributes its mapped pure rows to this issue's denominator.
+6. Pair each completed family with its #816 runtime slice before moving too far ahead. The completed domain/transport
+   contracts remain part of this issue's pure-coverage denominator.
 7. Commit and push each coherent family batch; update #815 with the recalculated mapped/required counts.
 
 ## Evidence

@@ -39,9 +39,9 @@ running its IDE gutter entry without `AI_SKIRMISH_RUNTIME_REQUEST` is not scenar
    Prefer #826's preset-world mode when unrelated opening/map prerequisites do not belong to the behavior under test.
 4. Diagnose the earliest disagreement in this order: observation, demand/mission, intent/claim, shared application,
    outcome, cleanup. Batch related repairs and run focused Jest before one grouped browser rerun.
-5. Cover both factions and representative sides/seeds on currently authored maps. Consume #825 domain/transport cases.
-   Island-only variants remain visible `deferred_content` under optional #822; never claim them or synthetic
-   flying-container coverage without registered capabilities.
+5. Cover both factions and representative sides/seeds on currently authored maps. Consume the code-adjacent
+   domain/transport contracts. Island-only variants remain visible `deferred_content` under optional #822; never claim
+   them or synthetic flying-container coverage without registered capabilities.
 6. First record each row as supported or explicitly deferred with its owner. Then derive isolated CI shards by stable
    manifest family from that status; do not copy scenario IDs into workflow YAML. Fail the selector when a supported
    runtime-required row has no recipe, no shard, or no runnable command. A clean worker may run one Phaser/Playwright

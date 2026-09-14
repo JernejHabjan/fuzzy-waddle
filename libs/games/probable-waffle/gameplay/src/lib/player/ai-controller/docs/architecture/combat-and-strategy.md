@@ -12,6 +12,9 @@ Offensive missions progress through assembly, rally, advance, engagement, regrou
 
 Small raids receive a bounded compatible local response while the main force retains useful pressure. A growing lethal threat can recall more of the army. Multiple fronts own separate squads, routes and reinforcement priorities instead of collapsing into one permanent blob.
 
+Defense membership is capability-aware: an actor can claim a threat response only when its target domains can affect the
+threat's movement domain. An impressive squad count made from incapable units is not protection.
+
 After a favorable engagement, the AI applies useful pressure to an exposed economy, production site, expansion, choke or core. It must not idle indefinitely for perfect certainty. After an unfavorable engagement, it preserves survivors, changes force/route/objective and avoids repeating the same lethal choke oscillation.
 
 ## Tactical execution
@@ -22,6 +25,17 @@ After a favorable engagement, the AI applies useful pressure to an exposed econo
 - Healing, spells and zones account for cooldowns, missing value and already-reserved effects.
 - Casualties, damage, position progress and objective effects are independently measured.
 - Reinforcements assemble or choose a safe alternate route instead of feeding singly into danger.
+
+## Domain and transport authority
+
+The observation pipeline publishes a generation-paired capability catalog and access graph. Route feasibility includes
+carriers producible by owned producers, not only currently available seats. A same-kind graph refresh preserves a valid
+mission, while a transient pending graph waits only until the existing phase deadline.
+
+The skirmish manager creates the child transport requirement. The transport manager then exclusively owns carrier
+production, reservation, boarding, transit, unloading, loss recovery and passenger handoff. Shared game commands remain
+authoritative for every state change. Unsupported faction capabilities, synthetic flying containers and test-injected
+brain plans are never treated as shipping evidence.
 
 ## Adaptation and technology
 

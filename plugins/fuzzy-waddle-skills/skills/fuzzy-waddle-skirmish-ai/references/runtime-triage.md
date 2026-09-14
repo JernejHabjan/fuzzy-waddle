@@ -2,10 +2,19 @@
 
 Use this only after a skirmish runtime or calibration failure.
 
-1. Summarize the emitted artifact with `pnpm ai:skirmish:report -- --failures-only --details`. Filter one row with `--scenario ID` before inspecting JSON.
-2. Compare the first failing checkpoint with the preceding one. Record actor/worker counts, delivered income, resources, producer queues, squads, objectives, mission events, score deltas, perturbation dispatch and command-failure families.
-3. Trace the responsible actor through committed observation, pure manager ownership, arbitration claims, shared command application and terminal outcome. Add a focused failing regression before changing the owner.
-4. Run all affected focused specs together. Run the grouped Playwright scenarios once after the batch is green. Independent Jest/type/build commands may run concurrently; accelerated browser matches may not.
+1. Summarize the newest artifact with `pnpm ai:skirmish:report -- --failures-only --details`. For a named artifact use
+   `pnpm ai:skirmish:report -- --report <path> --scenario <ID> --failures-only --details`. Inspect raw JSON only when
+   this bounded summary lacks one required field.
+2. If the report has no runtime payload or zero tests, decisions, or ticks, classify the first process/harness failure.
+   Do not draw behavior conclusions or rerun until timeout, browser, server, and provenance boundaries are sound.
+3. Compare the first failing checkpoint with the preceding one. Record actor/worker counts, income, resources, queues,
+   squads, objectives, mission events, score deltas, perturbation dispatch and command-failure families.
+4. Trace the responsible actor through committed observation, manager ownership, arbitration, shared application and
+   terminal outcome. Add a focused failing regression before changing the owner.
+5. Run affected focused specs together, then the grouped Playwright scenarios once. Independent Jest/type/build commands
+   may run concurrently; accelerated browser matches may not.
+6. Ensure the explicit test timeout covers selected variants plus startup/checkpoint overhead. Prefer #826 preset-world
+   runtime for focused invariants; keep full natural matches for emergent and terminal evidence.
 
 ## Proven interpretation traps
 

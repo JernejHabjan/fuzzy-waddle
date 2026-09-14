@@ -21,6 +21,17 @@ world, command bus, and shared command application, but it does not activate soc
 that path requires a relay and multiple human clients. Real peer relay, reconnect, and host-migration E2E belongs to
 [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819).
 
+The current recipes use 1× simulation speed through the first checkpoint and then their authored accelerated scale
+(currently 100× for opening, production, and land-loop recipes). Accelerated scale does not imply equal wall-clock
+speed: Phaser simulation, AI decisions, command application, checkpoint settling, and browser work still execute. Size
+the explicit Playwright timeout for the whole selected variant group. A timeout with no runtime payload and zero
+tests/decisions/ticks is an infrastructure failure, not behavioral evidence.
+
+Use `pnpm ai:skirmish:report -- --report <artifact> --scenario <ID> --failures-only --details` for bounded triage.
+[#826](https://github.com/JernejHabjan/fuzzy-waddle/issues/826) owns authoritative preset-world browser fixtures for
+focused cases that should not wait through unrelated opening/map prerequisites. Those fixtures must still create real
+world state and measure real outcomes; full natural matches remain required for emergence, terminal play, and soaks.
+
 ## Repetition and seed policy
 
 - Repeat each focused deterministic fixture three times and compare ordered decisions, authoritative hash, AI digest and first differing normalized path.
