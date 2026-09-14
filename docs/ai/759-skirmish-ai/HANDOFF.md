@@ -49,6 +49,8 @@ commit it separately, and then resume the issue. Never refresh the legacy source
 | 1                 | [#825](https://github.com/JernejHabjan/fuzzy-waddle/issues/825) | `complete`    | Current-content foundation done; natural E2E is #822    | —                         |
 | 2                 | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `in_progress` | PRO-01–05 typed pure family; pair existing #816 runtime | Terra medium              |
 | 2                 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Pair runtime family with #815; transport waits for #822 | Terra medium              |
+| 2a                | [#826](https://github.com/JernejHabjan/fuzzy-waddle/issues/826) | `not_started` | Add fast authoritative fixtures before broad #816 scale | Sol high → Terra medium   |
+| 2b                | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `not_started` | Strategic policy; prove with #815/#816 before #817      | Sol high → Terra high     |
 | 3                 | [#818](https://github.com/JernejHabjan/fuzzy-waddle/issues/818) | `not_started` | After #824; semantic debug usability/parity             | Terra medium              |
 | 4                 | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `not_started` | After stable SEQ/runtime tooling                        | Sol high → Terra medium   |
 | 5                 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `not_started` | After runtime matrix infrastructure                     | Sol high → Terra high     |
@@ -72,6 +74,8 @@ defined by the task-tracking and stage-delivery skills.
 | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | Legacy controller retirement     | Remove fallback only after runtime/save/multiplayer parity            |
 | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | Source structure and naming      | Main planner names migrated; persisted IDs and large-file debt remain |
 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | Save/replay/reconnect lifecycle  | Cross-phase and repeated-match runtime evidence remains               |
+| [#826](https://github.com/JernejHabjan/fuzzy-waddle/issues/826) | Fast authoritative runtime setup | Preset-world E2E contract and representative proofs remain            |
+| [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | Fastest credible victory policy  | Explicit alternative scoring and sustained pressure remain           |
 
 Each issue description links its cold-start plan. The plan records exact source anchors, dependency order, commands,
 evidence requirements, model/effort guidance, and completion boundary.
@@ -97,8 +101,10 @@ local/CI environment and one bounded agent session per coherent commit/evidence 
 | #823  | XL       | 4–8 sessions / 3–7 days                   | Save/replay/interruption/repeated-match matrix          |
 | #821  | Variable | 1–6 sessions / 1–5 days                   | Only blocking or compatibility-safe structural batches  |
 | #820  | L        | 2–4 sessions / 1–3 days                   | Parity audit and legacy removal after dependencies      |
+| #826  | M        | 2–4 sessions / 1–3 days                   | Authoritative preset-world setup and focused E2E proof  |
+| #827  | XL       | 4–8 sessions / 3–7 days                   | Strategy scoring, integration, and continuous evidence  |
 
-Sequentially, core closure is roughly 4–8 weeks of agent-assisted engineering. Independent worktrees can reduce elapsed
+Sequentially, core closure is roughly 5–10 weeks of agent-assisted engineering. Independent worktrees can reduce elapsed
 time after #824, but the full runtime matrix, paired calibration, and soaks still set a real lower bound. Optional #822 is
 roughly another 3–8 days once map requirements and assets exist.
 
