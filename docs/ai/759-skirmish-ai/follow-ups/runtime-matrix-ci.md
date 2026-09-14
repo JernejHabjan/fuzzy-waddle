@@ -12,7 +12,8 @@ runner/authority architecture question after compact Sol evidence.
 Estimated effort: **XXL**, about 10–20 focused agent sessions or 8–15 engineering days at the current unmapped count.
 
 Dependency: complete #824 first and consume its verified orchestration, context, triage, and server-reuse contracts. Do
-not build duplicate command wrappers in this issue.
+not build duplicate command wrappers in this issue. Finish the current SEQ causal repair, then use #826's authoritative
+preset-world fixtures before scaling the remaining focused runtime families; retain full natural matches where required.
 
 ## Cold start
 
@@ -35,6 +36,7 @@ running its IDE gutter entry without `AI_SKIRMISH_RUNTIME_REQUEST` is not scenar
 2. **Terra/medium delivery:** finish and rerun the land sequence slice before broadening the matrix.
 3. Convert one compatible family at a time to an authored recipe with finite checkpoints, deterministic perturbations,
    authoritative assertions, and bounded deadlines.
+   Prefer #826's preset-world mode when unrelated opening/map prerequisites do not belong to the behavior under test.
 4. Diagnose the earliest disagreement in this order: observation, demand/mission, intent/claim, shared application,
    outcome, cleanup. Batch related repairs and run focused Jest before one grouped browser rerun.
 5. Cover both factions and representative sides/seeds on currently authored maps. Consume #825 domain/transport cases.

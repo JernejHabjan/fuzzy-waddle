@@ -11,7 +11,8 @@ first reproducible SEQ disagreement. Hand seed expansion, report registration, a
 
 Estimated effort: **XL**, about 4–8 focused agent sessions or 3–7 engineering days, plus required soak runtime.
 
-Dependency: complete #824 and stabilize the required SEQ runtime path before calibration.
+Dependency: complete #824, implement #827's victory-path strategy, and stabilize the required SEQ runtime path before
+calibration. #817 calibrates proven strategy behavior; it does not invent the strategy policy through threshold tuning.
 
 ## Cold start
 
