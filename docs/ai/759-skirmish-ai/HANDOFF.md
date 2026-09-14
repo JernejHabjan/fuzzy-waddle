@@ -48,7 +48,7 @@ commit it separately, and then resume the issue. Never refresh the legacy source
 | ----------------- | --------------------------------------------------------------- | ------------- | ------------------------------------------------------- | ------------------------- |
 | 1                 | [#825](https://github.com/JernejHabjan/fuzzy-waddle/issues/825) | `complete`    | Current-content foundation done; natural E2E is #822    | —                         |
 | 2                 | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `in_progress` | PRO-01–05 typed pure family; pair existing #816 runtime | Terra medium              |
-| 2                 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `next`        | Pair runtime family with #815; transport waits for #822 | Terra medium              |
+| 2                 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Pair runtime family with #815; transport waits for #822 | Terra medium              |
 | 3                 | [#818](https://github.com/JernejHabjan/fuzzy-waddle/issues/818) | `not_started` | After #824; semantic debug usability/parity             | Terra medium              |
 | 4                 | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `not_started` | After stable SEQ/runtime tooling                        | Sol high → Terra medium   |
 | 5                 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `not_started` | After runtime matrix infrastructure                     | Sol high → Terra high     |
@@ -122,9 +122,7 @@ completed roadmap or TODO ledger.
 
 - ECO-08 passed both factions in a real Playwright runtime, including zero-worker bootstrap.
 - PRO-01–07 passed as one real Playwright group: 1,442 decisions and 24,040 ticks.
-- Latest SEQ-01/02 artifact ran 6,674 decisions and 120,079 ticks but failed terminal/recovery expectations.
-- Repairs after that SEQ artifact stop static enemy buildings from creating false home-defense demand and allow terminal
-  victory to satisfy post-raid recovery; focused manager tests passed, but Playwright has not rerun those repairs.
+- Latest complete SEQ-01/02 artifact ran 6,948 decisions and 120,095 ticks but still has terminal/recovery failures.
 - A wider focused gameplay batch passed 7 suites / 82 tests; the portal development build passed.
 - Closeout coverage was 10/120 runtime-required and 40/111 pure-required. These are mapped counts, not pass counts.
 - PRO-01–05 now map to `production-scenarios.json` and execute through the typed deterministic production suite:
@@ -141,6 +139,16 @@ completed roadmap or TODO ledger.
   threat allocation first; do not weaken worker-bootstrap or raid-recovery assertions. Tivara still needs sustained
   mission pressure and terminal resolution. Independently, SEQ-02 still has raid-recovery failure after the Skaduwee
   base-loss boundary.
+- `2b131ff3` makes home defense domain-aware: only owned combat actors that can target the observed raider may claim the
+  defense mission. The focused regression covers an air raider and rejects ground-only guards. The first rerun exceeded
+  the old 15-minute Playwright timeout without emitting runtime evidence, so `c2a017db` raises this intentionally
+  four-variant sequence test to 20 minutes. The clean report `1789412950848-failed.json` then completed at
+  `c2a017db` with 6,948 decisions and 120,095 ticks. Skaduwee SEQ-01 now retains its main base, three workers, positive
+  income, and three enemy losses; this removes the former `worker_bootstrap` base-loss failure. Keep the remaining
+  SEQ-02 Skaduwee injected-raid collapse distinct: its main stays active through tick 16,020 but is lost by tick 20,020.
+  Tivara retains both bases and six workers under its injected raid, but has no post-raid offensive launch and records
+  outcome-backlog overflow. Next, trace raid-force composition and the persistent retreat/outcome backlog separately;
+  do not weaken terminal, recovery, or mission-continuation assertions.
 - The pinned-baseline adapter is metadata-only; isolated baseline execution and D-06 calibration are not implemented.
 - Wrap-up migrated the main planner/manager filenames and implementation symbols to responsibility names, added the
   committed strategic intent summary, removed four optional AI IDE profiles, and established source-structure lint.
