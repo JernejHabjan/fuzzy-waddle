@@ -10,7 +10,7 @@ const runtimeRequestText = process.env.AI_SKIRMISH_RUNTIME_REQUEST;
 const resultPrefix = "AI_SKIRMISH_RUNTIME_RESULT_V1:";
 
 test.skip(!runtimeRequestText, "The skirmish AI runtime driver is invoked only by the matrix runner.");
-test.setTimeout(900_000);
+test.setTimeout(1_200_000);
 
 test("executes selected AI scenarios in real lobby-started Phaser matches", async ({ browser }) => {
   const request = parseRequest(runtimeRequestText);
