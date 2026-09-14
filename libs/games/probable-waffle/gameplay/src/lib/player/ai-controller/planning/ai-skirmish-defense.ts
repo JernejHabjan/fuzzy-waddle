@@ -9,7 +9,9 @@ export const AI_PURSUIT_LEASH_TICKS = 200;
 export function advanceAiSkirmishDefense(context: AiSkirmishProposalContext): void {
   const { localThreat, combat, activeDefense, state, observation, homeAccess } = context;
   if (!localThreat || combat.length === 0) return;
-  const defenders = combat.slice(0, Math.max(1, Math.ceil(combat.length * 0.25)));
+  const eligibleDefenders = combat.filter((actor) => canTarget(actor, localThreat));
+  if (eligibleDefenders.length === 0) return;
+  const defenders = eligibleDefenders.slice(0, Math.max(1, Math.ceil(eligibleDefenders.length * 0.25)));
   defenders.forEach((actor) => context.primaryOwnedActors.add(actor.actorId));
   const targetPosition = position(localThreat);
   const defenseId = activeDefense?.squadId ?? ("squad:defense:home" as AiSquadId);

@@ -1,4 +1,4 @@
-import { FactionType, ObjectNames, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
+import { FactionType, ObjectNames, OrderType, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
 import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import type { AiObservedActorV1 } from "../contracts/ai-observation-v1";
@@ -114,6 +114,78 @@ describe("AiSkirmishManager offense target selection", () => {
 
     expect(proposal.statePatch?.squads).toContainEqual(
       expect.objectContaining({ role: "attack", objectiveId: "enemy-main" })
+    );
+  });
+
+  it("assigns only anti-air combat actors to defend a protected base from an air raider", () => {
+    const main = {
+      ...actor("main", homeNode, 0),
+      housingCost: { status: "known" as const, value: 0, observedTick: 20 },
+      capabilities: [],
+      mainBuilding: { status: "known" as const, value: true, observedTick: 20 }
+    };
+    const groundGuard = actor("ground-guard", homeNode, 0);
+    const antiAirGuard = {
+      ...actor("anti-air-guard", homeNode, 0),
+      capabilities: [
+        {
+          id: "anti-air-guard:attack",
+          family: "military" as const,
+          level: 1,
+          domains: ["ground"] as const,
+          targetDomains: ["air"] as const,
+          capacity: { status: "known" as const, value: 0, observedTick: 20 }
+        }
+      ]
+    };
+    const airRaider = {
+      ...actor("air-raider", enemyNode, 1),
+      owner: 2,
+      relation: "enemy" as const,
+      visibility: "visible" as const,
+      capabilities: [
+        {
+          id: "air-raider:attack",
+          family: "military" as const,
+          level: 1,
+          domains: ["air"] as const,
+          targetDomains: ["ground"] as const,
+          capacity: { status: "known" as const, value: 0, observedTick: 20 }
+        }
+      ],
+      activeOrder: {
+        status: "known" as const,
+        value: { orderType: OrderType.Attack, targetActorId: main.actorId },
+        observedTick: 20
+      }
+    };
+    const observation = createAiTestObservation();
+    const proposal = new AiSkirmishManager(profile, () => catalog).propose(
+      {
+        ...observation,
+        tick: 20,
+        actors: [main, groundGuard, antiAirGuard, airRaider],
+        map: {
+          bounds: { status: "known", value: { width: 2, height: 1 }, observedTick: 20 },
+          staticRevision: 1,
+          frontierAccessNodeIds: [enemyNode],
+          scoutCoverageAccessNodeIds: [],
+          dynamicObstacleActorIds: [],
+          regionGeneration: { generation: 1, status: "ready", continuationCursor: 0 },
+          accessGraph: graph.graph
+        }
+      },
+      createAiBrainStateV1({
+        playerNumber: 1,
+        faction: FactionType.Tivara,
+        profile,
+        tick: 0,
+        archetypeId: "balanced"
+      })
+    );
+
+    expect(proposal.statePatch?.squads).toContainEqual(
+      expect.objectContaining({ role: "defense", objectiveId: "air-raider", actorIds: ["anti-air-guard"] })
     );
   });
 });
