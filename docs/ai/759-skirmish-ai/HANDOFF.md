@@ -135,8 +135,12 @@ completed roadmap or TODO ledger.
   ticks. The subsequent SEQ-01/02 runtime report `1789409819087-failed.json` recorded 7,172 decisions and 120,092 ticks:
   Skaduwee SEQ-01 targeted a non-terminal FrostForge after its opening contact, made no enemy kills, and had no terminal
   result. `ai-skirmish-offense.ts` now prioritizes an observed enemy main building; focused offense evidence passes.
-  A full rerun is still required. Independently, SEQ-02 still has duplicate-effect, raid-recovery, and Skaduwee worker
-  bootstrap failures; investigate those from the retained report after the target-selection rerun.
+  The `1789410623070-failed.json` rerun on `f4e2ac2e` confirms Skaduwee now records two enemy losses, but still fails
+  after its main base is destroyed. The final base is `lifecycle: lost`, all workers and military are gone, and the
+  completed bootstrap checkpoint cannot legally recreate workers without a main producer. Repair home-base survival and
+  threat allocation first; do not weaken worker-bootstrap or raid-recovery assertions. Tivara still needs sustained
+  mission pressure and terminal resolution. Independently, SEQ-02 still has raid-recovery failure after the Skaduwee
+  base-loss boundary.
 - The pinned-baseline adapter is metadata-only; isolated baseline execution and D-06 calibration are not implemented.
 - Wrap-up migrated the main planner/manager filenames and implementation symbols to responsibility names, added the
   committed strategic intent summary, removed four optional AI IDE profiles, and established source-structure lint.
