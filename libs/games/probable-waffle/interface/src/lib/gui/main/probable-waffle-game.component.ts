@@ -11,7 +11,13 @@ import { Subscription } from "rxjs";
 import { OptionsService } from "../options/options.service";
 import { AchievementService } from "../../services/achievement/achievement.service";
 import { GameSaveService } from "../../services/game-save/game-save.service";
-import type { Types } from "phaser";
+import type { Game, Types } from "phaser";
+import { environment } from "@fuzzy-waddle/environments/environment";
+import {
+  clearAiRuntimeBrowserTestHostV1,
+  publishAiRuntimeBrowserTestHostV1,
+  readAiRuntimeBrowserTestConfigV1
+} from "./ai-runtime-browser-test-host";
 
 @Component({
   templateUrl: "./probable-waffle-game.component.html",
@@ -35,6 +41,7 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
   private readonly achievementService = inject(AchievementService);
   private readonly gameSaveService = inject(GameSaveService);
   private refreshSubscription?: Subscription;
+  private runtimeTestGame?: Game;
 
   ngOnInit(): void {
     this.setData();
@@ -42,6 +49,7 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
     this.refreshSubscription = this.gameInstanceClientService.gameInstanceToGameComponentCommunicator.subscribe(
       (data) => {
         if (data === "refresh") {
+          this.clearRuntimeTestHost();
           this.gameData = undefined;
           this.cdr.detectChanges();
           setTimeout(() => {
@@ -57,13 +65,29 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
     const gameInstance = this.gameInstanceClientService.gameInstance;
     if (!gameInstance) return;
 
+    const runtimeTestConfig = environment.production ? null : readAiRuntimeBrowserTestConfigV1();
+    if (runtimeTestConfig) gameInstance.gameInstanceMetadata.data.rndSeed = runtimeTestConfig.seed;
+
     // Derive seed from rndSeed for deterministic lock-stepping
     const seed = gameInstance.gameInstanceMetadata.data.rndSeed;
+    const configuredPostBoot = probableWaffleGameConfig.callbacks?.postBoot;
 
     // Create game config with seed
     this.gameConfig = {
       ...probableWaffleGameConfig,
-      seed: [seed.toString()]
+      seed: [seed.toString()],
+      ...(runtimeTestConfig
+        ? {
+            callbacks: {
+              ...probableWaffleGameConfig.callbacks,
+              postBoot: (game: Game) => {
+                configuredPostBoot?.(game);
+                this.runtimeTestGame = game;
+                publishAiRuntimeBrowserTestHostV1(game, runtimeTestConfig);
+              }
+            }
+          }
+        : {})
     };
 
     this.gameData = {
@@ -75,5 +99,11 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy(): void {
     this.refreshSubscription?.unsubscribe();
+    this.clearRuntimeTestHost();
+  }
+
+  private clearRuntimeTestHost(): void {
+    clearAiRuntimeBrowserTestHostV1(this.runtimeTestGame);
+    this.runtimeTestGame = undefined;
   }
 }

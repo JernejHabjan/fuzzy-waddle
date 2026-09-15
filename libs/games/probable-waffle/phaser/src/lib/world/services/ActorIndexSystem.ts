@@ -53,7 +53,7 @@ export class ActorIndexSystem {
 
   // Explicit registration (safe to call multiple times)
   registerActor = (obj?: GameObject) => {
-    if (!obj || !obj.scene) return;
+    if (!obj || obj.scene !== this.scene) return;
 
     // Only index actors that have IdComponent
     const id = getActorComponent(obj, IdComponent);

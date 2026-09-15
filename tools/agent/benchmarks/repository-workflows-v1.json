@@ -1,0 +1,186 @@
+{
+  "schemaVersion": 1,
+  "id": "repository-workflows",
+  "version": 1,
+  "qualityInvariants": [
+    {
+      "id": "same-required-evidence",
+      "requirement": "An optimized workflow must preserve the declared context files, commands, selections, and required result checks."
+    },
+    {
+      "id": "fail-closed",
+      "requirement": "Missing tools, invalid commands, unexpected exits, or missing expected output make the workflow result non-matching."
+    },
+    {
+      "id": "preserve-provenance",
+      "requirement": "Every report records benchmark digest, source revision, worktree state, command arguments, and retained log paths."
+    },
+    {
+      "id": "reproduce-seeded-failure",
+      "requirement": "A later negative-path adapter benchmark must replay the same declared seed and failure reason; it must not be replaced with a passing-only sample."
+    }
+  ],
+  "tokenTelemetry": {
+    "status": "unavailable",
+    "reason": "This repository runner has no stable model/API telemetry source. Context bytes, output bytes, direct process starts, and wall time are proxies, not token counts."
+  },
+  "workflows": [
+    {
+      "id": "small-typescript-change",
+      "description": "A focused deterministic AI profile edit and its owning unit test.",
+      "contextFiles": [
+        "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/profiles/ai-profile-defaults.ts",
+        "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/profiles/ai-profile-defaults.spec.ts",
+        "libs/games/probable-waffle/gameplay/project.json"
+      ],
+      "requiredSelections": {
+        "projects": ["probable-waffle-gameplay"],
+        "tests": ["ai-profile-defaults.spec.ts"]
+      },
+      "commands": [
+        {
+          "executable": "pnpm",
+          "arguments": [
+            "exec",
+            "nx",
+            "test",
+            "probable-waffle-gameplay",
+            "--runInBand",
+            "--testPathPatterns=ai-profile-defaults\\.spec\\.ts$"
+          ],
+          "expectedOutcome": "passed",
+          "outputIncludes": ["Test Suites:"]
+        }
+      ],
+      "declaredStarts": { "server": 0, "browser": 0, "worker": 0 }
+    },
+    {
+      "id": "cross-project-change",
+      "description": "Affected-project selection for shared RTS gameplay plus portal runtime coverage.",
+      "contextFiles": [
+        "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/profiles/ai-profile-defaults.ts",
+        "apps/portal-e2e/src/e2e/skirmish-ai-runtime.spec.ts",
+        "nx.json"
+      ],
+      "requiredSelections": {
+        "projects": [
+          "probable-waffle-gameplay",
+          "probable-waffle-phaser",
+          "probable-waffle-interface",
+          "probable-waffle-desktop",
+          "portal",
+          "portal-e2e"
+        ],
+        "tests": []
+      },
+      "commands": [
+        {
+          "executable": "pnpm",
+          "arguments": [
+            "exec",
+            "nx",
+            "show",
+            "projects",
+            "--affected",
+            "--files=libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/profiles/ai-profile-defaults.ts,apps/portal-e2e/src/e2e/skirmish-ai-runtime.spec.ts"
+          ],
+          "expectedOutcome": "passed",
+          "outputIncludes": ["probable-waffle-gameplay", "portal-e2e"]
+        }
+      ],
+      "declaredStarts": { "server": 0, "browser": 0, "worker": 0 }
+    },
+    {
+      "id": "docs-skill-update",
+      "description": "A repository skill/source-index documentation update and its maintained route validation.",
+      "contextFiles": [
+        "plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-repo-workflow/SKILL.md",
+        "plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-repo-workflow/references/source-index.md",
+        "tools/skills/check-index.mjs"
+      ],
+      "requiredSelections": { "projects": [], "tests": ["tools/skills/check-index.mjs"] },
+      "commands": [
+        {
+          "executable": "pnpm",
+          "arguments": ["skills:check"],
+          "expectedOutcome": "passed",
+          "outputIncludes": ["skills:"]
+        }
+      ],
+      "declaredStarts": { "server": 0, "browser": 0, "worker": 0 }
+    },
+    {
+      "id": "unfamiliar-source-discovery",
+      "description": "Indexed source discovery of the owner and tests for a deterministic RTS AI profile change.",
+      "contextFiles": ["plugins/fuzzy-waddle-skills/skills/fuzzy-waddle-repo-workflow/references/source-index.md"],
+      "requiredSelections": { "projects": [], "tests": [] },
+      "commands": [
+        {
+          "executable": "rg",
+          "arguments": [
+            "--files",
+            "-g",
+            "*ai-profile-defaults*",
+            "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller"
+          ],
+          "expectedOutcome": "passed",
+          "outputIncludes": ["profiles/ai-profile-defaults.ts"]
+        }
+      ],
+      "declaredStarts": { "server": 0, "browser": 0, "worker": 0 }
+    },
+    {
+      "id": "focused-test-repair",
+      "description": "A focused pure AI scenario repair in its gameplay owner.",
+      "contextFiles": [
+        "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/testing/ai-scenario-harness.spec.ts",
+        "tools/testing/jest-node-preset.cjs"
+      ],
+      "requiredSelections": {
+        "projects": ["probable-waffle-gameplay"],
+        "tests": ["ai-scenario-harness.spec.ts"]
+      },
+      "commands": [
+        {
+          "executable": "pnpm",
+          "arguments": [
+            "exec",
+            "nx",
+            "test",
+            "probable-waffle-gameplay",
+            "--runInBand",
+            "--testPathPatterns=ai-scenario-harness\\.spec\\.ts$"
+          ],
+          "expectedOutcome": "passed",
+          "outputIncludes": ["Test Suites:"]
+        }
+      ],
+      "declaredStarts": { "server": 0, "browser": 0, "worker": 0 }
+    },
+    {
+      "id": "skirmish-runtime-scenario",
+      "description": "One seeded, manifest-backed Playwright skirmish opening scenario.",
+      "contextFiles": [
+        "tools/ai/fixtures/skirmish-v1.json",
+        "tools/ai/fixtures/stage-15-opening-runtime.json",
+        "tools/ai/run-skirmish-matrix.mjs",
+        "apps/portal-e2e/playwright.config.ts",
+        "apps/portal-e2e/src/e2e/skirmish-ai-runtime.spec.ts"
+      ],
+      "requiredSelections": {
+        "projects": ["portal", "portal-e2e"],
+        "tests": ["ECO-08", "skirmish-ai-runtime.spec.ts"],
+        "seed": "fixture-declared runtime variants"
+      },
+      "commands": [
+        {
+          "executable": "pnpm",
+          "arguments": ["ai:skirmish:opening"],
+          "expectedOutcome": "passed",
+          "outputIncludes": ["tmp/ai-skirmish-matrix/"]
+        }
+      ],
+      "declaredStarts": { "server": 1, "browser": 1, "worker": 1 }
+    }
+  ]
+}

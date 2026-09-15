@@ -37,7 +37,9 @@ import { LockedCursorHandler } from "../../player/human-controller/locked-cursor
 import { ActorDebugDamageSystem } from "../services/actor-debug-damage-system";
 import { SpellCursor } from "../../player/human-controller/spell-cursor";
 import { AoeZoneManager } from "../../entity/systems/aoe-zone-manager";
+import { SummonExpiryService } from "../../entity/systems/summon-expiry.service";
 import { CommandBusService } from "../services/multiplayer/command-bus.service";
+import { SharedCommandApplicationService } from "../services/multiplayer/shared-command-application.service";
 import { SimulationPauseReason, SimulationTickService } from "../services/simulation-tick.service";
 import { StateHashService } from "../services/recovery/state-hash.service";
 import { SnapshotService } from "../services/recovery/snapshot.service";
@@ -55,6 +57,12 @@ import { IndexedScenarioReferenceRegistry } from "../../campaign/scenario/scenar
 import { CampaignContentAllowanceService } from "@fuzzy-waddle/probable-waffle-campaign";
 import { CampaignParticipantSceneAdapter } from "../../campaign/participants/campaign-participant-scene-adapter";
 import { CampaignRestoreCoordinator } from "../../campaign/campaign-restore-coordinator";
+import {
+  readAiRuntimeBrowserTestConfigV1,
+  recordAiRuntimeBrowserInitialStateV1
+} from "../../player/ai-controller/testing/ai-runtime-browser-test-config";
+import { GathererComponent } from "../../entity/components/resource/gatherer-component";
+import { getActorComponent } from "../../data/actor-component";
 
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
   tilemap!: Phaser.Tilemaps.Tilemap;
@@ -131,8 +139,14 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       new TechTreeService(campaignContentAllowances),
       new SpellCursor(this),
       new AoeZoneManager(this),
+      new SummonExpiryService(this),
       new PauseSyncService(this),
       snapshotService
+    );
+    this.sceneGameData.services.push(
+      new SharedCommandApplicationService(this, (playerNumber) =>
+        gameModeConditionChecker.applyConcession(playerNumber)
+      )
     );
     scenarioReferenceRegistry.initialize(this);
     CampaignParticipantSceneAdapter.configure(this, campaignContentAllowances);
@@ -160,6 +174,16 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     creator.initInitialActors();
     // Populate the index after initial actors are in place
     actorIndex.scanExistingActors();
+    if (!environment.production && readAiRuntimeBrowserTestConfigV1()) {
+      for (const player of this.players) {
+        if (player.playerNumber === undefined) continue;
+        const initialActors = actorIndex.getOwnedActors(player.playerNumber);
+        recordAiRuntimeBrowserInitialStateV1(player.playerNumber, {
+          ownedActorCount: initialActors.length,
+          workerCount: initialActors.filter((actor) => !!getActorComponent(actor, GathererComponent)).length
+        });
+      }
+    }
     new ReplayPlaybackService().init(this);
     campaignMissionDirector?.startAfterActorIndexing();
     restoreCoordinator?.complete();
@@ -182,6 +206,9 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       this.scene.scene.data.remove("justCreated");
     });
     this.sceneGameData.initializers.sceneInitialized.next(true);
+    if (!environment.production && readAiRuntimeBrowserTestConfigV1()?.startPaused) {
+      simTickService?.pauseTick(SimulationPauseReason.Manual);
+    }
     simTickService?.resumeTick(SimulationPauseReason.SceneBootstrap);
 
     if (!environment.production) {

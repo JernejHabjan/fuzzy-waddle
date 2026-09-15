@@ -6,7 +6,13 @@ import { emitResource, getPlayer } from "../../../data/scene-data";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 import { onObjectReady } from "../../../data/game-object-helper";
-import { ObjectNames, type ResearchComponentData, type ResearchType } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  type GameCommandExecution,
+  ObjectNames,
+  type ResearchComponentData,
+  type ResearchType
+} from "@fuzzy-waddle/probable-waffle-protocol";
+import type { ActorId, PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 import { QueueComponent } from "../queue/queue-component";
 import {
   QueueItemType,
@@ -143,7 +149,10 @@ export class ResearchComponent {
   /**
    * Start research - delegates to SharedQueueComponent
    */
-  startResearch(type: ResearchType): boolean {
+  startResearch(
+    type: ResearchType,
+    commandContext?: { execution: GameCommandExecution; playerNumber: PlayerNumber; actorIds: readonly ActorId[] }
+  ): boolean {
     const { canStart } = this.canStartResearch(type);
     if (!canStart) {
       return false;
@@ -173,7 +182,8 @@ export class ResearchComponent {
       type: QueueItemType.Research,
       researchData: type,
       totalTime: researchData.researchTime,
-      remainingTime: researchData.researchTime
+      remainingTime: researchData.researchTime,
+      commandContext
     };
 
     sharedQueue.addItem(unifiedItem);

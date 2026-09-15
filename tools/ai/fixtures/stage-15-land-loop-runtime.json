@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 1,
+  "evidenceKind": "runtime",
+  "scenarioIds": ["PRO-01", "PRO-02", "PRO-03", "PRO-04", "PRO-05", "PRO-06", "PRO-07", "SEQ-01", "SEQ-02"],
+  "purpose": "Exercise purposeful duplicate production, composition accounting, the continuous land mission loop, and a legal human-command home raid in real lobby-started Phaser matches.",
+  "driver": "runtime",
+  "status": "ready_for_runtime_execution",
+  "context": {
+    "mapId": "EmberEnclave+RiverCrossing",
+    "mapDigest": "resolved_from_candidate_assets",
+    "side": 2,
+    "rulesVersion": "probable-waffle-rules-v1"
+  },
+  "recipe": {
+    "mapLabel": "Ember Enclave",
+    "aiPlayerNumber": 2,
+    "simulationTimeScale": 100,
+    "checkpointTicks": [20, 3000, 6000, 9000, 12000, 16000, 20000, 24000, 30000],
+    "variants": [
+      {
+        "id": "tivara-land-loop",
+        "scenarioIds": ["PRO-01", "PRO-02", "PRO-03", "PRO-04", "PRO-05", "PRO-06", "PRO-07", "SEQ-01"],
+        "seed": 759101,
+        "mapLabel": "Ember Enclave",
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal"
+      },
+      {
+        "id": "skaduwee-production",
+        "scenarioIds": ["PRO-01", "PRO-02", "PRO-03", "PRO-04", "PRO-05", "PRO-06", "PRO-07"],
+        "seed": 759102,
+        "mapLabel": "Ember Enclave",
+        "aiFaction": "Skaduwee",
+        "humanFaction": "Tivara",
+        "difficulty": "Normal"
+      },
+      {
+        "id": "skaduwee-land-loop",
+        "scenarioIds": ["SEQ-01"],
+        "seed": 759105,
+        "mapLabel": "River Crossing",
+        "aiFaction": "Skaduwee",
+        "humanFaction": "Tivara",
+        "difficulty": "Normal"
+      },
+      {
+        "id": "tivara-home-raid",
+        "scenarioIds": ["SEQ-02"],
+        "seed": 759103,
+        "mapLabel": "Ember Enclave",
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "perturbations": [{ "id": "home-raid", "tick": 2500, "kind": "human_attack_ai_home", "maximumAttackers": 3 }]
+      },
+      {
+        "id": "skaduwee-home-raid",
+        "scenarioIds": ["SEQ-02"],
+        "seed": 759104,
+        "mapLabel": "River Crossing",
+        "aiFaction": "Skaduwee",
+        "humanFaction": "Tivara",
+        "difficulty": "Normal",
+        "perturbations": [{ "id": "home-raid", "tick": 2500, "kind": "human_attack_ai_home", "maximumAttackers": 1 }]
+      }
+    ]
+  },
+  "assertions": {
+    "PRO-01": {
+      "maximumTick": 12000,
+      "minimumDecisions": 100,
+      "minimumAppliedCommands": 12,
+      "requiredAiFactions": ["Tivara", "Skaduwee"],
+      "minimumMilitaryCount": 12,
+      "minimumMilitaryProducerCount": 2,
+      "requireCompositionDemand": true,
+      "requireCapacityDemand": true
+    },
+    "PRO-02": {
+      "maximumTick": 12000,
+      "minimumDecisions": 100,
+      "minimumAppliedCommands": 12,
+      "requiredAiFactions": ["Tivara", "Skaduwee"],
+      "maximumMilitaryProducerCount": 2,
+      "requireCapacityDemand": true
+    },
+    "PRO-03": {
+      "maximumTick": 12000,
+      "minimumDecisions": 100,
+      "minimumAppliedCommands": 12,
+      "requiredAiFactions": ["Tivara", "Skaduwee"],
+      "minimumMilitaryProducerCount": 2,
+      "requireCapacityDemand": true
+    },
+    "PRO-04": {
+      "maximumTick": 12000,
+      "minimumDecisions": 100,
+      "minimumAppliedCommands": 12,
+      "requiredAiFactions": ["Tivara", "Skaduwee"],
+      "minimumMilitaryCount": 12,
+      "minimumRepeatedMilitaryTypeCount": 3,
+      "requireCompositionDemand": true,
+      "requireProductionStopsAtTarget": true
+    },
+    "PRO-05": {
+      "maximumTick": 12000,
+      "minimumDecisions": 100,
+      "minimumAppliedCommands": 12,
+      "requiredAiFactions": ["Tivara", "Skaduwee"],
+      "minimumMilitaryProducerCount": 2,
+      "maximumMilitaryProducerCount": 2,
+      "requireCapacityDemand": true
+    },
+    "PRO-06": {
+      "maximumTick": 12000,
+      "minimumDecisions": 100,
+      "minimumAppliedCommands": 12,
+      "requiredAiFactions": ["Tivara", "Skaduwee"],
+      "maximumMilitaryProducerCount": 2,
+      "requireCapacityDemand": true
+    },
+    "PRO-07": {
+      "maximumTick": 12000,
+      "minimumDecisions": 100,
+      "minimumAppliedCommands": 12,
+      "requiredAiFactions": ["Tivara", "Skaduwee"],
+      "maximumQueueOccupancyPerProducer": 2,
+      "requireCompositionDemand": true
+    },
+    "SEQ-01": {
+      "maximumTick": 30000,
+      "minimumDecisions": 300,
+      "minimumAppliedCommands": 20,
+      "requiredAiFactions": ["Tivara", "Skaduwee"],
+      "requireDeliveredIncome": true,
+      "minimumMilitaryCount": 8,
+      "firstOffensiveLaunchByTick": 12000,
+      "minimumOffensiveLaunchCount": 1,
+      "minimumDamageDealt": 1,
+      "minimumEnemyLosses": 1,
+      "requireMissionContinuation": true,
+      "requireTerminalResult": true
+    },
+    "SEQ-02": {
+      "maximumTick": 30000,
+      "minimumDecisions": 300,
+      "minimumAppliedCommands": 20,
+      "requiredAiFactions": ["Tivara", "Skaduwee"],
+      "requireDeliveredIncome": true,
+      "minimumMilitaryCount": 8,
+      "firstOffensiveLaunchByTick": 12000,
+      "minimumDamageDealt": 1,
+      "requireMissionContinuation": true,
+      "requireRaidDefenseRecovery": true
+    }
+  },
+  "deliberatelyBrokenOracle": "accept_a_self_reported_composition_or_mission_without_ready_units_applied_commands_damage_or_a_terminal_mode_result"
+}

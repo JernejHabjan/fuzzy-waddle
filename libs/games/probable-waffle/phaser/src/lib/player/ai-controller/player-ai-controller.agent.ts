@@ -16,7 +16,6 @@ import { BuilderComponent } from "../../entity/components/construction/builder-c
 import { PawnAiController } from "../../prefabs/ai-agents/pawn-ai-controller";
 import { OrderData } from "../../ai/OrderData";
 import { OrderType } from "../../ai/order-type";
-import { BuildingCursor } from "../human-controller/building-cursor";
 import { getGameObjectLogicalTransform, isGameObjectActiveInActiveScene } from "../../data/game-object-helper";
 import { DistanceHelper } from "../../library/distance-helper";
 import { MapAnalyzer } from "./ai-behavior/map-analyzer";
@@ -37,15 +36,20 @@ import { CombatMicroManager } from "./ai-behavior/combat-micro-manager";
 import { ScoutingManager } from "./ai-behavior/scouting-manager";
 import { TargetingManager } from "./ai-behavior/targeting-manager";
 import { SupplyPlanner } from "./ai-behavior/supply-planner";
-import { IsoHelper } from "../../world/tilemap/iso-helper";
 import { EconomyManager } from "./ai-behavior/economy-manager";
 import { PlayerAiBlackboard } from "./player-ai-blackboard";
 import { WorldStateSnapshotManager } from "./ai-behavior/world-state-snapshot-manager";
 import { getUnitStrength } from "./ai-utils";
 import { TechTreeService } from "../../data/tech-tree/tech-tree.service";
 import { dispatchAiOrder } from "./dispatch-ai-order";
+import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
+import { AiDecisionTrace, type AiDecisionReasonCode, type AiDecisionTraceSnapshot } from "./ai-decision-trace";
+import { isEnemyPlayerWeak } from "./ai-static-decisions";
+import { AiObservationPipeline } from "./observation/ai-observation-pipeline";
+import { queryAiAccessRouteV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import { SimulationTickService } from "../../world/services/simulation-tick.service";
 /**
  * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
  * storage boundaries do not drift into an unconstrained primitive.
@@ -70,11 +74,17 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   public adaptiveThresholds: AdaptiveThresholdManager;
   private economyManager: EconomyManager;
   private worldStateSnapshotManager: WorldStateSnapshotManager;
+  private readonly observationPipeline: AiObservationPipeline;
 
   private combatMicro: CombatMicroManager;
   private scoutingManager: ScoutingManager;
   private targetingManager: TargetingManager;
   private productionValidator: ProductionValidator;
+  private readonly decisionTrace: AiDecisionTrace;
+  /** The pure planner is the only mutation authority for research in skirmish mode. */
+  private purePlannerOwnsResearch = false;
+  /** The pure planner owns all player commands while the new skirmish brain is available. */
+  private purePlannerOwnsCommands = false;
 
   constructor(
     private readonly scene: ProbableWaffleScene,
@@ -82,6 +92,10 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     private readonly blackboard: PlayerAiBlackboard
   ) {
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.onShutdown, this);
+    if (this.player.playerNumber === undefined) {
+      throw new Error("AI decision trace requires an assigned player number");
+    }
+    this.decisionTrace = new AiDecisionTrace(this.player.playerNumber);
     this.randomService = getSceneService(this.scene, RandomService)!;
     this.cooldowns = new CooldownManager(this.randomService);
     this.mapAnalyzer = new MapAnalyzer(this.scene, this.player.playerNumber!);
@@ -118,10 +132,34 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     this.techManager = new TechProgressManager(this.blackboard, player.playerNumber!, this.logDebugInfo.bind(this));
     this.economyManager = new EconomyManager(this.blackboard);
     this.worldStateSnapshotManager = new WorldStateSnapshotManager(this.scene, this.player, this.blackboard);
+    this.observationPipeline = new AiObservationPipeline(this.scene, this.player, (resourceType) =>
+      Math.max(0, (this.blackboard.economy.incomeSmoothed[resourceType] ?? 0) * 60)
+    );
     this.combatMicro = new CombatMicroManager(this.scene, this.blackboard, this.logDebugInfo.bind(this));
     this.scoutingManager = new ScoutingManager(this.scene, this.blackboard, this.logDebugInfo.bind(this));
     this.targetingManager = new TargetingManager(this.scene, this.blackboard);
     this.setupDebuggingSubscription();
+  }
+
+  /** Returns the bounded immutable trace consumed by the read-only AI debug panel. */
+  getDebugSnapshot(): AiDecisionTraceSnapshot {
+    return this.decisionTrace.snapshot();
+  }
+
+  setPurePlannerOwnsResearch(enabled: boolean): void {
+    this.purePlannerOwnsResearch = enabled;
+  }
+
+  setPurePlannerOwnsCommands(enabled: boolean): void {
+    this.purePlannerOwnsCommands = enabled;
+  }
+
+  private recordDecision(
+    action: string,
+    outcome: "dispatched" | "failed" | "succeeded",
+    reason: AiDecisionReasonCode
+  ): void {
+    this.decisionTrace.record(action, outcome, reason);
   }
 
   private setupDebuggingSubscription() {
@@ -139,14 +177,41 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     await this.updateManagers(now);
   }
 
+  /** Returns the last atomically committed fair observation for the future pure-brain adapter. */
+  getCommittedObservation() {
+    return this.observationPipeline.getObservation();
+  }
+
+  /** Returns the runtime-derived capability catalog paired with the committed observation generation. */
+  getCommittedCapabilityCatalog() {
+    return this.observationPipeline.getCapabilityCatalog();
+  }
+
+  /** Saves only player-permitted memory and bounded query cursors, never live actors. */
+  getObservationMemoryState() {
+    return this.observationPipeline.getState();
+  }
+
+  /** Restores fair memory before the next observation rebuilds current live references. */
+  setObservationMemoryState(state: Parameters<AiObservationPipeline["setState"]>[0]): void {
+    this.observationPipeline.setState(state);
+  }
+
+  /** Supplies the debug panel with already committed observation metadata only. */
+  getObservationDebugSnapshot() {
+    return this.observationPipeline.getDebugSnapshot();
+  }
+
   private async updateManagers(now: number): Promise<void> {
-    this.worldStateSnapshotManager.update(now);
+    const tick = getSceneService(this.scene, SimulationTickService)?.currentTick ?? Math.max(0, Math.floor(now / 50));
+    await this.observationPipeline.refresh(tick);
+    await this.worldStateSnapshotManager.update(now);
     this.economyManager.update(now);
     // Update scouting vision sampling
     this.scoutingManager.updateVisionSampling(now);
     // Update primary target cache
     await this.targetingManager.update(now);
-    this.processPrerequisiteQueue();
+    if (!this.purePlannerOwnsCommands) this.processPrerequisiteQueue();
     if (this.cooldowns.canRun("adaptiveThresholds", now)) {
       this.adaptiveThresholds.update();
       this.cooldowns.markRun("adaptiveThresholds", now);
@@ -433,11 +498,11 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
         });
         if (!closestEnemy) return;
         const newOrder = new OrderData(OrderType.Attack, { targetGameObject: closestEnemy });
-        dispatchAiOrder(this.scene, unit, newOrder, this.player.playerNumber!);
-        assignedCount++;
+        const result = dispatchAiOrder(this.scene, unit, newOrder, this.player.playerNumber!);
+        if (result.status === "dispatched") assignedCount++;
       });
       this.logDebugInfo(`[Defense] ${assignedCount} defenders assigned to targets`);
-      return State.SUCCEEDED;
+      return assignedCount > 0 ? State.SUCCEEDED : State.FAILED;
     }
     this.logDebugInfo("[Defense] No defenders available or no enemies to engage");
     return State.FAILED;
@@ -466,14 +531,49 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       const aiController = getActorComponent(unit, PawnAiController);
       if (!aiController) return;
       if (aiController.blackboard.getCurrentOrder()) return;
+      if (!this.canIssueDirectObjectiveOrder(unit, target)) return;
       const newOrder = new OrderData(OrderType.Attack, { targetGameObject: target });
-      dispatchAiOrder(this.scene, unit, newOrder, this.player.playerNumber!);
-      assignedCount++;
+      const result = dispatchAiOrder(this.scene, unit, newOrder, this.player.playerNumber!);
+      if (result.status === "dispatched") assignedCount++;
     });
     this.logDebugInfo(`[Attack] ${assignedCount} units assigned to attack ${target.name}`);
+    if (assignedCount === 0) return State.FAILED;
     this.cooldowns.markRun("attackTrigger", now);
     this.blackboard.cooldowns.attackTrigger = now;
     return State.SUCCEEDED;
+  }
+
+  /** Prevents the transitional legacy attacker from bypassing Stage-8 route feasibility. */
+  private canIssueDirectObjectiveOrder(unit: GameObject, target: GameObject): boolean {
+    const observation = this.observationPipeline.getObservation();
+    const graph = observation?.map?.accessGraph;
+    const unitId = getActorComponent(unit, IdComponent)?.id;
+    const targetId = getActorComponent(target, IdComponent)?.id;
+    const source = observation?.actors.find((actor) => actor.actorId === unitId);
+    const destination = observation?.actors.find((actor) => actor.actorId === targetId);
+    if (!graph || source?.accessNodeId.status !== "known" || destination?.accessNodeId.status !== "known") {
+      this.recordDecision("attackEnemyBase", "failed", "path_not_found");
+      return false;
+    }
+    const capabilities = source.capabilities;
+    const result = queryAiAccessRouteV1(graph, {
+      queryId: `query:legacy-direct:${unitId}:${targetId}`,
+      kind: "firing_position",
+      fromNodeId: source.accessNodeId.value,
+      toNodeId: destination.accessNodeId.value,
+      capabilities: {
+        moverDomains: capabilities.flatMap((capability) => capability.domains),
+        targetDomains: capabilities.flatMap((capability) => capability.targetDomains),
+        waterTransportSeats: 0,
+        airTransportSeats: 0,
+        requiredPassengerSeats: 1,
+        requiredClearance: 1
+      },
+      firingNodeIds: [destination.accessNodeId.value]
+    });
+    const direct = result.kind === "direct" || result.kind === "air_or_naval_objective";
+    if (!direct) this.recordDecision("attackEnemyBase", "failed", "path_not_found");
+    return direct;
   }
 
   NeedMoreResources() {
@@ -512,6 +612,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     const idleWorkers = this.blackboard.getIdleWorkers();
     if (idleWorkers.length === 0) {
       this.logDebugInfo("[Workers] No idle workers to assign");
+      this.recordDecision("assignWorkersToGather", "failed", "no_idle_workers");
       return State.FAILED;
     }
 
@@ -548,9 +649,14 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
         const aiController = getActorComponent(worker, PawnAiController);
         const newOrder = new OrderData(OrderType.Gather, { targetGameObject: closestResourceSource });
         if (aiController) {
-          dispatchAiOrder(this.scene, worker, newOrder, this.player.playerNumber!);
+          const result = dispatchAiOrder(this.scene, worker, newOrder, this.player.playerNumber!);
+          this.recordDecision(
+            "assignWorkersToGather",
+            result.status === "dispatched" ? "dispatched" : "failed",
+            result.reason
+          );
+          if (result.status === "dispatched") assigned++;
         }
-        assigned++;
       }
     }
 
@@ -640,14 +746,11 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       return gathererComponent.isGathering;
     });
     if (workers.length > 0) {
-      workers.forEach((worker) => {
-        const gathererComponent = getActorComponent(worker, GathererComponent);
-        if (!gathererComponent) return;
-        // todo gathererComponent.gather(gathererComponent.getClosestResourceSource(ResourceType.Wood, 100)!);
-      });
-      this.logDebugInfo("Workers are gathering resources.");
+      this.logDebugInfo("Workers are already gathering resources.");
+      this.recordDecision("gatherResources", "succeeded", "already_gathering");
       return State.SUCCEEDED;
     }
+    this.recordDecision("gatherResources", "failed", "no_active_gatherers");
     return State.FAILED;
   }
 
@@ -691,6 +794,7 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       return gathererComponent.isGathering;
     });
     if (workers.length > 0 && criticalResource) {
+      let assigned = 0;
       for (const worker of workers) {
         const gathererComponent = getActorComponent(worker, GathererComponent);
         if (!gathererComponent) continue;
@@ -702,9 +806,11 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
         const aiController = getActorComponent(worker, PawnAiController);
         const newOrder = new OrderData(OrderType.Gather, { targetGameObject: closestResourceSource });
         if (aiController) {
-          dispatchAiOrder(this.scene, worker, newOrder, this.player.playerNumber!);
+          const result = dispatchAiOrder(this.scene, worker, newOrder, this.player.playerNumber!);
+          if (result.status === "dispatched") assigned += 1;
         }
       }
+      if (assigned === 0) return State.FAILED;
       this.logDebugInfo("Reassigned workers to gather the most critical resource.");
       return State.SUCCEEDED;
     }
@@ -721,12 +827,17 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   }
 
   StartUpgrade() {
-    if (this.SufficientResourcesForUpgrade()) {
-      // this.logDebugInfo("Starting a tech or unit upgrade.");
-      // todo this.blackboard.upgradeBuilding.startUpgrade();
-      return State.SUCCEEDED;
+    if (this.purePlannerOwnsResearch) {
+      this.recordDecision("startUpgrade", "failed", "pure_planner_authoritative");
+      return State.FAILED;
     }
-    return State.FAILED;
+    const state = this.techManager.tryStartResearch();
+    this.recordDecision(
+      "startUpgrade",
+      state === State.SUCCEEDED ? "succeeded" : "failed",
+      state === State.SUCCEEDED ? "research_started" : "no_legal_research"
+    );
+    return state;
   }
 
   /**
@@ -797,7 +908,11 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       const aiController = getActorComponent(worker, PawnAiController);
       if (!aiController) return false;
       const builderComponent = getActorComponent(worker, BuilderComponent);
-      return !!builderComponent && builderComponent.isIdle();
+      return (
+        !!builderComponent &&
+        builderComponent.isIdle() &&
+        builderComponent.constructableBuildings.includes(buildingType)
+      );
     });
     if (validWorkers.length === 0) {
       // Release consumed plan if no workers available
@@ -805,24 +920,22 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
       return State.FAILED;
     }
 
-    const worldXYZ = IsoHelper.isometricTileToWorldXY(this.scene, tileLocationXYZ.x, tileLocationXYZ.y);
-    if (!worldXYZ) {
+    const workerIds = validWorkers
+      .map((worker) => getActorComponent(worker, IdComponent)?.id)
+      .filter((actorId): actorId is string => actorId !== undefined);
+    const commandBus = getSceneService(this.scene, CommandBusService);
+    const dispatch = commandBus?.dispatch({
+      type: "CONSTRUCT",
+      playerNumber: this.player.playerNumber!,
+      actorIds: workerIds,
+      actorName: buildingType,
+      tileVec3: tileLocationXYZ,
+      siteKey: `${this.player.playerNumber}:${buildingType}:${tileLocationXYZ.x}:${tileLocationXYZ.y}`
+    });
+    if (!dispatch || dispatch.status !== "dispatched") {
       if (planConsumed) this.basePlanner.releasePlanAt(planConsumed.tile);
       return State.FAILED;
     }
-    const building = BuildingCursor.spawnBuildingForPlayer(
-      this.scene,
-      buildingType,
-      { x: worldXYZ.x, y: worldXYZ.y, z: 0 },
-      this.player.playerNumber
-    );
-
-    validWorkers.forEach((w) => {
-      const aiController = getActorComponent(w, PawnAiController);
-      if (!aiController) return;
-      const newOrder = new OrderData(OrderType.Build, { targetGameObject: building });
-      dispatchAiOrder(this.scene, w, newOrder, this.player.playerNumber!);
-    });
     // Mark reservation usage & release any lingering plan reservation reference
     this.basePlanner.markTileUsed({ x: tileLocationXYZ.x, y: tileLocationXYZ.y });
     this.basePlanner.releasePlanAt({ x: tileLocationXYZ.x, y: tileLocationXYZ.y });
@@ -878,7 +991,13 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
   // const currentPlayerUnitsCount = currentPlayerActors.length;
   // return enemyPlayersUnitsCount < currentPlayerUnitsCount;
   IsEnemyPlayerWeak() {
-    return this.blackboard.militaryStrength < this.blackboard.enemyMilitaryStrength;
+    const weaker = isEnemyPlayerWeak(this.blackboard.militaryStrength, this.blackboard.enemyMilitaryStrength);
+    this.recordDecision(
+      "isEnemyPlayerWeak",
+      weaker ? "succeeded" : "failed",
+      weaker ? "enemy_weaker" : "enemy_not_weaker"
+    );
+    return weaker;
   }
 
   ContinueScouting() {
@@ -984,13 +1103,13 @@ export class PlayerAiControllerAgent implements IPlayerControllerAgent {
     return this.logisticsManager.redirectToScarce();
   }
   ShouldPursueResearch(): boolean {
-    return this.techManager.shouldPursueResearch();
+    return !this.purePlannerOwnsResearch && this.techManager.shouldPursueResearch();
   }
   IsResearchInProgress(): boolean {
     return this.techManager.isResearchInProgress();
   }
   TryStartResearch(): State {
-    return this.techManager.tryStartResearch();
+    return this.purePlannerOwnsResearch ? State.FAILED : this.techManager.tryStartResearch();
   }
   ShouldReanalyzeMap(): boolean {
     if (!this.mapAnalyzer) return true;

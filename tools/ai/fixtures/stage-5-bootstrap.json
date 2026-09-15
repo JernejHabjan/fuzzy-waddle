@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "evidenceKind": "authored",
+  "scenarioIds": ["DBG-01", "DBG-03", "DBG-04", "DBG-05"],
+  "purpose": "Exercise one deterministic decision capture and one command/save continuation boundary.",
+  "driver": "both",
+  "seeds": [759001],
+  "context": {
+    "mapId": "stage-5-runtime-bootstrap",
+    "mapDigest": "authored-at-runtime-bootstrap",
+    "side": 1,
+    "faction": "Tivara",
+    "rulesVersion": "probable-waffle-rules-v1",
+    "contractVersions": {
+      "scenario": 1,
+      "brain": 1,
+      "observation": 1,
+      "command": 1,
+      "repro": 1,
+      "worldProjection": 1
+    }
+  },
+  "expectedAssertions": ["non_vacuous_world", "command_applied_once", "save_continuation_digest"],
+  "deliberatelyBrokenOracle": "command_applied_twice",
+  "status": "authored_not_run"
+}

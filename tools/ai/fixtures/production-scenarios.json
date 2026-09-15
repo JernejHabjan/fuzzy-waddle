@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "scenarioIds": ["PRO-01", "PRO-02", "PRO-03", "PRO-04", "PRO-05"],
+  "purpose": "Typed deterministic pure production-capacity scenarios. The Jest scenario suite owns setup and semantic assertions.",
+  "driver": "pure",
+  "seeds": [759301, 759302, 759303],
+  "context": {
+    "mapId": "production-capacity-pure",
+    "mapDigest": "typed-production-capacity",
+    "side": 1,
+    "faction": "Tivara",
+    "rulesVersion": "probable-waffle-rules-v1",
+    "contractVersions": { "scenario": 1, "brain": 1, "observation": 1, "command": 1 }
+  },
+  "assertionPolicy": {
+    "repetitions": 3,
+    "requires": ["semantic-effect", "negative-control", "canonical-digest"],
+    "forbids": ["unjustified-producer", "useful-unit-uniqueness-cap", "duplicate-capacity-side-effect"]
+  }
+}
