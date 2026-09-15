@@ -10,6 +10,7 @@ export class PawnAiBlackboard extends Blackboard {
   private status: "idle" | "executing" | "paused" = "idle";
   private failedOrders: OrderData[] = [];
   cancellationHandler?: () => void;
+  queuedOrderCancellationHandler?: (orders: readonly OrderData[]) => void;
   currentOrderChanged = new Subject<OrderData | undefined>();
 
   getStatus(): string {
@@ -65,7 +66,9 @@ export class PawnAiBlackboard extends Blackboard {
   }
 
   overrideOrderQueueAndActiveOrder(orderData: OrderData): void {
+    const queuedOrders = this.orderQueue.filter((order) => order !== this.currentOrder);
     this.resetCurrentOrder();
+    if (queuedOrders.length > 0) this.queuedOrderCancellationHandler?.(queuedOrders);
     this.orderQueue = [orderData];
   }
 

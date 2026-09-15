@@ -11,21 +11,22 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 - Pinned pre-change baseline: `de47f482889db30420692bf4406fba463d7db296`.
 - Manifest authority: `tools/ai/fixtures/skirmish-v1.json`, 121 scenario IDs before variants.
 - Completed prerequisites: #824 repository tooling and #825 current-content domain/transport foundation.
-- Current issues: #815 and #816. Latest complete runtime evidence is report `1789412950848-failed.json` at
-  `c2a017db`: 6,948 decisions and 120,095 ticks across SEQ-01/02.
-- Current behavior boundary: domain-compatible defense fixed Skaduwee SEQ-01 base/worker collapse. SEQ-02 still loses
-  the Skaduwee main between ticks 16,020 and 20,020; Tivara survives but does not resume useful offensive pressure and
-  reports outcome-backlog overflow.
-- Exact next work: trace SEQ-02 raid-force composition and persistent retreat/outcome ownership, add focused regressions,
-  then run the grouped SEQ browser evidence once. Do not weaken recovery, terminal, or mission-continuation assertions.
+- Current issues: #815, #816 and #826. Latest complete runtime evidence is report `1789447438707-failed.json`: 7,204
+  decisions and 120,080 ticks across SEQ-01/02.
+- Current behavior boundary: SEQ-02 now passes both factions. Full manager replacement no longer permits a later narrow
+  projection to resurrect an obsolete squad, valid tactical domain children survive while their strategic parent does,
+  and replaced queued pawn orders publish terminal cancellation outcomes.
+- Exact next work: implement #826's authoritative preset-world runtime fixture contract and representative browser proofs.
+  The remaining SEQ-01 terminal-result and Skaduwee worker-economy failures belong to #827/#816's later strategy/runtime
+  expansion; do not weaken their assertions.
 - Unrelated local `.run/start_portal.run.xml`, if present, is not AI scope.
 
 Start with:
 
 ```bash
 pnpm agent:doctor
-pnpm agent:context -- --issue 816
-pnpm ai:skirmish:report -- --report tmp/ai-skirmish-matrix/1789412950848-failed.json --scenario SEQ-02 --failures-only --details
+pnpm agent:context -- --issue 826
+pnpm ai:skirmish:report -- --report tmp/ai-skirmish-matrix/1789447438707-failed.json --scenario SEQ-02 --details
 ```
 
 Raw `tmp/` artifacts are ignored and may be absent in a cold worktree. If absent, trust only the compact evidence above
@@ -35,8 +36,8 @@ until one clean replacement run is necessary; do not reconstruct or dump the old
 
 | Order             | Issue                                                           | State         | Next boundary                                                    | Model / effort            |
 | ----------------- | --------------------------------------------------------------- | ------------- | ---------------------------------------------------------------- | ------------------------- |
-| 1                 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Finish current SEQ-02 causal repair                              | Sol, high → Terra, medium |
-| 2                 | [#826](https://github.com/JernejHabjan/fuzzy-waddle/issues/826) | `not_started` | Authoritative preset-world E2E bridge and representative proof   | Sol, high → Terra, medium |
+| 1                 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | SEQ-02 repair proven; resume remaining runtime families after #815 | Sol, high → Terra, medium |
+| 2                 | [#826](https://github.com/JernejHabjan/fuzzy-waddle/issues/826) | `in_progress` | Authoritative preset-world E2E bridge and representative proof   | Sol, high → Terra, medium |
 | 3                 | [#818](https://github.com/JernejHabjan/fuzzy-waddle/issues/818) | `not_started` | Strategy/debug usability before strategy expansion               | Sol, high → Terra, medium |
 | 4                 | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `not_started` | Fastest-credible-victory policy and sustained pressure           | Sol, high → Terra, high   |
 | 5                 | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `in_progress` | Recalculate from 45/111; complete pure families paired with #816 | Sol, high → Terra, medium |
@@ -61,8 +62,8 @@ transport-required runtime. It is detached from #759 and does not block core rea
 - PRO-01–05 have deterministic typed pure coverage with three-run proposal/state digest equality. Last recorded pure
   mapping was 45/111; runtime mapping was 10/120. Recalculate from the manifest before reporting new totals.
 - `2b131ff3` restricts home defense ownership to actors that can target the threat domain; its focused Jest suite passed.
-  `c2a017db` gives the four-variant land sequence a 20-minute harness budget. The subsequent real run removed the former
-  Skaduwee SEQ-01 worker-bootstrap failure but left the SEQ-02 and terminal/continuation failures above.
+  The latest grouped run proves SEQ-02 for both factions and removes its former raid-recovery, mission-continuation and
+  outcome-backlog failures. SEQ-01 still lacks terminal results for both factions and Skaduwee loses its worker economy.
 - No shipped map reliably requires transport and no shipped flying container proves air shipping. #822 owns that optional
   future content; current generic route/transport contracts remain covered.
 - Current Playwright uses real lobby/Phaser/shared command application, but not socket multiplayer; #819 owns that proof.

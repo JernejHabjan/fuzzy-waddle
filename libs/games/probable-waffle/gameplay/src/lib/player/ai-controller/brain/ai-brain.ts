@@ -1,7 +1,6 @@
 import type { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
 import type { AiCommandOutcomeV1 } from "../contracts/ai-command-contracts";
-import type { AiDebugSnapshotV1 } from "../contracts/ai-debug-snapshot-v1";
 import type {
   AiIntentClaimV1,
   AiIntentDecisionV1,
@@ -16,24 +15,12 @@ import { projectAiDebugSnapshot } from "../debug/project-ai-debug-snapshot";
 import { planAiDecisions } from "../planning/ai-decision-planner";
 import { AI_PROVISIONAL_LEASE_DURATION_TICKS } from "./create-ai-brain-state-v1";
 import { aiDeadline } from "../contracts/ai-core-types";
+import type { AiBrainV1 } from "./ai-brain-v1";
+import type { AiBrainStepResultV1 } from "./ai-brain-step-result-v1";
+import { projectAiManagerState } from "./project-ai-manager-state";
 
-/** Result of one pure decision boundary. */
-export interface AiBrainStepResultV1 {
-  readonly nextState: AiBrainStateV1;
-  readonly acceptedIntents: readonly AiIntentV1[];
-  readonly decisions: readonly AiIntentDecisionV1[];
-  readonly trace: readonly AiIntentDecisionV1[];
-  readonly debugSnapshot: AiDebugSnapshotV1;
-}
-
-/** Pure brain boundary used by the host runtime adapter. */
-export interface AiBrainV1 {
-  step(
-    observation: AiObservationV1,
-    previousState: AiBrainStateV1,
-    orderedOutcomes: readonly AiCommandOutcomeV1[]
-  ): AiBrainStepResultV1;
-}
+export type { AiBrainV1 } from "./ai-brain-v1";
+export type { AiBrainStepResultV1 } from "./ai-brain-step-result-v1";
 
 function compareIntents(left: AiIntentV1, right: AiIntentV1): number {
   return (
@@ -231,53 +218,7 @@ export class PureAiBrain implements AiBrainV1 {
     // Stage 8 extends that established seam with its non-overlapping transport projection.
     // Stage 9 appends only newly-created transport children after the owner has advanced them.
     // Stage 14 merges only its `demand:adapt:` rows and saved rationale after the macro ledger.
-    const projectedState = proposalBatches.reduce<AiBrainStateV1>((state, batch) => {
-      const patch = batch.statePatch;
-      if (!patch) return state;
-      const { transportAppend, squadUpdates, adaptation, adaptationDemands, openingArchetypeId, ...replacePatch } =
-        patch;
-      return {
-        ...state,
-        ...replacePatch,
-        ...(openingArchetypeId ? { opening: { ...state.opening, archetypeId: openingArchetypeId } } : {}),
-        ...(adaptation || adaptationDemands
-          ? {
-              economyProduction: {
-                ...state.economyProduction,
-                ...(adaptation ? { adaptation } : {}),
-                ...(adaptationDemands
-                  ? {
-                      demands: [
-                        ...state.economyProduction.demands.filter(
-                          (demand) => !demand.demandId.startsWith("demand:adapt:")
-                        ),
-                        ...adaptationDemands
-                      ].sort((left, right) => left.demandId.localeCompare(right.demandId))
-                    }
-                  : {})
-              }
-            }
-          : {}),
-        ...(transportAppend?.length
-          ? {
-              transport: [
-                ...state.transport,
-                ...transportAppend.filter(
-                  (candidate) => !state.transport.some((current) => current.planId === candidate.planId)
-                )
-              ]
-            }
-          : {}),
-        ...(squadUpdates?.length
-          ? {
-              squads: [
-                ...state.squads.filter((squad) => !squadUpdates.some((update) => update.squadId === squad.squadId)),
-                ...squadUpdates
-              ].sort((left, right) => left.squadId.localeCompare(right.squadId))
-            }
-          : {})
-      };
-    }, planning.state);
+    const projectedState = projectAiManagerState(planning.state, proposalBatches);
     const modeIsTerminal = observation.modeGoals.some(
       (goal) => goal.owner === observation.playerNumber && (goal.state === "completed" || goal.state === "failed")
     );
