@@ -78,6 +78,20 @@ export interface RuntimeCheckpointV1 {
   }[];
   readonly profileDifficulty: string | null;
   readonly strategyStance: string;
+  readonly visibleEnemyFacts: readonly {
+    readonly objectName: string;
+    readonly relation: string;
+    readonly visibility: string;
+    readonly position: { readonly x: number; readonly y: number; readonly z: number } | null;
+    readonly healthPermille: number | null;
+  }[];
+  readonly decisionFacts: readonly {
+    readonly outcome: string;
+    readonly reason: string;
+    readonly kind: string;
+    readonly reasonCode: string;
+    readonly objectName: string | null;
+  }[];
   readonly demands: readonly {
     readonly demandId: string;
     readonly purpose: string;
@@ -100,6 +114,8 @@ export interface RuntimeCheckpointV1 {
     readonly squadId: string;
     readonly role: string;
     readonly state: string;
+    readonly domain: string;
+    readonly actorNames: readonly string[];
     readonly actorCount: number;
     readonly objectiveId: string | null;
     readonly createdTick: number | null;

@@ -19,7 +19,7 @@
     "variants": [
       {
         "id": "tivara-land-loop",
-        "scenarioIds": ["PRO-01", "PRO-02", "PRO-03", "PRO-04", "PRO-05", "PRO-06", "PRO-07", "SEQ-01"],
+        "scenarioIds": ["PRO-01", "PRO-02", "PRO-03", "PRO-04", "PRO-06", "PRO-07", "SEQ-01"],
         "seed": 759101,
         "mapLabel": "Ember Enclave",
         "aiFaction": "Tivara",
@@ -28,12 +28,44 @@
       },
       {
         "id": "skaduwee-production",
-        "scenarioIds": ["PRO-01", "PRO-02", "PRO-03", "PRO-04", "PRO-05", "PRO-06", "PRO-07"],
+        "scenarioIds": ["PRO-01", "PRO-02", "PRO-03", "PRO-04", "PRO-06", "PRO-07"],
         "seed": 759102,
         "mapLabel": "Ember Enclave",
         "aiFaction": "Skaduwee",
         "humanFaction": "Tivara",
         "difficulty": "Normal"
+      },
+      {
+        "id": "tivara-producer-replacement",
+        "scenarioIds": ["PRO-05"],
+        "seed": 826051,
+        "mapLabel": "Ember Enclave",
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "determinismGroup": "tivara-production-replacement",
+        "repetitions": 3,
+        "checkpointTicks": [20, 400, 800, 1600, 3000, 5000, 8000, 12000],
+        "presetWorld": {
+          "fixtureId": "production-replacement",
+          "actors": [
+            {
+              "fixtureActorId": "ai-producer-1",
+              "actorName": "AnkGuard",
+              "owner": 2,
+              "position": { "x": 400, "y": 880, "z": 0 }
+            }
+          ],
+          "resourceGrants": [
+            { "playerNumber": 2, "amounts": { "food": 2000, "wood": 2000, "stone": 2000, "minerals": 2000 } }
+          ],
+          "queues": [
+            { "producerFixtureActorId": "ai-producer-1", "actorName": "TivaraMacemanMale", "count": 1 }
+          ],
+          "events": [
+            { "id": "producer-loss", "tick": 500, "kind": "destroy_owned_actor", "owner": 2, "objectName": "AnkGuard" }
+          ]
+        }
       },
       {
         "id": "skaduwee-land-loop",
@@ -107,10 +139,12 @@
       "maximumTick": 12000,
       "minimumDecisions": 100,
       "minimumAppliedCommands": 12,
-      "requiredAiFactions": ["Tivara", "Skaduwee"],
+      "requiredAiFactions": ["Tivara"],
       "minimumMilitaryProducerCount": 2,
       "maximumMilitaryProducerCount": 2,
-      "requireCapacityDemand": true
+      "requireCapacityDemand": true,
+      "requiredPresetFixtureId": "production-replacement",
+      "requireProducerReplacementAfterLoss": true
     },
     "PRO-06": {
       "maximumTick": 12000,

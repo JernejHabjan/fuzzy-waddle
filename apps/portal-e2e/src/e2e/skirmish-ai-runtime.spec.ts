@@ -32,7 +32,19 @@ test("executes selected AI scenarios in real lobby-started Phaser matches", asyn
         (candidate) =>
           candidate.scenarioIds === undefined || candidate.scenarioIds.some((id) => request.scenarioIds.includes(id))
       )) {
-        executed.push(await runVariant(browser, fixture, variant, request.seed, request.scenarioIds));
+        for (let repetition = 0; repetition < (variant.repetitions ?? 1); repetition += 1) {
+          executed.push(
+            await runVariant(
+              browser,
+              fixture,
+              variant,
+              request.seed,
+              request.scenarioIds,
+              request.sourceRevision,
+              request.fixtureDigest
+            )
+          );
+        }
       }
       variants = executed;
       fixtureRuns.set(fixture, variants);

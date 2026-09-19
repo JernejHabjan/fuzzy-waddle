@@ -4,6 +4,8 @@ export {
   type AiRuntimeBrowserInitialStateV1,
   type AiRuntimeBrowserTestConfigV1,
   type AiRuntimeBrowserTestHostV1,
+  type AiRuntimePresetApplicationV1,
+  type AiRuntimePresetWorldV1,
   clearAiRuntimeBrowserTestHostV1,
   publishAiRuntimeBrowserTestHostV1,
   readAiRuntimeBrowserTestConfigV1,

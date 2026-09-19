@@ -30,6 +30,25 @@ export async function captureRuntimeStrategyCheckpoint(
     return {
       profileDifficulty: state.profileDifficulty ?? null,
       strategyStance: state.strategy.stance,
+      visibleEnemyFacts: observation.actors
+        .filter((actor) => actor.relation !== "self")
+        .map((actor) => ({
+          objectName: actor.objectName,
+          relation: actor.relation,
+          visibility: actor.visibility,
+          position: actor.logicalPosition.status === "known" ? actor.logicalPosition.value : null,
+          healthPermille: actor.healthPermille?.status === "known" ? actor.healthPermille.value : null
+        }))
+        .sort((left, right) =>
+          `${left.objectName}:${JSON.stringify(left.position)}`.localeCompare(`${right.objectName}:${JSON.stringify(right.position)}`)
+        ),
+      decisionFacts: (parts.controller.getBrainDebugSnapshot()?.decisions ?? []).map((decision) => ({
+        outcome: decision.outcome,
+        reason: decision.reason,
+        kind: decision.intent.kind,
+        reasonCode: decision.intent.reasonCode,
+        objectName: decision.intent.objectName ?? null
+      })),
       demands: state.economyProduction.demands
         .map((demand) => ({
           demandId: demand.demandId,
@@ -73,6 +92,13 @@ export async function captureRuntimeStrategyCheckpoint(
           squadId: squad.squadId,
           role: squad.role,
           state: squad.state,
+          domain: squad.domain,
+          actorNames: squad.actorIds
+            .flatMap((actorId) => {
+              const actor = observation.actors.find((candidate) => candidate.actorId === actorId);
+              return actor ? [actor.objectName] : [];
+            })
+            .sort(),
           actorCount: squad.actorIds.length,
           objectiveId: squad.objectiveId,
           createdTick: squad.lifecycle?.createdTick ?? null,

@@ -66,7 +66,13 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
     if (!gameInstance) return;
 
     const runtimeTestConfig = environment.production ? null : readAiRuntimeBrowserTestConfigV1();
-    if (runtimeTestConfig) gameInstance.gameInstanceMetadata.data.rndSeed = runtimeTestConfig.seed;
+    if (runtimeTestConfig) {
+      gameInstance.gameInstanceMetadata.data.rndSeed = runtimeTestConfig.seed;
+      if (runtimeTestConfig.presetWorld) {
+        gameInstance.gameInstanceMetadata.data.gameInstanceId =
+          `runtime-fixture-${runtimeTestConfig.seed}-${runtimeTestConfig.presetWorld.fixtureId}`;
+      }
+    }
 
     // Derive seed from rndSeed for deterministic lock-stepping
     const seed = gameInstance.gameInstanceMetadata.data.rndSeed;

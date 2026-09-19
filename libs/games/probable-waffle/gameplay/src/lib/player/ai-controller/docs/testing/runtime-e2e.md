@@ -28,9 +28,46 @@ the explicit Playwright timeout for the whole selected variant group. A timeout 
 tests/decisions/ticks is an infrastructure failure, not behavioral evidence.
 
 Use `pnpm ai:skirmish:report -- --report <artifact> --scenario <ID> --failures-only --details` for bounded triage.
-[#826](https://github.com/JernejHabjan/fuzzy-waddle/issues/826) owns authoritative preset-world browser fixtures for
-focused cases that should not wait through unrelated opening/map prerequisites. Those fixtures must still create real
-world state and measure real outcomes; full natural matches remain required for emergence, terminal play, and soaks.
+
+## Authoritative focused worlds
+
+A runtime variant may declare `presetWorld` when its invariant should not wait through unrelated opening prerequisites.
+The developer-only bridge strictly validates actor names, unique fixture IDs, owners, finite in-map positions, positive
+resource grants, legal production queues, source revision, and fixture digest. It then creates actors through
+`SceneActorCreator`, changes resources through player-state events, and seeds authored items in the real
+`QueueComponent` after catalog, tech-tree, and payment checks. `ProductionComponent` then processes those queues in
+normal simulation. Setup runs after ordinary map indexing but before the first simulation tick or AI observation.
+Map selection supplies topology; authored actors supply normal faction vision. Scheduled events are keyed to authoritative
+simulation ticks. The bridge does not expose arbitrary topology rewrites, fog reveals, or clock jumps that could leak
+hidden information. Unknown fields—including brain state, desired decisions, hidden knowledge, or success flags—make
+the bridge fail closed.
+
+Scripted opponent pressure remains a real deterministic human command. It may select attacker object names and a target
+object name, but combat and AI response remain authoritative Phaser behavior. A focused producer-loss fixture may instead
+apply scheduled lethal damage through the real HealthComponent. The runner must observe a later producer-count drop and
+recovery; the event cannot mark the AI's decision or outcome as successful.
+Each focused deterministic variant runs three isolated repetitions. The runner compares the initial-world digest and the
+scenario's independently evaluated outcome signature. Opaque command IDs, exact accelerated-frame combat totals, and
+behavior unrelated to that scenario are excluded; a changed acceptance milestone remains a deterministic failure.
+
+The first retained focused proofs are:
+
+| Scenario             | Causal setup and independent result                                                                    |
+| -------------------- | ------------------------------------------------------------------------------------------------------ |
+| `DOMAIN-06`          | Real slingers engage real Banshees; squad membership and observed target establish compatible combat  |
+| `RAID-02`            | A legal air raid is engaged and the surviving force redirects to a different objective                |
+| `PRO-05`             | Scheduled lethal damage removes a Tivara producer; its count drops and returns in three runs           |
+| `SCOUT-05`           | Two distinct unseen Banshee positions yield identical committed enemy facts and decisions             |
+
+The Skaduwee producer-loss experiment on River Crossing is retained as a diagnostic report, not a passing `PRO-05`
+variant: its starting world has three military producers and late-game worker attrition, so it does not isolate the
+two-producer replacement invariant. Full-faction production coverage remains in the natural `PRO-01–04/06–07` rows.
+
+Runtime reports retain `execution.wallMs` and `execution.processStarts` alongside decision and tick counts. Use these
+fields when comparing a focused case to its natural-map counterpart; do not infer a speedup from simulated ticks alone.
+
+Keep natural lobby/map variants for emergent openings, terminal play, calibration, and soaks. Focused presets complement
+those matches and must never replace an invariant whose outcome depends on discovering an unauthored world naturally.
 
 ## Repetition and seed policy
 

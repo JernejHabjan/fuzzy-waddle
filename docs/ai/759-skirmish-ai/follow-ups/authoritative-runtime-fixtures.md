@@ -9,6 +9,15 @@ independently measured outcomes. They complement rather than replace full lobby/
 Recommended agent: `gpt-5.6-sol`, high effort for the first world-setup and authority boundary; then
 `gpt-5.6-terra`, medium effort for fixture families. Estimated effort: 2–4 focused sessions.
 
+## Current boundary
+
+The typed bridge and focused `SCOUT-05`, `DOMAIN-06`, `RAID-02`, and `PRO-05` Playwright proofs are implemented.
+Report `1789835431357-passed.json` covered all four in one browser process: 3,709 decisions, 72,960 ticks, and
+287,506 ms; repeated causal outcome digests matched. Initial queues use the real queue component after catalog,
+tech-tree, and payment checks. Topology is selected by map, vision arises from authored actors, and scheduled events
+use the simulation tick. The only remaining closeout item is an apples-to-apples wall-time/process-start measurement
+against the corresponding natural-map invariant, followed by a final issue audit and plan retirement.
+
 ## Cold start
 
 Read only:

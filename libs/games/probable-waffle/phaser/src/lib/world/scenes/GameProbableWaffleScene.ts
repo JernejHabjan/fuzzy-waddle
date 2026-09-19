@@ -63,6 +63,7 @@ import {
 } from "../../player/ai-controller/testing/ai-runtime-browser-test-config";
 import { GathererComponent } from "../../entity/components/resource/gatherer-component";
 import { getActorComponent } from "../../data/actor-component";
+import { applyAiRuntimePresetWorldV1 } from "../../player/ai-controller/testing/apply-ai-runtime-preset-world-v1";
 
 export default class GameProbableWaffleScene extends ProbableWaffleScene {
   tilemap!: Phaser.Tilemaps.Tilemap;
@@ -174,13 +175,15 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     creator.initInitialActors();
     // Populate the index after initial actors are in place
     actorIndex.scanExistingActors();
+    applyAiRuntimePresetWorldV1(this, creator);
     if (!environment.production && readAiRuntimeBrowserTestConfigV1()) {
       for (const player of this.players) {
         if (player.playerNumber === undefined) continue;
         const initialActors = actorIndex.getOwnedActors(player.playerNumber);
         recordAiRuntimeBrowserInitialStateV1(player.playerNumber, {
           ownedActorCount: initialActors.length,
-          workerCount: initialActors.filter((actor) => !!getActorComponent(actor, GathererComponent)).length
+          workerCount: initialActors.filter((actor) => !!getActorComponent(actor, GathererComponent)).length,
+          ownedActorNames: initialActors.map((actor) => actor.name).sort()
         });
       }
     }

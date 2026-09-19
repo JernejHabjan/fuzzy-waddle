@@ -1,3 +1,6 @@
+import type { RuntimePresetWorldV1 } from "./skirmish-ai-runtime-preset-world";
+import type { RuntimePerturbationV1 } from "./skirmish-ai-runtime-perturbation";
+
 export interface RuntimeVariantV1 {
   readonly id: string;
   readonly scenarioIds?: readonly string[];
@@ -6,10 +9,9 @@ export interface RuntimeVariantV1 {
   readonly aiFaction: "Tivara" | "Skaduwee";
   readonly humanFaction: "Tivara" | "Skaduwee";
   readonly difficulty: "Easy" | "Normal" | "Hard";
-  readonly perturbations?: readonly {
-    readonly id: string;
-    readonly tick: number;
-    readonly kind: "human_attack_ai_home";
-    readonly maximumAttackers: number;
-  }[];
+  readonly presetWorld?: RuntimePresetWorldV1;
+  readonly checkpointTicks?: readonly number[];
+  readonly determinismGroup?: string;
+  readonly repetitions?: number;
+  readonly perturbations?: readonly RuntimePerturbationV1[];
 }

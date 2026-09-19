@@ -27,6 +27,7 @@ test("summarizes runtime failures and final variant evidence", () => {
     rows: ["SEQ-01"],
     candidate: "c8fba4964b76ba6b26f0d5e747c2445a56a1bbe7",
     workCounts: { scenarios: 1, testSuites: 1, tests: 1, decisions: 20, ticks: 300 },
+    execution: { wallMs: 42910, processStarts: 1 },
     runtime: {
       scenarios: [
         {
@@ -57,6 +58,7 @@ test("summarizes runtime failures and final variant evidence", () => {
   });
 
   assert.match(text, /SCENARIO SEQ-01 FAIL failures=variant:terminal_result_missing/);
+  assert.match(text, /EXECUTION wallMs=42910 processStarts=1/);
   assert.match(
     text,
     /VARIANT variant seed=759 tick=300 result=quit workers=6 army=1 income=4.13 produced=2 damage=10 enemyLosses=1/

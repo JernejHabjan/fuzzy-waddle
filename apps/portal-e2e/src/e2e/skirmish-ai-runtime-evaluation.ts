@@ -23,6 +23,56 @@ export function evaluateScenario(
   if (assertion.requireNoInitialWorker && !selectedVariants.some((variant) => variant.initialWorkerCount === 0)) {
     failures.push("no_no_worker_variant");
   }
+  if (assertion.requireHiddenStateParity) {
+    const [left, right] = selectedVariants;
+    if (!left || !right || selectedVariants.length !== 2 || left.initialWorldDigest === right.initialWorldDigest) {
+      failures.push("hidden_state_world_pair_invalid");
+    } else {
+      const leftFirst = left.checkpoints[0];
+      const rightFirst = right.checkpoints[0];
+      if (JSON.stringify(leftFirst?.visibleEnemyFacts) !== JSON.stringify(rightFirst?.visibleEnemyFacts)) {
+        failures.push("hidden_state_observation_leak");
+      }
+      if (
+        assertion.requiredHiddenActorName &&
+        [leftFirst, rightFirst].some((checkpoint) =>
+          checkpoint?.visibleEnemyFacts.some((actor) => actor.objectName === assertion.requiredHiddenActorName)
+        )
+      ) {
+        failures.push("hidden_state_actor_disclosed");
+      }
+      if (JSON.stringify(leftFirst?.decisionFacts) !== JSON.stringify(rightFirst?.decisionFacts)) {
+        failures.push("hidden_state_decision_leak");
+      }
+    }
+  }
+  const determinismGroups = new Map<string, RuntimeVariantResultV1[]>();
+  for (const variant of selectedVariants) {
+    if (!variant.determinismGroup) continue;
+    determinismGroups.set(variant.determinismGroup, [
+      ...(determinismGroups.get(variant.determinismGroup) ?? []),
+      variant
+    ]);
+  }
+  for (const [group, repetitions] of determinismGroups) {
+    if (repetitions.length < 2) failures.push(`determinism_repetition_missing:${group}`);
+    if (new Set(repetitions.map((variant) => variant.initialWorldDigest)).size > 1) {
+      failures.push(`determinism_initial_world:${group}`);
+    }
+    const outcomeSignatures = repetitions.map((variant) =>
+      JSON.stringify(
+        evaluateRuntimeVariant(scenarioId, assertion, variant)
+          .map((failure) => failure.slice(failure.indexOf(":") + 1))
+          .sort()
+      )
+    );
+    if (new Set(outcomeSignatures).size > 1) {
+      failures.push(`determinism_outcome:${group}`);
+    }
+    if (new Set(repetitions.map((variant) => variant.outcomeDigest)).size > 1) {
+      failures.push(`determinism_outcome_digest:${group}`);
+    }
+  }
   for (const variant of selectedVariants) {
     failures.push(...evaluateRuntimeVariant(scenarioId, assertion, variant));
   }

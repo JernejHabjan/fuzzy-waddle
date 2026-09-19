@@ -24,6 +24,13 @@ export interface RuntimeAssertionV1 {
   readonly requireMissionContinuation?: boolean;
   readonly requireTerminalResult?: boolean;
   readonly requireRaidDefenseRecovery?: boolean;
+  readonly requiredPresetFixtureId?: string;
+  readonly requireProducerReplacementAfterLoss?: boolean;
+  readonly requiredDefenseTargetName?: string;
+  readonly requiredDefenseActorName?: string;
+  readonly requireMissionRedirectionAfterRaid?: boolean;
+  readonly requireHiddenStateParity?: boolean;
+  readonly requiredHiddenActorName?: string;
   readonly requireWaterTopology?: boolean;
   readonly requireBuildableWaterCarrier?: boolean;
   readonly requiredTransportPlanId?: string;

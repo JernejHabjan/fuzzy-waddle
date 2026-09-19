@@ -3,6 +3,7 @@ import { evaluateRuntimeRaidRecovery } from "./skirmish-ai-runtime-raid-evaluati
 import { evaluateRuntimeTransport } from "./skirmish-ai-runtime-transport-evaluation";
 import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
 import { last } from "./skirmish-ai-runtime-value";
+import { evaluateRuntimePresetWorld } from "./skirmish-ai-runtime-preset-evaluation";
 
 export function evaluateRuntimeVariant(
   scenarioId: string,
@@ -173,6 +174,7 @@ export function evaluateRuntimeVariant(
     failures.push(`${variant.variantId}:terminal_result_missing`);
   }
   failures.push(...evaluateRuntimeRaidRecovery(assertion, variant, final, hasTerminalResult));
+  failures.push(...evaluateRuntimePresetWorld(assertion, variant));
   failures.push(...evaluateRuntimeTransport(assertion, variant));
   failures.push(...variant.aiErrors.map((error) => `${variant.variantId}:ai_error:${error}`));
   return failures;

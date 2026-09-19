@@ -1,28 +1,18 @@
 import type Phaser from "phaser";
+import type { AiRuntimeBrowserInitialStateV1 } from "./ai-runtime-browser-initial-state-v1";
+import type { AiRuntimeBrowserTestConfigV1 } from "./ai-runtime-browser-test-config-v1";
+import type { AiRuntimeBrowserTestHostV1 } from "./ai-runtime-browser-test-host-v1";
+import type { AiRuntimePresetApplicationV1 } from "./ai-runtime-preset-application-v1";
+import { isAiRuntimeBrowserTestConfigV1 } from "./validate-ai-runtime-browser-test-config-v1";
 
 export const AI_RUNTIME_BROWSER_TEST_CONFIG_KEY_V1 = "fuzzy-waddle:ai-runtime-browser-test-v1";
 export const AI_RUNTIME_BROWSER_TEST_HOST_KEY_V1 = "__fuzzyWaddleAiRuntimeBrowserTestV1";
 
-/** Explicit developer-harness input. Ordinary skirmish navigation never creates this value. */
-export interface AiRuntimeBrowserTestConfigV1 {
-  readonly schemaVersion: 1;
-  readonly enabled: true;
-  readonly seed: number;
-  readonly startPaused: true;
-}
-
-export interface AiRuntimeBrowserInitialStateV1 {
-  readonly ownedActorCount: number;
-  readonly workerCount: number;
-}
-
-/** Test-only handle to the real Phaser game created by the ordinary Angular game route. */
-export interface AiRuntimeBrowserTestHostV1 {
-  readonly schemaVersion: 1;
-  readonly config: AiRuntimeBrowserTestConfigV1;
-  readonly game: Phaser.Game;
-  readonly initialStateByPlayer: Readonly<Record<number, AiRuntimeBrowserInitialStateV1>>;
-}
+export type { AiRuntimeBrowserInitialStateV1 } from "./ai-runtime-browser-initial-state-v1";
+export type { AiRuntimeBrowserTestConfigV1 } from "./ai-runtime-browser-test-config-v1";
+export type { AiRuntimeBrowserTestHostV1 } from "./ai-runtime-browser-test-host-v1";
+export type { AiRuntimePresetApplicationV1 } from "./ai-runtime-preset-application-v1";
+export type { AiRuntimePresetWorldV1 } from "./ai-runtime-preset-world-v1";
 
 declare global {
   interface Window {
@@ -38,18 +28,7 @@ export function readAiRuntimeBrowserTestConfigV1(
     const encoded = storage.getItem(AI_RUNTIME_BROWSER_TEST_CONFIG_KEY_V1);
     if (!encoded) return null;
     const value: unknown = JSON.parse(encoded);
-    if (
-      !value ||
-      typeof value !== "object" ||
-      (value as Partial<AiRuntimeBrowserTestConfigV1>).schemaVersion !== 1 ||
-      (value as Partial<AiRuntimeBrowserTestConfigV1>).enabled !== true ||
-      (value as Partial<AiRuntimeBrowserTestConfigV1>).startPaused !== true ||
-      !Number.isSafeInteger((value as Partial<AiRuntimeBrowserTestConfigV1>).seed) ||
-      ((value as Partial<AiRuntimeBrowserTestConfigV1>).seed ?? 0) < 0
-    ) {
-      return null;
-    }
-    return value as AiRuntimeBrowserTestConfigV1;
+    return isAiRuntimeBrowserTestConfigV1(value) ? value : null;
   } catch {
     return null;
   }
@@ -74,6 +53,24 @@ export function recordAiRuntimeBrowserInitialStateV1(
   window[AI_RUNTIME_BROWSER_TEST_HOST_KEY_V1] = {
     ...host,
     initialStateByPlayer: { ...host.initialStateByPlayer, [playerNumber]: initialState }
+  };
+}
+
+export function recordAiRuntimePresetApplicationV1(application: AiRuntimePresetApplicationV1): void {
+  const host = window[AI_RUNTIME_BROWSER_TEST_HOST_KEY_V1];
+  if (!host) throw new Error("runtime_test_host_unavailable_for_preset");
+  window[AI_RUNTIME_BROWSER_TEST_HOST_KEY_V1] = { ...host, presetApplication: application };
+}
+
+export function recordAiRuntimePresetEventV1(event: AiRuntimePresetApplicationV1["eventResults"][number]): void {
+  const host = window[AI_RUNTIME_BROWSER_TEST_HOST_KEY_V1];
+  if (!host?.presetApplication) throw new Error("runtime_test_preset_unavailable_for_event");
+  window[AI_RUNTIME_BROWSER_TEST_HOST_KEY_V1] = {
+    ...host,
+    presetApplication: {
+      ...host.presetApplication,
+      eventResults: [...host.presetApplication.eventResults, event]
+    }
   };
 }
 

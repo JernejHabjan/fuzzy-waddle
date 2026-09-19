@@ -138,7 +138,7 @@
       "id": "SCOUT-05",
       "stages": [4, 9, 14],
       "group": "scouting",
-      "fixture": null,
+      "fixture": "focused-hidden-state-runtime.json",
       "authoredFixture": "stage-14-adaptation.json",
       "drivers": ["pure", "runtime"]
     },
@@ -206,7 +206,7 @@
       "id": "DOMAIN-06",
       "stages": [8, 13],
       "group": "access",
-      "fixture": null,
+      "fixture": "focused-defense-runtime.json",
       "authoredFixture": "stage-13-tactics.json",
       "drivers": ["pure", "runtime"]
     },
@@ -222,7 +222,7 @@
       "id": "RAID-02",
       "stages": [13],
       "group": "combat",
-      "fixture": null,
+      "fixture": "focused-defense-runtime.json",
       "authoredFixture": "stage-13-tactics.json",
       "drivers": ["pure", "runtime"]
     },

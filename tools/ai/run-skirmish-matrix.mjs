@@ -261,6 +261,7 @@ function invokeHarness(input) {
 }
 
 function invokeRuntimeHarness(input) {
+  const startedAt = performance.now();
   const fixtures = [
     ...new Map(
       input.rows.map((row) => {
@@ -296,6 +297,7 @@ function invokeRuntimeHarness(input) {
     ],
     { cwd: workspaceRoot, env: environment, encoding: "utf8", maxBuffer: 32 * 1024 * 1024 }
   );
+  const wallMs = Math.round(performance.now() - startedAt);
   if (command.error) throw command.error;
   const runtimeReport = parseRuntimeReport(`${command.stdout}\n${command.stderr}`);
   const report = {
@@ -319,6 +321,7 @@ function invokeRuntimeHarness(input) {
       decisions: runtimeReport?.workCounts?.decisions ?? 0,
       ticks: runtimeReport?.workCounts?.ticks ?? 0
     },
+    execution: { wallMs, processStarts: 1 },
     runtime: runtimeReport,
     process: { exitCode: command.status, signal: command.signal, stdout: command.stdout, stderr: command.stderr }
   };

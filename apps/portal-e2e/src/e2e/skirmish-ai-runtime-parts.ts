@@ -16,6 +16,7 @@ export interface RuntimePagePartsV1 {
   dispatchHumanRaid(
     humanPlayerNumber: number,
     targetActorId: string,
-    maximumAttackers: number
+    maximumAttackers: number,
+    attackerObjectNames?: readonly string[]
   ): { status: string; dispatchedActors: number };
 }

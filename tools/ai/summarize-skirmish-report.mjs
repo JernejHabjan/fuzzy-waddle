@@ -66,6 +66,9 @@ export function summarizeReport(report, options = {}) {
     ];
     lines.push(`WORK ${workSummary.join(" ")}`);
   }
+  if (report.execution) {
+    lines.push(`EXECUTION wallMs=${report.execution.wallMs} processStarts=${report.execution.processStarts}`);
+  }
 
   const scenarios = runtime?.scenarios ?? [];
   const noExecutedWork =

@@ -99,6 +99,15 @@ export async function installRuntimeAccessor(page: Page): Promise<void> {
           typeof (candidate as { getMetric?: unknown }).getMetric === "function"
       );
       const controller = handler?.getAiPlayerController(playerNumber);
+      const component = (
+        actor: ReturnType<NonNullable<typeof actorIndex>["getOwnedActors"]>[number],
+        componentName: string
+      ): Record<string, unknown> | undefined => {
+        const data = actor.getData("actorData");
+        return data
+          ? [...data.components.entries()].find(([constructor]) => constructor.name === componentName)?.[1]
+          : undefined;
+      };
       return controller && tickService && actorIndex && commandBus && scoreTracker
         ? {
             controller,
@@ -117,19 +126,20 @@ export async function installRuntimeAccessor(page: Page): Promise<void> {
             getCommandOutcomes() {
               return commandBus.getAuthorityState().outcomes;
             },
-            dispatchHumanRaid(humanPlayerNumber: number, targetActorId: string, maximumAttackers: number) {
-              const component = (
-                actor: ReturnType<typeof actorIndex.getOwnedActors>[number],
-                componentName: string
-              ): Record<string, unknown> | undefined => {
-                const data = actor.getData("actorData");
-                return data
-                  ? [...data.components.entries()].find(([constructor]) => constructor.name === componentName)?.[1]
-                  : undefined;
-              };
+            dispatchHumanRaid(
+              humanPlayerNumber: number,
+              targetActorId: string,
+              maximumAttackers: number,
+              attackerObjectNames?: readonly string[]
+            ) {
               const actorIds = actorIndex
                 .getOwnedActors(humanPlayerNumber)
-                .filter((actor) => component(actor, "AttackComponent") && component(actor, "ActorTranslateComponent"))
+                .filter(
+                  (actor) =>
+                    component(actor, "AttackComponent") &&
+                    component(actor, "ActorTranslateComponent") &&
+                    (!attackerObjectNames || attackerObjectNames.includes(actor.name))
+                )
                 .map((actor) => component(actor, "IdComponent")?.["id"])
                 .filter((id): id is string => typeof id === "string")
                 .sort()
