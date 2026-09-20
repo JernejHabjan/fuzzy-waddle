@@ -20,6 +20,7 @@ completion evidence remains in Git and the parent handoff. #816 owns remaining m
 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | Lifecycle compatibility          | [Lifecycle validation](lifecycle-validation.md)                 | #824; multiplayer portions use #819              |
 | [#826](https://github.com/JernejHabjan/fuzzy-waddle/issues/826) | Fast authoritative runtime setup | [Preset-world runtime](authoritative-runtime-fixtures.md)       | #824; accelerates #816                           |
 | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | Fastest credible victory policy  | [Victory strategy](fastest-credible-victory.md)                 | #826; validated by #815/#816, calibrated by #817 |
+| [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828) | Long-match runtime performance   | [Profile-guided optimization](runtime-performance.md)         | Pair with #816; does not block #818 or #827       |
 
 Close a subissue only after its plan's omission audit, focused evidence, final closure audit, commit, push, and GitHub
 status update are complete. Triage the resolved plan: migrate enduring knowledge into owning code/docs/tests, update

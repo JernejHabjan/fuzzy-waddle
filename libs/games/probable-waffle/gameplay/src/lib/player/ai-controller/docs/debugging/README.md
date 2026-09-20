@@ -22,4 +22,9 @@ Why-not inspection distinguishes not evaluated, rejected, unresolved and not rec
 The strategic summary must use player-facing language rather than raw manager IDs and reason codes. Detailed IDs remain
 available in drill-down views for correlation with commands, effects, saves, and incident bundles.
 
+The overview is projected only from the committed observation, brain state, and arbitration decisions. Historical
+overview/strategy views use their retained snapshot; categories requiring an unretained historical observation/state
+must say so instead of mixing in current facts. The live panel selects one cloned snapshot and does not clone the full
+bounded history on every refresh. A selected historical decision may clone that history for navigation.
+
 See [incident reproduction](incident-reproduction.md) for capture and offline comparison.

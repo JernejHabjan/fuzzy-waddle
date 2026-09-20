@@ -19,6 +19,10 @@ function sentence(value: string): string {
   return normalized ? `${normalized.charAt(0).toUpperCase()}${normalized.slice(1)}` : "None";
 }
 
+function countNoun(count: number, singular: string, plural = `${singular}s`): string {
+  return `${count} ${count === 1 ? singular : plural}`;
+}
+
 function primarySquad(state: AiBrainStateV1) {
   const priority: Readonly<Record<string, number>> = { defense: 0, attack: 1, reinforcement: 2, escort: 3, scout: 4 };
   return state.squads
@@ -37,25 +41,59 @@ function describeObjective(
   if (state.skirmish.mode.state === "conceding") {
     return `Conceding: ${sentence(state.skirmish.mode.lastReason ?? "position is no longer recoverable")}`;
   }
-  if (!squad) return `${sentence(state.strategy.stance)} with no active squad mission`;
+  if (!squad) {
+    const transport = state.transport.find((plan) => !["completed", "cancelled", "failed"].includes(plan.phase));
+    if (transport) {
+      const kind = transport.lifecycle?.missionKind ?? "transfer";
+      const route = transport.lifecycle?.route.kind;
+      const medium = route === "air_transport" ? "air" : route === "water_transport" ? "water" : "unconfirmed";
+      return `${sentence(kind)} by ${medium} transport`;
+    }
+    return `${sentence(state.strategy.stance)} with no active squad mission`;
+  }
   const targetId = squad.tactics?.targetActorId ?? squad.objectiveId;
   const target = targetId ? observation.actors.find((actor) => actor.actorId === targetId) : undefined;
-  const targetName = target ? sentence(String(target.objectName)) : targetId ? `target ${targetId}` : "assigned area";
+  const targetName = target
+    ? `${target.visibility === "last_seen" ? "last known " : ""}${sentence(String(target.objectName))}`
+    : squad.lifecycle?.targetRegionId
+      ? "assigned region"
+      : "assigned area";
   const player = squad.lifecycle?.targetPlayerNumber;
   const ownership = player === null || player === undefined ? "" : ` belonging to Player ${player}`;
-  const action = squad.role === "defense" ? "Defending against" : squad.role === "scout" ? "Scouting" : "Attacking";
+  const action =
+    squad.role === "defense"
+      ? "Defending against"
+      : squad.role === "scout"
+        ? "Scouting"
+        : squad.role === "escort"
+          ? "Escorting toward"
+          : squad.role === "reserve"
+            ? "Holding near"
+            : "Attacking";
   return `${action} ${targetName}${ownership}`;
 }
 
 function describeForce(state: AiBrainStateV1, squad: AiBrainStateV1["squads"][number] | undefined): string {
-  if (!squad) return "No active combat force";
+  if (!squad) {
+    const transport = state.transport.find((plan) => !["completed", "cancelled", "failed"].includes(plan.phase));
+    if (!transport) return "No active combat force";
+    return (
+      `${countNoun(transport.passengerIds.length, "passenger")}, ` +
+      `${countNoun(transport.transportIds.length, "carrier")}; ${humanize(transport.phase)}; ` +
+      `deadline tick ${transport.lifecycle?.phaseDeadline.dueTick ?? "unknown"}`
+    );
+  }
   const ordered = squad.tactics?.orderedActorIds.length ?? 0;
-  const deadline = squad.lifecycle?.effectDeadline.dueTick ?? squad.lifecycle?.assemblyDeadline.dueTick;
-  const force = `${squad.actorIds.length} ${squad.domain} units; ${sentence(squad.state)}`;
-  return `${force}; ${ordered}/${squad.actorIds.length} ordered; deadline tick ${deadline ?? "none"}`;
+  const assembling = ["forming", "assemble", "rally"].includes(squad.state);
+  const deadline = assembling ? squad.lifecycle?.assemblyDeadline.dueTick : squad.lifecycle?.effectDeadline.dueTick;
+  const force = `${squad.actorIds.length} ${squad.domain} units; ${humanize(squad.state)}`;
+  return (
+    `${force}; ${ordered}/${squad.actorIds.length} ordered; ` +
+    `${assembling ? "assembly" : "effect"} deadline tick ${deadline ?? "unknown"}`
+  );
 }
 
-function describeProduction(state: AiBrainStateV1): string {
+function describeProduction(observation: AiObservationV1, state: AiBrainStateV1): string {
   const demand = state.economyProduction.demands
     .map((candidate) => ({
       candidate,
@@ -75,7 +113,16 @@ function describeProduction(state: AiBrainStateV1): string {
   const remaining = demand.candidate.desired - demand.committed;
   const need = `Need ${remaining} more ${humanize(demand.candidate.capabilityOrRole)}`;
   const purpose = `for ${humanize(demand.candidate.purpose)}`;
-  return `${need} ${purpose} (${demand.committed}/${demand.candidate.desired} committed)`;
+  const queues = observation.actors.flatMap((actor) =>
+    actor.relation === "self" && actor.queue.status === "known" ? [actor.queue.value] : []
+  );
+  const freeSlots = queues.reduce((total, queue) => total + Math.max(0, queue.capacity - queue.occupied), 0);
+  const capacity = queues.length ? `; ${freeSlots} observed free queue slots (eligibility varies)` : "; queue capacity unknown";
+  const evidence = state.economyProduction.adaptation.activeRoleTargets.find(
+    (target) => target.role === demand.candidate.capabilityOrRole && target.evidenceIds.length
+  );
+  const rationale = evidence ? `; supported by ${countNoun(evidence.evidenceIds.length, "committed evidence item")}` : "";
+  return `${need} ${purpose} (${demand.committed}/${demand.candidate.desired} committed)${capacity}${rationale}`;
 }
 
 function describeEconomy(observation: AiObservationV1, decisions: readonly AiIntentDecisionV1[]): string {
@@ -87,7 +134,7 @@ function describeEconomy(observation: AiObservationV1, decisions: readonly AiInt
     } => decision.outcome === "accepted" && decision.intent.kind === "assign_gatherers"
   );
   if (gather) {
-    return `Assigning ${gather.intent.actorIds.length} workers to ${humanize(String(gather.intent.resourceType))}`;
+    return `Assigning ${countNoun(gather.intent.actorIds.length, "worker")} to ${humanize(String(gather.intent.resourceType))}`;
   }
   const workers = observation.actors.filter(
     (actor) => actor.relation === "self" && actor.capabilities.some((capability) => capability.family === "gather")
@@ -115,20 +162,32 @@ function describeNextAction(decisions: readonly AiIntentDecisionV1[]): string {
   if (intent.kind === "produce") return `Train ${sentence(String(intent.objectName))}`;
   if (intent.kind === "construct") return `Build ${sentence(String(intent.objectName))}`;
   if (intent.kind === "assign_gatherers") {
-    return `Gather ${humanize(String(intent.resourceType))} with ${intent.actorIds.length} workers`;
+    return `Gather ${humanize(String(intent.resourceType))} with ${countNoun(intent.actorIds.length, "worker")}`;
   }
   if (intent.kind === "research") return `Research ${sentence(String(intent.researchType))}`;
-  if (intent.kind === "board") return `Board ${intent.actorIds.length} passengers`;
-  if (intent.kind === "unload") return `Unload ${intent.passengerIds.length} passengers`;
+  if (intent.kind === "board") return `Board ${countNoun(intent.actorIds.length, "passenger")}`;
+  if (intent.kind === "unload") return `Unload ${countNoun(intent.passengerIds.length, "passenger")}`;
   return sentence(intent.kind);
 }
 
 function describeBlocker(state: AiBrainStateV1, decisions: readonly AiIntentDecisionV1[]): string | null {
-  const blocker = state.blockers[0];
+  const blocker = state.blockers.find((entry) => entry.status === "technical_fault") ??
+    state.blockers.find((entry) => entry.status !== "failed_optional");
   if (blocker) {
-    const recovery = state.recovery.records.find((record) => record.cause === blocker.cause);
-    const retry = recovery ? `; ${sentence(recovery.state)}, retry tick ${recovery.nextRetryTick}` : "";
-    return `${sentence(blocker.cause)} (${blocker.status})${retry}`;
+    const recovery = state.recovery.records.find((record) => record.planId === blocker.planId);
+    const alternative = recovery?.alternate ? ` via ${humanize(recovery.alternate)}` : "";
+    const retry = recovery
+      ? `; ${humanize(recovery.state)}, retry tick ${recovery.nextRetryTick}${alternative}`
+      : "; awaiting recovery";
+    const affected =
+      blocker.planId === state.opening.plan.planId
+        ? "opening build order"
+        : state.transport.some((plan) => String(plan.planId) === String(blocker.planId))
+          ? "transport operation"
+          : blocker.planId === state.strategy.goalId
+            ? "strategic objective"
+            : "current plan";
+    return `${sentence(blocker.cause)} blocks ${affected} until tick ${blocker.deadline.dueTick}${retry}`;
   }
   const rejected = decisions.find((decision) => decision.outcome === "rejected");
   return rejected ? `${sentence(rejected.reason)}: ${sentence(rejected.detail)}` : null;
@@ -147,7 +206,7 @@ export function projectAiStrategicIntentSummary(
     headline: `${sentence(state.strategy.stance)} — ${objective}; ${force}`,
     objective,
     force,
-    production: describeProduction(state),
+    production: describeProduction(observation, state),
     economy: describeEconomy(observation, decisions),
     blocker: describeBlocker(state, decisions),
     nextAction: describeNextAction(decisions)

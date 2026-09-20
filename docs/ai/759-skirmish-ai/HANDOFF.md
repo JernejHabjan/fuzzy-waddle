@@ -11,14 +11,18 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 - Pinned pre-change baseline: `de47f482889db30420692bf4406fba463d7db296`.
 - Manifest authority: `tools/ai/fixtures/skirmish-v1.json`, 121 scenario IDs before variants.
 - Completed prerequisites: #824 repository tooling and #825 current-content domain/transport foundation.
-- Current issues: #815, #816 and #826. Latest focused runtime evidence is `1789835431357-passed.json`: SCOUT-05,
+- Current issues: #815, #816, #818 and #826. Latest focused runtime evidence is `1789835431357-passed.json`: SCOUT-05,
   DOMAIN-06, RAID-02 and PRO-05 passed in one browser process (3,709 decisions, 72,960 ticks, 287,506 ms).
 - Current behavior boundary: SEQ-02 now passes both factions. Full manager replacement no longer permits a later narrow
   projection to resurrect an obsolete squad, valid tactical domain children survive while their strategic parent does,
   and replaced queued pawn orders publish terminal cancellation outcomes.
-- Exact next work: finish #826's apples-to-apples focused-versus-natural wall-time comparison and audit/close the issue;
-  its authoritative actor/resource/queue/event bridge and four representative browser proofs are implemented. Then begin
-  #818's strategic debug overview. The remaining SEQ-01 terminal-result and Skaduwee worker-economy failures belong to
+- Exact next work: finish #818's panel readability and real browser hidden/shown/historical/export parity, then audit
+  and close it. The pure strategic summary now names objective/force phase/deadline, composition deficit/capacity and
+  causal evidence, economy shortage, next action, and blocker/retry from committed facts. The panel is split below the
+  400-line source limit; historical overview no longer reads current state, and live refresh skips copying all history.
+  #826 still needs an apples-to-apples focused-versus-natural wall-time comparison before close. Its authoritative
+  actor/resource/queue/event bridge and four representative browser proofs are implemented. The remaining SEQ-01
+  terminal-result and Skaduwee worker-economy failures belong to
   #827/#816's later strategy/runtime expansion; do not weaken their assertions.
 - Unrelated local `.run/start_portal.run.xml`, if present, is not AI scope.
 
@@ -26,7 +30,7 @@ Start with:
 
 ```bash
 pnpm agent:doctor
-pnpm agent:context -- --issue 826
+pnpm agent:context -- --issue 818
 pnpm ai:skirmish:report -- --report tmp/ai-skirmish-matrix/1789835431357-passed.json --details
 ```
 
@@ -38,8 +42,8 @@ until one clean replacement run is necessary; do not reconstruct or dump the old
 | Order             | Issue                                                           | State         | Next boundary                                                    | Model / effort            |
 | ----------------- | --------------------------------------------------------------- | ------------- | ---------------------------------------------------------------- | ------------------------- |
 | 1                 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | SEQ-02 repair proven; resume remaining runtime families after #815 | Sol, high → Terra, medium |
-| 2                 | [#826](https://github.com/JernejHabjan/fuzzy-waddle/issues/826) | `in_progress` | Bridge/proofs pass; finish direct natural-map timing comparison  | Terra, medium             |
-| 3                 | [#818](https://github.com/JernejHabjan/fuzzy-waddle/issues/818) | `not_started` | Strategy/debug usability before strategy expansion               | Sol, high → Terra, medium |
+| 2                 | [#818](https://github.com/JernejHabjan/fuzzy-waddle/issues/818) | `in_progress` | Pure summary/panel split done; browser parity and readability remain | Sol, high → Terra, medium |
+| 3                 | [#826](https://github.com/JernejHabjan/fuzzy-waddle/issues/826) | `in_progress` | Bridge/proofs pass; finish direct natural-map timing comparison  | Terra, medium             |
 | 4                 | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `not_started` | Fastest-credible-victory policy and sustained pressure           | Sol, high → Terra, high   |
 | 5                 | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `in_progress` | Recalculate from 45/111; complete pure families paired with #816 | Sol, high → Terra, medium |
 | 5                 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Recalculate from 10/120; runtime families and required CI shards | Sol, high → Terra, medium |
@@ -48,6 +52,7 @@ until one clean replacement run is necessary; do not reconstruct or dump the old
 | 8                 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `not_started` | Save/replay/reconnect/repeated-match evidence                    | Sol, high → Terra, medium |
 | 9                 | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | `not_started` | Retire legacy controller after parity dependencies               | Sol, high → Terra, medium |
 | As needed / final | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `not_started` | Bounded blockers, then final naming/structure cleanup            | Terra, medium             |
+| Profile-guided    | [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828) | `not_started` | Measure and optimize real long-match simulation hot paths        | Sol, high → Terra, high   |
 
 Dependencies remain authoritative over model grouping. Every planning, authority, architecture, strategy, or causal-diagnosis
 boundary starts on Sol/high; Terra resumes only once that boundary has a compact contract and focused acceptance evidence.
@@ -75,6 +80,14 @@ transport-required runtime. It is detached from #759 and does not block core rea
 - No shipped map reliably requires transport and no shipped flying container proves air shipping. #822 owns that optional
   future content; current generic route/transport contracts remain covered.
 - Current Playwright uses real lobby/Phaser/shared command application, but not socket multiplayer; #819 owns that proof.
+- SEQ-01/02 run at 100× simulation scale. Their 30,000-tick maximum is an observation ceiling for a natural match,
+  while first offensive launch is separately required by tick 12,000; it is not evidence that the AI optimizes match
+  length. #827 owns fastest-credible-victory strategy. #828 owns profile-guided runtime speed and responsiveness;
+  its [cold-start plan](follow-ups/runtime-performance.md) requires paired deterministic before/after evidence.
+- #818 focused evidence: gameplay Jest 167/167, Phaser Jest 239/239, gameplay and Phaser lint passed. The full Phaser
+  `tsc --noEmit` still reports pre-existing campaign spec typing and map `tilemap` declaration errors; no errors in the
+  touched AI files remain. Browser debug parity, long-value visual inspection, and export/history UI lifecycle are not
+  yet validated, so do not close #818 from these unit results.
 - The pure brain is used for configured skirmishes; unresolved player/faction identity still falls back to the legacy
   behavior tree. #820 owns evidence-backed removal.
 - Required manifest-derived pre-merge runtime CI, isolated pinned-baseline execution, D-06 calibration, and soaks do not
