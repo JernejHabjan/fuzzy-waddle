@@ -13,14 +13,12 @@ completion evidence remains in Git and the parent handoff. #816 owns remaining m
 | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | Pure scenario coverage           | [Deterministic scenarios](deterministic-scenarios.md)           | #824                                             |
 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | Runtime matrix and CI            | [Runtime matrix and CI](runtime-matrix-ci.md)                   | #824; #815 by scenario family                    |
 | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | Continuous play and difficulty   | [Continuous calibration](continuous-calibration.md)             | #824; stable SEQ runtime; baseline adapter       |
-| [#818](https://github.com/JernejHabjan/fuzzy-waddle/issues/818) | Strategic debugging              | [Strategic debugging](strategic-debugging.md)                   | #824; committed debug projection                 |
 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | Multiplayer AI                   | [Multiplayer E2E](multiplayer-e2e.md)                           | #824; runtime matrix infrastructure              |
 | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | Legacy retirement                | [Legacy controller retirement](legacy-controller-retirement.md) | #824, #816, #819, #823                           |
 | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | Source structure and naming      | [Source structure cleanup](source-structure-cleanup.md)         | #824; run bounded slices when they unblock work  |
 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | Lifecycle compatibility          | [Lifecycle validation](lifecycle-validation.md)                 | #824; multiplayer portions use #819              |
-| [#826](https://github.com/JernejHabjan/fuzzy-waddle/issues/826) | Fast authoritative runtime setup | [Preset-world runtime](authoritative-runtime-fixtures.md)       | #824; accelerates #816                           |
 | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | Fastest credible victory policy  | [Victory strategy](fastest-credible-victory.md)                 | #826; validated by #815/#816, calibrated by #817 |
-| [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828) | Long-match runtime performance   | [Profile-guided optimization](runtime-performance.md)         | Pair with #816; does not block #818 or #827       |
+| [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828) | Long-match runtime performance   | [Profile-guided optimization](runtime-performance.md)         | Pair with #816; does not block #827               |
 
 Close a subissue only after its plan's omission audit, focused evidence, final closure audit, commit, push, and GitHub
 status update are complete. Triage the resolved plan: migrate enduring knowledge into owning code/docs/tests, update

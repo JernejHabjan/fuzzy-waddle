@@ -66,6 +66,10 @@ two-producer replacement invariant. Full-faction production coverage remains in 
 Runtime reports retain `execution.wallMs` and `execution.processStarts` alongside decision and tick counts. Use these
 fields when comparing a focused case to its natural-map counterpart; do not infer a speedup from simulated ticks alone.
 
+A natural-map control that cannot satisfy a focused invariant is not an equivalent correctness oracle or a performance
+baseline. Record that outcome in its issue/handoff without claiming a speedup. The focused fixture remains the
+authoritative `PRO-05` replacement proof; natural recovery behavior remains runtime/strategy work under #816/#827.
+
 Keep natural lobby/map variants for emergent openings, terminal play, calibration, and soaks. Focused presets complement
 those matches and must never replace an invariant whose outcome depends on discovering an unauthored world naturally.
 

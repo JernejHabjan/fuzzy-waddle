@@ -8,7 +8,7 @@ policy in #827 and not a reason to weaken SEQ-01/02's 30,000-tick ceiling or fir
 
 Start on Sol/high for the profile and causal choice of hot path; use Terra/high for a bounded implementation after the
 profile names its owner. Pair with #816's continuous-match runs, but keep focused 400–12,000-tick fixtures for fast
-feedback. Do not block #818 or #827 on this optional optimization unless profiling shows a correctness failure.
+feedback. Do not block #827 on this optional optimization unless profiling shows a correctness failure.
 
 ## Cold start
 

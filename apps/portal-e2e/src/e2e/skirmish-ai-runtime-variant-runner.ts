@@ -51,16 +51,7 @@ export async function runVariant(
   );
 
   try {
-    await page.goto("/aota/skirmish");
-    await page.getByText(variant.mapLabel ?? fixture.recipe.mapLabel, { exact: true }).click();
-    const dismissHint = page.getByRole("button", { name: "Got it" });
-    if (await dismissHint.isVisible()) await dismissHint.click();
-    await page.locator("#faction-1").selectOption({ label: variant.humanFaction });
-    await page.locator(`#faction-${fixture.recipe.aiPlayerNumber}`).selectOption({ label: variant.aiFaction });
-    await page.locator(`#difficulty-${fixture.recipe.aiPlayerNumber}`).selectOption({ label: variant.difficulty });
-    await page.waitForTimeout(150);
-    await page.getByRole("button", { name: "Start Game" }).click();
-    await page.waitForURL(/\/aota\/game$/);
+    await configureLobby(page, fixture, variant);
     await installRuntimeAccessor(page);
     await waitForRuntimeController(page, fixture.recipe.aiPlayerNumber);
     await debugProbe?.(page, -1);
@@ -210,6 +201,23 @@ export async function runVariant(
   } finally {
     await context.close();
   }
+}
+
+async function configureLobby(
+  page: Page,
+  fixture: RuntimeFixtureV1,
+  variant: RuntimeVariantV1
+): Promise<void> {
+  await page.goto("/aota/skirmish");
+  await page.getByText(variant.mapLabel ?? fixture.recipe.mapLabel, { exact: true }).click();
+  const dismissHint = page.getByRole("button", { name: "Got it" });
+  if (await dismissHint.isVisible()) await dismissHint.click();
+  await page.locator("#faction-1").selectOption({ label: variant.humanFaction });
+  await page.locator(`#faction-${fixture.recipe.aiPlayerNumber}`).selectOption({ label: variant.aiFaction });
+  await page.locator(`#difficulty-${fixture.recipe.aiPlayerNumber}`).selectOption({ label: variant.difficulty });
+  await page.waitForTimeout(150);
+  await page.getByRole("button", { name: "Start Game" }).click();
+  await page.waitForURL(/\/aota\/game$/);
 }
 
 async function waitForRuntimeController(page: Page, aiPlayerNumber: number): Promise<void> {

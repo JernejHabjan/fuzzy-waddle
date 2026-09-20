@@ -73,7 +73,7 @@ For a repair, compare command and AI digests, authoritative outcomes and indepen
 - Runtime adapters own capture/replay/application boundaries and real-world checkpoints.
 - Planning managers own recorded why-not alternatives and domain-specific causal facts.
 - Phaser UI owns bounded presentation, overlays, keyboard behavior and cleanup.
-- Playwright owns reproduction round trips, debug parity, overflow/player switching and two-match lifecycle.
+- Playwright owns reproduction round trips, debug parity, bounded viewport checks, and repeated-selection lifecycle.
 
 The targeted `apps/portal-e2e/src/e2e/skirmish-ai-debug-parity.spec.ts` is a regular Playwright test, runnable from
 the IDE or with:
@@ -82,9 +82,10 @@ the IDE or with:
 pnpm exec playwright test -c apps/portal-e2e/playwright.config.ts apps/portal-e2e/src/e2e/skirmish-ai-debug-parity.spec.ts --workers=1
 ```
 
-It boots four real same-seed 400-tick matches
-from the authoritative preset world, compares committed gameplay digests for hidden/shown/historical/exported debug
-views, checks the first-page strategic fields and one category switch, and saves ignored review screenshots under
+It boots four real same-seed 400-tick matches from the authoritative preset world, compares committed gameplay digests
+for hidden/shown/historical/exported debug views, and checks the first-page strategic fields. The shown run drives the
+actual Phaser player/category button handlers, re-enters the selected player, proves a replaced label releases its wheel
+listener and overlay, and captures the overview at 1024×720. Review screenshots are ignored under
 `tmp/ai-debug-parity`. It is a focused DBG-06 subset, not proof of the full capture/replay or two-match lifecycle.
 
 Use the existing debug entry point; the isolated workbench may be a developer/test-only route backed by the runtime scenario bridge, not a new ordinary lobby feature. UI action labels must distinguish view history from simulation stepping. Expensive strings/indexes are lazy and bounded; diagnostic exceptions cannot stop the controller. Browser QA must demonstrate one real repeated-building or stalled-attack case from selection through capture, replay, comparison and a passing repaired scenario.
