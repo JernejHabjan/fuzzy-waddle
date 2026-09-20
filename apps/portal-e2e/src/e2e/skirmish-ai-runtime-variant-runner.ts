@@ -16,7 +16,8 @@ export async function runVariant(
   requestedSeed: number | null,
   requestedScenarioIds: readonly string[],
   sourceRevision: string,
-  fixtureDigest: string
+  fixtureDigest: string,
+  debugProbe?: (page: Page, checkpointIndex: number) => Promise<void>
 ): Promise<RuntimeVariantResultV1> {
   const context = await browser.newContext();
   const page = await context.newPage();
@@ -62,10 +63,16 @@ export async function runVariant(
     await page.waitForURL(/\/aota\/game$/);
     await installRuntimeAccessor(page);
     await waitForRuntimeController(page, fixture.recipe.aiPlayerNumber);
+    await debugProbe?.(page, -1);
     if (variant.presetWorld?.queues?.length) {
       const expected = variant.presetWorld.queues.reduce((count, queue) => count + queue.count, 0);
       await page.waitForFunction(
-        (count) => window.__fuzzyWaddleAiRuntimeBrowserTestV1?.presetApplication?.queuedItemCount === count,
+        (count) => {
+          const host = (
+            window as unknown as { __fuzzyWaddleAiRuntimeBrowserTestV1?: { presetApplication?: { queuedItemCount: number } } }
+          ).__fuzzyWaddleAiRuntimeBrowserTestV1;
+          return host?.presetApplication?.queuedItemCount === count;
+        },
         expected,
         { timeout: 30_000 }
       );
@@ -144,6 +151,7 @@ export async function runVariant(
       await setSimulationState(page, fixture.recipe.aiPlayerNumber, "pause", fixture.recipe.simulationTimeScale);
       await waitForSettledDecision(page, fixture.recipe.aiPlayerNumber);
       checkpoints.push(await captureCheckpoint(page, fixture.recipe.aiPlayerNumber, targetTick));
+      await debugProbe?.(page, index);
     }
     if (variant.presetWorld?.events?.length) {
       const eventResults = await page.evaluate(() => {

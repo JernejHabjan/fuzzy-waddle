@@ -106,7 +106,7 @@ export default class AiControllerDebugPanel extends Phaser.GameObjects.Container
     this.button.on("action", this.toggleLabels, this);
     this.aiControllerDebugLabel.destroy();
 
-    this.panelBackdrop = this.scene.add.rectangle(-215, 205, 440, 350, 0x111827, 0.92);
+    this.panelBackdrop = this.scene.add.rectangle(-255, 220, 520, 380, 0x111827, 0.92);
     this.panelBackdrop.setStrokeStyle(2, 0xd9c9a3, 0.9);
     this.panelBackdrop.setVisible(false);
     this.addAt(this.panelBackdrop, 0);

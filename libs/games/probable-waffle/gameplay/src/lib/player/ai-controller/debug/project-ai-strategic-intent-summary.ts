@@ -189,8 +189,18 @@ function describeBlocker(state: AiBrainStateV1, decisions: readonly AiIntentDeci
             : "current plan";
     return `${sentence(blocker.cause)} blocks ${affected} until tick ${blocker.deadline.dueTick}${retry}`;
   }
-  const rejected = decisions.find((decision) => decision.outcome === "rejected");
-  return rejected ? `${sentence(rejected.reason)}: ${sentence(rejected.detail)}` : null;
+  const rejected = decisions.find(
+    (decision): decision is Extract<AiIntentDecisionV1, { outcome: "rejected" }> => decision.outcome === "rejected"
+  );
+  if (!rejected) return null;
+  const explanations: Readonly<Record<typeof rejected.reason, string>> = {
+    claim_conflict: "Claim conflict: another action already claimed the same actor or capacity",
+    invalid_numeric_input: "A proposed action contained an invalid value",
+    precondition_failed: "A required actor, resource, route, or target is not yet available",
+    profile_limit: "The current difficulty's action budget deferred this proposal",
+    resource_conflict: "Available resources were committed to a higher-priority action"
+  };
+  return explanations[rejected.reason];
 }
 
 /** Builds presentation-ready meaning from committed state without querying or advancing gameplay. */
@@ -202,8 +212,13 @@ export function projectAiStrategicIntentSummary(
   const squad = primarySquad(state);
   const objective = describeObjective(observation, state, squad);
   const force = describeForce(state, squad);
+  const headlineForce = squad
+    ? `${countNoun(squad.actorIds.length, "unit")} in ${humanize(squad.state)}`
+    : state.transport.some((plan) => !["completed", "cancelled", "failed"].includes(plan.phase))
+      ? "transport operation active"
+      : "no active force";
   return {
-    headline: `${sentence(state.strategy.stance)} — ${objective}; ${force}`,
+    headline: `${sentence(state.strategy.stance)}: ${objective}; ${headlineForce}`,
     objective,
     force,
     production: describeProduction(observation, state),

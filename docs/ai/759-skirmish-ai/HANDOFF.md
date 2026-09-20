@@ -16,10 +16,11 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 - Current behavior boundary: SEQ-02 now passes both factions. Full manager replacement no longer permits a later narrow
   projection to resurrect an obsolete squad, valid tactical domain children survive while their strategic parent does,
   and replaced queued pawn orders publish terminal cancellation outcomes.
-- Exact next work: finish #818's panel readability and real browser hidden/shown/historical/export parity, then audit
-  and close it. The pure strategic summary now names objective/force phase/deadline, composition deficit/capacity and
-  causal evidence, economy shortage, next action, and blocker/retry from committed facts. The panel is split below the
-  400-line source limit; historical overview no longer reads current state, and live refresh skips copying all history.
+- Exact next work: finish #818's player/category switching, overlay/listener disposal and smaller-viewport review,
+  then audit and close it. The pure strategic summary names objective/force phase/deadline, composition
+  deficit/capacity/evidence, economy shortage, next action, and blocker/retry from committed facts. The panel is split
+  below the 400-line source limit; historical overview no longer reads current state, and live refresh skips cloning
+  the entire history. Browser hidden/shown/historical/export parity now passes in a 400-tick preset-world match.
   #826 still needs an apples-to-apples focused-versus-natural wall-time comparison before close. Its authoritative
   actor/resource/queue/event bridge and four representative browser proofs are implemented. The remaining SEQ-01
   terminal-result and Skaduwee worker-economy failures belong to
@@ -42,7 +43,7 @@ until one clean replacement run is necessary; do not reconstruct or dump the old
 | Order             | Issue                                                           | State         | Next boundary                                                    | Model / effort            |
 | ----------------- | --------------------------------------------------------------- | ------------- | ---------------------------------------------------------------- | ------------------------- |
 | 1                 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | SEQ-02 repair proven; resume remaining runtime families after #815 | Sol, high → Terra, medium |
-| 2                 | [#818](https://github.com/JernejHabjan/fuzzy-waddle/issues/818) | `in_progress` | Pure summary/panel split done; browser parity and readability remain | Sol, high → Terra, medium |
+| 2                 | [#818](https://github.com/JernejHabjan/fuzzy-waddle/issues/818) | `in_progress` | Debug parity/overview pass; finish lifecycle and viewport audit | Terra, medium             |
 | 3                 | [#826](https://github.com/JernejHabjan/fuzzy-waddle/issues/826) | `in_progress` | Bridge/proofs pass; finish direct natural-map timing comparison  | Terra, medium             |
 | 4                 | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `not_started` | Fastest-credible-victory policy and sustained pressure           | Sol, high → Terra, high   |
 | 5                 | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `in_progress` | Recalculate from 45/111; complete pure families paired with #816 | Sol, high → Terra, medium |
@@ -84,10 +85,13 @@ transport-required runtime. It is detached from #759 and does not block core rea
   while first offensive launch is separately required by tick 12,000; it is not evidence that the AI optimizes match
   length. #827 owns fastest-credible-victory strategy. #828 owns profile-guided runtime speed and responsiveness;
   its [cold-start plan](follow-ups/runtime-performance.md) requires paired deterministic before/after evidence.
-- #818 focused evidence: gameplay Jest 167/167, Phaser Jest 239/239, gameplay and Phaser lint passed. The full Phaser
-  `tsc --noEmit` still reports pre-existing campaign spec typing and map `tilemap` declaration errors; no errors in the
-  touched AI files remain. Browser debug parity, long-value visual inspection, and export/history UI lifecycle are not
-  yet validated, so do not close #818 from these unit results.
+- #818 focused evidence: gameplay Jest 168/168, Phaser Jest 239/239, affected lint passed (one pre-existing portal
+  unused-variable warning), and portal-e2e `tsc --noEmit` passed. The full Phaser `tsc --noEmit` still reports unrelated
+  campaign spec typing and map `tilemap` declaration errors. `skirmish-ai-debug-parity.spec.ts` passed four same-seed
+  hidden/shown/historical/exported runs with matching authoritative gameplay digests; screenshots at 1280×720 show the
+  six overview fields on the first page with no raw arbitration IDs. Screenshots live under ignored `tmp/ai-debug-parity`
+  and are not retained evidence after checkout; rerun the test when reviewing layout. Player switching, overlay/listener
+  cleanup, and a smaller viewport still need direct proof before #818 can close.
 - The pure brain is used for configured skirmishes; unresolved player/faction identity still falls back to the legacy
   behavior tree. #820 owns evidence-backed removal.
 - Required manifest-derived pre-merge runtime CI, isolated pinned-baseline execution, D-06 calibration, and soaks do not

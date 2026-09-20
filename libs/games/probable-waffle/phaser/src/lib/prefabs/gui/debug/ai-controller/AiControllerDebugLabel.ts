@@ -74,15 +74,15 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
     this.once(Phaser.GameObjects.Events.DESTROY, this.destroyTransportOverlay, this);
     this.telemetryText.setInteractive();
     this.telemetryText.on("wheel", this.onTelemetryWheel, this);
-    const panelBackground = scene.add.rectangle(-210, 0, 420, 290, 0x111827, 0.74);
+    const panelBackground = scene.add.rectangle(-250, 0, 500, 320, 0x111827, 0.74);
     panelBackground.setOrigin(0.5, 0);
     this.addAt(panelBackground, 0);
-    this.playerName.setPosition(-410, 8).setOrigin(0, 0).setWordWrapWidth(400, true);
+    this.playerName.setPosition(-490, 8).setOrigin(0, 0).setWordWrapWidth(480, true);
     this.playerName.setStyle({ align: "left", color: "#fff1cc", fontSize: "18px" });
-    this.playerAction.setPosition(-410, 34).setOrigin(0, 0).setWordWrapWidth(400, true);
+    this.playerAction.setPosition(-490, 34).setOrigin(0, 0).setWordWrapWidth(480, true);
     this.playerAction.setStyle({ align: "left", color: "#d8e6ff", fontSize: "16px", maxLines: 2 });
-    this.telemetryText.setPosition(-410, 78).setOrigin(0, 0).setWordWrapWidth(400, true);
-    this.telemetryText.setStyle({ align: "left", color: "#ffffff", fontSize: "15px", lineSpacing: 2, maxLines: 12 });
+    this.telemetryText.setPosition(-490, 78).setOrigin(0, 0).setWordWrapWidth(480, true);
+    this.telemetryText.setStyle({ align: "left", color: "#ffffff", fontSize: "16px", lineSpacing: 1, maxLines: 16 });
     // Preserve generated-label compatibility references without executing the legacy mutable readers.
     void [
       AiLegacyDebugStrategicLines.getOverviewLines,
@@ -221,7 +221,7 @@ export default class AiControllerDebugLabel extends Phaser.GameObjects.Container
 
   private pageIndex = 0;
   private historyOffset = 0;
-  private readonly linesPerPage = 9;
+  private readonly linesPerPage = 7;
 
   private onTelemetryWheel(
     pointer: Phaser.Input.Pointer,

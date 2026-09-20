@@ -196,6 +196,38 @@ describe("committed strategic intent summary", () => {
     const summary = projectAiStrategicIntentSummary(observation, brainState(), decisions);
     expect(summary.economy).toContain("Assigning 1 worker to wood");
     expect(summary.nextAction).toContain("Gather wood with 1 worker");
-    expect(summary.blocker).toContain("Precondition failed: Target visible");
+    expect(summary.blocker).toBe("A required actor, resource, route, or target is not yet available");
+    expect(summary.blocker).not.toContain("target_visible");
+  });
+
+  it("labels missing queue and target facts instead of inventing them", () => {
+    const state = brainState();
+    const summary = projectAiStrategicIntentSummary(
+      observation,
+      {
+        ...state,
+        squads: [squad("attack", "forming")],
+        economyProduction: {
+          ...state.economyProduction,
+          demands: [{
+            demandId: "demand:ranged",
+            purpose: "pressure",
+            capabilityOrRole: "ranged",
+            unit: "actor_count",
+            desired: 2,
+            satisfiedActorIds: [],
+            queuedIds: [],
+            constructingIds: [],
+            acceptedNotObservedEffectIds: [],
+            preferredObjectNames: [],
+            resourceObligations: {}
+          }]
+        }
+      },
+      []
+    );
+    expect(summary.objective).toContain("assigned area");
+    expect(summary.objective).not.toContain("enemy-1");
+    expect(summary.production).toContain("queue capacity unknown");
   });
 });

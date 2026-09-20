@@ -108,6 +108,7 @@ export interface RuntimePageControllerV1 {
         squads: {
           squadId: string;
           role: string;
+          domain: string;
           state: string;
           actorIds: string[];
           objectiveId: string | null;
@@ -176,6 +177,7 @@ export interface RuntimePageControllerV1 {
       intent: { kind: string; reasonCode: string; objectName?: string };
     }[];
   }[];
+  exportBrainDebugHistory(): string;
   getBrainCommandBridgeSnapshot():
     | {
         outcomes: {
