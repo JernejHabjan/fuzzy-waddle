@@ -5,7 +5,11 @@ import type { AiDemandV1, AiPlanStepV1 } from "../contracts/ai-plan-contracts";
 import type { AiIntentV1 } from "../contracts/ai-intent-v1";
 import type { AiObservationV1 } from "../contracts/ai-observation-v1";
 import type { AiManagerProposalV1, AiProposalManagerV1 } from "./ai-manager-proposal";
-import { decideAiEconomyPolicy, hasCredibleAiEconomyThreat } from "./ai-economy-policy";
+import {
+  canAffordAiEconomyCost,
+  decideAiEconomyPolicy,
+  hasCredibleAiEconomyThreat
+} from "./ai-economy-policy";
 import { projectAiResourceForecasts, selectAiForecastResource } from "./ai-resource-forecast";
 import { proposeAiWorkerRecovery } from "./ai-worker-recovery";
 
@@ -478,6 +482,7 @@ export class AiMacroManager implements AiProposalManagerV1 {
     const gatherSources = observation.actors
       .filter(
         (actor) =>
+          actor.objectName !== ObjectNames.Field &&
           actor.relation !== "enemy" &&
           actor.visibility !== "last_seen" &&
           actor.resourceState.status === "known" &&
@@ -497,16 +502,28 @@ export class AiMacroManager implements AiProposalManagerV1 {
         .sort(
           (left, right) => left.stockpile - right.stockpile || left.resourceType.localeCompare(right.resourceType)
         )[0]?.resourceType;
-    const gatherSource = gatherSources.find(
-      (actor) =>
-        actor.resourceState.status === "known" && actor.resourceState.value.resourceType === constrainedResource
-    );
+    const activeGatherersBySource = new Map<string, number>();
+    for (const actor of self) {
+      const order = actor.activeOrder?.status === "known" ? actor.activeOrder.value : null;
+      if (order?.orderType !== OrderType.Gather || !order.targetActorId) continue;
+      activeGatherersBySource.set(order.targetActorId, (activeGatherersBySource.get(order.targetActorId) ?? 0) + 1);
+    }
+    const gatherCandidate = gatherSources
+      .filter(
+        (actor) =>
+          actor.resourceState.status === "known" && actor.resourceState.value.resourceType === constrainedResource
+      )
+      .map((actor) => {
+        const capacity =
+          actor.resourceState.status === "known" && actor.resourceState.value.serviceCapacity.status === "known"
+            ? actor.resourceState.value.serviceCapacity.value
+            : 1;
+        return { actor, availableCapacity: capacity - (activeGatherersBySource.get(actor.actorId) ?? 0) };
+      })
+      .find((candidate) => candidate.availableCapacity > 0);
+    const gatherSource = gatherCandidate?.actor;
     if (idleWorkers.length > 0 && gatherSource?.resourceState.status === "known" && constrainedResource) {
-      const capacity =
-        gatherSource.resourceState.value.serviceCapacity.status === "known"
-          ? gatherSource.resourceState.value.serviceCapacity.value
-          : 1;
-      const selectedWorkers = idleWorkers.slice(0, Math.max(1, Math.min(4, capacity)));
+      const selectedWorkers = idleWorkers.slice(0, Math.min(4, gatherCandidate?.availableCapacity ?? 0));
       const ids = nextIds(state, "gather", ordinal++);
       intents.push({
         ...ids,
@@ -740,7 +757,10 @@ export class AiMacroManager implements AiProposalManagerV1 {
         preferredObjectNames: [foodPrerequisiteObject],
         resourceObligations: foodPrerequisiteEntry.constructionProfile?.resourceCost ?? {}
       });
-      if (committedFoodPrerequisites < desiredFoodPrerequisites) {
+      if (
+        committedFoodPrerequisites < desiredFoodPrerequisites &&
+        canAffordAiEconomyCost(observation, foodPrerequisiteEntry.constructionProfile?.resourceCost ?? {})
+      ) {
         const alreadyClaimed = claimedActorIds(intents);
         const builder = self
           .filter(isAvailableBuilder)
@@ -818,7 +838,11 @@ export class AiMacroManager implements AiProposalManagerV1 {
       });
       const committedFoodSources =
         readyFoodSources.length + constructingFoodSources.length + acceptedFoodSourceEffectIds.length;
-      if (committedFoodSources < desiredFoodSources && (!foodPrerequisiteObject || readyFoodPrerequisites.length > 0)) {
+      if (
+        committedFoodSources < desiredFoodSources &&
+        (!foodPrerequisiteObject || readyFoodPrerequisites.length > 0) &&
+        canAffordAiEconomyCost(observation, foodSourceEntry.constructionProfile?.resourceCost ?? {})
+      ) {
         const alreadyClaimed = claimedActorIds(intents);
         const builder = self
           .filter(isAvailableBuilder)
@@ -887,18 +911,21 @@ export class AiMacroManager implements AiProposalManagerV1 {
           return order?.orderType === OrderType.Gather && order.targetActorId ? [order.targetActorId] : [];
         })
       );
-      // A returning worker is still part of a renewable-food labor cycle even
-      // though its transient target is the drop-off. Account for it against a
-      // stable unclaimed Field so another decision does not overstaff the source.
+      // A returning food worker will automatically resume its Field after delivery. Its transient order does not
+      // expose the source identity, so defer new Field assignments until all such workers resume gathering.
       const returningWorkerCount = self.filter((actor) => {
         const order = actor.activeOrder?.status === "known" ? actor.activeOrder.value : null;
-        return order?.orderType === OrderType.ReturnResources;
+        if (order?.orderType !== OrderType.ReturnResources || !order.targetActorId) return false;
+        return self.some(
+          (target) =>
+            target.actorId === order.targetActorId &&
+            (target.objectName === foodPrerequisiteObject || target.objectName === ObjectNames.Granary)
+        );
       }).length;
-      readyFoodSources
-        .filter((source) => !staffedFoodSourceIds.has(source.actorId))
-        .slice(0, returningWorkerCount)
-        .forEach((source) => staffedFoodSourceIds.add(source.actorId));
-      const unstaffedFoodSource = readyFoodSources.find((source) => !staffedFoodSourceIds.has(source.actorId));
+      const unstaffedFoodSource =
+        returningWorkerCount === 0
+          ? readyFoodSources.find((source) => !staffedFoodSourceIds.has(source.actorId))
+          : undefined;
       if (unstaffedFoodSource) {
         const alreadyClaimed = claimedActorIds(intents);
         const worker = self

@@ -84,15 +84,17 @@ transport-required runtime. It is detached from #759 and does not block core rea
   observed source capacity plus a bounded expansion buffer, credible local pressure and 65/35, 35/65 or emergency
   20/80 economy/defense budgets. Scarce food belongs to workforce recovery before optional reinforcements while a
   defender survives. Focused
-  gameplay evidence is 25 passing tests, the protocol default-state test passes, and the portal development build
+  gameplay evidence is 27 passing tests, the protocol default-state test passes, and the portal development build
   passes. ECO-08 passed both factions in real Playwright runtime, including zero-worker bootstrap, in
   `1790009966016-passed.json`.
-- Fresh 200-resource SEQ-01/02 evidence is `1790010368891-failed.json`: one browser process, 48,080 aggregate ticks and
-  390,748 ms. Both SEQ-01 factions now finish with six workers, renewable food and positive delivered income instead of
-  the earlier three/four-worker collapse, but neither produces the required sustained army or terminal result.
-  SEQ-02 Tivara also recovers six workers; the authored Skaduwee raid still destroys its producer/economy and ends with
-  one worker. A final unvalidated policy adjustment lets observed resource capacity lead workforce growth above six;
-  start there with focused tests before one grouped runtime rerun. Do not increase the 12,000-tick ceiling.
+- The latest 200-resource SEQ-01/02 evidence is `1790011554849-failed.json`: one browser process, 48,084 aggregate
+  ticks and 266,561 ms. The capacity-led demand requests eight or more workers, but renewable-food labor still delivered
+  too slowly for sustained armies and the authored Skaduwee attack could destroy the economy. Inspection showed generic
+  gather assignment and Field-specific labor authority overlapping while a farmer returned food, allowing two workers
+  to resume on one single-capacity Field. The final focused repair makes the Field planner the sole assignment owner,
+  waits for returning farmers to resume, counts occupied generic-source slots, and suppresses unaffordable infrastructure
+  proposals. Its 27 focused tests pass, but it still needs one grouped runtime rerun. Do not increase the 12,000-tick
+  ceiling.
 - PRO-01–07 passed both factions in one runtime group: 1,442 decisions and 24,040 ticks. The focused PRO-05
   replacement fixture now passes three repeated runs, including one real authored queue item and an observed producer
   loss/return; its Skaduwee River Crossing experiment is retained only as a diagnostic because the starting world has

@@ -1,7 +1,7 @@
 import { ObjectNames, OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
-import { decideAiEconomyPolicy } from "./ai-economy-policy";
+import { canAffordAiEconomyCost, decideAiEconomyPolicy } from "./ai-economy-policy";
 
 const catalog: AiCapabilityCatalogV1 = {
   schemaVersion: 1,
@@ -53,6 +53,16 @@ function foodSource(actorId: string, capacity: number) {
 }
 
 describe("decideAiEconomyPolicy", () => {
+  it("uses only unreserved stockpile when admitting economy construction", () => {
+    const observation = {
+      ...createAiTestObservation(),
+      resources: [{ ...createAiTestObservation().resources[0], stockpile: 100, reservedUnspent: 50, obligationsDue: 20 }]
+    };
+
+    expect(canAffordAiEconomyCost(observation, { [ResourceType.Wood]: 30 })).toBe(true);
+    expect(canAffordAiEconomyCost(observation, { [ResourceType.Wood]: 31 })).toBe(false);
+  });
+
   it("grows beyond the six-worker recovery floor when dated demand and capacity exist", () => {
     const workers = Array.from({ length: 6 }, (_, index) => createAiTestOwnedActor(`worker-${index}`));
     const observation = {

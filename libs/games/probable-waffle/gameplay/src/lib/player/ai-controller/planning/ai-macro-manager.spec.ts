@@ -827,9 +827,11 @@ describe("AiMacroManager", () => {
       ...createAiTestOwnedActor(id),
       objectName: ObjectNames.Field
     }));
+    const idleWorker = createAiTestOwnedActor("idle-worker");
+    const granary = { ...createAiTestOwnedActor("granary"), objectName: ObjectNames.Granary };
 
     const proposal = new AiMacroManager(() => catalog).propose(
-      { ...createAiTestObservation(), tick: 200, actors: [worker, ...fields] },
+      { ...createAiTestObservation(), tick: 200, actors: [worker, idleWorker, granary, ...fields] },
       state
     );
 
@@ -838,7 +840,44 @@ describe("AiMacroManager", () => {
     ).toBe(false);
     expect(
       proposal.statePatch?.economyProduction?.demands.find((demand) => demand.purpose === "renewable_food_capacity")
-    ).toMatchObject({ desired: 1 });
+    ).toMatchObject({ desired: 2 });
+  });
+
+  it("does not assign an idle worker to a resource source whose service capacity is full", () => {
+    const gatheringWorker = {
+      ...createAiTestOwnedActor("gathering-worker"),
+      activeOrder: {
+        status: "known" as const,
+        value: { orderType: OrderType.Gather, targetActorId: "wood-source" },
+        observedTick: 200
+      }
+    };
+    const woodSource = {
+      ...createAiTestOwnedActor("wood-source"),
+      relation: "neutral" as const,
+      visibility: "visible" as const,
+      resourceState: {
+        status: "known" as const,
+        value: {
+          resourceType: ResourceType.Wood,
+          available: { status: "known" as const, value: 100, observedTick: 200 },
+          serviceCapacity: { status: "known" as const, value: 1, observedTick: 200 }
+        },
+        observedTick: 200
+      }
+    };
+    const proposal = new AiMacroManager(() => catalog).propose(
+      {
+        ...createAiTestObservation(),
+        tick: 200,
+        actors: [gatheringWorker, createAiTestOwnedActor("idle-worker"), woodSource]
+      },
+      completedOpeningState()
+    );
+
+    expect(
+      proposal.intents.some((intent) => intent.kind === "assign_gatherers" && intent.sourceActorId === "wood-source")
+    ).toBe(false);
   });
 
   it("moves a worker from a generic food source onto authored renewable Field capacity", () => {

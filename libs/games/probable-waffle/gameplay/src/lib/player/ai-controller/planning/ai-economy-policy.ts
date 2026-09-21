@@ -18,6 +18,15 @@ function projectedIncome(observation: AiObservationV1, resourceType: ResourceTyp
   return income?.status === "known" ? income.value / 2 : 0;
 }
 
+export function canAffordAiEconomyCost(
+  observation: AiObservationV1,
+  cost: Readonly<Partial<Record<ResourceType, number>>>
+): boolean {
+  return Object.entries(cost).every(
+    ([resourceType, amount]) => availableStockpile(observation, resourceType as ResourceType) >= (amount ?? 0)
+  );
+}
+
 function usefulSourceCapacity(observation: AiObservationV1): number {
   return observation.actors
     .filter(
