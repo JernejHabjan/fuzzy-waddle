@@ -239,6 +239,14 @@ export interface AiObservedMapV1 {
     readonly elevation: number;
     readonly observedBlocked: boolean;
   }[];
+  readonly tacticalCells?: readonly {
+    readonly tileKey: string;
+    readonly position: Vector3Simple;
+    readonly groundPassable: boolean;
+    readonly waterPassable: boolean;
+    readonly elevation: number;
+    readonly observedBlocked: boolean;
+  }[];
   /** Completed cached topology generation; optional for legacy observations and isolated fixtures. */
   readonly accessGraph?: AiAccessGraphV1;
 }

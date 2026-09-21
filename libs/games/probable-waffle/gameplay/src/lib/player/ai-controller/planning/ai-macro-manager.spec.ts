@@ -652,7 +652,7 @@ describe("AiMacroManager", () => {
 
     expect(proposal.statePatch?.economyProduction?.demands).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ purpose: "dated_land_pressure", desired: 12 }),
+        expect.objectContaining({ purpose: "dated_ground_pressure", desired: 12 }),
         expect.objectContaining({ purpose: "dated_military_throughput", desired: 2 })
       ])
     );
@@ -989,7 +989,7 @@ describe("AiMacroManager", () => {
     );
 
     expect(
-      proposal.statePatch?.economyProduction?.demands.find((demand) => demand.purpose === "dated_land_pressure")
+      proposal.statePatch?.economyProduction?.demands.find((demand) => demand.purpose === "dated_ground_pressure")
     ).toMatchObject({ desired: 12, satisfiedActorIds: expect.arrayContaining(military.map((actor) => actor.actorId)) });
     expect(
       proposal.statePatch?.economyProduction?.demands.find((demand) => demand.purpose === "dated_military_throughput")

@@ -84,11 +84,20 @@ export function finalizeAiSkirmishProposal(context: AiSkirmishProposalContext): 
       strategy: context.opponent
         ? {
             ...state.strategy,
-            stance: context.localThreat ? "defend" : "pressure",
+            stance: context.localThreat
+              ? "defend"
+              : context.assessment?.choice === "finish"
+                ? "finish"
+                : context.assessment?.choice === "recover"
+                  ? "recover"
+                  : "pressure",
             goalId: context.attackPlanId!,
-            objectiveId: context.opponent.actorId
+            objectiveId: context.opponent.actorId,
+            assessment: context.assessment
           }
-        : state.strategy,
+        : context.assessment
+          ? { ...state.strategy, assessment: context.assessment }
+          : state.strategy,
       skirmish: resultSkirmish
     }
   };

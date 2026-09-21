@@ -11,22 +11,43 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 - Pinned pre-change baseline: `de47f482889db30420692bf4406fba463d7db296`.
 - Manifest authority: `tools/ai/fixtures/skirmish-v1.json`, 121 scenario IDs before variants.
 - Completed prerequisites: #824 repository tooling and #825 current-content domain/transport foundation.
-- Current issues: #815 and #816. Latest focused runtime evidence is `1789835431357-passed.json`: SCOUT-05,
-  DOMAIN-06, RAID-02 and PRO-05 passed in one browser process (3,709 decisions, 72,960 ticks, 287,506 ms).
+- Current issues: #815, #816, active #827, and prerequisite #829. The latest SEQ-01 diagnostic is
+  `1789968100579-failed.json` (2 variants, 24,040 aggregate ticks, 248,878 ms). Skaduwee found the bridge ground
+  route and launched, but still had no terminal result by tick 12,020. The test remains red; do not relax its terminal
+  assertion merely to close #827.
 - Current behavior boundary: SEQ-02 now passes both factions. Full manager replacement no longer permits a later narrow
   projection to resurrect an obsolete squad, valid tactical domain children survive while their strategic parent does,
   and replaced queued pawn orders publish terminal cancellation outcomes.
-- Exact next work: #816 resumes remaining runtime families and the required CI shards. The remaining SEQ-01
-  terminal-result and Skaduwee worker-economy failures belong to #827/#816's later strategy/runtime expansion; do not
-  weaken their assertions.
+- Exact next work: checkpoint the current #827 slice, perform the smallest behavior-neutral #821 macro split if still
+  required, then implement #829 before final #827 victory validation. Standard skirmish starts will change from 2,000 to
+  200 of every resource for both players, so old SEQ balance evidence becomes diagnostic rather than calibration proof.
+  Continue #816 runtime families after #829/#827 stabilize. Definition-derived prerequisite recovery is implemented:
+  completed opening history no longer suppresses live replacement, failed effects do not remain accepted commitments,
+  and duplicate food drop-offs scale only with demanded Field throughput. In the retained seed, Skaduwee rebuilt/scaled to two
+  Granaries and six Fields, launched at tick 2,820 and peaked at 19 military actors, but combat attrition reduced it to
+  zero military actors and three workers by tick 12,020. River Crossing needs no air transport: its bridge is
+  traversable by land.
+- The current #827 worktree is not committed. It contains a typed strategy assessment, opportunity ranking, tactical
+  liveness and remote approach cells, worker recovery, debug projection, and the 12,000-tick cap. Focused Jest suites
+  passed; `apps/portal-e2e/tsconfig.json` type checking passed. Phaser/gameplay-wide `tsc` still emits unrelated
+  existing spec errors. The latest local tactical regression (30 focused tests passed) lets an attack squad engage a
+  nearby armed defender while retaining its strategic objective. Same seed and initial-world digest as the previous
+  run improved survival but did not achieve victory. Demand-priced 600-tick resource forecasts, forecast-deficit labor,
+  prerequisite recovery and bounded duplicate food infrastructure now have 25 passing focused macro/forecast tests.
+  The latest runtime constructed 11 buildings, reached two Granaries and six Fields, produced 21 units and dealt 292
+  damage, but lost 23 units and six buildings without destroying an enemy actor. A post-run null-position guard in
+  immediate-threat selection kept the 30 focused tactics tests green. `nx lint probable-waffle-gameplay` remains red on 25 tracked
+  source-structure violations in already oversized/compound files touched by this larger worktree; the new forecast
+  source/spec are 77/84 lines and satisfy the limits. #821 owns the required behavior-neutral splits. Recheck tactical
+  move reissue before stage close.
 - Unrelated local `.run/start_portal.run.xml`, if present, is not AI scope.
 
 Start with:
 
 ```bash
 pnpm agent:doctor
-pnpm agent:context -- --issue 816
-pnpm ai:skirmish:report -- --report tmp/ai-skirmish-matrix/1789835431357-passed.json --details
+pnpm agent:context -- --issue 821
+pnpm ai:skirmish:report -- --report tmp/ai-skirmish-matrix/1789968100579-failed.json --details
 ```
 
 Raw `tmp/` artifacts are ignored and may be absent in a cold worktree. If absent, trust only the compact evidence above
@@ -34,18 +55,19 @@ until one clean replacement run is necessary; do not reconstruct or dump the old
 
 ## Remaining execution order
 
-| Order             | Issue                                                           | State         | Next boundary                                                    | Model / effort            |
-| ----------------- | --------------------------------------------------------------- | ------------- | ---------------------------------------------------------------- | ------------------------- |
-| 1                 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | SEQ-02 repair proven; resume remaining runtime families after #815 | Sol, high → Terra, medium |
-| 2                 | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `not_started` | Fastest-credible-victory policy and sustained pressure           | Sol, high → Terra, high   |
-| 5                 | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `in_progress` | Recalculate from 45/111; complete pure families paired with #816 | Sol, high → Terra, medium |
-| 5                 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Recalculate from 10/120; runtime families and required CI shards | Sol, high → Terra, medium |
-| 6                 | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `not_started` | Isolated baseline, D-06, paired difficulty and soaks after #827  | Sol, high → Terra, medium |
-| 7                 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `not_started` | Real multiplayer relay/lockstep AI evidence                      | Sol, high → Terra, high   |
-| 8                 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `not_started` | Save/replay/reconnect/repeated-match evidence                    | Sol, high → Terra, medium |
-| 9                 | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | `not_started` | Retire legacy controller after parity dependencies               | Sol, high → Terra, medium |
-| As needed / final | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `not_started` | Bounded blockers, then final naming/structure cleanup            | Terra, medium             |
-| Profile-guided    | [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828) | `not_started` | Measure and optimize real long-match simulation hot paths        | Sol, high → Terra, high   |
+| Order             | Issue                                                           | State         | Next boundary                                                      | Model / effort            |
+| ----------------- | --------------------------------------------------------------- | ------------- | ------------------------------------------------------------------ | ------------------------- |
+| 1 / as needed     | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `not_started` | Split the macro owner only where required to unblock #829          | Terra, medium             |
+| 2                 | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829) | `not_started` | 200-resource starts, adaptive workforce, runway and threat budgets | Sol, high → Terra, high   |
+| 3                 | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `in_progress` | Revalidate sustained pressure and recovery on the new economy      | Sol, high → Terra, high   |
+| 4                 | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `in_progress` | Recalculate coverage; complete pure families paired with #816      | Sol, high → Terra, medium |
+| 5                 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Recalculate runtime rows and add required CI shards                | Sol, high → Terra, medium |
+| 6                 | [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828) | `not_started` | Optimize measured long-match hot paths after behavior stabilizes   | Sol, high → Terra, high   |
+| 7                 | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `not_started` | Isolated baseline, D-06, paired difficulty and soaks               | Sol, high → Terra, medium |
+| 8                 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `not_started` | Real multiplayer relay/lockstep AI evidence                        | Sol, high → Terra, high   |
+| 9                 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `not_started` | Save/replay/reconnect/repeated-match evidence                      | Sol, high → Terra, medium |
+| 10                | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | `not_started` | Retire legacy controller after parity dependencies                 | Sol, high → Terra, medium |
+| 11 / final        | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `not_started` | Finish naming and source-structure cleanup                         | Terra, medium             |
 
 Dependencies remain authoritative over model grouping. Every planning, authority, architecture, strategy, or causal-diagnosis
 boundary starts on Sol/high; Terra resumes only once that boundary has a compact contract and focused acceptance evidence.
@@ -75,10 +97,13 @@ transport-required runtime. It is detached from #759 and does not block core rea
 - No shipped map reliably requires transport and no shipped flying container proves air shipping. #822 owns that optional
   future content; current generic route/transport contracts remain covered.
 - Current Playwright uses real lobby/Phaser/shared command application, but not socket multiplayer; #819 owns that proof.
-- SEQ-01/02 run at 100× simulation scale. Their 30,000-tick maximum is an observation ceiling for a natural match,
-  while first offensive launch is separately required by tick 12,000; it is not evidence that the AI optimizes match
-  length. #827 owns fastest-credible-victory strategy. #828 owns profile-guided runtime speed and responsiveness;
-  its [cold-start plan](follow-ups/runtime-performance.md) requires paired deterministic before/after evidence.
+- SEQ-01/02 run at 100× simulation scale and are capped at 12,000 requested ticks; the browser checkpoint is at
+  tick 12,020. River Crossing has a valid bridge/ground route. #827 owns fastest-credible-victory strategy, including
+  recovery when the first Skaduwee attack trades poorly. The SEQ-01 Skaduwee fixture is Normal difficulty against a
+  human-controlled lobby slot, not a higher-difficulty-versus-lower-difficulty AI matchup. #817 must use paired
+  difficulty evidence before claiming that a smarter AI reliably wins. #828 owns profile-guided runtime speed and
+  responsiveness; its [cold-start plan](follow-ups/runtime-performance.md) requires paired deterministic before/after
+  evidence.
 - The pure brain is used for configured skirmishes; unresolved player/faction identity still falls back to the legacy
   behavior tree. #820 owns evidence-backed removal.
 - Required manifest-derived pre-merge runtime CI, isolated pinned-baseline execution, D-06 calibration, and soaks do not

@@ -197,6 +197,7 @@ export function projectAiDebugSnapshot(
     stance: state.strategy.stance,
     goalId: state.strategy.goalId,
     commitmentUntilTick: state.strategy.commitmentDeadline.dueTick,
+    ...(state.strategy.assessment ? { strategicAssessment: state.strategy.assessment } : {}),
     topReasons,
     decisions,
     nextActions: accepted.slice(0, 3).map((decision) => `${decision.intent.kind}:${decision.intent.reasonCode}`),

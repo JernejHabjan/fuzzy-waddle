@@ -15,7 +15,7 @@
     "mapLabel": "Ember Enclave",
     "aiPlayerNumber": 2,
     "simulationTimeScale": 100,
-    "checkpointTicks": [20, 3000, 6000, 9000, 12000, 16000, 20000, 24000, 30000],
+    "checkpointTicks": [20, 1000, 2000, 3000, 4500, 6000, 8000, 10000, 12000],
     "variants": [
       {
         "id": "tivara-land-loop",
@@ -59,9 +59,7 @@
           "resourceGrants": [
             { "playerNumber": 2, "amounts": { "food": 2000, "wood": 2000, "stone": 2000, "minerals": 2000 } }
           ],
-          "queues": [
-            { "producerFixtureActorId": "ai-producer-1", "actorName": "TivaraMacemanMale", "count": 1 }
-          ],
+          "queues": [{ "producerFixtureActorId": "ai-producer-1", "actorName": "TivaraMacemanMale", "count": 1 }],
           "events": [
             { "id": "producer-loss", "tick": 500, "kind": "destroy_owned_actor", "owner": 2, "objectName": "AnkGuard" }
           ]
@@ -163,7 +161,7 @@
       "requireCompositionDemand": true
     },
     "SEQ-01": {
-      "maximumTick": 30000,
+      "maximumTick": 12000,
       "minimumDecisions": 300,
       "minimumAppliedCommands": 20,
       "requiredAiFactions": ["Tivara", "Skaduwee"],
@@ -174,10 +172,11 @@
       "minimumDamageDealt": 1,
       "minimumEnemyLosses": 1,
       "requireMissionContinuation": true,
+      "requiredGroundRouteVariantIds": ["skaduwee-land-loop"],
       "requireTerminalResult": true
     },
     "SEQ-02": {
-      "maximumTick": 30000,
+      "maximumTick": 12000,
       "minimumDecisions": 300,
       "minimumAppliedCommands": 20,
       "requiredAiFactions": ["Tivara", "Skaduwee"],

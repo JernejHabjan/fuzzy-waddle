@@ -563,6 +563,9 @@ function validateRuntimeFixture(fixture, scenarioId) {
       (!Array.isArray(assertion.requiredOpeningSteps) || assertion.requiredOpeningSteps.length === 0)) ||
     (assertion.requireNoInitialWorker !== undefined && typeof assertion.requireNoInitialWorker !== "boolean") ||
     (assertion.requireDeliveredIncome !== undefined && typeof assertion.requireDeliveredIncome !== "boolean") ||
+    (assertion.requiredGroundRouteVariantIds !== undefined &&
+      (!Array.isArray(assertion.requiredGroundRouteVariantIds) ||
+        assertion.requiredGroundRouteVariantIds.some((variantId) => typeof variantId !== "string"))) ||
     !Array.isArray(assertion.requiredAiFactions) ||
     assertion.requiredAiFactions.length === 0 ||
     assertion.requiredAiFactions.some((faction) => !["Tivara", "Skaduwee"].includes(faction)) ||

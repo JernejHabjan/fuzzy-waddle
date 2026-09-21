@@ -696,6 +696,7 @@ export class AiObservationPipeline {
       cargoCapacity: definition.components?.container?.capacity ?? null,
       constructionProfile: {
         resourceCost: { ...(definition.components?.productionCost?.resources ?? {}) },
+        requiredObjectNames: [...(definition.components?.requirements?.actors ?? [])].sort(),
         footprintRadiusTiles: Math.floor(
           ((definition.components?.representable?.width ?? 0) *
             (definition.components?.collider?.colliderFactorReduction || 1)) /
@@ -872,6 +873,55 @@ export class AiObservationPipeline {
         }
       }
     }
+    const tacticalCells: typeof constructionCells = [];
+    if (tilemap && navigation) {
+      const targets = actors
+        .filter((actor) => actor.relation === "enemy" && actor.visibility === "visible")
+        .filter((actor) => actor.logicalPosition.status === "known")
+        .sort((left, right) => {
+          const priority = (actor: AiObservedActorV1) =>
+            actor.mainBuilding?.status === "known" && actor.mainBuilding.value
+              ? 0
+              : actor.capabilities.some((capability) => capability.family === "produce")
+                ? 1
+                : 2;
+          return priority(left) - priority(right) || left.actorId.localeCompare(right.actorId);
+        })
+        .slice(0, 12);
+      const includedTactical = new Set<string>();
+      for (const target of targets) {
+        if (target.logicalPosition.status !== "known") continue;
+        const center = target.logicalPosition.value;
+        for (
+          let y = Math.max(0, Math.round(center.y) - 6);
+          y <= Math.min(tilemap.height - 1, Math.round(center.y) + 6);
+          y += 1
+        ) {
+          for (
+            let x = Math.max(0, Math.round(center.x) - 6);
+            x <= Math.min(tilemap.width - 1, Math.round(center.x) + 6);
+            x += 1
+          ) {
+            if (tacticalCells.length >= 1_024) break;
+            const tileKey = `${x},${y}`;
+            if (includedTactical.has(tileKey)) continue;
+            includedTactical.add(tileKey);
+            const observedNavigable = permittedTopology.navigableTileKeys.has(tileKey);
+            const observedBlocked = permittedTopology.blockedTileKeys.has(tileKey);
+            tacticalCells.push({
+              tileKey,
+              position: { x, y, z: observedNavigable ? (navigation.getNavigableHeightAtTile({ x, y }) ?? 0) : 0 },
+              groundPassable:
+                !observedBlocked &&
+                (observedNavigable || navigation.isTileGridWithoutBlockingObjectsNavigable({ x, y })),
+              waterPassable: navigation.isTileNavigable({ x, y }, MovementTerrainType.Water),
+              elevation: observedNavigable ? (navigation.getNavigableHeightAtTile({ x, y }) ?? 0) : 0,
+              observedBlocked
+            });
+          }
+        }
+      }
+    }
     return {
       bounds: tilemap
         ? knownValue({ width: tilemap.width, height: tilemap.height }, tick)
@@ -893,6 +943,7 @@ export class AiObservationPipeline {
         continuationCursor: accessGraph?.continuationCursor ?? this.queryContinuationCursor
       },
       constructionCells,
+      tacticalCells,
       ...(accessGraph ? { accessGraph } : {})
     };
   }
@@ -909,6 +960,23 @@ export class AiObservationPipeline {
     const tilemap = getSceneComponent(this.scene, TilemapComponent)?.tilemap;
     const blockedTileKeys = new Set<string>();
     const navigableTileKeys = new Set<string>();
+    if (tilemap) {
+      this.scene.children.each((child) => {
+        if (!getActorComponent(child, NavigableComponent) || getActorComponent(child, OwnerComponent)) return;
+        const footprint = getTileCoordsUnderObject(tilemap, child);
+        if (footprint.length === 0) return;
+        const { shrinkX, shrinkY } = NavigableComponent.handleNavigable(child);
+        const minX = Math.min(...footprint.map((tile) => tile.x));
+        const maxX = Math.max(...footprint.map((tile) => tile.x));
+        const minY = Math.min(...footprint.map((tile) => tile.y));
+        const maxY = Math.max(...footprint.map((tile) => tile.y));
+        for (const tile of footprint) {
+          if (tile.x < minX + shrinkX || tile.x > maxX - shrinkX) continue;
+          if (tile.y < minY + shrinkY || tile.y > maxY - shrinkY) continue;
+          navigableTileKeys.add(`${tile.x},${tile.y}`);
+        }
+      });
+    }
     const input = actors
       .filter((actor) => actor.visibility !== "last_seen")
       .flatMap((actor) => {
@@ -941,7 +1009,7 @@ export class AiObservationPipeline {
       .sort()
       .join("|");
     let hash = 0x811c9dc5;
-    const source = `${tilemap?.width ?? 0}:${tilemap?.height ?? 0}:${input}`;
+    const source = `${tilemap?.width ?? 0}:${tilemap?.height ?? 0}:${input}:${[...navigableTileKeys].sort().join("|")}`;
     for (let index = 0; index < source.length; index += 1) {
       hash ^= source.charCodeAt(index);
       hash = Math.imul(hash, 0x01000193);

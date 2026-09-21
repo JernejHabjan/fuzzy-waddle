@@ -139,6 +139,7 @@ export function createAiSkirmishProposalContext(
     nextSquads: [],
     skirmish,
     opponent: undefined,
-    attackPlanId: undefined
+    attackPlanId: undefined,
+    assessment: undefined
   };
 }

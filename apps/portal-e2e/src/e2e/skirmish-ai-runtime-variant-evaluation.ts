@@ -173,6 +173,12 @@ export function evaluateRuntimeVariant(
   if (assertion.requireTerminalResult && !hasTerminalResult) {
     failures.push(`${variant.variantId}:terminal_result_missing`);
   }
+  if (
+    assertion.requiredGroundRouteVariantIds?.includes(variant.variantId) &&
+    !variant.checkpoints.some((checkpoint) => checkpoint.strategyAssessment?.routeDomain === "ground")
+  ) {
+    failures.push(`${variant.variantId}:ground_route_missing`);
+  }
   failures.push(...evaluateRuntimeRaidRecovery(assertion, variant, final, hasTerminalResult));
   failures.push(...evaluateRuntimePresetWorld(assertion, variant));
   failures.push(...evaluateRuntimeTransport(assertion, variant));

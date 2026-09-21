@@ -79,7 +79,17 @@ export interface RuntimePageControllerV1 {
     | {
         scheduler: { decisionSequence: number };
         profileDifficulty?: string;
-        strategy: { stance: string };
+        strategy: {
+          stance: string;
+          assessment?: {
+            choice: string;
+            reason: string;
+            targetActorId: string | null;
+            routeDomain?: string | null;
+            readyForce: number;
+            requiredForce: number;
+          };
+        };
         opening: {
           plan: {
             planId: string;

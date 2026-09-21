@@ -19,6 +19,7 @@ import type { AiBlockerV1, AiProgressContractV1, AiRecoveryEpisodeV1 } from "./a
 import type { AiLaneServiceStateV1 } from "./ai-lane-contracts";
 import type { AiQueryStateV1 } from "./ai-query-contracts";
 import type { AiRouteRequestV1, AiRouteResultV1 } from "./ai-access-graph-v1";
+import type { AiStrategyAssessment } from "./ai-strategy-assessment";
 
 /** Persisted strategic stance with commitment hysteresis. */
 export interface AiStrategyStateV1 {
@@ -29,6 +30,8 @@ export interface AiStrategyStateV1 {
   readonly commitmentDeadline: AiDeadlineV1;
   readonly evidenceIds: readonly AiEvidenceId[];
   readonly suspendedGoalId: AiPlanId | null;
+  /** Optional for saves made before the strategic opportunity selector was introduced. */
+  readonly assessment?: AiStrategyAssessment;
 }
 
 /** Opening state is separate so completed checkpoints survive defense and migration. */

@@ -36,6 +36,19 @@ export class AiCommittedDebugLines {
         "=== STRATEGY & COMBAT ===",
         `Stance: ${brain.stance}; goal ${brain.goalId ?? "none"}`,
         `Commitment until tick: ${brain.commitmentUntilTick}`,
+        ...(brain.strategicAssessment
+          ? [
+              `Choice: ${brain.strategicAssessment.choice}; ${brain.strategicAssessment.reason}`,
+              `Force: ${brain.strategicAssessment.readyForce}/${brain.strategicAssessment.requiredForce} compatible units; ` +
+                `route ${brain.strategicAssessment.routeDomain ?? "unknown"}; ` +
+                `confidence ${brain.strategicAssessment.confidencePermille}‰`,
+              `Expected effect by tick ${brain.strategicAssessment.expectedEffectTick ?? "unknown"}; ` +
+                `reconsider at ${brain.strategicAssessment.reconsiderTick}`,
+              ...brain.strategicAssessment.alternatives.map(
+                (alternative) => `Alternative ${alternative.targetActorId}: ${alternative.reason}`
+              )
+            ]
+          : []),
         `Squads: ${brain.skirmish.squads.length}; incidents: ${brain.skirmish.incidents.length}`,
         ...brain.skirmish.squads
           .slice(0, 6)
@@ -92,7 +105,7 @@ export class AiCommittedDebugLines {
         ...brain.adaptation.evidence.map(
           (evidence) =>
             `  evidence ${evidence.kind}: ${evidence.sourceContactId} ` +
-              `${evidence.consecutiveEvaluations}/2 (${evidence.permittedFacts.join(",")})`
+            `${evidence.consecutiveEvaluations}/2 (${evidence.permittedFacts.join(",")})`
         ),
         ...brain.adaptation.roleTargets.map(
           (target) => `  counter ${target.role}: ${target.desired} (${target.evidenceIds.join(",")})`
@@ -135,7 +148,6 @@ export class AiCommittedDebugLines {
     }
     return ["No committed detail for this category"];
   }
-
 
   static getCommandAuthorityLines(
     controller: PlayerAiController,
@@ -182,7 +194,6 @@ export class AiCommittedDebugLines {
     }
     return lines;
   }
-
 
   static getSquadSupportLines(brain: ReturnType<PlayerAiController["getBrainDebugSnapshot"]> | undefined): string[] {
     const lines = ["=== SQUADS & SUPPORT ==="];

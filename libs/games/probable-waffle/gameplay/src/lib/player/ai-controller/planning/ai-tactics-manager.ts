@@ -7,6 +7,7 @@ import type { AiIntentV1 } from "../contracts/ai-intent-v1";
 import type { AiDomainV1, AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
 import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
 import type { AiManagerProposalV1, AiProposalManagerV1 } from "./ai-manager-proposal";
+import { selectAiAttackApproachPositions } from "./ai-tactics-approach-positions";
 
 export const AI_TACTICS_ATTACK_RATIO_PERMILLE = 1200;
 export const AI_TACTICS_RETREAT_RATIO_PERMILLE = 800;
@@ -111,6 +112,7 @@ function actorCombatStrength(actor: AiObservedActorV1, opponents: readonly AiObs
   const support =
     profile.passiveRegenerationPerSecond +
     (profile.healing ? (profile.healing.amount * 1000) / Math.max(1, profile.healing.cooldownTicks) : 0);
+  if (bestDps <= 0 && support <= 0) return 0;
   return Math.max(1, Math.floor(((bestDps + support) * effectiveDurability * statusPenalty) / 1_000_000));
 }
 
@@ -197,7 +199,7 @@ function legalForMembers(
   members: readonly AiObservedActorV1[]
 ): boolean {
   if (harmfulAt(position, observation)) return false;
-  const cell = observation.map?.constructionCells?.find(
+  const cell = [...(observation.map?.constructionCells ?? []), ...(observation.map?.tacticalCells ?? [])].find(
     (candidate) => candidate.position.x === position.x && candidate.position.y === position.y
   );
   if (!cell) return members.every((member) => movementDomains(member).includes("air"));
@@ -474,7 +476,10 @@ export class AiTacticsManager implements AiProposalManagerV1 {
     for (const actor of reinforcementActors) {
       const destination =
         augmentedSquads.find((squad) => underLocalPressure && squad.role === "defense") ??
-        augmentedSquads.find((squad) => squad.role === "attack") ??
+        augmentedSquads.find(
+          (squad) =>
+            squad.role === "attack" && (squad.domain === "mixed" || movementDomains(actor).includes(squad.domain))
+        ) ??
         augmentedSquads.find((squad) => squad.role === "reinforcement" || squad.role === "reserve");
       if (destination) destination.actorIds = [...destination.actorIds, actor.actorId];
     }
@@ -579,6 +584,25 @@ export class AiTacticsManager implements AiProposalManagerV1 {
       const previousTarget = squad.tactics?.targetActorId ? actorById.get(squad.tactics.targetActorId) : undefined;
       const bestTarget = alternatives[0];
       const rememberedTarget = squad.objectiveId ? actorById.get(squad.objectiveId as ActorId) : undefined;
+      const committedTarget =
+        squad.role === "attack" && rememberedTarget?.relation === "enemy" && rememberedTarget.visibility === "visible"
+          ? rememberedTarget
+          : undefined;
+      const immediateThreat = (committedTarget ? localEnemies : [])
+        .flatMap((enemy) => {
+          const enemyPosition = knownPosition(enemy);
+          if (!enemyPosition) return [];
+          const distances = members.flatMap((member) => {
+            const memberPosition = knownPosition(member);
+            return memberPosition && canTarget(member, enemy) && canTarget(enemy, member)
+              ? [distance(memberPosition, enemyPosition)]
+              : [];
+          });
+          return distances.length > 0 ? [{ enemy, nearest: Math.min(...distances) }] : [];
+        })
+        .filter(({ nearest }) => nearest <= 8)
+        .sort((left, right) => left.nearest - right.nearest || left.enemy.actorId.localeCompare(right.enemy.actorId))[0]
+        ?.enemy;
       const retainPrevious = Boolean(
         previousTarget &&
           previousTarget.visibility === "visible" &&
@@ -586,9 +610,12 @@ export class AiTacticsManager implements AiProposalManagerV1 {
           bestTarget &&
           bestTarget.score * 1000 < squad.tactics.targetScore * (1000 + AI_TACTICS_TARGET_SWITCH_IMPROVEMENT_PERMILLE)
       );
-      const targetId = retainPrevious
-        ? previousTarget?.actorId
-        : ((bestTarget?.objectiveId as ActorId | undefined) ?? rememberedTarget?.actorId);
+      const targetId =
+        immediateThreat?.actorId ??
+        committedTarget?.actorId ??
+        (retainPrevious
+          ? previousTarget?.actorId
+          : ((bestTarget?.objectiveId as ActorId | undefined) ?? rememberedTarget?.actorId));
       const target = targetId ? actorById.get(targetId) : undefined;
       const visibleTarget = target?.visibility === "visible" ? target : undefined;
       const targetAwareMembers = visibleTarget
@@ -617,8 +644,9 @@ export class AiTacticsManager implements AiProposalManagerV1 {
         estimate.ratioPermille >= AI_TACTICS_ATTACK_RATIO_PERMILLE && estimate.confidencePermille >= 500;
       const unfavorable =
         estimate.ratioPermille < AI_TACTICS_RETREAT_RATIO_PERMILLE ||
-        members.filter((actor) => actor.healthPermille?.status === "known" && actor.healthPermille.value <= 250)
-          .length >= Math.max(1, Math.ceil(members.length / 3));
+        (estimate.predictedFriendlyLossPermille > 0 &&
+          members.filter((actor) => actor.healthPermille?.status === "known" && actor.healthPermille.value <= 250)
+            .length >= Math.max(1, Math.ceil(members.length / 3)));
       const awaitingLaunch = ["forming", "assemble", "rally", "ready", "advance", "moving"].includes(squad.state);
       const forcedDecision =
         awaitingLaunch && (squad.lifecycle?.assemblyDeadline.dueTick ?? observation.tick) <= observation.tick;
@@ -635,14 +663,22 @@ export class AiTacticsManager implements AiProposalManagerV1 {
         );
       const missionProgressed =
         usefulEffectTick !== null && usefulEffectTick > (squad.lifecycle?.lastUsefulEffectTick ?? -1);
+      const strategicLaunchRecorded = state.skirmish.timeline.some(
+        (event) =>
+          event.kind === "mission" &&
+          event.subjectId === squad.squadId &&
+          event.detail.startsWith("launch:") &&
+          event.tick >= (squad.lifecycle?.createdTick ?? observation.tick)
+      );
+      const awaitingStrategicLaunch =
+        squad.role === "attack" &&
+        state.strategy.assessment?.targetActorId === squad.objectiveId &&
+        !strategicLaunchRecorded;
       const missionExpired =
         ["attack", "escort", "reinforcement", "scout"].includes(squad.role) &&
         !missionProgressed &&
         (squad.lifecycle?.effectDeadline.dueTick ?? Number.MAX_SAFE_INTEGER) <= observation.tick;
-      const missionRecoveryExhausted =
-        missionExpired &&
-        (squad.state === "recover" || squad.state === "recovering") &&
-        (squad.lifecycle?.recoveryAttempt ?? 0) >= 1;
+      const missionRecoveryExhausted = missionExpired && (squad.lifecycle?.recoveryAttempt ?? 0) >= 1;
       const emptyRecoveryExhausted =
         members.length === 0 && (squad.state === "recover" || squad.state === "recovering");
       const quietState: AiSquadStateV1["state"] = landedForRegroup
@@ -667,13 +703,15 @@ export class AiTacticsManager implements AiProposalManagerV1 {
           ? "completed"
           : members.length === 0 || missionExpired
             ? "recover"
-            : (unfavorable || topologyLost) && retreat
-              ? "retreat"
-              : localEnemies.length > 0 && (favorable || forcedDecision)
-                ? "engage"
-                : localEnemies.length > 0
-                  ? "regroup"
-                  : quietState;
+            : awaitingStrategicLaunch
+              ? "assemble"
+              : (unfavorable || topologyLost) && retreat
+                ? "retreat"
+                : localEnemies.length > 0 && (favorable || forcedDecision)
+                  ? "engage"
+                  : localEnemies.length > 0
+                    ? "regroup"
+                    : quietState;
       const nowRetreat = nextState === "retreat";
       const oscillationCount =
         previousRetreat !== nowRetreat && squad.tactics && observation.tick <= squad.tactics.nextReconsiderTick
@@ -729,11 +767,17 @@ export class AiTacticsManager implements AiProposalManagerV1 {
       const postedActorIds = new Set(postAssignments.map((assignment) => assignment.actorId));
       const assignedPositions = [
         ...postAssignments,
-        ...formationPositions(
-          postMembers.filter((actor) => !postedActorIds.has(actor.actorId)),
-          anchor,
-          observation
-        )
+        ...(squad.role === "attack" && !recoveryPhase && anchor && observation.map?.tacticalCells?.length
+          ? selectAiAttackApproachPositions(
+              postMembers.filter((actor) => !postedActorIds.has(actor.actorId)),
+              anchor,
+              observation
+            )
+          : formationPositions(
+              postMembers.filter((actor) => !postedActorIds.has(actor.actorId)),
+              anchor,
+              observation
+            ))
       ];
       const finalState: AiSquadStateV1["state"] =
         oscillationCount >= 2 && nextState === "engage" ? "regroup" : nextState;
@@ -769,6 +813,10 @@ export class AiTacticsManager implements AiProposalManagerV1 {
           ) {
             return activeOrder?.orderType !== OrderType.Attack || activeOrder.targetActorId !== visibleTarget.actorId;
           }
+          const assignment = assignedPositions.find((candidate) => candidate.actorId === actor.actorId);
+          if (assignment && distance(knownPosition(actor) ?? assignment.position, assignment.position) > 2) {
+            return activeOrder?.orderType !== OrderType.Move;
+          }
           return false;
         })
         .map((actor) => actor.actorId);
@@ -777,7 +825,7 @@ export class AiTacticsManager implements AiProposalManagerV1 {
       const updated: AiSquadStateV1 = {
         ...squad,
         actorIds: finalState === "completed" ? [] : members.map((actor) => actor.actorId),
-        objectiveId: targetId ?? squad.objectiveId,
+        objectiveId: squad.role === "attack" ? squad.objectiveId : (targetId ?? squad.objectiveId),
         state: finalState,
         ...(squad.lifecycle
           ? {
@@ -813,9 +861,11 @@ export class AiTacticsManager implements AiProposalManagerV1 {
           taskForceId: `task-force:${squad.lifecycle?.targetPlayerNumber ?? "local"}`,
           script,
           targetActorId: targetId ?? null,
-          targetScore: retainPrevious
-            ? squad.tactics!.targetScore
-            : (bestTarget?.score ?? squad.tactics?.targetScore ?? 0),
+          targetScore: committedTarget
+            ? (alternatives.find((candidate) => candidate.objectiveId === committedTarget.actorId)?.score ?? 0)
+            : retainPrevious
+              ? squad.tactics!.targetScore
+              : (bestTarget?.score ?? squad.tactics?.targetScore ?? 0),
           engagementRatioPermille: estimate.ratioPermille,
           confidencePermille: estimate.confidencePermille,
           predictedFriendlyLossPermille: estimate.predictedFriendlyLossPermille,
@@ -898,7 +948,7 @@ export class AiTacticsManager implements AiProposalManagerV1 {
               logicalPosition: assignment.position
             });
           }
-        } else {
+        } else if (updated.role !== "attack" || recoveryPhase || !observation.map?.tacticalCells?.length) {
           const batch = actorsNeedingOrder.slice(0, this.profile.maxActorOrdersPerStep);
           if (batch.length > 0)
             intents.push({

@@ -78,6 +78,14 @@ export interface RuntimeCheckpointV1 {
   }[];
   readonly profileDifficulty: string | null;
   readonly strategyStance: string;
+  readonly strategyAssessment?: {
+    readonly choice: string;
+    readonly reason: string;
+    readonly targetActorId: string | null;
+    readonly routeDomain: string | null;
+    readonly readyForce: number;
+    readonly requiredForce: number;
+  } | null;
   readonly visibleEnemyFacts: readonly {
     readonly objectName: string;
     readonly relation: string;

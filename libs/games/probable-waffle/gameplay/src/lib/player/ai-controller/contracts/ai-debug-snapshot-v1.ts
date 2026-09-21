@@ -3,6 +3,7 @@ import type { FactionType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiIntentDecisionV1 } from "./ai-intent-v1";
 import type { AiSimulationTick } from "./ai-core-types";
 import type { AiStrategicIntentSummary } from "./ai-strategic-intent-summary";
+import type { AiStrategyAssessment } from "./ai-strategy-assessment";
 
 /** Explicit completeness flags prevent partial traces from being presented as exact explanations. */
 export interface AiDiagnosticCompletenessV1 {
@@ -53,6 +54,8 @@ export interface AiDebugSnapshotV1 {
   readonly stance: string;
   readonly goalId: string | null;
   readonly commitmentUntilTick: AiSimulationTick;
+  /** Committed strategic choice and rejected alternatives, including historical snapshots. */
+  readonly strategicAssessment?: AiStrategyAssessment;
   readonly topReasons: readonly string[];
   readonly decisions: readonly AiIntentDecisionV1[];
   readonly nextActions: readonly string[];

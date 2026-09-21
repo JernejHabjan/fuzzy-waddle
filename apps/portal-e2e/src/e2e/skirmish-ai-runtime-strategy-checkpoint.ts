@@ -30,6 +30,16 @@ export async function captureRuntimeStrategyCheckpoint(
     return {
       profileDifficulty: state.profileDifficulty ?? null,
       strategyStance: state.strategy.stance,
+      strategyAssessment: state.strategy.assessment
+        ? {
+            choice: state.strategy.assessment.choice,
+            reason: state.strategy.assessment.reason,
+            targetActorId: state.strategy.assessment.targetActorId,
+            routeDomain: state.strategy.assessment.routeDomain ?? null,
+            readyForce: state.strategy.assessment.readyForce,
+            requiredForce: state.strategy.assessment.requiredForce
+          }
+        : null,
       visibleEnemyFacts: observation.actors
         .filter((actor) => actor.relation !== "self")
         .map((actor) => ({
@@ -40,7 +50,9 @@ export async function captureRuntimeStrategyCheckpoint(
           healthPermille: actor.healthPermille?.status === "known" ? actor.healthPermille.value : null
         }))
         .sort((left, right) =>
-          `${left.objectName}:${JSON.stringify(left.position)}`.localeCompare(`${right.objectName}:${JSON.stringify(right.position)}`)
+          `${left.objectName}:${JSON.stringify(left.position)}`.localeCompare(
+            `${right.objectName}:${JSON.stringify(right.position)}`
+          )
         ),
       decisionFacts: (parts.controller.getBrainDebugSnapshot()?.decisions ?? []).map((decision) => ({
         outcome: decision.outcome,

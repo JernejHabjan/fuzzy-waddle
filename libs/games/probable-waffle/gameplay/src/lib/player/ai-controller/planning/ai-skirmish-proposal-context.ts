@@ -10,6 +10,7 @@ import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v
 import type { AiAccessNodeId, AiPlanId } from "../contracts/ai-core-types";
 import type { AiIntentV1 } from "../contracts/ai-intent-v1";
 import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
+import type { AiStrategyAssessment } from "../contracts/ai-strategy-assessment";
 
 export interface AiSkirmishProposalContext {
   readonly observation: AiObservationV1;
@@ -35,4 +36,5 @@ export interface AiSkirmishProposalContext {
   skirmish: AiSkirmishStateV1;
   opponent: AiObservedActorV1 | undefined;
   attackPlanId: AiPlanId | undefined;
+  assessment: AiStrategyAssessment | undefined;
 }

@@ -16,6 +16,19 @@ const recorded = {
   commitmentUntilTick: 280,
   progressHealth: "watching",
   topReasons: ["observed enemy pressure"],
+  skirmish: { squads: [], incidents: [] },
+  strategicAssessment: {
+    choice: "finish",
+    reason: "credible_force_and_route",
+    targetActorId: "enemy-core",
+    readyForce: 3,
+    requiredForce: 2,
+    visibleThreatCount: 0,
+    confidencePermille: 1000,
+    expectedEffectTick: 300,
+    reconsiderTick: 280,
+    alternatives: [{ targetActorId: "enemy-field", reason: "lower_expected_effect" }]
+  },
   decisions: [],
   whyNot: []
 } as unknown as NonNullable<ReturnType<PlayerAiController["getBrainDebugSnapshot"]>>;
@@ -43,8 +56,12 @@ describe("committed AI debug lines", () => {
 
   it("labels unavailable historical details instead of mixing in current facts", () => {
     const controller = {
-      getBrainState: jest.fn(() => { throw new Error("live state must not be read"); }),
-      getCommittedObservation: jest.fn(() => { throw new Error("live observation must not be read"); })
+      getBrainState: jest.fn(() => {
+        throw new Error("live state must not be read");
+      }),
+      getCommittedObservation: jest.fn(() => {
+        throw new Error("live observation must not be read");
+      })
     } as unknown as PlayerAiController;
 
     const lines = AiCommittedDebugLines.getCommittedPlanningLines(controller, recorded, 2, "production");
@@ -53,5 +70,22 @@ describe("committed AI debug lines", () => {
     expect(lines).toContain("Detailed observation/state rows were not retained in this bounded snapshot");
     expect(controller.getBrainState).not.toHaveBeenCalled();
     expect(controller.getCommittedObservation).not.toHaveBeenCalled();
+  });
+
+  it("shows the committed finish rationale and alternatives in historical strategy views", () => {
+    const controller = {
+      getBrainState: jest.fn(() => {
+        throw new Error("live state must not be read");
+      }),
+      getCommittedObservation: jest.fn(() => {
+        throw new Error("live observation must not be read");
+      })
+    } as unknown as PlayerAiController;
+
+    const lines = AiCommittedDebugLines.getCommittedPlanningLines(controller, recorded, 1, "strategy");
+    expect(lines).toContain("Choice: finish; credible_force_and_route");
+    expect(lines).toContain("Force: 3/2 compatible units; route unknown; confidence 1000‰");
+    expect(lines).toContain("Alternative enemy-field: lower_expected_effect");
+    expect(controller.getBrainState).not.toHaveBeenCalled();
   });
 });

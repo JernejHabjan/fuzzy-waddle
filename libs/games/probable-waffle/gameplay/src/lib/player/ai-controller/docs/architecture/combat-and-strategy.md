@@ -17,6 +17,17 @@ threat's movement domain. An impressive squad count made from incapable units is
 
 After a favorable engagement, the AI applies useful pressure to an exposed economy, production site, expansion, choke or core. It must not idle indefinitely for perfect certainty. After an unfavorable engagement, it preserves survivors, changes force/route/objective and avoids repeating the same lethal choke oscillation.
 
+The offense owner ranks visible and bounded last-seen targets by core/economic value, travel, visible local counterforce,
+route feasibility and contact age. A compatible force can launch on an exposed core before the normal reinforcement
+target is complete; a severe observed counterforce blocks the assembly timeout from forcing a token attack. A completed
+mission does not consume the launch permission of the next mission, even when its stable squad ID is reused. The
+selected choice, compatible/required force, confidence, effect/reconsideration ticks and bounded alternatives are saved
+in the strategy state and projected into the historical debug view. A completed opening with a collapsed workforce
+recovers that workforce before forming a fresh offensive squad, unless a credible finishing force is already ready.
+
+Attack squads approach visible building objectives through distinct observed passable cells around the footprint.
+They do not use the occupied building center as a movement waypoint when no legal approach cell is known.
+
 ## Tactical execution
 
 - Focus fire is limited by useful-effect reservations to reduce overkill.

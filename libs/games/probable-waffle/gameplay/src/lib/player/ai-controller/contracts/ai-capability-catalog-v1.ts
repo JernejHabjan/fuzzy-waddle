@@ -19,6 +19,7 @@ export interface AiCapabilityCatalogEntryV1 {
   /** Definition-derived construction and elevated-navigation facts; absent for legacy catalogs. */
   readonly constructionProfile?: Readonly<{
     readonly resourceCost: Readonly<Partial<Record<ResourceType, number>>>;
+    readonly requiredObjectNames?: readonly ObjectNames[];
     /** Radius used by the runtime's square `getTileCoordsUnderObject` footprint rule. */
     readonly footprintRadiusTiles: number;
     readonly visionRange: number | null;

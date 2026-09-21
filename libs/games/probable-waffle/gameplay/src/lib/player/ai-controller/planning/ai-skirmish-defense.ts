@@ -1,7 +1,16 @@
 import { aiDeadline, type AiPlanId, type AiSquadId } from "../contracts/ai-core-types";
 import type { AiSquadStateV1 } from "../contracts/ai-brain-state-v1";
 import type { AiSkirmishProposalContext } from "./ai-skirmish-proposal-context";
-import { baseId, canTarget, domains, intentBase, position, regionId, withTimeline } from "./ai-skirmish-support";
+import {
+  baseId,
+  canTarget,
+  distance,
+  domains,
+  intentBase,
+  position,
+  regionId,
+  withTimeline
+} from "./ai-skirmish-support";
 
 export const AI_SKIRMISH_ASSEMBLY_TIMEOUT_TICKS = 1200;
 export const AI_PURSUIT_LEASH_TICKS = 200;
@@ -11,7 +20,24 @@ export function advanceAiSkirmishDefense(context: AiSkirmishProposalContext): vo
   if (!localThreat || combat.length === 0) return;
   const eligibleDefenders = combat.filter((actor) => canTarget(actor, localThreat));
   if (eligibleDefenders.length === 0) return;
-  const defenders = eligibleDefenders.slice(0, Math.max(1, Math.ceil(eligibleDefenders.length * 0.25)));
+  const confirmedHome =
+    context.homeBaseActor?.mainBuilding?.status === "known" && context.homeBaseActor.mainBuilding.value;
+  const nearbyAttackers = context.visibleEnemies.filter((enemy) => {
+    const enemyPosition = position(enemy);
+    return (
+      enemy.housingCost.status === "known" &&
+      enemy.housingCost.value > 0 &&
+      confirmedHome &&
+      context.home !== undefined &&
+      enemyPosition !== undefined &&
+      distance(context.home, enemyPosition) <= 12
+    );
+  }).length;
+  const defenseCount = Math.min(
+    eligibleDefenders.length,
+    Math.max(1, Math.ceil(eligibleDefenders.length * 0.25), nearbyAttackers * 2)
+  );
+  const defenders = eligibleDefenders.slice(0, defenseCount);
   defenders.forEach((actor) => context.primaryOwnedActors.add(actor.actorId));
   const targetPosition = position(localThreat);
   const defenseId = activeDefense?.squadId ?? ("squad:defense:home" as AiSquadId);
