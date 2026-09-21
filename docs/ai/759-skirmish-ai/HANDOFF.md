@@ -27,19 +27,19 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
   Granaries and six Fields, launched at tick 2,820 and peaked at 19 military actors, but combat attrition reduced it to
   zero military actors and three workers by tick 12,020. River Crossing needs no air transport: its bridge is
   traversable by land.
-- The current #827 worktree is not committed. It contains a typed strategy assessment, opportunity ranking, tactical
-  liveness and remote approach cells, worker recovery, debug projection, and the 12,000-tick cap. Focused Jest suites
-  passed; `apps/portal-e2e/tsconfig.json` type checking passed. Phaser/gameplay-wide `tsc` still emits unrelated
+- The current #827 strategy/recovery checkpoint is commit `e1215af5` on the remote branch. It contains a typed strategy
+  assessment, opportunity ranking, tactical liveness and remote approach cells, worker recovery, debug projection, and
+  the 12,000-tick cap. Its latest focused evidence is 48 gameplay tests, three debug-panel tests, and
+  `apps/portal-e2e/tsconfig.json` type checking passing. Phaser/gameplay-wide `tsc` still emits unrelated
   existing spec errors. The latest local tactical regression (30 focused tests passed) lets an attack squad engage a
   nearby armed defender while retaining its strategic objective. Same seed and initial-world digest as the previous
   run improved survival but did not achieve victory. Demand-priced 600-tick resource forecasts, forecast-deficit labor,
   prerequisite recovery and bounded duplicate food infrastructure now have 25 passing focused macro/forecast tests.
   The latest runtime constructed 11 buildings, reached two Granaries and six Fields, produced 21 units and dealt 292
   damage, but lost 23 units and six buildings without destroying an enemy actor. A post-run null-position guard in
-  immediate-threat selection kept the 30 focused tactics tests green. `nx lint probable-waffle-gameplay` remains red on 25 tracked
-  source-structure violations in already oversized/compound files touched by this larger worktree; the new forecast
-  source/spec are 77/84 lines and satisfy the limits. #821 owns the required behavior-neutral splits. Recheck tactical
-  move reissue before stage close.
+  immediate-threat selection kept the 30 focused tactics tests green. `nx lint probable-waffle-gameplay` remains red on
+  26 source-structure violations in oversized/compound files touched by that checkpoint; no baseline hashes were
+  renewed. #821 owns the required behavior-neutral splits. Recheck tactical move reissue before #827 stage close.
 - Unrelated local `.run/start_portal.run.xml`, if present, is not AI scope.
 
 Start with:
