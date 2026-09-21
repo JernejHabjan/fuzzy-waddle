@@ -18,10 +18,18 @@ throughput, while terminally failed effects are released so rejected work can be
 
 Workers retain ownership of useful in-progress duties such as returning resources. Reassignment is allowed when a source is depleted, inaccessible, unsafe or oversaturated, but a brief duty transition must not be mistaken for idleness.
 
-Once the opening worker checkpoint has completed, a separate current-workforce demand maintains its six-worker floor.
-Losses do not reopen historical opening steps. Owned, queued and accepted-but-unobserved replacements count once; a
-replacement has essential-economy priority and a real resource claim ahead of optional army spending. When food is
-insufficient, the demand remains visible without proposing an unaffordable queue command.
+Standard skirmishes give both human and AI players 200 food, wood, stone and minerals. The opening therefore secures a
+two-worker minimum before infrastructure instead of spending the entire food reserve on a serialized six-worker gate.
+Once renewable income is reachable, a separate current-workforce demand maintains six as a recovery floor and grows
+toward dated spending demand, useful resource-service capacity and an 18-worker safety ceiling. Owned, queued and
+accepted-but-unobserved replacements count once. Losses do not reopen historical opening steps.
+
+The economy policy projects food runway from available stockpile, planned workers and dated food obligations. Field
+capacity is bounded by projected labor, so an urgent runway can create one useful Field per available worker but never
+unstaffable speculative farms. Visible enemy pressure, plus the strategy commitment that prevents one-tick posture
+oscillation, freezes optional workforce growth and shifts the advertised spending split from 65/35 economy/defense to
+35/65 under pressure or 20/80 when local attackers outnumber defenders. Recovery below the six-worker floor remains
+possible at a lower priority; when pressure clears, useful economic growth resumes.
 
 ## Demand and legitimate duplicates
 

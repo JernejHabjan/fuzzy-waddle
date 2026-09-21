@@ -11,7 +11,8 @@ export function proposeAiWorkerRecovery(
   state: AiBrainStateV1,
   catalog: AiCapabilityCatalogV1,
   workerObjectName: ObjectNames,
-  desired: number
+  desired: number,
+  priority: { readonly urgencyClass: 0 | 2; readonly utility: number } = { urgencyClass: 0, utility: 990 }
 ): { readonly demand: AiDemandV1; readonly intent: AiIntentV1 | null } {
   const owned = observation.actors.filter((actor) => actor.relation === "self" && actor.visibility === "owned");
   const workers = owned.filter((actor) =>
@@ -89,15 +90,15 @@ export function proposeAiWorkerRecovery(
       demandId,
       lane: "essential_economy",
       proposedTick: observation.tick,
-      urgencyClass: 0,
-      utility: 990,
+      urgencyClass: priority.urgencyClass,
+      utility: priority.utility,
       preconditions: [{ kind: "actor_exists", actorId: producer.actorId }],
       claims: [
         { claimId, kind: "production_slot", producerId: producer.actorId, slot: 0 },
         ...resourceClaims,
         { claimId: `${claimId}:effect` as AiIntentV1["claims"][number]["claimId"], kind: "effect", effectId }
       ],
-      reasonCode: `worker_recovery:${workers.length}/${desired}`,
+      reasonCode: `worker_recovery:${workers.length}/${desired}:priority=${priority.urgencyClass}`,
       producerId: producer.actorId,
       objectName: workerObjectName
     }

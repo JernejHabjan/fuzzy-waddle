@@ -5,6 +5,7 @@ import type { AiDemandV1, AiPlanStepV1 } from "../contracts/ai-plan-contracts";
 import type { AiIntentV1 } from "../contracts/ai-intent-v1";
 import type { AiObservationV1 } from "../contracts/ai-observation-v1";
 import type { AiManagerProposalV1, AiProposalManagerV1 } from "./ai-manager-proposal";
+import { decideAiEconomyPolicy, hasCredibleAiEconomyThreat } from "./ai-economy-policy";
 import { projectAiResourceForecasts, selectAiForecastResource } from "./ai-resource-forecast";
 import { proposeAiWorkerRecovery } from "./ai-worker-recovery";
 
@@ -79,8 +80,9 @@ function queuedProduction(observation: AiObservationV1, objectNames: ReadonlySet
     .sort((left, right) => left.itemId.localeCompare(right.itemId));
 }
 
-/** Historical opening progress must not regress when a later expansion becomes active. */
-const OPENING_WORKER_COUNT = 6;
+/** The opening needs enough labor to unlock renewable food without spending the entire initial food reserve. */
+const MINIMUM_OPENING_WORKERS = 2;
+const WORKER_RECOVERY_FLOOR = 6;
 
 function queuedObjectIds(observation: AiObservationV1, objectName: ObjectNames): string[] {
   return owned(observation)
@@ -269,7 +271,7 @@ export class AiMacroManager implements AiProposalManagerV1 {
     let ordinal = 0;
     const checkpointStatus = checkpoints.map((checkpoint) => {
       const matchingActors = checkpointActors(observation, checkpoint, catalog);
-      const desired = checkpoint.id === "bootstrap-worker" ? OPENING_WORKER_COUNT : checkpoint.desired;
+      const desired = checkpoint.id === "bootstrap-worker" ? MINIMUM_OPENING_WORKERS : checkpoint.desired;
       const previousStep = state.opening.plan.steps.find((step) => step.stepId === `step:opening:${checkpoint.id}`);
       const satisfiedActors = matchingActors.filter(isFinishedActor);
       return {
@@ -555,17 +557,6 @@ export class AiMacroManager implements AiProposalManagerV1 {
         : 0;
     const openingComplete = activeCheckpointId === undefined;
     const workerCheckpoint = checkpointStatus.find((entry) => entry.checkpoint.id === "bootstrap-worker");
-    if (workerCheckpoint?.fulfilled) {
-      const recovery = proposeAiWorkerRecovery(
-        observation,
-        state,
-        catalog,
-        workerCheckpoint.checkpoint.requiredObject,
-        OPENING_WORKER_COUNT
-      );
-      demands.push(recovery.demand);
-      if (recovery.intent) intents.push(recovery.intent);
-    }
     if (openingComplete && neededHousing > 0 && housingEntries[0]) {
       const housingObject = housingEntries[0].sourceObjectName;
       demands.push({
@@ -656,11 +647,17 @@ export class AiMacroManager implements AiProposalManagerV1 {
         .map((entry) => entry.sourceObjectName)
     );
     const queuedMilitary = queuedProduction(observation, militaryProducts);
+    const currentWorkerCount = self.filter((actor) =>
+      catalog.entries.some((entry) => entry.sourceObjectName === actor.objectName && entry.gathers.length > 0)
+    ).length;
+    const workforceRecoveryOwnsFood = currentWorkerCount < WORKER_RECOVERY_FLOOR && military.length > 0;
     const targetMilitary = openingComplete
       ? pressureDomain === "air"
         ? Math.max(8, state.strategy.assessment?.requiredForce ?? 8)
         : 12
-      : budget.firstForce;
+      : hasCredibleAiEconomyThreat(observation)
+        ? budget.firstForce
+        : military.length;
     const compositionPrefix = pressureDomain === "air" ? "composition-air" : "composition";
     const pressureForecast = projectAiResourceForecasts(
       observation,
@@ -693,17 +690,26 @@ export class AiMacroManager implements AiProposalManagerV1 {
       .filter((actor) => actor.objectName === ObjectNames.Field && !isFinishedActor(actor))
       .sort((left, right) => left.actorId.localeCompare(right.actorId));
     const acceptedFoodSourceEffectIds = unresolvedReservedEffectIds(state, "effect:food-capacity:Field:effect:");
-    const foodStockpile =
-      observation.resources.find((resource) => resource.resourceType === ResourceType.Food)?.stockpile ?? 0;
-    const forecastFood = pressureForecast.find((forecast) => forecast.resourceType === ResourceType.Food)?.amount ?? 0;
-    const foodCapableWorkerCount = self.filter((actor) =>
-      catalog.entries.some(
-        (entry) => entry.sourceObjectName === actor.objectName && entry.gathers.includes(ResourceType.Food)
-      )
-    ).length;
-    const forecastFoodSourceCount = foodStockpile < 600 || forecastFood > 0 ? 6 : 2;
+    const economyPolicy = decideAiEconomyPolicy(
+      observation,
+      catalog,
+      pressureForecast,
+      state.strategy.stance === "defend"
+    );
     const desiredFoodSources =
-      openingComplete && foodSourceEntry ? Math.min(forecastFoodSourceCount, Math.max(1, foodCapableWorkerCount)) : 0;
+      openingComplete && foodSourceEntry ? economyPolicy.desiredFoodSources : 0;
+    if (workerCheckpoint?.fulfilled) {
+      const recovery = proposeAiWorkerRecovery(
+        observation,
+        state,
+        catalog,
+        workerCheckpoint.checkpoint.requiredObject,
+        Math.max(WORKER_RECOVERY_FLOOR, economyPolicy.desiredWorkers),
+        economyPolicy.posture !== "safe" ? { urgencyClass: 2, utility: 700 } : undefined
+      );
+      demands.push(recovery.demand);
+      if (recovery.intent) intents.push(recovery.intent);
+    }
     const foodPrerequisiteObject = foodSourceEntry?.constructionProfile?.requiredObjectNames?.[0];
     const foodPrerequisiteEntry = catalog.entries.find((entry) => entry.sourceObjectName === foodPrerequisiteObject);
     const desiredFoodPrerequisites =
@@ -1006,7 +1012,7 @@ export class AiMacroManager implements AiProposalManagerV1 {
       });
       const committedCapacity =
         militaryProducers.length + constructingProducers.length + acceptedCapacityEffectIds.length;
-      if (openingComplete && committedCapacity < desiredProducerCount) {
+      if (openingComplete && !workforceRecoveryOwnsFood && committedCapacity < desiredProducerCount) {
         const alreadyClaimed = claimedActorIds(intents);
         const builder = self
           .filter(isAvailableBuilder)
@@ -1074,7 +1080,7 @@ export class AiMacroManager implements AiProposalManagerV1 {
     }
 
     const projectedCount = military.length + queuedMilitary.length + acceptedMilitaryEffectIds.length;
-    if (projectedCount < targetMilitary) {
+    if (!workforceRecoveryOwnsFood && projectedCount < targetMilitary) {
       const roleCounts = { frontline: 0, ranged: 0, support: 0 };
       for (const actor of military) roleCounts[roleFor(actor.objectName, catalog)] += 1;
       for (const item of queuedMilitary) roleCounts[roleFor(item.objectName, catalog)] += 1;
@@ -1180,7 +1186,12 @@ export class AiMacroManager implements AiProposalManagerV1 {
         `opening_step:${current ?? "transition"}`,
         `archetype:${state.opening.archetypeId}`,
         `supply_free:${freeSupply}/${budget.supplyBuffer}`,
-        `military:${military.length}/${targetMilitary}`
+        `military:${military.length}/${targetMilitary}`,
+        `workforce_food_priority:${workforceRecoveryOwnsFood}`,
+        `economy:workers=${economyPolicy.workers}+${economyPolicy.queuedWorkers}/${economyPolicy.desiredWorkers}:` +
+          `assigned=${economyPolicy.assignedWorkers}:food_runway=${economyPolicy.foodRunwayTicks}`,
+        `spending:${economyPolicy.posture}:economy=${economyPolicy.budget.economyPermille}:` +
+          `defense=${economyPolicy.budget.defensePermille}:blocker=${economyPolicy.blocker ?? "none"}`
       ],
       statePatch: {
         opening: {

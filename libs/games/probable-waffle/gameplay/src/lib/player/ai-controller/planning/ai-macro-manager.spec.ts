@@ -185,7 +185,7 @@ describe("AiMacroManager", () => {
     );
     expect(
       proposal.statePatch?.economyProduction?.demands.find((demand) => demand.purpose === "bootstrap_worker")?.desired
-    ).toBe(6);
+    ).toBe(2);
   });
 
   it("does not regress the opening workforce checkpoint after later bases appear", () => {
@@ -215,7 +215,7 @@ describe("AiMacroManager", () => {
 
     expect(
       proposal.statePatch?.economyProduction?.demands.find((demand) => demand.purpose === "bootstrap_worker")
-    ).toMatchObject({ desired: 6, satisfiedActorIds: expect.arrayContaining(workers.map((worker) => worker.actorId)) });
+    ).toMatchObject({ desired: 2, satisfiedActorIds: expect.arrayContaining(workers.map((worker) => worker.actorId)) });
     expect(
       proposal.statePatch?.opening?.plan.steps.find((step) => step.stepId === "step:opening:bootstrap-worker")?.state
     ).toBe("completed");
@@ -913,6 +913,7 @@ describe("AiMacroManager", () => {
         tick: 200,
         resources,
         actors: [
+          ...Array.from({ length: 6 }, (_, index) => createAiTestOwnedActor(`worker-${index}`)),
           { ...createAiTestOwnedActor("producer-1"), objectName: ObjectNames.AnkGuard },
           { ...createAiTestOwnedActor("producer-2"), objectName: ObjectNames.AnkGuard }
         ]
@@ -925,6 +926,37 @@ describe("AiMacroManager", () => {
     expect(composition[0]).toEqual(
       expect.objectContaining({ objectName: ObjectNames.TivaraSlingshotFemale, producerId: "producer-1" })
     );
+  });
+
+  it("reserves scarce food for workforce recovery before optional reinforcements", () => {
+    const proposal = new AiMacroManager(() => catalog).propose(
+      {
+        ...createAiTestObservation(),
+        tick: 200,
+        actors: [
+          createAiTestOwnedActor("worker"),
+          { ...createAiTestOwnedActor("main"), objectName: ObjectNames.Sandhold },
+          { ...createAiTestOwnedActor("producer"), objectName: ObjectNames.AnkGuard },
+          { ...createAiTestOwnedActor("military"), objectName: ObjectNames.TivaraMacemanMale }
+        ],
+        resources: [
+          ...createAiTestObservation().resources,
+          {
+            resourceType: ResourceType.Food,
+            stockpile: 100,
+            reservedUnspent: 0,
+            obligationsDue: 0,
+            deliveredIncomePerMinute: { status: "known" as const, value: 0, observedTick: 200 }
+          }
+        ]
+      },
+      completedOpeningState()
+    );
+    const produced = proposal.intents.flatMap((intent) => (intent.kind === "produce" ? [intent.objectName] : []));
+
+    expect(produced).toContain(ObjectNames.TivaraWorker);
+    expect(produced).not.toContain(ObjectNames.TivaraMacemanMale);
+    expect(produced).not.toContain(ObjectNames.TivaraSlingshotFemale);
   });
 
   it("keeps land-force demand and throughput separate from air and naval production", () => {

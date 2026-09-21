@@ -18,9 +18,10 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 - Current behavior boundary: SEQ-02 now passes both factions. Full manager replacement no longer permits a later narrow
   projection to resurrect an obsolete squad, valid tactical domain children survive while their strategic parent does,
   and replaced queued pawn orders publish terminal cancellation outcomes.
-- Exact next work: checkpoint the current #827 slice, perform the smallest behavior-neutral #821 macro split if still
-  required, then implement #829 before final #827 victory validation. Standard skirmish starts will change from 2,000 to
-  200 of every resource for both players, so old SEQ balance evidence becomes diagnostic rather than calibration proof.
+- Exact next work: continue #829 from the committed low-resource economy checkpoint, then perform final #827 victory
+  validation. Standard skirmish starts are now 200 of every resource for both players, so older SEQ balance evidence is
+  diagnostic rather than calibration proof. The smallest #821 prerequisite slice extracted a typed economy policy;
+  final macro-owner and spec splitting remains in #821 because both legacy files are still oversized.
   Continue #816 runtime families after #829/#827 stabilize. Definition-derived prerequisite recovery is implemented:
   completed opening history no longer suppresses live replacement, failed effects do not remain accepted commitments,
   and duplicate food drop-offs scale only with demanded Field throughput. In the retained seed, Skaduwee rebuilt/scaled to two
@@ -57,8 +58,8 @@ until one clean replacement run is necessary; do not reconstruct or dump the old
 
 | Order             | Issue                                                           | State         | Next boundary                                                      | Model / effort            |
 | ----------------- | --------------------------------------------------------------- | ------------- | ------------------------------------------------------------------ | ------------------------- |
-| 1 / as needed     | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `not_started` | Split the macro owner only where required to unblock #829          | Terra, medium             |
-| 2                 | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829) | `not_started` | 200-resource starts, adaptive workforce, runway and threat budgets | Sol, high → Terra, high   |
+| 1 / as needed     | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `partial`     | Finish macro/spec splits and broader source cleanup later          | Terra, medium             |
+| 2                 | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829) | `in_progress` | Revalidate capacity-led growth above six and raid recovery          | Sol, high → Terra, high   |
 | 3                 | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `in_progress` | Revalidate sustained pressure and recovery on the new economy      | Sol, high → Terra, high   |
 | 4                 | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `in_progress` | Recalculate coverage; complete pure families paired with #816      | Sol, high → Terra, medium |
 | 5                 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Recalculate runtime rows and add required CI shards                | Sol, high → Terra, medium |
@@ -78,7 +79,20 @@ transport-required runtime. It is detached from #759 and does not block core rea
 
 ## Active evidence and boundaries
 
-- ECO-08 passed both factions in real Playwright runtime, including zero-worker bootstrap.
+- The #829 checkpoint gives every standard player 200 of each resource. A two-worker minimum opening avoids serial
+  starvation; six is the live recovery floor, not the cap. The typed economy policy prices dated demand, food runway,
+  observed source capacity plus a bounded expansion buffer, credible local pressure and 65/35, 35/65 or emergency
+  20/80 economy/defense budgets. Scarce food belongs to workforce recovery before optional reinforcements while a
+  defender survives. Focused
+  gameplay evidence is 25 passing tests, the protocol default-state test passes, and the portal development build
+  passes. ECO-08 passed both factions in real Playwright runtime, including zero-worker bootstrap, in
+  `1790009966016-passed.json`.
+- Fresh 200-resource SEQ-01/02 evidence is `1790010368891-failed.json`: one browser process, 48,080 aggregate ticks and
+  390,748 ms. Both SEQ-01 factions now finish with six workers, renewable food and positive delivered income instead of
+  the earlier three/four-worker collapse, but neither produces the required sustained army or terminal result.
+  SEQ-02 Tivara also recovers six workers; the authored Skaduwee raid still destroys its producer/economy and ends with
+  one worker. A final unvalidated policy adjustment lets observed resource capacity lead workforce growth above six;
+  start there with focused tests before one grouped runtime rerun. Do not increase the 12,000-tick ceiling.
 - PRO-01–07 passed both factions in one runtime group: 1,442 decisions and 24,040 ticks. The focused PRO-05
   replacement fixture now passes three repeated runs, including one real authored queue item and an observed producer
   loss/return; its Skaduwee River Crossing experiment is retained only as a diagnostic because the starting world has
