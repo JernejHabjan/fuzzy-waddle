@@ -2,6 +2,7 @@ import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protoco
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
 import { createAiTestObservation } from "../testing/ai-test-fixtures";
+import { canAffordAiEconomyCost } from "./ai-economy-policy";
 import { projectAiResourceForecasts, selectAiForecastResource } from "./ai-resource-forecast";
 
 const catalog: AiCapabilityCatalogV1 = {
@@ -80,5 +81,35 @@ describe("AI resource forecast", () => {
     expect(selectAiForecastResource(observation, forecasts, new Set([ResourceType.Wood, ResourceType.Food]))).toBe(
       ResourceType.Food
     );
+  });
+
+  it("sums distinct dated consumers while keeping reserved and due food unavailable for new promises", () => {
+    const observation = {
+      ...createAiTestObservation(),
+      resources: [
+        {
+          resourceType: ResourceType.Food,
+          stockpile: 500,
+          reservedUnspent: 150,
+          obligationsDue: 100,
+          deliveredIncomePerMinute: { status: "known" as const, value: 0, observedTick: 20 }
+        }
+      ]
+    };
+    const army = demand();
+    const supply: AiDemandV1 = {
+      ...demand(),
+      demandId: "demand:test:supply",
+      purpose: "supply",
+      desired: 2,
+      satisfiedActorIds: [],
+      queuedIds: [],
+      preferredObjectNames: [ObjectNames.TivaraMacemanMale]
+    };
+    const forecasts = projectAiResourceForecasts(observation, [army, supply], catalog);
+
+    expect(forecasts.find((forecast) => forecast.resourceType === ResourceType.Food)?.amount).toBe(500);
+    expect(canAffordAiEconomyCost(observation, { [ResourceType.Food]: 250 })).toBe(true);
+    expect(canAffordAiEconomyCost(observation, { [ResourceType.Food]: 251 })).toBe(false);
   });
 });
