@@ -107,6 +107,10 @@ not block this gate.
   the six-worker recovery floor while preserving a ready finishing opportunity. The revised Field/housing targets change
   prior fixture expectations and need final-gate runtime evidence for both factions, especially renewable-food throughput,
   supply prebuilds, and attack continuation after losses.
+- #815 preparation: ECO-04 and ECO-07 now have authored typed pure subject/control fixtures for dated-resource labor and
+  queued-population supply, including once-only housing commitments and three-run proposal digests. Their manifest
+  registration and runner selection are wired but not executed; required real-runtime counterparts remain unimplemented
+  under #816. Do not add them to the passing count until the final gate executes the fixtures and coverage report.
 
 - The #829 checkpoint gives every standard player 200 of each resource. A two-worker minimum opening avoids serial
   starvation; six is the live recovery floor, not the cap. The typed economy policy prices dated demand, food runway,

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "scenarioIds": ["ECO-04"],
+  "purpose": "Deterministic dated ranged-unit resource forecast and useful labor reassignment with a surplus control.",
+  "driver": "pure",
+  "seeds": [759401, 759402, 759403],
+  "context": {
+    "mapId": "economy-forecast-pure",
+    "mapDigest": "typed-wood-deficit",
+    "side": 1,
+    "faction": "Tivara",
+    "rulesVersion": "probable-waffle-rules-v1",
+    "contractVersions": { "scenario": 1, "brain": 1, "observation": 1, "command": 1 }
+  },
+  "assertionPolicy": {
+    "repetitions": 3,
+    "requires": ["catalog-priced-ranged-demand", "wood-labor-assignment", "surplus-control", "canonical-digest"],
+    "forbids": ["raw-stockpile-only-assignment", "hidden-income-assumption", "unrelated-resource-assignment"]
+  }
+}

@@ -212,10 +212,25 @@ function invokeHarness(input) {
   const includesAuthoredTactics = input.rows.some((row) => row.authoredFixture === "stage-13-tactics.json");
   const includesAuthoredAdaptation = input.rows.some((row) => row.authoredFixture === "stage-14-adaptation.json");
   const includesAuthoredProduction = input.rows.some((row) => row.authoredFixture === "production-scenarios.json");
-  const testPathPattern =
-    includesAuthoredTactics || includesAuthoredAdaptation || includesAuthoredProduction
-      ? "(ai-(brain|scenario-harness|runtime-scenario|repro-cli|production-scenarios|stage-13-tactics-manager|stage-14-adaptation-manager)|authoritative-state-projection|actor-manager-ai-save|ai-profile-defaults|player-ai-controller\\.agent\\.static)\\.spec\\.ts$"
-      : "(ai-(scenario-harness|runtime-scenario|repro-cli)|authoritative-state-projection|actor-manager-ai-save)\\.spec\\.ts$";
+  const includesAuthoredEconomySupply = input.rows.some((row) => row.authoredFixture === "economy-supply-scenarios.json");
+  const includesAuthoredEconomyForecast = input.rows.some(
+    (row) => row.authoredFixture === "economy-forecast-scenarios.json"
+  );
+  const baseTestNames = [
+    "ai-(scenario-harness|runtime-scenario|repro-cli)",
+    "authoritative-state-projection",
+    "actor-manager-ai-save"
+  ];
+  const authoredTestNames = [
+    "ai-(brain|production-scenarios|housing-demand|economy-forecast-scenarios)",
+    "ai-(stage-13-tactics-manager|stage-14-adaptation-manager)",
+    "ai-profile-defaults",
+    "player-ai-controller\\.agent\\.static"
+  ];
+  const includeAuthored =
+    includesAuthoredTactics || includesAuthoredAdaptation || includesAuthoredProduction ||
+    includesAuthoredEconomySupply || includesAuthoredEconomyForecast;
+  const testPathPattern = `(${[...baseTestNames, ...(includeAuthored ? authoredTestNames : [])].join("|")})\\.spec\\.ts$`;
   const command = spawnSync(
     "pnpm",
     [

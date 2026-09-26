@@ -15,10 +15,24 @@
     { "id": "ECO-01", "stages": [7, 10], "group": "economy", "fixture": null, "drivers": ["pure", "runtime"] },
     { "id": "ECO-02", "stages": [7, 10], "group": "economy", "fixture": null, "drivers": ["pure", "runtime"] },
     { "id": "ECO-03", "stages": [7], "group": "economy", "fixture": null, "drivers": ["pure", "runtime"] },
-    { "id": "ECO-04", "stages": [7], "group": "economy", "fixture": null, "drivers": ["pure", "runtime"] },
+    {
+      "id": "ECO-04",
+      "stages": [7],
+      "group": "economy",
+      "fixture": null,
+      "authoredFixture": "economy-forecast-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
     { "id": "ECO-05", "stages": [7], "group": "economy", "fixture": null, "drivers": ["pure", "runtime"] },
     { "id": "ECO-06", "stages": [7, 12], "group": "economy", "fixture": null, "drivers": ["pure", "runtime"] },
-    { "id": "ECO-07", "stages": [7], "group": "economy", "fixture": null, "drivers": ["pure", "runtime"] },
+    {
+      "id": "ECO-07",
+      "stages": [7],
+      "group": "economy",
+      "fixture": null,
+      "authoredFixture": "economy-supply-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
     {
       "id": "ECO-08",
       "stages": [7],
