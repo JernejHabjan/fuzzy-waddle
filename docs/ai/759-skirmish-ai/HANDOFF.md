@@ -140,7 +140,8 @@ not block this gate.
   registered for pure execution but remains unrun; its real-runtime counterpart is still missing under #816.
 - #815/#816 runner hardening is authored but unrun: pure selection now captures uncached per-project Jest JSON and fails
   closed unless every selected ID appears in a passing executed assertion title. This replaces the former broad-file
-  proxy. At the final gate, repair missing/compound scenario titles or missing semantic tests; do not suppress the
+  proxy. The stale stage-named tactics/adaptation spec selector was also corrected to the actual responsibility-named
+  specs. At the final gate, repair missing/compound scenario titles or missing semantic tests; do not suppress the
   reported IDs or count fixture registration as execution. Runtime fixture validation now checks the ECO-01/02 paired
   branch and its source/service geometry contract.
 - #815 technology authoring is unrun: TECH-01/02 now explicitly pair an expensive early one-unit upgrade against a
