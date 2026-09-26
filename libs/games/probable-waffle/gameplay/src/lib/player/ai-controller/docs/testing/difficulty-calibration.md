@@ -6,6 +6,10 @@ Correctness and challenge are separate gates. Every difficulty must obey the sam
 
 - Compare profiles using identical maps, factions, sides, rules, opponent probes and shared seeds.
 - Begin with 20 paired seeds per comparison and expand to at most 100 when intervals overlap materially.
+- Use the two currently shipped maps, River Crossing and Ember Enclave, and mirror factions/sides. Island transport
+  calibration belongs to optional #822 after that map exists; it does not block core difficulty evidence.
+- An AI-versus-AI or independently scripted-opponent harness must measure terminal outcomes. The current one-AI/
+  human-slot Playwright runtime driver does not prove difficulty ordering by itself.
 - Keep candidate and pinned baseline in isolated clean checkouts; candidate code may not silently serve as its own baseline adapter.
 - Report sample size, win/outcome distribution and uncertainty rather than one headline win rate.
 - Treat statistically indistinguishable advertised levels as unfinished tuning.

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "scenarioIds": ["D-06"],
-  "purpose": "Paired, fair runtime calibration for easy, normal and hard skirmish profiles after the complete Stage-15 validation ladder is available.",
+  "purpose": "Paired, fair runtime calibration for easy, normal and hard skirmish profiles after core runtime coverage is proven.",
   "driver": "runtime",
   "status": "authored_not_run",
   "baseline": {
@@ -10,12 +10,19 @@
     "candidateFallbackProhibited": true
   },
   "pairedRuns": {
-    "seeds": [759061, 759062, 759063, 759064, 759065],
+    "seeds": [
+      759061, 759062, 759063, 759064, 759065, 759066, 759067, 759068, 759069, 759070,
+      759071, 759072, 759073, 759074, 759075, 759076, 759077, 759078, 759079, 759080
+    ],
+    "holdoutSeeds": [759091, 759092, 759093, 759094, 759095],
     "factions": ["Tivara", "Skaduwee"],
-    "maps": ["land", "water-access", "transport-required"],
+    "mapLabels": ["River Crossing", "Ember Enclave"],
+    "futureIslandMapIssue": 822,
     "opponentProfiles": ["balanced", "rush", "macro", "turtle", "tech"],
+    "difficultyPairs": [["Easy", "Normal"], ["Normal", "Hard"]],
     "sameSeedMapFactionOpponentAcrossDifficulties": true,
-    "minimumCompletedPairCount": 30
+    "minimumCompletedPairCountPerComparison": 20,
+    "maximumPairCountWhenUncertain": 100
   },
   "fairnessInvariants": [
     "same_starting_resources_and_population",
@@ -44,5 +51,5 @@
     "separateBalanceFindingFromCorrectnessFailure": true,
     "failClosedOnMissingRuntimeEvidence": true
   },
-  "runtimeCounterpart": "required_in_stage_15"
+  "runtimeCounterpart": "required_after_core_runtime_and_ai_opponent_harness"
 }

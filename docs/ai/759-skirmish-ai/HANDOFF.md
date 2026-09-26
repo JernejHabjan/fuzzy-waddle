@@ -123,6 +123,11 @@ not block this gate.
   `AI_SKIRMISH_PROFILE=1`; the compact reporter summarizes normalized play time. This instrumentation is unrun.
   Measure paired identical workloads only at the final gate, then retain or reject a concrete hot-path optimization
   based on identical authoritative digests and measured gain. Its plan's stale 30,000-tick wording was corrected.
+- #817 calibration metadata now uses 20 planned paired seeds plus a disjoint holdout, Easy/Normal and Normal/Hard
+  comparisons, and only the two shipped maps. The former `transport-required` pseudo-map was removed; optional #822
+  remains a later extension. This is unrun metadata, not a D-06 runtime adapter or difficulty proof. The present
+  one-AI/human-slot browser runner cannot establish AI-versus-AI outcome ordering, so #817 still needs its own fair
+  opponent harness and isolated baseline execution at the final gate.
 - A behavior-preserving #821 structural slice moved the shared admission pass into `brain/ai-intent-arbiter.ts`, leaving
   `ai-brain.ts` as the decision coordinator. This split is unverified and needs its focused Jest and structural lint at
   the final gate; the much larger macro/runner owners remain #821 debt.
