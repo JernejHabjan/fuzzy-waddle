@@ -117,6 +117,11 @@ not block this gate.
 - A behavior-preserving #821 structural slice moved the shared admission pass into `brain/ai-intent-arbiter.ts`, leaving
   `ai-brain.ts` as the decision coordinator. This split is unverified and needs its focused Jest and structural lint at
   the final gate; the much larger macro/runner owners remain #821 debt.
+- #816 CI scaffolding now derives fail-closed required runtime shards directly from manifest group/fixture pairs and
+  registers a non-draft PR job with retained reports/traces. Selector unit cases are authored but unrun. It will fail
+  until all supported core rows have real runnable recipes; do not mark #816 complete or switch the draft PR to ready.
+  `DOMAIN-03`, `DOMAIN-04`, and `H-29` runtime rows are explicitly `deferred_content` to optional #822 because no
+  island map ships; their pure rows remain required. This removes the island content dependency, not the core gap.
 - #815 preparation: ECO-04 and ECO-07 now have authored typed pure subject/control fixtures for dated-resource labor and
   queued-population supply, including once-only housing commitments and three-run proposal digests. Their manifest
   registration and runner selection are wired but not executed; required real-runtime counterparts remain unimplemented

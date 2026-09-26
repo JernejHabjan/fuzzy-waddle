@@ -206,8 +206,14 @@
       "authoredFixture": "stage-14-adaptation.json",
       "drivers": ["pure", "runtime"]
     },
-    { "id": "DOMAIN-03", "stages": [8, 9], "group": "access", "fixture": null, "drivers": ["pure", "runtime"] },
-    { "id": "DOMAIN-04", "stages": [8, 12], "group": "access", "fixture": null, "drivers": ["pure", "runtime"] },
+    {
+      "id": "DOMAIN-03", "stages": [8, 9], "group": "access", "fixture": null, "drivers": ["pure", "runtime"],
+      "runtimeSupport": { "status": "deferred_content", "issue": 822, "reason": "No shipped transport-required island map" }
+    },
+    {
+      "id": "DOMAIN-04", "stages": [8, 12], "group": "access", "fixture": null, "drivers": ["pure", "runtime"],
+      "runtimeSupport": { "status": "deferred_content", "issue": 822, "reason": "No shipped carrier-loss island route" }
+    },
     {
       "id": "DOMAIN-05",
       "stages": [9, 14],
@@ -338,6 +344,7 @@
       "stages": [8, 12, 13],
       "group": "transport",
       "fixture": null,
+      "runtimeSupport": { "status": "deferred_content", "issue": 822, "reason": "No shipped transport-required island map" },
       "authoredFixture": "stage-13-tactics.json",
       "drivers": ["pure", "runtime"]
     },

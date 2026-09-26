@@ -63,7 +63,8 @@ function runSuite(options) {
   const baselineManifest = readJson(join(fixtureDirectory, manifest.baseline), 64 * 1024);
   if (baseline !== baselineManifest.baselineSourceSha) throw new Error("baseline_not_pinned_manifest_sha");
   const missingRuntime = manifest.rows.filter(
-    (row) => row.drivers.includes("runtime") && runtimeFixtureReference(row) === null
+    (row) => row.drivers.includes("runtime") && row.runtimeSupport?.status !== "deferred_content" &&
+      runtimeFixtureReference(row) === null
   );
   const missingPure = manifest.rows.filter((row) => row.drivers.includes("pure") && pureFixtureReference(row) === null);
   if (missingRuntime.length > 0 || missingPure.length > 0) {
@@ -498,6 +499,14 @@ function validateManifest(value) {
       }
       validateRuntimeFixture(fixture, row.id);
     }
+    if (row.runtimeSupport !== undefined && (
+      row.runtimeSupport.status !== "deferred_content" ||
+      row.runtimeSupport.issue !== 822 ||
+      typeof row.runtimeSupport.reason !== "string" ||
+      row.runtimeSupport.reason.length === 0 ||
+      row.fixture !== null ||
+      !row.drivers.includes("runtime")
+    )) throw new Error(`invalid_runtime_support:${row.id}`);
     if (row.authoredFixture !== undefined) {
       if (!safeReference(row.authoredFixture)) throw new Error(`unsafe_authored_fixture_reference:${row.id}`);
       const fixture = readJson(join(fixtureDirectory, row.authoredFixture), 1024 * 1024);
