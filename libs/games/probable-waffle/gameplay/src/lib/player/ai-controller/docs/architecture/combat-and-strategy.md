@@ -25,6 +25,11 @@ selected choice, compatible/required force, confidence, effect/reconsideration t
 in the strategy state and projected into the historical debug view. A completed opening with a collapsed workforce
 recovers that workforce before forming a fresh offensive squad, unless a credible finishing force is already ready.
 
+A failed mission's creation tick, target, observed losses and bounded repeat count survive the squad's removal in the
+strategy assessment. A recent failure briefly favors rebuilding, raises the compatible force requirement for the same
+target, and allows a later stronger follow-up; a changed target does not inherit that penalty. This is a response to
+observed mission failure, not hidden enemy strength. Runtime victory and timing still require paired scenario proof.
+
 Attack squads approach visible building objectives through distinct observed passable cells around the footprint.
 They do not use the occupied building center as a movement waypoint when no legal approach cell is known.
 

@@ -50,6 +50,8 @@ interface AiIntentBaseV1 {
   readonly proposedTick: AiSimulationTick;
   readonly urgencyClass: number;
   readonly utility: number;
+  /** Resource budget authority: survival bypasses posture quotas but still consumes the shared stockpile. */
+  readonly spendingCategory?: "survival" | "economy" | "defense";
   readonly preconditions: readonly AiIntentPreconditionV1[];
   readonly claims: readonly AiIntentClaimV1[];
   readonly reasonCode: string;
@@ -123,6 +125,7 @@ export type AiIntentDecisionV1 =
         | "precondition_failed"
         | "claim_conflict"
         | "resource_conflict"
+        | "posture_budget"
         | "profile_limit";
       readonly detail: string;
     };

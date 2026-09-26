@@ -91,6 +91,7 @@ export function proposeAiWorkerRecovery(
     demand,
     intent: {
       kind: "produce",
+      spendingCategory: workers.length < 6 ? "survival" : "economy",
       intentId,
       effectId,
       planId: state.opening.plan.planId,

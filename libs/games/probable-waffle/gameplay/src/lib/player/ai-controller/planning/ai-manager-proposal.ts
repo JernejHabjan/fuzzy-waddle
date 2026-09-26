@@ -22,6 +22,8 @@ export interface AiManagerProposalV1 {
   readonly evaluated: boolean;
   readonly intents: readonly AiIntentV1[];
   readonly reasons: readonly string[];
+  /** The macro owner publishes the current posture to shared resource arbitration. */
+  readonly spendingBudget?: Readonly<{ economyPermille: number; defensePermille: number }>;
   /**
    * Optional deterministic state projection owned by a narrow proposer.  It is
    * committed at the same decision boundary as accepted intents, so demand and

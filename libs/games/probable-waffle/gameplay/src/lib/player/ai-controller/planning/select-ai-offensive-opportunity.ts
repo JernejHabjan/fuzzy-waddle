@@ -15,6 +15,35 @@ export interface AiOffensiveOpportunity {
 const MAX_CANDIDATES = 64;
 const TARGET_HYSTERESIS_PERMILLE = 150;
 const WORKFORCE_RECOVERY_FLOOR = 6;
+const FAILURE_MEMORY_TICKS = 4000;
+
+function recentFailedMission(context: AiSkirmishProposalContext): AiStrategyAssessment["recentFailure"] {
+  const previous = context.state.strategy.assessment;
+  const remembered = previous?.recentFailure;
+  const completed = context.state.squads
+    .filter(
+      (squad) =>
+        squad.role === "attack" &&
+        squad.state === "completed" &&
+        (squad.lifecycle?.terminalReason === "no_members_released" ||
+          squad.lifecycle?.terminalReason === "effect_deadline_exhausted")
+    )
+    .sort((left, right) => (right.lifecycle?.createdTick ?? 0) - (left.lifecycle?.createdTick ?? 0))[0];
+  if (!completed?.lifecycle || remembered?.missionCreatedTick === completed.lifecycle.createdTick) return remembered;
+  const targetActorId = previous?.targetActorId ?? null;
+  const repeatedFailures =
+    remembered?.targetActorId === targetActorId &&
+    context.observation.tick - remembered.observedTick <= FAILURE_MEMORY_TICKS
+      ? Math.min(3, remembered.repeatedFailures + 1)
+      : 1;
+  return {
+    missionCreatedTick: completed.lifecycle.createdTick,
+    observedTick: context.observation.tick,
+    targetActorId,
+    losses: completed.tactics?.observedLossCount ?? 0,
+    repeatedFailures
+  };
+}
 
 function isCore(actor: AiObservedActorV1): boolean {
   return actor.mainBuilding?.status === "known" && actor.mainBuilding.value === true;
@@ -62,6 +91,7 @@ export function selectAiOffensiveOpportunity(
   attackers: readonly AiObservedActorV1[]
 ): AiOffensiveOpportunity {
   const graph = context.observation.map?.accessGraph;
+  const recentFailure = recentFailedMission(context);
   const contacts = [...context.visibleEnemies, ...context.rememberedEnemies].slice(0, MAX_CANDIDATES);
   const candidates = contacts
     .flatMap((opponent) => {
@@ -97,7 +127,13 @@ export function selectAiOffensiveOpportunity(
       const threats = threatNear(context, opponent);
       const producers = productionNear(context, opponent);
       const capable = compatibleAttackers.length;
-      const required = Math.max(producers >= 2 ? 8 : isCore(opponent) ? 2 : 3, Math.ceil(threats * 1.5) + 1);
+      const failurePenalty =
+        recentFailure?.targetActorId === opponent.actorId &&
+        context.observation.tick - recentFailure.observedTick <= FAILURE_MEMORY_TICKS
+          ? Math.min(6, recentFailure.repeatedFailures * 2 + Math.floor(recentFailure.losses / 4))
+          : 0;
+      const required =
+        Math.max(producers >= 2 ? 8 : isCore(opponent) ? 2 : 3, Math.ceil(threats * 1.5) + 1) + failurePenalty;
       const travel =
         position(compatibleAttackers[0]) && position(opponent)
           ? distance(position(compatibleAttackers[0])!, position(opponent)!)
@@ -127,8 +163,12 @@ export function selectAiOffensiveOpportunity(
   const ready = selected ? selected.capable >= selected.required : false;
   const recovering =
     context.state.opening.plan.lifecycle === "completed" && workers < WORKFORCE_RECOVERY_FLOOR && !ready;
+  const rebuildingFailedMission =
+    selected !== undefined &&
+    recentFailure?.targetActorId === selected.opponent.actorId &&
+    context.observation.tick < recentFailure.observedTick + Math.min(400, recentFailure.repeatedFailures * 100);
   const choice: AiStrategyAssessment["choice"] = selected
-    ? recovering
+    ? recovering || rebuildingFailedMission
       ? "recover"
       : isCore(selected.opponent) && ready
         ? "finish"
@@ -142,8 +182,10 @@ export function selectAiOffensiveOpportunity(
     assessment: {
       choice,
       reason: selected
-        ? recovering
-          ? "workforce_below_recovery_floor"
+        ? recovering || rebuildingFailedMission
+          ? recovering
+            ? "workforce_below_recovery_floor"
+            : "recent_failed_mission_rebuild"
           : ready
             ? "credible_force_and_route"
             : selected.producers >= 2
@@ -157,7 +199,10 @@ export function selectAiOffensiveOpportunity(
       visibleThreatCount: selected?.threats ?? 0,
       confidencePermille: selected?.opponent.visibility === "visible" ? 1000 : selected ? 550 : 0,
       expectedEffectTick: travelTicks === null ? null : context.observation.tick + travelTicks,
-      reconsiderTick: context.observation.tick + (ready ? 40 : 100),
+      reconsiderTick: rebuildingFailedMission && recentFailure
+        ? recentFailure.observedTick + Math.min(400, recentFailure.repeatedFailures * 100)
+        : context.observation.tick + (ready ? 40 : 100),
+      ...(recentFailure ? { recentFailure } : {}),
       alternatives: candidates
         .filter((candidate) => candidate !== selected)
         .slice(0, 4)

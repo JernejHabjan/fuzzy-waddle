@@ -18,6 +18,7 @@ import { aiDeadline } from "../contracts/ai-core-types";
 import type { AiBrainV1 } from "./ai-brain-v1";
 import type { AiBrainStepResultV1 } from "./ai-brain-step-result-v1";
 import { projectAiManagerState } from "./project-ai-manager-state";
+import { aiSpendingBudgetConflict } from "./ai-spending-budget";
 
 export type { AiBrainV1 } from "./ai-brain-v1";
 export type { AiBrainStepResultV1 } from "./ai-brain-step-result-v1";
@@ -234,8 +235,15 @@ export class PureAiBrain implements AiBrainV1 {
     );
     const claimedThisStep = new Set<string>();
     const resourceClaims = new Map<ResourceType, number>();
+    const categorySpend = {
+      economy: new Map<ResourceType, number>(),
+      defense: new Map<ResourceType, number>()
+    };
+    const spendingBudget = proposalBatches.find((batch) => batch.spendingBudget)?.spendingBudget;
+    const pendingBudgetIntents = new Set(intents.map((intent) => intent.intentId));
 
     for (const intent of intents) {
+      pendingBudgetIntents.delete(intent.intentId);
       if (!validateIntentNumbers(intent)) {
         decisions.push({ outcome: "rejected", intent, reason: "invalid_numeric_input", detail: "numeric_guard" });
         continue;
@@ -282,10 +290,38 @@ export class PureAiBrain implements AiBrainV1 {
         });
         continue;
       }
+      const budgetConflict = aiSpendingBudgetConflict(
+        intent,
+        intents.filter(
+          (candidate) =>
+            pendingBudgetIntents.has(candidate.intentId) &&
+            candidate.preconditions.every((precondition) =>
+              preconditionSatisfied(precondition, observation, projectedState)
+            ) &&
+            candidate.claims.every((claim) =>
+              claim.kind === "resource"
+                ? (resourceClaims.get(claim.resourceType) ?? 0) + claim.amount <=
+                  availableResource(observation, claim.resourceType)
+                : !claimedThisStep.has(claimKey(claim)) && !existingClaims.has(claimKey(claim))
+            )
+        ),
+        spendingBudget,
+        (resourceType) => Math.max(0, availableResource(observation, resourceType)),
+        resourceClaims,
+        categorySpend
+      );
+      if (budgetConflict) {
+        decisions.push({ outcome: "rejected", intent, reason: "posture_budget", detail: budgetConflict });
+        continue;
+      }
 
       for (const claim of intent.claims) {
         if (claim.kind === "resource") {
           resourceClaims.set(claim.resourceType, (resourceClaims.get(claim.resourceType) ?? 0) + claim.amount);
+          if (intent.spendingCategory === "economy" || intent.spendingCategory === "defense") {
+            const spend = categorySpend[intent.spendingCategory];
+            spend.set(claim.resourceType, (spend.get(claim.resourceType) ?? 0) + claim.amount);
+          }
         } else {
           claimedThisStep.add(claimKey(claim));
           claimedThisStep.add(claim.claimId);

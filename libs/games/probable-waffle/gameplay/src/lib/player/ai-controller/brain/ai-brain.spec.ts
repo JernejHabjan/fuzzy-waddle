@@ -34,7 +34,10 @@ function stopIntent(id: string, utility: number, actorId: string, wood: number):
 class DummyManager implements AiProposalManagerV1 {
   readonly managerId = "dummy";
 
-  constructor(private readonly intents: readonly AiIntentV1[]) {}
+  constructor(
+    private readonly intents: readonly AiIntentV1[],
+    private readonly spendingBudget?: AiManagerProposalV1["spendingBudget"]
+  ) {}
 
   propose(): AiManagerProposalV1 {
     return {
@@ -42,6 +45,7 @@ class DummyManager implements AiProposalManagerV1 {
       lane: "essential_economy",
       evaluated: true,
       intents: this.intents,
+      ...(this.spendingBudget ? { spendingBudget: this.spendingBudget } : {}),
       reasons: ["fixture"]
     };
   }
@@ -122,6 +126,34 @@ class AdaptationLedgerManager implements AiProposalManagerV1 {
 }
 
 describe("PureAiBrain", () => {
+  it("applies the emergency posture to competing affordable spending while preserving survival", () => {
+    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    });
+    const observation = createAiTestObservation();
+    const economy = { ...stopIntent("economy", 950, "worker-1", 100), spendingCategory: "economy" as const };
+    const defense = { ...stopIntent("defense", 900, "worker-2", 100), spendingCategory: "defense" as const };
+    const available = {
+      ...observation,
+      actors: [...observation.actors, createAiTestOwnedActor("worker-2")],
+      resources: [{ ...observation.resources[0]!, stockpile: 200, reservedUnspent: 0, obligationsDue: 0 }]
+    };
+
+    const result = new PureAiBrain(profile, [
+      new DummyManager([economy, defense], { economyPermille: 200, defensePermille: 800 })
+    ]).step(available, state, []);
+
+    expect(result.acceptedIntents.map((intent) => intent.intentId)).toEqual(["intent:defense"]);
+    expect(result.decisions).toContainEqual(
+      expect.objectContaining({ outcome: "rejected", reason: "posture_budget", detail: ResourceType.Wood })
+    );
+  });
+
   it("admits only the affordable combination of separately affordable resource claims", () => {
     const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
     const state = createAiBrainStateV1({

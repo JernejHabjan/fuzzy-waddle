@@ -107,6 +107,13 @@ not block this gate.
   the six-worker recovery floor while preserving a ready finishing opportunity. The revised Field/housing targets change
   prior fixture expectations and need final-gate runtime evidence for both factions, especially renewable-food throughput,
   supply prebuilds, and attack continuation after losses.
+- Latest unverified authoring: #829 now tags priced survival/economy/defense intents and uses the macro posture in
+  shared resource arbitration. The arbiter protects an eligible competing purchase's share, permits survival to use
+  the common stockpile, and reports `posture_budget` in the high-level debug blocker. Pure arbiter/helper cases are
+  authored but unrun. Audit candidate filtering, quota behavior under sustained 200-resource play, and duplicate
+  Field/housing effects at the final gate. #827 now remembers a completed failed offensive mission after squad
+  removal, briefly rebuilds, increases same-target force need, and permits a stronger follow-up; its focused test is
+  authored but unrun. Do not claim SEQ victory from these static changes.
 - #815 preparation: ECO-04 and ECO-07 now have authored typed pure subject/control fixtures for dated-resource labor and
   queued-population supply, including once-only housing commitments and three-run proposal digests. Their manifest
   registration and runner selection are wired but not executed; required real-runtime counterparts remain unimplemented

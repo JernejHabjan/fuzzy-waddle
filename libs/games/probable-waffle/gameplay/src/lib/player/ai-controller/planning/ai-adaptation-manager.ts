@@ -381,6 +381,7 @@ export class AiAdaptationManager implements AiProposalManagerV1 {
       intents.push({
         ...next,
         kind: "produce",
+        spendingCategory: "defense",
         planId: state.opening.plan.planId,
         demandId: `demand:adapt:${target.role}` as AiDemandV1["demandId"],
         lane: "supply_production",
@@ -439,6 +440,7 @@ export class AiAdaptationManager implements AiProposalManagerV1 {
       intents.push({
         ...next,
         kind: "research",
+        spendingCategory: "defense",
         planId: state.opening.plan.planId,
         demandId: null,
         lane: "optional_infrastructure_tech",

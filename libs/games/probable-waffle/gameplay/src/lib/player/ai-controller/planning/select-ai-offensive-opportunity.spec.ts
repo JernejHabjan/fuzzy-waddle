@@ -145,6 +145,48 @@ function brain(): AiBrainStateV1 {
 const manager = new AiSkirmishManager(profile, () => catalog);
 
 describe("fastest credible offense", () => {
+  it("remembers a failed first mission, rebuilds briefly, then permits a stronger follow-up", () => {
+    const initial = brain();
+    const actors = [guard("a", "self", 0), guard("b", "self", 0), core("enemy-core")];
+    const first = manager.propose(world(actors), initial);
+    const launched = first.statePatch?.squads?.find((squad) => squad.role === "attack");
+    if (!launched?.lifecycle || !first.statePatch?.strategy || !first.statePatch.skirmish)
+      throw new Error("missing_initial_attack_mission");
+    const failed: AiBrainStateV1 = {
+      ...initial,
+      squads: [{
+        ...launched,
+        actorIds: [],
+        state: "completed",
+        lifecycle: { ...launched.lifecycle, terminalReason: "no_members_released" }
+      }],
+      strategy: first.statePatch.strategy,
+      skirmish: first.statePatch.skirmish
+    };
+
+    const rebuilding = manager.propose(world(actors, 200), failed);
+    expect(rebuilding.statePatch?.strategy?.assessment).toEqual(
+      expect.objectContaining({
+        choice: "recover",
+        reason: "recent_failed_mission_rebuild",
+        requiredForce: 4,
+        recentFailure: expect.objectContaining({ repeatedFailures: 1, targetActorId: "enemy-core" })
+      })
+    );
+    expect(rebuilding.intents.some((intent) => intent.kind === "attack")).toBe(false);
+
+    if (!rebuilding.statePatch?.strategy || !rebuilding.statePatch.skirmish)
+      throw new Error("missing_recovery_projection");
+    const renewed = manager.propose(
+      world([...actors, guard("c", "self", 0), guard("d", "self", 0)], 400),
+      { ...failed, squads: [], strategy: rebuilding.statePatch.strategy, skirmish: rebuilding.statePatch.skirmish }
+    );
+    expect(renewed.statePatch?.strategy?.assessment).toEqual(
+      expect.objectContaining({ choice: "finish", requiredForce: 4 })
+    );
+    expect(renewed.intents).toContainEqual(expect.objectContaining({ kind: "attack", targetActorId: "enemy-core" }));
+  });
+
   it("finishes an exposed reachable core with a small compatible force before the old six-unit gate", () => {
     const result = manager.propose(world([guard("a", "self", 0), guard("b", "self", 0), core("enemy-core")]), brain());
 

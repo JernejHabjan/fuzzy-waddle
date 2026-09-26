@@ -33,6 +33,12 @@ oscillation, freezes optional workforce growth and shifts the advertised spendin
 35/65 under pressure or 20/80 when local attackers outnumber defenders. Recovery below the six-worker floor remains
 possible at a lower priority; when pressure clears, useful economic growth resumes.
 
+The macro owner now publishes that split to the shared intent arbiter. Catalog-priced spending proposals are tagged as
+survival, economy or defense. Survival still obeys the real stockpile but may cross a posture quota; otherwise the
+arbiter protects the opposing category's share only while an affordable, still-eligible competing proposal is pending.
+An idle category does not freeze resources. This is a per-decision allocation, not a separate bank account; accepted
+claims and authoritative command outcomes remain the spending source of truth.
+
 ## Demand and legitimate duplicates
 
 Duplicate units, production buildings, houses and resource drop-offs are valid when they satisfy measured demand. The AI suppresses duplicate fulfillment of one commitment, not repeated actor types.

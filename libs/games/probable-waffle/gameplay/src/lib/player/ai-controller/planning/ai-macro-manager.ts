@@ -390,6 +390,8 @@ export class AiMacroManager implements AiProposalManagerV1 {
         intents.push({
           ...ids,
           kind: "produce",
+          spendingCategory:
+            checkpoint.id === "bootstrap-worker" ? "survival" : checkpoint.id === "first-producer" ? "defense" : "economy",
           planId: state.opening.plan.planId,
           demandId,
           lane: checkpoint.id === "bootstrap-worker" ? "essential_economy" : "supply_production",
@@ -439,6 +441,7 @@ export class AiMacroManager implements AiProposalManagerV1 {
           intents.push({
             ...ids,
             kind: "construct",
+            spendingCategory: checkpoint.id === "first-producer" ? "defense" : "survival",
             planId: state.opening.plan.planId,
             demandId,
             lane: checkpoint.id === "bootstrap-worker" ? "essential_economy" : "supply_production",
@@ -618,6 +621,7 @@ export class AiMacroManager implements AiProposalManagerV1 {
           intents.push({
             ...ids,
             kind: "construct",
+            spendingCategory: housing.queuedPopulation > 0 ? "survival" : "economy",
             planId: state.opening.plan.planId,
             demandId: "demand:supply:buffer" as AiDemandV1["demandId"],
             lane: "supply_production",
@@ -674,7 +678,7 @@ export class AiMacroManager implements AiProposalManagerV1 {
     const targetMilitary = openingComplete
       ? pressureDomain === "air"
         ? Math.max(8, state.strategy.assessment?.requiredForce ?? 8)
-        : 12
+        : Math.min(18, Math.max(12, state.strategy.assessment?.requiredForce ?? 12))
       : hasCredibleAiEconomyThreat(observation)
         ? budget.firstForce
         : military.length;
@@ -789,6 +793,7 @@ export class AiMacroManager implements AiProposalManagerV1 {
             intents.push({
               ...next,
               kind: "construct",
+              spendingCategory: readyFoodPrerequisites.length === 0 ? "survival" : "economy",
               planId: state.opening.plan.planId,
               demandId: prerequisiteDemandId,
               lane: "essential_economy",
@@ -878,6 +883,7 @@ export class AiMacroManager implements AiProposalManagerV1 {
             intents.push({
               ...next,
               kind: "construct",
+              spendingCategory: readyFoodSources.length === 0 ? "survival" : "economy",
               planId: state.opening.plan.planId,
               demandId: "demand:economy:sustainable-food" as AiDemandV1["demandId"],
               lane: "essential_economy",
@@ -1077,6 +1083,7 @@ export class AiMacroManager implements AiProposalManagerV1 {
             intents.push({
               ...next,
               kind: "construct",
+              spendingCategory: "defense",
               planId: state.opening.plan.planId,
               demandId: "demand:capacity:first-army" as AiDemandV1["demandId"],
               lane: "supply_production",
@@ -1174,6 +1181,7 @@ export class AiMacroManager implements AiProposalManagerV1 {
         intents.push({
           ...next,
           kind: "produce",
+          spendingCategory: "defense",
           planId: state.opening.plan.planId,
           demandId: "demand:composition:first-squad" as AiDemandV1["demandId"],
           lane: "supply_production",
@@ -1218,6 +1226,7 @@ export class AiMacroManager implements AiProposalManagerV1 {
       lane: "supply_production",
       evaluated: true,
       intents,
+      spendingBudget: economyPolicy.budget,
       reasons: [
         `opening_step:${current ?? "transition"}`,
         `archetype:${state.opening.archetypeId}`,

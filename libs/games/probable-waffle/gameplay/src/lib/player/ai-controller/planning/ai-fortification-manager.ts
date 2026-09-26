@@ -839,6 +839,7 @@ export class AiFortificationManager implements AiProposalManagerV1 {
       return [
         {
           kind: "construct" as const,
+          spendingCategory: "defense" as const,
           intentId,
           effectId,
           planId: `plan:${plan.planId}` as AiIntentV1["planId"],

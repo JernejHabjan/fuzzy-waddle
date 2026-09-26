@@ -198,6 +198,7 @@ function describeBlocker(state: AiBrainStateV1, decisions: readonly AiIntentDeci
     invalid_numeric_input: "A proposed action contained an invalid value",
     precondition_failed: "A required actor, resource, route, or target is not yet available",
     profile_limit: "The current difficulty's action budget deferred this proposal",
+    posture_budget: "The current economy or defense posture reserved resources for a competing need",
     resource_conflict: "Available resources were committed to a higher-priority action"
   };
   return explanations[rejected.reason];

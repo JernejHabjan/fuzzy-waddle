@@ -10,5 +10,13 @@ export interface AiStrategyAssessment {
   readonly confidencePermille: number;
   readonly expectedEffectTick: number | null;
   readonly reconsiderTick: number;
+  /** Last failed offensive mission, retained after its squad leaves the active squad projection. */
+  readonly recentFailure?: Readonly<{
+    readonly missionCreatedTick: number;
+    readonly observedTick: number;
+    readonly targetActorId: string | null;
+    readonly losses: number;
+    readonly repeatedFailures: number;
+  }>;
   readonly alternatives: readonly { readonly targetActorId: string; readonly reason: string }[];
 }
