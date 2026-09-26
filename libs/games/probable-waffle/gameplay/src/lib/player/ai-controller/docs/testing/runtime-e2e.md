@@ -69,6 +69,11 @@ two-producer replacement invariant. Full-faction production coverage remains in 
 
 Runtime reports retain `execution.wallMs` and `execution.processStarts` alongside decision and tick counts. Use these
 fields when comparing a focused case to its natural-map counterpart; do not infer a speedup from simulated ticks alone.
+For a paired performance investigation, set `AI_SKIRMISH_PROFILE=1` on the same matrix command before and after the
+change. Optional variant timing separates lobby/setup, simulation advance, decision settle, checkpoint capture,
+perturbations, and supported browser long tasks; the compact reporter gives play milliseconds per 1,000 ticks and
+`--details` shows per-checkpoint phases. Profiling data is excluded from outcome digests and AI decisions. Use the
+same seed, map, faction, profile, checkpoint schedule, browser/machine conditions and at least three repeats.
 
 Economy checkpoints also retain ready housing capacity, current population, catalog-priced queued population, and
 ready housing actor names. The authored ECO-07 preset pairs a real five-item queue above the initial capacity with an

@@ -187,6 +187,28 @@ describe("fastest credible offense", () => {
     expect(renewed.intents).toContainEqual(expect.objectContaining({ kind: "attack", targetActorId: "enemy-core" }));
   });
 
+  it("attributes a failed mission to its saved objective after the current assessment changes target", () => {
+    const initial = brain();
+    const actors = [guard("a", "self", 0), guard("b", "self", 0), core("enemy-core")];
+    const first = manager.propose(world(actors), initial);
+    const launched = first.statePatch?.squads?.find((squad) => squad.role === "attack");
+    const strategy = first.statePatch?.strategy;
+    if (!launched?.lifecycle || !strategy?.assessment) throw new Error("missing_initial_attack_mission");
+    const state: AiBrainStateV1 = {
+      ...initial,
+      squads: [{
+        ...launched,
+        actorIds: [],
+        state: "completed",
+        lifecycle: { ...launched.lifecycle, terminalReason: "no_members_released" }
+      }],
+      strategy: { ...strategy, assessment: { ...strategy.assessment, targetActorId: "other-core" } }
+    };
+
+    const result = manager.propose(world(actors, 200), state);
+    expect(result.statePatch?.strategy?.assessment?.recentFailure?.targetActorId).toBe("enemy-core");
+  });
+
   it("finishes an exposed reachable core with a small compatible force before the old six-unit gate", () => {
     const result = manager.propose(world([guard("a", "self", 0), guard("b", "self", 0), core("enemy-core")]), brain());
 

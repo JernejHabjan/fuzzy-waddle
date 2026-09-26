@@ -4,7 +4,7 @@
 
 Make long, real Phaser skirmish matches responsive and shorten browser-matrix wall time without changing simulation
 outcomes, decision authority, or fairness. This is runtime performance work, not the fastest-credible-victory strategy
-policy in #827 and not a reason to weaken SEQ-01/02's 30,000-tick ceiling or first-launch-by-12,000 assertion.
+policy in #827 and not a reason to weaken SEQ-01/02's current 12,000-tick request ceiling or terminal assertion.
 
 Start on Sol/high for the profile and causal choice of hot path; use Terra/high for a bounded implementation after the
 profile names its owner. Pair with #816's continuous-match runs, but keep focused 400–12,000-tick fixtures for fast
@@ -27,6 +27,8 @@ feedback. Do not block #827 on this optional optimization unless profiling shows
 - Record per-variant wall time and normalized milliseconds per 1,000 simulated ticks, plus checkpoint-specific times.
   Measure browser main-thread long tasks and game-frame time over representative early/mid/late windows; record machine
   and browser conditions. Distinguish CPU, browser startup, network/assets, and deliberate test waits.
+- The optional `AI_SKIRMISH_PROFILE=1` runner probe is authored but unverified. Its phase and browser-long-task fields
+  do not alter the outcome digest; inspect them before choosing a hot-path owner.
 - Add bounded, disabled-by-default timings around the measured hottest owner. Do not expose hidden-world facts, call
   planners from debug UI, or make timing data part of the deterministic decision input.
 - Choose the highest-impact avoidable hot path by profile, not intuition. Optimize it in a small change; preserve tick
@@ -41,5 +43,5 @@ feedback. Do not block #827 on this optional optimization unless profiling shows
 
 ## Likely next action
 
-First instrument where the existing 100× run spends time. A 30,000-tick test ceiling is not a 30,000-tick match
+First instrument where the existing 100× run spends time. A 12,000-tick test ceiling is not a 12,000-tick match
 target; #827 separately owns strategy that turns scouting/economy advantage into earlier credible attacks and wins.

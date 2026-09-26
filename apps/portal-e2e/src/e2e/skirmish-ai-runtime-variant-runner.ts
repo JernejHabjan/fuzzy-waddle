@@ -19,8 +19,33 @@ export async function runVariant(
   fixtureDigest: string,
   debugProbe?: (page: Page, checkpointIndex: number) => Promise<void>
 ): Promise<RuntimeVariantResultV1> {
+  const profiling = process.env.AI_SKIRMISH_PROFILE === "1";
+  const variantStartedAt = performance.now();
   const context = await browser.newContext();
   const page = await context.newPage();
+  const checkpointPhases: {
+    targetTick: number;
+    advanceMs: number;
+    settleMs: number;
+    captureMs: number;
+  }[] = [];
+  let perturbationMs = 0;
+  if (profiling) {
+    await page.addInitScript(() => {
+      const metrics = { count: 0, totalMs: 0, maximumMs: 0 };
+      (window as unknown as { __skirmishPerf?: typeof metrics }).__skirmishPerf = metrics;
+      if (typeof PerformanceObserver === "undefined" || !PerformanceObserver.supportedEntryTypes.includes("longtask")) {
+        return;
+      }
+      new PerformanceObserver((list) => {
+        for (const entry of list.getEntries()) {
+          metrics.count += 1;
+          metrics.totalMs += entry.duration;
+          metrics.maximumMs = Math.max(metrics.maximumMs, entry.duration);
+        }
+      }).observe({ entryTypes: ["longtask"] });
+    });
+  }
   const aiErrors: string[] = [];
   page.on("console", (message) => {
     const text = message.text();
@@ -103,6 +128,7 @@ export async function runVariant(
     } else if (initialBoundary.presetApplication) {
       throw new Error("runtime_unrequested_preset_application");
     }
+    const setupMs = Math.round(performance.now() - variantStartedAt);
     const checkpoints: RuntimeCheckpointV1[] = [];
     const perturbations: { id: string; tick: number; dispatchedActors: number; subjectName: string | null }[] = [];
     const pendingPerturbations = [...(variant.perturbations ?? [])].sort(
@@ -121,6 +147,7 @@ export async function runVariant(
       while (pendingPerturbations[0] && pendingPerturbations[0].tick <= targetTick) {
         const perturbation = pendingPerturbations.shift();
         if (!perturbation) break;
+        const perturbationStartedAt = performance.now();
         await setSimulationState(
           page,
           fixture.recipe.aiPlayerNumber,
@@ -131,7 +158,9 @@ export async function runVariant(
         await setSimulationState(page, fixture.recipe.aiPlayerNumber, "pause", fixture.recipe.simulationTimeScale);
         await waitForSettledDecision(page, fixture.recipe.aiPlayerNumber);
         perturbations.push(await applyRuntimePerturbation(page, perturbation, fixture.recipe.aiPlayerNumber));
+        if (profiling) perturbationMs += performance.now() - perturbationStartedAt;
       }
+      const advanceStartedAt = performance.now();
       await setSimulationState(
         page,
         fixture.recipe.aiPlayerNumber,
@@ -139,10 +168,20 @@ export async function runVariant(
         index === 0 ? 1 : fixture.recipe.simulationTimeScale
       );
       await waitForSimulationTick(page, fixture.recipe.aiPlayerNumber, targetTick);
+      const settleStartedAt = performance.now();
       await setSimulationState(page, fixture.recipe.aiPlayerNumber, "pause", fixture.recipe.simulationTimeScale);
       await waitForSettledDecision(page, fixture.recipe.aiPlayerNumber);
+      const captureStartedAt = performance.now();
       checkpoints.push(await captureCheckpoint(page, fixture.recipe.aiPlayerNumber, targetTick));
       await debugProbe?.(page, index);
+      if (profiling) {
+        checkpointPhases.push({
+          targetTick,
+          advanceMs: Math.round(settleStartedAt - advanceStartedAt),
+          settleMs: Math.round(captureStartedAt - settleStartedAt),
+          captureMs: Math.round(performance.now() - captureStartedAt)
+        });
+      }
     }
     if (variant.presetWorld?.events?.length) {
       const eventResults = await page.evaluate(() => {
@@ -181,6 +220,22 @@ export async function runVariant(
       perturbations,
       aiErrors
     });
+    const browserLongTasks = profiling
+      ? await page.evaluate(() => {
+          const metrics = (
+            window as unknown as {
+              __skirmishPerf?: { count: number; totalMs: number; maximumMs: number };
+            }
+          ).__skirmishPerf;
+          return metrics
+            ? {
+                count: metrics.count,
+                totalMs: Math.round(metrics.totalMs),
+                maximumMs: Math.round(metrics.maximumMs)
+              }
+            : null;
+        })
+      : null;
     return {
       variantId: variant.id,
       seed: effectiveSeed,
@@ -197,7 +252,18 @@ export async function runVariant(
       outcomeDigest,
       checkpoints,
       perturbations,
-      aiErrors
+      aiErrors,
+      ...(profiling
+        ? {
+            timing: {
+              setupMs,
+              perturbationMs: Math.round(perturbationMs),
+              totalWallMsExcludingTeardown: Math.round(performance.now() - variantStartedAt),
+              checkpointPhases,
+              browserLongTasks
+            }
+          }
+        : {})
     };
   } finally {
     await context.close();

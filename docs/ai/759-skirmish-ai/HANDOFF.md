@@ -117,6 +117,12 @@ not block this gate.
 - #829 now persists safe/pressured/emergency posture and delays de-escalation by at most 160 simulation ticks after
   the last visible local threat; escalation remains immediate. Its pure test is authored but unrun. The runtime budget
   and posture transition still need paired low-resource/threat evidence at the final gate.
+- #827 failed-mission attribution now reads the completed squad's saved objective before a newer strategy assessment;
+  the changed-target regression is authored but unrun. Follow-up victory and casualty recovery remain unproven.
+- #828 now has optional per-variant setup/advance/settle/capture/perturbation and browser-long-task probes behind
+  `AI_SKIRMISH_PROFILE=1`; the compact reporter summarizes normalized play time. This instrumentation is unrun.
+  Measure paired identical workloads only at the final gate, then retain or reject a concrete hot-path optimization
+  based on identical authoritative digests and measured gain. Its plan's stale 30,000-tick wording was corrected.
 - A behavior-preserving #821 structural slice moved the shared admission pass into `brain/ai-intent-arbiter.ts`, leaving
   `ai-brain.ts` as the decision coordinator. This split is unverified and needs its focused Jest and structural lint at
   the final gate; the much larger macro/runner owners remain #821 debt.

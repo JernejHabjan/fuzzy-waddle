@@ -39,6 +39,13 @@ test("summarizes runtime failures and final variant evidence", () => {
               variantId: "variant",
               seed: 759,
               aiErrors: [],
+              timing: {
+                setupMs: 500,
+                perturbationMs: 0,
+                totalWallMsExcludingTeardown: 700,
+                checkpointPhases: [{ targetTick: 300, advanceMs: 120, settleMs: 40, captureMs: 20 }],
+                browserLongTasks: { count: 2, totalMs: 110, maximumMs: 60 }
+              },
               checkpoints: [
                 {
                   tick: 300,
@@ -59,6 +66,10 @@ test("summarizes runtime failures and final variant evidence", () => {
 
   assert.match(text, /SCENARIO SEQ-01 FAIL failures=variant:terminal_result_missing/);
   assert.match(text, /EXECUTION wallMs=42910 processStarts=1/);
+  assert.match(
+    text,
+    /timing setupMs=500 playMs=120 settleMs=40 captureMs=20 perturbationMs=0 playMsPer1kTicks=400 longTasks=2/
+  );
   assert.match(
     text,
     /VARIANT variant seed=759 tick=300 result=quit workers=6 army=1 income=4.13 produced=2 damage=10 enemyLosses=1/

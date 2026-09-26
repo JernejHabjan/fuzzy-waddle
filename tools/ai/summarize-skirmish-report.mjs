@@ -114,6 +114,26 @@ export function summarizeReport(report, options = {}) {
           .filter(Boolean)
           .join(" ")
       );
+      if (variant.timing) {
+        const phases = variant.timing.checkpointPhases ?? [];
+        const playMs = phases.reduce((sum, phase) => sum + (phase.advanceMs ?? 0), 0);
+        const settleMs = phases.reduce((sum, phase) => sum + (phase.settleMs ?? 0), 0);
+        const captureMs = phases.reduce((sum, phase) => sum + (phase.captureMs ?? 0), 0);
+        const ticks = Math.max(1, final.tick ?? 0);
+        lines.push(
+          `    timing setupMs=${variant.timing.setupMs} playMs=${playMs} settleMs=${settleMs} ` +
+          `captureMs=${captureMs} perturbationMs=${variant.timing.perturbationMs ?? 0} ` +
+          `playMsPer1kTicks=${Math.round((playMs * 1000) / ticks)} ` +
+          `longTasks=${variant.timing.browserLongTasks?.count ?? "unsupported"}`
+        );
+        if (options.details) {
+          lines.push(
+            `    timingCheckpoints=${phases
+              .map((phase) => `${phase.targetTick}:${phase.advanceMs}/${phase.settleMs}/${phase.captureMs}`)
+              .join(",")}`
+          );
+        }
+      }
       if (options.details) appendVariantDetails(lines, final);
     }
   }

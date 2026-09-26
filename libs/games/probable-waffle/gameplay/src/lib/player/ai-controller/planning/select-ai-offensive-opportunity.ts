@@ -30,7 +30,9 @@ function recentFailedMission(context: AiSkirmishProposalContext): AiStrategyAsse
     )
     .sort((left, right) => (right.lifecycle?.createdTick ?? 0) - (left.lifecycle?.createdTick ?? 0))[0];
   if (!completed?.lifecycle || remembered?.missionCreatedTick === completed.lifecycle.createdTick) return remembered;
-  const targetActorId = previous?.targetActorId ?? null;
+  const targetActorId = completed.objectiveId && !completed.objectiveId.startsWith("hypothesis:")
+    ? completed.objectiveId
+    : (previous?.targetActorId ?? null);
   const repeatedFailures =
     remembered?.targetActorId === targetActorId &&
     context.observation.tick - remembered.observedTick <= FAILURE_MEMORY_TICKS

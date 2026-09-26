@@ -23,4 +23,16 @@ export interface RuntimeVariantResultV1 {
     readonly subjectName: string | null;
   }[];
   readonly aiErrors: readonly string[];
+  readonly timing?: {
+    readonly setupMs: number;
+    readonly perturbationMs: number;
+    readonly totalWallMsExcludingTeardown: number;
+    readonly checkpointPhases: readonly {
+      readonly targetTick: number;
+      readonly advanceMs: number;
+      readonly settleMs: number;
+      readonly captureMs: number;
+    }[];
+    readonly browserLongTasks: { readonly count: number; readonly totalMs: number; readonly maximumMs: number } | null;
+  };
 }
