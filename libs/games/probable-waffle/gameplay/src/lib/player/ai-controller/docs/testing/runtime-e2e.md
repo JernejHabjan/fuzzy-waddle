@@ -6,6 +6,12 @@ Skirmish AI runtime acceptance must be executable in CI before a change merges t
 
 The pre-merge gate must include every supported runtime-required manifest row. Missing fixtures, zero decisions, zero ticks, a missing terminal result, provenance mismatch or browser/runtime failure fails the gate. Unsupported future capabilities remain visible in the report and require an explicit reason.
 
+Pure selection also requires a passing, actually executed Jest assertion naming each requested scenario ID. The matrix
+captures separate Jest JSON results for gameplay and Phaser without a cached target; a broad passing spec file or a registered fixture
+with no ID-specific assertion cannot count as coverage. The compact report lists missing IDs, and the runner exits
+nonzero. This contract is authored but awaits the final validation gate; existing generic test titles may need explicit
+scenario names then.
+
 Recommended CI tiers:
 
 | Tier               | Trigger                                  | Coverage                                                                 |

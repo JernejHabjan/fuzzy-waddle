@@ -4,6 +4,7 @@ import { dirname, isAbsolute, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { resolvePinnedBaselineSupport } from "./baseline-adapter-v1.mjs";
+import { runPureJestWithScenarioEvidence } from "./pure-scenario-evidence.mjs";
 
 const toolDirectory = dirname(fileURLToPath(import.meta.url));
 const workspaceRoot = resolve(toolDirectory, "../..");
@@ -236,23 +237,15 @@ function invokeHarness(input) {
     includesAuthoredTactics || includesAuthoredAdaptation || includesAuthoredProduction ||
     includesAuthoredEconomySupply || includesAuthoredEconomyForecast || includesAuthoredResourceService;
   const testPathPattern = `(${[...baseTestNames, ...(includeAuthored ? authoredTestNames : [])].join("|")})\\.spec\\.ts$`;
-  const command = spawnSync(
-    "pnpm",
-    [
-      "exec",
-      "nx",
-      "run-many",
-      "--target=test",
-      "--projects=probable-waffle-gameplay,probable-waffle-phaser",
-      "--runInBand",
-      `--testPathPatterns=${testPathPattern}`
-    ],
-    { cwd: workspaceRoot, env: environment, encoding: "utf8", maxBuffer: 16 * 1024 * 1024 }
-  );
-  const jestCounts = parseJestCounts(command.stdout);
+  const { command, evidence, counts } = runPureJestWithScenarioEvidence({
+    workspaceRoot,
+    environment,
+    testPathPattern,
+    scenarioIds: input.rows.map((row) => row.id)
+  });
   const report = {
     schemaVersion: 1,
-    status: command.status === 0 ? "passed" : "failed",
+    status: command.status === 0 && evidence.missingScenarioIds.length === 0 ? "passed" : "failed",
     suite: input.suite,
     manifestVersion: manifest.manifestVersion,
     candidate: input.candidate ?? readHead(),
@@ -260,6 +253,7 @@ function invokeHarness(input) {
     fixtureDigest,
     baseline: input.baseline ?? null,
     rows: input.rows.map((row) => row.id),
+    pureScenarioEvidence: evidence,
     contexts: input.rows
       .filter((row) => pureFixtureReference(row))
       .map((row) => ({
@@ -268,15 +262,15 @@ function invokeHarness(input) {
       })),
     workCounts: {
       scenarios: input.rows.length,
-      testSuites: jestCounts.testSuites,
-      tests: jestCounts.tests,
+      testSuites: counts.testSuites,
+      tests: counts.tests,
       decisions: 0,
       ticks: 0
     },
     process: { exitCode: command.status, signal: command.signal, stdout: command.stdout, stderr: command.stderr }
   };
   if (command.error) throw command.error;
-  if (command.status !== 0) process.exitCode = 1;
+  if (report.status !== "passed") process.exitCode = 1;
   return report;
 }
 
@@ -569,6 +563,8 @@ function validateRuntimeFixture(fixture, scenarioId) {
         !["Tivara", "Skaduwee"].includes(variant.humanFaction) ||
         !["Easy", "Normal", "Hard"].includes(variant.difficulty) ||
         (variant.supplyBranch !== undefined && !["prebuild", "ample_control"].includes(variant.supplyBranch)) ||
+        (variant.resourceServiceBranch !== undefined &&
+          !["build", "served_control"].includes(variant.resourceServiceBranch)) ||
         (variant.mapLabel !== undefined && typeof variant.mapLabel !== "string") ||
         (variant.perturbations !== undefined &&
           (!Array.isArray(variant.perturbations) ||
@@ -605,6 +601,21 @@ function validateRuntimeFixture(fixture, scenarioId) {
           (variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId))
         )
       )) ||
+    (assertion.requiredResourceService !== undefined &&
+      (!assertion.requiredResourceService ||
+        typeof assertion.requiredResourceService.sourceObjectName !== "string" ||
+        typeof assertion.requiredResourceService.serviceObjectName !== "string" ||
+        typeof assertion.requiredResourceService.resourceType !== "string" ||
+        !Number.isSafeInteger(assertion.requiredResourceService.maximumTileDistance) ||
+        assertion.requiredResourceService.maximumTileDistance <= 0 ||
+        !Number.isSafeInteger(assertion.requiredResourceService.latestTick) ||
+        assertion.requiredResourceService.latestTick <= 0 ||
+        !["build", "served_control"].every((branch) =>
+          recipe.variants.some((variant) =>
+            variant.resourceServiceBranch === branch &&
+            (variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId))
+          )
+        ))) ||
     [
       "maximumTick",
       "minimumMilitaryCount",
@@ -704,20 +715,6 @@ function parseArguments(tokens) {
 
 function helpText() {
   return `Run deterministic or real-runtime skirmish AI scenarios.\n\nUsage:\n  node tools/ai/run-skirmish-matrix.mjs --scenario ID [--mode pure|runtime|both]\n  node tools/ai/run-skirmish-matrix.mjs --scenarios ID,ID [--mode pure|runtime|both]\n  node tools/ai/run-skirmish-matrix.mjs --suite stage-smoke --stage N --working-tree\n  node tools/ai/run-skirmish-matrix.mjs --candidate SHA --baseline SHA\n\nOptions:\n  --manifest PATH       Override tools/ai/fixtures/skirmish-v1.json\n  --output DIRECTORY    Store the JSON artifact in this directory\n  --seed INTEGER        Override the pure-scenario seed\n  --help                Show this help without creating a failure artifact\n\nUse tools/ai/summarize-skirmish-report.mjs on the emitted artifact. Group compatible runtime IDs with --scenarios so Playwright starts once.\n`;
-}
-
-function parseJestCounts(output) {
-  const normalized = output.replace(/\u001b\[[0-9;]*m/g, "");
-  return {
-    testSuites: parsePassedCount(normalized, "Test Suites"),
-    tests: parsePassedCount(normalized, "Tests")
-  };
-}
-
-function parsePassedCount(output, label) {
-  const line = output.split("\n").find((candidate) => candidate.trimStart().startsWith(`${label}:`));
-  const match = line?.match(/([0-9]+) passed/);
-  return match ? Number(match[1]) : 0;
 }
 
 function readJson(path, maxBytes) {

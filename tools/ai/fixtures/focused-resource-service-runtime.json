@@ -31,6 +31,7 @@
           "fixtureId": "underserved-forest",
           "actors": [
             { "fixtureActorId": "forest", "actorName": "Tree1", "owner": null, "position": { "x": 896, "y": 840, "z": 0 } },
+            { "fixtureActorId": "served-forest", "actorName": "Tree9", "owner": null, "position": { "x": 448, "y": 840, "z": 0 } },
             { "fixtureActorId": "remote-mill", "actorName": "WorkMill", "owner": 2, "position": { "x": 400, "y": 800, "z": 0 } },
             { "fixtureActorId": "worker-1", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 752, "y": 800, "z": 0 } },
             { "fixtureActorId": "worker-2", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 784, "y": 824, "z": 0 } },
@@ -58,6 +59,7 @@
           "fixtureId": "served-forest-control",
           "actors": [
             { "fixtureActorId": "forest", "actorName": "Tree1", "owner": null, "position": { "x": 896, "y": 840, "z": 0 } },
+            { "fixtureActorId": "served-forest", "actorName": "Tree9", "owner": null, "position": { "x": 448, "y": 840, "z": 0 } },
             { "fixtureActorId": "remote-mill", "actorName": "WorkMill", "owner": 2, "position": { "x": 400, "y": 800, "z": 0 } },
             { "fixtureActorId": "local-mill", "actorName": "WorkMill", "owner": 2, "position": { "x": 800, "y": 880, "z": 0 } },
             { "fixtureActorId": "worker-1", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 752, "y": 800, "z": 0 } },

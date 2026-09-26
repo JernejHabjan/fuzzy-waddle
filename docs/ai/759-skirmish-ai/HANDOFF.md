@@ -138,6 +138,11 @@ not block this gate.
   ECO-05 now has an authored pure subject/control fixture that combines queued force, upgrade, expansion and supply
   wood demand, scarce-versus-surplus labor assignment, spendable-stockpile bounds and three-run digests. It is
   registered for pure execution but remains unrun; its real-runtime counterpart is still missing under #816.
+- #815/#816 runner hardening is authored but unrun: pure selection now captures uncached per-project Jest JSON and fails
+  closed unless every selected ID appears in a passing executed assertion title. This replaces the former broad-file
+  proxy. At the final gate, repair missing/compound scenario titles or missing semantic tests; do not suppress the
+  reported IDs or count fixture registration as execution. Runtime fixture validation now checks the ECO-01/02 paired
+  branch and its source/service geometry contract.
 - #816 preparation: the runtime checkpoint now captures actual ready housing, used/queued population and housing actor
   names. ECO-07 now has an authored, registered, short preset-world Playwright recipe with five real queued units,
   four workers, a shortfall branch and an ample-capacity control. Its positive oracle requires a real queue-driven

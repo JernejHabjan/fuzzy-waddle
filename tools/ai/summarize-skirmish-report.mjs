@@ -69,6 +69,12 @@ export function summarizeReport(report, options = {}) {
   if (report.execution) {
     lines.push(`EXECUTION wallMs=${report.execution.wallMs} processStarts=${report.execution.processStarts}`);
   }
+  const pureEvidence = report.pureScenarioEvidence ?? report.pure?.pureScenarioEvidence;
+  if (pureEvidence) {
+    const missing = pureEvidence.missingScenarioIds ?? [];
+    lines.push(`PURE_COVERAGE executed=${pureEvidence.executed?.length ?? 0} missing=${missing.length}`);
+    if (missing.length > 0) lines.push(`PURE_MISSING ${missing.join(",")}`);
+  }
 
   const scenarios = runtime?.scenarios ?? [];
   const noExecutedWork =

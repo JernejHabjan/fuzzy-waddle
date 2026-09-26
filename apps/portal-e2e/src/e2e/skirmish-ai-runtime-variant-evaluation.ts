@@ -5,6 +5,7 @@ import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-resul
 import { last } from "./skirmish-ai-runtime-value";
 import { evaluateRuntimePresetWorld } from "./skirmish-ai-runtime-preset-evaluation";
 import { evaluateRuntimeSupplyControl, evaluateRuntimeSupplyPrebuild } from "./skirmish-ai-runtime-supply-evaluation";
+import { evaluateRuntimeResourceService } from "./skirmish-ai-runtime-resource-service-evaluation";
 
 export function evaluateRuntimeVariant(
   scenarioId: string,
@@ -187,6 +188,13 @@ export function evaluateRuntimeVariant(
       ...(variant.supplyBranch === "ample_control"
         ? evaluateRuntimeSupplyControl(variant.checkpoints, assertion.requiredSupplyPrebuild)
         : evaluateRuntimeSupplyPrebuild(variant.checkpoints, assertion.requiredSupplyPrebuild)).map(
+        (failure) => `${variant.variantId}:${failure}`
+      )
+    );
+  }
+  if (assertion.requiredResourceService) {
+    failures.push(
+      ...evaluateRuntimeResourceService(assertion.requiredResourceService, variant).map(
         (failure) => `${variant.variantId}:${failure}`
       )
     );

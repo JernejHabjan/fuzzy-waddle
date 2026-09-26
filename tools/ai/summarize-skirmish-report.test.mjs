@@ -120,3 +120,17 @@ test("does not classify an executed pure report as missing runtime infrastructur
 
   assert.doesNotMatch(text, /INFRASTRUCTURE/);
 });
+
+test("surfaces missing per-scenario pure assertions without dumping Jest output", () => {
+  const text = summarizeReport({
+    status: "failed",
+    rows: ["ECO-01", "ECO-02"],
+    workCounts: { scenarios: 2, testSuites: 2, tests: 10, decisions: 0, ticks: 0 },
+    pureScenarioEvidence: {
+      executed: [{ scenarioId: "ECO-01", passedTestCount: 1 }, { scenarioId: "ECO-02", passedTestCount: 0 }],
+      missingScenarioIds: ["ECO-02"]
+    }
+  });
+  assert.match(text, /PURE_COVERAGE executed=2 missing=1/);
+  assert.match(text, /PURE_MISSING ECO-02/);
+});
