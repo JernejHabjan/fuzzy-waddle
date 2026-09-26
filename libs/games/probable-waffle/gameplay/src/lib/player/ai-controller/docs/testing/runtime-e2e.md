@@ -66,6 +66,11 @@ two-producer replacement invariant. Full-faction production coverage remains in 
 Runtime reports retain `execution.wallMs` and `execution.processStarts` alongside decision and tick counts. Use these
 fields when comparing a focused case to its natural-map counterpart; do not infer a speedup from simulated ticks alone.
 
+Economy checkpoints also retain ready housing capacity, current population, catalog-priced queued population, and
+ready housing actor names. A queued-supply preset must first prove a real capacity shortfall, then independently observe
+a completed named housing gain before its authored deadline. The oracle is available for ECO-07, but no runtime fixture
+or passing browser evidence is registered for that row yet.
+
 A natural-map control that cannot satisfy a focused invariant is not an equivalent correctness oracle or a performance
 baseline. Record that outcome in its issue/handoff without claiming a speedup. The focused fixture remains the
 authoritative `PRO-05` replacement proof; natural recovery behavior remains runtime/strategy work under #816/#827.

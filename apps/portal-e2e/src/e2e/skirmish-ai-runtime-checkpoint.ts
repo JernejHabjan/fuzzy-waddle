@@ -7,6 +7,10 @@ export interface RuntimeCheckpointV1 {
   readonly openingPlanId: string;
   readonly openingSteps: Readonly<Record<string, { readonly state: string; readonly completedTick: number | null }>>;
   readonly workerCount: number;
+  readonly readyHousingCapacity?: number;
+  readonly usedPopulation?: number;
+  readonly queuedPopulation?: number;
+  readonly readyHousingActorNames?: readonly string[];
   readonly deliveredIncome: number;
   readonly appliedCommands: readonly { readonly commandId: string; readonly effectId: string }[];
   readonly terminalFailureCount: number;

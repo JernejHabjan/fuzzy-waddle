@@ -22,6 +22,23 @@ export async function captureRuntimeEconomyCheckpoint(
       const workerNames = new Set(
         catalog.entries.filter((entry) => entry.gathers.length > 0).map((entry) => entry.sourceObjectName)
       );
+      const catalogByName = new Map(catalog.entries.map((entry) => [entry.sourceObjectName, entry]));
+      const readyHousing = selfActors.filter(
+        (actor) =>
+          actor.housingCapacity.status === "known" &&
+          actor.housingCapacity.value > 0 &&
+          (actor.constructionProgress?.status !== "known" || actor.constructionProgress.value >= 100)
+      );
+      const queuedItemIds = new Set<string>();
+      let queuedPopulation = 0;
+      for (const actor of selfActors) {
+        if (actor.queue.status !== "known") continue;
+        for (const item of actor.queue.value.items ?? []) {
+          if (item.kind !== "production" || !item.objectName || queuedItemIds.has(item.itemId)) continue;
+          queuedItemIds.add(item.itemId);
+          queuedPopulation += catalogByName.get(item.objectName)?.housingCost ?? 0;
+        }
+      }
       const terminalFailureReasons: Record<string, number> = {};
       bridge.outcomes
         .filter((outcome) => ["rejected", "cancelled", "failed"].includes(outcome.kind))
@@ -43,6 +60,16 @@ export async function captureRuntimeEconomyCheckpoint(
           ])
         ),
         workerCount: selfActors.filter((actor) => workerNames.has(actor.objectName)).length,
+        readyHousingCapacity: readyHousing.reduce(
+          (total, actor) => total + (actor.housingCapacity.status === "known" ? actor.housingCapacity.value : 0),
+          0
+        ),
+        usedPopulation: selfActors.reduce(
+          (total, actor) => total + (actor.housingCost.status === "known" ? actor.housingCost.value : 0),
+          0
+        ),
+        queuedPopulation,
+        readyHousingActorNames: readyHousing.map((actor) => actor.objectName).sort(),
         deliveredIncome: observation.resources.reduce(
           (total, resource) =>
             total +

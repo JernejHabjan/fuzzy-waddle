@@ -4,6 +4,7 @@ import { evaluateRuntimeTransport } from "./skirmish-ai-runtime-transport-evalua
 import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
 import { last } from "./skirmish-ai-runtime-value";
 import { evaluateRuntimePresetWorld } from "./skirmish-ai-runtime-preset-evaluation";
+import { evaluateRuntimeSupplyPrebuild } from "./skirmish-ai-runtime-supply-evaluation";
 
 export function evaluateRuntimeVariant(
   scenarioId: string,
@@ -181,6 +182,13 @@ export function evaluateRuntimeVariant(
   }
   failures.push(...evaluateRuntimeRaidRecovery(assertion, variant, final, hasTerminalResult));
   failures.push(...evaluateRuntimePresetWorld(assertion, variant));
+  if (assertion.requiredSupplyPrebuild) {
+    failures.push(
+      ...evaluateRuntimeSupplyPrebuild(variant.checkpoints, assertion.requiredSupplyPrebuild).map(
+        (failure) => `${variant.variantId}:${failure}`
+      )
+    );
+  }
   failures.push(...evaluateRuntimeTransport(assertion, variant));
   failures.push(...variant.aiErrors.map((error) => `${variant.variantId}:ai_error:${error}`));
   return failures;

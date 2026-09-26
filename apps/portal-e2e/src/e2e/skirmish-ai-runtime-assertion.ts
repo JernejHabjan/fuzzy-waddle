@@ -27,6 +27,11 @@ export interface RuntimeAssertionV1 {
   readonly requireRaidDefenseRecovery?: boolean;
   readonly requiredPresetFixtureId?: string;
   readonly requireProducerReplacementAfterLoss?: boolean;
+  readonly requiredSupplyPrebuild?: {
+    readonly minimumBuffer: number;
+    readonly latestTick: number;
+    readonly housingObjectName: string;
+  };
   readonly requiredDefenseTargetName?: string;
   readonly requiredDefenseActorName?: string;
   readonly requireMissionRedirectionAfterRaid?: boolean;

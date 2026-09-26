@@ -65,17 +65,17 @@ until one clean replacement run is necessary; do not reconstruct or dump the old
 
 | Order             | Issue                                                           | State         | Next boundary                                                      | Model / effort            |
 | ----------------- | --------------------------------------------------------------- | ------------- | ------------------------------------------------------------------ | ------------------------- |
-| 1 / as needed     | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `partial`     | Finish macro/spec splits and broader source cleanup later          | Terra, medium             |
-| 2                 | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829) | `in_progress` | Revalidate capacity-led growth above six and raid recovery          | Sol, high → Terra, high   |
-| 3                 | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `in_progress` | Revalidate sustained pressure and recovery on the new economy      | Sol, high → Terra, high   |
-| 4                 | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `in_progress` | Recalculate coverage; complete pure families paired with #816      | Sol, high → Terra, medium |
-| 5                 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Recalculate runtime rows and add required CI shards                | Sol, high → Terra, medium |
-| 6                 | [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828) | `not_started` | Optimize measured long-match hot paths after behavior stabilizes   | Sol, high → Terra, high   |
-| 7                 | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `not_started` | Isolated baseline, D-06, paired difficulty and soaks               | Sol, high → Terra, medium |
-| 8                 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `not_started` | Real multiplayer relay/lockstep AI evidence                        | Sol, high → Terra, high   |
-| 9                 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `not_started` | Save/replay/reconnect/repeated-match evidence                      | Sol, high → Terra, medium |
-| 10                | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | `not_started` | Retire legacy controller after parity dependencies                 | Sol, high → Terra, medium |
-| 11 / final        | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `not_started` | Finish naming and source-structure cleanup                         | Terra, medium             |
+| 1 / as needed     | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `partial`     | Split only the owners that block the next implementation slice      | Terra, medium             |
+| 2                 | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829) | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof  | Sol, high → Terra, high   |
+| 3                 | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `in_progress` | Finish sustained pressure/recovery policy; defer victory proof     | Sol, high → Terra, high   |
+| 4                 | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `in_progress` | Author remaining typed pure families; execute only at final gate    | Sol, high → Terra, medium |
+| 5                 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Author targeted runtime recipes and CI contracts; do not run yet   | Sol, high → Terra, medium |
+| 6                 | [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828) | `not_started` | Prepare probes now; measure/optimize only at final gate             | Sol, high → Terra, high   |
+| 7                 | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `not_started` | Prepare paired fixtures; baseline/D-06/soaks at final gate         | Sol, high → Terra, medium |
+| 8                 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `not_started` | Author relay/lockstep cases after #816 runtime contract exists      | Sol, high → Terra, high   |
+| 9                 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `not_started` | Author save/replay/reconnect/repeated-match cases after #819        | Sol, high → Terra, medium |
+| 10                | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | `not_started` | Retire legacy controller only after parity proof at final gate     | Sol, high → Terra, medium |
+| 11 / final        | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `not_started` | Finish naming/source cleanup, then run final validation gate        | Terra, medium             |
 
 Dependencies remain authoritative over model grouping. Every planning, authority, architecture, strategy, or causal-diagnosis
 boundary starts on Sol/high; Terra resumes only once that boundary has a compact contract and focused acceptance evidence.
@@ -111,6 +111,10 @@ not block this gate.
   queued-population supply, including once-only housing commitments and three-run proposal digests. Their manifest
   registration and runner selection are wired but not executed; required real-runtime counterparts remain unimplemented
   under #816. Do not add them to the passing count until the final gate executes the fixtures and coverage report.
+- #816 preparation: the runtime checkpoint now captures actual ready housing, used/queued population and housing actor
+  names. A fail-closed queued-supply oracle plus its own unexecuted unit spec is ready for a short ECO-07 preset-world
+  recipe. Do not register ECO-07 runtime coverage until the preset proves a real queue-driven shortfall and completed
+  housing gain on a shipped map; avoid guessing a fixed 47/50 initial supply value.
 
 - The #829 checkpoint gives every standard player 200 of each resource. A two-worker minimum opening avoids serial
   starvation; six is the live recovery floor, not the cap. The typed economy policy prices dated demand, food runway,
