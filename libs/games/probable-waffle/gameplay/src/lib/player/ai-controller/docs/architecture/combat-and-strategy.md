@@ -66,6 +66,9 @@ stops when the commitment is satisfied. Existing production is retained rather t
 Research scoring weighs current and likely beneficiaries against cost, queue delay, and survival needs. The shared
 research command remains the final authority. Adaptation evidence, targets, research rationale, and cancellation policy
 are saved and projected into the debug snapshot without live replanning.
+Queued production items count as future beneficiaries once each; an idle producer alone is not an upgraded unit.
+Optional research must clear the minimum useful-value threshold even for a tech archetype, and a visible survival
+threat suspends it. The paired early/mass/queued/threat pure case is authored but unverified until the final gate.
 
 ## Difficulty
 

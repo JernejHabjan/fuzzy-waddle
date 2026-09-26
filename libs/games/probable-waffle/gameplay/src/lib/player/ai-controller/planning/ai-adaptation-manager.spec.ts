@@ -6,6 +6,7 @@ import {
   ResourceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
+import { digestCanonicalAiValue } from "../brain/canonical-ai-serialization";
 import { aiDeadline } from "../contracts/ai-core-types";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
@@ -242,7 +243,7 @@ describe("AiAdaptationManager", () => {
     expect(proposal.statePatch?.adaptation?.evidence.some((entry) => entry.kind === "water_or_transport")).toBe(false);
   });
 
-  it("TECH-01/02 scores only a legal upgrade and preserves survival over optional technology", () => {
+  it("TECH-01 TECH-02 delays expensive small-army research, funds useful mass, and protects survival", () => {
     const main = actor("main", ObjectNames.Sandhold, "self", []);
     const slingshot = actor("slingshot", ObjectNames.TivaraSlingshotFemale, "self", ["ground"]);
     const candidate: AiObservationV1["researchCandidates"][number] = {
@@ -258,34 +259,67 @@ describe("AiAdaptationManager", () => {
         spellType: null
       }
     };
-    const quiet = manager.propose(
-      observation(100, [main, slingshot], [candidate]),
-      createAiBrainStateV1({
-        playerNumber: 1,
-        faction: FactionType.Tivara,
-        profile,
-        tick: 0,
-        archetypeId: "opening:1:tech"
-      })
+    const state = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "opening:1:tech"
+    });
+    const funded = (actors: AiObservationV1["actors"]): AiObservationV1 => ({
+      ...observation(100, actors, [candidate]),
+      resources: [ResourceType.Wood, ResourceType.Minerals].map((resourceType) => ({
+        resourceType,
+        stockpile: 1000,
+        reservedUnspent: 0,
+        obligationsDue: 0,
+        deliveredIncomePerMinute: { status: "known" as const, value: 100, observedTick: 100 }
+      }))
+    });
+    const army = Array.from({ length: 4 }, (_, index) =>
+      actor(`slingshot-${index}`, ObjectNames.TivaraSlingshotFemale, "self", ["ground"])
     );
-    expect(quiet.intents).toContainEqual(
+    const early = Array.from({ length: 3 }, () => manager.propose(funded([main, slingshot]), state));
+    const quiet = Array.from({ length: 3 }, () => manager.propose(funded([main, ...army]), state));
+    const queuedMain: AiObservedActorV1 = {
+      ...main,
+      queue: {
+        status: "known",
+        observedTick: 100,
+        value: {
+          capacity: 4,
+          occupied: 3,
+          itemIds: ["queue-1", "queue-2", "queue-3"],
+          items: ["queue-1", "queue-2", "queue-3"].map((itemId) => ({
+            itemId,
+            kind: "production" as const,
+            objectName: ObjectNames.TivaraSlingshotFemale,
+            researchType: null
+          }))
+        }
+      }
+    };
+    const committed = Array.from({ length: 3 }, () =>
+      manager.propose(funded([queuedMain, slingshot]), state)
+    );
+    expect(new Set(early.map(digestCanonicalAiValue)).size).toBe(1);
+    expect(new Set(quiet.map(digestCanonicalAiValue)).size).toBe(1);
+    expect(new Set(committed.map(digestCanonicalAiValue)).size).toBe(1);
+    expect(early[0]?.intents.some((intent) => intent.kind === "research")).toBe(false);
+    expect(early[0]?.reasons).toContain("research:no_sufficient_legal_value");
+    expect(quiet[0]?.intents).toContainEqual(
       expect.objectContaining({ kind: "research", researchType: candidate.researchType })
     );
-    const underAttack = manager.propose(
-      observation(
-        100,
-        [main, slingshot, actor("enemy", ObjectNames.TivaraSlingshotFemale, "enemy", ["ground"])],
-        [candidate]
-      ),
-      createAiBrainStateV1({
-        playerNumber: 1,
-        faction: FactionType.Tivara,
-        profile,
-        tick: 0,
-        archetypeId: "opening:1:tech"
-      })
+    expect(committed[0]?.intents).toContainEqual(
+      expect.objectContaining({ kind: "research", researchType: candidate.researchType })
     );
-    expect(underAttack.intents.some((intent) => intent.kind === "research")).toBe(false);
+    const underAttack = Array.from({ length: 3 }, () => manager.propose(
+      funded([main, ...army, actor("enemy", ObjectNames.TivaraSlingshotFemale, "enemy", ["ground"])]),
+      state
+    ));
+    expect(new Set(underAttack.map(digestCanonicalAiValue)).size).toBe(1);
+    expect(underAttack[0]?.intents.some((intent) => intent.kind === "research")).toBe(false);
+    expect(underAttack[0]?.reasons).toContain("research:survival_threat");
   });
 
   it("PRO-06/07 counts accepted counter production until reconciliation observes the completed actor", () => {

@@ -12,6 +12,7 @@ import type { AiManagerProposalV1, AiProposalManagerV1 } from "./ai-manager-prop
 type AdaptationRole = AiBrainStateV1["economyProduction"]["adaptation"]["activeRoleTargets"][number]["role"];
 type EvidenceKind = AiBrainStateV1["economyProduction"]["adaptation"]["evidence"][number]["kind"];
 const VISIBLE_EVIDENCE_CONFIDENCE_PERMILLE = 700;
+const MIN_RESEARCH_UTILITY = 500;
 
 function owned(observation: AiObservationV1) {
   return observation.actors.filter((actor) => actor.relation === "self" && actor.visibility === "owned");
@@ -272,14 +273,22 @@ function archetypeFallback(
 function researchScore(
   candidate: AiObservationV1["researchCandidates"][number],
   observation: AiObservationV1,
-  catalog: AiCapabilityCatalogV1,
   state: AiBrainStateV1
 ): number {
   const self = owned(observation);
   const upgradeTarget = candidate.benefit.kind === "unit_level" ? candidate.benefit.targetObjectName : null;
+  const queuedItemIds = new Set<string>();
+  const queuedBeneficiaries = upgradeTarget
+    ? self.flatMap((actor) => actor.queue.status === "known" ? actor.queue.value.items ?? [] : [])
+        .filter((item) => item.kind === "production" && item.objectName === upgradeTarget)
+        .filter((item) => {
+          if (queuedItemIds.has(item.itemId)) return false;
+          queuedItemIds.add(item.itemId);
+          return true;
+        }).length
+    : 0;
   const beneficiaries = upgradeTarget
-    ? self.filter((actor) => actor.objectName === upgradeTarget).length +
-      self.filter((actor) => entryFor(catalog, actor.objectName)?.produces.includes(upgradeTarget)).length
+    ? self.filter((actor) => actor.objectName === upgradeTarget).length + queuedBeneficiaries
     : self.filter(
         (actor) =>
           actor.combatProfile?.status === "known" &&
@@ -418,8 +427,8 @@ export class AiAdaptationManager implements AiProposalManagerV1 {
       pendingResearch || survivalThreatVisible
         ? undefined
         : observation.researchCandidates
-            .map((candidate) => ({ candidate, score: researchScore(candidate, observation, catalog, state) }))
-            .filter((entry) => entry.score > 0)
+            .map((candidate) => ({ candidate, score: researchScore(candidate, observation, state) }))
+            .filter((entry) => entry.score >= MIN_RESEARCH_UTILITY)
             .sort(
               (left, right) =>
                 right.score - left.score ||
@@ -465,6 +474,13 @@ export class AiAdaptationManager implements AiProposalManagerV1 {
 
     const fallback = archetypeFallback(state, observation, catalog);
     const activeRoleTargets = canTransition ? targets : prior.activeRoleTargets;
+    const researchReason = scoredResearch
+      ? `research_score:${scoredResearch.score}`
+      : survivalThreatVisible
+        ? "research:survival_threat"
+        : pendingResearch
+          ? "research:already_pending"
+          : "research:no_sufficient_legal_value";
     return {
       managerId: this.managerId,
       lane: "optional_infrastructure_tech",
@@ -474,7 +490,7 @@ export class AiAdaptationManager implements AiProposalManagerV1 {
         `adaptation_evidence:${evidence.length}`,
         `composition_transition:${canTransition ? "eligible" : "cooldown"}`,
         `committed_production:${prior.cancellationPolicy}`,
-        scoredResearch ? `research_score:${scoredResearch.score}` : "research:no_positive_legal_candidate",
+        researchReason,
         fallback?.reason ?? `archetype:${state.opening.archetypeId}`
       ],
       statePatch: {
