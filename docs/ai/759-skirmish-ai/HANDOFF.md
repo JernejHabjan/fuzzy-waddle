@@ -146,8 +146,9 @@ not block this gate.
 - #815 technology authoring is unrun: TECH-01/02 now explicitly pair an expensive early one-unit upgrade against a
   larger existing or queued beneficiary set, then suppress that same upgrade during visible pressure. Research scoring
   counts distinct queued production items, no longer treats an idle producer as a beneficiary, and requires a useful
-  minimum score even for a tech archetype. The adaptation manager remains over 400 lines and #821 must split it before
-  final structural lint. Do not count TECH-01/02 as passing until the final gate.
+  minimum score even for a tech archetype. A behavior-preserving #821 slice extracted adaptation evidence, role and
+  research scoring so the touched manager and spec are below 400 physical lines; the split is unverified and still
+  needs focused type/lint/test proof at the final gate. Do not count TECH-01/02 as passing until then.
 - #816 preparation: the runtime checkpoint now captures actual ready housing, used/queued population and housing actor
   names. ECO-07 now has an authored, registered, short preset-world Playwright recipe with five real queued units,
   four workers, a shortfall branch and an ample-capacity control. Its positive oracle requires a real queue-driven

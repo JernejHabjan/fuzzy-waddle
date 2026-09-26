@@ -6,13 +6,11 @@ import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
 import type { AiIntentV1 } from "../contracts/ai-intent-v1";
 import type { AiObservationV1 } from "../contracts/ai-observation-v1";
 import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
-import type { AiEffectId, AiEvidenceId } from "../contracts/ai-core-types";
+import type { AiEffectId } from "../contracts/ai-core-types";
 import type { AiManagerProposalV1, AiProposalManagerV1 } from "./ai-manager-proposal";
-
-type AdaptationRole = AiBrainStateV1["economyProduction"]["adaptation"]["activeRoleTargets"][number]["role"];
-type EvidenceKind = AiBrainStateV1["economyProduction"]["adaptation"]["evidence"][number]["kind"];
-const VISIBLE_EVIDENCE_CONFIDENCE_PERMILLE = 700;
-const MIN_RESEARCH_UTILITY = 500;
+import { adaptationRoleTargets, mergeAdaptationEvidence } from "./ai-adaptation-evidence";
+import { MIN_RESEARCH_UTILITY, scoreAdaptationResearch } from "./ai-adaptation-research-score";
+import type { AiAdaptationRole } from "./ai-adaptation-role";
 
 function owned(observation: AiObservationV1) {
   return observation.actors.filter((actor) => actor.relation === "self" && actor.visibility === "owned");
@@ -27,125 +25,11 @@ function ids(state: AiBrainStateV1, prefix: string, ordinal: number) {
   };
 }
 
-function enemyEvidence(observation: AiObservationV1): readonly {
-  readonly evidenceId: AiEvidenceId;
-  readonly kind: EvidenceKind;
-  readonly sourceContactId: string;
-  readonly confidencePermille: number;
-  readonly permittedFacts: readonly string[];
-}[] {
-  return observation.actors
-    .filter((actor) => actor.relation === "enemy" && actor.visibility !== "last_seen")
-    .flatMap((actor) => {
-      const kinds: { kind: EvidenceKind; facts: string[] }[] = [];
-      if (actor.capabilities.some((capability) => capability.domains.includes("air"))) {
-        kinds.push({ kind: "flyer", facts: ["visible_air_movement"] });
-      }
-      if (
-        (actor.housingCost.status === "known" &&
-          actor.housingCost.value > 0 &&
-          actor.capabilities.some((capability) => capability.domains.includes("water"))) ||
-        (actor.containerState?.status === "known" && actor.containerState.value.mobileDomains.length > 0)
-      ) {
-        kinds.push({ kind: "water_or_transport", facts: ["visible_water_or_container"] });
-      }
-      if (
-        actor.combatProfile?.status === "known" &&
-        actor.combatProfile.value.attacks.some((attack) => attack.areaRadius > 0)
-      ) {
-        kinds.push({ kind: "area_damage", facts: ["visible_area_attack"] });
-      }
-      if (
-        actor.capabilities.every((capability) => capability.domains.length === 0) &&
-        actor.combatProfile?.status === "known" &&
-        actor.combatProfile.value.attacks.length > 0
-      ) {
-        kinds.push({ kind: "static_fortification", facts: ["visible_static_attack"] });
-      }
-      return kinds.map(({ kind, facts }) => ({
-        evidenceId: `evidence:adapt:${kind}:${actor.evidenceId}` as AiEvidenceId,
-        kind,
-        sourceContactId: actor.actorId,
-        confidencePermille: VISIBLE_EVIDENCE_CONFIDENCE_PERMILLE,
-        permittedFacts: facts
-      }));
-    })
-    .sort((left, right) => left.evidenceId.localeCompare(right.evidenceId));
-}
-
-function mergeEvidence(
-  state: AiBrainStateV1,
-  observation: AiObservationV1
-): AiBrainStateV1["economyProduction"]["adaptation"]["evidence"] {
-  const previous = new Map(state.economyProduction.adaptation.evidence.map((entry) => [entry.evidenceId, entry]));
-  const visible = enemyEvidence(observation).map((entry) => {
-    const earlier = previous.get(entry.evidenceId);
-    return {
-      ...entry,
-      observedTick: observation.tick,
-      confidencePermille: Math.max(entry.confidencePermille, earlier?.confidencePermille ?? 0),
-      consecutiveEvaluations: Math.min(2, (earlier?.consecutiveEvaluations ?? 0) + 1),
-      permittedFacts: [...new Set([...(earlier?.permittedFacts ?? []), ...entry.permittedFacts])].sort()
-    };
-  });
-  const rememberedContactIds = new Set(
-    observation.actors
-      .filter((actor) => actor.relation === "enemy" && actor.visibility === "last_seen")
-      .map((actor) => actor.actorId)
-  );
-  const decayed = state.economyProduction.adaptation.evidence
-    .filter((entry) => rememberedContactIds.has(entry.sourceContactId))
-    .filter((entry) => !visible.some((current) => current.evidenceId === entry.evidenceId))
-    .map((entry) => ({
-      ...entry,
-      confidencePermille: Math.max(
-        0,
-        VISIBLE_EVIDENCE_CONFIDENCE_PERMILLE - Math.max(0, observation.tick - entry.observedTick)
-      ),
-      consecutiveEvaluations: 0
-    }))
-    .filter((entry) => entry.confidencePermille > 0);
-  return [...visible, ...decayed].sort((left, right) => left.evidenceId.localeCompare(right.evidenceId));
-}
-
-function roleTargets(
-  evidence: AiBrainStateV1["economyProduction"]["adaptation"]["evidence"],
-  state: AiBrainStateV1
-): readonly {
-  readonly role: AdaptationRole;
-  readonly desired: number;
-  readonly evidenceIds: readonly AiEvidenceId[];
-}[] {
-  const confirmed = evidence.filter((entry) => entry.consecutiveEvaluations >= 2 && entry.confidencePermille >= 500);
-  const byKind = (kind: EvidenceKind) =>
-    confirmed
-      .filter((entry) => entry.kind === kind)
-      .map((entry) => entry.evidenceId)
-      .sort();
-  const offensiveObjective = ["pressure", "expand", "finish"].includes(state.strategy.stance);
-  const targets: { role: AdaptationRole; desired: number; evidenceIds: readonly AiEvidenceId[] }[] = [
-    { role: "anti_air", desired: Math.min(2, byKind("flyer").length), evidenceIds: byKind("flyer") },
-    {
-      role: "water_control",
-      desired: Math.min(2, byKind("water_or_transport").length),
-      evidenceIds: byKind("water_or_transport")
-    },
-    { role: "ranged", desired: Math.min(2, byKind("area_damage").length), evidenceIds: byKind("area_damage") },
-    { role: "support", desired: Math.min(1, byKind("area_damage").length), evidenceIds: byKind("area_damage") },
-    {
-      role: "fortification_breaker",
-      desired: offensiveObjective ? Math.min(2, byKind("static_fortification").length) : 0,
-      evidenceIds: byKind("static_fortification")
-    }
-  ];
-  return targets.filter((target) => target.desired > 0);
-}
-
 function entryFor(catalog: AiCapabilityCatalogV1, objectName: ObjectNames): AiCapabilityCatalogEntryV1 | undefined {
   return catalog.entries.find((entry) => entry.sourceObjectName === objectName);
 }
 
-function matchesRole(entry: AiCapabilityCatalogEntryV1, role: AdaptationRole): boolean {
+function matchesRole(entry: AiCapabilityCatalogEntryV1, role: AiAdaptationRole): boolean {
   const family = entry.family.toLowerCase();
   switch (role) {
     case "anti_air":
@@ -166,7 +50,7 @@ function matchesRole(entry: AiCapabilityCatalogEntryV1, role: AdaptationRole): b
 function currentRoleActorIds(
   observation: AiObservationV1,
   catalog: AiCapabilityCatalogV1,
-  role: AdaptationRole
+  role: AiAdaptationRole
 ): readonly ActorId[] {
   return owned(observation)
     .filter((actor) => {
@@ -178,13 +62,13 @@ function currentRoleActorIds(
 }
 
 /** Accepted counter production remains a counted commitment until shared reconciliation releases it. */
-function pendingRoleCommitments(state: AiBrainStateV1, role: AdaptationRole): number {
+function pendingRoleCommitments(state: AiBrainStateV1, role: AiAdaptationRole): number {
   return state.reservations.filter(
     (reservation) => reservation.subjectKey?.startsWith(`effect:effect:stage14:${role}:`) === true
   ).length;
 }
 
-function pendingRoleEffectIds(state: AiBrainStateV1, role: AdaptationRole): readonly AiEffectId[] {
+function pendingRoleEffectIds(state: AiBrainStateV1, role: AiAdaptationRole): readonly AiEffectId[] {
   return state.reservations
     .map((reservation) => reservation.subjectKey)
     .filter((subjectKey): subjectKey is string => subjectKey?.startsWith(`effect:effect:stage14:${role}:`) === true)
@@ -195,7 +79,7 @@ function pendingRoleEffectIds(state: AiBrainStateV1, role: AdaptationRole): read
 function producerForRole(
   observation: AiObservationV1,
   catalog: AiCapabilityCatalogV1,
-  role: AdaptationRole,
+  role: AiAdaptationRole,
   remainingResources: ReadonlyMap<ResourceType, number>
 ):
   | {
@@ -244,7 +128,7 @@ function archetypeFallback(
 ): { readonly id: string; readonly reason: string } | undefined {
   const archetypeParts = state.opening.archetypeId.split(":");
   const purpose = archetypeParts[archetypeParts.length - 1];
-  const producerPathAvailable = (role: AdaptationRole) =>
+  const producerPathAvailable = (role: AiAdaptationRole) =>
     catalog.entries.some((entry) =>
       entry.produces.some((candidate) => {
         const product = entryFor(catalog, candidate);
@@ -268,52 +152,6 @@ function archetypeFallback(
         reason: `archetype_fallback:${purpose}:capability_or_access_unavailable`
       }
     : undefined;
-}
-
-function researchScore(
-  candidate: AiObservationV1["researchCandidates"][number],
-  observation: AiObservationV1,
-  state: AiBrainStateV1
-): number {
-  const self = owned(observation);
-  const upgradeTarget = candidate.benefit.kind === "unit_level" ? candidate.benefit.targetObjectName : null;
-  const queuedItemIds = new Set<string>();
-  const queuedBeneficiaries = upgradeTarget
-    ? self.flatMap((actor) => actor.queue.status === "known" ? actor.queue.value.items ?? [] : [])
-        .filter((item) => item.kind === "production" && item.objectName === upgradeTarget)
-        .filter((item) => {
-          if (queuedItemIds.has(item.itemId)) return false;
-          queuedItemIds.add(item.itemId);
-          return true;
-        }).length
-    : 0;
-  const beneficiaries = upgradeTarget
-    ? self.filter((actor) => actor.objectName === upgradeTarget).length + queuedBeneficiaries
-    : self.filter(
-        (actor) =>
-          actor.combatProfile?.status === "known" &&
-          actor.combatProfile.value.spells.some((spell) => spell.spellType === candidate.benefit.spellType)
-      ).length;
-  const resources = Object.values(candidate.cost).reduce((total, value) => total + (value ?? 0), 0);
-  const researchProducer = self.find((actor) => actor.actorId === candidate.producerId);
-  const queueDelay = researchProducer?.queue.status === "known" ? researchProducer.queue.value.occupied * 60 : 0;
-  const survivalCost = observation.threatSummary.visibleEnemyActorIds.length > 0 ? 400 : 0;
-  const archetypeParts = state.opening.archetypeId.split(":");
-  const purpose = archetypeParts[archetypeParts.length - 1];
-  const archetypeBias = purpose === "tech" ? 200 : purpose === "rush" || purpose === "pressure" ? -100 : 0;
-  return Math.max(
-    0,
-    Math.min(
-      1000,
-      beneficiaries * 180 +
-        180 -
-        Math.round(resources / 2) -
-        Math.round(candidate.durationTicks / 10) -
-        queueDelay -
-        survivalCost +
-        archetypeBias
-    )
-  );
 }
 
 /**
@@ -340,8 +178,8 @@ export class AiAdaptationManager implements AiProposalManagerV1 {
         reasons: ["catalog_not_ready"]
       };
     }
-    const evidence = mergeEvidence(state, observation);
-    const targets = roleTargets(evidence, state);
+    const evidence = mergeAdaptationEvidence(state, observation);
+    const targets = adaptationRoleTargets(evidence, state);
     const prior = state.economyProduction.adaptation;
     const canTransition =
       prior.lastTransitionTick === null ||
@@ -427,7 +265,7 @@ export class AiAdaptationManager implements AiProposalManagerV1 {
       pendingResearch || survivalThreatVisible
         ? undefined
         : observation.researchCandidates
-            .map((candidate) => ({ candidate, score: researchScore(candidate, observation, state) }))
+            .map((candidate) => ({ candidate, score: scoreAdaptationResearch(candidate, observation, state) }))
             .filter((entry) => entry.score >= MIN_RESEARCH_UTILITY)
             .sort(
               (left, right) =>
