@@ -11,6 +11,7 @@ import {
   hasCredibleAiEconomyThreat
 } from "./ai-economy-policy";
 import { projectAiResourceForecasts, selectAiForecastResource } from "./ai-resource-forecast";
+import { createAiResourceCostClaims } from "./ai-resource-cost-claims";
 import { calculateAiHousingDemand } from "./ai-housing-demand";
 import { proposeAiWorkerRecovery } from "./ai-worker-recovery";
 
@@ -398,6 +399,11 @@ export class AiMacroManager implements AiProposalManagerV1 {
           preconditions: [{ kind: "actor_exists", actorId: producer.actorId }],
           claims: [
             { claimId: ids.claimId, kind: "production_slot", producerId: producer.actorId, slot: 0 },
+            ...createAiResourceCostClaims(
+              ids.claimId,
+              catalog.entries.find((entry) => entry.sourceObjectName === checkpoint.requiredObject)
+                ?.constructionProfile?.resourceCost ?? {}
+            ),
             {
               claimId: `${ids.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
               kind: "effect",
@@ -447,6 +453,11 @@ export class AiMacroManager implements AiProposalManagerV1 {
                 actorId: builder.actorId
               },
               { claimId: ids.claimId, kind: "site", siteKey: `opening:${checkpoint.id}:${position.x}:${position.y}` },
+              ...createAiResourceCostClaims(
+                ids.claimId,
+                catalog.entries.find((entry) => entry.sourceObjectName === checkpoint.requiredObject)
+                  ?.constructionProfile?.resourceCost ?? {}
+              ),
               {
                 claimId: `${ids.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
                 kind: "effect",
@@ -612,7 +623,7 @@ export class AiMacroManager implements AiProposalManagerV1 {
             lane: "supply_production",
             proposedTick: observation.tick,
             urgencyClass: 1,
-            utility: 850,
+            utility: housing.queuedPopulation > 0 ? 920 : 850,
             preconditions: [{ kind: "actor_exists", actorId: builder.actorId }],
             claims: [
               {
@@ -621,6 +632,7 @@ export class AiMacroManager implements AiProposalManagerV1 {
                 actorId: builder.actorId
               },
               { claimId: ids.claimId, kind: "site", siteKey: `supply:${housingObject}:${position.x}:${position.y}` },
+              ...createAiResourceCostClaims(ids.claimId, housing.housingEntry.constructionProfile?.resourceCost ?? {}),
               {
                 claimId: `${ids.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
                 kind: "effect",
@@ -795,6 +807,10 @@ export class AiMacroManager implements AiProposalManagerV1 {
                   kind: "site",
                   siteKey: `food-prerequisite:${foodPrerequisiteObject}:${position.x}:${position.y}`
                 },
+                ...createAiResourceCostClaims(
+                  next.claimId,
+                  foodPrerequisiteEntry.constructionProfile?.resourceCost ?? {}
+                ),
                 {
                   claimId: `${next.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
                   kind: "effect",
@@ -880,6 +896,7 @@ export class AiMacroManager implements AiProposalManagerV1 {
                   kind: "site",
                   siteKey: `food-capacity:${ObjectNames.Field}:${position.x}:${position.y}`
                 },
+                ...createAiResourceCostClaims(next.claimId, foodSourceEntry.constructionProfile?.resourceCost ?? {}),
                 {
                   claimId: `${next.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
                   kind: "effect",
@@ -1078,6 +1095,7 @@ export class AiMacroManager implements AiProposalManagerV1 {
                   kind: "site",
                   siteKey: `capacity:${primaryProducerObjectName}:${position.x}:${position.y}`
                 },
+                ...createAiResourceCostClaims(next.claimId, producerEntry?.constructionProfile?.resourceCost ?? {}),
                 {
                   claimId: `${next.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
                   kind: "effect",

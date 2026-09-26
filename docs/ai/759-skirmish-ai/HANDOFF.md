@@ -115,6 +115,17 @@ not block this gate.
   names. A fail-closed queued-supply oracle plus its own unexecuted unit spec is ready for a short ECO-07 preset-world
   recipe. Do not register ECO-07 runtime coverage until the preset proves a real queue-driven shortfall and completed
   housing gain on a shipped map; avoid guessing a fixed 47/50 initial supply value.
+- Next implementation gaps before the final gate: catalog-priced resource claims now let shared arbitration reject
+  simultaneous macro construction/opening-production overspend, but #829's 65/35–20/80 spending split remains
+  explanatory policy, not a cross-manager posture budget. Keep emergency defense, food recovery and offensive finish
+  from overpromising the same stockpile. #827 still needs evidence-based follow-up pressure and recovery after a failed first
+  mission, not just the new six-worker launch pause. #815/#816 need remaining scenario families and a fail-closed
+  scenario-to-test/CI mapping; a shared Jest path pattern and authored fixture metadata alone are not execution proof.
+  #828 profiling, #817 calibration/soaks, #819 socket multiplayer, #823 lifecycle, and #820 parity-gated retirement
+  depend on those foundations or require the deferred validation gate, so none should be reported complete now.
+- The resource-claim change is unverified: the new helper and pure-arbiter regression are authored, and existing
+  Field/housing tests now assert catalog-priced claims. At the final gate, inspect claim reservation/reconciliation and
+  paired low-resource ECO-04/07 outcomes before treating the spending fix as proven.
 
 - The #829 checkpoint gives every standard player 200 of each resource. A two-worker minimum opening avoids serial
   starvation; six is the live recovery floor, not the cap. The typed economy policy prices dated demand, food runway,

@@ -186,6 +186,9 @@ describe("AI food infrastructure", () => {
 
     expect(labor).toEqual(expect.objectContaining({ kind: "assign_gatherers" }));
     expect(construction).toEqual(expect.objectContaining({ kind: "construct" }));
+    expect(construction?.claims).toContainEqual(
+      expect.objectContaining({ kind: "resource", resourceType: ResourceType.Wood, amount: 60 })
+    );
     expect(labor?.utility).toBeGreaterThan(construction?.utility ?? 0);
   });
 

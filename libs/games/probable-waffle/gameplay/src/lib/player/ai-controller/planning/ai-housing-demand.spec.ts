@@ -179,6 +179,13 @@ describe("housing capacity demand", () => {
       expect.arrayContaining([expect.objectContaining({ purpose: "supply_buffer", unit: "actor_count", desired: 2 })])
     );
     expect(subject.intents).toContainEqual(expect.objectContaining({ kind: "construct", objectName: ObjectNames.Olival }));
+    const housingIntent = subject.intents.find(
+      (intent) => intent.kind === "construct" && intent.objectName === ObjectNames.Olival
+    );
+    expect(housingIntent?.claims).toContainEqual(
+      expect.objectContaining({ kind: "resource", resourceType: ResourceType.Wood, amount: 80 })
+    );
+    expect(housingIntent?.utility).toBe(920);
     expect(control.intents.some((intent) => intent.kind === "construct" && intent.objectName === ObjectNames.Olival))
       .toBe(false);
   });

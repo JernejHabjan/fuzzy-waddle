@@ -47,6 +47,10 @@ Additional capacity requires evidence such as:
 
 Existing, queued, under-construction and accepted-not-yet-observed capacity count toward the same demand once. When the target is fulfilled or abandoned, optional claims are released and excess construction/production stops.
 
+Macro construction and opening production carry catalog-priced resource claims into shared intent arbitration. Several
+simultaneous proposed buildings may each be individually affordable, but only the combination that fits unreserved
+stockpile can be admitted. A rejected lower-priority proposal remains unmet demand rather than silently spending money.
+
 Housing demand prices queued population as well as current use and an opening-specific reserve. Ready houses supply
 current capacity; unfinished houses and accepted but unobserved effects count toward future capacity once. The demand
 ledger records a required building count, while the planner separately calculates population capacity, so a house is

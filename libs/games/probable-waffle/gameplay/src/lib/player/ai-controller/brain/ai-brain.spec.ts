@@ -4,7 +4,7 @@ import type { AiManagerProposalV1, AiProposalManagerV1 } from "../planning/ai-ma
 import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
 import { createAiBrainStateV1 } from "./create-ai-brain-state-v1";
 import { PureAiBrain } from "./ai-brain";
-import { createAiTestObservation } from "../testing/ai-test-fixtures";
+import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
 import { findAiWhyNotExplanationV1 } from "../debug/project-ai-debug-snapshot";
 
 function stopIntent(id: string, utility: number, actorId: string, wood: number): AiIntentV1 {
@@ -122,6 +122,33 @@ class AdaptationLedgerManager implements AiProposalManagerV1 {
 }
 
 describe("PureAiBrain", () => {
+  it("admits only the affordable combination of separately affordable resource claims", () => {
+    const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
+    const state = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    });
+    const observation = createAiTestObservation();
+    const result = new PureAiBrain(profile, [
+      new DummyManager([
+        stopIntent("housing", 920, "worker-1", 50),
+        stopIntent("field", 880, "worker-2", 40)
+      ])
+    ]).step(
+      { ...observation, actors: [...observation.actors, createAiTestOwnedActor("worker-2")] },
+      state,
+      []
+    );
+
+    expect(result.acceptedIntents.map((intent) => intent.intentId)).toEqual(["intent:housing"]);
+    expect(result.decisions).toContainEqual(
+      expect.objectContaining({ outcome: "rejected", reason: "resource_conflict", detail: ResourceType.Wood })
+    );
+  });
+
   it("explains accepted and rejected intents with deterministic claim arbitration", () => {
     const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
     const state = createAiBrainStateV1({
