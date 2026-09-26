@@ -13,6 +13,8 @@ export interface AiCapabilityCatalogEntryV1 {
   readonly constructs: readonly ObjectNames[];
   readonly researches: readonly ResearchType[];
   readonly gathers: readonly ResourceType[];
+  /** ResourceDrain-backed drop-off compatibility; absent in catalogs captured before this projection. */
+  readonly acceptsResources?: readonly ResourceType[];
   readonly housingCapacity: number | null;
   readonly housingCost: number | null;
   readonly cargoCapacity: number | null;

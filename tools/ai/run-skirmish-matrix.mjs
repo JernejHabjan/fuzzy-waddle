@@ -217,20 +217,23 @@ function invokeHarness(input) {
   const includesAuthoredEconomyForecast = input.rows.some(
     (row) => row.authoredFixture === "economy-forecast-scenarios.json"
   );
+  const includesAuthoredResourceService = input.rows.some(
+    (row) => row.authoredFixture === "resource-service-scenarios.json"
+  );
   const baseTestNames = [
     "ai-(scenario-harness|runtime-scenario|repro-cli)",
     "authoritative-state-projection",
     "actor-manager-ai-save"
   ];
   const authoredTestNames = [
-    "ai-(brain|production-scenarios|housing-demand|economy-forecast-scenarios)",
+    "ai-(brain|production-scenarios|housing-demand|economy-forecast-scenarios|resource-service-manager)",
     "ai-(stage-13-tactics-manager|stage-14-adaptation-manager)",
     "ai-profile-defaults",
     "player-ai-controller\\.agent\\.static"
   ];
   const includeAuthored =
     includesAuthoredTactics || includesAuthoredAdaptation || includesAuthoredProduction ||
-    includesAuthoredEconomySupply || includesAuthoredEconomyForecast;
+    includesAuthoredEconomySupply || includesAuthoredEconomyForecast || includesAuthoredResourceService;
   const testPathPattern = `(${[...baseTestNames, ...(includeAuthored ? authoredTestNames : [])].join("|")})\\.spec\\.ts$`;
   const command = spawnSync(
     "pnpm",

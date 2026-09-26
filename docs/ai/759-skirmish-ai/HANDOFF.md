@@ -171,6 +171,12 @@ not block this gate.
 - ECO-03 now has an unrun three-repeat pure source-saturation subject/control: an idle worker chooses the spare wood
   source rather than an already fully occupied one, and does not overfill the sole saturated source. It is registered
   in the manifest but does not increase the last validated coverage count; its runtime counterpart is still absent.
+- ECO-01/02 now have unrun pure subject/control cases for compatible, priced local WorkMill construction, a justified
+  same-type second deposit, and already-served suppression. The runtime catalog now exposes definition-backed accepted
+  resource types; a separate resource-service proposer is registered and construction cells can include bounded owned
+  vision around visible sources. Final-gate review must verify source visibility, footprint/path legality, accepted-site
+  deduplication, actual travel gain, both factions' legal roster, and real runtime income; the runtime recipes remain
+  unimplemented, so these cases do not increase the last validated counts.
 - SCOUT-05 compares two distinct hidden Banshee positions: neither is disclosed in the first committed observation and
   the first decision facts match. DOMAIN-06 and RAID-02 prove real air defense and mission redirection. The grouped
   focused run retained identical causal outcome digests in every repeated group. Runtime reports record wall time and

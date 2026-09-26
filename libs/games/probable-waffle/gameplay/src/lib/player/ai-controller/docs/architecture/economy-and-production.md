@@ -18,6 +18,13 @@ throughput, while terminally failed effects are released so rejected work can be
 
 Workers retain ownership of useful in-progress duties such as returning resources. Reassignment is allowed when a source is depleted, inaccessible, unsafe or oversaturated, but a brief duty transition must not be mistaken for idleness.
 
+The resource-service proposer uses definition-derived drop-off resource types. A visible, valuable non-food source may
+justify a compatible mill/camp only when existing local service is too far away, a worker or dated demand can use it,
+its catalog cost is spendable, and a currently observed footprint improves travel. An already-served source, pending
+site commitment, or unfinished nearby drop-off suppresses duplicate work. A second building of the same type remains
+legal for a distinct underserved source. Construction candidates around a distant source are exposed only from bounded
+owned vision anchors; final terrain, collision, path, and builder legality remain with shared command application.
+
 Standard skirmishes give both human and AI players 200 food, wood, stone and minerals. The opening therefore secures a
 two-worker minimum before infrastructure instead of spending the entire food reserve on a serialized six-worker gate.
 Once renewable income is reachable, a separate current-workforce demand maintains six as a recovery floor and grows

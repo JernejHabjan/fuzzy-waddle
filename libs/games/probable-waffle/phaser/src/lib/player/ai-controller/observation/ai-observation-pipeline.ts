@@ -691,6 +691,7 @@ export class AiObservationPipeline {
         : [],
       researches: [...researches].sort(),
       gathers: normalizeGatherResourceTypes(definition.components?.gatherer?.resourceSourceGameObjectClasses),
+      acceptsResources: [...(definition.components?.resourceDrain?.resourceTypes ?? [])].sort(),
       housingCapacity: definition.components?.housing?.housingCapacity ?? null,
       housingCost: definition.components?.housingCost?.housingNeeded ?? null,
       cargoCapacity: definition.components?.container?.capacity ?? null,
@@ -833,7 +834,7 @@ export class AiObservationPipeline {
       )
     ].sort();
     const constructionCells: Array<NonNullable<NonNullable<AiObservationV1["map"]>["constructionCells"]>[number]> = [];
-    const anchors = actors
+    const mainAnchors = actors
       .filter(
         (actor) => actor.visibility === "owned" && actor.mainBuilding?.status === "known" && actor.mainBuilding.value
       )
@@ -850,11 +851,52 @@ export class AiObservationPipeline {
       .filter((position): position is Vector3Simple => position !== null)
       .sort((left, right) => left.y - right.y || left.x - right.x)
       .slice(0, 4);
+    const visibleSources = actors.filter(
+      (actor) =>
+        actor.visibility === "visible" &&
+        actor.resourceState.status === "known" &&
+        actor.resourceState.value.available.status === "known" &&
+        actor.resourceState.value.available.value > 0 &&
+        actor.logicalPosition.status === "known"
+    );
+    const serviceAnchors = actors
+      .filter((actor) => actor.visibility === "owned" && actor.logicalPosition.status === "known")
+      .flatMap((actor) => {
+        const liveActor = liveById.get(actor.actorId);
+        const vision = liveActor ? getActorComponent(liveActor, VisionComponent) : undefined;
+        if (!vision) return [];
+        const ownedPosition = actor.logicalPosition.status === "known" ? actor.logicalPosition.value : null;
+        const nearSource = visibleSources.some((source) => {
+          const sourcePosition = source.logicalPosition.status === "known" ? source.logicalPosition.value : null;
+          return (
+            ownedPosition !== null &&
+            sourcePosition !== null &&
+            Math.abs(ownedPosition.x - sourcePosition.x) + Math.abs(ownedPosition.y - sourcePosition.y) <= vision.range
+          );
+        });
+        return nearSource && ownedPosition
+          ? [{ position: ownedPosition, radius: Math.min(4, Math.floor(vision.range)) }]
+          : [];
+      })
+      .sort((left, right) => left.position.y - right.position.y || left.position.x - right.position.x)
+      .slice(0, 4);
+    const anchors = [
+      ...mainAnchors.map((position) => ({ position, radius: 12 })),
+      ...serviceAnchors
+    ];
     const included = new Set<string>();
     if (tilemap && navigation) {
       anchorCells: for (const anchor of anchors) {
-        for (let y = Math.max(0, anchor.y - 12); y <= Math.min(tilemap.height - 1, anchor.y + 12); y += 1) {
-          for (let x = Math.max(0, anchor.x - 12); x <= Math.min(tilemap.width - 1, anchor.x + 12); x += 1) {
+        for (
+          let y = Math.max(0, anchor.position.y - anchor.radius);
+          y <= Math.min(tilemap.height - 1, anchor.position.y + anchor.radius);
+          y += 1
+        ) {
+          for (
+            let x = Math.max(0, anchor.position.x - anchor.radius);
+            x <= Math.min(tilemap.width - 1, anchor.position.x + anchor.radius);
+            x += 1
+          ) {
             if (constructionCells.length >= 2_048) break anchorCells;
             const tileKey = `${x},${y}`;
             if (included.has(tileKey)) continue;

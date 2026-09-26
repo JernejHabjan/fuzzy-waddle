@@ -28,6 +28,7 @@ import type { AiDebugSnapshotV1, AiProfileConfigV1 } from "@fuzzy-waddle/probabl
 import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { selectAiOpeningArchetypeV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-opening-archetypes-v1";
 import { AiMacroManager } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-macro-manager";
+import { AiResourceServiceManager } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-resource-service-manager";
 import { AiTransportManager } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-transport-manager";
 import { AiSkirmishManager } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-skirmish-manager";
 import { AiBaseManager } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-base-manager";
@@ -70,6 +71,7 @@ export class PlayerAiController {
     this.pureBrain = this.profile
       ? new PureAiBrain(this.profile, [
           new AiMacroManager(() => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
+          new AiResourceServiceManager(() => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
           new AiTransportManager(() => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
           new AiSkirmishManager(this.profile, () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
           new AiBaseManager(this.profile, () => this.playerAiControllerAgent?.getCommittedCapabilityCatalog()),
