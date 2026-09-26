@@ -31,6 +31,11 @@ export function evaluateScenario(
   ) {
     failures.push("required_supply_branches_missing");
   }
+  if (assertion.requiredResourceService && !["build", "served_control"].every((branch) =>
+    selectedVariants.some((variant) => variant.resourceServiceBranch === branch)
+  )) {
+    failures.push("required_resource_service_branches_missing");
+  }
   if (assertion.requireHiddenStateParity) {
     const [left, right] = selectedVariants;
     if (!left || !right || selectedVariants.length !== 2 || left.initialWorldDigest === right.initialWorldDigest) {

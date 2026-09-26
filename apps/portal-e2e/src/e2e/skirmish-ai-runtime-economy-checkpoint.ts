@@ -133,6 +133,22 @@ export async function captureRuntimeEconomyCheckpoint(
         resourceStockpiles: Object.fromEntries(
           observation.resources.map((resource) => [resource.resourceType, resource.stockpile])
         ),
+        resourceServiceActors: observation.actors
+          .filter((actor) => actor.logicalPosition.status === "known")
+          .filter((actor) =>
+            actor.resourceState.status === "known" ||
+            (actor.relation === "self" && (catalogByName.get(actor.objectName)?.acceptsResources?.length ?? 0) > 0)
+          )
+          .map((actor) => ({
+            actorId: actor.actorId,
+            objectName: actor.objectName,
+            relation: actor.relation,
+            x: actor.logicalPosition.status === "known" ? actor.logicalPosition.value.x : 0,
+            y: actor.logicalPosition.status === "known" ? actor.logicalPosition.value.y : 0,
+            ready: actor.constructionProgress?.status !== "known" || actor.constructionProgress.value >= 100,
+            resourceType: actor.resourceState.status === "known" ? actor.resourceState.value.resourceType : null
+          }))
+          .sort((left, right) => left.actorId.localeCompare(right.actorId)),
         recentMacroDecisions: debug.decisions
           .filter(
             (decision) =>

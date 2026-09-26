@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "evidenceKind": "runtime",
+  "scenarioIds": ["ECO-01", "ECO-02"],
+  "purpose": "Build a definition-backed local wood drop-off only when a visible forest is underserved; retain a served control.",
+  "driver": "runtime",
+  "status": "ready_for_runtime_execution",
+  "context": {
+    "mapId": "EmberEnclave",
+    "mapDigest": "resolved_from_candidate_assets",
+    "side": 2,
+    "rulesVersion": "probable-waffle-rules-v1"
+  },
+  "recipe": {
+    "mapLabel": "Ember Enclave",
+    "aiPlayerNumber": 2,
+    "simulationTimeScale": 100,
+    "checkpointTicks": [20, 200, 500, 900, 1500, 2400, 3200],
+    "variants": [
+      {
+        "id": "tivara-underserved-forest",
+        "scenarioIds": ["ECO-01", "ECO-02"],
+        "seed": 829011,
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "resourceServiceBranch": "build",
+        "determinismGroup": "underserved-forest",
+        "repetitions": 3,
+        "presetWorld": {
+          "fixtureId": "underserved-forest",
+          "actors": [
+            { "fixtureActorId": "forest", "actorName": "Tree1", "owner": null, "position": { "x": 896, "y": 840, "z": 0 } },
+            { "fixtureActorId": "remote-mill", "actorName": "WorkMill", "owner": 2, "position": { "x": 400, "y": 800, "z": 0 } },
+            { "fixtureActorId": "worker-1", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 752, "y": 800, "z": 0 } },
+            { "fixtureActorId": "worker-2", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 784, "y": 824, "z": 0 } },
+            { "fixtureActorId": "worker-3", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 816, "y": 848, "z": 0 } },
+            { "fixtureActorId": "worker-4", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 752, "y": 880, "z": 0 } },
+            { "fixtureActorId": "worker-5", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 784, "y": 904, "z": 0 } },
+            { "fixtureActorId": "worker-6", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 816, "y": 928, "z": 0 } }
+          ],
+          "resourceGrants": [
+            { "playerNumber": 2, "amounts": { "food": 1200, "wood": 1200, "stone": 1200, "minerals": 1200 } }
+          ]
+        }
+      },
+      {
+        "id": "tivara-served-forest-control",
+        "scenarioIds": ["ECO-01", "ECO-02"],
+        "seed": 829012,
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "resourceServiceBranch": "served_control",
+        "determinismGroup": "served-forest-control",
+        "repetitions": 3,
+        "presetWorld": {
+          "fixtureId": "served-forest-control",
+          "actors": [
+            { "fixtureActorId": "forest", "actorName": "Tree1", "owner": null, "position": { "x": 896, "y": 840, "z": 0 } },
+            { "fixtureActorId": "remote-mill", "actorName": "WorkMill", "owner": 2, "position": { "x": 400, "y": 800, "z": 0 } },
+            { "fixtureActorId": "local-mill", "actorName": "WorkMill", "owner": 2, "position": { "x": 800, "y": 880, "z": 0 } },
+            { "fixtureActorId": "worker-1", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 752, "y": 800, "z": 0 } },
+            { "fixtureActorId": "worker-2", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 784, "y": 824, "z": 0 } },
+            { "fixtureActorId": "worker-3", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 816, "y": 848, "z": 0 } },
+            { "fixtureActorId": "worker-4", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 752, "y": 880, "z": 0 } },
+            { "fixtureActorId": "worker-5", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 784, "y": 904, "z": 0 } },
+            { "fixtureActorId": "worker-6", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 816, "y": 928, "z": 0 } }
+          ],
+          "resourceGrants": [
+            { "playerNumber": 2, "amounts": { "food": 1200, "wood": 1200, "stone": 1200, "minerals": 1200 } }
+          ]
+        }
+      }
+    ]
+  },
+  "assertions": {
+    "ECO-01": {
+      "maximumTick": 3200,
+      "minimumDecisions": 10,
+      "minimumAppliedCommands": 1,
+      "requiredAiFactions": ["Tivara"],
+      "requiredResourceService": {
+        "sourceObjectName": "Tree1",
+        "serviceObjectName": "WorkMill",
+        "resourceType": "wood",
+        "maximumTileDistance": 10,
+        "latestTick": 3200
+      }
+    },
+    "ECO-02": {
+      "maximumTick": 3200,
+      "minimumDecisions": 10,
+      "minimumAppliedCommands": 1,
+      "requiredAiFactions": ["Tivara"],
+      "requiredResourceService": {
+        "sourceObjectName": "Tree1",
+        "serviceObjectName": "WorkMill",
+        "resourceType": "wood",
+        "maximumTileDistance": 10,
+        "latestTick": 3200
+      }
+    }
+  },
+  "deliberatelyBrokenOracle": "accept a self-reported build intent without a visible source, applied command, ready nearby mill, or served control"
+}

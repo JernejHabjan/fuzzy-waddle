@@ -33,6 +33,13 @@ export interface RuntimeAssertionV1 {
     readonly housingObjectName: string;
   };
   readonly requireSupplyControl?: boolean;
+  readonly requiredResourceService?: {
+    readonly sourceObjectName: string;
+    readonly serviceObjectName: string;
+    readonly resourceType: string;
+    readonly maximumTileDistance: number;
+    readonly latestTick: number;
+  };
   readonly requiredDefenseTargetName?: string;
   readonly requiredDefenseActorName?: string;
   readonly requireMissionRedirectionAfterRaid?: boolean;

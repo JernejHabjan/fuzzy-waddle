@@ -183,9 +183,10 @@ not block this gate.
 - ECO-01/02 now have unrun pure subject/control cases for compatible, priced local WorkMill construction, a justified
   same-type second deposit, and already-served suppression. The runtime catalog now exposes definition-backed accepted
   resource types; a separate resource-service proposer is registered and construction cells can include bounded owned
-  vision around visible sources. Final-gate review must verify source visibility, footprint/path legality, accepted-site
-  deduplication, actual travel gain, both factions' legal roster, and real runtime income; the runtime recipes remain
-  unimplemented, so these cases do not increase the last validated counts.
+  vision around visible sources. An unrun focused Phaser recipe now pairs an underserved forest with an already-served
+  control, checking an applied command and completed nearby WorkMill; the evaluator's focused cases are also unrun.
+  Final-gate review must verify source visibility, footprint/path legality, accepted-site deduplication, actual travel
+  gain, both factions' legal roster, and real runtime income. Do not increase the last validated coverage count yet.
 - ECO-06 is still unmapped. A partial unrun pure edge now asserts that owned carried wood is not spendable and a nearly
   depleted tree does not cause pointless mill rebuilding; the observation adapter projects carried worker resources.
   The full destroyed-drop-off, alternate return route, crop-growth, and bounded recovery sequence still needs typed

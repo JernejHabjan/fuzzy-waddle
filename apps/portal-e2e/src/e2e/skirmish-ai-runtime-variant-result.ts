@@ -13,6 +13,7 @@ export interface RuntimeVariantResultV1 {
   readonly presetQueuedItemCount: number;
   readonly determinismGroup: string | null;
   readonly supplyBranch?: "prebuild" | "ample_control";
+  readonly resourceServiceBranch?: "build" | "served_control";
   readonly initialWorldDigest: string;
   readonly outcomeDigest: string;
   readonly checkpoints: readonly RuntimeCheckpointV1[];

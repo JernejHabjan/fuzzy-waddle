@@ -81,6 +81,11 @@ otherwise comparable ample-housing control. The positive branch must independent
 the control must not construct another while its queued demand fits. Both branches repeat three times. This fixture is
 registered but has not yet been executed or proven in the browser.
 
+The authored ECO-01/02 preset pairs an underserved visible Tree1 with the same forest already served by a local
+WorkMill. A remote owned WorkMill remains in both worlds: the positive branch must apply a resource-service command
+and complete another WorkMill within ten observed tiles of the source, while the control must not duplicate its local
+service. Each branch repeats three times; this recipe and its oracle are unexecuted until the final validation gate.
+
 A natural-map control that cannot satisfy a focused invariant is not an equivalent correctness oracle or a performance
 baseline. Record that outcome in its issue/handoff without claiming a speedup. The focused fixture remains the
 authoritative `PRO-05` replacement proof; natural recovery behavior remains runtime/strategy work under #816/#827.

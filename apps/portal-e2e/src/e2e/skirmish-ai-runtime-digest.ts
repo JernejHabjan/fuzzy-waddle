@@ -23,6 +23,17 @@ export function projectRuntimeOutcomeDigestInput(
     workerEconomyEstablished: checkpoints.some((checkpoint) => checkpoint.workerCount > 0),
     workerEconomyRetained: (final?.workerCount ?? 0) > 0,
     deliveredIncome: checkpoints.some((checkpoint) => checkpoint.deliveredIncome > 0),
+    resourceServiceProgress: checkpoints.map((checkpoint) => ({
+      readyServices: (checkpoint.resourceServiceActors ?? [])
+        .filter((actor) => actor.relation === "self" && actor.ready && actor.resourceType === null)
+        .reduce<Record<string, number>>((counts, actor) => {
+          counts[actor.objectName] = (counts[actor.objectName] ?? 0) + 1;
+          return counts;
+        }, {}),
+      appliedResourceService: checkpoint.appliedCommands.filter((command) =>
+        command.effectId.startsWith("effect:resource-service:")
+      ).length
+    })),
     viableArmyRetained: (final?.militaryActorNames.length ?? 0) > 0,
     producerLifecycle: producerNames.map((objectName) => {
       const counts = producerCounts(objectName);

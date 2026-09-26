@@ -13,11 +13,11 @@
   },
   "rows": [
     {
-      "id": "ECO-01", "stages": [7, 10], "group": "economy", "fixture": null,
+      "id": "ECO-01", "stages": [7, 10], "group": "economy", "fixture": "focused-resource-service-runtime.json",
       "authoredFixture": "resource-service-scenarios.json", "drivers": ["pure", "runtime"]
     },
     {
-      "id": "ECO-02", "stages": [7, 10], "group": "economy", "fixture": null,
+      "id": "ECO-02", "stages": [7, 10], "group": "economy", "fixture": "focused-resource-service-runtime.json",
       "authoredFixture": "resource-service-scenarios.json", "drivers": ["pure", "runtime"]
     },
     {

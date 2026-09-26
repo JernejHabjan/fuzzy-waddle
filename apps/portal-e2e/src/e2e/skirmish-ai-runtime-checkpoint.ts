@@ -40,6 +40,15 @@ export interface RuntimeCheckpointV1 {
   readonly sceneComponentNames: readonly string[];
   readonly mapBoundsStatus: string;
   readonly resourceStockpiles: Readonly<Record<string, number>>;
+  readonly resourceServiceActors?: readonly {
+    readonly actorId: string;
+    readonly objectName: string;
+    readonly relation: string;
+    readonly x: number;
+    readonly y: number;
+    readonly ready: boolean;
+    readonly resourceType: string | null;
+  }[];
   readonly recentMacroDecisions: readonly string[];
   readonly accessTopology: {
     readonly status: string;
