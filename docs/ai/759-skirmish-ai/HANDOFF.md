@@ -102,8 +102,11 @@ not block this gate.
 - Unverified implementation-sweep batch: food runway now sums concurrent worker, standing-workforce and military
   demand; Field count reserves non-food labor; staffed Fields rank above speculative new Fields; worker replacement
   ignores terminally rejected/cancelled/failed leases. Focused pure tests were authored/updated but deliberately not
-  executed. The revised Field target changes prior fixture expectations and needs final-gate runtime evidence for both
-  factions, especially renewable-food throughput after losses.
+  executed. A later unverified batch counts queued population and disjoint ready/constructing/accepted housing capacity,
+  records housing demand as a building count rather than population points, and makes non-credible offense pause below
+  the six-worker recovery floor while preserving a ready finishing opportunity. The revised Field/housing targets change
+  prior fixture expectations and need final-gate runtime evidence for both factions, especially renewable-food throughput,
+  supply prebuilds, and attack continuation after losses.
 
 - The #829 checkpoint gives every standard player 200 of each resource. A two-worker minimum opening avoids serial
   starvation; six is the live recovery floor, not the cap. The typed economy policy prices dated demand, food runway,

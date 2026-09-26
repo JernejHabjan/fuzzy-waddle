@@ -189,6 +189,50 @@ describe("fastest credible offense", () => {
     expect(result.statePatch?.skirmish?.timeline.some((event) => event.detail.startsWith("launch:"))).toBe(false);
   });
 
+  it("recovers a damaged workforce before assembling a non-credible attack", () => {
+    const workers = Array.from({ length: 3 }, (_, index) => ({
+      ...createAiTestOwnedActor(`worker-${index}`),
+      capabilities: [
+        {
+          id: `worker-${index}:gather`,
+          family: "gather",
+          level: 1,
+          domains: ["ground" as const],
+          targetDomains: [],
+          capacity: { status: "known" as const, value: 1, observedTick: 20 }
+        }
+      ]
+    }));
+    const initial = brain();
+    const result = manager.propose(
+      world([
+        ...workers,
+        guard("a", "self", 0),
+        guard("b", "self", 0),
+        core("enemy-core"),
+        producer("barracks"),
+        producer("range")
+      ]),
+      { ...initial, opening: { ...initial.opening, plan: { ...initial.opening.plan, lifecycle: "completed" } } }
+    );
+
+    expect(result.statePatch?.strategy?.assessment).toEqual(
+      expect.objectContaining({ choice: "recover", reason: "workforce_below_recovery_floor" })
+    );
+    expect(result.intents.some((intent) => intent.kind === "attack")).toBe(false);
+  });
+
+  it("does not abandon an immediate exposed-core finish just because the workforce is damaged", () => {
+    const initial = brain();
+    const result = manager.propose(
+      world([guard("a", "self", 0), guard("b", "self", 0), core("enemy-core")]),
+      { ...initial, opening: { ...initial.opening, plan: { ...initial.opening.plan, lifecycle: "completed" } } }
+    );
+
+    expect(result.statePatch?.strategy?.assessment?.choice).toBe("finish");
+    expect(result.intents).toContainEqual(expect.objectContaining({ kind: "attack", targetActorId: "enemy-core" }));
+  });
+
   it("does not count shoreline ground troops as a naval force against a water objective", () => {
     const waterAccess = buildAiAccessGraphV1({
       generation: 1,

@@ -11,6 +11,7 @@ import {
   hasCredibleAiEconomyThreat
 } from "./ai-economy-policy";
 import { projectAiResourceForecasts, selectAiForecastResource } from "./ai-resource-forecast";
+import { calculateAiHousingDemand } from "./ai-housing-demand";
 import { proposeAiWorkerRecovery } from "./ai-worker-recovery";
 
 /** One resolved opening checkpoint; the runtime catalog remains the authority for legality. */
@@ -556,40 +557,30 @@ export class AiMacroManager implements AiProposalManagerV1 {
         sourceActorId: gatherSource.actorId
       });
     }
-    const housing = self.reduce(
-      (total, actor) => total + (actor.housingCapacity.status === "known" ? actor.housingCapacity.value : 0),
-      0
-    );
-    const used = self.reduce(
-      (total, actor) => total + (actor.housingCost.status === "known" ? actor.housingCost.value : 0),
-      0
-    );
-    const freeSupply = housing - used;
-    const housingEntries = catalog.entries
-      .filter((entry) => (entry.housingCapacity ?? 0) > 0)
-      .sort((a, b) => a.sourceObjectName.localeCompare(b.sourceObjectName));
-    const neededHousing =
-      freeSupply < budget.supplyBuffer
-        ? Math.ceil((budget.supplyBuffer - freeSupply) / Math.max(1, housingEntries[0]?.housingCapacity ?? 1))
-        : 0;
     const openingComplete = activeCheckpointId === undefined;
     const workerCheckpoint = checkpointStatus.find((entry) => entry.checkpoint.id === "bootstrap-worker");
-    if (openingComplete && neededHousing > 0 && housingEntries[0]) {
-      const housingObject = housingEntries[0].sourceObjectName;
+    const housing = calculateAiHousingDemand(
+      observation,
+      catalog,
+      checkpoints.find((checkpoint) => checkpoint.id === "supply-safety")!.requiredObject,
+      budget.supplyBuffer,
+      unresolvedReservedEffectIds(state, "effect:supply:effect:")
+    );
+    const freeSupply = housing.freeSupply;
+    if (openingComplete && housing.neededBuildings > 0 && housing.housingEntry) {
+      const housingObject = housing.housingEntry.sourceObjectName;
       demands.push({
         demandId: "demand:supply:buffer" as AiDemandV1["demandId"],
         purpose: "supply_buffer",
         capabilityOrRole: "housing",
-        unit: "population",
-        desired: used + budget.supplyBuffer,
-        satisfiedActorIds: self
-          .filter((actor) => actor.housingCapacity.status === "known" && actor.housingCapacity.value > 0)
-          .map((actor) => actor.actorId),
+        unit: "actor_count",
+        desired: housing.desiredBuildingCount,
+        satisfiedActorIds: housing.ready.map((actor) => actor.actorId),
         queuedIds: [],
-        constructingIds: [],
-        acceptedNotObservedEffectIds: [],
+        constructingIds: housing.constructing.map((actor) => actor.actorId),
+        acceptedNotObservedEffectIds: housing.acceptedEffectIds,
         preferredObjectNames: [housingObject],
-        resourceObligations: {}
+        resourceObligations: housing.housingEntry.constructionProfile?.resourceCost ?? {}
       });
       const builders = self
         .filter(isAvailableBuilder)
@@ -599,8 +590,8 @@ export class AiMacroManager implements AiProposalManagerV1 {
             (entry) => entry.sourceObjectName === actor.objectName && entry.constructs.includes(housingObject)
           )
         );
-      if (builders.length > 0) {
-        for (let index = 0; index < Math.min(neededHousing, builders.length); index += 1) {
+      if (builders.length > 0 && canAffordAiEconomyCost(observation, housing.housingEntry.constructionProfile?.resourceCost ?? {})) {
+        for (let index = 0; index < Math.min(housing.neededBuildings, builders.length); index += 1) {
           const builder = builders[index];
           if (!builder || builder.logicalPosition.status !== "known") continue;
           const position = selectConstructionPosition(
@@ -609,7 +600,7 @@ export class AiMacroManager implements AiProposalManagerV1 {
             state.scheduler.decisionSequence,
             ordinal + index,
             selectedConstructionTileKeys,
-            housingEntries[0].constructionProfile?.footprintRadiusTiles ?? 0
+            housing.housingEntry.constructionProfile?.footprintRadiusTiles ?? 0
           );
           if (!position) continue;
           const ids = nextIds(state, "supply", ordinal++);
@@ -636,7 +627,7 @@ export class AiMacroManager implements AiProposalManagerV1 {
                 effectId: ids.effectId
               }
             ],
-            reasonCode: `supply_buffer:${state.opening.archetypeId}:deficit=${budget.supplyBuffer - freeSupply}`,
+            reasonCode: `supply_buffer:${state.opening.archetypeId}:deficit=${housing.queuedPopulation + budget.supplyBuffer - freeSupply}`,
             builderIds: [builder.actorId],
             objectName: housingObject,
             logicalPosition: position,

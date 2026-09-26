@@ -47,6 +47,11 @@ Additional capacity requires evidence such as:
 
 Existing, queued, under-construction and accepted-not-yet-observed capacity count toward the same demand once. When the target is fulfilled or abandoned, optional claims are released and excess construction/production stops.
 
+Housing demand prices queued population as well as current use and an opening-specific reserve. Ready houses supply
+current capacity; unfinished houses and accepted but unobserved effects count toward future capacity once. The demand
+ledger records a required building count, while the planner separately calculates population capacity, so a house is
+not mistaken for one population point and copied until a numeric population target is reached.
+
 ## Composition and technology
 
 Composition uses real runtime target domains, effective levels, attacks, armour, range, support and movement capabilities. It must never invent a familiar RTS counter that the faction cannot build. Sparse evidence justifies limited preparation and scouting; confirmed strength can justify a larger counter transition.

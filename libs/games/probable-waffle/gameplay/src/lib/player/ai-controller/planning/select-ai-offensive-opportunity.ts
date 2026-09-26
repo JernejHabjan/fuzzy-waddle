@@ -14,6 +14,7 @@ export interface AiOffensiveOpportunity {
 
 const MAX_CANDIDATES = 64;
 const TARGET_HYSTERESIS_PERMILLE = 150;
+const WORKFORCE_RECOVERY_FLOOR = 6;
 
 function isCore(actor: AiObservedActorV1): boolean {
   return actor.mainBuilding?.status === "known" && actor.mainBuilding.value === true;
@@ -124,7 +125,8 @@ export function selectAiOffensiveOpportunity(
     (actor) => actor.relation === "self" && actor.capabilities.some((capability) => capability.family === "gather")
   ).length;
   const ready = selected ? selected.capable >= selected.required : false;
-  const recovering = context.state.opening.plan.lifecycle === "completed" && workers < 2 && !ready;
+  const recovering =
+    context.state.opening.plan.lifecycle === "completed" && workers < WORKFORCE_RECOVERY_FLOOR && !ready;
   const choice: AiStrategyAssessment["choice"] = selected
     ? recovering
       ? "recover"
