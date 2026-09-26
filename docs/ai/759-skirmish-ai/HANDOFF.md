@@ -114,6 +114,9 @@ not block this gate.
   Field/housing effects at the final gate. #827 now remembers a completed failed offensive mission after squad
   removal, briefly rebuilds, increases same-target force need, and permits a stronger follow-up; its focused test is
   authored but unrun. Do not claim SEQ victory from these static changes.
+- A behavior-preserving #821 structural slice moved the shared admission pass into `brain/ai-intent-arbiter.ts`, leaving
+  `ai-brain.ts` as the decision coordinator. This split is unverified and needs its focused Jest and structural lint at
+  the final gate; the much larger macro/runner owners remain #821 debt.
 - #815 preparation: ECO-04 and ECO-07 now have authored typed pure subject/control fixtures for dated-resource labor and
   queued-population supply, including once-only housing commitments and three-run proposal digests. Their manifest
   registration and runner selection are wired but not executed; required real-runtime counterparts remain unimplemented

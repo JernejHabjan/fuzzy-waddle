@@ -20,6 +20,10 @@ authoritative world
 
 Domain managers propose changes; they do not mutate the world. The brain merges each manager's owned state projection, resolves claims and budgets, and emits a deterministic intent order. A manager may replace only the state slice or keyed rows it owns.
 
+`ai-intent-arbiter.ts` owns this shared admission pass: stable intent ordering, observation preconditions, exclusive
+claims, real stockpile limits and posture-aware spending reservations. `ai-brain.ts` coordinates the pass and commits
+accepted claims/state; domain managers must not implement a competing admission path.
+
 The Phaser bridge converts accepted intents to the same command path used by other controllers. Server/runtime validation remains authoritative for ownership, prerequisites, resources, queues, placement, paths and targets. Applied, rejected, duplicated, delayed and stale outcomes return through typed reconciliation.
 
 ## Required invariants
