@@ -127,4 +127,26 @@ describe("decideAiEconomyPolicy", () => {
     expect(policy).toMatchObject({ desiredWorkers: 8, assignedWorkers: 1, posture: "emergency" });
     expect(policy.budget).toEqual({ economyPermille: 200, defensePermille: 800 });
   });
+
+  it("holds a recent defense posture briefly, then resumes the safe economy without hidden-threat influence", () => {
+    const base = createAiTestObservation();
+    const attacked = {
+      ...base,
+      threatSummary: { ...base.threatSummary, visibleEnemyActorIds: ["visible-raider"] }
+    };
+    const first = decideAiEconomyPolicy(attacked, catalog, []);
+    const remembered = {
+      ...base,
+      tick: 100,
+      threatSummary: { ...base.threatSummary, rememberedEnemyActorIds: ["visible-raider"] }
+    };
+    const held = decideAiEconomyPolicy(remembered, catalog, [], false, first.postureState);
+    const released = decideAiEconomyPolicy({ ...remembered, tick: 220 }, catalog, [], false, held.postureState);
+
+    expect(first.posture).toBe("emergency");
+    expect(held.posture).toBe("emergency");
+    expect(held.postureState.lastThreatTick).toBe(base.tick);
+    expect(released.posture).toBe("safe");
+    expect(released.budget).toEqual({ economyPermille: 650, defensePermille: 350 });
+  });
 });

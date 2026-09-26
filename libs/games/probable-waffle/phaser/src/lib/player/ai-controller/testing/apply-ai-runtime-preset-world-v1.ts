@@ -29,7 +29,13 @@ export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, crea
   if (!preset) return;
   const validOwners = new Set(scene.players.map((player) => player.playerNumber).filter((owner) => owner !== undefined));
   for (const actor of preset.actors) {
-    if (!validOwners.has(actor.owner)) throw new Error(`runtime_preset_unknown_owner:${actor.fixtureActorId}`);
+    if (actor.owner === null) {
+      if (!getPwActorDefinition(actor.actorName, null)?.components?.resourceSource) {
+        throw new Error(`runtime_preset_neutral_not_resource_source:${actor.fixtureActorId}`);
+      }
+    } else if (!validOwners.has(actor.owner)) {
+      throw new Error(`runtime_preset_unknown_owner:${actor.fixtureActorId}`);
+    }
     if (
       Math.abs(actor.position.x) > scene.tilemap.widthInPixels ||
       actor.position.y < 0 ||
@@ -56,7 +62,7 @@ export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, crea
   const createdActorNames: string[] = [];
   const createdActors = new Map<string, Phaser.GameObjects.GameObject>();
   for (const actor of preset.actors) {
-    const created = creator.createFinishedActor(actor.actorName as ObjectNames, actor.position, actor.owner);
+    const created = creator.createFinishedActor(actor.actorName as ObjectNames, actor.position, actor.owner ?? undefined);
     if (!created) throw new Error(`runtime_preset_actor_creation_failed:${actor.fixtureActorId}`);
     createdActorNames.push(created.name);
     createdActors.set(actor.fixtureActorId, created);
@@ -70,7 +76,7 @@ export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, crea
     const production = producer ? getActorComponent(producer, ProductionComponent) : undefined;
     const costData = getPwActorDefinition(authoredQueue.actorName, null)?.components?.productionCost;
     const owner = preset.actors.find((actor) => actor.fixtureActorId === authoredQueue.producerFixtureActorId)?.owner;
-    if (!producer || !production || !costData || owner === undefined) {
+    if (!producer || !production || !costData || owner === undefined || owner === null) {
       throw new Error(`runtime_preset_queue_component_missing:${authoredQueue.producerFixtureActorId}`);
     }
     const player = getPlayer(scene, owner);

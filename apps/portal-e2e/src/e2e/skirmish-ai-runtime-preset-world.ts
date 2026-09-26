@@ -3,7 +3,7 @@ export interface RuntimePresetWorldV1 {
   readonly actors: readonly {
     readonly fixtureActorId: string;
     readonly actorName: string;
-    readonly owner: number;
+    readonly owner: number | null;
     readonly position: { readonly x: number; readonly y: number; readonly z: number };
   }[];
   readonly resourceGrants: readonly {

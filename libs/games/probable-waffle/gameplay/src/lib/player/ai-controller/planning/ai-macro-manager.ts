@@ -718,7 +718,8 @@ export class AiMacroManager implements AiProposalManagerV1 {
       observation,
       catalog,
       pressureForecast,
-      state.strategy.stance === "defend"
+      state.strategy.stance === "defend",
+      state.economyProduction.posture
     );
     const desiredFoodSources =
       openingComplete && foodSourceEntry ? economyPolicy.desiredFoodSources : 0;
@@ -1246,6 +1247,7 @@ export class AiMacroManager implements AiProposalManagerV1 {
         economyProduction: {
           demands,
           forecasts: projectAiResourceForecasts(observation, demands, catalog),
+          posture: economyPolicy.postureState,
           adaptation: state.economyProduction.adaptation
         }
       }

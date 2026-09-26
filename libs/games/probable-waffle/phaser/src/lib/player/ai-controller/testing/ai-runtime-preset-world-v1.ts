@@ -10,7 +10,7 @@ export interface AiRuntimePresetWorldV1 {
   readonly actors: readonly {
     readonly fixtureActorId: string;
     readonly actorName: ObjectNames;
-    readonly owner: number;
+    readonly owner: number | null;
     readonly position: { readonly x: number; readonly y: number; readonly z: number };
   }[];
   readonly resourceGrants: readonly {

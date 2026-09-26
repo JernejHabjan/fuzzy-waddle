@@ -39,6 +39,7 @@ import { spellDefinitions } from "../../../entity/components/combat/spell-defini
 import { QueueComponent } from "../../../entity/components/queue/queue-component";
 import { ResourceSourceComponent } from "../../../entity/components/resource/resource-source-component";
 import { ResourceDrainComponent } from "../../../entity/components/resource/resource-drain-component";
+import { GathererComponent } from "../../../entity/components/resource/gatherer-component";
 import { ContainableComponent } from "../../../entity/components/building/containable-component";
 import { ContainerComponent } from "../../../entity/components/building/container-component";
 import { BuilderComponent } from "../../../entity/components/construction/builder-component";
@@ -367,6 +368,7 @@ export class AiObservationPipeline {
     const queue = getActorComponent(actor, QueueComponent);
     const source = getActorComponent(actor, ResourceSourceComponent);
     const drain = getActorComponent(actor, ResourceDrainComponent);
+    const gatherer = getActorComponent(actor, GathererComponent);
     const health = getActorComponent(actor, HealthComponent);
     const attack = getActorComponent(actor, AttackComponent);
     const healing = getActorComponent(actor, HealingComponent);
@@ -494,6 +496,17 @@ export class AiObservationPipeline {
               },
               tick
             )
+          : gatherer && owned && gatherer.carriedResourceType !== null
+            ? knownValue(
+                {
+                  resourceType: gatherer.carriedResourceType,
+                  available: unknownValue("not_supported"),
+                  carried: knownValue(gatherer.carriedResourceAmount, tick),
+                  growthReadyTick: unknownValue("not_supported"),
+                  serviceCapacity: unknownValue("not_supported")
+                },
+                tick
+              )
           : unknownValue(owned ? "not_supported" : "not_observed"),
       ...(owned && constructionSite
         ? { constructionProgress: knownValue(constructionSite.progressPercentage, tick) }

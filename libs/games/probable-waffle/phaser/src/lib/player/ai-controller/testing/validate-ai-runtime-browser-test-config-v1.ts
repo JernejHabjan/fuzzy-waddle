@@ -31,6 +31,7 @@ function validPresetWorld(value: unknown): boolean {
   }
   if (!Array.isArray(value["actors"]) || value["actors"].length > 100) return false;
   const fixtureActorIds = new Set<string>();
+  const actorOwners = new Map<string, number | null>();
   for (const actor of value["actors"]) {
     if (!isRecord(actor) || !hasOnlyKeys(actor, ["fixtureActorId", "actorName", "owner", "position"])) return false;
     const fixtureActorId = actor["fixtureActorId"];
@@ -38,7 +39,10 @@ function validPresetWorld(value: unknown): boolean {
     if (fixtureActorIds.has(fixtureActorId)) return false;
     fixtureActorIds.add(fixtureActorId);
     if (typeof actor["actorName"] !== "string" || !actorNames.has(actor["actorName"])) return false;
-    if (!Number.isSafeInteger(actor["owner"]) || (actor["owner"] as number) < 1) return false;
+    if (actor["owner"] !== null && (!Number.isSafeInteger(actor["owner"]) || (actor["owner"] as number) < 1)) {
+      return false;
+    }
+    actorOwners.set(fixtureActorId, actor["owner"] as number | null);
     const position = actor["position"];
     if (!isRecord(position) || !hasOnlyKeys(position, ["x", "y", "z"])) return false;
     if (![position["x"], position["y"], position["z"]].every((coordinate) => Number.isFinite(coordinate))) return false;
@@ -60,6 +64,7 @@ function validPresetWorld(value: unknown): boolean {
       hasOnlyKeys(queue, ["producerFixtureActorId", "actorName", "count"]) &&
       typeof queue["producerFixtureActorId"] === "string" &&
       fixtureActorIds.has(queue["producerFixtureActorId"]) &&
+      actorOwners.get(queue["producerFixtureActorId"]) !== null &&
       typeof queue["actorName"] === "string" &&
       actorNames.has(queue["actorName"]) &&
       Number.isSafeInteger(queue["count"]) &&

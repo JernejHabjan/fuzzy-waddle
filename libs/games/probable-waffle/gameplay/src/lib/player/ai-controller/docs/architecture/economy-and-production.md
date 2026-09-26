@@ -24,6 +24,9 @@ its catalog cost is spendable, and a currently observed footprint improves trave
 site commitment, or unfinished nearby drop-off suppresses duplicate work. A second building of the same type remains
 legal for a distinct underserved source. Construction candidates around a distant source are exposed only from bounded
 owned vision anchors; final terrain, collision, path, and builder legality remain with shared command application.
+Owned carried resources are observed separately from the spendable stockpile; a nearly depleted source alone is not a
+reason to rebuild a local drop-off. The pawn's return order retains responsibility for choosing another compatible
+finished drop-off if its prior target disappears.
 
 Standard skirmishes give both human and AI players 200 food, wood, stone and minerals. The opening therefore secures a
 two-worker minimum before infrastructure instead of spending the entire food reserve on a serialized six-worker gate.
@@ -45,6 +48,8 @@ survival, economy or defense. Survival still obeys the real stockpile but may cr
 arbiter protects the opposing category's share only while an affordable, still-eligible competing proposal is pending.
 An idle category does not freeze resources. This is a per-decision allocation, not a separate bank account; accepted
 claims and authoritative command outcomes remain the spending source of truth.
+The posture itself is save-safe: visible local pressure escalates immediately, while de-escalation retains the last
+observed threat posture for a bounded 160 simulation ticks. Remembered or hidden enemies do not refresh that timer.
 
 ## Demand and legitimate duplicates
 

@@ -76,6 +76,16 @@ export function assertAiBrainStateV1(value: unknown): asserts value is AiBrainSt
     assertDeadline(progress.milestoneDeadline, `progress.${progress.planId}.milestoneDeadline`);
   }
   if (!Array.isArray(value.recovery.records)) throw new Error("malformed_ai_recovery_state");
+  const posture = value.economyProduction.posture;
+  if (posture !== undefined) {
+    if (!isRecord(posture) || !["safe", "pressured", "emergency"].includes(posture.status as string)) {
+      throw new Error("malformed_ai_economy_posture");
+    }
+    assertAiNonNegativeInteger(posture.enteredTick, "economyProduction.posture.enteredTick");
+    if (posture.lastThreatTick !== null) {
+      assertAiNonNegativeInteger(posture.lastThreatTick, "economyProduction.posture.lastThreatTick");
+    }
+  }
   if (
     !isRecord(value.economyProduction.adaptation) ||
     !Array.isArray(value.economyProduction.adaptation.evidence) ||

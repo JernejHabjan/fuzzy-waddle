@@ -12,6 +12,7 @@ import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observa
 import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
 import { createAiTestObservation, createAiTestOwnedActor, unknownAiValue } from "../testing/ai-test-fixtures";
 import { AiResourceServiceManager } from "./ai-resource-service-manager";
+import { canAffordAiEconomyCost } from "./ai-economy-policy";
 
 const catalog: AiCapabilityCatalogV1 = {
   schemaVersion: 1,
@@ -152,5 +153,47 @@ describe("AiResourceServiceManager", () => {
     }
     expect(control.actors.filter((candidate) => candidate.objectName === ObjectNames.WorkMill)).toHaveLength(2);
     expect(proposal(control).intents).toHaveLength(0);
+  });
+
+  it("ECO-06 partial: carried wood is not spendable and a nearly depleted tree does not trigger mill churn", () => {
+    const baseline = world(20);
+    const observation: AiObservationV1 = {
+      ...baseline,
+      actors: baseline.actors.map((candidate) => {
+        if (candidate.actorId === "worker-0") {
+          return {
+            ...candidate,
+            resourceState: {
+              status: "known" as const,
+              observedTick: 20,
+              value: {
+                resourceType: ResourceType.Wood,
+                available: unknownAiValue,
+                carried: { status: "known" as const, value: 3, observedTick: 20 },
+                growthReadyTick: unknownAiValue,
+                serviceCapacity: unknownAiValue
+              }
+            }
+          };
+        }
+        if (candidate.actorId === "forest-b" && candidate.resourceState.status === "known") {
+          return {
+            ...candidate,
+            resourceState: {
+              ...candidate.resourceState,
+              value: {
+                ...candidate.resourceState.value,
+                available: { status: "known" as const, value: 3, observedTick: 20 }
+              }
+            }
+          };
+        }
+        return candidate;
+      }),
+      resources: [{ ...baseline.resources[0], stockpile: 99 }]
+    };
+
+    expect(canAffordAiEconomyCost(observation, { [ResourceType.Wood]: 100 })).toBe(false);
+    expect(proposal(observation).intents).toHaveLength(0);
   });
 });

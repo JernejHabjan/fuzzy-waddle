@@ -114,6 +114,9 @@ not block this gate.
   Field/housing effects at the final gate. #827 now remembers a completed failed offensive mission after squad
   removal, briefly rebuilds, increases same-target force need, and permits a stronger follow-up; its focused test is
   authored but unrun. Do not claim SEQ victory from these static changes.
+- #829 now persists safe/pressured/emergency posture and delays de-escalation by at most 160 simulation ticks after
+  the last visible local threat; escalation remains immediate. Its pure test is authored but unrun. The runtime budget
+  and posture transition still need paired low-resource/threat evidence at the final gate.
 - A behavior-preserving #821 structural slice moved the shared admission pass into `brain/ai-intent-arbiter.ts`, leaving
   `ai-brain.ts` as the decision coordinator. This split is unverified and needs its focused Jest and structural lint at
   the final gate; the much larger macro/runner owners remain #821 debt.
@@ -177,6 +180,14 @@ not block this gate.
   vision around visible sources. Final-gate review must verify source visibility, footprint/path legality, accepted-site
   deduplication, actual travel gain, both factions' legal roster, and real runtime income; the runtime recipes remain
   unimplemented, so these cases do not increase the last validated counts.
+- ECO-06 is still unmapped. A partial unrun pure edge now asserts that owned carried wood is not spendable and a nearly
+  depleted tree does not cause pointless mill rebuilding; the observation adapter projects carried worker resources.
+  The full destroyed-drop-off, alternate return route, crop-growth, and bounded recovery sequence still needs typed
+  pure and real runtime coverage. The pawn's existing ReturnResources branch can acquire another live drain, but that
+  behavior has not been validated in this sweep.
+- #816 preset-world schema/application now permits only definition-backed neutral resource-source actors with an
+  explicit null owner. Queue producers remain player-owned. Validator cases are authored but unrun; this enables
+  targeted resource-service worlds without counting any new runtime scenario as covered.
 - SCOUT-05 compares two distinct hidden Banshee positions: neither is disclosed in the first committed observation and
   the first decision facts match. DOMAIN-06 and RAID-02 prove real air defense and mission redirection. The grouped
   focused run retained identical causal outcome digests in every repeated group. Runtime reports record wall time and

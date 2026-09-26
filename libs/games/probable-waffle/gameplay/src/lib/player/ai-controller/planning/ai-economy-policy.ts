@@ -6,6 +6,7 @@ const WORKER_FLOOR = 6;
 const WORKER_LIMIT = 18;
 const FORECAST_HORIZON_TICKS = 600;
 const LOCAL_THREAT_DISTANCE = 10;
+const POSTURE_RELEASE_TICKS = 160;
 
 function availableStockpile(observation: AiObservationV1, resourceType: ResourceType): number {
   const resource = observation.resources.find((candidate) => candidate.resourceType === resourceType);
@@ -72,7 +73,12 @@ export function decideAiEconomyPolicy(
   observation: AiObservationV1,
   catalog: AiCapabilityCatalogV1,
   forecasts: readonly { readonly resourceType: ResourceType; readonly amount: number }[],
-  defensiveCommitment = false
+  defensiveCommitment = false,
+  previousPosture?: Readonly<{
+    readonly status: "safe" | "pressured" | "emergency";
+    readonly enteredTick: number;
+    readonly lastThreatTick: number | null;
+  }>
 ) {
   const self = observation.actors.filter((actor) => actor.relation === "self" && actor.visibility === "owned");
   const workers = self.filter((actor) =>
@@ -115,13 +121,25 @@ export function decideAiEconomyPolicy(
       (entry) => entry.sourceObjectName === actor.objectName && entry.gathers.length === 0 && entry.targetDomains.length > 0
     )
   ).length;
-  const posture = credibleThreat
+  const requestedPosture = credibleThreat
     ? defenders === 0 || observation.threatSummary.visibleEnemyActorIds.length > defenders
       ? "emergency"
       : "pressured"
     : defensiveCommitment
       ? "pressured"
       : "safe";
+  const severity = { safe: 0, pressured: 1, emergency: 2 } as const;
+  const holdPrior =
+    previousPosture &&
+    severity[previousPosture.status] > severity[requestedPosture] &&
+    previousPosture.lastThreatTick !== null &&
+    observation.tick - previousPosture.lastThreatTick < POSTURE_RELEASE_TICKS;
+  const posture = holdPrior ? previousPosture.status : requestedPosture;
+  const postureState = {
+    status: posture,
+    enteredTick: previousPosture?.status === posture ? previousPosture.enteredTick : observation.tick,
+    lastThreatTick: credibleThreat ? observation.tick : (previousPosture?.lastThreatTick ?? null)
+  } as const;
   const safeTarget = Math.min(WORKER_LIMIT, capacity, Math.max(WORKER_FLOOR, workers.length + demandGrowth));
   const desiredWorkers = posture === "safe" ? safeTarget : Math.max(WORKER_FLOOR, workers.length);
   const foodForecast = forecasts.find((forecast) => forecast.resourceType === ResourceType.Food)?.amount ?? 0;
@@ -158,6 +176,7 @@ export function decideAiEconomyPolicy(
     desiredFoodSources,
     foodRunwayTicks,
     posture,
+    postureState,
     budget,
     blocker: desiredWorkers > workers.length + queuedWorkers && capacity <= workers.length ? "resource_saturation" : null
   } as const;

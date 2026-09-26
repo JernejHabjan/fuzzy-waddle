@@ -86,6 +86,11 @@ export interface AiBaseStateV1 {
 /** Resource forecasts and production demands kept outside a global blackboard. */
 export interface AiEconomyProductionStateV1 {
   readonly demands: readonly AiDemandV1[];
+  readonly posture?: Readonly<{
+    readonly status: "safe" | "pressured" | "emergency";
+    readonly enteredTick: AiSimulationTick;
+    readonly lastThreatTick: AiSimulationTick | null;
+  }>;
   readonly forecasts: readonly {
     readonly resourceType: ResourceType;
     readonly horizonTick: AiSimulationTick;
