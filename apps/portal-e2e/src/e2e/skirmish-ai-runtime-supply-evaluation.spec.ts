@@ -1,9 +1,10 @@
+import { expect, test } from "@playwright/test";
 import { evaluateRuntimeSupplyPrebuild } from "./skirmish-ai-runtime-supply-evaluation";
 
 const requirement = { minimumBuffer: 3, latestTick: 800, housingObjectName: "Olival" } as const;
 
-describe("authoritative queued-supply runtime oracle", () => {
-  it("fails closed when no queued population ever creates a real capacity deficit", () => {
+test.describe("authoritative queued-supply runtime oracle", () => {
+  test("fails closed when no queued population ever creates a real capacity deficit", () => {
     expect(
       evaluateRuntimeSupplyPrebuild(
         [{ tick: 20, readyHousingCapacity: 16, usedPopulation: 4, queuedPopulation: 0, readyHousingActorNames: [] }],
@@ -12,7 +13,7 @@ describe("authoritative queued-supply runtime oracle", () => {
     ).toEqual(["supply_prebuild_precondition_missing"]);
   });
 
-  it("requires a real completed housing gain by the authored deadline", () => {
+  test("requires a real completed housing gain by the authored deadline", () => {
     const pressured = {
       tick: 20,
       readyHousingCapacity: 8,
