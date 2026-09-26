@@ -131,12 +131,14 @@ export function decideAiEconomyPolicy(
     catalog.entries.find((entry) => entry.sourceObjectName === workers[0]?.objectName)?.constructionProfile
       ?.resourceCost?.[ResourceType.Food] ?? 50;
   const plannedWorkerFood = Math.max(0, desiredWorkers - workers.length - queuedWorkers) * workerFoodCost;
-  const foodDemand = Math.max(foodForecast, plannedWorkerFood, desiredWorkers * 25);
+  const foodDemand = foodForecast + plannedWorkerFood + desiredWorkers * 25;
   const foodRunwayTicks =
     foodDemand === 0 ? FORECAST_HORIZON_TICKS : Math.floor((foodAvailable / foodDemand) * FORECAST_HORIZON_TICKS);
   const projectedWorkers = Math.max(1, workers.length + queuedWorkers);
+  const nonFoodLaborReserve = projectedWorkers > 1 ? Math.max(1, Math.ceil(projectedWorkers / 3)) : 0;
+  const usefulFoodLabor = projectedWorkers - nonFoodLaborReserve;
   const desiredFoodSources = Math.min(
-    projectedWorkers,
+    usefulFoodLabor,
     foodRunwayTicks < FORECAST_HORIZON_TICKS
       ? projectedWorkers
       : Math.max(2, Math.ceil(desiredWorkers / 2), Math.ceil(Math.max(0, foodDemand - foodAvailable) / 50))

@@ -962,7 +962,7 @@ export class AiMacroManager implements AiProposalManagerV1 {
             lane: "essential_economy",
             proposedTick: observation.tick,
             urgencyClass: 1,
-            utility: 870,
+            utility: 900,
             preconditions: [
               { kind: "actor_exists", actorId: worker.actorId },
               { kind: "actor_exists", actorId: unstaffedFoodSource.actorId }

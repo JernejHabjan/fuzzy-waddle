@@ -30,7 +30,14 @@ export function proposeAiWorkerRecovery(
     .filter((key): key is string => key?.startsWith("effect:effect:worker-recovery:") === true)
     .map((key) => key.slice("effect:".length) as AiIntentV1["effectId"])
     .sort();
-  const accepted = rawAccepted.slice(0, Math.max(0, desired - workers.length - queues.length));
+  const terminalEffectIds = new Set(
+    state.pendingOutcomes
+      .filter((outcome) => ["completed", "rejected", "cancelled", "failed"].includes(outcome.kind))
+      .map((outcome) => outcome.identity.effectId)
+  );
+  const accepted = rawAccepted
+    .filter((effectId) => !terminalEffectIds.has(effectId))
+    .slice(0, Math.max(0, desired - workers.length - queues.length));
   const demandId = "demand:economy:worker-floor" as AiDemandV1["demandId"];
   const demand: AiDemandV1 = {
     demandId,

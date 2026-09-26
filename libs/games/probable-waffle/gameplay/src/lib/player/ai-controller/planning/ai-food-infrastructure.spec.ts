@@ -111,9 +111,9 @@ function state(): AiBrainStateV1 {
   });
 }
 
-function observation(granaryCount: number) {
+function observation(granaryCount: number, workerCount = 6) {
   const base = createAiTestObservation();
-  const workers = Array.from({ length: 6 }, (_, index) => createAiTestOwnedActor(`worker-${index}`));
+  const workers = Array.from({ length: workerCount }, (_, index) => createAiTestOwnedActor(`worker-${index}`));
   const granaries = Array.from({ length: granaryCount }, (_, index) => ({
     ...createAiTestOwnedActor(`granary-${index}`),
     objectName: ObjectNames.Granary
@@ -160,7 +160,7 @@ describe("AI food infrastructure", () => {
   });
 
   it("adds a useful duplicate drop-off only when forecast-backed Field capacity justifies it", () => {
-    const proposal = new AiMacroManager(() => catalog).propose(observation(1), state());
+    const proposal = new AiMacroManager(() => catalog).propose(observation(1, 10), state());
     const demand = proposal.statePatch?.economyProduction?.demands.find(
       (candidate) => candidate.purpose === "food_drop_off_capacity"
     );
@@ -169,6 +169,24 @@ describe("AI food infrastructure", () => {
     expect(proposal.intents).toContainEqual(
       expect.objectContaining({ kind: "construct", objectName: ObjectNames.Granary })
     );
+  });
+
+  it("prioritizes staffing an existing Field over constructing the next Field", () => {
+    const field = { ...createAiTestOwnedActor("field-ready"), objectName: ObjectNames.Field };
+    const proposal = new AiMacroManager(() => catalog).propose(
+      { ...observation(1), actors: [...observation(1).actors, field] },
+      state()
+    );
+    const labor = proposal.intents.find(
+      (intent) => intent.kind === "assign_gatherers" && intent.sourceActorId === field.actorId
+    );
+    const construction = proposal.intents.find(
+      (intent) => intent.kind === "construct" && intent.objectName === ObjectNames.Field
+    );
+
+    expect(labor).toEqual(expect.objectContaining({ kind: "assign_gatherers" }));
+    expect(construction).toEqual(expect.objectContaining({ kind: "construct" }));
+    expect(labor?.utility).toBeGreaterThan(construction?.utility ?? 0);
   });
 
   it("retries Field capacity after a rejected effect instead of counting it forever", () => {

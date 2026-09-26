@@ -24,9 +24,11 @@ Once renewable income is reachable, a separate current-workforce demand maintain
 toward dated spending demand, useful resource-service capacity and an 18-worker safety ceiling. Owned, queued and
 accepted-but-unobserved replacements count once. Losses do not reopen historical opening steps.
 
-The economy policy projects food runway from available stockpile, planned workers and dated food obligations. Field
-capacity is bounded by projected labor, so an urgent runway can create one useful Field per available worker but never
-unstaffable speculative farms. Visible enemy pressure, plus the strategy commitment that prevents one-tick posture
+The economy policy projects food runway from available stockpile, planned workers and dated food obligations together;
+these simultaneous consumers are additive rather than alternatives. Field capacity is bounded by projected labor and
+reserves at least one worker, or roughly a third of larger workforces, for non-food duties. An urgent runway can grow
+renewable capacity without constructing fields that would leave wood/stone/mineral demand unstaffed. Terminally failed
+worker-production leases are released before counting committed replacements. Visible enemy pressure, plus the strategy commitment that prevents one-tick posture
 oscillation, freezes optional workforce growth and shifts the advertised spending split from 65/35 economy/defense to
 35/65 under pressure or 20/80 when local attackers outnumber defenders. Recovery below the six-worker floor remains
 possible at a lower priority; when pressure clears, useful economic growth resumes.

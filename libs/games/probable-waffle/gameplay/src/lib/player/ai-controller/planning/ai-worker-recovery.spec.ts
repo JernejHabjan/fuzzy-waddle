@@ -130,4 +130,66 @@ describe("worker economy replacement", () => {
     expect(short.demand.desired).toBe(6);
     expect(short.intent).toBeNull();
   });
+
+  it("releases a terminally rejected worker lease so a replacement can be retried", () => {
+    const initial = createAiTestObservation();
+    const effectId = "effect:worker-recovery:7:home" as never;
+    const state = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile,
+      tick: 0,
+      archetypeId: "balanced"
+    });
+    const proposal = proposeAiWorkerRecovery(
+      {
+        ...initial,
+        actors: [producer(), ...Array.from({ length: 5 }, (_, index) => worker(`worker-${index}`))],
+        resources: [
+          {
+            resourceType: ResourceType.Food,
+            stockpile: 100,
+            reservedUnspent: 0,
+            obligationsDue: 0,
+            deliveredIncomePerMinute: { status: "known", value: 0, observedTick: 20 }
+          }
+        ]
+      },
+      {
+        ...state,
+        reservations: [
+          {
+            claimId: "claim:worker" as never,
+            subjectKey: `effect:${effectId}`,
+            ownerPlanId: state.opening.plan.planId,
+            state: { kind: "applied_spending", appliedTick: 18 },
+            prerequisites: [],
+            createdTick: 17
+          }
+        ],
+        pendingOutcomes: [
+          {
+            kind: "rejected",
+            tick: 19,
+            reason: "queue_lost",
+            identity: {
+              matchId: "match" as never,
+              authorityEpoch: 0,
+              playerNumber: 1,
+              sequence: 7,
+              commandId: "command:7" as never,
+              effectId,
+              intentId: "intent:7" as never
+            }
+          }
+        ]
+      },
+      catalog,
+      ObjectNames.TivaraWorker,
+      6
+    );
+
+    expect(proposal.demand.acceptedNotObservedEffectIds).toEqual([]);
+    expect(proposal.intent).toEqual(expect.objectContaining({ kind: "produce", objectName: ObjectNames.TivaraWorker }));
+  });
 });

@@ -773,7 +773,7 @@ describe("AiMacroManager", () => {
     );
 
     expect(proposal.statePatch?.economyProduction?.demands).toEqual(
-      expect.arrayContaining([expect.objectContaining({ purpose: "renewable_food_capacity", desired: 6 })])
+      expect.arrayContaining([expect.objectContaining({ purpose: "renewable_food_capacity", desired: 4 })])
     );
     expect(proposal.intents).toEqual(
       expect.arrayContaining([expect.objectContaining({ kind: "construct", objectName: ObjectNames.Field })])
@@ -840,7 +840,7 @@ describe("AiMacroManager", () => {
     ).toBe(false);
     expect(
       proposal.statePatch?.economyProduction?.demands.find((demand) => demand.purpose === "renewable_food_capacity")
-    ).toMatchObject({ desired: 2 });
+    ).toMatchObject({ desired: 1 });
   });
 
   it("does not assign an idle worker to a resource source whose service capacity is full", () => {

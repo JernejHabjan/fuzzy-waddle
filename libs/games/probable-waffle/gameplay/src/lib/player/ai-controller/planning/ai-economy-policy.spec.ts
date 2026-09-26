@@ -76,7 +76,33 @@ describe("decideAiEconomyPolicy", () => {
     ]);
 
     expect(policy.desiredWorkers).toBe(8);
-    expect(policy.desiredFoodSources).toBe(6);
+    expect(policy.desiredFoodSources).toBe(4);
+  });
+
+  it("prices worker and army food together while reserving labor for other resources", () => {
+    const workers = Array.from({ length: 6 }, (_, index) => createAiTestOwnedActor(`worker-${index}`));
+    const observation = {
+      ...createAiTestObservation(),
+      actors: [...workers, foodSource("food", 8)],
+      resources: [
+        {
+          resourceType: ResourceType.Food,
+          stockpile: 200,
+          reservedUnspent: 0,
+          obligationsDue: 0,
+          deliveredIncomePerMinute: { status: "known" as const, value: 0, observedTick: 20 }
+        }
+      ]
+    };
+
+    const policy = decideAiEconomyPolicy(observation, catalog, [
+      { resourceType: ResourceType.Food, amount: 150 },
+      { resourceType: ResourceType.Wood, amount: 300 }
+    ]);
+
+    expect(policy.desiredWorkers).toBe(8);
+    expect(policy.foodRunwayTicks).toBeLessThan(300);
+    expect(policy.desiredFoodSources).toBe(4);
   });
 
   it("freezes optional growth under visible pressure while preserving returning workers", () => {

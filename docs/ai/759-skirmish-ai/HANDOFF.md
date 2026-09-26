@@ -6,6 +6,12 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
+- Current execution mode (user direction, 2026-09-26): prepare the remaining implementation and test cases in dependency
+  order, but do **not** run unit tests, Playwright, simulations, lint, type checks, builds, repository validation,
+  `agent:doctor`, or `agent:context` during this implementation sweep. Treat every new change as **unverified**. Batch
+  the full validation, repair, review, and calibration at the final gate below. This supersedes older per-issue
+  verification instructions in this handoff and linked follow-up plans for the current sweep.
+
 - Branch: `feature/759-skirmish-ai`; draft PR [#814](https://github.com/JernejHabjan/fuzzy-waddle/pull/814) targets
   `develop`. Verify local and remote tips before editing.
 - Pinned pre-change baseline: `de47f482889db30420692bf4406fba463d7db296`.
@@ -15,11 +21,12 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
   `1789968100579-failed.json` (2 variants, 24,040 aggregate ticks, 248,878 ms). Skaduwee found the bridge ground
   route and launched, but still had no terminal result by tick 12,020. The test remains red; do not relax its terminal
   assertion merely to close #827.
-- Current behavior boundary: SEQ-02 now passes both factions. Full manager replacement no longer permits a later narrow
+- Prior-economy behavior boundary: SEQ-02 passed both factions before the 200-resource start. The current low-resource
+  SEQ-01/02 run is red and must be rechecked at the final gate. Full manager replacement no longer permits a later narrow
   projection to resurrect an obsolete squad, valid tactical domain children survive while their strategic parent does,
   and replaced queued pawn orders publish terminal cancellation outcomes.
-- Exact next work: continue #829 from the committed low-resource economy checkpoint, then perform final #827 victory
-  validation. Standard skirmish starts are now 200 of every resource for both players, so older SEQ balance evidence is
+- Exact next work: continue #829 implementation from the committed low-resource economy checkpoint, then #827 strategy
+  implementation; defer their validation to the final gate. Standard skirmish starts are now 200 of every resource for both players, so older SEQ balance evidence is
   diagnostic rather than calibration proof. The smallest #821 prerequisite slice extracted a typed economy policy;
   final macro-owner and spec splitting remains in #821 because both legacy files are still oversized.
   Continue #816 runtime families after #829/#827 stabilize. Definition-derived prerequisite recovery is implemented:
@@ -43,7 +50,7 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
   renewed. #821 owns the required behavior-neutral splits. Recheck tactical move reissue before #827 stage close.
 - Unrelated local `.run/start_portal.run.xml`, if present, is not AI scope.
 
-Start with:
+Previously recommended commands (deferred until the final validation gate):
 
 ```bash
 pnpm agent:doctor
@@ -77,7 +84,26 @@ Do not reorder dependent work merely to avoid a model switch or downgrade a deep
 Optional [#822](https://github.com/JernejHabjan/fuzzy-waddle/issues/822) owns a future island map and natural
 transport-required runtime. It is detached from #759 and does not block core readiness.
 
+## Final validation gate — not during the implementation sweep
+
+Keep a single deferred gate for all changed behavior and newly authored tests. Do not interpret a passing result from
+an older commit as evidence for newer unverified code. At the gate, run repository doctor/context and smallest focused
+static/unit checks first, repair in batches, then manifest-derived pure and targeted preset-world Playwright groups,
+followed by bounded SEQ-01/02, real multiplayer/lifecycle scenarios, pinned-baseline and D-06 calibration, long-match
+performance comparisons, broader affected checks, and a final code/omission review. Keep the 12,000-tick SEQ ceiling;
+do not use a 30,000-tick natural-match run to paper over missing targeted fixtures. Retain compact reports, exact seeds,
+digest/provenance, wall time, and known failures in this handoff until each result has a durable owner. Close each
+subissue only after its authored requirements and final-gate evidence both pass; do not claim runtime, difficulty,
+multiplayer, lifecycle, or performance acceptance from unrun tests. #822 island-map content remains optional and must
+not block this gate.
+
 ## Active evidence and boundaries
+
+- Unverified implementation-sweep batch: food runway now sums concurrent worker, standing-workforce and military
+  demand; Field count reserves non-food labor; staffed Fields rank above speculative new Fields; worker replacement
+  ignores terminally rejected/cancelled/failed leases. Focused pure tests were authored/updated but deliberately not
+  executed. The revised Field target changes prior fixture expectations and needs final-gate runtime evidence for both
+  factions, especially renewable-food throughput after losses.
 
 - The #829 checkpoint gives every standard player 200 of each resource. A two-worker minimum opening avoids serial
   starvation; six is the live recovery floor, not the cap. The typed economy policy prices dated demand, food runway,
@@ -129,8 +155,9 @@ transport-required runtime. It is detached from #759 and does not block core rea
 
 - A generic `continue implementing` resumes the first in-progress boundary above. Read only its linked plan, generated
   context packet, named fixture rows, first failing owner, and adjacent specs.
-- Batch coherent repairs. Use focused checks when they guide the next change; run one grouped Playwright process after the
-  batch. Follow the skirmish skill's bounded reporting and long-process rules.
+- For this implementation-only sweep, batch coherent code and test authoring without running checks. At the final
+  validation gate, use focused checks to guide repairs and one grouped Playwright process per coherent batch. Follow
+  the skirmish skill's bounded reporting and long-process rules then.
 - A sequential agent may commit directly to this integration branch. Parallel work requires isolated worktrees and
   sub-PRs targeting `feature/759-skirmish-ai`.
 - At each issue close, move proven contracts to code/tests or code-adjacent docs, update backlinks, remove resolved
