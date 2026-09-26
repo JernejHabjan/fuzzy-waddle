@@ -143,8 +143,12 @@ function world(woodStockpile: number, foodStockpile: number): AiObservationV1 {
   };
 }
 
-function proposal(woodStockpile: number, foodStockpile: number, demands: readonly AiDemandV1[] = [demand]) {
-  const observation = world(woodStockpile, foodStockpile);
+function proposal(
+  woodStockpile: number,
+  foodStockpile: number,
+  demands: readonly AiDemandV1[] = [demand],
+  observation = world(woodStockpile, foodStockpile)
+) {
   const initial = createAiBrainStateV1({
     playerNumber: 1,
     faction: FactionType.Tivara,
@@ -169,6 +173,52 @@ function proposal(woodStockpile: number, foodStockpile: number, demands: readonl
 }
 
 describe("typed deterministic economy forecast scenarios", () => {
+  it("ECO-03: assigns the next worker to spare source capacity, not a saturated source", () => {
+    const saturatedWorkers = Array.from({ length: 12 }, (_, index) => ({
+      ...createAiTestOwnedActor(`busy-worker-${index}`),
+      activeOrder: {
+        status: "known" as const,
+        observedTick: 20,
+        value: { orderType: OrderType.Gather, targetActorId: "wood-source-a" }
+      }
+    }));
+    const baseline = world(0, 500);
+    const actors = [
+      ...saturatedWorkers,
+      {
+        ...createAiTestOwnedActor("idle-worker"),
+        activeOrder: { status: "known" as const, observedTick: 20, value: null }
+      },
+      ...baseline.actors.filter((actor) => actor.actorId === "producer"),
+      source("wood-source-a", ObjectNames.Tree1, ResourceType.Wood, 12),
+      source("wood-source-b", ObjectNames.Tree1, ResourceType.Wood, 2),
+      source("food-source", ObjectNames.CropsWheat, ResourceType.Food, 6)
+    ];
+    const runs = Array.from({ length: 3 }, () => proposal(0, 500, [demand], { ...baseline, actors }));
+    const noSpareCapacity = proposal(0, 500, [demand], {
+      ...baseline,
+      actors: actors.filter((actor) => actor.actorId !== "wood-source-b")
+    });
+
+    expect(new Set(runs.map(digestCanonicalAiValue)).size).toBe(1);
+    expect(runs[0]?.intents).toContainEqual(
+      expect.objectContaining({
+        kind: "assign_gatherers",
+        actorIds: ["idle-worker"],
+        resourceType: ResourceType.Wood,
+        sourceActorId: "wood-source-b"
+      })
+    );
+    expect(
+      runs[0]?.intents.some((intent) => intent.kind === "assign_gatherers" && intent.sourceActorId === "wood-source-a")
+    ).toBe(false);
+    expect(
+      noSpareCapacity.intents.some(
+        (intent) => intent.kind === "assign_gatherers" && intent.resourceType === ResourceType.Wood
+      )
+    ).toBe(false);
+  });
+
   it("ECO-04: shifts idle labor to the priced wood shortfall before ranged production stalls", () => {
     const runs = Array.from({ length: 3 }, () => proposal(0, 500));
     const control = proposal(1000, 0);

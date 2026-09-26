@@ -135,11 +135,10 @@ not block this gate.
   shortfall and completed Olival gain; the control forbids unnecessary housing. Both repeat three times. This is
   **unrun**, so do not count it as passing runtime coverage until the final gate proves the actual starting capacity,
   legal queue, construction and deterministic outcomes. No fixed illustrative 47/50 value is assumed.
-- Next implementation gaps before the final gate: catalog-priced resource claims now let shared arbitration reject
-  simultaneous macro construction/opening-production overspend, but #829's 65/35–20/80 spending split remains
-  explanatory policy, not a cross-manager posture budget. Keep emergency defense, food recovery and offensive finish
-  from overpromising the same stockpile. #827 still needs evidence-based follow-up pressure and recovery after a failed first
-  mission, not just the new six-worker launch pause. #815/#816 need remaining scenario families and a fail-closed
+- Next implementation gaps before the final gate: catalog-priced resource claims and cross-manager posture spending
+  arbitration are authored but unverified. Confirm that emergency defense, food recovery and offensive finish do not
+  overpromise the same stockpile. #827's failed-mission follow-up is also authored but lacks real victory/recovery proof.
+  #815/#816 need remaining scenario families and a fail-closed
   scenario-to-test/CI mapping; a shared Jest path pattern and authored fixture metadata alone are not execution proof.
   #828 profiling, #817 calibration/soaks, #819 socket multiplayer, #823 lifecycle, and #820 parity-gated retirement
   depend on those foundations or require the deferred validation gate, so none should be reported complete now.
@@ -169,6 +168,9 @@ not block this gate.
   three producers and late worker attrition.
 - PRO-01–05 have deterministic typed pure coverage with three-run proposal/state digest equality. Last recorded pure
   mapping is 46/111; runtime mapping is 13/120. Recalculate from the manifest before reporting future totals.
+- ECO-03 now has an unrun three-repeat pure source-saturation subject/control: an idle worker chooses the spare wood
+  source rather than an already fully occupied one, and does not overfill the sole saturated source. It is registered
+  in the manifest but does not increase the last validated coverage count; its runtime counterpart is still absent.
 - SCOUT-05 compares two distinct hidden Banshee positions: neither is disclosed in the first committed observation and
   the first decision facts match. DOMAIN-06 and RAID-02 prove real air defense and mission redirection. The grouped
   focused run retained identical causal outcome digests in every repeated group. Runtime reports record wall time and
