@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "evidenceKind": "runtime",
+  "scenarioIds": ["ECO-07"],
+  "purpose": "Exercise real queued-population housing prebuild and an ample-capacity control in the Phaser skirmish world.",
+  "driver": "runtime",
+  "status": "ready_for_runtime_execution",
+  "context": {
+    "mapId": "EmberEnclave",
+    "mapDigest": "resolved_from_candidate_assets",
+    "side": 2,
+    "rulesVersion": "probable-waffle-rules-v1"
+  },
+  "recipe": {
+    "mapLabel": "Ember Enclave",
+    "aiPlayerNumber": 2,
+    "simulationTimeScale": 100,
+    "checkpointTicks": [20, 300, 600, 1000, 1600, 2200, 3000],
+    "variants": [
+      {
+        "id": "tivara-queued-supply-shortfall",
+        "scenarioIds": ["ECO-07"],
+        "seed": 829071,
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "supplyBranch": "prebuild",
+        "determinismGroup": "queued-supply-shortfall",
+        "repetitions": 3,
+        "presetWorld": {
+          "fixtureId": "queued-supply-shortfall",
+          "actors": [
+            { "fixtureActorId": "ai-producer", "actorName": "AnkGuard", "owner": 2, "position": { "x": 400, "y": 880, "z": 0 } },
+            { "fixtureActorId": "ai-worker-1", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 512, "y": 832, "z": 0 } },
+            { "fixtureActorId": "ai-worker-2", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 544, "y": 856, "z": 0 } },
+            { "fixtureActorId": "ai-worker-3", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 576, "y": 880, "z": 0 } },
+            { "fixtureActorId": "ai-worker-4", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 608, "y": 904, "z": 0 } }
+          ],
+          "resourceGrants": [
+            { "playerNumber": 2, "amounts": { "food": 2000, "wood": 2000, "stone": 2000, "minerals": 2000 } }
+          ],
+          "queues": [{ "producerFixtureActorId": "ai-producer", "actorName": "TivaraMacemanMale", "count": 5 }]
+        }
+      },
+      {
+        "id": "tivara-ample-supply-control",
+        "scenarioIds": ["ECO-07"],
+        "seed": 829072,
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "supplyBranch": "ample_control",
+        "determinismGroup": "ample-supply-control",
+        "repetitions": 3,
+        "presetWorld": {
+          "fixtureId": "ample-supply-control",
+          "actors": [
+            { "fixtureActorId": "ai-producer", "actorName": "AnkGuard", "owner": 2, "position": { "x": 400, "y": 880, "z": 0 } },
+            { "fixtureActorId": "ai-worker-1", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 512, "y": 832, "z": 0 } },
+            { "fixtureActorId": "ai-worker-2", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 544, "y": 856, "z": 0 } },
+            { "fixtureActorId": "ai-worker-3", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 576, "y": 880, "z": 0 } },
+            { "fixtureActorId": "ai-worker-4", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 608, "y": 904, "z": 0 } },
+            { "fixtureActorId": "ai-house-1", "actorName": "Olival", "owner": 2, "position": { "x": 320, "y": 832, "z": 0 } },
+            { "fixtureActorId": "ai-house-2", "actorName": "Olival", "owner": 2, "position": { "x": 352, "y": 864, "z": 0 } }
+          ],
+          "resourceGrants": [
+            { "playerNumber": 2, "amounts": { "food": 2000, "wood": 2000, "stone": 2000, "minerals": 2000 } }
+          ],
+          "queues": [{ "producerFixtureActorId": "ai-producer", "actorName": "TivaraMacemanMale", "count": 5 }]
+        }
+      }
+    ]
+  },
+  "assertions": {
+    "ECO-07": {
+      "maximumTick": 3000,
+      "minimumDecisions": 10,
+      "minimumAppliedCommands": 1,
+      "requiredAiFactions": ["Tivara"],
+      "requiredSupplyPrebuild": { "minimumBuffer": 3, "latestTick": 3000, "housingObjectName": "Olival" },
+      "requireSupplyControl": true
+    }
+  },
+  "deliberatelyBrokenOracle": "accept_a_self_reported_housing_demand_without_queue_pressure_or_a_completed_olival"
+}

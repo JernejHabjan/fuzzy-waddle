@@ -1,4 +1,4 @@
-import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
+import type { PlayerNumber, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { ResourceType } from "../../probable-waffle/resource-type-definition";
 import { ObjectNames } from "./object-names";
 import type { ActorId } from "@fuzzy-waddle/platform-game-sessions";
@@ -6,6 +6,7 @@ import type { PrerequisiteType } from "./prereque-type";
 import type { StatusEffectData } from "../../probable-waffle/status-effect";
 import type { PreRequirement } from "./pre-requirement";
 import type { ResearchType } from "./research-type";
+import type { GameCommandOutcome } from "./game-command";
 
 /**
  * Defines the structured vision component data contract for this module. Its declared surface makes visibility
@@ -91,6 +92,18 @@ export interface GathererComponentData {
    * defined by {@link GathererComponentData} and must remain consistent across producers and consumers.
    */
   remainingCooldown?: number;
+  /** Stable source assignment restored after actors are indexed. */
+  currentResourceSourceId?: ActorId | null;
+  /** Last useful source retained for deterministic gather-loop continuation. */
+  previousResourceSourceId?: ActorId | null;
+  /** Resource family associated with the previous source. */
+  previousResourceType?: ResourceType | null;
+}
+
+/** Save-owned crop growth and tender assignment state. */
+export interface TendableComponentData {
+  readonly growthPercent: number;
+  readonly tenderIds: readonly ActorId[];
 }
 
 /**
@@ -668,6 +681,7 @@ export interface PlayerAiBlackboardData {
  * Defines the structured aibehavior tree state data contract for this module. Its declared surface makes
  * blackboard, telemetry, enabled explicit to every consumer. Use this shared shape rather than an ad-hoc
  * object so adapters, persistence, and callers remain compatible.
+ * Versioned command, observation, pure-brain and cadence extensions below complete the save boundary.
  */
 export interface AIBehaviorTreeStateData {
   /**
@@ -685,6 +699,79 @@ export interface AIBehaviorTreeStateData {
    * associated behavior is active; do not infer it from unrelated state.
    */
   enabled?: boolean;
+  /**
+   * Bounded authoritative outcome frontier for the legacy-to-pure brain adapter.
+   * This survives save/load so an uncertain command is reconciled before retry.
+   */
+  commandReconciliation?: AiCommandReconciliationStateData;
+  /**
+   * Player-scoped observation memory retained by the host AI. It contains only
+   * facts that the AI was permitted to observe, never a live-world reference.
+   */
+  observationMemory?: AiObservationMemoryStateData;
+  /**
+   * Versioned pure-brain state. Protocol keeps this structurally unknown to avoid
+   * depending on gameplay; the owning gameplay migration validates it before use.
+   */
+  brainState?: unknown;
+  /** Restartable cadence captured at the last completed controller boundary. */
+  controllerCadence?: AiControllerCadenceStateData;
+}
+
+/** Save-safe legacy/pure controller scheduling frontier. */
+export interface AiControllerCadenceStateData {
+  readonly schemaVersion: 1;
+  readonly elapsedMilliseconds: number;
+  readonly queuedAfterBoundary: boolean;
+  readonly completedDecisionSequence: number;
+}
+
+/**
+ * Serializable last-seen contact. A lost contact deliberately has no live
+ * target handle; consumers may reason about the remembered position only.
+ */
+export interface AiObservationRememberedContactData {
+  readonly actorId: ActorId;
+  readonly objectName: ObjectNames;
+  readonly owner: PlayerNumber | null;
+  readonly relation: "self" | "ally" | "neutral" | "enemy";
+  readonly evidenceId: string;
+  readonly lastSeenTick: number;
+  readonly confidencePermille: number;
+  readonly position: Vector3Simple | null;
+}
+
+/**
+ * Saved cursor and evidence state for the Stage 4 fair-observation pipeline.
+ * Query cursors prevent a navigation invalidation burst from restarting all
+ * optional work or changing the next committed observation.
+ */
+export interface AiObservationMemoryStateData {
+  readonly schemaVersion: 1;
+  readonly generation: number;
+  readonly committedTick: number;
+  readonly knowledgeRevision: number;
+  readonly queryInputRevision: number;
+  readonly queryContinuationCursor: number;
+  readonly invalidationDebt: number;
+  readonly contacts: readonly AiObservationRememberedContactData[];
+}
+
+/** Serializable H3 authority state owned by one AI player controller. */
+export interface AiCommandReconciliationStateData {
+  readonly schemaVersion: 1;
+  readonly authorityEpoch: number;
+  readonly processedSequenceWatermark: number;
+  readonly pendingCommandIds: readonly string[];
+  /** Full unresolved records; never evicted with recent history or refreshed on load. */
+  readonly pendingCommands?: readonly {
+    readonly dispatched: GameCommandOutcome;
+    readonly lastProgressTick: number;
+    readonly applicationObserved: boolean;
+    readonly terminalActorIds: readonly ActorId[];
+  }[];
+  readonly recentOutcomes: readonly GameCommandOutcome[];
+  readonly health: "healthy" | "reconciling" | "technical_fault";
 }
 
 /**
@@ -703,6 +790,10 @@ export interface ConvertibleComponentData {
    * defined by {@link ConvertibleComponentData} and must remain consistent across producers and consumers.
    */
   checkInterval?: number;
+  /** Accumulated simulation milliseconds toward the next proximity check. */
+  accumulatedTime?: number;
+  /** True after the canonical proximity winner has taken ownership. */
+  converted?: boolean;
 }
 
 /**
@@ -734,6 +825,24 @@ export interface SpellComponentData {
    * value contract explicit so callers cannot smuggle a broader shape across this boundary.
    */
   autocastEnabled?: Record<string, boolean>; // spellType -> enabled
+  /** In-flight spell impacts applied by simulation tick, never tween completion. */
+  pendingImpacts?: PendingSpellImpactData[];
+}
+
+/** Save-safe spell impact queued against the fixed simulation clock. */
+export interface PendingSpellImpactData {
+  readonly effectId: string;
+  readonly commandId: string;
+  readonly commitmentKey: string;
+  readonly playerNumber: number;
+  readonly authorityEpoch: number;
+  readonly sequence: number;
+  readonly intentId?: string;
+  readonly casterIds: readonly ActorId[];
+  readonly spellType: string;
+  readonly targetObjectId?: ActorId;
+  readonly targetTile: Vector3Simple;
+  readonly dueTick: number;
 }
 
 /**

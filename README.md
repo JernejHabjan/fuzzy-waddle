@@ -75,15 +75,16 @@ For full setup instructions see the [Getting Started guide](wiki/getting-started
 
 ## Wiki
 
-| Page                                       | Description                                              |
-| ------------------------------------------ | -------------------------------------------------------- |
-| [Getting Started](wiki/getting-started.md) | Prerequisites, install, common commands                  |
-| [Architecture](wiki/architecture.md)       | Monorepo layout, game structure, real-time communication |
-| [Tauri Desktop](wiki/tauri-desktop.md)     | Desktop app prerequisites, dev workflow, build commands  |
-| [Supabase Setup](wiki/supabase.md)         | Auth, type generation, JDBC, local dev                   |
-| [Deployment](wiki/deployment.md)           | Render and GitHub Pages deployment config                |
-| [Releases](wiki/releases.md)               | Version bump rules and automated release flow            |
-| [Troubleshooting](wiki/troubleshooting.md) | Common issues and fixes                                  |
+| Page                                                      | Description                                              |
+| --------------------------------------------------------- | -------------------------------------------------------- |
+| [Getting Started](wiki/getting-started.md)                | Prerequisites, install, common commands                  |
+| [Architecture](wiki/architecture.md)                      | Monorepo layout, game structure, real-time communication |
+| [Probable Waffle AI](wiki/probable-waffle-skirmish-ai.md) | Skirmish AI architecture, testing and debugging          |
+| [Tauri Desktop](wiki/tauri-desktop.md)                    | Desktop app prerequisites, dev workflow, build commands  |
+| [Supabase Setup](wiki/supabase.md)                        | Auth, type generation, JDBC, local dev                   |
+| [Deployment](wiki/deployment.md)                          | Render and GitHub Pages deployment config                |
+| [Releases](wiki/releases.md)                              | Version bump rules and automated release flow            |
+| [Troubleshooting](wiki/troubleshooting.md)                | Common issues and fixes                                  |
 
 ---
 

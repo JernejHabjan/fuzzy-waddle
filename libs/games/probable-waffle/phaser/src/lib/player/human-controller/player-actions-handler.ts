@@ -132,7 +132,7 @@ export class PlayerActionsHandler {
           // Find the production building with the least total remaining production time
           const targetComponent = findProductionBuildingWithLeastRemainingTime(this.currentSelectedActors);
           const playerNumber = getCurrentPlayerNumber(this.scene);
-          if (targetComponent && playerNumber) {
+          if (targetComponent && playerNumber !== undefined) {
             dispatchProductionCommand(this.scene, this.currentSelectedActors, playerNumber, product);
             e.preventDefault();
             return;
@@ -158,6 +158,7 @@ export class PlayerActionsHandler {
           const hasProduction = !!(primary && getActorComponent(primary, ProductionComponent));
           if (hasProduction) {
             // Start a two-step Move command; ProductionComponent listens for move to set rally point
+            // The completed gesture dispatches SET_RALLY_POINT so unit movement cannot consume it.
             this.startOrderCommand(OrderType.Move, this.currentSelectedActors);
           }
         }
@@ -392,7 +393,7 @@ export class PlayerActionsHandler {
       : undefined;
 
     const playerNumber = getCurrentPlayerNumber(this.scene);
-    if (!playerNumber) return;
+    if (playerNumber === undefined) return;
 
     // Capture shift state at dispatch time so all clients apply the same queue/override decision
     const queue = this.shiftKey?.isDown ?? false;
@@ -410,7 +411,19 @@ export class PlayerActionsHandler {
       this.primarySelectedActor &&
       getActorComponent(this.primarySelectedActor, ProductionComponent);
     if (hasProductionRallyPointOrder && !!tileVec3 && !!worldVec3) {
-      commandBus.dispatch({ type: "MOVE", playerNumber, actorIds, tileVec3, worldVec3, queue });
+      const producerActorIds = this.currentSelectedActors
+        .filter((actor) => getActorComponent(actor, ProductionComponent))
+        .map((actor) => getActorComponent(actor, IdComponent)?.id)
+        .filter((id): id is string => !!id);
+      if (producerActorIds.length === 0) return;
+      commandBus.dispatch({
+        type: "SET_RALLY_POINT",
+        playerNumber,
+        actorIds: producerActorIds,
+        tileVec3,
+        worldVec3,
+        targetObjectId: targetGameObjectId
+      });
     } else {
       // Validate terrain compatibility before issuing Move commands
       if (orderType === OrderType.Move && tileVec3 && !targetGameObjectId) {

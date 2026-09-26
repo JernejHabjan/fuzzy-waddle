@@ -1,4 +1,5 @@
-import type { ResearchType } from "@fuzzy-waddle/probable-waffle-protocol";
+import type { GameCommandExecution, ResearchType } from "@fuzzy-waddle/probable-waffle-protocol";
+import type { ActorId, PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 import type { ProductionQueueItem } from "../production/game-object";
 
 export enum QueueItemType {
@@ -18,4 +19,9 @@ export interface UnifiedQueueItem {
   // Shared metadata
   totalTime: number; // For calculating refunds and progress
   remainingTime: number; // Current remaining time for this item
+  commandContext?: {
+    execution: GameCommandExecution;
+    playerNumber: PlayerNumber;
+    actorIds: readonly ActorId[];
+  };
 }

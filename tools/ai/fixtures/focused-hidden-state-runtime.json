@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "evidenceKind": "runtime",
+  "scenarioIds": ["SCOUT-05"],
+  "purpose": "Compare the first permitted AI observation and committed decisions in worlds differing only by an unseen enemy position.",
+  "driver": "runtime",
+  "status": "ready_for_runtime_execution",
+  "context": {
+    "mapId": "EmberEnclave",
+    "mapDigest": "resolved_from_candidate_assets",
+    "side": 2,
+    "rulesVersion": "probable-waffle-rules-v1"
+  },
+  "recipe": {
+    "mapLabel": "Ember Enclave",
+    "aiPlayerNumber": 2,
+    "simulationTimeScale": 100,
+    "checkpointTicks": [20, 400],
+    "variants": [
+      {
+        "id": "hidden-enemy-west",
+        "scenarioIds": ["SCOUT-05"],
+        "seed": 826051,
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "presetWorld": {
+          "fixtureId": "hidden-enemy-parity",
+          "actors": [
+            { "fixtureActorId": "ai-worker", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 400, "y": 840, "z": 0 } },
+            { "fixtureActorId": "human-hidden", "actorName": "Banshee", "owner": 1, "position": { "x": -960, "y": 720, "z": 64 } }
+          ],
+          "resourceGrants": []
+        }
+      },
+      {
+        "id": "hidden-enemy-east",
+        "scenarioIds": ["SCOUT-05"],
+        "seed": 826051,
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "presetWorld": {
+          "fixtureId": "hidden-enemy-parity",
+          "actors": [
+            { "fixtureActorId": "ai-worker", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 400, "y": 840, "z": 0 } },
+            { "fixtureActorId": "human-hidden", "actorName": "Banshee", "owner": 1, "position": { "x": -768, "y": 720, "z": 64 } }
+          ],
+          "resourceGrants": []
+        }
+      }
+    ]
+  },
+  "assertions": {
+    "SCOUT-05": {
+      "maximumTick": 400,
+      "minimumDecisions": 1,
+      "minimumAppliedCommands": 1,
+      "requiredAiFactions": ["Tivara"],
+      "requiredPresetFixtureId": "hidden-enemy-parity",
+      "requiredHiddenActorName": "Banshee",
+      "requireHiddenStateParity": true
+    }
+  }
+}

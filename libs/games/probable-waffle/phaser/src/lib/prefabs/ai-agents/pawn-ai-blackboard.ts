@@ -10,6 +10,7 @@ export class PawnAiBlackboard extends Blackboard {
   private status: "idle" | "executing" | "paused" = "idle";
   private failedOrders: OrderData[] = [];
   cancellationHandler?: () => void;
+  queuedOrderCancellationHandler?: (orders: readonly OrderData[]) => void;
   currentOrderChanged = new Subject<OrderData | undefined>();
 
   getStatus(): string {
@@ -39,6 +40,11 @@ export class PawnAiBlackboard extends Blackboard {
     return undefined;
   }
 
+  /** Returns a read-only snapshot used to settle command effects on actor teardown. */
+  getQueuedOrders(): readonly OrderData[] {
+    return [...this.orderQueue];
+  }
+
   getCurrentOrder(): OrderData | undefined {
     return this.currentOrder;
   }
@@ -60,7 +66,9 @@ export class PawnAiBlackboard extends Blackboard {
   }
 
   overrideOrderQueueAndActiveOrder(orderData: OrderData): void {
+    const queuedOrders = this.orderQueue.filter((order) => order !== this.currentOrder);
     this.resetCurrentOrder();
+    if (queuedOrders.length > 0) this.queuedOrderCancellationHandler?.(queuedOrders);
     this.orderQueue = [orderData];
   }
 
