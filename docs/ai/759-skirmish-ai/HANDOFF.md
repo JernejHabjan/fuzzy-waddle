@@ -126,12 +126,15 @@ not block this gate.
   queued-population supply, including once-only housing commitments and three-run proposal digests. Their manifest
   registration and runner selection are wired but not executed; required real-runtime counterparts remain unimplemented
   under #816. Do not add them to the passing count until the final gate executes the fixtures and coverage report.
-  ECO-05 has a narrower unexecuted unit assertion for aggregate dated consumers and spendable stockpile; it is **not**
-  registered as full scenario coverage because queue, upgrade, expansion, transfer and runtime effects remain unproved.
+  ECO-05 now has an authored pure subject/control fixture that combines queued force, upgrade, expansion and supply
+  wood demand, scarce-versus-surplus labor assignment, spendable-stockpile bounds and three-run digests. It is
+  registered for pure execution but remains unrun; its real-runtime counterpart is still missing under #816.
 - #816 preparation: the runtime checkpoint now captures actual ready housing, used/queued population and housing actor
-  names. A fail-closed queued-supply oracle plus its own unexecuted unit spec is ready for a short ECO-07 preset-world
-  recipe. Do not register ECO-07 runtime coverage until the preset proves a real queue-driven shortfall and completed
-  housing gain on a shipped map; avoid guessing a fixed 47/50 initial supply value.
+  names. ECO-07 now has an authored, registered, short preset-world Playwright recipe with five real queued units,
+  four workers, a shortfall branch and an ample-capacity control. Its positive oracle requires a real queue-driven
+  shortfall and completed Olival gain; the control forbids unnecessary housing. Both repeat three times. This is
+  **unrun**, so do not count it as passing runtime coverage until the final gate proves the actual starting capacity,
+  legal queue, construction and deterministic outcomes. No fixed illustrative 47/50 value is assumed.
 - Next implementation gaps before the final gate: catalog-priced resource claims now let shared arbitration reject
   simultaneous macro construction/opening-production overspend, but #829's 65/35–20/80 spending split remains
   explanatory policy, not a cross-manager posture budget. Keep emergency defense, food recovery and offensive finish

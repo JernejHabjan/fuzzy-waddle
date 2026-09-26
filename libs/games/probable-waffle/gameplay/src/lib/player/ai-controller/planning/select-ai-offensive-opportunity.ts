@@ -130,7 +130,7 @@ export function selectAiOffensiveOpportunity(
       const failurePenalty =
         recentFailure?.targetActorId === opponent.actorId &&
         context.observation.tick - recentFailure.observedTick <= FAILURE_MEMORY_TICKS
-          ? Math.min(6, recentFailure.repeatedFailures * 2 + Math.floor(recentFailure.losses / 4))
+          ? Math.min(4, recentFailure.repeatedFailures * 2 + Math.floor(recentFailure.losses / 4))
           : 0;
       const required =
         Math.max(producers >= 2 ? 8 : isCore(opponent) ? 2 : 3, Math.ceil(threats * 1.5) + 1) + failurePenalty;

@@ -13,5 +13,6 @@ export interface RuntimeVariantV1 {
   readonly checkpointTicks?: readonly number[];
   readonly determinismGroup?: string;
   readonly repetitions?: number;
+  readonly supplyBranch?: "prebuild" | "ample_control";
   readonly perturbations?: readonly RuntimePerturbationV1[];
 }

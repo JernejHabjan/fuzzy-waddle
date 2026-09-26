@@ -32,6 +32,7 @@ export interface RuntimeAssertionV1 {
     readonly latestTick: number;
     readonly housingObjectName: string;
   };
+  readonly requireSupplyControl?: boolean;
   readonly requiredDefenseTargetName?: string;
   readonly requiredDefenseActorName?: string;
   readonly requireMissionRedirectionAfterRaid?: boolean;

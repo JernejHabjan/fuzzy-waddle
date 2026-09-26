@@ -564,6 +564,7 @@ function validateRuntimeFixture(fixture, scenarioId) {
         !["Tivara", "Skaduwee"].includes(variant.aiFaction) ||
         !["Tivara", "Skaduwee"].includes(variant.humanFaction) ||
         !["Easy", "Normal", "Hard"].includes(variant.difficulty) ||
+        (variant.supplyBranch !== undefined && !["prebuild", "ample_control"].includes(variant.supplyBranch)) ||
         (variant.mapLabel !== undefined && typeof variant.mapLabel !== "string") ||
         (variant.perturbations !== undefined &&
           (!Array.isArray(variant.perturbations) ||
@@ -593,6 +594,13 @@ function validateRuntimeFixture(fixture, scenarioId) {
     !Array.isArray(assertion.requiredAiFactions) ||
     assertion.requiredAiFactions.length === 0 ||
     assertion.requiredAiFactions.some((faction) => !["Tivara", "Skaduwee"].includes(faction)) ||
+    (assertion.requireSupplyControl === true &&
+      !["prebuild", "ample_control"].every((branch) =>
+        recipe.variants.some((variant) =>
+          variant.supplyBranch === branch &&
+          (variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId))
+        )
+      )) ||
     [
       "maximumTick",
       "minimumMilitaryCount",
@@ -614,7 +622,8 @@ function validateRuntimeFixture(fixture, scenarioId) {
       "requireProductionStopsAtTarget",
       "requireMissionContinuation",
       "requireTerminalResult",
-      "requireRaidDefenseRecovery"
+      "requireRaidDefenseRecovery",
+      "requireSupplyControl"
     ].some((field) => assertion[field] !== undefined && typeof assertion[field] !== "boolean")
   ) {
     throw new Error(`malformed_runtime_fixture:${scenarioId}`);

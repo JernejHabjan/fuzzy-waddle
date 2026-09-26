@@ -11,6 +11,7 @@ import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v
 import type { AiObservationV1 } from "../contracts/ai-observation-v1";
 import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
 import { AiMacroManager } from "../planning/ai-macro-manager";
+import { canAffordAiEconomyCost } from "../planning/ai-economy-policy";
 import { projectAiResourceForecasts } from "../planning/ai-resource-forecast";
 import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
 import { createAiTestObservation, createAiTestOwnedActor, unknownAiValue } from "./ai-test-fixtures";
@@ -142,7 +143,7 @@ function world(woodStockpile: number, foodStockpile: number): AiObservationV1 {
   };
 }
 
-function proposal(woodStockpile: number, foodStockpile: number) {
+function proposal(woodStockpile: number, foodStockpile: number, demands: readonly AiDemandV1[] = [demand]) {
   const observation = world(woodStockpile, foodStockpile);
   const initial = createAiBrainStateV1({
     playerNumber: 1,
@@ -161,7 +162,7 @@ function proposal(woodStockpile: number, foodStockpile: number) {
     ...initial,
     economyProduction: {
       ...initial.economyProduction,
-      forecasts: projectAiResourceForecasts(observation, [demand], catalog)
+      forecasts: projectAiResourceForecasts(observation, demands, catalog)
     }
   };
   return new AiMacroManager(() => catalog).propose(observation, state);
@@ -182,6 +183,59 @@ describe("typed deterministic economy forecast scenarios", () => {
       })
     );
     expect(control.intents).toContainEqual(
+      expect.objectContaining({ kind: "assign_gatherers", resourceType: ResourceType.Food, sourceActorId: "food-source" })
+    );
+  });
+
+  it("ECO-05: aggregates queued force, upgrade, expansion and supply needs without promising reserved wood", () => {
+    const consumers: readonly AiDemandV1[] = [
+      { ...demand, queuedIds: ["ranged-queued-1", "ranged-queued-2"] },
+      {
+        ...demand,
+        demandId: "demand:forecast:upgrade",
+        purpose: "upgrade",
+        desired: 1,
+        queuedIds: [],
+        preferredObjectNames: [],
+        resourceObligations: { [ResourceType.Wood]: 80 }
+      },
+      {
+        ...demand,
+        demandId: "demand:forecast:expansion",
+        purpose: "expansion",
+        desired: 1,
+        queuedIds: [],
+        preferredObjectNames: [],
+        resourceObligations: { [ResourceType.Wood]: 100 }
+      },
+      {
+        ...demand,
+        demandId: "demand:forecast:supply",
+        purpose: "supply",
+        desired: 1,
+        queuedIds: [],
+        preferredObjectNames: [],
+        resourceObligations: { [ResourceType.Wood]: 50 }
+      }
+    ];
+    const scarceWorld = world(200, 500);
+    const scarceWood = scarceWorld.resources.map((entry) =>
+      entry.resourceType === ResourceType.Wood ? { ...entry, reservedUnspent: 30, obligationsDue: 40 } : entry
+    );
+    const obligated = { ...scarceWorld, resources: scarceWood };
+    const forecasts = projectAiResourceForecasts(obligated, consumers, catalog);
+    const shortageRuns = Array.from({ length: 3 }, () => proposal(0, 500, consumers));
+    const surplusRuns = Array.from({ length: 3 }, () => proposal(1000, 0, consumers));
+
+    expect(forecasts.find((entry) => entry.resourceType === ResourceType.Wood)?.amount).toBe(530);
+    expect(canAffordAiEconomyCost(obligated, { [ResourceType.Wood]: 130 })).toBe(true);
+    expect(canAffordAiEconomyCost(obligated, { [ResourceType.Wood]: 131 })).toBe(false);
+    expect(new Set(shortageRuns.map(digestCanonicalAiValue)).size).toBe(1);
+    expect(new Set(surplusRuns.map(digestCanonicalAiValue)).size).toBe(1);
+    expect(shortageRuns[0]?.intents).toContainEqual(
+      expect.objectContaining({ kind: "assign_gatherers", resourceType: ResourceType.Wood, sourceActorId: "wood-source" })
+    );
+    expect(surplusRuns[0]?.intents).toContainEqual(
       expect.objectContaining({ kind: "assign_gatherers", resourceType: ResourceType.Food, sourceActorId: "food-source" })
     );
   });

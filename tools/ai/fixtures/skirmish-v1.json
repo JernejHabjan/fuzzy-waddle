@@ -23,13 +23,16 @@
       "authoredFixture": "economy-forecast-scenarios.json",
       "drivers": ["pure", "runtime"]
     },
-    { "id": "ECO-05", "stages": [7], "group": "economy", "fixture": null, "drivers": ["pure", "runtime"] },
+    {
+      "id": "ECO-05", "stages": [7], "group": "economy", "fixture": null,
+      "authoredFixture": "economy-forecast-scenarios.json", "drivers": ["pure", "runtime"]
+    },
     { "id": "ECO-06", "stages": [7, 12], "group": "economy", "fixture": null, "drivers": ["pure", "runtime"] },
     {
       "id": "ECO-07",
       "stages": [7],
       "group": "economy",
-      "fixture": null,
+      "fixture": "focused-supply-runtime.json",
       "authoredFixture": "economy-supply-scenarios.json",
       "drivers": ["pure", "runtime"]
     },

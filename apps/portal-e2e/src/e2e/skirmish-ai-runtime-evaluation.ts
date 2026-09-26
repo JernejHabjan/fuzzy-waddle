@@ -23,6 +23,14 @@ export function evaluateScenario(
   if (assertion.requireNoInitialWorker && !selectedVariants.some((variant) => variant.initialWorkerCount === 0)) {
     failures.push("no_no_worker_variant");
   }
+  if (
+    assertion.requireSupplyControl &&
+    !["prebuild", "ample_control"].every((branch) =>
+      selectedVariants.some((variant) => variant.supplyBranch === branch)
+    )
+  ) {
+    failures.push("required_supply_branches_missing");
+  }
   if (assertion.requireHiddenStateParity) {
     const [left, right] = selectedVariants;
     if (!left || !right || selectedVariants.length !== 2 || left.initialWorldDigest === right.initialWorldDigest) {

@@ -192,6 +192,7 @@ export async function runVariant(
       presetResourceGrantCount: initialBoundary.presetApplication?.resourceGrantCount ?? 0,
       presetQueuedItemCount: initialBoundary.presetApplication?.queuedItemCount ?? 0,
       determinismGroup: variant.determinismGroup ?? null,
+      ...(variant.supplyBranch ? { supplyBranch: variant.supplyBranch } : {}),
       initialWorldDigest,
       outcomeDigest,
       checkpoints,

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "scenarioIds": ["ECO-04"],
+  "scenarioIds": ["ECO-04", "ECO-05"],
   "purpose": "Deterministic dated ranged-unit resource forecast and useful labor reassignment with a surplus control.",
   "driver": "pure",
   "seeds": [759401, 759402, 759403],
@@ -14,7 +14,7 @@
   },
   "assertionPolicy": {
     "repetitions": 3,
-    "requires": ["catalog-priced-ranged-demand", "wood-labor-assignment", "surplus-control", "canonical-digest"],
+    "requires": ["catalog-priced-ranged-demand", "aggregate-queued-upgrade-expansion-supply-demand", "wood-labor-assignment", "surplus-control", "canonical-digest"],
     "forbids": ["raw-stockpile-only-assignment", "hidden-income-assumption", "unrelated-resource-assignment"]
   }
 }

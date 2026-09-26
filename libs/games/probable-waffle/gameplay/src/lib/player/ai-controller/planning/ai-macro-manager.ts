@@ -678,7 +678,7 @@ export class AiMacroManager implements AiProposalManagerV1 {
     const targetMilitary = openingComplete
       ? pressureDomain === "air"
         ? Math.max(8, state.strategy.assessment?.requiredForce ?? 8)
-        : Math.min(18, Math.max(12, state.strategy.assessment?.requiredForce ?? 12))
+        : 12
       : hasCredibleAiEconomyThreat(observation)
         ? budget.firstForce
         : military.length;

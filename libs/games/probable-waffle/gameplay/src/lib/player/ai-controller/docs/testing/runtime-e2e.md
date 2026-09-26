@@ -71,9 +71,10 @@ Runtime reports retain `execution.wallMs` and `execution.processStarts` alongsid
 fields when comparing a focused case to its natural-map counterpart; do not infer a speedup from simulated ticks alone.
 
 Economy checkpoints also retain ready housing capacity, current population, catalog-priced queued population, and
-ready housing actor names. A queued-supply preset must first prove a real capacity shortfall, then independently observe
-a completed named housing gain before its authored deadline. The oracle is available for ECO-07, but no runtime fixture
-or passing browser evidence is registered for that row yet.
+ready housing actor names. The authored ECO-07 preset pairs a real five-item queue above the initial capacity with an
+otherwise comparable ample-housing control. The positive branch must independently observe a completed Olival gain;
+the control must not construct another while its queued demand fits. Both branches repeat three times. This fixture is
+registered but has not yet been executed or proven in the browser.
 
 A natural-map control that cannot satisfy a focused invariant is not an equivalent correctness oracle or a performance
 baseline. Record that outcome in its issue/handoff without claiming a speedup. The focused fixture remains the
