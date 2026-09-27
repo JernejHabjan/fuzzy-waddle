@@ -447,6 +447,7 @@
     },
     {
       "id": "SEQ-01",
+      "name": "Continuous land-match victory",
       "stages": [15],
       "group": "continuous",
       "fixture": "stage-15-land-loop-runtime.json",
@@ -454,6 +455,7 @@
     },
     {
       "id": "SEQ-02",
+      "name": "Defend a home raid and resume play",
       "stages": [15],
       "group": "continuous",
       "fixture": "stage-15-land-loop-runtime.json",
@@ -461,7 +463,15 @@
     },
     { "id": "SEQ-03", "stages": [15], "group": "continuous", "fixture": null, "drivers": ["runtime"] },
     { "id": "SEQ-04", "stages": [15], "group": "continuous", "fixture": null, "drivers": ["runtime"] },
-    { "id": "SEQ-05", "stages": [15], "group": "continuous", "fixture": null, "drivers": ["runtime"] },
+    {
+      "id": "SEQ-05",
+      "name": "Island transport and expansion",
+      "stages": [15],
+      "group": "continuous",
+      "fixture": null,
+      "drivers": ["runtime"],
+      "runtimeSupport": { "status": "deferred_content", "issue": 822, "reason": "No shipped island map" }
+    },
     { "id": "SEQ-06", "stages": [15], "group": "continuous", "fixture": null, "drivers": ["runtime"] },
     { "id": "SEQ-07", "stages": [15], "group": "continuous", "fixture": null, "drivers": ["runtime"] },
     { "id": "SEQ-08", "stages": [15], "group": "continuous", "fixture": null, "drivers": ["runtime"] },

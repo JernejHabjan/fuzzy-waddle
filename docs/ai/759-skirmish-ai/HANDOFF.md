@@ -50,6 +50,11 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
   stage-labelled source/test naming audit remains #821 work, not a reason to renew hashes.
 - Pinned pre-change baseline: `de47f482889db30420692bf4406fba463d7db296`.
 - Manifest authority: `tools/ai/fixtures/skirmish-v1.json`, 121 scenario IDs before variants.
+- The generated [scenario test catalog](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/scenario-catalog.md)
+  joins all 121 requirements to their registered fixtures, spec references, current maps and tick bounds; it does not
+  claim test execution. Its [frozen-map contract](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/test-map-contract.md)
+  is a #816 authoring target, not a shipped map. A manifest/docs-derived catalog check is authored for non-draft PR
+  and `develop` CI. Neither that check nor any scenario test has run in this sweep.
 - Completed prerequisites: #824 repository tooling and #825 current-content domain/transport foundation.
 - Current issues: #815, #816, active #827, and prerequisite #829. The latest SEQ-01 diagnostic is
   `1789968100579-failed.json` (2 variants, 24,040 aggregate ticks, 248,878 ms). Skaduwee found the bridge ground
@@ -242,8 +247,9 @@ not block this gate.
 - #816 CI scaffolding now derives fail-closed required runtime shards directly from manifest group/fixture pairs and
   registers a non-draft PR job with retained reports/traces. Selector unit cases are authored but unrun. It will fail
   until all supported core rows have real runnable recipes; do not mark #816 complete or switch the draft PR to ready.
-  `DOMAIN-03`, `DOMAIN-04`, and `H-29` runtime rows are explicitly `deferred_content` to optional #822 because no
-  island map ships; their pure rows remain required. This removes the island content dependency, not the core gap.
+  `DOMAIN-03`, `DOMAIN-04`, `H-29`, and `SEQ-05` runtime rows are explicitly `deferred_content` to optional #822 because no
+  island map ships; the first three pure rows remain required, while `SEQ-05` is runtime-only. This removes the island
+  content dependency, not the core gap.
 - #815 preparation: ECO-04 and ECO-07 now have authored typed pure subject/control fixtures for dated-resource labor and
   queued-population supply, including once-only housing commitments and three-run proposal digests. Their manifest
   registration and runner selection are wired but not executed; required real-runtime counterparts remain unimplemented
@@ -343,8 +349,9 @@ not block this gate.
   evidence.
 - The pure brain is used for configured skirmishes; unresolved player/faction identity still falls back to the legacy
   behavior tree. #820 owns evidence-backed removal.
-- Required manifest-derived pre-merge runtime CI, isolated pinned-baseline execution, D-06 calibration, and soaks do not
-  yet exist. Authored rows or one-time local passes are not release evidence.
+- The manifest-derived pre-merge runtime CI wiring exists but is intentionally fail-closed while supported rows lack
+  executable recipes. Isolated pinned-baseline execution, D-06 calibration, and soaks do not yet exist. Authored rows
+  or one-time local passes are not release evidence.
 
 ## Execution and retirement rules
 

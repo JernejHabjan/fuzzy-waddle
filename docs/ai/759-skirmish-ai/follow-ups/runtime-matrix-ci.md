@@ -20,13 +20,14 @@ preset-world fixtures before scaling the remaining focused runtime families; ret
 Read only:
 
 1. `libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/runtime-e2e.md`
+   and its linked generated scenario catalog and frozen test-map contract
 2. `apps/portal-e2e/src/e2e/skirmish-ai-runtime.spec.ts`
 3. `tools/ai/run-skirmish-matrix.mjs` and the selected manifest rows/runtime recipe
 4. the first failing authority path named by the compact report
 5. `.github/workflows/pull-request-checks.yml` and `develop-ci.yml` only when wiring CI
 
-Current closeout count was 10 of 120 runtime-required rows mapped. Recalculate first. The runtime spec is parameterized;
-running its IDE gutter entry without `AI_SKIRMISH_RUNTIME_REQUEST` is not scenario evidence.
+Read the generated catalog for the current registered/required counts; it does not claim passing evidence. The runtime
+spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME_REQUEST` is not scenario evidence.
 
 ## Implementation order
 
@@ -39,9 +40,11 @@ running its IDE gutter entry without `AI_SKIRMISH_RUNTIME_REQUEST` is not scenar
    Prefer #826's preset-world mode when unrelated opening/map prerequisites do not belong to the behavior under test.
 4. Diagnose the earliest disagreement in this order: observation, demand/mission, intent/claim, shared application,
    outcome, cleanup. Batch related repairs and run focused Jest before one grouped browser rerun.
-5. Cover both factions and representative sides/seeds on currently authored maps. Consume the code-adjacent
-   domain/transport contracts. Island-only variants remain visible `deferred_content` under optional #822; never claim
-   them or synthetic flying-container coverage without registered capabilities.
+5. Author frozen test maps and migrate deterministic browser recipes per the code-adjacent test-map contract. Keep
+   mutable shipped-map playtests as separate compatibility evidence, not the stable CI oracle. Cover both factions and
+   representative sides/seeds; consume the domain/transport contracts. Island-only variants remain visible
+   `deferred_content` under optional #822; never claim them or synthetic flying-container coverage without registered
+   capabilities.
 6. First record each row as supported or explicitly deferred with its owner. Then derive isolated CI shards by stable
    manifest family from that status; do not copy scenario IDs into workflow YAML. Fail the selector when a supported
    runtime-required row has no recipe, no shard, or no runnable command. A clean worker may run one Phaser/Playwright

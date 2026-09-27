@@ -48,6 +48,13 @@ observation -> demand/mission -> intent/claim -> command application -> outcome 
 
 `tools/ai/fixtures/skirmish-v1.json` owns the required IDs, driver requirement, fixture registration and baseline compatibility. Typed fixture builders and assertions own setup and expected behavior. The coverage gate must fail when a supported required row is missing rather than reducing the denominator.
 
+The [generated scenario catalog](scenario-catalog.md) joins every manifest ID to its requirement, registered pure fixture,
+ID-referencing specs, and real-game recipe/map/checkpoint data. It reports wiring, not passing evidence. Edit the
+linked requirement and fixture sources, then regenerate with `pnpm ai:skirmish:catalog -- --write`; the non-draft PR
+and `develop` CI jobs check that the catalog stays synchronized. Existing browser recipes still use changing product
+maps; [frozen test maps](test-map-contract.md) and their migration remain implementation work under #816. Until that
+migration is done, do not describe a changing-map run as a stable reference-map regression.
+
 The current catalog contains 121 named cases before variants. Most still require fixture/runtime implementation; see [the handoff](../../../../../../../../../../docs/ai/759-skirmish-ai/HANDOFF.md).
 
 Detailed requirements are split by concern:

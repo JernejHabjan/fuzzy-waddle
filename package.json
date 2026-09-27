@@ -17,6 +17,7 @@
     "ai:skirmish:production": "node tools/ai/run-skirmish-matrix.mjs --scenarios PRO-01,PRO-02,PRO-03,PRO-04,PRO-05,PRO-06,PRO-07 --mode runtime",
     "ai:skirmish:land-sequences": "node tools/ai/run-skirmish-matrix.mjs --scenarios SEQ-01,SEQ-02 --mode runtime",
     "ai:skirmish:report": "node tools/ai/summarize-skirmish-report.mjs",
+    "ai:skirmish:catalog": "node tools/ai/generate-skirmish-test-catalog.mjs",
     "ai:skirmish:report:failures": "node tools/ai/summarize-skirmish-report.mjs --failures-only --details",
     "ai:tools:test": "node --test tools/ai/*.test.mjs tools/eslint-plugin-fuzzy-waddle/*.test.mjs tools/skills/*.test.mjs",
     "agent:tools:test": "node --test tools/agent/*.test.mjs",

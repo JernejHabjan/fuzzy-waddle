@@ -22,9 +22,10 @@ Recommended CI tiers:
 
 The pull-request workflow now derives one runtime shard per manifest group/fixture and refuses to produce a required
 matrix while a supported row has no executable recipe. It skips draft PRs; making the PR ready for review enables the
-gate. At present the gate is intentionally red because core runtime rows remain unmapped. The three island-only runtime
-rows `DOMAIN-03`, `DOMAIN-04`, and `H-29` are explicitly visible as `deferred_content` for optional #822; their pure
-contracts remain required. Do not remove those rows from the manifest or mistake this CI wiring for passing coverage.
+gate. At present the gate is intentionally red because core runtime rows remain unmapped. The four island-only runtime
+rows `DOMAIN-03`, `DOMAIN-04`, `H-29`, and `SEQ-05` are explicitly visible as `deferred_content` for optional #822.
+The first three still require pure contracts; `SEQ-05` requires runtime evidence when an island map ships. Do not
+remove those rows from the manifest or mistake this CI wiring for passing coverage.
 
 The current browser driver starts a local skirmish with one human and AI players. It exercises the real lobby, Phaser
 world, command bus, and shared command application, but it does not activate socket-backed multiplayer lockstep because

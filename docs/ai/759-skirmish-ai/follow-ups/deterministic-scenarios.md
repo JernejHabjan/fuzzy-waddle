@@ -18,13 +18,13 @@ tooling contract.
 Read only:
 
 1. `libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/README.md`
-2. the selected family document under that directory
+2. its linked generated scenario catalog and the selected family requirement document
 3. `tools/ai/fixtures/skirmish-v1.json` rows for the chosen family
 4. the owning manager and adjacent spec
 5. scenario builders/runners under `gameplay/src/lib/player/ai-controller/testing/`
 
-The latest completed family maps PRO-01–05, yielding 45 of 111 pure-required rows mapped. Recalculate before editing;
-never copy that number into logic. Keep same-type units/buildings legal when causal demand remains.
+Read the generated catalog for the current registered/required counts. Its fixture and spec links are navigation, not
+passing evidence; never copy a count into logic. Keep same-type units/buildings legal when causal demand remains.
 
 ## Implementation order
 
