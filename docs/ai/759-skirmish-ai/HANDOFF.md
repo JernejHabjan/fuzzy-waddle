@@ -108,6 +108,9 @@ not block this gate.
   otherwise identical safe world. Its independent oracle requires visible contact, a defense-favoring committed budget,
   an actual defense squad plus later applied command, and worker/income growth in the safe control. This is unrun;
   final-gate repair must establish real reaction and control growth rather than weaken the oracle.
+  STRAT-01 also has a typed pure paired world: visible local raid versus safe, last-seen, and remote-contact controls,
+  with three repeated decision digests, budget/workforce assertions, and bounded recovery. Its manifest and pure Jest
+  selector are wired, but neither the pure case nor the browser pair has been executed.
 
 - ECO-08 now has an authored three-repeat focused workforce variant from an exact 200-resource start: six real
   workers, two Fields, a Granary, and an independent oracle requiring growth/retention above six plus delivered

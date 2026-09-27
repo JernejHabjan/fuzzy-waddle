@@ -170,7 +170,8 @@
     },
     {
       "id": "STRAT-01", "stages": [6, 9], "group": "strategy",
-      "fixture": "focused-pressure-budget-runtime.json", "drivers": ["pure", "runtime"]
+      "fixture": "focused-pressure-budget-runtime.json",
+      "authoredFixture": "pressure-strategy-scenarios.json", "drivers": ["pure", "runtime"]
     },
     { "id": "STRAT-02", "stages": [9, 13], "group": "strategy", "fixture": null, "drivers": ["pure", "runtime"] },
     { "id": "STRAT-03", "stages": [9, 13], "group": "strategy", "fixture": null, "drivers": ["pure", "runtime"] },

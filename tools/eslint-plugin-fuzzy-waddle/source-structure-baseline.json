@@ -665,7 +665,7 @@
   "libs/platform/identity/src/lib/social/friendship.ts": "584441083e1a456e92ea6a7bafa0a5d8dea79c88f6c58b1568e224536850ecc7",
   "libs/platform/identity/src/lib/social/social-dtos.ts": "159a251a6e36e9f2176fd1e323aa57ea016104e091d636936b51479371365092",
   "libs/platform/identity/src/lib/social/social-identifiers.ts": "8bcb30af1d74ba618fb4560463d6dec708fd32be31e0a4dc45b1af62e545148c",
-  "tools/ai/run-skirmish-matrix.mjs": "f964e7daa3dc5b07f0c812fbf0149c918e39321ff9e2d897f3df6eb9abff95ba",
+  "tools/ai/run-skirmish-matrix.mjs": "a24abc5f7fd6e0fa187579381ca838b19a6ed7a70107d331484bac3bd735ea4f",
   "tools/ai/summarize-skirmish-report.mjs": "2434b66c17b70913dee0d20e46d63d41fba9444078fde6ece5227b8a2b5b9d1d",
   "tools/phaser-editor/validate-project.mjs": "367ae4bb18a0cbd4c7afdca656da24c49f591afc0de5fe9ac9022c07fd4e19bd",
   "tools/testing/angular/mocks/phaser.js": "7d5668d403f26e733ed51b7b3c5d0dc4839b3ecbfcc937bba933cb4ce2e9b49b"
