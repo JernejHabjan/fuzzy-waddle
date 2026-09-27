@@ -34,8 +34,11 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
   pure/runtime execution, and shared I/O to focused modules; the CLI remains the dispatch/replay/report owner under
   400 physical lines, and its source-structure exemption was removed. The final gate must compare scenario selection,
   malformed-fixture rejection, pure/runtime report shape, replay/compare provenance, and CLI exit behavior. The Phaser
-  observation pipeline (~1,468 lines) and compound brain-state/invariant/serializer owners remain #821 debt; do not
-  silently renew their hash exemptions. Plan compatibility before changing persisted IDs. Notify the user before the
+  observation pipeline (~1,468 lines) remains #821 debt. The brain-state contract now has one persisted slice per
+  type-only file behind its old import surface; the validator delegates to focused observation, transport, squad and
+  dependency-edge owners; the canonical-value type is separate from serialization. Their three old baseline entries
+  were removed, but none of these edits has passed type/lint/save/replay proof. Do not silently renew other exemptions.
+  Plan compatibility before changing persisted IDs. Notify the user before the
   final gate; do not remove legacy fallback, tune difficulty, or claim performance improvement without evidence.
 - Pinned pre-change baseline: `de47f482889db30420692bf4406fba463d7db296`.
 - Manifest authority: `tools/ai/fixtures/skirmish-v1.json`, 121 scenario IDs before variants.

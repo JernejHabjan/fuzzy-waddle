@@ -21,6 +21,12 @@ All paths below are repository-relative. Resolve against the checkout, not a fix
 
 Use one exported substantive type/class per file and existing path aliases. Reuse `PlayerNumber`, actor ID, `ObjectNames`, `ResourceType`, faction/order/command types rather than copying the illustrative string IDs from the research document. Add named plan/squad/claim IDs where needed. Stable collections serialize as sorted arrays; convert to lookup maps inside pure reducers if useful.
 
+The persisted brain-state import surface is `contracts/ai-brain-state-v1.ts`; each state slice is defined in one
+`contracts/brain-state/` file. `contracts/validate-ai-contracts-v1.ts` retains the validation import surface,
+delegating to focused brain, observation, dependency-edge, transport and squad validators. Canonical JSON values live
+in `brain/canonical-ai-value.ts`, while `brain/canonical-ai-serialization.ts` owns deterministic ordering and digests.
+These boundaries do not change persisted schema names or serialized field order.
+
 ## Brain composition and lifecycle
 
 One host-owned brain per AI player. `PlayerAiController` owns cadence and lifecycle; `AiBrain.step(observation, previousState, orderedOutcomes)` is the pure decision boundary and returns `{nextState, acceptedIntents, trace, debugSnapshot}`. Managers receive read-only data and produce proposals. The runtime adapter applies no strategic choice after arbitration except revalidation/rejection.

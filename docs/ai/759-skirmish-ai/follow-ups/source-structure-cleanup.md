@@ -46,9 +46,9 @@ large files, stage-labelled persisted IDs/fixtures, and ordinary implementation 
    modules; its baseline entry is removed. Final-gate fixture, scenario, report, and replay proof is still required.
    The Playwright variant runner's setup/initial-world verification was split into a separate focused module; check
    both module boundaries at the final gate before considering its #821 slice complete.
-   The #829 committed-workforce debug slice narrowly changed the legacy macro owner, compound brain-state contract,
-   invariant validator, and canonical serializer. Their four reviewed hash exceptions must be removed by
-   responsibility-based splits before #821 closes; the new high-level debug projector itself remains below limits.
+   The #829 committed-workforce debug slice's macro, brain-state contract, invariant validator, and canonical
+   serializer have now been split by responsibility and their four reviewed hash exceptions removed. Final-gate
+   type/lint/save/replay evidence is required before #821 closes; the debug projector remains below limits.
    The STRAT-01 paired pressure recipe changed the oversized matrix fixture validator; its reviewed hash remains a
    temporary exception until fixture validation moves into a bounded owner.
 2. Rename stage/phase filenames, symbols, comments, test descriptions, and non-persisted diagnostics by responsibility.

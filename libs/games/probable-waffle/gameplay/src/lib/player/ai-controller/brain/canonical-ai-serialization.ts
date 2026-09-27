@@ -1,8 +1,6 @@
 import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
 import type { AiObservationV1 } from "../contracts/ai-observation-v1";
-
-type JsonPrimitive = string | number | boolean | null;
-type CanonicalValue = JsonPrimitive | readonly CanonicalValue[] | { readonly [key: string]: CanonicalValue };
+import type { CanonicalValue } from "./canonical-ai-value";
 
 /** Recursively sorts object keys and rejects values that cannot cross a deterministic boundary. */
 export function canonicalizeAiValue(value: unknown, path = "$"): CanonicalValue {
