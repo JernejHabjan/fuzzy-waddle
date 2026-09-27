@@ -81,6 +81,22 @@ describe("decideAiEconomyPolicy", () => {
     expect(policy.desiredFoodSources).toBe(4);
   });
 
+  it("defers optional worker growth during a credible near-term finishing mission", () => {
+    const workers = Array.from({ length: 8 }, (_, index) => createAiTestOwnedActor(`worker-${index}`));
+    const observation = {
+      ...createAiTestObservation(),
+      actors: [...workers, foodSource("food", 12)],
+      resources: [{ ...createAiTestObservation().resources[0], stockpile: 0 }]
+    };
+    const forecast = [{ resourceType: ResourceType.Wood, amount: 1200 }];
+    const growing = decideAiEconomyPolicy(observation, catalog, forecast);
+    const finishing = decideAiEconomyPolicy(observation, catalog, forecast, false, undefined, true);
+
+    expect(growing.desiredWorkers).toBeGreaterThan(workers.length);
+    expect(finishing.desiredWorkers).toBe(workers.length);
+    expect(finishing.posture).toBe("safe");
+  });
+
   it("prices worker and army food together while reserving labor for other resources", () => {
     const workers = Array.from({ length: 6 }, (_, index) => createAiTestOwnedActor(`worker-${index}`));
     const observation = {

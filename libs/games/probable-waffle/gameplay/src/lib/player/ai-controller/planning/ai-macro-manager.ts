@@ -738,7 +738,11 @@ export class AiMacroManager implements AiProposalManagerV1 {
       catalog,
       pressureForecast,
       state.strategy.stance === "defend",
-      state.economyProduction.posture
+      state.economyProduction.posture,
+      state.strategy.assessment?.choice === "finish" &&
+        state.strategy.assessment.readyForce >= state.strategy.assessment.requiredForce &&
+        state.strategy.assessment.expectedEffectTick !== null &&
+        state.strategy.assessment.expectedEffectTick <= observation.tick + 600
     );
     const desiredFoodSources =
       openingComplete && foodSourceEntry ? economyPolicy.desiredFoodSources : 0;

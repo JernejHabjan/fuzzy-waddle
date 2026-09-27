@@ -119,6 +119,9 @@ not block this gate.
   three-repeat pure route-pair fixture and typed manager cases for direct worker attack, pending-core scouting fallback,
   and deterministic assessment. These are unrun and are not runtime/SEQ-01 victory proof; final-gate execution must
   check that non-actionable pending targets do not keep a stale attack mission alive.
+  A near-term, ready finishing assessment now defers optional worker growth, while a safe world with no such
+  assessment keeps growing; an unrun pure pair covers this policy. Final-gate runtime evidence must ensure this
+  does not starve a failed finish or suppress necessary replacement after the mission ends.
 
 - ECO-08 now has an authored three-repeat focused workforce variant from an exact 200-resource start: six real
   workers, two Fields, a Granary, and an independent oracle requiring growth/retention above six plus delivered

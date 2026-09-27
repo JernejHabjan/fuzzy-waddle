@@ -85,7 +85,8 @@ export function decideAiEconomyPolicy(
     readonly status: "safe" | "pressured" | "emergency";
     readonly enteredTick: number;
     readonly lastThreatTick: number | null;
-  }>
+  }>,
+  finishCommitted = false
 ) {
   const self = observation.actors.filter((actor) => actor.relation === "self" && actor.visibility === "owned");
   const workers = self.filter((actor) =>
@@ -148,7 +149,9 @@ export function decideAiEconomyPolicy(
     lastThreatTick: credibleThreat ? observation.tick : (previousPosture?.lastThreatTick ?? null)
   } as const;
   const safeTarget = Math.min(WORKER_LIMIT, capacity, Math.max(WORKER_FLOOR, workers.length + demandGrowth));
-  const desiredWorkers = posture === "safe" ? safeTarget : Math.max(WORKER_FLOOR, workers.length);
+  const desiredWorkers = posture === "safe" && !finishCommitted
+    ? safeTarget
+    : Math.max(WORKER_FLOOR, workers.length);
   const foodForecast = forecasts.find((forecast) => forecast.resourceType === ResourceType.Food)?.amount ?? 0;
   const foodAvailable =
     availableStockpile(observation, ResourceType.Food) + projectedIncome(observation, ResourceType.Food);
