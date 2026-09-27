@@ -10,6 +10,9 @@ The 600-tick resource forecast prices only the unmet portion of current demands 
 Labor prioritizes the largest forecast deficit rather than the smallest raw stockpile. Food-consuming military demand
 establishes bounded renewable Field capacity before the stockpile is exhausted; observed actors, queues, construction
 and accepted effects remain disjoint commitments.
+When no idle worker is available, a clearly priced shortage may transfer one unloaded Gather worker from a different
+resource with at least 100 spendable surplus beyond its forecast. The donor source retains at least one worker;
+returning and cargo-bearing workers keep their orders. The transfer is suppressed without 100 units of target deficit.
 
 Opening checkpoints record historical progression; they are not lifetime uniqueness locks. Current demands separately
 replace destroyed prerequisites and scale useful duplicate capacity. Construction prerequisites come from runtime

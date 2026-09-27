@@ -143,7 +143,7 @@
   "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-fortification-manager.spec.ts": "9103e586f2ca44e79e5d9abcf74ead671e5084142c883c5e45a49afd022c5ef2",
   "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-fortification-manager.ts": "81623284db289c7f89eb5fd3f3f1ee87082aa31049a185e0f47c01796a64f17c",
   "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-macro-manager.spec.ts": "fd3e392fe5900f6c34b919ebff0bf729952f150cf669fbb8146f95f657037421",
-  "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-macro-manager.ts": "05f2c08a934242b58fe64e395857fc1d7a42786ea52aef973c27c2b6c92eb1b5",
+  "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-macro-manager.ts": "4eba57858a0557dca3829b238ae0ba69be20ffeb1c9a176f750a4c3b09166dc3",
   "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-manager-proposal.ts": "b720d278a1d23273a135bcced85372d55edfc6983dffe4a9ae5a0c1004b04464",
   "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-recovery-manager.spec.ts": "4baa8f0cc7dc4ff139aec1c83f60221aba2da3cbff49fae987b59f77a079fa26",
   "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-recovery-manager.ts": "707d77aecd51e26164c320472cdc7ca1c52a617abf2a13a284b214eb1222dc94",

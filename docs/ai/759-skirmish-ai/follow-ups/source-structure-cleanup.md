@@ -39,6 +39,9 @@ large files, stage-labelled persisted IDs/fixtures, and ordinary implementation 
 
 1. Split one responsibility cluster at a time. Preserve public imports with a temporary barrel only when consumers need
    it; remove aliases once all callers migrate.
+   The macro owner is a concrete #821 cleanup target: the ECO-05 surplus-transfer integration changed its reviewed
+   hash baseline while leaving it over 400 lines. Extract opening, labor, housing, food, and construction proposal
+   responsibilities, then remove its baseline entry. Do not renew the hash again instead of splitting.
 2. Rename stage/phase filenames, symbols, comments, test descriptions, and non-persisted diagnostics by responsibility.
 3. Remove `V1` from ordinary implementations. Keep it on save/wire/repro/fixture/report schemas unless a compatible
    migration and schema-version policy are supplied.

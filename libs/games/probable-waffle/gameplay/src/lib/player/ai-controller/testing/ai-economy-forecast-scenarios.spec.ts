@@ -289,4 +289,67 @@ describe("typed deterministic economy forecast scenarios", () => {
       expect.objectContaining({ kind: "assign_gatherers", resourceType: ResourceType.Food, sourceActorId: "food-source" })
     );
   });
+
+  it("ECO-05: transfers one unloaded gatherer from food surplus to a priced wood deficit", () => {
+    const baseline = world(0, 1000);
+    const allBusy = {
+      ...baseline,
+      actors: baseline.actors.map((actor) => actor.actorId === "worker-0"
+        ? { ...actor, activeOrder: {
+            status: "known" as const, observedTick: 20,
+            value: { orderType: OrderType.Gather, targetActorId: "food-source" }
+          } }
+        : actor)
+    };
+    const runs = Array.from({ length: 3 }, () => proposal(0, 1000, [demand], allBusy));
+    expect(new Set(runs.map(digestCanonicalAiValue)).size).toBe(1);
+    expect(runs[0]?.intents).toContainEqual(expect.objectContaining({
+      kind: "assign_gatherers", actorIds: ["worker-0"], resourceType: ResourceType.Wood,
+      sourceActorId: "wood-source", reasonCode: "economy:surplus_transfer:1:wood"
+    }));
+    const foodScarce = proposal(0, 50, [demand], {
+      ...allBusy,
+      resources: allBusy.resources.map((resource) => resource.resourceType === ResourceType.Food
+        ? { ...resource, stockpile: 50 }
+        : resource)
+    });
+    expect(foodScarce.intents.some((intent) =>
+      intent.kind === "assign_gatherers" && intent.reasonCode.startsWith("economy:surplus_transfer")
+    )).toBe(false);
+  });
+
+  it("ECO-05: leaves returning and loaded workers alone and retains the final food gatherer", () => {
+    const baseline = world(0, 1000);
+    const workers = baseline.actors.map((actor) => {
+      if (actor.actorId === "worker-0") return {
+        ...actor,
+        activeOrder: {
+          status: "known" as const, observedTick: 20,
+          value: { orderType: OrderType.ReturnResources, targetActorId: "producer" }
+        }
+      };
+      if (actor.actorId === "worker-1") return {
+        ...actor,
+        resourceState: { status: "known" as const, observedTick: 20, value: {
+          resourceType: ResourceType.Food,
+          available: unknownAiValue,
+          carried: { status: "known" as const, observedTick: 20, value: 10 },
+          growthReadyTick: unknownAiValue,
+          serviceCapacity: unknownAiValue
+        } }
+      };
+      return actor;
+    });
+    const result = proposal(0, 1000, [demand], { ...baseline, actors: workers });
+    expect(result.intents).toContainEqual(expect.objectContaining({
+      kind: "assign_gatherers", actorIds: ["worker-2"], sourceActorId: "wood-source"
+    }));
+    const oneFoodWorker = proposal(0, 1000, [demand], {
+      ...baseline,
+      actors: baseline.actors.filter((actor) => !actor.actorId.startsWith("worker-") || actor.actorId === "worker-1")
+    });
+    expect(oneFoodWorker.intents.some((intent) =>
+      intent.kind === "assign_gatherers" && intent.reasonCode.startsWith("economy:surplus_transfer")
+    )).toBe(false);
+  });
 });

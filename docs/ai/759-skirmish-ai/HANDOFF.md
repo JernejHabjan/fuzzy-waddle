@@ -99,6 +99,12 @@ not block this gate.
 
 ## Active evidence and boundaries
 
+- ECO-05 now has an unverified conservative surplus-to-deficit labor transfer and pure regressions for deterministic
+  choice, food preservation, return/cargo ownership, and insufficient donor stock. The still-oversized macro owner
+  needed a narrowly reviewed hash-baseline update, not a claim of structural compliance. #821 must split that owner
+  and remove its baseline entry; do not refresh the hash again as a routine lint workaround. Verify behavior and
+  source structure together at the final gate.
+
 - ECO-03 now has a focused browser fixture: two pre-tick workers saturate a definition-backed tree, a third is
   free, and the oracle requires an observed alternate wood-source order without overassignment. Its preset-actor
   ID bridge, oracle tests, and three-repeat recipe are unexecuted; verify them at the final gate before counting

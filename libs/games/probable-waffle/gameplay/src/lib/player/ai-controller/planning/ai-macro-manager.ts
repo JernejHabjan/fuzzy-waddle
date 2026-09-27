@@ -14,6 +14,7 @@ import { projectAiResourceForecasts, selectAiForecastResource } from "./ai-resou
 import { createAiResourceCostClaims } from "./ai-resource-cost-claims";
 import { calculateAiHousingDemand } from "./ai-housing-demand";
 import { proposeAiWorkerRecovery } from "./ai-worker-recovery";
+import { selectAiSurplusLaborTransfer } from "./ai-surplus-labor-transfer";
 
 /** One resolved opening checkpoint; the runtime catalog remains the authority for legality. */
 interface OpeningCheckpointV1 {
@@ -537,39 +538,54 @@ export class AiMacroManager implements AiProposalManagerV1 {
       })
       .find((candidate) => candidate.availableCapacity > 0);
     const gatherSource = gatherCandidate?.actor;
-    if (idleWorkers.length > 0 && gatherSource?.resourceState.status === "known" && constrainedResource) {
-      const selectedWorkers = idleWorkers.slice(0, Math.min(4, gatherCandidate?.availableCapacity ?? 0));
-      const ids = nextIds(state, "gather", ordinal++);
-      intents.push({
-        ...ids,
-        kind: "assign_gatherers",
-        planId: state.opening.plan.planId,
-        demandId: null,
-        lane: "essential_economy",
-        proposedTick: observation.tick,
-        urgencyClass: 0,
-        utility: 980,
-        preconditions: [
-          ...selectedWorkers.map((worker) => ({ kind: "actor_exists" as const, actorId: worker.actorId })),
-          { kind: "actor_exists", actorId: gatherSource.actorId }
-        ],
-        claims: [
-          ...selectedWorkers.map((worker, index) => ({
-            claimId: `${ids.claimId}:worker:${index}` as AiIntentV1["claims"][number]["claimId"],
-            kind: "actor" as const,
-            actorId: worker.actorId
-          })),
-          {
-            claimId: `${ids.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
-            kind: "effect",
-            effectId: ids.effectId
-          }
-        ],
-        reasonCode: `economy:idle_workers:${selectedWorkers.length}:${constrainedResource}`,
-        actorIds: selectedWorkers.map((worker) => worker.actorId),
-        resourceType: constrainedResource,
-        sourceActorId: gatherSource.actorId
-      });
+    if (gatherSource?.resourceState.status === "known" && constrainedResource) {
+      const transferable = idleWorkers.length === 0
+        ? selectAiSurplusLaborTransfer(
+            observation,
+            catalog,
+            state.economyProduction.forecasts,
+            self.filter((actor) => !openingBuilderIds.has(actor.actorId) && !reservedActorIds.has(actor.actorId)),
+            gatherSources,
+            constrainedResource
+          )
+        : undefined;
+      const selectedWorkers = idleWorkers.length > 0
+        ? idleWorkers.slice(0, Math.min(4, gatherCandidate?.availableCapacity ?? 0))
+        : transferable ? [transferable] : [];
+      if (selectedWorkers.length > 0) {
+        const ids = nextIds(state, "gather", ordinal++);
+        intents.push({
+          ...ids,
+          kind: "assign_gatherers",
+          planId: state.opening.plan.planId,
+          demandId: null,
+          lane: "essential_economy",
+          proposedTick: observation.tick,
+          urgencyClass: 0,
+          utility: 980,
+          preconditions: [
+            ...selectedWorkers.map((worker) => ({ kind: "actor_exists" as const, actorId: worker.actorId })),
+            { kind: "actor_exists", actorId: gatherSource.actorId }
+          ],
+          claims: [
+            ...selectedWorkers.map((worker, index) => ({
+              claimId: `${ids.claimId}:worker:${index}` as AiIntentV1["claims"][number]["claimId"],
+              kind: "actor" as const,
+              actorId: worker.actorId
+            })),
+            {
+              claimId: `${ids.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
+              kind: "effect",
+              effectId: ids.effectId
+            }
+          ],
+          reasonCode: `economy:${transferable ? "surplus_transfer" : "idle_workers"}:` +
+            `${selectedWorkers.length}:${constrainedResource}`,
+          actorIds: selectedWorkers.map((worker) => worker.actorId),
+          resourceType: constrainedResource,
+          sourceActorId: gatherSource.actorId
+        });
+      }
     }
     const openingComplete = activeCheckpointId === undefined;
     const workerCheckpoint = checkpointStatus.find((entry) => entry.checkpoint.id === "bootstrap-worker");
