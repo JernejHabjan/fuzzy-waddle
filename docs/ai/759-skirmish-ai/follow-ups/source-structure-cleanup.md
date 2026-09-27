@@ -45,6 +45,8 @@ large files, stage-labelled persisted IDs/fixtures, and ordinary implementation 
    The matrix runner `tools/ai/run-skirmish-matrix.mjs` is a second explicit target: ECO-03 fixture validation
    changed its reviewed baseline. Extract fixture schema validation, scenario selection, execution, and reporting
    into bounded modules, then remove its baseline entry.
+   The Playwright variant runner's setup/initial-world verification was split into a separate focused module; check
+   both module boundaries at the final gate before considering its #821 slice complete.
 2. Rename stage/phase filenames, symbols, comments, test descriptions, and non-persisted diagnostics by responsibility.
 3. Remove `V1` from ordinary implementations. Keep it on save/wire/repro/fixture/report schemas unless a compatible
    migration and schema-version policy are supplied.

@@ -3,11 +3,11 @@ import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
 import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
 import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
 import type { RuntimeCheckpointV1 } from "./skirmish-ai-runtime-checkpoint";
-import { installRuntimeAccessor } from "./skirmish-ai-runtime-browser-accessor";
 import { captureCheckpoint } from "./skirmish-ai-runtime-checkpoint-capture";
 import { last } from "./skirmish-ai-runtime-value";
 import { applyRuntimePerturbation } from "./skirmish-ai-runtime-perturbation-runner";
 import { digestRuntimeValue, projectRuntimeOutcomeDigestInput } from "./skirmish-ai-runtime-digest";
+import { prepareRuntimeVariant } from "./skirmish-ai-runtime-variant-setup";
 
 export async function runVariant(
   browser: Browser,
@@ -30,132 +30,13 @@ export async function runVariant(
     captureMs: number;
   }[] = [];
   let perturbationMs = 0;
-  if (profiling) {
-    await page.addInitScript(() => {
-      const metrics = { count: 0, totalMs: 0, maximumMs: 0 };
-      (window as unknown as { __skirmishPerf?: typeof metrics }).__skirmishPerf = metrics;
-      if (typeof PerformanceObserver === "undefined" || !PerformanceObserver.supportedEntryTypes.includes("longtask")) {
-        return;
-      }
-      new PerformanceObserver((list) => {
-        for (const entry of list.getEntries()) {
-          metrics.count += 1;
-          metrics.totalMs += entry.duration;
-          metrics.maximumMs = Math.max(metrics.maximumMs, entry.duration);
-        }
-      }).observe({ entryTypes: ["longtask"] });
-    });
-  }
   const aiErrors: string[] = [];
-  page.on("console", (message) => {
-    const text = message.text();
-    if (/Error (stepping behaviour tree|updating AI on simulation tick|scheduling next AI step)/i.test(text)) {
-      aiErrors.push(text);
-    }
-  });
-  page.on("pageerror", (error) => {
-    if (/\bAI\b|player-ai|brain/i.test(error.message)) aiErrors.push(error.message);
-  });
   const effectiveSeed = requestedSeed ?? variant.seed;
-  await page.addInitScript(
-    ({ seed, presetWorld, revision, digest }) => {
-      window.sessionStorage.setItem(
-        "fuzzy-waddle:ai-runtime-browser-test-v1",
-        JSON.stringify({
-          schemaVersion: 1,
-          enabled: true,
-          seed,
-          startPaused: true,
-          ...(presetWorld
-            ? { presetWorld: { ...presetWorld, provenance: { sourceRevision: revision, fixtureDigest: digest } } }
-            : {})
-        })
-      );
-    },
-    { seed: effectiveSeed, presetWorld: variant.presetWorld, revision: sourceRevision, digest: fixtureDigest }
-  );
 
   try {
-    await configureLobby(page, fixture, variant);
-    await installRuntimeAccessor(page);
-    await waitForRuntimeController(page, fixture.recipe.aiPlayerNumber);
-    await debugProbe?.(page, -1);
-    if (variant.presetWorld?.queues?.length) {
-      const expected = variant.presetWorld.queues.reduce((count, queue) => count + queue.count, 0);
-      await page.waitForFunction(
-        (count) => {
-          const host = (
-            window as unknown as { __fuzzyWaddleAiRuntimeBrowserTestV1?: { presetApplication?: { queuedItemCount: number } } }
-          ).__fuzzyWaddleAiRuntimeBrowserTestV1;
-          return host?.presetApplication?.queuedItemCount === count;
-        },
-        expected,
-        { timeout: 30_000 }
-      );
-    }
-    const initialBoundary = await page.evaluate((playerNumber) => {
-      const host = (
-        window as unknown as {
-          __fuzzyWaddleAiRuntimeBrowserTestV1?: {
-            game: {
-              scene: {
-                getScenes(active: boolean): {
-                  scene: { key: string };
-                  players?: { playerNumber: number; getResources(): Record<string, number> }[];
-                }[];
-              };
-            };
-            initialStateByPlayer: Record<
-              number,
-              { ownedActorCount: number; workerCount: number; ownedActorNames: string[] }
-            >;
-            presetApplication?: {
-              fixtureId: string;
-              sourceRevision: string;
-              fixtureDigest: string;
-              createdActorNames: string[];
-              createdActorIds: Record<string, string>;
-              resourceGrantCount: number;
-              resourceStartCount: number;
-              queuedItemCount: number;
-              initialOrderCount: number;
-              eventResults: { id: string; tick: number; affectedActors: number; subjectName: string }[];
-            };
-          };
-        }
-      ).__fuzzyWaddleAiRuntimeBrowserTestV1;
-      const state = host?.initialStateByPlayer[playerNumber];
-      if (!state) throw new Error("runtime_initial_state_unavailable");
-      const scene = host?.game.scene.getScenes(true).find((candidate) => candidate.scene.key.startsWith("Map"));
-      const initialResourceBalances = Object.fromEntries(
-        (scene?.players ?? []).map((player) => [player.playerNumber, player.getResources()])
-      );
-      return { state, presetApplication: host?.presetApplication ?? null, initialResourceBalances };
-    }, fixture.recipe.aiPlayerNumber);
-    if (variant.presetWorld) {
-      const application = initialBoundary.presetApplication;
-      if (!application) throw new Error("runtime_preset_application_missing");
-      if (application.fixtureId !== variant.presetWorld.fixtureId) throw new Error("runtime_preset_fixture_mismatch");
-      if (application.sourceRevision !== sourceRevision) throw new Error("runtime_preset_source_mismatch");
-      if (application.fixtureDigest !== fixtureDigest) throw new Error("runtime_preset_digest_mismatch");
-      if (application.resourceStartCount !== (variant.presetWorld.resourceStarts?.length ?? 0)) {
-        throw new Error("runtime_preset_resource_start_mismatch");
-      }
-      for (const start of variant.presetWorld.resourceStarts ?? []) {
-        for (const [resourceType, target] of Object.entries(start.amounts)) {
-          if (initialBoundary.initialResourceBalances[start.playerNumber]?.[resourceType] !== target) {
-            throw new Error(`runtime_preset_resource_start_not_observed:${start.playerNumber}:${resourceType}`);
-          }
-        }
-      }
-      const requestedQueues = variant.presetWorld.queues?.reduce((count, queue) => count + queue.count, 0) ?? 0;
-      if (application.queuedItemCount !== requestedQueues) throw new Error("runtime_preset_queue_mismatch");
-      if (application.initialOrderCount !== (variant.presetWorld.initialOrders?.length ?? 0)) {
-        throw new Error("runtime_preset_initial_order_mismatch");
-      }
-    } else if (initialBoundary.presetApplication) {
-      throw new Error("runtime_unrequested_preset_application");
-    }
+    const initialBoundary = await prepareRuntimeVariant(
+      page, fixture, variant, effectiveSeed, sourceRevision, fixtureDigest, profiling, aiErrors, debugProbe
+    );
     const setupMs = Math.round(performance.now() - variantStartedAt);
     const checkpoints: RuntimeCheckpointV1[] = [];
     const perturbations: { id: string; tick: number; dispatchedActors: number; subjectName: string | null }[] = [];
@@ -312,29 +193,6 @@ export async function runVariant(
   } finally {
     await context.close();
   }
-}
-
-async function configureLobby(
-  page: Page,
-  fixture: RuntimeFixtureV1,
-  variant: RuntimeVariantV1
-): Promise<void> {
-  await page.goto("/aota/skirmish");
-  await page.getByText(variant.mapLabel ?? fixture.recipe.mapLabel, { exact: true }).click();
-  const dismissHint = page.getByRole("button", { name: "Got it" });
-  if (await dismissHint.isVisible()) await dismissHint.click();
-  await page.locator("#faction-1").selectOption({ label: variant.humanFaction });
-  await page.locator(`#faction-${fixture.recipe.aiPlayerNumber}`).selectOption({ label: variant.aiFaction });
-  await page.locator(`#difficulty-${fixture.recipe.aiPlayerNumber}`).selectOption({ label: variant.difficulty });
-  await page.waitForTimeout(150);
-  await page.getByRole("button", { name: "Start Game" }).click();
-  await page.waitForURL(/\/aota\/game$/);
-}
-
-async function waitForRuntimeController(page: Page, aiPlayerNumber: number): Promise<void> {
-  await page.waitForFunction((playerNumber) => !!window.__fuzzyWaddleAiRuntimePartsV1?.(playerNumber), aiPlayerNumber, {
-    timeout: 120_000
-  });
 }
 
 async function waitForSimulationTick(page: Page, aiPlayerNumber: number, targetTick: number): Promise<void> {

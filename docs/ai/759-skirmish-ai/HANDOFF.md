@@ -102,7 +102,9 @@ not block this gate.
 - ECO-08 now has an authored three-repeat focused workforce variant from an exact 200-resource start: six real
   workers, two Fields, a Granary, and an independent oracle requiring growth/retention above six plus delivered
   income by tick 3,000. The old natural opening variants remain. This is unrun and must not be counted as proof
-  until the final gate; repair real world/production issues rather than lowering the >6 acceptance bound.
+  until the final gate; repair real world/production issues rather than lowering the >6 acceptance bound. A #821
+  structural slice moved browser setup and pre-tick verification out of the Playwright variant runner; both parts
+  still require the final-gate type/lint/runtime checks.
 
 - ECO-04 labor ranking now discounts only measured delivered income within the bounded 600-tick horizon. A pure
   known-versus-unknown income case and matrix selector are authored but unrun. This estimate affects worker routing,
