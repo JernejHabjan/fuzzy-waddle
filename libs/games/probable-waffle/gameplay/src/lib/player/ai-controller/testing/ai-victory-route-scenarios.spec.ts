@@ -1,6 +1,7 @@
 import { FactionType, ObjectNames, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
 import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
 import { digestCanonicalAiValue } from "../brain/canonical-ai-serialization";
+import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
 import { buildAiAccessGraphV1 } from "../planning/ai-access-graph-v1";
@@ -55,7 +56,7 @@ function actor(actorId: string, relation: "self" | "enemy", x: number): AiObserv
   };
 }
 
-function world(includeWorker: boolean): AiObservationV1 {
+function world(includeWorker: boolean, tick = 20): AiObservationV1 {
   const core: AiObservedActorV1 = {
     ...actor("enemy-core", "enemy", 2),
     mainBuilding: { status: "known", value: true, observedTick: 20 }
@@ -75,6 +76,7 @@ function world(includeWorker: boolean): AiObservationV1 {
   ];
   return {
     ...createAiTestObservation(),
+    tick,
     actors,
     threatSummary: {
       observedTick: 20,
@@ -91,10 +93,14 @@ function world(includeWorker: boolean): AiObservationV1 {
   };
 }
 
-function proposal(includeWorker: boolean) {
-  return manager.propose(world(includeWorker), createAiBrainStateV1({
+function brain(): AiBrainStateV1 {
+  return createAiBrainStateV1({
     playerNumber: 1, faction: FactionType.Tivara, profile, tick: 0, archetypeId: "balanced"
-  }));
+  });
+}
+
+function proposal(includeWorker: boolean) {
+  return manager.propose(world(includeWorker), brain());
 }
 
 describe("STRAT-07 credible-route priority", () => {
@@ -125,5 +131,44 @@ describe("STRAT-07 credible-route priority", () => {
       digestCanonicalAiValue(proposal(true).statePatch?.strategy?.assessment)
     );
     expect(new Set(digests).size).toBe(1);
+  });
+
+  it("does not turn an expired assembly deadline into a one-unit attack against a visible defender", () => {
+    const defender: AiObservedActorV1 = {
+      ...actor("enemy-defender", "enemy", 1),
+      capabilities: [{
+        id: "enemy-defender:attack", family: "military", level: 1,
+        domains: ["ground"], targetDomains: ["ground"],
+        capacity: { status: "known", value: 0, observedTick: 20 }
+      }]
+    };
+    const baseWorld = world(true);
+    const openWorld = { ...baseWorld, actors: [baseWorld.actors[0]!, ...baseWorld.actors.slice(3)] };
+    const weakWorld = { ...openWorld, actors: [...openWorld.actors, defender] };
+    const initial = brain();
+    const first = manager.propose(weakWorld, initial);
+    const pendingSquads = first.statePatch?.squads;
+    if (!pendingSquads || !first.statePatch?.skirmish) throw new Error("missing_assembly_state");
+    const later = manager.propose(
+      { ...weakWorld, tick: 1300 },
+      { ...initial, squads: pendingSquads, skirmish: first.statePatch.skirmish }
+    );
+
+    expect(later.statePatch?.strategy?.assessment).toEqual(expect.objectContaining({
+      targetActorId: "enemy-worker", readyForce: 1, visibleThreatCount: 1
+    }));
+    expect(later.statePatch?.squads?.find((squad) => squad.role === "attack")?.state).toBe("forming");
+    expect(later.intents.some((intent) => intent.kind === "attack" && intent.targetActorId === "enemy-worker"))
+      .toBe(false);
+
+    const openFirst = manager.propose(openWorld, initial);
+    if (!openFirst.statePatch?.squads || !openFirst.statePatch.skirmish)
+      throw new Error("missing_open_assembly_state");
+    const openLater = manager.propose(
+      { ...openWorld, tick: 1300 },
+      { ...initial, squads: openFirst.statePatch.squads, skirmish: openFirst.statePatch.skirmish }
+    );
+    expect(openLater.intents.some((intent) => intent.kind === "attack" && intent.targetActorId === "enemy-worker"))
+      .toBe(true);
   });
 });

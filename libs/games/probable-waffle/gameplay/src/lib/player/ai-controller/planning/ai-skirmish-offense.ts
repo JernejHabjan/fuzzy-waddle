@@ -78,6 +78,7 @@ function createAttackSquad(
   const timedEngagement =
     assemblyExpired &&
     !severeCounterforce &&
+    (context.assessment?.readyForce ?? 0) > (context.assessment?.visibleThreatCount ?? 0) &&
     requiredForce <= 5 &&
     route?.kind === "direct" &&
     route.domain === "ground" &&

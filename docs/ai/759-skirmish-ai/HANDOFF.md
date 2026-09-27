@@ -122,6 +122,9 @@ not block this gate.
   A near-term, ready finishing assessment now defers optional worker growth, while a safe world with no such
   assessment keeps growing; an unrun pure pair covers this policy. Final-gate runtime evidence must ensure this
   does not starve a failed finish or suppress necessary replacement after the mission ends.
+  The STRAT-07 pure case also pairs an expired one-unit assembly against an undefended worker and a guarded worker;
+  the former may force a bounded launch, the latter must keep forming instead of launching a token attack. This
+  source/test change is unrun and needs the final-gate gameplay verification.
 
 - ECO-08 now has an authored three-repeat focused workforce variant from an exact 200-resource start: six real
   workers, two Fields, a Granary, and an independent oracle requiring growth/retention above six plus delivered
