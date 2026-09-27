@@ -7,6 +7,7 @@ export interface AiRuntimePresetApplicationV1 {
   /** Authoritative actor IDs keyed by authored fixture ID, for independent runtime assertions. */
   readonly createdActorIds: Readonly<Record<string, string>>;
   readonly resourceGrantCount: number;
+  readonly resourceStartCount: number;
   readonly queuedItemCount: number;
   readonly initialOrderCount: number;
   readonly eventResults: readonly {

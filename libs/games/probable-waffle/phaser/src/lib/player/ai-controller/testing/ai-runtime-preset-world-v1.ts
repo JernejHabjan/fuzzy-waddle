@@ -17,6 +17,11 @@ export interface AiRuntimePresetWorldV1 {
     readonly playerNumber: number;
     readonly amounts: Partial<Record<ResourceType, number>>;
   }[];
+  /** Exact pre-tick balances, applied after grants/queue charges and before any AI observation. */
+  readonly resourceStarts?: readonly {
+    readonly playerNumber: number;
+    readonly amounts: Partial<Record<ResourceType, number>>;
+  }[];
   readonly queues?: readonly {
     readonly producerFixtureActorId: string;
     readonly actorName: ObjectNames;

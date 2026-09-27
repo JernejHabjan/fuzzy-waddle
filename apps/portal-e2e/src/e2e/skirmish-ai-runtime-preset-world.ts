@@ -10,6 +10,11 @@ export interface RuntimePresetWorldV1 {
     readonly playerNumber: number;
     readonly amounts: Readonly<Record<string, number>>;
   }[];
+  /** Exact pre-tick balances applied through resource events after grants and queue charges. */
+  readonly resourceStarts?: readonly {
+    readonly playerNumber: number;
+    readonly amounts: Readonly<Record<string, number>>;
+  }[];
   readonly queues?: readonly {
     readonly producerFixtureActorId: string;
     readonly actorName: string;

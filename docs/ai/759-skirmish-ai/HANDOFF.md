@@ -122,6 +122,8 @@ not block this gate.
   ID bridge, oracle tests, and three-repeat recipe are unexecuted; verify them at the final gate before counting
   ECO-03 as real runtime coverage. The matrix runner needed a reviewed temporary source-structure hash update;
   #821 owns its split and removal from the baseline.
+  The fixture now also sets exact pre-tick wood to zero through normal resource events, independently checked by
+  the runner; other balances remain ample. This scoped preset capability and its validation case are unrun.
 
 - Unverified implementation-sweep batch: food runway now sums concurrent worker, standing-workforce and military
   demand; Field count reserves non-food labor; staffed Fields rank above speculative new Fields; worker replacement

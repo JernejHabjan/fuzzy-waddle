@@ -1,6 +1,6 @@
 import { environment } from "@fuzzy-waddle/environments/environment";
 import type Phaser from "phaser";
-import { DamageType, ObjectNames, type PlayerStateResources } from "@fuzzy-waddle/probable-waffle-protocol";
+import { DamageType, ObjectNames, ResourceType, type PlayerStateResources } from "@fuzzy-waddle/probable-waffle-protocol";
 import { emitResource, getPlayer } from "../../../data/scene-data";
 import { getActorComponent } from "../../../data/actor-component";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
@@ -52,6 +52,9 @@ export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, crea
   }
   for (const grant of preset.resourceGrants) {
     if (!validOwners.has(grant.playerNumber)) throw new Error("runtime_preset_resource_owner_unknown");
+  }
+  for (const start of preset.resourceStarts ?? []) {
+    if (!validOwners.has(start.playerNumber)) throw new Error("runtime_preset_resource_start_owner_unknown");
   }
   for (const event of preset.events ?? []) {
     if (!validOwners.has(event.owner)) throw new Error(`runtime_preset_event_owner_unknown:${event.id}`);
@@ -111,6 +114,17 @@ export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, crea
       queuedItemCount += 1;
     }
   }
+  for (const start of preset.resourceStarts ?? []) {
+    const player = getPlayer(scene, start.playerNumber);
+    if (!player) throw new Error("runtime_preset_resource_start_player_missing");
+    for (const resourceType of Object.values(ResourceType)) {
+      const target = start.amounts[resourceType];
+      if (target === undefined) continue;
+      const current = player.getResources()[resourceType] ?? 0;
+      if (target > current) emitResource(scene, "resource.added", { [resourceType]: target - current }, start.playerNumber);
+      if (target < current) emitResource(scene, "resource.removed", { [resourceType]: current - target }, start.playerNumber);
+    }
+  }
   for (const initialOrder of preset.initialOrders ?? []) {
     const worker = createdActors.get(initialOrder.workerFixtureActorId);
     const source = createdActors.get(initialOrder.sourceFixtureActorId);
@@ -128,6 +142,7 @@ export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, crea
     createdActorNames: createdActorNames.sort(),
     createdActorIds,
     resourceGrantCount: preset.resourceGrants.length,
+    resourceStartCount: preset.resourceStarts?.length ?? 0,
     queuedItemCount,
     initialOrderCount: preset.initialOrders?.length ?? 0,
     eventResults: []

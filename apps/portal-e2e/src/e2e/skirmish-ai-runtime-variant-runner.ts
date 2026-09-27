@@ -97,6 +97,14 @@ export async function runVariant(
       const host = (
         window as unknown as {
           __fuzzyWaddleAiRuntimeBrowserTestV1?: {
+            game: {
+              scene: {
+                getScenes(active: boolean): {
+                  scene: { key: string };
+                  players?: { playerNumber: number; getResources(): Record<string, number> }[];
+                }[];
+              };
+            };
             initialStateByPlayer: Record<
               number,
               { ownedActorCount: number; workerCount: number; ownedActorNames: string[] }
@@ -108,6 +116,7 @@ export async function runVariant(
               createdActorNames: string[];
               createdActorIds: Record<string, string>;
               resourceGrantCount: number;
+              resourceStartCount: number;
               queuedItemCount: number;
               initialOrderCount: number;
               eventResults: { id: string; tick: number; affectedActors: number; subjectName: string }[];
@@ -117,7 +126,11 @@ export async function runVariant(
       ).__fuzzyWaddleAiRuntimeBrowserTestV1;
       const state = host?.initialStateByPlayer[playerNumber];
       if (!state) throw new Error("runtime_initial_state_unavailable");
-      return { state, presetApplication: host?.presetApplication ?? null };
+      const scene = host?.game.scene.getScenes(true).find((candidate) => candidate.scene.key.startsWith("Map"));
+      const initialResourceBalances = Object.fromEntries(
+        (scene?.players ?? []).map((player) => [player.playerNumber, player.getResources()])
+      );
+      return { state, presetApplication: host?.presetApplication ?? null, initialResourceBalances };
     }, fixture.recipe.aiPlayerNumber);
     if (variant.presetWorld) {
       const application = initialBoundary.presetApplication;
@@ -125,6 +138,16 @@ export async function runVariant(
       if (application.fixtureId !== variant.presetWorld.fixtureId) throw new Error("runtime_preset_fixture_mismatch");
       if (application.sourceRevision !== sourceRevision) throw new Error("runtime_preset_source_mismatch");
       if (application.fixtureDigest !== fixtureDigest) throw new Error("runtime_preset_digest_mismatch");
+      if (application.resourceStartCount !== (variant.presetWorld.resourceStarts?.length ?? 0)) {
+        throw new Error("runtime_preset_resource_start_mismatch");
+      }
+      for (const start of variant.presetWorld.resourceStarts ?? []) {
+        for (const [resourceType, target] of Object.entries(start.amounts)) {
+          if (initialBoundary.initialResourceBalances[start.playerNumber]?.[resourceType] !== target) {
+            throw new Error(`runtime_preset_resource_start_not_observed:${start.playerNumber}:${resourceType}`);
+          }
+        }
+      }
       const requestedQueues = variant.presetWorld.queues?.reduce((count, queue) => count + queue.count, 0) ?? 0;
       if (application.queuedItemCount !== requestedQueues) throw new Error("runtime_preset_queue_mismatch");
       if (application.initialOrderCount !== (variant.presetWorld.initialOrders?.length ?? 0)) {
@@ -225,6 +248,7 @@ export async function runVariant(
             fixtureDigest: initialBoundary.presetApplication.fixtureDigest,
             createdActorNames: initialBoundary.presetApplication.createdActorNames,
             resourceGrantCount: initialBoundary.presetApplication.resourceGrantCount,
+            resourceStartCount: initialBoundary.presetApplication.resourceStartCount,
             queuedItemCount: initialBoundary.presetApplication.queuedItemCount,
             initialOrderCount: initialBoundary.presetApplication.initialOrderCount
           }
@@ -261,6 +285,8 @@ export async function runVariant(
       presetCreatedActorNames: initialBoundary.presetApplication?.createdActorNames ?? [],
       presetCreatedActorIds: initialBoundary.presetApplication?.createdActorIds ?? {},
       presetResourceGrantCount: initialBoundary.presetApplication?.resourceGrantCount ?? 0,
+      presetResourceStartCount: initialBoundary.presetApplication?.resourceStartCount ?? 0,
+      presetInitialResourceBalances: initialBoundary.initialResourceBalances,
       presetQueuedItemCount: initialBoundary.presetApplication?.queuedItemCount ?? 0,
       presetInitialOrderCount: initialBoundary.presetApplication?.initialOrderCount ?? 0,
       determinismGroup: variant.determinismGroup ?? null,

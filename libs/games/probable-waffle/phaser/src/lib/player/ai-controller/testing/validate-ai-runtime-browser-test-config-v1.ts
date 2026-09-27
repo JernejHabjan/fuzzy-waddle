@@ -14,7 +14,9 @@ function hasOnlyKeys(value: Record<string, unknown>, keys: readonly string[]): b
 }
 
 function validPresetWorld(value: unknown): boolean {
-  if (!isRecord(value) || !hasOnlyKeys(value, ["fixtureId", "provenance", "actors", "resourceGrants", "queues", "initialOrders", "events"])) {
+  if (!isRecord(value) || !hasOnlyKeys(value, [
+    "fixtureId", "provenance", "actors", "resourceGrants", "resourceStarts", "queues", "initialOrders", "events"
+  ])) {
     return false;
   }
   if (typeof value["fixtureId"] !== "string" || !/^[a-z0-9][a-z0-9-]{2,63}$/.test(value["fixtureId"])) return false;
@@ -55,6 +57,21 @@ function validPresetWorld(value: unknown): boolean {
     if (!isRecord(amounts) || !hasOnlyKeys(amounts, [...resourceTypes])) return false;
     const values = Object.values(amounts);
     return values.length > 0 && values.every((amount) => Number.isFinite(amount) && (amount as number) > 0);
+  });
+  const resourceStarts = value["resourceStarts"] ?? [];
+  if (!Array.isArray(resourceStarts) || resourceStarts.length > 16) return false;
+  const startedPlayers = new Set<number>();
+  const validStarts = resourceStarts.every((start) => {
+    if (!isRecord(start) || !hasOnlyKeys(start, ["playerNumber", "amounts"])) return false;
+    const playerNumber = start["playerNumber"];
+    if (typeof playerNumber !== "number" || !Number.isSafeInteger(playerNumber) || playerNumber < 1) return false;
+    if (startedPlayers.has(playerNumber)) return false;
+    startedPlayers.add(playerNumber);
+    const amounts = start["amounts"];
+    if (!isRecord(amounts) || !hasOnlyKeys(amounts, [...resourceTypes])) return false;
+    const values = Object.values(amounts);
+    return values.length > 0 && values.every((amount) => typeof amount === "number" &&
+      Number.isSafeInteger(amount) && amount >= 0 && amount <= 100_000);
   });
   const queues = value["queues"] ?? [];
   if (!Array.isArray(queues) || queues.length > 16) return false;
@@ -101,8 +118,9 @@ function validPresetWorld(value: unknown): boolean {
       actorNames.has(event["objectName"])
     );
   });
-  const workCount = value["actors"].length + value["resourceGrants"].length + queues.length + initialOrders.length + events.length;
-  return validGrants && validQueues && validOrders && validEvents && workCount > 0;
+  const workCount = value["actors"].length + value["resourceGrants"].length + resourceStarts.length +
+    queues.length + initialOrders.length + events.length;
+  return validGrants && validStarts && validQueues && validOrders && validEvents && workCount > 0;
 }
 
 export function isAiRuntimeBrowserTestConfigV1(value: unknown): value is AiRuntimeBrowserTestConfigV1 {

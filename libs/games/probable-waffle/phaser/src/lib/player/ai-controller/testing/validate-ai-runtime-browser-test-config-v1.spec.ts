@@ -70,4 +70,25 @@ describe("runtime preset neutral source validation", () => {
       }
     })).toBe(false);
   });
+
+  it("accepts exact zero-resource starts and rejects duplicate or invalid balances", () => {
+    const withStart = {
+      ...config,
+      presetWorld: { ...config.presetWorld, resourceStarts: [
+        { playerNumber: 2, amounts: { wood: 0, food: 900 } }
+      ] }
+    };
+    expect(isAiRuntimeBrowserTestConfigV1(withStart)).toBe(true);
+    expect(isAiRuntimeBrowserTestConfigV1({
+      ...withStart,
+      presetWorld: {
+        ...withStart.presetWorld,
+        resourceStarts: [...withStart.presetWorld.resourceStarts, ...withStart.presetWorld.resourceStarts]
+      }
+    })).toBe(false);
+    expect(isAiRuntimeBrowserTestConfigV1({
+      ...withStart,
+      presetWorld: { ...withStart.presetWorld, resourceStarts: [{ playerNumber: 2, amounts: { wood: -1 } }] }
+    })).toBe(false);
+  });
 });

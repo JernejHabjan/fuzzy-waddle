@@ -11,6 +11,8 @@ export interface RuntimeVariantResultV1 {
   readonly presetCreatedActorNames: readonly string[];
   readonly presetCreatedActorIds: Readonly<Record<string, string>>;
   readonly presetResourceGrantCount: number;
+  readonly presetResourceStartCount: number;
+  readonly presetInitialResourceBalances: Readonly<Record<number, Readonly<Record<string, number>>>>;
   readonly presetQueuedItemCount: number;
   readonly presetInitialOrderCount: number;
   readonly determinismGroup: string | null;

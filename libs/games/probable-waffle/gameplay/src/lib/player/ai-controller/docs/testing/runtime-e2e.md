@@ -47,7 +47,9 @@ resource grants, legal production queues, source revision, and fixture digest. I
 `SceneActorCreator`, changes resources through player-state events, and seeds authored items in the real
 `QueueComponent` after catalog, tech-tree, and payment checks. `ProductionComponent` then processes those queues in
 normal simulation. Setup runs after ordinary map indexing but before the first simulation tick or AI observation.
-Map selection supplies topology; authored actors supply normal faction vision. Scheduled events are keyed to authoritative
+Exact starting balances may also be set through ordinary add/remove resource events after queue charges; the runner
+independently reads the actual pre-tick player balances and rejects any mismatch. Seeded initial Gather orders are
+ordinary pawn orders, not authored AI outputs. Map selection supplies topology; authored actors supply normal faction vision. Scheduled events are keyed to authoritative
 simulation ticks. The bridge does not expose arbitrary topology rewrites, fog reveals, or clock jumps that could leak
 hidden information. Unknown fields—including brain state, desired decisions, hidden knowledge, or success flags—make
 the bridge fail closed.
@@ -95,8 +97,9 @@ service. Each branch repeats three times; this recipe and its oracle are unexecu
 The authored ECO-03 preset gives two workers ordinary pre-tick Gather orders to the same definition-backed,
 two-slot tree and leaves a third worker available. The runtime oracle uses authoritative fixture-to-actor IDs,
 not prefab names or debug intent text: it requires an observed full source, no overassignment, and an actual
-Gather order to another observed wood source. These are starting-world orders, not AI decisions or a substituted
-brain outcome. This recipe and its oracle are unexecuted until the final validation gate.
+Gather order to another observed wood source. Exact pre-tick stockpiles make wood the scarce resource. These are
+starting-world orders, not AI decisions or substituted brain outcomes. This recipe and its oracle are unexecuted
+until the final validation gate.
 
 A natural-map control that cannot satisfy a focused invariant is not an equivalent correctness oracle or a performance
 baseline. Record that outcome in its issue/handoff without claiming a speedup. The focused fixture remains the

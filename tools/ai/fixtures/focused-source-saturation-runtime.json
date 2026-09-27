@@ -38,6 +38,9 @@
           "resourceGrants": [
             { "playerNumber": 2, "amounts": { "food": 1500, "stone": 1200, "minerals": 1200 } }
           ],
+          "resourceStarts": [
+            { "playerNumber": 2, "amounts": { "food": 1200, "wood": 0, "stone": 1200, "minerals": 1200 } }
+          ],
           "initialOrders": [
             { "workerFixtureActorId": "worker-1", "sourceFixtureActorId": "full-tree", "kind": "gather" },
             { "workerFixtureActorId": "worker-2", "sourceFixtureActorId": "full-tree", "kind": "gather" }

@@ -8,7 +8,8 @@ export function evaluateRuntimePresetWorld(
   const failures: string[] = [];
   if (assertion.requiredPresetFixtureId !== undefined) {
     if (variant.presetFixtureId !== assertion.requiredPresetFixtureId) failures.push(`${variant.variantId}:preset_fixture`);
-    if (variant.presetCreatedActorNames.length + variant.presetResourceGrantCount === 0) {
+    if (variant.presetCreatedActorNames.length + variant.presetResourceGrantCount +
+      variant.presetResourceStartCount + variant.presetInitialOrderCount === 0) {
       failures.push(`${variant.variantId}:preset_zero_work`);
     }
   }
