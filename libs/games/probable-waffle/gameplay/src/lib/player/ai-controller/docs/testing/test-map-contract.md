@@ -40,8 +40,9 @@ test-lobby/game bootstrap. Map selection and exact coordinates belong in the run
   topology; continuous matches use the frozen bridge or open-economy map from a legal start. A test of product-map
   compatibility may run separately against mutable shipped maps and must report the exact map/source digest.
 - Replace broad 12,000-tick production recipes with focused legal preset worlds where the assertion concerns a
-  producer, queue, unit mix or replacement rather than the whole match. Keep a small number of bounded continuous
-  matches to prove opening-to-victory integration. Derive each focused deadline from actual construction, travel and
-  combat costs, then measure wall time; do not shorten a deadline by skipping the authoritative game path.
+  producer, queue, unit mix or replacement rather than the whole match. Target 200–2,000 ticks per focused case and
+  document measured exceptions. Keep a small, separate number of finite continuous matches to prove opening-to-victory
+  integration; those can run longer when real terminal play requires it. Derive deadlines from actual construction,
+  travel and combat costs, then measure wall time; do not shorten a deadline by skipping the authoritative game path.
 - Preserve a fresh game/world per variant even when a CI shard reuses one browser/server process. Failed map setup or
   missing required topology is an infrastructure failure, never a passing AI behavior result.

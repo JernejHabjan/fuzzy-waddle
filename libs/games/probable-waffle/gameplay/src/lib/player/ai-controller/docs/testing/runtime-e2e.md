@@ -59,9 +59,11 @@ Scripted opponent pressure remains a real deterministic human command. It may se
 object name, but combat and AI response remain authoritative Phaser behavior. A focused producer-loss fixture may instead
 apply scheduled lethal damage through the real HealthComponent. The runner must observe a later producer-count drop and
 recovery; the event cannot mark the AI's decision or outcome as successful.
-Each focused deterministic variant runs three isolated repetitions. The runner compares the initial-world digest and the
-scenario's independently evaluated outcome signature. Opaque command IDs, exact accelerated-frame combat totals, and
-behavior unrelated to that scenario are excluded; a changed acceptance milestone remains a deterministic failure.
+The existing focused recipes often run three isolated repetitions; this is migration debt, not the target for every
+pre-merge case. A positive/control pair is two causal worlds, not a request for three repetitions of each. Preserve
+an isolated world per variant. Where repetition is required, compare the initial-world digest and independently
+evaluated outcome signature. Opaque command IDs, exact accelerated-frame combat totals, and unrelated behavior are
+excluded; a changed acceptance milestone remains a deterministic failure.
 
 The first retained focused proofs are:
 
@@ -114,14 +116,33 @@ authoritative `PRO-05` replacement proof; natural recovery behavior remains runt
 Keep natural lobby/map variants for emergent openings, terminal play, calibration, and soaks. Focused presets complement
 those matches and must never replace an invariant whose outcome depends on discovering an unauthored world naturally.
 
-## Repetition and seed policy
+## Tick budgets, repetitions and seeds
 
-- Repeat each focused deterministic fixture three times and compare ordered decisions, authoritative hash, AI digest and first differing normalized path.
-- Run representative supported runtime scenarios with seeds 1–5, mirrored sides and both factions on each available authored map.
-- Expand selected stress scenarios to seeds 1–20.
-- Run difficulty calibration with 20 paired seeds, expanding to at most 100 where uncertainty remains material.
-- Run at least three 60-minute-simulation soaks covering large armies, depleted resources, effects and lifecycle recovery.
-- Freeze final holdout seeds and thresholds before release evaluation; retain failures in the report.
+The authoritative simulation interval is 50 ms: 20 ticks are one simulated second, 2,400 ticks are two simulated
+minutes, and 12,000 ticks are ten simulated minutes. Acceleration changes wall time, not the number of simulated
+ticks or the amount of gameplay work. Record both tick count and wall time.
+
+- Focused preset-world browser cases should normally finish within 200–2,000 ticks (10–100 simulated seconds).
+  A longer focused deadline needs measured construction/travel/combat latency and a written reason in its recipe;
+  do not skip real production, movement or combat merely to meet a budget. Stop at the earliest authoritative
+  acceptance milestone rather than waiting for a distant final checkpoint.
+- Run each positive and control variant once in ordinary PR and required pre-merge coverage. For a scenario whose
+  acceptance explicitly includes repeatability, use at least two identical-start runs and compare normalized
+  decisions, initial-world and outcome digests, reporting the first differing path. Put additional repeats and
+  seed sweeps in scheduled/manual extended coverage. A single run proves a behavior on that seed, not determinism.
+- Existing recipes with three repetitions and broad 12,000-tick schedules are not yet migrated. #816 must change
+  the fixture counts and the `determinismGroup` evaluator contract together, then verify that one-run cases still
+  fail on missing/incorrect outcomes and two-run cases still fail on divergence. Do not silently weaken an existing
+  determinism assertion to save runtime.
+- Keep a small continuous-match execution tier for its existing manifest scenarios, from legal starts. It may take
+  longer than two simulated minutes:
+  set each full-match deadline from measured victory/recovery behavior, retain a finite bound and mandatory terminal
+  result, and report why any increase over the current 12,000-tick SEQ request ceiling is necessary. A longer match
+  must not substitute for missing focused coverage or make a losing AI appear to pass.
+- Cover representative factions/sides and seeds 1–5 on authored maps in extended runs; expand selected stress cases
+  to seeds 1–20. Difficulty calibration uses 20 paired seeds, up to 100 if uncertainty remains material. At least
+  three 60-minute-simulation soaks cover large armies, depleted resources, effects and lifecycle recovery in the
+  scheduled/manual tier, not every PR. Freeze holdout seeds and thresholds before release evaluation.
 
 ## Runtime coverage families
 

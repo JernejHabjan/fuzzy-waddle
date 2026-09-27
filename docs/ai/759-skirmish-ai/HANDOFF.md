@@ -50,6 +50,12 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
   stage-labelled source/test naming audit remains #821 work, not a reason to renew hashes.
 - Pinned pre-change baseline: `de47f482889db30420692bf4406fba463d7db296`.
 - Manifest authority: `tools/ai/fixtures/skirmish-v1.json`, 121 scenario IDs before variants.
+- Latest testing-policy decision (2026-09-27): focused Playwright presets normally target 200–2,000 ticks and one
+  isolated run per positive/control branch; explicit determinism assertions need at least two identical starts.
+  Full-match victory/recovery cases are separate and may run longer than two simulated minutes when a measured,
+  finite deadline is necessary for a real terminal result. At 50 ms/tick, two simulated minutes are 2,400 ticks.
+  Existing three-repeat/12,000-tick recipes are migration work, not an endorsed default. The authoritative policy
+  and exceptions are in [runtime E2E](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/runtime-e2e.md).
 - The generated [scenario test catalog](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/scenario-catalog.md)
   joins all 121 requirements to their registered fixtures, spec references, current maps and tick bounds; it does not
   claim test execution. Its [frozen-map contract](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/test-map-contract.md)
@@ -108,7 +114,7 @@ until one clean replacement run is necessary; do not reconstruct or dump the old
 | 2             | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829) | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof | Sol, high → Terra, high   |
 | 3             | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `in_progress` | Finish sustained pressure/recovery policy; defer victory proof    | Sol, high → Terra, high   |
 | 4             | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `in_progress` | Author remaining typed pure families; execute only at final gate  | Sol, high → Terra, medium |
-| 5             | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Author targeted runtime recipes and CI contracts; do not run yet  | Sol, high → Terra, medium |
+| 5             | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Shorten focused recipes, fix repetition tiers, author maps/CI; do not run yet | Sol, high → Terra, medium |
 | 6             | [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828) | `not_started` | Prepare probes now; measure/optimize only at final gate           | Sol, high → Terra, high   |
 | 7             | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `not_started` | Prepare paired fixtures; baseline/D-06/soaks at final gate        | Sol, high → Terra, medium |
 | 8             | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `not_started` | Author relay/lockstep cases after #816 runtime contract exists    | Sol, high → Terra, high   |
@@ -123,14 +129,39 @@ Do not reorder dependent work merely to avoid a model switch or downgrade a deep
 Optional [#822](https://github.com/JernejHabjan/fuzzy-waddle/issues/822) owns a future island map and natural
 transport-required runtime. It is detached from #759 and does not block core readiness.
 
+## Cross-session testing plan
+
+Follow the dependency grid above; the following #816/final-gate sequence survives a new machine or agent. Current
+fixture schedules and historical 12,000-tick diagnostics remain facts about authored/previous runs, not new policy.
+
+1. During the authoring sweep, inventory each registered browser recipe from the manifest and generated catalog:
+   causal branch count, repetition count, earliest authoritative success/failure milestone, current tick ceiling,
+   map dependency and execution tier. Do not infer passing evidence from registration.
+2. Author frozen open-economy, bridge and fortified test maps plus legal preset worlds. Replace broad production,
+   economy, defense and raid waits with focused 200–2,000-tick cases where possible. Preserve full real command and
+   effect paths; document measured exceptions and leave full legal-start matches separate. No island-map dependency.
+3. Migrate fixture repetition counts and the Playwright `determinismGroup` evaluator in one bounded change: one run
+   per positive/control branch in ordinary PR coverage, at least two identical starts for explicit determinism,
+   extra seeds/repeats and soaks in scheduled/manual coverage. Preserve fail-closed coverage/provenance and CI shard
+   selection. Keep the catalog derived from the manifest/fixtures rather than maintaining parallel scenario counts.
+4. Finish required pure/runtime mappings for supported IDs in the 121-scenario manifest, with the four island-content
+   runtime rows explicit and deferred. Author focused outcomes before relying on the small continuous-match tier.
+   During this sweep, do not execute tests, E2E, simulations, lint, builds or validation under the user direction above.
+5. Before the final gate, tell the user. Then execute focused checks, repair in batches, run required browser shards,
+   measure the shortest credible full-match deadlines, run paired difficulty/performance evidence and extended soaks,
+   and finish code/omission review. A longer full-match deadline is permitted only with documented evidence; preserve
+   mandatory terminal victory/recovery assertions rather than passing on mere survival or elapsed ticks.
+
 ## Final validation gate — not during the implementation sweep
 
 Keep a single deferred gate for all changed behavior and newly authored tests. Do not interpret a passing result from
 an older commit as evidence for newer unverified code. At the gate, run repository doctor/context and smallest focused
 static/unit checks first, repair in batches, then manifest-derived pure and targeted preset-world Playwright groups,
 followed by bounded SEQ-01/02, real multiplayer/lifecycle scenarios, pinned-baseline and D-06 calibration, long-match
-performance comparisons, broader affected checks, and a final code/omission review. Keep the 12,000-tick SEQ ceiling;
-do not use a 30,000-tick natural-match run to paper over missing targeted fixtures. Retain compact reports, exact seeds,
+performance comparisons, broader affected checks, and a final code/omission review. Treat the present 12,000-tick SEQ
+ceiling as a starting measurement, not a universal cap: increase it only if a real full match needs more time and the
+cause, wall cost and finite terminal deadline are recorded. Do not use a long natural match to paper over missing
+targeted fixtures. Retain compact reports, exact seeds,
 digest/provenance, wall time, and known failures in this handoff until each result has a durable owner. Close each
 subissue only after its authored requirements and final-gate evidence both pass; do not claim runtime, difficulty,
 multiplayer, lifecycle, or performance acceptance from unrun tests. #822 island-map content remains optional and must

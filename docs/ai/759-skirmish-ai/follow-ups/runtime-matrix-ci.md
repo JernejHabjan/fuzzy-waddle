@@ -38,6 +38,10 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
 3. Convert one compatible family at a time to an authored recipe with finite checkpoints, deterministic perturbations,
    authoritative assertions, and bounded deadlines.
    Prefer #826's preset-world mode when unrelated opening/map prerequisites do not belong to the behavior under test.
+   Audit current variant counts and tick budgets first: aim for one run per positive/control branch and 200–2,000 ticks
+   for focused cases, with measured exceptions. Keep explicit determinism assertions at two or more identical starts;
+   update the evaluator contract with fixture repetition changes. Full-match victories remain separate, finite and
+   allowed to run longer when terminal behavior requires it. See the code-adjacent runtime E2E policy.
 4. Diagnose the earliest disagreement in this order: observation, demand/mission, intent/claim, shared application,
    outcome, cleanup. Batch related repairs and run focused Jest before one grouped browser rerun.
 5. Author frozen test maps and migrate deterministic browser recipes per the code-adjacent test-map contract. Keep
@@ -71,4 +75,6 @@ terminal results fail the shard.
 - CI shard output is derived from the manifest support status, assigns every supported runtime-required row exactly once,
   and fails closed for missing/unrunnable assignments rather than reducing the required denominator.
 - Optional island-content rows remain explicit, visible, non-passing, and outside the supported core gate.
+- Focused recipes have bounded, justified tick budgets and no redundant PR repetitions; explicit determinism rows
+  still compare at least two runs. Continuous-match rows retain a terminal oracle and evidence-based deadline.
 - Run omission/final closure audits, update coverage counts and operator docs, commit, push, and close #816.
