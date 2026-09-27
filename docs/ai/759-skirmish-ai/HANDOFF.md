@@ -250,11 +250,13 @@ not block this gate.
   control, checking an applied command and completed nearby WorkMill; the evaluator's focused cases are also unrun.
   Final-gate review must verify source visibility, footprint/path legality, accepted-site deduplication, actual travel
   gain, both factions' legal roster, and real runtime income. Do not increase the last validated coverage count yet.
-- ECO-06 is still unmapped. A partial unrun pure edge now asserts that owned carried wood is not spendable and a nearly
-  depleted tree does not cause pointless mill rebuilding; the observation adapter projects carried worker resources.
-  The full destroyed-drop-off, alternate return route, crop-growth, and bounded recovery sequence still needs typed
-  pure and real runtime coverage. The pawn's existing ReturnResources branch can acquire another live drain, but that
-  behavior has not been validated in this sweep.
+- ECO-06 now maps to the resource-service pure fixture. An unrun three-repeat recovery case removes a destroyed
+  drop-off, requires a compatible replacement, leaves a loaded returning worker's order intact, then suppresses
+  rebuilding after service is restored or the source depletes. Carried wood remains unspendable. The manager now
+  prefers idle builders and excludes returning/cargo-bearing workers. This is only partial ECO-06 coverage: alternate
+  return-route behavior, crop-growth legality, bounded in-world recovery, and real Playwright runtime still need
+  targeted authoring and final-gate execution. The pawn's existing ReturnResources branch can acquire another live
+  drain, but that behavior has not been validated in this sweep.
 - #816 preset-world schema/application now permits only definition-backed neutral resource-source actors with an
   explicit null owner. Queue producers remain player-owned. Validator cases are authored but unrun; this enables
   targeted resource-service worlds without counting any new runtime scenario as covered.

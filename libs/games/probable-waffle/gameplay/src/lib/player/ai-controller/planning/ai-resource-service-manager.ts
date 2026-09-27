@@ -144,9 +144,16 @@ export class AiResourceServiceManager implements AiProposalManagerV1 {
         )
       ) continue;
       const builder = workers
-        .filter((actor) => actor.activeOrder?.status !== "known" || actor.activeOrder.value?.orderType !== OrderType.Build)
+        .filter((actor) => {
+          const order = actor.activeOrder?.status === "known" ? actor.activeOrder.value?.orderType : null;
+          const cargo = actor.resourceState.status === "known" ? actor.resourceState.value.carried : null;
+          return order !== OrderType.Build && order !== OrderType.ReturnResources &&
+            !(cargo?.status === "known" && cargo.value > 0);
+        })
         .sort(
           (left, right) =>
+            Number(left.activeOrder?.status === "known" && left.activeOrder.value !== null) -
+              Number(right.activeOrder?.status === "known" && right.activeOrder.value !== null) ||
             distance(position(left) ?? sourcePosition, sourcePosition) -
               distance(position(right) ?? sourcePosition, sourcePosition) ||
             left.actorId.localeCompare(right.actorId)

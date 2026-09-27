@@ -196,4 +196,58 @@ describe("AiResourceServiceManager", () => {
     expect(canAffordAiEconomyCost(observation, { [ResourceType.Wood]: 100 })).toBe(false);
     expect(proposal(observation).intents).toHaveLength(0);
   });
+
+  it("ECO-06: replaces a destroyed drop-off without commandeering a returning loaded worker", () => {
+    const base = world(20);
+    const destroyed: AiObservationV1 = {
+      ...base,
+      actors: base.actors.filter((candidate) => candidate.actorId !== "main").map((candidate) =>
+        candidate.actorId === "worker-1"
+          ? {
+              ...candidate,
+              activeOrder: {
+                status: "known" as const, observedTick: 20,
+                value: { orderType: OrderType.ReturnResources, targetActorId: "main" }
+              },
+              resourceState: {
+                status: "known" as const, observedTick: 20,
+                value: {
+                  resourceType: ResourceType.Wood,
+                  available: unknownAiValue,
+                  carried: { status: "known" as const, value: 3, observedTick: 20 },
+                  growthReadyTick: unknownAiValue,
+                  serviceCapacity: unknownAiValue
+                }
+              }
+            }
+          : candidate
+      )
+    };
+    const runs = Array.from({ length: 3 }, () => proposal(destroyed));
+    expect(new Set(runs.map(digestCanonicalAiValue)).size).toBe(1);
+    const intent = runs[0]?.intents[0];
+    expect(intent).toEqual(expect.objectContaining({ kind: "construct", objectName: ObjectNames.WorkMill }));
+    if (intent?.kind === "construct") expect(intent.builderIds).toEqual(["worker-2"]);
+
+    const restored = { ...destroyed, actors: [...destroyed.actors, actor("restored-mill", ObjectNames.WorkMill, 19, 5)] };
+    expect(proposal(restored).intents).toHaveLength(0);
+    const depleted: AiObservationV1 = {
+      ...destroyed,
+      actors: destroyed.actors.map((candidate) =>
+        candidate.actorId === "forest-b" && candidate.resourceState.status === "known"
+          ? {
+              ...candidate,
+              resourceState: {
+                ...candidate.resourceState,
+                value: {
+                  ...candidate.resourceState.value,
+                  available: { status: "known" as const, value: 3, observedTick: 20 }
+                }
+              }
+            }
+          : candidate
+      )
+    };
+    expect(proposal(depleted).intents).toHaveLength(0);
+  });
 });

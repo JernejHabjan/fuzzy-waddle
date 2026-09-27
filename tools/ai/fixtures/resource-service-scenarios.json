@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "scenarioIds": ["ECO-01", "ECO-02"],
-  "purpose": "Definition-backed compatible wood drop-offs with forest-local placement, useful duplicates and already-served controls.",
+  "scenarioIds": ["ECO-01", "ECO-02", "ECO-06"],
+  "purpose": "Definition-backed wood drop-offs, useful duplicates, destroyed-service replacement, and loaded-worker ownership.",
   "driver": "pure",
   "seeds": [759101, 759102, 759103],
   "context": {
@@ -14,7 +14,7 @@
   },
   "assertionPolicy": {
     "repetitions": 3,
-    "requires": ["definition-backed-resource-compatibility", "legal-local-footprint", "catalog-priced-claim", "beneficial-second-deposit", "canonical-digest"],
-    "forbids": ["one-per-building-type-cap", "incompatible-dropoff", "unneeded-served-forest-deposit"]
+    "requires": ["definition-backed-resource-compatibility", "legal-local-footprint", "catalog-priced-claim", "beneficial-second-deposit", "destroyed-dropoff-replacement", "loaded-worker-order-preservation", "canonical-digest"],
+    "forbids": ["one-per-building-type-cap", "incompatible-dropoff", "unneeded-served-forest-deposit", "depleted-source-rebuild-loop"]
   }
 }
