@@ -1,13 +1,18 @@
 #!/usr/bin/env node
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
-import { dirname, isAbsolute, join, relative, resolve } from "node:path";
+import { writeFileSync, mkdirSync } from "node:fs";
+import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
-import { spawnSync } from "node:child_process";
 import { resolvePinnedBaselineSupport } from "./baseline-adapter-v1.mjs";
-import { runPureJestWithScenarioEvidence } from "./pure-scenario-evidence.mjs";
+import { invokeHarness, invokeSelectedHarness } from "./skirmish-matrix-execution.mjs";
+import {
+  fixtureReference, pureFixtureReference, runtimeFixtureReference, safeReference, validateManifest
+} from "./skirmish-matrix-fixtures.mjs";
+import {
+  digestString, isRecord, readHead, readJson, readWorkingTreeSource, required, requireEnum, requireInteger,
+  requireSha, resolveExplicitPath, workspaceRoot
+} from "./skirmish-matrix-io.mjs";
 
 const toolDirectory = dirname(fileURLToPath(import.meta.url));
-const workspaceRoot = resolve(toolDirectory, "../..");
 const args = parseArguments(process.argv.slice(2));
 if (args.help === true) {
   process.stdout.write(helpText());
@@ -19,9 +24,10 @@ const manifestPath = args.manifest
 const fixtureDirectory = dirname(manifestPath);
 const reportDirectory = args.output ? resolveExplicitPath(args.output) : join(workspaceRoot, "tmp/ai-skirmish-matrix");
 const manifest = readJson(manifestPath, 4 * 1024 * 1024);
+const matrixContext = { manifest, workspaceRoot, fixtureDirectory };
 
 try {
-  validateManifest(manifest);
+  validateManifest(manifest, fixtureDirectory);
   const result = dispatch(args);
   if (result) writeReport(result);
 } catch (error) {
@@ -57,7 +63,7 @@ function runSuite(options) {
     if (rows.length === 0) throw new Error(`missing_stage_coverage:${stage}`);
     const runnable = rows.filter((row) => typeof fixtureReference(row) === "string");
     if (stage === 5 && runnable.length < 4) throw new Error("stage_5_harness_coverage_missing");
-    return invokeSelectedHarness({ suite, stage, rows: runnable, mode: "both", options });
+    return invokeSelectedHarness({ suite, stage, rows: runnable, mode: "both", options }, matrixContext);
   }
   const candidate = requireSha(options.candidate, "candidate");
   const baseline = requireSha(options.baseline, "baseline");
@@ -67,7 +73,9 @@ function runSuite(options) {
     (row) => row.drivers.includes("runtime") && row.runtimeSupport?.status !== "deferred_content" &&
       runtimeFixtureReference(row) === null
   );
-  const missingPure = manifest.rows.filter((row) => row.drivers.includes("pure") && pureFixtureReference(row) === null);
+  const missingPure = manifest.rows.filter(
+    (row) => row.drivers.includes("pure") && pureFixtureReference(row, fixtureDirectory) === null
+  );
   if (missingRuntime.length > 0 || missingPure.length > 0) {
     throw new Error(
       `mandatory_coverage_missing:runtime=${missingRuntime.map((row) => row.id).join(",")};pure=${missingPure
@@ -89,7 +97,7 @@ function runSuite(options) {
     candidate,
     baseline,
     baselineSupport
-  });
+  }, matrixContext);
   const unexecutedBaselineRuntime = baselineSupport
     .filter((support) => support.runtime.status === "supported")
     .map((support) => support.id);
@@ -120,12 +128,12 @@ function runSelectedScenarios(options) {
   const rows = scenarioIds.map((scenarioId) => {
     const row = manifest.rows.find((candidate) => candidate.id === scenarioId);
     if (!row) throw new Error(`unknown_scenario:${scenarioId}`);
-    if (pureFixtureReference(row) === null && runtimeFixtureReference(row) === null) {
+    if (pureFixtureReference(row, fixtureDirectory) === null && runtimeFixtureReference(row) === null) {
       throw new Error(`scenario_fixture_not_implemented:${row.id}`);
     }
     return row;
   });
-  const allHavePure = rows.every((row) => pureFixtureReference(row) !== null);
+  const allHavePure = rows.every((row) => pureFixtureReference(row, fixtureDirectory) !== null);
   const allHaveRuntime = rows.every((row) => runtimeFixtureReference(row) !== null);
   const defaultMode = allHaveRuntime && allHavePure ? "both" : allHaveRuntime ? "runtime" : "pure";
   const mode = requireEnum(options.mode ?? defaultMode, ["pure", "runtime", "both"], "mode");
@@ -135,7 +143,7 @@ function runSelectedScenarios(options) {
         ? null
         : requireInteger(manifest.defaultSeeds[0], "seed", 0, Number.MAX_SAFE_INTEGER)
       : requireInteger(options.seed, "seed", 0, Number.MAX_SAFE_INTEGER);
-  const missingPure = rows.filter((row) => pureFixtureReference(row) === null);
+  const missingPure = rows.filter((row) => pureFixtureReference(row, fixtureDirectory) === null);
   if ((mode === "pure" || mode === "both") && missingPure.length > 0) {
     throw new Error(`scenario_pure_fixture_deferred:${missingPure.map((row) => row.id).join(",")}`);
   }
@@ -145,230 +153,10 @@ function runSelectedScenarios(options) {
   }
   const missingDriver = rows.find((row) => mode !== "both" && !row.drivers.includes(mode));
   if (missingDriver) throw new Error(`scenario_driver_missing:${missingDriver.id}:${mode}`);
-  return invokeSelectedHarness({ suite: scenarioIds.length === 1 ? "single" : "selection", seed, mode, rows, options });
-}
-
-function invokeSelectedHarness(input) {
-  const requestedPure = input.mode !== "runtime";
-  const requestedRuntime = input.mode !== "pure";
-  const pureRows = requestedPure
-    ? input.rows.filter((row) => row.drivers.includes("pure") && pureFixtureReference(row))
-    : [];
-  const runtimeRows = requestedRuntime
-    ? input.rows.filter((row) => row.drivers.includes("runtime") && runtimeFixtureReference(row))
-    : [];
-  const pure = pureRows.length > 0 ? invokeHarness({ ...input, rows: pureRows, mode: "pure" }) : null;
-  const runtime =
-    runtimeRows.length > 0 ? invokeRuntimeHarness({ ...input, rows: runtimeRows, mode: "runtime" }) : null;
-  if (!pure) return runtime;
-  if (!runtime) return pure;
-  return {
-    schemaVersion: 1,
-    status: pure.status === "passed" && runtime.status === "passed" ? "passed" : "failed",
-    suite: input.suite,
-    manifestVersion: manifest.manifestVersion,
-    candidate: input.candidate ?? readHead(),
-    baseline: input.baseline ?? null,
-    rows: input.rows.map((row) => row.id),
-    workCounts: {
-      scenarios: input.rows.length,
-      testSuites: pure.workCounts.testSuites + runtime.workCounts.testSuites,
-      tests: pure.workCounts.tests + runtime.workCounts.tests,
-      decisions: pure.workCounts.decisions + runtime.workCounts.decisions,
-      ticks: pure.workCounts.ticks + runtime.workCounts.ticks
-    },
-    pure,
-    runtime
-  };
-}
-
-function invokeHarness(input) {
-  const environment = {
-    ...process.env,
-    AI_SKIRMISH_MATRIX_REQUEST: JSON.stringify({
-      schemaVersion: 1,
-      manifestVersion: manifest.manifestVersion,
-      suite: input.suite,
-      stage: input.stage ?? null,
-      candidate: input.candidate ?? null,
-      baseline: input.baseline ?? null,
-      seed: input.seed ?? null,
-      mode: input.mode ?? "both",
-      scenarioIds: input.rows.map((row) => row.id),
-      replayArtifactPath: input.options?.artifactPath ?? null,
-      untilTick: input.options?.untilTick ?? null,
-      breakOn: input.options?.breakOn ?? null,
-      baselineSupport: input.baselineSupport ?? null
-    })
-  };
-  const workingTreeSource = input.suite === "stage-smoke" ? readWorkingTreeSource() : "";
-  const workingTreeDigest = workingTreeSource.length > 0 ? digestString(workingTreeSource) : null;
-  const fixtureDigest = digestString(
-    JSON.stringify(
-      input.rows.map((row) => {
-        const reference = pureFixtureReference(row);
-        return { row, fixture: reference ? readJson(join(fixtureDirectory, reference), 1024 * 1024) : null };
-      })
-    )
+  return invokeSelectedHarness(
+    { suite: scenarioIds.length === 1 ? "single" : "selection", seed, mode, rows, options },
+    matrixContext
   );
-  const includesAuthoredTactics = input.rows.some((row) => row.authoredFixture === "stage-13-tactics.json");
-  const includesAuthoredAdaptation = input.rows.some((row) => row.authoredFixture === "stage-14-adaptation.json");
-  const includesAuthoredProduction = input.rows.some((row) => row.authoredFixture === "production-scenarios.json");
-  const includesAuthoredEconomySupply = input.rows.some((row) => row.authoredFixture === "economy-supply-scenarios.json");
-  const includesAuthoredEconomyForecast = input.rows.some(
-    (row) => row.authoredFixture === "economy-forecast-scenarios.json"
-  );
-  const includesAuthoredResourceService = input.rows.some(
-    (row) => row.authoredFixture === "resource-service-scenarios.json"
-  );
-  const includesAuthoredPressureStrategy = input.rows.some(
-    (row) => row.authoredFixture === "pressure-strategy-scenarios.json"
-  );
-  const includesAuthoredVictoryRoute = input.rows.some(
-    (row) => row.authoredFixture === "victory-route-scenarios.json"
-  );
-  const baseTestNames = [
-    "ai-(scenario-harness|runtime-scenario|repro-cli)",
-    "authoritative-state-projection",
-    "actor-manager-ai-save"
-  ];
-  const authoredTestNames = [
-    "ai-(brain|production-scenarios|housing-demand|economy-forecast-scenarios|resource-forecast|resource-service-manager|pressure-strategy-scenarios|victory-route-scenarios)",
-    "ai-(tactics-manager|adaptation-(manager|queue))",
-    "validate-ai-runtime-browser-test-config-v1",
-    "ai-profile-defaults",
-    "player-ai-controller\\.agent\\.static"
-  ];
-  const includeAuthored =
-    includesAuthoredTactics || includesAuthoredAdaptation || includesAuthoredProduction ||
-    includesAuthoredEconomySupply || includesAuthoredEconomyForecast || includesAuthoredResourceService ||
-    includesAuthoredPressureStrategy || includesAuthoredVictoryRoute;
-  const testPathPattern = `(${[...baseTestNames, ...(includeAuthored ? authoredTestNames : [])].join("|")})\\.spec\\.ts$`;
-  const { command, evidence, counts } = runPureJestWithScenarioEvidence({
-    workspaceRoot,
-    environment,
-    testPathPattern,
-    scenarioIds: input.rows.map((row) => row.id)
-  });
-  const report = {
-    schemaVersion: 1,
-    status: command.status === 0 && evidence.missingScenarioIds.length === 0 ? "passed" : "failed",
-    suite: input.suite,
-    manifestVersion: manifest.manifestVersion,
-    candidate: input.candidate ?? readHead(),
-    dirtySourceDigest: workingTreeDigest,
-    fixtureDigest,
-    baseline: input.baseline ?? null,
-    rows: input.rows.map((row) => row.id),
-    pureScenarioEvidence: evidence,
-    contexts: input.rows
-      .filter((row) => pureFixtureReference(row))
-      .map((row) => ({
-        scenarioId: row.id,
-        ...readJson(join(fixtureDirectory, pureFixtureReference(row)), 1024 * 1024).context
-      })),
-    workCounts: {
-      scenarios: input.rows.length,
-      testSuites: counts.testSuites,
-      tests: counts.tests,
-      decisions: 0,
-      ticks: 0
-    },
-    process: { exitCode: command.status, signal: command.signal, stdout: command.stdout, stderr: command.stderr }
-  };
-  if (command.error) throw command.error;
-  if (report.status !== "passed") process.exitCode = 1;
-  return report;
-}
-
-function invokeRuntimeHarness(input) {
-  const startedAt = performance.now();
-  const fixtures = [
-    ...new Map(
-      input.rows.map((row) => {
-        const reference = runtimeFixtureReference(row);
-        return [reference, readJson(join(fixtureDirectory, reference), 1024 * 1024)];
-      })
-    ).values()
-  ];
-  const workingTreeSource = readWorkingTreeSource();
-  const workingTreeDigest = workingTreeSource.length > 0 ? digestString(workingTreeSource) : null;
-  const fixtureDigest = digestString(JSON.stringify(fixtures));
-  const environment = {
-    ...process.env,
-    AI_SKIRMISH_RUNTIME_REQUEST: JSON.stringify({
-      schemaVersion: 1,
-      sourceRevision: input.candidate ?? readHead(),
-      dirtySourceDigest: workingTreeDigest,
-      fixtureDigest,
-      seed: input.seed ?? null,
-      scenarioIds: input.rows.map((row) => row.id),
-      fixtures
-    })
-  };
-  const command = spawnSync(
-    "pnpm",
-    [
-      "exec",
-      "playwright",
-      "test",
-      "apps/portal-e2e/src/e2e/skirmish-ai-runtime.spec.ts",
-      "--config=apps/portal-e2e/playwright.config.ts",
-      "--workers=1"
-    ],
-    { cwd: workspaceRoot, env: environment, encoding: "utf8", maxBuffer: 32 * 1024 * 1024 }
-  );
-  const wallMs = Math.round(performance.now() - startedAt);
-  if (command.error) throw command.error;
-  const runtimeReport = parseRuntimeReport(`${command.stdout}\n${command.stderr}`);
-  const report = {
-    schemaVersion: 1,
-    status: command.status === 0 && runtimeReport?.status === "passed" ? "passed" : "failed",
-    suite: input.suite,
-    manifestVersion: manifest.manifestVersion,
-    candidate: input.candidate ?? readHead(),
-    dirtySourceDigest: workingTreeDigest,
-    fixtureDigest,
-    baseline: input.baseline ?? null,
-    rows: input.rows.map((row) => row.id),
-    contexts: input.rows.map((row) => ({
-      scenarioId: row.id,
-      ...readJson(join(fixtureDirectory, runtimeFixtureReference(row)), 1024 * 1024).context
-    })),
-    workCounts: {
-      scenarios: input.rows.length,
-      testSuites: runtimeReport ? 1 : 0,
-      tests: runtimeReport ? 1 : 0,
-      decisions: runtimeReport?.workCounts?.decisions ?? 0,
-      ticks: runtimeReport?.workCounts?.ticks ?? 0
-    },
-    execution: { wallMs, processStarts: 1 },
-    runtime: runtimeReport,
-    process: { exitCode: command.status, signal: command.signal, stdout: command.stdout, stderr: command.stderr }
-  };
-  if (report.workCounts.decisions <= 0 || report.workCounts.ticks <= 0) {
-    report.status = "failed";
-  }
-  if (report.status !== "passed") process.exitCode = 1;
-  return report;
-}
-
-function parseRuntimeReport(output) {
-  const prefix = "AI_SKIRMISH_RUNTIME_RESULT_V1:";
-  const start = output.lastIndexOf(prefix);
-  if (start < 0) return null;
-  const line = output
-    .slice(start + prefix.length)
-    .split("\n", 1)[0]
-    ?.replace(/\u001b\[[0-9;]*m/g, "")
-    .trim();
-  if (!line) return null;
-  try {
-    const value = JSON.parse(line);
-    return value?.schemaVersion === 1 ? value : null;
-  } catch {
-    return null;
-  }
 }
 
 function replayBundle(options) {
@@ -425,7 +213,7 @@ function replayBundle(options) {
     suite: "replay",
     rows: [scenarioRow(artifact.manifest.replayInputs.scenarioId)],
     options: { ...options, untilTick, breakOn, artifactPath }
-  });
+  }, matrixContext);
 }
 
 function compareBundles(options) {
@@ -473,227 +261,6 @@ function scenarioRow(id) {
   return row;
 }
 
-function validateManifest(value) {
-  if (!value || value.schemaVersion !== 1 || value.manifestVersion !== "skirmish-v1" || !Array.isArray(value.rows))
-    throw new Error("malformed_manifest");
-  if (value.rows.length !== value.requiredCaseCount || value.requiredCaseCount !== 121)
-    throw new Error(`manifest_case_count:${value.rows.length}`);
-  if (!safeReference(value.baseline)) throw new Error("unsafe_baseline_manifest_reference");
-  const ids = new Set();
-  for (const row of value.rows) {
-    if (!row || typeof row.id !== "string" || !/^[A-Z]+-[0-9]{2}$/.test(row.id) || ids.has(row.id))
-      throw new Error(`invalid_manifest_row:${row?.id ?? "unknown"}`);
-    if (
-      !Array.isArray(row.stages) ||
-      row.stages.length === 0 ||
-      row.stages.some((stage) => !Number.isSafeInteger(stage) || stage < 0 || stage > 15) ||
-      !Array.isArray(row.drivers) ||
-      row.drivers.length === 0 ||
-      row.drivers.some((driver) => driver !== "pure" && driver !== "runtime")
-    ) {
-      throw new Error(`incomplete_manifest_row:${row.id}`);
-    }
-    if (row.fixture !== null) {
-      if (!safeReference(row.fixture)) throw new Error(`unsafe_fixture_reference:${row.id}`);
-      const fixture = readJson(join(fixtureDirectory, row.fixture), 1024 * 1024);
-      if (!Array.isArray(fixture.scenarioIds) || !fixture.scenarioIds.includes(row.id)) {
-        throw new Error(`fixture_identity_mismatch:${row.id}`);
-      }
-      if (fixture.evidenceKind !== "runtime" || fixture.driver !== "runtime") {
-        throw new Error(`fixture_not_runtime_evidence:${row.id}`);
-      }
-      validateRuntimeFixture(fixture, row.id);
-    }
-    if (row.runtimeSupport !== undefined && (
-      row.runtimeSupport.status !== "deferred_content" ||
-      row.runtimeSupport.issue !== 822 ||
-      typeof row.runtimeSupport.reason !== "string" ||
-      row.runtimeSupport.reason.length === 0 ||
-      row.fixture !== null ||
-      !row.drivers.includes("runtime")
-    )) throw new Error(`invalid_runtime_support:${row.id}`);
-    if (row.authoredFixture !== undefined) {
-      if (!safeReference(row.authoredFixture)) throw new Error(`unsafe_authored_fixture_reference:${row.id}`);
-      const fixture = readJson(join(fixtureDirectory, row.authoredFixture), 1024 * 1024);
-      if (!Array.isArray(fixture.scenarioIds) || !fixture.scenarioIds.includes(row.id)) {
-        throw new Error(`authored_fixture_identity_mismatch:${row.id}`);
-      }
-    }
-    ids.add(row.id);
-  }
-}
-
-function fixtureReference(row) {
-  return row.fixture ?? row.authoredFixture ?? null;
-}
-
-function pureFixtureReference(row) {
-  return (
-    row.authoredFixture ??
-    (row.fixture && readJson(join(fixtureDirectory, row.fixture), 1024 * 1024).driver === "pure" ? row.fixture : null)
-  );
-}
-
-function runtimeFixtureReference(row) {
-  return row.fixture;
-}
-
-function validateRuntimeFixture(fixture, scenarioId) {
-  const recipe = fixture.recipe;
-  const assertion = fixture.assertions?.[scenarioId];
-  if (
-    !recipe ||
-    typeof recipe.mapLabel !== "string" ||
-    !Number.isSafeInteger(recipe.aiPlayerNumber) ||
-    recipe.aiPlayerNumber <= 0 ||
-    !Number.isFinite(recipe.simulationTimeScale) ||
-    recipe.simulationTimeScale <= 0 ||
-    !Array.isArray(recipe.checkpointTicks) ||
-    recipe.checkpointTicks.length < 2 ||
-    recipe.checkpointTicks.some((tick) => !Number.isSafeInteger(tick) || tick < 0) ||
-    recipe.checkpointTicks.some((tick, index) => index > 0 && tick <= recipe.checkpointTicks[index - 1]) ||
-    !Array.isArray(recipe.variants) ||
-    recipe.variants.length === 0 ||
-    new Set(recipe.variants.map((variant) => variant.id)).size !== recipe.variants.length ||
-    recipe.variants.some(
-      (variant) =>
-        !variant ||
-        typeof variant.id !== "string" ||
-        variant.id.length === 0 ||
-        (variant.scenarioIds !== undefined &&
-          (!Array.isArray(variant.scenarioIds) ||
-            variant.scenarioIds.length === 0 ||
-            variant.scenarioIds.some((id) => !fixture.scenarioIds.includes(id)))) ||
-        !Number.isSafeInteger(variant.seed) ||
-        variant.seed < 0 ||
-        !["Tivara", "Skaduwee"].includes(variant.aiFaction) ||
-        !["Tivara", "Skaduwee"].includes(variant.humanFaction) ||
-        !["Easy", "Normal", "Hard"].includes(variant.difficulty) ||
-        (variant.supplyBranch !== undefined && !["prebuild", "ample_control"].includes(variant.supplyBranch)) ||
-        (variant.pressureBranch !== undefined && !["raid", "safe_control"].includes(variant.pressureBranch)) ||
-        (variant.resourceServiceBranch !== undefined &&
-          !["build", "served_control"].includes(variant.resourceServiceBranch)) ||
-        (variant.mapLabel !== undefined && typeof variant.mapLabel !== "string") ||
-        (variant.perturbations !== undefined &&
-          (!Array.isArray(variant.perturbations) ||
-            variant.perturbations.some(
-              (perturbation) =>
-                !perturbation ||
-                typeof perturbation.id !== "string" ||
-                !Number.isSafeInteger(perturbation.tick) ||
-                perturbation.tick < 0 ||
-                perturbation.kind !== "human_attack_ai_home" ||
-                !Number.isSafeInteger(perturbation.maximumAttackers) ||
-                perturbation.maximumAttackers <= 0
-            )))
-    ) ||
-    !assertion ||
-    !Number.isSafeInteger(assertion.minimumDecisions) ||
-    assertion.minimumDecisions <= 0 ||
-    !Number.isSafeInteger(assertion.minimumAppliedCommands) ||
-    assertion.minimumAppliedCommands <= 0 ||
-    (assertion.requiredOpeningSteps !== undefined &&
-      (!Array.isArray(assertion.requiredOpeningSteps) || assertion.requiredOpeningSteps.length === 0)) ||
-    (assertion.requireNoInitialWorker !== undefined && typeof assertion.requireNoInitialWorker !== "boolean") ||
-    (assertion.requireDeliveredIncome !== undefined && typeof assertion.requireDeliveredIncome !== "boolean") ||
-    (assertion.requiredGroundRouteVariantIds !== undefined &&
-      (!Array.isArray(assertion.requiredGroundRouteVariantIds) ||
-        assertion.requiredGroundRouteVariantIds.some((variantId) => typeof variantId !== "string"))) ||
-    !Array.isArray(assertion.requiredAiFactions) ||
-    assertion.requiredAiFactions.length === 0 ||
-    assertion.requiredAiFactions.some((faction) => !["Tivara", "Skaduwee"].includes(faction)) ||
-    (assertion.requireSupplyControl === true &&
-      !["prebuild", "ample_control"].every((branch) =>
-        recipe.variants.some((variant) =>
-          variant.supplyBranch === branch &&
-          (variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId))
-        )
-      )) ||
-    (assertion.requirePressureResponse !== undefined && typeof assertion.requirePressureResponse !== "boolean") ||
-    (assertion.requirePressureResponse === true &&
-      !["raid", "safe_control"].every((branch) =>
-        recipe.variants.some((variant) =>
-          variant.pressureBranch === branch &&
-          (variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId))
-        )
-      )) ||
-    (assertion.requiredResourceService !== undefined &&
-      (!assertion.requiredResourceService ||
-        typeof assertion.requiredResourceService.sourceObjectName !== "string" ||
-        typeof assertion.requiredResourceService.serviceObjectName !== "string" ||
-        typeof assertion.requiredResourceService.resourceType !== "string" ||
-        !Number.isSafeInteger(assertion.requiredResourceService.maximumTileDistance) ||
-        assertion.requiredResourceService.maximumTileDistance <= 0 ||
-        !Number.isSafeInteger(assertion.requiredResourceService.latestTick) ||
-        assertion.requiredResourceService.latestTick <= 0 ||
-        !["build", "served_control"].every((branch) =>
-          recipe.variants.some((variant) =>
-            variant.resourceServiceBranch === branch &&
-            (variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId))
-          )
-        ))) ||
-    (assertion.requiredSaturatedSource !== undefined &&
-      (!assertion.requiredSaturatedSource ||
-        typeof assertion.requiredSaturatedSource.saturatedFixtureActorId !== "string" ||
-        typeof assertion.requiredSaturatedSource.spareFixtureActorId !== "string" ||
-        typeof assertion.requiredSaturatedSource.resourceType !== "string" ||
-        !Number.isSafeInteger(assertion.requiredSaturatedSource.capacity) ||
-        assertion.requiredSaturatedSource.capacity < 1 ||
-        !Number.isSafeInteger(assertion.requiredSaturatedSource.latestTick) ||
-        assertion.requiredSaturatedSource.latestTick < 1 ||
-        !recipe.variants.some((variant) => {
-          if (variant.scenarioIds !== undefined && !variant.scenarioIds.includes(scenarioId)) return false;
-          const preset = variant.presetWorld;
-          const fullId = assertion.requiredSaturatedSource.saturatedFixtureActorId;
-          const spareId = assertion.requiredSaturatedSource.spareFixtureActorId;
-          return preset?.actors?.some((actor) => actor.fixtureActorId === fullId && actor.owner === null) &&
-            preset.actors.some((actor) => actor.fixtureActorId === spareId && actor.owner === null) &&
-            preset.initialOrders?.filter((order) => order.sourceFixtureActorId === fullId).length ===
-              assertion.requiredSaturatedSource.capacity;
-        }))) ||
-    (assertion.requiredWorkerGrowth !== undefined &&
-      (!assertion.requiredWorkerGrowth ||
-        typeof assertion.requiredWorkerGrowth.variantId !== "string" ||
-        !recipe.variants.some((variant) => variant.id === assertion.requiredWorkerGrowth.variantId &&
-          (variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId)) &&
-          variant.presetWorld?.resourceStarts?.length === 1) ||
-        !Number.isSafeInteger(assertion.requiredWorkerGrowth.initialWorkerCount) ||
-        assertion.requiredWorkerGrowth.initialWorkerCount < 1 ||
-        !Number.isSafeInteger(assertion.requiredWorkerGrowth.minimumPeakWorkerCount) ||
-        assertion.requiredWorkerGrowth.minimumPeakWorkerCount <= assertion.requiredWorkerGrowth.initialWorkerCount ||
-        !Number.isSafeInteger(assertion.requiredWorkerGrowth.minimumFinalWorkerCount) ||
-        assertion.requiredWorkerGrowth.minimumFinalWorkerCount <= assertion.requiredWorkerGrowth.initialWorkerCount ||
-        !Number.isSafeInteger(assertion.requiredWorkerGrowth.latestTick) ||
-        assertion.requiredWorkerGrowth.latestTick < 1)) ||
-    [
-      "maximumTick",
-      "minimumMilitaryCount",
-      "minimumMilitaryTypeCount",
-      "minimumRepeatedMilitaryTypeCount",
-      "minimumMilitaryProducerCount",
-      "maximumMilitaryProducerCount",
-      "maximumQueueOccupancyPerProducer",
-      "firstOffensiveLaunchByTick",
-      "minimumOffensiveLaunchCount",
-      "minimumDamageDealt",
-      "minimumEnemyLosses"
-    ].some(
-      (field) => assertion[field] !== undefined && (!Number.isSafeInteger(assertion[field]) || assertion[field] < 0)
-    ) ||
-    [
-      "requireCompositionDemand",
-      "requireCapacityDemand",
-      "requireProductionStopsAtTarget",
-      "requireMissionContinuation",
-      "requireTerminalResult",
-      "requireRaidDefenseRecovery",
-      "requireSupplyControl"
-    ].some((field) => assertion[field] !== undefined && typeof assertion[field] !== "boolean")
-  ) {
-    throw new Error(`malformed_runtime_fixture:${scenarioId}`);
-  }
-}
-
 function validateArtifact(value) {
   if (!value || typeof value !== "object" || !value.manifest || !value.payload)
     throw new Error("malformed_repro_artifact");
@@ -707,18 +274,6 @@ function validateArtifact(value) {
   )
     throw new Error("unsafe_repro_reference");
   if (containsMarkup(value)) throw new Error("unsafe_repro_markup");
-}
-
-function safeReference(value) {
-  return (
-    typeof value === "string" &&
-    value.length > 0 &&
-    value.length <= 512 &&
-    !value.startsWith("/") &&
-    !value.includes("..") &&
-    !value.includes("\\") &&
-    !value.includes(":")
-  );
 }
 
 function containsMarkup(value) {
@@ -766,82 +321,10 @@ function helpText() {
   return `Run deterministic or real-runtime skirmish AI scenarios.\n\nUsage:\n  node tools/ai/run-skirmish-matrix.mjs --scenario ID [--mode pure|runtime|both]\n  node tools/ai/run-skirmish-matrix.mjs --scenarios ID,ID [--mode pure|runtime|both]\n  node tools/ai/run-skirmish-matrix.mjs --suite stage-smoke --stage N --working-tree\n  node tools/ai/run-skirmish-matrix.mjs --candidate SHA --baseline SHA\n\nOptions:\n  --manifest PATH       Override tools/ai/fixtures/skirmish-v1.json\n  --output DIRECTORY    Store the JSON artifact in this directory\n  --seed INTEGER        Override the pure-scenario seed\n  --help                Show this help without creating a failure artifact\n\nUse tools/ai/summarize-skirmish-report.mjs on the emitted artifact. Group compatible runtime IDs with --scenarios so Playwright starts once.\n`;
 }
 
-function readJson(path, maxBytes) {
-  const text = readFileSync(path, "utf8");
-  if (Buffer.byteLength(text) > maxBytes) throw new Error(`oversized_json:${path}`);
-  return JSON.parse(text);
-}
-
-function resolveExplicitPath(value) {
-  const supplied = required(value, "path");
-  if (supplied.includes("\0")) throw new Error("invalid_path");
-  return isAbsolute(supplied) ? resolve(supplied) : resolve(process.cwd(), supplied);
-}
-
-function requireInteger(value, label, minimum, maximum) {
-  const number = Number(value);
-  if (!Number.isSafeInteger(number) || number < minimum || number > maximum) throw new Error(`invalid_${label}`);
-  return number;
-}
-
-function requireSha(value, label) {
-  const sha = required(value, label);
-  if (!/^[a-f0-9]{40}$/.test(sha)) throw new Error(`invalid_${label}_sha`);
-  return sha;
-}
-
-function requireEnum(value, choices, label) {
-  if (!choices.includes(value)) throw new Error(`invalid_${label}:${value}`);
-  return value;
-}
-
-function required(value, label) {
-  if (typeof value !== "string" || value.length === 0) throw new Error(`missing_${label}`);
-  return value;
-}
-
-function readHead() {
-  const result = spawnSync("git", ["rev-parse", "HEAD"], { cwd: workspaceRoot, encoding: "utf8" });
-  return result.status === 0 ? result.stdout.trim() : "working-tree";
-}
-
-function readGitText(arguments_) {
-  const result = spawnSync("git", arguments_, { cwd: workspaceRoot, encoding: "utf8" });
-  if (result.status !== 0) throw new Error(`git_inspection_failed:${arguments_.join("_")}`);
-  return result.stdout;
-}
-
-function readWorkingTreeSource() {
-  const tracked = readGitText(["diff", "--no-ext-diff", "HEAD", "--"]);
-  const untrackedPaths = readGitText(["ls-files", "--others", "--exclude-standard", "-z"])
-    .split("\0")
-    .filter(Boolean)
-    .sort();
-  const untracked = untrackedPaths.map((path) => {
-    const absolutePath = resolve(workspaceRoot, path);
-    if (relative(workspaceRoot, absolutePath).startsWith("..")) throw new Error(`unsafe_untracked_path:${path}`);
-    return `${path}\0${readFileSync(absolutePath).toString("base64")}`;
-  });
-  return tracked.length > 0 || untracked.length > 0 ? `${tracked}\0${untracked.join("\0")}` : "";
-}
-
-function digestString(input) {
-  let hash = 0x811c9dc5;
-  for (let index = 0; index < input.length; index += 1) {
-    hash ^= input.charCodeAt(index);
-    hash = Math.imul(hash, 0x01000193);
-  }
-  return `fnv1a32:${(hash >>> 0).toString(16).padStart(8, "0")}`;
-}
-
 function writeReport(report) {
   mkdirSync(reportDirectory, { recursive: true });
   const name = `${Date.now()}-${report.status ?? "report"}.json`;
   const path = join(reportDirectory, name);
   writeFileSync(path, `${JSON.stringify(report, null, 2)}\n`);
   process.stdout.write(`${relative(workspaceRoot, path)}\n`);
-}
-
-function isRecord(value) {
-  return value !== null && typeof value === "object" && !Array.isArray(value);
 }

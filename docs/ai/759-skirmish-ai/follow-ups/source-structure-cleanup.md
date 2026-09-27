@@ -42,10 +42,8 @@ large files, stage-labelled persisted IDs/fixtures, and ordinary implementation 
    The macro owner has been split into opening, general labor, housing, food prerequisite/Field/labor, military force
    context, producer capacity, and unit-composition modules. Its source-structure baseline entry has been removed;
    final-gate lint and representative behavior proof are still required before counting this #821 slice complete.
-   The matrix runner `tools/ai/run-skirmish-matrix.mjs` is a second explicit target: ECO-03 fixture validation
-   changed its reviewed baseline. Extract fixture schema validation, scenario selection, execution, and reporting
-   into bounded modules, then remove its baseline entry. The later STRAT-07 pure-fixture selector also changes this
-   reviewed oversized owner; remove the exception during that split.
+   The matrix runner now delegates fixture schema validation, pure/runtime execution, and shared I/O to bounded
+   modules; its baseline entry is removed. Final-gate fixture, scenario, report, and replay proof is still required.
    The Playwright variant runner's setup/initial-world verification was split into a separate focused module; check
    both module boundaries at the final gate before considering its #821 slice complete.
    The #829 committed-workforce debug slice narrowly changed the legacy macro owner, compound brain-state contract,
