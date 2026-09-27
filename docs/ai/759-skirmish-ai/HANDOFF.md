@@ -38,13 +38,15 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
   forecast ranking, source capacity, surplus transfer, and single ordinal increment should be checked at the final gate.
 - Queued-population housing demand and missing-building proposals are now isolated in `ai-housing-proposal.ts`; it
   retains the prior construction-site reservation and ordinal ordering. This is unverified until the final gate.
+- Field labor ownership, including returning/cargo worker protection, is now isolated in `ai-field-labor-proposal.ts`.
+  This is a behavior-preserving move, not a fix for the conservative all-returners staffing delay; verify it later.
 - Production-only boundary audit: #815/#816/#819/#823 primarily require pure or browser/network evidence and are
   excluded from this sweep. #817 difficulty tuning and #828 hot-path optimization require measured, paired runs;
   their preparation is already authored, but no threshold or hot path should be guessed now. #820 legacy removal is
   gated on #816/#819/#823 parity evidence and must not be done speculatively. #829/#827 production behavior remains
   unproven until the final gate; repair only the first evidenced failure then. #821 has remaining code-only structural
   work, but its final baseline removal and compatibility audit also require that gate.
-- Exact next safe code-only action: split food and production from `AiMacroManager.propose` without changing
+- Exact next safe code-only action: split food infrastructure and production from `AiMacroManager.propose` without changing
   policy. Then notify the user before the final test/validation gate. Do not remove the legacy behavior tree, tune
   difficulty, or claim performance improvement before the dependency evidence exists.
 - Pinned pre-change baseline: `de47f482889db30420692bf4406fba463d7db296`.
