@@ -539,7 +539,10 @@ export class AiMacroManager implements AiProposalManagerV1 {
       .find((candidate) => candidate.availableCapacity > 0);
     const gatherSource = gatherCandidate?.actor;
     if (gatherSource?.resourceState.status === "known" && constrainedResource) {
-      const transferable = idleWorkers.length === 0
+      const compatibleIdleWorkers = idleWorkers.filter((actor) => catalog.entries.some(
+        (entry) => entry.sourceObjectName === actor.objectName && entry.gathers.includes(constrainedResource)
+      ));
+      const transferable = compatibleIdleWorkers.length === 0
         ? selectAiSurplusLaborTransfer(
             observation,
             catalog,
@@ -549,8 +552,8 @@ export class AiMacroManager implements AiProposalManagerV1 {
             constrainedResource
           )
         : undefined;
-      const selectedWorkers = idleWorkers.length > 0
-        ? idleWorkers.slice(0, Math.min(4, gatherCandidate?.availableCapacity ?? 0))
+      const selectedWorkers = compatibleIdleWorkers.length > 0
+        ? compatibleIdleWorkers.slice(0, Math.min(4, gatherCandidate?.availableCapacity ?? 0))
         : transferable ? [transferable] : [];
       if (selectedWorkers.length > 0) {
         const ids = nextIds(state, "gather", ordinal++);

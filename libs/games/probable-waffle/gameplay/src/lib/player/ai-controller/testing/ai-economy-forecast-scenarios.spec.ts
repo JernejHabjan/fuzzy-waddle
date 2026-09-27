@@ -147,7 +147,8 @@ function proposal(
   woodStockpile: number,
   foodStockpile: number,
   demands: readonly AiDemandV1[] = [demand],
-  observation = world(woodStockpile, foodStockpile)
+  observation = world(woodStockpile, foodStockpile),
+  runtimeCatalog: AiCapabilityCatalogV1 = catalog
 ) {
   const initial = createAiBrainStateV1({
     playerNumber: 1,
@@ -166,10 +167,10 @@ function proposal(
     ...initial,
     economyProduction: {
       ...initial.economyProduction,
-      forecasts: projectAiResourceForecasts(observation, demands, catalog)
+      forecasts: projectAiResourceForecasts(observation, demands, runtimeCatalog)
     }
   };
-  return new AiMacroManager(() => catalog).propose(observation, state);
+  return new AiMacroManager(() => runtimeCatalog).propose(observation, state);
 }
 
 describe("typed deterministic economy forecast scenarios", () => {
@@ -350,6 +351,32 @@ describe("typed deterministic economy forecast scenarios", () => {
     });
     expect(oneFoodWorker.intents.some((intent) =>
       intent.kind === "assign_gatherers" && intent.reasonCode.startsWith("economy:surplus_transfer")
+    )).toBe(false);
+  });
+
+  it("ECO-05: skips an idle worker unable to gather the shortage resource", () => {
+    const baseline = world(0, 1000);
+    const limitedCatalog: AiCapabilityCatalogV1 = {
+      ...catalog,
+      entries: [
+        ...catalog.entries
+          .filter((entry) => entry.sourceObjectName === ObjectNames.TivaraWorker)
+          .map((entry) => ({ ...entry, sourceObjectName: ObjectNames.TivaraWorkerFemale,
+            gathers: [ResourceType.Food] })),
+        ...catalog.entries
+      ]
+    };
+    const actors = baseline.actors.map((actor) => actor.actorId === "worker-0"
+      ? { ...actor, objectName: ObjectNames.TivaraWorkerFemale }
+      : actor);
+    const result = proposal(0, 1000, [demand], { ...baseline, actors }, limitedCatalog);
+    expect(result.intents).toContainEqual(expect.objectContaining({
+      kind: "assign_gatherers", actorIds: ["worker-1"], resourceType: ResourceType.Wood,
+      sourceActorId: "wood-source"
+    }));
+    expect(result.intents.some((intent) =>
+      intent.kind === "assign_gatherers" && intent.actorIds.includes("worker-0") &&
+        intent.resourceType === ResourceType.Wood
     )).toBe(false);
   });
 });
