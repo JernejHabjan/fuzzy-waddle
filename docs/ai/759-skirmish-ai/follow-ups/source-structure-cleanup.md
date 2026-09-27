@@ -42,6 +42,9 @@ large files, stage-labelled persisted IDs/fixtures, and ordinary implementation 
    The macro owner is a concrete #821 cleanup target: the ECO-05 surplus-transfer integration changed its reviewed
    hash baseline while leaving it over 400 lines. Extract opening, labor, housing, food, and construction proposal
    responsibilities, then remove its baseline entry. Do not renew the hash again instead of splitting.
+   The matrix runner `tools/ai/run-skirmish-matrix.mjs` is a second explicit target: ECO-03 fixture validation
+   changed its reviewed baseline. Extract fixture schema validation, scenario selection, execution, and reporting
+   into bounded modules, then remove its baseline entry.
 2. Rename stage/phase filenames, symbols, comments, test descriptions, and non-persisted diagnostics by responsibility.
 3. Remove `V1` from ordinary implementations. Keep it on save/wire/repro/fixture/report schemas unless a compatible
    migration and schema-version policy are supplied.

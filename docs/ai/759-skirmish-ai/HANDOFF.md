@@ -108,7 +108,8 @@ not block this gate.
 - ECO-03 now has a focused browser fixture: two pre-tick workers saturate a definition-backed tree, a third is
   free, and the oracle requires an observed alternate wood-source order without overassignment. Its preset-actor
   ID bridge, oracle tests, and three-repeat recipe are unexecuted; verify them at the final gate before counting
-  ECO-03 as real runtime coverage.
+  ECO-03 as real runtime coverage. The matrix runner needed a reviewed temporary source-structure hash update;
+  #821 owns its split and removal from the baseline.
 
 - Unverified implementation-sweep batch: food runway now sums concurrent worker, standing-workforce and military
   demand; Field count reserves non-food labor; staffed Fields rank above speculative new Fields; worker replacement
