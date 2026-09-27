@@ -49,8 +49,12 @@ large files, stage-labelled persisted IDs/fixtures, and ordinary implementation 
    The #829 committed-workforce debug slice's macro, brain-state contract, invariant validator, and canonical
    serializer have now been split by responsibility and their four reviewed hash exceptions removed. Final-gate
    type/lint/save/replay evidence is required before #821 closes; the debug projector remains below limits.
-   The STRAT-01 paired pressure recipe changed the oversized matrix fixture validator; its reviewed hash remains a
-   temporary exception until fixture validation moves into a bounded owner.
+   The STRAT-01 paired pressure fixture checks now live in the bounded matrix-fixtures owner; confirm their rejection
+   and scenario-selection behavior at the final gate.
+   The Phaser observation pipeline remains the largest live-world cleanup target. Split its memory normalization,
+   actor/catalog, permitted topology/map, and auxiliary projections while preserving visibility policy and generation
+   fencing. Keep capture/commit/save/disposal in the coordinator; split the >200-line actor projection by combat and
+   container concerns. Its hash entry remains until this complete, feedback-backed migration can remove it.
 2. Rename stage/phase filenames, symbols, comments, test descriptions, and non-persisted diagnostics by responsibility.
 3. Remove `V1` from ordinary implementations. Keep it on save/wire/repro/fixture/report schemas unless a compatible
    migration and schema-version policy are supplied.

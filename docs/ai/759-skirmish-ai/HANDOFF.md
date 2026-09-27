@@ -40,6 +40,14 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
   were removed, but none of these edits has passed type/lint/save/replay proof. Do not silently renew other exemptions.
   Plan compatibility before changing persisted IDs. Notify the user before the
   final gate; do not remove legacy fallback, tune difficulty, or claim performance improvement without evidence.
+- Next #821 source boundary: `phaser/.../observation/ai-observation-pipeline.ts` still owns 1,468 physical lines and
+  retains its existing hash-baselined exemption. Decompose by fair visibility boundary: (1) pure memory normalization
+  and bounded-work helpers, (2) owned/visible actor plus runtime catalog projection, (3) permitted topology/map cells,
+  (4) research/effects/threat/mode goals, leaving capture/commit, generation fencing, save restore and disposal in the
+  coordinator. Keep the visibility policy before every live-world read and preserve exact generation, memory, query
+  cursor, invalidation, sorting and catalog semantics. `projectActor` itself is over 200 physical lines and needs a
+  focused combat/container subprojection. This cross-library split requires Sol/high scope review and focused
+  Phaser/type/save/replay evidence at the final gate; do not rename persisted identities while doing it.
 - Pinned pre-change baseline: `de47f482889db30420692bf4406fba463d7db296`.
 - Manifest authority: `tools/ai/fixtures/skirmish-v1.json`, 121 scenario IDs before variants.
 - Completed prerequisites: #824 repository tooling and #825 current-content domain/transport foundation.
