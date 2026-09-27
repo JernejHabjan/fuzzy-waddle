@@ -199,7 +199,7 @@ export function advanceAiSkirmishOffense(
   const sourceNode = node(choice.attackers[0]);
   const targetNode = node(context.opponent);
   const route = choice.route;
-  if (choice.assessment.choice === "recover") return undefined;
+  if (choice.assessment.choice === "recover" || choice.assessment.choice === "scout") return undefined;
   const attack = createAttackSquad(context, context.opponent, choice.attackers, route, sourceNode);
   context.nextSquads.push(attack);
   if ((route?.kind === "water_transport" || route?.kind === "air_transport") && sourceNode && targetNode)

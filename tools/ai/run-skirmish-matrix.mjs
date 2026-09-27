@@ -224,13 +224,16 @@ function invokeHarness(input) {
   const includesAuthoredPressureStrategy = input.rows.some(
     (row) => row.authoredFixture === "pressure-strategy-scenarios.json"
   );
+  const includesAuthoredVictoryRoute = input.rows.some(
+    (row) => row.authoredFixture === "victory-route-scenarios.json"
+  );
   const baseTestNames = [
     "ai-(scenario-harness|runtime-scenario|repro-cli)",
     "authoritative-state-projection",
     "actor-manager-ai-save"
   ];
   const authoredTestNames = [
-    "ai-(brain|production-scenarios|housing-demand|economy-forecast-scenarios|resource-forecast|resource-service-manager|pressure-strategy-scenarios)",
+    "ai-(brain|production-scenarios|housing-demand|economy-forecast-scenarios|resource-forecast|resource-service-manager|pressure-strategy-scenarios|victory-route-scenarios)",
     "ai-(tactics-manager|adaptation-(manager|queue))",
     "validate-ai-runtime-browser-test-config-v1",
     "ai-profile-defaults",
@@ -239,7 +242,7 @@ function invokeHarness(input) {
   const includeAuthored =
     includesAuthoredTactics || includesAuthoredAdaptation || includesAuthoredProduction ||
     includesAuthoredEconomySupply || includesAuthoredEconomyForecast || includesAuthoredResourceService ||
-    includesAuthoredPressureStrategy;
+    includesAuthoredPressureStrategy || includesAuthoredVictoryRoute;
   const testPathPattern = `(${[...baseTestNames, ...(includeAuthored ? authoredTestNames : [])].join("|")})\\.spec\\.ts$`;
   const { command, evidence, counts } = runPureJestWithScenarioEvidence({
     workspaceRoot,

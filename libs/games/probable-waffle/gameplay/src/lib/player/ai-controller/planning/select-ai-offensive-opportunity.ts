@@ -150,9 +150,11 @@ export function selectAiOffensiveOpportunity(
       ];
     })
     .sort((left, right) => right.score - left.score || left.opponent.actorId.localeCompare(right.opponent.actorId));
+  const actionable = candidates.filter((candidate) => candidate.route.kind !== "pending");
+  const ranked = actionable.length > 0 ? actionable : candidates;
   const focusedPlayer = context.activeAttack?.lifecycle?.targetPlayerNumber;
-  const focused = candidates.find((candidate) => candidate.opponent.owner === focusedPlayer);
-  const best = candidates[0];
+  const focused = ranked.find((candidate) => candidate.opponent.owner === focusedPlayer);
+  const best = ranked[0];
   const selected =
     focused &&
     best &&
@@ -162,7 +164,8 @@ export function selectAiOffensiveOpportunity(
   const workers = context.observation.actors.filter(
     (actor) => actor.relation === "self" && actor.capabilities.some((capability) => capability.family === "gather")
   ).length;
-  const ready = selected ? selected.capable >= selected.required : false;
+  const pendingRoute = selected?.route.kind === "pending";
+  const ready = selected ? !pendingRoute && selected.capable >= selected.required : false;
   const recovering =
     context.state.opening.plan.lifecycle === "completed" && workers < WORKFORCE_RECOVERY_FLOOR && !ready;
   const rebuildingFailedMission =
@@ -170,11 +173,13 @@ export function selectAiOffensiveOpportunity(
     recentFailure?.targetActorId === selected.opponent.actorId &&
     context.observation.tick < recentFailure.observedTick + Math.min(400, recentFailure.repeatedFailures * 100);
   const choice: AiStrategyAssessment["choice"] = selected
-    ? recovering || rebuildingFailedMission
-      ? "recover"
-      : isCore(selected.opponent) && ready
-        ? "finish"
-        : "pressure"
+    ? pendingRoute
+      ? "scout"
+      : recovering || rebuildingFailedMission
+        ? "recover"
+        : isCore(selected.opponent) && ready
+          ? "finish"
+          : "pressure"
     : "scout";
   const travelTicks = selected ? Math.max(100, selected.travel * 20) : null;
   return {
@@ -184,15 +189,17 @@ export function selectAiOffensiveOpportunity(
     assessment: {
       choice,
       reason: selected
-        ? recovering || rebuildingFailedMission
-          ? recovering
-            ? "workforce_below_recovery_floor"
-            : "recent_failed_mission_rebuild"
-          : ready
-            ? "credible_force_and_route"
-            : selected.producers >= 2
-              ? "assembling_against_developed_base"
-              : "assembling_compatible_force"
+        ? pendingRoute
+          ? "route_pending"
+          : recovering || rebuildingFailedMission
+            ? recovering
+              ? "workforce_below_recovery_floor"
+              : "recent_failed_mission_rebuild"
+            : ready
+              ? "credible_force_and_route"
+              : selected.producers >= 2
+                ? "assembling_against_developed_base"
+                : "assembling_compatible_force"
         : "no_reachable_observed_objective",
       targetActorId: selected?.opponent.actorId ?? null,
       routeDomain: selected?.route.kind === "direct" ? selected.route.domain : null,
@@ -200,7 +207,7 @@ export function selectAiOffensiveOpportunity(
       requiredForce: selected?.required ?? 0,
       visibleThreatCount: selected?.threats ?? 0,
       confidencePermille: selected?.opponent.visibility === "visible" ? 1000 : selected ? 550 : 0,
-      expectedEffectTick: travelTicks === null ? null : context.observation.tick + travelTicks,
+      expectedEffectTick: travelTicks === null || pendingRoute ? null : context.observation.tick + travelTicks,
       reconsiderTick: rebuildingFailedMission && recentFailure
         ? recentFailure.observedTick + Math.min(400, recentFailure.repeatedFailures * 100)
         : context.observation.tick + (ready ? 40 : 100),

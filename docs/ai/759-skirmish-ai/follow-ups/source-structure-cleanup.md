@@ -44,7 +44,8 @@ large files, stage-labelled persisted IDs/fixtures, and ordinary implementation 
    responsibilities, then remove its baseline entry. Do not renew the hash again instead of splitting.
    The matrix runner `tools/ai/run-skirmish-matrix.mjs` is a second explicit target: ECO-03 fixture validation
    changed its reviewed baseline. Extract fixture schema validation, scenario selection, execution, and reporting
-   into bounded modules, then remove its baseline entry.
+   into bounded modules, then remove its baseline entry. The later STRAT-07 pure-fixture selector also changes this
+   reviewed oversized owner; remove the exception during that split.
    The Playwright variant runner's setup/initial-world verification was split into a separate focused module; check
    both module boundaries at the final gate before considering its #821 slice complete.
    The #829 committed-workforce debug slice narrowly changed the legacy macro owner, compound brain-state contract,

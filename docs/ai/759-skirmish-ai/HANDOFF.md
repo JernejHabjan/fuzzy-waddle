@@ -112,6 +112,11 @@ not block this gate.
   with three repeated decision digests, budget/workforce assertions, and bounded recovery. Its manifest and pure Jest
   selector are wired, but neither the pure case nor the browser pair has been executed.
 
+- #827 now prefers a confirmed reachable target over a higher-value unknown-route target. STRAT-07 has an authored
+  three-repeat pure route-pair fixture and typed manager cases for direct worker attack, pending-core scouting fallback,
+  and deterministic assessment. These are unrun and are not runtime/SEQ-01 victory proof; final-gate execution must
+  check that non-actionable pending targets do not keep a stale attack mission alive.
+
 - ECO-08 now has an authored three-repeat focused workforce variant from an exact 200-resource start: six real
   workers, two Fields, a Granary, and an independent oracle requiring growth/retention above six plus delivered
   income by tick 3,000. The old natural opening variants remain. This is unrun and must not be counted as proof

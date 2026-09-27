@@ -88,10 +88,12 @@ export function finalizeAiSkirmishProposal(context: AiSkirmishProposalContext): 
               ? "defend"
               : context.assessment?.choice === "finish"
                 ? "finish"
-                : context.assessment?.choice === "recover"
+              : context.assessment?.choice === "recover"
                   ? "recover"
-                  : "pressure",
-            goalId: context.attackPlanId!,
+                  : context.assessment?.choice === "scout"
+                    ? "stabilize"
+                    : "pressure",
+            goalId: context.assessment?.choice === "scout" ? null : context.attackPlanId!,
             objectiveId: context.opponent.actorId,
             assessment: context.assessment
           }

@@ -195,7 +195,10 @@
       "authoredFixture": "stage-14-adaptation.json",
       "drivers": ["pure", "runtime"]
     },
-    { "id": "STRAT-07", "stages": [9, 13], "group": "strategy", "fixture": null, "drivers": ["pure", "runtime"] },
+    {
+      "id": "STRAT-07", "stages": [9, 13], "group": "strategy", "fixture": null,
+      "authoredFixture": "victory-route-scenarios.json", "drivers": ["pure", "runtime"]
+    },
     { "id": "STRAT-08", "stages": [9, 13], "group": "strategy", "fixture": null, "drivers": ["pure", "runtime"] },
     {
       "id": "STRAT-09",
