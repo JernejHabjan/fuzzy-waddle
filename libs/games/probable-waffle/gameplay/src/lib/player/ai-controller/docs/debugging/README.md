@@ -21,6 +21,9 @@ Why-not inspection distinguishes not evaluated, rejected, unresolved and not rec
 
 The strategic summary must use player-facing language rather than raw manager IDs and reason codes. Detailed IDs remain
 available in drill-down views for correlation with commands, effects, saves, and incident bundles.
+Its economy line shows the committed workforce target and queue, assigned gatherers, food runway, useful food-source
+demand, threat posture, spending split, and a diagnosed saturation blocker when present. These are snapshots of the
+last committed macro decision, not a live recomputation when the panel opens.
 
 The overview is projected only from the committed observation, brain state, and arbitration decisions. Historical
 overview/strategy views use their retained snapshot; categories requiring an unretained historical observation/state

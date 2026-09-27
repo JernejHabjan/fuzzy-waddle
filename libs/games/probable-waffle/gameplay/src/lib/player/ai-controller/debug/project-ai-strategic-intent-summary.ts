@@ -125,7 +125,11 @@ function describeProduction(observation: AiObservationV1, state: AiBrainStateV1)
   return `${need} ${purpose} (${demand.committed}/${demand.candidate.desired} committed)${capacity}${rationale}`;
 }
 
-function describeEconomy(observation: AiObservationV1, decisions: readonly AiIntentDecisionV1[]): string {
+function describeEconomy(
+  observation: AiObservationV1,
+  state: AiBrainStateV1,
+  decisions: readonly AiIntentDecisionV1[]
+): string {
   const gather = decisions.find(
     (
       decision
@@ -133,9 +137,6 @@ function describeEconomy(observation: AiObservationV1, decisions: readonly AiInt
       readonly intent: Extract<AiIntentV1, { kind: "assign_gatherers" }>;
     } => decision.outcome === "accepted" && decision.intent.kind === "assign_gatherers"
   );
-  if (gather) {
-    return `Assigning ${countNoun(gather.intent.actorIds.length, "worker")} to ${humanize(String(gather.intent.resourceType))}`;
-  }
   const workers = observation.actors.filter(
     (actor) => actor.relation === "self" && actor.capabilities.some((capability) => capability.family === "gather")
   ).length;
@@ -149,10 +150,21 @@ function describeEconomy(observation: AiObservationV1, decisions: readonly AiInt
         right.deficit - left.deficit ||
         String(left.resource.resourceType).localeCompare(String(right.resource.resourceType))
     )[0];
-  if (shortage?.deficit) {
-    return `${workers} workers; short ${shortage.deficit} ${humanize(String(shortage.resource.resourceType))} for commitments`;
-  }
-  return `${workers} workers; current commitments are funded`;
+  const action = gather
+    ? `Assigning ${countNoun(gather.intent.actorIds.length, "worker")} to ${humanize(String(gather.intent.resourceType))}`
+    : shortage?.deficit
+      ? `${workers} workers; short ${shortage.deficit} ${humanize(String(shortage.resource.resourceType))} for commitments`
+      : `${workers} workers; current commitments are funded`;
+  const plan = state.economyProduction.workforce;
+  if (!plan) return action;
+  const posture = state.economyProduction.posture?.status ?? "unknown";
+  const blocker = plan.blocker ? `; blocked by ${humanize(plan.blocker)}` : "";
+  return (
+    `${action}; workforce ${plan.workers}+${plan.queuedWorkers} queued/${plan.desiredWorkers} desired, ` +
+    `${plan.assignedWorkers} gathering/returning; food runway ${plan.foodRunwayTicks} ticks, ` +
+    `${plan.desiredFoodSources} food sources needed; ${posture} budget ` +
+    `${plan.economyPermille / 10}% economy/${plan.defensePermille / 10}% defense${blocker}`
+  );
 }
 
 function describeNextAction(decisions: readonly AiIntentDecisionV1[]): string {
@@ -223,7 +235,7 @@ export function projectAiStrategicIntentSummary(
     objective,
     force,
     production: describeProduction(observation, state),
-    economy: describeEconomy(observation, decisions),
+    economy: describeEconomy(observation, state, decisions),
     blocker: describeBlocker(state, decisions),
     nextAction: describeNextAction(decisions)
   };

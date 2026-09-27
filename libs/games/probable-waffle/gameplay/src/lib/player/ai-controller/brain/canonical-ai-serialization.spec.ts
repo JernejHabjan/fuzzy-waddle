@@ -104,6 +104,31 @@ describe("Stage 2 canonical state and migration", () => {
     expect(canonicalizeAiBrainStateV1(permuted).scheduler.rngState).toEqual(state.scheduler.rngState);
   });
 
+  it("includes the committed economy posture and workforce rationale in state digests", () => {
+    const state = migrateAiBrainState({ blackboard: {} }, migrationContext);
+    const withPolicy = {
+      ...state,
+      economyProduction: {
+        ...state.economyProduction,
+        posture: { status: "safe" as const, enteredTick: 40, lastThreatTick: null },
+        workforce: {
+          workers: 6, queuedWorkers: 1, assignedWorkers: 5, desiredWorkers: 8,
+          desiredFoodSources: 4, foodRunwayTicks: 300, blocker: null,
+          economyPermille: 650, defensePermille: 350
+        }
+      }
+    };
+    const baseline = digestCanonicalAiValue(canonicalizeAiBrainStateV1(withPolicy));
+    expect(baseline).not.toBe(digestCanonicalAiValue(canonicalizeAiBrainStateV1(state)));
+    expect(baseline).not.toBe(digestCanonicalAiValue(canonicalizeAiBrainStateV1({
+      ...withPolicy,
+      economyProduction: {
+        ...withPolicy.economyProduction,
+        posture: { status: "pressured" as const, enteredTick: 40, lastThreatTick: 40 }
+      }
+    })));
+  });
+
   it("rejects unsupported future state instead of silently resetting", () => {
     expect(() => migrateAiBrainState({ schemaVersion: 2 }, migrationContext)).toThrow(
       new AiBrainMigrationError("unsupported_future_schema", "2")

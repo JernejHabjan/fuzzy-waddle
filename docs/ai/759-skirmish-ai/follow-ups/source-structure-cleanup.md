@@ -47,6 +47,9 @@ large files, stage-labelled persisted IDs/fixtures, and ordinary implementation 
    into bounded modules, then remove its baseline entry.
    The Playwright variant runner's setup/initial-world verification was split into a separate focused module; check
    both module boundaries at the final gate before considering its #821 slice complete.
+   The #829 committed-workforce debug slice narrowly changed the legacy macro owner, compound brain-state contract,
+   invariant validator, and canonical serializer. Their four reviewed hash exceptions must be removed by
+   responsibility-based splits before #821 closes; the new high-level debug projector itself remains below limits.
 2. Rename stage/phase filenames, symbols, comments, test descriptions, and non-persisted diagnostics by responsibility.
 3. Remove `V1` from ordinary implementations. Keep it on save/wire/repro/fixture/report schemas unless a compatible
    migration and schema-version policy are supplied.

@@ -86,6 +86,26 @@ export function assertAiBrainStateV1(value: unknown): asserts value is AiBrainSt
       assertAiNonNegativeInteger(posture.lastThreatTick, "economyProduction.posture.lastThreatTick");
     }
   }
+  const workforce = value.economyProduction.workforce;
+  if (workforce !== undefined) {
+    if (!isRecord(workforce) || (workforce.blocker !== null && workforce.blocker !== "resource_saturation")) {
+      throw new Error("malformed_ai_economy_workforce");
+    }
+    for (const field of [
+      "workers", "queuedWorkers", "assignedWorkers", "desiredWorkers", "desiredFoodSources", "foodRunwayTicks",
+      "economyPermille", "defensePermille"
+    ]) {
+      const value = workforce[field];
+      if (typeof value !== "number") throw new Error(`invalid_ai_integer:economyProduction.workforce.${field}`);
+      assertAiNonNegativeInteger(value, `economyProduction.workforce.${field}`);
+    }
+    if (Number(workforce.economyPermille) + Number(workforce.defensePermille) !== 1000) {
+      throw new Error("invalid_ai_economy_budget");
+    }
+    if (Number(workforce.assignedWorkers) > Number(workforce.workers)) {
+      throw new Error("invalid_ai_economy_assignment_count");
+    }
+  }
   if (
     !isRecord(value.economyProduction.adaptation) ||
     !Array.isArray(value.economyProduction.adaptation.evidence) ||

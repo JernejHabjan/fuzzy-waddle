@@ -1267,6 +1267,17 @@ export class AiMacroManager implements AiProposalManagerV1 {
           demands,
           forecasts: projectAiResourceForecasts(observation, demands, catalog),
           posture: economyPolicy.postureState,
+          workforce: {
+            workers: economyPolicy.workers,
+            queuedWorkers: economyPolicy.queuedWorkers,
+            assignedWorkers: economyPolicy.assignedWorkers,
+            desiredWorkers: economyPolicy.desiredWorkers,
+            desiredFoodSources: economyPolicy.desiredFoodSources,
+            foodRunwayTicks: economyPolicy.foodRunwayTicks,
+            blocker: economyPolicy.blocker,
+            economyPermille: economyPolicy.budget.economyPermille,
+            defensePermille: economyPolicy.budget.defensePermille
+          },
           adaptation: state.economyProduction.adaptation
         }
       }

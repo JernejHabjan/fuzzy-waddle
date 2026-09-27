@@ -49,4 +49,25 @@ describe("Stage 2 AI invariant guards", () => {
       })
     ).toThrow("invalid_ai_deadline:strategy.commitmentDeadline");
   });
+
+  it("rejects an inconsistent persisted workforce budget", () => {
+    const state = createAiBrainStateV1({
+      playerNumber: 1,
+      faction: FactionType.Tivara,
+      profile: createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium),
+      tick: 20,
+      archetypeId: "balanced"
+    });
+    expect(() => assertAiBrainStateV1({
+      ...state,
+      economyProduction: {
+        ...state.economyProduction,
+        workforce: {
+          workers: 6, queuedWorkers: 0, assignedWorkers: 5, desiredWorkers: 8,
+          desiredFoodSources: 4, foodRunwayTicks: 300, blocker: null,
+          economyPermille: 650, defensePermille: 650
+        }
+      }
+    })).toThrow("invalid_ai_economy_budget");
+  });
 });

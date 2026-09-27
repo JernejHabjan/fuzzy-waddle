@@ -99,6 +99,12 @@ not block this gate.
 
 ## Active evidence and boundaries
 
+- #829 now commits a bounded workforce/runway/budget snapshot into the AI state and projects it into the high-level
+  economy debug line. Canonical state digests also include the existing posture and new workforce rationale. Contract,
+  digest, and debug unit cases are authored but unrun. Four existing oversized/compound source owners needed reviewed
+  source-structure hash updates; #821 owns their later split/removal, not a routine baseline refresh. At the final gate,
+  check that committed snapshots follow decision boundaries and survive save/reload without changing planner authority.
+
 - ECO-08 now has an authored three-repeat focused workforce variant from an exact 200-resource start: six real
   workers, two Fields, a Granary, and an independent oracle requiring growth/retention above six plus delivered
   income by tick 3,000. The old natural opening variants remain. This is unrun and must not be counted as proof

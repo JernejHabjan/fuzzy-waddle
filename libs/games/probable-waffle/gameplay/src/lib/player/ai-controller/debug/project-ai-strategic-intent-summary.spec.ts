@@ -200,6 +200,27 @@ describe("committed strategic intent summary", () => {
     expect(summary.blocker).not.toContain("target_visible");
   });
 
+  it("explains committed workforce growth, food runway, posture, and saturation without raw manager trace", () => {
+    const state = brainState();
+    const summary = projectAiStrategicIntentSummary(observation, {
+      ...state,
+      economyProduction: {
+        ...state.economyProduction,
+        posture: { status: "pressured", enteredTick: 20, lastThreatTick: 20 },
+        workforce: {
+          workers: 8, queuedWorkers: 1, assignedWorkers: 6, desiredWorkers: 10,
+          desiredFoodSources: 4, foodRunwayTicks: 180, blocker: "resource_saturation",
+          economyPermille: 350, defensePermille: 650
+        }
+      }
+    }, []);
+
+    expect(summary.economy).toContain("workforce 8+1 queued/10 desired, 6 gathering/returning");
+    expect(summary.economy).toContain("food runway 180 ticks, 4 food sources needed");
+    expect(summary.economy).toContain("pressured budget 35% economy/65% defense");
+    expect(summary.economy).toContain("blocked by resource saturation");
+  });
+
   it("labels missing queue and target facts instead of inventing them", () => {
     const state = brainState();
     const summary = projectAiStrategicIntentSummary(

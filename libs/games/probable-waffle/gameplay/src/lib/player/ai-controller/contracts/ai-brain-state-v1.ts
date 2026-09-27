@@ -86,6 +86,18 @@ export interface AiBaseStateV1 {
 /** Resource forecasts and production demands kept outside a global blackboard. */
 export interface AiEconomyProductionStateV1 {
   readonly demands: readonly AiDemandV1[];
+  /** Last committed macro decision; absent in older saves until the next decision boundary. */
+  readonly workforce?: Readonly<{
+    readonly workers: number;
+    readonly queuedWorkers: number;
+    readonly assignedWorkers: number;
+    readonly desiredWorkers: number;
+    readonly desiredFoodSources: number;
+    readonly foodRunwayTicks: number;
+    readonly blocker: "resource_saturation" | null;
+    readonly economyPermille: number;
+    readonly defensePermille: number;
+  }>;
   readonly posture?: Readonly<{
     readonly status: "safe" | "pressured" | "emergency";
     readonly enteredTick: AiSimulationTick;

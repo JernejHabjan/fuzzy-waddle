@@ -185,6 +185,8 @@ export function canonicalizeAiBrainStateV1(state: AiBrainStateV1): AiBrainStateV
       }))
       .sort((left, right) => left.baseId.localeCompare(right.baseId)),
     economyProduction: {
+      ...(state.economyProduction.posture ? { posture: state.economyProduction.posture } : {}),
+      ...(state.economyProduction.workforce ? { workforce: state.economyProduction.workforce } : {}),
       demands: [...state.economyProduction.demands]
         .map((demand) => ({
           ...demand,
