@@ -3,7 +3,7 @@ import { digestCanonicalAiValue } from "../brain/canonical-ai-serialization";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import type { AiObservationV1 } from "../contracts/ai-observation-v1";
 import { decideAiEconomyPolicy } from "../planning/ai-economy-policy";
-import { createAiTestObservation, createAiTestOwnedActor } from "./ai-test-fixtures";
+import { createAiTestObservation, createAiTestOwnedActor, unknownAiValue } from "./ai-test-fixtures";
 
 const catalog: AiCapabilityCatalogV1 = {
   schemaVersion: 1, generation: 1, unsupported: [],
@@ -28,6 +28,8 @@ function economyWorld(contact: "none" | "local" | "remembered" | "remote"): AiOb
       value: {
         resourceType: ResourceType.Food,
         available: { status: "known" as const, value: 100, observedTick: 20 },
+        carried: unknownAiValue,
+        growthReadyTick: unknownAiValue,
         serviceCapacity: { status: "known" as const, value: 10, observedTick: 20 }
       }
     }
