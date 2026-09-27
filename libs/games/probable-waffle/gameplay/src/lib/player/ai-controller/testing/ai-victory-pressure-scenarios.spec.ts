@@ -107,6 +107,7 @@ function strategyWorld(forceCount: number, workerCount: number, defenderCount: n
   }));
   const core: AiObservedActorV1 = {
     ...combatActor("enemy-core", "enemy", 1),
+    capabilities: [],
     mainBuilding: { status: "known", value: true, observedTick: 200 }
   };
   const defenders = Array.from({ length: defenderCount }, (_, index) =>
