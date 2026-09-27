@@ -99,6 +99,13 @@ not block this gate.
 
 ## Active evidence and boundaries
 
+- TECH-05 now has unverified queued-counter accounting: compatible production queue items satisfy evidence-backed
+  role demand before new counters are proposed. A focused pure case compares two queued counters with one queued
+  counter under the same confirmed flyer evidence. Verify demand counting and no-cancel behavior at the final gate;
+  TECH-05 as a whole still needs changing-composition and stale-evidence runtime coverage. The split adaptation
+  manager is now removed from the source-structure baseline, and the pure runner selects the new focused spec;
+  structural lint and executed scenario evidence still await the final gate.
+
 - ECO-05 now has an unverified conservative surplus-to-deficit labor transfer and pure regressions for deterministic
   choice, food preservation, return/cargo ownership, and insufficient donor stock. The still-oversized macro owner
   needed a narrowly reviewed hash-baseline update, not a claim of structural compliance. #821 must split that owner

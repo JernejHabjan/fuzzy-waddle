@@ -11,6 +11,8 @@ import type { AiManagerProposalV1, AiProposalManagerV1 } from "./ai-manager-prop
 import { adaptationRoleTargets, mergeAdaptationEvidence } from "./ai-adaptation-evidence";
 import { MIN_RESEARCH_UTILITY, scoreAdaptationResearch } from "./ai-adaptation-research-score";
 import type { AiAdaptationRole } from "./ai-adaptation-role";
+import { matchesAdaptationRole } from "./ai-adaptation-role-match";
+import { queuedAdaptationRoleItemIds } from "./ai-adaptation-queued-role";
 
 function owned(observation: AiObservationV1) {
   return observation.actors.filter((actor) => actor.relation === "self" && actor.visibility === "owned");
@@ -29,24 +31,6 @@ function entryFor(catalog: AiCapabilityCatalogV1, objectName: ObjectNames): AiCa
   return catalog.entries.find((entry) => entry.sourceObjectName === objectName);
 }
 
-function matchesRole(entry: AiCapabilityCatalogEntryV1, role: AiAdaptationRole): boolean {
-  const family = entry.family.toLowerCase();
-  switch (role) {
-    case "anti_air":
-      return entry.targetDomains.includes("air");
-    case "water_control":
-      return entry.movementDomains.includes("water") && entry.targetDomains.includes("water");
-    case "ranged":
-      return family.includes("range") || family.includes("spell");
-    case "support":
-      return family.includes("heal") || family.includes("support") || family.includes("spell");
-    case "fortification_breaker":
-      return entry.movementDomains.includes("air") || family.includes("range") || family.includes("spell");
-    case "frontline":
-      return !family.includes("range") && !family.includes("heal") && entry.targetDomains.includes("ground");
-  }
-}
-
 function currentRoleActorIds(
   observation: AiObservationV1,
   catalog: AiCapabilityCatalogV1,
@@ -55,7 +39,7 @@ function currentRoleActorIds(
   return owned(observation)
     .filter((actor) => {
       const entry = entryFor(catalog, actor.objectName);
-      return entry !== undefined && matchesRole(entry, role);
+      return entry !== undefined && matchesAdaptationRole(entry, role);
     })
     .map((actor) => actor.actorId)
     .sort();
@@ -97,7 +81,7 @@ function producerForRole(
         (candidate): candidate is { candidate: ObjectNames; entry: AiCapabilityCatalogEntryV1 } =>
           candidate.entry !== undefined
       )
-      .filter((candidate) => matchesRole(candidate.entry, role))
+      .filter((candidate) => matchesAdaptationRole(candidate.entry, role))
       .filter((candidate) =>
         Object.entries(candidate.entry.constructionProfile?.resourceCost ?? {}).every(
           ([resourceType, amount]) => (remainingResources.get(resourceType as ResourceType) ?? 0) >= (amount ?? 0)
@@ -132,7 +116,7 @@ function archetypeFallback(
     catalog.entries.some((entry) =>
       entry.produces.some((candidate) => {
         const product = entryFor(catalog, candidate);
-        return product !== undefined && matchesRole(product, role);
+        return product !== undefined && matchesAdaptationRole(product, role);
       })
     );
   const mapHasWater = observation.map?.accessGraph?.nodes.some((node) => node.domain === "water") ?? false;
@@ -196,6 +180,7 @@ export class AiAdaptationManager implements AiProposalManagerV1 {
 
     for (const target of targets) {
       const currentActorIds = currentRoleActorIds(observation, catalog, target.role);
+      const queuedIds = queuedAdaptationRoleItemIds(observation, catalog, target.role);
       const acceptedEffectIds = pendingRoleEffectIds(state, target.role);
       const current = currentActorIds.length;
       const committed = pendingRoleCommitments(state, target.role);
@@ -206,13 +191,13 @@ export class AiAdaptationManager implements AiProposalManagerV1 {
         unit: "actor_count",
         desired: target.desired,
         satisfiedActorIds: currentActorIds,
-        queuedIds: [],
+        queuedIds,
         constructingIds: [],
         acceptedNotObservedEffectIds: acceptedEffectIds,
         preferredObjectNames: [],
         resourceObligations: {}
       });
-      if (!canTransition || current + committed >= target.desired) continue;
+      if (!canTransition || current + queuedIds.length + committed >= target.desired) continue;
       const producer = producerForRole(observation, catalog, target.role, remainingResources);
       if (!producer) continue;
       const next = ids(state, target.role, ordinal++);
@@ -245,7 +230,8 @@ export class AiAdaptationManager implements AiProposalManagerV1 {
             effectId: next.effectId
           }
         ],
-        reasonCode: `adapt:${target.role}:confirmed=${target.evidenceIds.join(",")}:current=${current}:committed=${committed}/${target.desired}`,
+        reasonCode: `adapt:${target.role}:confirmed=${target.evidenceIds.join(",")}:` +
+          `current=${current}:queued=${queuedIds.length}:committed=${committed}/${target.desired}`,
         producerId: producer.producerId,
         objectName: producer.objectName
       });

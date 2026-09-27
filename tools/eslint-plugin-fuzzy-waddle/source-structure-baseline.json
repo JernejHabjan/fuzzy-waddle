@@ -137,7 +137,6 @@
   "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-access-graph-v1.spec.ts": "83acff6585d85080337357b0f2e8794f28782a5f23986b846fc629344cbedcd9",
   "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-access-graph-v1.ts": "8924d14462126322daf2ac4daafe7410a3bc8fcf70494b461bafe12193683852",
   "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-adaptation-manager.spec.ts": "ff26ce94cdd17813673bcda14febf304af82aad0b4c87237bf0e00f7702aa556",
-  "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-adaptation-manager.ts": "aabd797bb201dfe3eacdc7e0787af64cfee35d267776900a231cc3e9e9698ed1",
   "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-base-manager.spec.ts": "9ddb992c75804ad5884e02ce2f3afb86cd3f530b0e7baff981007cfa72d95ff3",
   "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-base-manager.ts": "c39328becec9b2650cb0177d6700584f083d3cc2daf67de632f9e372ed995bd8",
   "libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-fortification-manager.spec.ts": "9103e586f2ca44e79e5d9abcf74ead671e5084142c883c5e45a49afd022c5ef2",
@@ -666,7 +665,7 @@
   "libs/platform/identity/src/lib/social/friendship.ts": "584441083e1a456e92ea6a7bafa0a5d8dea79c88f6c58b1568e224536850ecc7",
   "libs/platform/identity/src/lib/social/social-dtos.ts": "159a251a6e36e9f2176fd1e323aa57ea016104e091d636936b51479371365092",
   "libs/platform/identity/src/lib/social/social-identifiers.ts": "8bcb30af1d74ba618fb4560463d6dec708fd32be31e0a4dc45b1af62e545148c",
-  "tools/ai/run-skirmish-matrix.mjs": "5ff3fe807a82d36f90c04bea647fac7e2c2520c431d8ec9b55112141be88bf2e",
+  "tools/ai/run-skirmish-matrix.mjs": "6e61963087aed887ae94e193cb0b20f3a3ede04037024e809a4b63aef7fb39af",
   "tools/ai/summarize-skirmish-report.mjs": "2434b66c17b70913dee0d20e46d63d41fba9444078fde6ece5227b8a2b5b9d1d",
   "tools/phaser-editor/validate-project.mjs": "367ae4bb18a0cbd4c7afdca656da24c49f591afc0de5fe9ac9022c07fd4e19bd",
   "tools/testing/angular/mocks/phaser.js": "7d5668d403f26e733ed51b7b3c5d0dc4839b3ecbfcc937bba933cb4ce2e9b49b"

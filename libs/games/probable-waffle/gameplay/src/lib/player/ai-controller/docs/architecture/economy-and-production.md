@@ -80,6 +80,9 @@ not mistaken for one population point and copied until a numeric population targ
 ## Composition and technology
 
 Composition uses real runtime target domains, effective levels, attacks, armour, range, support and movement capabilities. It must never invent a familiar RTS counter that the faction cannot build. Sparse evidence justifies limited preparation and scouting; confirmed strength can justify a larger counter transition.
+Counter demand counts compatible units already in real production queues alongside owned units and accepted effects.
+It asks for additional production only for the remaining deficit; existing useful queues are not cancelled to make a
+new composition look tidier.
 
 Research competes with survival, supply, production and expansion. Its value depends on eligible existing and committed units, timing, queue occupancy and opportunity cost. Useful queued units are not cancelled merely to obtain a cosmetically cleaner composition.
 

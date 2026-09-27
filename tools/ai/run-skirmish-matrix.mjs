@@ -228,7 +228,7 @@ function invokeHarness(input) {
   ];
   const authoredTestNames = [
     "ai-(brain|production-scenarios|housing-demand|economy-forecast-scenarios|resource-service-manager)",
-    "ai-(tactics-manager|adaptation-manager)",
+    "ai-(tactics-manager|adaptation-(manager|queue))",
     "validate-ai-runtime-browser-test-config-v1",
     "ai-profile-defaults",
     "player-ai-controller\\.agent\\.static"
