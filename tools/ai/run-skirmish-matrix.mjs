@@ -563,6 +563,7 @@ function validateRuntimeFixture(fixture, scenarioId) {
         !["Tivara", "Skaduwee"].includes(variant.humanFaction) ||
         !["Easy", "Normal", "Hard"].includes(variant.difficulty) ||
         (variant.supplyBranch !== undefined && !["prebuild", "ample_control"].includes(variant.supplyBranch)) ||
+        (variant.pressureBranch !== undefined && !["raid", "safe_control"].includes(variant.pressureBranch)) ||
         (variant.resourceServiceBranch !== undefined &&
           !["build", "served_control"].includes(variant.resourceServiceBranch)) ||
         (variant.mapLabel !== undefined && typeof variant.mapLabel !== "string") ||
@@ -598,6 +599,14 @@ function validateRuntimeFixture(fixture, scenarioId) {
       !["prebuild", "ample_control"].every((branch) =>
         recipe.variants.some((variant) =>
           variant.supplyBranch === branch &&
+          (variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId))
+        )
+      )) ||
+    (assertion.requirePressureResponse !== undefined && typeof assertion.requirePressureResponse !== "boolean") ||
+    (assertion.requirePressureResponse === true &&
+      !["raid", "safe_control"].every((branch) =>
+        recipe.variants.some((variant) =>
+          variant.pressureBranch === branch &&
           (variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId))
         )
       )) ||

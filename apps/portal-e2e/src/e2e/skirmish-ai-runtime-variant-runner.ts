@@ -172,6 +172,7 @@ export async function runVariant(
       presetInitialOrderCount: initialBoundary.presetApplication?.initialOrderCount ?? 0,
       determinismGroup: variant.determinismGroup ?? null,
       ...(variant.supplyBranch ? { supplyBranch: variant.supplyBranch } : {}),
+      ...(variant.pressureBranch ? { pressureBranch: variant.pressureBranch } : {}),
       ...(variant.resourceServiceBranch ? { resourceServiceBranch: variant.resourceServiceBranch } : {}),
       initialWorldDigest,
       outcomeDigest,

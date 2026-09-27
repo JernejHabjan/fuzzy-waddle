@@ -33,6 +33,7 @@ export interface RuntimeAssertionV1 {
     readonly housingObjectName: string;
   };
   readonly requireSupplyControl?: boolean;
+  readonly requirePressureResponse?: boolean;
   readonly requiredResourceService?: {
     readonly sourceObjectName: string;
     readonly serviceObjectName: string;

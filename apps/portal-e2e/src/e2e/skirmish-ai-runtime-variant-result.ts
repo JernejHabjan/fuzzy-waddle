@@ -17,6 +17,7 @@ export interface RuntimeVariantResultV1 {
   readonly presetInitialOrderCount: number;
   readonly determinismGroup: string | null;
   readonly supplyBranch?: "prebuild" | "ample_control";
+  readonly pressureBranch?: "raid" | "safe_control";
   readonly resourceServiceBranch?: "build" | "served_control";
   readonly initialWorldDigest: string;
   readonly outcomeDigest: string;

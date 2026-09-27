@@ -1,6 +1,7 @@
 import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
 import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
 import { evaluateRuntimeVariant } from "./skirmish-ai-runtime-variant-evaluation";
+import { evaluateRuntimePressureResponse } from "./skirmish-ai-runtime-pressure-evaluation";
 
 export function evaluateScenario(
   scenarioId: string,
@@ -30,6 +31,9 @@ export function evaluateScenario(
     )
   ) {
     failures.push("required_supply_branches_missing");
+  }
+  if (assertion.requirePressureResponse) {
+    failures.push(...evaluateRuntimePressureResponse(selectedVariants));
   }
   if (assertion.requiredResourceService && !["build", "served_control"].every((branch) =>
     selectedVariants.some((variant) => variant.resourceServiceBranch === branch)

@@ -14,6 +14,7 @@ export interface RuntimeVariantV1 {
   readonly determinismGroup?: string;
   readonly repetitions?: number;
   readonly supplyBranch?: "prebuild" | "ample_control";
+  readonly pressureBranch?: "raid" | "safe_control";
   readonly resourceServiceBranch?: "build" | "served_control";
   readonly perturbations?: readonly RuntimePerturbationV1[];
 }

@@ -104,6 +104,10 @@ not block this gate.
   digest, and debug unit cases are authored but unrun. Four existing oversized/compound source owners needed reviewed
   source-structure hash updates; #821 owns their later split/removal, not a routine baseline refresh. At the final gate,
   check that committed snapshots follow decision boundaries and survive save/reload without changing planner authority.
+  A paired, three-repeat, 200-resource STRAT-01 Playwright recipe now contrasts a dispatched Banshee raid with the
+  otherwise identical safe world. Its independent oracle requires visible contact, a defense-favoring committed budget,
+  an actual defense squad plus later applied command, and worker/income growth in the safe control. This is unrun;
+  final-gate repair must establish real reaction and control growth rather than weaken the oracle.
 
 - ECO-08 now has an authored three-repeat focused workforce variant from an exact 200-resource start: six real
   workers, two Fields, a Granary, and an independent oracle requiring growth/retention above six plus delivered

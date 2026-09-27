@@ -22,6 +22,13 @@ export function projectRuntimeOutcomeDigestInput(
     decisionWorkObserved: (final?.decisionSequence ?? 0) > 0,
     workerEconomyEstablished: checkpoints.some((checkpoint) => checkpoint.workerCount > 0),
     workerEconomyRetained: (final?.workerCount ?? 0) > 0,
+    economyTrajectory: checkpoints.map((checkpoint) => ({
+      workers: checkpoint.workerCount,
+      posture: checkpoint.economyPosture ?? null,
+      desiredWorkers: checkpoint.workforcePolicy?.desiredWorkers ?? null,
+      economyPermille: checkpoint.workforcePolicy?.economyPermille ?? null,
+      defensePermille: checkpoint.workforcePolicy?.defensePermille ?? null
+    })),
     deliveredIncome: checkpoints.some((checkpoint) => checkpoint.deliveredIncome > 0),
     resourceServiceProgress: checkpoints.map((checkpoint) => ({
       readyServices: (checkpoint.resourceServiceActors ?? [])

@@ -50,6 +50,8 @@ large files, stage-labelled persisted IDs/fixtures, and ordinary implementation 
    The #829 committed-workforce debug slice narrowly changed the legacy macro owner, compound brain-state contract,
    invariant validator, and canonical serializer. Their four reviewed hash exceptions must be removed by
    responsibility-based splits before #821 closes; the new high-level debug projector itself remains below limits.
+   The STRAT-01 paired pressure recipe changed the oversized matrix fixture validator; its reviewed hash remains a
+   temporary exception until fixture validation moves into a bounded owner.
 2. Rename stage/phase filenames, symbols, comments, test descriptions, and non-persisted diagnostics by responsibility.
 3. Remove `V1` from ordinary implementations. Keep it on save/wire/repro/fixture/report schemas unless a compatible
    migration and schema-version policy are supplied.

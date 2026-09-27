@@ -60,6 +60,17 @@ export async function captureRuntimeEconomyCheckpoint(
           ])
         ),
         workerCount: selfActors.filter((actor) => workerNames.has(actor.objectName)).length,
+        economyPosture: state.economyProduction.posture?.status ?? null,
+        workforcePolicy: state.economyProduction.workforce
+          ? {
+              workers: state.economyProduction.workforce.workers,
+              queuedWorkers: state.economyProduction.workforce.queuedWorkers,
+              desiredWorkers: state.economyProduction.workforce.desiredWorkers,
+              foodRunwayTicks: state.economyProduction.workforce.foodRunwayTicks,
+              economyPermille: state.economyProduction.workforce.economyPermille,
+              defensePermille: state.economyProduction.workforce.defensePermille
+            }
+          : null,
         readyHousingCapacity: readyHousing.reduce(
           (total, actor) => total + (actor.housingCapacity.status === "known" ? actor.housingCapacity.value : 0),
           0
