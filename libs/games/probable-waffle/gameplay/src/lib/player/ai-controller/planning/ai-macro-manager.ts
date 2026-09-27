@@ -12,7 +12,7 @@ import {
 } from "./ai-economy-policy";
 import { projectAiResourceForecasts } from "./ai-resource-forecast";
 import { createAiResourceCostClaims } from "./ai-resource-cost-claims";
-import { calculateAiHousingDemand } from "./ai-housing-demand";
+import { proposeAiHousing } from "./ai-housing-proposal";
 import { proposeAiWorkerRecovery } from "./ai-worker-recovery";
 import { proposeAiGeneralGathering } from "./ai-general-gathering-proposal";
 import { plannedAiForceSize, plannedAiProducerCount } from "./ai-force-capacity";
@@ -79,85 +79,22 @@ export class AiMacroManager implements AiProposalManagerV1 {
     }
     const openingComplete = activeCheckpointId === undefined;
     const workerCheckpoint = checkpointStatus.find((entry) => entry.checkpoint.id === "bootstrap-worker");
-    const housing = calculateAiHousingDemand(
+    const housing = proposeAiHousing(
       observation,
+      state,
       catalog,
-      checkpoints.find((checkpoint) => checkpoint.id === "supply-safety")!.requiredObject,
+      checkpoints,
+      self,
+      openingComplete,
       budget.supplyBuffer,
-      unresolvedReservedEffectIds(state, "effect:supply:effect:")
+      reservedActorIds,
+      selectedConstructionTileKeys,
+      ordinal
     );
+    if (housing.demand) demands.push(housing.demand);
+    intents.push(...housing.intents);
+    ordinal = housing.ordinal;
     const freeSupply = housing.freeSupply;
-    if (openingComplete && housing.neededBuildings > 0 && housing.housingEntry) {
-      const housingObject = housing.housingEntry.sourceObjectName;
-      demands.push({
-        demandId: "demand:supply:buffer" as AiDemandV1["demandId"],
-        purpose: "supply_buffer",
-        capabilityOrRole: "housing",
-        unit: "actor_count",
-        desired: housing.desiredBuildingCount,
-        satisfiedActorIds: housing.ready.map((actor) => actor.actorId),
-        queuedIds: [],
-        constructingIds: housing.constructing.map((actor) => actor.actorId),
-        acceptedNotObservedEffectIds: housing.acceptedEffectIds,
-        preferredObjectNames: [housingObject],
-        resourceObligations: housing.housingEntry.constructionProfile?.resourceCost ?? {}
-      });
-      const builders = self
-        .filter(isAvailableBuilder)
-        .filter((actor) => !reservedActorIds.has(actor.actorId))
-        .filter((actor) =>
-          catalog.entries.some(
-            (entry) => entry.sourceObjectName === actor.objectName && entry.constructs.includes(housingObject)
-          )
-        );
-      if (builders.length > 0 && canAffordAiEconomyCost(observation, housing.housingEntry.constructionProfile?.resourceCost ?? {})) {
-        for (let index = 0; index < Math.min(housing.neededBuildings, builders.length); index += 1) {
-          const builder = builders[index];
-          if (!builder || builder.logicalPosition.status !== "known") continue;
-          const position = selectConstructionPosition(
-            observation,
-            builder,
-            state.scheduler.decisionSequence,
-            ordinal + index,
-            selectedConstructionTileKeys,
-            housing.housingEntry.constructionProfile?.footprintRadiusTiles ?? 0
-          );
-          if (!position) continue;
-          const ids = nextIds(state, "supply", ordinal++);
-          intents.push({
-            ...ids,
-            kind: "construct",
-            spendingCategory: housing.queuedPopulation > 0 ? "survival" : "economy",
-            planId: state.opening.plan.planId,
-            demandId: "demand:supply:buffer" as AiDemandV1["demandId"],
-            lane: "supply_production",
-            proposedTick: observation.tick,
-            urgencyClass: 1,
-            utility: housing.queuedPopulation > 0 ? 920 : 850,
-            preconditions: [{ kind: "actor_exists", actorId: builder.actorId }],
-            claims: [
-              {
-                claimId: `${ids.claimId}:builder` as AiIntentV1["claims"][number]["claimId"],
-                kind: "actor",
-                actorId: builder.actorId
-              },
-              { claimId: ids.claimId, kind: "site", siteKey: `supply:${housingObject}:${position.x}:${position.y}` },
-              ...createAiResourceCostClaims(ids.claimId, housing.housingEntry.constructionProfile?.resourceCost ?? {}),
-              {
-                claimId: `${ids.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
-                kind: "effect",
-                effectId: ids.effectId
-              }
-            ],
-            reasonCode: `supply_buffer:${state.opening.archetypeId}:deficit=${housing.queuedPopulation + budget.supplyBuffer - freeSupply}`,
-            builderIds: [builder.actorId],
-            objectName: housingObject,
-            logicalPosition: position,
-            siteKey: `supply:${housingObject}:${position.x}:${position.y}`
-          });
-        }
-      }
-    }
 
     const pressureDomain = openingComplete && state.strategy.assessment?.routeDomain === "air" ? "air" : "ground";
     const military = self.filter(
