@@ -1,6 +1,6 @@
 import { ObjectNames, OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
+import { createAiTestObservation, createAiTestOwnedActor, unknownAiValue } from "../testing/ai-test-fixtures";
 import { canAffordAiEconomyCost, decideAiEconomyPolicy } from "./ai-economy-policy";
 
 const catalog: AiCapabilityCatalogV1 = {
@@ -45,6 +45,8 @@ function foodSource(actorId: string, capacity: number) {
       value: {
         resourceType: ResourceType.Food,
         available: { status: "known" as const, value: 100, observedTick: 20 },
+        carried: unknownAiValue,
+        growthReadyTick: unknownAiValue,
         serviceCapacity: { status: "known" as const, value: capacity, observedTick: 20 }
       },
       observedTick: 20
