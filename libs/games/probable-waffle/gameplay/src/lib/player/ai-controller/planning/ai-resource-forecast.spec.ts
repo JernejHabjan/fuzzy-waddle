@@ -83,6 +83,26 @@ describe("AI resource forecast", () => {
     );
   });
 
+  it("ECO-04: counts measured income due before the deadline, but never assumes unknown income", () => {
+    const base = createAiTestObservation();
+    const resources = [ResourceType.Wood, ResourceType.Food].map((resourceType) => ({
+      resourceType, stockpile: 0, reservedUnspent: 0, obligationsDue: 0,
+      deliveredIncomePerMinute: resourceType === ResourceType.Wood
+        ? { status: "known" as const, value: 600, observedTick: base.tick }
+        : { status: "known" as const, value: 0, observedTick: base.tick }
+    }));
+    const forecasts = [
+      { resourceType: ResourceType.Wood, horizonTick: base.tick + 600, amount: 300, confidencePermille: 800 },
+      { resourceType: ResourceType.Food, horizonTick: base.tick + 600, amount: 100, confidencePermille: 800 }
+    ];
+    const available = new Set([ResourceType.Wood, ResourceType.Food]);
+    expect(selectAiForecastResource({ ...base, resources }, forecasts, available)).toBe(ResourceType.Food);
+    const unknownWood = resources.map((entry) => entry.resourceType === ResourceType.Wood
+      ? { ...entry, deliveredIncomePerMinute: { status: "unknown" as const, reason: "not_observed" as const } }
+      : entry);
+    expect(selectAiForecastResource({ ...base, resources: unknownWood }, forecasts, available)).toBe(ResourceType.Wood);
+  });
+
   it("sums distinct dated consumers while keeping reserved and due food unavailable for new promises", () => {
     const observation = {
       ...createAiTestObservation(),

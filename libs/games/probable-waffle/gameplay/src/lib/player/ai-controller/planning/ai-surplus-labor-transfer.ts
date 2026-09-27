@@ -1,6 +1,7 @@
 import { OrderType, type ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
+import { aiResourceForecastDeficit } from "./ai-resource-forecast";
 
 const MIN_TRANSFER_DEFICIT = 100;
 const MIN_DONOR_SURPLUS = 100;
@@ -14,13 +15,17 @@ function spendable(observation: AiObservationV1, resourceType: ResourceType): nu
 export function selectAiSurplusLaborTransfer(
   observation: AiObservationV1,
   catalog: AiCapabilityCatalogV1,
-  forecasts: readonly { readonly resourceType: ResourceType; readonly amount: number }[],
+  forecasts: readonly {
+    readonly resourceType: ResourceType;
+    readonly horizonTick: number;
+    readonly amount: number;
+  }[],
   workers: readonly AiObservedActorV1[],
   sources: readonly AiObservedActorV1[],
   targetResource: ResourceType
 ): AiObservedActorV1 | undefined {
-  const wanted = forecasts.find((entry) => entry.resourceType === targetResource)?.amount ?? 0;
-  if (wanted - spendable(observation, targetResource) < MIN_TRANSFER_DEFICIT) return undefined;
+  const targetForecast = forecasts.find((entry) => entry.resourceType === targetResource);
+  if (!targetForecast || aiResourceForecastDeficit(observation, targetForecast) < MIN_TRANSFER_DEFICIT) return undefined;
   const sourcesById = new Map(sources.map((source) => [source.actorId, source]));
   const gatherersBySource = new Map<string, number>();
   for (const worker of workers) {

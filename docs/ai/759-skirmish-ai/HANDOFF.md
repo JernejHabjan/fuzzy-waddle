@@ -99,6 +99,11 @@ not block this gate.
 
 ## Active evidence and boundaries
 
+- ECO-04 labor ranking now discounts only measured delivered income within the bounded 600-tick horizon. A pure
+  known-versus-unknown income case and matrix selector are authored but unrun. This estimate affects worker routing,
+  not authoritative spending; verify low-resource throughput and that rising demand still adds useful labor at the
+  final gate.
+
 - TECH-05 now has unverified queued-counter accounting: compatible production queue items satisfy evidence-backed
   role demand before new counters are proposed. A focused pure case compares two queued counters with one queued
   counter under the same confirmed flyer evidence. Verify demand counting and no-cancel behavior at the final gate;

@@ -64,14 +64,24 @@ export function selectAiForecastResource(
   forecasts: readonly ReturnType<typeof projectAiResourceForecasts>[number][],
   availableTypes: ReadonlySet<ResourceType>
 ): ResourceType | undefined {
-  const ledger = new Map(observation.resources.map((resource) => [resource.resourceType, resource]));
   return [...forecasts]
     .filter((forecast) => availableTypes.has(forecast.resourceType))
-    .map((forecast) => {
-      const resource = ledger.get(forecast.resourceType);
-      const available = (resource?.stockpile ?? 0) - (resource?.reservedUnspent ?? 0) - (resource?.obligationsDue ?? 0);
-      return { resourceType: forecast.resourceType, deficit: forecast.amount - available };
-    })
+    .map((forecast) => ({ resourceType: forecast.resourceType, deficit: aiResourceForecastDeficit(observation, forecast) }))
     .sort((left, right) => right.deficit - left.deficit || left.resourceType.localeCompare(right.resourceType))[0]
     ?.resourceType;
+}
+
+/** Uses empirical delivered income only within the bounded dated horizon; unknown income makes no promise. */
+export function aiResourceForecastDeficit(
+  observation: AiObservationV1,
+  forecast: { readonly resourceType: ResourceType; readonly horizonTick: number; readonly amount: number }
+): number {
+  const resource = observation.resources.find((entry) => entry.resourceType === forecast.resourceType);
+  const spendable = (resource?.stockpile ?? 0) - (resource?.reservedUnspent ?? 0) - (resource?.obligationsDue ?? 0);
+  const horizon = Math.max(0, Math.min(FORECAST_HORIZON_TICKS, forecast.horizonTick - observation.tick));
+  const income = resource?.deliveredIncomePerMinute;
+  const deliveredIncome = income?.status === "known"
+    ? income.value * horizon / 1200
+    : 0;
+  return forecast.amount - spendable - deliveredIncome;
 }
