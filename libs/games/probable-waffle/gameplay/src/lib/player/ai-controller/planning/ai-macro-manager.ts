@@ -10,11 +10,11 @@ import {
   decideAiEconomyPolicy,
   hasCredibleAiEconomyThreat
 } from "./ai-economy-policy";
-import { projectAiResourceForecasts, selectAiForecastResource } from "./ai-resource-forecast";
+import { projectAiResourceForecasts } from "./ai-resource-forecast";
 import { createAiResourceCostClaims } from "./ai-resource-cost-claims";
 import { calculateAiHousingDemand } from "./ai-housing-demand";
 import { proposeAiWorkerRecovery } from "./ai-worker-recovery";
-import { selectAiSurplusLaborTransfer } from "./ai-surplus-labor-transfer";
+import { proposeAiGeneralGathering } from "./ai-general-gathering-proposal";
 import { plannedAiForceSize, plannedAiProducerCount } from "./ai-force-capacity";
 import { openingBudget } from "./ai-opening-catalog";
 import { proposeAiOpening } from "./ai-opening-proposal";
@@ -70,115 +70,12 @@ export class AiMacroManager implements AiProposalManagerV1 {
 
     const self = owned(observation);
     const budget = openingBudget(state.opening.archetypeId);
-    const openingBuilderIds = new Set(
-      intents.flatMap((intent) => {
-        if (intent.kind === "construct") return [...intent.builderIds];
-        if (intent.kind === "resume_construct") return [...intent.actorIds];
-        return [];
-      })
+    const gatheringIntent = proposeAiGeneralGathering(
+      observation, state, catalog, self, intents, reservedActorIds, ordinal
     );
-    const idleWorkers = self
-      .filter((actor) =>
-        catalog.entries.some((entry) => entry.sourceObjectName === actor.objectName && entry.gathers.length > 0)
-      )
-      .filter((actor) => !openingBuilderIds.has(actor.actorId))
-      .filter((actor) => !reservedActorIds.has(actor.actorId))
-      .filter((actor) => actor.activeOrder?.status === "known" && actor.activeOrder.value === null)
-      .sort((left, right) => left.actorId.localeCompare(right.actorId));
-    const gatherSources = observation.actors
-      .filter(
-        (actor) =>
-          actor.objectName !== ObjectNames.Field &&
-          actor.relation !== "enemy" &&
-          actor.visibility !== "last_seen" &&
-          actor.resourceState.status === "known" &&
-          actor.resourceState.value.available.status === "known" &&
-          actor.resourceState.value.available.value > 0
-      )
-      .sort((left, right) => left.actorId.localeCompare(right.actorId));
-    const sourceResourceTypes = new Set(
-      gatherSources.map((actor) =>
-        actor.resourceState.status === "known" ? actor.resourceState.value.resourceType : ResourceType.Wood
-      )
-    );
-    const constrainedResource =
-      selectAiForecastResource(observation, state.economyProduction.forecasts, sourceResourceTypes) ??
-      observation.resources
-        .filter((resource) => sourceResourceTypes.has(resource.resourceType))
-        .sort(
-          (left, right) => left.stockpile - right.stockpile || left.resourceType.localeCompare(right.resourceType)
-        )[0]?.resourceType;
-    const activeGatherersBySource = new Map<string, number>();
-    for (const actor of self) {
-      const order = actor.activeOrder?.status === "known" ? actor.activeOrder.value : null;
-      if (order?.orderType !== OrderType.Gather || !order.targetActorId) continue;
-      activeGatherersBySource.set(order.targetActorId, (activeGatherersBySource.get(order.targetActorId) ?? 0) + 1);
-    }
-    const gatherCandidate = gatherSources
-      .filter(
-        (actor) =>
-          actor.resourceState.status === "known" && actor.resourceState.value.resourceType === constrainedResource
-      )
-      .map((actor) => {
-        const capacity =
-          actor.resourceState.status === "known" && actor.resourceState.value.serviceCapacity.status === "known"
-            ? actor.resourceState.value.serviceCapacity.value
-            : 1;
-        return { actor, availableCapacity: capacity - (activeGatherersBySource.get(actor.actorId) ?? 0) };
-      })
-      .find((candidate) => candidate.availableCapacity > 0);
-    const gatherSource = gatherCandidate?.actor;
-    if (gatherSource?.resourceState.status === "known" && constrainedResource) {
-      const compatibleIdleWorkers = idleWorkers.filter((actor) => catalog.entries.some(
-        (entry) => entry.sourceObjectName === actor.objectName && entry.gathers.includes(constrainedResource)
-      ));
-      const transferable = compatibleIdleWorkers.length === 0
-        ? selectAiSurplusLaborTransfer(
-            observation,
-            catalog,
-            state.economyProduction.forecasts,
-            self.filter((actor) => !openingBuilderIds.has(actor.actorId) && !reservedActorIds.has(actor.actorId)),
-            gatherSources,
-            constrainedResource
-          )
-        : undefined;
-      const selectedWorkers = compatibleIdleWorkers.length > 0
-        ? compatibleIdleWorkers.slice(0, Math.min(4, gatherCandidate?.availableCapacity ?? 0))
-        : transferable ? [transferable] : [];
-      if (selectedWorkers.length > 0) {
-        const ids = nextIds(state, "gather", ordinal++);
-        intents.push({
-          ...ids,
-          kind: "assign_gatherers",
-          planId: state.opening.plan.planId,
-          demandId: null,
-          lane: "essential_economy",
-          proposedTick: observation.tick,
-          urgencyClass: 0,
-          utility: 980,
-          preconditions: [
-            ...selectedWorkers.map((worker) => ({ kind: "actor_exists" as const, actorId: worker.actorId })),
-            { kind: "actor_exists", actorId: gatherSource.actorId }
-          ],
-          claims: [
-            ...selectedWorkers.map((worker, index) => ({
-              claimId: `${ids.claimId}:worker:${index}` as AiIntentV1["claims"][number]["claimId"],
-              kind: "actor" as const,
-              actorId: worker.actorId
-            })),
-            {
-              claimId: `${ids.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
-              kind: "effect",
-              effectId: ids.effectId
-            }
-          ],
-          reasonCode: `economy:${transferable ? "surplus_transfer" : "idle_workers"}:` +
-            `${selectedWorkers.length}:${constrainedResource}`,
-          actorIds: selectedWorkers.map((worker) => worker.actorId),
-          resourceType: constrainedResource,
-          sourceActorId: gatherSource.actorId
-        });
-      }
+    if (gatheringIntent) {
+      intents.push(gatheringIntent);
+      ordinal += 1;
     }
     const openingComplete = activeCheckpointId === undefined;
     const workerCheckpoint = checkpointStatus.find((entry) => entry.checkpoint.id === "bootstrap-worker");

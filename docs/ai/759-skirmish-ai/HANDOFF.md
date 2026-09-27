@@ -34,13 +34,15 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 - The opening checkpoint/intent phase is now in `ai-opening-proposal.ts`; the macro owner consumes its existing
   demands, steps, intents, reserved actors, selected sites, and ordinal. This extraction has not been typechecked or
   behaviorally exercised. Its unchanged proposal ordering and saved checkpoint semantics need final-gate confirmation.
+- General non-Field labor assignment is now in `ai-general-gathering-proposal.ts`; the same opening-builder exclusions,
+  forecast ranking, source capacity, surplus transfer, and single ordinal increment should be checked at the final gate.
 - Production-only boundary audit: #815/#816/#819/#823 primarily require pure or browser/network evidence and are
   excluded from this sweep. #817 difficulty tuning and #828 hot-path optimization require measured, paired runs;
   their preparation is already authored, but no threshold or hot path should be guessed now. #820 legacy removal is
   gated on #816/#819/#823 parity evidence and must not be done speculatively. #829/#827 production behavior remains
   unproven until the final gate; repair only the first evidenced failure then. #821 has remaining code-only structural
   work, but its final baseline removal and compatibility audit also require that gate.
-- Exact next safe code-only action: split housing, labor, food, and production from `AiMacroManager.propose` without changing
+- Exact next safe code-only action: split housing, food, and production from `AiMacroManager.propose` without changing
   policy. Then notify the user before the final test/validation gate. Do not remove the legacy behavior tree, tune
   difficulty, or claim performance improvement before the dependency evidence exists.
 - Pinned pre-change baseline: `de47f482889db30420692bf4406fba463d7db296`.

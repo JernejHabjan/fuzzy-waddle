@@ -41,7 +41,8 @@ large files, stage-labelled persisted IDs/fixtures, and ordinary implementation 
    it; remove aliases once all callers migrate.
    The macro owner is a concrete #821 cleanup target: opening/military catalog, observation/queue, construction-cell,
    and effect-identity helpers were extracted. Opening proposals now live in `ai-opening-proposal.ts`, but the
-   proposal method remains oversized and still needs labor, housing, food, and production ownership splits.
+   general labor is now in `ai-general-gathering-proposal.ts`. The proposal method remains oversized and still needs
+   housing, food, and production ownership splits.
    The ECO-05 surplus-transfer integration changed its reviewed
    hash baseline while leaving it over 400 lines. Extract opening, labor, housing, food, and construction proposal
    responsibilities, then remove its baseline entry. The later near-term finishing-policy handoff also changed this
