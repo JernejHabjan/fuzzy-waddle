@@ -22,8 +22,9 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
   its source-structure baseline exemption was removed. Opening, general labor, housing, food prerequisite/Field/labor,
   military force context, producer capacity, and affordable role-balanced unit proposals have focused owners. Preserve
   their existing intent/demand ordering, ordinal IDs, site reservations, and accepted-effect accounting; review those
-  boundaries at the final gate. Other #821 debt (observation pipeline, matrix runner, compound contracts/serializer,
-  naming and legacy spec) remains. No tests, Playwright, simulations, builds, lint, or type checks ran in this sweep.
+  boundaries at the final gate. The matrix runner, compound contracts/serializer and observation pipeline now have
+  unverified splits; #821 naming and other baselined legacy debt remain. No tests, Playwright, simulations, builds,
+  lint, or type checks ran in this sweep.
 - Production-only boundary audit: #815/#816/#819/#823 primarily require pure or browser/network evidence and are
   excluded from this sweep. #817 difficulty tuning and #828 hot-path optimization require measured, paired runs;
   their preparation is already authored, but no threshold or hot path should be guessed now. #820 legacy removal is
@@ -34,20 +35,19 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
   pure/runtime execution, and shared I/O to focused modules; the CLI remains the dispatch/replay/report owner under
   400 physical lines, and its source-structure exemption was removed. The final gate must compare scenario selection,
   malformed-fixture rejection, pure/runtime report shape, replay/compare provenance, and CLI exit behavior. The Phaser
-  observation pipeline (~1,468 lines) remains #821 debt. The brain-state contract now has one persisted slice per
+  observation pipeline has since been split as described below. The brain-state contract now has one persisted slice per
   type-only file behind its old import surface; the validator delegates to focused observation, transport, squad and
   dependency-edge owners; the canonical-value type is separate from serialization. Their three old baseline entries
   were removed, but none of these edits has passed type/lint/save/replay proof. Do not silently renew other exemptions.
   Plan compatibility before changing persisted IDs. Notify the user before the
   final gate; do not remove legacy fallback, tune difficulty, or claim performance improvement without evidence.
-- Next #821 source boundary: `phaser/.../observation/ai-observation-pipeline.ts` still owns 1,468 physical lines and
-  retains its existing hash-baselined exemption. Decompose by fair visibility boundary: (1) pure memory normalization
-  and bounded-work helpers, (2) owned/visible actor plus runtime catalog projection, (3) permitted topology/map cells,
-  (4) research/effects/threat/mode goals, leaving capture/commit, generation fencing, save restore and disposal in the
-  coordinator. Keep the visibility policy before every live-world read and preserve exact generation, memory, query
-  cursor, invalidation, sorting and catalog semantics. `projectActor` itself is over 200 physical lines and needs a
-  focused combat/container subprojection. This cross-library split requires Sol/high scope review and focused
-  Phaser/type/save/replay evidence at the final gate; do not rename persisted identities while doing it.
+- #821 observation split (unverified): `phaser/.../observation/ai-observation-pipeline.ts` is now a 368-line capture,
+  generation-commit, save/restore and disposal coordinator. Memory/work, actor/combat/catalog, permitted topology/map,
+  access-product and auxiliary-context projection live in bounded neighboring modules. Its source-structure baseline
+  exemption was removed. At the final gate, review fair visibility before live reads, generation fencing, memory and
+  query-cursor persistence, invalidation, deterministic sorting and catalog contents; run focused Phaser/type/save/replay
+  evidence. Do not rename persisted manager/effect/claim/trace IDs without migration and old-fixture proof. The broader
+  stage-labelled source/test naming audit remains #821 work, not a reason to renew hashes.
 - Pinned pre-change baseline: `de47f482889db30420692bf4406fba463d7db296`.
 - Manifest authority: `tools/ai/fixtures/skirmish-v1.json`, 121 scenario IDs before variants.
 - Completed prerequisites: #824 repository tooling and #825 current-content domain/transport foundation.

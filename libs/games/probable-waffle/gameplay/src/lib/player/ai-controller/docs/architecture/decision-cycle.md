@@ -16,6 +16,11 @@ authoritative world
 
 `AiObservationV1` is the only strategic input. It contains owned facts, legitimately observed enemy knowledge and capability projections resolved from the runtime catalog. It must not expose live Phaser objects, hidden queues, current hidden positions or unrestricted navigation state.
 
+In the Phaser adapter, `ai-observation-pipeline.ts` owns the visibility gate, generation commit, saved cursor and lifecycle.
+Neighboring `observation/` modules project actors/combat, the capability catalog, permitted topology/map cells,
+remembered contacts, access products and mode context. Keep any new live-world projector behind the same owned-or-visible
+gate; a pure brain manager must never query Phaser directly.
+
 `AiBrainStateV1` owns persistent goals, knowledge, demand, reservations, bases, squads, transports, fortifications, recovery, scheduling and deterministic identity state. Every persisted deadline uses simulation ticks. Canonical serialization sorts set-like data while preserving intentionally ordered data such as RNG state.
 
 Domain managers propose changes; they do not mutate the world. The brain merges each manager's owned state projection, resolves claims and budgets, and emits a deterministic intent order. A manager may replace only the state slice or keyed rows it owns.

@@ -8,6 +8,7 @@ All paths in the following table are relative to libs/games/probable-waffle/phas
 | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | AI cadence and ownership                            | player/ai-controller/player-ai-controller.agent.ts                                                                                              |
 | Pure planner runtime bridge                         | player/ai-controller/player-ai-controller.ts ; player/ai-controller/observation/ai-observation-pipeline.ts                                      |
+| Fair AI observation projection                      | player/ai-controller/observation/ai-observation-visibility-policy.ts ; ai-observation-actor-projector.ts ; ai-observation-catalog.ts ; ai-observation-map.ts ; ai-observation-context.ts (same directory) |
 | Build-site reachability and deterministic ranking   | player/ai-controller/ai-behavior/base-planner.ts ; player/ai-controller/ai-behavior/map-analyzer.ts                                             |
 | AI order dispatch                                   | player/ai-controller/dispatch-ai-order.ts                                                                                                       |
 | Shared applied orders                               | world/services/multiplayer/command-bus.service.ts ; entity/systems/queue-command.system.ts ; entity/systems/action.system.ts                    |
@@ -18,11 +19,11 @@ All paths in the following table are relative to libs/games/probable-waffle/phas
 | Save/load and authoritative hash                    | data/save-game.ts ; data/load-game.ts ; world/services/recovery/state-hash.service.ts                                                           |
 | Match end conditions                                | world/state/GameModeConditionChecker.ts                                                                                                         |
 | Purposeful skirmish loop                            | player/ai-controller/player-ai-controller.ts                                                                                                    |
-| Stable bases and expansion candidates               | player/ai-controller/observation/ai-observation-pipeline.ts ; world/services/multiplayer/shared-command-application.service.ts                  |
+| Stable bases and expansion candidates               | player/ai-controller/observation/ai-observation-map.ts ; world/services/multiplayer/shared-command-application.service.ts                       |
 | Fortification graph planning                        | prefabs/buildings/tivara/navigation-topology.events.ts ; world/services/height-navigation-graph-builder.ts                                      |
 | Causal recovery / anti-blocking                     | player/ai-controller/observation/ai-observation-pipeline.ts ; world/services/multiplayer/command-bus.service.ts                                 |
-| Tactical squads, combat estimates and support       | player/ai-controller/observation/ai-observation-pipeline.ts ; player/ai-controller/player-ai-controller.ts                                      |
-| Adaptive counters, research and archetype rationale | player/ai-controller/observation/ai-observation-pipeline.ts ; player/ai-controller/player-ai-controller.ts                                      |
+| Tactical squads, combat estimates and support       | player/ai-controller/observation/ai-observation-combat-profile.ts ; player/ai-controller/player-ai-controller.ts                                  |
+| Adaptive counters, research and archetype rationale | player/ai-controller/observation/ai-observation-context.ts ; player/ai-controller/player-ai-controller.ts                                         |
 | AI incident capture and offline investigation       | player/ai-controller/testing/ai-runtime-scenario-bridge.ts                                                                                      |
 | In-game AI panel                                    | prefabs/gui/debug/ai-controller/AiControllerDebugPanel.ts                                                                                       |
 

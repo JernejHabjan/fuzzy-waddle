@@ -51,15 +51,17 @@ large files, stage-labelled persisted IDs/fixtures, and ordinary implementation 
    type/lint/save/replay evidence is required before #821 closes; the debug projector remains below limits.
    The STRAT-01 paired pressure fixture checks now live in the bounded matrix-fixtures owner; confirm their rejection
    and scenario-selection behavior at the final gate.
-   The Phaser observation pipeline remains the largest live-world cleanup target. Split its memory normalization,
-   actor/catalog, permitted topology/map, and auxiliary projections while preserving visibility policy and generation
-   fencing. Keep capture/commit/save/disposal in the coordinator; split the >200-line actor projection by combat and
-   container concerns. Its hash entry remains until this complete, feedback-backed migration can remove it.
+   The Phaser observation pipeline is now split into memory/work, actor/combat/catalog, permitted topology/map,
+   access-product, and auxiliary-context owners. Capture/commit/save/disposal stay in the 368-line coordinator, and
+   its hash exception was removed. This is still unverified: final-gate type/lint, fair-visibility, save/replay,
+   generation-fence and access-cursor evidence must confirm the extracted boundaries before closing this slice.
 2. Rename stage/phase filenames, symbols, comments, test descriptions, and non-persisted diagnostics by responsibility.
 3. Remove `V1` from ordinary implementations. Keep it on save/wire/repro/fixture/report schemas unless a compatible
    migration and schema-version policy are supplied.
-4. Inventory persisted effect/claim/manager/trace IDs before renaming. Add read migration or compatibility aliases and
-   prove old fixtures/saves still load.
+4. Inventory persisted effect/claim/manager/trace IDs before renaming. A source-only survey found stage-labelled IDs
+   across manager, intent/effect/claim and test-fixture contracts. Do not rename those by string replacement: add read
+   migration or compatibility aliases and prove old fixtures/saves still load. Stage-labelled comments/test descriptions
+   in hash-baselined files also need a reviewed split before editing, not a new baseline hash.
 5. Remove each compliant file from the baseline rather than updating its hash. Run `rg` for obsolete names and paths.
 6. Commit and push small mechanical batches with focused type/lint/tests; avoid broad semantic rewrites.
 
