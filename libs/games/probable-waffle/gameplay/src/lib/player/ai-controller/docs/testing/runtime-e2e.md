@@ -40,6 +40,16 @@ tests/decisions/ticks is an infrastructure failure, not behavioral evidence.
 
 Use `pnpm ai:skirmish:report -- --report <artifact> --scenario <ID> --failures-only --details` for bounded triage.
 
+At the final validation gate, run a small representative map/fixture preflight, then manifest-selected family/map
+shards as one retained sweep. Reuse a browser/server process inside a worker but isolate every game world; independent
+CI workers may run separate shards. The current report command summarizes one artifact. #816 must extend that same
+tool with a bounded cross-report repair list before the broad sweep: reject mixed source/fixture provenance, keep
+infrastructure and invalid-setup failures separate from gameplay outcomes, and show a provisional cluster keyed by
+the first normalized failed predicate plus family/map and available checkpoint evidence. Each cluster links every
+affected ID/seed and one representative replay artifact. Shared text is not proof of shared cause; confirm the
+earliest causal owner before editing. Rerun only affected shards after a repair batch, then perform one full required
+matrix after repairs. Never drop a required row or weaken an independent oracle to clear a cluster.
+
 ## Authoritative focused worlds
 
 A runtime variant may declare `presetWorld` when its invariant should not wait through unrelated opening prerequisites.

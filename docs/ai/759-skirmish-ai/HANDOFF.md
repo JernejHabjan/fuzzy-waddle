@@ -69,6 +69,11 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
   existing runner. The current runner always advances through every checkpoint, so the latter is unimplemented.
   JetBrains semantic search was reachable in this worktree; future agents should probe once and fall back to narrow
   `rg` if their host has no IDE connection. No new global search/index tool is needed.
+- #816 batched-repair decision (unimplemented): before the final broad game sweep, extend the existing single-report
+  skirmish summarizer with provenance-checked cross-shard failure clustering and a compact repair list. A shared
+  predicate is only a hypothesis; separate infrastructure/setup from gameplay and confirm one causal owner before
+  repairing a cluster. One representative preflight at the final gate precedes family/map shards; after a repair,
+  rerun affected shards, then one complete required matrix. No test execution is authorized during this sweep.
 - The generated [scenario test catalog](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/scenario-catalog.md)
   joins all 121 requirements to their registered fixtures, spec references, current maps and tick bounds; it does not
   claim test execution. Its [frozen-map contract](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/test-map-contract.md)
@@ -149,8 +154,9 @@ fixture schedules and historical 12,000-tick diagnostics remain facts about auth
 
 0. Tool gate before mass scenario authoring: use the new bounded inventory (not raw fixture dumps), add validated
    execution-kind/variant-role/deadline metadata to the existing catalog/fixture tools, and add optional
-   stop-on-evidence to the current Playwright runner. Do not build a duplicate runner or index. The inventory is
-   authored; metadata and early stop are pending. Defer their tests under the current no-validation instruction.
+   stop-on-evidence to the current Playwright runner. Extend the existing report summarizer with a bounded,
+   provenance-checked cross-shard repair list. Do not build a duplicate runner or index. The inventory is authored;
+   metadata, early stop and failure clustering are pending. Defer their tests under the current no-validation rule.
 1. During the authoring sweep, use the inventory to identify each registered browser recipe's causal branches,
    repetitions, earliest authoritative success/failure milestone, tick ceiling, map dependency and execution tier.
    Do not infer passing evidence from registration or a compact inventory flag.
@@ -170,22 +176,25 @@ fixture schedules and historical 12,000-tick diagnostics remain facts about auth
 4. Finish required pure/runtime mappings for supported IDs in the 121-scenario manifest, with the four island-content
    runtime rows explicit and deferred. Author focused outcomes before relying on the small continuous-match tier.
    During this sweep, do not execute tests, E2E, simulations, lint, builds or validation under the user direction above.
-5. Before the final gate, tell the user. Then execute focused checks, repair in batches, run required browser shards,
-   measure the shortest credible full-match deadlines, run paired difficulty/performance evidence and extended soaks,
-   and finish code/omission review. A longer full-match deadline is permitted only with documented evidence; preserve
-   mandatory terminal victory/recovery assertions rather than passing on mere survival or elapsed ticks.
+5. Before the final gate, tell the user. Preflight representative map/fixture infrastructure, then run compatible
+   family/map shards as one retained sweep and generate a compact repair list. Confirm causal clusters from one
+   representative each, repair shared owners in batches, rerun affected shards, then perform one clean full matrix.
+   Measure the shortest credible full-match deadlines, run paired difficulty/performance evidence and extended soaks,
+   and finish code/omission review. A longer full-match deadline needs documented evidence; preserve mandatory
+   terminal victory/recovery rather than passing on mere survival or elapsed ticks.
 
 ## Final validation gate — not during the implementation sweep
 
 Keep a single deferred gate for all changed behavior and newly authored tests. Do not interpret a passing result from
 an older commit as evidence for newer unverified code. At the gate, run repository doctor/context and smallest focused
-static/unit checks first, repair in batches, then manifest-derived pure and targeted preset-world Playwright groups,
-followed by bounded SEQ-01/02, real multiplayer/lifecycle scenarios, pinned-baseline and D-06 calibration, long-match
-performance comparisons, broader affected checks, and a final code/omission review. Treat the present 12,000-tick SEQ
-ceiling as a starting measurement, not a universal cap: increase it only if a real full match needs more time and the
-cause, wall cost and finite terminal deadline are recorded. Do not use a long natural match to paper over missing
-targeted fixtures. Retain compact reports, exact seeds,
-digest/provenance, wall time, and known failures in this handoff until each result has a durable owner. Close each
+static/unit checks first, then representative map/fixture preflight and manifest-derived pure/Playwright family shards.
+Generate the retained cross-shard repair list, fix confirmed shared causes in batches, rerun affected shards and then
+one full required matrix, including bounded SEQ-01/02 and supported multiplayer/lifecycle rows. Follow with
+pinned-baseline and D-06 calibration, long-match performance comparisons, broader affected checks, and a final
+code/omission review. Treat the present 12,000-tick SEQ ceiling as a starting measurement, not a universal cap:
+increase it only if a real full match needs more time and the cause, wall cost and finite terminal deadline are
+recorded. Do not use a long natural match to paper over missing targeted fixtures. Retain compact reports, exact
+seeds, digest/provenance, wall time, and known failures in this handoff until each result has a durable owner. Close each
 subissue only after its authored requirements and final-gate evidence both pass; do not claim runtime, difficulty,
 multiplayer, lifecycle, or performance acceptance from unrun tests. #822 island-map content remains optional and must
 not block this gate.

@@ -9,7 +9,10 @@ Recommended agent: `gpt-5.6-sol`, high effort for the first runtime runner, CI-s
 Hand proven family recipes and repeatable repairs to `gpt-5.6-terra`, medium effort. Reserve Astra for an unresolved
 runner/authority architecture question after compact Sol evidence.
 
-Estimated effort: **XXL**, about 10–20 focused agent sessions or 8–15 engineering days at the current unmapped count.
+Estimated effort: **XXL risk envelope**, not 97 separate browser worlds: the current catalog has 97 supported runtime
+rows without recipes, plus frozen maps, independent outcome oracles, CI wiring and final-gameplay repair. About 10–20
+focused agent sessions is a provisional planning range, not a measured calendar estimate. Re-estimate after the first
+frozen map and two representative behavior families using actual fixture reuse, run time and failure rate.
 
 Dependency: complete #824 first and consume its verified orchestration, context, triage, and server-reuse contracts. Do
 not build duplicate command wrappers in this issue. Finish the current SEQ causal repair, then use #826's authoritative
@@ -37,6 +40,14 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
    its implementation is authored but its unit test is deferred to the final gate. Extend the existing catalog
    generator/fixture validator with typed execution-kind, variant-role and deadline-rationale metadata before editing
    dozens of recipes. Add optional stop-on-evidence to the existing runtime driver before long-case conversion.
+   Extend `tools/ai/summarize-skirmish-report.mjs` with a bounded repair-list mode for a selected collection of
+   retained shard reports; the current summarizer handles one report and has no cross-scenario clusters. Reject
+   mixed candidate/fixture provenance, and never merge infrastructure failures with gameplay failures. Preserve
+   exact report paths, scenario/variant IDs, seeds, failure codes and replay selection. Accept explicit artifact paths
+   or one run directory; emit short text plus machine-readable cluster data, not raw checkpoint dumps. Cluster by
+   normalized first failed predicate plus family/map and available checkpoint evidence; label clusters provisional
+   until an agent confirms the shared causal owner. Add pure tool tests for grouping, distinct causes and provenance
+   rejection.
    Do not build a parallel runner, hand-maintained 121-row sheet, or another broad repository index.
 1. **Sol/high boundary:** establish the runner-to-Playwright-to-authoritative-outcome contract by inspecting the
    first land sequence, the selected manifest/fixture and current evaluator. Author a compact reproduction and
@@ -82,6 +93,25 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
    oracles run through their required horizon. Retain the actual stop tick and reason in reports. Author tests for
    early success, pending event, negative control, missing effect and mandatory terminal result before execution.
 
+## Deferred final-gate execution loop
+
+1. Tell the user before starting. Run the smallest tool/schema and representative map/fixture preflight at this gate;
+   repair infrastructure or invalid setup before dispatching the broad suite. The preflight is not scenario acceptance.
+2. Run manifest-selected compatible family/map shards, reusing a browser/server process within each worker while
+   starting a fresh world per variant. Independent CI workers may run separate shards concurrently. Preserve one
+   candidate SHA, dirty/fixture digests, seeds and retained reports across the sweep.
+3. Generate one bounded repair list across the sweep. Separate missing/zero-work infrastructure, invalid preset/map,
+   and actual behavior failures. Show cluster size, affected IDs, first failed predicate/checkpoint, one representative
+   artifact/replay command and pointers to every member. Do not dump raw logs into agent context or claim a common
+   root cause solely because several rows share a generic failure code such as `terminal_result_missing`.
+4. Inspect one representative per provisional cluster and trace observation → intent → application → outcome.
+   Repair shared owners in coherent batches; retain each scenario's independent oracle. Rerun only affected shards
+   after each batch, then run the full required matrix once after repairs. Do not make CI green by dropping rows,
+   shortening a negative-control horizon or accepting a planned action as an in-game effect.
+5. Keep the PR draft while supported coverage or behavior is red. Enable the existing fail-closed required CI gate
+   when the supported matrix, pure coverage and final review actually pass; extended calibration/soaks retain their
+   separate schedule.
+
 ## Evidence
 
 ```bash
@@ -111,4 +141,7 @@ terminal results fail the shard.
 - Focused/continuous recipes and evaluator modules have stable responsibility names; new/rewritten TS/JS/MJS files
   respect 400 non-comment lines per file, 200 per method and 140 columns per line; hand-maintained JSON is also wrapped
   at 140 columns. No blanket baseline refresh.
+- A retained, provenance-checked sweep yields one bounded repair list across shards; failure clustering never hides
+  a required row or substitutes a hypothesis for a confirmed causal diagnosis. Affected-only reruns precede one
+  clean full required matrix.
 - Run omission/final closure audits, update coverage counts and operator docs, commit, push, and close #816.
