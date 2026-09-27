@@ -14,44 +14,25 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 - Branch: `feature/759-skirmish-ai`; draft PR [#814](https://github.com/JernejHabjan/fuzzy-waddle/pull/814) targets
   `develop`. Verify local and remote tips before editing.
-- Latest production-only sweep (unverified): #829 local pressure now requires a visible, positioned enemy near a
-  protected asset; #827's evidenced required force now raises the bounded military production target above the
-  ordinary 12-unit standing force, and the missing force determines whether extra producers have dated work.
-  The catalog now tags effective long-range weapons so the macro producer can distinguish real ranged units from
-  frontline units; support demand is bounded instead of being counted as unlimited frontline.
-  #821 moved opening and military catalog responsibilities out of the oversized macro owner, but that owner remains
-  over limit. Its temporary source-structure hash was reviewed and updated for this partial split; #821 must finish
-  the split and remove the exemption. The oversized observation pipeline's hash was likewise updated for the range
-  projection and remains a #821 cleanup owner. No tests, Playwright, simulations, builds, lint, or type checks were run for
-  this sweep under the user's explicit final-gate policy.
-- Next #827 unverified strategy slice: among actionable observed targets, an objective with enough compatible force
-  ready now takes precedence over a higher-scoring objective that still needs reinforcements. This should permit useful
-  raids while the larger finishing force grows; targeted pure and runtime route/mission checks remain at the final gate.
-- Latest #821 behavior-preserving split (unverified): macro observation/queue facts, construction-cell selection, and
-  proposal effect identity/reconciliation now live in focused modules. The macro class and its `propose` method still
-  exceed structural limits; continue splitting production before removing the
-  temporary hash exemption. Recheck imports, types, lint, and representative decisions only at the final gate.
-- The opening checkpoint/intent phase is now in `ai-opening-proposal.ts`; the macro owner consumes its existing
-  demands, steps, intents, reserved actors, selected sites, and ordinal. This extraction has not been typechecked or
-  behaviorally exercised. Its unchanged proposal ordering and saved checkpoint semantics need final-gate confirmation.
-- General non-Field labor assignment is now in `ai-general-gathering-proposal.ts`; the same opening-builder exclusions,
-  forecast ranking, source capacity, surplus transfer, and single ordinal increment should be checked at the final gate.
-- Queued-population housing demand and missing-building proposals are now isolated in `ai-housing-proposal.ts`; it
-  retains the prior construction-site reservation and ordinal ordering. This is unverified until the final gate.
-- Field labor ownership, including returning/cargo worker protection, is now isolated in `ai-field-labor-proposal.ts`.
-  This is a behavior-preserving move, not a fix for the conservative all-returners staffing delay; verify it later.
-- Food drop-off prerequisite and Field-capacity proposals are now separate modules. The macro owner preserves their
-  demand/intent order and ordinal increments; verify exact commitments, duplicate limits, and affordable construction
-  at the final gate. Only the production/composition phase still keeps the macro file over structural limits.
+- Production-only sweep (unverified): #829 now requires a visible, positioned enemy near a protected asset for local
+  threat posture; #827 grows a bounded force from evidenced required strength, adds throughput only for a dated deficit,
+  distinguishes effective ranged weapons, bounds support composition, and can choose a ready useful raid over a larger
+  objective that still needs reinforcements. Pure and runtime proof remains entirely at the final gate.
+- #821 macro split (unverified): `AiMacroManager.propose` is now a 191-physical-line orchestrator in a 222-line file;
+  its source-structure baseline exemption was removed. Opening, general labor, housing, food prerequisite/Field/labor,
+  military force context, producer capacity, and affordable role-balanced unit proposals have focused owners. Preserve
+  their existing intent/demand ordering, ordinal IDs, site reservations, and accepted-effect accounting; review those
+  boundaries at the final gate. Other #821 debt (observation pipeline, matrix runner, compound contracts/serializer,
+  naming and legacy spec) remains. No tests, Playwright, simulations, builds, lint, or type checks ran in this sweep.
 - Production-only boundary audit: #815/#816/#819/#823 primarily require pure or browser/network evidence and are
   excluded from this sweep. #817 difficulty tuning and #828 hot-path optimization require measured, paired runs;
   their preparation is already authored, but no threshold or hot path should be guessed now. #820 legacy removal is
   gated on #816/#819/#823 parity evidence and must not be done speculatively. #829/#827 production behavior remains
   unproven until the final gate; repair only the first evidenced failure then. #821 has remaining code-only structural
   work, but its final baseline removal and compatibility audit also require that gate.
-- Exact next safe code-only action: split production/composition from `AiMacroManager.propose` without changing
-  policy. Then notify the user before the final test/validation gate. Do not remove the legacy behavior tree, tune
-  difficulty, or claim performance improvement before the dependency evidence exists.
+- Next boundary: review the remaining source-only #821 debt, then notify the user before the final test/validation
+  gate. Do not remove the legacy behavior tree, tune difficulty, or claim performance improvement before dependency
+  evidence exists. If a later source-only split touches persisted IDs, first plan compatibility/migration explicitly.
 - Pinned pre-change baseline: `de47f482889db30420692bf4406fba463d7db296`.
 - Manifest authority: `tools/ai/fixtures/skirmish-v1.json`, 121 scenario IDs before variants.
 - Completed prerequisites: #824 repository tooling and #825 current-content domain/transport foundation.

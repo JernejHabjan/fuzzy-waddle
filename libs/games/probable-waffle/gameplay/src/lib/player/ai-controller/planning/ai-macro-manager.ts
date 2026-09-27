@@ -1,38 +1,19 @@
-import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
 import type { AiObservationV1 } from "../contracts/ai-observation-v1";
 import type { AiManagerProposalV1, AiProposalManagerV1 } from "./ai-manager-proposal";
-import {
-  decideAiEconomyPolicy,
-  hasCredibleAiEconomyThreat
-} from "./ai-economy-policy";
 import { projectAiResourceForecasts } from "./ai-resource-forecast";
-import { createAiResourceCostClaims } from "./ai-resource-cost-claims";
 import { proposeAiHousing } from "./ai-housing-proposal";
-import { proposeAiFieldLabor } from "./ai-field-labor-proposal";
-import { proposeAiFieldCapacity } from "./ai-field-capacity-proposal";
-import { proposeAiFoodPrerequisite } from "./ai-food-prerequisite-proposal";
-import { proposeAiWorkerRecovery } from "./ai-worker-recovery";
+import { proposeAiFoodEconomy } from "./ai-food-economy-proposal";
 import { proposeAiGeneralGathering } from "./ai-general-gathering-proposal";
-import { plannedAiForceSize, plannedAiProducerCount } from "./ai-force-capacity";
 import { openingBudget } from "./ai-opening-catalog";
 import { proposeAiOpening } from "./ai-opening-proposal";
-import { isMilitaryCatalogEntry, producerMilitaryProducts, productionRoleDeficit, roleFor } from "./ai-military-catalog";
-import {
-  claimedActorIds,
-  isAvailableBuilder,
-  isFinishedActor,
-  owned,
-  queuedProduction,
-  queueFree
-} from "./ai-macro-observation";
-import { selectConstructionPosition } from "./ai-construction-site-selector";
-import { nextIds, unresolvedReservedEffectIds } from "./ai-macro-effect-identity";
-
-const WORKER_RECOVERY_FLOOR = 6;
+import { owned } from "./ai-macro-observation";
+import { unresolvedReservedEffectIds } from "./ai-macro-effect-identity";
+import { proposeAiMilitaryCapacity } from "./ai-military-capacity-proposal";
+import { proposeAiMilitaryUnits } from "./ai-military-unit-proposal";
+import { observeAiMilitaryForce } from "./ai-military-force-context";
 
 /**
  * Macro proposal owner. It derives opening, supply and composition demand
@@ -98,151 +79,39 @@ export class AiMacroManager implements AiProposalManagerV1 {
     ordinal = housing.ordinal;
     const freeSupply = housing.freeSupply;
 
-    const pressureDomain = openingComplete && state.strategy.assessment?.routeDomain === "air" ? "air" : "ground";
-    const military = self.filter(
-      (actor) =>
-        actor.housingCost.status === "known" &&
-        actor.housingCost.value > 0 &&
-        catalog.entries.some(
-          (entry) =>
-            entry.sourceObjectName === actor.objectName &&
-            isMilitaryCatalogEntry(entry) &&
-            entry.movementDomains.includes(pressureDomain)
-        )
-    );
-    const militaryProducts = new Set(
-      catalog.entries
-        .filter((entry) => isMilitaryCatalogEntry(entry) && entry.movementDomains.includes(pressureDomain))
-        .map((entry) => entry.sourceObjectName)
-    );
-    const queuedMilitary = queuedProduction(observation, militaryProducts);
-    const currentWorkerCount = self.filter((actor) =>
-      catalog.entries.some((entry) => entry.sourceObjectName === actor.objectName && entry.gathers.length > 0)
-    ).length;
-    const workforceRecoveryOwnsFood = currentWorkerCount < WORKER_RECOVERY_FLOOR && military.length > 0;
-    const targetMilitary = plannedAiForceSize(
-      openingComplete,
+    const {
       pressureDomain,
-      state.strategy.assessment,
-      military.length,
-      hasCredibleAiEconomyThreat(observation) ? budget.firstForce : null
-    );
-    const compositionPrefix = pressureDomain === "air" ? "composition-air" : "composition";
-    const pressureForecast = projectAiResourceForecasts(
-      observation,
-      [
-        {
-          demandId: "demand:composition:first-squad" as AiDemandV1["demandId"],
-          purpose: "military_resource_forecast",
-          capabilityOrRole: `${pressureDomain}_combat_composition`,
-          unit: "actor_count",
-          desired: targetMilitary,
-          satisfiedActorIds: military.map((actor) => actor.actorId),
-          queuedIds: queuedMilitary.map((item) => item.itemId),
-          constructingIds: [],
-          acceptedNotObservedEffectIds: [],
-          preferredObjectNames: [...militaryProducts].sort(),
-          resourceObligations: {}
-        }
-      ],
-      catalog
-    );
-
-    // A granary is only a drop-off point. Sustained reinforcement needs actual
-    // renewable food sources plus workers assigned to them; otherwise a faction
-    // can spend its starting food and permanently stop replacing combat losses.
-    const foodSourceEntry = catalog.entries.find((entry) => entry.sourceObjectName === ObjectNames.Field);
-    const readyFoodSources = self
-      .filter((actor) => actor.objectName === ObjectNames.Field && isFinishedActor(actor))
-      .sort((left, right) => left.actorId.localeCompare(right.actorId));
-    const constructingFoodSources = self
-      .filter((actor) => actor.objectName === ObjectNames.Field && !isFinishedActor(actor))
-      .sort((left, right) => left.actorId.localeCompare(right.actorId));
-    const acceptedFoodSourceEffectIds = unresolvedReservedEffectIds(state, "effect:food-capacity:Field:effect:");
-    const economyPolicy = decideAiEconomyPolicy(
-      observation,
-      catalog,
-      pressureForecast,
-      state.strategy.stance === "defend",
-      state.economyProduction.posture,
-      state.strategy.assessment?.choice === "finish" &&
-        state.strategy.assessment.readyForce >= state.strategy.assessment.requiredForce &&
-        state.strategy.assessment.expectedEffectTick !== null &&
-        state.strategy.assessment.expectedEffectTick <= observation.tick + 600
-    );
-    const desiredFoodSources =
-      openingComplete && foodSourceEntry ? economyPolicy.desiredFoodSources : 0;
-    if (workerCheckpoint?.fulfilled) {
-      const recovery = proposeAiWorkerRecovery(
-        observation,
-        state,
-        catalog,
-        workerCheckpoint.checkpoint.requiredObject,
-        Math.max(WORKER_RECOVERY_FLOOR, economyPolicy.desiredWorkers),
-        economyPolicy.posture !== "safe" ? { urgencyClass: 2, utility: 700 } : undefined
-      );
-      demands.push(recovery.demand);
-      if (recovery.intent) intents.push(recovery.intent);
-    }
-    const prerequisite = proposeAiFoodPrerequisite(
+      military,
+      militaryProducts,
+      queuedMilitary,
+      workforceRecoveryOwnsFood,
+      targetMilitary,
+      compositionPrefix,
+      pressureForecast
+    } = observeAiMilitaryForce({
       observation,
       state,
       catalog,
       self,
-      foodSourceEntry,
-      desiredFoodSources,
+      openingComplete,
+      firstForce: budget.firstForce
+    });
+    const foodEconomy = proposeAiFoodEconomy({
+      observation,
+      state,
+      catalog,
+      self,
+      pressureForecast,
+      openingComplete,
+      workerRequiredObject: workerCheckpoint?.fulfilled ? workerCheckpoint.checkpoint.requiredObject : undefined,
       reservedActorIds,
       selectedConstructionTileKeys,
+      demands,
       intents,
       ordinal
-    );
-    if (prerequisite.demand) demands.push(prerequisite.demand);
-    if (prerequisite.intent) {
-      intents.push(prerequisite.intent);
-      ordinal += 1;
-    }
-    const foodPrerequisiteObject = prerequisite.objectName;
-    const readyFoodPrerequisites = prerequisite.ready;
-    const fieldCapacity = proposeAiFieldCapacity({
-      observation,
-      state,
-      catalog,
-      self,
-      foodSourceEntry,
-      desiredFoodSources,
-      readyFoodSources,
-      constructingFoodSources,
-      acceptedFoodSourceEffectIds,
-      foodPrerequisiteObject,
-      readyFoodPrerequisites,
-      reservedActorIds,
-      selectedConstructionTileKeys,
-      priorIntents: intents,
-      ordinal
     });
-    if (fieldCapacity.demand) demands.push(fieldCapacity.demand);
-    if (fieldCapacity.intent) {
-      intents.push(fieldCapacity.intent);
-      ordinal += 1;
-    }
-    if (desiredFoodSources > 0 && foodSourceEntry) {
-      const laborIntent = proposeAiFieldLabor(
-        observation,
-        state,
-        catalog,
-        self,
-        readyFoodSources,
-        foodPrerequisiteObject,
-        reservedActorIds,
-        intents,
-        ordinal
-      );
-      if (laborIntent) {
-        intents.push(laborIntent);
-        ordinal += 1;
-      }
-    }
-
+    const economyPolicy = foodEconomy.policy;
+    ordinal = foodEconomy.ordinal;
     const rawAcceptedMilitaryEffectIds = unresolvedReservedEffectIds(state, `effect:${compositionPrefix}:effect:`);
     // The opening force is enough to survive and scout. A completed opening commits
     // to a dated force target that grows with evidenced opposition; the strategic selector may launch a
@@ -268,199 +137,45 @@ export class AiMacroManager implements AiProposalManagerV1 {
       resourceObligations: {}
     });
 
-    const militaryProducers = self
-      .filter(isFinishedActor)
-      .filter((actor) => producerMilitaryProducts(actor.objectName, catalog, pressureDomain).length > 0)
-      .sort((left, right) => left.actorId.localeCompare(right.actorId));
-    const primaryProducerObjectName = militaryProducers[0]?.objectName;
-    const desiredProducerCount = openingComplete
-      ? plannedAiProducerCount(targetMilitary, military.length, queuedMilitary.length)
-      : 1;
-    if (primaryProducerObjectName) {
-      const constructingProducers = self
-        .filter((actor) => actor.objectName === primaryProducerObjectName && !isFinishedActor(actor))
-        .sort((left, right) => left.actorId.localeCompare(right.actorId));
-      const acceptedCapacityEffectIds = unresolvedReservedEffectIds(
+    const capacity = proposeAiMilitaryCapacity({
+      observation,
+      state,
+      catalog,
+      self,
+      pressureDomain,
+      targetMilitary,
+      militaryCount: military.length,
+      queuedMilitaryCount: queuedMilitary.length,
+      openingComplete,
+      workforceRecoveryOwnsFood,
+      reservedActorIds,
+      selectedConstructionTileKeys,
+      priorIntents: intents,
+      ordinal
+    });
+    if (capacity.demand) demands.push(capacity.demand);
+    if (capacity.intent) {
+      intents.push(capacity.intent);
+      ordinal += 1;
+    }
+    intents.push(
+      ...proposeAiMilitaryUnits({
+        observation,
         state,
-        `effect:capacity:${primaryProducerObjectName}:effect:`
-      );
-      const producerEntry = catalog.entries.find((entry) => entry.sourceObjectName === primaryProducerObjectName);
-      demands.push({
-        demandId: "demand:capacity:first-army" as AiDemandV1["demandId"],
-        purpose: "dated_military_throughput",
-        capabilityOrRole: primaryProducerObjectName,
-        unit: "work_per_horizon",
-        desired: desiredProducerCount,
-        satisfiedActorIds: militaryProducers.map((actor) => actor.actorId),
-        queuedIds: [],
-        constructingIds: constructingProducers.map((actor) => actor.actorId),
-        acceptedNotObservedEffectIds: acceptedCapacityEffectIds,
-        preferredObjectNames: [primaryProducerObjectName],
-        resourceObligations: producerEntry?.constructionProfile?.resourceCost ?? {}
-      });
-      const committedCapacity =
-        militaryProducers.length + constructingProducers.length + acceptedCapacityEffectIds.length;
-      if (openingComplete && !workforceRecoveryOwnsFood && committedCapacity < desiredProducerCount) {
-        const alreadyClaimed = claimedActorIds(intents);
-        const builder = self
-          .filter(isAvailableBuilder)
-          .filter((actor) => !reservedActorIds.has(actor.actorId) && !alreadyClaimed.has(actor.actorId))
-          .filter((actor) =>
-            catalog.entries.some(
-              (entry) =>
-                entry.sourceObjectName === actor.objectName && entry.constructs.includes(primaryProducerObjectName)
-            )
-          )
-          .sort((left, right) => {
-            const leftIdle = left.activeOrder?.status === "known" && left.activeOrder.value === null ? 1 : 0;
-            const rightIdle = right.activeOrder?.status === "known" && right.activeOrder.value === null ? 1 : 0;
-            return leftIdle - rightIdle || left.actorId.localeCompare(right.actorId);
-          })[0];
-        if (builder) {
-          const position = selectConstructionPosition(
-            observation,
-            builder,
-            state.scheduler.decisionSequence,
-            ordinal,
-            selectedConstructionTileKeys,
-            producerEntry?.constructionProfile?.footprintRadiusTiles ?? 0
-          );
-          if (position) {
-            const next = nextIds(state, `capacity:${primaryProducerObjectName}`, ordinal++);
-            intents.push({
-              ...next,
-              kind: "construct",
-              spendingCategory: "defense",
-              planId: state.opening.plan.planId,
-              demandId: "demand:capacity:first-army" as AiDemandV1["demandId"],
-              lane: "supply_production",
-              proposedTick: observation.tick,
-              urgencyClass: 3,
-              utility: 640,
-              preconditions: [{ kind: "actor_exists", actorId: builder.actorId }],
-              claims: [
-                {
-                  claimId: `${next.claimId}:builder` as AiIntentV1["claims"][number]["claimId"],
-                  kind: "actor",
-                  actorId: builder.actorId
-                },
-                {
-                  claimId: next.claimId,
-                  kind: "site",
-                  siteKey: `capacity:${primaryProducerObjectName}:${position.x}:${position.y}`
-                },
-                ...createAiResourceCostClaims(next.claimId, producerEntry?.constructionProfile?.resourceCost ?? {}),
-                {
-                  claimId: `${next.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
-                  kind: "effect",
-                  effectId: next.effectId
-                }
-              ],
-              reasonCode:
-                `capacity:dated_target=${targetMilitary}:ready=${militaryProducers.length}:` +
-                `committed=${committedCapacity}/${desiredProducerCount}`,
-              builderIds: [builder.actorId],
-              objectName: primaryProducerObjectName,
-              logicalPosition: position,
-              siteKey: `capacity:${primaryProducerObjectName}:${position.x}:${position.y}`
-            });
-          }
-        }
-      }
-    }
-
-    const projectedCount = military.length + queuedMilitary.length + acceptedMilitaryEffectIds.length;
-    if (!workforceRecoveryOwnsFood && projectedCount < targetMilitary) {
-      const roleCounts = { frontline: 0, ranged: 0, support: 0 };
-      for (const actor of military) roleCounts[roleFor(actor.objectName, catalog)] += 1;
-      for (const item of queuedMilitary) roleCounts[roleFor(item.objectName, catalog)] += 1;
-      const desiredRanged = Math.ceil((targetMilitary * budget.rangedPermille) / 1000);
-      const remainingProductionResources = new Map(
-        observation.resources.map(
-          (resource) =>
-            [resource.resourceType, resource.stockpile - resource.reservedUnspent - resource.obligationsDue] as const
-        )
-      );
-      let remaining = targetMilitary - projectedCount;
-      for (const producer of militaryProducers.filter(queueFree)) {
-        if (remaining <= 0) break;
-        const candidate = [...producerMilitaryProducts(producer.objectName, catalog, pressureDomain)]
-          .filter((objectName) => {
-            const cost = catalog.entries.find((entry) => entry.sourceObjectName === objectName)?.constructionProfile
-              ?.resourceCost;
-            return Object.entries(cost ?? {}).every(
-              ([resourceType, amount]) =>
-                (remainingProductionResources.get(resourceType as ResourceType) ?? 0) >= (amount ?? 0)
-            );
-          })
-          .sort((left, right) => {
-            const leftRole = roleFor(left, catalog);
-            const rightRole = roleFor(right, catalog);
-            const leftDeficit = productionRoleDeficit(leftRole, roleCounts, targetMilitary, desiredRanged);
-            const rightDeficit = productionRoleDeficit(rightRole, roleCounts, targetMilitary, desiredRanged);
-            const totalCost = (objectName: ObjectNames) =>
-              Object.values(
-                catalog.entries.find((entry) => entry.sourceObjectName === objectName)?.constructionProfile
-                  ?.resourceCost ?? {}
-              ).reduce<number>((total, amount) => total + (amount ?? 0), 0);
-            return rightDeficit - leftDeficit || totalCost(left) - totalCost(right) || left.localeCompare(right);
-          })[0];
-        if (!candidate) continue;
-        const next = nextIds(state, compositionPrefix, ordinal++);
-        const resourceCost =
-          catalog.entries.find((entry) => entry.sourceObjectName === candidate)?.constructionProfile?.resourceCost ??
-          {};
-        const resourceClaims = Object.entries(resourceCost)
-          .filter((entry): entry is [ResourceType, number] => entry[1] !== undefined && entry[1] > 0)
-          .sort(([left], [right]) => left.localeCompare(right))
-          .map(([resourceType, amount]) => ({
-            claimId: `${next.claimId}:${resourceType}` as AiIntentV1["claims"][number]["claimId"],
-            kind: "resource" as const,
-            resourceType,
-            amount
-          }));
-        intents.push({
-          ...next,
-          kind: "produce",
-          spendingCategory: "defense",
-          planId: state.opening.plan.planId,
-          demandId: "demand:composition:first-squad" as AiDemandV1["demandId"],
-          lane: "supply_production",
-          proposedTick: observation.tick,
-          urgencyClass: 3,
-          utility: 600,
-          preconditions: [{ kind: "actor_exists", actorId: producer.actorId }],
-          claims: [
-            { claimId: next.claimId, kind: "production_slot", producerId: producer.actorId, slot: 0 },
-            ...resourceClaims,
-            {
-              claimId: `${next.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
-              kind: "effect",
-              effectId: next.effectId
-            }
-          ],
-          reasonCode:
-            `composition:${state.opening.archetypeId}:${roleFor(candidate, catalog)}:` +
-            `frontline=${roleCounts.frontline}:ranged=${roleCounts.ranged}:projected=${
-              projectedCount +
-              intents.filter(
-                (intent) => intent.kind === "produce" && intent.demandId === "demand:composition:first-squad"
-              ).length
-            }/${targetMilitary}`,
-          producerId: producer.actorId,
-          objectName: candidate
-        });
-        for (const [resourceType, amount] of Object.entries(resourceCost)) {
-          remainingProductionResources.set(
-            resourceType as ResourceType,
-            Math.max(0, (remainingProductionResources.get(resourceType as ResourceType) ?? 0) - (amount ?? 0))
-          );
-        }
-        roleCounts[roleFor(candidate, catalog)] += 1;
-        remaining -= 1;
-      }
-    }
-
+        catalog,
+        producers: capacity.producers,
+        military,
+        queuedMilitary,
+        acceptedEffectCount: acceptedMilitaryEffectIds.length,
+        targetMilitary,
+        rangedPermille: budget.rangedPermille,
+        pressureDomain,
+        compositionPrefix,
+        workforceRecoveryOwnsFood,
+        priorIntents: intents,
+        ordinal
+      })
+    );
     const current = steps.find((step) => step.state !== "completed")?.stepId ?? null;
     return {
       managerId: this.managerId,

@@ -64,6 +64,14 @@ claims and authoritative command outcomes remain the spending source of truth.
 The posture itself is save-safe: visible local pressure escalates immediately, while de-escalation retains the last
 observed threat posture for a bounded 160 simulation ticks. Remembered or hidden enemies do not refresh that timer.
 
+For source changes, `planning/ai-macro-manager.ts` owns proposal ordering and the committed demand/state patch.
+`ai-opening-proposal.ts`, `ai-general-gathering-proposal.ts`, `ai-housing-proposal.ts`, and
+`ai-food-economy-proposal.ts` own the corresponding economy proposal phases; the food coordinator calls the focused
+prerequisite, Field-capacity, and Field-labor proposers. `ai-military-force-context.ts` captures the compatible force
+and its forecast, while `ai-military-capacity-proposal.ts` and `ai-military-unit-proposal.ts` own producer and unit
+requests. Keep their intent ordinals, resource claims, accepted-effect accounting, and construction-site reservations
+consistent when changing phase boundaries.
+
 ## Demand and legitimate duplicates
 
 Duplicate units, production buildings, houses and resource drop-offs are valid when they satisfy measured demand. The AI suppresses duplicate fulfillment of one commitment, not repeated actor types.

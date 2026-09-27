@@ -39,14 +39,9 @@ large files, stage-labelled persisted IDs/fixtures, and ordinary implementation 
 
 1. Split one responsibility cluster at a time. Preserve public imports with a temporary barrel only when consumers need
    it; remove aliases once all callers migrate.
-   The macro owner is a concrete #821 cleanup target: opening/military catalog, observation/queue, construction-cell,
-   and effect-identity helpers were extracted. Opening proposals now live in `ai-opening-proposal.ts`, but the
-   general labor is now in `ai-general-gathering-proposal.ts`. The proposal method remains oversized and still needs
-   production ownership split; housing, food drop-off, Field capacity, and Field labor now have focused owners.
-   The ECO-05 surplus-transfer integration changed its reviewed
-   hash baseline while leaving it over 400 lines. Extract opening, labor, housing, food, and construction proposal
-   responsibilities, then remove its baseline entry. The later near-term finishing-policy handoff also changed this
-   reviewed legacy owner; do not renew the hash again instead of splitting.
+   The macro owner has been split into opening, general labor, housing, food prerequisite/Field/labor, military force
+   context, producer capacity, and unit-composition modules. Its source-structure baseline entry has been removed;
+   final-gate lint and representative behavior proof are still required before counting this #821 slice complete.
    The matrix runner `tools/ai/run-skirmish-matrix.mjs` is a second explicit target: ECO-03 fixture validation
    changed its reviewed baseline. Extract fixture schema validation, scenario selection, execution, and reporting
    into bounded modules, then remove its baseline entry. The later STRAT-07 pure-fixture selector also changes this
