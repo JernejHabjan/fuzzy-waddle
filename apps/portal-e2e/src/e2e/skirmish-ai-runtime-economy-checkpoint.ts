@@ -146,7 +146,11 @@ export async function captureRuntimeEconomyCheckpoint(
             x: actor.logicalPosition.status === "known" ? actor.logicalPosition.value.x : 0,
             y: actor.logicalPosition.status === "known" ? actor.logicalPosition.value.y : 0,
             ready: actor.constructionProgress?.status !== "known" || actor.constructionProgress.value >= 100,
-            resourceType: actor.resourceState.status === "known" ? actor.resourceState.value.resourceType : null
+            resourceType: actor.resourceState.status === "known" ? actor.resourceState.value.resourceType : null,
+            serviceCapacity:
+              actor.resourceState.status === "known" && actor.resourceState.value.serviceCapacity.status === "known"
+                ? actor.resourceState.value.serviceCapacity.value
+                : null
           }))
           .sort((left, right) => left.actorId.localeCompare(right.actorId)),
         recentMacroDecisions: debug.decisions

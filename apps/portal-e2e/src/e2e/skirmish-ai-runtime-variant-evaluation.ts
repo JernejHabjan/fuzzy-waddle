@@ -6,6 +6,7 @@ import { last } from "./skirmish-ai-runtime-value";
 import { evaluateRuntimePresetWorld } from "./skirmish-ai-runtime-preset-evaluation";
 import { evaluateRuntimeSupplyControl, evaluateRuntimeSupplyPrebuild } from "./skirmish-ai-runtime-supply-evaluation";
 import { evaluateRuntimeResourceService } from "./skirmish-ai-runtime-resource-service-evaluation";
+import { evaluateRuntimeSourceSaturation } from "./skirmish-ai-runtime-source-saturation-evaluation";
 
 export function evaluateRuntimeVariant(
   scenarioId: string,
@@ -195,6 +196,13 @@ export function evaluateRuntimeVariant(
   if (assertion.requiredResourceService) {
     failures.push(
       ...evaluateRuntimeResourceService(assertion.requiredResourceService, variant).map(
+        (failure) => `${variant.variantId}:${failure}`
+      )
+    );
+  }
+  if (assertion.requiredSaturatedSource) {
+    failures.push(
+      ...evaluateRuntimeSourceSaturation(assertion.requiredSaturatedSource, variant).map(
         (failure) => `${variant.variantId}:${failure}`
       )
     );

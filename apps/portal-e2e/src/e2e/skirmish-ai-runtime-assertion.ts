@@ -40,6 +40,13 @@ export interface RuntimeAssertionV1 {
     readonly maximumTileDistance: number;
     readonly latestTick: number;
   };
+  readonly requiredSaturatedSource?: {
+    readonly saturatedFixtureActorId: string;
+    readonly spareFixtureActorId: string;
+    readonly resourceType: string;
+    readonly capacity: number;
+    readonly latestTick: number;
+  };
   readonly requiredDefenseTargetName?: string;
   readonly requiredDefenseActorName?: string;
   readonly requireMissionRedirectionAfterRaid?: boolean;

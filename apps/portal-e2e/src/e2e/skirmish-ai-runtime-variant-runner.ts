@@ -106,8 +106,10 @@ export async function runVariant(
               sourceRevision: string;
               fixtureDigest: string;
               createdActorNames: string[];
+              createdActorIds: Record<string, string>;
               resourceGrantCount: number;
               queuedItemCount: number;
+              initialOrderCount: number;
               eventResults: { id: string; tick: number; affectedActors: number; subjectName: string }[];
             };
           };
@@ -125,6 +127,9 @@ export async function runVariant(
       if (application.fixtureDigest !== fixtureDigest) throw new Error("runtime_preset_digest_mismatch");
       const requestedQueues = variant.presetWorld.queues?.reduce((count, queue) => count + queue.count, 0) ?? 0;
       if (application.queuedItemCount !== requestedQueues) throw new Error("runtime_preset_queue_mismatch");
+      if (application.initialOrderCount !== (variant.presetWorld.initialOrders?.length ?? 0)) {
+        throw new Error("runtime_preset_initial_order_mismatch");
+      }
     } else if (initialBoundary.presetApplication) {
       throw new Error("runtime_unrequested_preset_application");
     }
@@ -214,6 +219,16 @@ export async function runVariant(
       actors: initialBoundary.state.ownedActorNames,
       authoredPreset: variant.presetWorld ?? null,
       preset: initialBoundary.presetApplication
+        ? {
+            fixtureId: initialBoundary.presetApplication.fixtureId,
+            sourceRevision: initialBoundary.presetApplication.sourceRevision,
+            fixtureDigest: initialBoundary.presetApplication.fixtureDigest,
+            createdActorNames: initialBoundary.presetApplication.createdActorNames,
+            resourceGrantCount: initialBoundary.presetApplication.resourceGrantCount,
+            queuedItemCount: initialBoundary.presetApplication.queuedItemCount,
+            initialOrderCount: initialBoundary.presetApplication.initialOrderCount
+          }
+        : null
     });
     const outcomeDigest = digestRuntimeValue({
       checkpoints: projectRuntimeOutcomeDigestInput(checkpoints, !variant.presetWorld),
@@ -244,8 +259,10 @@ export async function runVariant(
       initialWorkerCount: initialBoundary.state.workerCount,
       presetFixtureId: initialBoundary.presetApplication?.fixtureId ?? null,
       presetCreatedActorNames: initialBoundary.presetApplication?.createdActorNames ?? [],
+      presetCreatedActorIds: initialBoundary.presetApplication?.createdActorIds ?? {},
       presetResourceGrantCount: initialBoundary.presetApplication?.resourceGrantCount ?? 0,
       presetQueuedItemCount: initialBoundary.presetApplication?.queuedItemCount ?? 0,
+      presetInitialOrderCount: initialBoundary.presetApplication?.initialOrderCount ?? 0,
       determinismGroup: variant.determinismGroup ?? null,
       ...(variant.supplyBranch ? { supplyBranch: variant.supplyBranch } : {}),
       ...(variant.resourceServiceBranch ? { resourceServiceBranch: variant.resourceServiceBranch } : {}),

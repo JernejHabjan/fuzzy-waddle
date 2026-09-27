@@ -38,4 +38,36 @@ describe("runtime preset neutral source validation", () => {
       }
     })).toBe(false);
   });
+
+  it("accepts only unique owned workers assigned to authored neutral gathering sources", () => {
+    const worker = {
+      fixtureActorId: "owned-worker", actorName: "TivaraWorkerMale", owner: 2,
+      position: { x: 352, y: 640, z: 0 }
+    };
+    const withWorker = {
+      ...config,
+      presetWorld: {
+        ...config.presetWorld,
+        actors: [neutralSource, worker],
+        initialOrders: [
+          { workerFixtureActorId: "owned-worker", sourceFixtureActorId: "neutral-forest", kind: "gather" }
+        ]
+      }
+    };
+    expect(isAiRuntimeBrowserTestConfigV1(withWorker)).toBe(true);
+    expect(isAiRuntimeBrowserTestConfigV1({
+      ...withWorker,
+      presetWorld: {
+        ...withWorker.presetWorld,
+        initialOrders: [...withWorker.presetWorld.initialOrders, ...withWorker.presetWorld.initialOrders]
+      }
+    })).toBe(false);
+    expect(isAiRuntimeBrowserTestConfigV1({
+      ...withWorker,
+      presetWorld: {
+        ...withWorker.presetWorld,
+        initialOrders: [{ ...withWorker.presetWorld.initialOrders[0], sourceFixtureActorId: "missing" }]
+      }
+    })).toBe(false);
+  });
 });

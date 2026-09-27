@@ -48,6 +48,7 @@ export interface RuntimeCheckpointV1 {
     readonly y: number;
     readonly ready: boolean;
     readonly resourceType: string | null;
+    readonly serviceCapacity?: number | null;
   }[];
   readonly recentMacroDecisions: readonly string[];
   readonly accessTopology: {

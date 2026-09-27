@@ -21,7 +21,7 @@
       "authoredFixture": "resource-service-scenarios.json", "drivers": ["pure", "runtime"]
     },
     {
-      "id": "ECO-03", "stages": [7], "group": "economy", "fixture": null,
+      "id": "ECO-03", "stages": [7], "group": "economy", "fixture": "focused-source-saturation-runtime.json",
       "authoredFixture": "economy-forecast-scenarios.json", "drivers": ["pure", "runtime"]
     },
     {

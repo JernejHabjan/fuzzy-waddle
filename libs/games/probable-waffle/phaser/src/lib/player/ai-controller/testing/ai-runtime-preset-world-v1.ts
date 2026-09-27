@@ -22,6 +22,11 @@ export interface AiRuntimePresetWorldV1 {
     readonly actorName: ObjectNames;
     readonly count: number;
   }[];
+  readonly initialOrders?: readonly {
+    readonly workerFixtureActorId: string;
+    readonly sourceFixtureActorId: string;
+    readonly kind: "gather";
+  }[];
   readonly events?: readonly {
     readonly id: string;
     readonly tick: number;

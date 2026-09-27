@@ -616,6 +616,25 @@ function validateRuntimeFixture(fixture, scenarioId) {
             (variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId))
           )
         ))) ||
+    (assertion.requiredSaturatedSource !== undefined &&
+      (!assertion.requiredSaturatedSource ||
+        typeof assertion.requiredSaturatedSource.saturatedFixtureActorId !== "string" ||
+        typeof assertion.requiredSaturatedSource.spareFixtureActorId !== "string" ||
+        typeof assertion.requiredSaturatedSource.resourceType !== "string" ||
+        !Number.isSafeInteger(assertion.requiredSaturatedSource.capacity) ||
+        assertion.requiredSaturatedSource.capacity < 1 ||
+        !Number.isSafeInteger(assertion.requiredSaturatedSource.latestTick) ||
+        assertion.requiredSaturatedSource.latestTick < 1 ||
+        !recipe.variants.some((variant) => {
+          if (variant.scenarioIds !== undefined && !variant.scenarioIds.includes(scenarioId)) return false;
+          const preset = variant.presetWorld;
+          const fullId = assertion.requiredSaturatedSource.saturatedFixtureActorId;
+          const spareId = assertion.requiredSaturatedSource.spareFixtureActorId;
+          return preset?.actors?.some((actor) => actor.fixtureActorId === fullId && actor.owner === null) &&
+            preset.actors.some((actor) => actor.fixtureActorId === spareId && actor.owner === null) &&
+            preset.initialOrders?.filter((order) => order.sourceFixtureActorId === fullId).length ===
+              assertion.requiredSaturatedSource.capacity;
+        }))) ||
     [
       "maximumTick",
       "minimumMilitaryCount",

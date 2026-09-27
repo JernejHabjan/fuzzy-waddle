@@ -15,6 +15,11 @@ export interface RuntimePresetWorldV1 {
     readonly actorName: string;
     readonly count: number;
   }[];
+  readonly initialOrders?: readonly {
+    readonly workerFixtureActorId: string;
+    readonly sourceFixtureActorId: string;
+    readonly kind: "gather";
+  }[];
   readonly events?: readonly {
     readonly id: string;
     readonly tick: number;

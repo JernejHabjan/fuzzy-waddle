@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "evidenceKind": "runtime",
+  "scenarioIds": ["ECO-03"],
+  "purpose": "Observe a full two-worker wood source and verify the AI sends additional labor to another observed source without overassigning the full one.",
+  "driver": "runtime",
+  "status": "ready_for_runtime_execution",
+  "context": {
+    "mapId": "EmberEnclave",
+    "mapDigest": "resolved_from_candidate_assets",
+    "side": 2,
+    "rulesVersion": "probable-waffle-rules-v1"
+  },
+  "recipe": {
+    "mapLabel": "Ember Enclave",
+    "aiPlayerNumber": 2,
+    "simulationTimeScale": 100,
+    "checkpointTicks": [20, 80, 160, 300, 600, 1000],
+    "variants": [
+      {
+        "id": "tivara-full-wood-source",
+        "scenarioIds": ["ECO-03"],
+        "seed": 829013,
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "determinismGroup": "full-wood-source",
+        "repetitions": 3,
+        "presetWorld": {
+          "fixtureId": "full-wood-source",
+          "actors": [
+            { "fixtureActorId": "full-tree", "actorName": "Tree1", "owner": null, "position": { "x": 896, "y": 840, "z": 0 } },
+            { "fixtureActorId": "spare-tree", "actorName": "Tree9", "owner": null, "position": { "x": 960, "y": 840, "z": 0 } },
+            { "fixtureActorId": "worker-1", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 752, "y": 800, "z": 0 } },
+            { "fixtureActorId": "worker-2", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 784, "y": 824, "z": 0 } },
+            { "fixtureActorId": "worker-3", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 816, "y": 848, "z": 0 } }
+          ],
+          "resourceGrants": [
+            { "playerNumber": 2, "amounts": { "food": 1500, "stone": 1200, "minerals": 1200 } }
+          ],
+          "initialOrders": [
+            { "workerFixtureActorId": "worker-1", "sourceFixtureActorId": "full-tree", "kind": "gather" },
+            { "workerFixtureActorId": "worker-2", "sourceFixtureActorId": "full-tree", "kind": "gather" }
+          ]
+        }
+      }
+    ]
+  },
+  "assertions": {
+    "ECO-03": {
+      "maximumTick": 1000,
+      "minimumDecisions": 5,
+      "minimumAppliedCommands": 1,
+      "requiredAiFactions": ["Tivara"],
+      "requiredSaturatedSource": {
+        "saturatedFixtureActorId": "full-tree",
+        "spareFixtureActorId": "spare-tree",
+        "resourceType": "wood",
+        "capacity": 2,
+        "latestTick": 1000
+      }
+    }
+  },
+  "deliberatelyBrokenOracle": "accept only a gather intent or count the two authored initial orders as AI allocation, without observing a spare-source gather order"
+}

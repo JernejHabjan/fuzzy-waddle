@@ -11,6 +11,11 @@ import { QueueItemType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/com
 import { PaymentType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/payment-type";
 import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
+import { OrderData } from "../../../ai/OrderData";
+import { OrderType } from "../../../ai/order-type";
+import { GathererComponent } from "../../../entity/components/resource/gatherer-component";
+import { ResourceSourceComponent } from "../../../entity/components/resource/resource-source-component";
+import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller";
 import type GameProbableWaffleScene from "../../../world/scenes/GameProbableWaffleScene";
 import type { SceneActorCreator } from "../../../world/services/scene-actor-creator";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
@@ -61,11 +66,15 @@ export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, crea
   }
   const createdActorNames: string[] = [];
   const createdActors = new Map<string, Phaser.GameObjects.GameObject>();
+  const createdActorIds: Record<string, string> = {};
   for (const actor of preset.actors) {
     const created = creator.createFinishedActor(actor.actorName as ObjectNames, actor.position, actor.owner ?? undefined);
     if (!created) throw new Error(`runtime_preset_actor_creation_failed:${actor.fixtureActorId}`);
+    const actorId = getActorComponent(created, IdComponent)?.id;
+    if (!actorId) throw new Error(`runtime_preset_actor_id_missing:${actor.fixtureActorId}`);
     createdActorNames.push(created.name);
     createdActors.set(actor.fixtureActorId, created);
+    createdActorIds[actor.fixtureActorId] = actorId;
   }
   for (const grant of preset.resourceGrants) {
     emitResource(scene, "resource.added", grant.amounts as Partial<PlayerStateResources>, grant.playerNumber);
@@ -102,13 +111,25 @@ export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, crea
       queuedItemCount += 1;
     }
   }
+  for (const initialOrder of preset.initialOrders ?? []) {
+    const worker = createdActors.get(initialOrder.workerFixtureActorId);
+    const source = createdActors.get(initialOrder.sourceFixtureActorId);
+    const pawn = worker ? getActorComponent(worker, PawnAiController) : undefined;
+    if (!worker || !source || !pawn || !getActorComponent(worker, GathererComponent) ||
+      !getActorComponent(source, ResourceSourceComponent)) {
+      throw new Error(`runtime_preset_invalid_initial_gather:${initialOrder.workerFixtureActorId}`);
+    }
+    pawn.blackboard.overrideOrderQueueAndActiveOrder(new OrderData(OrderType.Gather, { targetGameObject: source }));
+  }
   recordAiRuntimePresetApplicationV1({
     fixtureId: preset.fixtureId,
     sourceRevision: preset.provenance.sourceRevision,
     fixtureDigest: preset.provenance.fixtureDigest,
     createdActorNames: createdActorNames.sort(),
+    createdActorIds,
     resourceGrantCount: preset.resourceGrants.length,
     queuedItemCount,
+    initialOrderCount: preset.initialOrders?.length ?? 0,
     eventResults: []
   });
   const pendingEvents = [...(preset.events ?? [])].sort((left, right) => left.tick - right.tick || left.id.localeCompare(right.id));

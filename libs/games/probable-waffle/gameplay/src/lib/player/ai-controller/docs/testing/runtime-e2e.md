@@ -92,6 +92,12 @@ WorkMill. A remote owned WorkMill remains in both worlds: the positive branch mu
 and complete another WorkMill within ten observed tiles of the source, while the control must not duplicate its local
 service. Each branch repeats three times; this recipe and its oracle are unexecuted until the final validation gate.
 
+The authored ECO-03 preset gives two workers ordinary pre-tick Gather orders to the same definition-backed,
+two-slot tree and leaves a third worker available. The runtime oracle uses authoritative fixture-to-actor IDs,
+not prefab names or debug intent text: it requires an observed full source, no overassignment, and an actual
+Gather order to another observed wood source. These are starting-world orders, not AI decisions or a substituted
+brain outcome. This recipe and its oracle are unexecuted until the final validation gate.
+
 A natural-map control that cannot satisfy a focused invariant is not an equivalent correctness oracle or a performance
 baseline. Record that outcome in its issue/handoff without claiming a speedup. The focused fixture remains the
 authoritative `PRO-05` replacement proof; natural recovery behavior remains runtime/strategy work under #816/#827.

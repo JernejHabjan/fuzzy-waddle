@@ -9,8 +9,10 @@ export interface RuntimeVariantResultV1 {
   readonly initialWorkerCount: number;
   readonly presetFixtureId: string | null;
   readonly presetCreatedActorNames: readonly string[];
+  readonly presetCreatedActorIds: Readonly<Record<string, string>>;
   readonly presetResourceGrantCount: number;
   readonly presetQueuedItemCount: number;
+  readonly presetInitialOrderCount: number;
   readonly determinismGroup: string | null;
   readonly supplyBranch?: "prebuild" | "ample_control";
   readonly resourceServiceBranch?: "build" | "served_control";

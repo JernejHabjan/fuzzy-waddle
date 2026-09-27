@@ -14,7 +14,7 @@ function hasOnlyKeys(value: Record<string, unknown>, keys: readonly string[]): b
 }
 
 function validPresetWorld(value: unknown): boolean {
-  if (!isRecord(value) || !hasOnlyKeys(value, ["fixtureId", "provenance", "actors", "resourceGrants", "queues", "events"])) {
+  if (!isRecord(value) || !hasOnlyKeys(value, ["fixtureId", "provenance", "actors", "resourceGrants", "queues", "initialOrders", "events"])) {
     return false;
   }
   if (typeof value["fixtureId"] !== "string" || !/^[a-z0-9][a-z0-9-]{2,63}$/.test(value["fixtureId"])) return false;
@@ -71,6 +71,18 @@ function validPresetWorld(value: unknown): boolean {
       (queue["count"] as number) >= 1 &&
       (queue["count"] as number) <= 5
   );
+  const initialOrders = value["initialOrders"] ?? [];
+  if (!Array.isArray(initialOrders) || initialOrders.length > 32) return false;
+  const orderedWorkers = new Set<string>();
+  const validOrders = initialOrders.every((order) => {
+    if (!isRecord(order) || !hasOnlyKeys(order, ["workerFixtureActorId", "sourceFixtureActorId", "kind"])) return false;
+    const workerId = order["workerFixtureActorId"];
+    const sourceId = order["sourceFixtureActorId"];
+    if (typeof workerId !== "string" || typeof sourceId !== "string" || order["kind"] !== "gather") return false;
+    if (orderedWorkers.has(workerId)) return false;
+    orderedWorkers.add(workerId);
+    return actorOwners.has(workerId) && actorOwners.get(workerId) !== null && actorOwners.get(sourceId) === null;
+  });
   const events = value["events"] ?? [];
   if (!Array.isArray(events) || events.length > 16) return false;
   const eventIds = new Set<string>();
@@ -89,8 +101,8 @@ function validPresetWorld(value: unknown): boolean {
       actorNames.has(event["objectName"])
     );
   });
-  const workCount = value["actors"].length + value["resourceGrants"].length + queues.length + events.length;
-  return validGrants && validQueues && validEvents && workCount > 0;
+  const workCount = value["actors"].length + value["resourceGrants"].length + queues.length + initialOrders.length + events.length;
+  return validGrants && validQueues && validOrders && validEvents && workCount > 0;
 }
 
 export function isAiRuntimeBrowserTestConfigV1(value: unknown): value is AiRuntimeBrowserTestConfigV1 {
