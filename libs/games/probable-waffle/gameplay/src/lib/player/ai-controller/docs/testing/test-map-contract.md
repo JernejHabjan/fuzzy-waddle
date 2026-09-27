@@ -16,6 +16,11 @@ stable test maps is part of #816. Natural playtests on the latest shipped maps r
 | Fortified approach | Legal wall/stair/tower surfaces, a deliberate friendly opening and alternate attack approaches | Placement, rampart defense, breach, withdrawal and friendly clearance |
 | Island crossing | A genuinely unreachable-by-land objective, usable water route and landing sites | Optional #822 transport-required runtime cases; not a #759 merge dependency |
 
+Build these incrementally, not as one prerequisite bundle. Freeze the smallest open-economy map first and migrate
+economy/production cases that need it. Add the bridge map when land-route, combat or continuous-match cases need it.
+Add the fortified map when wall/rampart cases are ready to author. Each map gets its own topology contract and can
+support stable CI cases without waiting for the later maps. Island crossing remains optional #822 content.
+
 The bridge map can begin as an editor-authored copy of River Crossing with unrelated scene objects removed. Copy its
 tilemap and relevant navigation/tileset metadata into test-owned assets too; referencing the live product tilemap would
 make the supposedly frozen map drift. Keep the test `.scene`, generated `.ts`, asset-pack registration and map definition

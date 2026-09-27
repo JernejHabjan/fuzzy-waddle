@@ -13,16 +13,22 @@ description: Implement, diagnose or validate the Probable Waffle skirmish AI, de
    A generic request to continue draft PR #814 follows the first active row in the handoff progress grid. Optional
    island-map issue #822 is not a core dependency or merge gate.
 2. Read only the named manifest rows/fixtures implicated by the task. Use the [RTS source index](../fuzzy-waddle-phaser/references/rts-source-index.md) once, then navigate exact symbols and adjacent specs.
+   If a JetBrains semantic tool is available, probe it once with a known symbol and use it for bounded symbol/call
+   lookup; otherwise use narrow `rg` in the indexed owner. Do not repeat repository-wide searches after ownership is known.
 3. Treat files already read in the current logical turn as cached knowledge. Reopen only changed or missing ranges; prefer `git diff` for edits.
 
 ## Work efficiently
 
 - Keep an internal acceptance list keyed by scenario ID and invariant. Repair the first causal disagreement: observation -> demand/mission -> intent/claim -> shared application -> outcome -> cleanup.
 - Batch related focused Jest specs and independent TypeScript/build checks. Run only one accelerated Phaser/Playwright match process at a time; group compatible runtime IDs with `--scenarios` so the browser starts once.
-- Run `pnpm agent:doctor` and `pnpm agent:context -- --issue <number>` first for unfinished #759 work. Use
+- When execution is authorized, run `pnpm agent:doctor` and `pnpm agent:context -- --issue <number>` first for
+  unfinished #759 work. During an explicit no-validation sweep, use the handoff and indexed source directly; do not
+  run these commands merely because this skill lists them. Use
   `agent:verify`, `agent:triage`, `agent:metrics`, `agent:process`, and manifest-backed `agent:scenario` only through
   their documented contracts; do not manually rebuild their bounded output from chat history. #816 owns supported-row
   classification and CI sharding, so do not manufacture a scenario list in workflow YAML.
+- Before expanding #816 browser fixtures, inspect `pnpm ai:skirmish:catalog -- --inventory` for one-line-per-recipe
+  setup/repetition/tick flags; do not dump every fixture or treat inventory flags as execution evidence.
 - Summarize the newest matrix artifact with `pnpm ai:skirmish:report -- --details`, or a named artifact with
   `pnpm ai:skirmish:report -- --report <path> --scenario <ID> --failures-only --details`. Never inspect or print full
   JSON before the bounded summary identifies a missing field.

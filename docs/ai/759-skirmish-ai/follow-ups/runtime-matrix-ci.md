@@ -31,10 +31,18 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
 
 ## Implementation order
 
-1. **Sol/high boundary:** establish the runner-to-Playwright-to-authoritative-outcome contract on the first failing land
-   sequence or missing CI-family assignment. Commit the compact reproduction, fail-closed selector rule, and one proven
-   family boundary; do not register broad families before this path is understood.
-2. **Terra/medium delivery:** finish and rerun the land sequence slice before broadening the matrix.
+0. **Tooling prerequisite, before mass fixture work:** use the existing bounded agent context/report commands when
+   execution is authorized, not a second context system. The new read-only
+   `pnpm ai:skirmish:catalog -- --inventory` groups registered recipes and flags repeated, long and mixed cases;
+   its implementation is authored but its unit test is deferred to the final gate. Extend the existing catalog
+   generator/fixture validator with typed execution-kind, variant-role and deadline-rationale metadata before editing
+   dozens of recipes. Add optional stop-on-evidence to the existing runtime driver before long-case conversion.
+   Do not build a parallel runner, hand-maintained 121-row sheet, or another broad repository index.
+1. **Sol/high boundary:** establish the runner-to-Playwright-to-authoritative-outcome contract by inspecting the
+   first land sequence, the selected manifest/fixture and current evaluator. Author a compact reproduction and
+   fail-closed selector rule; retain the final-gate execution boundary rather than claiming proof now.
+2. **Terra/medium delivery:** finish the land-sequence fixture/contract slice before broadening the matrix. Defer
+   the runtime rerun until the user-authorized final gate.
 3. Convert one compatible family at a time to an authored recipe with finite checkpoints, deterministic perturbations,
    authoritative assertions, and bounded deadlines.
    Prefer #826's preset-world mode when unrelated opening/map prerequisites do not belong to the behavior under test.
@@ -49,9 +57,12 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
    Keep `apps/portal-e2e/src/e2e/skirmish-ai-runtime.spec.ts` generic; put family-specific setup/evaluation in focused
    adjacent modules. Update manifest paths and every loader/catalog consumer for any nested fixture directories.
 4. Diagnose the earliest disagreement in this order: observation, demand/mission, intent/claim, shared application,
-   outcome, cleanup. Batch related repairs and run focused Jest before one grouped browser rerun.
-5. Author frozen test maps and migrate deterministic browser recipes per the code-adjacent test-map contract. Keep
-   mutable shipped-map playtests as separate compatibility evidence, not the stable CI oracle. Cover both factions and
+   outcome, cleanup. Batch related authored repairs; run focused Jest and one grouped browser rerun only at the
+   deferred final validation gate.
+5. Author frozen test maps incrementally per the code-adjacent test-map contract: open economy first, bridge when
+   route/combat/continuous cases need it, and fortified when wall cases need it. Do not block one map's cases on the
+   next map. Migrate deterministic browser recipes per map. Keep mutable shipped-map playtests as separate
+   compatibility evidence, not the stable CI oracle. Cover both factions and
    representative sides/seeds; consume the domain/transport contracts. Island-only variants remain visible
    `deferred_content` under optional #822; never claim them or synthetic flying-container coverage without registered
    capabilities.
@@ -66,6 +77,10 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
    execution-kind/variant-role metadata and an over-budget reason to recipes; derive the actor/resource/queue/event
    summary from `presetWorld` instead of copying it. Split the generator by stable responsibility before it exceeds
    the repository's source-size limits; never maintain a second manual scenario table.
+9. Stop-on-evidence must use settled checkpoints and independent authoritative outcome predicates. A positive case
+   may end once all selected assertions and required events are complete; negative controls and temporal/terminal
+   oracles run through their required horizon. Retain the actual stop tick and reason in reports. Author tests for
+   early success, pending event, negative control, missing effect and mandatory terminal result before execution.
 
 ## Evidence
 
@@ -91,6 +106,8 @@ terminal results fail the shard.
   still compare at least two runs. Continuous-match rows retain a terminal oracle and evidence-based deadline.
 - Each focused browser row has a declared legal preset starting state, or a documented natural-opening exception.
   The generated catalog makes that state, execution kind and deadline visible without duplicating fixture data.
+- Focused positive cases can stop on proven outcomes; controls, liveness windows and continuous matches cannot
+  silently exit early. The result records actual ticks and why execution stopped.
 - Focused/continuous recipes and evaluator modules have stable responsibility names; new/rewritten TS/JS/MJS files
   respect 400 non-comment lines per file, 200 per method and 140 columns per line; hand-maintained JSON is also wrapped
   at 140 columns. No blanket baseline refresh.

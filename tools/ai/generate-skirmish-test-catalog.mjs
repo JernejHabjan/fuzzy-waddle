@@ -2,6 +2,7 @@
 import { readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { basename, dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { collectRuntimeInventory, renderRuntimeInventory } from "./skirmish-runtime-inventory.mjs";
 
 const workspaceRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const testingDirectory = join(
@@ -187,8 +188,18 @@ export function renderCatalog() {
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const mode = process.argv[2] ?? "--check";
-  if (!["--write", "--check"].includes(mode) || process.argv.length > 3) throw new Error("usage: --write|--check");
-  const content = renderCatalog();
-  if (mode === "--write") writeFileSync(catalogPath, content);
-  else if (readFileSync(catalogPath, "utf8") !== content) throw new Error("skirmish_test_catalog_stale");
+  if (!["--write", "--check", "--inventory"].includes(mode) || process.argv.length > 3) {
+    throw new Error("usage: --write|--check|--inventory");
+  }
+  if (mode === "--inventory") {
+    const manifest = JSON.parse(readFileSync(join(fixtureDirectory, "skirmish-v1.json"), "utf8"));
+    const inventory = collectRuntimeInventory(manifest, (path) =>
+      JSON.parse(readFileSync(join(fixtureDirectory, path), "utf8"))
+    );
+    process.stdout.write(renderRuntimeInventory(inventory));
+  } else {
+    const content = renderCatalog();
+    if (mode === "--write") writeFileSync(catalogPath, content);
+    else if (readFileSync(catalogPath, "utf8") !== content) throw new Error("skirmish_test_catalog_stale");
+  }
 }

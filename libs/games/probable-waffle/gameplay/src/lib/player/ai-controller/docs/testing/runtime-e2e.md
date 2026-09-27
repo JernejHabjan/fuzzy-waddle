@@ -147,6 +147,12 @@ ticks or the amount of gameplay work. Record both tick count and wall time.
   A longer focused deadline needs measured construction/travel/combat latency and a written reason in its recipe;
   do not skip real production, movement or combat merely to meet a budget. Stop at the earliest authoritative
   acceptance milestone rather than waiting for a distant final checkpoint.
+- The current runner always advances through every authored checkpoint. #816 must add optional stop-on-evidence for
+  focused cases before broad fixture expansion: evaluate independently captured authoritative outcomes at settled
+  checkpoints, stop only after every selected positive requirement is satisfied and no required scheduled event or
+  observation horizon remains, then record the stop tick/reason. A negative control, absence assertion, liveness
+  window or continuous match must keep its required horizon. Early stop never converts a missing terminal result,
+  missing checkpoint, or unobserved effect into a pass.
 - Run each positive and control variant once in ordinary PR and required pre-merge coverage. For a scenario whose
   acceptance explicitly includes repeatability, use at least two identical-start runs and compare normalized
   decisions, initial-world and outcome digests, reporting the first differing path. Put additional repeats and

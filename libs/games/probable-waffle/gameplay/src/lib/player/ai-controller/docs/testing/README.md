@@ -55,6 +55,10 @@ and `develop` CI jobs check that the catalog stays synchronized. Existing browse
 maps; [frozen test maps](test-map-contract.md) and their migration remain implementation work under #816. Until that
 migration is done, do not describe a changing-map run as a stable reference-map regression.
 
+For bounded authoring triage, `pnpm ai:skirmish:catalog -- --inventory` prints one line per registered runtime recipe:
+IDs, variant/run counts, preset coverage, maximum tick and migration flags. It reads the manifest/fixtures without
+launching the game. Flags are an inventory, not proof of a failing test or an excuse to drop a required row.
+
 The current catalog contains 121 named cases before variants. Most still require fixture/runtime implementation; see [the handoff](../../../../../../../../../../docs/ai/759-skirmish-ai/HANDOFF.md).
 
 Detailed requirements are split by concern:

@@ -62,6 +62,13 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
   starting state, branch/repetition counts and tick rationale from fixture data. Existing catalog rows still show
   the old counts/limits and do not yet summarize preset state. Keep TS/JS/MJS additions within the repo's 400-line
   file, 200-line method and 140-column rules; do not build another giant Playwright or generator file.
+- #816 tooling-first update: `pnpm ai:skirmish:catalog -- --inventory` is now an authored read-only, bounded recipe
+  summary with 19/120 registered runtime rows, 97 supported missing, four island-deferred, and nine current recipe
+  files. It flags the mixed production/SEQ file, long focused waits and redundant repetitions; its new unit test
+  has **not** run. Before mass fixture work, finish typed catalog metadata and optional stop-on-evidence in the
+  existing runner. The current runner always advances through every checkpoint, so the latter is unimplemented.
+  JetBrains semantic search was reachable in this worktree; future agents should probe once and fall back to narrow
+  `rg` if their host has no IDE connection. No new global search/index tool is needed.
 - The generated [scenario test catalog](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/scenario-catalog.md)
   joins all 121 requirements to their registered fixtures, spec references, current maps and tick bounds; it does not
   claim test execution. Its [frozen-map contract](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/test-map-contract.md)
@@ -120,7 +127,7 @@ until one clean replacement run is necessary; do not reconstruct or dump the old
 | 2             | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829) | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof | Sol, high → Terra, high   |
 | 3             | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `in_progress` | Finish sustained pressure/recovery policy; defer victory proof    | Sol, high → Terra, high   |
 | 4             | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `in_progress` | Author remaining typed pure families; execute only at final gate  | Sol, high → Terra, medium |
-| 5             | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Shorten focused recipes, fix repetition tiers, author maps/CI; do not run yet | Sol, high → Terra, medium |
+| 5             | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Tool gate, focused recipes, incremental maps/CI; do not run yet | Sol, high → Terra, medium |
 | 6             | [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828) | `not_started` | Prepare probes now; measure/optimize only at final gate           | Sol, high → Terra, high   |
 | 7             | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `not_started` | Prepare paired fixtures; baseline/D-06/soaks at final gate        | Sol, high → Terra, medium |
 | 8             | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `not_started` | Author relay/lockstep cases after #816 runtime contract exists    | Sol, high → Terra, high   |
@@ -140,11 +147,17 @@ transport-required runtime. It is detached from #759 and does not block core rea
 Follow the dependency grid above; the following #816/final-gate sequence survives a new machine or agent. Current
 fixture schedules and historical 12,000-tick diagnostics remain facts about authored/previous runs, not new policy.
 
-1. During the authoring sweep, inventory each registered browser recipe from the manifest and generated catalog:
-   causal branch count, repetition count, earliest authoritative success/failure milestone, current tick ceiling,
-   map dependency and execution tier. Do not infer passing evidence from registration.
-2. Author frozen open-economy, bridge and fortified test maps plus legal preset worlds. Replace broad production,
-   economy, defense and raid waits with focused 200–2,000-tick cases where possible. Preserve full real command and
+0. Tool gate before mass scenario authoring: use the new bounded inventory (not raw fixture dumps), add validated
+   execution-kind/variant-role/deadline metadata to the existing catalog/fixture tools, and add optional
+   stop-on-evidence to the current Playwright runner. Do not build a duplicate runner or index. The inventory is
+   authored; metadata and early stop are pending. Defer their tests under the current no-validation instruction.
+1. During the authoring sweep, use the inventory to identify each registered browser recipe's causal branches,
+   repetitions, earliest authoritative success/failure milestone, tick ceiling, map dependency and execution tier.
+   Do not infer passing evidence from registration or a compact inventory flag.
+2. Freeze the smallest open-economy test map first, then the bridge map when route/combat/full-match cases need it,
+   then the fortified map when wall cases need it. Each can support CI independently. Add legal preset worlds and
+   replace broad production, economy, defense and raid waits with focused 200–2,000-tick cases where possible.
+   Preserve full real command and
    effect paths; document measured exceptions and leave full legal-start matches in a separate execution tier.
    Organize focused fixtures by behavior family and pair positive/control variants in the same small recipe; split
    the mixed production/SEQ fixture and keep the Playwright driver generic. No island-map dependency.
