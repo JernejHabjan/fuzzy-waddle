@@ -30,9 +30,12 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
   gated on #816/#819/#823 parity evidence and must not be done speculatively. #829/#827 production behavior remains
   unproven until the final gate; repair only the first evidenced failure then. #821 has remaining code-only structural
   work, but its final baseline removal and compatibility audit also require that gate.
-- Next boundary: review the remaining source-only #821 debt, then notify the user before the final test/validation
-  gate. Do not remove the legacy behavior tree, tune difficulty, or claim performance improvement before dependency
-  evidence exists. If a later source-only split touches persisted IDs, first plan compatibility/migration explicitly.
+- Remaining #821 debt after source inspection: the Phaser observation pipeline is about 1,468 lines; the matrix runner
+  is about 847; the brain-state contract is about 481, with separate invariant/serializer naming debt. These broad
+  splits are not safely closed by the macro refactor and remain explicit #821 work. Do not silently renew their hash
+  exemptions. The matrix runner and compound state contracts need focused type/fixture/replay proof during the final
+  gate; plan compatibility before changing persisted IDs. Notify the user before starting that gate. Do not remove
+  the legacy behavior tree, tune difficulty, or claim performance improvement before dependency evidence exists.
 - Pinned pre-change baseline: `de47f482889db30420692bf4406fba463d7db296`.
 - Manifest authority: `tools/ai/fixtures/skirmish-v1.json`, 121 scenario IDs before variants.
 - Completed prerequisites: #824 repository tooling and #825 current-content domain/transport foundation.
