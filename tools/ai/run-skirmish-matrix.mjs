@@ -635,6 +635,20 @@ function validateRuntimeFixture(fixture, scenarioId) {
             preset.initialOrders?.filter((order) => order.sourceFixtureActorId === fullId).length ===
               assertion.requiredSaturatedSource.capacity;
         }))) ||
+    (assertion.requiredWorkerGrowth !== undefined &&
+      (!assertion.requiredWorkerGrowth ||
+        typeof assertion.requiredWorkerGrowth.variantId !== "string" ||
+        !recipe.variants.some((variant) => variant.id === assertion.requiredWorkerGrowth.variantId &&
+          (variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId)) &&
+          variant.presetWorld?.resourceStarts?.length === 1) ||
+        !Number.isSafeInteger(assertion.requiredWorkerGrowth.initialWorkerCount) ||
+        assertion.requiredWorkerGrowth.initialWorkerCount < 1 ||
+        !Number.isSafeInteger(assertion.requiredWorkerGrowth.minimumPeakWorkerCount) ||
+        assertion.requiredWorkerGrowth.minimumPeakWorkerCount <= assertion.requiredWorkerGrowth.initialWorkerCount ||
+        !Number.isSafeInteger(assertion.requiredWorkerGrowth.minimumFinalWorkerCount) ||
+        assertion.requiredWorkerGrowth.minimumFinalWorkerCount <= assertion.requiredWorkerGrowth.initialWorkerCount ||
+        !Number.isSafeInteger(assertion.requiredWorkerGrowth.latestTick) ||
+        assertion.requiredWorkerGrowth.latestTick < 1)) ||
     [
       "maximumTick",
       "minimumMilitaryCount",

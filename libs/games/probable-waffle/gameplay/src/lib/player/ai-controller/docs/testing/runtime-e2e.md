@@ -101,6 +101,11 @@ Gather order to another observed wood source. Exact pre-tick stockpiles make woo
 starting-world orders, not AI decisions or substituted brain outcomes. This recipe and its oracle are unexecuted
 until the final validation gate.
 
+ECO-08 retains both natural 200-resource faction openings and adds a focused Tivara growth variant with six real
+workers, two finished Fields and a Granary. Its exact 200-resource starting balance is checked before tick zero;
+the oracle requires at least seven observed workers by tick 3,000, retains seven at the final checkpoint, and
+observes delivered income. Three isolated repetitions are authored but unexecuted until the final gate.
+
 A natural-map control that cannot satisfy a focused invariant is not an equivalent correctness oracle or a performance
 baseline. Record that outcome in its issue/handoff without claiming a speedup. The focused fixture remains the
 authoritative `PRO-05` replacement proof; natural recovery behavior remains runtime/strategy work under #816/#827.

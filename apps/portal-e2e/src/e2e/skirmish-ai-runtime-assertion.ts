@@ -47,6 +47,13 @@ export interface RuntimeAssertionV1 {
     readonly capacity: number;
     readonly latestTick: number;
   };
+  readonly requiredWorkerGrowth?: {
+    readonly variantId: string;
+    readonly initialWorkerCount: number;
+    readonly minimumPeakWorkerCount: number;
+    readonly minimumFinalWorkerCount: number;
+    readonly latestTick: number;
+  };
   readonly requiredDefenseTargetName?: string;
   readonly requiredDefenseActorName?: string;
   readonly requireMissionRedirectionAfterRaid?: boolean;

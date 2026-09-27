@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "evidenceKind": "runtime",
   "scenarioIds": ["ECO-08"],
-  "purpose": "Run both real faction starts from the ordinary lobby, prove the no-worker bootstrap reaches delivered income, and retain completed opening checkpoints without command duplication.",
+  "purpose": "Run both real faction starts, prove no-worker bootstrap and delivered income, and require a focused six-worker economy to grow beyond its recovery floor from equal 200-resource balances.",
   "driver": "runtime",
   "status": "ready_for_runtime_execution",
   "context": {
@@ -32,6 +32,35 @@
         "aiFaction": "Skaduwee",
         "humanFaction": "Tivara",
         "difficulty": "Normal"
+      },
+      {
+        "id": "tivara-workforce-growth",
+        "scenarioIds": ["ECO-08"],
+        "seed": 759083,
+        "mapLabel": "Ember Enclave",
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "determinismGroup": "workforce-growth",
+        "repetitions": 3,
+        "presetWorld": {
+          "fixtureId": "workforce-growth",
+          "actors": [
+            { "fixtureActorId": "worker-1", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 640, "y": 800, "z": 0 } },
+            { "fixtureActorId": "worker-2", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 672, "y": 824, "z": 0 } },
+            { "fixtureActorId": "worker-3", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 704, "y": 848, "z": 0 } },
+            { "fixtureActorId": "worker-4", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 640, "y": 872, "z": 0 } },
+            { "fixtureActorId": "worker-5", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 672, "y": 896, "z": 0 } },
+            { "fixtureActorId": "worker-6", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 704, "y": 920, "z": 0 } },
+            { "fixtureActorId": "granary", "actorName": "Granary", "owner": 2, "position": { "x": 800, "y": 880, "z": 0 } },
+            { "fixtureActorId": "field-1", "actorName": "Field", "owner": 2, "position": { "x": 864, "y": 816, "z": 0 } },
+            { "fixtureActorId": "field-2", "actorName": "Field", "owner": 2, "position": { "x": 896, "y": 896, "z": 0 } }
+          ],
+          "resourceGrants": [],
+          "resourceStarts": [
+            { "playerNumber": 2, "amounts": { "food": 200, "wood": 200, "stone": 200, "minerals": 200 } }
+          ]
+        }
       }
     ]
   },
@@ -47,8 +76,15 @@
       ],
       "requireNoInitialWorker": true,
       "requireDeliveredIncome": true,
-      "requiredAiFactions": ["Tivara", "Skaduwee"]
+      "requiredAiFactions": ["Tivara", "Skaduwee"],
+      "requiredWorkerGrowth": {
+        "variantId": "tivara-workforce-growth",
+        "initialWorkerCount": 6,
+        "minimumPeakWorkerCount": 7,
+        "minimumFinalWorkerCount": 7,
+        "latestTick": 3000
+      }
     }
   },
-  "deliberatelyBrokenOracle": "require_initial_worker_before_the_first_production_can_complete"
+  "deliberatelyBrokenOracle": "require_initial_worker_before_the_first_production_can_complete_or_accept_desired_worker_debug_text_without_observed_growth"
 }
