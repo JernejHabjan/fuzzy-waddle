@@ -151,7 +151,8 @@ export function selectAiOffensiveOpportunity(
     })
     .sort((left, right) => right.score - left.score || left.opponent.actorId.localeCompare(right.opponent.actorId));
   const actionable = candidates.filter((candidate) => candidate.route.kind !== "pending");
-  const ranked = actionable.length > 0 ? actionable : candidates;
+  const readyActionable = actionable.filter((candidate) => candidate.capable >= candidate.required);
+  const ranked = readyActionable.length > 0 ? readyActionable : actionable.length > 0 ? actionable : candidates;
   const focusedPlayer = context.activeAttack?.lifecycle?.targetPlayerNumber;
   const focused = ranked.find((candidate) => candidate.opponent.owner === focusedPlayer);
   const best = ranked[0];

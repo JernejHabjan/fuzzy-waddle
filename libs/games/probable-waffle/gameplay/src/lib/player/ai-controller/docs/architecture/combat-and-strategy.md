@@ -19,8 +19,10 @@ After a favorable engagement, the AI applies useful pressure to an exposed econo
 
 The offense owner ranks visible and bounded last-seen targets by core/economic value, travel, visible local counterforce,
 route feasibility and contact age. A compatible force can launch on an exposed core before the normal reinforcement
-target is complete; a severe observed counterforce blocks the assembly timeout from forcing a token attack. A completed
-mission does not consume the launch permission of the next mission, even when its stable squad ID is reused. The
+target is complete; a severe observed counterforce blocks the assembly timeout from forcing a token attack. A reachable
+target that can be attacked with the current force takes precedence over a more valuable target that still needs
+reinforcements. Once the larger force becomes ready, target value can reclaim priority. A completed mission does not
+consume the launch permission of the next mission, even when its stable squad ID is reused. The
 selected choice, compatible/required force, confidence, effect/reconsideration ticks and bounded alternatives are saved
 in the strategy state and projected into the historical debug view. A completed opening with a collapsed workforce
 recovers that workforce before forming a fresh offensive squad, unless a credible finishing force is already ready.
