@@ -42,6 +42,12 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
    for focused cases, with measured exceptions. Keep explicit determinism assertions at two or more identical starts;
    update the evaluator contract with fixture repetition changes. Full-match victories remain separate, finite and
    allowed to run longer when terminal behavior requires it. See the code-adjacent runtime E2E policy.
+   Split the current mixed `tools/ai/fixtures/stage-15-land-loop-runtime.json`: keep natural SEQ match recipes in a
+   continuous-match file, and give production/replacement behavior its own focused files with legal preset actors,
+   balances, queues and scheduled loss where needed. Group a positive/control pair together; do not create one file
+   per ID or share a 12,000-tick natural match merely because several IDs mention production.
+   Keep `apps/portal-e2e/src/e2e/skirmish-ai-runtime.spec.ts` generic; put family-specific setup/evaluation in focused
+   adjacent modules. Update manifest paths and every loader/catalog consumer for any nested fixture directories.
 4. Diagnose the earliest disagreement in this order: observation, demand/mission, intent/claim, shared application,
    outcome, cleanup. Batch related repairs and run focused Jest before one grouped browser rerun.
 5. Author frozen test maps and migrate deterministic browser recipes per the code-adjacent test-map contract. Keep
@@ -54,6 +60,12 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
    runtime-required row has no recipe, no shard, or no runnable command. A clean worker may run one Phaser/Playwright
    process at a time; separate workers may run shards concurrently.
 7. Publish compact JSON for every shard and retain trace/repro, browser logs, screenshots/video on failure.
+8. Extend `tools/ai/generate-skirmish-test-catalog.mjs` to derive execution kind, preset starting-state summary,
+   positive/control counts, map, deadline and focused-over-budget rationale from recipe data. Add parser/renderer
+   fixtures for missing setup, paired variants, long focused exceptions and continuous matches. Add validated
+   execution-kind/variant-role metadata and an over-budget reason to recipes; derive the actor/resource/queue/event
+   summary from `presetWorld` instead of copying it. Split the generator by stable responsibility before it exceeds
+   the repository's source-size limits; never maintain a second manual scenario table.
 
 ## Evidence
 
@@ -77,4 +89,9 @@ terminal results fail the shard.
 - Optional island-content rows remain explicit, visible, non-passing, and outside the supported core gate.
 - Focused recipes have bounded, justified tick budgets and no redundant PR repetitions; explicit determinism rows
   still compare at least two runs. Continuous-match rows retain a terminal oracle and evidence-based deadline.
+- Each focused browser row has a declared legal preset starting state, or a documented natural-opening exception.
+  The generated catalog makes that state, execution kind and deadline visible without duplicating fixture data.
+- Focused/continuous recipes and evaluator modules have stable responsibility names; new/rewritten TS/JS/MJS files
+  respect 400 non-comment lines per file, 200 per method and 140 columns per line; hand-maintained JSON is also wrapped
+  at 140 columns. No blanket baseline refresh.
 - Run omission/final closure audits, update coverage counts and operator docs, commit, push, and close #816.

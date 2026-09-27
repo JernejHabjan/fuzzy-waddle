@@ -55,6 +55,27 @@ simulation ticks. The bridge does not expose arbitrary topology rewrites, fog re
 hidden information. Unknown fields—including brain state, desired decisions, hidden knowledge, or success flags—make
 the bridge fail closed.
 
+Organize the runtime recipes by test purpose, not by implementation stage: small focused files for a behavior family
+and its positive/control variants, and separate files for continuous legal-start matches. Reuse a recipe across IDs
+only when the same setup and independent oracle genuinely prove each ID. Keep the generic Playwright driver thin;
+split scenario evaluators and setup helpers by stable responsibility rather than growing one switch or fixture file.
+The manifest remains the only ID-to-recipe registration authority.
+
+Every focused browser recipe should explicitly declare the minimal legal starting world needed for its assertion:
+map/topology, actor types/owners/positions, exact relevant resource balances, and any necessary ordinary production
+queue, starting order or timed opponent event. Include other player state only through a validated authoritative game
+service; do not inject AI memory, hidden information, a desired decision or a success flag. If a focused case truly
+needs an unpreset natural opening, record that reason and its measured deadline as an exception. Continuous-match
+recipes deliberately start from normal game state and prove the entire opening-to-result chain.
+
+Use validated recipe metadata for execution kind (`focused_preset`, justified `focused_natural`, or `continuous`),
+variant role (subject/control where applicable), and the reason for a focused deadline above 2,000 ticks. The
+generated scenario catalog must derive, for each registered runtime row, that kind, linked variant/fixture,
+starting-state summary, positive/control run counts, map, tick deadline and exception rationale from recipe data.
+It must show missing setup as missing rather than infer it from requirement prose. Do not hand-edit generated rows
+or copy fixture state into another maintained table.
+Catalog output reports registration and declared budgets, never an executed pass.
+
 Scripted opponent pressure remains a real deterministic human command. It may select attacker object names and a target
 object name, but combat and AI response remain authoritative Phaser behavior. A focused producer-loss fixture may instead
 apply scheduled lethal damage through the real HealthComponent. The runner must observe a later producer-count drop and
@@ -134,6 +155,10 @@ ticks or the amount of gameplay work. Record both tick count and wall time.
   the fixture counts and the `determinismGroup` evaluator contract together, then verify that one-run cases still
   fail on missing/incorrect outcomes and two-run cases still fail on divergence. Do not silently weaken an existing
   determinism assertion to save runtime.
+- Keep hand-maintained TS/JS/MJS test and catalog-tool files at or below 400 non-comment lines, methods at or below
+  200 non-comment lines, and lines at or below 140 columns. Wrap hand-maintained fixture JSON to the same 140-column
+  style; split large behavior families instead of packing unrelated variants into one file. Do not refresh
+  source-structure baselines to hide size.
 - Keep a small continuous-match execution tier for its existing manifest scenarios, from legal starts. It may take
   longer than two simulated minutes:
   set each full-match deadline from measured victory/recovery behavior, retain a finite bound and mandatory terminal

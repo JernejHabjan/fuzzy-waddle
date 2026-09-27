@@ -56,6 +56,12 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
   finite deadline is necessary for a real terminal result. At 50 ms/tick, two simulated minutes are 2,400 ticks.
   Existing three-repeat/12,000-tick recipes are migration work, not an endorsed default. The authoritative policy
   and exceptions are in [runtime E2E](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/runtime-e2e.md).
+- #816 layout decision (unimplemented): split focused behavior/positive-control recipes from legal-start continuous
+  matches, notably the mixed `stage-15-land-loop-runtime.json`; declare legal actor/resource/queue/event preset state
+  for each focused case or a documented natural-opening exception. Extend the generated catalog to expose kind,
+  starting state, branch/repetition counts and tick rationale from fixture data. Existing catalog rows still show
+  the old counts/limits and do not yet summarize preset state. Keep TS/JS/MJS additions within the repo's 400-line
+  file, 200-line method and 140-column rules; do not build another giant Playwright or generator file.
 - The generated [scenario test catalog](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/scenario-catalog.md)
   joins all 121 requirements to their registered fixtures, spec references, current maps and tick bounds; it does not
   claim test execution. Its [frozen-map contract](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/test-map-contract.md)
@@ -139,11 +145,15 @@ fixture schedules and historical 12,000-tick diagnostics remain facts about auth
    map dependency and execution tier. Do not infer passing evidence from registration.
 2. Author frozen open-economy, bridge and fortified test maps plus legal preset worlds. Replace broad production,
    economy, defense and raid waits with focused 200–2,000-tick cases where possible. Preserve full real command and
-   effect paths; document measured exceptions and leave full legal-start matches separate. No island-map dependency.
+   effect paths; document measured exceptions and leave full legal-start matches in a separate execution tier.
+   Organize focused fixtures by behavior family and pair positive/control variants in the same small recipe; split
+   the mixed production/SEQ fixture and keep the Playwright driver generic. No island-map dependency.
 3. Migrate fixture repetition counts and the Playwright `determinismGroup` evaluator in one bounded change: one run
    per positive/control branch in ordinary PR coverage, at least two identical starts for explicit determinism,
    extra seeds/repeats and soaks in scheduled/manual coverage. Preserve fail-closed coverage/provenance and CI shard
    selection. Keep the catalog derived from the manifest/fixtures rather than maintaining parallel scenario counts.
+   Add generated per-row kind, starting actor/resource/queue/event summary, branch/repetition counts and budget
+   rationale; missing focused setup must remain visible. Keep generator/evaluator source within the size rules.
 4. Finish required pure/runtime mappings for supported IDs in the 121-scenario manifest, with the four island-content
    runtime rows explicit and deferred. Author focused outcomes before relying on the small continuous-match tier.
    During this sweep, do not execute tests, E2E, simulations, lint, builds or validation under the user direction above.
