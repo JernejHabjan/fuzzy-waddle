@@ -54,7 +54,14 @@ export function hasCredibleAiEconomyThreat(observation: AiObservationV1): boolea
   const visibleEnemies = observation.actors.filter((actor) => visibleIds.has(actor.actorId));
   if (visibleEnemies.length === 0) return true;
   const protectedPositions = observation.actors.flatMap((actor) =>
-    actor.relation === "self" && actor.visibility === "owned" && actor.logicalPosition.status === "known"
+    actor.relation === "self" &&
+    actor.visibility === "owned" &&
+    actor.logicalPosition.status === "known" &&
+    ((actor.mainBuilding?.status === "known" && actor.mainBuilding.value) ||
+      actor.resourceState.status === "known" ||
+      actor.capabilities.some((capability) =>
+        ["gather", "produce", "drop_off"].includes(capability.family)
+      ))
       ? [actor.logicalPosition.value]
       : []
   );

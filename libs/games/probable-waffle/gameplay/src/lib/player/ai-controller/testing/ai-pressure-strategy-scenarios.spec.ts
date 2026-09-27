@@ -2,7 +2,7 @@ import { FactionType, ObjectNames, ResourceType } from "@fuzzy-waddle/probable-w
 import { digestCanonicalAiValue } from "../brain/canonical-ai-serialization";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import type { AiObservationV1 } from "../contracts/ai-observation-v1";
-import { decideAiEconomyPolicy } from "../planning/ai-economy-policy";
+import { decideAiEconomyPolicy, hasCredibleAiEconomyThreat } from "../planning/ai-economy-policy";
 import { createAiTestObservation, createAiTestOwnedActor, unknownAiValue } from "./ai-test-fixtures";
 
 const catalog: AiCapabilityCatalogV1 = {
@@ -65,6 +65,30 @@ function economyWorld(contact: "none" | "local" | "remembered" | "remote"): AiOb
 }
 
 describe("STRAT-01 paired early-raid economy policy", () => {
+  it("does not freeze home growth for enemy contact near an outbound military actor", () => {
+    const remote = economyWorld("remote");
+    const soldier = {
+      ...createAiTestOwnedActor("outbound-guard"),
+      objectName: ObjectNames.TivaraMacemanMale,
+      logicalPosition: { status: "known" as const, value: { x: 99, y: 100, z: 0 }, observedTick: 20 },
+      capabilities: [{
+        id: "outbound-guard:attack", family: "military", level: 1,
+        domains: ["ground" as const], targetDomains: ["ground" as const],
+        capacity: { status: "known" as const, value: 0, observedTick: 20 }
+      }]
+    };
+    const outboundWorld = { ...remote, actors: [...remote.actors, soldier] };
+    expect(hasCredibleAiEconomyThreat(outboundWorld)).toBe(false);
+    expect(decideAiEconomyPolicy(outboundWorld, catalog, forecasts).budget)
+      .toEqual({ economyPermille: 650, defensePermille: 350 });
+    const core = {
+      ...createAiTestOwnedActor("exposed-core"),
+      logicalPosition: { status: "known" as const, value: { x: 99, y: 100, z: 0 }, observedTick: 20 },
+      mainBuilding: { status: "known" as const, value: true, observedTick: 20 }
+    };
+    expect(hasCredibleAiEconomyThreat({ ...remote, actors: [...remote.actors, core] })).toBe(true);
+  });
+
   it("diverts the 200-resource budget only for a visible local threat and resumes growth after pressure", () => {
     expect(economyWorld("none").resources.map((resource) => resource.stockpile)).toEqual([200, 200, 200, 200]);
     const safe = decideAiEconomyPolicy(economyWorld("none"), catalog, forecasts);

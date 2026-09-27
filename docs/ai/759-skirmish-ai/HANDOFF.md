@@ -111,6 +111,9 @@ not block this gate.
   STRAT-01 also has a typed pure paired world: visible local raid versus safe, last-seen, and remote-contact controls,
   with three repeated decision digests, budget/workforce assertions, and bounded recovery. Its manifest and pure Jest
   selector are wired, but neither the pure case nor the browser pair has been executed.
+  The safe/pressure classifier now measures visible enemy proximity to owned economic/base assets, excluding
+  outbound military actors from the home-defense budget signal. A typed control is authored but unrun; final-gate
+  pressure checks must still prove that workers, Fields, producers, and the core do trigger defense when threatened.
 
 - #827 now prefers a confirmed reachable target over a higher-value unknown-route target. STRAT-07 has an authored
   three-repeat pure route-pair fixture and typed manager cases for direct worker attack, pending-core scouting fallback,
