@@ -691,7 +691,10 @@ export class AiObservationPipeline {
   ): AiCapabilityCatalogEntryV1 {
     return {
       capabilityId: `${objectName}:level:${level}`,
-      family: capabilityFamilies(definition).join("+") || "passive",
+      family: [
+        ...capabilityFamilies(definition),
+        definition.components?.attack?.attacks.some((attack) => attack.range >= 4) ? "ranged" : null
+      ].filter((family): family is string => family !== null).join("+") || "passive",
       sourceObjectName: objectName,
       effectiveLevel: level,
       movementDomains: movementDomains(definition),

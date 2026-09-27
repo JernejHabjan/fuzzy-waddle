@@ -14,6 +14,16 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 - Branch: `feature/759-skirmish-ai`; draft PR [#814](https://github.com/JernejHabjan/fuzzy-waddle/pull/814) targets
   `develop`. Verify local and remote tips before editing.
+- Latest production-only sweep (unverified): #829 local pressure now requires a visible, positioned enemy near a
+  protected asset; #827's evidenced required force now raises the bounded military production target above the
+  ordinary 12-unit standing force, and the missing force determines whether extra producers have dated work.
+  The catalog now tags effective long-range weapons so the macro producer can distinguish real ranged units from
+  frontline units; support demand is bounded instead of being counted as unlimited frontline.
+  #821 moved opening and military catalog responsibilities out of the oversized macro owner, but that owner remains
+  over limit. Its temporary source-structure hash was reviewed and updated for this partial split; #821 must finish
+  the split and remove the exemption. The oversized observation pipeline's hash was likewise updated for the range
+  projection and remains a #821 cleanup owner. No tests, Playwright, simulations, builds, lint, or type checks were run for
+  this sweep under the user's explicit final-gate policy.
 - Pinned pre-change baseline: `de47f482889db30420692bf4406fba463d7db296`.
 - Manifest authority: `tools/ai/fixtures/skirmish-v1.json`, 121 scenario IDs before variants.
 - Completed prerequisites: #824 repository tooling and #825 current-content domain/transport foundation.
@@ -35,7 +45,7 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
   Granaries and six Fields, launched at tick 2,820 and peaked at 19 military actors, but combat attrition reduced it to
   zero military actors and three workers by tick 12,020. River Crossing needs no air transport: its bridge is
   traversable by land.
-- The current #827 strategy/recovery checkpoint is commit `e1215af5` on the remote branch. It contains a typed strategy
+- The last pre-sweep checked #827 strategy/recovery checkpoint is commit `e1215af5` on the remote branch. It contains a typed strategy
   assessment, opportunity ranking, tactical liveness and remote approach cells, worker recovery, debug projection, and
   the 12,000-tick cap. Its latest focused evidence is 48 gameplay tests, three debug-panel tests, and
   `apps/portal-e2e/tsconfig.json` type checking passing. Phaser/gameplay-wide `tsc` still emits unrelated

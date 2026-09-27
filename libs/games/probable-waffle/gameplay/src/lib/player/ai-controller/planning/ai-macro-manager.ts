@@ -1,4 +1,4 @@
-import { FactionType, ObjectNames, OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { ObjectNames, OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import type { AiDemandV1, AiPlanStepV1 } from "../contracts/ai-plan-contracts";
@@ -15,29 +15,9 @@ import { createAiResourceCostClaims } from "./ai-resource-cost-claims";
 import { calculateAiHousingDemand } from "./ai-housing-demand";
 import { proposeAiWorkerRecovery } from "./ai-worker-recovery";
 import { selectAiSurplusLaborTransfer } from "./ai-surplus-labor-transfer";
-
-/** One resolved opening checkpoint; the runtime catalog remains the authority for legality. */
-interface OpeningCheckpointV1 {
-  readonly id: string;
-  readonly purpose: string;
-  readonly requiredObject: ObjectNames;
-  readonly desired: number;
-}
-
-const factionOpenings: Readonly<Record<FactionType, readonly OpeningCheckpointV1[]>> = {
-  [FactionType.Tivara]: [
-    { id: "bootstrap-worker", purpose: "bootstrap_worker", requiredObject: ObjectNames.TivaraWorker, desired: 1 },
-    { id: "supply-safety", purpose: "supply_buffer", requiredObject: ObjectNames.Olival, desired: 1 },
-    { id: "first-producer", purpose: "first_military_producer", requiredObject: ObjectNames.AnkGuard, desired: 1 },
-    { id: "sustainable-food", purpose: "sustainable_food", requiredObject: ObjectNames.Granary, desired: 1 }
-  ],
-  [FactionType.Skaduwee]: [
-    { id: "bootstrap-worker", purpose: "bootstrap_worker", requiredObject: ObjectNames.SkaduweeWorker, desired: 1 },
-    { id: "supply-safety", purpose: "supply_buffer", requiredObject: ObjectNames.Emberstone, desired: 1 },
-    { id: "first-producer", purpose: "first_military_producer", requiredObject: ObjectNames.InfantryInn, desired: 1 },
-    { id: "sustainable-food", purpose: "sustainable_food", requiredObject: ObjectNames.Granary, desired: 1 }
-  ]
-};
+import { plannedAiForceSize, plannedAiProducerCount } from "./ai-force-capacity";
+import { factionOpenings, openingBudget, type OpeningCheckpoint } from "./ai-opening-catalog";
+import { isMilitaryCatalogEntry, producerMilitaryProducts, productionRoleDeficit, roleFor } from "./ai-military-catalog";
 
 function owned(observation: AiObservationV1) {
   return observation.actors.filter((actor) => actor.relation === "self" && actor.visibility === "owned");
@@ -45,7 +25,7 @@ function owned(observation: AiObservationV1) {
 
 function checkpointActors(
   observation: AiObservationV1,
-  checkpoint: OpeningCheckpointV1,
+  checkpoint: OpeningCheckpoint,
   catalog: AiCapabilityCatalogV1
 ) {
   const actors = owned(observation);
@@ -187,62 +167,8 @@ function unresolvedReservedEffectIds(state: AiBrainStateV1, subjectPrefix: strin
     .sort();
 }
 
-function roleFor(objectName: ObjectNames, catalog: AiCapabilityCatalogV1): "frontline" | "ranged" | "support" {
-  const entry = catalog.entries.find((candidate) => candidate.sourceObjectName === objectName);
-  const family = entry?.family.toLowerCase() ?? "";
-  if (family.includes("heal") || family.includes("support")) return "support";
-  if (family.includes("range")) return "ranged";
-  return "frontline";
-}
-
-function isMilitaryCatalogEntry(entry: AiCapabilityCatalogV1["entries"][number]): boolean {
-  return entry.gathers.length === 0 && entry.targetDomains.length > 0;
-}
-
-function producerMilitaryProducts(
-  objectName: ObjectNames,
-  catalog: AiCapabilityCatalogV1,
-  movementDomain?: "ground" | "air" | "water"
-): readonly ObjectNames[] {
-  const producer = catalog.entries.find((entry) => entry.sourceObjectName === objectName);
-  return (producer?.produces ?? [])
-    .filter((candidate) => {
-      const product = catalog.entries.find((entry) => entry.sourceObjectName === candidate);
-      return (
-        product !== undefined &&
-        isMilitaryCatalogEntry(product) &&
-        (movementDomain === undefined || product.movementDomains.includes(movementDomain))
-      );
-    })
-    .sort();
-}
-
-/** Archetypes vary a legal branch budget only; every profile still executes the shared essential checkpoints. */
-function openingBudget(archetypeId: string): {
-  readonly firstForce: number;
-  readonly supplyBuffer: number;
-  readonly rangedPermille: number;
-} {
-  const parts = archetypeId.split(":");
-  const purpose = parts[parts.length - 1];
-  switch (purpose) {
-    case "rush":
-    case "pressure":
-      return { firstForce: 4, supplyBuffer: 3, rangedPermille: 300 };
-    case "macro":
-      return { firstForce: 4, supplyBuffer: 5, rangedPermille: 400 };
-    case "tech":
-      return { firstForce: 5, supplyBuffer: 4, rangedPermille: 500 };
-    case "turtle":
-    case "safe":
-      return { firstForce: 6, supplyBuffer: 4, rangedPermille: 500 };
-    default:
-      return { firstForce: 6, supplyBuffer: 3, rangedPermille: 400 };
-  }
-}
-
 /**
- * Stage 7 proposal owner. It derives opening, supply and composition demand
+ * Macro proposal owner. It derives opening, supply and composition demand
  * from one committed observation and the paired runtime capability catalog.
  * It never assumes that an object is buildable merely because its name appears
  * in a faction recipe: the catalog must expose the matching producer/builder.
@@ -694,13 +620,13 @@ export class AiMacroManager implements AiProposalManagerV1 {
       catalog.entries.some((entry) => entry.sourceObjectName === actor.objectName && entry.gathers.length > 0)
     ).length;
     const workforceRecoveryOwnsFood = currentWorkerCount < WORKER_RECOVERY_FLOOR && military.length > 0;
-    const targetMilitary = openingComplete
-      ? pressureDomain === "air"
-        ? Math.max(8, state.strategy.assessment?.requiredForce ?? 8)
-        : 12
-      : hasCredibleAiEconomyThreat(observation)
-        ? budget.firstForce
-        : military.length;
+    const targetMilitary = plannedAiForceSize(
+      openingComplete,
+      pressureDomain,
+      state.strategy.assessment,
+      military.length,
+      hasCredibleAiEconomyThreat(observation) ? budget.firstForce : null
+    );
     const compositionPrefix = pressureDomain === "air" ? "composition-air" : "composition";
     const pressureForecast = projectAiResourceForecasts(
       observation,
@@ -1024,7 +950,7 @@ export class AiMacroManager implements AiProposalManagerV1 {
 
     const rawAcceptedMilitaryEffectIds = unresolvedReservedEffectIds(state, `effect:${compositionPrefix}:effect:`);
     // The opening force is enough to survive and scout. A completed opening commits
-    // to a dated 12-unit reinforcement target; the strategic selector may launch a
+    // to a dated force target that grows with evidenced opposition; the strategic selector may launch a
     // smaller credible force when a reachable objective has little visible defense.
     // Queue observation and accepted leases can briefly describe the same command.
     // Clamp accepted-not-observed identities to the genuinely unobserved remainder
@@ -1052,7 +978,9 @@ export class AiMacroManager implements AiProposalManagerV1 {
       .filter((actor) => producerMilitaryProducts(actor.objectName, catalog, pressureDomain).length > 0)
       .sort((left, right) => left.actorId.localeCompare(right.actorId));
     const primaryProducerObjectName = militaryProducers[0]?.objectName;
-    const desiredProducerCount = openingComplete && targetMilitary >= 12 ? 2 : 1;
+    const desiredProducerCount = openingComplete
+      ? plannedAiProducerCount(targetMilitary, military.length, queuedMilitary.length)
+      : 1;
     if (primaryProducerObjectName) {
       const constructingProducers = self
         .filter((actor) => actor.objectName === primaryProducerObjectName && !isFinishedActor(actor))
@@ -1173,14 +1101,8 @@ export class AiMacroManager implements AiProposalManagerV1 {
           .sort((left, right) => {
             const leftRole = roleFor(left, catalog);
             const rightRole = roleFor(right, catalog);
-            const leftDeficit =
-              leftRole === "ranged"
-                ? desiredRanged - roleCounts.ranged
-                : targetMilitary - desiredRanged - roleCounts.frontline;
-            const rightDeficit =
-              rightRole === "ranged"
-                ? desiredRanged - roleCounts.ranged
-                : targetMilitary - desiredRanged - roleCounts.frontline;
+            const leftDeficit = productionRoleDeficit(leftRole, roleCounts, targetMilitary, desiredRanged);
+            const rightDeficit = productionRoleDeficit(rightRole, roleCounts, targetMilitary, desiredRanged);
             const totalCost = (objectName: ObjectNames) =>
               Object.values(
                 catalog.entries.find((entry) => entry.sourceObjectName === objectName)?.constructionProfile

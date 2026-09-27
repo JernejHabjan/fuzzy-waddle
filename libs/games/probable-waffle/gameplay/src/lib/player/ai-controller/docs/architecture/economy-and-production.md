@@ -40,6 +40,11 @@ Once renewable income is reachable, a separate current-workforce demand maintain
 toward dated spending demand, useful resource-service capacity and an 18-worker safety ceiling. Owned, queued and
 accepted-but-unobserved replacements count once. Losses do not reopen historical opening steps.
 
+After an observed failed attack, the strategic assessment may require a larger compatible force. Macro production
+uses that requirement, bounded by a 24-unit planning ceiling, rather than stopping at the ordinary 12-unit standing
+target. Additional military producers are requested only while the owned and queued force leaves enough dated work
+to justify their throughput. The producer demand still counts existing, constructing, and accepted capacity.
+
 The economy policy projects food runway from available stockpile, planned workers and dated food obligations together;
 these simultaneous consumers are additive rather than alternatives. Field capacity is bounded by projected labor and
 reserves at least one worker, or roughly a third of larger workforces, for non-food duties. An urgent runway can grow
@@ -48,6 +53,8 @@ worker-production leases are released before counting committed replacements. Vi
 oscillation, freezes optional workforce growth and shifts the advertised spending split from 65/35 economy/defense to
 35/65 under pressure or 20/80 when local attackers outnumber defenders. Recovery below the six-worker floor remains
 possible at a lower priority; when pressure clears, useful economic growth resumes.
+Local pressure requires a visible enemy with a known position near an observed owned base or economic asset; a threat
+summary ID without a corresponding visible contact does not establish a local emergency.
 
 The macro owner now publishes that split to the shared intent arbiter. Catalog-priced spending proposals are tagged as
 survival, economy or defense. Survival still obeys the real stockpile but may cross a posture quota; otherwise the
@@ -83,6 +90,9 @@ not mistaken for one population point and copied until a numeric population targ
 ## Composition and technology
 
 Composition uses real runtime target domains, effective levels, attacks, armour, range, support and movement capabilities. It must never invent a familiar RTS counter that the faction cannot build. Sparse evidence justifies limited preparation and scouting; confirmed strength can justify a larger counter transition.
+The current-tech catalog tags ranged attackers from their effective weapon range, because the generic `attack`
+capability alone cannot distinguish ranged from frontline units. Production counts owned and queued units by role,
+reserves at most one support slot in a standing force, and favors an unmet role before another copy of a fulfilled role.
 Counter demand counts compatible units already in real production queues alongside owned units and accepted effects.
 It asks for additional production only for the remaining deficit; existing useful queues are not cancelled to make a
 new composition look tidier.

@@ -51,8 +51,10 @@ function usefulSourceCapacity(observation: AiObservationV1): number {
 export function hasCredibleAiEconomyThreat(observation: AiObservationV1): boolean {
   const visibleIds = new Set(observation.threatSummary.visibleEnemyActorIds);
   if (visibleIds.size === 0) return false;
-  const visibleEnemies = observation.actors.filter((actor) => visibleIds.has(actor.actorId));
-  if (visibleEnemies.length === 0) return true;
+  const visibleEnemies = observation.actors.filter(
+    (actor) => actor.relation === "enemy" && actor.visibility === "visible" && visibleIds.has(actor.actorId)
+  );
+  if (visibleEnemies.length === 0) return false;
   const protectedPositions = observation.actors.flatMap((actor) =>
     actor.relation === "self" &&
     actor.visibility === "owned" &&
@@ -66,7 +68,7 @@ export function hasCredibleAiEconomyThreat(observation: AiObservationV1): boolea
       : []
   );
   return visibleEnemies.some((enemy) => {
-    if (enemy.logicalPosition.status !== "known") return true;
+    if (enemy.logicalPosition.status !== "known") return false;
     const enemyPosition = enemy.logicalPosition.value;
     return protectedPositions.some((position) => {
       const distance =
