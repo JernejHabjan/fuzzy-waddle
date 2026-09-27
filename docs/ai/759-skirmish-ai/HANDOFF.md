@@ -6,11 +6,11 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
-- Current execution mode (user direction, 2026-09-26): prepare the remaining implementation and test cases in dependency
-  order, but do **not** run unit tests, Playwright, simulations, lint, type checks, builds, repository validation,
-  `agent:doctor`, or `agent:context` during this implementation sweep. Treat every new change as **unverified**. Batch
-  the full validation, repair, review, and calibration at the final gate below. This supersedes older per-issue
-  verification instructions in this handoff and linked follow-up plans for the current sweep.
+- Current execution mode (latest user direction, 2026-09-27): implement production-only changes, excluding new pure
+  tests, Playwright/E2E tests, simulations, and all validation. Do **not** run lint, type checks, builds, repository
+  validation, `agent:doctor`, or `agent:context` during this sweep. Treat every new source change as **unverified**.
+  Batch all testing, repair, review, and calibration at the final gate below, and tell the user before starting that
+  gate. This supersedes older per-issue instructions to author or execute checks during the current sweep.
 
 - Branch: `feature/759-skirmish-ai`; draft PR [#814](https://github.com/JernejHabjan/fuzzy-waddle/pull/814) targets
   `develop`. Verify local and remote tips before editing.
@@ -31,6 +31,15 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
   proposal effect identity/reconciliation now live in focused modules. The macro class and its `propose` method still
   exceed structural limits; continue splitting by opening, housing, labor, food, and production before removing the
   temporary hash exemption. Recheck imports, types, lint, and representative decisions only at the final gate.
+- Production-only boundary audit: #815/#816/#819/#823 primarily require pure or browser/network evidence and are
+  excluded from this sweep. #817 difficulty tuning and #828 hot-path optimization require measured, paired runs;
+  their preparation is already authored, but no threshold or hot path should be guessed now. #820 legacy removal is
+  gated on #816/#819/#823 parity evidence and must not be done speculatively. #829/#827 production behavior remains
+  unproven until the final gate; repair only the first evidenced failure then. #821 has remaining code-only structural
+  work, but its final baseline removal and compatibility audit also require that gate.
+- Exact next safe code-only action: split the remaining `AiMacroManager.propose` responsibilities without changing
+  policy. Then notify the user before the final test/validation gate. Do not remove the legacy behavior tree, tune
+  difficulty, or claim performance improvement before the dependency evidence exists.
 - Pinned pre-change baseline: `de47f482889db30420692bf4406fba463d7db296`.
 - Manifest authority: `tools/ai/fixtures/skirmish-v1.json`, 121 scenario IDs before variants.
 - Completed prerequisites: #824 repository tooling and #825 current-content domain/transport foundation.
@@ -42,7 +51,7 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
   SEQ-01/02 run is red and must be rechecked at the final gate. Full manager replacement no longer permits a later narrow
   projection to resurrect an obsolete squad, valid tactical domain children survive while their strategic parent does,
   and replaced queued pawn orders publish terminal cancellation outcomes.
-- Exact next work: continue #829 implementation from the committed low-resource economy checkpoint, then #827 strategy
+- Earlier checkpoint work: continue #829 implementation from the committed low-resource economy checkpoint, then #827 strategy
   implementation; defer their validation to the final gate. Standard skirmish starts are now 200 of every resource for both players, so older SEQ balance evidence is
   diagnostic rather than calibration proof. The smallest #821 prerequisite slice extracted a typed economy policy;
   final macro-owner and spec splitting remains in #821 because both legacy files are still oversized.
