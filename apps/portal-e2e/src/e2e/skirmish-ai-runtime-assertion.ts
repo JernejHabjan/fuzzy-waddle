@@ -48,6 +48,11 @@ export interface RuntimeAssertionV1 {
     readonly capacity: number;
     readonly latestTick: number;
   };
+  readonly requiredResourceLabor?: {
+    readonly playerNumber: number;
+    readonly resourceType: string;
+    readonly latestTick: number;
+  };
   readonly requiredWorkerGrowth?: {
     readonly variantId: string;
     readonly initialWorkerCount: number;

@@ -13,19 +13,39 @@
   },
   "rows": [
     {
-      "id": "ECO-01", "stages": [7, 10], "group": "economy", "fixture": "focused-resource-service-runtime.json",
-      "authoredFixture": "resource-service-scenarios.json", "drivers": ["pure", "runtime"]
+      "id": "ECO-01",
+      "stages": [7, 10],
+      "group": "economy",
+      "fixture": "focused-resource-service-runtime.json",
+      "authoredFixture": "resource-service-scenarios.json",
+      "drivers": ["pure", "runtime"]
     },
     {
-      "id": "ECO-02", "stages": [7, 10], "group": "economy", "fixture": "focused-resource-service-runtime.json",
-      "authoredFixture": "resource-service-scenarios.json", "drivers": ["pure", "runtime"]
+      "id": "ECO-02",
+      "stages": [7, 10],
+      "group": "economy",
+      "fixture": "focused-resource-service-runtime.json",
+      "authoredFixture": "resource-service-scenarios.json",
+      "drivers": ["pure", "runtime"]
     },
     {
-      "id": "ECO-03", "stages": [7], "group": "economy", "fixture": "focused-source-saturation-runtime.json",
-      "authoredFixture": "economy-forecast-scenarios.json", "drivers": ["pure", "runtime"]
+      "id": "ECO-03",
+      "stages": [7],
+      "group": "economy",
+      "fixture": "focused-source-saturation-runtime.json",
+      "authoredFixture": "economy-forecast-scenarios.json",
+      "drivers": ["pure", "runtime"]
     },
     {
       "id": "ECO-04",
+      "stages": [7],
+      "group": "economy",
+      "fixture": "focused-labor-deficit-runtime.json",
+      "authoredFixture": "economy-forecast-scenarios.json",
+      "drivers": ["pure", "runtime"]
+    },
+    {
+      "id": "ECO-05",
       "stages": [7],
       "group": "economy",
       "fixture": null,
@@ -33,12 +53,12 @@
       "drivers": ["pure", "runtime"]
     },
     {
-      "id": "ECO-05", "stages": [7], "group": "economy", "fixture": null,
-      "authoredFixture": "economy-forecast-scenarios.json", "drivers": ["pure", "runtime"]
-    },
-    {
-      "id": "ECO-06", "stages": [7, 12], "group": "economy", "fixture": null,
-      "authoredFixture": "resource-service-scenarios.json", "drivers": ["pure", "runtime"]
+      "id": "ECO-06",
+      "stages": [7, 12],
+      "group": "economy",
+      "fixture": null,
+      "authoredFixture": "resource-service-scenarios.json",
+      "drivers": ["pure", "runtime"]
     },
     {
       "id": "ECO-07",
@@ -53,6 +73,7 @@
       "stages": [7],
       "group": "economy",
       "fixture": "stage-15-opening-runtime.json",
+      "authoredFixture": "opening-bootstrap-scenarios.json",
       "drivers": ["pure", "runtime"]
     },
     {
@@ -172,9 +193,12 @@
       "drivers": ["pure", "runtime"]
     },
     {
-      "id": "STRAT-01", "stages": [6, 9], "group": "strategy",
+      "id": "STRAT-01",
+      "stages": [6, 9],
+      "group": "strategy",
       "fixture": "focused-pressure-budget-runtime.json",
-      "authoredFixture": "pressure-strategy-scenarios.json", "drivers": ["pure", "runtime"]
+      "authoredFixture": "pressure-strategy-scenarios.json",
+      "drivers": ["pure", "runtime"]
     },
     { "id": "STRAT-02", "stages": [9, 13], "group": "strategy", "fixture": null, "drivers": ["pure", "runtime"] },
     { "id": "STRAT-03", "stages": [9, 13], "group": "strategy", "fixture": null, "drivers": ["pure", "runtime"] },
@@ -184,7 +208,7 @@
       "stages": [6, 13, 14],
       "group": "strategy",
       "fixture": null,
-      "authoredFixture": "stage-14-adaptation.json",
+      "authoredFixture": "victory-route-scenarios.json",
       "drivers": ["pure", "runtime"]
     },
     {
@@ -192,16 +216,24 @@
       "stages": [6, 7, 14],
       "group": "strategy",
       "fixture": null,
-      "authoredFixture": "stage-14-adaptation.json",
+      "authoredFixture": "victory-route-scenarios.json",
       "drivers": ["pure", "runtime"]
     },
     {
-      "id": "STRAT-07", "stages": [9, 13], "group": "strategy", "fixture": null,
-      "authoredFixture": "victory-route-scenarios.json", "drivers": ["pure", "runtime"]
+      "id": "STRAT-07",
+      "stages": [9, 13],
+      "group": "strategy",
+      "fixture": null,
+      "authoredFixture": "victory-route-scenarios.json",
+      "drivers": ["pure", "runtime"]
     },
     {
-      "id": "STRAT-08", "stages": [9, 13], "group": "strategy", "fixture": null,
-      "authoredFixture": "victory-route-scenarios.json", "drivers": ["pure", "runtime"]
+      "id": "STRAT-08",
+      "stages": [9, 13],
+      "group": "strategy",
+      "fixture": null,
+      "authoredFixture": "victory-route-scenarios.json",
+      "drivers": ["pure", "runtime"]
     },
     {
       "id": "STRAT-09",
@@ -232,11 +264,23 @@
       "drivers": ["pure", "runtime"]
     },
     {
-      "id": "DOMAIN-03", "stages": [8, 9], "group": "access", "fixture": null, "drivers": ["pure", "runtime"],
-      "runtimeSupport": { "status": "deferred_content", "issue": 822, "reason": "No shipped transport-required island map" }
+      "id": "DOMAIN-03",
+      "stages": [8, 9],
+      "group": "access",
+      "fixture": null,
+      "drivers": ["pure", "runtime"],
+      "runtimeSupport": {
+        "status": "deferred_content",
+        "issue": 822,
+        "reason": "No shipped transport-required island map"
+      }
     },
     {
-      "id": "DOMAIN-04", "stages": [8, 12], "group": "access", "fixture": null, "drivers": ["pure", "runtime"],
+      "id": "DOMAIN-04",
+      "stages": [8, 12],
+      "group": "access",
+      "fixture": null,
+      "drivers": ["pure", "runtime"],
       "runtimeSupport": { "status": "deferred_content", "issue": 822, "reason": "No shipped carrier-loss island route" }
     },
     {
@@ -369,7 +413,11 @@
       "stages": [8, 12, 13],
       "group": "transport",
       "fixture": null,
-      "runtimeSupport": { "status": "deferred_content", "issue": 822, "reason": "No shipped transport-required island map" },
+      "runtimeSupport": {
+        "status": "deferred_content",
+        "issue": 822,
+        "reason": "No shipped transport-required island map"
+      },
       "authoredFixture": "stage-13-tactics.json",
       "drivers": ["pure", "runtime"]
     },

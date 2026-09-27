@@ -7,6 +7,7 @@ import { evaluateRuntimePresetWorld } from "./skirmish-ai-runtime-preset-evaluat
 import { evaluateRuntimeSupplyControl, evaluateRuntimeSupplyPrebuild } from "./skirmish-ai-runtime-supply-evaluation";
 import { evaluateRuntimeResourceService } from "./skirmish-ai-runtime-resource-service-evaluation";
 import { evaluateRuntimeSourceSaturation } from "./skirmish-ai-runtime-source-saturation-evaluation";
+import { evaluateRuntimeResourceLabor } from "./skirmish-ai-runtime-resource-labor-evaluation";
 import { evaluateRuntimeWorkerGrowth } from "./skirmish-ai-runtime-worker-growth-evaluation";
 
 export function evaluateRuntimeVariant(
@@ -189,9 +190,8 @@ export function evaluateRuntimeVariant(
     failures.push(
       ...(variant.supplyBranch === "ample_control"
         ? evaluateRuntimeSupplyControl(variant.checkpoints, assertion.requiredSupplyPrebuild)
-        : evaluateRuntimeSupplyPrebuild(variant.checkpoints, assertion.requiredSupplyPrebuild)).map(
-        (failure) => `${variant.variantId}:${failure}`
-      )
+        : evaluateRuntimeSupplyPrebuild(variant.checkpoints, assertion.requiredSupplyPrebuild)
+      ).map((failure) => `${variant.variantId}:${failure}`)
     );
   }
   if (assertion.requiredResourceService) {
@@ -208,10 +208,19 @@ export function evaluateRuntimeVariant(
       )
     );
   }
+  if (assertion.requiredResourceLabor) {
+    failures.push(
+      ...evaluateRuntimeResourceLabor(assertion.requiredResourceLabor, variant).map(
+        (failure) => `${variant.variantId}:${failure}`
+      )
+    );
+  }
   if (assertion.requiredWorkerGrowth) {
-    failures.push(...evaluateRuntimeWorkerGrowth(assertion.requiredWorkerGrowth, variant).map(
-      (failure) => `${variant.variantId}:${failure}`
-    ));
+    failures.push(
+      ...evaluateRuntimeWorkerGrowth(assertion.requiredWorkerGrowth, variant).map(
+        (failure) => `${variant.variantId}:${failure}`
+      )
+    );
   }
   failures.push(...evaluateRuntimeTransport(assertion, variant));
   failures.push(...variant.aiErrors.map((error) => `${variant.variantId}:ai_error:${error}`));

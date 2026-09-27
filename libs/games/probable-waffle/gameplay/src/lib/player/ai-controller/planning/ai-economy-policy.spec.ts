@@ -54,11 +54,34 @@ function foodSource(actorId: string, capacity: number) {
   };
 }
 
+function visibleRaider(domain: "ground" | "air" = "ground") {
+  return {
+    ...createAiTestOwnedActor("enemy"),
+    objectName: ObjectNames.Banshee,
+    owner: 2,
+    relation: "enemy" as const,
+    visibility: "visible" as const,
+    logicalPosition: { status: "known" as const, value: { x: 8, y: 5, z: 0 }, observedTick: 20 },
+    capabilities: [
+      {
+        id: `enemy:${domain}`,
+        family: "attack",
+        level: 1,
+        domains: [domain],
+        targetDomains: ["ground" as const],
+        capacity: { status: "known" as const, value: 0, observedTick: 20 }
+      }
+    ]
+  };
+}
+
 describe("decideAiEconomyPolicy", () => {
   it("uses only unreserved stockpile when admitting economy construction", () => {
     const observation = {
       ...createAiTestObservation(),
-      resources: [{ ...createAiTestObservation().resources[0], stockpile: 100, reservedUnspent: 50, obligationsDue: 20 }]
+      resources: [
+        { ...createAiTestObservation().resources[0], stockpile: 100, reservedUnspent: 50, obligationsDue: 20 }
+      ]
     };
 
     expect(canAffordAiEconomyCost(observation, { [ResourceType.Wood]: 30 })).toBe(true);
@@ -73,9 +96,7 @@ describe("decideAiEconomyPolicy", () => {
       resources: [{ ...createAiTestObservation().resources[0], stockpile: 0 }]
     };
 
-    const policy = decideAiEconomyPolicy(observation, catalog, [
-      { resourceType: ResourceType.Wood, amount: 600 }
-    ]);
+    const policy = decideAiEconomyPolicy(observation, catalog, [{ resourceType: ResourceType.Wood, amount: 600 }]);
 
     expect(policy.desiredWorkers).toBe(8);
     expect(policy.desiredFoodSources).toBe(4);
@@ -134,29 +155,74 @@ describe("decideAiEconomyPolicy", () => {
     }));
     const observation = {
       ...createAiTestObservation(),
-      actors: [...workers, foodSource("food", 18)],
+      actors: [...workers, foodSource("food", 18), visibleRaider()],
       threatSummary: { ...createAiTestObservation().threatSummary, visibleEnemyActorIds: ["enemy"] }
     };
 
-    const policy = decideAiEconomyPolicy(observation, catalog, [
-      { resourceType: ResourceType.Wood, amount: 1200 }
-    ]);
+    const policy = decideAiEconomyPolicy(observation, catalog, [{ resourceType: ResourceType.Wood, amount: 1200 }]);
 
     expect(policy).toMatchObject({ desiredWorkers: 8, assignedWorkers: 1, posture: "emergency" });
     expect(policy.budget).toEqual({ economyPermille: 200, defensePermille: 800 });
+  });
+
+  it("counts only nearby defenders able to attack the observed threat domain", () => {
+    const base = createAiTestObservation();
+    const guard = {
+      ...createAiTestOwnedActor("guard"),
+      objectName: ObjectNames.TivaraMacemanMale
+    };
+    const defenseCatalog: AiCapabilityCatalogV1 = {
+      ...catalog,
+      entries: [
+        ...catalog.entries,
+        {
+          ...catalog.entries[0]!,
+          capabilityId: "ground-guard",
+          sourceObjectName: ObjectNames.TivaraMacemanMale,
+          gathers: [],
+          targetDomains: ["ground"]
+        }
+      ]
+    };
+    const observation = {
+      ...base,
+      actors: [createAiTestOwnedActor("worker"), guard, visibleRaider("air")],
+      threatSummary: { ...base.threatSummary, visibleEnemyActorIds: ["enemy"] }
+    };
+    expect(decideAiEconomyPolicy(observation, defenseCatalog, []).posture).toBe("emergency");
+
+    const airDefenseCatalog: AiCapabilityCatalogV1 = {
+      ...defenseCatalog,
+      entries: defenseCatalog.entries.map((entry) =>
+        entry.capabilityId === "ground-guard" ? { ...entry, targetDomains: ["ground", "air"] } : entry
+      )
+    };
+    expect(decideAiEconomyPolicy(observation, airDefenseCatalog, []).posture).toBe("pressured");
+    const remoteGuard = {
+      ...guard,
+      logicalPosition: { status: "known" as const, value: { x: 100, y: 100, z: 0 }, observedTick: 20 }
+    };
+    expect(
+      decideAiEconomyPolicy(
+        { ...observation, actors: [observation.actors[0]!, remoteGuard, visibleRaider("air")] },
+        airDefenseCatalog,
+        []
+      ).posture
+    ).toBe("emergency");
   });
 
   it("holds a recent defense posture briefly, then resumes the safe economy without hidden-threat influence", () => {
     const base = createAiTestObservation();
     const attacked = {
       ...base,
-      threatSummary: { ...base.threatSummary, visibleEnemyActorIds: ["visible-raider"] }
+      actors: [...base.actors, visibleRaider()],
+      threatSummary: { ...base.threatSummary, visibleEnemyActorIds: ["enemy"] }
     };
     const first = decideAiEconomyPolicy(attacked, catalog, []);
     const remembered = {
       ...base,
       tick: 100,
-      threatSummary: { ...base.threatSummary, rememberedEnemyActorIds: ["visible-raider"] }
+      threatSummary: { ...base.threatSummary, rememberedEnemyActorIds: ["enemy"] }
     };
     const held = decideAiEconomyPolicy(remembered, catalog, [], false, first.postureState);
     const released = decideAiEconomyPolicy({ ...remembered, tick: 220 }, catalog, [], false, held.postureState);

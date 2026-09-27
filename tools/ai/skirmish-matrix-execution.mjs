@@ -72,9 +72,14 @@ export function invokeHarness(input, context) {
   const includesAuthoredTactics = input.rows.some((row) => row.authoredFixture === "stage-13-tactics.json");
   const includesAuthoredAdaptation = input.rows.some((row) => row.authoredFixture === "stage-14-adaptation.json");
   const includesAuthoredProduction = input.rows.some((row) => row.authoredFixture === "production-scenarios.json");
-  const includesAuthoredEconomySupply = input.rows.some((row) => row.authoredFixture === "economy-supply-scenarios.json");
+  const includesAuthoredEconomySupply = input.rows.some(
+    (row) => row.authoredFixture === "economy-supply-scenarios.json"
+  );
   const includesAuthoredEconomyForecast = input.rows.some(
     (row) => row.authoredFixture === "economy-forecast-scenarios.json"
+  );
+  const includesAuthoredOpeningBootstrap = input.rows.some(
+    (row) => row.authoredFixture === "opening-bootstrap-scenarios.json"
   );
   const includesAuthoredResourceService = input.rows.some(
     (row) => row.authoredFixture === "resource-service-scenarios.json"
@@ -82,26 +87,30 @@ export function invokeHarness(input, context) {
   const includesAuthoredPressureStrategy = input.rows.some(
     (row) => row.authoredFixture === "pressure-strategy-scenarios.json"
   );
-  const includesAuthoredVictoryRoute = input.rows.some(
-    (row) => row.authoredFixture === "victory-route-scenarios.json"
-  );
+  const includesAuthoredVictoryRoute = input.rows.some((row) => row.authoredFixture === "victory-route-scenarios.json");
   const baseTestNames = [
     "ai-(scenario-harness|runtime-scenario|repro-cli)",
     "authoritative-state-projection",
     "actor-manager-ai-save"
   ];
   const authoredTestNames = [
-    "ai-(brain|production-scenarios|housing-demand|economy-forecast-scenarios|" +
-      "resource-forecast|resource-service-manager|pressure-strategy-scenarios|victory-route-scenarios)",
+    "ai-(brain|production-scenarios|housing-demand|economy-forecast-scenarios|opening-bootstrap-scenarios|" +
+      "resource-forecast|resource-service-manager|pressure-strategy-scenarios|victory-route-scenarios|victory-pressure-scenarios)",
     "ai-(tactics-manager|adaptation-(manager|queue))",
     "validate-ai-runtime-browser-test-config-v1",
     "ai-profile-defaults",
     "player-ai-controller\\.agent\\.static"
   ];
   const includeAuthored =
-    includesAuthoredTactics || includesAuthoredAdaptation || includesAuthoredProduction ||
-    includesAuthoredEconomySupply || includesAuthoredEconomyForecast || includesAuthoredResourceService ||
-    includesAuthoredPressureStrategy || includesAuthoredVictoryRoute;
+    includesAuthoredTactics ||
+    includesAuthoredAdaptation ||
+    includesAuthoredProduction ||
+    includesAuthoredEconomySupply ||
+    includesAuthoredEconomyForecast ||
+    includesAuthoredOpeningBootstrap ||
+    includesAuthoredResourceService ||
+    includesAuthoredPressureStrategy ||
+    includesAuthoredVictoryRoute;
   const testPathPattern = `(${[...baseTestNames, ...(includeAuthored ? authoredTestNames : [])].join("|")})\\.spec\\.ts$`;
   const { command, evidence, counts } = runPureJestWithScenarioEvidence({
     workspaceRoot,

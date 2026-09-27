@@ -6,11 +6,11 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
-- Current execution mode (latest user direction, 2026-09-27): implement production-only changes, excluding new pure
-  tests, Playwright/E2E tests, simulations, and all validation. Do **not** run lint, type checks, builds, repository
-  validation, `agent:doctor`, or `agent:context` during this sweep. Treat every new source change as **unverified**.
-  Batch all testing, repair, review, and calibration at the final gate below, and tell the user before starting that
-  gate. This supersedes older per-issue instructions to author or execute checks during the current sweep.
+- Current execution mode (latest user direction, 2026-09-27): implement source and author pure/Playwright scenarios,
+  fixtures, and CI contracts, but **do not execute** tests, E2E, simulations, lint, type checks, builds, repository
+  validation, `agent:doctor`, or `agent:context` during this sweep. Treat every new change as **unverified**.
+  Batch all execution, repair, review, and calibration at the final gate below, and tell the user before starting it.
+  This supersedes older per-issue instructions to run checks during the current sweep.
 
 - Branch: `feature/759-skirmish-ai`; draft PR [#814](https://github.com/JernejHabjan/fuzzy-waddle/pull/814) targets
   `develop`. Verify local and remote tips before editing.
@@ -25,8 +25,8 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
   boundaries at the final gate. The matrix runner, compound contracts/serializer and observation pipeline now have
   unverified splits; #821 naming and other baselined legacy debt remain. No tests, Playwright, simulations, builds,
   lint, or type checks ran in this sweep.
-- Production-only boundary audit: #815/#816/#819/#823 primarily require pure or browser/network evidence and are
-  excluded from this sweep. #817 difficulty tuning and #828 hot-path optimization require measured, paired runs;
+- Implementation boundary audit: author #815/#816 and later #819/#823 tests and recipes now, but retain no passing
+  evidence until the final gate. #817 difficulty tuning and #828 hot-path optimization require measured, paired runs;
   their preparation is already authored, but no threshold or hot path should be guessed now. #820 legacy removal is
   gated on #816/#819/#823 parity evidence and must not be done speculatively. #829/#827 production behavior remains
   unproven until the final gate; repair only the first evidenced failure then. #821 has remaining code-only structural
@@ -97,19 +97,19 @@ until one clean replacement run is necessary; do not reconstruct or dump the old
 
 ## Remaining execution order
 
-| Order             | Issue                                                           | State         | Next boundary                                                      | Model / effort            |
-| ----------------- | --------------------------------------------------------------- | ------------- | ------------------------------------------------------------------ | ------------------------- |
-| 1 / as needed     | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `partial`     | Split only the owners that block the next implementation slice      | Terra, medium             |
-| 2                 | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829) | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof  | Sol, high → Terra, high   |
-| 3                 | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `in_progress` | Finish sustained pressure/recovery policy; defer victory proof     | Sol, high → Terra, high   |
-| 4                 | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `in_progress` | Author remaining typed pure families; execute only at final gate    | Sol, high → Terra, medium |
-| 5                 | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Author targeted runtime recipes and CI contracts; do not run yet   | Sol, high → Terra, medium |
-| 6                 | [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828) | `not_started` | Prepare probes now; measure/optimize only at final gate             | Sol, high → Terra, high   |
-| 7                 | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `not_started` | Prepare paired fixtures; baseline/D-06/soaks at final gate         | Sol, high → Terra, medium |
-| 8                 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `not_started` | Author relay/lockstep cases after #816 runtime contract exists      | Sol, high → Terra, high   |
-| 9                 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `not_started` | Author save/replay/reconnect/repeated-match cases after #819        | Sol, high → Terra, medium |
-| 10                | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | `not_started` | Retire legacy controller only after parity proof at final gate     | Sol, high → Terra, medium |
-| 11 / final        | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `not_started` | Finish naming/source cleanup, then run final validation gate        | Terra, medium             |
+| Order         | Issue                                                           | State         | Next boundary                                                     | Model / effort            |
+| ------------- | --------------------------------------------------------------- | ------------- | ----------------------------------------------------------------- | ------------------------- |
+| 1 / as needed | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `partial`     | Split only the owners that block the next implementation slice    | Terra, medium             |
+| 2             | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829) | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof | Sol, high → Terra, high   |
+| 3             | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `in_progress` | Finish sustained pressure/recovery policy; defer victory proof    | Sol, high → Terra, high   |
+| 4             | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `in_progress` | Author remaining typed pure families; execute only at final gate  | Sol, high → Terra, medium |
+| 5             | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Author targeted runtime recipes and CI contracts; do not run yet  | Sol, high → Terra, medium |
+| 6             | [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828) | `not_started` | Prepare probes now; measure/optimize only at final gate           | Sol, high → Terra, high   |
+| 7             | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `not_started` | Prepare paired fixtures; baseline/D-06/soaks at final gate        | Sol, high → Terra, medium |
+| 8             | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `not_started` | Author relay/lockstep cases after #816 runtime contract exists    | Sol, high → Terra, high   |
+| 9             | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `not_started` | Author save/replay/reconnect/repeated-match cases after #819      | Sol, high → Terra, medium |
+| 10            | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | `not_started` | Retire legacy controller only after parity proof at final gate    | Sol, high → Terra, medium |
+| 11 / final    | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `not_started` | Finish naming/source cleanup, then run final validation gate      | Terra, medium             |
 
 Dependencies remain authoritative over model grouping. Every planning, authority, architecture, strategy, or causal-diagnosis
 boundary starts on Sol/high; Terra resumes only once that boundary has a compact contract and focused acceptance evidence.
@@ -148,6 +148,8 @@ not block this gate.
   The safe/pressure classifier now measures visible enemy proximity to owned economic/base assets, excluding
   outbound military actors from the home-defense budget signal. A typed control is authored but unrun; final-gate
   pressure checks must still prove that workers, Fields, producers, and the core do trigger defense when threatened.
+  The newest unverified threat-policy repair counts only nearby defenders compatible with the local enemy's movement
+  domain; remote fighters and ground-only units cannot falsely cover an air raid. Pure cases cover both controls.
 
 - #827 now prefers a confirmed reachable target over a higher-value unknown-route target. STRAT-07 has an authored
   three-repeat pure route-pair fixture and typed manager cases for direct worker attack, pending-core scouting fallback,
@@ -162,6 +164,9 @@ not block this gate.
   STRAT-08 now shares this pure fixture with a separate known-route, four-guard, exposed-core finishing case. Its
   asserted intent and strategic choice are unrun; actual core destruction, victory/score authority, and optional
   spending suppression still require targeted runtime plus bounded SEQ evidence.
+  STRAT-05/06 now have typed three-repeat pure pairs for visible counterforce versus an exposed core and for equal-tick
+  healthy-force pressure versus workforce recovery. Their manifest/runner registration is authored but unrun; they do
+  not establish sustained pressure, actual victory, or temporal redirection until final-gate runtime evidence.
 
 - ECO-08 now has an authored three-repeat focused workforce variant from an exact 200-resource start: six real
   workers, two Fields, a Granary, and an independent oracle requiring growth/retention above six plus delivered
@@ -169,11 +174,17 @@ not block this gate.
   until the final gate; repair real world/production issues rather than lowering the >6 acceptance bound. A #821
   structural slice moved browser setup and pre-tick verification out of the Playwright variant runner; both parts
   still require the final-gate type/lint/runtime checks.
+  A separate typed ECO-08 pure fixture now covers both factions' zero-worker production, catalog-priced food claim,
+  queued-worker accounting, two-worker checkpoint retirement, and repeated canonical digest. It is registered but unrun.
 
 - ECO-04 labor ranking now discounts only measured delivered income within the bounded 600-tick horizon. A pure
   known-versus-unknown income case and matrix selector are authored but unrun. This estimate affects worker routing,
   not authoritative spending; verify low-resource throughput and that rising demand still adds useful labor at the
   final gate.
+  A short ECO-04 preset-world runtime recipe is now authored with three idle workers, a neutral tree and an exact
+  zero-wood start. Its independent oracle requires the applied zero balance, no preset worker orders, an observed ready
+  wood source and a real worker Gather order by tick 900; three repeats are configured. Neither the recipe nor oracle
+  has run. Confirm legal preset geometry and actual labor behavior at the final gate rather than weakening the oracle.
 
 - TECH-05 now has unverified queued-counter accounting: compatible production queue items satisfy evidence-backed
   role demand before new counters are proposed. A focused pure case compares two queued counters with one queued
@@ -261,7 +272,7 @@ not block this gate.
 - Next implementation gaps before the final gate: catalog-priced resource claims and cross-manager posture spending
   arbitration are authored but unverified. Confirm that emergency defense, food recovery and offensive finish do not
   overpromise the same stockpile. #827's failed-mission follow-up is also authored but lacks real victory/recovery proof.
-  #815/#816 need remaining scenario families and a fail-closed
+  #815/#816 still need the remaining scenario families and a fail-closed
   scenario-to-test/CI mapping; a shared Jest path pattern and authored fixture metadata alone are not execution proof.
   #828 profiling, #817 calibration/soaks, #819 socket multiplayer, #823 lifecycle, and #820 parity-gated retirement
   depend on those foundations or require the deferred validation gate, so none should be reported complete now.

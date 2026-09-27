@@ -32,14 +32,16 @@ export function validateManifest(value, fixtureDirectory) {
       }
       validateRuntimeFixture(fixture, row.id);
     }
-    if (row.runtimeSupport !== undefined && (
-      row.runtimeSupport.status !== "deferred_content" ||
-      row.runtimeSupport.issue !== 822 ||
-      typeof row.runtimeSupport.reason !== "string" ||
-      row.runtimeSupport.reason.length === 0 ||
-      row.fixture !== null ||
-      !row.drivers.includes("runtime")
-    )) throw new Error(`invalid_runtime_support:${row.id}`);
+    if (
+      row.runtimeSupport !== undefined &&
+      (row.runtimeSupport.status !== "deferred_content" ||
+        row.runtimeSupport.issue !== 822 ||
+        typeof row.runtimeSupport.reason !== "string" ||
+        row.runtimeSupport.reason.length === 0 ||
+        row.fixture !== null ||
+        !row.drivers.includes("runtime"))
+    )
+      throw new Error(`invalid_runtime_support:${row.id}`);
     if (row.authoredFixture !== undefined) {
       if (!safeReference(row.authoredFixture)) throw new Error(`unsafe_authored_fixture_reference:${row.id}`);
       const fixture = readJson(join(fixtureDirectory, row.authoredFixture), 1024 * 1024);
@@ -132,17 +134,19 @@ function validateRuntimeFixture(fixture, scenarioId) {
     assertion.requiredAiFactions.some((faction) => !["Tivara", "Skaduwee"].includes(faction)) ||
     (assertion.requireSupplyControl === true &&
       !["prebuild", "ample_control"].every((branch) =>
-        recipe.variants.some((variant) =>
-          variant.supplyBranch === branch &&
-          (variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId))
+        recipe.variants.some(
+          (variant) =>
+            variant.supplyBranch === branch &&
+            (variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId))
         )
       )) ||
     (assertion.requirePressureResponse !== undefined && typeof assertion.requirePressureResponse !== "boolean") ||
     (assertion.requirePressureResponse === true &&
       !["raid", "safe_control"].every((branch) =>
-        recipe.variants.some((variant) =>
-          variant.pressureBranch === branch &&
-          (variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId))
+        recipe.variants.some(
+          (variant) =>
+            variant.pressureBranch === branch &&
+            (variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId))
         )
       )) ||
     (assertion.requiredResourceService !== undefined &&
@@ -155,9 +159,10 @@ function validateRuntimeFixture(fixture, scenarioId) {
         !Number.isSafeInteger(assertion.requiredResourceService.latestTick) ||
         assertion.requiredResourceService.latestTick <= 0 ||
         !["build", "served_control"].every((branch) =>
-          recipe.variants.some((variant) =>
-            variant.resourceServiceBranch === branch &&
-            (variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId))
+          recipe.variants.some(
+            (variant) =>
+              variant.resourceServiceBranch === branch &&
+              (variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId))
           )
         ))) ||
     (assertion.requiredSaturatedSource !== undefined &&
@@ -174,17 +179,41 @@ function validateRuntimeFixture(fixture, scenarioId) {
           const preset = variant.presetWorld;
           const fullId = assertion.requiredSaturatedSource.saturatedFixtureActorId;
           const spareId = assertion.requiredSaturatedSource.spareFixtureActorId;
-          return preset?.actors?.some((actor) => actor.fixtureActorId === fullId && actor.owner === null) &&
+          return (
+            preset?.actors?.some((actor) => actor.fixtureActorId === fullId && actor.owner === null) &&
             preset.actors.some((actor) => actor.fixtureActorId === spareId && actor.owner === null) &&
             preset.initialOrders?.filter((order) => order.sourceFixtureActorId === fullId).length ===
-              assertion.requiredSaturatedSource.capacity;
+              assertion.requiredSaturatedSource.capacity
+          );
+        }))) ||
+    (assertion.requiredResourceLabor !== undefined &&
+      (!assertion.requiredResourceLabor ||
+        assertion.requiredResourceLabor.playerNumber !== recipe.aiPlayerNumber ||
+        !["food", "wood", "stone", "minerals"].includes(assertion.requiredResourceLabor.resourceType) ||
+        !Number.isSafeInteger(assertion.requiredResourceLabor.latestTick) ||
+        assertion.requiredResourceLabor.latestTick < 1 ||
+        assertion.requiredResourceLabor.latestTick > recipe.checkpointTicks.at(-1) ||
+        !recipe.variants.some(
+          (variant) => variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId)
+        ) ||
+        !recipe.variants.every((variant) => {
+          if (variant.scenarioIds !== undefined && !variant.scenarioIds.includes(scenarioId)) return true;
+          const preset = variant.presetWorld;
+          return (
+            preset?.initialOrders?.length === 0 &&
+            preset.resourceStarts?.length === 1 &&
+            preset.resourceStarts[0]?.amounts?.[assertion.requiredResourceLabor.resourceType] === 0
+          );
         }))) ||
     (assertion.requiredWorkerGrowth !== undefined &&
       (!assertion.requiredWorkerGrowth ||
         typeof assertion.requiredWorkerGrowth.variantId !== "string" ||
-        !recipe.variants.some((variant) => variant.id === assertion.requiredWorkerGrowth.variantId &&
-          (variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId)) &&
-          variant.presetWorld?.resourceStarts?.length === 1) ||
+        !recipe.variants.some(
+          (variant) =>
+            variant.id === assertion.requiredWorkerGrowth.variantId &&
+            (variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId)) &&
+            variant.presetWorld?.resourceStarts?.length === 1
+        ) ||
         !Number.isSafeInteger(assertion.requiredWorkerGrowth.initialWorkerCount) ||
         assertion.requiredWorkerGrowth.initialWorkerCount < 1 ||
         !Number.isSafeInteger(assertion.requiredWorkerGrowth.minimumPeakWorkerCount) ||

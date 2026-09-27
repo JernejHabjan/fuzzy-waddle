@@ -15,6 +15,11 @@ Fixture JSON and typed builders are inert data until a Jest or matrix/Playwright
 Their assertions are deterministic code and require no LLM evaluation or manual judgment. Unmapped fixture metadata is
 not automated coverage.
 
+Focused economy runtime assertions must verify applied preset balances and independently observed worker orders. For
+example, ECO-04's zero-wood labor case requires a ready wood source and an AI-issued Gather order by a finite tick;
+fixture-authored starting orders or planner debug text do not satisfy it. ECO-08's separate pure case covers both
+factions' two-worker opening bootstrap; its runtime workforce-growth case remains a distinct Playwright obligation.
+
 ## Stable commands
 
 ```bash

@@ -1,6 +1,6 @@
 import { ObjectNames, OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiObservationV1 } from "../contracts/ai-observation-v1";
+import type { AiObservedActorV1, AiObservationV1 } from "../contracts/ai-observation-v1";
 
 const WORKER_FLOOR = 6;
 const WORKER_LIMIT = 18;
@@ -14,8 +14,9 @@ function availableStockpile(observation: AiObservationV1, resourceType: Resource
 }
 
 function projectedIncome(observation: AiObservationV1, resourceType: ResourceType): number {
-  const income = observation.resources.find((candidate) => candidate.resourceType === resourceType)
-    ?.deliveredIncomePerMinute;
+  const income = observation.resources.find(
+    (candidate) => candidate.resourceType === resourceType
+  )?.deliveredIncomePerMinute;
   return income?.status === "known" ? income.value / 2 : 0;
 }
 
@@ -48,34 +49,61 @@ function usefulSourceCapacity(observation: AiObservationV1): number {
     );
 }
 
-export function hasCredibleAiEconomyThreat(observation: AiObservationV1): boolean {
+function localEconomyThreats(observation: AiObservationV1): AiObservedActorV1[] {
   const visibleIds = new Set(observation.threatSummary.visibleEnemyActorIds);
-  if (visibleIds.size === 0) return false;
+  if (visibleIds.size === 0) return [];
   const visibleEnemies = observation.actors.filter(
     (actor) => actor.relation === "enemy" && actor.visibility === "visible" && visibleIds.has(actor.actorId)
   );
-  if (visibleEnemies.length === 0) return false;
+  if (visibleEnemies.length === 0) return [];
   const protectedPositions = observation.actors.flatMap((actor) =>
     actor.relation === "self" &&
     actor.visibility === "owned" &&
     actor.logicalPosition.status === "known" &&
     ((actor.mainBuilding?.status === "known" && actor.mainBuilding.value) ||
       actor.resourceState.status === "known" ||
-      actor.capabilities.some((capability) =>
-        ["gather", "produce", "drop_off"].includes(capability.family)
-      ))
+      actor.capabilities.some((capability) => ["gather", "produce", "drop_off"].includes(capability.family)))
       ? [actor.logicalPosition.value]
       : []
   );
-  return visibleEnemies.some((enemy) => {
+  return visibleEnemies.filter((enemy) => {
     if (enemy.logicalPosition.status !== "known") return false;
     const enemyPosition = enemy.logicalPosition.value;
     return protectedPositions.some((position) => {
-      const distance =
-        Math.abs(position.x - enemyPosition.x) + Math.abs(position.y - enemyPosition.y);
+      const distance = Math.abs(position.x - enemyPosition.x) + Math.abs(position.y - enemyPosition.y);
       return distance <= LOCAL_THREAT_DISTANCE;
     });
   });
+}
+
+export function hasCredibleAiEconomyThreat(observation: AiObservationV1): boolean {
+  return localEconomyThreats(observation).length > 0;
+}
+
+/** Only defenders near the exposed economy with a weapon for the observed movement domain can cover the threat. */
+function compatibleLocalDefenders(
+  self: readonly AiObservedActorV1[],
+  threats: readonly AiObservedActorV1[],
+  catalog: AiCapabilityCatalogV1
+): number {
+  return self.filter((defender) => {
+    const defenderPosition = defender.logicalPosition;
+    if (defenderPosition.status !== "known") return false;
+    const entry = catalog.entries.find((candidate) => candidate.sourceObjectName === defender.objectName);
+    if (!entry || entry.gathers.length > 0 || entry.targetDomains.length === 0) return false;
+    return threats.some((threat) => {
+      const threatPosition = threat.logicalPosition;
+      if (threatPosition.status !== "known") return false;
+      const threatDomains = threat.capabilities.flatMap((capability) => capability.domains);
+      const targetDomains = threatDomains.length > 0 ? threatDomains : ["ground" as const];
+      const distance =
+        Math.abs(defenderPosition.value.x - threatPosition.value.x) +
+        Math.abs(defenderPosition.value.y - threatPosition.value.y);
+      return (
+        distance <= LOCAL_THREAT_DISTANCE + 4 && targetDomains.some((domain) => entry.targetDomains.includes(domain))
+      );
+    });
+  }).length;
 }
 
 export function decideAiEconomyPolicy(
@@ -125,14 +153,11 @@ export function decideAiEconomyPolicy(
   const observedCapacity = usefulSourceCapacity(observation);
   const capacity = Math.max(WORKER_FLOOR, observedCapacity + 4);
   const demandGrowth = Math.ceil(forecastDeficit / 150);
-  const credibleThreat = hasCredibleAiEconomyThreat(observation);
-  const defenders = self.filter((actor) =>
-    catalog.entries.some(
-      (entry) => entry.sourceObjectName === actor.objectName && entry.gathers.length === 0 && entry.targetDomains.length > 0
-    )
-  ).length;
+  const localThreats = localEconomyThreats(observation);
+  const credibleThreat = localThreats.length > 0;
+  const defenders = compatibleLocalDefenders(self, localThreats, catalog);
   const requestedPosture = credibleThreat
-    ? defenders === 0 || observation.threatSummary.visibleEnemyActorIds.length > defenders
+    ? defenders === 0 || localThreats.length > defenders
       ? "emergency"
       : "pressured"
     : defensiveCommitment
@@ -151,9 +176,7 @@ export function decideAiEconomyPolicy(
     lastThreatTick: credibleThreat ? observation.tick : (previousPosture?.lastThreatTick ?? null)
   } as const;
   const safeTarget = Math.min(WORKER_LIMIT, capacity, Math.max(WORKER_FLOOR, workers.length + demandGrowth));
-  const desiredWorkers = posture === "safe" && !finishCommitted
-    ? safeTarget
-    : Math.max(WORKER_FLOOR, workers.length);
+  const desiredWorkers = posture === "safe" && !finishCommitted ? safeTarget : Math.max(WORKER_FLOOR, workers.length);
   const foodForecast = forecasts.find((forecast) => forecast.resourceType === ResourceType.Food)?.amount ?? 0;
   const foodAvailable =
     availableStockpile(observation, ResourceType.Food) + projectedIncome(observation, ResourceType.Food);
@@ -190,6 +213,7 @@ export function decideAiEconomyPolicy(
     posture,
     postureState,
     budget,
-    blocker: desiredWorkers > workers.length + queuedWorkers && capacity <= workers.length ? "resource_saturation" : null
+    blocker:
+      desiredWorkers > workers.length + queuedWorkers && capacity <= workers.length ? "resource_saturation" : null
   } as const;
 }
