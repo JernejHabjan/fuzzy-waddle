@@ -29,7 +29,7 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
   raids while the larger finishing force grows; targeted pure and runtime route/mission checks remain at the final gate.
 - Latest #821 behavior-preserving split (unverified): macro observation/queue facts, construction-cell selection, and
   proposal effect identity/reconciliation now live in focused modules. The macro class and its `propose` method still
-  exceed structural limits; continue splitting by food and production before removing the
+  exceed structural limits; continue splitting production before removing the
   temporary hash exemption. Recheck imports, types, lint, and representative decisions only at the final gate.
 - The opening checkpoint/intent phase is now in `ai-opening-proposal.ts`; the macro owner consumes its existing
   demands, steps, intents, reserved actors, selected sites, and ordinal. This extraction has not been typechecked or
@@ -40,13 +40,16 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
   retains the prior construction-site reservation and ordinal ordering. This is unverified until the final gate.
 - Field labor ownership, including returning/cargo worker protection, is now isolated in `ai-field-labor-proposal.ts`.
   This is a behavior-preserving move, not a fix for the conservative all-returners staffing delay; verify it later.
+- Food drop-off prerequisite and Field-capacity proposals are now separate modules. The macro owner preserves their
+  demand/intent order and ordinal increments; verify exact commitments, duplicate limits, and affordable construction
+  at the final gate. Only the production/composition phase still keeps the macro file over structural limits.
 - Production-only boundary audit: #815/#816/#819/#823 primarily require pure or browser/network evidence and are
   excluded from this sweep. #817 difficulty tuning and #828 hot-path optimization require measured, paired runs;
   their preparation is already authored, but no threshold or hot path should be guessed now. #820 legacy removal is
   gated on #816/#819/#823 parity evidence and must not be done speculatively. #829/#827 production behavior remains
   unproven until the final gate; repair only the first evidenced failure then. #821 has remaining code-only structural
   work, but its final baseline removal and compatibility audit also require that gate.
-- Exact next safe code-only action: split food infrastructure and production from `AiMacroManager.propose` without changing
+- Exact next safe code-only action: split production/composition from `AiMacroManager.propose` without changing
   policy. Then notify the user before the final test/validation gate. Do not remove the legacy behavior tree, tune
   difficulty, or claim performance improvement before the dependency evidence exists.
 - Pinned pre-change baseline: `de47f482889db30420692bf4406fba463d7db296`.

@@ -6,7 +6,6 @@ import type { AiIntentV1 } from "../contracts/ai-intent-v1";
 import type { AiObservationV1 } from "../contracts/ai-observation-v1";
 import type { AiManagerProposalV1, AiProposalManagerV1 } from "./ai-manager-proposal";
 import {
-  canAffordAiEconomyCost,
   decideAiEconomyPolicy,
   hasCredibleAiEconomyThreat
 } from "./ai-economy-policy";
@@ -14,6 +13,8 @@ import { projectAiResourceForecasts } from "./ai-resource-forecast";
 import { createAiResourceCostClaims } from "./ai-resource-cost-claims";
 import { proposeAiHousing } from "./ai-housing-proposal";
 import { proposeAiFieldLabor } from "./ai-field-labor-proposal";
+import { proposeAiFieldCapacity } from "./ai-field-capacity-proposal";
+import { proposeAiFoodPrerequisite } from "./ai-food-prerequisite-proposal";
 import { proposeAiWorkerRecovery } from "./ai-worker-recovery";
 import { proposeAiGeneralGathering } from "./ai-general-gathering-proposal";
 import { plannedAiForceSize, plannedAiProducerCount } from "./ai-force-capacity";
@@ -183,191 +184,48 @@ export class AiMacroManager implements AiProposalManagerV1 {
       demands.push(recovery.demand);
       if (recovery.intent) intents.push(recovery.intent);
     }
-    const foodPrerequisiteObject = foodSourceEntry?.constructionProfile?.requiredObjectNames?.[0];
-    const foodPrerequisiteEntry = catalog.entries.find((entry) => entry.sourceObjectName === foodPrerequisiteObject);
-    const desiredFoodPrerequisites =
-      foodPrerequisiteObject && desiredFoodSources > 0 ? Math.max(1, Math.ceil(desiredFoodSources / 4)) : 0;
-    const readyFoodPrerequisites = foodPrerequisiteObject
-      ? self.filter((actor) => actor.objectName === foodPrerequisiteObject && isFinishedActor(actor))
-      : [];
-    const constructingFoodPrerequisites = foodPrerequisiteObject
-      ? self.filter((actor) => actor.objectName === foodPrerequisiteObject && !isFinishedActor(actor))
-      : [];
-    const acceptedFoodPrerequisiteEffectIds = foodPrerequisiteObject
-      ? unresolvedReservedEffectIds(state, `effect:food-prerequisite:${foodPrerequisiteObject}:effect:`)
-      : [];
-    const committedFoodPrerequisites =
-      readyFoodPrerequisites.length + constructingFoodPrerequisites.length + acceptedFoodPrerequisiteEffectIds.length;
-    if (desiredFoodPrerequisites > 0 && foodPrerequisiteObject && foodPrerequisiteEntry) {
-      const prerequisiteDemandId = "demand:economy:food-prerequisite" as AiDemandV1["demandId"];
-      demands.push({
-        demandId: prerequisiteDemandId,
-        purpose: "food_drop_off_capacity",
-        capabilityOrRole: foodPrerequisiteObject,
-        unit: "actor_count",
-        desired: desiredFoodPrerequisites,
-        satisfiedActorIds: readyFoodPrerequisites.map((actor) => actor.actorId),
-        queuedIds: [],
-        constructingIds: constructingFoodPrerequisites.map((actor) => actor.actorId),
-        acceptedNotObservedEffectIds: acceptedFoodPrerequisiteEffectIds,
-        preferredObjectNames: [foodPrerequisiteObject],
-        resourceObligations: foodPrerequisiteEntry.constructionProfile?.resourceCost ?? {}
-      });
-      if (
-        committedFoodPrerequisites < desiredFoodPrerequisites &&
-        canAffordAiEconomyCost(observation, foodPrerequisiteEntry.constructionProfile?.resourceCost ?? {})
-      ) {
-        const alreadyClaimed = claimedActorIds(intents);
-        const builder = self
-          .filter(isAvailableBuilder)
-          .filter((actor) => !reservedActorIds.has(actor.actorId) && !alreadyClaimed.has(actor.actorId))
-          .filter((actor) =>
-            catalog.entries.some(
-              (entry) =>
-                entry.sourceObjectName === actor.objectName && entry.constructs.includes(foodPrerequisiteObject)
-            )
-          )
-          .sort((left, right) => left.actorId.localeCompare(right.actorId))[0];
-        if (builder) {
-          const position = selectConstructionPosition(
-            observation,
-            builder,
-            state.scheduler.decisionSequence,
-            ordinal,
-            selectedConstructionTileKeys,
-            foodPrerequisiteEntry.constructionProfile?.footprintRadiusTiles ?? 0
-          );
-          if (position) {
-            const next = nextIds(state, `food-prerequisite:${foodPrerequisiteObject}`, ordinal++);
-            intents.push({
-              ...next,
-              kind: "construct",
-              spendingCategory: readyFoodPrerequisites.length === 0 ? "survival" : "economy",
-              planId: state.opening.plan.planId,
-              demandId: prerequisiteDemandId,
-              lane: "essential_economy",
-              proposedTick: observation.tick,
-              urgencyClass: readyFoodPrerequisites.length === 0 ? 0 : 2,
-              utility: readyFoodPrerequisites.length === 0 ? 930 : 760,
-              preconditions: [{ kind: "actor_exists", actorId: builder.actorId }],
-              claims: [
-                {
-                  claimId: `${next.claimId}:builder` as AiIntentV1["claims"][number]["claimId"],
-                  kind: "actor",
-                  actorId: builder.actorId
-                },
-                {
-                  claimId: next.claimId,
-                  kind: "site",
-                  siteKey: `food-prerequisite:${foodPrerequisiteObject}:${position.x}:${position.y}`
-                },
-                ...createAiResourceCostClaims(
-                  next.claimId,
-                  foodPrerequisiteEntry.constructionProfile?.resourceCost ?? {}
-                ),
-                {
-                  claimId: `${next.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
-                  kind: "effect",
-                  effectId: next.effectId
-                }
-              ],
-              reasonCode:
-                `food_prerequisite:${foodPrerequisiteObject}:` +
-                `ready=${readyFoodPrerequisites.length}:committed=${committedFoodPrerequisites}/${desiredFoodPrerequisites}`,
-              builderIds: [builder.actorId],
-              objectName: foodPrerequisiteObject,
-              logicalPosition: position,
-              siteKey: `food-prerequisite:${foodPrerequisiteObject}:${position.x}:${position.y}`
-            });
-          }
-        }
-      }
+    const prerequisite = proposeAiFoodPrerequisite(
+      observation,
+      state,
+      catalog,
+      self,
+      foodSourceEntry,
+      desiredFoodSources,
+      reservedActorIds,
+      selectedConstructionTileKeys,
+      intents,
+      ordinal
+    );
+    if (prerequisite.demand) demands.push(prerequisite.demand);
+    if (prerequisite.intent) {
+      intents.push(prerequisite.intent);
+      ordinal += 1;
+    }
+    const foodPrerequisiteObject = prerequisite.objectName;
+    const readyFoodPrerequisites = prerequisite.ready;
+    const fieldCapacity = proposeAiFieldCapacity({
+      observation,
+      state,
+      catalog,
+      self,
+      foodSourceEntry,
+      desiredFoodSources,
+      readyFoodSources,
+      constructingFoodSources,
+      acceptedFoodSourceEffectIds,
+      foodPrerequisiteObject,
+      readyFoodPrerequisites,
+      reservedActorIds,
+      selectedConstructionTileKeys,
+      priorIntents: intents,
+      ordinal
+    });
+    if (fieldCapacity.demand) demands.push(fieldCapacity.demand);
+    if (fieldCapacity.intent) {
+      intents.push(fieldCapacity.intent);
+      ordinal += 1;
     }
     if (desiredFoodSources > 0 && foodSourceEntry) {
-      demands.push({
-        demandId: "demand:economy:sustainable-food" as AiDemandV1["demandId"],
-        purpose: "renewable_food_capacity",
-        capabilityOrRole: ObjectNames.Field,
-        unit: "actor_count",
-        desired: desiredFoodSources,
-        satisfiedActorIds: readyFoodSources.map((actor) => actor.actorId),
-        queuedIds: [],
-        constructingIds: constructingFoodSources.map((actor) => actor.actorId),
-        acceptedNotObservedEffectIds: acceptedFoodSourceEffectIds,
-        preferredObjectNames: [ObjectNames.Field],
-        resourceObligations: foodSourceEntry.constructionProfile?.resourceCost ?? {}
-      });
-      const committedFoodSources =
-        readyFoodSources.length + constructingFoodSources.length + acceptedFoodSourceEffectIds.length;
-      if (
-        committedFoodSources < desiredFoodSources &&
-        (!foodPrerequisiteObject || readyFoodPrerequisites.length > 0) &&
-        canAffordAiEconomyCost(observation, foodSourceEntry.constructionProfile?.resourceCost ?? {})
-      ) {
-        const alreadyClaimed = claimedActorIds(intents);
-        const builder = self
-          .filter(isAvailableBuilder)
-          .filter((actor) => !reservedActorIds.has(actor.actorId) && !alreadyClaimed.has(actor.actorId))
-          .filter((actor) =>
-            catalog.entries.some(
-              (entry) => entry.sourceObjectName === actor.objectName && entry.constructs.includes(ObjectNames.Field)
-            )
-          )
-          .sort((left, right) => {
-            const leftIdle = left.activeOrder?.status === "known" && left.activeOrder.value === null ? 0 : 1;
-            const rightIdle = right.activeOrder?.status === "known" && right.activeOrder.value === null ? 0 : 1;
-            return leftIdle - rightIdle || left.actorId.localeCompare(right.actorId);
-          })[0];
-        if (builder) {
-          const position = selectConstructionPosition(
-            observation,
-            builder,
-            state.scheduler.decisionSequence,
-            ordinal,
-            selectedConstructionTileKeys,
-            foodSourceEntry.constructionProfile?.footprintRadiusTiles ?? 0
-          );
-          if (position) {
-            const next = nextIds(state, `food-capacity:${ObjectNames.Field}`, ordinal++);
-            intents.push({
-              ...next,
-              kind: "construct",
-              spendingCategory: readyFoodSources.length === 0 ? "survival" : "economy",
-              planId: state.opening.plan.planId,
-              demandId: "demand:economy:sustainable-food" as AiDemandV1["demandId"],
-              lane: "essential_economy",
-              proposedTick: observation.tick,
-              urgencyClass: 1,
-              utility: 880,
-              preconditions: [{ kind: "actor_exists", actorId: builder.actorId }],
-              claims: [
-                {
-                  claimId: `${next.claimId}:builder` as AiIntentV1["claims"][number]["claimId"],
-                  kind: "actor",
-                  actorId: builder.actorId
-                },
-                {
-                  claimId: next.claimId,
-                  kind: "site",
-                  siteKey: `food-capacity:${ObjectNames.Field}:${position.x}:${position.y}`
-                },
-                ...createAiResourceCostClaims(next.claimId, foodSourceEntry.constructionProfile?.resourceCost ?? {}),
-                {
-                  claimId: `${next.claimId}:effect` as AiIntentV1["claims"][number]["claimId"],
-                  kind: "effect",
-                  effectId: next.effectId
-                }
-              ],
-              reasonCode: `food_capacity:ready=${readyFoodSources.length}:committed=${committedFoodSources}/${desiredFoodSources}`,
-              builderIds: [builder.actorId],
-              objectName: ObjectNames.Field,
-              logicalPosition: position,
-              siteKey: `food-capacity:${ObjectNames.Field}:${position.x}:${position.y}`
-            });
-          }
-        }
-      }
-
       const laborIntent = proposeAiFieldLabor(
         observation,
         state,
