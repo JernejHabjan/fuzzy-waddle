@@ -125,6 +125,9 @@ not block this gate.
   The STRAT-07 pure case also pairs an expired one-unit assembly against an undefended worker and a guarded worker;
   the former may force a bounded launch, the latter must keep forming instead of launching a token attack. This
   source/test change is unrun and needs the final-gate gameplay verification.
+  STRAT-08 now shares this pure fixture with a separate known-route, four-guard, exposed-core finishing case. Its
+  asserted intent and strategic choice are unrun; actual core destruction, victory/score authority, and optional
+  spending suppression still require targeted runtime plus bounded SEQ evidence.
 
 - ECO-08 now has an authored three-repeat focused workforce variant from an exact 200-resource start: six real
   workers, two Fields, a Granary, and an independent oracle requiring growth/retention above six plus delivered

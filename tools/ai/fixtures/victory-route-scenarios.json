@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
-  "scenarioIds": ["STRAT-07"],
+  "scenarioIds": ["STRAT-07", "STRAT-08"],
   "driver": "pure",
-  "purpose": "A reachable worker outranks an unknown-route core; the core remains a scouting fallback.",
+  "purpose": "Prefer an executable opportunity to an unknown-route core, then finish a core when the route is known.",
   "seeds": [827701, 827702, 827703],
   "context": {
     "mapId": "typed-credible-route-pair",
-    "mapDigest": "reachable-worker-unknown-core",
+    "mapDigest": "paired-known-and-unknown-routes",
     "side": 1,
     "faction": "Tivara",
     "rulesVersion": "probable-waffle-rules-v1",
@@ -14,7 +14,7 @@
   },
   "assertionPolicy": {
     "repetitions": 3,
-    "requires": ["confirmed-reachable-objective", "pending-route-scout-fallback", "canonical-digest"],
+    "requires": ["confirmed-reachable-objective", "pending-route-scout-fallback", "reachable-core-finish", "canonical-digest"],
     "forbids": ["pending-route-outranks-direct-route", "blind-attack-order"]
   }
 }

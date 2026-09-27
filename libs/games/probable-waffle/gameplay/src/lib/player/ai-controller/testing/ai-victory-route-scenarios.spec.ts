@@ -172,3 +172,46 @@ describe("STRAT-07 credible-route priority", () => {
       .toBe(true);
   });
 });
+
+describe("STRAT-08 reachable exposed-core finish", () => {
+  it("commits an immediate finishing attack when the core and sufficient ground force share a known route", () => {
+    const known = buildAiAccessGraphV1({
+      generation: 1, staticRevision: 1, dynamicRevision: 1, threatRevision: 0, builtTick: 0,
+      continuationCursor: 0, includeAirRegion: false,
+      cells: [
+        { x: 0, y: 0, ground: true, water: false, elevation: 0, groundNeighborKeys: ["1,0"],
+          knowledge: "known_static", clearance: 2 },
+        { x: 1, y: 0, ground: true, water: false, elevation: 0, groundNeighborKeys: ["0,0"],
+          knowledge: "known_static", clearance: 2 }
+      ]
+    });
+    const knownHome = known.groundNodeByTileKey.get("0,0")!;
+    const knownCore = known.groundNodeByTileKey.get("1,0")!;
+    const guards = Array.from({ length: 4 }, (_, index) => ({
+      ...actor(`guard-${index}`, "self", 0),
+      accessNodeId: { status: "known" as const, value: knownHome, observedTick: 20 }
+    }));
+    const core = {
+      ...actor("enemy-core", "enemy", 1),
+      housingCost: { status: "known" as const, value: 0, observedTick: 20 },
+      accessNodeId: { status: "known" as const, value: knownCore, observedTick: 20 },
+      mainBuilding: { status: "known" as const, value: true, observedTick: 20 }
+    };
+    const baseWorld = world(false);
+    const finishWorld: AiObservationV1 = {
+      ...baseWorld,
+      actors: [...guards, core],
+      threatSummary: { ...baseWorld.threatSummary, visibleEnemyActorIds: ["enemy-core"] },
+      map: { ...baseWorld.map!, accessGraph: known.graph, frontierAccessNodeIds: [] }
+    };
+    const result = manager.propose(finishWorld, brain());
+
+    expect(result.statePatch?.strategy?.assessment).toEqual(expect.objectContaining({
+      choice: "finish", targetActorId: "enemy-core", routeDomain: "ground",
+      readyForce: 4, requiredForce: 2
+    }));
+    expect(result.statePatch?.strategy?.stance).toBe("finish");
+    expect(result.intents.some((intent) => intent.kind === "attack" && intent.targetActorId === "enemy-core"))
+      .toBe(true);
+  });
+});
