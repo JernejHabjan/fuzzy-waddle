@@ -27,6 +27,10 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 - Next #827 unverified strategy slice: among actionable observed targets, an objective with enough compatible force
   ready now takes precedence over a higher-scoring objective that still needs reinforcements. This should permit useful
   raids while the larger finishing force grows; targeted pure and runtime route/mission checks remain at the final gate.
+- Latest #821 behavior-preserving split (unverified): macro observation/queue facts, construction-cell selection, and
+  proposal effect identity/reconciliation now live in focused modules. The macro class and its `propose` method still
+  exceed structural limits; continue splitting by opening, housing, labor, food, and production before removing the
+  temporary hash exemption. Recheck imports, types, lint, and representative decisions only at the final gate.
 - Pinned pre-change baseline: `de47f482889db30420692bf4406fba463d7db296`.
 - Manifest authority: `tools/ai/fixtures/skirmish-v1.json`, 121 scenario IDs before variants.
 - Completed prerequisites: #824 repository tooling and #825 current-content domain/transport foundation.

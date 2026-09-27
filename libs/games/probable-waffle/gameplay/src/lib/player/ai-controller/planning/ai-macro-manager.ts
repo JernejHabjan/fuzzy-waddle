@@ -16,156 +16,25 @@ import { calculateAiHousingDemand } from "./ai-housing-demand";
 import { proposeAiWorkerRecovery } from "./ai-worker-recovery";
 import { selectAiSurplusLaborTransfer } from "./ai-surplus-labor-transfer";
 import { plannedAiForceSize, plannedAiProducerCount } from "./ai-force-capacity";
-import { factionOpenings, openingBudget, type OpeningCheckpoint } from "./ai-opening-catalog";
+import { factionOpenings, openingBudget } from "./ai-opening-catalog";
 import { isMilitaryCatalogEntry, producerMilitaryProducts, productionRoleDeficit, roleFor } from "./ai-military-catalog";
-
-function owned(observation: AiObservationV1) {
-  return observation.actors.filter((actor) => actor.relation === "self" && actor.visibility === "owned");
-}
-
-function checkpointActors(
-  observation: AiObservationV1,
-  checkpoint: OpeningCheckpoint,
-  catalog: AiCapabilityCatalogV1
-) {
-  const actors = owned(observation);
-  if (checkpoint.id !== "bootstrap-worker") {
-    return actors.filter((actor) => actor.objectName === checkpoint.requiredObject);
-  }
-  return actors.filter((actor) => {
-    const entry = catalog.entries.find((candidate) => candidate.sourceObjectName === actor.objectName);
-    return actor.objectName === checkpoint.requiredObject || (entry?.gathers.length ?? 0) > 0;
-  });
-}
-
-function isFinishedActor(actor: AiObservationV1["actors"][number]): boolean {
-  return actor.constructionProgress?.status !== "known" || actor.constructionProgress.value >= 100;
-}
-
-function queueFree(actor: AiObservationV1["actors"][number]): boolean {
-  return actor.queue.status !== "known" || actor.queue.value.occupied === 0;
-}
-
-function claimedActorIds(intents: readonly AiIntentV1[]): ReadonlySet<string> {
-  return new Set(
-    intents.flatMap((intent) => intent.claims.flatMap((claim) => (claim.kind === "actor" ? [claim.actorId] : [])))
-  );
-}
-
-function queuedProduction(observation: AiObservationV1, objectNames: ReadonlySet<ObjectNames>) {
-  return owned(observation)
-    .flatMap((actor) =>
-      actor.queue.status === "known"
-        ? (actor.queue.value.items ?? [])
-            .filter(
-              (item): item is typeof item & { readonly objectName: ObjectNames } =>
-                item.kind === "production" && item.objectName !== null && objectNames.has(item.objectName)
-            )
-            .map((item) => ({ producerId: actor.actorId, itemId: item.itemId, objectName: item.objectName }))
-        : []
-    )
-    .sort((left, right) => left.itemId.localeCompare(right.itemId));
-}
+import {
+  checkpointActors,
+  claimedActorIds,
+  hasAssignedBuilder,
+  isAvailableBuilder,
+  isFinishedActor,
+  owned,
+  queuedObjectIds,
+  queuedProduction,
+  queueFree
+} from "./ai-macro-observation";
+import { selectConstructionPosition } from "./ai-construction-site-selector";
+import { nextIds, unresolvedReservedEffectIds } from "./ai-macro-effect-identity";
 
 /** The opening needs enough labor to unlock renewable food without spending the entire initial food reserve. */
 const MINIMUM_OPENING_WORKERS = 2;
 const WORKER_RECOVERY_FLOOR = 6;
-
-function queuedObjectIds(observation: AiObservationV1, objectName: ObjectNames): string[] {
-  return owned(observation)
-    .flatMap((actor) =>
-      actor.queue.status === "known"
-        ? (actor.queue.value.items ?? [])
-            .filter((item) => item.kind === "production" && item.objectName === objectName)
-            .map((item) => item.itemId)
-        : []
-    )
-    .sort();
-}
-
-function isAvailableBuilder(actor: AiObservationV1["actors"][number]): boolean {
-  return actor.activeOrder?.status !== "known" || actor.activeOrder.value?.orderType !== OrderType.Build;
-}
-
-function hasAssignedBuilder(observation: AiObservationV1, siteActorId: string): boolean {
-  return owned(observation).some(
-    (actor) =>
-      actor.activeOrder?.status === "known" &&
-      actor.activeOrder.value?.orderType === OrderType.Build &&
-      actor.activeOrder.value.targetActorId === siteActorId
-  );
-}
-
-function selectConstructionPosition(
-  observation: AiObservationV1,
-  builder: AiObservationV1["actors"][number],
-  decisionSequence: number,
-  ordinal: number,
-  selectedTileKeys: Set<string>,
-  footprintRadiusTiles = 0
-) {
-  if (builder.logicalPosition.status !== "known") return undefined;
-  const origin = builder.logicalPosition.value;
-  const cells = observation.map?.constructionCells ?? [];
-  const byKey = new Map(cells.map((cell) => [cell.tileKey, cell]));
-  const footprintKeys = (x: number, y: number) => {
-    const keys: string[] = [];
-    for (let offsetY = -footprintRadiusTiles; offsetY <= footprintRadiusTiles; offsetY += 1) {
-      for (let offsetX = -footprintRadiusTiles; offsetX <= footprintRadiusTiles; offsetX += 1) {
-        keys.push(`${x + offsetX},${y + offsetY}`);
-      }
-    }
-    return keys;
-  };
-  const candidates = cells
-    .filter((cell) => {
-      const keys = footprintKeys(cell.position.x, cell.position.y);
-      return keys.every((key) => {
-        const footprintCell = byKey.get(key);
-        return (
-          footprintCell !== undefined &&
-          footprintCell.groundPassable &&
-          !footprintCell.observedBlocked &&
-          !selectedTileKeys.has(key)
-        );
-      });
-    })
-    .sort(
-      (left, right) =>
-        Math.abs(left.position.x - origin.x) +
-          Math.abs(left.position.y - origin.y) -
-          (Math.abs(right.position.x - origin.x) + Math.abs(right.position.y - origin.y)) ||
-        left.tileKey.localeCompare(right.tileKey)
-    );
-  if (candidates.length === 0) return undefined;
-  const selected = candidates[(decisionSequence + ordinal) % candidates.length];
-  if (!selected) return undefined;
-  for (const key of footprintKeys(selected.position.x, selected.position.y)) selectedTileKeys.add(key);
-  return selected.position;
-}
-
-function nextIds(state: AiBrainStateV1, prefix: string, index: number) {
-  const suffix = `${state.scheduler.decisionSequence}:${index}`;
-  return {
-    intentId: `${prefix}:intent:${suffix}` as AiIntentV1["intentId"],
-    effectId: `${prefix}:effect:${suffix}` as AiIntentV1["effectId"],
-    claimId: `${prefix}:claim:${suffix}` as AiIntentV1["claims"][number]["claimId"]
-  };
-}
-
-function unresolvedReservedEffectIds(state: AiBrainStateV1, subjectPrefix: string): readonly AiIntentV1["effectId"][] {
-  const terminalEffectIds = new Set(
-    state.pendingOutcomes
-      .filter((outcome) => ["completed", "rejected", "cancelled", "failed"].includes(outcome.kind))
-      .map((outcome) => outcome.identity.effectId)
-  );
-  return state.reservations
-    .map((reservation) => reservation.subjectKey)
-    .filter((subjectKey): subjectKey is string => subjectKey?.startsWith(subjectPrefix) === true)
-    .map((subjectKey) => subjectKey.slice("effect:".length) as AiIntentV1["effectId"])
-    .filter((effectId) => !terminalEffectIds.has(effectId))
-    .sort();
-}
 
 /**
  * Macro proposal owner. It derives opening, supply and composition demand
