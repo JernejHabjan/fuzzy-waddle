@@ -72,7 +72,7 @@
       "id": "ECO-08",
       "stages": [7],
       "group": "economy",
-      "fixture": "stage-15-opening-runtime.json",
+      "fixture": "opening-workforce-runtime.json",
       "authoredFixture": "opening-bootstrap-scenarios.json",
       "drivers": ["pure", "runtime"]
     },

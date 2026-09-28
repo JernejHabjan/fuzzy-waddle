@@ -6,6 +6,9 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
+- Stable-name cleanup checkpoint (2026-09-28, **unverified**): ECO-08's `stage-15-opening-runtime.json` moved with
+  `git mv` to `opening-workforce-runtime.json`; its manifest, generated catalog and agent benchmark reference follow
+  the new path. This is a recipe identity/path change, not new browser evidence.
 - Terminal-oracle authoring checkpoint (2026-09-28, **unverified**): SEQ-01 now requires the AI player's authoritative
   `win` result; `loss`, `tie`, `quit` and an isolated completed mode goal cannot satisfy victory. The runtime driver
   can stop a terminal match after all scheduled events only when every selected scenario requires victory, and records

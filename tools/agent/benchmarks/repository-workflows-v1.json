@@ -162,7 +162,7 @@
       "description": "One seeded, manifest-backed Playwright skirmish opening scenario.",
       "contextFiles": [
         "tools/ai/fixtures/skirmish-v1.json",
-        "tools/ai/fixtures/stage-15-opening-runtime.json",
+        "tools/ai/fixtures/opening-workforce-runtime.json",
         "tools/ai/run-skirmish-matrix.mjs",
         "apps/portal-e2e/playwright.config.ts",
         "apps/portal-e2e/src/e2e/skirmish-ai-runtime.spec.ts"
