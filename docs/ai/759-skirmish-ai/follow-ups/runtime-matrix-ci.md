@@ -100,10 +100,11 @@ compaction; do not reload the whole catalog/history. Compact context size is a p
    for focused cases, with measured exceptions. Keep explicit determinism assertions at two or more identical starts;
    update the evaluator contract with fixture repetition changes. Full-match victories remain separate, finite and
    allowed to run longer when terminal behavior requires it. See the code-adjacent runtime E2E policy.
-   Split the current mixed `tools/ai/fixtures/stage-15-land-loop-runtime.json`: keep natural SEQ match recipes in a
-   continuous-match file, and give production/replacement behavior its own focused files with legal preset actors,
+   Continue splitting `tools/ai/fixtures/continuous-land-and-production-runtime.json`: keep natural SEQ match recipes
+   in a continuous-match file, and give PRO-01–04/06–07 behavior its own focused files with legal preset actors,
    balances, queues and scheduled loss where needed. Group a positive/control pair together; do not create one file
-   per ID or share a 12,000-tick natural match merely because several IDs mention production.
+   per ID or share a 12,000-tick natural match merely because several IDs mention production. PRO-05 already owns
+   `tools/ai/fixtures/focused-production-replacement-runtime.json`, though its long deadline/repeats still need review.
    Keep `apps/portal-e2e/src/e2e/skirmish-ai-runtime.spec.ts` generic; put family-specific setup/evaluation in focused
    adjacent modules. Update manifest paths and every loader/catalog consumer for any nested fixture directories.
    Positive/control pairs use the same seed and starting world except the causal variable under test. Keep exact

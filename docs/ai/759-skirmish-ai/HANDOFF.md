@@ -6,6 +6,12 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
+- Recipe split checkpoint (2026-09-28, **unverified**): the old mixed
+  `stage-15-land-loop-runtime.json` is now `continuous-land-and-production-runtime.json`, with the focused PRO-05
+  producer-loss case moved to `focused-production-replacement-runtime.json`. Manifest and generated catalog links
+  follow the new owners. The continuous fixture still uses long natural matches for PRO-01–04/06–07; replace those
+  with focused legal preset branches before the final gate, then leave only genuine continuous SEQ cases in its file.
+  Existing PRO-05 repetitions/deadline are migration debt. No tests or runtime simulations ran for this split.
 - Metadata authoring checkpoint (2026-09-28, **unverified**): all nine currently registered runtime recipes now declare
   per-variant execution kind and role; paired controls declare a pair ID, identical seed/map/ID membership. Focused
   natural setups and focused deadlines above 2,000 ticks carry reasons. The fixture validator now enforces these
@@ -76,8 +82,9 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
   finite deadline is necessary for a real terminal result. At 50 ms/tick, two simulated minutes are 2,400 ticks.
   Existing three-repeat/12,000-tick recipes are migration work, not an endorsed default. The authoritative policy
   and exceptions are in [runtime E2E](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/runtime-e2e.md).
-- #816 layout decision (unimplemented): split focused behavior/positive-control recipes from legal-start continuous
-  matches, notably the mixed `stage-15-land-loop-runtime.json`; declare legal actor/resource/queue/event preset state
+- #816 layout decision (partially authored): split focused behavior/positive-control recipes from legal-start continuous
+  matches. The old mixed land-loop recipe's PRO-05 focused branch is separate; PRO-01–04/06–07 still share a natural
+  continuous recipe with SEQ rows and need shorter focused legal presets. Declare actor/resource/queue/event preset state
   for each focused case or a documented natural-opening exception. Extend the generated catalog to expose kind,
   starting state, branch/repetition counts and tick rationale from fixture data. Existing catalog rows still show
   the old counts/limits and do not yet summarize preset state. Keep TS/JS/MJS additions within the repo's 400-line

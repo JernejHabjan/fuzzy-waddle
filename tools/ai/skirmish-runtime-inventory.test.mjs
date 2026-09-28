@@ -15,8 +15,8 @@ test("runtime inventory counts shared variants once and exposes focused migratio
     recipe: {
       checkpointTicks: [20, 3000],
       variants: [
-        { id: "shared", repetitions: 3, scenarioIds: ["PRO-01", "SEQ-01"] },
-        { id: "match", scenarioIds: ["SEQ-01"], presetWorld: { fixtureId: "example" } }
+        { id: "shared", executionKind: "focused_natural", repetitions: 3, scenarioIds: ["PRO-01", "SEQ-01"] },
+        { id: "match", executionKind: "continuous", scenarioIds: ["SEQ-01"] }
       ]
     }
   };
@@ -29,7 +29,7 @@ test("runtime inventory counts shared variants once and exposes focused migratio
     ids: ["PRO-01", "SEQ-01"],
     variants: 2,
     runs: 4,
-    presetVariants: 1,
+    presetVariants: 0,
     maximumTick: 3000,
     flags: ["mixed_focused_continuous", "focused_without_preset", "focused_over_2000", "repeated"]
   });

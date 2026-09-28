@@ -20,7 +20,7 @@ Read only:
 
 1. `libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/difficulty-calibration.md`
 2. the SEQ and D-06 rows in `tools/ai/fixtures/skirmish-v1.json`
-3. `tools/ai/fixtures/stage-15-land-loop-runtime.json`
+3. `tools/ai/fixtures/continuous-land-and-production-runtime.json`
 4. `tools/ai/fixtures/baseline-v1.json` and `difficulty-calibration-v1.json`
 5. the latest compact SEQ report recorded in `docs/ai/759-skirmish-ai/HANDOFF.md`
 

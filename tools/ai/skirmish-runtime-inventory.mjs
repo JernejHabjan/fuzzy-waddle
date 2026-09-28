@@ -21,9 +21,10 @@ export function collectRuntimeInventory(manifest, readFixture) {
       const matches = applicableRows(rows, variant);
       return matches.length ? [{ variant, matches }] : [];
     });
-    const focused = variants.filter(({ matches }) => matches.some((row) => row.group !== "continuous"));
-    const continuous = variants.filter(({ matches }) => matches.some((row) => row.group === "continuous"));
+    const focused = variants.filter(({ variant }) => variant.executionKind?.startsWith("focused_"));
+    const continuous = variants.filter(({ variant }) => variant.executionKind === "continuous");
     const flags = [];
+    if (variants.some(({ variant }) => !variant.executionKind)) flags.push("execution_kind_missing");
     if (focused.length && continuous.length) flags.push("mixed_focused_continuous");
     if (focused.some(({ variant }) => !variant.presetWorld)) flags.push("focused_without_preset");
     if (focused.some(({ variant }) => tickLimit(fixture.recipe, variant) > 2000)) flags.push("focused_over_2000");
