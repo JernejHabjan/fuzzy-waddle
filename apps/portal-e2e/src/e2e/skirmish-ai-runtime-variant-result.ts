@@ -3,6 +3,7 @@ import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
 
 export interface RuntimeVariantResultV1 {
   readonly variantId: string;
+  readonly repetition?: number;
   readonly mapLabel: string;
   readonly stopReason: "terminal_result" | "checkpoint_ceiling";
   readonly seed: number;

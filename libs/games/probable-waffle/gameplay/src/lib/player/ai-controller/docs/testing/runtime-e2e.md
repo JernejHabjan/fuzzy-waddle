@@ -55,8 +55,12 @@ and each shard's expected fixture identities/digests. Different selected fixture
 aggregate digests; reject conflicts for the same identity or unexpected membership, not all differing digests. Keep
 infrastructure and invalid-setup failures separate from gameplay outcomes, and show a provisional cluster keyed by
 the first failed predicate plus family/map and available checkpoint evidence. Each cluster links every
-affected ID/seed and one representative artifact. Exact single-variant/repetition replay selection remains to be
-implemented; the current command reruns a whole scenario. Shared text is not proof of shared cause; confirm the
+affected ID/seed and one representative artifact. Diagnostic replay can select an exact authored variant and 1-based
+repetition with `--scenario ID --mode runtime --variant ID --repetition N [--seed INTEGER]`. It evaluates that variant's
+own oracle only and reports `diagnostic_passed` or `diagnostic_failed`; it cannot satisfy a positive/control pair,
+determinism group or full matrix coverage. The repair reducer rejects diagnostic reports as coverage. Use its
+`rerunScenario` command for full proof after a repair, or `rerunVariant` to isolate one failure first. Shared text is
+not proof of shared cause; confirm the
 earliest causal owner before editing. Rerun affected shards after a repair batch. Establish final required matrix
 evidence after all repairs, tuning, optimization and legacy removal; reuse a complete passing sweep only while its
 relevant source/workload inputs still match. Never drop a required row or weaken its oracle to clear a cluster.

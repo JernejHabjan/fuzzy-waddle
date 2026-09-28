@@ -12,7 +12,16 @@ export function parseRequest(value: string | undefined): RuntimeRequestV1 {
     !Array.isArray(parsed.scenarioIds) ||
     parsed.scenarioIds.length === 0 ||
     !Array.isArray(parsed.fixtures) ||
-    parsed.fixtures.length === 0
+    parsed.fixtures.length === 0 ||
+    (parsed.diagnosticSelection !== undefined && (
+      parsed.diagnosticSelection === null ||
+      typeof parsed.diagnosticSelection !== "object" ||
+      parsed.scenarioIds.length !== 1 ||
+      parsed.diagnosticSelection.scenarioId !== parsed.scenarioIds[0] ||
+      typeof parsed.diagnosticSelection.variantId !== "string" ||
+      !Number.isSafeInteger(parsed.diagnosticSelection.repetition) ||
+      parsed.diagnosticSelection.repetition < 1
+    ))
   ) {
     throw new Error("runtime_request_malformed");
   }

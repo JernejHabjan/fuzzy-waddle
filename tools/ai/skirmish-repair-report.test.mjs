@@ -7,7 +7,7 @@ function shard(id, fixture, digest, failure = null) {
     scenarioId: id,
     passed: failure === null,
     failures: failure ? [`subject:${failure}`] : [],
-    variants: [{ variantId: "subject", seed: 42, checkpoints: [{ tick: 300, gameResult: null }] }]
+    variants: [{ variantId: "subject", repetition: 2, seed: 42, checkpoints: [{ tick: 300, gameResult: null }] }]
   };
   return {
     path: `tmp/sweep/${id}.json`,
@@ -40,6 +40,16 @@ test("counts passing and failing shards while accepting distinct aggregate fixtu
   assert.equal(report.clusters[0].representative.failedPredicate, "missing_field");
   assert.equal(report.clusters[0].representative.lastObserved.tick, 300);
   assert.equal(report.clusters[0].representative.artifact, "tmp/sweep/ECO-01.json");
+  assert.equal(report.clusters[0].representative.rerunVariant,
+    "node tools/ai/run-skirmish-matrix.mjs --scenario ECO-01 --mode runtime" +
+      " --variant subject --repetition 2 --seed 42");
+});
+
+test("diagnostic reruns never count as complete matrix coverage", () => {
+  const diagnostic = shard("ECO-01", "economy.json", "digest-a");
+  diagnostic.report.status = "diagnostic_passed";
+  diagnostic.report.diagnosticSelection = { scenarioId: "ECO-01", variantId: "subject", repetition: 2 };
+  assert.throws(() => buildRepairReport([diagnostic]), /repair_report_not_full_coverage/);
 });
 
 test("rejects conflicting fixture provenance and mixed source revisions", () => {

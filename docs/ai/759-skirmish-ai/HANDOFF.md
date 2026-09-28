@@ -6,6 +6,12 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
+- Diagnostic replay authoring checkpoint (2026-09-28, **unverified**): the matrix CLI now accepts one runtime
+  `--scenario` with `--variant`, 1-based `--repetition` and optional `--seed`. The browser driver executes only that
+  isolated run and evaluates its individual oracle, labels the result diagnostic, and the repair reducer rejects it
+  as full coverage while emitting exact diagnostic and whole-scenario rerun commands. Selection and reducer tests are
+  authored but unrun. This reduces affected reruns; paired/determinism and final matrix proof still require complete
+  scenario/shard execution. No test, E2E, build, lint or validation command ran for this change.
 - Stable-name cleanup checkpoint (2026-09-28, **unverified**): ECO-08's `stage-15-opening-runtime.json` moved with
   `git mv` to `opening-workforce-runtime.json`; its manifest, generated catalog and agent benchmark reference follow
   the new path. This is a recipe identity/path change, not new browser evidence.
@@ -31,8 +37,8 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
   source/manifest provenance, SHA-256 per-fixture identities and scenario-to-map sources. The existing report CLI has
   `--repair-list` for bounded JSON failure clusters and `--require-supported` for manifest-wide missing-row detection;
   full artifacts remain retained. Pure tool tests are authored but were not executed. Use one isolated report directory
-  and one `--run-id` (or `AI_SKIRMISH_MATRIX_RUN_ID`) per sweep. The CLI currently reruns a whole scenario, not one
-  repetition/variant; exact single-variant replay selection and final-gate proof remain #816 work. Continue metadata,
+  and one `--run-id` (or `AI_SKIRMISH_MATRIX_RUN_ID`) per sweep. Diagnostic single-variant/repetition selection is now
+  authored but unverified; full scenario reruns remain required for coverage and final-gate proof. Continue metadata,
   maps, fixtures, relay/lifecycle preparation and #821 cleanup before tests. No test/build/lint commands ran here.
 - Planning review (2026-09-28): use the compact batch table in [#816](follow-ups/runtime-matrix-ci.md).
   Pair #815 pure and #816 runtime authoring by family. Metadata is an authoring prerequisite; early-stop and repair
@@ -173,7 +179,7 @@ merely because their issue title mentions testing. All authored work remains unv
 | 1 / as needed | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `partial`     | Split only the owners that block the next implementation slice    | Terra, medium             |
 | 2             | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829) | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof | Sol, high → Terra, high   |
 | 3             | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `in_progress` | Finish sustained pressure/recovery policy; defer victory proof    | Sol, high → Terra, high   |
-| 4             | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Finish frozen maps, legal presets, bounded reporting and exact replay selection | Sol, high → Terra, medium |
+| 4             | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Finish frozen maps, legal presets, bounded reporting and replay proof | Sol, high → Terra, medium |
 | 5 / paired    | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `in_progress` | Author each pure family alongside its #816 runtime slice | Sol, high → Terra, medium |
 | 5 / paired    | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Author focused positive/control cases, then a small continuous-match tier | Sol, high → Terra, medium |
 | 6             | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `not_started` | Build real relay/two-client harness, authority wiring and cases before gate | Sol, high → Terra, high |

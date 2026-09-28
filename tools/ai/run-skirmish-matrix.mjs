@@ -4,6 +4,7 @@ import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { resolvePinnedBaselineSupport } from "./baseline-adapter-v1.mjs";
 import { invokeHarness, invokeSelectedHarness } from "./skirmish-matrix-execution.mjs";
+import { selectDiagnosticVariant } from "./skirmish-runtime-diagnostic-selection.mjs";
 import {
   fixtureReference, pureFixtureReference, runtimeFixtureReference, safeReference, validateManifest
 } from "./skirmish-matrix-fixtures.mjs";
@@ -43,6 +44,12 @@ try {
 }
 
 function dispatch(options) {
+  if (options.variant !== undefined || options.repetition !== undefined) {
+    if (!options.scenario || options.scenarios || options.suite || options.candidate || options.baseline ||
+        options["replay-bundle"] || options["compare-bundle"]) {
+      throw new Error("diagnostic_selection_requires_single_scenario");
+    }
+  }
   if (options["compare-bundle"]) return compareBundles(options);
   if (options["replay-bundle"]) return replayBundle(options);
   if (options.suite) return runSuite(options);
@@ -137,6 +144,9 @@ function runSelectedScenarios(options) {
   const allHaveRuntime = rows.every((row) => runtimeFixtureReference(row) !== null);
   const defaultMode = allHaveRuntime && allHavePure ? "both" : allHaveRuntime ? "runtime" : "pure";
   const mode = requireEnum(options.mode ?? defaultMode, ["pure", "runtime", "both"], "mode");
+  const diagnosticSelection = options.variant === undefined && options.repetition === undefined
+    ? null
+    : selectedDiagnosticVariant(options, rows, mode);
   const seed =
     options.seed === undefined
       ? mode === "runtime"
@@ -154,9 +164,18 @@ function runSelectedScenarios(options) {
   const missingDriver = rows.find((row) => mode !== "both" && !row.drivers.includes(mode));
   if (missingDriver) throw new Error(`scenario_driver_missing:${missingDriver.id}:${mode}`);
   return invokeSelectedHarness(
-    { suite: scenarioIds.length === 1 ? "single" : "selection", seed, mode, rows, options },
+    { suite: scenarioIds.length === 1 ? "single" : "selection", seed, mode, rows, options, diagnosticSelection },
     matrixContext
   );
+}
+
+function selectedDiagnosticVariant(options, rows, mode) {
+  if (rows.length !== 1) throw new Error("diagnostic_selection_requires_single_scenario");
+  const row = rows[0];
+  const reference = runtimeFixtureReference(row);
+  if (!reference) throw new Error(`diagnostic_runtime_fixture_missing:${row.id}`);
+  const fixture = readJson(join(fixtureDirectory, reference), 1024 * 1024);
+  return selectDiagnosticVariant(options, row.id, mode, fixture);
 }
 
 function replayBundle(options) {
@@ -318,7 +337,25 @@ function parseArguments(tokens) {
 }
 
 function helpText() {
-  return `Run deterministic or real-runtime skirmish AI scenarios.\n\nUsage:\n  node tools/ai/run-skirmish-matrix.mjs --scenario ID [--mode pure|runtime|both]\n  node tools/ai/run-skirmish-matrix.mjs --scenarios ID,ID [--mode pure|runtime|both]\n  node tools/ai/run-skirmish-matrix.mjs --suite stage-smoke --stage N --working-tree\n  node tools/ai/run-skirmish-matrix.mjs --candidate SHA --baseline SHA\n\nOptions:\n  --manifest PATH       Override tools/ai/fixtures/skirmish-v1.json\n  --output DIRECTORY    Store the JSON artifact in this directory\n  --seed INTEGER        Override the pure-scenario seed\n  --help                Show this help without creating a failure artifact\n\nUse tools/ai/summarize-skirmish-report.mjs on the emitted artifact. Group compatible runtime IDs with --scenarios so Playwright starts once.\n`;
+  return [
+    "Run deterministic or real-runtime skirmish AI scenarios.",
+    "", "Usage:",
+    "  node tools/ai/run-skirmish-matrix.mjs --scenario ID [--mode pure|runtime|both]",
+    "  node tools/ai/run-skirmish-matrix.mjs --scenario ID --mode runtime --variant ID --repetition N [--seed INTEGER]",
+    "  node tools/ai/run-skirmish-matrix.mjs --scenarios ID,ID [--mode pure|runtime|both]",
+    "  node tools/ai/run-skirmish-matrix.mjs --suite stage-smoke --stage N --working-tree",
+    "  node tools/ai/run-skirmish-matrix.mjs --candidate SHA --baseline SHA",
+    "", "Options:",
+    "  --manifest PATH       Override tools/ai/fixtures/skirmish-v1.json",
+    "  --output DIRECTORY    Store the JSON artifact in this directory",
+    "  --seed INTEGER        Override the authored seed for a selected run",
+    "  --variant ID          Diagnostic-only: run one variant of --scenario in runtime mode",
+    "  --repetition INTEGER  Diagnostic-only: select one 1-based repetition with --variant",
+    "  --help                Show this help without creating a failure artifact",
+    "", "Diagnostic replays cannot satisfy full scenario coverage.",
+    "Use tools/ai/summarize-skirmish-report.mjs on the emitted artifact.",
+    "Group compatible runtime IDs with --scenarios so Playwright starts once.", ""
+  ].join("\n");
 }
 
 function writeReport(report) {

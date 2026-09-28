@@ -2,6 +2,7 @@ import { expect, test } from "@playwright/test";
 import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
 import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
 import { evaluateScenario } from "./skirmish-ai-runtime-evaluation";
+import { evaluateRuntimeVariant } from "./skirmish-ai-runtime-variant-evaluation";
 import { parseRequest } from "./skirmish-ai-runtime-request-parser";
 import { runVariant } from "./skirmish-ai-runtime-variant-runner";
 import { last } from "./skirmish-ai-runtime-value";
@@ -30,19 +31,19 @@ test("executes selected AI scenarios in real lobby-started Phaser matches", asyn
       const executed: RuntimeVariantResultV1[] = [];
       for (const variant of fixture.recipe.variants.filter(
         (candidate) =>
-          candidate.scenarioIds === undefined || candidate.scenarioIds.some((id) => request.scenarioIds.includes(id))
+          (candidate.scenarioIds === undefined || candidate.scenarioIds.some((id) => request.scenarioIds.includes(id))) &&
+          (!request.diagnosticSelection || candidate.id === request.diagnosticSelection.variantId)
       )) {
-        for (let repetition = 0; repetition < (variant.repetitions ?? 1); repetition += 1) {
+        for (let repetition = 1; repetition <= (variant.repetitions ?? 1); repetition += 1) {
+          if (request.diagnosticSelection && repetition !== request.diagnosticSelection.repetition) continue;
           executed.push(
-            await runVariant(
-              browser,
-              fixture,
-              variant,
-              request.seed,
-              request.scenarioIds,
-              request.sourceRevision,
-              request.fixtureDigest
-            )
+            {
+              ...(await runVariant(
+                browser, fixture, variant, request.seed, request.scenarioIds,
+                request.sourceRevision, request.fixtureDigest
+              )),
+              repetition
+            }
           );
         }
       }
@@ -55,7 +56,11 @@ test("executes selected AI scenarios in real lobby-started Phaser matches", asyn
         .map((variant) => variant.id)
     );
     const scenarioVariants = variants.filter((variant) => applicableVariantIds.has(variant.variantId));
-    const failures = evaluateScenario(scenarioId, fixture, scenarioVariants);
+    const failures = request.diagnosticSelection
+      ? scenarioVariants.length === 1
+        ? evaluateRuntimeVariant(scenarioId, fixture.assertions[scenarioId], scenarioVariants[0])
+        : ["diagnostic_variant_missing_or_ambiguous"]
+      : evaluateScenario(scenarioId, fixture, scenarioVariants);
     scenarioResults.push({ scenarioId, passed: failures.length === 0, failures, variants: scenarioVariants });
   }
 
@@ -64,7 +69,10 @@ test("executes selected AI scenarios in real lobby-started Phaser matches", asyn
     sourceRevision: request.sourceRevision,
     dirtySourceDigest: request.dirtySourceDigest,
     fixtureDigest: request.fixtureDigest,
-    status: scenarioResults.every((result) => result.passed) ? "passed" : "failed",
+    status: request.diagnosticSelection
+      ? scenarioResults.every((result) => result.passed) ? "diagnostic_passed" : "diagnostic_failed"
+      : scenarioResults.every((result) => result.passed) ? "passed" : "failed",
+    diagnosticSelection: request.diagnosticSelection ?? null,
     scenarios: scenarioResults,
     workCounts: {
       scenarios: scenarioResults.length,

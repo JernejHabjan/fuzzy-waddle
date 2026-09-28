@@ -187,6 +187,7 @@ function invokeRuntimeHarness(input, context) {
       fixtureDigest,
       seed: input.seed ?? null,
       scenarioIds: input.rows.map((row) => row.id),
+      diagnosticSelection: input.diagnosticSelection ?? undefined,
       fixtures
     })
   };
@@ -207,7 +208,10 @@ function invokeRuntimeHarness(input, context) {
   const runtimeReport = parseRuntimeReport(`${command.stdout}\n${command.stderr}`);
   const report = {
     schemaVersion: 1,
-    status: command.status === 0 && runtimeReport?.status === "passed" ? "passed" : "failed",
+    status: input.diagnosticSelection
+      ? command.status === 0 && runtimeReport?.status === "diagnostic_passed"
+        ? "diagnostic_passed" : "diagnostic_failed"
+      : command.status === 0 && runtimeReport?.status === "passed" ? "passed" : "failed",
     suite: input.suite,
     manifestVersion: manifest.manifestVersion,
     candidate: input.candidate ?? readHead(),
@@ -217,6 +221,7 @@ function invokeRuntimeHarness(input, context) {
     scenarioSources,
     runId,
     seed: input.seed ?? null,
+    diagnosticSelection: input.diagnosticSelection ?? null,
     baseline: input.baseline ?? null,
     rows: input.rows.map((row) => row.id),
     contexts: input.rows.map((row) => ({
@@ -237,7 +242,7 @@ function invokeRuntimeHarness(input, context) {
   if (report.workCounts.decisions <= 0 || report.workCounts.ticks <= 0) {
     report.status = "failed";
   }
-  if (report.status !== "passed") process.exitCode = 1;
+  if (report.status !== "passed" && report.status !== "diagnostic_passed") process.exitCode = 1;
   return report;
 }
 
