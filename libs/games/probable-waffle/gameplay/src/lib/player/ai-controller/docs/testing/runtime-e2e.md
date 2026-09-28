@@ -43,12 +43,15 @@ Use `pnpm ai:skirmish:report -- --report <artifact> --scenario <ID> --failures-o
 At the final validation gate, run a small representative map/fixture preflight, then manifest-selected family/map
 shards as one retained sweep. Reuse a browser/server process inside a worker but isolate every game world; independent
 CI workers may run separate shards. The current report command summarizes one artifact. #816 must extend that same
-tool with a bounded cross-report repair list before the broad sweep: reject mixed source/fixture provenance, keep
+tool with a bounded cross-report repair list before the broad sweep: require common source/run/manifest identity
+and each shard's expected fixture identities/digests. Different selected fixture sets legitimately have different
+aggregate digests; reject conflicts for the same identity or unexpected membership, not all differing digests. Keep
 infrastructure and invalid-setup failures separate from gameplay outcomes, and show a provisional cluster keyed by
 the first normalized failed predicate plus family/map and available checkpoint evidence. Each cluster links every
 affected ID/seed and one representative replay artifact. Shared text is not proof of shared cause; confirm the
-earliest causal owner before editing. Rerun only affected shards after a repair batch, then perform one full required
-matrix after repairs. Never drop a required row or weaken an independent oracle to clear a cluster.
+earliest causal owner before editing. Rerun affected shards after a repair batch. Establish final required matrix
+evidence after all repairs, tuning, optimization and legacy removal; reuse a complete passing sweep only while its
+relevant source/workload inputs still match. Never drop a required row or weaken its oracle to clear a cluster.
 
 ## Authoritative focused worlds
 
@@ -77,6 +80,7 @@ queue, starting order or timed opponent event. Include other player state only t
 service; do not inject AI memory, hidden information, a desired decision or a success flag. If a focused case truly
 needs an unpreset natural opening, record that reason and its measured deadline as an exception. Continuous-match
 recipes deliberately start from normal game state and prove the entire opening-to-result chain.
+Positive/control pairs keep the same seed and legal starting state except for the causal variable being tested.
 
 Use validated recipe metadata for execution kind (`focused_preset`, justified `focused_natural`, or `continuous`),
 variant role (subject/control where applicable), and the reason for a focused deadline above 2,000 ticks. The
@@ -163,6 +167,9 @@ ticks or the amount of gameplay work. Record both tick count and wall time.
   observation horizon remains, then record the stop tick/reason. A negative control, absence assertion, liveness
   window or continuous match must keep its required horizon. Early stop never converts a missing terminal result,
   missing checkpoint, or unobserved effect into a pass.
+  A positive milestone with later cleanup, retention or no-duplicate obligations must finish that stability window.
+  A shared variant can stop only when every selected scenario's obligations are complete; continuous matches can
+  finish at their authoritative terminal result.
 - Run each positive and control variant once in ordinary PR and required pre-merge coverage. For a scenario whose
   acceptance explicitly includes repeatability, use at least two identical-start runs and compare normalized
   decisions, initial-world and outcome digests, reporting the first differing path. Put additional repeats and

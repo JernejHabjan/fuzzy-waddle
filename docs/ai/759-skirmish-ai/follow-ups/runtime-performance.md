@@ -4,16 +4,17 @@
 
 Make long, real Phaser skirmish matches responsive and shorten browser-matrix wall time without changing simulation
 outcomes, decision authority, or fairness. This is runtime performance work, not the fastest-credible-victory strategy
-policy in #827 and not a reason to weaken SEQ-01/02's current 12,000-tick request ceiling or terminal assertion.
+policy in #827. Preserve terminal assertions and use the measured finite deadlines in the runtime E2E policy.
 
 Start on Sol/high for the profile and causal choice of hot path; use Terra/high for a bounded implementation after the
-profile names its owner. Pair with #816's continuous-match runs, but keep focused 400–12,000-tick fixtures for fast
-feedback. Do not block #827 on this optional optimization unless profiling shows a correctness failure.
+profile names its owner. Pair with #816's continuous-match runs; focused fixtures target 200–2,000 ticks with
+justified exceptions. Do not block #827 on optional optimization unless profiling shows a correctness failure.
 
 ## Cold start
 
 1. Read the repo workflow, debugging, Phaser, and skirmish AI skills; then this file and `HANDOFF.md`.
-2. Run `pnpm agent:context -- --issue 828` and inspect only its named source/test owners.
+2. During the authoring sweep, inspect only the named source/test owners; context commands and profiling execution
+   wait for the final gate under the handoff policy. Then use `pnpm agent:context -- --issue 828`.
 3. Baseline one repeatable SEQ-01/02 variant from `tools/ai/fixtures/stage-15-land-loop-runtime.json` at its existing
    seed, map, AI faction, 100× simulation scale and checkpoints. Preserve revision, fixture digest, scenario assertion
    outcome, tick count, decisions, wall time, and process starts. Do not compare unlike scenarios as speed evidence.

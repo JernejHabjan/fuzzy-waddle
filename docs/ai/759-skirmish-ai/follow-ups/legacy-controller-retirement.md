@@ -11,7 +11,10 @@ cross-system design problem.
 
 Estimated effort: **L**, about 2–4 focused agent sessions or 1–3 engineering days after all parity dependencies pass.
 
-Dependency: complete #824, #816, #819, and #823 before removing the fallback.
+Dependency: #824 is complete. Obtain passing behavior/authority/save parity evidence from #816, #819 and #823 before
+removing the fallback. Formal closure of those issues is not a prerequisite: #816's final matrix must also cover the
+post-removal revision. Removal remains deferred until the execution gate; recheck affected parity after removal and
+include the resulting code in final required evidence. This avoids a circular dependency between removal and closure.
 
 ## Cold start
 

@@ -11,7 +11,7 @@ effort for bounded implementation, fixtures, and focused verification. Estimated
 
 ## Cold start
 
-Run `pnpm agent:doctor` and `pnpm agent:context -- --issue 829`, then read only:
+Read only the following during the authoring sweep. Doctor/context and test execution wait for the handoff's final gate:
 
 1. `libs/games/probable-waffle/protocol/src/lib/game-instance/probable-waffle/player.ts` and adjacent state tests;
 2. `ai-macro-manager.ts`, `ai-resource-forecast.ts`, `ai-worker-recovery.ts`, `ai-skirmish-defense.ts`, and adjacent specs;
@@ -65,7 +65,7 @@ growing workforce target.
 - Clearing the pressure resumes the suspended economy plan without reopening completed historical checkpoints.
 - Debug output explains desired workforce, food runway, threat/posture, budget split, and the selected/blocked action.
 - Focused deterministic tests, targeted real-runtime low-resource/threat/recovery cases, and fresh bounded SEQ-01/02
-  evidence pass without increasing the 12,000-tick ceiling or relaxing terminal assertions.
+  evidence pass within the measured deadlines in the runtime E2E policy, preserving terminal assertions.
 - Omission audit, final closure audit, commit, push, GitHub update, and plan triage are complete.
 
 ## Stop and retirement

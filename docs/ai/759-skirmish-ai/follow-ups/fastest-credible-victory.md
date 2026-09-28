@@ -18,7 +18,7 @@ Read only:
 4. the latest SEQ report in `docs/ai/759-skirmish-ai/HANDOFF.md`
 5. related issue #654 for event-driven opponent weakness evidence; do not duplicate stale legacy-controller state
 
-Run `pnpm agent:doctor` and `pnpm agent:context -- --issue 827` before implementation.
+Doctor/context and runtime reproduction wait for the handoff's final gate during the current authoring sweep.
 
 ## Decision contract
 

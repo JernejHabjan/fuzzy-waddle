@@ -28,18 +28,20 @@ passing evidence; never copy a count into logic. Keep same-type units/buildings 
 
 ## Implementation order
 
-1. Run the matrix coverage report and select one coherent family, starting with economy/production, then access/combat,
+1. Read the inventory/catalog and select one coherent family, starting with economy/production, then access/combat,
    placement/fortification/recovery, authority/lifecycle, and remaining classic RTS/difficulty/debug cases.
 2. Create typed setup through the existing scenario builder. Use catalog capabilities and stable IDs, not prefab-name
    heuristics or hidden runtime facts.
 3. Assert outcomes independently: state transition, bounded work, useful effect, cleanup, and canonical hash. Cover the
    negative/recovery edge that could otherwise produce a false pass.
 4. Register the fixture in the manifest without changing the required denominator or driver.
-5. Repeat the scenario three times and compare decisions, state, and hash. Add ordering permutations where inputs have
-   set semantics.
-6. Pair each completed family with its #816 runtime slice before moving too far ahead. The completed domain/transport
-   contracts remain part of this issue's pure-coverage denominator.
-7. Commit and push each coherent family batch; update #815 with the recalculated mapped/required counts.
+5. Author three-run decision/state/hash checks and meaningful ordering permutations for set-valued inputs.
+   Execute them at the deferred final gate; authored assertions are not passing evidence.
+6. Pair each family's pure and #816 runtime authoring in one context pass, reusing domain understanding and typed
+   builders where semantics agree. Do not finish all pure families before beginning runtime authoring. Completed
+   domain/transport contracts remain part of this issue's pure-coverage denominator.
+7. Commit and push coherent family batches; preserve selected IDs, source files, unresolved questions and unrun checks
+   in the existing handoff. Recalculate coverage from the manifest rather than copying counts into multiple plans.
 
 ## Evidence
 

@@ -6,6 +6,12 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
+- Planning review (2026-09-28): use the compact batch table in [#816](follow-ups/runtime-matrix-ci.md).
+  Pair #815 pure and #816 runtime authoring by family. Metadata is an authoring prerequisite; early-stop and repair
+  clustering must exist before execution but do not block independent fixtures. Full-match victory is a final-gate
+  obligation, not a prerequisite for writing short cases. Different shards may have different fixture-set digests;
+  validate common source/run identity and each shard's expected fixture mapping. Final required evidence belongs
+  after tuning, optimization and legacy retirement. This review changes the plan; runtime contracts remain pending.
 - Current execution mode (latest user direction, 2026-09-27): implement source and author pure/Playwright scenarios,
   fixtures, and CI contracts, but **do not execute** tests, E2E, simulations, lint, type checks, builds, repository
   validation, `agent:doctor`, or `agent:context` during this sweep. Treat every new change as **unverified**.
@@ -65,15 +71,16 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 - #816 tooling-first update: `pnpm ai:skirmish:catalog -- --inventory` is now an authored read-only, bounded recipe
   summary with 19/120 registered runtime rows, 97 supported missing, four island-deferred, and nine current recipe
   files. It flags the mixed production/SEQ file, long focused waits and redundant repetitions; its new unit test
-  has **not** run. Before mass fixture work, finish typed catalog metadata and optional stop-on-evidence in the
-  existing runner. The current runner always advances through every checkpoint, so the latter is unimplemented.
+  has **not** run. Finish typed catalog metadata before mass fixture work and optional stop-on-evidence before the
+  execution sweep. The current runner always advances through every checkpoint, so the latter is unimplemented.
   JetBrains semantic search was reachable in this worktree; future agents should probe once and fall back to narrow
   `rg` if their host has no IDE connection. No new global search/index tool is needed.
 - #816 batched-repair decision (unimplemented): before the final broad game sweep, extend the existing single-report
   skirmish summarizer with provenance-checked cross-shard failure clustering and a compact repair list. A shared
   predicate is only a hypothesis; separate infrastructure/setup from gameplay and confirm one causal owner before
   repairing a cluster. One representative preflight at the final gate precedes family/map shards; after a repair,
-  rerun affected shards, then one complete required matrix. No test execution is authorized during this sweep.
+  rerun affected shards, then establish final required evidence after all source changes. No test execution is
+  authorized during this authoring sweep.
 - The generated [scenario test catalog](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/scenario-catalog.md)
   joins all 121 requirements to their registered fixtures, spec references, current maps and tick bounds; it does not
   claim test execution. Its [frozen-map contract](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/test-map-contract.md)
@@ -131,8 +138,8 @@ until one clean replacement run is necessary; do not reconstruct or dump the old
 | 1 / as needed | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `partial`     | Split only the owners that block the next implementation slice    | Terra, medium             |
 | 2             | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829) | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof | Sol, high → Terra, high   |
 | 3             | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `in_progress` | Finish sustained pressure/recovery policy; defer victory proof    | Sol, high → Terra, high   |
-| 4             | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `in_progress` | Author remaining typed pure families; execute only at final gate  | Sol, high → Terra, medium |
-| 5             | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Tool gate, focused recipes, incremental maps/CI; do not run yet | Sol, high → Terra, medium |
+| 4 / paired | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `in_progress` | Author each pure family alongside its #816 runtime slice | Sol, high → Terra, medium |
+| 4 / paired | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Metadata first, then paired family batches and incremental maps | Sol, high → Terra, medium |
 | 6             | [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828) | `not_started` | Prepare probes now; measure/optimize only at final gate           | Sol, high → Terra, high   |
 | 7             | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `not_started` | Prepare paired fixtures; baseline/D-06/soaks at final gate        | Sol, high → Terra, medium |
 | 8             | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `not_started` | Author relay/lockstep cases after #816 runtime contract exists    | Sol, high → Terra, high   |
@@ -152,11 +159,10 @@ transport-required runtime. It is detached from #759 and does not block core rea
 Follow the dependency grid above; the following #816/final-gate sequence survives a new machine or agent. Current
 fixture schedules and historical 12,000-tick diagnostics remain facts about authored/previous runs, not new policy.
 
-0. Tool gate before mass scenario authoring: use the new bounded inventory (not raw fixture dumps), add validated
-   execution-kind/variant-role/deadline metadata to the existing catalog/fixture tools, and add optional
-   stop-on-evidence to the current Playwright runner. Extend the existing report summarizer with a bounded,
-   provenance-checked cross-shard repair list. Do not build a duplicate runner or index. The inventory is authored;
-   metadata, early stop and failure clustering are pending. Defer their tests under the current no-validation rule.
+0. Before mass authoring, add execution-kind/variant-role/deadline metadata to the existing catalog/fixture tools.
+   Finish optional stop-on-evidence and cross-shard repair reporting before the broad execution sweep; independent
+   family authoring can proceed meanwhile. The inventory is authored; these extensions remain pending. Defer their
+   tests under the current no-validation rule. Use the #816 batch table and preserve one short resume record per batch.
 1. During the authoring sweep, use the inventory to identify each registered browser recipe's causal branches,
    repetitions, earliest authoritative success/failure milestone, tick ceiling, map dependency and execution tier.
    Do not infer passing evidence from registration or a compact inventory flag.
@@ -178,20 +184,23 @@ fixture schedules and historical 12,000-tick diagnostics remain facts about auth
    During this sweep, do not execute tests, E2E, simulations, lint, builds or validation under the user direction above.
 5. Before the final gate, tell the user. Preflight representative map/fixture infrastructure, then run compatible
    family/map shards as one retained sweep and generate a compact repair list. Confirm causal clusters from one
-   representative each, repair shared owners in batches, rerun affected shards, then perform one clean full matrix.
+   representative each, repair shared owners in batches and rerun affected shards.
    Measure the shortest credible full-match deadlines, run paired difficulty/performance evidence and extended soaks,
    and finish code/omission review. A longer full-match deadline needs documented evidence; preserve mandatory
-   terminal victory/recovery rather than passing on mere survival or elapsed ticks.
+   terminal victory/recovery rather than passing on mere survival or elapsed ticks. Establish the final required
+   matrix evidence after all repairs, tuning, optimization and legacy removal, reusing a complete passing sweep
+   only if its relevant source/workload inputs still match.
 
 ## Final validation gate — not during the implementation sweep
 
 Keep a single deferred gate for all changed behavior and newly authored tests. Do not interpret a passing result from
 an older commit as evidence for newer unverified code. At the gate, run repository doctor/context and smallest focused
 static/unit checks first, then representative map/fixture preflight and manifest-derived pure/Playwright family shards.
-Generate the retained cross-shard repair list, fix confirmed shared causes in batches, rerun affected shards and then
-one full required matrix, including bounded SEQ-01/02 and supported multiplayer/lifecycle rows. Follow with
-pinned-baseline and D-06 calibration, long-match performance comparisons, broader affected checks, and a final
-code/omission review. Treat the present 12,000-tick SEQ ceiling as a starting measurement, not a universal cap:
+Generate the retained cross-shard repair list, fix confirmed shared causes in batches and rerun affected shards.
+Establish continuous-match/multiplayer/lifecycle parity, then perform calibration, measured optimization and gated
+legacy retirement. Finish required matrix evidence on the resulting revision, broader affected checks and code review.
+A complete passing sweep with unchanged relevant inputs can be retained; repeat affected calibration/benchmark evidence
+if later edits invalidate it. Treat the present 12,000-tick SEQ ceiling as a starting measurement, not a universal cap:
 increase it only if a real full match needs more time and the cause, wall cost and finite terminal deadline are
 recorded. Do not use a long natural match to paper over missing targeted fixtures. Retain compact reports, exact
 seeds, digest/provenance, wall time, and known failures in this handoff until each result has a durable owner. Close each
