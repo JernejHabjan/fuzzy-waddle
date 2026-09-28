@@ -158,6 +158,7 @@ export async function runVariant(
       : null;
     return {
       variantId: variant.id,
+      mapLabel: variant.mapLabel ?? fixture.recipe.mapLabel,
       seed: effectiveSeed,
       aiFaction: variant.aiFaction,
       initialOwnedActorCount: initialBoundary.state.ownedActorCount,

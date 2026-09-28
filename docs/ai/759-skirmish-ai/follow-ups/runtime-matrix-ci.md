@@ -47,6 +47,12 @@ Use this batch order; the contract details below are acceptance requirements for
 | Pre-gate cleanup | Finish in-scope #821 splits/renames and update imports, manifests, compatibility readers and documentation links | Terra/medium; Sol for changed contracts |
 | Deferred validation | Preflight, grouped sweep, cluster repairs, calibration/optimization/legacy retirement, then final evidence | Sol/high diagnosis; Terra for confirmed bounded repairs |
 
+Reporter authoring checkpoint (2026-09-28, unverified): the existing summary CLI now accepts `--repair-list` and
+`--require-supported`; runtime reports include a shared run ID, source/manifest provenance, per-fixture SHA-256
+identities and scenario sources. CI supplies the run ID; manual sweeps must use `--run-id`. Pure parser/cluster tests
+are authored. Its rerun command selects a whole scenario, so exact variant/repetition replay still needs a bounded diagnostic
+selection contract before relying on that field. Do not treat this checkpoint as executed evidence.
+
 Metadata comes before mass authoring because it defines every recipe. Early-stop and failure clustering are needed
 before execution, so they need not block independent fixture authoring. Implement each helper with its first real
 consumer; avoid a general fixture framework or extra index. Keep required defaults explicit. Use the inventory to

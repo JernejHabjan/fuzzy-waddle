@@ -39,16 +39,21 @@ the explicit Playwright timeout for the whole selected variant group. A timeout 
 tests/decisions/ticks is an infrastructure failure, not behavioral evidence.
 
 Use `pnpm ai:skirmish:report -- --report <artifact> --scenario <ID> --failures-only --details` for bounded triage.
+For a retained sweep, isolate its artifacts in one directory, give every shard the same `--run-id`, then use
+`pnpm ai:skirmish:report -- --report <directory> --repair-list --require-supported`. The output is compact JSON;
+nonzero exit means a failing or missing required row. These new contracts are authored but unverified until the final gate.
 
 At the final validation gate, run a small representative map/fixture preflight, then manifest-selected family/map
 shards as one retained sweep. Reuse a browser/server process inside a worker but isolate every game world; independent
-CI workers may run separate shards. The current report command summarizes one artifact. #816 must extend that same
-tool with a bounded cross-report repair list before the broad sweep: require common source/run/manifest identity
+CI workers may run separate shards. An authored, unverified `--repair-list` mode reads an isolated directory of runtime
+reports and emits bounded JSON. Use `--require-supported` for the full required matrix, plus one shared `--run-id` for
+manual shards; CI supplies a run ID. The reporter requires common source/run/manifest identity
 and each shard's expected fixture identities/digests. Different selected fixture sets legitimately have different
 aggregate digests; reject conflicts for the same identity or unexpected membership, not all differing digests. Keep
 infrastructure and invalid-setup failures separate from gameplay outcomes, and show a provisional cluster keyed by
-the first normalized failed predicate plus family/map and available checkpoint evidence. Each cluster links every
-affected ID/seed and one representative replay artifact. Shared text is not proof of shared cause; confirm the
+the first failed predicate plus family/map and available checkpoint evidence. Each cluster links every
+affected ID/seed and one representative artifact. Exact single-variant/repetition replay selection remains to be
+implemented; the current command reruns a whole scenario. Shared text is not proof of shared cause; confirm the
 earliest causal owner before editing. Rerun affected shards after a repair batch. Establish final required matrix
 evidence after all repairs, tuning, optimization and legacy removal; reuse a complete passing sweep only while its
 relevant source/workload inputs still match. Never drop a required row or weaken its oracle to clear a cluster.

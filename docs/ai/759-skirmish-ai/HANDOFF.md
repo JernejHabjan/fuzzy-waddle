@@ -6,6 +6,13 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
+- Reporting authoring checkpoint (2026-09-28, **unverified**): runtime shard reports now carry a shared CI/manual run ID,
+  source/manifest provenance, SHA-256 per-fixture identities and scenario-to-map sources. The existing report CLI has
+  `--repair-list` for bounded JSON failure clusters and `--require-supported` for manifest-wide missing-row detection;
+  full artifacts remain retained. Pure tool tests are authored but were not executed. Use one isolated report directory
+  and one `--run-id` (or `AI_SKIRMISH_MATRIX_RUN_ID`) per sweep. The CLI currently reruns a whole scenario, not one
+  repetition/variant; exact single-variant replay selection and final-gate proof remain #816 work. Continue metadata,
+  maps, fixtures, relay/lifecycle preparation and #821 cleanup before tests. No test/build/lint commands ran here.
 - Planning review (2026-09-28): use the compact batch table in [#816](follow-ups/runtime-matrix-ci.md).
   Pair #815 pure and #816 runtime authoring by family. Metadata is an authoring prerequisite; early-stop and repair
   clustering must exist before execution but do not block independent fixtures. Full-match victory is a final-gate

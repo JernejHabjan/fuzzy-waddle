@@ -7,7 +7,11 @@ test("parses compact triage flags", () => {
     input: "artifact.json",
     scenario: "SEQ-01",
     details: true,
-    failuresOnly: false
+    failuresOnly: false,
+    repairList: false,
+    requireSupported: false,
+    maxClusters: null,
+    maxBytes: null
   });
 });
 
@@ -16,8 +20,18 @@ test("accepts an explicit report option used by retained-tool workflows", () => 
     input: "artifact.json",
     scenario: null,
     details: false,
-    failuresOnly: true
+    failuresOnly: true,
+    repairList: false,
+    requireSupported: false,
+    maxClusters: null,
+    maxBytes: null
   });
+});
+
+test("parses a cross-shard repair request", () => {
+  assert.equal(parseSummaryArguments(["--report", "tmp/sweep", "--repair-list"]).repairList, true);
+  assert.equal(parseSummaryArguments(["--repair-list", "--require-supported"]).requireSupported, true);
+  assert.equal(parseSummaryArguments(["--repair-list", "--max-clusters", "4"]).maxClusters, 4);
 });
 
 test("summarizes runtime failures and final variant evidence", () => {

@@ -1,4 +1,5 @@
 import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { join } from "node:path";
 import { runPureJestWithScenarioEvidence } from "./pure-scenario-evidence.mjs";
 import { pureFixtureReference, runtimeFixtureReference } from "./skirmish-matrix-fixtures.mjs";
@@ -151,6 +152,10 @@ export function invokeHarness(input, context) {
 
 function invokeRuntimeHarness(input, context) {
   const { manifest, workspaceRoot, fixtureDirectory } = context;
+  const runId = input.options?.["run-id"] ?? process.env.AI_SKIRMISH_MATRIX_RUN_ID ?? null;
+  if (runId !== null && (typeof runId !== "string" || !/^[A-Za-z0-9._-]{1,100}$/.test(runId))) {
+    throw new Error("invalid_skirmish_matrix_run_id");
+  }
   const startedAt = performance.now();
   const fixtures = [
     ...new Map(
@@ -163,6 +168,16 @@ function invokeRuntimeHarness(input, context) {
   const workingTreeSource = readWorkingTreeSource();
   const workingTreeDigest = workingTreeSource.length > 0 ? digestString(workingTreeSource) : null;
   const fixtureDigest = digestString(JSON.stringify(fixtures));
+  const fixtureIdentityDigests = [...new Map(input.rows.map((row) => {
+    const reference = runtimeFixtureReference(row);
+    const fixture = readJson(join(fixtureDirectory, reference), 1024 * 1024);
+    return [reference, { reference, digest: `sha256:${createHash("sha256").update(JSON.stringify(fixture)).digest("hex")}` }];
+  })).values()].sort((left, right) => left.reference.localeCompare(right.reference));
+  const scenarioSources = input.rows.map((row) => {
+    const reference = runtimeFixtureReference(row);
+    const fixture = readJson(join(fixtureDirectory, reference), 1024 * 1024);
+    return { scenarioId: row.id, group: row.group, reference, map: fixture.recipe.mapLabel };
+  });
   const environment = {
     ...process.env,
     AI_SKIRMISH_RUNTIME_REQUEST: JSON.stringify({
@@ -198,6 +213,10 @@ function invokeRuntimeHarness(input, context) {
     candidate: input.candidate ?? readHead(),
     dirtySourceDigest: workingTreeDigest,
     fixtureDigest,
+    fixtureIdentityDigests,
+    scenarioSources,
+    runId,
+    seed: input.seed ?? null,
     baseline: input.baseline ?? null,
     rows: input.rows.map((row) => row.id),
     contexts: input.rows.map((row) => ({

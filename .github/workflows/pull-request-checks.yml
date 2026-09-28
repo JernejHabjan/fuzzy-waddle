@@ -160,6 +160,8 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium
       - name: Run required skirmish shard
         run: node tools/ai/run-skirmish-matrix.mjs --scenarios "${{ matrix.scenarios }}" --mode runtime
+        env:
+          AI_SKIRMISH_MATRIX_RUN_ID: ${{ github.run_id }}-${{ github.run_attempt }}
       - name: Retain skirmish evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

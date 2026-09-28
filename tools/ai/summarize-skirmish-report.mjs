@@ -2,17 +2,23 @@
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { dirname, isAbsolute, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { buildRepairReport } from "./skirmish-repair-report.mjs";
 
 const toolDirectory = dirname(fileURLToPath(import.meta.url));
 const workspaceRoot = resolve(toolDirectory, "../..");
 
 export function parseSummaryArguments(tokens) {
-  const options = { input: null, scenario: null, details: false, failuresOnly: false };
+  const options = { input: null, scenario: null, details: false, failuresOnly: false, repairList: false,
+    requireSupported: false, maxClusters: null, maxBytes: null };
   for (let index = 0; index < tokens.length; index += 1) {
     const token = tokens[index];
     if (token === "--") continue;
     if (token === "--details") options.details = true;
     else if (token === "--failures-only") options.failuresOnly = true;
+    else if (token === "--repair-list") options.repairList = true;
+    else if (token === "--require-supported") options.requireSupported = true;
+    else if (token === "--max-clusters") options.maxClusters = Number(requiredValue(tokens[++index], "max_clusters"));
+    else if (token === "--max-bytes") options.maxBytes = Number(requiredValue(tokens[++index], "max_bytes"));
     else if (token === "--scenario") options.scenario = requiredValue(tokens[++index], "scenario");
     else if (token === "--report") {
       if (options.input !== null) throw new Error("duplicate_report_input");
@@ -35,6 +41,15 @@ export function resolveReportPath(input, root = workspaceRoot) {
     .sort((left, right) => right.modified - left.modified || right.path.localeCompare(left.path));
   if (reports.length === 0) throw new Error(`report_directory_empty:${target}`);
   return reports[0].path;
+}
+
+export function resolveRepairReportPaths(input, root = workspaceRoot) {
+  const supplied = input ?? join(root, "tmp/ai-skirmish-matrix");
+  const target = isAbsolute(supplied) ? resolve(supplied) : resolve(process.cwd(), supplied);
+  if (!statSync(target).isDirectory()) return [target];
+  const paths = readdirSync(target).filter((name) => name.endsWith(".json")).sort().map((name) => join(target, name));
+  if (paths.length === 0) throw new Error(`report_directory_empty:${target}`);
+  return paths;
 }
 
 export function summarizeReport(report, options = {}) {
@@ -216,9 +231,14 @@ function helpText() {
     "  --scenario ID       Show one scenario",
     "  --details           Add compact resources, worker orders, queues, squads and missions",
     "  --failures-only     Hide passing scenarios",
+    "  --repair-list       Parse all reports in a directory and emit bounded cross-shard JSON",
+    "  --require-supported Require every supported runtime row in repair-list mode",
+    "  --max-clusters N    Limit displayed failure clusters (default 16)",
+    "  --max-bytes N       Limit output JSON bytes (default 16384)",
     "  --help              Show this help",
     "",
     "With no path, the newest JSON report in tmp/ai-skirmish-matrix is selected.",
+    "Repair-list mode reads every JSON artifact in the supplied directory and requires a shared run ID.",
     ""
   ].join("\n");
 }
@@ -228,9 +248,32 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     const options = parseSummaryArguments(process.argv.slice(2));
     if (options.help) process.stdout.write(helpText());
     else {
-      const path = resolveReportPath(options.input);
-      const report = JSON.parse(readFileSync(path, "utf8"));
-      process.stdout.write(`${summarizeReport(report, { ...options, path })}\n`);
+      if (options.repairList) {
+        const manifest = options.requireSupported
+          ? JSON.parse(readFileSync(join(workspaceRoot, "tools/ai/fixtures/skirmish-v1.json"), "utf8"))
+          : null;
+        if (manifest && (!Array.isArray(manifest.rows) || manifest.manifestVersion !== "skirmish-v1"))
+          throw new Error("repair_report_invalid_manifest");
+        const entries = resolveRepairReportPaths(options.input).map((path) => ({
+          path: relative(workspaceRoot, path) || path,
+          report: JSON.parse(readFileSync(path, "utf8"))
+        }));
+        const expectedIds = manifest?.rows.filter((row) => row.drivers.includes("runtime") &&
+          row.runtimeSupport?.status !== "deferred_content").map((row) => row.id);
+        const repair = buildRepairReport(entries, {
+          expectedIds,
+          ...(options.maxClusters === null ? {} : { maxClusters: options.maxClusters }),
+          ...(options.maxBytes === null ? {} : { maxBytes: options.maxBytes })
+        });
+        process.stdout.write(`${JSON.stringify(repair)}\n`);
+        if (repair.status !== "passed") process.exitCode = 1;
+      } else {
+        if (options.requireSupported || options.maxClusters !== null || options.maxBytes !== null)
+          throw new Error("repair_options_need_repair_list");
+        const path = resolveReportPath(options.input);
+        const report = JSON.parse(readFileSync(path, "utf8"));
+        process.stdout.write(`${summarizeReport(report, { ...options, path })}\n`);
+      }
     }
   } catch (error) {
     process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`);
