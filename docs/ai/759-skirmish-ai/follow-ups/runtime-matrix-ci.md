@@ -42,8 +42,9 @@ Use this batch order; the contract details below are acceptance requirements for
 | Shared authoring contract | Extend existing fixture metadata, inventory and catalog; one short preset example and one continuous example | Sol/high |
 | First usable family | Freeze open-economy map; author paired #815 pure and #816 runtime economy/production cases using existing setup services | Sol/high for new semantics, then Terra/medium for specified cases |
 | Further families | Reuse helpers for combat/scouting/strategy; add bridge when needed, fortified map with wall cases; then recovery/debug | Same model across related cases while contract remains stable |
-| Specialized adapters | #819 relay and #823 lifecycle contracts plus their cases; preserve their separate authority requirements | Sol/high, then bounded Terra delivery |
+| Specialized adapters | Build #819 real relay/two-client harness and #823 lifecycle wiring/setup plus cases; preserve separate authority requirements | Sol/high, then bounded Terra delivery |
 | Execution tooling | Finish early-stop and cross-report repair output before the broad validation sweep | Sol/high for oracle/provenance design, Terra/medium for specified plumbing |
+| Pre-gate cleanup | Finish in-scope #821 splits/renames and update imports, manifests, compatibility readers and documentation links | Terra/medium; Sol for changed contracts |
 | Deferred validation | Preflight, grouped sweep, cluster repairs, calibration/optimization/legacy retirement, then final evidence | Sol/high diagnosis; Terra for confirmed bounded repairs |
 
 Metadata comes before mass authoring because it defines every recipe. Early-stop and failure clustering are needed
@@ -109,6 +110,41 @@ compaction; do not reload the whole catalog/history. Compact context size is a p
    A transient positive event cannot end a case that also requires retained workers, no duplicate construction,
    cleanup or sustained pressure. Declare the minimum observation/stability window and all selected obligations;
    shared variants stop only after all obligations finish. Continuous matches may stop on their real terminal result.
+
+## Authoring readiness before execution
+
+This is a source-review checklist, not a claim of passing validation. Before announcing the final gate, record each
+item as authored/unverified or explicitly blocked with its owner:
+
+- Required gameplay changes and source-confirmed defects addressed; no known missing wiring hidden as a test task.
+- Frozen maps, legal presets, independent oracles and required pure/runtime mappings authored; island rows deferred.
+- Real relay/authenticated two-client setup/teardown and lifecycle adapters authored under #819/#823, including
+  authority fencing, save/restore, replay and repeated-match cleanup where their source contracts need repair.
+- In-scope splits/renames completed with imports, registrations, manifest paths, compatibility and docs updated.
+- CI selection, early-stop, report producers and bounded cross-shard reporting authored with their own test cases.
+
+Measured optimizations, difficulty tuning and legacy deletion remain evidence-dependent final-gate work. Do not
+invent fixes for an unobserved runtime failure or remove compatibility on the strength of this checklist.
+
+## Script-first agent result contract
+
+Implement this in the existing reporter before execution; it is a pending requirement, not current capability.
+
+- Parse and evaluate results deterministically outside agent context. Passing rows produce totals by tier/family;
+  retain full evidence in artifacts. No agent evaluation per tick, checkpoint or successful variant.
+- Emit bounded JSON with run/source/workload provenance, expected/executed/passed/failed/unexecuted counts and
+  provisional failure clusters. Each cluster includes classification, failure code, affected IDs, one representative
+  expected/observed outcome and checkpoint, seed/map, artifact pointer and exact replay selection.
+- Bound output by configurable byte and cluster limits. Preserve full member lists in retained artifacts; include
+  omitted counts and detail pointers. Truncation never changes exit status, hides missing rows or marks them passing.
+- Separate setup/infrastructure, behavior and unknown failures. Missing evidence stays unknown; a matching failure
+  code is not proof of a shared cause. Reject incompatible provenance as specified above.
+- Invoke agent judgment at a batch boundary for actionable failures, ambiguous evidence or tuning decisions. Start
+  with the compact JSON, then request only the named cluster/member/checkpoint detail needed for diagnosis. Keep
+  routine process waiting and successful result collection scripted; do not repeatedly reload unchanged reports.
+- Author reporter tests for malformed/missing reports, provenance conflicts, distinct causes, zero-work runs and
+  output truncation with correct totals and failure status. Execute these in the final preflight before trusting
+  compressed results. Retain raw logs/traces so compression is reversible, not evidence deletion.
 
 ## Deferred final-gate execution loop
 

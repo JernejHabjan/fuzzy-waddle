@@ -30,6 +30,11 @@ activate `CommandBusService` multiplayer mode, which requires a relay and more t
 
 ## Implementation order
 
+During the current authoring sweep, build the real relay/authentication/lobby/client setup and teardown harness,
+authority wiring and assertions below without executing them. Repair missing wiring demonstrated by source inspection
+in the same slice; this task is not just running existing local tests. References to proving/comparing/verifying below
+describe final-gate acceptance. Runtime-only failures remain deferred, and authored cases are not passing evidence.
+
 1. **Sol/high boundary:** trace one host-owned AI command through relay, shared application, peer projection, and retained
    provenance. Commit a deterministic two-peer reproduction and the authority fence before adding interruption cases.
 2. **Terra/high delivery:** add a deterministic test lobby with two authenticated browser clients, one authoritative host, and at least one AI.

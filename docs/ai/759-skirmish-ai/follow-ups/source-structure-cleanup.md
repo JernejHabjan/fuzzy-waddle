@@ -63,7 +63,11 @@ large files, stage-labelled persisted IDs/fixtures, and ordinary implementation 
    migration or compatibility aliases and prove old fixtures/saves still load. Stage-labelled comments/test descriptions
    in hash-baselined files also need a reviewed split before editing, not a new baseline hash.
 5. Remove each compliant file from the baseline rather than updating its hash. Run `rg` for obsolete names and paths.
-6. Commit and push small mechanical batches with focused type/lint/tests; avoid broad semantic rewrites.
+6. Finish in-scope mechanical batches before the final execution sweep, updating imports, registrations, manifests,
+   fixture paths and documentation links together. Commit and push task-owned changes; avoid broad semantic rewrites.
+   Under the current no-validation direction, author compatibility tests but defer type/lint/tests and structural
+   validation to the final gate. Source inspection is not proof of behavior preservation. Legacy controller deletion
+   belongs to #820 after parity evidence, not this pre-gate naming cleanup.
 
 ## Completion
 

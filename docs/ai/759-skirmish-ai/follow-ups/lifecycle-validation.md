@@ -30,6 +30,11 @@ multiplayer reconnect proof.
 
 ## Implementation order
 
+Prepare legal snapshot builders, restore/replay/cleanup adapters and typed assertions during the authoring sweep.
+Repair source-confirmed migration, fencing or disposal gaps now; do not wait for test execution to implement known
+missing contracts. Local save/replay preparation need not wait for #819; socket-backed cases depend on its harness.
+The proofs below run only at the final gate. Keep all authored fixtures and repairs explicitly unverified until then.
+
 1. **Sol/high boundary:** trace one active commitment across save/load, replay, and reconnect authority. Commit the
    canonical before/after state, exact-once boundary, and first deterministic reproduction before enumerating every phase.
 2. **Terra/medium delivery:** enumerate restartable AI phases: economy delivery, construction, production/research, squad mission, transport,

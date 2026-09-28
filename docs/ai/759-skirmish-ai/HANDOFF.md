@@ -133,6 +133,12 @@ until one clean replacement run is necessary; do not reconstruct or dump the old
 
 ## Remaining execution order
 
+**Build first, execute later (2026-09-28):** this grid is an authoring queue, not permission to run checks.
+Complete source changes, multiplayer/lifecycle wiring and harnesses, legal fixtures, report tooling, and in-scope
+splits/renames before the final gate. Fix defects established by source inspection now; leave runtime-dependent
+diagnosis, measured tuning and legacy retirement until evidence exists. Do not postpone known implementation gaps
+merely because their issue title mentions testing. All authored work remains unverified until executed.
+
 | Order         | Issue                                                           | State         | Next boundary                                                     | Model / effort            |
 | ------------- | --------------------------------------------------------------- | ------------- | ----------------------------------------------------------------- | ------------------------- |
 | 1 / as needed | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `partial`     | Split only the owners that block the next implementation slice    | Terra, medium             |
@@ -142,10 +148,11 @@ until one clean replacement run is necessary; do not reconstruct or dump the old
 | 4 / paired | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Metadata first, then paired family batches and incremental maps | Sol, high → Terra, medium |
 | 6             | [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828) | `not_started` | Prepare probes now; measure/optimize only at final gate           | Sol, high → Terra, high   |
 | 7             | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `not_started` | Prepare paired fixtures; baseline/D-06/soaks at final gate        | Sol, high → Terra, medium |
-| 8             | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `not_started` | Author relay/lockstep cases after #816 runtime contract exists    | Sol, high → Terra, high   |
-| 9             | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `not_started` | Author save/replay/reconnect/repeated-match cases after #819      | Sol, high → Terra, medium |
+| 8             | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `not_started` | Build real relay/two-client harness, authority wiring and cases before gate | Sol, high → Terra, high |
+| 9             | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `not_started` | Build lifecycle setup/restore/cleanup adapters and cases; network cases use #819 | Sol, high → Terra, medium |
 | 10            | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | `not_started` | Retire legacy controller only after parity proof at final gate    | Sol, high → Terra, medium |
-| 11 / final    | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `not_started` | Finish naming/source cleanup, then run final validation gate      | Terra, medium             |
+| Before gate   | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `partial` | Finish in-scope splits/renames, compatibility and consumer updates; defer checks | Terra, medium |
+| Final gate    | Required issues above | `deferred` | Announce, preflight, grouped execution, compact triage, repairs and final evidence | Sol, high → bounded Terra repairs |
 
 Dependencies remain authoritative over model grouping. Every planning, authority, architecture, strategy, or causal-diagnosis
 boundary starts on Sol/high; Terra resumes only once that boundary has a compact contract and focused acceptance evidence.
@@ -181,6 +188,9 @@ fixture schedules and historical 12,000-tick diagnostics remain facts about auth
    rationale; missing focused setup must remain visible. Keep generator/evaluator source within the size rules.
 4. Finish required pure/runtime mappings for supported IDs in the 121-scenario manifest, with the four island-content
    runtime rows explicit and deferred. Author focused outcomes before relying on the small continuous-match tier.
+   Finish #819/#823 implementation and harness preparation, #821 cleanup and the #816 readiness checklist first.
+   Automated parsers must reduce retained results to bounded failure packets before agent review; passing rows need
+   counts, not narrated checkpoints. Agents inspect batches only when judgment is needed, with detail on demand.
    During this sweep, do not execute tests, E2E, simulations, lint, builds or validation under the user direction above.
 5. Before the final gate, tell the user. Preflight representative map/fixture infrastructure, then run compatible
    family/map shards as one retained sweep and generate a compact repair list. Confirm causal clusters from one
