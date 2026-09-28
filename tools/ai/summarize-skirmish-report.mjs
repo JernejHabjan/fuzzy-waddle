@@ -122,6 +122,7 @@ export function summarizeReport(report, options = {}) {
           `  VARIANT ${variant.variantId}`,
           `seed=${variant.seed ?? "none"}`,
           `tick=${final.tick ?? "none"}`,
+          variant.stopReason ? `stop=${variant.stopReason}` : null,
           `result=${final.gameResult ?? "none"}`,
           `workers=${final.workerCount ?? "none"}`,
           `army=${final.militaryActorNames?.length ?? "none"}`,

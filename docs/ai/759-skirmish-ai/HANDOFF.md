@@ -6,6 +6,11 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
+- Terminal-oracle authoring checkpoint (2026-09-28, **unverified**): SEQ-01 now requires the AI player's authoritative
+  `win` result; `loss`, `tie`, `quit` and an isolated completed mode goal cannot satisfy victory. The runtime driver
+  can stop a terminal match after all scheduled events only when every selected scenario requires victory, and records
+  its stop reason in retained variants and compact reports. A grouped PRO+SEQ variant still runs its full production
+  horizon; other focused stop-on-evidence cases remain to implement. Pure terminal-policy tests are authored, unrun.
 - Recipe split checkpoint (2026-09-28, **unverified**): the old mixed
   `stage-15-land-loop-runtime.json` is now `continuous-land-and-production-runtime.json`, with the focused PRO-05
   producer-loss case moved to `focused-production-replacement-runtime.json`. Manifest and generated catalog links

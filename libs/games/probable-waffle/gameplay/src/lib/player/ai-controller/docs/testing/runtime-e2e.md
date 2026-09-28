@@ -5,6 +5,9 @@
 Skirmish AI runtime acceptance must be executable in CI before a change merges to `develop`/`main`; it must not exist only as a one-time agent run. The required Playwright matrix should be sharded by stable scenario group while preserving one isolated game per variant. Derive shard membership from manifest support status; workflow YAML must not duplicate a hand-written scenario list.
 
 The pre-merge gate must include every supported runtime-required manifest row. Missing fixtures, zero decisions, zero ticks, a missing terminal result, provenance mismatch or browser/runtime failure fails the gate. Unsupported future capabilities remain visible in the report and require an explicit reason.
+For a victory row, an authoritative AI-player `win` is required; loss, tie, quit or a completed intermediate mode goal
+cannot substitute for victory. A terminal world may stop early only after all selected victory assertions and scheduled
+events are complete. The currently authored terminal-stop helper does not yet cover nonterminal focused success cases.
 
 Pure selection also requires a passing, actually executed Jest assertion naming each requested scenario ID. The matrix
 captures separate Jest JSON results for gameplay and Phaser without a cached target; a broad passing spec file or a registered fixture

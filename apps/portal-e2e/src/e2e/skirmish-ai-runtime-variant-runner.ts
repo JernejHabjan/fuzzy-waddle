@@ -8,6 +8,7 @@ import { last } from "./skirmish-ai-runtime-value";
 import { applyRuntimePerturbation } from "./skirmish-ai-runtime-perturbation-runner";
 import { digestRuntimeValue, projectRuntimeOutcomeDigestInput } from "./skirmish-ai-runtime-digest";
 import { prepareRuntimeVariant } from "./skirmish-ai-runtime-variant-setup";
+import { canStopAfterTerminal } from "./skirmish-ai-runtime-terminal";
 
 export async function runVariant(
   browser: Browser,
@@ -43,9 +44,12 @@ export async function runVariant(
     const pendingPerturbations = [...(variant.perturbations ?? [])].sort(
       (left, right) => left.tick - right.tick || left.id.localeCompare(right.id)
     );
+    const applicableScenarioIds = requestedScenarioIds.filter(
+      (scenarioId) => variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId)
+    );
+    let stopReason: RuntimeVariantResultV1["stopReason"] = "checkpoint_ceiling";
     const maximumTick = Math.max(
-      ...requestedScenarioIds
-        .filter((scenarioId) => variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId))
+      ...applicableScenarioIds
         .map((scenarioId) => fixture.assertions[scenarioId]?.maximumTick ?? last(fixture.recipe.checkpointTicks))
     );
     const checkpointTicks = [...new Set(variant.checkpointTicks ?? fixture.recipe.checkpointTicks)]
@@ -81,7 +85,8 @@ export async function runVariant(
       await setSimulationState(page, fixture.recipe.aiPlayerNumber, "pause", fixture.recipe.simulationTimeScale);
       await waitForSettledDecision(page, fixture.recipe.aiPlayerNumber);
       const captureStartedAt = performance.now();
-      checkpoints.push(await captureCheckpoint(page, fixture.recipe.aiPlayerNumber, targetTick));
+      const checkpoint = await captureCheckpoint(page, fixture.recipe.aiPlayerNumber, targetTick);
+      checkpoints.push(checkpoint);
       await debugProbe?.(page, index);
       if (profiling) {
         checkpointPhases.push({
@@ -90,6 +95,14 @@ export async function runVariant(
           settleMs: Math.round(captureStartedAt - settleStartedAt),
           captureMs: Math.round(performance.now() - captureStartedAt)
         });
+      }
+      const pendingEventTicks = [
+        ...pendingPerturbations.map((event) => event.tick),
+        ...(variant.presetWorld?.events ?? []).map((event) => event.tick)
+      ];
+      if (canStopAfterTerminal(fixture.assertions, applicableScenarioIds, checkpoint, pendingEventTicks)) {
+        stopReason = "terminal_result";
+        break;
       }
     }
     if (variant.presetWorld?.events?.length) {
@@ -159,6 +172,7 @@ export async function runVariant(
     return {
       variantId: variant.id,
       mapLabel: variant.mapLabel ?? fixture.recipe.mapLabel,
+      stopReason,
       seed: effectiveSeed,
       aiFaction: variant.aiFaction,
       initialOwnedActorCount: initialBoundary.state.ownedActorCount,

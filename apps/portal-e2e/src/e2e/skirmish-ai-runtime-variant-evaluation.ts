@@ -9,6 +9,7 @@ import { evaluateRuntimeResourceService } from "./skirmish-ai-runtime-resource-s
 import { evaluateRuntimeSourceSaturation } from "./skirmish-ai-runtime-source-saturation-evaluation";
 import { evaluateRuntimeResourceLabor } from "./skirmish-ai-runtime-resource-labor-evaluation";
 import { evaluateRuntimeWorkerGrowth } from "./skirmish-ai-runtime-worker-growth-evaluation";
+import { isAiVictory } from "./skirmish-ai-runtime-terminal";
 
 export function evaluateRuntimeVariant(
   scenarioId: string,
@@ -172,11 +173,9 @@ export function evaluateRuntimeVariant(
     );
     if (!continued) failures.push(`${variant.variantId}:mission_pressure_did_not_continue`);
   }
-  const hasTerminalResult =
-    (final.gameResult !== null && final.gameResult.toLowerCase() !== "quit") ||
-    final.modeGoals.some((goal) => goal.owner === 2 && goal.state === "completed");
-  if (assertion.requireTerminalResult && !hasTerminalResult) {
-    failures.push(`${variant.variantId}:terminal_result_missing`);
+  const hasAiVictory = isAiVictory(final);
+  if (assertion.requireAiVictory && !hasAiVictory) {
+    failures.push(`${variant.variantId}:ai_victory_missing`);
   }
   if (
     assertion.requiredGroundRouteVariantIds?.includes(variant.variantId) &&
@@ -184,7 +183,7 @@ export function evaluateRuntimeVariant(
   ) {
     failures.push(`${variant.variantId}:ground_route_missing`);
   }
-  failures.push(...evaluateRuntimeRaidRecovery(assertion, variant, final, hasTerminalResult));
+  failures.push(...evaluateRuntimeRaidRecovery(assertion, variant, final, hasAiVictory));
   failures.push(...evaluateRuntimePresetWorld(assertion, variant));
   if (assertion.requiredSupplyPrebuild) {
     failures.push(

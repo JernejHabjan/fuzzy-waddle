@@ -4,6 +4,7 @@ import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
 export interface RuntimeVariantResultV1 {
   readonly variantId: string;
   readonly mapLabel: string;
+  readonly stopReason: "terminal_result" | "checkpoint_ceiling";
   readonly seed: number;
   readonly aiFaction: RuntimeVariantV1["aiFaction"];
   readonly initialOwnedActorCount: number;

@@ -47,6 +47,7 @@ function failureRecord(report, path, source, scenario, failure) {
     variantId: brief(variantId, 80),
     seed: Number.isSafeInteger(variant?.seed) ? variant.seed : report.seed,
     observed: observedCheckpoint(variant),
+    stopReason: variant?.stopReason ?? null,
     path
   };
 }
@@ -182,7 +183,8 @@ export function buildRepairReport(entries, options = {}) {
       affectedIds: [...new Set(members.map((member) => member.scenarioId))].slice(0, 40),
       omittedIds: Math.max(0, new Set(members.map((member) => member.scenarioId)).size - 40),
       representative: { scenarioId: first.scenarioId, variantId: first.variantId, seed: first.seed,
-        failedPredicate: first.code, lastObserved: first.observed, artifact: first.path,
+        failedPredicate: first.code, lastObserved: first.observed, stopReason: first.stopReason,
+        artifact: first.path,
         rerunScenario: `node tools/ai/run-skirmish-matrix.mjs --scenario ${first.scenarioId} --mode runtime` +
           (Number.isSafeInteger(first.seed) ? ` --seed ${first.seed}` : "") }
     };

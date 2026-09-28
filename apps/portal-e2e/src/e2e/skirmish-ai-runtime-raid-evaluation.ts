@@ -6,7 +6,7 @@ export function evaluateRuntimeRaidRecovery(
   assertion: RuntimeAssertionV1,
   variant: RuntimeVariantResultV1,
   final: RuntimeCheckpointV1,
-  hasTerminalResult: boolean
+  hasAiVictory: boolean
 ): string[] {
   const failures: string[] = [];
   if (assertion.requireRaidDefenseRecovery) {
@@ -31,7 +31,7 @@ export function evaluateRuntimeRaidRecovery(
       raid !== undefined &&
       final.deliveredIncome > 0 &&
       final.strategyStance !== "defend" &&
-      (hasTerminalResult || final.squads.some((squad) => squad.role === "attack" && squad.actorCount > 0));
+      (hasAiVictory || final.squads.some((squad) => squad.role === "attack" && squad.actorCount > 0));
     if (!raid || raid.dispatchedActors <= 0) failures.push(`${variant.variantId}:raid_not_dispatched`);
     if (!defenseSeen && !interceptedOutsideHome) failures.push(`${variant.variantId}:raid_defense_not_observed`);
     if (!recovered) failures.push(`${variant.variantId}:raid_recovery_not_observed`);

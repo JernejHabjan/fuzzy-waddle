@@ -22,7 +22,7 @@ export interface RuntimeAssertionV1 {
   readonly minimumDamageDealt?: number;
   readonly minimumEnemyLosses?: number;
   readonly requireMissionContinuation?: boolean;
-  readonly requireTerminalResult?: boolean;
+  readonly requireAiVictory?: boolean;
   readonly requiredGroundRouteVariantIds?: readonly string[];
   readonly requireRaidDefenseRecovery?: boolean;
   readonly requiredPresetFixtureId?: string;

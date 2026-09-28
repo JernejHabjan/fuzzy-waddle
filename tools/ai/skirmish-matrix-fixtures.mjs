@@ -243,7 +243,7 @@ function validateRuntimeFixture(fixture, scenarioId) {
       "requireCapacityDemand",
       "requireProductionStopsAtTarget",
       "requireMissionContinuation",
-      "requireTerminalResult",
+      "requireAiVictory",
       "requireRaidDefenseRecovery",
       "requireSupplyControl"
     ].some((field) => assertion[field] !== undefined && typeof assertion[field] !== "boolean")

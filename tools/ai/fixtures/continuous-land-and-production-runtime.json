@@ -142,7 +142,7 @@
       "minimumEnemyLosses": 1,
       "requireMissionContinuation": true,
       "requiredGroundRouteVariantIds": ["skaduwee-land-loop"],
-      "requireTerminalResult": true
+      "requireAiVictory": true
     },
     "SEQ-02": {
       "maximumTick": 12000,
