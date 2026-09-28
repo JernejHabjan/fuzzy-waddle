@@ -45,7 +45,7 @@ Use this batch order; the contract details below are acceptance requirements for
 | Specialized adapters | Build #819 real relay/two-client harness and #823 lifecycle wiring/setup plus cases; preserve separate authority requirements | Sol/high, then bounded Terra delivery |
 | Execution tooling | Finish early-stop and cross-report repair output before the broad validation sweep | Sol/high for oracle/provenance design, Terra/medium for specified plumbing |
 | Pre-gate cleanup | Finish in-scope #821 splits/renames and update imports, manifests, compatibility readers and documentation links | Terra/medium; Sol for changed contracts |
-| Deferred validation | Preflight, grouped sweep, cluster repairs, calibration/optimization/legacy retirement, then final evidence | Sol/high diagnosis; Terra for confirmed bounded repairs |
+| Deferred validation | Preflight, grouped sweep, cluster repairs, calibration/optimization/legacy retirement, then final evidence | Astra/high diagnosis and evidence decisions; Terra for confirmed bounded repairs |
 
 Reporter authoring checkpoint (2026-09-28, unverified): the existing summary CLI now accepts `--repair-list` and
 `--require-supported`; runtime reports include a shared run ID, source/manifest provenance, per-fixture SHA-256

@@ -166,11 +166,14 @@ merely because their issue title mentions testing. All authored work remains unv
 | 9             | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `not_started` | Build lifecycle setup/restore/cleanup adapters and cases; network cases use #819 | Sol, high → Terra, medium |
 | 10            | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | `not_started` | Retire legacy controller only after parity proof at final gate    | Sol, high → Terra, medium |
 | Before gate   | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `partial` | Finish in-scope splits/renames, compatibility and consumer updates; defer checks | Terra, medium |
-| Final gate    | Required issues above | `deferred` | Announce, preflight, grouped execution, compact triage, repairs and final evidence | Sol, high → bounded Terra repairs |
+| Final gate    | Required issues above | `deferred` | Announce, preflight, grouped execution, compact triage, repairs and final evidence | Astra, high for diagnosis and evidence decisions; bounded Terra repairs |
 
 Dependencies remain authoritative over model grouping. Every planning, authority, architecture, strategy, or causal-diagnosis
 boundary starts on Sol/high; Terra resumes only once that boundary has a compact contract and focused acceptance evidence.
 Do not reorder dependent work merely to avoid a model switch or downgrade a deep-reasoning boundary for cost.
+The user's latest model direction reserves a stronger model for steps 3–4: grouped runtime validation, causal repair,
+difficulty/performance decisions and legacy retirement start on `gpt-6-astra` at high effort. A bounded repair with
+an already established contract can use Terra; re-escalate if the evidence changes the architecture or authority path.
 
 Optional [#822](https://github.com/JernejHabjan/fuzzy-waddle/issues/822) owns a future island map and natural
 transport-required runtime. It is detached from #759 and does not block core readiness.
