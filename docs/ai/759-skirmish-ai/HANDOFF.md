@@ -173,15 +173,16 @@ merely because their issue title mentions testing. All authored work remains unv
 | 1 / as needed | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `partial`     | Split only the owners that block the next implementation slice    | Terra, medium             |
 | 2             | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829) | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof | Sol, high → Terra, high   |
 | 3             | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `in_progress` | Finish sustained pressure/recovery policy; defer victory proof    | Sol, high → Terra, high   |
-| 4 / paired | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `in_progress` | Author each pure family alongside its #816 runtime slice | Sol, high → Terra, medium |
-| 4 / paired | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Metadata first, then paired family batches and incremental maps | Sol, high → Terra, medium |
-| 6             | [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828) | `not_started` | Prepare probes now; measure/optimize only at final gate           | Sol, high → Terra, high   |
-| 7             | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `not_started` | Prepare paired fixtures; baseline/D-06/soaks at final gate        | Sol, high → Terra, medium |
-| 8             | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `not_started` | Build real relay/two-client harness, authority wiring and cases before gate | Sol, high → Terra, high |
-| 9             | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `not_started` | Build lifecycle setup/restore/cleanup adapters and cases; network cases use #819 | Sol, high → Terra, medium |
-| 10            | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | `not_started` | Retire legacy controller only after parity proof at final gate    | Sol, high → Terra, medium |
-| Before gate   | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `partial` | Finish in-scope splits/renames, compatibility and consumer updates; defer checks | Terra, medium |
+| 4             | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Finish frozen maps, legal presets, bounded reporting and exact replay selection | Sol, high → Terra, medium |
+| 5 / paired    | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `in_progress` | Author each pure family alongside its #816 runtime slice | Sol, high → Terra, medium |
+| 5 / paired    | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Author focused positive/control cases, then a small continuous-match tier | Sol, high → Terra, medium |
+| 6             | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `not_started` | Build real relay/two-client harness, authority wiring and cases before gate | Sol, high → Terra, high |
+| 7             | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `not_started` | Build lifecycle setup/restore/cleanup adapters and cases; network cases use #819 | Sol, high → Terra, medium |
+| 8             | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `partial` | Finish in-scope splits/renames and consumer updates before broad runs; defer checks | Terra, medium |
+| 9 / prepare   | [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828) | `not_started` | Author probes now; measure/optimize only at final gate | Sol, high → Terra, high |
+| 9 / prepare   | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `not_started` | Author paired fixtures; calibrate/soak only at final gate | Sol, high → Terra, medium |
 | Final gate    | Required issues above | `deferred` | Announce, preflight, grouped execution, compact triage, repairs and final evidence | Astra, high for diagnosis and evidence decisions; bounded Terra repairs |
+| After parity | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | `not_started` | Retire legacy controller only after multiplayer/lifecycle/matrix proof | Astra, high decision → Terra, medium cleanup |
 
 Dependencies remain authoritative over model grouping. Every planning, authority, architecture, strategy, or causal-diagnosis
 boundary starts on Sol/high; Terra resumes only once that boundary has a compact contract and focused acceptance evidence.
@@ -221,8 +222,12 @@ fixture schedules and historical 12,000-tick diagnostics remain facts about auth
 4. Finish required pure/runtime mappings for supported IDs in the 121-scenario manifest, with the four island-content
    runtime rows explicit and deferred. Author focused outcomes before relying on the small continuous-match tier.
    Finish #819/#823 implementation and harness preparation, #821 cleanup and the #816 readiness checklist first.
-   Automated parsers must reduce retained results to bounded failure packets before agent review; passing rows need
-   counts, not narrated checkpoints. Agents inspect batches only when judgment is needed, with detail on demand.
+   The runner retains raw evidence and emits one bounded JSON index per shard: run/source/fixture digests, supported
+   row counts, pass/fail/unsupported counts, duration, stop reason and artifact paths. An offline reducer clusters
+   failures by setup/authority/gameplay/timeout cause and outputs only affected IDs, minimal facts and replay commands.
+   Passing rows need counts, not narrated checkpoints. Agents read the reduced index/repair list first and open one
+   representative raw artifact only when a causal decision requires it; do not paste full event streams into context.
+   Exact variant/seed/repetition replay must work before the broad sweep so repairs rerun only affected shards.
    During this sweep, do not execute tests, E2E, simulations, lint, builds or validation under the user direction above.
 5. Before the final gate, tell the user. Preflight representative map/fixture infrastructure, then run compatible
    family/map shards as one retained sweep and generate a compact repair list. Confirm causal clusters from one
