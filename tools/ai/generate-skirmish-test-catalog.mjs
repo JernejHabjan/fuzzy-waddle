@@ -3,6 +3,7 @@ import { readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { basename, dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { collectRuntimeInventory, renderRuntimeInventory } from "./skirmish-runtime-inventory.mjs";
+import { describeRuntimeVariant } from "./skirmish-runtime-recipe-metadata.mjs";
 
 const workspaceRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const testingDirectory = join(
@@ -114,10 +115,39 @@ function runtimeCell(row) {
   const maximumTick = Math.max(
     ...variants.map((variant) => Math.max(...(variant.checkpointTicks ?? fixture.recipe.checkpointTicks)))
   );
+  const kinds = [...new Set(variants.map((variant) => variant.executionKind ?? "missing kind"))];
   return (
     `Registered ${link(join(fixtureDirectory, row.fixture), "recipe")}; ${maps.join(" / ")}; ` +
-    `${runs} run${runs === 1 ? "" : "s"}, ≤${maximumTick.toLocaleString("en-US")} ticks`
+    `${kinds.join(" / ")}; ${runs} run${runs === 1 ? "" : "s"}, ≤${maximumTick.toLocaleString("en-US")} ticks`
   );
+}
+
+function runtimeVariantRows(manifest) {
+  const fixturePaths = [...new Set(manifest.rows.map((row) => row.fixture).filter(Boolean))].sort();
+  const lines = [
+    "## Registered runtime variants",
+    "",
+    "Declared setup and budget metadata below comes from recipes; it is not execution evidence. `lobby defaults` means",
+    "the recipe did not author a preset world. A long focused deadline needs its own rationale.",
+    "",
+    "| Recipe / variant | Scenario IDs | Kind / role | Map | Starting state | Runs / ceiling | Rationale |",
+    "| --- | --- | --- | --- | --- | --- | --- |"
+  ];
+  for (const path of fixturePaths) {
+    const fixture = JSON.parse(readFileSync(join(fixtureDirectory, path), "utf8"));
+    for (const variant of fixture.recipe.variants) {
+      const detail = describeRuntimeVariant(fixture.recipe, variant);
+      const ids = variant.scenarioIds ?? fixture.scenarioIds;
+      lines.push(
+        `| ${link(join(fixtureDirectory, path), detail.id)} | ${cell(ids.join(", "))} | ` +
+          `${cell(`${detail.kind} / ${detail.role}${detail.pairId ? ` (${detail.pairId})` : ""}`)} | ` +
+          `${cell(detail.map)} | ${cell(detail.setup)} | ` +
+          `${detail.runs} / ${detail.maximumTick.toLocaleString("en-US")} ticks | ${cell(detail.rationale ?? "—")} |`
+      );
+    }
+  }
+  lines.push("");
+  return lines;
 }
 
 export function renderCatalog() {
@@ -183,6 +213,7 @@ export function renderCatalog() {
     }
     lines.push("");
   }
+  lines.push(...runtimeVariantRows(manifest));
   return `${lines.join("\n")}\n`;
 }
 

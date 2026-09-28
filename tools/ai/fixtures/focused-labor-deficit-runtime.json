@@ -19,6 +19,8 @@
     "variants": [
       {
         "id": "tivara-wood-deficit-labor",
+        "executionKind": "focused_preset",
+        "role": "standalone",
         "scenarioIds": ["ECO-04"],
         "seed": 829014,
         "aiFaction": "Tivara",

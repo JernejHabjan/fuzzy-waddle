@@ -53,6 +53,12 @@ identities and scenario sources. CI supplies the run ID; manual sweeps must use 
 are authored. Its rerun command selects a whole scenario, so exact variant/repetition replay still needs a bounded diagnostic
 selection contract before relying on that field. Do not treat this checkpoint as executed evidence.
 
+Recipe metadata checkpoint (2026-09-28, unverified): all nine currently registered runtime recipes declare
+execution kind, variant role, pair identity where relevant, and focused long-deadline or natural-setup rationale.
+The validator and generated catalog expose this contract and the current actual starting state. Paired resource-service
+and housing controls now share their subject seed. Existing long/repeated focused recipes still need the planned
+family-specific migration; no scenario pass is inferred from metadata or catalog generation.
+
 Metadata comes before mass authoring because it defines every recipe. Early-stop and failure clustering are needed
 before execution, so they need not block independent fixture authoring. Implement each helper with its first real
 consumer; avoid a general fixture framework or extra index. Keep required defaults explicit. Use the inventory to

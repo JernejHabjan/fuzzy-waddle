@@ -93,6 +93,8 @@ generated scenario catalog must derive, for each registered runtime row, that ki
 starting-state summary, positive/control run counts, map, tick deadline and exception rationale from recipe data.
 It must show missing setup as missing rather than infer it from requirement prose. Do not hand-edit generated rows
 or copy fixture state into another maintained table.
+The current metadata contract and catalog variant table are authored but unverified; subject/control pairs now declare
+one pair ID and matching seed, map and scenario membership. Existing multi-run focused variants remain migration work.
 Catalog output reports registration and declared budgets, never an executed pass.
 
 Scripted opponent pressure remains a real deterministic human command. It may select attacker object names and a target

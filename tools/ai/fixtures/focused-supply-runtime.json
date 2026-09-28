@@ -19,6 +19,10 @@
     "variants": [
       {
         "id": "tivara-queued-supply-shortfall",
+        "executionKind": "focused_preset",
+        "role": "subject",
+        "pairId": "queued-housing",
+        "deadlineRationale": "A completed housing gain must precede the queued population stall.",
         "scenarioIds": ["ECO-07"],
         "seed": 829071,
         "aiFaction": "Tivara",
@@ -44,8 +48,12 @@
       },
       {
         "id": "tivara-ample-supply-control",
+        "executionKind": "focused_preset",
+        "role": "control",
+        "pairId": "queued-housing",
+        "deadlineRationale": "Absence of redundant housing must hold through the paired production window.",
         "scenarioIds": ["ECO-07"],
-        "seed": 829072,
+        "seed": 829071,
         "aiFaction": "Tivara",
         "humanFaction": "Skaduwee",
         "difficulty": "Normal",

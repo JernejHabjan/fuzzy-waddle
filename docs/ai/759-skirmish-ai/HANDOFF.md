@@ -6,6 +6,13 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
+- Metadata authoring checkpoint (2026-09-28, **unverified**): all nine currently registered runtime recipes now declare
+  per-variant execution kind and role; paired controls declare a pair ID, identical seed/map/ID membership. Focused
+  natural setups and focused deadlines above 2,000 ticks carry reasons. The fixture validator now enforces these
+  contracts, and the generated scenario catalog lists each variant's actors, resource starts/grants, queue/order/event
+  counts, runs and ceiling. Catalog generation (`--write`) updated the document; no tests or checks ran. This does not
+  turn 97 missing supported recipes into coverage. Next: frozen maps and paired #815/#816 families; split the mixed
+  production/continuous recipe and retire long/repeated focused cases before the final sweep.
 - Reporting authoring checkpoint (2026-09-28, **unverified**): runtime shard reports now carry a shared CI/manual run ID,
   source/manifest provenance, SHA-256 per-fixture identities and scenario-to-map sources. The existing report CLI has
   `--repair-list` for bounded JSON failure clusters and `--require-supported` for manifest-wide missing-row detection;

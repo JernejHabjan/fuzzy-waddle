@@ -1,5 +1,6 @@
 import { join } from "node:path";
 import { readJson } from "./skirmish-matrix-io.mjs";
+import { validateRuntimeRecipeMetadata } from "./skirmish-runtime-recipe-metadata.mjs";
 
 export function validateManifest(value, fixtureDirectory) {
   if (!value || value.schemaVersion !== 1 || value.manifestVersion !== "skirmish-v1" || !Array.isArray(value.rows))
@@ -249,6 +250,7 @@ function validateRuntimeFixture(fixture, scenarioId) {
   ) {
     throw new Error(`malformed_runtime_fixture:${scenarioId}`);
   }
+  validateRuntimeRecipeMetadata(recipe);
 }
 
 export function safeReference(value) {

@@ -19,6 +19,10 @@
     "variants": [
       {
         "id": "tivara-early-raid",
+        "executionKind": "focused_preset",
+        "role": "subject",
+        "pairId": "raid-pressure",
+        "deadlineRationale": "Observe the raid, defensive spending and subsequent worker recovery window.",
         "seed": 829101,
         "aiFaction": "Tivara",
         "humanFaction": "Skaduwee",
@@ -53,6 +57,10 @@
       },
       {
         "id": "tivara-safe-control",
+        "executionKind": "focused_preset",
+        "role": "control",
+        "pairId": "raid-pressure",
+        "deadlineRationale": "Observe the same worker recovery window without an enemy raid.",
         "seed": 829101,
         "aiFaction": "Tivara",
         "humanFaction": "Skaduwee",

@@ -19,6 +19,8 @@
     "variants": [
       {
         "id": "tivara-land-loop",
+        "executionKind": "continuous",
+        "role": "standalone",
         "scenarioIds": ["PRO-01", "PRO-02", "PRO-03", "PRO-04", "PRO-06", "PRO-07", "SEQ-01"],
         "seed": 759101,
         "mapLabel": "Ember Enclave",
@@ -28,6 +30,8 @@
       },
       {
         "id": "skaduwee-production",
+        "executionKind": "continuous",
+        "role": "standalone",
         "scenarioIds": ["PRO-01", "PRO-02", "PRO-03", "PRO-04", "PRO-06", "PRO-07"],
         "seed": 759102,
         "mapLabel": "Ember Enclave",
@@ -37,6 +41,9 @@
       },
       {
         "id": "tivara-producer-replacement",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "deadlineRationale": "Legacy producer-loss case waits through a long recovery; replace with a shorter frozen-map preset.",
         "scenarioIds": ["PRO-05"],
         "seed": 826051,
         "mapLabel": "Ember Enclave",
@@ -67,6 +74,8 @@
       },
       {
         "id": "skaduwee-land-loop",
+        "executionKind": "continuous",
+        "role": "standalone",
         "scenarioIds": ["SEQ-01"],
         "seed": 759105,
         "mapLabel": "River Crossing",
@@ -76,6 +85,8 @@
       },
       {
         "id": "tivara-home-raid",
+        "executionKind": "continuous",
+        "role": "standalone",
         "scenarioIds": ["SEQ-02"],
         "seed": 759103,
         "mapLabel": "Ember Enclave",
@@ -86,6 +97,8 @@
       },
       {
         "id": "skaduwee-home-raid",
+        "executionKind": "continuous",
+        "role": "standalone",
         "scenarioIds": ["SEQ-02"],
         "seed": 759104,
         "mapLabel": "River Crossing",

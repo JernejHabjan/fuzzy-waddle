@@ -3,6 +3,11 @@ import type { RuntimePerturbationV1 } from "./skirmish-ai-runtime-perturbation";
 
 export interface RuntimeVariantV1 {
   readonly id: string;
+  readonly executionKind: "focused_preset" | "focused_natural" | "continuous";
+  readonly role: "subject" | "control" | "standalone";
+  readonly pairId?: string;
+  readonly setupRationale?: string;
+  readonly deadlineRationale?: string;
   readonly scenarioIds?: readonly string[];
   readonly seed: number;
   readonly mapLabel?: string;

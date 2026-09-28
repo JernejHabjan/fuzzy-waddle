@@ -19,6 +19,10 @@
     "variants": [
       {
         "id": "tivara-no-worker-opening",
+        "executionKind": "focused_natural",
+        "role": "standalone",
+        "setupRationale": "The zero-worker opening must start from the ordinary lobby world.",
+        "deadlineRationale": "Worker creation and first delivered income can require the full opening window.",
         "seed": 759081,
         "mapLabel": "Ember Enclave",
         "aiFaction": "Tivara",
@@ -27,6 +31,10 @@
       },
       {
         "id": "skaduwee-opening",
+        "executionKind": "focused_natural",
+        "role": "standalone",
+        "setupRationale": "The faction opening must start from the ordinary lobby world.",
+        "deadlineRationale": "Worker creation and first delivered income can require the full opening window.",
         "seed": 759082,
         "mapLabel": "River Crossing",
         "aiFaction": "Skaduwee",
@@ -35,6 +43,9 @@
       },
       {
         "id": "tivara-workforce-growth",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "deadlineRationale": "A completed extra worker must persist beyond the initial recovery floor.",
         "scenarioIds": ["ECO-08"],
         "seed": 759083,
         "mapLabel": "Ember Enclave",

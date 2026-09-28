@@ -19,6 +19,8 @@
     "variants": [
       {
         "id": "tivara-full-wood-source",
+        "executionKind": "focused_preset",
+        "role": "standalone",
         "scenarioIds": ["ECO-03"],
         "seed": 829013,
         "aiFaction": "Tivara",

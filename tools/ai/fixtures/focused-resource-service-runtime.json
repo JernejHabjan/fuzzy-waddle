@@ -19,6 +19,10 @@
     "variants": [
       {
         "id": "tivara-underserved-forest",
+        "executionKind": "focused_preset",
+        "role": "subject",
+        "pairId": "wood-service",
+        "deadlineRationale": "A completed local WorkMill, not merely its proposal, is the outcome.",
         "scenarioIds": ["ECO-01", "ECO-02"],
         "seed": 829011,
         "aiFaction": "Tivara",
@@ -47,8 +51,12 @@
       },
       {
         "id": "tivara-served-forest-control",
+        "executionKind": "focused_preset",
+        "role": "control",
+        "pairId": "wood-service",
+        "deadlineRationale": "Absence of a redundant local WorkMill must hold through the paired observation window.",
         "scenarioIds": ["ECO-01", "ECO-02"],
-        "seed": 829012,
+        "seed": 829011,
         "aiFaction": "Tivara",
         "humanFaction": "Skaduwee",
         "difficulty": "Normal",

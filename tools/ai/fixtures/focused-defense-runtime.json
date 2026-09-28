@@ -19,6 +19,9 @@
     "variants": [
       {
         "id": "tivara-air-raid-recovery",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "deadlineRationale": "Legacy long defense and redirection sequence; shorten after a frozen-map focused replacement is authored.",
         "scenarioIds": ["DOMAIN-06", "RAID-02"],
         "seed": 826061,
         "mapLabel": "Ember Enclave",

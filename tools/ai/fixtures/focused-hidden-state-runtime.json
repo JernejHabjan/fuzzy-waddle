@@ -19,6 +19,9 @@
     "variants": [
       {
         "id": "hidden-enemy-west",
+        "executionKind": "focused_preset",
+        "role": "subject",
+        "pairId": "hidden-position",
         "scenarioIds": ["SCOUT-05"],
         "seed": 826051,
         "aiFaction": "Tivara",
@@ -35,6 +38,9 @@
       },
       {
         "id": "hidden-enemy-east",
+        "executionKind": "focused_preset",
+        "role": "control",
+        "pairId": "hidden-position",
         "scenarioIds": ["SCOUT-05"],
         "seed": 826051,
         "aiFaction": "Tivara",

@@ -30,5 +30,7 @@ test("catalog includes all scenario identities and distinguishes wiring from pas
   assert.match(catalog, /Defend a home raid and resume play \(SEQ-02\)/);
   assert.match(catalog, /Island transport and expansion \(SEQ-05\)/);
   assert.match(catalog, /Registered is not passed/);
+  assert.match(catalog, /Registered runtime variants/);
+  assert.match(catalog, /focused_preset \/ control \(hidden-position\)/);
   assert.match(catalog, /Deferred: \[#822\]/);
 });
