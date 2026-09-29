@@ -23,6 +23,12 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
   proof has not run. Background wood is Tree6 so the Tree1/Tree9 fixture subjects remain identifiable. Next: author
   paired focused families against this map, then migrate other compatible economy/production rows; keep
   bridge/fortified maps separate. No tests, E2E, lint, type checks, builds or editor validation ran.
+- Production/continuous registration split (2026-09-29, **unverified**): `git mv` left the natural SEQ-01/02 variants in
+  `continuous-land-runtime.json`; `production-natural-runtime.json` now owns PRO-01–04/06–07 with the previous faction
+  seeds, checkpoints and assertions. This prevents a production shard from implicitly running the continuous-match
+  scenario IDs, but **does not** shorten the production runs or prove production behavior. Replace the natural PRO
+  variants with legal, bounded frozen-map focused cases before the final gate. Manifest/catalog and follow-up links
+  must track these paths; no tests, E2E, lint, builds or validation ran for this split.
 - Diagnostic replay authoring checkpoint (2026-09-28, **unverified**): the matrix CLI now accepts one runtime
   `--scenario` with `--variant`, 1-based `--repetition` and optional `--seed`. The browser driver executes only that
   isolated run and evaluates its individual oracle, labels the result diagnostic, and the repair reducer rejects it
@@ -38,10 +44,10 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
   its stop reason in retained variants and compact reports. A grouped PRO+SEQ variant still runs its full production
   horizon; other focused stop-on-evidence cases remain to implement. Pure terminal-policy tests are authored, unrun.
 - Recipe split checkpoint (2026-09-28, **unverified**): the old mixed
-  `stage-15-land-loop-runtime.json` is now `continuous-land-and-production-runtime.json`, with the focused PRO-05
+  `stage-15-land-loop-runtime.json` was renamed before the current `continuous-land-runtime.json` split, with the focused PRO-05
   producer-loss case moved to `focused-production-replacement-runtime.json`. Manifest and generated catalog links
-  follow the new owners. The continuous fixture still uses long natural matches for PRO-01–04/06–07; replace those
-  with focused legal preset branches before the final gate, then leave only genuine continuous SEQ cases in its file.
+  follow the new owners. Long natural PRO-01–04/06–07 now live in `production-natural-runtime.json` pending focused
+  legal preset branches before the final gate; only genuine continuous SEQ cases remain in the continuous file.
   Existing PRO-05 repetitions/deadline are migration debt. No tests or runtime simulations ran for this split.
 - Metadata authoring checkpoint (2026-09-28, **unverified**): all nine currently registered runtime recipes now declare
   per-variant execution kind and role; paired controls declare a pair ID, identical seed/map/ID membership. Focused

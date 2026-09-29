@@ -15,7 +15,7 @@ justified exceptions. Do not block #827 on optional optimization unless profilin
 1. Read the repo workflow, debugging, Phaser, and skirmish AI skills; then this file and `HANDOFF.md`.
 2. During the authoring sweep, inspect only the named source/test owners; context commands and profiling execution
    wait for the final gate under the handoff policy. Then use `pnpm agent:context -- --issue 828`.
-3. Baseline one repeatable SEQ-01/02 variant from `tools/ai/fixtures/continuous-land-and-production-runtime.json` at its existing
+3. Baseline one repeatable SEQ-01/02 variant from `tools/ai/fixtures/continuous-land-runtime.json` at its existing
    seed, map, AI faction, 100× simulation scale and checkpoints. Preserve revision, fixture digest, scenario assertion
    outcome, tick count, decisions, wall time, and process starts. Do not compare unlike scenarios as speed evidence.
 4. Inspect `apps/portal-e2e/src/e2e/skirmish-ai-runtime-variant-runner.ts`, the tick service, AI scheduler/observation

@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "evidenceKind": "runtime",
+  "scenarioIds": ["PRO-01", "PRO-02", "PRO-03", "PRO-04", "PRO-06", "PRO-07"],
+  "purpose": "Observe production and composition in natural land matches until focused production worlds replace these runs.",
+  "driver": "runtime",
+  "status": "ready_for_runtime_execution",
+  "context": {
+    "mapId": "EmberEnclave",
+    "mapDigest": "resolved_from_candidate_assets",
+    "side": 2,
+    "rulesVersion": "probable-waffle-rules-v1"
+  },
+  "recipe": {
+    "mapLabel": "Ember Enclave",
+    "aiPlayerNumber": 2,
+    "simulationTimeScale": 100,
+    "checkpointTicks": [20, 1000, 2000, 3000, 4500, 6000, 8000, 10000, 12000],
+    "variants": [
+      {
+        "id": "tivara-production",
+        "executionKind": "continuous",
+        "role": "standalone",
+        "seed": 759101,
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal"
+      },
+      {
+        "id": "skaduwee-production",
+        "executionKind": "continuous",
+        "role": "standalone",
+        "seed": 759102,
+        "aiFaction": "Skaduwee",
+        "humanFaction": "Tivara",
+        "difficulty": "Normal"
+      }
+    ]
+  },
+  "assertions": {
+    "PRO-01": {
+      "maximumTick": 12000,
+      "minimumDecisions": 100,
+      "minimumAppliedCommands": 12,
+      "requiredAiFactions": ["Tivara", "Skaduwee"],
+      "minimumMilitaryCount": 12,
+      "minimumMilitaryProducerCount": 2,
+      "requireCompositionDemand": true,
+      "requireCapacityDemand": true
+    },
+    "PRO-02": {
+      "maximumTick": 12000,
+      "minimumDecisions": 100,
+      "minimumAppliedCommands": 12,
+      "requiredAiFactions": ["Tivara", "Skaduwee"],
+      "maximumMilitaryProducerCount": 2,
+      "requireCapacityDemand": true
+    },
+    "PRO-03": {
+      "maximumTick": 12000,
+      "minimumDecisions": 100,
+      "minimumAppliedCommands": 12,
+      "requiredAiFactions": ["Tivara", "Skaduwee"],
+      "minimumMilitaryProducerCount": 2,
+      "requireCapacityDemand": true
+    },
+    "PRO-04": {
+      "maximumTick": 12000,
+      "minimumDecisions": 100,
+      "minimumAppliedCommands": 12,
+      "requiredAiFactions": ["Tivara", "Skaduwee"],
+      "minimumMilitaryCount": 12,
+      "minimumRepeatedMilitaryTypeCount": 3,
+      "requireCompositionDemand": true,
+      "requireProductionStopsAtTarget": true
+    },
+    "PRO-06": {
+      "maximumTick": 12000,
+      "minimumDecisions": 100,
+      "minimumAppliedCommands": 12,
+      "requiredAiFactions": ["Tivara", "Skaduwee"],
+      "maximumMilitaryProducerCount": 2,
+      "requireCapacityDemand": true
+    },
+    "PRO-07": {
+      "maximumTick": 12000,
+      "minimumDecisions": 100,
+      "minimumAppliedCommands": 12,
+      "requiredAiFactions": ["Tivara", "Skaduwee"],
+      "maximumQueueOccupancyPerProducer": 2,
+      "requireCompositionDemand": true
+    }
+  },
+  "deliberatelyBrokenOracle": "accept_a_self_reported_composition_without_ready_units_or_applied_commands"
+}

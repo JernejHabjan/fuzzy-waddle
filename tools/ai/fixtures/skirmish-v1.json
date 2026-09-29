@@ -80,7 +80,7 @@
       "id": "PRO-01",
       "stages": [7],
       "group": "production",
-      "fixture": "continuous-land-and-production-runtime.json",
+      "fixture": "production-natural-runtime.json",
       "authoredFixture": "production-scenarios.json",
       "drivers": ["pure", "runtime"]
     },
@@ -88,7 +88,7 @@
       "id": "PRO-02",
       "stages": [7],
       "group": "production",
-      "fixture": "continuous-land-and-production-runtime.json",
+      "fixture": "production-natural-runtime.json",
       "authoredFixture": "production-scenarios.json",
       "drivers": ["pure", "runtime"]
     },
@@ -96,7 +96,7 @@
       "id": "PRO-03",
       "stages": [7],
       "group": "production",
-      "fixture": "continuous-land-and-production-runtime.json",
+      "fixture": "production-natural-runtime.json",
       "authoredFixture": "production-scenarios.json",
       "drivers": ["pure", "runtime"]
     },
@@ -104,7 +104,7 @@
       "id": "PRO-04",
       "stages": [7],
       "group": "production",
-      "fixture": "continuous-land-and-production-runtime.json",
+      "fixture": "production-natural-runtime.json",
       "authoredFixture": "production-scenarios.json",
       "drivers": ["pure", "runtime"]
     },
@@ -120,7 +120,7 @@
       "id": "PRO-06",
       "stages": [7, 12, 14],
       "group": "production",
-      "fixture": "continuous-land-and-production-runtime.json",
+      "fixture": "production-natural-runtime.json",
       "authoredFixture": "stage-14-adaptation.json",
       "drivers": ["pure", "runtime"]
     },
@@ -128,7 +128,7 @@
       "id": "PRO-07",
       "stages": [7, 14],
       "group": "production",
-      "fixture": "continuous-land-and-production-runtime.json",
+      "fixture": "production-natural-runtime.json",
       "authoredFixture": "stage-14-adaptation.json",
       "drivers": ["pure", "runtime"]
     },
@@ -450,7 +450,7 @@
       "name": "Continuous land-match victory",
       "stages": [15],
       "group": "continuous",
-      "fixture": "continuous-land-and-production-runtime.json",
+      "fixture": "continuous-land-runtime.json",
       "drivers": ["runtime"]
     },
     {
@@ -458,7 +458,7 @@
       "name": "Defend a home raid and resume play",
       "stages": [15],
       "group": "continuous",
-      "fixture": "continuous-land-and-production-runtime.json",
+      "fixture": "continuous-land-runtime.json",
       "drivers": ["runtime"]
     },
     { "id": "SEQ-03", "stages": [15], "group": "continuous", "fixture": null, "drivers": ["runtime"] },
