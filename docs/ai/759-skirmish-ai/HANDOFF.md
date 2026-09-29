@@ -13,8 +13,12 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
   static contract test checks no campaign actors. A source-structure prerequisite split the protocol map enum,
   key, lighting and data types into single-owner files while preserving exports; changed map-browser and matchmaking
   source baseline entries were removed. Public lobby filters exclude the map and the server rejects it in public
-  matchmaking. These Angular/server tests are authored but unrun. Do not claim legal build sites, reachable resources, editor sync or
-  live lobby startup until the final-gate preflight. ECO-01/02 resource service, ECO-03 source saturation and ECO-04
+  matchmaking. These Angular/server tests are authored but unrun. A separate, unrun
+  `skirmish-ai-test-map-preflight.spec.ts` starts its ordinary test-marked lobby, checks the scene/indexed resources,
+  open ground patches and an actual navigation path; run it first at the final gate using the command in
+  [runtime E2E policy](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/runtime-e2e.md).
+  Do not claim legal build sites, reachable resources, editor sync or live lobby startup until that gate; its topology
+  checks alone cannot prove a legal construction order. ECO-01/02 resource service, ECO-03 source saturation and ECO-04
   labor are the first authored fixture migrations; their workers/sources are explicit presets but their world/effect
   proof has not run. Background wood is Tree6 so the Tree1/Tree9 fixture subjects remain identifiable. Next: author
   paired focused families against this map, then migrate other compatible economy/production rows; keep

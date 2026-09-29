@@ -46,8 +46,16 @@ For a retained sweep, isolate its artifacts in one directory, give every shard t
 `pnpm ai:skirmish:report -- --report <directory> --repair-list --require-supported`. The output is compact JSON;
 nonzero exit means a failing or missing required row. These new contracts are authored but unverified until the final gate.
 
-At the final validation gate, run a small representative map/fixture preflight, then manifest-selected family/map
-shards as one retained sweep. Reuse a browser/server process inside a worker but isolate every game world; independent
+At the final validation gate, first run the frozen open-economy map preflight with
+`AI_SKIRMISH_MAP_PREFLIGHT=1 pnpm exec playwright test apps/portal-e2e/src/e2e/skirmish-ai-test-map-preflight.spec.ts --config=apps/portal-e2e/playwright.config.ts --workers=1`.
+It starts an ordinary test-marked lobby, verifies the active scene and indexed neutral resources, finds open 3×3
+ground patches near both starts, and requests a real ground path between them. It emits one bounded
+`AI_SKIRMISH_MAP_PREFLIGHT_V1` JSON line. This is an infrastructure check, not a scenario result or proof that a
+particular building placement is legal; the focused building recipes must prove that separately. The preflight is
+authored but has not been executed.
+
+Then run representative fixture preflight and manifest-selected family/map shards as one retained sweep. Reuse a
+browser/server process inside a worker but isolate every game world; independent
 CI workers may run separate shards. An authored, unverified `--repair-list` mode reads an isolated directory of runtime
 reports and emits bounded JSON. Use `--require-supported` for the full required matrix, plus one shared `--run-id` for
 manual shards; CI supplies a run ID. The reporter requires common source/run/manifest identity
