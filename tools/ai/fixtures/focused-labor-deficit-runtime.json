@@ -6,13 +6,13 @@
   "driver": "runtime",
   "status": "ready_for_runtime_execution",
   "context": {
-    "mapId": "EmberEnclave",
+    "mapId": "AiOpenEconomy",
     "mapDigest": "resolved_from_candidate_assets",
     "side": 2,
     "rulesVersion": "probable-waffle-rules-v1"
   },
   "recipe": {
-    "mapLabel": "Ember Enclave",
+    "mapLabel": "AI Open Economy (test only)",
     "aiPlayerNumber": 2,
     "simulationTimeScale": 100,
     "checkpointTicks": [20, 80, 160, 300, 600, 900],

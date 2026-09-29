@@ -14,8 +14,9 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
   key, lighting and data types into single-owner files while preserving exports; changed map-browser and matchmaking
   source baseline entries were removed. Public lobby filters exclude the map and the server rejects it in public
   matchmaking. These Angular/server tests are authored but unrun. Do not claim legal build sites, reachable resources, editor sync or
-  live lobby startup until the final-gate preflight. Existing product-map recipes have not migrated. Next: author
-  one focused legal preset family against this map, then migrate other compatible economy/production rows; keep
+  live lobby startup until the final-gate preflight. ECO-04's focused labor fixture is the first authored migration;
+  its existing workers/source are explicit legal presets but its world/effect proof has not run. Next: author
+  paired focused families against this map, then migrate other compatible economy/production rows; keep
   bridge/fortified maps separate. No tests, E2E, lint, type checks, builds or editor validation ran.
 - Diagnostic replay authoring checkpoint (2026-09-28, **unverified**): the matrix CLI now accepts one runtime
   `--scenario` with `--variant`, 1-based `--repetition` and optional `--seed`. The browser driver executes only that

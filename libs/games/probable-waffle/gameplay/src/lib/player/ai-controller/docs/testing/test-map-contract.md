@@ -2,8 +2,9 @@
 
 ## Current boundary
 
-The registered Playwright recipes currently launch the shipped Ember Enclave and River Crossing maps. They exercise
-real Phaser gameplay, but those maps can change as game content develops. The first test-owned open-economy map is now
+Most registered Playwright recipes still launch the shipped Ember Enclave and River Crossing maps. They exercise
+real Phaser gameplay, but those maps can change as game content develops. The focused ECO-04 labor recipe is the first
+authored migration to the test-owned open-economy map; its runtime result is unverified. That map is now
 authored as `MapAiOpenEconomy.scene`, `MapAiOpenEconomy.ts` and `ai_open_economy.json`, with a frozen asset digest in
 `tools/ai/fixtures/test-map-topology.json`. It has two owned spawns, neutral wood/stone/minerals and flat grass tiles;
 food still comes from normal faction construction. Ordinary map browsing and matchmaking exclude it; the explicit
