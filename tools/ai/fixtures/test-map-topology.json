@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "maps": [
+    {
+      "id": "ai-open-economy",
+      "scene": "libs/games/probable-waffle/phaser/src/lib/world/scenes/game-maps/MapAiOpenEconomy.scene",
+      "sceneSha256": "33dee8da790fd5a8ccc2185794461e9a1c320c8149fc84c517ecd2818239733d",
+      "tilemap": "libs/games/probable-waffle/phaser/src/assets/probable-waffle/tilemaps/ai_open_economy.json",
+      "tilemapSha256": "86eaef4b4a6f361d1dbf7973595c9609a32bee354b08b3ee0ef89ad1a8cac64a",
+      "assetPackDirectory": "libs/games/probable-waffle/phaser/src/assets/probable-waffle/asset-packers/maps",
+      "assetPack": "asset-pack-probable-waffle-ai-open-economy.json",
+      "assetPackSha256": "ff64f3747be26a85fd239e7883cd85b01c82bb490d80518ca97ad07d0c851b3d"
+    }
+  ]
+}

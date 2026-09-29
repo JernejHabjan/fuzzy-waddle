@@ -9,6 +9,7 @@ import { GameInstanceClientService } from "../../../communicators/game-instance-
 import { gameInstanceClientServiceStub } from "../../../communicators/game-instance-client.service.stub";
 import { SceneCommunicatorClientServiceStub } from "../../../communicators/scene-communicator-client.service.stub";
 import { ProbableWaffleMapEnum } from "@fuzzy-waddle/probable-waffle-protocol";
+import { environment } from "@fuzzy-waddle/environments/environment";
 
 @Component({
   selector: "probable-waffle-map-browser",
@@ -27,6 +28,7 @@ describe("MapBrowserComponent", () => {
   let fixture: ComponentFixture<MapBrowserComponent>;
 
   beforeEach(async () => {
+    window.sessionStorage.removeItem("fuzzy-waddle:ai-runtime-browser-test-v1");
     await TestBed.configureTestingModule({
       imports: [MapBrowserComponent, CommonModule],
       providers: [
@@ -43,5 +45,16 @@ describe("MapBrowserComponent", () => {
 
   it("should create", () => {
     expect(component).toBeTruthy();
+  });
+
+  it("hides the frozen AI map from ordinary skirmish browsing", () => {
+    expect(component.maps.some((map) => map.id === ProbableWaffleMapEnum.AiOpenEconomy)).toBe(false);
+  });
+
+  it("offers the frozen AI map only to the explicit local runtime-test lobby", () => {
+    window.sessionStorage.setItem("fuzzy-waddle:ai-runtime-browser-test-v1", "test");
+    component.ngOnInit();
+    expect(component.maps.some((map) => map.id === ProbableWaffleMapEnum.AiOpenEconomy)).toBe(!environment.production);
+    window.sessionStorage.removeItem("fuzzy-waddle:ai-runtime-browser-test-v1");
   });
 });

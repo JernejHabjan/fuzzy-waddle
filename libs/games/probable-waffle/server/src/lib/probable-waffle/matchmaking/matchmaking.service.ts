@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import {
   createPlayerLobbyDefinition,
   type DifficultyModifiers,
@@ -62,6 +62,11 @@ export class MatchmakingService implements MatchmakingServiceInterface {
   }
 
   async requestGameSearchForMatchMaking(matchMakingDto: RequestGameSearchForMatchMakingDto, user: User): Promise<void> {
+    if (!Array.isArray(matchMakingDto.mapPoolIds) || matchMakingDto.mapPoolIds.length === 0 ||
+        matchMakingDto.mapPoolIds.some((id) => !ProbableWaffleLevels[id as ProbableWaffleMapEnum] ||
+          ProbableWaffleLevels[id as ProbableWaffleMapEnum].testOnly)) {
+      throw new BadRequestException("Matchmaking map pool contains an unavailable map");
+    }
     const pendingMatchmakingGameInstance = this.findGameInstanceForMatchMaking(matchMakingDto);
     if (pendingMatchmakingGameInstance) {
       await this.joinGameInstanceForMatchmaking(pendingMatchmakingGameInstance, matchMakingDto, user);

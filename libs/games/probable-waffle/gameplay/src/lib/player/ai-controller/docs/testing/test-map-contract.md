@@ -3,9 +3,14 @@
 ## Current boundary
 
 The registered Playwright recipes currently launch the shipped Ember Enclave and River Crossing maps. They exercise
-real Phaser gameplay, but those maps can change as game content develops. The [scenario catalog](scenario-catalog.md)
-reports their current map labels; it does not pretend frozen CI maps already exist. Moving supported browser recipes to
-stable test maps is part of #816. Natural playtests on the latest shipped maps remain useful, but are a separate signal.
+real Phaser gameplay, but those maps can change as game content develops. The first test-owned open-economy map is now
+authored as `MapAiOpenEconomy.scene`, `MapAiOpenEconomy.ts` and `ai_open_economy.json`, with a frozen asset digest in
+`tools/ai/fixtures/test-map-topology.json`. It has two owned spawns, neutral wood/stone/minerals and flat grass tiles;
+food still comes from normal faction construction. Ordinary map browsing and matchmaking exclude it; the explicit
+local runtime-test lobby can select it. Its static contract test is authored but unrun, and no runtime topology,
+resource access, placement or map-start proof exists yet. The [scenario catalog](scenario-catalog.md) still correctly
+labels the registered product-map recipes. Migrate them only with legal preset and independent outcome review. Natural
+playtests on the latest shipped maps remain a separate compatibility signal.
 
 ## Target map set
 

@@ -6,6 +6,17 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
+- Frozen-map authoring checkpoint (2026-09-29, **unverified**): `MapAiOpenEconomy` now has a test-owned flat-grass
+  tilemap, two owned spawns, nearby neutral wood/stone/minerals, an editor scene, runtime scene and asset pack.
+  `ProbableWaffleLevels` marks it test-only; ordinary map browsing/matchmaking hide it, while the AI runtime-test
+  lobby marker exposes it. `tools/ai/fixtures/test-map-topology.json` pins scene/tilemap/pack SHA-256 and an unrun
+  static contract test checks no campaign actors. A source-structure prerequisite split the protocol map enum,
+  key, lighting and data types into single-owner files while preserving exports; changed map-browser and matchmaking
+  source baseline entries were removed. Public lobby filters exclude the map and the server rejects it in public
+  matchmaking. These Angular/server tests are authored but unrun. Do not claim legal build sites, reachable resources, editor sync or
+  live lobby startup until the final-gate preflight. Existing product-map recipes have not migrated. Next: author
+  one focused legal preset family against this map, then migrate other compatible economy/production rows; keep
+  bridge/fortified maps separate. No tests, E2E, lint, type checks, builds or editor validation ran.
 - Diagnostic replay authoring checkpoint (2026-09-28, **unverified**): the matrix CLI now accepts one runtime
   `--scenario` with `--variant`, 1-based `--repetition` and optional `--seed`. The browser driver executes only that
   isolated run and evaluates its individual oracle, labels the result diagnostic, and the repair reducer rejects it

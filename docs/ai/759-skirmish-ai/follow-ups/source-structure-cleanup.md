@@ -55,6 +55,9 @@ large files, stage-labelled persisted IDs/fixtures, and ordinary implementation 
    access-product, and auxiliary-context owners. Capture/commit/save/disposal stay in the 368-line coordinator, and
    its hash exception was removed. This is still unverified: final-gate type/lint, fair-visibility, save/replay,
    generation-fence and access-cursor evidence must confirm the extracted boundaries before closing this slice.
+   The frozen open-economy map addition also split the protocol's compound map registry into one declaration per
+   file while preserving its public export surface. Changed map-browser and matchmaking owners had their old hash
+   exemptions removed. Their type/lint and map-list behavior remain unverified until the final gate.
 2. Rename stage/phase filenames, symbols, comments, test descriptions, and non-persisted diagnostics by responsibility.
 3. Remove `V1` from ordinary implementations. Keep it on save/wire/repro/fixture/report schemas unless a compatible
    migration and schema-version policy are supplied.

@@ -50,8 +50,14 @@ Use this batch order; the contract details below are acceptance requirements for
 Reporter authoring checkpoint (2026-09-28, unverified): the existing summary CLI now accepts `--repair-list` and
 `--require-supported`; runtime reports include a shared run ID, source/manifest provenance, per-fixture SHA-256
 identities and scenario sources. CI supplies the run ID; manual sweeps must use `--run-id`. Pure parser/cluster tests
-are authored. Its rerun command selects a whole scenario, so exact variant/repetition replay still needs a bounded diagnostic
-selection contract before relying on that field. Do not treat this checkpoint as executed evidence.
+are authored. Exact 1-based variant/repetition diagnostic selection and a bounded rerun command are now authored but
+unverified; diagnostic results cannot satisfy full scenario, pair, determinism or matrix coverage. Do not treat this
+checkpoint as executed evidence.
+
+Open-economy map checkpoint (2026-09-29, unverified): a separate grass tilemap, two-spawn editor/runtime scene and
+asset pack are authored with a SHA-256 static topology contract. The map is hidden from ordinary browsing and
+matchmaking but selectable by the local AI runtime-test lobby. No editor, topology, resource, buildability or
+Playwright preflight has run, so existing product-map recipes remain registered until legal starting worlds migrate.
 
 Recipe metadata checkpoint (2026-09-28, unverified): all nine currently registered runtime recipes declare
 execution kind, variant role, pair identity where relevant, and focused long-deadline or natural-setup rationale.
@@ -141,7 +147,8 @@ invent fixes for an unobserved runtime failure or remove compatibility on the st
 
 ## Script-first agent result contract
 
-Implement this in the existing reporter before execution; it is a pending requirement, not current capability.
+The cross-shard reducer and exact diagnostic replay are authored but unverified. Finish remaining per-shard summary
+and stop-on-evidence details before execution; the full contract below remains the acceptance target.
 
 - Parse and evaluate results deterministically outside agent context. Passing rows produce totals by tier/family;
   retain full evidence in artifacts. No agent evaluation per tick, checkpoint or successful variant.
