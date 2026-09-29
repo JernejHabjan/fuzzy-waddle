@@ -57,7 +57,8 @@ checkpoint as executed evidence.
 Open-economy map checkpoint (2026-09-29, unverified): a separate grass tilemap, two-spawn editor/runtime scene and
 asset pack are authored with a SHA-256 static topology contract. The map is hidden from ordinary browsing and
 matchmaking but selectable by the local AI runtime-test lobby. No editor, topology, resource, buildability or
-Playwright preflight has run. ECO-04 is the first authored focused-map migration; most product-map recipes remain
+Playwright preflight has run. ECO-01/02, ECO-03 and ECO-04 are the first authored focused-map migrations; most
+product-map recipes remain
 registered until their legal starting worlds and independent outcomes are reviewed.
 
 Recipe metadata checkpoint (2026-09-28, unverified): all nine currently registered runtime recipes declare

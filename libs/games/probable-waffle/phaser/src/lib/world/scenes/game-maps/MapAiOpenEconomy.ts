@@ -2,7 +2,7 @@ import Phaser from "phaser";
 import GameProbableWaffleScene from "../GameProbableWaffleScene";
 import Spawn from "../../../prefabs/buildings/misc/Spawn";
 import EditorOwner from "../editor-components/EditorOwner";
-import Tree1 from "../../../prefabs/outside/foliage/trees/resources/Tree1";
+import Tree6 from "../../../prefabs/outside/foliage/trees/resources/Tree6";
 import StonePile from "../../../prefabs/outside/resources/stone-pile/StonePile";
 import Minerals from "../../../prefabs/outside/resources/minerals/Minerals";
 
@@ -30,7 +30,7 @@ export default class MapAiOpenEconomy extends GameProbableWaffleScene {
     eastOwner.owner_id = "2";
 
     for (const [x, y] of [[-672, 640], [-960, 736], [288, 752], [608, 928]]) {
-      this.add.existing(new Tree1(this, x, y));
+      this.add.existing(new Tree6(this, x, y));
     }
     for (const [x, y] of [[-688, 784], [272, 960]]) {
       this.add.existing(new StonePile(this, x, y));

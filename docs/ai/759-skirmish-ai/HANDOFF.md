@@ -14,8 +14,9 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
   key, lighting and data types into single-owner files while preserving exports; changed map-browser and matchmaking
   source baseline entries were removed. Public lobby filters exclude the map and the server rejects it in public
   matchmaking. These Angular/server tests are authored but unrun. Do not claim legal build sites, reachable resources, editor sync or
-  live lobby startup until the final-gate preflight. ECO-04's focused labor fixture is the first authored migration;
-  its existing workers/source are explicit legal presets but its world/effect proof has not run. Next: author
+  live lobby startup until the final-gate preflight. ECO-01/02 resource service, ECO-03 source saturation and ECO-04
+  labor are the first authored fixture migrations; their workers/sources are explicit presets but their world/effect
+  proof has not run. Background wood is Tree6 so the Tree1/Tree9 fixture subjects remain identifiable. Next: author
   paired focused families against this map, then migrate other compatible economy/production rows; keep
   bridge/fortified maps separate. No tests, E2E, lint, type checks, builds or editor validation ran.
 - Diagnostic replay authoring checkpoint (2026-09-28, **unverified**): the matrix CLI now accepts one runtime

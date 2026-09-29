@@ -32,7 +32,7 @@ test("the open-economy scene has only two owned spawns and symmetric neutral res
     assert.equal(objects.get(label).prefabId, "c91c72f2-a5b5-4fea-abde-27ebfc228ae5");
   }
   for (const label of ["tree_west_1", "tree_west_2", "tree_east_1", "tree_east_2"]) {
-    assert.equal(objects.get(label).prefabId, "ec58b20e-e04f-4bd4-8401-856efe433f36");
+    assert.equal(objects.get(label).prefabId, "ec58b20e-e04f-4bd4-8401-856e1e433f46");
   }
   for (const label of ["stone_west", "stone_east"]) {
     assert.equal(objects.get(label).prefabId, "e208af37-5101-4cbf-adca-93d59373fc09");
