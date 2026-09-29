@@ -21,5 +21,6 @@ export interface RuntimeVariantV1 {
   readonly supplyBranch?: "prebuild" | "ample_control";
   readonly pressureBranch?: "raid" | "safe_control";
   readonly resourceServiceBranch?: "build" | "served_control";
+  readonly productionCapacityBranch?: "build" | "already_sufficient";
   readonly perturbations?: readonly RuntimePerturbationV1[];
 }

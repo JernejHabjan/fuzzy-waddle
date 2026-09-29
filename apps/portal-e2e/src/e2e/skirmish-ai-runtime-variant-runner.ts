@@ -189,6 +189,7 @@ export async function runVariant(
       ...(variant.supplyBranch ? { supplyBranch: variant.supplyBranch } : {}),
       ...(variant.pressureBranch ? { pressureBranch: variant.pressureBranch } : {}),
       ...(variant.resourceServiceBranch ? { resourceServiceBranch: variant.resourceServiceBranch } : {}),
+      ...(variant.productionCapacityBranch ? { productionCapacityBranch: variant.productionCapacityBranch } : {}),
       initialWorldDigest,
       outcomeDigest,
       checkpoints,

@@ -10,6 +10,7 @@ import { evaluateRuntimeSourceSaturation } from "./skirmish-ai-runtime-source-sa
 import { evaluateRuntimeResourceLabor } from "./skirmish-ai-runtime-resource-labor-evaluation";
 import { evaluateRuntimeWorkerGrowth } from "./skirmish-ai-runtime-worker-growth-evaluation";
 import { isAiVictory } from "./skirmish-ai-runtime-terminal";
+import { evaluateRuntimeProductionCapacity } from "./skirmish-ai-runtime-production-capacity-evaluation";
 
 export function evaluateRuntimeVariant(
   scenarioId: string,
@@ -100,7 +101,7 @@ export function evaluateRuntimeVariant(
   if (assertion.requireCapacityDemand && capacityDemands.length === 0) {
     failures.push(`${variant.variantId}:capacity_demand_missing`);
   }
-  if (scenarioId === "PRO-03") {
+  if (scenarioId === "PRO-03" && !assertion.requiredProductionCapacity) {
     const capacityIndex = variant.checkpoints.findIndex((checkpoint) => checkpoint.militaryProducerNames.length >= 2);
     const fulfilledIndex = variant.checkpoints.findIndex((checkpoint) => {
       const demand = checkpoint.demands.find(
@@ -184,6 +185,8 @@ export function evaluateRuntimeVariant(
     failures.push(`${variant.variantId}:ground_route_missing`);
   }
   failures.push(...evaluateRuntimeRaidRecovery(assertion, variant, final, hasAiVictory));
+  failures.push(...evaluateRuntimeProductionCapacity(scenarioId, assertion.requiredProductionCapacity, variant)
+    .map((failure) => `${variant.variantId}:${failure}`));
   failures.push(...evaluateRuntimePresetWorld(assertion, variant));
   if (assertion.requiredSupplyPrebuild) {
     failures.push(

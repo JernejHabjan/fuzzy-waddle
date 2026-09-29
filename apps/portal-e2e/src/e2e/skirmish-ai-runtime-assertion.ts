@@ -15,6 +15,10 @@ export interface RuntimeAssertionV1 {
   readonly maximumMilitaryProducerCount?: number;
   readonly requireCompositionDemand?: boolean;
   readonly requireCapacityDemand?: boolean;
+  readonly requiredProductionCapacity?: {
+    readonly latestTick: number;
+    readonly producerObjectNameByFaction: Readonly<Record<RuntimeVariantV1["aiFaction"], string>>;
+  };
   readonly requireProductionStopsAtTarget?: boolean;
   readonly maximumQueueOccupancyPerProducer?: number;
   readonly firstOffensiveLaunchByTick?: number;

@@ -109,7 +109,7 @@ compaction; do not reload the whole catalog/history. Compact context size is a p
    update the evaluator contract with fixture repetition changes. Full-match victories remain separate, finite and
    allowed to run longer when terminal behavior requires it. See the code-adjacent runtime E2E policy.
    `tools/ai/fixtures/continuous-land-runtime.json` now owns only natural SEQ match recipes. Replace the temporary
-   natural `tools/ai/fixtures/production-natural-runtime.json` with focused PRO-01–04/06–07 files with legal preset actors,
+   natural `tools/ai/fixtures/production-natural-runtime.json` with focused PRO-03/04/06/07 files with legal preset actors,
    balances, queues and scheduled loss where needed. Group a positive/control pair together; do not create one file
    per ID or share a 12,000-tick natural match merely because several IDs mention production. PRO-05 already owns
    `tools/ai/fixtures/focused-production-replacement-runtime.json`, though its long deadline/repeats still need review.

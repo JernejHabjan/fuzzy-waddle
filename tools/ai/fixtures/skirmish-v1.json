@@ -80,7 +80,7 @@
       "id": "PRO-01",
       "stages": [7],
       "group": "production",
-      "fixture": "production-natural-runtime.json",
+      "fixture": "focused-production-capacity-runtime.json",
       "authoredFixture": "production-scenarios.json",
       "drivers": ["pure", "runtime"]
     },
@@ -88,7 +88,7 @@
       "id": "PRO-02",
       "stages": [7],
       "group": "production",
-      "fixture": "production-natural-runtime.json",
+      "fixture": "focused-production-capacity-runtime.json",
       "authoredFixture": "production-scenarios.json",
       "drivers": ["pure", "runtime"]
     },

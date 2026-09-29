@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "evidenceKind": "runtime",
-  "scenarioIds": ["PRO-01", "PRO-02", "PRO-03", "PRO-04", "PRO-06", "PRO-07"],
-  "purpose": "Observe production and composition in natural land matches until focused production worlds replace these runs.",
+  "scenarioIds": ["PRO-03", "PRO-04", "PRO-06", "PRO-07"],
+  "purpose": "Temporary natural composition and queue coverage until focused production worlds replace these runs.",
   "driver": "runtime",
   "status": "ready_for_runtime_execution",
   "context": {
@@ -38,24 +38,6 @@
     ]
   },
   "assertions": {
-    "PRO-01": {
-      "maximumTick": 12000,
-      "minimumDecisions": 100,
-      "minimumAppliedCommands": 12,
-      "requiredAiFactions": ["Tivara", "Skaduwee"],
-      "minimumMilitaryCount": 12,
-      "minimumMilitaryProducerCount": 2,
-      "requireCompositionDemand": true,
-      "requireCapacityDemand": true
-    },
-    "PRO-02": {
-      "maximumTick": 12000,
-      "minimumDecisions": 100,
-      "minimumAppliedCommands": 12,
-      "requiredAiFactions": ["Tivara", "Skaduwee"],
-      "maximumMilitaryProducerCount": 2,
-      "requireCapacityDemand": true
-    },
     "PRO-03": {
       "maximumTick": 12000,
       "minimumDecisions": 100,

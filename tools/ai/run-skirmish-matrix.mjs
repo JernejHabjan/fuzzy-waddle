@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import { resolvePinnedBaselineSupport } from "./baseline-adapter-v1.mjs";
 import { invokeHarness, invokeSelectedHarness } from "./skirmish-matrix-execution.mjs";
 import { selectDiagnosticVariant } from "./skirmish-runtime-diagnostic-selection.mjs";
+import { buildSkirmishShardIndex } from "./skirmish-shard-index.mjs";
 import {
   fixtureReference, pureFixtureReference, runtimeFixtureReference, safeReference, validateManifest
 } from "./skirmish-matrix-fixtures.mjs";
@@ -364,4 +365,12 @@ function writeReport(report) {
   const path = join(reportDirectory, name);
   writeFileSync(path, `${JSON.stringify(report, null, 2)}\n`);
   process.stdout.write(`${relative(workspaceRoot, path)}\n`);
+  if (report.runtime || report.reason) {
+    const indexDirectory = join(reportDirectory, "indexes");
+    mkdirSync(indexDirectory, { recursive: true });
+    const indexPath = join(indexDirectory, name);
+    const index = buildSkirmishShardIndex(report, relative(workspaceRoot, path));
+    writeFileSync(indexPath, `${JSON.stringify(index, null, 2)}\n`);
+    process.stdout.write(`${relative(workspaceRoot, indexPath)}\n`);
+  }
 }

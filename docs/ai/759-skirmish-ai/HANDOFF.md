@@ -6,6 +6,16 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
+- Production/report authoring checkpoint (2026-09-29, **unverified**): `PRO-01/02` now use a 2,000-tick frozen-map
+  paired one-versus-two-producer recipe for both factions. A new oracle requires a real ready second producer in the
+  deficit branch, forbids a cash-only third producer throughout the ample-capacity control, and checks a dated
+  two-producer demand. Preset-pair validation requires identical seed/resources/actors except that one extra producer.
+  The new fixture and oracle tests have not run; the frozen-map preflight still must establish legal positions and
+  the final gate must confirm the intended force demand appears. `PRO-03/04/06/07` remain in long natural coverage
+  pending their distinct transition, composition, resilience, and queue contracts; do not label the paired capacity
+  recipe full production-family proof. Matrix runtime reports now also write bounded `indexes/*.json` summaries
+  beside retained raw reports, with totals, source/run/fixture identity, stop reasons, first failures, and raw pointer.
+  This report writer and its authored pure tests are unrun. No tests, E2E, lint, type checks or builds ran.
 - Frozen-map authoring checkpoint (2026-09-29, **unverified**): `MapAiOpenEconomy` now has a test-owned flat-grass
   tilemap, two owned spawns, nearby neutral wood/stone/minerals, an editor scene, runtime scene and asset pack.
   `ProbableWaffleLevels` marks it test-only; ordinary map browsing/matchmaking hide it, while the AI runtime-test
@@ -24,10 +34,10 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
   paired focused families against this map, then migrate other compatible economy/production rows; keep
   bridge/fortified maps separate. No tests, E2E, lint, type checks, builds or editor validation ran.
 - Production/continuous registration split (2026-09-29, **unverified**): `git mv` left the natural SEQ-01/02 variants in
-  `continuous-land-runtime.json`; `production-natural-runtime.json` now owns PRO-01–04/06–07 with the previous faction
+  `continuous-land-runtime.json`; `production-natural-runtime.json` initially owned PRO-01–04/06–07 with the previous faction
   seeds, checkpoints and assertions. This prevents a production shard from implicitly running the continuous-match
-  scenario IDs, but **does not** shorten the production runs or prove production behavior. Replace the natural PRO
-  variants with legal, bounded frozen-map focused cases before the final gate. Manifest/catalog and follow-up links
+  scenario IDs, but **does not** shorten the production runs or prove production behavior. PRO-01/02 have since moved
+  to the focused pair above; replace the remaining natural PRO variants before the final gate. Manifest/catalog and follow-up links
   must track these paths; no tests, E2E, lint, builds or validation ran for this split.
 - Diagnostic replay authoring checkpoint (2026-09-28, **unverified**): the matrix CLI now accepts one runtime
   `--scenario` with `--variant`, 1-based `--repetition` and optional `--seed`. The browser driver executes only that
@@ -46,7 +56,7 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 - Recipe split checkpoint (2026-09-28, **unverified**): the old mixed
   `stage-15-land-loop-runtime.json` was renamed before the current `continuous-land-runtime.json` split, with the focused PRO-05
   producer-loss case moved to `focused-production-replacement-runtime.json`. Manifest and generated catalog links
-  follow the new owners. Long natural PRO-01–04/06–07 now live in `production-natural-runtime.json` pending focused
+  follow the new owners. Long natural PRO-03/04/06/07 now live in `production-natural-runtime.json` pending focused
   legal preset branches before the final gate; only genuine continuous SEQ cases remain in the continuous file.
   Existing PRO-05 repetitions/deadline are migration debt. No tests or runtime simulations ran for this split.
 - Metadata authoring checkpoint (2026-09-28, **unverified**): all nine currently registered runtime recipes now declare
@@ -120,8 +130,8 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
   Existing three-repeat/12,000-tick recipes are migration work, not an endorsed default. The authoritative policy
   and exceptions are in [runtime E2E](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/runtime-e2e.md).
 - #816 layout decision (partially authored): split focused behavior/positive-control recipes from legal-start continuous
-  matches. The old mixed land-loop recipe's PRO-05 focused branch is separate; PRO-01–04/06–07 still share a natural
-  continuous recipe with SEQ rows and need shorter focused legal presets. Declare actor/resource/queue/event preset state
+  matches. The old mixed land-loop recipe's PRO-05 focused branch is separate; PRO-03/04/06/07 still share a natural
+  production recipe and need shorter focused legal presets. Declare actor/resource/queue/event preset state
   for each focused case or a documented natural-opening exception. Extend the generated catalog to expose kind,
   starting state, branch/repetition counts and tick rationale from fixture data. Existing catalog rows still show
   the old counts/limits and do not yet summarize preset state. Keep TS/JS/MJS additions within the repo's 400-line

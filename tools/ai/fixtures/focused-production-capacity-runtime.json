@@ -1,0 +1,170 @@
+{
+  "schemaVersion": 1,
+  "evidenceKind": "runtime",
+  "scenarioIds": ["PRO-01", "PRO-02"],
+  "purpose": "Pair one ready producer needing dated throughput against two already-ready producers with the same ample balance.",
+  "driver": "runtime",
+  "status": "ready_for_runtime_execution",
+  "context": {
+    "mapId": "AiOpenEconomy",
+    "mapDigest": "resolved_from_candidate_assets",
+    "side": 2,
+    "rulesVersion": "probable-waffle-rules-v1"
+  },
+  "recipe": {
+    "mapLabel": "AI Open Economy (test only)",
+    "aiPlayerNumber": 2,
+    "simulationTimeScale": 100,
+    "checkpointTicks": [20, 100, 300, 600, 1000, 1500, 2000],
+    "variants": [
+      {
+        "id": "tivara-capacity-build",
+        "executionKind": "focused_preset",
+        "role": "subject",
+        "pairId": "tivara-capacity",
+        "scenarioIds": ["PRO-01", "PRO-02"],
+        "seed": 816101,
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "productionCapacityBranch": "build",
+        "presetWorld": {
+          "fixtureId": "tivara-capacity-build",
+          "actors": [
+            { "fixtureActorId": "producer-1", "actorName": "AnkGuard", "owner": 2, "position": { "x": 1000, "y": 480, "z": 0 } },
+            { "fixtureActorId": "housing", "actorName": "Olival", "owner": 2, "position": { "x": 0, "y": 360, "z": 0 } },
+            { "fixtureActorId": "granary", "actorName": "Granary", "owner": 2, "position": { "x": 0, "y": 1200, "z": 0 } },
+            { "fixtureActorId": "field", "actorName": "Field", "owner": 2, "position": { "x": -320, "y": 1200, "z": 0 } },
+            { "fixtureActorId": "worker-1", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 640, "y": 480, "z": 0 } },
+            { "fixtureActorId": "worker-2", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 680, "y": 520, "z": 0 } },
+            { "fixtureActorId": "worker-3", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 720, "y": 560, "z": 0 } },
+            { "fixtureActorId": "worker-4", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 640, "y": 600, "z": 0 } },
+            { "fixtureActorId": "worker-5", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 680, "y": 640, "z": 0 } },
+            { "fixtureActorId": "worker-6", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 720, "y": 680, "z": 0 } }
+          ],
+          "resourceGrants": [
+            { "playerNumber": 2, "amounts": { "food": 2500, "wood": 2500, "stone": 2500, "minerals": 2500 } }
+          ]
+        }
+      },
+      {
+        "id": "tivara-capacity-control",
+        "executionKind": "focused_preset",
+        "role": "control",
+        "pairId": "tivara-capacity",
+        "scenarioIds": ["PRO-01", "PRO-02"],
+        "seed": 816101,
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "productionCapacityBranch": "already_sufficient",
+        "presetWorld": {
+          "fixtureId": "tivara-capacity-control",
+          "actors": [
+            { "fixtureActorId": "producer-1", "actorName": "AnkGuard", "owner": 2, "position": { "x": 1000, "y": 480, "z": 0 } },
+            { "fixtureActorId": "housing", "actorName": "Olival", "owner": 2, "position": { "x": 0, "y": 360, "z": 0 } },
+            { "fixtureActorId": "granary", "actorName": "Granary", "owner": 2, "position": { "x": 0, "y": 1200, "z": 0 } },
+            { "fixtureActorId": "field", "actorName": "Field", "owner": 2, "position": { "x": -320, "y": 1200, "z": 0 } },
+            { "fixtureActorId": "worker-1", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 640, "y": 480, "z": 0 } },
+            { "fixtureActorId": "worker-2", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 680, "y": 520, "z": 0 } },
+            { "fixtureActorId": "worker-3", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 720, "y": 560, "z": 0 } },
+            { "fixtureActorId": "worker-4", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 640, "y": 600, "z": 0 } },
+            { "fixtureActorId": "worker-5", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 680, "y": 640, "z": 0 } },
+            { "fixtureActorId": "worker-6", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 720, "y": 680, "z": 0 } },
+            { "fixtureActorId": "producer-2", "actorName": "AnkGuard", "owner": 2, "position": { "x": 1000, "y": 1150, "z": 0 } }
+          ],
+          "resourceGrants": [
+            { "playerNumber": 2, "amounts": { "food": 2500, "wood": 2500, "stone": 2500, "minerals": 2500 } }
+          ]
+        }
+      },
+      {
+        "id": "skaduwee-capacity-build",
+        "executionKind": "focused_preset",
+        "role": "subject",
+        "pairId": "skaduwee-capacity",
+        "scenarioIds": ["PRO-01", "PRO-02"],
+        "seed": 816102,
+        "aiFaction": "Skaduwee",
+        "humanFaction": "Tivara",
+        "difficulty": "Normal",
+        "productionCapacityBranch": "build",
+        "presetWorld": {
+          "fixtureId": "skaduwee-capacity-build",
+          "actors": [
+            { "fixtureActorId": "producer-1", "actorName": "InfantryInn", "owner": 2, "position": { "x": 1000, "y": 480, "z": 0 } },
+            { "fixtureActorId": "housing", "actorName": "Emberstone", "owner": 2, "position": { "x": 0, "y": 360, "z": 0 } },
+            { "fixtureActorId": "granary", "actorName": "Granary", "owner": 2, "position": { "x": 0, "y": 1200, "z": 0 } },
+            { "fixtureActorId": "field", "actorName": "Field", "owner": 2, "position": { "x": -320, "y": 1200, "z": 0 } },
+            { "fixtureActorId": "worker-1", "actorName": "SkaduweeWorkerMale", "owner": 2, "position": { "x": 640, "y": 480, "z": 0 } },
+            { "fixtureActorId": "worker-2", "actorName": "SkaduweeWorkerMale", "owner": 2, "position": { "x": 680, "y": 520, "z": 0 } },
+            { "fixtureActorId": "worker-3", "actorName": "SkaduweeWorkerMale", "owner": 2, "position": { "x": 720, "y": 560, "z": 0 } },
+            { "fixtureActorId": "worker-4", "actorName": "SkaduweeWorkerMale", "owner": 2, "position": { "x": 640, "y": 600, "z": 0 } },
+            { "fixtureActorId": "worker-5", "actorName": "SkaduweeWorkerMale", "owner": 2, "position": { "x": 680, "y": 640, "z": 0 } },
+            { "fixtureActorId": "worker-6", "actorName": "SkaduweeWorkerMale", "owner": 2, "position": { "x": 720, "y": 680, "z": 0 } }
+          ],
+          "resourceGrants": [
+            { "playerNumber": 2, "amounts": { "food": 2500, "wood": 2500, "stone": 2500, "minerals": 2500 } }
+          ]
+        }
+      },
+      {
+        "id": "skaduwee-capacity-control",
+        "executionKind": "focused_preset",
+        "role": "control",
+        "pairId": "skaduwee-capacity",
+        "scenarioIds": ["PRO-01", "PRO-02"],
+        "seed": 816102,
+        "aiFaction": "Skaduwee",
+        "humanFaction": "Tivara",
+        "difficulty": "Normal",
+        "productionCapacityBranch": "already_sufficient",
+        "presetWorld": {
+          "fixtureId": "skaduwee-capacity-control",
+          "actors": [
+            { "fixtureActorId": "producer-1", "actorName": "InfantryInn", "owner": 2, "position": { "x": 1000, "y": 480, "z": 0 } },
+            { "fixtureActorId": "housing", "actorName": "Emberstone", "owner": 2, "position": { "x": 0, "y": 360, "z": 0 } },
+            { "fixtureActorId": "granary", "actorName": "Granary", "owner": 2, "position": { "x": 0, "y": 1200, "z": 0 } },
+            { "fixtureActorId": "field", "actorName": "Field", "owner": 2, "position": { "x": -320, "y": 1200, "z": 0 } },
+            { "fixtureActorId": "worker-1", "actorName": "SkaduweeWorkerMale", "owner": 2, "position": { "x": 640, "y": 480, "z": 0 } },
+            { "fixtureActorId": "worker-2", "actorName": "SkaduweeWorkerMale", "owner": 2, "position": { "x": 680, "y": 520, "z": 0 } },
+            { "fixtureActorId": "worker-3", "actorName": "SkaduweeWorkerMale", "owner": 2, "position": { "x": 720, "y": 560, "z": 0 } },
+            { "fixtureActorId": "worker-4", "actorName": "SkaduweeWorkerMale", "owner": 2, "position": { "x": 640, "y": 600, "z": 0 } },
+            { "fixtureActorId": "worker-5", "actorName": "SkaduweeWorkerMale", "owner": 2, "position": { "x": 680, "y": 640, "z": 0 } },
+            { "fixtureActorId": "worker-6", "actorName": "SkaduweeWorkerMale", "owner": 2, "position": { "x": 720, "y": 680, "z": 0 } },
+            { "fixtureActorId": "producer-2", "actorName": "InfantryInn", "owner": 2, "position": { "x": 1000, "y": 1150, "z": 0 } }
+          ],
+          "resourceGrants": [
+            { "playerNumber": 2, "amounts": { "food": 2500, "wood": 2500, "stone": 2500, "minerals": 2500 } }
+          ]
+        }
+      }
+    ]
+  },
+  "assertions": {
+    "PRO-01": {
+      "maximumTick": 2000,
+      "minimumDecisions": 10,
+      "minimumAppliedCommands": 1,
+      "requiredAiFactions": ["Tivara", "Skaduwee"],
+      "requireCompositionDemand": true,
+      "requireCapacityDemand": true,
+      "requiredProductionCapacity": {
+        "latestTick": 2000,
+        "producerObjectNameByFaction": { "Tivara": "AnkGuard", "Skaduwee": "InfantryInn" }
+      }
+    },
+    "PRO-02": {
+      "maximumTick": 2000,
+      "minimumDecisions": 10,
+      "minimumAppliedCommands": 1,
+      "requiredAiFactions": ["Tivara", "Skaduwee"],
+      "requireCapacityDemand": true,
+      "requiredProductionCapacity": {
+        "latestTick": 2000,
+        "producerObjectNameByFaction": { "Tivara": "AnkGuard", "Skaduwee": "InfantryInn" }
+      }
+    }
+  },
+  "deliberatelyBrokenOracle": "accept a self-reported demand without a ready added producer or tolerate a third producer in the ample-capacity control"
+}

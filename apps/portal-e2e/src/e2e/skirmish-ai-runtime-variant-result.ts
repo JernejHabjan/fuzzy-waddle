@@ -22,6 +22,7 @@ export interface RuntimeVariantResultV1 {
   readonly supplyBranch?: "prebuild" | "ample_control";
   readonly pressureBranch?: "raid" | "safe_control";
   readonly resourceServiceBranch?: "build" | "served_control";
+  readonly productionCapacityBranch?: "build" | "already_sufficient";
   readonly initialWorldDigest: string;
   readonly outcomeDigest: string;
   readonly checkpoints: readonly RuntimeCheckpointV1[];

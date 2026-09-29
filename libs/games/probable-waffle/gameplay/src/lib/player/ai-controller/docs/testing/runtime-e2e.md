@@ -45,6 +45,11 @@ Use `pnpm ai:skirmish:report -- --report <artifact> --scenario <ID> --failures-o
 For a retained sweep, isolate its artifacts in one directory, give every shard the same `--run-id`, then use
 `pnpm ai:skirmish:report -- --report <directory> --repair-list --require-supported`. The output is compact JSON;
 nonzero exit means a failing or missing required row. These new contracts are authored but unverified until the final gate.
+Each matrix runtime artifact also writes a bounded JSON index under its report directory's `indexes/` subdirectory.
+Read that index first for source/run/fixture identity, exact expected/executed/passed/failed/unexecuted counts, stop
+reasons, the first failed predicate per row, and a pointer back to the retained raw artifact. An omitted-failure count
+means the bounded index truncated display, never the underlying results or exit status. Indexes are kept outside the
+top-level shard directory so `--repair-list` reads only complete reports. This source path is authored, unverified.
 
 At the final validation gate, first run the frozen open-economy map preflight with
 `AI_SKIRMISH_MAP_PREFLIGHT=1 pnpm exec playwright test apps/portal-e2e/src/e2e/skirmish-ai-test-map-preflight.spec.ts --config=apps/portal-e2e/playwright.config.ts --workers=1`.
