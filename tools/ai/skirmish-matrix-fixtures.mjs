@@ -1,6 +1,6 @@
 import { join } from "node:path";
 import { readJson } from "./skirmish-matrix-io.mjs";
-import { validateRuntimeRecipeMetadata } from "./skirmish-runtime-recipe-metadata.mjs";
+import { validateEvidenceStopAssertions, validateRuntimeRecipeMetadata } from "./skirmish-runtime-recipe-metadata.mjs";
 import { validProductionCapacityPair } from "./skirmish-runtime-production-capacity-fixture.mjs";
 
 export function validateManifest(value, fixtureDirectory) {
@@ -256,6 +256,7 @@ function validateRuntimeFixture(fixture, scenarioId) {
     throw new Error(`malformed_runtime_fixture:${scenarioId}`);
   }
   validateRuntimeRecipeMetadata(recipe);
+  validateEvidenceStopAssertions(fixture);
 }
 
 export function safeReference(value) {

@@ -9,6 +9,8 @@ import { applyRuntimePerturbation } from "./skirmish-ai-runtime-perturbation-run
 import { digestRuntimeValue, projectRuntimeOutcomeDigestInput } from "./skirmish-ai-runtime-digest";
 import { prepareRuntimeVariant } from "./skirmish-ai-runtime-variant-setup";
 import { canStopAfterTerminal } from "./skirmish-ai-runtime-terminal";
+import { evaluateEvidenceStopAtCheckpoint } from "./skirmish-ai-runtime-evidence-stop-evaluation";
+import { collectRuntimePresetEvents } from "./skirmish-ai-runtime-preset-event-results";
 
 export async function runVariant(
   browser: Browser,
@@ -48,6 +50,7 @@ export async function runVariant(
       (scenarioId) => variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId)
     );
     let stopReason: RuntimeVariantResultV1["stopReason"] = "checkpoint_ceiling";
+    let satisfiedSinceTick: number | null = null;
     const maximumTick = Math.max(
       ...applicableScenarioIds
         .map((scenarioId) => fixture.assertions[scenarioId]?.maximumTick ?? last(fixture.recipe.checkpointTicks))
@@ -104,32 +107,19 @@ export async function runVariant(
         stopReason = "terminal_result";
         break;
       }
-    }
-    if (variant.presetWorld?.events?.length) {
-      const eventResults = await page.evaluate(() => {
-        const host = (
-          window as unknown as {
-            __fuzzyWaddleAiRuntimeBrowserTestV1?: {
-              presetApplication?: {
-                eventResults: { id: string; tick: number; affectedActors: number; subjectName: string }[];
-              };
-            };
-          }
-        ).__fuzzyWaddleAiRuntimeBrowserTestV1;
-        return host?.presetApplication?.eventResults ?? [];
-      });
-      if (eventResults.length !== variant.presetWorld.events.length) {
-        throw new Error("runtime_preset_events_incomplete");
+      if (variant.evidenceStop) {
+        const next = evaluateEvidenceStopAtCheckpoint({
+          variant, fixture, scenarioIds: applicableScenarioIds, initialBoundary, effectiveSeed,
+          checkpoints, perturbations, aiErrors, pendingEventTicks, satisfiedSinceTick
+        });
+        satisfiedSinceTick = next.satisfiedSinceTick;
+        if (next.stop) {
+          stopReason = "evidence_satisfied";
+          break;
+        }
       }
-      perturbations.push(
-        ...eventResults.map((event) => ({
-          id: event.id,
-          tick: event.tick,
-          dispatchedActors: event.affectedActors,
-          subjectName: event.subjectName
-        }))
-      );
     }
+    perturbations.push(...await collectRuntimePresetEvents(page, variant));
 
     const initialWorldDigest = digestRuntimeValue({
       seed: effectiveSeed,

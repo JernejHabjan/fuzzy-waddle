@@ -53,6 +53,9 @@ identities and scenario sources. CI supplies the run ID; manual sweeps must use 
 are authored. Exact 1-based variant/repetition diagnostic selection and a bounded rerun command are now authored but
 unverified; diagnostic results cannot satisfy full scenario, pair, determinism or matrix coverage. Do not treat this
 checkpoint as executed evidence.
+The matrix writer now authors a bounded `indexes/*.json` sibling for each runtime report. Positive-only
+`evidenceStop` policy is also authored with a stability window and fail-closed assertion allowlist. No fixture opts
+into early stop yet; its runner and policy tests remain unrun under the current authoring mode.
 
 Open-economy map checkpoint (2026-09-29, unverified): a separate grass tilemap, two-spawn editor/runtime scene and
 asset pack are authored with a SHA-256 static topology contract. The map is hidden from ordinary browsing and

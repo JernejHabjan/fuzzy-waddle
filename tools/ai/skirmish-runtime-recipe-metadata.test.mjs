@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { describeRuntimeVariant, validateRuntimeRecipeMetadata } from "./skirmish-runtime-recipe-metadata.mjs";
+import {
+  describeRuntimeVariant, validateEvidenceStopAssertions, validateRuntimeRecipeMetadata
+} from "./skirmish-runtime-recipe-metadata.mjs";
 
 const recipe = { mapLabel: "Frozen Open", checkpointTicks: [20, 400] };
 
@@ -38,4 +40,21 @@ test("continuous matches cannot masquerade as preset worlds", () => {
   assert.throws(() => validateRuntimeRecipeMetadata({ ...recipe, variants: [{
     id: "match", executionKind: "continuous", role: "standalone", presetWorld: { actors: [] }
   }] }), /runtime_recipe_unexpected_preset/);
+});
+
+test("early evidence stop requires a subject, a finite stability window and monotonic assertions", () => {
+  const subject = { id: "subject", executionKind: "focused_preset", role: "standalone",
+    evidenceStop: { earliestTick: 100, stableForTicks: 200 }, presetWorld: { actors: [] } };
+  assert.doesNotThrow(() => validateRuntimeRecipeMetadata({ ...recipe, variants: [subject] }));
+  assert.throws(() => validateRuntimeRecipeMetadata({ ...recipe, variants: [{ ...subject,
+    role: "control", pairId: "test" }] }),
+    /runtime_recipe_evidence_stop_invalid/);
+  assert.throws(() => validateRuntimeRecipeMetadata({ ...recipe, variants: [{ ...subject,
+    evidenceStop: { earliestTick: 300, stableForTicks: 200 } }] }), /runtime_recipe_evidence_stop_invalid/);
+  const fixture = { scenarioIds: ["PRO-01"], recipe: { ...recipe, variants: [subject] },
+    assertions: { "PRO-01": { minimumDecisions: 2, minimumAppliedCommands: 1,
+      requiredAiFactions: ["Tivara"], minimumMilitaryCount: 3 } } };
+  assert.doesNotThrow(() => validateEvidenceStopAssertions(fixture));
+  fixture.assertions["PRO-01"].maximumMilitaryProducerCount = 2;
+  assert.throws(() => validateEvidenceStopAssertions(fixture), /runtime_recipe_evidence_stop_unsafe/);
 });

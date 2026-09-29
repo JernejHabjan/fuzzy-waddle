@@ -15,7 +15,10 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
   pending their distinct transition, composition, resilience, and queue contracts; do not label the paired capacity
   recipe full production-family proof. Matrix runtime reports now also write bounded `indexes/*.json` summaries
   beside retained raw reports, with totals, source/run/fixture identity, stop reasons, first failures, and raw pointer.
-  This report writer and its authored pure tests are unrun. No tests, E2E, lint, type checks or builds ran.
+  A fail-closed optional evidence-stop contract is authored: only positive monotonic assertions may opt in, with an
+  earliest tick, stability window and no pending event; controls/temporal oracles retain their ceiling. No recipe opts
+  in yet, so no runtime saving is claimed. The report writer, early-stop policy and authored tests are unrun. No tests,
+  E2E, lint, type checks or builds ran.
 - Frozen-map authoring checkpoint (2026-09-29, **unverified**): `MapAiOpenEconomy` now has a test-owned flat-grass
   tilemap, two owned spawns, nearby neutral wood/stone/minerals, an editor scene, runtime scene and asset pack.
   `ProbableWaffleLevels` marks it test-only; ordinary map browsing/matchmaking hide it, while the AI runtime-test

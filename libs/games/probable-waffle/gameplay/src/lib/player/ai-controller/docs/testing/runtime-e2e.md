@@ -50,6 +50,10 @@ Read that index first for source/run/fixture identity, exact expected/executed/p
 reasons, the first failed predicate per row, and a pointer back to the retained raw artifact. An omitted-failure count
 means the bounded index truncated display, never the underlying results or exit status. Indexes are kept outside the
 top-level shard directory so `--repair-list` reads only complete reports. This source path is authored, unverified.
+Focused positive variants may opt into `evidenceStop` only with an explicit earliest checkpoint and consecutive-stability
+window. The fixture reader rejects controls and any assertion with absence, temporal, terminal or lifecycle obligations;
+the browser driver also refuses to stop while a scheduled perturbation remains or any selected oracle fails. Until a
+reviewed fixture opts in and the final-gate tests execute, existing recipes still run their authored ceilings.
 
 At the final validation gate, first run the frozen open-economy map preflight with
 `AI_SKIRMISH_MAP_PREFLIGHT=1 pnpm exec playwright test apps/portal-e2e/src/e2e/skirmish-ai-test-map-preflight.spec.ts --config=apps/portal-e2e/playwright.config.ts --workers=1`.

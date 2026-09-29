@@ -1,5 +1,11 @@
 const executionKinds = new Set(["focused_preset", "focused_natural", "continuous"]);
 const variantRoles = new Set(["subject", "control", "standalone"]);
+const monotonicAssertionKeys = new Set([
+  "maximumTick", "minimumDecisions", "minimumAppliedCommands", "requiredAiFactions",
+  "minimumMilitaryCount", "minimumMilitaryTypeCount", "minimumRepeatedMilitaryTypeCount",
+  "minimumMilitaryProducerCount", "requireCompositionDemand", "requireCapacityDemand",
+  "minimumDamageDealt", "minimumEnemyLosses", "minimumOffensiveLaunchCount"
+]);
 
 function nonempty(value) {
   return typeof value === "string" && value.trim().length > 0;
@@ -32,6 +38,12 @@ export function validateRuntimeRecipeMetadata(recipe) {
       throw new Error(`runtime_recipe_deadline_rationale_missing:${variant.id}`);
     if (variant.deadlineRationale !== undefined && !nonempty(variant.deadlineRationale))
       throw new Error(`runtime_recipe_deadline_rationale_invalid:${variant.id}`);
+    const stop = variant.evidenceStop;
+    if (stop && (variant.role === "control" || !Number.isSafeInteger(stop.earliestTick) ||
+        stop.earliestTick < 0 || !Number.isSafeInteger(stop.stableForTicks) || stop.stableForTicks < 0 ||
+        stop.earliestTick + stop.stableForTicks > deadline)) {
+      throw new Error(`runtime_recipe_evidence_stop_invalid:${variant.id}`);
+    }
   }
   for (const [pairId, members] of pairs) {
     const subject = members.find((variant) => variant.role === "subject");
@@ -41,6 +53,19 @@ export function validateRuntimeRecipeMetadata(recipe) {
         subject.seed !== control.seed || !sameRows ||
         (subject.mapLabel ?? recipe.mapLabel) !== (control.mapLabel ?? recipe.mapLabel)) {
       throw new Error(`runtime_recipe_pair_mismatch:${pairId}`);
+    }
+  }
+}
+
+/** Assert the Node fixture reader and browser driver agree on the fail-closed opt-in. */
+export function validateEvidenceStopAssertions(fixture) {
+  for (const variant of fixture.recipe.variants) {
+    if (!variant.evidenceStop) continue;
+    const selected = fixture.scenarioIds.filter((id) =>
+      variant.scenarioIds === undefined || variant.scenarioIds.includes(id));
+    if (selected.length === 0 || selected.some((id) =>
+      Object.keys(fixture.assertions[id] ?? {}).some((key) => !monotonicAssertionKeys.has(key)))) {
+      throw new Error(`runtime_recipe_evidence_stop_unsafe:${variant.id}`);
     }
   }
 }
@@ -78,7 +103,10 @@ export function describeRuntimeVariant(recipe, variant) {
       : "lobby defaults",
     rationale: [
       variant.setupRationale ? `setup: ${variant.setupRationale}` : null,
-      variant.deadlineRationale ? `deadline: ${variant.deadlineRationale}` : null
+      variant.deadlineRationale ? `deadline: ${variant.deadlineRationale}` : null,
+      variant.evidenceStop
+        ? `evidence stop: ≥${variant.evidenceStop.earliestTick}, stable ${variant.evidenceStop.stableForTicks} ticks`
+        : null
     ].filter(Boolean).join("; ") || null
   };
 }

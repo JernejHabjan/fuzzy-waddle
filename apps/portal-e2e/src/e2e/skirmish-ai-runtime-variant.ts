@@ -8,6 +8,7 @@ export interface RuntimeVariantV1 {
   readonly pairId?: string;
   readonly setupRationale?: string;
   readonly deadlineRationale?: string;
+  readonly evidenceStop?: { readonly earliestTick: number; readonly stableForTicks: number };
   readonly scenarioIds?: readonly string[];
   readonly seed: number;
   readonly mapLabel?: string;
