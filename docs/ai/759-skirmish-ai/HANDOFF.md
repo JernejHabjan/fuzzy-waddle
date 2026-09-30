@@ -6,6 +6,14 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
+- Multiplayer diagnostic/lifecycle authoring checkpoint (2026-09-30, **unverified**): browser-only relay and local-hash
+  observation now lives in a small test-owned Phaser adapter rather than adding methods to hash-baselined
+  `CommandBusService` and `StateHashService`; those two source owners have been restored to their original shapes.
+  The adapter subscribes to real applied batches, relay events and local hash broadcasts, exposes only bounded
+  credential-free facts, and is installed only for a local marked test lobby. `AiPlayerHandler` now fences every
+  controller before dropping it on scene shutdown/destroy. Its spec and the adapter spec are authored but unrun.
+  An already-awaiting controller/agent update may still read the old scene before the authority fence suppresses
+  dispatch; #823 needs a generation/disposal guard and focused interruption evidence before lifecycle acceptance.
 - Multiplayer relay authoring checkpoint (2026-09-30, **unverified**): `MapAiMultiplayer` is a test-only frozen
   three-spawn counterpart to the open-economy map, with a separate editor scene and pinned topology digest. A local-only
   public Supabase override, two real ephemeral-user sessions, two browser contexts, API/portal Playwright config,

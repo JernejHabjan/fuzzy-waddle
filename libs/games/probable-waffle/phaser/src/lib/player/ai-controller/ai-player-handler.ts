@@ -9,7 +9,10 @@ export class AiPlayerHandler {
   private onShutdownSubscription: Subscription;
   constructor(private readonly scene: GameProbableWaffleScene) {
     this.onShutdownSubscription = scene.onShutdown.subscribe(() => this.clearControllers());
-    scene.onDestroy.subscribe(() => this.onShutdownSubscription.unsubscribe());
+    scene.onDestroy.subscribe(() => {
+      this.clearControllers();
+      this.onShutdownSubscription.unsubscribe();
+    });
     this.createAiPlayerControllersForAiPlayers();
   }
 
@@ -34,6 +37,7 @@ export class AiPlayerHandler {
   }
 
   private clearControllers() {
+    for (const controller of this.aiPlayerControllers) controller.setAuthorityActive(false);
     this.aiPlayerControllers = [];
   }
 

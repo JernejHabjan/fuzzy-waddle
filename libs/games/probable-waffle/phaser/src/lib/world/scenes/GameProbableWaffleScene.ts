@@ -42,6 +42,10 @@ import { CommandBusService } from "../services/multiplayer/command-bus.service";
 import { SharedCommandApplicationService } from "../services/multiplayer/shared-command-application.service";
 import { SimulationPauseReason, SimulationTickService } from "../services/simulation-tick.service";
 import { StateHashService } from "../services/recovery/state-hash.service";
+import {
+  AiMultiplayerDiagnostics,
+  multiplayerDiagnosticsRequested
+} from "../../player/ai-controller/testing/ai-multiplayer-diagnostics";
 import { SnapshotService } from "../services/recovery/snapshot.service";
 import { ReconnectService } from "../services/recovery/reconnect.service";
 import { ReplayPlaybackService } from "../services/replay/replay-playback.service";
@@ -197,6 +201,9 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
 
     // Desync detection: hash state every 20 ticks and compare with peers (MP only).
     stateHashService.init(this);
+    if (!environment.production && multiplayerDiagnosticsRequested()) {
+      this.sceneGameData.services.push(new AiMultiplayerDiagnostics(this, commandBusService));
+    }
     // Snapshot service: host keeps a rolling snapshot for reconnect / late spectator catch-up.
     snapshotService.init(this);
     // Reconnect service: non-host clients request a snapshot when they rejoin after a drop.

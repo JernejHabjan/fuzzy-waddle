@@ -30,27 +30,28 @@ export async function observeMultiplayerPeer(page: Page, aiPlayerNumber: number)
     const scene = host?.game.scene.getScenes(true).find((candidate) => candidate.scene.key === "MapAiMultiplayer");
     if (!scene) throw new Error("multiplayer_test_scene_missing");
     const graph = scene.getSceneGameData();
-    const relay = graph.services.find((candidate): candidate is {
-      getRelayDiagnostics(): Relay;
-      getAuthorityState(): { processedCommandIds: readonly string[] };
+    const diagnostics = graph.services.find((candidate): candidate is {
+      kind: "ai-multiplayer-browser-diagnostics";
+      getSnapshot(aiPlayerNumber: number): {
+        relay: Relay;
+        processedAiCommandIds: readonly string[];
+        hashes: Hashes;
+      };
     } =>
-      !!candidate && typeof (candidate as { getRelayDiagnostics?: unknown }).getRelayDiagnostics === "function" &&
-      typeof (candidate as { getAuthorityState?: unknown }).getAuthorityState === "function"
-    );
-    const hashes = graph.services.find((candidate): candidate is { getRecentHashCheckpoints(): Hashes } =>
-      !!candidate && typeof (candidate as { getRecentHashCheckpoints?: unknown }).getRecentHashCheckpoints === "function"
+      !!candidate && (candidate as { kind?: unknown }).kind === "ai-multiplayer-browser-diagnostics" &&
+      typeof (candidate as { getSnapshot?: unknown }).getSnapshot === "function"
     );
     const handler = graph.systems.find((candidate): candidate is {
       getAiPlayerController(player: number): unknown;
     } => !!candidate && typeof (candidate as { getAiPlayerController?: unknown }).getAiPlayerController === "function");
-    if (!relay || !hashes || !handler) throw new Error("multiplayer_observation_service_missing");
+    if (!diagnostics || !handler) throw new Error("multiplayer_observation_service_missing");
+    const snapshot = diagnostics.getSnapshot(playerNumber);
     return {
       sceneKey: scene.scene.key,
-      relay: relay.getRelayDiagnostics(),
+      relay: snapshot.relay,
       aiControllerPresent: !!handler.getAiPlayerController(playerNumber),
-      processedAiCommandIds: relay.getAuthorityState().processedCommandIds
-        .filter((id) => id.startsWith(`${playerNumber}:`)).slice(-16),
-      hashes: hashes.getRecentHashCheckpoints()
+      processedAiCommandIds: snapshot.processedAiCommandIds,
+      hashes: snapshot.hashes
     };
   }, aiPlayerNumber);
 }

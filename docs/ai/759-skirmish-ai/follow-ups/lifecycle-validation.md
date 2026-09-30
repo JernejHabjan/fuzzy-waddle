@@ -27,6 +27,10 @@ AI doc paths are relative to the gameplay AI-controller directory; Phaser paths 
 
 Coordinate socket-backed cases with #819. Pure serialization or local second-match evidence must not be presented as
 multiplayer reconnect proof.
+`AiPlayerHandler` now fences each controller before shutdown/destroy drops it (authored, unrun). The transient authority
+gate suppresses dispatch after an awaited planning step, but an already-awaiting agent update may still read the
+destroyed scene. Add generation/disposal fencing around that async boundary and a focused interrupted-step assertion;
+do not call this exact-once lifecycle proof until final-gate execution.
 
 ## Implementation order
 

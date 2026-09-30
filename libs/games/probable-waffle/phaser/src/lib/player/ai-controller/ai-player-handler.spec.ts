@@ -38,14 +38,16 @@ describe("AiPlayerHandler campaign composition", () => {
     const handler = new AiPlayerHandler(scene);
 
     expect(PlayerAiController).toHaveBeenCalledTimes(1);
-    expect(handler.getAiPlayerController(1)).toBeDefined();
-    expect(handler.getAiPlayerController(1)?.setEnabled).toHaveBeenCalledWith(true);
+    const controller = handler.getAiPlayerController(1)!;
+    expect(controller).toBeDefined();
+    expect(controller.setEnabled).toHaveBeenCalledWith(true);
     expect(handler.getAiPlayerController(2)).toBeUndefined();
     expect(handler.setPlayerEnabled(1, false)).toBe(true);
     expect(handler.getAiPlayerController(1)?.setEnabled).toHaveBeenCalledWith(false);
     expect(handler.setPlayerEnabled(2, false)).toBe(false);
     onShutdown.next();
     expect(handler.getAiPlayerController(1)).toBeUndefined();
+    expect(controller.setAuthorityActive).toHaveBeenCalledWith(false);
   });
 
   it("suspends a demoted host without mutating AI policy and resumes a promoted host once", () => {
@@ -77,5 +79,8 @@ describe("AiPlayerHandler campaign composition", () => {
     promoted.setHostAuthorityActive(true);
     expect(promoted.getAiPlayerController(2)).toBeDefined();
     expect(PlayerAiController).toHaveBeenCalledTimes(2);
+    onDestroy.next();
+    expect(controller.setAuthorityActive).toHaveBeenLastCalledWith(false);
+    expect(handler.getAiPlayerController(2)).toBeUndefined();
   });
 });

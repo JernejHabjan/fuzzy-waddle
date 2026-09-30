@@ -37,6 +37,10 @@ discovery; `.github/workflows/pull-request-checks.yml` invokes it only when the 
 must be run and repaired at the final gate. A second authored case closes the real host and requires peer promotion
 and a higher epoch. It is an authority-fence smoke, not exact-once mid-commitment transfer. Reconnect, full host-transfer
 continuation, combat/terminal and leave/re-entry acceptance remain; preserve those obligations in this plan.
+The newest unrun diagnostic slice moves browser observations out of the hash-baselined production relay/hash owners
+into a localhost/test-marker-only Phaser adapter. It records real applied human batches, received relay sequences,
+host authority epoch, bounded AI command IDs and locally emitted tick hashes. This preserves source-structure debt
+baselines but does not yet prove two-peer equality; run the authored cases at the final gate.
 
 ## Implementation order
 
