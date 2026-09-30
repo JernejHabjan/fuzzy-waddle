@@ -71,6 +71,13 @@ export class HomePageComponent implements OnInit {
       bannerImage: "dungeon-crawler-banner.webp",
       route: "dungeon-crawler",
       inDevelopment: true
+    },
+    {
+      name: "Trump Defense 2016",
+      description: "Build towers and raise the wall across three 3D levels",
+      image: "trump-defense.webp",
+      bannerImage: "trump-defense.webp",
+      route: "trump-defense"
     }
   ];
 

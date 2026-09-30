@@ -1,0 +1,131 @@
+<main class="td-game">
+  <header class="td-header">
+    <div class="td-title">
+      <a routerLink="/" aria-label="Back to games">← Games</a>
+      <div>
+        <h1>Trump Defense 2016</h1>
+        <p>Level {{ levelNumber() }} of 3 · Build the wall</p>
+      </div>
+    </div>
+    <button type="button" class="td-sound" (click)="toggleSound()" [attr.aria-pressed]="muted()">
+      {{ muted() ? "Sound off" : "Sound on" }}
+    </button>
+  </header>
+
+  <div class="td-hud" aria-label="Game status">
+    <span
+      >Money <strong>${{ hud().money }}</strong></span
+    >
+    <span
+      >Lives <strong>{{ hud().lives }}</strong></span
+    >
+    <span
+      >Wall <strong>{{ hud().wall }} / {{ hud().goal }}</strong></span
+    >
+    <span
+      >Tile <strong>{{ hud().selected }}</strong></span
+    >
+  </div>
+
+  <section class="td-stage" aria-label="3D game map">
+    <div
+      #viewport
+      class="td-viewport"
+      (pointerdown)="onPointer($event)"
+      (wheel)="onWheel($event)"
+      (webglcontextlost)="onContextLost($event)"
+    ></div>
+
+    @if (phase() !== "playing") {
+      <div class="td-overlay">
+        <div class="td-panel" role="status">
+          @switch (phase()) {
+            @case ("loading") {
+              <h2>Loading level {{ levelNumber() }}</h2>
+            }
+            @case ("ready") {
+              <h2>Defend the border</h2>
+            }
+            @case ("paused") {
+              <h2>Paused</h2>
+            }
+            @case ("won") {
+              <h2>{{ finalLevel() ? "Campaign complete" : "Level complete" }}</h2>
+            }
+            @case ("lost") {
+              <h2>Defense defeated</h2>
+            }
+            @case ("error") {
+              <h2>Unable to load the map</h2>
+            }
+          }
+          <p>{{ message() }}</p>
+          @switch (phase()) {
+            @case ("ready") {
+              <button type="button" (click)="start()">Start level</button>
+            }
+            @case ("paused") {
+              <button type="button" (click)="pause()">Resume</button>
+            }
+            @case ("won") {
+              @if (finalLevel()) {
+                <button type="button" (click)="restart()">Restart campaign</button>
+              } @else {
+                <button type="button" (click)="next()">Next level</button>
+              }
+            }
+            @case ("lost") {
+              <button type="button" (click)="retry()">Retry level</button>
+            }
+            @case ("error") {
+              <button type="button" (click)="retry()">Try again</button>
+            }
+          }
+        </div>
+      </div>
+    }
+  </section>
+
+  <div class="td-camera-controls" aria-label="Camera controls">
+    <span>Camera</span>
+    <button type="button" aria-label="Pan left" (click)="panCamera(-8, 0)">←</button>
+    <button type="button" aria-label="Pan up" (click)="panCamera(0, -8)">↑</button>
+    <button type="button" aria-label="Pan down" (click)="panCamera(0, 8)">↓</button>
+    <button type="button" aria-label="Pan right" (click)="panCamera(8, 0)">→</button>
+    <button type="button" aria-label="Zoom out" (click)="zoomCamera(120)">−</button>
+    <button type="button" aria-label="Zoom in" (click)="zoomCamera(-120)">+</button>
+  </div>
+
+  <div class="td-controls" aria-label="Game controls">
+    <button type="button" (click)="buy('SniperTower')" [disabled]="phase() !== 'playing'">
+      Sniper · ${{ hud().sniperCost }} <kbd>B</kbd>
+    </button>
+    <button type="button" (click)="buy('Cannon')" [disabled]="phase() !== 'playing'">
+      Cannon · ${{ hud().cannonCost }} <kbd>C</kbd>
+    </button>
+    <button type="button" (click)="upgrade()" [disabled]="phase() !== 'playing'">
+      Upgrade · ${{ hud().upgradeCost }} <kbd>U</kbd>
+    </button>
+    <button type="button" (click)="wall()" [disabled]="phase() !== 'playing'">
+      Raise wall · ${{ hud().wallCost }} <kbd>Space</kbd>
+    </button>
+    <button type="button" (click)="pause()" [disabled]="phase() !== 'playing'">Pause <kbd>P</kbd></button>
+  </div>
+
+  <p class="td-feedback" aria-live="polite">{{ message() }}</p>
+  <p class="td-help">
+    @if (randomPlacement()) {
+      Towers are placed randomly in level 3.
+    } @else {
+      Click a clear tile to place a tower. Click a tower to upgrade it.
+    }
+    Pan with arrows or WASD; zoom with the wheel or camera controls.
+  </p>
+  <details class="td-credits">
+    <summary>Audio credits</summary>
+    <p>
+      The original TD2016 used material from Stronghold Crusader and Command &amp; Conquer: Red Alert. Exact per-file
+      sources for the audio in this rewrite are still being identified.
+    </p>
+  </details>
+</main>

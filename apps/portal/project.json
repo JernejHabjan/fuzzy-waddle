@@ -8,7 +8,7 @@
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:application",
-      "dependsOn": ["assets-check"],
+      "dependsOn": ["assets-check", "trump-defense-lines"],
       "outputs": ["{workspaceRoot}/dist/apps/portal"],
       "options": {
         "outputPath": {
@@ -52,6 +52,11 @@
           {
             "glob": "**/*",
             "input": "libs/games/probable-waffle/phaser/src/assets",
+            "output": "assets"
+          },
+          {
+            "glob": "**/*",
+            "input": "libs/games/trump-defense/interface/src/assets",
             "output": "assets"
           }
         ],
@@ -125,6 +130,13 @@
       "cache": false,
       "options": {
         "command": "node tools/assets/check-git-lfs.mjs",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "trump-defense-lines": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/ci/check-trump-defense-ts-length.mjs",
         "cwd": "{workspaceRoot}"
       }
     },

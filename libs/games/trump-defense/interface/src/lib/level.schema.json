@@ -1,0 +1,209 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["version", "id", "name", "grid", "paths", "scene", "rules", "music"],
+  "properties": {
+    "version": { "const": 1 },
+    "id": { "enum": [1, 2, 3] },
+    "name": { "type": "string", "minLength": 1 },
+    "grid": {
+      "type": "object",
+      "required": ["width", "height", "tileSize"],
+      "properties": {
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 },
+        "tileSize": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "paths": {
+      "type": "object",
+      "required": ["ground", "flying"],
+      "properties": {
+        "ground": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/gridPoint" } },
+        "flying": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/gridPoint" } }
+      }
+    },
+    "scene": {
+      "type": "object",
+      "required": [
+        "terrain",
+        "pathTile",
+        "wall",
+        "props",
+        "skybox",
+        "ambient",
+        "directional",
+        "points",
+        "spots",
+        "visuals"
+      ],
+      "properties": {
+        "terrain": { "$ref": "#/$defs/prop" },
+        "pathTile": { "$ref": "#/$defs/visual" },
+        "wall": { "$ref": "#/$defs/prop" },
+        "props": { "type": "array", "items": { "$ref": "#/$defs/prop" } },
+        "skybox": { "type": "array", "minItems": 6, "maxItems": 6, "items": { "type": "string", "minLength": 1 } },
+        "ambient": {
+          "type": "object",
+          "required": ["color", "intensity"],
+          "properties": { "color": { "type": "string" }, "intensity": { "type": "number", "minimum": 0 } }
+        },
+        "directional": { "$ref": "#/$defs/light" },
+        "points": { "type": "array", "items": { "$ref": "#/$defs/light" } },
+        "spots": { "type": "array", "items": { "$ref": "#/$defs/light" } },
+        "visuals": {
+          "type": "object",
+          "required": [
+            "SniperTower",
+            "SniperTower2",
+            "Cannon",
+            "Cannon2",
+            "MexicanBanjo",
+            "Builder",
+            "MexicanBalooner",
+            "MexicanMafia",
+            "MexicanBaloon",
+            "Rocket"
+          ],
+          "additionalProperties": { "$ref": "#/$defs/visual" }
+        }
+      }
+    },
+    "rules": {
+      "type": "object",
+      "required": [
+        "enemyRoster",
+        "enemies",
+        "towers",
+        "enemyHp",
+        "enemyHpIncrease",
+        "enemyHpIntervalMs",
+        "spawnDelayMs",
+        "spawnIntervalMs",
+        "moveIntervalMs",
+        "startingMoney",
+        "startingLives",
+        "wallCost",
+        "wallStartDelayMs",
+        "wallStep",
+        "wallGoal",
+        "randomTowerPlacement"
+      ],
+      "properties": {
+        "enemyRoster": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "enemies": {
+          "type": "object",
+          "required": ["MexicanBanjo", "Builder", "MexicanBalooner", "MexicanMafia", "MexicanBaloon"],
+          "additionalProperties": { "$ref": "#/$defs/enemy" }
+        },
+        "towers": {
+          "type": "object",
+          "required": ["SniperTower", "Cannon"],
+          "additionalProperties": { "$ref": "#/$defs/tower" }
+        },
+        "enemyHp": { "type": "number", "exclusiveMinimum": 0 },
+        "enemyHpIncrease": { "type": "number", "minimum": 0 },
+        "enemyHpIntervalMs": { "type": "integer", "minimum": 1 },
+        "spawnDelayMs": { "type": "integer", "minimum": 0 },
+        "spawnIntervalMs": { "type": "integer", "minimum": 1 },
+        "moveIntervalMs": { "type": "integer", "minimum": 1 },
+        "startingMoney": { "type": "integer", "minimum": 0 },
+        "startingLives": { "type": "integer", "minimum": 1 },
+        "wallCost": { "type": "integer", "minimum": 1 },
+        "wallStartDelayMs": { "type": "integer", "minimum": 0 },
+        "wallStep": { "type": "integer", "minimum": 1 },
+        "wallGoal": { "type": "integer", "minimum": 1 },
+        "randomTowerPlacement": { "type": "boolean" }
+      }
+    },
+    "music": { "type": "string", "minLength": 1 }
+  },
+  "$defs": {
+    "gridPoint": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": { "type": "number" }
+    },
+    "worldPoint": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": { "type": "number" }
+    },
+    "visual": {
+      "type": "object",
+      "required": ["model", "texture"],
+      "properties": {
+        "model": { "type": "string", "minLength": 1 },
+        "texture": { "type": "string", "minLength": 1 },
+        "specular": { "type": "string", "minLength": 1 }
+      }
+    },
+    "prop": {
+      "type": "object",
+      "required": ["model", "texture", "position"],
+      "properties": {
+        "model": { "type": "string", "minLength": 1 },
+        "texture": { "type": "string", "minLength": 1 },
+        "specular": { "type": "string", "minLength": 1 },
+        "position": { "$ref": "#/$defs/worldPoint" },
+        "rotationY": { "type": "number" }
+      }
+    },
+    "light": {
+      "type": "object",
+      "required": ["color", "intensity", "position"],
+      "properties": {
+        "color": { "type": "string" },
+        "intensity": { "type": "number", "minimum": 0 },
+        "position": { "$ref": "#/$defs/worldPoint" },
+        "target": { "$ref": "#/$defs/worldPoint" },
+        "distance": { "type": "number", "minimum": 0 },
+        "angle": { "type": "number", "exclusiveMinimum": 0 }
+      }
+    },
+    "enemy": {
+      "type": "object",
+      "required": ["path", "altitude", "reward"],
+      "properties": {
+        "path": { "enum": ["ground", "flying"] },
+        "altitude": { "type": "number" },
+        "reward": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "tower": {
+      "type": "object",
+      "required": [
+        "label",
+        "visual",
+        "upgradedVisual",
+        "cost",
+        "upgradeCost",
+        "range",
+        "damage",
+        "cooldownMs",
+        "canHitFlying",
+        "airBonusDamage",
+        "fireSound",
+        "upgradeRange",
+        "upgradeDamage"
+      ],
+      "properties": {
+        "label": { "type": "string", "minLength": 1 },
+        "visual": { "type": "string", "minLength": 1 },
+        "upgradedVisual": { "type": "string", "minLength": 1 },
+        "cost": { "type": "integer", "minimum": 0 },
+        "upgradeCost": { "type": "integer", "minimum": 0 },
+        "range": { "type": "number", "exclusiveMinimum": 0 },
+        "damage": { "type": "number", "exclusiveMinimum": 0 },
+        "cooldownMs": { "type": "integer", "minimum": 1 },
+        "canHitFlying": { "type": "boolean" },
+        "airBonusDamage": { "type": "number", "minimum": 0 },
+        "fireSound": { "enum": ["pew", "cannon"] },
+        "upgradeRange": { "type": "number", "minimum": 0 },
+        "upgradeDamage": { "type": "number", "minimum": 0 }
+      }
+    }
+  }
+}

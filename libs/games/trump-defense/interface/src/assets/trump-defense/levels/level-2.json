@@ -1,0 +1,555 @@
+{
+  "version": 1,
+  "id": 2,
+  "name": "Level 2",
+  "grid": {
+    "width": 16,
+    "height": 12,
+    "tileSize": 8
+  },
+  "paths": {
+    "ground": [
+      [0, 64],
+      [8, 64],
+      [16, 64],
+      [16, 72],
+      [16, 80],
+      [24, 80],
+      [32, 80],
+      [40, 80],
+      [40, 80],
+      [40, 72],
+      [40, 64],
+      [40, 56],
+      [40, 48],
+      [40, 40],
+      [40, 32],
+      [40, 24],
+      [40, 16],
+      [48, 16],
+      [48, 16],
+      [56, 16],
+      [64, 16],
+      [64, 24],
+      [64, 32],
+      [72, 32],
+      [80, 32],
+      [80, 24],
+      [80, 16],
+      [88, 16],
+      [96, 16],
+      [96, 24],
+      [96, 32],
+      [96, 40],
+      [96, 48],
+      [96, 56],
+      [96, 64],
+      [96, 64],
+      [104, 64],
+      [112, 64],
+      [120, 64]
+    ],
+    "flying": [
+      [0, 64],
+      [8, 64],
+      [16, 64],
+      [24, 64],
+      [32, 64],
+      [40, 64],
+      [48, 64],
+      [56, 64],
+      [64, 64],
+      [72, 64],
+      [80, 64],
+      [88, 64],
+      [96, 64],
+      [104, 64],
+      [112, 64],
+      [120, 64]
+    ]
+  },
+  "scene": {
+    "terrain": {
+      "model": "models/Map.obj",
+      "texture": "textures/MapDiffuse.webp",
+      "position": [64, 0, -48]
+    },
+    "pathTile": {
+      "model": "models/Tile.obj",
+      "texture": "textures/TileDiffuse.webp"
+    },
+    "wall": {
+      "model": "models/Wall.obj",
+      "texture": "textures/WallDiffuse.webp",
+      "position": [144, 0, -48.55]
+    },
+    "props": [
+      {
+        "model": "models/WallHeight.obj",
+        "texture": "textures/WallHeightDiffuse.webp",
+        "position": [128, 0, -48]
+      },
+      {
+        "model": "models/MexicanMafia.obj",
+        "texture": "textures/MexicanMafiaDiffuse.webp",
+        "position": [156, 18, -48],
+        "rotationY": 3.141592653589793
+      },
+      {
+        "model": "models/Navodila.obj",
+        "texture": "textures/NavodilaDiffuse.webp",
+        "position": [158, 0, 0]
+      },
+      {
+        "model": "models/Odar.obj",
+        "texture": "textures/OdarDiffuse.webp",
+        "position": [138, 0, -96]
+      },
+      {
+        "model": "models/Builder.obj",
+        "texture": "textures/BuilderDiffuse.webp",
+        "specular": "textures/BuilderSpecular.webp",
+        "position": [140, 5, -98],
+        "rotationY": 1.5707963267948966
+      },
+      {
+        "model": "models/Hammer.obj",
+        "texture": "textures/HammerDiffuse.webp",
+        "specular": "textures/HammerSpecular.webp",
+        "position": [139.5, 6, -97.7]
+      },
+      {
+        "model": "models/Odar.obj",
+        "texture": "textures/OdarDiffuse.webp",
+        "position": [138, 0, -84]
+      },
+      {
+        "model": "models/Builder.obj",
+        "texture": "textures/BuilderDiffuse.webp",
+        "specular": "textures/BuilderSpecular.webp",
+        "position": [140, 5, -86],
+        "rotationY": 1.5707963267948966
+      },
+      {
+        "model": "models/Hammer.obj",
+        "texture": "textures/HammerDiffuse.webp",
+        "specular": "textures/HammerSpecular.webp",
+        "position": [139.5, 6, -85.7]
+      },
+      {
+        "model": "models/Odar.obj",
+        "texture": "textures/OdarDiffuse.webp",
+        "position": [138, 0, -72]
+      },
+      {
+        "model": "models/Builder.obj",
+        "texture": "textures/BuilderDiffuse.webp",
+        "specular": "textures/BuilderSpecular.webp",
+        "position": [140, 5, -74],
+        "rotationY": 1.5707963267948966
+      },
+      {
+        "model": "models/Hammer.obj",
+        "texture": "textures/HammerDiffuse.webp",
+        "specular": "textures/HammerSpecular.webp",
+        "position": [139.5, 6, -73.7]
+      },
+      {
+        "model": "models/Odar.obj",
+        "texture": "textures/OdarDiffuse.webp",
+        "position": [138, 0, -60]
+      },
+      {
+        "model": "models/Builder.obj",
+        "texture": "textures/BuilderDiffuse.webp",
+        "specular": "textures/BuilderSpecular.webp",
+        "position": [140, 5, -62],
+        "rotationY": 1.5707963267948966
+      },
+      {
+        "model": "models/Hammer.obj",
+        "texture": "textures/HammerDiffuse.webp",
+        "specular": "textures/HammerSpecular.webp",
+        "position": [139.5, 6, -61.7]
+      },
+      {
+        "model": "models/Odar.obj",
+        "texture": "textures/OdarDiffuse.webp",
+        "position": [138, 0, -48]
+      },
+      {
+        "model": "models/Builder.obj",
+        "texture": "textures/BuilderDiffuse.webp",
+        "specular": "textures/BuilderSpecular.webp",
+        "position": [140, 5, -50],
+        "rotationY": 1.5707963267948966
+      },
+      {
+        "model": "models/Hammer.obj",
+        "texture": "textures/HammerDiffuse.webp",
+        "specular": "textures/HammerSpecular.webp",
+        "position": [139.5, 6, -49.7]
+      },
+      {
+        "model": "models/Odar.obj",
+        "texture": "textures/OdarDiffuse.webp",
+        "position": [138, 0, -36]
+      },
+      {
+        "model": "models/Builder.obj",
+        "texture": "textures/BuilderDiffuse.webp",
+        "specular": "textures/BuilderSpecular.webp",
+        "position": [140, 5, -38],
+        "rotationY": 1.5707963267948966
+      },
+      {
+        "model": "models/Hammer.obj",
+        "texture": "textures/HammerDiffuse.webp",
+        "specular": "textures/HammerSpecular.webp",
+        "position": [139.5, 6, -37.7]
+      },
+      {
+        "model": "models/Odar.obj",
+        "texture": "textures/OdarDiffuse.webp",
+        "position": [138, 0, -24]
+      },
+      {
+        "model": "models/Builder.obj",
+        "texture": "textures/BuilderDiffuse.webp",
+        "specular": "textures/BuilderSpecular.webp",
+        "position": [140, 5, -26],
+        "rotationY": 1.5707963267948966
+      },
+      {
+        "model": "models/Hammer.obj",
+        "texture": "textures/HammerDiffuse.webp",
+        "specular": "textures/HammerSpecular.webp",
+        "position": [139.5, 6, -25.7]
+      },
+      {
+        "model": "models/Odar.obj",
+        "texture": "textures/OdarDiffuse.webp",
+        "position": [138, 0, -12]
+      },
+      {
+        "model": "models/Builder.obj",
+        "texture": "textures/BuilderDiffuse.webp",
+        "specular": "textures/BuilderSpecular.webp",
+        "position": [140, 5, -14],
+        "rotationY": 1.5707963267948966
+      },
+      {
+        "model": "models/Hammer.obj",
+        "texture": "textures/HammerDiffuse.webp",
+        "specular": "textures/HammerSpecular.webp",
+        "position": [139.5, 6, -13.7]
+      },
+      {
+        "model": "models/House1.obj",
+        "texture": "textures/House1Diffuse.webp",
+        "position": [-40, 0, -96]
+      },
+      {
+        "model": "models/House2.obj",
+        "texture": "textures/House2Diffuse.webp",
+        "position": [-40, 0, -72]
+      },
+      {
+        "model": "models/Cactus.obj",
+        "texture": "textures/CactusDiffuse.webp",
+        "position": [-35, 0, -67]
+      },
+      {
+        "model": "models/House1.obj",
+        "texture": "textures/House1Diffuse.webp",
+        "position": [-40, 0, -48]
+      },
+      {
+        "model": "models/Cactus.obj",
+        "texture": "textures/CactusDiffuse.webp",
+        "position": [-35, 0, -19]
+      },
+      {
+        "model": "models/Cactus.obj",
+        "texture": "textures/CactusDiffuse.webp",
+        "position": [-45, 0, -17]
+      },
+      {
+        "model": "models/Cactus.obj",
+        "texture": "textures/CactusDiffuse.webp",
+        "position": [-55, 0, 2]
+      },
+      {
+        "model": "models/House1.obj",
+        "texture": "textures/House1Diffuse.webp",
+        "position": [-20, 0, -72]
+      },
+      {
+        "model": "models/Cactus.obj",
+        "texture": "textures/CactusDiffuse.webp",
+        "position": [-15, 0, -67]
+      },
+      {
+        "model": "models/House2.obj",
+        "texture": "textures/House2Diffuse.webp",
+        "position": [-20, 0, -48]
+      },
+      {
+        "model": "models/Cactus.obj",
+        "texture": "textures/CactusDiffuse.webp",
+        "position": [-15, 0, -43]
+      },
+      {
+        "model": "models/Cactus.obj",
+        "texture": "textures/CactusDiffuse.webp",
+        "position": [-10, 0, -43]
+      },
+      {
+        "model": "models/House1.obj",
+        "texture": "textures/House1Diffuse.webp",
+        "position": [-30, 0, -19]
+      },
+      {
+        "model": "models/House2.obj",
+        "texture": "textures/House2Diffuse.webp",
+        "position": [-25, 0, 5]
+      },
+      {
+        "model": "models/House1.obj",
+        "texture": "textures/House1Diffuse.webp",
+        "position": [-50, 0, -96]
+      },
+      {
+        "model": "models/Cactus.obj",
+        "texture": "textures/CactusDiffuse.webp",
+        "position": [-45, 0, -57]
+      },
+      {
+        "model": "models/House1.obj",
+        "texture": "textures/House1Diffuse.webp",
+        "position": [-50, 0, -28]
+      },
+      {
+        "model": "models/Cactus.obj",
+        "texture": "textures/CactusDiffuse.webp",
+        "position": [-45, 0, -23]
+      },
+      {
+        "model": "models/Cactus.obj",
+        "texture": "textures/CactusDiffuse.webp",
+        "position": [-40, 0, -23]
+      }
+    ],
+    "skybox": [
+      "skyboxes/CubeMapNight/right.jpg",
+      "skyboxes/CubeMapNight/left.jpg",
+      "skyboxes/CubeMapNight/top.jpg",
+      "skyboxes/CubeMapNight/bottom.jpg",
+      "skyboxes/CubeMapNight/back.jpg",
+      "skyboxes/CubeMapNight/front.jpg"
+    ],
+    "ambient": {
+      "color": "#ffffff",
+      "intensity": 0.12
+    },
+    "directional": {
+      "color": "#bba661",
+      "intensity": 0,
+      "position": [20, 80, 30],
+      "target": [64, 0, -48]
+    },
+    "points": [
+      {
+        "color": "#ffffff",
+        "intensity": 2.2,
+        "position": [1, 21, -63],
+        "distance": 62
+      },
+      {
+        "color": "#ffffff",
+        "intensity": 2.2,
+        "position": [25, 21, -79],
+        "distance": 62
+      },
+      {
+        "color": "#ffffff",
+        "intensity": 2.2,
+        "position": [41, 21, -63],
+        "distance": 62
+      },
+      {
+        "color": "#ffffff",
+        "intensity": 2.2,
+        "position": [41, 21, -23],
+        "distance": 62
+      },
+      {
+        "color": "#ffffff",
+        "intensity": 2.2,
+        "position": [65, 21, -15],
+        "distance": 62
+      },
+      {
+        "color": "#ffffff",
+        "intensity": 2.2,
+        "position": [81, 21, -23],
+        "distance": 62
+      },
+      {
+        "color": "#ffffff",
+        "intensity": 2.2,
+        "position": [97, 21, -31],
+        "distance": 62
+      },
+      {
+        "color": "#ffffff",
+        "intensity": 2.2,
+        "position": [97, 21, -63],
+        "distance": 62
+      }
+    ],
+    "spots": [
+      {
+        "color": "#00ff00",
+        "intensity": 4,
+        "position": [-8, 1, -65],
+        "target": [16, 0, -65],
+        "distance": 70,
+        "angle": 0.26
+      },
+      {
+        "color": "#ff0000",
+        "intensity": 4,
+        "position": [128, 1, -65],
+        "target": [104, 0, -65],
+        "distance": 70,
+        "angle": 0.26
+      }
+    ],
+    "visuals": {
+      "SniperTower": {
+        "model": "models/SniperTower.obj",
+        "texture": "textures/SniperTowerDiffuse.webp",
+        "specular": "textures/SniperTowerSpecular.webp"
+      },
+      "SniperTower2": {
+        "model": "models/SniperTower2.obj",
+        "texture": "textures/SniperTower2Diffuse.webp",
+        "specular": "textures/SniperTower2Specular.webp"
+      },
+      "Cannon": {
+        "model": "models/Cannon.obj",
+        "texture": "textures/CannonDiffuse.webp",
+        "specular": "textures/CannonSpecular.webp"
+      },
+      "Cannon2": {
+        "model": "models/Cannon2.obj",
+        "texture": "textures/Cannon2Diffuse.webp",
+        "specular": "textures/Cannon2Specular.webp"
+      },
+      "MexicanBanjo": {
+        "model": "models/MexicanBanjo.obj",
+        "texture": "textures/MexicanBanjoDiffuse.webp"
+      },
+      "Builder": {
+        "model": "models/Builder.obj",
+        "texture": "textures/BuilderDiffuse.webp",
+        "specular": "textures/BuilderSpecular.webp"
+      },
+      "MexicanBalooner": {
+        "model": "models/MexicanBalooner.obj",
+        "texture": "textures/MexicanBaloonerDiffuse.webp",
+        "specular": "textures/MexicanBaloonerSpecular.webp"
+      },
+      "MexicanMafia": {
+        "model": "models/MexicanMafia.obj",
+        "texture": "textures/MexicanMafiaDiffuse.webp"
+      },
+      "MexicanBaloon": {
+        "model": "models/MexicanBaloon.obj",
+        "texture": "textures/MexicanBaloonDiffuse.webp",
+        "specular": "textures/MexicanBaloonSpecular.webp"
+      },
+      "Rocket": {
+        "model": "models/Rocket.obj",
+        "texture": "textures/RocketDiffuse.webp"
+      }
+    }
+  },
+  "rules": {
+    "enemyRoster": ["MexicanBanjo", "Builder", "MexicanBalooner"],
+    "enemyHp": 70,
+    "enemyHpIncrease": 10,
+    "enemyHpIntervalMs": 5000,
+    "spawnDelayMs": 5000,
+    "spawnIntervalMs": 2000,
+    "moveIntervalMs": 500,
+    "startingMoney": 200,
+    "startingLives": 10,
+    "wallCost": 100,
+    "wallStep": 5,
+    "wallGoal": 35,
+    "randomTowerPlacement": false,
+    "enemies": {
+      "MexicanBanjo": {
+        "path": "ground",
+        "altitude": 0,
+        "reward": 10
+      },
+      "Builder": {
+        "path": "ground",
+        "altitude": 0,
+        "reward": 10
+      },
+      "MexicanBalooner": {
+        "path": "flying",
+        "altitude": 9,
+        "reward": 20
+      },
+      "MexicanMafia": {
+        "path": "ground",
+        "altitude": 0,
+        "reward": 10
+      },
+      "MexicanBaloon": {
+        "path": "flying",
+        "altitude": 9,
+        "reward": 20
+      }
+    },
+    "towers": {
+      "SniperTower": {
+        "label": "Sniper tower",
+        "visual": "SniperTower",
+        "upgradedVisual": "SniperTower2",
+        "cost": 20,
+        "upgradeCost": 50,
+        "range": 20,
+        "damage": 10,
+        "cooldownMs": 1000,
+        "canHitFlying": true,
+        "airBonusDamage": 10,
+        "fireSound": "pew",
+        "upgradeRange": 20,
+        "upgradeDamage": 20
+      },
+      "Cannon": {
+        "label": "Cannon",
+        "visual": "Cannon",
+        "upgradedVisual": "Cannon2",
+        "cost": 30,
+        "upgradeCost": 50,
+        "range": 20,
+        "damage": 15,
+        "cooldownMs": 1000,
+        "canHitFlying": false,
+        "airBonusDamage": 0,
+        "fireSound": "cannon",
+        "upgradeRange": 20,
+        "upgradeDamage": 20
+      }
+    },
+    "wallStartDelayMs": 3000
+  },
+  "music": "music/SandalMaker.mp3"
+}

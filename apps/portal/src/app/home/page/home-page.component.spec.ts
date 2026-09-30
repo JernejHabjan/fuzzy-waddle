@@ -41,4 +41,10 @@ describe("HomePageComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy();
   });
+
+  it("links the new Trump Defense game from the portal", () => {
+    expect(component.displayGames).toEqual(
+      expect.arrayContaining([expect.objectContaining({ name: "Trump Defense 2016", route: "trump-defense" })])
+    );
+  });
 });
