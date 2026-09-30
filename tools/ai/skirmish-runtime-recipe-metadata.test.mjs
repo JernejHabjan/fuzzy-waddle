@@ -57,4 +57,10 @@ test("early evidence stop requires a subject, a finite stability window and mono
   assert.doesNotThrow(() => validateEvidenceStopAssertions(fixture));
   fixture.assertions["PRO-01"].maximumMilitaryProducerCount = 2;
   assert.throws(() => validateEvidenceStopAssertions(fixture), /runtime_recipe_evidence_stop_unsafe/);
+  delete fixture.assertions["PRO-01"].maximumMilitaryProducerCount;
+  fixture.assertions["PRO-01"].minimumMilitaryTypeCount = 2;
+  assert.throws(() => validateEvidenceStopAssertions(fixture), /runtime_recipe_evidence_stop_unsafe/);
+  delete fixture.assertions["PRO-01"].minimumMilitaryTypeCount;
+  fixture.assertions["PRO-01"].minimumRepeatedMilitaryTypeCount = 3;
+  assert.throws(() => validateEvidenceStopAssertions(fixture), /runtime_recipe_evidence_stop_unsafe/);
 });

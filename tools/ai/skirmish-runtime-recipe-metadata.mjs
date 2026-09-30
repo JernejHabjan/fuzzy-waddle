@@ -2,7 +2,7 @@ const executionKinds = new Set(["focused_preset", "focused_natural", "continuous
 const variantRoles = new Set(["subject", "control", "standalone"]);
 const monotonicAssertionKeys = new Set([
   "maximumTick", "minimumDecisions", "minimumAppliedCommands", "requiredAiFactions",
-  "minimumMilitaryCount", "minimumMilitaryTypeCount", "minimumRepeatedMilitaryTypeCount",
+  "minimumMilitaryCount",
   "minimumMilitaryProducerCount", "requireCompositionDemand", "requireCapacityDemand",
   "minimumDamageDealt", "minimumEnemyLosses", "minimumOffensiveLaunchCount"
 ]);

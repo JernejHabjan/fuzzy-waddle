@@ -119,7 +119,8 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
   This supersedes older per-issue instructions to run checks during the current sweep.
 - The optional evidence-stop allowlist has an unrun source-level correction: final military type diversity and final
   repeated-type counts are not monotonic because units may die, so these assertions must run to their horizon.
-  Its focused policy spec is authored but unrun; do not use early stop for a final-composition oracle.
+  Both Node recipe validation and browser stop policy now reject them, with focused cases authored but unrun; do not
+  use early stop for a final-composition oracle.
 
 - Branch: `feature/759-skirmish-ai`; draft PR [#814](https://github.com/JernejHabjan/fuzzy-waddle/pull/814) targets
   `develop`. Verify local and remote tips before editing.
