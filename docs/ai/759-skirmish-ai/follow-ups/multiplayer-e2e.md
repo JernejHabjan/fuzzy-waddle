@@ -36,8 +36,9 @@ bounded relay diagnostics and common-tick hash comparison. `pnpm ai:skirmish:mul
 discovery; `.github/workflows/pull-request-checks.yml` invokes it only when the draft PR becomes ready. The case
 must be run and repaired at the final gate. A second authored case closes the real host and requires peer promotion,
 a higher epoch and a newly applied AI command. It is a continuation smoke, not exact-once mid-commitment transfer.
-Reconnect, full host-transfer
-continuation, combat/terminal and leave/re-entry acceptance remain; preserve those obligations in this plan.
+An unrun non-host reconnect case reopens the same game URL with the same authenticated context and demands restored
+AI command history plus matching peer hashes at new ticks. Snapshot application, interrupted commitment exact-once,
+combat/terminal and leave/re-entry acceptance remain; preserve those obligations in this plan.
 The newest unrun diagnostic slice moves browser observations out of the hash-baselined production relay/hash owners
 into a localhost/test-marker-only Phaser adapter. It records real applied human batches, received relay sequences,
 host authority epoch, bounded AI command IDs and locally emitted tick hashes. This preserves source-structure debt

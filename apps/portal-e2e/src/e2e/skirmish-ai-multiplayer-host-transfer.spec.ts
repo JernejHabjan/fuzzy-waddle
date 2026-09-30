@@ -43,7 +43,7 @@ test("a real host disconnect promotes the remaining peer's AI authority", async 
       lobbyName: match.lobbyName,
       host: beforeHost,
       peer: afterPeer,
-      peerBeforeTransfer: beforePeer,
+      peerBeforeInterruption: beforePeer,
       checkpointComparisons: []
     });
     await match.dispose();

@@ -31,6 +31,8 @@ multiplayer reconnect proof.
 gate suppresses dispatch after an awaited planning step, but an already-awaiting agent update may still read the
 destroyed scene. Add generation/disposal fencing around that async boundary and a focused interrupted-step assertion;
 do not call this exact-once lifecycle proof until final-gate execution.
+The unrun two-browser non-host reconnect smoke checks restored AI command history and two new matching peer-hash ticks
+after reopening the same match. It is not a phase-by-phase active-commitment or duplicate-side-effect oracle.
 
 ## Implementation order
 
