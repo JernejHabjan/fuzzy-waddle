@@ -34,8 +34,8 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
   persisted `campaignAiEnabled` policy. Promotion can create AI controllers even before scene metadata refresh and
   repeated promotion does not duplicate them. The scene's original `SnapshotService` is now reused by migration;
   demotion disposes its interval, request listener and pending first capture, and promotion reinitializes that owner.
-  Focused handler/controller/migration/snapshot specs are authored but unrun. This is **not** #819 completion: no authenticated
-  two-browser relay, peer-hash comparison, reconnect, or host-transfer E2E exists yet. Do not infer network parity.
+  Focused handler/controller/migration/snapshot specs are authored but unrun. This is **not** #819 completion:
+  authenticated relay, peer-hash, reconnect and host-transfer cases are now authored but unexecuted. Do not infer parity.
 - Production/report authoring checkpoint (2026-09-29, **unverified**): `PRO-01/02` now use a 2,000-tick frozen-map
   paired one-versus-two-producer recipe for both factions. A new oracle requires a real ready second producer in the
   deficit branch, forbids a cash-only third producer throughout the ample-capacity control, and checks a dated
@@ -252,11 +252,11 @@ merely because their issue title mentions testing. All authored work remains unv
 | 4             | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Finish frozen maps, legal presets, bounded reporting and replay proof | Sol, high → Terra, medium |
 | 5 / paired    | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `in_progress` | Author each pure family alongside its #816 runtime slice | Sol, high → Terra, medium |
 | 5 / paired    | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Author focused positive/control cases, then a small continuous-match tier | Sol, high → Terra, medium |
-| 6             | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `in_progress` | Finish real relay/two-client harness and parity cases; source authority gate is authored/unrun | Sol, high → Terra, high |
-| 7             | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `not_started` | Build lifecycle setup/restore/cleanup adapters and cases; network cases use #819 | Sol, high → Terra, medium |
+| 6             | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `in_progress` | Extend authored two-client smokes to exact-once interruption, terminal and re-entry parity | Sol, high → Terra, high |
+| 7             | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `partial` | Finish generation fencing, phase restore/replay and cleanup cases; network cases use #819 | Sol, high → Terra, medium |
 | 8             | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `partial` | Finish in-scope splits/renames and consumer updates before broad runs; defer checks | Terra, medium |
-| 9 / prepare   | [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828) | `not_started` | Author probes now; measure/optimize only at final gate | Sol, high → Terra, high |
-| 9 / prepare   | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `not_started` | Author paired fixtures; calibrate/soak only at final gate | Sol, high → Terra, medium |
+| 9 / prepare   | [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828) | `partial` | Review authored probes; measure/optimize only at final gate | Sol, high → Terra, high |
+| 9 / prepare   | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `partial` | Review authored paired fixtures; calibrate/soak only at final gate | Sol, high → Terra, medium |
 | Final gate    | Required issues above | `deferred` | Announce, preflight, grouped execution, compact triage, repairs and final evidence | Astra, high for diagnosis and evidence decisions; bounded Terra repairs |
 | After parity | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | `not_started` | Retire legacy controller only after multiplayer/lifecycle/matrix proof | Astra, high decision → Terra, medium cleanup |
 
@@ -534,7 +534,8 @@ not block this gate.
   outcome-backlog failures. SEQ-01 still lacks terminal results for both factions and Skaduwee loses its worker economy.
 - No shipped map reliably requires transport and no shipped flying container proves air shipping. #822 owns that optional
   future content; current generic route/transport contracts remain covered.
-- Current Playwright uses real lobby/Phaser/shared command application, but not socket multiplayer; #819 owns that proof.
+- The established single-browser Playwright matrix uses real lobby/Phaser/shared application, not socket multiplayer.
+  Separate socket-backed two-browser cases are now authored under #819 but have not run; network parity is unproven.
 - SEQ-01/02 run at 100× simulation scale and are capped at 12,000 requested ticks; the browser checkpoint is at
   tick 12,020. River Crossing has a valid bridge/ground route. #827 owns fastest-credible-victory strategy, including
   recovery when the first Skaduwee attack trades poorly. The SEQ-01 Skaduwee fixture is Normal difficulty against a
