@@ -10,8 +10,8 @@ import Minerals from "../../../prefabs/outside/resources/minerals/Minerals";
 export default class MapAiOpenEconomy extends GameProbableWaffleScene {
   public override tilemap!: Phaser.Tilemaps.Tilemap;
 
-  constructor() {
-    super("MapAiOpenEconomy");
+  constructor(sceneKey = "MapAiOpenEconomy", private readonly thirdSpawn = false) {
+    super(sceneKey);
   }
 
   editorCreate(): void {
@@ -28,6 +28,16 @@ export default class MapAiOpenEconomy extends GameProbableWaffleScene {
     this.add.existing(eastSpawn);
     const eastOwner = new EditorOwner(eastSpawn);
     eastOwner.owner_id = "2";
+
+    if (this.thirdSpawn) {
+      const southSpawn = new Spawn(this, -176, 1264);
+      this.add.existing(southSpawn);
+      const southOwner = new EditorOwner(southSpawn);
+      southOwner.owner_id = "3";
+      this.add.existing(new Tree6(this, -336, 1312));
+      this.add.existing(new StonePile(this, -64, 1392));
+      this.add.existing(new Minerals(this, -384, 1168));
+    }
 
     for (const [x, y] of [[-672, 640], [-960, 736], [288, 752], [608, 928]]) {
       this.add.existing(new Tree6(this, x, y));

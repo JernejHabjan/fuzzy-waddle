@@ -107,6 +107,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     const creator = new SceneActorCreator(this);
     const actorIndex = new ActorIndexSystem(this);
     const snapshotService = new SnapshotService();
+    const stateHashService = new StateHashService();
     const commandBusService = new CommandBusService(this);
     const simTickService = new SimulationTickService(this);
     const scenarioReferenceRegistry = new IndexedScenarioReferenceRegistry();
@@ -125,6 +126,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
       // CommandBusService and SimulationTickService must be registered first so they're available during initInitialActors()
       commandBusService,
       simTickService,
+      stateHashService,
       new NavigationService(this, this.tilemap),
       new MovementOccupancyService(this),
       new NavigationDebugService(this, this.tilemap),
@@ -193,8 +195,8 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     // Activate the multiplayer relay path when a socket is present
     commandBusService.tryInitMultiplayer();
 
-    // Desync detection: hash state every 60 ticks and compare with peers (MP only).
-    new StateHashService().init(this);
+    // Desync detection: hash state every 20 ticks and compare with peers (MP only).
+    stateHashService.init(this);
     // Snapshot service: host keeps a rolling snapshot for reconnect / late spectator catch-up.
     snapshotService.init(this);
     // Reconnect service: non-host clients request a snapshot when they rejoin after a drop.

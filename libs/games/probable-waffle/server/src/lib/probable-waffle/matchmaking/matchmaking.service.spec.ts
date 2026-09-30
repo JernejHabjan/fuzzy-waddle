@@ -46,5 +46,8 @@ describe("MatchmakingService", () => {
     await expect(service.requestGameSearchForMatchMaking({
       mapPoolIds: [ProbableWaffleMapEnum.AiOpenEconomy], factionType: null
     }, {} as User)).rejects.toBeInstanceOf(BadRequestException);
+    await expect(service.requestGameSearchForMatchMaking({
+      mapPoolIds: [ProbableWaffleMapEnum.AiMultiplayer], factionType: null
+    }, {} as User)).rejects.toBeInstanceOf(BadRequestException);
   });
 });

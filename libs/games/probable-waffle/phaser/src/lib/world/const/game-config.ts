@@ -11,6 +11,7 @@ import EndGameDialog from "../scenes/hud-scenes/EndGameDialog";
 import ReconnectRecoveryDialog from "../scenes/hud-scenes/ReconnectRecoveryDialog";
 import MapSandbox from "../scenes/game-maps/MapSandbox";
 import MapAiOpenEconomy from "../scenes/game-maps/MapAiOpenEconomy";
+import MapAiMultiplayer from "../scenes/game-maps/MapAiMultiplayer";
 
 export const probableWaffleGameConfig: Types.Core.GameConfig = {
   ...baseGameConfig,
@@ -22,6 +23,7 @@ export const probableWaffleGameConfig: Types.Core.GameConfig = {
     MapRiverCrossing,
     MapEmberEnclave,
     MapAiOpenEconomy,
+    MapAiMultiplayer,
     HudProbableWaffle,
     GameActionsLayer,
     EndGameDialog,

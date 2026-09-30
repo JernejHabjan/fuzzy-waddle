@@ -27,6 +27,7 @@ describe("ProbableWaffleGameComponent", () => {
 
   beforeEach(async () => {
     window.sessionStorage.removeItem(AI_RUNTIME_BROWSER_TEST_CONFIG_KEY_V1);
+    window.sessionStorage.removeItem("fuzzy-waddle:ai-multiplayer-browser-test-v1");
     delete window.__fuzzyWaddleAiRuntimeBrowserTestV1;
     await TestBed.configureTestingModule({
       providers: [
@@ -83,5 +84,26 @@ describe("ProbableWaffleGameComponent", () => {
     });
     fixture.destroy();
     expect(window.__fuzzyWaddleAiRuntimeBrowserTestV1).toBeUndefined();
+  });
+
+  it("publishes a separate local multiplayer observer without replacing the network seed", async () => {
+    fixture.destroy();
+    await gameInstanceClientServiceStub.createGameInstance(
+      "relay-test", ProbableWaffleGameInstanceVisibility.Private, ProbableWaffleGameInstanceType.SelfHosted
+    );
+    const originalSeed = gameInstanceClientServiceStub.gameInstance!.gameInstanceMetadata.data.rndSeed;
+    window.sessionStorage.setItem("fuzzy-waddle:ai-multiplayer-browser-test-v1", "1");
+    fixture = TestBed.createComponent(ProbableWaffleGameComponent);
+    fixture.detectChanges();
+    const container = fixture.debugElement.query(By.directive(GameContainerTestingComponent))
+      .componentInstance as GameContainerTestingComponent;
+    const game = {} as Phaser.Game;
+    container.gameConfig()?.callbacks?.postBoot?.(game);
+    const observed = window as typeof window & { __fuzzyWaddleAiMultiplayerBrowserTestV1?: { game: Phaser.Game } };
+    expect(observed.__fuzzyWaddleAiMultiplayerBrowserTestV1?.game).toBe(game);
+    expect(window.__fuzzyWaddleAiRuntimeBrowserTestV1).toBeUndefined();
+    expect(gameInstanceClientServiceStub.gameInstance!.gameInstanceMetadata.data.rndSeed).toBe(originalSeed);
+    fixture.destroy();
+    expect(observed.__fuzzyWaddleAiMultiplayerBrowserTestV1).toBeUndefined();
   });
 });

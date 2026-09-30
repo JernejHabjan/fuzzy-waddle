@@ -34,6 +34,12 @@ The current browser driver starts a local skirmish with one human and AI players
 world, command bus, and shared command application, but it does not activate socket-backed multiplayer lockstep because
 that path requires a relay and multiple human clients. Real peer relay, reconnect, and host-migration E2E belongs to
 [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819).
+An additional, currently unrun `skirmish-ai-multiplayer-relay.spec.ts` starts two authenticated browser contexts
+against a local Supabase-backed Nest API and the frozen three-spawn `MapAiMultiplayer`. Its separate
+`pnpm ai:skirmish:multiplayer` runner discovers local credentials without printing them and starts the portal/API
+through `playwright.multiplayer.config.ts`; the caller must first start local Supabase. The non-draft PR workflow
+has a separate job for this case. This initial smoke requires a real relayed AI command and common-tick hashes,
+but does not satisfy #819's reconnect, migration, lifecycle, combat or terminal obligations. It has not run yet.
 
 The current recipes use 1× simulation speed through the first checkpoint and then their authored accelerated scale
 (currently 100× for opening, production, and land-loop recipes). Accelerated scale does not imply equal wall-clock

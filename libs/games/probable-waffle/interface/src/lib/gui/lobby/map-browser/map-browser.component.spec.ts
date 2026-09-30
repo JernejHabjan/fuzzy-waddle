@@ -49,12 +49,14 @@ describe("MapBrowserComponent", () => {
 
   it("hides the frozen AI map from ordinary skirmish browsing", () => {
     expect(component.maps.some((map) => map.id === ProbableWaffleMapEnum.AiOpenEconomy)).toBe(false);
+    expect(component.maps.some((map) => map.id === ProbableWaffleMapEnum.AiMultiplayer)).toBe(false);
   });
 
   it("offers the frozen AI map only to the explicit local runtime-test lobby", () => {
     window.sessionStorage.setItem("fuzzy-waddle:ai-runtime-browser-test-v1", "test");
     component.ngOnInit();
     expect(component.maps.some((map) => map.id === ProbableWaffleMapEnum.AiOpenEconomy)).toBe(!environment.production);
+    expect(component.maps.some((map) => map.id === ProbableWaffleMapEnum.AiMultiplayer)).toBe(!environment.production);
     window.sessionStorage.removeItem("fuzzy-waddle:ai-runtime-browser-test-v1");
   });
 });

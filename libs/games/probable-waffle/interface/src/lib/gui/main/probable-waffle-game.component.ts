@@ -18,6 +18,11 @@ import {
   publishAiRuntimeBrowserTestHostV1,
   readAiRuntimeBrowserTestConfigV1
 } from "./ai-runtime-browser-test-host";
+import {
+  clearMultiplayerBrowserTestHost,
+  multiplayerBrowserTestRequested,
+  publishMultiplayerBrowserTestHost
+} from "./ai-multiplayer-browser-test-host";
 
 @Component({
   templateUrl: "./probable-waffle-game.component.html",
@@ -82,14 +87,15 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
     this.gameConfig = {
       ...probableWaffleGameConfig,
       seed: [seed.toString()],
-      ...(runtimeTestConfig
+      ...(runtimeTestConfig || multiplayerBrowserTestRequested()
         ? {
             callbacks: {
               ...probableWaffleGameConfig.callbacks,
               postBoot: (game: Game) => {
                 configuredPostBoot?.(game);
                 this.runtimeTestGame = game;
-                publishAiRuntimeBrowserTestHostV1(game, runtimeTestConfig);
+                if (runtimeTestConfig) publishAiRuntimeBrowserTestHostV1(game, runtimeTestConfig);
+                else publishMultiplayerBrowserTestHost(game);
               }
             }
           }
@@ -110,6 +116,7 @@ export class ProbableWaffleGameComponent implements OnInit, OnDestroy {
 
   private clearRuntimeTestHost(): void {
     clearAiRuntimeBrowserTestHostV1(this.runtimeTestGame);
+    clearMultiplayerBrowserTestHost(this.runtimeTestGame);
     this.runtimeTestGame = undefined;
   }
 }

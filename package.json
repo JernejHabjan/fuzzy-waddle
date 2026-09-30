@@ -19,6 +19,7 @@
     "ai:skirmish:report": "node tools/ai/summarize-skirmish-report.mjs",
     "ai:skirmish:catalog": "node tools/ai/generate-skirmish-test-catalog.mjs",
     "ai:skirmish:report:failures": "node tools/ai/summarize-skirmish-report.mjs --failures-only --details",
+    "ai:skirmish:multiplayer": "node tools/ai/run-multiplayer-e2e.mjs",
     "ai:tools:test": "node --test tools/ai/*.test.mjs tools/eslint-plugin-fuzzy-waddle/*.test.mjs tools/skills/*.test.mjs",
     "agent:tools:test": "node --test tools/agent/*.test.mjs",
     "agent:measure": "node tools/agent/measure-workflows.mjs",

@@ -50,3 +50,23 @@ test("the open-economy scene has only two owned spawns and symmetric neutral res
   assert.equal(scene.plainObjects[0].key, "tiles_ai_open_economy");
   assert.equal(pack.section1.files[0].key, "tiles_ai_open_economy");
 });
+
+test("the frozen multiplayer scene has three owned spawns and local resources without campaign actors", () => {
+  const map = contract.maps.find((candidate) => candidate.id === "ai-multiplayer");
+  assert.ok(map);
+  const scene = frozenJson(map.scene, map.sceneSha256);
+  const tilemap = frozenJson(map.tilemap, map.tilemapSha256);
+  const pack = frozenJson(`${map.assetPackDirectory}/${map.assetPack}`, map.assetPackSha256);
+  assert.equal(scene.settings.sceneKey, "MapAiMultiplayer");
+  assert.deepEqual(scene.displayList.filter((entry) => entry["EditorOwner.owner_id"]).map((entry) =>
+    entry["EditorOwner.owner_id"]), ["1", "2", "3"]);
+  assert.deepEqual(scene.displayList.map((entry) => entry.label).sort(), [
+    "tilemap_level_1", "spawn_1", "spawn_2", "spawn_3", "tree_west_1", "tree_west_2", "stone_west",
+    "minerals_west", "tree_east_1", "tree_east_2", "stone_east", "minerals_east", "tree_south",
+    "stone_south", "minerals_south"
+  ].sort());
+  assert.equal(tilemap.width, 50);
+  assert.equal(tilemap.height, 50);
+  assert.deepEqual([...new Set(tilemap.layers[0].data)], [12]);
+  assert.equal(pack.section1.files[0].key, scene.plainObjects[0].key);
+});

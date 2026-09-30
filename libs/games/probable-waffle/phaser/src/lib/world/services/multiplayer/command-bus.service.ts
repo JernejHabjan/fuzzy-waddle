@@ -133,6 +133,23 @@ export class CommandBusService {
     }
   }
 
+  /** Bounded, read-only relay facts for multiplayer diagnostics and real-browser assertions. */
+  getRelayDiagnostics(): {
+    readonly active: boolean;
+    readonly localPlayerNumber: number | null;
+    readonly humanPlayerNumbers: readonly number[];
+    readonly authorityEpoch: number;
+    readonly lastReceivedRelaySequenceByPlayer: Readonly<Record<number, number>>;
+  } {
+    return {
+      active: this.isMultiplayer,
+      localPlayerNumber: this.localPlayerNumber,
+      humanPlayerNumbers: [...this.humanPlayerNumbers],
+      authorityEpoch: this.authorityEpoch,
+      lastReceivedRelaySequenceByPlayer: Object.fromEntries(this.lastReceivedRelaySequenceByPlayer)
+    };
+  }
+
   /**
    * Activates the multiplayer relay path.
    * Must be called after tickService is set and the communicator is ready.

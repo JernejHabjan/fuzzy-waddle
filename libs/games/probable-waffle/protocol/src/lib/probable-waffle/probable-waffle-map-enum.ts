@@ -19,5 +19,7 @@ export enum ProbableWaffleMapEnum {
    */
   EmberEnclave = 3,
   /** Test-owned, campaign-free economy map; never offered as an ordinary public choice. */
-  AiOpenEconomy = 4
+  AiOpenEconomy = 4,
+  /** Test-owned three-spawn relay map; never offered as an ordinary public choice. */
+  AiMultiplayer = 5
 }

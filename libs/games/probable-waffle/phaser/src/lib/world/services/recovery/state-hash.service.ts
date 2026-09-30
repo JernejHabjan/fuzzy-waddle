@@ -189,6 +189,13 @@ export class StateHashService {
   private readonly lastMismatchLogTickByPlayer = new Map<number, number>();
   private missingLocalHashLogSignature: string | null = null;
 
+  /** Recent tick-aligned local digests; never exposes the diagnostic actor payload or mutable hash map. */
+  getRecentHashCheckpoints(limit = 12): readonly { readonly tick: number; readonly hash: string }[] {
+    const count = Number.isSafeInteger(limit) ? Math.max(0, Math.min(limit, 32)) : 0;
+    if (count === 0) return [];
+    return [...this.localHashes.entries()].slice(-count).map(([tick, snapshot]) => ({ tick, hash: snapshot.hash }));
+  }
+
   /** Documents the init member and its declared contract at this boundary. */
   init(scene: ProbableWaffleScene): void {
     this.scene = scene;

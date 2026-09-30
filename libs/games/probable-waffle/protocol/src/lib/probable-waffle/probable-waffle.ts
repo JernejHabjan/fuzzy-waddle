@@ -211,5 +211,29 @@ export const ProbableWaffleLevels: ProbableWaffleMapType = {
       heightTiles: 50
     },
     lighting: { ambientColor: 0xe6edf5 }
+  },
+  [ProbableWaffleMapEnum.AiMultiplayer]: {
+    id: ProbableWaffleMapEnum.AiMultiplayer,
+    devOnly: true,
+    testOnly: true,
+    name: "AI Multiplayer (test only)",
+    loader: {
+      mapSceneKey: "MapAiMultiplayer",
+      mapLoaderAssetPackPath: "asset-pack-probable-waffle-ai-open-economy.json"
+    },
+    presentation: {
+      description: "Frozen three-spawn topology for real skirmish relay and host migration scenarios",
+      imagePath: "assets/probable-waffle/tilemaps/thumbnails/ember_enclave.png"
+    },
+    mapInfo: {
+      startPositionsOnTile: [
+        { x: 10, y: 20, z: 0 },
+        { x: 30, y: 10, z: 0 },
+        { x: 35, y: 35, z: 0 }
+      ],
+      widthTiles: 50,
+      heightTiles: 50
+    },
+    lighting: { ambientColor: 0xe6edf5 }
   }
 };

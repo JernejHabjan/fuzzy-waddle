@@ -6,6 +6,16 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
+- Multiplayer relay authoring checkpoint (2026-09-30, **unverified**): `MapAiMultiplayer` is a test-only frozen
+  three-spawn counterpart to the open-economy map, with a separate editor scene and pinned topology digest. A local-only
+  public Supabase override, two real ephemeral-user sessions, two browser contexts, API/portal Playwright config,
+  bounded relay/hash diagnostics, and the first socket-backed AI relay case are authored. The case demands two human
+  relay participants, host-only AI ownership, one processed AI command common to both peers, and matching tick hashes.
+  `pnpm ai:skirmish:multiplayer` discovers local CLI keys without printing them; a non-draft PR job starts local Supabase
+  and invokes it. This is an **unrun smoke slice, not #819 completion**: the test lobby/map, local auth, server/socket
+  startup, third spawn legality and all assertions need final-gate execution and repair. Reconnect, host transfer,
+  terminal result, peer log retention and re-entry cases are not yet authored. Browser tracing is disabled to avoid
+  retaining ephemeral session JWTs. Do not treat this case as the full multiplayer parity proof.
 - Multiplayer authority source checkpoint (2026-09-30, **unverified**): the host-migration event now drives a
   transient `PlayerAiController` authority gate, so a demoted host stops planning/dispatching without flipping the
   persisted `campaignAiEnabled` policy. Promotion can create AI controllers even before scene metadata refresh and
