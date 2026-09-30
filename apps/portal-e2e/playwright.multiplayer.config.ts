@@ -5,6 +5,7 @@ const serviceKey = process.env.AI_MULTIPLAYER_SUPABASE_SERVICE_KEY;
 /** Supabase itself is provisioned by the caller; this config owns only the local game API and portal. */
 export default defineConfig({
   testDir: "./src/e2e",
+  outputDir: "../../test-results/skirmish-multiplayer",
   testMatch: "skirmish-ai-multiplayer-*.spec.ts",
   fullyParallel: false,
   retries: 0,

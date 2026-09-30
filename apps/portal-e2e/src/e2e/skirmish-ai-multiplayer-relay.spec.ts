@@ -1,6 +1,8 @@
 import { expect, test, type Page } from "@playwright/test";
 import { createMultiplayerTestIdentities, installMultiplayerIdentity } from "./skirmish-ai-multiplayer-auth";
 import { observeMultiplayerPeer } from "./skirmish-ai-multiplayer-observation";
+import type { MultiplayerPeerObservation } from "./skirmish-ai-multiplayer-observation";
+import { attachMultiplayerEvidence } from "./skirmish-ai-multiplayer-evidence";
 
 test.skip(process.env.AI_MULTIPLAYER_E2E !== "1", "Requires local Supabase and the local API relay.");
 test.setTimeout(180_000);
@@ -11,16 +13,23 @@ async function openOnlineLobby(page: Page): Promise<void> {
   await page.getByText("Custom Game", { exact: true }).click();
 }
 
-test("two authenticated peers run the real relay while only the host owns skirmish AI", async ({ browser }) => {
+test("two authenticated peers run the real relay while only the host owns skirmish AI", async ({ browser }, testInfo) => {
   const provisioned = await createMultiplayerTestIdentities();
   const hostContext = await browser.newContext();
   const peerContext = await browser.newContext();
+  const evidence: {
+    lobbyName: string;
+    host: MultiplayerPeerObservation | null;
+    peer: MultiplayerPeerObservation | null;
+    checkpointComparisons: { tick: number; agrees: boolean }[];
+  } = { lobbyName: "not-created", host: null, peer: null, checkpointComparisons: [] };
   try {
     await installMultiplayerIdentity(hostContext, provisioned.identities[0]);
     await installMultiplayerIdentity(peerContext, provisioned.identities[1]);
     const host = await hostContext.newPage();
     const peer = await peerContext.newPage();
     const lobbyName = `ai-relay-${Date.now()}`;
+    evidence.lobbyName = lobbyName;
 
     await openOnlineLobby(host);
     await host.getByText("Create a game", { exact: true }).click();
@@ -48,8 +57,14 @@ test("two authenticated peers run the real relay while only the host owns skirmi
       const [local, remote] = await Promise.all([
         observeMultiplayerPeer(host, 3), observeMultiplayerPeer(peer, 3)
       ]);
+      evidence.host = local;
+      evidence.peer = remote;
       const remoteHashes = new Map(remote.hashes.map(({ tick, hash }) => [tick, hash]));
       const shared = local.hashes.filter(({ tick }) => remoteHashes.has(tick));
+      for (const { tick, hash } of shared) {
+        if (evidence.checkpointComparisons.some((checkpoint) => checkpoint.tick === tick)) continue;
+        evidence.checkpointComparisons.push({ tick, agrees: remoteHashes.get(tick) === hash });
+      }
       const remoteAiCommands = new Set(remote.processedAiCommandIds);
       return {
         relay: local.relay.active && remote.relay.active,
@@ -57,13 +72,14 @@ test("two authenticated peers run the real relay while only the host owns skirmi
         hostOwnsAi: local.aiControllerPresent && !remote.aiControllerPresent,
         relayedAiCommand: local.processedAiCommandIds.some((id) => remoteAiCommands.has(id)),
         sharedHashes: shared.length >= 2,
-        hashesAgree: shared.every(({ tick, hash }) => remoteHashes.get(tick) === hash)
+        hashesAgree: evidence.checkpointComparisons.every((checkpoint) => checkpoint.agrees)
       };
     }, { timeout: 60_000, intervals: [1_000, 2_000] }).toEqual({
       relay: true, humans: true, hostOwnsAi: true, relayedAiCommand: true,
       sharedHashes: true, hashesAgree: true
     });
   } finally {
+    await attachMultiplayerEvidence(testInfo, evidence);
     await Promise.allSettled([hostContext.close(), peerContext.close()]);
     await provisioned.dispose();
   }

@@ -14,8 +14,9 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
   `pnpm ai:skirmish:multiplayer` discovers local CLI keys without printing them; a non-draft PR job starts local Supabase
   and invokes it. This is an **unrun smoke slice, not #819 completion**: the test lobby/map, local auth, server/socket
   startup, third spawn legality and all assertions need final-gate execution and repair. Reconnect, host transfer,
-  terminal result, peer log retention and re-entry cases are not yet authored. Browser tracing is disabled to avoid
-  retaining ephemeral session JWTs. Do not treat this case as the full multiplayer parity proof.
+  terminal result and re-entry cases are not yet authored. The smoke now retains credential-free bounded peer state,
+  common-tick comparisons and failure screenshots; raw relay-log capture is still pending. Browser tracing is disabled
+  to avoid retaining ephemeral session JWTs. Do not treat this case as the full multiplayer parity proof.
 - Multiplayer authority source checkpoint (2026-09-30, **unverified**): the host-migration event now drives a
   transient `PlayerAiController` authority gate, so a demoted host stops planning/dispatching without flipping the
   persisted `campaignAiEnabled` policy. Promotion can create AI controllers even before scene metadata refresh and
