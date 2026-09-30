@@ -13,9 +13,9 @@ export class AiPlayerHandler {
     this.createAiPlayerControllersForAiPlayers();
   }
 
-  createAiPlayerControllersForAiPlayers() {
-    // this only runs on host machine
-    if (!this.scene.isHost) return;
+  createAiPlayerControllersForAiPlayers(hostMigrationConfirmed = false) {
+    // Initial creation follows scene ownership; migration can use the authoritative host event before metadata refresh.
+    if (!this.scene.isHost && !hostMigrationConfirmed) return;
     if (this.aiPlayerControllers.length > 0) return;
 
     const aiPlayers = this.scene.players.filter((player) => {
@@ -39,6 +39,12 @@ export class AiPlayerHandler {
 
   getAiPlayerController(playerNumber: PlayerNumber) {
     return this.aiPlayerControllers.find((controller) => controller.player.playerNumber === playerNumber);
+  }
+
+  /** The host fence is transient and must not rewrite campaignAiEnabled in player definitions. */
+  setHostAuthorityActive(isLocalHost: boolean): void {
+    if (isLocalHost) this.createAiPlayerControllersForAiPlayers(true);
+    for (const controller of this.aiPlayerControllers) controller.setAuthorityActive(isLocalHost);
   }
 
   /** Documents the set player enabled member and its declared contract at this boundary. */

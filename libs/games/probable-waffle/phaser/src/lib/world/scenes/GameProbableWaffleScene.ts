@@ -199,7 +199,7 @@ export default class GameProbableWaffleScene extends ProbableWaffleScene {
     snapshotService.init(this);
     // Reconnect service: non-host clients request a snapshot when they rejoin after a drop.
     new ReconnectService().init(this);
-    new HostMigrationService().init(this);
+    new HostMigrationService().init(this, snapshotService);
     new ReplayRecorderService().init(this);
 
     super.create();

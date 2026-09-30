@@ -6,6 +6,13 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
+- Multiplayer authority source checkpoint (2026-09-30, **unverified**): the host-migration event now drives a
+  transient `PlayerAiController` authority gate, so a demoted host stops planning/dispatching without flipping the
+  persisted `campaignAiEnabled` policy. Promotion can create AI controllers even before scene metadata refresh and
+  repeated promotion does not duplicate them. The scene's original `SnapshotService` is now reused by migration;
+  demotion disposes its interval, request listener and pending first capture, and promotion reinitializes that owner.
+  Focused handler/controller/migration/snapshot specs are authored but unrun. This is **not** #819 completion: no authenticated
+  two-browser relay, peer-hash comparison, reconnect, or host-transfer E2E exists yet. Do not infer network parity.
 - Production/report authoring checkpoint (2026-09-29, **unverified**): `PRO-01/02` now use a 2,000-tick frozen-map
   paired one-versus-two-producer recipe for both factions. A new oracle requires a real ready second producer in the
   deficit branch, forbids a cash-only third producer throughout the ample-capacity control, and checks a dated
@@ -218,7 +225,7 @@ merely because their issue title mentions testing. All authored work remains unv
 | 4             | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Finish frozen maps, legal presets, bounded reporting and replay proof | Sol, high → Terra, medium |
 | 5 / paired    | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `in_progress` | Author each pure family alongside its #816 runtime slice | Sol, high → Terra, medium |
 | 5 / paired    | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Author focused positive/control cases, then a small continuous-match tier | Sol, high → Terra, medium |
-| 6             | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `not_started` | Build real relay/two-client harness, authority wiring and cases before gate | Sol, high → Terra, high |
+| 6             | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `in_progress` | Finish real relay/two-client harness and parity cases; source authority gate is authored/unrun | Sol, high → Terra, high |
 | 7             | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `not_started` | Build lifecycle setup/restore/cleanup adapters and cases; network cases use #819 | Sol, high → Terra, medium |
 | 8             | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `partial` | Finish in-scope splits/renames and consumer updates before broad runs; defer checks | Terra, medium |
 | 9 / prepare   | [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828) | `not_started` | Author probes now; measure/optimize only at final gate | Sol, high → Terra, high |

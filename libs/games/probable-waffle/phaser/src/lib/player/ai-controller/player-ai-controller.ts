@@ -46,6 +46,7 @@ export class PlayerAiController {
   private elapsedTime: number = 0;
   private static readonly AI_ENABLED = true;
   private enabled = true;
+  private authorityActive = true;
   private readonly stepInterval: number;
   telemetry = new TelemetrySink();
   private telemetryFrameModulo = AI_CONFIG.telemetryFrameModulo;
@@ -113,7 +114,7 @@ export class PlayerAiController {
   private async updateFrameNonDeterministicFallback(_: number, delta: number) {
     const deltaWithTimeScale = delta * this.scene.time.timeScale;
 
-    if (!PlayerAiController.AI_ENABLED || !this.enabled) return;
+    if (!PlayerAiController.AI_ENABLED || !this.enabled || !this.authorityActive) return;
     this.elapsedTime += deltaWithTimeScale;
     if (this.elapsedTime >= this.stepInterval) {
       await this.runScheduledStep();
@@ -121,7 +122,7 @@ export class PlayerAiController {
   }
 
   private async updateOnSimulationTick(): Promise<void> {
-    if (!PlayerAiController.AI_ENABLED || !this.enabled) return;
+    if (!PlayerAiController.AI_ENABLED || !this.enabled || !this.authorityActive) return;
     this.elapsedTime += SimulationTickService.TICK_INTERVAL_MS;
     if (this.elapsedTime >= this.stepInterval) {
       await this.runScheduledStep();
@@ -129,6 +130,7 @@ export class PlayerAiController {
   }
 
   private async runScheduledStep(): Promise<void> {
+    if (!this.authorityActive || !this.enabled) return;
     if (this.stepInFlight) {
       this.stepQueued = true;
       return;
@@ -146,6 +148,7 @@ export class PlayerAiController {
             "ai.preTick",
             async () => await this.playerAiControllerAgent.preTick(getSimulationNow(this.scene))
           );
+          if (!this.authorityActive) break;
           this.stepDecisionPlanner();
           if (this.telemetryFrameModulo && frameBeforeSnapshot % this.telemetryFrameModulo === 0) {
             this.blackboard.diagnostics.telemetry = this.telemetry.snapshot();
@@ -251,6 +254,12 @@ export class PlayerAiController {
     if (definition) definition.campaignAiEnabled = enabled;
   }
 
+  /** Host transfer suspends planning without changing the campaign's persisted AI-enabled policy. */
+  setAuthorityActive(active: boolean): void {
+    this.authorityActive = active;
+    if (!active) this.stepQueued = false;
+  }
+
   isEnabled(): boolean {
     return this.enabled;
   }
@@ -343,6 +352,7 @@ export class PlayerAiController {
   }
 
   private stepDecisionPlanner(): void {
+    if (this.authorityActive === false) return;
     if (this.pureBrain) {
       this.telemetry.withSpan("ai.pureBrainStep", () => this.stepPureBrain());
       return;
@@ -353,7 +363,7 @@ export class PlayerAiController {
   /** Translates accepted macro and transport intents through the shared player command authority. */
   /** Stage 13 also routes accepted tactical attack, recovery, healing and manual spell intents here. */
   private dispatchAcceptedIntents(intents: readonly AiIntentV1[]): void {
-    if (this.player.playerNumber === undefined) return;
+    if (this.authorityActive === false || this.player.playerNumber === undefined) return;
     dispatchAiIntents(this.scene, this.player.playerNumber, intents);
   }
 

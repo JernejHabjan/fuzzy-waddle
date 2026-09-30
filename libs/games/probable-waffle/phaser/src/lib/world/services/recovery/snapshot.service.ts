@@ -39,7 +39,10 @@ const SNAPSHOT_REFRESH_INTERVAL_MS = 60_000;
 export class SnapshotService {
   private latestSnapshot: ProbableWaffleSnapshotData | null = null;
   private refreshHandle?: ReturnType<typeof setInterval>;
+  private initialCaptureDelay?: CancelableSimDelay;
   private requestSub?: Subscription;
+  private shutdownScene?: ProbableWaffleScene;
+  private readonly onSceneShutdown = () => this.destroy();
   private readonly logger = createMultiplayerClientLogger("SnapshotService");
 
   /**
@@ -51,11 +54,12 @@ export class SnapshotService {
    * @see {@link captureSnapshot} for serialization ownership.
    * @see {@link ReconnectService} for the requesting client lifecycle.
    */
-  init(scene: ProbableWaffleScene): void {
+  init(scene: ProbableWaffleScene, hostMigrationConfirmed = false): void {
     // Only the host generates and serves snapshots.
-    if (!scene.isHost) {
+    if (!scene.isHost && !hostMigrationConfirmed) {
       return;
     }
+    if (this.refreshHandle !== undefined || this.requestSub) return;
 
     const communicator = getCommunicator(scene);
     if (!communicator.snapshotRequested) {
@@ -71,7 +75,7 @@ export class SnapshotService {
 
     // Immediately take the first snapshot once the scene is running.
     // A small delay lets all actors finish spawning and registering.
-    new CancelableSimDelay(scene, 500, () => {
+    this.initialCaptureDelay = new CancelableSimDelay(scene, 500, () => {
       this.captureSnapshot(scene);
     });
 
@@ -96,7 +100,8 @@ export class SnapshotService {
         );
       });
 
-    scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.destroy());
+    this.shutdownScene = scene;
+    scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.onSceneShutdown);
   }
 
   /** Documents the get latest snapshot member and its declared contract at this boundary. */
@@ -185,10 +190,16 @@ export class SnapshotService {
   }
 
   destroy(): void {
+    this.shutdownScene?.events.off(Phaser.Scenes.Events.SHUTDOWN, this.onSceneShutdown);
+    this.shutdownScene = undefined;
+    this.initialCaptureDelay?.remove();
+    this.initialCaptureDelay = undefined;
     if (this.refreshHandle !== undefined) {
       clearInterval(this.refreshHandle);
       this.refreshHandle = undefined;
     }
     this.requestSub?.unsubscribe();
+    this.requestSub = undefined;
+    this.latestSnapshot = null;
   }
 }

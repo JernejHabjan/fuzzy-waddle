@@ -55,6 +55,30 @@ describe("PlayerAiController pure planner integration", () => {
     expect(legacyStep).toHaveBeenCalledTimes(1);
   });
 
+  it("fences a demoted host before planning or dispatch without changing the saved AI policy", () => {
+    const controller = Object.create(PlayerAiController.prototype) as PlayerAiController;
+    const pureStep = jest.fn();
+    const policy = { campaignAiEnabled: true };
+    Reflect.set(controller, "pureBrain", {});
+    Reflect.set(controller, "stepPureBrain", pureStep);
+    Reflect.set(controller, "telemetry", { withSpan: (_name: string, action: () => void) => action() });
+    Reflect.set(controller, "player", { playerNumber: 1, playerController: { data: { playerDefinition: policy } } });
+    Reflect.set(controller, "scene", {});
+    Reflect.set(controller, "stepQueued", true);
+
+    controller.setAuthorityActive(false);
+    invokeDecisionPlanner(controller);
+    invokeDispatch(controller, [{ ...baseIntent, kind: "stop", actorIds: ["worker"] } as AiIntentV1]);
+    expect(pureStep).not.toHaveBeenCalled();
+    expect(getSceneService).not.toHaveBeenCalled();
+    expect(policy.campaignAiEnabled).toBe(true);
+    expect(Reflect.get(controller, "stepQueued")).toBe(false);
+
+    controller.setAuthorityActive(true);
+    invokeDecisionPlanner(controller);
+    expect(pureStep).toHaveBeenCalledTimes(1);
+  });
+
   it("dispatches gather, tend and stop intents through shared command authority", () => {
     const actors = new Map([
       ["worker", {}],

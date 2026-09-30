@@ -27,6 +27,9 @@ Library-relative prefixes are discoverable from the repo workflow source index. 
 
 The current AI runtime uses one human plus AI in a local skirmish. It exercises shared command application but does not
 activate `CommandBusService` multiplayer mode, which requires a relay and more than one human player.
+Source-only handoff checkpoint (2026-09-30, unverified): host events now suspend/resume a transient AI authority gate
+without mutating campaign AI policy and reuse the scene's original snapshot service with demotion cleanup. Focused
+unit specs are authored; no socket-backed two-client match, peer comparison or migration runtime proof has run.
 
 ## Implementation order
 
