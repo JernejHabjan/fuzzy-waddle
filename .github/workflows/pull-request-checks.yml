@@ -169,6 +169,7 @@ jobs:
           name: skirmish-${{ matrix.id }}
           path: |
             tmp/ai-skirmish-matrix/*.json
+            tmp/ai-skirmish-matrix/indexes/*.json
             test-results/
           if-no-files-found: warn
 

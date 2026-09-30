@@ -181,6 +181,7 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 - #816 batched-repair authoring (unverified): `--repair-list` already aggregates retained shard reports with shared
   run/source provenance, per-fixture digest conflict checks, missing-row accounting and bounded provisional clusters.
   It now accepts either a run directory or repeated explicit `--report` files; parser/path cases are authored but unrun.
+  The required non-draft PR shard job now retains both raw reports and bounded `indexes/*.json` summaries.
   Do not rebuild it. A shared predicate is only a hypothesis: separate infrastructure/setup from gameplay and confirm
   one causal owner before repairing a cluster. One representative preflight at the final gate precedes family/map
   shards; after a repair, rerun affected shards, then establish final evidence. No execution in this sweep.
