@@ -33,4 +33,6 @@ Models, textures, cubemap faces, sounds, and the portal icon came from `/home/je
 
 The TD2016 author identified Stronghold Crusader and Command & Conquer: Red Alert as sources of material in the original game. [Asset credits](./ASSET_CREDITS.md) name both games, list every audio file included in this rewrite, and distinguish them from the original `Sounds/SFX/Crusader` samples that are excluded. The precise source game and redistribution terms for each included recording are not documented in TD2016.
 
+Audio is tracked by Git LFS. If a fresh checkout reports pointer files during `portal:assets-check` or `portal:serve`, run `pnpm assets:hydrate` before playtesting.
+
 `level.schema.json` and the semantic Jest checks validate the three bundled level files. Runtime loading checks the version and required top-level shape, and reports missing files. A future editor or user-supplied level flow would need runtime validation before accepting arbitrary JSON.
