@@ -3,7 +3,7 @@ import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
 
 const monotonicAssertionKeys = new Set([
   "maximumTick", "minimumDecisions", "minimumAppliedCommands", "requiredAiFactions",
-  "minimumMilitaryCount", "minimumMilitaryTypeCount", "minimumRepeatedMilitaryTypeCount",
+  "minimumMilitaryCount",
   "minimumMilitaryProducerCount", "requireCompositionDemand", "requireCapacityDemand",
   "minimumDamageDealt", "minimumEnemyLosses", "minimumOffensiveLaunchCount"
 ]);

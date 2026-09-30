@@ -27,10 +27,11 @@ test("pending perturbations and paired controls cannot stop early", () => {
   expect(state({ tick: 400, satisfiedSinceTick: 200, role: "control" }).stop).toBe(false);
 });
 
-test("absence, temporal, terminal and lifecycle assertions retain the full horizon", () => {
+test("absence, final-composition, temporal, terminal and lifecycle assertions retain the full horizon", () => {
   expect(isEvidenceStopSafe(positive)).toBe(true);
   for (const addition of [
     { maximumMilitaryProducerCount: 2 }, { requireProductionStopsAtTarget: true },
+    { minimumMilitaryTypeCount: 2 }, { minimumRepeatedMilitaryTypeCount: 3 },
     { requireAiVictory: true }, { requireProducerReplacementAfterLoss: true }
   ]) {
     expect(isEvidenceStopSafe({ ...positive, ...addition })).toBe(false);

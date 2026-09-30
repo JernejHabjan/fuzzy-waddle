@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { parseSummaryArguments, summarizeReport } from "./summarize-skirmish-report.mjs";
+import { parseSummaryArguments, resolveRepairReportPaths, summarizeReport } from "./summarize-skirmish-report.mjs";
 
 test("parses compact triage flags", () => {
   assert.deepEqual(parseSummaryArguments(["--", "artifact.json", "--scenario", "SEQ-01", "--details"]), {
@@ -32,6 +32,14 @@ test("parses a cross-shard repair request", () => {
   assert.equal(parseSummaryArguments(["--report", "tmp/sweep", "--repair-list"]).repairList, true);
   assert.equal(parseSummaryArguments(["--repair-list", "--require-supported"]).requireSupported, true);
   assert.equal(parseSummaryArguments(["--repair-list", "--max-clusters", "4"]).maxClusters, 4);
+  assert.deepEqual(parseSummaryArguments(["--repair-list", "--report", "a.json", "--report", "b.json"]).input,
+    ["a.json", "b.json"]);
+  assert.throws(() => parseSummaryArguments(["--report", "a.json", "--report", "b.json"]),
+    /multiple_reports_need_repair_list/);
+  assert.deepEqual(resolveRepairReportPaths(["tools/ai/fixtures/skirmish-v1.json"]),
+    [`${process.cwd()}/tools/ai/fixtures/skirmish-v1.json`]);
+  assert.throws(() => resolveRepairReportPaths(["tools/ai/fixtures/skirmish-v1.json",
+    "tools/ai/fixtures/skirmish-v1.json"]), /repair_report_explicit_paths_must_be_distinct_files/);
 });
 
 test("summarizes runtime failures and final variant evidence", () => {

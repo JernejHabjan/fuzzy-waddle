@@ -56,6 +56,8 @@ checkpoint as executed evidence.
 The matrix writer now authors a bounded `indexes/*.json` sibling for each runtime report. Positive-only
 `evidenceStop` policy is also authored with a stability window and fail-closed assertion allowlist. No fixture opts
 into early stop yet; its runner and policy tests remain unrun under the current authoring mode.
+Source review removed final military-type and repeated-type assertions from that allowlist: their final-checkpoint
+values can fall after losses, so stable interim evidence is insufficient. The new policy cases are unrun.
 
 Open-economy map checkpoint (2026-09-29, unverified): a separate grass tilemap, two-spawn editor/runtime scene and
 asset pack are authored with a SHA-256 static topology contract. The map is hidden from ordinary browsing and
@@ -90,8 +92,9 @@ compaction; do not reload the whole catalog/history. Compact context size is a p
    dozens of recipes. Add optional stop-on-evidence to the existing runtime driver before the broad execution sweep.
    Derive actor/resource/queue/event summaries from `presetWorld`; author metadata/catalog cases for missing setup,
    paired variants and justified long cases. Keep these in the existing bounded generator and adjacent helpers.
-   Extend `tools/ai/summarize-skirmish-report.mjs` with a bounded repair-list mode for a selected collection of
-   retained shard reports; the current summarizer handles one report and has no cross-scenario clusters. Reject
+   The bounded `--repair-list` mode already aggregates retained shards from a run directory or repeated explicit files
+   and has unrun provenance, path-selection and truncation tests;
+   review and execute it at the final gate rather than building a second reducer. Reject
    mixed source revisions or incompatible workload provenance, and keep infrastructure failures distinct. Preserve
    exact report paths, scenario/variant IDs, seeds, failure codes and replay selection. Accept explicit artifact paths
    or one run directory; emit short text plus machine-readable cluster data, not raw checkpoint dumps. Cluster by

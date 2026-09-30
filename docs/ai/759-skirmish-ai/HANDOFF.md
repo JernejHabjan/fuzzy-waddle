@@ -117,6 +117,9 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
   validation, `agent:doctor`, or `agent:context` during this sweep. Treat every new change as **unverified**.
   Batch all execution, repair, review, and calibration at the final gate below, and tell the user before starting it.
   This supersedes older per-issue instructions to run checks during the current sweep.
+- The optional evidence-stop allowlist has an unrun source-level correction: final military type diversity and final
+  repeated-type counts are not monotonic because units may die, so these assertions must run to their horizon.
+  Its focused policy spec is authored but unrun; do not use early stop for a final-composition oracle.
 
 - Branch: `feature/759-skirmish-ai`; draft PR [#814](https://github.com/JernejHabjan/fuzzy-waddle/pull/814) targets
   `develop`. Verify local and remote tips before editing.
@@ -165,23 +168,22 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 - #816 layout decision (partially authored): split focused behavior/positive-control recipes from legal-start continuous
   matches. The old mixed land-loop recipe's PRO-05 focused branch is separate; PRO-03/04/06/07 still share a natural
   production recipe and need shorter focused legal presets. Declare actor/resource/queue/event preset state
-  for each focused case or a documented natural-opening exception. Extend the generated catalog to expose kind,
-  starting state, branch/repetition counts and tick rationale from fixture data. Existing catalog rows still show
-  the old counts/limits and do not yet summarize preset state. Keep TS/JS/MJS additions within the repo's 400-line
+  for each focused case or a documented natural-opening exception. The generated catalog now exposes kind,
+  starting state, branch/repetition counts and tick rationale from fixture data, but is unverified. Keep TS/JS/MJS additions within the repo's 400-line
   file, 200-line method and 140-column rules; do not build another giant Playwright or generator file.
 - #816 tooling-first update: `pnpm ai:skirmish:catalog -- --inventory` is now an authored read-only, bounded recipe
   summary with 19/120 registered runtime rows, 97 supported missing, four island-deferred, and nine current recipe
   files. It flags the mixed production/SEQ file, long focused waits and redundant repetitions; its new unit test
-  has **not** run. Finish typed catalog metadata before mass fixture work and optional stop-on-evidence before the
-  execution sweep. The current runner always advances through every checkpoint, so the latter is unimplemented.
+  has **not** run. Typed catalog metadata and optional stop-on-evidence are now authored, but no recipe opts in and
+  neither contract has run. Do not claim a shorter suite until the final gate.
   JetBrains semantic search was reachable in this worktree; future agents should probe once and fall back to narrow
   `rg` if their host has no IDE connection. No new global search/index tool is needed.
-- #816 batched-repair decision (unimplemented): before the final broad game sweep, extend the existing single-report
-  skirmish summarizer with provenance-checked cross-shard failure clustering and a compact repair list. A shared
-  predicate is only a hypothesis; separate infrastructure/setup from gameplay and confirm one causal owner before
-  repairing a cluster. One representative preflight at the final gate precedes family/map shards; after a repair,
-  rerun affected shards, then establish final required evidence after all source changes. No test execution is
-  authorized during this authoring sweep.
+- #816 batched-repair authoring (unverified): `--repair-list` already aggregates retained shard reports with shared
+  run/source provenance, per-fixture digest conflict checks, missing-row accounting and bounded provisional clusters.
+  It now accepts either a run directory or repeated explicit `--report` files; parser/path cases are authored but unrun.
+  Do not rebuild it. A shared predicate is only a hypothesis: separate infrastructure/setup from gameplay and confirm
+  one causal owner before repairing a cluster. One representative preflight at the final gate precedes family/map
+  shards; after a repair, rerun affected shards, then establish final evidence. No execution in this sweep.
 - The generated [scenario test catalog](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/scenario-catalog.md)
   joins all 121 requirements to their registered fixtures, spec references, current maps and tick bounds; it does not
   claim test execution. Its [frozen-map contract](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/test-map-contract.md)

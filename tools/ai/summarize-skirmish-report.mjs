@@ -21,13 +21,15 @@ export function parseSummaryArguments(tokens) {
     else if (token === "--max-bytes") options.maxBytes = Number(requiredValue(tokens[++index], "max_bytes"));
     else if (token === "--scenario") options.scenario = requiredValue(tokens[++index], "scenario");
     else if (token === "--report") {
-      if (options.input !== null) throw new Error("duplicate_report_input");
-      options.input = requiredValue(tokens[++index], "report");
+      const supplied = requiredValue(tokens[++index], "report");
+      options.input = options.input === null ? supplied : [...(Array.isArray(options.input) ? options.input :
+        [options.input]), supplied];
     } else if (token === "--help") options.help = true;
     else if (token.startsWith("--")) throw new Error(`unknown_option:${token}`);
     else if (options.input === null) options.input = token;
-    else throw new Error(`unexpected_argument:${token}`);
+    else options.input = [...(Array.isArray(options.input) ? options.input : [options.input]), token];
   }
+  if (Array.isArray(options.input) && !options.repairList) throw new Error("multiple_reports_need_repair_list");
   return options;
 }
 
@@ -44,6 +46,12 @@ export function resolveReportPath(input, root = workspaceRoot) {
 }
 
 export function resolveRepairReportPaths(input, root = workspaceRoot) {
+  if (Array.isArray(input)) {
+    const paths = input.map((supplied) => isAbsolute(supplied) ? resolve(supplied) : resolve(process.cwd(), supplied));
+    if (new Set(paths).size !== paths.length || paths.some((path) => !path.endsWith(".json") || !statSync(path).isFile()))
+      throw new Error("repair_report_explicit_paths_must_be_distinct_files");
+    return paths.sort();
+  }
   const supplied = input ?? join(root, "tmp/ai-skirmish-matrix");
   const target = isAbsolute(supplied) ? resolve(supplied) : resolve(process.cwd(), supplied);
   if (!statSync(target).isDirectory()) return [target];
@@ -228,7 +236,7 @@ function helpText() {
     "  node tools/ai/summarize-skirmish-report.mjs [artifact-or-directory] [options]",
     "",
     "Options:",
-    "  --report PATH       Read an explicit artifact or report directory",
+    "  --report PATH       Read an artifact or directory; repeat for explicit repair-list files",
     "  --scenario ID       Show one scenario",
     "  --details           Add compact resources, worker orders, queues, squads and missions",
     "  --failures-only     Hide passing scenarios",
@@ -239,7 +247,7 @@ function helpText() {
     "  --help              Show this help",
     "",
     "With no path, the newest JSON report in tmp/ai-skirmish-matrix is selected.",
-    "Repair-list mode reads every JSON artifact in the supplied directory and requires a shared run ID.",
+    "Repair-list mode reads a directory or distinct explicit files and requires a shared run ID.",
     ""
   ].join("\n");
 }
