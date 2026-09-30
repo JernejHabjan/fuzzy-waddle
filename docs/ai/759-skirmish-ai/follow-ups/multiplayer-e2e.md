@@ -34,8 +34,9 @@ An unrun first socket-backed case now exists at `apps/portal-e2e/src/e2e/skirmis
 It uses two local Supabase users, the actual room/socket route, frozen three-spawn `MapAiMultiplayer`, a host AI,
 bounded relay diagnostics and common-tick hash comparison. `pnpm ai:skirmish:multiplayer` owns local credential
 discovery; `.github/workflows/pull-request-checks.yml` invokes it only when the draft PR becomes ready. The case
-must be run and repaired at the final gate. It does not yet include reconnect, host transfer, combat/terminal or
-leave/re-entry acceptance; preserve those obligations in this plan.
+must be run and repaired at the final gate. A second authored case closes the real host and requires peer promotion
+and a higher epoch. It is an authority-fence smoke, not exact-once mid-commitment transfer. Reconnect, full host-transfer
+continuation, combat/terminal and leave/re-entry acceptance remain; preserve those obligations in this plan.
 
 ## Implementation order
 
