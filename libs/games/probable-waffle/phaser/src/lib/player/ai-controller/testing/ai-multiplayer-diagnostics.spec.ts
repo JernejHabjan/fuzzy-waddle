@@ -25,9 +25,10 @@ describe("AiMultiplayerDiagnostics", () => {
       ] } },
       events: { once: jest.fn() }
     } as unknown as ProbableWaffleScene;
+    const processedCommandIds = ["3:2:1:game", "1:2:1:game"];
     const bus = {
       commandBatch$: batches.asObservable(),
-      getAuthorityState: () => ({ authorityEpoch: 2, processedCommandIds: ["3:2:1:game", "1:2:1:game"] })
+      getAuthorityState: () => ({ authorityEpoch: 2, processedCommandIds })
     } as unknown as CommandBusService;
     const observer = new AiMultiplayerDiagnostics(scene, bus);
     batches.next({ tick: 20, playerNumber: 1 });
@@ -47,6 +48,11 @@ describe("AiMultiplayerDiagnostics", () => {
       processedAiCommandIds: ["3:2:1:game"],
       hashes: [{ tick: 20, hash: "local" }]
     });
+    for (let tick = 21; tick <= 39; tick += 1) hashes.next({ tick, hash: `local-${tick}`, emitterUserId: "host" });
+    for (let sequence = 2; sequence <= 22; sequence += 1) processedCommandIds.push(`3:2:${sequence}:game`);
+    expect(observer.getSnapshot(3).hashes).toHaveLength(12);
+    expect(observer.getSnapshot(3).hashes[0].tick).toBe(28);
+    expect(observer.getSnapshot(3).processedAiCommandIds).toHaveLength(16);
     observer.destroy();
     batches.next({ tick: 40, playerNumber: 1 });
     hashes.next({ tick: 40, hash: "late", emitterUserId: "host" });
