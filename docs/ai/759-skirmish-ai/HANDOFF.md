@@ -22,8 +22,9 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
   `pnpm ai:skirmish:multiplayer` discovers local CLI keys without printing them; a non-draft PR job starts local Supabase
   and invokes it. This is an **unrun smoke slice, not #819 completion**: the test lobby/map, local auth, server/socket
   startup, third spawn legality and all assertions need final-gate execution and repair. A second unrun case closes
-  the real host after an AI command and requires peer AI promotion plus a new authority epoch. It does **not** yet prove
-  mid-commitment exact-once continuation. Reconnect, terminal result and re-entry cases are not yet authored. Both cases
+  the real host after an AI command and requires peer AI promotion, a new authority epoch and a newly applied AI command.
+  It does **not** yet prove mid-commitment exact-once continuation. Reconnect, terminal result and re-entry cases are
+  not yet authored. Both cases
   retain credential-free bounded peer state and failure screenshots; raw relay-log capture is pending. Browser tracing
   is disabled to avoid retaining ephemeral session JWTs. Do not treat these as the full multiplayer parity proof.
 - Multiplayer authority source checkpoint (2026-09-30, **unverified**): the host-migration event now drives a

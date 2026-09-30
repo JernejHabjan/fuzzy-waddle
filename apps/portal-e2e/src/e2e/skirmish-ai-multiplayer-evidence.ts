@@ -8,6 +8,7 @@ export async function attachMultiplayerEvidence(
     readonly lobbyName: string;
     readonly host: MultiplayerPeerObservation | null;
     readonly peer: MultiplayerPeerObservation | null;
+    readonly peerBeforeTransfer?: MultiplayerPeerObservation | null;
     readonly checkpointComparisons: readonly { tick: number; agrees: boolean }[];
   }
 ): Promise<void> {
@@ -17,6 +18,7 @@ export async function attachMultiplayerEvidence(
       lobbyName: evidence.lobbyName,
       host: evidence.host,
       peer: evidence.peer,
+      peerBeforeTransfer: evidence.peerBeforeTransfer,
       checkpointComparisons: evidence.checkpointComparisons.slice(-16)
     })),
     contentType: "application/json"
