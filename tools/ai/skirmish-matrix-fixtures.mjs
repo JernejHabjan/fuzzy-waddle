@@ -2,6 +2,7 @@ import { join } from "node:path";
 import { readJson } from "./skirmish-matrix-io.mjs";
 import { validateEvidenceStopAssertions, validateRuntimeRecipeMetadata } from "./skirmish-runtime-recipe-metadata.mjs";
 import { validProductionCapacityPair } from "./skirmish-runtime-production-capacity-fixture.mjs";
+import { validProductionCompositionPair } from "./skirmish-runtime-production-composition-fixture.mjs";
 
 export function validateManifest(value, fixtureDirectory) {
   if (!value || value.schemaVersion !== 1 || value.manifestVersion !== "skirmish-v1" || !Array.isArray(value.rows))
@@ -107,6 +108,8 @@ function validateRuntimeFixture(fixture, scenarioId) {
           !["build", "served_control"].includes(variant.resourceServiceBranch)) ||
         (variant.productionCapacityBranch !== undefined &&
           !["build", "already_sufficient"].includes(variant.productionCapacityBranch)) ||
+        (variant.productionCompositionBranch !== undefined &&
+          !["fill_deficit", "satisfied_control"].includes(variant.productionCompositionBranch)) ||
         (variant.mapLabel !== undefined && typeof variant.mapLabel !== "string") ||
         (variant.perturbations !== undefined &&
           (!Array.isArray(variant.perturbations) ||
@@ -138,6 +141,8 @@ function validateRuntimeFixture(fixture, scenarioId) {
     assertion.requiredAiFactions.some((faction) => !["Tivara", "Skaduwee"].includes(faction)) ||
     (assertion.requiredProductionCapacity !== undefined &&
       !validProductionCapacityPair(recipe, assertion, scenarioId)) ||
+    (assertion.requiredProductionComposition !== undefined &&
+      !validProductionCompositionPair(recipe, assertion, scenarioId)) ||
     (assertion.requireSupplyControl === true &&
       !["prebuild", "ample_control"].every((branch) =>
         recipe.variants.some(

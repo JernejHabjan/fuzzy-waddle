@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "evidenceKind": "runtime",
-  "scenarioIds": ["PRO-03", "PRO-04", "PRO-06", "PRO-07"],
+  "scenarioIds": ["PRO-03", "PRO-06", "PRO-07"],
   "purpose": "Temporary natural composition and queue coverage until focused production worlds replace these runs.",
   "driver": "runtime",
   "status": "ready_for_runtime_execution",
@@ -45,16 +45,6 @@
       "requiredAiFactions": ["Tivara", "Skaduwee"],
       "minimumMilitaryProducerCount": 2,
       "requireCapacityDemand": true
-    },
-    "PRO-04": {
-      "maximumTick": 12000,
-      "minimumDecisions": 100,
-      "minimumAppliedCommands": 12,
-      "requiredAiFactions": ["Tivara", "Skaduwee"],
-      "minimumMilitaryCount": 12,
-      "minimumRepeatedMilitaryTypeCount": 3,
-      "requireCompositionDemand": true,
-      "requireProductionStopsAtTarget": true
     },
     "PRO-06": {
       "maximumTick": 12000,

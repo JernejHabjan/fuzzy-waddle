@@ -3,6 +3,8 @@ import { digestCanonicalAiValue } from "../brain/canonical-ai-serialization";
 import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import type { AiIntentV1 } from "../contracts/ai-intent-v1";
+import { aiDeadline } from "../contracts/ai-core-types";
+import type { AiReservationV1 } from "../contracts/ai-dependency-contracts";
 import { AiMacroManager } from "../planning/ai-macro-manager";
 import type { AiManagerProposalV1 } from "../planning/ai-manager-proposal";
 import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
@@ -134,7 +136,8 @@ function constructionCells() {
 
 function propose(
   actors: ReturnType<typeof createAiTestObservation>["actors"],
-  catalogInput = catalog
+  catalogInput = catalog,
+  state = completedOpeningState()
 ): AiManagerProposalV1 {
   const observation = createAiTestObservation();
   return new AiMacroManager(() => catalogInput).propose(
@@ -144,7 +147,7 @@ function propose(
       actors,
       map: { ...observation.map!, constructionCells: constructionCells() }
     },
-    completedOpeningState()
+    state
   );
 }
 
@@ -163,8 +166,35 @@ function oneTypeCatalog(): AiCapabilityCatalogV1 {
   return {
     ...catalog,
     entries: catalog.entries.map((entry) =>
-      entry.sourceObjectName === ObjectNames.AnkGuard ? { ...entry, produces: [ObjectNames.TivaraMacemanMale] } : entry
+      entry.sourceObjectName === ObjectNames.AnkGuard
+        ? { ...entry, produces: [ObjectNames.TivaraMacemanMale] }
+        : entry.sourceObjectName === ObjectNames.TivaraMacemanMale
+          ? { ...entry, constructionProfile: {
+              resourceCost: { [ResourceType.Wood]: 35 }, footprintRadiusTiles: 0, visionRange: 6,
+              navigableHeight: null, enterHeight: null, exitHeight: null
+            } }
+          : entry
     )
+  };
+}
+
+/** Existing useful copies remain legal beneficiaries; producer lane occupancy is observed separately. */
+function repeatedArmy(count: number) {
+  return Array.from({ length: count }, (_, index) => ({
+    ...createAiTestOwnedActor(`military-${index}`),
+    objectName: ObjectNames.TivaraMacemanMale
+  }));
+}
+
+/** A real typed queue commitment fills a deficit even while another producer's lane remains idle. */
+function queuedProducer(count: number) {
+  const items = Array.from({ length: count }, (_, index) => ({
+    itemId: `queued-${index}`, kind: "production" as const, objectName: ObjectNames.TivaraMacemanMale, researchType: null
+  }));
+  return {
+    ...producer("producer-1"),
+    queue: { status: "known" as const, observedTick: 200,
+      value: { capacity: 5, occupied: count, itemIds: items.map((item) => item.itemId), items } }
   };
 }
 
@@ -204,13 +234,22 @@ const scenarios: readonly AiProductionPureScenarioV1[] = [
   },
   {
     scenarioId: "PRO-04",
-    purpose: "Two idle producers may make the same useful legal unit without a diversity cap.",
-    execute: () => ({ subject: propose([...workers(), producer("producer-1"), producer("producer-2")], oneTypeCatalog()) }),
-    assertSemanticEffect: ({ subject }) => {
+    purpose: "Ten useful copies admit two priced copies; the otherwise identical satisfied force stops excess production.",
+    execute: () => ({
+      subject: propose([...workers(), producer("producer-1"), producer("producer-2"), ...repeatedArmy(10)], oneTypeCatalog()),
+      control: propose([...workers(), producer("producer-1"), producer("producer-2"), ...repeatedArmy(12)], oneTypeCatalog())
+    }),
+    assertSemanticEffect: ({ subject, control }) => {
       expect(production(subject.intents)).toHaveLength(2);
       expect(production(subject.intents).every((intent) => intent.objectName === ObjectNames.TivaraMacemanMale)).toBe(
         true
       );
+      expect(new Set(production(subject.intents).map((intent) => intent.effectId)).size).toBe(2);
+      for (const intent of production(subject.intents)) {
+        expect(intent.claims.filter((claim) => claim.kind === "resource"))
+          .toEqual([expect.objectContaining({ resourceType: ResourceType.Wood, amount: 35 })]);
+      }
+      expect(production(control?.intents ?? [])).toHaveLength(0);
     }
   },
   {
@@ -235,5 +274,43 @@ describe("typed deterministic production scenarios", () => {
 
     expect(new Set(digests).size).toBe(1);
     scenario.assertSemanticEffect(runs[0]!);
+  });
+
+  it("PRO-04 counts queued copies and unobserved leases before admitting another useful copy", () => {
+    const execute = () => {
+      const base = completedOpeningState();
+      const state = { ...base, reservations: Array.from({ length: 2 }, (_, index) => ({
+          claimId: `claim:composition:${index}`,
+          subjectKey: `effect:composition:effect:${index}`,
+          ownerPlanId: base.opening.plan.planId,
+          state: { kind: "provisional", expiresAt: aiDeadline(400) },
+          prerequisites: [], createdTick: 200
+        } satisfies AiReservationV1)) };
+      return {
+        queued: propose([...workers(), queuedProducer(2), producer("producer-2"), ...repeatedArmy(10)], oneTypeCatalog()),
+        leased: propose([...workers(), producer("producer-1"), producer("producer-2"), ...repeatedArmy(10)], oneTypeCatalog(), state),
+        observed: propose([...workers(), queuedProducer(2), producer("producer-2"), ...repeatedArmy(10)], oneTypeCatalog(), state),
+        oneMissing: propose([...workers(), producer("producer-1"), producer("producer-2"), ...repeatedArmy(11)], oneTypeCatalog())
+      };
+    };
+    const result = execute();
+    const runs = [result, execute(), execute()];
+    expect(new Set(runs.map(digestCanonicalAiValue)).size).toBe(1);
+    expect(production(result.queued.intents)).toHaveLength(0);
+    expect(production(result.leased.intents)).toHaveLength(0);
+    expect(production(result.observed.intents)).toHaveLength(0);
+    expect(result.observed.statePatch?.economyProduction?.demands.find(
+      (demand) => demand.demandId === "demand:composition:first-squad"
+    )?.acceptedNotObservedEffectIds).toHaveLength(0);
+    expect(production(result.oneMissing.intents)).toHaveLength(1);
+  });
+
+  it("PRO-04 preserves duplicate-unit decisions under set-valued actor and catalog ordering", () => {
+    const actors = [...workers(), producer("producer-1"), producer("producer-2"), ...repeatedArmy(10)];
+    const priced = oneTypeCatalog();
+    const original = propose(actors, priced);
+    const reordered = propose([...actors].reverse(), { ...priced, entries: [...priced.entries].reverse() });
+    expect(digestCanonicalAiValue(reordered)).toBe(digestCanonicalAiValue(original));
+    expect(production(reordered.intents)).toHaveLength(2);
   });
 });

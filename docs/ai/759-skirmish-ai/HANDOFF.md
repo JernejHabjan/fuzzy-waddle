@@ -6,13 +6,37 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
-**Next session (user policy, 2026-10-02):** start #815/#816 production-family design and its first representative
-implementation on **GPT-6.1 Sol / high**. Read the model-batch contract below, then the #816 packet and selected
-PRO-03/04/06/07 requirements, existing production fixtures and family oracles. Existing PRO-01/02 capacity helpers
-are reuse candidates, not proof of prebuilding/abandonment, resilience or cancellation. Deliver a concrete focused
-preset, independent oracle and corresponding pure contract example; specify remaining family cases for the next
-implementation batch. Keep all execution deferred. Commit/push the authored slice, update the batch grid and pause
-before switching to **GPT-6 Luna / medium**. Do not resume an older issue merely because it is marked in progress.
+**Next session (user policy, 2026-10-02):** #815/#816 production composition commitment expansion on
+**GPT-6 Luna / medium**. Read the [production-family packet](follow-ups/runtime-matrix-ci.md#production-family-authoring-contract-2026-10-02-unverified)
+and its four concrete next-batch criteria; keep related pure cases and seeded-queue runtime controls together.
+The first PRO-04 preset/oracle/pure example is authored and unverified. PRO-03 future-transition abandonment,
+PRO-06 resilience and PRO-07 cancellation/refund authority still need their distinct Sol/high contracts; capacity
+helpers are not proof of them. Keep all execution deferred, source-review, commit/push and pause at the next
+model boundary. Do not resume an older issue merely because it is marked in progress.
+
+- Current checkpoint: #815/#816 first production-family design and PRO-04 representative authoring finished;
+  **unverified**, ready for the specified expansion, not scenario/issue acceptance. Recommended batch model was
+  GPT-6.1 Sol/high; actual session model/effort is not exposed. Base/local/remote before authoring:
+  `87f948bc504b493726a4c48864ebd2cb7d6d0d02` on `feature/759-skirmish-ai`, worktree
+  `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`. The commit containing this ledger owns the authored revision;
+  the next session verifies its local and remote SHA rather than relying on a self-referential hash here.
+- Changed source anchors: `tools/ai/fixtures/focused-production-composition-runtime.json`, manifest PRO-04 mapping,
+  `apps/portal-e2e/src/e2e/skirmish-ai-runtime-production-composition-evaluation{,.spec}.ts`,
+  `tools/ai/skirmish-runtime-production-composition-fixture{,.test}.mjs`, and
+  `libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/testing/ai-production-scenarios.spec.ts`.
+  Assertion/variant/result contracts, checkpoint capture,
+  generic evaluator/runner, optional composition digest and generated catalog are wired to those owners.
+  Natural production now retains only PRO-03/06/07. No production policy, persisted brain IDs, lifecycle adapter,
+  source baseline or shared skill changed.
+- Acceptance closure: (1) family requirements/source gaps specified in #816 packet; (2) two legal-definition-backed
+  faction pairs, exact equal balances, 600-tick ceiling and 200-tick retained window authored; (3) independent new-unit
+  identity/applied-effect/absence oracle plus false-pass examples authored; (4) pure priced duplicates and
+  ready/queued/leased target suppression, three-run digests and input permutation authored; (5) registration,
+  catalog and next-batch packet updated. Implementation review, Omission Audit and separate Final Closure Audit use
+  source inspection only; catalog generation used `node tools/ai/generate-skirmish-test-catalog.mjs --write`
+  as an authoring operation. All tests, E2E, simulations, lint/type/build/editor/schema validation and doctor/context
+  remain deferred. Map positions, live useful product selection, training latency and the complete runtime path
+  remain final-gate obligations. No passing evidence, coverage increment or measured speedup is claimed.
 
 - Multiplayer diagnostic/lifecycle authoring checkpoint (2026-09-30, **unverified**): browser-only relay and local-hash
   observation now lives in a small test-owned Phaser adapter rather than adding methods to hash-baselined
@@ -51,7 +75,8 @@ before switching to **GPT-6 Luna / medium**. Do not resume an older issue merely
   The new fixture and oracle tests have not run; the frozen-map preflight still must establish legal positions and
   the final gate must confirm the intended force demand appears. `PRO-03/04/06/07` remain in long natural coverage
   pending their distinct transition, composition, resilience, and queue contracts; do not label the paired capacity
-  recipe full production-family proof. Matrix runtime reports now also write bounded `indexes/*.json` summaries
+  recipe full production-family proof. PRO-04 has since moved to the focused composition example above.
+  Matrix runtime reports now also write bounded `indexes/*.json` summaries
   beside retained raw reports, with totals, source/run/fixture identity, stop reasons, first failures, and raw pointer.
   A fail-closed optional evidence-stop contract is authored: only positive monotonic assertions may opt in, with an
   earliest tick, stability window and no pending event; controls/temporal oracles retain their ceiling. No recipe opts
@@ -97,7 +122,7 @@ before switching to **GPT-6 Luna / medium**. Do not resume an older issue merely
 - Recipe split checkpoint (2026-09-28, **unverified**): the old mixed
   `stage-15-land-loop-runtime.json` was renamed before the current `continuous-land-runtime.json` split, with the focused PRO-05
   producer-loss case moved to `focused-production-replacement-runtime.json`. Manifest and generated catalog links
-  follow the new owners. Long natural PRO-03/04/06/07 now live in `production-natural-runtime.json` pending focused
+  follow the new owners. Long natural PRO-03/06/07 now live in `production-natural-runtime.json` pending focused
   legal preset branches before the final gate; only genuine continuous SEQ cases remain in the continuous file.
   Existing PRO-05 repetitions/deadline are migration debt. No tests or runtime simulations ran for this split.
 - Metadata authoring checkpoint (2026-09-28, **unverified**): all nine currently registered runtime recipes now declare
@@ -175,8 +200,9 @@ before switching to **GPT-6 Luna / medium**. Do not resume an older issue merely
   Existing three-repeat/12,000-tick recipes are migration work, not an endorsed default. The authoritative policy
   and exceptions are in [runtime E2E](../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/testing/runtime-e2e.md).
 - #816 layout decision (partially authored): split focused behavior/positive-control recipes from legal-start continuous
-  matches. The old mixed land-loop recipe's PRO-05 focused branch is separate; PRO-03/04/06/07 still share a natural
-  production recipe and need shorter focused legal presets. Declare actor/resource/queue/event preset state
+  matches. The old mixed land-loop recipe's PRO-05 focused branch is separate; PRO-03/06/07 still share a natural
+  production recipe and need their own legal presets and distinct contracts. PRO-04 has a focused composition owner.
+  Declare actor/resource/queue/event preset state
   for each focused case or a documented natural-opening exception. The generated catalog now exposes kind,
   starting state, branch/repetition counts and tick rationale from fixture data, but is unverified. Keep TS/JS/MJS additions within the repo's 400-line
   file, 200-line method and 140-column rules; do not build another giant Playwright or generator file.
@@ -257,7 +283,7 @@ merely because their issue title mentions testing. All authored work remains unv
 | 1 / as needed | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `partial` | Split only owners blocking the selected batch | GPT-6 Luna, medium |
 | 2 | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829) | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof | GPT-6.1 Sol, high |
 | 3 | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `in_progress` | Finish pressure/recovery policy; defer victory proof | GPT-6.1 Sol, high |
-| 4 / next batch | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Production-family design, first preset/oracle/pure example, then specified family expansion | GPT-6.1 Sol, high; next batch GPT-6 Luna, medium |
+| 4 / next batch | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | PRO-04 first example authored/unverified; expand priced/busy-lane pure cases and specified seeded-queue controls | GPT-6 Luna, medium; Sol high for remaining new family contracts |
 | 5 / paired | #815 / #816 | `in_progress` | Remaining family contracts, focused fixtures, frozen maps and continuous-match tier | Sol high for new contracts; Luna medium for established cases |
 | 6 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `in_progress` | Exact-once interruption, terminal and re-entry parity | GPT-6.1 Sol, high |
 | 7 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `partial` | Generation fencing, phase restore/replay and cleanup cases | GPT-6.1 Sol, high |

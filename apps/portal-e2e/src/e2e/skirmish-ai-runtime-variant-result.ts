@@ -23,6 +23,8 @@ export interface RuntimeVariantResultV1 {
   readonly pressureBranch?: "raid" | "safe_control";
   readonly resourceServiceBranch?: "build" | "served_control";
   readonly productionCapacityBranch?: "build" | "already_sufficient";
+  /** Retained causal branch for the independent composition oracle and diagnostic replay. */
+  readonly productionCompositionBranch?: "fill_deficit" | "satisfied_control";
   readonly initialWorldDigest: string;
   readonly outcomeDigest: string;
   readonly checkpoints: readonly RuntimeCheckpointV1[];

@@ -10,9 +10,11 @@ export function digestRuntimeValue(value: unknown): string {
   return `fnv1a32:${hash.toString(16).padStart(8, "0")}`;
 }
 
+/** Adds composition milestones only for declared composition variants; other fixture signatures retain their existing shape. */
 export function projectRuntimeOutcomeDigestInput(
   checkpoints: readonly RuntimeCheckpointV1[],
-  includeTerminalResult: boolean
+  includeTerminalResult: boolean,
+  includeComposition = false
 ): unknown {
   const final = checkpoints.at(-1);
   const producerCounts = (objectName: string) =>
@@ -42,6 +44,16 @@ export function projectRuntimeOutcomeDigestInput(
       ).length
     })),
     viableArmyRetained: (final?.militaryActorNames.length ?? 0) > 0,
+    ...(includeComposition ? { compositionTrajectory: checkpoints.map((checkpoint) => ({
+      readyTypeCounts: checkpoint.militaryActorNames.reduce<Record<string, number>>((counts, name) => {
+        counts[name] = (counts[name] ?? 0) + 1;
+        return counts;
+      }, {}),
+      queuedTypes: checkpoint.militaryProducerQueues.flatMap((producer) => producer.queuedObjectNames).sort(),
+      appliedCompositionCount: checkpoint.appliedCommands.filter((command) =>
+        command.effectId.startsWith("effect:composition:effect:")
+      ).length
+    })) } : {}),
     producerLifecycle: producerNames.map((objectName) => {
       const counts = producerCounts(objectName);
       const lowestAfterStart = Math.min(...counts.slice(1));

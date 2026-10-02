@@ -23,5 +23,7 @@ export interface RuntimeVariantV1 {
   readonly pressureBranch?: "raid" | "safe_control";
   readonly resourceServiceBranch?: "build" | "served_control";
   readonly productionCapacityBranch?: "build" | "already_sufficient";
+  /** A pair differs only by the useful units already satisfying the control's force target. */
+  readonly productionCompositionBranch?: "fill_deficit" | "satisfied_control";
   readonly perturbations?: readonly RuntimePerturbationV1[];
 }

@@ -76,6 +76,11 @@ export async function captureRuntimeStrategyCheckpoint(
         .filter((actor) => militaryNames.has(actor.objectName))
         .map((actor) => actor.objectName)
         .sort(),
+      militaryActors: selfActors
+        .filter((actor) => militaryNames.has(actor.objectName))
+        .filter((actor) => actor.constructionProgress?.status !== "known" || actor.constructionProgress.value >= 100)
+        .map((actor) => ({ actorId: actor.actorId, objectName: actor.objectName }))
+        .sort((left, right) => left.actorId.localeCompare(right.actorId)),
       militaryProducerNames: selfActors
         .filter(
           (actor) =>

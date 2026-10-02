@@ -133,6 +133,8 @@ export interface RuntimeCheckpointV1 {
     readonly accepted: number;
   }[];
   readonly militaryActorNames: readonly string[];
+  /** Owned ready military identities distinguish produced copies from preset copies or demand counters. */
+  readonly militaryActors?: readonly { readonly actorId: string; readonly objectName: string }[];
   readonly militaryProducerNames: readonly string[];
   readonly militaryProducerQueues: readonly {
     readonly actorId: string;

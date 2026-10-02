@@ -11,6 +11,7 @@ import { evaluateRuntimeResourceLabor } from "./skirmish-ai-runtime-resource-lab
 import { evaluateRuntimeWorkerGrowth } from "./skirmish-ai-runtime-worker-growth-evaluation";
 import { isAiVictory } from "./skirmish-ai-runtime-terminal";
 import { evaluateRuntimeProductionCapacity } from "./skirmish-ai-runtime-production-capacity-evaluation";
+import { evaluateRuntimeProductionComposition } from "./skirmish-ai-runtime-production-composition-evaluation";
 
 export function evaluateRuntimeVariant(
   scenarioId: string,
@@ -186,6 +187,8 @@ export function evaluateRuntimeVariant(
   }
   failures.push(...evaluateRuntimeRaidRecovery(assertion, variant, final, hasAiVictory));
   failures.push(...evaluateRuntimeProductionCapacity(scenarioId, assertion.requiredProductionCapacity, variant)
+    .map((failure) => `${variant.variantId}:${failure}`));
+  failures.push(...evaluateRuntimeProductionComposition(assertion.requiredProductionComposition, variant)
     .map((failure) => `${variant.variantId}:${failure}`));
   failures.push(...evaluateRuntimePresetWorld(assertion, variant));
   if (assertion.requiredSupplyPrebuild) {

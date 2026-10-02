@@ -139,7 +139,7 @@ export async function runVariant(
         : null
     });
     const outcomeDigest = digestRuntimeValue({
-      checkpoints: projectRuntimeOutcomeDigestInput(checkpoints, !variant.presetWorld),
+      checkpoints: projectRuntimeOutcomeDigestInput(checkpoints, !variant.presetWorld, !!variant.productionCompositionBranch),
       perturbations,
       aiErrors
     });
@@ -180,6 +180,7 @@ export async function runVariant(
       ...(variant.pressureBranch ? { pressureBranch: variant.pressureBranch } : {}),
       ...(variant.resourceServiceBranch ? { resourceServiceBranch: variant.resourceServiceBranch } : {}),
       ...(variant.productionCapacityBranch ? { productionCapacityBranch: variant.productionCapacityBranch } : {}),
+      ...(variant.productionCompositionBranch ? { productionCompositionBranch: variant.productionCompositionBranch } : {}),
       initialWorldDigest,
       outcomeDigest,
       checkpoints,
