@@ -5,9 +5,9 @@
 All supported runtime-required scenarios launch a real lobby-created Phaser match, observe authoritative effects, and run
 as fail-closed required pre-merge shards with useful retained artifacts.
 
-Recommended agent: `gpt-5.6-sol`, high effort for the first runtime runner, CI-shard, and authoritative-outcome contract.
-Hand proven family recipes and repeatable repairs to `gpt-5.6-terra`, medium effort. Reserve Astra for an unresolved
-runner/authority architecture question after compact Sol evidence.
+Recommended agent: **GPT-6.1 Sol / high** for new family helpers, reliable assertions and complex runtime contracts;
+**GPT-6 Luna / medium** for expansion using established patterns and routine wiring. Follow the handoff's
+[model batches and pause contract](../HANDOFF.md#model-batches-and-pause-contract), including its exact next batch.
 
 Estimated effort: **XXL risk envelope**, not 97 separate browser worlds: the current catalog has 97 supported runtime
 rows without recipes, plus frozen maps, independent outcome oracles, CI wiring and final-gameplay repair. About 10–20
@@ -40,12 +40,12 @@ Use this batch order; the contract details below are acceptance requirements for
 | Batch | Concrete output and dependency | Recommended agent |
 | --- | --- | --- |
 | Shared authoring contract | Extend existing fixture metadata, inventory and catalog; one short preset example and one continuous example | Sol/high |
-| First usable family | Freeze open-economy map; author paired #815 pure and #816 runtime economy/production cases using existing setup services | Sol/high for new semantics, then Terra/medium for specified cases |
+| First usable family | Reuse authored open-economy map; author paired #815 pure and #816 runtime economy/production cases using existing setup services | GPT-6.1 Sol/high for new semantics, then GPT-6 Luna/medium for specified cases |
 | Further families | Reuse helpers for combat/scouting/strategy; add bridge when needed, fortified map with wall cases; then recovery/debug | Same model across related cases while contract remains stable |
-| Specialized adapters | Build #819 real relay/two-client harness and #823 lifecycle wiring/setup plus cases; preserve separate authority requirements | Sol/high, then bounded Terra delivery |
-| Execution tooling | Finish early-stop and cross-report repair output before the broad validation sweep | Sol/high for oracle/provenance design, Terra/medium for specified plumbing |
-| Pre-gate cleanup | Finish in-scope #821 splits/renames and update imports, manifests, compatibility readers and documentation links | Terra/medium; Sol for changed contracts |
-| Deferred validation | Preflight, grouped sweep, cluster repairs, calibration/optimization/legacy retirement, then final evidence | Astra/high diagnosis and evidence decisions; Terra for confirmed bounded repairs |
+| Specialized adapters | Extend authored #819 relay harness and #823 lifecycle setup plus cases; preserve separate authority requirements | GPT-6.1 Sol/high; GPT-6 Luna/medium only for specified wiring |
+| Execution tooling | Review authored early-stop and cross-report repair output before the broad validation sweep | GPT-6.1 Sol/high for oracle/provenance design, GPT-6 Luna/medium for specified plumbing |
+| Pre-gate cleanup | Finish in-scope #821 splits/renames and update imports, manifests, compatibility readers and documentation links | GPT-6 Luna/medium; GPT-6.1 Sol/high for changed contracts |
+| Deferred validation | Preflight, grouped sweep, cluster repairs, calibration/optimization/legacy retirement, then final evidence | GPT-6.1 Sol/high diagnosis and evidence decisions; GPT-6 Luna/medium for confirmed bounded repairs |
 
 Reporter authoring checkpoint (2026-09-28, unverified): the existing summary CLI now accepts `--repair-list` and
 `--require-supported`; runtime reports include a shared run ID, source/manifest provenance, per-fixture SHA-256
@@ -76,7 +76,8 @@ Metadata comes before mass authoring because it defines every recipe. Early-stop
 before execution, so they need not block independent fixture authoring. Implement each helper with its first real
 consumer; avoid a general fixture framework or extra index. Keep required defaults explicit. Use the inventory to
 select one bounded family batch, carry its exact IDs/files/assertions forward, and expand only when that contract is
-clear. Stop for handoff at a coherent commit boundary, not after every scenario or model recommendation.
+clear. Report progress and pause at the agreed model-batch boundary after committing/pushing and updating the handoff,
+not after every scenario. Group related work on the same model to avoid unnecessary switching.
 
 Read only the handoff's latest policy/current batch, selected requirement rows, fixture and named owning code. Retain
 a short resume record with changed files, unresolved decisions, next IDs and unrun checks. Reuse this record after

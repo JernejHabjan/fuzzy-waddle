@@ -5,8 +5,10 @@
 Every supported pure-required row in `tools/ai/fixtures/skirmish-v1.json` executes a typed deterministic scenario with
 semantic assertions. Missing work must fail closed; a fixture filename alone is not coverage.
 
-Recommended agent: `gpt-5.6-sol`, high effort for each new scenario-family contract and cross-manager diagnosis; hand
-mechanical scenario expansion with an already-proven fixture recipe to `gpt-5.6-terra`, medium effort.
+Recommended agent: **GPT-6.1 Sol / high** for each new scenario-family contract and cross-manager diagnosis;
+**GPT-6 Luna / medium** for expansion using established fixture patterns. Follow the handoff's
+[model batches and pause contract](../HANDOFF.md#model-batches-and-pause-contract); report progress and pause before
+the next model batch rather than switching after individual scenarios.
 
 Estimated effort: **XL**, about 6–12 focused agent sessions or 4–8 engineering days at the current unmapped count.
 
@@ -41,7 +43,8 @@ passing evidence; never copy a count into logic. Keep same-type units/buildings 
    builders where semantics agree. Do not finish all pure families before beginning runtime authoring. Completed
    domain/transport contracts remain part of this issue's pure-coverage denominator.
 7. Commit and push coherent family batches; preserve selected IDs, source files, unresolved questions and unrun checks
-   in the existing handoff. Recalculate coverage from the manifest rather than copying counts into multiple plans.
+   in the existing handoff, then pause at the agreed model boundary. Recalculate coverage from the manifest at the
+   final gate rather than copying counts into multiple plans; do not run coverage commands during authoring.
 
 ## Evidence
 

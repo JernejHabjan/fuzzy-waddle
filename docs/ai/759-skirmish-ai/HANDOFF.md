@@ -6,6 +6,14 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
+**Next session (user policy, 2026-10-02):** start #815/#816 production-family design and its first representative
+implementation on **GPT-6.1 Sol / high**. Read the model-batch contract below, then the #816 packet and selected
+PRO-03/04/06/07 requirements, existing production fixtures and family oracles. Existing PRO-01/02 capacity helpers
+are reuse candidates, not proof of prebuilding/abandonment, resilience or cancellation. Deliver a concrete focused
+preset, independent oracle and corresponding pure contract example; specify remaining family cases for the next
+implementation batch. Keep all execution deferred. Commit/push the authored slice, update the batch grid and pause
+before switching to **GPT-6 Luna / medium**. Do not resume an older issue merely because it is marked in progress.
+
 - Multiplayer diagnostic/lifecycle authoring checkpoint (2026-09-30, **unverified**): browser-only relay and local-hash
   observation now lives in a small test-owned Phaser adapter rather than adding methods to hash-baselined
   `CommandBusService` and `StateHashService`; those two source owners have been restored to their original shapes.
@@ -246,26 +254,56 @@ merely because their issue title mentions testing. All authored work remains unv
 
 | Order         | Issue                                                           | State         | Next boundary                                                     | Model / effort            |
 | ------------- | --------------------------------------------------------------- | ------------- | ----------------------------------------------------------------- | ------------------------- |
-| 1 / as needed | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `partial`     | Split only the owners that block the next implementation slice    | Terra, medium             |
-| 2             | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829) | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof | Sol, high → Terra, high   |
-| 3             | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `in_progress` | Finish sustained pressure/recovery policy; defer victory proof    | Sol, high → Terra, high   |
-| 4             | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Finish frozen maps, legal presets, bounded reporting and replay proof | Sol, high → Terra, medium |
-| 5 / paired    | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815) | `in_progress` | Author each pure family alongside its #816 runtime slice | Sol, high → Terra, medium |
-| 5 / paired    | [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Author focused positive/control cases, then a small continuous-match tier | Sol, high → Terra, medium |
-| 6             | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `in_progress` | Extend authored two-client smokes to exact-once interruption, terminal and re-entry parity | Sol, high → Terra, high |
-| 7             | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `partial` | Finish generation fencing, phase restore/replay and cleanup cases; network cases use #819 | Sol, high → Terra, medium |
-| 8             | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `partial` | Finish in-scope splits/renames and consumer updates before broad runs; defer checks | Terra, medium |
-| 9 / prepare   | [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828) | `partial` | Review authored probes; measure/optimize only at final gate | Sol, high → Terra, high |
-| 9 / prepare   | [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `partial` | Review authored paired fixtures; calibrate/soak only at final gate | Sol, high → Terra, medium |
-| Final gate    | Required issues above | `deferred` | Announce, preflight, grouped execution, compact triage, repairs and final evidence | Astra, high for diagnosis and evidence decisions; bounded Terra repairs |
-| After parity | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | `not_started` | Retire legacy controller only after multiplayer/lifecycle/matrix proof | Astra, high decision → Terra, medium cleanup |
+| 1 / as needed | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `partial` | Split only owners blocking the selected batch | GPT-6 Luna, medium |
+| 2 | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829) | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof | GPT-6.1 Sol, high |
+| 3 | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `in_progress` | Finish pressure/recovery policy; defer victory proof | GPT-6.1 Sol, high |
+| 4 / next batch | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Production-family design, first preset/oracle/pure example, then specified family expansion | GPT-6.1 Sol, high; next batch GPT-6 Luna, medium |
+| 5 / paired | #815 / #816 | `in_progress` | Remaining family contracts, focused fixtures, frozen maps and continuous-match tier | Sol high for new contracts; Luna medium for established cases |
+| 6 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `in_progress` | Exact-once interruption, terminal and re-entry parity | GPT-6.1 Sol, high |
+| 7 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `partial` | Generation fencing, phase restore/replay and cleanup cases | GPT-6.1 Sol, high |
+| 8 | #821 | `partial` | Remaining splits/renames and consumer updates | GPT-6 Luna, medium |
+| 9 / prepare | [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828), [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `partial` | Review probes/opponent fixtures; measurements deferred | GPT-6.1 Sol, high for contracts; Luna medium for specified wiring |
+| Final gate | Required issues above | `deferred` | Announce, grouped execution, compact triage, repairs and final evidence | GPT-6.1 Sol, high; Luna medium for diagnosed repairs |
+| After parity | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | `not_started` | Evidence-backed legacy retirement | GPT-6.1 Sol, high decision; Luna medium cleanup |
 
-Dependencies remain authoritative over model grouping. Every planning, authority, architecture, strategy, or causal-diagnosis
-boundary starts on Sol/high; Terra resumes only once that boundary has a compact contract and focused acceptance evidence.
-Do not reorder dependent work merely to avoid a model switch or downgrade a deep-reasoning boundary for cost.
-The user's latest model direction reserves a stronger model for steps 3–4: grouped runtime validation, causal repair,
-difficulty/performance decisions and legacy retirement start on `gpt-6-astra` at high effort. A bounded repair with
-an already established contract can use Terra; re-escalate if the evidence changes the architecture or authority path.
+## Model batches and pause contract
+
+The 2026-10-02 user policy below owns #759 model choice and execution boundaries, including when older subissue
+packets or repo skills recommend Terra or automatic Astra use. It applies to this roadmap, not unrelated tasks.
+
+| Responsibility | Model / effort |
+| --- | --- |
+| First family design, reusable helpers and reliable independent assertions | GPT-6.1 Sol / high |
+| Similar cases with concrete setup, oracle and acceptance contracts | GPT-6 Luna / medium |
+| Wall/access semantics, multiplayer, save/load or unresolved causal investigation | GPT-6.1 Sol / high |
+| Routine source splitting, naming, fixtures and registration wiring | GPT-6 Luna / medium |
+
+- A batch is a coherent family or shared owner, not one scenario. Keep the same model/session across several related
+  cases while the contract remains suitable; dependencies take priority over grouping. Do not switch after each file
+  or ID. Never downgrade an unresolved architecture/authority/oracle decision just to finish it on Luna.
+- At session start report a small grid: batch/issue, selected IDs, state, authored versus validated evidence,
+  next boundary and model/effort. Record actual settings only when known; recommendations do not change the model.
+- Work through the selected batch. Use source inspection to review wiring and omissions; tests, E2E, simulations,
+  lint, type checks, builds, doctor/context and validation commands remain deferred to the announced final gate.
+- At a model boundary, finish and source-review the slice, commit/push task-owned work, update this ledger with exact
+  files/IDs, unresolved decisions and next acceptance criteria, then report the progress grid and **pause**. Do not
+  start the next model batch automatically. If the same model suits the next related slice, group it into the current
+  bounded batch where dependencies permit, avoiding unnecessary pauses.
+- Recommend the next exact model/effort with one sentence explaining the need. Ask for a stronger model only when a
+  compact unresolved problem warrants it; Astra is not the default on the user's limited subscription.
+- Preserve a short context packet: current batch, source anchors, changed contracts, unrun evidence, next action and
+  commands for the eventual final gate. The next session reads that packet and selected files, not the whole chat or
+  every issue plan. Stay in the same conversation/model within a batch where practical; cache reuse across model or
+  chat changes is not guaranteed. Report token/cache measurements only when actual telemetry exposes them.
+- Test patterns must tolerate content/balance changes: capability-based legal setup, costs/ranges derived from
+  definitions, causal positive/control worlds, real applied effects, and separate navigation/construction/combat
+  assertions. Balance/win-rate calibration belongs to the final gate. Missing required capabilities remain explicit
+  setup failures, not silently skipped coverage. Keep focused code and the existing file/method/line-size rules.
+
+Copyable next-chat prompt:
+
+> Read docs/ai/759-skirmish-ai/HANDOFF.md. Implement its next model batch; report progress, commit/push, then pause
+> before the next batch and recommend model/effort. Defer all tests/builds/validation to the final gate.
 
 Optional [#822](https://github.com/JernejHabjan/fuzzy-waddle/issues/822) owns a future island map and natural
 transport-required runtime. It is detached from #759 and does not block core readiness.
@@ -551,8 +589,9 @@ not block this gate.
 
 ## Execution and retirement rules
 
-- A generic `continue implementing` resumes the first in-progress boundary above. Read only its linked plan, generated
-  context packet, named fixture rows, first failing owner, and adjacent specs.
+- A generic `continue implementing` resumes the Quick resume's next model batch, then the first remaining boundary
+  in the execution grid. Read only its linked plan, existing context packet, named fixture rows, owning code and
+  adjacent specs. Report the step and obey the model-batch pause contract; do not run a context generator during authoring.
 - For this implementation-only sweep, batch coherent code and test authoring without running checks. At the final
   validation gate, use focused checks to guide repairs and one grouped Playwright process per coherent batch. Follow
   the skirmish skill's bounded reporting and long-process rules then.
