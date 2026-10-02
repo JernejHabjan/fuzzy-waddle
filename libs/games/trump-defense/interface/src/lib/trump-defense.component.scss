@@ -94,10 +94,13 @@
   gap: 0.6rem;
   margin-top: 0.75rem;
 }
+/* Fixed flex dimensions keep every level card equal even when its label wraps. */
 .td-level-choice {
   display: grid;
-  min-width: 9rem;
-  min-height: 6rem;
+  flex: 0 0 clamp(10.5rem, 25vw, 13rem);
+  width: clamp(10.5rem, 25vw, 13rem);
+  height: 6.25rem;
+  box-sizing: border-box;
   align-content: center;
   gap: 0.3rem;
   border: 1px solid #f1d6ab;
