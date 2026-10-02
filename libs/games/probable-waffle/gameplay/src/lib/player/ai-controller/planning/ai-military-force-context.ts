@@ -8,6 +8,7 @@ import { WORKER_RECOVERY_FLOOR } from "./ai-food-economy-proposal";
 import { queuedProduction } from "./ai-macro-observation";
 import { isMilitaryCatalogEntry } from "./ai-military-catalog";
 import { projectAiResourceForecasts } from "./ai-resource-forecast";
+import { observeAiProductionTransition } from "./ai-production-transition";
 
 /** Captures the compatible force and food pressure before proposal ordering begins. */
 export function observeAiMilitaryForce(args: {
@@ -20,7 +21,7 @@ export function observeAiMilitaryForce(args: {
 }) {
   const { observation, state, catalog, self, openingComplete, firstForce } = args;
   const pressureDomain = openingComplete && state.strategy.assessment?.routeDomain === "air" ? "air" : "ground";
-  const military = self.filter(
+  let military = self.filter(
     (actor) =>
       actor.housingCost.status === "known" &&
       actor.housingCost.value > 0 &&
@@ -36,18 +37,33 @@ export function observeAiMilitaryForce(args: {
       .filter((entry) => isMilitaryCatalogEntry(entry) && entry.movementDomains.includes(pressureDomain))
       .map((entry) => entry.sourceObjectName)
   );
-  const queuedMilitary = queuedProduction(observation, militaryProducts);
+  let queuedMilitary = queuedProduction(observation, militaryProducts);
   const currentWorkerCount = self.filter((actor) =>
     catalog.entries.some((entry) => entry.sourceObjectName === actor.objectName && entry.gathers.length > 0)
   ).length;
   const workforceRecoveryOwnsFood = currentWorkerCount < WORKER_RECOVERY_FLOOR && military.length > 0;
-  const targetMilitary = plannedAiForceSize(
+  const standingTarget = plannedAiForceSize(
     openingComplete,
     pressureDomain,
     state.strategy.assessment,
     military.length,
     hasCredibleAiEconomyThreat(observation) ? firstForce : null
   );
+  const transition = observeAiProductionTransition({
+    observation, state, catalog, domain: pressureDomain, readyForce: military.length,
+    queuedForce: queuedMilitary.length, openingComplete: openingComplete && !workforceRecoveryOwnsFood
+  });
+  if (transition?.status === "committed") {
+    military = military.filter((actor) => actor.objectName === transition.productObjectName);
+    queuedMilitary = queuedMilitary.filter((item) => item.objectName === transition.productObjectName);
+  }
+  const held = transition && ["abandoned", "expired"].includes(transition.status) &&
+    (state.strategy.assessment?.targetActorId === transition.targetActorId ||
+      !state.strategy.assessment || ["scout", "recover"].includes(state.strategy.assessment.choice)) &&
+    !hasCredibleAiEconomyThreat(observation);
+  const targetMilitary = held || (transition?.status === "committed" && observation.tick < transition.beginsTick)
+    ? military.length + queuedMilitary.length : transition?.status === "committed" ? transition.desiredForce : standingTarget;
+  const capacityTargetMilitary = transition?.status === "committed" ? transition.desiredForce : targetMilitary;
   const compositionPrefix = pressureDomain === "air" ? "composition-air" : "composition";
   const pressureForecast = projectAiResourceForecasts(
     observation,
@@ -57,12 +73,12 @@ export function observeAiMilitaryForce(args: {
         purpose: "military_resource_forecast",
         capabilityOrRole: `${pressureDomain}_combat_composition`,
         unit: "actor_count",
-        desired: targetMilitary,
+        desired: capacityTargetMilitary,
         satisfiedActorIds: military.map((actor) => actor.actorId),
         queuedIds: queuedMilitary.map((item) => item.itemId),
         constructingIds: [],
         acceptedNotObservedEffectIds: [],
-        preferredObjectNames: [...militaryProducts].sort(),
+        preferredObjectNames: transition?.status === "committed" ? [transition.productObjectName] : [...militaryProducts].sort(),
         resourceObligations: {}
       }
     ],
@@ -75,6 +91,8 @@ export function observeAiMilitaryForce(args: {
     queuedMilitary,
     workforceRecoveryOwnsFood,
     targetMilitary,
+    capacityTargetMilitary,
+    transition,
     compositionPrefix,
     pressureForecast
   };

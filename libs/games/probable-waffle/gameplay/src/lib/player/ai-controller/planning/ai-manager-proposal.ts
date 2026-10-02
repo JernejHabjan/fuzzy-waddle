@@ -14,6 +14,8 @@ import type {
 } from "../contracts/ai-brain-state-v1";
 import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
 import type { AiServiceLaneV1 } from "../contracts/ai-lane-contracts";
+import type { AiReservationV1 } from "../contracts/ai-dependency-contracts";
+import type { AiPlanId } from "../contracts/ai-core-types";
 
 /** Deterministic proposal batch produced by one narrow manager. */
 export interface AiManagerProposalV1 {
@@ -31,6 +33,10 @@ export interface AiManagerProposalV1 {
    * fresh request on every cadence.
    */
   readonly statePatch?: Readonly<{
+    /** Macro may append optional forecasts; they neither reserve cash nor prove command application. */
+    forecastReservations?: readonly AiReservationV1[];
+    /** Release only forecast/provisional claims. Dispatched, paid and refundable work remains authoritative. */
+    releasedOptionalPlanIds?: readonly AiPlanId[];
     opening?: AiOpeningStateV1;
     /** Stage 14 may change only the opening archetype; Stage 7 remains the plan/progress owner. */
     openingArchetypeId?: AiOpeningStateV1["archetypeId"];

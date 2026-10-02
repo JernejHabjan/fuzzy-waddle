@@ -1,10 +1,13 @@
 import type { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiEvidenceId, AiSimulationTick } from "../ai-core-types";
 import type { AiDemandV1 } from "../ai-plan-contracts";
+import type { AiProductionTransitionV1 } from "./ai-production-transition-v1";
 
 /** Resource forecasts and production demands kept outside a global blackboard. */
 export interface AiEconomyProductionStateV1 {
   readonly demands: readonly AiDemandV1[];
+  /** Absent in older saves; macro establishes a commitment only from a later normal decision. */
+  readonly transition?: AiProductionTransitionV1;
   /** Last committed macro decision; absent in older saves until the next decision boundary. */
   readonly workforce?: Readonly<{
     readonly workers: number;

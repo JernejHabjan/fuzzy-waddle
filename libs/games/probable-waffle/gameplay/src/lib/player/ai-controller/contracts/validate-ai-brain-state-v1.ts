@@ -4,6 +4,7 @@ import { assertDeadline, assertUnique, isRecord } from "./ai-validation-primitiv
 import { assertAiSquadStateV1 } from "./validate-ai-squad-state-v1";
 import { assertAiTransportStateV1 } from "./validate-ai-transport-state-v1";
 import { assertAiWaitEdgesV1 } from "./validate-ai-wait-edges-v1";
+import { assertAiProductionTransitionV1 } from "./validate-ai-production-transition-v1";
 
 /** Structural guard used before a persisted state is trusted as V1. */
 export function isAiBrainStateV1(value: unknown): value is AiBrainStateV1 {
@@ -38,6 +39,7 @@ export function isAiBrainStateV1(value: unknown): value is AiBrainStateV1 {
 /** Rejects malformed counters and duplicate identities in a typed brain state. */
 export function assertAiBrainStateV1(value: unknown): asserts value is AiBrainStateV1 {
   if (!isAiBrainStateV1(value)) throw new Error("malformed_ai_state:v1_shape");
+  assertAiProductionTransitionV1(value.economyProduction.transition);
   assertAiNonNegativeInteger(value.playerNumber, "playerNumber");
   assertAiNonNegativeInteger(value.lastCommittedTick, "lastCommittedTick");
   assertAiNonNegativeInteger(value.scheduler.decisionSequence, "scheduler.decisionSequence");

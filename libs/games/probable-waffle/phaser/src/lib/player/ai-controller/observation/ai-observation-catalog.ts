@@ -15,6 +15,7 @@ import {
   targetDomains
 } from "./ai-observation-capabilities";
 import { knownValue } from "./ai-observation-values";
+import { projectAiProductionTiming } from "./ai-production-timing";
 
 type GameObject = Phaser.GameObjects.GameObject;
 
@@ -111,6 +112,15 @@ export function projectCatalogDefinition(
     housingCapacity: definition.components?.housing?.housingCapacity ?? null,
     housingCost: definition.components?.housingCost?.housingNeeded ?? null,
     cargoCapacity: definition.components?.container?.capacity ?? null,
+    ...(definition.components?.productionCost
+      ? {
+          productionTiming: projectAiProductionTiming(
+            definition.components.productionCost,
+            definition.components.constructable,
+            getPwActorDefinition(objectName, null)?.components?.queue?.queueCount ?? 1
+          )
+        }
+      : {}),
     constructionProfile: {
       resourceCost: { ...(definition.components?.productionCost?.resources ?? {}) },
       requiredObjectNames: [...(definition.components?.requirements?.actors ?? [])].sort(),

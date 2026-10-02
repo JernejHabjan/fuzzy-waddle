@@ -3,7 +3,6 @@ import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v
 import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
 import type { AiObservationV1 } from "../contracts/ai-observation-v1";
 import type { AiManagerProposalV1, AiProposalManagerV1 } from "./ai-manager-proposal";
-import { projectAiResourceForecasts } from "./ai-resource-forecast";
 import { proposeAiHousing } from "./ai-housing-proposal";
 import { proposeAiFoodEconomy } from "./ai-food-economy-proposal";
 import { proposeAiGeneralGathering } from "./ai-general-gathering-proposal";
@@ -14,6 +13,8 @@ import { unresolvedReservedEffectIds } from "./ai-macro-effect-identity";
 import { proposeAiMilitaryCapacity } from "./ai-military-capacity-proposal";
 import { proposeAiMilitaryUnits } from "./ai-military-unit-proposal";
 import { observeAiMilitaryForce } from "./ai-military-force-context";
+import { projectAiMacroEconomyState } from "./project-ai-macro-economy-state";
+import { productionTransitionClaims } from "./ai-production-transition-claims";
 
 /**
  * Macro proposal owner. It derives opening, supply and composition demand
@@ -86,6 +87,8 @@ export class AiMacroManager implements AiProposalManagerV1 {
       queuedMilitary,
       workforceRecoveryOwnsFood,
       targetMilitary,
+      capacityTargetMilitary,
+      transition,
       compositionPrefix,
       pressureForecast
     } = observeAiMilitaryForce({
@@ -124,16 +127,17 @@ export class AiMacroManager implements AiProposalManagerV1 {
       Math.max(0, targetMilitary - military.length - queuedMilitary.length)
     );
     demands.push({
-      demandId: "demand:composition:first-squad" as AiDemandV1["demandId"],
+      demandId: transition?.status === "committed"
+        ? transition.demandId : "demand:composition:first-squad" as AiDemandV1["demandId"],
       purpose: openingComplete ? `dated_${pressureDomain}_pressure` : "opening_force",
       capabilityOrRole: `${pressureDomain}_combat_composition`,
       unit: "actor_count",
-      desired: targetMilitary,
+      desired: capacityTargetMilitary,
       satisfiedActorIds: military.map((actor) => actor.actorId).sort(),
       queuedIds: queuedMilitary.map((item) => item.itemId),
       constructingIds: [],
       acceptedNotObservedEffectIds: acceptedMilitaryEffectIds,
-      preferredObjectNames: [...militaryProducts].sort(),
+      preferredObjectNames: transition?.status === "committed" ? [transition.productObjectName] : [...militaryProducts].sort(),
       resourceObligations: {}
     });
 
@@ -143,7 +147,7 @@ export class AiMacroManager implements AiProposalManagerV1 {
       catalog,
       self,
       pressureDomain,
-      targetMilitary,
+      targetMilitary: capacityTargetMilitary,
       militaryCount: military.length,
       queuedMilitaryCount: queuedMilitary.length,
       openingComplete,
@@ -151,7 +155,8 @@ export class AiMacroManager implements AiProposalManagerV1 {
       reservedActorIds,
       selectedConstructionTileKeys,
       priorIntents: intents,
-      ordinal
+      ordinal,
+      ...(transition ? { transition } : {})
     });
     if (capacity.demand) demands.push(capacity.demand);
     if (capacity.intent) {
@@ -173,7 +178,8 @@ export class AiMacroManager implements AiProposalManagerV1 {
         compositionPrefix,
         workforceRecoveryOwnsFood,
         priorIntents: intents,
-        ordinal
+        ordinal,
+        ...(transition?.status === "committed" ? { transition } : {})
       })
     );
     const current = steps.find((step) => step.state !== "completed")?.stepId ?? null;
@@ -195,27 +201,12 @@ export class AiMacroManager implements AiProposalManagerV1 {
           `defense=${economyPolicy.budget.defensePermille}:blocker=${economyPolicy.blocker ?? "none"}`
       ],
       statePatch: {
+        ...productionTransitionClaims(transition, state, catalog, demands),
         opening: {
           ...state.opening,
           plan: { ...state.opening.plan, currentStepId: current, steps, lifecycle: current ? "active" : "completed" }
         },
-        economyProduction: {
-          demands,
-          forecasts: projectAiResourceForecasts(observation, demands, catalog),
-          posture: economyPolicy.postureState,
-          workforce: {
-            workers: economyPolicy.workers,
-            queuedWorkers: economyPolicy.queuedWorkers,
-            assignedWorkers: economyPolicy.assignedWorkers,
-            desiredWorkers: economyPolicy.desiredWorkers,
-            desiredFoodSources: economyPolicy.desiredFoodSources,
-            foodRunwayTicks: economyPolicy.foodRunwayTicks,
-            blocker: economyPolicy.blocker,
-            economyPermille: economyPolicy.budget.economyPermille,
-            defensePermille: economyPolicy.budget.defensePermille
-          },
-          adaptation: state.economyProduction.adaptation
-        }
+        economyProduction: projectAiMacroEconomyState(observation, state, catalog, demands, economyPolicy, transition)
       }
     };
   }

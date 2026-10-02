@@ -8,6 +8,7 @@ import type { AiReservationV1 } from "../contracts/ai-dependency-contracts";
 import { AiMacroManager } from "../planning/ai-macro-manager";
 import type { AiManagerProposalV1 } from "../planning/ai-manager-proposal";
 import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+import { createAiProductionPolicyFixture } from "./ai-production-policy-fixture";
 import { createAiTestObservation, createAiTestOwnedActor } from "./ai-test-fixtures";
 
 interface AiProductionPureScenarioV1 {
@@ -241,11 +242,19 @@ const scenarios: readonly AiProductionPureScenarioV1[] = [
   },
   {
     scenarioId: "PRO-03",
-    purpose: "Capacity is prebuilt before the dated force is complete, rather than after its queue is saturated.",
-    execute: () => ({ subject: propose([...workers(), producer("producer-1")]) }),
+    purpose: "An affordable observed objective commits fixed future dates and prebuilds before unit admission.",
+    execute: () => {
+      const { observation, state, catalog: timedCatalog } = createAiProductionPolicyFixture();
+      return { subject: new AiMacroManager(() => timedCatalog).propose(observation, state) };
+    },
     assertSemanticEffect: ({ subject }) => {
-      expect(capacityConstruction(subject.intents)[0]).toMatchObject({ objectName: ObjectNames.AnkGuard });
-      expect(capacityConstruction(subject.intents)[0]?.reasonCode).toContain("dated_target=12");
+      const transition = subject.statePatch?.economyProduction?.transition;
+      expect(transition).toMatchObject({ status: "committed", committedTick: 200, beginsTick: 350,
+        forceDeadlineTick: 750, desiredForce: 12, desiredProducers: 2 });
+      expect(subject.intents).toEqual(expect.arrayContaining([
+        expect.objectContaining({ kind: "construct", planId: transition?.planId, objectName: ObjectNames.AnkGuard })
+      ]));
+      expect(subject.intents.some((intent) => intent.kind === "produce")).toBe(false);
     }
   },
   {

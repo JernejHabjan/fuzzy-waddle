@@ -10,7 +10,10 @@ export function projectAiManagerState(
   return proposalBatches.reduce<AiBrainStateV1>((state, batch) => {
     const patch = batch.statePatch;
     if (!patch) return state;
-    const { transportAppend, squadUpdates, adaptation, adaptationDemands, openingArchetypeId, ...replacePatch } = patch;
+    const {
+      transportAppend, squadUpdates, adaptation, adaptationDemands, openingArchetypeId,
+      forecastReservations, releasedOptionalPlanIds, ...replacePatch
+    } = patch;
     const currentSquadIds = new Set(state.squads.map((squad) => squad.squadId));
     const applicableSquadUpdates = squadUpdates?.filter((update) => {
       const parentSquadId = update.squadId.includes(":domain:")
@@ -25,6 +28,13 @@ export function projectAiManagerState(
     return {
       ...state,
       ...replacePatch,
+      reservations: [
+        ...state.reservations.filter((reservation) =>
+          !releasedOptionalPlanIds?.includes(reservation.ownerPlanId) ||
+          !["forecast", "provisional"].includes(reservation.state.kind)),
+        ...(forecastReservations ?? []).filter((reservation) =>
+          !state.reservations.some((existing) => existing.claimId === reservation.claimId))
+      ],
       ...(openingArchetypeId ? { opening: { ...state.opening, archetypeId: openingArchetypeId } } : {}),
       ...(adaptation || adaptationDemands
         ? {

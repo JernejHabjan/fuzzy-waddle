@@ -118,17 +118,81 @@ branches. No adapter fills `productionEvidence`, no new runnable focused recipe/
 fixture parsing/schema enforcement for the new field still needs the adapter/recipe slice. No policy, persisted brain
 identifier, queue/refund gameplay owner or manifest denominator changed. All examples are authored and unrun.
 
-**Next related batch — stay on GPT-6.1 Sol / high:** establish the real future/resilience policy owners and test-only
-production/queue/resource capture, then author legal paired worlds and full pure behavioral cases against these
-contracts. Group the authority work before a Luna fixture expansion; its decisions are still unresolved. Start with
-`ai-military-capacity-proposal.ts`, `ai-military-force-context.ts`, `QueueCommandSystem`, `QueueComponent`,
-`ProductionComponent`/`ResearchComponent`, the preset-world service and selected new oracle contracts. Do not replace
-source authority with self-reported counters or AI-state injection. Record absent capabilities/provenance as missing
-evidence; retain the deferred execution policy.
+**Next related batch — stay on GPT-6.1 Sol / high:** continue the authority capture and legal setup named in the
+policy checkpoint below. The evidence-contract checkpoint above describes the preceding slice; its missing policy
+owners now have an authored implementation, without runtime acceptance. Do not replace source authority with
+self-reported counters or AI-state injection. Record absent capabilities/provenance as missing evidence.
 
 Deferred focused checks also include the new Playwright production contract/transition/resilience/refund/pair specs
 and `ai-production-resource-authority.spec.ts`. First execute their synthetic oracle cases and pure admission cases at
 the final gate, then map preflight and the eventual focused browser recipes; no check listed here has run.
+
+### Production policy checkpoint (2026-10-02, unverified)
+
+The next bounded slice authors gameplay support behind PRO-03/06. `observeAiProductionTransition` is macro-owned:
+normal post-opening pressure against a visible compatible objective, known idle production, legal catalog builder,
+definition-backed timing and cash after the observed reserved/unpaid ledger can establish one future commitment.
+The existing eight-work-per-lane horizon and 24-unit/three-producer bounds remain; this is not measured tuning.
+`projectAiProductionTiming` reads production milliseconds, physical queues (matching `QueueComponent`'s base-definition
+initialization), and automatic plus one-builder construction work rate. It never uses queue backlog slots as lanes.
+
+The saved `AiProductionTransitionV1` freezes plan/demand/target/product identities, commitment/start/force dates and
+justified force/capacity. A unit cycle is an admission/travel allowance before the start; it cannot guarantee actual
+construction readiness. Macro links early capacity and later selected-product commands to that plan. The force ledger
+and food/resource forecasts retain the future demand while admission is held. Dates do not slide. Changed objective or
+essential defense abandons it; a missed deadline expires it. The terminal record prevents reviving the same objective
+on every cadence while permitting a different objective to establish a new schedule. Only observed ready products can
+fulfill it. The canonical serializer retains it, and a present malformed schedule rejects; older V1 saves omit it until
+a new normal decision commits. Mission set-ordering and macro economy projection were extracted to keep owners bounded.
+
+`productionTransitionClaims` appends one optional forecast for missing useful products, not already observed/queued
+copies. It is a lineage/budget expectation, not resource admission or applied spending. `projectAiManagerState` removes
+only forecast/provisional claims on release. `reconcileAiProductionReservations` advances this plan's command claims
+from actual ordered outcomes before that release, preserving dispatched/applied work and removing it only at terminal
+authority. A forecast is not a refund, and no shared gameplay queue/resource timing changed.
+
+`needsAiProducerResilience` requires useful strategic demand and current visible, positioned effective ground attacks
+against every compatible ready producer. Damage, minimum range and the shared high-ground threshold/bonus matter;
+remembered/stale contacts cannot become live threats. `proposeAiMilitaryCapacity` can add one priced safe survivor or
+replace useful lost critical capacity using its saved demand. A known safe compatible alternative or satisfied demand
+prevents needless redundancy. Its new placement filter checks the entire footprint against weapon reach and a bounded,
+known-cell ground flood. It conservatively excludes unknown cells and height transitions; shared construction application
+still owns actual placement/navigation/payment legality. This is not proof of a build site, builder arrival or readiness.
+
+`ai-production-scenarios-policy.spec.ts` authors both factions' normal schedule, no early unit admission, stable dates,
+one initial build, later two-producer admission, abandonment/unspent release, same-boundary dispatched/applied retention,
+terminal release, older/default and malformed saves, pledged obligations, deadline expiry and repeated digests. Resilience
+cases author safe/low-value/no-demand/hidden/stale/island controls, useful survivor output after loss, critical replacement
+and order permutation. The existing registered PRO-03 macro case now requires this real future commitment instead of its
+old aggregate prebuild approximation. The existing matrix `ai-production-scenarios` pattern selects the policy suite;
+no manifest denominator or recipe registration changed. Pure fixture facts are not browser outcome evidence. These
+source-authored cases, timing cases and changed serialization paths remain entirely unexecuted.
+
+Requirement-to-evidence closure for this source slice:
+
+1. Definition timing and current catalog consumer: `ai-production-timing.ts`, adjacent unrun spec, catalog projection.
+2. Future identity/dates/admission and optional claim lifecycle: transition/claims owners, military context/proposals,
+   macro and manager/outcome reducers; both-faction unrun policy sequences.
+3. Fair criticality, safe placement and lost-capacity recovery: producer-safety and capacity proposal; unrun controls.
+4. Persistence/default/rejection and bounded methods: optional economy-state contract, guard, canonical serializer and
+   extracted mission ordering/macro economy projection; unrun save examples and existing serializer suites.
+5. Source review, Omission Audit and separate Final Closure Audit: direct source/call-site/diff review only. Existing
+   comments are preserved and no content-hash baseline was refreshed. No gameplay claim is validated by these audits.
+
+**Remaining adapter/authority boundary:** the Phaser ledger still emits zero reserved/unpaid fields, so current runtime
+cash does not prove the full PRO-07 budget contract. Add real obligation provenance and test-owned ordered queue/resource
+capture; preserve synchronous cancel/refund application and capture the pending request before it. Add a read-only
+committed schedule projection for evidence/debug without running the planner, physical lane/item identities, prices,
+research completion, current effective weapon ranges and real navigation/placement proof. Reconcile internal fulfilled/
+expired lifecycle with the oracle's retained commitment requirements explicitly; never fabricate a `committed` snapshot.
+Then schema-validate contracts and author legal paid train/research/cancel setups and both factions' future/resilience
+pairs. The natural recipe remains migration debt and fails the mandatory gate for missing contracts/branches; no runtime
+adapter fills `productionEvidence`. Full pure family integration and policy/strategy world causality still need review.
+
+Keep these related owners on **GPT-6.1 Sol / high**. Only move to lower-cost fixture expansion after authority and setup
+are concrete. All execution remains final-gate work, including timing projection, `ai-production-scenarios` (which also
+selects the new policy suite), macro/air/capacity, canonical serializer/migration, generic production oracles and eventual
+focused browser worlds. No test, simulation, lint/type/build/editor/schema validation or doctor/context ran.
 
 Eventual focused gate: `pnpm ai:tools:test`, the gameplay `ai-production-scenarios` spec, the Playwright
 `skirmish-ai-runtime-production-composition-evaluation` spec, and

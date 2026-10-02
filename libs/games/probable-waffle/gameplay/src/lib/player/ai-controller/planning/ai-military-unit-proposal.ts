@@ -7,6 +7,7 @@ import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
 import { nextIds } from "./ai-macro-effect-identity";
 import { queueFree } from "./ai-macro-observation";
 import { producerMilitaryProducts, productionRoleDeficit, roleFor } from "./ai-military-catalog";
+import type { AiProductionTransitionV1 } from "../contracts/brain-state/ai-production-transition-v1";
 
 /** Fills the bounded force deficit with affordable, role-balanced production. */
 export function proposeAiMilitaryUnits(args: {
@@ -24,13 +25,15 @@ export function proposeAiMilitaryUnits(args: {
   readonly workforceRecoveryOwnsFood: boolean;
   readonly priorIntents: readonly AiIntentV1[];
   readonly ordinal: number;
+  readonly transition?: AiProductionTransitionV1;
 }): readonly AiIntentV1[] {
   const {
     observation, state, catalog, producers, military, queuedMilitary, acceptedEffectCount, targetMilitary,
-    rangedPermille, pressureDomain, compositionPrefix, workforceRecoveryOwnsFood, priorIntents, ordinal
+    rangedPermille, pressureDomain, compositionPrefix, workforceRecoveryOwnsFood, priorIntents, ordinal, transition
   } = args;
   const projectedCount = military.length + queuedMilitary.length + acceptedEffectCount;
-  if (workforceRecoveryOwnsFood || projectedCount >= targetMilitary) return [];
+  if (workforceRecoveryOwnsFood || projectedCount >= targetMilitary ||
+    (transition && observation.tick < transition.beginsTick)) return [];
   const roleCounts = { frontline: 0, ranged: 0, support: 0 };
   for (const actor of military) roleCounts[roleFor(actor.objectName, catalog)] += 1;
   for (const item of queuedMilitary) roleCounts[roleFor(item.objectName, catalog)] += 1;
@@ -46,6 +49,7 @@ export function proposeAiMilitaryUnits(args: {
   for (const producer of producers.filter(queueFree)) {
     if (remaining <= 0) break;
     const candidate = [...producerMilitaryProducts(producer.objectName, catalog, pressureDomain)]
+      .filter((objectName) => !transition || objectName === transition.productObjectName)
       .filter((objectName) => {
         const cost = catalog.entries.find((entry) => entry.sourceObjectName === objectName)?.constructionProfile
           ?.resourceCost;
@@ -86,8 +90,8 @@ export function proposeAiMilitaryUnits(args: {
       ...next,
       kind: "produce",
       spendingCategory: "defense",
-      planId: state.opening.plan.planId,
-      demandId: "demand:composition:first-squad" as AiDemandV1["demandId"],
+      planId: transition?.planId ?? state.opening.plan.planId,
+      demandId: transition?.demandId ?? "demand:composition:first-squad" as AiDemandV1["demandId"],
       lane: "supply_production",
       proposedTick: observation.tick,
       urgencyClass: 3,

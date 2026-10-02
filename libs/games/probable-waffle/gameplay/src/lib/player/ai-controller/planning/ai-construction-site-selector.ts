@@ -7,7 +7,9 @@ export function selectConstructionPosition(
   decisionSequence: number,
   ordinal: number,
   selectedTileKeys: Set<string>,
-  footprintRadiusTiles = 0
+  footprintRadiusTiles = 0,
+  /** Optional production policy filter; shared construction application remains the placement authority. */
+  acceptCell?: (cell: NonNullable<NonNullable<AiObservationV1["map"]>["constructionCells"]>[number]) => boolean
 ) {
   if (builder.logicalPosition.status !== "known") return undefined;
   const origin = builder.logicalPosition.value;
@@ -31,7 +33,8 @@ export function selectConstructionPosition(
           footprintCell !== undefined &&
           footprintCell.groundPassable &&
           !footprintCell.observedBlocked &&
-          !selectedTileKeys.has(key)
+          !selectedTileKeys.has(key) &&
+          (acceptCell?.(footprintCell) ?? true)
         );
       });
     })

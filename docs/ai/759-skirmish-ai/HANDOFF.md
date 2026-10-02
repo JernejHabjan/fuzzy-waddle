@@ -6,43 +6,58 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
-**Next session (user policy, 2026-10-02):** continue the production authority/policy and runtime-adapter work for
-PRO-03/06/07 on **GPT-6.1 Sol / high**; no model switch is needed. The distinct evidence contracts/oracles are now
-written, but real future-transition ownership, safe resilience policy, runtime capture and legal focused presets
-remain unimplemented. Read the [production packet](follow-ups/runtime-matrix-ci.md#production-authority-contract-checkpoint-2026-10-02-unverified)
-and those selected owners. Keep related authority work together; defer all execution, commit/push and pause at the
-next bounded authoring boundary. Do not downgrade this remaining causal work to fixture-only expansion.
+**Next session (user policy, 2026-10-02):** continue the related PRO-03/06/07 production runtime-capture and legal
+setup work on **GPT-6.1 Sol / high**; no model switch is needed. Evidence contracts and the first future/resilience
+policy owners are authored, but authority capture, legal focused worlds and runtime integration remain. Read the
+[policy checkpoint](follow-ups/runtime-matrix-ci.md#production-policy-checkpoint-2026-10-02-unverified), then the
+selected queue/resource/setup owners. Keep the adapter and authority work together; defer all execution, commit/push
+and pause at the next bounded authoring boundary. Do not use synthetic oracle records as browser evidence.
 
-- Current step: #815/#816 PRO-03/06/07 **evidence-contract authoring**, authored/unverified. This is not runtime
-  migration, behavior acceptance or issue completion. The batch began at `9cb93e6a7ec0d67fe46d277d20336edf21160886`
+- Current step: #815/#816 PRO-03/06 **production-policy authoring**, authored/unverified. This is not runtime
+  migration, behavior acceptance or issue completion. The batch began at `05aa5a5de37d7cd02d4cb0a352193cb37a51e23d`
   on `feature/759-skirmish-ai`, worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`. The commit containing this
-  ledger owns the revision; verify its local/remote SHA on resume. Actual model/effort is not exposed here.
-- Changed source anchors: `apps/portal-e2e/src/e2e/skirmish-ai-runtime-production-{contract,evidence}.ts`, the
-  adjacent contract/evidence validation, transition, pair, refund/payment and producer-resilience evaluators/specs;
-  generic assertion/result/scenario/variant evaluation and the extracted supplementary production-count helper;
-  `libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/testing/ai-production-resource-authority.spec.ts`. Capacity-only oracle specs now use PRO-01/02.
-- Contract decisions: PRO-03 observes a genuine future commitment after normal decisions, idle lanes, definition
-  durations, justified extra throughput, readiness before its start date, a dated applied force, optional unspent
-  lease release and retained irreversible commitments. PRO-06 requires current visible building-weapon exposure,
-  safe reachable new capacity before scheduled loss, applied useful output afterward, and safe/low-value/no-demand
-  controls. PRO-07 requires physical shared train/research lanes, priced cash/remaining obligations, a pending
-  cancellation **request**, an unaffordable admission probe before authoritative refund application, normal later
-  progress and no cancellation/requeue cycle. Applied cancellation/refund are synchronous in existing queue owners;
-  do not invent a delayed refund or mutate gameplay to make that window appear.
-- Fail-closed integration: PRO-03/06/07 cannot pass the generic evaluator without the per-variant contracts and real
-  evidence. The temporary natural recipe remains registered and now fails `production_contract_missing` plus missing
-  required branches; it is retained migration debt. No runtime adapter currently fills `productionEvidence`, and no
-  new runnable focused recipe or full pure scenario was registered. Synthetic oracle fixtures are test inputs only.
-- Source-review closure: (1) distinct causal contracts and full horizons; (2) applied identities, definition prices,
-  timing and retention; (3) per-faction branches and same-seed/balance/setup transition/resilience pairs;
-  (4) adversarial oracle cases and partial real-arbiter resource/slot cases; (5) generic hard gate and resume packet.
-  Implementation review, Omission Audit and separate Final Closure Audit used source inspection only. Runtime setup,
-  adapter provenance/digest capture, schema validation of new fixture fields, policy/save ownership, legal sites,
-  both-faction concrete worlds and full pure behavior scenarios remain explicit next-step gaps. No production policy,
-  persisted brain IDs, shared queue authority or manifest denominator changed; no passing evidence is claimed.
-- All tests, E2E, simulations, lint/type/build/editor/schema validation and doctor/context remain deferred. No catalog
-  generation ran because registrations did not change. Prior PRO-04 ready/seeded-queue pairs from `9cb93e6a` remain
-  authored/unverified; their positions, paid application and completion timing still belong to the final gate.
+  ledger owns the revision; verify local/remote SHA on resume. Actual model/effort is not exposed here.
+- Changed source anchors: gameplay `planning/ai-production-transition.ts`, `ai-production-transition-claims.ts`,
+  `reconcile-ai-production-reservations.ts`, `ai-producer-safety.ts`, military force/capacity/unit proposals and macro;
+  `contracts/brain-state/ai-production-transition-v1.ts`, its guard, economy state and manager patch/projection;
+  canonical serializer plus extracted mission-state ordering and macro economy projection. Phaser observation
+  `ai-production-timing.ts`/catalog now project definition duration, physical queue count and one-builder work rate.
+- PRO-03 policy: a normal post-opening decision may commit an affordable visible objective with idle production,
+  justified additional throughput and definition timing. A single unit cycle allows admission/travel before its fixed
+  start date; it is not proof of actual readiness. Capacity can build early; the selected product admits at the start.
+  Dates, product, target and plan/demand IDs persist. Changed objective/essential defense abandons optional work;
+  missed deadlines expire without sliding or reviving the same objective. Optional forecasts are lineage/budget
+  expectations, not reserved cash or paid work. Applied outcomes preserve dispatched/applied claims until authoritative
+  terminal outcomes. Older V1 saves have no transition; malformed present schedules reject.
+- PRO-06 policy: current visible effective ground weapons, minimum range and high-ground bonus identify exposure.
+  An evidenced useful deficit with no safe compatible producer may add one survivor, with priced admission and a
+  conservative known-cell ground path plus safe footprint. Saved critical demand permits useful replacement after
+  all compatible capacity is lost. Known safe alternatives and satisfied/low-value demand decline redundancy.
+  Shared construction application still owns actual footprint/path/payment legality. Height transitions and unknown
+  construction cells conservatively decline this placement path; they are not declared unreachable by the game.
+- Authored pure cases: `testing/ai-production-scenarios-policy.spec.ts` covers both factions' fixed future dates,
+  prebuild/dated admission, abandonment and unspent claims, same-boundary dispatch/application retention, terminal
+  cleanup, save round-trip/older defaults/malformed dates, obligations, expiry, repeated digests, safe/low-value/
+  no-demand/hidden/stale/island controls, survivor output after loss and critical replacement. The existing registered
+  PRO-03 macro case now asserts a real future schedule instead of the old count-only approximation. These permitted
+  pure facts are not real-game outcome records or a completed pure/runtime family. Timing projection cases are unrun.
+- Source-review closure: (1) definition timing and normal macro consumers; (2) stable future schedule and unit/capacity
+  linkage; (3) reversible release versus outcome-owned spending; (4) fair resilience and conservative legal-site
+  proposals; (5) serialization/older-save guard and both-faction authored cases; (6) updated resume ownership.
+  Implementation review, Omission Audit and separate Final Closure Audit used source inspection only. No source
+  baseline was refreshed; existing comments were preserved. No shared gameplay queue/refund timing changed.
+- Remaining authority gap: Phaser resources still project `reservedUnspent: 0` and `obligationsDue: 0`. Establish their
+  actual provenance and a test-owned ordered queue/resource adapter, including cancellation request before synchronous
+  application/refund. Capture real stable schedules, lanes, effective weapon exposure and navigation; schema-validate
+  per-variant production contracts, then author legal paid train/research/cancel setups and per-faction causal pairs.
+  Integrate terminal schedule lifecycle with the independent oracle's retained commitment snapshots honestly.
+- Fail-closed integration remains: no adapter fills `productionEvidence`; natural PRO-03/06/07 still fail the mandatory
+  contract/branch gate. No new runnable recipe, manifest coverage increment or passing evidence is claimed. PRO-07
+  remains contract plus partial real-arbiter cases. No catalog generation ran because registrations did not change.
+- All tests, E2E, simulations, lint/type/build/editor/schema validation and doctor/context remain deferred. At the final
+  gate include the policy suite (selected by the existing `ai-production-scenarios` matrix pattern), timing projection,
+  serializer/migration, macro/air/capacity and generic production oracle suites before eventual focused browser worlds.
+  Prior PRO-04 ready/seeded-queue pairs remain authored/unverified; legal sites, paid application and timing need proof.
 
 - Multiplayer diagnostic/lifecycle authoring checkpoint (2026-09-30, **unverified**): browser-only relay and local-hash
   observation now lives in a small test-owned Phaser adapter rather than adding methods to hash-baselined
