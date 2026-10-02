@@ -7,7 +7,8 @@ import { spawnEnemies } from "./spawn-system";
 export function stepGame(state: GameState, deltaMs: number): void {
   if (state.status !== "playing") return;
   state.sounds.length = 0;
-  state.shotEffects.length = 0;
+  for (const effect of state.shotEffects) effect.elapsedMs += deltaMs;
+  state.shotEffects = state.shotEffects.filter((effect) => effect.elapsedMs < effect.durationMs);
   const previousMs = state.elapsedMs;
   state.elapsedMs += deltaMs;
   // Draw.cpp: "počaka 5 sec na začetk" — first spawn follows the opening delay.

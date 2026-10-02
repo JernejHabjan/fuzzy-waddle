@@ -19,10 +19,11 @@ export function spawnEnemies(state: GameState): void {
       id: state.nextEntityId++,
       visual: kind,
       position: { x: start[0], y: definition.altitude, z: -start[1] },
+      orientation: { y: 0 },
       path: { kind: definition.path, waypoint: 0 },
       health: { current: rules.enemyHp + state.bonusHp, reward: definition.reward }
     };
     state.entities.set(entity.id, entity);
-    state.sounds.push(definition.path === "flying" ? "baloon" : "spawn");
+    state.sounds.push({ kind: definition.path === "flying" ? "baloon" : "spawn", worldX: start[0] });
   }
 }

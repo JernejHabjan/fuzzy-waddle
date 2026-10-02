@@ -67,6 +67,24 @@ describe("Trump Defense gameplay", () => {
     expect(state.entities.has(enemy?.id ?? -1)).toBe(false);
     expect(state.money).toBe(207);
     expect(state.shotEffects).toHaveLength(1);
+    expect(state.sounds.map(({ kind }) => kind)).toEqual(["cannon", "die", "cash"]);
+  });
+
+  it("turns towers toward targets and retains projectile state for a visible flight", () => {
+    const custom = structuredClone(first);
+    custom.rules.enemyHp = 1000;
+    custom.rules.spawnDelayMs = 100;
+    custom.rules.spawnIntervalMs = 100;
+    custom.rules.moveIntervalMs = 500;
+    const state = createGame(custom);
+    selectTile(state, [0, 56]);
+    expect(buyTower(state, "Cannon", () => 0).ok).toBe(true);
+    stepGame(state, 100);
+    const cannon = [...state.entities.values()].find((entity) => entity.weapon);
+    expect(cannon?.orientation?.y).toBeCloseTo(Math.PI / 2);
+    expect(state.shotEffects[0]).toMatchObject({ elapsedMs: 0, durationMs: 450 });
+    stepGame(state, 100);
+    expect(state.shotEffects[0]?.elapsedMs).toBe(100);
   });
 
   it("pauses timers and reaches victory after seven wall purchases", () => {
@@ -94,5 +112,6 @@ describe("Trump Defense gameplay", () => {
     for (let i = 0; i < 1200 && state.status === "playing"; i++) stepGame(state, 100);
     expect(state.status).toBe("lost");
     expect(state.lives).toBeLessThanOrEqual(0);
+    expect(state.sounds.some(({ kind }) => kind === "lifeLost")).toBe(true);
   });
 });

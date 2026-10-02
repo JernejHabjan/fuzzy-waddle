@@ -37,6 +37,8 @@ describe("TD2016 shipped levels", () => {
     expect(level.paths.ground.at(-1)).toEqual([120, 64]);
     expect(level.scene.points).toHaveLength(8);
     expect(level.scene.spots).toHaveLength(2);
+    expect(level.scene.props.some((prop) => prop.model === "models/WhiteHouse.obj")).toBe(true);
+    expect(level.scene.visuals.Heart.model).toBe("models/Heart.obj");
     for (const path of assets(level)) {
       expect(path).not.toContain("..");
       expect(existsSync(join(root, path))).toBe(true);
@@ -65,6 +67,8 @@ describe("TD2016 shipped levels", () => {
     expect(night.scene.skybox).not.toEqual(day.scene.skybox);
     expect(final.scene.skybox).toEqual(day.scene.skybox);
     expect(day.rules.enemyRoster).toEqual(["MexicanBanjo"]);
+    expect(day.rules.enemyHp).toBe(90);
+    expect(day.rules.enemyHpIncrease).toBe(15);
     expect(night.rules.enemyRoster).toEqual(["MexicanBanjo", "Builder", "MexicanBalooner"]);
     expect(final.rules.enemyRoster).toHaveLength(5);
     expect(final.rules.randomTowerPlacement).toBe(true);

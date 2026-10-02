@@ -22,7 +22,7 @@ export function selectTile(state: GameState, tile: GridPoint): ActionResult {
     return rejected("Select a buildable tile.");
   }
   state.selectedTile = tile;
-  state.sounds.push("select");
+  state.sounds.push({ kind: "select", worldX: tile[0] });
   return accepted(`Tile ${tile[0] / tileSize + 1}, ${tile[1] / tileSize + 1} selected.`);
 }
 
@@ -51,6 +51,7 @@ export function buyTower(state: GameState, kind: TowerKind, random: () => number
     id: state.nextEntityId++,
     visual: definition.visual,
     position: { x: tile[0], y: 0, z: -tile[1] },
+    orientation: { y: 0 },
     tower: { kind, tile },
     weapon: {
       range: definition.range,
@@ -66,7 +67,7 @@ export function buyTower(state: GameState, kind: TowerKind, random: () => number
   state.entities.set(entity.id, entity);
   state.occupied.add(tileKey(tile));
   state.money -= definition.cost;
-  state.sounds.push("cash");
+  state.sounds.push({ kind: "buy", worldX: tile[0] });
   return accepted(`${definition.label} built.`);
 }
 
@@ -89,7 +90,7 @@ export function upgradeTower(state: GameState): ActionResult {
   tower.weapon.damage += definition.upgradeDamage;
   tower.visual = definition.upgradedVisual;
   state.money -= definition.upgradeCost;
-  state.sounds.push("cash");
+  state.sounds.push({ kind: "upgrade", worldX: tower.position.x });
   return accepted("Tower upgraded.");
 }
 
@@ -100,7 +101,7 @@ export function buildWall(state: GameState): ActionResult {
   if (state.money < state.level.rules.wallCost) return rejected("Not enough money for the wall.");
   state.money -= state.level.rules.wallCost;
   state.wallHeight = Math.min(state.level.rules.wallGoal, state.wallHeight + state.level.rules.wallStep);
-  state.sounds.push("buildWall");
+  state.sounds.push({ kind: "buildWall" });
   if (state.wallHeight >= state.level.rules.wallGoal) state.status = "won";
   return accepted(state.status === "won" ? "Wall complete!" : "Wall raised.");
 }

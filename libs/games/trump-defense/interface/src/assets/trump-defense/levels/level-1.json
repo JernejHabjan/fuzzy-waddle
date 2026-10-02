@@ -85,6 +85,11 @@
     },
     "props": [
       {
+        "model": "models/WhiteHouse.obj",
+        "texture": "textures/WhiteHouseDiffuse.webp",
+        "position": [163, 0, -48]
+      },
+      {
         "model": "models/WallHeight.obj",
         "texture": "textures/WallHeightDiffuse.webp",
         "position": [128, 0, -48]
@@ -470,6 +475,10 @@
         "texture": "textures/MexicanBaloonDiffuse.webp",
         "specular": "textures/MexicanBaloonSpecular.webp"
       },
+      "Heart": {
+        "model": "models/Heart.obj",
+        "texture": "textures/HeartDiffuse.webp"
+      },
       "Rocket": {
         "model": "models/Rocket.obj",
         "texture": "textures/RocketDiffuse.webp"
@@ -478,8 +487,8 @@
   },
   "rules": {
     "enemyRoster": ["MexicanBanjo"],
-    "enemyHp": 100,
-    "enemyHpIncrease": 17,
+    "enemyHp": 90,
+    "enemyHpIncrease": 15,
     "enemyHpIntervalMs": 5000,
     "spawnDelayMs": 5000,
     "spawnIntervalMs": 2000,

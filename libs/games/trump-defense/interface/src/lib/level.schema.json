@@ -63,7 +63,8 @@
             "MexicanBalooner",
             "MexicanMafia",
             "MexicanBaloon",
-            "Rocket"
+            "Rocket",
+            "Heart"
           ],
           "additionalProperties": { "$ref": "#/$defs/visual" }
         }

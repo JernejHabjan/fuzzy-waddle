@@ -1,10 +1,8 @@
 import {
-  BufferGeometry,
   CubeTexture,
   CubeTextureLoader,
   DoubleSide,
-  Line,
-  LineBasicMaterial,
+  Group,
   Mesh,
   MeshBasicMaterial,
   PerspectiveCamera,
@@ -14,8 +12,7 @@ import {
   Scene,
   Vector2,
   Vector3,
-  WebGLRenderer,
-  type Group
+  WebGLRenderer
 } from "three";
 import type { GameState, GridPoint, LevelDefinition, SceneProp } from "@fuzzy-waddle/trump-defense-gameplay";
 import { assetUrl } from "./asset-paths";
@@ -23,7 +20,6 @@ import { ModelBank } from "./model-bank";
 import { addSceneLights } from "./scene-lighting";
 
 type EntityView = { visual: string; object: Group };
-type ShotView = { line: Line; expires: number };
 
 /** The scene is a disposable view of immutable level data and current gameplay entities. */
 export class ThreeScene {
@@ -40,7 +36,9 @@ export class ThreeScene {
     new MeshBasicMaterial({ color: "#f7d567", transparent: true, opacity: 0.5, side: DoubleSide, depthWrite: false })
   );
   private readonly entityViews = new Map<number, EntityView>();
-  private readonly shots: ShotView[] = [];
+  private readonly projectiles = new Map<number, Group>();
+  private readonly hearts: Group[] = [];
+  private lightEffects: Group | null = null;
   private readonly target = new Vector3(64, 0, -48);
   private skybox: CubeTexture | null = null;
   private wall: Group | null = null;
@@ -49,13 +47,21 @@ export class ThreeScene {
   private disposed = false;
   private mapWidth = 128;
   private mapDepth = 96;
+  /** Distance is kept separately so wheel input can change zoom and tilt in one step. */
+  private cameraDistance = 150;
+  /** Orbit inclination is adjusted by the same wheel direction as camera distance. */
+  private cameraAngle = Math.PI / 4;
 
   constructor(private readonly host: HTMLElement) {
     this.renderer = new WebGLRenderer({ antialias: true, alpha: false });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    this.renderer.shadowMap.enabled = true;
     this.renderer.domElement.style.display = "block";
+    this.renderer.domElement.style.width = "100%";
+    this.renderer.domElement.style.height = "100%";
     this.host.appendChild(this.renderer.domElement);
     this.camera.position.set(64, 105, 74);
+    this.cameraDistance = this.camera.position.distanceTo(this.target);
     this.camera.lookAt(this.target);
     this.selected.rotation.x = -Math.PI / 2;
     this.selected.position.y = 0.4;
@@ -72,8 +78,9 @@ export class ThreeScene {
     this.mapDepth = level.grid.height * level.grid.tileSize;
     const cameraScale = Math.max(this.mapWidth / 128, this.mapDepth / 96);
     this.target.set(this.mapWidth / 2, 0, -this.mapDepth / 2);
-    this.camera.position.set(this.target.x, 105 * cameraScale, this.target.z + 122 * cameraScale);
-    this.camera.lookAt(this.target);
+    this.cameraDistance = 150 * cameraScale;
+    this.cameraAngle = Math.PI / 4;
+    this.updateCameraPosition();
     const { terrain, wall, pathTile, props, visuals, skybox } = level.scene;
     const loader = new CubeTextureLoader();
     const [, background] = await Promise.all([
@@ -87,7 +94,7 @@ export class ThreeScene {
     }
     this.skybox = background;
     this.scene.background = background;
-    addSceneLights(this.scene, level);
+    this.lightEffects = addSceneLights(this.scene, level);
     this.place(terrain);
     for (const prop of props) this.place(prop);
     this.wall = this.place(wall);
@@ -104,6 +111,12 @@ export class ThreeScene {
     const object = this.models.create(prop);
     object.position.set(...prop.position);
     object.rotation.y = prop.rotationY ?? 0;
+    object.traverse((child) => {
+      if (child instanceof Mesh) {
+        child.castShadow = true;
+        child.receiveShadow = true;
+      }
+    });
     this.scene.add(object);
     return object;
   }
@@ -122,40 +135,71 @@ export class ThreeScene {
       if (!view) {
         const asset = this.level.scene.visuals[entity.visual];
         const object = this.models.create(asset);
+        object.traverse((child) => {
+          if (child instanceof Mesh) {
+            child.castShadow = true;
+            child.receiveShadow = true;
+          }
+        });
         view = { visual: entity.visual, object };
         this.entityViews.set(entity.id, view);
         this.scene.add(object);
       }
       view.object.position.set(entity.position.x, entity.position.y, entity.position.z);
+      view.object.rotation.y = entity.orientation?.y ?? 0;
     }
     this.selected.visible = !!state.selectedTile;
     if (state.selectedTile) this.selected.position.set(state.selectedTile[0], 0.4, -state.selectedTile[1]);
     if (this.wall) this.wall.position.y = this.wallBaseY + state.wallHeight;
-    for (const shot of state.shotEffects) this.addShot(shot.from, shot.to);
+    this.syncProjectiles(state);
+    this.syncHearts(state.lives);
   }
 
-  private addShot(
-    from: Vector3 | { x: number; y: number; z: number },
-    to: Vector3 | { x: number; y: number; z: number }
-  ): void {
-    const line = new Line(
-      new BufferGeometry().setFromPoints([new Vector3(from.x, from.y + 5, from.z), new Vector3(to.x, to.y + 5, to.z)]),
-      new LineBasicMaterial({ color: "#ffbd52" })
-    );
-    this.scene.add(line);
-    this.shots.push({ line, expires: performance.now() + 120 });
+  /** Reconciles in-flight rocket meshes with simulation-owned projectile effects. */
+  private syncProjectiles(state: GameState): void {
+    const level = this.level;
+    if (!level) return;
+    const active = new Set(state.shotEffects.map((effect) => effect.id));
+    for (const [id, object] of this.projectiles) {
+      if (active.has(id)) continue;
+      this.scene.remove(object);
+      this.projectiles.delete(id);
+    }
+    for (const effect of state.shotEffects) {
+      let rocket = this.projectiles.get(effect.id);
+      if (!rocket) {
+        rocket = this.models.create(level.scene.visuals.Rocket);
+        this.projectiles.set(effect.id, rocket);
+        this.scene.add(rocket);
+      }
+      const progress = Math.min(1, effect.elapsedMs / effect.durationMs);
+      const from = new Vector3(effect.from.x, effect.from.y + 4, effect.from.z);
+      const to = new Vector3(effect.to.x, effect.to.y + 4, effect.to.z);
+      rocket.position.copy(from).lerp(to, progress);
+      const dx = to.x - from.x;
+      const dz = to.z - from.z;
+      rocket.rotation.y = Math.atan2(-dz, dx);
+    }
+  }
+
+  /** Shows one original heart model for every life remaining at the map edge. */
+  private syncHearts(lives: number): void {
+    const asset = this.level?.scene.visuals.Heart;
+    if (!asset) return;
+    while (this.hearts.length < lives) {
+      const heart = this.models.create(asset);
+      heart.scale.setScalar(2.2);
+      heart.position.set(this.mapWidth / 4 + this.hearts.length * 6, 5, -this.mapDepth - 8);
+      this.hearts.push(heart);
+      this.scene.add(heart);
+    }
+    while (this.hearts.length > lives) {
+      const heart = this.hearts.pop();
+      if (heart) this.scene.remove(heart);
+    }
   }
 
   render(): void {
-    const now = performance.now();
-    for (let i = this.shots.length - 1; i >= 0; i--) {
-      const shot = this.shots[i];
-      if (!shot || shot.expires > now) continue;
-      this.scene.remove(shot.line);
-      shot.line.geometry.dispose();
-      (shot.line.material as LineBasicMaterial).dispose();
-      this.shots.splice(i, 1);
-    }
     this.renderer.render(this.scene, this.camera);
   }
 
@@ -180,17 +224,30 @@ export class ThreeScene {
     const zMargin = this.mapDepth * 0.25;
     const x = Math.max(-xMargin, Math.min(this.mapWidth + xMargin, this.target.x + dx));
     const z = Math.max(-this.mapDepth - zMargin, Math.min(zMargin, this.target.z + dz));
-    this.camera.position.x += x - this.target.x;
-    this.camera.position.z += z - this.target.z;
     this.target.set(x, 0, z);
-    this.camera.lookAt(this.target);
+    this.updateCameraPosition();
   }
 
   zoom(direction: number): void {
-    const offset = this.camera.position.clone().sub(this.target);
     const mapScale = Math.max(this.mapWidth / 128, this.mapDepth / 96);
-    const distance = Math.max(45 * mapScale, Math.min(230 * mapScale, offset.length() * (direction > 0 ? 1.1 : 0.9)));
-    this.camera.position.copy(this.target).add(offset.setLength(distance));
+    const steps = Math.max(-3, Math.min(3, direction / 120));
+    this.cameraDistance = Math.max(45 * mapScale, Math.min(230 * mapScale, this.cameraDistance * 1.1 ** steps));
+    // The legacy wheel changed camera height and pitch together; orbiting preserves that coupled feel.
+    this.cameraAngle = Math.max(0.2, Math.min(1.25, this.cameraAngle + (steps * Math.PI) / 36));
+    this.updateCameraPosition();
+  }
+
+  get cameraX(): number {
+    return this.target.x;
+  }
+
+  private updateCameraPosition(): void {
+    const horizontal = Math.cos(this.cameraAngle) * this.cameraDistance;
+    this.camera.position.set(
+      this.target.x,
+      Math.sin(this.cameraAngle) * this.cameraDistance,
+      this.target.z + horizontal
+    );
     this.camera.lookAt(this.target);
   }
 
@@ -206,9 +263,13 @@ export class ThreeScene {
     if (this.disposed) return;
     this.disposed = true;
     this.observer.disconnect();
-    for (const shot of this.shots) {
-      shot.line.geometry.dispose();
-      (shot.line.material as LineBasicMaterial).dispose();
+    for (const group of [this.lightEffects]) {
+      group?.traverse((object) => {
+        if (object instanceof Mesh) {
+          object.geometry.dispose();
+          if (object.material instanceof MeshBasicMaterial) object.material.dispose();
+        }
+      });
     }
     this.selected.geometry.dispose();
     (this.selected.material as MeshBasicMaterial).dispose();

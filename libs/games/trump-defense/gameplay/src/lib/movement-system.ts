@@ -11,16 +11,20 @@ export function moveEnemies(state: GameState): void {
       if (!next) {
         state.entities.delete(entity.id);
         state.lives = Math.max(0, state.lives - 1);
-        state.sounds.push("die");
+        state.sounds.push({ kind: "lifeLost", worldX: entity.position.x });
         if (state.lives <= 0) {
           state.status = "lost";
           return;
         }
         continue;
       }
+      const nextPosition = { x: next[0], z: -next[1] };
+      const dx = nextPosition.x - entity.position.x;
+      const dz = nextPosition.z - entity.position.z;
+      if (dx || dz) entity.orientation = { y: Math.atan2(-dz, dx) };
       entity.path.waypoint++;
-      entity.position.x = next[0];
-      entity.position.z = -next[1];
+      entity.position.x = nextPosition.x;
+      entity.position.z = nextPosition.z;
     }
   }
 }

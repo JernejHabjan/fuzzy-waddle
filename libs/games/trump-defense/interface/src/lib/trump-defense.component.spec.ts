@@ -15,6 +15,7 @@ jest.mock("./game-audio", () => ({
     pause: jest.fn(),
     resume: jest.fn(),
     stop: jest.fn(),
+    updateCameraArea: jest.fn(),
     dispose: jest.fn()
   }))
 }));
@@ -41,6 +42,9 @@ describe("TrumpDefenseComponent", () => {
     }).compileComponents();
     fixture = TestBed.createComponent(TrumpDefenseComponent);
     fixture.detectChanges();
+    const levelButton = fixture.nativeElement.querySelector(".td-level-choice") as HTMLButtonElement;
+    levelButton.click();
+    fixture.detectChanges();
     await new Promise((resolve) => setTimeout(resolve, 0));
     await fixture.whenStable();
     fixture.detectChanges();
@@ -52,6 +56,15 @@ describe("TrumpDefenseComponent", () => {
     expect(fixture.nativeElement.textContent).toContain("Defend the border");
     expect(fixture.nativeElement.textContent).toContain("200");
     expect(fixture.nativeElement.textContent).toContain("10");
+  });
+
+  it("offers a level choice before loading the selected map", () => {
+    fixture.destroy();
+    jest.mocked(loadLevel).mockClear();
+    fixture = TestBed.createComponent(TrumpDefenseComponent);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelectorAll(".td-level-choice")).toHaveLength(3);
+    expect(loadLevel).not.toHaveBeenCalled();
   });
 
   it("starts from a user gesture and builds on a picked tile", () => {

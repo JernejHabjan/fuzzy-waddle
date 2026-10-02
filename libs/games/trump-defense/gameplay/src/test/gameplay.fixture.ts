@@ -59,10 +59,10 @@ export function makeLevel(id: 1 | 2 | 3): LevelDefinition {
       directional: { color: "#ffffff", intensity: 1, position: [0, 10, 0] },
       points: [],
       spots: [],
-      visuals: Object.fromEntries(actorNames.map((name) => [name, visual(name)])) as Record<
-        ActorVisualKind,
-        VisualAsset
-      >
+      visuals: {
+        ...(Object.fromEntries(actorNames.map((name) => [name, visual(name)])) as Record<ActorVisualKind, VisualAsset>),
+        Heart: visual("Heart")
+      }
     },
     rules: {
       enemyRoster: roster,

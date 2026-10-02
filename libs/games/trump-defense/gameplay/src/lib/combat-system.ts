@@ -10,7 +10,7 @@ function inRange(tower: GameEntity, enemy: GameEntity): boolean {
 export function fireTowers(state: GameState): void {
   for (const tower of state.entities.values()) {
     const weapon = tower.weapon;
-    if (!weapon || state.elapsedMs - weapon.lastShotMs < weapon.cooldownMs) continue;
+    if (!weapon) continue;
     // GameObject.cpp: "cannon nemore strelat gor" — target eligibility is weapon data.
     const target = [...state.entities.values()]
       .filter(
@@ -19,14 +19,25 @@ export function fireTowers(state: GameState): void {
       )
       .sort((left, right) => (right.path?.waypoint ?? 0) - (left.path?.waypoint ?? 0))[0];
     if (!target?.health || !target.path) continue;
+    const dx = target.position.x - tower.position.x;
+    const dz = target.position.z - tower.position.z;
+    tower.orientation = { y: Math.atan2(-dz, dx) };
+    if (state.elapsedMs - weapon.lastShotMs < weapon.cooldownMs) continue;
     weapon.lastShotMs = state.elapsedMs;
     target.health.current -= weapon.damage + (target.path.kind === "flying" ? weapon.airBonusDamage : 0);
-    state.shotEffects.push({ from: { ...tower.position }, to: { ...target.position } });
-    state.sounds.push(weapon.fireSound);
+    state.shotEffects.push({
+      id: state.nextProjectileId++,
+      from: { ...tower.position },
+      to: { ...target.position },
+      elapsedMs: 0,
+      durationMs: 450
+    });
+    state.sounds.push({ kind: weapon.fireSound, worldX: tower.position.x });
     if (target.health.current <= 0) {
       state.entities.delete(target.id);
       state.money += target.health.reward;
-      state.sounds.push("cash");
+      state.sounds.push({ kind: "die", worldX: target.position.x });
+      state.sounds.push({ kind: "cash", worldX: target.position.x });
     }
   }
 }

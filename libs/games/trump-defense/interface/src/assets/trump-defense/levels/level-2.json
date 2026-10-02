@@ -85,6 +85,11 @@
     },
     "props": [
       {
+        "model": "models/WhiteHouse.obj",
+        "texture": "textures/WhiteHouseDiffuse.webp",
+        "position": [163, 0, -48]
+      },
+      {
         "model": "models/WallHeight.obj",
         "texture": "textures/WallHeightDiffuse.webp",
         "position": [128, 0, -48]
@@ -413,7 +418,7 @@
         "color": "#00ff00",
         "intensity": 4,
         "position": [-8, 1, -65],
-        "target": [16, 0, -65],
+        "target": [-5, 0, -65],
         "distance": 70,
         "angle": 0.26
       },
@@ -421,7 +426,7 @@
         "color": "#ff0000",
         "intensity": 4,
         "position": [128, 1, -65],
-        "target": [104, 0, -65],
+        "target": [125, 0, -65],
         "distance": 70,
         "angle": 0.26
       }
@@ -469,6 +474,10 @@
         "model": "models/MexicanBaloon.obj",
         "texture": "textures/MexicanBaloonDiffuse.webp",
         "specular": "textures/MexicanBaloonSpecular.webp"
+      },
+      "Heart": {
+        "model": "models/Heart.obj",
+        "texture": "textures/HeartDiffuse.webp"
       },
       "Rocket": {
         "model": "models/Rocket.obj",

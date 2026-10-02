@@ -21,6 +21,7 @@ export function createGame(level: LevelDefinition): GameState {
     bonusHp: 0,
     spawnIndex: 0,
     nextEntityId: 1,
+    nextProjectileId: 1,
     sounds: [],
     shotEffects: []
   };
