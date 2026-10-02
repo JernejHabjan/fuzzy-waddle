@@ -47,6 +47,7 @@ export class TrumpDefenseComponent implements AfterViewInit, OnDestroy {
   private loadToken = 0;
 
   protected readonly phase = signal<TrumpDefensePhase>("selecting");
+  protected readonly showProjectInfo = signal(false);
   protected readonly levelNumber = signal<1 | 2 | 3>(1);
   protected readonly finalLevel = computed(() => this.levelNumber() === 3);
   protected readonly levelChoices = [1, 2, 3] as const;
@@ -69,7 +70,7 @@ export class TrumpDefenseComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.phase.set("selecting");
-    this.message.set("Choose an unlocked level to begin.");
+    this.message.set("Pick an unlocked battleground, amigo.");
   }
 
   /** A level owns fresh simulation, scene, and audio state; stale async loads are ignored. */
@@ -100,8 +101,8 @@ export class TrumpDefenseComponent implements AfterViewInit, OnDestroy {
       this.phase.set("ready");
       this.message.set(
         index === 3
-          ? "Towers build at random open tiles in this level."
-          : "Choose a tile, then build defenses and the wall."
+          ? "Towers build on open tiles across this level, amigo."
+          : "Pick a tile, amigo—build those towers and raise the wall!"
       );
     } catch (error) {
       if (this.destroyed || token !== this.loadToken) return;
@@ -115,7 +116,7 @@ export class TrumpDefenseComponent implements AfterViewInit, OnDestroy {
   protected start(): void {
     if (!this.game || this.phase() !== "ready") return;
     this.phase.set("playing");
-    this.message.set(`Keep enemies away while raising the wall to ${this.game.level.rules.wallGoal}.`);
+    this.message.set(`Hold the line, amigo—raise that wall to ${this.game.level.rules.wallGoal}.`);
     this.audio.startMusic(this.game.level.music);
     this.schedule();
   }
@@ -149,7 +150,7 @@ export class TrumpDefenseComponent implements AfterViewInit, OnDestroy {
     if (this.game.status === "lost") {
       this.phase.set("lost");
       this.audio.stop();
-      this.message.set("The defense fell. Try this level again.");
+      this.message.set("The wall went down, amigo. Saddle up and try again!");
       return;
     }
     this.frameId = requestAnimationFrame(this.frame);
@@ -173,7 +174,11 @@ export class TrumpDefenseComponent implements AfterViewInit, OnDestroy {
       this.phase.set("won");
       this.audio.stop();
       cancelAnimationFrame(this.frameId);
-      this.message.set(this.finalLevel() ? "All three levels complete!" : "Wall complete. Ready for the next level.");
+      this.message.set(
+        this.finalLevel()
+          ? "All three levels defended. ¡Viva la defense!"
+          : "Wall's up! The next level's waiting, amigo."
+      );
     }
   }
 
@@ -227,6 +232,10 @@ export class TrumpDefenseComponent implements AfterViewInit, OnDestroy {
     this.audio.setMuted(this.muted());
   }
 
+  protected toggleProjectInfo(): void {
+    this.showProjectInfo.update((visible) => !visible);
+  }
+
   protected retry(): void {
     void this.load(this.levelNumber());
   }
@@ -237,7 +246,7 @@ export class TrumpDefenseComponent implements AfterViewInit, OnDestroy {
     this.scene = null;
     this.game = null;
     this.phase.set("selecting");
-    this.message.set("Choose an unlocked level to begin.");
+    this.message.set("Pick an unlocked battleground, amigo.");
   }
   protected next(): void {
     const index = this.levelNumber();

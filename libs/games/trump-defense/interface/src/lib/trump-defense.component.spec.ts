@@ -51,7 +51,7 @@ describe("TrumpDefenseComponent", () => {
   afterEach(() => fixture.destroy());
 
   it("loads a level and presents the original resources", () => {
-    expect(fixture.nativeElement.textContent).toContain("Defend the border");
+    expect(fixture.nativeElement.textContent).toContain("Hold that wall!");
     expect(fixture.nativeElement.textContent).toContain("200");
     expect(fixture.nativeElement.textContent).toContain("10");
   });
@@ -65,10 +65,27 @@ describe("TrumpDefenseComponent", () => {
     expect(loadLevel).not.toHaveBeenCalled();
   });
 
+  it("reveals the 2016 school project details from the level picker info button", () => {
+    fixture.destroy();
+    fixture = TestBed.createComponent(TrumpDefenseComponent);
+    fixture.detectChanges();
+    const root = fixture.nativeElement as HTMLElement;
+    const infoButton = root.querySelector<HTMLButtonElement>(".td-info-button");
+    expect(infoButton?.getAttribute("aria-expanded")).toBe("false");
+    expect(root.querySelector("#td-project-info")).toBeNull();
+    infoButton?.click();
+    fixture.detectChanges();
+    expect(infoButton?.getAttribute("aria-expanded")).toBe("true");
+    expect(root.querySelector("#td-project-info")?.textContent).toContain(
+      "school project for the Computer Graphics class"
+    );
+    expect(root.querySelector("#td-project-info")?.textContent).toContain("University of Ljubljana");
+  });
+
   it("starts from a user gesture and builds on a picked tile", () => {
     const root = fixture.nativeElement as HTMLElement;
     const startButtons = Array.from(root.querySelectorAll("button"));
-    startButtons.find((button) => button.textContent?.includes("Start level"))?.click();
+    startButtons.find((button) => button.textContent?.includes("Let's roll"))?.click();
     fixture.detectChanges();
     const viewport: HTMLElement = fixture.nativeElement.querySelector(".td-viewport");
     viewport.dispatchEvent(new Event("pointerdown", { bubbles: true }));
@@ -110,7 +127,7 @@ describe("TrumpDefenseComponent", () => {
   it("keeps the status, sound and placement controls over the game viewport", () => {
     const root = fixture.nativeElement as HTMLElement;
     const start = Array.from(root.querySelectorAll("button")).find((button) =>
-      button.textContent?.includes("Start level")
+      button.textContent?.includes("Let's roll")
     );
     start?.click();
     fixture.detectChanges();
