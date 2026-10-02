@@ -10,6 +10,7 @@ const requirement = {
 
 type Evidence = Parameters<typeof evaluateRuntimeProductionComposition>[1];
 type Checkpoint = Evidence["checkpoints"][number];
+type Branch = "fill_deficit" | "satisfied_control" | "seeded_queue_control";
 
 function army(control = false) {
   return Array.from({ length: control ? 6 : 4 }, (_, index) => ({
@@ -17,34 +18,59 @@ function army(control = false) {
   }));
 }
 
-function checkpoint(tick: number, control = false, filled = tick >= 200): Checkpoint {
+function checkpoint(tick: number, branch: Branch = "fill_deficit", filled = tick >= 200): Checkpoint {
+  const control = branch === "satisfied_control";
   const initial = army(control);
-  const militaryActors = [...initial, ...(!control && filled
+  const seededComplete = branch === "seeded_queue_control" && filled;
+  const militaryActors = [...initial, ...((!control && branch === "fill_deficit" && filled) || seededComplete
     ? [{ actorId: "new-1", objectName: "frontline" }, { actorId: "new-2", objectName: "frontline" }] : [])];
   return {
     tick, targetTick: tick, militaryActors,
-    appliedCommands: !control && filled
+    appliedCommands: branch === "fill_deficit" && filled
       ? [1, 2].map((id) => ({ commandId: `command-${id}`, effectId: `effect:composition:effect:${id}` })) : [],
     demands: [{ demandId: "demand:composition:first-squad", purpose: "dated_ground_pressure", desired: 6,
-      satisfied: militaryActors.length, queued: 0, constructing: 0, accepted: 0 }],
-    militaryProducerQueues: [{ actorId: "producer", objectName: "barracks", capacity: 5, occupied: 0, queuedObjectNames: [] }]
+      satisfied: militaryActors.length, queued: branch === "seeded_queue_control" && !seededComplete ? 2 : 0,
+      constructing: 0, accepted: 0 }],
+    militaryProducerQueues: [1, 2].map((producer) => {
+      const items = branch === "seeded_queue_control" && !seededComplete
+        ? [{ itemId: `producer-${producer}:0:Production`, kind: "production" as const,
+            objectName: "frontline", researchType: null }]
+        : [];
+      return { actorId: `producer-${producer}`, objectName: "barracks", capacity: 5,
+        occupied: items.length, queuedObjectNames: items.map((item) => item.objectName!), queuedItems: items };
+    })
   };
 }
 
-function evidence(control = false): Evidence {
+function evidence(branch: Branch = "fill_deficit"): Evidence {
+  const control = branch === "satisfied_control";
   const initial = army(control);
+  const seeded = branch === "seeded_queue_control";
   return {
-    aiFaction: "Tivara", productionCompositionBranch: control ? "satisfied_control" : "fill_deficit",
-    presetFixtureId: "composition", presetCreatedActorNames: initial.map((actor) => actor.objectName),
-    presetCreatedActorIds: Object.fromEntries(initial.map((actor) => [actor.actorId, actor.actorId])),
-    presetQueuedItemCount: 0, stopReason: "checkpoint_ceiling",
-    checkpoints: [checkpoint(20, control), checkpoint(200, control), checkpoint(600, control)]
+    aiFaction: "Tivara", productionCompositionBranch: branch,
+    presetFixtureId: "composition", presetCreatedActorNames: [...initial.map((actor) => actor.objectName), "barracks", "barracks"],
+    presetCreatedActorIds: Object.fromEntries([
+      ...initial.map((actor) => [actor.actorId, actor.actorId] as const),
+      ["producer-1", "producer-1"] as const,
+      ["producer-2", "producer-2"] as const
+    ]),
+    presetQueuedItemCount: seeded ? 2 : 0,
+    presetInitialQueueItems: seeded ? [1, 2].map((producer) => ({
+      producerFixtureActorId: `producer-${producer}`, producerActorId: `producer-${producer}`,
+      itemId: `producer-${producer}:0:Production`, kind: "production" as const,
+      objectName: "frontline", researchType: null
+    })) : [],
+    stopReason: "checkpoint_ceiling",
+    checkpoints: seeded
+      ? [checkpoint(20, branch, false), checkpoint(200, branch, false), checkpoint(400, branch), checkpoint(600, branch)]
+      : [checkpoint(20, branch), checkpoint(200, branch), checkpoint(600, branch)]
   };
 }
 
 test("PRO-04 requires new useful copies, applied effects, and a retained satisfied control", () => {
   expect(evaluateRuntimeProductionComposition(requirement, evidence())).toEqual([]);
-  expect(evaluateRuntimeProductionComposition(requirement, evidence(true))).toEqual([]);
+  expect(evaluateRuntimeProductionComposition(requirement, evidence("satisfied_control"))).toEqual([]);
+  expect(evaluateRuntimeProductionComposition(requirement, evidence("seeded_queue_control"))).toEqual([]);
 });
 
 test("ledger fulfillment and preset copies cannot substitute for new produced identities", () => {
@@ -98,14 +124,45 @@ test("loss, later excess and control production cannot hide behind a fulfilled d
     checkpoints: [...variant.checkpoints.slice(0, 2), { ...loss, militaryActors: army() }] }))
     .toContain("production_composition_force_not_retained");
   const excess = { ...loss, militaryProducerQueues: loss.militaryProducerQueues.map((producer) =>
-    ({ ...producer, occupied: 1, queuedObjectNames: ["frontline"] })) };
+    ({ ...producer, occupied: 1, queuedObjectNames: ["frontline"], queuedItems: [{
+      itemId: `${producer.actorId}:0:Production`, kind: "production" as const,
+      objectName: "frontline", researchType: null
+    }] })) };
   expect(evaluateRuntimeProductionComposition(requirement, { ...variant,
     checkpoints: [...variant.checkpoints.slice(0, 2), excess] }))
     .toContain("production_composition_overproduction");
-  const control = evidence(true);
+  const control = evidence("satisfied_control");
   expect(evaluateRuntimeProductionComposition(requirement, { ...control,
     checkpoints: control.checkpoints.map((row) => ({ ...row, appliedCommands: loss.appliedCommands })) }))
     .toContain("production_composition_control_produced");
+});
+
+test("seeded queues must complete their captured identities without AI composition application", () => {
+  const variant = evidence("seeded_queue_control");
+  const unfinished = variant.checkpoints.map((row) => row.targetTick === 600
+    ? { ...row, militaryProducerQueues: row.militaryProducerQueues.map((producer) => ({
+        ...producer, occupied: 1, queuedObjectNames: ["frontline"], queuedItems: [{
+          itemId: `unseeded-${producer.actorId}:0:Production`, kind: "production" as const,
+          objectName: "frontline", researchType: null
+        }]
+      })) }
+    : row);
+  expect(evaluateRuntimeProductionComposition(requirement, { ...variant, checkpoints: unfinished }))
+    .toContain("production_composition_seeded_control_unexpected_queue");
+  const noApplication = { ...variant, checkpoints: variant.checkpoints.map((row) => ({
+    ...row, militaryActors: row.militaryActors?.filter((actor) => actor.actorId !== "new-2")
+  })) };
+  expect(evaluateRuntimeProductionComposition(requirement, noApplication))
+    .toContain("production_composition_useful_copies_missing");
+  const aiProduced = { ...variant, checkpoints: variant.checkpoints.map((row) => ({
+    ...row,
+    appliedCommands: [{ commandId: "unexpected", effectId: "effect:composition:effect:unexpected" }]
+  })) };
+  expect(evaluateRuntimeProductionComposition(requirement, aiProduced))
+    .toContain("production_composition_seeded_control_applied_ai_work");
+  expect(evaluateRuntimeProductionComposition(requirement, { ...variant,
+    presetInitialQueueItems: variant.presetInitialQueueItems.map((item) => ({ ...item, objectName: "ranged" })) }))
+    .toContain("production_composition_initial_setup");
 });
 
 test("changing the target or accepting a missing causal branch is not composition evidence", () => {

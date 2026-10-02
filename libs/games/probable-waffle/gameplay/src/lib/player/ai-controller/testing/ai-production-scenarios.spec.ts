@@ -95,10 +95,10 @@ const catalog: AiCapabilityCatalogV1 = {
   ]
 };
 
-function completedOpeningState() {
+function completedOpeningState(faction = FactionType.Tivara) {
   return createAiBrainStateV1({
     playerNumber: 1,
-    faction: FactionType.Tivara,
+    faction,
     profile,
     tick: 200,
     archetypeId: "balanced",
@@ -111,12 +111,15 @@ function completedOpeningState() {
   });
 }
 
-function workers() {
-  return Array.from({ length: 6 }, (_, index) => createAiTestOwnedActor(`worker-${index}`));
+function workers(faction: "Tivara" | "Skaduwee" = "Tivara") {
+  const workerName = faction === "Tivara" ? ObjectNames.TivaraWorkerMale : ObjectNames.SkaduweeWorkerMale;
+  return Array.from({ length: 6 }, (_, index) => ({
+    ...createAiTestOwnedActor(`worker-${faction}-${index}`), objectName: workerName
+  }));
 }
 
-function producer(actorId: string) {
-  return { ...createAiTestOwnedActor(actorId), objectName: ObjectNames.AnkGuard };
+function producer(actorId: string, objectName: ObjectNames = ObjectNames.AnkGuard) {
+  return { ...createAiTestOwnedActor(actorId), objectName };
 }
 
 function constructionCells() {
@@ -137,14 +140,18 @@ function constructionCells() {
 function propose(
   actors: ReturnType<typeof createAiTestObservation>["actors"],
   catalogInput = catalog,
-  state = completedOpeningState()
+  state = completedOpeningState(),
+  faction = FactionType.Tivara,
+  resources = createAiTestObservation().resources
 ): AiManagerProposalV1 {
   const observation = createAiTestObservation();
   return new AiMacroManager(() => catalogInput).propose(
     {
       ...observation,
+      faction,
       tick: 200,
       actors,
+      resources,
       map: { ...observation.map!, constructionCells: constructionCells() }
     },
     state
@@ -162,37 +169,46 @@ function capacityConstruction(intents: readonly AiIntentV1[]): readonly Extract<
   );
 }
 
-function oneTypeCatalog(): AiCapabilityCatalogV1 {
+function oneTypeCatalog(faction: "Tivara" | "Skaduwee" = "Tivara"): AiCapabilityCatalogV1 {
+  const producerName = faction === "Tivara" ? ObjectNames.AnkGuard : ObjectNames.InfantryInn;
+  const workerName = faction === "Tivara" ? ObjectNames.TivaraWorkerMale : ObjectNames.SkaduweeWorkerMale;
+  const frontlineName = faction === "Tivara" ? ObjectNames.TivaraMacemanMale : ObjectNames.SkaduweeWarriorMale;
+  const rangedName = faction === "Tivara" ? ObjectNames.TivaraSlingshotFemale : ObjectNames.SkaduweeRangedFemale;
   return {
     ...catalog,
     entries: catalog.entries.map((entry) =>
-      entry.sourceObjectName === ObjectNames.AnkGuard
-        ? { ...entry, produces: [ObjectNames.TivaraMacemanMale] }
+      entry.sourceObjectName === ObjectNames.TivaraWorker
+        ? { ...entry, sourceObjectName: workerName }
+        : entry.sourceObjectName === ObjectNames.AnkGuard
+        ? { ...entry, sourceObjectName: producerName, produces: [frontlineName] }
         : entry.sourceObjectName === ObjectNames.TivaraMacemanMale
-          ? { ...entry, constructionProfile: {
+          ? { ...entry, sourceObjectName: frontlineName, constructionProfile: {
               resourceCost: { [ResourceType.Wood]: 35 }, footprintRadiusTiles: 0, visionRange: 6,
               navigableHeight: null, enterHeight: null, exitHeight: null
             } }
-          : entry
+          : entry.sourceObjectName === ObjectNames.TivaraSlingshotFemale
+            ? { ...entry, sourceObjectName: rangedName, produces: [] }
+            : entry
     )
   };
 }
 
 /** Existing useful copies remain legal beneficiaries; producer lane occupancy is observed separately. */
-function repeatedArmy(count: number) {
+function repeatedArmy(count: number, unitName: ObjectNames = ObjectNames.TivaraMacemanMale) {
   return Array.from({ length: count }, (_, index) => ({
     ...createAiTestOwnedActor(`military-${index}`),
-    objectName: ObjectNames.TivaraMacemanMale
+    objectName: unitName
   }));
 }
 
 /** A real typed queue commitment fills a deficit even while another producer's lane remains idle. */
-function queuedProducer(count: number) {
+function queuedProducer(count: number, producerName: ObjectNames = ObjectNames.AnkGuard,
+  unitName: ObjectNames = ObjectNames.TivaraMacemanMale) {
   const items = Array.from({ length: count }, (_, index) => ({
-    itemId: `queued-${index}`, kind: "production" as const, objectName: ObjectNames.TivaraMacemanMale, researchType: null
+    itemId: `queued-${index}`, kind: "production" as const, objectName: unitName, researchType: null
   }));
   return {
-    ...producer("producer-1"),
+    ...producer("producer-1", producerName),
     queue: { status: "known" as const, observedTick: 200,
       value: { capacity: 5, occupied: count, itemIds: items.map((item) => item.itemId), items } }
   };
@@ -303,6 +319,46 @@ describe("typed deterministic production scenarios", () => {
       (demand) => demand.demandId === "demand:composition:first-squad"
     )?.acceptedNotObservedEffectIds).toHaveLength(0);
     expect(production(result.oneMissing.intents)).toHaveLength(1);
+  });
+
+  it("PRO-04 uses priced affordability and shares a busy lane with an idle producer for both factions", () => {
+    const base = createAiTestObservation();
+    for (const faction of ["Tivara", "Skaduwee"] as const) {
+      const factionType = faction === "Tivara" ? FactionType.Tivara : FactionType.Skaduwee;
+      const unitName = faction === "Tivara" ? ObjectNames.TivaraMacemanMale : ObjectNames.SkaduweeWarriorMale;
+      const producerName = faction === "Tivara" ? ObjectNames.AnkGuard : ObjectNames.InfantryInn;
+      const priced = oneTypeCatalog(faction);
+      const price = priced.entries.find((entry) => entry.sourceObjectName === unitName)
+        ?.constructionProfile?.resourceCost.wood;
+      expect(price).toBeDefined();
+      const actors = [...workers(faction), producer("producer-1", producerName), producer("producer-2", producerName),
+        ...repeatedArmy(11, unitName)];
+      const withWood = (wood: number) => {
+        const resources = [{ ...base.resources[0]!, stockpile: wood, reservedUnspent: 0, obligationsDue: 0 }];
+        return propose(actors, priced, completedOpeningState(factionType), factionType, resources);
+      };
+      const exact = withWood(price!);
+      const exactRuns = [exact, withWood(price!), withWood(price!)];
+      expect(new Set(exactRuns.map(digestCanonicalAiValue)).size).toBe(1);
+      expect(production(exact.intents)).toHaveLength(1);
+      expect(production(withWood(price! - 1).intents)).toHaveLength(0);
+      const reordered = propose([...actors].reverse(), { ...priced, entries: [...priced.entries].reverse() },
+        completedOpeningState(factionType), factionType,
+        [{ ...base.resources[0]!, stockpile: price!, reservedUnspent: 0, obligationsDue: 0 }]);
+      expect(digestCanonicalAiValue(reordered)).toBe(digestCanonicalAiValue(exact));
+
+      const laneActors = [...workers(faction), queuedProducer(1, producerName, unitName),
+        producer("producer-2", producerName), ...repeatedArmy(10, unitName)];
+      const busyAndIdle = propose(laneActors, priced, completedOpeningState(factionType), factionType);
+      const laneRuns = [busyAndIdle, propose(laneActors, priced, completedOpeningState(factionType), factionType),
+        propose(laneActors, priced, completedOpeningState(factionType), factionType)];
+      expect(new Set(laneRuns.map(digestCanonicalAiValue)).size).toBe(1);
+      const laneReordered = propose([...laneActors].reverse(), { ...priced, entries: [...priced.entries].reverse() },
+        completedOpeningState(factionType), factionType);
+      expect(digestCanonicalAiValue(laneReordered)).toBe(digestCanonicalAiValue(busyAndIdle));
+      expect(production(busyAndIdle.intents)).toHaveLength(1);
+      expect(production(busyAndIdle.intents)[0]?.producerId).toBe("producer-2");
+    }
   });
 
   it("PRO-04 preserves duplicate-unit decisions under set-valued actor and catalog ordering", () => {

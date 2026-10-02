@@ -49,7 +49,9 @@ export function projectRuntimeOutcomeDigestInput(
         counts[name] = (counts[name] ?? 0) + 1;
         return counts;
       }, {}),
-      queuedTypes: checkpoint.militaryProducerQueues.flatMap((producer) => producer.queuedObjectNames).sort(),
+      queuedTypes: checkpoint.militaryProducerQueues.flatMap((producer) => producer.queuedItems
+        .map((item) => `${producer.actorId}:${item.itemId}:${item.kind}:${item.objectName ?? item.researchType ?? "unknown"}`))
+        .sort(),
       appliedCompositionCount: checkpoint.appliedCommands.filter((command) =>
         command.effectId.startsWith("effect:composition:effect:")
       ).length

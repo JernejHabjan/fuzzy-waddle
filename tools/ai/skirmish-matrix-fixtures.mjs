@@ -109,7 +109,7 @@ function validateRuntimeFixture(fixture, scenarioId) {
         (variant.productionCapacityBranch !== undefined &&
           !["build", "already_sufficient"].includes(variant.productionCapacityBranch)) ||
         (variant.productionCompositionBranch !== undefined &&
-          !["fill_deficit", "satisfied_control"].includes(variant.productionCompositionBranch)) ||
+          !["fill_deficit", "satisfied_control", "seeded_queue_control"].includes(variant.productionCompositionBranch)) ||
         (variant.mapLabel !== undefined && typeof variant.mapLabel !== "string") ||
         (variant.perturbations !== undefined &&
           (!Array.isArray(variant.perturbations) ||

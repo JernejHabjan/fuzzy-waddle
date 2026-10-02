@@ -83,6 +83,14 @@ export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, crea
     emitResource(scene, "resource.added", grant.amounts as Partial<PlayerStateResources>, grant.playerNumber);
   }
   let queuedItemCount = 0;
+  const initialQueueItems: {
+    producerFixtureActorId: string;
+    producerActorId: string;
+    itemId: string;
+    kind: "production" | "research";
+    objectName: string | null;
+    researchType: string | null;
+  }[] = [];
   for (const authoredQueue of preset.queues ?? []) {
     const producer = createdActors.get(authoredQueue.producerFixtureActorId);
     const production = producer ? getActorComponent(producer, ProductionComponent) : undefined;
@@ -112,6 +120,17 @@ export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, crea
         remainingTime: costData.productionTime
       });
       queuedItemCount += 1;
+    }
+    const producerActorId = createdActorIds[authoredQueue.producerFixtureActorId];
+    for (const [index, item] of queue.allItems.entries()) {
+      initialQueueItems.push({
+        producerFixtureActorId: authoredQueue.producerFixtureActorId,
+        producerActorId,
+        itemId: `${producerActorId}:${index}:${item.type}`,
+        kind: item.productionData ? "production" : "research",
+        objectName: item.productionData?.actorName ?? null,
+        researchType: item.researchData ?? null
+      });
     }
   }
   for (const start of preset.resourceStarts ?? []) {
@@ -144,6 +163,7 @@ export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, crea
     resourceGrantCount: preset.resourceGrants.length,
     resourceStartCount: preset.resourceStarts?.length ?? 0,
     queuedItemCount,
+    initialQueueItems,
     initialOrderCount: preset.initialOrders?.length ?? 0,
     eventResults: []
   });

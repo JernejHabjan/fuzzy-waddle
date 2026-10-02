@@ -17,6 +17,14 @@ export interface RuntimeVariantResultV1 {
   readonly presetResourceStartCount: number;
   readonly presetInitialResourceBalances: Readonly<Record<number, Readonly<Record<string, number>>>>;
   readonly presetQueuedItemCount: number;
+  readonly presetInitialQueueItems: readonly {
+    readonly producerFixtureActorId: string;
+    readonly producerActorId: string;
+    readonly itemId: string;
+    readonly kind: "production" | "research";
+    readonly objectName: string | null;
+    readonly researchType: string | null;
+  }[];
   readonly presetInitialOrderCount: number;
   readonly determinismGroup: string | null;
   readonly supplyBranch?: "prebuild" | "ample_control";
@@ -24,7 +32,7 @@ export interface RuntimeVariantResultV1 {
   readonly resourceServiceBranch?: "build" | "served_control";
   readonly productionCapacityBranch?: "build" | "already_sufficient";
   /** Retained causal branch for the independent composition oracle and diagnostic replay. */
-  readonly productionCompositionBranch?: "fill_deficit" | "satisfied_control";
+  readonly productionCompositionBranch?: "fill_deficit" | "satisfied_control" | "seeded_queue_control";
   readonly initialWorldDigest: string;
   readonly outcomeDigest: string;
   readonly checkpoints: readonly RuntimeCheckpointV1[];

@@ -134,6 +134,7 @@ export async function runVariant(
             resourceGrantCount: initialBoundary.presetApplication.resourceGrantCount,
             resourceStartCount: initialBoundary.presetApplication.resourceStartCount,
             queuedItemCount: initialBoundary.presetApplication.queuedItemCount,
+            initialQueueItems: initialBoundary.presetApplication.initialQueueItems,
             initialOrderCount: initialBoundary.presetApplication.initialOrderCount
           }
         : null
@@ -174,6 +175,7 @@ export async function runVariant(
       presetResourceStartCount: initialBoundary.presetApplication?.resourceStartCount ?? 0,
       presetInitialResourceBalances: initialBoundary.initialResourceBalances,
       presetQueuedItemCount: initialBoundary.presetApplication?.queuedItemCount ?? 0,
+      presetInitialQueueItems: initialBoundary.presetApplication?.initialQueueItems ?? [],
       presetInitialOrderCount: initialBoundary.presetApplication?.initialOrderCount ?? 0,
       determinismGroup: variant.determinismGroup ?? null,
       ...(variant.supplyBranch ? { supplyBranch: variant.supplyBranch } : {}),

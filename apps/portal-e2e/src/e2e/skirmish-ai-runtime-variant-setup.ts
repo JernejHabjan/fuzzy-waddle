@@ -103,6 +103,14 @@ export async function prepareRuntimeVariant(
             resourceGrantCount: number;
             resourceStartCount: number;
             queuedItemCount: number;
+            initialQueueItems: {
+              producerFixtureActorId: string;
+              producerActorId: string;
+              itemId: string;
+              kind: "production" | "research";
+              objectName: string | null;
+              researchType: string | null;
+            }[];
             initialOrderCount: number;
             eventResults: { id: string; tick: number; affectedActors: number; subjectName: string }[];
           };
@@ -135,6 +143,18 @@ export async function prepareRuntimeVariant(
     }
     const requestedQueues = variant.presetWorld.queues?.reduce((count, queue) => count + queue.count, 0) ?? 0;
     if (application.queuedItemCount !== requestedQueues) throw new Error("runtime_preset_queue_mismatch");
+    const expectedQueueItems = (variant.presetWorld.queues ?? []).flatMap((queue) =>
+      Array.from({ length: queue.count }, () => ({ producerFixtureActorId: queue.producerFixtureActorId,
+        objectName: queue.actorName })));
+    const observedQueueItems = application.initialQueueItems.map((item) => ({
+      producerFixtureActorId: item.producerFixtureActorId,
+      objectName: item.objectName
+    }));
+    if (JSON.stringify([...expectedQueueItems].sort(compareQueueItem)) !==
+        JSON.stringify([...observedQueueItems].sort(compareQueueItem)) ||
+        new Set(application.initialQueueItems.map((item) => item.itemId)).size !== requestedQueues) {
+      throw new Error("runtime_preset_queue_identity_mismatch");
+    }
     if (application.initialOrderCount !== (variant.presetWorld.initialOrders?.length ?? 0)) {
       throw new Error("runtime_preset_initial_order_mismatch");
     }
@@ -142,6 +162,12 @@ export async function prepareRuntimeVariant(
     throw new Error("runtime_unrequested_preset_application");
   }
   return initialBoundary;
+}
+
+function compareQueueItem(left: { producerFixtureActorId: string; objectName: string },
+  right: { producerFixtureActorId: string; objectName: string }): number {
+  return left.producerFixtureActorId.localeCompare(right.producerFixtureActorId) ||
+    left.objectName.localeCompare(right.objectName);
 }
 
 async function configureLobby(page: Page, fixture: RuntimeFixtureV1, variant: RuntimeVariantV1): Promise<void> {

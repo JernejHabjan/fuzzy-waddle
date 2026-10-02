@@ -9,6 +9,15 @@ export interface AiRuntimePresetApplicationV1 {
   readonly resourceGrantCount: number;
   readonly resourceStartCount: number;
   readonly queuedItemCount: number;
+  /** Actual producer, observation identity, type and product of each item present at the paused tick-zero boundary. */
+  readonly initialQueueItems: readonly {
+    readonly producerFixtureActorId: string;
+    readonly producerActorId: string;
+    readonly itemId: string;
+    readonly kind: "production" | "research";
+    readonly objectName: string | null;
+    readonly researchType: string | null;
+  }[];
   readonly initialOrderCount: number;
   readonly eventResults: readonly {
     readonly id: string;

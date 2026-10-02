@@ -20,15 +20,15 @@ export interface RuntimeAssertionV1 {
     readonly producerObjectNameByFaction: Readonly<Record<RuntimeVariantV1["aiFaction"], string>>;
   };
   readonly requireProductionStopsAtTarget?: boolean;
-  /** Independent ready-unit and applied-command proof, followed by a full no-excess observation window. */
+  /** Independent unit, command and seeded-queue proof, followed by a full no-excess observation window. */
   readonly requiredProductionComposition?: {
     /** Both branches must reach this checkpoint; no evidence-stop opt-in is permitted. */
     readonly latestTick: number;
     /** Required settled duration after the subject fills its deficit. */
     readonly stableForTicks: number;
-    /** Declared force target shared by the deficient subject and satisfied control. */
+    /** Declared force target shared by the deficient subject and both controls. */
     readonly targetMilitaryCount: number;
-    /** Copies absent from the subject's starting world but present in its control. */
+    /** Useful copies absent from the subject's starting world and supplied by either control branch. */
     readonly additionalUnitCount: number;
     /** Definition-backed useful unit whose repeated production is under test. */
     readonly unitObjectNameByFaction: Readonly<Record<RuntimeVariantV1["aiFaction"], string>>;

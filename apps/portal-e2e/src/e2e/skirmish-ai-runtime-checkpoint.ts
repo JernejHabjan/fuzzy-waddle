@@ -142,6 +142,12 @@ export interface RuntimeCheckpointV1 {
     readonly capacity: number;
     readonly occupied: number;
     readonly queuedObjectNames: readonly string[];
+    readonly queuedItems: readonly {
+      readonly itemId: string;
+      readonly kind: "production" | "research";
+      readonly objectName: string | null;
+      readonly researchType: string | null;
+    }[];
   }[];
   readonly squads: readonly {
     readonly squadId: string;

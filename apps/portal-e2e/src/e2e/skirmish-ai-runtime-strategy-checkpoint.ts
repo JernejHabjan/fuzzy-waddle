@@ -101,7 +101,15 @@ export async function captureRuntimeStrategyCheckpoint(
               ? (actor.queue.value.items ?? [])
                   .flatMap((item) => (item.kind === "production" && item.objectName ? [item.objectName] : []))
                   .sort()
-              : []
+              : [],
+          queuedItems: actor.queue.status === "known"
+            ? (actor.queue.value.items ?? []).map((item) => ({
+                itemId: item.itemId,
+                kind: item.kind,
+                objectName: item.objectName,
+                researchType: item.researchType
+              })).sort((left, right) => left.itemId.localeCompare(right.itemId))
+            : []
         }))
         .sort((left, right) => left.actorId.localeCompare(right.actorId)),
       squads: state.squads

@@ -38,48 +38,54 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
 ### Production-family authoring contract (2026-10-02, unverified)
 
 The first representative is PRO-04. `tools/ai/fixtures/focused-production-composition-runtime.json` now replaces its
-natural-map registration with two same-seed faction pairs: ten ready soldiers, including two useful frontline copies
-and eight ranged units, versus the same world with two additional frontline copies. Two finished producers, six
-workers, food infrastructure and spare housing isolate production. Exact pre-tick balances are equal; no seeded queue,
-loss, hidden information or AI-state injection is used. Each branch runs once through 600 ticks. Those positions and
-the deadline are authored hypotheses until frozen-map preflight and the final gate prove them.
+natural-map registration with two same-seed causal pairs per faction. Both start with ten ready soldiers, including
+two useful frontline copies and eight ranged units. One pair compares that deficit with two additional ready copies;
+the other compares it with one ordinary paid frontline item in each producer queue. Two finished producers, six
+workers, food infrastructure and spare housing isolate production. Exact pre-tick balances are equal; no losses,
+hidden information or AI-state injection are used. Each branch runs once through 600 ticks. Those positions and the
+deadline are authored hypotheses until frozen-map preflight and the final gate prove them.
 
 `requiredProductionComposition` and `evaluateRuntimeProductionComposition` independently require new owned ready
 identities, two distinct applied composition effects, a dated unchanged target, retention and no excess ready/queued
-units. The subject must fill its deficit at least 200 ticks before the final checkpoint. The satisfied control forbids
-new military identities, military queues and composition application throughout the window. Ledger-only fulfillment,
-unrelated commands, seeded copies, changed targets, missing identity evidence and truncated horizons fail closed.
+units. The subject must fill its deficit at least 200 ticks before the final checkpoint. The ready control forbids
+new military identities and queues; the seeded control forbids AI composition application and requires both captured
+queue items to complete into exactly two new identities. Ledger-only fulfillment, unrelated commands, seeded copies,
+changed targets, missing identity evidence and truncated horizons fail closed.
 `validProductionCompositionPair` checks the causal setup; the browser oracle still proves the actual effect.
-The pure PRO-04 example separately covers priced useful duplicates, ready/queued/accepted target suppression,
-disjoint accepted-versus-observed commitments, a one-unit remainder, three-run digests and input-order permutation.
+The pure PRO-04 examples cover priced useful duplicates, ready/queued/accepted target suppression, disjoint
+accepted-versus-observed commitments, a one-unit remainder, busy/idle producer lanes, exact affordability versus a
+one-unit shortfall, both faction catalogs, three-run digests and input-order permutation.
 No authored example here has run, and no coverage count or runtime saving is claimed.
 
 | ID | Separate required causal world / independent oracle | Existing source anchor / remaining gap |
 | --- | --- | --- |
 | PRO-03 | Idle producer plus a dated future transition, paired with the same transition abandoned before spending. Require ready added capacity before its force deadline and release only unspent optional leases on abandonment. | `proposeAiMilitaryCapacity` prices current deficits; the existing PRO-03 pure test is a partial prebuild example. A future commitment/deadline and abandonment path are not established by this helper. Sol/high owns that contract before runtime migration. |
-| PRO-04 | Useful repeated-unit deficit versus satisfied ready/queued commitments. Observe actual new copies and applied effects, then prohibit excess for an explicit window. | First ready-control example authored above. Extend the same identity/application oracle to ordinary seeded production queues; do not use demand counters as the effect oracle. |
+| PRO-04 | Useful repeated-unit deficit versus satisfied ready/queued commitments. Observe actual new copies and applied effects, then prohibit excess for an explicit window. | Ready and seeded-queue pairs authored above. Do not use demand counters as the effect oracle. |
 | PRO-06 | Critical exposed producer versus the same useful demand already served safely; separately pair low-value/no-demand worlds. Observe an applied safe redundancy/replacement and retained useful throughput after scheduled loss; forbid needless redundancy. | `proposeAiMilitaryCapacity` has no criticality/exposure input. `AiAdaptationManager` counts role commitments, not producer resilience. Select fair visible threat evidence and a safe reachable site on Sol/high before claiming this row. |
 | PRO-07 | Useful train/research contention on one shared lane; separately cancel one paid commitment while its refund is pending. Require applied lane occupancy within capacity, catalog-priced obligations, no spending of unapplied refunds and no cancel/requeue cycle over a dated window. | Presets seed production only; `applyAiRuntimePresetWorldV1` has no research/cancellation event setup. Pure queues can express research items. Actual shared-lane/refund application needs its own adapter and causal oracle on Sol/high, not a queue-count cap. |
 
-**Next bounded batch — GPT-6 Luna / medium:** expand the specified composition commitment cases together. Keep
-PRO-03/06/07's unresolved production-policy/authority work for a later Sol/high batch.
+**Completed bounded batch — GPT-6 Luna / medium, authored and unverified:**
 
-1. Add PRO-04 pure cases for a busy lane plus an idle producer, exact catalog-priced affordability versus one-unit
-   shortfall, and both faction catalogs; retain three-run hashes and set-order checks. Use the existing proposal
-   helpers and typed catalog, without copying live balance constants or broadening military policy.
-2. Add a seeded-queue control pair on the same frozen map: the subject retains ten ready soldiers and empty queues;
-   the control differs only by one ordinary paid frontline item in each of the two producers. Keep exact unspent
-   pre-tick balances equal after normal queue charges. No brain leases or manufactured outcomes are allowed.
-3. Extend the pair validator to validate each `pairId` independently, retaining both ready-control pairs and required
-   factions. The queued control starts with ten preset military identities and two paid queued items, completes two
-   new useful identities normally, issues zero AI composition commands and never exceeds twelve ready-plus-queued
-   units. The subject still requires two new copies and two applied AI effects. No excess commands/queue entries
-   after fulfillment, no early stop, and the same 200-tick stability/600-tick horizon remain mandatory.
-4. Capture initial per-producer queue identities/types through the existing paused setup boundary so the oracle can
-   distinguish preset completions from AI-created work. Do not infer paid queue application from debug text. Author
-   false-pass cases, preserve diagnostic result/digest wiring, update manifest-derived catalog and this handoff,
-   source-review, commit/push and pause. If real queue provenance requires a new authority decision, return to
-   Sol/high instead of inventing one. All execution stays deferred.
+1. PRO-04 pure examples now cover a busy lane plus idle producer, exact typed-catalog price versus one-unit
+   shortfall, and Tivara/Skaduwee product catalogs. Both faction paths retain repeated-result digests and reordered
+   actor/catalog checks; existing queue/lease/observed suppression and one-unit remainder examples remain.
+2. Each faction now has two same-map pairs: ten ready units versus the twelve-ready satisfied control, and the same
+   ten-ready subject versus a control with one ordinary paid frontline item in each producer queue. All branches
+   reset to equal authored pre-tick balances after normal queue charges, and retain the 600-tick ceiling and
+   200-tick observation window.
+3. The fixture validator groups by `pairId` and checks each ready and seeded-queue pair independently for both
+   factions. The runtime oracle requires two new identities and applied composition effects in the subject, forbids
+   AI composition commands in the seeded control, matches its captured queue item IDs/types/products, requires two
+   normal completions, and prevents excess ready-plus-queued units.
+4. The paused preset application captures actual per-producer queue item identities and types; checkpoints and
+   diagnostic digests retain them. False-pass examples and the generated manifest-derived catalog are authored.
+   No tests, validation, E2E, simulation, lint, type checking, build or editor check ran; paid application,
+   positions and completion timing remain final-gate evidence.
+
+**Next bounded batch — GPT-6.1 Sol / high:** author distinct causal contracts for PRO-03 future-transition
+abandonment, PRO-06 exposed-producer resilience and PRO-07 shared-lane/cancellation-refund authority. Keep those
+policy/authority decisions together on Sol/high; do not infer them from capacity helpers or queue counts. Tests and
+all execution remain deferred.
 
 Eventual focused gate: `pnpm ai:tools:test`, the gameplay `ai-production-scenarios` spec, the Playwright
 `skirmish-ai-runtime-production-composition-evaluation` spec, and

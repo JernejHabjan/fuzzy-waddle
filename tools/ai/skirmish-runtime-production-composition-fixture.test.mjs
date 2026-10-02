@@ -9,7 +9,7 @@ import { fileURLToPath } from "node:url";
 const fixture = JSON.parse(readFileSync(new URL("./fixtures/focused-production-composition-runtime.json", import.meta.url)));
 const requirement = fixture.assertions["PRO-04"];
 
-test("production composition pairs differ only by the useful copies satisfying their control", () => {
+test("ready and paid-queue production pairs validate independently for both factions", () => {
   assert.equal(validProductionCompositionPair(fixture.recipe, requirement, "PRO-04"), true);
   const manifest = JSON.parse(readFileSync(new URL("./fixtures/skirmish-v1.json", import.meta.url)));
   validateManifest(manifest, fileURLToPath(new URL("./fixtures", import.meta.url)));
@@ -32,6 +32,21 @@ test("composition controls cannot change resources, unrelated actors, queues or 
     (copy) => { copy.recipe.variants.pop(); }
   ];
   for (const mutate of mutations) {
+    const copy = structuredClone(fixture);
+    mutate(copy);
+    assert.equal(validProductionCompositionPair(copy.recipe, copy.assertions["PRO-04"], "PRO-04"), false);
+  }
+});
+
+test("queue provenance requires two distinct paid producers in its own seeded-control pair", () => {
+  for (const mutate of [
+    (copy) => { copy.recipe.variants[5].presetWorld.queues.pop(); },
+    (copy) => { copy.recipe.variants[5].presetWorld.queues[1].producerFixtureActorId = "missing-producer"; },
+    (copy) => { copy.recipe.variants[5].presetWorld.queues[1].producerFixtureActorId = "housing"; },
+    (copy) => { copy.recipe.variants[5].presetWorld.queues[1].actorName = "TivaraSlingshotFemale"; },
+    (copy) => { copy.recipe.variants[5].seed += 1; },
+    (copy) => { copy.recipe.variants[5].pairId = copy.recipe.variants[1].pairId; }
+  ]) {
     const copy = structuredClone(fixture);
     mutate(copy);
     assert.equal(validProductionCompositionPair(copy.recipe, copy.assertions["PRO-04"], "PRO-04"), false);
