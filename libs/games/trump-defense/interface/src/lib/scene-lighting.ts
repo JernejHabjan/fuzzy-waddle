@@ -7,7 +7,6 @@ import {
   MeshBasicMaterial,
   PointLight,
   Scene,
-  SphereGeometry,
   SpotLight,
   Vector3
 } from "three";
@@ -54,11 +53,8 @@ export function addSceneLights(scene: Scene, level: LevelDefinition): Group {
 function addSpotlightVisual(group: Group, light: SpotLight, data: SceneLight): void {
   if (!data.target) return;
   const target = new Vector3(...data.target);
-  addLightPool(group, target, data.color, 11, 0.12);
-  addLightPool(group, target, data.color, 6, 0.2);
-  const sourceMarker = new Mesh(new SphereGeometry(1.6, 10, 8), new MeshBasicMaterial({ color: data.color }));
-  sourceMarker.position.set(...data.position);
-  group.add(sourceMarker);
+  addLightPool(group, target, data.color, 16, 0.16);
+  addLightPool(group, target, data.color, 9, 0.24);
   light.castShadow = true;
 }
 

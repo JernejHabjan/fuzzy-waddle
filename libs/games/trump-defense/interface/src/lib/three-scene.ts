@@ -189,7 +189,7 @@ export class ThreeScene {
     while (this.hearts.length < lives) {
       const heart = this.models.create(asset);
       heart.scale.setScalar(2.2);
-      heart.position.set(this.mapWidth / 4 + this.hearts.length * 6, 5, -this.mapDepth - 8);
+      heart.position.set(this.mapWidth / 4 + this.hearts.length * 8, 5, -this.mapDepth - 8);
       this.hearts.push(heart);
       this.scene.add(heart);
     }

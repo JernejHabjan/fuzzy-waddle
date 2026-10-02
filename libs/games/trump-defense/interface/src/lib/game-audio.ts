@@ -15,11 +15,18 @@ const soundFiles: Record<GameSoundCue["kind"], string> = {
   upgrade: "towerUpgrade.wav",
   lifeLost: "woodhit_06.wav"
 };
+const rapidFireFiles = new Set([soundFiles.pew, soundFiles.cannon]);
+const rapidFireVolumes: Record<string, number> = {
+  [soundFiles.pew]: 0.12,
+  [soundFiles.cannon]: 0.16
+};
+const rapidFireIntervalMs = 160;
 
 /** Routes world-originating effects through camera-relative attenuation and stereo panning. */
 export class GameAudio {
   private music: Howl | null = null;
   private readonly effects = new Map<string, Howl>();
+  private readonly lastRapidFireMs = new Map<string, number>();
   private muted = false;
   private lastWorkSoundMs = 0;
   private lastWallSoundMs = 0;
@@ -83,17 +90,25 @@ export class GameAudio {
     const relativeX = sourceX - cameraX;
     if (Math.abs(relativeX) > 55) return null;
     return {
-      volume: 0.48 * Math.max(0.08, 1 - Math.abs(relativeX) / 70),
+      volume: 0.3 * Math.max(0.08, 1 - Math.abs(relativeX) / 70),
       pan: Math.max(-1, Math.min(1, relativeX / 55))
     };
   }
 
-  private playFile(file: string, sourceX?: number, cameraX = 0, volume = 0.48): void {
+  private playFile(file: string, sourceX?: number, cameraX = 0, volume = 0.3): void {
+    if (rapidFireFiles.has(file)) {
+      const now = performance.now();
+      const lastPlayed = this.lastRapidFireMs.get(file) ?? Number.NEGATIVE_INFINITY;
+      if (now - lastPlayed < rapidFireIntervalMs) return;
+      this.lastRapidFireMs.set(file, now);
+      volume = Math.min(volume, rapidFireVolumes[file] ?? volume);
+    }
     let effect = this.effects.get(file);
     if (!effect) {
-      effect = new Howl({ src: [assetUrl(`sfx/${file}`)], volume });
+      effect = new Howl({ src: [assetUrl(`sfx/${file}`)], volume, pool: rapidFireFiles.has(file) ? 1 : 3 });
       this.effects.set(file, effect);
     }
+    if (rapidFireFiles.has(file)) effect.stop();
     const id = effect.play();
     effect.volume(volume, id);
     if (sourceX !== undefined) {
@@ -123,6 +138,7 @@ export class GameAudio {
     this.lastWallSoundMs = 0;
     this.lastWorkSoundMs = 0;
     this.lastSlumSoundMs = 0;
+    this.lastRapidFireMs.clear();
   }
 
   dispose(): void {

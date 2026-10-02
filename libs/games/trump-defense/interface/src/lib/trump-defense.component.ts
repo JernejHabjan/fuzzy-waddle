@@ -9,7 +9,6 @@ import {
   type AfterViewInit,
   type OnDestroy
 } from "@angular/core";
-import { RouterLink } from "@angular/router";
 import {
   buildWall,
   buyTower,
@@ -30,7 +29,6 @@ import type { TrumpDefenseHud, TrumpDefensePhase } from "./trump-defense-ui-stat
 
 @Component({
   selector: "fuzzy-waddle-trump-defense",
-  imports: [RouterLink],
   templateUrl: "./trump-defense.component.html",
   styleUrl: "./trump-defense.component.scss",
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -65,7 +63,6 @@ export class TrumpDefenseComponent implements AfterViewInit, OnDestroy {
   });
   protected readonly message = signal("Loading the original map…");
   protected readonly muted = signal(false);
-  protected readonly randomPlacement = signal(false);
 
   ngAfterViewInit(): void {
     this.phase.set("selecting");
@@ -94,7 +91,6 @@ export class TrumpDefenseComponent implements AfterViewInit, OnDestroy {
         return;
       }
       this.game = createGame(level);
-      this.randomPlacement.set(level.rules.randomTowerPlacement);
       scene.sync(this.game);
       scene.render();
       this.updateHud();
@@ -199,7 +195,8 @@ export class TrumpDefenseComponent implements AfterViewInit, OnDestroy {
 
   protected onWheel(event: WheelEvent): void {
     event.preventDefault();
-    this.zoomCamera(event.deltaY);
+    this.scene?.zoom(event.deltaY);
+    this.scene?.render();
   }
 
   protected panCamera(dx: number, dz: number): void {
@@ -207,11 +204,6 @@ export class TrumpDefenseComponent implements AfterViewInit, OnDestroy {
     if (this.scene && this.game) {
       this.audio.updateCameraArea(this.scene.cameraX, this.game.level.grid.width * this.game.level.grid.tileSize);
     }
-    this.scene?.render();
-  }
-
-  protected zoomCamera(delta: number): void {
-    this.scene?.zoom(delta);
     this.scene?.render();
   }
 

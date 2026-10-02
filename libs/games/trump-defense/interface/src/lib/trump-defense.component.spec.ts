@@ -1,5 +1,4 @@
 import { TestBed, type ComponentFixture } from "@angular/core/testing";
-import { provideRouter } from "@angular/router";
 import type { LevelDefinition } from "@fuzzy-waddle/trump-defense-gameplay";
 import level1 from "../assets/trump-defense/levels/level-1.json";
 import { loadLevel } from "./asset-paths";
@@ -37,8 +36,7 @@ describe("TrumpDefenseComponent", () => {
   beforeEach(async () => {
     jest.mocked(loadLevel).mockResolvedValue(level1 as unknown as LevelDefinition);
     await TestBed.configureTestingModule({
-      imports: [TrumpDefenseComponent],
-      providers: [provideRouter([])]
+      imports: [TrumpDefenseComponent]
     }).compileComponents();
     fixture = TestBed.createComponent(TrumpDefenseComponent);
     fixture.detectChanges();
@@ -68,36 +66,45 @@ describe("TrumpDefenseComponent", () => {
   });
 
   it("starts from a user gesture and builds on a picked tile", () => {
-    const buttons: HTMLButtonElement[] = Array.from(fixture.nativeElement.querySelectorAll("button"));
-    buttons.find((button) => button.textContent?.includes("Start level"))?.click();
+    const root = fixture.nativeElement as HTMLElement;
+    const startButtons = Array.from(root.querySelectorAll("button"));
+    startButtons.find((button) => button.textContent?.includes("Start level"))?.click();
     fixture.detectChanges();
     const viewport: HTMLElement = fixture.nativeElement.querySelector(".td-viewport");
     viewport.dispatchEvent(new Event("pointerdown", { bubbles: true }));
-    buttons.find((button) => button.textContent?.includes("Sniper"))?.click();
+    const sniper = Array.from(root.querySelectorAll("button")).find((button) => button.textContent?.includes("Sniper"));
+    sniper?.click();
     fixture.detectChanges();
     expect(fixture.nativeElement.textContent).toContain("180");
     expect(fixture.nativeElement.textContent).toContain("Sniper tower built");
   });
 
-  it("offers pointer controls for camera panning and zooming", () => {
+  it("keeps camera controls off the HUD while wheel zoom still works", () => {
     const scene = jest.mocked(ThreeScene).mock.results.at(-1)?.value as jest.Mocked<ThreeScene>;
-    const pan = fixture.nativeElement.querySelector('[aria-label="Pan left"]') as HTMLButtonElement;
-    const zoom = fixture.nativeElement.querySelector('[aria-label="Zoom in"]') as HTMLButtonElement;
-    pan.click();
-    zoom.click();
-    expect(scene.pan).toHaveBeenCalledWith(-8, 0);
+    const stage: HTMLElement = fixture.nativeElement.querySelector(".td-stage");
+    stage.dispatchEvent(new WheelEvent("wheel", { deltaY: -120, bubbles: true, cancelable: true }));
+    expect(fixture.nativeElement.querySelector(".td-camera-controls")).toBeNull();
     expect(scene.zoom).toHaveBeenCalledWith(-120);
+  });
+
+  it("keeps the status, sound and placement controls over the game viewport", () => {
+    const root = fixture.nativeElement as HTMLElement;
+    const start = Array.from(root.querySelectorAll("button")).find((button) =>
+      button.textContent?.includes("Start level")
+    );
+    start?.click();
+    fixture.detectChanges();
+    const stage: HTMLElement = fixture.nativeElement.querySelector(".td-stage");
+    expect(stage.querySelector(".td-hud")).not.toBeNull();
+    expect(stage.querySelector(".td-sound")).not.toBeNull();
+    expect(stage.querySelector(".td-controls")).not.toBeNull();
+    expect(fixture.nativeElement.querySelector(".td-help")).toBeNull();
+    expect(fixture.nativeElement.querySelector(".td-credits")).toBeNull();
   });
 
   it("releases the scene when the route component is destroyed", () => {
     const scene = jest.mocked(ThreeScene).mock.results.at(-1)?.value as jest.Mocked<ThreeScene>;
     fixture.destroy();
     expect(scene.dispose).toHaveBeenCalled();
-  });
-
-  it("credits the original game's identified third-party sources", () => {
-    const credits: HTMLElement = fixture.nativeElement.querySelector(".td-credits");
-    expect(credits.textContent).toContain("Stronghold Crusader");
-    expect(credits.textContent).toContain("Red Alert");
   });
 });

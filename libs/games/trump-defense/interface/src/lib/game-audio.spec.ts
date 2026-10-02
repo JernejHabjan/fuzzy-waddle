@@ -32,4 +32,16 @@ describe("Trump Defense positional audio", () => {
     const howl = jest.mocked(Howl).mock.results[0]?.value as jest.Mocked<Howl>;
     expect(howl.stereo).toHaveBeenCalledWith(40 / 55, 1);
   });
+
+  it("mixes simultaneous tower shots quietly and prevents the same cannon sound stacking", () => {
+    const audio = new GameAudio();
+    audio.play({ kind: "cannon", worldX: 20 }, 20);
+    audio.play({ kind: "cannon", worldX: 20 }, 20);
+
+    const howl = jest.mocked(Howl).mock.results[0]?.value as jest.Mocked<Howl>;
+    expect(howl.play).toHaveBeenCalledTimes(1);
+    expect(Howl).toHaveBeenCalledWith(expect.objectContaining({ pool: 1, volume: 0.16 }));
+    expect(howl.stop).toHaveBeenCalledTimes(1);
+    expect(howl.volume).toHaveBeenCalledWith(0.16, 1);
+  });
 });

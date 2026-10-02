@@ -1,27 +1,45 @@
-/* The game occupies the portal content area without covering navigation. */
+/* The USA palette and all layout rules stay inside this game component. */
 :host {
+  --td-navy: #071a33;
+  --td-blue: #153b70;
+  --td-red: #b31942;
+  --td-cream: #fff8e7;
   display: block;
   height: 100%;
   min-height: 0;
-  color: #f7e9cb;
-  background: #101c22;
   overflow: hidden;
+  color: var(--td-cream);
+  background: var(--td-navy);
 }
 
-/* Main layout keeps controls visible while the map takes remaining space. */
+/* Keep the title compact and let the game stage use the remaining portal height. */
 .td-game {
   display: flex;
   flex-direction: column;
   height: 100%;
   min-height: 0;
   box-sizing: border-box;
-  padding: 1rem;
-  gap: 0.75rem;
+  padding: 0.4rem;
+  gap: 0.35rem;
   overflow: hidden;
 }
+.td-header {
+  flex: 0 0 auto;
+  min-height: 1.55rem;
+  border-left: 0.18rem solid var(--td-red);
+  padding-left: 0.45rem;
+}
+.td-header h1 {
+  margin: 0;
+  color: var(--td-cream);
+  font-size: 1rem;
+  line-height: 1.5rem;
+  letter-spacing: 0.025em;
+}
 
-/* Level selection replaces the map until the player chooses a level. */
+/* The level picker fills the screen until a level is selected. */
 .td-level-select {
+  position: relative;
   flex: 1;
   display: grid;
   align-content: center;
@@ -34,106 +52,136 @@
   margin: 0;
 }
 .td-level-select p {
-  color: #b9c0bc;
+  color: #d4dcec;
 }
 .td-level-list {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0.75rem;
-  margin-top: 1rem;
+  gap: 0.6rem;
+  margin-top: 0.75rem;
 }
 .td-level-choice {
   display: grid;
-  min-width: 10rem;
-  min-height: 6rem;
+  min-width: 9rem;
+  min-height: 5.25rem;
   align-content: center;
   gap: 0.3rem;
 }
 .td-level-choice span {
-  color: #344237;
+  color: var(--td-navy);
   font-weight: 400;
 }
-
-/* Header groups the route link and title in a compact strip. */
-.td-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-}
-.td-title {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-}
-.td-title a {
-  color: #e3c785;
-  white-space: nowrap;
-}
-.td-title h1 {
-  margin: 0;
-  font-size: clamp(1.2rem, 2vw, 1.8rem);
-}
-.td-title p {
-  margin: 0;
-  color: #b9c0bc;
-  font-size: 0.85rem;
+.td-sound-select {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
 }
 
-/* Status stays readable over the dark page outside the canvas. */
-.td-hud {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.65rem;
-}
-.td-hud span {
-  border: 1px solid #536454;
-  background: #24342e;
-  border-radius: 0.45rem;
-  padding: 0.35rem 0.75rem;
-}
-.td-hud strong {
-  color: #f4d476;
-}
-
-/* The viewport owns only rendering and map picking. */
+/* The canvas is the full stage; HUD and actions float over the map. */
 .td-stage {
   position: relative;
   flex: 1;
   min-height: 0;
-  border: 2px solid #667255;
-  border-radius: 0.7rem;
+  border: 1px solid #d4dcec;
+  border-radius: 0.35rem;
   overflow: hidden;
-  background: #233c4c;
+  background: #152f4d;
 }
 .td-viewport {
   position: absolute;
   inset: 0;
   touch-action: none;
 }
-/* The renderer's intrinsic pixel dimensions must not enlarge the document. */
+/* The renderer's intrinsic pixels must not increase the document size. */
 .td-viewport canvas {
   display: block;
   width: 100%;
   height: 100%;
 }
+.td-hud {
+  position: absolute;
+  z-index: 2;
+  top: 0.5rem;
+  left: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  max-width: calc(100% - 3.5rem);
+  pointer-events: none;
+}
+.td-hud span {
+  border-left: 2px solid var(--td-red);
+  border-radius: 0.25rem;
+  padding: 0.35rem 0.55rem;
+  color: var(--td-cream);
+  background: #071a33e8;
+  box-shadow: 0 0.15rem 0.45rem #0007;
+  backdrop-filter: blur(0.25rem);
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+.td-hud strong {
+  color: #fff;
+}
+.td-sound {
+  position: absolute;
+  z-index: 3;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: grid;
+  place-items: center;
+  width: 2.2rem;
+  min-width: 2.2rem;
+  min-height: 2.2rem;
+  padding: 0.25rem;
+  font-size: 1.1rem;
+}
 
-/* Overlay communicates loading, pause, victory, defeat, and WebGL errors. */
+/* Keep game actions compact at the lower edge so the map stays visible. */
+.td-controls {
+  position: absolute;
+  z-index: 2;
+  bottom: 0.5rem;
+  left: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  max-width: calc(100% - 1rem);
+  pointer-events: none;
+}
+.td-controls button {
+  min-height: 2rem;
+  padding: 0.35rem 0.55rem;
+  color: var(--td-cream);
+  background: #071a33ed;
+  border-color: #e3eaf5;
+  box-shadow: 0 0.15rem 0.45rem #0007;
+  backdrop-filter: blur(0.25rem);
+  font-size: 0.78rem;
+  pointer-events: auto;
+}
+.td-controls button:hover:not(:disabled) {
+  background: var(--td-blue);
+}
+
+/* Loading and game-state actions use the same scoped navy and red palette. */
 .td-overlay {
   position: absolute;
+  z-index: 4;
   inset: 0;
   display: grid;
   place-items: center;
-  background: #0b1718b8;
   padding: 1rem;
+  background: #071a33a8;
 }
 .td-panel {
   max-width: 27rem;
-  padding: 1.5rem;
-  border: 1px solid #a98e50;
-  border-radius: 0.75rem;
-  background: #152522;
+  padding: 1.25rem;
+  border: 1px solid var(--td-cream);
+  border-top: 3px solid var(--td-red);
+  border-radius: 0.5rem;
+  background: #0d2850f2;
   text-align: center;
   box-shadow: 0 1rem 3rem #0009;
 }
@@ -141,48 +189,23 @@
   margin: 0 0 0.5rem;
 }
 .td-panel p {
-  margin: 0 0 1.25rem;
+  margin: 0 0 1rem;
 }
 
-/* Pointer camera controls keep the entire map reachable on touch screens. */
-.td-camera-controls {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-}
-.td-camera-controls span {
-  margin-right: 0.3rem;
-  color: #b9c0bc;
-  font-size: 0.83rem;
-}
-.td-camera-controls button {
-  min-width: 2.5rem;
-  min-height: 2.5rem;
-  padding: 0.3rem;
-}
-
-/* Actions mirror the original B, C, U, and Space shortcuts. */
-.td-controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
 button {
-  border: 1px solid #b59553;
-  border-radius: 0.45rem;
-  padding: 0.5rem 0.75rem;
-  color: #19231d;
-  background: #edcd78;
+  border: 1px solid #f1d6ab;
+  border-radius: 0.35rem;
+  padding: 0.45rem 0.7rem;
+  color: #071a33;
+  background: var(--td-cream);
   font-weight: 700;
   cursor: pointer;
 }
 button:hover:not(:disabled) {
-  background: #ffe09a;
+  background: #fff;
 }
-button:focus-visible,
-a:focus-visible {
-  outline: 3px solid #fff;
+button:focus-visible {
+  outline: 3px solid var(--td-red);
   outline-offset: 2px;
 }
 button:disabled {
@@ -190,45 +213,57 @@ button:disabled {
   cursor: not-allowed;
 }
 kbd {
-  margin-left: 0.35rem;
-  padding: 0.1rem 0.25rem;
-  border-radius: 0.2rem;
-  background: #182822;
-  color: #f7e9cb;
-  font-size: 0.7rem;
+  margin-left: 0.2rem;
+  padding: 0.08rem 0.2rem;
+  border-radius: 0.15rem;
+  color: var(--td-cream);
+  background: var(--td-blue);
+  font-size: 0.65rem;
 }
-
-/* Feedback announces unaffordable and invalid actions. */
-.td-feedback {
-  min-height: 1.5rem;
-  margin: 0;
-  color: #f7d884;
-}
-.td-help {
-  margin: 0;
-  color: #b9c0bc;
-  font-size: 0.83rem;
-}
-.td-credits {
-  color: #b9c0bc;
-  font-size: 0.83rem;
-}
-.td-credits summary {
-  cursor: pointer;
-}
-.td-credits p {
-  margin: 0.35rem 0 0;
+.td-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 @media (max-width: 600px) {
   .td-game {
-    padding: 0.5rem;
+    padding: 0.25rem;
   }
   .td-stage {
     flex: 1;
-    min-height: 0;
+  }
+  .td-hud {
+    top: 0.3rem;
+    left: 0.3rem;
+    gap: 0.2rem;
+  }
+  .td-hud span {
+    padding: 0.25rem 0.35rem;
+    font-size: 0.72rem;
+  }
+  .td-sound {
+    top: 0.3rem;
+    right: 0.3rem;
+  }
+  .td-controls {
+    right: 0.3rem;
+    bottom: 0.3rem;
+    left: 0.3rem;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.25rem;
+    max-width: none;
   }
   .td-controls button {
-    flex: 1 1 45%;
+    min-width: 0;
+    padding: 0.35rem 0.2rem;
+    font-size: 0.7rem;
   }
 }
