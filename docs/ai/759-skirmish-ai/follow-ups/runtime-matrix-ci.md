@@ -82,10 +82,53 @@ No authored example here has run, and no coverage count or runtime saving is cla
    No tests, validation, E2E, simulation, lint, type checking, build or editor check ran; paid application,
    positions and completion timing remain final-gate evidence.
 
-**Next bounded batch — GPT-6.1 Sol / high:** author distinct causal contracts for PRO-03 future-transition
-abandonment, PRO-06 exposed-producer resilience and PRO-07 shared-lane/cancellation-refund authority. Keep those
-policy/authority decisions together on Sol/high; do not infer them from capacity helpers or queue counts. Tests and
-all execution remain deferred.
+### Production authority contract checkpoint (2026-10-02, unverified)
+
+The distinct contracts/oracles are authored. This is an evidence-contract slice, **not** the focused runtime migration
+or completed gameplay support. `RuntimeProductionContractV1` declares per-variant branch, product/producer, group,
+ceiling and retained window. `RuntimeProductionEvidenceV1` requires definition prices/durations, actual initial
+identities, committed snapshots, physical lanes, current visible threats, future plan dates/leases, ready products
+and research authority facts, and strictly ordered command/resource application facts. Fixtures declare expectations;
+only a real test-owned adapter may capture evidence. The oracle-only synthetic builders cannot feed browser results.
+
+| ID / acceptance | Authored owner and independent rejection | Still required before runtime migration |
+| --- | --- | --- |
+| PRO-03 future versus abandonment | `skirmish-ai-runtime-production-transition-evaluation.ts`: normal post-start commitment, idle lanes, catalog-duration throughput justification, new ready capacity before transition starts, dated applied/retained force; abandoned optional unspent leases disappear while irreversible claims remain. Missing/changed dates, unrelated effects, late capacity and paid-claim erasure fail. | Establish the real future plan/demand/deadline and optional claim owner, including persistence/reconciliation. Trigger commitment and abandonment through legal visible world changes; never preset an AI brain/lease. Capture at tick zero and after decisions, then author both factions' legal pairs. |
+| PRO-06 exposed critical producer | `skirmish-ai-runtime-producer-resilience-evaluation.ts`: current visible effective building-weapon reach, new safe/reachable ready identity before loss, useful applied product from that survivor and retained output; safe-served and low-value/no-demand controls prohibit added capacity. Hidden/stale threats, unreachable/unsafe sites, missing loss and unrelated output fail. | Add fair observation-backed criticality/exposure policy and safe-site selection, with real navigation/placement authority. Capture effective ranges and reachability, then author both causal pairs per faction and deterministic actor-specific loss. |
+| PRO-07 shared queue and refund | `skirmish-ai-runtime-production-refund-evaluation.ts`: shared physical lane occupancy, useful independent train/research completion, exact definition prices, reserved cash and remaining pay-over-time obligations; one paid cancellation request, an unfundable pre-refund probe, actual credit, later useful output and no requeue cycle. | Seed ordinary paid production/research through legal components/commands. Record cancellation dispatch and shared queue/resource application order in a test-only adapter. Capture remaining obligations from their real authority, exact queue identities and tech completion. Author shared-contention and pending-request worlds per faction. |
+
+**Timing decision from source inspection:** `QueueComponent.cancelProductionItem` removes/reports the cancelled item
+then calls `ProductionComponent.handleProductionRefund`; research calls its refund before removing/reporting the item.
+Both refund paths emit resource addition synchronously. A pending-refund case therefore observes cancellation
+**request/dispatch before authoritative cancellation/refund application**. Applied cancellation and credit may share a
+tick, with their order retained explicitly. Do not defer the shared refund, inject anticipated cash or require a
+multi-tick gap after applied cancellation just to satisfy a test.
+
+`evaluateRuntimeProductionContract` is mandatory in the generic variant evaluator for these three IDs, and
+`evaluateRuntimeProductionPairs` requires all branches for each required faction. Transition/resilience pairs must
+have distinct variants with equal seed/map/pre-tick balances and a shared causal setup digest; queue contention and
+cancellation use separate worlds. Aggregate producer/demand/queue checks now live in a supplementary count helper.
+The old aggregate PRO-03 prebuild shortcut was removed, and capacity-only specs identify PRO-01/02 instead.
+`requiredProductionContracts` cannot opt into early evidence stopping. The new pure resource-authority spec exercises
+the existing arbiter's shared slot identity, priced claims, obligations and cash boundary with repeated digests and
+proposal-order permutation; it does not establish runtime queue/refund application or full PRO-07 pure coverage.
+
+The natural PRO-03/06/07 recipe remains registered as migration debt and now fails closed for missing contracts and
+branches. No adapter fills `productionEvidence`, no new runnable focused recipe/full pure row was registered, and
+fixture parsing/schema enforcement for the new field still needs the adapter/recipe slice. No policy, persisted brain
+identifier, queue/refund gameplay owner or manifest denominator changed. All examples are authored and unrun.
+
+**Next related batch — stay on GPT-6.1 Sol / high:** establish the real future/resilience policy owners and test-only
+production/queue/resource capture, then author legal paired worlds and full pure behavioral cases against these
+contracts. Group the authority work before a Luna fixture expansion; its decisions are still unresolved. Start with
+`ai-military-capacity-proposal.ts`, `ai-military-force-context.ts`, `QueueCommandSystem`, `QueueComponent`,
+`ProductionComponent`/`ResearchComponent`, the preset-world service and selected new oracle contracts. Do not replace
+source authority with self-reported counters or AI-state injection. Record absent capabilities/provenance as missing
+evidence; retain the deferred execution policy.
+
+Deferred focused checks also include the new Playwright production contract/transition/resilience/refund/pair specs
+and `ai-production-resource-authority.spec.ts`. First execute their synthetic oracle cases and pure admission cases at
+the final gate, then map preflight and the eventual focused browser recipes; no check listed here has run.
 
 Eventual focused gate: `pnpm ai:tools:test`, the gameplay `ai-production-scenarios` spec, the Playwright
 `skirmish-ai-runtime-production-composition-evaluation` spec, and

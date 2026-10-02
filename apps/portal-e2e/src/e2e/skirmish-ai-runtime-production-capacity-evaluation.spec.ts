@@ -28,17 +28,17 @@ function variant(branch: "build" | "already_sufficient", checkpoints: readonly R
   } as RuntimeVariantResultV1;
 }
 
-test("capacity subject needs a ready second producer before squad completion", () => {
+test("capacity subject needs a real ready second producer", () => {
   const ready = variant("build", [checkpoint(20, 1), checkpoint(600, 2)]);
-  expect(evaluateRuntimeProductionCapacity("PRO-03", assertion, ready)).toEqual([]);
-  expect(evaluateRuntimeProductionCapacity("PRO-03", assertion, variant("build", [checkpoint(20, 1)])))
+  expect(evaluateRuntimeProductionCapacity("PRO-01", assertion, ready)).toEqual([]);
+  expect(evaluateRuntimeProductionCapacity("PRO-01", assertion, variant("build", [checkpoint(20, 1)])))
     .toContain("production_capacity_not_ready");
 });
 
 test("ample-capacity control must not construct a cash-only third producer", () => {
   const safe = variant("already_sufficient", [checkpoint(20, 2), checkpoint(2000, 2)]);
-  expect(evaluateRuntimeProductionCapacity("PRO-06", assertion, safe)).toEqual([]);
-  expect(evaluateRuntimeProductionCapacity("PRO-06", assertion,
+  expect(evaluateRuntimeProductionCapacity("PRO-02", assertion, safe)).toEqual([]);
+  expect(evaluateRuntimeProductionCapacity("PRO-02", assertion,
     variant("already_sufficient", [checkpoint(20, 2), checkpoint(2000, 3)])))
     .toContain("production_capacity_unnecessary_duplicate");
 });

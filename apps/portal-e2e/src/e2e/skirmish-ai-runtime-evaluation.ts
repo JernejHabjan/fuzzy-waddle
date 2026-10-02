@@ -2,6 +2,7 @@ import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
 import type { RuntimeVariantResultV1 } from "./skirmish-ai-runtime-variant-result";
 import { evaluateRuntimeVariant } from "./skirmish-ai-runtime-variant-evaluation";
 import { evaluateRuntimePressureResponse } from "./skirmish-ai-runtime-pressure-evaluation";
+import { evaluateRuntimeProductionPairs } from "./skirmish-ai-runtime-production-pair-evaluation";
 
 export function evaluateScenario(
   scenarioId: string,
@@ -17,7 +18,7 @@ export function evaluateScenario(
   );
   const selectedVariants = variants.filter((variant) => applicableVariantIds.has(variant.variantId));
   if (selectedVariants.length === 0) return [`runtime_variants_missing:${scenarioId}`];
-  const failures: string[] = [];
+  const failures = evaluateRuntimeProductionPairs(scenarioId, assertion, selectedVariants);
   const actualFactions = [...new Set(selectedVariants.map((variant) => variant.aiFaction))].sort();
   const requiredFactions = [...assertion.requiredAiFactions].sort();
   if (JSON.stringify(actualFactions) !== JSON.stringify(requiredFactions)) failures.push("required_ai_factions");

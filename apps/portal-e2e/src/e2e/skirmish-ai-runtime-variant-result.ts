@@ -1,7 +1,10 @@
 import type { RuntimeCheckpointV1 } from "./skirmish-ai-runtime-checkpoint";
 import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
+import type { RuntimeProductionEvidenceV1 } from "./skirmish-ai-runtime-production-evidence";
 
 export interface RuntimeVariantResultV1 {
+  /** Absent until a real runtime adapter has retained ordered production/resource authority facts. */
+  readonly productionEvidence?: RuntimeProductionEvidenceV1;
   readonly variantId: string;
   readonly repetition?: number;
   readonly mapLabel: string;

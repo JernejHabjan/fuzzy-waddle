@@ -1,6 +1,9 @@
 import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
+import type { RuntimeProductionContractV1 } from "./skirmish-ai-runtime-production-contract";
 
 export interface RuntimeAssertionV1 {
+  /** Required per variant for causal PRO-03/06/07 proof; natural aggregate recipes remain insufficient. */
+  readonly requiredProductionContracts?: Readonly<Record<string, RuntimeProductionContractV1>>;
   readonly maximumTick?: number;
   readonly minimumDecisions: number;
   readonly minimumAppliedCommands: number;

@@ -6,38 +6,43 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
-**Next session (user policy, 2026-10-02):** author the distinct PRO-03 future-transition/abandonment, PRO-06
-producer-resilience and PRO-07 cancellation/refund contracts as one related **GPT-6.1 Sol / high** batch. Read the
-[production-family packet](follow-ups/runtime-matrix-ci.md#production-family-authoring-contract-2026-10-02-unverified)
-and inspect only those source owners plus PRO-04 evidence if a new contract depends on it. Do not claim that
-capacity helpers prove these behaviors. Keep execution deferred; source-review, commit/push and pause at that model
-boundary. The PRO-04 expansion below is authored and unverified.
+**Next session (user policy, 2026-10-02):** continue the production authority/policy and runtime-adapter work for
+PRO-03/06/07 on **GPT-6.1 Sol / high**; no model switch is needed. The distinct evidence contracts/oracles are now
+written, but real future-transition ownership, safe resilience policy, runtime capture and legal focused presets
+remain unimplemented. Read the [production packet](follow-ups/runtime-matrix-ci.md#production-authority-contract-checkpoint-2026-10-02-unverified)
+and those selected owners. Keep related authority work together; defer all execution, commit/push and pause at the
+next bounded authoring boundary. Do not downgrade this remaining causal work to fixture-only expansion.
 
-- Current checkpoint: #815/#816 PRO-04 ready-control and seeded-queue pairs, both factions, pure affordability/lane
-  cases, queue provenance and independent pair validation are authored; **unverified**, not scenario/issue acceptance.
-  The batch began at `1834c9efb4aecb7c2afe41a197d80bb6e0f4b16c` on `feature/759-skirmish-ai`, worktree
-  `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`. The commit containing this ledger owns the authored revision;
-  the next session verifies its local and remote SHA rather than relying on a self-referential hash here.
-- Changed source anchors: `tools/ai/fixtures/focused-production-composition-runtime.json`, manifest PRO-04 mapping,
-  `apps/portal-e2e/src/e2e/skirmish-ai-runtime-production-composition-evaluation{,.spec}.ts`,
-  `tools/ai/skirmish-runtime-production-composition-fixture{,.test}.mjs`, and
-  `libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/testing/ai-production-scenarios.spec.ts`.
-  Phaser preset application provenance, assertion/variant/result contracts, checkpoint capture,
-  generic evaluator/runner, optional composition digest and generated catalog are wired to those owners.
-  Natural production now retains only PRO-03/06/07. No production policy, persisted brain IDs, lifecycle adapter,
-  source baseline or shared skill changed.
-- Acceptance closure: (1) family requirements/source gaps specified in #816 packet; (2) two legal-definition-backed
-  causal pairs per faction, exact equal pre-tick balances, 600-tick ceiling and 200-tick retained window authored;
-  (3) independent new-unit identity/applied-effect/absence oracle plus ready- and seeded-queue false-pass examples;
-  (4) pure priced duplicates, ready/queued/leased suppression, busy/idle lanes, exact affordability/shortfall, both
-  catalogs, three-run digests and input permutation; (5) registration, catalog and next-batch packet updated.
-  Implementation review, Omission Audit and separate Final Closure Audit use
-  source inspection only; catalog generation used `node tools/ai/generate-skirmish-test-catalog.mjs --write`
-  as an authoring operation. All tests, E2E, simulations, lint/type/build/editor/schema validation and doctor/context
-  remain deferred. This batch adds a second same-map causal pair per faction, exact one-unit affordability and busy/idle
-  lane pure cases across both typed catalogs, and paused-boundary producer/item/type capture. Map positions, live queue
-  payment/completion, useful product selection, training latency and the complete runtime path remain final-gate
-  obligations. No passing evidence, coverage increment or measured speedup is claimed.
+- Current step: #815/#816 PRO-03/06/07 **evidence-contract authoring**, authored/unverified. This is not runtime
+  migration, behavior acceptance or issue completion. The batch began at `9cb93e6a7ec0d67fe46d277d20336edf21160886`
+  on `feature/759-skirmish-ai`, worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`. The commit containing this
+  ledger owns the revision; verify its local/remote SHA on resume. Actual model/effort is not exposed here.
+- Changed source anchors: `apps/portal-e2e/src/e2e/skirmish-ai-runtime-production-{contract,evidence}.ts`, the
+  adjacent contract/evidence validation, transition, pair, refund/payment and producer-resilience evaluators/specs;
+  generic assertion/result/scenario/variant evaluation and the extracted supplementary production-count helper;
+  `libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/testing/ai-production-resource-authority.spec.ts`. Capacity-only oracle specs now use PRO-01/02.
+- Contract decisions: PRO-03 observes a genuine future commitment after normal decisions, idle lanes, definition
+  durations, justified extra throughput, readiness before its start date, a dated applied force, optional unspent
+  lease release and retained irreversible commitments. PRO-06 requires current visible building-weapon exposure,
+  safe reachable new capacity before scheduled loss, applied useful output afterward, and safe/low-value/no-demand
+  controls. PRO-07 requires physical shared train/research lanes, priced cash/remaining obligations, a pending
+  cancellation **request**, an unaffordable admission probe before authoritative refund application, normal later
+  progress and no cancellation/requeue cycle. Applied cancellation/refund are synchronous in existing queue owners;
+  do not invent a delayed refund or mutate gameplay to make that window appear.
+- Fail-closed integration: PRO-03/06/07 cannot pass the generic evaluator without the per-variant contracts and real
+  evidence. The temporary natural recipe remains registered and now fails `production_contract_missing` plus missing
+  required branches; it is retained migration debt. No runtime adapter currently fills `productionEvidence`, and no
+  new runnable focused recipe or full pure scenario was registered. Synthetic oracle fixtures are test inputs only.
+- Source-review closure: (1) distinct causal contracts and full horizons; (2) applied identities, definition prices,
+  timing and retention; (3) per-faction branches and same-seed/balance/setup transition/resilience pairs;
+  (4) adversarial oracle cases and partial real-arbiter resource/slot cases; (5) generic hard gate and resume packet.
+  Implementation review, Omission Audit and separate Final Closure Audit used source inspection only. Runtime setup,
+  adapter provenance/digest capture, schema validation of new fixture fields, policy/save ownership, legal sites,
+  both-faction concrete worlds and full pure behavior scenarios remain explicit next-step gaps. No production policy,
+  persisted brain IDs, shared queue authority or manifest denominator changed; no passing evidence is claimed.
+- All tests, E2E, simulations, lint/type/build/editor/schema validation and doctor/context remain deferred. No catalog
+  generation ran because registrations did not change. Prior PRO-04 ready/seeded-queue pairs from `9cb93e6a` remain
+  authored/unverified; their positions, paid application and completion timing still belong to the final gate.
 
 - Multiplayer diagnostic/lifecycle authoring checkpoint (2026-09-30, **unverified**): browser-only relay and local-hash
   observation now lives in a small test-owned Phaser adapter rather than adding methods to hash-baselined

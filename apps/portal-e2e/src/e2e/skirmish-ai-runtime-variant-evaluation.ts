@@ -12,13 +12,17 @@ import { evaluateRuntimeWorkerGrowth } from "./skirmish-ai-runtime-worker-growth
 import { isAiVictory } from "./skirmish-ai-runtime-terminal";
 import { evaluateRuntimeProductionCapacity } from "./skirmish-ai-runtime-production-capacity-evaluation";
 import { evaluateRuntimeProductionComposition } from "./skirmish-ai-runtime-production-composition-evaluation";
+import { evaluateRuntimeProductionContract } from "./skirmish-ai-runtime-production-contract-evaluation";
+import { evaluateRuntimeProductionCounts } from "./skirmish-ai-runtime-production-count-evaluation";
 
 export function evaluateRuntimeVariant(
   scenarioId: string,
   assertion: RuntimeAssertionV1,
   variant: RuntimeVariantResultV1
 ): string[] {
-  const failures: string[] = [];
+  const failures = evaluateRuntimeProductionContract(
+    scenarioId, assertion.requiredProductionContracts?.[variant.variantId], variant.productionEvidence
+  ).map((failure) => `${variant.variantId}:${failure}`);
   const final = last(variant.checkpoints);
   const appliedCommands = new Map(
     variant.checkpoints
@@ -75,68 +79,7 @@ export function evaluateRuntimeVariant(
   ) {
     failures.push(`${variant.variantId}:minimum_repeated_military_type_count`);
   }
-  const maximumProducerCount = Math.max(
-    ...variant.checkpoints.map((checkpoint) => checkpoint.militaryProducerNames.length)
-  );
-  if (
-    assertion.minimumMilitaryProducerCount !== undefined &&
-    maximumProducerCount < assertion.minimumMilitaryProducerCount
-  ) {
-    failures.push(`${variant.variantId}:minimum_military_producer_count`);
-  }
-  if (
-    assertion.maximumMilitaryProducerCount !== undefined &&
-    maximumProducerCount > assertion.maximumMilitaryProducerCount
-  ) {
-    failures.push(`${variant.variantId}:maximum_military_producer_count`);
-  }
-  const compositionDemands = variant.checkpoints.flatMap((checkpoint) =>
-    checkpoint.demands.filter((demand) => demand.demandId === "demand:composition:first-squad")
-  );
-  const capacityDemands = variant.checkpoints.flatMap((checkpoint) =>
-    checkpoint.demands.filter((demand) => demand.demandId === "demand:capacity:first-army")
-  );
-  if (assertion.requireCompositionDemand && compositionDemands.length === 0) {
-    failures.push(`${variant.variantId}:composition_demand_missing`);
-  }
-  if (assertion.requireCapacityDemand && capacityDemands.length === 0) {
-    failures.push(`${variant.variantId}:capacity_demand_missing`);
-  }
-  if (scenarioId === "PRO-03" && !assertion.requiredProductionCapacity) {
-    const capacityIndex = variant.checkpoints.findIndex((checkpoint) => checkpoint.militaryProducerNames.length >= 2);
-    const fulfilledIndex = variant.checkpoints.findIndex((checkpoint) => {
-      const demand = checkpoint.demands.find(
-        (candidate) => candidate.demandId === "demand:composition:first-squad" && candidate.desired >= 12
-      );
-      return demand !== undefined && demand.satisfied + demand.queued + demand.accepted >= demand.desired;
-    });
-    const prebuilt = capacityIndex >= 0 && fulfilledIndex >= 0 && capacityIndex <= fulfilledIndex;
-    if (!prebuilt) failures.push(`${variant.variantId}:capacity_not_prebuilt`);
-  }
-  if (assertion.requireProductionStopsAtTarget) {
-    const fulfillmentIndex = variant.checkpoints.findIndex((checkpoint) => {
-      const demand = checkpoint.demands.find((candidate) => candidate.demandId === "demand:composition:first-squad");
-      return demand !== undefined && demand.satisfied + demand.queued + demand.accepted >= demand.desired;
-    });
-    if (fulfillmentIndex < 0) failures.push(`${variant.variantId}:composition_target_not_fulfilled`);
-    else if (
-      variant.checkpoints.slice(fulfillmentIndex).some((checkpoint) => {
-        const demand = checkpoint.demands.find((candidate) => candidate.demandId === "demand:composition:first-squad");
-        return demand !== undefined && demand.satisfied + demand.queued + demand.accepted > demand.desired;
-      })
-    ) {
-      failures.push(`${variant.variantId}:composition_overproduction`);
-    }
-  }
-  const maximumQueueOccupancy = assertion.maximumQueueOccupancyPerProducer;
-  if (
-    maximumQueueOccupancy !== undefined &&
-    variant.checkpoints.some((checkpoint) =>
-      checkpoint.militaryProducerQueues.some((producer) => producer.occupied > maximumQueueOccupancy)
-    )
-  ) {
-    failures.push(`${variant.variantId}:producer_queue_overbooked`);
-  }
+  failures.push(...evaluateRuntimeProductionCounts(assertion, variant));
   const launchEvents = [
     ...new Map(
       variant.checkpoints
