@@ -26,14 +26,18 @@ description: Write or maintain requested Fuzzy Waddle plans and cold-start progr
 - Put repository-wide environment, context, project selection, verification, triage, metrics, caching, and output-budget behavior in generic tools with small domain adapters. Do not duplicate the generic core inside the feature that first needed it.
 - Prefer generated bounded context and manifest-derived test selection over another hand-maintained index. Keep mutable counts, scenario registration, and status in one authority.
 - Detect file-size, method-size, line-length, and ownership blockers before behavior changes. Route necessary behavior-neutral restructuring through a separate bounded lower-cost pass and commit; do not hide violations by refreshing a baseline.
-- Use `gpt-5.6-sol` with high effort for planning, architecture, cross-system diagnosis, authority boundaries, and any change whose correct scope is still uncertain. Use `gpt-5.6-terra` only after Sol has made the contract and acceptance evidence concrete, for bounded mechanical implementation, fixture expansion, or cleanup. Do not downgrade a planning/deep-reasoning boundary merely to reduce cost; an agent may suggest a rare Astra escalation only for a compact, reproducible unresolved design problem.
-- At each stop, report a compact grid with issue/stage, state, evidence or blocker, and dependency. Then recommend the next model/effort with one brief reason. Do not claim a recommendation changed the active model.
+- Keep exact model choices and verification timing in the task's authoritative runbook. Recommend stronger reasoning for unresolved design, authority or causal investigation, and economical implementation only after setup, contracts and acceptance are concrete; do not silently downgrade uncertain work.
+- Group dependency-compatible work into coherent family/owner batches, not one model switch per file or scenario. When the user requests model-switch pauses, name the next boundary before work and stop there; continuous execution does not override an explicit pause. Do not promise cache reuse across models or chats.
+- At session start and each agreed stop, report a compact grid with current batch/issue, state, authored versus validated evidence or blocker, dependency and next boundary. Recommend the next model/effort with one brief reason; recommendations do not change the active model.
 
 ## Resume record
 
 Before interruption or handoff, preserve branch/worktree, base and source provenance, current stage/substep, decisions and implemented symbols, acceptance evidence, exact check commands/results, unresolved defects versus infrastructure blockers, and the next action.
 
 Keep a bounded quick-resume block at the top of a long ledger: current provenance/ownership, last meaningful pass/failure artifacts, repairs made after that evidence, and one exact next command. Leave completed stage history below it so a cold agent need not load the whole file.
+If execution is deferred, give the exact next authoring action instead of an executable check. Include selected IDs,
+changed files/symbols, unresolved decisions, unrun checks and next-batch acceptance; link source anchors rather than
+copying large logs or chat history. Reuse that record across compaction and cold starts.
 
 Use explicit states such as not_started, in_progress, stage_checked, validated and blocked. The plan defines their meaning; “code authored” never silently becomes “tests passed.” Invalidate affected evidence when shared inputs/contracts change. A cold agent must be able to resume from files and git without earlier conversation history.
 

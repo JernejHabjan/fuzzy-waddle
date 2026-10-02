@@ -11,6 +11,8 @@ The user's plan owns the stage boundary, required checks and git authority. This
 
 1. Read the runbook, shared contracts, current stage and relevant cross-cutting cases; use the progress ledger and git to verify prerequisites. Do not reread every unrelated packet.
 2. Confirm the selected stage, branch and model/effort. Record actual settings; if unavailable, say unknown rather than infer them. A recommendation does not switch the running model.
+   For a model-batched task, report the current batch and agreed pause boundary; keep related work together instead of
+   switching after each file or scenario. Exact models and verification timing belong to the runbook, not this skill.
 3. Create a numbered acceptance map covering every mandatory stage requirement, including owning cross-stage cases. Link each to planned symbols, consumers, checks and required docs/debug/save/cleanup evidence. Resolve conflicting policy before implementation.
 
 ## Close in this order
@@ -34,6 +36,10 @@ The user's plan owns the stage boundary, required checks and git authority. This
 - Record tested source revision or dirty-diff digest before the closure commit. Report the final commit/remote SHA in the handoff; the next agent verifies the commit containing the ledger. Do not invent a self-referential commit SHA inside its own contents.
 - Record remaining blockers honestly. If already satisfied by existing code, prove equivalence and checks, then commit the task-owned evidence update when authorized; do not invent runtime changes.
 - For a multi-issue roadmap, return the refreshed dependency-ordered progress grid and the next recommended model/effort with one sentence of rationale. Escalation is a user choice, not an automatic stage action.
+- Keep the cold-start record compact: branch/provenance, exact changed files and selected IDs, authored versus validated
+  evidence, unresolved decisions, unrun checks, next acceptance and one next action. Link owning sources and artifacts;
+  do not require the next agent to reread chat history. If the user requested model-switch pauses, end at the agreed
+  batch boundary even when an older roadmap says to continue automatically.
 - At final roadmap closure, delete temporary handoff/plan artifacts after backlink and durable-knowledge audits. Preserve chronology in Git/PR history rather than permanent product documentation.
 
 ## Resume
