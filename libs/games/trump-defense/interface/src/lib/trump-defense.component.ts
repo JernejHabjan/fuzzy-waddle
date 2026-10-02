@@ -51,9 +51,9 @@ export class TrumpDefenseComponent implements AfterViewInit, OnDestroy {
   protected readonly levelNumber = signal<1 | 2 | 3>(1);
   protected readonly finalLevel = computed(() => this.levelNumber() === 3);
   protected readonly levelChoices = [
-    { number: 1, label: "First Line" },
-    { number: 2, label: "Night Watch" },
-    { number: 3, label: "Final Stand" }
+    { number: 1, label: "Red, White & Boom" },
+    { number: 2, label: "Stars After Dark" },
+    { number: 3, label: "Liberty's Last Stand" }
   ] as const;
   protected readonly unlockedLevels = signal(getUnlockedLevels(isDevMode()));
   protected readonly hud = signal<TrumpDefenseHud>({

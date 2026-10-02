@@ -51,7 +51,7 @@ describe("TrumpDefenseComponent", () => {
   afterEach(() => fixture.destroy());
 
   it("loads a level and presents the original resources", () => {
-    expect(fixture.nativeElement.textContent).toContain("Hold that wall!");
+    expect(fixture.nativeElement.textContent).toContain("HOLD THE LINE!");
     expect(fixture.nativeElement.textContent).toContain("200");
     expect(fixture.nativeElement.textContent).toContain("10");
   });
@@ -62,9 +62,9 @@ describe("TrumpDefenseComponent", () => {
     fixture = TestBed.createComponent(TrumpDefenseComponent);
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelectorAll(".td-level-choice")).toHaveLength(3);
-    expect(fixture.nativeElement.textContent).toContain("First Line");
-    expect(fixture.nativeElement.textContent).toContain("Night Watch");
-    expect(fixture.nativeElement.textContent).toContain("Final Stand");
+    expect(fixture.nativeElement.textContent).toContain("Red, White & Boom");
+    expect(fixture.nativeElement.textContent).toContain("Stars After Dark");
+    expect(fixture.nativeElement.textContent).toContain("Liberty's Last Stand");
     expect(fixture.nativeElement.textContent).not.toContain("amigo");
     expect(loadLevel).not.toHaveBeenCalled();
   });
@@ -89,7 +89,7 @@ describe("TrumpDefenseComponent", () => {
   it("starts from a user gesture and builds on a picked tile", () => {
     const root = fixture.nativeElement as HTMLElement;
     const startButtons = Array.from(root.querySelectorAll("button"));
-    startButtons.find((button) => button.textContent?.includes("Let's roll"))?.click();
+    startButtons.find((button) => button.textContent?.includes("DEPLOY"))?.click();
     fixture.detectChanges();
     const viewport: HTMLElement = fixture.nativeElement.querySelector(".td-viewport");
     viewport.dispatchEvent(new Event("pointerdown", { bubbles: true }));
@@ -116,7 +116,7 @@ describe("TrumpDefenseComponent", () => {
     const pause = Array.from(root.querySelectorAll("button")).find((button) => button.textContent?.includes("Pause"));
     pause?.click();
     fixture.detectChanges();
-    expect(root.querySelector(".td-panel")?.textContent).toContain("Paused");
+    expect(root.querySelector(".td-panel")?.textContent).toContain("TACTICAL PAUSE");
     expect(root.querySelector(".td-panel")?.textContent).not.toContain("Tile");
   });
 
@@ -130,9 +130,7 @@ describe("TrumpDefenseComponent", () => {
 
   it("keeps the status, sound and placement controls over the game viewport", () => {
     const root = fixture.nativeElement as HTMLElement;
-    const start = Array.from(root.querySelectorAll("button")).find((button) =>
-      button.textContent?.includes("Let's roll")
-    );
+    const start = Array.from(root.querySelectorAll("button")).find((button) => button.textContent?.includes("DEPLOY"));
     start?.click();
     fixture.detectChanges();
     const stage: HTMLElement = fixture.nativeElement.querySelector(".td-stage");

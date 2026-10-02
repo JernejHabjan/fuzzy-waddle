@@ -14,8 +14,8 @@
       >
         {{ muted() ? "♪" : "♫" }}
       </button>
-      <h2 id="td-level-title">Choose your battleground</h2>
-      <p>Three battles. One wall. No room to back down.</p>
+      <h2 id="td-level-title">PICK YOUR BATTLEFIELD</h2>
+      <p>Three fronts. One wall. Freedom's on the line.</p>
       <div class="td-level-list">
         @for (level of levelChoices; track level.number) {
           <button
@@ -100,22 +100,22 @@
           <div class="td-panel" role="status">
             @switch (phase()) {
               @case ("selecting") {
-                <h2>Choose a level</h2>
+                <h2>PICK YOUR BATTLEFIELD</h2>
               }
               @case ("loading") {
                 <h2>Loading level {{ levelNumber() }}</h2>
               }
               @case ("ready") {
-                <h2>Hold that wall!</h2>
+                <h2>HOLD THE LINE!</h2>
               }
               @case ("paused") {
-                <h2>Paused</h2>
+                <h2>TACTICAL PAUSE</h2>
               }
               @case ("won") {
                 <h2>{{ finalLevel() ? "Campaign complete" : "Level complete" }}</h2>
               }
               @case ("lost") {
-                <h2>Defense defeated</h2>
+                <h2>DEFENSE OVERRUN</h2>
               }
               @case ("error") {
                 <h2>Unable to load the map</h2>
@@ -126,7 +126,7 @@
             }
             @switch (phase()) {
               @case ("ready") {
-                <button type="button" (click)="start()">Let's roll</button>
+                <button type="button" (click)="start()">DEPLOY</button>
               }
               @case ("paused") {
                 <button type="button" (click)="pause()">Resume</button>
