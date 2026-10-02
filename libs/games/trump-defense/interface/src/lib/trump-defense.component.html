@@ -14,18 +14,21 @@
       >
         {{ muted() ? "♪" : "♫" }}
       </button>
-      <h2 id="td-level-title">Pick your battleground, amigo!</h2>
-      <p>Three levels. One wall. A whole lotta trouble heading your way.</p>
+      <h2 id="td-level-title">Choose your battleground</h2>
+      <p>Three battles. One wall. No room to back down.</p>
       <div class="td-level-list">
-        @for (level of levelChoices; track level) {
+        @for (level of levelChoices; track level.number) {
           <button
             type="button"
             class="td-level-choice"
-            [disabled]="!unlockedLevels().includes(level)"
-            (click)="chooseLevel(level)"
+            [disabled]="!unlockedLevels().includes(level.number)"
+            (click)="chooseLevel(level.number)"
           >
-            <strong>Level {{ level }}</strong>
-            <span>{{ unlockedLevels().includes(level) ? "Ready, amigo!" : "Locked down" }}</span>
+            <strong>Level {{ level.number }}</strong>
+            <span>{{ level.label }}</span>
+            @if (!unlockedLevels().includes(level.number)) {
+              <small>Locked</small>
+            }
           </button>
         }
       </div>

@@ -97,7 +97,7 @@
 .td-level-choice {
   display: grid;
   min-width: 9rem;
-  min-height: 5.25rem;
+  min-height: 6rem;
   align-content: center;
   gap: 0.3rem;
   border: 1px solid #f1d6ab;
@@ -115,6 +115,13 @@
 .td-level-choice span {
   color: var(--td-navy);
   font-weight: 400;
+}
+.td-level-choice small {
+  color: #41546a;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 .td-sound-select {
   position: absolute;

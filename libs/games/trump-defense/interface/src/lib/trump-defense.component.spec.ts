@@ -62,6 +62,10 @@ describe("TrumpDefenseComponent", () => {
     fixture = TestBed.createComponent(TrumpDefenseComponent);
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelectorAll(".td-level-choice")).toHaveLength(3);
+    expect(fixture.nativeElement.textContent).toContain("First Line");
+    expect(fixture.nativeElement.textContent).toContain("Night Watch");
+    expect(fixture.nativeElement.textContent).toContain("Final Stand");
+    expect(fixture.nativeElement.textContent).not.toContain("amigo");
     expect(loadLevel).not.toHaveBeenCalled();
   });
 
