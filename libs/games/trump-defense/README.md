@@ -31,7 +31,7 @@ The browser campaign shows level choices before creating a Three.js scene, store
 
 ## Assets and release review
 
-Models, textures, cubemap faces, sounds, and the portal icon came from `/home/jernej/Git/School/TD2016/TrumpDefense2016`. The shipped OBJ meshes use Three's bundled OBJ loader; diffuse/specular PNGs were converted to WebP, and cubemap JPEGs were reduced to 1024 pixels per face for browser delivery. Runtime code does not parse OBJ itself. The repository's audio LFS rules apply to copied MP3/WAV files.
+Models, textures, legacy cubemap faces, sounds, and the portal icon came from `/home/jernej/Git/School/TD2016/TrumpDefense2016`. The shipped OBJ meshes use Three's bundled OBJ loader; diffuse/specular PNGs were converted to WebP, and legacy cubemap JPEGs were reduced to 1024 pixels per face for browser delivery. The original level 2 night cubemap had four 1 × 1 faces, so it is replaced with six matching 512-pixel procedural night-sky faces; cube faces follow Three.js's +X, −X, +Y, −Y, +Z, −Z order. Level 2 point and spot lights are authored only in its level data and use Three.js lighting directly, without painted circle meshes. Runtime code does not parse OBJ itself. The repository's audio LFS rules apply to copied MP3/WAV files.
 
 The TD2016 author identified Stronghold Crusader and Command & Conquer: Red Alert as sources of material in the original game. The `Sounds/SFX/Crusader/` folder identifies the Stronghold Crusader samples; some other original material came from Red Alert, but the source does not map individual files to it. [Asset credits](./ASSET_CREDITS.md) list the included audio and known attribution. Redistribution terms for individual recordings are not documented in TD2016.
 

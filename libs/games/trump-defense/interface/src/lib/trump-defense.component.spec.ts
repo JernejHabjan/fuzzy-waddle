@@ -72,11 +72,31 @@ describe("TrumpDefenseComponent", () => {
     fixture.detectChanges();
     const viewport: HTMLElement = fixture.nativeElement.querySelector(".td-viewport");
     viewport.dispatchEvent(new Event("pointerdown", { bubbles: true }));
+    fixture.detectChanges();
     const sniper = Array.from(root.querySelectorAll("button")).find((button) => button.textContent?.includes("Sniper"));
+    const upgrade = Array.from(root.querySelectorAll("button")).find((button) =>
+      button.textContent?.includes("Upgrade")
+    );
+    expect(sniper?.disabled).toBe(false);
+    expect(upgrade?.disabled).toBe(true);
     sniper?.click();
     fixture.detectChanges();
     expect(fixture.nativeElement.textContent).toContain("180");
     expect(fixture.nativeElement.textContent).toContain("Sniper tower built");
+    expect(upgrade?.disabled).toBe(false);
+  });
+
+  it("disables placement without a selected tile and omits tile details while paused", () => {
+    const root = fixture.nativeElement as HTMLElement;
+    root.querySelector<HTMLButtonElement>(".td-panel button")?.click();
+    fixture.detectChanges();
+    const sniper = Array.from(root.querySelectorAll("button")).find((button) => button.textContent?.includes("Sniper"));
+    expect(sniper?.disabled).toBe(true);
+    const pause = Array.from(root.querySelectorAll("button")).find((button) => button.textContent?.includes("Pause"));
+    pause?.click();
+    fixture.detectChanges();
+    expect(root.querySelector(".td-panel")?.textContent).toContain("Paused");
+    expect(root.querySelector(".td-panel")?.textContent).not.toContain("Tile");
   });
 
   it("keeps camera controls off the HUD while wheel zoom still works", () => {

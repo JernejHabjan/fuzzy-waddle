@@ -1,23 +1,12 @@
-import {
-  AmbientLight,
-  CircleGeometry,
-  DirectionalLight,
-  Group,
-  Mesh,
-  MeshBasicMaterial,
-  PointLight,
-  Scene,
-  SpotLight,
-  Vector3
-} from "three";
+import { AmbientLight, DirectionalLight, PointLight, Scene, SpotLight } from "three";
 import type { LevelDefinition, SceneLight } from "@fuzzy-waddle/trump-defense-gameplay";
 
 const position = (light: DirectionalLight | PointLight | SpotLight, data: SceneLight): void => {
   light.position.set(...data.position);
 };
 
-export function addSceneLights(scene: Scene, level: LevelDefinition): Group {
-  const visibleEffects = new Group();
+/** Builds actual Three.js illumination; it leaves spot shape and falloff to the light cone and materials. */
+export function addSceneLights(scene: Scene, level: LevelDefinition): void {
   const { ambient, directional, points, spots } = level.scene;
   scene.add(new AmbientLight(ambient.color, ambient.intensity));
   const sun = new DirectionalLight(directional.color, directional.intensity);
@@ -39,31 +28,9 @@ export function addSceneLights(scene: Scene, level: LevelDefinition): Group {
       light.target.position.set(...data.target);
       scene.add(light.target);
       light.castShadow = true;
-      light.shadow.mapSize.set(512, 512);
+      light.shadow.mapSize.set(1024, 1024);
       light.shadow.camera.far = data.distance ?? 100;
-      addSpotlightVisual(visibleEffects, light, data);
     }
     scene.add(light);
   }
-  scene.add(visibleEffects);
-  return visibleEffects;
-}
-
-/** Standard meshes make legacy spotlight locations legible without custom shader effects. */
-function addSpotlightVisual(group: Group, light: SpotLight, data: SceneLight): void {
-  if (!data.target) return;
-  const target = new Vector3(...data.target);
-  addLightPool(group, target, data.color, 16, 0.16);
-  addLightPool(group, target, data.color, 9, 0.24);
-  light.castShadow = true;
-}
-
-function addLightPool(group: Group, position: Vector3, color: string, radius: number, opacity: number): void {
-  const pool = new Mesh(
-    new CircleGeometry(radius, 32),
-    new MeshBasicMaterial({ color, transparent: true, opacity, depthWrite: false })
-  );
-  pool.rotation.x = -Math.PI / 2;
-  pool.position.set(position.x, 0.45, position.z);
-  group.add(pool);
 }

@@ -346,12 +346,12 @@
       }
     ],
     "skybox": [
-      "skyboxes/CubeMapNight/right.jpg",
-      "skyboxes/CubeMapNight/left.jpg",
-      "skyboxes/CubeMapNight/top.jpg",
-      "skyboxes/CubeMapNight/bottom.jpg",
-      "skyboxes/CubeMapNight/back.jpg",
-      "skyboxes/CubeMapNight/front.jpg"
+      "skyboxes/TrumpDefenseNight/right.jpg",
+      "skyboxes/TrumpDefenseNight/left.jpg",
+      "skyboxes/TrumpDefenseNight/top.jpg",
+      "skyboxes/TrumpDefenseNight/bottom.jpg",
+      "skyboxes/TrumpDefenseNight/front.jpg",
+      "skyboxes/TrumpDefenseNight/back.jpg"
     ],
     "ambient": {
       "color": "#ffffff",
@@ -366,49 +366,49 @@
     "points": [
       {
         "color": "#ffffff",
-        "intensity": 2.2,
+        "intensity": 180,
         "position": [1, 21, -63],
         "distance": 62
       },
       {
         "color": "#ffffff",
-        "intensity": 2.2,
+        "intensity": 180,
         "position": [25, 21, -79],
         "distance": 62
       },
       {
         "color": "#ffffff",
-        "intensity": 2.2,
+        "intensity": 180,
         "position": [41, 21, -63],
         "distance": 62
       },
       {
         "color": "#ffffff",
-        "intensity": 2.2,
+        "intensity": 180,
         "position": [41, 21, -23],
         "distance": 62
       },
       {
         "color": "#ffffff",
-        "intensity": 2.2,
+        "intensity": 180,
         "position": [65, 21, -15],
         "distance": 62
       },
       {
         "color": "#ffffff",
-        "intensity": 2.2,
+        "intensity": 180,
         "position": [81, 21, -23],
         "distance": 62
       },
       {
         "color": "#ffffff",
-        "intensity": 2.2,
+        "intensity": 180,
         "position": [97, 21, -31],
         "distance": 62
       },
       {
         "color": "#ffffff",
-        "intensity": 2.2,
+        "intensity": 180,
         "position": [97, 21, -63],
         "distance": 62
       }
@@ -416,19 +416,19 @@
     "spots": [
       {
         "color": "#00ff00",
-        "intensity": 4,
-        "position": [-8, 1, -65],
-        "target": [-5, 0, -65],
-        "distance": 70,
-        "angle": 0.26
+        "intensity": 3500,
+        "position": [-8, 55, -65],
+        "target": [26, 0, -65],
+        "distance": 90,
+        "angle": 0.52
       },
       {
         "color": "#ff0000",
-        "intensity": 4,
-        "position": [128, 1, -65],
-        "target": [125, 0, -65],
-        "distance": 70,
-        "angle": 0.26
+        "intensity": 3500,
+        "position": [128, 55, -65],
+        "target": [102, 0, -65],
+        "distance": 90,
+        "angle": 0.52
       }
     ],
     "visuals": {
@@ -540,7 +540,8 @@
         "airBonusDamage": 10,
         "fireSound": "pew",
         "upgradeRange": 20,
-        "upgradeDamage": 20
+        "upgradeDamage": 20,
+        "rotateToTarget": false
       },
       "Cannon": {
         "label": "Cannon",
@@ -555,7 +556,8 @@
         "airBonusDamage": 0,
         "fireSound": "cannon",
         "upgradeRange": 20,
-        "upgradeDamage": 20
+        "upgradeDamage": 20,
+        "rotateToTarget": true
       }
     },
     "wallStartDelayMs": 3000

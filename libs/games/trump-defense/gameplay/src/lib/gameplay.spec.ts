@@ -70,7 +70,7 @@ describe("Trump Defense gameplay", () => {
     expect(state.sounds.map(({ kind }) => kind)).toEqual(["cannon", "die", "cash"]);
   });
 
-  it("turns towers toward targets and retains projectile state for a visible flight", () => {
+  it("only rotates data-configured towers and retains projectile state for a visible flight", () => {
     const custom = structuredClone(first);
     custom.rules.enemyHp = 1000;
     custom.rules.spawnDelayMs = 100;
@@ -81,10 +81,24 @@ describe("Trump Defense gameplay", () => {
     expect(buyTower(state, "Cannon", () => 0).ok).toBe(true);
     stepGame(state, 100);
     const cannon = [...state.entities.values()].find((entity) => entity.weapon);
-    expect(cannon?.orientation?.y).toBeCloseTo(Math.PI / 2);
+    expect(cannon?.orientation?.y).toBeCloseTo((3 * Math.PI) / 2);
     expect(state.shotEffects[0]).toMatchObject({ elapsedMs: 0, durationMs: 450 });
     stepGame(state, 100);
     expect(state.shotEffects[0]?.elapsedMs).toBe(100);
+  });
+
+  it("keeps a non-tracking tower's orientation unchanged while it fires", () => {
+    const custom = structuredClone(first);
+    custom.rules.enemyHp = 1000;
+    custom.rules.spawnDelayMs = 100;
+    custom.rules.spawnIntervalMs = 100;
+    custom.rules.moveIntervalMs = 500;
+    const state = createGame(custom);
+    selectTile(state, [0, 56]);
+    expect(buyTower(state, "SniperTower", () => 0).ok).toBe(true);
+    stepGame(state, 100);
+    const sniper = [...state.entities.values()].find((entity) => entity.weapon);
+    expect(sniper?.orientation).toEqual({ y: 0 });
   });
 
   it("pauses timers and reaches victory after seven wall purchases", () => {

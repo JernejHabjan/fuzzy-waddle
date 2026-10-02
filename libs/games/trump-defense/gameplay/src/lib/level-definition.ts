@@ -24,6 +24,8 @@ export interface TowerDefinition {
   range: number;
   damage: number;
   cooldownMs: number;
+  /** Whether combat updates this tower's yaw to track its current target. */
+  rotateToTarget: boolean;
   canHitFlying: boolean;
   airBonusDamage: number;
   fireSound: "pew" | "cannon";
@@ -64,6 +66,7 @@ export interface LevelDefinition {
     pathTile: VisualAsset;
     wall: SceneProp;
     props: SceneProp[];
+    /** CubeTextureLoader order: +X, -X, +Y, -Y, +Z/front, -Z/back. */
     skybox: string[];
     ambient: { color: string; intensity: number };
     directional: SceneLight;

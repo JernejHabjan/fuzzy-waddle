@@ -34,6 +34,7 @@ export function makeLevel(id: 1 | 2 | 3): LevelDefinition {
     range: id === 2 ? 20 : 30,
     damage: kind === "Cannon" ? 15 : 10,
     cooldownMs: 1000,
+    rotateToTarget: kind === "Cannon",
     canHitFlying: kind === "SniperTower",
     airBonusDamage: kind === "SniperTower" ? 10 : 0,
     fireSound: kind === "Cannon" ? "cannon" : "pew",

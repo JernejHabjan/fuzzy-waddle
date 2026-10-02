@@ -35,11 +35,15 @@ describe("TD2016 shipped levels", () => {
     expect(level.paths.flying).toHaveLength(16);
     expect(level.paths.ground[0]).toEqual([0, 64]);
     expect(level.paths.ground.at(-1)).toEqual([120, 64]);
-    expect(level.scene.points).toHaveLength(8);
-    expect(level.scene.spots).toHaveLength(2);
+    expect(level.scene.points).toHaveLength(id === 2 ? 8 : 0);
+    expect(level.scene.spots).toHaveLength(id === 2 ? 2 : 0);
+    expect(level.scene.skybox[4]).toMatch(/front\.jpg$/);
+    expect(level.scene.skybox[5]).toMatch(/back\.jpg$/);
+    expect(level.rules.towers.SniperTower.rotateToTarget).toBe(false);
+    expect(level.rules.towers.Cannon.rotateToTarget).toBe(true);
     expect(level.scene.props.some((prop) => prop.model === "models/WhiteHouse.obj")).toBe(true);
     expect(level.scene.visuals.Heart.model).toBe("models/Heart.obj");
-    for (const path of assets(level)) {
+    for (const path of [...assets(level), ...level.scene.skybox]) {
       expect(path).not.toContain("..");
       expect(existsSync(join(root, path))).toBe(true);
     }

@@ -21,7 +21,10 @@ export function fireTowers(state: GameState): void {
     if (!target?.health || !target.path) continue;
     const dx = target.position.x - tower.position.x;
     const dz = target.position.z - tower.position.z;
-    tower.orientation = { y: Math.atan2(-dz, dx) };
+    if (weapon.rotateToTarget) {
+      // The authored cannon mesh faces backward relative to the gameplay aim vector.
+      tower.orientation = { y: Math.atan2(-dz, dx) + Math.PI };
+    }
     if (state.elapsedMs - weapon.lastShotMs < weapon.cooldownMs) continue;
     weapon.lastShotMs = state.elapsedMs;
     target.health.current -= weapon.damage + (target.path.kind === "flying" ? weapon.airBonusDamage : 0);

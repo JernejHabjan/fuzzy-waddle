@@ -31,6 +31,8 @@ export interface WeaponComponent {
   canHitFlying: boolean;
   airBonusDamage: number;
   cooldownMs: number;
+  /** Copied from level-authored tower behavior; the combat system never checks tower names. */
+  rotateToTarget: boolean;
   fireSound: "pew" | "cannon";
   lastShotMs: number;
   level: 1 | 2;

@@ -59,6 +59,7 @@ export function buyTower(state: GameState, kind: TowerKind, random: () => number
       canHitFlying: definition.canHitFlying,
       airBonusDamage: definition.airBonusDamage,
       cooldownMs: definition.cooldownMs,
+      rotateToTarget: definition.rotateToTarget,
       fireSound: definition.fireSound,
       lastShotMs: -definition.cooldownMs,
       level: 1

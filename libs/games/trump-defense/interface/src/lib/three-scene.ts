@@ -38,7 +38,6 @@ export class ThreeScene {
   private readonly entityViews = new Map<number, EntityView>();
   private readonly projectiles = new Map<number, Group>();
   private readonly hearts: Group[] = [];
-  private lightEffects: Group | null = null;
   private readonly target = new Vector3(64, 0, -48);
   private skybox: CubeTexture | null = null;
   private wall: Group | null = null;
@@ -94,7 +93,7 @@ export class ThreeScene {
     }
     this.skybox = background;
     this.scene.background = background;
-    this.lightEffects = addSceneLights(this.scene, level);
+    addSceneLights(this.scene, level);
     this.place(terrain);
     for (const prop of props) this.place(prop);
     this.wall = this.place(wall);
@@ -263,14 +262,6 @@ export class ThreeScene {
     if (this.disposed) return;
     this.disposed = true;
     this.observer.disconnect();
-    for (const group of [this.lightEffects]) {
-      group?.traverse((object) => {
-        if (object instanceof Mesh) {
-          object.geometry.dispose();
-          if (object.material instanceof MeshBasicMaterial) object.material.dispose();
-        }
-      });
-    }
     this.selected.geometry.dispose();
     (this.selected.material as MeshBasicMaterial).dispose();
     this.models.dispose();

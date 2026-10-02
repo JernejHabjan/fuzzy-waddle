@@ -24,6 +24,7 @@ import {
 import { loadLevel } from "./asset-paths";
 import { GameAudio } from "./game-audio";
 import { getUnlockedLevels, unlockLevel } from "./level-progress";
+import { deriveHud } from "./trump-defense-hud";
 import { ThreeScene } from "./three-scene";
 import type { TrumpDefenseHud, TrumpDefensePhase } from "./trump-defense-ui-state";
 
@@ -55,11 +56,13 @@ export class TrumpDefenseComponent implements AfterViewInit, OnDestroy {
     lives: 0,
     wall: 0,
     goal: 0,
-    selected: "None",
     sniperCost: 0,
     cannonCost: 0,
     upgradeCost: 0,
-    wallCost: 0
+    wallCost: 0,
+    canPlaceSniper: false,
+    canPlaceCannon: false,
+    canUpgrade: false
   });
   protected readonly message = signal("Loading the original map…");
   protected readonly muted = signal(false);
@@ -154,20 +157,7 @@ export class TrumpDefenseComponent implements AfterViewInit, OnDestroy {
 
   private updateHud(): void {
     if (!this.game) return;
-    const { money, lives, wallHeight, selectedTile, level } = this.game;
-    this.hud.set({
-      money,
-      lives,
-      wall: wallHeight,
-      goal: level.rules.wallGoal,
-      selected: selectedTile
-        ? `${selectedTile[0] / level.grid.tileSize + 1}, ${selectedTile[1] / level.grid.tileSize + 1}`
-        : "None",
-      sniperCost: level.rules.towers.SniperTower.cost,
-      cannonCost: level.rules.towers.Cannon.cost,
-      upgradeCost: level.rules.towers.SniperTower.upgradeCost,
-      wallCost: level.rules.wallCost
-    } satisfies TrumpDefenseHud);
+    this.hud.set(deriveHud(this.game));
   }
 
   private apply(result: ActionResult): void {
@@ -223,6 +213,7 @@ export class TrumpDefenseComponent implements AfterViewInit, OnDestroy {
     togglePause(this.game);
     this.phase.set(this.game.status === "paused" ? "paused" : "playing");
     if (this.game.status === "paused") {
+      this.message.set("Game paused.");
       cancelAnimationFrame(this.frameId);
       this.audio.pause();
     } else {

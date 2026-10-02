@@ -62,9 +62,15 @@
 
       @if (phase() === "playing") {
         <div class="td-controls" aria-label="Game controls">
-          <button type="button" (click)="buy('SniperTower')">Sniper · ${{ hud().sniperCost }} <kbd>B</kbd></button>
-          <button type="button" (click)="buy('Cannon')">Cannon · ${{ hud().cannonCost }} <kbd>C</kbd></button>
-          <button type="button" (click)="upgrade()">Upgrade · ${{ hud().upgradeCost }} <kbd>U</kbd></button>
+          <button type="button" [disabled]="!hud().canPlaceSniper" (click)="buy('SniperTower')">
+            Sniper · ${{ hud().sniperCost }} <kbd>B</kbd>
+          </button>
+          <button type="button" [disabled]="!hud().canPlaceCannon" (click)="buy('Cannon')">
+            Cannon · ${{ hud().cannonCost }} <kbd>C</kbd>
+          </button>
+          <button type="button" [disabled]="!hud().canUpgrade" (click)="upgrade()">
+            Upgrade · ${{ hud().upgradeCost }} <kbd>U</kbd>
+          </button>
           <button type="button" (click)="wall()">Raise wall · ${{ hud().wallCost }} <kbd>Space</kbd></button>
           <button type="button" (click)="pause()">Pause <kbd>P</kbd></button>
         </div>
@@ -96,7 +102,9 @@
                 <h2>Unable to load the map</h2>
               }
             }
-            <p>{{ message() }}</p>
+            @if (phase() !== "paused") {
+              <p>{{ message() }}</p>
+            }
             @switch (phase()) {
               @case ("ready") {
                 <button type="button" (click)="start()">Start level</button>
