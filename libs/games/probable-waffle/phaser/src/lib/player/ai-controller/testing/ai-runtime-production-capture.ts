@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { Subscription } from "rxjs";
-import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { ProbableWafflePlayerType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { UnifiedQueueItem } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/queue-item";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
@@ -101,10 +101,24 @@ export class AiRuntimeProductionCapture {
 
   /** Appends one detached snapshot at a settled decision boundary; tick zero permits no committed AI input yet. */
   capture(playerNumber: number): AiRuntimeProductionCaptureV1 {
+    return this.captureBoundary(playerNumber, true);
+  }
+
+  /** Human queue authority has no AI decision input. Test-owned callbacks choose and name these exact boundaries. */
+  captureHumanQueueBoundary(playerNumber: number): AiRuntimeProductionCaptureV1 {
+    const player = getPlayer(this.scene, playerNumber);
+    if (player?.playerController.data.playerDefinition?.playerType !== ProbableWafflePlayerType.Human) {
+      throw new Error("production_capture_human_boundary_required");
+    }
+    return this.captureBoundary(playerNumber, false);
+  }
+
+  private captureBoundary(playerNumber: number, requireDecision: boolean): AiRuntimeProductionCaptureV1 {
     if (this.disposed) throw new Error("production_capture_disposed");
     const tick = getSceneService(this.scene, SimulationTickService)?.currentTick ?? this.startedTick;
-    const controller = getSceneSystem(this.scene, AiPlayerHandler)?.getAiPlayerController(playerNumber);
-    if (tick > 0 && (!controller || !controller.isDecisionBoundarySettled())) {
+    const controller = requireDecision
+      ? getSceneSystem(this.scene, AiPlayerHandler)?.getAiPlayerController(playerNumber) : undefined;
+    if (requireDecision && tick > 0 && (!controller || !controller.isDecisionBoundarySettled())) {
       throw new Error("production_capture_boundary_unsettled");
     }
     const actors = (getSceneService(this.scene, ActorIndexSystem)?.getOwnedActors(playerNumber) ?? [])

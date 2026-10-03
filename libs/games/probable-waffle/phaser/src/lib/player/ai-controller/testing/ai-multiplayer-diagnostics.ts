@@ -4,6 +4,7 @@ import { ProbableWafflePlayerType } from "@fuzzy-waddle/probable-waffle-protocol
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getCommunicator } from "../../../data/scene-data";
 import { CommandBusService } from "../../../world/services/multiplayer/command-bus.service";
+import { AiMultiplayerQueueWorld, multiplayerQueueWorldRequested } from "./ai-multiplayer-queue-world";
 
 const marker = "fuzzy-waddle:ai-multiplayer-browser-test-v1";
 
@@ -16,7 +17,7 @@ export function multiplayerDiagnosticsRequested(): boolean {
   }
 }
 
-/** Test-only observer of real relayed batches and hash events; never plans or mutates gameplay. */
+/** Test-only relay/hash observer. A separate explicit queue-world opt-in owns the shared-command experiment. */
 export class AiMultiplayerDiagnostics {
   readonly kind = "ai-multiplayer-browser-diagnostics";
   private readonly subscriptions: Subscription[] = [];
@@ -24,8 +25,10 @@ export class AiMultiplayerDiagnostics {
   private readonly lastReceivedRelaySequenceByPlayer = new Map<number, number>();
   private readonly localHashes = new Map<number, string>();
   private readonly humanPlayerNumbers: number[];
+  private readonly queueWorld: AiMultiplayerQueueWorld | null;
 
   constructor(private readonly scene: ProbableWaffleScene, private readonly commandBus: CommandBusService) {
+    this.queueWorld = multiplayerQueueWorldRequested() ? new AiMultiplayerQueueWorld(scene, commandBus) : null;
     this.humanPlayerNumbers = scene.baseGameData.gameInstance.players
       .filter((player) => player.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.Human)
       .map((player) => player.playerNumber)
@@ -67,15 +70,22 @@ export class AiMultiplayerDiagnostics {
       },
       processedAiCommandIds: this.commandBus.getAuthorityState().processedCommandIds
         .filter((id) => id.startsWith(`${aiPlayerNumber}:`)).slice(-16),
-      hashes: [...this.localHashes].map(([tick, hash]) => ({ tick, hash }))
+      hashes: [...this.localHashes].map(([tick, hash]) => ({ tick, hash })),
+      queueWorld: this.queueWorld?.getSnapshot() ?? null
     };
   }
 
   destroy(): void {
+    this.queueWorld?.destroy();
     this.subscriptions.forEach((subscription) => subscription.unsubscribe());
     this.subscriptions.length = 0;
     this.observedHumanBatches.clear();
     this.lastReceivedRelaySequenceByPlayer.clear();
     this.localHashes.clear();
+  }
+
+  startQueueWorld(): void {
+    if (!this.queueWorld) throw new Error("multiplayer_queue_world_not_enabled");
+    this.queueWorld.start();
   }
 }

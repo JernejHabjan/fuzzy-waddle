@@ -6,47 +6,46 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
-**Next session (user policy, 2026-10-03):** continue related PRO-03/06/07 authority on **GPT-6.1 Sol / high**.
-Current step: #815/#816 **shared queue money callers**, authored/unverified. The bounded shared-owner extraction was
-committed as `6cfd91ea`; the caller batch began at that commit, after policy commit `423b3a16`. Its containing commit
-owns the new revision. Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch
-`feature/759-skirmish-ai`; verify local/remote on resume. Actual model/effort is unavailable. No issue/family is complete.
-The user removed the comment-permission rule; comment maintenance within authorized work needs no separate approval.
+**Next session (user policy, 2026-10-03):** retain **GPT-6.1 Sol / high** for grouped PRO-03/06/07 authority.
+Current step: #815/#816/#819 **buffered multiplayer queue boundary**, authored/unverified. This batch began at
+`2b6a4a036fa3a837f73ea528313eadbf24afa9e1`; its containing commit owns the new revision. Worktree
+`/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify local/remote on resume.
+Actual model/effort is unavailable. No issue/family is complete. The user removed the comment-permission rule.
 
-Read the [shared-caller checkpoint](follow-ups/runtime-matrix-ci.md#production-shared-queue-callers-checkpoint-2026-10-03-unverified).
-**Next exact authoring action:** extend the existing two-peer `MapAiMultiplayer` harness with legally paid queues on
-both peers and a genuine buffered cancellation/pre-credit rejection world. The unaffordable probe must actually be
-rejected before refund credit while cancellation is pending. A same-batch refund-then-probe or local deterministic
-multiplayer dispatch cannot prove this. Group that with genuine evidence normalization; keep mandatory causal gates.
-Defer executable validation, commit/push, then pause at the next bounded authoring boundary.
+Read the [buffered-world checkpoint](follow-ups/runtime-matrix-ci.md#production-buffered-multiplayer-world-checkpoint-2026-10-03-unverified).
+**Next exact authoring action:** author distinct legal PRO-07 shared-contention and strategic cancellation worlds,
+then the genuine `RuntimeProductionEvidenceV1` adapter against committed AI inputs and item-scoped authority facts.
+Reuse the new socket boundary evidence where applicable. Its deliberate same-product retry tests shared authority;
+the full PRO-07 oracle still forbids cancel/requeue cycles. Do not register it as full PRO-07 coverage or synthesize
+missing fair/strategy facts. Group related normalization and PRO-03/06 world work; defer checks, commit/push, then pause.
 
-- Shared restructuring: production alias/spawning, research definition and unified display projection have separate
-  owners. Existing public component wrappers/export and display ordering remain. Only the three changed component
-  baseline entries were removed; no hash was refreshed. Source restructuring and caller wiring have separate commits.
-- Real callers: `ProductionComponent` and `ResearchComponent` construct the physical `UnifiedQueueItem` with purchase
-  context before initial payment, then insert that same handle. `QueueComponent` forwards its actual first item for
-  each successful per-tick charge. Production/research refunds receive the actual item and stamped cancellation from
-  `QueueCommandSystem`, separately from purchase context. Existing eligibility, full-vector 50ms payment and refund
-  formulas remain; production removes/reports before refund, research refunds before removal/report.
-- Denied ticks: `recordQueueItemPaymentDenied` reports the actual shared affordability branch with stored handle,
-  requested vector, scoped cash, restore flag and a distinct scene-local operation ID. It never calls the emitter or
-  fabricates a payment callback/after balance. Queue processing still returns before progress. Ordinary scenes skip
-  diagnostic work. Subsequent snapshots/outcomes are still required to prove causal effects.
-- Raw capture keeps detached item/purchase/cancellation facts and existing bounds/teardown. The obsolete
-  `queue_resource_shared_callers_unconnected` gap is replaced with `queue_resource_runtime_authority_unverified`;
-  `resource_item_attribution` remains. Authored wiring and mocked records do not establish runtime authority or
-  normalized `productionEvidence`. No recipe/manifest/oracle denominator changed.
-- Authored/unrun: `entity/systems/shared-queue-resource.spec.ts` drives the real command system, production/research
-  components and tick queue with mocked scene/cash authority: pre-insertion/post-removal handles, actual cancellation
-  lineage, both refund orders, successful/denied ticks, stored-progress refund, immediate rejection, restore/no credit,
-  ordinary-scene forwarding and teardown. Emitter/projection specs add denial/no-payment/detachment cases.
-- Implementation review, Omission Audit and separate Final Closure Audit are source-only. No test, E2E, simulation,
-  format/lint/type/build/editor/schema/repository check or doctor/context command ran. The linked checkpoint lists the
-  deferred command and a discovered shared Phaser mock emitter omission to repair at the final gate.
-- Remaining implementation: the real buffered cancellation/probe world and genuine evidence normalization,
-  pre-capture/restore ownership, fair cadence, navigation/placement/exposure, legal focused PRO-03/06 pairs and distinct
-  PRO-07 worlds, full pure family coverage and PRO-04 runtime proof. Prior pending capture and legal queue setup remain
-  authored/unverified; their checkpoints and deferred checks are linked from the shared-caller record.
+- Shared callers/splits remain authored in `6cfd91ea` and `2b6a4a03`: actual pre-insertion charge items, full-vector
+  50ms payments/denials and separate stamped cancellations/refunds. Existing eligibility/refund formulas remain.
+  See the [shared-caller checkpoint](follow-ups/runtime-matrix-ci.md#production-shared-queue-callers-checkpoint-2026-10-03-unverified).
+- Opt-in socket world: `AiMultiplayerQueueWorld` and `prepareAiMultiplayerQueueWorld` select an existing ready owned
+  worker producer on `MapAiMultiplayer`. At tick one both peers mirror definition-derived starting cash. The actual
+  paid queue is then purchased through host human slot one's normal `CommandBusService.dispatch`, never deterministic
+  local multiplayer dispatch. Remote observers never submit a test command or invent a sender request.
+- Real bus ordering: synchronous dispatch calls share a future tick. The world dispatches the unaffordable probe,
+  waits one simulation tick, then requests cancellation before the probe's scheduled application and requires a later
+  cancellation tick. Rejection must precede actual refund credit; resumed production must create a newly indexed actor.
+  Passive reads do not sample or advance simulation. Shutdown/destroy disposes world and capture subscriptions.
+- Named raw human queue boundaries use `captureHumanQueueBoundary`, which rejects AI players and leaves AI input,
+  catalog and brain state null. The original settled-AI capture gate is unchanged. Existing raw gaps/caps remain.
+- `normalizeMultiplayerQueueBoundary` validates real started/callback/finished cash samples, stored definition price,
+  exact purchase/cancel/item lineage, applied/rejected/terminal outcomes, physical items, pre-credit shortfall and new
+  actor presence. The sender's request is distinct from remote delivery. This narrow normalization does not fill
+  `productionEvidence` or clear wider AI/fairness/navigation/cadence/restore gaps; mandatory family gates stay intact.
+- Authored/unrun: socket cancellation/refund/resumption case, post-completion two-peer matching hashes, credential-free
+  raw/normalized attachments; scheduling/remote-passivity/teardown/skipped-clock Jest cases; synthetic normalizer
+  negatives for timing, missing callbacks, truncation, item identity and refund mismatch; human-boundary capture case.
+- Source-only implementation review, Omission Audit and separate Final Closure Audit. No test/E2E/simulation,
+  formatting/lint/type/build/editor/schema/repository check or doctor/context command ran. First-tick bootstrap,
+  setup parity, auth/relay, async spawn/index timing and all assertions need final-gate execution. Prior shared Phaser
+  mock emitter/lifecycle omissions remain recorded in the shared-caller checkpoint for final-gate repair.
+- Remaining: genuine full production evidence and distinct legal PRO-07 worlds, PRO-03/06 pairs, full pure-family
+  coverage, PRO-04 runtime proof, pending pre-capture/restore ownership, fair cadence and navigation/placement/exposure.
+  The socket boundary authoring is not full #819 parity or #815/#816 completion.
 
 - Multiplayer diagnostic/lifecycle authoring checkpoint (2026-09-30, **unverified**): browser-only relay and local-hash
   observation now lives in a small test-owned Phaser adapter rather than adding methods to hash-baselined

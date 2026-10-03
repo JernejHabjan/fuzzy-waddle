@@ -46,7 +46,7 @@ describe("AiMultiplayerDiagnostics", () => {
         lastReceivedRelaySequenceByPlayer: { 2: 4 }
       },
       processedAiCommandIds: ["3:2:1:game"],
-      hashes: [{ tick: 20, hash: "local" }]
+      hashes: [{ tick: 20, hash: "local" }], queueWorld: null
     });
     for (let tick = 21; tick <= 39; tick += 1) hashes.next({ tick, hash: `local-${tick}`, emitterUserId: "host" });
     for (let sequence = 2; sequence <= 22; sequence += 1) processedCommandIds.push(`3:2:${sequence}:game`);

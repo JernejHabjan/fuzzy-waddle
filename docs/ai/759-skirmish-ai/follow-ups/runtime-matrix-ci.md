@@ -765,7 +765,8 @@ do not mistake mock setup failure for gameplay evidence. This discovery is sourc
 and a genuinely buffered cancellation/pre-credit rejection world. The probe must be rejected before cancellation
 credit while cancellation is pending; same-batch cancellation then probe and local deterministic dispatch are invalid
 proof. Group with normalization of actual capture/outcome evidence and legal PRO-07 worlds without relaxing gates.
-Commit/push and pause at that bounded authoring boundary. Shared callers are authored; the world remains not_started.
+Commit/push and pause at that bounded authoring boundary. At this checkpoint shared callers were authored and the world remained not_started. The buffered-world checkpoint
+below now authors the narrow socket boundary and its normalization; full causal production evidence remains unfinished.
 
 At the announced final gate, run this combined caller/observer selection, then the existing pending/setup/payment/
 digest/oracle selections linked above, frozen-map preflight, legal production worlds and socket-backed proof:
@@ -775,3 +776,78 @@ NX_DAEMON=false pnpm exec nx test probable-waffle-phaser --testPathPattern='shar
 ```
 
 All tests/E2E/simulations, formatting/lint/type/build/editor/schema/repository checks and doctor/context remain **unrun**.
+
+
+### Production buffered multiplayer world checkpoint (2026-10-03, unverified)
+
+This batch began at `2b6a4a036fa3a837f73ea528313eadbf24afa9e1` in
+`/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`. Its containing commit owns the
+latest revision. Actual model/effort is unavailable; retain **GPT-6.1 Sol / high** for related authority/world work.
+Source authoring only: no executable checks ran and no issue/family closes.
+
+| Acceptance | Authored source/consumer | Status and deferred evidence |
+| --- | --- | --- |
+| 1. Both-peer legal paid setup | `prepareAiMultiplayerQueueWorld`, opt-in match marker, `AiMultiplayerQueueWorld` | Existing ready owned land-worker producer; mirrored definition cash at tick one; paid item admitted by real socket command; bootstrap/payment/parity unrun |
+| 2. Genuine buffered order | World simulation-tick state machine and normal host `dispatch` | Probe first; cancellation requested next tick before probe executes, cancellation scheduled later; no local deterministic dispatch; relay timing unrun |
+| 3. Authority capture/normalization | Human-only `captureHumanQueueBoundary`; named snapshots and `normalizeMultiplayerQueueBoundary` | Null AI input; exact item/price/callback/cash/outcome/request lineage, physical removal and newly indexed resumed actor; wider raw gaps and full production gates retained |
+| 4. Negative/real test authoring | World scheduling Jest spec, capture/diagnostics specs, Playwright queue-refund and normalization specs | Authored/unrun; actual two-peer relay/hash case separate from synthetic contract inputs |
+| 5. Audits/publication | Source implementation review, Omission Audit and separate Final Closure Audit, updated handoff | Source-only; scoped commit/push and remote SHA verification at delivery; tests/validation explicitly deferred |
+
+**Setup/ownership:** only the existing localhost/development multiplayer diagnostics plus the new explicit
+`fuzzy-waddle:ai-multiplayer-queue-world-v1=cancel-refund` marker install this test-owned mutator. Both peers use the
+same host-human producer and effective definition, without injecting AI state or a fake queue item. Starting cash is
+`2 * price - floor(price * refundFactor)` for every resource, so a real initial payment leaves cash insufficient for
+the probe but sufficient after the actual shared refund. The marked world chooses a land worker rather than a boat
+whose completion cannot be established on this map. Eligibility/application still belong to the existing shared path.
+The paid item is created on both peers by the one real relayed purchase, with the actual stamped command context.
+
+**Scheduling:** source inspection established that back-to-back `dispatch` calls can share the same future tick;
+pendingOutbound insertion does not advance the bus send cursor. The world therefore waits a simulation tick between
+probe and cancellation. It requires `cancelRequestedTick < probeExecutionTick < cancelExecutionTick`, records the
+actual sender request/dispatch outcome and keeps remote delivery separate. A skipped clock or synchronous/local
+application fails closed. The sender waits until after actual refund application before resuming. Completion also
+waits for actual indexed actor presence because spawning can await navigation/object initialization. The experiment
+is a shared authority probe, not a claimed strategy decision or useful-force policy world.
+
+**Capture/evidence:** named ready/paid/cancel-pending/rejected/refunded/resumed/complete snapshots use actual human
+queue/cash authority. Human capture rejects AI players, and the existing settled decision requirement remains intact.
+Raw facts retain existing bounds/drop counts/gaps and detached physical item identities. Passive browser polling
+returns cached records. The normalizer requires one actual started/callback/finished operation for each payment,
+valid scoped balances and exact stored prices/refund formula; original purchase and cancellation IDs remain distinct.
+It requires exactly one applied purchase, an actual insufficient-resource rejection, cancellation terminals and a
+resumed applied/completed item with new world identity. Both peers must agree on stamped commands, scoped payments,
+physical checkpoints and two post-completion real hashes. Failure attachments retain bounded credential-free facts.
+Shutdown/destroy disposes both subscriptions and capture; no save/relay schema or gameplay price changed.
+
+**Limits:** no `RuntimeProductionEvidenceV1` is manufactured. Broad raw authority/fairness/navigation/cadence/restore
+provenance gaps remain. The deliberate same-product retry isolates refund affordability, while the mandatory PRO-07
+oracle still rejects cancel/requeue cycles. This socket case therefore cannot be counted as a full PRO-07 recipe,
+strategy proof, pure-family coverage or #819 parity. No manifest/recipe/denominator/causal gate changed.
+
+**Omission Audit:** traced diagnostics registration, both-context marker installation, real bus versus deterministic
+paths, future scheduling, actual shared queue/refund callbacks, sender versus remote ownership, item identity,
+resource start and human capture gate, async spawn/index boundary, passive polling, test discovery and teardown.
+Full distinct PRO-07 worlds and genuine production-family normalization remain explicit unfinished implementation.
+**Separate Final Closure Audit:** reviewed the repaired grouped scope against acceptance, including failed dispatch,
+clock skip, stale/missing payment records, truncated capture, reused actor identity and ordinary marker-free behavior.
+The final gate must establish live bootstrap/payment/relay/index/hash results; source review is not runtime proof.
+
+**Next exact action:** retain the same model/effort and author distinct legal PRO-07 shared train/research contention
+and strategic paid-cancellation worlds, then connect genuine full production evidence using actual committed AI
+inputs, fair reachability, queue snapshots and item-scoped callbacks. Reuse the new narrow socket boundary evidence
+without changing the family oracle or counting human/synthetic facts as AI strategy. Group related PRO-03/06
+normalization/world work when dependency-compatible. Commit/push and pause at the next bounded authoring boundary.
+
+At the announced final gate, repair the previously recorded shared Phaser mock setup and run the affected selection:
+
+```bash
+NX_DAEMON=false pnpm exec nx test probable-waffle-phaser --testPathPattern='ai-multiplayer-queue-world|ai-multiplayer-diagnostics|ai-runtime-production-capture|shared-queue-resource|emit-queue-item-resource|project-ai-runtime-queue-resource' --skip-nx-cache
+pnpm exec playwright test --config apps/portal-e2e/playwright.multiplayer.config.ts --grep 'synthetic contract tests'
+pnpm ai:skirmish:multiplayer
+```
+
+The synthetic Playwright command still uses the existing multiplayer config; its configured local servers require
+the normal local stack/environment. The multiplayer launcher discovers credentials from the existing local Supabase stack and
+runs the registered socket cases; do not print credentials or substitute local single-player application. Follow
+with the existing preset/pending/payment/digest/oracle selections, frozen-map preflight and full causal worlds.
+All tests/E2E/simulations, formatting/lint/type/build/editor/schema/repository checks and doctor/context remain unrun.

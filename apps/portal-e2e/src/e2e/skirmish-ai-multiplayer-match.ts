@@ -24,7 +24,9 @@ async function waitForMultiplayerGame(page: Page): Promise<void> {
 }
 
 /** Creates an ordinary public custom lobby with two real humans and one host-owned AI. */
-export async function startMultiplayerTestMatch(browser: Browser): Promise<MultiplayerTestMatch> {
+export async function startMultiplayerTestMatch(
+  browser: Browser, options: { readonly queueWorld?: true } = {}
+): Promise<MultiplayerTestMatch> {
   const provisioned = await createMultiplayerTestIdentities();
   const hostContext = await browser.newContext();
   const peerContext = await browser.newContext();
@@ -35,6 +37,15 @@ export async function startMultiplayerTestMatch(browser: Browser): Promise<Multi
   try {
     await installMultiplayerIdentity(hostContext, provisioned.identities[0]);
     await installMultiplayerIdentity(peerContext, provisioned.identities[1]);
+    if (options.queueWorld) {
+      for (const context of [hostContext, peerContext]) {
+        await context.addInitScript(() => {
+          if (window.location.origin === "http://127.0.0.1:4200") {
+            window.sessionStorage.setItem("fuzzy-waddle:ai-multiplayer-queue-world-v1", "cancel-refund");
+          }
+        });
+      }
+    }
     const host = await hostContext.newPage();
     const peer = await peerContext.newPage();
     const lobbyName = `ai-relay-${Date.now()}`;

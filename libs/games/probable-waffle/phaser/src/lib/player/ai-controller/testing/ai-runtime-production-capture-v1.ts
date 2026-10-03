@@ -21,7 +21,7 @@ export interface AiRuntimeProductionCaptureV1 {
     readonly tick: number;
     readonly observation: AiObservationV1 | null;
     readonly capabilityCatalog: AiCapabilityCatalogV1 | null;
-    /** Actual tick-zero owned identities are available even before the first fair observation commit. */
+    /** Actual owned identities, also available at tick zero and explicit human queue callbacks without an AI input. */
     readonly ownedActors: readonly { readonly actorId: string; readonly objectName: string }[];
     /** Read-only save-owned state, retaining fulfilled/expired exactly as recorded by the brain. */
     readonly economyProduction: AiBrainStateV1["economyProduction"] | null;

@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import { Subject } from "rxjs";
 import {
-  FactionType, ObjectNames, ProbableWaffleAiDifficulty, ResearchType, ResourceType,
+  FactionType, ObjectNames, ProbableWaffleAiDifficulty, ProbableWafflePlayerType, ResearchType, ResourceType,
   type GameCommand, type GameCommandOutcome
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { createAiBrainStateV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/create-ai-brain-state-v1";
@@ -86,6 +86,22 @@ function setup() {
 }
 
 describe("AiRuntimeProductionCapture", () => {
+  it("captures a human shared-queue boundary without synthesizing a committed AI input or bypassing the AI gate", () => {
+    const fixture = setup();
+    fixture.ticks.currentTick = 8;
+    jest.mocked(getSceneSystem).mockReturnValue(undefined);
+    jest.mocked(getPlayer).mockReturnValue({ getResources: () => fixture.money,
+      playerController: { data: { playerDefinition: { playerType: ProbableWafflePlayerType.Human } } } } as never);
+    const snapshot = fixture.capture.captureHumanQueueBoundary(2).snapshots.at(-1);
+    expect(snapshot).toMatchObject({ tick: 8, observation: null, capabilityCatalog: null, economyProduction: null });
+    expect(snapshot?.queues[0].lanes[0].items).toHaveLength(2);
+    expect(() => fixture.capture.capture(2)).toThrow("production_capture_boundary_unsettled");
+    jest.mocked(getPlayer).mockReturnValue({ getResources: () => fixture.money,
+      playerController: { data: { playerDefinition: { playerType: ProbableWafflePlayerType.AI } } } } as never);
+    expect(() => fixture.capture.captureHumanQueueBoundary(2)).toThrow("production_capture_human_boundary_required");
+    fixture.capture.dispose();
+  });
+
   it("captures exact item handles before insertion/after removal, preserving scoped cash and both command lineages", () => {
     const fixture = setup();
     jest.mocked(getCommunicator).mockReturnValue(fixture.scene.communicator as never);
