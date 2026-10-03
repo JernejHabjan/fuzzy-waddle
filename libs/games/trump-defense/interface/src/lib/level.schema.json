@@ -62,9 +62,9 @@
             "Cannon2",
             "MexicanBanjo",
             "Builder",
-            "MexicanBalooner",
+            "MexicanBallooner",
             "MexicanMafia",
-            "MexicanBaloon",
+            "MexicanBalloon",
             "Rocket",
             "Heart"
           ],
@@ -96,7 +96,7 @@
         "enemyRoster": { "type": "array", "minItems": 1, "items": { "type": "string" } },
         "enemies": {
           "type": "object",
-          "required": ["MexicanBanjo", "Builder", "MexicanBalooner", "MexicanMafia", "MexicanBaloon"],
+          "required": ["MexicanBanjo", "Builder", "MexicanBallooner", "MexicanMafia", "MexicanBalloon"],
           "additionalProperties": { "$ref": "#/$defs/enemy" }
         },
         "towers": {

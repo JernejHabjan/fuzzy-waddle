@@ -7,7 +7,6 @@ import {
   isDevMode,
   signal,
   viewChild,
-  type AfterViewInit,
   type OnDestroy
 } from "@angular/core";
 import { Location } from "@angular/common";
@@ -42,7 +41,7 @@ import type { TrumpDefensePhase } from "./trump-defense-ui-state";
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: "td-shell", "(window:keydown)": "onKeydown($event)" }
 })
-export class TrumpDefenseComponent implements AfterViewInit, OnDestroy {
+export class TrumpDefenseComponent implements OnDestroy {
   private readonly location = inject(Location);
   private readonly viewport = viewChild.required<ElementRef<HTMLDivElement>>("viewport");
   private readonly audio = new GameAudio();
@@ -62,12 +61,8 @@ export class TrumpDefenseComponent implements AfterViewInit, OnDestroy {
   protected readonly levelChoices = levelChoices;
   protected readonly unlockedLevels = signal(getUnlockedLevels(isDevMode()));
   protected readonly hud = signal(emptyHud);
-  protected readonly message = signal("Loading the original map…");
+  protected readonly message = signal("Select an unlocked level to begin.");
   protected readonly muted = signal(false);
-
-  ngAfterViewInit(): void {
-    this.message.set("Select an unlocked level to begin.");
-  }
 
   /** A level owns fresh simulation, scene, and audio state; stale async loads are ignored. */
   private async load(index: 1 | 2 | 3): Promise<void> {

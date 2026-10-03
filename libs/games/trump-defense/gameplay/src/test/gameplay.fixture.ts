@@ -2,8 +2,8 @@ import type {
   ActorVisualKind,
   EnemyKind,
   LevelDefinition,
-  TowerKind,
   TowerDefinition,
+  TowerKind,
   VisualAsset
 } from "../lib/level-definition";
 
@@ -15,16 +15,16 @@ const actorNames: ActorVisualKind[] = [
   "Cannon2",
   "MexicanBanjo",
   "Builder",
-  "MexicanBalooner",
+  "MexicanBallooner",
   "MexicanMafia",
-  "MexicanBaloon",
+  "MexicanBalloon",
   "Rocket"
 ];
 
 export function makeLevel(id: 1 | 2 | 3): LevelDefinition {
   const roster: EnemyKind[] = ["MexicanBanjo"];
-  if (id >= 2) roster.push("Builder", "MexicanBalooner");
-  if (id >= 3) roster.push("MexicanMafia", "MexicanBaloon");
+  if (id >= 2) roster.push("Builder", "MexicanBallooner");
+  if (id >= 3) roster.push("MexicanMafia", "MexicanBalloon");
   const tower = (kind: TowerKind): TowerDefinition => ({
     enabled: kind === "Cannon" || id > 1,
     label: kind,
@@ -72,9 +72,9 @@ export function makeLevel(id: 1 | 2 | 3): LevelDefinition {
       enemies: {
         MexicanBanjo: { path: "ground", altitude: 0, reward: 10 },
         Builder: { path: "ground", altitude: 0, reward: 10 },
-        MexicanBalooner: { path: "flying", altitude: 9, reward: 20 },
+        MexicanBallooner: { path: "flying", altitude: 9, reward: 20 },
         MexicanMafia: { path: "ground", altitude: 0, reward: 10 },
-        MexicanBaloon: { path: "flying", altitude: 9, reward: 20 }
+        MexicanBalloon: { path: "flying", altitude: 9, reward: 20 }
       },
       towers: { SniperTower: tower("SniperTower"), Cannon: tower("Cannon") },
       enemyHp: id === 2 ? 70 : id === 3 ? 120 : 100,

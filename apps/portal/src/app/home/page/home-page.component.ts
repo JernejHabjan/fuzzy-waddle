@@ -74,7 +74,7 @@ export class HomePageComponent implements OnInit {
     },
     {
       name: "Trump Defense 2016",
-      description: "Build towers and raise the wall across three 3D levels",
+      description: "Build towers and raise the wall to prevent invaders from entering the country",
       image: "trump-defense.webp",
       bannerImage: "trump-defense.webp",
       route: "trump-defense"

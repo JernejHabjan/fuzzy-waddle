@@ -2,7 +2,7 @@
 export type GridPoint = readonly [x: number, z: number];
 export type WorldPoint = readonly [x: number, y: number, z: number];
 
-export type EnemyKind = "MexicanBanjo" | "Builder" | "MexicanBalooner" | "MexicanMafia" | "MexicanBaloon";
+export type EnemyKind = "MexicanBanjo" | "Builder" | "MexicanBallooner" | "MexicanMafia" | "MexicanBalloon";
 export type TowerKind = "SniperTower" | "Cannon";
 export type ActorVisualKind = EnemyKind | TowerKind | "SniperTower2" | "Cannon2" | "Rocket";
 export type SceneVisualKind = ActorVisualKind | "Heart";

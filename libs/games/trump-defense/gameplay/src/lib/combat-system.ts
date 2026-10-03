@@ -11,7 +11,6 @@ export function fireTowers(state: GameState): void {
   for (const tower of state.entities.values()) {
     const weapon = tower.weapon;
     if (!weapon) continue;
-    // GameObject.cpp: "cannon nemore strelat gor" — target eligibility is weapon data.
     const target = [...state.entities.values()]
       .filter(
         (enemy) =>
@@ -36,6 +35,8 @@ export function fireTowers(state: GameState): void {
       durationMs: 450
     });
     state.sounds.push({ kind: weapon.fireSound, worldX: tower.position.x });
+    state.sounds.push({ kind: "projectileTravel", worldX: tower.position.x });
+    state.sounds.push({ kind: "enemyHit", worldX: target.position.x });
     if (target.health.current <= 0) {
       state.entities.delete(target.id);
       state.money += target.health.reward;

@@ -11,7 +11,7 @@ export function stepGame(state: GameState, deltaMs: number): void {
   state.shotEffects = state.shotEffects.filter((effect) => effect.elapsedMs < effect.durationMs);
   const previousMs = state.elapsedMs;
   state.elapsedMs += deltaMs;
-  // Draw.cpp: "počaka 5 sec na začetk" — first spawn follows the opening delay.
+  // first spawn follows the opening delay.
   if (previousMs < state.level.rules.spawnDelayMs && state.elapsedMs >= state.level.rules.spawnDelayMs) {
     state.spawnMs = state.level.rules.spawnIntervalMs;
   } else if (previousMs >= state.level.rules.spawnDelayMs) {
@@ -22,7 +22,7 @@ export function stepGame(state: GameState, deltaMs: number): void {
   spawnEnemies(state);
   moveEnemies(state);
   if (state.status === "playing") fireTowers(state);
-  // Draw.cpp: every five seconds enemies gain health and become harder.
+  // Draw.cpp: every five seconds enemies gain health
   while (state.hpIncreaseMs >= state.level.rules.enemyHpIntervalMs) {
     state.hpIncreaseMs -= state.level.rules.enemyHpIntervalMs;
     state.bonusHp += state.level.rules.enemyHpIncrease;

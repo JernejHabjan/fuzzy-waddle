@@ -21,12 +21,14 @@ jest.mock("howler", () => ({
 describe("Trump Defense positional audio", () => {
   beforeEach(() => jest.mocked(Howl).mockClear());
 
-  it("does not play entry spawn cues while the camera is away from the entry", () => {
+  it("keeps entry spawn cues audible from the default whole-map view", () => {
     const audio = new GameAudio();
-    audio.play({ kind: "spawn", worldX: 0 }, 64);
+    audio.play({ kind: "spawn", worldX: 0 }, 90);
     expect(Howl).not.toHaveBeenCalled();
-    audio.play({ kind: "spawn", worldX: 0 }, 0);
+    audio.play({ kind: "spawn", worldX: 0 }, 64);
     expect(Howl).toHaveBeenCalledTimes(1);
+    const howl = jest.mocked(Howl).mock.results[0]?.value as jest.Mocked<Howl>;
+    expect(howl.volume).toHaveBeenLastCalledWith(0.18, 1);
   });
 
   it("uses the original ground spawn and victory samples", () => {
@@ -35,6 +37,28 @@ describe("Trump Defense positional audio", () => {
     audio.play({ kind: "victory" }, 64);
     expect(Howl).toHaveBeenCalledWith(expect.objectContaining({ src: ["sfx/firepop2.wav"] }));
     expect(Howl).toHaveBeenCalledWith(expect.objectContaining({ src: ["sfx/cheer2.wav"] }));
+  });
+
+  it("uses the original enemy hit and projectile flight samples", () => {
+    const audio = new GameAudio();
+    audio.play({ kind: "enemyHit", worldX: 20 }, 20);
+    audio.play({ kind: "projectileTravel", worldX: 20 }, 20);
+    expect(Howl).toHaveBeenCalledWith(expect.objectContaining({ src: ["sfx/hit_01.wav"] }));
+    expect(Howl).toHaveBeenCalledWith(expect.objectContaining({ src: ["sfx/flamearrow_03.wav"] }));
+  });
+
+  it("keeps entry, weapon, projectile, and upgrade cues audible at their source", () => {
+    const audio = new GameAudio();
+    audio.play({ kind: "spawn", worldX: 0 }, 0);
+    audio.play({ kind: "cannon", worldX: 20 }, 20);
+    audio.play({ kind: "projectileTravel", worldX: 30 }, 30);
+    audio.play({ kind: "upgrade", worldX: 40 }, 40);
+
+    const expectedGains = [0.5, 0.48, 0.32, 0.55];
+    for (const [index, expectedGain] of expectedGains.entries()) {
+      const howl = jest.mocked(Howl).mock.results[index]?.value as jest.Mocked<Howl>;
+      expect(howl.volume).toHaveBeenLastCalledWith(expectedGain, 1);
+    }
   });
 
   it.each([
@@ -61,7 +85,7 @@ describe("Trump Defense positional audio", () => {
     howl.volume.mockClear();
     audio.updateCameraArea(-30, 128, 100);
     expect(howl.stereo).toHaveBeenLastCalledWith(-10 / 55, 1);
-    expect(howl.volume.mock.calls.at(-1)?.[0]).toBeCloseTo(0.45 * (1 - 10 / 70) * 0.5);
+    expect(howl.volume.mock.calls.at(-1)?.[0]).toBeCloseTo(0.45 * (1 - 10 / 100) * 0.5);
   });
 
   it("pans world sounds toward their map position", () => {
@@ -71,15 +95,15 @@ describe("Trump Defense positional audio", () => {
     expect(howl.stereo).toHaveBeenCalledWith(40 / 55, 1);
   });
 
-  it("mixes simultaneous tower shots quietly and prevents the same cannon sound stacking", () => {
+  it("keeps tower fire prominent and prevents the same cannon sound stacking", () => {
     const audio = new GameAudio();
     audio.play({ kind: "cannon", worldX: 20 }, 20);
     audio.play({ kind: "cannon", worldX: 20 }, 20);
 
     const howl = jest.mocked(Howl).mock.results[0]?.value as jest.Mocked<Howl>;
     expect(howl.play).toHaveBeenCalledTimes(1);
-    expect(Howl).toHaveBeenCalledWith(expect.objectContaining({ pool: 1, volume: 0.16 }));
+    expect(Howl).toHaveBeenCalledWith(expect.objectContaining({ pool: 1, volume: 0.48 }));
     expect(howl.stop).toHaveBeenCalledTimes(1);
-    expect(howl.volume).toHaveBeenCalledWith(0.16, 1);
+    expect(howl.volume).toHaveBeenCalledWith(0.48, 1);
   });
 });

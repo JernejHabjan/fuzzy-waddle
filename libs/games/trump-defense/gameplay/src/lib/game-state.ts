@@ -58,11 +58,13 @@ export interface GameEntity {
 /** Named audio actions map to original files in the interface audio adapter. */
 export type GameSound =
   | "spawn"
-  | "baloon"
+  | "balloon"
   | "cash"
   | "die"
   | "pew"
   | "cannon"
+  | "enemyHit"
+  | "projectileTravel"
   | "buildWall"
   | "select"
   | "buy"

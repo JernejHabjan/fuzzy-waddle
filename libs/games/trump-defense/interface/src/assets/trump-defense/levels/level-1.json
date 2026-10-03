@@ -399,19 +399,19 @@
         "texture": "textures/BuilderDiffuse.webp",
         "specular": "textures/BuilderSpecular.webp"
       },
-      "MexicanBalooner": {
-        "model": "models/MexicanBalooner.obj",
-        "texture": "textures/MexicanBaloonerDiffuse.webp",
-        "specular": "textures/MexicanBaloonerSpecular.webp"
+      "MexicanBallooner": {
+        "model": "models/MexicanBallooner.obj",
+        "texture": "textures/MexicanBalloonerDiffuse.webp",
+        "specular": "textures/MexicanBalloonerSpecular.webp"
       },
       "MexicanMafia": {
         "model": "models/MexicanMafia.obj",
         "texture": "textures/MexicanMafiaDiffuse.webp"
       },
-      "MexicanBaloon": {
-        "model": "models/MexicanBaloon.obj",
-        "texture": "textures/MexicanBaloonDiffuse.webp",
-        "specular": "textures/MexicanBaloonSpecular.webp"
+      "MexicanBalloon": {
+        "model": "models/MexicanBalloon.obj",
+        "texture": "textures/MexicanBalloonDiffuse.webp",
+        "specular": "textures/MexicanBalloonSpecular.webp"
       },
       "Heart": {
         "model": "models/Heart.obj",
@@ -448,7 +448,7 @@
         "altitude": 0,
         "reward": 10
       },
-      "MexicanBalooner": {
+      "MexicanBallooner": {
         "path": "flying",
         "altitude": 9,
         "reward": 20
@@ -458,7 +458,7 @@
         "altitude": 0,
         "reward": 10
       },
-      "MexicanBaloon": {
+      "MexicanBalloon": {
         "path": "flying",
         "altitude": 9,
         "reward": 20

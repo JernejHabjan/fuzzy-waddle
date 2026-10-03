@@ -4,11 +4,13 @@ import { assetUrl } from "./asset-paths";
 
 export const soundFiles: Record<GameSoundCue["kind"], string> = {
   spawn: "firepop2.wav",
-  baloon: "baloon.wav",
+  balloon: "balloon.wav",
   cash: "cash.wav",
   die: "die.wav",
   pew: "arrwdth_09.wav",
   cannon: "cannon.wav",
+  enemyHit: "hit_01.wav",
+  projectileTravel: "flamearrow_03.wav",
   buildWall: "wallUpgrade.wav",
   select: "select.wav",
   buy: "buy.wav",
@@ -17,14 +19,27 @@ export const soundFiles: Record<GameSoundCue["kind"], string> = {
   victory: "cheer2.wav",
   buildWallOpening: "buildWall.wav"
 };
-const rapidFireFiles = new Set([soundFiles.pew, soundFiles.cannon]);
+const rapidFireFiles = new Set([
+  soundFiles.pew,
+  soundFiles.cannon,
+  soundFiles.enemyHit,
+  soundFiles.projectileTravel
+]);
 const rapidFireVolumes: Record<string, number> = {
-  [soundFiles.pew]: 0.24,
-  [soundFiles.cannon]: 0.28
+  [soundFiles.pew]: 0.4,
+  [soundFiles.cannon]: 0.48,
+  [soundFiles.enemyHit]: 0.24,
+  [soundFiles.projectileTravel]: 0.32
 };
-const positionalActionVolumes: Partial<Record<GameSoundCue["kind"], number>> = {
+const cueVolumes: Partial<Record<GameSoundCue["kind"], number>> = {
+  spawn: 0.5,
+  balloon: 0.5,
+  pew: 0.4,
+  cannon: 0.48,
+  enemyHit: 0.24,
+  projectileTravel: 0.32,
   buy: 0.6,
-  upgrade: 0.6
+  upgrade: 0.55
 };
 const rapidFireIntervalMs = 160;
 type AmbientZone = "work" | "wall" | "slums";
@@ -58,11 +73,10 @@ export class GameAudio {
 
   play(cue: GameSoundCue, cameraX: number): void {
     if (this.muted) return;
-    if ((cue.kind === "spawn" || cue.kind === "baloon") && cameraX >= 30) return;
     if (cue.kind === "select" && cue.worldX === undefined) return;
     const pan = cue.worldX === undefined ? undefined : this.spatialMix(cue.worldX, cameraX);
     if (cue.worldX !== undefined && !pan) return;
-    this.playFile(soundFiles[cue.kind], cue.worldX, cameraX, positionalActionVolumes[cue.kind] ?? 0.3);
+    this.playFile(soundFiles[cue.kind], cue.worldX, cameraX, cueVolumes[cue.kind] ?? 0.3);
   }
 
   /** Restores the source game's wall-work and slum chatter zones around the RTS camera. */
@@ -111,9 +125,10 @@ export class GameAudio {
 
   private spatialMix(sourceX: number, cameraX: number): { volume: number; pan: number } | null {
     const relativeX = sourceX - cameraX;
-    if (Math.abs(relativeX) > 55) return null;
+    // Keep sounds audible from the whole-map view; hard cutoffs made entry cues vanish at match start.
+    if (Math.abs(relativeX) > 80) return null;
     return {
-      volume: 0.3 * Math.max(0.08, 1 - Math.abs(relativeX) / 70) * this.hearingScale,
+      volume: 0.3 * Math.max(0.25, 1 - Math.abs(relativeX) / 100) * this.hearingScale,
       pan: Math.max(-1, Math.min(1, relativeX / 55))
     };
   }

@@ -82,7 +82,7 @@ describe("TD2016 shipped levels", () => {
     expect(day.rules.enemyRoster).toEqual(["MexicanBanjo"]);
     expect(day.rules.enemyHp).toBe(90);
     expect(day.rules.enemyHpIncrease).toBe(15);
-    expect(night.rules.enemyRoster).toEqual(["MexicanBanjo", "Builder", "MexicanBalooner"]);
+    expect(night.rules.enemyRoster).toEqual(["MexicanBanjo", "Builder", "MexicanBallooner"]);
     expect(final.rules.enemyRoster).toHaveLength(5);
     expect(final.rules.randomTowerPlacement).toBe(true);
     night.scene.terrain.model = "models/another-map.obj";

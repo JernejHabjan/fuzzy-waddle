@@ -103,7 +103,6 @@ export function upgradeTower(state: GameState): ActionResult {
   );
   if (!tower?.weapon || !tower.tower) return rejected("Select a tower to upgrade.");
   const definition = state.level.rules.towers[tower.tower.kind];
-  // InputManager.cpp: "ZAENKAT SM DO LVL2" — only a second tower level exists.
   if (tower.weapon.level === 2) return rejected("This tower is already upgraded.");
   if (state.money < definition.upgradeCost) return rejected("Not enough money to upgrade.");
   tower.weapon.level = 2;

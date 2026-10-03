@@ -117,10 +117,10 @@ describe("LevelTutorialComponent", () => {
 
   it("showcases every newly introduced enemy in its campaign briefing", () => {
     expect(getLevelTutorial(2).map((slide) => slide.showcase)).toEqual(
-      expect.arrayContaining(["Builder", "MexicanBalooner"])
+      expect.arrayContaining(["Builder", "MexicanBallooner"])
     );
     expect(getLevelTutorial(3).map((slide) => slide.showcase)).toEqual(
-      expect.arrayContaining(["MexicanMafia", "MexicanBaloon"])
+      expect.arrayContaining(["MexicanMafia", "MexicanBalloon"])
     );
   });
 });

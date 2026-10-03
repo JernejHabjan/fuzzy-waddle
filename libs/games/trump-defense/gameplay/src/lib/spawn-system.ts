@@ -24,6 +24,6 @@ export function spawnEnemies(state: GameState): void {
       health: { current: rules.enemyHp + state.bonusHp, reward: definition.reward }
     };
     state.entities.set(entity.id, entity);
-    state.sounds.push({ kind: definition.path === "flying" ? "baloon" : "spawn", worldX: start[0] });
+    state.sounds.push({ kind: definition.path === "flying" ? "balloon" : "spawn", worldX: start[0] });
   }
 }

@@ -53,7 +53,7 @@ const airSlides: LevelTutorialSlide[] = [
   {
     title: "AIR RAID",
     description: "Ballooners fly over the road. Ground cannons cannot reach them, so bring the right defense.",
-    showcase: "MexicanBalooner"
+    showcase: "MexicanBallooner"
   },
   {
     title: "SNIPER TOWER",
@@ -89,7 +89,7 @@ const finalSlides: LevelTutorialSlide[] = [
   {
     title: "MORE TROUBLE IN THE SKY",
     description: "Another balloon unit joins the air raid. Sniper towers can hit it; cannons cannot.",
-    showcase: "MexicanBaloon"
+    showcase: "MexicanBalloon"
   }
 ];
 
