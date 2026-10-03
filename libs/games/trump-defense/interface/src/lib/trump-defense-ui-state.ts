@@ -1,5 +1,5 @@
 /** Component phases separate level selection, scene loading, and active play transitions. */
-export type TrumpDefensePhase = "selecting" | "loading" | "ready" | "playing" | "paused" | "won" | "lost" | "error";
+export type TrumpDefensePhase = "selecting" | "loading" | "tutorial" | "playing" | "paused" | "won" | "lost" | "error";
 
 /** Values shown by the HUD; action availability follows selected and owned entity components. */
 export interface TrumpDefenseHud {

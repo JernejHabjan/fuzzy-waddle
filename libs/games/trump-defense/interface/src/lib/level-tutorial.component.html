@@ -1,0 +1,17 @@
+<section class="td-tutorial" aria-label="Level briefing">
+  <div class="td-tutorial-card" aria-live="polite">
+    <p class="td-tutorial-count">BRIEFING {{ slideIndex() + 1 }} / {{ slides().length }}</p>
+    <h2>{{ slide().title }}</h2>
+    <p class="td-tutorial-copy">{{ slide().description }}</p>
+    <div class="td-tutorial-actions">
+      <button type="button" class="td-tutorial-back" (click)="exit.emit()">LEVEL SELECT</button>
+      <div class="td-tutorial-arrows">
+        <button type="button" aria-label="Previous briefing" [disabled]="isFirst()" (click)="move(-1)">←</button>
+        <button type="button" aria-label="Next briefing" (click)="move(1)">
+          {{ isLast() ? "START LEVEL" : "→" }}
+        </button>
+      </div>
+      <button type="button" class="td-tutorial-skip" (click)="start.emit()">SKIP BRIEFING</button>
+    </div>
+  </div>
+</section>

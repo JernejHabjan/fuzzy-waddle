@@ -6,6 +6,8 @@ export type EnemyKind = "MexicanBanjo" | "Builder" | "MexicanBalooner" | "Mexica
 export type TowerKind = "SniperTower" | "Cannon";
 export type ActorVisualKind = EnemyKind | TowerKind | "SniperTower2" | "Cannon2" | "Rocket";
 export type SceneVisualKind = ActorVisualKind | "Heart";
+/** Models available to tutorial displays, including a level's build-site marker. */
+export type TutorialVisualKind = SceneVisualKind | "BuildTile" | "Wall";
 
 /** Level-authored components describe an enemy; systems never infer traits from its name. */
 export interface EnemyDefinition {
@@ -64,6 +66,8 @@ export interface LevelDefinition {
   scene: {
     terrain: SceneProp;
     pathTile: VisualAsset;
+    /** Visual markers are authored per level and occupy every non-path grid cell. */
+    buildableTile: VisualAsset;
     wall: SceneProp;
     props: SceneProp[];
     /** CubeTextureLoader order: +X, -X, +Y, -Y, +Z/front, -Z/back. */

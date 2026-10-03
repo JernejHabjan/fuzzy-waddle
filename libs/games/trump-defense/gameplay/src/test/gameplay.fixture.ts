@@ -53,6 +53,7 @@ export function makeLevel(id: 1 | 2 | 3): LevelDefinition {
     scene: {
       terrain: { ...visual("Map"), position: [64, 0, -48] },
       pathTile: visual("Tile"),
+      buildableTile: visual("BuildTile"),
       wall: { ...visual("Wall"), position: [144, 0, -48] },
       props: [],
       skybox: [],

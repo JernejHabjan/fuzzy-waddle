@@ -1,23 +1,28 @@
 import {
   CubeTexture,
   CubeTextureLoader,
-  DoubleSide,
   Group,
   Mesh,
-  MeshBasicMaterial,
   PerspectiveCamera,
   Plane,
-  PlaneGeometry,
   Raycaster,
   Scene,
   Vector2,
   Vector3,
   WebGLRenderer
 } from "three";
-import type { GameState, GridPoint, LevelDefinition, SceneProp } from "@fuzzy-waddle/trump-defense-gameplay";
+import {
+  type GameState,
+  type GridPoint,
+  type LevelDefinition,
+  type SceneProp,
+  type TutorialVisualKind
+} from "@fuzzy-waddle/trump-defense-gameplay";
 import { assetUrl } from "./asset-paths";
 import { ModelBank } from "./model-bank";
 import { addSceneLights } from "./scene-lighting";
+import { LevelGridVisuals } from "./level-grid-visuals";
+import { TutorialShowcase } from "./tutorial-showcase";
 
 type EntityView = { visual: string; object: Group };
 
@@ -25,16 +30,15 @@ type EntityView = { visual: string; object: Group };
 export class ThreeScene {
   private readonly renderer: WebGLRenderer;
   private readonly scene = new Scene();
+  private readonly mapRoot = new Group();
   private readonly camera = new PerspectiveCamera(45, 1, 0.5, 500);
   private readonly models = new ModelBank();
+  private readonly gridVisuals = new LevelGridVisuals(this.mapRoot, this.models);
+  private readonly showcase = new TutorialShowcase(this.models, this.camera);
   private readonly observer: ResizeObserver;
   private readonly raycaster = new Raycaster();
   private readonly pointer = new Vector2();
   private readonly ground = new Plane(new Vector3(0, 1, 0), 0);
-  private readonly selected = new Mesh(
-    new PlaneGeometry(7, 7),
-    new MeshBasicMaterial({ color: "#f7d567", transparent: true, opacity: 0.5, side: DoubleSide, depthWrite: false })
-  );
   private readonly entityViews = new Map<number, EntityView>();
   private readonly projectiles = new Map<number, Group>();
   private readonly hearts: Group[] = [];
@@ -62,10 +66,7 @@ export class ThreeScene {
     this.camera.position.set(64, 105, 74);
     this.cameraDistance = this.camera.position.distanceTo(this.target);
     this.camera.lookAt(this.target);
-    this.selected.rotation.x = -Math.PI / 2;
-    this.selected.position.y = 0.4;
-    this.selected.visible = false;
-    this.scene.add(this.selected);
+    this.scene.add(this.mapRoot, this.showcase.root);
     this.observer = new ResizeObserver(() => this.resize());
     this.observer.observe(this.host);
     this.resize();
@@ -80,10 +81,10 @@ export class ThreeScene {
     this.cameraDistance = 150 * cameraScale;
     this.cameraAngle = Math.PI / 4;
     this.updateCameraPosition();
-    const { terrain, wall, pathTile, props, visuals, skybox } = level.scene;
+    const { terrain, wall, pathTile, buildableTile, props, visuals, skybox } = level.scene;
     const loader = new CubeTextureLoader();
     const [, background] = await Promise.all([
-      this.models.prepare([terrain, wall, pathTile, ...props, ...Object.values(visuals)]),
+      this.models.prepare([terrain, wall, pathTile, buildableTile, ...props, ...Object.values(visuals)]),
       loader.loadAsync(skybox.map(assetUrl))
     ]);
     if (this.disposed) {
@@ -98,12 +99,7 @@ export class ThreeScene {
     for (const prop of props) this.place(prop);
     this.wall = this.place(wall);
     this.wallBaseY = wall.position[1];
-    for (const key of new Set(level.paths.ground.map(([x, z]) => `${x},${z}`))) {
-      const [x, z] = key.split(",").map(Number);
-      const tile = this.models.create(pathTile);
-      tile.position.set(x ?? 0, 0.3, -(z ?? 0));
-      this.scene.add(tile);
-    }
+    this.gridVisuals.load(level);
   }
 
   private place(prop: SceneProp): Group {
@@ -116,7 +112,7 @@ export class ThreeScene {
         child.receiveShadow = true;
       }
     });
-    this.scene.add(object);
+    this.mapRoot.add(object);
     return object;
   }
 
@@ -125,7 +121,7 @@ export class ThreeScene {
     for (const [id, view] of this.entityViews) {
       const entity = state.entities.get(id);
       if (!entity || entity.visual !== view.visual) {
-        this.scene.remove(view.object);
+        this.mapRoot.remove(view.object);
         this.entityViews.delete(id);
       }
     }
@@ -142,16 +138,33 @@ export class ThreeScene {
         });
         view = { visual: entity.visual, object };
         this.entityViews.set(entity.id, view);
-        this.scene.add(object);
+        this.mapRoot.add(object);
       }
       view.object.position.set(entity.position.x, entity.position.y, entity.position.z);
       view.object.rotation.y = entity.orientation?.y ?? 0;
     }
-    this.selected.visible = !!state.selectedTile;
-    if (state.selectedTile) this.selected.position.set(state.selectedTile[0], 0.4, -state.selectedTile[1]);
+    this.gridVisuals.syncSelection(state, this.entityViews);
     if (this.wall) this.wall.position.y = this.wallBaseY + state.wallHeight;
     this.syncProjectiles(state);
     this.syncHearts(state.lives);
+  }
+
+  /** Replaces the map with a centered, rotating model until the briefing is dismissed. */
+  setShowcase(visual: TutorialVisualKind | null): void {
+    this.mapRoot.visible = visual === null;
+    this.showcase.set(this.level, visual);
+    if (!visual) {
+      this.updateCameraPosition();
+      this.render();
+      return;
+    }
+    this.render();
+  }
+
+  /** Advances the tutorial model independently while the gameplay simulation remains idle. */
+  rotateShowcase(): void {
+    this.showcase.rotate();
+    this.render();
   }
 
   /** Reconciles in-flight rocket meshes with simulation-owned projectile effects. */
@@ -161,7 +174,7 @@ export class ThreeScene {
     const active = new Set(state.shotEffects.map((effect) => effect.id));
     for (const [id, object] of this.projectiles) {
       if (active.has(id)) continue;
-      this.scene.remove(object);
+      this.mapRoot.remove(object);
       this.projectiles.delete(id);
     }
     for (const effect of state.shotEffects) {
@@ -169,7 +182,7 @@ export class ThreeScene {
       if (!rocket) {
         rocket = this.models.create(level.scene.visuals.Rocket);
         this.projectiles.set(effect.id, rocket);
-        this.scene.add(rocket);
+        this.mapRoot.add(rocket);
       }
       const progress = Math.min(1, effect.elapsedMs / effect.durationMs);
       const from = new Vector3(effect.from.x, effect.from.y + 4, effect.from.z);
@@ -190,11 +203,11 @@ export class ThreeScene {
       heart.scale.setScalar(2.2);
       heart.position.set(this.mapWidth / 4 + this.hearts.length * 8, 5, -this.mapDepth - 8);
       this.hearts.push(heart);
-      this.scene.add(heart);
+      this.mapRoot.add(heart);
     }
     while (this.hearts.length > lives) {
       const heart = this.hearts.pop();
-      if (heart) this.scene.remove(heart);
+      if (heart) this.mapRoot.remove(heart);
     }
   }
 
@@ -262,8 +275,7 @@ export class ThreeScene {
     if (this.disposed) return;
     this.disposed = true;
     this.observer.disconnect();
-    this.selected.geometry.dispose();
-    (this.selected.material as MeshBasicMaterial).dispose();
+    this.gridVisuals.dispose();
     this.models.dispose();
     this.skybox?.dispose();
     this.renderer.dispose();

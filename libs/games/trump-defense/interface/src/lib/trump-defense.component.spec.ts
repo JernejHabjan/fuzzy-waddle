@@ -23,6 +23,8 @@ jest.mock("./three-scene", () => ({
     load: jest.fn().mockResolvedValue(undefined),
     sync: jest.fn(),
     render: jest.fn(),
+    setShowcase: jest.fn(),
+    rotateShowcase: jest.fn(),
     pick: jest.fn().mockReturnValue([8, 8]),
     pan: jest.fn(),
     zoom: jest.fn(),
@@ -46,12 +48,14 @@ describe("TrumpDefenseComponent", () => {
     await new Promise((resolve) => setTimeout(resolve, 0));
     await fixture.whenStable();
     fixture.detectChanges();
+    fixture.nativeElement.querySelector<HTMLButtonElement>(".td-tutorial-skip")?.click();
+    fixture.detectChanges();
   });
 
   afterEach(() => fixture.destroy());
 
   it("loads a level and presents the original resources", () => {
-    expect(fixture.nativeElement.textContent).toContain("HOLD THE LINE!");
+    expect(fixture.nativeElement.querySelector(".td-stage")).not.toBeNull();
     expect(fixture.nativeElement.textContent).toContain("200");
     expect(fixture.nativeElement.textContent).toContain("10");
   });
@@ -88,9 +92,6 @@ describe("TrumpDefenseComponent", () => {
 
   it("starts from a user gesture and builds on a picked tile", () => {
     const root = fixture.nativeElement as HTMLElement;
-    const startButtons = Array.from(root.querySelectorAll("button"));
-    startButtons.find((button) => button.textContent?.includes("DEPLOY"))?.click();
-    fixture.detectChanges();
     const viewport: HTMLElement = fixture.nativeElement.querySelector(".td-viewport");
     viewport.dispatchEvent(new Event("pointerdown", { bubbles: true }));
     fixture.detectChanges();
@@ -109,8 +110,6 @@ describe("TrumpDefenseComponent", () => {
 
   it("disables placement without a selected tile and omits tile details while paused", () => {
     const root = fixture.nativeElement as HTMLElement;
-    root.querySelector<HTMLButtonElement>(".td-panel button")?.click();
-    fixture.detectChanges();
     const sniper = Array.from(root.querySelectorAll("button")).find((button) => button.textContent?.includes("Sniper"));
     expect(sniper?.disabled).toBe(true);
     const pause = Array.from(root.querySelectorAll("button")).find((button) => button.textContent?.includes("Pause"));
@@ -130,15 +129,56 @@ describe("TrumpDefenseComponent", () => {
 
   it("keeps the status, sound and placement controls over the game viewport", () => {
     const root = fixture.nativeElement as HTMLElement;
-    const start = Array.from(root.querySelectorAll("button")).find((button) => button.textContent?.includes("DEPLOY"));
-    start?.click();
-    fixture.detectChanges();
     const stage: HTMLElement = fixture.nativeElement.querySelector(".td-stage");
     expect(stage.querySelector(".td-hud")).not.toBeNull();
     expect(stage.querySelector(".td-sound")).not.toBeNull();
     expect(stage.querySelector(".td-controls")).not.toBeNull();
     expect(fixture.nativeElement.querySelector(".td-help")).toBeNull();
     expect(fixture.nativeElement.querySelector(".td-credits")).toBeNull();
+  });
+
+  it("briefs each level before deployment and returns from the briefing to level selection", async () => {
+    fixture.destroy();
+    fixture = TestBed.createComponent(TrumpDefenseComponent);
+    fixture.detectChanges();
+    fixture.nativeElement.querySelector<HTMLButtonElement>(".td-level-choice")?.click();
+    fixture.detectChanges();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const root = fixture.nativeElement as HTMLElement;
+    expect(root.textContent).toContain("GROUND FORCES");
+    expect(root.textContent).toContain("Cannons hit them hard");
+    expect(root.querySelector(".td-panel")).toBeNull();
+    expect(root.querySelector(".td-hud")).toBeNull();
+    root.querySelector<HTMLButtonElement>('[aria-label="Next briefing"]')?.click();
+    fixture.detectChanges();
+    expect(root.textContent).toContain("CANNON");
+    root.querySelector<HTMLButtonElement>('[aria-label="Next briefing"]')?.click();
+    fixture.detectChanges();
+    expect(root.textContent).toContain("PICK A BUILD SITE");
+    root.querySelector<HTMLButtonElement>(".td-tutorial-back")?.click();
+    fixture.detectChanges();
+    expect(root.querySelectorAll(".td-level-choice")).toHaveLength(3);
+    root.querySelector<HTMLButtonElement>(".td-level-choice")?.click();
+    fixture.detectChanges();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    await fixture.whenStable();
+    fixture.detectChanges();
+    root.querySelector<HTMLButtonElement>(".td-tutorial-skip")?.click();
+    fixture.detectChanges();
+    expect(root.querySelector(".td-controls")).not.toBeNull();
+  });
+
+  it("returns from a paused game to the level picker", () => {
+    const root = fixture.nativeElement as HTMLElement;
+    root.querySelector<HTMLButtonElement>(".td-controls button:last-child")?.click();
+    fixture.detectChanges();
+    Array.from(root.querySelectorAll<HTMLButtonElement>(".td-panel button"))
+      .find((button) => button.textContent?.includes("Level select"))
+      ?.click();
+    fixture.detectChanges();
+    expect(root.querySelectorAll(".td-level-choice")).toHaveLength(3);
   });
 
   it("releases the scene when the route component is destroyed", () => {

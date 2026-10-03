@@ -10,6 +10,7 @@ function isBundledLevel(value: unknown, id: number): value is LevelDefinition {
     level.version === 1 &&
     level.id === id &&
     !!level.scene?.terrain &&
+    !!level.scene?.buildableTile &&
     Array.isArray(level.paths?.ground) &&
     Array.isArray(level.paths?.flying) &&
     Array.isArray(level.scene?.props) &&

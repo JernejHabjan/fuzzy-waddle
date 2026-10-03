@@ -28,6 +28,7 @@
       "required": [
         "terrain",
         "pathTile",
+        "buildableTile",
         "wall",
         "props",
         "skybox",
@@ -40,6 +41,7 @@
       "properties": {
         "terrain": { "$ref": "#/$defs/prop" },
         "pathTile": { "$ref": "#/$defs/visual" },
+        "buildableTile": { "$ref": "#/$defs/visual" },
         "wall": { "$ref": "#/$defs/prop" },
         "props": { "type": "array", "items": { "$ref": "#/$defs/prop" } },
         "skybox": { "type": "array", "minItems": 6, "maxItems": 6, "items": { "type": "string", "minLength": 1 } },

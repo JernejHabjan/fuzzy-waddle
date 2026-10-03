@@ -13,6 +13,7 @@ function assets(level: LevelDefinition): string[] {
   const visuals: VisualAsset[] = [
     level.scene.terrain,
     level.scene.pathTile,
+    level.scene.buildableTile,
     level.scene.wall,
     ...level.scene.props,
     ...Object.values(level.scene.visuals)

@@ -78,6 +78,10 @@
       "model": "models/Tile.obj",
       "texture": "textures/TileDiffuse.webp"
     },
+    "buildableTile": {
+      "model": "models/BuildTile.obj",
+      "texture": "textures/BuildTileDiffuse.webp"
+    },
     "wall": {
       "model": "models/Wall.obj",
       "texture": "textures/WallDiffuse.webp",

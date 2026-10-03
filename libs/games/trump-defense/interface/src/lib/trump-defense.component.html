@@ -58,17 +58,28 @@
         (webglcontextlost)="onContextLost($event)"
       ></div>
 
-      <div class="td-hud" aria-label="Game status">
-        <span
-          >Cash <strong>${{ hud().money }}</strong></span
-        >
-        <span
-          >Lives <strong>{{ hud().lives }}</strong></span
-        >
-        <span
-          >Wall <strong>{{ hud().wall }} / {{ hud().goal }}</strong></span
-        >
-      </div>
+      @if (phase() === "tutorial") {
+        <td-level-tutorial
+          [level]="levelNumber()"
+          (showcaseChange)="setShowcase($event)"
+          (start)="start()"
+          (exit)="returnToSelection()"
+        />
+      }
+
+      @if (phase() !== "tutorial") {
+        <div class="td-hud" aria-label="Game status">
+          <span
+            >Cash <strong>${{ hud().money }}</strong></span
+          >
+          <span
+            >Lives <strong>{{ hud().lives }}</strong></span
+          >
+          <span
+            >Wall <strong>{{ hud().wall }} / {{ hud().goal }}</strong></span
+          >
+        </div>
+      }
       <button
         type="button"
         class="td-sound"
@@ -95,7 +106,7 @@
         </div>
       }
 
-      @if (phase() !== "playing") {
+      @if (phase() !== "playing" && phase() !== "tutorial") {
         <div class="td-overlay">
           <div class="td-panel" role="status">
             @switch (phase()) {
@@ -104,9 +115,6 @@
               }
               @case ("loading") {
                 <h2>Loading level {{ levelNumber() }}</h2>
-              }
-              @case ("ready") {
-                <h2>HOLD THE LINE!</h2>
               }
               @case ("paused") {
                 <h2>TACTICAL PAUSE</h2>
@@ -125,15 +133,13 @@
               <p>{{ message() }}</p>
             }
             @switch (phase()) {
-              @case ("ready") {
-                <button type="button" (click)="start()">DEPLOY</button>
-              }
               @case ("paused") {
                 <button type="button" (click)="pause()">Resume</button>
+                <button type="button" (click)="returnToSelection()">Level select</button>
               }
               @case ("won") {
                 @if (finalLevel()) {
-                  <button type="button" (click)="restart()">Restart campaign</button>
+                  <button type="button" (click)="returnToSelection()">Restart campaign</button>
                 } @else {
                   <button type="button" (click)="next()">Next level</button>
                 }
@@ -144,6 +150,9 @@
               @case ("error") {
                 <button type="button" (click)="retry()">Try again</button>
               }
+            }
+            @if (phase() === "won" || phase() === "lost" || phase() === "error") {
+              <button type="button" (click)="returnToSelection()">Level select</button>
             }
           </div>
         </div>

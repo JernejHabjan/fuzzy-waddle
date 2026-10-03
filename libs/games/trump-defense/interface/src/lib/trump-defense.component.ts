@@ -25,13 +25,18 @@ import { loadLevel } from "./asset-paths";
 import { GameAudio } from "./game-audio";
 import { getUnlockedLevels, unlockLevel } from "./level-progress";
 import { deriveHud } from "./trump-defense-hud";
+import { getLevelTutorial } from "./level-tutorial";
+import { LevelTutorialComponent } from "./level-tutorial.component";
 import { ThreeScene } from "./three-scene";
-import type { TrumpDefenseHud, TrumpDefensePhase } from "./trump-defense-ui-state";
+import { emptyHud, levelChoices } from "./trump-defense-ui-config";
+import type { TutorialVisualKind } from "@fuzzy-waddle/trump-defense-gameplay";
+import type { TrumpDefensePhase } from "./trump-defense-ui-state";
 
 @Component({
   selector: "fuzzy-waddle-trump-defense",
   templateUrl: "./trump-defense.component.html",
   styleUrl: "./trump-defense.component.scss",
+  imports: [LevelTutorialComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: "td-shell", "(window:keydown)": "onKeydown($event)" }
 })
@@ -41,6 +46,7 @@ export class TrumpDefenseComponent implements AfterViewInit, OnDestroy {
   private scene: ThreeScene | null = null;
   private game: GameState | null = null;
   private frameId = 0;
+  private showcaseFrameId = 0;
   private lastFrame = 0;
   private accumulator = 0;
   private destroyed = false;
@@ -50,25 +56,9 @@ export class TrumpDefenseComponent implements AfterViewInit, OnDestroy {
   protected readonly showProjectInfo = signal(false);
   protected readonly levelNumber = signal<1 | 2 | 3>(1);
   protected readonly finalLevel = computed(() => this.levelNumber() === 3);
-  protected readonly levelChoices = [
-    { number: 1, label: "Red, White & Boom" },
-    { number: 2, label: "Stars After Dark" },
-    { number: 3, label: "Liberty's Last Stand" }
-  ] as const;
+  protected readonly levelChoices = levelChoices;
   protected readonly unlockedLevels = signal(getUnlockedLevels(isDevMode()));
-  protected readonly hud = signal<TrumpDefenseHud>({
-    money: 0,
-    lives: 0,
-    wall: 0,
-    goal: 0,
-    sniperCost: 0,
-    cannonCost: 0,
-    upgradeCost: 0,
-    wallCost: 0,
-    canPlaceSniper: false,
-    canPlaceCannon: false,
-    canUpgrade: false
-  });
+  protected readonly hud = signal(emptyHud);
   protected readonly message = signal("Loading the original map…");
   protected readonly muted = signal(false);
 
@@ -102,12 +92,10 @@ export class TrumpDefenseComponent implements AfterViewInit, OnDestroy {
       scene.sync(this.game);
       scene.render();
       this.updateHud();
-      this.phase.set("ready");
-      this.message.set(
-        index === 3
-          ? "Towers build on available tiles across this level."
-          : "Select an empty tile to place defenses, then raise the wall."
-      );
+      this.scene.setShowcase(getLevelTutorial(index)[0]?.showcase ?? null);
+      this.phase.set("tutorial");
+      this.message.set(`Level ${index} briefing. Skip it any time to deploy.`);
+      this.animateShowcase();
     } catch (error) {
       if (this.destroyed || token !== this.loadToken) return;
       this.scene?.dispose();
@@ -118,11 +106,24 @@ export class TrumpDefenseComponent implements AfterViewInit, OnDestroy {
   }
 
   protected start(): void {
-    if (!this.game || this.phase() !== "ready") return;
+    if (!this.game || this.phase() !== "tutorial") return;
+    cancelAnimationFrame(this.showcaseFrameId);
+    this.scene?.setShowcase(null);
     this.phase.set("playing");
     this.message.set(`Defend the route and raise the wall to ${this.game.level.rules.wallGoal}.`);
     this.audio.startMusic(this.game.level.music);
     this.schedule();
+  }
+
+  /** Keeps the tutorial model turning while the gameplay simulation stays paused. */
+  private readonly animateShowcase = (): void => {
+    if (this.destroyed || this.phase() !== "tutorial" || !this.scene) return;
+    this.scene.rotateShowcase();
+    this.showcaseFrameId = requestAnimationFrame(this.animateShowcase);
+  };
+
+  protected setShowcase(visual: TutorialVisualKind | null): void {
+    this.scene?.setShowcase(visual);
   }
 
   protected chooseLevel(index: 1 | 2 | 3): void {
@@ -241,8 +242,11 @@ export class TrumpDefenseComponent implements AfterViewInit, OnDestroy {
   protected retry(): void {
     void this.load(this.levelNumber());
   }
-  protected restart(): void {
+  /** Leaves the current run and rebuilds the campaign picker on the next level choice. */
+  protected returnToSelection(): void {
+    this.loadToken++;
     cancelAnimationFrame(this.frameId);
+    cancelAnimationFrame(this.showcaseFrameId);
     this.audio.stop();
     this.scene?.dispose();
     this.scene = null;
@@ -258,9 +262,9 @@ export class TrumpDefenseComponent implements AfterViewInit, OnDestroy {
   protected onKeydown(event: KeyboardEvent): void {
     const key = event.key.toLowerCase();
     if ([" ", "arrowup", "arrowdown", "arrowleft", "arrowright"].includes(key)) event.preventDefault();
-    if (key === "enter" && this.phase() === "ready") return this.start();
+    if (key === "enter" && this.phase() === "tutorial") return this.start();
     if (key === "enter" && this.phase() === "selecting") return this.chooseLevel(1);
-    if (key === "enter" && this.phase() === "won") return this.finalLevel() ? this.restart() : this.next();
+    if (key === "enter" && this.phase() === "won") return this.finalLevel() ? this.returnToSelection() : this.next();
     if (key === "enter" && this.phase() === "lost") return this.retry();
     if (key === "enter" && this.phase() === "error") return this.retry();
     if (key === "p") return this.pause();
@@ -288,6 +292,7 @@ export class TrumpDefenseComponent implements AfterViewInit, OnDestroy {
     this.destroyed = true;
     this.loadToken++;
     cancelAnimationFrame(this.frameId);
+    cancelAnimationFrame(this.showcaseFrameId);
     this.audio.dispose();
     this.scene?.dispose();
   }
