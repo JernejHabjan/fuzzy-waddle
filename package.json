@@ -1,6 +1,6 @@
 {
   "name": "fuzzy-waddle",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "license": "UNLICENSED",
   "scripts": {
     "start:portal": "nx serve portal --outputStyle=stream",
