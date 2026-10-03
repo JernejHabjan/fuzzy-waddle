@@ -25,8 +25,9 @@ async function waitForMultiplayerGame(page: Page): Promise<void> {
 
 /** Creates an ordinary public custom lobby with two real humans and one host-owned AI. */
 export async function startMultiplayerTestMatch(
-  browser: Browser, options: { readonly queueWorld?: true } = {}
+  browser: Browser, options: { readonly queueWorld?: true; readonly sharedQueueWorld?: "shared_contention" | "cancel_research" } = {}
 ): Promise<MultiplayerTestMatch> {
+  if (options.queueWorld && options.sharedQueueWorld) throw new Error("multiplayer_queue_world_opt_ins_conflict");
   const provisioned = await createMultiplayerTestIdentities();
   const hostContext = await browser.newContext();
   const peerContext = await browser.newContext();
@@ -46,6 +47,15 @@ export async function startMultiplayerTestMatch(
         });
       }
     }
+    if (options.sharedQueueWorld) {
+      for (const context of [hostContext, peerContext]) {
+        await context.addInitScript((branch) => {
+          if (window.location.origin === "http://127.0.0.1:4200") {
+            window.sessionStorage.setItem("fuzzy-waddle:ai-multiplayer-shared-queue-world-v1", branch);
+          }
+        }, options.sharedQueueWorld);
+      }
+    }
     const host = await hostContext.newPage();
     const peer = await peerContext.newPage();
     const lobbyName = `ai-relay-${Date.now()}`;
@@ -56,6 +66,7 @@ export async function startMultiplayerTestMatch(
     await host.getByRole("button", { name: "Create Lobby" }).click();
     await expect(host).toHaveURL(/\/aota\/lobby/);
     await host.getByText("AI Multiplayer (test only)", { exact: true }).click();
+    if (options.sharedQueueWorld) await host.locator("#faction-1").selectOption({ label: "Tivara" });
     await host.getByRole("button", { name: /Open player space/ }).click();
     await host.getByRole("button", { name: /Add A\.I\. player/ }).click();
 

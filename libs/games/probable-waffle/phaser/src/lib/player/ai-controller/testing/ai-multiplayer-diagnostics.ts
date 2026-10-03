@@ -6,6 +6,8 @@ import { getCommunicator } from "../../../data/scene-data";
 import { CommandBusService } from "../../../world/services/multiplayer/command-bus.service";
 import { AiMultiplayerQueueWorld, multiplayerQueueWorldRequested } from "./ai-multiplayer-queue-world";
 
+import { AiMultiplayerSharedQueueWorld, multiplayerSharedQueueWorldRequested } from "./ai-multiplayer-shared-queue-world";
+
 const marker = "fuzzy-waddle:ai-multiplayer-browser-test-v1";
 
 export function multiplayerDiagnosticsRequested(): boolean {
@@ -26,9 +28,14 @@ export class AiMultiplayerDiagnostics {
   private readonly localHashes = new Map<number, string>();
   private readonly humanPlayerNumbers: number[];
   private readonly queueWorld: AiMultiplayerQueueWorld | null;
+  private readonly sharedQueueWorld: AiMultiplayerSharedQueueWorld | null;
 
   constructor(private readonly scene: ProbableWaffleScene, private readonly commandBus: CommandBusService) {
-    this.queueWorld = multiplayerQueueWorldRequested() ? new AiMultiplayerQueueWorld(scene, commandBus) : null;
+    const sharedBranch = multiplayerSharedQueueWorldRequested();
+    const queueRequested = multiplayerQueueWorldRequested();
+    if (sharedBranch && queueRequested) throw new Error("multiplayer_queue_world_opt_ins_conflict");
+    this.queueWorld = queueRequested ? new AiMultiplayerQueueWorld(scene, commandBus) : null;
+    this.sharedQueueWorld = sharedBranch ? new AiMultiplayerSharedQueueWorld(scene, commandBus, sharedBranch) : null;
     this.humanPlayerNumbers = scene.baseGameData.gameInstance.players
       .filter((player) => player.playerController.data.playerDefinition?.playerType === ProbableWafflePlayerType.Human)
       .map((player) => player.playerNumber)
@@ -71,17 +78,24 @@ export class AiMultiplayerDiagnostics {
       processedAiCommandIds: this.commandBus.getAuthorityState().processedCommandIds
         .filter((id) => id.startsWith(`${aiPlayerNumber}:`)).slice(-16),
       hashes: [...this.localHashes].map(([tick, hash]) => ({ tick, hash })),
-      queueWorld: this.queueWorld?.getSnapshot() ?? null
+      queueWorld: this.queueWorld?.getSnapshot() ?? null,
+      sharedQueueWorld: this.sharedQueueWorld?.getSnapshot() ?? null
     };
   }
 
   destroy(): void {
     this.queueWorld?.destroy();
+    this.sharedQueueWorld?.destroy();
     this.subscriptions.forEach((subscription) => subscription.unsubscribe());
     this.subscriptions.length = 0;
     this.observedHumanBatches.clear();
     this.lastReceivedRelaySequenceByPlayer.clear();
     this.localHashes.clear();
+  }
+
+  startSharedQueueWorld(): void {
+    if (!this.sharedQueueWorld) throw new Error("multiplayer_shared_queue_world_not_enabled");
+    this.sharedQueueWorld.start();
   }
 
   startQueueWorld(): void {

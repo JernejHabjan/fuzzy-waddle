@@ -1,6 +1,8 @@
-import { ResourceType, type GameCommand, type GameCommandOutcomeKind } from "@fuzzy-waddle/probable-waffle-protocol";
+import { ResourceType, type GameCommandOutcomeKind } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiMultiplayerQueueWorldV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-multiplayer-queue-world-v1";
+
+import { sameRuntimeQueueCommand as sameQueueCommand } from "./skirmish-ai-runtime-queue-command-equality";
 
 /** Normalizes this narrow real queue experiment. It cannot populate RuntimeProductionEvidenceV1 or clear its AI/fairness gaps. */
 export function normalizeMultiplayerQueueBoundary(world: AiMultiplayerQueueWorldV1, requireSenderRequest: boolean) {
@@ -159,13 +161,3 @@ export function normalizeMultiplayerQueueBoundary(world: AiMultiplayerQueueWorld
   return { failures: [...new Set(failures)], payments, request, rejection, completion };
 }
 
-/** Wire object property order is irrelevant; compare the complete stamped queue payload and execution identity. */
-function sameQueueCommand(left: GameCommand, right: GameCommand | undefined): boolean {
-  if (!right || left.tick !== right.tick || left.playerNumber !== right.playerNumber ||
-    left.actorIds.length !== right.actorIds.length ||
-    left.actorIds.some((actorId, index) => actorId !== right.actorIds[index]) ||
-    !(["schemaVersion", "commandId", "commitmentKey", "source", "authorityEpoch", "sequence", "intentId", "effectId"] as const)
-      .every((key) => left.execution?.[key] === right.execution?.[key])) return false;
-  return (left.type === "PRODUCTION" && right.type === "PRODUCTION" && left.actorName === right.actorName) ||
-    (left.type === "CANCEL_PRODUCTION" && right.type === "CANCEL_PRODUCTION" && left.queueIndex === right.queueIndex);
-}

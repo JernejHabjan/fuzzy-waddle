@@ -851,3 +851,78 @@ the normal local stack/environment. The multiplayer launcher discovers credentia
 runs the registered socket cases; do not print credentials or substitute local single-player application. Follow
 with the existing preset/pending/payment/digest/oracle selections, frozen-map preflight and full causal worlds.
 All tests/E2E/simulations, formatting/lint/type/build/editor/schema/repository checks and doctor/context remain unrun.
+
+
+### Production distinct shared queue worlds checkpoint (2026-10-03, unverified)
+
+This grouped authority batch began at `486e2a7a63f18710228aea8667f9d4407f79b846`. It authors two distinct human socket
+worlds and their narrow normalization. It does **not** complete PRO-07, prove useful AI strategy, populate
+`RuntimeProductionEvidenceV1`, register family coverage or close #815/#816/#819. All executable validation is deferred.
+
+| Acceptance | Source path / consumer | Status and final-gate evidence |
+| --- | --- | --- |
+| 1. Legal shared capability setup | `prepareAiMultiplayerSharedQueueWorld`, setup Jest spec, existing two-peer match launcher | Authored: indexed ready human producer, one physical lane with capacity >=2, definition-backed worker and faction/prerequisite eligible tech. Both peers mirror only cash at tick one. Live bootstrap/shared preflight remains unverified. |
+| 2. Distinct shared authority worlds | `AiMultiplayerSharedQueueWorld`, diagnostics opt-in, two socket specs | Authored: train/research coexistence and paid research cancellation with a different technology probe/resumption. Only human slot one sends ordinary buffered commands. Real outcomes, tech registration, indexed owned worker variants and twenty-tick effect presence are required. |
+| 3. Item-scoped normalization | `normalizeRuntimeScopedQueuePayments`, `normalizeMultiplayerSharedQueueWorld`, `evaluateMultiplayerResearchCancellation` | Authored: complete scoped triples, whole purchase/cancel execution lineage, stored prices, actual progress-dependent refund and cash, physical items, strict sequence, genuine sender request and independent completion. Raw wider gaps stay present. Full AI adapter remains unfinished. |
+| 4. Registered meaningful regressions | new Phaser setup/world specs and `skirmish-ai-multiplayer-shared-queue*.spec.ts` | Authored/unrun: mocked legal setup/scheduling/passivity/teardown/effect loss, synthetic adapter contract cases and two actual socket cases. Existing multiplayer config glob discovers the new specs; no matrix coverage is claimed. |
+| 5. Review, handoff and publication | current handoff and this checkpoint | Source-only implementation review, Omission Audit, then separate Final Closure Audit; task-owned commit/push and remote verification. No executable checks. |
+
+The separate storage marker `fuzzy-waddle:ai-multiplayer-shared-queue-world-v1` accepts `shared_contention` or
+`cancel_research` only. Existing development/localhost/multiplayer diagnostics gating owns installation. Combining this
+marker with the older worker refund opt-in is rejected before either experiment is constructed. Ordinary diagnostics
+retain null optional worlds. Reading snapshots never invokes an AI controller, samples authority or dispatches commands.
+Scene teardown fences both subscriptions and retained records.
+
+The contention branch uses the existing ready producer's real shared lane for two paid orders. It waits for both a
+command-linked spawned worker and actual tech registration, then checks effects every simulation tick for twenty ticks.
+Worker aliases are read from the runtime definition's `randomOfType`; a male/female variant is not rejected merely
+because its concrete name differs from the purchased worker alias. Actual ownership, active scene and non-killed state
+are required. These are authority effects; a technology's strategic usefulness to the AI is still missing evidence.
+
+The cancellation branch pays for technology A and probes **different** technology B. Starting cash is A's stored
+price plus `max(0, B price - conservative refund bound)` per resource. The bound uses A's definition refund factor and
+at most twenty 50ms progress ticks. At least one refunded resource must cause a real B shortfall. Cancellation must
+apply inside that actual window; normalization checks the emitted refund using A's actual remaining/total time and
+existing `floor(price * refundFactor * (1 - progress))` formula. The expected bound is never applied as money.
+As in the earlier socket experiment, probe dispatch and cancellation request occur on separate simulation ticks,
+request < probe application < cancellation application, and B is retried only after real refund credit. A is never
+requeued. Research's existing refund-before-removal/source-terminal ordering remains unchanged.
+
+The reusable semantic queue-command equality now also understands research and cancellation, retaining every stamped
+execution field. The earlier worker-only normalizer uses the same helper without changing its experiment contract.
+New scoped payment normalization accepts only immediate item-backed triples for these worlds, rejects incomplete
+operations, generic cash substitution, wrong callback ordinal/provenance, restore/nesting/overflow and mismatched
+balances. It is not yet a per-tick/remaining-obligation or full production-evidence adapter. The world proof retains
+raw gap labels instead of clearing absent AI, fair reachability, decision cadence, restore and initial setup provenance.
+
+**Omission Audit:** traced marker -> development diagnostics -> first mirrored tick -> indexed capability/definition
+selection -> ordinary socket dispatch -> shared component charge/item/outcome -> request/probe/refund -> different
+purchase -> actual tech/spawn -> stable presence -> normalization/attachments/hash consumer. New specs are discovered
+by the existing config. No deterministic multiplayer dispatch, seeded queue, injected AI state, hidden opponent input,
+family oracle relaxation or manifest/catalog change was added. The source review repaired worker alias matching and
+strengthened scoped metadata/outcome lineage and ownership checks. Both-faction setup, useful AI cancellation and full
+normalization are explicit next-batch work rather than accepted requirements.
+
+**Separate Final Closure Audit:** re-read the bounded source owners, immediate helper/diagnostic/browser consumers,
+source provenance and exact staged scope after repairs. Checks remain deferred; source review is not validation.
+No skill/tool policy changed. No issue/family is declared complete. Existing source owners remain bounded; no baseline
+hash was refreshed. Remote publication is verified after the containing commit.
+
+**Next exact authoring action:** author genuine committed-AI boundary/claim/obligation normalization for
+`RuntimeProductionEvidenceV1`, preserve absent proof as failures, and legal Skaduwee research-producer setup. Then
+connect actual useful AI contending/strategic cancellation worlds and dependency-compatible PRO-03/06 pairs. Current
+human socket worlds supply reusable shared authority only. Retain **GPT-6.1 Sol / high** for this grouped authority
+work; actual running model/effort is unavailable. Commit/push this bounded batch and pause.
+
+At the final gate, add these commands to the earlier oracle/capture/policy/map/shared-caller selections:
+
+```bash
+NX_DAEMON=false pnpm exec nx test probable-waffle-phaser --testPathPattern='ai-multiplayer-shared-queue-world|prepare-ai-multiplayer-shared-queue-world|ai-multiplayer-diagnostics|ai-multiplayer-queue-world|ai-runtime-production-capture' --skip-nx-cache
+pnpm exec playwright test --config apps/portal-e2e/playwright.multiplayer.config.ts --grep 'synthetic contract tests'
+pnpm ai:skirmish:multiplayer
+```
+
+The pure Playwright command still invokes the existing API/portal config and needs its local stack/environment. The
+multiplayer launcher discovers local Supabase credentials without printing them. All commands above are unrun. Existing
+Phaser mock emitter/lifecycle omissions remain final-gate repair work. The family oracle continues to reject missing
+full evidence, missing both-faction branch worlds and same-product cancellation/requeue cycles.
