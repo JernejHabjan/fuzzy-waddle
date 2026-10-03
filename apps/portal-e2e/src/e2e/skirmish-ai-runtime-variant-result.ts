@@ -3,6 +3,7 @@ import type { AiRuntimePresetQueueApplicationV1 } from
 import type { RuntimeCheckpointV1 } from "./skirmish-ai-runtime-checkpoint";
 import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
 import type { RuntimeProductionEvidenceV1 } from "./skirmish-ai-runtime-production-evidence";
+import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
 import type { AiRuntimeProductionCaptureV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
 
@@ -11,6 +12,8 @@ export interface RuntimeVariantResultV1 {
   readonly productionEvidence?: RuntimeProductionEvidenceV1;
   /** Raw authority diagnostics retain explicit gaps and cannot satisfy the independent evidence contract. */
   readonly productionCapture?: AiRuntimeProductionCaptureV1;
+  /** Checked AI intent/authority lineage with unresolved gaps; never substitutes for full productionEvidence. */
+  readonly productionCausality?: RuntimeProductionCausalityV1;
   readonly variantId: string;
   readonly repetition?: number;
   readonly mapLabel: string;

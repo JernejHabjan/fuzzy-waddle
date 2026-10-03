@@ -37,9 +37,10 @@ describe("dispatchAiIntentCommand", () => {
     const intent = pendingCommandIntent();
     dispatchAiIntentCommand(f.scene, f.bus, pendingCommandRequest().command, intent);
     expect(order).toEqual(["requested", "authority_applied", "finished"]);
-    expect(recorded[0]).toEqual(pendingCommandRequest());
+    expect(recorded[0]).toEqual({ ...pendingCommandRequest(), acceptedIntent: intent });
     expect(recorded[1]).toEqual(f.finished);
     expect(recorded[0].kind === "requested" && recorded[0].claims).not.toBe(intent.claims);
+    expect(recorded[0].kind === "requested" && recorded[0].acceptedIntent).not.toBe(intent);
     expect(recorded[1].kind === "finished" && recorded[1].receipt).not.toBe(f.finished.receipt);
   });
 

@@ -16,6 +16,8 @@ export type AiIntentCommandDispatchEvent = {
     /** The arbiter's accepted claims, before any command callback can apply or retire them. */
     readonly claims: AiIntentV1["claims"];
     readonly proposedTick: number;
+    /** Detached arbiter-accepted proposal, including plan/demand identity. Older diagnostic fixtures may omit it. */
+    readonly acceptedIntent?: AiIntentV1;
   }
   | { readonly kind: "finished"; readonly receipt: GameCommandDispatchReceipt }
   | { readonly kind: "threw" }

@@ -20,7 +20,7 @@ export function dispatchAiIntentCommand(
   const emit = (event: AiIntentCommandDispatchEvent) =>
     scene.events.emit(AI_INTENT_COMMAND_DISPATCH_EVENT, structuredClone(event));
   emit({ kind: "requested", playerNumber: command.playerNumber, correlation, command,
-    claims: intent.claims, proposedTick: intent.proposedTick });
+    claims: intent.claims, proposedTick: intent.proposedTick, acceptedIntent: intent });
   try {
     const receipt = bus.dispatchAi(command, correlation);
     emit({ kind: "finished", playerNumber: command.playerNumber, correlation, receipt });

@@ -12,6 +12,7 @@ import { canStopAfterTerminal } from "./skirmish-ai-runtime-terminal";
 import { evaluateEvidenceStopAtCheckpoint } from "./skirmish-ai-runtime-evidence-stop-evaluation";
 import { collectRuntimePresetEvents } from "./skirmish-ai-runtime-preset-event-results";
 import { captureRuntimeProductionAuthority } from "./skirmish-ai-runtime-production-capture";
+import { normalizeRuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality-normalization";
 
 export async function runVariant(
   browser: Browser,
@@ -191,7 +192,9 @@ export async function runVariant(
       ...(variant.productionCompositionBranch ? { productionCompositionBranch: variant.productionCompositionBranch } : {}),
       initialWorldDigest,
       outcomeDigest,
-      ...(productionCapture ? { productionCapture } : {}),
+      ...(productionCapture ? {
+        productionCapture, productionCausality: normalizeRuntimeProductionCausality(productionCapture)
+      } : {}),
       checkpoints,
       perturbations,
       aiErrors,

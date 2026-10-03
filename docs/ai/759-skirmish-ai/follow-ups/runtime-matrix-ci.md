@@ -926,3 +926,70 @@ The pure Playwright command still invokes the existing API/portal config and nee
 multiplayer launcher discovers local Supabase credentials without printing them. All commands above are unrun. Existing
 Phaser mock emitter/lifecycle omissions remain final-gate repair work. The family oracle continues to reject missing
 full evidence, missing both-faction branch worlds and same-product cancellation/requeue cycles.
+
+
+### Production AI causality checkpoint (2026-10-03, unverified)
+
+This bounded grouped adapter batch began at `e658318ae81b5dd9bd7618f0c3d4a70e557d19d3`. It connects actual accepted
+AI intent to queue authority and report diagnostics. It does **not** populate `RuntimeProductionEvidenceV1`, establish
+AI strategic usefulness, author the missing legal Skaduwee world or close PRO-03/06/07 or #815/#816/#819. Those remain
+unfinished implementation, independent of the user's deferred validation policy.
+
+| Acceptance | Source / consumer | Status and remaining evidence |
+| --- | --- | --- |
+| 1. Preserve accepted intent identity | `AiIntentCommandDispatchEvent`, `dispatchAiIntentCommand`, adjacent Jest spec | Authored: detached full accepted intent before actual bus call, retaining plan/demand/claims. Older diagnostics may omit the optional field; AI normalization rejects that omission. Actual committed decision identity still missing. |
+| 2. Link request to shared authority | `validateRuntimeProductionCommandLineage`, `normalizeRuntimeProductionCausality` | Authored: strict observer order, correlation/payload, authority stamp, admission/delivery/outcome lineage, retries separated by request scope, pending and synchronous paths. No plan inferred from strings or neighboring snapshots. |
+| 3. Retain scoped AI money | same normalizer and existing `normalizeRuntimeScopedQueuePayments` | Authored: actual AI origin and separate cancellation, exact immediate triples, stored-price charge, actual progress refund formula. Denied/per-tick/unknown payments retain gaps; missing application payment/refund stays explicit. Event-time claims/obligations still missing. |
+| 4. Register consumers and regressions | `RuntimeVariantResultV1`, `runVariant`, `evaluateRuntimeProductionCausality`, `evaluateRuntimeVariant`, new synthetic Playwright spec | Authored/unrun: real runner emits causal diagnostics beside raw capture; only mandatory causal production rows surface their gaps/failures. Default Playwright config discovers the new spec. Mandatory full evidence oracle remains unchanged. |
+| 5. Review, handoff, publication | handoff and this checkpoint | Source-only review and Omission Audit, separate Final Closure Audit, exact task-owned commit/push and remote verification; executable checks deferred. |
+
+`RuntimeProductionCausalityV1` is a detached diagnostic, not a narrower spelling of full production evidence. Its
+command records retain accepted intent, real request/receipt sequence, stamped command and actual delivered/outcome
+facts. Application can occur before the finished receipt in single-player; a pending multiplayer command needs its
+real admission but must not be given invented delivery. Request and intended tick remain distinct. Wrong/duplicate
+stamps, payload, claims, callback order, truncated capture or missing dispatch scope fail closed. Human receipt/payment
+records are excluded rather than relabeled as AI intent. Any causal failure suppresses normalized money; raw facts remain.
+
+Scoped payments require the original accepted AI purchase and the actual distinct cancellation command. Refund
+normalization uses the stored price and actual remaining/total progress with the existing arithmetic ordering, never
+an expected cash credit. Generic resource events cannot replace missing item operations. Full raw gaps stay attached,
+with explicit missing committed-decision link, event-time liabilities, runtime definition catalog and paired setup.
+Per-tick/denied/unknown operations are not promoted to complete payment proof. Catalog, useful demand, fair producer
+geometry/readiness, effect stability and lease states still require their own actual authorities.
+
+The synthetic helper deliberately adds invented accepted intents to existing synthetic queue-shape contracts. Its
+prices remain synthetic. This is not the adapter for the real human socket worlds, not a browser fixture, and never
+runs inside the game or registers matrix coverage. The actual runner gets its intents only from production dispatch
+callbacks. Tests cover two branches, full intent detachment, pending/synchronous ordering, missing/changed provenance,
+duplicate delivery, callback/capture loss, absent item payments, incorrect refund progress and unchanged oracle gating.
+All assertions are authored, not executed; local bootstrap, module/type contracts and live outcomes remain unverified.
+
+**Omission Audit:** traced accepted controller result -> intent dispatcher -> diagnostic before real bus call -> raw
+capture -> normalization -> real variant result -> mandatory production report evaluation. Reviewed backward optional
+records, ordinary no-listener dispatch, correlation retries, same-tick callback order, delayed admission, item/cancel
+lineage, missing payments and test discovery. No save/wire schema, gameplay rule, family recipe, coverage denominator,
+full oracle or source baseline was changed. Full adapter fields and legal strategic both-faction worlds are explicitly
+unfinished, so this checkpoint closes only the causal-link authoring substep.
+
+**Separate Final Closure Audit:** after source repairs, revisited the numbered acceptance and immediate callers,
+helper ownership, stale comments, detached/bounded records, exact staged scope and both report gates. No executable
+validation was performed. No skill/tool policy change, new worktree, thread, branch or PR was required. Publication
+is verified after the containing commit; the integration PR remains draft.
+
+**Next exact action:** add actual committed-decision identity and operation-time reservations/liabilities, then the
+fair snapshot/catalog/setup projection needed by `RuntimeProductionEvidenceV1`. Preserve absent evidence as failures.
+Follow with legal Skaduwee research-producer setup and actual useful AI contention/cancellation worlds; group compatible
+PRO-03/06 pairs. Retain **GPT-6.1 Sol / high** because the remaining work crosses decision, queue and authority contracts.
+Actual model/effort is unavailable. Continue authoring only, then commit/push and pause at the next bounded batch.
+
+At the final gate, add to the existing capture/pending/shared payment/production oracle/socket selections:
+
+```bash
+NX_DAEMON=false pnpm exec nx test probable-waffle-phaser --testPathPattern='dispatch-ai-intent-command|ai-runtime-pending-commands|ai-runtime-production-capture' --skip-nx-cache
+pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts skirmish-ai-runtime-production-causality-normalization.spec.ts
+```
+
+The default Playwright config starts the local portal; this contract spec does not provision socket identities. The
+existing multiplayer selection still owns the human worlds. All tests/E2E/simulations, formatting/lint/types/build/
+editor/schema/repository checks and doctor/context/catalog commands remain unrun. Repair shared Phaser mock emitter/
+lifecycle omissions at that gate, then execute the full actual-world evidence; these contracts cannot count as it.

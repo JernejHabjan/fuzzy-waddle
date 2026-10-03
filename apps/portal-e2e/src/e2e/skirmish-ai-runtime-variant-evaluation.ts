@@ -14,6 +14,7 @@ import { evaluateRuntimeProductionCapacity } from "./skirmish-ai-runtime-product
 import { evaluateRuntimeProductionComposition } from "./skirmish-ai-runtime-production-composition-evaluation";
 import { evaluateRuntimeProductionContract } from "./skirmish-ai-runtime-production-contract-evaluation";
 import { evaluateRuntimeProductionCounts } from "./skirmish-ai-runtime-production-count-evaluation";
+import { evaluateRuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality-evaluation";
 
 export function evaluateRuntimeVariant(
   scenarioId: string,
@@ -23,6 +24,8 @@ export function evaluateRuntimeVariant(
   const failures = evaluateRuntimeProductionContract(
     scenarioId, assertion.requiredProductionContracts?.[variant.variantId], variant.productionEvidence
   ).map((failure) => `${variant.variantId}:${failure}`);
+  failures.push(...evaluateRuntimeProductionCausality(scenarioId, variant.productionCausality)
+    .map((failure) => `${variant.variantId}:${failure}`));
   const final = last(variant.checkpoints);
   const appliedCommands = new Map(
     variant.checkpoints
