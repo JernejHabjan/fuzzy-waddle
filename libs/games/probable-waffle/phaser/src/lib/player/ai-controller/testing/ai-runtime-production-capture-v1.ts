@@ -2,6 +2,7 @@ import type { AiBrainStateV1, AiCapabilityCatalogV1, AiObservationV1 } from "@fu
 import type { ResearchType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiRuntimeProductionFactV1 } from "./ai-runtime-production-fact-v1";
 import type { AiRuntimeProductionQueueV1 } from "./ai-runtime-production-queue-v1";
+import type { AiRuntimePendingCommandV1 } from "./ai-runtime-pending-command-v1";
 
 /**
  * Diagnostic raw capture, not RuntimeProductionEvidenceV1. Missing causal attribution and navigation/placement proof
@@ -26,6 +27,10 @@ export interface AiRuntimeProductionCaptureV1 {
     readonly economyProduction: AiBrainStateV1["economyProduction"] | null;
     readonly reservations: AiBrainStateV1["reservations"];
     readonly resources: Readonly<Record<ResourceType, number>>;
+    /** Actual admitted AI commands still awaiting application; not a queue, refund credit or resource escrow. */
+    readonly pendingCommands: readonly AiRuntimePendingCommandV1[];
+    /** Full claims until all addressed actors settle, separate from queue liabilities. Null signals aggregate overflow. */
+    readonly pendingResourceClaims: Readonly<Record<ResourceType, number>> | null;
     readonly obligations: Readonly<Record<ResourceType, number>>;
     readonly queues: readonly AiRuntimeProductionQueueV1[];
     readonly completedResearch: readonly ResearchType[];

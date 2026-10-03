@@ -556,3 +556,78 @@ pnpm ai:tools:test
 Also include the Playwright oracle-only `skirmish-ai-runtime-production-refund-evaluation.spec.ts`,
 `skirmish-ai-runtime-production-composition-evaluation.spec.ts` and `skirmish-ai-runtime-digest.spec.ts` in the grouped
 portal-e2e gate, then the frozen-map preflight and actual focused production worlds. All commands remain **unrun**.
+
+
+### Production pending-command capture checkpoint (2026-10-03, unverified)
+
+This independent authority slice began at `6b64fd5930780c59bdde19f8e21b4d340b47091a`. The previously selected shared
+item-money hooks require bounded production/queue/research splits, whose existing comments cannot be relocated
+without permission under AGENTS.md. Permission to move those comments verbatim was requested asynchronously and
+remains unanswered. This batch completes the dependency-compatible pending-command capture work; it does not
+implement those hooks or the real buffered cancellation/refund/probe world. No issue or production family is complete.
+
+1. **Dispatch provenance — authored:** `ai-intent-dispatcher.ts` uses `dispatchAiIntentCommand` for its existing
+   economic, movement, combat and control translations. An installed capture listener receives the exact accepted
+   claims and command input before shared `dispatchAi`, followed by its actual receipt or rethrown exception. Ordinary
+   scenes without that listener take the direct original bus path. No command is manufactured or admitted by the
+   observer; prefix stripping and commitment correlation retain their prior semantics.
+2. **Unspent pending ownership — authored:** `AiRuntimePendingCommands` correlates real dispatched outcomes with that
+   in-flight scope, preserving command ID, commitment, intent/effect, player, epoch/sequence, product/address, actual
+   request tick, proposal tick, scheduled tick and original claims. Only confirmed admission owns a diagnostic claim.
+   Applied/terminal per-actor outcomes retire it after every addressed actor settles. A synchronous application before
+   the finished receipt stays retired. Partial application conservatively retains the full command claim; no guessed
+   per-actor cost is allocated. Duplicate outcomes do not release ownership, and uncertain lost/backlog outcomes leave
+   it outstanding with a gap. Receipt/player/authority/timing mismatches remain explicit. Accepted cancellation has
+   zero resource claims unless its real intent says otherwise; there is no pending credit.
+3. **Capture/consumer/lifecycle — authored:** `AiRuntimeProductionFactV1` retains dispatch-scope callbacks and the bus
+   intended tick on dispatched outcomes; enclosing fact tick remains actual callback time. `AiRuntimeProductionCapture`
+   snapshots retain detached pending commands and resource claims beside real cash and queue liabilities. Claims are
+   a diagnostic view of existing accepted ownership, not cash escrow or additional saved reservations to sum twice.
+   Request/pending ledgers each cap at 128; invalid/duplicate resource claims and missing admission fail diagnostic
+   completeness, and aggregate overflow produces null rather than a fictional numeric balance. The existing browser
+   result's typed raw capture retains these fields automatically. Teardown removes the local dispatch listener and
+   clears ownership on both shutdown/destroy. The pre-capture/restore gap stays explicit; no restored command metadata
+   or price is inferred. Normalized production evidence, recipes, manifest and acceptance gates are unchanged.
+4. **Regression authoring — authored/unrun:** `dispatch-ai-intent-command.spec.ts`,
+   `testing/ai-runtime-pending-commands.spec.ts` and the added `ai-runtime-production-capture.spec.ts` case cover direct
+   dispatch, detached scope order, real receipt/rejection/exception retention, synchronous versus buffered ownership,
+   partial actors, cancellation without credit, duplicates, mismatched/premature outcomes, unknown intents, malformed
+   and duplicate claims, receipt/schedule mismatch, bounded overflow, null aggregate and scene cleanup. Fixture helpers
+   explicitly label their records synthetic; these are not relayed runtime or payment/refund evidence.
+5. **Closure — source only:** implementation review traced all dispatch translations and existing bus timing semantics,
+   then repaired receipt-after-application, authority/commitment correlation, premature callback handling and overflow
+   representation. Omission Audit checks all four paths above, immediate contracts/consumer, test discovery and scope.
+   Separate Final Closure Audit rechecks those repairs and staged ownership. No existing comments were moved/rewritten,
+   no content hash was refreshed, and no executable validation ran. Shared hooks remain an explicit permission boundary.
+
+**Concrete next shared split:** subject to the pending verbatim-comment permission, extract the production alias and
+spawn responsibility into bounded `production-game-object.ts`/`production-spawner.ts`, the research definition into
+`research-definition.ts`, and the unified display projection into `project-shared-queue-items.ts`. Keep existing
+public exports and method wrappers, preserve copied comments verbatim with their original responsibility, and remove
+only baseline entries for owners made compliant. Inspect actual sizes/ownership during that authoring pass; do not
+refresh any hash. No shared owner is modified by this checkpoint.
+
+**Next exact authoring action:** after that permission is answered, add scoped queue-resource emission at the actual
+production/research immediate charge, queue per-tick successful charge and cancellation refund boundaries. Carry the
+actual unified item handle/command context and stored price, sample operation-scoped authority balances, preserve raw
+callback ordering, distinguish suppression/no payment, and forward the actual cancellation command separately from
+its item's originating command. Preserve existing shared refund formulas, including the per-tick owner's unusual
+progress-based refund. Then author the real buffered cancellation/pre-credit rejection world using actual lockstep
+scheduling and both-peer legal setup. A same-batch cancellation followed by a probe executes refund before probe;
+that cannot prove pre-credit rejection. The fixture must establish an actually earlier applied rejected probe while
+cancellation is still pending, without using deterministic local dispatch to fork multiplayer balances.
+
+Retain **GPT-6.1 Sol / high** for these grouped authority decisions; actual model/effort is unavailable. Commit/push
+this independent authored boundary and pause. Pending comments permission is neither assumed granted nor inferred
+from a generic resume. Remaining fair cadence, placement/navigation/exposure, lifecycle status reconciliation, legal
+PRO-03/06/07 worlds, normalized evidence, full pure coverage and PRO-04 runtime proof remain as above.
+
+At the announced final gate, add:
+
+```bash
+NX_DAEMON=false pnpm exec nx test probable-waffle-phaser --testPathPattern='dispatch-ai-intent-command|ai-runtime-pending-commands|ai-runtime-production-capture|install-ai-runtime-production-capture' --skip-nx-cache
+```
+
+Then run the existing grouped raw/setup/payment/digest/oracle tests and map preflight before actual production worlds
+and socket-backed cancellation/probe execution. All commands remain **unrun**; no tests, E2E, simulations, formatting,
+lint/type/build/editor/schema/repository checks or doctor/context commands ran in this batch.

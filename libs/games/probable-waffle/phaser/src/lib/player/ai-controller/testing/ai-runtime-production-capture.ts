@@ -19,6 +19,8 @@ import { projectAiProductionObligations } from "../observation/ai-production-obl
 import { captureAiRuntimeProductionQueue } from "./ai-runtime-production-queues";
 import type { AiRuntimeProductionCaptureV1 } from "./ai-runtime-production-capture-v1";
 import type { AiRuntimeProductionFactV1 } from "./ai-runtime-production-fact-v1";
+import { AI_INTENT_COMMAND_DISPATCH_EVENT, type AiIntentCommandDispatchEvent } from "../ai-intent-command-dispatch-event";
+import { AiRuntimePendingCommands } from "./ai-runtime-pending-commands";
 
 const MAX_FACTS = 8192;
 const MAX_SNAPSHOTS = 256;
@@ -36,6 +38,7 @@ export class AiRuntimeProductionCapture {
   private nextItemId = 1;
   private nextSequence = 1;
   private readonly factDrops = new Map<number, number>();
+  private readonly pendingCommands = new AiRuntimePendingCommands();
   private disposed = false;
 
   constructor(private readonly scene: ProbableWaffleScene) {
@@ -49,9 +52,13 @@ export class AiRuntimeProductionCapture {
     for (const player of scene.players) {
       if (player.playerNumber !== undefined) this.lastBalances.set(player.playerNumber, this.resources(player.playerNumber));
     }
-    this.subscriptions.add(bus.commandOutcome$.subscribe((outcome) => this.append({
-      ...this.boundary(outcome.playerNumber), kind: "outcome", outcome
-    })));
+    scene.events.on(AI_INTENT_COMMAND_DISPATCH_EVENT, this.observeDispatch, this);
+    this.subscriptions.add(bus.commandOutcome$.subscribe((outcome) => {
+      const boundary = this.boundary(outcome.playerNumber);
+      this.pendingCommands.observeOutcome(outcome, boundary.tick);
+      this.append({ ...boundary, kind: "outcome", outcome,
+        scheduledTick: outcome.kind === "dispatched" ? outcome.tick : null });
+    }));
     this.subscriptions.add(bus.command$.subscribe((command) => this.append({
       ...this.boundary(command.playerNumber), kind: "command_delivered", command
     })));
@@ -106,6 +113,7 @@ export class AiRuntimeProductionCapture {
       return queue ? [queue] : [];
     });
     const state = controller?.getBrainState();
+    const pending = this.pendingCommands.snapshot(playerNumber);
     const snapshot = {
       tick, observation: controller?.getCommittedObservation() ?? null,
       capabilityCatalog: controller?.getCommittedCapabilityCatalog() ?? null,
@@ -115,6 +123,7 @@ export class AiRuntimeProductionCapture {
       }),
       economyProduction: state?.economyProduction ?? null, reservations: state?.reservations ?? [],
       resources: this.resources(playerNumber),
+      pendingCommands: pending.commands, pendingResourceClaims: pending.resources,
       obligations: projectAiProductionObligations(actors.flatMap((actor) => getActorComponent(actor, QueueComponent)?.allItems ?? [])),
       queues, completedResearch: [...(getSceneService(this.scene, TechTreeService)?.getPlayerResearch(playerNumber) ?? [])].sort()
     } satisfies AiRuntimeProductionCaptureV1["snapshots"][number];
@@ -126,9 +135,9 @@ export class AiRuntimeProductionCapture {
       schemaVersion: 1, kind: "production_authority_capture", startedTick: this.startedTick, playerNumber,
       droppedFactCount: this.factDrops.get(playerNumber) ?? 0,
       droppedSnapshotCount: this.snapshotDrops.get(playerNumber) ?? 0,
-      gaps: ["resource_item_attribution", "pending_dispatch_resource_claims", "navigation_placement_authority",
+      gaps: ["resource_item_attribution", "pending_dispatch_before_capture_or_restore", "navigation_placement_authority",
         "pre_registration_queue_events", "capture_local_identity_restore", "initial_paid_item_provenance",
-        "decision_snapshot_cadence"],
+        "decision_snapshot_cadence", ...pending.gaps],
       facts: this.facts.filter((fact) => fact.playerNumber === playerNumber), snapshots
     } satisfies AiRuntimeProductionCaptureV1);
   }
@@ -143,6 +152,8 @@ export class AiRuntimeProductionCapture {
     this.lastBalances.clear();
     this.snapshots.clear();
     this.facts.length = 0;
+    this.pendingCommands.dispose();
+    this.scene.events.off(AI_INTENT_COMMAND_DISPATCH_EVENT, this.observeDispatch, this);
     this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.dispose, this);
     this.scene.events.off(Phaser.Scenes.Events.DESTROY, this.dispose, this);
   }
@@ -177,6 +188,13 @@ export class AiRuntimeProductionCapture {
     if (!resources) throw new Error("production_capture_player_missing");
     return { ...resources };
   }
+
+  private readonly observeDispatch = (event: AiIntentCommandDispatchEvent): void => {
+    if (this.disposed) return;
+    const boundary = this.boundary(event.playerNumber);
+    this.pendingCommands.observeDispatch(event, boundary.tick);
+    this.append({ ...boundary, kind: "intent_dispatch", event });
+  };
 
   private boundary(playerNumber: number) {
     return { sequence: 0, tick: getSceneService(this.scene, SimulationTickService)?.currentTick ?? 0, playerNumber };

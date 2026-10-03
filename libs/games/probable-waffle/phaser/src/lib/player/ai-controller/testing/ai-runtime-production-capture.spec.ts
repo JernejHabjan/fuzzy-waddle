@@ -21,6 +21,8 @@ import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 import { QueueComponent } from "../../../entity/components/queue/queue-component";
 import { OwnerComponent } from "../../../entity/components/owner-component";
 import { AiRuntimeProductionCapture } from "./ai-runtime-production-capture";
+import { AI_INTENT_COMMAND_DISPATCH_EVENT } from "../ai-intent-command-dispatch-event";
+import { pendingCommandRequest, pendingCommandOutcome, pendingCommandFinished } from "./ai-runtime-pending-command-fixtures";
 
 jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
 jest.mock("../../../data/scene-data", () => ({ getPlayer: jest.fn() }));
@@ -57,7 +59,7 @@ function setup() {
     getCommittedCapabilityCatalog: () => undefined,
     isDecisionBoundarySettled: jest.fn(() => true) };
   const scene = { players: [{ playerNumber: 2 }], communicator: { playerChanged: { on: changes } },
-    events: { once: jest.fn(), off: jest.fn() } } as unknown as ProbableWaffleScene;
+    events: new Phaser.Events.EventEmitter() } as unknown as ProbableWaffleScene;
   const actor = { scene, active: true, name: ObjectNames.AnkGuard } as Phaser.GameObjects.GameObject;
   jest.mocked(getPlayer).mockReturnValue({ getResources: () => money } as never);
   jest.mocked(getSceneSystem).mockReturnValue({ getAiPlayerController: () => controller } as never);
@@ -80,6 +82,34 @@ function setup() {
 }
 
 describe("AiRuntimeProductionCapture", () => {
+  it("retains actual buffered request time, intended execution tick and unspent AI claims independently of queue liabilities", () => {
+    const fixture = setup();
+    fixture.ticks.currentTick = 100;
+    fixture.scene.events.emit(AI_INTENT_COMMAND_DISPATCH_EVENT, pendingCommandRequest());
+    fixture.outcomes.next(pendingCommandOutcome());
+    fixture.scene.events.emit(AI_INTENT_COMMAND_DISPATCH_EVENT, pendingCommandFinished());
+    const captured = fixture.capture.capture(2);
+    expect(captured.facts.map((fact) => [fact.sequence, fact.tick, fact.kind])).toEqual([
+      [1, 100, "intent_dispatch"], [2, 100, "outcome"], [3, 100, "intent_dispatch"]
+    ]);
+    const admitted = captured.facts[1];
+    expect(admitted.kind === "outcome" && admitted.scheduledTick).toBe(102);
+    expect(admitted.kind === "outcome" && admitted.outcome.tick).toBe(102);
+    expect(captured.snapshots[0].pendingResourceClaims?.food).toBe(35);
+    expect(captured.snapshots[0].resources.food).toBe(100);
+    expect(captured.snapshots[0].obligations.food).toBe(28);
+    fixture.ticks.currentTick = 102;
+    fixture.outcomes.next(pendingCommandOutcome("applied"));
+    const after = fixture.capture.capture(2);
+    expect(after.snapshots[1].pendingCommands).toEqual([]);
+    expect(after.snapshots[1].pendingResourceClaims?.food).toBe(0);
+    expect(captured.snapshots[0].pendingResourceClaims?.food).toBe(35);
+    expect(after.gaps).toContain("pending_dispatch_before_capture_or_restore");
+    fixture.scene.events.emit(Phaser.Scenes.Events.SHUTDOWN);
+    expect(fixture.scene.events.listenerCount(AI_INTENT_COMMAND_DISPATCH_EVENT)).toBe(0);
+    expect(fixture.outcomes.observed).toBe(false);
+  });
+
   it("retains request, synchronous refund and terminal callback order without inventing item attribution", () => {
     const fixture = setup();
     fixture.capture.capture(2);
