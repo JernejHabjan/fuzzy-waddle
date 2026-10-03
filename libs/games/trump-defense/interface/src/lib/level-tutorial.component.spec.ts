@@ -72,9 +72,12 @@ describe("LevelTutorialComponent", () => {
     }
     const upgrade = root.querySelector<HTMLButtonElement>("[aria-pressed]");
     expect(upgrade?.textContent).toContain("UPGRADE CANNON");
+    expect(visuals.at(-1)).toBe("Cannon");
+    expect(root.textContent).toContain("BASIC CANNON");
     upgrade?.click();
     fixture.detectChanges();
     expect(visuals.at(-1)).toBe("Cannon2");
+    expect(root.textContent).toContain("UPGRADED CANNON");
     expect(upgrade?.getAttribute("aria-pressed")).toBe("true");
     upgrade?.click();
     fixture.detectChanges();
@@ -86,6 +89,30 @@ describe("LevelTutorialComponent", () => {
     fixture.detectChanges();
     expect(visuals.at(-1)).toBe("Cannon");
     expect(root.querySelector("[aria-pressed]")?.getAttribute("aria-pressed")).toBe("false");
+  });
+
+  it("shows the basic sniper first, then its upgrade, and resets when revisiting", async () => {
+    await TestBed.configureTestingModule({ imports: [LevelTutorialComponent] }).compileComponents();
+    const fixture = TestBed.createComponent(LevelTutorialComponent);
+    fixture.componentRef.setInput("level", 2);
+    const visuals: TutorialShowcaseSelection[] = [];
+    fixture.componentInstance["showcaseChange"].subscribe((visual) => visuals.push(visual));
+    fixture.detectChanges();
+    const root = fixture.nativeElement as HTMLElement;
+    root.querySelector<HTMLButtonElement>('[aria-label="Next briefing"]')?.click();
+    fixture.detectChanges();
+    expect(visuals.at(-1)).toBe("SniperTower");
+    expect(root.textContent).toContain("BASIC SNIPER TOWER");
+    root.querySelector<HTMLButtonElement>("[aria-pressed]")?.click();
+    fixture.detectChanges();
+    expect(visuals.at(-1)).toBe("SniperTower2");
+    expect(root.textContent).toContain("UPGRADED SNIPER TOWER");
+    root.querySelector<HTMLButtonElement>('[aria-label="Next briefing"]')?.click();
+    fixture.detectChanges();
+    root.querySelector<HTMLButtonElement>('[aria-label="Previous briefing"]')?.click();
+    fixture.detectChanges();
+    expect(visuals.at(-1)).toBe("SniperTower");
+    expect(root.textContent).toContain("BASIC SNIPER TOWER");
   });
 
   it("showcases every newly introduced enemy in its campaign briefing", () => {

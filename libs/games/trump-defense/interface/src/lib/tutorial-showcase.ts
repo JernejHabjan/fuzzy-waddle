@@ -41,7 +41,14 @@ export class TutorialShowcase {
     const model = this.models.create(asset);
     const bounds = new Box3().setFromObject(model);
     const center = bounds.getCenter(new Vector3());
-    const size = bounds.getSize(new Vector3());
+    const defense = Object.values(level.rules.towers).find(
+      (tower) => tower.visual === visual || tower.upgradedVisual === visual
+    );
+    // Keep base and upgraded defenses at the same scale so an upgrade never appears to shrink.
+    const referenceBounds = defense
+      ? new Box3().setFromObject(this.models.create(level.scene.visuals[defense.visual]))
+      : bounds;
+    const size = referenceBounds.getSize(new Vector3());
     const scale = 8 / Math.max(size.x, size.y, size.z, 1);
     const item = new Group();
     model.scale.setScalar(scale);

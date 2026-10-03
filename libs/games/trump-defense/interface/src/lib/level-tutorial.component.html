@@ -4,9 +4,10 @@
     <h2>{{ slide().title }}</h2>
     <p class="td-tutorial-copy">{{ slide().description }}</p>
     @if (slide().upgradedShowcase) {
+      <p class="td-tutorial-count">{{ showingUpgrade() ? "UPGRADED" : "BASIC" }} {{ slide().defenseLabel }}</p>
       <div class="td-tutorial-actions td-tutorial-preview">
         <button type="button" [attr.aria-pressed]="showingUpgrade()" (click)="toggleUpgrade()">
-          {{ showingUpgrade() ? "SHOW BASIC CANNON" : "UPGRADE CANNON" }}
+          {{ showingUpgrade() ? "SHOW BASIC" : "UPGRADE" }} {{ slide().defenseLabel }}
         </button>
       </div>
     }

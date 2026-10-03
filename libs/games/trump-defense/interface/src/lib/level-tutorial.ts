@@ -10,6 +10,8 @@ export interface LevelTutorialSlide {
   showcase: TutorialShowcaseSelection;
   /** Optional upgraded model preview; this demonstration never spends campaign money. */
   upgradedShowcase?: TutorialShowcaseSelection;
+  /** Display name shared by the upgrade action and basic/upgraded preview status. */
+  defenseLabel?: string;
 }
 
 const groundSlides: LevelTutorialSlide[] = [
@@ -32,7 +34,8 @@ const groundSlides: LevelTutorialSlide[] = [
     title: "MORE FIREPOWER",
     description: "Select your cannon on the battlefield, then hit Upgrade. Cash buys more damage and longer range.",
     showcase: "Cannon",
-    upgradedShowcase: "Cannon2"
+    upgradedShowcase: "Cannon2",
+    defenseLabel: "CANNON"
   },
   {
     title: "HEARTS ARE LIVES",
@@ -55,7 +58,9 @@ const airSlides: LevelTutorialSlide[] = [
   {
     title: "SNIPER TOWER",
     description: "Sniper towers are built to hit flying units. Place one where it can cover the route.",
-    showcase: "SniperTower"
+    showcase: "SniperTower",
+    upgradedShowcase: "SniperTower2",
+    defenseLabel: "SNIPER TOWER"
   },
   {
     title: "GROUND REINFORCEMENTS",
