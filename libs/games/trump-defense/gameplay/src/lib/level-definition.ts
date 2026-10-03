@@ -20,6 +20,8 @@ export interface EnemyDefinition {
 
 /** Tower behavior and upgrade values stay in data, independent of visual names. */
 export interface TowerDefinition {
+  /** Campaign availability is authored per level and enforced by purchase actions. */
+  enabled: boolean;
   label: string;
   visual: ActorVisualKind;
   upgradedVisual: ActorVisualKind;

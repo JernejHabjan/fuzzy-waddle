@@ -1,6 +1,6 @@
 import { makeLevel } from "../test/gameplay.fixture";
 import { createGame } from "./create-game";
-import { buildWall, buyTower, selectTile, togglePause, upgradeTower } from "./game-actions";
+import { buildWall, buyTower, hasAvailableBuildSite, selectTile, togglePause, upgradeTower } from "./game-actions";
 import { stepGame } from "./step-game";
 
 const first = makeLevel(1);
@@ -106,7 +106,7 @@ describe("Trump Defense gameplay", () => {
   });
 
   it("keeps a non-tracking tower's orientation unchanged while it fires", () => {
-    const custom = structuredClone(first);
+    const custom = structuredClone(second);
     custom.rules.enemyHp = 1000;
     custom.rules.spawnDelayMs = 100;
     custom.rules.spawnIntervalMs = 100;
@@ -133,10 +133,35 @@ describe("Trump Defense gameplay", () => {
     expect(buildWall(state).ok).toBe(false);
   });
 
+  it("enforces the level-authored sniper lock without spending money", () => {
+    const state = createGame(first);
+    selectTile(state, [8, 8]);
+    expect(buyTower(state, "SniperTower", () => 0).ok).toBe(false);
+    expect(state.money).toBe(200);
+    expect(state.entities.size).toBe(0);
+    expect(buyTower(state, "Cannon", () => 0).ok).toBe(true);
+  });
+
   it("uses level three's random placement rule", () => {
     const state = createGame(third);
+    expect(selectTile(state, [8, 8]).ok).toBe(false);
+    expect(state.selectedTile).toBeNull();
     expect(buyTower(state, "Cannon", () => 0).ok).toBe(true);
-    expect([...state.entities.values()][0]?.tower?.tile).toBeDefined();
+    const tile = [...state.entities.values()][0]?.tower?.tile;
+    expect(tile).toBeDefined();
+    if (!tile) throw new Error("The random tower has no site.");
+    expect(selectTile(state, tile).ok).toBe(true);
+    expect(upgradeTower(state).ok).toBe(true);
+  });
+
+  it("disables random placement when every site is occupied", () => {
+    const state = createGame(third);
+    for (let x = 0; x < 128; x += 8) {
+      for (let z = 0; z < 96; z += 8) state.occupied.add(`${x},${z}`);
+    }
+    expect(hasAvailableBuildSite(state)).toBe(false);
+    expect(buyTower(state, "Cannon", () => 0)).toEqual({ ok: false, message: "No free build sites remain." });
+    expect(state.money).toBe(200);
   });
 
   it("lets unopposed enemies reduce lives and end a run", () => {

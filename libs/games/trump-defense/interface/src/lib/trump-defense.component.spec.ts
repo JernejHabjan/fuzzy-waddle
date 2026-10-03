@@ -1,6 +1,8 @@
 import { TestBed, type ComponentFixture } from "@angular/core/testing";
 import { Location } from "@angular/common";
-import type { LevelDefinition } from "@fuzzy-waddle/trump-defense-gameplay";
+import type { GameState, LevelDefinition } from "@fuzzy-waddle/trump-defense-gameplay";
+import { GameAudio } from "./game-audio";
+import level3 from "../assets/trump-defense/levels/level-3.json";
 import level1 from "../assets/trump-defense/levels/level-1.json";
 import { loadLevel } from "./asset-paths";
 import { ThreeScene } from "./three-scene";
@@ -50,7 +52,7 @@ describe("TrumpDefenseComponent", () => {
     await new Promise((resolve) => setTimeout(resolve, 0));
     await fixture.whenStable();
     fixture.detectChanges();
-    fixture.nativeElement.querySelector<HTMLButtonElement>(".td-tutorial-skip")?.click();
+    (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>(".td-tutorial-skip")?.click();
     fixture.detectChanges();
   });
 
@@ -109,17 +111,76 @@ describe("TrumpDefenseComponent", () => {
     const viewport: HTMLElement = fixture.nativeElement.querySelector(".td-viewport");
     viewport.dispatchEvent(new Event("pointerdown", { bubbles: true }));
     fixture.detectChanges();
-    const sniper = Array.from(root.querySelectorAll("button")).find((button) => button.textContent?.includes("Sniper"));
+    const cannon = Array.from(root.querySelectorAll("button")).find((button) => button.textContent?.includes("Cannon"));
     const upgrade = Array.from(root.querySelectorAll("button")).find((button) =>
       button.textContent?.includes("Upgrade")
     );
-    expect(sniper?.disabled).toBe(false);
+    expect(cannon?.disabled).toBe(false);
     expect(upgrade?.disabled).toBe(true);
-    sniper?.click();
+    cannon?.click();
     fixture.detectChanges();
-    expect(fixture.nativeElement.textContent).toContain("180");
-    expect(fixture.nativeElement.textContent).toContain("Sniper tower built");
+    expect(fixture.nativeElement.textContent).toContain("170");
+    expect(fixture.nativeElement.textContent).toContain("Cannon built");
     expect(upgrade?.disabled).toBe(false);
+  });
+
+  it("keeps the level-one sniper locked even after selecting a build site", () => {
+    fixture.nativeElement.querySelector(".td-viewport").dispatchEvent(new Event("pointerdown", { bubbles: true }));
+    fixture.detectChanges();
+    const sniper = Array.from(
+      (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>("button")
+    ).find((button) => button.textContent?.includes("Sniper"));
+    expect(sniper?.disabled).toBe(true);
+    window.dispatchEvent(new KeyboardEvent("keydown", { key: "b" }));
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain("200");
+  });
+
+  it("enables random purchases without selecting a tile on level three", async () => {
+    jest.mocked(loadLevel).mockResolvedValue(level3 as unknown as LevelDefinition);
+    (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>(".td-page-back")?.click();
+    fixture.detectChanges();
+    (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>(".td-level-choice")[2]?.click();
+    fixture.detectChanges();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    await fixture.whenStable();
+    fixture.detectChanges();
+    (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>(".td-tutorial-skip")?.click();
+    fixture.detectChanges();
+    const buttons = Array.from(
+      (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>(".td-controls button")
+    );
+    expect(buttons[0]?.disabled).toBe(false);
+    expect(buttons[1]?.disabled).toBe(false);
+    buttons[1]?.click();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain("170");
+  });
+
+  it("drains tick sounds before a pointer action can replay them", () => {
+    jest.spyOn(window, "requestAnimationFrame").mockReturnValue(1);
+    const runtime = fixture.componentInstance as unknown as { game: GameState; frame: (now: number) => void };
+    runtime.game.level = structuredClone(runtime.game.level);
+    runtime.game.level.rules.spawnDelayMs = 100;
+    runtime.frame(1000);
+    runtime.frame(1100);
+    const audio = jest.mocked(GameAudio).mock.results.at(-1)?.value as jest.Mocked<GameAudio>;
+    expect(audio.play).toHaveBeenCalledWith(expect.objectContaining({ kind: "spawn" }), undefined);
+    audio.play.mockClear();
+    fixture.nativeElement.querySelector(".td-viewport").dispatchEvent(new Event("pointerdown", { bubbles: true }));
+    expect(audio.play).toHaveBeenCalledTimes(1);
+    expect(audio.play).toHaveBeenCalledWith(expect.objectContaining({ kind: "select" }), 64);
+    jest.restoreAllMocks();
+  });
+
+  it("plays the victory cue after stopping the active game audio", () => {
+    const runtime = fixture.componentInstance as unknown as { game: GameState };
+    runtime.game.elapsedMs = 3000;
+    runtime.game.money = 700;
+    for (let count = 0; count < 7; count++) window.dispatchEvent(new KeyboardEvent("keydown", { key: " " }));
+    const audio = jest.mocked(GameAudio).mock.results.at(-1)?.value as jest.Mocked<GameAudio>;
+    expect(audio.stop).toHaveBeenCalled();
+    expect(audio.play).toHaveBeenLastCalledWith({ kind: "victory" }, 64);
   });
 
   it("disables placement without a selected tile and omits tile details while paused", () => {
@@ -155,7 +216,7 @@ describe("TrumpDefenseComponent", () => {
     fixture.destroy();
     fixture = TestBed.createComponent(TrumpDefenseComponent);
     fixture.detectChanges();
-    fixture.nativeElement.querySelector<HTMLButtonElement>(".td-level-choice")?.click();
+    (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>(".td-level-choice")?.click();
     fixture.detectChanges();
     await new Promise((resolve) => setTimeout(resolve, 0));
     await fixture.whenStable();

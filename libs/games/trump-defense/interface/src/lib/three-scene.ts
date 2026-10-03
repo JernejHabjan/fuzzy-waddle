@@ -249,6 +249,11 @@ export class ThreeScene {
     this.updateCameraPosition();
   }
 
+  /** Height controls the audio adapter's hearing distance as the player zooms. */
+  get cameraHeight(): number {
+    return this.camera.position.y;
+  }
+
   get cameraX(): number {
     return this.target.x;
   }

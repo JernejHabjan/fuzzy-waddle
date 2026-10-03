@@ -466,6 +466,7 @@
     },
     "towers": {
       "SniperTower": {
+        "enabled": false,
         "label": "Sniper tower",
         "visual": "SniperTower",
         "upgradedVisual": "SniperTower2",
@@ -482,6 +483,7 @@
         "rotateToTarget": false
       },
       "Cannon": {
+        "enabled": true,
         "label": "Cannon",
         "visual": "Cannon",
         "upgradedVisual": "Cannon2",

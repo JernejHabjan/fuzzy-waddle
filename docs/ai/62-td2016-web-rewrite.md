@@ -122,12 +122,12 @@ flowchart LR
 
 ## Decisions made for this implementation
 
-| Decision           | Outcome                                                                                                                                             |
-| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Scope of issue #62 | The user's implementation request superseded the older asset-only issue wording.                                                                    |
-| Theme and name     | Retained the TD2016 identity and source art for fidelity, pending release rights review.                                                            |
-| Legacy quirks      | Kept repeated path waypoints and core visible rules; documented the spawn overwrite and projectile presentation changes in the feature README.      |
-| Asset conversion   | Kept OBJ meshes through Three's bundled OBJ loader, converted textures to WebP, resized cubemap faces, and excluded the uncertain Crusader samples. |
+| Decision           | Outcome                                                                                                                                                                      |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Scope of issue #62 | The user's implementation request superseded the older asset-only issue wording.                                                                                             |
+| Theme and name     | Retained the TD2016 identity and source art for fidelity, pending release rights review.                                                                                     |
+| Legacy quirks      | Kept repeated path waypoints and core visible rules; documented the spawn overwrite and projectile presentation changes in the feature README.                               |
+| Asset conversion   | Kept OBJ meshes through Three's bundled OBJ loader, converted textures to WebP, resized cubemap faces, and included the referenced Crusader samples with source attribution. |
 
 ## Deferred follow-up: optional map editor
 

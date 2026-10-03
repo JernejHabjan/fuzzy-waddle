@@ -424,13 +424,7 @@
     }
   },
   "rules": {
-    "enemyRoster": [
-      "MexicanBanjo",
-      "Builder",
-      "MexicanBalooner",
-      "MexicanMafia",
-      "MexicanBaloon"
-    ],
+    "enemyRoster": ["MexicanBanjo", "Builder", "MexicanBalooner", "MexicanMafia", "MexicanBaloon"],
     "enemyHp": 120,
     "enemyHpIncrease": 15,
     "enemyHpIntervalMs": 5000,
@@ -472,6 +466,7 @@
     },
     "towers": {
       "SniperTower": {
+        "enabled": true,
         "label": "Sniper tower",
         "visual": "SniperTower",
         "upgradedVisual": "SniperTower2",
@@ -488,6 +483,7 @@
         "rotateToTarget": false
       },
       "Cannon": {
+        "enabled": true,
         "label": "Cannon",
         "visual": "Cannon",
         "upgradedVisual": "Cannon2",

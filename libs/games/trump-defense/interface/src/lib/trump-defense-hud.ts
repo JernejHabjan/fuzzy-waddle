@@ -1,4 +1,4 @@
-import { isTower, tileKey, type GameState } from "@fuzzy-waddle/trump-defense-gameplay";
+import { hasAvailableBuildSite, isTower, tileKey, type GameState } from "@fuzzy-waddle/trump-defense-gameplay";
 import type { TrumpDefenseHud } from "./trump-defense-ui-state";
 
 /**
@@ -13,7 +13,9 @@ export function deriveHud(state: GameState): TrumpDefenseHud {
         (entity) => isTower(entity) && entity.tower && tileKey(entity.tower.tile) === selectedKey
       )
     : undefined;
-  const buildable = !!selectedKey && !state.occupied.has(selectedKey);
+  const buildable = level.rules.randomTowerPlacement
+    ? hasAvailableBuildSite(state)
+    : !!selectedKey && !state.occupied.has(selectedKey);
   const sniper = level.rules.towers.SniperTower;
   const cannon = level.rules.towers.Cannon;
   const selectedUpgradeCost = selectedTower?.tower
@@ -29,8 +31,8 @@ export function deriveHud(state: GameState): TrumpDefenseHud {
     cannonCost: cannon.cost,
     upgradeCost: selectedUpgradeCost,
     wallCost: level.rules.wallCost,
-    canPlaceSniper: buildable && money >= sniper.cost,
-    canPlaceCannon: buildable && money >= cannon.cost,
+    canPlaceSniper: sniper.enabled && buildable && money >= sniper.cost,
+    canPlaceCannon: cannon.enabled && buildable && money >= cannon.cost,
     canUpgrade:
       !!selectedTower?.weapon &&
       !!selectedTower.tower &&

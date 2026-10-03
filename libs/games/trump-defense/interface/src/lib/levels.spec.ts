@@ -3,6 +3,8 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { LevelDefinition, VisualAsset } from "@fuzzy-waddle/trump-defense-gameplay";
 
+import { soundFiles } from "./game-audio";
+
 const root = join(__dirname, "../assets/trump-defense");
 const schema = JSON.parse(readFileSync(join(__dirname, "level.schema.json"), "utf8"));
 const validate = new Ajv({ allErrors: true }).compile(schema);
@@ -40,6 +42,8 @@ describe("TD2016 shipped levels", () => {
     expect(level.scene.spots).toHaveLength(id === 2 ? 2 : 0);
     expect(level.scene.skybox[4]).toMatch(/front\.jpg$/);
     expect(level.scene.skybox[5]).toMatch(/back\.jpg$/);
+    expect(level.rules.towers.SniperTower.enabled).toBe(id > 1);
+    expect(level.rules.towers.Cannon.enabled).toBe(true);
     expect(level.rules.towers.SniperTower.rotateToTarget).toBe(false);
     expect(level.rules.towers.Cannon.rotateToTarget).toBe(true);
     expect(level.scene.props.some((prop) => prop.model === "models/WhiteHouse.obj")).toBe(true);
@@ -65,6 +69,10 @@ describe("TD2016 shipped levels", () => {
       expect(level.rules.enemies[kind]).toBeDefined();
       expect(level.scene.visuals[kind]).toBeDefined();
     }
+  });
+
+  it("ships every routed sound effect", () => {
+    for (const file of Object.values(soundFiles)) expect(existsSync(join(root, "sfx", file))).toBe(true);
   });
 
   it("keeps historical differences and independently editable scenes", () => {

@@ -21,9 +21,25 @@ export function selectTile(state: GameState, tile: GridPoint): ActionResult {
     state.selectedTile = null;
     return rejected("Select a buildable tile.");
   }
+  if (state.level.rules.randomTowerPlacement && !state.occupied.has(tileKey(tile))) {
+    state.selectedTile = null;
+    return rejected("Defenses are placed randomly on this battlefield.");
+  }
   state.selectedTile = tile;
   state.sounds.push({ kind: "select", worldX: tile[0] });
   return accepted(`Tile ${tile[0] / tileSize + 1}, ${tile[1] / tileSize + 1} selected.`);
+}
+
+/** Returns whether random placement has any clear site, independently of selection. */
+export function hasAvailableBuildSite(state: GameState): boolean {
+  const { width, height, tileSize } = state.level.grid;
+  for (let z = 0; z < height * tileSize; z += tileSize) {
+    for (let x = 0; x < width * tileSize; x += tileSize) {
+      const key = tileKey([x, z]);
+      if (!state.blocked.has(key) && !state.occupied.has(key)) return true;
+    }
+  }
+  return false;
 }
 
 function availableTile(state: GameState, random: () => number): GridPoint | null {
@@ -41,9 +57,13 @@ function availableTile(state: GameState, random: () => number): GridPoint | null
 export function buyTower(state: GameState, kind: TowerKind, random: () => number): ActionResult {
   if (state.status !== "playing") return rejected("The level is not active.");
   const definition = state.level.rules.towers[kind];
+  if (!definition.enabled) return rejected(`${definition.label} is locked on this battlefield.`);
   if (state.money < definition.cost) return rejected(`Need $${definition.cost} for ${definition.label}.`);
   const tile = state.level.rules.randomTowerPlacement ? availableTile(state, random) : state.selectedTile;
-  if (!tile) return rejected("Select an available tile first.");
+  if (!tile)
+    return rejected(
+      state.level.rules.randomTowerPlacement ? "No free build sites remain." : "Select an available tile first."
+    );
   if (state.blocked.has(tileKey(tile)) || state.occupied.has(tileKey(tile))) {
     return rejected("That tile is unavailable.");
   }

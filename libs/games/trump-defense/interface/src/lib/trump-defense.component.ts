@@ -66,7 +66,6 @@ export class TrumpDefenseComponent implements AfterViewInit, OnDestroy {
   protected readonly muted = signal(false);
 
   ngAfterViewInit(): void {
-    this.phase.set("selecting");
     this.message.set("Select an unlocked level to begin.");
   }
 
@@ -150,11 +149,15 @@ export class TrumpDefenseComponent implements AfterViewInit, OnDestroy {
     this.accumulator += elapsed;
     while (this.accumulator >= 100 && this.game.status === "playing") {
       stepGame(this.game, 100);
-      for (const sound of this.game.sounds) this.audio.play(sound, this.scene.cameraX);
+      for (const sound of this.game.sounds.splice(0)) this.audio.play(sound, this.scene.cameraX);
       this.scene.sync(this.game);
       this.accumulator -= 100;
     }
-    this.audio.updateCameraArea(this.scene.cameraX, this.game.level.grid.width * this.game.level.grid.tileSize);
+    this.audio.updateCameraArea(
+      this.scene.cameraX,
+      this.game.level.grid.width * this.game.level.grid.tileSize,
+      this.scene.cameraHeight
+    );
     this.scene.render();
     this.updateHud();
     if (this.game.status === "lost") {
@@ -183,6 +186,7 @@ export class TrumpDefenseComponent implements AfterViewInit, OnDestroy {
       this.unlockedLevels.set(unlockLevel(this.levelNumber(), isDevMode()));
       this.phase.set("won");
       this.audio.stop();
+      this.audio.play({ kind: "victory" }, this.scene?.cameraX ?? 64);
       cancelAnimationFrame(this.frameId);
       this.message.set(
         this.finalLevel() ? "All three levels held. Campaign complete!" : "Wall complete. Next level unlocked."
@@ -204,10 +208,7 @@ export class TrumpDefenseComponent implements AfterViewInit, OnDestroy {
 
   protected panCamera(dx: number, dz: number): void {
     this.scene?.pan(dx, dz);
-    if (this.scene && this.game) {
-      this.audio.updateCameraArea(this.scene.cameraX, this.game.level.grid.width * this.game.level.grid.tileSize);
-    }
-    this.scene?.render();
+    // The next active frame renders and remixes audio from the updated camera.
   }
 
   protected buy(kind: TowerKind): void {

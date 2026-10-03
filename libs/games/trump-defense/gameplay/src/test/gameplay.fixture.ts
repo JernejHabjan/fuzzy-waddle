@@ -26,6 +26,7 @@ export function makeLevel(id: 1 | 2 | 3): LevelDefinition {
   if (id >= 2) roster.push("Builder", "MexicanBalooner");
   if (id >= 3) roster.push("MexicanMafia", "MexicanBaloon");
   const tower = (kind: TowerKind): TowerDefinition => ({
+    enabled: kind === "Cannon" || id > 1,
     label: kind,
     visual: kind,
     upgradedVisual: kind === "Cannon" ? "Cannon2" : "SniperTower2",

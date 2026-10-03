@@ -178,6 +178,7 @@
     "tower": {
       "type": "object",
       "required": [
+        "enabled",
         "label",
         "visual",
         "upgradedVisual",
@@ -194,6 +195,7 @@
         "upgradeDamage"
       ],
       "properties": {
+        "enabled": { "type": "boolean" },
         "label": { "type": "string", "minLength": 1 },
         "visual": { "type": "string", "minLength": 1 },
         "upgradedVisual": { "type": "string", "minLength": 1 },

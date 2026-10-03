@@ -4,7 +4,7 @@ import { getLevelGridPaths } from "./level-grid-paths";
 
 describe("getLevelGridPaths", () => {
   it("marks the ground route visually while blocking ground and flying routes from construction", () => {
-    const { groundPathTiles, blockedTiles } = getLevelGridPaths(levelOne as LevelDefinition);
+    const { groundPathTiles, blockedTiles } = getLevelGridPaths(levelOne as unknown as LevelDefinition);
 
     expect(groundPathTiles.has("0,64")).toBe(true);
     expect(groundPathTiles.has("24,64")).toBe(false);
