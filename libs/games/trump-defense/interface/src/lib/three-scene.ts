@@ -190,7 +190,7 @@ export class ThreeScene {
       rocket.position.copy(from).lerp(to, progress);
       const dx = to.x - from.x;
       const dz = to.z - from.z;
-      rocket.rotation.y = Math.atan2(-dz, dx);
+      rocket.rotation.y = Math.atan2(-dz, dx) + Math.PI;
     }
   }
 

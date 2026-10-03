@@ -14,12 +14,17 @@ export const soundFiles: Record<GameSoundCue["kind"], string> = {
   buy: "buy.wav",
   upgrade: "towerUpgrade.wav",
   lifeLost: "woodhit_06.wav",
-  victory: "cheer2.wav"
+  victory: "cheer2.wav",
+  buildWallOpening: "buildWall.wav"
 };
 const rapidFireFiles = new Set([soundFiles.pew, soundFiles.cannon]);
 const rapidFireVolumes: Record<string, number> = {
-  [soundFiles.pew]: 0.12,
-  [soundFiles.cannon]: 0.16
+  [soundFiles.pew]: 0.24,
+  [soundFiles.cannon]: 0.28
+};
+const positionalActionVolumes: Partial<Record<GameSoundCue["kind"], number>> = {
+  buy: 0.6,
+  upgrade: 0.6
 };
 const rapidFireIntervalMs = 160;
 type AmbientZone = "work" | "wall" | "slums";
@@ -57,7 +62,7 @@ export class GameAudio {
     if (cue.kind === "select" && cue.worldX === undefined) return;
     const pan = cue.worldX === undefined ? undefined : this.spatialMix(cue.worldX, cameraX);
     if (cue.worldX !== undefined && !pan) return;
-    this.playFile(soundFiles[cue.kind], cue.worldX, cameraX);
+    this.playFile(soundFiles[cue.kind], cue.worldX, cameraX, positionalActionVolumes[cue.kind] ?? 0.3);
   }
 
   /** Restores the source game's wall-work and slum chatter zones around the RTS camera. */

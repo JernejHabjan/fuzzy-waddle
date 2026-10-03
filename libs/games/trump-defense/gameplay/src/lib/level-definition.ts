@@ -101,4 +101,6 @@ export interface LevelDefinition {
     randomTowerPlacement: boolean;
   };
   music: string;
+  /** Optional effect played once when deployment begins, after the level briefing. */
+  startSound?: "buildWallOpening";
 }

@@ -68,7 +68,8 @@ export type GameSound =
   | "buy"
   | "upgrade"
   | "lifeLost"
-  | "victory";
+  | "victory"
+  | "buildWallOpening";
 
 /** A sound cue keeps its world origin so the browser adapter can attenuate and pan it. */
 export interface GameSoundCue {

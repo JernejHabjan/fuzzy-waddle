@@ -502,5 +502,6 @@
     },
     "wallStartDelayMs": 3000
   },
-  "music": "music/Mariachi.mp3"
+  "music": "music/Mariachi.mp3",
+  "startSound": "buildWallOpening"
 }

@@ -114,6 +114,7 @@ export class TrumpDefenseComponent implements AfterViewInit, OnDestroy {
     this.phase.set("playing");
     this.message.set(`Defend the route and raise the wall to ${this.game.level.rules.wallGoal}.`);
     this.audio.startMusic(this.game.level.music);
+    if (this.game.level.startSound) this.audio.play({ kind: this.game.level.startSound }, this.scene?.cameraX ?? 64);
     this.schedule();
   }
 
@@ -202,6 +203,7 @@ export class TrumpDefenseComponent implements AfterViewInit, OnDestroy {
 
   protected onWheel(event: WheelEvent): void {
     event.preventDefault();
+    if (this.phase() === "tutorial") return;
     this.scene?.zoom(event.deltaY);
     this.scene?.render();
   }

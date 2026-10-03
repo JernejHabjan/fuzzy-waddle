@@ -119,7 +119,8 @@
         "randomTowerPlacement": { "type": "boolean" }
       }
     },
-    "music": { "type": "string", "minLength": 1 }
+    "music": { "type": "string", "minLength": 1 },
+    "startSound": { "const": "buildWallOpening" }
   },
   "$defs": {
     "gridPoint": {

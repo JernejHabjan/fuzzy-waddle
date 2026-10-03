@@ -16,7 +16,8 @@ function isBundledLevel(value: unknown, id: number): value is LevelDefinition {
     Array.isArray(level.scene?.props) &&
     Array.isArray(level.scene?.skybox) &&
     !!level.rules &&
-    typeof level.music === "string"
+    typeof level.music === "string" &&
+    (level.startSound === undefined || level.startSound === "buildWallOpening")
   );
 }
 
