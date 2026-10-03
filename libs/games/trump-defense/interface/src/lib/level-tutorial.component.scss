@@ -63,6 +63,12 @@
   gap: 0.6rem;
 }
 
+/* The upgrade demonstration has its own row above briefing navigation. */
+.td-tutorial-preview {
+  justify-content: center;
+  margin-bottom: 0.8rem;
+}
+
 .td-tutorial-arrows button {
   min-width: 2.5rem;
 }

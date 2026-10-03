@@ -1,5 +1,6 @@
 import { TestBed } from "@angular/core/testing";
 import { LevelTutorialComponent } from "./level-tutorial.component";
+import type { TutorialShowcaseSelection } from "@fuzzy-waddle/trump-defense-gameplay";
 import { getLevelTutorial } from "./level-tutorial";
 
 describe("LevelTutorialComponent", () => {
@@ -21,6 +22,8 @@ describe("LevelTutorialComponent", () => {
     next();
     expect(root.textContent).toContain("PICK A BUILD SITE");
     next();
+    expect(root.textContent).toContain("MORE FIREPOWER");
+    next();
     expect(root.textContent).toContain("HEARTS ARE LIVES");
     next();
     expect(root.textContent).toContain("RAISE THE WALL");
@@ -39,6 +42,9 @@ describe("LevelTutorialComponent", () => {
     expect(root.textContent).toContain("SNIPER TOWER");
     root.querySelector<HTMLButtonElement>('[aria-label="Next briefing"]')?.click();
     fixture.detectChanges();
+    expect(root.textContent).toContain("GROUND REINFORCEMENTS");
+    root.querySelector<HTMLButtonElement>('[aria-label="Next briefing"]')?.click();
+    fixture.detectChanges();
     expect(root.textContent).toContain("NIGHT WATCH");
     expect(root.textContent).toContain("Spotlights reveal the spawn areas");
   });
@@ -50,5 +56,44 @@ describe("LevelTutorialComponent", () => {
     fixture.detectChanges();
     expect((fixture.nativeElement as HTMLElement).textContent).toContain("random available tile");
     expect(getLevelTutorial(3)[0]?.showcase).toEqual(["Cannon", "SniperTower"]);
+  });
+  it("previews the cannon upgrade and resets to the basic model when revisiting the card", async () => {
+    await TestBed.configureTestingModule({ imports: [LevelTutorialComponent] }).compileComponents();
+    const fixture = TestBed.createComponent(LevelTutorialComponent);
+    fixture.componentRef.setInput("level", 1);
+    const visuals: TutorialShowcaseSelection[] = [];
+    fixture.componentInstance["showcaseChange"].subscribe((visual) => visuals.push(visual));
+    fixture.detectChanges();
+    const root = fixture.nativeElement as HTMLElement;
+    const next = root.querySelector<HTMLButtonElement>('[aria-label="Next briefing"]');
+    for (let index = 0; index < 3; index++) {
+      next?.click();
+      fixture.detectChanges();
+    }
+    const upgrade = root.querySelector<HTMLButtonElement>("[aria-pressed]");
+    expect(upgrade?.textContent).toContain("UPGRADE CANNON");
+    upgrade?.click();
+    fixture.detectChanges();
+    expect(visuals.at(-1)).toBe("Cannon2");
+    expect(upgrade?.getAttribute("aria-pressed")).toBe("true");
+    upgrade?.click();
+    fixture.detectChanges();
+    expect(visuals.at(-1)).toBe("Cannon");
+    upgrade?.click();
+    next?.click();
+    fixture.detectChanges();
+    root.querySelector<HTMLButtonElement>('[aria-label="Previous briefing"]')?.click();
+    fixture.detectChanges();
+    expect(visuals.at(-1)).toBe("Cannon");
+    expect(root.querySelector("[aria-pressed]")?.getAttribute("aria-pressed")).toBe("false");
+  });
+
+  it("showcases every newly introduced enemy in its campaign briefing", () => {
+    expect(getLevelTutorial(2).map((slide) => slide.showcase)).toEqual(
+      expect.arrayContaining(["Builder", "MexicanBalooner"])
+    );
+    expect(getLevelTutorial(3).map((slide) => slide.showcase)).toEqual(
+      expect.arrayContaining(["MexicanMafia", "MexicanBaloon"])
+    );
   });
 });

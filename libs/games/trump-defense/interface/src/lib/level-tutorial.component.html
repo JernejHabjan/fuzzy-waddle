@@ -3,6 +3,13 @@
     <p class="td-tutorial-count">BRIEFING {{ slideIndex() + 1 }} / {{ slides().length }}</p>
     <h2>{{ slide().title }}</h2>
     <p class="td-tutorial-copy">{{ slide().description }}</p>
+    @if (slide().upgradedShowcase) {
+      <div class="td-tutorial-actions td-tutorial-preview">
+        <button type="button" [attr.aria-pressed]="showingUpgrade()" (click)="toggleUpgrade()">
+          {{ showingUpgrade() ? "SHOW BASIC CANNON" : "UPGRADE CANNON" }}
+        </button>
+      </div>
+    }
     <div class="td-tutorial-actions">
       <button type="button" class="td-tutorial-back" (click)="exit.emit()">LEVEL SELECT</button>
       <div class="td-tutorial-arrows">

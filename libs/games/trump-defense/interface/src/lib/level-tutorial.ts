@@ -8,6 +8,8 @@ export interface LevelTutorialSlide {
   description: string;
   /** Level-authored model to spin in the showcase, or null for a scene explanation. */
   showcase: TutorialShowcaseSelection;
+  /** Optional upgraded model preview; this demonstration never spends campaign money. */
+  upgradedShowcase?: TutorialShowcaseSelection;
 }
 
 const groundSlides: LevelTutorialSlide[] = [
@@ -25,6 +27,12 @@ const groundSlides: LevelTutorialSlide[] = [
     title: "PICK A BUILD SITE",
     description: "Click a marked tile to choose where to build. The road is off limits; keep the cannon beside it.",
     showcase: "BuildTile"
+  },
+  {
+    title: "MORE FIREPOWER",
+    description: "Select your cannon on the battlefield, then hit Upgrade. Cash buys more damage and longer range.",
+    showcase: "Cannon",
+    upgradedShowcase: "Cannon2"
   },
   {
     title: "HEARTS ARE LIVES",
@@ -50,6 +58,11 @@ const airSlides: LevelTutorialSlide[] = [
     showcase: "SniperTower"
   },
   {
+    title: "GROUND REINFORCEMENTS",
+    description: "Builders now join the ground attack. Keep cannons covering the road while snipers watch the skies.",
+    showcase: "Builder"
+  },
+  {
     title: "NIGHT WATCH",
     description: "This front is dark. Spotlights reveal the spawn areas and help you watch the incoming attack.",
     showcase: null
@@ -62,6 +75,16 @@ const finalSlides: LevelTutorialSlide[] = [
     description:
       "There is no single marked build site here. Choose a defense and it will land on a random available tile.",
     showcase: ["Cannon", "SniperTower"]
+  },
+  {
+    title: "MAFIA ON THE MARCH",
+    description: "Mafia troops join the ground assault. Give them a proper cannon welcome along the road.",
+    showcase: "MexicanMafia"
+  },
+  {
+    title: "MORE TROUBLE IN THE SKY",
+    description: "Another balloon unit joins the air raid. Sniper towers can hit it; cannons cannot.",
+    showcase: "MexicanBaloon"
   }
 ];
 

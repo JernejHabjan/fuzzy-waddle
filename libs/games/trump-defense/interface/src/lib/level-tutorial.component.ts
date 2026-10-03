@@ -19,10 +19,20 @@ export class LevelTutorialComponent {
   /** Returning to campaign selection abandons this loaded scene. */
   protected readonly exit = output<void>();
   protected readonly slideIndex = signal(0);
+  /** Preview state belongs to the current card and resets whenever navigation changes it. */
+  protected readonly showingUpgrade = signal(false);
   protected readonly slides = computed(() => getLevelTutorial(this.level()));
   protected readonly slide = computed(() => this.slides()[this.slideIndex()]!);
   protected readonly isFirst = computed(() => this.slideIndex() === 0);
   protected readonly isLast = computed(() => this.slideIndex() === this.slides().length - 1);
+
+  /** Switches the showcase between authored base and upgrade assets without touching gameplay. */
+  protected toggleUpgrade(): void {
+    const upgraded = this.slide().upgradedShowcase;
+    if (!upgraded) return;
+    this.showingUpgrade.update((showing) => !showing);
+    this.showcaseChange.emit(this.showingUpgrade() ? upgraded : this.slide().showcase);
+  }
 
   /** Emits the new visual only after changing cards so text and model stay in sync. */
   protected move(direction: -1 | 1): void {
@@ -31,6 +41,7 @@ export class LevelTutorialComponent {
       return;
     }
     const index = Math.max(0, Math.min(this.slides().length - 1, this.slideIndex() + direction));
+    this.showingUpgrade.set(false);
     this.slideIndex.set(index);
     this.showcaseChange.emit(this.slide().showcase);
   }
