@@ -21,7 +21,8 @@ export function validateRuntimeProductionEvidence(
     evidence.initialPaidItemIds.some((itemId) => !initial.producers.some((producer) =>
       producer.lanes.some((lane) => lane.itemIds.includes(itemId))))) failures.push("production_initial_identity_mismatch");
   if (!unique(evidence.catalog.map((entry) => entry.productKey)) || evidence.catalog.some((entry) =>
-    !Number.isSafeInteger(entry.durationTicks) || entry.durationTicks <= 0 ||
+    !Number.isSafeInteger(entry.durationTicks) || entry.durationTicks < 0 ||
+    !["immediate", "per_successful_tick"].includes(entry.payment) ||
     !Object.keys(entry.cost).length || Object.values(entry.cost).some((amount) => !Number.isFinite(amount) || amount < 0))) {
     failures.push("production_catalog_numeric_evidence");
   }

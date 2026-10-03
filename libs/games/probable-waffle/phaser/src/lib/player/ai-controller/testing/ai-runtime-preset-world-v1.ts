@@ -1,4 +1,4 @@
-import type { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import type { ObjectNames, ResearchType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 /** Test-authored world inputs applied through real scene actor and resource services before tick zero. */
 export interface AiRuntimePresetWorldV1 {
@@ -26,6 +26,11 @@ export interface AiRuntimePresetWorldV1 {
     readonly producerFixtureActorId: string;
     readonly actorName: ObjectNames;
     readonly count: number;
+  }[];
+  /** Paid research admitted after production seeds through the ordinary shared command authority. */
+  readonly researchQueues?: readonly {
+    readonly producerFixtureActorId: string;
+    readonly researchType: ResearchType;
   }[];
   readonly initialOrders?: readonly {
     readonly workerFixtureActorId: string;

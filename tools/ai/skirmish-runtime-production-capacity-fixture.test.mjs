@@ -25,3 +25,12 @@ test("an unrelated control actor cannot masquerade as the single causal differen
   });
   assert.equal(validProductionCapacityPair(changed.recipe, changed.assertions["PRO-01"], "PRO-01"), false);
 });
+
+
+test("a research seed cannot become an undeclared capacity-pair variable", () => {
+  const changed = structuredClone(fixture);
+  changed.recipe.variants[1].presetWorld.researchQueues = [
+    { producerFixtureActorId: "producer-1", researchType: "tivaraMacemanUpgradeLevel2" }
+  ];
+  assert.equal(validProductionCapacityPair(changed.recipe, changed.assertions["PRO-01"], "PRO-01"), false);
+});

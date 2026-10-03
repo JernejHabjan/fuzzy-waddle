@@ -1,7 +1,8 @@
-import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { ObjectNames, ResearchType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiRuntimeBrowserTestConfigV1 } from "./ai-runtime-browser-test-config-v1";
 
 const actorNames = new Set<string>(Object.values(ObjectNames));
+const researchTypes = new Set<string>(Object.values(ResearchType));
 const resourceTypes = new Set<string>(Object.values(ResourceType));
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -15,7 +16,7 @@ function hasOnlyKeys(value: Record<string, unknown>, keys: readonly string[]): b
 
 function validPresetWorld(value: unknown): boolean {
   if (!isRecord(value) || !hasOnlyKeys(value, [
-    "fixtureId", "provenance", "actors", "resourceGrants", "resourceStarts", "queues", "initialOrders", "events"
+    "fixtureId", "provenance", "actors", "resourceGrants", "resourceStarts", "queues", "researchQueues", "initialOrders", "events"
   ])) {
     return false;
   }
@@ -88,6 +89,20 @@ function validPresetWorld(value: unknown): boolean {
       (queue["count"] as number) >= 1 &&
       (queue["count"] as number) <= 5
   );
+  const researchQueues = value["researchQueues"] ?? [];
+  if (!Array.isArray(researchQueues) || researchQueues.length > 16) return false;
+  const researched = new Set<string>();
+  const validResearchQueues = researchQueues.every((queue) => {
+    if (!isRecord(queue) || !hasOnlyKeys(queue, ["producerFixtureActorId", "researchType"])) return false;
+    const producerId = queue["producerFixtureActorId"];
+    const type = queue["researchType"];
+    if (typeof producerId !== "string" || !fixtureActorIds.has(producerId) || actorOwners.get(producerId) === null ||
+      typeof type !== "string" || !researchTypes.has(type)) return false;
+    const identity = `${actorOwners.get(producerId)}:${type}`;
+    if (researched.has(identity)) return false;
+    researched.add(identity);
+    return true;
+  });
   const initialOrders = value["initialOrders"] ?? [];
   if (!Array.isArray(initialOrders) || initialOrders.length > 32) return false;
   const orderedWorkers = new Set<string>();
@@ -119,8 +134,8 @@ function validPresetWorld(value: unknown): boolean {
     );
   });
   const workCount = value["actors"].length + value["resourceGrants"].length + resourceStarts.length +
-    queues.length + initialOrders.length + events.length;
-  return validGrants && validStarts && validQueues && validOrders && validEvents && workCount > 0;
+    queues.length + researchQueues.length + initialOrders.length + events.length;
+  return validGrants && validStarts && validQueues && validResearchQueues && validOrders && validEvents && workCount > 0;
 }
 
 export function isAiRuntimeBrowserTestConfigV1(value: unknown): value is AiRuntimeBrowserTestConfigV1 {

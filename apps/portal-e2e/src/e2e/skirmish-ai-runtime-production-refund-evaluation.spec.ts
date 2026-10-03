@@ -29,10 +29,12 @@ function pendingRefund() {
   return { ...productionEvidence(snapshots, [
     productionEvent(1, 0, "enqueue", { itemId: "paid-old", laneId: "shared-0", charged: { wood: 35 },
       resourcesBefore: { wood: 35 }, resourcesAfter: { wood: 0 } }),
-    productionEvent(2, 100, "cancel_requested", { itemId: "paid-old", resourcesBefore: { wood: 0 }, resourcesAfter: { wood: 0 } }),
+    productionEvent(2, 100, "cancel_requested", { scheduledTick: 200, commandId: "cancel-paid-old", itemId: "paid-old",
+      resourcesBefore: { wood: 0 }, resourcesAfter: { wood: 0 } }),
     productionEvent(3, 150, "enqueue_rejected", { productKey: "useful-research", resourcesBefore: { wood: 0 },
       resourcesAfter: { wood: 0 } }),
-    productionEvent(4, 200, "cancel", { itemId: "paid-old", resourcesBefore: { wood: 0 }, resourcesAfter: { wood: 0 } }),
+    productionEvent(4, 200, "cancel", { commandId: "cancel-paid-old", itemId: "paid-old",
+      resourcesBefore: { wood: 0 }, resourcesAfter: { wood: 0 } }),
     productionEvent(5, 200, "refund", { refundForItemId: "paid-old", refundAmounts: { wood: 35 },
       resourcesBefore: { wood: 0 }, resourcesAfter: { wood: 35 } }),
     productionEvent(6, 200, "enqueue", { productKey: "useful-research", itemId: "new-research", laneId: "shared-0",
@@ -80,16 +82,68 @@ test("PRO-07 rejects missing pending boundary, spending imaginary refunds and ca
       resourcesAfter: { wood: 65 } })] })).toContain("production_cancel_requeue_cycle");
 });
 
-test("PRO-07 pay-over-time reserves catalog obligations and cannot spend money due to another commitment", () => {
-  const evidence = productionEvidence([], [productionEvent(1, 0, "enqueue", { itemId: "over-time", laneId: "shared-0",
-    obligationsAfter: { wood: 35 } }), productionEvent(2, 10, "pay", { itemId: "over-time", charged: { wood: 5 },
-    resourcesBefore: { wood: 40 }, resourcesAfter: { wood: 35 }, obligationsDue: { wood: 35 },
-    obligationsAfter: { wood: 30 } })]);
-  const overTime = { ...evidence, catalog: evidence.catalog.map((entry) => entry.kind === "production"
-    ? { ...entry, payment: "over_time" as const } : entry) };
-  expect(evaluateRuntimeProductionPayments(overTime)).toEqual([]);
-  expect(evaluateRuntimeProductionPayments({ ...overTime, events: overTime.events.map((event) => event.kind === "enqueue"
-    ? { ...event, obligationsAfter: {} } : event) })).toContain("production_unfunded_remaining_obligation");
-  expect(evaluateRuntimeProductionPayments({ ...overTime, events: overTime.events.map((event) => event.kind === "pay"
-    ? { ...event, obligationsDue: { wood: 75 } } : event) })).toContain("production_spent_unapplied_money");
+test("PRO-07 protects full-vector liability on every successful tick instead of treating it as one total price", () => {
+  const events = [
+    productionEvent(1, 0, "enqueue", { itemId: "over-time", laneId: "shared-0", remainingSuccessfulTicks: 2,
+      resourcesBefore: { wood: 80 }, resourcesAfter: { wood: 80 }, obligationsAfter: { wood: 70 } }),
+    productionEvent(2, 10, "pay", { itemId: "over-time", remainingSuccessfulTicks: 2, charged: { wood: 35 },
+      resourcesBefore: { wood: 80 }, resourcesAfter: { wood: 45 }, obligationsDue: { wood: 70 },
+      obligationsAfter: { wood: 35 } }),
+    productionEvent(3, 11, "pay", { itemId: "over-time", remainingSuccessfulTicks: 1, charged: { wood: 35 },
+      resourcesBefore: { wood: 45 }, resourcesAfter: { wood: 10 }, obligationsDue: { wood: 35 } })
+  ];
+  const evidence = productionEvidence([], events);
+  const perTick = { ...evidence, catalog: evidence.catalog.map((entry) => entry.kind === "production"
+    ? { ...entry, payment: "per_successful_tick" as const, durationTicks: 2 } : entry) };
+  expect(evaluateRuntimeProductionPayments(perTick)).toEqual([]);
+  expect(evaluateRuntimeProductionPayments({ ...perTick, events: events.map((event) => event.kind === "enqueue"
+    ? { ...event, obligationsAfter: { wood: 35 } } : event) })).toContain("production_unfunded_remaining_obligation");
+  expect(evaluateRuntimeProductionPayments({ ...perTick, events: events.map((event) => event.kind === "pay"
+    ? { ...event, charged: { wood: 5 }, resourcesAfter: { wood: event.resourcesBefore.wood - 5 } } : event) }))
+    .toContain("production_catalog_price_mismatch");
+  expect(evaluateRuntimeProductionPayments({ ...perTick, events: events.map((event) => event.kind === "pay"
+    ? { ...event, obligationsDue: { wood: 150 } } : event) })).toContain("production_spent_unapplied_money");
+  expect(evaluateRuntimeProductionPayments({ ...perTick, events: [...events,
+    productionEvent(4, 12, "pay", { itemId: "over-time", remainingSuccessfulTicks: 1, charged: { wood: 35 },
+      resourcesBefore: { wood: 80 }, resourcesAfter: { wood: 45 }, obligationsDue: { wood: 35 } })] }))
+    .toContain("production_per_tick_identity_timing_missing");
+});
+
+test("PRO-07 rejects missing per-tick identity, timing, own liability and a failed-payment fiction", () => {
+  const evidence = productionEvidence([], [productionEvent(1, 0, "enqueue", { itemId: "over-time",
+    remainingSuccessfulTicks: 1, obligationsAfter: { wood: 35 } }),
+    productionEvent(2, 1, "pay", { itemId: "over-time", remainingSuccessfulTicks: 1, charged: { wood: 35 },
+      resourcesAfter: { wood: 65 }, obligationsDue: { wood: 35 } })]);
+  const perTick = { ...evidence, catalog: evidence.catalog.map((entry) => entry.kind === "production"
+    ? { ...entry, payment: "per_successful_tick" as const, durationTicks: 0 } : entry) };
+  expect(evaluateRuntimeProductionPayments(perTick)).toEqual([]);
+  for (const patch of [{ itemId: null }, { remainingSuccessfulTicks: undefined }, { remainingSuccessfulTicks: 0 }]) {
+    expect(evaluateRuntimeProductionPayments({ ...perTick, events: evidence.events.map((event) => ({ ...event, ...patch })) }))
+      .toContain("production_per_tick_identity_timing_missing");
+  }
+  expect(evaluateRuntimeProductionPayments({ ...perTick, events: evidence.events.map((event) => event.kind === "pay"
+    ? { ...event, actorId: "other-producer" } : event) })).toContain("production_per_tick_identity_timing_missing");
+  expect(evaluateRuntimeProductionPayments({ ...perTick, events: evidence.events.map((event) => event.kind === "pay"
+    ? { ...event, obligationsDue: { wood: 0 } } : event) })).toContain("production_unfunded_remaining_obligation");
+  expect(evaluateRuntimeProductionPayments({ ...perTick, events: evidence.events.map((event) => event.kind === "pay"
+    ? { ...event, charged: { wood: 0 }, resourcesAfter: event.resourcesBefore } : event) }))
+    .toContain("production_catalog_price_mismatch");
+});
+
+test("PRO-07 requires a real buffered cancellation timestamp and rejects synchronous dispatch as pending money", () => {
+  const contract = productionContract("PRO-07", "cancel_pending_refund");
+  const evidence = pendingRefund();
+  for (const scheduledTick of [undefined, 100, 99, 201, Number.NaN]) {
+    expect(evaluateRuntimeProductionContract("PRO-07", contract, { ...evidence, events: evidence.events.map((event) =>
+      event.kind === "cancel_requested" ? { ...event, scheduledTick } : event) }))
+      .toContain("production_pending_refund_boundary_missing");
+  }
+});
+
+test("PRO-07 cannot use an unrelated buffered request as the cancellation boundary", () => {
+  const evidence = pendingRefund();
+  expect(evaluateRuntimeProductionContract("PRO-07", productionContract("PRO-07", "cancel_pending_refund"), {
+    ...evidence, events: evidence.events.map((event) => event.kind === "cancel_requested"
+      ? { ...event, commandId: "unrelated-buffered-command" } : event)
+  })).toContain("production_pending_refund_boundary_missing");
 });

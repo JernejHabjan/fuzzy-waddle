@@ -1,3 +1,5 @@
+import type { AiRuntimePresetApplicationV1 } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application-v1";
 import type { Page } from "@playwright/test";
 import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
 import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
@@ -67,8 +69,9 @@ export async function prepareRuntimeVariant(
     { timeout: 120_000 }
   );
   await debugProbe?.(page, -1);
-  if (variant.presetWorld?.queues?.length) {
-    const expected = variant.presetWorld.queues.reduce((count, queue) => count + queue.count, 0);
+  if (variant.presetWorld?.queues?.length || variant.presetWorld?.researchQueues?.length) {
+    const expected = (variant.presetWorld.queues ?? []).reduce((count, queue) => count + queue.count, 0) +
+      (variant.presetWorld.researchQueues?.length ?? 0);
     await page.waitForFunction(
       (count) => {
         const host = (
@@ -96,26 +99,7 @@ export async function prepareRuntimeVariant(
             number,
             { ownedActorCount: number; workerCount: number; ownedActorNames: string[] }
           >;
-          presetApplication?: {
-            fixtureId: string;
-            sourceRevision: string;
-            fixtureDigest: string;
-            createdActorNames: string[];
-            createdActorIds: Record<string, string>;
-            resourceGrantCount: number;
-            resourceStartCount: number;
-            queuedItemCount: number;
-            initialQueueItems: {
-              producerFixtureActorId: string;
-              producerActorId: string;
-              itemId: string;
-              kind: "production" | "research";
-              objectName: string | null;
-              researchType: string | null;
-            }[];
-            initialOrderCount: number;
-            eventResults: { id: string; tick: number; affectedActors: number; subjectName: string }[];
-          };
+          presetApplication?: AiRuntimePresetApplicationV1;
         };
       }
     ).__fuzzyWaddleAiRuntimeBrowserTestV1;
@@ -143,19 +127,31 @@ export async function prepareRuntimeVariant(
         }
       }
     }
-    const requestedQueues = variant.presetWorld.queues?.reduce((count, queue) => count + queue.count, 0) ?? 0;
+    const requestedQueues = (variant.presetWorld.queues?.reduce((count, queue) => count + queue.count, 0) ?? 0) +
+      (variant.presetWorld.researchQueues?.length ?? 0);
     if (application.queuedItemCount !== requestedQueues) throw new Error("runtime_preset_queue_mismatch");
-    const expectedQueueItems = (variant.presetWorld.queues ?? []).flatMap((queue) =>
-      Array.from({ length: queue.count }, () => ({ producerFixtureActorId: queue.producerFixtureActorId,
-        objectName: queue.actorName })));
+    const expectedQueueItems = [
+      ...(variant.presetWorld.queues ?? []).flatMap((queue) =>
+        Array.from({ length: queue.count }, () => ({ producerFixtureActorId: queue.producerFixtureActorId,
+          objectName: queue.actorName, researchType: null }))),
+      ...(variant.presetWorld.researchQueues ?? []).map((queue) => ({ producerFixtureActorId: queue.producerFixtureActorId,
+        objectName: null, researchType: queue.researchType }))
+    ];
     const observedQueueItems = application.initialQueueItems.map((item) => ({
       producerFixtureActorId: item.producerFixtureActorId,
-      objectName: item.objectName
+      objectName: item.objectName, researchType: item.researchType
     }));
     if (JSON.stringify([...expectedQueueItems].sort(compareQueueItem)) !==
         JSON.stringify([...observedQueueItems].sort(compareQueueItem)) ||
         new Set(application.initialQueueItems.map((item) => item.itemId)).size !== requestedQueues) {
       throw new Error("runtime_preset_queue_identity_mismatch");
+    }
+    if (application.queueApplications.length !== requestedQueues || application.queueApplications.some((entry) =>
+      !entry.command.execution || entry.itemId !== `queue:${entry.command.actorIds[0]}:${entry.command.execution.commandId}` ||
+      !application.initialQueueItems.some((item) => item.itemId === entry.itemId &&
+        item.producerFixtureActorId === entry.producerFixtureActorId) ||
+      !entry.outcomes.some((outcome) => outcome.kind === "applied" && outcome.commandId === entry.command.execution?.commandId))) {
+      throw new Error("runtime_preset_queue_application_provenance_missing");
     }
     if (application.initialOrderCount !== (variant.presetWorld.initialOrders?.length ?? 0)) {
       throw new Error("runtime_preset_initial_order_mismatch");
@@ -166,10 +162,13 @@ export async function prepareRuntimeVariant(
   return initialBoundary;
 }
 
-function compareQueueItem(left: { producerFixtureActorId: string; objectName: string },
-  right: { producerFixtureActorId: string; objectName: string }): number {
+function compareQueueItem(
+  left: { producerFixtureActorId: string; objectName: string | null; researchType: string | null },
+  right: { producerFixtureActorId: string; objectName: string | null; researchType: string | null }
+): number {
   return left.producerFixtureActorId.localeCompare(right.producerFixtureActorId) ||
-    left.objectName.localeCompare(right.objectName);
+    (left.objectName ?? "").localeCompare(right.objectName ?? "") ||
+    (left.researchType ?? "").localeCompare(right.researchType ?? "");
 }
 
 async function configureLobby(page: Page, fixture: RuntimeFixtureV1, variant: RuntimeVariantV1): Promise<void> {

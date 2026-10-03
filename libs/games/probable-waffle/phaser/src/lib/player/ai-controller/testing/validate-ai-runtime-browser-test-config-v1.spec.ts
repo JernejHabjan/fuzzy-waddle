@@ -99,3 +99,28 @@ describe("runtime preset neutral source validation", () => {
     })).toBe(false);
   });
 });
+
+
+describe("runtime research seed validation", () => {
+  const producer = { ...neutralSource, fixtureActorId: "owned-producer", owner: 2 };
+  const research = { producerFixtureActorId: producer.fixtureActorId, researchType: "tivaraMacemanUpgradeLevel2" };
+  const withResearch = { ...config, presetWorld: { ...config.presetWorld, actors: [producer], researchQueues: [research] } };
+
+  it("accepts definition-named owned research and rejects unknown fields, types, producers and duplicate player tech", () => {
+    expect(isAiRuntimeBrowserTestConfigV1(withResearch)).toBe(true);
+    for (const queue of [{ ...research, researchType: "invented" }, { ...research, count: 1 },
+      { ...research, producerFixtureActorId: "missing" }]) {
+      expect(isAiRuntimeBrowserTestConfigV1({ ...withResearch, presetWorld: { ...withResearch.presetWorld,
+        researchQueues: [queue] } })).toBe(false);
+    }
+    expect(isAiRuntimeBrowserTestConfigV1({ ...withResearch, presetWorld: { ...withResearch.presetWorld,
+      actors: [{ ...producer, owner: null }] } })).toBe(false);
+    const second = { ...producer, fixtureActorId: "second-producer" };
+    expect(isAiRuntimeBrowserTestConfigV1({ ...withResearch, presetWorld: { ...withResearch.presetWorld,
+      actors: [producer, second], researchQueues: [research, { ...research, producerFixtureActorId: second.fixtureActorId }] } }))
+      .toBe(false);
+    expect(isAiRuntimeBrowserTestConfigV1({ ...withResearch, presetWorld: { ...withResearch.presetWorld,
+      actors: [producer, { ...second, owner: 1 }],
+      researchQueues: [research, { ...research, producerFixtureActorId: second.fixtureActorId }] } })).toBe(true);
+  });
+});

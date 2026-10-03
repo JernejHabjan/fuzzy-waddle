@@ -10,12 +10,14 @@ test("focused presets declare a legal starting world and bounded purpose", () =>
   const variant = {
     id: "subject", executionKind: "focused_preset", role: "standalone", seed: 7,
     presetWorld: { actors: [{ actorName: "Worker" }, { actorName: "Worker" }],
-      resourceStarts: [{ playerNumber: 2, amounts: { food: 200 } }], queues: [], events: [] }
+      resourceStarts: [{ playerNumber: 2, amounts: { food: 200 } }], queues: [],
+      researchQueues: [{ producerFixtureActorId: "producer-1", researchType: "example-research" }], events: [] }
   };
   assert.doesNotThrow(() => validateRuntimeRecipeMetadata({ ...recipe, variants: [variant] }));
   const detail = describeRuntimeVariant(recipe, variant);
   assert.equal(detail.kind, "focused_preset");
   assert.match(detail.setup, /actors=Worker×2; starts=P2\[food:200\]/);
+  assert.match(detail.setup, /research=1/);
 });
 
 test("rejects missing natural setup reasons and unjustified focused deadlines", () => {

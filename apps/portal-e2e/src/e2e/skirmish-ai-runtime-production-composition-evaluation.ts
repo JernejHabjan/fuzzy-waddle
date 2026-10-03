@@ -32,7 +32,7 @@ export function evaluateRuntimeProductionComposition(
   if (!variant.presetFixtureId || initialCopies < 2 || initialIds.size !== variant.presetCreatedActorNames.length ||
       variant.presetQueuedItemCount !== initialQueues.length || new Set(initialQueues.map((item) => item.itemId)).size !==
       initialQueues.length || initialQueues.some((item) => item.kind !== "production" || item.objectName !== unitName ||
-        !item.itemId.startsWith(`${item.producerActorId}:`) ||
+        !item.itemId.startsWith(`queue:${item.producerActorId}:`) ||
         variant.presetCreatedActorIds[item.producerFixtureActorId] !== item.producerActorId)) {
     fail("initial_setup");
   }

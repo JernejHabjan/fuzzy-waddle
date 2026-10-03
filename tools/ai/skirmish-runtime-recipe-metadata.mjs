@@ -99,6 +99,7 @@ export function describeRuntimeVariant(recipe, variant) {
     setup: preset
       ? `actors=${countActors(preset.actors)}; starts=${resourceSummary(preset.resourceStarts)}; ` +
         `grants=${resourceSummary(preset.resourceGrants)}; queues=${preset.queues?.length ?? 0}; ` +
+        `research=${preset.researchQueues?.length ?? 0}; ` +
         `orders=${preset.initialOrders?.length ?? 0}; events=${preset.events?.length ?? 0}`
       : "lobby defaults",
     rationale: [

@@ -5,6 +5,7 @@ import type { RuntimeProductionEvidenceV1 } from "./skirmish-ai-runtime-producti
 export function evaluateRuntimeProductionPayments(evidence: RuntimeProductionEvidenceV1): string[] {
   const failures: string[] = [];
   const paid = new Map<string, Record<string, number>>();
+  const remainingTicks = new Map<string, { ticks: number; actorId: string; productKey: string }>();
   for (const event of evidence.events) {
     if (!["construct", "enqueue", "enqueue_rejected", "pay", "refund"].includes(event.kind)) continue;
     const entry = evidence.catalog.find((candidate) => candidate.productKey === event.productKey);
@@ -12,7 +13,23 @@ export function evaluateRuntimeProductionPayments(evidence: RuntimeProductionEvi
       failures.push("production_catalog_price_missing");
       continue;
     }
-    const resources = new Set([...Object.keys(entry.cost), ...Object.keys(event.charged), ...Object.keys(event.refundAmounts)]);
+    const perTick = entry.payment === "per_successful_tick";
+    const paying = event.kind === "pay";
+    const admitting = ["construct", "enqueue"].includes(event.kind);
+    const ticks = event.remainingSuccessfulTicks;
+    const validTicks = typeof ticks === "number" && Number.isSafeInteger(ticks) && ticks > 0;
+    if (perTick && (admitting || paying) && (!event.itemId || !validTicks ||
+      !Number.isSafeInteger(entry.durationTicks) || entry.durationTicks < 0 ||
+      (admitting && (event.kind !== "enqueue" || ticks !== Math.max(1, entry.durationTicks) || remainingTicks.has(event.itemId))) ||
+      (paying && (remainingTicks.get(event.itemId)?.ticks !== ticks ||
+        remainingTicks.get(event.itemId)?.actorId !== event.actorId ||
+        remainingTicks.get(event.itemId)?.productKey !== event.productKey)))) {
+      failures.push("production_per_tick_identity_timing_missing");
+    }
+    if (paying && !perTick) failures.push("production_unexpected_repeat_payment");
+    const resources = new Set([...Object.keys(entry.cost), ...Object.keys(event.charged), ...Object.keys(event.refundAmounts),
+      ...Object.keys(event.resourcesBefore), ...Object.keys(event.resourcesAfter), ...Object.keys(event.reservedUnspent),
+      ...Object.keys(event.obligationsDue), ...Object.keys(event.obligationsAfter)]);
     for (const resource of resources) {
       const before = event.resourcesBefore[resource];
       const after = event.resourcesAfter[resource];
@@ -21,23 +38,28 @@ export function evaluateRuntimeProductionPayments(evidence: RuntimeProductionEvi
       const refund = event.kind === "refund" ? event.refundAmounts[resource] ?? 0 : 0;
       const reserved = event.reservedUnspent[resource];
       const obligation = event.obligationsDue[resource];
+      const obligationAfter = event.obligationsAfter[resource];
       if (before === undefined || after === undefined || reserved === undefined || obligation === undefined ||
-        [before, after, cost, charged, refund, reserved, obligation].some((value) =>
-          value === undefined || !Number.isFinite(value) || value < 0)) {
+        obligationAfter === undefined || [before, after, cost, charged, refund, reserved, obligation, obligationAfter]
+          .some((value) => !Number.isFinite(value) || value < 0)) {
         failures.push("production_payment_numeric_evidence");
         continue;
       }
       if (after !== before - charged + refund) failures.push("production_payment_balance_mismatch");
-      const ownRemaining = event.kind === "pay" && event.itemId
-        ? Math.max(0, cost - (paid.get(event.itemId)?.[resource] ?? 0)) : 0;
+      const ownRemaining = perTick && paying && validTicks ? cost * ticks : 0;
+      const admissionPrice = perTick && validTicks ? cost * ticks : cost;
+      if (![ownRemaining, admissionPrice].every(Number.isFinite)) failures.push("production_payment_numeric_evidence");
       if (charged > before - reserved - Math.max(0, obligation - ownRemaining)) {
         failures.push("production_spent_unapplied_money");
       }
-      if (["construct", "enqueue"].includes(event.kind) && cost > before - reserved - obligation) {
+      if (admitting && admissionPrice > before - reserved - obligation) {
         failures.push("production_unfunded_catalog_obligation");
       }
-      if (["construct", "enqueue"].includes(event.kind) && entry.payment === "immediate" && charged !== cost) {
-        failures.push("production_catalog_price_mismatch");
+      if (admitting && charged !== (perTick ? 0 : cost)) failures.push("production_catalog_price_mismatch");
+      if (perTick && paying && charged !== cost) failures.push("production_catalog_price_mismatch");
+      if (perTick && ((admitting && obligationAfter !== obligation + admissionPrice) ||
+        (paying && (obligation < ownRemaining || obligationAfter !== obligation - cost)))) {
+        failures.push("production_unfunded_remaining_obligation");
       }
       if (event.kind === "refund" && charged !== 0) failures.push("production_refund_charged");
       if (event.kind === "enqueue_rejected" && charged !== 0) failures.push("production_rejected_order_charged");
@@ -46,10 +68,15 @@ export function evaluateRuntimeProductionPayments(evidence: RuntimeProductionEvi
         const totalPaid = (itemPaid[resource] ?? 0) + charged;
         itemPaid[resource] = totalPaid;
         paid.set(event.itemId, itemPaid);
-        if (totalPaid > cost) failures.push("production_paid_more_than_catalog");
-        if (entry.payment === "over_time" && (event.obligationsAfter[resource] ?? -1) < cost - totalPaid) {
-          failures.push("production_unfunded_remaining_obligation");
-        }
+        const maximum = perTick ? cost * Math.max(1, entry.durationTicks) : cost;
+        if (!Number.isFinite(maximum) || totalPaid > maximum) failures.push("production_paid_more_than_catalog");
+      }
+    }
+    if (perTick && event.itemId && validTicks) {
+      if (admitting) remainingTicks.set(event.itemId, { ticks, actorId: event.actorId, productKey: event.productKey });
+      else if (paying) {
+        const previous = remainingTicks.get(event.itemId);
+        if (previous) remainingTicks.set(event.itemId, { ...previous, ticks: ticks - 1 });
       }
     }
   }
@@ -125,15 +152,19 @@ export function evaluateRuntimeProductionRefund(
     const requested = events.find((event) => event.kind === "cancel_requested" && event.itemId === cancellation?.itemId);
     const refund = events.find((event) => event.kind === "refund" && event.refundForItemId === cancellation?.itemId);
     if (cancellations.length !== 1 || !cancellation?.itemId || !evidence.initialPaidItemIds.includes(cancellation.itemId) ||
-      !requested || requested.sequence >= cancellation.sequence || !refund || refund.sequence <= requested.sequence ||
-      refund.tick <= requested.tick || refund.tick !== cancellation.tick ||
+      !requested || requested.commandId !== cancellation.commandId || requested.actorId !== cancellation.actorId ||
+      requested.productKey !== cancellation.productKey || requested.sequence >= cancellation.sequence || !refund ||
+      refund.sequence <= requested.sequence ||
+      !Number.isSafeInteger(requested.scheduledTick) || (requested.scheduledTick ?? -1) <= requested.tick ||
+      refund.tick < (requested.scheduledTick ?? Number.POSITIVE_INFINITY) || refund.tick !== cancellation.tick ||
       refund.tick + contract.stableForTicks > contract.latestTick ||
       !Object.values(refund.refundAmounts).some((amount) => amount > 0)) {
       failures.push("production_pending_refund_boundary_missing");
       return failures;
     }
     const rejected = events.find((event) => event.kind === "enqueue_rejected" &&
-      event.sequence > requested.sequence && event.sequence < refund.sequence);
+      event.sequence > requested.sequence && event.sequence < refund.sequence &&
+      event.tick >= requested.tick && event.tick <= refund.tick);
     const price = evidence.catalog.find((entry) => entry.productKey === rejected?.productKey);
     const shortfall = rejected && price && Object.entries(price.cost).some(([resource, amount]) =>
       amount > (rejected.resourcesBefore[resource] ?? 0) - (rejected.reservedUnspent[resource] ?? 0) -

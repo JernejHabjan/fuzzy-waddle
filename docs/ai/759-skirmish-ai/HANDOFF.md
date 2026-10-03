@@ -6,66 +6,60 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
-**Next session (user policy, 2026-10-03):** continue related PRO-03/06/07 item-level authority and legal setup on
-**GPT-6.1 Sol / high**. Queue liabilities, passive raw capture and contract parsing are authored; reliable causal
-attribution, legal paid worlds and normalized runtime evidence remain. Read the
-[raw-capture checkpoint](follow-ups/runtime-matrix-ci.md#production-raw-capture-checkpoint-2026-10-03-unverified),
-then `testing/ai-runtime-production-capture.ts`, shared queue/production/research owners and the independent refund
-oracle. Keep these authority decisions together; defer all execution, commit/push and pause at the next bounded
-source-authoring boundary. Do not use raw diagnostics or synthetic oracle fixtures as accepted production evidence.
+**Next session (user policy, 2026-10-03):** continue related PRO-03/06/07 authority on **GPT-6.1 Sol / high**.
+Read the [legal queue-setup checkpoint](follow-ups/runtime-matrix-ci.md#production-legal-queue-setup-checkpoint-2026-10-03-unverified),
+then `testing/apply-ai-runtime-preset-queues.ts`, `schedule-ai-runtime-preset-setup.ts`, the raw capture and shared
+queue/production/research resource emitters. **Next exact authoring action:** design and add item-scoped charge/refund
+facts at the real shared application boundary, retaining callback sequence and request/execution ticks. Group that
+with pending dispatch ownership and the real buffered-cancellation setup. Defer all execution, commit/push and pause
+at the next bounded authoring boundary; no raw/synthetic record may substitute for accepted runtime evidence.
 
-- Current step: #815/#816 **production authority projection/raw-capture authoring**, authored/unverified. The batch
-  began at `c2bce7d2a4e2296bbbbaede891c4b796866d957d` on `feature/759-skirmish-ai`, worktree
-  `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`; local/remote matched. The commit containing this ledger owns the
-  new revision; verify local/remote SHA on resume. Actual model/effort is unavailable. No issue/family is complete.
-- Source owners: Phaser `observation/ai-production-obligations.ts` and pipeline now project remaining owned queue
-  liability. Test-owned `ai-runtime-production-capture.ts`, queue/fact/capture contracts, queue reader and gated
-  installer retain ordered callbacks, real balance changes, physical lanes and stable item identities. Browser
-  config/host/preset setup and portal `skirmish-ai-runtime-production-capture.ts`/variant setup/runner/result retain
-  tick-zero plus settled-checkpoint raw captures. Node `skirmish-runtime-production-contract-fixture.mjs` is wired
-  into the fixture reader for the new production-contract field. Registrations/manifest denominator are unchanged.
-- Authority decision: current `QueueComponent` passes the full stored cost vector to payment on **every successful
-  fixed tick** for `PayOverTime`; failed payment advances neither time nor liability. Remaining liability is that
-  vector times remaining successful ticks, including waiting items, not a prorated total price. Immediate
-  production/research already paid have zero remaining liability. No shipped prefab reference to `PayOverTime` was
-  found in the inspected definitions. Shared payment/refund behavior was preserved. The independent oracle's older
-  total-price assumption still needs reconciliation with this actual authority before a per-tick world can pass.
-- Capture is explicitly diagnostic: `productionCapture` differs from `productionEvidence`. Facts retain callback
-  sequence, current observation-of-callback tick and original outcome/command ticks. `command_delivered` can follow
-  application for existing component subscribers and must not be renamed a request. Resource events keep observed
-  before/after balances and a continuity flag; no charge/refund is guessed from amount or timing. Tick-zero owned
-  identities and later committed observation/catalog, save-owned transition/leases, queues and completed tech are
-  detached copies. Terminal schedule status is retained honestly. Command-context item IDs survive restoration;
-  uncommanded IDs are stable handles only within this capture and never array positions.
-- Bounds/lifecycle: 8,192 raw facts per scene and 256 snapshots per player, with explicit dropped counts. Only marked
-  developer production worlds install; ordinary worlds have no observer. Shutdown/destroy unsubscribes and detaches
-  only its own host handle, preserving a replacement game. Existing actor registration plus a test-only tick scan
-  discovers queue components initialized late. Missing pre-registration events remain an explicit provenance gap.
-- Contract parsing: present per-variant records reject unknown fields, mismatched scenario/branch/pair identities,
-  missing/orphaned variants, absent faction branches, mismatched pair horizons/products, ceilings absent from their
-  checkpoint list and early-stop opt-ins. PRO-07 keeps distinct standalone worlds. This checks schema/coverage only,
-  not definition legality or real setup equality. Missing contracts on the natural debt recipe still fail the runtime
-  mandatory gate. No adapter emits normalized `productionEvidence`; no recipe or passing evidence is claimed.
-- Authored/unrun cases: `ai-production-obligations.spec.ts`, `ai-runtime-production-capture.spec.ts`, installer and
-  config specs, and `skirmish-runtime-production-contract-fixture.test.mjs`. They cover fixed-tick/waiting liabilities,
-  stalling/removal/malformed authority, callback order, real balance continuity, lane identities across index shifts,
-  command-backed restoration, honest expired schedules, tech facts, player filtering, bounds, disposal, opt-in and
-  replacement-host cleanup, malformed branches/pairs/ceilings. These mocked/source cases are not real application proof.
-- Source closure: implementation review, Omission Audit and separate Final Closure Audit covered owning authority,
-  fair owned ledger, read-only snapshots, browser/config/fixture consumers, lifecycle, tests and staged scope. Audits
-  used source inspection only; existing comments and source baselines were preserved. No executable check ran.
-- Remaining boundary: resource callbacks have no item/command attribution; tick-zero paid provenance and legal
-  train/research/cancel setup remain missing. `reservedUnspent` still reflects no shared cash escrow; pending AI dispatch
-  obligations are a separate unresolved admission owner. Add reliable scoped capture at the actual authority boundary,
-  committed decision cadence and real navigation/placement proof without exposing hidden opponents. Reconcile oracle
-  total-price semantics and the pending-refund tick predicate: single-player dispatch/application is synchronous in one
-  tick, whereas a real buffered multiplayer request may precede application. Preserve sequence and original ticks;
-  never invent delayed shared refunds, request time or a committed terminal schedule. Then author both factions' legal
-  PRO-03/06 pairs and separate PRO-07 worlds, populate normalized evidence and integrate full pure family coverage.
-- All tests, E2E, simulations, lint/type/build/editor/schema/repository validation and doctor/context remain deferred.
-  At the final gate include the new obligation/capture/installer/config suites and Node contract fixture cases, then
-  prior policy/timing/serializer/arbiter/oracle suites, frozen-map preflight and eventual focused browser worlds.
-  PRO-04 pairs and all prior unverified authoring remain final-gate debt. No catalog generation ran.
+- Current step: #815/#816 **legal production/research setup and authority-oracle reconciliation**, authored/unverified.
+  Batch base `c2cd61df413e27c96a439c01eca5f2b34faeddfd`, local/remote matched on `feature/759-skirmish-ai`, worktree
+  `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`. Its containing commit owns the new revision; verify local/remote
+  SHA on resume. Actual model/effort is unavailable. No issue/family is complete.
+- Setup ownership: `applyAiRuntimePresetQueues` replaces direct money removal/queue insertion with ordinary
+  `CommandBusService.dispatchDeterministic` production and research. It requires correlated applied outcomes,
+  exactly one new physical item with saved command context and unchanged earlier items, and definition-priced real
+  balances sampled around synchronous application. Detached `queueApplications` retain commands/outcomes/cash before
+  later explicit `resourceStarts`. Unaffordable/unsupported/missing/rejected/no-op application aborts; no queue or
+  resources are synthesized to make a setup succeed.
+- Bootstrap decision: preset actors are created before their component object-ready callbacks. Queue-bearing worlds
+  finish setup only after earlier zero-delay initialization timers, still paused at tick zero. The scheduler disposes
+  readiness subscriptions/timers on shutdown/destroy, fences inactive/replaced games, and rejects a clock that advanced
+  or resumed. Queue-free worlds retain synchronous setup. This bootstrap order is authored, not browser-proven.
+- Contracts/consumers: bounded `researchQueues` name a real research enum and owned authored producer; duplicate
+  player-tech/unknown fields/neutral or missing producers fail session parsing. Browser setup verifies production and
+  research counts and command provenance; raw variant results retain setup records. Existing capacity pairs must keep
+  research identical and PRO-04 composition pairs permit none. Recipe summaries expose research counts. No scenario
+  registration, manifest denominator, fixture migration or catalog generation changed.
+- Identity/determinism: fair owned queue projection uses `queue:<actorId>:<commandId>` for commanded items, matching
+  setup/raw capture through index shifts and save clones. Legacy uncommanded items retain their positional compatibility
+  IDs without a durability claim. PRO-04 uses the new identity prefix. Setup digests retain fixture/product/order;
+  trajectory digests alias per-match item IDs by first appearance while preserving continuity/replacement. Complete
+  command/item IDs stay in raw evidence. This changes digest semantics, not an accepted causal oracle.
+- Independent oracle: `per_successful_tick` now means the full stored vector on each successful 50 ms tick, not a
+  prorated total price. Per-tick evidence must retain own remaining successful charges; admission funds all remaining
+  charges, successful payments consume one full vector and release one charge, and other liabilities remain protected.
+  Repeated/short/failed-payment fictions and missing timing/identity are rejected. Zero-duration restored heads retain
+  one-charge semantics. Catalog parsing rejects unknown payment labels. Shared gameplay payment/refund code is unchanged.
+- Pending refund: a request must carry its real future `scheduledTick` and link the cancellation command/actor/product;
+  callback-observation tick remains separate. Synchronous single-player/deterministic dispatch cannot prove this branch.
+  Applied cancellation/refund can share a tick (research may refund before terminal cancellation); no delayed credit is
+  invented. The existing single-player harness still cannot supply the required pending-refund world; real buffered
+  dispatch and an actual rejected pre-credit probe remain authoring debt.
+- Authored/unrun: command-setup/payment/scheduler specs, queue-identity spec, browser config research cases,
+  Playwright payment/refund/composition/digest examples and Node pair/metadata cases. These isolated/mock/synthetic
+  examples do not prove Phaser initialization, legal paid worlds, money lineage or useful runtime effects.
+- Source closure: implementation review, Omission Audit (requirements 1–5 in the linked checkpoint), then separate
+  Final Closure Audit inspected owners/callers, teardown, strict inputs, records/digests, pair controls, tests and scope.
+  Existing comments/source baselines are preserved; no executable check ran. All checks remain final-gate debt.
+- Remaining: item-scoped ongoing charge/refund hooks, fair decision cadence, pending AI resource ownership, actual
+  placement/navigation and effective exposure evidence, legal PRO-03/06 pairs and distinct PRO-07 worlds, normalized
+  `productionEvidence`, full pure-family coverage and PRO-04 runtime proof. Raw capture still declares its attribution/
+  provenance gaps; setup records narrow only tick-zero preset provenance. No mandatory runtime gate was relaxed.
+- Deferred focused commands and final-gate sequence are in the linked checkpoint. All tests, E2E, simulations,
+  lint/type/build/editor/schema/repository validation and doctor/context remain deferred until the announced final gate.
 
 - Multiplayer diagnostic/lifecycle authoring checkpoint (2026-09-30, **unverified**): browser-only relay and local-hash
   observation now lives in a small test-owned Phaser adapter rather than adding methods to hash-baselined

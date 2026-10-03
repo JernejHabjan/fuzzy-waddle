@@ -33,7 +33,7 @@ function checkpoint(tick: number, branch: Branch = "fill_deficit", filled = tick
       constructing: 0, accepted: 0 }],
     militaryProducerQueues: [1, 2].map((producer) => {
       const items = branch === "seeded_queue_control" && !seededComplete
-        ? [{ itemId: `producer-${producer}:0:Production`, kind: "production" as const,
+        ? [{ itemId: `queue:producer-${producer}:seed-${producer}`, kind: "production" as const,
             objectName: "frontline", researchType: null }]
         : [];
       return { actorId: `producer-${producer}`, objectName: "barracks", capacity: 5,
@@ -57,7 +57,7 @@ function evidence(branch: Branch = "fill_deficit"): Evidence {
     presetQueuedItemCount: seeded ? 2 : 0,
     presetInitialQueueItems: seeded ? [1, 2].map((producer) => ({
       producerFixtureActorId: `producer-${producer}`, producerActorId: `producer-${producer}`,
-      itemId: `producer-${producer}:0:Production`, kind: "production" as const,
+      itemId: `queue:producer-${producer}:seed-${producer}`, kind: "production" as const,
       objectName: "frontline", researchType: null
     })) : [],
     stopReason: "checkpoint_ceiling",

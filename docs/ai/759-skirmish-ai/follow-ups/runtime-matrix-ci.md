@@ -206,8 +206,8 @@ inspection found that pay-over-time production currently charges its entire stor
 protects every remaining successful charge for heads and waiting items; paid immediate production/research adds no
 future charge. Malformed timing/cost fails capture instead of creating zero liability. A zero-time restored head still
 enters the payment branch once before completion. No inspected shipped prefab uses this payment type, and no shared
-payment/refund owner changed. The old independent payment oracle treats over-time price as a total; reconcile that
-contract with actual authority before authoring its per-tick runtime world, without silently changing game balance.
+payment/refund owner changed. At this checkpoint the independent payment oracle still treated over-time price as a total; the legal queue-setup
+checkpoint below reconciles that contract without changing shared game balance.
 
 `AiRuntimeProductionCapture` subscribes to actual bus outcomes/command delivery, player resource application, physical
 queue changes, tech completion and actor unregistration. Resource callbacks retain copied before/after balances and a
@@ -484,3 +484,75 @@ terminal results fail the shard.
   a required row or substitutes a hypothesis for a confirmed causal diagnosis. Affected-only reruns precede one
   clean full required matrix.
 - Run omission/final closure audits, update coverage counts and operator docs, commit, push, and close #816.
+
+
+### Production legal queue-setup checkpoint (2026-10-03, unverified)
+
+This bounded prerequisite batch began at `c2cd61df413e27c96a439c01eca5f2b34faeddfd`. It authors ordinary paid setup and
+reconciles known oracle assumptions. It does **not** provide item-scoped ongoing resource hooks, legal-world/browser
+proof, normalized `productionEvidence`, full pure-family coverage or completion of #815/#816.
+
+The source acceptance record is:
+
+1. **Legal setup — authored:** `applyAiRuntimePresetQueues` dispatches each production/research seed through the real
+   bus/`QueueCommandSystem` path. `applyAiRuntimePresetWorldV1` no longer charges or adds queue items directly. Existing
+   component initialization owns queue creation/registration, prices, eligibility, faction/campaign tech and capacity.
+   Dispatch rejection, absent applied outcome, missing/wrong command-backed physical item, replacement of earlier
+   items or wrong resource delta aborts setup. There is no corrective cash injection or rollback claiming acceptance.
+2. **Real scoped provenance — authored:** `AiRuntimePresetQueueApplicationV1` retains the stamped command, matching
+   callback outcomes, exact shared item ID and detached before/after resource-authority samples. Production immediate
+   price and research definition price must match; per-tick production seeds pay nothing before simulation begins.
+   These samples precede explicit authored balance resets. They describe a synchronous setup operation and are not
+   guessed attribution for later unlabelled resource callbacks.
+3. **Bootstrap/consumers/identity — authored:** object-ready callbacks wait for `sceneInitialized` and zero-delay
+   Phaser timers. `scheduleAiRuntimePresetSetup` subscribes after preset actors are constructed, so its timer follows
+   their component initializers. It checks paused tick zero and current active game, disposes on shutdown/destroy and
+   fences stale games. The portal waits for the completed setup record before reading cash/queue counts. Fair owned
+   queue items now share command-backed IDs with setup/raw capture across index shifts/restore; legacy identities
+   remain positional. Browser counts/provenance, bounded enum-checked `researchQueues`, pair guards and recipe summary
+   consumers are wired. Digests normalize per-match identifiers while retaining queue replacement continuity and full
+   raw identities. No registrations/manifest/catalog generation changed.
+4. **Authority-oracle agreement — authored:** `per_successful_tick` declares the actual full-vector charge. Events
+   retain remaining successful charges before enqueue/payment; the independent oracle checks total admission liability,
+   exact one-vector charges/liability release, repeat/timing identity and protected other commitments. Zero-duration
+   queue heads still charge once. `cancel_requested.scheduledTick` is the intended bus tick, distinct from actual callback
+   tick, and must be later than observation/request tick and linked to the cancellation command/actor/product. The
+   refund/probe sequence remains application order. A deterministic/single-player dispatch cannot satisfy the pending
+   branch. Neither shared gameplay money timing nor the mandatory production evidence gate changed.
+5. **Closure/evidence — authored/unverified:** source review followed input -> bootstrap -> component command ->
+   outcomes/physical item -> cash -> record -> browser/digest/oracles. Omission Audit covered strict parsing, duplicate
+   player tech, repeated seeds, no-op/rejected/wrong-price application, teardown, host replacement, pair controls and
+   immediate consumers. Separate Final Closure Audit checked repaired consumers, named remaining gaps and exact staged
+   scope. Existing comments and content-hash baselines are preserved. No executable check ran.
+
+Authored unrun tests cover command-backed multiple seeds on one producer, normal research pricing, unpaid per-tick
+admission, scoped detached cash, dispatch-only/no-op/wrong identity/product, admission rejection/application exception,
+missing authority and free items; deferred readiness, both teardown events, stale/inactive game and resumed/advanced
+clock; fair queue identity through saved clones/index shifts; strict research seed fields/ownership/duplicate tech;
+per-tick full price and liability, exhausted/short/no-payment fictions, real buffered request timing/correlation; digest
+session-independence with preserved replacement identity; and Node research pair variables/summary counts. Mocked and
+synthetic examples are never browser outcome proof.
+
+**Remaining acceptance:** add true item-scoped payment/refund callbacks without inferring money from amounts/order,
+then pending dispatch claims and real buffered cancellation/probe setup. The normal single-player harness cannot
+manufacture a pending request interval; use actual buffered authority. Shared production/queue/research/scene owners
+have source baselines: any necessary edits require bounded comment-preserving restructuring, not hash refreshes.
+Per-tick cancellation also retains the shared owner's unusual progress-based refund formula; do not silently change
+balance or assume it refunds cumulative per-tick payments. Continue fair decision cadence, placement/navigation and
+weapon exposure facts, lifecycle status reconciliation, legal both-faction PRO-03/06 pairs and separate PRO-07 worlds,
+normalized runtime evidence and full pure-family integration. Existing PRO-04 fixture setup is affected and needs the
+same final-gate legal command/initialization proof. Natural PRO-03/06/07 remain fail-closed migration debt.
+
+**Next model boundary:** retain **GPT-6.1 Sol / high** for these related authority decisions. Actual model/effort is
+unavailable. Commit/push this authored prerequisite and pause; do not switch models per file or scenario.
+
+At the announced final gate, add these focused commands to the earlier raw-capture/policy/oracle/map checks:
+
+```bash
+NX_DAEMON=false pnpm exec nx test probable-waffle-phaser --testPathPattern='apply-ai-runtime-preset-queues|assert-ai-runtime-preset-queue-payment|schedule-ai-runtime-preset-setup|ai-observation-queue-item-id|validate-ai-runtime-browser-test-config-v1' --skip-nx-cache
+pnpm ai:tools:test
+```
+
+Also include the Playwright oracle-only `skirmish-ai-runtime-production-refund-evaluation.spec.ts`,
+`skirmish-ai-runtime-production-composition-evaluation.spec.ts` and `skirmish-ai-runtime-digest.spec.ts` in the grouped
+portal-e2e gate, then the frozen-map preflight and actual focused production worlds. All commands remain **unrun**.

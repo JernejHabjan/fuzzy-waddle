@@ -6,7 +6,7 @@ import type { RuntimeCheckpointV1 } from "./skirmish-ai-runtime-checkpoint";
 import { captureCheckpoint } from "./skirmish-ai-runtime-checkpoint-capture";
 import { last } from "./skirmish-ai-runtime-value";
 import { applyRuntimePerturbation } from "./skirmish-ai-runtime-perturbation-runner";
-import { digestRuntimeValue, projectRuntimeOutcomeDigestInput } from "./skirmish-ai-runtime-digest";
+import { digestRuntimeValue, projectRuntimeOutcomeDigestInput, projectRuntimePresetQueueDigest } from "./skirmish-ai-runtime-digest";
 import { prepareRuntimeVariant } from "./skirmish-ai-runtime-variant-setup";
 import { canStopAfterTerminal } from "./skirmish-ai-runtime-terminal";
 import { evaluateEvidenceStopAtCheckpoint } from "./skirmish-ai-runtime-evidence-stop-evaluation";
@@ -139,7 +139,7 @@ export async function runVariant(
             resourceGrantCount: initialBoundary.presetApplication.resourceGrantCount,
             resourceStartCount: initialBoundary.presetApplication.resourceStartCount,
             queuedItemCount: initialBoundary.presetApplication.queuedItemCount,
-            initialQueueItems: initialBoundary.presetApplication.initialQueueItems,
+            initialQueueItems: projectRuntimePresetQueueDigest(initialBoundary.presetApplication.initialQueueItems),
             initialOrderCount: initialBoundary.presetApplication.initialOrderCount
           }
         : null
@@ -181,6 +181,7 @@ export async function runVariant(
       presetInitialResourceBalances: initialBoundary.initialResourceBalances,
       presetQueuedItemCount: initialBoundary.presetApplication?.queuedItemCount ?? 0,
       presetInitialQueueItems: initialBoundary.presetApplication?.initialQueueItems ?? [],
+      presetQueueApplications: initialBoundary.presetApplication?.queueApplications ?? [],
       presetInitialOrderCount: initialBoundary.presetApplication?.initialOrderCount ?? 0,
       determinismGroup: variant.determinismGroup ?? null,
       ...(variant.supplyBranch ? { supplyBranch: variant.supplyBranch } : {}),

@@ -27,7 +27,8 @@ export function validProductionCapacityPair(recipe, assertion, scenarioId) {
     const right = control.presetWorld;
     if (!left || !right || !same(left.resourceGrants, right.resourceGrants) ||
         !same(left.resourceStarts, right.resourceStarts) || !same(left.queues, right.queues) ||
-        !same(left.initialOrders, right.initialOrders) || !same(left.events, right.events)) return false;
+        !same(left.researchQueues, right.researchQueues) || !same(left.initialOrders, right.initialOrders) ||
+        !same(left.events, right.events)) return false;
     const initial = left.actors.filter((actor) => actor.owner === recipe.aiPlayerNumber && actor.actorName === producer);
     const ample = right.actors.filter((actor) => actor.owner === recipe.aiPlayerNumber && actor.actorName === producer);
     if (initial.length !== 1 || ample.length !== 2) return false;

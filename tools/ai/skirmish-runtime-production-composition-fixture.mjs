@@ -20,6 +20,7 @@ function validPair(pair, requirement, recipe, faction, scenarioId) {
   if (!Array.isArray(left?.actors) || !Array.isArray(right?.actors) || !same(left.resourceGrants, right.resourceGrants) ||
       !same(left.resourceStarts, right.resourceStarts) || !Array.isArray(left.resourceStarts) ||
       left.resourceStarts.length !== 1 || left.resourceStarts[0]?.playerNumber !== recipe.aiPlayerNumber ||
+      (left.researchQueues?.length ?? 0) !== 0 || (right.researchQueues?.length ?? 0) !== 0 ||
       !same(left.initialOrders, right.initialOrders) || !same(left.events, right.events) ||
       (left.events?.length ?? 0) !== 0) return false;
   const leftIds = new Set(left.actors.map((actor) => actor.fixtureActorId));

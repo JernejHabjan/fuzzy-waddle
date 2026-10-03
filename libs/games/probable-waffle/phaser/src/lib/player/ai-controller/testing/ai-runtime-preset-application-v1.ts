@@ -1,3 +1,5 @@
+import type { AiRuntimePresetQueueApplicationV1 } from "./ai-runtime-preset-queue-application-v1";
+
 /** Independently recorded result of applying a validated preset through authoritative scene services. */
 export interface AiRuntimePresetApplicationV1 {
   readonly fixtureId: string;
@@ -18,6 +20,8 @@ export interface AiRuntimePresetApplicationV1 {
     readonly objectName: string | null;
     readonly researchType: string | null;
   }[];
+  /** Real admitted commands, queue identities and scoped balances before later explicit resource-start resets. */
+  readonly queueApplications: readonly AiRuntimePresetQueueApplicationV1[];
   readonly initialOrderCount: number;
   readonly eventResults: readonly {
     readonly id: string;

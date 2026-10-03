@@ -27,6 +27,9 @@ test("composition controls cannot change resources, unrelated actors, queues or 
     (copy) => { copy.recipe.variants[0].presetWorld.queues.push({ producerFixtureActorId: "producer-1",
       actorName: "TivaraMacemanMale", count: 2 }); },
     (copy) => { copy.recipe.variants[1].productionCompositionBranch = "fill_deficit"; },
+    (copy) => { copy.recipe.variants[1].presetWorld.researchQueues = [
+      { producerFixtureActorId: "producer-1", researchType: "tivaraMacemanUpgradeLevel2" }
+    ]; },
     (copy) => { copy.recipe.variants[1].seed += 1; },
     (copy) => { copy.recipe.variants[1].humanFaction = "Tivara"; },
     (copy) => { copy.recipe.variants.pop(); }

@@ -21,6 +21,7 @@ import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller"
 import type { AiAccessGraphAdapter } from "./ai-access-graph.adapter";
 import { projectActorCapabilities } from "./ai-observation-catalog";
 import { projectAiCombatProfile } from "./ai-observation-combat-profile";
+import { aiObservationQueueItemId } from "./ai-observation-queue-item-id";
 import { knownValue, unknownValue, uniqueDomain } from "./ai-observation-values";
 
 type GameObject = Phaser.GameObjects.GameObject;
@@ -105,10 +106,10 @@ export function projectAiObservedActor(
             {
               capacity: queue.queueDefinition.queueCount * queue.queueDefinition.capacityPerQueue,
               occupied: queue.allItems.length,
-              itemIds: queue.allItems.map((item, index) => `${actorId}:${index}:${item.type}`).sort(),
+              itemIds: queue.allItems.map((item, index) => aiObservationQueueItemId(actorId, item, index)).sort(),
               items: queue.allItems
                 .map((item, index) => ({
-                  itemId: `${actorId}:${index}:${item.type}`,
+                  itemId: aiObservationQueueItemId(actorId, item, index),
                   kind: item.productionData ? ("production" as const) : ("research" as const),
                   objectName: item.productionData?.actorName ?? null,
                   researchType: item.researchData ?? null

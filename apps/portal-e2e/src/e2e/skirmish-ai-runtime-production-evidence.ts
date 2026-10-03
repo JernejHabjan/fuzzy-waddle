@@ -13,7 +13,8 @@ export interface RuntimeProductionEvidenceV1 {
     readonly productKey: string;
     readonly kind: "production" | "research" | "construction";
     readonly cost: Readonly<Record<string, number>>;
-    readonly payment: "immediate" | "over_time";
+    /** Per-tick cost is the entire stored vector charged once for every successful queue tick. */
+    readonly payment: "immediate" | "per_successful_tick";
     /** Definition duration converted to fixed simulation ticks. */
     readonly durationTicks: number;
   }[];
@@ -63,6 +64,10 @@ export interface RuntimeProductionEvidenceV1 {
   readonly events: readonly {
     readonly sequence: number;
     readonly tick: number;
+    /** Intended command tick on a real pre-application request; absent for ordinary applied facts. */
+    readonly scheduledTick?: number;
+    /** Queue-authority remaining successful charges before enqueue/payment, required for per-tick evidence. */
+    readonly remainingSuccessfulTicks?: number;
     readonly commandId: string;
     readonly effectId: string;
     readonly planId: string | null;

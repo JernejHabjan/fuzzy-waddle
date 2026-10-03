@@ -4,12 +4,7 @@ import { DamageType, ObjectNames, ResourceType, type PlayerStateResources } from
 import { emitResource, getPlayer } from "../../../data/scene-data";
 import { getActorComponent } from "../../../data/actor-component";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
-import { ProductionComponent } from "../../../entity/components/production/production-component";
-import { QueueComponent } from "../../../entity/components/queue/queue-component";
 import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
-import { QueueItemType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/queue-item";
-import { PaymentType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/payment-type";
-import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { OrderData } from "../../../ai/OrderData";
 import { OrderType } from "../../../ai/order-type";
@@ -21,6 +16,8 @@ import type { SceneActorCreator } from "../../../world/services/scene-actor-crea
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
+import { scheduleAiRuntimePresetSetup } from "./schedule-ai-runtime-preset-setup";
+import { applyAiRuntimePresetQueues } from "./apply-ai-runtime-preset-queues";
 import { installAiRuntimeProductionCapture } from "./install-ai-runtime-production-capture";
 import {
   readAiRuntimeBrowserTestConfigV1,
@@ -84,118 +81,76 @@ export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, crea
   for (const grant of preset.resourceGrants) {
     emitResource(scene, "resource.added", grant.amounts as Partial<PlayerStateResources>, grant.playerNumber);
   }
-  let queuedItemCount = 0;
-  const initialQueueItems: {
-    producerFixtureActorId: string;
-    producerActorId: string;
-    itemId: string;
-    kind: "production" | "research";
-    objectName: string | null;
-    researchType: string | null;
-  }[] = [];
-  for (const authoredQueue of preset.queues ?? []) {
-    const producer = createdActors.get(authoredQueue.producerFixtureActorId);
-    const production = producer ? getActorComponent(producer, ProductionComponent) : undefined;
-    const costData = getPwActorDefinition(authoredQueue.actorName, null)?.components?.productionCost;
-    const owner = preset.actors.find((actor) => actor.fixtureActorId === authoredQueue.producerFixtureActorId)?.owner;
-    if (!producer || !production || !costData || owner === undefined || owner === null) {
-      throw new Error(`runtime_preset_queue_component_missing:${authoredQueue.producerFixtureActorId}`);
-    }
-    const player = getPlayer(scene, owner);
-    const techTree = getSceneService(scene, TechTreeService);
-    if (!player || !techTree?.isContentAllowed(owner, "actor", authoredQueue.actorName)) {
-      throw new Error(`runtime_preset_queue_content_unavailable:${authoredQueue.producerFixtureActorId}`);
-    }
-    const queue = QueueComponent.createSharedQueue(producer);
-    queue.registerProductionComponent(production);
-    for (let index = 0; index < authoredQueue.count; index += 1) {
-      if (costData.costType === PaymentType.PayImmediately) {
-        if (!player.canPayAllResources(costData.resources)) {
-          throw new Error(`runtime_preset_queue_unaffordable:${authoredQueue.producerFixtureActorId}`);
-        }
-        emitResource(scene, "resource.removed", costData.resources, owner);
+  const completeSetup = () => {
+    const { queuedItemCount, initialQueueItems, queueApplications } = applyAiRuntimePresetQueues(scene, preset, createdActors);
+    for (const start of preset.resourceStarts ?? []) {
+      const player = getPlayer(scene, start.playerNumber);
+      if (!player) throw new Error("runtime_preset_resource_start_player_missing");
+      for (const resourceType of Object.values(ResourceType)) {
+        const target = start.amounts[resourceType];
+        if (target === undefined) continue;
+        const current = player.getResources()[resourceType] ?? 0;
+        if (target > current) emitResource(scene, "resource.added", { [resourceType]: target - current }, start.playerNumber);
+        if (target < current) emitResource(scene, "resource.removed", { [resourceType]: current - target }, start.playerNumber);
       }
-      queue.addItem({
-        type: QueueItemType.Production,
-        productionData: { actorName: authoredQueue.actorName, costData },
-        totalTime: costData.productionTime,
-        remainingTime: costData.productionTime
-      });
-      queuedItemCount += 1;
     }
-    const producerActorId = createdActorIds[authoredQueue.producerFixtureActorId];
-    for (const [index, item] of queue.allItems.entries()) {
-      initialQueueItems.push({
-        producerFixtureActorId: authoredQueue.producerFixtureActorId,
-        producerActorId,
-        itemId: `${producerActorId}:${index}:${item.type}`,
-        kind: item.productionData ? "production" : "research",
-        objectName: item.productionData?.actorName ?? null,
-        researchType: item.researchData ?? null
-      });
+    for (const initialOrder of preset.initialOrders ?? []) {
+      const worker = createdActors.get(initialOrder.workerFixtureActorId);
+      const source = createdActors.get(initialOrder.sourceFixtureActorId);
+      const pawn = worker ? getActorComponent(worker, PawnAiController) : undefined;
+      if (!worker || !source || !pawn || !getActorComponent(worker, GathererComponent) ||
+        !getActorComponent(source, ResourceSourceComponent)) {
+        throw new Error(`runtime_preset_invalid_initial_gather:${initialOrder.workerFixtureActorId}`);
+      }
+      pawn.blackboard.overrideOrderQueueAndActiveOrder(new OrderData(OrderType.Gather, { targetGameObject: source }));
     }
+    recordAiRuntimePresetApplicationV1({
+      fixtureId: preset.fixtureId,
+      sourceRevision: preset.provenance.sourceRevision,
+      fixtureDigest: preset.provenance.fixtureDigest,
+      createdActorNames: createdActorNames.sort(),
+      createdActorIds,
+      resourceGrantCount: preset.resourceGrants.length,
+      resourceStartCount: preset.resourceStarts?.length ?? 0,
+      queuedItemCount,
+      initialQueueItems,
+      queueApplications,
+      initialOrderCount: preset.initialOrders?.length ?? 0,
+      eventResults: []
+    });
+    const pendingEvents = [...(preset.events ?? [])].sort((left, right) => left.tick - right.tick || left.id.localeCompare(right.id));
+    if (pendingEvents.length === 0) return;
+    const tickService = getSceneService(scene, SimulationTickService);
+    const actorIndex = getSceneService(scene, ActorIndexSystem);
+    if (!tickService || !actorIndex) throw new Error("runtime_preset_event_services_unavailable");
+    const subscription = tickService.tick$.subscribe(() => {
+      while (pendingEvents[0] && pendingEvents[0].tick <= tickService.currentTick) {
+        const event = pendingEvents.shift();
+        if (!event) break;
+        const target = actorIndex
+          .getOwnedActors(event.owner)
+          .filter((actor) => actor.name === event.objectName)
+          .sort((left, right) => {
+            const leftId = getActorComponent(left, IdComponent)?.id ?? "";
+            const rightId = getActorComponent(right, IdComponent)?.id ?? "";
+            return leftId.localeCompare(rightId);
+          })[0];
+        const health = target ? getActorComponent(target, HealthComponent) : undefined;
+        if (health) health.takeDamage(Number.MAX_SAFE_INTEGER, DamageType.Physical);
+        recordAiRuntimePresetEventV1({
+          id: event.id,
+          tick: tickService.currentTick,
+          affectedActors: health ? 1 : 0,
+          subjectName: event.objectName
+        });
+      }
+      if (pendingEvents.length === 0) subscription.unsubscribe();
+    });
+    scene.onShutdown.subscribe(() => subscription.unsubscribe());
+  };
+  if ((preset.queues?.length ?? 0) + (preset.researchQueues?.length ?? 0) > 0) {
+    scheduleAiRuntimePresetSetup(scene, completeSetup);
+  } else {
+    completeSetup();
   }
-  for (const start of preset.resourceStarts ?? []) {
-    const player = getPlayer(scene, start.playerNumber);
-    if (!player) throw new Error("runtime_preset_resource_start_player_missing");
-    for (const resourceType of Object.values(ResourceType)) {
-      const target = start.amounts[resourceType];
-      if (target === undefined) continue;
-      const current = player.getResources()[resourceType] ?? 0;
-      if (target > current) emitResource(scene, "resource.added", { [resourceType]: target - current }, start.playerNumber);
-      if (target < current) emitResource(scene, "resource.removed", { [resourceType]: current - target }, start.playerNumber);
-    }
-  }
-  for (const initialOrder of preset.initialOrders ?? []) {
-    const worker = createdActors.get(initialOrder.workerFixtureActorId);
-    const source = createdActors.get(initialOrder.sourceFixtureActorId);
-    const pawn = worker ? getActorComponent(worker, PawnAiController) : undefined;
-    if (!worker || !source || !pawn || !getActorComponent(worker, GathererComponent) ||
-      !getActorComponent(source, ResourceSourceComponent)) {
-      throw new Error(`runtime_preset_invalid_initial_gather:${initialOrder.workerFixtureActorId}`);
-    }
-    pawn.blackboard.overrideOrderQueueAndActiveOrder(new OrderData(OrderType.Gather, { targetGameObject: source }));
-  }
-  recordAiRuntimePresetApplicationV1({
-    fixtureId: preset.fixtureId,
-    sourceRevision: preset.provenance.sourceRevision,
-    fixtureDigest: preset.provenance.fixtureDigest,
-    createdActorNames: createdActorNames.sort(),
-    createdActorIds,
-    resourceGrantCount: preset.resourceGrants.length,
-    resourceStartCount: preset.resourceStarts?.length ?? 0,
-    queuedItemCount,
-    initialQueueItems,
-    initialOrderCount: preset.initialOrders?.length ?? 0,
-    eventResults: []
-  });
-  const pendingEvents = [...(preset.events ?? [])].sort((left, right) => left.tick - right.tick || left.id.localeCompare(right.id));
-  if (pendingEvents.length === 0) return;
-  const tickService = getSceneService(scene, SimulationTickService);
-  const actorIndex = getSceneService(scene, ActorIndexSystem);
-  if (!tickService || !actorIndex) throw new Error("runtime_preset_event_services_unavailable");
-  const subscription = tickService.tick$.subscribe(() => {
-    while (pendingEvents[0] && pendingEvents[0].tick <= tickService.currentTick) {
-      const event = pendingEvents.shift();
-      if (!event) break;
-      const target = actorIndex
-        .getOwnedActors(event.owner)
-        .filter((actor) => actor.name === event.objectName)
-        .sort((left, right) => {
-          const leftId = getActorComponent(left, IdComponent)?.id ?? "";
-          const rightId = getActorComponent(right, IdComponent)?.id ?? "";
-          return leftId.localeCompare(rightId);
-        })[0];
-      const health = target ? getActorComponent(target, HealthComponent) : undefined;
-      if (health) health.takeDamage(Number.MAX_SAFE_INTEGER, DamageType.Physical);
-      recordAiRuntimePresetEventV1({
-        id: event.id,
-        tick: tickService.currentTick,
-        affectedActors: health ? 1 : 0,
-        subjectName: event.objectName
-      });
-    }
-    if (pendingEvents.length === 0) subscription.unsubscribe();
-  });
-  scene.onShutdown.subscribe(() => subscription.unsubscribe());
 }

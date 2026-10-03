@@ -1,3 +1,5 @@
+import type { AiRuntimePresetApplicationV1 } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application-v1";
 import type { RuntimeCheckpointV1 } from "./skirmish-ai-runtime-checkpoint";
 
 export function digestRuntimeValue(value: unknown): string {
@@ -17,6 +19,16 @@ export function projectRuntimeOutcomeDigestInput(
   includeComposition = false
 ): unknown {
   const final = checkpoints.at(-1);
+  // Alias raw identities by first appearance across the whole trajectory so replacement still changes the digest.
+  const itemAliases = new Map<string, number>();
+  const queueIdentity = (actorId: string, itemId: string): number => {
+    const key = JSON.stringify([actorId, itemId]);
+    const existing = itemAliases.get(key);
+    if (existing !== undefined) return existing;
+    const alias = itemAliases.size;
+    itemAliases.set(key, alias);
+    return alias;
+  };
   const producerCounts = (objectName: string) =>
     checkpoints.map((checkpoint) => checkpoint.militaryProducerNames.filter((name) => name === objectName).length);
   const producerNames = [...new Set(checkpoints.flatMap((checkpoint) => checkpoint.militaryProducerNames))].sort();
@@ -50,7 +62,8 @@ export function projectRuntimeOutcomeDigestInput(
         return counts;
       }, {}),
       queuedTypes: checkpoint.militaryProducerQueues.flatMap((producer) => producer.queuedItems
-        .map((item) => `${producer.actorId}:${item.itemId}:${item.kind}:${item.objectName ?? item.researchType ?? "unknown"}`))
+        .map((item) => `${producer.actorId}:${queueIdentity(producer.actorId, item.itemId)}:${item.kind}:` +
+          `${item.objectName ?? item.researchType ?? "unknown"}`))
         .sort(),
       appliedCompositionCount: checkpoint.appliedCommands.filter((command) =>
         command.effectId.startsWith("effect:composition:effect:")
@@ -71,4 +84,10 @@ export function projectRuntimeOutcomeDigestInput(
     lostBuilding: checkpoints.some((checkpoint) => (checkpoint.scoreMetrics["buildings_lost"] ?? 0) > 0),
     ...(includeTerminalResult ? { terminalResult: final?.gameResult ?? null } : {})
   };
+}
+
+/** Setup order and semantic products are deterministic; per-match stamped command and runtime actor IDs stay in raw evidence. */
+export function projectRuntimePresetQueueDigest(items: AiRuntimePresetApplicationV1["initialQueueItems"]) {
+  return items.map((item, setupOrdinal) => ({ producerFixtureActorId: item.producerFixtureActorId, kind: item.kind,
+    objectName: item.objectName, researchType: item.researchType, setupOrdinal }));
 }

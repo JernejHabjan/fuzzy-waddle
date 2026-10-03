@@ -1,3 +1,5 @@
+import type { AiRuntimePresetQueueApplicationV1 } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-queue-application-v1";
 import type { RuntimeCheckpointV1 } from "./skirmish-ai-runtime-checkpoint";
 import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
 import type { RuntimeProductionEvidenceV1 } from "./skirmish-ai-runtime-production-evidence";
@@ -32,6 +34,8 @@ export interface RuntimeVariantResultV1 {
     readonly objectName: string | null;
     readonly researchType: string | null;
   }[];
+  /** Detached real setup application records; absent in natural worlds and older synthetic oracle fixtures. */
+  readonly presetQueueApplications?: readonly AiRuntimePresetQueueApplicationV1[];
   readonly presetInitialOrderCount: number;
   readonly determinismGroup: string | null;
   readonly supplyBranch?: "prebuild" | "ample_control";

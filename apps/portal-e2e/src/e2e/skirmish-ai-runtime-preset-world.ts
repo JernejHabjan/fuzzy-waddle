@@ -20,6 +20,11 @@ export interface RuntimePresetWorldV1 {
     readonly actorName: string;
     readonly count: number;
   }[];
+  /** Research seeds use normal priced shared commands after the production seeds. */
+  readonly researchQueues?: readonly {
+    readonly producerFixtureActorId: string;
+    readonly researchType: string;
+  }[];
   readonly initialOrders?: readonly {
     readonly workerFixtureActorId: string;
     readonly sourceFixtureActorId: string;
