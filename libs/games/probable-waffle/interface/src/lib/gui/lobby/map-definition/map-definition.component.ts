@@ -6,7 +6,8 @@ import {
   inject,
   type OnDestroy,
   type OnInit,
-  ViewChild
+  ViewChild,
+  ChangeDetectionStrategy
 } from "@angular/core";
 import {
   GameSetupHelpers,
@@ -50,6 +51,7 @@ interface DisplayRect {
   selector: "probable-waffle-map-definition",
   templateUrl: "./map-definition.component.html",
   styleUrls: ["./map-definition.component.scss"],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FaIconComponent]
 })
 export class MapDefinitionComponent implements OnInit, OnDestroy {

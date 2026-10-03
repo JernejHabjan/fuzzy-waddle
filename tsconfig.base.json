@@ -75,7 +75,10 @@
     "sourceMap": true,
     "declaration": false,
     "incremental": true,
-    "tsBuildInfoFile": "./tmp/tsconfig.tsbuildinfo"
+    "tsBuildInfoFile": "./tmp/tsconfig.tsbuildinfo",
+    "noUncheckedSideEffectImports": false,
+    "types": ["*"],
+    "ignoreDeprecations": "6.0"
   },
   "exclude": ["node_modules", "tmp", "dist"]
 }

@@ -1,4 +1,4 @@
-import { Component, inject, type OnDestroy, type OnInit, input } from "@angular/core";
+import { Component, inject, type OnDestroy, type OnInit, input, ChangeDetectionStrategy } from "@angular/core";
 
 import { AtlasSpriteComponent } from "../atlas-sprite/atlas-sprite.component";
 import { AudioAtlasService } from "../../services/audio-atlas/audio-atlas.service";
@@ -8,6 +8,7 @@ import { AudioAtlasService } from "../../services/audio-atlas/audio-atlas.servic
   standalone: true,
   imports: [AtlasSpriteComponent],
   templateUrl: "./achievement-notification.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ["./achievement-notification.component.scss"]
 })
 export class AchievementNotificationComponent implements OnInit, OnDestroy {
