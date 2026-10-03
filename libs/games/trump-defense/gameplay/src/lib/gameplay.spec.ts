@@ -70,6 +70,24 @@ describe("Trump Defense gameplay", () => {
     expect(state.sounds.map(({ kind }) => kind)).toEqual(["cannon", "die", "cash"]);
   });
 
+  it.each(["ground", "flying"] as const)("sniper towers damage %s enemies from cannon-side build sites", (pathKind) => {
+    const custom = structuredClone(second);
+    custom.rules.enemyRoster = ["MexicanBalooner"];
+    custom.rules.enemies.MexicanBalooner.path = pathKind;
+    custom.rules.spawnDelayMs = 100;
+    custom.rules.spawnIntervalMs = 1000;
+    custom.rules.enemyHp = 70;
+    const state = createGame(custom);
+    selectTile(state, [8, 56]);
+    expect(buyTower(state, "SniperTower", () => 0).ok).toBe(true);
+
+    stepGame(state, 100);
+
+    const enemy = [...state.entities.values()].find((entity) => entity.path);
+    expect(enemy?.health?.current).toBe(pathKind === "flying" ? 50 : 60);
+    expect(state.shotEffects).toHaveLength(1);
+  });
+
   it("only rotates data-configured towers and retains projectile state for a visible flight", () => {
     const custom = structuredClone(first);
     custom.rules.enemyHp = 1000;

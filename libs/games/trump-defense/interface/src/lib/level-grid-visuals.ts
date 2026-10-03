@@ -1,6 +1,7 @@
 import { BoxHelper, Group, Object3D } from "three";
 import { tileKey, type GameState, type LevelDefinition } from "@fuzzy-waddle/trump-defense-gameplay";
 import { ModelBank } from "./model-bank";
+import { getLevelGridPaths } from "./level-grid-paths";
 
 /** Owns build-site markers and the legacy wireframe selection bounds for one map. */
 export class LevelGridVisuals {
@@ -15,10 +16,10 @@ export class LevelGridVisuals {
     this.root.add(this.selectedBounds);
   }
 
-  /** Places a model on every buildable tile and its path counterpart on every route cell. */
+  /** Marks the ground route while keeping every ground and flying route cell unavailable for building. */
   load(level: LevelDefinition): void {
-    const pathTiles = new Set([...level.paths.ground, ...level.paths.flying].map(tileKey));
-    for (const key of pathTiles) {
+    const { groundPathTiles, blockedTiles } = getLevelGridPaths(level);
+    for (const key of groundPathTiles) {
       const [x, z] = key.split(",").map(Number);
       const tile = this.models.create(level.scene.pathTile);
       tile.position.set(x ?? 0, 0.3, -(z ?? 0));
@@ -27,7 +28,7 @@ export class LevelGridVisuals {
     for (let z = 0; z < level.grid.height * level.grid.tileSize; z += level.grid.tileSize) {
       for (let x = 0; x < level.grid.width * level.grid.tileSize; x += level.grid.tileSize) {
         const key = `${x},${z}`;
-        if (pathTiles.has(key)) continue;
+        if (blockedTiles.has(key)) continue;
         const tile = this.models.create(level.scene.buildableTile);
         tile.position.set(x, 0.3, -z);
         this.buildableTiles.set(key, tile);

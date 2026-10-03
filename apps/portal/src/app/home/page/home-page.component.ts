@@ -40,7 +40,7 @@ export class HomePageComponent implements OnInit {
   protected isBanned = false;
   protected bannedUntil: string | null = null;
   protected moderationNote: string | null = null;
-  private readonly currentlyFeaturedGame = "dungeon-crawler";
+  private readonly currentlyFeaturedGame = "trump-defense";
   displayGames: DisplayGame[] = [
     {
       name: "Ashes of the Ancients",

@@ -43,15 +43,19 @@ export class TutorialShowcase {
     const center = bounds.getCenter(new Vector3());
     const size = bounds.getSize(new Vector3());
     const scale = 8 / Math.max(size.x, size.y, size.z, 1);
-    model.scale.multiplyScalar(scale);
-    const spacing = count > 1 ? (index - (count - 1) / 2) * 14 : 0;
-    model.position.set(spacing - center.x * scale, 10 - center.y * scale, -center.z * scale);
-    this.root.add(model);
+    const item = new Group();
+    model.scale.setScalar(scale);
+    model.position.set(-center.x * scale, -center.y * scale, -center.z * scale);
+    item.position.set(count > 1 ? (index - (count - 1) / 2) * 14 : 0, 10, 0);
+    // Build sites are authored as ground planes; face the briefing camera so the tile reads clearly.
+    if (visual === "BuildTile") item.rotation.x = Math.PI / 2;
+    item.add(model);
+    this.root.add(item);
     if (visual === "BuildTile") {
-      this.selectionBounds = new BoxHelper(model, 0xf7d567);
+      this.selectionBounds = new BoxHelper(item, 0xf7d567);
       this.root.add(this.selectionBounds);
     }
-    this.modelsInShowcase.push(model);
+    this.modelsInShowcase.push(item);
   }
 
   /** Rotates only the tutorial model; simulation state remains untouched. */
