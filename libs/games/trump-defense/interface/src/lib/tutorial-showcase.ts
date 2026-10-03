@@ -1,4 +1,4 @@
-import { Box3, BoxHelper, Group, PerspectiveCamera, Vector3 } from "three";
+import { Box3, BoxHelper, Group, PerspectiveCamera, SpotLight, Vector3 } from "three";
 import type {
   LevelDefinition,
   TutorialShowcaseSelection,
@@ -20,6 +20,7 @@ export class TutorialShowcase {
   /** Centers one authored level model in the skybox for an unobstructed briefing view. */
   set(level: LevelDefinition | null, visual: TutorialShowcaseSelection): void {
     this.disposeSelectionBounds();
+    this.disposeLights();
     this.root.clear();
     this.modelsInShowcase.length = 0;
     this.root.visible = !!level && !!visual;
@@ -63,6 +64,13 @@ export class TutorialShowcase {
       this.root.add(this.selectionBounds);
     }
     this.modelsInShowcase.push(item);
+    if (level.scene.spots.length > 0) {
+      // Briefing objects sit outside the map lights; give spotlight-enabled levels a local overhead key.
+      const light = new SpotLight(0xfff3dd, 1200, 60, Math.PI / 6, 0.45, 2);
+      light.position.set(item.position.x, 28, 6);
+      light.target = item;
+      this.root.add(light);
+    }
   }
 
   /** Rotates only the tutorial model; simulation state remains untouched. */
@@ -74,8 +82,16 @@ export class TutorialShowcase {
   /** Releases the helper-owned render buffers when the enclosing scene is disposed. */
   dispose(): void {
     this.disposeSelectionBounds();
+    this.disposeLights();
     this.modelsInShowcase.length = 0;
     this.root.clear();
+  }
+
+  /** Releases briefing-owned lights before replacing models or returning to the map. */
+  private disposeLights(): void {
+    for (const child of this.root.children) {
+      if (child instanceof SpotLight) child.dispose();
+    }
   }
 
   /** Drops the Three.js helper's GPU buffers before replacing or disposing the scene. */
