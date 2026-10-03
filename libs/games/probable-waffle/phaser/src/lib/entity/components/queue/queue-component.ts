@@ -1,10 +1,9 @@
+import { projectSharedQueueItems } from "./project-shared-queue-items";
 import { Subject } from "rxjs";
 import type { SharedQueueItem } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/shared-queue-item";
-import { SharedQueueItemType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/shared-queue-item-type";
 import { ProductionComponent } from "../production/production-component";
 import { ResearchComponent } from "../research/research-component";
 import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
-import { researchDefinitions } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/research/research-definitions";
 import {
   QueueItemType,
   type UnifiedQueueItem
@@ -467,57 +466,7 @@ export class QueueComponent {
    * Computed on-demand from sharedQueues
    */
   get items(): SharedQueueItem[] {
-    const items: SharedQueueItem[] = [];
-    let displayIndex = 0;
-
-    for (const queue of this.sharedQueues) {
-      for (let i = 0; i < queue.queuedItems.length; i++) {
-        const item = queue.queuedItems[i]!;
-
-        // Calculate progress (only for first item in queue)
-        const progress = i === 0 ? (this.getQueueProgress(queue) ?? 0) : 0;
-
-        // Handle production items
-        if (item.type === QueueItemType.Production && item.productionData) {
-          const actorDefinition = getPwActorDefinition(item.productionData.actorName, null);
-          const infoComponent = actorDefinition?.components?.info;
-          if (infoComponent?.smallImage) {
-            items.push({
-              type: SharedQueueItemType.Production,
-              id: `production-${displayIndex}`,
-              iconData: {
-                key: infoComponent.smallImage.key,
-                frame: infoComponent.smallImage.frame,
-                origin: infoComponent.smallImage.origin
-              },
-              progressPercent: progress,
-              displayIndex: displayIndex++,
-              productionData: item.productionData
-            });
-          }
-        }
-        // Handle research items
-        else if (item.type === QueueItemType.Research && item.researchData) {
-          const researchData = researchDefinitions[item.researchData];
-          if (researchData && researchData.icon) {
-            items.push({
-              type: SharedQueueItemType.Research,
-              id: `research-${item.researchData}`,
-              iconData: {
-                key: researchData.icon.key,
-                frame: researchData.icon.frame,
-                origin: { x: 0.5, y: 0.5 }
-              },
-              progressPercent: progress,
-              displayIndex: displayIndex++,
-              researchData: item.researchData
-            });
-          }
-        }
-      }
-    }
-
-    return items;
+    return projectSharedQueueItems(this.sharedQueues, (queue) => this.getQueueProgress(queue));
   }
 
   /**

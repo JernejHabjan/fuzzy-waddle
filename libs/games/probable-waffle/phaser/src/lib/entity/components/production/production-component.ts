@@ -14,11 +14,10 @@ import {
   type ProductionComponentData,
   ResourceType
 } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { ActorId, PlayerNumber, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
+import type { ActorId, PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 import { HealthComponent } from "../combat/components/health-component";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
-import { SceneActorCreator } from "../../../world/services/scene-actor-creator";
-import { getGameObjectBounds, getGameObjectLogicalTransform, onObjectReady } from "../../../data/game-object-helper";
+import { onObjectReady } from "../../../data/game-object-helper";
 import { Subject, Subscription } from "rxjs";
 import RallyPoint from "../../../prefabs/buildings/misc/RallyPoint";
 import { ConstructionSiteComponent } from "../construction/construction-site-component";
@@ -32,21 +31,13 @@ import type { ProductionDefinition } from "@fuzzy-waddle/probable-waffle-gamepla
 import { AssignProductionErrorCode } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/assign-production-error-code";
 import type { ProductionCostDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/production-cost-definition";
 import { NavigationService } from "../../../world/services/navigation.service";
-import { IsoHelper } from "../../../world/tilemap/iso-helper";
-import { MovementTerrainType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/movement/movement-terrain-type";
-import { ProbableWaffleSceneEventName } from "../../../world/services/recovery/probable-waffle-scene-events";
 import { CommandBusService } from "../../../world/services/multiplayer/command-bus.service";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { OrderType } from "../../../ai/order-type";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
-import { getActorSystem } from "../../../data/actor-system";
-import { ActionSystem } from "../../systems/action.system";
 import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
-/**
- * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
- * storage boundaries do not drift into an unconstrained primitive.
- */
-type GameObject = Phaser.GameObjects.GameObject;
+import type { ProductionGameObject as GameObject } from "./production-game-object";
+import { spawnProductionActor } from "./production-spawner";
 
 export class ProductionComponent {
   private readonly rallyPoint: RallyPoint;
@@ -278,98 +269,9 @@ export class ProductionComponent {
    * Handles spawning logic only - queue manipulation is handled by SharedQueue.
    */
   async handleProductionComplete(item: ProductionQueueItem): Promise<string | null> {
-    const { actorName } = item;
-
-    const logicalTransform = getGameObjectLogicalTransform(this.gameObject);
-    if (!logicalTransform) throw new Error("Transform not found");
-
-    // offset spawn position
-    const bounds = getGameObjectBounds(this.gameObject);
-    if (!bounds) throw new Error("Bounds not found");
-    const { width, height } = bounds;
-
-    // Get NavigationService to find a valid spawn location
-    let finalSpawnPosition = {
-      x: logicalTransform.x + width / 2,
-      y: logicalTransform.y + height / 4,
-      z: logicalTransform.z
-    } satisfies Vector3Simple;
-    let validSpawnLocationFound = false;
-
-    // Determine target tile preference based on rally point if it's set
-    let targetTile: Vector3Simple | undefined;
-    if (this.rallyPoint.isSet()) {
-      targetTile = this.rallyPoint.getTargetTileVec3();
-    }
-
-    const unitDef = getPwActorDefinition(actorName, null);
-    const isWaterUnit = unitDef?.components?.translatable?.movementTerrainType === MovementTerrainType.Water;
-
-    let spawnTile: { x: number; y: number } | null | undefined;
-    if (isWaterUnit) {
-      const buildingTile = this.navigationService.getCenterTileCoordUnderObject(this.gameObject);
-      if (buildingTile) {
-        spawnTile = this.navigationService.findNearestWaterTile(buildingTile);
-      }
-    } else {
-      spawnTile = this.navigationService.getSpawnPointAroundGameObject(this.gameObject, undefined, targetTile);
-    }
-
-    if (spawnTile) {
-      const unoccupiedWorldPosition = IsoHelper.isometricTileToWorldXY(
-        this.gameObject.scene,
-        spawnTile.x,
-        spawnTile.y
-      )!;
-      finalSpawnPosition = {
-        x: unoccupiedWorldPosition.x,
-        y: unoccupiedWorldPosition.y,
-        z: finalSpawnPosition.z
-      } satisfies Vector3Simple;
-      validSpawnLocationFound = true;
-    }
-
-    // If no valid spawn location found, don't spawn (item stays completed in queue logic)
-    if (!validSpawnLocationFound) {
-      return null;
-    }
-
-    // Spawn gameObject using helper
-    const originalOwner = this.ownerComponent?.getOwner();
-
-    const sceneActorCreator = getSceneService(this.gameObject.scene, SceneActorCreator);
-    if (!sceneActorCreator) throw new Error("SceneActorCreator not found");
-
-    const newGameObject = sceneActorCreator.createFinishedActor(actorName, finalSpawnPosition, originalOwner);
-    if (newGameObject) {
-      if (originalOwner !== undefined) {
-        this.gameObject.scene.events.emit(ProbableWaffleSceneEventName.ScoreUnitProduced, originalOwner);
-      }
-      if (this.rallyPoint.isSet()) {
-        this.executeSpawnRallyAction(newGameObject);
-      }
-    }
-    return newGameObject ? (getActorComponent(newGameObject, IdComponent)?.id ?? null) : null;
-  }
-
-  private executeSpawnRallyAction(newGameObject: Phaser.GameObjects.GameObject) {
-    const actionSystem = getActorSystem<ActionSystem>(newGameObject, ActionSystem);
-    if (!actionSystem) {
-      // noinspection JSIgnoredPromiseFromCall
-      this.rallyPoint.navigateGameObjectToRallyPoint(newGameObject);
-      return;
-    }
-
-    const targetGameObject = this.rallyPoint.getTargetGameObject();
-    if (targetGameObject?.active) {
-      actionSystem.executeAction(undefined, targetGameObject);
-      return;
-    }
-
-    const targetTile = this.rallyPoint.getTargetTileVec3();
-    if (targetTile) {
-      actionSystem.executeAction(OrderType.Move, undefined, targetTile);
-    }
+    return spawnProductionActor(
+      this.gameObject, item, this.rallyPoint, this.navigationService, this.ownerComponent
+    );
   }
 
   /**
