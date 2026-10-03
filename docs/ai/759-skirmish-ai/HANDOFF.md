@@ -7,39 +7,44 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 ## Quick resume
 
 **Next session (user policy, 2026-10-03):** retain **GPT-6.1 Sol / high** for grouped PRO-03/06/07 authority.
-Current step: #815/#816 **accepted AI intent and queue causality adapter**, authored/unverified. This batch began at
-`e658318ae81b5dd9bd7618f0c3d4a70e557d19d3`; its containing commit owns the new revision. Worktree
+Current step: #815/#816 **accepting decision lineage and callback-time state capture**, authored/unverified. This batch
+began at `1f96cde194828d88eba46a1e9d1c894ad56ff497`; its containing commit owns the new revision. Worktree
 `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify local/remote on resume.
 Actual model/effort is unavailable. No issue/family is complete. The user removed the comment-permission rule.
 
-Read the [AI causality checkpoint](follow-ups/runtime-matrix-ci.md#production-ai-causality-checkpoint-2026-10-03-unverified).
-**Next exact authoring action:** retain committed decision identity and operation-time unspent claims/queue liabilities,
-then project fair ready/reachable producers, useful products/tech, definition catalog and paired setup into the full
-`RuntimeProductionEvidenceV1` adapter. Missing authority stays a failure; do not use the nearest checkpoint or zero
-vectors to fill event fields. Author legal Skaduwee research-producer setup and actual useful strategic AI cancellation/
-contending worlds. Group compatible PRO-03/06 pairs; defer checks, commit/push, then pause.
+Read the [decision/boundary checkpoint](follow-ups/runtime-matrix-ci.md#production-ai-decision-and-boundary-checkpoint-2026-10-03-unverified).
+**Next exact authoring action:** reconcile actual selected-result reservations and admitted claims through shared
+payment/application outcomes into operation-time unspent claims, without double counting or reading the nearest
+checkpoint. Add a genuine post-progress boundary for successful per-tick liability reduction; current payment finish
+occurs before the shared queue decrements progress. Then project fair ready/reachable producers, useful products/tech,
+definition catalog and paired setup into the full `RuntimeProductionEvidenceV1` adapter. Missing authority stays a
+failure. Author legal Skaduwee research-producer setup and actual useful strategic AI cancellation/contending worlds.
+Group compatible PRO-03/06 pairs; defer all executable checks, commit/push, then pause.
 
-- Actual `dispatchAiIntentCommand` diagnostics now retain the full detached arbiter-accepted intent before the bus call,
-  including plan/demand identity and claims. Optionality supports older diagnostic records; missing intent cannot pass
-  AI lineage normalization. Ordinary listener-free dispatch remains the original bus path.
-- `normalizeRuntimeProductionCausality` links request, actual stamped receipt, admission, delivery, outcomes and immediate
-  item-scoped payments. It distinguishes request tick from intended execution tick, accepts synchronous callbacks before
-  receipt and pending admission without premature delivery, and checks full payload/authority/claims/progress lineage.
-- The real variant runner stores this diagnostic `productionCausality` beside raw `productionCapture`. The PRO-03/06/07
-  report consumer surfaces failures and all retained gaps. Full `productionEvidence` stays absent and its mandatory
-  oracle is unchanged. No paired digest, fair reachability, strategic usefulness or event-time liability is synthesized.
-- Authored/unrun: dispatcher detachment assertions and synthetic Playwright contracts for contention/cancellation,
-  synchronous application, pending requests, missing intent, claims/payload/stamp changes, duplicate delivery, capture
-  loss, missing callbacks/payments, incorrect refund progress, human exclusion and report gating. Synthetic prices and
-  fabricated accepted intents in the test helper are explicitly contract-only, never runtime AI strategy evidence.
+- The real controller now publishes its actual accepting result before dispatch, including native tick/generation/
+  decision sequence, current bridge authority epoch, full accepted intents/decisions, selected reservations and production
+  state. Each requested command carries that exact identity. The saved brain remains updated after dispatch returns.
+- Diagnostic normalization requires one preceding same-callback-tick result, exact full accepted proposal and accepted
+  arbitration entry, and the actual bus epoch. Contradictory supplied identity fails and suppresses normalized payments;
+  older requests retain a missing-decision gap. Several accepted commands may share one genuine result.
+- Dispatch, outcome, delivery, queue change and item-resource callbacks now retain live balances, physical lanes and
+  remaining costs, saved lease provenance and pending claims. Outcomes include pending-ledger before/after samples.
+  Invalid/absent/oversized authority becomes null plus a gap. Sampling never invokes a planner or changes gameplay.
+- Raw saved leases may lag the selecting decision and outcomes. They are not a reconciled unspent vector. Payment
+  finished samples are genuinely before progress decrement; no post-progress obligation is invented. Both gaps remain
+  explicit. Full `productionEvidence` remains absent and its mandatory oracle is unchanged.
+- Authored/unrun: helper ordering/detachment/empty-result/exception tests, command identity detachment, capture payment/
+  pending/invalid-authority/cleanup assertions, and synthetic decision lineage/shared-result/absence contracts. The
+  default Playwright config discovers the new spec. Synthetic results and prices never count as runtime strategy proof.
 - Source-only implementation review, Omission Audit and separate Final Closure Audit. All executable validation remains
-  deferred. Full normalization, legal both-faction AI worlds, fair cadence/navigation and operation-time obligations
-  remain unfinished. Existing Phaser mock emitter/lifecycle debt remains for the final gate.
-- Prior [distinct human socket worlds](follow-ups/runtime-matrix-ci.md#production-distinct-shared-queue-worlds-checkpoint-2026-10-03-unverified)
-  are in `e658318a`: shared worker/research contention and distinct-technology paid cancellation. They require real tech,
-  indexed worker variants and twenty ticks of effect presence, but prove only shared human authority. Browser cases use
-  Tivara; Skaduwee's initial FrostForge has no research component. Earlier shared caller and buffered worker prerequisites
-  remain in `2b6a4a03` and `486e2a7a`. No family recipe/manifest denominator was changed or accepted as covered.
+  deferred, including formatting/lint/types/build/editor/schema/repository checks and doctor/context/catalog commands.
+  Existing Phaser mock emitter/lifecycle debt stays for the final gate. The controller's two old long imports were
+  reflowed and its baseline exemption removed; no content hash was refreshed.
+- Prior [causal adapter](follow-ups/runtime-matrix-ci.md#production-ai-causality-checkpoint-2026-10-03-unverified) is in
+  `1f96cde1`; prior [distinct human socket worlds](follow-ups/runtime-matrix-ci.md#production-distinct-shared-queue-worlds-checkpoint-2026-10-03-unverified)
+  are in `e658318a`. Those worlds require real tech, indexed worker variants and twenty ticks of effect presence, but
+  prove shared human authority. Tivara uses Sandhold; Skaduwee's initial FrostForge has no research component. Shared
+  caller and buffered worker prerequisites remain in `2b6a4a03` and `486e2a7a`. No family recipe/coverage change.
 
 - Multiplayer diagnostic/lifecycle authoring checkpoint (2026-09-30, **unverified**): browser-only relay and local-hash
   observation now lives in a small test-owned Phaser adapter rather than adding methods to hash-baselined

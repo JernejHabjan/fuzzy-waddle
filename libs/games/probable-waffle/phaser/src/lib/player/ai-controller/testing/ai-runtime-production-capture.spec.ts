@@ -23,6 +23,7 @@ import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 import { QueueComponent } from "../../../entity/components/queue/queue-component";
 import { OwnerComponent } from "../../../entity/components/owner-component";
 import { AiRuntimeProductionCapture } from "./ai-runtime-production-capture";
+import { AI_DECISION_DISPATCH_EVENT, type AiDecisionDispatchEvent } from "../ai-decision-dispatch-event";
 import { AI_INTENT_COMMAND_DISPATCH_EVENT } from "../ai-intent-command-dispatch-event";
 import { pendingCommandRequest, pendingCommandOutcome, pendingCommandFinished } from "./ai-runtime-pending-command-fixtures";
 
@@ -133,6 +134,10 @@ describe("AiRuntimeProductionCapture", () => {
     expect(generic.kind === "resources_applied" && generic.balanceMatches).toBe(false);
     expect(finished.kind === "queue_resource" && finished.resource.emission).toMatchObject({ phase: "finished",
       before: { food: 111 }, after: { food: 76 }, balanceMatches: true, callbackCount: 1 });
+    expect(started.boundaryState?.resources?.food).toBe(111);
+    expect(finished.boundaryState?.resources?.food).toBe(76);
+    expect(started.boundaryState?.queues?.[0].lanes[0].items).toHaveLength(2);
+    expect(finished.boundaryState?.gaps).toContain("production_boundary_unspent_reconciliation_missing");
     expect(initial.snapshots[0].queues[0].lanes[0].items[2].itemId).toBe("queue:producer:purchase");
     fixture.queuedItems.pop();
     emitQueueItemResource({ producer: fixture.actor, item: purchased, operation: "cancellation_refund",
@@ -165,6 +170,9 @@ describe("AiRuntimeProductionCapture", () => {
     const admitted = captured.facts[1];
     expect(admitted.kind === "outcome" && admitted.scheduledTick).toBe(102);
     expect(admitted.kind === "outcome" && admitted.outcome.tick).toBe(102);
+    expect(admitted.kind === "outcome" && admitted.boundaryStateBefore?.pendingResourceClaims?.food).toBe(0);
+    expect(admitted.boundaryState?.pendingResourceClaims?.food).toBe(35);
+    expect(admitted.boundaryState?.obligations?.food).toBe(28);
     expect(captured.snapshots[0].pendingResourceClaims?.food).toBe(35);
     expect(captured.snapshots[0].resources.food).toBe(100);
     expect(captured.snapshots[0].obligations.food).toBe(28);
@@ -172,12 +180,70 @@ describe("AiRuntimeProductionCapture", () => {
     fixture.outcomes.next(pendingCommandOutcome("applied"));
     const after = fixture.capture.capture(2);
     expect(after.snapshots[1].pendingCommands).toEqual([]);
+    const applied = after.facts.at(-1);
+    expect(applied?.kind === "outcome" && applied.boundaryStateBefore?.pendingResourceClaims?.food).toBe(35);
+    expect(applied?.boundaryState?.pendingResourceClaims?.food).toBe(0);
     expect(after.snapshots[1].pendingResourceClaims?.food).toBe(0);
     expect(captured.snapshots[0].pendingResourceClaims?.food).toBe(35);
     expect(after.gaps).toContain("pending_dispatch_before_capture_or_restore");
     fixture.scene.events.emit(Phaser.Scenes.Events.SHUTDOWN);
     expect(fixture.scene.events.listenerCount(AI_INTENT_COMMAND_DISPATCH_EVENT)).toBe(0);
     expect(fixture.outcomes.observed).toBe(false);
+  });
+
+  it("samples per-tick cash before the physical progress decrement instead of inventing post-payment obligations", () => {
+    const f = setup();
+    jest.mocked(getCommunicator).mockReturnValue(f.scene.communicator as never);
+    jest.mocked(isSnapshotApplyInProgress).mockReturnValue(false);
+    jest.mocked(emitResource).mockImplementation((_scene, action, amounts) => {
+      for (const type of Object.values(ResourceType)) f.money[type] +=
+        (action === "resource.added" ? 1 : -1) * (amounts[type] ?? 0);
+      f.changes.next({ property: action, data: { playerNumber: 2, playerStateData: { resources: amounts } } });
+    });
+    emitQueueItemResource({ producer: f.actor, item: f.queuedItems[0], operation: "tick_charge",
+      amounts: { food: 7 }, playerNumber: 2 });
+    f.queuedItems[0].remainingTime -= 50;
+    f.queueChanges.next([]);
+    const capture = f.capture.capture(2);
+    const started = capture.facts[0];
+    const finished = capture.facts[3];
+    const changed = capture.facts[4];
+    expect(started.boundaryState?.resources?.food).toBe(100);
+    expect(finished.boundaryState?.resources?.food).toBe(93);
+    expect(started.boundaryState?.obligations?.food).toBe(28);
+    expect(finished.boundaryState?.obligations?.food).toBe(28);
+    expect(changed.boundaryState?.obligations?.food).toBe(21);
+    expect(finished.boundaryState?.queues?.[0].lanes[0].items[0].remainingTimeMs).toBe(100);
+    expect(changed.boundaryState?.queues?.[0].lanes[0].items[0].remainingTimeMs).toBe(50);
+    f.queuedItems[0].remainingTime = 1;
+    expect(changed.boundaryState?.queues?.[0].lanes[0].items[0].remainingTimeMs).toBe(50);
+    f.capture.dispose();
+  });
+
+  it("retains a selected result separately from saved leases and fails absent queue authority to null", () => {
+    const f = setup();
+    const decision = { identity: { playerNumber: 2, tick: 0, generation: 7, decisionSequence: 8, authorityEpoch: 1 },
+      acceptedIntents: [], decisions: [], economyProduction: f.state.economyProduction,
+      reservations: [{ claimId: "claim:selected", ownerPlanId: "plan:force", subjectKey: "resource:food:35",
+        state: { kind: "provisional", expiresAt: { clock: "simulation", unit: "tick", dueTick: 20, persistence: "save" } },
+        prerequisites: [], createdTick: 0 }]
+    } satisfies AiDecisionDispatchEvent;
+    f.scene.events.emit(AI_DECISION_DISPATCH_EVENT, decision);
+    f.outcomes.next(outcome("dispatched"));
+    f.queuedItems[0].remainingTime = Number.NaN;
+    f.outcomes.next(outcome("active"));
+    f.queuedItems[0].remainingTime = 100;
+    const captured = f.capture.capture(2);
+    const selected = captured.facts[0];
+    expect(selected.kind === "decision_selected" && selected.decision).toEqual(decision);
+    expect(selected.kind === "decision_selected" && selected.decision.reservations).not.toBe(decision.reservations);
+    expect(captured.facts[1].boundaryState?.brain?.reservations).toEqual([]);
+    expect(captured.facts[1].boundaryState?.brain?.decisionSequence).toBe(0);
+    expect(captured.facts[2].boundaryState?.obligations).toBeNull();
+    expect(captured.facts[2].boundaryState?.queues).toBeNull();
+    expect(captured.facts[2].boundaryState?.gaps).toContain("production_boundary_queue_authority_invalid");
+    f.scene.events.emit(Phaser.Scenes.Events.SHUTDOWN);
+    expect(f.scene.events.listenerCount(AI_DECISION_DISPATCH_EVENT)).toBe(0);
   });
 
   it("retains request, synchronous refund and terminal callback order without inventing item attribution", () => {

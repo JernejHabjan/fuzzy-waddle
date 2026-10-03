@@ -21,12 +21,13 @@ import { AiCommandReconciliation } from "./ai-command-reconciliation";
 import type { AiAuthorityStateV1, AiBrainStateV1, AiCommandOutcomeV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
 import { createAiBrainStateV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/create-ai-brain-state-v1";
 import { migrateAiBrainState } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/migrate-ai-brain-state";
-import { canonicalizeAiBrainStateV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/canonical-ai-serialization";
+import { canonicalizeAiBrainStateV1 } from
+  "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/canonical-ai-serialization";
 import { createAiProfileConfigV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-profile-defaults";
 import { PureAiBrain } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/ai-brain";
 import type { AiDebugSnapshotV1, AiProfileConfigV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
-import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
-import { selectAiOpeningArchetypeV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-opening-archetypes-v1";
+import { selectAiOpeningArchetypeV1 } from
+  "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/profiles/ai-opening-archetypes-v1";
 import { AiMacroManager } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-macro-manager";
 import { AiResourceServiceManager } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-resource-service-manager";
 import { AiTransportManager } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-transport-manager";
@@ -36,7 +37,11 @@ import { AiFortificationManager } from "@fuzzy-waddle/probable-waffle-gameplay/p
 import { AiRecoveryManager } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-recovery-manager";
 import { AiTacticsManager } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-tactics-manager";
 import { AiAdaptationManager } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-adaptation-manager";
+import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiBrainStepResultV1 } from
+  "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/ai-brain-step-result-v1";
 import { dispatchAiIntents } from "./ai-intent-dispatcher";
+import { dispatchAiBrainResult } from "./dispatch-ai-brain-result";
 
 export class PlayerAiController {
   private static readonly MAX_SCHEDULED_STEPS_PER_RUN = 5;
@@ -338,7 +343,7 @@ export class PlayerAiController {
     const bridge = this.getBrainCommandBridgeSnapshot();
     if (!observation || !this.brainState || !this.pureBrain) return;
     const result = this.pureBrain.step(observation, this.brainState, bridge?.outcomes ?? []);
-    this.dispatchAcceptedIntents(result.acceptedIntents);
+    this.dispatchAcceptedIntents(result.acceptedIntents, { result, authority: bridge?.authority ?? result.nextState.authority });
     this.brainState = structuredClone(
       canonicalizeAiBrainStateV1({
         ...result.nextState,
@@ -360,11 +365,14 @@ export class PlayerAiController {
     this.telemetry.withSpan("ai.behaviourTreeStep", () => this.behaviourTree.step());
   }
 
-  /** Translates accepted macro and transport intents through the shared player command authority. */
-  /** Stage 13 also routes accepted tactical attack, recovery, healing and manual spell intents here. */
-  private dispatchAcceptedIntents(intents: readonly AiIntentV1[]): void {
+  /** Routes accepted commands under the host fence; real pure steps also publish their exact accepting result. */
+  private dispatchAcceptedIntents(
+    intents: readonly AiIntentV1[],
+    decision?: { readonly result: AiBrainStepResultV1; readonly authority: AiAuthorityStateV1 }
+  ): void {
     if (this.authorityActive === false || this.player.playerNumber === undefined) return;
-    dispatchAiIntents(this.scene, this.player.playerNumber, intents);
+    if (decision) dispatchAiBrainResult(this.scene, this.player.playerNumber, decision.result, decision.authority);
+    else dispatchAiIntents(this.scene, this.player.playerNumber, intents);
   }
 
   private resolveProfile(): AiProfileConfigV1 | undefined {

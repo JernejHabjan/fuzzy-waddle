@@ -44,6 +44,18 @@ describe("dispatchAiIntentCommand", () => {
     expect(recorded[1].kind === "finished" && recorded[1].receipt).not.toBe(f.finished.receipt);
   });
 
+  it("detaches the exact decision identity alongside the accepted proposal", () => {
+    const f = fixture();
+    const recorded: AiIntentCommandDispatchEvent[] = [];
+    f.events.on(AI_INTENT_COMMAND_DISPATCH_EVENT, (event: AiIntentCommandDispatchEvent) => recorded.push(event));
+    const identity = { playerNumber: 2, tick: 99, generation: 5, decisionSequence: 9, authorityEpoch: 1 };
+    dispatchAiIntentCommand(f.scene, f.bus, pendingCommandRequest().command, pendingCommandIntent(), identity);
+    expect(recorded[0].kind === "requested" && recorded[0].decisionIdentity).toEqual(identity);
+    expect(recorded[0].kind === "requested" && recorded[0].decisionIdentity).not.toBe(identity);
+    identity.generation = 100;
+    expect(recorded[0].kind === "requested" && recorded[0].decisionIdentity?.generation).toBe(5);
+  });
+
   it("retains rejection or exception without fabricating a dispatched command or swallowing the shared failure", () => {
     const f = fixture();
     const kinds: string[] = [];

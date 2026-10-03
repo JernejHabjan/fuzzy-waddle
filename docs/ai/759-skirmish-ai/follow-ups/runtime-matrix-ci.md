@@ -993,3 +993,79 @@ The default Playwright config starts the local portal; this contract spec does n
 existing multiplayer selection still owns the human worlds. All tests/E2E/simulations, formatting/lint/types/build/
 editor/schema/repository checks and doctor/context/catalog commands remain unrun. Repair shared Phaser mock emitter/
 lifecycle omissions at that gate, then execute the full actual-world evidence; these contracts cannot count as it.
+
+
+### Production AI decision and boundary checkpoint (2026-10-03, unverified)
+
+This grouped authoring batch began at `1f96cde194828d88eba46a1e9d1c894ad56ff497`. It closes the accepting-result
+linkage and raw callback-state substep, not the full production adapter, useful strategy, both-faction worlds or
+PRO-03/06/07/#815/#816/#819. Tests and every executable validation remain deferred by user policy.
+
+| Acceptance | Owner / consumer | Authored evidence and remaining gate |
+| --- | --- | --- |
+| 1. Genuine accepting result | `PlayerAiController.stepPureBrain`, `dispatchAiBrainResult`, `AiDecisionDispatchEvent`, `AiDecisionIdentity`, `dispatchAiIntents` | Actual result published before any dispatch; native debug generation/tick/sequence plus bridge epoch, whole accepted intents/decisions and selected leases. Ordinary listener-free dispatch keeps its original path. Saved brain update ordering is unchanged. |
+| 2. Exact request identity | `AiIntentCommandDispatchEvent`, `dispatchAiIntentCommand`, `matchRuntimeProductionDecision` | Detached key on each actual request; exactly one preceding same-observer-tick result, full semantic proposal/accepted arbitration and bus-epoch equality. Several commands may share one result. Legacy absence stays a gap; supplied mismatch fails and suppresses normalized money. |
+| 3. Raw operation-time authority | `AiRuntimeProductionBoundaryState`, `projectAiRuntimeProductionBoundaryState`, `AiRuntimeProductionCapture` | At real dispatch/outcome/delivery/queue/resource callbacks: actual cash, physical queues/remaining costs, saved leases with native tick/sequence and pending ownership. Outcomes sample before and after diagnostic ledger changes. Invalid/missing/overflow authority stays null, never zero. |
+| 4. Real consumer and meaningful contracts | `RuntimeProductionCausalityV1`, existing real `runVariant` / report path, helper/capture Jest and new decision Playwright spec | Exact decision/request boundary plus raw operation records survive the existing report consumer. Ordered/detached/missing/contradictory/shared-decision/empty-result/error/queue-invalid/pending/sample-phase contracts authored, all unrun. Full production gate remains unchanged. |
+| 5. Scope review and publication | handoff and this checkpoint, exact staged source/docs/baseline removal | Source-only review, Omission Audit, separate Final Closure Audit, authorized task-owned commit/push with remote SHA verification. No execution evidence or completed family is claimed. |
+
+The accepting-result event is a local diagnostic of the actual result chosen for dispatch. It is emitted even when no
+intents are accepted, before synchronous bus effects and before the controller saves nextState/debug history. It retains
+selected reservations separately from callback-time saved leases. A thrown command prevents normal saved-state adoption;
+existing dispatch exception/causal failures still reject evidence. Nothing is persisted or sent over the relay.
+Native identity is scoped to the retained capture and epoch, not minted from an intent reason or matched to a nearby
+snapshot. The Node-side adapter uses deep semantic equality on the full typed proposal, independent of key ordering.
+
+Boundary projection is passive, test-capture-only and detached. It reuses the indexed owned active non-killed actors,
+physical lane projector, shared successful-charge arithmetic and actual balance sampler. Bounds are 256 actors,
+2,048 physical items and 512 saved reservations per projection, within the existing 8,192-fact capture. Exceeding them
+retains null authority and explicit gaps rather than partial proof. Invalid item progress/cost/identity likewise stays
+null. The callback ledger's full admitted claims remain independent of physical queue liabilities. The outcome's
+before/after samples refer to pending-ledger ownership, not pre-application world state: the shared callback may already
+follow actual component application. Existing initial/restore/pre-registration/navigation/cadence gaps remain attached.
+
+**Remaining authority:** saved reservations advance on decision boundaries, so their observation at an operation cannot
+by itself prove reconciled unspent claims. Selected-result leases and actual pending/outcome/payment lineage now provide
+inputs, but `production_boundary_unspent_reconciliation_missing` remains on every boundary. Full event liabilities
+also remain missing. Shared per-tick payment emits its finished callback before the queue decrements remaining time;
+that sample intentionally keeps the old remaining cost. Queue-change samples expose later physical changes when an
+actual queue-change callback occurs. The authored regression manually drives such a later callback; it does not claim
+that every real progress tick emits queue change. A genuine post-progress hook/lineage is required before promotion.
+No nearest-checkpoint, zero-vector, expected refund or hypothetical successful tick fills these fields.
+
+The default Playwright configuration discovers `skirmish-ai-runtime-production-decision-lineage.spec.ts`; multiplayer
+socket test discovery is unchanged. Synthetic decisions are explicitly invented contract inputs, not runtime planner
+selection, fair setup or useful effects. Missing key remains a missing-decision gap even beside a plausible result.
+Contradictory supplied keys, duplicate records, rejected/changed proposals, future records and epoch/sequence mismatch
+fail closed. The full mandatory production oracle still rejects absent `RuntimeProductionEvidenceV1`.
+
+**Omission Audit:** traced actual brain step -> accepting-result helper -> fenced accepted dispatch -> all economic/
+combat/control translations -> before-bus requested scope -> raw decision/operation callback capture -> native identity
+matching -> real result/report diagnostics. Reviewed synchronous and buffered ordering, pre-progress finish, stale saved
+leases, pending admission/retirement, null/overflow samples and scene disposal. No full oracle, gameplay payment rule,
+family manifest/recipe/denominator, save/wire schema or balance threshold changed. Controller source width debt was
+reflowed and its one baseline entry removed without updating hashes. Existing reflection-based dispatch regression gets
+an explicit no-listener scene fixture. Full claims reconciliation and stable useful worlds remain unfinished.
+
+**Separate Final Closure Audit:** after source repairs, revisited all five acceptance items, immediate caller guards,
+report/test registration, captured references/bounds, stale documentation and exact staged ownership. No executable
+checks ran and no pass is claimed. No skill/tool policy change, new worktree/branch/thread/PR or model switch. The
+integration PR remains draft. Verify the containing commit and remote SHA on resume; publication is checked after it.
+
+**Next exact action:** implement operation-time unspent reconciliation from actual selected leases, admissions and
+item-scoped payments/outcomes, plus a real post-progress boundary for remaining successful charges. Then populate the
+full fair snapshot/catalog/setup adapter, legal Skaduwee setup and useful strategic AI cancellation/contention worlds.
+Group compatible PRO-03/06 pairs. Retain **GPT-6.1 Sol / high** for this authority work; actual model/effort is unknown.
+Continue authoring only, commit/push, then pause at the next bounded batch.
+
+Add these unrun commands at the final gate, with all prior pending/payment/oracle/socket selections:
+
+```bash
+NX_DAEMON=false pnpm exec nx test probable-waffle-phaser --testPathPattern='player-ai-controller.spec|dispatch-ai-brain-result|dispatch-ai-intent-command|ai-runtime-production-capture|ai-runtime-pending-commands' --skip-nx-cache
+pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts skirmish-ai-runtime-production-decision-lineage.spec.ts skirmish-ai-runtime-production-causality-normalization.spec.ts
+```
+
+The default config starts the local portal; these pure contract specs do not provision socket identities. At the final
+gate repair the shared Phaser mock emitter/lifecycle omissions, then run affected focused and actual-world checks.
+All tests/E2E/simulations, formatting/lint/types/build/editor/schema/repository checks and doctor/context/catalog remain
+unrun. Sampling overhead and live bootstrap/outcomes are unmeasured, not accepted production evidence.

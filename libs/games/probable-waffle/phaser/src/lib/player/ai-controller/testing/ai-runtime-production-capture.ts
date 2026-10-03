@@ -24,6 +24,9 @@ import { AiRuntimePendingCommands } from "./ai-runtime-pending-commands";
 import { QUEUE_RESOURCE_EMISSION_EVENT, type QueueResourceEmissionEvent } from "../../../data/queue-resource-emission-event";
 import { projectAiRuntimeQueueResource } from "./project-ai-runtime-queue-resource";
 
+import { AI_DECISION_DISPATCH_EVENT, type AiDecisionDispatchEvent } from "../ai-decision-dispatch-event";
+import { projectAiRuntimeProductionBoundaryState } from "./project-ai-runtime-production-boundary-state";
+
 const MAX_FACTS = 8192;
 const MAX_SNAPSHOTS = 256;
 
@@ -54,12 +57,14 @@ export class AiRuntimeProductionCapture {
     for (const player of scene.players) {
       if (player.playerNumber !== undefined) this.lastBalances.set(player.playerNumber, this.resources(player.playerNumber));
     }
+    scene.events.on(AI_DECISION_DISPATCH_EVENT, this.observeDecision, this);
     scene.events.on(AI_INTENT_COMMAND_DISPATCH_EVENT, this.observeDispatch, this);
     scene.events.on(QUEUE_RESOURCE_EMISSION_EVENT, this.observeQueueResource, this);
     this.subscriptions.add(bus.commandOutcome$.subscribe((outcome) => {
       const boundary = this.boundary(outcome.playerNumber);
+      const boundaryStateBefore = this.facts.length < MAX_FACTS ? this.sampleBoundaryState(outcome.playerNumber) : undefined;
       this.pendingCommands.observeOutcome(outcome, boundary.tick);
-      this.append({ ...boundary, kind: "outcome", outcome,
+      this.append({ ...boundary, kind: "outcome", outcome, boundaryStateBefore,
         scheduledTick: outcome.kind === "dispatched" ? outcome.tick : null });
     }));
     this.subscriptions.add(bus.command$.subscribe((command) => this.append({
@@ -171,6 +176,7 @@ export class AiRuntimeProductionCapture {
     this.snapshots.clear();
     this.facts.length = 0;
     this.pendingCommands.dispose();
+    this.scene.events.off(AI_DECISION_DISPATCH_EVENT, this.observeDecision, this);
     this.scene.events.off(AI_INTENT_COMMAND_DISPATCH_EVENT, this.observeDispatch, this);
     this.scene.events.off(QUEUE_RESOURCE_EMISSION_EVENT, this.observeQueueResource, this);
     this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.dispose, this);
@@ -208,6 +214,15 @@ export class AiRuntimeProductionCapture {
     return { ...resources };
   }
 
+  /** The selected result precedes dispatch, even when the saved brain/debug view still names the prior decision. */
+  private readonly observeDecision = (decision: AiDecisionDispatchEvent): void => {
+    this.append({ ...this.boundary(decision.identity.playerNumber), kind: "decision_selected", decision });
+  };
+
+  private sampleBoundaryState(playerNumber: number) {
+    return projectAiRuntimeProductionBoundaryState(this.scene, playerNumber, this.pendingCommands, this.identify);
+  }
+
   private readonly observeDispatch = (event: AiIntentCommandDispatchEvent): void => {
     if (this.disposed) return;
     const boundary = this.boundary(event.playerNumber);
@@ -230,7 +245,10 @@ export class AiRuntimeProductionCapture {
   private append(fact: AiRuntimeProductionFactV1): void {
     if (this.disposed) return;
     const sequence = this.nextSequence++;
-    if (this.facts.length < MAX_FACTS) this.facts.push(structuredClone({ ...fact, sequence }));
-    else this.factDrops.set(fact.playerNumber, (this.factDrops.get(fact.playerNumber) ?? 0) + 1);
+    if (this.facts.length < MAX_FACTS) {
+      const boundaryState = ["intent_dispatch", "outcome", "queue_resource", "queue_changed", "command_delivered"]
+        .includes(fact.kind) ? this.sampleBoundaryState(fact.playerNumber) : undefined;
+      this.facts.push(structuredClone({ ...fact, sequence, ...(boundaryState ? { boundaryState } : {}) }));
+    } else this.factDrops.set(fact.playerNumber, (this.factDrops.get(fact.playerNumber) ?? 0) + 1);
   }
 }

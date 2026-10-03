@@ -4,12 +4,15 @@ import type { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import type { CommandBusService, GameCommandDispatchReceipt } from "../../world/services/multiplayer/command-bus.service";
 import { AI_INTENT_COMMAND_DISPATCH_EVENT, type AiIntentCommandDispatchEvent } from "./ai-intent-command-dispatch-event";
 
+import type { AiDecisionIdentity } from "./ai-decision-identity";
+
 /** Observes the accepted intent before synchronous application; shared bus admission remains the only authority. */
 export function dispatchAiIntentCommand(
   scene: ProbableWaffleScene,
   bus: CommandBusService,
   command: GameCommandInput,
-  intent: AiIntentV1
+  intent: AiIntentV1,
+  decisionIdentity?: AiDecisionIdentity
 ): GameCommandDispatchReceipt {
   const correlation = {
     intentId: intent.intentId.replace(/^intent:/, ""),
@@ -20,7 +23,8 @@ export function dispatchAiIntentCommand(
   const emit = (event: AiIntentCommandDispatchEvent) =>
     scene.events.emit(AI_INTENT_COMMAND_DISPATCH_EVENT, structuredClone(event));
   emit({ kind: "requested", playerNumber: command.playerNumber, correlation, command,
-    claims: intent.claims, proposedTick: intent.proposedTick, acceptedIntent: intent });
+    claims: intent.claims, proposedTick: intent.proposedTick, acceptedIntent: intent,
+    ...(decisionIdentity ? { decisionIdentity } : {}) });
   try {
     const receipt = bus.dispatchAi(command, correlation);
     emit({ kind: "finished", playerNumber: command.playerNumber, correlation, receipt });

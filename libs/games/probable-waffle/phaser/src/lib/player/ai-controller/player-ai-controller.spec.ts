@@ -63,7 +63,7 @@ describe("PlayerAiController pure planner integration", () => {
     Reflect.set(controller, "stepPureBrain", pureStep);
     Reflect.set(controller, "telemetry", { withSpan: (_name: string, action: () => void) => action() });
     Reflect.set(controller, "player", { playerNumber: 1, playerController: { data: { playerDefinition: policy } } });
-    Reflect.set(controller, "scene", {});
+    Reflect.set(controller, "scene", { events: { listenerCount: () => 0 } });
     Reflect.set(controller, "stepQueued", true);
 
     controller.setAuthorityActive(false);
@@ -96,7 +96,7 @@ describe("PlayerAiController pure planner integration", () => {
       return undefined;
     });
     const controller = Object.create(PlayerAiController.prototype) as PlayerAiController;
-    Reflect.set(controller, "scene", {});
+    Reflect.set(controller, "scene", { events: { listenerCount: () => 0 } });
     Reflect.set(controller, "player", { playerNumber: 1 });
 
     invokeDispatch(controller, [

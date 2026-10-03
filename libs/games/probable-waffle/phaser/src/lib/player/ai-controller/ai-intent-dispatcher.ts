@@ -11,14 +11,17 @@ import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 
+import type { AiDecisionIdentity } from "./ai-decision-identity";
+
 function dispatchEconomicOrMovementIntent(
   scene: ProbableWaffleScene,
   intent: AiIntentV1,
   playerNumber: PlayerNumber,
   actorIndex: ActorIndexSystem,
-  commandBus: CommandBusService
+  commandBus: CommandBusService,
+  decisionIdentity?: AiDecisionIdentity
 ): boolean {
-  const dispatch = (command: GameCommandInput) => dispatchAiIntentCommand(scene, commandBus, command, intent);
+  const dispatch = (command: GameCommandInput) => dispatchAiIntentCommand(scene, commandBus, command, intent, decisionIdentity);
   if (intent.kind === "assign_gatherers") {
     const actors = actorIndex.getActorsByIds([...intent.actorIds]);
     if (
@@ -117,9 +120,10 @@ function dispatchCombatOrControlIntent(
   intent: AiIntentV1,
   playerNumber: PlayerNumber,
   actorIndex: ActorIndexSystem,
-  commandBus: CommandBusService
+  commandBus: CommandBusService,
+  decisionIdentity?: AiDecisionIdentity
 ): void {
-  const dispatch = (command: GameCommandInput) => dispatchAiIntentCommand(scene, commandBus, command, intent);
+  const dispatch = (command: GameCommandInput) => dispatchAiIntentCommand(scene, commandBus, command, intent, decisionIdentity);
   if (intent.kind === "attack") {
     const actors = actorIndex.getActorsByIds([...intent.actorIds]);
     if (actors.length === intent.actorIds.length)
@@ -184,13 +188,14 @@ function dispatchCombatOrControlIntent(
 export function dispatchAiIntents(
   scene: ProbableWaffleScene,
   playerNumber: PlayerNumber,
-  intents: readonly AiIntentV1[]
+  intents: readonly AiIntentV1[],
+  decisionIdentity?: AiDecisionIdentity
 ): void {
   const actorIndex = getSceneService(scene, ActorIndexSystem);
   const commandBus = getSceneService(scene, CommandBusService);
   if (!actorIndex || !commandBus) return;
   for (const intent of intents) {
-    if (dispatchEconomicOrMovementIntent(scene, intent, playerNumber, actorIndex, commandBus)) continue;
-    dispatchCombatOrControlIntent(scene, intent, playerNumber, actorIndex, commandBus);
+    if (dispatchEconomicOrMovementIntent(scene, intent, playerNumber, actorIndex, commandBus, decisionIdentity)) continue;
+    dispatchCombatOrControlIntent(scene, intent, playerNumber, actorIndex, commandBus, decisionIdentity);
   }
 }

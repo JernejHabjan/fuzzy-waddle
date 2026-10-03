@@ -6,6 +6,8 @@ import { isRuntimeQueueCommand, validateRuntimeProductionCommandLineage } from
 import { normalizeRuntimeScopedQueuePayments, sameRuntimeQueueVector } from "./skirmish-ai-runtime-scoped-queue-payments";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 
+import { matchRuntimeProductionDecision } from "./skirmish-ai-runtime-production-decision-lineage";
+
 /**
  * Pure, bounded by the raw capture limits. Links real dispatch scope to stamped queue authority; no nearest
  * checkpoint, reason string or fixture expectation can supply missing accepted-intent or payment lineage.
@@ -14,7 +16,6 @@ export function normalizeRuntimeProductionCausality(capture: AiRuntimeProduction
   const failures: string[] = [];
   const gaps = new Set(capture.gaps);
   gaps.add("production_ai_event_liabilities_missing");
-  gaps.add("production_ai_committed_decision_link_missing");
   gaps.add("production_ai_definition_catalog_missing");
   gaps.add("production_ai_paired_setup_missing");
   if (capture.droppedFactCount || capture.droppedSnapshotCount) failures.push("production_ai_capture_dropped");
@@ -24,6 +25,14 @@ export function normalizeRuntimeProductionCausality(capture: AiRuntimeProduction
     (index > 0 && (fact.sequence <= capture.facts[index - 1].sequence || fact.tick < capture.facts[index - 1].tick)))) {
     failures.push("production_ai_capture_order");
   }
+  const decisions = capture.facts.filter((fact) => fact.kind === "decision_selected");
+  const operationBoundaries = capture.facts.filter((fact) =>
+    fact.kind === "queue_resource" || fact.kind === "queue_changed");
+  for (const fact of capture.facts) {
+    fact.boundaryState?.gaps.forEach((gap) => gaps.add(gap));
+    if (fact.kind === "outcome") fact.boundaryStateBefore?.gaps.forEach((gap) => gaps.add(gap));
+  }
+  let missingDecision = false;
   const dispatches = capture.facts.filter((fact) => fact.kind === "intent_dispatch");
   const deliveries = capture.facts.filter((fact) => fact.kind === "command_delivered");
   const outcomes = capture.facts.filter((fact) => fact.kind === "outcome");
@@ -62,12 +71,17 @@ export function normalizeRuntimeProductionCausality(capture: AiRuntimeProduction
     const observedOutcomes = outcomes.filter((fact) => fact.outcome.commandId === commandId);
     const lineageFailures = validateRuntimeProductionCommandLineage(request, receipt, command,
       observedDeliveries, observedOutcomes);
+    const decision = matchRuntimeProductionDecision(request, decisions, command.execution?.authorityEpoch);
+    if (!decision.decision) missingDecision = true;
+    lineageFailures.push(...decision.failures);
     failures.push(...lineageFailures);
     if (!lineageFailures.length && event.acceptedIntent) commands.push({
       requestedSequence: request.sequence, requestedTick: request.tick, receiptSequence: receipt.sequence,
-      acceptedIntent: event.acceptedIntent, command, deliveries: observedDeliveries, outcomes: observedOutcomes
+      acceptedIntent: event.acceptedIntent, decision: decision.decision, requestBoundary: request.boundaryState ?? null,
+      command, deliveries: observedDeliveries, outcomes: observedOutcomes
     });
   }
+  if (missingDecision || !commands.length) gaps.add("production_ai_committed_decision_link_missing");
   for (const delivery of deliveries) {
     if (isRuntimeQueueCommand(delivery.command) && delivery.command.execution?.source === "ai" &&
       !commands.some((entry) => entry.command.execution?.commandId === delivery.command.execution?.commandId)) {
@@ -130,7 +144,7 @@ export function normalizeRuntimeProductionCausality(capture: AiRuntimeProduction
   }
   // Invalid operations remain in the raw diagnostic; only a sound group is exposed as normalized money.
   return structuredClone({
-    schemaVersion: 1, failures: [...new Set(failures)], gaps: [...gaps].sort(), commands,
+    schemaVersion: 1, failures: [...new Set(failures)], gaps: [...gaps].sort(), commands, operationBoundaries,
     payments: failures.length ? [] : payments.payments
   } satisfies RuntimeProductionCausalityV1);
 }
