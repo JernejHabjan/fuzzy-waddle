@@ -7,59 +7,59 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 ## Quick resume
 
 **Next session (user policy, 2026-10-03):** continue related PRO-03/06/07 authority on **GPT-6.1 Sol / high**.
-Read the [pending-command capture checkpoint](follow-ups/runtime-matrix-ci.md#production-pending-command-capture-checkpoint-2026-10-03-unverified),
-then `dispatch-ai-intent-command.ts`, `testing/ai-runtime-pending-commands.ts`, the raw capture and shared
-queue/production/research resource emitters. **Next exact authoring action:** resolve the pending permission to move
-existing comments verbatim with bounded shared-owner splits, then add actual item-scoped charge/refund facts and
-cancellation-command lineage. Group that with a real buffered cancellation/pre-credit rejection world; ordinary
-single-player/deterministic dispatch cannot establish its pending interval. Defer all execution, commit/push and pause
-at the next bounded authoring boundary; no raw/synthetic record may substitute for accepted runtime evidence.
+Read the [queue-resource observer checkpoint](follow-ups/runtime-matrix-ci.md#production-queue-resource-observer-checkpoint-2026-10-03-unverified),
+then `data/emit-queue-item-resource.ts`, `testing/project-ai-runtime-queue-resource.ts` and the shared
+production/queue/research owners. **Next exact authoring action:** obtain the still-unanswered permission to relocate
+existing comments verbatim with the concrete bounded splits in the linked checkpoint. Then connect the prepared
+observer to real immediate/per-tick charges and cancellation refunds, forwarding the actual cancellation command.
+Group that with the real buffered cancellation/pre-credit rejection world. Defer validation; commit/push and pause
+at the next bounded authoring boundary; a raw or synthetic record cannot substitute for accepted runtime evidence.
 
-- Current step: #815/#816 **pending AI command ownership and buffered timing capture**, authored/unverified.
-  Batch base `6b64fd5930780c59bdde19f8e21b4d340b47091a`, local/remote matched on `feature/759-skirmish-ai`, worktree
-  `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`. Its containing commit owns the new revision; verify local/remote
-  SHA on resume. Actual model/effort is unavailable. No issue/family is complete.
-- Dispatch ownership: `dispatchAiIntents` routes its existing commands through `dispatchAiIntentCommand`. With a
-  marked capture listener, it records detached original accepted claims/input before the actual bus call, then the
-  actual receipt or exception. Without a listener it calls the original bus directly. Shared admission, correlation,
-  buffering, cost, gameplay reservations, playback and relay rules are unchanged.
-- Pending capture: `AiRuntimePendingCommands` admits only correlated real `dispatched` outcomes, recording actual
-  request tick separately from bus-scheduled tick and retaining product/address/epoch/sequence/claims. Synchronous
-  application can retire ownership before the dispatch receipt returns; the receipt never recreates it. Partial actor
-  outcomes retain the full claim until all settle. Duplicate outcomes do not release it; missing/uncertain outcomes,
-  malformed claims, receipt mismatch, premature callbacks and overflow remain explicit gaps. This is a diagnostic
-  view of accepted claims, not new gameplay cash escrow, a refund promise or another amount to add to saved reservations.
-- Raw facts/snapshots: callback-order `intent_dispatch` and outcome `scheduledTick` complement the actual callback
-  tick. Snapshots retain detached `pendingCommands` and `pendingResourceClaims` separately from cash and physical
-  per-tick queue liabilities; aggregate overflow is explicit null. Request/pending ledgers each cap at 128; scene
-  shutdown/destroy removes the dispatch listener and clears ownership. Raw `productionCapture` remains distinct from
-  normalized `productionEvidence`; mandatory causal gates remain fail-closed. The browser result already retains the
-  full typed capture, so no recipe, catalog, manifest, denominator or oracle gate changed.
-- Shared-owner boundary: the item-scoped money hooks are **not implemented**. Production/queue/research files are
-  hash-baselined and contain multiple declarations/oversized owners. AGENTS.md prohibits moving existing comments
-  without explicit permission. A question to relocate comments verbatim with extracted code is pending, with no answer
-  received in this batch. Those owners and all hashes remain untouched; neither authorization nor hook completion may
-  be inferred from elapsed time. See the concrete split route in the linked checkpoint.
-- Authored/unrun: dispatch observer specs, pending ledger cases for synchronous/buffered ownership, partial actors,
-  zero-credit cancellation, duplicate/wrong/premature callbacks, unobserved intent, malformed/duplicate claims,
-  exceptions/lost outcomes, receipt mismatch, caps and overflow; integrated capture timing/cash/liability/teardown case.
-  These synthetic/mocked observer cases do not prove multiplayer relay, a real pending refund/probe or money lineage.
-- Source closure: implementation review and repairs covered input -> dispatch scope -> real bus outcomes -> ownership
-  -> detached snapshots/raw browser consumer -> cleanup. Omission Audit and separate Final Closure Audit inspect
-  acceptance 1–5 in the linked checkpoint and exact staged scope. Existing comments/source baselines are preserved;
-  no executable check ran. All checks remain final-gate debt.
-- Prior legal setup remains authored/unverified: normal deterministic production/research seeds require real applied
-  outcomes, command-backed physical items and definition-priced scoped balances. Queue-bearing worlds finish after
-  component initialization timers at paused tick zero. Strict research seeds, browser provenance, pair controls and
-  session-independent digests are wired. Payment/refund oracle rules use full per-successful-tick vectors and require
-  a real future cancellation scheduled tick; shared payment/refund balance formulas remain unchanged. See the
+- Current step: #815/#816 **item-scoped money observer and raw-capture support**, authored/unverified; shared callers
+  remain blocked. Batch base `ab2bc287ba532815edcf8558e922adba1ea65a08`, local/remote matched on
+  `feature/759-skirmish-ai`, worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`. Its containing commit owns the
+  new revision; verify local/remote SHA on resume. Actual model/effort is unavailable. No issue/family is complete.
+- Prepared emission boundary: `emitQueueItemResource` forwards the original shared emitter exactly once. An observed
+  scene gets started/exact callback/finished records, original requested vector, operation-scoped cash, observed
+  restore flag, return/throw state and callback count. Object identity plus player/action matches a callback; equal
+  values alone cannot establish attribution. Eight callbacks are retained per emission, count saturates at nine with
+  an explicit limit flag. Temporary subscriptions and active nested scopes are released in finally. Nested callbacks
+  belong to the innermost scope; the outer balance interval is marked ambiguous. Missing/malformed samples are null,
+  zero callbacks never establish payment, and the helper leaves the actual shared price/refund/suppression rules alone.
+- Raw integration: `AiRuntimeProductionCapture` listens for local queue-resource events and projects live item handles
+  immediately, including before insertion/after removal. `AiRuntimeQueueResourceV1` retains actual producer/owner,
+  command-backed or capture-local item identity, stored price/progress/refund factor, originating purchase context,
+  separate cancellation command and detached emission samples. Missing/mismatched lineage, future cancellation
+  timestamps, callback/sample failures and nested intervals stay explicit gaps. Existing fact caps/drop counts,
+  selected-player filtering and scene teardown apply. The typed browser result already retains the new fact variant.
+- Shared-owner boundary: **no production/research/queue caller uses this helper yet**. Those files are hash-baselined
+  and need bounded splits whose comments cannot be moved without permission under AGENTS.md. The prior question to
+  move them verbatim is unanswered; generic continuation does not grant that permission. The shared files and all
+  hashes remain untouched. `resource_item_attribution` and `queue_resource_shared_callers_unconnected` remain in every
+  capture, even if a synthetic test invokes the adapter. The real buffered cancellation/probe world is not authored.
+- Authored/unrun: emitter/projection specs and a raw-capture integration case cover direct forwarding, scoped cash
+  distinct from the previous observed balance, exact/equal/mutated vectors, owner/action mismatch, missing authority,
+  restore/no callback, malformed samples, bounded duplicate callbacks, nested scopes, exceptions, purchase/cancellation
+  lineage, research definition price, pre-insertion/post-removal identity and teardown. These mocked cases prove no
+  actual shared caller, multiplayer relay, legal paid world or refund formula. All executable checks remain deferred.
+- Source closure: implementation review, Omission Audit and separate Final Closure Audit cover acceptance 1–5 in the
+  linked checkpoint. Shared-caller/multiplayer obligations remain explicit blockers. Existing comments were preserved,
+  no baseline changed, and no tests/E2E/simulation/format/lint/type/build/editor/schema/repository checks ran.
+- Previous pending ownership remains authored/unverified: accepted-intent scope precedes real bus admission, admitted
+  commands retain original claims and actual request/scheduled ticks, synchronous application before receipt stays
+  retired, partial actors retain full claims, and uncertain outcomes remain gaps. This is diagnostic ownership,
+  independent of actual cash/queue liabilities and not additional gameplay escrow. See the
+  [pending-command checkpoint](follow-ups/runtime-matrix-ci.md#production-pending-command-capture-checkpoint-2026-10-03-unverified).
+- Prior legal setup remains authored/unverified: command-backed deterministic production/research seeds require real
+  applied outcomes and definition-priced scoped cash at paused tick zero after component initialization timers.
+  Per-successful-tick payments charge the full stored vector, and refund oracles require genuine future cancellation
+  timing. Shared payment/refund formulas are unchanged. See the
   [legal queue-setup checkpoint](follow-ups/runtime-matrix-ci.md#production-legal-queue-setup-checkpoint-2026-10-03-unverified).
-- Remaining: true item-scoped ongoing charge/refund facts and actual cancellation lineage, pending ownership before
-  capture/restore, fair decision cadence, placement/navigation and effective exposure evidence, legal PRO-03/06 pairs
-  and distinct PRO-07 worlds, normalized `productionEvidence`, full pure-family coverage and PRO-04 runtime proof.
-  Real buffered cancellation/probe authoring still depends on money attribution and a legal paid world.
-- Deferred focused commands and final-gate sequence are in the linked checkpoint. All tests, E2E, simulations,
-  lint/type/build/editor/schema/repository validation and doctor/context remain deferred until the announced final gate.
+- Remaining: real caller attribution/cancellation lineage and buffered pre-credit rejection, pre-capture/restore
+  ownership, fair cadence, placement/navigation/exposure, legal PRO-03/06 pairs and distinct PRO-07 worlds, normalized
+  `productionEvidence`, full pure-family coverage and PRO-04 runtime proof. No recipe/catalog/manifest/oracle changed.
+- Deferred commands and the final-gate sequence are in the linked checkpoint. Doctor/context and all executable
+  validation remain deferred until the announced final gate. Commit/push this authored support boundary, then pause.
 
 - Multiplayer diagnostic/lifecycle authoring checkpoint (2026-09-30, **unverified**): browser-only relay and local-hash
   observation now lives in a small test-owned Phaser adapter rather than adding methods to hash-baselined

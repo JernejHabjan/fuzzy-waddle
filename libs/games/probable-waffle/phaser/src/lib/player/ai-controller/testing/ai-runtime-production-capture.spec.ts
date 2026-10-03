@@ -12,7 +12,9 @@ import { QueueItemType, type UnifiedQueueItem } from
   "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/queue-item";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getActorComponent } from "../../../data/actor-component";
-import { getPlayer } from "../../../data/scene-data";
+import { emitResource, getCommunicator, getPlayer, isSnapshotApplyInProgress } from "../../../data/scene-data";
+import { emitQueueItemResource } from "../../../data/emit-queue-item-resource";
+import { QUEUE_RESOURCE_EMISSION_EVENT } from "../../../data/queue-resource-emission-event";
 import { getSceneService, getSceneSystem } from "../../../world/services/scene-component-helpers";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { CommandBusService } from "../../../world/services/multiplayer/command-bus.service";
@@ -25,7 +27,9 @@ import { AI_INTENT_COMMAND_DISPATCH_EVENT } from "../ai-intent-command-dispatch-
 import { pendingCommandRequest, pendingCommandOutcome, pendingCommandFinished } from "./ai-runtime-pending-command-fixtures";
 
 jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
-jest.mock("../../../data/scene-data", () => ({ getPlayer: jest.fn() }));
+jest.mock("../../../data/scene-data", () => ({
+  getPlayer: jest.fn(), getCommunicator: jest.fn(), emitResource: jest.fn(), isSnapshotApplyInProgress: jest.fn()
+}));
 jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn(), getSceneSystem: jest.fn() }));
 
 function item(): UnifiedQueueItem {
@@ -82,6 +86,56 @@ function setup() {
 }
 
 describe("AiRuntimeProductionCapture", () => {
+  it("captures exact item handles before insertion/after removal, preserving scoped cash and both command lineages", () => {
+    const fixture = setup();
+    jest.mocked(getCommunicator).mockReturnValue(fixture.scene.communicator as never);
+    jest.mocked(isSnapshotApplyInProgress).mockReturnValue(false);
+    jest.mocked(emitResource).mockImplementation((_scene, action, amounts) => {
+      for (const type of Object.values(ResourceType)) {
+        fixture.money[type] += (action === "resource.added" ? 1 : -1) * (amounts[type] ?? 0);
+      }
+      fixture.changes.next({ property: action, data: { playerNumber: 2, playerStateData: { resources: amounts } } });
+    });
+    const purchased: UnifiedQueueItem = { type: QueueItemType.Production, totalTime: 100, remainingTime: 100,
+      productionData: { actorName: ObjectNames.TivaraWorker,
+        costData: { costType: PaymentType.PayImmediately, productionTime: 100, refundFactor: 0.5, resources: { food: 35 } } },
+      commandContext: { execution: { schemaVersion: 1, commandId: "purchase", commitmentKey: "purchase:producer",
+        source: "ai", authorityEpoch: 1, sequence: 4 }, playerNumber: 2, actorIds: ["producer"] } };
+    fixture.money.food = 111;
+    emitQueueItemResource({ producer: fixture.actor, item: purchased, operation: "immediate_charge",
+      amounts: { food: 35 }, playerNumber: 2 });
+    fixture.queuedItems.push(purchased);
+    fixture.queueChanges.next([]);
+    const initial = fixture.capture.capture(2);
+    expect(initial.facts.map((fact) => fact.kind)).toEqual([
+      "queue_resource", "resources_applied", "queue_resource", "queue_resource", "queue_changed"
+    ]);
+    const started = initial.facts[0];
+    const generic = initial.facts[1];
+    const finished = initial.facts[3];
+    expect(started.kind === "queue_resource" && started.resource.itemId).toBe("queue:producer:purchase");
+    expect(generic.kind === "resources_applied" && generic.balanceMatches).toBe(false);
+    expect(finished.kind === "queue_resource" && finished.resource.emission).toMatchObject({ phase: "finished",
+      before: { food: 111 }, after: { food: 76 }, balanceMatches: true, callbackCount: 1 });
+    expect(initial.snapshots[0].queues[0].lanes[0].items[2].itemId).toBe("queue:producer:purchase");
+    fixture.queuedItems.pop();
+    emitQueueItemResource({ producer: fixture.actor, item: purchased, operation: "cancellation_refund",
+      amounts: { food: 7 }, playerNumber: 2, cancellationCommand: { type: "CANCEL_PRODUCTION", tick: 0,
+        playerNumber: 2, actorIds: ["producer"], queueIndex: 0, execution: { schemaVersion: 1, commandId: "cancel",
+          commitmentKey: "cancel:producer", source: "ai", authorityEpoch: 1, sequence: 5 } } });
+    const refunded = fixture.capture.capture(2);
+    const refund = refunded.facts[refunded.facts.length - 1];
+    expect(refund.kind === "queue_resource" && refund.resource).toMatchObject({ itemId: "queue:producer:purchase",
+      originatingCommandContext: { execution: { commandId: "purchase" } },
+      cancellationCommand: { execution: { commandId: "cancel" } }, storedPrice: { food: 35 },
+      emission: { requested: { food: 7 }, after: { food: 83 }, balanceMatches: true } });
+    expect(refunded.gaps).toContain("queue_resource_shared_callers_unconnected");
+    expect(initial.snapshots[0].resources.food).toBe(76);
+    fixture.scene.events.emit(Phaser.Scenes.Events.SHUTDOWN);
+    expect(fixture.scene.events.listenerCount(QUEUE_RESOURCE_EMISSION_EVENT)).toBe(0);
+    expect(fixture.changes.observed).toBe(false);
+  });
+
   it("retains actual buffered request time, intended execution tick and unspent AI claims independently of queue liabilities", () => {
     const fixture = setup();
     fixture.ticks.currentTick = 100;

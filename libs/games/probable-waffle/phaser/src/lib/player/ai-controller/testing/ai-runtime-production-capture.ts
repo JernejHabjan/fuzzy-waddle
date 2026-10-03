@@ -21,6 +21,8 @@ import type { AiRuntimeProductionCaptureV1 } from "./ai-runtime-production-captu
 import type { AiRuntimeProductionFactV1 } from "./ai-runtime-production-fact-v1";
 import { AI_INTENT_COMMAND_DISPATCH_EVENT, type AiIntentCommandDispatchEvent } from "../ai-intent-command-dispatch-event";
 import { AiRuntimePendingCommands } from "./ai-runtime-pending-commands";
+import { QUEUE_RESOURCE_EMISSION_EVENT, type QueueResourceEmissionEvent } from "../../../data/queue-resource-emission-event";
+import { projectAiRuntimeQueueResource } from "./project-ai-runtime-queue-resource";
 
 const MAX_FACTS = 8192;
 const MAX_SNAPSHOTS = 256;
@@ -53,6 +55,7 @@ export class AiRuntimeProductionCapture {
       if (player.playerNumber !== undefined) this.lastBalances.set(player.playerNumber, this.resources(player.playerNumber));
     }
     scene.events.on(AI_INTENT_COMMAND_DISPATCH_EVENT, this.observeDispatch, this);
+    scene.events.on(QUEUE_RESOURCE_EMISSION_EVENT, this.observeQueueResource, this);
     this.subscriptions.add(bus.commandOutcome$.subscribe((outcome) => {
       const boundary = this.boundary(outcome.playerNumber);
       this.pendingCommands.observeOutcome(outcome, boundary.tick);
@@ -135,7 +138,8 @@ export class AiRuntimeProductionCapture {
       schemaVersion: 1, kind: "production_authority_capture", startedTick: this.startedTick, playerNumber,
       droppedFactCount: this.factDrops.get(playerNumber) ?? 0,
       droppedSnapshotCount: this.snapshotDrops.get(playerNumber) ?? 0,
-      gaps: ["resource_item_attribution", "pending_dispatch_before_capture_or_restore", "navigation_placement_authority",
+      gaps: ["resource_item_attribution", "queue_resource_shared_callers_unconnected",
+        "pending_dispatch_before_capture_or_restore", "navigation_placement_authority",
         "pre_registration_queue_events", "capture_local_identity_restore", "initial_paid_item_provenance",
         "decision_snapshot_cadence", ...pending.gaps],
       facts: this.facts.filter((fact) => fact.playerNumber === playerNumber), snapshots
@@ -154,6 +158,7 @@ export class AiRuntimeProductionCapture {
     this.facts.length = 0;
     this.pendingCommands.dispose();
     this.scene.events.off(AI_INTENT_COMMAND_DISPATCH_EVENT, this.observeDispatch, this);
+    this.scene.events.off(QUEUE_RESOURCE_EMISSION_EVENT, this.observeQueueResource, this);
     this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.dispose, this);
     this.scene.events.off(Phaser.Scenes.Events.DESTROY, this.dispose, this);
   }
@@ -194,6 +199,14 @@ export class AiRuntimeProductionCapture {
     const boundary = this.boundary(event.playerNumber);
     this.pendingCommands.observeDispatch(event, boundary.tick);
     this.append({ ...boundary, kind: "intent_dispatch", event });
+  };
+
+  /** The live item can be outside the queue; projecting now preserves its actual handle identity and lineage. */
+  private readonly observeQueueResource = (event: QueueResourceEmissionEvent): void => {
+    if (this.disposed) return;
+    const boundary = this.boundary(event.scope.playerNumber);
+    this.append({ ...boundary, kind: "queue_resource",
+      resource: projectAiRuntimeQueueResource(event, this.identify, boundary.tick) });
   };
 
   private boundary(playerNumber: number) {

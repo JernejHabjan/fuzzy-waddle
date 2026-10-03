@@ -1,6 +1,7 @@
 import type { GameCommand, GameCommandOutcome, ResearchType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiRuntimeProductionQueueV1 } from "./ai-runtime-production-queue-v1";
 import type { AiIntentCommandDispatchEvent } from "../ai-intent-command-dispatch-event";
+import type { AiRuntimeQueueResourceV1 } from "./ai-runtime-queue-resource-v1";
 
 /** Raw authority callbacks in observer order. No resource event is labelled a payment/refund without item provenance. */
 export type AiRuntimeProductionFactV1 = {
@@ -15,6 +16,7 @@ export type AiRuntimeProductionFactV1 = {
     readonly scheduledTick: number | null;
   }
   | { readonly kind: "intent_dispatch"; readonly event: AiIntentCommandDispatchEvent }
+  | { readonly kind: "queue_resource"; readonly resource: AiRuntimeQueueResourceV1 }
   /** Delivery observation can follow component application; this is explicitly not a dispatch/request timestamp. */
   | { readonly kind: "command_delivered"; readonly command: GameCommand }
   | {
