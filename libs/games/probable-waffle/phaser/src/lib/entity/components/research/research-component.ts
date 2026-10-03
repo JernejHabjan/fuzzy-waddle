@@ -1,13 +1,15 @@
+import { emitQueueItemResource } from "../../../data/emit-queue-item-resource";
 import { GameEventEmitter as EventEmitter } from "@fuzzy-waddle/platform-game-host";
 import { researchDefinitions } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/research/research-definitions";
 import { OwnerComponent } from "../owner-component";
 import { getActorComponent } from "../../../data/actor-component";
-import { emitResource, getPlayer } from "../../../data/scene-data";
+import { getPlayer } from "../../../data/scene-data";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 import { onObjectReady } from "../../../data/game-object-helper";
 import {
   type GameCommandExecution,
+  type CancelResearchCommand,
   ObjectNames,
   type ResearchComponentData,
   type ResearchType
@@ -158,16 +160,6 @@ export class ResearchComponent {
       return false;
     }
 
-    // Pay resources immediately
-    emitResource(this.gameObject.scene, "resource.removed", researchData.cost, owner);
-
-    // Delegate to SharedQueueComponent
-    const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
-    if (!sharedQueue) {
-      console.error("SharedQueueComponent not found");
-      return false;
-    }
-
     const unifiedItem: UnifiedQueueItem = {
       type: QueueItemType.Research,
       researchData: type,
@@ -175,6 +167,17 @@ export class ResearchComponent {
       remainingTime: researchData.researchTime,
       commandContext
     };
+
+    // Pay resources immediately
+    emitQueueItemResource({ producer: this.gameObject, item: unifiedItem, playerNumber: owner,
+      operation: "immediate_charge", amounts: researchData.cost });
+
+    // Delegate to SharedQueueComponent
+    const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
+    if (!sharedQueue) {
+      console.error("SharedQueueComponent not found");
+      return false;
+    }
 
     sharedQueue.addItem(unifiedItem);
 
@@ -231,9 +234,12 @@ export class ResearchComponent {
 
   /**
    * Public method for SharedQueueComponent to handle research refunds.
-   * Called during cancellation.
+   * Called before item removal; the applied cancellation is carried separately from the purchase execution.
    */
-  public handleResearchRefund(type: ResearchType, remainingTime: number, totalTime: number): void {
+  public handleResearchRefund(
+    type: ResearchType, remainingTime: number, totalTime: number,
+    item: UnifiedQueueItem, cancellationCommand?: CancelResearchCommand
+  ): void {
     const owner = this.ownerComponent?.getOwner();
     if (owner === undefined) return;
 
@@ -251,19 +257,20 @@ export class ResearchComponent {
       }
     }
 
-    emitResource(this.gameObject.scene, "resource.added", refundedResources, owner);
+    emitQueueItemResource({ producer: this.gameObject, item, playerNumber: owner,
+      operation: "cancellation_refund", amounts: refundedResources, cancellationCommand });
   }
 
   /**
    * Cancel research - delegates to SharedQueueComponent
    */
-  cancelResearch(): boolean {
+  cancelResearch(cancellationCommand?: CancelResearchCommand): boolean {
     const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
     if (!sharedQueue) {
       return false;
     }
 
-    return sharedQueue.cancelResearchItem();
+    return sharedQueue.cancelResearchItem(cancellationCommand);
   }
 
   getResearchProgress(type: ResearchType): number {

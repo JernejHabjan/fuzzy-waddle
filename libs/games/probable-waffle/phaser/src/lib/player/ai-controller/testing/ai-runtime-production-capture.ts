@@ -138,7 +138,7 @@ export class AiRuntimeProductionCapture {
       schemaVersion: 1, kind: "production_authority_capture", startedTick: this.startedTick, playerNumber,
       droppedFactCount: this.factDrops.get(playerNumber) ?? 0,
       droppedSnapshotCount: this.snapshotDrops.get(playerNumber) ?? 0,
-      gaps: ["resource_item_attribution", "queue_resource_shared_callers_unconnected",
+      gaps: ["resource_item_attribution", "queue_resource_runtime_authority_unverified",
         "pending_dispatch_before_capture_or_restore", "navigation_placement_authority",
         "pre_registration_queue_events", "capture_local_identity_restore", "initial_paid_item_provenance",
         "decision_snapshot_cadence", ...pending.gaps],

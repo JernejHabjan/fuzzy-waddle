@@ -19,7 +19,7 @@ import { addActorComponent } from "../../../data/actor-data";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { CommandBusService } from "../../../world/services/multiplayer/command-bus.service";
-import type { GameCommandOutcomeKind } from "@fuzzy-waddle/probable-waffle-protocol";
+import type { CancelProductionCommand, CancelResearchCommand, GameCommandOutcomeKind } from "@fuzzy-waddle/probable-waffle-protocol";
 
 /**
  * SharedQueueComponent is the queue owner and processor.
@@ -113,7 +113,7 @@ export class QueueComponent {
     let paid = true;
     if (costData.costType === PaymentType.PayOverTime) {
       if (!this.productionComponent) return;
-      paid = this.productionComponent.handlePayOverTimePayment(costData.resources);
+      paid = this.productionComponent.handlePayOverTimePayment(costData.resources, firstItem);
     }
 
     if (!paid) return;
@@ -264,7 +264,7 @@ export class QueueComponent {
   /**
    * Public API: Cancel a production item
    */
-  cancelProductionItem(item: ProductionQueueItem): boolean {
+  cancelProductionItem(item: ProductionQueueItem, cancellationCommand?: CancelProductionCommand): boolean {
     for (let i = 0; i < this.sharedQueues.length; i++) {
       const queue = this.sharedQueues[i]!;
       const index = queue.queuedItems.findIndex(
@@ -284,7 +284,9 @@ export class QueueComponent {
 
         // Delegate refund to ProductionComponent
         if (this.productionComponent) {
-          this.productionComponent.handleProductionRefund(cancelledItem.productionData.costData, cancelledItem);
+          this.productionComponent.handleProductionRefund(
+            cancelledItem.productionData.costData, cancelledItem, cancellationCommand
+          );
           this.productionComponent.emitQueueChange({
             itemsFromAllQueues: this.allItems,
             type: "remove"
@@ -310,7 +312,7 @@ export class QueueComponent {
   /**
    * Public API: Cancel the first research item
    */
-  cancelResearchItem(): boolean {
+  cancelResearchItem(cancellationCommand?: CancelResearchCommand): boolean {
     for (const queue of this.sharedQueues) {
       const firstItem = queue.queuedItems[0];
       if (firstItem && firstItem.type === QueueItemType.Research && firstItem.researchData) {
@@ -318,7 +320,9 @@ export class QueueComponent {
 
         // Delegate refund to ResearchComponent
         if (this.researchComponent) {
-          this.researchComponent.handleResearchRefund(type, firstItem.remainingTime, firstItem.totalTime);
+          this.researchComponent.handleResearchRefund(
+            type, firstItem.remainingTime, firstItem.totalTime, firstItem, cancellationCommand
+          );
         }
 
         // Remove from queue

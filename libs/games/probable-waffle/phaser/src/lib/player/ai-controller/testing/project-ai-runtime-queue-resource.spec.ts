@@ -52,6 +52,24 @@ describe("projectAiRuntimeQueueResource", () => {
     expect(result.emission).not.toHaveProperty("scope");
   });
 
+  it("retains denied tick attempts as detached affordability facts without inventing payment callbacks", () => {
+    const original = event();
+    const input = {
+      scope: { ...original.scope, operation: "tick_charge", cancellationCommand: undefined },
+      phase: "denied", reason: "insufficient_resources", operationId: 2,
+      requested: { food: 35 }, before: { food: 10, wood: 100, stone: 100, minerals: 100 },
+      snapshotRestoreInProgress: false
+    } satisfies QueueResourceEmissionEvent;
+    const result = projectAiRuntimeQueueResource(input, () => "item", 102);
+    expect(result).toMatchObject({ operation: "tick_charge", remainingTimeMs: 40,
+      originatingCommandContext: { execution: { commandId: "purchase" } }, cancellationCommand: null,
+      emission: { phase: "denied", reason: "insufficient_resources", before: { food: 10 } }, gaps: [] });
+    expect(result.emission).not.toHaveProperty("callbackCount");
+    expect(result.emission).not.toHaveProperty("after");
+    input.scope.item.remainingTime = 0;
+    expect(result.remainingTimeMs).toBe(40);
+  });
+
   it("reads research price/refund policy from the real definition", () => {
     const original = event();
     const researchType = ResearchType.TivaraMacemanUpgradeLevel2;

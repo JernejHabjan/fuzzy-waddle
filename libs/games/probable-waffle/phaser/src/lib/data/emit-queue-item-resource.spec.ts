@@ -4,7 +4,7 @@ import { ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protoco
 import { QueueItemType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/queue-item";
 import { PaymentType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/payment-type";
 import { emitResource, getCommunicator, getPlayer, isSnapshotApplyInProgress } from "./scene-data";
-import { emitQueueItemResource } from "./emit-queue-item-resource";
+import { emitQueueItemResource, recordQueueItemPaymentDenied } from "./emit-queue-item-resource";
 import { QUEUE_RESOURCE_EMISSION_EVENT, type QueueResourceEmissionEvent } from "./queue-resource-emission-event";
 import type { QueueResourceEmissionRecord } from "./queue-resource-emission-record";
 import type { QueueResourceEmissionScope } from "./queue-resource-emission-scope";
@@ -55,6 +55,22 @@ describe("emitQueueItemResource", () => {
     expect(getPlayer).not.toHaveBeenCalled();
     expect(getCommunicator).not.toHaveBeenCalled();
     expect(isSnapshotApplyInProgress).not.toHaveBeenCalled();
+  });
+
+  it("observes denied affordability once without an emitter or callback subscription, and does no work without capture", () => {
+    const fixture = setup();
+    recordQueueItemPaymentDenied({ ...fixture.scope, operation: "tick_charge" });
+    expect(fixture.records).toEqual([expect.objectContaining({ operationId: 1, phase: "denied",
+      reason: "insufficient_resources", before: { food: 100, wood: 100, stone: 100, minerals: 100 }, requested: { food: 35 } })]);
+    expect(fixture.money.food).toBe(100);
+    expect(emitResource).not.toHaveBeenCalled();
+    expect(getCommunicator).not.toHaveBeenCalled();
+    expect(fixture.changes.observed).toBe(false);
+    const ordinary = setup(false);
+    recordQueueItemPaymentDenied({ ...ordinary.scope, operation: "tick_charge" });
+    expect(getPlayer).not.toHaveBeenCalled();
+    expect(isSnapshotApplyInProgress).not.toHaveBeenCalled();
+    expect(emitResource).not.toHaveBeenCalled();
   });
 
   it("samples scoped cash around the exact callback, preserving detached request price and scene-local order", () => {

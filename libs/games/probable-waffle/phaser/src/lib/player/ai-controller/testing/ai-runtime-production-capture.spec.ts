@@ -129,7 +129,7 @@ describe("AiRuntimeProductionCapture", () => {
       originatingCommandContext: { execution: { commandId: "purchase" } },
       cancellationCommand: { execution: { commandId: "cancel" } }, storedPrice: { food: 35 },
       emission: { requested: { food: 7 }, after: { food: 83 }, balanceMatches: true } });
-    expect(refunded.gaps).toContain("queue_resource_shared_callers_unconnected");
+    expect(refunded.gaps).toContain("queue_resource_runtime_authority_unverified");
     expect(initial.snapshots[0].resources.food).toBe(76);
     fixture.scene.events.emit(Phaser.Scenes.Events.SHUTDOWN);
     expect(fixture.scene.events.listenerCount(QUEUE_RESOURCE_EMISSION_EVENT)).toBe(0);

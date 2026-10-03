@@ -251,8 +251,8 @@ Source-slice closure map:
 
 **Next related boundary — stay on GPT-6.1 Sol / high:** establish reliable item-scoped payment/refund attribution,
 initial paid-item provenance, pending dispatch admission and legal production/research/cancel setup through ordinary
-components/commands. The shared owners are baselined; any required source split must preserve existing comments and
-be a separate bounded responsibility extraction, never a hash refresh. Resolve the independent oracle's price and
+components/commands. These shared-owner extractions and callers are now authored in the shared-caller checkpoint
+below. Keep comments accurate and use bounded responsibility extractions, never a hash refresh. Resolve the independent oracle's price and
 pending-request timing assumptions honestly: ordinary single-player dispatch/application is synchronous, and a real
 buffered request requires an actual authority path. Add committed-decision snapshots and real navigation/placement
 proof, reconcile terminal schedule evidence, then build legal both-faction focused worlds and normalized evidence.
@@ -601,14 +601,14 @@ implement those hooks or the real buffered cancellation/refund/probe world. No i
    no content hash was refreshed, and no executable validation ran. Shared hooks were not implemented; their former
    comment-permission boundary has since been removed by the user.
 
-**Concrete next shared split:** extract the production alias and
+**Historical shared split action (now authored in the shared-caller checkpoint below):** extract the production alias and
 spawn responsibility into bounded `production-game-object.ts`/`production-spawner.ts`, the research definition into
 `research-definition.ts`, and the unified display projection into `project-shared-queue-items.ts`. Keep existing
 public exports and method wrappers, keep comments accurate with their responsibility, and remove
 only baseline entries for owners made compliant. Inspect actual sizes/ownership during that authoring pass; do not
 refresh any hash. No shared owner is modified by this checkpoint.
 
-**Next exact authoring action:** after those bounded splits, connect the prepared scoped queue-resource emitter at the actual
+**Historical caller action (now authored below):** after those bounded splits, connect the prepared scoped queue-resource emitter at the actual
 production/research immediate charge, queue per-tick successful charge and cancellation refund boundaries. Carry the
 actual unified item handle/command context and stored price, sample operation-scoped authority balances, preserve raw
 callback ordering, distinguish suppression/no payment, and forward the actual cancellation command separately from
@@ -638,8 +638,8 @@ lint/type/build/editor/schema/repository checks or doctor/context commands ran i
 This support slice began at `ab2bc287ba532815edcf8558e922adba1ea65a08`, with local/remote matching on
 `feature/759-skirmish-ai`. The former comment-relocation blocker is cleared by the user's 2026-10-03 removal of the
 blanket comment-permission rule. Comment maintenance within authorized implementation requires no separate approval.
-The bounded adapter and raw consumer are authored; shared money callers and the real buffered cancellation/probe
-world remain unimplemented. No issue/family is complete, and no runnable recipe or normalized evidence was added.
+At this checkpoint the bounded adapter and raw consumer were authored; shared money callers were subsequently
+authored in the shared-caller checkpoint below. The real buffered cancellation/probe world remains unimplemented. No issue/family is complete, and no runnable recipe or normalized evidence was added.
 
 1. **Emission boundary — authored:** `data/emit-queue-item-resource.ts` forwards the actual shared `emitResource`
    inputs once, without another price/refund policy. Ordinary scenes with no diagnostic listener use that original
@@ -678,7 +678,7 @@ world remain unimplemented. No issue/family is complete, and no runnable recipe 
    and source-structure baselines are untouched. No test, simulation, E2E, formatting, lint, type, build, editor,
    schema, repository check or doctor/context command ran. Commit/push this bounded support slice and pause.
 
-**Next exact authoring action:** perform the proposed bounded
+**Historical next action (now authored in the shared-caller checkpoint below):** perform the proposed bounded
 `production-game-object.ts`, `production-spawner.ts`, `research-definition.ts` and `project-shared-queue-items.ts`
 splits, keeping comments accurate with their responsibilities. Preserve public wrappers/exports and remove only
 baselines whose owners become compliant; never refresh a hash to pass lint. Then connect `emitQueueItemResource` to
@@ -688,8 +688,10 @@ eligibility/cash behavior. Forward the actual stamped cancellation through the q
 wrappers separately from the item's purchase context. Record failed payment attempts without charging or progressing
 the queue. Do not recompute or rebalance the shared PayOverTime progress-based refund formula.
 
-The helper currently has **no shared production/research/queue caller**. Every capture retains both
-`resource_item_attribution` and `queue_resource_shared_callers_unconnected`; synthetic calls cannot remove those gaps.
+At this checkpoint the helper had no shared production/research/queue caller. The shared-caller checkpoint below
+connects those paths and replaces `queue_resource_shared_callers_unconnected` with
+`queue_resource_runtime_authority_unverified`; `resource_item_attribution` remains. Synthetic records do not establish
+runtime authority or normalized causal evidence.
 After caller wiring, author the legal two-peer buffered cancellation/probe world described above: the rejected probe
 must actually apply before cancellation credit while that cancellation is pending. Same-batch refund-then-probe and
 deterministic local dispatch cannot prove it. Then normalize genuine evidence without weakening causal gates.
@@ -707,3 +709,69 @@ NX_DAEMON=false pnpm exec nx test probable-waffle-phaser --testPathPattern='emit
 It remains **unrun**. Follow with map preflight, real production worlds and socket-backed cancellation/probe execution
 after the shared callers and legal worlds exist. Keep authored support, runnable scenario coverage and accepted
 runtime evidence separate.
+
+
+### Production shared-queue callers checkpoint (2026-10-03, unverified)
+
+This grouped shared-owner batch began at `423b3a16fbaad9eb21f628bb58341f5363a6a469`. The behavior-preserving extraction
+is commit `6cfd91ea`; caller wiring began there. Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch
+`feature/759-skirmish-ai`. The containing caller commit owns the latest revision; verify it and the remote on resume.
+Actual model/effort is unavailable. No executable validation ran; no issue or family is complete.
+
+| Acceptance | Authored source and consumers | Evidence/status |
+| --- | --- | --- |
+| 1. Bounded owners | `production-game-object.ts`, `production-spawner.ts`, `research-definition.ts`, `project-shared-queue-items.ts`; existing component wrappers/research type re-export | Source reviewed; three component baseline entries removed, no hash refreshed; structural lint deferred |
+| 2. Actual money items | Production/research initial charge constructs and carries the same unified item before insertion; tick payment receives the physical first item; both refunds receive their actual item | Source traced; eligibility, charge/refund formulas and insertion/removal order preserved; runtime proof deferred |
+| 3. Cancellation and denial | Queue command system forwards the original stamped cancel through component/queue/refund wrappers; `recordQueueItemPaymentDenied` records failed affordability without emission or progress | Separate purchase/cancel lineage; denial has no invented callback/after cash; actual relay/order proof still missing |
+| 4. Regression authoring | `entity/systems/shared-queue-resource.spec.ts`, emitter/projection denial cases, capture gap assertion update | Authored/unrun, real components with synthetic scene/emitter; no paid runtime or lockstep proof |
+| 5. Closure/publication | Implementation review, Omission Audit and separate Final Closure Audit; handoff and latest gap labels reconciled | Source-only audits; scoped commit/push and remote SHA verification at delivery; all executable gates deferred |
+
+The production wrapper keeps actual spawning/navigation/rally behavior with `spawnProductionActor`; the helper reads
+its original owner at the original pre-creation boundary. Research keeps the `ResearchDefinition` re-export for the
+existing prefab contract. Display projection preserves lane/item traversal, icon selection, index and progress rules.
+Only excerpts were extracted, not whole tracked-file moves. The final caller commit wraps two pre-existing long
+production imports exposed by removal of the old structural exemption. No baseline hash was regenerated.
+
+All actual shared charge/refund sites now invoke `emitQueueItemResource` with the physical handle, including the
+pre-insertion initial payment and post-removal production refund. Successful PayOverTime ticks still charge the full
+stored vector each 50ms before progress. A failed affordability attempt emits one `denied` diagnostic only when
+observed, with requested price, current cash and item progress; the queue returns without payment/progress. Its
+scene-local ID shares the operation sequence. It has no callback or after balance, so later snapshots/outcomes must
+establish the result. No new save/relay field, gameplay escrow or price policy was added.
+
+Production cancellation still removes the item/reports the purchase's terminal outcome before credit; research
+still credits before removal/terminal outcome. The refund's separate cancellation is the actual command delivered
+to `QueueCommandSystem`, never copied from the purchase execution. Optional cancellation metadata leaves direct
+legacy cancellation callable; missing lineage stays an explicit raw projection gap. Existing refund suppression and
+the unusual PayOverTime one-vector progress-based refund remain unchanged.
+
+Every capture retains `resource_item_attribution` and `queue_resource_runtime_authority_unverified`. Source wiring
+replaces the former absent-caller gap, but no mocked trace removes the real-authority/evidence debt. No normalized
+`productionEvidence`, recipe, scenario registration, denominator or causal acceptance gate changed.
+
+**Source review and audits:** traced all charge/refund callers, before/after insertion/removal handles, denied return,
+separate cancellation forwarding, public research type consumer, save/restore queue context, display projection and
+existing diagnostic teardown/caps. Omission Audit retains the missing two-peer world and normalized evidence as
+unfinished implementation. Separate Final Closure Audit reviewed the complete grouped diff, exact owned staging,
+comments and deferred gates. No skill/tooling policy was changed.
+
+**Known final-gate test setup debt:** the shared Angular Phaser mock omits `Phaser.Events.EventEmitter` and lifecycle
+constants used by earlier observer/capture specs. The new shared-path fixture locally loads Phaser's headless event
+implementation and supplies its object-destroy constant. Repair the existing selected specs' setup at the final gate;
+do not mistake mock setup failure for gameplay evidence. This discovery is source inspection, not an executed failure.
+
+**Next exact authoring action — retain GPT-6.1 Sol / high:** extend the existing two-peer `MapAiMultiplayer` harness
+(`skirmish-ai-multiplayer-match.ts`, observation/diagnostics adapter and command bus) with both-peer legal paid setup
+and a genuinely buffered cancellation/pre-credit rejection world. The probe must be rejected before cancellation
+credit while cancellation is pending; same-batch cancellation then probe and local deterministic dispatch are invalid
+proof. Group with normalization of actual capture/outcome evidence and legal PRO-07 worlds without relaxing gates.
+Commit/push and pause at that bounded authoring boundary. Shared callers are authored; the world remains not_started.
+
+At the announced final gate, run this combined caller/observer selection, then the existing pending/setup/payment/
+digest/oracle selections linked above, frozen-map preflight, legal production worlds and socket-backed proof:
+
+```bash
+NX_DAEMON=false pnpm exec nx test probable-waffle-phaser --testPathPattern='shared-queue-resource|emit-queue-item-resource|project-ai-runtime-queue-resource|ai-runtime-production-capture|install-ai-runtime-production-capture' --skip-nx-cache
+```
+
+All tests/E2E/simulations, formatting/lint/type/build/editor/schema/repository checks and doctor/context remain **unrun**.

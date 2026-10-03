@@ -12,7 +12,7 @@ const MAX_CALLBACKS = 8;
 /**
  * Forward one actual shared resource emission. Marked captures receive operation-scoped samples and exact callback
  * identity; ordinary scenes take the original emitter path. This neither changes prices nor promises refund credit.
- * Shared callers must supply the physical item and applied cancellation; absent callers remain explicit capture debt.
+ * Shared callers supply the physical item and separate applied cancellation, including before insertion/after removal.
  */
 export function emitQueueItemResource(scope: QueueResourceEmissionScope): void {
   const scene = scope.producer.scene;
@@ -71,4 +71,18 @@ export function emitQueueItemResource(scope: QueueResourceEmissionScope): void {
       nestedEmission: callbacks.nested, balanceMatches
     } satisfies QueueResourceEmissionEvent);
   }
+}
+
+/** Observe the shared failed-tick branch without emission, fabricated callbacks or advancing the item's progress. */
+export function recordQueueItemPaymentDenied(scope: QueueResourceEmissionScope & { operation: "tick_charge" }): void {
+  const scene = scope.producer.scene;
+  if (!scene.events.listenerCount(QUEUE_RESOURCE_EMISSION_EVENT)) return;
+  const operationId = (scopeSequences.get(scene) ?? 0) + 1;
+  scopeSequences.set(scene, operationId);
+  scene.events.emit(QUEUE_RESOURCE_EMISSION_EVENT, {
+    scope, operationId, requested: sampleQueueResourceVector(scope.amounts),
+    before: sampleQueueResourceBalance(scene, scope.playerNumber),
+    snapshotRestoreInProgress: isSnapshotApplyInProgress(scene),
+    phase: "denied", reason: "insufficient_resources"
+  } satisfies QueueResourceEmissionEvent);
 }

@@ -1,8 +1,9 @@
+import { emitQueueItemResource, recordQueueItemPaymentDenied } from "../../../data/emit-queue-item-resource";
 import Phaser from "phaser";
 import { PaymentType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/payment-type";
 import { OwnerComponent } from "../owner-component";
 import { getActorComponent } from "../../../data/actor-component";
-import { emitResource, getPlayer } from "../../../data/scene-data";
+import { getPlayer } from "../../../data/scene-data";
 import { QueueComponent } from "../queue/queue-component";
 import {
   QueueItemType,
@@ -10,6 +11,7 @@ import {
 } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/queue-item";
 import {
   type GameCommandExecution,
+  type CancelProductionCommand,
   ProbableWaffleGameCommandTypes,
   type ProductionComponentData,
   ResourceType
@@ -28,8 +30,12 @@ import type {
 } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/production-events";
 import type { ProductionQueueItem } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/game-object";
 import type { ProductionDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/production-definition";
-import { AssignProductionErrorCode } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/assign-production-error-code";
-import type { ProductionCostDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/production-cost-definition";
+import {
+  AssignProductionErrorCode
+} from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/assign-production-error-code";
+import type {
+  ProductionCostDefinition
+} from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/production-cost-definition";
 import { NavigationService } from "../../../world/services/navigation.service";
 import { CommandBusService } from "../../../world/services/multiplayer/command-bus.service";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
@@ -207,14 +213,6 @@ export class ProductionComponent {
       return productionState;
     }
 
-    this.handleImmediatePayment(queueItem);
-
-    // Delegate to SharedQueueComponent
-    const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
-    if (!sharedQueue) {
-      throw new Error("SharedQueueComponent not found");
-    }
-
     const unifiedItem: UnifiedQueueItem = {
       type: QueueItemType.Production,
       productionData: queueItem,
@@ -223,11 +221,19 @@ export class ProductionComponent {
       commandContext
     };
 
+    this.handleImmediatePayment(queueItem, unifiedItem);
+
+    // Delegate to SharedQueueComponent
+    const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
+    if (!sharedQueue) {
+      throw new Error("SharedQueueComponent not found");
+    }
+
     sharedQueue.addItem(unifiedItem);
     return null;
   }
 
-  private handleImmediatePayment(queueItem: ProductionQueueItem): void {
+  private handleImmediatePayment(queueItem: ProductionQueueItem, item: UnifiedQueueItem): void {
     if (queueItem.costData.costType === PaymentType.PayImmediately) {
       const owner = this.ownerComponent?.getOwner();
       if (!owner) return;
@@ -236,14 +242,16 @@ export class ProductionComponent {
       if (!player) return;
 
       // Fully pay for the production item
-      emitResource(this.gameObject.scene, "resource.removed", queueItem.costData.resources, owner);
+      emitQueueItemResource({ producer: this.gameObject, item, playerNumber: owner,
+        operation: "immediate_charge", amounts: queueItem.costData.resources });
     }
   }
 
   /**
-   * Public method for SharedQueueComponent to call during PayOverTime processing
+   * Charge the full stored vector for one successful queue tick. The physical item is observed before progress.
+   * An unaffordable tick emits only a denial diagnostic and returns false, leaving queue progress unchanged.
    */
-  public handlePayOverTimePayment(resources: Partial<Record<ResourceType, number>>): boolean {
+  public handlePayOverTimePayment(resources: Partial<Record<ResourceType, number>>, item: UnifiedQueueItem): boolean {
     const owner = this.ownerComponent?.getOwner();
     if (!owner) {
       throw new Error("Owner not found");
@@ -257,8 +265,12 @@ export class ProductionComponent {
 
     let productionCostPaid = false;
     if (canPayAllResources) {
-      emitResource(this.gameObject.scene, "resource.removed", resources, owner);
+      emitQueueItemResource({ producer: this.gameObject, item, playerNumber: owner,
+        operation: "tick_charge", amounts: resources });
       productionCostPaid = true;
+    } else {
+      recordQueueItemPaymentDenied({ producer: this.gameObject, item, playerNumber: owner,
+        operation: "tick_charge", amounts: resources });
     }
 
     return productionCostPaid;
@@ -289,9 +301,11 @@ export class ProductionComponent {
   }
 
   /**
-   * Public method for SharedQueueComponent to handle production refunds
+   * Refund the actual removed item using its stored policy. Cancellation lineage is separate from purchase context.
    */
-  public handleProductionRefund(costData: ProductionCostDefinition, item: UnifiedQueueItem): void {
+  public handleProductionRefund(
+    costData: ProductionCostDefinition, item: UnifiedQueueItem, cancellationCommand?: CancelProductionCommand
+  ): void {
     const owner = this.ownerComponent?.getOwner();
     if (!owner) return;
     const player = getPlayer(this.gameObject.scene, owner);
@@ -318,7 +332,8 @@ export class ProductionComponent {
         });
         break;
     }
-    emitResource(this.gameObject.scene, "resource.added", refundedResources, owner);
+    emitQueueItemResource({ producer: this.gameObject, item, playerNumber: owner,
+      operation: "cancellation_refund", amounts: refundedResources, cancellationCommand });
   }
 
   private canAssignProduction(item: ProductionQueueItem): AssignProductionErrorCode | null {
@@ -362,13 +377,13 @@ export class ProductionComponent {
   /**
    * Cancel production - delegates to SharedQueueComponent
    */
-  cancelProduction(item: ProductionQueueItem) {
+  cancelProduction(item: ProductionQueueItem, cancellationCommand?: CancelProductionCommand) {
     if (!this.isFinished) return;
 
     const sharedQueue = getActorComponent(this.gameObject, QueueComponent);
     if (!sharedQueue) return;
 
-    sharedQueue.cancelProductionItem(item);
+    sharedQueue.cancelProductionItem(item, cancellationCommand);
   }
 
   getData(): ProductionComponentData {

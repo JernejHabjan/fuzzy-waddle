@@ -113,7 +113,7 @@ export class QueueCommandSystem {
       return;
     }
 
-    productionComponent.cancelProduction(queueItem.productionData);
+    productionComponent.cancelProduction(queueItem.productionData, cmd);
     commandBus.reportOutcome(cmd, "cancelled", "cancelled");
   }
 
@@ -151,7 +151,7 @@ export class QueueCommandSystem {
       commandBus.reportOutcome(cmd, "rejected", "invalid_target");
       return;
     }
-    researchComponent.cancelResearch();
+    researchComponent.cancelResearch(cmd);
     commandBus.reportOutcome(cmd, "cancelled", "cancelled");
   }
 

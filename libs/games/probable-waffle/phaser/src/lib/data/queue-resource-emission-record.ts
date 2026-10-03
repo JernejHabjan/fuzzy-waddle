@@ -10,6 +10,11 @@ export type QueueResourceEmissionRecord = {
 } & (
   | { readonly phase: "started" }
   | {
+    /** Shared affordability denied this attempt: no emitter or queue progress is invoked. */
+    readonly phase: "denied";
+    readonly reason: "insufficient_resources";
+  }
+  | {
     readonly phase: "callback";
     readonly callbackOrdinal: number;
     readonly amounts: Readonly<Partial<Record<ResourceType, number>>> | null;
