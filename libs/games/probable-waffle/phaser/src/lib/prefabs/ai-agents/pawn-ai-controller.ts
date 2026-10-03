@@ -16,6 +16,7 @@ import { AiType } from "./ai-type";
 import { getActorComponent } from "../../data/actor-component";
 import { isGameObjectActiveInActiveScene } from "../../data/game-object-helper";
 import { SimulationTickService } from "../../world/services/simulation-tick.service";
+import { reportCancelledPawnOrders } from "./report-cancelled-pawn-orders";
 
 export class PawnAiController {
   readonly blackboard: PawnAiBlackboard = new PawnAiBlackboard();
@@ -55,6 +56,8 @@ export class PawnAiController {
         };
         break;
     }
+    this.blackboard.queuedOrderCancellationHandler = (orders) =>
+      reportCancelledPawnOrders(this.gameObject, orders, "queued order cancelled by replacement");
 
     if (!environment.production) {
       const aiDebuggingService = getSceneService(this.gameObject.scene, DebuggingService)!;
@@ -152,6 +155,7 @@ export class PawnAiController {
   }
 
   private onShutdown() {
+    this.agent.reportInterruptedOrdersOnShutdown();
     this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.updateFrameNonDeterministicFallback, this);
     this.tickSubscription?.unsubscribe();
     this.aiDebuggingSubscription?.unsubscribe();

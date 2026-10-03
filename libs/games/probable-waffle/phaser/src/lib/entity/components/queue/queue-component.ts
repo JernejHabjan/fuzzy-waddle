@@ -1,11 +1,13 @@
+import { projectSharedQueueItems } from "./project-shared-queue-items";
 import { Subject } from "rxjs";
 import type { SharedQueueItem } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/shared-queue-item";
-import { SharedQueueItemType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/shared-queue-item-type";
 import { ProductionComponent } from "../production/production-component";
 import { ResearchComponent } from "../research/research-component";
 import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
-import { researchDefinitions } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/research/research-definitions";
-import { QueueItemType, type UnifiedQueueItem } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/queue-item";
+import {
+  QueueItemType,
+  type UnifiedQueueItem
+} from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/queue-item";
 import { SharedQueue } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/shared-queue";
 import { PaymentType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/payment-type";
 import type { ProductionQueueItem } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/game-object";
@@ -16,6 +18,8 @@ import { getActorComponent } from "../../../data/actor-component";
 import { addActorComponent } from "../../../data/actor-data";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
+import { CommandBusService } from "../../../world/services/multiplayer/command-bus.service";
+import type { CancelProductionCommand, CancelResearchCommand, GameCommandOutcomeKind } from "@fuzzy-waddle/probable-waffle-protocol";
 
 /**
  * SharedQueueComponent is the queue owner and processor.
@@ -109,7 +113,7 @@ export class QueueComponent {
     let paid = true;
     if (costData.costType === PaymentType.PayOverTime) {
       if (!this.productionComponent) return;
-      paid = this.productionComponent.handlePayOverTimePayment(costData.resources);
+      paid = this.productionComponent.handlePayOverTimePayment(costData.resources, firstItem);
     }
 
     if (!paid) return;
@@ -177,9 +181,16 @@ export class QueueComponent {
     queue.queuedItems.splice(0, 1);
 
     // Delegate to ProductionComponent for spawning logic
+    let producedActorId: string | null = null;
     if (this.productionComponent) {
-      await this.productionComponent.handleProductionComplete(item.productionData);
+      producedActorId = await this.productionComponent.handleProductionComplete(item.productionData);
     }
+    this.reportTerminalOutcome(
+      item,
+      producedActorId ? "completed" : "failed",
+      producedActorId ? [producedActorId] : [],
+      producedActorId ? undefined : "no_legal_spawn_location"
+    );
 
     // No need to reset queue - items are self-contained with their own remainingTime
 
@@ -208,6 +219,7 @@ export class QueueComponent {
     if (this.researchComponent) {
       this.researchComponent.handleResearchComplete(item.researchData);
     }
+    this.reportTerminalOutcome(item, "completed", [`research:${item.researchData}`]);
 
     // No need to reset queue - items are self-contained with their own remainingTime
 
@@ -252,7 +264,7 @@ export class QueueComponent {
   /**
    * Public API: Cancel a production item
    */
-  cancelProductionItem(item: ProductionQueueItem): boolean {
+  cancelProductionItem(item: ProductionQueueItem, cancellationCommand?: CancelProductionCommand): boolean {
     for (let i = 0; i < this.sharedQueues.length; i++) {
       const queue = this.sharedQueues[i]!;
       const index = queue.queuedItems.findIndex(
@@ -268,10 +280,13 @@ export class QueueComponent {
 
         // Remove from queue
         queue.queuedItems.splice(index, 1);
+        this.reportTerminalOutcome(cancelledItem, "cancelled", [], "queue_item_cancelled");
 
         // Delegate refund to ProductionComponent
         if (this.productionComponent) {
-          this.productionComponent.handleProductionRefund(cancelledItem.productionData.costData, cancelledItem);
+          this.productionComponent.handleProductionRefund(
+            cancelledItem.productionData.costData, cancelledItem, cancellationCommand
+          );
           this.productionComponent.emitQueueChange({
             itemsFromAllQueues: this.allItems,
             type: "remove"
@@ -297,7 +312,7 @@ export class QueueComponent {
   /**
    * Public API: Cancel the first research item
    */
-  cancelResearchItem(): boolean {
+  cancelResearchItem(cancellationCommand?: CancelResearchCommand): boolean {
     for (const queue of this.sharedQueues) {
       const firstItem = queue.queuedItems[0];
       if (firstItem && firstItem.type === QueueItemType.Research && firstItem.researchData) {
@@ -305,11 +320,14 @@ export class QueueComponent {
 
         // Delegate refund to ResearchComponent
         if (this.researchComponent) {
-          this.researchComponent.handleResearchRefund(type, firstItem.remainingTime, firstItem.totalTime);
+          this.researchComponent.handleResearchRefund(
+            type, firstItem.remainingTime, firstItem.totalTime, firstItem, cancellationCommand
+          );
         }
 
         // Remove from queue
         queue.queuedItems.splice(0, 1);
+        this.reportTerminalOutcome(firstItem, "cancelled", [], "research_cancelled");
 
         // Emit cancellation
         if (this.researchComponent) {
@@ -452,57 +470,7 @@ export class QueueComponent {
    * Computed on-demand from sharedQueues
    */
   get items(): SharedQueueItem[] {
-    const items: SharedQueueItem[] = [];
-    let displayIndex = 0;
-
-    for (const queue of this.sharedQueues) {
-      for (let i = 0; i < queue.queuedItems.length; i++) {
-        const item = queue.queuedItems[i]!;
-
-        // Calculate progress (only for first item in queue)
-        const progress = i === 0 ? (this.getQueueProgress(queue) ?? 0) : 0;
-
-        // Handle production items
-        if (item.type === QueueItemType.Production && item.productionData) {
-          const actorDefinition = getPwActorDefinition(item.productionData.actorName, null);
-          const infoComponent = actorDefinition?.components?.info;
-          if (infoComponent?.smallImage) {
-            items.push({
-              type: SharedQueueItemType.Production,
-              id: `production-${displayIndex}`,
-              iconData: {
-                key: infoComponent.smallImage.key,
-                frame: infoComponent.smallImage.frame,
-                origin: infoComponent.smallImage.origin
-              },
-              progressPercent: progress,
-              displayIndex: displayIndex++,
-              productionData: item.productionData
-            });
-          }
-        }
-        // Handle research items
-        else if (item.type === QueueItemType.Research && item.researchData) {
-          const researchData = researchDefinitions[item.researchData];
-          if (researchData && researchData.icon) {
-            items.push({
-              type: SharedQueueItemType.Research,
-              id: `research-${item.researchData}`,
-              iconData: {
-                key: researchData.icon.key,
-                frame: researchData.icon.frame,
-                origin: { x: 0.5, y: 0.5 }
-              },
-              progressPercent: progress,
-              displayIndex: displayIndex++,
-              researchData: item.researchData
-            });
-          }
-        }
-      }
-    }
-
-    return items;
+    return projectSharedQueueItems(this.sharedQueues, (queue) => this.getQueueProgress(queue));
   }
 
   /**
@@ -526,11 +494,38 @@ export class QueueComponent {
     this.queueChangedSubject.next(this.items);
   }
 
+  private reportTerminalOutcome(
+    item: UnifiedQueueItem,
+    kind: Extract<GameCommandOutcomeKind, "completed" | "cancelled" | "failed">,
+    worldLinkIds: readonly string[],
+    detail?: string
+  ): void {
+    const context = item.commandContext;
+    if (!context) return;
+    const tick = getSceneService(this.gameObject.scene, SimulationTickService)?.currentTick ?? 0;
+    getSceneService(this.gameObject.scene, CommandBusService)?.reportPersistedOutcome({
+      schemaVersion: 1,
+      kind,
+      reason: kind === "cancelled" ? "cancelled" : kind === "failed" ? "application_failed" : "applied",
+      tick,
+      playerNumber: context.playerNumber,
+      commandId: context.execution.commandId,
+      commitmentKey: context.execution.commitmentKey,
+      authorityEpoch: context.execution.authorityEpoch,
+      sequence: context.execution.sequence,
+      ...(context.execution.intentId ? { intentId: context.execution.intentId } : {}),
+      ...(context.execution.effectId ? { effectId: context.execution.effectId } : {}),
+      actorIds: [...context.actorIds],
+      worldLinkIds: [...worldLinkIds],
+      detail
+    });
+  }
+
   /**
    * Get serialized data for save/load
    */
   getData(): UnifiedQueueItem[] {
-    return this.allItems;
+    return structuredClone(this.allItems);
   }
 
   /**
@@ -546,7 +541,7 @@ export class QueueComponent {
     items.forEach((item) => {
       const queue = this.findQueueWithLeastTime();
       if (queue) {
-        queue.queuedItems.push(item);
+        queue.queuedItems.push(structuredClone(item));
       }
     });
 
@@ -557,6 +552,11 @@ export class QueueComponent {
    * Cleanup
    */
   private destroy(): void {
+    if (this.gameObject.scene.sys.isActive()) {
+      for (const item of this.allItems) {
+        this.reportTerminalOutcome(item, "failed", [], "queue_owner_destroyed");
+      }
+    }
     this.simulationTickSub?.unsubscribe();
     this.productionComponent = undefined;
     this.researchComponent = undefined;

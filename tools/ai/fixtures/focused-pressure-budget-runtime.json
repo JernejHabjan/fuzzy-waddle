@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "evidenceKind": "runtime",
+  "scenarioIds": ["STRAT-01"],
+  "purpose": "Compare a 200-resource early raid with an otherwise identical safe economy, using real orders and committed AI posture.",
+  "driver": "runtime",
+  "status": "ready_for_runtime_execution",
+  "context": {
+    "mapId": "EmberEnclave",
+    "mapDigest": "resolved_from_candidate_assets",
+    "side": 2,
+    "rulesVersion": "probable-waffle-rules-v1"
+  },
+  "recipe": {
+    "mapLabel": "Ember Enclave",
+    "aiPlayerNumber": 2,
+    "simulationTimeScale": 100,
+    "checkpointTicks": [20, 100, 300, 600, 900, 1300, 2000, 3000],
+    "variants": [
+      {
+        "id": "tivara-early-raid",
+        "executionKind": "focused_preset",
+        "role": "subject",
+        "pairId": "raid-pressure",
+        "deadlineRationale": "Observe the raid, defensive spending and subsequent worker recovery window.",
+        "seed": 829101,
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "pressureBranch": "raid",
+        "determinismGroup": "early-raid",
+        "repetitions": 3,
+        "presetWorld": {
+          "fixtureId": "early-pressure-pair",
+          "actors": [
+            { "fixtureActorId": "worker-1", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 640, "y": 800, "z": 0 } },
+            { "fixtureActorId": "worker-2", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 672, "y": 824, "z": 0 } },
+            { "fixtureActorId": "worker-3", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 704, "y": 848, "z": 0 } },
+            { "fixtureActorId": "worker-4", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 640, "y": 872, "z": 0 } },
+            { "fixtureActorId": "worker-5", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 672, "y": 896, "z": 0 } },
+            { "fixtureActorId": "worker-6", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 704, "y": 920, "z": 0 } },
+            { "fixtureActorId": "slinger-1", "actorName": "TivaraSlingshotFemale", "owner": 2, "position": { "x": 400, "y": 840, "z": 0 } },
+            { "fixtureActorId": "slinger-2", "actorName": "TivaraSlingshotFemale", "owner": 2, "position": { "x": 432, "y": 864, "z": 0 } },
+            { "fixtureActorId": "slinger-3", "actorName": "TivaraSlingshotFemale", "owner": 2, "position": { "x": 464, "y": 888, "z": 0 } },
+            { "fixtureActorId": "granary", "actorName": "Granary", "owner": 2, "position": { "x": 800, "y": 880, "z": 0 } },
+            { "fixtureActorId": "field-1", "actorName": "Field", "owner": 2, "position": { "x": 864, "y": 816, "z": 0 } },
+            { "fixtureActorId": "field-2", "actorName": "Field", "owner": 2, "position": { "x": 896, "y": 896, "z": 0 } },
+            { "fixtureActorId": "raider-1", "actorName": "Banshee", "owner": 1, "position": { "x": 0, "y": 840, "z": 64 } },
+            { "fixtureActorId": "raider-2", "actorName": "Banshee", "owner": 1, "position": { "x": 32, "y": 864, "z": 64 } }
+          ],
+          "resourceGrants": [],
+          "resourceStarts": [{ "playerNumber": 2, "amounts": { "food": 200, "wood": 200, "stone": 200, "minerals": 200 } }]
+        },
+        "perturbations": [
+          { "id": "home-raid", "tick": 100, "kind": "human_attack_ai_home", "maximumAttackers": 2, "attackerObjectNames": ["Banshee"] }
+        ]
+      },
+      {
+        "id": "tivara-safe-control",
+        "executionKind": "focused_preset",
+        "role": "control",
+        "pairId": "raid-pressure",
+        "deadlineRationale": "Observe the same worker recovery window without an enemy raid.",
+        "seed": 829101,
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "pressureBranch": "safe_control",
+        "determinismGroup": "early-safe-control",
+        "repetitions": 3,
+        "presetWorld": {
+          "fixtureId": "early-pressure-pair",
+          "actors": [
+            { "fixtureActorId": "worker-1", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 640, "y": 800, "z": 0 } },
+            { "fixtureActorId": "worker-2", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 672, "y": 824, "z": 0 } },
+            { "fixtureActorId": "worker-3", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 704, "y": 848, "z": 0 } },
+            { "fixtureActorId": "worker-4", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 640, "y": 872, "z": 0 } },
+            { "fixtureActorId": "worker-5", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 672, "y": 896, "z": 0 } },
+            { "fixtureActorId": "worker-6", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 704, "y": 920, "z": 0 } },
+            { "fixtureActorId": "slinger-1", "actorName": "TivaraSlingshotFemale", "owner": 2, "position": { "x": 400, "y": 840, "z": 0 } },
+            { "fixtureActorId": "slinger-2", "actorName": "TivaraSlingshotFemale", "owner": 2, "position": { "x": 432, "y": 864, "z": 0 } },
+            { "fixtureActorId": "slinger-3", "actorName": "TivaraSlingshotFemale", "owner": 2, "position": { "x": 464, "y": 888, "z": 0 } },
+            { "fixtureActorId": "granary", "actorName": "Granary", "owner": 2, "position": { "x": 800, "y": 880, "z": 0 } },
+            { "fixtureActorId": "field-1", "actorName": "Field", "owner": 2, "position": { "x": 864, "y": 816, "z": 0 } },
+            { "fixtureActorId": "field-2", "actorName": "Field", "owner": 2, "position": { "x": 896, "y": 896, "z": 0 } },
+            { "fixtureActorId": "raider-1", "actorName": "Banshee", "owner": 1, "position": { "x": 0, "y": 840, "z": 64 } },
+            { "fixtureActorId": "raider-2", "actorName": "Banshee", "owner": 1, "position": { "x": 32, "y": 864, "z": 64 } }
+          ],
+          "resourceGrants": [],
+          "resourceStarts": [{ "playerNumber": 2, "amounts": { "food": 200, "wood": 200, "stone": 200, "minerals": 200 } }]
+        }
+      }
+    ]
+  },
+  "assertions": {
+    "STRAT-01": {
+      "maximumTick": 3000,
+      "minimumDecisions": 10,
+      "minimumAppliedCommands": 1,
+      "requiredAiFactions": ["Tivara"],
+      "requiredPresetFixtureId": "early-pressure-pair",
+      "requirePressureResponse": true
+    }
+  },
+  "deliberatelyBrokenOracle": "accept_the_debug_posture_alone_without_a_visible_raider_real_dispatch_applied_response_and_safe_control_growth"
+}

@@ -17,6 +17,7 @@ import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import type { OwnerDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/owner-definition";
 import { markGameObjectAmbientResponsive } from "../../world/services/lighting/lighting-game-object-meta";
 import { SceneLightingService } from "../../world/services/lighting/scene-lighting.service";
+import { arePlayersAllied } from "../../data/player-relation";
 
 export class OwnerComponent {
   static readonly ZIndex = 1;
@@ -152,7 +153,7 @@ export class OwnerComponent {
     if (!ownerComponent) {
       return false;
     }
-    return ownerComponent.getOwner() === this.getOwner();
+    return arePlayersAllied(this.gameObject.scene, this.getOwner(), ownerComponent.getOwner());
   }
 
   private assignOwnerColor(): void {

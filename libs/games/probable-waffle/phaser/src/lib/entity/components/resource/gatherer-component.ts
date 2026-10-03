@@ -83,6 +83,8 @@ export class GathererComponent {
   private cooldownTickSub?: Subscription;
   private simulationTickService?: SimulationTickService;
   private cooldownStartedTick: number | null = null;
+  private pendingCurrentResourceSourceId: string | null = null;
+  private pendingPreviousResourceSourceId: string | null = null;
 
   onResourceGathered: Subject<[GameObject, GameObject, GatherData, number]> = new Subject<
     [GameObject, GameObject, GatherData, number]
@@ -106,7 +108,11 @@ export class GathererComponent {
     this.animationActorComponent = getActorComponent(this.gameObject, AnimationActorComponent);
     this.actorTranslateComponent = getActorComponent(this.gameObject, ActorTranslateComponent);
     this.simulationTickService = getSceneService(this.gameObject.scene, SimulationTickService);
+    if (this.remainingCooldown > 0 && this.cooldownStartedTick === null) {
+      this.cooldownStartedTick = this.simulationTickService?.currentTick ?? null;
+    }
     this.cooldownTickSub = this.simulationTickService?.tick$.subscribe(() => {
+      this.resolveRestoredSourceAssignments();
       this.onSimulationTick();
     });
   }
@@ -595,7 +601,9 @@ export class GathererComponent {
 
   setData(data: Partial<GathererComponentData>) {
     if (data.carriedResourceAmount !== undefined) {
-      this.carriedResourceAmount = data.carriedResourceAmount;
+      this.carriedResourceAmount = Number.isFinite(data.carriedResourceAmount)
+        ? Math.max(0, data.carriedResourceAmount)
+        : 0;
       if (this.carriedResourceAmount <= 0 && data.carriedResourceType === undefined) {
         this.carriedResourceType = null;
       }
@@ -604,17 +612,64 @@ export class GathererComponent {
       this.carriedResourceType = data.carriedResourceType;
     }
     if (data.remainingCooldown !== undefined) {
-      this.remainingCooldown = data.remainingCooldown;
+      this.remainingCooldown = Number.isFinite(data.remainingCooldown) ? Math.max(0, data.remainingCooldown) : 0;
       // Fixes gather cooldown drift by anchoring restored cooldown start to the current simulation tick.
       this.cooldownStartedTick = this.remainingCooldown > 0 ? (this.simulationTickService?.currentTick ?? null) : null;
     }
+    if (data.currentResourceSourceId !== undefined) {
+      this.pendingCurrentResourceSourceId = this.normalizeActorId(data.currentResourceSourceId);
+    }
+    if (data.previousResourceSourceId !== undefined) {
+      this.pendingPreviousResourceSourceId = this.normalizeActorId(data.previousResourceSourceId);
+    }
+    if (data.previousResourceType !== undefined) this.previousResourceType = data.previousResourceType;
+    this.resolveRestoredSourceAssignments();
   }
 
   getData(): GathererComponentData {
     return {
       carriedResourceAmount: this.carriedResourceAmount,
       carriedResourceType: this.carriedResourceType as any,
-      remainingCooldown: this.remainingCooldown
+      remainingCooldown: this.remainingCooldown,
+      currentResourceSourceId: this.actorId(this.currentResourceSource) ?? this.pendingCurrentResourceSourceId,
+      previousResourceSourceId: this.actorId(this.previousResourceSource) ?? this.pendingPreviousResourceSourceId,
+      previousResourceType: this.previousResourceType
     } satisfies GathererComponentData;
+  }
+
+  private resolveRestoredSourceAssignments(): void {
+    const actorIndex = getSceneService(this.gameObject.scene, ActorIndexSystem);
+    if (!actorIndex) return;
+    if (this.pendingCurrentResourceSourceId) {
+      const source = actorIndex.getActorById(this.pendingCurrentResourceSourceId);
+      if (source && this.restoreResourceSource(source)) this.pendingCurrentResourceSourceId = null;
+    }
+    if (this.pendingPreviousResourceSourceId) {
+      const source = actorIndex.getActorById(this.pendingPreviousResourceSourceId);
+      if (source) {
+        this.previousResourceSource = source;
+        this.pendingPreviousResourceSourceId = null;
+      }
+    }
+  }
+
+  private actorId(actor: GameObject | null): string | null {
+    return actor ? (getActorComponent(actor, IdComponent)?.id ?? null) : null;
+  }
+
+  private normalizeActorId(value: unknown): string | null {
+    return typeof value === "string" && value.length > 0 ? value : null;
+  }
+
+  private restoreResourceSource(source: GameObject): boolean {
+    if (this.currentResourceSource === source) return true;
+    const sourceComponent = getActorComponent(source, ResourceSourceComponent);
+    if (!sourceComponent) return false;
+    if (this.currentResourceSource) {
+      getActorComponent(this.currentResourceSource, ResourceSourceComponent)?.unassignGatherer(this.gameObject);
+    }
+    this.currentResourceSource = source;
+    sourceComponent.assignGatherer(this.gameObject);
+    return true;
   }
 }

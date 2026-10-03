@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "benchmark": {
+    "id": "repository-workflows",
+    "version": 1,
+    "beforeDefinitionDigest": "8987bc044068c25c666dfd7e900f092379ad3270138d07893517f9035cd8c228",
+    "currentDefinitionDigest": "c9a02adfb2069cc10d0aebe1807225b1889a01d2cffc8e39234b92fc26478dae"
+  },
+  "recordedOn": "2026-09-12",
+  "provenance": {
+    "revision": "417ef777b8426591326a91484edd481189bdf1b3",
+    "worktreeStatusAtMeasurement": ["M .run/start_portal.run.xml", "?? tools/agent/"],
+    "nodeVersion": "v24.18.0"
+  },
+  "status": "measured",
+  "tokenTelemetry": {
+    "status": "unavailable",
+    "reason": "No stable model/API telemetry source was available. All values below are named execution/context proxies, not token counts."
+  },
+  "qualityInvariantIds": ["same-required-evidence", "fail-closed", "preserve-provenance", "reproduce-seeded-failure"],
+  "workflows": [
+    {
+      "id": "small-typescript-change",
+      "outcome": "passed",
+      "contextBytes": 5355,
+      "commandWallMilliseconds": 3957.88,
+      "outputBytes": 1026,
+      "outputLines": 21,
+      "cacheTextIndicators": 2,
+      "declaredStarts": { "directProcess": 1, "server": 0, "browser": 0, "worker": 0 }
+    },
+    {
+      "id": "cross-project-change",
+      "outcome": "passed",
+      "contextBytes": 58181,
+      "commandWallMilliseconds": 2533.88,
+      "outputBytes": 130,
+      "outputLines": 2,
+      "cacheTextIndicators": 0,
+      "declaredStarts": { "directProcess": 1, "server": 0, "browser": 0, "worker": 0 }
+    },
+    {
+      "id": "docs-skill-update",
+      "outcome": "passed",
+      "contextBytes": 14729,
+      "commandWallMilliseconds": 1399.13,
+      "outputBytes": 133,
+      "outputLines": 10,
+      "cacheTextIndicators": 0,
+      "declaredStarts": { "directProcess": 1, "server": 0, "browser": 0, "worker": 0 }
+    },
+    {
+      "id": "unfamiliar-source-discovery",
+      "outcome": "unavailable",
+      "expectedOutcome": "unavailable",
+      "reason": "The initial external discovery provider was unavailable in this environment.",
+      "contextBytes": 6203,
+      "commandWallMilliseconds": 2.46,
+      "outputBytes": 0,
+      "outputLines": 0,
+      "cacheTextIndicators": 0,
+      "declaredStarts": { "directProcess": 1, "server": 0, "browser": 0, "worker": 0 }
+    },
+    {
+      "id": "focused-test-repair",
+      "outcome": "passed",
+      "contextBytes": 6003,
+      "commandWallMilliseconds": 3627.76,
+      "outputBytes": 1027,
+      "outputLines": 21,
+      "cacheTextIndicators": 2,
+      "declaredStarts": { "directProcess": 1, "server": 0, "browser": 0, "worker": 0 }
+    },
+    {
+      "id": "skirmish-runtime-scenario",
+      "outcome": "passed",
+      "contextBytes": 104286,
+      "commandWallMilliseconds": 101168.62,
+      "outputBytes": 122,
+      "outputLines": 4,
+      "cacheTextIndicators": 0,
+      "declaredStarts": { "directProcess": 1, "server": 1, "browser": 1, "worker": 1 }
+    }
+  ],
+  "totals": {
+    "workflows": 6,
+    "directProcessStarts": 6,
+    "declaredServerStarts": 1,
+    "declaredBrowserStarts": 1,
+    "declaredWorkerStarts": 1,
+    "commandWallMilliseconds": 112689.73,
+    "contextBytes": 194757,
+    "outputBytes": 2438,
+    "outputLines": 58,
+    "cacheTextIndicators": 4,
+    "retainedLogBytes": 2438
+  },
+  "observations": [
+    "The runtime scenario used 89.78 percent of measured command wall time; process reuse is a candidate for later evidence-led work.",
+    "The initial discovery provider was unavailable; a repository-native indexed replacement is measured separately below.",
+    "Cache indicators are text occurrences only; this baseline does not claim Nx cache hit or miss counts."
+  ],
+  "replacementRemeasurement": {
+    "workflowId": "unfamiliar-source-discovery",
+    "outcome": "passed",
+    "contextBytes": 4566,
+    "commandWallMilliseconds": 11.86,
+    "outputBytes": 199,
+    "outputLines": 3,
+    "cacheTextIndicators": 0,
+    "declaredStarts": { "directProcess": 1, "server": 0, "browser": 0, "worker": 0 }
+  },
+  "nextBoundary": "Define generic command/adapter/result contracts and deterministic output budgets before implementing doctor/context."
+}

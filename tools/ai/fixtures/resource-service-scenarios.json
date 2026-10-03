@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "scenarioIds": ["ECO-01", "ECO-02", "ECO-06"],
+  "purpose": "Definition-backed wood drop-offs, useful duplicates, destroyed-service replacement, and loaded-worker ownership.",
+  "driver": "pure",
+  "seeds": [759101, 759102, 759103],
+  "context": {
+    "mapId": "resource-service-pure",
+    "mapDigest": "typed-forest-and-dropoff-service",
+    "side": 1,
+    "faction": "Tivara",
+    "rulesVersion": "probable-waffle-rules-v1",
+    "contractVersions": { "scenario": 1, "brain": 1, "observation": 1, "command": 1 }
+  },
+  "assertionPolicy": {
+    "repetitions": 3,
+    "requires": ["definition-backed-resource-compatibility", "legal-local-footprint", "catalog-priced-claim", "beneficial-second-deposit", "destroyed-dropoff-replacement", "loaded-worker-order-preservation", "canonical-digest"],
+    "forbids": ["one-per-building-type-cap", "incompatible-dropoff", "unneeded-served-forest-deposit", "depleted-source-rebuild-loop"]
+  }
+}

@@ -36,6 +36,24 @@ import { ProbableWaffleSceneEventName } from "../../../world/services/recovery/p
  */
 type GameObject = Phaser.GameObjects.GameObject;
 
+export function buildsWithoutAssignedWorkers(
+  definition: Pick<ConstructionSiteDefinition, "startImmediately" | "progressMadeAutomatically" | "maxAssignedBuilders">
+): boolean {
+  return (
+    definition.startImmediately && definition.progressMadeAutomatically > 0 && definition.maxAssignedBuilders === 0
+  );
+}
+
+export function constructionVitalityIncrement(
+  totalVitalityToGain: number,
+  productionTime: number,
+  constructionProgress: number
+): number {
+  if (totalVitalityToGain <= 0) return 0;
+  if (productionTime <= 0) return totalVitalityToGain;
+  return (totalVitalityToGain / productionTime) * constructionProgress;
+}
+
 export class ConstructionSiteComponent {
   public progressPercentage = 0;
   public constructionProgressPercentageChanged: BehaviorSubject<number> = new BehaviorSubject<number>(
@@ -134,7 +152,11 @@ export class ConstructionSiteComponent {
       const totalHealthToGain = maxHealth - initialHealth;
 
       // Calculate health increment based on total health to gain
-      const healthIncrement = (totalHealthToGain / productionDefinition.productionTime) * constructionProgress;
+      const healthIncrement = constructionVitalityIncrement(
+        totalHealthToGain,
+        productionDefinition.productionTime,
+        constructionProgress
+      );
       healthComponent.healthComponentData.health += healthIncrement;
       healthComponent.healthComponentData.health = Math.min(healthComponent.healthComponentData.health, maxHealth);
 
@@ -143,7 +165,11 @@ export class ConstructionSiteComponent {
       if (maxArmour) {
         const initialArmour = maxArmour * this.constructionSiteDefinition.initialHealthPercentage;
         const totalArmourToGain = maxArmour - initialArmour;
-        const armourIncrement = (totalArmourToGain / productionDefinition.productionTime) * constructionProgress;
+        const armourIncrement = constructionVitalityIncrement(
+          totalArmourToGain,
+          productionDefinition.productionTime,
+          constructionProgress
+        );
         healthComponent.healthComponentData.armour += armourIncrement;
         healthComponent.healthComponentData.armour = Math.min(healthComponent.healthComponentData.armour, maxArmour);
       }
@@ -191,7 +217,7 @@ export class ConstructionSiteComponent {
     if (productionDefinition.productionTime === PaymentType.PayImmediately) {
       const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
       const owner = ownerComponent?.getOwner();
-      if (!owner) throw new Error("Owner not found");
+      if (owner === undefined) throw new Error("Owner not found");
       const player = getPlayer(this.gameObject.scene, owner);
       if (!player) throw new Error("PlayerController not found");
 
@@ -252,6 +278,11 @@ export class ConstructionSiteComponent {
 
   get isFinished() {
     return this.state === ConstructionStateEnum.Finished;
+  }
+
+  /** Automatic sites such as Fields must not be destroyed when no builder can be assigned. */
+  get buildsWithoutAssignedWorkers() {
+    return buildsWithoutAssignedWorkers(this.constructionSiteDefinition);
   }
 
   canAssignBuilder() {

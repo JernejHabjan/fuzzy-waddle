@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "evidenceKind": "runtime",
+  "scenarioIds": ["ECO-08"],
+  "purpose": "Run both real faction starts, prove no-worker bootstrap and delivered income, and require a focused six-worker economy to grow beyond its recovery floor from equal 200-resource balances.",
+  "driver": "runtime",
+  "status": "ready_for_runtime_execution",
+  "context": {
+    "mapId": "EmberEnclave+RiverCrossing",
+    "mapDigest": "resolved_from_candidate_assets",
+    "side": 2,
+    "rulesVersion": "probable-waffle-rules-v1"
+  },
+  "recipe": {
+    "mapLabel": "Ember Enclave",
+    "aiPlayerNumber": 2,
+    "simulationTimeScale": 100,
+    "checkpointTicks": [20, 400, 900, 1600, 3000],
+    "variants": [
+      {
+        "id": "tivara-no-worker-opening",
+        "executionKind": "focused_natural",
+        "role": "standalone",
+        "setupRationale": "The zero-worker opening must start from the ordinary lobby world.",
+        "deadlineRationale": "Worker creation and first delivered income can require the full opening window.",
+        "seed": 759081,
+        "mapLabel": "Ember Enclave",
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal"
+      },
+      {
+        "id": "skaduwee-opening",
+        "executionKind": "focused_natural",
+        "role": "standalone",
+        "setupRationale": "The faction opening must start from the ordinary lobby world.",
+        "deadlineRationale": "Worker creation and first delivered income can require the full opening window.",
+        "seed": 759082,
+        "mapLabel": "River Crossing",
+        "aiFaction": "Skaduwee",
+        "humanFaction": "Tivara",
+        "difficulty": "Normal"
+      },
+      {
+        "id": "tivara-workforce-growth",
+        "executionKind": "focused_preset",
+        "role": "standalone",
+        "deadlineRationale": "A completed extra worker must persist beyond the initial recovery floor.",
+        "scenarioIds": ["ECO-08"],
+        "seed": 759083,
+        "mapLabel": "Ember Enclave",
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "determinismGroup": "workforce-growth",
+        "repetitions": 3,
+        "presetWorld": {
+          "fixtureId": "workforce-growth",
+          "actors": [
+            { "fixtureActorId": "worker-1", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 640, "y": 800, "z": 0 } },
+            { "fixtureActorId": "worker-2", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 672, "y": 824, "z": 0 } },
+            { "fixtureActorId": "worker-3", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 704, "y": 848, "z": 0 } },
+            { "fixtureActorId": "worker-4", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 640, "y": 872, "z": 0 } },
+            { "fixtureActorId": "worker-5", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 672, "y": 896, "z": 0 } },
+            { "fixtureActorId": "worker-6", "actorName": "TivaraWorkerMale", "owner": 2, "position": { "x": 704, "y": 920, "z": 0 } },
+            { "fixtureActorId": "granary", "actorName": "Granary", "owner": 2, "position": { "x": 800, "y": 880, "z": 0 } },
+            { "fixtureActorId": "field-1", "actorName": "Field", "owner": 2, "position": { "x": 864, "y": 816, "z": 0 } },
+            { "fixtureActorId": "field-2", "actorName": "Field", "owner": 2, "position": { "x": 896, "y": 896, "z": 0 } }
+          ],
+          "resourceGrants": [],
+          "resourceStarts": [
+            { "playerNumber": 2, "amounts": { "food": 200, "wood": 200, "stone": 200, "minerals": 200 } }
+          ]
+        }
+      }
+    ]
+  },
+  "assertions": {
+    "ECO-08": {
+      "minimumDecisions": 20,
+      "minimumAppliedCommands": 4,
+      "requiredOpeningSteps": [
+        "step:opening:bootstrap-worker",
+        "step:opening:supply-safety",
+        "step:opening:first-producer",
+        "step:opening:sustainable-food"
+      ],
+      "requireNoInitialWorker": true,
+      "requireDeliveredIncome": true,
+      "requiredAiFactions": ["Tivara", "Skaduwee"],
+      "requiredWorkerGrowth": {
+        "variantId": "tivara-workforce-growth",
+        "initialWorkerCount": 6,
+        "minimumPeakWorkerCount": 7,
+        "minimumFinalWorkerCount": 7,
+        "latestTick": 3000
+      }
+    }
+  },
+  "deliberatelyBrokenOracle": "require_initial_worker_before_the_first_production_can_complete_or_accept_desired_worker_debug_text_without_observed_growth"
+}
