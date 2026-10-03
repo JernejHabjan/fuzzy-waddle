@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, ChangeDetectionStrategy } from "@angular/core";
 import { Router } from "@angular/router";
 import { AuthService } from "../../auth/auth.service";
 
@@ -8,6 +8,7 @@ import { HomeNavComponent } from "../../home-nav/home-nav.component";
   selector: "fuzzy-waddle-profile-nav",
   templateUrl: "./profile-nav.component.html",
   styleUrls: ["./profile-nav.component.scss"],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [HomeNavComponent]
 })
 export class ProfileNavComponent {

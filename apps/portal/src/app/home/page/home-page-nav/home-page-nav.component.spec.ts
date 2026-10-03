@@ -2,9 +2,10 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { HomePageNavComponent } from "./home-page-nav.component";
 import { FontAwesomeTestingModule } from "@fortawesome/angular-fontawesome/testing";
 import { provideRouter } from "@angular/router";
-import { Component } from "@angular/core";
+import { Component, ChangeDetectionStrategy } from "@angular/core";
 
-@Component({ selector: "fuzzy-waddle-home-page-nav", template: "", standalone: true, imports: [] })
+@Component({ selector: "fuzzy-waddle-home-page-nav", template: "", standalone: true, changeDetection: ChangeDetectionStrategy.Eager,
+ imports: [] })
 export class HomePageNavTestingComponent {}
 
 describe("HomePageNavComponent", () => {

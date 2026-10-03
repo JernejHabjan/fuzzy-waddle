@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, ChangeDetectionStrategy } from "@angular/core";
 import type { OnInit } from "@angular/core";
 import { SpectateService } from "./spectate.service";
 import { type LittleMuncherRoom } from "@fuzzy-waddle/little-muncher-protocol";
@@ -7,6 +7,7 @@ import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/se
 @Component({
   selector: "little-muncher-spectate",
   templateUrl: "./spectate.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ["./spectate.component.scss"]
 })
 export class SpectateComponent implements OnInit {

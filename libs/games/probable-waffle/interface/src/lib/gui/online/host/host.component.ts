@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, ChangeDetectionStrategy } from "@angular/core";
 import { GameInstanceClientService } from "../../../communicators/game-instance-client.service";
 import {
   ProbableWaffleGameInstanceType,
@@ -12,6 +12,7 @@ import { FormsModule } from "@angular/forms";
   selector: "probable-waffle-host",
   templateUrl: "./host.component.html",
   styleUrls: ["./host.component.scss"],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule]
 })
 export class HostComponent {

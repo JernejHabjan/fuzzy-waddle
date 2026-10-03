@@ -1,4 +1,4 @@
-import { Component, inject, type OnInit } from "@angular/core";
+import { Component, inject, type OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { DatePipe } from "@angular/common";
 import { AuthService } from "@fuzzy-waddle/platform-identity/client/auth/auth.service";
 import { environment } from "@fuzzy-waddle/environments/environment";
@@ -27,6 +27,7 @@ export type DisplayGame = {
   templateUrl: "./home-page.component.html",
   styleUrls: ["./home-page.component.scss"],
   imports: [ChatFloatComponent, RouterLink, HomePageNavComponent, FaIconComponent, DatePipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: AngularHost.contentFlexFullHeight
 })
 export class HomePageComponent implements OnInit {

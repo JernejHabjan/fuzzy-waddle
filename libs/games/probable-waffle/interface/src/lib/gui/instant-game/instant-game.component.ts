@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, ChangeDetectionStrategy } from "@angular/core";
 import type { OnInit } from "@angular/core";
 
 import { GameInstanceClientService } from "../../communicators/game-instance-client.service";
@@ -16,6 +16,7 @@ import { AngularHost } from "@fuzzy-waddle/platform-game-host/angular/consts";
   selector: "fuzzy-waddle-instant-game",
   imports: [LoaderComponent],
   host: AngularHost.contentFlexFullHeightCenter,
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<fuzzy-waddle-loader />`
 })
 export class InstantGameComponent implements OnInit {

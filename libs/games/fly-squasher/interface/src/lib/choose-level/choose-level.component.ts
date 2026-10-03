@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, ChangeDetectionStrategy } from "@angular/core";
 import { FlySquasherLevels } from "@fuzzy-waddle/fly-squasher-protocol";
 import { KeyValuePipe } from "@angular/common";
 import { RouterLink } from "@angular/router";
@@ -11,6 +11,7 @@ import { CenterWrapperComponent } from "@fuzzy-waddle/platform-game-host/angular
   templateUrl: "./choose-level.component.html",
   styleUrls: ["./choose-level.component.scss"],
   imports: [RouterLink, HomeNavComponent, CenterWrapperComponent, KeyValuePipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: AngularHost.contentFlexFullHeight
 })
 export class ChooseLevelComponent {

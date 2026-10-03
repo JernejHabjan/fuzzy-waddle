@@ -1,4 +1,4 @@
-import { Component, inject, signal, type OnInit } from "@angular/core";
+import { Component, inject, signal, type OnInit, ChangeDetectionStrategy } from "@angular/core";
 
 import { environment } from "@fuzzy-waddle/environments/environment";
 import { RouterLink } from "@angular/router";
@@ -12,6 +12,7 @@ import { faGoogle } from "@fortawesome/free-brands-svg-icons";
   selector: "probable-waffle-main-menu-buttons",
   imports: [RouterLink, FaIconComponent],
   templateUrl: "./main-menu-buttons.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: "./main-menu-buttons.component.scss"
 })
 export class MainMenuButtonsComponent implements OnInit {

@@ -10,7 +10,7 @@ import { ServiceWorkerModule } from "@angular/service-worker";
 import { bootstrapApplication, BrowserModule } from "@angular/platform-browser";
 import { provideRouter, withComponentInputBinding } from "@angular/router";
 import { accessTokenInterceptor } from "@fuzzy-waddle/platform-identity/client/auth/access-token.interceptor";
-import { provideHttpClient, withInterceptors } from "@angular/common/http";
+import { provideHttpClient, withInterceptors, withXhr } from "@angular/common/http";
 import { AuthGuard } from "@fuzzy-waddle/platform-identity/client/auth/auth.guard";
 import { authReadyInterceptor } from "@fuzzy-waddle/platform-identity/client/auth/auth-ready.interceptor";
 import { portalRoutes } from "./app/app.routes";
@@ -36,6 +36,6 @@ bootstrapApplication(AppComponent, {
       SocketIoModule.forRoot(environment.socketIoConfig)
     ),
     AuthGuard,
-    provideHttpClient(withInterceptors([authReadyInterceptor, accessTokenInterceptor]))
+    provideHttpClient(withXhr(), withInterceptors([authReadyInterceptor, accessTokenInterceptor]))
   ]
 }).catch((err) => console.error(err));
