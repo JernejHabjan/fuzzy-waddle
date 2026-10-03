@@ -21,6 +21,13 @@ const config = {
 };
 
 describe("runtime preset neutral source validation", () => {
+  it("accepts only the explicit production capture opt-in", () => {
+    expect(isAiRuntimeBrowserTestConfigV1({ ...config, captureProduction: true })).toBe(true);
+    for (const captureProduction of [false, "true", 1, {}]) {
+      expect(isAiRuntimeBrowserTestConfigV1({ ...config, captureProduction })).toBe(false);
+    }
+  });
+
   it("accepts an explicitly neutral fixture actor for authoritative application", () => {
     expect(isAiRuntimeBrowserTestConfigV1(config)).toBe(true);
   });

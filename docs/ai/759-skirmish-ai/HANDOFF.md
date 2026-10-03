@@ -6,58 +6,66 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
-**Next session (user policy, 2026-10-02):** continue the related PRO-03/06/07 production runtime-capture and legal
-setup work on **GPT-6.1 Sol / high**; no model switch is needed. Evidence contracts and the first future/resilience
-policy owners are authored, but authority capture, legal focused worlds and runtime integration remain. Read the
-[policy checkpoint](follow-ups/runtime-matrix-ci.md#production-policy-checkpoint-2026-10-02-unverified), then the
-selected queue/resource/setup owners. Keep the adapter and authority work together; defer all execution, commit/push
-and pause at the next bounded authoring boundary. Do not use synthetic oracle records as browser evidence.
+**Next session (user policy, 2026-10-03):** continue related PRO-03/06/07 item-level authority and legal setup on
+**GPT-6.1 Sol / high**. Queue liabilities, passive raw capture and contract parsing are authored; reliable causal
+attribution, legal paid worlds and normalized runtime evidence remain. Read the
+[raw-capture checkpoint](follow-ups/runtime-matrix-ci.md#production-raw-capture-checkpoint-2026-10-03-unverified),
+then `testing/ai-runtime-production-capture.ts`, shared queue/production/research owners and the independent refund
+oracle. Keep these authority decisions together; defer all execution, commit/push and pause at the next bounded
+source-authoring boundary. Do not use raw diagnostics or synthetic oracle fixtures as accepted production evidence.
 
-- Current step: #815/#816 PRO-03/06 **production-policy authoring**, authored/unverified. This is not runtime
-  migration, behavior acceptance or issue completion. The batch began at `05aa5a5de37d7cd02d4cb0a352193cb37a51e23d`
-  on `feature/759-skirmish-ai`, worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`. The commit containing this
-  ledger owns the revision; verify local/remote SHA on resume. Actual model/effort is not exposed here.
-- Changed source anchors: gameplay `planning/ai-production-transition.ts`, `ai-production-transition-claims.ts`,
-  `reconcile-ai-production-reservations.ts`, `ai-producer-safety.ts`, military force/capacity/unit proposals and macro;
-  `contracts/brain-state/ai-production-transition-v1.ts`, its guard, economy state and manager patch/projection;
-  canonical serializer plus extracted mission-state ordering and macro economy projection. Phaser observation
-  `ai-production-timing.ts`/catalog now project definition duration, physical queue count and one-builder work rate.
-- PRO-03 policy: a normal post-opening decision may commit an affordable visible objective with idle production,
-  justified additional throughput and definition timing. A single unit cycle allows admission/travel before its fixed
-  start date; it is not proof of actual readiness. Capacity can build early; the selected product admits at the start.
-  Dates, product, target and plan/demand IDs persist. Changed objective/essential defense abandons optional work;
-  missed deadlines expire without sliding or reviving the same objective. Optional forecasts are lineage/budget
-  expectations, not reserved cash or paid work. Applied outcomes preserve dispatched/applied claims until authoritative
-  terminal outcomes. Older V1 saves have no transition; malformed present schedules reject.
-- PRO-06 policy: current visible effective ground weapons, minimum range and high-ground bonus identify exposure.
-  An evidenced useful deficit with no safe compatible producer may add one survivor, with priced admission and a
-  conservative known-cell ground path plus safe footprint. Saved critical demand permits useful replacement after
-  all compatible capacity is lost. Known safe alternatives and satisfied/low-value demand decline redundancy.
-  Shared construction application still owns actual footprint/path/payment legality. Height transitions and unknown
-  construction cells conservatively decline this placement path; they are not declared unreachable by the game.
-- Authored pure cases: `testing/ai-production-scenarios-policy.spec.ts` covers both factions' fixed future dates,
-  prebuild/dated admission, abandonment and unspent claims, same-boundary dispatch/application retention, terminal
-  cleanup, save round-trip/older defaults/malformed dates, obligations, expiry, repeated digests, safe/low-value/
-  no-demand/hidden/stale/island controls, survivor output after loss and critical replacement. The existing registered
-  PRO-03 macro case now asserts a real future schedule instead of the old count-only approximation. These permitted
-  pure facts are not real-game outcome records or a completed pure/runtime family. Timing projection cases are unrun.
-- Source-review closure: (1) definition timing and normal macro consumers; (2) stable future schedule and unit/capacity
-  linkage; (3) reversible release versus outcome-owned spending; (4) fair resilience and conservative legal-site
-  proposals; (5) serialization/older-save guard and both-faction authored cases; (6) updated resume ownership.
-  Implementation review, Omission Audit and separate Final Closure Audit used source inspection only. No source
-  baseline was refreshed; existing comments were preserved. No shared gameplay queue/refund timing changed.
-- Remaining authority gap: Phaser resources still project `reservedUnspent: 0` and `obligationsDue: 0`. Establish their
-  actual provenance and a test-owned ordered queue/resource adapter, including cancellation request before synchronous
-  application/refund. Capture real stable schedules, lanes, effective weapon exposure and navigation; schema-validate
-  per-variant production contracts, then author legal paid train/research/cancel setups and per-faction causal pairs.
-  Integrate terminal schedule lifecycle with the independent oracle's retained commitment snapshots honestly.
-- Fail-closed integration remains: no adapter fills `productionEvidence`; natural PRO-03/06/07 still fail the mandatory
-  contract/branch gate. No new runnable recipe, manifest coverage increment or passing evidence is claimed. PRO-07
-  remains contract plus partial real-arbiter cases. No catalog generation ran because registrations did not change.
-- All tests, E2E, simulations, lint/type/build/editor/schema validation and doctor/context remain deferred. At the final
-  gate include the policy suite (selected by the existing `ai-production-scenarios` matrix pattern), timing projection,
-  serializer/migration, macro/air/capacity and generic production oracle suites before eventual focused browser worlds.
-  Prior PRO-04 ready/seeded-queue pairs remain authored/unverified; legal sites, paid application and timing need proof.
+- Current step: #815/#816 **production authority projection/raw-capture authoring**, authored/unverified. The batch
+  began at `c2bce7d2a4e2296bbbbaede891c4b796866d957d` on `feature/759-skirmish-ai`, worktree
+  `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`; local/remote matched. The commit containing this ledger owns the
+  new revision; verify local/remote SHA on resume. Actual model/effort is unavailable. No issue/family is complete.
+- Source owners: Phaser `observation/ai-production-obligations.ts` and pipeline now project remaining owned queue
+  liability. Test-owned `ai-runtime-production-capture.ts`, queue/fact/capture contracts, queue reader and gated
+  installer retain ordered callbacks, real balance changes, physical lanes and stable item identities. Browser
+  config/host/preset setup and portal `skirmish-ai-runtime-production-capture.ts`/variant setup/runner/result retain
+  tick-zero plus settled-checkpoint raw captures. Node `skirmish-runtime-production-contract-fixture.mjs` is wired
+  into the fixture reader for the new production-contract field. Registrations/manifest denominator are unchanged.
+- Authority decision: current `QueueComponent` passes the full stored cost vector to payment on **every successful
+  fixed tick** for `PayOverTime`; failed payment advances neither time nor liability. Remaining liability is that
+  vector times remaining successful ticks, including waiting items, not a prorated total price. Immediate
+  production/research already paid have zero remaining liability. No shipped prefab reference to `PayOverTime` was
+  found in the inspected definitions. Shared payment/refund behavior was preserved. The independent oracle's older
+  total-price assumption still needs reconciliation with this actual authority before a per-tick world can pass.
+- Capture is explicitly diagnostic: `productionCapture` differs from `productionEvidence`. Facts retain callback
+  sequence, current observation-of-callback tick and original outcome/command ticks. `command_delivered` can follow
+  application for existing component subscribers and must not be renamed a request. Resource events keep observed
+  before/after balances and a continuity flag; no charge/refund is guessed from amount or timing. Tick-zero owned
+  identities and later committed observation/catalog, save-owned transition/leases, queues and completed tech are
+  detached copies. Terminal schedule status is retained honestly. Command-context item IDs survive restoration;
+  uncommanded IDs are stable handles only within this capture and never array positions.
+- Bounds/lifecycle: 8,192 raw facts per scene and 256 snapshots per player, with explicit dropped counts. Only marked
+  developer production worlds install; ordinary worlds have no observer. Shutdown/destroy unsubscribes and detaches
+  only its own host handle, preserving a replacement game. Existing actor registration plus a test-only tick scan
+  discovers queue components initialized late. Missing pre-registration events remain an explicit provenance gap.
+- Contract parsing: present per-variant records reject unknown fields, mismatched scenario/branch/pair identities,
+  missing/orphaned variants, absent faction branches, mismatched pair horizons/products, ceilings absent from their
+  checkpoint list and early-stop opt-ins. PRO-07 keeps distinct standalone worlds. This checks schema/coverage only,
+  not definition legality or real setup equality. Missing contracts on the natural debt recipe still fail the runtime
+  mandatory gate. No adapter emits normalized `productionEvidence`; no recipe or passing evidence is claimed.
+- Authored/unrun cases: `ai-production-obligations.spec.ts`, `ai-runtime-production-capture.spec.ts`, installer and
+  config specs, and `skirmish-runtime-production-contract-fixture.test.mjs`. They cover fixed-tick/waiting liabilities,
+  stalling/removal/malformed authority, callback order, real balance continuity, lane identities across index shifts,
+  command-backed restoration, honest expired schedules, tech facts, player filtering, bounds, disposal, opt-in and
+  replacement-host cleanup, malformed branches/pairs/ceilings. These mocked/source cases are not real application proof.
+- Source closure: implementation review, Omission Audit and separate Final Closure Audit covered owning authority,
+  fair owned ledger, read-only snapshots, browser/config/fixture consumers, lifecycle, tests and staged scope. Audits
+  used source inspection only; existing comments and source baselines were preserved. No executable check ran.
+- Remaining boundary: resource callbacks have no item/command attribution; tick-zero paid provenance and legal
+  train/research/cancel setup remain missing. `reservedUnspent` still reflects no shared cash escrow; pending AI dispatch
+  obligations are a separate unresolved admission owner. Add reliable scoped capture at the actual authority boundary,
+  committed decision cadence and real navigation/placement proof without exposing hidden opponents. Reconcile oracle
+  total-price semantics and the pending-refund tick predicate: single-player dispatch/application is synchronous in one
+  tick, whereas a real buffered multiplayer request may precede application. Preserve sequence and original ticks;
+  never invent delayed shared refunds, request time or a committed terminal schedule. Then author both factions' legal
+  PRO-03/06 pairs and separate PRO-07 worlds, populate normalized evidence and integrate full pure family coverage.
+- All tests, E2E, simulations, lint/type/build/editor/schema/repository validation and doctor/context remain deferred.
+  At the final gate include the new obligation/capture/installer/config suites and Node contract fixture cases, then
+  prior policy/timing/serializer/arbiter/oracle suites, frozen-map preflight and eventual focused browser worlds.
+  PRO-04 pairs and all prior unverified authoring remain final-gate debt. No catalog generation ran.
 
 - Multiplayer diagnostic/lifecycle authoring checkpoint (2026-09-30, **unverified**): browser-only relay and local-hash
   observation now lives in a small test-owned Phaser adapter rather than adding methods to hash-baselined

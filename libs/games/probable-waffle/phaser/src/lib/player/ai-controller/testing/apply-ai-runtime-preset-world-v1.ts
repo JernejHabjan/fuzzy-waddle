@@ -21,6 +21,7 @@ import type { SceneActorCreator } from "../../../world/services/scene-actor-crea
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
+import { installAiRuntimeProductionCapture } from "./install-ai-runtime-production-capture";
 import {
   readAiRuntimeBrowserTestConfigV1,
   recordAiRuntimePresetApplicationV1,
@@ -30,6 +31,7 @@ import {
 /** Applies a validated preset after normal map indexing and before the first simulation tick or AI observation. */
 export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, creator: SceneActorCreator): void {
   if (environment.production) return;
+  installAiRuntimeProductionCapture(scene);
   const preset = readAiRuntimeBrowserTestConfigV1()?.presetWorld;
   if (!preset) return;
   const validOwners = new Set(scene.players.map((player) => player.playerNumber).filter((owner) => owner !== undefined));

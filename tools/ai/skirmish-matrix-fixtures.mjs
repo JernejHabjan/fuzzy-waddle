@@ -3,6 +3,7 @@ import { readJson } from "./skirmish-matrix-io.mjs";
 import { validateEvidenceStopAssertions, validateRuntimeRecipeMetadata } from "./skirmish-runtime-recipe-metadata.mjs";
 import { validProductionCapacityPair } from "./skirmish-runtime-production-capacity-fixture.mjs";
 import { validProductionCompositionPair } from "./skirmish-runtime-production-composition-fixture.mjs";
+import { validProductionContracts } from "./skirmish-runtime-production-contract-fixture.mjs";
 
 export function validateManifest(value, fixtureDirectory) {
   if (!value || value.schemaVersion !== 1 || value.manifestVersion !== "skirmish-v1" || !Array.isArray(value.rows))
@@ -143,6 +144,7 @@ function validateRuntimeFixture(fixture, scenarioId) {
       !validProductionCapacityPair(recipe, assertion, scenarioId)) ||
     (assertion.requiredProductionComposition !== undefined &&
       !validProductionCompositionPair(recipe, assertion, scenarioId)) ||
+    (assertion.requiredProductionContracts !== undefined && !validProductionContracts(recipe, assertion, scenarioId)) ||
     (assertion.requireSupplyControl === true &&
       !["prebuild", "ample_control"].every((branch) =>
         recipe.variants.some(

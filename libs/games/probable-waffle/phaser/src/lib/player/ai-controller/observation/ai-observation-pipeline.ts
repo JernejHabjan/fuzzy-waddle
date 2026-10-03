@@ -17,6 +17,7 @@ import { getActorComponent } from "../../../data/actor-component";
 import { getGameObjectCurrentTile, isSceneActive } from "../../../data/game-object-helper";
 import { OwnerComponent } from "../../../entity/components/owner-component";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
+import { QueueComponent } from "../../../entity/components/queue/queue-component";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { NavigationService } from "../../../world/services/navigation.service";
@@ -49,6 +50,7 @@ import {
   selectBoundedObservationWork
 } from "./ai-observation-work";
 import { knownValue, uniqueDomain, unknownValue } from "./ai-observation-values";
+import { projectAiProductionObligations } from "./ai-production-obligations";
 
 const MAX_ACCESS_PRODUCTS_PER_OBSERVATION = 4;
 const MAX_INVALIDATION_DEBT = 1024;
@@ -248,6 +250,9 @@ export class AiObservationPipeline {
       accessGraph,
       permittedTopology
     );
+    const obligations = projectAiProductionObligations(liveActors
+      .filter((actor) => getActorComponent(actor, OwnerComponent)?.getOwner() === playerNumber)
+      .flatMap((actor) => getActorComponent(actor, QueueComponent)?.allItems ?? []));
     const resources = Object.values(ResourceType)
       .sort()
       .map((resourceType) => {
@@ -255,8 +260,9 @@ export class AiObservationPipeline {
         return {
           resourceType,
           stockpile: this.player.getResources()[resourceType] ?? 0,
+          // Shared components have no cash escrow. Pending AI dispatch claims remain a separate admission owner.
           reservedUnspent: 0,
-          obligationsDue: 0,
+          obligationsDue: obligations[resourceType],
           deliveredIncomePerMinute:
             deliveredIncome !== undefined && Number.isFinite(deliveredIncome)
               ? knownValue(Math.max(0, deliveredIncome), tick)

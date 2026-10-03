@@ -6,5 +6,7 @@ export interface AiRuntimeBrowserTestConfigV1 {
   readonly enabled: true;
   readonly seed: number;
   readonly startPaused: true;
+  /** Explicit raw authority diagnostics; this does not enable a production oracle or preset brain state. */
+  readonly captureProduction?: true;
   readonly presetWorld?: AiRuntimePresetWorldV1;
 }

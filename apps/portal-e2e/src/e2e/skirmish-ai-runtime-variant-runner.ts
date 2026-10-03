@@ -11,6 +11,7 @@ import { prepareRuntimeVariant } from "./skirmish-ai-runtime-variant-setup";
 import { canStopAfterTerminal } from "./skirmish-ai-runtime-terminal";
 import { evaluateEvidenceStopAtCheckpoint } from "./skirmish-ai-runtime-evidence-stop-evaluation";
 import { collectRuntimePresetEvents } from "./skirmish-ai-runtime-preset-event-results";
+import { captureRuntimeProductionAuthority } from "./skirmish-ai-runtime-production-capture";
 
 export async function runVariant(
   browser: Browser,
@@ -49,6 +50,9 @@ export async function runVariant(
     const applicableScenarioIds = requestedScenarioIds.filter(
       (scenarioId) => variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId)
     );
+    const captureProduction = applicableScenarioIds.some((id) => ["PRO-03", "PRO-06", "PRO-07"].includes(id));
+    let productionCapture = captureProduction
+      ? await captureRuntimeProductionAuthority(page, fixture.recipe.aiPlayerNumber) : undefined;
     let stopReason: RuntimeVariantResultV1["stopReason"] = "checkpoint_ceiling";
     let satisfiedSinceTick: number | null = null;
     const maximumTick = Math.max(
@@ -90,6 +94,7 @@ export async function runVariant(
       const captureStartedAt = performance.now();
       const checkpoint = await captureCheckpoint(page, fixture.recipe.aiPlayerNumber, targetTick);
       checkpoints.push(checkpoint);
+      if (captureProduction) productionCapture = await captureRuntimeProductionAuthority(page, fixture.recipe.aiPlayerNumber);
       await debugProbe?.(page, index);
       if (profiling) {
         checkpointPhases.push({
@@ -185,6 +190,7 @@ export async function runVariant(
       ...(variant.productionCompositionBranch ? { productionCompositionBranch: variant.productionCompositionBranch } : {}),
       initialWorldDigest,
       outcomeDigest,
+      ...(productionCapture ? { productionCapture } : {}),
       checkpoints,
       perturbations,
       aiErrors,

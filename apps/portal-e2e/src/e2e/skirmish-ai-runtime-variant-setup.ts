@@ -41,7 +41,7 @@ export async function prepareRuntimeVariant(
     if (/\bAI\b|player-ai|brain/i.test(error.message)) aiErrors.push(error.message);
   });
   await page.addInitScript(
-    ({ seed, presetWorld, revision, digest }) => {
+    ({ seed, presetWorld, revision, digest, captureProduction }) => {
       window.sessionStorage.setItem(
         "fuzzy-waddle:ai-runtime-browser-test-v1",
         JSON.stringify({
@@ -49,13 +49,15 @@ export async function prepareRuntimeVariant(
           enabled: true,
           seed,
           startPaused: true,
+          ...(captureProduction ? { captureProduction: true } : {}),
           ...(presetWorld
             ? { presetWorld: { ...presetWorld, provenance: { sourceRevision: revision, fixtureDigest: digest } } }
             : {})
         })
       );
     },
-    { seed: effectiveSeed, presetWorld: variant.presetWorld, revision: sourceRevision, digest: fixtureDigest }
+    { seed: effectiveSeed, presetWorld: variant.presetWorld, revision: sourceRevision, digest: fixtureDigest,
+      captureProduction: (variant.scenarioIds ?? fixture.scenarioIds).some((id) => ["PRO-03", "PRO-06", "PRO-07"].includes(id)) }
   );
   await configureLobby(page, fixture, variant);
   await installRuntimeAccessor(page);

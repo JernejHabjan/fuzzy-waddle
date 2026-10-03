@@ -124,7 +124,7 @@ function validPresetWorld(value: unknown): boolean {
 }
 
 export function isAiRuntimeBrowserTestConfigV1(value: unknown): value is AiRuntimeBrowserTestConfigV1 {
-  if (!isRecord(value) || !hasOnlyKeys(value, ["schemaVersion", "enabled", "seed", "startPaused", "presetWorld"])) {
+  if (!isRecord(value) || !hasOnlyKeys(value, ["schemaVersion", "enabled", "seed", "startPaused", "presetWorld", "captureProduction"])) {
     return false;
   }
   return (
@@ -133,6 +133,7 @@ export function isAiRuntimeBrowserTestConfigV1(value: unknown): value is AiRunti
     value["startPaused"] === true &&
     Number.isSafeInteger(value["seed"]) &&
     (value["seed"] as number) >= 0 &&
+    (value["captureProduction"] === undefined || value["captureProduction"] === true) &&
     (value["presetWorld"] === undefined || validPresetWorld(value["presetWorld"]))
   );
 }

@@ -179,9 +179,9 @@ Requirement-to-evidence closure for this source slice:
 5. Source review, Omission Audit and separate Final Closure Audit: direct source/call-site/diff review only. Existing
    comments are preserved and no content-hash baseline was refreshed. No gameplay claim is validated by these audits.
 
-**Remaining adapter/authority boundary:** the Phaser ledger still emits zero reserved/unpaid fields, so current runtime
-cash does not prove the full PRO-07 budget contract. Add real obligation provenance and test-owned ordered queue/resource
-capture; preserve synchronous cancel/refund application and capture the pending request before it. Add a read-only
+**Adapter/authority boundary at this policy checkpoint:** the Phaser ledger emitted zero reserved/unpaid fields. The
+raw-capture checkpoint below now implements unpaid queue liability and passive callbacks; full PRO-07 budget/causality
+still remains. Preserve synchronous cancel/refund application and capture the actual pending request. Add a read-only
 committed schedule projection for evidence/debug without running the planner, physical lane/item identities, prices,
 research completion, current effective weapon ranges and real navigation/placement proof. Reconcile internal fulfilled/
 expired lifecycle with the oracle's retained commitment requirements explicitly; never fabricate a `committed` snapshot.
@@ -193,6 +193,81 @@ Keep these related owners on **GPT-6.1 Sol / high**. Only move to lower-cost fix
 are concrete. All execution remains final-gate work, including timing projection, `ai-production-scenarios` (which also
 selects the new policy suite), macro/air/capacity, canonical serializer/migration, generic production oracles and eventual
 focused browser worlds. No test, simulation, lint/type/build/editor/schema validation or doctor/context ran.
+
+### Production raw-capture checkpoint (2026-10-03, unverified)
+
+The next source slice implements actual queue-liability projection and passive test-owned raw capture. It is **not**
+normalized causal runtime evidence, legal-world migration, PRO-family acceptance or issue completion. It began from
+`c2bce7d2a4e2296bbbbaede891c4b796866d957d`; its containing commit owns the new source revision.
+
+`projectAiProductionObligations` consumes all owned live queue items in the committed observation pipeline. Source
+inspection found that pay-over-time production currently charges its entire stored resource vector on each successful
+50 ms queue tick, including the final partial tick. Failed payment leaves remaining time unchanged. The projection
+protects every remaining successful charge for heads and waiting items; paid immediate production/research adds no
+future charge. Malformed timing/cost fails capture instead of creating zero liability. A zero-time restored head still
+enters the payment branch once before completion. No inspected shipped prefab uses this payment type, and no shared
+payment/refund owner changed. The old independent payment oracle treats over-time price as a total; reconcile that
+contract with actual authority before authoring its per-tick runtime world, without silently changing game balance.
+
+`AiRuntimeProductionCapture` subscribes to actual bus outcomes/command delivery, player resource application, physical
+queue changes, tech completion and actor unregistration. Resource callbacks retain copied before/after balances and a
+continuity flag. The global callback sequence preserves same-tick ordering; fact tick is the current callback-observation
+tick while original command/outcome ticks remain in their records. Command delivery can follow application for existing
+subscribers and cannot prove pre-application request timing. Neither balance delta nor temporal proximity supplies
+item-level payment/refund identity. Actor unregistration is retained as that fact, not an assumed combat death.
+
+Read-only snapshots retain tick-zero owned actor IDs, later fair committed observation/catalog, the saved macro schedule
+with its actual committed/abandoned/fulfilled/expired status, reservations, physical lanes, stored item costs/times,
+actual resource balances, projected obligations and completed research from `TechTreeService`. Item identities use
+saved command context where present; otherwise a WeakMap keeps a capture-local handle stable across array-index shifts.
+An uncommanded handle does not survive restore. Lane IDs use actual queue indices; backlog capacity remains separate.
+No planner, pathfinder, debug panel, payment owner or live AI state is mutated by these readers.
+
+The strict developer config now permits `captureProduction: true`; the installer runs before preset resources/queues
+in marked PRO-03/06/07 worlds, including natural worlds without a preset. The browser driver samples tick zero and each
+settled checkpoint and retains `productionCapture` in its raw result. This new field cannot satisfy
+`RuntimeProductionEvidenceV1`. The capture caps facts at 8,192 per scene and snapshots at 256 per player, with explicit
+per-player dropped counts. Shutdown/destroy fences subscriptions and detaches only the matching global host handle.
+Existing/new actors are observed through index events; a test-only tick scan attaches late-created queue components.
+Queue events before registration, decision-snapshot cadence and restore provenance remain explicit gaps.
+
+`validProductionContracts` is wired to Node fixture parsing for present `requiredProductionContracts`. It checks strict
+keys, scenario branch membership, every selected variant and required faction, matching pair identities/products/
+horizons, declared checkpoint ceiling, stable window and absence of early stopping. PRO-07 uses separate standalone
+queue worlds. It is schema/coverage enforcement, not definition legality, actual setup equality or execution evidence.
+The missing-contract natural recipe remains migration debt at the mandatory runtime gate; no recipe was registered,
+manifest denominator changed or normalized `productionEvidence` fabricated.
+
+Source-slice closure map:
+
+1. Owned resource liability: obligation helper and pipeline call, adjacent unrun timing/stall/removal/malformed cases.
+2. Ordered real callback and detached snapshot ownership: capture/fact/queue contracts, queue reader and capture class;
+   unrun callback-order, balance-continuity, index-shift, command-context restore, expired-status, tech and bounds cases.
+3. Installation/teardown/browser retention: explicit config guard, gated installer, preset bootstrap and portal capture/
+   setup/runner/result consumers; unrun opt-in, direct destroy, replacement-host and subscription disposal cases.
+4. Present fixture contracts: Node helper/reader hook; unrun both-faction PRO-03/06/07 shape and rejection examples.
+5. Implementation review, Omission Audit and separate Final Closure Audit: source/diff inspection only. Existing comments
+   and source baselines were preserved. No test, E2E, simulation, lint/type/build/editor/schema/repo check ran.
+
+**Next related boundary — stay on GPT-6.1 Sol / high:** establish reliable item-scoped payment/refund attribution,
+initial paid-item provenance, pending dispatch admission and legal production/research/cancel setup through ordinary
+components/commands. The shared owners are baselined; any required source split must preserve existing comments and
+be a separate bounded responsibility extraction, never a hash refresh. Resolve the independent oracle's price and
+pending-request timing assumptions honestly: ordinary single-player dispatch/application is synchronous, and a real
+buffered request requires an actual authority path. Add committed-decision snapshots and real navigation/placement
+proof, reconcile terminal schedule evidence, then build legal both-faction focused worlds and normalized evidence.
+Do not lower the causal acceptance gate to accept this raw trace. Full pure family integration still remains.
+
+At the deferred final gate include `ai-production-obligations`, `ai-runtime-production-capture`, installer and browser
+config specs in Phaser, plus `skirmish-runtime-production-contract-fixture.test.mjs` under `pnpm ai:tools:test`. Retain
+prior policy/timing/serializer/arbiter/oracle gates and run frozen-map preflight before eventual focused runtime worlds.
+These commands are deferred, and no passing evidence or runtime savings are claimed.
+
+Deferred focused command for the new Phaser owners:
+
+```bash
+NX_DAEMON=false pnpm exec nx test probable-waffle-phaser --testPathPattern='ai-production-(obligations|timing)|ai-runtime-production-capture|validate-ai-runtime-browser-test-config-v1' --skip-nx-cache
+```
 
 Eventual focused gate: `pnpm ai:tools:test`, the gameplay `ai-production-scenarios` spec, the Playwright
 `skirmish-ai-runtime-production-composition-evaluation` spec, and
