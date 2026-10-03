@@ -102,6 +102,7 @@ export interface GameState {
   selectedTile: GridPoint | null;
   entities: Map<number, GameEntity>;
   occupied: Set<string>;
+  /** Terrain cells reserved by ground enemies; elevated flight routes remain buildable. */
   blocked: Set<string>;
   elapsedMs: number;
   spawnMs: number;

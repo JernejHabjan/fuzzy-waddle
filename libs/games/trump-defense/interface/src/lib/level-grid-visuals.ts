@@ -16,9 +16,9 @@ export class LevelGridVisuals {
     this.root.add(this.selectedBounds);
   }
 
-  /** Marks the ground route while keeping every ground and flying route cell unavailable for building. */
+  /** Marks the ground route and leaves aerial route cells available for ground construction. */
   load(level: LevelDefinition): void {
-    const { groundPathTiles, blockedTiles } = getLevelGridPaths(level);
+    const { groundPathTiles } = getLevelGridPaths(level);
     for (const key of groundPathTiles) {
       const [x, z] = key.split(",").map(Number);
       const tile = this.models.create(level.scene.pathTile);
@@ -28,7 +28,7 @@ export class LevelGridVisuals {
     for (let z = 0; z < level.grid.height * level.grid.tileSize; z += level.grid.tileSize) {
       for (let x = 0; x < level.grid.width * level.grid.tileSize; x += level.grid.tileSize) {
         const key = `${x},${z}`;
-        if (blockedTiles.has(key)) continue;
+        if (groundPathTiles.has(key)) continue;
         const tile = this.models.create(level.scene.buildableTile);
         tile.position.set(x, 0.3, -z);
         this.buildableTiles.set(key, tile);

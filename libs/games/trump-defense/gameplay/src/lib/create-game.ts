@@ -13,7 +13,7 @@ export function createGame(level: LevelDefinition): GameState {
     selectedTile: null,
     entities: new Map(),
     occupied: new Set(),
-    blocked: new Set([...level.paths.ground, ...level.paths.flying].map(tileKey)),
+    blocked: new Set(level.paths.ground.map(tileKey)),
     elapsedMs: 0,
     spawnMs: 0,
     movementMs: 0,

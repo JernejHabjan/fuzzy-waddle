@@ -1,13 +1,12 @@
 import { tileKey, type LevelDefinition } from "@fuzzy-waddle/trump-defense-gameplay";
 
-/** Separates visible ground markers from all route cells that gameplay forbids building on. */
+/** Keeps the visible ground route distinct from the elevated flight route. */
 export function getLevelGridPaths(level: LevelDefinition): {
   groundPathTiles: ReadonlySet<string>;
-  blockedTiles: ReadonlySet<string>;
+  flyingPathTiles: ReadonlySet<string>;
 } {
-  const groundPathTiles = new Set(level.paths.ground.map(tileKey));
   return {
-    groundPathTiles,
-    blockedTiles: new Set([...groundPathTiles, ...level.paths.flying.map(tileKey)])
+    groundPathTiles: new Set(level.paths.ground.map(tileKey)),
+    flyingPathTiles: new Set(level.paths.flying.map(tileKey))
   };
 }

@@ -32,6 +32,18 @@ describe("Trump Defense gameplay", () => {
     expect(tower?.weapon?.damage).toBe(30);
   });
 
+  it("allows towers beneath the flying route while reserving ground-route cells", () => {
+    const level = structuredClone(first);
+    level.paths.ground = [[0, 64]];
+    level.paths.flying = [[0, 64], [8, 64], [16, 64]];
+    const state = createGame(level);
+
+    expect(selectTile(state, [0, 64]).ok).toBe(false);
+    expect(selectTile(state, [8, 64]).ok).toBe(true);
+    expect(buyTower(state, "Cannon", () => 0).ok).toBe(true);
+    expect(state.occupied.has("8,64")).toBe(true);
+  });
+
   it("reads movement and reward from enemy components instead of names", () => {
     const custom = structuredClone(second);
     custom.rules.enemyRoster = ["Builder"];

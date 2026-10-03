@@ -18,6 +18,8 @@ The old spawn loop wrote every same-lane roster entry to one entry square, leavi
 
 Sniper availability is level-authored: level 1 locks it in both the HUD and purchase action. Level 3 picks a random free build site without selecting a tile; existing defenses can still be selected for upgrades. Sound cues are consumed once, active world sounds follow camera panning and zoom, and wall/slum ambience fades out when leaving its zone. Ground spawning uses the original `firepop2.wav` sample, and victories play `cheer2.wav`.
 
+Only ground-route cells reserve terrain for enemy movement. The flight route is elevated, so visible build sites and tower placement remain available beneath it.
+
 The browser campaign shows level choices before creating a Three.js scene, stores the highest unlocked level in `localStorage`, and exposes all three levels in development builds. The source RTS camera starts at `(0, 50, 0)` with a fixed 70° view rotation in `Draw.cpp`, plus its adjustable pitch. Its wheel adjusts height by five units, Z by 2.5 units, and pitch by five degrees per notch; the browser intentionally keeps its current 45° whole-map starting view and couples orbit distance with a five-degree angle step. World sound cues use camera-relative distance and stereo panning. Entry spawn cues only play while near the original entry; wall work, wall ambience, and slum chatter retain their separate source camera zones. The White House had an asset and a commented draw call in TD2016; this feature request restores it at that source transform.
 
 ## Relevant source comments
