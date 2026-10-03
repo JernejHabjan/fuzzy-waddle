@@ -16,7 +16,7 @@ import {
   type GridPoint,
   type LevelDefinition,
   type SceneProp,
-  type TutorialVisualKind
+  type TutorialShowcaseSelection
 } from "@fuzzy-waddle/trump-defense-gameplay";
 import { assetUrl } from "./asset-paths";
 import { ModelBank } from "./model-bank";
@@ -150,7 +150,7 @@ export class ThreeScene {
   }
 
   /** Replaces the map with a centered, rotating model until the briefing is dismissed. */
-  setShowcase(visual: TutorialVisualKind | null): void {
+  setShowcase(visual: TutorialShowcaseSelection): void {
     this.mapRoot.visible = visual === null;
     this.showcase.set(this.level, visual);
     if (!visual) {
@@ -276,6 +276,7 @@ export class ThreeScene {
     this.disposed = true;
     this.observer.disconnect();
     this.gridVisuals.dispose();
+    this.showcase.dispose();
     this.models.dispose();
     this.skybox?.dispose();
     this.renderer.dispose();

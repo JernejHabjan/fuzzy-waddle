@@ -25,10 +25,24 @@
   overflow: hidden;
 }
 .td-header {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
   flex: 0 0 auto;
   min-height: 1.55rem;
   border-left: 0.18rem solid var(--td-red);
   padding-left: 0.45rem;
+}
+.td-page-back {
+  min-height: 1.8rem;
+  padding: 0.2rem 0.55rem;
+  border-color: #d4dcec;
+  color: var(--td-cream);
+  background: #153b70;
+  font-size: 0.75rem;
+}
+.td-page-back:hover:not(:disabled) {
+  background: var(--td-red);
 }
 .td-header h1 {
   margin: 0;

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input, output, signal } from "@angular/core";
 import { getLevelTutorial } from "./level-tutorial";
-import type { TutorialVisualKind } from "@fuzzy-waddle/trump-defense-gameplay";
+import type { TutorialShowcaseSelection } from "@fuzzy-waddle/trump-defense-gameplay";
 
 /** Presents level mechanics before deployment and reports showcase changes to the scene adapter. */
 @Component({
@@ -13,7 +13,7 @@ export class LevelTutorialComponent {
   /** Campaign level determines the mechanics and the number of briefing cards. */
   readonly level = input.required<number>();
   /** Active model is passed to the Three.js showcase without coupling this view to the renderer. */
-  protected readonly showcaseChange = output<TutorialVisualKind | null>();
+  protected readonly showcaseChange = output<TutorialShowcaseSelection>();
   /** The final card and skip control both hand deployment back to the game owner. */
   protected readonly start = output<void>();
   /** Returning to campaign selection abandons this loaded scene. */

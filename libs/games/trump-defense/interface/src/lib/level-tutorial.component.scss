@@ -65,13 +65,34 @@
 
 .td-tutorial-arrows button {
   min-width: 2.5rem;
-  min-height: 2.2rem;
 }
 
-.td-tutorial-back,
-.td-tutorial-skip {
+/* Briefing actions share the same compact navy, cream, and red button language as the HUD. */
+.td-tutorial-actions button {
+  min-height: 2rem;
+  padding: 0.35rem 0.55rem;
+  border: 1px solid #e3eaf5;
+  border-radius: 0.35rem;
   color: #fff8e7;
+  background: #071a33ed;
+  box-shadow: 0 0.15rem 0.45rem #0007;
+  font-family: "Chakra Petch", "WorkSans", sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.td-tutorial-actions button:hover:not(:disabled) {
   background: #153b70;
+}
+
+.td-tutorial-actions button:focus-visible {
+  outline: 3px solid #b31942;
+  outline-offset: 2px;
+}
+
+.td-tutorial-actions button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 @media (max-width: 600px) {

@@ -1,4 +1,5 @@
 import { TestBed, type ComponentFixture } from "@angular/core/testing";
+import { Location } from "@angular/common";
 import type { LevelDefinition } from "@fuzzy-waddle/trump-defense-gameplay";
 import level1 from "../assets/trump-defense/levels/level-1.json";
 import { loadLevel } from "./asset-paths";
@@ -38,7 +39,8 @@ describe("TrumpDefenseComponent", () => {
   beforeEach(async () => {
     jest.mocked(loadLevel).mockResolvedValue(level1 as unknown as LevelDefinition);
     await TestBed.configureTestingModule({
-      imports: [TrumpDefenseComponent]
+      imports: [TrumpDefenseComponent],
+      providers: [{ provide: Location, useValue: { back: jest.fn() } }]
     }).compileComponents();
     fixture = TestBed.createComponent(TrumpDefenseComponent);
     fixture.detectChanges();
@@ -71,6 +73,18 @@ describe("TrumpDefenseComponent", () => {
     expect(fixture.nativeElement.textContent).toContain("Liberty's Last Stand");
     expect(fixture.nativeElement.textContent).not.toContain("amigo");
     expect(loadLevel).not.toHaveBeenCalled();
+  });
+
+  it("uses the title back button for level selection first and browser history second", () => {
+    const root = fixture.nativeElement as HTMLElement;
+    const back = root.querySelector<HTMLButtonElement>(".td-page-back");
+    const location = TestBed.inject(Location);
+    back?.click();
+    fixture.detectChanges();
+    expect(root.querySelectorAll(".td-level-choice")).toHaveLength(3);
+    expect(location.back).not.toHaveBeenCalled();
+    back?.click();
+    expect(location.back).toHaveBeenCalledTimes(1);
   });
 
   it("reveals the 2016 school project details from the level picker info button", () => {

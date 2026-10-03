@@ -1,4 +1,4 @@
-import type { TutorialVisualKind } from "@fuzzy-waddle/trump-defense-gameplay";
+import type { TutorialShowcaseSelection } from "@fuzzy-waddle/trump-defense-gameplay";
 
 /** One skippable briefing card; the showcase model is rendered by {@link ThreeScene}. */
 export interface LevelTutorialSlide {
@@ -7,7 +7,7 @@ export interface LevelTutorialSlide {
   /** Gameplay rule or action the player needs before deploying. */
   description: string;
   /** Level-authored model to spin in the showcase, or null for a scene explanation. */
-  showcase: TutorialVisualKind | null;
+  showcase: TutorialShowcaseSelection;
 }
 
 const groundSlides: LevelTutorialSlide[] = [
@@ -61,7 +61,7 @@ const finalSlides: LevelTutorialSlide[] = [
     title: "OPEN BATTLEFIELD",
     description:
       "There is no single marked build site here. Choose a defense and it will land on a random available tile.",
-    showcase: "Cannon"
+    showcase: ["Cannon", "SniperTower"]
   }
 ];
 

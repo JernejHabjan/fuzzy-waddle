@@ -8,6 +8,8 @@ export type ActorVisualKind = EnemyKind | TowerKind | "SniperTower2" | "Cannon2"
 export type SceneVisualKind = ActorVisualKind | "Heart";
 /** Models available to tutorial displays, including a level's build-site marker. */
 export type TutorialVisualKind = SceneVisualKind | "BuildTile" | "Wall";
+/** A briefing may feature one model or a paired set, or leave the map visible. */
+export type TutorialShowcaseSelection = TutorialVisualKind | readonly TutorialVisualKind[] | null;
 
 /** Level-authored components describe an enemy; systems never infer traits from its name. */
 export interface EnemyDefinition {

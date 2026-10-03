@@ -3,12 +3,14 @@ import {
   Component,
   ElementRef,
   computed,
+  inject,
   isDevMode,
   signal,
   viewChild,
   type AfterViewInit,
   type OnDestroy
 } from "@angular/core";
+import { Location } from "@angular/common";
 import {
   buildWall,
   buyTower,
@@ -29,7 +31,7 @@ import { getLevelTutorial } from "./level-tutorial";
 import { LevelTutorialComponent } from "./level-tutorial.component";
 import { ThreeScene } from "./three-scene";
 import { emptyHud, levelChoices } from "./trump-defense-ui-config";
-import type { TutorialVisualKind } from "@fuzzy-waddle/trump-defense-gameplay";
+import type { TutorialShowcaseSelection } from "@fuzzy-waddle/trump-defense-gameplay";
 import type { TrumpDefensePhase } from "./trump-defense-ui-state";
 
 @Component({
@@ -41,6 +43,7 @@ import type { TrumpDefensePhase } from "./trump-defense-ui-state";
   host: { class: "td-shell", "(window:keydown)": "onKeydown($event)" }
 })
 export class TrumpDefenseComponent implements AfterViewInit, OnDestroy {
+  private readonly location = inject(Location);
   private readonly viewport = viewChild.required<ElementRef<HTMLDivElement>>("viewport");
   private readonly audio = new GameAudio();
   private scene: ThreeScene | null = null;
@@ -122,9 +125,11 @@ export class TrumpDefenseComponent implements AfterViewInit, OnDestroy {
     this.showcaseFrameId = requestAnimationFrame(this.animateShowcase);
   };
 
-  protected setShowcase(visual: TutorialVisualKind | null): void {
-    this.scene?.setShowcase(visual);
-  }
+  protected readonly setShowcase = (visual: TutorialShowcaseSelection): void => this.scene?.setShowcase(visual);
+
+  /** First returns from a level to the picker; the picker delegates to browser history. */
+  protected readonly goBack = (): void =>
+    this.phase() === "selecting" ? this.location.back() : this.returnToSelection();
 
   protected chooseLevel(index: 1 | 2 | 3): void {
     if (!this.unlockedLevels().includes(index)) return;
