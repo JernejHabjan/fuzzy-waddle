@@ -1,0 +1,44 @@
+/* Campaign-only responsive tokens inherited by overview and mission screens. */
+.aota-campaign-surface {
+  --aota-campaign-page-padding: clamp(1rem, 3vw, 3rem);
+  --aota-campaign-gap: clamp(0.75rem, 2vw, 1.5rem);
+  --aota-campaign-card-width: clamp(15rem, 22vw, 20rem);
+  --aota-campaign-focus-ring: 0 0 0 0.2rem rgb(240 196 107 / 62%);
+}
+
+/* Keyboard focus treatment shared by campaign controls. */
+.aota-campaign-surface :focus-visible {
+  outline: none;
+  box-shadow: var(--aota-campaign-focus-ring);
+}
+
+/* Desktop chapter row layout; owning components decide whether wrapping or scrolling is appropriate. */
+.aota-campaign-scroll-row {
+  display: flex;
+  gap: var(--aota-campaign-gap);
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: inline mandatory;
+  scrollbar-color: var(--aota-gold-soft) transparent;
+}
+
+/* Stable responsive width for every direct chapter-card child. */
+.aota-campaign-scroll-row > * {
+  flex: 0 0 var(--aota-campaign-card-width);
+  scroll-snap-align: center;
+}
+
+/* Mobile campaign navigation becomes a vertical chapter list. */
+@media (max-width: 700px) {
+  /* Vertical chapter flow avoids horizontal phone scrolling. */
+  .aota-campaign-scroll-row {
+    flex-direction: column;
+    overflow: visible;
+    scroll-snap-type: none;
+  }
+
+  /* Mobile cards fill the available inline size. */
+  .aota-campaign-scroll-row > * {
+    flex-basis: auto;
+  }
+}

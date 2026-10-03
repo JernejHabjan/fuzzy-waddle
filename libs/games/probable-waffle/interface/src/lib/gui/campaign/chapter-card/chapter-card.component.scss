@@ -1,0 +1,114 @@
+/* Clickable illustrated chapter tile. */
+.campaign-chapter-card {
+  position: relative;
+  display: grid;
+  min-block-size: clamp(18rem, 33vw, 24rem);
+  inline-size: 100%;
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid var(--aota-border-soft);
+  border-radius: 0.9rem;
+  background: var(--aota-panel-heavy);
+  color: var(--aota-text);
+  text-align: start;
+  box-shadow: 0 1rem 2rem var(--aota-shadow);
+}
+
+.campaign-chapter-card:hover,
+.campaign-chapter-card--recommended {
+  border-color: var(--aota-gold-soft);
+  transform: translateY(-0.2rem);
+}
+
+/* Shared stacking plane for artwork, overlay, and copy. */
+.campaign-chapter-card__art,
+.campaign-chapter-card__veil,
+.campaign-chapter-card__copy {
+  grid-area: 1 / 1;
+}
+
+/* Chapter illustration fills the tile without affecting layout. */
+.campaign-chapter-card__art {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+/* Dark gradient keeps chapter copy readable over artwork. */
+.campaign-chapter-card__veil {
+  background: linear-gradient(180deg, rgb(5 7 10 / 12%) 20%, rgb(5 7 10 / 90%) 100%);
+}
+
+/* Bottom-aligned chapter title and progress. */
+.campaign-chapter-card__copy {
+  z-index: 1;
+  align-self: end;
+  padding: 1.1rem;
+}
+
+/* Chapter text elements use block layout. */
+.campaign-chapter-card__subtitle,
+.campaign-chapter-card__title,
+.campaign-chapter-card__progress {
+  display: block;
+}
+
+/* Small gold chapter metadata and recommendation badge. */
+.campaign-chapter-card__subtitle,
+.campaign-chapter-card__recommendation {
+  color: var(--aota-gold);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+/* Main chapter name. */
+.campaign-chapter-card__title {
+  margin-block: 0.25rem;
+  font-family: "Cinzel", serif;
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
+}
+
+/* Mission completion summary. */
+.campaign-chapter-card__progress {
+  color: var(--aota-muted);
+  font-size: 0.9rem;
+}
+
+/* Continue badge for the recommended chapter. */
+.campaign-chapter-card__recommendation {
+  position: absolute;
+  inset: 0.75rem 0.75rem auto auto;
+  z-index: 1;
+  padding: 0.35rem 0.55rem;
+  border: 1px solid rgb(240 196 107 / 65%);
+  border-radius: 999px;
+  background: rgb(10 13 17 / 72%);
+}
+
+/* Locked chapters are visibly unavailable while their artwork remains recognizable. */
+.campaign-chapter-card--locked {
+  cursor: not-allowed;
+  filter: grayscale(0.85) brightness(0.55);
+}
+
+/* Lock badge clearly labels inaccessible chapters. */
+.campaign-chapter-card__lock {
+  position: absolute;
+  inset: 0.75rem auto auto 0.75rem;
+  z-index: 2;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid rgb(255 255 255 / 35%);
+  border-radius: 999px;
+  background: rgb(5 7 10 / 82%);
+  color: var(--aota-text);
+  font-weight: 700;
+}
+
+/* Compact chapter cards on phone-sized screens. */
+@media (max-width: 700px) {
+  .campaign-chapter-card {
+    min-block-size: 14rem;
+  }
+}

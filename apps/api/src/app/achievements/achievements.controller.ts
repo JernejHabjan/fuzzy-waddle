@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Query, UseGuards } from "@nestjs/common";
 import type { AuthUser } from "@supabase/supabase-js";
-import { CurrentUser } from "../../auth/current-user";
-import { OnlineAccessGuard } from "../../auth/guards/online-access.guard";
+import { CurrentUser } from "@fuzzy-waddle/platform-identity/server/auth/current-user";
+import { OnlineAccessGuard } from "@fuzzy-waddle/platform-identity/server/auth/guards/online-access.guard";
 import { AchievementsService, type AchievementUnlockDto } from "./achievements.service";
 import { UnlockAchievementDto } from "./achievement.dto";
 

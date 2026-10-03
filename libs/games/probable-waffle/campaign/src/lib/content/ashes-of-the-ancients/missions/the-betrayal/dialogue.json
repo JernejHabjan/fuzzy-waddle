@@ -1,0 +1,63 @@
+{
+  "$schema": "../../../../../schemas/dialogue.schema.json",
+  "schemaVersion": 1,
+  "missionId": "the-betrayal",
+  "texts": [
+    {
+      "id": "narrator-name",
+      "text": "Narrator"
+    },
+    {
+      "id": "opening-briefing-text",
+      "text": "A trusted companion reveals a hidden purpose."
+    },
+    {
+      "id": "primary-title",
+      "text": "Escape the betrayal"
+    },
+    {
+      "id": "primary-description",
+      "text": "Escape the betrayal; Protect the crystal"
+    },
+    {
+      "id": "optional-title",
+      "text": "Discover an optional opportunity"
+    },
+    {
+      "id": "optional-description",
+      "text": "Explore the mission space for an optional story or tactical discovery."
+    },
+    {
+      "id": "failure-title",
+      "text": "Mission force lost"
+    },
+    {
+      "id": "failure-description",
+      "text": "Keep every mission-critical participant and structure operational."
+    },
+    {
+      "id": "betrayal-revealed-title",
+      "text": "Checkpoint: the reveal finalizes all gameplay-critical state"
+    },
+    {
+      "id": "betrayal-revealed-resume",
+      "text": "Resume after the reveal finalizes all gameplay-critical state."
+    }
+  ],
+  "speakers": [
+    {
+      "id": "mission-narrator",
+      "nameTextId": "narrator-name"
+    }
+  ],
+  "lines": [
+    {
+      "id": "opening-briefing",
+      "speakerId": "mission-narrator",
+      "textId": "opening-briefing-text",
+      "text": "A trusted companion reveals a hidden purpose.",
+      "delivery": "non-blocking"
+    }
+  ],
+  "cinematics": []
+}

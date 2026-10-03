@@ -1,0 +1,121 @@
+{
+    "id": "8552f4bd-87ce-4bdf-aed4-b4c919b08b80",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 1280,
+        "borderHeight": 720
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "17a90fdb-45d7-4ff7-82fd-fe0f7789c235",
+            "label": "container_1",
+            "x": 640,
+            "y": 360,
+            "list": [
+                {
+                    "type": "Rectangle",
+                    "id": "92e18d8b-0f84-4971-b67d-303bfe347ea7",
+                    "label": "overlay",
+                    "scope": "CLASS",
+                    "x": -640,
+                    "y": -360,
+                    "originX": 0,
+                    "originY": 0,
+                    "fillColor": "#000000",
+                    "fillAlpha": 0.7,
+                    "width": 1280,
+                    "height": 720
+                },
+                {
+                    "type": "NineSlice",
+                    "id": "7c930b90-7c23-4736-b05e-f1f8ebbbf2f4",
+                    "label": "dialogBg",
+                    "scope": "CLASS",
+                    "texture": {
+                        "key": "gui",
+                        "frame": "cryos_mini_gui/surfaces/surface_parchment.png"
+                    },
+                    "leftWidth": 3,
+                    "rightWidth": 3,
+                    "topHeight": 3,
+                    "bottomHeight": 3,
+                    "width": 300,
+                    "height": 150
+                },
+                {
+                    "type": "Text",
+                    "id": "3f291f25-f807-4d49-b91f-1f79c7aa30dd",
+                    "label": "messageText",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": -30,
+                    "originX": 0.5,
+                    "originY": 0.5,
+                    "text": "Message",
+                    "resolution": 10,
+                    "align": "center",
+                    "fontFamily": "disposabledroid",
+                    "fontSize": "18px",
+                    "color": "#000000ff",
+                    "wordWrapWidth": 260
+                },
+                {
+                    "prefabId": "2c7a7ebf-6290-4eea-837b-ff0a8a70f4e8",
+                    "id": "75f71d95-befc-4fce-a7b0-18f6e90157fd",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "text",
+                        "w",
+                        "h",
+                        "fontSize"
+                    ],
+                    "label": "yesButton",
+                    "scope": "CLASS",
+                    "x": -60,
+                    "y": 40,
+                    "text": "Yes",
+                    "w": 80,
+                    "h": 30,
+                    "fontSize": 20
+                },
+                {
+                    "prefabId": "2c7a7ebf-6290-4eea-837b-ff0a8a70f4e8",
+                    "id": "d7c3a7fc-ef7a-4e3b-b85d-823efeef552f",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "text",
+                        "w",
+                        "h",
+                        "fontSize"
+                    ],
+                    "label": "noButton",
+                    "scope": "CLASS",
+                    "x": 60,
+                    "y": 40,
+                    "text": "No",
+                    "w": 80,
+                    "h": 30,
+                    "fontSize": 20
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

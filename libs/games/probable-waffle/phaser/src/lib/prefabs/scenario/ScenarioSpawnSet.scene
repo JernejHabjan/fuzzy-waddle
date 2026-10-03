@@ -1,0 +1,39 @@
+{
+  "id": "d1000000-0000-4000-8000-000000000006",
+  "sceneType": "PREFAB",
+  "settings": {
+    "compilerInsertSpaces": true,
+    "compilerTabSize": 2,
+    "exportClass": true,
+    "autoImport": true,
+    "compilerOutputLanguage": "TYPE_SCRIPT",
+    "borderWidth": 64,
+    "borderHeight": 64
+  },
+  "displayList": [
+    {
+      "type": "Rectangle",
+      "id": "d1000000-0000-4000-8000-000000000016",
+      "label": "scenarioSpawnSet",
+      "x": 32,
+      "y": 32,
+      "width": 64,
+      "height": 64,
+      "isFilled": true,
+      "fillColor": 16711765,
+      "fillAlpha": 0.2,
+      "isStroked": true
+    }
+  ],
+  "plainObjects": [],
+  "meta": {
+    "app": "Phaser Editor - Scene Editor",
+    "url": "https://phaser.io/editor",
+    "contentType": "phasereditor2d.core.scene.SceneContentType",
+    "version": 5
+  },
+  "prefabProperties": [
+    { "name": "scenarioId", "label": "Stable Scenario ID", "defValue": "", "type": { "id": "string" } },
+    { "name": "pointIds", "label": "Spawn Point IDs", "defValue": "", "type": { "id": "string" } }
+  ]
+}

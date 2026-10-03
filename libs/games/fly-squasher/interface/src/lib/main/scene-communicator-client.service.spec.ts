@@ -1,0 +1,26 @@
+import { TestBed } from "@angular/core/testing";
+import { SceneCommunicatorClientService } from "./scene-communicator-client.service";
+import { HighScoreService } from "../high-score/high-score.service";
+import { highScoreServiceStub } from "../high-score/high-score.service.stub";
+import {
+  FlySquasherCommunicatorService,
+  flySquasherCommunicatorServiceStub
+} from "@fuzzy-waddle/fly-squasher-gameplay/fly-squasher-communicator.service";
+
+describe("SceneCommunicatorClientService", () => {
+  let service: SceneCommunicatorClientService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: HighScoreService, useValue: highScoreServiceStub },
+        { provide: FlySquasherCommunicatorService, useValue: flySquasherCommunicatorServiceStub }
+      ]
+    });
+    service = TestBed.inject(SceneCommunicatorClientService);
+  });
+
+  it("should be created", () => {
+    expect(service).toBeTruthy();
+  });
+});

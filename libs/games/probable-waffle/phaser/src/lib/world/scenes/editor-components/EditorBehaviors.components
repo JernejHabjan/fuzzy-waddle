@@ -1,0 +1,151 @@
+{
+    "components": [
+        {
+            "name": "EditorOwner",
+            "displayName": "EditorOwner",
+            "objectDisplayFormat": "",
+            "baseClass": "",
+            "gameObjectType": "Phaser.GameObjects.GameObject",
+            "generateGameObjectField": true,
+            "properties": [
+                {
+                    "name": "owner_id",
+                    "label": "Owner ID",
+                    "tooltip": "",
+                    "defValue": "-1",
+                    "customDefinition": false,
+                    "editorOnly": false,
+                    "deprecated": false,
+                    "type": {
+                        "id": "option",
+                        "isArray": false,
+                        "options": [
+                            "1",
+                            "2",
+                            "3",
+                            "4",
+                            "5",
+                            "6",
+                            "7",
+                            "8",
+                            "-1"
+                        ]
+                    }
+                }
+            ],
+            "constraints": [],
+            "constraintsCondition": "all"
+        },
+        {
+            "name": "EditorConvertible",
+            "displayName": "EditorConvertible",
+            "objectDisplayFormat": "",
+            "baseClass": "",
+            "gameObjectType": "Phaser.GameObjects.GameObject",
+            "generateGameObjectField": true,
+            "properties": [
+                {
+                    "name": "detection_range",
+                    "label": "Detection Range",
+                    "tooltip": "Range in tiles to detect nearby owned units",
+                    "defValue": 8,
+                    "customDefinition": false,
+                    "editorOnly": false,
+                    "deprecated": false,
+                    "type": {
+                        "id": "number",
+                        "isArray": false
+                    }
+                },
+                {
+                    "name": "check_interval",
+                    "label": "Check Interval",
+                    "tooltip": "How often to check for nearby units (in milliseconds)",
+                    "defValue": 500,
+                    "customDefinition": false,
+                    "editorOnly": false,
+                    "deprecated": false,
+                    "type": {
+                        "id": "number",
+                        "isArray": false
+                    }
+                }
+            ],
+            "constraints": [],
+            "constraintsCondition": "all"
+        },
+        {
+            "name": "EditorActorLevel",
+            "displayName": "",
+            "objectDisplayFormat": "",
+            "baseClass": "",
+            "gameObjectType": "Phaser.GameObjects.GameObject",
+            "generateGameObjectField": true,
+            "properties": [
+                {
+                    "name": "level",
+                    "label": "Level",
+                    "tooltip": "",
+                    "defValue": 1,
+                    "customDefinition": false,
+                    "editorOnly": false,
+                    "deprecated": false,
+                    "type": {
+                        "id": "number",
+                        "isArray": false
+                    }
+                }
+            ],
+            "constraints": [],
+            "constraintsCondition": "all"
+        },
+        {
+            "name": "EditorScenarioReference",
+            "displayName": "Scenario Reference",
+            "objectDisplayFormat": "{scenarioId}",
+            "baseClass": "",
+            "gameObjectType": "Phaser.GameObjects.GameObject",
+            "generateGameObjectField": true,
+            "properties": [
+                {
+                    "name": "scenarioId",
+                    "label": "Stable Scenario ID",
+                    "tooltip": "Human-readable campaign ID; do not use the editor UUID or variable label.",
+                    "defValue": "",
+                    "customDefinition": false,
+                    "editorOnly": false,
+                    "deprecated": false,
+                    "type": {
+                        "id": "string",
+                        "isArray": false
+                    }
+                },
+                {
+                    "name": "tags",
+                    "label": "Scenario Tags",
+                    "tooltip": "Comma-separated stable tags.",
+                    "defValue": "",
+                    "customDefinition": false,
+                    "editorOnly": false,
+                    "deprecated": false,
+                    "type": {
+                        "id": "string",
+                        "isArray": false
+                    }
+                }
+            ],
+            "constraints": [],
+            "constraintsCondition": "all"
+        }
+    ],
+    "meta": {
+        "app": "Phaser Editor 2D - User Components Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.UserComponents"
+    },
+    "outputLang": "TYPE_SCRIPT",
+    "insertSpaces": true,
+    "tabSize": 2,
+    "exportClass": true,
+    "autoImport": true
+}

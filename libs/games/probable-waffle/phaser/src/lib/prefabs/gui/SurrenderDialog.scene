@@ -1,0 +1,121 @@
+{
+    "id": "c2ecac06-c622-41d5-bd39-cbee463d067f",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 1280,
+        "borderHeight": 720
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "c78e71ec-8d6c-4e5c-9f63-28ae2532625a",
+            "label": "container_1",
+            "x": 640,
+            "y": 360,
+            "list": [
+                {
+                    "type": "Rectangle",
+                    "id": "09323b96-75f0-425b-b416-fd871412d7c1",
+                    "label": "overlay",
+                    "scope": "CLASS",
+                    "x": -640,
+                    "y": -360,
+                    "originX": 0,
+                    "originY": 0,
+                    "fillColor": "#000000",
+                    "fillAlpha": 0.7,
+                    "width": 1280,
+                    "height": 720
+                },
+                {
+                    "type": "NineSlice",
+                    "id": "8ed2dd14-85aa-408d-81d6-c0635e5e3b25",
+                    "label": "dialogBg",
+                    "scope": "CLASS",
+                    "texture": {
+                        "key": "gui",
+                        "frame": "cryos_mini_gui/surfaces/surface_parchment.png"
+                    },
+                    "leftWidth": 3,
+                    "rightWidth": 3,
+                    "topHeight": 3,
+                    "bottomHeight": 3,
+                    "width": 360,
+                    "height": 170
+                },
+                {
+                    "type": "Text",
+                    "id": "1d1e3bfe-0069-4d10-8c69-9487c17c6fd9",
+                    "label": "titleText",
+                    "scope": "CLASS",
+                    "x": 0,
+                    "y": -34,
+                    "originX": 0.5,
+                    "originY": 0.5,
+                    "text": "Player wants to surrender",
+                    "resolution": 10,
+                    "align": "center",
+                    "fontFamily": "disposabledroid",
+                    "fontSize": "22px",
+                    "color": "#000000ff",
+                    "wordWrapWidth": 320
+                },
+                {
+                    "prefabId": "2c7a7ebf-6290-4eea-837b-ff0a8a70f4e8",
+                    "id": "47a50d33-558e-4646-b4ae-59cf88f38402",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "text",
+                        "w",
+                        "h",
+                        "fontSize"
+                    ],
+                    "label": "acceptButton",
+                    "scope": "CLASS",
+                    "x": -70,
+                    "y": 45,
+                    "text": "Yes",
+                    "w": 90,
+                    "h": 30,
+                    "fontSize": 20
+                },
+                {
+                    "prefabId": "2c7a7ebf-6290-4eea-837b-ff0a8a70f4e8",
+                    "id": "db32c66d-c71b-4c14-9986-87fb16e182f0",
+                    "unlock": [
+                        "x",
+                        "y",
+                        "text",
+                        "w",
+                        "h",
+                        "fontSize"
+                    ],
+                    "label": "rejectButton",
+                    "scope": "CLASS",
+                    "x": 70,
+                    "y": 45,
+                    "text": "No",
+                    "w": 90,
+                    "h": 30,
+                    "fontSize": 20
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

@@ -1,0 +1,63 @@
+{
+  "$schema": "../../../../../schemas/dialogue.schema.json",
+  "schemaVersion": 1,
+  "missionId": "the-siege",
+  "texts": [
+    {
+      "id": "narrator-name",
+      "text": "Narrator"
+    },
+    {
+      "id": "opening-briefing-text",
+      "text": "The war reaches the gates."
+    },
+    {
+      "id": "primary-title",
+      "text": "Break the siege"
+    },
+    {
+      "id": "primary-description",
+      "text": "Break the siege; Protect the civilians"
+    },
+    {
+      "id": "optional-title",
+      "text": "Discover an optional opportunity"
+    },
+    {
+      "id": "optional-description",
+      "text": "Explore the mission space for an optional story or tactical discovery."
+    },
+    {
+      "id": "failure-title",
+      "text": "Mission force lost"
+    },
+    {
+      "id": "failure-description",
+      "text": "Keep every mission-critical participant and structure operational."
+    },
+    {
+      "id": "walls-secured-title",
+      "text": "Checkpoint: the opening force reaches the fortifications"
+    },
+    {
+      "id": "walls-secured-resume",
+      "text": "Resume after the opening force reaches the fortifications."
+    }
+  ],
+  "speakers": [
+    {
+      "id": "mission-narrator",
+      "nameTextId": "narrator-name"
+    }
+  ],
+  "lines": [
+    {
+      "id": "opening-briefing",
+      "speakerId": "mission-narrator",
+      "textId": "opening-briefing-text",
+      "text": "The war reaches the gates.",
+      "delivery": "non-blocking"
+    }
+  ],
+  "cinematics": []
+}

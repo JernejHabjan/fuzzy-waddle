@@ -1,0 +1,318 @@
+{
+  "$schema": "../../../../../schemas/mission.schema.json",
+  "schemaVersion": 1,
+  "id": "the-siege",
+  "chapterId": "crystal-war",
+  "revision": 1,
+  "mapKey": "MapEmberEnclave",
+  "prerequisites": ["the-first-and-last-dinner"],
+  "catalogue": {
+    "order": 2,
+    "title": "The Siege",
+    "faction": "both",
+    "environment": "Crystal citadel",
+    "briefing": "The war reaches the gates.",
+    "objectiveSummaries": ["Break the siege", "Protect the civilians"]
+  },
+  "participants": [
+    {
+      "slotId": "tivara-player",
+      "controller": "human",
+      "faction": 1,
+      "teamId": "alliance",
+      "requiredForVictory": true,
+      "profileOwnership": "independent",
+      "economy": "normal",
+      "fogPolicy": "normal"
+    },
+    {
+      "slotId": "skaduwee-player",
+      "controller": "human",
+      "singlePlayerSubstitution": "scripted-ai",
+      "faction": 2,
+      "teamId": "alliance",
+      "requiredForVictory": true,
+      "profileOwnership": "independent",
+      "economy": "normal",
+      "fogPolicy": "normal"
+    }
+  ],
+  "progressionAllowance": {
+    "maxStoryChapter": "crystal-war",
+    "loadoutSlotCount": 1
+  },
+  "initialState": {
+    "activePhaseIds": ["opening"],
+    "facts": [
+      {
+        "id": "mission-complete",
+        "value": false,
+        "debugMutable": true
+      },
+      {
+        "id": "mission-failed",
+        "value": false,
+        "debugMutable": true
+      },
+      {
+        "id": "optional-complete",
+        "value": false,
+        "debugMutable": true
+      },
+      {
+        "id": "checkpoint-ready",
+        "value": false,
+        "debugMutable": true
+      }
+    ],
+    "counters": [
+      {
+        "id": "mission-progress",
+        "value": 0,
+        "debugMutable": true
+      }
+    ],
+    "timers": []
+  },
+  "phases": [
+    {
+      "id": "opening",
+      "mode": "sequential",
+      "entryActions": [
+        {
+          "id": "show-opening-briefing",
+          "kind": "start-dialogue",
+          "scope": "mission",
+          "lineId": "opening-briefing",
+          "waitForAcknowledgement": false
+        }
+      ],
+      "exitActions": [],
+      "triggers": [],
+      "transitions": [
+        {
+          "id": "begin-operation",
+          "targetPhaseIds": ["operation"],
+          "condition": {
+            "kind": "always"
+          },
+          "actions": [],
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "id": "operation",
+      "mode": "parallel",
+      "entryActions": [],
+      "exitActions": [],
+      "triggers": [
+        {
+          "id": "resolve-authored-victory",
+          "kind": "condition",
+          "condition": {
+            "kind": "fact",
+            "factId": "mission-complete",
+            "equals": true
+          },
+          "actions": [
+            {
+              "id": "request-authored-victory",
+              "kind": "request-outcome",
+              "scope": "mission",
+              "outcome": "victory",
+              "reasonId": "authored-victory"
+            }
+          ],
+          "firing": {
+            "kind": "once"
+          },
+          "priority": 100
+        },
+        {
+          "id": "resolve-authored-defeat",
+          "kind": "condition",
+          "condition": {
+            "kind": "fact",
+            "factId": "mission-failed",
+            "equals": true
+          },
+          "actions": [
+            {
+              "id": "request-authored-defeat",
+              "kind": "request-outcome",
+              "scope": "mission",
+              "outcome": "defeat",
+              "reasonId": "authored-defeat"
+            }
+          ],
+          "firing": {
+            "kind": "once"
+          },
+          "priority": 90
+        }
+      ],
+      "transitions": []
+    }
+  ],
+  "objectives": [
+    {
+      "id": "primary-mission",
+      "kind": "primary",
+      "ownership": {
+        "kind": "shared"
+      },
+      "titleTextId": "primary-title",
+      "descriptionTextId": "primary-description",
+      "reveal": {
+        "kind": "always"
+      },
+      "complete": {
+        "kind": "fact",
+        "factId": "mission-complete",
+        "equals": true
+      },
+      "display": {
+        "announceReveal": true,
+        "announceCompletion": true,
+        "showInTracker": true
+      }
+    },
+    {
+      "id": "optional-discovery",
+      "kind": "optional",
+      "ownership": {
+        "kind": "shared"
+      },
+      "titleTextId": "optional-title",
+      "descriptionTextId": "optional-description",
+      "reveal": {
+        "kind": "always"
+      },
+      "complete": {
+        "kind": "fact",
+        "factId": "optional-complete",
+        "equals": true
+      },
+      "display": {
+        "announceReveal": true,
+        "announceCompletion": true,
+        "showInTracker": true
+      }
+    },
+    {
+      "id": "mission-failure",
+      "kind": "failure",
+      "ownership": {
+        "kind": "shared"
+      },
+      "titleTextId": "failure-title",
+      "descriptionTextId": "failure-description",
+      "reveal": {
+        "kind": "always"
+      },
+      "complete": {
+        "kind": "fact",
+        "factId": "mission-failed",
+        "equals": true
+      },
+      "display": {
+        "announceReveal": true,
+        "announceCompletion": true,
+        "showInTracker": true,
+        "announceFailure": true
+      }
+    }
+  ],
+  "checkpoints": [
+    {
+      "id": "walls-secured",
+      "titleTextId": "walls-secured-title",
+      "trigger": {
+        "kind": "fact",
+        "factId": "checkpoint-ready",
+        "equals": true
+      },
+      "requiredActions": [],
+      "savePolicy": "when-stable",
+      "resumePresentation": {
+        "textId": "walls-secured-resume"
+      }
+    }
+  ],
+  "difficulty": {
+    "story": {},
+    "normal": {},
+    "hard": {}
+  },
+  "contentStatus": "skeleton",
+  "implementation": {
+    "summary": "A scripted skirmish grows into a fortified siege featuring technology upgrades, catapults, ballistae, cannon fire, and a Flower Monster.",
+    "phasePlan": [
+      {
+        "id": "border-skirmish",
+        "description": "Survive the scripted opening clash and withdraw behind the fortifications."
+      },
+      {
+        "id": "siegeworks",
+        "description": "Research defenses and deploy catapults, ballistae, and cannon positions."
+      },
+      {
+        "id": "flower-monster",
+        "description": "Break the siege engines and defeat the Flower Monster leading the assault."
+      }
+    ],
+    "checkpointCandidates": [
+      {
+        "id": "walls-secured",
+        "after": "the opening force reaches the fortifications"
+      },
+      {
+        "id": "siege-tech-ready",
+        "after": "the required defensive technology is researched"
+      }
+    ],
+    "plannedScenarioReferences": {
+      "actors": ["fortification-gate", "siege-catapult", "siege-ballista", "siege-cannon", "flower-monster"],
+      "regions": ["outer-battlefield", "inner-defense"],
+      "routes": ["siege-approach"],
+      "spawnSets": ["siege-wave"]
+    },
+    "mechanics": [
+      "Scripted skirmish and tactical withdrawal",
+      "Fortification research and siege weapons",
+      "Multi-stage Flower Monster boss fight"
+    ],
+    "coopNotes": [
+      "Players can specialize in wall defense and counter-siege operations.",
+      "Technology gates and boss phases are shared deterministic state."
+    ],
+    "dependencies": [],
+    "missingAssets": ["Fortification map and siege-weapon placements", "Flower Monster boss states and effects"],
+    "tests": [
+      "Recover from the opening skirmish and activate each weapon",
+      "Defeat every boss stage after checkpoint resume"
+    ],
+    "definitionOfDone": [
+      "All siege technologies have visible battlefield consequences",
+      "Boss state cannot advance twice under co-op events"
+    ],
+    "implementationTodos": [
+      {
+        "id": "author-scenario-contract",
+        "module": "scenario",
+        "description": "Author and validate the planned scenario references for The Siege."
+      },
+      {
+        "id": "implement-mission-runtime",
+        "module": "campaign-runtime",
+        "description": "Replace scaffold facts with deterministic authored phase logic for The Siege."
+      },
+      {
+        "id": "finish-mission-presentation",
+        "module": "campaign-presentation",
+        "description": "Add final dialogue, cinematics, audio, and objective presentation for The Siege."
+      }
+    ]
+  }
+}

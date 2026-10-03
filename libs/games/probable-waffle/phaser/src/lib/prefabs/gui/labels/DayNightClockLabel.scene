@@ -1,0 +1,49 @@
+{
+    "id": "b6ff5db8-fbfb-4b51-adfe-0bdad0cdedce",
+    "sceneType": "PREFAB",
+    "settings": {
+        "compilerInsertSpaces": true,
+        "compilerTabSize": 2,
+        "exportClass": true,
+        "autoImport": true,
+        "preloadMethodName": "",
+        "preloadPackFiles": [],
+        "createMethodName": "",
+        "compilerOutputLanguage": "TYPE_SCRIPT",
+        "borderWidth": 220,
+        "borderHeight": 40
+    },
+    "displayList": [
+        {
+            "type": "Container",
+            "id": "cf3c9b16-4e49-4430-8c16-92d3b6103196",
+            "label": "container_1",
+            "x": 13,
+            "y": 692,
+            "list": [
+                {
+                    "type": "Text",
+                    "id": "b771d0fd-16fb-43a8-a0ca-a80dd9217881",
+                    "label": "clockText",
+                    "scope": "CLASS",
+                    "originX": 0,
+                    "originY": 1,
+                    "text": "",
+                    "resolution": 10,
+                    "fontFamily": "disposabledroid",
+                    "fontSize": "18px",
+                    "color": "#ffffffff",
+                    "stroke": "#000000ff",
+                    "strokeThickness": 3
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor - Scene Editor",
+        "url": "https://phaser.io/editor",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 5
+    }
+}

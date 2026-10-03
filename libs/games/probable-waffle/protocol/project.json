@@ -1,0 +1,8 @@
+{
+  "name": "probable-waffle-protocol",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/games/probable-waffle/protocol/src",
+  "projectType": "library",
+  "targets": { "lint": { "executor": "@nx/eslint:lint" } },
+  "tags": ["scope:probable-waffle", "type:protocol"]
+}

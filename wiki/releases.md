@@ -13,8 +13,8 @@ pnpm run version:app 1.2.3
 This updates:
 
 - `package.json`
-- `apps/client/src-tauri/Cargo.toml`
-- `apps/client/src-tauri/tauri.conf.json`
+- `apps/probable-waffle-desktop/src-tauri/Cargo.toml`
+- `apps/probable-waffle-desktop/src-tauri/tauri.conf.json`
 
 Do not edit only one of those files manually. CI expects them to stay in sync.
 

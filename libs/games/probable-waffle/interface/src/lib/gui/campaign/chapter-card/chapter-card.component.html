@@ -1,0 +1,29 @@
+<button
+  class="campaign-chapter-card"
+  type="button"
+  [class.campaign-chapter-card--recommended]="state().isRecommended"
+  [class.campaign-chapter-card--locked]="state().isLocked"
+  [disabled]="state().isLocked"
+  (click)="selectChapter()"
+>
+  <img
+    class="campaign-chapter-card__art"
+    [src]="chapter().artwork.desktopSrc"
+    [alt]="chapter().artwork.alt"
+    [style.object-position]="chapter().artwork.focalPosition"
+  />
+  <span class="campaign-chapter-card__veil" aria-hidden="true"></span>
+  <span class="campaign-chapter-card__copy">
+    <span class="campaign-chapter-card__subtitle">{{ chapter().subtitle }}</span>
+    <span class="campaign-chapter-card__title">{{ chapter().title }}</span>
+    <span class="campaign-chapter-card__progress">
+      {{ state().completedMissions }} / {{ state().totalMissions }} missions complete
+    </span>
+  </span>
+  @if (state().isRecommended) {
+    <span class="campaign-chapter-card__recommendation">Continue</span>
+  }
+  @if (state().isLocked) {
+    <span class="campaign-chapter-card__lock" aria-label="Locked chapter">🔒 Locked</span>
+  }
+</button>

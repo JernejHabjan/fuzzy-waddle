@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "id": "ashes-of-the-ancients",
+  "catalogueVersion": 1,
+  "chapters": [
+    {
+      "id": "prologue",
+      "order": 0,
+      "title": "The Dream",
+      "subtitle": "Prologue",
+      "summary": "Ancient visions draw Tivara and Skaduwee toward the same uncertain future.",
+      "layout": "single",
+      "artwork": {
+        "desktopSrc": "assets/probable-waffle/campaign/chapters/prologue-the-dream.png",
+        "alt": "A volcanic vision at the beginning of the campaign",
+        "focalPosition": "50% 45%"
+      },
+      "missionArtwork": {
+        "desktopSrc": "assets/probable-waffle/campaign/mission-boards/prologue-the-dream.png",
+        "alt": "A volcanic battlefield beneath an ancient crystal",
+        "focalPosition": "50% 52%"
+      },
+      "missionIds": ["dreams"]
+    },
+    {
+      "id": "two-homelands",
+      "order": 1,
+      "title": "Two Homelands",
+      "subtitle": "Chapter I",
+      "summary": "Tivara and Skaduwee follow separate paths, until neither can ignore the other any longer.",
+      "layout": "parallel",
+      "artwork": {
+        "desktopSrc": "assets/probable-waffle/campaign/chapters/two-homelands.png",
+        "alt": "Desert and snowbound homelands divided by an ancient road",
+        "focalPosition": "50% 50%"
+      },
+      "missionArtwork": {
+        "desktopSrc": "assets/probable-waffle/campaign/mission-boards/two-homelands.png",
+        "alt": "A road connecting Tivara's desert homeland and Skaduwee's frozen homeland",
+        "focalPosition": "50% 52%"
+      },
+      "missionIds": [
+        "cyclops-and-sheep",
+        "snow-wendigo-and-fire",
+        "slingshooters-and-wolves",
+        "owl-and-skaduwee-crystal",
+        "sand-dunes-and-tivara-crystal",
+        "we-had-enough"
+      ]
+    },
+    {
+      "id": "crystal-war",
+      "order": 2,
+      "title": "The Crystal War",
+      "subtitle": "Chapter II",
+      "summary": "The promise of a shared future turns into open conflict over the crystals.",
+      "layout": "collision",
+      "artwork": {
+        "desktopSrc": "assets/probable-waffle/campaign/chapters/crystal-war.png",
+        "alt": "A frozen fortress facing a fleet across crystal waters",
+        "focalPosition": "45% 50%"
+      },
+      "missionArtwork": {
+        "desktopSrc": "assets/probable-waffle/campaign/mission-boards/crystal-war.png",
+        "alt": "Opposing fleets and citadels across crystal waters",
+        "focalPosition": "50% 52%"
+      },
+      "missionIds": [
+        "sailing-towards-the-new-future",
+        "the-first-and-last-dinner",
+        "the-siege",
+        "time-rush",
+        "joining-crystal"
+      ]
+    },
+    {
+      "id": "united-against-volcano",
+      "order": 3,
+      "title": "United Against the Volcano",
+      "subtitle": "Chapter III",
+      "summary": "The old rivals fight together as the volcano wakes beneath them.",
+      "layout": "united",
+      "artwork": {
+        "desktopSrc": "assets/probable-waffle/campaign/chapters/united-against-volcano.png",
+        "alt": "Tivara and Skaduwee armies advancing together toward a volcano",
+        "focalPosition": "50% 42%"
+      },
+      "missionArtwork": {
+        "desktopSrc": "assets/probable-waffle/campaign/mission-boards/united-against-volcano.png",
+        "alt": "Two armies advancing together toward an erupting volcano",
+        "focalPosition": "50% 52%"
+      },
+      "missionIds": ["mobster-or-friend", "the-volcano-is-getting-angry", "cult-wars", "the-volcano"]
+    },
+    {
+      "id": "the-betrayal",
+      "order": 4,
+      "title": "The Betrayal",
+      "subtitle": "Chapter IV",
+      "summary": "The final path returns to the volcano, where the alliance is tested one last time.",
+      "layout": "finale",
+      "artwork": {
+        "desktopSrc": "assets/probable-waffle/campaign/chapters/the-betrayal.png",
+        "alt": "A corrupted volcanic battlefield under violet storm clouds",
+        "focalPosition": "50% 48%"
+      },
+      "missionArtwork": {
+        "desktopSrc": "assets/probable-waffle/campaign/mission-boards/the-betrayal.png",
+        "alt": "A corrupted volcanic throne surrounded by violet crystals",
+        "focalPosition": "50% 52%"
+      },
+      "missionIds": ["the-betrayal", "undead-and-cursed-lands", "end-game", "resolution"]
+    }
+  ]
+}

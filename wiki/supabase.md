@@ -20,15 +20,15 @@ See Supabase's current [Google OAuth guide](https://supabase.com/docs/guides/aut
 
 In your Supabase project under **Authentication → URL Configuration**:
 
-| Setting       | Value                                                                                     |
-|---------------|-------------------------------------------------------------------------------------------|
-| Site URL      | `https://fuzzy-waddle.onrender.com`                                                       |
-| Redirect URLs | `http://localhost:4200/`                                                                  |
-|               | `https://fuzzy-waddle.onrender.com/`                                                      |
-|               | `https://jernejhabjan.github.io/fuzzy-waddle/`                                            |
-|               | `http://localhost:4200/assets/auth-callback.html` ← Tauri dev OAuth callback              |
-|               | `https://fuzzy-waddle.onrender.com/assets/auth-callback.html` ← Tauri prod OAuth callback |
-|               | `com.fuzzywaddle.probablewaffle://auth/callback` ← Tauri deep-link (kept as fallback)     |
+| Setting       | Value                                                                                                          |
+|---------------|----------------------------------------------------------------------------------------------------------------|
+| Site URL      | `https://fuzzy-waddle.onrender.com`                                                                            |
+| Redirect URLs | `http://localhost:4200/`                                                                                       |
+|               | `https://fuzzy-waddle.onrender.com/`                                                                           |
+|               | `https://jernejhabjan.github.io/fuzzy-waddle/`                                                                 |
+|               | `http://localhost:4201/assets/auth-callback.html?desktop_auth_nonce=*` ← Tauri dev OAuth callback              |
+|               | `https://fuzzy-waddle.onrender.com/assets/auth-callback.html?desktop_auth_nonce=*` ← Tauri prod OAuth callback |
+|               | `com.fuzzywaddle.probablewaffle://auth/callback` ← Tauri deep-link (kept as fallback)                          |
 
 ## Local Supabase Development
 
@@ -96,6 +96,7 @@ The local auth redirect allow-list in `supabase/config.toml` includes:
 
 - `http://localhost:4200`
 - `http://localhost:4200/`
+- `http://localhost:4201/assets/auth-callback.html?desktop_auth_nonce=*`
 - `http://127.0.0.1:4200`
 - `http://127.0.0.1:4200/`
 
@@ -103,11 +104,11 @@ The local auth redirect allow-list in `supabase/config.toml` includes:
 
 Env ownership in this repo:
 
-| File                                           | Used by                  | Values                                                                                    |
-|------------------------------------------------|--------------------------|-------------------------------------------------------------------------------------------|
-| `.env`                                         | Supabase CLI local stack | `SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID`, `SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET`         |
-| `apps/api/.env.local`                          | Nest API                 | `CORS_ORIGIN`, `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`                                     |
-| `apps/client/src/environments/environment*.ts` | Angular client           | public API URL, client URL, Supabase URL, Supabase anon/publishable key, Socket.IO config |
+| File                                                           | Used by                  | Values                                                                                    |
+|----------------------------------------------------------------|--------------------------|-------------------------------------------------------------------------------------------|
+| `.env`                                                         | Supabase CLI local stack | `SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID`, `SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET`         |
+| `apps/api/.env.local`                                          | Nest API                 | `CORS_ORIGIN`, `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`                                     |
+| `libs/platform/game-host/src/lib/environments/environment*.ts` | Angular applications     | public API URL, client URL, Supabase URL, Supabase anon/publishable key, Socket.IO config |
 
 For the Nest API:
 
@@ -123,13 +124,13 @@ For the Nest API:
 
 For the Angular client:
 
-- Hosted Supabase values live in `apps/client/src/environments/environment.prod.ts`.
-- Local Supabase values live in `apps/client/src/environments/environment.ts`.
+- Hosted Supabase values live in `libs/platform/game-host/src/lib/environments/environment.prod.ts`.
+- Local Supabase values live in `libs/platform/game-host/src/lib/environments/environment.ts`.
 - The browser client must use the anon/publishable key, never the service role key.
 
 ## Generating TypeScript Types
 
-Keep the shared types in `libs/api-interfaces/src/database/database.types.ts` in sync with your Supabase schema:
+Keep `libs/platform/database-schema/src/lib/database/database.types.ts` in sync with your Supabase schema:
 
 Start the local stack first:
 
@@ -217,27 +218,37 @@ supabase status
 
 ### Applying Migrations Remotely
 
-Do not use `supabase db reset` on the hosted database. That command is for local development.
+Do not use `supabase db reset` on the hosted database. That command destroys and recreates only the local database.
 
-The hosted Supabase project is updated after migrations are merged into `main`. Verify migrations locally before merging:
+Create a timestamped migration for every schema change. The migration is the executable history; keep the matching declarative source under `supabase/schemas/` in the same change.
+
+```bash
+# Authenticate once on this machine.
+supabase login
+
+# Link this checkout to the intended hosted project. Confirm the project ref before continuing.
+supabase link --project-ref bhzetyxjimpabioxoodz
+
+# Create the migration, then copy the reviewed SQL from the matching schema change.
+supabase migration new probable_waffle_game_saves
+```
+
+Before a remote apply, review and prove the complete migration history against the local database:
 
 ```bash
 supabase db reset
-pnpm generate-supabase-types
 supabase db lint --local --schema public --level warning --fail-on none
+pnpm generate-supabase-types
 ```
 
-If an urgent manual remote apply is ever needed outside the normal merge flow, preview first:
+Inspect the pending remote changes, then apply them to the linked project only after confirming both the SQL and the target project:
 
 ```bash
 supabase db push --dry-run
-```
-
-Then apply only after reviewing the SQL and confirming the target project:
-
-```bash
 supabase db push
 ```
+
+`supabase db push` records applied migrations in the hosted migration history and only applies pending files from `supabase/migrations/`. Do not edit a migration that has already been applied remotely; create a new corrective migration instead.
 
 ## Connecting via JDBC
 

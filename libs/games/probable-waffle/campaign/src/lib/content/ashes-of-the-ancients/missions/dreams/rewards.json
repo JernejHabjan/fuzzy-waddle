@@ -1,0 +1,18 @@
+{
+  "$schema": "../../../../../schemas/rewards.schema.json",
+  "schemaVersion": 1,
+  "missionId": "dreams",
+  "rewards": [
+    {
+      "id": "unlock-cyclops-and-sheep",
+      "kind": "story-unlock",
+      "titleTextId": "unlock-cyclops-title",
+      "scope": {
+        "kind": "global"
+      },
+      "oneTime": true,
+      "objectiveIds": ["witness-dream-outcome"],
+      "unlockId": "mission-cyclops-and-sheep"
+    }
+  ]
+}

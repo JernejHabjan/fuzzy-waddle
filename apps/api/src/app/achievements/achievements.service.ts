@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import type { AuthUser } from "@supabase/supabase-js";
-import { POSTGRES_ERROR_CODES } from "../../core/database/postgres-error-codes";
-import { SupabaseProviderService } from "../../core/supabase-provider/supabase-provider.service";
-import { Json } from "@fuzzy-waddle/api-interfaces";
+import { POSTGRES_ERROR_CODES } from "@fuzzy-waddle/platform-database-schema/server/database/postgres-error-codes";
+import { SupabaseProviderService } from "@fuzzy-waddle/platform-database-schema/server/supabase-provider/supabase-provider.service";
+import { Json } from "@fuzzy-waddle/platform-database-schema";
 
 export interface AchievementUnlockDto {
   id: number;
