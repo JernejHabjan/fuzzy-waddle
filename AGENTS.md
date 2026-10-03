@@ -45,7 +45,6 @@ When multiple skills apply:
 - Never stage unrelated changes. Never push or open a PR automatically outside the `agent-ready`, `decision-pr`, or `research` lanes.
 - Do not create plan markdown files unless explicitly prompted
 - Use `git mv` for meaningful tracked-file moves
-- Do not remove, rewrite, or move existing comments without explicit permission; treat comments made stale by a change as blockers until permission is granted
 
 ## Response Style
 

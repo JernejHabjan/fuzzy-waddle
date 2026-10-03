@@ -560,10 +560,10 @@ portal-e2e gate, then the frozen-map preflight and actual focused production wor
 
 ### Production pending-command capture checkpoint (2026-10-03, unverified)
 
-This independent authority slice began at `6b64fd5930780c59bdde19f8e21b4d340b47091a`. The previously selected shared
-item-money hooks require bounded production/queue/research splits, whose existing comments cannot be relocated
-without permission under AGENTS.md. Permission to move those comments verbatim was requested asynchronously and
-remains unanswered. This batch completes the dependency-compatible pending-command capture work; it does not
+This independent authority slice began at `6b64fd5930780c59bdde19f8e21b4d340b47091a`. At authorship, the previously
+selected shared item-money hooks were deferred because bounded production/queue/research splits required relocating
+comments under the former AGENTS.md permission rule. The user removed that rule on 2026-10-03; the permission
+blocker is cleared. This batch completes the dependency-compatible pending-command capture work; it does not
 implement those hooks or the real buffered cancellation/refund/probe world. No issue or production family is complete.
 
 1. **Dispatch provenance — authored:** `ai-intent-dispatcher.ts` uses `dispatchAiIntentCommand` for its existing
@@ -598,16 +598,17 @@ implement those hooks or the real buffered cancellation/refund/probe world. No i
    then repaired receipt-after-application, authority/commitment correlation, premature callback handling and overflow
    representation. Omission Audit checks all four paths above, immediate contracts/consumer, test discovery and scope.
    Separate Final Closure Audit rechecks those repairs and staged ownership. No existing comments were moved/rewritten,
-   no content hash was refreshed, and no executable validation ran. Shared hooks remain an explicit permission boundary.
+   no content hash was refreshed, and no executable validation ran. Shared hooks were not implemented; their former
+   comment-permission boundary has since been removed by the user.
 
-**Concrete next shared split:** subject to the pending verbatim-comment permission, extract the production alias and
+**Concrete next shared split:** extract the production alias and
 spawn responsibility into bounded `production-game-object.ts`/`production-spawner.ts`, the research definition into
 `research-definition.ts`, and the unified display projection into `project-shared-queue-items.ts`. Keep existing
-public exports and method wrappers, preserve copied comments verbatim with their original responsibility, and remove
+public exports and method wrappers, keep comments accurate with their responsibility, and remove
 only baseline entries for owners made compliant. Inspect actual sizes/ownership during that authoring pass; do not
 refresh any hash. No shared owner is modified by this checkpoint.
 
-**Next exact authoring action:** after that permission is answered, add scoped queue-resource emission at the actual
+**Next exact authoring action:** after those bounded splits, connect the prepared scoped queue-resource emitter at the actual
 production/research immediate charge, queue per-tick successful charge and cancellation refund boundaries. Carry the
 actual unified item handle/command context and stored price, sample operation-scoped authority balances, preserve raw
 callback ordering, distinguish suppression/no payment, and forward the actual cancellation command separately from
@@ -618,8 +619,8 @@ that cannot prove pre-credit rejection. The fixture must establish an actually e
 cancellation is still pending, without using deterministic local dispatch to fork multiplayer balances.
 
 Retain **GPT-6.1 Sol / high** for these grouped authority decisions; actual model/effort is unavailable. Commit/push
-this independent authored boundary and pause. Pending comments permission is neither assumed granted nor inferred
-from a generic resume. Remaining fair cadence, placement/navigation/exposure, lifecycle status reconciliation, legal
+this independent authored boundary and pause. The former comment-approval blocker is cleared by the user's policy
+change. Remaining fair cadence, placement/navigation/exposure, lifecycle status reconciliation, legal
 PRO-03/06/07 worlds, normalized evidence, full pure coverage and PRO-04 runtime proof remain as above.
 
 At the announced final gate, add:
@@ -635,7 +636,8 @@ lint/type/build/editor/schema/repository checks or doctor/context commands ran i
 ### Production queue-resource observer checkpoint (2026-10-03, unverified)
 
 This support slice began at `ab2bc287ba532815edcf8558e922adba1ea65a08`, with local/remote matching on
-`feature/759-skirmish-ai`. The comment-relocation permission requested in the previous checkpoint is still unanswered.
+`feature/759-skirmish-ai`. The former comment-relocation blocker is cleared by the user's 2026-10-03 removal of the
+blanket comment-permission rule. Comment maintenance within authorized implementation requires no separate approval.
 The bounded adapter and raw consumer are authored; shared money callers and the real buffered cancellation/probe
 world remain unimplemented. No issue/family is complete, and no runnable recipe or normalized evidence was added.
 
@@ -676,10 +678,11 @@ world remain unimplemented. No issue/family is complete, and no runnable recipe 
    and source-structure baselines are untouched. No test, simulation, E2E, formatting, lint, type, build, editor,
    schema, repository check or doctor/context command ran. Commit/push this bounded support slice and pause.
 
-**Next exact authoring action:** obtain explicit permission to move existing comments verbatim with the proposed
+**Next exact authoring action:** perform the proposed bounded
 `production-game-object.ts`, `production-spawner.ts`, `research-definition.ts` and `project-shared-queue-items.ts`
-splits. Preserve public wrappers/exports and remove only baselines whose owners become compliant; never refresh a
-hash to pass lint. Then connect `emitQueueItemResource` to actual production/research immediate charges, successful
+splits, keeping comments accurate with their responsibilities. Preserve public wrappers/exports and remove only
+baselines whose owners become compliant; never refresh a hash to pass lint. Then connect `emitQueueItemResource` to
+actual production/research immediate charges, successful
 per-tick payments and both refunds. Create/carry the actual unified handle before initial charge without changing
 eligibility/cash behavior. Forward the actual stamped cancellation through the queue command/system/component
 wrappers separately from the item's purchase context. Record failed payment attempts without charging or progressing
@@ -692,8 +695,8 @@ must actually apply before cancellation credit while that cancellation is pendin
 deterministic local dispatch cannot prove it. Then normalize genuine evidence without weakening causal gates.
 
 Retain the existing **GPT-6.1 Sol / high** recommendation for the grouped shared ownership and lockstep decisions;
-actual settings are unavailable. The permission question is an explicit AGENTS.md boundary, not an inferred approval
-for gameplay behavior. A generic resume does not answer it.
+actual settings are unavailable. The user removed the comment-approval restriction; shared caller wiring can resume
+within the standing implementation scope. Tests and validation still wait for the final gate.
 
 At the announced final gate, add this focused command to the existing pending/setup/payment/digest/oracle suite:
 

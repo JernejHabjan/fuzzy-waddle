@@ -7,16 +7,19 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 ## Quick resume
 
 **Next session (user policy, 2026-10-03):** continue related PRO-03/06/07 authority on **GPT-6.1 Sol / high**.
+The user removed the blanket comment-permission rule on 2026-10-03. Comment maintenance within authorized work needs
+no separate approval; the production/queue/research split permission blocker is cleared. Policy-change base
+`07fb53aaec85f61c30b13a0871b68ad70e19dfda`; no gameplay implementation or validation is added by this policy update.
 Read the [queue-resource observer checkpoint](follow-ups/runtime-matrix-ci.md#production-queue-resource-observer-checkpoint-2026-10-03-unverified),
 then `data/emit-queue-item-resource.ts`, `testing/project-ai-runtime-queue-resource.ts` and the shared
-production/queue/research owners. **Next exact authoring action:** obtain the still-unanswered permission to relocate
-existing comments verbatim with the concrete bounded splits in the linked checkpoint. Then connect the prepared
+production/queue/research owners. **Next exact authoring action:** perform the concrete bounded shared-owner splits
+in the linked checkpoint, keeping comments accurate with their responsibilities. Then connect the prepared
 observer to real immediate/per-tick charges and cancellation refunds, forwarding the actual cancellation command.
 Group that with the real buffered cancellation/pre-credit rejection world. Defer validation; commit/push and pause
 at the next bounded authoring boundary; a raw or synthetic record cannot substitute for accepted runtime evidence.
 
 - Current step: #815/#816 **item-scoped money observer and raw-capture support**, authored/unverified; shared callers
-  remain blocked. Batch base `ab2bc287ba532815edcf8558e922adba1ea65a08`, local/remote matched on
+  are not started and ready to resume. Batch base `ab2bc287ba532815edcf8558e922adba1ea65a08`, local/remote matched on
   `feature/759-skirmish-ai`, worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`. Its containing commit owns the
   new revision; verify local/remote SHA on resume. Actual model/effort is unavailable. No issue/family is complete.
 - Prepared emission boundary: `emitQueueItemResource` forwards the original shared emitter exactly once. An observed
@@ -33,8 +36,8 @@ at the next bounded authoring boundary; a raw or synthetic record cannot substit
   timestamps, callback/sample failures and nested intervals stay explicit gaps. Existing fact caps/drop counts,
   selected-player filtering and scene teardown apply. The typed browser result already retains the new fact variant.
 - Shared-owner boundary: **no production/research/queue caller uses this helper yet**. Those files are hash-baselined
-  and need bounded splits whose comments cannot be moved without permission under AGENTS.md. The prior question to
-  move them verbatim is unanswered; generic continuation does not grant that permission. The shared files and all
+  and need bounded splits. The user removed the comment-permission restriction, so these splits can proceed within
+  the authorized implementation scope without another comment approval. The shared files and all
   hashes remain untouched. `resource_item_attribution` and `queue_resource_shared_callers_unconnected` remain in every
   capture, even if a synthetic test invokes the adapter. The real buffered cancellation/probe world is not authored.
 - Authored/unrun: emitter/projection specs and a raw-capture integration case cover direct forwarding, scoped cash
@@ -43,8 +46,8 @@ at the next bounded authoring boundary; a raw or synthetic record cannot substit
   lineage, research definition price, pre-insertion/post-removal identity and teardown. These mocked cases prove no
   actual shared caller, multiplayer relay, legal paid world or refund formula. All executable checks remain deferred.
 - Source closure: implementation review, Omission Audit and separate Final Closure Audit cover acceptance 1–5 in the
-  linked checkpoint. Shared-caller/multiplayer obligations remain explicit blockers. Existing comments were preserved,
-  no baseline changed, and no tests/E2E/simulation/format/lint/type/build/editor/schema/repository checks ran.
+  linked checkpoint. Shared-caller/multiplayer obligations remain unfinished implementation. Existing comments were
+  preserved, no baseline changed, and no tests/E2E/simulation/format/lint/type/build/editor/schema/repository checks ran.
 - Previous pending ownership remains authored/unverified: accepted-intent scope precedes real bus admission, admitted
   commands retain original claims and actual request/scheduled ticks, synchronous application before receipt stays
   retired, partial actors retain full claims, and uncertain outcomes remain gaps. This is diagnostic ownership,

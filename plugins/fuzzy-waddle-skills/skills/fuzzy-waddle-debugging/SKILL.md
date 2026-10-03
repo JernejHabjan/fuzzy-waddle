@@ -19,4 +19,4 @@ description: Diagnose Fuzzy Waddle regressions, AI loops, lifecycle faults and m
 - Repeated scanning/derived state: inspect the existing index and invalidation path before adding another cache or whole-world loop.
 - GUI: compare observed projection with its authoritative source; debug tools must not mutate or advance the live game.
 
-Preserve existing comments; add a local explanation for a non-obvious repaired invariant. Keep strict boundary parsing and typed contracts. Capture only relevant diagnostic state; do not expose hidden player data or credentials in logs.
+Keep comments accurate; add a local explanation for a non-obvious repaired invariant. Keep strict boundary parsing and typed contracts. Capture only relevant diagnostic state; do not expose hidden player data or credentials in logs.

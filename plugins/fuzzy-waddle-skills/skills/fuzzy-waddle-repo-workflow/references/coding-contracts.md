@@ -15,7 +15,7 @@ Evaluate every changed public/private class, interface, type alias, enum, nested
 
 Explain ownership, representation/units, lifecycle, ordering, persistence, invariants, side effects, failures and cleanup where relevant. Properties and enum members are first-class contracts: describe semantic differences and valid states. Link related owners with JSDoc links; scale detail to stateful/branch-heavy logic. Add short class/method docs for non-trivial managers/services/controllers and a local invariant comment for non-obvious repairs.
 
-Review existing docs on changed symbols and their immediate consumers. Preserve existing comments under AGENTS.md; obtain direction for conflicting stale comments rather than silently rewriting them. Never leave knowingly false behavior documentation.
+Review existing docs on changed symbols and their immediate consumers. Update, relocate or remove comments as needed to keep them accurate and useful for authorized changes; no separate comment approval is required. Never leave knowingly false behavior documentation.
 
 When replacing a requested brief/plan, move durable decisions into owning code/docs, preserve source-to-symbol traceability and distinguish executable behavior from scaffolds/future work. Use a small workflow diagram only when it clarifies multiple dependent stages or authority boundaries. Do not make shipped code depend on a deleted planning document.
 

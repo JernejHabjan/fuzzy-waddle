@@ -16,7 +16,7 @@ description: Apply Fuzzy Waddle scope, verification, source-discovery and git ow
 ## Scope and evidence
 
 1. Read AGENTS.md and current git status. Turn the request into a numbered internal acceptance checklist; inspect the affected authority, consumers, registrations, config and tests.
-2. Implement only the requested change. Diagnostic/review requests do not authorize fixes or external writes. Preserve unrelated changes and existing comments; follow AGENTS.md's comment-preservation rule.
+2. Implement only the requested change. Diagnostic/review requests do not authorize fixes or external writes. Preserve unrelated changes. Keep comments accurate; update, relocate or remove them when needed for authorized changes without separate approval.
 3. Add tests with changed behavior, including Angular service/component changes. Run checks when user-authorized or required by the agent-ready lane; otherwise request approval. Start apps only when runtime verification is relevant. Batch implementation between meaningful verification boundaries: use the smallest causal check when feedback is needed, and avoid repeating full tests, lint, type checks, or builds after every small edit. Run the broader required set once the owned slice is stable and again only when later changes invalidate it. Testing/validation tasks are the exception—their evidence runs are the implementation work.
 4. Review the changed stage as another engineer would: actual call path, edge cases, cleanup, error handling, compatibility, bounded work and documentation. Repair task-caused failures and rerun affected authorized checks.
 5. Perform an Omission Audit against every acceptance item, then a separate Final Closure Audit after repairs/checks. An authored file, successful dispatch, or green unrelated test is not evidence of the required outcome.
@@ -37,5 +37,5 @@ when quality is preserved. Never allow raw metrics to trigger uncontrolled edits
 - Use git mv for meaningful tracked moves. Stage exact task-owned paths and inspect the staged diff; never include unrelated work. Ignored requested docs may need exact-path git add -f.
 - Follow the explicitly chosen branch. Otherwise use the active environment's branch naming policy. Never recreate a branch solely to normalize its name.
 - Commit/push/PR actions require explicit user authority or the applicable delivery lane. Verify local and remote SHAs; do not force-push, merge, deploy, or disable CI to finish.
-- A required failed check, stale comment conflict or unverified push remains a named blocker. Keep partial implementation, focused validation and release validation distinct.
+- A required failed check, unresolved contract conflict or unverified push remains a named blocker. Keep partial implementation, focused validation and release validation distinct.
 - Report outcome, evidence, outstanding limitations and the exact next action briefly. Present commit-message drafts/PR prose only when requested.

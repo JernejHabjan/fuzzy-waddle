@@ -20,6 +20,6 @@ Read [RTS source routes](references/rts-source-index.md) for Probable Waffle wor
 
 ## Editor and validation boundaries
 
-Inspect adjacent .scene and generated sections before editing GUI/prefabs. Preserve comments and authored/generated ownership. Use tools/phaser-editor/validate-project.mjs when editor wiring is affected, with verification authority from the task.
+Inspect adjacent .scene and generated sections before editing GUI/prefabs. Keep comments accurate and preserve authored/generated ownership. Use tools/phaser-editor/validate-project.mjs when editor wiring is affected, with verification authority from the task.
 
 Pure fixtures do not prove movement/combat/topology or multiplayer correctness. Select affected runtime tests from the repo verification routes; use the browser-playtest skill when actual game UI/playtesting is requested. For #759 implementation, the plan runbook owns all proposed behavior and stage gates; the index is only a map of existing code.
