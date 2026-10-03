@@ -359,7 +359,7 @@
     ],
     "ambient": {
       "color": "#ffffff",
-      "intensity": 0.9
+      "intensity": 3.0
     },
     "directional": {
       "color": "#bba661",
