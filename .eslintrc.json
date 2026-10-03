@@ -29,7 +29,8 @@
                   "scope:probable-waffle",
                   "scope:little-muncher",
                   "scope:fly-squasher",
-                  "scope:dungeon-crawler"
+                  "scope:dungeon-crawler",
+                  "scope:trump-defense"
                 ]
               },
               {
@@ -61,6 +62,10 @@
               {
                 "sourceTag": "scope:dungeon-crawler",
                 "onlyDependOnLibsWithTags": ["scope:dungeon-crawler", "scope:platform"]
+              },
+              {
+                "sourceTag": "scope:trump-defense",
+                "onlyDependOnLibsWithTags": ["scope:trump-defense", "scope:platform"]
               },
               {
                 "sourceTag": "type:interface",

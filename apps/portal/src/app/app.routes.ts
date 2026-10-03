@@ -87,6 +87,14 @@ const dungeonCrawlerRoutes = [
   }
 ] satisfies Routes;
 
+const trumpDefenseRoutes = [
+  {
+    path: "trump-defense",
+    loadComponent: () =>
+      import("@fuzzy-waddle/trump-defense-interface/trump-defense.component").then((m) => m.TrumpDefenseComponent)
+  }
+] satisfies Routes;
+
 // useHash: true // not needed
 // when deployed, set a rewrite rule for SPA application:
 // source: "/*"
@@ -129,6 +137,7 @@ export const portalRoutes = [
   ...probableWaffleRoutes,
   ...flySquasherRoutes,
   ...dungeonCrawlerRoutes,
+  ...trumpDefenseRoutes,
   {
     path: "**",
     redirectTo: ""

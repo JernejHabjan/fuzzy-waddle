@@ -40,7 +40,7 @@ export class HomePageComponent implements OnInit {
   protected isBanned = false;
   protected bannedUntil: string | null = null;
   protected moderationNote: string | null = null;
-  private readonly currentlyFeaturedGame = "dungeon-crawler";
+  private readonly currentlyFeaturedGame = "trump-defense";
   displayGames: DisplayGame[] = [
     {
       name: "Ashes of the Ancients",
@@ -71,6 +71,13 @@ export class HomePageComponent implements OnInit {
       bannerImage: "dungeon-crawler-banner.webp",
       route: "dungeon-crawler",
       inDevelopment: true
+    },
+    {
+      name: "Trump Defense 2016",
+      description: "Build towers and raise the wall to prevent invaders from entering the country",
+      image: "trump-defense.webp",
+      bannerImage: "trump-defense.webp",
+      route: "trump-defense"
     }
   ];
 
