@@ -30,7 +30,8 @@ export function validateRuntimeProductionProgress(capture: AiRuntimeProductionCa
       after.snapshotRestoreInProgress || before.actorId !== after.actorId || before.laneId !== after.laneId ||
       !before.actorId || !before.laneId || item.identitySource !== "command" || command.execution?.source !== "ai" ||
       command.playerNumber !== capture.playerNumber || command.actorIds.length !== 1 || command.actorIds[0] !== before.actorId ||
-      item.itemId !== `queue:${before.actorId}:${command.execution.commandId}` || command.tick > start.tick ||
+      item.itemId !== `queue:${before.actorId}:${command.execution.commandId}` ||
+      item.effectId !== command.execution.effectId || command.tick > start.tick ||
       (command.type === "PRODUCTION" ? item.objectName !== command.actorName || item.researchType !== null :
         command.type !== "RESEARCH" || item.researchType !== command.researchType || item.objectName !== null) ||
       !Number.isFinite(item.totalTimeMs) || item.totalTimeMs < 0 || !Number.isFinite(item.remainingTimeMs) ||
@@ -59,7 +60,8 @@ export function validateRuntimeProductionProgress(capture: AiRuntimeProductionCa
       .find((lane) => lane.laneId === before.laneId)?.items[0];
     if (!head || !isDeepStrictEqual(head, item)) failures.push("production_ai_progress_before_head_invalid");
     const updatedQueues = expectedQueues.map((queue) => ({ ...queue, lanes: queue.lanes.map((lane) => ({
-      ...lane, items: lane.items.map((entry, index) => lane.laneId === before.laneId && index === 0 ? next : entry)
+      ...lane, items: lane.items.map((entry, index) =>
+        queue.actorId === before.actorId && lane.laneId === before.laneId && index === 0 ? next : entry)
     })) }));
     if (!isDeepStrictEqual(updatedQueues, stateAfter.queues) ||
       stateBefore.exhaustedProgressItemId !== undefined || stateAfter.exhaustedProgressItemId !==

@@ -7,6 +7,10 @@ export function calculateRuntimeQueueLiabilities(queues: readonly AiRuntimeProdu
   const due: Record<ResourceType, number> = { food: 0, wood: 0, stone: 0, minerals: 0 };
   const identities = new Set<string>();
   let exhaustedFound = exhaustedItemId === undefined;
+  if (new Set(queues.map((queue) => queue.actorId)).size !== queues.length || queues.some((queue) =>
+    !queue.actorId || new Set(queue.lanes.map((lane) => lane.laneId)).size !== queue.lanes.length ||
+    queue.lanes.some((lane) => !lane.laneId || !Number.isSafeInteger(lane.capacity) || lane.capacity <= 0 ||
+      lane.items.length > lane.capacity))) return null;
   for (const queue of queues) for (const lane of queue.lanes) for (const [index, item] of lane.items.entries()) {
     if (!item.itemId || identities.has(item.itemId) || item.payment === "unknown" ||
       !Number.isFinite(item.totalTimeMs) || item.totalTimeMs < 0 || !Number.isFinite(item.remainingTimeMs) ||

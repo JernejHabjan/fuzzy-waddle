@@ -6,6 +6,7 @@ import { isRuntimeQueueCommand, validateRuntimeProductionCommandLineage } from
 import { normalizeRuntimeScopedQueuePayments, sameRuntimeQueueVector } from "./skirmish-ai-runtime-scoped-queue-payments";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 
+import { projectRuntimeProductionOperations } from "./skirmish-ai-runtime-production-operation-projection";
 import { validateRuntimeProductionProgress } from "./skirmish-ai-runtime-production-progress";
 import { matchRuntimeProductionDecision } from "./skirmish-ai-runtime-production-decision-lineage";
 
@@ -19,7 +20,9 @@ export function normalizeRuntimeProductionCausality(capture: AiRuntimeProduction
   gaps.add("production_ai_event_liabilities_missing");
   gaps.add("production_ai_definition_catalog_missing");
   gaps.add("production_ai_paired_setup_missing");
-  if (capture.droppedFactCount || capture.droppedSnapshotCount) failures.push("production_ai_capture_dropped");
+  if (capture.droppedFactCount || capture.droppedSnapshotCount || capture.facts.length > 8192 || capture.snapshots.length > 256) {
+    failures.push("production_ai_capture_dropped");
+  }
   if (capture.facts.some((fact, index) => fact.playerNumber !== capture.playerNumber ||
     !Number.isSafeInteger(fact.tick) || fact.tick < capture.startedTick ||
     !Number.isSafeInteger(fact.sequence) || fact.sequence <= 0 ||
@@ -108,7 +111,11 @@ export function normalizeRuntimeProductionCausality(capture: AiRuntimeProduction
       failures.push("production_ai_unattributed_payment"); return false;
     }
     if (value.payment !== "immediate") {
-      gaps.add(value.payment === "unknown" ? "production_ai_payment_mode_unknown" : "production_ai_per_tick_liability_missing");
+      if (value.payment === "unknown") gaps.add("production_ai_payment_mode_unknown");
+      else if (value.operation !== "tick_charge") {
+        gaps.add("production_ai_per_tick_liability_missing");
+        if (value.operation === "cancellation_refund") gaps.add("production_ai_per_tick_refund_authority_missing");
+      }
       return false;
     }
     if (value.emission.phase === "denied") { gaps.add("production_ai_denied_payment"); return false; }
@@ -132,16 +139,30 @@ export function normalizeRuntimeProductionCausality(capture: AiRuntimeProduction
       }
     }
   }
+  const operations = projectRuntimeProductionOperations(capture, commands, payments.payments, progress);
+  failures.push(...operations.failures);
+  operations.gaps.forEach((gap) => gaps.add(gap));
+  for (const fact of queueFacts) {
+    if (fact.resource.originatingCommandContext?.execution.source !== "ai" ||
+      fact.resource.payment !== "per_successful_tick" || fact.resource.operation !== "tick_charge") continue;
+    if (!operations.operations.some((operation) => operation.operationId === fact.resource.emission.operationId)) {
+      gaps.add("production_ai_per_tick_liability_missing");
+    }
+  }
   for (const entry of commands) {
     const id = entry.command.execution?.commandId;
     const purchasing = entry.command.type === "PRODUCTION" || entry.command.type === "RESEARCH";
     const applied = entry.outcomes.some((fact) => fact.outcome.kind === "applied");
     const cancelled = entry.outcomes.some((fact) => fact.outcome.kind === "cancelled");
-    if (purchasing && applied && !payments.payments.some((payment) =>
+    const physicalPerTick = capture.facts.some((fact) => fact.kind === "queue_changed" &&
+      fact.queue.lanes.some((lane) => lane.items.some((item) => item.commandId === id &&
+        item.payment === "per_successful_tick" && item.identitySource === "command")));
+    if (purchasing && applied && !physicalPerTick && !payments.payments.some((payment) =>
       payment.resource.operation === "immediate_charge" &&
       payment.resource.originatingCommandContext?.execution.commandId === id)) {
       gaps.add("production_ai_applied_payment_missing");
     }
+    if (purchasing && applied && physicalPerTick) gaps.add("production_ai_per_tick_enqueue_authority_missing");
     if (!purchasing && cancelled && !payments.payments.some((payment) =>
       payment.resource.operation === "cancellation_refund" && payment.resource.cancellationCommand?.execution?.commandId === id)) {
       gaps.add("production_ai_cancel_refund_missing");
@@ -150,6 +171,6 @@ export function normalizeRuntimeProductionCausality(capture: AiRuntimeProduction
   // Invalid operations remain in the raw diagnostic; only a sound group is exposed as normalized money.
   return structuredClone({
     schemaVersion: 1, failures: [...new Set(failures)], gaps: [...gaps].sort(), commands, operationBoundaries,
-    payments: failures.length ? [] : payments.payments
+    payments: failures.length ? [] : payments.payments, operations: failures.length ? [] : operations.operations
   } satisfies RuntimeProductionCausalityV1);
 }

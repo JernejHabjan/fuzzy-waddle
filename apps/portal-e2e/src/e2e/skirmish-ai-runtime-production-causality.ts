@@ -2,6 +2,7 @@ import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
 import type { GameCommand } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiRuntimeProductionFactV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
+import type { RuntimeProductionOperationV1 } from "./skirmish-ai-runtime-production-operation";
 import type { normalizeRuntimeScopedQueuePayments } from "./skirmish-ai-runtime-scoped-queue-payments";
 
 /**
@@ -30,6 +31,8 @@ export interface RuntimeProductionCausalityV1 {
   readonly operationBoundaries: readonly Extract<AiRuntimeProductionFactV1, {
     kind: "queue_resource" | "queue_changed" | "queue_progress"
   }>[];
-  /** Only validated immediate-operation lineage; per-tick/denied operations retain explicit gaps. */
+  /** Complete scoped money/progress intervals; nullable unspent claims keep unsupported ownership explicit. */
+  readonly operations: readonly RuntimeProductionOperationV1[];
+  /** Legacy immediate-payment diagnostic, separate from the actual post-progress per-tick operations. */
   readonly payments: ReturnType<typeof normalizeRuntimeScopedQueuePayments>["payments"];
 }

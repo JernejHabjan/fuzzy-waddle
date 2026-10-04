@@ -1160,3 +1160,84 @@ the portal; pure contract specs do not provision socket identities. Shared Phase
 remain unverified debt. All tests/E2E/simulations, format/lint/type/build/editor/schema/repository checks and
 doctor/context/catalog commands remain deferred. Measure capture pressure and overhead, live bootstrap and actual
 both-faction outcomes at the final gate; source-only review does not establish any of them.
+
+## Production operation projection checkpoint (2026-10-04, unverified)
+
+Base `e64a6f802777419b746b6f3f9c11d01b67412675`; same integration worktree and `feature/759-skirmish-ai` branch.
+The containing commit owns publication. The unrelated Nx migration is preserved. Actual model/effort is unavailable;
+retain **GPT-6.1 Sol / high** for the remaining native lifecycle/fair-world design. No automatic model change.
+
+| Acceptance | Owner/consumer | Evidence/status |
+| --- | --- | --- |
+| 1. Exact complete cash intervals | `RuntimeProductionOperationV1`, `projectRuntimeProductionOperations`, existing scoped payment normalizer | Authored: immediate charge and distinct cancellation refund use actual start/finish cash and unchanged physical liabilities, native accepted decision/command/item ownership and complete callback triples. No inferred enqueue/application time. |
+| 2. True per-tick application | operation projector, `validateRuntimeProductionProgress`, shared capture hook from prior batch | Authored: successful charge pairs with actual advanced head/remaining liabilities; final/initial-zero heads retain their distinction. Denied attempt stays zero-charge with unchanged cash/progress/liabilities. Native effect, actor/lane, all waiting liabilities and unique scope are checked. |
+| 3. Queue-claim reconciliation | `reconcileRuntimeProductionUnspent`, boundary ledger | Authored: native selected provisional lease/proposal, admission, exact successful immediate price or physical per-tick transfer justifies state. Full selected/admitted totals are recomputed once, with omitted active admissions/leases rejected. Pending diagnostic claims are separate. Missing/unsupported ownership stays null. |
+| 4. Real consumer and contracts | `RuntimeProductionCausalityV1.operations` -> existing variant runner/report/evaluator; default Playwright operation spec | Authored/unrun: positive immediate/tick/denied/final/zero/refund, retained transient gap, missing or contradictory state/claims/cash/native ownership, reused identity and duplicate lane contracts. Existing legacy immediate-payment list stays separate. |
+| 5. Review, handoff and publication | this checkpoint, HANDOFF quick resume, exact task-owned commit/push | Source-only implementation review and Omission Audit; separate Final Closure Audit after repairs/staging. No executable validation or assertion pass claimed. Remote SHA verified after commit at publication. |
+
+**Operation contract:** records carry actual command and purchased-item command separately, accepted plan/effect,
+physical actor/item and scene-local operation id. Per-tick scopes additionally retain actual lane/attempt and remaining
+successful charges. Exact raw boundary sequences identify before/after cash, absolute physical liabilities and nullable
+queue-claim totals. Charge/refund vectors stay separate. Cash and obligations require every ResourceType; sparse stored
+costs must contain only known finite nonnegative resources. Duplicate queue owner/lane/capacity and reused operation
+identities fail closed. The projector is Node/test-owned, detached and bounded by capture limits; it adds no gameplay,
+save, relay, listener or persistence authority. Report normalization now rejects captures beyond existing 8192 fact /
+256 snapshot bounds as well as declared drops. Diagnostic runtime cost remains unmeasured.
+
+**Claim interval:** exact accepting identity and full proposal bind each ledger entry to selected native provisional
+resource leases; amounts are not parsed from subject keys. Admitted amounts require actual preceding native admission.
+Paid state requires a captured completed immediate triple with the accepted full vector. Physical per-tick ownership
+requires the actual command-backed product/effect and stored accepted price at that callback. Released state requires
+actual terminal outcome. Paid immediate work can remain paid after completion; it is not unspent cash. Whole-ledger
+selected/admitted totals are independently recomputed and pending diagnostic amounts are never added. Missing native
+admissions/retained leases cannot silently understate the total. This remains the captured queue-claim subset, not
+complete global resource escrow or reservation timing proof.
+
+Unsupported non-queue ownership, pre-capture/restore/migrated owners, unstamped rejected admissions and a removed
+per-tick item before its terminal callback remain null with gaps. Current operations do not manufacture a lifecycle
+interval to cover them. The full production adapter must obtain their actual authorities. A complete immediate
+admitted-to-paid interval may name its exact callback in `reconciledCallbackSequences` only when both endpoint totals
+are reconciled, the complete native operation is sound, and the callback ledger contains only the genuine transient
+payment gap with unchanged entries and the actual post-charge cash/unchanged physical liabilities. A stale intermediate
+callback cannot borrow its endpoints to claim reconciliation. Raw facts and top-level gaps remain unchanged; this is
+no global gap deletion.
+
+**Consumer scope:** existing `runVariant` normalization retains operations in real variant JSON/reports. Sound
+per-tick operations stop carrying the narrow missing-progress-liability gap; their enqueue authority remains separately
+missing. Unsupported per-tick refunds and mismatched payment modes keep gaps. Full event liabilities, fair producers /
+reachability / usefulness, runtime definition catalog, paired setup, cadence and restore gaps remain. The mandatory
+full `RuntimeProductionEvidenceV1` oracle is unchanged and still rejects missing evidence. No synthetic contract becomes
+runtime coverage. No scenario recipe/registration, coverage denominator, balance threshold or source baseline changed.
+
+**Omission Audit:** traced actual capture callbacks -> exact accepting/native command lineage -> scoped immediate
+payments or actual progress attempts -> absolute liabilities -> queue-claim reconciliation -> causal normalizer ->
+existing report/evaluator. Reviewed synchronous payment before saved brain adoption, buffered intended/actual times,
+final exhausted heads, untouched waiting lanes, denied attempts, distinct refunds, absent/contradictory state and
+native identities, bounded detached output and retained raw gaps. No additional gameplay lifetime/save duties arise.
+Non-queue/global/restore and complete lifecycle/fair-world evidence remain explicit open work, not satisfied acceptance.
+
+**Separate Final Closure Audit:** after source repairs, rechecked the five scoped acceptance items, immediate consumers,
+test discovery, legacy contracts, native optional effect typing, new owners/line widths and exact staged scope. No
+executable check ran or pass is claimed. No skill/tool policy change, migration edit, baseline refresh, new agent,
+branch/worktree/thread/PR or model switch. Existing integration PR remains draft. Commit/push then pause as requested.
+
+**Next exact authoring action:** implement exact native enqueue/rejection, cancellation request/application/removal and
+completion/product or tech events around these operation intervals. Per-tick insertion and cancellation refunds need
+separate actual ownership; do not infer an enqueue from a successful payment. Resolve unsupported resource/restore and
+unstamped rejection ownership, keeping missing amounts null. Then project fair ready/reachable producers, useful stable
+products/tech, runtime price/duration/effective-level catalog and paired setup into complete production evidence.
+Author legal Skaduwee research setup and useful strategic AI contention/cancellation worlds; group compatible PRO-03/06
+pairs. Continue authoring only, commit/push, then pause. Retain GPT-6.1 Sol / high for this authority work.
+
+Add the following **unrun proposed command** to the final gate, alongside prior capture/claim/progress/decision,
+preset/pending/payment/digest/oracle/map/multiplayer checks:
+
+```bash
+pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts skirmish-ai-runtime-production-operation-projection.spec.ts skirmish-ai-runtime-production-progress.spec.ts skirmish-ai-runtime-production-decision-lineage.spec.ts skirmish-ai-runtime-production-causality-normalization.spec.ts
+```
+
+The default config starts the portal; these pure contract fixtures provision no socket identities. Review all flags /
+dependency installation against merged Nx 23.2.1/Jest 30.3.0/Phaser 4.2.1 at the final gate. Shared Phaser mock emitter /
+lifecycle omissions remain prior unverified debt. All tests/E2E/simulations, format/lint/type/build/editor/schema /
+repository checks and doctor/context/catalog commands remain deferred. Type/module compatibility, source-structure
+checks, report/capture pressure, bootstrap and actual both-faction strategic outcomes still need executable evidence.

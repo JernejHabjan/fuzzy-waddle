@@ -7,51 +7,49 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 ## Quick resume
 
 **Next session (user policy, 2026-10-04):** retain **GPT-6.1 Sol / high** for grouped PRO-03/06/07 authority.
-Current step: #815/#816 **queue claim reconciliation and genuine post-progress capture**, authored/unverified.
-This batch began at `59f72e037751e66078338c8e245aa7f062802313`, the upstream merge containing the unrelated Nx
-migration; that migration is preserved. Its containing commit owns the new revision. Worktree
-`/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify local/remote on resume.
-Actual model/effort is unavailable. No issue/family is complete. The user removed the comment-permission rule.
+Current step: #815/#816 **scoped production money/progress operation projection**, authored/unverified.
+This batch began at `e64a6f802777419b746b6f3f9c11d01b67412675`; its containing commit owns the new revision.
+Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify local/remote on resume.
+The unrelated Nx migration in `59f72e037` is preserved. Actual model/effort is unavailable. No issue/family is complete.
+The user removed the comment-permission rule. All executable validation remains at the final gate.
 
-Read the [claim/progress checkpoint](follow-ups/runtime-matrix-ci.md#production-queue-claims-and-progress-checkpoint-2026-10-04-unverified).
-**Next exact authoring action:** build the complete operation-event projection from exact request/decision, scoped
-payment and genuine progress boundaries. Resolve unsupported non-queue resource owners and pre-capture/restore leases
-through their actual shared authorities; keep missing ownership null. Pair successful per-tick triples with their
-actual attempts, preserving the final paid-head distinction. Then add fair ready/reachable producer/useful product/tech,
-runtime definition catalog and paired setup authorities for `RuntimeProductionEvidenceV1`. Full proof remains absent.
-Author legal Skaduwee research-producer setup and useful strategic AI cancellation/contention worlds, grouping compatible
-PRO-03/06 pairs. Defer all executable checks, commit/push, then pause at the next coherent boundary.
+Read the [operation checkpoint](follow-ups/runtime-matrix-ci.md#production-operation-projection-checkpoint-2026-10-04-unverified).
+**Next exact authoring action:** extend exact operation scopes into queue lifecycle events: native enqueue/rejection,
+real cancellation request/application/removal and completion with created actor or actual tech authority. Prove per-tick
+insertion/remaining obligations and per-tick cancellation refunds separately; current operations alone cannot provide
+those events. Resolve non-queue, unstamped rejected-admission, pre-capture/restore and removed-before-terminal claim
+ownership from actual authorities, keeping absent amounts null. Then supply fair ready/reachable producers, useful
+stable products/tech, runtime definition catalog and paired setup for full `RuntimeProductionEvidenceV1`. Author legal
+Skaduwee research setup and useful strategic AI cancellation/contention worlds, grouping compatible PRO-03/06 pairs.
+Defer all executable checks, commit/push the next coherent batch, then pause.
 
-- `AiRuntimeUnspentClaims` now binds exact accepting resource claims to selected leases and native command admissions.
-  It retains selected/admitted cash once; pending diagnostic claims are not added again. Valid immediate payment retires
-  cash, actual pay-over-time insertion transfers ownership to physical queue liabilities, and real rejection/terminal
-  outcomes release ownership. Forecasts and refundable/spent work are separate. Saved brain adoption remains unchanged.
-- Boundary `unspentClaims.resources` is null for absent/pre-capture/migrated/unsupported ownership, contradictory scope,
-  wrong payment/queue lineage, lost outcomes and overflow. During an in-flight cash callback it is temporarily null;
-  a complete real operation can settle the ledger. Those raw gaps are retained, not silently cleared by the report.
-  Non-queue resource purchases are still unsupported, so this is not complete global escrow proof.
-- The actual shared production/research processor now wraps pay/decrement/clamp with local attempt callbacks. The
-  advanced callback occurs before progress subscribers and completion/removal. Denied/throwing payment never advances.
-  Immediate/research and ordinary listener-free behavior retain their prior payment/progress ordering.
-- Successful zero remaining time excludes only that exact exhausted live head from future obligations at its advanced
-  callback. An unprocessed zero-time head still owes one charge. Raw queues keep the item until real shared removal;
-  no hypothetical tick, expected credit, nearest snapshot or queue-change imitation supplies the boundary.
-- Node diagnostics check attempt order, complete per-tick triples/native origin, actual cash, unchanged waiting lanes,
-  exact remaining progress, absolute physical-lane liabilities and one-charge reduction. They are registered in the
-  existing real normalizer/report path; raw progress records survive. Full event/fairness/catalog/setup gaps and the
-  mandatory full production oracle remain unchanged.
-- Authored/unrun: actual fixed-tick processor ordering/denial/exception/no-listener contracts, capture final/zero-head/
-  stale-brain/pending/detachment/cleanup assertions, lease/claim payment/queue/release/failure/overflow contracts and
-  synthetic Node progress cases. Shared capture fixtures moved into a small owner; no source baseline hash changed.
+- `RuntimeProductionCausalityV1.operations` now retains exact immediate-charge/refund and successful/denied per-tick
+  intervals. The Node projector uses validated accepting decisions/native command lineage, scoped cash callbacks and
+  actual shared progress. Successful tick liabilities come from the genuine advanced callback, including the final
+  exhausted head; money finish remains pre-progress. Denied attempts carry no charge or guessed advancement.
+- Queue liabilities are independently recomputed at both boundaries. Duplicate owners/lanes, invalid capacity, unknown
+  costs, non-finite/sparse cash, inconsistent head/native effect, reused operations and contradictory claim totals fail
+  closed. The legacy immediate-payment diagnostic stays separate; no per-tick attempt is treated as an enqueue.
+- Node reconciliation checks captured queue claims against actual selected provisional leases, command admissions,
+  completed immediate payments or physical per-tick ownership. Selected/admitted claims contribute once. Pending
+  diagnostic claims are never added. Unsupported/missing ownership stays null with a gap; full global escrow is absent.
+- A complete immediate interval may name its exact transient callback in `reconciledCallbackSequences`. This records
+  scoped reconciliation without deleting the raw/top-level `unspent_payment_in_progress` or missing-boundary gap.
+  Other authority gaps remain. Invalid causal groups suppress normalized operations and payments.
+- Authored/unrun: native-shaped decision/claim/payment/progress and distinct cancellation-refund fixtures, positive
+  immediate/tick/denied/final/initial-zero cases, missing-boundary/owner/lease/admission/cash/identity negatives and
+  retained-gap/report contracts. Existing default Playwright discovery and real variant JSON/report path own them.
+  Synthetic contracts are not AI outcomes, useful cancellation policy or runtime coverage.
+- Full event/fairness/catalog/setup/cadence/restore proof and the mandatory PRO-03/06/07 oracle remain unchanged.
+  No runtime recipe, coverage denominator, balance threshold, save/wire schema, source baseline or migration file changed.
   No tests/E2E/simulations, format/lint/type/build/editor/schema/repository checks or doctor/context/catalog commands ran.
-- Upstream now declares Nx `23.2.1`, Jest `30.3.0`, Phaser `4.2.1`. The new proposed gate command uses Jest's plural
-  `testPathPatterns`; older checkpoint commands need migration-aware review at the final gate. Dependency installation,
-  shared Phaser mock emitter/lifecycle debt, bootstrap, live outcomes and capture pressure/overhead remain unverified.
-- Prior [decision/boundary](follow-ups/runtime-matrix-ci.md#production-ai-decision-and-boundary-checkpoint-2026-10-03-unverified)
-  is in `40102bb4`; prior [causality](follow-ups/runtime-matrix-ci.md#production-ai-causality-checkpoint-2026-10-03-unverified)
-  is in `1f96cde1`; prior [distinct human socket worlds](follow-ups/runtime-matrix-ci.md#production-distinct-shared-queue-worlds-checkpoint-2026-10-03-unverified)
-  are in `e658318a`. The human worlds do not prove AI strategy; Tivara uses Sandhold, while Skaduwee's initial FrostForge
-  lacks research. No family recipe, scenario registration, coverage denominator or acceptance threshold changed.
+  Nx 23.2.1/Jest 30.3.0/Phaser 4.2.1 tooling, dependency installation, shared Phaser mock debt, bootstrap, capture/report
+  pressure and actual both-faction outcomes remain final-gate obligations.
+- Prior [claim/progress](follow-ups/runtime-matrix-ci.md#production-queue-claims-and-progress-checkpoint-2026-10-04-unverified)
+  is in `e64a6f802`; [decision/boundary](follow-ups/runtime-matrix-ci.md#production-ai-decision-and-boundary-checkpoint-2026-10-03-unverified)
+  is in `40102bb4`; [causality](follow-ups/runtime-matrix-ci.md#production-ai-causality-checkpoint-2026-10-03-unverified) is
+  in `1f96cde1`; [distinct human socket worlds](follow-ups/runtime-matrix-ci.md#production-distinct-shared-queue-worlds-checkpoint-2026-10-03-unverified)
+  are in `e658318a`. Human worlds do not prove AI strategy. Tivara uses Sandhold; initial Skaduwee FrostForge lacks research.
 
 - Multiplayer diagnostic/lifecycle authoring checkpoint (2026-09-30, **unverified**): browser-only relay and local-hash
   observation now lives in a small test-owned Phaser adapter rather than adding methods to hash-baselined
