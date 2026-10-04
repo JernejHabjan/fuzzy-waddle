@@ -1,3 +1,4 @@
+import type { AiRuntimeQueueMutationV1 } from "./ai-runtime-queue-mutation-v1";
 import type { GameCommand, GameCommandOutcome, ResearchType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiRuntimeProductionQueueV1 } from "./ai-runtime-production-queue-v1";
 import type { AiIntentCommandDispatchEvent } from "../ai-intent-command-dispatch-event";
@@ -25,6 +26,7 @@ export type AiRuntimeProductionFactV1 = {
   }
   | { readonly kind: "decision_selected"; readonly decision: AiDecisionDispatchEvent }
   | { readonly kind: "intent_dispatch"; readonly event: AiIntentCommandDispatchEvent }
+  | { readonly kind: "queue_mutation"; readonly mutation: AiRuntimeQueueMutationV1 }
   | { readonly kind: "queue_progress"; readonly progress: AiRuntimeQueueProgressV1 }
   | { readonly kind: "queue_resource"; readonly resource: AiRuntimeQueueResourceV1 }
   /** Delivery observation can follow component application; this is explicitly not a dispatch/request timestamp. */

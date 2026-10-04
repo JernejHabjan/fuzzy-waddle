@@ -1,3 +1,4 @@
+import { projectRuntimeProductionQueueMutations } from "./skirmish-ai-runtime-production-queue-mutations";
 import type { AiRuntimeProductionCaptureV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
 import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
@@ -31,8 +32,9 @@ export function normalizeRuntimeProductionCausality(capture: AiRuntimeProduction
   }
   const decisions = capture.facts.filter((fact) => fact.kind === "decision_selected");
   const operationBoundaries = capture.facts.filter((fact) =>
-    fact.kind === "queue_resource" || fact.kind === "queue_changed" || fact.kind === "queue_progress");
+    fact.kind === "queue_resource" || fact.kind === "queue_changed" || fact.kind === "queue_progress" || fact.kind === "queue_mutation");
   for (const fact of capture.facts) {
+    if (fact.kind === "queue_mutation") fact.mutation.gaps.forEach((gap) => gaps.add(gap));
     if (fact.kind === "queue_progress") fact.progress.gaps.forEach((gap) => gaps.add(gap));
     fact.boundaryState?.gaps.forEach((gap) => gaps.add(gap));
     if (fact.kind === "outcome") fact.boundaryStateBefore?.gaps.forEach((gap) => gaps.add(gap));
@@ -142,6 +144,9 @@ export function normalizeRuntimeProductionCausality(capture: AiRuntimeProduction
   const operations = projectRuntimeProductionOperations(capture, commands, payments.payments, progress);
   failures.push(...operations.failures);
   operations.gaps.forEach((gap) => gaps.add(gap));
+  const mutations = projectRuntimeProductionQueueMutations(capture, commands, payments.payments, operations.operations);
+  failures.push(...mutations.failures);
+  mutations.gaps.forEach((gap) => gaps.add(gap));
   for (const fact of queueFacts) {
     if (fact.resource.originatingCommandContext?.execution.source !== "ai" ||
       fact.resource.payment !== "per_successful_tick" || fact.resource.operation !== "tick_charge") continue;
@@ -162,7 +167,10 @@ export function normalizeRuntimeProductionCausality(capture: AiRuntimeProduction
       payment.resource.originatingCommandContext?.execution.commandId === id)) {
       gaps.add("production_ai_applied_payment_missing");
     }
-    if (purchasing && applied && physicalPerTick) gaps.add("production_ai_per_tick_enqueue_authority_missing");
+    const enqueued = mutations.mutations.some((mutation) => mutation.operation === "enqueue" &&
+      mutation.originatingCommandId === id);
+    if (purchasing && applied && !enqueued) gaps.add("production_ai_enqueue_mutation_authority_missing");
+    if (purchasing && applied && physicalPerTick && !enqueued) gaps.add("production_ai_per_tick_enqueue_authority_missing");
     if (!purchasing && cancelled && !payments.payments.some((payment) =>
       payment.resource.operation === "cancellation_refund" && payment.resource.cancellationCommand?.execution?.commandId === id)) {
       gaps.add("production_ai_cancel_refund_missing");
@@ -171,6 +179,7 @@ export function normalizeRuntimeProductionCausality(capture: AiRuntimeProduction
   // Invalid operations remain in the raw diagnostic; only a sound group is exposed as normalized money.
   return structuredClone({
     schemaVersion: 1, failures: [...new Set(failures)], gaps: [...gaps].sort(), commands, operationBoundaries,
-    payments: failures.length ? [] : payments.payments, operations: failures.length ? [] : operations.operations
+    payments: failures.length ? [] : payments.payments, operations: failures.length ? [] : operations.operations,
+    queueMutations: failures.length ? [] : mutations.mutations
   } satisfies RuntimeProductionCausalityV1);
 }

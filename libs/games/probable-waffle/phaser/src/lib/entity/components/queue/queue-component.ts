@@ -1,3 +1,4 @@
+import { mutateSharedQueueItem } from "./mutate-shared-queue-item";
 import { advanceSharedQueueItem } from "./advance-shared-queue-item";
 import { projectSharedQueueItems } from "./project-shared-queue-items";
 import { Subject } from "rxjs";
@@ -172,7 +173,8 @@ export class QueueComponent {
     if (item.type !== QueueItemType.Production || !item.productionData) return;
 
     // Remove from queue
-    queue.queuedItems.splice(0, 1);
+    mutateSharedQueueItem({ producer: this.gameObject, item, queueIndex, itemIndex: 0,
+      operation: "complete_remove" }, () => { queue.queuedItems.splice(0, 1); });
 
     // Delegate to ProductionComponent for spawning logic
     let producedActorId: string | null = null;
@@ -207,7 +209,8 @@ export class QueueComponent {
     if (item.type !== QueueItemType.Research || !item.researchData) return;
 
     // Remove from queue
-    queue.queuedItems.splice(0, 1);
+    mutateSharedQueueItem({ producer: this.gameObject, item, queueIndex, itemIndex: 0,
+      operation: "complete_remove" }, () => { queue.queuedItems.splice(0, 1); });
 
     // Delegate to ResearchComponent for tech tree registration
     if (this.researchComponent) {
@@ -242,7 +245,8 @@ export class QueueComponent {
       item.remainingTime = item.totalTime;
     }
 
-    queue.queuedItems.push(item);
+    mutateSharedQueueItem({ producer: this.gameObject, item, queueIndex: this.sharedQueues.indexOf(queue),
+      itemIndex: queue.queuedItems.length, operation: "enqueue" }, () => { queue.queuedItems.push(item); });
 
     // Emit queue change
     if (this.productionComponent) {
@@ -273,7 +277,8 @@ export class QueueComponent {
         }
 
         // Remove from queue
-        queue.queuedItems.splice(index, 1);
+        mutateSharedQueueItem({ producer: this.gameObject, item: cancelledItem, queueIndex: i, itemIndex: index,
+          operation: "cancel_remove", cancellationCommand }, () => { queue.queuedItems.splice(index, 1); });
         this.reportTerminalOutcome(cancelledItem, "cancelled", [], "queue_item_cancelled");
 
         // Delegate refund to ProductionComponent
@@ -307,7 +312,7 @@ export class QueueComponent {
    * Public API: Cancel the first research item
    */
   cancelResearchItem(cancellationCommand?: CancelResearchCommand): boolean {
-    for (const queue of this.sharedQueues) {
+    for (const [queueIndex, queue] of this.sharedQueues.entries()) {
       const firstItem = queue.queuedItems[0];
       if (firstItem && firstItem.type === QueueItemType.Research && firstItem.researchData) {
         const type = firstItem.researchData;
@@ -320,7 +325,8 @@ export class QueueComponent {
         }
 
         // Remove from queue
-        queue.queuedItems.splice(0, 1);
+        mutateSharedQueueItem({ producer: this.gameObject, item: firstItem, queueIndex, itemIndex: 0,
+          operation: "cancel_remove", cancellationCommand }, () => { queue.queuedItems.splice(0, 1); });
         this.reportTerminalOutcome(firstItem, "cancelled", [], "research_cancelled");
 
         // Emit cancellation

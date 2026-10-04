@@ -1241,3 +1241,94 @@ dependency installation against merged Nx 23.2.1/Jest 30.3.0/Phaser 4.2.1 at the
 lifecycle omissions remain prior unverified debt. All tests/E2E/simulations, format/lint/type/build/editor/schema /
 repository checks and doctor/context/catalog commands remain deferred. Type/module compatibility, source-structure
 checks, report/capture pressure, bootstrap and actual both-faction strategic outcomes still need executable evidence.
+
+
+## Production physical queue checkpoint (2026-10-04, unverified)
+
+**Scope/provenance:** current #815/#816 PRO-03/06/07 substep is native physical insertion/removal interval authoring.
+Base `75768bb0875123f8971ab7bc1515172a76f76fde`, integration worktree
+`/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`. The unrelated Nx migration in
+`59f72e037` remains intact. This is not full lifecycle / RuntimeProductionEvidenceV1 or issue acceptance.
+
+| Acceptance | Owner / consumer | Status and evidence |
+| --- | --- | --- |
+| 1. Real physical authority | `QueueComponent` -> `mutateSharedQueueItem`, `QueueMutationEvent` | Authored/unverified: actual push/splice before UI callbacks, retained production/research refund and async completion ordering, no-listener call-once path. |
+| 2. Exact raw state / lifetime | `AiRuntimeProductionCapture`, `projectAiRuntimeQueueMutation`, shared `captureAiRuntimeProductionItem` | Authored/unverified: detached outside-lane item/context, before/after all-lane cash/obligations, earliest actual per-tick transfer, restore flag, bounded facts and scene cleanup. |
+| 3. Native normalized intervals | `projectRuntimeProductionQueueMutations`, `validateRuntimeQueueMutationBoundaries`, unspent reconciler | Authored/unverified: exact accepting scope/price/physical delta, request/intended/actual timing, isolated cash, independent liabilities, nullable claims and separate actual payment/refund IDs. |
+| 4. Contracts / report wiring | New shared mutation/capture Jest specs and default Playwright queue mutation spec/fixtures; existing `runVariant` | Authored/unrun: source review of actual consumers/discovery, both cancellation orders, single-player pre-receipt application, completion and negative boundaries. No assertion executed. |
+| 5. Review / handoff / publication | This checkpoint and HANDOFF Quick resume | Source-only implementation review/Omission Audit and separate Final Closure Audit recorded; exact task-owned commit/push then pause. No executable validation or release readiness claimed. |
+
+**Physical authority:** the actual selected lane and affected item handle surround the push/splice itself. Enqueue is
+not inferred from cash payment or a later UI notification. Production retains remove -> original terminal -> refund;
+research retains refund -> remove -> original terminal. Completion removes before async spawn / synchronous tech
+registration. The listener-free path mutates once; a throwing mutation reports no successful after callback. IDs are
+scene-local diagnostics in a WeakMap, never save/relay metadata or gameplay deduplication. Bulk QueueComponent.setData
+keeps its restore path; research restore addItem facts retain their restore flag and cannot supply fresh native authority.
+
+**Capture and claim timing:** the new subscription is owned by capture and removed on dispose/shutdown/destroy.
+Full lane projection shares its item projector with detached mutation handles. Actual per-tick after-push state retires
+admitted cash into future physical liabilities before ordinary queueChanged/UI notifications. Node reconciliation can
+use this affected native item/context at that exact callback, retaining the prior queueChanged route for older captures.
+Pending diagnostic claims are never added. All raw drops/gaps and unknown restore/ownership states remain explicit.
+The extra callback pressure and nested bounded normalization cost are unmeasured; final gate owns performance evidence.
+
+**Normalized contract:** `queueMutations` is a separate physical diagnostic in the existing causal/report path. Native
+accepted result, complete bus stamp/context, addressed producer/product, stored accepted full price, physical lane/index
+and actual callback ordering must match. Every resource must be present in cash/obligation vectors; liabilities are
+recomputed independently from all lanes. Exactly the selected push/splice changes the physical queues; cash and every
+unrelated lane stay unchanged within that interval. Contradictory metadata, duplicate/reused IDs/items, restore, a prior
+terminal, malformed/missing pair or inconsistent boundaries fails closed and suppresses normalized operations/payments.
+Missing state/scope is a named gap; it cannot borrow a snapshot or nearest queue notification.
+
+Request sequence/tick is the native request observation; scheduled tick is the actual bus intended application time;
+the mutation tick is actual shared application/removal. Buffered cancellation does not receive advance cash. Immediate
+insertion names its preceding scoped charge without charging again. Cancellation names its original purchase and
+separate cancel execution plus actual refund, on the appropriate side of removal. Missing money or terminal callbacks
+remain gaps. Completion removal requires the genuine advanced zero head and its exhausted marker; it still cannot
+prove a produced actor or registered useful tech. Removed per-tick ownership before terminal remains null with a gap.
+Full event/cadence/global escrow/restore, fair world/catalog/paired setup and useful replacement evidence remain absent.
+Only the narrow missing-per-tick-enqueue gap can cease for a sound actual physical interval; raw gaps remain unchanged.
+
+**Authored contracts:** real QueueComponent push/splice and production/research cancellation/completion ordering,
+actual lane selection, nonexistent cancellation, no-listener/throw behavior; capture detachment, no-UI observation,
+exhausted-head liability sampling, restore and cancellation provenance/cleanup. New native-shaped pure fixtures cover
+immediate and per-tick insertion, single-player application before finished receipt, distinct production/research refund
+ordering, final consumed-head removal, missing physical state, forged metadata, cash/other-lane/liability/index/duplicate /
+restore negatives and a missing advanced callback. They establish no real product/tech, runtime definition prices,
+legal setup, strategic AI cancellation, socket parity or passing coverage. Existing legacy contracts remain separate.
+
+**Omission Audit:** traced QueueComponent mutation -> live event -> owned raw capture -> exact decision/native request /
+admission/lifecycle scope -> independently checked physical/cash/liability interval -> queue-claim reconciliation ->
+normalizer -> existing `runVariant` JSON/evaluator. Reviewed synchronous pre-receipt application, buffered cancel request
+versus future removal, both refund orders, exhausted heads/unrelated lanes, legacy absence, restore and cleanup, invalid
+suppression, exact staging and unchanged mandatory full production oracle. Rejected admissions/application and actual
+created actor / registered tech events are explicit next work, as are unsupported per-tick/global/restore owners.
+
+**Separate Final Closure Audit:** after source repairs, rechecked the five scoped items, optional native stamps and
+GameCommandInput typing, consumer/test discovery, new source owner sizes/line layout and staged scope. This is a source
+review, not format/type/source-structure validation. No tests/E2E/simulations or executable checks ran; all such evidence
+remains deferred. No baseline hash, oracle coverage, threshold, package/config/migration, skill/tool policy, model switch,
+agent/thread/worktree/branch/PR creation. Integration PR remains draft. Publish only this batch, verify remote SHA, pause.
+
+**Next grouped authoring:** native rejected request/application events and actual actor/tech completion authority;
+complete cancellation request/application/removal/refund lifecycle, removed per-tick ownership and per-tick refunds.
+Resolve non-queue/global/unstamped rejection/pre-capture/restore claim authority without default zeros. Then fair
+ready/reachable producers, useful stable products/tech, runtime definition catalog and paired setup; legal Skaduwee
+research setup and useful strategic AI cancellation/contention worlds, grouping compatible PRO-03/06 pairs.
+Retain **GPT-6.1 Sol / high** for this cross-authority work; this is a judgment, not an automatic switch. Actual model /
+effort remains unavailable. [OpenAI Docs](https://developers.openai.com/api/docs/models/gpt-6.1-sol) was searched and
+opened this turn and lists high effort; no pricing or actual-account availability claim is made.
+
+Add these **unrun proposed commands** to the final gate, alongside prior capture/claim/progress/decision,
+preset/pending/payment/digest/oracle/map/multiplayer checks:
+
+```bash
+NX_DAEMON=false pnpm exec nx test probable-waffle-phaser --testPathPatterns='mutate-shared-queue-item|ai-runtime-queue-mutation-capture|advance-shared-queue-item|ai-runtime-production-capture|ai-runtime-unspent-claims' --skip-nx-cache
+pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts skirmish-ai-runtime-production-queue-mutations.spec.ts skirmish-ai-runtime-production-operation-projection.spec.ts skirmish-ai-runtime-production-progress.spec.ts skirmish-ai-runtime-production-decision-lineage.spec.ts skirmish-ai-runtime-production-causality-normalization.spec.ts
+```
+
+Review tooling/flags against merged Nx 23.2.1 / Jest 30.3.0 / Phaser 4.2.1 and dependency installation at that gate.
+The default Playwright config starts portal; these pure fixtures need no socket identity. Shared Phaser mock emitter /
+lifecycle omissions remain prior unverified debt. All tests/E2E/simulations, format/lint/type/build/editor/schema /
+repository checks and doctor/context/catalog commands remain deferred. Type/module compatibility, source structure,
+report/capture pressure, bootstrap and actual both-faction strategic outcomes still require executable evidence.

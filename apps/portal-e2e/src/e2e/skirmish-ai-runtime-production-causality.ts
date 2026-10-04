@@ -1,3 +1,4 @@
+import type { RuntimeProductionQueueMutationV1 } from "./skirmish-ai-runtime-production-queue-mutation";
 import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
 import type { GameCommand } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiRuntimeProductionFactV1 } from
@@ -29,8 +30,10 @@ export interface RuntimeProductionCausalityV1 {
   }[];
   /** Exact raw operation boundaries, including the genuine post-progress callback; never promoted to full event obligations. */
   readonly operationBoundaries: readonly Extract<AiRuntimeProductionFactV1, {
-    kind: "queue_resource" | "queue_changed" | "queue_progress"
+    kind: "queue_resource" | "queue_changed" | "queue_progress" | "queue_mutation"
   }>[];
+  /** Exact native physical insertion/removal intervals; full lifecycle/useful-effect evidence remains separate. */
+  readonly queueMutations: readonly RuntimeProductionQueueMutationV1[];
   /** Complete scoped money/progress intervals; nullable unspent claims keep unsupported ownership explicit. */
   readonly operations: readonly RuntimeProductionOperationV1[];
   /** Legacy immediate-payment diagnostic, separate from the actual post-progress per-tick operations. */

@@ -81,7 +81,17 @@ export function reconcileRuntimeProductionUnspent(
     const paid = !!payment && sameRuntimeQueueVector(payment.resource.storedPrice, price);
     const items = fact.boundaryState?.queues?.flatMap((queue) => queue.lanes.flatMap((lane) => lane.items
       .filter((item) => item.commandId === entry.commandId).map((item) => ({ queue, item })))) ?? [];
-    const inserted = prefix.some((candidate) => candidate.kind === "queue_changed" &&
+    const insertions = prefix.flatMap((candidate) => candidate.kind === "queue_changed" ? [{
+      sequence: candidate.sequence, tick: candidate.tick, queue: candidate.queue
+    }] :
+      candidate.kind === "queue_mutation" && candidate.mutation.operation === "enqueue" &&
+      candidate.mutation.phase === "after" && candidate.mutation.actorId === intent.producerId &&
+      candidate.mutation.item?.commandId === entry.commandId &&
+      isDeepStrictEqual(candidate.mutation.originatingCommandContext?.execution, scope?.command.execution)
+        ? (candidate.boundaryState?.queues ?? []).filter((queue) => queue.actorId === intent.producerId).map((queue) => ({
+        sequence: candidate.sequence, tick: candidate.tick, queue
+      })) : []);
+    const inserted = insertions.some((candidate) =>
       !!scope && candidate.tick === scope.command.tick && scope.outcomes.some((outcome) =>
         outcome.sequence < candidate.sequence && outcome.outcome.kind === "dispatched") &&
       candidate.queue.actorId === intent.producerId && candidate.queue.lanes.some((lane) => lane.items.some((item) =>

@@ -1,3 +1,5 @@
+import { QUEUE_MUTATION_EVENT, type QueueMutationEvent } from "../../../entity/components/queue/queue-mutation-event";
+import { projectAiRuntimeQueueMutation } from "./project-ai-runtime-queue-mutation";
 import Phaser from "phaser";
 import { Subscription } from "rxjs";
 import { ProbableWafflePlayerType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
@@ -62,6 +64,7 @@ export class AiRuntimeProductionCapture {
     }
     scene.events.on(AI_DECISION_DISPATCH_EVENT, this.observeDecision, this);
     scene.events.on(AI_INTENT_COMMAND_DISPATCH_EVENT, this.observeDispatch, this);
+    scene.events.on(QUEUE_MUTATION_EVENT, this.observeMutation, this);
     scene.events.on(QUEUE_PROGRESS_EVENT, this.observeProgress, this);
     scene.events.on(QUEUE_RESOURCE_EMISSION_EVENT, this.observeQueueResource, this);
     this.subscriptions.add(bus.commandOutcome$.subscribe((outcome) => {
@@ -184,6 +187,7 @@ export class AiRuntimeProductionCapture {
     this.unspentClaims.dispose();
     this.scene.events.off(AI_DECISION_DISPATCH_EVENT, this.observeDecision, this);
     this.scene.events.off(AI_INTENT_COMMAND_DISPATCH_EVENT, this.observeDispatch, this);
+    this.scene.events.off(QUEUE_MUTATION_EVENT, this.observeMutation, this);
     this.scene.events.off(QUEUE_PROGRESS_EVENT, this.observeProgress, this);
     this.scene.events.off(QUEUE_RESOURCE_EMISSION_EVENT, this.observeQueueResource, this);
     this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.dispose, this);
@@ -251,6 +255,22 @@ export class AiRuntimeProductionCapture {
     this.append({ ...boundary, kind: "queue_resource", resource });
   };
 
+  /** Earliest physical insertion transfers future charges; removal callbacks retain their actual terminal ordering. */
+  private readonly observeMutation = (event: QueueMutationEvent): void => {
+    if (this.disposed) return;
+    const playerNumber = getActorComponent(event.producer, OwnerComponent)?.getOwner();
+    if (playerNumber === undefined) return;
+    const mutation = projectAiRuntimeQueueMutation(event, this.identify);
+    if (event.operation === "enqueue" && event.phase === "after") {
+      const queue = captureAiRuntimeProductionQueue(event.producer, this.identify);
+      if (queue) this.unspentClaims.observeQueue(playerNumber, queue);
+    }
+    // A completing head has already consumed its actual last progress attempt before this splice.
+    const exhausted = event.operation === "complete_remove" && event.phase === "before" && event.item.remainingTime === 0
+      ? event.item : undefined;
+    this.append({ ...this.boundary(playerNumber), kind: "queue_mutation", mutation }, exhausted);
+  };
+
   /** Samples the actual live head after shared decrement, before progress subscribers or async completion can mutate it. */
   private readonly observeProgress = (event: QueueProgressEvent): void => {
     if (this.disposed) return;
@@ -281,7 +301,8 @@ export class AiRuntimeProductionCapture {
     const sequence = this.nextSequence++;
     if (this.facts.length < MAX_FACTS) {
       const boundaryState = [
-        "decision_selected", "intent_dispatch", "outcome", "queue_resource", "queue_changed", "command_delivered", "queue_progress"
+        "decision_selected", "intent_dispatch", "outcome", "queue_resource", "queue_changed", "command_delivered",
+        "queue_progress", "queue_mutation"
       ]
         .includes(fact.kind) ? this.sampleBoundaryState(fact.playerNumber, exhaustedProgressItem) : undefined;
       this.facts.push(structuredClone({ ...fact, sequence, ...(boundaryState ? { boundaryState } : {}) }));
