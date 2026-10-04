@@ -1069,3 +1069,94 @@ The default config starts the local portal; these pure contract specs do not pro
 gate repair the shared Phaser mock emitter/lifecycle omissions, then run affected focused and actual-world checks.
 All tests/E2E/simulations, formatting/lint/types/build/editor/schema/repository checks and doctor/context/catalog remain
 unrun. Sampling overhead and live bootstrap/outcomes are unmeasured, not accepted production evidence.
+
+
+### Production queue claims and progress checkpoint (2026-10-04, unverified)
+
+This coherent authoring batch began at `59f72e037751e66078338c8e245aa7f062802313`. The unrelated upstream/Nx merge
+is retained; the owned diff changes no migration/config/package files. This closes the scoped queue-claim ledger and
+real post-progress hook authoring substep, not complete production evidence or PRO-03/06/07/#815/#816/#819.
+Actual model/effort is unknown. Recommendation remains **GPT-6.1 Sol / high**; no model switch was performed.
+
+| Acceptance | Owner / consumer | Evidence / status |
+| --- | --- | --- |
+| 1. Selected cash ownership once | `AiRuntimeUnspentClaims`, `AiRuntimeUnspentClaimsV1`, production capture | Authored: exact accepted queue claims/selected resource leases, request identity/payload, real admission and scoped payment/physical queue transfer. Forecasts, spent/refundable work and pending diagnostic claims are not counted again. Unsupported/pre-capture/migrated/invalid/overflow ownership stays null. |
+| 2. Genuine progress boundary | `advanceSharedQueueItem`, `QueueProgressEvent`, actual `QueueComponent` production/research callers | Authored: before real payment and after actual decrement/clamp, before progress callbacks/completion. Denial/exception preserves progress. Ordinary no-listener path, prices, fixed 50 ms clock and completion order are retained. |
+| 3. Exact operation-time liabilities | boundary projector, `AiRuntimeQueueProgressV1`, capture | Authored: detached live head/lane identity, actual cash/queues and future-charge vectors. Only the genuinely advanced exhausted zero head is excluded before removal; unprocessed zero heads/waiting lanes retain charges. Capture disposes hook and claim ledger. |
+| 4. Real diagnostic consumer and contracts | `validateRuntimeProductionProgress`, `calculateRuntimeQueueLiabilities`, existing causal normalizer/report; Jest and Playwright specs | Authored/unrun: native attempt/payment identity/order, whole cash delta, exact progress, unchanged other items/lanes, independently computed absolute liabilities and one successful-charge reduction. Missing authority stays a gap; contradictions fail. Existing full oracle remains mandatory. |
+| 5. Review/handoff/publication | this checkpoint and quick resume | Source-only implementation review and Omission Audit; separate Final Closure Audit after repairs/staging. Exact owned commit/push and remote verification at publication. All executable validation deferred. |
+
+**Ownership details:** amounts come from full accepted claims and exact native selected provisional leases, never
+parsed resource-subject strings or forecast prerequisites. Entries retain full accepting identity/proposal and actual
+command id. Selected/admitted entries contribute cash once. A real rejected admission or terminal outcome releases it;
+a validated immediate charge marks paid. An actual command-backed pay-over-time insertion transfers the accepted claim
+to the physical remaining-charge owner. The existing pending ledger remains independently visible and can lag payment.
+The saved brain still updates after dispatch, so it cannot substitute for this operation-time owner.
+
+The ledger retains at most 512 entries per player; selected decisions/leases also have a 512 guard. Overflow fails
+closed instead of exposing partial money. Omitted unadmitted/settled leases retire at a genuine selecting decision;
+admitted or physical-liability ownership survives stale decision leases until real outcomes settle it. Unknown
+non-queue resource purchases and prior/migrated resource ownership remain explicit limitations. A callback in the
+middle of an immediate emission is temporarily unknown until the complete operation returns; raw callback gaps remain
+attached to diagnostic normalization. No refund prediction creates cash or another unspent claim.
+
+**Progress details:** the scene-local attempt id is diagnostic only and is not persisted/relayed. Native resource
+operation ids remain separate. Started/advanced/denied/threw callbacks retain the live item before/after processing;
+retained facts project it immediately, never store handles. A per-tick finished money callback is still pre-progress.
+The new advanced callback reads the actual later state, not an adjusted earlier sample. Both callbacks occur before
+UI progress subscribers and asynchronous production completion can remove/spawn items. Missing production components
+retain the original no-processing return; denied payment and exceptions retain the original no-progress behavior.
+
+At the final paid head, physical remaining time is zero while the head is still present. Its exact
+`exhaustedProgressItemId` excludes that successfully processed item from future charges at this callback. Other
+zero-time heads/waiting items are not excluded; they still enter one actual payment branch. Queue completion/removal,
+research registration, terminal outcomes, prices/refund formulas and planner behavior are unchanged.
+
+Node diagnostics require two same-tick ordered attempt callbacks, command-backed producer/item/native origin,
+fixed-step progress, untouched remaining lanes/items, exact scoped charge triples (or an actual denied attempt),
+whole cash delta and one stored-vector liability reduction. They independently recompute the absolute charge vector
+from all physical lanes, so two consistently inflated before/after vectors cannot pass. Missing state/command is a
+named gap; duplicate scope, altered progress/payment/epoch/cash/remaining liabilities or restore is rejected. This
+remains a diagnostic slice: per-tick money is not promoted into the existing immediate-payment list, and complete
+`RuntimeProductionEvidenceV1`, fair geometry/useful effects/catalog/setup/cadence/restore proof remain unfinished.
+
+**Authored checks:** `advance-shared-queue-item.spec.ts` drives the actual fixed-tick `QueueComponent`; capture boundary
+specs exercise the real helper with actual scoped emitter callbacks. The old manual-progress capture assertion is
+replaced by this genuine hook case, retaining pre-progress cash/liability assertions. Shared mutable synthetic scene
+setup lives in `ai-runtime-production-capture-fixtures.ts` to keep specs bounded. Claim specs cover selection/admission,
+payment, physical transfer, forecast/release, pending/spent distinction, absent/mismatched/duplicate/lost ownership,
+migrated subjects and overflow. The default Playwright config discovers the new progress contract spec; its invented
+prices/queues/decisions never count as runtime coverage. No assertion has been executed.
+
+**Omission Audit:** traced real pure result -> native request -> shared admission/payment/queue insertion/outcomes ->
+claim ledger -> exact boundary projection, and actual fixed-tick queue -> helper -> capture -> Node attempt/liability
+validator -> existing causal result/report. Reviewed synchronous versus buffered ordering, stale saved leases, initial
+zero heads, final paid heads, waiting lanes, refunds/rejections, incomplete payment, fail-closed overflow, detached
+retention and disposal. No full oracle/coverage/recipe/balance threshold, save/wire schema, source baseline or migration
+was changed. Full global resource ownership and actual useful strategic worlds are explicitly unfinished.
+
+**Separate Final Closure Audit:** after source repairs, revisited all five acceptance items, actual controller/queue
+consumers, synthetic versus real provenance, listener-free path, test discovery, new source ownership, stale comments
+and exact staged scope. No check ran or pass is claimed. No new worktree/branch/thread/PR/agent or model switch. The
+existing integration PR remains draft. Publication SHA is checked after the containing commit; verify it on resume.
+
+**Next exact authoring action:** complete the production operation-event adapter using exact decision/request,
+scoped payment and real post-progress records. Resolve non-queue claimed purchases and prior/restore leases from their
+actual shared authorities, then project fair ready/reachable producers, useful stable products/tech, runtime definition
+catalog and paired setup into full evidence. Keep missing inputs explicit. Follow with legal Skaduwee research setup
+and useful strategic AI contention/cancellation worlds; group compatible PRO-03/06 pairs. Continue implementation only,
+commit/push, then pause. Retain **GPT-6.1 Sol / high** for the remaining cross-authority design.
+
+Add these **unrun proposed commands** to the final gate, alongside prior decision/pending/payment/oracle/socket checks:
+
+```bash
+NX_DAEMON=false pnpm exec nx test probable-waffle-phaser --testPathPatterns='advance-shared-queue-item|ai-runtime-production-boundaries|ai-runtime-unspent-claims|ai-runtime-production-capture' --skip-nx-cache
+pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts skirmish-ai-runtime-production-progress.spec.ts skirmish-ai-runtime-production-decision-lineage.spec.ts skirmish-ai-runtime-production-causality-normalization.spec.ts
+```
+
+The merged package declarations are Nx 23.2.1/Jest 30.3.0/Phaser 4.2.1. Review dependency installation and older singular
+`testPathPattern` commands at the final gate rather than reverting the migration. The default Playwright config starts
+the portal; pure contract specs do not provision socket identities. Shared Phaser mock emitter/lifecycle omissions
+remain unverified debt. All tests/E2E/simulations, format/lint/type/build/editor/schema/repository checks and
+doctor/context/catalog commands remain deferred. Measure capture pressure and overhead, live bootstrap and actual
+both-faction outcomes at the final gate; source-only review does not establish any of them.

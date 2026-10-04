@@ -6,6 +6,7 @@ import { isRuntimeQueueCommand, validateRuntimeProductionCommandLineage } from
 import { normalizeRuntimeScopedQueuePayments, sameRuntimeQueueVector } from "./skirmish-ai-runtime-scoped-queue-payments";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 
+import { validateRuntimeProductionProgress } from "./skirmish-ai-runtime-production-progress";
 import { matchRuntimeProductionDecision } from "./skirmish-ai-runtime-production-decision-lineage";
 
 /**
@@ -27,8 +28,9 @@ export function normalizeRuntimeProductionCausality(capture: AiRuntimeProduction
   }
   const decisions = capture.facts.filter((fact) => fact.kind === "decision_selected");
   const operationBoundaries = capture.facts.filter((fact) =>
-    fact.kind === "queue_resource" || fact.kind === "queue_changed");
+    fact.kind === "queue_resource" || fact.kind === "queue_changed" || fact.kind === "queue_progress");
   for (const fact of capture.facts) {
+    if (fact.kind === "queue_progress") fact.progress.gaps.forEach((gap) => gaps.add(gap));
     fact.boundaryState?.gaps.forEach((gap) => gaps.add(gap));
     if (fact.kind === "outcome") fact.boundaryStateBefore?.gaps.forEach((gap) => gaps.add(gap));
   }
@@ -94,6 +96,9 @@ export function normalizeRuntimeProductionCausality(capture: AiRuntimeProduction
       failures.push("production_ai_unattributed_receipt");
     }
   }
+  const progress = validateRuntimeProductionProgress(capture, commands.map((entry) => entry.command));
+  failures.push(...progress.failures);
+  progress.gaps.forEach((gap) => gaps.add(gap));
   const queueFacts = capture.facts.filter((fact) => fact.kind === "queue_resource");
   const scoped = queueFacts.filter((fact) => {
     const value = fact.resource;

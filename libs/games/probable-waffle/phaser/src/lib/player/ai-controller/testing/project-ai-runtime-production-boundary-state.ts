@@ -10,6 +10,7 @@ import { AiPlayerHandler } from "../ai-player-handler";
 import { projectAiProductionObligations } from "../observation/ai-production-obligations";
 import { captureAiRuntimeProductionQueue } from "./ai-runtime-production-queues";
 import type { AiRuntimePendingCommands } from "./ai-runtime-pending-commands";
+import type { AiRuntimeUnspentClaimsV1 } from "./ai-runtime-unspent-claims-v1";
 import type { AiRuntimeProductionBoundaryState } from "./ai-runtime-production-boundary-state";
 
 const MAX_ACTORS = 256;
@@ -21,9 +22,13 @@ export function projectAiRuntimeProductionBoundaryState(
   scene: ProbableWaffleScene,
   playerNumber: number,
   pendingCommands: AiRuntimePendingCommands,
-  identify: (actorId: string, item: UnifiedQueueItem) => string
+  identify: (actorId: string, item: UnifiedQueueItem) => string,
+  unspentClaims?: AiRuntimeUnspentClaimsV1,
+  exhaustedProgressItem?: UnifiedQueueItem
 ): AiRuntimeProductionBoundaryState {
-  const gaps = new Set<string>(["production_boundary_unspent_reconciliation_missing"]);
+  const gaps = new Set<string>(unspentClaims?.gaps ?? []);
+  if (!unspentClaims?.resources) gaps.add("production_boundary_unspent_reconciliation_missing");
+  let exhaustedProgressItemId: string | undefined;
   const pending = pendingCommands.snapshot(playerNumber);
   pending.gaps.forEach((gap) => gaps.add(gap));
   let resources: AiRuntimeProductionBoundaryState["resources"] = null;
@@ -65,16 +70,25 @@ export function projectAiRuntimeProductionBoundaryState(
             item.totalTimeMs < 0 || item.remainingTimeMs < 0 || item.remainingTimeMs > item.totalTimeMs)))) {
             throw new Error("queue_cost_or_progress_invalid");
           }
-          obligations = projectAiProductionObligations(items);
+          if (exhaustedProgressItem) {
+            const actor = actors.find((candidate) => getActorComponent(candidate, QueueComponent)?.queues.some((lane) =>
+              lane.queuedItems[0] === exhaustedProgressItem));
+            const queue = actor ? captureAiRuntimeProductionQueue(actor, identify) : null;
+            if (!queue || exhaustedProgressItem.remainingTime !== 0) throw new Error("exhausted_progress_item_missing");
+            exhaustedProgressItemId = identify(queue.actorId, exhaustedProgressItem);
+          }
+          // Only the actually advanced zero head has exhausted its charges; an unprocessed zero-time head still owes one.
+          obligations = projectAiProductionObligations(items.filter((item) => item !== exhaustedProgressItem));
         }
       }
     }
   } catch {
     // Preserve absence instead of aborting an ordinary shared command because test diagnostics cannot project it.
+    exhaustedProgressItemId = undefined;
     queues = null;
     obligations = null;
     gaps.add("production_boundary_queue_authority_invalid");
   }
   return structuredClone({ resources, brain, pendingCommands: pending.commands, pendingResourceClaims: pending.resources,
-    queues, obligations, gaps: [...gaps].sort() } satisfies AiRuntimeProductionBoundaryState);
+    queues, obligations, unspentClaims, exhaustedProgressItemId, gaps: [...gaps].sort() } satisfies AiRuntimeProductionBoundaryState);
 }

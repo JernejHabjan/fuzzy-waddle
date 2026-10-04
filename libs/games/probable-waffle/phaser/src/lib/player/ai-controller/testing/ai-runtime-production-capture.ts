@@ -5,7 +5,7 @@ import type { UnifiedQueueItem } from "@fuzzy-waddle/probable-waffle-gameplay/en
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getActorComponent } from "../../../data/actor-component";
-import { getPlayer } from "../../../data/scene-data";
+import { getPlayer, isSnapshotApplyInProgress } from "../../../data/scene-data";
 import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 import { OwnerComponent } from "../../../entity/components/owner-component";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
@@ -25,6 +25,8 @@ import { QUEUE_RESOURCE_EMISSION_EVENT, type QueueResourceEmissionEvent } from "
 import { projectAiRuntimeQueueResource } from "./project-ai-runtime-queue-resource";
 
 import { AI_DECISION_DISPATCH_EVENT, type AiDecisionDispatchEvent } from "../ai-decision-dispatch-event";
+import { AiRuntimeUnspentClaims } from "./ai-runtime-unspent-claims";
+import { QUEUE_PROGRESS_EVENT, type QueueProgressEvent } from "../../../entity/components/queue/queue-progress-event";
 import { projectAiRuntimeProductionBoundaryState } from "./project-ai-runtime-production-boundary-state";
 
 const MAX_FACTS = 8192;
@@ -44,6 +46,7 @@ export class AiRuntimeProductionCapture {
   private nextSequence = 1;
   private readonly factDrops = new Map<number, number>();
   private readonly pendingCommands = new AiRuntimePendingCommands();
+  private readonly unspentClaims = new AiRuntimeUnspentClaims();
   private disposed = false;
 
   constructor(private readonly scene: ProbableWaffleScene) {
@@ -59,11 +62,13 @@ export class AiRuntimeProductionCapture {
     }
     scene.events.on(AI_DECISION_DISPATCH_EVENT, this.observeDecision, this);
     scene.events.on(AI_INTENT_COMMAND_DISPATCH_EVENT, this.observeDispatch, this);
+    scene.events.on(QUEUE_PROGRESS_EVENT, this.observeProgress, this);
     scene.events.on(QUEUE_RESOURCE_EMISSION_EVENT, this.observeQueueResource, this);
     this.subscriptions.add(bus.commandOutcome$.subscribe((outcome) => {
       const boundary = this.boundary(outcome.playerNumber);
       const boundaryStateBefore = this.facts.length < MAX_FACTS ? this.sampleBoundaryState(outcome.playerNumber) : undefined;
       this.pendingCommands.observeOutcome(outcome, boundary.tick);
+      this.unspentClaims.observeOutcome(outcome);
       this.append({ ...boundary, kind: "outcome", outcome, boundaryStateBefore,
         scheduledTick: outcome.kind === "dispatched" ? outcome.tick : null });
     }));
@@ -176,8 +181,10 @@ export class AiRuntimeProductionCapture {
     this.snapshots.clear();
     this.facts.length = 0;
     this.pendingCommands.dispose();
+    this.unspentClaims.dispose();
     this.scene.events.off(AI_DECISION_DISPATCH_EVENT, this.observeDecision, this);
     this.scene.events.off(AI_INTENT_COMMAND_DISPATCH_EVENT, this.observeDispatch, this);
+    this.scene.events.off(QUEUE_PROGRESS_EVENT, this.observeProgress, this);
     this.scene.events.off(QUEUE_RESOURCE_EMISSION_EVENT, this.observeQueueResource, this);
     this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.dispose, this);
     this.scene.events.off(Phaser.Scenes.Events.DESTROY, this.dispose, this);
@@ -202,9 +209,10 @@ export class AiRuntimeProductionCapture {
     this.queueSubscriptions.set(actor, queue.queueChangedObservable.subscribe(() => {
       const playerNumber = getActorComponent(actor, OwnerComponent)?.getOwner();
       const captured = captureAiRuntimeProductionQueue(actor, this.identify);
-      if (playerNumber !== undefined && captured) this.append({
-        ...this.boundary(playerNumber), kind: "queue_changed", queue: captured
-      });
+      if (playerNumber !== undefined && captured) {
+        this.unspentClaims.observeQueue(playerNumber, captured);
+        this.append({ ...this.boundary(playerNumber), kind: "queue_changed", queue: captured });
+      }
     }));
   }
 
@@ -216,17 +224,21 @@ export class AiRuntimeProductionCapture {
 
   /** The selected result precedes dispatch, even when the saved brain/debug view still names the prior decision. */
   private readonly observeDecision = (decision: AiDecisionDispatchEvent): void => {
+    if (this.disposed) return;
+    this.unspentClaims.observeDecision(decision);
     this.append({ ...this.boundary(decision.identity.playerNumber), kind: "decision_selected", decision });
   };
 
-  private sampleBoundaryState(playerNumber: number) {
-    return projectAiRuntimeProductionBoundaryState(this.scene, playerNumber, this.pendingCommands, this.identify);
+  private sampleBoundaryState(playerNumber: number, exhaustedProgressItem?: UnifiedQueueItem) {
+    return projectAiRuntimeProductionBoundaryState(this.scene, playerNumber, this.pendingCommands, this.identify,
+      this.unspentClaims.snapshot(playerNumber), exhaustedProgressItem);
   }
 
   private readonly observeDispatch = (event: AiIntentCommandDispatchEvent): void => {
     if (this.disposed) return;
     const boundary = this.boundary(event.playerNumber);
     this.pendingCommands.observeDispatch(event, boundary.tick);
+    this.unspentClaims.observeDispatch(event);
     this.append({ ...boundary, kind: "intent_dispatch", event });
   };
 
@@ -234,20 +246,44 @@ export class AiRuntimeProductionCapture {
   private readonly observeQueueResource = (event: QueueResourceEmissionEvent): void => {
     if (this.disposed) return;
     const boundary = this.boundary(event.scope.playerNumber);
-    this.append({ ...boundary, kind: "queue_resource",
-      resource: projectAiRuntimeQueueResource(event, this.identify, boundary.tick) });
+    const resource = projectAiRuntimeQueueResource(event, this.identify, boundary.tick);
+    this.unspentClaims.observeResource(event.scope.playerNumber, resource);
+    this.append({ ...boundary, kind: "queue_resource", resource });
+  };
+
+  /** Samples the actual live head after shared decrement, before progress subscribers or async completion can mutate it. */
+  private readonly observeProgress = (event: QueueProgressEvent): void => {
+    if (this.disposed) return;
+    const playerNumber = getActorComponent(event.producer, OwnerComponent)?.getOwner();
+    if (playerNumber === undefined) return;
+    let queue: ReturnType<typeof captureAiRuntimeProductionQueue> = null;
+    try { queue = captureAiRuntimeProductionQueue(event.producer, this.identify); }
+    catch { /* Missing authority stays explicit. */ }
+    const itemId = queue ? this.identify(queue.actorId, event.item) : null;
+    const lane = queue?.lanes.find((candidate) => candidate.items[0]?.itemId === itemId);
+    const item = lane?.items[0] ?? null;
+    const progress = {
+      attemptId: event.attemptId, phase: event.phase, actorId: queue?.actorId ?? null, item,
+      laneId: lane?.laneId ?? null, deltaMs: event.deltaMs, remainingBeforeMs: event.remainingBeforeMs,
+      snapshotRestoreInProgress: isSnapshotApplyInProgress(this.scene),
+      gaps: item ? [] : ["production_progress_live_head_missing"]
+    };
+    const exhausted = item && event.phase === "advanced" && event.item.remainingTime === 0 ? event.item : undefined;
+    this.append({ ...this.boundary(playerNumber), kind: "queue_progress", progress }, exhausted);
   };
 
   private boundary(playerNumber: number) {
     return { sequence: 0, tick: getSceneService(this.scene, SimulationTickService)?.currentTick ?? 0, playerNumber };
   }
 
-  private append(fact: AiRuntimeProductionFactV1): void {
+  private append(fact: AiRuntimeProductionFactV1, exhaustedProgressItem?: UnifiedQueueItem): void {
     if (this.disposed) return;
     const sequence = this.nextSequence++;
     if (this.facts.length < MAX_FACTS) {
-      const boundaryState = ["intent_dispatch", "outcome", "queue_resource", "queue_changed", "command_delivered"]
-        .includes(fact.kind) ? this.sampleBoundaryState(fact.playerNumber) : undefined;
+      const boundaryState = [
+        "decision_selected", "intent_dispatch", "outcome", "queue_resource", "queue_changed", "command_delivered", "queue_progress"
+      ]
+        .includes(fact.kind) ? this.sampleBoundaryState(fact.playerNumber, exhaustedProgressItem) : undefined;
       this.facts.push(structuredClone({ ...fact, sequence, ...(boundaryState ? { boundaryState } : {}) }));
     } else this.factDrops.set(fact.playerNumber, (this.factDrops.get(fact.playerNumber) ?? 0) + 1);
   }

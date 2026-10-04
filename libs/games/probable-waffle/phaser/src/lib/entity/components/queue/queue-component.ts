@@ -1,3 +1,4 @@
+import { advanceSharedQueueItem } from "./advance-shared-queue-item";
 import { projectSharedQueueItems } from "./project-shared-queue-items";
 import { Subject } from "rxjs";
 import type { SharedQueueItem } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/shared-queue-item";
@@ -109,18 +110,13 @@ export class QueueComponent {
 
     const { costData } = firstItem.productionData;
 
-    // Handle payment
-    let paid = true;
-    if (costData.costType === PaymentType.PayOverTime) {
-      if (!this.productionComponent) return;
-      paid = this.productionComponent.handlePayOverTimePayment(costData.resources, firstItem);
-    }
+    if (costData.costType === PaymentType.PayOverTime && !this.productionComponent) return;
 
-    if (!paid) return;
-
-    // Update progress on the item itself
-    firstItem.remainingTime -= delta;
-    firstItem.remainingTime = Math.max(firstItem.remainingTime, 0);
+    // Shared affordability and progress retain their existing ordering; the diagnostic finish samples the real decrement.
+    if (!advanceSharedQueueItem(this.gameObject, firstItem, delta, () => {
+      if (costData.costType !== PaymentType.PayOverTime) return true;
+      return this.productionComponent?.handlePayOverTimePayment(costData.resources, firstItem) ?? false;
+    })) return;
 
     const progress = ((firstItem.totalTime - firstItem.remainingTime) / firstItem.totalTime) * 100;
 
@@ -146,9 +142,7 @@ export class QueueComponent {
     const firstItem = queue.queuedItems[0]!;
     if (!firstItem.researchData) return;
 
-    // Update progress on the item itself
-    firstItem.remainingTime -= delta;
-    firstItem.remainingTime = Math.max(firstItem.remainingTime, 0);
+    advanceSharedQueueItem(this.gameObject, firstItem, delta, () => true);
 
     const progress = ((firstItem.totalTime - firstItem.remainingTime) / firstItem.totalTime) * 100;
 

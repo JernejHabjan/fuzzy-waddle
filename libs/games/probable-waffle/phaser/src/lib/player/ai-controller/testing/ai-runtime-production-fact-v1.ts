@@ -3,6 +3,7 @@ import type { AiRuntimeProductionQueueV1 } from "./ai-runtime-production-queue-v
 import type { AiIntentCommandDispatchEvent } from "../ai-intent-command-dispatch-event";
 import type { AiRuntimeQueueResourceV1 } from "./ai-runtime-queue-resource-v1";
 
+import type { AiRuntimeQueueProgressV1 } from "./ai-runtime-queue-progress-v1";
 import type { AiDecisionDispatchEvent } from "../ai-decision-dispatch-event";
 import type { AiRuntimeProductionBoundaryState } from "./ai-runtime-production-boundary-state";
 
@@ -24,6 +25,7 @@ export type AiRuntimeProductionFactV1 = {
   }
   | { readonly kind: "decision_selected"; readonly decision: AiDecisionDispatchEvent }
   | { readonly kind: "intent_dispatch"; readonly event: AiIntentCommandDispatchEvent }
+  | { readonly kind: "queue_progress"; readonly progress: AiRuntimeQueueProgressV1 }
   | { readonly kind: "queue_resource"; readonly resource: AiRuntimeQueueResourceV1 }
   /** Delivery observation can follow component application; this is explicitly not a dispatch/request timestamp. */
   | { readonly kind: "command_delivered"; readonly command: GameCommand }

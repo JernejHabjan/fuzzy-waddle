@@ -6,7 +6,7 @@ import type { normalizeRuntimeScopedQueuePayments } from "./skirmish-ai-runtime-
 
 /**
  * Diagnostic AI lineage, not RuntimeProductionEvidenceV1. Retains actual accepted intent and observer order;
- * it cannot supply fair geometry, full decision cadence, setup provenance or reconciled unspent liabilities.
+ * it cannot supply fair geometry, full decision cadence, setup provenance or complete event liability proof.
  */
 export interface RuntimeProductionCausalityV1 {
   readonly schemaVersion: 1;
@@ -26,8 +26,10 @@ export interface RuntimeProductionCausalityV1 {
     readonly deliveries: readonly Extract<AiRuntimeProductionFactV1, { kind: "command_delivered" }>[];
     readonly outcomes: readonly Extract<AiRuntimeProductionFactV1, { kind: "outcome" }>[];
   }[];
-  /** Exact raw operation boundaries, including pre-progress payment finish; never promoted to full event obligations. */
-  readonly operationBoundaries: readonly Extract<AiRuntimeProductionFactV1, { kind: "queue_resource" | "queue_changed" }>[];
+  /** Exact raw operation boundaries, including the genuine post-progress callback; never promoted to full event obligations. */
+  readonly operationBoundaries: readonly Extract<AiRuntimeProductionFactV1, {
+    kind: "queue_resource" | "queue_changed" | "queue_progress"
+  }>[];
   /** Only validated immediate-operation lineage; per-tick/denied operations retain explicit gaps. */
   readonly payments: ReturnType<typeof normalizeRuntimeScopedQueuePayments>["payments"];
 }
