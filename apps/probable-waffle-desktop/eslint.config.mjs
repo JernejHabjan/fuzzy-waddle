@@ -1,4 +1,5 @@
 import baseConfig from "../../eslint.config.mjs";
+import angular from "angular-eslint";
 import nx from "@nx/eslint-plugin";
 
 export default [
@@ -16,8 +17,13 @@ export default [
         }
       ],
       "@angular-eslint/component-selector": "off",
+      // Angular's v22 migration deliberately uses Eager change detection to preserve the prior default.
+      "@angular-eslint/prefer-on-push-component-change-detection": "off",
       "@angular-eslint/prefer-standalone": "error"
     }
   },
-  ...nx.configs["flat/angular-template"]
+  ...angular.configs.templateRecommended.map((config) => ({
+    ...config,
+    files: ["**/*.html"]
+  }))
 ];

@@ -1,4 +1,5 @@
 import baseConfig from "../eslint.config.mjs";
+import angular from "angular-eslint";
 import nx from "@nx/eslint-plugin";
 
 export default [
@@ -11,6 +12,7 @@ export default [
     files: ["**/*.ts"],
     rules: {
       "@typescript-eslint/no-empty-function": "off",
+      "@typescript-eslint/no-empty-interface": "off",
       "@typescript-eslint/no-empty-object-type": "off",
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-inferrable-types": "off",
@@ -21,7 +23,10 @@ export default [
       "no-case-declarations": "off"
     }
   },
-  ...nx.configs["flat/angular-template"],
+  ...angular.configs.templateRecommended.map((config) => ({
+    ...config,
+    files: ["**/*.html"]
+  })),
   {
     files: ["**/*.html"],
     rules: {

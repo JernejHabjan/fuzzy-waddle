@@ -1,4 +1,5 @@
 import baseConfig from "../../eslint.config.mjs";
+import angular from "angular-eslint";
 import nx from "@nx/eslint-plugin";
 
 export default [
@@ -25,10 +26,15 @@ export default [
       "no-case-declarations": "off",
       "@typescript-eslint/no-empty-function": "off",
       "@angular-eslint/prefer-standalone": "error",
+      // Angular's v22 migration deliberately uses Eager change detection to preserve the prior default.
+      "@angular-eslint/prefer-on-push-component-change-detection": "off",
       "@typescript-eslint/no-empty-object-type": "off"
     }
   },
-  ...nx.configs["flat/angular-template"],
+  ...angular.configs.templateRecommended.map((config) => ({
+    ...config,
+    files: ["**/*.html"]
+  })),
   {
     files: ["**/*.html"],
     rules: {
