@@ -256,9 +256,14 @@ root [Move] {
                     action [LeaveConstructionSiteOrCurrentContainer]
                 }
 
-                /* move */
-                fail {
+                /*
+                 * A successful route may end at MovementSystem's accepted congestion fallback rather
+                 * than the requested tile. That is still order completion; retaining the order would
+                 * otherwise restart movement toward an already-unavailable destination.
+                 */
+                sequence {
                     action [MoveToTargetOrLocation, "move"]
+                    action [Stop, "Move - Completed"]
                 }
 
                 /* if reached target, stop */
