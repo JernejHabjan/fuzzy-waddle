@@ -1,0 +1,63 @@
+{
+  "$schema": "../../../../../schemas/dialogue.schema.json",
+  "schemaVersion": 1,
+  "missionId": "sand-dunes-and-tivara-crystal",
+  "texts": [
+    {
+      "id": "narrator-name",
+      "text": "Narrator"
+    },
+    {
+      "id": "opening-briefing-text",
+      "text": "Tivara's crystal is buried under shifting sand and old resentment."
+    },
+    {
+      "id": "primary-title",
+      "text": "Cross the dunes"
+    },
+    {
+      "id": "primary-description",
+      "text": "Cross the dunes; Claim the crystal"
+    },
+    {
+      "id": "optional-title",
+      "text": "Discover an optional opportunity"
+    },
+    {
+      "id": "optional-description",
+      "text": "Explore the mission space for an optional story or tactical discovery."
+    },
+    {
+      "id": "failure-title",
+      "text": "Mission force lost"
+    },
+    {
+      "id": "failure-description",
+      "text": "Keep every mission-critical participant and structure operational."
+    },
+    {
+      "id": "temple-opened-title",
+      "text": "Checkpoint: the party enters the buried temple"
+    },
+    {
+      "id": "temple-opened-resume",
+      "text": "Resume after the party enters the buried temple."
+    }
+  ],
+  "speakers": [
+    {
+      "id": "mission-narrator",
+      "nameTextId": "narrator-name"
+    }
+  ],
+  "lines": [
+    {
+      "id": "opening-briefing",
+      "speakerId": "mission-narrator",
+      "textId": "opening-briefing-text",
+      "text": "Tivara's crystal is buried under shifting sand and old resentment.",
+      "delivery": "non-blocking"
+    }
+  ],
+  "cinematics": []
+}

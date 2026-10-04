@@ -1,0 +1,75 @@
+<div class="container mt-4 overflow-auto aota-data-page">
+  <div class="card-container aota-card-shell">
+    @if (filteredSaves().length) {
+      @if (!scopeFilter || scopeFilter === "campaign") {
+        @if (!fromGame) {
+          <h2 class="text-primary">{{ missionScopeId ? "Mission Saves" : "Campaign" }}</h2>
+        }
+        @for (group of campaignGroups(); track group.missionId) {
+          <details [open]="$first">
+            <summary>{{ group.chapterLabel }} · {{ group.missionTitle }} · {{ group.saves.length }} saves</summary>
+            @for (save of group.saves; track save.id) {
+              <div class="aota-save-row">
+                @if (save.thumbnail) {
+                  <img class="save-thumbnail" [src]="save.thumbnail" alt="Saved game preview" />
+                }
+                <span
+                  ><strong>{{ save.kind === "autosave" ? "Autosave" : save.name }}</strong> ·
+                  {{ save.updatedAt | date: "medium" }} · {{ save.syncState }}</span
+                >
+                @if (renameSaveId() === save.id) {
+                  <input
+                    type="text"
+                    [value]="renameValue()"
+                    (input)="updateRenameValue($event)"
+                    aria-label="Save name"
+                  />
+                  <button class="btn btn-secondary" (click)="confirmRename()">Save Name</button>
+                } @else if (save.kind === "manual") {
+                  <button class="btn btn-secondary" (click)="beginRename(save)">Rename</button>
+                }
+                <button class="btn btn-primary" (click)="loadSave(save)">Load</button>
+                <button class="btn btn-danger" (click)="deleteSave(save)">Delete</button>
+              </div>
+            }
+          </details>
+        }
+      }
+      @if (!scopeFilter || scopeFilter === "skirmish") {
+        @if (!fromGame) {
+          <h2 class="text-primary mt-4">Skirmish</h2>
+        }
+        @for (save of skirmishSaves(); track save.id) {
+          <div class="aota-save-row">
+            @if (save.thumbnail) {
+              <img class="save-thumbnail" [src]="save.thumbnail" alt="Saved game preview" />
+            }
+            <span>{{ save.name || "Autosave" }} · {{ save.updatedAt | date: "medium" }}</span
+            ><button class="btn btn-primary" (click)="loadSave(save)">Load</button
+            ><button class="btn btn-primary" (click)="deleteSave(save)">Delete</button>
+          </div>
+        }
+      }
+    } @else {
+      <div class="text-center">No saved games found.</div>
+    }
+
+    @if (unsupportedSaves().length) {
+      <h2 class="text-warning mt-4">Recovery</h2>
+      @for (save of unsupportedSaves(); track save.id) {
+        <div class="aota-save-row">
+          <span
+            ><strong>{{ save.name || "Unavailable save" }}</strong> · {{ save.updatedAt | date: "medium" }} ·
+            {{ save.compatibility.reason }}. Try an earlier autosave or restart the mission.</span
+          >
+          <button class="btn btn-secondary" (click)="exportUnsupportedSave(save)">Export</button>
+          <button class="btn btn-danger" (click)="deleteUnsupportedSave(save)">Delete</button>
+        </div>
+      }
+    }
+
+    <div class="mt-4">
+      <button class="btn btn-primary" (click)="handleLeave()">{{ fromGame ? "Back to game" : "Leave" }}</button>
+    </div>
+  </div>
+</div>

@@ -1,7 +1,6 @@
 # Tauri Desktop App (Probable Waffle)
 
-Probable Waffle can be built as a standalone desktop app using [Tauri v2](https://tauri.app/).
-The app is a thin native shell around the same Angular build.
+Probable Waffle can be built as a standalone desktop app using [Tauri v2](https://tauri.app/). The app is a thin native shell around the same Angular build.
 
 ## Prerequisites
 
@@ -27,7 +26,7 @@ pnpm tauri:dev
 pnpm tauri:build
 ```
 
-Output: `apps/client/src-tauri/target/release/bundle/nsis/Ashes of the Ancients_<version>_x64-setup.exe`
+Output: `apps/probable-waffle-desktop/src-tauri/target/release/bundle/nsis/Ashes of the Ancients_<version>_x64-setup.exe`
 
 ## Release Versioning
 
@@ -79,19 +78,19 @@ A tray icon appears while the app is running with two actions:
 
 Tauri's WebView cannot complete a standard browser OAuth redirect, so sign-in uses a deep-link flow:
 
-1. The app calls `signInWithOAuth` with `skipBrowserRedirect: true` and `redirectTo` pointing to `/assets/auth-callback.html` on the web app.
+1. The app calls `signInWithOAuth` with `skipBrowserRedirect: true` and `redirectTo` pointing to `/assets/auth-callback.html` with a per-attempt nonce.
 2. The auth URL is opened in the **system browser** (Chrome / Edge / Safari).
 3. After the user authenticates, Google → Supabase → browser lands on `/assets/auth-callback.html` — a plain HTML file (no Angular, no Supabase) that:
 
-- Redirects to `com.fuzzywaddle.probablewaffle://auth/callback?...#...` to hand the full callback payload to the app.
+- Redirects to `com.fuzzywaddle.probablewaffle://auth/callback?...` with only the nonce and auth result needed by the app.
 - Tells the user to close the browser tab after the app handoff.
 
-4. OS triggers the registered deep-link → the single-instance plugin forwards it via `"deep-link-received"`.
-5. `AuthService` either parses `access_token` + `refresh_token` from the URL hash and calls `supabase.auth.setSession()`, or exchanges a `?code=...` callback for a session.
+4. OS triggers the registered deep link → the single-instance plugin feeds it into Tauri's standard `onOpenUrl` event.
+5. `AuthService` accepts only the exact callback whose nonce matches the active sign-in attempt, then exchanges its short-lived PKCE `?code=...` for a session. Legacy implicit tokens remain supported for auth attempts started by an older client.
 
-Using a plain HTML file (not an Angular page) prevents Supabase's `detectSessionInUrl` from accidentally establishing a session in the browser tab instead of the app.
+Using a plain HTML file (not an Angular page) prevents Supabase's `detectSessionInUrl` from accidentally establishing a session in the browser tab instead of the app. The callback forwards only the fields needed to complete authentication; provider credentials and unrelated response metadata are not copied into the native protocol URL.
 
-The `/assets/auth-callback.html` redirect URL must also be registered in Supabase — see [supabase.md](supabase.md).
+The nonce-bearing `/assets/auth-callback.html?desktop_auth_nonce=*` redirect URL pattern must also be registered in Supabase — see [supabase.md](supabase.md).
 
 ## Notes
 
@@ -100,15 +99,14 @@ The `/assets/auth-callback.html` redirect URL must also be registered in Supabas
 
 ## CORS
 
-The Tauri app contacts the production API (`https://fuzzy-waddle-api.onrender.com`) from two different origins depending on how it runs:
+The Tauri app origin depends on how it runs. Local development uses the local API, while packaged builds use the production API:
 
 | Mode                             | Origin                   |
 |----------------------------------|--------------------------|
-| `pnpm tauri:dev` (all platforms) | `http://localhost:4200`  |
+| `pnpm tauri:dev` (all platforms) | `http://localhost:4201`  |
 | Production — Windows (WebView2)  | `http://tauri.localhost` |
 | Production — macOS / Linux       | `tauri://localhost`      |
 
-In dev mode Tauri's WebView loads the Angular dev server directly, so the origin is the dev server's URL.
-In a production build Tauri serves the bundled `dist/` through a virtual host: WebView2 requires an HTTP scheme (`http://tauri.localhost`), while WKWebView and WebKitGTK accept a custom scheme (`tauri://localhost`).
+In dev mode Tauri's WebView loads the Angular dev server directly, so the origin is the dev server's URL. In a production build Tauri serves the bundled `dist/` through a virtual host: WebView2 requires an HTTP scheme (`http://tauri.localhost`), while WKWebView and WebKitGTK accept a custom scheme (`tauri://localhost`).
 
 All three must be in the `CORS_ORIGIN` environment variable of the Render API service — see [deployment.md](deployment.md). Without them the browser blocks every API and WebSocket call with a CORS error.

@@ -1,0 +1,8 @@
+{
+  "name": "fly-squasher-protocol",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/games/fly-squasher/protocol/src",
+  "projectType": "library",
+  "targets": { "lint": { "executor": "@nx/eslint:lint" } },
+  "tags": ["scope:fly-squasher", "type:protocol"]
+}

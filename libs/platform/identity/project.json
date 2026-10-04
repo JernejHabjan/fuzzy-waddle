@@ -1,0 +1,19 @@
+{
+  "name": "platform-identity",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/platform/identity/src",
+  "projectType": "library",
+  "tags": ["scope:platform", "type:platform"],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/platform/identity/jest.config.cts"
+      }
+    }
+  }
+}

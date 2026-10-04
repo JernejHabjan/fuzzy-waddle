@@ -70,9 +70,11 @@ supabase/.temp
 .nx/polygraph
 .nx/self-healing
 .ai/
-.junie
-AGENTS.md
 CLAUDE.md
-plugins
-docs/ai/
+.junie/mcp/
 .codex
+.pnpm-store
+test-results/
+.mcp.json
+.output.txt
+test_output.txt

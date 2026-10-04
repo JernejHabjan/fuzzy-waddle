@@ -1,0 +1,19 @@
+{
+  "name": "probable-waffle-campaign",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/games/probable-waffle/campaign/src",
+  "projectType": "library",
+  "tags": ["scope:probable-waffle", "type:protocol"],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/games/probable-waffle/campaign/jest.config.cts"
+      }
+    }
+  }
+}

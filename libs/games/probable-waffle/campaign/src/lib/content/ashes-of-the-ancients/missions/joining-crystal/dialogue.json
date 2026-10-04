@@ -1,0 +1,63 @@
+{
+  "$schema": "../../../../../schemas/dialogue.schema.json",
+  "schemaVersion": 1,
+  "missionId": "joining-crystal",
+  "texts": [
+    {
+      "id": "narrator-name",
+      "text": "Narrator"
+    },
+    {
+      "id": "opening-briefing-text",
+      "text": "Only a joined crystal can end the escalation."
+    },
+    {
+      "id": "primary-title",
+      "text": "Unite the fragments"
+    },
+    {
+      "id": "primary-description",
+      "text": "Unite the fragments; Defend the ritual"
+    },
+    {
+      "id": "optional-title",
+      "text": "Discover an optional opportunity"
+    },
+    {
+      "id": "optional-description",
+      "text": "Explore the mission space for an optional story or tactical discovery."
+    },
+    {
+      "id": "failure-title",
+      "text": "Mission force lost"
+    },
+    {
+      "id": "failure-description",
+      "text": "Keep every mission-critical participant and structure operational."
+    },
+    {
+      "id": "wind-anchors-held-title",
+      "text": "Checkpoint: both magic-wind anchors are secured"
+    },
+    {
+      "id": "wind-anchors-held-resume",
+      "text": "Resume after both magic-wind anchors are secured."
+    }
+  ],
+  "speakers": [
+    {
+      "id": "mission-narrator",
+      "nameTextId": "narrator-name"
+    }
+  ],
+  "lines": [
+    {
+      "id": "opening-briefing",
+      "speakerId": "mission-narrator",
+      "textId": "opening-briefing-text",
+      "text": "Only a joined crystal can end the escalation.",
+      "delivery": "non-blocking"
+    }
+  ],
+  "cinematics": []
+}

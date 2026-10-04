@@ -1,0 +1,90 @@
+import {
+  ANIM_BUILDING_ICON_ANIMS_TIVARA_ANKGUARD_ACTION,
+  ANIM_BUILDING_ICON_ANIMS_TIVARA_ANKGUARD_IDLE
+} from "../../../icon-animations";
+import { ObjectNames, ResearchType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { PaymentType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/payment-type";
+import { coreConstructionSiteDefinition } from "../../shared/core-construction-site.definition";
+import type { PrefabDefinition } from "../../../definitions/prefab-definition";
+import { ActorPhysicalType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/combat/components/actor-physical-type";
+
+export const ankGuardDefinition = {
+  components: {
+    representable: {
+      width: 256,
+      height: 176,
+      origin: { x: 0.5, y: 0.8 }
+    },
+    objectDescriptor: {
+      color: 0xc2a080
+    },
+    owner: {
+      color: [
+        {
+          originalColor: 0x800080,
+          epsilon: 0
+        }
+      ]
+    },
+    vision: {
+      range: 15
+    },
+    info: {
+      name: "Ank Guard",
+      description: "Oozing with ancient curse, this fortress births the mightiest of Tivara's infantry",
+      tooltipDescription: [
+        "Trains infantry units",
+        "Produces melee and ranged fighters",
+        "Core military production building"
+      ],
+      portraitAnimation: {
+        idle: ANIM_BUILDING_ICON_ANIMS_TIVARA_ANKGUARD_IDLE,
+        action: ANIM_BUILDING_ICON_ANIMS_TIVARA_ANKGUARD_ACTION
+      },
+      smallImage: {
+        key: "factions",
+        frame: "building_icons/tivara/ankguard.png",
+        origin: { x: 0.5, y: 0.5 }
+      }
+    },
+    health: {
+      physicalState: ActorPhysicalType.Structural,
+      maxHealth: 400
+    },
+    productionCost: {
+      resources: {
+        [ResourceType.Wood]: 200,
+        [ResourceType.Stone]: 50
+      },
+      refundFactor: 0.5,
+      productionTime: 20000,
+      costType: PaymentType.PayImmediately
+    },
+    production: {
+      availableProduceActors: [
+        ObjectNames.TivaraSlingshotFemale,
+        ObjectNames.TivaraMacemanMale,
+        ObjectNames.ForestWendigo
+      ]
+    },
+    research: {
+      availableResearch: [
+        ResearchType.FirestormSpell,
+        ResearchType.FrostNovaSpell,
+        ResearchType.WendigoBranches,
+        ResearchType.HealingRainSpell,
+        ResearchType.CommonBoatUpgradeLevel2,
+        ResearchType.VikingBoatUpgradeLevel2
+      ]
+    },
+    queue: {
+      queueCount: 1,
+      capacityPerQueue: 5
+    },
+    selectable: {},
+    collider: { enabled: true },
+    constructable: {
+      ...coreConstructionSiteDefinition
+    }
+  }
+} satisfies PrefabDefinition;

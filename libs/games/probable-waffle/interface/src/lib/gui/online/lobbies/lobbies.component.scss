@@ -1,0 +1,124 @@
+@use "variables" as *;
+
+.lobbies {
+  max-width: 100%;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  color: #f5ecd9;
+}
+
+.d-flex {
+  display: flex;
+  gap: 1rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+}
+
+.selected-row td {
+  background-color: rgba(240, 196, 107, 0.14);
+  color: #f5ecd9;
+}
+
+.lobbies-tooltip {
+  font-size: 0.95rem;
+  margin-bottom: 10px;
+  color: #c8b89b;
+}
+
+.selection-help {
+  margin-bottom: 0.75rem;
+  color: #c8b89b;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+tr.cursor-pointer:focus-visible td {
+  outline: 2px solid rgba(240, 196, 107, 0.9);
+  outline-offset: -2px;
+}
+
+.card-container {
+  padding: 1rem;
+  border: 1px solid rgba(111, 85, 52, 0.52);
+  border-radius: 1rem;
+  margin-top: 1rem;
+  min-width: min(320px, 100%);
+
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(111, 85, 52, 0.28);
+  }
+
+  @media (max-width: 768px) {
+    margin-top: 0;
+  }
+}
+
+.lobby-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  .map-details {
+    text-align: center;
+  }
+
+  .map-description {
+    margin-top: 0.5rem;
+    font-size: 0.8em;
+    text-align: left;
+  }
+}
+
+.empty-state {
+  color: #c8b89b;
+  font-size: 0.9rem;
+}
+
+.join-unavailable {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.lobby-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.join-help {
+  flex-basis: 100%;
+  color: #c8b89b;
+  font-size: 0.85rem;
+}
+
+table {
+  width: 100%;
+  border-color: rgba(111, 85, 52, 0.3);
+
+  th,
+  td {
+    color: #f5ecd9;
+    border-color: rgba(111, 85, 52, 0.24);
+  }
+
+  thead th {
+    color: #f0c46b;
+    font-family: "Cinzel", serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+  }
+}

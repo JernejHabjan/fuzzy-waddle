@@ -5,3 +5,8 @@
 
 /.nx/workspace-data
 .nx/self-healing
+
+# Phaser Editor and Tiled own these generated asset and metadata files.
+/libs/games/*/gameplay/src/assets
+/libs/games/*/gameplay/src/metadata
+/libs/games/*/gameplay/src/lib/prefabs

@@ -1,0 +1,359 @@
+@use "sass:color";
+@use "variables" as *;
+
+:host {
+  min-height: 100%;
+  height: auto !important;
+}
+
+:host ::ng-deep fuzzy-waddle-center-wrapper {
+  display: block;
+}
+
+:host ::ng-deep fuzzy-waddle-center-wrapper > div {
+  padding: 1rem 0 2rem;
+}
+
+.card-container {
+  width: min(90rem, calc(100vw - 2rem));
+  padding: 1.5rem 1.25rem;
+}
+
+.achievement-header-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  width: 100%;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+.achievement-header {
+  text-align: center;
+  color: #f0c46b;
+  font-family: "Cinzel", serif;
+  margin-bottom: 1rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
+
+  @media (min-width: 768px) {
+    margin-bottom: 0;
+  }
+}
+
+.filters-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+
+  @media (min-width: 768px) {
+    justify-content: flex-end;
+  }
+}
+
+.filter-dropdown {
+  margin-right: 8px;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.achievements-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 10px;
+  margin: 0 auto;
+
+  @media (min-width: 1400px) {
+    max-width: 1400px;
+  }
+}
+
+.achievement {
+  border-radius: 1rem;
+  border: 1px solid rgba(111, 85, 52, 0.52);
+  padding: 16px;
+  margin: 0;
+  background-color: rgba(21, 26, 31, 0.94);
+  color: #f5ecd9;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  position: relative;
+  overflow: hidden;
+
+  @media (max-width: 576px) {
+    padding: 12px;
+
+    &:hover {
+      transform: none;
+    }
+  }
+
+  &.unlocked {
+    border-color: rgba(141, 201, 107, 0.74);
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 40px;
+      height: 40px;
+      background-color: #8dc96b;
+      clip-path: polygon(0 0, 100% 0, 100% 100%);
+    }
+
+    &::after {
+      content: "✓";
+      position: absolute;
+      top: 2px;
+      right: 6px;
+      color: white;
+      font-size: 14px;
+      font-weight: bold;
+    }
+  }
+
+  &.locked {
+    filter: grayscale(0.7);
+    opacity: 0.8;
+    border-color: rgba($primary, 0.4); // Reduced border color vibrancy
+
+    .achievement-image-container {
+      background: rgba(111, 85, 52, 0.1);
+    }
+
+    .achievement-image {
+      opacity: 0.5;
+      filter: grayscale(1);
+    }
+  }
+
+  .achievement-title-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 10px 0;
+    padding-top: 20px;
+
+    .lock-icon {
+      color: rgba(240, 196, 107, 0.6);
+      font-size: 16px;
+    }
+  }
+
+  .achievement-title {
+    font-family: "Cinzel", serif;
+    font-size: 18px;
+    color: #f5ecd9;
+    margin: 0;
+
+    @media (max-width: 576px) {
+      font-size: 16px;
+    }
+  }
+
+  .difficulty-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    font-weight: bold;
+
+    &.easy {
+      background-color: #4caf50;
+      color: white;
+    }
+
+    &.medium {
+      background-color: #ff9800;
+      color: white;
+    }
+
+    &.hard {
+      background-color: #f44336;
+      color: white;
+    }
+
+    &.locked-badge {
+      opacity: 0.6;
+      filter: grayscale(0.3);
+    }
+  }
+
+  .category-badge {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background-color: rgba(240, 196, 107, 0.12);
+    color: #f0c46b;
+    margin-bottom: 8px;
+    text-transform: capitalize;
+  }
+
+  .achievement-description {
+    font-size: 14px;
+    color: #c8b89b;
+    margin-bottom: 16px;
+    flex-grow: 1;
+
+    @media (max-width: 576px) {
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+  }
+
+  .achievement-image-container {
+    display: flex;
+    justify-content: center;
+    margin-top: auto;
+    padding: 10px;
+    background: rgba(240, 196, 107, 0.08);
+    border-radius: 8px;
+
+    @media (max-width: 576px) {
+      padding: 8px;
+    }
+  }
+
+  .achievement-image {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+
+    @media (max-width: 576px) {
+      width: 48px;
+      height: 48px;
+    }
+  }
+
+  .achievement-date {
+    font-size: 12px;
+    color: rgba(200, 184, 155, 0.72);
+    margin-top: 10px;
+    text-align: right;
+
+    @media (max-width: 576px) {
+      font-size: 11px;
+      margin-top: 8px;
+    }
+  }
+}
+
+.achievement-progress-container {
+  width: 100%;
+  max-width: 400px;
+  margin: 1rem auto;
+  padding: 0 1rem;
+}
+
+.achievement-progress-stats {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  margin-bottom: 0.5rem;
+
+  .progress-count {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #8dc96b;
+  }
+
+  .progress-separator {
+    font-size: 1.2rem;
+    margin: 0 0.3rem;
+  }
+
+  .progress-total {
+    font-size: 1.2rem;
+  }
+
+  .progress-percent {
+    margin-left: 0.5rem;
+    font-size: 1rem;
+    color: #f0c46b;
+    font-weight: bold;
+    background: rgba(240, 196, 107, 0.12);
+    padding: 0.2rem 0.5rem;
+    border-radius: 1rem;
+  }
+}
+
+.achievement-progress-bar {
+  width: 100%;
+  height: 8px;
+  background-color: rgba(52, 169, 161, 0.16);
+  border-radius: 4px;
+  overflow: hidden;
+
+  .achievement-progress-filled {
+    height: 100%;
+    background-color: #f0c46b;
+    border-radius: 4px;
+    transition: width 0.5s ease;
+  }
+}
+
+.category-section {
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.category-header {
+  border-bottom: 1px solid rgba(111, 85, 52, 0.45);
+  margin-bottom: 1rem;
+  width: 100%;
+
+  h3 {
+    color: #f0c46b;
+    font-family: "Cinzel", serif;
+    font-size: 1.5rem;
+    margin: 0.5rem 0;
+    padding-left: 0.5rem;
+  }
+}
+
+.category-achievements {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 15px;
+  width: 100%;
+
+  @media (max-width: 576px) {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  @media (min-width: 577px) and (max-width: 767px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 768px) and (max-width: 991px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (min-width: 992px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @media (min-width: 1200px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
