@@ -7,7 +7,7 @@ import { type BuilderComponentData, ObjectNames } from "@fuzzy-waddle/probable-w
 import { HealthComponent } from "../combat/components/health-component";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { AudioService } from "../../../world/services/audio.service";
-import { getGameObjectLogicalTransform, onObjectReady } from "../../../data/game-object-helper";
+import { getGameObjectLogicalTransform, isGameObjectActiveInActiveScene, onObjectReady } from "../../../data/game-object-helper";
 import { UiFeedbackBuildDeniedSound } from "../../../hud/UiFeedbackSfx";
 import HudMessages, { HudVisualFeedbackMessageType } from "../../../prefabs/gui/labels/HudMessages";
 import { CrossSceneCommunicationService } from "../../../world/services/CrossSceneCommunicationService";
@@ -257,7 +257,17 @@ export class BuilderComponent {
     return !this.assignedConstructionSite;
   }
 
-  async getClosestConstructionSite(rangeInTiles: number): Promise<GameObject | null> {
+  /**
+   * Selects the nearest reachable friendly construction site. Candidates are revalidated after
+   * asynchronous pathfinding because another builder can fill or finish a site while distances are
+   * being calculated. Optional reservations let one placement command distribute workers without
+   * mutating construction state outside the command bus.
+   */
+  async getClosestConstructionSite(
+    rangeInTiles: number,
+    candidates?: readonly GameObject[],
+    reservations: ReadonlyMap<GameObject, number> = new Map()
+  ): Promise<GameObject | null> {
     const owner = getActorComponent(this.gameObject, OwnerComponent)?.getOwner();
     const transform = getGameObjectLogicalTransform(this.gameObject);
     if (!owner || !transform) {
@@ -268,14 +278,19 @@ export class BuilderComponent {
     const tileSize = TilemapComponent.tileWidth;
     const worldRange = rangeInTiles * tileSize;
 
-    // First filter by geometric distance and ownership
-    const availableConstructionSites = this.gameObject.scene.children.list.filter((go) => {
+    const actorIndex = getSceneService(this.gameObject.scene, ActorIndexSystem);
+    const constructionSites = candidates ?? actorIndex?.getOwnedConstructionSites(owner) ?? [];
+
+    // Filter before pathfinding to keep selection deterministic and bounded to indexed actors.
+    const availableConstructionSites = constructionSites.filter((go) => {
       // Skip the currently assigned construction site (we're looking for the NEXT one)
       if (go === this.assignedConstructionSite) return false;
+      if (!isGameObjectActiveInActiveScene(go)) return false;
 
       const constructionSiteComponent = getActorComponent(go, ConstructionSiteComponent);
       if (!constructionSiteComponent) return false;
       if (!constructionSiteComponent.canAssignBuilder()) return false;
+      if ((reservations.get(go) ?? 0) >= constructionSiteComponent.getAvailableBuilderSlots()) return false;
       const targetOwnerComponent = getActorComponent(go, OwnerComponent);
       if (!targetOwnerComponent) return false;
       const targetOwner = targetOwnerComponent.getOwner();
@@ -297,14 +312,30 @@ export class BuilderComponent {
     const pairs: [GameObject, GameObject][] = availableConstructionSites.map((site) => [this.gameObject, site]);
     const distances = await DistanceHelper.batchGetDistancesBetweenGameObjects(pairs);
 
-    const sitesWithDistance: { site: GameObject; distance: number }[] = [];
+    const sitesWithDistance: { site: GameObject; distance: number; geometricDistance: number; x: number; y: number }[] = [];
 
     for (let i = 0; i < availableConstructionSites.length; i++) {
       const distance = distances[i];
       // console.log("[Build] getClosestConstructionSite: Site", availableConstructionSites[i], "navDistance=", distance);
       // Only include reachable sites
-      if (typeof distance === "number" && distance <= rangeInTiles) {
-        sitesWithDistance.push({ site: availableConstructionSites[i]!, distance });
+      const site = availableConstructionSites[i]!;
+      const targetTransform = getGameObjectLogicalTransform(site);
+      // The target may have been completed, destroyed, or claimed while navigation was resolving.
+      if (
+        typeof distance === "number" &&
+        distance <= rangeInTiles &&
+        targetTransform &&
+        isGameObjectActiveInActiveScene(site) &&
+        getActorComponent(site, ConstructionSiteComponent)?.canAssignBuilder() &&
+        (reservations.get(site) ?? 0) < (getActorComponent(site, ConstructionSiteComponent)?.getAvailableBuilderSlots() ?? 0)
+      ) {
+        sitesWithDistance.push({
+          site,
+          distance,
+          geometricDistance: DistanceHelper.distance3D(transform, targetTransform),
+          x: Math.floor(targetTransform.x / tileSize),
+          y: Math.floor(targetTransform.y / tileSize)
+        });
       }
     }
 
@@ -312,21 +343,16 @@ export class BuilderComponent {
 
     if (sitesWithDistance.length === 0) return null;
 
-    // Find closest by navigation distance with deterministic tie-break by actor ID.
-    const closest = sitesWithDistance.reduce((prev, curr) => {
-      if (curr.distance < prev.distance) {
-        return curr;
-      }
-      if (curr.distance > prev.distance) {
-        return prev;
-      }
-      const prevId = getActorComponent(prev.site, IdComponent)?.id ?? "";
-      const currId = getActorComponent(curr.site, IdComponent)?.id ?? "";
-      if (!prevId || !currId || prevId === currId) {
-        return prev;
-      }
-      return currId.localeCompare(prevId) < 0 ? curr : prev;
-    });
+    // Navigation distance is authoritative; the remaining keys make equal routes spatially stable.
+    const closest = sitesWithDistance.sort((left, right) => {
+      return (
+        left.distance - right.distance ||
+        left.geometricDistance - right.geometricDistance ||
+        left.x - right.x ||
+        left.y - right.y ||
+        (getActorComponent(left.site, IdComponent)?.id ?? "").localeCompare(getActorComponent(right.site, IdComponent)?.id ?? "")
+      );
+    })[0]!;
 
     // console.log("[Build] getClosestConstructionSite: Closest site", closest.site, "at distance", closest.distance);
     return closest.site;
