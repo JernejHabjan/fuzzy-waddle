@@ -1,4 +1,4 @@
-import { Component, inject, type OnDestroy, type OnInit } from "@angular/core";
+import { Component, inject, type OnDestroy, type OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
@@ -10,6 +10,7 @@ import { Subscription } from "rxjs";
   selector: "fuzzy-waddle-sw-refresh",
   templateUrl: "./sw-refresh.component.html",
   styleUrls: ["./sw-refresh.component.scss"],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FaIconComponent, NgbAlert]
 })
 export class SwRefreshComponent implements OnInit, OnDestroy {

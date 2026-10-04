@@ -8,8 +8,9 @@
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:application",
-      "dependsOn": ["assets-check"],
+      "dependsOn": ["assets-check", "trump-defense-lines"],
       "outputs": ["{workspaceRoot}/dist/apps/portal"],
+      "defaultConfiguration": "production",
       "options": {
         "outputPath": {
           "base": "dist/apps/portal",
@@ -52,6 +53,11 @@
           {
             "glob": "**/*",
             "input": "libs/games/probable-waffle/phaser/src/assets",
+            "output": "assets"
+          },
+          {
+            "glob": "**/*",
+            "input": "libs/games/trump-defense/interface/src/assets",
             "output": "assets"
           }
         ],
@@ -100,12 +106,16 @@
           "sourceMap": true,
           "namedChunks": true
         }
-      },
-      "defaultConfiguration": "production"
+      }
     },
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
       "dependsOn": ["assets-check"],
+      "defaultConfiguration": "development",
+      "continuous": true,
+      "options": {
+        "proxyConfig": "apps/portal/proxy.conf.json"
+      },
       "configurations": {
         "production": {
           "buildTarget": "portal:build:production"
@@ -113,18 +123,20 @@
         "development": {
           "buildTarget": "portal:build:development"
         }
-      },
-      "defaultConfiguration": "development",
-      "options": {
-        "proxyConfig": "apps/portal/proxy.conf.json"
-      },
-      "continuous": true
+      }
     },
     "assets-check": {
       "executor": "nx:run-commands",
       "cache": false,
       "options": {
         "command": "node tools/assets/check-git-lfs.mjs",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "trump-defense-lines": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/ci/check-trump-defense-ts-length.mjs",
         "cwd": "{workspaceRoot}"
       }
     },

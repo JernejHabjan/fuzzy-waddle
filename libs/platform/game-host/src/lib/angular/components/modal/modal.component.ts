@@ -1,10 +1,11 @@
-import { Component, inject, Injectable, TemplateRef, input, viewChild } from "@angular/core";
+import { Component, inject, Injectable, TemplateRef, input, viewChild, ChangeDetectionStrategy } from "@angular/core";
 import { type ModalConfig } from "./modal-config";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: "fuzzy-waddle-modal",
   templateUrl: "./modal.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ["./modal.component.scss"]
 })
 @Injectable()

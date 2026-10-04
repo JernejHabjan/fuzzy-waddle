@@ -1,10 +1,11 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { HomeNavComponent } from "./home-nav.component";
-import { Component, input } from "@angular/core";
+import { Component, input, ChangeDetectionStrategy } from "@angular/core";
 import { provideRouter } from "@angular/router";
 
-@Component({ selector: "fuzzy-waddle-home-nav", template: "<ng-content />", standalone: true, imports: [] })
+@Component({ selector: "fuzzy-waddle-home-nav", template: "<ng-content />", standalone: true, changeDetection: ChangeDetectionStrategy.Eager,
+ imports: [] })
 export class HomeNavTestingComponent {
   readonly routerLink = input<string>("/");
   readonly title = input<string>("Fuzzy Waddle");

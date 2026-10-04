@@ -1,5 +1,5 @@
 import type { OnInit } from "@angular/core";
-import { Component, inject } from "@angular/core";
+import { Component, inject, ChangeDetectionStrategy } from "@angular/core";
 import { faWindowMaximize, faWindowMinimize } from "@fortawesome/free-solid-svg-icons";
 import { ChatService } from "@fuzzy-waddle/platform-chat/client/data-access/chat.service";
 
@@ -12,6 +12,7 @@ import type { ChatMessage } from "@fuzzy-waddle/platform-chat";
   selector: "fuzzy-waddle-chat-float",
   templateUrl: "./chat-float.component.html",
   styleUrls: ["./chat-float.component.scss"],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ChatComponent, FaIconComponent]
 })
 export class ChatFloatComponent implements OnInit {

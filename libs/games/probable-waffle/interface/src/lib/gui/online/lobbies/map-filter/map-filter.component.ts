@@ -1,9 +1,10 @@
-import { Component, type OnInit, output } from "@angular/core";
+import { Component, type OnInit, output, ChangeDetectionStrategy } from "@angular/core";
 import { ProbableWaffleLevels, ProbableWaffleMapEnum } from "@fuzzy-waddle/probable-waffle-protocol";
 
 @Component({
   selector: "probable-waffle-map-filter",
   templateUrl: "./map-filter.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ["./map-filter.component.scss"]
 })
 export class MapFilterComponent implements OnInit {

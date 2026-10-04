@@ -4,7 +4,9 @@
     "sourceMap": false,
     "outDir": "../../dist/out-tsc",
     "allowJs": true,
-    "types": ["@playwright/test", "node"]
+    "types": ["@playwright/test", "node"],
+    "ignoreDeprecations": "6.0",
+    "rootDir": "."
   },
   "include": ["src/**/*.ts", "src/**/*.js", "playwright.config.ts"],
   "angularCompilerOptions": {

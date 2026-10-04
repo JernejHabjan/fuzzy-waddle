@@ -1,4 +1,4 @@
-import { Component, inject, isDevMode, NgZone, type OnDestroy, type OnInit, ViewChild, input } from "@angular/core";
+import { Component, inject, isDevMode, NgZone, type OnDestroy, type OnInit, ViewChild, input, ChangeDetectionStrategy } from "@angular/core";
 import { BaseGame } from "../phaser/game/base-game";
 import type { Types } from "phaser";
 import { type BaseGameData } from "../phaser/game/base-game-data";
@@ -9,6 +9,7 @@ import { GameContainerElement } from "./game-container";
   templateUrl: "./game-container.component.html",
   styleUrls: ["./game-container.component.scss"],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: { class: "d-flex flex-column h-100" }
 })
 export class GameContainerComponent implements OnInit, OnDestroy {

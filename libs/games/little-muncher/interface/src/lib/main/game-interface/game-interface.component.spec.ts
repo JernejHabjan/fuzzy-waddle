@@ -12,6 +12,8 @@ import { ModalComponent } from "@fuzzy-waddle/platform-game-host/angular/compone
 
 import { WrapPipe } from "@fuzzy-waddle/platform-game-host/angular/pipes/wrap.pipe";
 import { ActivatedRoute } from "@angular/router";
+import { ServerHealthService } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service";
+import { serverHealthServiceStub } from "@fuzzy-waddle/platform-game-host/angular/services/server-health.service.stub";
 
 @Component({ selector: "little-muncher-game-interface", template: "", standalone: true, imports: [] })
 export class GameInterfaceTestingComponent {}
@@ -26,6 +28,7 @@ describe("GameInterfaceComponent", () => {
       providers: [
         { provide: GameInstanceClientService, useValue: gameInstanceClientServiceStub },
         { provide: AuthService, useValue: authServiceStub },
+        { provide: ServerHealthService, useValue: serverHealthServiceStub },
         { provide: ActivatedRoute, useValue: {} }
       ],
       imports: [GameInterfaceComponent, WrapPipe]

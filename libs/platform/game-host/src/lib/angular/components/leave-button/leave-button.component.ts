@@ -1,4 +1,4 @@
-import { Component, input, viewChild } from "@angular/core";
+import { Component, input, viewChild, ChangeDetectionStrategy } from "@angular/core";
 
 import { RouterLink } from "@angular/router";
 import { ModalComponent } from "../modal/modal.component";
@@ -8,6 +8,7 @@ import type { ModalConfig } from "../modal/modal-config";
   selector: "fuzzy-waddle-leave-button",
   imports: [RouterLink, ModalComponent],
   templateUrl: "./leave-button.component.html",
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: "./leave-button.component.scss"
 })
 export class LeaveButtonComponent {
