@@ -1,3 +1,5 @@
+import { matchRuntimeRejectedAdmission } from "./skirmish-ai-runtime-rejected-admission";
+import { projectRuntimeProductionRejections } from "./skirmish-ai-runtime-production-rejections";
 import { projectRuntimeProductionQueueMutations } from "./skirmish-ai-runtime-production-queue-mutations";
 import type { AiRuntimeProductionCaptureV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
@@ -37,13 +39,14 @@ export function normalizeRuntimeProductionCausality(capture: AiRuntimeProduction
     if (fact.kind === "queue_mutation") fact.mutation.gaps.forEach((gap) => gaps.add(gap));
     if (fact.kind === "queue_progress") fact.progress.gaps.forEach((gap) => gaps.add(gap));
     fact.boundaryState?.gaps.forEach((gap) => gaps.add(gap));
-    if (fact.kind === "outcome") fact.boundaryStateBefore?.gaps.forEach((gap) => gaps.add(gap));
+    if (fact.kind === "outcome" || fact.kind === "intent_dispatch") fact.boundaryStateBefore?.gaps.forEach((gap) => gaps.add(gap));
   }
   let missingDecision = false;
   const dispatches = capture.facts.filter((fact) => fact.kind === "intent_dispatch");
   const deliveries = capture.facts.filter((fact) => fact.kind === "command_delivered");
   const outcomes = capture.facts.filter((fact) => fact.kind === "outcome");
   const commands: RuntimeProductionCausalityV1["commands"][number][] = [];
+  const admissions: NonNullable<ReturnType<typeof matchRuntimeRejectedAdmission>["scope"]>[] = [];
   const matchedReceipts = new Set<number>();
   const commandIds = new Set<string>();
   for (const request of dispatches) {
@@ -64,8 +67,10 @@ export function normalizeRuntimeProductionCausality(capture: AiRuntimeProduction
     if (receipt.event.kind === "threw") { failures.push("production_ai_dispatch_threw"); continue; }
     if (receipt.event.kind !== "finished") continue;
     if (receipt.event.receipt.status === "rejected") {
-      // Rejected admission has no stamped item; retain a gap rather than pretending it was enqueued.
-      gaps.add("production_ai_rejected_admission");
+      const matched = matchRuntimeRejectedAdmission(capture, request, receipt);
+      failures.push(...matched.failures);
+      if (matched.scope) admissions.push(matched.scope);
+      else { missingDecision = true; gaps.add("production_ai_rejected_admission_authority_missing"); }
       continue;
     }
     const command = receipt.event.receipt.command;
@@ -88,7 +93,7 @@ export function normalizeRuntimeProductionCausality(capture: AiRuntimeProduction
       command, deliveries: observedDeliveries, outcomes: observedOutcomes
     });
   }
-  if (missingDecision || !commands.length) gaps.add("production_ai_committed_decision_link_missing");
+  if (missingDecision || (!commands.length && !admissions.length)) gaps.add("production_ai_committed_decision_link_missing");
   for (const delivery of deliveries) {
     if (isRuntimeQueueCommand(delivery.command) && delivery.command.execution?.source === "ai" &&
       !commands.some((entry) => entry.command.execution?.commandId === delivery.command.execution?.commandId)) {
@@ -141,6 +146,17 @@ export function normalizeRuntimeProductionCausality(capture: AiRuntimeProduction
       }
     }
   }
+  const rejections = projectRuntimeProductionRejections(capture, commands, payments.payments, admissions);
+  failures.push(...rejections.failures);
+  rejections.gaps.forEach((gap) => gaps.add(gap));
+  for (const outcome of outcomes) {
+    if (outcome.outcome.kind !== "rejected" || !dispatches.some((request) => request.event.kind === "requested" &&
+      isRuntimeQueueCommand(request.event.command) && request.event.correlation.intentId === outcome.outcome.intentId &&
+      request.event.correlation.effectId === outcome.outcome.effectId &&
+      request.event.correlation.commitmentKey === outcome.outcome.commitmentKey)) continue;
+    if (!commands.some((entry) => entry.command.execution?.commandId === outcome.outcome.commandId) &&
+      !admissions.some((entry) => entry.outcome?.sequence === outcome.sequence)) failures.push("production_ai_unattributed_rejection");
+  }
   const operations = projectRuntimeProductionOperations(capture, commands, payments.payments, progress);
   failures.push(...operations.failures);
   operations.gaps.forEach((gap) => gaps.add(gap));
@@ -180,6 +196,6 @@ export function normalizeRuntimeProductionCausality(capture: AiRuntimeProduction
   return structuredClone({
     schemaVersion: 1, failures: [...new Set(failures)], gaps: [...gaps].sort(), commands, operationBoundaries,
     payments: failures.length ? [] : payments.payments, operations: failures.length ? [] : operations.operations,
-    queueMutations: failures.length ? [] : mutations.mutations
+    queueMutations: failures.length ? [] : mutations.mutations, rejections: failures.length ? [] : rejections.rejections
   } satisfies RuntimeProductionCausalityV1);
 }

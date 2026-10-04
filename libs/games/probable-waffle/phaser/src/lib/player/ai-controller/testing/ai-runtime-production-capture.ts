@@ -241,9 +241,10 @@ export class AiRuntimeProductionCapture {
   private readonly observeDispatch = (event: AiIntentCommandDispatchEvent): void => {
     if (this.disposed) return;
     const boundary = this.boundary(event.playerNumber);
+    const boundaryStateBefore = this.facts.length < MAX_FACTS ? this.sampleBoundaryState(event.playerNumber) : undefined;
     this.pendingCommands.observeDispatch(event, boundary.tick);
     this.unspentClaims.observeDispatch(event);
-    this.append({ ...boundary, kind: "intent_dispatch", event });
+    this.append({ ...boundary, kind: "intent_dispatch", event, boundaryStateBefore });
   };
 
   /** The live item can be outside the queue; projecting now preserves its actual handle identity and lineage. */

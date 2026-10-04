@@ -25,7 +25,12 @@ export type AiRuntimeProductionFactV1 = {
     readonly scheduledTick: number | null;
   }
   | { readonly kind: "decision_selected"; readonly decision: AiDecisionDispatchEvent }
-  | { readonly kind: "intent_dispatch"; readonly event: AiIntentCommandDispatchEvent }
+  | {
+    readonly kind: "intent_dispatch";
+    readonly event: AiIntentCommandDispatchEvent;
+    /** Exact pre-callback ledger state; rejected receipt releases selected claims before the after sample. */
+    readonly boundaryStateBefore?: AiRuntimeProductionBoundaryState;
+  }
   | { readonly kind: "queue_mutation"; readonly mutation: AiRuntimeQueueMutationV1 }
   | { readonly kind: "queue_progress"; readonly progress: AiRuntimeQueueProgressV1 }
   | { readonly kind: "queue_resource"; readonly resource: AiRuntimeQueueResourceV1 }

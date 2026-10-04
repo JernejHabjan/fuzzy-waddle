@@ -1,3 +1,4 @@
+import type { RuntimeProductionRejectionV1 } from "./skirmish-ai-runtime-production-rejection";
 import type { RuntimeProductionQueueMutationV1 } from "./skirmish-ai-runtime-production-queue-mutation";
 import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
 import type { GameCommand } from "@fuzzy-waddle/probable-waffle-protocol";
@@ -15,6 +16,8 @@ export interface RuntimeProductionCausalityV1 {
   readonly failures: readonly string[];
   /** Original capture gaps remain attached even when an individual causal chain is sound. */
   readonly gaps: readonly string[];
+  /** Rejected requests/applications retain native release authority without inventing a stamped admitted command. */
+  readonly rejections: readonly RuntimeProductionRejectionV1[];
   readonly commands: readonly {
     readonly requestedSequence: number;
     readonly requestedTick: number;

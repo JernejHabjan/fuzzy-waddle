@@ -1,3 +1,4 @@
+import { isSnapshotApplyInProgress } from "../../../data/scene-data";
 import type { UnifiedQueueItem } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/queue-item";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getActorComponent } from "../../../data/actor-component";
@@ -89,6 +90,7 @@ export function projectAiRuntimeProductionBoundaryState(
     obligations = null;
     gaps.add("production_boundary_queue_authority_invalid");
   }
-  return structuredClone({ resources, brain, pendingCommands: pending.commands, pendingResourceClaims: pending.resources,
-    queues, obligations, unspentClaims, exhaustedProgressItemId, gaps: [...gaps].sort() } satisfies AiRuntimeProductionBoundaryState);
+  return structuredClone({ snapshotRestoreInProgress: isSnapshotApplyInProgress(scene), resources, brain,
+    pendingCommands: pending.commands, pendingResourceClaims: pending.resources, queues, obligations, unspentClaims,
+    exhaustedProgressItemId, gaps: [...gaps].sort() } satisfies AiRuntimeProductionBoundaryState);
 }

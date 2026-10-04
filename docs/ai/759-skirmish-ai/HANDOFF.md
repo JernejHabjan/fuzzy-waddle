@@ -7,49 +7,49 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 ## Quick resume
 
 **Next session (user policy, 2026-10-04):** retain **GPT-6.1 Sol / high** for grouped PRO-03/06/07 authority.
-Current step: #815/#816 **native physical queue insertion/removal intervals**, authored/unverified.
-This batch began at `75768bb0875123f8971ab7bc1515172a76f76fde`; its containing commit owns the new revision.
+Current step: #815/#816 **native rejected admission/application and selected-claim release**, authored/unverified.
+This batch began at `f6e60b9e0862263112f4dc88cbf4bb08582af916`; its containing commit owns the new revision.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify local/remote on resume.
 The unrelated Nx migration in `59f72e037` is preserved. Actual model/effort is unavailable. No issue/family is complete.
 The user removed the comment-permission rule. All executable validation remains at the final gate.
 
-Read the [physical queue checkpoint](follow-ups/runtime-matrix-ci.md#production-physical-queue-checkpoint-2026-10-04-unverified).
-**Next exact authoring action:** bind native rejected request/application and actual created actor / registered tech
-completion to these physical intervals. Add full lifecycle cancellation events with the original purchase and distinct
-cancel request/application; refund linkage alone is not a useful replacement or strategic AI cancellation policy.
-Resolve removed-before-terminal per-tick ownership and actual per-tick refund lineage; keep unsupported global/non-queue,
-unstamped rejected admission and pre-capture/restore ownership null until actual authorities exist. Then project fair
+Read the [rejection checkpoint](follow-ups/runtime-matrix-ci.md#production-native-rejection-checkpoint-2026-10-04-unverified).
+**Next exact authoring action:** bind actual created actor / registered tech completion to the existing physical
+removal intervals, then complete cancellation request/application/removal/refund lifecycle with the original purchase
+and distinct cancel execution. Resolve removed-before-terminal per-tick ownership and actual per-tick refund lineage;
+keep unsupported global/non-queue and pre-capture/restore ownership null until actual authorities exist. Project fair
 ready/reachable producers, useful stable products/tech, runtime price/duration/effective-level catalog and paired setup
 into complete `RuntimeProductionEvidenceV1`. Author legal Skaduwee research setup and useful strategic AI worlds,
 grouping compatible PRO-03/06 pairs. Defer all executable checks, commit/push the next coherent batch, then pause.
 
-- `QueueComponent` now observes its actual push/splice through `mutateSharedQueueItem`; scene-local mutation IDs and
-  live handles are passive diagnostics, with a listener-free call-once path. The existing production removal -> terminal
-  -> refund and research refund -> removal -> terminal ordering stays in place. Completion removal remains before async
-  spawning / tech registration. Save/restore bulk insertion is not relabelled as a fresh native purchase.
-- Capture owns/disposes the new scene subscription and records detached `queue_mutation` facts at both physical
-  boundaries. Item projection is shared with lane capture and works before insertion/after removal. Actual after-push
-  per-tick items transfer admitted claims before UI queueChanged callbacks; pending claims are never added again.
-- `RuntimeProductionCausalityV1.queueMutations` retains exact native accepting decision/command, item, lane/index,
-  request observation, intended application tick, all-resource cash and independently recomputed all-lane liabilities.
-  Exact push/splice must leave cash and unrelated lanes unchanged. Native item/price/context, restore, incomplete,
-  duplicate/reused, terminal-before-mutation and contradictory intervals fail closed and suppress normalized money too.
-- Immediate insertion links its actual prior charge; cancellation links its distinct actual refund on the correct side
-  of removal. Missing payment/refund/terminal authority remains a gap. Completion requires its genuine advanced zero
-  head and still carries a missing-created-effect gap. Removed per-tick claim ownership remains null with its existing
-  gap; no old head or later outcome supplies an invented callback amount. Raw/top-level gaps remain attached.
-- Authored/unrun: real QueueComponent ordering/selection/listener-free/throw contracts, capture detachment/disposal /
-  restore/exhausted-head cases, and native-shaped immediate/per-tick insertion, synchronous application before receipt,
-  production/research cancellation ordering, completion and contradictory/missing boundary cases. Pure fixtures prove
-  no live setup, definition pricing, useful AI product/tech, strategic cancellation or runtime coverage.
-- Existing `runVariant` normalization/report JSON retains the new intervals. Full event/fairness/catalog/setup/cadence /
-  restore evidence and mandatory PRO-03/06/07 oracle remain open and unchanged. No recipe/coverage denominator, balance
-  threshold, save/wire schema, source baseline, package/configuration or migration changed. No tests/E2E/simulations,
-  format/lint/type/build/editor/schema/repository checks or doctor/context/catalog commands ran. Nx 23.2.1/Jest 30.3.0 /
-  Phaser 4.2.1 tooling, dependency installation, shared Phaser mock debt, capture/report pressure and both-faction
-  bootstrap/outcomes remain final-gate obligations.
-- Prior [money/progress operations](follow-ups/runtime-matrix-ci.md#production-operation-projection-checkpoint-2026-10-04-unverified)
-  are in `75768bb08`; [claim/progress](follow-ups/runtime-matrix-ci.md#production-queue-claims-and-progress-checkpoint-2026-10-04-unverified)
+- Real dispatch callbacks now retain detached state before and after the pending/unspent ledger update. Every sampled
+  boundary includes actual snapshot-restore status. The existing native outcome before/after path is reused; no shared
+  admission/application rule, bus receipt, gameplay/save/relay schema, price or refund behavior changes.
+- Shared `validateRuntimeProductionRequest` validates unstamped accepted queue payload/claims/correlation for both
+  admitted and rejected paths. `matchRuntimeRejectedAdmission` binds the exact selected result, request and synchronous
+  rejected receipt. A genuine input-address rejection may retain its stamped outcome; other rejected receipts retain
+  null command IDs and null intended application time. No fake stamped command or physical item is constructed.
+- `RuntimeProductionCausalityV1.rejections` retains admission versus application, request observation, finished receipt,
+  native terminal, intended versus actual time, full cash and independently recomputed all-lane liabilities. Native
+  application rejection may precede delivery or the finished single-player receipt. Exact local ledger samples prove
+  selected/admitted -> released without advance credit or adding pending claims. The unspent reconciler recognizes
+  exact rejected admission receipts and excludes the current callback for its before sample.
+- Wrong selection/correlation/stamp, conflicting success, duplicate/uncertain native outcomes, restore, changed cash /
+  unrelated physical lanes/liabilities, incorrect release or attributed native resource/mutation/progress/item effects
+  fail closed and suppress normalized rejection/money/physical records. Missing legacy before-state or restore authority
+  stays null or gapped. Retry correlations cannot borrow a later admitted native command. Raw/global gaps remain.
+- Authored/unrun: production/research rejected admission/application, input-address stamped rejection, bus rejection
+  without delivery, synchronous pre-receipt application, exact native retry fencing, detached callback claim release,
+  restore/teardown and contradictory/missing boundaries. Synthetic contracts prove no useful product/tech, live legal
+  setup, strategic AI cancellation, definition catalog, socket parity or passing runtime coverage.
+- Existing `runVariant` normalization/report retains the new records. Mandatory full PRO-03/06/07 evidence and
+  event/fairness/catalog/setup/cadence/global/restore ownership remain open. No recipe/coverage denominator, balance
+  threshold, source baseline, package/configuration or migration changed. All tests/E2E/simulations, format/lint/type /
+  build/editor/schema/repository checks and doctor/context/catalog commands remain deferred. Nx 23.2.1/Jest 30.3.0 /
+  Phaser 4.2.1 tooling, shared Phaser mock debt, capture/report pressure and actual bootstrap/outcomes require final proof.
+- Prior [physical intervals](follow-ups/runtime-matrix-ci.md#production-physical-queue-checkpoint-2026-10-04-unverified)
+  are in `f6e60b9e0`; [money/progress operations](follow-ups/runtime-matrix-ci.md#production-operation-projection-checkpoint-2026-10-04-unverified)
+  in `75768bb08`; [claim/progress](follow-ups/runtime-matrix-ci.md#production-queue-claims-and-progress-checkpoint-2026-10-04-unverified)
   in `e64a6f802`; [decision/boundary](follow-ups/runtime-matrix-ci.md#production-ai-decision-and-boundary-checkpoint-2026-10-03-unverified)
   in `40102bb4`; [causality](follow-ups/runtime-matrix-ci.md#production-ai-causality-checkpoint-2026-10-03-unverified) in
   `1f96cde1`; [distinct human socket worlds](follow-ups/runtime-matrix-ci.md#production-distinct-shared-queue-worlds-checkpoint-2026-10-03-unverified)

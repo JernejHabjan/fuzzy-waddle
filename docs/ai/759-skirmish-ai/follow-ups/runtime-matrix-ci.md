@@ -1332,3 +1332,80 @@ The default Playwright config starts portal; these pure fixtures need no socket 
 lifecycle omissions remain prior unverified debt. All tests/E2E/simulations, format/lint/type/build/editor/schema /
 repository checks and doctor/context/catalog commands remain deferred. Type/module compatibility, source structure,
 report/capture pressure, bootstrap and actual both-faction strategic outcomes still require executable evidence.
+
+
+## Production native rejection checkpoint (2026-10-04, unverified)
+
+**Scope/provenance:** current #815/#816 PRO-03/06/07 substep is rejected admission/application plus exact selected-claim
+release. Base `f6e60b9e0862263112f4dc88cbf4bb08582af916`, integration worktree
+`/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; unrelated Nx migration preserved.
+The batch closes this authoring slice only. Full lifecycle / RuntimeProductionEvidenceV1 and all executable proof remain open.
+
+| Acceptance | Owners / consumers | Status / evidence |
+| --- | --- | --- |
+| 1. Native rejected request | `validateRuntimeProductionRequest`, `matchRuntimeRejectedAdmission`, existing dispatch and command lineage | Authored/unverified: same closed unstamped payload validation, exact selected result and synchronous receipt, nullable native stamp. |
+| 2. Actual callback state | `AiRuntimeProductionCapture`, raw fact/boundary types and boundary projector | Authored/unverified: detached dispatch before/after ledger samples; actual restore flag; existing outcome samples and cleanup reused. |
+| 3. Normalized rejection / claim release | `projectRuntimeProductionRejections`, boundary validator, unspent reconciler and causality normalizer | Authored/unverified: admission/application stages, exact native times, full cash/all-lane liabilities, selected/admitted release, null missing state, fail-closed group suppression. |
+| 4. Contract authoring / report integration | New rejection capture Jest spec, Playwright rejection spec and two native-shaped fixtures; existing `runVariant` | Authored/unrun: production/research, stamped/unstamped, no-delivery and synchronous delivery paths, retry fencing and negative boundaries; existing report retains normalized object. |
+| 5. Review / handoff / publication | This checkpoint, HANDOFF Quick resume and exact task-owned Git scope | Source-only implementation review/Omission Audit; separate Final Closure Audit before commit/push/pause. No passing validation or release readiness claim. |
+
+**Native authority and timing:** `dispatchAi` supplies the shared stamp, but a rejected receipt does not itself expose
+that stamp. Spectator/replay/owner normalization rejection can publish only the receipt; input-address rejection can
+publish one native rejected outcome without an admitted command. The adapter retains the real unstamped request and
+nullable native outcome/ID. It constructs no fake bus command, scheduled tick, queue item or useful effect. A subsequent
+application rejection follows actual admission; native validation may reject before delivery, while a component may
+reject during command delivery. Synchronous application/outcome can precede the finished receipt. Buffered request
+observation, intended application tick and actual terminal observation remain distinct. A relay rejection may precede
+its intended application time; no advance refund/credit is inferred.
+
+**Boundary and release authority:** each dispatch callback now samples before the pending/unspent ledger update and
+retains its detached after sample. All sampled boundaries include snapshot-restore status. Native outcome callbacks
+reuse their existing exact before/after samples. Rejection validates unchanged full enum cash and full physical queues,
+including unrelated lanes, and independently recomputes both all-lane future-cost vectors. The targeted selected or
+admitted queue claim must become released; all unrelated entries stay identical. The Node reconciler excludes the
+current event when reading its before ledger and accepts an unstamped release only through its exact selected request /
+rejected receipt scope. Its amounts still come from native accepted resource leases, never a forecast or reason string.
+Pending diagnostic resource claims are not added again. Non-queue/global, migrated, pre-capture and restore ownership
+remain null/gapped. Missing older callback state or restore status stays explicit; no snapshot supplies that absence.
+
+**Failure behavior:** contradictory selected result, request payload/claims/correlation, native epoch/sequence/actors,
+duplicate or conflicting lifecycle, uncertain duplicate/lost/backlog outcomes, supplied restore, cash/queue/liability /
+release changes and attributed native resource/mutation/progress/queue-item effects fail closed. Native IDs distinguish
+later retries with the same correlation; a rejected admission cannot borrow the retry's stamp/outcome. Invalid groups
+suppress rejections as well as normalized payments/operations/mutations; raw facts and original/global gaps remain.
+This is a diagnostic rejection record, not a complete RuntimeProductionEvidenceV1 event or fairness/catalog/setup proof.
+
+**Omission Audit:** source-traced selected decision -> real `dispatchAiIntentCommand` observer -> shared bus receipt /
+native application outcome -> owned detached callback samples -> exact scope/release reconciliation -> normalizer ->
+existing `runVariant`/report/evaluator. Reviewed actual unstamped and stamped input-address branches, pre-delivery bus
+rejection, component rejection, synchronous pre-receipt application, native retry fencing, missing older state,
+restore, bounded capture/drop behavior and existing disposal. The new shared request validator replaces duplicated
+accepted-request validation, retaining actual command stamp/admission/delivery validation. No mandatory oracle, recipe,
+coverage denominator, full event gap or useful-effect requirement was relaxed. New tests are discovered by existing
+Jest/default Playwright routes; none ran. Additional before-state capture/report cost remains unmeasured.
+
+**Separate Final Closure Audit:** after source repairs, rechecked the five acceptance items, explicit discriminant
+narrowing, actual before-event cutoff, unrelated claim/cash/lane invariants, immediate consumers, source layout and exact
+staging. No baseline refresh, policy/skill/tool change, model switch or new agent/thread/worktree/branch/PR. No tests /
+E2E/simulations, format/lint/type/build/editor/schema/repository checks or doctor/context/catalog commands ran. The
+existing draft integration PR and unrelated migration are preserved. Publish only this batch, verify remote SHA, pause.
+
+**Next grouped authoring:** actual created actor / registered tech completion bound to physical removals, then full
+cancellation request/application/removal/refund lifecycle, removed per-tick ownership and actual per-tick refunds.
+Continue fair ready/reachable producers, stable useful products/tech, runtime price/duration/effective-level catalog,
+paired setup, legal Skaduwee research producer and strategic AI worlds. Keep compatible PRO-03/06 pairs together.
+Recommend **GPT-6.1 Sol / high** for these cross-authority contracts; this is judgment, not an automatic model switch.
+Actual model/effort is unavailable. [OpenAI Docs](https://developers.openai.com/api/docs/models/gpt-6.1-sol) was searched
+and opened this turn and supports high effort; no account availability or pricing claim is made.
+
+Add these **unrun proposed commands** to the final gate alongside prior physical/payment/progress/decision/preset /
+pending/digest/oracle/map/multiplayer checks:
+
+```bash
+NX_DAEMON=false pnpm exec nx test probable-waffle-phaser --testPathPatterns='ai-runtime-rejection-capture|ai-runtime-production-capture|ai-runtime-unspent-claims|ai-runtime-pending-commands|dispatch-ai-intent-command' --skip-nx-cache
+pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts skirmish-ai-runtime-production-rejections.spec.ts skirmish-ai-runtime-production-queue-mutations.spec.ts skirmish-ai-runtime-production-operation-projection.spec.ts skirmish-ai-runtime-production-decision-lineage.spec.ts skirmish-ai-runtime-production-causality-normalization.spec.ts
+```
+
+Review merged Nx 23.2.1/Jest 30.3.0/Phaser 4.2.1 flags/dependencies at that gate. Shared Phaser mock emitter/lifecycle
+omissions remain prior unverified debt. Type/module/source-structure compatibility, capture/report pressure, native
+bootstrap and both-faction strategic outcomes remain executable final-gate obligations.

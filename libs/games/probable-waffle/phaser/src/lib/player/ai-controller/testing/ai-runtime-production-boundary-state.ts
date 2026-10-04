@@ -10,6 +10,8 @@ import type { AiRuntimeProductionQueueV1 } from "./ai-runtime-production-queue-v
  * Null denotes unavailable/invalid authority, including genuine overflow; it must never become a zero vector.
  */
 export interface AiRuntimeProductionBoundaryState {
+  /** True rejects fresh native lifecycle proof during snapshot application; absent in older diagnostic captures. */
+  readonly snapshotRestoreInProgress?: boolean;
   /** Optional only for older captures. Reconciled queue claims; unsupported/pre-capture ownership remains null. */
   readonly unspentClaims?: AiRuntimeUnspentClaimsV1;
   /** Exact exhausted live head at a successful progress callback, excluded from future charges before removal. */

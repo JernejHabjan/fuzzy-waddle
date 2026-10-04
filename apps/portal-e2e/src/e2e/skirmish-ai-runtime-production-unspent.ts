@@ -1,3 +1,4 @@
+import { matchRuntimeRejectedAdmission } from "./skirmish-ai-runtime-rejected-admission";
 import { isDeepStrictEqual } from "node:util";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiRuntimeProductionCaptureV1 } from
@@ -17,20 +18,23 @@ export function isRuntimeProductionBalance(value: Readonly<Partial<Record<Resour
 /**
  * Independently reconciles the captured queue-claim subset at one exact callback. Native accepted leases, admission,
  * completed scoped payment and physical liability transfer justify each state. Missing global/non-queue ownership
- * remains null; this does not replace the full production reservation/cadence authority.
+ * remains null; this does not replace the full production reservation/cadence authority. beforeCallback excludes
+ * the enclosing event from lifecycle reconciliation while retaining its real sampled physical state and sequence.
  */
 export function reconcileRuntimeProductionUnspent(
   capture: AiRuntimeProductionCaptureV1,
   fact: AiRuntimeProductionFactV1,
   commands: RuntimeProductionCausalityV1["commands"],
-  payments: RuntimeProductionCausalityV1["payments"]
+  payments: RuntimeProductionCausalityV1["payments"],
+  beforeCallback = false
 ) {
   const ledger = fact.boundaryState?.unspentClaims;
   const failures: string[] = [];
   const gaps: string[] = [];
   const missing = () => ({ resources: null, failures, gaps: [...gaps, "production_ai_operation_unspent_missing"] });
   if (!ledger?.resources || ledger.gaps.length) return missing();
-  const prefix = capture.facts.filter((entry) => entry.sequence <= fact.sequence);
+  const cutoff = fact.sequence - (beforeCallback ? 1 : 0);
+  const prefix = capture.facts.filter((entry) => entry.sequence <= cutoff);
   const decisions = prefix.filter((entry) => entry.kind === "decision_selected");
   const latest = decisions[decisions.length - 1];
   if (!latest) return missing();
@@ -65,15 +69,25 @@ export function reconcileRuntimeProductionUnspent(
       failures.push("production_ai_operation_unspent_selection_invalid"); continue;
     }
     if (entry.state === "released" && entry.commandId === null) {
-      // Bus rejection has no stamp. A separate rejected-request adapter must prove that release before using its amount.
-      gaps.push("production_ai_operation_rejected_admission_unspent_missing"); continue;
+      const requests = prefix.filter((candidate) => candidate.kind === "intent_dispatch" &&
+        candidate.event.kind === "requested" && isDeepStrictEqual(candidate.event.acceptedIntent, intent) &&
+        isDeepStrictEqual(candidate.event.decisionIdentity, entry.identity));
+      const releases = requests.flatMap((request) => prefix.flatMap((receipt) => {
+        if (request.kind !== "intent_dispatch" || receipt.kind !== "intent_dispatch" || receipt.event.kind !== "finished" ||
+          receipt.event.receipt.status !== "rejected" || !isDeepStrictEqual(receipt.event.correlation, request.event.correlation) ||
+          receipt.sequence <= request.sequence) return [];
+        const matched = matchRuntimeRejectedAdmission(capture, request, receipt);
+        return matched.scope ? [matched.scope] : [];
+      }));
+      if (releases.length !== 1) gaps.push("production_ai_operation_rejected_admission_unspent_missing");
+      continue;
     }
     const scope = commands.find((command) => isDeepStrictEqual(command.acceptedIntent, intent) &&
       isDeepStrictEqual(command.decision?.decision.identity, entry.identity));
-    const admitted = scope?.outcomes.some((outcome) => outcome.sequence <= fact.sequence && outcome.outcome.kind === "dispatched");
-    const terminal = scope?.outcomes.some((outcome) => outcome.sequence <= fact.sequence &&
+    const admitted = scope?.outcomes.some((outcome) => outcome.sequence <= cutoff && outcome.outcome.kind === "dispatched");
+    const terminal = scope?.outcomes.some((outcome) => outcome.sequence <= cutoff &&
       ["failed", "rejected", "cancelled", "completed"].includes(outcome.outcome.kind));
-    const payment = payments.find((payment) => payment.sequence <= fact.sequence &&
+    const payment = payments.find((payment) => payment.sequence <= cutoff &&
       payment.resource.operation === "immediate_charge" &&
       payment.resource.originatingCommandContext?.execution.commandId === entry.commandId);
     const price = Object.fromEntries(Object.values(ResourceType).map((type) => [type, claims.reduce((sum, claim) =>
@@ -110,7 +124,7 @@ export function reconcileRuntimeProductionUnspent(
     if (entry.state === "selected" ? entry.commandId !== null || admitted :
       !scope?.decision || !admitted || scope.command.execution?.commandId !== entry.commandId ||
       (entry.state === "admitted" ? paid || transferred || terminal :
-        entry.state === "paid" ? !paid || scope?.outcomes.some((outcome) => outcome.sequence <= fact.sequence &&
+        entry.state === "paid" ? !paid || scope?.outcomes.some((outcome) => outcome.sequence <= cutoff &&
           ["failed", "rejected", "cancelled"].includes(outcome.outcome.kind)) :
           entry.state === "queue_liability" ? terminal : !terminal)) {
       failures.push("production_ai_operation_unspent_state_invalid");
@@ -122,10 +136,10 @@ export function reconcileRuntimeProductionUnspent(
   // Missing active admissions or retained provisional leases must not understate the absolute captured amount.
   for (const scope of commands) {
     if (scope.acceptedIntent.kind !== "produce" && scope.acceptedIntent.kind !== "research") continue;
-    const admitted = scope.outcomes.some((outcome) => outcome.sequence <= fact.sequence && outcome.outcome.kind === "dispatched");
-    const settled = scope.outcomes.some((outcome) => outcome.sequence <= fact.sequence &&
+    const admitted = scope.outcomes.some((outcome) => outcome.sequence <= cutoff && outcome.outcome.kind === "dispatched");
+    const settled = scope.outcomes.some((outcome) => outcome.sequence <= cutoff &&
       ["failed", "rejected", "cancelled", "completed"].includes(outcome.outcome.kind)) ||
-      payments.some((payment) => payment.sequence <= fact.sequence && payment.resource.operation === "immediate_charge" &&
+      payments.some((payment) => payment.sequence <= cutoff && payment.resource.operation === "immediate_charge" &&
         payment.resource.originatingCommandContext?.execution.commandId === scope.command.execution?.commandId);
     if (admitted && !settled && !ledger.entries.some((entry) => entry.commandId === scope.command.execution?.commandId)) {
       failures.push("production_ai_operation_unspent_admission_missing");
