@@ -174,7 +174,8 @@ describe("AiRuntimeProductionCapture", () => {
 
   it("retains request, synchronous refund and terminal callback order without inventing item attribution", () => {
     const fixture = setup();
-    fixture.capture.capture(2);
+    const initial = fixture.capture.capture(2);
+    expect(initial.snapshots[0]?.afterSequence).toBe(0);
     fixture.outcomes.next(outcome("dispatched"));
     fixture.money.food += 7;
     fixture.changes.next({ property: "resource.added", data: { playerNumber: 2,
@@ -190,6 +191,7 @@ describe("AiRuntimeProductionCapture", () => {
     expect(cash?.kind === "resources_applied" && cash.before.food).toBe(100);
     expect(cash?.kind === "resources_applied" && cash.after.food).toBe(107);
     expect(capture.gaps).toContain("resource_item_attribution");
+    expect(capture.snapshots.at(-1)?.afterSequence).toBe(4);
     fixture.capture.dispose();
   });
 
@@ -205,6 +207,7 @@ describe("AiRuntimeProductionCapture", () => {
     expect(captured.snapshots[0].completedResearch).toEqual([researchType]);
     expect(captured.facts.map((fact) => fact.kind)).toEqual(["research_completed", "actor_unregistered"]);
     expect(captured.facts.every((fact) => fact.playerNumber === 2)).toBe(true);
+    expect(captured.snapshots.at(-1)?.afterSequence).toBe(captured.facts.at(-1)?.sequence);
     fixture.capture.dispose();
   });
 

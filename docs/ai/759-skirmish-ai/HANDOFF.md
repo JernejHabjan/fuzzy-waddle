@@ -7,20 +7,42 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 ## Quick resume
 
 **Next session (user policy, 2026-10-05):** retain **GPT-6.1 Sol / high** for grouped PRO-03/06/07 authority.
-Current step: #815/#816 **native producer spatial authority and target-specific weapon exposure**, authored/unverified.
-This batch began at `9c7f09ee76365fe147fbb7b2e97f731aab387c5c`; its containing commit owns the new revision.
+Current step: #815/#816 **machinery batch 12: construction AI lineage and sampled effect retention**, authored/unverified.
+This batch began at `55f14e50c8329f8824277d87031f83db634bd301`; its containing commit owns the new revision.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify local/remote on resume.
 Nx merge `59f72e037` is preserved. Actual model/effort is unavailable. No family/issue is complete.
 The user removed the comment-permission rule. All executable validation remains at the final gate.
 
-Read the [spatial/exposure checkpoint](follow-ups/runtime-matrix-ci.md#production-spatial-exposure-checkpoint-2026-10-05-unverified).
-**Next exact authoring action:** join stable useful actor/tech effects and construction AI decision lineage into full
-`RuntimeProductionEvidenceV1`, using actual native spatial intervals, current target-specific attack captures,
-command-priced catalogs and initial queue provenance. Complete target-specific producer service/output routes,
-navigation revision/history authority and construction catalog as needed; returned cached paths are not fresh topology
-proof. Keep initial/pre-capture/migrated/restore/global ownership explicit. Then finish actual paired setup, legal
-Skaduwee research producer setup and useful strategic AI cancellation/transition worlds; group compatible PRO-03/06 pairs.
+Read the [lineage/retention checkpoint](follow-ups/runtime-matrix-ci.md#production-lineage-retention-checkpoint-2026-10-05-unverified).
+**Next exact authoring action:** finish the authorities required by the full `RuntimeProductionEvidenceV1` adapter:
+target-specific producer service/output routes and navigation revision/history, command-priced construction catalog,
+dated useful demand and continuous effect stability. Consume the new accepted construction scopes and ordered retention
+samples, current target-specific attack captures, queue catalogs and initial queue provenance; never interpolate
+unsampled stability or turn cached paths into fresh topology proof. Keep initial/pre-capture/migrated/restore/global
+ownership explicit. Then finish actual paired setup, legal Skaduwee research producer setup and useful strategic AI
+cancellation/transition worlds; group compatible PRO-03/06 pairs. The full adapter remains absent.
 Defer executable checks, commit/push the next coherent batch, then pause.
+
+- `matchRuntimeConstructionDecision` joins a native legal-placement/path interval to the exact accepted construct,
+  admission, stamped receipt, delivery and lifecycle. Multi-builder payload, site/tile, full stamp and selected decision
+  must agree. Retry scopes are fenced by the previous finish; a future receipt cannot fill an already-resolved path.
+  Native placement/delivery/application can remain useful without a legacy AI identity, with its gap retained.
+  Construction scopes live on `spatialAuthority.paths[].constructionCommand`; queue accounting retains its queue scope.
+- Raw snapshots now retain the last captured player fact as `afterSequence`. Normalized worlds preserve that marker,
+  actual completed research and their own omissions. Same-tick pre-terminal samples and legacy unordered samples cannot
+  supply post-terminal presence. Future/regressing markers and contradictory research authority suppress normalized groups.
+- `projectRuntimeProductionEffectRetention` links exact native completions to later actor/tech samples and original
+  accepted decision/demand identity. Present/absent/unavailable and actual component levels remain separate. Reused IDs,
+  reappearing unregistered actors, changed product family/owner and missing registered tech fail closed. Bounds are 256
+  completions and 8,192 completion/snapshot pairs; overflow retains an explicit gap and no partial retention group.
+  Accepted demand attribution and sampled presence still leave continuous stability and strategic usefulness gaps.
+- Construction/effect-retention synthetic Playwright specs and raw-capture marker assertions are authored/unrun.
+  Source implementation review, Omission Audit and separate Final Closure Audit are recorded in the checkpoint. The
+  existing variant runner already serializes the new diagnostic groups through its normalizer. No executable validation
+  ran; no production family or issue is complete. Capture/report cost and actual runtime effects remain final-gate work.
+
+Prior batch 11 [spatial/exposure checkpoint](follow-ups/runtime-matrix-ci.md#production-spatial-exposure-checkpoint-2026-10-05-unverified)
+is in `55f14e50c`; these inherited spatial contracts remain authored/unverified:
 
 - Native construction footprint checks and lifecycle now live in `applySharedConstructionCommand`; the service keeps
   command subscription, site-key and completion-subscription ownership. The moved checks/outcomes remain in native
@@ -35,7 +57,7 @@ Defer executable checks, commit/push the next coherent batch, then pause.
   restore/scene flags and bounded footprint/path loss. Bounds: 128 footprint tiles, 512 returned path tiles; raw cap unchanged.
 - `RuntimeProductionCausalityV1.spatialAuthority` separates native placements, spawn choices and paired builder paths.
   Native construction linkage requires the exact site/builder, captured legal placement, native delivery and actual
-  applied outcome; actual outcome time remains separate from intended command time. AI decision linkage remains a gap.
+  applied outcome; actual outcome time remains separate from intended command time. Batch 12 adds exact AI decision linkage.
   Empty successful paths differ from null/no-path. Cross-tick awaits or moved/index-lost actors cannot supply current
   binding. Topology revision/history and general producer reachability remain unproven; endpoint/node checks never fill them.
 - Exact current consumed decisions can now retain bounded producer/threat pairs through `captureAiProducerExposure`.

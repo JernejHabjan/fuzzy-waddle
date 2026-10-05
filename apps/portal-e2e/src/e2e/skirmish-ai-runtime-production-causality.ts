@@ -12,6 +12,7 @@ import type { RuntimeProductionWorldSnapshotV1 } from "./skirmish-ai-runtime-pro
 import type { RuntimeProductionInitialQueueV1 } from "./skirmish-ai-runtime-production-initial-queue";
 import type { RuntimeProductionDecisionV1 } from "./skirmish-ai-runtime-production-decision";
 import type { RuntimeProductionSpatialAuthorityV1 } from "./skirmish-ai-runtime-production-spatial-authority";
+import type { RuntimeProductionEffectRetentionV1 } from "./skirmish-ai-runtime-production-effect-retention";
 
 /**
  * Diagnostic AI lineage, not RuntimeProductionEvidenceV1. Retains actual accepted intent and observer order;
@@ -33,6 +34,8 @@ export interface RuntimeProductionCausalityV1 {
   readonly rejections: readonly RuntimeProductionRejectionV1[];
   /** Actual completed products/tech; strategic usefulness and stable-effect acceptance remain separate. */
   readonly completions: readonly RuntimeProductionCompletionV1[];
+  /** Later ordered actor/tech samples linked to exact completions; never a continuous or useful-effect oracle verdict. */
+  readonly effectRetention: readonly RuntimeProductionEffectRetentionV1[];
   /** Exact distinct native cancellation/removal/refund; this supplies no useful replacement or AI strategy proof. */
   readonly cancellations: readonly RuntimeProductionCancellationV1[];
   readonly commands: readonly {

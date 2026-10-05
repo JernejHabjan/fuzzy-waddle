@@ -4,6 +4,7 @@ import type { AiRuntimeCreatedActorV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-created-actor-v1";
 import type { RuntimeProductionSpatialAuthorityV1 } from "./skirmish-ai-runtime-production-spatial-authority";
 import { matchRuntimeConstructionPath } from "./skirmish-ai-runtime-construction-path-lineage";
+import { matchRuntimeConstructionDecision } from "./skirmish-ai-runtime-construction-decision-lineage";
 
 /** Bounded native spatial lineage. Future checkpoints, placement acceptance and endpoint checks never fill a route. */
 export function normalizeRuntimeProductionSpatial(capture: AiRuntimeProductionCaptureV1) {
@@ -103,8 +104,11 @@ export function normalizeRuntimeProductionSpatial(capture: AiRuntimeProductionCa
     const construction = matchRuntimeConstructionPath(capture, request, fact);
     failures.push(...construction.failures);
     construction.gaps.forEach((gap) => gaps.add(gap));
+    const lineage = construction.placement ? matchRuntimeConstructionDecision(capture, construction.placement, fact) : null;
+    lineage?.failures.forEach((failure) => failures.push(failure));
+    lineage?.gaps.forEach((gap) => gaps.add(gap));
     authority.paths.push({ requested: request, resolved: fact, currentAtResolution,
-      constructionPlacement: construction.placement });
+      constructionPlacement: construction.placement, constructionCommand: lineage?.scope ?? null });
   }
   if (requests.size !== completed.size) gaps.add("production_spatial_path_pending_or_missing");
   if (!facts.length) gaps.add("production_spatial_authority_missing");

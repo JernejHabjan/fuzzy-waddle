@@ -1,4 +1,4 @@
-import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { ResearchType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiRuntimeProductionCaptureV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
 import type { RuntimeProductionWorldSnapshotV1 } from "./skirmish-ai-runtime-production-world-snapshot";
@@ -10,11 +10,22 @@ export function normalizeRuntimeProductionWorld(capture: AiRuntimeProductionCapt
   const gaps = new Set<string>();
   if (capture.snapshots.length > 256) return { snapshots, failures: ["production_world_snapshot_overflow"], gaps: [] };
   for (const [index, snapshot] of capture.snapshots.entries()) {
+    const afterSequence = snapshot.afterSequence ?? null;
+    const previous = capture.snapshots[index - 1];
     if (!Number.isSafeInteger(snapshot.tick) || snapshot.tick < capture.startedTick ||
-      (index > 0 && snapshot.tick < capture.snapshots[index - 1].tick)) {
+      (previous && snapshot.tick < previous.tick) ||
+      (afterSequence !== null && (!Number.isSafeInteger(afterSequence) || afterSequence < 0 ||
+        (afterSequence > 0 && !capture.facts.some((fact) => fact.sequence === afterSequence)) ||
+        capture.facts.some((fact) => (fact.sequence <= afterSequence && fact.tick > snapshot.tick) ||
+          (fact.sequence > afterSequence && fact.tick < snapshot.tick)) ||
+        (previous?.afterSequence !== undefined && afterSequence < previous.afterSequence)))) {
       failures.push("production_world_snapshot_order"); continue;
     }
     const world = snapshot.world;
+    if (new Set(snapshot.completedResearch).size !== snapshot.completedResearch.length ||
+      snapshot.completedResearch.some((type) => !Object.values(ResearchType).includes(type))) {
+      failures.push("production_world_research_invalid"); continue;
+    }
     if (!world) { gaps.add("production_world_authority_missing"); continue; }
     world.gaps.forEach((gap) => gaps.add(gap));
     if (world.snapshotRestoreInProgress || world.actors.length > 256 || world.catalog.length > 512) {
@@ -84,7 +95,8 @@ export function normalizeRuntimeProductionWorld(capture: AiRuntimeProductionCapt
     if (world.catalog.some((entry) => !snapshot.queues.some((queue) => queue.actorId === entry.producerActorId))) {
       gaps.add("production_world_producer_queue_missing");
     }
-    snapshots.push({ tick: snapshot.tick, observationTick: observation?.tick ?? null,
+    snapshots.push({ tick: snapshot.tick, afterSequence, completedResearch: snapshot.completedResearch, gaps: world.gaps,
+      observationTick: observation?.tick ?? null,
       actors: world.actors, catalog: world.catalog, producers });
   }
   return structuredClone({ snapshots: failures.length ? [] : snapshots, failures: [...new Set(failures)], gaps: [...gaps].sort() });

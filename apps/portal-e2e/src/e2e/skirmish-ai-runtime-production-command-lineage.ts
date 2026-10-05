@@ -2,7 +2,7 @@ import { validateRuntimeProductionRequest } from "./skirmish-ai-runtime-producti
 import type { GameCommand } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiRuntimeProductionFactV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
-import { sameRuntimeQueueCommand } from "./skirmish-ai-runtime-queue-command-equality";
+import { sameRuntimeProductionCommand } from "./skirmish-ai-runtime-production-command-equality";
 
 /** Selects the closed queue command family for this diagnostic; payload and native execution are validated separately. */
 export function isRuntimeQueueCommand(command: { readonly type: string }): boolean {
@@ -33,7 +33,7 @@ export function validateRuntimeProductionCommandLineage(
     request.tick !== receipt.tick || request.sequence >= receipt.sequence ||
     !Number.isSafeInteger(command.tick) || command.tick < request.tick ||
     command.playerNumber !== request.playerNumber || event.playerNumber !== request.playerNumber ||
-    !sameRuntimeQueueCommand({ ...event.command, tick: command.tick, execution }, command)) {
+    !sameRuntimeProductionCommand({ ...event.command, tick: command.tick, execution }, command)) {
     failures.push("production_ai_request_receipt_lineage");
   }
   const admission = outcomes.filter((fact) => fact.outcome.kind === "dispatched");
@@ -42,8 +42,9 @@ export function validateRuntimeProductionCommandLineage(
     fact.scheduledTick !== command.tick || fact.outcome.tick !== command.tick)) {
     failures.push("production_ai_admission_lineage");
   }
-  if (deliveries.length > 1 || deliveries.some((fact) => fact.tick !== command.tick ||
-    fact.sequence <= request.sequence || !sameRuntimeQueueCommand(fact.command, command))) {
+  if (deliveries.length > 1 || deliveries.some((fact) =>
+    (command.type === "CONSTRUCT" ? fact.tick < command.tick : fact.tick !== command.tick) ||
+    fact.sequence <= request.sequence || !sameRuntimeProductionCommand(fact.command, command))) {
     failures.push("production_ai_delivery_lineage");
   }
   for (const fact of outcomes) {
@@ -58,7 +59,7 @@ export function validateRuntimeProductionCommandLineage(
       outcome.reason === "lost_outcome" || outcome.reason === "outcome_backlog_overflow" ||
       (outcome.kind !== "dispatched" && (fact.scheduledTick !== null || outcome.tick !== fact.tick ||
         (admission[0] && fact.sequence <= admission[0].sequence) ||
-        (outcome.kind === "applied" && fact.tick !== command.tick) ||
+        (outcome.kind === "applied" && (command.type === "CONSTRUCT" ? fact.tick < command.tick : fact.tick !== command.tick)) ||
         (!["rejected", "failed"].includes(outcome.kind) && fact.tick < command.tick)))) {
       failures.push("production_ai_outcome_lineage");
     }

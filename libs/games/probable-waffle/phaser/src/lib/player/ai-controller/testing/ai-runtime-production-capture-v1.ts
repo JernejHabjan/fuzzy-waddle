@@ -20,6 +20,8 @@ export interface AiRuntimeProductionCaptureV1 {
   readonly facts: readonly AiRuntimeProductionFactV1[];
   readonly snapshots: readonly {
     readonly tick: number;
+    /** Last observed fact for this player before sampling. Legacy captures cannot establish same-tick effect order. */
+    readonly afterSequence?: number;
     readonly observation: AiObservationV1 | null;
     readonly capabilityCatalog: AiCapabilityCatalogV1 | null;
     /** Actual owned component readiness/levels and command-priced options; absent in older diagnostic captures. */

@@ -17,6 +17,7 @@ import { matchRuntimeProductionDecision } from "./skirmish-ai-runtime-production
 import { normalizeRuntimeProductionWorld } from "./skirmish-ai-runtime-production-world-normalization";
 import { normalizeRuntimeProductionDecisions } from "./skirmish-ai-runtime-production-decisions";
 import { normalizeRuntimeProductionSpatial } from "./skirmish-ai-runtime-production-spatial-normalization";
+import { projectRuntimeProductionEffectRetention } from "./skirmish-ai-runtime-production-effect-retention-projection";
 import { normalizeRuntimeProductionInitialQueues } from "./skirmish-ai-runtime-production-initial-queue-normalization";
 import type { AiRuntimePresetApplicationV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application-v1";
@@ -183,6 +184,9 @@ export function normalizeRuntimeProductionCausality(
   const completions = projectRuntimeProductionCompletions(capture, commands, mutations.mutations);
   failures.push(...completions.failures);
   completions.gaps.forEach((gap) => gaps.add(gap));
+  const retention = projectRuntimeProductionEffectRetention(capture, commands, completions.completions, world.snapshots);
+  failures.push(...retention.failures);
+  retention.gaps.forEach((gap) => gaps.add(gap));
   for (const fact of queueFacts) {
     if (fact.resource.originatingCommandContext?.execution.source !== "ai" ||
       fact.resource.payment !== "per_successful_tick" || fact.resource.operation !== "tick_charge") continue;
@@ -221,6 +225,7 @@ export function normalizeRuntimeProductionCausality(
     spatialAuthority: failures.length ? { placements: [], spawns: [], paths: [] } : spatial.authority,
     payments: failures.length ? [] : payments.payments, operations: failures.length ? [] : operations.operations,
     completions: failures.length ? [] : completions.completions,
+    effectRetention: failures.length ? [] : retention.effects,
     cancellations: failures.length ? [] : cancellations.cancellations,
     queueMutations: failures.length ? [] : mutations.mutations, rejections: failures.length ? [] : rejections.rejections
   } satisfies RuntimeProductionCausalityV1);

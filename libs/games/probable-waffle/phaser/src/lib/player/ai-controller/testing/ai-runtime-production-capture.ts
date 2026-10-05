@@ -163,7 +163,9 @@ export class AiRuntimeProductionCapture {
     const state = controller?.getBrainState();
     const pending = this.pendingCommands.snapshot(playerNumber);
     const snapshot = {
-      tick, observation: controller?.getCommittedObservation() ?? null,
+      tick, afterSequence: this.facts.reduce((sequence, fact) =>
+        fact.playerNumber === playerNumber ? fact.sequence : sequence, 0),
+      observation: controller?.getCommittedObservation() ?? null,
       capabilityCatalog: controller?.getCommittedCapabilityCatalog() ?? null,
       world: captureAiRuntimeProductionWorld(this.scene, playerNumber, actors),
       ownedActors: actors.flatMap((actor) => {

@@ -35,6 +35,80 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
 
 ## Implementation order
 
+### Production lineage/retention checkpoint (2026-10-05, unverified)
+
+Machinery batch 12, #815/#816 PRO-03/06/07 prerequisites. Base `55f14e50c8329f8824277d87031f83db634bd301`,
+worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; this packet's containing
+commit owns the new revision. Nx merge `59f72e037` remains intact. Actual model/effort is unavailable.
+All tests, simulations, formatter/lint/types/build/schema/editor/repository and doctor/context/catalog execution remain
+deferred by the user. This is an authored diagnostic slice; full production evidence and family acceptance remain open.
+
+| Acceptance | Implemented owner / consumer | Evidence state |
+| --- | --- | --- |
+| 1. Exact accepted construction lineage | `matchRuntimeConstructionDecision`, production request/command validators, spatial normalizer | Source reviewed; synthetic spec authored/unrun |
+| 2. Actual sampled boundary order | Raw snapshot `afterSequence`, marked capture, world normalizer | Source reviewed; marker assertions authored/unrun |
+| 3. Native completion to later owned effect | `RuntimeProductionEffectRetentionV1`, retention projector, causality normalizer | Actor/tech samples authored; continuous/useful proof absent |
+| 4. Fail closed and bounded loss | Full stamp/site/builder checks, sample marker ordering, ID reuse/tech checks, 256/8,192 limits | Negative specs authored/unrun |
+| 5. Consumer, handoff, scoped publication | Existing variant runner/report contract, this packet and handoff | Source wiring reviewed; normal commit/push and remote SHA required |
+
+Construction lineage follows the real selected decision -> accepted construct -> dispatch admission -> stamped receipt ->
+native placement/delivery/application -> observed path interval. `constructionCommand` is attached to each joined path;
+queue scope and queue-specific accounting remain under their existing owners. The accepted intent must exactly match
+all addressed builders, prefab, site key and logical tile; the delivery and native applied outcome must retain the
+full execution correlation. Same-effect retries are fenced by the previous finish. Duplicate/mismatched receipts,
+wrong selected decisions and a receipt observed after path resolution invalidate the spatial group. Missing legacy
+decision identity stays a gap. Construction's actual late application is distinct from the intended command tick.
+Native human/legacy placement alone supplies no AI attribution, fresh navigation or reachability verdict.
+
+`afterSequence` is the last observed fact for the sampled player, not the global sequence counter. It may be zero
+before any player event; gaps in global sequence caused by other players remain legal. Raw capture adds no listener,
+query, timer, persistence or relay field. World normalization checks marker membership, clocks and monotonic sample
+ordering, and preserves independently sampled completed tech and source-world omissions. Older snapshots omit the
+marker and cannot establish same-tick or later effect order. Normalized worlds retain legacy order loss as null.
+
+Retention joins each exact native completion to subsequent ordered world samples. Actual indexed actor identity,
+canonical family, owner and component level remain separate from researched catalog level. A complete sample with no
+product records absence; an incomplete owned-world sample leaves absence unavailable. Native unregistration and
+registration records prevent reusing an actor ID as the original product. Newly registered research must remain in
+the later player tech authority. Samples retain the original accepted decision and demand ID without interpreting
+the demand as useful. There is no interpolation, stability duration, demand fulfillment or oracle verdict. The
+projector caps completions at 256 and completion/snapshot expansion at 8,192; overflow returns no partial group and a
+named gap. Actor lifecycle events are indexed once rather than rescanning the entire raw capture for each sample.
+The causality normalizer suppresses retention and all other normalized effect groups on contradictions. Existing
+`skirmish-ai-runtime-variant-runner.ts` already invokes that normalizer and retains its complete result in reports.
+
+Implementation review and Omission Audit (source-only): traced native construction ordering, admission versus actual
+application time, accepted multi-builder payload, repeated effect attempts, current consumers, raw capture disposal,
+world identity/catalog checks, completion/removal authority and report projection. Reviewed changed contract comments
+and direct constructors/imports. No new capture owner, save migration, public gameplay policy or external write is
+needed. Repairs during review made stamp comparison semantic for optional execution fields, retained sample-local
+world gaps, fenced future receipts and removed nullable-clock access from nested callbacks. No baseline was refreshed.
+
+Separate Final Closure Audit (source-only): acceptance 1–4 and documentation/consumer authoring are present; publication
+is the final required action. Newly authored tests cover positive multi-builder lineage, late application, missing
+legacy identity, retry scopes, forged decisions/payload/stamps/admission/duplicate or future receipts, actor and tech
+retention, same-tick pre-terminal and unordered samples, absence versus loss, changed levels, impossible/regressing
+markers, reused/unregistered actor IDs, restore, missing registered tech and report overflow. Raw-capture assertions
+cover zero before events, a later same-tick marker and interleaved other-player sequence exclusion. No tests or checks
+ran, so compilation, runtime setup, exact assertions, Phaser mocks and report cost are unverified. The full adapter,
+route freshness, command-priced construction, complete event liabilities, paired setup, useful demand and continuous
+stable-effect evidence remain named obligations. No family/issue/release closure is claimed; no skill/tool changes.
+
+Deferred focused commands (review Nx/Jest/Phaser compatibility before execution at the final gate):
+
+```sh
+NX_DAEMON=false pnpm exec nx test probable-waffle-phaser --testPathPatterns='ai-runtime-production-capture' --skip-nx-cache
+pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts skirmish-ai-runtime-construction-decision-lineage.spec.ts skirmish-ai-runtime-production-effect-retention.spec.ts skirmish-ai-runtime-production-spatial-normalization.spec.ts skirmish-ai-runtime-production-world-normalization.spec.ts skirmish-ai-runtime-production-completions.spec.ts skirmish-ai-runtime-production-causality-normalization.spec.ts
+```
+
+Next authoring: complete producer service/output route and navigation revision/history authorities, command-priced
+construction catalog, dated useful demand and continuous effect stability, then implement the full
+`RuntimeProductionEvidenceV1` adapter using these exact construction/effect joins. Continue with actual paired setups,
+legal Skaduwee research and useful strategic cancellation/transition worlds. Keep compatible PRO-03/06/07 work together.
+Retain **GPT-6.1 Sol / high** for these authority joins; this is a task recommendation, not a model switch.
+The [official model page](https://developers.openai.com/api/docs/models/gpt-6.1-sol) supports complex coding and high
+reasoning effort. Commit/push the authored batch and pause before continuing.
+
 ### Production-family authoring contract (2026-10-02, unverified)
 
 The first representative is PRO-04. `tools/ai/fixtures/focused-production-composition-runtime.json` now replaces its

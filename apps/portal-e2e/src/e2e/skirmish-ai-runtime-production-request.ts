@@ -11,14 +11,21 @@ export function validateRuntimeProductionRequest(request: Extract<AiRuntimeProdu
   if (!intent) return ["production_ai_accepted_intent_missing"];
   const command = event.command;
   const producer = command.actorIds.length === 1 ? command.actorIds[0] : undefined;
-  const matches = command.type === "PRODUCTION" ? intent.kind === "produce" &&
+  const matches = command.type === "CONSTRUCT" ? intent.kind === "construct" &&
+    intent.objectName === command.actorName && intent.siteKey === command.siteKey &&
+    isDeepStrictEqual(intent.logicalPosition, command.tileVec3) &&
+    isDeepStrictEqual(intent.builderIds, command.actorIds) && !!command.siteKey &&
+    command.actorIds.length > 0 && command.actorIds.every((id) => !!id) &&
+    new Set(command.actorIds).size === command.actorIds.length && Object.values(command.tileVec3).every(Number.isFinite) :
+    command.type === "PRODUCTION" ? intent.kind === "produce" &&
     intent.producerId === producer && intent.objectName === command.actorName :
     command.type === "RESEARCH" ? intent.kind === "research" &&
       intent.producerId === producer && intent.researchType === command.researchType :
     command.type === "CANCEL_PRODUCTION" ? intent.kind === "cancel" &&
       intent.actorId === producer && intent.queueIndex === command.queueIndex :
     command.type === "CANCEL_RESEARCH" && intent.kind === "cancel" && intent.actorId === producer;
-  if (!matches || !producer || command.playerNumber !== request.playerNumber || event.playerNumber !== request.playerNumber ||
+  if (!matches || (command.type !== "CONSTRUCT" && !producer) ||
+    command.playerNumber !== request.playerNumber || event.playerNumber !== request.playerNumber ||
     !intent.planId || (intent.demandId !== null && !intent.demandId) ||
     event.correlation.intentId !== intent.intentId.replace(/^intent:/, "") ||
     event.correlation.effectId !== intent.effectId.replace(/^effect:/, "") ||
