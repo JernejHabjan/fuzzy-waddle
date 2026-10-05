@@ -9,6 +9,7 @@ import type { AiRuntimeQueueResourceV1 } from "./ai-runtime-queue-resource-v1";
 import type { AiRuntimeQueueProgressV1 } from "./ai-runtime-queue-progress-v1";
 import type { AiDecisionDispatchEvent } from "../ai-decision-dispatch-event";
 import type { AiRuntimeProductionBoundaryState } from "./ai-runtime-production-boundary-state";
+import type { AiRuntimeProductionSpatialV1 } from "./ai-runtime-production-spatial-v1";
 
 /** Raw authority callbacks in observer order. No resource event is labelled a payment/refund without item provenance. */
 export type AiRuntimeProductionFactV1 = {
@@ -27,6 +28,7 @@ export type AiRuntimeProductionFactV1 = {
     readonly scheduledTick: number | null;
   }
   | { readonly kind: "decision_selected"; readonly decision: AiDecisionDispatchEvent }
+  | { readonly kind: "spatial_authority"; readonly spatial: AiRuntimeProductionSpatialV1 }
   | {
     readonly kind: "intent_dispatch";
     readonly event: AiIntentCommandDispatchEvent;

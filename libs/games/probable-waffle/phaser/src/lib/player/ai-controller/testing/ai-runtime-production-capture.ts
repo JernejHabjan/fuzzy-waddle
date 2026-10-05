@@ -35,6 +35,7 @@ import { AiRuntimeUnspentClaims } from "./ai-runtime-unspent-claims";
 import { QUEUE_PROGRESS_EVENT, type QueueProgressEvent } from "../../../entity/components/queue/queue-progress-event";
 import { projectAiRuntimeProductionBoundaryState } from "./project-ai-runtime-production-boundary-state";
 import { captureAiRuntimeProductionWorld } from "./capture-ai-runtime-production-world";
+import { AiRuntimeProductionSpatialCapture } from "./ai-runtime-production-spatial-capture";
 
 const MAX_FACTS = 8192;
 const MAX_SNAPSHOTS = 256;
@@ -55,6 +56,7 @@ export class AiRuntimeProductionCapture {
   private readonly pendingCommands = new AiRuntimePendingCommands();
   private readonly unspentClaims = new AiRuntimeUnspentClaims();
   private disposed = false;
+  private readonly spatialCapture: AiRuntimeProductionSpatialCapture;
 
   constructor(private readonly scene: ProbableWaffleScene) {
     const ticks = getSceneService(scene, SimulationTickService);
@@ -64,6 +66,9 @@ export class AiRuntimeProductionCapture {
     const playerChanged = scene.communicator.playerChanged;
     if (!ticks || !bus || !index || !tech || !playerChanged) throw new Error("production_capture_authority_missing");
     this.startedTick = ticks.currentTick;
+    this.spatialCapture = new AiRuntimeProductionSpatialCapture(scene, this.identify, (playerNumber, spatial) => {
+      this.append({ ...this.boundary(playerNumber), kind: "spatial_authority", spatial });
+    });
     for (const player of scene.players) {
       if (player.playerNumber !== undefined) this.lastBalances.set(player.playerNumber, this.resources(player.playerNumber));
     }
@@ -191,6 +196,7 @@ export class AiRuntimeProductionCapture {
   dispose(): void {
     if (this.disposed) return;
     this.disposed = true;
+    this.spatialCapture.dispose();
     this.subscriptions.unsubscribe();
     this.queueSubscriptions.forEach((subscription) => subscription.unsubscribe());
     this.queueSubscriptions.clear();

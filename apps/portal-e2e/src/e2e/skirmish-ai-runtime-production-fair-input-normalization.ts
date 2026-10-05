@@ -1,13 +1,17 @@
 import type { AiDecisionInputV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/ai-decision-input-v1";
 import type { RuntimeProductionFairInputV1 } from "./skirmish-ai-runtime-production-fair-input";
 import { validateRuntimeProductionFairGraph } from "./skirmish-ai-runtime-production-fair-graph";
+import { normalizeRuntimeProducerExposure } from "./skirmish-ai-runtime-producer-exposure";
 
 /** Preserves exact visible/remembered semantics and real query statuses, without reading the live opponent world. */
 export function normalizeRuntimeProductionFairInput(input: AiDecisionInputV1) {
   const failures: string[] = [];
   const gaps = new Set<string>();
+  const exposure = normalizeRuntimeProducerExposure(input);
+  failures.push(...exposure.failures);
+  exposure.gaps.forEach((gap) => gaps.add(gap));
   const observation = input.observation;
-  if (!observation) return { fairInput: null, failures, gaps: ["production_decision_observation_missing"] };
+  if (!observation) return { fairInput: null, failures, gaps: [...gaps, "production_decision_observation_missing"] };
   const { tick, playerNumber, actors } = observation;
   if (actors.length > 256 || observation.accessProducts.length > 64) {
     return { fairInput: null, failures: ["production_decision_fair_overflow"], gaps: [] };
@@ -90,7 +94,6 @@ export function normalizeRuntimeProductionFairInput(input: AiDecisionInputV1) {
     if (query.status !== "ready") gaps.add(`production_decision_query_${query.status}`);
   }
   gaps.add("production_decision_producer_reachability_missing");
-  gaps.add("production_decision_building_exposure_missing");
   const visibleThreats: RuntimeProductionFairInputV1["visibleThreats"][number][] = actors
     .filter((actor) => actor.relation === "enemy" && actor.visibility === "visible")
     .map((actor) => {
@@ -100,6 +103,7 @@ export function normalizeRuntimeProductionFairInput(input: AiDecisionInputV1) {
       if (!attacks) gaps.add("production_decision_threat_weapons_missing");
       return { actorId: actor.actorId, observedTick: actor.observedTick, position, attacks, buildingRange: null };
     });
-  const fairInput = { accessGraph: graph, accessProducts: queries, visibleThreats } satisfies RuntimeProductionFairInputV1;
+  const fairInput = { accessGraph: graph, accessProducts: queries, visibleThreats, producerExposure: exposure.exposure }
+    satisfies RuntimeProductionFairInputV1;
   return structuredClone({ fairInput: failures.length ? null : fairInput, failures: [...new Set(failures)], gaps: [...gaps].sort() });
 }

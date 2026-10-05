@@ -1,4 +1,5 @@
 import type { AiAccessGraphV1, AiCapabilityCatalogV1, AiObservationV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiDecisionProducerExposureV1 } from "./ai-decision-producer-exposure-v1";
 
 /** Test-only inputs actually consumed by a selected pure step, separate from later settled world snapshots. */
 export interface AiDecisionInputV1 {
@@ -8,6 +9,8 @@ export interface AiDecisionInputV1 {
   readonly capabilityCatalog: AiCapabilityCatalogV1 | null;
   /** The observation's permitted cached topology, with its own generation/status/age. */
   readonly accessGraph: AiAccessGraphV1 | null;
+  /** Optional only for older publishers; current capture preserves explicit missing/binding gaps. */
+  readonly producerExposure?: AiDecisionProducerExposureV1 | null;
   readonly cadence: {
     readonly clock: "simulation" | "render_fallback";
     /** Actual fixed-clock boundary; fallback has no deterministic tick authority. */

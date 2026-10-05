@@ -5,8 +5,9 @@ import { getSceneService } from "../../world/services/scene-component-helpers";
 import { SimulationTickService } from "../../world/services/simulation-tick.service";
 import { AI_DECISION_DISPATCH_EVENT } from "./ai-decision-dispatch-event";
 import type { AiDecisionInputV1 } from "./ai-decision-input-v1";
+import { captureAiProducerExposure } from "./capture-ai-producer-exposure";
 
-/** Passive listener-gated projection: no actor scan, navigation query, timer, saved state or ordinary-game clone. */
+/** Listener-gated diagnostic projection: consumed input plus bounded current target binding; no navigation query or timer. */
 export function captureAiDecisionInput(
   scene: ProbableWaffleScene, observation: AiObservationV1, catalog: AiCapabilityCatalogV1 | undefined,
   intervalMs: number, completedBefore: number
@@ -14,6 +15,7 @@ export function captureAiDecisionInput(
   if (!scene.events.listenerCount(AI_DECISION_DISPATCH_EVENT)) return undefined;
   const gaps: string[] = [];
   const ticks = getSceneService(scene, SimulationTickService);
+  const restoring = isSnapshotApplyInProgress(scene);
   const bounded = observation.actors.length <= 256 && observation.accessProducts.length <= 64 &&
     observation.actors.every((actor) => actor.capabilities.length <= 64 &&
       (actor.combatProfile?.status !== "known" || actor.combatProfile.value.attacks.length <= 32));
@@ -29,8 +31,9 @@ export function captureAiDecisionInput(
       tick: observation.tick, playerNumber: observation.playerNumber, faction: observation.faction,
       actors: observation.actors, accessProducts: observation.accessProducts, threatSummary: observation.threatSummary } : null,
     capabilityCatalog: boundedCatalog ? catalog : null, accessGraph: boundedGraph ? graph : null,
+    producerExposure: bounded ? captureAiProducerExposure(scene, observation, ticks?.currentTick ?? null, restoring) : null,
     cadence: { clock: ticks ? "simulation" : "render_fallback", tick: ticks?.currentTick ?? null,
       configuredIntervalTicks: intervalMs / SimulationTickService.TICK_INTERVAL_MS, completedBefore },
-    snapshotRestoreInProgress: isSnapshotApplyInProgress(scene), gaps
+    snapshotRestoreInProgress: restoring, gaps
   };
 }

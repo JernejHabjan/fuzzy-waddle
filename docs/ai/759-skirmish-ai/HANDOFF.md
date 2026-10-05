@@ -7,50 +7,52 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 ## Quick resume
 
 **Next session (user policy, 2026-10-05):** retain **GPT-6.1 Sol / high** for grouped PRO-03/06/07 authority.
-Current step: #815/#816 **consumed decision cadence and fair navigation/threat inputs**, authored/unverified.
-This batch began at `66f450a669739c1fe91672671984c2a18e40999a`; its containing commit owns the new revision.
+Current step: #815/#816 **native producer spatial authority and target-specific weapon exposure**, authored/unverified.
+This batch began at `9c7f09ee76365fe147fbb7b2e97f731aab387c5c`; its containing commit owns the new revision.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify local/remote on resume.
-The unrelated Nx migration in `59f72e037` is preserved. Actual model/effort is unavailable. No issue/family is complete.
+Nx merge `59f72e037` is preserved. Actual model/effort is unavailable. No family/issue is complete.
 The user removed the comment-permission rule. All executable validation remains at the final gate.
 
-Read the [decision/fair-input checkpoint](follow-ups/runtime-matrix-ci.md#production-consumed-decision-input-checkpoint-2026-10-05-unverified).
-**Next exact authoring action:** join target-specific shared navigation/placement and building-weapon/elevation authority
-for producers; then stable useful actor/tech effects and actual paired setup into full `RuntimeProductionEvidenceV1`.
-Use exact consumed decisions, per-boundary command-priced catalogs and initial queue provenance; do not flatten levels,
-borrow later checkpoints, infer paths from node membership, or convert endpoint status into producer reachability.
-Keep global/non-queue, pre-capture/migrated/restore ownership null until real authority exists. Follow with legal
-Skaduwee research setup and useful strategic AI cancellation/transition worlds, grouping compatible PRO-03/06 pairs.
+Read the [spatial/exposure checkpoint](follow-ups/runtime-matrix-ci.md#production-spatial-exposure-checkpoint-2026-10-05-unverified).
+**Next exact authoring action:** join stable useful actor/tech effects and construction AI decision lineage into full
+`RuntimeProductionEvidenceV1`, using actual native spatial intervals, current target-specific attack captures,
+command-priced catalogs and initial queue provenance. Complete target-specific producer service/output routes,
+navigation revision/history authority and construction catalog as needed; returned cached paths are not fresh topology
+proof. Keep initial/pre-capture/migrated/restore/global ownership explicit. Then finish actual paired setup, legal
+Skaduwee research producer setup and useful strategic AI cancellation/transition worlds; group compatible PRO-03/06 pairs.
 Defer executable checks, commit/push the next coherent batch, then pause.
 
-- `PlayerAiController.stepPureBrain` now passes its actually consumed observation/catalog and real configured interval /
-  completed-attempt count to the selected-result event before dispatch. Input capture is listener-gated, bounded and
-  passive; empty decisions remain present. Publication and raw retention detach the input. No new timers, subscriptions,
-  saved state, actor scans or navigation queries were introduced. Old/synthetic publishers retain an explicit missing gap.
-- `RuntimeProductionCausalityV1.decisions` separates selected observer sequence/tick, pure identity, completed controller
-  attempts, configured interval and consumed observation age. Same-tick catch-up and stale observations are retained
-  without pretending the configured interval is an observed cadence guarantee. Missing selections, skipped attempts,
-  fallback clocks, prior history and authority changes remain gaps. Supplied regression/identity/time/restore contradictions
-  suppress decisions and all normalized world/setup/lifecycle/money arrays.
-- Fair decision input retains the observation's own permitted cached graph, its independent generation/status/age, exact
-  native access-product statuses, and current visible enemy positions/weapon profiles. Remembered enemies cannot supply
-  exposure. The existing access-product publisher only checks endpoints and currently never returns `ready`; even an
-  input labelled ready supplies no completed-path proof. Producer reachability and target-specific building range remain
-  null/gapped. No live opponent lookup, coordinate-distance path inference or invented high-ground range is used.
-- New Jest controller/input publication and Playwright decision/fair-input specs, plus the raw-capture spec update, are
-  authored/unrun. The existing decision-lineage fixture was preserved after a source-review naming collision; the new
-  fixture has its own consumed-input owner. Mandatory full PRO-03/06/07 oracle gaps/denominators remain unchanged.
-- This is a diagnostic authoring slice. Full production evidence, construction catalog, complete cadence/history,
-  producer navigation/placement/exposure, useful stable effects, paired fairness/setup, global/restore liabilities and
-  strategic AI behavior remain open. All tests/E2E/simulations, format/lint/type/build/editor/schema/repository checks and
-  doctor/context/catalog remain deferred. Capture/report pressure, actual bootstrap, shared Phaser mock emitter/lifecycle
-  debt and Nx/Jest/Phaser compatibility need final proof. No recipe/config/package/migration/baseline/skill/policy edits.
-- Prior [owned world/setup](follow-ups/runtime-matrix-ci.md#production-owned-world-setup-checkpoint-2026-10-05-unverified)
-  is in `66f450a66`; [cancellation/removed claims](follow-ups/runtime-matrix-ci.md#production-cancellation-lifecycle-checkpoint-2026-10-05-unverified)
-  in `56bd5e53e`; [created actor/tech](follow-ups/runtime-matrix-ci.md#production-completed-effect-authority-checkpoint-2026-10-05-unverified)
-  in `0101ef0e3`; [rejection/release](follow-ups/runtime-matrix-ci.md#production-native-rejection-checkpoint-2026-10-04-unverified)
-  in `dd1e9192e`; [physical intervals](follow-ups/runtime-matrix-ci.md#production-physical-queue-checkpoint-2026-10-04-unverified)
-  in `f6e60b9e0`. Earlier authority/human socket anchors remain reachable through those checkpoints.
-  Human worlds do not prove AI strategy. Tivara uses Sandhold; initial Skaduwee FrostForge lacks research.
+- Native construction footprint checks and lifecycle now live in `applySharedConstructionCommand`; the service keeps
+  command subscription, site-key and completion-subscription ownership. The moved checks/outcomes remain in native
+  order. One already-computed footprint verdict is emitted before illegal-site destruction or builder assignment.
+  The changed service's source-structure exemption was removed, never refreshed. Comments remain authorized.
+- Production spawner emits its actual ground/water/null tile and world position before creation. This proves only
+  the shared spawn choice, not a route to an objective or a successful created product.
+- `AiRuntimeProductionSpatialCapture` is installed/disposed with the existing marked-test raw capture. It observes
+  existing owned-builder-to-owned-construction path calls, invokes the original method once and returns its exact
+  Promise/result/rejection. No new route query or timer exists. Teardown fences pending callbacks and restores only
+  its own wrapper. Raw `spatial_authority` facts retain request/resolution order, real fixed clocks, actor/index bindings,
+  restore/scene flags and bounded footprint/path loss. Bounds: 128 footprint tiles, 512 returned path tiles; raw cap unchanged.
+- `RuntimeProductionCausalityV1.spatialAuthority` separates native placements, spawn choices and paired builder paths.
+  Native construction linkage requires the exact site/builder, captured legal placement, native delivery and actual
+  applied outcome; actual outcome time remains separate from intended command time. AI decision linkage remains a gap.
+  Empty successful paths differ from null/no-path. Cross-tick awaits or moved/index-lost actors cannot supply current
+  binding. Topology revision/history and general producer reachability remain unproven; endpoint/node checks never fill them.
+- Exact current consumed decisions can now retain bounded producer/threat pairs through `captureAiProducerExposure`.
+  Only current visible contacts pass the shared visibility policy, indexed identity, current tile/base elevation and
+  exact consumed weapon checks. Stale/restore/missing/mismatched inputs stay unavailable. Actual native attack selection,
+  target-specific positioning range, actual elevations/high-ground bonus and floored 3D distance remain separate.
+  `withinSelectedWeaponBand` is geometry only, not attack execution/permission. No enemy cooldown, live hidden profile,
+  universal building range or safety verdict is exposed; scalar `buildingRange` remains null. Pair limit is 256.
+- Spatial and exposure contradictions suppress every normalized world/setup/decision/lifecycle/money/spatial group.
+  Full PRO-03/06/07 evidence/oracles/denominators remain mandatory. New native-seam Jest and synthetic Playwright specs
+  plus raw-capture coverage are authored/unrun. No test, simulation, formatter, lint/type/build/schema/editor/repository,
+  doctor/context/catalog command ran. Capture/report cost, cached-path freshness, actual bootstrap, Phaser mock emitter
+  debt and Nx/Jest/Phaser compatibility remain final-gate obligations.
+- Prior [consumed decision/fair input](follow-ups/runtime-matrix-ci.md#production-consumed-decision-input-checkpoint-2026-10-05-unverified)
+  is in `9c7f09ee7`; [world/setup](follow-ups/runtime-matrix-ci.md#production-owned-world-setup-checkpoint-2026-10-05-unverified)
+  in `66f450a66`; cancellation/completion/rejection/physical and human socket anchors remain reachable from those packets.
+  Human queue worlds do not prove AI strategy. Tivara uses Sandhold; initial Skaduwee FrostForge lacks research.
 
 - Multiplayer diagnostic/lifecycle authoring checkpoint (2026-09-30, **unverified**): browser-only relay and local-hash
   observation now lives in a small test-owned Phaser adapter rather than adding methods to hash-baselined

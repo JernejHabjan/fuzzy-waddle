@@ -1,0 +1,25 @@
+import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
+import type { ConstructCommand } from "@fuzzy-waddle/probable-waffle-protocol";
+import type { AiRuntimeCreatedActorV1 } from "./ai-runtime-created-actor-v1";
+import type { AiRuntimeProductionQueueV1 } from "./ai-runtime-production-queue-v1";
+
+/** Detached native spatial observations. No verdict supplies a general producer-reachable or safe-site boolean. */
+export type AiRuntimeProductionSpatialV1 = {
+  readonly clockTick: number | null;
+  readonly snapshotRestoreInProgress: boolean;
+  readonly sceneActive: boolean;
+  readonly gaps: readonly string[];
+} & (
+  | { readonly kind: "placement"; readonly command: ConstructCommand; readonly site: AiRuntimeCreatedActorV1;
+    readonly footprint: readonly Vector2Simple[] | null; readonly legal: boolean }
+  | { readonly kind: "spawn"; readonly producer: AiRuntimeCreatedActorV1;
+    readonly item: AiRuntimeProductionQueueV1["lanes"][number]["items"][number]; readonly waterUnit: boolean;
+    readonly tile: Vector2Simple | null; readonly position: Vector3Simple | null }
+  | { readonly kind: "builder_path"; readonly queryId: number; readonly phase: "requested" | "resolved" | "rejected" | "threw";
+    readonly source: AiRuntimeCreatedActorV1; readonly target: AiRuntimeCreatedActorV1;
+    readonly sourceTile: Vector2Simple | null; readonly targetTile: Vector2Simple | null;
+    /** Actual shared caller radius; null means the native default was used. */
+    readonly radiusTiles: number | null;
+    /** Complete returned path including empty success; null means no path or bounded capture loss. */
+    readonly path: readonly Vector2Simple[] | null; readonly result: "path" | "no_path" | null }
+);

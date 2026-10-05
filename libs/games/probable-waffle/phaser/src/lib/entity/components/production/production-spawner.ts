@@ -18,6 +18,8 @@ import { ProbableWaffleSceneEventName } from "../../../world/services/recovery/p
 import { OrderType } from "../../../ai/order-type";
 import { getActorSystem } from "../../../data/actor-system";
 import { ActionSystem } from "../../systems/action.system";
+import { PRODUCTION_SPATIAL_AUTHORITY_EVENT, type ProductionSpatialAuthorityEvent } from
+  "../../../world/services/multiplayer/production-spatial-authority-event";
 
 /**
  * Resolve a legal spawn and apply the existing rally action; the caller remains the queue owner.
@@ -83,6 +85,12 @@ export async function spawnProductionActor(
   }
 
   // A missing legal spawn is reported as a failed completion by the queue owner.
+  if (queueItem && gameObject.scene.events.listenerCount(PRODUCTION_SPATIAL_AUTHORITY_EVENT)) {
+    gameObject.scene.events.emit(PRODUCTION_SPATIAL_AUTHORITY_EVENT, {
+      kind: "spawn", producer: gameObject, item: queueItem, waterUnit: isWaterUnit,
+      tile: spawnTile ?? null, position: validSpawnLocationFound ? finalSpawnPosition : null
+    } satisfies ProductionSpatialAuthorityEvent);
+  }
   if (!validSpawnLocationFound) {
     return null;
   }

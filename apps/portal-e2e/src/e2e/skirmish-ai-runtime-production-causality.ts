@@ -11,6 +11,7 @@ import type { normalizeRuntimeScopedQueuePayments } from "./skirmish-ai-runtime-
 import type { RuntimeProductionWorldSnapshotV1 } from "./skirmish-ai-runtime-production-world-snapshot";
 import type { RuntimeProductionInitialQueueV1 } from "./skirmish-ai-runtime-production-initial-queue";
 import type { RuntimeProductionDecisionV1 } from "./skirmish-ai-runtime-production-decision";
+import type { RuntimeProductionSpatialAuthorityV1 } from "./skirmish-ai-runtime-production-spatial-authority";
 
 /**
  * Diagnostic AI lineage, not RuntimeProductionEvidenceV1. Retains actual accepted intent and observer order;
@@ -27,6 +28,7 @@ export interface RuntimeProductionCausalityV1 {
   readonly initialQueues: readonly RuntimeProductionInitialQueueV1[];
   /** Every captured selected step, including empty decisions, with its actual input and configured scheduler cadence. */
   readonly decisions: readonly RuntimeProductionDecisionV1[];
+  readonly spatialAuthority: RuntimeProductionSpatialAuthorityV1;
   /** Rejected requests/applications retain native release authority without inventing a stamped admitted command. */
   readonly rejections: readonly RuntimeProductionRejectionV1[];
   /** Actual completed products/tech; strategic usefulness and stable-effect acceptance remain separate. */

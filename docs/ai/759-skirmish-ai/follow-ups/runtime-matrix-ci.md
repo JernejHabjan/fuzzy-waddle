@@ -1752,3 +1752,113 @@ legal Skaduwee research producer setup and useful strategic AI cancellation/tran
 PRO-03/06 pairs. Retain **GPT-6.1 Sol / high** for these cross-authority joins. Official OpenAI Docs searched/opened
 this turn confirm complex coding and `high` support: [GPT-6.1 Sol](https://developers.openai.com/api/docs/models/gpt-6.1-sol).
 The recommendation is task judgment, not a switch or inference about active settings. Commit/push, verify remote, pause.
+
+
+### Production spatial/exposure checkpoint (2026-10-05, unverified)
+
+**Scope/provenance:** grouped #815/#816 PRO-03/06/07 authoring from
+`9c7f09ee76365fe147fbb7b2e97f731aab387c5c`, integration worktree
+`/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`.
+Containing commit owns publication; verify remote on resume. Nx merge `59f72e037` is preserved.
+Actual model/effort is unknown. Comment edits/moves remain authorized. All executable validation is deferred.
+This is native spatial/input authority authoring, not full production evidence, strategy or family acceptance.
+
+| Acceptance | Implemented owners / consumers | Evidence / status |
+| --- | --- | --- |
+| 1. Native placement/spawn results | applySharedConstructionCommand, emitConstructionPlacement, ProductionSpatialAuthorityEvent, spawnProductionActor | Actual already-computed footprint verdict before destruction/assignment; actual ground/water/null spawn tile before creation. Shared service retains lifecycle owners. Authored/unverified. |
+| 2. Existing native builder-route intervals and cleanup | AiRuntimeProductionSpatialCapture, AiRuntimeProductionSpatialV1, existing raw capture/fact union | One original service invocation and exact Promise/result/rejection; owned builder/owned construction targets only. Real request/resolution clocks, restore/scene/index bindings, bounded loss and disposal. No new query. Authored/unverified. |
+| 3. Native spatial/command joins and report fences | normalizeRuntimeProductionSpatial, matchRuntimeConstructionPath, RuntimeProductionSpatialAuthorityV1, causality normalizer/report | Separate legal/illegal footprints, spawn choices and requested/resolved paths. Exact native site/builder/delivery/application. Intended time differs from actual application time. Missing authority stays gapped; contradictions suppress all normalized groups. Authored/unverified. |
+| 4. Target-specific fair shared weapon/elevation authority | AiDecisionProducerExposureV1, captureAiProducerExposure, captureAiDecisionInput, normalizeRuntimeProducerExposure, fair input normalizer | Current consumed input only; shared visibility, indexed identity, current tile/base elevation and exact weapons. Native selected attack/positioning range and geometric band kept separate; no hidden cooldown or safety credit. Authored/unverified. |
+| 5. Negative contracts, review, cold start and publication | Four new Phaser specs, two new Playwright specs plus spatial fixture; existing raw capture spec update; HANDOFF | Tests authored/unrun. Source review/Omission Audit and separate Final Closure Audit. Exact task-owned publication/pause remains required. |
+
+**Native spatial ownership:** the shared constructor previously combined scene subscription/state ownership with
+construction application. Its existing application body now delegates to a bounded responsibility owner while
+retaining site reconciliation, addressed-builder/owner/activity/eligibility/cash gates, native creation, footprint /
+collision checks, assignment, native outcomes and completion/destroy subscriptions in the same order. The boolean
+footprint expression is evaluated once with the same short-circuit behavior; the local listener-gated event observes
+that verdict before destruction or assignment. The changed service's content-hash baseline entry was removed, not
+renewed. No queue/resource/cancel selection, save/relay schema, strategic policy, recipes or packages changed.
+
+Production's spawner retains its native water nearest-tile versus ordinary around-building choice, tile-to-world
+conversion and original creation/completion/rally timing. Its local event observes that result with the actual removed
+item before creation. A null choice remains no spawn; a tile supplies no producer-to-objective route or created actor.
+
+The existing marked-test capture owns a spatial observer. Its instance-level navigation wrapper filters actual owned
+builders and owned construction targets, captures the input boundary, calls the original native object-target path
+method once with the same receiver/arguments, attaches an observer and returns the original Promise. Null versus empty
+returned paths, rejection and synchronous throw remain distinct. Observer-only Promise errors cannot replace the
+native result; a missing return leaves the request explicitly unmatched. Disposal removes its event listener, fences
+pending continuations and restores only its own wrapper, preserving later replacements. It adds no route query,
+movement order, timer or saved state. Ordinary games have no installed wrapper; native events have a listener-free path.
+Bounds: 128 footprint tiles, 512 path tiles and the unchanged 8,192-fact ledger. Loss is null plus named gap, never a
+silently complete subset. Diagnostic current-visibility rechecks and observer/report pressure remain unmeasured.
+
+**Native normalization and remaining route boundaries:** paired path intervals use actual scene-local IDs, source /
+target index identity, owner, requested radius, observer sequence and fixed clocks. Foreign/regressing/orphan/duplicate /
+restore/malformed path, footprint or spawn values fail closed. Null path stays not-found, empty success remains empty,
+and pending/failed/overflow requests remain gaps. Moved/index-lost actors or cross-tick awaits deny current binding;
+unchanged endpoints across ticks cannot prove there was no intermediate restore/topology change. The native service
+also caches paths; no navigation revision is captured here. All returned paths remain native query diagnostics,
+not complete fresh topology, service/output-route or global producer-reachable/safe verdicts.
+
+A route joins native construction only through its exact owned target and addressed builder, a captured earlier legal
+footprint, one native command delivery with matching payload/execution identity and a real applied outcome naming the
+same site/builder/epoch. Application's actual observer tick matches placement, and can be later than the intended
+command tick. Delivery/application must precede the route result; missing placement clocks or live index binding
+cannot supply a join. Missing clocks also cannot hide contradictory spatial values. Initial, repair, pre-capture and
+missing-application routes have no guessed construction link. Construction
+AI accepted-decision lineage, full construction catalog, producer service/output routes, navigation revision/history
+and full production evidence remain next work; mandatory gaps and full PRO-03/06/07 oracles are intact.
+
+**Target-specific exposure:** capture is reachable only after the existing decision-listener gate. It requires the
+actual simulation tick to equal the consumed observation tick, no restore, current permitted visible contacts,
+exact indexed object/name/owner/scene/current tile/base-z/representable binding, finished non-flying owned producer
+components and an exact consumed weapon vector. No remembered/hidden actor can repair missing profiles. Pair cardinality
+is at most 256; overflow yields no pairs and an explicit gap. Native AttackComponent.getAttack chooses the actual
+highest-damage first-declared weapon; getAttackRange can instead prefer longer effective range among equal-damage
+weapons. Both results are retained. Shared high-ground helpers use actual representable elevation including flight;
+DistanceHelper retains the native floored 3D tile distance. Enemy cooldown remains private.
+
+`withinSelectedWeaponBand` checks positive damage, minimum range and that selected weapon's effective range. It is
+geometric diagnostic information, never proof that a native order/path/cooldown/stun allows an attack. The existing
+pawn's positioning/range behavior is not changed. A threat has no one range for all buildings; scalar buildingRange
+remains null, with target-specific pairs separate. Missing/unavailable pairs cannot prove safety. Readiness/useful
+resilience, stable effects and full oracle exposure integration remain open.
+
+**Implementation Review / Omission Audit (source only):** acceptance 1–5 traced shared application/delegation,
+short-circuit footprint checks, actual spawner, existing MovementSystem/native radius path, query cache, fixed clock,
+raw observer ordering, synchronous/native Promise preservation, teardown, actual attack choice versus positioning,
+shared visibility/elevations/distance, exact consumed profiles and every normalized consumer. Source review repaired
+an overly strict application-time join (actual time is not intended time), a local field-renaming collision with
+minRange, typed production test input, strict array-index guards and long expressions before publication. The final
+review fenced future delivery/application, mismatched canonical site names and malformed values with missing clocks.
+These were source findings, not
+executed failures. Native negative specs cover legal/illegal/reconciled placement, ground/water spawn, null/empty /
+oversized/failed paths, original Promise/throw identity, delayed disposal, current/hidden/stale/restored/changed
+weapon/position binding, equal-damage choice, high-ground threshold and minimum band. Synthetic normalizer specs
+cover native joins, missing setup, moved/cross-tick paths, invalid ownership/time/values and complete suppression.
+No synthetic shape proves actual legal map/bootstrap, strategy or stable production. No skill/tool change was needed.
+
+**Separate Final Closure Audit (source only):** after source repairs, concrete owners/consumers and authored tests
+cover this native capture/normalization slice. Source responsibilities are bounded; one substantive contract per file,
+no baseline refresh. Required full evidence/oracles/denominators remain intact. All executable tests/E2E/simulations,
+format/lint/type/build/editor/schema/repository and doctor/context/catalog checks remain deferred. Exact staging,
+normal commit/push, remote verification and pause close publication only. No issue/family or release gate is complete.
+
+**Deferred focused commands (unrun; append to prior final gate):**
+
+```bash
+NX_DAEMON=false pnpm exec nx test probable-waffle-phaser --testPathPatterns='capture-ai-producer-exposure|ai-runtime-production-spatial-capture|apply-shared-construction-command|production-spatial-spawn|ai-runtime-decision-input|ai-runtime-production-capture' --skip-nx-cache
+pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts skirmish-ai-runtime-producer-exposure.spec.ts skirmish-ai-runtime-production-spatial-normalization.spec.ts skirmish-ai-runtime-production-decisions.spec.ts skirmish-ai-runtime-production-fair-input-normalization.spec.ts skirmish-ai-runtime-production-causality-normalization.spec.ts
+```
+
+At that gate, review flags/dependencies against merged Nx 23.2.1/Jest 30.3.0/Phaser 4.2.1, shared Phaser mock
+Events/GameObjects lifecycle debt, module/type/format/structure compatibility, bounded listener/Promise/report cost,
+actual map/bootstrap, native topology freshness and both-faction production effects. No check was executed here.
+
+**Next grouped authoring:** stable useful actor/tech effects, construction AI decision lineage, complete construction /
+producer route/history authority and actual paired setup into full production evidence; then legal Skaduwee research
+producer setup and useful strategic AI cancellation/transition worlds. Group compatible PRO-03/06 pairs.
+Retain **GPT-6.1 Sol / high** for these related cross-authority joins. Official OpenAI documentation searched/opened
+this turn supports complex coding and high effort: [GPT-6.1 Sol](https://developers.openai.com/api/docs/models/gpt-6.1-sol).
+The recommendation is task judgment, not a switch or an inference about active settings. Commit/push, verify remote, pause.

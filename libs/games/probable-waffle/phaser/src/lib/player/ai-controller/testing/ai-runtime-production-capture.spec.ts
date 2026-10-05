@@ -12,6 +12,7 @@ import { AI_DECISION_DISPATCH_EVENT, type AiDecisionDispatchEvent } from "../ai-
 import { AI_INTENT_COMMAND_DISPATCH_EVENT } from "../ai-intent-command-dispatch-event";
 import { pendingCommandRequest, pendingCommandOutcome, pendingCommandFinished } from "./ai-runtime-pending-command-fixtures";
 import { productionCaptureFixture as setup, productionCaptureItem as item } from "./ai-runtime-production-capture-fixtures";
+import { PRODUCTION_SPATIAL_AUTHORITY_EVENT } from "../../../world/services/multiplayer/production-spatial-authority-event";
 
 jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
 jest.mock("../../../data/scene-data", () => ({
@@ -25,6 +26,17 @@ function outcome(kind: GameCommandOutcome["kind"], commandId = "cancel-request")
 }
 
 describe("AiRuntimeProductionCapture", () => {
+  it("detaches native spatial callbacks into the same observer ledger and removes their listener on teardown", () => {
+    const f = setup(); const queued = { ...item(), remainingTime: 0 };
+    f.scene.events.emit(PRODUCTION_SPATIAL_AUTHORITY_EVENT, { kind: "spawn", producer: f.actor, item: queued,
+      waterUnit: false, tile: { x: 4, y: 5 }, position: { x: 100, y: 200, z: 0 } });
+    const captured = f.capture.capture(2); const fact = captured.facts[0];
+    expect(fact).toMatchObject({ kind: "spatial_authority", spatial: { kind: "spawn",
+      producer: { actorId: "producer" }, item: { remainingTimeMs: 0 }, tile: { x: 4, y: 5 } } });
+    queued.remainingTime = 99;
+    expect(fact?.kind === "spatial_authority" && fact.spatial.kind === "spawn" && fact.spatial.item.remainingTimeMs).toBe(0);
+    f.capture.dispose(); expect(f.scene.events.listenerCount(PRODUCTION_SPATIAL_AUTHORITY_EVENT)).toBe(0);
+  });
   it("captures a human shared-queue boundary without synthesizing a committed AI input or bypassing the AI gate", () => {
     const fixture = setup();
     fixture.ticks.currentTick = 8;
