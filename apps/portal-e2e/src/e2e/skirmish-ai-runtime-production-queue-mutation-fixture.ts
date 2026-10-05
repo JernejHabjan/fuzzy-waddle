@@ -9,9 +9,11 @@ import { productionRefundOperationFixture } from "./skirmish-ai-runtime-producti
 import { calculateRuntimeQueueLiabilities } from "./skirmish-ai-runtime-queue-liabilities";
 
 /** Invented physical mutation/native lineage contracts only; no live setup, actor creation or AI strategic outcome. */
-export function productionQueueMutationFixture(kind: "immediate" | "tick" | "completion" | "cancel" = "tick") {
+export function productionQueueMutationFixture(
+  kind: "immediate" | "tick" | "completion" | "cancel" = "tick", remaining = 100
+) {
   const source = kind === "cancel" ? productionRefundOperationFixture() :
-    productionOperationFixture(kind === "immediate" ? "immediate" : "tick", kind === "completion" ? 50 : 100);
+    productionOperationFixture(kind === "immediate" ? "immediate" : "tick", kind === "completion" ? 50 : remaining);
   // Keep the purchased head's lane empty before push; unrelated waiting work has its own unchanged lane.
   const moveWaiting = (queue: NonNullable<AiRuntimeProductionBoundaryState["queues"]>[number]) => {
     const waiting = queue.lanes[0].items.filter((item) => item.commandId === "waiting");

@@ -1,3 +1,5 @@
+import { hasRuntimeRemovedQueueOwnership } from "./skirmish-ai-runtime-removed-queue-ownership";
+import { isRuntimeProductionBalance } from "./skirmish-ai-runtime-production-balance";
 import { matchRuntimeRejectedAdmission } from "./skirmish-ai-runtime-rejected-admission";
 import { isDeepStrictEqual } from "node:util";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
@@ -8,12 +10,7 @@ import type { AiRuntimeProductionFactV1 } from
 import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
 import { sameRuntimeQueueVector } from "./skirmish-ai-runtime-scoped-queue-payments";
 
-/** Full shared balances require every resource and reject unknown fields; sparse stored prices are separate. */
-export function isRuntimeProductionBalance(value: Readonly<Partial<Record<ResourceType, number>>> | null | undefined) {
-  return !!value && Object.keys(value).length === Object.values(ResourceType).length &&
-    Object.values(ResourceType).every((type) => typeof value[type] === "number" &&
-      Number.isFinite(value[type]) && (value[type] ?? -1) >= 0);
-}
+export { isRuntimeProductionBalance } from "./skirmish-ai-runtime-production-balance";
 
 /**
  * Independently reconciles the captured queue-claim subset at one exact callback. Native accepted leases, admission,
@@ -32,6 +29,9 @@ export function reconcileRuntimeProductionUnspent(
   const failures: string[] = [];
   const gaps: string[] = [];
   const missing = () => ({ resources: null, failures, gaps: [...gaps, "production_ai_operation_unspent_missing"] });
+  if (fact.boundaryState?.snapshotRestoreInProgress) {
+    failures.push("production_ai_operation_unspent_restore_invalid"); return missing();
+  }
   if (!ledger?.resources || ledger.gaps.length) return missing();
   const cutoff = fact.sequence - (beforeCallback ? 1 : 0);
   const prefix = capture.facts.filter((entry) => entry.sequence <= cutoff);
@@ -119,8 +119,10 @@ export function reconcileRuntimeProductionUnspent(
       items[0].item.payment === "per_successful_tick" && items[0].item.effectId === scope?.command.execution?.effectId &&
       items[0].item.objectName === (intent.kind === "produce" ? intent.objectName : null) &&
       items[0].item.researchType === null && sameRuntimeQueueVector(items[0].item.charge, price);
-    // Physical removal before a terminal callback needs a separate lifecycle interval; do not borrow an old head.
-    if (entry.state === "queue_liability" && !transferred) gaps.push("production_ai_operation_queue_transfer_missing");
+    // The exact consumed/removal interval may retire physical liability before its later native terminal.
+    const removed = entry.state === "queue_liability" && inserted && items.length === 0 && !!scope &&
+      hasRuntimeRemovedQueueOwnership(capture, fact, scope, cutoff, commands);
+    if (entry.state === "queue_liability" && !transferred && !removed) gaps.push("production_ai_operation_queue_transfer_missing");
     if (entry.state === "selected" ? entry.commandId !== null || admitted :
       !scope?.decision || !admitted || scope.command.execution?.commandId !== entry.commandId ||
       (entry.state === "admitted" ? paid || transferred || terminal :

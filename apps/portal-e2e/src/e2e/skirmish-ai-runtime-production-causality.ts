@@ -1,3 +1,4 @@
+import type { RuntimeProductionCancellationV1 } from "./skirmish-ai-runtime-production-cancellation";
 import type { RuntimeProductionCompletionV1 } from "./skirmish-ai-runtime-production-completion";
 import type { RuntimeProductionRejectionV1 } from "./skirmish-ai-runtime-production-rejection";
 import type { RuntimeProductionQueueMutationV1 } from "./skirmish-ai-runtime-production-queue-mutation";
@@ -21,6 +22,8 @@ export interface RuntimeProductionCausalityV1 {
   readonly rejections: readonly RuntimeProductionRejectionV1[];
   /** Actual completed products/tech; strategic usefulness and stable-effect acceptance remain separate. */
   readonly completions: readonly RuntimeProductionCompletionV1[];
+  /** Exact distinct native cancellation/removal/refund; this supplies no useful replacement or AI strategy proof. */
+  readonly cancellations: readonly RuntimeProductionCancellationV1[];
   readonly commands: readonly {
     readonly requestedSequence: number;
     readonly requestedTick: number;
@@ -42,6 +45,6 @@ export interface RuntimeProductionCausalityV1 {
   readonly queueMutations: readonly RuntimeProductionQueueMutationV1[];
   /** Complete scoped money/progress intervals; nullable unspent claims keep unsupported ownership explicit. */
   readonly operations: readonly RuntimeProductionOperationV1[];
-  /** Legacy immediate-payment diagnostic, separate from the actual post-progress per-tick operations. */
+  /** Actual scoped immediate charges and refunds; per-tick charges stay in post-progress operations. */
   readonly payments: ReturnType<typeof normalizeRuntimeScopedQueuePayments>["payments"];
 }

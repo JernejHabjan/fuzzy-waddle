@@ -61,9 +61,15 @@ export function researchQueueMutationFixture() {
   if (!before?.boundaryState || refunds.length !== 3) throw new Error("synthetic_research_cancel_missing");
   const paid = before.boundaryState;
   const afterCash = { food: 97, wood: 100, stone: 100, minerals: 100 };
-  const refundFacts = refunds.map((fact, index): AiRuntimeProductionFactV1 => ({ ...fact,
-    boundaryState: { ...paid, resources: index === 0 ? paid.resources : afterCash }
-  }));
+  const refundFacts = refunds.map((fact, index): AiRuntimeProductionFactV1 => {
+    if (fact.kind !== "queue_resource") throw new Error("synthetic_refund_missing");
+    const emission = fact.resource.emission;
+    return { ...fact, resource: { ...fact.resource, emission: {
+      ...emission, requested: { food: 4 },
+      ...(emission.phase === "callback" ? { amounts: { food: 4 } } : {}),
+      ...(emission.phase === "finished" ? { after: afterCash } : {})
+    } }, boundaryState: { ...paid, resources: index === 0 ? paid.resources : afterCash } };
+  });
   facts = facts.flatMap((fact) => refunds.includes(fact) ? [] : fact === before ? [...refundFacts,
     { ...fact, boundaryState: { ...paid, resources: afterCash } }] :
     removing.includes(fact) ? [{ ...fact, boundaryState: fact.boundaryState ? {

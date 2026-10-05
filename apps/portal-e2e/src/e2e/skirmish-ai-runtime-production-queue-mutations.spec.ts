@@ -62,7 +62,7 @@ test.describe("native production physical mutation projection", () => {
       obligationsDue: { food: 11 }, obligationsAfter: { food: 11 } });
     const refund = result.operations.find((operation) => operation.kind === "cancellation_refund");
     expect(refund?.boundarySequences[0]).toBeGreaterThan(cancelled?.sequence ?? Infinity);
-    expect(refund?.resourcesAfter.food).toBe(97);
+    expect(refund?.resourcesAfter.food).toBe(100);
     expect(result.gaps).not.toContain("production_ai_mutation_cancel_terminal_missing");
   });
 
@@ -77,14 +77,14 @@ test.describe("native production physical mutation projection", () => {
     expect(result.gaps).not.toContain("production_ai_mutation_cancel_terminal_missing");
   });
 
-  test("completion removal requires the actual advanced zero head and keeps missing created-effect/removed-claim proof", () => {
+  test("completion removal retires its exact physical claim and keeps missing created-effect proof", () => {
     const result = normalizeRuntimeProductionCausality(productionQueueMutationFixture("completion"));
     expect(result.failures).toEqual([]);
     const completed = result.queueMutations.find((mutation) => mutation.operation === "complete_remove");
     expect(completed).toMatchObject({ item: { remainingTimeMs: 0 },
-      obligationsDue: { food: 11 }, obligationsAfter: { food: 11 }, reservedUnspentAfter: null });
+      obligationsDue: { food: 11 }, obligationsAfter: { food: 11 }, reservedUnspentAfter: { food: 0 } });
     expect(result.gaps).toContain("production_ai_mutation_created_effect_authority_missing");
-    expect(result.gaps).toContain("production_ai_operation_queue_transfer_missing");
+    expect(result.gaps).not.toContain("production_ai_operation_queue_transfer_missing");
   });
 
   for (const defect of ["missing_after", "wrong_native", "cash", "other_lane", "liabilities", "position", "duplicate", "restore"]) {

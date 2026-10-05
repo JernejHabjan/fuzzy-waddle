@@ -1496,3 +1496,90 @@ Review merged Nx 23.2.1/Jest 30.3.0/Phaser 4.2.1 flags/dependencies at that gate
 type/build/editor/schema/repository checks and doctor/context/catalog commands remain deferred. Native helper/capture
 runtime compatibility, source structure, capture/report pressure, actual bootstrap and both-faction strategic outcomes
 remain final-gate obligations.
+
+
+## Production cancellation lifecycle checkpoint (2026-10-05, unverified)
+
+**Scope/provenance:** #815/#816 PRO-03/06/07 native cancellation/refund lifecycle and removed per-tick queue-claim
+ownership. Base `0101ef0e32491bdb181e490c45639672cd9bfd70`; integration worktree
+`/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`. Nx migration preserved.
+This is a diagnostic authoring slice, not full RuntimeProductionEvidenceV1, useful strategy or executable acceptance.
+
+| Acceptance | Owners / consumers | Status / evidence |
+| --- | --- | --- |
+| 1. Exact native refund policy | validateRuntimeQueueRefundPolicy, normalizeRuntimeScopedQueuePayments and production causality normalizer | Authored/unverified: immediate production full-factor refund, research/per-tick remaining-progress refund, actual scoped triples and stored vector, no cumulative credit. |
+| 2. Complete cancellation lineage | RuntimeProductionCancellationV1, matchRuntimeCancellationPaidLineage, projectRuntimeProductionCancellations | Authored/unverified: selected purchase/insertion/payment -> distinct accepted cancel -> actual removal/refund -> both native terminals, separate request/application/observer times. |
+| 3. Removed claim ownership | hasRuntimeRemovedQueueOwnership, reconcileRuntimeProductionUnspent, shared physical boundary validator / extracted balance helper | Authored/unverified: exact observed prefix, native price/insertion/removal, current absence, completion exhausted-head or distinct cancel admission. Missing authority null; global/non-queue/restore unsupported. |
+| 4. Consumers / negative contracts | Existing runVariant/report/evaluator; cancellation and removed-ownership specs, per-tick fixture and repaired existing fixtures/specs | Authored/unrun: production/research/per-tick, true paid-progress chain, missing/contradictory/reused/restore authority, native order, no snapshot/tombstone substitution or full-evidence credit. |
+| 5. Review / closure / publication | Source-only implementation review/Omission Audit, separate Final Closure Audit, HANDOFF and exact staged scope | All execution deferred. Publish this coherent slice, verify remote SHA and pause. No issue/family or final gate is complete. |
+
+**Source authority and preserved behavior:** QueueCommandSystem forwards the real applied cancel. QueueComponent
+production removes the actual selected item, reports its original purchase cancelled, invokes the native refund and
+then the cancel command system reports its separate cancelled outcome. Research refunds its physical head first,
+then removes it and reports the original purchase cancelled before the distinct cancel terminal. Delivery observation
+may follow synchronous gameplay callbacks. The normalized record retains the actual accepted native scopes and
+physical/refund/terminal order; no synthetic applied outcome is added to cancel commands. Gameplay owners, queue
+selection, stored prices, refunds, native terminals, score, save and relay behavior are unchanged.
+
+**Refund correction:** source review found the previous diagnostic treated immediate-paid production like research.
+Native ProductionComponent pays `floor(stored price * refund factor)` for immediate payment, independent of remaining
+progress. Its pay-over-time branch uses `floor(stored price * (1 - progress) * refund factor)` with one stored vector.
+ResearchComponent multiplies its factor by remaining progress first, then floors price times that product. The pure
+policy mirror keeps these native floating-point multiplication orders. Actual callback cash must still reconcile at
+all resources; the emitted vector cannot be inferred from cumulative charges. The older synthetic production refund
+fixture now credits 7 rather than 4, and records both native cancelled reasons; research keeps progress credit 4.
+Per-tick refunds are normalized separately from their successful tick charge intervals. No shipped balance fix implied.
+
+**Paid lineage and physical ownership:** a cancellation needs exactly one actual validated insertion with the same
+item, stored price, product/payment/time, and an actual preceding immediate charge. Per-tick cancellation additionally
+walks the captured real 50 ms attempt chain from full insertion time to removed remaining time and links every advanced
+attempt to its validated actual charge operation. Missing history or no observed paid work remains a gap, even when
+native credit/terminal exists. Neither later cash nor a fixture expectation supplies paid work. Removed queue-claim
+ownership is independent of usefulness: exact current absence and a complete prefix physical interval can retire that
+subset before its later native terminal. Completion requires the true advanced exhausted head; cancellation requires
+its separate accepted/admitted command. No retained old head or nearest snapshot is used. Balance validation was
+extracted with compatibility re-export to avoid a dependency cycle; full all-lane physical liability arithmetic is reused.
+Raw capture limits, global gaps, unsupported ownership and the separate full production evidence requirement remain.
+
+**Failure/gap boundaries:** supplied wrong native/item/price/payment/time, conflicting cancel kind/reason/world link,
+wrong terminal/refund order, duplicate/refund reuse or restore contradict authority and suppress every normalized effect
+array. Native cancel terminal contradictions are inspected even when physical evidence is missing. Missing older
+physical/refund/paid/terminal authority remains named, without invented lifecycle/effect credit. Original raw/global gaps
+stay attached. A sound narrow cancellation does not prove useful distinct replacement, stable tech/product value,
+fair reachability, effective levels, complete reservations, paired setup, actual AI cancellation policy or both factions.
+
+**Implementation review / Omission Audit:** traced real queue command -> component -> native physical mutation /
+refund -> separate terminals -> scoped triple/progress/claim projection -> normalized lifecycle -> existing variant
+report/evaluator. Inspected immediate versus per-tick production and research formula/order, same-item paid progress,
+current physical absence and prefix boundaries, original/native selection, legacy/missing state, restore, reuse, failure
+suppression and report ownership. Repaired the old fixture's native cancelled reason, policy-specific credit and
+terminal kind, explicit compound filter narrowing, research floating-point order and restore boundary guards.
+All new specs use existing default Playwright discovery. No new runtime listener, persistence format, global claim
+owner, strategy, recipe, oracle relaxation, denominator change, source-baseline refresh or package/config change.
+
+**Separate Final Closure Audit:** after source repairs, rechecked all five acceptance items, actual native owner
+semantics, immediate consumers, meaningful positive/missing/negative specs, null/gap contracts, compatibility exports,
+responsibility/file/function boundaries, and exact task-owned staged scope. Evidence is authored/source-reviewed only;
+no automated size/format/type/test/runtime check. Shared Phaser mock debt remains prior unverified work. No policy /
+skill/tool/model switch, agent/thread/worktree/branch/PR creation or issue closure. Publish normally, verify the remote
+branch SHA and pause at this slice; retain the final release gate.
+
+**Next grouped authoring:** capture fair ready/reachable producers, actual runtime price/duration/effective-level
+catalog, stable useful products/tech and paired setup/initial paid-item provenance into full RuntimeProductionEvidenceV1.
+Complete actual cadence/navigation/threat/lease ownership; keep global/non-queue/migrated/pre-capture/restore claims
+null until their real authorities exist. Then legal Skaduwee research setup and useful strategic AI worlds, grouping
+compatible PRO-03/06 pairs. Recommend **GPT-6.1 Sol / high** for cross-authority implementation without another switch;
+actual active model/effort is unavailable. [OpenAI Docs](https://developers.openai.com/api/docs/models/gpt-6.1-sol) was
+searched and opened; high effort is supported. The recommendation is judgment, not an automatic switch.
+
+Add these **unrun proposed commands** beside the prior completion/rejection/physical/payment/progress/decision /
+preset/pending/digest/oracle/map/multiplayer final-gate checks:
+
+```bash
+pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts skirmish-ai-runtime-production-cancellations.spec.ts skirmish-ai-runtime-removed-queue-ownership.spec.ts skirmish-ai-runtime-production-completions.spec.ts skirmish-ai-runtime-production-queue-mutations.spec.ts skirmish-ai-runtime-production-operation-projection.spec.ts skirmish-ai-runtime-production-causality-normalization.spec.ts
+```
+
+Review merged Nx 23.2.1/Jest 30.3.0/Phaser 4.2.1 flags/dependencies at the final gate. All tests/E2E/simulations,
+format/lint/type/build/editor/schema/repository checks and doctor/context/catalog commands remain deferred. Actual
+runtime native policy/creation/claims, tooling/module compatibility, shared mocks, capture/report pressure, legal
+bootstrap and useful both-faction strategic outcomes still require executable evidence.

@@ -1,3 +1,5 @@
+import { projectRuntimeProductionCancellations } from "./skirmish-ai-runtime-production-cancellations";
+import { validateRuntimeQueueRefundPolicy } from "./skirmish-ai-runtime-refund-policy";
 import { projectRuntimeProductionCompletions } from "./skirmish-ai-runtime-production-completions";
 import { matchRuntimeRejectedAdmission } from "./skirmish-ai-runtime-rejected-admission";
 import { projectRuntimeProductionRejections } from "./skirmish-ai-runtime-production-rejections";
@@ -8,7 +10,6 @@ import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-product
 import { isRuntimeQueueCommand, validateRuntimeProductionCommandLineage } from
   "./skirmish-ai-runtime-production-command-lineage";
 import { normalizeRuntimeScopedQueuePayments, sameRuntimeQueueVector } from "./skirmish-ai-runtime-scoped-queue-payments";
-import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 
 import { projectRuntimeProductionOperations } from "./skirmish-ai-runtime-production-operation-projection";
 import { validateRuntimeProductionProgress } from "./skirmish-ai-runtime-production-progress";
@@ -119,11 +120,10 @@ export function normalizeRuntimeProductionCausality(capture: AiRuntimeProduction
       value.originatingCommandContext?.execution.commandId)) {
       failures.push("production_ai_unattributed_payment"); return false;
     }
-    if (value.payment !== "immediate") {
+    if (value.payment !== "immediate" && value.operation !== "cancellation_refund") {
       if (value.payment === "unknown") gaps.add("production_ai_payment_mode_unknown");
       else if (value.operation !== "tick_charge") {
         gaps.add("production_ai_per_tick_liability_missing");
-        if (value.operation === "cancellation_refund") gaps.add("production_ai_per_tick_refund_authority_missing");
       }
       return false;
     }
@@ -138,15 +138,7 @@ export function normalizeRuntimeProductionCausality(capture: AiRuntimeProduction
     if (value.operation === "immediate_charge" && !sameRuntimeQueueVector(value.storedPrice, value.emission.requested)) {
       failures.push("production_ai_charge_stored_price_mismatch");
     }
-    if (value.operation === "cancellation_refund") {
-      if (value.refundFactor === null || !Number.isFinite(value.refundFactor) ||
-        value.refundFactor < 0 || value.refundFactor > 1 || value.totalTimeMs === null || value.remainingTimeMs === null ||
-        Object.values(ResourceType).some((resource) => (value.emission.requested?.[resource] ?? 0) !==
-          Math.floor((value.storedPrice?.[resource] ?? 0) * (value.refundFactor ?? 0) *
-            (1 - ((value.totalTimeMs ?? 0) - (value.remainingTimeMs ?? 0)) / (value.totalTimeMs ?? 0))))) {
-        failures.push("production_ai_refund_progress_mismatch");
-      }
-    }
+    failures.push(...validateRuntimeQueueRefundPolicy(value));
   }
   const rejections = projectRuntimeProductionRejections(capture, commands, payments.payments, admissions);
   failures.push(...rejections.failures);
@@ -165,6 +157,9 @@ export function normalizeRuntimeProductionCausality(capture: AiRuntimeProduction
   const mutations = projectRuntimeProductionQueueMutations(capture, commands, payments.payments, operations.operations);
   failures.push(...mutations.failures);
   mutations.gaps.forEach((gap) => gaps.add(gap));
+  const cancellations = projectRuntimeProductionCancellations(capture, commands, mutations.mutations, operations.operations);
+  failures.push(...cancellations.failures);
+  cancellations.gaps.forEach((gap) => gaps.add(gap));
   const completions = projectRuntimeProductionCompletions(capture, commands, mutations.mutations);
   failures.push(...completions.failures);
   completions.gaps.forEach((gap) => gaps.add(gap));
@@ -202,6 +197,7 @@ export function normalizeRuntimeProductionCausality(capture: AiRuntimeProduction
     schemaVersion: 1, failures: [...new Set(failures)], gaps: [...gaps].sort(), commands, operationBoundaries,
     payments: failures.length ? [] : payments.payments, operations: failures.length ? [] : operations.operations,
     completions: failures.length ? [] : completions.completions,
+    cancellations: failures.length ? [] : cancellations.cancellations,
     queueMutations: failures.length ? [] : mutations.mutations, rejections: failures.length ? [] : rejections.rejections
   } satisfies RuntimeProductionCausalityV1);
 }

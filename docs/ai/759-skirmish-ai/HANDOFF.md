@@ -7,56 +7,53 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 ## Quick resume
 
 **Next session (user policy, 2026-10-05):** retain **GPT-6.1 Sol / high** for grouped PRO-03/06/07 authority.
-Current step: #815/#816 **actual created actor / registered tech completion authority**, authored/unverified.
-This batch began at `dd1e9192e1f7ae9e52418b2f4adaf705e09689ab`; its containing commit owns the new revision.
+Current step: #815/#816 **native cancellation/refund lifecycle and removed queue-claim ownership**, authored/unverified.
+This batch began at `0101ef0e32491bdb181e490c45639672cd9bfd70`; its containing commit owns the new revision.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify local/remote on resume.
 The unrelated Nx migration in `59f72e037` is preserved. Actual model/effort is unavailable. No issue/family is complete.
 The user removed the comment-permission rule. All executable validation remains at the final gate.
 
-Read the [completion checkpoint](follow-ups/runtime-matrix-ci.md#production-completed-effect-authority-checkpoint-2026-10-05-unverified).
-**Next exact authoring action:** complete cancellation request/application/removal/refund lifecycle with the original
-purchase and distinct cancel execution. Resolve removed-before-terminal per-tick ownership and actual per-tick refund
-lineage; keep unsupported global/non-queue and pre-capture/restore ownership null until actual authorities exist.
-Project fair ready/reachable producers, useful stable products/tech, runtime price/duration/effective-level catalog and
-paired setup into complete `RuntimeProductionEvidenceV1`. Author legal Skaduwee research setup and useful strategic AI
-worlds, grouping compatible PRO-03/06 pairs. Defer executable checks, commit/push the next coherent batch, then pause.
+Read the [cancellation checkpoint](follow-ups/runtime-matrix-ci.md#production-cancellation-lifecycle-checkpoint-2026-10-05-unverified).
+**Next exact authoring action:** capture fair ready/reachable producers, actual definition price/duration/effective-level
+catalog, useful stable products/tech and paired setup/initial paid-item provenance for `RuntimeProductionEvidenceV1`.
+Keep global/non-queue, pre-capture/migrated/restore ownership null until real authority exists; complete actual decision
+cadence/navigation/threat/lease ownership. Then author legal Skaduwee research setup and useful strategic AI worlds,
+grouping compatible PRO-03/06 pairs. Defer executable checks, commit/push the next coherent batch, then pause.
 
-- The real queue owner passes its exact removed `UnifiedQueueItem` through production/research completion. Local
-  `observeQueueCompletionAuthority` wraps the actual synchronous `SceneActorCreator.createFinishedActor` or
-  `TechTreeService.registerResearchComplete` call once, returning its real result or propagating its throw. No async
-  continuation, price/refund, physical removal, score/rally/upgrade, native terminal, save or relay behavior changes.
-- Raw `queue_completion` before/after/threw facts retain the detached removed handle and native purchase context,
-  real returned actor/index/owner/canonical definition family and actual tech membership. Existing index/service
-  subscriptions now retain `actor_registered` and sampled `research_completed` authority; restore status, full boundary
-  samples, existing capture/drop bounds and shutdown/dispose cleanup remain explicit. Legacy callers without a removed
-  handle produce no synthetic scope. Missing legal spawn produces no fabricated creation callback.
-- `RuntimeProductionCausalityV1.completions` joins exact selected/native purchase, validated consumed-head removal,
-  actual new actor/tech registration inside the creator/service interval and later completed native terminal. It retains
-  request, intended application, physical removal, authority and terminal times separately; a production terminal may
-  follow its async continuation. Canonical variant identity comes from the shared registry, not a fixture name guess.
-- Wrong native context/item/producer, reused removal/effect, conflicting terminal, wrong world link, pre-existing or
-  duplicate registration, wrong owner/product/index/scene, inactive/dead/unfinished actor and supplied restore fail
-  closed and suppress completions plus every normalized rejection/payment/operation/mutation. Rejection now rejects
-  attributed completion callbacks too, including unstamped admission. Missing authority remains null/gapped; no native
-  world link, nearest snapshot or global research notification supplies it. Original raw/global gaps stay attached.
-- Authored/unrun: production per-tick and research immediate-paid completion contracts, true variant family, distinct
-  removal/registration/terminal order, async terminal tick, native identity and missing/contradictory/reuse/restore cases,
-  detached capture, actual index/tech-shaped callbacks, listener-free/throw behavior and teardown. Synthetic fixtures
-  prove no real creation legality, live catalog/setup, stable usefulness, AI strategy or both-faction runtime coverage.
-- Existing `runVariant` normalization/report retains the new completion records; mandatory full PRO-03/06/07 evidence
-  remains open. Removed per-tick claim ownership before terminal stays null/gapped. Fairness/catalog/setup/cadence /
-  exposure/global/restore authority and useful AI cancellation remain open. No recipe/denominator/oracle/balance /
+- `RuntimeProductionCausalityV1.cancellations` joins the exact original selected/native purchase and paid item to its
+  distinct accepted cancel execution, physical removal, actual scoped refund and both cancelled native terminals.
+  Request observation, intended application, removal/refund and terminal sequences/ticks stay separate. Native production
+  removes -> terminates the purchase -> refunds; research refunds -> removes -> terminates the purchase. The cancel
+  execution terminates after both. No queue/gameplay/payment/cancel policy, score, relay or save behavior changes.
+- Scoped money accepts actual per-tick production refund triples separately from true tick charges. Refund policy now
+  matches the native owners: immediate production refunds its full stored vector times factor; research and per-tick
+  production additionally scale by remaining progress, using each native multiplication order. A per-tick refund uses
+  one stored vector, never cumulative paid charges or predicted cash. Synthetic immediate-production expectations now
+  refund 7 rather than 4; synthetic research retains its actual-shaped progress credit of 4.
+- Paid lifecycle requires an actual validated insertion and immediate charge, or the complete captured 50 ms successful
+  charge/progress chain from insertion to cancellation. Missing history/payment stays gapped; no terminal or later state
+  supplies it. Wrong item/price/payment mode/time, reused refund, conflicting terminal/world link/order or supplied restore
+  fails closed and suppresses cancellations plus all normalized completions/rejections/payments/operations/mutations.
+- Removed-before-terminal per-tick queue-claim ownership resolves only from the exact observed native physical interval
+  and current absent item, with the original selected admission/price/insertion. Completion additionally requires its
+  actual advanced exhausted head; cancellation requires its distinct admitted native scope. Missing removal stays null /
+  gapped; global/non-queue and pre-capture/restore owners remain unsupported. Absolute all-lane liabilities remain separate.
+- Authored/unrun: three refund policies/native lifecycle orders, actual paid per-tick progress, early request/future intended
+  application, missing insertion/removal/refund/terminal/payment history, over-credit/identity/policy/restore/order/reuse
+  negatives, and removed ownership without old-head/snapshot substitution. Existing completion/physical/payment specs
+  were updated for the resolved physical claim and native production refund. No live world or strategic acceptance claimed.
+- Existing `runVariant`/report retains cancellations through the normalized object, and the evaluator retains mandatory
+  PRO-03/06/07 failures/gaps. Full `RuntimeProductionEvidenceV1`, stable utility/effective-level/fairness/catalog/setup /
+  cadence/exposure/global/restore authority and useful distinct replacement remain open. No recipe/denominator/oracle /
   baseline/package/configuration/migration change. All tests/E2E/simulations, format/lint/type/build/editor/schema /
-  repository checks and doctor/context/catalog commands remain deferred. Nx 23.2.1/Jest 30.3.0/Phaser 4.2.1 tooling,
-  shared Phaser mock debt, capture/report pressure and real bootstrap/outcomes need final proof.
-- Prior [rejection/release](follow-ups/runtime-matrix-ci.md#production-native-rejection-checkpoint-2026-10-04-unverified)
-  is in `dd1e9192e`; [physical intervals](follow-ups/runtime-matrix-ci.md#production-physical-queue-checkpoint-2026-10-04-unverified)
+  repository checks and doctor/context/catalog commands remain deferred. Nx/Jest/Phaser compatibility and shared Phaser
+  mock debt, capture/report pressure, real bootstrap/outcomes and both-faction coverage need final proof.
+- Prior [created actor/tech](follow-ups/runtime-matrix-ci.md#production-completed-effect-authority-checkpoint-2026-10-05-unverified)
+  is in `0101ef0e3`; [rejection/release](follow-ups/runtime-matrix-ci.md#production-native-rejection-checkpoint-2026-10-04-unverified)
+  in `dd1e9192e`; [physical intervals](follow-ups/runtime-matrix-ci.md#production-physical-queue-checkpoint-2026-10-04-unverified)
   in `f6e60b9e0`; [money/progress](follow-ups/runtime-matrix-ci.md#production-operation-projection-checkpoint-2026-10-04-unverified)
-  in `75768bb08`; [claim/progress](follow-ups/runtime-matrix-ci.md#production-queue-claims-and-progress-checkpoint-2026-10-04-unverified)
-  in `e64a6f802`; [decision/boundary](follow-ups/runtime-matrix-ci.md#production-ai-decision-and-boundary-checkpoint-2026-10-03-unverified)
-  in `40102bb4`; [causality](follow-ups/runtime-matrix-ci.md#production-ai-causality-checkpoint-2026-10-03-unverified)
-  in `1f96cde1`; [human socket worlds](follow-ups/runtime-matrix-ci.md#production-distinct-shared-queue-worlds-checkpoint-2026-10-03-unverified)
-  in `e658318a`. Human worlds do not prove AI strategy. Tivara uses Sandhold; initial Skaduwee FrostForge lacks research.
+  in `75768bb08`. Earlier decision/claim/causality/human socket anchors remain in those checkpoints. Human worlds do not
+  prove AI strategy. Tivara uses Sandhold; initial Skaduwee FrostForge lacks research.
 
 - Multiplayer diagnostic/lifecycle authoring checkpoint (2026-09-30, **unverified**): browser-only relay and local-hash
   observation now lives in a small test-owned Phaser adapter rather than adding methods to hash-baselined

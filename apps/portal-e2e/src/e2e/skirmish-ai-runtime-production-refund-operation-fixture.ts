@@ -26,9 +26,9 @@ export function productionRefundOperationFixture() {
     ...applied.outcome, ...command.execution, kind: "dispatched", reason: "accepted_for_dispatch", tick: 10
   } satisfies Extract<AiRuntimeProductionFactV1, { kind: "outcome" }>["outcome"];
   const resource = { ...purchase.resource, cancellationCommand: command, operation: "cancellation_refund" as const,
-    remainingTimeMs: 100, emission: { operationId: 5, phase: "started" as const, requested: { food: 4 },
+    remainingTimeMs: 100, emission: { operationId: 5, phase: "started" as const, requested: { food: 7 },
       before: { food: 93, wood: 100, stone: 100, minerals: 100 }, snapshotRestoreInProgress: false } };
-  const afterCash = { ...resource.emission.before, food: 97 };
+  const afterCash = { ...resource.emission.before, food: 100 };
   const boundaryState = { ...purchase.boundaryState, unspentClaims: { ...purchase.boundaryState.unspentClaims,
     entries: purchase.boundaryState.unspentClaims.entries.map((entry) => ({ ...entry, state: "released" as const })) } };
   const facts: AiRuntimeProductionFactV1[] = [...capture.facts,
@@ -39,14 +39,15 @@ export function productionRefundOperationFixture() {
     { ...base, kind: "outcome", outcome: admission, scheduledTick: 10 },
     { ...base, kind: "intent_dispatch", event: { kind: "finished", playerNumber: 1, correlation,
       receipt: { status: "dispatched", command } } },
-    { ...base, tick: 10, kind: "outcome", outcome: { ...applied.outcome, tick: 10, kind: "cancelled" }, scheduledTick: null },
+    { ...base, tick: 10, kind: "outcome", outcome: { ...applied.outcome, tick: 10, kind: "cancelled", reason: "cancelled" }, scheduledTick: null },
     { ...base, tick: 10, kind: "queue_resource", resource, boundaryState },
     { ...base, tick: 10, kind: "queue_resource", resource: { ...resource, emission: { ...resource.emission,
-      phase: "callback", callbackOrdinal: 1, amounts: { food: 4 } } }, boundaryState: { ...boundaryState, resources: afterCash } },
+      phase: "callback", callbackOrdinal: 1, amounts: { food: 7 } } }, boundaryState: { ...boundaryState, resources: afterCash } },
     { ...base, tick: 10, kind: "queue_resource", resource: { ...resource, emission: { ...resource.emission,
       phase: "finished", status: "returned", after: afterCash, callbackCount: 1, callbackLimitExceeded: false,
       nestedEmission: false, balanceMatches: true } }, boundaryState: { ...boundaryState, resources: afterCash } },
-    { ...base, tick: 10, kind: "outcome", outcome: { ...admission, kind: "applied", tick: 10 }, scheduledTick: null },
+    { ...base, tick: 10, kind: "outcome", scheduledTick: null,
+      outcome: { ...admission, kind: "cancelled", reason: "cancelled", tick: 10 } },
     { ...base, tick: 10, kind: "command_delivered", command }
   ];
   return { ...capture, facts: facts.map((fact, index) => ({ ...fact, sequence: index + 1 })) };

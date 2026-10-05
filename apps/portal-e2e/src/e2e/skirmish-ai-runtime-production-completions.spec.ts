@@ -26,7 +26,7 @@ test.describe("native queue completed-effect authority", () => {
       if (family === "production") {
         expect(completed.createdActor).toMatchObject({ objectName: ObjectNames.TivaraWorkerMale,
           canonicalObjectName: ObjectNames.TivaraWorker, indexed: true, playerNumber: 1 });
-        expect(result.gaps).toContain("production_ai_operation_queue_transfer_missing");
+        expect(result.gaps).not.toContain("production_ai_operation_queue_transfer_missing");
       } else {
         expect(completed.createdActor).toBeNull();
         expect(completed.worldLinkId).toBe(`research:${completed.researchType}`);

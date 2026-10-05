@@ -2,7 +2,7 @@ import { isDeepStrictEqual } from "node:util";
 import type { AiRuntimeProductionFactV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
 import { calculateRuntimeQueueLiabilities } from "./skirmish-ai-runtime-queue-liabilities";
-import { isRuntimeProductionBalance } from "./skirmish-ai-runtime-production-unspent";
+import { isRuntimeProductionBalance } from "./skirmish-ai-runtime-production-balance";
 import { sameRuntimeQueueVector } from "./skirmish-ai-runtime-scoped-queue-payments";
 
 /** Independent exact push/splice and all-lane arithmetic. No other lane or cash may change within this physical interval. */
@@ -18,7 +18,8 @@ export function validateRuntimeQueueMutationBoundaries(
     return { boundary: null, failures: [], gaps: ["production_ai_mutation_boundary_missing"] };
   }
   const invalid = () => ({ boundary: null, failures: ["production_ai_mutation_physical_boundary_invalid"], gaps: [] });
-  if (![left.resources, right.resources, left.obligations, right.obligations].every(isRuntimeProductionBalance) ||
+  if (left.snapshotRestoreInProgress || right.snapshotRestoreInProgress ||
+    ![left.resources, right.resources, left.obligations, right.obligations].every(isRuntimeProductionBalance) ||
     !sameRuntimeQueueVector(left.resources, right.resources) ||
     !sameRuntimeQueueVector(calculateRuntimeQueueLiabilities(left.queues, left.exhaustedProgressItemId), left.obligations) ||
     !sameRuntimeQueueVector(calculateRuntimeQueueLiabilities(right.queues, right.exhaustedProgressItemId), right.obligations) ||

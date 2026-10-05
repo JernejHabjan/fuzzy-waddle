@@ -86,8 +86,8 @@ test.describe("production operation synthetic contract tests", () => {
     expect(refund.originatingCommandId).toBe("purchase");
     expect(refund.itemId).toBe("queue:producer:purchase");
     expect(refund.resourcesBefore.food).toBe(93);
-    expect(refund.resourcesAfter.food).toBe(97);
-    expect(refund.refundAmounts.food).toBe(4);
+    expect(refund.resourcesAfter.food).toBe(100);
+    expect(refund.refundAmounts.food).toBe(7);
     expect(refund.charged.food).toBe(0);
     expect(refund.obligationsAfter).toEqual(refund.obligationsDue);
     expect(refund.reservedUnspentBefore?.food).toBe(0);

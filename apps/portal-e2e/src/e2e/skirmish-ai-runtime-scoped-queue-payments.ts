@@ -13,7 +13,7 @@ export function sameRuntimeQueueVector(
     (left[type] ?? 0) >= 0 && (right[type] ?? 0) >= 0 && (left[type] ?? 0) === (right[type] ?? 0));
 }
 
-/** Immediate item-scoped triples only. Generic cash and per-tick obligations require separate evidence. */
+/** Actual immediate charges and either native refund policy; per-tick charges require their own progress interval. */
 export function normalizeRuntimeScopedQueuePayments(capture: AiRuntimeProductionCaptureV1, commands: readonly GameCommand[]) {
   const failures: string[] = [];
   const resources = capture.facts.filter((fact) => fact.kind === "queue_resource");
@@ -36,7 +36,9 @@ export function normalizeRuntimeScopedQueuePayments(capture: AiRuntimeProduction
       !(["schemaVersion", "commandId", "commitmentKey", "source", "authorityEpoch", "sequence", "intentId", "effectId"] as const)
         .every((key) => context.execution[key] === origin.execution?.[key]) ||
       value.identitySource !== "command" || value.itemId !== `queue:${value.actorId}:${context.execution.commandId}` ||
-      value.payment !== "immediate" || !value.storedPrice || value.totalTimeMs === null || value.totalTimeMs <= 0 ||
+      (value.payment !== "immediate" && !(value.operation === "cancellation_refund" &&
+        value.payment === "per_successful_tick" && origin.type === "PRODUCTION")) ||
+      !value.storedPrice || value.totalTimeMs === null || value.totalTimeMs <= 0 ||
       value.remainingTimeMs === null || value.remainingTimeMs < 0 || value.remainingTimeMs > value.totalTimeMs ||
       (origin.type === "PRODUCTION" ? value.objectName !== origin.actorName || value.researchType !== null :
         origin.type !== "RESEARCH" || value.researchType !== origin.researchType || value.objectName !== null) ||
@@ -52,6 +54,7 @@ export function normalizeRuntimeScopedQueuePayments(capture: AiRuntimeProduction
       !emission.before || !emission.after || !emission.requested || group.length !== 3 || start.length !== 1 ||
       callback.length !== 1 || start[0].sequence >= callback[0].sequence || callback[0].sequence >= fact.sequence ||
       group.some((entry) => entry.tick !== fact.tick || entry.resource.gaps.length ||
+        entry.boundaryState?.snapshotRestoreInProgress ||
         entry.resource.actorId !== value.actorId || entry.resource.ownerNumber !== value.ownerNumber ||
         entry.resource.itemId !== value.itemId || entry.resource.operation !== value.operation ||
         entry.resource.identitySource !== value.identitySource || entry.resource.objectName !== value.objectName ||
