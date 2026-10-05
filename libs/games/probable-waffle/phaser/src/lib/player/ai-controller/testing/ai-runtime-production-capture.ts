@@ -34,6 +34,7 @@ import { AI_DECISION_DISPATCH_EVENT, type AiDecisionDispatchEvent } from "../ai-
 import { AiRuntimeUnspentClaims } from "./ai-runtime-unspent-claims";
 import { QUEUE_PROGRESS_EVENT, type QueueProgressEvent } from "../../../entity/components/queue/queue-progress-event";
 import { projectAiRuntimeProductionBoundaryState } from "./project-ai-runtime-production-boundary-state";
+import { captureAiRuntimeProductionWorld } from "./capture-ai-runtime-production-world";
 
 const MAX_FACTS = 8192;
 const MAX_SNAPSHOTS = 256;
@@ -159,6 +160,7 @@ export class AiRuntimeProductionCapture {
     const snapshot = {
       tick, observation: controller?.getCommittedObservation() ?? null,
       capabilityCatalog: controller?.getCommittedCapabilityCatalog() ?? null,
+      world: captureAiRuntimeProductionWorld(this.scene, playerNumber, actors),
       ownedActors: actors.flatMap((actor) => {
         const actorId = getActorComponent(actor, IdComponent)?.id;
         return actorId ? [{ actorId, objectName: actor.name }] : [];

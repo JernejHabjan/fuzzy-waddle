@@ -3,6 +3,7 @@ import type { ResearchType, ResourceType } from "@fuzzy-waddle/probable-waffle-p
 import type { AiRuntimeProductionFactV1 } from "./ai-runtime-production-fact-v1";
 import type { AiRuntimeProductionQueueV1 } from "./ai-runtime-production-queue-v1";
 import type { AiRuntimePendingCommandV1 } from "./ai-runtime-pending-command-v1";
+import type { AiRuntimeProductionWorldV1 } from "./ai-runtime-production-world-v1";
 
 /**
  * Diagnostic raw capture, not RuntimeProductionEvidenceV1. Missing causal attribution and navigation/placement proof
@@ -21,6 +22,8 @@ export interface AiRuntimeProductionCaptureV1 {
     readonly tick: number;
     readonly observation: AiObservationV1 | null;
     readonly capabilityCatalog: AiCapabilityCatalogV1 | null;
+    /** Actual owned component readiness/levels and command-priced options; absent in older diagnostic captures. */
+    readonly world?: AiRuntimeProductionWorldV1;
     /** Actual owned identities, also available at tick zero and explicit human queue callbacks without an AI input. */
     readonly ownedActors: readonly { readonly actorId: string; readonly objectName: string }[];
     /** Read-only save-owned state, retaining fulfilled/expired exactly as recorded by the brain. */

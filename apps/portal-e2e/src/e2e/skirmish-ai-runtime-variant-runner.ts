@@ -193,7 +193,8 @@ export async function runVariant(
       initialWorldDigest,
       outcomeDigest,
       ...(productionCapture ? {
-        productionCapture, productionCausality: normalizeRuntimeProductionCausality(productionCapture)
+        productionCapture,
+        productionCausality: normalizeRuntimeProductionCausality(productionCapture, initialBoundary.presetApplication)
       } : {}),
       checkpoints,
       perturbations,

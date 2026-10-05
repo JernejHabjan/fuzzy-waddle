@@ -8,16 +8,22 @@ import type { AiRuntimeProductionFactV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
 import type { RuntimeProductionOperationV1 } from "./skirmish-ai-runtime-production-operation";
 import type { normalizeRuntimeScopedQueuePayments } from "./skirmish-ai-runtime-scoped-queue-payments";
+import type { RuntimeProductionWorldSnapshotV1 } from "./skirmish-ai-runtime-production-world-snapshot";
+import type { RuntimeProductionInitialQueueV1 } from "./skirmish-ai-runtime-production-initial-queue";
 
 /**
  * Diagnostic AI lineage, not RuntimeProductionEvidenceV1. Retains actual accepted intent and observer order;
- * it cannot supply fair geometry, full decision cadence, setup provenance or complete event liability proof.
+ * it cannot supply full navigation, decision cadence, paired setup, stable usefulness or complete event liability proof.
  */
 export interface RuntimeProductionCausalityV1 {
   readonly schemaVersion: 1;
   readonly failures: readonly string[];
   /** Original capture gaps remain attached even when an individual causal chain is sound. */
   readonly gaps: readonly string[];
+  /** Actual owned readiness/options and exact current fair positions; full reachability/setup/usefulness remains open. */
+  readonly worldSnapshots: readonly RuntimeProductionWorldSnapshotV1[];
+  /** Setup joins actual paused insertion/payment. A per-tick enqueue is explicitly unpaid. */
+  readonly initialQueues: readonly RuntimeProductionInitialQueueV1[];
   /** Rejected requests/applications retain native release authority without inventing a stamped admitted command. */
   readonly rejections: readonly RuntimeProductionRejectionV1[];
   /** Actual completed products/tech; strategic usefulness and stable-effect acceptance remain separate. */

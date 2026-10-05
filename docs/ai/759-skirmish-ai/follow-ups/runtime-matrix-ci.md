@@ -1583,3 +1583,84 @@ Review merged Nx 23.2.1/Jest 30.3.0/Phaser 4.2.1 flags/dependencies at the final
 format/lint/type/build/editor/schema/repository checks and doctor/context/catalog commands remain deferred. Actual
 runtime native policy/creation/claims, tooling/module compatibility, shared mocks, capture/report pressure, legal
 bootstrap and useful both-faction strategic outcomes still require executable evidence.
+
+
+### Production owned world/setup checkpoint (2026-10-05, unverified)
+
+**Scope/provenance:** grouped #815/#816 PRO-03/06/07 diagnostic authoring, beginning at
+`56bd5e53e73afdd9c043fd1c99d2cec746e31825`, integration worktree
+`/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`.
+The containing commit owns this batch; verify its remote SHA on resume. The unrelated Nx merge `59f72e037` is preserved.
+Actual model/effort is unknown. User-authorized comment edits remain permitted. All executable validation is deferred.
+This closes the bounded authoring slice only, not full production evidence, useful strategy, family or issue acceptance.
+
+| Acceptance | Implemented owners / consumers | Evidence / status |
+| --- | --- | --- |
+| 1. Actual bounded owned readiness/options and native price versus level | Phaser `capture-ai-runtime-production-world.ts`, `capture-ai-runtime-queue-catalog.ts`, their typed contracts; `AiRuntimeProductionCapture.captureBoundary` | Source-reviewed. Actual scene/index/owner identity, readiness, component level, base production command price/duration and separately researched level; research-definition cost/duration. No global roster or navigation queries. Authored/unverified. |
+| 2. Fair exact-boundary world diagnostics and explicit missing authority | `normalizeRuntimeProductionWorld`, `RuntimeProductionWorldSnapshotV1`, `RuntimeProductionCausalityV1.worldSnapshots` | Exact current owned observation required for positions; stale/missing positions and all reachability stay null/gapped. Contradictory identity/queue/numerics/time/restore suppress all normalized arrays. Authored/unverified. |
+| 3. Actual paused setup insertion/payment provenance | `normalizeRuntimeProductionInitialQueues`, `RuntimeProductionInitialQueueV1`, `RuntimeProductionCausalityV1.initialQueues` | Native command/application, physical insertion, full stored item/catalog price and scoped payment join at tick zero. Immediate paid versus unpaid per-tick is explicit; resets and subsequent gameplay cannot replace initial balances. Authored/unverified. |
+| 4. Report wiring and meaningful negative contracts | `runVariant` passes its real preset application; normalizer retains both arrays. `capture-ai-runtime-production-world.spec.ts`, world and initial-queue normalization specs, synthetic world fixture | Default Jest/Playwright discovery; authored/unrun. Existing full PRO-03/06/07 evaluator/oracle gaps and denominator stay mandatory. |
+| 5. Source audits, cold start and authorized publication boundary | This checkpoint and HANDOFF Quick resume; exact task-owned staging, normal commit/push and remote SHA verification | Source-only audits below. Publication belongs to the containing commit. Pause after verified push; retain Sol/high for the next related authority batch. |
+
+**Native price finding:** `QueueCommandSystem.handleProductionCommand` calls `getPwActorDefinition(actorName, null)`
+for the stored production cost. Research can upgrade the resulting actor but does not make the shared command charge
+its effective-level cost. The new catalog preserves `priceSource: base_production_definition` separately from
+`effectiveLevel`, and uses the existing fixed-clock duration conversion. Research uses the real `researchDefinitions`
+price/duration. Actual `ProductionComponent.productionDefinition.availableProduceActors` and
+`ResearchComponent.availableResearch` restrict the producer options; they do not establish current-tech eligibility,
+affordability, useful strategic demand or accepted admission. No balance values were copied into production code.
+
+**World authority:** raw snapshots preserve same-scene, actual indexed owned actor identity, canonical family,
+active/alive/finished state and actual component level. Capture bounds are 256 actors, 512 catalog entries and
+128 advertised options per actor; overflow remains explicit. Normalization preserves time-varying producer-scoped
+catalogs and actual physical lanes. Position requires the same sampled tick's owned/self committed observation;
+future, foreign, hidden or contradictory supplied observations fail, while absent/stale inputs remain null/gapped.
+Reachability is always null until actual navigation authority is joined. A ready actor is not a stable useful product,
+a safe site, a served demand or a full-oracle snapshot. Full construction catalog/cadence/threat/exposure remains open.
+
+**Initial queues:** the existing real `AiRuntimePresetApplicationV1` is passed by the variant runner, never synthesized
+from a recipe. Each player's setup application must match exactly one paused physical item, native delivery and one
+applied outcome, original execution, item/product/producer/lane, full stored price, command-defined duration/payment,
+exact before/after insertion and independently checked all-lane liabilities/cash. Native applied observation follows
+insertion. Immediate credit requires the actual full scoped charge triple before insertion and its isolated setup
+balances. Per-tick insertion has no payment and is labelled `unpaid_per_tick`; no initial paid-item credit is invented.
+Later resource-start resets do not replace the operation balances. Projection reads only tick-zero facts so later
+charges/refunds/removals/terminals cannot change initial provenance. Unknown/uncommanded/pre-capture work stays gapped.
+Missing setup/tick-zero/insertion/payment produces no item credit; supplied partial/mismatched/duplicated/restore /
+wrong-order evidence fails closed. This does not create a paired setup digest or resolve global reservation ownership.
+
+**Implementation Review / Omission Audit (source only):** traced shared command base price, component-advertised options,
+tech level/research definitions, index/ownership/readiness, fixed timing, raw settled capture, exact committed position,
+real preset native application, physical push boundaries, scoped payment, resource resets, subsequent lifecycle and
+normalizer/report/full evaluator consumers. Repaired the base-price/effective-level distinction, isolated tick-zero
+history from later same-item facts, required native applied-after-insertion order, execution/world-link/setup actor
+mapping and stored-price equality, preserved null reachability, and added duplicate/overflow/hidden/future/restore /
+conflicting position-timestamp fences. Synthetic fixtures are explicitly labelled;
+no browser outcome, full production evidence, fairness/eligibility proof or gameplay policy is claimed. No reusable
+skill/tool/policy change was needed. Shared Phaser mock emitter/lifecycle debt and capture/report cost remain final-gate work.
+
+**Separate Final Closure Audit (source only):** acceptance 1–5 maps to the actual owners/consumer and authored specs.
+Source review and exact staged scope establish authoring/publication only. No executable check ran, including automated
+format/source-structure validation. New owners are small responsibility-based files with single substantive contracts;
+no content-hash baseline was refreshed. Native production/research/queue/payment/cancel selection, score/save/relay and
+strategic AI policy remain untouched. Full `RuntimeProductionEvidenceV1`, construction catalog, decision cadence,
+fair navigation/threats, stable usefulness, paired setup and global/restore liabilities remain explicit open work.
+
+**Deferred focused commands (unrun; append to the existing final gate):**
+
+```bash
+NX_DAEMON=false pnpm exec nx test probable-waffle-phaser --testPathPatterns='capture-ai-runtime-production-world|ai-runtime-production-capture|ai-runtime-completion-capture' --skip-nx-cache
+pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts skirmish-ai-runtime-production-world-normalization.spec.ts skirmish-ai-runtime-production-initial-queue-normalization.spec.ts skirmish-ai-runtime-production-causality-normalization.spec.ts skirmish-ai-runtime-production-cancellations.spec.ts skirmish-ai-runtime-production-completions.spec.ts
+```
+
+Review Nx 23.2.1 / Jest 30.3.0 / Phaser 4.2.1 tooling and shared mocks before execution. All tests/E2E/simulations,
+format/lint/type/build/editor/schema/repository checks and doctor/context/catalog remain deferred. Confirm real paused
+bootstrap and both-faction outcomes, complete lifecycle/lease/restore authority, bounded capture/report pressure and
+full mandatory oracles at the final gate. Synthetic source contracts do not replace those runtime obligations.
+
+**Next grouped authoring:** actual decision cadence and fair navigation/reachability/threat authority, then stable
+useful actor/tech effects and paired setup into full production evidence. Follow with legal Skaduwee research setup
+and strategic AI cancellation/transition worlds; keep compatible PRO-03/06 pairs together. Retain **GPT-6.1 Sol / high**
+for these cross-authority joins. Official OpenAI Docs searched/fetched this turn confirm complex coding and `high`
+support: [GPT-6.1 Sol](https://developers.openai.com/api/docs/models/gpt-6.1-sol). The recommendation is a task judgment,
+not a model switch or an inference about active settings. Commit/push this slice, verify remote, then pause.

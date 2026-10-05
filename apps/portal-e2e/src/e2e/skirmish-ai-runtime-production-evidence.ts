@@ -8,7 +8,7 @@ export interface RuntimeProductionEvidenceV1 {
   readonly initialProducerIds: readonly string[];
   readonly initialProductActorIds: readonly string[];
   readonly initialPaidItemIds: readonly string[];
-  /** Prices and queue shape come from the runtime definitions at the effective level. */
+  /** Prices/durations match the shared command's definition lookup; researched product level is separate raw authority. */
   readonly catalog: readonly {
     readonly productKey: string;
     readonly kind: "production" | "research" | "construction";

@@ -14,17 +14,29 @@ import { normalizeRuntimeScopedQueuePayments, sameRuntimeQueueVector } from "./s
 import { projectRuntimeProductionOperations } from "./skirmish-ai-runtime-production-operation-projection";
 import { validateRuntimeProductionProgress } from "./skirmish-ai-runtime-production-progress";
 import { matchRuntimeProductionDecision } from "./skirmish-ai-runtime-production-decision-lineage";
+import { normalizeRuntimeProductionWorld } from "./skirmish-ai-runtime-production-world-normalization";
+import { normalizeRuntimeProductionInitialQueues } from "./skirmish-ai-runtime-production-initial-queue-normalization";
+import type { AiRuntimePresetApplicationV1 } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application-v1";
 
 /**
  * Pure, bounded by the raw capture limits. Links real dispatch scope to stamped queue authority; no nearest
  * checkpoint, reason string or fixture expectation can supply missing accepted-intent or payment lineage.
  */
-export function normalizeRuntimeProductionCausality(capture: AiRuntimeProductionCaptureV1): RuntimeProductionCausalityV1 {
+export function normalizeRuntimeProductionCausality(
+  capture: AiRuntimeProductionCaptureV1, setup?: AiRuntimePresetApplicationV1
+): RuntimeProductionCausalityV1 {
   const failures: string[] = [];
   const gaps = new Set(capture.gaps);
   gaps.add("production_ai_event_liabilities_missing");
   gaps.add("production_ai_definition_catalog_missing");
   gaps.add("production_ai_paired_setup_missing");
+  const world = normalizeRuntimeProductionWorld(capture);
+  failures.push(...world.failures);
+  world.gaps.forEach((gap) => gaps.add(gap));
+  const initial = normalizeRuntimeProductionInitialQueues(capture, setup);
+  failures.push(...initial.failures);
+  initial.gaps.forEach((gap) => gaps.add(gap));
   if (capture.droppedFactCount || capture.droppedSnapshotCount || capture.facts.length > 8192 || capture.snapshots.length > 256) {
     failures.push("production_ai_capture_dropped");
   }
@@ -195,6 +207,8 @@ export function normalizeRuntimeProductionCausality(capture: AiRuntimeProduction
   // Invalid operations remain in the raw diagnostic; only a sound group is exposed as normalized money.
   return structuredClone({
     schemaVersion: 1, failures: [...new Set(failures)], gaps: [...gaps].sort(), commands, operationBoundaries,
+    worldSnapshots: failures.length ? [] : world.snapshots,
+    initialQueues: failures.length ? [] : initial.items,
     payments: failures.length ? [] : payments.payments, operations: failures.length ? [] : operations.operations,
     completions: failures.length ? [] : completions.completions,
     cancellations: failures.length ? [] : cancellations.cancellations,
