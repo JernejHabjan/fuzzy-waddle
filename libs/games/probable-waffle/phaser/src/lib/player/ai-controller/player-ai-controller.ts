@@ -42,6 +42,8 @@ import type { AiBrainStepResultV1 } from
   "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/ai-brain-step-result-v1";
 import { dispatchAiIntents } from "./ai-intent-dispatcher";
 import { dispatchAiBrainResult } from "./dispatch-ai-brain-result";
+import { captureAiDecisionInput } from "./capture-ai-decision-input";
+import type { AiDecisionInputV1 } from "./ai-decision-input-v1";
 
 export class PlayerAiController {
   private static readonly MAX_SCHEDULED_STEPS_PER_RUN = 5;
@@ -343,7 +345,11 @@ export class PlayerAiController {
     const bridge = this.getBrainCommandBridgeSnapshot();
     if (!observation || !this.brainState || !this.pureBrain) return;
     const result = this.pureBrain.step(observation, this.brainState, bridge?.outcomes ?? []);
-    this.dispatchAcceptedIntents(result.acceptedIntents, { result, authority: bridge?.authority ?? result.nextState.authority });
+    this.dispatchAcceptedIntents(result.acceptedIntents, {
+      result, authority: bridge?.authority ?? result.nextState.authority,
+      input: captureAiDecisionInput(this.scene, observation,
+        this.playerAiControllerAgent.getCommittedCapabilityCatalog(), this.stepInterval, this.completedDecisionSequence)
+    });
     this.brainState = structuredClone(
       canonicalizeAiBrainStateV1({
         ...result.nextState,
@@ -368,10 +374,14 @@ export class PlayerAiController {
   /** Routes accepted commands under the host fence; real pure steps also publish their exact accepting result. */
   private dispatchAcceptedIntents(
     intents: readonly AiIntentV1[],
-    decision?: { readonly result: AiBrainStepResultV1; readonly authority: AiAuthorityStateV1 }
+    decision?: {
+      readonly result: AiBrainStepResultV1;
+      readonly authority: AiAuthorityStateV1;
+      readonly input?: AiDecisionInputV1;
+    }
   ): void {
     if (this.authorityActive === false || this.player.playerNumber === undefined) return;
-    if (decision) dispatchAiBrainResult(this.scene, this.player.playerNumber, decision.result, decision.authority);
+    if (decision) dispatchAiBrainResult(this.scene, this.player.playerNumber, decision.result, decision.authority, decision.input);
     else dispatchAiIntents(this.scene, this.player.playerNumber, intents);
   }
 

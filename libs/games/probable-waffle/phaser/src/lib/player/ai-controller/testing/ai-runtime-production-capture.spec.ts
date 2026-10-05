@@ -132,6 +132,9 @@ describe("AiRuntimeProductionCapture", () => {
   it("retains a selected result separately from saved leases and fails absent queue authority to null", () => {
     const f = setup();
     const decision = { identity: { playerNumber: 2, tick: 0, generation: 7, decisionSequence: 8, authorityEpoch: 1 },
+      input: { observation: null, capabilityCatalog: null, accessGraph: null,
+        cadence: { clock: "simulation", tick: 0, configuredIntervalTicks: 5, completedBefore: 3 },
+        snapshotRestoreInProgress: false, gaps: ["production_decision_observation_overflow"] },
       acceptedIntents: [], decisions: [], economyProduction: f.state.economyProduction,
       reservations: [{ claimId: "claim:selected", ownerPlanId: "plan:force", subjectKey: "resource:food:35",
         state: { kind: "provisional", expiresAt: { clock: "simulation", unit: "tick", dueTick: 20, persistence: "save" } },
@@ -146,6 +149,8 @@ describe("AiRuntimeProductionCapture", () => {
     const selected = captured.facts[0];
     expect(selected.kind === "decision_selected" && selected.decision).toEqual(decision);
     expect(selected.kind === "decision_selected" && selected.decision.reservations).not.toBe(decision.reservations);
+    expect(selected.kind === "decision_selected" && selected.decision.input).not.toBe(decision.input);
+    expect(selected.kind === "decision_selected" && selected.decision.input?.cadence.completedBefore).toBe(3);
     expect(captured.facts[1].boundaryState?.brain?.reservations).toEqual([]);
     expect(captured.facts[1].boundaryState?.brain?.decisionSequence).toBe(0);
     expect(captured.facts[2].boundaryState?.obligations).toBeNull();

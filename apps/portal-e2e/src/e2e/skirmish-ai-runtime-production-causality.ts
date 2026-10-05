@@ -10,10 +10,11 @@ import type { RuntimeProductionOperationV1 } from "./skirmish-ai-runtime-product
 import type { normalizeRuntimeScopedQueuePayments } from "./skirmish-ai-runtime-scoped-queue-payments";
 import type { RuntimeProductionWorldSnapshotV1 } from "./skirmish-ai-runtime-production-world-snapshot";
 import type { RuntimeProductionInitialQueueV1 } from "./skirmish-ai-runtime-production-initial-queue";
+import type { RuntimeProductionDecisionV1 } from "./skirmish-ai-runtime-production-decision";
 
 /**
  * Diagnostic AI lineage, not RuntimeProductionEvidenceV1. Retains actual accepted intent and observer order;
- * it cannot supply full navigation, decision cadence, paired setup, stable usefulness or complete event liability proof.
+ * it cannot supply full navigation/exposure, cadence closure, paired setup, stable usefulness or complete event liabilities.
  */
 export interface RuntimeProductionCausalityV1 {
   readonly schemaVersion: 1;
@@ -24,6 +25,8 @@ export interface RuntimeProductionCausalityV1 {
   readonly worldSnapshots: readonly RuntimeProductionWorldSnapshotV1[];
   /** Setup joins actual paused insertion/payment. A per-tick enqueue is explicitly unpaid. */
   readonly initialQueues: readonly RuntimeProductionInitialQueueV1[];
+  /** Every captured selected step, including empty decisions, with its actual input and configured scheduler cadence. */
+  readonly decisions: readonly RuntimeProductionDecisionV1[];
   /** Rejected requests/applications retain native release authority without inventing a stamped admitted command. */
   readonly rejections: readonly RuntimeProductionRejectionV1[];
   /** Actual completed products/tech; strategic usefulness and stable-effect acceptance remain separate. */

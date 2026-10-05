@@ -15,6 +15,7 @@ import { projectRuntimeProductionOperations } from "./skirmish-ai-runtime-produc
 import { validateRuntimeProductionProgress } from "./skirmish-ai-runtime-production-progress";
 import { matchRuntimeProductionDecision } from "./skirmish-ai-runtime-production-decision-lineage";
 import { normalizeRuntimeProductionWorld } from "./skirmish-ai-runtime-production-world-normalization";
+import { normalizeRuntimeProductionDecisions } from "./skirmish-ai-runtime-production-decisions";
 import { normalizeRuntimeProductionInitialQueues } from "./skirmish-ai-runtime-production-initial-queue-normalization";
 import type { AiRuntimePresetApplicationV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application-v1";
@@ -37,6 +38,9 @@ export function normalizeRuntimeProductionCausality(
   const initial = normalizeRuntimeProductionInitialQueues(capture, setup);
   failures.push(...initial.failures);
   initial.gaps.forEach((gap) => gaps.add(gap));
+  const cadence = normalizeRuntimeProductionDecisions(capture);
+  failures.push(...cadence.failures);
+  cadence.gaps.forEach((gap) => gaps.add(gap));
   if (capture.droppedFactCount || capture.droppedSnapshotCount || capture.facts.length > 8192 || capture.snapshots.length > 256) {
     failures.push("production_ai_capture_dropped");
   }
@@ -209,6 +213,7 @@ export function normalizeRuntimeProductionCausality(
     schemaVersion: 1, failures: [...new Set(failures)], gaps: [...gaps].sort(), commands, operationBoundaries,
     worldSnapshots: failures.length ? [] : world.snapshots,
     initialQueues: failures.length ? [] : initial.items,
+    decisions: failures.length ? [] : cadence.decisions,
     payments: failures.length ? [] : payments.payments, operations: failures.length ? [] : operations.operations,
     completions: failures.length ? [] : completions.completions,
     cancellations: failures.length ? [] : cancellations.cancellations,

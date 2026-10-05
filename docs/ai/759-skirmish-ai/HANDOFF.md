@@ -7,48 +7,49 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 ## Quick resume
 
 **Next session (user policy, 2026-10-05):** retain **GPT-6.1 Sol / high** for grouped PRO-03/06/07 authority.
-Current step: #815/#816 **owned producer catalog/readiness and paused initial queue provenance**, authored/unverified.
-This batch began at `56bd5e53e73afdd9c043fd1c99d2cec746e31825`; its containing commit owns the new revision.
+Current step: #815/#816 **consumed decision cadence and fair navigation/threat inputs**, authored/unverified.
+This batch began at `66f450a669739c1fe91672671984c2a18e40999a`; its containing commit owns the new revision.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify local/remote on resume.
 The unrelated Nx migration in `59f72e037` is preserved. Actual model/effort is unavailable. No issue/family is complete.
 The user removed the comment-permission rule. All executable validation remains at the final gate.
 
-Read the [world/setup checkpoint](follow-ups/runtime-matrix-ci.md#production-owned-world-setup-checkpoint-2026-10-05-unverified).
-**Next exact authoring action:** capture actual decision cadence and fair navigation/reachability/threat authority,
-then join stable useful actor/tech effects and paired setup into full `RuntimeProductionEvidenceV1`. Use the new
-per-boundary command-priced catalog and initial queue joins; do not flatten effective levels across snapshots.
+Read the [decision/fair-input checkpoint](follow-ups/runtime-matrix-ci.md#production-consumed-decision-input-checkpoint-2026-10-05-unverified).
+**Next exact authoring action:** join target-specific shared navigation/placement and building-weapon/elevation authority
+for producers; then stable useful actor/tech effects and actual paired setup into full `RuntimeProductionEvidenceV1`.
+Use exact consumed decisions, per-boundary command-priced catalogs and initial queue provenance; do not flatten levels,
+borrow later checkpoints, infer paths from node membership, or convert endpoint status into producer reachability.
 Keep global/non-queue, pre-capture/migrated/restore ownership null until real authority exists. Follow with legal
 Skaduwee research setup and useful strategic AI cancellation/transition worlds, grouping compatible PRO-03/06 pairs.
 Defer executable checks, commit/push the next coherent batch, then pause.
 
-- Every raw snapshot now samples bounded actual owned/indexed actor readiness, current component level and real producer
-  options. Queue prices/durations mirror the native shared command: production uses its base definition, while researched
-  effective product level remains separate; research uses its definition. No global faction/opponent catalog or live
-  pathfinder is consulted. Options advertise component support, not affordability, prerequisite or admission proof.
-- `RuntimeProductionCausalityV1.worldSnapshots` preserves producer-scoped prices/levels at each sampled tick, physical
-  lanes and owned readiness. Fair positions require the exact current owned committed observation; absent/stale inputs
-  stay null/gapped. Reachability stays null. Supplied identity, numeric, duration, queue, future observation or restore
-  contradictions fail closed and suppress world/setup plus all normalized lifecycle/money arrays.
-- `initialQueues` joins the actual paused preset application to native delivery/application, exact physical insertion,
-  stored item/definition price and actual scoped payment. Immediate items receive paid provenance; per-tick insertion
-  is explicitly unpaid. Before/after setup payment balances precede resource-start resets, and only tick-zero facts can
-  prove initial provenance. Later same-item charges/refunds/terminals cannot rewrite it. Unknown/pre-capture work remains
-  gapped. Missing setup/tick-zero/insertion/payment never receives credit; supplied mismatches fail closed.
-- `runVariant` supplies the existing real preset application to the normalizer; reports retain both new arrays through
-  the existing normalized object. Three new specs and a synthetic fixture are authored/unrun for price versus level,
-  research cost, Skaduwee production without invented FrostForge research, readiness, exact/stale/hidden fair inputs,
-  isolated initial balances, unpaid per-tick setup, later facts, missing authority and contradictory money/native order.
-- This is a diagnostic authoring slice. Full `RuntimeProductionEvidenceV1`, construction catalog, decision cadence,
-  navigation/exposure, useful stable effects, paired fairness/setup, global/restore claims and strategic AI behavior remain
-  open. Full mandatory PRO-03/06/07 gaps/oracles/denominators remain intact. No recipe/config/package/migration/baseline /
-  skill/policy changes. Tests/E2E/simulations, format/lint/type/build/editor/schema/repository checks and doctor/context /
-  catalog commands remain deferred. Capture/report pressure, actual bootstrap, shared Phaser mock debt and Nx/Jest/Phaser
-  compatibility need final proof.
-- Prior [cancellation/removed claims](follow-ups/runtime-matrix-ci.md#production-cancellation-lifecycle-checkpoint-2026-10-05-unverified)
-  is in `56bd5e53e`; [created actor/tech](follow-ups/runtime-matrix-ci.md#production-completed-effect-authority-checkpoint-2026-10-05-unverified)
+- `PlayerAiController.stepPureBrain` now passes its actually consumed observation/catalog and real configured interval /
+  completed-attempt count to the selected-result event before dispatch. Input capture is listener-gated, bounded and
+  passive; empty decisions remain present. Publication and raw retention detach the input. No new timers, subscriptions,
+  saved state, actor scans or navigation queries were introduced. Old/synthetic publishers retain an explicit missing gap.
+- `RuntimeProductionCausalityV1.decisions` separates selected observer sequence/tick, pure identity, completed controller
+  attempts, configured interval and consumed observation age. Same-tick catch-up and stale observations are retained
+  without pretending the configured interval is an observed cadence guarantee. Missing selections, skipped attempts,
+  fallback clocks, prior history and authority changes remain gaps. Supplied regression/identity/time/restore contradictions
+  suppress decisions and all normalized world/setup/lifecycle/money arrays.
+- Fair decision input retains the observation's own permitted cached graph, its independent generation/status/age, exact
+  native access-product statuses, and current visible enemy positions/weapon profiles. Remembered enemies cannot supply
+  exposure. The existing access-product publisher only checks endpoints and currently never returns `ready`; even an
+  input labelled ready supplies no completed-path proof. Producer reachability and target-specific building range remain
+  null/gapped. No live opponent lookup, coordinate-distance path inference or invented high-ground range is used.
+- New Jest controller/input publication and Playwright decision/fair-input specs, plus the raw-capture spec update, are
+  authored/unrun. The existing decision-lineage fixture was preserved after a source-review naming collision; the new
+  fixture has its own consumed-input owner. Mandatory full PRO-03/06/07 oracle gaps/denominators remain unchanged.
+- This is a diagnostic authoring slice. Full production evidence, construction catalog, complete cadence/history,
+  producer navigation/placement/exposure, useful stable effects, paired fairness/setup, global/restore liabilities and
+  strategic AI behavior remain open. All tests/E2E/simulations, format/lint/type/build/editor/schema/repository checks and
+  doctor/context/catalog remain deferred. Capture/report pressure, actual bootstrap, shared Phaser mock emitter/lifecycle
+  debt and Nx/Jest/Phaser compatibility need final proof. No recipe/config/package/migration/baseline/skill/policy edits.
+- Prior [owned world/setup](follow-ups/runtime-matrix-ci.md#production-owned-world-setup-checkpoint-2026-10-05-unverified)
+  is in `66f450a66`; [cancellation/removed claims](follow-ups/runtime-matrix-ci.md#production-cancellation-lifecycle-checkpoint-2026-10-05-unverified)
+  in `56bd5e53e`; [created actor/tech](follow-ups/runtime-matrix-ci.md#production-completed-effect-authority-checkpoint-2026-10-05-unverified)
   in `0101ef0e3`; [rejection/release](follow-ups/runtime-matrix-ci.md#production-native-rejection-checkpoint-2026-10-04-unverified)
   in `dd1e9192e`; [physical intervals](follow-ups/runtime-matrix-ci.md#production-physical-queue-checkpoint-2026-10-04-unverified)
-  in `f6e60b9e0`. Earlier money/decision/claim/human socket anchors remain reachable through those checkpoints.
+  in `f6e60b9e0`. Earlier authority/human socket anchors remain reachable through those checkpoints.
   Human worlds do not prove AI strategy. Tivara uses Sandhold; initial Skaduwee FrostForge lacks research.
 
 - Multiplayer diagnostic/lifecycle authoring checkpoint (2026-09-30, **unverified**): browser-only relay and local-hash

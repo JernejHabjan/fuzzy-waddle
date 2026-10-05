@@ -1,5 +1,6 @@
 import type { AiBrainStateV1, AiIntentDecisionV1, AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
 import type { AiDecisionIdentity } from "./ai-decision-identity";
+import type { AiDecisionInputV1 } from "./ai-decision-input-v1";
 
 export const AI_DECISION_DISPATCH_EVENT = "ai-decision-dispatch";
 
@@ -10,6 +11,8 @@ export const AI_DECISION_DISPATCH_EVENT = "ai-decision-dispatch";
  */
 export interface AiDecisionDispatchEvent {
   readonly identity: AiDecisionIdentity;
+  /** Absent only on older/synthetic publishers; exact consumed input is never borrowed from a later checkpoint. */
+  readonly input?: AiDecisionInputV1;
   readonly acceptedIntents: readonly AiIntentV1[];
   readonly decisions: readonly AiIntentDecisionV1[];
   readonly reservations: AiBrainStateV1["reservations"];

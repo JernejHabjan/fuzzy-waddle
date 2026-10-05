@@ -1664,3 +1664,91 @@ and strategic AI cancellation/transition worlds; keep compatible PRO-03/06 pairs
 for these cross-authority joins. Official OpenAI Docs searched/fetched this turn confirm complex coding and `high`
 support: [GPT-6.1 Sol](https://developers.openai.com/api/docs/models/gpt-6.1-sol). The recommendation is a task judgment,
 not a model switch or an inference about active settings. Commit/push this slice, verify remote, then pause.
+
+
+### Production consumed decision input checkpoint (2026-10-05, unverified)
+
+**Scope/provenance:** grouped #815/#816 PRO-03/06/07 diagnostic authoring, beginning at
+`66f450a669739c1fe91672671984c2a18e40999a`, integration worktree
+`/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`.
+The containing commit owns this batch; verify remote on resume. Nx merge `59f72e037` is preserved.
+Actual model/effort is unknown. Existing comment authorization persists. All executable validation is deferred.
+No full production contract, family, issue, cadence guarantee, path or exposure acceptance is claimed.
+
+| Acceptance | Implemented owners / consumers | Evidence / status |
+| --- | --- | --- |
+| 1. Exact consumed selected-step inputs and real scheduler fields | Phaser `AiDecisionInputV1`, `captureAiDecisionInput`, `PlayerAiController.stepPureBrain`, `dispatchAiBrainResult`, `AiDecisionDispatchEvent`; existing raw selected fact | Listener-gated passive bounded capture; observation/catalog actually consumed, configured interval and completed attempts before selection. Event/raw clones precede ordinary dispatch and debug/state adoption. Empty decisions retained. Source-reviewed, authored/unverified. |
+| 2. Fair committed topology/query/threat input with no fabricated reach | `normalizeRuntimeProductionFairInput`, `validateRuntimeProductionFairGraph`, `RuntimeProductionFairInputV1` | Own cached graph generation/status/age, exact owned-to-visible-enemy endpoint checks and visible weapon facts. Remembered opponents excluded from current threats. Producer path and target-specific building range remain null/gapped. Source-reviewed, authored/unverified. |
+| 3. Cadence join, missing authority and contradiction fencing | `normalizeRuntimeProductionDecisions`, `RuntimeProductionDecisionV1` | Exact selected identity/input/catalog, configured interval versus observer time and observation age. Catch-up/stale/skips/epochs/prior history retain explicit semantics. Restore, regression, mismatch, invalid topology/time/query fail closed; missing catalog cannot hide supplied graph contradictions. Source-reviewed, authored/unverified. |
+| 4. Report consumer and meaningful negative contracts | `RuntimeProductionCausalityV1.decisions`, sole causality normalizer, existing variant report; three new specs and raw capture spec update | Global failures suppress decisions plus world/setup and all normalized lifecycle/money arrays. New controller/input and fair/cadence specs discovered by normal suites, authored/unrun. Full evaluator/oracle/denominator untouched. |
+| 5. Audits, cold start and authorized publication/pause | This checkpoint and HANDOFF Quick resume; exact task-owned staging and normal commit/push | Source-only review/audits below. Publication belongs to containing commit; verify remote then pause. Retain Sol/high for related cross-authority joins. |
+
+**Actual input/cadence:** input capture receives the same committed observation used by `pureBrain.step` and the
+synchronously paired catalog used by its managers. It adds the controller's actual configured interval (converted
+from milliseconds using the fixed-clock constant), completed scheduled attempts before this selected step, current
+simulation tick or explicit render fallback, and actual restore flag. The selected event is cloned before shared
+command dispatch; the existing capture clones that event in observer order. No new listener/timer/service/scan/query,
+save/wire schema or strategic policy was introduced. The helper performs no authority reads when the selected-event
+listener is absent. Bounds are 256 actors, 64 access products, 64 actor capabilities, 32 attacks per profile, 512 catalog
+entries/unsupported rows, 512 graph nodes/unknown nodes/transfers and 2,048 links. Oversized optional inputs become
+null with named gaps, rather than a silently truncated complete world. The raw capture's existing fact-drop fence
+continues to fail closed. Report/capture pressure and nested payload size still require final-gate evidence.
+
+`normalizeRuntimeProductionDecisions` retains selected sequence/tick, native pure identity, scheduler fields,
+observation age, paired capability catalog and fair input. Configured interval is not measured execution spacing:
+same-tick catch-up and stale consumed observations can occur after asynchronous pre-tick work. Repeated/regressing
+pure decisions or controller attempts, changed same-epoch cadence, foreign/future/mismatched observations/catalogs,
+restore, invalid graph/query/weapon facts and bad observer order fail closed. Skipped attempts, missing input/catalog,
+render fallback, initial unknown history and authority changes stay explicit gaps. Missing metadata is never supplied
+by a later settled checkpoint. Missing catalog/observation does not hide a supplied contradictory graph.
+
+**Navigation/threat finding:** `AiObservationPipeline.projectAccessProducts` delegates to `projectAccessProduct`.
+That publisher names exact owned-source/current-visible-enemy pairs and checks whether each endpoint is traversable;
+it returns `not_ready`, `unknown`, `blocked` or `service_failed`, and has no branch that produces `ready` or a complete
+path. Those statuses are retained verbatim. A graph node assignment, cached ready graph, blocked endpoint or input
+labelled ready is never converted to a producer reachable/safe boolean. Cached graph generation differs legitimately
+from observation generation; pending/old graph status/age remains visible. Query revision is its own invalidation
+revision, not guessed from graph generation. The fair projector validates actual pair IDs, node endpoints, domains
+and observation-time query stamp, without requerying navigation or accessing live opponents.
+
+Current visible enemy positions and attack profiles come only from the consumed observation. Last-seen opponents
+never supply exposure, live cooldown or current weapons. Missing profiles/positions stay null, not zero. Base range,
+minimum range, targeting domains and high-ground bonus remain separate weapon facts. The shared runtime picks a
+specific attack against a target and applies actual elevations; this batch deliberately leaves `buildingRange` null
+until target-specific authority is joined. Full producer construction/spawn/service reachability remains open.
+
+**Implementation Review / Omission Audit (source only):** traced fixed-clock scheduler catch-up, pre-tick commit,
+pure selection, manager catalog, host fence, listener-free dispatch, event/raw detachment, ledger consumers, report
+retention, permitted graph/access publisher and visible/remembered combat projection. Reviewed compatibility with
+legacy selected fixtures and ordinary human captures. Source review caught an existing fixture-name collision;
+restored the original decision-lineage fixture verbatim and placed new data in
+`skirmish-ai-runtime-production-consumed-decision-fixture.ts`. Added current/stale/same-tick/empty/overflow/fallback /
+restore/cadence-regression/skipped-attempt, hidden/foreign/future/duplicate/malformed weapons, pending/missing graph,
+invalid endpoints/query owners/timestamps and partial-missing-input contradictions. Tests are authored/unrun; no
+synthetic object proves a useful real decision or fair legal world. No skill/tool/policy change was needed.
+
+**Separate Final Closure Audit (source only):** acceptance 1–5 maps to concrete owners/consumers and authored specs.
+Source review supports authoring/publication only. No executable validation ran, including automated source-size /
+format/module/type checks. New owners are bounded responsibility-based files with single substantive contracts;
+no content-hash baseline was refreshed. Existing lineage fixture and native queue/payment/cancel/save/relay/score /
+strategic policies remain intact. Full cadence closure, producer navigation/placement/exposure, construction catalog,
+stable usefulness, paired setup, global/restore claims, full evidence and both-faction AI outcomes remain open.
+
+**Deferred focused commands (unrun; append to prior final-gate commands):**
+
+```bash
+NX_DAEMON=false pnpm exec nx test probable-waffle-phaser --testPathPatterns='ai-runtime-decision-input|dispatch-ai-brain-result|player-ai-controller.spec|ai-runtime-production-capture' --skip-nx-cache
+pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts skirmish-ai-runtime-production-decisions.spec.ts skirmish-ai-runtime-production-fair-input-normalization.spec.ts skirmish-ai-runtime-production-decision-lineage.spec.ts skirmish-ai-runtime-production-causality-normalization.spec.ts skirmish-ai-runtime-production-world-normalization.spec.ts
+```
+
+Review Nx 23.2.1/Jest 30.3.0/Phaser 4.2.1 flags/dependencies and shared Phaser mock Events/lifecycle debt at the final
+gate. All tests/E2E/simulations, format/lint/type/build/editor/schema/repository and doctor/context/catalog commands
+remain deferred. Real cadence, bounded capture/report pressure, legal bootstrap, stable usefulness, both factions,
+full PRO-03/06/07 oracle/denominator and multiplayer parity need executable evidence.
+
+**Next grouped authoring:** target-specific shared producer navigation/placement and building attack/elevation
+authority, then stable useful actor/tech effects and actual paired setup into full production evidence. Follow with
+legal Skaduwee research producer setup and useful strategic AI cancellation/transition worlds; group compatible
+PRO-03/06 pairs. Retain **GPT-6.1 Sol / high** for these cross-authority joins. Official OpenAI Docs searched/opened
+this turn confirm complex coding and `high` support: [GPT-6.1 Sol](https://developers.openai.com/api/docs/models/gpt-6.1-sol).
+The recommendation is task judgment, not a switch or inference about active settings. Commit/push, verify remote, pause.
