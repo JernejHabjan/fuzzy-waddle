@@ -1409,3 +1409,90 @@ pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts skirmish
 Review merged Nx 23.2.1/Jest 30.3.0/Phaser 4.2.1 flags/dependencies at that gate. Shared Phaser mock emitter/lifecycle
 omissions remain prior unverified debt. Type/module/source-structure compatibility, capture/report pressure, native
 bootstrap and both-faction strategic outcomes remain executable final-gate obligations.
+
+
+## Production completed-effect authority checkpoint (2026-10-05, unverified)
+
+**Scope/provenance:** current #815/#816 PRO-03/06/07 slice is actual actor creation / tech registration bound to native
+purchase and physical completion removal. Base `dd1e9192e1f7ae9e52418b2f4adaf705e09689ab`, integration worktree
+`/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; unrelated Nx migration preserved.
+This closes the bounded authoring slice only; full lifecycle, RuntimeProductionEvidenceV1 and executable proof stay open.
+
+| Acceptance | Owners / consumers | Status / evidence |
+| --- | --- | --- |
+| 1. Actual completion authorities | QueueComponent -> ProductionComponent / production-spawner and ResearchComponent -> observeQueueCompletionAuthority | Authored/unverified: removed live item reaches the real creator/registration call; callback invoked once, exact result/throw, existing order and async behavior retained. |
+| 2. Bounded detached raw capture | QueueCompletionAuthorityEvent, raw completion/actor contracts and projectors, AiRuntimeProductionCapture | Authored/unverified: exact before/after/threw, actual object/index/canonical identity and tech membership; real index/service notifications, restore, capture/drop limits and teardown. |
+| 3. Native completed-effect projection | Completion interval validator, completed-effect matcher, projectRuntimeProductionCompletions and normalizer | Authored/unverified: native selected purchase -> consumed physical head -> actual new registration -> later terminal; exact times, gaps and group suppression. |
+| 4. Consumers / contract authoring | Rejection projection, existing runVariant/report/evaluator; new helper/capture Jest specs and completion Playwright spec/fixtures | Authored/unrun: production/research, canonical variant, async terminal, missing/contradictory/reused authority, restore/detachment/throw/disposal; rejected attempts forbid completion callbacks too. |
+| 5. Source review / handoff / publication | This checkpoint, HANDOFF Quick resume and exact task-owned staged scope | Source-only implementation review/Omission Audit and separate Final Closure Audit. All execution deferred; commit/push/remote verification/pause remains the publication boundary. |
+
+**Actual call path and timing:** the queue removes its consumed zero-time head through the existing physical mutation
+helper. It then passes that exact removed handle to the production/research component. The passive completion helper
+runs around the actual synchronous creator call after legal spawn selection, or around the actual TechTreeService
+registration call before unit upgrades and component notifications. It adds no async continuation. Listener-free calls
+still execute the original callback once, returning the same object/undefined or propagating the same throw. Missing
+legal spawn and legacy calls without an item produce no invented creation scope. A thrown authority has before/threw,
+never after. A real undefined creator result with its failed native terminal stays a named creation-failed gap, without
+completion credit or a fabricated actor. These diagnostics are scene-local WeakMap interval identities; no save/relay/gameplay deduplication role.
+
+**Raw provenance:** the detached item uses the existing capture item owner even outside its lane. The actual returned
+object must be indexed as that same object in its own scene, owned, active/alive/finished, and in the producer scene.
+Canonical requested/created product families both use the shared definition registry so a genuine random variant
+can match its purchased family; neither side is inferred from a display name in Node. The index's real actorRegistered callback is retained separately inside creation; the tech service's existing
+researchCompleted callback is retained inside registration, with actual false -> true membership. Complete current
+boundary samples and restore flags remain separate from these identities. New observers use existing subscriptions /
+fact limits/drop reporting and are removed at shutdown/destroy/disposal. Capture and index-lookup/report cost is unmeasured.
+
+**Normalized authority:** `RuntimeProductionCausalityV1.completions` retains purchase command/effect/plan, exact item /
+producer, request sequence/tick, intended bus tick, physical removal sequence/tick, creator/registration interval,
+registration sequence and later native completed terminal sequence/tick/world link. A production terminal may occur
+on a later async continuation tick. The native terminal alone cannot prove actor type, registration or research scope.
+Missing native selection/item/physical interval/notification/terminal remains a named gap without nearest-snapshot or
+world-link substitution. Older captures without new facts retain the created-effect gap. Full raw/global gaps remain;
+local success does not provide stable strategic utility, effective researched level, fair reachability or complete event
+cash/liability/claim authority. Removed-before-terminal per-tick ownership stays null/gapped for the next lifecycle slice.
+
+**Fail-closed behavior:** supplied wrong native stamp/context/producer/item/price, reused removal/effect, duplicate /
+pre-existing registration, conflicting success/cancel/reject/failure, wrong world link, wrong actor family/owner/index /
+scene, inactive/dead/unfinished created actor, false registration or supplied restore contradict completion. Native
+terminal/creation conflicts are inspected before requiring physical removal, so a missing interval cannot mask them.
+The rejection projector now forbids attributed completion authority on stamped rejected application and unstamped
+rejected admission. Any diagnostic failure suppresses completions, rejections, payments, operations and mutations while
+retaining raw facts. Missing older boundary state stays an explicit gap, with no invented resource or useful-effect record.
+
+**Implementation review / Omission Audit:** source-traced actual queue removal -> shared component/spawner/service
+call -> exact returned object/new research -> real index/service callback -> native terminal -> normalizer -> existing
+runVariant/report/evaluator. Reviewed successful/absent/throwing creation, missing service/owner, canonical variants,
+registration ordering and duplicate/reuse fences, unchanged async continuation, legacy callers, restore, bounds and
+cleanup. Added explicit compound filter discriminants and checked independent callback/terminal timestamps. Source
+review repaired the rejection consumer to recognize newly introduced completion facts and moved terminal contradiction
+inspection ahead of missing-removal handling. New specs use existing Jest/default Playwright discovery. No mandatory
+oracle, full evidence gap, recipe, coverage denominator, source baseline, price/refund rule or relay schema was weakened.
+
+**Separate Final Closure Audit:** after source repairs, rechecked all five acceptance items, immediate native/report /
+rejection consumers, detached live-handle/item/index/tech projection, explicit null/gap ownership and task-owned scope.
+Source owners remain split by responsibility; no baseline refresh or automated size/format check. Shared Phaser mock
+Events.EventEmitter/GameObjects.Events lifecycle omissions remain prior unverified debt. No policy/skill/tool change,
+model switch, agent/thread/worktree/branch/PR creation or issue closure. Every executable check remains deferred.
+Publish this coherent actor/tech authority batch normally, verify local/remote SHA and pause; no release readiness claim.
+
+**Next grouped authoring:** exact cancellation request/application/removal/refund lifecycle with the original purchase
+and distinct accepted cancel execution; removed per-tick ownership and actual shared per-tick refund lineage. Continue
+fair ready/reachable producers, stable useful products/tech, actual runtime price/duration/effective-level catalog and
+paired setup, legal Skaduwee research producer and strategic AI cancellation/transition worlds. Keep compatible
+PRO-03/06 pairs together. Recommend **GPT-6.1 Sol / high** for the remaining cross-authority contracts; this is judgment,
+not an automatic switch. Actual active settings are unavailable. [OpenAI Docs](https://developers.openai.com/api/docs/models/gpt-6.1-sol)
+was searched and opened for this recommendation and supports high effort.
+
+Add these **unrun proposed commands** to the final gate alongside prior rejection/physical/payment/progress/decision /
+preset/pending/digest/oracle/map/multiplayer checks:
+
+```bash
+NX_DAEMON=false pnpm exec nx test probable-waffle-phaser --testPathPatterns='observe-queue-completion-authority|ai-runtime-completion-capture|mutate-shared-queue-item|ai-runtime-production-capture' --skip-nx-cache
+pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts skirmish-ai-runtime-production-completions.spec.ts skirmish-ai-runtime-production-rejections.spec.ts skirmish-ai-runtime-production-queue-mutations.spec.ts skirmish-ai-runtime-production-operation-projection.spec.ts skirmish-ai-runtime-production-causality-normalization.spec.ts
+```
+
+Review merged Nx 23.2.1/Jest 30.3.0/Phaser 4.2.1 flags/dependencies at that gate. All tests/E2E/simulations, format/lint /
+type/build/editor/schema/repository checks and doctor/context/catalog commands remain deferred. Native helper/capture
+runtime compatibility, source structure, capture/report pressure, actual bootstrap and both-faction strategic outcomes
+remain final-gate obligations.

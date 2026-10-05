@@ -35,6 +35,7 @@ export function productionCaptureFixture() {
     data: { playerNumber: number; playerStateData: { resources: Partial<Record<ResourceType, number>> } } }>();
   const queueChanges = new Subject<never[]>();
   const unregistered = new Subject<Phaser.GameObjects.GameObject>();
+  const registered = new Subject<Phaser.GameObjects.GameObject>();
   const researches = new Subject<{ playerNumber: number; researchType: ResearchType }>();
   const completedResearch = new Set<ResearchType>();
   const ticks = { currentTick: 0, tick$: new Subject<number>() };
@@ -50,14 +51,17 @@ export function productionCaptureFixture() {
   const scene = { players: [{ playerNumber: 2 }], communicator: { playerChanged: { on: changes } },
     events: new Phaser.Events.EventEmitter() } as unknown as ProbableWaffleScene;
   const actor = { scene, active: true, name: ObjectNames.AnkGuard } as Phaser.GameObjects.GameObject;
+  const indexedActors = [actor];
   jest.mocked(getPlayer).mockReturnValue({ getResources: () => money } as never);
   jest.mocked(getSceneSystem).mockReturnValue({ getAiPlayerController: () => controller } as never);
   jest.mocked(getSceneService).mockImplementation((_scene, service) => {
     if (service === SimulationTickService) return ticks as never;
     if (service === CommandBusService) return { command$: commands, commandOutcome$: outcomes } as never;
-    if (service === ActorIndexSystem) return { getAllIdActors: () => [actor], getOwnedActors: () => [actor],
-      actorRegistered: new Subject(), actorUnregistered: unregistered } as never;
-    if (service === TechTreeService) return { researchCompleted: researches, getPlayerResearch: () => completedResearch } as never;
+    if (service === ActorIndexSystem) return { getAllIdActors: () => indexedActors, getOwnedActors: () => indexedActors,
+      getActorById: (id: string) => indexedActors.find((entry) => getActorComponent(entry, IdComponent)?.id === id) ?? null,
+      actorRegistered: registered, actorUnregistered: unregistered } as never;
+    if (service === TechTreeService) return { researchCompleted: researches, getPlayerResearch: () => completedResearch,
+      isResearched: (_player: number, type: ResearchType) => completedResearch.has(type) } as never;
     return undefined;
   });
   jest.mocked(getActorComponent).mockImplementation((_actor, component) => {
@@ -67,6 +71,6 @@ export function productionCaptureFixture() {
     return undefined;
   });
   return { capture: new AiRuntimeProductionCapture(scene), state, controller, scene, actor, queuedItems,
-    ticks, money, changes, commands, outcomes, queueChanges, unregistered, researches, completedResearch };
+    ticks, money, changes, commands, outcomes, queueChanges, unregistered, registered, indexedActors, researches, completedResearch };
 }
 

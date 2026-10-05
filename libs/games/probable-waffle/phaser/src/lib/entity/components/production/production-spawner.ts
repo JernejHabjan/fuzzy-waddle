@@ -1,3 +1,5 @@
+import type { UnifiedQueueItem } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/queue-item";
+import { observeQueueCompletionAuthority } from "../queue/observe-queue-completion-authority";
 import type Phaser from "phaser";
 import type { OwnerComponent } from "../owner-component";
 import type { Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
@@ -17,13 +19,17 @@ import { OrderType } from "../../../ai/order-type";
 import { getActorSystem } from "../../../data/actor-system";
 import { ActionSystem } from "../../systems/action.system";
 
-/** Resolve a legal spawn and apply the existing rally action; the caller remains the queue owner. */
+/**
+ * Resolve a legal spawn and apply the existing rally action; the caller remains the queue owner.
+ * A supplied removed handle scopes the actual synchronous creator call, without changing async terminal timing.
+ */
 export async function spawnProductionActor(
   gameObject: Phaser.GameObjects.GameObject,
   item: ProductionQueueItem,
   rallyPoint: RallyPoint,
   navigationService: NavigationService,
-  ownerComponent: OwnerComponent | undefined
+  ownerComponent: OwnerComponent | undefined,
+  queueItem?: UnifiedQueueItem
 ): Promise<string | null> {
   const { actorName } = item;
 
@@ -87,7 +93,8 @@ export async function spawnProductionActor(
   const sceneActorCreator = getSceneService(gameObject.scene, SceneActorCreator);
   if (!sceneActorCreator) throw new Error("SceneActorCreator not found");
 
-  const newGameObject = sceneActorCreator.createFinishedActor(actorName, finalSpawnPosition, originalOwner);
+  const create = () => sceneActorCreator.createFinishedActor(actorName, finalSpawnPosition, originalOwner);
+  const newGameObject = queueItem ? observeQueueCompletionAuthority({ producer: gameObject, item: queueItem }, create) : create();
   if (newGameObject) {
     if (originalOwner !== undefined) {
       gameObject.scene.events.emit(ProbableWaffleSceneEventName.ScoreUnitProduced, originalOwner);

@@ -90,7 +90,6 @@ export function projectRuntimeProductionQueueMutations(
         before.boundaryState?.exhaustedProgressItemId !== item.itemId) {
         failures.push("production_ai_mutation_completion_progress_missing"); continue;
       }
-      gaps.push("production_ai_mutation_created_effect_authority_missing");
     }
     const repeated = value.operation === "enqueue" ? inserted.has(item.itemId) || removed.has(item.itemId) : removed.has(item.itemId);
     if (repeated) { failures.push("production_ai_mutation_item_reused"); continue; }

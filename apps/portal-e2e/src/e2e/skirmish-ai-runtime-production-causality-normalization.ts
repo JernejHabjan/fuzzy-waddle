@@ -1,3 +1,4 @@
+import { projectRuntimeProductionCompletions } from "./skirmish-ai-runtime-production-completions";
 import { matchRuntimeRejectedAdmission } from "./skirmish-ai-runtime-rejected-admission";
 import { projectRuntimeProductionRejections } from "./skirmish-ai-runtime-production-rejections";
 import { projectRuntimeProductionQueueMutations } from "./skirmish-ai-runtime-production-queue-mutations";
@@ -36,6 +37,7 @@ export function normalizeRuntimeProductionCausality(capture: AiRuntimeProduction
   const operationBoundaries = capture.facts.filter((fact) =>
     fact.kind === "queue_resource" || fact.kind === "queue_changed" || fact.kind === "queue_progress" || fact.kind === "queue_mutation");
   for (const fact of capture.facts) {
+    if (fact.kind === "queue_completion") fact.completion.gaps.forEach((gap) => gaps.add(gap));
     if (fact.kind === "queue_mutation") fact.mutation.gaps.forEach((gap) => gaps.add(gap));
     if (fact.kind === "queue_progress") fact.progress.gaps.forEach((gap) => gaps.add(gap));
     fact.boundaryState?.gaps.forEach((gap) => gaps.add(gap));
@@ -163,6 +165,9 @@ export function normalizeRuntimeProductionCausality(capture: AiRuntimeProduction
   const mutations = projectRuntimeProductionQueueMutations(capture, commands, payments.payments, operations.operations);
   failures.push(...mutations.failures);
   mutations.gaps.forEach((gap) => gaps.add(gap));
+  const completions = projectRuntimeProductionCompletions(capture, commands, mutations.mutations);
+  failures.push(...completions.failures);
+  completions.gaps.forEach((gap) => gaps.add(gap));
   for (const fact of queueFacts) {
     if (fact.resource.originatingCommandContext?.execution.source !== "ai" ||
       fact.resource.payment !== "per_successful_tick" || fact.resource.operation !== "tick_charge") continue;
@@ -196,6 +201,7 @@ export function normalizeRuntimeProductionCausality(capture: AiRuntimeProduction
   return structuredClone({
     schemaVersion: 1, failures: [...new Set(failures)], gaps: [...gaps].sort(), commands, operationBoundaries,
     payments: failures.length ? [] : payments.payments, operations: failures.length ? [] : operations.operations,
+    completions: failures.length ? [] : completions.completions,
     queueMutations: failures.length ? [] : mutations.mutations, rejections: failures.length ? [] : rejections.rejections
   } satisfies RuntimeProductionCausalityV1);
 }

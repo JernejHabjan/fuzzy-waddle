@@ -1,3 +1,7 @@
+import { QUEUE_COMPLETION_AUTHORITY_EVENT, type QueueCompletionAuthorityEvent } from
+  "../../../entity/components/queue/queue-completion-authority-event";
+import { projectAiRuntimeQueueCompletion } from "./project-ai-runtime-queue-completion";
+import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor";
 import { QUEUE_MUTATION_EVENT, type QueueMutationEvent } from "../../../entity/components/queue/queue-mutation-event";
 import { projectAiRuntimeQueueMutation } from "./project-ai-runtime-queue-mutation";
 import Phaser from "phaser";
@@ -65,6 +69,7 @@ export class AiRuntimeProductionCapture {
     scene.events.on(AI_DECISION_DISPATCH_EVENT, this.observeDecision, this);
     scene.events.on(AI_INTENT_COMMAND_DISPATCH_EVENT, this.observeDispatch, this);
     scene.events.on(QUEUE_MUTATION_EVENT, this.observeMutation, this);
+    scene.events.on(QUEUE_COMPLETION_AUTHORITY_EVENT, this.observeCompletion, this);
     scene.events.on(QUEUE_PROGRESS_EVENT, this.observeProgress, this);
     scene.events.on(QUEUE_RESOURCE_EMISSION_EVENT, this.observeQueueResource, this);
     this.subscriptions.add(bus.commandOutcome$.subscribe((outcome) => {
@@ -95,7 +100,14 @@ export class AiRuntimeProductionCapture {
     this.subscriptions.add(tech.researchCompleted.subscribe(({ playerNumber, researchType }) => this.append({
       ...this.boundary(playerNumber), kind: "research_completed", researchType
     })));
-    this.subscriptions.add(index.actorRegistered.subscribe((actor) => this.watchQueue(actor)));
+    this.subscriptions.add(index.actorRegistered.subscribe((actor) => {
+      const playerNumber = getActorComponent(actor, OwnerComponent)?.getOwner();
+      if (playerNumber !== undefined && actor.scene === this.scene) this.append({
+        ...this.boundary(playerNumber), kind: "actor_registered", actor: captureAiRuntimeCreatedActor(actor),
+        snapshotRestoreInProgress: isSnapshotApplyInProgress(this.scene)
+      });
+      this.watchQueue(actor);
+    }));
     this.subscriptions.add(index.actorUnregistered.subscribe((actor) => {
       const playerNumber = getActorComponent(actor, OwnerComponent)?.getOwner();
       const actorId = getActorComponent(actor, IdComponent)?.id;
@@ -188,6 +200,7 @@ export class AiRuntimeProductionCapture {
     this.scene.events.off(AI_DECISION_DISPATCH_EVENT, this.observeDecision, this);
     this.scene.events.off(AI_INTENT_COMMAND_DISPATCH_EVENT, this.observeDispatch, this);
     this.scene.events.off(QUEUE_MUTATION_EVENT, this.observeMutation, this);
+    this.scene.events.off(QUEUE_COMPLETION_AUTHORITY_EVENT, this.observeCompletion, this);
     this.scene.events.off(QUEUE_PROGRESS_EVENT, this.observeProgress, this);
     this.scene.events.off(QUEUE_RESOURCE_EMISSION_EVENT, this.observeQueueResource, this);
     this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.dispose, this);
@@ -256,6 +269,15 @@ export class AiRuntimeProductionCapture {
     this.append({ ...boundary, kind: "queue_resource", resource });
   };
 
+  /** Actual creator/tech authority, sampled separately from prior removal and later native terminal reporting. */
+  private readonly observeCompletion = (event: QueueCompletionAuthorityEvent): void => {
+    if (this.disposed) return;
+    const playerNumber = getActorComponent(event.producer, OwnerComponent)?.getOwner();
+    if (playerNumber === undefined) return;
+    this.append({ ...this.boundary(playerNumber), kind: "queue_completion",
+      completion: projectAiRuntimeQueueCompletion(event, this.identify) });
+  };
+
   /** Earliest physical insertion transfers future charges; removal callbacks retain their actual terminal ordering. */
   private readonly observeMutation = (event: QueueMutationEvent): void => {
     if (this.disposed) return;
@@ -303,7 +325,7 @@ export class AiRuntimeProductionCapture {
     if (this.facts.length < MAX_FACTS) {
       const boundaryState = [
         "decision_selected", "intent_dispatch", "outcome", "queue_resource", "queue_changed", "command_delivered",
-        "queue_progress", "queue_mutation"
+        "queue_progress", "queue_mutation", "queue_completion", "actor_registered", "research_completed"
       ]
         .includes(fact.kind) ? this.sampleBoundaryState(fact.playerNumber, exhaustedProgressItem) : undefined;
       this.facts.push(structuredClone({ ...fact, sequence, ...(boundaryState ? { boundaryState } : {}) }));

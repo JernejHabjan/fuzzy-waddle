@@ -48,7 +48,8 @@ export function projectRuntimeProductionRejections(
         return true;
       }
       const context = fact.kind === "queue_resource" ? fact.resource.originatingCommandContext :
-        fact.kind === "queue_mutation" ? fact.mutation.originatingCommandContext : null;
+        fact.kind === "queue_mutation" ? fact.mutation.originatingCommandContext :
+          fact.kind === "queue_completion" ? fact.completion.originatingCommandContext : null;
       const cancel = fact.kind === "queue_resource" ? fact.resource.cancellationCommand :
         fact.kind === "queue_mutation" ? fact.mutation.cancellationCommand : null;
       const same = (execution: GameCommandExecution | undefined) => commandId ? execution?.commandId === commandId : within &&

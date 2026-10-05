@@ -1,3 +1,5 @@
+import type { AiRuntimeQueueCompletionV1 } from "./ai-runtime-queue-completion-v1";
+import type { AiRuntimeCreatedActorV1 } from "./ai-runtime-created-actor-v1";
 import type { AiRuntimeQueueMutationV1 } from "./ai-runtime-queue-mutation-v1";
 import type { GameCommand, GameCommandOutcome, ResearchType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiRuntimeProductionQueueV1 } from "./ai-runtime-production-queue-v1";
@@ -31,6 +33,8 @@ export type AiRuntimeProductionFactV1 = {
     /** Exact pre-callback ledger state; rejected receipt releases selected claims before the after sample. */
     readonly boundaryStateBefore?: AiRuntimeProductionBoundaryState;
   }
+  | { readonly kind: "queue_completion"; readonly completion: AiRuntimeQueueCompletionV1 }
+  | { readonly kind: "actor_registered"; readonly actor: AiRuntimeCreatedActorV1; readonly snapshotRestoreInProgress: boolean }
   | { readonly kind: "queue_mutation"; readonly mutation: AiRuntimeQueueMutationV1 }
   | { readonly kind: "queue_progress"; readonly progress: AiRuntimeQueueProgressV1 }
   | { readonly kind: "queue_resource"; readonly resource: AiRuntimeQueueResourceV1 }

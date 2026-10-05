@@ -179,7 +179,7 @@ export class QueueComponent {
     // Delegate to ProductionComponent for spawning logic
     let producedActorId: string | null = null;
     if (this.productionComponent) {
-      producedActorId = await this.productionComponent.handleProductionComplete(item.productionData);
+      producedActorId = await this.productionComponent.handleProductionComplete(item.productionData, item);
     }
     this.reportTerminalOutcome(
       item,
@@ -214,7 +214,7 @@ export class QueueComponent {
 
     // Delegate to ResearchComponent for tech tree registration
     if (this.researchComponent) {
-      this.researchComponent.handleResearchComplete(item.researchData);
+      this.researchComponent.handleResearchComplete(item.researchData, item);
     }
     this.reportTerminalOutcome(item, "completed", [`research:${item.researchData}`]);
 

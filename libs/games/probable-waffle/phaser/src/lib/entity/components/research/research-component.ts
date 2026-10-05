@@ -1,3 +1,4 @@
+import { observeQueueCompletionAuthority } from "../queue/observe-queue-completion-authority";
 import { emitQueueItemResource } from "../../../data/emit-queue-item-resource";
 import { GameEventEmitter as EventEmitter } from "@fuzzy-waddle/platform-game-host";
 import { researchDefinitions } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/research/research-definitions";
@@ -190,11 +191,17 @@ export class ResearchComponent {
   /**
    * Called by SharedQueueComponent when research completes.
    * Registers the research in the tech tree and emits completion events.
+   * An optional removed handle scopes the actual registration call, before unit upgrades/component notifications.
    */
-  handleResearchComplete(type: ResearchType): void {
+  handleResearchComplete(type: ResearchType, queueItem?: UnifiedQueueItem): void {
     const owner = this.ownerComponent?.getOwner();
     if (owner !== undefined) {
-      this.techTreeService?.registerResearchComplete(owner, type);
+      const register = () => {
+        this.techTreeService?.registerResearchComplete(owner, type);
+        return undefined;
+      };
+      if (queueItem) observeQueueCompletionAuthority({ producer: this.gameObject, item: queueItem }, register);
+      else register();
     }
 
     // Handle unit upgrades if this research upgrades units

@@ -279,10 +279,11 @@ export class ProductionComponent {
   /**
    * Called by SharedQueueComponent when production completes.
    * Handles spawning logic only - queue manipulation is handled by SharedQueue.
+   * The optional removed handle scopes local creation diagnostics; other callers retain their existing behavior.
    */
-  async handleProductionComplete(item: ProductionQueueItem): Promise<string | null> {
+  async handleProductionComplete(item: ProductionQueueItem, queueItem?: UnifiedQueueItem): Promise<string | null> {
     return spawnProductionActor(
-      this.gameObject, item, this.rallyPoint, this.navigationService, this.ownerComponent
+      this.gameObject, item, this.rallyPoint, this.navigationService, this.ownerComponent, queueItem
     );
   }
 

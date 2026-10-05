@@ -1,3 +1,4 @@
+import type { RuntimeProductionCompletionV1 } from "./skirmish-ai-runtime-production-completion";
 import type { RuntimeProductionRejectionV1 } from "./skirmish-ai-runtime-production-rejection";
 import type { RuntimeProductionQueueMutationV1 } from "./skirmish-ai-runtime-production-queue-mutation";
 import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
@@ -18,6 +19,8 @@ export interface RuntimeProductionCausalityV1 {
   readonly gaps: readonly string[];
   /** Rejected requests/applications retain native release authority without inventing a stamped admitted command. */
   readonly rejections: readonly RuntimeProductionRejectionV1[];
+  /** Actual completed products/tech; strategic usefulness and stable-effect acceptance remain separate. */
+  readonly completions: readonly RuntimeProductionCompletionV1[];
   readonly commands: readonly {
     readonly requestedSequence: number;
     readonly requestedTick: number;
