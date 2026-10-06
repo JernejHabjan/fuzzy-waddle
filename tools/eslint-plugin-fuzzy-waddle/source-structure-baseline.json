@@ -556,7 +556,6 @@
   "libs/games/probable-waffle/phaser/src/lib/world/services/multiplayer/command-bus.service.ts": "651378971ea2e730d9fc2e6a29fdb85a5e9f0c67265c2a83ac60e5e70a782ada",
   "libs/games/probable-waffle/phaser/src/lib/world/services/multiplayer/ready-barrier.service.ts": "93656f101289a36c8d883877df8657e28b50adc7658995c853bf9f21f17e4657",
   "libs/games/probable-waffle/phaser/src/lib/world/services/navigation-debug.service.ts": "5bf06c7c9280cf31b0d133d555706da5599942fe576d6814e7649f7ae8ce168d",
-  "libs/games/probable-waffle/phaser/src/lib/world/services/navigation.service.ts": "fc10d781b391363643272323a79ce2343ea59821eef6e4945988a1244cb5350e",
   "libs/games/probable-waffle/phaser/src/lib/world/services/recovery/authoritative-state-projection.ts": "5821504fa20049c2470ca83ea4025cb1a0515bfc10db3608c8e4625041ba544a",
   "libs/games/probable-waffle/phaser/src/lib/world/services/recovery/connection-recovery.service.ts": "5446cd04a06e3aca2b910647a30650c3ab1b5543aabc42ebc95496da5bdf455a",
   "libs/games/probable-waffle/phaser/src/lib/world/services/recovery/probable-waffle-scene-events.ts": "b2da0c4ce3feecec2272a6cf29ff8f194c3af219f2f45d48010e1cbb0a7ca2fc",

@@ -35,6 +35,92 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
 
 ## Implementation order
 
+### Production navigation owner checkpoint (2026-10-06, unverified)
+
+Machinery batch 18, #821 prerequisite for #815/#816 PRO-03/06/07 native navigation provenance.
+Base `b6d396348d19bf46d95714533bb0f49c8e6f05f4`, worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`,
+branch `feature/759-skirmish-ai`; containing commit owns this revision. Nx merge `59f72e037` is preserved.
+Actual model/effort is unavailable. No family/issue is complete; all executable validation remains at the final gate.
+
+The selected navigation owner was still an oversized content-hash exemption. The repo task-tracking rule requires a
+separate behavior-neutral prerequisite before new behavior in that owner. This batch authors that prerequisite;
+native query/cache/completed-rebuild provenance is the next acceptance boundary, not an outcome of this extraction.
+
+| Acceptance | Implemented owner / consumer | Evidence state |
+| --- | --- | --- |
+| 1. Public compatibility and scene ownership | `NavigationService`, `navigation-terrain-type.ts`, existing movement/AI/production callers | Service token, exports, signatures, subscription receiver and direct Promise forwarding preserved by source review; facade Jest unrun |
+| 2. Native graph and query/cache responsibilities | `NavigationHeightGraph`, `GroundNavigationPathfinder`, existing `WaterNavigationHelper` | Exact graph reference, direction ordering, cache TTL/result references and uncached overlays preserved; graph/cache Jest unrun |
+| 3. Grid, candidate and object-route responsibilities | `NavigationObjectGrid`, `NavigationTileSelection`, `NavigationObjectRoutes` | Collider/navigable priority, RNG progression, distance/y/x ties, target footprint and terrain routing retained; selection/facade Jest unrun |
+| 4. Maintainable source and caller wiring | Six responsibility files, facade composition, exact source-baseline entry removal | No refreshed hash, source-size command or new registration/config/save field; enforcement remains deferred |
+| 5. Review, omissions, closure and publication | Four specs, `NavigationPathfinderDouble`, handoff and this packet | Source-only audits below; exact staging, normal commit/push/remote verification and pause required |
+
+Production sources are under `libs/games/probable-waffle/phaser/src/lib/world/services/`:
+
+- `navigation-height-graph.ts`: owns the built graph/cells, debug conditions, directed traversal, sorted bounded
+  connected-component walk and static versus overlay EasyStar direction configuration. Its snapshot getter returns the
+  existing reference. A new reference is not yet a captured completed-rebuild revision.
+- `ground-navigation-pathfinder.ts`: owns the existing persistent EasyStar instance and ground cache. Native cache
+  keys, request-time wall-clock TTL of 1,000 ms, cleanup threshold, null/empty results, mutable result-array identity and
+  debug callback order remain unchanged. Dynamic occupancy overlays still use a fresh uncached EasyStar instance.
+- `navigation-object-grid.ts`: keeps the original scene-child collider and navigable-footprint passes, tinting branches,
+  footprint shrink rules and out-of-bounds writes. Navigables still overwrite collider tiles in native order.
+- `navigation-tile-selection.ts`: keeps the original radius candidates, one RNG sample per attempted candidate,
+  same-index removal, deterministic distance/y/x order, indexed representable occupancy and spawn perimeter search.
+  It samples existing owners lazily so scene initialization/replaced grid storage retain their original lifetime.
+- `navigation-object-routes.ts`: keeps actual actor/target checks, selected target footprint/radius, existing public
+  closest-target call, terrain-specific route and optional debug output. No diagnostic target/path query is added.
+- `navigation-terrain-type.ts`: owns the same literal enum; `navigation.service.ts` imports/re-exports that exact object
+  so existing `TerrainType` imports still resolve to the one authority.
+
+The facade keeps `NavigationService.UpdateNavigationEvent`, the same 100-ms trailing throttle, constructor registration,
+scene initialization and shutdown callback ownership. Rebuild order stays object overlay -> ground grid -> height graph ->
+ground EasyStar setup -> distance cache clear -> ground cache clear -> water cache clear. Base terrain/water setup
+still occurs only at initialization. Water dynamic-blocker calls still use the existing water cache without a ground
+occupancy overlay. Shutdown still removes its update listener and clears only the ground cache. The inherited trailing
+throttle/water lifetime behavior is not repaired or represented as complete disposal evidence by this split.
+
+The original async implementation moves to its owner. New facade forwarders deliberately omit `async` and return the
+owner Promise directly; adding a second async adoption layer would change completion ordering. Existing facade methods
+that already wrapped a native query remain async. Native query throws/rejections, mutable returned paths and debug
+ordering stay native-owned. In particular, a pending old ground query can still refill a cleared cache, and a late
+callback retains the request's timestamp. Native cache/rebuild observation must characterize those cases before claiming
+freshness; this extraction introduces no version guard, cache copy, new timer, query, actor scan or save/relay field.
+
+**Implementation Review / Omission Audit (source only):** acceptance 1–5 traced the facade constructor, initialization,
+all moved method bodies, static/object/dynamic/water routing, graph cell/reference consumers, movement enum imports,
+production spawn callers, DistanceHelper and marked builder/producer wrappers. Callers continue resolving the same
+service token and public methods; capture wrappers need no registration change. Dependencies on the facade in extracted
+selection/routes are type-only; runtime composition stays scene-owned. Repairs remove extra async forwarding layers,
+retain the existing closest-target public call, isolate the enum while preserving its re-export identity, and correct
+stale spawn-exhaustion/null-result comments without changing their native predicates. The exact obsolete navigation
+baseline entry is removed, with no new exemption or hash refresh. New owners keep one substantive declaration each;
+source-size enforcement is still unrun. No editor, GUI, package, config, save/wire migration or scenario registration
+applies. No skill/tool improvement was needed.
+
+Authored/unrun characterization: cache exact TTL and request-versus-callback clock, original path mutation, null/empty
+results, old callback after clear, uncached overlays and native query errors; exact graph reference, directed asymmetry,
+static/overlay order, same-height and traversal bounds; RNG/removal, current grid/water candidates, distance/y/x ties,
+occupancy sampling and spawn exhaustion; public enum/Promise identity, static/water fallback, missing source tile,
+initialization/rebuild/cache clear order and shutdown listener ownership. `NavigationPathfinderDouble` explicitly delivers
+callbacks and does not execute pathfinding. These are synthetic/native-boundary characterizations, not Phaser world,
+completed revision, useful arrival, actual cache freshness or measured runtime-cost evidence. Existing Phaser mock and
+merged Nx compatibility debt remains final-gate work.
+
+**Separate Final Closure Audit (source only):** after the forwarding/comment repairs, every authoring item has a concrete
+owner, consumer and explicit deferred evidence. Public return types/default arguments and native rebuild/cache ordering
+remain in source; the staged scope must contain only these navigation owners/specs, exact baseline removal and two
+handoff documents. Formatting, lint, types, builds, source-size/schema/editor/repository checks, Jest, Playwright and
+simulations remain unrun. Publication closes only this prerequisite authored slice; verify exact remote SHA and pause.
+The next grouped Sol/high batch adds bounded native query/cache/rebuild observation and report consumption through these
+owners. Useful demand/service/rally lineage, arrival/stability, full production adapter/oracles, setup/research and
+strategic AI worlds remain open. No family, issue, complete machinery or release closure is claimed.
+
+**Deferred focused command (unrun; append to prior final gate):**
+
+```bash
+NX_DAEMON=false pnpm exec nx test probable-waffle-phaser --testPathPatterns='ground-navigation-pathfinder|navigation-height-graph|navigation-tile-selection|navigation-service-boundary|height-navigation-graph-builder|ai-runtime-navigation-observation|ai-runtime-producer-route-capture|ai-runtime-production-spatial-capture|production-spatial-spawn' --skip-nx-cache
+```
+
 ### Production producer route checkpoint (2026-10-06, unverified)
 
 Machinery batch 17, #815/#816 PRO-03/06/07 prerequisites. Base `b238801000ae8730c9802a833a485fa57162f55f`,
