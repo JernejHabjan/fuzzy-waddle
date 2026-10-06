@@ -7,23 +7,41 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 ## Quick resume
 
 **Next session (user policy, 2026-10-06):** retain **GPT-6.1 Sol / high** for grouped PRO-03/06/07 authority.
-Current step: #815/#816 **machinery batch 13: command-priced construction catalog**, authored/unverified.
-This batch began at `2f087d048dcf4b8d13765cd6251c61798b94ab56`; its containing commit owns the new revision.
+Current step: #815/#816 **machinery batch 14: observed navigation boundaries**, authored/unverified.
+This batch began at `e08d28f60943e669fa7dfcc7f6009bee83d06e28`; its containing commit owns the new revision.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify local/remote on resume.
 Nx merge `59f72e037` is preserved. Actual model/effort is unavailable. No family/issue is complete.
 The user removed the comment-permission rule. All executable validation remains at the final gate.
 
-Read the [construction catalog checkpoint](follow-ups/runtime-matrix-ci.md#production-construction-catalog-checkpoint-2026-10-06-unverified).
-**Next exact authoring action:** finish the authorities required by the full `RuntimeProductionEvidenceV1` adapter:
-target-specific producer service/output routes and navigation revision/history, dated useful demand and continuous
-effect stability, and actual construction payment/lifecycle scope. Review the existing `ConstructionSiteComponent.startConstruction`
+Read the [navigation boundary checkpoint](follow-ups/runtime-matrix-ci.md#production-navigation-boundary-checkpoint-2026-10-06-unverified).
+**Next exact authoring action:** trace and retain actual construction payment/lifecycle authority, including
+pre-start destruction, cancellation, repeated teardown, restore and definition changes. Review `ConstructionSiteComponent.startConstruction`
 predicate (`productionTime === PaymentType.PayImmediately`) before claiming construction money; configured payment is
-not that native condition. Consume the new command-priced catalog, accepted construction scopes and ordered retention
+not that native condition. Group the required native authority extraction with source-size compliance rather than
+refreshing baselines. Target-specific producer service/output routes, native query/cache revision and complete navigation
+history, dated useful demand and continuous effect stability still precede the full `RuntimeProductionEvidenceV1` adapter.
+The new boundary counters detect observed changes only: never promote `same_observed` to fresh, reachable or safe.
+Consume the command-priced catalog, accepted construction scopes and ordered retention
 samples, current target-specific attack captures, queue catalogs and initial queue provenance; never interpolate
 unsampled stability or turn cached paths into fresh topology proof. Keep initial/pre-capture/migrated/restore/global
 ownership explicit. Then finish actual paired setup, legal Skaduwee research producer setup and useful strategic AI
 cancellation/transition worlds; group compatible PRO-03/06 pairs. The full adapter remains absent.
 Defer executable checks, commit/push the next coherent batch, then pause.
+
+- Marked spatial capture now samples only the existing navigation graph reference and counts observed update requests.
+  Capture-local graph observations and request counts are distinct; throttled requests are not rebuilds. No graph tiles,
+  hidden actors, path query, timer, native navigation mutation or planner input is introduced.
+- Every existing owned builder/site query boundary retains optional legacy-compatible navigation metadata. Missing
+  graph/read failure/disposal/bounded loss stay unavailable. One listener and one graph reference are released on disposal;
+  original query receiver, arguments, Promise, result and rejection remain native-owned.
+- Normalized paths retain `topologyObservation`: `same_observed`, `changed` or `unavailable`, separately from
+  actor binding. Update requests without a new graph still flag change. Invalid/regressing counters or revived exhausted
+  observation suppress all normalized groups. Native revision, cache provenance and complete history gaps remain.
+- Jest capture/observer and synthetic Playwright counter/interval cases are authored/unrun. Implementation review,
+  Omission Audit and separate Final Closure Audit are recorded in the checkpoint. No family/issue is complete.
+
+Prior batch 13 [construction catalog checkpoint](follow-ups/runtime-matrix-ci.md#production-construction-catalog-checkpoint-2026-10-06-unverified)
+is in `e08d28f60`; these inherited contracts remain authored/unverified:
 
 - Native placement retains a detached copy of the exact base price already checked by shared construction, copied
   before site creation can run callbacks. Listener-free gameplay retains its native references and application order.

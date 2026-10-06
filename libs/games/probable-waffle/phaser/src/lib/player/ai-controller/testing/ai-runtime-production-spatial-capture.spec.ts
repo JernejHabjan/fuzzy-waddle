@@ -16,6 +16,7 @@ import { SimulationTickService } from "../../../world/services/simulation-tick.s
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { AiRuntimeProductionSpatialCapture } from "./ai-runtime-production-spatial-capture";
 import type { AiRuntimeProductionSpatialV1 } from "./ai-runtime-production-spatial-v1";
+import type { HeightNavigationGraph } from "../../../world/services/height-navigation-graph-builder";
 
 jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
 jest.mock("../../../data/game-object-helper", () => ({ getGameObjectCurrentTile: jest.fn() }));
@@ -30,7 +31,10 @@ function fixture() {
   let settle: (path: Vector2Simple[] | null) => void = () => { throw new Error("resolver_missing"); };
   const promise = new Promise<Vector2Simple[] | null>((resolve) => { settle = resolve; });
   const original = jest.fn(() => promise);
-  const navigation = { findAndUseNavigablePathBetweenGameObjectsWithRadius: original } as unknown as NavigationService;
+  let graph: HeightNavigationGraph | undefined = { cells: [], edgesByTileKey: new Map() };
+  const readGraph = jest.fn(() => graph);
+  const navigation = { findAndUseNavigablePathBetweenGameObjectsWithRadius: original,
+    getHeightGraphDebugSnapshot: readGraph } as unknown as NavigationService;
   const ticks = { currentTick: 10 };
   jest.mocked(getSceneService).mockImplementation((_scene, service) => {
     if (service === NavigationService) return navigation as never;
@@ -49,10 +53,49 @@ function fixture() {
   jest.mocked(isSnapshotApplyInProgress).mockReturnValue(false);
   const records: AiRuntimeProductionSpatialV1[] = [];
   const capture = new AiRuntimeProductionSpatialCapture(scene, () => "unused", (_player, value) => records.push(structuredClone(value)));
-  return { scene, source, target, navigation, ticks, records, capture, original, promise, settle };
+  return { scene, source, target, navigation, ticks, records, capture, original, promise, settle, readGraph,
+    replaceGraph: (value: HeightNavigationGraph | undefined) => { graph = value; } };
 }
 
 describe("production spatial capture", () => {
+  it("records update requests and changed graph references without querying or altering the native path", async () => {
+    const f = fixture();
+    const pending = f.navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius(f.source, f.target);
+    expect(pending).toBe(f.promise);
+    expect(f.records[0]).toMatchObject({ navigation: { graphObservationId: 1, updateRequestCount: 0 } });
+    f.scene.events.emit(NavigationService.UpdateNavigationEvent);
+    f.replaceGraph({ cells: [], edgesByTileKey: new Map() });
+    f.settle([]); await pending;
+    expect(f.records[1]).toMatchObject({ navigation: { graphObservationId: 2, updateRequestCount: 1 } });
+    expect(f.original).toHaveBeenCalledTimes(1);
+    expect(f.readGraph).toHaveBeenCalledTimes(2);
+    expect(f.records[1]).not.toHaveProperty("graph");
+    f.capture.dispose();
+    expect(f.scene.events.listenerCount(NavigationService.UpdateNavigationEvent)).toBe(0);
+  });
+
+  it("retains an update request even when a throttled rebuild has not replaced the graph", async () => {
+    const f = fixture();
+    const pending = f.navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius(f.source, f.target);
+    f.scene.events.emit(NavigationService.UpdateNavigationEvent);
+    f.settle([]); await pending;
+    expect(f.records[1]).toMatchObject({ navigation: { graphObservationId: 1, updateRequestCount: 1 } });
+    f.capture.dispose();
+  });
+
+  it("keeps missing/failed graph reads unavailable while returning the original Promise", async () => {
+    for (const failed of [false, true]) {
+      const f = fixture();
+      if (failed) f.readGraph.mockImplementation(() => { throw new Error("diagnostic_read_failed"); });
+      else f.replaceGraph(undefined);
+      const pending = f.navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius(f.source, f.target);
+      expect(pending).toBe(f.promise); f.settle([]); await pending;
+      expect(f.records[1]).toMatchObject({ navigation: {
+        graphObservationId: null, updateRequestCount: failed ? null : 0
+      } });
+      expect(f.original).toHaveBeenCalledTimes(1); f.capture.dispose();
+    }
+  });
   it("retains native admission pricing in raw placement facts with missing-tech loss and disposal fencing", () => {
     const f = fixture();
     const event = { kind: "placement", site: f.target, footprint: [{ x: 7, y: 9 }], legal: true, admissionCost: { food: 7 },

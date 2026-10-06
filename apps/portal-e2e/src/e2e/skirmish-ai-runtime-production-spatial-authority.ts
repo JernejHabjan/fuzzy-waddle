@@ -15,5 +15,7 @@ export interface RuntimeProductionSpatialAuthorityV1 {
     readonly constructionCommand: RuntimeProductionCausalityV1["commands"][number] | null;
     /** Same-tick actor binding only. False after movement/awaited ticks; true supplies no topology freshness proof. */
     readonly currentAtResolution: boolean;
+    /** Graph-reference/update-request comparison only. Even same_observed leaves native cache/history unknown. */
+    readonly topologyObservation: "same_observed" | "changed" | "unavailable";
   }[];
 }

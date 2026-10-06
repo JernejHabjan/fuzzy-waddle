@@ -3,6 +3,7 @@ import type { ConstructCommand } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiRuntimeCreatedActorV1 } from "./ai-runtime-created-actor-v1";
 import type { AiRuntimeProductionQueueV1 } from "./ai-runtime-production-queue-v1";
 import type { AiRuntimeConstructionCatalogV1 } from "./ai-runtime-construction-catalog-v1";
+import type { AiRuntimeNavigationBoundaryV1 } from "./ai-runtime-navigation-boundary-v1";
 
 /** Detached native spatial observations. No verdict supplies a general producer-reachable or safe-site boolean. */
 export type AiRuntimeProductionSpatialV1 = {
@@ -19,6 +20,8 @@ export type AiRuntimeProductionSpatialV1 = {
     readonly item: AiRuntimeProductionQueueV1["lanes"][number]["items"][number]; readonly waterUnit: boolean;
     readonly tile: Vector2Simple | null; readonly position: Vector3Simple | null }
   | { readonly kind: "builder_path"; readonly queryId: number; readonly phase: "requested" | "resolved" | "rejected" | "threw";
+    /** Legacy captures omit this; later observations cannot backfill either query boundary. */
+    readonly navigation?: AiRuntimeNavigationBoundaryV1;
     readonly source: AiRuntimeCreatedActorV1; readonly target: AiRuntimeCreatedActorV1;
     readonly sourceTile: Vector2Simple | null; readonly targetTile: Vector2Simple | null;
     /** Actual shared caller radius; null means the native default was used. */

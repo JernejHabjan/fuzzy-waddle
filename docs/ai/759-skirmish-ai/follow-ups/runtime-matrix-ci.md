@@ -35,6 +35,70 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
 
 ## Implementation order
 
+### Production navigation boundary checkpoint (2026-10-06, unverified)
+
+Machinery batch 14, #815/#816 PRO-03/06/07 prerequisites. Base `e08d28f60943e669fa7dfcc7f6009bee83d06e28`,
+worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; containing commit owns
+the new revision. Nx merge `59f72e037` remains intact. Actual model/effort is unavailable. No executable validation ran.
+
+| Acceptance | Implemented owner / consumer | Evidence state |
+| --- | --- | --- |
+| 1. Capture exact observed navigation boundaries | `AiRuntimeNavigationObservation`, `AiRuntimeNavigationBoundaryV1`, existing marked spatial capture | Capture/observer Jest specs authored/unrun; source reviewed |
+| 2. Preserve native query ownership and cleanup | Original receiver/args/Promise/result/rejection, one disposed listener, constant retained graph reference | Existing capture cases plus changed/read-loss/disposal cases authored/unrun |
+| 3. Fail-closed report handling | Boundary validator/interval projector, spatial normalizer, `paths[].topologyObservation`, existing variant runner | Synthetic Playwright cases authored/unrun |
+| 4. Bound work and preserve missing authority | 8,192 graph observations/update requests, terminal loss, legacy gaps, native revision/cache/history gaps | Bound and contradiction cases authored/unrun; no fresh/reachable/safe verdict |
+| 5. Audits and scoped publication | This checkpoint, handoff, exact task-owned staging | Source audits below; normal commit/push and exact remote SHA required |
+
+Native source inspection: `NavigationService.updateNavigation` calls setup and clears ground/water/distance caches.
+Setup creates a new height-graph object, exposed by the existing O(1) `getHeightGraphDebugSnapshot` getter.
+`UpdateNavigationEvent` drives a throttled handler, so observing a request cannot prove completed rebuild/cache clearing.
+Ground paths can reuse a 1,000 ms cache. This batch leaves all native navigation code untouched.
+
+The test-owned observer reads only graph reference identity at actual requested/resolved/threw/rejected boundaries.
+Its positive graph observation ID denotes consecutive observed reference identity, not a native revision or world digest.
+An absent graph breaks that interval. Update-request count is independent and capture-local; neither counter reconstructs
+unsampled changes. No graph cells, global actors or tiles are serialized or supplied to fair AI input. A getter failure
+becomes terminal diagnostic loss without altering the native query. Bounds stop usable observation after 8,192 graph
+observations or update requests; loss returns null counters. Disposal removes the listener and releases the graph.
+There is no accumulated history, new query, timer, prototype replacement, gameplay/save/relay change or new scene owner.
+
+The spatial normalizer validates every observed boundary, including native failed query intervals, before accepting it.
+Malformed/negative/fractional/oversized counters, regressions across interleaved queries, and resumed counters after
+exhaustion fail closed through the existing causality suppression. Legacy omission and missing graph cannot supply an
+interval or erase prior known counters. Equal graph/update counters give only `same_observed`; either changed counter
+gives `changed`; absent/lost boundaries give `unavailable`. Actor binding `currentAtResolution` remains a distinct fact.
+A request count changing without graph replacement is still flagged. The original raw path and lineage stay intact.
+Every normalized path keeps native revision, cache-provenance and complete-history gaps, including equal boundaries.
+The existing variant runner consumes the full causality return, so this field reaches reports without new registration.
+
+**Implementation review and Omission Audit:** traced marked capture installation -> native caller boundary -> existing
+graph getter/update event -> raw optional metadata -> validated interval -> causality -> variant report. Reviewed
+throttle semantics, same-tick awaits, unavailable graph, reader exception, failed queries, interleaved/legacy counters,
+overflow, exact native Promise identity, teardown, late callbacks and later wrapper replacement. Specs cover graph
+replacement, update without rebuild, legacy/lost samples, counter contradictions and both observation bounds. All are
+authored/unrun. No source baseline was refreshed; changed owners had no matching exemption. No skills/tooling changed.
+Full producer/output routes, native query/cache revisions/history, real construction money/lifecycle, continuous effect
+stability, useful demand, paired setup and the full evidence adapter remain open.
+
+**Separate Final Closure Audit:** all five authoring requirements have source paths and explicitly deferred executable
+evidence. No tests, E2E, simulation, formatter/lint/types/build/schema/editor/repository or doctor/context/catalog command
+ran. This closes this authoring batch only; no production family, issue, release or validation gate is complete. Inspect
+exact staged paths, commit/push normally, verify exact remote SHA and both worktrees, then pause.
+
+Focused final-gate commands, **not run**:
+
+```bash
+NX_DAEMON=false pnpm exec nx test probable-waffle-phaser --testPathPatterns='ai-runtime-navigation-observation|ai-runtime-production-spatial-capture' --skip-nx-cache
+pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts skirmish-ai-runtime-navigation-boundary.spec.ts skirmish-ai-runtime-production-spatial-normalization.spec.ts skirmish-ai-runtime-construction-decision-lineage.spec.ts skirmish-ai-runtime-production-causality-normalization.spec.ts
+```
+
+Next grouped authoring: actual construction charge/cancel/lifecycle attribution, with pre-start destruction, repeated
+teardown, restore and definition history explicitly scoped; inspect the native `productionTime` payment predicate.
+Keep native authority extraction and source-size compliance together, then producer/output routes and complete
+query/cache revision/history, useful demand/stability and the full adapter. Retain **GPT-6.1 Sol / high** for unresolved
+causal contracts; this is task judgment. Complex coding and high effort are supported in
+[official OpenAI documentation](https://developers.openai.com/api/docs/models/gpt-6.1-sol).
+
 ### Production construction catalog checkpoint (2026-10-06, unverified)
 
 Machinery batch 13, #815/#816 PRO-03/06/07 prerequisites. Base `2f087d048dcf4b8d13765cd6251c61798b94ab56`,

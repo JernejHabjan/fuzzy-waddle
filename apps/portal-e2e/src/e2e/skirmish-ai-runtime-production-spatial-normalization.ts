@@ -6,6 +6,9 @@ import type { RuntimeProductionSpatialAuthorityV1 } from "./skirmish-ai-runtime-
 import { matchRuntimeConstructionPath } from "./skirmish-ai-runtime-construction-path-lineage";
 import { matchRuntimeConstructionDecision } from "./skirmish-ai-runtime-construction-decision-lineage";
 import { validateRuntimeConstructionCatalog } from "./skirmish-ai-runtime-construction-catalog-validation";
+import type { AiRuntimeNavigationBoundaryV1 } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-navigation-boundary-v1";
+import { projectRuntimeNavigationInterval, validateRuntimeNavigationBoundary } from "./skirmish-ai-runtime-navigation-boundary";
 
 /** Bounded native spatial lineage. Future checkpoints, placement acceptance and endpoint checks never fill a route. */
 export function normalizeRuntimeProductionSpatial(capture: AiRuntimeProductionCaptureV1) {
@@ -26,6 +29,7 @@ export function normalizeRuntimeProductionSpatial(capture: AiRuntimeProductionCa
   const facts = capture.facts.filter((fact) => fact.kind === "spatial_authority");
   const requests = new Map<number, typeof facts[number]>();
   const completed = new Set<number>();
+  let lastNavigation: AiRuntimeNavigationBoundaryV1 | undefined;
   for (const fact of facts) {
     const value = fact.spatial;
     value.gaps.forEach((gap) => gaps.add(gap));
@@ -63,6 +67,15 @@ export function normalizeRuntimeProductionSpatial(capture: AiRuntimeProductionCa
       if (!value.tile) gaps.add("production_spatial_spawn_not_found");
       if (boundaryKnown) authority.spawns.push(fact);
       continue;
+    }
+    if (value.kind === "builder_path") {
+      const navigationFailures = validateRuntimeNavigationBoundary(value.navigation, lastNavigation);
+      failures.push(...navigationFailures);
+      if (!navigationFailures.length && value.navigation !== undefined) {
+        // A missing graph does not erase earlier observed counters; exhausted observation remains terminal.
+        lastNavigation = value.navigation.updateRequestCount === null ? value.navigation : { ...value.navigation,
+          graphObservationId: value.navigation.graphObservationId ?? lastNavigation?.graphObservationId ?? null };
+      }
     }
     if (value.kind !== "builder_path" || !integer(value.queryId) || value.queryId === 0 ||
       !actorValid(value.source) || !actorValid(value.target) || value.source.actorId === value.target.actorId ||
@@ -103,13 +116,18 @@ export function normalizeRuntimeProductionSpatial(capture: AiRuntimeProductionCa
     if (request.tick !== fact.tick) gaps.add("production_spatial_path_history_continuity_unverified");
     if (!currentAtResolution) gaps.add("production_spatial_path_stale_binding");
     if (value.result === "no_path") gaps.add("production_spatial_path_not_found");
+    const topologyObservation = projectRuntimeNavigationInterval(before.navigation, value.navigation);
+    if (topologyObservation === "changed") gaps.add("production_spatial_path_topology_changed");
+    if (topologyObservation === "unavailable") gaps.add("production_spatial_navigation_boundary_missing");
+    gaps.add("production_spatial_path_cache_provenance_missing");
+    gaps.add("production_spatial_navigation_history_unverified");
     const construction = matchRuntimeConstructionPath(capture, request, fact);
     failures.push(...construction.failures);
     construction.gaps.forEach((gap) => gaps.add(gap));
     const lineage = construction.placement ? matchRuntimeConstructionDecision(capture, construction.placement, fact) : null;
     lineage?.failures.forEach((failure) => failures.push(failure));
     lineage?.gaps.forEach((gap) => gaps.add(gap));
-    authority.paths.push({ requested: request, resolved: fact, currentAtResolution,
+    authority.paths.push({ requested: request, resolved: fact, currentAtResolution, topologyObservation,
       constructionPlacement: construction.placement, constructionCommand: lineage?.scope ?? null });
   }
   if (requests.size !== completed.size) gaps.add("production_spatial_path_pending_or_missing");

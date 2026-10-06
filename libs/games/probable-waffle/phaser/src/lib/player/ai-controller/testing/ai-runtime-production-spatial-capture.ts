@@ -15,12 +15,14 @@ import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor
 import { captureAiRuntimeProductionItem } from "./ai-runtime-production-item";
 import type { AiRuntimeProductionSpatialV1 } from "./ai-runtime-production-spatial-v1";
 import { captureAiRuntimeConstructionCatalog } from "./capture-ai-runtime-construction-catalog";
+import { AiRuntimeNavigationObservation } from "./ai-runtime-navigation-observation";
 
 /** Test-owned service observation. Queries run once, return their original Promise and never feed an AI planner. */
 export class AiRuntimeProductionSpatialCapture {
   private disposed = false;
   private nextQueryId = 1;
   private restoreNavigation?: () => void;
+  private navigationObservation?: AiRuntimeNavigationObservation;
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -29,7 +31,10 @@ export class AiRuntimeProductionSpatialCapture {
   ) {
     scene.events.on(PRODUCTION_SPATIAL_AUTHORITY_EVENT, this.observeNative, this);
     const navigation = getSceneService(scene, NavigationService);
-    if (navigation) this.observeNavigation(navigation);
+    if (navigation) {
+      this.navigationObservation = new AiRuntimeNavigationObservation(scene, navigation);
+      this.observeNavigation(navigation);
+    }
   }
 
   /** Restore only our installed method, preserving a later owner's replacement; pending callbacks are fenced. */
@@ -37,6 +42,7 @@ export class AiRuntimeProductionSpatialCapture {
     if (this.disposed) return;
     this.disposed = true;
     this.restoreNavigation?.();
+    this.navigationObservation?.dispose();
     this.scene.events.off(PRODUCTION_SPATIAL_AUTHORITY_EVENT, this.observeNative, this);
   }
 
@@ -76,6 +82,7 @@ export class AiRuntimeProductionSpatialCapture {
       }
       const queryId = this.nextQueryId++;
       const snapshot = () => ({ ...this.boundary(), kind: "builder_path" as const, queryId,
+        navigation: this.navigationObservation?.sample(),
         source: captureAiRuntimeCreatedActor(source), target: captureAiRuntimeCreatedActor(target),
         sourceTile: getGameObjectCurrentTile(source) ?? null, targetTile: getGameObjectCurrentTile(target) ?? null,
         radiusTiles: radius ?? null });
