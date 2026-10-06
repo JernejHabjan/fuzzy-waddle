@@ -28,6 +28,7 @@ import { SimulationTickService } from "../../../world/services/simulation-tick.s
 import { ProbableWaffleSceneEventName } from "../../../world/services/recovery/probable-waffle-scene-events";
 import { buildsWithoutAssignedWorkers, constructionVitalityIncrement } from "./construction-progress";
 import { startConstructionPayment, refundConstructionPayment } from "./construction-payment";
+import { observeConstructionLifecycle } from "./observe-construction-authority";
 
 export { buildsWithoutAssignedWorkers, constructionVitalityIncrement } from "./construction-progress";
 
@@ -191,11 +192,12 @@ export class ConstructionSiteComponent {
     }
     const productionDefinition = this.productionDefinition;
     if (!productionDefinition) throw new Error("Production definition not found");
-    startConstructionPayment(this.gameObject, productionDefinition);
+    startConstructionPayment(this.gameObject, productionDefinition, this.state, this.remainingConstructionTime);
 
     // start building
     this.remainingConstructionTime = productionDefinition.productionTime;
     this.state = ConstructionStateEnum.Constructing;
+    observeConstructionLifecycle(this.gameObject, this.state, this.remainingConstructionTime, "started");
     this.constructionStateChanged.next(this.state);
   }
 
@@ -220,7 +222,7 @@ export class ConstructionSiteComponent {
     if (!productionDefinition) throw new Error("Production definition not found");
 
     refundConstructionPayment(this.gameObject, productionDefinition, this.constructionSiteDefinition.refundFactor,
-      () => this.getProgressFraction());
+      () => this.getProgressFraction(), this.state, this.remainingConstructionTime);
 
     // stop action on builders
     this.assignedBuilders.forEach((builder) => {
@@ -305,6 +307,7 @@ export class ConstructionSiteComponent {
 
   private finishConstruction() {
     this.state = ConstructionStateEnum.Finished;
+    observeConstructionLifecycle(this.gameObject, this.state, this.remainingConstructionTime, "finished");
     this.constructionStateChanged.next(this.state);
 
     const visibilityComponent = getGameObjectVisibility(this.gameObject);
@@ -357,11 +360,13 @@ export class ConstructionSiteComponent {
     this.pendingAssignedRepairerIds = data.assignedRepairers ? [...data.assignedRepairers] : undefined;
     this.tryResolveAssignedActorReferences();
 
+    observeConstructionLifecycle(this.gameObject, this.state, this.remainingConstructionTime, "restored");
     this.constructionProgressPercentageChanged.next(this.progressPercentage);
     this.constructionStateChanged.next(this.state);
   }
 
   private onDestroy() {
+    observeConstructionLifecycle(this.gameObject, this.state, this.remainingConstructionTime, "teardown");
     this.cancelConstruction();
     this.simulationTickSub?.unsubscribe();
   }

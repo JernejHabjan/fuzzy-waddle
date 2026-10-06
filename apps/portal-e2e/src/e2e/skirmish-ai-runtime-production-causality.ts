@@ -31,6 +31,8 @@ export interface RuntimeProductionCausalityV1 {
   /** Every captured selected step, including empty decisions, with its actual input and configured scheduler cadence. */
   readonly decisions: readonly RuntimeProductionDecisionV1[];
   readonly spatialAuthority: RuntimeProductionSpatialAuthorityV1;
+  /** Exact callback-time attempts/transitions, including repeated refunds; no saved paid-price ledger or full AI lineage. */
+  readonly constructionAuthority: readonly Extract<AiRuntimeProductionFactV1, { kind: "construction_authority" }>[];
   /** Exact shared admission price and independently sampled effective site definition; no charge or history is implied. */
   readonly constructionCatalog: readonly RuntimeConstructionCatalogEntryV1[];
   /** Rejected requests/applications retain native release authority without inventing a stamped admitted command. */

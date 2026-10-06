@@ -1,5 +1,7 @@
-import type { ConstructionSiteDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/construction/construction-site-definition";
+import type { ConstructionSiteDefinition } from
+  "@fuzzy-waddle/probable-waffle-gameplay/entity/components/construction/construction-site-definition";
 
+/** Automatic zero-worker sites can continue without an assignment. */
 export function buildsWithoutAssignedWorkers(
   definition: Pick<ConstructionSiteDefinition, "startImmediately" | "progressMadeAutomatically" | "maxAssignedBuilders">
 ): boolean {
@@ -8,6 +10,7 @@ export function buildsWithoutAssignedWorkers(
   );
 }
 
+/** Gain vitality per simulation work increment; instant work never divides by zero. */
 export function constructionVitalityIncrement(
   totalVitalityToGain: number,
   productionTime: number,

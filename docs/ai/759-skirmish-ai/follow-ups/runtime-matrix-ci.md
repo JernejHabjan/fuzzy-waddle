@@ -35,6 +35,89 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
 
 ## Implementation order
 
+### Production construction lifecycle checkpoint (2026-10-06, unverified)
+
+Machinery batch 15, #815/#816 PRO-03/06/07 prerequisites. Base `02345fb78d8fc6460fecf2af0f44f1793b1ed57c`,
+worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; containing commit owns
+this revision. Prerequisite extraction `e654a8e1a` is included in the grouped publication. Nx merge `59f72e037`
+remains intact. Actual model/effort is unavailable. All executable validation stays deferred to the final gate.
+
+| Acceptance | Implemented owner / consumer | Evidence state |
+| --- | --- | --- |
+| 1. Narrow native authority without policy changes | `construction-payment.ts`, `construction-progress.ts`, existing `ConstructionSiteComponent` callers/exports | Source diff reviewed; changed size exemption removed, not refreshed; original progress specs retained/unrun |
+| 2. Exact resource/lifecycle attempts | `ConstructionAuthorityRecord`, `ConstructionResourceScope`, `observeConstructionResource`, `observeConstructionLifecycle` | Native payment characterization and real component state/restore/teardown Jest authored/unrun |
+| 3. Marked capture and report consumption | Raw construction contract/fact, existing capture install/dispose, `normalizeRuntimeConstructionAuthority`, causality/variant runner | Capture Jest and synthetic Playwright authored/unrun; no separate runner registration |
+| 4. Bounded/fail-closed authority | Constant synchronous observation, callback count saturates at nine, 256-record normalized group, existing raw caps | Contradictions suppress groups; overflow drops the entire group; missing/full-history authority remains explicit |
+| 5. Review, omissions, closure and publication | This checkpoint, handoff, exact owned paths | Separate source audits below; normal commit/push and exact remote SHA required |
+
+Native findings remain behaviorally unchanged: start charges only when `productionTime === PaymentType.PayImmediately`
+(the enum value is zero), independently of configured costType. An ordinary configured immediate price with positive
+work time therefore follows the native skipped-charge branch. Cancellation resamples the current production definition,
+uses current progress only for configured immediate costs, multiplies by the site's refund factor, floors each resource,
+and emits even before construction starts. Cancellation does not change state or retain a paid-price ledger; killed and
+destroy callbacks can invoke it twice. Finished cancellation returns early. Construction progress itself emits no
+per-tick charge in this owner. A zero-duration progress fraction can become non-finite; this remains a native defect,
+not a reason to manufacture a finite refund or validated payment policy. Definition/owner errors before the resource
+observer remain uncaptured native errors, with incomplete-history gaps. No balance/persistence policy is repaired here.
+
+The extraction keeps exact predicate/resource references and call order, progress helpers' existing exports and restore
+assignment behavior. Removing the component's content-hash exemption avoids presenting edited oversized authority as
+baselined. New owners are narrow and one contract per file; no baseline is refreshed. Source-size enforcement is unrun.
+
+Resource observation is listener-gated. Ordinary scenes call the original shared emitter once without balance/communicator
+reads. Marked scenes copy the definition/request before native callbacks, sample only the explicit owner's current balance,
+subscribe for exact action/owner/input-object identity, and release that subscription on normal/error return. Callback count
+saturates at nine without accumulated history. Nested observed construction intervals fence the outer comparison. A returned
+emitter is separate from a callback and delta; restore suppression can return with unchanged money and no callback. Missing
+owner is retained as null, never replaced with the emitter's local-player fallback. Setup/projection errors cannot replace
+the native return/error. Observation loss, other resource owners and unsampled operations remain unproven.
+
+Lifecycle observations occur after the real start/finish state assignment, after setData loads its fields, and before each
+native teardown cancellation. `finished` precedes upgrade/score effects and proves only the state transition; `restored`
+means setData ran, not a completed reconnect/snapshot. No progress polling, new scene owner, timer, save/relay data, fair AI
+input, paid-price ledger, cancellation guard or new resource mutation is introduced. Teardown callbacks remain distinct.
+
+The existing marked raw capture detaches the site through actual identity/index/owner projection and appends these facts
+under its unchanged 8,192 fact cap; disposal removes its event listener. The normalizer inspects every construction fact,
+even beyond its 256-entry projection limit, checks native predicates/refund arithmetic/callback/delta claims and rejects
+contradictory boundaries, vectors and ownership. A 257-entry group is dropped rather than partially accepted. Legacy omission
+has an explicit gap. Null authority, restore/inactive boundaries, nested/throwing/saturated intervals, complete payment/
+definition history, global resource interval ownership, full AI lifecycle identity and completed effects remain gaps.
+Exact local matching callbacks are diagnostic observations, not `RuntimeProductionEvidenceV1` or accepted liabilities.
+The causality coordinator suppresses all normalized groups on contradictions; the existing variant runner serializes the
+whole return, including `constructionAuthority`. Queue money remains on its prior native queue contracts.
+
+**Implementation review and Omission Audit:** traced component start/cancel/finish/setData/killed/destroy -> extracted
+native payment -> exact emitter/callback observation -> existing marked capture -> bounded normalizer -> causality ->
+variant report. Reviewed no-listener behavior, original emitter arguments/errors, definition mutation during callbacks,
+skip/denial, current-price/progress refunds, pre-start and repeated cancellation, restore suppression, explicit missing
+owner, exact versus merely equal callback vectors, nested intervals, callback saturation, diagnostic failure/cleanup,
+legacy omission, changed prices and invalid money/state/clock claims. Regression sources cover those cases; all are
+unrun. Existing serialization shape/assignment cleanup/queue accounting are retained. Native policy defects are recorded
+rather than hidden by expected prices. No skills/tooling changes or unrelated Nx edits belong to the stage.
+
+**Separate Final Closure Audit:** five authoring criteria have owning implementations, immediate consumers and source
+or authored-regression evidence. Executable correctness, global resource ownership/complete payment history, exact AI
+construction/cancellation lineage, pre-capture/initial/restore provenance, real completed product effects, zero-duration
+policy and capture/report performance remain unverified. No family, subissue, parent, runtime adapter or release is
+complete. Publish only the exact owned extraction/capture/contracts/specs/docs, keep PR #814 draft and verify the final
+remote SHA; preserve primary develop and Nx migration. Retain **GPT-6.1 Sol / high** for grouped construction lineage/
+setup ownership; official [model documentation](https://developers.openai.com/api/docs/models/gpt-6.1-sol) supports
+complex coding and high reasoning, while the task-specific recommendation does not switch the running model.
+
+Focused final-gate commands (recorded only; **not run**):
+
+```bash
+NX_DAEMON=false pnpm exec nx test probable-waffle-phaser --testPathPatterns='construction-payment|construction-lifecycle|construction-site-component|ai-runtime-construction-capture' --skip-nx-cache
+pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts skirmish-ai-runtime-construction-authority.spec.ts skirmish-ai-runtime-production-causality-normalization.spec.ts skirmish-ai-runtime-construction-catalog.spec.ts
+```
+
+At the final gate also run the required formatting/lint/type/build/repository checks, including changed source-size
+owners and Nx/Jest/Phaser compatibility. Known Phaser global EventEmitter/DESTROY mock debt remains unverified.
+Next authoring: exact construction placement/admission/AI lifecycle joins and initial/restore ownership, followed by
+remaining native producer output routes and full paired/useful/stable evidence. Never promote these attempts to a
+complete paid-price history, terminal cancellation or useful strategic replacement.
+
 ### Production navigation boundary checkpoint (2026-10-06, unverified)
 
 Machinery batch 14, #815/#816 PRO-03/06/07 prerequisites. Base `e08d28f60943e669fa7dfcc7f6009bee83d06e28`,

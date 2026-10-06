@@ -18,6 +18,7 @@ import { normalizeRuntimeProductionWorld } from "./skirmish-ai-runtime-productio
 import { normalizeRuntimeProductionDecisions } from "./skirmish-ai-runtime-production-decisions";
 import { normalizeRuntimeProductionSpatial } from "./skirmish-ai-runtime-production-spatial-normalization";
 import { projectRuntimeConstructionCatalog } from "./skirmish-ai-runtime-construction-catalog-projection";
+import { normalizeRuntimeConstructionAuthority } from "./skirmish-ai-runtime-construction-authority";
 import { runtimeProductionApplicationGaps } from "./skirmish-ai-runtime-production-application-gaps";
 import { projectRuntimeProductionEffectRetention } from "./skirmish-ai-runtime-production-effect-retention-projection";
 import { normalizeRuntimeProductionInitialQueues } from "./skirmish-ai-runtime-production-initial-queue-normalization";
@@ -48,6 +49,9 @@ export function normalizeRuntimeProductionCausality(
   const spatial = normalizeRuntimeProductionSpatial(capture);
   failures.push(...spatial.failures);
   spatial.gaps.forEach((gap) => gaps.add(gap));
+  const construction = normalizeRuntimeConstructionAuthority(capture);
+  failures.push(...construction.failures);
+  construction.gaps.forEach((gap) => gaps.add(gap));
   const constructionCatalog = projectRuntimeConstructionCatalog(spatial.authority);
   failures.push(...constructionCatalog.failures);
   constructionCatalog.gaps.forEach((gap) => gaps.add(gap));
@@ -207,6 +211,7 @@ export function normalizeRuntimeProductionCausality(
     initialQueues: failures.length ? [] : initial.items,
     decisions: failures.length ? [] : cadence.decisions,
     spatialAuthority: failures.length ? { placements: [], spawns: [], paths: [] } : spatial.authority,
+    constructionAuthority: failures.length ? [] : construction.records,
     constructionCatalog: failures.length ? [] : constructionCatalog.entries,
     payments: failures.length ? [] : payments.payments, operations: failures.length ? [] : operations.operations,
     completions: failures.length ? [] : completions.completions,

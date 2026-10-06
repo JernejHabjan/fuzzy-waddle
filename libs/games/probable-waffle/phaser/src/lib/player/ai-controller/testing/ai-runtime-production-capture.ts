@@ -37,6 +37,9 @@ import { projectAiRuntimeProductionBoundaryState } from "./project-ai-runtime-pr
 import { captureAiRuntimeProductionWorld } from "./capture-ai-runtime-production-world";
 import { AiRuntimeProductionSpatialCapture } from "./ai-runtime-production-spatial-capture";
 
+import { CONSTRUCTION_AUTHORITY_EVENT, type ConstructionAuthorityEvent } from
+  "../../../entity/components/construction/construction-authority-event";
+
 const MAX_FACTS = 8192;
 const MAX_SNAPSHOTS = 256;
 
@@ -78,6 +81,7 @@ export class AiRuntimeProductionCapture {
     scene.events.on(QUEUE_COMPLETION_AUTHORITY_EVENT, this.observeCompletion, this);
     scene.events.on(QUEUE_PROGRESS_EVENT, this.observeProgress, this);
     scene.events.on(QUEUE_RESOURCE_EMISSION_EVENT, this.observeQueueResource, this);
+    scene.events.on(CONSTRUCTION_AUTHORITY_EVENT, this.observeConstruction, this);
     this.subscriptions.add(bus.commandOutcome$.subscribe((outcome) => {
       const boundary = this.boundary(outcome.playerNumber);
       const boundaryStateBefore = this.facts.length < MAX_FACTS ? this.sampleBoundaryState(outcome.playerNumber) : undefined;
@@ -213,6 +217,7 @@ export class AiRuntimeProductionCapture {
     this.scene.events.off(QUEUE_COMPLETION_AUTHORITY_EVENT, this.observeCompletion, this);
     this.scene.events.off(QUEUE_PROGRESS_EVENT, this.observeProgress, this);
     this.scene.events.off(QUEUE_RESOURCE_EMISSION_EVENT, this.observeQueueResource, this);
+    this.scene.events.off(CONSTRUCTION_AUTHORITY_EVENT, this.observeConstruction, this);
     this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.dispose, this);
     this.scene.events.off(Phaser.Scenes.Events.DESTROY, this.dispose, this);
   }
@@ -323,6 +328,16 @@ export class AiRuntimeProductionCapture {
     };
     const exhausted = item && event.phase === "advanced" && event.item.remainingTime === 0 ? event.item : undefined;
     this.append({ ...this.boundary(playerNumber), kind: "queue_progress", progress }, exhausted);
+  };
+
+  private readonly observeConstruction = (event: ConstructionAuthorityEvent): void => {
+    if (this.disposed || event.site.scene !== this.scene) return;
+    const { site: liveSite, ...record } = event;
+    const site = captureAiRuntimeCreatedActor(liveSite);
+    if (site.playerNumber === null) return;
+    this.append({ ...this.boundary(site.playerNumber), kind: "construction_authority",
+      construction: { ...record, site, clockTick: getSceneService(this.scene, SimulationTickService)?.currentTick ?? null,
+        sceneActive: this.scene.sys?.isActive() ?? false } });
   };
 
   private boundary(playerNumber: number) {
