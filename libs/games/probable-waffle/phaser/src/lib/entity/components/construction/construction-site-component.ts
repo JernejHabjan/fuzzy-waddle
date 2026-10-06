@@ -1,14 +1,10 @@
 import Phaser from "phaser";
-import { PaymentType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/payment-type";
 import {
   type ConstructionSiteComponentData,
-  ConstructionStateEnum,
-  ResourceType
+  ConstructionStateEnum
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { HealthComponent } from "../combat/components/health-component";
 import { getActorComponent } from "../../../data/actor-component";
-import { OwnerComponent } from "../owner-component";
-import { emitResource, getPlayer } from "../../../data/scene-data";
 import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
 import { getGameObjectVisibility, onObjectReady } from "../../../data/game-object-helper";
 import { getResearchedLevelForActor } from "../../../data/actor-level-utils";
@@ -30,29 +26,10 @@ import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/compo
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { ProbableWaffleSceneEventName } from "../../../world/services/recovery/probable-waffle-scene-events";
-/**
- * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
- * storage boundaries do not drift into an unconstrained primitive.
- */
-type GameObject = Phaser.GameObjects.GameObject;
+import { buildsWithoutAssignedWorkers, constructionVitalityIncrement } from "./construction-progress";
+import { startConstructionPayment, refundConstructionPayment } from "./construction-payment";
 
-export function buildsWithoutAssignedWorkers(
-  definition: Pick<ConstructionSiteDefinition, "startImmediately" | "progressMadeAutomatically" | "maxAssignedBuilders">
-): boolean {
-  return (
-    definition.startImmediately && definition.progressMadeAutomatically > 0 && definition.maxAssignedBuilders === 0
-  );
-}
-
-export function constructionVitalityIncrement(
-  totalVitalityToGain: number,
-  productionTime: number,
-  constructionProgress: number
-): number {
-  if (totalVitalityToGain <= 0) return 0;
-  if (productionTime <= 0) return totalVitalityToGain;
-  return (totalVitalityToGain / productionTime) * constructionProgress;
-}
+export { buildsWithoutAssignedWorkers, constructionVitalityIncrement } from "./construction-progress";
 
 export class ConstructionSiteComponent {
   public progressPercentage = 0;
@@ -62,8 +39,8 @@ export class ConstructionSiteComponent {
   private remainingConstructionTime = 0;
   private state: ConstructionStateEnum = ConstructionStateEnum.NotStarted;
   public constructionStateChanged: Subject<ConstructionStateEnum> = new Subject<ConstructionStateEnum>();
-  private assignedBuilders: GameObject[] = [];
-  private assignedRepairers: GameObject[] = [];
+  private assignedBuilders: Phaser.GameObjects.GameObject[] = [];
+  private assignedRepairers: Phaser.GameObjects.GameObject[] = [];
   constructionProgressUiComponent: ConstructionProgressUiComponent;
   private audioService?: AudioService;
   private healthComponent?: HealthComponent;
@@ -72,7 +49,7 @@ export class ConstructionSiteComponent {
   private pendingAssignedBuilderIds?: string[];
   private pendingAssignedRepairerIds?: string[];
   constructor(
-    private readonly gameObject: GameObject,
+    private readonly gameObject: Phaser.GameObjects.GameObject,
     private readonly constructionSiteDefinition: ConstructionSiteDefinition
   ) {
     this.constructionProgressUiComponent = new ConstructionProgressUiComponent(this.gameObject);
@@ -214,20 +191,7 @@ export class ConstructionSiteComponent {
     }
     const productionDefinition = this.productionDefinition;
     if (!productionDefinition) throw new Error("Production definition not found");
-    if (productionDefinition.productionTime === PaymentType.PayImmediately) {
-      const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
-      const owner = ownerComponent?.getOwner();
-      if (owner === undefined) throw new Error("Owner not found");
-      const player = getPlayer(this.gameObject.scene, owner);
-      if (!player) throw new Error("PlayerController not found");
-
-      const canAfford = player.canPayAllResources(productionDefinition.resources);
-      if (canAfford) {
-        emitResource(this.gameObject.scene, "resource.removed", productionDefinition.resources, owner);
-      } else {
-        throw new Error("Cannot afford building costs");
-      }
-    }
+    startConstructionPayment(this.gameObject, productionDefinition);
 
     // start building
     this.remainingConstructionTime = productionDefinition.productionTime;
@@ -255,19 +219,8 @@ export class ConstructionSiteComponent {
     const productionDefinition = this.productionDefinition;
     if (!productionDefinition) throw new Error("Production definition not found");
 
-    const TimeRefundFactor =
-      productionDefinition.costType === PaymentType.PayImmediately ? this.getProgressFraction() : 1.0;
-    const actualRefundFactor = this.constructionSiteDefinition.refundFactor * TimeRefundFactor;
-
-    // refund costs
-    const refundCosts: Partial<Record<ResourceType, number>> = {};
-    Object.entries(productionDefinition.resources).forEach(([key, value]) => {
-      refundCosts[key as ResourceType] = Math.floor(value * actualRefundFactor);
-    });
-
-    const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
-    const owner = ownerComponent?.getOwner();
-    emitResource(this.gameObject.scene, "resource.added", refundCosts, owner);
+    refundConstructionPayment(this.gameObject, productionDefinition, this.constructionSiteDefinition.refundFactor,
+      () => this.getProgressFraction());
 
     // stop action on builders
     this.assignedBuilders.forEach((builder) => {
@@ -293,11 +246,11 @@ export class ConstructionSiteComponent {
     );
   }
 
-  assignBuilder(gameObject: GameObject) {
+  assignBuilder(gameObject: Phaser.GameObjects.GameObject) {
     this.assignedBuilders.push(gameObject);
   }
 
-  unAssignBuilder(gameObject: GameObject) {
+  unAssignBuilder(gameObject: Phaser.GameObjects.GameObject) {
     const index = this.assignedBuilders.indexOf(gameObject);
     if (index >= 0) {
       this.assignedBuilders.splice(index, 1);
@@ -312,10 +265,10 @@ export class ConstructionSiteComponent {
       healthComponent.healthComponentData.health < healthComponent.healthDefinition.maxHealth
     );
   }
-  assignRepairer(gameObject: GameObject) {
+  assignRepairer(gameObject: Phaser.GameObjects.GameObject) {
     this.assignedRepairers.push(gameObject);
   }
-  unAssignRepairer(gameObject: GameObject) {
+  unAssignRepairer(gameObject: Phaser.GameObjects.GameObject) {
     const index = this.assignedRepairers.indexOf(gameObject);
     if (index >= 0) {
       this.assignedRepairers.splice(index, 1);
@@ -422,7 +375,7 @@ export class ConstructionSiteComponent {
     if (this.pendingAssignedBuilderIds) {
       const resolvedBuilders = this.pendingAssignedBuilderIds
         .map((id) => actorIndex.getActorById(id))
-        .filter((obj): obj is GameObject => obj !== null);
+        .filter((obj): obj is Phaser.GameObjects.GameObject => obj !== null);
       if (resolvedBuilders.length === this.pendingAssignedBuilderIds.length) {
         // Fixes partial assignment state by applying builder references only after complete resolution.
         this.assignedBuilders = resolvedBuilders;
@@ -433,7 +386,7 @@ export class ConstructionSiteComponent {
     if (this.pendingAssignedRepairerIds) {
       const resolvedRepairers = this.pendingAssignedRepairerIds
         .map((id) => actorIndex.getActorById(id))
-        .filter((obj): obj is GameObject => obj !== null);
+        .filter((obj): obj is Phaser.GameObjects.GameObject => obj !== null);
       if (resolvedRepairers.length === this.pendingAssignedRepairerIds.length) {
         // Fixes partial assignment state by applying repairer references only after complete resolution.
         this.assignedRepairers = resolvedRepairers;

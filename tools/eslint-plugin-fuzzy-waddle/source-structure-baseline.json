@@ -251,7 +251,6 @@
   "libs/games/probable-waffle/phaser/src/lib/entity/components/combat/spell-definitions.ts": "abc185d66d5c3848bee1789c790695a5a1acf2d781d3e5f91531f08e9226573f",
   "libs/games/probable-waffle/phaser/src/lib/entity/components/combat/weapon-definitions.ts": "b5bbe2409c9a810222e381377f6c510af076e70c929a3171bf8434b4ef02c626",
   "libs/games/probable-waffle/phaser/src/lib/entity/components/construction/builder-component.ts": "5d759a1e6fe696d587881fba47d2be8c810ed18686c3ce979bdcd6bdfd157bf2",
-  "libs/games/probable-waffle/phaser/src/lib/entity/components/construction/construction-site-component.ts": "02b4acdace86400d91996ec6f558fd5213676c76d17e6b31d0b431db1e157ad8",
   "libs/games/probable-waffle/phaser/src/lib/entity/components/convertible-component.ts": "de7aae38d7eea85439a4066da809efa0371165b7822eeb6e640761021dbf3117",
   "libs/games/probable-waffle/phaser/src/lib/entity/components/movement/actor-translate-component.ts": "a6abac3556acdc90e9a31495c71fa0f998415da1129855276e078ebca40b774d",
   "libs/games/probable-waffle/phaser/src/lib/entity/components/movement/flying-component.ts": "7c6b0185d452c1330c86f7ab7944edc572d04f5e1108412c3f9dc999262ed439",
