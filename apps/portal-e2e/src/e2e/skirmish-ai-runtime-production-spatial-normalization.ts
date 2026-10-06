@@ -5,6 +5,7 @@ import type { AiRuntimeCreatedActorV1 } from
 import type { RuntimeProductionSpatialAuthorityV1 } from "./skirmish-ai-runtime-production-spatial-authority";
 import { matchRuntimeConstructionPath } from "./skirmish-ai-runtime-construction-path-lineage";
 import { matchRuntimeConstructionDecision } from "./skirmish-ai-runtime-construction-decision-lineage";
+import { validateRuntimeConstructionCatalog } from "./skirmish-ai-runtime-construction-catalog-validation";
 
 /** Bounded native spatial lineage. Future checkpoints, placement acceptance and endpoint checks never fill a route. */
 export function normalizeRuntimeProductionSpatial(capture: AiRuntimeProductionCaptureV1) {
@@ -37,6 +38,7 @@ export function normalizeRuntimeProductionSpatial(capture: AiRuntimeProductionCa
     const boundaryKnown = value.clockTick !== null && value.sceneActive;
     if (!boundaryKnown) gaps.add("production_spatial_clock_scene_missing");
     if (value.kind === "placement") {
+      failures.push(...validateRuntimeConstructionCatalog(value.catalog));
       const command = value.command;
       if (!actorValid(value.site) || command.actorName !== value.site.canonicalObjectName ||
         command.playerNumber !== capture.playerNumber || command.type !== "CONSTRUCT" ||

@@ -6,22 +6,40 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
-**Next session (user policy, 2026-10-05):** retain **GPT-6.1 Sol / high** for grouped PRO-03/06/07 authority.
-Current step: #815/#816 **machinery batch 12: construction AI lineage and sampled effect retention**, authored/unverified.
-This batch began at `55f14e50c8329f8824277d87031f83db634bd301`; its containing commit owns the new revision.
+**Next session (user policy, 2026-10-06):** retain **GPT-6.1 Sol / high** for grouped PRO-03/06/07 authority.
+Current step: #815/#816 **machinery batch 13: command-priced construction catalog**, authored/unverified.
+This batch began at `2f087d048dcf4b8d13765cd6251c61798b94ab56`; its containing commit owns the new revision.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify local/remote on resume.
 Nx merge `59f72e037` is preserved. Actual model/effort is unavailable. No family/issue is complete.
 The user removed the comment-permission rule. All executable validation remains at the final gate.
 
-Read the [lineage/retention checkpoint](follow-ups/runtime-matrix-ci.md#production-lineage-retention-checkpoint-2026-10-05-unverified).
+Read the [construction catalog checkpoint](follow-ups/runtime-matrix-ci.md#production-construction-catalog-checkpoint-2026-10-06-unverified).
 **Next exact authoring action:** finish the authorities required by the full `RuntimeProductionEvidenceV1` adapter:
-target-specific producer service/output routes and navigation revision/history, command-priced construction catalog,
-dated useful demand and continuous effect stability. Consume the new accepted construction scopes and ordered retention
+target-specific producer service/output routes and navigation revision/history, dated useful demand and continuous
+effect stability, and actual construction payment/lifecycle scope. Review the existing `ConstructionSiteComponent.startConstruction`
+predicate (`productionTime === PaymentType.PayImmediately`) before claiming construction money; configured payment is
+not that native condition. Consume the new command-priced catalog, accepted construction scopes and ordered retention
 samples, current target-specific attack captures, queue catalogs and initial queue provenance; never interpolate
 unsampled stability or turn cached paths into fresh topology proof. Keep initial/pre-capture/migrated/restore/global
 ownership explicit. Then finish actual paired setup, legal Skaduwee research producer setup and useful strategic AI
 cancellation/transition worlds; group compatible PRO-03/06 pairs. The full adapter remains absent.
 Defer executable checks, commit/push the next coherent batch, then pause.
+
+- Native placement retains a detached copy of the exact base price already checked by shared construction, copied
+  before site creation can run callbacks. Listener-free gameplay retains its native references and application order.
+- The marked capture separately samples the site's current researched definition, configured payment and required
+  work in milliseconds. Missing tech leaves this unavailable. Required work is not a completion deadline; neither
+  price nor configuration proves a charge. Future definition changes remain an explicit history gap.
+- `constructionCatalog` reaches existing variant reports through the causality normalizer. It retains the exact
+  stamped command/site/placement, legal verdict, admission/effective price distinction and previously joined decision/
+  demand identity. Unjoined autonomous/legacy placements retain native pricing without invented paths or AI identity.
+  Invalid pricing suppresses normalized groups; duplicate command identity fails; 256-entry overflow drops the group.
+- Native seam/capture/catalog Jest and synthetic Playwright cases are authored/unrun. Source review, Omission Audit
+  and separate Final Closure Audit are in the checkpoint. No executable check ran, no family/issue is complete, and
+  the Nx merge remains intact. Full definition catalog, actual payment, route freshness and useful/stable evidence remain open.
+
+Prior batch 12 [lineage/retention checkpoint](follow-ups/runtime-matrix-ci.md#production-lineage-retention-checkpoint-2026-10-05-unverified)
+is in `2f087d048`; these inherited contracts remain authored/unverified:
 
 - `matchRuntimeConstructionDecision` joins a native legal-placement/path interval to the exact accepted construct,
   admission, stamped receipt, delivery and lifecycle. Multi-builder payload, site/tile, full stamp and selected decision

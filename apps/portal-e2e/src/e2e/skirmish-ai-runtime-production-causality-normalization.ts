@@ -17,6 +17,8 @@ import { matchRuntimeProductionDecision } from "./skirmish-ai-runtime-production
 import { normalizeRuntimeProductionWorld } from "./skirmish-ai-runtime-production-world-normalization";
 import { normalizeRuntimeProductionDecisions } from "./skirmish-ai-runtime-production-decisions";
 import { normalizeRuntimeProductionSpatial } from "./skirmish-ai-runtime-production-spatial-normalization";
+import { projectRuntimeConstructionCatalog } from "./skirmish-ai-runtime-construction-catalog-projection";
+import { runtimeProductionApplicationGaps } from "./skirmish-ai-runtime-production-application-gaps";
 import { projectRuntimeProductionEffectRetention } from "./skirmish-ai-runtime-production-effect-retention-projection";
 import { normalizeRuntimeProductionInitialQueues } from "./skirmish-ai-runtime-production-initial-queue-normalization";
 import type { AiRuntimePresetApplicationV1 } from
@@ -46,6 +48,9 @@ export function normalizeRuntimeProductionCausality(
   const spatial = normalizeRuntimeProductionSpatial(capture);
   failures.push(...spatial.failures);
   spatial.gaps.forEach((gap) => gaps.add(gap));
+  const constructionCatalog = projectRuntimeConstructionCatalog(spatial.authority);
+  failures.push(...constructionCatalog.failures);
+  constructionCatalog.gaps.forEach((gap) => gaps.add(gap));
   if (capture.droppedFactCount || capture.droppedSnapshotCount || capture.facts.length > 8192 || capture.snapshots.length > 256) {
     failures.push("production_ai_capture_dropped");
   }
@@ -194,28 +199,7 @@ export function normalizeRuntimeProductionCausality(
       gaps.add("production_ai_per_tick_liability_missing");
     }
   }
-  for (const entry of commands) {
-    const id = entry.command.execution?.commandId;
-    const purchasing = entry.command.type === "PRODUCTION" || entry.command.type === "RESEARCH";
-    const applied = entry.outcomes.some((fact) => fact.outcome.kind === "applied");
-    const cancelled = entry.outcomes.some((fact) => fact.outcome.kind === "cancelled");
-    const physicalPerTick = capture.facts.some((fact) => fact.kind === "queue_changed" &&
-      fact.queue.lanes.some((lane) => lane.items.some((item) => item.commandId === id &&
-        item.payment === "per_successful_tick" && item.identitySource === "command")));
-    if (purchasing && applied && !physicalPerTick && !payments.payments.some((payment) =>
-      payment.resource.operation === "immediate_charge" &&
-      payment.resource.originatingCommandContext?.execution.commandId === id)) {
-      gaps.add("production_ai_applied_payment_missing");
-    }
-    const enqueued = mutations.mutations.some((mutation) => mutation.operation === "enqueue" &&
-      mutation.originatingCommandId === id);
-    if (purchasing && applied && !enqueued) gaps.add("production_ai_enqueue_mutation_authority_missing");
-    if (purchasing && applied && physicalPerTick && !enqueued) gaps.add("production_ai_per_tick_enqueue_authority_missing");
-    if (!purchasing && cancelled && !payments.payments.some((payment) =>
-      payment.resource.operation === "cancellation_refund" && payment.resource.cancellationCommand?.execution?.commandId === id)) {
-      gaps.add("production_ai_cancel_refund_missing");
-    }
-  }
+  runtimeProductionApplicationGaps(capture, commands, payments.payments, mutations.mutations).forEach((gap) => gaps.add(gap));
   // Invalid operations remain in the raw diagnostic; only a sound group is exposed as normalized money.
   return structuredClone({
     schemaVersion: 1, failures: [...new Set(failures)], gaps: [...gaps].sort(), commands, operationBoundaries,
@@ -223,6 +207,7 @@ export function normalizeRuntimeProductionCausality(
     initialQueues: failures.length ? [] : initial.items,
     decisions: failures.length ? [] : cadence.decisions,
     spatialAuthority: failures.length ? { placements: [], spawns: [], paths: [] } : spatial.authority,
+    constructionCatalog: failures.length ? [] : constructionCatalog.entries,
     payments: failures.length ? [] : payments.payments, operations: failures.length ? [] : operations.operations,
     completions: failures.length ? [] : completions.completions,
     effectRetention: failures.length ? [] : retention.effects,

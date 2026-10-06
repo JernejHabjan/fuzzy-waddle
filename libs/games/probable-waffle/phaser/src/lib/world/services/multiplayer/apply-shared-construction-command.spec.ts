@@ -74,7 +74,7 @@ describe("native construction placement seam", () => {
     const f = fixture(); const sites = new Map<string, string>();
     applySharedConstructionCommand(f.scene, f.command, sites, []);
     expect(f.order).toEqual(["placement", "assignment", "applied", "active"]);
-    expect(f.events[0]).toMatchObject({ kind: "placement", legal: true, footprint: [{ x: 7, y: 9 }] });
+    expect(f.events[0]).toMatchObject({ kind: "placement", legal: true, footprint: [{ x: 7, y: 9 }], admissionCost: { food: 7 } });
     expect(f.navigable).toHaveBeenCalledTimes(1);
     f.changes.next(ConstructionStateEnum.Finished);
     expect(f.order.at(-1)).toBe("completed");
@@ -88,5 +88,16 @@ describe("native construction placement seam", () => {
     expect(f.site.destroy).toHaveBeenCalledTimes(1); expect(f.execute).not.toHaveBeenCalled();
     expect(f.bus.reportOutcome).toHaveBeenCalledWith(f.command, "rejected", "illegal_site", ["builder"], [], "invalid_footprint");
     expect(f.navigable).toHaveBeenCalledTimes(1);
+  });
+  it("detaches the already checked price and preserves the unobserved native application", () => {
+    const f = fixture(); const cost = { food: 7 }; jest.mocked(getCostForObjectName).mockReturnValue(cost);
+    jest.mocked(BuildingCursor.spawnBuildingForPlayer).mockImplementationOnce(() => { cost.food = 99; return f.site; });
+    applySharedConstructionCommand(f.scene, f.command, new Map(), []);
+    expect(f.events[0]).toMatchObject({ admissionCost: { food: 7 } });
+    expect(getCostForObjectName).toHaveBeenCalledWith(f.command.actorName);
+    const unobserved = fixture(); unobserved.scene.events.removeAllListeners(PRODUCTION_SPATIAL_AUTHORITY_EVENT);
+    applySharedConstructionCommand(unobserved.scene, unobserved.command, new Map(), []);
+    expect(unobserved.events).toEqual([]); expect(unobserved.execute).toHaveBeenCalledTimes(1);
+    expect(unobserved.order).toEqual(["assignment", "applied", "active"]);
   });
 });

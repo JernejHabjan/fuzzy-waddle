@@ -13,6 +13,7 @@ import type { RuntimeProductionInitialQueueV1 } from "./skirmish-ai-runtime-prod
 import type { RuntimeProductionDecisionV1 } from "./skirmish-ai-runtime-production-decision";
 import type { RuntimeProductionSpatialAuthorityV1 } from "./skirmish-ai-runtime-production-spatial-authority";
 import type { RuntimeProductionEffectRetentionV1 } from "./skirmish-ai-runtime-production-effect-retention";
+import type { RuntimeConstructionCatalogEntryV1 } from "./skirmish-ai-runtime-construction-catalog-entry";
 
 /**
  * Diagnostic AI lineage, not RuntimeProductionEvidenceV1. Retains actual accepted intent and observer order;
@@ -30,6 +31,8 @@ export interface RuntimeProductionCausalityV1 {
   /** Every captured selected step, including empty decisions, with its actual input and configured scheduler cadence. */
   readonly decisions: readonly RuntimeProductionDecisionV1[];
   readonly spatialAuthority: RuntimeProductionSpatialAuthorityV1;
+  /** Exact shared admission price and independently sampled effective site definition; no charge or history is implied. */
+  readonly constructionCatalog: readonly RuntimeConstructionCatalogEntryV1[];
   /** Rejected requests/applications retain native release authority without inventing a stamped admitted command. */
   readonly rejections: readonly RuntimeProductionRejectionV1[];
   /** Actual completed products/tech; strategic usefulness and stable-effect acceptance remain separate. */

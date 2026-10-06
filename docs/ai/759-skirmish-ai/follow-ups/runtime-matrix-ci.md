@@ -35,6 +35,75 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
 
 ## Implementation order
 
+### Production construction catalog checkpoint (2026-10-06, unverified)
+
+Machinery batch 13, #815/#816 PRO-03/06/07 prerequisites. Base `2f087d048dcf4b8d13765cd6251c61798b94ab56`,
+worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; containing commit owns
+the new revision. Nx merge `59f72e037` is preserved. Actual model/effort is unavailable. All executable checks remain
+deferred to the user-authorized final gate. This is diagnostic authoring, not full production evidence or family closure.
+
+| Acceptance | Implemented owner / consumer | Evidence state |
+| --- | --- | --- |
+| 1. Exact command-checked construction price | Shared construction, listener-gated detached admission vector, native placement event | Native seam spec authored/unrun; source reviewed |
+| 2. Distinct effective site definition | `AiRuntimeConstructionCatalogV1`, `captureAiRuntimeConstructionCatalog`, marked spatial capture | Base/researched/configuration/loss specs authored/unrun |
+| 3. Bounded fail-closed report consumption | Catalog validator/projector, `RuntimeProductionCausalityV1.constructionCatalog`, existing variant runner | 256 limit, duplicate and invalid-value specs authored/unrun |
+| 4. Missing authority remains explicit | Legacy/tech/AI identity/payment/definition-history gaps | Source reviewed; no inferred paid or useful result |
+| 5. Audits, handoff and scoped publication | This packet, handoff, exact task-owned Git paths | Source audits below; normal commit/push and exact remote SHA required |
+
+`applySharedConstructionCommand` keeps native eligibility, affordability, footprint, assignment and outcomes in order.
+For an existing spatial listener it copies the exact checked base-price vector before site creation can invoke callbacks;
+`emitConstructionPlacement` detaches the local event vector again. Listener-free application uses its original cost
+reference and adds no definition lookup, resource mutation or route query. Reconciled/failed-before-placement commands
+still produce no placement catalog; no later snapshot can fill that absence.
+
+`captureAiRuntimeConstructionCatalog` belongs only to the existing marked test capture. It selects the same site's
+researched definition as the construction component at the placement boundary, with null for the base-level lookup.
+Absent tech, mismatched site name, invalid level/numerics or missing definition leave the effective definition null
+with explicit loss. Admission price is retained independently. The helper reads current owned tech and definitions;
+it does not revalidate affordability/prerequisites, add a listener/timer/cache or mutate gameplay. Existing capture
+disposal fences the placement observer. No saved/relay/schema protocol field is added.
+
+`requiredWorkMs` describes construction work, not elapsed time: assigned builders and automatic progress determine
+speed, and future research may change the component's definition selection. `configuredPayment` is definition data,
+not an actual charge. Source inspection found the existing `ConstructionSiteComponent.startConstruction` compares
+`productionTime === PaymentType.PayImmediately`, rather than `costType`. This batch preserves it. Actual construction
+charge/cancellation/lifecycle attribution and that payment predicate remain explicit debt before full evidence acceptance.
+Do not fill paid provenance from either admission cost or configured payment.
+
+The spatial normalizer validates prices even on an unbound/illegal placement. The catalog projector consumes validated
+native placements, retaining command, site, legal verdict and observer order. Exact previously joined construction paths
+can supply selected decision and accepted demand identities; no path leaves these null and explicit. Multiple builders
+do not duplicate a catalog entry. Native/legacy/autonomous placements need no fabricated route. More than 256 placements
+returns an empty catalog with an overflow gap; duplicate command identity fails closed. Contradictory numeric/configured
+prices suppress the complete normalized causality groups. The existing variant runner serializes the normalizer's full
+return value, so no unused adapter or new runner registration exists. The full `RuntimeProductionEvidenceV1` adapter and
+global definition catalog remain absent. Queue application-gap projection moved unchanged to its own small helper so
+the causality coordinator stays within the method-size contract; source baseline entries were not refreshed.
+
+**Implementation review and Omission Audit:** traced checked command cost -> pre-creation copy -> native placement ->
+marked capture -> raw catalog -> spatial validation -> bounded catalog -> existing report. Reviewed immediate consumers,
+legacy captures, multi-builder scopes, missing tech, researched cost divergence, unbound contradictions, duplicated
+commands, bounds, disposal and absence of gameplay/relay changes. Meaningful native Jest and synthetic Playwright
+specs are authored, all unrun. No skills/tooling changes or unrelated Nx changes were needed. Route/topology freshness,
+continuous retention, dated useful demand, paired setup and complete event liabilities remain unresolved dependencies.
+
+**Separate Final Closure Audit:** all five authoring requirements have implemented source paths and deferred evidence.
+No tests, E2E, simulation, formatter/lint/types/build/schema/editor/repository or doctor/context/catalog command ran.
+No family, issue, release or validation gate is closed. Inspect exact staged paths, publish normally, verify the remote
+branch SHA and both worktrees, then pause. Publication is separate from executable correctness.
+
+Focused final-gate commands, **not run**:
+
+```bash
+NX_DAEMON=false pnpm exec nx test probable-waffle-phaser --testPathPatterns='apply-shared-construction-command|ai-runtime-production-spatial-capture|capture-ai-runtime-construction-catalog' --skip-nx-cache
+pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts skirmish-ai-runtime-construction-catalog.spec.ts skirmish-ai-runtime-construction-decision-lineage.spec.ts skirmish-ai-runtime-production-spatial-normalization.spec.ts skirmish-ai-runtime-production-causality-normalization.spec.ts
+```
+
+Next grouped authority: target-specific producer/output routes with actual navigation revision/history, dated useful
+demand, continuous effect retention and actual construction money/lifecycle, then the full evidence adapter and paired
+PRO-03/06 transition worlds. Retain **GPT-6.1 Sol / high** for unresolved causal contracts; this is task judgment, with
+complex coding/high support described in [official OpenAI documentation](https://developers.openai.com/api/docs/models/gpt-6.1-sol).
+
 ### Production lineage/retention checkpoint (2026-10-05, unverified)
 
 Machinery batch 12, #815/#816 PRO-03/06/07 prerequisites. Base `55f14e50c8329f8824277d87031f83db634bd301`,

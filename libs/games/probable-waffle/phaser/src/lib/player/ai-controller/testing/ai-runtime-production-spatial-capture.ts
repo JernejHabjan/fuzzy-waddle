@@ -14,6 +14,7 @@ import { PRODUCTION_SPATIAL_AUTHORITY_EVENT, type ProductionSpatialAuthorityEven
 import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor";
 import { captureAiRuntimeProductionItem } from "./ai-runtime-production-item";
 import type { AiRuntimeProductionSpatialV1 } from "./ai-runtime-production-spatial-v1";
+import { captureAiRuntimeConstructionCatalog } from "./capture-ai-runtime-construction-catalog";
 
 /** Test-owned service observation. Queries run once, return their original Promise and never feed an AI planner. */
 export class AiRuntimeProductionSpatialCapture {
@@ -49,9 +50,10 @@ export class AiRuntimeProductionSpatialCapture {
     if (event.kind === "placement") {
       if (event.site.scene !== this.scene) return;
       const footprint = event.footprint.length <= 128 ? event.footprint : null;
+      const pricing = captureAiRuntimeConstructionCatalog(event);
       this.append(event.command.playerNumber, { ...this.boundary(), kind: "placement", command: event.command,
         site: captureAiRuntimeCreatedActor(event.site), footprint, legal: event.legal,
-        gaps: footprint ? [] : ["production_spatial_footprint_overflow"] });
+        catalog: pricing.catalog, gaps: [...pricing.gaps, ...(footprint ? [] : ["production_spatial_footprint_overflow"])] });
     } else {
       const producer = captureAiRuntimeCreatedActor(event.producer);
       if (event.producer.scene !== this.scene || producer.playerNumber === null || !producer.actorId) return;

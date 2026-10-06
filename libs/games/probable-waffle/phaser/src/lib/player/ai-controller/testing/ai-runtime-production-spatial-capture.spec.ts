@@ -1,6 +1,8 @@
 import Phaser from "phaser";
 import type { Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
+import { PRODUCTION_SPATIAL_AUTHORITY_EVENT, type ProductionSpatialAuthorityEvent } from
+  "../../../world/services/multiplayer/production-spatial-authority-event";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { getGameObjectCurrentTile } from "../../../data/game-object-helper";
@@ -51,6 +53,20 @@ function fixture() {
 }
 
 describe("production spatial capture", () => {
+  it("retains native admission pricing in raw placement facts with missing-tech loss and disposal fencing", () => {
+    const f = fixture();
+    const event = { kind: "placement", site: f.target, footprint: [{ x: 7, y: 9 }], legal: true, admissionCost: { food: 7 },
+      command: { type: "CONSTRUCT", tick: 10, playerNumber: 1, actorIds: ["source"], actorName: ObjectNames.TivaraSandhold,
+        tileVec3: { x: 7, y: 9, z: 0 }, siteKey: "site:key" } } satisfies ProductionSpatialAuthorityEvent;
+    f.scene.events.emit(PRODUCTION_SPATIAL_AUTHORITY_EVENT, event);
+    expect(f.records[0]).toMatchObject({ kind: "placement", clockTick: 10,
+      catalog: { priceSource: "shared_command_base_definition", admissionCost: { food: 7 }, siteDefinition: null },
+      gaps: ["production_construction_effective_definition_missing"] });
+    event.admissionCost.food = 99;
+    expect(f.records[0]?.kind === "placement" && f.records[0].catalog?.admissionCost).toEqual({ food: 7 });
+    f.capture.dispose(); f.scene.events.emit(PRODUCTION_SPATIAL_AUTHORITY_EVENT, event);
+    expect(f.records).toHaveLength(1);
+  });
   it("retains the original Promise and full empty/nonempty native result without issuing another query", async () => {
     const f = fixture();
     expect(f.original).not.toHaveBeenCalled();

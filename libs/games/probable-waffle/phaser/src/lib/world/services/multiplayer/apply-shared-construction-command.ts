@@ -5,6 +5,7 @@ import {
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { Subscription } from "rxjs";
 import { emitConstructionPlacement } from "./emit-construction-placement";
+import { PRODUCTION_SPATIAL_AUTHORITY_EVENT } from "./production-spatial-authority-event";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getActorComponent } from "../../../data/actor-component";
 import { getActorSystem } from "../../../data/actor-system";
@@ -86,6 +87,8 @@ export function applySharedConstructionCommand(
     return;
   }
 
+  // Preserve the checked vector before site construction can run callbacks; unobserved gameplay keeps its native references.
+  const observedAdmissionCost = scene.events.listenerCount(PRODUCTION_SPATIAL_AUTHORITY_EVENT) ? { ...costs } : costs;
   const world = IsoHelper.isometricTileToWorldXY(scene, command.tileVec3.x, command.tileVec3.y);
   let site: Phaser.GameObjects.GameObject;
   try {
@@ -139,7 +142,7 @@ export function applySharedConstructionCommand(
     !navigation ||
     footprint.some((tile) => !navigation.isTileGridWithoutBlockingObjectsNavigable(tile)) ||
     hasCollision;
-  emitConstructionPlacement(scene, command, site, footprint, !illegal);
+  emitConstructionPlacement(scene, command, site, footprint, !illegal, observedAdmissionCost);
   if (illegal) {
     site.destroy();
     commandBus.reportOutcome(command, "rejected", "illegal_site", command.actorIds, [], "invalid_footprint");
