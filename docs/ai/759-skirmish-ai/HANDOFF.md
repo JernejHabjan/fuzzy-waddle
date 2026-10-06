@@ -7,27 +7,43 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 ## Quick resume
 
 **Next session (user policy, 2026-10-06):** retain **GPT-6.1 Sol / high** for grouped PRO-03/06/07 authority.
-Current step: #815/#816 **machinery batch 15: native construction payment/lifecycle boundaries**, authored/unverified.
-This batch began at `02345fb78d8fc6460fecf2af0f44f1793b1ed57c`; its containing commit owns the new revision.
-The behavior-neutral prerequisite extraction is `e654a8e1a`; both changes belong to this grouped batch.
+Current step: #815/#816 **machinery batch 16: construction lineage and initial/restore ownership**, authored/unverified.
+This batch began at `f3835ddc2a862f265ecdd1f16a7e716dbc77d1e5`; its containing commit owns the new revision.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify local/remote on resume.
 Nx merge `59f72e037` is preserved. Actual model/effort is unavailable. No family/issue is complete.
 The user removed the comment-permission rule. All executable validation remains at the final gate.
 
-Read the [construction lifecycle checkpoint](follow-ups/runtime-matrix-ci.md#production-construction-lifecycle-checkpoint-2026-10-06-unverified).
-**Next exact authoring action:** join construction lifecycle/resource attempts to exact stamped placement/admission and
-accepted AI identity, with explicit initial/pre-capture and restore ownership. Follow existing construction command/path
-scopes and the new native callbacks; never attribute a refund to the nearest price, command or balance. Retain repeated
-teardown attempts and missing cancellation command provenance rather than inventing terminal/idempotent behavior.
+Read the [construction ownership checkpoint](follow-ups/runtime-matrix-ci.md#production-construction-ownership-checkpoint-2026-10-06-unverified).
+**Next exact authoring action:** capture target-specific producer service/output routes through existing native query
+and spawn/rally callers, joined to exact accepted demand and producer/product identities. Start from the RTS source
+index's NavigationService, MovementSystem and production spawner owners; use existing spatial/exposure/retention scopes.
+Separate native query/cache provenance, output placement and actual useful reachability; never add a query just to fill
+diagnostics or infer useful routes from endpoint equality. Complete navigation revision/cache/history and dated useful
+demand/continuous stability before the full `RuntimeProductionEvidenceV1` adapter. Group compatible route/owner work
+before switching models. Actual paired setup, legal Skaduwee research and useful strategic AI cancellation/transition
+worlds remain open. Defer executable checks, commit/push the next coherent batch, then pause.
+
+- Marked capture retains a detached installation-time construction inventory, reusing the existing indexed actor list.
+  Inventory is per declared player, bounded at 256 sites; overflow/reader loss discard membership. Known neutral owners
+  are excluded. Later snapshots cannot supply installation ownership; no new tick scan, timer or game/save state exists.
+- `constructionLineage` reaches existing variant reports beside `initialConstruction`. Every native lifecycle/refund
+  attempt retains exact earlier placement, full stamped admission/accepted decision and actual application when present.
+  Automatic sites need no builder path. Capture-wide joins are retrospective; path-resolution receipt fences are unchanged.
+- Installation presence means `capture_initial`, never map/setup or paid provenance. Restore/setData and observed
+  unregister/re-registration fence old links. Unknown ownership stays unavailable; repeated refunds/teardowns are distinct.
+  Changed canonical family fails; a visual variant change retains its explicit definition-history gap.
+- Pricing reports reuse the exact lifecycle admission scope when no path supplies one. Prices never supply a lineage
+  or paid ledger. Contradictions suppress normalized groups; initial/lineage overflow yields no partial group. Missing
+  cancellation command, setup/payment/global-resource/site-lifetime history and completed useful effect remain gaps.
+- Initial-inventory Jest and synthetic construction-lineage Playwright cases are authored/unrun. Source review,
+  Omission Audit and separate Final Closure Audit are in the checkpoint. No executable validation or issue closure.
+
+Prior batch 15 [construction lifecycle checkpoint](follow-ups/runtime-matrix-ci.md#production-construction-lifecycle-checkpoint-2026-10-06-unverified)
+is in `f3835ddc2`, with prerequisite extraction `e654a8e1a`; its native findings remain authored/unverified:
+
 The native `productionTime === PaymentType.PayImmediately` charge predicate remains unchanged, as do current-definition
 refunds, pre-start/repeated refunds and the lack of a saved paid-price ledger. These are characterized defects/policy
 questions, not validated payment correctness. Zero-duration progress/refund arithmetic also requires final-gate evidence.
-Group compatible construction lineage/setup ownership before switching models. Then finish target-specific producer
-service/output routes, native query/cache revision and complete navigation history, dated useful demand and continuous
-effect stability before the full `RuntimeProductionEvidenceV1` adapter. Consume existing command-priced catalogs,
-ordered retention, exact accepted construction scopes and target-specific attack captures; sampled equality never proves
-freshness, reachability or safety. Actual paired setup, legal Skaduwee research and useful strategic AI cancellation/
-transition worlds remain open. Defer executable checks, commit/push the next coherent batch, then pause.
 
 - Native payment/progress responsibilities are extracted; the changed construction source exemption is removed, not
   refreshed. Existing exports, price resampling, predicates, state/save shape and builder cleanup order are retained.
@@ -375,7 +391,7 @@ merely because their issue title mentions testing. All authored work remains unv
 | 1 / as needed | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `partial` | Split only owners blocking the selected batch | GPT-6 Luna, medium |
 | 2 | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829) | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof | GPT-6.1 Sol, high |
 | 3 | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `in_progress` | Finish pressure/recovery policy; defer victory proof | GPT-6.1 Sol, high |
-| 4 / next batch | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | PRO-04 first example authored/unverified; expand priced/busy-lane pure cases and specified seeded-queue controls | GPT-6 Luna, medium; Sol high for remaining new family contracts |
+| 4 / next batch | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Machinery 16 authored/unverified; next target-specific service/output routes, then complete history/useful-effect adapter | GPT-6.1 Sol, high |
 | 5 / paired | #815 / #816 | `in_progress` | Remaining family contracts, focused fixtures, frozen maps and continuous-match tier | Sol high for new contracts; Luna medium for established cases |
 | 6 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `in_progress` | Exact-once interruption, terminal and re-entry parity | GPT-6.1 Sol, high |
 | 7 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `partial` | Generation fencing, phase restore/replay and cleanup cases | GPT-6.1 Sol, high |

@@ -17,6 +17,7 @@ describe("marked construction capture", () => {
       definition, operation: "start_charge", owner: undefined, amounts: null, refundFactor: null, noEmission: "skipped" });
     observeConstructionLifecycle(f.actor, ConstructionStateEnum.Constructing, 75, "restored");
     const captured = f.capture.capture(2);
+    expect(captured.initialConstruction).toMatchObject({ tick: 0, sites: [], gaps: [] });
     const records = captured.facts.filter((fact) => fact.kind === "construction_authority");
     expect(records.map((fact) => fact.construction.kind)).toEqual(["resource", "lifecycle"]);
     expect(records[0].construction).toMatchObject({ site: { actorId: "producer", playerNumber: 2 },

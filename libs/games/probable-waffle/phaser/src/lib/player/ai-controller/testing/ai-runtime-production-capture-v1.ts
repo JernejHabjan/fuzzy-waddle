@@ -4,6 +4,7 @@ import type { AiRuntimeProductionFactV1 } from "./ai-runtime-production-fact-v1"
 import type { AiRuntimeProductionQueueV1 } from "./ai-runtime-production-queue-v1";
 import type { AiRuntimePendingCommandV1 } from "./ai-runtime-pending-command-v1";
 import type { AiRuntimeProductionWorldV1 } from "./ai-runtime-production-world-v1";
+import type { AiRuntimeInitialConstructionV1 } from "./ai-runtime-initial-construction-v1";
 
 /**
  * Diagnostic raw capture, not RuntimeProductionEvidenceV1. Missing causal attribution and navigation/placement proof
@@ -17,6 +18,8 @@ export interface AiRuntimeProductionCaptureV1 {
   readonly droppedFactCount: number;
   readonly droppedSnapshotCount: number;
   readonly gaps: readonly string[];
+  /** Captured once at listener installation; legacy omission cannot be repaired from later actor snapshots. */
+  readonly initialConstruction?: AiRuntimeInitialConstructionV1;
   readonly facts: readonly AiRuntimeProductionFactV1[];
   readonly snapshots: readonly {
     readonly tick: number;

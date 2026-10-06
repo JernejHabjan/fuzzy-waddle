@@ -7,11 +7,15 @@ import { validateRuntimeProductionCommandLineage } from "./skirmish-ai-runtime-p
 import { sameRuntimeProductionCommand } from "./skirmish-ai-runtime-production-command-equality";
 import { matchRuntimeProductionDecision } from "./skirmish-ai-runtime-production-decision-lineage";
 
-/** Exact accepted construct -> admission -> stamped receipt. Native path joining independently proves placement/application. */
+/**
+ * Exact accepted construct -> admission -> stamped receipt. A supplied path resolution fences its interval.
+ * Without a path, this is retrospective capture-wide admission lineage, never authority available at the site callback.
+ * Native placement/application and site continuity are independently checked by the caller.
+ */
 export function matchRuntimeConstructionDecision(
   capture: AiRuntimeProductionCaptureV1,
   placement: Extract<AiRuntimeProductionFactV1, { kind: "spatial_authority" }>,
-  resolution: Extract<AiRuntimeProductionFactV1, { kind: "spatial_authority" }>
+  resolution?: Extract<AiRuntimeProductionFactV1, { kind: "spatial_authority" }>
 ) {
   const failures: string[] = [];
   const gaps: string[] = [];
@@ -40,12 +44,14 @@ export function matchRuntimeConstructionDecision(
     fact.sequence < receipt.sequence && (!previousFinish || fact.sequence > previousFinish.sequence));
   const request = requests[0];
   if (!request) return { scope, failures, gaps: ["production_spatial_construction_ai_decision_link_missing"] };
-  if (requests.length !== 1 || request.sequence >= placement.sequence || receipt.sequence >= resolution.sequence) {
+  if (requests.length !== 1 || request.sequence >= placement.sequence ||
+    (resolution && receipt.sequence >= resolution.sequence)) {
     return { scope, failures: ["production_spatial_construction_dispatch_interval_invalid"], gaps };
   }
-  const deliveries = capture.facts.filter((fact) => fact.kind === "command_delivered" &&
-    fact.command.execution?.commandId === execution.commandId);
-  const outcomes = capture.facts.filter((fact) => fact.kind === "outcome" && fact.outcome.commandId === execution.commandId);
+  const deliveries = capture.facts.filter((fact) => fact.kind === "command_delivered")
+    .filter((fact) => fact.command.execution?.commandId === execution.commandId);
+  const outcomes = capture.facts.filter((fact) => fact.kind === "outcome")
+    .filter((fact) => fact.outcome.commandId === execution.commandId);
   failures.push(...validateRuntimeProductionCommandLineage(request, receipt, command, deliveries, outcomes));
   const decision = matchRuntimeProductionDecision(request,
     capture.facts.filter((fact) => fact.kind === "decision_selected"), execution.authorityEpoch);

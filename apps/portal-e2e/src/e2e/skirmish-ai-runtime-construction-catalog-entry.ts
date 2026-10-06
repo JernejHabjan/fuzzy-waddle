@@ -12,7 +12,7 @@ export interface RuntimeConstructionCatalogEntryV1 {
   readonly siteActorId: string;
   readonly legal: boolean;
   readonly pricing: AiRuntimeConstructionCatalogV1;
-  /** Only a previously established exact construction scope supplies these identities; no path means no inference. */
+  /** Only an exact validated path/lifecycle admission scope supplies these identities; site/name/price equality cannot. */
   readonly acceptedDecision: AiDecisionIdentity | null;
   readonly acceptedDemandId: string | null;
 }

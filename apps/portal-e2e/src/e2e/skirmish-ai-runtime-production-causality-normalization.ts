@@ -19,6 +19,7 @@ import { normalizeRuntimeProductionDecisions } from "./skirmish-ai-runtime-produ
 import { normalizeRuntimeProductionSpatial } from "./skirmish-ai-runtime-production-spatial-normalization";
 import { projectRuntimeConstructionCatalog } from "./skirmish-ai-runtime-construction-catalog-projection";
 import { normalizeRuntimeConstructionAuthority } from "./skirmish-ai-runtime-construction-authority";
+import { projectRuntimeConstructionLineage } from "./skirmish-ai-runtime-construction-lineage-projection";
 import { runtimeProductionApplicationGaps } from "./skirmish-ai-runtime-production-application-gaps";
 import { projectRuntimeProductionEffectRetention } from "./skirmish-ai-runtime-production-effect-retention-projection";
 import { normalizeRuntimeProductionInitialQueues } from "./skirmish-ai-runtime-production-initial-queue-normalization";
@@ -52,7 +53,10 @@ export function normalizeRuntimeProductionCausality(
   const construction = normalizeRuntimeConstructionAuthority(capture);
   failures.push(...construction.failures);
   construction.gaps.forEach((gap) => gaps.add(gap));
-  const constructionCatalog = projectRuntimeConstructionCatalog(spatial.authority);
+  const constructionLineage = projectRuntimeConstructionLineage(capture, spatial.authority, construction.records);
+  failures.push(...constructionLineage.failures);
+  constructionLineage.gaps.forEach((gap) => gaps.add(gap));
+  const constructionCatalog = projectRuntimeConstructionCatalog(spatial.authority, constructionLineage.entries);
   failures.push(...constructionCatalog.failures);
   constructionCatalog.gaps.forEach((gap) => gaps.add(gap));
   if (capture.droppedFactCount || capture.droppedSnapshotCount || capture.facts.length > 8192 || capture.snapshots.length > 256) {
@@ -212,6 +216,8 @@ export function normalizeRuntimeProductionCausality(
     decisions: failures.length ? [] : cadence.decisions,
     spatialAuthority: failures.length ? { placements: [], spawns: [], paths: [] } : spatial.authority,
     constructionAuthority: failures.length ? [] : construction.records,
+    initialConstruction: failures.length ? null : constructionLineage.initial,
+    constructionLineage: failures.length ? [] : constructionLineage.entries,
     constructionCatalog: failures.length ? [] : constructionCatalog.entries,
     payments: failures.length ? [] : payments.payments, operations: failures.length ? [] : operations.operations,
     completions: failures.length ? [] : completions.completions,

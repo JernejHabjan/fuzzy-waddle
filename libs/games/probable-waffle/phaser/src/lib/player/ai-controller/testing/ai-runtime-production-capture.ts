@@ -36,6 +36,8 @@ import { QUEUE_PROGRESS_EVENT, type QueueProgressEvent } from "../../../entity/c
 import { projectAiRuntimeProductionBoundaryState } from "./project-ai-runtime-production-boundary-state";
 import { captureAiRuntimeProductionWorld } from "./capture-ai-runtime-production-world";
 import { AiRuntimeProductionSpatialCapture } from "./ai-runtime-production-spatial-capture";
+import { captureAiRuntimeInitialConstruction } from "./capture-ai-runtime-initial-construction";
+import type { AiRuntimeInitialConstructionV1 } from "./ai-runtime-initial-construction-v1";
 
 import { CONSTRUCTION_AUTHORITY_EVENT, type ConstructionAuthorityEvent } from
   "../../../entity/components/construction/construction-authority-event";
@@ -60,6 +62,7 @@ export class AiRuntimeProductionCapture {
   private readonly unspentClaims = new AiRuntimeUnspentClaims();
   private disposed = false;
   private readonly spatialCapture: AiRuntimeProductionSpatialCapture;
+  private readonly initialConstruction: Map<number, AiRuntimeInitialConstructionV1>;
 
   constructor(private readonly scene: ProbableWaffleScene) {
     const ticks = getSceneService(scene, SimulationTickService);
@@ -69,6 +72,8 @@ export class AiRuntimeProductionCapture {
     const playerChanged = scene.communicator.playerChanged;
     if (!ticks || !bus || !index || !tech || !playerChanged) throw new Error("production_capture_authority_missing");
     this.startedTick = ticks.currentTick;
+    const initialActors = index.getAllIdActors();
+    this.initialConstruction = captureAiRuntimeInitialConstruction(scene, initialActors, this.startedTick);
     this.spatialCapture = new AiRuntimeProductionSpatialCapture(scene, this.identify, (playerNumber, spatial) => {
       this.append({ ...this.boundary(playerNumber), kind: "spatial_authority", spatial });
     });
@@ -129,7 +134,7 @@ export class AiRuntimeProductionCapture {
     }));
     // Components can finish initialization after index registration. This test-only scan attaches missing listeners.
     this.subscriptions.add(ticks.tick$.subscribe(() => index.getAllIdActors().forEach((actor) => this.watchQueue(actor))));
-    index.getAllIdActors().forEach((actor) => this.watchQueue(actor));
+    initialActors.forEach((actor) => this.watchQueue(actor));
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.dispose, this);
     scene.events.once(Phaser.Scenes.Events.DESTROY, this.dispose, this);
   }
@@ -190,6 +195,7 @@ export class AiRuntimeProductionCapture {
       schemaVersion: 1, kind: "production_authority_capture", startedTick: this.startedTick, playerNumber,
       droppedFactCount: this.factDrops.get(playerNumber) ?? 0,
       droppedSnapshotCount: this.snapshotDrops.get(playerNumber) ?? 0,
+      initialConstruction: this.initialConstruction.get(playerNumber),
       gaps: ["resource_item_attribution", "queue_resource_runtime_authority_unverified",
         "pending_dispatch_before_capture_or_restore", "navigation_placement_authority",
         "pre_registration_queue_events", "capture_local_identity_restore", "initial_paid_item_provenance",
@@ -207,6 +213,7 @@ export class AiRuntimeProductionCapture {
     this.queueSubscriptions.forEach((subscription) => subscription.unsubscribe());
     this.queueSubscriptions.clear();
     this.lastBalances.clear();
+    this.initialConstruction.clear();
     this.snapshots.clear();
     this.facts.length = 0;
     this.pendingCommands.dispose();

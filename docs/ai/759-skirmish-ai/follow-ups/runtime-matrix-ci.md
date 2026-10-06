@@ -35,6 +35,90 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
 
 ## Implementation order
 
+### Production construction ownership checkpoint (2026-10-06, unverified)
+
+Machinery batch 16, #815/#816 PRO-03/06/07 prerequisites. Base `f3835ddc2a862f265ecdd1f16a7e716dbc77d1e5`,
+worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; containing commit owns
+this revision. Nx merge `59f72e037` remains intact. Actual model/effort is unavailable. No issue/family is complete.
+All executable validation remains deferred to the final gate; source review below is not execution evidence.
+
+| Acceptance | Implemented owner / consumer | Evidence state |
+| --- | --- | --- |
+| 1. Exact native placement/admission lineage | `projectRuntimeConstructionLineage`, shared `matchRuntimeConstructionDecision`, `matchRuntimeConstructionApplication` | Exact earlier site, complete payload/stamp, accepted decision/demand and native application; source reviewed, synthetic Playwright unrun |
+| 2. Installation/pre-capture/restore ownership | `AiRuntimeInitialConstructionV1`, `captureAiRuntimeInitialConstruction`, existing marked capture, `normalizeRuntimeInitialConstruction` | One detached installation inventory per player, no later backfill; Jest authored/unrun |
+| 3. Every attempt reaches reports | `RuntimeConstructionLineageV1`, causality normalizer and existing variant runner; pricing projector consumes exact scopes | Repeated refunds/teardowns retained; automatic sites need no builder path; source traced, Playwright unrun |
+| 4. Bounds, contradictions and missing history | 256-site inventories / lineage groups, restore and ID-reuse fences, existing raw caps / root fail-closed suppression | No partial membership on overflow/reader loss; legacy absence, cancellation/setup/payment/global ownership and useful-effect history stay gaps |
+| 5. Review, omissions, closure and publication | New inventory/lineage specs, capture/authority assertions, handoff and this packet | Source-only audits below; exact staged scope, normal commit/push/remote verification and pause required |
+
+Installation samples actual ConstructionSiteComponent state/work through its existing save projection, and the shared
+created-actor identity/index/owner projection. It reuses the actor list already needed for initial queue listeners;
+there is no additional index query, recurring scan, timer, planner input or gameplay/save/relay mutation. The existing
+capture owns and clears its per-player map on dispose. Known ownership outside declared players is excluded; an unknown
+owner or read failure makes membership unavailable, rather than proving a partial inventory complete. Each declared
+player retains at most 256 sites, with overflow discarding the whole player's group. Initial state may be unfinished
+or finished and work counters can include native negative completion overshoot. Presence at tick zero is still only
+capture installation presence, never fixture/map identity, prior charge provenance, restoration completion or paid lease.
+
+Lineage consumes validated native records and placements. Each callback requires an exact earlier site-ID/canonical
+family/owner binding; multiple earlier placements fail closed instead of choosing the nearest. Observed unregister /
+re-registration, restore flags and setData boundaries fence earlier ownership, including manual setData outside global
+restore. Canonical family/owner changes without a fence fail; visual variant changes keep an explicit history gap.
+Installation binding requires actual index identity. Missing IDs/clock/live binding retain gaps, not useful product credit.
+Future placement cannot backfill an earlier callback. All repeated teardown/refund attempts remain independent records.
+
+The existing construction decision matcher now allows a caller to request capture-wide retrospective admission linkage
+without a path resolution. The accepted request, retry fence, selected decision, native admission, receipt and complete
+command payload/stamp remain shared authority. Existing path callers still supply their resolution boundary, preserving
+the stricter receipt-before-resolution rule. This permits automatic sites without inventing a builder path and preserves
+single-player callback-before-receipt order. No retrospective scope is represented as authority available at callback time.
+Application is separate: one exact delivery and one real applied outcome must match actual placement tick, actor IDs,
+site world link and all execution fields. Illegal/missing/failed application retains nullable application alongside the
+observed admission/attempt; admission cannot imply legal, paid, completed or useful construction. Pricing reports reuse
+these exact scopes by placement sequence; current definition, admission price and refund vector remain separate.
+
+`RuntimeProductionCausalityV1.initialConstruction` and `constructionLineage` reach the existing variant serialization.
+Contradictory initial state/identity, application/stamp, family or ambiguous placement suppress normalized authority,
+catalog, world, money and effect groups. Overflow yields no partial lineage/inventory. Per-attempt AI identity gaps
+replace the unconditional construction AI gap only when the exact admission is actually joined. Full site-lifetime,
+payment/definition/global-resource history, initial setup/payment, cancellation command identity and completion/useful
+effects remain explicit. No full production adapter/oracle/denominator is weakened. Native payment predicate, resampled
+refund policy, pre-start/repeated credits and zero-duration arithmetic are untouched, still authored/unverified findings.
+
+**Implementation Review / Omission Audit (source only):** acceptance 1–5 traced capture construction/install/dispose,
+actual component save getters, owner/index projection, legacy optional raw contract, exact shared decision/command
+matching, native placement/application callback order, full causality/variant consumption and catalog scope reuse.
+Source repairs preserve neutral ownership, fenced restore family changes and visual variants; callback-time state/finished
+contradictions now fail closed. Specs cover automatic sites, multi-builder exact admission, callback-before-receipt,
+initial/legacy/unknown/neutral/reader/overflow ownership, finish-before-effects, illegal/missing application, restored
+callbacks, ID reuse, repeated teardown/refund, future placement, stamp/site/state contradictions and whole-group loss.
+No test or other executable check ran. No new scenario registration or editor/GUI/package/config/save migration applies;
+these are test-owned diagnostic contracts consumed by the existing runner. No skill/tool change was needed.
+
+**Separate Final Closure Audit (source only):** after source repairs, all five authoring items have concrete owners,
+consumers, authored tests and explicit deferred evidence. Existing raw caps and complete-evidence gates are retained.
+New files/methods remain narrow, one substantive contract per file; no source baseline is refreshed. Size enforcement,
+format/lint/type/build/Jest/Playwright/schema/editor/repository checks remain unrun. Paired setup, navigation/cache/history,
+producer service/output reachability, dated useful demand/continuous stability, AI strategic cancellation worlds, legal
+Skaduwee research and the full `RuntimeProductionEvidenceV1` adapter remain open. No release/issue/family closure.
+Publication closes only this authored slice; verify exact owned stage, normal commit/push and matching remote SHA, then pause.
+
+**Deferred focused commands (unrun; append to prior final gate):**
+
+```bash
+NX_DAEMON=false pnpm exec nx test probable-waffle-phaser --testPathPatterns='capture-ai-runtime-initial-construction|ai-runtime-construction-capture|ai-runtime-production-capture' --skip-nx-cache
+pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts skirmish-ai-runtime-construction-lineage.spec.ts skirmish-ai-runtime-construction-authority.spec.ts skirmish-ai-runtime-construction-decision-lineage.spec.ts skirmish-ai-runtime-construction-catalog.spec.ts skirmish-ai-runtime-production-causality-normalization.spec.ts
+```
+
+Final-gate work also includes merged Nx/Jest/Phaser compatibility, Phaser mock emitter debt, actual capture installation /
+restore order, bounded inventory/report cost and real legal/useful worlds. Synthetic contracts do not provide that evidence.
+
+**Next grouped authoring:** target-specific producer service/output routes through existing native query/spawn/rally
+callers and exact accepted demand/producer/product identity. Then complete navigation revision/cache/history and dated
+useful demand/continuous stability before the full production adapter and real strategic worlds. Keep **GPT-6.1 Sol / high**
+for these unresolved authority boundaries. Official OpenAI documentation searched/opened this turn supports complex
+coding and high effort: [GPT-6.1 Sol](https://developers.openai.com/api/docs/models/gpt-6.1-sol). Recommendation is task
+judgment, not an actual setting change. Commit/push, verify remote, pause.
+
 ### Production construction lifecycle checkpoint (2026-10-06, unverified)
 
 Machinery batch 15, #815/#816 PRO-03/06/07 prerequisites. Base `02345fb78d8fc6460fecf2af0f44f1793b1ed57c`,

@@ -28,7 +28,7 @@ test("construction retains native free pre-start/repeated refunds and changed cu
   const result = normalizeRuntimeConstructionAuthority(capture);
   expect(result.failures).toEqual([]); expect(result.records).toHaveLength(2);
   expect(result.gaps).toContain("production_construction_payment_history_missing");
-  expect(result.gaps).toContain("production_construction_ai_lifecycle_identity_missing");
+  expect(result.gaps).toContain("production_construction_site_lifetime_history_unverified");
   expect(result.gaps).toContain("production_construction_global_resource_interval_unverified");
   expect(result.gaps).toContain("production_construction_definition_history_missing");
   expect(normalizeRuntimeProductionCausality(capture).constructionAuthority).toEqual(result.records);

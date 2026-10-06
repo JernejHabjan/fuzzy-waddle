@@ -1,8 +1,11 @@
 import type { RuntimeProductionSpatialAuthorityV1 } from "./skirmish-ai-runtime-production-spatial-authority";
 import type { RuntimeConstructionCatalogEntryV1 } from "./skirmish-ai-runtime-construction-catalog-entry";
+import type { RuntimeConstructionLineageV1 } from "./skirmish-ai-runtime-construction-lineage";
 
 /** Consumes validated native placements and exact existing scopes; autonomous/legacy sites need no invented path. */
-export function projectRuntimeConstructionCatalog(authority: RuntimeProductionSpatialAuthorityV1) {
+export function projectRuntimeConstructionCatalog(
+  authority: RuntimeProductionSpatialAuthorityV1, lineage: readonly RuntimeConstructionLineageV1[] = []
+) {
   const entries: RuntimeConstructionCatalogEntryV1[] = [];
   const failures: string[] = [];
   const gaps = new Set<string>();
@@ -22,7 +25,8 @@ export function projectRuntimeConstructionCatalog(authority: RuntimeProductionSp
     if (!pricing) { gaps.add("production_construction_command_catalog_missing"); continue; }
     if (!placement.site.actorId) { gaps.add("production_construction_catalog_site_binding_missing"); continue; }
     const scope = authority.paths.find((path) => path.constructionPlacement?.sequence === fact.sequence &&
-      path.constructionCommand)?.constructionCommand;
+      path.constructionCommand)?.constructionCommand ?? lineage.find((entry) =>
+        entry.placement?.sequence === fact.sequence && entry.commandScope)?.commandScope;
     if (!scope?.decision) gaps.add("production_construction_catalog_ai_identity_missing");
     if (!pricing.siteDefinition) gaps.add("production_construction_effective_definition_missing");
     entries.push({ placementSequence: fact.sequence, placementTick: fact.tick, command: placement.command,

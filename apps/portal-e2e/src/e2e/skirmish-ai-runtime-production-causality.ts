@@ -14,6 +14,9 @@ import type { RuntimeProductionDecisionV1 } from "./skirmish-ai-runtime-producti
 import type { RuntimeProductionSpatialAuthorityV1 } from "./skirmish-ai-runtime-production-spatial-authority";
 import type { RuntimeProductionEffectRetentionV1 } from "./skirmish-ai-runtime-production-effect-retention";
 import type { RuntimeConstructionCatalogEntryV1 } from "./skirmish-ai-runtime-construction-catalog-entry";
+import type { RuntimeConstructionLineageV1 } from "./skirmish-ai-runtime-construction-lineage";
+import type { AiRuntimeInitialConstructionV1 } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-initial-construction-v1";
 
 /**
  * Diagnostic AI lineage, not RuntimeProductionEvidenceV1. Retains actual accepted intent and observer order;
@@ -31,8 +34,12 @@ export interface RuntimeProductionCausalityV1 {
   /** Every captured selected step, including empty decisions, with its actual input and configured scheduler cadence. */
   readonly decisions: readonly RuntimeProductionDecisionV1[];
   readonly spatialAuthority: RuntimeProductionSpatialAuthorityV1;
-  /** Exact callback-time attempts/transitions, including repeated refunds; no saved paid-price ledger or full AI lineage. */
+  /** Exact callback-time attempts/transitions, including repeated refunds; no saved paid-price ledger or full history. */
   readonly constructionAuthority: readonly Extract<AiRuntimeProductionFactV1, { kind: "construction_authority" }>[];
+  /** Installation-time inventory only. Null keeps legacy, failed-reader and overflow membership unavailable. */
+  readonly initialConstruction: AiRuntimeInitialConstructionV1 | null;
+  /** Exact retrospective placement/admission versus installation/restore ownership, preserving every separate attempt. */
+  readonly constructionLineage: readonly RuntimeConstructionLineageV1[];
   /** Exact shared admission price and independently sampled effective site definition; no charge or history is implied. */
   readonly constructionCatalog: readonly RuntimeConstructionCatalogEntryV1[];
   /** Rejected requests/applications retain native release authority without inventing a stamped admitted command. */

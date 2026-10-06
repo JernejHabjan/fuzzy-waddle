@@ -67,7 +67,7 @@ export function normalizeRuntimeConstructionAuthority(capture: AiRuntimeProducti
   const failures: string[] = [];
   const gaps = new Set<string>(["production_construction_payment_history_missing",
     "production_construction_global_resource_interval_unverified", "production_construction_definition_history_missing",
-    "production_construction_ai_lifecycle_identity_missing", "production_construction_completion_effect_missing"]);
+    "production_construction_site_lifetime_history_unverified", "production_construction_completion_effect_missing"]);
   if (!records.length) gaps.add("production_construction_authority_missing");
   for (const fact of records) {
     const value = fact.construction;
@@ -77,6 +77,11 @@ export function normalizeRuntimeConstructionAuthority(capture: AiRuntimeProducti
       typeof value.snapshotRestoreInProgress !== "boolean" || typeof value.sceneActive !== "boolean" ||
       (value.clockTick !== null && value.clockTick !== fact.tick) || value.site.playerNumber !== capture.playerNumber ||
       fact.playerNumber !== capture.playerNumber) failures.push("production_construction_boundary_invalid");
+    if (!value.site.objectName || !value.site.canonicalObjectName ||
+      ![value.site.active, value.site.alive, value.site.finished, value.site.indexed].every((flag) => typeof flag === "boolean") ||
+      value.site.finished !== (value.state === ConstructionStateEnum.Finished)) {
+      failures.push("production_construction_site_invalid");
+    }
     if (!value.site.actorId || value.clockTick === null) gaps.add("production_construction_site_clock_missing");
     if (value.snapshotRestoreInProgress || !value.sceneActive) gaps.add("production_construction_restore_or_inactive_boundary");
     if (value.kind === "lifecycle") {
