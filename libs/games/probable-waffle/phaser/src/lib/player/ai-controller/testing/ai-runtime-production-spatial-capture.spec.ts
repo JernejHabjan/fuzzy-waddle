@@ -14,6 +14,7 @@ import { NavigationService } from "../../../world/services/navigation.service";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
+import { productionCaptureItem } from "./ai-runtime-production-capture-fixtures";
 import { AiRuntimeProductionSpatialCapture } from "./ai-runtime-production-spatial-capture";
 import type { AiRuntimeProductionSpatialV1 } from "./ai-runtime-production-spatial-v1";
 import type { HeightNavigationGraph } from "../../../world/services/height-navigation-graph-builder";
@@ -58,6 +59,20 @@ function fixture() {
 }
 
 describe("production spatial capture", () => {
+  it("routes actual returned-product events through the installed marked capture and detaches the native item", () => {
+    const f = fixture();
+    const item = { ...productionCaptureItem(), remainingTime: 0 };
+    f.scene.events.emit(PRODUCTION_SPATIAL_AUTHORITY_EVENT, { kind: "output", producer: f.target, product: f.source,
+      item, rallyMode: "unset", target: null, targetTile: null } satisfies ProductionSpatialAuthorityEvent);
+    item.remainingTime = 99;
+    expect(f.records[0]).toMatchObject({ kind: "output", outputId: 1,
+      producer: { actorId: "target" }, product: { actorId: "source" }, item: { remainingTimeMs: 0 }, rallyMode: "unset" });
+    f.capture.dispose();
+    f.scene.events.emit(PRODUCTION_SPATIAL_AUTHORITY_EVENT, { kind: "output", producer: f.target, product: f.source,
+      item, rallyMode: "unset", target: null, targetTile: null } satisfies ProductionSpatialAuthorityEvent);
+    expect(f.records).toHaveLength(1);
+  });
+
   it("records update requests and changed graph references without querying or altering the native path", async () => {
     const f = fixture();
     const pending = f.navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius(f.source, f.target);

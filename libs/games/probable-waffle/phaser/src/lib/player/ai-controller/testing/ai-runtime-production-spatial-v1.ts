@@ -1,5 +1,6 @@
 import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import type { ConstructCommand } from "@fuzzy-waddle/probable-waffle-protocol";
+import type { AiRuntimeProducerRouteV1 } from "./ai-runtime-producer-route-v1";
 import type { AiRuntimeCreatedActorV1 } from "./ai-runtime-created-actor-v1";
 import type { AiRuntimeProductionQueueV1 } from "./ai-runtime-production-queue-v1";
 import type { AiRuntimeConstructionCatalogV1 } from "./ai-runtime-construction-catalog-v1";
@@ -12,6 +13,7 @@ export type AiRuntimeProductionSpatialV1 = {
   readonly sceneActive: boolean;
   readonly gaps: readonly string[];
 } & (
+  | AiRuntimeProducerRouteV1
   | { readonly kind: "placement"; readonly command: ConstructCommand; readonly site: AiRuntimeCreatedActorV1;
     readonly footprint: readonly Vector2Simple[] | null; readonly legal: boolean;
     /** Legacy captures omit pricing; omission cannot be filled from a later definition or checkpoint. */

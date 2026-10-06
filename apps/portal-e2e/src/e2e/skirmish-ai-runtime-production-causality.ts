@@ -1,3 +1,4 @@
+import type { RuntimeProducerRoutesV1 } from "./skirmish-ai-runtime-producer-routes";
 import type { RuntimeProductionCancellationV1 } from "./skirmish-ai-runtime-production-cancellation";
 import type { RuntimeProductionCompletionV1 } from "./skirmish-ai-runtime-production-completion";
 import type { RuntimeProductionRejectionV1 } from "./skirmish-ai-runtime-production-rejection";
@@ -33,6 +34,8 @@ export interface RuntimeProductionCausalityV1 {
   readonly initialQueues: readonly RuntimeProductionInitialQueueV1[];
   /** Every captured selected step, including empty decisions, with its actual input and configured scheduler cadence. */
   readonly decisions: readonly RuntimeProductionDecisionV1[];
+  /** Existing native service/output queries and exact completed-product demand lineage; no useful arrival claim. */
+  readonly producerRoutes: RuntimeProducerRoutesV1;
   readonly spatialAuthority: RuntimeProductionSpatialAuthorityV1;
   /** Exact callback-time attempts/transitions, including repeated refunds; no saved paid-price ledger or full history. */
   readonly constructionAuthority: readonly Extract<AiRuntimeProductionFactV1, { kind: "construction_authority" }>[];

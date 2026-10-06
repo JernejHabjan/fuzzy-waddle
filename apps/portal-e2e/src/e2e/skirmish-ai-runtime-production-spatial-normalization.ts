@@ -32,6 +32,18 @@ export function normalizeRuntimeProductionSpatial(capture: AiRuntimeProductionCa
   let lastNavigation: AiRuntimeNavigationBoundaryV1 | undefined;
   for (const fact of facts) {
     const value = fact.spatial;
+    // Graph/request counters belong to one service observer across both query kinds.
+    if (value.kind === "builder_path" || value.kind === "producer_path") {
+      const navigationFailures = validateRuntimeNavigationBoundary(value.navigation, lastNavigation);
+      failures.push(...navigationFailures);
+      if (!navigationFailures.length && value.navigation !== undefined) {
+        // A missing graph does not erase earlier observed counters; exhausted observation remains terminal.
+        lastNavigation = value.navigation.updateRequestCount === null ? value.navigation : { ...value.navigation,
+          graphObservationId: value.navigation.graphObservationId ?? lastNavigation?.graphObservationId ?? null };
+      }
+    }
+    // Producer/output routes have their own bounded validator and exact completion lineage.
+    if (value.kind === "output" || value.kind === "producer_path") continue;
     value.gaps.forEach((gap) => gaps.add(gap));
     if (fact.playerNumber !== capture.playerNumber || !integer(fact.sequence) || fact.sequence === 0 ||
       !integer(fact.tick) || fact.tick < capture.startedTick || value.snapshotRestoreInProgress ||
@@ -67,15 +79,6 @@ export function normalizeRuntimeProductionSpatial(capture: AiRuntimeProductionCa
       if (!value.tile) gaps.add("production_spatial_spawn_not_found");
       if (boundaryKnown) authority.spawns.push(fact);
       continue;
-    }
-    if (value.kind === "builder_path") {
-      const navigationFailures = validateRuntimeNavigationBoundary(value.navigation, lastNavigation);
-      failures.push(...navigationFailures);
-      if (!navigationFailures.length && value.navigation !== undefined) {
-        // A missing graph does not erase earlier observed counters; exhausted observation remains terminal.
-        lastNavigation = value.navigation.updateRequestCount === null ? value.navigation : { ...value.navigation,
-          graphObservationId: value.navigation.graphObservationId ?? lastNavigation?.graphObservationId ?? null };
-      }
     }
     if (value.kind !== "builder_path" || !integer(value.queryId) || value.queryId === 0 ||
       !actorValid(value.source) || !actorValid(value.target) || value.source.actorId === value.target.actorId ||

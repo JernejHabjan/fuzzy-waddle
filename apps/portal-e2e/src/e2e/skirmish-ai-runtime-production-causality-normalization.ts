@@ -1,3 +1,4 @@
+import { normalizeRuntimeProducerRoutes } from "./skirmish-ai-runtime-producer-route-normalization";
 import { projectRuntimeProductionCancellations } from "./skirmish-ai-runtime-production-cancellations";
 import { validateRuntimeQueueRefundPolicy } from "./skirmish-ai-runtime-refund-policy";
 import { projectRuntimeProductionCompletions } from "./skirmish-ai-runtime-production-completions";
@@ -197,6 +198,9 @@ export function normalizeRuntimeProductionCausality(
   const completions = projectRuntimeProductionCompletions(capture, commands, mutations.mutations);
   failures.push(...completions.failures);
   completions.gaps.forEach((gap) => gaps.add(gap));
+  const routes = normalizeRuntimeProducerRoutes(capture, commands, completions.completions, spatial.authority);
+  failures.push(...routes.failures);
+  routes.gaps.forEach((gap) => gaps.add(gap));
   const retention = projectRuntimeProductionEffectRetention(capture, commands, completions.completions, world.snapshots);
   failures.push(...retention.failures);
   retention.gaps.forEach((gap) => gaps.add(gap));
@@ -215,6 +219,7 @@ export function normalizeRuntimeProductionCausality(
     initialQueues: failures.length ? [] : initial.items,
     decisions: failures.length ? [] : cadence.decisions,
     spatialAuthority: failures.length ? { placements: [], spawns: [], paths: [] } : spatial.authority,
+    producerRoutes: failures.length ? { outputs: [], paths: [] } : routes.routes,
     constructionAuthority: failures.length ? [] : construction.records,
     initialConstruction: failures.length ? null : constructionLineage.initial,
     constructionLineage: failures.length ? [] : constructionLineage.entries,

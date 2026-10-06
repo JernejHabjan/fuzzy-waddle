@@ -1,4 +1,5 @@
 import type { UnifiedQueueItem } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/queue-item";
+import { observeProductionOutput } from "./observe-production-output";
 import { observeQueueCompletionAuthority } from "../queue/observe-queue-completion-authority";
 import type Phaser from "phaser";
 import type { OwnerComponent } from "../owner-component";
@@ -108,15 +109,22 @@ export async function spawnProductionActor(
       gameObject.scene.events.emit(ProbableWaffleSceneEventName.ScoreUnitProduced, originalOwner);
     }
     if (rallyPoint.isSet()) {
-      executeSpawnRallyAction(newGameObject, rallyPoint);
+      executeSpawnRallyAction(newGameObject, rallyPoint, gameObject, queueItem);
+    } else {
+      observeProductionOutput(gameObject, queueItem, newGameObject, "unset");
     }
   }
   return newGameObject ? (getActorComponent(newGameObject, IdComponent)?.id ?? null) : null;
 }
 
-function executeSpawnRallyAction(newGameObject: Phaser.GameObjects.GameObject, rallyPoint: RallyPoint) {
+/** Emit only values already selected by the native branch, before that caller can start a navigation query. */
+function executeSpawnRallyAction(
+  newGameObject: Phaser.GameObjects.GameObject, rallyPoint: RallyPoint,
+  producer: Phaser.GameObjects.GameObject, queueItem?: UnifiedQueueItem
+) {
   const actionSystem = getActorSystem<ActionSystem>(newGameObject, ActionSystem);
   if (!actionSystem) {
+    observeProductionOutput(producer, queueItem, newGameObject, "movement_fallback");
     // noinspection JSIgnoredPromiseFromCall
     rallyPoint.navigateGameObjectToRallyPoint(newGameObject);
     return;
@@ -124,12 +132,16 @@ function executeSpawnRallyAction(newGameObject: Phaser.GameObjects.GameObject, r
 
   const targetGameObject = rallyPoint.getTargetGameObject();
   if (targetGameObject?.active) {
+    observeProductionOutput(producer, queueItem, newGameObject, "actor_action", targetGameObject);
     actionSystem.executeAction(undefined, targetGameObject);
     return;
   }
 
   const targetTile = rallyPoint.getTargetTileVec3();
   if (targetTile) {
+    observeProductionOutput(producer, queueItem, newGameObject, "tile_action", null, targetTile);
     actionSystem.executeAction(OrderType.Move, undefined, targetTile);
+  } else {
+    observeProductionOutput(producer, queueItem, newGameObject, "no_target");
   }
 }

@@ -35,6 +35,103 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
 
 ## Implementation order
 
+### Production producer route checkpoint (2026-10-06, unverified)
+
+Machinery batch 17, #815/#816 PRO-03/06/07 prerequisites. Base `b238801000ae8730c9802a833a485fa57162f55f`,
+worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; containing commit owns
+this revision. Nx merge `59f72e037` is preserved. Actual model/effort is unavailable. No issue/family is complete.
+All executable validation remains deferred to the final gate; source review below is not execution evidence.
+
+| Acceptance | Implemented owner / consumer | Evidence state |
+| --- | --- | --- |
+| 1. Native returned object and rally selection | `spawnProductionActor`, `observeProductionOutput`, local `ProductionSpatialAuthorityEvent` | Exact producer/item/product plus already-selected branch; native branch/error-isolation Jest authored/unrun |
+| 2. Existing target-specific service/output queries | `AiRuntimeProducerRouteCapture` installed/disposed by marked `AiRuntimeProductionSpatialCapture`; `AiRuntimeProducerRouteV1` | Three existing NavigationService methods observed once; weak product binding and producer-component scope; passive capture/integration Jest unrun |
+| 3. Exact report lineage | `matchRuntimeProducerOutput`, `RuntimeProducerRoutesV1`, `normalizeRuntimeProducerRoutes`, causality normalizer and existing variant runner | Exact physical item, native completion/product/spawn and accepted production decision/demand; synthetic Playwright authored/unrun |
+| 4. Loss, contradiction and lifetime ownership | Bounded bindings/queries/paths, scene/index/clock checks, restore/setData/reuse fences and root suppression | No partial route group after overflow; duplicate product/item and conflicting command/query facts fail closed; negative cases authored/unrun |
+| 5. Review, omissions, closure and publication | Native/passive/synthetic specs, handoff and this packet | Source-only audits below; exact staging, normal commit/push/remote verification and pause required |
+
+The spawner emits an output record only for an actual returned product with a supplied physical queue handle. It does
+so after the existing creator/score callback and before the selected rally invocation. Branches are `unset`,
+`movement_fallback`, `actor_action`, `tile_action` and `no_target`. The fallback keeps target selection inside RallyPoint;
+its target remains unknown in this boundary. Actor/tile branches retain values the native code already selected.
+No additional `isSet`/target getters, spawn choice, action or route query exists. The output observer is listener-gated,
+local/nonpersistent, and catches diagnostic listener errors without changing native actions, return values or errors.
+
+The existing marked spatial capture owns the route adapter even if the scene has no navigation service. When present,
+it wraps the actual service instance's object-radius, static-tile and dynamic-blocker methods; builder observation
+remains installed outside that wrapper. Disposal restores builder then route wrappers in reverse ownership order,
+preserves later replacements, fences pending continuations and clears weak product bindings. No timer, extra index
+scan, hidden actor list or planner input is introduced. The dynamic route records only the actual blocker count, not
+occupancy actors or a reconstructed grid. Source/target identity, actual capture-scene membership, current tiles,
+fixed clock, scene/restore flags and existing graph-reference/request observations are sampled at each boundary.
+Caller tile arguments and native path results are detached before later mutation; the original receiver/arguments,
+Promise, null/empty/nonempty result object, rejection and synchronous throw are preserved. Diagnostic-reader failures
+remain missing history and cannot retry the native call. Flying/direct movement and other unwrapped queries stay unknown.
+
+Actual returned-object bindings are weak and cap at 256 output events; capture-local output/query counters saturate
+at 8,192. Each complete returned path is retained up to 512 tiles, otherwise its successful native result remains
+separate from diagnostic loss. The normalized output/query group caps at 256 each and is discarded entirely on either
+overflow, including raw binding overflow. The raw root's 8,192-fact/256-snapshot caps are unchanged. Tail records are
+still validated after group overflow; duplicate output IDs, consumed item/product reuse and contradictory interval,
+clock, method, argument, actor, result and navigation claims suppress all normalized route/world/money/effect groups.
+
+Output lineage requires the exact item ID/producer/product from the real native completion, the full detached physical
+item, command/effect identity, producer membership and callback order: actual creator-after precedes output, output
+precedes the production terminal, and creation/output use the same actual tick. Spawn choice joins exact same item and
+producer before creator-before, after physical removal. Missing native completion/spawn or decision cannot be filled
+from an endpoint, name, price, nearest event or later snapshot. Every query with output ownership names the exact earlier
+capture-local output ID and actual product ID/canonical family/owner. The production admission/selected demand can be
+retrospectively reported through that output; it does not assert that later movement fulfills the original demand.
+Generic owned-producer target queries carry no inferred service intent/demand; their missing identity stays explicit.
+
+Request and terminal actor binding is separate from successful route result and topology observation. Current binding
+requires same-tick active/alive/finished/indexed actors still in the capture scene at unchanged sampled tiles. Restore
+flags, relevant construction setData and observed unregister/re-registration fence old output links. Awaited ticks,
+missing clock/scene/index, moved actors and topology changes keep distinct gaps. Failed/pending/no-path and empty-success
+queries are retained distinctly. Native cache provenance/revision, complete query history, rally-command identity,
+actual movement/service arrival, useful dated demand and continuous stability remain missing. No endpoint or rally
+selection supplies a reachable/safe/useful producer boolean. The full `RuntimeProductionEvidenceV1` adapter/oracles and
+PRO-03/06/07 denominators remain mandatory and unchanged.
+
+**Implementation Review / Omission Audit (source only):** acceptance 1–5 traced the native spawn/creator/rally order,
+RallyPoint fallback, MovementSystem static/dynamic callers, NavigationService object/tile methods and existing marked
+capture installation/disposal. Raw kinds are additive/legacy-compatible; the existing spatial normalizer delegates only
+new kinds while validating the shared graph/request counter stream across builder and producer queries;
+the causality normalizer validates/routes the new groups after native completions. The existing variant runner
+serializes the full result without new scenario registration. Source repairs isolate diagnostic reads from the one
+native invocation, add actual scene membership, and reject consumed product/item reuse. Tests cover all five rally
+branches with original getter/action counts, error isolation, original Promise/arguments/result mutation, static/dynamic/
+producer-target scopes, unrelated tile movement, null/empty/overflow results, reader/native failure, pending/disposal/
+later replacement, exact accepted demand, missing authority, restore/reuse/scene/index/awaited/topology boundaries,
+contradictions and whole-group overflow including invalid tails. Every test is unrun. No editor/GUI/config/package/save
+migration applies; all new runtime contracts are local test diagnostics. No skill/tool improvement was needed.
+
+**Separate Final Closure Audit (source only):** after repairs, all five authoring items have concrete implementations,
+consumers, authored cases and explicit deferred evidence. New source owners remain narrow; no source exemption was
+refreshed. Source-size enforcement, formatting, lint, types, builds, Jest, Playwright, simulations, schema/editor and
+repository validation remain unrun. Publication closes only this authored slice; exact staging, normal commit/push and
+matching remote SHA remain required before pausing. Full native navigation/cache/history, service/rally command
+identity, useful arrival/demand/stability, paired setup/legal research, strategic AI transition/cancellation worlds and
+runtime profiling remain open. No release, family, issue or complete machinery closure is claimed.
+
+**Deferred focused commands (unrun; append to prior final gate):**
+
+```bash
+NX_DAEMON=false pnpm exec nx test probable-waffle-phaser --testPathPatterns='production-spatial-spawn|observe-production-output|ai-runtime-producer-route-capture|ai-runtime-production-spatial-capture|ai-runtime-production-capture' --skip-nx-cache
+pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts skirmish-ai-runtime-producer-routes.spec.ts skirmish-ai-runtime-production-spatial-normalization.spec.ts skirmish-ai-runtime-production-completions.spec.ts skirmish-ai-runtime-production-effect-retention.spec.ts skirmish-ai-runtime-production-causality-normalization.spec.ts
+```
+
+Final-gate obligations include merged Nx/Jest/Phaser compatibility and mock-emitter debt, actual asynchronous/native
+cache order, observer/capture/report cost and real legal/useful worlds. Synthetic contracts provide no gameplay proof.
+
+**Next grouped authoring:** actual native navigation query/cache/rebuild provenance through ground TTL, dynamic-grid
+and water-helper branches, preserving results and distinguishing completed rebuilds from capture-local graph/request
+observations. Inspect source-size ownership before a narrow extraction; never refresh baselines or add diagnostic-only
+queries. Then dated useful demand, actual arrival/service effects and continuous stability before the full production
+adapter. Keep **GPT-6.1 Sol / high** for these unresolved authority boundaries. Official OpenAI documentation was searched
+and opened this turn: [GPT-6.1 Sol](https://developers.openai.com/api/docs/models/gpt-6.1-sol) supports complex coding
+and high effort. The recommendation is task judgment, not a setting change. Commit/push, verify remote, pause.
+
 ### Production construction ownership checkpoint (2026-10-06, unverified)
 
 Machinery batch 16, #815/#816 PRO-03/06/07 prerequisites. Base `f3835ddc2a862f265ecdd1f16a7e716dbc77d1e5`,

@@ -12,4 +12,9 @@ export type ProductionSpatialAuthorityEvent =
     /** Detached price already checked by shared application; supplies no actual payment authority. */
     readonly admissionCost: Readonly<Partial<Record<ResourceType, number>>> }
   | { readonly kind: "spawn"; readonly producer: Phaser.GameObjects.GameObject; readonly item: UnifiedQueueItem;
-    readonly waterUnit: boolean; readonly tile: Vector2Simple | null; readonly position: Vector3Simple | null };
+    readonly waterUnit: boolean; readonly tile: Vector2Simple | null; readonly position: Vector3Simple | null }
+  | { readonly kind: "output"; readonly producer: Phaser.GameObjects.GameObject; readonly item: UnifiedQueueItem;
+    readonly product: Phaser.GameObjects.GameObject;
+    /** Actual selected caller branch before invocation; fallback target selection remains inside RallyPoint. */
+    readonly rallyMode: "unset" | "movement_fallback" | "actor_action" | "tile_action" | "no_target";
+    readonly target: Phaser.GameObjects.GameObject | null; readonly targetTile: Vector3Simple | null };

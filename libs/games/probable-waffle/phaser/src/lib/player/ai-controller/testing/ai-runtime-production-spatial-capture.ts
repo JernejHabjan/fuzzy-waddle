@@ -15,6 +15,7 @@ import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor
 import { captureAiRuntimeProductionItem } from "./ai-runtime-production-item";
 import type { AiRuntimeProductionSpatialV1 } from "./ai-runtime-production-spatial-v1";
 import { captureAiRuntimeConstructionCatalog } from "./capture-ai-runtime-construction-catalog";
+import { AiRuntimeProducerRouteCapture } from "./ai-runtime-producer-route-capture";
 import { AiRuntimeNavigationObservation } from "./ai-runtime-navigation-observation";
 
 /** Test-owned service observation. Queries run once, return their original Promise and never feed an AI planner. */
@@ -22,6 +23,7 @@ export class AiRuntimeProductionSpatialCapture {
   private disposed = false;
   private nextQueryId = 1;
   private restoreNavigation?: () => void;
+  private producerRoutes?: AiRuntimeProducerRouteCapture;
   private navigationObservation?: AiRuntimeNavigationObservation;
 
   constructor(
@@ -31,8 +33,11 @@ export class AiRuntimeProductionSpatialCapture {
   ) {
     scene.events.on(PRODUCTION_SPATIAL_AUTHORITY_EVENT, this.observeNative, this);
     const navigation = getSceneService(scene, NavigationService);
+    if (navigation) this.navigationObservation = new AiRuntimeNavigationObservation(scene, navigation);
+    this.producerRoutes = new AiRuntimeProducerRouteCapture(scene, () => this.boundary(), identify, append,
+      this.navigationObservation);
     if (navigation) {
-      this.navigationObservation = new AiRuntimeNavigationObservation(scene, navigation);
+      this.producerRoutes.install(navigation);
       this.observeNavigation(navigation);
     }
   }
@@ -42,6 +47,7 @@ export class AiRuntimeProductionSpatialCapture {
     if (this.disposed) return;
     this.disposed = true;
     this.restoreNavigation?.();
+    this.producerRoutes?.dispose();
     this.navigationObservation?.dispose();
     this.scene.events.off(PRODUCTION_SPATIAL_AUTHORITY_EVENT, this.observeNative, this);
   }
@@ -60,6 +66,8 @@ export class AiRuntimeProductionSpatialCapture {
       this.append(event.command.playerNumber, { ...this.boundary(), kind: "placement", command: event.command,
         site: captureAiRuntimeCreatedActor(event.site), footprint, legal: event.legal,
         catalog: pricing.catalog, gaps: [...pricing.gaps, ...(footprint ? [] : ["production_spatial_footprint_overflow"])] });
+    } else if (event.kind === "output") {
+      this.producerRoutes?.observeOutput(event);
     } else {
       const producer = captureAiRuntimeCreatedActor(event.producer);
       if (event.producer.scene !== this.scene || producer.playerNumber === null || !producer.actorId) return;

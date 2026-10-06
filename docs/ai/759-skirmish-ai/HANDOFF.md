@@ -7,21 +7,45 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 ## Quick resume
 
 **Next session (user policy, 2026-10-06):** retain **GPT-6.1 Sol / high** for grouped PRO-03/06/07 authority.
-Current step: #815/#816 **machinery batch 16: construction lineage and initial/restore ownership**, authored/unverified.
-This batch began at `f3835ddc2a862f265ecdd1f16a7e716dbc77d1e5`; its containing commit owns the new revision.
+Current step: #815/#816 **machinery batch 17: native producer service/output routes**, authored/unverified.
+This batch began at `b238801000ae8730c9802a833a485fa57162f55f`; its containing commit owns the new revision.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify local/remote on resume.
 Nx merge `59f72e037` is preserved. Actual model/effort is unavailable. No family/issue is complete.
 The user removed the comment-permission rule. All executable validation remains at the final gate.
 
-Read the [construction ownership checkpoint](follow-ups/runtime-matrix-ci.md#production-construction-ownership-checkpoint-2026-10-06-unverified).
-**Next exact authoring action:** capture target-specific producer service/output routes through existing native query
-and spawn/rally callers, joined to exact accepted demand and producer/product identities. Start from the RTS source
-index's NavigationService, MovementSystem and production spawner owners; use existing spatial/exposure/retention scopes.
-Separate native query/cache provenance, output placement and actual useful reachability; never add a query just to fill
-diagnostics or infer useful routes from endpoint equality. Complete navigation revision/cache/history and dated useful
-demand/continuous stability before the full `RuntimeProductionEvidenceV1` adapter. Group compatible route/owner work
-before switching models. Actual paired setup, legal Skaduwee research and useful strategic AI cancellation/transition
-worlds remain open. Defer executable checks, commit/push the next coherent batch, then pause.
+Read the [producer route checkpoint](follow-ups/runtime-matrix-ci.md#production-producer-route-checkpoint-2026-10-06-unverified).
+**Next exact authoring action:** complete native navigation query/cache/rebuild provenance through the actual
+NavigationService and water-helper callers, preserving native results and identifying completed rebuilds separately
+from capture-local graph observations/update requests. Inspect the ground TTL cache, dynamic-grid/water branches and
+shared graph/cache owners before choosing a narrow extraction; do not refresh source baselines or add diagnostic-only
+queries. Then join dated useful demand, actual arrival/service effects and continuous stability before the full
+`RuntimeProductionEvidenceV1` adapter. Generic producer-target queries still lack service-intent identity; output
+production admission does not attribute later movement to its original demand. Rally-command identity, flying/direct
+movement, complete query history and useful reachability remain open. Actual paired setup, legal Skaduwee research and
+strategic AI cancellation/transition worlds remain open. Group compatible owners, defer all executable checks,
+commit/push the next coherent batch, then pause.
+
+- Shared spawner records the actual returned product and already-selected rally caller branch before execution.
+  Unset, movement fallback, actor action, tile action and missing-target branches remain distinct. Listener-free
+  gameplay adds no target selection reads; observer failure cannot replace the native action/result/error.
+- Marked spatial capture observes existing object-radius, static-tile and dynamic-blocker queries. Owned producer
+  targets and actual output objects supply the scope; no new query, world scan, timer, planner input or save/wire field.
+  Weak object bindings avoid ID/name/tile guesses; original receiver, arguments, Promise/result/errors stay native-owned.
+- `producerRoutes` reaches existing variant reports. Output joins exact physical item, creator/registration/completion,
+  spawn choice and accepted production decision/demand. A query uses the exact earlier output ID and product binding;
+  generic service queries cannot borrow demand through producer identity. Joins are retrospective diagnostics.
+- Source/target scene/index/owner bindings, request versus terminal clocks and graph observations remain separate from
+  path results. Restore, setData and observed unregister/re-registration fence old links. Null/empty paths, failed or
+  pending queries, unrelated movement and missing lineage retain gaps. No arrival, cache freshness or strategic utility
+  is inferred from endpoint equality or a selected rally target.
+- Bindings/groups cap at 256 outputs/queries; returned paths cap at 512 tiles and capture-local counters at 8,192.
+  Overflow drops the whole normalized route group; every tail contradiction is inspected. Reused product/item claims
+  fail closed and suppress other normalized groups. Disposal fences callbacks and restores only owned wrappers.
+- Native branch/passive capture Jest and synthetic route Playwright cases are authored/unrun. Source review,
+  Omission Audit and separate Final Closure Audit are in the checkpoint; no executable validation or issue closure.
+
+Prior batch 16 [construction ownership checkpoint](follow-ups/runtime-matrix-ci.md#production-construction-ownership-checkpoint-2026-10-06-unverified)
+is in `b23880100`; its inherited contracts remain authored/unverified:
 
 - Marked capture retains a detached installation-time construction inventory, reusing the existing indexed actor list.
   Inventory is per declared player, bounded at 256 sites; overflow/reader loss discard membership. Known neutral owners
@@ -391,7 +415,7 @@ merely because their issue title mentions testing. All authored work remains unv
 | 1 / as needed | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `partial` | Split only owners blocking the selected batch | GPT-6 Luna, medium |
 | 2 | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829) | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof | GPT-6.1 Sol, high |
 | 3 | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `in_progress` | Finish pressure/recovery policy; defer victory proof | GPT-6.1 Sol, high |
-| 4 / next batch | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Machinery 16 authored/unverified; next target-specific service/output routes, then complete history/useful-effect adapter | GPT-6.1 Sol, high |
+| 4 / next batch | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Machinery 17 authored/unverified; next native navigation/cache provenance, then useful demand/stability and full adapter | GPT-6.1 Sol, high |
 | 5 / paired | #815 / #816 | `in_progress` | Remaining family contracts, focused fixtures, frozen maps and continuous-match tier | Sol high for new contracts; Luna medium for established cases |
 | 6 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `in_progress` | Exact-once interruption, terminal and re-entry parity | GPT-6.1 Sol, high |
 | 7 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `partial` | Generation fencing, phase restore/replay and cleanup cases | GPT-6.1 Sol, high |
