@@ -53,4 +53,14 @@ describe("native resource service observation (unrun until final gate)", () => {
     release(); const releaseLater = PawnResourceServiceObservation.subscribe(f.board, later);
     await promise; expect(old).toHaveBeenCalledTimes(1); expect(later).not.toHaveBeenCalled(); releaseLater();
   });
+
+  it("bounds subscriptions without changing the service result for a rejected ninth observer", async () => {
+    const f = fixture(), ninth = jest.fn(), accepted = jest.fn();
+    const releases = Array.from({ length: 8 }, () => PawnResourceServiceObservation.subscribe(f.board, (event) => accepted(event)));
+    releases.push(PawnResourceServiceObservation.subscribe(f.board, ninth));
+    const promise = Promise.resolve(4);
+    expect(PawnResourceServiceObservation.invoke(f.actor, f.board, f.order, f.target, "gather", () => promise)).toBe(promise);
+    expect(await promise).toBe(4); expect(accepted).toHaveBeenCalledTimes(16); expect(ninth).not.toHaveBeenCalled();
+    releases.forEach((release) => release());
+  });
 });

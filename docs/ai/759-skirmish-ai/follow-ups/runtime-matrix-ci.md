@@ -103,6 +103,55 @@ Deferred command: `pnpm exec nx test probable-waffle-phaser --testPathPatterns='
 Next: strict service-attempt validation/projection, retaining actual credit/cargo/stability gaps. Continue the selected
 profile without pausing within this three-stage group.
 
+**Stage 28 — authored/unverified**, base `77499c4db98e1f28d625ed6a66e465039d0b22a1`:
+
+| Acceptance | Implementation / purpose | Evidence |
+| --- | --- | --- |
+| 1. Every supplied frozen order and attempt | Shared `validateRuntimeRouteOrders`; new `normalizeRuntimeServiceAttempts` | Full order stamp/source scope, native phase/amount and paired identity inspected, including orphan/failure/overflow tails |
+| 2. No lifetime revival | Shared order fence plus dedicated attempt validation | Restore/controller/observed unregister/re-register interval; false lifetime cannot revive or be replaced with a fresh attempt ID for an old admitted order; target reuse separately prevents ownership attribution |
+| 3. Independent report meanings | New `RuntimeServiceAttemptV1`, causality `serviceAttempts` field | Paired native result versus admitted task ownership versus dated service demand; native amount never promoted to income or fulfilled demand |
+| 4. Explicit unavailable history | Dedicated normalization | Legacy/no-order/no-admission/partial/clock/scene/unready/fenced data remain gaps; 256-attempt overflow drops the entire group; contradictory data suppress existing normalized report groups |
+| 5. Meaningful consumed cases | New Playwright service-attempt spec and additional observer bound case | Positive/zero/failure/rally/replacement/missing/fence/revival/target reuse/payload/stamp/overflow cases authored/unrun; existing variant runner retains the new field |
+| 6. Group handoff/publication | Existing HANDOFF/checkpoint | All three authoring stages retained, next credit/cargo contract and purpose, final-gate commands and scoped publication |
+
+**Source Implementation Review:** shared frozen-order validation now includes native service samples rather than only
+query/movement callers. A single start and at most one terminal retain operation, source/target physical identity and the
+entire immutable order. Amount is finite/nonnegative only on resolved; other phases carry null, so zero stays distinct
+from rejection or partial work. Order attribution requires a paired terminal, earlier observed admission and available
+source/target/clock/lifetime interval. Current-order replacement supplies no alternate task. Observed target reuse prevents
+ownership without asserting that the source board token itself expired. Dated service lineage reuses exact command/stamp
+and earlier selected demand; local rally or missing demand cannot borrow purchase purpose. Retargeted admission and actual
+target versus frozen order remain explicit gaps. `nativeResultAmount` retains callee diagnostics even when ownership is
+unavailable; it supplies no resource type, credited player, cargo ledger, applied money, arrival or useful/stable verdict.
+Every tail is inspected before a normalized group receives ownership attribution; raw fact-budget loss fails closed.
+The observer-bound case uses eight distinct listener functions because subscriptions are stored in a Set; repeating one
+function would not exercise the eight-listener limit. This source-review repair is authored and unrun.
+
+**Omission Audit:** acceptance 1–6 have consumed owners and authored positive/control/negative cases. `serviceAttempts`
+reaches the existing causality normalizer and variant report without a new fixture-registration or CI route. All service
+orders reuse existing stamp/identity checks; source/target/player/scene and full-history gaps remain explicit. Same task
+may own multiple attempts; task repetition is not a duplicate service effect. No changes to gameplay/resource policy,
+cargo persistence, source-size baseline, save/wire/planner state, timers/scans/queries or unrelated Nx files. Source review
+only; report join cost and native observer overhead remain unmeasured. No skill/tool improvement task applies.
+
+**Separate Final Closure Audit:** after source repairs, rechecked union consumers, immutable attempt identity, start-time
+admission ordering, source/target fences, native result versus income, global contradiction suppression, overflow tails,
+test discovery and exact staged scope. All three foundation stages are authored, not validated; no family/issue closure.
+No Jest/Playwright/simulation, formatting/lint/type/build, source-size/schema/editor/repository validator, doctor/context,
+catalog or diff check ran. Native/module compatibility, test syntax/flags, performance and real-money/gameplay evidence
+remain final-gate obligations. Normal scoped commit/push and exact local/remote SHA verification close publication.
+
+Deferred command: `pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts skirmish-ai-runtime-service-attempt.spec.ts skirmish-ai-runtime-route-order.spec.ts skirmish-ai-runtime-route-caller.spec.ts skirmish-ai-runtime-production-causality-normalization.spec.ts`.
+Retain the stage 26/27 Jest commands above and stage 25 movement cases at the final gate.
+
+**Next and purpose:** define actual emission/application and bounded cargo identities across native gather/drop-off awaits,
+mutating Gather/ReturnResources orders, source/drain/player ownership, campaign suppression, mixed/old cargo and restore/reuse.
+This lets a useful-service assertion distinguish a returned amount from credited benefit. Existing service attempt identity
+supplies the caller boundary, not the cargo origin. Do not add a nearest-time or current-order join to resource money.
+Any edit to the baselined gatherer needs a separate compliant prerequisite split; no baseline refresh. Recommend Sol 6.1
+high for this cross-owner causal design, then medium for settled implementation. Pause after the three requested stages;
+sustained usefulness and full runtime oracles remain open beyond actual-credit evidence.
+
 ### Production movement arrival checkpoint (2026-10-07, unverified)
 
 Machinery batch 25, #815/#816 PRO-03/06/07 physical movement evidence.
