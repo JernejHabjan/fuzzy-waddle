@@ -127,12 +127,15 @@ export class AiRuntimeProducerRouteCapture {
         this.emit(playerNumber, snapshot());
       }
     } catch { snapshot = undefined; }
+    const native = snapshot ? this.navigationObservation?.query() : undefined;
     let promise: Promise<Vector2Simple[] | null>;
-    try { promise = call(); }
+    try { promise = native ? native.invoke(call) : call(); }
     catch (error) {
       if (snapshot && playerNumber !== undefined) {
-        try { this.emit(playerNumber, { ...snapshot(), phase: "threw" }); } catch { /* Preserve native error. */ }
+        try { this.emit(playerNumber, { ...snapshot(), nativeQuery: native?.sample(), phase: "threw" }); }
+        catch { /* Preserve native error. */ }
       }
+      this.navigationObservation?.release(native);
       throw error;
     }
     const captured = snapshot;
@@ -141,11 +144,11 @@ export class AiRuntimeProducerRouteCapture {
       void promise.then((path) => {
         if (this.disposed) return;
         const bounded = path === null || path.length <= 512;
-        this.emit(owner, { ...captured(), phase: "resolved", result: path === null ? "no_path" : "path",
+        this.emit(owner, { ...captured(), nativeQuery: native?.sample(), phase: "resolved", result: path === null ? "no_path" : "path",
           path: bounded ? path : null, gaps: bounded ? [] : ["production_route_path_overflow"] });
       }, () => {
-        if (!this.disposed) this.emit(owner, { ...captured(), phase: "rejected" });
-      }).catch(() => undefined);
+        if (!this.disposed) this.emit(owner, { ...captured(), nativeQuery: native?.sample(), phase: "rejected" });
+      }).catch(() => undefined).finally(() => this.navigationObservation?.release(native));
     }
     return promise;
   }

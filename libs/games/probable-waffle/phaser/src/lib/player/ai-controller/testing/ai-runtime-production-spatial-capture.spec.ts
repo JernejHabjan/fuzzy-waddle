@@ -18,6 +18,8 @@ import { productionCaptureItem } from "./ai-runtime-production-capture-fixtures"
 import { AiRuntimeProductionSpatialCapture } from "./ai-runtime-production-spatial-capture";
 import type { AiRuntimeProductionSpatialV1 } from "./ai-runtime-production-spatial-v1";
 import type { HeightNavigationGraph } from "../../../world/services/height-navigation-graph-builder";
+import { NavigationProvenance } from "../../../world/services/navigation-provenance";
+import type { NavigationNativeQuery } from "../../../world/services/navigation-native-query";
 
 jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
 jest.mock("../../../data/game-object-helper", () => ({ getGameObjectCurrentTile: jest.fn() }));
@@ -59,6 +61,35 @@ function fixture() {
 }
 
 describe("production spatial capture", () => {
+  it("joins only the synchronous native builder lookup and detaches its callback generation at terminal", async () => {
+    const f = fixture(), provenance = new NavigationProvenance();
+    f.navigation.getNativeNavigationBoundary = () => provenance.sample();
+    f.navigation.observeNativeNavigationQuery = (call, observer) => provenance.observe(call, observer);
+    let query: NavigationNativeQuery | null = null;
+    f.original.mockImplementationOnce(() => {
+      query = provenance.query("ground_static", { x: 4, y: 5 }, { x: 5, y: 5 }, "miss", 10);
+      return f.promise;
+    });
+    const returned = f.navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius(f.source, f.target);
+    expect(returned).toBe(f.promise);
+    expect(f.records[0]).not.toHaveProperty("nativeQuery");
+    provenance.cleared("ground"); provenance.completed(query);
+    f.settle([]); await returned;
+    expect(f.records[1]).toMatchObject({ nativeQuery: { queryId: 1, cache: "miss",
+      requested: { groundCacheClear: 0 }, completed: { groundCacheClear: 1 } } });
+    provenance.cleared("ground");
+    expect(f.records[1]?.kind === "builder_path" && f.records[1].nativeQuery?.completed?.groundCacheClear).toBe(1);
+    expect(f.original).toHaveBeenCalledTimes(1); f.capture.dispose();
+  });
+
+  it("preserves the one native invocation when builder diagnostic projection throws", async () => {
+    const f = fixture();
+    f.readGraph.mockImplementationOnce(() => { throw new Error("reader"); });
+    const returned = f.navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius(f.source, f.target);
+    expect(returned).toBe(f.promise); f.settle([]); await returned;
+    expect(f.original).toHaveBeenCalledTimes(1); f.capture.dispose();
+  });
+
   it("routes actual returned-product events through the installed marked capture and detaches the native item", () => {
     const f = fixture();
     const item = { ...productionCaptureItem(), remainingTime: 0 };

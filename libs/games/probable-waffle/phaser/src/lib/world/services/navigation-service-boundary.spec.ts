@@ -78,12 +78,16 @@ describe("navigation facade extraction boundaries", () => {
     jest.spyOn(NavigationObjectGrid.prototype, "build").mockImplementation(() => { order.push("objects"); return [[undefined]]; });
     jest.spyOn(NavigationHeightGraph.prototype, "build").mockImplementation(() => { order.push("height"); });
     jest.spyOn(GroundNavigationPathfinder.prototype, "setup").mockImplementation(() => { order.push("ground_setup"); });
-    jest.mocked(DistanceHelper.clearNavigationCache).mockImplementation(() => { order.push("distance_clear"); });
+    jest.mocked(DistanceHelper.clearNavigationCache).mockImplementation(() => {
+      expect(f.service.getNativeNavigationBoundary()).toMatchObject({ completedRebuild: 0, rebuildInProgress: true });
+      order.push("distance_clear");
+    });
     jest.spyOn(GroundNavigationPathfinder.prototype, "clearCache").mockImplementation(() => { order.push("ground_clear"); });
     jest.spyOn(WaterNavigationHelper.prototype, "clearCache").mockImplementation(() => { order.push("water_clear"); });
     const init = jest.mocked(onSceneInitialized).mock.calls[0];
     if (!init) throw new Error("navigation_test_init_missing");
     init[1].call(f.service);
+    expect(f.service.getNativeNavigationBoundary()).toMatchObject({ completedRebuild: 1, rebuildInProgress: false });
     expect(order).toEqual(["terrain", "water_setup", "objects", "height", "ground_setup",
       "distance_clear", "ground_clear", "water_clear"]);
     expect(f.events.on).toHaveBeenCalledWith(NavigationService.UpdateNavigationEvent, expect.any(Function), f.service);

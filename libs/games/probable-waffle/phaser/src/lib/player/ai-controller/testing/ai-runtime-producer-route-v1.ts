@@ -1,3 +1,4 @@
+import type { NavigationNativeQuery } from "../../../world/services/navigation-native-query";
 import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import type { AiRuntimeCreatedActorV1 } from "./ai-runtime-created-actor-v1";
 import type { AiRuntimeProductionQueueV1 } from "./ai-runtime-production-queue-v1";
@@ -24,6 +25,8 @@ export type AiRuntimeProducerRouteV1 =
     readonly radiusTiles: number | null;
     /** Capture-local graph/request samples, never completed native revision or cache freshness. */
     readonly navigation: AiRuntimeNavigationBoundaryV1 | undefined;
+    /** Exact native cache lookup or uncached overlay; omitted for early return, legacy or observation loss. */
+    readonly nativeQuery?: NavigationNativeQuery;
     /** Only the actual argument count, never hidden occupancy actors or a recreated blocker grid. */
     readonly dynamicBlockerCount: number | null;
     /** Detached complete native result, including empty success; null also represents bounded loss with a gap. */

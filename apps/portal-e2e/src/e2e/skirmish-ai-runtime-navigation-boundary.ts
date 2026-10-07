@@ -1,6 +1,8 @@
 import type { AiRuntimeNavigationBoundaryV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-navigation-boundary-v1";
 
+import { validateRuntimeNativeBoundary } from "./skirmish-ai-runtime-native-navigation-validation";
+
 /** Validate capture-local counters before accepting even a failed or unbound native query. Legacy omission is a gap. */
 export function validateRuntimeNavigationBoundary(
   value: AiRuntimeNavigationBoundaryV1 | undefined,
@@ -21,7 +23,7 @@ export function validateRuntimeNavigationBoundary(
     (previous.graphObservationId !== null && value.graphObservationId !== null &&
       value.graphObservationId < previous.graphObservationId)
   )) return ["production_spatial_navigation_counter_regressed"];
-  return [];
+  return validateRuntimeNativeBoundary(value.native, previous?.native);
 }
 
 /** Equality is limited to two observed references/update counters; it supplies no freshness or complete history. */

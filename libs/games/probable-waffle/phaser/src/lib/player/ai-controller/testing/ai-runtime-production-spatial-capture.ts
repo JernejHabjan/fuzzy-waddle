@@ -80,38 +80,52 @@ export class AiRuntimeProductionSpatialCapture {
   private observeNavigation(navigation: NavigationService): void {
     const original = navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius;
     const wrapper: typeof original = (...args) => {
-      if (this.disposed) return original.apply(navigation, args);
+      if (this.disposed || this.nextQueryId > 8192) return original.apply(navigation, args);
       const [source, target, radius] = args;
-      const playerNumber = getActorComponent(source, OwnerComponent)?.getOwner();
-      if (source.scene !== this.scene || target.scene !== this.scene || playerNumber === undefined ||
-        getActorComponent(target, OwnerComponent)?.getOwner() !== playerNumber ||
-        !getActorComponent(source, BuilderComponent) || !getActorComponent(target, ConstructionSiteComponent)) {
-        return original.apply(navigation, args);
-      }
-      const queryId = this.nextQueryId++;
-      const snapshot = () => ({ ...this.boundary(), kind: "builder_path" as const, queryId,
-        navigation: this.navigationObservation?.sample(),
-        source: captureAiRuntimeCreatedActor(source), target: captureAiRuntimeCreatedActor(target),
-        sourceTile: getGameObjectCurrentTile(source) ?? null, targetTile: getGameObjectCurrentTile(target) ?? null,
-        radiusTiles: radius ?? null });
-      this.append(playerNumber, { ...snapshot(), phase: "requested", path: null, result: null, gaps: [] });
+      let playerNumber: number | undefined;
+      let snapshot: (() => Pick<Extract<AiRuntimeProductionSpatialV1, { kind: "builder_path" }>,
+        "clockTick" | "snapshotRestoreInProgress" | "sceneActive" | "kind" | "queryId" | "navigation" |
+        "source" | "target" | "sourceTile" | "targetTile" | "radiusTiles">) | undefined;
+      try {
+        playerNumber = getActorComponent(source, OwnerComponent)?.getOwner();
+        if (source.scene === this.scene && target.scene === this.scene && playerNumber !== undefined &&
+          getActorComponent(target, OwnerComponent)?.getOwner() === playerNumber &&
+          getActorComponent(source, BuilderComponent) && getActorComponent(target, ConstructionSiteComponent)) {
+          const queryId = this.nextQueryId++;
+          snapshot = () => ({ ...this.boundary(), kind: "builder_path", queryId,
+            navigation: this.navigationObservation?.sample(),
+            source: captureAiRuntimeCreatedActor(source), target: captureAiRuntimeCreatedActor(target),
+            sourceTile: getGameObjectCurrentTile(source) ?? null, targetTile: getGameObjectCurrentTile(target) ?? null,
+            radiusTiles: radius ?? null });
+          this.append(playerNumber, { ...snapshot(), phase: "requested", path: null, result: null, gaps: [] });
+        }
+      } catch { snapshot = undefined; }
+      if (!snapshot || playerNumber === undefined) return original.apply(navigation, args);
+      const captured = snapshot, owner = playerNumber;
+      const native = this.navigationObservation?.query();
       let promise: ReturnType<typeof original>;
-      try { promise = original.apply(navigation, args); }
-      catch (error) {
-        this.append(playerNumber, { ...snapshot(), phase: "threw", path: null, result: null, gaps: [] });
+      try {
+        const call = () => original.apply(navigation, args);
+        promise = native ? native.invoke(call) : call();
+      } catch (error) {
+        try {
+          this.append(owner, { ...captured(), nativeQuery: native?.sample(), phase: "threw", path: null, result: null, gaps: [] });
+        } catch { /* Preserve the original native error, including a failed diagnostic reader. */ }
+        this.navigationObservation?.release(native);
         throw error;
       }
       // Subscribe before the caller awaits, retaining the exact Promise, result object and native rejection.
       void promise.then((path) => {
         if (this.disposed) return;
         const bounded = path === null || path.length <= 512;
-        this.append(playerNumber, { ...snapshot(), phase: "resolved", path: bounded ? path : null,
+        this.append(owner, { ...captured(), nativeQuery: native?.sample(), phase: "resolved", path: bounded ? path : null,
           result: path === null ? "no_path" : "path", gaps: bounded ? [] : ["production_spatial_path_overflow"] });
       }, () => {
         if (!this.disposed) {
-          this.append(playerNumber, { ...snapshot(), phase: "rejected", path: null, result: null, gaps: [] });
+          this.append(owner, { ...captured(), nativeQuery: native?.sample(), phase: "rejected", path: null, result: null, gaps: [] });
         }
-      }).catch(() => undefined); // Projection failure leaves an unmatched request; it cannot change the caller's Promise.
+      // Projection failure leaves an unmatched request; it cannot change the caller's Promise.
+      }).catch(() => undefined).finally(() => this.navigationObservation?.release(native));
       return promise;
     };
     navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius = wrapper;

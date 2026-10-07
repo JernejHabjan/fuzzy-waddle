@@ -1,3 +1,4 @@
+import type { projectRuntimeNativeNavigation } from "./skirmish-ai-runtime-native-navigation";
 import type { AiRuntimeProductionFactV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
 import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
@@ -21,6 +22,8 @@ export interface RuntimeProducerRoutesV1 {
     /** Same-tick actor/scene/index binding at the terminal, including failure terminals; supplies no route freshness. */
     readonly currentAtResolution: boolean;
     readonly topologyObservation: "same_observed" | "changed" | "unavailable";
+    /** Native lookup/cache generation diagnostics, kept separate from graph observations and arrival. */
+    readonly nativeNavigation: ReturnType<typeof projectRuntimeNativeNavigation>;
     readonly gaps: readonly string[];
   }[];
 }

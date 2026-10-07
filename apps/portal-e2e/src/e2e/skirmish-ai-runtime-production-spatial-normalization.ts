@@ -1,3 +1,5 @@
+import { projectRuntimeNativeNavigation } from "./skirmish-ai-runtime-native-navigation";
+import { runtimeNativeQueryFingerprint, validateRuntimeNativeQuery } from "./skirmish-ai-runtime-native-navigation-validation";
 import type { AiRuntimeProductionCaptureV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
 import type { AiRuntimeCreatedActorV1 } from
@@ -30,18 +32,32 @@ export function normalizeRuntimeProductionSpatial(capture: AiRuntimeProductionCa
   const requests = new Map<number, typeof facts[number]>();
   const completed = new Set<number>();
   let lastNavigation: AiRuntimeNavigationBoundaryV1 | undefined;
+  const nativeQueries = new Map<number, string>();
   for (const fact of facts) {
     const value = fact.spatial;
     // Graph/request counters belong to one service observer across both query kinds.
     if (value.kind === "builder_path" || value.kind === "producer_path") {
+      const queryFailures = validateRuntimeNativeQuery(value.nativeQuery, undefined, value.navigation?.native,
+        value.phase === "resolved");
+      failures.push(...queryFailures);
+      if (!queryFailures.length && value.nativeQuery) {
+        const fingerprint = runtimeNativeQueryFingerprint(value.nativeQuery);
+        const previous = nativeQueries.get(value.nativeQuery.queryId);
+        if (previous !== undefined && previous !== fingerprint) failures.push("production_spatial_native_query_identity_conflict");
+        nativeQueries.set(value.nativeQuery.queryId, fingerprint);
+      }
       const navigationFailures = validateRuntimeNavigationBoundary(value.navigation, lastNavigation);
       failures.push(...navigationFailures);
       if (!navigationFailures.length && value.navigation !== undefined) {
         // A missing graph does not erase earlier observed counters; exhausted observation remains terminal.
-        lastNavigation = value.navigation.updateRequestCount === null ? value.navigation : { ...value.navigation,
-          graphObservationId: value.navigation.graphObservationId ?? lastNavigation?.graphObservationId ?? null };
+        lastNavigation = { ...value.navigation,
+          graphObservationId: value.navigation.updateRequestCount === null ? null :
+          value.navigation.graphObservationId ?? lastNavigation?.graphObservationId ?? null,
+          native: value.navigation.native === undefined ? lastNavigation?.native : value.navigation.native };
       }
     }
+    if ((value.kind === "builder_path" || value.kind === "producer_path") && value.phase === "requested" &&
+      value.nativeQuery !== undefined) failures.push("production_spatial_native_query_before_invocation");
     // Producer/output routes have their own bounded validator and exact completion lineage.
     if (value.kind === "output" || value.kind === "producer_path") continue;
     value.gaps.forEach((gap) => gaps.add(gap));
@@ -101,6 +117,9 @@ export function normalizeRuntimeProductionSpatial(capture: AiRuntimeProductionCa
       failures.push("production_spatial_path_interval_invalid"); continue;
     }
     completed.add(value.queryId);
+    failures.push(...validateRuntimeNativeQuery(value.nativeQuery, before.navigation?.native,
+      value.navigation?.native, value.phase === "resolved"));
+    if (value.nativeQuery?.engine === "ground_overlay") failures.push("production_spatial_native_query_engine_invalid");
     if (value.phase === "rejected" || value.phase === "threw") {
       if (value.path !== null || value.result !== null) failures.push("production_spatial_path_failed_value");
       gaps.add("production_spatial_path_service_failed"); continue;
@@ -122,21 +141,21 @@ export function normalizeRuntimeProductionSpatial(capture: AiRuntimeProductionCa
     const topologyObservation = projectRuntimeNavigationInterval(before.navigation, value.navigation);
     if (topologyObservation === "changed") gaps.add("production_spatial_path_topology_changed");
     if (topologyObservation === "unavailable") gaps.add("production_spatial_navigation_boundary_missing");
-    gaps.add("production_spatial_path_cache_provenance_missing");
-    gaps.add("production_spatial_navigation_history_unverified");
+    const nativeNavigation = projectRuntimeNativeNavigation(before.navigation, value.navigation, value.nativeQuery);
+    nativeNavigation.gaps.forEach((gap) => gaps.add(gap));
     const construction = matchRuntimeConstructionPath(capture, request, fact);
     failures.push(...construction.failures);
     construction.gaps.forEach((gap) => gaps.add(gap));
     const lineage = construction.placement ? matchRuntimeConstructionDecision(capture, construction.placement, fact) : null;
     lineage?.failures.forEach((failure) => failures.push(failure));
     lineage?.gaps.forEach((gap) => gaps.add(gap));
-    authority.paths.push({ requested: request, resolved: fact, currentAtResolution, topologyObservation,
+    authority.paths.push({ requested: request, resolved: fact, currentAtResolution, topologyObservation, nativeNavigation,
       constructionPlacement: construction.placement, constructionCommand: lineage?.scope ?? null });
   }
   if (requests.size !== completed.size) gaps.add("production_spatial_path_pending_or_missing");
   if (!facts.length) gaps.add("production_spatial_authority_missing");
   gaps.add("production_spatial_full_producer_reachability_missing");
-  gaps.add("production_spatial_navigation_revision_missing");
+  if (!authority.paths.length) gaps.add("production_spatial_navigation_revision_missing");
   if (!authority.paths.length) gaps.add("production_spatial_construction_command_path_join_missing");
   return structuredClone({ authority: failures.length ? { placements: [], spawns: [], paths: [] } : authority,
     failures: [...new Set(failures)], gaps: [...gaps].sort() });

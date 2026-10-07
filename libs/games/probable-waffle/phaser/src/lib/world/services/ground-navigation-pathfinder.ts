@@ -1,22 +1,28 @@
 import type { Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { js as EasyStar } from "easystarjs";
+import { NavigationProvenance } from "./navigation-provenance";
+import type { NavigationNativeQuery } from "./navigation-native-query";
 import type { NavigationHeightGraph } from "./navigation-height-graph";
 
 /** Owns the native ground EasyStar instance, one-second wall-clock cache and uncached occupancy overlays. */
 export class GroundNavigationPathfinder {
   private readonly easyStar = new EasyStar();
   // Native result arrays remain shared with callers, including subsequent caller mutations.
-  private readonly pathCache = new Map<string, { path: Vector2Simple[] | null; timestamp: number }>();
+  private readonly pathCache = new Map<string, {
+    path: Vector2Simple[] | null; timestamp: number; query: NavigationNativeQuery | null
+  }>();
   private static readonly PATH_CACHE_TTL_MS = 1000;
 
   constructor(
     private readonly heightGraph: Pick<NavigationHeightGraph, "configureStatic" | "configureOverlay">,
     private readonly DEBUG: boolean,
-    private readonly drawPath: (path: Vector2Simple[]) => void
+    private readonly drawPath: (path: Vector2Simple[]) => void,
+    private readonly provenance = new NavigationProvenance()
   ) {}
 
   clearCache(): void {
     this.pathCache.clear();
+    this.provenance.cleared("ground");
   }
 
   /** Samples performance.now once at request time; caches null/empty paths and original mutable result arrays. */
@@ -27,7 +33,11 @@ export class GroundNavigationPathfinder {
 
     // Check cache
     const cached = this.pathCache.get(cacheKey);
-    if (cached && now - cached.timestamp < GroundNavigationPathfinder.PATH_CACHE_TTL_MS) {
+    const hit = !!cached && now - cached.timestamp < GroundNavigationPathfinder.PATH_CACHE_TTL_MS;
+    const query = this.provenance.query("ground_static", fromTileXY, toTileXY, hit ? "hit" : "miss", now,
+      hit ? cached?.query : null);
+    if (hit && cached) {
+      this.provenance.completed(query);
       return cached.path;
     }
 
@@ -40,7 +50,8 @@ export class GroundNavigationPathfinder {
         }
 
         // Cache the result
-        this.pathCache.set(cacheKey, { path: result, timestamp: now });
+        this.pathCache.set(cacheKey, { path: result, timestamp: now, query });
+        this.provenance.completed(query);
 
         // Periodically clean up old cache entries
         if (this.pathCache.size > 1000) {
@@ -68,6 +79,7 @@ export class GroundNavigationPathfinder {
     navigationGrid: number[][],
     useHeightGraphDirections: boolean
   ): Promise<Vector2Simple[] | null> {
+    const query = this.provenance.query("ground_overlay", fromTileXY, toTileXY, "bypass", null);
     const easyStar = new EasyStar();
     easyStar.setGrid(navigationGrid);
     easyStar.setAcceptableTiles([0]);
@@ -79,6 +91,7 @@ export class GroundNavigationPathfinder {
     }
     return new Promise((resolve) => {
       easyStar.findPath(fromTileXY.x, fromTileXY.y, toTileXY.x, toTileXY.y, (path) => {
+        this.provenance.completed(query);
         resolve(!path ? null : path.length === 0 ? [] : path);
       });
       easyStar.calculate();
@@ -99,5 +112,6 @@ export class GroundNavigationPathfinder {
     this.easyStar.setAcceptableTiles([0]);
     this.easyStar.enableDiagonals();
     this.heightGraph.configureStatic(this.easyStar);
+    this.provenance.configured("ground");
   }
 }

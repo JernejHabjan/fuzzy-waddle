@@ -1,3 +1,4 @@
+import type { projectRuntimeNativeNavigation } from "./skirmish-ai-runtime-native-navigation";
 import type { AiRuntimeProductionFactV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
 import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
@@ -17,5 +18,7 @@ export interface RuntimeProductionSpatialAuthorityV1 {
     readonly currentAtResolution: boolean;
     /** Graph-reference/update-request comparison only. Even same_observed leaves native cache/history unknown. */
     readonly topologyObservation: "same_observed" | "changed" | "unavailable";
+    /** Native lookup/cache generation diagnostics, kept separate from graph observations and arrival. */
+    readonly nativeNavigation: ReturnType<typeof projectRuntimeNativeNavigation>;
   }[];
 }

@@ -6,39 +6,50 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
-**Next session (user policy, 2026-10-06):** retain **GPT-6.1 Sol / high** for grouped PRO-03/06/07 authority.
-Current step: #815/#816 machinery batch 18, #821 prerequisite **native navigation owner split**, authored/unverified.
-This batch began at `b6d396348d19bf46d95714533bb0f49c8e6f05f4`; its containing commit owns the new revision.
+**Next session (user policy, 2026-10-07):** retain **GPT-6.1 Sol / high** for grouped PRO-03/06/07 authority.
+Current step: #815/#816 machinery batch 19, **native navigation query/cache/completed-rebuild provenance**, authored/unverified.
+This batch began at `024c6a75d0d756afcae57be0b8ab250676ad3ce7`; its containing commit owns the new revision.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify local/remote on resume.
 Nx merge `59f72e037` is preserved. Actual model/effort is unavailable. No family/issue is complete.
 The user removed the comment-permission rule. All executable validation remains at the final gate.
 
-Read the [navigation owner checkpoint](follow-ups/runtime-matrix-ci.md#production-navigation-owner-checkpoint-2026-10-06-unverified).
-**Next exact authoring action:** add native query/cache/completed-rebuild provenance through `NavigationService`,
-`GroundNavigationPathfinder` and `WaterNavigationHelper`, then consume it in the marked builder/producer route capture
-and report normalizers. The required behavior-neutral split is now authored; its source exemption was removed, never
-refreshed. Distinguish native completed setup/cache clears from capture-local graph references and throttled update
-requests. Preserve original results/errors and observe only actual queries, including uncached dynamic overlays and
-water fallback. The ground cache uses request-time `performance.now()` TTL, retains mutable path arrays and can be
-refilled by an old pending callback after a clear; none of these native behaviors was repaired by the split. Do not
-claim freshness from equal counters or successful endpoints. Keep bounded query ownership, disposal and missing-history
-contracts, add negative/rebuild/cache characterization cases, then join dated useful demand, arrival/service effects
-and continuous stability before the full `RuntimeProductionEvidenceV1` adapter. Generic service intent, rally-command
-identity, flying/direct movement, complete history, actual paired setup/legal Skaduwee research and strategic AI
-cancellation/transition worlds remain open. Group compatible owners, defer checks, commit/push, then pause.
+Read the [native navigation checkpoint](follow-ups/runtime-matrix-ci.md#production-native-navigation-checkpoint-2026-10-07-unverified).
+**Next exact authoring action:** join exact shared service/rally-command identity and dated useful demand to the actual
+producer/product routes, then observe native arrival/service effects and continuous useful stability. Consume the new
+`nativeNavigation` report as bounded generation diagnostics: `same_completed` and `same_requested_generation` do not
+prove immutable cache results, complete topology/query history or arrival. Generic producer-target queries still lack
+service intent; an output admission cannot attribute later movement to its original demand. Keep flying/direct movement,
+missing history, restoration, actor replacement and partial/failed rebuild gaps explicit. Preserve real receiver,
+arguments, Promise/results/errors and actual fixed-clock boundaries, without extra queries or planner inputs. Add strict
+negative/orphan/overflow cases and report consumption; group compatible owners, defer checks, commit/push, then pause.
+Full `RuntimeProductionEvidenceV1`, PRO-03/06/07 independent denominators/oracles, actual paired setup/legal Skaduwee
+research and strategic AI cancellation/transition worlds remain open. No fixed total machinery count is claimed.
 
-- `NavigationService` keeps its public scene-service token, method signatures, terrain enum re-export and existing
-  subscriptions. The six new responsibility owners isolate height graph, ground path cache/overlays, object grid,
-  tile selection, object-target routes and terrain labels; WaterNavigationHelper stays the existing water owner.
-- Collider overlay precedes navigable footprint overlay; graph build precedes ground EasyStar configuration;
-  distance, ground and water cache clears remain in native order. Static and dynamic height directions remain distinct.
-  Random candidate selection/removal, distance/y/x ties, occupancy sampling and spawn exhaustion remain native-owned.
-- Facade forwarders return the original helper Promise directly, keeping the original async boundary count. Mutable
-  native path references, request-time TTL, null/empty results, errors and water dynamic fallback remain unchanged.
-  No diagnostic events, revision counters, extra queries, actor scans, timers, planner inputs or save/wire fields exist.
-- Source-size, formatting, types, lint, builds, Jest and runtime/schema/editor/repository validation remain unrun.
-  Four characterization specs and one explicit-callback test fixture are authored; source reviews and separate audits
-  are in the checkpoint. This closes the authored split only; native query/cache/rebuild evidence is still missing.
+- `NavigationProvenance` now observes actual native ground/water configurations, explicit clears, query engine/cache
+  branch and request-time entry lineage. `completedRebuild` advances only after setup, distance invalidation and both
+  clears return. Failed partial/reentrant outer rebuilds remain pending until successful completion. Counters cap at
+  8,192 with terminal loss; synchronous observer nesting caps at eight. None are saved, relayed or consumed by the AI.
+- Static ground/water caches still share mutable arrays and use the native one-second request-time TTL. Old pending
+  callbacks can still refill after clear; diagnostics preserve both the old request generation and actual insertion
+  generation. Dynamic ground overlays stay uncached; dynamic water calls remain on the actual water cache. No native
+  cache/version/throttle/disposal repair, new path query, world scan, timer or changed Promise boundary is introduced.
+- Marked builder/producer wrappers bind only their actual synchronous native lookup. At most 256 pending holders
+  retain a record; ambiguous/missing/legacy/lost lookups remain unavailable. Callback completion is detached at the
+  outer terminal; disposal clears holders and fences late projection. Diagnostic exceptions preserve the one native call.
+- Builder/producer reports now expose `nativeNavigation` separately from capture-local topology and actor binding.
+  Strict milestone/TTL/cache-entry/engine validation covers failed/orphan/overflow tails. One shared query identity
+  validator allows identical nested caller observations but rejects conflicting lineage; contradictions suppress all
+  normalized groups. Mutable result history, complete queries/topology, effective arrival and strategic utility stay gaps.
+- Three new specs and additions to three existing specs are authored/unrun. Source Implementation Review, Omission
+  Audit and separate Final Closure Audit are in the checkpoint. Formatting, types, lint, builds, Jest, Playwright,
+  source-size/schema/editor/repository checks and simulations remain deferred. Runtime cost is unmeasured.
+
+Prior batch 18 [navigation owner checkpoint](follow-ups/runtime-matrix-ci.md#production-navigation-owner-checkpoint-2026-10-06-unverified)
+is in `024c6a75d`; its behavior-neutral #821 prerequisite remains authored/unverified. NavigationService keeps the scene
+service token, terrain enum re-export, public API, receiver and Promise forwarding. Height graph, ground cache/overlay,
+object grid, tile selection, object routes and terrain labels have focused owners. Native rebuild/cache/RNG/selection
+order was preserved and the exact obsolete source exemption removed without refresh. Four characterization specs remain
+unrun; the inherited 100-ms trailing throttle and water shutdown lifetime behavior are still open under #823.
 
 Prior batch 17 [producer route checkpoint](follow-ups/runtime-matrix-ci.md#production-producer-route-checkpoint-2026-10-06-unverified)
 is in `b6d396348`; its inherited contracts remain authored/unverified:
@@ -433,7 +444,7 @@ merely because their issue title mentions testing. All authored work remains unv
 | 1 / as needed | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `partial` | Split only owners blocking the selected batch | GPT-6 Luna, medium |
 | 2 | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829) | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof | GPT-6.1 Sol, high |
 | 3 | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `in_progress` | Finish pressure/recovery policy; defer victory proof | GPT-6.1 Sol, high |
-| 4 / next batch | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Machinery 18 navigation split authored/unverified; next native query/cache/rebuild provenance, then useful demand/stability | GPT-6.1 Sol, high |
+| 4 / next batch | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Machinery 19 native query/cache/rebuild diagnostics authored/unverified; next service/rally identity, useful demand/arrival/stability | GPT-6.1 Sol, high |
 | 5 / paired | #815 / #816 | `in_progress` | Remaining family contracts, focused fixtures, frozen maps and continuous-match tier | Sol high for new contracts; Luna medium for established cases |
 | 6 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `in_progress` | Exact-once interruption, terminal and re-entry parity | GPT-6.1 Sol, high |
 | 7 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `partial` | Generation fencing, phase restore/replay and cleanup cases | GPT-6.1 Sol, high |

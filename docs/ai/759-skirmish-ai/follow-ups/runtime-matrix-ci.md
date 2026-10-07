@@ -35,6 +35,97 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
 
 ## Implementation order
 
+### Production native navigation checkpoint (2026-10-07, unverified)
+
+Machinery batch 19, #815/#816 PRO-03/06/07 authority; prerequisite #821 split is in `024c6a75d`.
+Base `024c6a75d0d756afcae57be0b8ab250676ad3ce7`, worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`,
+branch `feature/759-skirmish-ai`; containing commit owns this revision. Nx merge `59f72e037` is preserved.
+Actual model/effort is unavailable. No family/issue is complete; all executable validation remains at the final gate.
+
+| Acceptance | Implemented owner / consumer | Evidence state |
+| --- | --- | --- |
+| 1. Actual native milestones | `NavigationProvenance`, `NavigationNativeBoundary`, `NavigationService`, ground/water owners | Completed configuration/clear/rebuild and partial/reentrant failure source paths reviewed; native/facade Jest authored/unrun |
+| 2. Native query/cache entry lineage | `NavigationNativeQuery`, actual ground/water lookup and callback sites | Static hit/miss, request-time TTL, original insertion generation, uncached overlays and water fallback retained; native Jest unrun |
+| 3. Bounded caller capture/disposal | `AiRuntimeNativeQueryObservation`, shared navigation observation, marked builder/producer captures | Exact synchronous native lookup; 256 pending holders, ambiguous/missing legacy loss, original Promise/errors and disposal reviewed; Jest unrun |
+| 4. Strict normalization/report consumption | Native validator/projection, shared spatial stream, producer normalizer and existing causality/variant reports | Failed/orphan/tail payload checks, milestone/TTL/engine/conflicting identity rejection and separate generation diagnostics; synthetic Playwright unrun |
+| 5. Reviews, omissions and handoff | Three new specs, three expanded specs, this checkpoint and HANDOFF | Source-only audits below; exact staging, normal commit/push/remote verification and pause required |
+
+Native contracts/implementation are under `libs/games/probable-waffle/phaser/src/lib/world/services/`:
+`navigation-native-boundary.ts`, `navigation-native-query.ts`, `navigation-provenance.ts`, the facade and existing ground/
+water owners. Native counters are scene-local diagnostics, not authority commands, deterministic planner inputs or saved
+state. Query/rebuild/configuration/clear counters saturate at 8,192; loss remains null for the service lifetime. Observer
+scopes cap at eight synchronous nested callers. Native caches remain at their existing cleanup thresholds; records hold
+constant-size detached tiles/milestones, never actor/scene references or copied paths, and entry lineage is flattened.
+
+Rebuild milestones retain the actual setup -> distance invalidation -> ground clear -> water clear sequence. A successful
+inner rebuild leaves its outer invocation pending. Failed setup/cache clear releases the invocation depth while retaining
+the partial-rebuild flag; a later complete rebuild can recover. Water setup still configures its original grid/costs and
+clears its own cache directly. Water configuration does not advance on ordinary ground object rebuilds. Shutdown still
+clears only ground, without pretending it rebuilt topology. The existing 100-ms throttle/disposal defects are not fixed.
+
+The native cache request timestamp remains the already-sampled `performance.now()` value; no additional clock read was
+added. Callback insertion stores the exact query request and completed milestone. An old pending callback can still refill
+a cleared cache, including after a completed rebuild; a later hit retains the older origin, not the lookup generation.
+Null, empty and mutable original arrays, debug order, TTL thresholds, native rejections/throws and EasyStar calculate order
+remain unchanged. Ground occupancy overlays use a fresh engine and record `bypass` with no cache wall-time sample. Dynamic
+water queries still use water's native static cache; diagnostics do not manufacture ground overlays or extra queries.
+
+Marked captures observe only synchronous native lookups from the actual wrapped caller. They return the same native
+Promise, invoke its receiver/arguments once, and detach query completion only at the outer terminal. No query means no
+native record, including early returns. Multiple lookups/nested ambiguity, legacy methods, reader/counter loss or pending
+holder capacity leave an explicit normalized gap. The shared observer caps pending holders at 256 and clears them on
+root capture disposal; every completion/error releases its holder. Builder diagnostic reads/append are fenced from the
+native invocation, repairing the prior diagnostic-error interference seam. Neither capture adds a timer or actor scan.
+
+`apps/portal-e2e/src/e2e/skirmish-ai-runtime-native-navigation-validation.ts` validates native payloads before pairing,
+including failed/orphan/overflow tails. Counter bounds, monotonic milestones, terminal loss revival, pending rebuilds,
+completed-versus-configuration/clear consistency, exact cache TTL, original entry identity/time/insertion lineage and
+engine/method compatibility fail closed. Spatial normalization checks one service stream across both caller kinds and
+retains prior native milestones through legacy omission. Shared native query IDs may appear in identical nested caller
+scopes; conflicting schema-only fingerprints fail all groups. Producer group overflow still discards the whole group.
+
+The native projection is consumed by both `RuntimeProductionSpatialAuthorityV1.paths[].nativeNavigation` and
+`RuntimeProducerRoutesV1.paths[].nativeNavigation`; the existing causality normalizer/variant runner already serializes
+those groups, with no new registration. It separates `completedRebuildInterval` (`same_completed`, `changed`, `unavailable`)
+from `queryGenerationAtTerminal` (`same_native_generation`, `changed`, `unavailable`) and `cacheLineage`
+(`same_requested_generation`, `older_request_generation`, `uncached_overlay`, `unavailable`) and retains
+the exact native lookup. Equal generation is not immutable result, complete query/topology history or useful arrival
+proof. Static cache mutation/history remains a mandatory gap; actor movement/restoration, target endpoint selection,
+service/rally command identity, demand usefulness and continuous stability keep their independent contracts.
+
+**Implementation Review / Omission Audit (source only):** acceptance 1–5 traced actual facade initialization/rebuild/
+shutdown, ground and water hit/miss/insertion/overlay paths, object/terrain routing, marked capture installation/nesting/
+disposal, strict validation, both report consumers, root failure suppression and existing variant serialization. Repairs
+preserve direct water cache clear (no new public interception boundary), isolate diagnostic failures from native calls,
+release failed/reentrant rebuild ownership, keep native loss terminal, validate all query tails and preserve history
+through legacy omitted fields. New owners retain one substantive contract each; no source baseline was refreshed.
+No editor/GUI/package/config/save/wire migration or scenario registration applies. No skill/tool improvement was needed.
+
+Authored/unrun evidence: `navigation-provenance.spec.ts` characterizes partial/reentrant rebuilds, actual clears,
+ground/water old callback refill, request-time exact TTL, shared array mutation, static/overlay query identity, observer/
+native errors and bounded terminal loss. `ai-runtime-native-query-observation.spec.ts` covers Promise identity, terminal
+copy, ambiguity/missing query, 256 pending holders, capacity recovery, disposal and terminal native reader loss. Existing
+builder/producer capture specs add actual scoped native record consumption; facade spec adds completion ordering.
+`skirmish-ai-runtime-native-navigation.spec.ts` covers builder and producer report consumption, old request/insertion
+lineage, water fallback/overlay, partial/missing/exhausted history, malformed TTL/counters/engine/IDs, native failure,
+conflicting identity and root fail-closed output. All are synthetic/native-boundary characterizations; actual topology,
+Phaser movement, useful effects, performance and merged Nx/Phaser mock compatibility remain final-gate evidence.
+
+**Separate Final Closure Audit (source only):** after repairs, every authoring acceptance has concrete owners, consumers
+and explicit deferred evidence. Scope contains only native navigation/capture/report owners/specs and the two handoff
+documents. Formatting, source-size enforcement, lint, types, builds, schema/editor/repository checks, Jest, Playwright
+and simulations remain unrun. Normal commit/push/exact remote verification closes only this authored slice; pause after
+publication. Next grouped **GPT-6.1 Sol / high**: exact service/rally command identity and dated useful demand, followed by
+native arrival/service effects and continuous useful stability. Full production adapter/oracles/denominators, paired
+setup/legal research, strategic cancellation/transitions and #823 generation/disposal repair remain open.
+
+**Deferred focused commands (unrun; append to the existing final gate):**
+
+```bash
+NX_DAEMON=false pnpm exec nx test probable-waffle-phaser --testPathPatterns='navigation-provenance|ground-navigation-pathfinder|navigation-service-boundary|ai-runtime-native-query-observation|ai-runtime-navigation-observation|ai-runtime-producer-route-capture|ai-runtime-production-spatial-capture' --skip-nx-cache
+pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts skirmish-ai-runtime-native-navigation.spec.ts skirmish-ai-runtime-navigation-boundary.spec.ts skirmish-ai-runtime-producer-routes.spec.ts skirmish-ai-runtime-production-spatial-normalization.spec.ts skirmish-ai-runtime-production-causality-normalization.spec.ts
+```
+
 ### Production navigation owner checkpoint (2026-10-06, unverified)
 
 Machinery batch 18, #821 prerequisite for #815/#816 PRO-03/06/07 native navigation provenance.

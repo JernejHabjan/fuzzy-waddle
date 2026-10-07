@@ -1,3 +1,5 @@
+import { projectRuntimeNativeNavigation } from "./skirmish-ai-runtime-native-navigation";
+import { validateRuntimeNativeQuery } from "./skirmish-ai-runtime-native-navigation-validation";
 import type { AiRuntimeProductionCaptureV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
 import type { AiRuntimeNavigationBoundaryV1 } from
@@ -17,8 +19,7 @@ export function normalizeRuntimeProducerRoutes(
   const outputs: RuntimeProducerRoutesV1["outputs"][number][] = [];
   const paths: RuntimeProducerRoutesV1["paths"][number][] = [];
   const failures: string[] = [];
-  const gaps = new Set(["production_route_complete_query_history_missing", "production_route_useful_arrival_missing",
-    "production_route_native_cache_provenance_missing", "production_route_native_navigation_revision_missing"]);
+  const gaps = new Set(["production_route_complete_query_history_missing", "production_route_useful_arrival_missing"]);
   if (capture.facts.length > 8192 || capture.droppedFactCount) {
     return { routes: { outputs: [], paths: [] } satisfies RuntimeProducerRoutesV1,
       failures: ["production_route_capture_dropped"], gaps: [...gaps] };
@@ -58,10 +59,13 @@ export function normalizeRuntimeProducerRoutes(
     const navigationFailures = validateRuntimeNavigationBoundary(value.navigation, lastNavigation);
     failures.push(...navigationFailures);
     if (!navigationFailures.length && value.navigation !== undefined) {
-      lastNavigation = value.navigation.updateRequestCount === null ? value.navigation : { ...value.navigation,
-        graphObservationId: value.navigation.graphObservationId ?? lastNavigation?.graphObservationId ?? null };
+      lastNavigation = { ...value.navigation,
+        graphObservationId: value.navigation.updateRequestCount === null ? null :
+          value.navigation.graphObservationId ?? lastNavigation?.graphObservationId ?? null,
+        native: value.navigation.native === undefined ? lastNavigation?.native : value.navigation.native };
     }
     if (value.phase === "requested") {
+      if (value.nativeQuery !== undefined) failures.push("production_spatial_native_query_before_invocation");
       if (requests.has(value.queryId) || value.path !== null || value.result !== null) {
         failures.push("production_route_query_identity_duplicate");
       }
@@ -83,11 +87,18 @@ export function normalizeRuntimeProducerRoutes(
       failures.push("production_route_query_interval_invalid"); continue;
     }
     completed.add(value.queryId);
+    failures.push(...validateRuntimeNativeQuery(value.nativeQuery, before.navigation?.native,
+      value.navigation?.native, value.phase === "resolved"));
+    if (value.nativeQuery && (value.method === "tile_dynamic" ? value.nativeQuery.engine === "ground_static" :
+      value.nativeQuery.engine === "ground_overlay")) failures.push("production_spatial_native_query_engine_invalid");
     if (value.phase === "resolved" ?
       (value.result === "no_path" ? value.path !== null : value.result !== "path" ||
         value.path === null && !value.gaps.includes("production_route_path_overflow")) :
       value.path !== null || value.result !== null) failures.push("production_route_query_result_invalid");
-    const entryGaps = ["production_route_useful_arrival_missing", "production_route_native_cache_provenance_missing"];
+    const nativeNavigation = projectRuntimeNativeNavigation(before.navigation, value.navigation, value.nativeQuery);
+    const entryGaps = ["production_route_useful_arrival_missing", ...nativeNavigation.gaps];
+    if (nativeNavigation.cacheLineage === "unavailable") entryGaps.push("production_route_native_cache_provenance_missing");
+    if (nativeNavigation.completedRebuildInterval === "unavailable") entryGaps.push("production_route_native_navigation_revision_missing");
     if (value.phase !== "resolved") entryGaps.push("production_route_native_query_failed");
     if (value.result === "no_path") entryGaps.push("production_route_native_path_not_found");
     const candidate = outputs.find((entry) => entry.boundary.spatial.kind === "output" &&
@@ -125,10 +136,14 @@ export function normalizeRuntimeProducerRoutes(
     const topologyObservation = projectRuntimeNavigationInterval(before.navigation, value.navigation);
     if (topologyObservation !== "same_observed") entryGaps.push(`production_route_topology_${topologyObservation}`);
     entryGaps.forEach((gap) => gaps.add(gap));
-    if (!overflow) paths.push({ requested: request, terminal: fact, output, currentAtResolution, topologyObservation,
+    if (!overflow) paths.push({ requested: request, terminal: fact, output, currentAtResolution, topologyObservation, nativeNavigation,
       gaps: entryGaps });
   }
   if (requests.size !== completed.size) gaps.add("production_route_pending_or_missing_queries");
+  if (!paths.length) {
+    gaps.add("production_route_native_cache_provenance_missing");
+    gaps.add("production_route_native_navigation_revision_missing");
+  }
   if (!outputIds.size && !requests.size) gaps.add("production_route_authority_missing");
   if (overflow) gaps.add("production_route_group_overflow");
   return structuredClone({ routes: { outputs: failures.length || overflow ? [] : outputs,

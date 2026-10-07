@@ -1,4 +1,4 @@
-import type Phaser from "phaser";
+import Phaser from "phaser";
 import type { Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { getActorComponent } from "../../../data/actor-component";
@@ -10,6 +10,9 @@ import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor
 import type { AiRuntimeProductionSpatialV1 } from "./ai-runtime-production-spatial-v1";
 import { productionCaptureItem } from "./ai-runtime-production-capture-fixtures";
 import { AiRuntimeProducerRouteCapture } from "./ai-runtime-producer-route-capture";
+import { AiRuntimeNavigationObservation } from "./ai-runtime-navigation-observation";
+import { NavigationProvenance } from "../../../world/services/navigation-provenance";
+import type { NavigationNativeQuery } from "../../../world/services/navigation-native-query";
 
 jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
 jest.mock("../../../data/game-object-helper", () => ({ getGameObjectCurrentTile: jest.fn() }));
@@ -50,6 +53,31 @@ function fixture() {
 }
 
 describe("passive producer service/output route capture", () => {
+  it("retains exact native water lookup lineage through the producer-output wrapper", async () => {
+    const f = fixture(), provenance = new NavigationProvenance(); f.capture.dispose();
+    f.scene.events = new Phaser.Events.EventEmitter();
+    f.navigation.getHeightGraphDebugSnapshot = () => ({ cells: [], edgesByTileKey: new Map() });
+    f.navigation.getNativeNavigationBoundary = () => provenance.sample();
+    f.navigation.observeNativeNavigationQuery = (call, observer) => provenance.observe(call, observer);
+    const observation = new AiRuntimeNavigationObservation(f.scene, f.navigation);
+    const capture = new AiRuntimeProducerRouteCapture(f.scene,
+      () => ({ clockTick: 10, sceneActive: true, snapshotRestoreInProgress: false }),
+      () => "actual:item", (_owner, value) => f.records.push(value), observation);
+    capture.install(f.navigation);
+    capture.observeOutput({ kind: "output", producer: f.producer, product: f.product,
+      item: { ...productionCaptureItem(), remainingTime: 0 }, rallyMode: "movement_fallback", target: null, targetTile: null });
+    let query: NavigationNativeQuery | null = null;
+    f.dynamic.mockImplementationOnce(() => {
+      query = provenance.query("water_static", { x: 3, y: 4 }, { x: 8, y: 9 }, "miss", 10);
+      return f.promise;
+    });
+    const returned = f.navigation.findPathFromGameObjectToTileAvoidingDynamicBlockers(f.product, { x: 8, y: 9 }, []);
+    expect(returned).toBe(f.promise); provenance.completed(query); f.settle(null); await returned;
+    expect(f.records[2]).toMatchObject({ method: "tile_dynamic", result: "no_path",
+      nativeQuery: { queryId: 1, engine: "water_static", cache: "miss", requestTimeMs: 10 } });
+    expect(f.dynamic).toHaveBeenCalledTimes(1); capture.dispose(); observation.dispose();
+  });
+
   it("binds the returned object, preserves original Promise/arguments, and detaches before native path mutation", async () => {
     const f = fixture(); f.output();
     const destination = { x: 8, y: 9 };

@@ -24,6 +24,9 @@ import { GroundNavigationPathfinder } from "./ground-navigation-pathfinder";
 import { NavigationObjectGrid } from "./navigation-object-grid";
 import { NavigationTileSelection } from "./navigation-tile-selection";
 import { NavigationObjectRoutes } from "./navigation-object-routes";
+import { NavigationProvenance } from "./navigation-provenance";
+import type { NavigationNativeBoundary } from "./navigation-native-boundary";
+import type { NavigationNativeQuery } from "./navigation-native-query";
 import { TerrainType } from "./navigation-terrain-type";
 
 // Keep the existing public import path and the same enum identity for movement callers.
@@ -46,7 +49,8 @@ export class NavigationService {
   private readonly objectGrid: NavigationObjectGrid;
   private readonly selection: NavigationTileSelection;
   private readonly objectRoutes: NavigationObjectRoutes;
-  private readonly waterNavHelper = new WaterNavigationHelper();
+  private readonly provenance = new NavigationProvenance();
+  private readonly waterNavHelper = new WaterNavigationHelper(this.provenance);
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -55,7 +59,9 @@ export class NavigationService {
     this.scene.events.on(NavigationService.UpdateNavigationEvent, this.throttleUpdateNavigation, this);
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
     this.heightGraph = new NavigationHeightGraph(scene, tilemap, this.DEBUG_CLICK_INFO);
-    this.groundPaths = new GroundNavigationPathfinder(this.heightGraph, this.DEBUG, (path) => this.drawDebugPath(path));
+    this.groundPaths = new GroundNavigationPathfinder(
+      this.heightGraph, this.DEBUG, (path) => this.drawDebugPath(path), this.provenance
+    );
     this.objectGrid = new NavigationObjectGrid(scene, tilemap, this.DEBUG);
     this.selection = new NavigationTileSelection(
       tilemap, this, () => this.easyStarNavigationGrid, this.waterNavHelper,
@@ -170,6 +176,16 @@ export class NavigationService {
     return this.heightGraph.getConnectedNavigableTiles(startTile, options);
   }
 
+  /** O(1) native completed milestones, independent of capture-local graph/update-request observations. */
+  getNativeNavigationBoundary(): NavigationNativeBoundary | null {
+    return this.provenance.sample();
+  }
+
+  /** Observe only native lookups initiated by this synchronous caller; returns its exact Promise/result/error. */
+  observeNativeNavigationQuery<T>(call: () => T, observer: (query: NavigationNativeQuery) => void): T {
+    return this.provenance.observe(call, observer);
+  }
+
   getHeightGraphDebugSnapshot(): HeightNavigationGraph | undefined {
     return this.heightGraph.getHeightGraphDebugSnapshot();
   }
@@ -235,11 +251,18 @@ export class NavigationService {
   private throttleUpdateNavigation = throttleWithTrailing(this.updateNavigation.bind(this), 100);
 
   private updateNavigation() {
-    this.setup();
-    // Clear both the distance cache and path cache when navigation grid changes
-    DistanceHelper.clearNavigationCache();
-    this.groundPaths.clearCache();
-    this.waterNavHelper.clearCache();
+    this.provenance.beginRebuild();
+    try {
+      this.setup();
+      // Clear both the distance cache and path cache when navigation grid changes
+      DistanceHelper.clearNavigationCache();
+      this.groundPaths.clearCache();
+      this.waterNavHelper.clearCache();
+      this.provenance.completeRebuild();
+    } catch (error) {
+      this.provenance.failedRebuild();
+      throw error;
+    }
   }
 
   /**

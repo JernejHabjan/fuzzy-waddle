@@ -1,3 +1,4 @@
+import type { NavigationNativeQuery } from "../../../world/services/navigation-native-query";
 import type { Vector2Simple, Vector3Simple } from "@fuzzy-waddle/platform-game-sessions";
 import type { ConstructCommand } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiRuntimeProducerRouteV1 } from "./ai-runtime-producer-route-v1";
@@ -24,6 +25,8 @@ export type AiRuntimeProductionSpatialV1 = {
   | { readonly kind: "builder_path"; readonly queryId: number; readonly phase: "requested" | "resolved" | "rejected" | "threw";
     /** Legacy captures omit this; later observations cannot backfill either query boundary. */
     readonly navigation?: AiRuntimeNavigationBoundaryV1;
+    /** Exact synchronous native lookup, detached at terminal. Legacy/no-query/ambiguous ownership remains omitted. */
+    readonly nativeQuery?: NavigationNativeQuery;
     readonly source: AiRuntimeCreatedActorV1; readonly target: AiRuntimeCreatedActorV1;
     readonly sourceTile: Vector2Simple | null; readonly targetTile: Vector2Simple | null;
     /** Actual shared caller radius; null means the native default was used. */

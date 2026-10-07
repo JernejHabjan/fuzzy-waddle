@@ -1,6 +1,8 @@
 import Phaser from "phaser";
 import { js as EasyStar } from "easystarjs";
 import type { Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
+import { NavigationProvenance } from "./navigation-provenance";
+import type { NavigationNativeQuery } from "./navigation-native-query";
 import { TerrainGridBuilder } from "./terrain-grid-builder";
 
 /**
@@ -10,12 +12,14 @@ import { TerrainGridBuilder } from "./terrain-grid-builder";
 export class WaterNavigationHelper {
   private readonly easyStar: EasyStar;
   private waterGrid: number[][] = [];
-  private pathCache = new Map<string, { path: Vector2Simple[] | null; timestamp: number }>();
+  private pathCache = new Map<string, {
+    path: Vector2Simple[] | null; timestamp: number; query: NavigationNativeQuery | null
+  }>();
   private readonly CACHE_TTL_MS = 1000;
   /** Cost multiplier applied to shore-adjacent tiles so ships prefer open water. */
   private static readonly SHORE_COST = 8;
 
-  constructor() {
+  constructor(private readonly provenance = new NavigationProvenance()) {
     this.easyStar = new EasyStar();
   }
 
@@ -26,19 +30,27 @@ export class WaterNavigationHelper {
     this.easyStar.setAcceptableTiles([0, TerrainGridBuilder.SHORE_TILE]);
     this.easyStar.setTileCost(TerrainGridBuilder.SHORE_TILE, WaterNavigationHelper.SHORE_COST);
     this.easyStar.enableDiagonals();
+    this.provenance.configured("water");
     this.pathCache.clear();
+    this.provenance.cleared("water");
   }
 
   findPath(from: Vector2Simple, to: Vector2Simple): Promise<Vector2Simple[] | null> {
     const key = `${from.x},${from.y}->${to.x},${to.y}`;
     const now = performance.now();
     const cached = this.pathCache.get(key);
-    if (cached && now - cached.timestamp < this.CACHE_TTL_MS) return Promise.resolve(cached.path);
+    const hit = !!cached && now - cached.timestamp < this.CACHE_TTL_MS;
+    const query = this.provenance.query("water_static", from, to, hit ? "hit" : "miss", now, hit ? cached?.query : null);
+    if (hit && cached) {
+      this.provenance.completed(query);
+      return Promise.resolve(cached.path);
+    }
 
     return new Promise((resolve) => {
       this.easyStar.findPath(from.x, from.y, to.x, to.y, (path) => {
         const result = !path ? null : path.length === 0 ? [] : path;
-        this.pathCache.set(key, { path: result, timestamp: now });
+        this.pathCache.set(key, { path: result, timestamp: now, query });
+        this.provenance.completed(query);
         if (this.pathCache.size > 500) this.cleanCache(now);
         resolve(result);
       });
@@ -148,6 +160,7 @@ export class WaterNavigationHelper {
 
   clearCache(): void {
     this.pathCache.clear();
+    this.provenance.cleared("water");
   }
 
   private cleanCache(now: number): void {
