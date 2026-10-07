@@ -1,3 +1,4 @@
+import { MovementQueryObservation } from "../../entity/systems/movement-query-observation";
 import type { IPlayerPawnControllerAgent } from "./player-pawn-ai-controller.agent.interface";
 import Phaser from "phaser";
 import { State } from "mistreevous";
@@ -99,7 +100,8 @@ export class PawnAgentBoarding {
     try {
       const success = await movementSystem.moveToActorByAdjustingPathDynamically(target, {
         radiusTilesAroundDestination: 1
-      } satisfies Partial<PathMoveConfig>);
+      } satisfies Partial<PathMoveConfig>,
+        MovementQueryObservation.capture(this.gameObject, this.blackboard, currentOrder, "boarding_adjacent"));
       // Movement may return false when path is empty (unit already at destination tile).
       // Accept that case too if we're now within boarding range.
       return success || this.agent.CanBoardContainerNow() ? State.SUCCEEDED : State.FAILED;
@@ -149,7 +151,8 @@ export class PawnAgentBoarding {
     }
 
     const shoreLocation: Vector3Simple = { x: groundMeetingPoint.x, y: groundMeetingPoint.y, z: 0 };
-    const success = await movementSystem.moveToLocationByFollowingStaticPath(shoreLocation);
+    const success = await movementSystem.moveToLocationByFollowingStaticPath(shoreLocation, undefined,
+      MovementQueryObservation.capture(this.gameObject, this.blackboard, currentOrder, "boarding_ground_shore"));
 
     if (!success && containerComp) {
       // Clean up if we couldn't reach the shore
@@ -196,7 +199,8 @@ export class PawnAgentBoarding {
     if (!shoreTile) return State.FAILED;
 
     const shoreLocation: Vector3Simple = { x: shoreTile.x, y: shoreTile.y, z: 0 };
-    const success = await movementSystem.moveToLocationByFollowingStaticPath(shoreLocation);
+    const success = await movementSystem.moveToLocationByFollowingStaticPath(shoreLocation, undefined,
+      MovementQueryObservation.capture(this.gameObject, this.blackboard, null, "boarding_container_shore"));
     return success ? State.SUCCEEDED : State.FAILED;
   }
 

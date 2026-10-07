@@ -1,3 +1,5 @@
+import { MovementQueryObservation } from "./movement-query-observation";
+import type { MovementQueryContext } from "./movement-query-context";
 import type Phaser from "phaser";
 import type { GameCommand, MoveCommand } from "@fuzzy-waddle/probable-waffle-protocol";
 import { PawnAiController } from "../../prefabs/ai-agents/pawn-ai-controller";
@@ -68,13 +70,18 @@ describe("movement facade extraction boundaries (unrun until final gate)", () =>
 
   it("keeps native mutable path consumption, callbacks and final destination release", async () => {
     const f = fixture(), destination = { x: 3, y: 4, z: 0 }, path = [{ x: 0, y: 0 }, destination];
-    f.navigation.findPathFromGameObjectToTile.mockResolvedValue(path);
+    const context: MovementQueryContext = { actor: f.actor, board: new PawnAiBlackboard(),
+      order: null, caller: "boarding_container_shore" };
+    f.navigation.findPathFromGameObjectToTile.mockImplementation(async () => {
+      expect(MovementQueryObservation.current(f.actor)).toEqual({ context, stage: "initial" }); return path;
+    });
     const config = { onComplete: jest.fn() };
     const execute = jest.spyOn(MovementPathExecution.prototype, "moveAlongPathByFollowingPreCalculatedStaticPath")
-      .mockImplementation(async (received, receivedConfig) => {
+      .mockImplementation(async (received, receivedConfig, _recovery, receivedContext) => {
+        expect(receivedContext).toBe(context); expect(MovementQueryObservation.current(f.actor)).toBeUndefined();
         expect(received).toBe(path); expect(receivedConfig).toBe(config); expect(received).toEqual([destination]);
       });
-    expect(await f.system.moveToLocationByFollowingStaticPath(destination, config)).toBe(true);
+    expect(await f.system.moveToLocationByFollowingStaticPath(destination, config, context)).toBe(true);
     expect(execute).toHaveBeenCalledTimes(1);
     expect(f.navigation.findPathFromGameObjectToTile).toHaveBeenCalledWith(f.actor, destination);
     expect(f.occupancy.releaseDestination).toHaveBeenCalledWith("actor:1");

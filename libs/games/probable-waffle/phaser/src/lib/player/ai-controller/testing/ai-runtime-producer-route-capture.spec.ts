@@ -16,6 +16,7 @@ import type { NavigationNativeQuery } from "../../../world/services/navigation-n
 import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller";
 import { PawnAiBlackboard } from "../../../prefabs/ai-agents/pawn-ai-blackboard";
 import { OrderData } from "../../../ai/OrderData";
+import { MovementQueryObservation } from "../../../entity/systems/movement-query-observation";
 import { OrderType } from "../../../ai/order-type";
 
 jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
@@ -75,6 +76,50 @@ describe("passive producer service/output route capture", () => {
       { currentOrder: { orderId: 2, admissionObserved: false } }]);
     expect(f.tile).toHaveBeenCalledTimes(1); f.capture.dispose();
   });
+  it("keeps explicit caller identity separate from equal current-order samples and fences a pending restore", async () => {
+    const f = fixture(), board = new PawnAiBlackboard();
+    const previous = jest.mocked(getActorComponent).getMockImplementation();
+    jest.mocked(getActorComponent).mockImplementation((actor, component) => component === PawnAiController ?
+      { blackboard: board } as never : previous?.(actor, component));
+    f.output();
+    const first = new OrderData(OrderType.Move, { targetTileLocation: { x: 8, y: 9, z: 0 } });
+    board.addOrder(first); board.setCurrentOrder(first);
+    const context = MovementQueryObservation.capture(f.product, board, first, "location_movement");
+    const second = new OrderData(OrderType.Move, { targetTileLocation: { x: 8, y: 9, z: 0 } });
+    board.setCurrentOrder(second);
+    const returned = MovementQueryObservation.invoke(f.product, context, "repath", () =>
+      f.navigation.findPathFromGameObjectToTileAvoidingDynamicBlockers(f.product, { x: 8, y: 9 }, []));
+    expect(returned).toBe(f.promise); expect(MovementQueryObservation.current(f.product)).toBeUndefined();
+    board.setData({}, f.scene); f.settle(null); await returned;
+    const paths = f.records.filter((value) => value.kind === "producer_path");
+    expect(paths).toMatchObject([
+      { currentOrder: { orderId: 2 }, queryCaller: { invocationId: 1, caller: "location_movement", stage: "repath",
+        order: { orderId: 1, admissionObserved: true }, lifetimeValid: true } },
+      { queryCaller: { invocationId: 1, order: { orderId: 1 }, lifetimeValid: false }, result: "no_path" }
+    ]);
+    expect(f.dynamic).toHaveBeenCalledTimes(1); f.capture.dispose();
+  });
+
+  it("does not lend the outer caller to a nested native query", async () => {
+    const f = fixture(), board = new PawnAiBlackboard();
+    const previous = jest.mocked(getActorComponent).getMockImplementation();
+    jest.mocked(getActorComponent).mockImplementation((actor, component) => component === PawnAiController ?
+      { blackboard: board } as never : previous?.(actor, component));
+    f.output();
+    const context = MovementQueryObservation.capture(f.product, board, null, "boarding_container_shore");
+    f.tile.mockImplementationOnce(() => {
+      void f.navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius(f.product, f.producer, 1);
+      return f.promise;
+    });
+    const returned = MovementQueryObservation.invoke(f.product, context, "initial", () =>
+      f.navigation.findPathFromGameObjectToTile(f.product, { x: 8, y: 9 }));
+    const requested = f.records.filter((value) => value.kind === "producer_path" && value.phase === "requested");
+    expect(requested[0]).toMatchObject({ queryCaller: { invocationId: 1, order: null } });
+    expect(requested[1]?.kind === "producer_path" && requested[1].queryCaller).toBeUndefined();
+    f.settle([]); await returned;
+    expect(f.tile).toHaveBeenCalledTimes(1); expect(f.object).toHaveBeenCalledTimes(1); f.capture.dispose();
+  });
+
   it("retains exact native water lookup lineage through the producer-output wrapper", async () => {
     const f = fixture(), provenance = new NavigationProvenance(); f.capture.dispose();
     f.scene.events = new Phaser.Events.EventEmitter();

@@ -1,3 +1,4 @@
+import { MovementQueryObservation } from "../../entity/systems/movement-query-observation";
 import type Phaser from "phaser";
 import { State } from "mistreevous";
 import { PlayerPawnAiControllerAgent } from "./player-pawn-ai-controller.agent";
@@ -54,8 +55,10 @@ describe("pawn agent native order boundaries (unrun until final gate)", () => {
     const move = jest.fn(async (_target: Phaser.GameObjects.GameObject) => true);
     jest.mocked(getActorSystem).mockImplementation((_actor, token) => token === MovementSystem
       ? { canMoveTo, moveToActorByAdjustingPathDynamically: move } as never : undefined);
+    const contexts: unknown[] = [];
+    const unsubscribe = MovementQueryObservation.subscribe(f.blackboard, (context) => { contexts.push(context); });
     const pending = f.agent.MoveToTarget("move");
-    expect(canMoveTo).toHaveBeenCalledWith(f.target, 0);
+    expect(canMoveTo).toHaveBeenCalledWith(f.target, 0, contexts[0]);
     const replacement = new OrderData(OrderType.Move, { targetTileLocation: { x: 9, y: 9, z: 0 } });
     f.blackboard.setCurrentOrder(replacement);
     if (!release) throw new Error("pawn_test_probe_missing");
@@ -64,6 +67,9 @@ describe("pawn agent native order boundaries (unrun until final gate)", () => {
     expect(move.mock.calls[0]?.[0]).toBe(f.target);
     expect(f.blackboard.getCurrentOrder()).toBe(replacement);
     expect(order.data.targetGameObject).toBe(f.target);
+    expect(contexts).toMatchObject([{ caller: "reachability_probe", order }, { caller: "actor_movement", order }]);
+    expect(move).toHaveBeenCalledWith(f.target, expect.any(Object), contexts[1]);
+    unsubscribe();
   });
 
   it("does not move after a denied probe and preserves the caught probe-error result", async () => {

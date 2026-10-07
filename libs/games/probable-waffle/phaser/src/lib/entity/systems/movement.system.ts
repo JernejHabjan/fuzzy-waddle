@@ -25,6 +25,8 @@ import { MovementPresentation } from "./movement-presentation";
 import { MovementTween } from "./movement-tween";
 import { MovementPathExecution } from "./movement-path-execution";
 import { MovementFormation } from "./movement-formation";
+import type { MovementQueryContext } from "./movement-query-context";
+import { MovementQueryObservation } from "./movement-query-observation";
 
 /**
  * Actor-system token and public movement facade. Shared MOVE admission stays here; actor-local owners handle
@@ -109,7 +111,8 @@ export class MovementSystem {
 
   async moveToLocationByFollowingStaticPath(
     tileVec3: Vector3Simple,
-    pathMoveConfig?: PathMoveConfig
+    pathMoveConfig?: PathMoveConfig,
+    queryContext?: MovementQueryContext
   ): Promise<boolean> {
     if (!isGameObjectActiveInActiveScene(this.gameObject)) return false;
     const flyingComponent = getActorComponent(this.gameObject, FlyingComponent);
@@ -122,7 +125,8 @@ export class MovementSystem {
 
     if (!this.runtime.navigationService) return false;
 
-    const path = await this.runtime.navigationService.findPathFromGameObjectToTile(this.gameObject, tileVec3);
+    const path = await MovementQueryObservation.invoke(this.gameObject, queryContext, "initial",
+      () => this.runtime.navigationService!.findPathFromGameObjectToTile(this.gameObject, tileVec3));
     if (!path || !path.length) return false;
 
     if (this.DEBUG) console.log(`Moving to tile ${tileVec3.x}, ${tileVec3.y}`);
@@ -133,7 +137,7 @@ export class MovementSystem {
       if (!path.length) return false;
       // Remove the first tile, as it's the current tile
       path.shift();
-      await this.pathExecution.moveAlongPathByFollowingPreCalculatedStaticPath(path, pathMoveConfig);
+      await this.pathExecution.moveAlongPathByFollowingPreCalculatedStaticPath(path, pathMoveConfig, undefined, queryContext);
     } catch (e) {
       // console.error("Error moving along path", e);
       return false;
@@ -147,14 +151,16 @@ export class MovementSystem {
 
   async moveToActorByAdjustingPathDynamically(
     gameObject: Phaser.GameObjects.GameObject,
-    pathMoveConfig?: Partial<PathMoveConfig>
+    pathMoveConfig?: Partial<PathMoveConfig>,
+    queryContext?: MovementQueryContext
   ): Promise<boolean> {
-    return this.moveToActorByFollowingDeterministicSnapshotPath(gameObject, pathMoveConfig);
+    return this.moveToActorByFollowingDeterministicSnapshotPath(gameObject, pathMoveConfig, queryContext);
   }
 
   private async moveToActorByFollowingDeterministicSnapshotPath(
     destinationGameObject: Phaser.GameObjects.GameObject,
-    pathMoveConfig?: Partial<PathMoveConfig>
+    pathMoveConfig?: Partial<PathMoveConfig>,
+    queryContext?: MovementQueryContext
   ): Promise<boolean> {
     const flyingComponent = getActorComponent(this.gameObject, FlyingComponent);
     const usePathfinding = !flyingComponent;
@@ -178,7 +184,8 @@ export class MovementSystem {
     // to wait, sidestep, or repath after a blockage.
     const path = await this.getPathToClosestNavigableTileBetweenGameObjectsInRadius(
       destinationGameObject,
-      pathMoveConfig?.radiusTilesAroundDestination
+      pathMoveConfig?.radiusTilesAroundDestination,
+      queryContext
     );
     if (!path || !path.length) return false;
 
@@ -186,7 +193,8 @@ export class MovementSystem {
 
     try {
       path.shift();
-      await this.pathExecution.moveAlongPathByFollowingPreCalculatedStaticPath(path, pathMoveConfig as PathMoveConfig);
+      await this.pathExecution.moveAlongPathByFollowingPreCalculatedStaticPath(
+        path, pathMoveConfig as PathMoveConfig, undefined, queryContext);
       return true;
     } catch {
       return false;
@@ -203,21 +211,21 @@ export class MovementSystem {
     this.commandBusSubscription?.unsubscribe();
   }
 
-  async canMoveTo(targetGameObject: Phaser.GameObjects.GameObject, range?: number): Promise<boolean> {
-    const path = await this.getPathToClosestNavigableTileBetweenGameObjectsInRadius(targetGameObject, range);
+  async canMoveTo(targetGameObject: Phaser.GameObjects.GameObject, range?: number,
+    queryContext?: MovementQueryContext): Promise<boolean> {
+    const path = await this.getPathToClosestNavigableTileBetweenGameObjectsInRadius(targetGameObject, range, queryContext);
     return !!path && path.length > 0;
   }
 
   async getPathToClosestNavigableTileBetweenGameObjectsInRadius(
     targetGameObject: Phaser.GameObjects.GameObject,
-    range?: number
+    range?: number,
+    queryContext?: MovementQueryContext
   ): Promise<Vector2Simple[] | null> {
     if (!this.runtime.navigationService) throw new Error("No navigationService");
-    return this.runtime.navigationService.findAndUseNavigablePathBetweenGameObjectsWithRadius(
-      this.gameObject,
-      targetGameObject,
-      range
-    );
+    return MovementQueryObservation.invoke(this.gameObject, queryContext, "initial",
+      () => this.runtime.navigationService!.findAndUseNavigablePathBetweenGameObjectsWithRadius(
+        this.gameObject, targetGameObject, range));
   }
 
   /**

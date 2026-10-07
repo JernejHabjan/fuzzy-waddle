@@ -4,6 +4,7 @@ import type { AiRuntimeCreatedActorV1 } from "./ai-runtime-created-actor-v1";
 import type { AiRuntimeProductionQueueV1 } from "./ai-runtime-production-queue-v1";
 import type { AiRuntimeNavigationBoundaryV1 } from "./ai-runtime-navigation-boundary-v1";
 import type { AiRuntimeRouteOrderV1 } from "./ai-runtime-route-order-v1";
+import type { AiRuntimeRouteCallerV1 } from "./ai-runtime-route-caller-v1";
 
 /** Native output branch and existing query observations. They never assert movement completion or useful demand fulfillment. */
 export type AiRuntimeProducerRouteV1 =
@@ -25,6 +26,8 @@ export type AiRuntimeProducerRouteV1 =
     readonly phase: "requested" | "resolved" | "rejected" | "threw";
     /** Omitted for legacy/lost observation; null means no current order at this exact boundary. */
     readonly currentOrder?: AiRuntimeRouteOrderV1 | null;
+    /** Explicit native caller/order use; omitted for legacy, unordered helpers or bounded observation loss. */
+    readonly queryCaller?: AiRuntimeRouteCallerV1;
     /** Actual object scene membership at this boundary, independent of the object's own scene index lookup. */
     readonly sourceInCaptureScene: boolean; readonly targetInCaptureScene: boolean | null;
     readonly source: AiRuntimeCreatedActorV1; readonly target: AiRuntimeCreatedActorV1 | null;

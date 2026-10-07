@@ -6,6 +6,7 @@ import { OrderType } from "../../../ai/order-type";
 import { PawnAiBlackboard } from "../../../prefabs/ai-agents/pawn-ai-blackboard";
 import { PawnOrderObservation } from "../../../prefabs/ai-agents/pawn-order-observation";
 import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller";
+import { MovementQueryObservation } from "../../../entity/systems/movement-query-observation";
 import { AiRuntimeRouteOrderCapture } from "./ai-runtime-route-order-capture";
 import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor";
 import type { AiRuntimeProductionSpatialV1 } from "./ai-runtime-production-spatial-v1";
@@ -92,6 +93,38 @@ describe("marked capture order identities (unrun until final gate)", () => {
     expect(f.capture.sample(f.product)).toMatchObject({ orderId: 2, admissionObserved: false, originOutputId: null });
     expect(f.records[1]).toMatchObject({ kind: "route_order_restore", reason: "controller_replaced" });
     f.board.addOrder(new OrderData(OrderType.Stop, {})); expect(f.records).toHaveLength(2);
+    f.capture.dispose();
+  });
+
+  it("keeps the use-site order across replacement/mutation and fences restore/reuse without rebinding", () => {
+    const f = fixture(), tile = { x: 8, y: 9, z: 0 }, order = new OrderData(OrderType.Move, { targetTileLocation: tile });
+    f.board.addOrder(order); f.board.setCurrentOrder(order);
+    const context = MovementQueryObservation.capture(f.product, f.board, order, "location_movement");
+    const active = context ? { context, stage: "initial" as const } : undefined;
+    tile.x = 99; f.board.setCurrentOrder(new OrderData(OrderType.Stop));
+    expect(f.capture.caller(f.product, active)).toMatchObject({ invocationId: 1, lifetimeValid: true,
+      order: { orderId: 1, admissionObserved: true, targetTile: { x: 8, y: 9 } } });
+    expect(f.capture.caller(f.product, context ? { context: { ...context }, stage: "initial" } : undefined)).toBeUndefined();
+    f.board.setData({}, f.scene);
+    expect(f.capture.caller(f.product, active)).toMatchObject({ invocationId: 1, lifetimeValid: false, order: { orderId: 1 } });
+    f.capture.unwatchActor(f.product); f.capture.watchActor(f.product);
+    expect(f.capture.caller(f.product, active)?.lifetimeValid).toBe(false);
+    expect(f.capture.caller(f.producer, active)).toBeUndefined();
+    f.capture.dispose(); expect(f.capture.caller(f.product, active)).toBeUndefined();
+  });
+
+  it("records unordered container movement explicitly and saturates invocation identities without reviving them", () => {
+    const f = fixture();
+    let context = MovementQueryObservation.capture(f.product, f.board, null, "boarding_container_shore");
+    expect(f.capture.caller(f.product, context ? { context, stage: "initial" } : undefined)).toMatchObject({
+      invocationId: 1, order: null, caller: "boarding_container_shore", lifetimeValid: true });
+    for (let index = 1; index < 8193; index++) {
+      context = MovementQueryObservation.capture(f.product, f.board, null, "boarding_container_shore");
+    }
+    expect(f.capture.caller(f.product, context ? { context, stage: "fallback" } : undefined)).toBeUndefined();
+    f.capture.unwatchActor(f.product); f.capture.watchActor(f.product);
+    context = MovementQueryObservation.capture(f.product, f.board, null, "boarding_container_shore");
+    expect(f.capture.caller(f.product, context ? { context, stage: "initial" } : undefined)).toBeUndefined();
     f.capture.dispose();
   });
 

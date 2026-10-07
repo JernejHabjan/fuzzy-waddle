@@ -9,6 +9,8 @@ import type { BlockedStepRecoveryState } from "./blocked-step-recovery-state";
 import type { MovementRuntime } from "./movement-runtime";
 import type { MovementTween } from "./movement-tween";
 import type { MovementPresentation } from "./movement-presentation";
+import type { MovementQueryContext } from "./movement-query-context";
+import { MovementQueryObservation } from "./movement-query-observation";
 
 // When another actor is already stepping through the blocked tile, wait briefly
 // a couple of times before trying more disruptive recovery.
@@ -61,7 +63,8 @@ export class MovementPathExecution {
       waitAttemptsByTile: new Map<string, number>(),
       sideStepAttempts: 0,
       repathAttempts: 0
-    }
+    },
+    queryContext?: MovementQueryContext
   ): Promise<void> {
     if (!path.length) {
       config?.onComplete?.();
@@ -75,7 +78,7 @@ export class MovementPathExecution {
     config?.onPathUpdate?.(nextTile);
 
     const onComplete = async () => {
-      await this.moveAlongPathByFollowingPreCalculatedStaticPath(path, config, recoveryState);
+      await this.moveAlongPathByFollowingPreCalculatedStaticPath(path, config, recoveryState, queryContext);
     };
 
     const onStop = () => {
@@ -89,7 +92,7 @@ export class MovementPathExecution {
       if (!(error instanceof MovementStepBlockedError)) {
         throw error;
       }
-      await this.recoverFromBlockedPathStep(error, nextTile, path, config, recoveryState);
+      await this.recoverFromBlockedPathStep(error, nextTile, path, config, recoveryState, queryContext);
     }
   }
 
@@ -112,7 +115,8 @@ export class MovementPathExecution {
     blockedTile: Vector2Simple,
     remainingPath: Vector2Simple[],
     config: PathMoveConfig | undefined,
-    recoveryState: BlockedStepRecoveryState
+    recoveryState: BlockedStepRecoveryState,
+    queryContext?: MovementQueryContext
   ): Promise<void> {
     // Escalate from cheapest to most disruptive recovery:
     // wait -> sidestep -> repath -> same-height fallback tile.
@@ -131,7 +135,8 @@ export class MovementPathExecution {
       await this.moveAlongPathByFollowingPreCalculatedStaticPath(
         [blockedTile, ...remainingPath],
         config,
-        recoveryState
+        recoveryState,
+        queryContext
       );
       return;
     }
@@ -142,20 +147,20 @@ export class MovementPathExecution {
         recoveryState.sideStepAttempts++;
         config?.onPathUpdate?.(sideStepTile);
         await this.tween.moveActorToTileWithTween(sideStepTile, config);
-        const recovered = await this.repathToDestination(finalDestination, config, recoveryState);
+        const recovered = await this.repathToDestination(finalDestination, config, recoveryState, queryContext);
         if (recovered) return;
       }
     }
 
     if (recoveryState.repathAttempts < BLOCKED_STEP_MAX_REPATH_ATTEMPTS) {
       recoveryState.repathAttempts++;
-      const recovered = await this.repathToDestination(finalDestination, config, recoveryState);
+      const recovered = await this.repathToDestination(finalDestination, config, recoveryState, queryContext);
       if (recovered) return;
     }
 
-    const fallbackTile = await this.findReachableFallbackTile(finalDestination);
+    const fallbackTile = await this.findReachableFallbackTile(finalDestination, queryContext);
     if (!fallbackTile) throw error;
-    await this.moveToFallbackTile(fallbackTile, config, recoveryState);
+    await this.moveToFallbackTile(fallbackTile, config, recoveryState, queryContext);
   }
 
   private waitForBlockedStep(): Promise<void> {
@@ -186,7 +191,9 @@ export class MovementPathExecution {
   private async repathToDestination(
     destinationTile: Vector2Simple,
     config: PathMoveConfig | undefined,
-    recoveryState: BlockedStepRecoveryState
+    recoveryState: BlockedStepRecoveryState,
+    queryContext?: MovementQueryContext,
+    queryStage: "repath" | "fallback" = "repath"
   ): Promise<boolean> {
     if (!this.runtime.navigationService) return Promise.reject("No navigationService");
     const actorId = getActorComponent(this.runtime.gameObject, IdComponent)?.id;
@@ -201,11 +208,9 @@ export class MovementPathExecution {
               includeDestinationReservations: false
             })
           : [];
-      newPath = await this.runtime.navigationService.findPathFromGameObjectToTileAvoidingDynamicBlockers(
-        this.runtime.gameObject,
-        destinationTile,
-        dynamicBlockers
-      );
+      newPath = await MovementQueryObservation.invoke(this.runtime.gameObject, queryContext, queryStage,
+        () => this.runtime.navigationService!.findPathFromGameObjectToTileAvoidingDynamicBlockers(
+          this.runtime.gameObject, destinationTile, dynamicBlockers));
       if (newPath && newPath.length) break;
 
       // Congestion can temporarily make every route around a large obstacle look closed.
@@ -216,7 +221,7 @@ export class MovementPathExecution {
     }
     if (!newPath || !newPath.length) return false;
     newPath.shift();
-    await this.moveAlongPathByFollowingPreCalculatedStaticPath(newPath, config, recoveryState);
+    await this.moveAlongPathByFollowingPreCalculatedStaticPath(newPath, config, recoveryState, queryContext);
     return true;
   }
 
@@ -228,7 +233,8 @@ export class MovementPathExecution {
    * - remain reachable when dynamic blockers are overlaid
    * @param destinationTile The original target tile whose height layer and vicinity are preserved.
    */
-  private async findReachableFallbackTile(destinationTile: Vector2Simple): Promise<Vector2Simple | undefined> {
+  private async findReachableFallbackTile(destinationTile: Vector2Simple,
+    queryContext?: MovementQueryContext): Promise<Vector2Simple | undefined> {
     const navigationService = this.runtime.navigationService;
     const movementOccupancy = this.runtime.movementOccupancyService;
     const actorId = getActorComponent(this.runtime.gameObject, IdComponent)?.id;
@@ -257,7 +263,7 @@ export class MovementPathExecution {
           candidates.push(candidate);
         }
       }
-      const fallback = await this.getFirstReachableCandidate(candidates, destinationTile);
+      const fallback = await this.getFirstReachableCandidate(candidates, destinationTile, queryContext);
       if (fallback) return fallback;
     }
     return undefined;
@@ -272,7 +278,8 @@ export class MovementPathExecution {
    */
   private async getFirstReachableCandidate(
     candidates: Vector2Simple[],
-    destinationTile: Vector2Simple
+    destinationTile: Vector2Simple,
+    queryContext?: MovementQueryContext
   ): Promise<Vector2Simple | undefined> {
     const navigationService = this.runtime.navigationService;
     const movementOccupancy = this.runtime.movementOccupancyService;
@@ -288,11 +295,9 @@ export class MovementPathExecution {
       return a.x - b.x;
     });
     for (const candidate of orderedCandidates) {
-      const path = await navigationService.findPathFromGameObjectToTileAvoidingDynamicBlockers(
-        this.runtime.gameObject,
-        candidate,
-        dynamicBlockers
-      );
+      const path = await MovementQueryObservation.invoke(this.runtime.gameObject, queryContext, "fallback",
+        () => navigationService.findPathFromGameObjectToTileAvoidingDynamicBlockers(
+          this.runtime.gameObject, candidate, dynamicBlockers));
       if (path && path.length > 0) return candidate;
     }
     return undefined;
@@ -309,7 +314,8 @@ export class MovementPathExecution {
   private async moveToFallbackTile(
     fallbackTile: Vector2Simple,
     config: PathMoveConfig | undefined,
-    recoveryState: BlockedStepRecoveryState
+    recoveryState: BlockedStepRecoveryState,
+    queryContext?: MovementQueryContext
   ): Promise<void> {
     const actorId = getActorComponent(this.runtime.gameObject, IdComponent)?.id;
     const heightLayer = this.runtime.navigationService?.getNavigableHeightAtTile(fallbackTile) ?? 0;
@@ -320,7 +326,7 @@ export class MovementPathExecution {
     }
     // Reserve the escape slot before repathing so another actor cannot claim it
     // while this unit is recalculating its route.
-    const recovered = await this.repathToDestination(fallbackTile, config, recoveryState);
+    const recovered = await this.repathToDestination(fallbackTile, config, recoveryState, queryContext, "fallback");
     if (!recovered) {
       throw new Error("Failed to repath to fallback destination");
     }

@@ -1,3 +1,4 @@
+import { MovementQueryObservation } from "../../entity/systems/movement-query-observation";
 import Phaser from "phaser";
 import { State } from "mistreevous";
 import type { IPlayerPawnControllerAgent, PlayerPawnRangeType } from "./player-pawn-ai-controller.agent.interface";
@@ -48,7 +49,8 @@ export class PawnAgentMovement {
       if (movementSystem) {
         const nrTiles = await movementSystem.getPathToClosestNavigableTileBetweenGameObjectsInRadius(
           targetGameObject,
-          range
+          range,
+          MovementQueryObservation.capture(this.gameObject, this.blackboard, currentOrder, "range_probe")
         );
         if (nrTiles === null) {
           // Target is unreachable - this is handled by the behavior tree
@@ -158,7 +160,8 @@ export class PawnAgentMovement {
             this.agent.Stop("MoveToTarget");
           }
         }
-      } satisfies Partial<PathMoveConfig>);
+      } satisfies Partial<PathMoveConfig>,
+        MovementQueryObservation.capture(this.gameObject, this.blackboard, currentOrder, "actor_movement"));
       // console.log("[Build] MoveToTarget: Movement result=", success ? "SUCCESS" : "FAILED");
       return success ? State.SUCCEEDED : State.FAILED;
     } catch (e) {
@@ -203,9 +206,11 @@ export class PawnAgentMovement {
               movementSystem.cancelMovement();
             }
           }
-        } satisfies Partial<PathMoveConfig>);
+        } satisfies Partial<PathMoveConfig>,
+          MovementQueryObservation.capture(this.gameObject, this.blackboard, currentOrder, "location_movement"));
       } else {
-        success = await movementSystem.moveToLocationByFollowingStaticPath(location);
+        success = await movementSystem.moveToLocationByFollowingStaticPath(location, undefined,
+          MovementQueryObservation.capture(this.gameObject, this.blackboard, currentOrder, "location_movement"));
       }
       return success ? State.SUCCEEDED : State.FAILED;
     } catch (e) {
@@ -223,7 +228,8 @@ export class PawnAgentMovement {
     const movementSystem = getActorSystem(this.gameObject, MovementSystem);
     if (!movementSystem) return Promise.resolve(false);
     // noinspection UnnecessaryLocalVariableJS
-    return await movementSystem.canMoveTo(target, range);
+    return await movementSystem.canMoveTo(target, range,
+      MovementQueryObservation.capture(this.gameObject, this.blackboard, currentOrder, "reachability_probe"));
   }
 
   /**

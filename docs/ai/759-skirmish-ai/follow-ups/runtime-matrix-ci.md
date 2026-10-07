@@ -35,6 +35,82 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
 
 ## Implementation order
 
+### Production invocation capture checkpoint (2026-10-07, unverified)
+
+Machinery batch 23, #815/#816 PRO-03/06/07 native query/order diagnostics.
+Base `7096907e46618902a3170a5450af21232cf0ecd2`; the containing commit owns this slice.
+Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`.
+User-selected setting remains GPT-6.1 Sol / medium; host settings are not independently exposed. Nx merge `59f72e037` is retained.
+All executable validation remains deferred. This batch authors native capture, not normalized attribution or outcome proof.
+
+**Purpose:** record the actual caller and order used by a query. Current-order samples can change during awaits while
+native movement retains an earlier target/order; equal tiles cannot resolve that ambiguity. Explicit contexts now reach
+existing marked capture without leaving an ambient scope alive across awaits. The next report consumer uses these records
+to identify which task a route serves. Arrival, service benefit and sustained usefulness need later native evidence.
+
+| Acceptance | Implemented owner / consumer | Evidence state |
+| --- | --- | --- |
+| 1. Exact native use sites | `PawnAgentMovement`, `PawnAgentTending`, `PawnAgentBoarding`, `MovementQueryContext` | Actual local order passed; probes/actions distinct; container shore caller passes null without a blackboard read |
+| 2. Async execution/recovery propagation | `MovementSystem`, `MovementPathExecution`, `MovementQueryObservation` | Explicit context survives recursion/waits/sidestep/repath/fallback; ambient binding ends synchronously; native calls/awaits/results retained |
+| 3. Marked capture lifetime/identity | `AiRuntimeRouteOrderCapture`, `AiRuntimeProducerRouteCapture`, `AiRuntimeRouteCallerV1`, `AiRuntimeProducerRouteV1` | Detached use-site snapshots, 8 subscribers/depth, 8,192 invocation IDs, weak identities and existing 256 subscription lifetimes; restore/reuse/controller fences |
+| 4. Characterization and negatives | New observation spec; extended pawn, movement facade/recovery, order capture and producer capture specs | Authored/unrun: original Promise/one call, async/nested/actor isolation, thrown observer/query, orphan copied context, replacement/mutation, restore/reuse/disposal, unordered and overflow |
+| 5. Publication/handoff | This checkpoint and HANDOFF | Exact owned paths; normal commit/push and remote SHA verification; pause after publication |
+| 6. Strict report attribution/effects | Existing report normalizer | Next dependency: `queryCallerAttributed` remains false; no arrival/service/stability or complete-history credit |
+
+New production adapter files under `libs/games/probable-waffle/phaser/src/lib/`:
+
+- `entity/systems/movement-query-context.ts`: transient actor/blackboard/order/caller contract; separate from gameplay move config.
+- `entity/systems/movement-query-observation.ts`: passive subscribers and bounded synchronous native-call binding.
+- `player/ai-controller/testing/ai-runtime-route-caller-v1.ts`: detached capture contract with invocation ID, stage and lifetime validity.
+- New `entity/systems/movement-query-observation.spec.ts` plus five extended specs named in acceptance 4.
+  Existing movement facade/path execution, three pawn owners, order/producer captures and producer-route contract are wired.
+  Only these sources/specs and the two existing handoff documents change; no baseline refresh or tracked-file move.
+
+**Source Implementation Review:** traced range/reachability reads, retained MoveToTarget entry order after probe await,
+attack-move mutation, tending's spatial tile selection and both passenger/container shore branches. No extra current-order
+read, navigation query or gameplay decision is introduced. The optional diagnostic argument forwards separately from native
+move config and is never passed into navigation's arguments. All recursive recovery edges retain the context; candidate
+probes and routing to a chosen fallback have their own stage. Native receiver/arguments, path array mutation, callbacks,
+waits, occupancy/cleanup, query Promise/results/errors remain owned by the existing runtime. Only navigation invocation is
+scoped; the outer marked wrapper consumes its binding once before any native call, so nested/reentrant queries cannot
+borrow it. Nested undefined calls shadow outer contexts, nesting above eight loses context, and finally restores prior scope.
+Listener-free capture returns undefined and invocation with no context/outer binding calls directly. Observer exceptions
+are fenced. Capture snapshots the exact OrderData reference without reading current order; weak caller identity rejects
+copied/orphan contexts. Existing watch/restore tokens fence old holders, including failed partial restores and replaced
+controllers; terminal snapshots retain the original caller/order while reevaluating lifetime validity. IDs saturate and do
+not revive on re-registration. Teardown releases both subscribers and caller holders. Tests exercise the native boundaries
+with doubles; they do not prove map navigation, actor arrival, usefulness or runtime cost.
+
+**Omission Audit:** acceptance 1–5 have authored implementations and evidence paths; executable evidence is deferred.
+Both context and observer have production call sites; the raw caller contract is emitted by existing producer queries.
+Other helpers, formation/random selection, direct non-pawn/rally fallback, flying movement without queries and construction
+routes cannot borrow a pawn order through this seam. Container shore movement deliberately records null order, never the
+first boarder's order. Existing registration/inventory routes install capture listeners; no new scan/listener/timer outside
+the bounded board subscriptions exists. Capture begins only after marked installation, so earlier invocations remain missing.
+The normalizer still ignores the optional raw caller and grants no attribution; strict validation of supplied/orphan/overflow
+records, full command/demand joins and normalized caller authority are acceptance 6's next coherent report batch. No schema,
+save/relay, planner, scene/prefab, CI, skill/tool or Nx migration change is required by this native slice.
+
+**Separate Final Closure Audit:** revisited acceptance and immediate consumers after source review and repairs. Native
+capture authoring is complete; report authority and production outcome evidence remain open. No test, lint, formatter,
+type/build, schema/editor/repository check, source-size validator, simulation, doctor/context or `git diff --check` ran.
+Git scope/provenance/publication inspection only. No issue/family or strategic-usefulness gap closes. New files stay focused;
+structural compliance and runtime overhead require the final gate. Normal commit/push owns only the listed paths and requires
+exact remote SHA verification; publication failure is a blocker. Stay on Sol/medium for strict report consumption because
+it shares this causal model. No new plan file or skill/tool change was needed.
+
+Deferred final-gate command (unrun; Nx CLI options remain unverified after the migration):
+
+```bash
+NX_DAEMON=false pnpm exec nx test probable-waffle-phaser --testPathPatterns='movement-query-observation|movement-system-boundary|movement-path-execution|pawn-agent-order-boundaries|ai-runtime-route-order-capture|ai-runtime-producer-route-capture' --skip-nx-cache
+```
+
+Next exact source owners: `apps/portal-e2e/src/e2e/skirmish-ai-runtime-route-order-validation.ts`,
+`skirmish-ai-runtime-route-order-projection.ts` and a focused caller validator/projection/spec. Validate all supplied raw
+caller records before granting normalized attribution, independently from current-order equality. Missing/legacy/lost,
+unordered, restore/reuse/controller replacement, retargeted, failed/orphan/overflow and nested observation cases must stay
+explicit. Full service stamp/demand and useful-effect authority cannot be inferred from invocation identity alone.
+
 ### Production pawn ownership checkpoint (2026-10-07, unverified)
 
 Machinery batch 22, #821 prerequisite for #815/#816 PRO-03/06/07 caller/order authority.

@@ -1,3 +1,4 @@
+import { MovementQueryObservation } from "../../entity/systems/movement-query-observation";
 import Phaser from "phaser";
 import { State } from "mistreevous";
 import { getActorComponent } from "../../data/actor-component";
@@ -76,7 +77,7 @@ export class PawnAgentTending {
         x: randomTile.x,
         y: randomTile.y,
         z: 0
-      });
+      }, undefined, MovementQueryObservation.capture(this.gameObject, this.blackboard, currentOrder, "tending_movement"));
       return success ? State.SUCCEEDED : State.FAILED;
     } catch {
       return State.FAILED;

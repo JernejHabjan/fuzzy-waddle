@@ -13,6 +13,7 @@ import type { AiRuntimeProductionSpatialV1 } from "./ai-runtime-production-spati
 import type { AiRuntimeNavigationObservation } from "./ai-runtime-navigation-observation";
 import type { AiRuntimeProducerRouteV1 } from "./ai-runtime-producer-route-v1";
 import { AiRuntimeRouteOrderCapture } from "./ai-runtime-route-order-capture";
+import { MovementQueryObservation } from "../../../entity/systems/movement-query-observation";
 
 /** Passive instance wrappers and actual returned-object bindings, owned only by the marked test capture. */
 export class AiRuntimeProducerRouteCapture {
@@ -107,6 +108,7 @@ export class AiRuntimeProducerRouteCapture {
     method: Extract<AiRuntimeProducerRouteV1, { kind: "producer_path" }>["method"], dynamicBlockerCount: number | null,
     call: () => Promise<Vector2Simple[] | null>
   ): Promise<Vector2Simple[] | null> {
+    const caller = MovementQueryObservation.take(source);
     if (this.disposed || this.nextQueryId > 8192) return call();
     let snapshot: (() => AiRuntimeProductionSpatialV1 & { kind: "producer_path" }) | undefined;
     let playerNumber: number | undefined;
@@ -124,6 +126,7 @@ export class AiRuntimeProducerRouteCapture {
           purpose: ownedOutput ? "product_output" : "producer_service", outputId: ownedOutput?.outputId ?? null,
           method, dynamicBlockerCount, radiusTiles, navigation: this.navigationObservation?.sample(),
           currentOrder: this.orders.sample(source),
+          queryCaller: this.orders.caller(source, caller),
           sourceInCaptureScene: source.scene === this.scene, targetInCaptureScene: target ? target.scene === this.scene : null,
           source: captureAiRuntimeCreatedActor(source), target: target ? captureAiRuntimeCreatedActor(target) : null,
           sourceTile: getGameObjectCurrentTile(source) ?? null,

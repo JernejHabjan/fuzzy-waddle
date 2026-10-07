@@ -8,12 +8,18 @@ import type { ProductionSpatialAuthorityEvent } from "../../../world/services/mu
 import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor";
 import type { AiRuntimeProductionSpatialV1 } from "./ai-runtime-production-spatial-v1";
 import type { AiRuntimeRouteOrderV1 } from "./ai-runtime-route-order-v1";
+import { MovementQueryObservation } from "../../../entity/systems/movement-query-observation";
+import type { MovementQueryContext } from "../../../entity/systems/movement-query-context";
+import type { AiRuntimeRouteCallerV1 } from "./ai-runtime-route-caller-v1";
 
 /** Test-owned bounded weak order identities and subscriptions. Current-order overlap never supplies caller authority. */
 export class AiRuntimeRouteOrderCapture {
   private disposed = false;
   private nextOrderId = 1;
   private bindingCount = 0;
+  private nextInvocationId = 1;
+  private callers = new WeakMap<MovementQueryContext,
+    { invocationId: number; order: AiRuntimeRouteOrderV1 | null; lifetime: object; restoreToken: object }>();
   private identities = new WeakMap<OrderData,
     { orderId: number; actor: Phaser.GameObjects.GameObject; lifetime: object; restoreToken: object;
       admissionObserved: boolean; outputId: number | null }>();
@@ -51,6 +57,13 @@ export class AiRuntimeRouteOrderCapture {
       const state = { board, restoreToken: {}, release: () => undefined as void };
       const original = board.setData;
       const descriptor = Object.getOwnPropertyDescriptor(board, "setData");
+      const unsubscribeCaller = MovementQueryObservation.subscribe(board, (context) => {
+        if (this.disposed || context.actor !== actor || this.actors.get(actor) !== state || this.nextInvocationId > 8192) return;
+        const order = context.order ? this.snapshot(actor, context.order, false) : null;
+        if (order === undefined) return;
+        this.callers.set(context, { invocationId: this.nextInvocationId++, order,
+          lifetime: state, restoreToken: state.restoreToken });
+      });
       const unsubscribe = PawnOrderObservation.subscribe(board, (order, origin) => {
         if (this.disposed || this.actors.get(actor) !== state) return;
         const source = captureAiRuntimeCreatedActor(actor);
@@ -81,6 +94,7 @@ export class AiRuntimeRouteOrderCapture {
       };
       state.release = () => {
         unsubscribe();
+        unsubscribeCaller();
         try {
           if (board.setData === wrapper) {
             if (descriptor) Object.defineProperty(board, "setData", descriptor);
@@ -109,10 +123,25 @@ export class AiRuntimeRouteOrderCapture {
     } catch { return undefined; }
   }
 
+  /** Uses the invocation's detached order, never the current order after an await or restore. */
+  caller(actor: Phaser.GameObjects.GameObject,
+    active: ReturnType<typeof MovementQueryObservation.current>): AiRuntimeRouteCallerV1 | undefined {
+    if (this.disposed || !active || active.context.actor !== actor) return undefined;
+    try {
+      this.watchActor(actor);
+      const stored = this.callers.get(active.context), state = this.actors.get(actor);
+      if (!stored) return undefined;
+      return structuredClone({ invocationId: stored.invocationId, caller: active.context.caller, stage: active.stage,
+        order: stored.order, lifetimeValid: !!state && state.board === active.context.board &&
+          stored.lifetime === state && stored.restoreToken === state.restoreToken });
+    } catch { return undefined; }
+  }
+
   dispose(): void {
     this.disposed = true;
     this.actors.forEach((state) => state.release()); this.actors.clear();
     this.identities = new WeakMap(); this.outputs = new WeakMap();
+    this.callers = new WeakMap();
   }
 
   private snapshot(actor: Phaser.GameObjects.GameObject, order: OrderData, admitted: boolean): AiRuntimeRouteOrderV1 | undefined {

@@ -1,3 +1,6 @@
+import { MovementQueryObservation } from "./movement-query-observation";
+import type { MovementQueryContext } from "./movement-query-context";
+import { PawnAiBlackboard } from "../../prefabs/ai-agents/pawn-ai-blackboard";
 import type { Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { getGameObjectCurrentTile } from "../../data/game-object-helper";
 import { MovementTween } from "./movement-tween";
@@ -66,15 +69,22 @@ describe("native static path execution/recovery extraction (unrun until final ga
   it("reserves a ranked same-height fallback before the final repath", async () => {
     const f = fixture(), tile = { x: 1, y: 0 }, error = new MovementStepBlockedError(tile, ["actor:2"]);
     const candidate = { x: 1, y: -1 }, ordering: string[] = [];
+    const context: MovementQueryContext = { actor: f.actor, board: new PawnAiBlackboard(),
+      order: null, caller: "boarding_container_shore" };
+    const callers: ReturnType<typeof MovementQueryObservation.current>[] = [];
     f.move.mockRejectedValueOnce(error); f.occupancy.hasAnyActiveStepReservation.mockReturnValue(false);
     jest.mocked(getGameObjectCurrentTile).mockReturnValue(undefined);
     f.navigation.isWithinGridBounds.mockReturnValue(true);
     f.navigation.findPathFromGameObjectToTileAvoidingDynamicBlockers.mockImplementation(async (_actor, destination) => {
       ordering.push(`path:${destination.x},${destination.y}`);
+      callers.push(MovementQueryObservation.current(f.actor));
       return destination.x === candidate.x && destination.y === candidate.y ? [{ x: 0, y: 0 }, candidate] : null;
     });
     f.occupancy.reserveDestination.mockImplementation(() => { ordering.push("reserve"); return true; });
-    await f.execution.moveAlongPathByFollowingPreCalculatedStaticPath([tile]);
+    await f.execution.moveAlongPathByFollowingPreCalculatedStaticPath([tile], undefined, undefined, context);
+    expect(callers.map((caller) => caller?.stage)).toEqual(["repath", "repath", "repath", "fallback", "fallback"]);
+    expect(callers.every((caller) => caller?.context === context)).toBe(true);
+    expect(MovementQueryObservation.current(f.actor)).toBeUndefined();
     expect(f.occupancy.reserveDestination).toHaveBeenCalledWith("actor:1", [candidate], 0);
     expect(ordering.slice(-2)).toEqual(["reserve", "path:1,-1"]);
   });
