@@ -7,48 +7,53 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 ## Quick resume
 
 **Next session (user policy, 2026-10-07):** retain **GPT-6.1 Sol / high** for grouped PRO-03/06/07 authority.
-Current step: #815/#816 machinery batch 20, **native order admission/rally identity and selected service demand**,
-authored/unverified. Base `d1600887f09bb99df16e334a70abebba8ff3b6bf`; the containing commit owns this slice.
+Current step: #821 prerequisite / #815/#816 machinery batch 21, **native movement ownership split**, authored/unverified.
+Base `ef33516103f40f7cbb0d7ca72092332d31a663d2`; the containing commit owns this slice.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify local/remote on resume.
 Nx merge `59f72e037` is preserved. Actual model/effort is unavailable. No family/issue is complete.
 The user removed the comment-permission rule. All executable validation remains at the final gate.
 
-**Authored work — what it is for:** batch 20 records the actual orders admitted to a pawn's queue, distinguishes local
-rally orders from stamped shared service commands, and links service admission to its accepted intent and dated selected
-demand. Later tests will use these records to check which task a unit was assigned to. Purchase demand stays separate:
-buying a unit and assigning it useful work are different observed events. Current-order samples do not prove query use.
+**Authored work — what it is for:** batch 21 splits MovementSystem into ready/lazy dependencies, formation placement,
+path execution/congestion recovery, movement interpolation/cancellation and sound/animation owners. The public system
+still admits shared MOVE commands and selects native routes. These smaller owners will be used to add caller diagnostics
+at actual route and recovery invocations, without expanding an oversized file. The old source exemption is removed;
+no exemption is refreshed. Four characterization specs are authored/unrun; movement behavior is not runtime-verified.
 
-**Next step — what it is for:** bind the native navigation caller to the exact order it actually uses, distinguishing
-range/reachability probes from movement. Then observe actual arrival/service effects and useful stability. These links
-will let the final tests check that a new unit or building performs the task that justified creating it and keeps helping.
+**Next step — what it is for:** split the oversized pawn agent by its actual responsibilities, then bind native
+navigation callers to the exact order they use, distinguishing range/reachability probes from movement. These links
+will let final tests check which assigned task a route serves, before actual arrival/service effects and stable usefulness.
 
-Read the [order/demand checkpoint](follow-ups/runtime-matrix-ci.md#production-order-and-service-demand-checkpoint-2026-10-07-unverified).
-**Next exact authoring action:** supply native query-caller/order identity, then join real arrival/service terminals and
-continuous useful stability. `producerRoutes.paths[].orderLineage.queryCallerAttributed` is deliberately false; neither
-same current-order samples nor a selected target proves which order a query executes. Do not infer caller identity from
-matching target/tile or an async order overlapping a query. The oversized pawn agent/movement owners require a genuine
-prerequisite split if edited; never refresh their source exemptions. Retain Sol/high while that causal contract is open.
-Keep unstamped rally commands, non-service construction ownership, flying/direct movement, incomplete order history,
-retargeting, restore/reuse and partial/failed navigation history explicit. Preserve native receiver/arguments/Promise/
-results/errors, without extra queries, planner inputs, timers or scans. Add strict negative/orphan/overflow cases and
-report consumption; defer checks, commit/push, then pause. Full `RuntimeProductionEvidenceV1`, PRO-03/06/07 independent
-denominators/oracles, paired setup/legal Skaduwee research and strategic cancellation/transitions remain open.
-No fixed total machinery count or completion percentage is claimed.
+Read the [movement ownership checkpoint](follow-ups/runtime-matrix-ci.md#production-movement-ownership-checkpoint-2026-10-07-unverified).
+**Next exact authoring action:** restructure `prefabs/ai-agents/player-pawn-ai-controller.agent.ts` into focused owners,
+preserving native order reads/mutations, callbacks, receiver/arguments/Promise/results/errors and lifecycle. Its original
+exemption remains; never refresh it. Then carry actual caller/order identity through the new movement owners and existing
+marked capture/report. `producerRoutes.paths[].orderLineage.queryCallerAttributed` remains false; equal targets/current
+samples and an async order overlapping a query are not causal invocation evidence. No extra query, planner input, timer
+or scan. Keep unstamped rally, construction ownership, flying/direct movement, incomplete history, retargeting,
+restore/reuse and failed/partial navigation explicit. Add negative/orphan/overflow cases; defer checks, commit/push, pause.
 
-- Native `PawnAiBlackboard` observes only successful enqueue; a local scoped rally helper preserves the selected action.
-  At most one admitted order in the exact synchronous rally scope acquires output lineage. Nested cancellation ambiguity,
-  missing controllers and scope overflow cannot fabricate a shared stamp. Native action return/error stays unchanged.
-- Marked order capture reuses the root's existing actor inventory, stores bounded weak `OrderData` identities and samples
-  the actual current order beside existing route requests/terminals. Restore attempts, controller replacement and observed unregister/re-register
-  fence old identities. Disposal unsubscribes and restores only its own wrapper; no game/save/wire field is added.
-- `orderLineage` reaches existing causality/variant reports with exact admission, optional single-order rally origin,
-  full service command/accepted decision and selected demand row dated by its selection boundary. Original production
-  admission remains separate. Missing/future authority cannot fill a resolved route; construction-owned orders stay gaps.
-- Raw order/rally/current samples are validated even without paired queries and beyond the 256-order group limit.
-  Contradictory stamps, actors, payload, selected intent/demand, orphan/reused rally claims and terminal tails fail closed.
-  Whole-group overflow discards routes. Equal samples supply no complete order history, query caller or useful effect.
-- Four new specs and one expanded producer-capture spec are authored/unrun. Source Implementation Review, Omission
-  Audit and separate Final Closure Audit are in the checkpoint. All executable checks remain deferred; cost is unmeasured.
+| Current dependency | State | Purpose / next boundary |
+| --- | --- | --- |
+| Movement ownership prerequisite | Authored, unverified (batch 21) | Smaller route/recovery owners for native caller diagnostics |
+| Pawn agent prerequisite | Next authoring | Isolate actual order use without extending an exempt monolith |
+| Query caller/order authority | Open | Identify the task a native probe/movement query actually serves |
+| Arrival/service and continuous useful stability | Open | Establish task fulfillment and retained benefit |
+| Full production adapter/oracles/setup/strategy | Open | Complete independent PRO-03/06/07 runtime assertions |
+| Executable validation | Deferred final gate | Establish actual correctness before issue/release closure |
+
+No fixed total machinery count or completion percentage is claimed. Retain Sol/high while causal authority is open.
+New movement owners are under `libs/games/probable-waffle/phaser/src/lib/entity/systems/`: `movement-runtime.ts`,
+`movement-formation.ts`, `movement-path-execution.ts`, `movement-tween.ts`, `movement-presentation.ts`, plus the recovery
+state/error contracts. `MovementSystem` remains the registered class token, with the same public methods/helper exports.
+Source Implementation Review, Omission Audit, separate Final Closure Audit and unrun final-gate commands are in the
+checkpoint. Native cache/cancellation/throttle behavior remains unchanged; allocation/runtime cost is unmeasured.
+
+Prior batch 20 [order/service-demand checkpoint](follow-ups/runtime-matrix-ci.md#production-order-and-service-demand-checkpoint-2026-10-07-unverified)
+is in `ef33516103f40f7cbb0d7ca72092332d31a663d2`, based on `d1600887f`. It records exact native queue admission,
+single-order local rally origin, stamped service commands and their dated selected demand. Later tests use these records
+to distinguish buying a unit from assigning its useful task. Weak order identities and restore/reuse/controller fences,
+bounded fail-closed joins and existing report consumption remain authored/unverified. Current-order samples are only
+co-observation; query-caller attribution, complete history and useful-effect gaps remain. All executable checks stay deferred.
 
 Prior batch 19 [native navigation checkpoint](follow-ups/runtime-matrix-ci.md#production-native-navigation-checkpoint-2026-10-07-unverified)
 is in `e7770f36b6f244ac2b3ee8d447b7416748c23e12`, based on `024c6a75d`. It records actual route/cache/rebuild provenance

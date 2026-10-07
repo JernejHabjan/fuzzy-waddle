@@ -35,6 +35,100 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
 
 ## Implementation order
 
+### Production movement ownership checkpoint (2026-10-07, unverified)
+
+Machinery batch 21, #821 prerequisite for #815/#816 PRO-03/06/07 query-caller authority.
+Base `ef33516103f40f7cbb0d7ca72092332d31a663d2`; worktree
+`/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`.
+The containing commit owns this slice. Nx merge `59f72e037` is preserved; actual model/effort is unavailable.
+All executable validation remains at the final gate. This is authored restructuring, not verified movement correctness.
+
+**Purpose:** isolate the native movement responsibilities before adding caller/order diagnostics. Later records need
+actual invocation sites and recovery calls to distinguish a range/reachability probe from movement. Smaller owners
+make those seams reviewable without extending a content-hash-exempt monolith. No caller attribution is claimed here.
+
+| Acceptance | Implemented owner / consumer | Evidence state |
+| --- | --- | --- |
+| 1. Preserve actor-system identity and public API | `MovementSystem`, existing pawn agent/RallyPoint/random-movement consumers | Same class token, constructor subscription/readiness/kill order, method/export signatures and async route boundaries reviewed; facade spec authored/unrun |
+| 2. Separate concrete movement responsibilities | `MovementRuntime`, `MovementFormation`, `MovementPathExecution`, `MovementTween`, `MovementPresentation` | Facade instantiates and calls every owner; lazy dependencies/ready reads, mutable paths, timing and presentation reviewed; no new query/scan/timer |
+| 3. Keep native admission/recovery/lifecycle behavior | Shared MOVE callback, path executor, tween and occupancy service | Full command context, queue/override and application outcome, bounded wait/sidestep/repath/fallback, step/destination cleanup and errors reviewed; four specs authored/unrun |
+| 4. Retire obsolete size exemption without refresh | Exact MovementSystem entry removed from source-structure baseline; small recovery/error contracts | Genuine responsibility split; no other baseline changed; executable format/type/size/lint enforcement deferred |
+| 5. Source audits, handoff and publication | This checkpoint and HANDOFF | Source-only review/audits below; task-only normal commit/push and exact remote verification close publication, then pause |
+| 6. Next causal/effect work | Oversized pawn agent prerequisite, actual caller/order seam, existing marked capture/report | Open; `queryCallerAttributed` remains false, and arrival/service/stable-usefulness authority is still absent |
+
+Changed native files under `libs/games/probable-waffle/phaser/src/lib/entity/systems/`:
+- `movement.system.ts` retains shared command admission, public route selection/probes, random-movement and direction exports.
+- `movement-runtime.ts` retains ready-time component/service reads and original lazy navigation/occupancy caching.
+- `movement-formation.ts` owns connected same-height slot selection, native reachability and destination reservations.
+- `movement-path-execution.ts` owns mutable path recursion and bounded congestion recovery, including native repath queries.
+- `movement-tween.ts` owns tile/direct movement, step reservations, interpolation, active cancellation and scene listeners.
+- `movement-presentation.ts` owns order/movement sounds, direction updates and order animations.
+- `blocked-step-recovery-state.ts` and `movement-step-blocked-error.ts` retain the same recursive state/error identity.
+- `movement-test-fixture.ts` supplies shared boundary doubles; `movement-system-boundary.spec.ts`,
+  `movement-path-execution.spec.ts`, `movement-tween.spec.ts` and `movement-formation.spec.ts` are authored/unrun.
+
+The public system token stays registered through the existing actor setup; no consumer import migration is needed.
+New collaborators allocate actor-local owners before the original subscription/readiness/kill registration, with no
+component or scene lookup in those constructors. Ready reads retain their original order. Missing lazy services retry;
+the first available instance remains cached. No diagnostic registry, planner input, saved/wire field or listener is added.
+Allocation/runtime cost is unmeasured and remains a final-gate concern.
+
+Static and actor-target routing retain their existing async functions and native query receiver/arguments/results/errors.
+Queries still return the native mutable path arrays: initial current-tile removal and recursive consumption stay in place.
+Flying movement bypasses navigation paths and uses the original direct duration/distance behavior. Range probes do not
+execute a path. Shared MOVE still releases its destination, awaits native formation, then enqueues/overrides a stamped
+OrderData and reports per-actor application; non-pawn movement still reports completion/failure after movement.
+
+Recovery retains two active-step waits at 120 scene milliseconds, two sidesteps, two direct repath escalations, two wait
+retries per repath and six-ring fallback search. The native candidate ranking, lexicographic actor-ID formation ordering,
+96-cell connected search, height/footprint tests and destination-excluding dynamic blockers are unchanged. Step and
+fallback reservations retain their native ordering. UPDATE/SHUTDOWN, interpolated simulation clock, leading throttle,
+status/campaign speed modifiers, visual RNG, callback sequencing and rejection/cancellation behavior are retained.
+Existing async cancellation/callback/cache/throttle defects are not repaired or declared correct by this split.
+
+**Source Implementation Review (source only):** traced constructor -> shared MOVE -> formation -> native queue/outcome,
+pawn/RallyPoint public movement -> native navigation -> mutable path -> recovery -> reserved step/tween -> callbacks,
+instant position -> cached translator, and kill/cancel/shutdown cleanup. Reviewed receiver/argument order, original async
+boundaries, live versus ready-time component reads, direct flight, null/empty/error paths, default recovery-state lifetime,
+same-height fallback ranking and recursive path mutation. Repaired extraction boundary braces/comments/constants,
+fixture dynamic-blocker types and missing-reservation test setup during source review; these were not executed failures.
+
+**Omission Audit (source only):** every extracted owner has a native facade/owner caller. Existing public symbols,
+actor-system token, constructor callbacks and helper exports remain present. Four specs cover native mutable path
+consumption, null/empty/query-versus-execution errors, flying bypass/probes, full stamped queue/override application,
+readiness/kill cleanup, bounded waits/repath, ranked fallback reservation, arbitrary error propagation, onStop behavior,
+interpolation/paused time, delayed completion, cancellation/shutdown, speed/distance and failed reservation/setup.
+Shared doubles supply no world/pathfinder/useful-effect evidence. The tracked facade remains in place, so this is an
+extraction rather than a tracked-file move. No unrelated Nx, CI, schema, generated editor or fixture/oracle policy changed.
+No new execution plan or reusable skill/tool change was needed. Executable checks remain explicitly deferred.
+
+**Separate Final Closure Audit (source only):** the movement prerequisite slice maps to concrete runtime consumers and
+authored characterization tests. The obsolete exemption is removed once, never refreshed. Source review supports authored
+publication only; no tests, E2E, simulations, formatting, lint, type/build, source-size, schema/editor/repository checks or
+doctor/context/catalog commands ran. Caller identity, arrival/service effects, continuous usefulness, full production
+adapter, independent PRO-03/06/07 oracles/denominators, paired setup/legal research and strategy remain open. Publication
+requires exact task-owned staging, normal commit/push and matching remote SHA, followed by the agreed pause.
+
+**Deferred focused commands (unrun; append to the existing final gate):**
+
+```bash
+NX_DAEMON=false pnpm exec nx test probable-waffle-phaser --testPathPatterns='movement-system-boundary|movement-path-execution|movement-tween|movement-formation|ai-runtime-producer-route-capture|ai-runtime-production-spatial-capture|pawn-order-observation|observe-production-rally-action' --skip-nx-cache
+pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts skirmish-ai-runtime-route-order.spec.ts skirmish-ai-runtime-producer-routes.spec.ts skirmish-ai-runtime-production-spatial-normalization.spec.ts
+```
+
+Review flags/module mocking after the Nx/Phaser migration at that gate. Tween specs use a local arithmetic/event double;
+the shared Phaser mock is unchanged. Full runtime, lifecycle, multiplayer parity, source structure and allocation cost
+remain unverified. The current pawn agent still has its original content-hash exemption and was not edited here.
+
+**Next exact authoring — what it is for:** split the oversized pawn agent by its real responsibilities without refreshing
+its exemption, so actual order reads and range/reachability/movement invocations can accept a diagnostic seam. Then carry
+that exact caller identity through native route/recovery requests into existing marked capture/reports; never infer it
+from equal targets, current-order samples or an async scope spanning an await. This will let later oracles check which
+assigned task a movement serves before checking actual arrival/service effects and stable usefulness. Retain
+**GPT-6.1 Sol / high** for the grouped caller/effect work; causal authority remains unresolved. OpenAI Docs was searched
+and opened for the recommendation: [GPT-6.1 Sol](https://developers.openai.com/api/docs/models/gpt-6.1-sol).
+Recommendation only; no model switch, issue closure or percentage claim. Commit/push, verify remote, pause.
+
 ### Production order and service demand checkpoint (2026-10-07, unverified)
 
 Machinery batch 20, #815/#816 PRO-03/06/07 authority. Base `d1600887f09bb99df16e334a70abebba8ff3b6bf`;
