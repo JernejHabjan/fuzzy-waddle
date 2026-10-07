@@ -35,6 +35,46 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
 
 ## Implementation order
 
+### Production service foundation checkpoints (2026-10-07, unverified)
+
+User-authorized three-stage group: native service-attempt ownership (26), marked detached capture (27), strict report
+projection (28). This identifies which worker task invoked gathering/drop-off, not credited cargo or sustained usefulness.
+Last selected profile: GPT-6.1 Sol / medium; host settings unknown. Tests/validation remain deferred to the final gate.
+
+**Contract:** retain the action's entry order and actual callee target. Freeze mutable order data before the callee starts;
+never reread current order after an await to assign ownership. One transient execution owns start/terminal, with no ambient
+async context. Zero is a valid native result. Resolution proves only an attempt result: drains can return full amounts
+without credit; immediate credit uses source ownership, drop-off uses drain ownership. Actual application, resource type,
+beneficiary, old/mixed cargo, complete history, task usefulness and sustained stability remain gaps. Native policy, saved
+state, planner inputs, new scans/queries/timers and baseline refreshes are outside this foundation.
+
+**Stage 26 — authored/unverified**, base `1bfa9740460f0b2a7836ab44ebc0d38c18eb063e`:
+
+| Acceptance | Implementation / purpose | Evidence |
+| --- | --- | --- |
+| 1. Actual caller/target | `PawnResourceServiceEvent`, `PawnAgentResources.GatherResource/DropOffResources` | Existing order/target references surround the one native callee; native range/admission/retarget policy retained |
+| 2. Promise/error identity | `PawnResourceServiceObservation.invoke` | Original Promise forwarded, throw/rejection preserved; listener-free direct forwarding; diagnostic side observation with no added await |
+| 3. Bounded lifecycle | `subscribe`, weak board listener set | Eight subscriptions; release removes late terminal recipients; no old call transferred to a fresh listener set |
+| 4. Boundary cases | New observer spec and extended pawn order-boundary spec | Same Promise/one call, zero, pending replacement, observer/native failures and disposal authored/unrun |
+| 5. Resume/publication | Existing HANDOFF and this checkpoint | Group, next capture action and limitations recorded; scoped commit/push with exact remote verification |
+
+**Source Implementation Review:** traced the pawn methods into unchanged gatherer/drain owners. Gather retains its earlier
+order across the range await, then its actual selected target after start admission. Drop-off retains its entry order/target.
+The diagnostic closure adds no order/component reads, passes the original receiver/argument and forwards the same Promise.
+Native amounts do not affect behavior-tree results. Stage 26 installs the native seam; report consumption follows in 27/28.
+
+**Omission Audit:** acceptance 1–5 have symbols and authored cases. No callee, baseline, save/wire/CI/config or unrelated
+Nx change. Existing discovery registers specs. Cargo/application/stability remain explicitly outside attempt ownership.
+No new plan or skill/tool change applies.
+
+**Separate Final Closure Audit:** rechecked call sites, Promise forwarding, native errors, disposal and exact staged scope.
+Authoring only; no tests, formatter, lint, type/build, validators or diff check ran. Runtime cost/module compatibility/native
+behavior remain final-gate evidence. Normal scoped commit/push and exact local/remote SHA verification close publication.
+
+Deferred command: `pnpm exec nx test probable-waffle-phaser --testPathPatterns='pawn-resource-service-observation|pawn-agent-order-boundaries' --runInBand`.
+Next: marked capture freezes start data and lifetime boundaries before reporting; stay on the selected Sol profile within
+this concrete group, without an intermediate switch.
+
 ### Production movement arrival checkpoint (2026-10-07, unverified)
 
 Machinery batch 25, #815/#816 PRO-03/06/07 physical movement evidence.

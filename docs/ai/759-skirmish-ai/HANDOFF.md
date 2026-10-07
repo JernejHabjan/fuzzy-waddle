@@ -6,17 +6,21 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
-**Next session (user policy, 2026-10-07):** the user authorized continuous related stages on
-**GPT-6.1 Sol / medium**, stopping when stronger reasoning is warranted; tests/validation stay at the final gate.
-The suggested run was up to three authoring stages: movement, service effects, sustained usefulness, with assessment
-at each boundary. Only movement was authored; the next service contract needs the stronger-reasoning design pass below.
-Current step: #815/#816 machinery batch 25, **native movement completion/arrival**, authored/unverified.
-Base `aa4bf0a4920ba09d2df95045a2cae2a4d543239f`; the containing commit owns this slice.
+**Next session (user policy, 2026-10-07):** last selected profile is **GPT-6.1 Sol / medium**; host settings are unknown.
+The user explicitly authorized three consecutive service-foundation stages: native attempt ownership
+(26), marked capture (27), strict report projection (28). Continue within this group; do not pause for routine model advice.
+Current step: #815/#816 machinery batch 26, **native resource-service attempts**, authored/unverified.
+Base `1bfa9740460f0b2a7836ab44ebc0d38c18eb063e`; the containing commit owns this slice.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify local/remote on resume.
 Nx merge `59f72e037` is preserved. No family/issue is complete. The user removed the comment-permission rule.
 All executable tests and validation remain deferred to the final gate.
 
-**Authored work — what it is for:** marked captures now retain native execution start, selected endpoint, physical
+**Latest authored work — what it is for:** `PawnResourceServiceObservation` observes the one existing gather/drop-off
+callee, retaining the action's actual order/target across awaits and replacement. Started/resolved/rejected/threw and exact
+native amount are separate from income/cargo provenance. Listener-free calls forward directly; marked calls forward the
+same Promise/errors without an added await. Observer/pawn boundary specs are authored/unrun; gatherer/drain policy remains.
+
+**Prior movement work:** marked captures now retain native execution start, selected endpoint, physical
 arrival/stop and boolean-return/error boundaries through an explicit transient token. Original versus fallback endpoint
 and actual terminal tile remain separate from query success and the admitted service target. Cancellation can still
 resolve true; callback failure can still follow physical arrival. The existing report retains strict movement intervals,
@@ -25,12 +29,15 @@ neither endpoint arrival nor native return claims task usefulness. New observer/
 cases are authored/unrun. No gameplay policy, extra query/timer/scan, saved/wire/planner field or CI change was added.
 Callback/error/Promise/occupancy behavior and capture/report cost remain unverified.
 
-**Next step — what it is for:** design exact native resource-service effect ownership before authoring useful-service
-credit. This connects a worker's task to actual credited resources, independently from extraction, cargo and a successful
-drop-off return. Sustained usefulness then needs a separately defined observation interval and interruption policy.
+**Next step — what it is for:** marked capture freezes the actual service order/target before native callbacks and records
+independent source/target/clock/lifetime boundaries. The report then validates native attempt ownership; it cannot treat a
+returned amount as resource credit. Actual credited cargo and sustained usefulness remain a separate subsequent contract.
 
-Read the [movement checkpoint](follow-ups/runtime-matrix-ci.md#production-movement-arrival-checkpoint-2026-10-07-unverified).
-**Next exact action:** on **GPT-6.1 Sol / high** (recommendation, not an automatic switch), inspect
+Read the [service foundation checkpoint](follow-ups/runtime-matrix-ci.md#production-service-foundation-checkpoints-2026-10-07-unverified).
+**Next exact authoring:** add bounded service capture under existing order-capture actor subscriptions: weak native
+execution IDs, start-time detached order snapshot, actual target, independent boundary samples and existing lifetime fences.
+Unsubscribe on disposal and preserve native Promise/errors. Then author strict retrospective attempt report projection.
+No native amount supplies resource type, beneficiary, applied credit or cargo history. Later design must inspect
 `pawn-agent-resources.ts`, `GathererComponent.gatherResources/returnResources`, `ResourceDrainComponent.returnResources`
 and `emitResource`/actual resource application. Define a bounded transient service/cargo lineage contract across native
 order retargeting, source/drain ownership, awaits, mixed/old cargo, restore/reuse and campaign credit suppression. The drain
@@ -48,13 +55,15 @@ contract first, then group its implementation and report/spec authoring on Sol /
 | Native invocation/order capture | Authored, unverified (batch 23) | Exact caller identity carried to marked query records |
 | Strict caller validation/projection | Authored, unverified (batch 24) | Identify the order served without borrowing current-order or purchase evidence |
 | Native movement completion/arrival | Authored, unverified (batch 25) | Separate physical endpoint arrival, fallback, stop and native return |
-| Native resource-service effects | Next design; stronger-reasoning stop | Establish actual credit and exact service/cargo lineage |
+| Native service-attempt ownership | Authored, unverified (batch 26) | Retain the actual worker task and native target |
+| Marked service capture / report | Next (27 / 28) | Freeze and validate attempts without claiming income |
+| Credited resource-service effects | Open design after foundation | Establish actual credit and exact cargo lineage |
 | Continuous useful stability | Open; depends on service contract | Establish retained useful benefit over a defined interval |
 | Full production adapter/oracles/setup/strategy | Open | Complete independent PRO-03/06/07 runtime assertions |
 | Executable validation | Deferred final gate | Establish correctness before issue/release closure |
 
-No fixed total machinery count or completion percentage is claimed. Stop after movement authoring at the identified
-service-authority design boundary; recommend Sol / high for that design and Sol / medium for the settled implementation.
+No fixed total machinery count or completion percentage is claimed. Continue the three explicitly authorized service
+foundation stages. Recommend Sol / high for unresolved cargo/application design after the group, medium for settled code.
 Host model/effort settings are not independently exposed. Source review, Omission Audit, separate Final Closure Audit
 and unrun commands are in the checkpoint. No gameplay/save/wire/CI policy change, baseline refresh or new plan file exists.
 Prior batch 24 is in `aa4bf0a4920ba09d2df95045a2cae2a4d543239f`, based on `fc358946368d3ab595c7fd56bc1f9b7964eebb5d`;
@@ -506,7 +515,7 @@ merely because their issue title mentions testing. All authored work remains unv
 | 1 / as needed | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `partial` | Split only owners blocking the selected batch | Stay Sol medium; optional Luna high |
 | 2 | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829) | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof | GPT-6.1 Sol, medium |
 | 3 | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `in_progress` | Finish pressure/recovery policy; defer victory proof | GPT-6.1 Sol, medium |
-| 4 / next batch | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Machinery 25 movement arrival authored/unverified; next service/cargo/application contract, then effects/stability | GPT-6.1 Sol, high design; medium after contract |
+| 4 / next batch | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Machinery 26 native service attempts authored/unverified; continue capture/report 27/28 | Selected Sol profile; high for subsequent cargo/application design |
 | 5 / paired | #815 / #816 | `in_progress` | Remaining family contracts, focused fixtures, frozen maps and continuous-match tier | Sol medium; optional Luna high for established cases |
 | 6 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `in_progress` | Exact-once interruption, terminal and re-entry parity | GPT-6.1 Sol, medium |
 | 7 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `partial` | Generation fencing, phase restore/replay and cleanup cases | GPT-6.1 Sol, medium |
@@ -520,9 +529,9 @@ merely because their issue title mentions testing. All authored work remains unv
 The 2026-10-07 user policy below owns #759 model choice and execution boundaries. The user selected Sol 6.1 / medium
 for the current implementation group. Use Sol for unresolved thinking/design; Luna / high is an optional choice for
 concrete routine work. Keep related work together to avoid unnecessary switches. This applies to this roadmap.
-Latest execution request: continue multiple related stages without asking after each one; stop when stronger reasoning
-than Sol 6.1 / medium is warranted. Up to three stages were recommended, with assessment at each boundary. Movement
-authoring reached the service-authority design boundary described in Quick resume; no model was switched automatically.
+Latest execution request explicitly authorizes three consecutive stages: native service-attempt ownership, marked capture
+and strict report projection. Do not pause between them for routine recommendations; no model is switched automatically.
+Actual credited cargo/resource application remains a separate design boundary after this group.
 
 | Responsibility | Model / effort |
 | --- | --- |

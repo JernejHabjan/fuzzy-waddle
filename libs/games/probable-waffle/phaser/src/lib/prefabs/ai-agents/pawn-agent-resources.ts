@@ -8,6 +8,7 @@ import { PawnAiBlackboard } from "./pawn-ai-blackboard";
 import { GathererComponent } from "../../entity/components/resource/gatherer-component";
 import { ResourceSourceComponent } from "../../entity/components/resource/resource-source-component";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
+import { PawnResourceServiceObservation } from "./pawn-resource-service-observation";
 
 /** Owns resource acquisition, gathering and return actions, preserving native target mutation and async boundaries.
  * Actor-local collaborators own no subscriptions, timers or saved state; the controller owns their lifetime.
@@ -68,7 +69,8 @@ export class PawnAgentResources {
     if (!resourceSourceComponent || resourceSourceComponent.getCurrentResources() <= 0) return State.FAILED;
     const successfullyStarted = gathererComponent.startGatheringResources(target);
     if (!successfullyStarted) return State.FAILED;
-    await gathererComponent.gatherResources(target);
+    await PawnResourceServiceObservation.invoke(this.gameObject, this.blackboard, currentOrder, target, "gather",
+      () => gathererComponent.gatherResources(target));
     return State.SUCCEEDED;
   }
 
@@ -80,7 +82,8 @@ export class PawnAgentResources {
     if (!target) return State.FAILED;
     const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
     if (!gathererComponent) return State.FAILED;
-    await gathererComponent.returnResources(target);
+    await PawnResourceServiceObservation.invoke(this.gameObject, this.blackboard, currentOrder, target, "drop_off",
+      () => gathererComponent.returnResources(target));
     return State.SUCCEEDED;
   }
 

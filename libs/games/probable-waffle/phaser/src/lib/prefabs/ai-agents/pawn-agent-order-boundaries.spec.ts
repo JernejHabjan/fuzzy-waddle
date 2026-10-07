@@ -1,4 +1,6 @@
 import { MovementQueryObservation } from "../../entity/systems/movement-query-observation";
+import { PawnResourceServiceObservation } from "./pawn-resource-service-observation";
+import type { PawnResourceServiceEvent } from "./pawn-resource-service-event";
 import type Phaser from "phaser";
 import { State } from "mistreevous";
 import { PlayerPawnAiControllerAgent } from "./player-pawn-ai-controller.agent";
@@ -111,7 +113,9 @@ describe("pawn agent native order boundaries (unrun until final gate)", () => {
     let release: ((state: State) => void) | undefined;
     jest.spyOn(f.agent, "InRange").mockImplementation(() => new Promise<State>((resolve) => { release = resolve; }));
     const gatherer = { remainingCooldown: 0, isCapacityFull: () => false,
-      startGatheringResources: jest.fn(() => true), gatherResources: jest.fn(async () => undefined) };
+      startGatheringResources: jest.fn(() => true), gatherResources: jest.fn(async () => 2) };
+    const events: PawnResourceServiceEvent[] = [];
+    const unsubscribe = PawnResourceServiceObservation.subscribe(f.blackboard, (event) => events.push(event));
     // Missing health retains native permissive behavior; resource admission still uses the source component.
     jest.mocked(getActorComponent).mockImplementation((_actor, token) => token === GathererComponent
       ? gatherer as never : token === ResourceSourceComponent ? { getCurrentResources: () => 1 } as never : undefined);
@@ -123,6 +127,9 @@ describe("pawn agent native order boundaries (unrun until final gate)", () => {
     expect(gatherer.startGatheringResources).toHaveBeenCalledWith(f.target);
     expect(gatherer.gatherResources).toHaveBeenCalledWith(f.target);
     expect(f.blackboard.getCurrentOrder()).toBe(later);
+    expect(events).toMatchObject([{ phase: "started", operation: "gather", order: earlier, target: f.target },
+      { phase: "resolved", operation: "gather", order: earlier, target: f.target, amount: 2 }]);
+    unsubscribe();
   });
 
   it("the detached Stop callback keeps boarding cleanup before reset and queue pop", () => {
