@@ -5,8 +5,8 @@
 All supported runtime-required scenarios launch a real lobby-created Phaser match, observe authoritative effects, and run
 as fail-closed required pre-merge shards with useful retained artifacts.
 
-Recommended agent: **GPT-6.1 Sol / high** for new family helpers, reliable assertions and complex runtime contracts;
-**GPT-6 Luna / medium** for expansion using established patterns and routine wiring. Follow the handoff's
+Recommended agent: **GPT-6.1 Sol / medium** across related family helpers, assertions and causal contracts;
+high effort when a concrete unresolved problem warrants it. Optional **GPT-6 Luna / high** for specified routine work. Follow the handoff's
 [model batches and pause contract](../HANDOFF.md#model-batches-and-pause-contract), including its exact next batch.
 
 Estimated effort: **XXL risk envelope**, not 97 separate browser worlds: the current catalog has 97 supported runtime
@@ -34,6 +34,80 @@ Read the generated catalog for the current registered/required counts; it does n
 spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME_REQUEST` is not scenario evidence.
 
 ## Implementation order
+
+### Production pawn ownership checkpoint (2026-10-07, unverified)
+
+Machinery batch 22, #821 prerequisite for #815/#816 PRO-03/06/07 caller/order authority.
+Base `298c0f2f106aefc0f6d0bf9702bf627f6dfb266a`; the containing commit owns this slice.
+Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`.
+User-selected model/effort: GPT-6.1 Sol / medium; host settings not independently exposed. Nx merge `59f72e037` is retained.
+All executable validation remains deferred. This is intended behavior-neutral restructuring, authored/unverified.
+
+**Purpose:** isolate the pawn's actual order-use and route callers before diagnostics bind them to native navigation.
+These focused owners let later tests distinguish a route for an assigned task from an unrelated probe. They do not supply
+caller attribution, arrival, service benefit or sustained usefulness themselves.
+
+| Acceptance | Implemented owner / consumer | Evidence state |
+| --- | --- | --- |
+| 1. Preserve tree API and lifecycle | `PlayerPawnAiControllerAgent`, unchanged `PawnAiController` and MDSL consumers | Same exported token/constructor/public methods, Stop arrow and shutdown callback; source-reviewed, unverified |
+| 2. Preserve native reads, calls and async boundaries | Nine `PawnAgent*` owners, shared real blackboard/components | Original bodies extracted; cross-owner/public callbacks route through facade; no extra query/timer/listener/scan/state |
+| 3. Genuine responsibility split | Agent facade and focused owners; source baseline | Exact old agent exemption removed; no replacement exemption or baseline refresh; structural checks deferred |
+| 4. Meaningful characterization | `pawn-agent-order-boundaries.spec.ts`, `pawn-agent-terminal-boundaries.spec.ts` | Authored/unrun: async order replacement, denied/rejected probe, original gather order, boarding cleanup, terminal stamp/order and shutdown deduplication |
+| 5. Handoff/publication | This checkpoint and HANDOFF | Source audits below; normal exact-path commit/push with remote SHA verification; pause after publication |
+| 6. Causal attribution/effects | Existing capture/report and new precise route sites | Open; `queryCallerAttributed` remains false, arrival/service/stability authority absent |
+
+Changed files under `libs/games/probable-waffle/phaser/src/lib/prefabs/ai-agents/`:
+
+- `player-pawn-ai-controller.agent.ts`: forwarding behavior-tree entry point; collaborators are created without native reads.
+- `pawn-agent-movement.ts`: range and reachability probes, actor/location movement and native random Move admission.
+- `pawn-agent-orders.ts`: queue selection, exact Stop cleanup and persisted terminal/shutdown reporting.
+- `pawn-agent-combat.ts`: attacks/healing, retaliation and shared deterministic attackable-visible-enemy selection.
+- `pawn-agent-resources.ts`: acquisition, gathering, return and mutable Gather/ReturnResources transitions.
+- `pawn-agent-construction.ts`: construction/repair admission and next-site Build orders.
+- `pawn-agent-tending.ts`: crop assignments, native tile movement/animations and post-build Gather admission.
+- `pawn-agent-boarding.ts`: land/shore rendezvous, boarding requests and passenger/container loading.
+- `pawn-agent-spells.ts`: native autocast targeting/shared spell dispatch; no unnecessary blackboard retention.
+- `pawn-agent-status.ts`: live health/status/cooldown and target predicates.
+- Two boundary specs named above. Outside that directory, only the exact obsolete baseline entry and these two handoff
+  documents change. No meaningful tracked-file rename occurred; the existing tree entry point remains in place.
+
+**Source Implementation Review:** traced all original methods to the facade and extracted native bodies, the sole
+controller construction/cancellation/shutdown consumer and existing interface. No subclasses or private-method consumers
+were found in the owning source. Public intra-agent calls retain facade dispatch; private target selection stays owned by
+combat and is shared with movement through a callback. Native action component/system/service receivers and arguments,
+await/catch boundaries, order references and mutable targets remain unchanged. Selection performs no eager component/
+scene reads. Owners create no subscriptions/timers and persist nothing. Shutdown still deduplicates stamped command IDs.
+Stop still cleans assignments/attack, resets, reports, animates, cancels movement and pops in native order. Source review
+repaired missing test execution-stamp fields and narrowed mock signatures; `SelfIsAlive` callbacks use type-only facade
+contracts so the separately baselined existing interface does not need an unrelated rewrite; these were not executed test failures.
+
+**Omission Audit:** acceptance 1–5 have source implementations and authored evidence; validation is explicitly deferred.
+All nine owners are constructed/used by the registered tree entry point. The unchanged interface and its consumers were inspected; no save,
+wire, planner, capture/report, scene registration, generated prefab, CI or Nx migration change is needed. Existing native
+quirks remain, including non-awaited resource reacquisition, placeholder `NoEnemiesVisible`/high-value gathering behavior,
+shore failure/throw cleanup distinctions and order changes during awaits. Nine collaborator allocations per pawn agent
+remain unmeasured. Acceptance 6 is the next dependency, not completion claimed by this split.
+
+**Separate Final Closure Audit:** revisited the numbered acceptance map after source repairs and consumer inspection.
+Authored prerequisite scope is complete; runtime correctness and source-structure compliance require the final gate.
+No test, lint, type/build, schema/editor/repository validation, source-size checker, simulation, doctor/context or
+`git diff --check` ran. No issue/family, production oracle or useful-effect gap is closed. Git publication owns only the
+listed paths, uses normal push and requires exact remote SHA verification; publication failure remains a blocker.
+No skill/tool changes or new plan files were needed.
+
+Deferred final-gate command (unrun; Nx CLI arguments remain unverified after the unrelated migration):
+
+```bash
+NX_DAEMON=false pnpm exec nx test probable-waffle-phaser --testPathPatterns='pawn-agent-order-boundaries|pawn-agent-terminal-boundaries|player-pawn-order-terminal-outcome|pawn-order-observation|movement-system-boundary|ai-runtime-producer-route-capture' --skip-nx-cache
+```
+
+**Next authoring acceptance:** bind exact native order-use/caller identity at the focused movement/tending/boarding
+invocations and carry it through movement recovery and marked capture/report. Distinguish movement from range/reachability
+probes, stale entry orders from later reads, direct/flying/unordered boarding, failed/orphan/lost histories and restore/
+reuse. Never infer causality from current-order samples, target equality or ambient scope across awaits; add no native
+query/timer/scan. Keep actual arrival/service effects and continuous benefit open. Stay on Sol / medium for this related
+causal group; recommend high only for a concrete unresolved reasoning problem. Commit/push and pause at its next coherent
+boundary, with all executable evidence deferred.
 
 ### Production movement ownership checkpoint (2026-10-07, unverified)
 

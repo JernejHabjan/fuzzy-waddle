@@ -6,47 +6,54 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
-**Next session (user policy, 2026-10-07):** retain **GPT-6.1 Sol / high** for grouped PRO-03/06/07 authority.
-Current step: #821 prerequisite / #815/#816 machinery batch 21, **native movement ownership split**, authored/unverified.
-Base `ef33516103f40f7cbb0d7ca72092332d31a663d2`; the containing commit owns this slice.
+**Next session (user policy, 2026-10-07):** retain **GPT-6.1 Sol / medium** across related implementation and
+causal design. The user explicitly selected Sol 6.1 / medium for batch 22; host settings are not independently exposed.
+Current step: #821 prerequisite / #815/#816 machinery batch 22, **native pawn-agent ownership split**, authored/unverified.
+Base `298c0f2f106aefc0f6d0bf9702bf627f6dfb266a`; the containing commit owns this slice.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify local/remote on resume.
-Nx merge `59f72e037` is preserved. Actual model/effort is unavailable. No family/issue is complete.
-The user removed the comment-permission rule. All executable validation remains at the final gate.
+Nx merge `59f72e037` is preserved. No family/issue is complete. The user removed the comment-permission rule.
+All executable tests and validation remain deferred to the final gate.
 
-**Authored work — what it is for:** batch 21 splits MovementSystem into ready/lazy dependencies, formation placement,
-path execution/congestion recovery, movement interpolation/cancellation and sound/animation owners. The public system
-still admits shared MOVE commands and selects native routes. These smaller owners will be used to add caller diagnostics
-at actual route and recovery invocations, without expanding an oversized file. The old source exemption is removed;
-no exemption is refreshed. Four characterization specs are authored/unrun; movement behavior is not runtime-verified.
+**Authored work — what it is for:** batch 22 keeps the behavior-tree entry point and extracts movement probes/actions,
+order cleanup/reporting, combat/healing, resources, construction/repair, crop tending, boarding, spells and live status
+into focused actor-local owners. They share the actual blackboard and preserve native order reads/mutations across awaits.
+These owners will support diagnostics at the precise order-use and query invocation sites, without extending the oversized
+agent. The old source exemption is removed without refresh. Two boundary specs are authored/unrun; behavior is unverified.
 
-**Next step — what it is for:** split the oversized pawn agent by its actual responsibilities, then bind native
-navigation callers to the exact order they use, distinguishing range/reachability probes from movement. These links
-will let final tests check which assigned task a route serves, before actual arrival/service effects and stable usefulness.
+**Next step — what it is for:** bind actual native query callers to the exact order each invocation uses, distinguishing
+range/reachability probes from movement and recovery. That lets final assertions identify the assigned task a route serves;
+arrival/service effects and sustained usefulness still require their own evidence.
 
-Read the [movement ownership checkpoint](follow-ups/runtime-matrix-ci.md#production-movement-ownership-checkpoint-2026-10-07-unverified).
-**Next exact authoring action:** restructure `prefabs/ai-agents/player-pawn-ai-controller.agent.ts` into focused owners,
-preserving native order reads/mutations, callbacks, receiver/arguments/Promise/results/errors and lifecycle. Its original
-exemption remains; never refresh it. Then carry actual caller/order identity through the new movement owners and existing
-marked capture/report. `producerRoutes.paths[].orderLineage.queryCallerAttributed` remains false; equal targets/current
-samples and an async order overlapping a query are not causal invocation evidence. No extra query, planner input, timer
-or scan. Keep unstamped rally, construction ownership, flying/direct movement, incomplete history, retargeting,
-restore/reuse and failed/partial navigation explicit. Add negative/orphan/overflow cases; defer checks, commit/push, pause.
+Read the [pawn ownership checkpoint](follow-ups/runtime-matrix-ci.md#production-pawn-ownership-checkpoint-2026-10-07-unverified).
+**Next exact authoring action:** add passive invocation/order diagnostics at `pawn-agent-movement.ts`, native tending/
+boarding route sites and the movement/recovery owners. Carry exact identity through existing marked capture/report.
+`producerRoutes.paths[].orderLineage.queryCallerAttributed` remains false. Do not infer it from equal targets/tiles,
+current-order samples, or an async scope overlapping a query. `MoveToTarget` retains its entry target across its awaited
+probe; `CanMoveToTarget` performs its own native read. Resource acquisition can read an order after awaiting selection;
+`GatherResource` instead keeps the earlier order across `InRange`. Preserve these native differences, including callbacks,
+Promise/results/errors. No extra query, planner input, timer or scan. Keep unstamped rally, construction ownership,
+flying/direct movement, incomplete history, retargeting, restore/reuse and failed/partial navigation explicit.
+Add negative/orphan/overflow cases; defer checks, commit/push, pause at the next coherent boundary.
 
 | Current dependency | State | Purpose / next boundary |
 | --- | --- | --- |
 | Movement ownership prerequisite | Authored, unverified (batch 21) | Smaller route/recovery owners for native caller diagnostics |
-| Pawn agent prerequisite | Next authoring | Isolate actual order use without extending an exempt monolith |
-| Query caller/order authority | Open | Identify the task a native probe/movement query actually serves |
+| Pawn agent prerequisite | Authored, unverified (batch 22) | Focused owners retain exact native order use |
+| Query caller/order authority | Next authoring | Identify the task a native probe/movement query actually serves |
 | Arrival/service and continuous useful stability | Open | Establish task fulfillment and retained benefit |
 | Full production adapter/oracles/setup/strategy | Open | Complete independent PRO-03/06/07 runtime assertions |
-| Executable validation | Deferred final gate | Establish actual correctness before issue/release closure |
+| Executable validation | Deferred final gate | Establish correctness before issue/release closure |
 
-No fixed total machinery count or completion percentage is claimed. Retain Sol/high while causal authority is open.
-New movement owners are under `libs/games/probable-waffle/phaser/src/lib/entity/systems/`: `movement-runtime.ts`,
-`movement-formation.ts`, `movement-path-execution.ts`, `movement-tween.ts`, `movement-presentation.ts`, plus the recovery
-state/error contracts. `MovementSystem` remains the registered class token, with the same public methods/helper exports.
-Source Implementation Review, Omission Audit, separate Final Closure Audit and unrun final-gate commands are in the
-checkpoint. Native cache/cancellation/throttle behavior remains unchanged; allocation/runtime cost is unmeasured.
+No fixed total machinery count or completion percentage is claimed. Stay on Sol/medium for the next related causal batch;
+high is optional if a concrete unresolved problem warrants it. Native gameplay/save/wire/diagnostic state is unchanged.
+Source Implementation Review, Omission Audit, separate Final Closure Audit and unrun commands are in the checkpoint.
+Nine small owners are allocated per pawn agent; allocation/runtime cost is unmeasured and belongs to the final gate.
+
+Prior batch 21 [movement ownership checkpoint](follow-ups/runtime-matrix-ci.md#production-movement-ownership-checkpoint-2026-10-07-unverified)
+is in `298c0f2f106aefc0f6d0bf9702bf627f6dfb266a`, based on `ef33516103f40f7cbb0d7ca72092332d31a663d2`.
+MovementSystem retains the registered actor-system class token, shared MOVE admission and public route selection/probes;
+ready/lazy runtime, formation, path/recovery, tween and presentation owners are extracted. Four specs remain unrun.
+No caller attribution, arrival or useful-effect authority was added by that prerequisite.
 
 Prior batch 20 [order/service-demand checkpoint](follow-ups/runtime-matrix-ci.md#production-order-and-service-demand-checkpoint-2026-10-07-unverified)
 is in `ef33516103f40f7cbb0d7ca72092332d31a663d2`, based on `d1600887f`. It records exact native queue admission,
@@ -475,29 +482,30 @@ merely because their issue title mentions testing. All authored work remains unv
 
 | Order         | Issue                                                           | State         | Next boundary                                                     | Model / effort            |
 | ------------- | --------------------------------------------------------------- | ------------- | ----------------------------------------------------------------- | ------------------------- |
-| 1 / as needed | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `partial` | Split only owners blocking the selected batch | GPT-6 Luna, medium |
-| 2 | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829) | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof | GPT-6.1 Sol, high |
-| 3 | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `in_progress` | Finish pressure/recovery policy; defer victory proof | GPT-6.1 Sol, high |
-| 4 / next batch | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Machinery 20 order admission/rally identity/dated service demand authored/unverified; next native query caller, useful arrival/stability | GPT-6.1 Sol, high |
-| 5 / paired | #815 / #816 | `in_progress` | Remaining family contracts, focused fixtures, frozen maps and continuous-match tier | Sol high for new contracts; Luna medium for established cases |
-| 6 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `in_progress` | Exact-once interruption, terminal and re-entry parity | GPT-6.1 Sol, high |
-| 7 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `partial` | Generation fencing, phase restore/replay and cleanup cases | GPT-6.1 Sol, high |
-| 8 | #821 | `partial` | Remaining splits/renames and consumer updates | GPT-6 Luna, medium |
-| 9 / prepare | [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828), [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `partial` | Review probes/opponent fixtures; measurements deferred | GPT-6.1 Sol, high for contracts; Luna medium for specified wiring |
-| Final gate | Required issues above | `deferred` | Announce, grouped execution, compact triage, repairs and final evidence | GPT-6.1 Sol, high; Luna medium for diagnosed repairs |
-| After parity | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | `not_started` | Evidence-backed legacy retirement | GPT-6.1 Sol, high decision; Luna medium cleanup |
+| 1 / as needed | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `partial` | Split only owners blocking the selected batch | Stay Sol medium; optional Luna high |
+| 2 | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829) | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof | GPT-6.1 Sol, medium |
+| 3 | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `in_progress` | Finish pressure/recovery policy; defer victory proof | GPT-6.1 Sol, medium |
+| 4 / next batch | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Machinery 22 pawn ownership authored/unverified; next native query caller, useful arrival/stability | GPT-6.1 Sol, medium |
+| 5 / paired | #815 / #816 | `in_progress` | Remaining family contracts, focused fixtures, frozen maps and continuous-match tier | Sol medium; optional Luna high for established cases |
+| 6 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `in_progress` | Exact-once interruption, terminal and re-entry parity | GPT-6.1 Sol, medium |
+| 7 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `partial` | Generation fencing, phase restore/replay and cleanup cases | GPT-6.1 Sol, medium |
+| 8 | #821 | `partial` | Remaining splits/renames and consumer updates | Stay Sol medium; optional Luna high |
+| 9 / prepare | [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828), [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `partial` | Review probes/opponent fixtures; measurements deferred | GPT-6.1 Sol, medium for contracts; Luna high for specified wiring |
+| Final gate | Required issues above | `deferred` | Announce, grouped execution, compact triage, repairs and final evidence | GPT-6.1 Sol, medium; Luna high for diagnosed repairs |
+| After parity | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | `not_started` | Evidence-backed legacy retirement | GPT-6.1 Sol, medium decision; Luna high cleanup |
 
 ## Model batches and pause contract
 
-The 2026-10-02 user policy below owns #759 model choice and execution boundaries, including when older subissue
-packets or repo skills recommend Terra or automatic Astra use. It applies to this roadmap, not unrelated tasks.
+The 2026-10-07 user policy below owns #759 model choice and execution boundaries. The user selected Sol 6.1 / medium
+for the current implementation group. Use Sol for unresolved thinking/design; Luna / high is an optional choice for
+concrete routine work. Keep related work together to avoid unnecessary switches. This applies to this roadmap.
 
 | Responsibility | Model / effort |
 | --- | --- |
-| First family design, reusable helpers and reliable independent assertions | GPT-6.1 Sol / high |
-| Similar cases with concrete setup, oracle and acceptance contracts | GPT-6 Luna / medium |
-| Wall/access semantics, multiplayer, save/load or unresolved causal investigation | GPT-6.1 Sol / high |
-| Routine source splitting, naming, fixtures and registration wiring | GPT-6 Luna / medium |
+| First family design, reusable helpers and reliable independent assertions | GPT-6.1 Sol / medium; high if warranted |
+| Similar cases with concrete setup, oracle and acceptance contracts | Stay on Sol / medium; optional Luna / high |
+| Wall/access semantics, multiplayer, save/load or unresolved causal investigation | GPT-6.1 Sol / medium; high if warranted |
+| Routine source splitting, naming, fixtures and registration wiring | Stay on Sol / medium; optional Luna / high |
 
 - A batch is a coherent family or shared owner, not one scenario. Keep the same model/session across several related
   cases while the contract remains suitable; dependencies take priority over grouping. Do not switch after each file
