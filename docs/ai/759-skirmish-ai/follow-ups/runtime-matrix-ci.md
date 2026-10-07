@@ -35,6 +35,92 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
 
 ## Implementation order
 
+### Production movement arrival checkpoint (2026-10-07, unverified)
+
+Machinery batch 25, #815/#816 PRO-03/06/07 physical movement evidence.
+Base `aa4bf0a4920ba09d2df95045a2cae2a4d543239f`; the containing commit owns this slice.
+Integration worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`.
+User-selected setting is GPT-6.1 Sol / medium; host settings are not independently exposed. Nx merge `59f72e037` remains.
+The latest request permits related continuous stages and requires a stop when stronger reasoning is warranted.
+All executable validation remains deferred to the final gate.
+
+**Purpose:** an executed movement attempt can now be distinguished from a successful navigation query. A worker can
+arrive at its selected endpoint, arrive at a congestion fallback, stop early, or return false after a completion callback
+fails. Native cancellation still resolves successfully; `returned_true` cannot supply arrival. The report uses detached
+physical boundaries and retained order ownership so later service assertions cannot borrow a probe/path result or a
+replacement task. Actor-radius endpoints and tending/boarding endpoints are movement destinations, not proof that a
+resource/building/transport service was fulfilled.
+
+| Acceptance | Implemented owners / consumers | Evidence state |
+| --- | --- | --- |
+| 1. Native boundaries without new gameplay authority | `MovementSystem`, `MovementPathExecution`, `MovementTween`, new `MovementCompletionEvent` / `MovementCompletionObservation` | Explicit token passed across awaits/recovery; physical arrival/stop before native callbacks, query throw rethrown, native boolean results and occupancy ordering retained by source review |
+| 2. Passive bounded marked capture and cleanup | New `AiRuntimeMovementCapture` / `AiRuntimeMovementV1`, existing `AiRuntimeRouteOrderCapture` | Existing actor inventory/subscription lifetime; weak execution IDs capped at 8,192, eight observers per board, detached caller and endpoint/actual tile snapshots; disposal releases listeners |
+| 3. Strict retrospective report | New `RuntimeMovementV1` / `normalizeRuntimeMovement`, existing caller/order validators and causality normalizer | Start/destination/physical/return intervals and identity, immutable original endpoint, sticky fallback, complete supplied caller stamps, source/clock/lifetime fences; contradictory tails suppress normalized groups; 256 execution overflow drops whole movement group |
+| 4. Explicit unavailable and separate meanings | Same observer/capture/report owners | Missing context/position/clock/physical callback/return/admission, inactive actors, restore/reuse/controller reset, unordered helpers and partial history stay gaps; physical arrival, caller attribution and native return remain independent |
+| 5. Meaningful tests and final-gate policy | New observer Jest and movement Playwright specs; extended native facade/path/tween/order-capture specs | Listener-free/no-context, cancellation true, native throw, fallback recovery, callback error, frozen order replacement, restore/disposal, missing evidence, orphan/probe/endpoint/terminal contradictions and overflow authored/unrun |
+| 6. Handoff and authorized publication | Existing HANDOFF and this checkpoint | Current purpose/provenance, continuous execution policy, stronger-reasoning next boundary and exact deferred commands; commit/push and remote verification follow source review |
+
+New files:
+
+- `entity/systems/movement-completion-event.ts` and `movement-completion-observation.ts`: transient physical execution
+  boundaries, detached endpoints and a per-execution identity; ordinary listener-free movement creates no token/position read.
+- `player/ai-controller/testing/ai-runtime-movement-v1.ts` and `ai-runtime-movement-capture.ts`: marked bounded detached
+  records reusing order-capture ownership and fences; no native order/save or planner field.
+- `apps/portal-e2e/src/e2e/skirmish-ai-runtime-movement.ts` and `skirmish-ai-runtime-movement-normalization.ts`: report
+  records and strict projection consumed by existing production causality/variant reports.
+- `movement-completion-observation.spec.ts` and `skirmish-ai-runtime-movement.spec.ts`: passive-boundary and synthetic
+  report cases; extended `movement-system-boundary.spec.ts`, `movement-path-execution.spec.ts`, `movement-tween.spec.ts`
+  and `ai-runtime-route-order-capture.spec.ts` cover the actual owning boundaries. All remain unrun.
+
+**Source Implementation Review:** traced the location, actor-radius and direct/flying paths plus pawn movement, tending
+and boarding callers. A token begins only for explicit marked context, captures the first native endpoint, and follows
+the same path arrays and recovery state through waiting/sidestep/repath/fallback. Fallback candidate queries never select
+an execution destination; only an executable recovered path does. Empty-path completion observes actual position before
+the user completion callback. Tween cancellation observes stop after existing step release and before the native stop
+callback; it neither resumes the path nor changes the resolved Promise. A stopped sidestep remains stopped even if native
+recovery subsequently proceeds. Callback failure cannot erase already observed physical arrival. Direct movement uses its
+existing callbacks and Promise chain. Query errors stay outside the existing movement catch, rethrown by identity; movement
+errors retain false returns and native finally cleanup. Boolean observations occur only after destination cleanup returns;
+a cleanup error keeps the original rejection and missing-return gap instead of falsely recording a successful return.
+Report physical endpoint credit requires a real arrival boundary,
+matching selected endpoint/actual tile and available clock/source/lifetime interval; true return alone supplies none.
+Order attribution requires an earlier observed admission and frozen caller; a later current order supplies no replacement
+identity. Restore/reuse/controller changes fence the entire observed interval. Valid physical endpoint evidence still
+supplies no admitted-target fulfillment, credited service, strategic utility or continuous stability.
+
+**Omission Audit:** acceptance 1–6 have consumed symbols and authored cases. Existing report integration retains the new
+`movements` field; the spatial normalizer delegates this record kind, and shared caller/order validators inspect every
+supplied movement caller, including failed/orphan/overflow tails. Specs use existing Jest/Playwright discovery, requiring
+no CI/config/registration edit. No new query, scan, timer, native policy, saved/wire state, tracked-file move, baseline
+refresh or unrelated Nx edit exists. Legacy/unmarked calls remain unavailable. Source/refactor/contract audits only;
+no tool/skill improvement task applies. Runtime and report cost remain unmeasured, including repeated bounded joins.
+
+**Separate Final Closure Audit:** after source repairs, rechecked token propagation, disposal, original/fallback identity,
+current-order independence, report consumption, negative cases and task-owned publication scope. This completes movement
+authoring only, not validated behavior or family/issue closure. No formatter, lint, type/build, Jest, Playwright, simulation,
+source-size/schema/editor/repository validator, doctor/context/catalog or `git diff --check` ran. Native callback/Promise
+compatibility, real Phaser positions, performance, test syntax/module/flags and structural compliance require the final gate.
+Normal commit/push and exact local/remote SHA verification close publication; the next session verifies the containing commit.
+
+Deferred final-gate commands (unrun; include adjacent existing boundary tests):
+
+```bash
+pnpm exec nx test probable-waffle-phaser --testPathPatterns='movement-completion-observation|movement-system-boundary|movement-path-execution|movement-tween|ai-runtime-route-order-capture|movement-query-observation' --runInBand
+pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts skirmish-ai-runtime-movement.spec.ts skirmish-ai-runtime-route-caller.spec.ts skirmish-ai-runtime-route-order.spec.ts skirmish-ai-runtime-producer-routes.spec.ts skirmish-ai-runtime-production-causality-normalization.spec.ts
+```
+
+**Next boundary and why stronger reasoning is recommended:** native resource-service usefulness needs exact
+service/cargo/application ownership, not another callback-success flag. `PawnAgentResources` mutates the same order from
+Gather to ReturnResources and retargets source/drain after awaits. `GathererComponent` accumulates a carried pile and its
+immediate-credit branch uses the source owner. `ResourceDrainComponent.returnResources` waits, uses the drain owner,
+suppresses credit for campaign economy `granted`/`none`, then always emits its return subject and returns the full amount.
+Consequently the return value/subject does not prove income, and the current order or latest movement cannot claim all
+old/mixed cargo. Define bounded transient identities, actual resource application, denied/suppressed credit, partial
+history and restore/reuse before implementation. `gatherer-component.ts` is source-size baselined; editing it needs a
+separate compliant prerequisite split, never a refresh. Recommend **GPT-6.1 Sol / high** for this cross-owner causal design,
+then **Sol / medium** for grouped settled implementation. Stop here under the user's effort boundary. Sustained useful
+stability follows the service contract and needs its own interval/interruption oracle; no fixed total stage count is claimed.
+
 ### Production caller report checkpoint (2026-10-07, unverified)
 
 Machinery batch 24, #815/#816 PRO-03/06/07 report-side caller/order ownership.

@@ -13,6 +13,7 @@ import { applyCampaignProgressionModifiers } from "../../campaign/campaign-progr
 import { MovementStepBlockedError } from "./movement-step-blocked-error";
 import type { MovementRuntime } from "./movement-runtime";
 import type { MovementPresentation } from "./movement-presentation";
+import type { MovementCompletionObservation } from "./movement-completion-observation";
 
 /**
  * Owns the active per-actor movement callback and step reservation lifetime. UPDATE/SHUTDOWN subscriptions,
@@ -40,7 +41,8 @@ export class MovementTween {
     tile: Vector2Simple,
     config?: PathMoveConfig | Partial<PathMoveConfig>,
     onComplete?: (() => void) | (() => Promise<void>),
-    onStop?: () => void
+    onStop?: () => void,
+    completion?: MovementCompletionObservation
   ): Promise<void> {
     if (!isGameObjectActiveInActiveScene(this.runtime.gameObject)) {
       return Promise.reject("Scene is not active");
@@ -71,6 +73,7 @@ export class MovementTween {
 
     const wrappedOnStop = () => {
       if (actorId) movementOccupancy?.releaseStep(actorId);
+      completion?.terminal("stopped");
       onStop?.();
     };
 
@@ -111,7 +114,8 @@ export class MovementTween {
    */
   moveDirectlyToLocationWithoutPathfinding(
     vec3: Vector3Simple,
-    pathMoveConfig?: PathMoveConfig
+    pathMoveConfig?: PathMoveConfig,
+    completion?: MovementCompletionObservation
   ): Promise<void> {
     // don't use pathfinding
     // use worldXY to move directly to location
@@ -134,11 +138,13 @@ export class MovementTween {
       : 1;
 
     const onComplete = () => {
+      completion?.terminal("arrived");
       pathMoveConfig?.onComplete?.();
       this.presentation.playMovementAnimation(false, pathMoveConfig);
     };
 
     const onStop = () => {
+      completion?.terminal("stopped");
       pathMoveConfig?.onStop?.();
       if (!pathMoveConfig?.ignoreAnimations) this.presentation.playMovementAnimation(false, pathMoveConfig);
     };

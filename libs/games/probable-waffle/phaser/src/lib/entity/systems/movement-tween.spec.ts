@@ -6,6 +6,9 @@ import { RepresentableComponent } from "../components/representable-component";
 import { MovementPresentation } from "./movement-presentation";
 import { MovementTween } from "./movement-tween";
 import { MovementStepBlockedError } from "./movement-step-blocked-error";
+import { MovementCompletionObservation } from "./movement-completion-observation";
+import type { MovementCompletionEvent } from "./movement-completion-event";
+import { PawnAiBlackboard } from "../../prefabs/ai-agents/pawn-ai-blackboard";
 import { movementTestFixture } from "./movement-test-fixture";
 
 // Local arithmetic/event double avoids changing the shared Phaser mock during the no-validation sweep.
@@ -55,6 +58,22 @@ function update(f: ReturnType<typeof fixture>) {
 describe("movement interpolation/reservation extraction (unrun until final gate)", () => {
   beforeEach(() => jest.clearAllMocks());
   afterEach(() => jest.restoreAllMocks());
+
+  it("records direct cancellation before the user callback and keeps the native resolved Promise", async () => {
+    const f = fixture(), board = new PawnAiBlackboard(), events: MovementCompletionEvent[] = [], order: string[] = [];
+    const release = MovementCompletionObservation.subscribe(board, (event) => {
+      events.push(event); if (event.phase === "stopped") order.push("stop_boundary");
+    });
+    const completion = MovementCompletionObservation.begin({ actor: f.actor, board, order: null,
+      caller: "boarding_container_shore" }, "direct", { x: 4, y: 0 });
+    completion?.destination({ x: 4, y: 0 });
+    const pending = f.tween.moveDirectlyToLocationWithoutPathfinding({ x: 4, y: 0, z: 2 }, {
+      onStop: () => { order.push("user_stop"); }
+    }, completion);
+    f.tween.cancelMovement(); await expect(pending).resolves.toBeUndefined();
+    expect(order).toEqual(["stop_boundary", "user_stop"]);
+    expect(events.map((event) => event.phase)).toEqual(["started", "destination", "stopped"]); release();
+  });
 
   it("uses interpolated simulation time and releases the step before awaiting the next callback", async () => {
     const f = fixture();

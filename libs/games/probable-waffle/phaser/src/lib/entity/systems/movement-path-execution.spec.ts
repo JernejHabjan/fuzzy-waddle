@@ -1,4 +1,6 @@
 import { MovementQueryObservation } from "./movement-query-observation";
+import { MovementCompletionObservation } from "./movement-completion-observation";
+import type { MovementCompletionEvent } from "./movement-completion-event";
 import type { MovementQueryContext } from "./movement-query-context";
 import { PawnAiBlackboard } from "../../prefabs/ai-agents/pawn-ai-blackboard";
 import type { Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
@@ -72,6 +74,13 @@ describe("native static path execution/recovery extraction (unrun until final ga
     const context: MovementQueryContext = { actor: f.actor, board: new PawnAiBlackboard(),
       order: null, caller: "boarding_container_shore" };
     const callers: ReturnType<typeof MovementQueryObservation.current>[] = [];
+    const events: MovementCompletionEvent[] = [];
+    const release = MovementCompletionObservation.subscribe(context.board, (event) => events.push(event));
+    const completion = MovementCompletionObservation.begin(context, "path", tile);
+    completion?.destination(tile);
+    f.move.mockImplementation(async (destination, _config, complete) => {
+      jest.mocked(getGameObjectCurrentTile).mockReturnValue({ ...destination, z: 0 }); await complete?.();
+    });
     f.move.mockRejectedValueOnce(error); f.occupancy.hasAnyActiveStepReservation.mockReturnValue(false);
     jest.mocked(getGameObjectCurrentTile).mockReturnValue(undefined);
     f.navigation.isWithinGridBounds.mockReturnValue(true);
@@ -81,12 +90,14 @@ describe("native static path execution/recovery extraction (unrun until final ga
       return destination.x === candidate.x && destination.y === candidate.y ? [{ x: 0, y: 0 }, candidate] : null;
     });
     f.occupancy.reserveDestination.mockImplementation(() => { ordering.push("reserve"); return true; });
-    await f.execution.moveAlongPathByFollowingPreCalculatedStaticPath([tile], undefined, undefined, context);
+    await f.execution.moveAlongPathByFollowingPreCalculatedStaticPath([tile], undefined, undefined, context, completion);
     expect(callers.map((caller) => caller?.stage)).toEqual(["repath", "repath", "repath", "fallback", "fallback"]);
     expect(callers.every((caller) => caller?.context === context)).toBe(true);
     expect(MovementQueryObservation.current(f.actor)).toBeUndefined();
     expect(f.occupancy.reserveDestination).toHaveBeenCalledWith("actor:1", [candidate], 0);
     expect(ordering.slice(-2)).toEqual(["reserve", "path:1,-1"]);
+    expect(events.at(-1)).toMatchObject({ phase: "arrived", originalDestination: tile,
+      selectedDestination: candidate, actualTile: candidate, fallback: true }); release();
   });
 
   it("does not turn arbitrary movement or native repath errors into congestion retries", async () => {
@@ -108,5 +119,26 @@ describe("native static path execution/recovery extraction (unrun until final ga
     await f.execution.moveAlongPathByFollowingPreCalculatedStaticPath(path, { onStop });
     expect(onStop).toHaveBeenCalledTimes(1); expect(f.move).toHaveBeenCalledTimes(1);
     expect(path).toEqual([{ x: 2, y: 0 }]); expect(f.animate).toHaveBeenCalledWith(false, { onStop });
+  });
+
+  it("observes physical arrival before a failing user completion callback without changing the thrown error", async () => {
+    const f = fixture(), events: MovementCompletionEvent[] = [], order: string[] = [];
+    const context: MovementQueryContext = { actor: f.actor, board: new PawnAiBlackboard(),
+      order: null, caller: "boarding_container_shore" };
+    const release = MovementCompletionObservation.subscribe(context.board, (event) => {
+      events.push(event); if (event.phase === "arrived") order.push("arrival");
+    });
+    const completion = MovementCompletionObservation.begin(context, "path", { x: 1, y: 0 });
+    completion?.destination({ x: 1, y: 0 });
+    const error = new Error("native_user_callback");
+    f.move.mockImplementationOnce(async (_tile, _config, complete) => {
+      jest.mocked(getGameObjectCurrentTile).mockReturnValue({ x: 1, y: 0, z: 0 }); await complete?.();
+    });
+    await expect(f.execution.moveAlongPathByFollowingPreCalculatedStaticPath([{ x: 1, y: 0 }], {
+      onComplete: () => { order.push("callback"); throw error; }
+    }, undefined, context, completion)).rejects.toBe(error);
+    expect(order).toEqual(["arrival", "callback"]);
+    expect(events.at(-1)).toMatchObject({ phase: "arrived", actualTile: { x: 1, y: 0 }, fallback: false });
+    expect(f.animate).not.toHaveBeenCalled(); release();
   });
 });

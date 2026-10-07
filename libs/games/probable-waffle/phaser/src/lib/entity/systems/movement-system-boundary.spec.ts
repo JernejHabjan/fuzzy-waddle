@@ -1,4 +1,6 @@
 import { MovementQueryObservation } from "./movement-query-observation";
+import { MovementCompletionObservation } from "./movement-completion-observation";
+import type { MovementCompletionEvent } from "./movement-completion-event";
 import type { MovementQueryContext } from "./movement-query-context";
 import type Phaser from "phaser";
 import type { GameCommand, MoveCommand } from "@fuzzy-waddle/probable-waffle-protocol";
@@ -110,7 +112,7 @@ describe("movement facade extraction boundaries (unrun until final gate)", () =>
     const direct = jest.spyOn(MovementTween.prototype, "moveDirectlyToLocationWithoutPathfinding").mockResolvedValue();
     jest.mocked(getActorComponent).mockImplementation((_actor, component) => component === FlyingComponent ? {} as never : undefined);
     expect(await f.system.moveToActorByAdjustingPathDynamically(target)).toBe(true);
-    expect(direct).toHaveBeenCalledWith({ x: 0, y: 0, z: 0 }, undefined);
+    expect(direct).toHaveBeenCalledWith({ x: 0, y: 0, z: 0 }, undefined, undefined);
     expect(f.navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius).not.toHaveBeenCalled();
     const path = [{ x: 0, y: 0 }]; f.navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius.mockResolvedValue(path);
     expect(await f.system.getPathToClosestNavigableTileBetweenGameObjectsInRadius(target, 3)).toBe(path);
@@ -164,5 +166,41 @@ describe("movement facade extraction boundaries (unrun until final gate)", () =>
     expect(getIsoDirectionFromDirectionalVector(4, 1)).toBe("east");
     expect(getIsoDirectionFromDirectionalVector(1, 4)).toBe("south");
     expect(getIsoDirectionFromDirectionalVector(-2, -1)).toBe("northwest");
+  });
+
+  it("records a stopped execution separately from the unchanged native true return", async () => {
+    const f = fixture(), board = new PawnAiBlackboard(), events: MovementCompletionEvent[] = [];
+    const release = MovementCompletionObservation.subscribe(board, (event) => events.push(event));
+    const context: MovementQueryContext = { actor: f.actor, board, order: null, caller: "boarding_container_shore" };
+    f.navigation.findPathFromGameObjectToTile.mockResolvedValue([{ x: 0, y: 0 }, { x: 1, y: 0 }]);
+    jest.spyOn(MovementPathExecution.prototype, "moveAlongPathByFollowingPreCalculatedStaticPath")
+      .mockImplementation(async (_path, _config, _recovery, _context, completion) => completion?.terminal("stopped"));
+    expect(await f.system.moveToLocationByFollowingStaticPath({ x: 1, y: 0, z: 0 }, undefined, context)).toBe(true);
+    expect(events.map((event) => event.phase)).toEqual(["started", "destination", "stopped", "returned_true"]);
+    expect(f.occupancy.releaseDestination).toHaveBeenCalledTimes(1); release();
+  });
+
+  it("keeps query rejection identity while recording no physical arrival", async () => {
+    const f = fixture(), board = new PawnAiBlackboard(), events: MovementCompletionEvent[] = [];
+    const release = MovementCompletionObservation.subscribe(board, (event) => events.push(event));
+    const error = new Error("native_query"), context: MovementQueryContext = {
+      actor: f.actor, board, order: null, caller: "boarding_container_shore" };
+    f.navigation.findPathFromGameObjectToTile.mockRejectedValue(error);
+    await expect(f.system.moveToLocationByFollowingStaticPath({ x: 1, y: 0, z: 0 }, undefined, context)).rejects.toBe(error);
+    expect(events.map((event) => event.phase)).toEqual(["started", "threw"]);
+    expect(f.occupancy.releaseDestination).not.toHaveBeenCalled(); release();
+  });
+
+  it("does not record a boolean return when native destination cleanup rejects after arrival", async () => {
+    const f = fixture(), board = new PawnAiBlackboard(), events: MovementCompletionEvent[] = [];
+    const release = MovementCompletionObservation.subscribe(board, (event) => events.push(event));
+    const error = new Error("native_cleanup"), context: MovementQueryContext = {
+      actor: f.actor, board, order: null, caller: "boarding_container_shore" };
+    f.navigation.findPathFromGameObjectToTile.mockResolvedValue([{ x: 0, y: 0 }, { x: 1, y: 0 }]);
+    jest.spyOn(MovementPathExecution.prototype, "moveAlongPathByFollowingPreCalculatedStaticPath")
+      .mockImplementation(async (_path, _config, _recovery, _context, completion) => completion?.terminal("arrived"));
+    f.occupancy.releaseDestination.mockImplementation(() => { throw error; });
+    await expect(f.system.moveToLocationByFollowingStaticPath({ x: 1, y: 0, z: 0 }, undefined, context)).rejects.toBe(error);
+    expect(events.map((event) => event.phase)).toEqual(["started", "destination", "arrived"]); release();
   });
 });

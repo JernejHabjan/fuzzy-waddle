@@ -12,9 +12,10 @@ export function validateRuntimeRouteCallers(capture: AiRuntimeProductionCaptureV
   const requests = new Map<number, AiRuntimeRouteCallerV1 | undefined>();
   const failures: string[] = [];
   for (const fact of capture.facts) {
-    if (fact.kind !== "spatial_authority" || fact.spatial.kind !== "producer_path") continue;
-    const path = fact.spatial, caller = path.queryCaller;
-    if (path.phase === "requested") requests.set(path.queryId, caller);
+    if (fact.kind !== "spatial_authority" ||
+      fact.spatial.kind !== "producer_path" && fact.spatial.kind !== "movement") continue;
+    const path = fact.spatial, caller = path.kind === "producer_path" ? path.queryCaller : path.caller;
+    if (path.kind === "producer_path" && path.phase === "requested") requests.set(path.queryId, caller);
     if (caller === undefined) continue;
     if (!caller || !Number.isSafeInteger(caller.invocationId) || caller.invocationId < 1 || caller.invocationId > 8192 ||
       typeof caller.lifetimeValid !== "boolean" || caller.order === undefined ||
@@ -27,10 +28,12 @@ export function validateRuntimeRouteCallers(capture: AiRuntimeProductionCaptureV
     const objectInitial = probe || ["actor_movement", "boarding_adjacent"].includes(caller.caller);
     if ((caller.order === null) !== (caller.caller === "boarding_container_shore") ||
       probe && caller.stage !== "initial" ||
-      path.method !== (caller.stage === "initial" ? objectInitial ? "object_radius" : "tile_static" : "tile_dynamic")) {
+      path.kind === "producer_path" &&
+        path.method !== (caller.stage === "initial" ? objectInitial ? "object_radius" : "tile_static" : "tile_dynamic") ||
+      path.kind === "movement" && (probe || caller.stage !== "initial")) {
       failures.push("production_route_query_caller_method_invalid");
     }
-    if (path.phase !== "requested") {
+    if (path.kind === "producer_path" && path.phase !== "requested") {
       const requested = requests.get(path.queryId);
       if (!requested || !isDeepStrictEqual({ ...requested, lifetimeValid: false }, { ...caller, lifetimeValid: false })) {
         failures.push("production_route_query_caller_interval_invalid");

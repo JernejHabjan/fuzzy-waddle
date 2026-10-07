@@ -11,6 +11,7 @@ import type { MovementTween } from "./movement-tween";
 import type { MovementPresentation } from "./movement-presentation";
 import type { MovementQueryContext } from "./movement-query-context";
 import { MovementQueryObservation } from "./movement-query-observation";
+import type { MovementCompletionObservation } from "./movement-completion-observation";
 
 // When another actor is already stepping through the blocked tile, wait briefly
 // a couple of times before trying more disruptive recovery.
@@ -64,9 +65,11 @@ export class MovementPathExecution {
       sideStepAttempts: 0,
       repathAttempts: 0
     },
-    queryContext?: MovementQueryContext
+    queryContext?: MovementQueryContext,
+    completion?: MovementCompletionObservation
   ): Promise<void> {
     if (!path.length) {
+      completion?.terminal("arrived");
       config?.onComplete?.();
       this.presentation.playMovementAnimation(false, config);
       return;
@@ -78,7 +81,7 @@ export class MovementPathExecution {
     config?.onPathUpdate?.(nextTile);
 
     const onComplete = async () => {
-      await this.moveAlongPathByFollowingPreCalculatedStaticPath(path, config, recoveryState, queryContext);
+      await this.moveAlongPathByFollowingPreCalculatedStaticPath(path, config, recoveryState, queryContext, completion);
     };
 
     const onStop = () => {
@@ -87,12 +90,12 @@ export class MovementPathExecution {
     };
 
     try {
-      await this.tween.moveActorToTileWithTween(nextTile, config, onComplete, onStop);
+      await this.tween.moveActorToTileWithTween(nextTile, config, onComplete, onStop, completion);
     } catch (error) {
       if (!(error instanceof MovementStepBlockedError)) {
         throw error;
       }
-      await this.recoverFromBlockedPathStep(error, nextTile, path, config, recoveryState, queryContext);
+      await this.recoverFromBlockedPathStep(error, nextTile, path, config, recoveryState, queryContext, completion);
     }
   }
 
@@ -116,7 +119,8 @@ export class MovementPathExecution {
     remainingPath: Vector2Simple[],
     config: PathMoveConfig | undefined,
     recoveryState: BlockedStepRecoveryState,
-    queryContext?: MovementQueryContext
+    queryContext?: MovementQueryContext,
+    completion?: MovementCompletionObservation
   ): Promise<void> {
     // Escalate from cheapest to most disruptive recovery:
     // wait -> sidestep -> repath -> same-height fallback tile.
@@ -136,7 +140,8 @@ export class MovementPathExecution {
         [blockedTile, ...remainingPath],
         config,
         recoveryState,
-        queryContext
+        queryContext,
+        completion
       );
       return;
     }
@@ -146,21 +151,21 @@ export class MovementPathExecution {
       if (sideStepTile) {
         recoveryState.sideStepAttempts++;
         config?.onPathUpdate?.(sideStepTile);
-        await this.tween.moveActorToTileWithTween(sideStepTile, config);
-        const recovered = await this.repathToDestination(finalDestination, config, recoveryState, queryContext);
+        await this.tween.moveActorToTileWithTween(sideStepTile, config, undefined, undefined, completion);
+        const recovered = await this.repathToDestination(finalDestination, config, recoveryState, queryContext, "repath", completion);
         if (recovered) return;
       }
     }
 
     if (recoveryState.repathAttempts < BLOCKED_STEP_MAX_REPATH_ATTEMPTS) {
       recoveryState.repathAttempts++;
-      const recovered = await this.repathToDestination(finalDestination, config, recoveryState, queryContext);
+      const recovered = await this.repathToDestination(finalDestination, config, recoveryState, queryContext, "repath", completion);
       if (recovered) return;
     }
 
     const fallbackTile = await this.findReachableFallbackTile(finalDestination, queryContext);
     if (!fallbackTile) throw error;
-    await this.moveToFallbackTile(fallbackTile, config, recoveryState, queryContext);
+    await this.moveToFallbackTile(fallbackTile, config, recoveryState, queryContext, completion);
   }
 
   private waitForBlockedStep(): Promise<void> {
@@ -193,7 +198,8 @@ export class MovementPathExecution {
     config: PathMoveConfig | undefined,
     recoveryState: BlockedStepRecoveryState,
     queryContext?: MovementQueryContext,
-    queryStage: "repath" | "fallback" = "repath"
+    queryStage: "repath" | "fallback" = "repath",
+    completion?: MovementCompletionObservation
   ): Promise<boolean> {
     if (!this.runtime.navigationService) return Promise.reject("No navigationService");
     const actorId = getActorComponent(this.runtime.gameObject, IdComponent)?.id;
@@ -220,8 +226,9 @@ export class MovementPathExecution {
       await this.waitForBlockedStep();
     }
     if (!newPath || !newPath.length) return false;
+    completion?.destination(newPath[newPath.length - 1], queryStage === "fallback");
     newPath.shift();
-    await this.moveAlongPathByFollowingPreCalculatedStaticPath(newPath, config, recoveryState, queryContext);
+    await this.moveAlongPathByFollowingPreCalculatedStaticPath(newPath, config, recoveryState, queryContext, completion);
     return true;
   }
 
@@ -315,7 +322,8 @@ export class MovementPathExecution {
     fallbackTile: Vector2Simple,
     config: PathMoveConfig | undefined,
     recoveryState: BlockedStepRecoveryState,
-    queryContext?: MovementQueryContext
+    queryContext?: MovementQueryContext,
+    completion?: MovementCompletionObservation
   ): Promise<void> {
     const actorId = getActorComponent(this.runtime.gameObject, IdComponent)?.id;
     const heightLayer = this.runtime.navigationService?.getNavigableHeightAtTile(fallbackTile) ?? 0;
@@ -326,7 +334,7 @@ export class MovementPathExecution {
     }
     // Reserve the escape slot before repathing so another actor cannot claim it
     // while this unit is recalculating its route.
-    const recovered = await this.repathToDestination(fallbackTile, config, recoveryState, queryContext, "fallback");
+    const recovered = await this.repathToDestination(fallbackTile, config, recoveryState, queryContext, "fallback", completion);
     if (!recovered) {
       throw new Error("Failed to repath to fallback destination");
     }

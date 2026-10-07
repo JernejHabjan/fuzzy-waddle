@@ -23,7 +23,7 @@ export function validateRuntimeRouteOrders(capture: AiRuntimeProductionCaptureV1
     [value.active, value.alive, value.finished, value.indexed].every((flag) => typeof flag === "boolean");
   for (const fact of facts) {
     const value = fact.spatial;
-    if (!["route_order", "route_rally_order", "route_order_restore", "producer_path"].includes(value.kind) ||
+    if (!["route_order", "route_rally_order", "route_order_restore", "producer_path", "movement"].includes(value.kind) ||
       !("source" in value)) continue;
     if (fact.playerNumber !== capture.playerNumber || !integer(fact.tick) || fact.tick < capture.startedTick ||
       !id(fact.sequence) || value.clockTick !== null && value.clockTick !== fact.tick ||
@@ -57,7 +57,8 @@ export function validateRuntimeRouteOrders(capture: AiRuntimeProductionCaptureV1
     }
     const samples = value.kind === "route_order" ? [{ order: value.order, frozenCaller: false }] :
       value.kind === "producer_path" ? [{ order: value.currentOrder, frozenCaller: false },
-        { order: value.queryCaller?.order, frozenCaller: true }] : [];
+        { order: value.queryCaller?.order, frozenCaller: true }] :
+        value.kind === "movement" ? [{ order: value.caller?.order, frozenCaller: true }] : [];
     for (const { order, frozenCaller } of samples) {
       if (order == null) continue;
       const context = order.commandContext, execution = context?.execution;

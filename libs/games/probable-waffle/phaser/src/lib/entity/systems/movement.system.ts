@@ -27,6 +27,7 @@ import { MovementPathExecution } from "./movement-path-execution";
 import { MovementFormation } from "./movement-formation";
 import type { MovementQueryContext } from "./movement-query-context";
 import { MovementQueryObservation } from "./movement-query-observation";
+import { MovementCompletionObservation } from "./movement-completion-observation";
 
 /**
  * Actor-system token and public movement facade. Shared MOVE admission stays here; actor-local owners handle
@@ -114,39 +115,54 @@ export class MovementSystem {
     pathMoveConfig?: PathMoveConfig,
     queryContext?: MovementQueryContext
   ): Promise<boolean> {
-    if (!isGameObjectActiveInActiveScene(this.gameObject)) return false;
+    if (!isGameObjectActiveInActiveScene(this.gameObject)) {
+      MovementCompletionObservation.begin(queryContext?.actor === this.gameObject ? queryContext : undefined,
+        "path", tileVec3)?.returned(false);
+      return false;
+    }
     const flyingComponent = getActorComponent(this.gameObject, FlyingComponent);
     const usePathfinding = !flyingComponent;
+    const completion = MovementCompletionObservation.begin(queryContext?.actor === this.gameObject ? queryContext : undefined,
+      usePathfinding ? "path" : "direct", tileVec3);
     if (!usePathfinding) {
-      return this.tween.moveDirectlyToLocationWithoutPathfinding(tileVec3, pathMoveConfig)
-        .then(() => true)
-        .catch(() => false);
+      completion?.destination(tileVec3);
+      return this.tween.moveDirectlyToLocationWithoutPathfinding(tileVec3, pathMoveConfig, completion)
+        .then(() => { completion?.returned(true); return true; })
+        .catch(() => { completion?.returned(false); return false; });
     }
 
-    if (!this.runtime.navigationService) return false;
+    if (!this.runtime.navigationService) { completion?.returned(false); return false; }
 
-    const path = await MovementQueryObservation.invoke(this.gameObject, queryContext, "initial",
-      () => this.runtime.navigationService!.findPathFromGameObjectToTile(this.gameObject, tileVec3));
-    if (!path || !path.length) return false;
+    let path: Vector2Simple[] | null;
+    try {
+      path = await MovementQueryObservation.invoke(this.gameObject, queryContext, "initial",
+        () => this.runtime.navigationService!.findPathFromGameObjectToTile(this.gameObject, tileVec3));
+    } catch (error) { completion?.threw(); throw error; }
+    if (!path || !path.length) { completion?.returned(false); return false; }
 
     if (this.DEBUG) console.log(`Moving to tile ${tileVec3.x}, ${tileVec3.y}`);
 
     if (this.DEBUG) this.runtime.navigationService.drawDebugPath(path);
 
+    let success = false;
     try {
-      if (!path.length) return false;
-      // Remove the first tile, as it's the current tile
-      path.shift();
-      await this.pathExecution.moveAlongPathByFollowingPreCalculatedStaticPath(path, pathMoveConfig, undefined, queryContext);
+      if (path.length) {
+        completion?.destination(path[path.length - 1]);
+        // Remove the first tile, as it's the current tile
+        path.shift();
+        await this.pathExecution.moveAlongPathByFollowingPreCalculatedStaticPath(
+          path, pathMoveConfig, undefined, queryContext, completion);
+        success = true;
+      }
     } catch (e) {
       // console.error("Error moving along path", e);
-      return false;
     } finally {
       const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
       if (actorId) this.runtime.movementOccupancyService?.releaseDestination(actorId);
     }
 
-    return true;
+    completion?.returned(success);
+    return success;
   }
 
   async moveToActorByAdjustingPathDynamically(
@@ -164,44 +180,52 @@ export class MovementSystem {
   ): Promise<boolean> {
     const flyingComponent = getActorComponent(this.gameObject, FlyingComponent);
     const usePathfinding = !flyingComponent;
+    const completion = MovementCompletionObservation.begin(queryContext?.actor === this.gameObject ? queryContext : undefined,
+      usePathfinding ? "path" : "direct");
     if (!usePathfinding) {
       const vec3 = getGameObjectCurrentTile(destinationGameObject);
-      if (!vec3) return false;
+      if (!vec3) { completion?.returned(false); return false; }
+      completion?.destination(vec3);
       return this.tween.moveDirectlyToLocationWithoutPathfinding(
         {
           x: vec3.x,
           y: vec3.y,
           z: 0
         } satisfies Vector3Simple,
-        pathMoveConfig as PathMoveConfig
+        pathMoveConfig as PathMoveConfig,
+        completion
       )
-        .then(() => true)
-        .catch(() => false);
+        .then(() => { completion?.returned(true); return true; })
+        .catch(() => { completion?.returned(false); return false; });
     }
 
     // Actor-target movement snapshots a path to the nearest reachable tile by
     // the target object. The order stays deterministic until recovery chooses
     // to wait, sidestep, or repath after a blockage.
-    const path = await this.getPathToClosestNavigableTileBetweenGameObjectsInRadius(
-      destinationGameObject,
-      pathMoveConfig?.radiusTilesAroundDestination,
-      queryContext
-    );
-    if (!path || !path.length) return false;
+    let path: Vector2Simple[] | null;
+    try {
+      path = await this.getPathToClosestNavigableTileBetweenGameObjectsInRadius(
+        destinationGameObject, pathMoveConfig?.radiusTilesAroundDestination, queryContext);
+    } catch (error) { completion?.threw(); throw error; }
+    if (!path || !path.length) { completion?.returned(false); return false; }
 
     this.cancelMovement();
 
+    let success = false;
     try {
+      completion?.destination(path[path.length - 1]);
       path.shift();
       await this.pathExecution.moveAlongPathByFollowingPreCalculatedStaticPath(
-        path, pathMoveConfig as PathMoveConfig, undefined, queryContext);
-      return true;
+        path, pathMoveConfig as PathMoveConfig, undefined, queryContext, completion);
+      success = true;
     } catch {
-      return false;
+      // Preserve the native false result after destination cleanup; cleanup errors still reject.
     } finally {
       const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
       if (actorId) this.runtime.movementOccupancyService?.releaseDestination(actorId);
     }
+    completion?.returned(success);
+    return success;
   }
 
   private destroy() {

@@ -7,6 +7,8 @@ import { PawnAiBlackboard } from "../../../prefabs/ai-agents/pawn-ai-blackboard"
 import { PawnOrderObservation } from "../../../prefabs/ai-agents/pawn-order-observation";
 import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller";
 import { MovementQueryObservation } from "../../../entity/systems/movement-query-observation";
+import { MovementCompletionObservation } from "../../../entity/systems/movement-completion-observation";
+import { getGameObjectCurrentTile } from "../../../data/game-object-helper";
 import { AiRuntimeRouteOrderCapture } from "./ai-runtime-route-order-capture";
 import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor";
 import type { AiRuntimeProductionSpatialV1 } from "./ai-runtime-production-spatial-v1";
@@ -15,6 +17,7 @@ import { productionCaptureItem } from "./ai-runtime-production-capture-fixtures"
 jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
 jest.mock("../../../prefabs/ai-agents/pawn-ai-controller", () => ({ PawnAiController: class {} }));
 jest.mock("./capture-ai-runtime-created-actor", () => ({ captureAiRuntimeCreatedActor: jest.fn() }));
+jest.mock("../../../data/game-object-helper", () => ({ getGameObjectCurrentTile: jest.fn() }));
 
 function fixture() {
   const scene = {} as Phaser.Scene, board = new PawnAiBlackboard();
@@ -33,6 +36,24 @@ function fixture() {
 }
 
 describe("marked capture order identities (unrun until final gate)", () => {
+  it("captures one execution with its retained order across replacement, then fences restore and disposes listeners", () => {
+    const f = fixture(), order = new OrderData(OrderType.Move, { targetTileLocation: { x: 8, y: 9, z: 0 } });
+    f.board.addOrder(order); f.board.setCurrentOrder(order);
+    const context = MovementQueryObservation.capture(f.product, f.board, order, "location_movement");
+    const completion = MovementCompletionObservation.begin(context, "path", { x: 8, y: 9 });
+    completion?.destination({ x: 8, y: 9 });
+    f.board.setCurrentOrder(new OrderData(OrderType.Stop));
+    jest.mocked(getGameObjectCurrentTile).mockReturnValue({ x: 8, y: 9, z: 0 });
+    completion?.terminal("arrived");
+    const arrival = f.records.find((record) => record.kind === "movement" && record.phase === "arrived");
+    expect(arrival).toMatchObject({ executionId: 1, caller: { invocationId: 1, lifetimeValid: true, order: { orderId: 1 } },
+      actualTile: { x: 8, y: 9 } });
+    f.board.setData({}, f.scene); completion?.returned(true);
+    expect(f.records.at(-1)).toMatchObject({ kind: "movement", phase: "returned_true", executionId: 1,
+      caller: { invocationId: 1, lifetimeValid: false, order: { orderId: 1 } } });
+    const count = f.records.length; f.capture.dispose(); completion?.returned(false);
+    expect(f.records).toHaveLength(count);
+  });
   it("retains exact admission/rally identity and detached mutable order data without attributing a caller", () => {
     const f = fixture(), tile = { x: 8, y: 9, z: 0 }, order = new OrderData(OrderType.Move, { targetTileLocation: tile });
     PawnOrderObservation.rally(f.board, f.producer, f.item, () => f.board.overrideOrderQueueAndActiveOrder(order));

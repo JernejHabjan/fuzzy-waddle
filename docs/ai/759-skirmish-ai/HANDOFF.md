@@ -6,35 +6,40 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
-**Next session (user policy, 2026-10-07):** retain **GPT-6.1 Sol / medium** across related implementation and
-causal design. The user explicitly selected this setting; host settings are not independently exposed.
-Current step: #815/#816 machinery batch 24, **strict caller validation/projection**, authored/unverified.
-Base `fc358946368d3ab595c7fd56bc1f9b7964eebb5d`; the containing commit owns this slice.
+**Next session (user policy, 2026-10-07):** the user authorized continuous related stages on
+**GPT-6.1 Sol / medium**, stopping when stronger reasoning is warranted; tests/validation stay at the final gate.
+The suggested run was up to three authoring stages: movement, service effects, sustained usefulness, with assessment
+at each boundary. Only movement was authored; the next service contract needs the stronger-reasoning design pass below.
+Current step: #815/#816 machinery batch 25, **native movement completion/arrival**, authored/unverified.
+Base `aa4bf0a4920ba09d2df95045a2cae2a4d543239f`; the containing commit owns this slice.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify local/remote on resume.
 Nx merge `59f72e037` is preserved. No family/issue is complete. The user removed the comment-permission rule.
 All executable tests and validation remain deferred to the final gate.
 
-**Authored work — what it is for:** the report now validates detached native caller/order records across the capture,
-including failed/orphan/nested/overflow tails. It checks invocation identity, immutable snapshots, complete order stamps,
-source ownership, method/stage compatibility and restore/reuse/controller fences. A paired caller with an exact earlier
-admission can identify the order the query serves, separately from current-order equality and purchase demand.
-For example, a worker's old task can own a pending route even after a replacement order becomes current. Recovery/tending
-endpoints may differ from the admitted target; equal tiles never supply this link. Explicit unordered boat movement,
-legacy/missing/lost records and incomplete history remain gaps. A new synthetic Playwright spec is authored/unrun.
-This is report-side code only; gameplay is unchanged. Correctness and report cost remain unverified.
+**Authored work — what it is for:** marked captures now retain native execution start, selected endpoint, physical
+arrival/stop and boolean-return/error boundaries through an explicit transient token. Original versus fallback endpoint
+and actual terminal tile remain separate from query success and the admitted service target. Cancellation can still
+resolve true; callback failure can still follow physical arrival. The existing report retains strict movement intervals,
+detached caller/admission ownership, lifetime fences and bounded loss. A fallback cannot claim the original endpoint;
+neither endpoint arrival nor native return claims task usefulness. New observer/report specs and native boundary/capture
+cases are authored/unrun. No gameplay policy, extra query/timer/scan, saved/wire/planner field or CI change was added.
+Callback/error/Promise/occupancy behavior and capture/report cost remain unverified.
 
-**Next step — what it is for:** capture and project actual native movement completion/arrival boundaries. Query ownership
-identifies the task being attempted; it does not show that the actor reached its destination. Distinguish probes, failed
-routes, fallback arrival, cancellation and original task arrival before later service-benefit/stability assertions use it.
+**Next step — what it is for:** design exact native resource-service effect ownership before authoring useful-service
+credit. This connects a worker's task to actual credited resources, independently from extraction, cargo and a successful
+drop-off return. Sustained usefulness then needs a separately defined observation interval and interruption policy.
 
-Read the [caller report checkpoint](follow-ups/runtime-matrix-ci.md#production-caller-report-checkpoint-2026-10-07-unverified).
-**Next exact authoring action:** inspect `MovementSystem` / `MovementPathExecution` native callbacks, resolved-return and
-stop/error paths plus the pawn movement/tending/boarding callers. Establish a passive, bounded movement completion event
-with the retained explicit context, then extend marked capture and focused report validation/projection. Retain exact native
-callback/Promise/error/occupancy timing and no extra query, timer, scan or planner input. Record actual terminal position and
-original versus fallback destination without treating a path result/probe as arrival. Fence restore/reuse/replacement,
-missing context and partial history; add synthetic and boundary specs, all unrun. Service benefit and sustained stability
-follow after movement evidence. Commit/push, then pause at that coherent boundary.
+Read the [movement checkpoint](follow-ups/runtime-matrix-ci.md#production-movement-arrival-checkpoint-2026-10-07-unverified).
+**Next exact action:** on **GPT-6.1 Sol / high** (recommendation, not an automatic switch), inspect
+`pawn-agent-resources.ts`, `GathererComponent.gatherResources/returnResources`, `ResourceDrainComponent.returnResources`
+and `emitResource`/actual resource application. Define a bounded transient service/cargo lineage contract across native
+order retargeting, source/drain ownership, awaits, mixed/old cargo, restore/reuse and campaign credit suppression. The drain
+returns the full amount even when campaign economy suppresses emission; its subject/Promise is not applied-income proof.
+Immediate gathering credits the source owner while drains credit their owner; the same order mutates Gather/ReturnResources
+and target. Do not attribute a whole carried pile to the latest movement/order or infer credited income from a return value.
+`gatherer-component.ts` has an existing source-size exemption: any necessary edit needs a separate compliant prerequisite
+split, never a baseline refresh. Preserve callbacks/Promises/money ordering and final-gate deferral. Resolve this causal
+contract first, then group its implementation and report/spec authoring on Sol / medium when sufficiently concrete.
 
 | Current dependency | State | Purpose / next boundary |
 | --- | --- | --- |
@@ -42,14 +47,19 @@ follow after movement evidence. Commit/push, then pause at that coherent boundar
 | Pawn agent prerequisite | Authored, unverified (batch 22) | Focused owners retain native order use |
 | Native invocation/order capture | Authored, unverified (batch 23) | Exact caller identity carried to marked query records |
 | Strict caller validation/projection | Authored, unverified (batch 24) | Identify the order served without borrowing current-order or purchase evidence |
-| Native movement completion/arrival | Next authoring | Distinguish attempted navigation from actual destination arrival |
-| Service effects and continuous useful stability | Open | Establish task fulfillment and retained benefit |
+| Native movement completion/arrival | Authored, unverified (batch 25) | Separate physical endpoint arrival, fallback, stop and native return |
+| Native resource-service effects | Next design; stronger-reasoning stop | Establish actual credit and exact service/cargo lineage |
+| Continuous useful stability | Open; depends on service contract | Establish retained useful benefit over a defined interval |
 | Full production adapter/oracles/setup/strategy | Open | Complete independent PRO-03/06/07 runtime assertions |
 | Executable validation | Deferred final gate | Establish correctness before issue/release closure |
 
-No fixed total machinery count or completion percentage is claimed. Stay on Sol/medium for the next related causal batch;
-high is optional if a concrete unresolved problem warrants it. Source review, Omission Audit, separate Final Closure Audit
-and unrun commands are in the checkpoint. No gameplay/save/wire/CI change, baseline refresh or new plan file is introduced.
+No fixed total machinery count or completion percentage is claimed. Stop after movement authoring at the identified
+service-authority design boundary; recommend Sol / high for that design and Sol / medium for the settled implementation.
+Host model/effort settings are not independently exposed. Source review, Omission Audit, separate Final Closure Audit
+and unrun commands are in the checkpoint. No gameplay/save/wire/CI policy change, baseline refresh or new plan file exists.
+Prior batch 24 is in `aa4bf0a4920ba09d2df95045a2cae2a4d543239f`, based on `fc358946368d3ab595c7fd56bc1f9b7964eebb5d`;
+its [caller report checkpoint](follow-ups/runtime-matrix-ci.md#production-caller-report-checkpoint-2026-10-07-unverified)
+retains strict detached invocation/order validation independently from current-order co-observation.
 Prior batch 23 is in `4103d65a4c8cbaa08fc008082746185edd6173ad`, based on `7096907e46618902a3170a5450af21232cf0ecd2`;
 its [native capture checkpoint](follow-ups/runtime-matrix-ci.md#production-invocation-capture-checkpoint-2026-10-07-unverified)
 retains the producer/caller capture and boundary-test contracts. Normalized caller ownership still proves no useful arrival.
@@ -496,7 +506,7 @@ merely because their issue title mentions testing. All authored work remains unv
 | 1 / as needed | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `partial` | Split only owners blocking the selected batch | Stay Sol medium; optional Luna high |
 | 2 | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829) | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof | GPT-6.1 Sol, medium |
 | 3 | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `in_progress` | Finish pressure/recovery policy; defer victory proof | GPT-6.1 Sol, medium |
-| 4 / next batch | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Machinery 24 strict caller report authored/unverified; next native movement arrival, then service effects/stability | GPT-6.1 Sol, medium |
+| 4 / next batch | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Machinery 25 movement arrival authored/unverified; next service/cargo/application contract, then effects/stability | GPT-6.1 Sol, high design; medium after contract |
 | 5 / paired | #815 / #816 | `in_progress` | Remaining family contracts, focused fixtures, frozen maps and continuous-match tier | Sol medium; optional Luna high for established cases |
 | 6 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `in_progress` | Exact-once interruption, terminal and re-entry parity | GPT-6.1 Sol, medium |
 | 7 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `partial` | Generation fencing, phase restore/replay and cleanup cases | GPT-6.1 Sol, medium |
@@ -510,6 +520,9 @@ merely because their issue title mentions testing. All authored work remains unv
 The 2026-10-07 user policy below owns #759 model choice and execution boundaries. The user selected Sol 6.1 / medium
 for the current implementation group. Use Sol for unresolved thinking/design; Luna / high is an optional choice for
 concrete routine work. Keep related work together to avoid unnecessary switches. This applies to this roadmap.
+Latest execution request: continue multiple related stages without asking after each one; stop when stronger reasoning
+than Sol 6.1 / medium is warranted. Up to three stages were recommended, with assessment at each boundary. Movement
+authoring reached the service-authority design boundary described in Quick resume; no model was switched automatically.
 
 | Responsibility | Model / effort |
 | --- | --- |
@@ -552,9 +565,10 @@ concrete routine work. Keep related work together to avoid unnecessary switches.
 
 Copyable next-chat prompt:
 
-> Read docs/ai/759-skirmish-ai/HANDOFF.md. Implement its next model batch; report what was authored and what comes next,
-> including what each will be used for and why it matters. Commit/push, then pause before the next batch and recommend
-> model/effort. End each stage with a plain-language explanation of the change, the problem it solves and its users;
+> Read docs/ai/759-skirmish-ai/HANDOFF.md. Resolve its next service/cargo/application contract on the selected Sol model,
+> then implement related stages while that model/effort remains suitable. Report what was authored and what comes next,
+> including what each will be used for and why it matters. Commit/push each coherent stage; pause at a stronger-reasoning
+> boundary and recommend the next model/effort. End each stage with the change, the problem it solves and its users;
 > use a short gameplay example for abstract concepts and distinguish what is established from what remains unproven.
 > Defer all tests/builds/validation to the final gate.
 
