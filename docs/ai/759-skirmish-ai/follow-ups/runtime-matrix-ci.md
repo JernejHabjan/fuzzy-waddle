@@ -35,6 +35,106 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
 
 ## Implementation order
 
+### Production order and service demand checkpoint (2026-10-07, unverified)
+
+Machinery batch 20, #815/#816 PRO-03/06/07 authority. Base `d1600887f09bb99df16e334a70abebba8ff3b6bf`;
+worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`.
+The containing commit owns this revision. Nx merge `59f72e037` is preserved; actual model/effort is unavailable.
+All executable verification remains at the final gate. No production family, issue or runtime result is complete.
+
+**Purpose:** these records distinguish the task assigned to a unit from the demand that purchased it. Later runtime
+oracles need this distinction to check useful work, rather than count a purchase or a route as task fulfillment.
+The new native admission/service-demand association is authored; actual query-caller attribution still needs its seam.
+
+| Acceptance | Implemented owner / consumer | Evidence state |
+| --- | --- | --- |
+| 1. Actual enqueue and rally scope | `PawnAiBlackboard`, `PawnOrderObservation`, `observeProductionRallyAction`, shared spawner | Native argument identity, successful admission, single-order synchronous origin and native error/result preservation reviewed; two Jest specs authored/unrun |
+| 2. Bounded marked capture/lifetime | `AiRuntimeRouteOrderCapture`, root/spatial/producer captures, `AiRuntimeRouteOrderV1` | Existing inventory only; exact weak order identities, initial/missing admissions, restore/reuse/disposal and two-boundary samples; Jest plus expanded capture spec unrun |
+| 3. Exact shared service/dated demand | Service command/request/admission helpers, service lineage, shared stamped lifecycle validator | Full payload/eight stamp fields/ordered context, native per-actor outcomes, accepted request, selected result and dated demand; synthetic Playwright unrun |
+| 4. Fail-closed report consumption | Order validator/projection, producer routes and existing causality/variant serializer | Orphan/failed/unqueried/overflow-tail validation, 256-order whole-group loss, separate purchase/service lineage; report specs unrun |
+| 5. Native query-caller and useful effect | `orderLineage.queryCallerAttributed: false`, mandatory caller/history/effect gaps | Explicitly open for next batch; current-order overlap is not invocation authority, arrival or continuous useful stability |
+| 6. Reviews/publication/handoff | This checkpoint, HANDOFF and exact task-owned staging | Source-only audits below; normal commit/push/exact remote verification closes only this authored slice, then pause |
+
+Native files under `libs/games/probable-waffle/phaser/src/lib/`:
+- `prefabs/ai-agents/pawn-order-observation.ts` and adjacent spec; `pawn-ai-blackboard.ts` has the successful-enqueue seam.
+- `entity/components/production/observe-production-rally-action.ts` and adjacent spec; `production-spawner.ts` scopes only
+  its already-selected actor/tile action. Fallback movement stays untouched and supplies no fabricated order.
+
+Marked files under `player/ai-controller/testing/`:
+- `ai-runtime-route-order-v1.ts`, `ai-runtime-route-order-capture.ts` and adjacent spec.
+- Existing `ai-runtime-producer-route-v1.ts`, producer capture/spec, root production capture and spatial capture consumers.
+
+Report files under `apps/portal-e2e/src/e2e/`:
+- `skirmish-ai-runtime-route-order-lineage.ts`, order validation/projection, service command/lineage/outcome helpers,
+  `skirmish-ai-runtime-route-order-fixture.ts` and `skirmish-ai-runtime-route-order.spec.ts`.
+- Existing producer route normalizer/contract, spatial kind router and shared production command lineage validator.
+  The validator's optional request/equality owners retain the exact old queue/construction defaults.
+
+`PawnOrderObservation` is a local weak diagnostic registry, with eight observers/scoped nesting and terminal depth loss
+inside an exhausted scope. Enqueue observers see the exact admitted `OrderData` after the native queue mutation. Rally
+origin is emitted at scope exit only when that exact synchronous native action admits one order; a cancellation callback
+admitting another order makes origin ambiguous. A native action can throw after admitting an order; the admission remains
+an observation, never a successful-action or useful-effect verdict. Listener-free rally calls add no controller reads.
+No listener errors replace native return/Promise/errors, queue shape, cancellation order, planner state or save/wire data.
+
+The marked capture subscribes through the existing root inventory/registration/tick attachment; it adds no actor scan,
+new tick listener, path query or timer. A maximum of 256 actor lifetimes acquire subscriptions; order IDs saturate at
+8,192. Weak identity includes actual actor/controller lifetime and an opaque restore token. Attempts to `setData` fence before mutation,
+including partial/failing attempts; unregister/re-register cannot revive an earlier identity even for the same object.
+A changed controller/blackboard is fenced when observed, with a separate reset reason; its replacement time is not inferred.
+Wrapper installation failures unsubscribe, and disposal preserves the original method descriptor and any later owner.
+Actual current-order samples are detached at request/terminal, with missing controller/oversized context/reader loss
+unavailable. Disposal releases subscriptions/maps and restores only owned wrappers. Original query Promise/result/args
+and the one native invocation remain unchanged. Capture volume and runtime/report cost are unmeasured final-gate risks.
+
+Reports retain admission separately from local rally association and stamped service scope. An exact observed admission
+must match the full shared service payload/context, delivery, request/receipt, admission outcome and selected decision.
+A future receipt cannot fill an already-resolved query. Mutable orders may retarget; the original admission remains the
+basis for command matching while retargeting has a gap. Native service application/terminal reports retain their sorted
+actor subsets: different addressed pawns may apply/reject independently, while duplicate actor effects fail closed.
+The command and order context retain their entire ordered actor list; another pawn's application cannot fill this one's gap. Construction-owned commands remain with existing construction
+lineage, not a service failure. Missing/legacy/non-AI authority stays unavailable. The actual matching selected demand
+row is dated by its decision sequence/tick, never borrowed from a later snapshot or an output's original purchase scope.
+A missing demand row/selection is a gap; duplicate or malformed supplied rows fail. Demands/claims/actor arrays are bounded.
+
+Validation inspects every raw order/current/rally observation, including unpaired failed terminals and unqueried tails.
+Native payload/stamp/actor contradictions, identity reuse, duplicate admissions, orphan/rally-output reuse, invalid
+selected intent/demand or overflow-tail corruption suppress all normalized authority groups. More than 256 distinct
+observed orders discard the complete producer route group. Equal current-order samples mean only those two samples
+agree; `queryCallerAttributed` stays false, with complete order history and useful-effect gaps always present.
+
+**Source Implementation Review (source only):** traced root inventory -> native successful enqueue -> marked weak identity,
+spawner selected action -> single-order scoped origin -> output identity, and wrapped native query -> both detached order
+samples -> exact admission/shared dispatch/selected demand -> existing variant report. Reviewed queue replacement ordering,
+observer throws, original action/Promise/error, multi-order cancellation ambiguity, nesting/counter limits, missing actor
+components, mutable targeting, failed restore, object reuse and wrapper/disposal ownership. Repaired stale-lifetime revival,
+construction-command misclassification, per-actor service outcome semantics, unqueried admission omissions, controller
+replacement/failed wrapper subscription cleanup and exhausted nested-scope revival during review.
+
+**Omission Audit (source only):** all new owners have native callers or marked-report consumers, with four new specs and
+one expanded spec covering actual reference/Promise identity, listener-free branches, ambiguity/depth loss, restoration,
+missing admission/selection/demand/current/receipt/delivery, retargeting, future receipt, reused/orphan/full-stamp/payload
+claims, native multi-pawn application scopes, identity saturation, failed restore/installation, method descriptors,
+controller replacement and order overflow/tails. No game/save/wire/AI input, new scan/query/timer, fixture/oracle weakening, schema/editor
+or baseline refresh, CI change or unrelated Nx file is included. Exact query-caller attribution, movement arrival/effects,
+continuous usefulness and broader adapter/oracles remain explicitly open; no executable validation ran.
+
+**Separate Final Closure Audit (source only):** the bounded admission/rally/service-demand authoring slice has concrete
+owners and report consumers. Its runtime/type/format/size/schema/editor/build/test evidence remains deferred. The native
+query-caller acceptance is intentionally unfinished, not relabeled as proven by co-observation. Normal task-only commit/
+push/remote verification closes publication of the authored slice, then pause. Next grouped **GPT-6.1 Sol / high**: native
+order/query caller identity, then actual arrival/service terminal and continuous usefulness. Editing the oversized pawn
+agent/movement owners requires a behavior-neutral prerequisite split; do not refresh their exemptions. Full production
+adapter/independent denominators/oracles, paired setup/legal research and strategic cancellation/transitions remain open.
+No reusable skill/tool change is warranted by this slice; existing routing and the user's reporting-purpose policy apply.
+
+**Deferred focused commands (unrun; append to the existing final gate):**
+
+```bash
+NX_DAEMON=false pnpm exec nx test probable-waffle-phaser --testPathPatterns='pawn-order-observation|observe-production-rally-action|ai-runtime-route-order-capture|ai-runtime-producer-route-capture|ai-runtime-production-capture|production-spatial-spawn' --skip-nx-cache
+pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts skirmish-ai-runtime-route-order.spec.ts skirmish-ai-runtime-producer-routes.spec.ts skirmish-ai-runtime-production-spatial-normalization.spec.ts skirmish-ai-runtime-production-causality-normalization.spec.ts
+```
+
 ### Production native navigation checkpoint (2026-10-07, unverified)
 
 Machinery batch 19, #815/#816 PRO-03/06/07 authority; prerequisite #821 split is in `024c6a75d`.

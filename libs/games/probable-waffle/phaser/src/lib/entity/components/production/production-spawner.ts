@@ -1,5 +1,6 @@
 import type { UnifiedQueueItem } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/queue-item";
 import { observeProductionOutput } from "./observe-production-output";
+import { observeProductionRallyAction } from "./observe-production-rally-action";
 import { observeQueueCompletionAuthority } from "../queue/observe-queue-completion-authority";
 import type Phaser from "phaser";
 import type { OwnerComponent } from "../owner-component";
@@ -133,14 +134,16 @@ function executeSpawnRallyAction(
   const targetGameObject = rallyPoint.getTargetGameObject();
   if (targetGameObject?.active) {
     observeProductionOutput(producer, queueItem, newGameObject, "actor_action", targetGameObject);
-    actionSystem.executeAction(undefined, targetGameObject);
+    observeProductionRallyAction(producer, queueItem, newGameObject,
+      () => actionSystem.executeAction(undefined, targetGameObject));
     return;
   }
 
   const targetTile = rallyPoint.getTargetTileVec3();
   if (targetTile) {
     observeProductionOutput(producer, queueItem, newGameObject, "tile_action", null, targetTile);
-    actionSystem.executeAction(OrderType.Move, undefined, targetTile);
+    observeProductionRallyAction(producer, queueItem, newGameObject,
+      () => actionSystem.executeAction(OrderType.Move, undefined, targetTile));
   } else {
     observeProductionOutput(producer, queueItem, newGameObject, "no_target");
   }

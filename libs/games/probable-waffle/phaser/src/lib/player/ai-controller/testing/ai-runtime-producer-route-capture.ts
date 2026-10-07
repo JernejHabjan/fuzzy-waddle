@@ -12,6 +12,7 @@ import { captureAiRuntimeProductionItem } from "./ai-runtime-production-item";
 import type { AiRuntimeProductionSpatialV1 } from "./ai-runtime-production-spatial-v1";
 import type { AiRuntimeNavigationObservation } from "./ai-runtime-navigation-observation";
 import type { AiRuntimeProducerRouteV1 } from "./ai-runtime-producer-route-v1";
+import { AiRuntimeRouteOrderCapture } from "./ai-runtime-route-order-capture";
 
 /** Passive instance wrappers and actual returned-object bindings, owned only by the marked test capture. */
 export class AiRuntimeProducerRouteCapture {
@@ -22,6 +23,7 @@ export class AiRuntimeProducerRouteCapture {
   /** Weak object identity prevents same-ID replacement actors from inheriting output ownership. */
   private products = new WeakMap<Phaser.GameObjects.GameObject, { outputId: number; playerNumber: number }>();
   private readonly restores: (() => void)[] = [];
+  readonly orders: AiRuntimeRouteOrderCapture;
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -30,7 +32,7 @@ export class AiRuntimeProducerRouteCapture {
     private readonly identify: (actorId: string, item: UnifiedQueueItem) => string,
     private readonly append: (playerNumber: number, value: AiRuntimeProductionSpatialV1) => void,
     private readonly navigationObservation?: AiRuntimeNavigationObservation
-  ) {}
+  ) { this.orders = new AiRuntimeRouteOrderCapture(scene, boundary, append); }
 
   /** Bind the actual returned object before rally starts. At most 256 outputs acquire future-query bindings. */
   observeOutput(event: Extract<ProductionSpatialAuthorityEvent, { kind: "output" }>): void {
@@ -46,6 +48,7 @@ export class AiRuntimeProducerRouteCapture {
         item: captureAiRuntimeProductionItem(producer.actorId, event.item, this.identify),
         rallyMode: event.rallyMode, target: event.target ? captureAiRuntimeCreatedActor(event.target) : null,
         targetTile: event.targetTile, gaps });
+      if (!gaps.length) this.orders.bindOutput(event, outputId);
     } catch { /* Unobserved output remains missing; a later object/name match cannot repair it. */ }
   }
 
@@ -89,6 +92,7 @@ export class AiRuntimeProducerRouteCapture {
     this.restores.reverse().forEach((restore) => restore());
     this.restores.length = 0;
     this.products = new WeakMap();
+    this.orders.dispose();
   }
 
   private emit(playerNumber: number, value: AiRuntimeProductionSpatialV1): void {
@@ -119,6 +123,7 @@ export class AiRuntimeProducerRouteCapture {
         snapshot = () => ({ ...this.boundary(), kind: "producer_path", queryId,
           purpose: ownedOutput ? "product_output" : "producer_service", outputId: ownedOutput?.outputId ?? null,
           method, dynamicBlockerCount, radiusTiles, navigation: this.navigationObservation?.sample(),
+          currentOrder: this.orders.sample(source),
           sourceInCaptureScene: source.scene === this.scene, targetInCaptureScene: target ? target.scene === this.scene : null,
           source: captureAiRuntimeCreatedActor(source), target: target ? captureAiRuntimeCreatedActor(target) : null,
           sourceTile: getGameObjectCurrentTile(source) ?? null,

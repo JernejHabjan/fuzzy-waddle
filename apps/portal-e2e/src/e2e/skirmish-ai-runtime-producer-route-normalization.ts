@@ -1,4 +1,6 @@
 import { projectRuntimeNativeNavigation } from "./skirmish-ai-runtime-native-navigation";
+import { validateRuntimeRouteOrders } from "./skirmish-ai-runtime-route-order-validation";
+import { projectRuntimeRouteOrder } from "./skirmish-ai-runtime-route-order-projection";
 import { validateRuntimeNativeQuery } from "./skirmish-ai-runtime-native-navigation-validation";
 import type { AiRuntimeProductionCaptureV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
@@ -31,7 +33,9 @@ export function normalizeRuntimeProducerRoutes(
   const productIds = new Set<string>();
   const consumedItems = new Set<string>();
   let lastNavigation: AiRuntimeNavigationBoundaryV1 | undefined;
-  let overflow = false;
+  const orders = validateRuntimeRouteOrders(capture);
+  failures.push(...orders.failures);
+  let overflow = orders.overflow;
   for (const fact of facts) {
     const value = fact.spatial;
     if (value.kind !== "output" && value.kind !== "producer_path") continue;
@@ -96,7 +100,9 @@ export function normalizeRuntimeProducerRoutes(
         value.path === null && !value.gaps.includes("production_route_path_overflow")) :
       value.path !== null || value.result !== null) failures.push("production_route_query_result_invalid");
     const nativeNavigation = projectRuntimeNativeNavigation(before.navigation, value.navigation, value.nativeQuery);
-    const entryGaps = ["production_route_useful_arrival_missing", ...nativeNavigation.gaps];
+    const order = projectRuntimeRouteOrder(capture, request, fact, orders);
+    failures.push(...order.failures);
+    const entryGaps = ["production_route_useful_arrival_missing", ...nativeNavigation.gaps, ...order.lineage.gaps];
     if (nativeNavigation.cacheLineage === "unavailable") entryGaps.push("production_route_native_cache_provenance_missing");
     if (nativeNavigation.completedRebuildInterval === "unavailable") entryGaps.push("production_route_native_navigation_revision_missing");
     if (value.phase !== "resolved") entryGaps.push("production_route_native_query_failed");
@@ -137,6 +143,7 @@ export function normalizeRuntimeProducerRoutes(
     if (topologyObservation !== "same_observed") entryGaps.push(`production_route_topology_${topologyObservation}`);
     entryGaps.forEach((gap) => gaps.add(gap));
     if (!overflow) paths.push({ requested: request, terminal: fact, output, currentAtResolution, topologyObservation, nativeNavigation,
+      orderLineage: order.lineage,
       gaps: entryGaps });
   }
   if (requests.size !== completed.size) gaps.add("production_route_pending_or_missing_queries");

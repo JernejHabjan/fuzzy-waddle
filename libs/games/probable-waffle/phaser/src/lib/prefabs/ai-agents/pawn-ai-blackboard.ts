@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { Blackboard } from "../../ai/blackboard";
 import { OrderData } from "../../ai/OrderData";
 import { Subject } from "rxjs";
+import { PawnOrderObservation } from "./pawn-order-observation";
 
 export class PawnAiBlackboard extends Blackboard {
   private orderQueue: OrderData[] = [];
@@ -23,6 +24,7 @@ export class PawnAiBlackboard extends Blackboard {
 
   addOrder(order: OrderData): void {
     this.orderQueue.push(order);
+    PawnOrderObservation.enqueued(this, order);
   }
 
   anyOrderInQueue(): boolean {
@@ -70,6 +72,7 @@ export class PawnAiBlackboard extends Blackboard {
     this.resetCurrentOrder();
     if (queuedOrders.length > 0) this.queuedOrderCancellationHandler?.(queuedOrders);
     this.orderQueue = [orderData];
+    PawnOrderObservation.enqueued(this, orderData);
   }
 
   resetCurrentOrder(callCancellationHandler: boolean = true): void {

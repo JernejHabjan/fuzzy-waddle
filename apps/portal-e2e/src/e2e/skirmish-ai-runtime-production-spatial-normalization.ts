@@ -59,7 +59,8 @@ export function normalizeRuntimeProductionSpatial(capture: AiRuntimeProductionCa
     if ((value.kind === "builder_path" || value.kind === "producer_path") && value.phase === "requested" &&
       value.nativeQuery !== undefined) failures.push("production_spatial_native_query_before_invocation");
     // Producer/output routes have their own bounded validator and exact completion lineage.
-    if (value.kind === "output" || value.kind === "producer_path") continue;
+    if (value.kind === "output" || value.kind === "producer_path" || value.kind === "route_order" ||
+      value.kind === "route_rally_order" || value.kind === "route_order_restore") continue;
     value.gaps.forEach((gap) => gaps.add(gap));
     if (fact.playerNumber !== capture.playerNumber || !integer(fact.sequence) || fact.sequence === 0 ||
       !integer(fact.tick) || fact.tick < capture.startedTick || value.snapshotRestoreInProgress ||

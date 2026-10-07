@@ -3,6 +3,7 @@ import type { AiRuntimeProductionFactV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
 import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
 import type { RuntimeProductionCompletionV1 } from "./skirmish-ai-runtime-production-completion";
+import type { RuntimeRouteOrderLineageV1 } from "./skirmish-ai-runtime-route-order-lineage";
 
 /** Query/output diagnostics, never full producer reachability or useful-effect evidence. Capture-wide joins are retrospective. */
 export interface RuntimeProducerRoutesV1 {
@@ -24,6 +25,7 @@ export interface RuntimeProducerRoutesV1 {
     readonly topologyObservation: "same_observed" | "changed" | "unavailable";
     /** Native lookup/cache generation diagnostics, kept separate from graph observations and arrival. */
     readonly nativeNavigation: ReturnType<typeof projectRuntimeNativeNavigation>;
+    readonly orderLineage: RuntimeRouteOrderLineageV1;
     readonly gaps: readonly string[];
   }[];
 }

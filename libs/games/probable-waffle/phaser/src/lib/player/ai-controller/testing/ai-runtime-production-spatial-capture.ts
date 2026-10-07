@@ -57,6 +57,9 @@ export class AiRuntimeProductionSpatialCapture {
       snapshotRestoreInProgress: isSnapshotApplyInProgress(this.scene), sceneActive: this.scene.sys?.isActive() ?? false };
   }
 
+  watchActor(actor: Phaser.GameObjects.GameObject): void { this.producerRoutes?.orders.watchActor(actor); }
+  unwatchActor(actor: Phaser.GameObjects.GameObject): void { this.producerRoutes?.orders.unwatchActor(actor); }
+
   private readonly observeNative = (event: ProductionSpatialAuthorityEvent): void => {
     if (this.disposed) return;
     if (event.kind === "placement") {

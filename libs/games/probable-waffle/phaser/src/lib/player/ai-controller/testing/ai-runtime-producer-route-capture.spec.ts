@@ -13,11 +13,16 @@ import { AiRuntimeProducerRouteCapture } from "./ai-runtime-producer-route-captu
 import { AiRuntimeNavigationObservation } from "./ai-runtime-navigation-observation";
 import { NavigationProvenance } from "../../../world/services/navigation-provenance";
 import type { NavigationNativeQuery } from "../../../world/services/navigation-native-query";
+import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller";
+import { PawnAiBlackboard } from "../../../prefabs/ai-agents/pawn-ai-blackboard";
+import { OrderData } from "../../../ai/OrderData";
+import { OrderType } from "../../../ai/order-type";
 
 jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
 jest.mock("../../../data/game-object-helper", () => ({ getGameObjectCurrentTile: jest.fn() }));
 jest.mock("../../../entity/components/production/production-component", () => ({ ProductionComponent: class {} }));
 jest.mock("./capture-ai-runtime-created-actor", () => ({ captureAiRuntimeCreatedActor: jest.fn() }));
+jest.mock("../../../prefabs/ai-agents/pawn-ai-controller", () => ({ PawnAiController: class {} }));
 
 /** Synthetic service instance and mutable result; proves only passive call/identity/disposal contracts once executed. */
 function fixture() {
@@ -53,6 +58,23 @@ function fixture() {
 }
 
 describe("passive producer service/output route capture", () => {
+  it("samples actual current order identities at both boundaries while preserving the native Promise and one query", async () => {
+    const f = fixture(), board = new PawnAiBlackboard();
+    const previous = jest.mocked(getActorComponent).getMockImplementation();
+    jest.mocked(getActorComponent).mockImplementation((actor, component) => component === PawnAiController ?
+      { blackboard: board } as never : previous?.(actor, component));
+    f.output();
+    const first = new OrderData(OrderType.Move, { targetTileLocation: { x: 8, y: 9, z: 0 } });
+    board.addOrder(first); board.setCurrentOrder(first);
+    const returned = f.navigation.findPathFromGameObjectToTile(f.product, { x: 8, y: 9 });
+    expect(returned).toBe(f.promise);
+    const second = new OrderData(OrderType.Move, { targetTileLocation: { x: 8, y: 9, z: 0 } });
+    board.setCurrentOrder(second); f.settle([]); await returned;
+    const paths = f.records.filter((value) => value.kind === "producer_path");
+    expect(paths).toMatchObject([{ currentOrder: { orderId: 1, admissionObserved: true } },
+      { currentOrder: { orderId: 2, admissionObserved: false } }]);
+    expect(f.tile).toHaveBeenCalledTimes(1); f.capture.dispose();
+  });
   it("retains exact native water lookup lineage through the producer-output wrapper", async () => {
     const f = fixture(), provenance = new NavigationProvenance(); f.capture.dispose();
     f.scene.events = new Phaser.Events.EventEmitter();

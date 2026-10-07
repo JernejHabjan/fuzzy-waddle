@@ -131,6 +131,7 @@ export class AiRuntimeProductionCapture {
       });
       this.queueSubscriptions.get(actor)?.unsubscribe();
       this.queueSubscriptions.delete(actor);
+      this.spatialCapture.unwatchActor(actor);
     }));
     // Components can finish initialization after index registration. This test-only scan attaches missing listeners.
     this.subscriptions.add(ticks.tick$.subscribe(() => index.getAllIdActors().forEach((actor) => this.watchQueue(actor))));
@@ -242,6 +243,7 @@ export class AiRuntimeProductionCapture {
   };
 
   private watchQueue(actor: Phaser.GameObjects.GameObject): void {
+    this.spatialCapture.watchActor(actor);
     if (this.disposed || actor.scene !== this.scene || this.queueSubscriptions.has(actor)) return;
     const queue = getActorComponent(actor, QueueComponent);
     if (!queue) return;
