@@ -529,6 +529,11 @@ concrete routine work. Keep related work together to avoid unnecessary switches.
   plain-language explanation of what it will be used for and why it matters to the game or later evidence. Connect
   technical files/contracts to that purpose; a list of names alone is insufficient. Keep reports short and distinguish
   authored code from validated behavior. Apply this to progress updates, final replies and cold-start summaries.
+- At every stage ending, explain the result in the same accessible style as the worker/Gather attribution example:
+  state what changed, explain the problem it solves and who uses it, and use a brief gameplay example when an abstract
+  term needs one. Explain terms such as attribution in context rather than relying on file names or technical labels.
+  Say what the change establishes and what remains unproven, then give the next step and its purpose, commit/push
+  status, deferred evidence and recommended model/effort. Keep this explanation short; expand only when needed for understanding.
 - Work through the selected batch. Use source inspection to review wiring and omissions; tests, E2E, simulations,
   lint, type checks, builds, doctor/context and validation commands remain deferred to the announced final gate.
 - At a model boundary, finish and source-review the slice, commit/push task-owned work, update this ledger with exact
@@ -550,7 +555,9 @@ Copyable next-chat prompt:
 
 > Read docs/ai/759-skirmish-ai/HANDOFF.md. Implement its next model batch; report what was authored and what comes next,
 > including what each will be used for and why it matters. Commit/push, then pause before the next batch and recommend
-> model/effort. Defer all tests/builds/validation to the final gate.
+> model/effort. End each stage with a plain-language explanation of the change, the problem it solves and its users;
+> use a short gameplay example for abstract concepts and distinguish what is established from what remains unproven.
+> Defer all tests/builds/validation to the final gate.
 
 Optional [#822](https://github.com/JernejHabjan/fuzzy-waddle/issues/822) owns a future island map and natural
 transport-required runtime. It is detached from #759 and does not block core readiness.
