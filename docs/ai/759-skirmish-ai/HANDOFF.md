@@ -8,10 +8,18 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 **Next session (user policy, 2026-10-07):** retain **GPT-6.1 Sol / high** for grouped PRO-03/06/07 authority.
 Current step: #815/#816 machinery batch 19, **native navigation query/cache/completed-rebuild provenance**, authored/unverified.
-This batch began at `024c6a75d0d756afcae57be0b8ab250676ad3ce7`; its containing commit owns the new revision.
+Batch 19 implementation is in `e7770f36b6f244ac2b3ee8d447b7416748c23e12`, based on `024c6a75d`.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify local/remote on resume.
 Nx merge `59f72e037` is preserved. Actual model/effort is unavailable. No family/issue is complete.
 The user removed the comment-permission rule. All executable validation remains at the final gate.
+
+**Authored work — what it is for:** batch 19 records how navigation produced a route, including cached results and
+completed map rebuilds. The final tests will use these records to identify routes calculated against older navigation
+state and explain movement failures. This makes later reachability checks more trustworthy; the records are unvalidated.
+
+**Next step — what it is for:** connect each producer/product route to its actual service or rally order and the AI's
+dated demand. This supplies the link needed to check that a new unit or production building fulfills the task that
+justified creating it. Arrival and stability observations will then show that the useful effect happens and lasts.
 
 Read the [native navigation checkpoint](follow-ups/runtime-matrix-ci.md#production-native-navigation-checkpoint-2026-10-07-unverified).
 **Next exact authoring action:** join exact shared service/rally-command identity and dated useful demand to the actual
@@ -469,7 +477,12 @@ packets or repo skills recommend Terra or automatic Astra use. It applies to thi
   cases while the contract remains suitable; dependencies take priority over grouping. Do not switch after each file
   or ID. Never downgrade an unresolved architecture/authority/oracle decision just to finish it on Luna.
 - At session start report a small grid: batch/issue, selected IDs, state, authored versus validated evidence,
-  next boundary and model/effort. Record actual settings only when known; recommendations do not change the model.
+  purpose of the authored work, next boundary with its purpose, and model/effort. Record actual settings only when known;
+  recommendations do not change the model.
+- User reporting policy (2026-10-07): whenever describing what was authored or what comes next, include a short,
+  plain-language explanation of what it will be used for and why it matters to the game or later evidence. Connect
+  technical files/contracts to that purpose; a list of names alone is insufficient. Keep reports short and distinguish
+  authored code from validated behavior. Apply this to progress updates, final replies and cold-start summaries.
 - Work through the selected batch. Use source inspection to review wiring and omissions; tests, E2E, simulations,
   lint, type checks, builds, doctor/context and validation commands remain deferred to the announced final gate.
 - At a model boundary, finish and source-review the slice, commit/push task-owned work, update this ledger with exact
@@ -489,8 +502,9 @@ packets or repo skills recommend Terra or automatic Astra use. It applies to thi
 
 Copyable next-chat prompt:
 
-> Read docs/ai/759-skirmish-ai/HANDOFF.md. Implement its next model batch; report progress, commit/push, then pause
-> before the next batch and recommend model/effort. Defer all tests/builds/validation to the final gate.
+> Read docs/ai/759-skirmish-ai/HANDOFF.md. Implement its next model batch; report what was authored and what comes next,
+> including what each will be used for and why it matters. Commit/push, then pause before the next batch and recommend
+> model/effort. Defer all tests/builds/validation to the final gate.
 
 Optional [#822](https://github.com/JernejHabjan/fuzzy-waddle/issues/822) owns a future island map and natural
 transport-required runtime. It is detached from #759 and does not block core readiness.
@@ -778,7 +792,8 @@ not block this gate.
 
 - A generic `continue implementing` resumes the Quick resume's next model batch, then the first remaining boundary
   in the execution grid. Read only its linked plan, existing context packet, named fixture rows, owning code and
-  adjacent specs. Report the step and obey the model-batch pause contract; do not run a context generator during authoring.
+  adjacent specs. Report the step and its purpose, following the model-batch reporting/pause contract; do not run a
+  context generator during authoring.
 - For this implementation-only sweep, batch coherent code and test authoring without running checks. At the final
   validation gate, use focused checks to guide repairs and one grouped Playwright process per coherent batch. Follow
   the skirmish skill's bounded reporting and long-process rules then.
