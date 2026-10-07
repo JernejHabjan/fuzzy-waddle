@@ -8,6 +8,7 @@ import { PawnOrderObservation } from "../../../prefabs/ai-agents/pawn-order-obse
 import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller";
 import { MovementQueryObservation } from "../../../entity/systems/movement-query-observation";
 import { MovementCompletionObservation } from "../../../entity/systems/movement-completion-observation";
+import { PawnResourceServiceObservation } from "../../../prefabs/ai-agents/pawn-resource-service-observation";
 import { getGameObjectCurrentTile } from "../../../data/game-object-helper";
 import { AiRuntimeRouteOrderCapture } from "./ai-runtime-route-order-capture";
 import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor";
@@ -36,6 +37,34 @@ function fixture() {
 }
 
 describe("marked capture order identities (unrun until final gate)", () => {
+  it("freezes service order data before native work and fences a pending return across restore", async () => {
+    const f = fixture(), order = new OrderData(OrderType.Gather, { targetGameObject: f.producer });
+    f.board.addOrder(order); f.board.setCurrentOrder(order);
+    let settle: ((amount: number) => void) | undefined;
+    const original = new Promise<number>((resolve) => { settle = resolve; });
+    const pending = PawnResourceServiceObservation.invoke(f.product, f.board, order, f.producer, "gather", () => original);
+    order.orderType = OrderType.ReturnResources; order.data.targetGameObject = f.product;
+    f.board.setCurrentOrder(new OrderData(OrderType.Stop));
+    f.board.setData({}, f.scene);
+    if (!settle) throw new Error("service_capture_pending_missing");
+    settle(2); expect(pending).toBe(original); expect(await pending).toBe(2);
+    const attempts = f.records.filter((record) => record.kind === "service_attempt");
+    expect(attempts).toMatchObject([
+      { attemptId: 1, phase: "started", lifetimeValid: true, order: { orderId: 1, orderType: OrderType.Gather } },
+      { attemptId: 1, phase: "resolved", amount: 2, lifetimeValid: false,
+        order: { orderId: 1, orderType: OrderType.Gather, target: { actorId: "producer" } } }
+    ]); f.capture.dispose();
+  });
+
+  it("keeps pending service observation partial after capture disposal", async () => {
+    const f = fixture(), order = new OrderData(OrderType.ReturnResources, { targetGameObject: f.producer });
+    f.board.addOrder(order);
+    const promise = Promise.resolve(3);
+    const pending = PawnResourceServiceObservation.invoke(f.product, f.board, order, f.producer, "drop_off", () => promise);
+    const count = f.records.length; f.capture.dispose();
+    expect(await pending).toBe(3); expect(f.records).toHaveLength(count);
+    expect(f.records.at(-1)).toMatchObject({ kind: "service_attempt", phase: "started", amount: null });
+  });
   it("captures one execution with its retained order across replacement, then fences restore and disposes listeners", () => {
     const f = fixture(), order = new OrderData(OrderType.Move, { targetTileLocation: { x: 8, y: 9, z: 0 } });
     f.board.addOrder(order); f.board.setCurrentOrder(order);

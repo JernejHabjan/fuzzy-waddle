@@ -12,6 +12,7 @@ import { MovementQueryObservation } from "../../../entity/systems/movement-query
 import type { MovementQueryContext } from "../../../entity/systems/movement-query-context";
 import type { AiRuntimeRouteCallerV1 } from "./ai-runtime-route-caller-v1";
 import { AiRuntimeMovementCapture } from "./ai-runtime-movement-capture";
+import { AiRuntimeServiceAttemptCapture } from "./ai-runtime-service-attempt-capture";
 
 /** Test-owned bounded weak order identities and subscriptions. Current-order overlap never supplies caller authority. */
 export class AiRuntimeRouteOrderCapture {
@@ -20,6 +21,7 @@ export class AiRuntimeRouteOrderCapture {
   private bindingCount = 0;
   private nextInvocationId = 1;
   private readonly movement: AiRuntimeMovementCapture;
+  private readonly services: AiRuntimeServiceAttemptCapture;
   private callers = new WeakMap<MovementQueryContext,
     { invocationId: number; order: AiRuntimeRouteOrderV1 | null; lifetime: object; restoreToken: object }>();
   private identities = new WeakMap<OrderData,
@@ -36,6 +38,8 @@ export class AiRuntimeRouteOrderCapture {
     private readonly append: (owner: number, value: AiRuntimeProductionSpatialV1) => void) {
     this.movement = new AiRuntimeMovementCapture(scene, boundary,
       (actor, context) => this.caller(actor, { context, stage: "initial" }), append);
+    this.services = new AiRuntimeServiceAttemptCapture(scene, boundary,
+      (actor, order) => this.snapshot(actor, order, false), append);
   }
 
   bindOutput(event: Extract<ProductionSpatialAuthorityEvent, { kind: "output" }>, outputId: number): void {
@@ -87,6 +91,10 @@ export class AiRuntimeRouteOrderCapture {
         }
       });
       const unsubscribeMovement = this.movement.watch(actor, board);
+      const unsubscribeServices = this.services.watch(actor, board, () => {
+        this.watchActor(actor);
+        return this.actors.get(actor) === state ? state.restoreToken : undefined;
+      });
       const wrapper: typeof original = (...args) => {
         // Fence even failed or partial restores before invoking the original mutator once.
         state.restoreToken = {};
@@ -102,6 +110,7 @@ export class AiRuntimeRouteOrderCapture {
         unsubscribe();
         unsubscribeCaller();
         unsubscribeMovement();
+        unsubscribeServices();
         try {
           if (board.setData === wrapper) {
             if (descriptor) Object.defineProperty(board, "setData", descriptor);

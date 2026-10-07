@@ -75,6 +75,34 @@ Deferred command: `pnpm exec nx test probable-waffle-phaser --testPathPatterns='
 Next: marked capture freezes start data and lifetime boundaries before reporting; stay on the selected Sol profile within
 this concrete group, without an intermediate switch.
 
+**Stage 27 — authored/unverified**, base `4b0dd34d029e677a006a1b2dc174b25f35c144b5`:
+
+| Acceptance | Implementation / purpose | Evidence |
+| --- | --- | --- |
+| 1. Exact detached attempt | New `AiRuntimeServiceAttemptV1` / `AiRuntimeServiceAttemptCapture` | Weak execution IDs capped at 8,192; start-time snapshot reuses native order identity; terminal never resnapshots mutable order |
+| 2. Lifetime/source/target boundaries | Capture `watch`, existing order-capture state/token | Existing board restore token and actor/controller subscription lifetime, actual source/target and capture-scene membership sampled independently |
+| 3. Existing raw consumer / cleanup | `AiRuntimeProductionSpatialV1`, `AiRuntimeRouteOrderCapture` | Native service subscriber installed/released with existing actor inventory; raw root fact capture includes service records; spatial report delegates kind to the next dedicated validator |
+| 4. Pending work cases | Extended order-capture spec | Frozen Gather order across mutation/replacement, restore-invalid terminal and no late append after disposal authored/unrun |
+| 5. Resume / publication | HANDOFF/checkpoint | Exact next report contract and limitations, scoped commit/push and remote verification |
+
+**Source Implementation Review:** a started event binds one weak native execution and freezes the already selected order
+before the one native callee begins. Terminal reuses that snapshot, even after order/target mutation; actual target boundary
+is independently sampled. The existing owner getter detects controller replacement and token invalidation; current-order
+replacement alone does not invalidate an earlier attempt. Unwatch/disposal removes listeners and leaves partial history,
+never transfers it to a new board. Failed/lost readers cannot retry the native service. Report authority follows in stage 28.
+
+**Omission Audit:** acceptance 1–5 covered by consumed raw types/owners and authored cases. No extra scans/timers/queries,
+Promise wrapping, native component policy, save/wire/planner state, baseline refresh or CI/config change. Monetary/cargo
+claims remain absent. Existing actor and fact caps bound retained work; callback cost remains unmeasured.
+
+**Separate Final Closure Audit:** rechecked start-time detachment, partial histories, lifetime token getter, subscription
+release, union consumers and exact staged scope. All executable checks remain deferred; no issue/family closure. Normal
+commit/push and exact local/remote SHA verification close publication. No skill/tool changes apply.
+
+Deferred command: `pnpm exec nx test probable-waffle-phaser --testPathPatterns='ai-runtime-route-order-capture|pawn-resource-service-observation' --runInBand`.
+Next: strict service-attempt validation/projection, retaining actual credit/cargo/stability gaps. Continue the selected
+profile without pausing within this three-stage group.
+
 ### Production movement arrival checkpoint (2026-10-07, unverified)
 
 Machinery batch 25, #815/#816 PRO-03/06/07 physical movement evidence.

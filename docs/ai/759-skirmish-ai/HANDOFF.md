@@ -9,16 +9,17 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 **Next session (user policy, 2026-10-07):** last selected profile is **GPT-6.1 Sol / medium**; host settings are unknown.
 The user explicitly authorized three consecutive service-foundation stages: native attempt ownership
 (26), marked capture (27), strict report projection (28). Continue within this group; do not pause for routine model advice.
-Current step: #815/#816 machinery batch 26, **native resource-service attempts**, authored/unverified.
-Base `1bfa9740460f0b2a7836ab44ebc0d38c18eb063e`; the containing commit owns this slice.
+Current step: #815/#816 machinery batch 27, **marked resource-service capture**, authored/unverified.
+Base `4b0dd34d029e677a006a1b2dc174b25f35c144b5`; the containing commit owns this slice.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify local/remote on resume.
 Nx merge `59f72e037` is preserved. No family/issue is complete. The user removed the comment-permission rule.
 All executable tests and validation remain deferred to the final gate.
 
-**Latest authored work — what it is for:** `PawnResourceServiceObservation` observes the one existing gather/drop-off
-callee, retaining the action's actual order/target across awaits and replacement. Started/resolved/rejected/threw and exact
-native amount are separate from income/cargo provenance. Listener-free calls forward directly; marked calls forward the
-same Promise/errors without an added await. Observer/pawn boundary specs are authored/unrun; gatherer/drain policy remains.
+**Latest authored work — what it is for:** `AiRuntimeServiceAttemptCapture` retains bounded weak attempt identities,
+start-time detached service orders and actual source/target/clock/lifetime samples in the existing raw capture. Mutable
+orders cannot rewrite pending attempt purpose; restore/reuse/controller replacement invalidates old lifetime. Existing
+actor subscriptions own cleanup. Raw records retain exact native amount, never income/cargo attribution. Added capture
+cases are authored/unrun. Stage 26's observer forwards the same native Promise/errors; gatherer/drain policy remains.
 
 **Prior movement work:** marked captures now retain native execution start, selected endpoint, physical
 arrival/stop and boolean-return/error boundaries through an explicit transient token. Original versus fallback endpoint
@@ -29,14 +30,14 @@ neither endpoint arrival nor native return claims task usefulness. New observer/
 cases are authored/unrun. No gameplay policy, extra query/timer/scan, saved/wire/planner field or CI change was added.
 Callback/error/Promise/occupancy behavior and capture/report cost remain unverified.
 
-**Next step — what it is for:** marked capture freezes the actual service order/target before native callbacks and records
-independent source/target/clock/lifetime boundaries. The report then validates native attempt ownership; it cannot treat a
-returned amount as resource credit. Actual credited cargo and sustained usefulness remain a separate subsequent contract.
+**Next step — what it is for:** strict report projection checks every supplied service attempt and its exact earlier order
+admission, then reuses dated service-demand lineage. This identifies whose attempt ran without treating a returned amount
+as resource credit. Actual credited cargo and sustained usefulness remain separate subsequent contracts.
 
 Read the [service foundation checkpoint](follow-ups/runtime-matrix-ci.md#production-service-foundation-checkpoints-2026-10-07-unverified).
-**Next exact authoring:** add bounded service capture under existing order-capture actor subscriptions: weak native
-execution IDs, start-time detached order snapshot, actual target, independent boundary samples and existing lifetime fences.
-Unsubscribe on disposal and preserve native Promise/errors. Then author strict retrospective attempt report projection.
+**Next exact authoring:** validate service start/terminal identity, amount/phase, all frozen order stamps and source/target
+samples, restore/reuse/controller fences and contradiction/overflow tails. Add a consumed service-attempt report field with
+paired native result and independent order/admission/service-demand ownership; retain partial/missing evidence gaps.
 No native amount supplies resource type, beneficiary, applied credit or cargo history. Later design must inspect
 `pawn-agent-resources.ts`, `GathererComponent.gatherResources/returnResources`, `ResourceDrainComponent.returnResources`
 and `emitResource`/actual resource application. Define a bounded transient service/cargo lineage contract across native
@@ -56,7 +57,8 @@ contract first, then group its implementation and report/spec authoring on Sol /
 | Strict caller validation/projection | Authored, unverified (batch 24) | Identify the order served without borrowing current-order or purchase evidence |
 | Native movement completion/arrival | Authored, unverified (batch 25) | Separate physical endpoint arrival, fallback, stop and native return |
 | Native service-attempt ownership | Authored, unverified (batch 26) | Retain the actual worker task and native target |
-| Marked service capture / report | Next (27 / 28) | Freeze and validate attempts without claiming income |
+| Marked service capture | Authored, unverified (batch 27) | Freeze attempt orders and lifetime boundaries |
+| Strict service report | Next (28) | Validate attempt ownership without claiming income |
 | Credited resource-service effects | Open design after foundation | Establish actual credit and exact cargo lineage |
 | Continuous useful stability | Open; depends on service contract | Establish retained useful benefit over a defined interval |
 | Full production adapter/oracles/setup/strategy | Open | Complete independent PRO-03/06/07 runtime assertions |
@@ -515,7 +517,7 @@ merely because their issue title mentions testing. All authored work remains unv
 | 1 / as needed | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `partial` | Split only owners blocking the selected batch | Stay Sol medium; optional Luna high |
 | 2 | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829) | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof | GPT-6.1 Sol, medium |
 | 3 | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `in_progress` | Finish pressure/recovery policy; defer victory proof | GPT-6.1 Sol, medium |
-| 4 / next batch | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Machinery 26 native service attempts authored/unverified; continue capture/report 27/28 | Selected Sol profile; high for subsequent cargo/application design |
+| 4 / next batch | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Machinery 27 marked service capture authored/unverified; continue report 28 | Selected Sol profile; high for subsequent cargo/application design |
 | 5 / paired | #815 / #816 | `in_progress` | Remaining family contracts, focused fixtures, frozen maps and continuous-match tier | Sol medium; optional Luna high for established cases |
 | 6 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `in_progress` | Exact-once interruption, terminal and re-entry parity | GPT-6.1 Sol, medium |
 | 7 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `partial` | Generation fencing, phase restore/replay and cleanup cases | GPT-6.1 Sol, medium |

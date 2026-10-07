@@ -7,6 +7,7 @@ import type { AiRuntimeProductionQueueV1 } from "./ai-runtime-production-queue-v
 import type { AiRuntimeConstructionCatalogV1 } from "./ai-runtime-construction-catalog-v1";
 import type { AiRuntimeNavigationBoundaryV1 } from "./ai-runtime-navigation-boundary-v1";
 import type { AiRuntimeMovementV1 } from "./ai-runtime-movement-v1";
+import type { AiRuntimeServiceAttemptV1 } from "./ai-runtime-service-attempt-v1";
 
 /** Detached native spatial observations. No verdict supplies a general producer-reachable or safe-site boolean. */
 export type AiRuntimeProductionSpatialV1 = {
@@ -17,6 +18,7 @@ export type AiRuntimeProductionSpatialV1 = {
 } & (
   | AiRuntimeProducerRouteV1
   | AiRuntimeMovementV1
+  | AiRuntimeServiceAttemptV1
   | { readonly kind: "placement"; readonly command: ConstructCommand; readonly site: AiRuntimeCreatedActorV1;
     readonly footprint: readonly Vector2Simple[] | null; readonly legal: boolean;
     /** Legacy captures omit pricing; omission cannot be filled from a later definition or checkpoint. */
