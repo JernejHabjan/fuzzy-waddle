@@ -35,6 +35,77 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
 
 ## Implementation order
 
+### Production caller report checkpoint (2026-10-07, unverified)
+
+Machinery batch 24, #815/#816 PRO-03/06/07 report-side caller/order ownership.
+Base `fc358946368d3ab595c7fd56bc1f9b7964eebb5d`; the containing commit owns this slice.
+Integration worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`.
+User-selected setting remains GPT-6.1 Sol / medium; actual host settings are not independently exposed.
+Nx merge `59f72e037` is preserved. All executable validation stays deferred.
+
+**Purpose:** final report assertions can distinguish the order a native query actually serves from a later current order.
+A worker whose task is replaced during a pending route still has the original query caller recorded. This prevents a new
+same-target task or a unit's purchase demand from supplying the old query's purpose. Attribution means query/order
+ownership only: range/reachability probes, rejected/no-path queries and recovery attempts can belong to an order while
+supplying no movement success, destination arrival, service benefit or sustained stability.
+
+| Acceptance | Implemented owners / consumers | Evidence state |
+| --- | --- | --- |
+| 1. Every supplied caller/order | `validateRuntimeRouteOrders`, new `validateRuntimeRouteCallers` | Shared order payload/full stamp/source validation; all failed/orphan/nested/overflow tails inspected; invocation payload/method/stage and paired immutable snapshot checks |
+| 2. Lifetime and identity fences | New `runtimeRouteOrderFenced`, caller validator and existing order projection | Same invocation/source/caller/order retained across stages; false lifetime cannot revive; old admitted order cannot revive using a fresh invocation ID after observed reset/reuse |
+| 3. Separate report meanings | `RuntimeRouteOrderLineageV1`, `projectRuntimeRouteOrder`, existing route/causality normalizers | Detached caller retained; valid paired/admitted/lifetime-bound query ownership distinct from current-order sample equality; exact earlier rally/service/dated-demand joins reused |
+| 4. Explicit unavailable evidence | Same projection/normalizer | Missing/legacy/lost/null boat caller, unobserved admission, missing terminal/clock, restore/reuse, retarget, nested, failed/no-path and full-history/usefulness gaps retained; overflow drops whole route group |
+| 5. Contract evidence and handoff | New `skirmish-ai-runtime-route-caller.spec.ts`, existing HANDOFF and this checkpoint | Synthetic positive/replacement/rally/retarget/repath/fallback/missing/fence/revival/orphan/overflow cases authored/unrun; exact scoped commit/push/remote verification |
+
+Changed code under `apps/portal-e2e/src/e2e/`:
+
+- New `skirmish-ai-runtime-route-caller-validation.ts`: capture-wide invocation consistency and loss/fence checks.
+- New `skirmish-ai-runtime-route-order-fence.ts`: shared observed actor/controller lifetime interval predicate.
+- Updated `skirmish-ai-runtime-route-order-validation.ts`: validate detached caller orders through existing full order contracts.
+- Updated `skirmish-ai-runtime-route-order-projection.ts`: prefer explicit caller for task origin; preserve legacy co-observation.
+- Updated `skirmish-ai-runtime-route-order-lineage.ts`: detached caller plus narrowly documented boolean attribution.
+- New `skirmish-ai-runtime-route-caller.spec.ts`: synthetic consumer cases, registered by existing Playwright test discovery.
+
+**Source Implementation Review:** traced raw `AiRuntimeRouteCallerV1` into the existing producer route validator,
+projection, causality normalizer and existing report retention. Request/terminal identity excludes only the lifetime flag;
+that flag may fall but cannot revive. Multiple recovery queries retain one invocation, while stage/method compatibility
+is checked on each supplied boundary. Frozen caller orders are compared independently from mutable current samples;
+a pre-admission frozen snapshot does not become a live regression or gain credit through a later admission. Exact
+source/stamp conflicts still fail. Caller order replaces current order only for origin projection, never the separate
+current-sample comparison. Native endpoints are not compared with admitted task targets for ownership; retarget differences
+remain visible. Current order replacement alone does not erase the original caller. Restore/reuse/controller reset does.
+Failed/no-path query ownership can remain true, with mandatory failed-path/arrival/usefulness gaps. Null boat callers
+cannot borrow current-order service demand. All report groups already suppressed by route contradictions stay suppressed;
+existing raw diagnostic command boundaries retain their existing policy. Report joins are bounded by capture limits but
+include repeated scans; cost and correctness require the final gate.
+
+**Omission Audit:** acceptance 1–5 map to concrete consumed owners and authored tests. Every supplied caller is inspected
+before normalized credit, including nested missing observations and contradictory tails beyond the 256-identity reporting
+limit. Native capture remains unchanged; no new query/timer/scan, gameplay/save/wire/planner field, CI registration,
+tracked-file move or source exemption refresh is needed. Existing legacy specs still require false attribution. Direct,
+flying and construction paths without this producer caller seam remain unavailable, never inferred from actor/endpoint
+similarity. Service and purchase demand remain independent. Complete query/order history and arrival/service/stability
+remain open. No skill/tool change was needed.
+
+**Separate Final Closure Audit:** rechecked acceptance, immediate consumer and exact publication scope after source
+repairs. This closes caller-report authoring only; it establishes no executable pass or issue/family completion. No Jest,
+Playwright, simulation, formatter, lint, type/build, source-size/schema/editor/repository validator, doctor/context/catalog
+or `git diff --check` ran. Git scope/provenance/publication inspection only. Test syntax/module/flags, structural compliance,
+real gameplay and overhead remain deferred. Normal commit/push plus exact remote SHA verification close publication.
+
+Deferred final-gate command (unrun):
+
+```bash
+pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts skirmish-ai-runtime-route-caller.spec.ts skirmish-ai-runtime-route-order.spec.ts skirmish-ai-runtime-producer-routes.spec.ts skirmish-ai-runtime-production-causality-normalization.spec.ts
+```
+
+**Next grouped authoring:** native movement completion/arrival with original/fallback/stop/error boundaries, then service
+fulfillment and stable usefulness. Inspect `MovementSystem`, `MovementPathExecution`, native callbacks and pawn movement /
+tending/boarding owners; capture actual terminal position and retained context passively. A successful probe/path lookup
+must never become arrival, and fallback arrival must not claim original task fulfillment. Preserve native callbacks,
+Promise/error/occupancy timing and lifetime fences; bounded marked capture and strict report projection follow. Stay on
+**GPT-6.1 Sol / medium** because the next slice shares this causal model. Commit/push, verify remote, pause.
+
 ### Production invocation capture checkpoint (2026-10-07, unverified)
 
 Machinery batch 23, #815/#816 PRO-03/06/07 native query/order diagnostics.

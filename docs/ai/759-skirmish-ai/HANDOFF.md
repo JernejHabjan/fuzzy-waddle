@@ -8,52 +8,51 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 **Next session (user policy, 2026-10-07):** retain **GPT-6.1 Sol / medium** across related implementation and
 causal design. The user explicitly selected this setting; host settings are not independently exposed.
-Current step: #815/#816 machinery batch 23, **native invocation/order capture**, authored/unverified.
-Base `7096907e46618902a3170a5450af21232cf0ecd2`; the containing commit owns this slice.
+Current step: #815/#816 machinery batch 24, **strict caller validation/projection**, authored/unverified.
+Base `fc358946368d3ab595c7fd56bc1f9b7964eebb5d`; the containing commit owns this slice.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify local/remote on resume.
 Nx merge `59f72e037` is preserved. No family/issue is complete. The user removed the comment-permission rule.
 All executable tests and validation remain deferred to the final gate.
 
-**Authored work — what it is for:** native range/reachability, actor/location, tending and boarding callers now pass the
-order they actually use into movement. The explicit transient context survives path execution, waits, sidesteps, repaths
-and fallback queries. Only each synchronous navigation invocation exposes it to the existing marked capture, so unrelated
-async queries cannot borrow it. The outer marked wrapper consumes the binding once; nested/reentrant queries stay missing.
-`queryCaller` records a bounded invocation identity, detached use-site order, caller,
-initial/repath/fallback stage and restore/controller/lifetime fence. Container shore movement explicitly has no order.
-These records let the report distinguish a task's own query from an equal-target probe or a later current order.
-One new Jest spec and five extended boundary specs are authored/unrun. Gameplay/save/wire state is unchanged;
-test-owned diagnostic records change. Runtime overhead and correctness remain unverified.
+**Authored work — what it is for:** the report now validates detached native caller/order records across the capture,
+including failed/orphan/nested/overflow tails. It checks invocation identity, immutable snapshots, complete order stamps,
+source ownership, method/stage compatibility and restore/reuse/controller fences. A paired caller with an exact earlier
+admission can identify the order the query serves, separately from current-order equality and purchase demand.
+For example, a worker's old task can own a pending route even after a replacement order becomes current. Recovery/tending
+endpoints may differ from the admitted target; equal tiles never supply this link. Explicit unordered boat movement,
+legacy/missing/lost records and incomplete history remain gaps. A new synthetic Playwright spec is authored/unrun.
+This is report-side code only; gameplay is unchanged. Correctness and report cost remain unverified.
 
-**Next step — what it is for:** strictly validate and project the new caller records in the existing report normalizer.
-That will let final assertions identify the order a query actually serves, independently of current-order overlap.
-Arrival/service effects and sustained usefulness still require their own evidence.
+**Next step — what it is for:** capture and project actual native movement completion/arrival boundaries. Query ownership
+identifies the task being attempted; it does not show that the actor reached its destination. Distinguish probes, failed
+routes, fallback arrival, cancellation and original task arrival before later service-benefit/stability assertions use it.
 
-Read the [invocation capture checkpoint](follow-ups/runtime-matrix-ci.md#production-invocation-capture-checkpoint-2026-10-07-unverified).
-**Next exact authoring action:** consume `AiRuntimeRouteCallerV1` / `producer_path.queryCaller` in
-`apps/portal-e2e/src/e2e/skirmish-ai-runtime-route-order-validation.ts`, focused caller validation/projection owners and
-`skirmish-ai-runtime-route-order-projection.ts`. Validate every supplied record, including failed/orphan/overflow tails;
-reject identity/stamp/source/caller/stage/method contradictions and restored/reused/replaced lifetime revival. Inspect
-all nested native query observations before granting credit. Keep detached invocation order separate from current-order
-samples; retargeted orders and actual query destinations may differ (tending/boarding/recovery), so endpoint equality is
-never attribution. Join exact earlier admission/rally/service-demand records where available; do not borrow purchase demand.
-`orderLineage.queryCallerAttributed` remains false until this strict consumer exists. Add synthetic positive/negative/orphan/
-overflow cases, preserve legacy missing records and explicit unordered/flying/direct/construction gaps, and defer execution.
-No extra query, planner input, timer or scan. Commit/push, then pause at the coherent report-consumption boundary.
+Read the [caller report checkpoint](follow-ups/runtime-matrix-ci.md#production-caller-report-checkpoint-2026-10-07-unverified).
+**Next exact authoring action:** inspect `MovementSystem` / `MovementPathExecution` native callbacks, resolved-return and
+stop/error paths plus the pawn movement/tending/boarding callers. Establish a passive, bounded movement completion event
+with the retained explicit context, then extend marked capture and focused report validation/projection. Retain exact native
+callback/Promise/error/occupancy timing and no extra query, timer, scan or planner input. Record actual terminal position and
+original versus fallback destination without treating a path result/probe as arrival. Fence restore/reuse/replacement,
+missing context and partial history; add synthetic and boundary specs, all unrun. Service benefit and sustained stability
+follow after movement evidence. Commit/push, then pause at that coherent boundary.
 
 | Current dependency | State | Purpose / next boundary |
 | --- | --- | --- |
 | Movement ownership prerequisite | Authored, unverified (batch 21) | Focused route/recovery owners |
 | Pawn agent prerequisite | Authored, unverified (batch 22) | Focused owners retain native order use |
 | Native invocation/order capture | Authored, unverified (batch 23) | Exact caller identity carried to marked query records |
-| Strict caller validation/projection | Next authoring | Safely identify the order served by a native probe/movement query |
-| Arrival/service and continuous useful stability | Open | Establish task fulfillment and retained benefit |
+| Strict caller validation/projection | Authored, unverified (batch 24) | Identify the order served without borrowing current-order or purchase evidence |
+| Native movement completion/arrival | Next authoring | Distinguish attempted navigation from actual destination arrival |
+| Service effects and continuous useful stability | Open | Establish task fulfillment and retained benefit |
 | Full production adapter/oracles/setup/strategy | Open | Complete independent PRO-03/06/07 runtime assertions |
 | Executable validation | Deferred final gate | Establish correctness before issue/release closure |
 
 No fixed total machinery count or completion percentage is claimed. Stay on Sol/medium for the next related causal batch;
 high is optional if a concrete unresolved problem warrants it. Source review, Omission Audit, separate Final Closure Audit
-and unrun commands are in the checkpoint. Native scopes end before Promise settlement; explicit contexts are released with
-native async continuations, capture subscriptions/weak holders on disposal. No new scene scan/timer/save/wire field exists.
+and unrun commands are in the checkpoint. No gameplay/save/wire/CI change, baseline refresh or new plan file is introduced.
+Prior batch 23 is in `4103d65a4c8cbaa08fc008082746185edd6173ad`, based on `7096907e46618902a3170a5450af21232cf0ecd2`;
+its [native capture checkpoint](follow-ups/runtime-matrix-ci.md#production-invocation-capture-checkpoint-2026-10-07-unverified)
+retains the producer/caller capture and boundary-test contracts. Normalized caller ownership still proves no useful arrival.
 
 Prior batch 22 [pawn ownership checkpoint](follow-ups/runtime-matrix-ci.md#production-pawn-ownership-checkpoint-2026-10-07-unverified)
 is in `7096907e46618902a3170a5450af21232cf0ecd2`, based on `298c0f2f106aefc0f6d0bf9702bf627f6dfb266a`.
@@ -497,7 +496,7 @@ merely because their issue title mentions testing. All authored work remains unv
 | 1 / as needed | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `partial` | Split only owners blocking the selected batch | Stay Sol medium; optional Luna high |
 | 2 | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829) | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof | GPT-6.1 Sol, medium |
 | 3 | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `in_progress` | Finish pressure/recovery policy; defer victory proof | GPT-6.1 Sol, medium |
-| 4 / next batch | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Machinery 23 native invocation capture authored/unverified; next strict caller validation/projection, then useful arrival/stability | GPT-6.1 Sol, medium |
+| 4 / next batch | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Machinery 24 strict caller report authored/unverified; next native movement arrival, then service effects/stability | GPT-6.1 Sol, medium |
 | 5 / paired | #815 / #816 | `in_progress` | Remaining family contracts, focused fixtures, frozen maps and continuous-match tier | Sol medium; optional Luna high for established cases |
 | 6 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `in_progress` | Exact-once interruption, terminal and re-entry parity | GPT-6.1 Sol, medium |
 | 7 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `partial` | Generation fencing, phase restore/replay and cleanup cases | GPT-6.1 Sol, medium |

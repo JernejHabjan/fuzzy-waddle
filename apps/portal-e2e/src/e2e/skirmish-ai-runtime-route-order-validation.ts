@@ -7,8 +7,9 @@ import type { AiRuntimeRouteOrderV1 } from
 import type { AiRuntimeCreatedActorV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-created-actor-v1";
 import { matchRuntimeRouteServiceLineage } from "./skirmish-ai-runtime-route-service-lineage";
+import { validateRuntimeRouteCallers } from "./skirmish-ai-runtime-route-caller-validation";
 
-/** Inspect every admission/current sample and orphan rally claim, including overflow tails and failure terminals. */
+/** Inspect every admission/current/caller sample and orphan rally claim, including overflow tails and failure terminals. */
 export function validateRuntimeRouteOrders(capture: AiRuntimeProductionCaptureV1) {
   const facts = capture.facts.filter((fact) => fact.kind === "spatial_authority");
   const admissions = new Map<number, typeof facts[number]>(), rallies = new Map<number, typeof facts[number]>();
@@ -54,48 +55,57 @@ export function validateRuntimeRouteOrders(capture: AiRuntimeProductionCaptureV1
       }
       continue;
     }
-    const order = value.kind === "route_order" ? value.order : value.kind === "producer_path" ? value.currentOrder : undefined;
-    if (order == null) continue;
-    const context = order.commandContext, execution = context?.execution;
-    if (!id(order.orderId) || !Object.values(OrderType).includes(order.orderType) ||
-      order.target === undefined || order.targetTile === undefined || order.commandContext === undefined ||
-      typeof order.admissionObserved !== "boolean" || order.originOutputId !== null && !id(order.originOutputId) ||
-      order.target && !actor(order.target) ||
-      order.targetTile && (!integer(order.targetTile.x) || !integer(order.targetTile.y) || !Number.isFinite(order.targetTile.z)) ||
-      context && (context.playerNumber !== capture.playerNumber || !context.actorIds.includes(value.source.actorId ?? "") ||
-        !context.actorIds.length || context.actorIds.length > 256 || context.actorIds.some((entry) => !entry) ||
-        new Set(context.actorIds).size !== context.actorIds.length || !execution || execution.schemaVersion !== 1 ||
-        !execution.commandId || !execution.commitmentKey || !["human", "ai", "campaign", "replay"].includes(execution.source) ||
-        !integer(execution.authorityEpoch) || !integer(execution.sequence) ||
-        execution.intentId !== undefined && !execution.intentId || execution.effectId !== undefined && !execution.effectId)) {
-      failures.push("production_route_order_payload_invalid"); continue;
-    }
-    const previous = identities.get(order.orderId);
-    if (previous && (previous.source.actorId !== value.source.actorId ||
-      previous.source.canonicalObjectName !== value.source.canonicalObjectName ||
-      !isDeepStrictEqual(previous.order.commandContext, context) ||
-      previous.order.admissionObserved && !order.admissionObserved)) failures.push("production_route_order_identity_conflict");
-    identities.set(order.orderId, { source: value.source, order });
-    if (value.kind === "route_order") {
-      if (admissions.has(order.orderId) || !order.admissionObserved || order.originOutputId !== null) {
-        failures.push("production_route_order_admission_invalid");
+    const samples = value.kind === "route_order" ? [{ order: value.order, frozenCaller: false }] :
+      value.kind === "producer_path" ? [{ order: value.currentOrder, frozenCaller: false },
+        { order: value.queryCaller?.order, frozenCaller: true }] : [];
+    for (const { order, frozenCaller } of samples) {
+      if (order == null) continue;
+      const context = order.commandContext, execution = context?.execution;
+      if (!id(order.orderId) || !Object.values(OrderType).includes(order.orderType) ||
+        order.target === undefined || order.targetTile === undefined || order.commandContext === undefined ||
+        typeof order.admissionObserved !== "boolean" || order.originOutputId !== null && !id(order.originOutputId) ||
+        order.target && !actor(order.target) ||
+        order.targetTile && (!integer(order.targetTile.x) || !integer(order.targetTile.y) || !Number.isFinite(order.targetTile.z)) ||
+        context && (context.playerNumber !== capture.playerNumber || !context.actorIds.includes(value.source.actorId ?? "") ||
+          !context.actorIds.length || context.actorIds.length > 256 || context.actorIds.some((entry) => !entry) ||
+          new Set(context.actorIds).size !== context.actorIds.length || !execution || execution.schemaVersion !== 1 ||
+          !execution.commandId || !execution.commitmentKey || !["human", "ai", "campaign", "replay"].includes(execution.source) ||
+          !integer(execution.authorityEpoch) || !integer(execution.sequence) ||
+          execution.intentId !== undefined && !execution.intentId || execution.effectId !== undefined && !execution.effectId)) {
+        failures.push("production_route_order_payload_invalid"); continue;
       }
-      admissions.set(order.orderId, fact);
-      if (context) {
-        const key = `${value.source.actorId}:${context.execution.commandId}`;
-        if (commandActors.has(key)) failures.push("production_route_service_order_effect_reused");
-        commandActors.add(key);
+      const previous = identities.get(order.orderId);
+      if (previous && (previous.source.actorId !== value.source.actorId ||
+        previous.source.canonicalObjectName !== value.source.canonicalObjectName ||
+        !isDeepStrictEqual(previous.order.commandContext, context) ||
+        !frozenCaller && previous.order.admissionObserved && !order.admissionObserved)) {
+        failures.push("production_route_order_identity_conflict");
       }
-    }
-    if (order.originOutputId !== null) {
-      const rally = rallies.get(order.orderId);
-      if (rally?.spatial.kind !== "route_rally_order" || rally.spatial.outputId !== order.originOutputId ||
-        rally.sequence >= fact.sequence || context) failures.push("production_route_order_origin_invalid");
+      // A detached caller can predate a later admission; do not turn that old snapshot into a live regression.
+      if (!frozenCaller || !previous) identities.set(order.orderId, { source: value.source, order });
+      if (value.kind === "route_order") {
+        if (admissions.has(order.orderId) || !order.admissionObserved || order.originOutputId !== null) {
+          failures.push("production_route_order_admission_invalid");
+        }
+        admissions.set(order.orderId, fact);
+        if (context) {
+          const key = `${value.source.actorId}:${context.execution.commandId}`;
+          if (commandActors.has(key)) failures.push("production_route_service_order_effect_reused");
+          commandActors.add(key);
+        }
+      }
+      if (order.originOutputId !== null) {
+        const rally = rallies.get(order.orderId);
+        if (rally?.spatial.kind !== "route_rally_order" || rally.spatial.outputId !== order.originOutputId ||
+          rally.sequence >= fact.sequence || context) failures.push("production_route_order_origin_invalid");
+      }
     }
   }
   // Missing queries/overflow do not excuse contradictions in an otherwise supplied service dispatch or demand.
   for (const admission of admissions.values()) {
     failures.push(...matchRuntimeRouteServiceLineage(capture, admission, (capture.facts.at(-1)?.sequence ?? 0) + 1).failures);
   }
-  return { admissions, rallies, overflow: identities.size > 256, failures: [...new Set(failures)] };
+  const callers = validateRuntimeRouteCallers(capture);
+  failures.push(...callers.failures);
+  return { admissions, rallies, overflow: identities.size > 256 || callers.overflow, failures: [...new Set(failures)] };
 }
