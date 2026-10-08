@@ -41,11 +41,12 @@ import type { AiRuntimeInitialConstructionV1 } from "./ai-runtime-initial-constr
 import { AiRuntimeResourceCoverageCapture } from "./ai-runtime-resource-coverage-capture";
 import type { AiRuntimeResourceServiceIntervalV1 } from "./ai-runtime-resource-service-interval-v1";
 import { AiRuntimeRecipientResourceCapture } from "./ai-runtime-recipient-resource-capture";
+import { AiRuntimeResourceInputCapture } from "./ai-runtime-resource-input-capture";
+import { AI_RUNTIME_MAX_FACTS as MAX_FACTS, appendAiRuntimeProductionFact } from "./append-ai-runtime-production-fact";
 
 import { CONSTRUCTION_AUTHORITY_EVENT, type ConstructionAuthorityEvent } from
   "../../../entity/components/construction/construction-authority-event";
 
-const MAX_FACTS = 8192;
 const MAX_SNAPSHOTS = 256;
 
 /** Test-owned passive subscriptions. It retains callback order and actual money without inferring refund attribution. */
@@ -69,6 +70,7 @@ export class AiRuntimeProductionCapture {
   private readonly resourceCoverage: AiRuntimeResourceCoverageCapture;
   private readonly resourceIntervalDeclaration: AiRuntimeProductionCaptureV1["resourceIntervalDeclaration"];
   private readonly recipientResources: AiRuntimeRecipientResourceCapture;
+  private readonly resourceInputs: AiRuntimeResourceInputCapture;
 
   constructor(private readonly scene: ProbableWaffleScene, intervals: readonly AiRuntimeResourceServiceIntervalV1[] = []) {
     const ticks = getSceneService(scene, SimulationTickService);
@@ -86,77 +88,86 @@ export class AiRuntimeProductionCapture {
       return { tick: clock?.currentTick ?? this.startedTick, captureSequence: this.nextSequence - 1 };
     });
     const initialActors = index.getAllIdActors();
-    this.recipientResources = new AiRuntimeRecipientResourceCapture(scene, this.resourceCoverage,
-      (playerNumber) => this.boundary(playerNumber), () => this.nextSequence - 1, (fact) => this.append(fact));
-    this.initialConstruction = captureAiRuntimeInitialConstruction(scene, initialActors, this.startedTick);
-    this.spatialCapture = new AiRuntimeProductionSpatialCapture(scene, this.identify, (playerNumber, spatial) => {
-      this.append({ ...this.boundary(playerNumber), kind: "spatial_authority", spatial });
-    }, this.resourceCoverage);
-    for (const player of scene.players) {
-      if (player.playerNumber !== undefined) this.lastBalances.set(player.playerNumber, this.resources(player.playerNumber));
+    try {
+      this.recipientResources = new AiRuntimeRecipientResourceCapture(scene, this.resourceCoverage,
+        (playerNumber) => this.boundary(playerNumber), () => this.nextSequence - 1, (fact) => this.append(fact));
+      this.resourceInputs = new AiRuntimeResourceInputCapture(scene, this.resourceCoverage,
+        () => this.recipientResources.reconcile(), () => this.nextSequence - 1,
+        (playerNumber) => this.boundary(playerNumber), (fact) => this.append(fact));
+      this.initialConstruction = captureAiRuntimeInitialConstruction(scene, initialActors, this.startedTick);
+      this.spatialCapture = new AiRuntimeProductionSpatialCapture(scene, this.identify, (playerNumber, spatial) => {
+        this.append({ ...this.boundary(playerNumber), kind: "spatial_authority", spatial });
+      }, this.resourceCoverage);
+      for (const player of scene.players) {
+        if (player.playerNumber !== undefined) this.lastBalances.set(player.playerNumber, this.resources(player.playerNumber));
+      }
+      scene.events.on(AI_DECISION_DISPATCH_EVENT, this.observeDecision, this);
+      scene.events.on(AI_INTENT_COMMAND_DISPATCH_EVENT, this.observeDispatch, this);
+      scene.events.on(QUEUE_MUTATION_EVENT, this.observeMutation, this);
+      scene.events.on(QUEUE_COMPLETION_AUTHORITY_EVENT, this.observeCompletion, this);
+      scene.events.on(QUEUE_PROGRESS_EVENT, this.observeProgress, this);
+      scene.events.on(QUEUE_RESOURCE_EMISSION_EVENT, this.observeQueueResource, this);
+      scene.events.on(CONSTRUCTION_AUTHORITY_EVENT, this.observeConstruction, this);
+      this.subscriptions.add(bus.commandOutcome$.subscribe((outcome) => {
+        const boundary = this.boundary(outcome.playerNumber);
+        const boundaryStateBefore = this.facts.length < MAX_FACTS ? this.sampleBoundaryState(outcome.playerNumber) : undefined;
+        this.pendingCommands.observeOutcome(outcome, boundary.tick);
+        this.unspentClaims.observeOutcome(outcome);
+        this.append({ ...boundary, kind: "outcome", outcome, boundaryStateBefore,
+          scheduledTick: outcome.kind === "dispatched" ? outcome.tick : null });
+      }));
+      this.subscriptions.add(bus.command$.subscribe((command) => this.append({
+        ...this.boundary(command.playerNumber), kind: "command_delivered", command
+      })));
+      this.subscriptions.add(playerChanged.on.subscribe((event) => {
+        if (event.property !== "resource.added" && event.property !== "resource.removed") return;
+        const playerNumber = event.data.playerNumber;
+        if (playerNumber === undefined) return;
+        const after = this.resources(playerNumber);
+        const before = this.lastBalances.get(playerNumber) ?? after;
+        const amounts = { ...event.data.playerStateData?.resources };
+        const sign = event.property === "resource.added" ? 1 : -1;
+        const balanceMatches = Object.values(ResourceType).every((resource) =>
+          after[resource] === before[resource] + sign * (amounts[resource] ?? 0));
+        this.lastBalances.set(playerNumber, after);
+        this.append({ ...this.boundary(playerNumber), kind: "resources_applied", action: event.property,
+          amounts, before, after, balanceMatches });
+      }));
+      this.subscriptions.add(tech.researchCompleted.subscribe(({ playerNumber, researchType }) => this.append({
+        ...this.boundary(playerNumber), kind: "research_completed", researchType
+      })));
+      this.subscriptions.add(index.actorRegistered.subscribe((actor) => {
+        const playerNumber = getActorComponent(actor, OwnerComponent)?.getOwner();
+        if (playerNumber !== undefined && actor.scene === this.scene) this.append({
+          ...this.boundary(playerNumber), kind: "actor_registered", actor: captureAiRuntimeCreatedActor(actor),
+          snapshotRestoreInProgress: isSnapshotApplyInProgress(this.scene)
+        });
+        this.watchQueue(actor);
+      }));
+      this.subscriptions.add(index.actorUnregistered.subscribe((actor) => {
+        const playerNumber = getActorComponent(actor, OwnerComponent)?.getOwner();
+        const actorId = getActorComponent(actor, IdComponent)?.id;
+        if (playerNumber !== undefined && actorId) this.append({
+          ...this.boundary(playerNumber), kind: "actor_unregistered", actorId, objectName: actor.name
+        });
+        this.queueSubscriptions.get(actor)?.unsubscribe();
+        this.queueSubscriptions.delete(actor);
+        this.spatialCapture.unwatchActor(actor);
+      }));
+      // Components can finish initialization after index registration. This test-only scan attaches missing listeners.
+      this.subscriptions.add(ticks.tick$.subscribe(() => {
+        this.resourceCoverage.tick(ticks.currentTick);
+        try { this.recipientResources.reconcile(); } catch { this.resourceCoverage.lose("recipient_reconcile_failed"); }
+        index.getAllIdActors().forEach((actor) => this.watchQueue(actor));
+      }));
+      initialActors.forEach((actor) => this.watchQueue(actor));
+      scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.dispose, this);
+      scene.events.once(Phaser.Scenes.Events.DESTROY, this.dispose, this);
+    } catch (error) {
+      this.resourceCoverage.lose("capture_installation_failed");
+      try { this.dispose(); } catch { /* Preserve the original installation error after owned cleanup. */ }
+      throw error;
     }
-    scene.events.on(AI_DECISION_DISPATCH_EVENT, this.observeDecision, this);
-    scene.events.on(AI_INTENT_COMMAND_DISPATCH_EVENT, this.observeDispatch, this);
-    scene.events.on(QUEUE_MUTATION_EVENT, this.observeMutation, this);
-    scene.events.on(QUEUE_COMPLETION_AUTHORITY_EVENT, this.observeCompletion, this);
-    scene.events.on(QUEUE_PROGRESS_EVENT, this.observeProgress, this);
-    scene.events.on(QUEUE_RESOURCE_EMISSION_EVENT, this.observeQueueResource, this);
-    scene.events.on(CONSTRUCTION_AUTHORITY_EVENT, this.observeConstruction, this);
-    this.subscriptions.add(bus.commandOutcome$.subscribe((outcome) => {
-      const boundary = this.boundary(outcome.playerNumber);
-      const boundaryStateBefore = this.facts.length < MAX_FACTS ? this.sampleBoundaryState(outcome.playerNumber) : undefined;
-      this.pendingCommands.observeOutcome(outcome, boundary.tick);
-      this.unspentClaims.observeOutcome(outcome);
-      this.append({ ...boundary, kind: "outcome", outcome, boundaryStateBefore,
-        scheduledTick: outcome.kind === "dispatched" ? outcome.tick : null });
-    }));
-    this.subscriptions.add(bus.command$.subscribe((command) => this.append({
-      ...this.boundary(command.playerNumber), kind: "command_delivered", command
-    })));
-    this.subscriptions.add(playerChanged.on.subscribe((event) => {
-      if (event.property !== "resource.added" && event.property !== "resource.removed") return;
-      const playerNumber = event.data.playerNumber;
-      if (playerNumber === undefined) return;
-      const after = this.resources(playerNumber);
-      const before = this.lastBalances.get(playerNumber) ?? after;
-      const amounts = { ...event.data.playerStateData?.resources };
-      const sign = event.property === "resource.added" ? 1 : -1;
-      const balanceMatches = Object.values(ResourceType).every((resource) =>
-        after[resource] === before[resource] + sign * (amounts[resource] ?? 0));
-      this.lastBalances.set(playerNumber, after);
-      this.append({ ...this.boundary(playerNumber), kind: "resources_applied", action: event.property,
-        amounts, before, after, balanceMatches });
-    }));
-    this.subscriptions.add(tech.researchCompleted.subscribe(({ playerNumber, researchType }) => this.append({
-      ...this.boundary(playerNumber), kind: "research_completed", researchType
-    })));
-    this.subscriptions.add(index.actorRegistered.subscribe((actor) => {
-      const playerNumber = getActorComponent(actor, OwnerComponent)?.getOwner();
-      if (playerNumber !== undefined && actor.scene === this.scene) this.append({
-        ...this.boundary(playerNumber), kind: "actor_registered", actor: captureAiRuntimeCreatedActor(actor),
-        snapshotRestoreInProgress: isSnapshotApplyInProgress(this.scene)
-      });
-      this.watchQueue(actor);
-    }));
-    this.subscriptions.add(index.actorUnregistered.subscribe((actor) => {
-      const playerNumber = getActorComponent(actor, OwnerComponent)?.getOwner();
-      const actorId = getActorComponent(actor, IdComponent)?.id;
-      if (playerNumber !== undefined && actorId) this.append({
-        ...this.boundary(playerNumber), kind: "actor_unregistered", actorId, objectName: actor.name
-      });
-      this.queueSubscriptions.get(actor)?.unsubscribe();
-      this.queueSubscriptions.delete(actor);
-      this.spatialCapture.unwatchActor(actor);
-    }));
-    // Components can finish initialization after index registration. This test-only scan attaches missing listeners.
-    this.subscriptions.add(ticks.tick$.subscribe(() => {
-      this.resourceCoverage.tick(ticks.currentTick);
-      try { this.recipientResources.reconcile(); } catch { this.resourceCoverage.lose("recipient_reconcile_failed"); }
-      index.getAllIdActors().forEach((actor) => this.watchQueue(actor));
-    }));
-    initialActors.forEach((actor) => this.watchQueue(actor));
-    scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.dispose, this);
-    scene.events.once(Phaser.Scenes.Events.DESTROY, this.dispose, this);
   }
 
   /** Appends one detached snapshot at a settled decision boundary; tick zero permits no committed AI input yet. */
@@ -234,7 +245,8 @@ export class AiRuntimeProductionCapture {
         "decision_snapshot_cadence", ...pending.gaps],
       facts: this.facts.filter((fact) => fact.playerNumber === playerNumber), snapshots,
       recipientResourceFacts: this.facts.filter((fact) =>
-        fact.kind === "recipient_resources_installed" || fact.kind === "recipient_resource_mutation")
+        fact.kind === "recipient_resources_installed" || fact.kind === "recipient_resource_mutation" ||
+        fact.kind === "resource_input_read" || fact.kind === "resource_need_fence")
     } satisfies AiRuntimeProductionCaptureV1);
   }
 
@@ -243,13 +255,14 @@ export class AiRuntimeProductionCapture {
     if (this.disposed) return;
     this.disposed = true;
     this.resourceCoverage.lose("capture_disposed");
-    this.recipientResources.dispose();
-    this.spatialCapture.dispose();
+    this.recipientResources?.dispose();
+    this.resourceInputs?.dispose();
+    this.spatialCapture?.dispose();
     this.subscriptions.unsubscribe();
     this.queueSubscriptions.forEach((subscription) => subscription.unsubscribe());
     this.queueSubscriptions.clear();
     this.lastBalances.clear();
-    this.initialConstruction.clear();
+    this.initialConstruction?.clear();
     this.snapshots.clear();
     this.facts.length = 0;
     this.pendingCommands.dispose();
@@ -390,18 +403,9 @@ export class AiRuntimeProductionCapture {
 
   private append(fact: AiRuntimeProductionFactV1, exhaustedProgressItem?: UnifiedQueueItem): void {
     if (this.disposed) return;
-    const sequence = this.nextSequence++;
-    if (this.facts.length < MAX_FACTS) {
-      const boundaryState = [
-        "decision_selected", "intent_dispatch", "outcome", "queue_resource", "queue_changed", "command_delivered",
-        "queue_progress", "queue_mutation", "queue_completion", "actor_registered", "research_completed"
-      ]
-        .includes(fact.kind) ? this.sampleBoundaryState(fact.playerNumber, exhaustedProgressItem) : undefined;
-      try { this.facts.push(structuredClone({ ...fact, sequence, ...(boundaryState ? { boundaryState } : {}) })); }
-      catch (error) { this.resourceCoverage.lose("fact_append_failed"); throw error; }
-    } else {
-      this.resourceCoverage.lose("fact_overflow");
-      this.factDrops.set(fact.playerNumber, (this.factDrops.get(fact.playerNumber) ?? 0) + 1);
-    }
+    appendAiRuntimeProductionFact(this.facts, fact, this.nextSequence++,
+      () => this.sampleBoundaryState(fact.playerNumber, exhaustedProgressItem), this.resourceCoverage.lose, () => {
+        this.factDrops.set(fact.playerNumber, (this.factDrops.get(fact.playerNumber) ?? 0) + 1);
+      });
   }
 }

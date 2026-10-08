@@ -6,24 +6,26 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
-**Current batch (user policy, 2026-10-08):** `continue with next batch` authorizes related 37–38 capture/accounting.
-Current step: #815/#816 machinery 37 **recipient native journal**, authored/unverified; accounting 38 is next in this batch.
-Pause after 38. Last selected profile GPT-6.1 Sol / medium; actual host settings unknown. Recommended grouped profile
-GPT-6.1 Sol / high. All executable tests/validation remain deferred to the final gate.
-Base `80a84493b155a2f431cc0aa172257ce9398e3624` (player-owner split prerequisite); containing commit owns 37.
+**Current batch (user policy, 2026-10-08):** `continue with next batch` authorized related 37–38 capture/accounting.
+Current step: #815/#816 machinery 38 **frozen need accounting**, authored/unverified. Batch complete; pause here.
+Next: 39 coverage activation audit before useful metrics/real recipes. Recommend GPT-6.1 Sol / high for the unresolved
+writer/lifecycle authority. Last selected profile GPT-6.1 Sol / medium; actual host settings unknown. No model switch.
+All executable tests/validation remain deferred to the final gate.
+Base `f72d123174e9e9d1fb5ccdd335bfbce6cbeeff34` (37); containing commit owns 38.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify remote on resume.
 Preserve unrelated Nx merge `59f72e037`. No family/issue is complete. User removed the comment-permission rule.
 
-**Authored — why it is used:** the [37 native journal](follow-ups/runtime-matrix-ci.md#recipient-native-journal-checkpoint-2026-10-08-authoredunverified)
-records all observed recipient mutations at actual native entry/terminal positions and joins delivery by exact payload
-reference/recipient/operation. This lets accounting see grants/refunds/other deliveries rather than a worker subtotal.
-Vector payments count once; thrown partial payments remain actual partial changes. Reset/restore/replacement/bypass
-fences and owned cleanup retain explicit partial coverage. New protocol/native/journal controls are authored, unrun.
-The [36 design](follow-ups/runtime-matrix-ci.md#beneficiary-need-authority-design-checkpoint-2026-10-08-partially-implemented)
-requires an exact consumed-input marker, detached reconciled liability frame and conservative generation closure in 38.
-Mutable aliases/net-zero bypasses and missing need/liability/cargo lifetimes still block actual usefulness.
-Earlier 33–35 diagnostics still expose scoped income/potential through `resourceServices`; actual usefulness,
-throughput/capacity remain null. Real recipes declare no intervals; all prior unrun final-gate obligations remain.
+**Authored — why it is used:** [37 native journal](follow-ups/runtime-matrix-ci.md#recipient-native-journal-checkpoint-2026-10-08-authoredunverified)
+records all observed recipient resource changes at native entry/terminal positions and joins a delivery by exact
+payload/recipient/operation. [38 accounting](follow-ups/runtime-matrix-ci.md#frozen-need-accounting-checkpoint-2026-10-08-authoredunverified)
+adds the actual consumed-input read marker, selected reconciled liability frame, conservative known-boundary closure
+and strict replay through `resourceServices.needAccounting`. Example: seven wood arrives elsewhere toward a ten-wood
+shortage, then is spent; a later seven-wood worker delivery has an observed contribution bound of three, not seven.
+The report exposes observed bounds while actual usefulness stays null. Native/source/cargo/need silent mutation routes,
+public mutable aliases and incomplete liability histories remain activation blockers. All new specs are authored, unrun.
+Failed installation/append and listener-churn cleanup were source-reviewed and repaired; no runtime pass is claimed.
+The earlier 33–35 interval diagnostics still use their existing diagnostic publication positions; actual application
+window ownership is an activation prerequisite. Real recipes declare no intervals; all prior final-gate duties remain.
 
 **Settled credit/cargo contract:** explicit transient execution handles cross awaits; no ambient current order can assign
 credit. Record native cargo additions, reset/restore fences, exact offered pile, emission recipient and scoped before/after
@@ -32,20 +34,15 @@ Campaign suppression is explicit and may accompany a full native return. Old/unk
 to the latest task. Whole known piles may retain several earlier gathering attempts; no invented FIFO/partial allocation.
 A credit proves a scoped balance change, independently from cargo lineage, accepted task/demand and continuous usefulness.
 
-**Next exact authoring action — why:** group 37 native recipient mutation capture with 38 selected-need lifecycle and
-strict unresolved-before replay. Begin at `protocol/src/lib/game-instance/probable-waffle/player.ts` native vector/single
-mutators, then `phaser/src/lib/entity/components/resource/observe-resource-credit.ts` and
-`phaser/src/lib/player/ai-controller/testing/ai-runtime-production-capture.ts` (paths under `libs/games/probable-waffle/`).
-Use focused protocol-local passive owners, exact native operation IDs, the existing root fact budget and explicit
-beneficiary projection. Then capture the actual consumed observation read marker, selected-result liability frame,
-all positive recipient additions and conservative closure before liability/forecast/lifetime changes. This prevents
-other income, stale inputs and later spending from being mislabeled useful service. Source-size prerequisites need
-their own scoped extraction, never a baseline refresh. The linked 36 contract owns detailed routes and controls.
-Public mutable aliases/replacement remain unsupported until their actual mutation boundaries are owned; successful
-hooks/fixtures cannot certify them. Useful-window activation/real recipes follow a separate coverage audit after 38;
-continuous capacity and full PRO-03/06/07 proof remain open. All tests/validation stay deferred; no invented percentage.
-Recommend **GPT-6.1 Sol / high** across 37–38 because native failure/order and money ownership need careful reasoning;
-medium for settled wiring later. This is a recommendation, not a host switch or authorization to start that group.
+**Next exact authoring action — why:** stage 39 is a bounded coverage activation audit. Start from the
+[36 writer contract](follow-ups/runtime-matrix-ci.md#beneficiary-need-authority-design-checkpoint-2026-10-08-partially-implemented)
+and the 37–38 producer/replay owners. Name each unobserved alias, state replacement, claim expiry/recovery,
+queue/owner/death/source/drain/lifetime boundary and its actual writer. Separate observed diagnostic bounds from the
+complete histories needed for useful contribution and fixed application-owned windows. Define safe bounded hook
+prerequisites or retain unavailable metrics; never change native mutable-resource/payment semantics to fabricate
+complete authority. This prevents believable income records from being mistaken for useful sustained service.
+Pause after the audit/design boundary, before any activation-dependent implementation. Recommend **GPT-6.1 Sol / high**
+for the unresolved authority; medium suits later settled fixture/report wiring. No fixed total/percentage is claimed.
 
 | Dependency | State | Purpose / next boundary |
 | --- | --- | --- |
@@ -58,7 +55,7 @@ medium for settled wiring later. This is a recommendation, not a host switch or 
 | Supported coverage / loss (34) | Authored, unverified | Bounded cohorts/read frontiers and irreversible observation loss |
 | Interval diagnostics (35) | Authored, unverified | Fixed windows, unique credits and capped aggregate potential through reports |
 | Beneficiary/need authority design (36) | Authored; implementation open | Native writers, read/application positions, disjoint liabilities and conservative no-reopening contract |
-| Recipient journal and selected-need replay (37–38) | Next authoring batch; unimplemented | Account for all observed recipient income and close stale/changed needs |
+| Recipient journal and selected-need replay (37–38) | Authored, unverified; partial authority | Actual read/frame/native operation and observed accounting bounds; pause reached |
 | Complete need/lifetime history and useful throughput | Open; activation gate after 38 | Cover every relied-on mutation before enabling useful windows and real recipes |
 | Continuous useful capacity | Open | Complete mutation authority for readiness, supply, access/safety and service |
 | Full production adapter/oracles/setup/strategy | Open | Independent PRO-03/06/07 assertions |
@@ -74,8 +71,9 @@ Stage 28 is `135c5b1c1cec0f4a8557d52f1511761887f449f5`, 27 is `77499c4db98e1f28d
 26 is `4b0dd34d029e677a006a1b2dc174b25f35c144b5`, 25 is `1bfa9740460f0b2a7836ab44ebc0d38c18eb063e`.
 Stage 33 is `0e1906024c7339a964fcc1dfdea93145b9e10509`; stage 32 is `42b5bf3d3`.
 Stage 34 is `d226b6636d41cc7201803ba80d34869a32b59a78`; 35 is `d2e48214230e66290f95f7011c17951025cbacda`.
-The containing commit owns the 36 design; verify its remote SHA. No fixed machinery total or percent is claimed;
-33–35 diagnostic authoring and 36 design are delivered, useful-service acceptance remains open.
+36 is `47e88948d20658b17417cf8171e381fc5495874f`; 37 is `f72d123174e9e9d1fb5ccdd335bfbce6cbeeff34`.
+Player-owner split prerequisite is `80a84493b155a2f431cc0aa172257ce9398e3624`; containing commit owns 38.
+No fixed machinery total/percent is claimed; diagnostic authoring is delivered, useful-service acceptance remains open.
 All native observer,
 report, prior movement and earlier final-gate obligations remain unrun. Capture/report cost and native compatibility are unmeasured.
 Source review repaired ES2024 constructor initialization and loss-safe cargo/transfer fences; no runtime pass is claimed.
@@ -529,7 +527,7 @@ merely because their issue title mentions testing. All authored work remains unv
 | 1 / as needed | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `partial` | Split only owners blocking the selected batch | Stay Sol medium; optional Luna high |
 | 2 | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829) | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof | GPT-6.1 Sol, medium |
 | 3 | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `in_progress` | Finish pressure/recovery policy; defer victory proof | GPT-6.1 Sol, medium |
-| 4 / next boundary | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | 36 design authored; 37–38 recipient capture/need replay next; useful-window activation still gated | Sol high across capture/accounting; medium for settled wiring |
+| 4 / next boundary | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | 37–38 partial capture/accounting authored; 39 coverage activation audit next; useful windows still gated | Sol high for authority audit; medium for settled wiring |
 | 5 / paired | #815 / #816 | `in_progress` | Remaining family contracts, focused fixtures, frozen maps and continuous-match tier | Sol medium; optional Luna high for established cases |
 | 6 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `in_progress` | Exact-once interruption, terminal and re-entry parity | GPT-6.1 Sol, medium |
 | 7 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `partial` | Generation fencing, phase restore/replay and cleanup cases | GPT-6.1 Sol, medium |
@@ -543,8 +541,9 @@ merely because their issue title mentions testing. All authored work remains unv
 The user policy below and latest Quick resume own #759 model choice and execution boundaries. The user selected Sol 6.1 / medium
 for the current implementation group. Use Sol for unresolved thinking/design; Luna / high is an optional choice for
 concrete routine work. Keep related work together to avoid unnecessary switches. This applies to this roadmap.
-The latest `continue` authorized 36, now a source-reviewed design checkpoint; pause here.
-37–38 is the next related native-recipient capture and selected-need replay authoring batch, recommended Sol / high.
+The latest `continue with next batch` authorized 37–38, now authored/source-reviewed as partial diagnostic channels; pause here.
+39 is the next bounded coverage activation audit, recommended GPT-6.1 Sol / high; unresolved writer/lifecycle authority
+needs a safe design before useful activation. Do not infer that successful synthetic accounting completes the machinery.
 Complete mutable-alias, beneficiary need/liability and lifetime mutation authority remain activation blockers;
 useful-window verdicts require the coverage audit after that batch. Group implementation without per-file switches.
 No model was switched automatically. Continuous useful capacity and full production proof remain open.
@@ -590,9 +589,9 @@ No model was switched automatically. Continuous useful capacity and full product
 
 Copyable next-chat prompt:
 
-> Read docs/ai/759-skirmish-ai/HANDOFF.md and its beneficiary need authority design checkpoint. Implement the related
-> 37–38 native recipient journal and selected-need lifecycle/replay batch, then pause before useful-window activation.
-> Keep unsupported writer/lifetime channels unavailable; preserve exact application/read order and no-reopening rules.
+> Read docs/ai/759-skirmish-ai/HANDOFF.md and its frozen need accounting checkpoint. Complete bounded 39 coverage
+> activation audit: trace missing writer/lifecycle routes, define safe hook prerequisites and actual application window
+> ownership, then pause before activation implementation. Keep unsupported channels unavailable and native semantics intact.
 > Report what was authored and what comes next,
 > including what each will be used for and why it matters. Commit/push each coherent stage; pause at a stronger-reasoning
 > boundary and recommend the next model/effort. End each stage with the change, the problem it solves and its users;

@@ -7,6 +7,7 @@ import { nextIds } from "./ai-macro-effect-identity";
 import { aiResourceForecastDeficit, selectAiForecastEntry } from "./ai-resource-forecast";
 import { rememberAiGatheringSelection } from "./ai-gathering-selection-observation";
 import { selectAiSurplusLaborTransfer } from "./ai-surplus-labor-transfer";
+import { readAiResourceInputRead } from "./ai-resource-input-observation";
 
 /** Proposes a non-Field gathering assignment from aggregate forecasts or the native stockpile fallback. */
 export function proposeAiGeneralGathering(
@@ -132,6 +133,7 @@ export function proposeAiGeneralGathering(
     forecast: selectedForecast ? { amount: selectedForecast.amount, horizonTick: selectedForecast.horizonTick,
       confidencePermille: selectedForecast.confidencePermille } : null,
     ledger: observation.resources.find((entry) => entry.resourceType === constrainedResource) ?? null,
-    plannerDeficit: selectedForecast ? aiResourceForecastDeficit(observation, selectedForecast) : null }));
+    plannerDeficit: selectedForecast ? aiResourceForecastDeficit(observation, selectedForecast) : null,
+    resourceInputRead: readAiResourceInputRead(observation) }));
   return intent;
 }

@@ -5,6 +5,8 @@ import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { PlayerAiController } from "./player-ai-controller";
+import type Phaser from "phaser";
+import { installAiResourceInputObserver } from "./observation/ai-resource-input-observation";
 
 jest.mock("../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
@@ -24,6 +26,27 @@ const baseIntent = {
 
 describe("PlayerAiController pure planner integration", () => {
   afterEach(() => jest.clearAllMocks());
+
+  it("publishes disable/authority/replacement fences before changing controller policy or attempting migration", () => {
+    const controller = Object.create(PlayerAiController.prototype) as PlayerAiController;
+    const scene = {} as Phaser.Scene, policy = { campaignAiEnabled: true };
+    Reflect.set(controller, "scene", scene);
+    Reflect.set(controller, "player", { playerNumber: 1, playerController: { data: { playerDefinition: policy } } });
+    Reflect.set(controller, "authorityActive", true);
+    const reasons: string[] = [];
+    const before: unknown[] = [];
+    const release = installAiResourceInputObserver(scene, { begin: () => undefined, fence: (_player, reason) => {
+      reasons.push(reason);
+      if (reason === "controller_disabled") before.push(policy.campaignAiEnabled);
+      if (reason === "controller_authority_lost") before.push(Reflect.get(controller, "authorityActive"));
+    } });
+    controller.setEnabled(false); controller.setAuthorityActive(false);
+    Reflect.set(controller, "getBrainMigrationContext", () => undefined);
+    expect(() => controller.setBrainState({})).toThrow("ai_brain_identity_unavailable");
+    expect(reasons).toEqual(["controller_disabled", "controller_authority_lost", "controller_brain_replaced"]);
+    expect(before).toEqual([true, true]);
+    release();
+  });
 
   it("runs only the pure planner when the skirmish brain is available", () => {
     const controller = Object.create(PlayerAiController.prototype) as PlayerAiController;

@@ -51,6 +51,9 @@ import {
 } from "./ai-observation-work";
 import { knownValue, uniqueDomain, unknownValue } from "./ai-observation-values";
 import { projectAiProductionObligations } from "./ai-production-obligations";
+import { beginAiResourceInputRead } from "./ai-resource-input-observation";
+import { readAiResourceInputRead, rememberAiResourceInputRead } from
+  "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-resource-input-observation";
 
 const MAX_ACCESS_PRODUCTS_PER_OBSERVATION = 4;
 const MAX_INVALIDATION_DEBT = 1024;
@@ -104,6 +107,8 @@ export class AiObservationPipeline {
         return this.latestObservation;
       }
       this.latestObservation = canonicalizeAiObservationV1(captured.observation);
+      const resourceRead = readAiResourceInputRead(captured.observation);
+      if (resourceRead) rememberAiResourceInputRead(this.latestObservation, resourceRead);
       this.latestCatalog = captured.catalog;
       this.committedGeneration = generation;
       this.committedTick = tick;
@@ -250,6 +255,7 @@ export class AiObservationPipeline {
       accessGraph,
       permittedTopology
     );
+    const finishResourceRead = beginAiResourceInputRead(this.scene, this.player);
     const obligations = projectAiProductionObligations(liveActors
       .filter((actor) => getActorComponent(actor, OwnerComponent)?.getOwner() === playerNumber)
       .flatMap((actor) => getActorComponent(actor, QueueComponent)?.allItems ?? []));
@@ -270,7 +276,7 @@ export class AiObservationPipeline {
         };
       });
 
-    return {
+    const captured = {
       observation: {
         schemaVersion: 1,
         generation,
@@ -294,7 +300,9 @@ export class AiObservationPipeline {
         ),
         unsupported: []
       }
-    };
+    } satisfies { observation: AiObservationV1; catalog: AiCapabilityCatalogV1 };
+    finishResourceRead?.(captured.observation);
+    return captured;
   }
 
   private isEligibleActor(actor: Phaser.GameObjects.GameObject): boolean {

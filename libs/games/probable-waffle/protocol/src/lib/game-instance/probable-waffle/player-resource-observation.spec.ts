@@ -11,6 +11,16 @@ function fixture() {
 }
 
 describe("native player resource observation", () => {
+  it("bounds loss-sink reentrancy while preserving each requested native addition", () => {
+    const f = fixture();
+    const extra = PlayerResourceObservation.subscribe(f.player, () => { throw new Error("listener"); }, () => {
+      f.player.addResources({ wood: 2 });
+    });
+    f.player.addResources({ wood: 1 });
+    expect(f.player.getResources().wood).toBe(205);
+    expect(f.losses).toContain("recipient_mutation_listener_failed");
+    extra(); f.release();
+  });
   it("retains one outer vector identity and exact entry/terminal balances, including direct leaf payments", () => {
     const f = fixture(), request = { wood: 7, food: 3 };
     f.player.addResources(request);
@@ -45,10 +55,12 @@ describe("native player resource observation", () => {
     f.player.addResources({ wood: 1 });
     expect(f.player.getResources().wood).toBe(203);
     expect(f.losses).toContain("recipient_mutation_reentrancy");
+    let woodBeforeReset: number | undefined;
     const reset = PlayerResourceObservation.subscribe(f.player, () => undefined, (reason) => {
-      if (reason === "recipient_state_reset") expect(f.player.getResources().wood).toBe(203);
+      if (reason === "recipient_state_reset") woodBeforeReset = f.player.getResources().wood;
     });
     f.player.playerState.resetData();
+    expect(woodBeforeReset).toBe(203);
     expect(f.losses).toContain("recipient_state_reset");
     expect(() => f.player.payResources(ResourceType.Wood, 201)).toThrow("Not enough resources");
     reset(); extra(); f.release();

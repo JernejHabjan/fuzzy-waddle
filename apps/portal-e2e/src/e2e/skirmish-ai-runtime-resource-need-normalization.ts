@@ -28,6 +28,7 @@ export function normalizeRuntimeResourceNeeds(capture: AiRuntimeProductionCaptur
       const nonnegative = (value: number) => Number.isFinite(value) && value >= 0;
       const integer = (value: number) => Number.isSafeInteger(value) && value >= 0;
       const ledger = selection.ledger, forecast = selection.forecast, income = ledger?.deliveredIncomePerMinute;
+      const marker = selection.resourceInputRead;
       const invalid = seen.has(selection.intentId) || intent.length !== 1 || intent[0].kind !== "assign_gatherers" ||
         !fact.decision.decisions.some((entry) => entry.outcome === "accepted" && entry.reason === "accepted" &&
           isDeepStrictEqual(entry.intent, intent[0])) ||
@@ -39,6 +40,9 @@ export function normalizeRuntimeResourceNeeds(capture: AiRuntimeProductionCaptur
         fact.decision.input?.capabilityCatalog !== null && fact.decision.input?.capabilityCatalog !== undefined &&
           fact.decision.input.capabilityCatalog.generation !== selection.catalogGeneration ||
         !integer(selection.tick) || !integer(selection.observationGeneration) || !integer(selection.catalogGeneration) ||
+        marker !== undefined && (marker === null || marker.captureEpoch !== 1 || !integer(marker.lossEpoch) ||
+          marker.lossEpoch > 8192 || !integer(marker.sequence) || marker.sequence === 0 || marker.sequence >= fact.sequence ||
+          marker.playerNumber !== selection.playerNumber || marker.generation !== selection.observationGeneration) ||
         !Object.values(ResourceType).includes(selection.resourceType) ||
         !["forecast", "stockpile_fallback"].includes(selection.branch) ||
         (selection.branch === "forecast") !== (forecast !== null) ||

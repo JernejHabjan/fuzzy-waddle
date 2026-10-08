@@ -20,18 +20,20 @@ export class AiRuntimeRecipientResourceCapture {
   constructor(private readonly scene: ProbableWaffleScene, private readonly coverage: AiRuntimeResourceCoverageCapture,
     private readonly boundary: (playerNumber: number) => { tick: number; sequence: number; playerNumber: number },
     private readonly frontier: () => number, private readonly append: (fact: AiRuntimeProductionFactV1) => void) {
-    this.cleanup.push(installAiRuntimeResourceOperationIdentity(scene, (operation) => this.operations.get(operation)?.id ?? null));
-    this.cleanup.push(subscribeSceneResourceLoss(scene, coverage.lose));
-    for (const player of scene.players) {
-      const number = player.playerNumber;
-      if (number === undefined || !player.playerState || typeof player.getResources !== "function" ||
-        this.bindings.size >= 256) { coverage.lose("recipient_installation_missing"); continue; }
-      const balance = this.sample(player);
-      this.bindings.set(player, { number, state: player.playerState, data: player.playerState.data,
-        resources: player.getResources(), balance, open: 0 });
-      this.append({ ...boundary(number), kind: "recipient_resources_installed", resources: balance });
-      this.cleanup.push(PlayerResourceObservation.subscribe(player, (event) => this.observe(event), coverage.lose));
-    }
+    try {
+      this.cleanup.push(installAiRuntimeResourceOperationIdentity(scene, (operation) => this.operations.get(operation)?.id ?? null));
+      this.cleanup.push(subscribeSceneResourceLoss(scene, coverage.lose));
+      for (const player of scene.players) {
+        const number = player.playerNumber;
+        if (number === undefined || !player.playerState || typeof player.getResources !== "function" ||
+          this.bindings.size >= 256) { coverage.lose("recipient_installation_missing"); continue; }
+        const balance = this.sample(player);
+        this.bindings.set(player, { number, state: player.playerState, data: player.playerState.data,
+          resources: player.getResources(), balance, open: 0 });
+        this.append({ ...boundary(number), kind: "recipient_resources_installed", resources: balance });
+        this.cleanup.push(PlayerResourceObservation.subscribe(player, (event) => this.observe(event), coverage.lose));
+      }
+    } catch (error) { this.coverage.lose("recipient_installation_failed"); this.dispose(); throw error; }
   }
 
   /** Called at existing tick/read boundaries, with no new scan/timer. Reconciliation detects bypasses, not net-zero alias writes. */
@@ -51,7 +53,9 @@ export class AiRuntimeRecipientResourceCapture {
     if (this.disposed) return;
     this.disposed = true;
     this.coverage.lose("recipient_capture_disposed");
-    this.cleanup.splice(0).forEach((callback) => callback());
+    this.cleanup.splice(0).forEach((callback) => {
+      try { callback(); } catch { this.coverage.lose("recipient_cleanup_failed"); }
+    });
     this.bindings.clear();
   }
 

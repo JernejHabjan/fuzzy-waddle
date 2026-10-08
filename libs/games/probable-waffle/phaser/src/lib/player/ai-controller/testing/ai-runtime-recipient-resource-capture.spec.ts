@@ -20,6 +20,16 @@ function fixture() {
 }
 
 describe("all-recipient native resource journal", () => {
+  it("fences append failures without changing the native mutation or its original error", () => {
+    const f = fixture();
+    const append = jest.spyOn(f.facts, "push").mockImplementation(() => { throw new Error("append"); });
+    f.player.addResources({ wood: 1 });
+    expect(f.player.getResources().wood).toBe(201);
+    expect(f.coverage.read().losses).toContain("recipient_mutation_listener_failed");
+    expect(() => f.player.payAllResources({ wood: 1, food: 201 })).toThrow("Not enough resources");
+    expect(f.player.getResources().wood).toBe(200);
+    append.mockRestore(); f.journal.dispose();
+  });
   it("captures grants/refunds and removals once, detached from mutable native vectors", () => {
     const f = fixture();
     f.player.addResources({ wood: 7 }); f.player.payAllResources({ wood: 7 }); f.player.addResources({ wood: 3 });

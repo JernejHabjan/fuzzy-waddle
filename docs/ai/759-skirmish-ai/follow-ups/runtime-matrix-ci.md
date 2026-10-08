@@ -35,10 +35,84 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
 
 ## Implementation order
 
+### Frozen need accounting checkpoint (2026-10-08, authored/unverified)
+
+38 completes the authorized 37–38 **partial-channel diagnostic authoring** batch, based on
+`f72d123174e9e9d1fb5ccdd335bfbce6cbeeff34` (37). Containing commit owns 38; pause after publication.
+All executable validation remains deferred. Actual host model/effort unknown; last user-selected Sol 6.1 / medium.
+
+**What / why:** the native observation pipeline marks the actual resource/queue-obligation read in the root sequence.
+Weak observation metadata crosses only the pipeline's own canonicalization and accepted original gathering proposal;
+intent/save/wire schemas do not change. Interference, missing installation or loss cannot manufacture a read marker.
+`normalizeRuntimeRecipientMutations` validates every supplied journal tail, exact begin/terminal identities, initial
+balances, monotone loss, source/projection duplicates and read vectors. It counts each native operation once;
+older `resources_applied` callbacks do not become additional income.
+
+`projectRuntimeResourceNeedAccounting` freezes the consumed input, checks its exact read, uses the selected fact's
+actual reconciled unspent/live-queue frame, and requires the selected R0/D0 to match disjoint actual liabilities.
+Pending claims are not added again; saved brain reservations do not supply current ownership. Missing frame or
+pre-acceptance liability changes stay unavailable. An accepting result replacing the original forecast closes that
+generation immediately. Later selected decisions, known claim/application/queue/construction/actor changes and
+explicit controller fences close it conservatively; native application positions own accounting, not late publication.
+Controller restore/state replacement/disable/authority loss/shutdown and the start of a fresh pure decision publish
+fences before changing state. Existing queue before/start callbacks provide pre-mutation closure where available.
+Post-only outcome/actor callbacks, silent claim expiry/recovery, owner/death/restore aliases and component lifetime
+routes remain explicit unsupported coverage; these diagnostics cannot certify their absence.
+
+`calculateRuntimeResourceContribution` caps observed contribution using cumulative positive recipient additions
+since the consumed read, unchanged liabilities, actual entry/terminal stock and marginal spendable gain. Removals
+never undo that cumulative income. All other observed grants/refunds/deliveries reduce the old shortage; the whole
+matched delivery stays tied to its exact original selection and operation. Seven of ten wood supplied elsewhere and
+then spent allows at most three from the later seven-wood delivery. Prior full fulfillment allows zero; money absorbed
+by existing liabilities contributes zero. These are **observed upper bounds**, not complete-history useful metrics.
+The existing `resourceServices.needAccounting` report consumer serializes frozen frames/closures/applications; parent
+normalization failures clear it with other groups. Actual useful contribution, window floors, throughput and capacity
+remain null; fixture declarations cannot upgrade any partial channel. Real recipes still declare no intervals.
+
+**Source Implementation Review, 38:** traced native read -> pipeline canonicalization -> weak original selection ->
+selected boundary frame -> strict all-recipient replay -> exact credit operation -> existing variant report. Reviewed
+pre-acceptance additions, same-result replacement, application/publication order, cumulative income, marginal gain,
+whole-pile identity, overflow/tail conflicts, legacy omissions, monotone loss and owned teardown. Repair from this review:
+failed journal/root installation cleans owned subscriptions, and native listener snapshots prevent live-set churn from
+making a notification unbounded; recursive loss notifications are bounded, and reset bindings clean up by their actual state.
+The shared root append budget/sample/
+failure path moved to `appendAiRuntimeProductionFact` to keep the growing capture owner within its source-size contract;
+the existing root budget tests and new native append-failure control remain deferred. No baseline or skill/tool change.
+
+| Acceptance | Authored source evidence / status |
+| --- | --- |
+| 1. Exact consumed input | `AiResourceInputRead`, weak observation owner, native pipeline/root input capture, original proposal |
+| 2. Frozen liability frame | Selected fact's `boundaryState.unspentClaims` and live obligations, exact R0/D0; missing histories unavailable |
+| 3. Conservative closure | Controller pre-fences plus selected/queue/outcome/actor fact closure; unsupported silent/post-only routes remain gaps |
+| 4. Independent all-recipient replay | Strict paired journal validation, exact operation join, cumulative additions including pre-acceptance income; no double sum |
+| 5. Contribution/report | Observed bounds and null useful metrics through `resourceServices.needAccounting`; parent failure clears normalized records |
+| 6. Controls / final evidence | Proposal marker/controller/input/append controls plus journal/arithmetic/accounting Playwright specs authored, never run |
+| 7. Publication / stop | Task-owned 38 commit/push/remote check, then pause before coverage activation audit |
+
+**Omission Audit, 38:** acceptance 1–6 has authored producer/consumer/spec paths above. Full mutable-alias, silent
+need/liability changes and cargo/source/drain/owner lifetime coverage remain activation blockers, deliberately retained
+as gaps even for a synthetic successful calculation. No test fixture or hook list certifies full native authority.
+
+**Separate Final Closure Audit, 38:** reviewed frozen versus newly projected forecasts, selected-before-save frame,
+claims versus pending liabilities, exact native operation/window order, no reopening and null versus observed zero.
+The bounded partial-channel batch is authored; no issue/family/release acceptance closes. Next authorized continuation
+must begin with **39 coverage activation audit**, recommended **GPT-6.1 Sol / high**, to identify each missing writer
+and determine safe bounded hooks before enabling useful metrics or authoring activation-dependent native recipes.
+Do not silently erase gaps or change public mutable resource/native payment semantics to claim completeness.
+
+Deferred additional final-gate commands (combine with every earlier obligation; **not run**):
+
+```sh
+pnpm exec nx test probable-waffle-protocol --testPathPatterns='player-resource-observation|player' --runInBand
+pnpm exec nx test probable-waffle-gameplay --testPathPatterns='ai-general-gathering-proposal' --runInBand
+pnpm exec nx test probable-waffle-phaser --testPathPatterns='observe-resource-application|ai-runtime-recipient-resource-capture|ai-runtime-resource-input-capture|ai-runtime-production-capture|player-ai-controller|ai-observation-pipeline' --runInBand
+pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts skirmish-ai-runtime-resource-need-accounting.spec.ts skirmish-ai-runtime-resource-service.spec.ts skirmish-ai-runtime-resource-credit.spec.ts skirmish-ai-runtime-production-causality-normalization.spec.ts
+```
+
 ### Recipient native journal checkpoint (2026-10-08, authored/unverified)
 
 37 follows the 36 design below, with a behavior-preserving player-owner split prerequisite `80a84493b`.
-The containing commit owns 37. Batch 37–38 is authorized; proceed to accounting after scoped publication.
+37 is `f72d123174e9e9d1fb5ccdd335bfbce6cbeeff34`. Related 38 accounting is now authored above; batch pause reached.
 Last user-selected profile is GPT-6.1 Sol / medium; actual host settings unknown. Recommended profile remains
 GPT-6.1 Sol / high because native ordering/authority crosses protocol, scene capture and accounting.
 
@@ -68,7 +142,7 @@ root-budget ownership, all-recipient filtering, no double sum with `resources_ap
 Source authoring complete for this partial channel; full alias/lifetime authority and useful activation remain open.
 Final gate must run the new `player-resource-observation`, `observe-resource-application` and
 `ai-runtime-recipient-resource-capture` specs with every prior deferred command. No executable validation ran.
-Commit/push 37, then continue the authorized 38 accounting slice; pause after the batch.
+37 was committed/pushed with matching remote. Its controls remain unrun; 38 records the related accounting publication/pause.
 
 ### Beneficiary need authority design checkpoint (2026-10-08, partially implemented)
 
@@ -231,16 +305,16 @@ not moving deadlines or extending the forecast. `continuousUsefulCapacity` stays
 supply, drain, access/safety and service predicate histories exist. Source refill/lock/restore, drain capacity and
 owner changes are additional actual writers, not covered by successful extraction/credit observations.
 
-#### Next grouped implementation and final-gate evidence
+#### Capture/accounting implementation status and final-gate evidence
 
-Recommend **GPT-6.1 Sol / high** for the related 37–38 batch. This is a task-risk recommendation; settings are not
-changed. Keep the same profile across native observer and accounting work. Medium remains suitable for later settled
-fixture/report wiring. These are local authoring boundaries, not a remaining-machinery count or automatic authorization.
+37–38 partial-channel authoring is recorded above. Recommend **GPT-6.1 Sol / high** for the next 39 coverage audit;
+this is a task-risk recommendation, not a setting change. Medium remains suitable for later settled fixture/report
+wiring. These are local authoring boundaries, not a remaining-machinery count or automatic authorization.
 
 | Next stage | What / why / authoring stop condition |
 | --- | --- |
-| 37: recipient mutation capture | Focused native observer and bounded beneficiary journal, exact credit operation join, restore/reset/replacement fences and authored native controls. Gives accounting all observed recipient income rather than a worker subtotal; partial channels remain explicit. |
-| 38: need lifecycle/accounting | Accepted liability frame, conservative generation closure, strict journal replay and unresolved-before projection with negative controls. Prevents other income or spending from being credited to the old need. Publish both related stages, then pause; usefulness stays null wherever a required writer/lifetime route is unsupported. |
+| 37: recipient mutation capture | Authored/unverified native observer, bounded all-recipient journal, exact operation join and fences. Gives accounting observed recipient income rather than a worker subtotal; mutable aliases remain unsupported. |
+| 38: need lifecycle/accounting | Authored/unverified exact read, selected frame, conservative known-boundary closure and observed unresolved/contribution bounds. Prevents observed other income/spending from renewing old need; silent lifecycle routes and useful activation remain unsupported. Batch pause reached. |
 | After 38: activation/recipes | Audit remaining mutation authority before enabling useful windows, then frozen native positive/control declarations through the installer/browser config and existing variant consumer. Gives PRO oracles independent real evidence; do not assume 37–38 makes activation safe. |
 
 Author, but do not run until the final gate, controls for direct/vector mutations; partial throw; expected leaf nesting

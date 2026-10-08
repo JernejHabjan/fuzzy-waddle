@@ -12,6 +12,9 @@ import type { AiRuntimeProductionBoundaryState } from "./ai-runtime-production-b
 import type { AiRuntimeProductionSpatialV1 } from "./ai-runtime-production-spatial-v1";
 import type { AiRuntimeConstructionV1 } from "./ai-runtime-construction-v1";
 import type { AiRuntimeRecipientMutationV1 } from "./ai-runtime-recipient-mutation-v1";
+import type { AiResourceInputRead } from
+  "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-resource-input-read";
+import type { AiObservationV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
 
 /** Raw authority callbacks in observer order. No resource event is labelled a payment/refund without item provenance. */
 export type AiRuntimeProductionFactV1 = {
@@ -21,6 +24,9 @@ export type AiRuntimeProductionFactV1 = {
   /** Callback-time state after the diagnostic ledger update; optional only for older/synthetic records. */
   readonly boundaryState?: AiRuntimeProductionBoundaryState;
 } & (
+  | { readonly kind: "resource_input_read"; readonly read: AiResourceInputRead;
+    readonly resources: AiObservationV1["resources"] }
+  | { readonly kind: "resource_need_fence"; readonly reason: string }
   | { readonly kind: "recipient_resources_installed"; readonly resources: Record<ResourceType, number> | null }
   | { readonly kind: "recipient_resource_mutation"; readonly mutation: AiRuntimeRecipientMutationV1 }
   | {

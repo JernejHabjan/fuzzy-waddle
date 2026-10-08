@@ -12,7 +12,7 @@ export function subscribeSceneResourceLoss(scene: Phaser.Scene, callback: (reaso
 }
 
 export function fenceSceneResourceHistory(scene: Phaser.Scene, reason: string): void {
-  listeners.get(scene)?.forEach((callback) => {
+  [...(listeners.get(scene) ?? [])].forEach((callback) => {
     try { callback(reason); } catch { /* Observation cannot prevent native restore. */ }
   });
 }

@@ -6,6 +6,7 @@ import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
 import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
 import { proposeAiGeneralGathering } from "./ai-general-gathering-proposal";
 import { readAiGatheringSelection } from "./ai-gathering-selection-observation";
+import { rememberAiResourceInputRead } from "./ai-resource-input-observation";
 
 /** Real pure proposal inputs; synthetic world/capability does not prove live resource service. */
 function fixture() {
@@ -33,6 +34,15 @@ function fixture() {
 }
 
 describe("consumed gathering selection", () => {
+  it("retains the actual consumed observation marker without changing the saved intent", () => {
+    const f = fixture();
+    const marker = { captureEpoch: 1, lossEpoch: 0, sequence: 5, playerNumber: 1, generation: f.observation.generation };
+    rememberAiResourceInputRead(f.observation, marker);
+    const intent = f.propose();
+    if (!intent) throw new Error("gathering_fixture_missing");
+    expect(readAiGatheringSelection(intent)?.resourceInputRead).toEqual(marker);
+    expect(intent).not.toHaveProperty("resourceInputRead");
+  });
   it("retains the winning duplicate-resource entry before later forecast/ledger mutation", () => {
     const f = fixture(), intent = f.propose();
     if (!intent) throw new Error("gathering_fixture_missing");

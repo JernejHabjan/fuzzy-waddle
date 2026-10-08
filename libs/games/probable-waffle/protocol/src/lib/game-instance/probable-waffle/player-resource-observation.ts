@@ -3,10 +3,11 @@ import type { ProbableWafflePlayer } from "./probable-waffle-player";
 import type { PlayerResourceMutation } from "./player-resource-mutation";
 
 const listeners = new WeakMap<ProbableWafflePlayer, Set<{
-  event: (event: PlayerResourceMutation) => void; loss: (reason: string) => void;
+  event: (event: PlayerResourceMutation) => void; loss: (reason: string) => void; state: object;
 }>>();
 const states = new WeakMap<object, Set<ProbableWafflePlayer>>();
 const active = new WeakMap<ProbableWafflePlayer, { leaf: boolean }>();
+const reportingLoss = new WeakSet<ProbableWafflePlayer>();
 
 /** Optional protocol-local observation. It neither owns money nor makes public mutable aliases observable. */
 export class PlayerResourceObservation {
@@ -14,26 +15,31 @@ export class PlayerResourceObservation {
     loss: (reason: string) => void): () => void {
     const group = listeners.get(player) ?? new Set();
     if (group.size >= 8) { safely(() => loss("recipient_listener_overflow")); return () => undefined; }
-    const entry = { event, loss };
-    group.add(entry);
-    listeners.set(player, group);
     const bound = player.playerState;
     const owners = states.get(bound) ?? new Set();
+    if (!owners.has(player) && owners.size >= 256) { safely(() => loss("recipient_state_binding_overflow")); return () => undefined; }
+    const entry = { event, loss, state: bound };
+    group.add(entry);
+    listeners.set(player, group);
     owners.add(player);
     states.set(bound, owners);
     return () => {
       group.delete(entry);
-      if (!group.size) { listeners.delete(player); owners.delete(player); }
+      if (![...group].some((other) => other.state === bound)) owners.delete(player);
+      if (!group.size) listeners.delete(player);
     };
   }
 
   /** Called before reset's first write; constructor resets have no subscribers. */
   static reset(state: object): void {
-    states.get(state)?.forEach((player) => this.lose(player, "recipient_state_reset"));
+    [...(states.get(state) ?? [])].forEach((player) => this.lose(player, "recipient_state_reset"));
   }
 
   static lose(player: ProbableWafflePlayer, reason: string): void {
-    listeners.get(player)?.forEach((entry) => safely(() => entry.loss(reason)));
+    if (reportingLoss.has(player)) return;
+    reportingLoss.add(player);
+    try { [...(listeners.get(player) ?? [])].forEach((entry) => safely(() => entry.loss(reason))); }
+    finally { reportingLoss.delete(player); }
   }
 
   /** One explicit expected vector-to-leaf call. Consume the permit at entry so deeper reentrancy cannot inherit it. */
@@ -69,7 +75,7 @@ export class PlayerResourceObservation {
         player.playerState.data === binding.data && player.getResources() === binding.resources; }
       catch { this.lose(player, "recipient_mutation_reader_failed"); }
       if (!bindingValid) this.lose(player, "recipient_binding_replaced");
-      group.forEach((entry) => {
+      [...group].forEach((entry) => {
         try { entry.event({ player, operation, kind, request, requested: requested ? { ...requested } : null,
           phase, before: before ? { ...before } : null, after: after ? { ...after } : null, bindingValid }); }
         catch { this.lose(player, "recipient_mutation_listener_failed"); }

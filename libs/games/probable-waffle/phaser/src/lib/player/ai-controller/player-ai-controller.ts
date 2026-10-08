@@ -43,6 +43,7 @@ import type { AiBrainStepResultV1 } from
 import { dispatchAiIntents } from "./ai-intent-dispatcher";
 import { dispatchAiBrainResult } from "./dispatch-ai-brain-result";
 import { captureAiDecisionInput } from "./capture-ai-decision-input";
+import { fenceAiResourceNeed } from "./observation/ai-resource-input-observation";
 import type { AiDecisionInputV1 } from "./ai-decision-input-v1";
 
 export class PlayerAiController {
@@ -187,6 +188,7 @@ export class PlayerAiController {
   }
 
   private onShutdown() {
+    fenceAiResourceNeed(this.scene, this.player.playerNumber, "controller_shutdown");
     this.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.updateFrameNonDeterministicFallback, this);
     this.tickSubscription?.unsubscribe();
     this.commandReconciliation?.destroy();
@@ -221,6 +223,7 @@ export class PlayerAiController {
    * Set the AI behavior tree state from saved data.
    */
   public setSaveState(state: AIBehaviorTreeStateData): void {
+    fenceAiResourceNeed(this.scene, this.player.playerNumber, "controller_save_restore");
     this.setEnabled(state.enabled ?? true);
     if (state.blackboard) {
       this.blackboard.setData(state.blackboard, this.scene);
@@ -256,6 +259,7 @@ export class PlayerAiController {
 
   /** Documents the set enabled member and its declared contract at this boundary. */
   setEnabled(enabled: boolean): void {
+    if (!enabled) fenceAiResourceNeed(this.scene, this.player.playerNumber, "controller_disabled");
     this.enabled = enabled;
     const definition = this.player.playerController.data.playerDefinition;
     if (definition) definition.campaignAiEnabled = enabled;
@@ -263,6 +267,7 @@ export class PlayerAiController {
 
   /** Host transfer suspends planning without changing the campaign's persisted AI-enabled policy. */
   setAuthorityActive(active: boolean): void {
+    if (!active) fenceAiResourceNeed(this.scene, this.player.playerNumber, "controller_authority_lost");
     this.authorityActive = active;
     if (!active) this.stepQueued = false;
   }
@@ -328,6 +333,7 @@ export class PlayerAiController {
 
   /** Replaces state only through the checked V1 migration boundary. */
   setBrainState(state: unknown): void {
+    fenceAiResourceNeed(this.scene, this.player.playerNumber, "controller_brain_replaced");
     const context = this.getBrainMigrationContext();
     if (!context) throw new Error("ai_brain_identity_unavailable");
     this.brainState = structuredClone(canonicalizeAiBrainStateV1(migrateAiBrainState(state, context)));
@@ -344,6 +350,7 @@ export class PlayerAiController {
     const observation = this.playerAiControllerAgent.getCommittedObservation();
     const bridge = this.getBrainCommandBridgeSnapshot();
     if (!observation || !this.brainState || !this.pureBrain) return;
+    fenceAiResourceNeed(this.scene, this.player.playerNumber, "controller_decision_started");
     const result = this.pureBrain.step(observation, this.brainState, bridge?.outcomes ?? []);
     this.dispatchAcceptedIntents(result.acceptedIntents, {
       result, authority: bridge?.authority ?? result.nextState.authority,
