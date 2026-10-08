@@ -35,6 +35,181 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
 
 ## Implementation order
 
+### Useful resource service contract checkpoint (2026-10-08, unverified)
+
+Machinery 32 is the contract boundary after `c7aefd0b8dd2217f90eeea5d6abe695bb74e2057`.
+The containing commit owns this documentation slice. Last selected profile: GPT-6.1 Sol / medium; actual host
+settings unknown. A generic continuation authorizes this contract stage and its scoped commit/push, then a pause.
+No runtime code, executable spec, fixture registration or passing evidence is added here.
+
+**Purpose:** distinguish accepted gathering, actual delivered income, contribution to a dated resource need,
+retained throughput, and continuous useful capacity. These require different authorities. The 29–31 facts are
+prerequisites, not interchangeable proofs. The rules below govern the next implementation; they are unimplemented.
+
+#### Source findings and quantitative need
+
+- `planning/ai-general-gathering-proposal.ts` selects from `state.economyProduction.forecasts` and returns
+  `assign_gatherers` with `demandId: null`. `planning/ai-macro-manager.ts` invokes it before projecting the new macro
+  state. Capture the exact inputs consumed there; a later decision snapshot can contain a different forecast.
+- `planning/ai-resource-forecast.ts` aggregates unmet priced demands per resource with a 600-tick forecast horizon.
+  `aiResourceForecastDeficit` subtracts spendable stock and predicted delivered income. These are planner estimates,
+  not application evidence or a mapping from one resource unit to one originating production demand.
+- `contracts/ai-plan-contracts.ts` demand units include actor counts and generic work. `resourceObligations` can
+  price a missing actor/building; neither field alone declares a delivered-resource target with beneficiary/dates.
+- `skirmish-ai-runtime-route-service-lineage.ts` therefore may retain a valid selected service command while its
+  selected demand is missing. Keep that distinction; never parse `reasonCode`, borrow purchase demand, synthesize
+  a demand ID, or turn movement/production work into resource units.
+
+These gameplay source anchors are under `libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/`;
+the report anchors are under `apps/portal-e2e/src/e2e/`.
+
+The first resource-need authority is **aggregate selected forecast need**, explicitly labelled as such. A transient
+selection record must retain the actual intent/effect identity, player, observation/catalog generation and tick,
+selected resource, forecast amount/horizon/confidence, stockpile/reserved/due amounts, empirical-income status/value,
+and exact chosen forecast-versus-fallback branch. Bind this to the later accepted decision and shared command by
+existing identities. Rejected proposals supply no accepted service. Do not change native resource selection or
+persist/relay this diagnostic record. Capture input during selection; retrospective recomputation is insufficient.
+
+Define `spendable = max(0, stockpile - reservedUnspent - obligationsDue)` and
+`grossUnmet = max(0, forecast.amount - spendable)` in units of that exact resource. Retain the planner's own deficit
+separately, including its predicted income subtraction. A quantitative need requires known finite nonnegative inputs,
+a positive selected planner deficit, positive grossUnmet, positive forecast confidence and a future horizon. Missing,
+expired, fallback or nonpositive-deficit selections retain assignment/income only. Do not call grossUnmet a native
+planner output or recompute its forecast price into a different demand. The current selector can choose a nonpositive
+maximum; observation must preserve that behavior rather than repair it.
+
+This proves at most contribution toward an aggregate forecast shortfall. Individual production-demand fulfillment,
+whether that forecast is strategically sufficient, and affordability of a later purchase require their independent
+catalog/liability/decision/application evidence. Do not remove those production oracle gaps.
+
+#### Exact endpoints, horizon and accounting
+
+Use a capture epoch plus ordered boundary `(simulationTick, captureSequence)`; sequence distinguishes same-tick
+selection, admission, addition, credit, cancellation and read. A boundary is an actual detached capture/read position,
+never an asserted end of all work at that tick. `SimulationTickService.tick$` emits synchronously when a tick begins;
+async continuations can follow it. A tick subscription alone cannot seal that tick's final resource history.
+
+The fixture declares start tick, deadline/end tick, retained duration, subwindow length and required amounts before
+execution. All ticks are safe integers; durations are positive. Resource amounts are finite nonnegative native units.
+The requirement cannot extend the consumed forecast horizon, run ceiling or captured authority frontier. Never default
+an oracle window to the planner's 600 ticks, move a deadline to the first successful credit, or stop early. Require
+actual start/end reads and exact endpoint ticks. Define all effect intervals as `(leftBoundary, rightBoundary]`:
+left-edge/pre-installation credits are excluded; right-edge credits through that read's sequence are included.
+
+An eligible useful contribution needs positive `appliedAmount`, matching actual beneficiary and resource, complete
+whole-pile provenance and earlier accepted gathering with the same selection record. Credits after a selection's
+horizon, abandonment, supersession or lifetime fence remain observed money but supply no old-need contribution.
+Whole piles with contributors from different need generations are not allocated to one generation. Keep the existing
+no-partial/FIFO attribution rule. Cross-owner income cannot fulfill the gathering player's need. A recipient report
+must not infer it from its balance: existing facts are filed under the source player, so beneficiary-wide totals
+require explicit complete scene capture/recipient projection, not a single player's fact list.
+
+For one fixed need generation, count each transfer once in application order. Report raw eligible income separately
+from `potentialContribution = min(eligibleIncome, grossUnmet)`; excess has no additional fulfillment value. Whole-pile ownership
+remains intact when this cap saturates. Before labelling any portion useful, require independent evidence that this
+same need remains unresolved at that application's boundary. Other income, revised liabilities or abandonment may
+already have closed it. This requires complete beneficiary resource/liability/need history; a cohort subtotal cannot
+provide it. Missing history leaves actual useful contribution unavailable, with potentialContribution retained as an
+explicit upper bound. Later spending cannot reopen a fulfilled generation. The cap is not an allocation to originating demands
+or a rewrite of cargo lineage. Overlapping needs cannot each spend the same credit; until a real independent allocation
+authority exists, permit one evaluated generation per beneficiary/resource interval and reject overlapping claims.
+Credit at a supersession boundary uses its actual sequence relative to supersession, never tick-only equality.
+
+Zero application is observed zero income. Campaign suppression, emitter return, native extraction/drop-off result,
+pending cargo, refunds, initial stock and balance deltas without scoped service credit cannot satisfy this metric.
+Consumption/spending does not erase earlier income; retained stock and actual later spending remain separate evidence.
+
+#### Complete coverage and retained benefit
+
+Coverage is explicit capture-owned authority, scoped to the declared actor cohort, need generation, channels and
+epoch. Declare the cohort at the start boundary, including current native gatherer identity and listener installation;
+late installation cannot backfill old cargo or work. Pending pre-start executions cannot acquire this generation.
+Reuse the existing indexed inventory/subscription routes; no extra scene scan, navigation query or gameplay timer.
+New actors may join only at an observed registration/component-install boundary with fresh identities. Such joins
+cannot make an earlier cohort interval complete. Scope a cohort subtotal honestly; it is never all-player income.
+
+Installation/read/subscribe/append/detach failures, unsupported mutation paths, missed registrations, lost facts or
+snapshots, saturated identities, scene/controller/component replacement, restore, actor reuse and disposal make the
+affected coverage unavailable. Record a monotone epoch/loss fence before fallible diagnostics; even a lost fence
+record cannot allow later credits to certify the old interval. Fast-forward without intermediate ticks breaks tick
+coverage. Simulation pause adds no ticks or income; wall-clock waiting supplies no horizon evidence. Later snapshots,
+no recorded error, unchanged current order or repeated successful credits cannot repair absent coverage.
+
+Retain existing raw caps (8,192 facts/identities, 256 snapshots) and bound cohorts/need/window groups at 256. Overflow
+or supplied contradiction invalidates the whole relevant group; inspect all supplied tails before producing output.
+Legacy capture without explicit authority stays unavailable, even with zero reported drops. Hooks must cover every
+mutation relied upon; a roster plus tick counter alone cannot certify no missed service/cargo/lifetime changes.
+
+**Retained useful throughput** means independently declared resource delivery floors in every adjacent, nonoverlapping
+subwindow over the full retained interval. Require integral tiling of its duration; include a final partial window only
+if the fixture explicitly declares its length and floor. Require complete scoped coverage and dated positive need in
+each window; after a need is filled, renewed throughput usefulness needs a new independently captured generation.
+One large delivery cannot satisfy a later window, and a final stockpile cannot replace any window. Supersession or
+abandonment closes the old generation; do not invent future work to keep a sustained-service assertion alive.
+
+**Continuous useful capacity** is a stronger predicate: actual retained ready/living/owned capability, source supply,
+compatible beneficiary drain, accepted service and fair access/safety must hold throughout a declared interval.
+Endpoint snapshots and throughput windows do not prove it. Each predicate needs an initial authority sample plus all
+actual mutation/invalidation boundaries, including source depletion, order changes, component/lifetime changes and
+navigation/threat revisions. Until those complete routes exist, keep continuous capacity unavailable. Full production
+retention also needs producer/lane/product/tech authorities; resource flow never substitutes for those.
+
+#### Consumers, cases and next grouped implementation
+
+The future normalizer should expose scoped income, aggregate need contribution, retained throughput and continuous
+capacity as separate evidence/status fields. Contradictions still suppress parent normalized groups. Missing proof
+remains a gap; do not globally delete attempt-level missing-credit/history gaps just because some credits exist.
+Resolve only a specifically covered claim. The existing `evaluateRuntimeProductionCausality` and mandatory PRO-03/06/07
+transition/resilience/refund oracles and manifest denominators stay fail closed.
+
+Required future authored cases: real selection input versus newer decision forecast; null demand with positive aggregate
+need; nonpositive/fallback/expired/confidence-missing need; accepted versus rejected selection; boundary-edge and same-tick
+ordering; repeated/mixed-generation piles; beneficiary mismatch; one large pulse with an empty later window; fulfilled
+need without renewal; changed/cancelled need; snapshot/reader/append loss, late installation, restore/reuse/fast-forward
+and overflow with contradictory tail; observed zero and suppressed credit; other income fills need before cohort credit;
+income retained despite spending without reopening fulfilled need; successful
+throughput with continuous capacity unavailable. Pair positive/negative cases through real native paths at the final gate.
+
+Next coherent group, recommended **GPT-6.1 Sol / high** throughout:
+
+1. **33, selection authority:** capture exact consumed forecast/observation and bind accepted service identities;
+   this lets aggregate usefulness be measured without inventing an individual production demand.
+2. **34, coverage authority:** capture cohort installation/frontier/loss epochs and actual supported invalidation routes;
+   this lets an interval assert what was fully observed. Unsupported predicates remain explicit gaps.
+3. **35, interval reports:** implement strict boundary/accounting/window projection and negative specs through existing
+   variant reports; this lets oracles distinguish isolated income from retained useful throughput. Continuous capacity
+   stays unavailable for predicates lacking complete mutation coverage; no full production closure is implied.
+
+These are three planned authoring stages, not authorization to run them automatically or a fixed remaining machinery
+total. Source-size prerequisites discovered at an edited owner need their own scoped extraction before hooks.
+Use medium again once these actual authority routes are settled. This recommendation reflects cross-authority risk;
+[OpenAI Docs](https://developers.openai.com/api/docs/models/gpt-6.1-sol) confirms Sol supports medium/high, not that
+this repository requires one setting. Host settings are unchanged.
+
+| Acceptance | Result / evidence | State |
+| --- | --- | --- |
+| 1. Provenance/scope | Source anchors above; base 31, same branch, unrelated Nx merge preserved | Source reviewed |
+| 2. Quantitative need/beneficiary | Actual null-demand/aggregate forecast gap; separate units and selected-input binding | Contract authored; capture open |
+| 3. Endpoints/horizon | Ordered real boundaries, half-open effects, fixed fixture horizon and subwindows | Contract authored; oracle open |
+| 4. Accounting/loss | Unique transfer, aggregate cap, generation/owner fences, whole-pile policy, explicit coverage | Contract authored; implementation open |
+| 5. Continuous predicates | Mutation-complete authority required; pulses and sampled presence insufficient | Contract authored; authority open |
+| 6. Existing consumers/negative cases | Mandatory production oracles unchanged; future rejection cases named above | Source reviewed; specs open |
+| 7. Publication/resume | Handoff updated with next group/purpose/profile; scoped commit/push and remote check | Authoring boundary only |
+
+**Source Implementation Review:** traced real gathering selection and forecast calculation to admitted service lineage,
+native credit/cargo projection, capture's per-player filtering/read boundary and existing PRO oracles. Repaired the
+initial design assumption that every gathering command has a selected demand. Aggregate need and individual demand
+are now separate; tick emission is explicitly not an end-of-tick seal. No code behavior or existing authority is changed.
+
+**Omission Audit:** acceptance 1–7 represented. Capture/oracle/spec implementation is explicitly next, not claimed here.
+No new plan file, unused interface, save/wire/schema/editor/CI/baseline change or skill/tool change. No issue/family closes.
+
+**Separate Final Closure Audit:** rechecked units, beneficiaries, selection-time source, same-tick endpoints, generation
+overlap, coverage loss and independent continuous predicates against immediate consumers. The contract is reviewable;
+its actual implementation feasibility, bounded cost and executable correctness remain unverified. No tests, formatter,
+lint, types/build, source/schema/repository validators, simulation, doctor/context/catalog or diff check ran. Retain every
+29–31 and earlier final-gate command below; this docs-only slice adds no executable check or passing evidence.
+
 ### Production credit and cargo checkpoints (2026-10-08, unverified)
 
 Authorized group: gatherer prerequisite/contract (29), native cargo/application capture (30), strict report projection (31).
