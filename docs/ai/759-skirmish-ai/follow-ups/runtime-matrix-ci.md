@@ -209,6 +209,31 @@ explicit gaps; cancellation is not falsely labeled a health mutation. No runtime
 reconciled handoff/current grid/resume policy. Design authored/source-reviewed only; all executable evidence deferred.
 No skill/tool update warranted. Commit/push this documentation slice and pause at 47.
 
+### Construction presentation checkpoint (2026-10-08, authored/unverified)
+
+Stage 48 is based on `fa0dc1e4c0f1b589bb8265ba680a4e56b50ec609` (47, remote verified); containing commit owns 48.
+The current authorization covers 48–49, with a separate commit/push per stage and pause after 49.
+ConstructionPresentation owns cached audio, visibility/RNG and build/completion playback. ConstructionSiteComponent
+retains playingBuildSound in saved data, accessed by live callbacks, plus UI creation, state/subjects, ticks and teardown.
+The helper is stored after original UI creation but before eager ready; its lookup stays before cached health lookup.
+Native flag-before-play, audio throws, optional completion selection and uncancelled late callbacks are retained.
+This isolates presentation so passive readiness fences can be added to a focused owner without a baseline refresh.
+
+| Acceptance | Authored evidence / status |
+| --- | --- |
+| 48 sound ownership / save contract | Adjacent construction-presentation.ts and facade delegation; no new persisted fields/listeners/timers. Source-reviewed. |
+| 48 ready / guards / callbacks | construction-presentation.spec.ts: eager/deferred ordering, visibility/audio/RNG guards, restored flag and late callback, audio exception, completion sound without service. Authored/unrun. |
+| 48 lifecycle / cleanup / completion | New spec retains state/sound/builder/upgrade/score order and finished guard; existing construction-lifecycle.spec.ts retains repeated teardown and tick unsubscribe. Authored/unrun. |
+
+**Source Implementation Review:** compared original lookup/guard/RNG/callback order and live saved state against the
+extraction; constructor stores helper before ready, facade retains public class/API and registration. Immediate consumers
+and payment/lifecycle owners require no changes. No native arithmetic was changed.
+**Omission Audit:** all 48 obligations map above; no baseline refresh, duplicate flag, new cleanup or simulation owner.
+**Final Closure Audit (separate):** reviewed the final source/doc scope and unrun controls after implementation review;
+48 authored/source-reviewed only, all executable evidence deferred. No skill/tool change warranted.
+Next within current batch: 49 exact pre-write fences and native/capture/drain/report controls, for rejecting stale
+readiness continuity after construction/repair. Recommend staying on GPT-6.1 Sol / medium; actual host settings unknown.
+
 ### Health presentation prerequisite checkpoint (2026-10-08, authored/unverified)
 
 Stage 45 is `e5a5eb242970489ebd2c2d7e1c2967b9ecb56cf8`, based on `e173b564beda5d18a55dd9f28b03b91f550551ae` (44).

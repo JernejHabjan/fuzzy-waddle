@@ -6,22 +6,19 @@ import {
 import { HealthComponent } from "../combat/components/health-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
-import { getGameObjectVisibility, onObjectReady } from "../../../data/game-object-helper";
+import { onObjectReady } from "../../../data/game-object-helper";
 import { getResearchedLevelForActor } from "../../../data/actor-level-utils";
 import { BehaviorSubject, Subject, type Subscription } from "rxjs";
 import { upgradeFromConstructingToFullActorData } from "../../../data/actor-data";
 import { ConstructionProgressUiComponent } from "./construction-progress-ui-component";
 import { BuilderComponent } from "./builder-component";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
-import { AudioService } from "../../../world/services/audio.service";
-import {
-  SharedActorActionsSfxHammeringSounds,
-  SharedActorActionsSfxSawingSounds,
-  SharedActorActionsSfxSelectionSounds
-} from "../../../sfx/shared-actor-actions-sfx";
+import { ConstructionPresentation } from "./construction-presentation";
 import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller";
-import type { ConstructionSiteDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/construction/construction-site-definition";
-import type { ProductionCostDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/production-cost-definition";
+import type { ConstructionSiteDefinition } from
+  "@fuzzy-waddle/probable-waffle-gameplay/entity/components/construction/construction-site-definition";
+import type { ProductionCostDefinition } from
+  "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/production-cost-definition";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
@@ -43,7 +40,7 @@ export class ConstructionSiteComponent {
   private assignedBuilders: Phaser.GameObjects.GameObject[] = [];
   private assignedRepairers: Phaser.GameObjects.GameObject[] = [];
   constructionProgressUiComponent: ConstructionProgressUiComponent;
-  private audioService?: AudioService;
+  private readonly presentation: ConstructionPresentation;
   private healthComponent?: HealthComponent;
   private simulationTickSub?: Subscription;
   private playingBuildSound: boolean = false;
@@ -54,6 +51,8 @@ export class ConstructionSiteComponent {
     private readonly constructionSiteDefinition: ConstructionSiteDefinition
   ) {
     this.constructionProgressUiComponent = new ConstructionProgressUiComponent(this.gameObject);
+    this.presentation = new ConstructionPresentation(this.gameObject,
+      () => this.playingBuildSound, (playing) => { this.playingBuildSound = playing; });
     onObjectReady(gameObject, this.init, this);
     this.simulationTickSub = getSceneService(gameObject.scene, SimulationTickService)?.tick$.subscribe(() =>
       this.update()
@@ -70,7 +69,7 @@ export class ConstructionSiteComponent {
       this.progressPercentage = 100;
       this.constructionProgressPercentageChanged.next(this.progressPercentage);
     }
-    this.audioService = getSceneService(this.gameObject.scene, AudioService);
+    this.presentation.init();
     this.healthComponent = getActorComponent(this.gameObject, HealthComponent);
   }
 
@@ -153,7 +152,7 @@ export class ConstructionSiteComponent {
       }
     }
 
-    this.playBuildSound();
+    this.presentation.playBuildSound();
 
     // Check if finished.
     if (this.remainingConstructionTime <= 0) {
@@ -162,28 +161,6 @@ export class ConstructionSiteComponent {
 
     this.progressPercentage = this.getProgressFraction() * 100;
     this.constructionProgressPercentageChanged.next(this.progressPercentage);
-  }
-
-  private playBuildSound() {
-    if (!this.audioService) return;
-    const visibilityComponent = getGameObjectVisibility(this.gameObject);
-    if (!visibilityComponent || !visibilityComponent.visible) return;
-    if (this.playingBuildSound) return;
-    this.playingBuildSound = true;
-    const soundDefinitions = [...SharedActorActionsSfxHammeringSounds, ...SharedActorActionsSfxSawingSounds];
-    // can be random as it doesn't need to be deterministic
-    const soundDefinition = soundDefinitions[Math.floor(Math.random() * soundDefinitions.length)]!;
-    this.audioService.playSpatialAudioSprite(
-      this.gameObject,
-      soundDefinition.key,
-      soundDefinition.spriteName,
-      undefined,
-      {
-        onComplete: () => {
-          this.playingBuildSound = false;
-        }
-      }
-    );
   }
 
   startConstruction() {
@@ -293,7 +270,7 @@ export class ConstructionSiteComponent {
       healthComponent.healthDefinition.maxHealth
     );
 
-    this.playBuildSound();
+    this.presentation.playBuildSound();
 
     if (healthComponent.healthComponentData.health >= healthComponent.healthDefinition.maxHealth) {
       this.assignedRepairers.forEach((repairer) => {
@@ -310,13 +287,7 @@ export class ConstructionSiteComponent {
     observeConstructionLifecycle(this.gameObject, this.state, this.remainingConstructionTime, "finished");
     this.constructionStateChanged.next(this.state);
 
-    const visibilityComponent = getGameObjectVisibility(this.gameObject);
-    if (visibilityComponent && visibilityComponent.visible) {
-      const soundDefinitions = SharedActorActionsSfxSelectionSounds;
-      // can be random as it doesn't need to be deterministic
-      const soundDefinition = soundDefinitions[Math.floor(Math.random() * soundDefinitions.length)]!;
-      this.audioService?.playSpatialAudioSprite(this.gameObject, soundDefinition.key, soundDefinition.spriteName);
-    }
+    this.presentation.playCompletionSound();
 
     if (this.constructionSiteDefinition.consumesBuilders) {
       this.assignedBuilders.forEach((builder) => {
