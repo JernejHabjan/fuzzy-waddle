@@ -6,13 +6,15 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
-**Current batch (user policy, 2026-10-08):** `continue` authorized grouped implementation stages 48–49.
-Current step: #815/#816 machinery 49 **construction writer fences**, authored/unverified; pause after 49 publication.
-48 sound extraction and 49 passive writer fences are authored. Next: 50 source/drain capacity and lifetime design.
-Recommend GPT-6.1 Sol / high for the next bounded ownership design, then medium for its settled implementation batch.
-Last selected profile GPT-6.1 Sol / medium; actual host settings unknown. No model switch.
+**Current policy (user, 2026-10-08):** one consolidated remaining-machinery design pass on GPT-6.1 Sol / high,
+then one or more dependency-ordered implementation passes on Luna / high. Replace repeated per-component design stages.
+Current step: 49 construction writer fences authored/unverified and published; this commit updates execution policy only.
+Next: 50 consolidated machinery design, not started. Design determines the finite implementation passes and finish line.
+Pause after design publication for model selection; stay on Luna across settled implementation work without per-file switches.
+Sol reviews the combined implementation and handles unresolved contracts/difficult final-gate failures.
+Last selected profile GPT-6.1 Sol / medium; actual host settings unknown. Recommendations do not switch models.
 All executable tests/validation remain deferred to the final gate.
-Base `04ded09863f51adb72a10b54ff8a30537678c8be` (48, remote verified); containing commit owns 49.
+Base `a989f66c1ec2cd9ae2fdc1c931e923eb261bb7fc` (49, remote verified); containing commit owns this policy update.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify remote on resume.
 Preserve unrelated Nx merge `59f72e037`. No family/issue is complete. User removed the comment-permission rule.
 
@@ -76,13 +78,15 @@ Campaign suppression is explicit and may accompany a full native return. Old/unk
 to the latest task. Whole known piles may retain several earlier gathering attempts; no invented FIFO/partial allocation.
 A credit proves a scoped balance change, independently from cargo lineage, accepted task/demand and continuous usefulness.
 
-**Next exact authoring action — why:** design [50 source/drain capacity and lifetime contract](follow-ups/runtime-matrix-ci.md#next-design-batch-50-source-and-drain-capacitylifetime-contract).
-Inventory stock/refill/locks/worker assignment, capacity/load/unload/restore and actual await/cleanup identities; settle
-conservative native entry boundaries and a coherent implementation batch. This will let later accounting reject earlier
-supply/drop-off assumptions after a source/drain changes, while retaining native extraction and return behavior.
-Recommend **GPT-6.1 Sol / high** for this unresolved ownership design; medium after contracts are concrete.
-Design docs only, commit/push and pause after 50. Public aliases/channels remain incomplete, useful metrics null,
-and all executable validation stays deferred to the final gate.
+**Next exact authoring action — why:** complete [50 consolidated remaining-machinery design](follow-ups/runtime-matrix-ci.md#next-design-pass-50-consolidated-remaining-machinery).
+On **GPT-6.1 Sol / high**, inventory all remaining authority/evidence gaps and interactions, define the release finish line,
+settle exact shared and per-owner contracts, then give **Luna / high** concrete dependency-ordered implementation passes.
+Include source/drain, aliases/roster/component lifetime, need/liabilities, capacity predicates and real producer/report
+integration. One design covers the whole remaining machinery; local implementation inspection is still required.
+Proposed deferrals must retain current mandatory acceptance unless the user explicitly approves a scope change.
+This replaces repeated design/split/hook cycles with a finite execution plan; it does not implement that design now.
+Commit/push design docs and pause for the model change. Keep all executable validation deferred, then have Sol review
+the combined implementation before the final gate. Broader game-policy/scenario/parity work keeps its existing obligations.
 
 | Dependency | State | Purpose / next boundary |
 | --- | --- | --- |
@@ -103,7 +107,7 @@ and all executable validation stays deferred to the final gate.
 | Health presentation and mutation fence (45–46) | Authored, unverified; pause reached | Compliant health split, then pre-mutation loss before callbacks can observe changed readiness |
 | Construction / repair health writer contract (47) | Source design authored; pause reached | Settled silent health/work/lifecycle boundaries and actual technology caller |
 | Construction presentation and writer fences (48–49) | Authored, unverified; pause reached | Separate sound work and passive pre-write loss before construction/repair readiness changes |
-| Source/drain capacity and lifetime contract (50) | Next bounded design | Settle pre/post-await supply/drop-off mutation boundaries and implementation acceptance |
+| Consolidated remaining-machinery design (50) | Next single design pass | Settle remaining cross-system contracts, finish line and finite Luna high implementation passes |
 | Complete need/lifetime history and useful throughput | Open; activation still blocked | Public aliases and every relied-on mutation need authority before useful windows/real recipes |
 | Continuous useful capacity | Open | Complete mutation authority for readiness, supply, access/safety and service |
 | Full production adapter/oracles/setup/strategy | Open | Independent PRO-03/06/07 assertions |
@@ -125,7 +129,7 @@ Player-owner split prerequisite is `80a84493b155a2f431cc0aa172257ce9398e3624`;
 40 is `4647a4a427acf56ddf34579df3e64317dd8ac254`; 41 is `ecd26ba772e822ebbb06f4f21bf9172ded4fd495`;
 42 is `1dbaaf5d1f574960aaf9b71f20d9b37bb3343c6b`; 43 is `89ed0cf2cc757f76ecce400c3cb4647f67c8a687`; 44 is `e173b564beda5d18a55dd9f28b03b91f550551ae`;
 45 is `e5a5eb242970489ebd2c2d7e1c2967b9ecb56cf8`; 46 is `6011a432219678fcabad2a00f675964b83716507`; 47 is `fa0dc1e4c0f1b589bb8265ba680a4e56b50ec609`;
-48 is `04ded09863f51adb72a10b54ff8a30537678c8be`; containing commit owns 49.
+48 is `04ded09863f51adb72a10b54ff8a30537678c8be`; 49 is `a989f66c1ec2cd9ae2fdc1c931e923eb261bb7fc`.
 No fixed machinery total/percent is claimed; diagnostic authoring is delivered, useful-service acceptance remains open.
 All native observer,
 report, prior movement and earlier final-gate obligations remain unrun. Capture/report cost and native compatibility are unmeasured.
@@ -580,7 +584,7 @@ merely because their issue title mentions testing. All authored work remains unv
 | 1 / as needed | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `partial` | Split only owners blocking the selected batch | Stay Sol medium; optional Luna high |
 | 2 | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829) | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof | GPT-6.1 Sol, medium |
 | 3 | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `in_progress` | Finish pressure/recovery policy; defer victory proof | GPT-6.1 Sol, medium |
-| 4 / next boundary | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | 48–49 construction authored; 50 source/drain design next; useful activation blocked | Sol 6.1 high for new lifetime/capacity design |
+| 4 / next boundary | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | 49 published; consolidated machinery design next; useful activation blocked | Sol 6.1 high design → Luna high implementation → Sol review |
 | 5 / paired | #815 / #816 | `in_progress` | Remaining family contracts, focused fixtures, frozen maps and continuous-match tier | Sol medium; optional Luna high for established cases |
 | 6 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `in_progress` | Exact-once interruption, terminal and re-entry parity | GPT-6.1 Sol, medium |
 | 7 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `partial` | Generation fencing, phase restore/replay and cleanup cases | GPT-6.1 Sol, medium |
@@ -591,28 +595,30 @@ merely because their issue title mentions testing. All authored work remains unv
 
 ## Model batches and pause contract
 
-The user policy below and latest Quick resume own #759 model choice and execution boundaries. The user selected Sol 6.1 / medium
-for the current implementation group. Use Sol for unresolved thinking/design; Luna / high is an optional choice for
-concrete routine work. Keep related work together to avoid unnecessary switches. This applies to this roadmap.
-The latest `continue` authorized 48–49, now authored/unverified; pause after 49 publication.
-50 is the next bounded source/drain capacity and lifetime design; recommend GPT-6.1 Sol / high because its await/container
-identity and remaining ownership contract are unsettled. Return to medium for the resulting concrete implementation batch.
-Incoming-read identity, exact self-dispatch admission and distinct application windows are authored; native producer
-integration remains unrun. Do not infer that synthetic diagnostic controls complete the machinery.
-Complete mutable-alias, beneficiary need/liability and lifetime mutation authority remain activation blockers;
-the authored diagnostics grant no useful-window verdict. Group ownership decisions without per-file switches.
-No model was switched automatically. Continuous useful capacity and full production proof remain open.
+The latest user policy is **one consolidated design pass, then one or multiple implementation passes** for the
+remaining machinery. Stage 49 is published/authored/unverified. The stage-50 source/drain-only proposal is replaced
+by the consolidated design acceptance linked above. This policy update does not execute design or implementation.
+Design on GPT-6.1 Sol / high; implement settled contracts on Luna / high; return to Sol for a combined source review
+and unresolved architecture/causal questions or difficult final-gate failures. Actual host settings remain unknown.
+No automatic model switch, subagent or new chat is authorized by this policy. All executable validation stays deferred.
 
-| Responsibility | Model / effort |
-| --- | --- |
-| First family design, reusable helpers and reliable independent assertions | GPT-6.1 Sol / medium; high if warranted |
-| Similar cases with concrete setup, oracle and acceptance contracts | Stay on Sol / medium; optional Luna / high |
-| Wall/access semantics, multiplayer, save/load or unresolved causal investigation | GPT-6.1 Sol / medium; high if warranted |
-| Routine source splitting, naming, fixtures and registration wiring | Stay on Sol / medium; optional Luna / high |
+| Responsibility | Model / effort | Boundary |
+| --- | --- | --- |
+| All remaining machinery design, release scope, shared/per-owner contracts and acceptance | GPT-6.1 Sol / high | One consolidated design pass; publish and pause for model selection |
+| Settled implementation, required source splits, wiring, fixtures and test authoring | Luna / high | One or more finite passes defined by design; keep related work on Luna |
+| Combined implementation source review and unresolved contract conflicts | GPT-6.1 Sol / high | Review the combined result; targeted design amendments only when evidence requires them |
+| Final executable gate and repairs | Sol for causal triage; Luna / high for concrete repairs | Execution remains deferred until the gate; honor exact acceptance and retained commands |
 
-- A batch is a coherent family or shared owner, not one scenario. Keep the same model/session across several related
-  cases while the contract remains suitable; dependencies take priority over grouping. Do not switch after each file
-  or ID. Never downgrade an unresolved architecture/authority/oracle decision just to finish it on Luna.
+- The design must produce a finite list of substantial implementation passes and completion criteria. A pass may contain
+  several related owners and coherent commits. Do not create a new design stage or model pause for each file, helper,
+  split or mutation hook. Commit boundaries provide review/provenance without forcing a model switch or end of turn.
+- During Luna implementation, inspect local code and source-review/Omission Audit each coherent commit. Fix ordinary
+  implementation errors within the agreed contract. Reopen design only for a concrete contradiction, missing authority
+  decision or incompatible native ordering/lifetime behavior; record exact source evidence, retain safe work, and
+  escalate the affected decision to Sol. Continue independent authorized work if it does not depend on that decision.
+- Preserve all existing mandatory acceptance and deferred checks. The design can recommend explicit scope deferrals,
+  but cannot silently weaken an oracle, claim full alias coverage or declare useful activation from synthetic controls.
+  Broader policy/scenario/parity/calibration obligations remain in their owning issue plans.
 - At session start report a small grid: batch/issue, selected IDs, state, authored versus validated evidence,
   purpose of the authored work, next boundary with its purpose, and model/effort. Record actual settings only when known;
   recommendations do not change the model.
@@ -644,11 +650,14 @@ No model was switched automatically. Continuous useful capacity and full product
 
 Copyable next-chat prompt:
 
-> Read docs/ai/759-skirmish-ai/HANDOFF.md and its linked 50 design acceptance. Inventory actual source/drain stock,
-> refill/lock/assignment/restore and pre/post-await capacity/load/unload writers, container callbacks and lifetime identity.
-> Settle exact passive boundaries and a coherent implementation batch, preserving native extraction/return/payment/error
-> semantics. Keep aliases/channels unsupported and all executable validation deferred. Use Sol 6.1 high for design;
-> commit/push the existing design docs and pause after 50. Recommend medium for implementation once settled.
+> Read docs/ai/759-skirmish-ai/HANDOFF.md and its consolidated stage-50 design acceptance. Use GPT-6.1 Sol / high
+> for one source-grounded design covering all remaining machinery and interactions. Define required versus proposed
+> deferred scope, finish line, exact files/contracts/ordering/lifetimes, positive/negative test cases and deferred gate
+> commands. Produce a finite dependency-ordered set of one or more substantial Luna / high implementation passes,
+> with concrete escalation triggers. Preserve mandatory acceptance and normal-play capture/cost obligations.
+> Update existing docs, source-review/Omission Audit/separate Final Closure Audit, commit/push and pause for the model
+> change. Do not implement runtime code or execute validation in this design pass. Luna will implement settled work;
+> Sol will review the combined result and resolve concrete contract conflicts or difficult final-gate failures.
 > Report what was authored and what comes next,
 > including what each will be used for and why it matters. Commit/push each coherent stage; pause at a stronger-reasoning
 > boundary and recommend the next model/effort. End each stage with the change, the problem it solves and its users;

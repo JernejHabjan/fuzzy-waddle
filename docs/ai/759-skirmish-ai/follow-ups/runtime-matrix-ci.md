@@ -211,7 +211,8 @@ No skill/tool update warranted. Commit/push this documentation slice and pause a
 
 ### Construction writer fence checkpoint (2026-10-08, authored/unverified)
 
-Stage 49 is based on `04ded09863f51adb72a10b54ff8a30537678c8be` (48, remote verified); containing commit owns 49.
+Stage 49 is `a989f66c1ec2cd9ae2fdc1c931e923eb261bb7fc`, based on
+`04ded09863f51adb72a10b54ff8a30537678c8be` (48, remote verified).
 The authorized 48–49 batch reaches its pause after this publication. Last selected profile GPT-6.1 Sol / medium;
 actual host settings unknown. Tests, formatter, lint, types, builds, source-size validation, doctor/context and simulations
 remain deferred to the final gate. No new useful metric, complete channel or issue/family closure is claimed.
@@ -244,26 +245,45 @@ capacity/lifetime authority remain gaps. Fresh capture does not backfill lost hi
 reconciled current/next state, provenance, acceptance and publication scope. Authored/source-reviewed only; no check pass.
 Commit/push exact owned paths and pause after 49; remote SHA must be verified before reporting publication.
 
-#### Next design batch: 50 source and drain capacity/lifetime contract
+#### Next design pass: 50 consolidated remaining machinery
 
-Recommend **GPT-6.1 Sol / high** for this bounded new ownership design: source/drain operations cross awaits and container
-callbacks, and the remaining lifetime/alias contract is not settled by health/construction hooks. Return to medium for
-implementation once exact boundaries and acceptance are concrete. This recommendation does not change the running model.
+**User policy (2026-10-08):** replace the narrow source/drain design and repeated per-component design stages with
+**one thorough consolidated design pass on GPT-6.1 Sol / high**, followed by **one or more substantial implementation
+passes on Luna / high**. Sol reviews the combined implementation and resolves concrete contract conflicts or difficult
+final-gate failures. Recommendations do not switch the active model. The present change records policy only;
+stage 50 is not started. Tests, types, lint, builds, simulations, doctor/context and validation remain deferred.
 
-1. Read the stage-42 writer table, resource-source-component.ts, resource-drain-component.ts, adjacent resource-service
-   context/credit owners and specs; follow their actual ContainerComponent load/unload and ready/destroy consumers.
-2. Inventory source stock/refill/lock/assignment/restore and source/drain capacity mutations before/after waits. Record
-   current reference resampling, callbacks/errors/depletion and object/lifetime identities. Separate supported named
-   routes from public definition/data/container/component aliases, pre-installation state and destroyed-drain limitations.
-3. Settle conservative pre-write reasons/ordering using existing scene loss. Do not change native extraction amounts,
-   post-wait ownership/economy/full return, time/capacity/cleanup behavior or add exhaustive coverage claims. Identify any
-   baseline split prerequisite by source inspection without executing a validator or refreshing a hash.
-4. Define the next coherent implementation batch, exact authored controls/final-gate commands, purposes and model/effort;
-   update existing handoff/plan, source-review/Omission Audit/separate Final Closure Audit, commit/push design docs and pause.
+Purpose: give the economical implementation model settled contracts and a finite finish line, while preventing
+ongoing hook-by-hook expansion. Implementation passes are dependency/review units; they do not require model switches
+between files or commits. Existing broader game-policy/scenario/parity/calibration obligations remain separate.
 
-Purpose: later delivery accounting must reject earlier assumptions about usable supply and drop-off capacity when a
-source/drain changes, while native workers still extract and return under their original rules. Stage 50 is design only;
-no new runtime hook, alias API redesign, useful activation or executable validation. No fixed total/percent is implied.
+| Design acceptance | Required output in this existing plan / handoff |
+| --- | --- |
+| 50.1 Scope and finish line | Inventory every remaining machinery obligation from 32/36/39/42/49 and the current PRO-03/06/07 consumers. Define minimum required evidence, exact completion criteria and proposed deferrals with rationale. Preserve mandatory acceptance unless the user explicitly approves its removal; distinguish machinery completion from useful activation, runtime proof and issue closure. |
+| 50.2 Source-grounded inventory | Inspect actual source/drain stock/refill/lock/assignment/restore and pre/post-await capacity writers; container load/unload and lifetime; protocol resources/state/roster and mutable aliases; component/definition replacement; selected need, consumed/accepting frames and queue/payment liabilities; access/safety/readiness/clock predicates; actual capture installation, producer timing and report consumers. Record source anchors, current hooks, unsupported routes and prerequisite splits. |
+| 50.3 Shared and owner contracts | Settle exact interfaces, identity/lifetime ownership, mutation entry/terminal order, async context, reentrancy/failure, save/restore/disposal, bounds and supported-coverage declarations. Give exact owning files/symbols and implementation edits, including required behavior-preserving splits. Preserve native extraction, post-wait owner/economy, full return, silent health, payment arithmetic and callbacks. Resolve cross-owner conflicts together rather than leaving decisions to Luna. |
+| 50.4 Test and operational contract | Specify concrete positive/negative/recovery cases and real adapter/caller paths, synthetic versus runtime evidence, exact final-gate commands and compatibility criteria. Preserve existing test obligations. Explicitly require capture disabled in production/unmarked normal matches and measurements of disabled-hook CPU/allocation and any shipped bundle cost at the final gate; do not promise zero overhead or an unmeasured FPS result. |
+| 50.5 Finite implementation passes | Produce one or multiple dependency-ordered passes sized for Luna / high, each with exact changes, purpose, prerequisites, authored acceptance, commit scope and completion criteria. Group related owners/splits/hooks/tests in substantial passes. Give a source-grounded count/range after the inventory; do not carry forward the informal 15–25/30–50 estimates as commitments. Do not schedule a fresh design stage for each component. |
+| 50.6 Escalation and combined review | Luna inspects local code, implements and source-reviews within the agreed contract, and repairs routine errors without escalation. Escalate only an evidenced contract contradiction, missing architecture/authority decision or incompatible native ordering/lifetime rule; name exact source and impact. Keep safe work and continue independent authorized items. Sol reviews the combined implementation before the executable final gate; ordinary commit boundaries do not force a model switch. |
+| 50.7 Delivery | Source Implementation Review, Omission Audit and separate Final Closure Audit against 50.1–50.6; reconcile handoff/current grid/model policy/resume prompt, commit/push the design docs and pause for model selection. No runtime changes, executable validation, automatic model switch or new task/subagent in this design pass. |
+
+Initial source anchors are the existing stage-42 writer table; resource-source-component.ts/resource-drain-component.ts
+and adjacent service/cargo/credit owners; ContainerComponent and actor-data component maps; protocol player/resource
+observation and platform game-instance roster; queue mutation/restore/payment owners; controller/pipeline/unspent-claims
+and report projection/coverage owners. Use direct navigation for these known owners and semantic discovery only for
+unknown remaining predicate writers. This list starts the inventory, not an assertion of exhaustive ownership.
+
+### Execution-policy update checkpoint (2026-10-08, documentation only)
+
+Base `a989f66c1ec2cd9ae2fdc1c931e923eb261bb7fc` is published stage 49; containing commit owns this policy update.
+**Source Implementation Review:** replaced narrow next-design scope with one consolidated pass and concrete design
+acceptance; reconciled model responsibility, quick resume, dependency grid and copyable prompt. Existing native contracts
+and final-gate obligations remain. No runtime or test changes.
+**Omission Audit:** user request maps to 50.1–50.7: one Sol high design, finite one/multiple Luna high implementation
+passes, concrete escalation, combined Sol review, purposes, finish line and deferred validation. No generic skill change.
+**Final Closure Audit (separate):** reviewed both policy documents for stale next-action/model instructions and owned
+scope after editing. Policy authored/source-reviewed only; stage-50 design and all executable evidence remain outstanding.
+Commit/push this documentation update and pause; next work is the consolidated design pass.
 
 ### Construction presentation checkpoint (2026-10-08, authored/unverified)
 
