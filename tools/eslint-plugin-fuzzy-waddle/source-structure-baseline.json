@@ -257,7 +257,6 @@
   "libs/games/probable-waffle/phaser/src/lib/entity/components/movement/movement-decal-cursor.service.ts": "d25e0c83b214ae1c1310d6bd1d0dbd99f4be47d5623a022f0a605cc6a5666b97",
   "libs/games/probable-waffle/phaser/src/lib/entity/components/movement/navigable-component.ts": "0fbfa65f88924b8e643c42682374bb39db0a0b5abecd85dadadf18c2a005ad89",
   "libs/games/probable-waffle/phaser/src/lib/entity/components/movement/random-movement.component.ts": "76b6594844cb5ef28db86f657605694ba11b44163e0652e56323686642445214",
-  "libs/games/probable-waffle/phaser/src/lib/entity/components/owner-component.ts": "4faf99c0835161dc88089d03826c4230c197e3f51daab542a782c1515abf11f5",
   "libs/games/probable-waffle/phaser/src/lib/entity/components/production/production-cost-component.ts": "caff64f1387841c66920b34c532794d59a6f292611d6d2db2bdb90d4babf5a38",
   "libs/games/probable-waffle/phaser/src/lib/entity/components/random-sprite-component.ts": "d4793c75ddb38c5dee7a0d85a82db910a2695d0520667e426ce2a61f90eeaf4d",
   "libs/games/probable-waffle/phaser/src/lib/entity/components/representable-component.ts": "77336067f9163180824e2cfc05eac6d9cf412cbe0138144a50de018d4ebefc87",

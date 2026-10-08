@@ -35,6 +35,35 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
 
 ## Implementation order
 
+### Owner presentation prerequisite checkpoint (2026-10-08, authored/unverified)
+
+Stage 43 is based on `1dbaaf5d1f574960aaf9b71f20d9b37bb3343c6b`; its containing commit owns this checkpoint.
+`OwnerComponent` retains the only owner field, definition reference, public color access, static events/options,
+serialization and index → owner → visuals → event order. `OwnerPresentation` owns color/ring/pipeline/blink and
+visual subscriptions/cleanup. It reads the facade owner through a callback, with no duplicate owner state.
+Its explicit `attach` runs only after the facade stores the helper, preserving eager/deferred ready safety.
+This makes the formerly baselined owner small enough to add the next passive mutation fence without refreshing hashes.
+Only OwnerComponent's obsolete source baseline entry was removed. No ownership observation behavior changes yet.
+
+| Acceptance | Implemented source / authored evidence |
+| --- | --- |
+| 43.1 Facade / identity | OwnerComponent owns owner/index/events/getData/setData; ownerColor forwards read/write to helper; definition and object references retained. Owner spec covers ordering, same-owner and undefined restore no-op. |
+| 43.2 Presentation / lifecycle | OwnerPresentation moves existing visuals and delayed callbacks; attach stores before ready; killed/destroy disposal, frame/container visibility and movement/health/construction subscriptions authored in owner spec. |
+| 43.3 Native compatibility | Index throws precede assignment/events, first conversion blink and clear visual refresh preserved; opt-in pipeline and definition colors controlled. Immediate conversion and color-event consumers still use facade. |
+| 43.4 Size / scope | Facade and helper each below 400 lines, methods below 200 by source review; only own obsolete baseline removed; no new registration or runtime capture schema. Executable size/lint/type checks deferred. |
+| 43.5 Delivery / policy | Source-reviewed only; commit/push this prerequisite, then continue authorized 44. Tests, types, lint, formatting and runtime validation remain unrun. |
+
+**Source Implementation Review:** compared moved methods with original source and traced public callers, constructor
+ordering, same-owner/throw paths, on-ready subscriptions, render-only updates and killed/destroy disposal.
+Repaired an extraction typo before closure. Existing delayed color callbacks and repeated pipeline cleanup are preserved;
+no unrelated timer or pipeline fix is claimed. One extra helper allocation per actor remains unmeasured.
+
+**Omission Audit:** 43.1–43.5 maps every split requirement to source and authored controls; no copied owner, direct helper
+import of OwnerComponent, baseline refresh, native mutation hook, configuration or consumer migration was introduced.
+**Final Closure Audit (separate):** re-read final facade/helper/test diff and immediate consumers after repair; all 43
+source-authoring obligations covered. Final-gate commands from the 43–44 plan remain deferred; this is not a runtime pass.
+No durable proven behavior or reusable skill/tool change was established. Remaining 44 acceptance stays below.
+
 ### Ownership boundary design checkpoint (2026-10-08, source design only)
 
 42 is based on `ecd26ba772e822ebbb06f4f21bf9172ded4fd495` (41); containing commit owns this design.
