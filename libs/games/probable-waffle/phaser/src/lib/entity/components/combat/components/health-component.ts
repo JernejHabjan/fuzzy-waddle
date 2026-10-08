@@ -33,6 +33,7 @@ import type { FadeOutDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/e
 import { SimulationTickService } from "../../../../world/services/simulation-tick.service";
 import { CancelableSimDelay, getSimulationNow } from "../../../../world/services/simulation-time";
 import { ProbableWaffleSceneEventName } from "../../../../world/services/recovery/probable-waffle-scene-events";
+import { fenceSceneResourceHistory } from "../../../../data/scene-resource-observation";
 
 export class HealthComponent {
   static readonly DEBUG = false;
@@ -93,6 +94,8 @@ export class HealthComponent {
   }
 
   private init() {
+    // Initialization replaces definition/state directly; matching values still close the prior history.
+    fenceSceneResourceHistory(this.gameObject.scene, "resource_actor_health_change");
     const maximumHealth = applyCampaignProgressionModifiers(
       this.gameObject,
       "maximum-health",
@@ -170,6 +173,7 @@ export class HealthComponent {
   /** Documents the destroy actor silently member and its declared contract at this boundary. */
   destroyActorSilently() {
     if (!isGameObjectActiveInActiveScene(this.gameObject)) return;
+    fenceSceneResourceHistory(this.gameObject.scene, "resource_actor_health_change");
     this.suppressReactions = true;
     this.setHealthValue(0, false);
     this.gameObject.scene.events.emit(HealthComponent.KilledEvent, this.gameObject);
@@ -180,6 +184,8 @@ export class HealthComponent {
 
   killActor() {
     if (!isGameObjectActiveInActiveScene(this.gameObject)) return;
+    // Already-zero health makes the setter a no-op, but death still invalidates readiness.
+    fenceSceneResourceHistory(this.gameObject.scene, "resource_actor_health_change");
     this.setHealthValue(0, false);
     this.gameObject.scene.events.emit(HealthComponent.KilledEvent, this.gameObject);
     this.playDeathSound();
@@ -254,6 +260,7 @@ export class HealthComponent {
   }
 
   setHealthDefinition(healthDefinition: HealthDefinition) {
+    fenceSceneResourceHistory(this.gameObject.scene, "resource_actor_health_change");
     this.healthDefinition = healthDefinition;
     this.setHealthValue(healthDefinition.maxHealth, false);
     this.setArmorValue(healthDefinition.maxArmour ?? 0, false);
@@ -306,6 +313,8 @@ export class HealthComponent {
     const previousValue = this.healthComponentData.health;
     if (previousValue === value) return;
 
+    // Close all installed resource history before native callbacks can reenter changed readiness.
+    fenceSceneResourceHistory(this.gameObject.scene, "resource_actor_health_change");
     this.healthComponentData.health = value;
     this.healthChanged.emit(value);
 
@@ -326,6 +335,7 @@ export class HealthComponent {
     const previousValue = this.healthComponentData.armour;
     if (previousValue === value) return;
 
+    fenceSceneResourceHistory(this.gameObject.scene, "resource_actor_health_change");
     this.healthComponentData.armour = value;
     this.armorChanged.emit(value);
 

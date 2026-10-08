@@ -35,9 +35,74 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
 
 ## Implementation order
 
+### Health mutation fence checkpoint (2026-10-08, authored/unverified)
+
+Stage 46 is based on `e5a5eb242970489ebd2c2d7e1c2967b9ecb56cf8` (45, remote verified); containing commit owns 46.
+`HealthComponent` now invokes existing `fenceSceneResourceHistory(scene, "resource_actor_health_change")`:
+changed health/armor setters after no-op checks but before assignments/events; definition replacement before assignment;
+ready initialization before campaign modifier callbacks and direct initial writes; valid normal/silent kill entry before
+suppression, zero health, scene/actor callbacks or destruction. Kill entry fences already-zero health too. Changed kill
+can fence twice (entry plus setter); this conservative loss epoch is intentional and never dispatches an extra native event.
+Existing recipient capture subscription/disposal owns sticky global loss; no additional listener/schema/budget is created.
+
+Why used: a worker or drain damaged/healed/killed during a resource return can change readiness. The observation leaves native delivery policy unchanged: post-wait
+recipient, campaign suppression, notification and full return when the native route completes; earlier need/service accounting
+cannot certify continuity across that mutation. Any supported actor route loses global history, even outside cohorts.
+No exhaustive dependency map is claimed. Exact native credit remains diagnostic; channels remain partial, usefulness null.
+
+| Acceptance | Implemented source / authored evidence |
+| --- | --- |
+| 46.1 Setter / delegated routes | HealthComponent pre-write health/armor fence; health-component-resource-history spec controls prior state at loss, changed/same/empty restores, full/changed reset, heal, armor-first/zero damage, native reentrant reads and no cohort filter. |
+| 46.2 Initialization / definition | Fence before modifier callback or definition assignment, including matching values. Authored controls cover modifier failure with original state/sticky loss, direct initialization without native events, and definition replacement retaining references. |
+| 46.3 Death / failure / suppression | Valid normal/silent kill fences even at zero; invalid-active guard retained. Controls cover entry/setter/scene/actor ordering, immediate silent destruction, restore without death, damage-driven death, health/armor emitter throws and nested health dispatch. No observation-induced sound/death/event. |
+| 46.4 Capture / native delivery | Real scene recipient subscriber/journal controls observer throw isolation, later native credit, disposal and fresh partial capture without backfill. health-component-drain-credit spec uses actual health and drain with controlled wait/emit adapter; actual Phaser gatherer damage/normal/silent death × normal/granted/none economy retain the live drain's balances, context, recipient, notification and full return. |
+| 46.5 Reports / scope / delivery | Existing application report control parameterized for owner/health reasons through real coverage/subscriber/fence over synthetic accounting payloads. Loss nulls need/application bounds and usefulness, retains legacy diagnostic income/all partial channels. No public alias, construction/source/drain/platform authority claim. Tests/validation unrun; commit/push and pause. |
+
+**Source Implementation Review:** traced every supported setter and delegated path, ready initialization and both kill
+entries against original suppression/native callback order. Read recipient scene subscription/disposal and native drain's
+post-await lookup/credit path. Authored report producer uses the same passive fence over synthetic payloads, not a real
+health-driven match. Tests use real native health/drain/journal; visual/dependency lookup and emitResource adapter are
+controlled. The cross-await gatherer is an actual Phaser GameObject; silent destruction clears its scene, while the
+drain stays alive. Source review replaced an over-permissive destroyed-drain fixture; no destroyed-drain delivery guarantee
+is claimed. Review also found that the earlier owner cross-await control returned a player-shaped wrapper from getPlayer;
+protocol observation requires the actual player's state binding. Both owner and health controls now return real protocol
+players with typed campaign controllers and assert the exact application operation. This repairs authored evidence only;
+no production credit path changed. Observer callbacks are exception-isolated; native exceptions/reentrancy remain native. No timer/alias fix.
+
+**Omission Audit:** 46.1–46.5 maps all batch requirements; new health-component-prefixed specs are selected by the
+existing final-gate pattern. No unused registration, complete channel, new fact, persistence or broader baseline edit.
+ConstructionSiteComponent direct writes remain known unsupported health routes; arbitrary public aliases also remain.
+**Final Closure Audit (separate):** reread final health/fence/report/native controls and owning consumers after repairs.
+All source-authoring obligations covered, exact task-owned publication follows; no executable evidence or issue closure.
+Runtime capture cost/native compatibility remain unmeasured. No skill/tool change or durable proven contract was established.
+
+#### Next bounded design batch: 47 construction health writer contract
+
+Recommend **GPT-6.1 Sol / high** for this grouped authority design, then pause. Construction writes live health/armor
+silently rather than through HealthComponent setters; routing them through setters could add reactions/native events.
+The next decision must preserve those semantics while closing before callbacks and handling ready/progress/repair/restore.
+This is a concrete remaining writer contract, not a request to reopen all resource-history design.
+
+1. Audit exact `entity/components/construction/construction-site-component.ts` routes `setInitialHealth`, construction
+   progress, `tryRepair`, completion/cancel and getData/setData/init; inspect named local helpers and callbacks. Inventory
+   supported direct health/armor writes and actual references, including conditional/no-op and native failure order.
+2. Inspect definition/technology recalculation callers of HealthComponent.setHealthDefinition in `data/tech-tree` and
+   immediate consumers. Distinguish already-fenced facade routes from direct aliases; do not assert TechTreeService itself
+   writes health without source evidence. Public arbitrary data/definition/component map edits remain unsupported.
+3. Choose bounded pre-mutation fences preserving silent construction writes and unchanged construction/payment/repair
+   events, simulation time and save semantics. Specify exact loss reason/reentrant/error/capture-disposal controls and
+   conservative over-invalidation. Plan any baseline owner prerequisite separately; never refresh its hash.
+4. Record exact subsequent implementation batch, model/effort, acceptance, source anchors and unrun final-gate commands
+   in these existing docs. Design only: no construction/source/drain/platform runtime changes, new metric/schema/budget,
+   useful activation, real interval recipe or executable validation. Commit/push the design and pause.
+
+Purpose: construction progress and repair change actor readiness through exposed state. The next contract lets a later
+fence close earlier resource history at those actual writers without accidentally introducing health sounds/events/death.
+Source/drain capacity, complete lifetime, roster and arbitrary alias authorities remain subsequent open work.
+
 ### Health presentation prerequisite checkpoint (2026-10-08, authored/unverified)
 
-Stage 45 is based on `e173b564beda5d18a55dd9f28b03b91f550551ae` (44, remote verified); containing commit owns 45.
+Stage 45 is `e5a5eb242970489ebd2c2d7e1c2967b9ecb56cf8`, based on `e173b564beda5d18a55dd9f28b03b91f550551ae` (44).
 `HealthComponent` retains authoritative health data/definition references, damage metadata, public events and bounds/
 visibility forwarders, serialization, health/armor setters, reactions, death audio/animation and simulation destruction.
 New adjacent `HealthPresentation` owns bars, construction/frame/container visibility, UI timeout and damage/heal effects.
@@ -106,7 +171,7 @@ and application specs. No new production consumer/registration or source baselin
 after edits; source authoring complete, all executable verification explicitly deferred. Conservative global loss,
 public aliases, capture cost and partial channels remain limitations. No reusable skill/tool update warranted.
 
-#### Next bounded implementation batch: 45–46 health presentation and history fence
+#### Authored implementation batch: 45–46 health presentation and history fence
 
 Keep **GPT-6.1 Sol / medium** across this related prerequisite/hook pair, then pause. The 42 writer contract already
 selects conservative global loss; do not reopen complete-history design or expand into source/drain/platform owners.

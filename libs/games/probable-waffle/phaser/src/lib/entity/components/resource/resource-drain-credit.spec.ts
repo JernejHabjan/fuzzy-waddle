@@ -7,7 +7,8 @@ import { AiRuntimeRecipientResourceCapture } from "../../../player/ai-controller
 import { AiRuntimeResourceCoverageCapture } from "../../../player/ai-controller/testing/ai-runtime-resource-coverage-capture";
 import type { AiRuntimeProductionFactV1 } from "../../../player/ai-controller/testing/ai-runtime-production-fact-v1";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
-import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { ResourceType, ProbableWafflePlayerType, type ProbableWafflePlayerControllerData } from
+  "@fuzzy-waddle/probable-waffle-protocol";
 import { ResourceDrainComponent } from "./resource-drain-component";
 import { ResourceServiceObservation } from "./resource-service-observation";
 import type { ResourceServiceEvent } from "./resource-service-event";
@@ -55,8 +56,10 @@ describe("native drain credit policy (unrun until final gate)", () => {
     "uses the post-wait converted owner for %s economy while old capture history stays lost", async (economy) => {
       jest.clearAllMocks();
       const players = [1, 2].map((number) => {
-        const player = new ProbableWafflePlayer(new ProbableWafflePlayerState(), new ProbableWafflePlayerController());
-        Object.defineProperty(player, "playerNumber", { value: number }); return player;
+        const controller = new ProbableWafflePlayerController({ userId: null, playerDefinition: {
+          player: { playerNumber: number, joined: true }, playerType: ProbableWafflePlayerType.Human, campaignEconomy: economy
+        } } satisfies ProbableWafflePlayerControllerData);
+        return new ProbableWafflePlayer(new ProbableWafflePlayerState(), controller);
       });
       const scene = { players } as ProbableWaffleScene;
       const actor = { scene } as Phaser.GameObjects.GameObject;
@@ -72,8 +75,7 @@ describe("native drain credit policy (unrun until final gate)", () => {
         playerStateData: { resources: Partial<Record<ResourceType, number>> } } }>();
       jest.mocked(getPlayer).mockImplementation((_scene, number) => {
         const player = players.find((candidate) => candidate.playerNumber === number);
-        return player ? { getResources: () => player.getResources(),
-          playerController: { data: { playerDefinition: { campaignEconomy: economy } } } } as never : undefined;
+        return player;
       });
       jest.mocked(getCommunicator).mockReturnValue({ playerChanged: { on: changes } } as never);
       jest.mocked(isSnapshotApplyInProgress).mockReturnValue(false);
@@ -101,6 +103,7 @@ describe("native drain credit policy (unrun until final gate)", () => {
         context, status: economy === "normal" ? "returned" : "campaign_suppressed", balanceMatches: economy === "normal" });
       if (economy === "normal") expect(facts.at(-1)).toMatchObject({ playerNumber: 2,
         mutation: { phase: "returned", lossEpoch: 1 } });
+      if (economy === "normal") expect(records.at(-1)).toHaveProperty("application", expect.any(Object));
       expect(coverage.read().lost).toBe(true); release(); journal.dispose();
     }
   );
