@@ -12,6 +12,8 @@ import { onObjectReady } from "../../../data/game-object-helper";
 import { OwnerComponent } from "../owner-component";
 import type { ResourceDrainDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/resource/resource-drain-definition";
 import { waitForSimulationDuration } from "../../../world/services/simulation-time";
+import type { ResourceTransferContext } from "./resource-transfer-context";
+import { observeResourceCredit } from "./observe-resource-credit";
 /**
  * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
  * storage boundaries do not drift into an unconstrained primitive.
@@ -47,7 +49,8 @@ export class ResourceDrainComponent {
   /**
    * returns resources to player controller
    */
-  async returnResources(gatherer: GameObject, resourceType: ResourceType, amount: number): Promise<number> {
+  async returnResources(gatherer: GameObject, resourceType: ResourceType, amount: number,
+    context?: ResourceTransferContext): Promise<number> {
     if (this.gathererMustEnter) {
       this.currentCapacity += 1;
       this.containerComponent?.loadGameObject(gatherer);
@@ -63,16 +66,15 @@ export class ResourceDrainComponent {
     const ownerComponent = getActorComponent(this.gameObject, OwnerComponent);
     const owner = ownerComponent?.getOwner();
     const economy = getPlayer(this.gameObject.scene, owner)?.playerController.data.playerDefinition?.campaignEconomy;
-    if (campaignEconomyAcceptsGatheredResources(economy)) {
-      emitResource(
+    const amounts = { [resourceType]: amount } satisfies Partial<PlayerStateResources>;
+    observeResourceCredit({ actor: gatherer, target: this.gameObject, context, resourceType, amount,
+      channel: "drop_off", ownerArgument: owner ?? null }, this.gameObject.scene, amounts,
+      campaignEconomyAcceptsGatheredResources(economy) ? () => emitResource(
         this.gameObject.scene,
         "resource.added",
-        {
-          [resourceType]: amount
-        } satisfies Partial<PlayerStateResources>,
+        amounts,
         owner
-      );
-    }
+      ) : undefined);
 
     // notify listeners
     this.onResourcesReturned.next([resourceType, amount, gatherer]);

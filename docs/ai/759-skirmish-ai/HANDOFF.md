@@ -10,15 +10,18 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 is the separate gatherer prerequisite and settled ownership contract; 30 adds native capture; 31 projects reports.
 Last selected profile is GPT-6.1 Sol / medium; actual host model/effort are unknown. Pause after 31, recommend the next
 profile, and explain what each authored stage enables. All executable tests and validation stay deferred to the final gate.
-Current step: #815/#816 machinery 29, **gatherer ownership prerequisite**, authored/unverified.
-Base `135c5b1c1cec0f4a8557d52f1511761887f449f5`; the containing commit owns this slice.
+Current step: #815/#816 machinery 30, **native cargo/application capture**, authored/unverified.
+Base `00d6f2e77ab566262bd09225bdb945bf71e53210`; the containing commit owns this slice.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify remote on resume.
 Preserve unrelated Nx merge `59f72e037`. No family/issue is complete. The user removed the comment-permission rule.
 
-**Authored — why it is used:** `GathererComponent` remains the registered state/save/component facade. Focused
-`GathererTargetSelection` owns indexed targets and native distance ties; `GathererResourceExecution` owns native
-extract/return awaits and callback ordering. This removes the old gatherer source exemption before adding observation.
-Native amounts, assignments, player credit policy and serialization remain unchanged. Characterization cases are unrun.
+**Authored — why it is used:** `ResourceServiceObservation` records native cargo mutations, restore attempts and the
+exact offered pile. `observeResourceCredit` observes the native synchronous emission interval, exact callback payload
+identity, actual beneficiary and before/after balances, including suppressed/failed/unmatched application. Native return
+and credit remain independent. `AiRuntimeResourceServiceCapture` freezes these records under bounded weak cargo/transfer
+IDs and the existing attempt IDs/lifetime fences. This is the evidence input for strict report projection in 31.
+The 29 gatherer prerequisite is `00d6f2e77ab566262bd09225bdb945bf71e53210`; serialization/component tokens are retained.
+New/extended native observer, drain, execution and capture specs are authored/unrun.
 
 **Settled credit/cargo contract:** explicit transient execution handles cross awaits; no ambient current order can assign
 credit. Record native cargo additions, reset/restore fences, exact offered pile, emission recipient and scoped before/after
@@ -27,18 +30,18 @@ Campaign suppression is explicit and may accompany a full native return. Old/unk
 to the latest task. Whole known piles may retain several earlier gathering attempts; no invented FIFO/partial allocation.
 A credit proves a scoped balance change, independently from cargo lineage, accepted task/demand and continuous usefulness.
 
-**Next exact authoring action — why:** implement bounded passive resource hooks in the focused execution owner/facade/drain,
-then connect them to the existing marked actor subscriptions and detached spatial facts. This lets reports distinguish
-returned amounts from actual applied income and retain earlier cargo contributors. Reuse existing balance sampling and
-shared application (`ProbableWaffleListeners` -> `ProbableWafflePlayer.addResources`); no save/wire/planner fields, new scans,
-queries/timers or economy repair. Capture loss/restore/controller replacement/cross-owner credit must fail closed.
+**Next exact authoring action — why:** project strict bounded cargo/credit records in existing production/variant reports.
+Validate all supplied tails, link offers to earlier known additions and their exact attempt/admission/demand, and retain
+cross-owner credit separately. Old/unknown/mixed/interrupted cargo stays explicitly unavailable; partial allocation is not
+invented. Campaign suppression, callback identity, balance mismatches, restore/reuse/controller/scene fences and missing
+terminals need negative report cases. No task fulfillment or continuous usefulness is established by a credited pile.
 
 | Dependency | State | Purpose / next boundary |
 | --- | --- | --- |
 | Native movement and service attempt ownership (21–28) | Authored, unverified | Earlier task/order identity and lifetime boundaries |
 | Gatherer prerequisite and cargo contract (29) | Authored, unverified | Compliant focused native owners before hooks |
-| Native cargo/application capture (30) | Next | Exact pile, beneficiary and scoped balance change |
-| Strict cargo/credit projection (31) | Pending 30 | Connect known contributors without inferring task fulfillment |
+| Native cargo/application capture (30) | Authored, unverified | Exact pile, beneficiary and scoped balance change |
+| Strict cargo/credit projection (31) | Next | Connect known contributors without inferring task fulfillment |
 | Continuous useful stability | Open | Define and observe retained useful benefit over an interval |
 | Full production adapter/oracles/setup/strategy | Open | Independent PRO-03/06/07 assertions |
 | Executable validation | Deferred final gate | Establish correctness before issue/release closure |

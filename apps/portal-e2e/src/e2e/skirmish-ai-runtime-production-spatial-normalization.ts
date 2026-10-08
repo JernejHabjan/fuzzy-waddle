@@ -61,7 +61,7 @@ export function normalizeRuntimeProductionSpatial(capture: AiRuntimeProductionCa
     // Producer/output routes have their own bounded validator and exact completion lineage.
     if (value.kind === "output" || value.kind === "producer_path" || value.kind === "route_order" ||
       value.kind === "route_rally_order" || value.kind === "route_order_restore" || value.kind === "movement" ||
-      value.kind === "service_attempt") continue;
+      value.kind === "service_attempt" || value.kind === "resource_service") continue;
     value.gaps.forEach((gap) => gaps.add(gap));
     if (fact.playerNumber !== capture.playerNumber || !integer(fact.sequence) || fact.sequence === 0 ||
       !integer(fact.tick) || fact.tick < capture.startedTick || value.snapshotRestoreInProgress ||

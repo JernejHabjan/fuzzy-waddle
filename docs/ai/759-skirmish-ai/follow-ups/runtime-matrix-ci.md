@@ -65,6 +65,39 @@ closes authoring only; final gate must establish native compatibility and struct
 Deferred command: `pnpm exec nx test probable-waffle-phaser --testPathPatterns='gatherer-resource-execution|pawn-agent-order-boundaries' --runInBand`.
 Next 30: explicit transient cargo/credit boundaries let later reports prove exact beneficiary and prior contributors.
 
+**Stage 30 — authored/unverified**, base `00d6f2e77ab566262bd09225bdb945bf71e53210`:
+
+| Acceptance | Implementation / purpose | Evidence |
+| --- | --- | --- |
+| 1. Explicit execution across awaits | Pawn service forwarding, gatherer execution, `ResourceTransferContext` | Same native Promise; one callee; optional handles are unsaved and unused by native policy |
+| 2. Native cargo/offer/restore boundaries | `ResourceServiceObservation`, facade setter/setData and execution | Actual added/reset/removed state, extraction type/amount and pile offered before drain await; restore fences before partial mutation |
+| 3. Actual application evidence | `observeResourceCredit`, immediate/drain callers | Exact resource object callback, beneficiary, scoped balances, capped duplicate count/interference and campaign suppression |
+| 4. Marked detached capture/cleanup | `AiRuntimeResourceServiceV1`, capture, existing attempt watch | Eight listeners per actor; weak cargo/transfer/attempt IDs cap 8,192; restore/rebinding fences; no additional scene scan/timer |
+| 5. Immediate raw consumers | Spatial union and normalizer delegation | Existing production fact collector retains resource records for 31; no save/wire/config/CI registration |
+| 6. Boundary cases | New credit/drain/resource-capture specs; extended execution/order-capture/pawn specs | Same arguments/Promise, cross-owner policy, restore/pending/disposal, observer failure, missing/wrong/duplicate/async callbacks authored/unrun |
+| 7. Publication/resume | Handoff/checkpoint | Continue report projection within this group; exact scoped commit/push and remote SHA verification |
+
+**Source Implementation Review:** traced pawn -> facade -> extraction/drain -> `emitResource` -> synchronous protocol
+listener -> `ProbableWafflePlayer.addResources`. Diagnostics sample the actual scoped balance, not the root collector's
+previous event balance. The original sparse payload object is passed once to the emitter; exact callback identity and
+one matching callback are necessary for balance application. Nested/unrelated resource events invalidate outer authority.
+Listener-free observation performs no balance/channel/restore reads. Native callback/amount/cooldown ordering and campaign
+policy stay intact; unmarked drain arguments remain three. The compliant small drain's obsolete exemption is removed
+without refresh. Resource capture shares existing actor/controller subscriptions; transfer and emission restore flags are
+independent of capture boundary flags. No planner, saved state or gameplay cargo policy consumes this evidence.
+
+**Omission Audit:** acceptance 1–7 authored. Every new type/helper is reached from native callers or marked capture;
+negative and pending cases are registered through existing discovery, unrun. Report income/lineage is deliberately next,
+not claimed by the raw union. No new plan, unrelated Nx change, baseline refresh or skill/tool change.
+
+**Separate Final Closure Audit:** rechecked native callback receivers/argument timing, diagnostics isolation, subscription
+cleanup, ownership across awaits, frozen payloads and exact owned scope. Final source review repaired unmarked drain
+argument count and kept emission restore samples separate from capture's boolean boundary. Tests/formatter/lint/types/build,
+source/schema/repository validators and diff check were not run; compatibility, performance and source compliance are final-gate obligations.
+
+Deferred command: `pnpm exec nx test probable-waffle-phaser --testPathPatterns='observe-resource-credit|resource-drain-credit|resource-drain-component|gatherer-resource-execution|ai-runtime-resource-service-capture|ai-runtime-route-order-capture|pawn-resource-service-observation|pawn-agent-order-boundaries' --runInBand`.
+Next 31: connect exact applied credit and observed whole-pile contributors to admitted tasks without useful-service claims.
+
 ### Production service foundation checkpoints (2026-10-07, unverified)
 
 User-authorized three-stage group: native service-attempt ownership (26), marked detached capture (27), strict report

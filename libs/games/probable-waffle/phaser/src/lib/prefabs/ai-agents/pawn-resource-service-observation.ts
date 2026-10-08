@@ -17,7 +17,7 @@ export class PawnResourceServiceObservation {
   /** The callee is invoked once with the caller's already-selected target; no fresh order/component read is added. */
   static invoke(actor: Phaser.GameObjects.GameObject, board: PawnAiBlackboard, order: OrderData,
     target: Phaser.GameObjects.GameObject, operation: PawnResourceServiceEvent["operation"],
-    call: () => Promise<number>): Promise<number> {
+    call: (execution?: object) => Promise<number>): Promise<number> {
     const listeners = this.observers.get(board);
     if (!listeners?.size) return call();
     const execution = {};
@@ -29,7 +29,7 @@ export class PawnResourceServiceObservation {
     };
     emit("started", null);
     let result: Promise<number>;
-    try { result = call(); }
+    try { result = call(execution); }
     catch (error) { emit("threw", null); throw error; }
     // This side observation adds no await or replacement Promise. Unsubscribed listeners cannot receive late terminals.
     try { void result.then((amount) => emit("resolved", amount), () => emit("rejected", null)); }

@@ -6,8 +6,11 @@ import { ResourceSourceComponent } from "./resource-source-component";
 import { ResourceDrainComponent } from "./resource-drain-component";
 import type { GathererComponent } from "./gatherer-component";
 import { GathererResourceExecution } from "./gatherer-resource-execution";
+import { OwnerComponent } from "../owner-component";
+import { emitResource, getPlayer } from "../../../data/scene-data";
 
 jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../data/scene-data", () => ({ emitResource: jest.fn(), getPlayer: jest.fn() }));
 
 function fixture() {
   const actor = {} as Phaser.GameObjects.GameObject, target = {} as Phaser.GameObjects.GameObject;
@@ -57,5 +60,17 @@ describe("native gatherer execution ownership (unrun until final gate)", () => {
     expect(f.callbacks.setCarriedResourceAmount).not.toHaveBeenCalled();
     jest.mocked(getActorComponent).mockClear(); f.state.remainingCooldown = 1;
     expect(await f.execution.gatherResources(f.target)).toBe(0); expect(getActorComponent).not.toHaveBeenCalled();
+  });
+
+  it("keeps immediate gathering credit on the source owner and returns extraction independently of the whole pile", async () => {
+    const f = fixture();
+    jest.mocked(getActorComponent).mockImplementation((_actor, component) => component === ResourceSourceComponent ?
+      { extractResources: async () => 2, canAcceptGatherer: () => true, getCurrentResources: () => 0,
+        resourceSourceDefinition: { needsReturnToDrain: false } } as never :
+      component === OwnerComponent ? { getOwner: () => 2 } as never : undefined);
+    jest.mocked(getPlayer).mockReturnValue({} as never);
+    expect(await f.execution.gatherResources(f.target)).toBe(2);
+    expect(emitResource).toHaveBeenCalledWith(f.actor.scene, "resource.added", { wood: 3 }, 2);
+    expect(f.state.carriedResourceAmount).toBe(0);
   });
 });

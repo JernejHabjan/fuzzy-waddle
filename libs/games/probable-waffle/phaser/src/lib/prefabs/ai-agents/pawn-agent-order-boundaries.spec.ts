@@ -125,7 +125,7 @@ describe("pawn agent native order boundaries (unrun until final gate)", () => {
     release(State.SUCCEEDED);
     expect(await pending).toBe(State.SUCCEEDED);
     expect(gatherer.startGatheringResources).toHaveBeenCalledWith(f.target);
-    expect(gatherer.gatherResources).toHaveBeenCalledWith(f.target);
+    expect(gatherer.gatherResources).toHaveBeenCalledWith(f.target, events[0].execution);
     expect(f.blackboard.getCurrentOrder()).toBe(later);
     expect(events).toMatchObject([{ phase: "started", operation: "gather", order: earlier, target: f.target },
       { phase: "resolved", operation: "gather", order: earlier, target: f.target, amount: 2 }]);

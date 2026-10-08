@@ -9,6 +9,8 @@ import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller"
 import { MovementQueryObservation } from "../../../entity/systems/movement-query-observation";
 import { MovementCompletionObservation } from "../../../entity/systems/movement-completion-observation";
 import { PawnResourceServiceObservation } from "../../../prefabs/ai-agents/pawn-resource-service-observation";
+import { ResourceServiceObservation } from "../../../entity/components/resource/resource-service-observation";
+import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { getGameObjectCurrentTile } from "../../../data/game-object-helper";
 import { AiRuntimeRouteOrderCapture } from "./ai-runtime-route-order-capture";
 import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor";
@@ -37,6 +39,20 @@ function fixture() {
 }
 
 describe("marked capture order identities (unrun until final gate)", () => {
+  it("threads the native service execution into cargo evidence independently of the later current order", async () => {
+    const f = fixture(), owner = {}, order = new OrderData(OrderType.Gather, { targetGameObject: f.producer });
+    f.board.addOrder(order);
+    const promise = Promise.resolve(1);
+    const pending = PawnResourceServiceObservation.invoke(f.product, f.board, order, f.producer, "gather", (execution) => {
+      f.board.setCurrentOrder(new OrderData(OrderType.Stop));
+      ResourceServiceObservation.change(f.product, owner, () => ({ amount: 0, resourceType: ResourceType.Wood }),
+        { reason: "added", execution, target: f.producer, resourceType: ResourceType.Wood, delta: 1 }, () => undefined);
+      return promise;
+    });
+    expect(pending).toBe(promise); expect(await pending).toBe(1);
+    expect(f.records.find((value) => value.kind === "resource_service")).toMatchObject({ attemptId: 1, cargoId: 1,
+      lifetimeValid: true, phase: "cargo_changed" }); f.capture.dispose();
+  });
   it("freezes service order data before native work and fences a pending return across restore", async () => {
     const f = fixture(), order = new OrderData(OrderType.Gather, { targetGameObject: f.producer });
     f.board.addOrder(order); f.board.setCurrentOrder(order);

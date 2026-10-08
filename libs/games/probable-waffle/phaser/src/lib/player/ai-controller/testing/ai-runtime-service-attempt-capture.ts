@@ -5,29 +5,39 @@ import { PawnResourceServiceObservation } from "../../../prefabs/ai-agents/pawn-
 import type { AiRuntimeRouteOrderV1 } from "./ai-runtime-route-order-v1";
 import type { AiRuntimeProductionSpatialV1 } from "./ai-runtime-production-spatial-v1";
 import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor";
+import { AiRuntimeResourceServiceCapture } from "./ai-runtime-resource-service-capture";
 
 /** Test-owned weak attempts reuse order identities and actor subscriptions; no scene scans or money inference. */
 export class AiRuntimeServiceAttemptCapture {
   private nextId = 1;
+  private readonly resources: AiRuntimeResourceServiceCapture;
   private readonly identities = new WeakMap<object,
-    { id: number; order: AiRuntimeRouteOrderV1 | undefined; restoreToken: object | undefined }>();
+    { id: number; order: AiRuntimeRouteOrderV1 | undefined; restoreToken: object | undefined;
+      token: () => object | undefined }>();
 
   constructor(private readonly scene: Phaser.Scene,
     private readonly boundary: () => Pick<AiRuntimeProductionSpatialV1,
       "clockTick" | "snapshotRestoreInProgress" | "sceneActive">,
     private readonly snapshot: (actor: Phaser.GameObjects.GameObject, order: OrderData) => AiRuntimeRouteOrderV1 | undefined,
-    private readonly append: (owner: number, value: AiRuntimeProductionSpatialV1) => void) {}
+    private readonly append: (owner: number, value: AiRuntimeProductionSpatialV1) => void) {
+    this.resources = new AiRuntimeResourceServiceCapture(scene, boundary, (execution) => {
+      const identity = execution ? this.identities.get(execution) : undefined;
+      return identity ? { attemptId: identity.id,
+        lifetimeValid: !!identity.restoreToken && identity.token() === identity.restoreToken } : undefined;
+    }, append);
+  }
 
   /** The owner's token getter detects restore, unwatch/reuse and controller replacement independently of current order. */
   watch(actor: Phaser.GameObjects.GameObject, board: PawnAiBlackboard, token: () => object | undefined): () => void {
-    return PawnResourceServiceObservation.subscribe(board, (event) => {
+    const releaseResources = this.resources.watch(actor, token);
+    const releaseAttempts = PawnResourceServiceObservation.subscribe(board, (event) => {
       try {
         if (event.actor !== actor || event.board !== board) return;
         let identity = this.identities.get(event.execution);
         if (!identity) {
           if (event.phase !== "started" || this.nextId > 8192) return;
           const restoreToken = token();
-          identity = { id: this.nextId++, order: this.snapshot(actor, event.order), restoreToken };
+          identity = { id: this.nextId++, order: this.snapshot(actor, event.order), restoreToken, token };
           this.identities.set(event.execution, identity);
         }
         const source = captureAiRuntimeCreatedActor(actor);
@@ -40,5 +50,6 @@ export class AiRuntimeServiceAttemptCapture {
           gaps: identity.order ? [] : ["production_service_attempt_order_missing"] } satisfies AiRuntimeProductionSpatialV1));
       } catch { /* Failed or lost diagnostics never retry or replace the native callee. */ }
     });
+    return () => { releaseAttempts(); releaseResources(); };
   }
 }

@@ -29,6 +29,8 @@ import { SimulationTickService } from "../../../world/services/simulation-tick.s
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { GathererTargetSelection } from "./gatherer-target-selection";
 import { GathererResourceExecution } from "./gatherer-resource-execution";
+import { ResourceServiceObservation } from "./resource-service-observation";
+import type { ResourceCargoChange } from "./resource-cargo-change";
 type GameObject = Phaser.GameObjects.GameObject;
 
 export class GathererComponent {
@@ -95,7 +97,7 @@ export class GathererComponent {
   private readonly targets = new GathererTargetSelection(this.gameObject, this);
   private readonly execution = new GathererResourceExecution(this.gameObject, this,
     (source) => this.getGatherDataForResourceSource(source), {
-      setCarriedResourceAmount: (amount) => this.setCarriedResourceAmount(amount),
+      setCarriedResourceAmount: (amount, change) => this.setCarriedResourceAmount(amount, change),
       playGatherSound: () => this.playGatherSound(), playGatherAnimation: () => this.playGatherAnimation(),
       leaveCurrentResourceSource: () => this.leaveCurrentResourceSource()
     });
@@ -218,8 +220,13 @@ export class GathererComponent {
   getClosestResourceSource(type: ResourceType | null, maxDistance: number): Promise<GameObject | undefined> {
     return this.targets.getClosestResourceSource(type, maxDistance);
   }
-  gatherResources(source: GameObject): Promise<number> { return this.execution.gatherResources(source); }
-  returnResources(drain: GameObject): Promise<number> { return this.execution.returnResources(drain); }
+  /** Optional transient diagnostic execution is forwarded explicitly; never serialized or used by native policy. */
+  gatherResources(source: GameObject, execution?: object): Promise<number> {
+    return this.execution.gatherResources(source, execution);
+  }
+  returnResources(drain: GameObject, execution?: object): Promise<number> {
+    return this.execution.returnResources(drain, execution);
+  }
 
   // Gets the resource source the gameObject has recently been gathering from, if available, or a similar one within its sweep radius
   async getPreferredResourceSource(): Promise<GameObject | undefined> {
@@ -278,11 +285,12 @@ export class GathererComponent {
     return this.getGatherDataForResourceType(resourceSourceComponent.getResourceType());
   }
 
-  private setCarriedResourceAmount(amount: number) {
-    this.carriedResourceAmount = amount;
-    if (amount <= 0) {
-      this.carriedResourceType = null;
-    }
+  private setCarriedResourceAmount(amount: number, change: ResourceCargoChange = { reason: "reset" }) {
+    ResourceServiceObservation.change(this.gameObject, this,
+      () => ({ amount: this.carriedResourceAmount, resourceType: this.carriedResourceType }), change, () => {
+        this.carriedResourceAmount = amount;
+        if (amount <= 0) this.carriedResourceType = null;
+      });
   }
 
   private leaveCurrentResourceSource() {
@@ -382,6 +390,9 @@ export class GathererComponent {
   }
 
   setData(data: Partial<GathererComponentData>) {
+    // Fence provenance before even a partial or failed restore; native serialization remains unchanged.
+    ResourceServiceObservation.change(this.gameObject, this,
+      () => ({ amount: this.carriedResourceAmount, resourceType: this.carriedResourceType }), { reason: "restore" }, () => undefined);
     if (data.carriedResourceAmount !== undefined) {
       this.carriedResourceAmount = Number.isFinite(data.carriedResourceAmount)
         ? Math.max(0, data.carriedResourceAmount)

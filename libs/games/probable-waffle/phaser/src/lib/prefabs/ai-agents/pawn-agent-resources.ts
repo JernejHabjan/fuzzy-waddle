@@ -70,7 +70,7 @@ export class PawnAgentResources {
     const successfullyStarted = gathererComponent.startGatheringResources(target);
     if (!successfullyStarted) return State.FAILED;
     await PawnResourceServiceObservation.invoke(this.gameObject, this.blackboard, currentOrder, target, "gather",
-      () => gathererComponent.gatherResources(target));
+      (execution) => execution ? gathererComponent.gatherResources(target, execution) : gathererComponent.gatherResources(target));
     return State.SUCCEEDED;
   }
 
@@ -83,7 +83,7 @@ export class PawnAgentResources {
     const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
     if (!gathererComponent) return State.FAILED;
     await PawnResourceServiceObservation.invoke(this.gameObject, this.blackboard, currentOrder, target, "drop_off",
-      () => gathererComponent.returnResources(target));
+      (execution) => execution ? gathererComponent.returnResources(target, execution) : gathererComponent.returnResources(target));
     return State.SUCCEEDED;
   }
 
