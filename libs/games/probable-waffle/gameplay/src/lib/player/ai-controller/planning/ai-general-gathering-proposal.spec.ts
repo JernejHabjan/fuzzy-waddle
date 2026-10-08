@@ -32,7 +32,7 @@ function fixture() {
   return { observation, state, propose };
 }
 
-describe("consumed gathering selection (authored, final gate pending)", () => {
+describe("consumed gathering selection", () => {
   it("retains the winning duplicate-resource entry before later forecast/ledger mutation", () => {
     const f = fixture(), intent = f.propose();
     if (!intent) throw new Error("gathering_fixture_missing");

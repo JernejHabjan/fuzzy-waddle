@@ -5,6 +5,8 @@ import type { AiRuntimeProductionQueueV1 } from "./ai-runtime-production-queue-v
 import type { AiRuntimePendingCommandV1 } from "./ai-runtime-pending-command-v1";
 import type { AiRuntimeProductionWorldV1 } from "./ai-runtime-production-world-v1";
 import type { AiRuntimeInitialConstructionV1 } from "./ai-runtime-initial-construction-v1";
+import type { AiRuntimeResourceCoverageV1 } from "./ai-runtime-resource-coverage-v1";
+import type { AiRuntimeResourceServiceIntervalV1 } from "./ai-runtime-resource-service-interval-v1";
 
 /**
  * Diagnostic raw capture, not RuntimeProductionEvidenceV1. Missing causal attribution and navigation/placement proof
@@ -20,11 +22,20 @@ export interface AiRuntimeProductionCaptureV1 {
   readonly gaps: readonly string[];
   /** Captured once at listener installation; legacy omission cannot be repaired from later actor snapshots. */
   readonly initialConstruction?: AiRuntimeInitialConstructionV1;
+  readonly resourceCoverage?: AiRuntimeResourceCoverageV1;
+  /** Fixed fixture declarations at the actual installation boundary; absent legacy capture has no interval oracle. */
+  readonly resourceIntervalDeclaration?: {
+    readonly boundary: AiRuntimeResourceCoverageV1["frontier"];
+    readonly overflow: boolean;
+    readonly intervals: readonly AiRuntimeResourceServiceIntervalV1[];
+  };
   readonly facts: readonly AiRuntimeProductionFactV1[];
   readonly snapshots: readonly {
     readonly tick: number;
     /** Last observed fact for this player before sampling. Legacy captures cannot establish same-tick effect order. */
     readonly afterSequence?: number;
+    /** Read-time partial coverage and global observer frontier; no end-of-tick seal is implied. */
+    readonly resourceCoverage?: AiRuntimeResourceCoverageV1;
     readonly observation: AiObservationV1 | null;
     readonly capabilityCatalog: AiCapabilityCatalogV1 | null;
     /** Actual owned component readiness/levels and command-priced options; absent in older diagnostic captures. */

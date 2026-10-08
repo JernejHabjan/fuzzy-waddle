@@ -8,6 +8,7 @@ import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor
 import { AiRuntimeResourceServiceCapture } from "./ai-runtime-resource-service-capture";
 import { getActorComponent } from "../../../data/actor-component";
 import { GathererComponent } from "../../../entity/components/resource/gatherer-component";
+import type { AiRuntimeResourceCoverageCapture } from "./ai-runtime-resource-coverage-capture";
 
 /** Test-owned weak attempts reuse order identities and actor subscriptions; no scene scans or money inference. */
 export class AiRuntimeServiceAttemptCapture {
@@ -21,12 +22,13 @@ export class AiRuntimeServiceAttemptCapture {
     private readonly boundary: () => Pick<AiRuntimeProductionSpatialV1,
       "clockTick" | "snapshotRestoreInProgress" | "sceneActive">,
     private readonly snapshot: (actor: Phaser.GameObjects.GameObject, order: OrderData) => AiRuntimeRouteOrderV1 | undefined,
-    private readonly append: (owner: number, value: AiRuntimeProductionSpatialV1) => void) {
+    private readonly append: (owner: number, value: AiRuntimeProductionSpatialV1) => void,
+    private readonly coverage?: AiRuntimeResourceCoverageCapture) {
     this.resources = new AiRuntimeResourceServiceCapture(scene, boundary, (execution) => {
       const identity = execution ? this.identities.get(execution) : undefined;
       return identity ? { attemptId: identity.id,
         lifetimeValid: !!identity.restoreToken && identity.token() === identity.restoreToken } : undefined;
-    }, append, (actor) => getActorComponent(actor, GathererComponent));
+    }, append, (actor) => getActorComponent(actor, GathererComponent), coverage);
   }
 
   /** The owner's token getter detects restore, unwatch/reuse and controller replacement independently of current order. */
@@ -34,24 +36,25 @@ export class AiRuntimeServiceAttemptCapture {
     const releaseResources = this.resources.watch(actor, token);
     const releaseAttempts = PawnResourceServiceObservation.subscribe(board, (event) => {
       try {
-        if (event.actor !== actor || event.board !== board) return;
+        if (event.actor !== actor || event.board !== board) { this.coverage?.lose("service_attempt_binding_mismatch"); return; }
         let identity = this.identities.get(event.execution);
         if (!identity) {
-          if (event.phase !== "started" || this.nextId > 8192) return;
+          if (event.phase !== "started" || this.nextId > 8192) { this.coverage?.lose("service_attempt_identity_loss"); return; }
           const restoreToken = token();
           identity = { id: this.nextId++, order: this.snapshot(actor, event.order), restoreToken, token };
           this.identities.set(event.execution, identity);
         }
+        if (!identity.restoreToken || !identity.order) this.coverage?.lose("service_attempt_order_or_lifetime_missing");
         const source = captureAiRuntimeCreatedActor(actor);
-        if (source.playerNumber === null) return;
+        if (source.playerNumber === null) { this.coverage?.lose("service_attempt_owner_missing"); return; }
         this.append(source.playerNumber, structuredClone({ ...this.boundary(), kind: "service_attempt",
           attemptId: identity.id, operation: event.operation, phase: event.phase, amount: event.amount,
           source, target: captureAiRuntimeCreatedActor(event.target), sourceInCaptureScene: actor.scene === this.scene,
           targetInCaptureScene: event.target.scene === this.scene, order: identity.order,
           lifetimeValid: !!identity.restoreToken && token() === identity.restoreToken,
           gaps: identity.order ? [] : ["production_service_attempt_order_missing"] } satisfies AiRuntimeProductionSpatialV1));
-      } catch { /* Failed or lost diagnostics never retry or replace the native callee. */ }
-    });
+      } catch { this.coverage?.lose("service_attempt_projection_failed"); }
+    }, this.coverage?.lose);
     return () => { releaseAttempts(); releaseResources(); };
   }
 }

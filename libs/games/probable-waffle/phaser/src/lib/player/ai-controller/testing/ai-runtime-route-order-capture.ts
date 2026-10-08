@@ -13,6 +13,7 @@ import type { MovementQueryContext } from "../../../entity/systems/movement-quer
 import type { AiRuntimeRouteCallerV1 } from "./ai-runtime-route-caller-v1";
 import { AiRuntimeMovementCapture } from "./ai-runtime-movement-capture";
 import { AiRuntimeServiceAttemptCapture } from "./ai-runtime-service-attempt-capture";
+import type { AiRuntimeResourceCoverageCapture } from "./ai-runtime-resource-coverage-capture";
 
 /** Test-owned bounded weak order identities and subscriptions. Current-order overlap never supplies caller authority. */
 export class AiRuntimeRouteOrderCapture {
@@ -35,11 +36,12 @@ export class AiRuntimeRouteOrderCapture {
   constructor(private readonly scene: Phaser.Scene,
     private readonly boundary: () => Pick<AiRuntimeProductionSpatialV1,
       "clockTick" | "snapshotRestoreInProgress" | "sceneActive">,
-    private readonly append: (owner: number, value: AiRuntimeProductionSpatialV1) => void) {
+    private readonly append: (owner: number, value: AiRuntimeProductionSpatialV1) => void,
+    private readonly coverage?: AiRuntimeResourceCoverageCapture) {
     this.movement = new AiRuntimeMovementCapture(scene, boundary,
       (actor, context) => this.caller(actor, { context, stage: "initial" }), append);
     this.services = new AiRuntimeServiceAttemptCapture(scene, boundary,
-      (actor, order) => this.snapshot(actor, order, false), append);
+      (actor, order) => this.snapshot(actor, order, false), append, coverage);
   }
 
   bindOutput(event: Extract<ProductionSpatialAuthorityEvent, { kind: "output" }>, outputId: number): void {
@@ -56,12 +58,16 @@ export class AiRuntimeRouteOrderCapture {
       const previous = this.actors.get(actor);
       if (previous?.board === board) return;
       if (previous) {
+        this.coverage?.lose("controller_replaced");
         this.unwatchActor(actor);
         const source = captureAiRuntimeCreatedActor(actor);
         if (source.playerNumber !== null) this.emit(source.playerNumber, { ...this.boundary(), kind: "route_order_restore",
           reason: "controller_replaced", source, gaps: [] });
       }
-      if (!board || this.bindingCount >= 256) return;
+      if (!board || this.bindingCount >= 256) {
+        if (board) this.coverage?.lose("actor_subscription_overflow");
+        return;
+      }
       this.bindingCount++;
       const state = { board, restoreToken: {}, release: () => undefined as void };
       const original = board.setData;
@@ -97,6 +103,7 @@ export class AiRuntimeRouteOrderCapture {
       });
       const wrapper: typeof original = (...args) => {
         // Fence even failed or partial restores before invoking the original mutator once.
+        this.coverage?.lose("board_restore_attempt");
         state.restoreToken = {};
         this.outputs.delete(actor);
         try {
@@ -119,12 +126,13 @@ export class AiRuntimeRouteOrderCapture {
         } catch { /* Failed diagnostic teardown cannot replace a native result or later method owner. */ }
       };
       try { board.setData = wrapper; }
-      catch { state.release(); return; }
+      catch { this.coverage?.lose("board_wrapper_installation_failed"); state.release(); return; }
       this.actors.set(actor, state);
-    } catch { /* Missing observation cannot be filled by a later object/name match. */ }
+    } catch { this.coverage?.lose("actor_subscription_failed"); }
   }
 
   unwatchActor(actor: Phaser.GameObjects.GameObject): void {
+    if (this.actors.has(actor)) this.coverage?.lose("actor_unwatched");
     this.actors.get(actor)?.release(); this.actors.delete(actor); this.outputs.delete(actor);
   }
 
@@ -154,6 +162,7 @@ export class AiRuntimeRouteOrderCapture {
   }
 
   dispose(): void {
+    this.coverage?.lose("route_capture_disposed");
     this.disposed = true;
     this.actors.forEach((state) => state.release()); this.actors.clear();
     this.identities = new WeakMap(); this.outputs = new WeakMap();
@@ -179,6 +188,6 @@ export class AiRuntimeRouteOrderCapture {
   }
 
   private emit(owner: number, value: AiRuntimeProductionSpatialV1): void {
-    try { this.append(owner, structuredClone(value)); } catch { /* Preserve the native queue/action result. */ }
+    try { this.append(owner, structuredClone(value)); } catch { this.coverage?.lose("route_append_failed"); }
   }
 }

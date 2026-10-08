@@ -17,6 +17,7 @@ import type { AiRuntimeProductionSpatialV1 } from "./ai-runtime-production-spati
 import { captureAiRuntimeConstructionCatalog } from "./capture-ai-runtime-construction-catalog";
 import { AiRuntimeProducerRouteCapture } from "./ai-runtime-producer-route-capture";
 import { AiRuntimeNavigationObservation } from "./ai-runtime-navigation-observation";
+import type { AiRuntimeResourceCoverageCapture } from "./ai-runtime-resource-coverage-capture";
 
 /** Test-owned service observation. Queries run once, return their original Promise and never feed an AI planner. */
 export class AiRuntimeProductionSpatialCapture {
@@ -29,13 +30,14 @@ export class AiRuntimeProductionSpatialCapture {
   constructor(
     private readonly scene: Phaser.Scene,
     private readonly identify: (actorId: string, item: UnifiedQueueItem) => string,
-    private readonly append: (playerNumber: number, spatial: AiRuntimeProductionSpatialV1) => void
+    private readonly append: (playerNumber: number, spatial: AiRuntimeProductionSpatialV1) => void,
+    coverage?: AiRuntimeResourceCoverageCapture
   ) {
     scene.events.on(PRODUCTION_SPATIAL_AUTHORITY_EVENT, this.observeNative, this);
     const navigation = getSceneService(scene, NavigationService);
     if (navigation) this.navigationObservation = new AiRuntimeNavigationObservation(scene, navigation);
     this.producerRoutes = new AiRuntimeProducerRouteCapture(scene, () => this.boundary(), identify, append,
-      this.navigationObservation);
+      this.navigationObservation, coverage);
     if (navigation) {
       this.producerRoutes.install(navigation);
       this.observeNavigation(navigation);

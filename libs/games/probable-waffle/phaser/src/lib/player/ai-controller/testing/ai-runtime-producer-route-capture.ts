@@ -14,6 +14,7 @@ import type { AiRuntimeNavigationObservation } from "./ai-runtime-navigation-obs
 import type { AiRuntimeProducerRouteV1 } from "./ai-runtime-producer-route-v1";
 import { AiRuntimeRouteOrderCapture } from "./ai-runtime-route-order-capture";
 import { MovementQueryObservation } from "../../../entity/systems/movement-query-observation";
+import type { AiRuntimeResourceCoverageCapture } from "./ai-runtime-resource-coverage-capture";
 
 /** Passive instance wrappers and actual returned-object bindings, owned only by the marked test capture. */
 export class AiRuntimeProducerRouteCapture {
@@ -32,8 +33,9 @@ export class AiRuntimeProducerRouteCapture {
       "clockTick" | "snapshotRestoreInProgress" | "sceneActive">,
     private readonly identify: (actorId: string, item: UnifiedQueueItem) => string,
     private readonly append: (playerNumber: number, value: AiRuntimeProductionSpatialV1) => void,
-    private readonly navigationObservation?: AiRuntimeNavigationObservation
-  ) { this.orders = new AiRuntimeRouteOrderCapture(scene, boundary, append); }
+    private readonly navigationObservation?: AiRuntimeNavigationObservation,
+    coverage?: AiRuntimeResourceCoverageCapture
+  ) { this.orders = new AiRuntimeRouteOrderCapture(scene, boundary, append, coverage); }
 
   /** Bind the actual returned object before rally starts. At most 256 outputs acquire future-query bindings. */
   observeOutput(event: Extract<ProductionSpatialAuthorityEvent, { kind: "output" }>): void {

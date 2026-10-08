@@ -38,6 +38,8 @@ import { captureAiRuntimeProductionWorld } from "./capture-ai-runtime-production
 import { AiRuntimeProductionSpatialCapture } from "./ai-runtime-production-spatial-capture";
 import { captureAiRuntimeInitialConstruction } from "./capture-ai-runtime-initial-construction";
 import type { AiRuntimeInitialConstructionV1 } from "./ai-runtime-initial-construction-v1";
+import { AiRuntimeResourceCoverageCapture } from "./ai-runtime-resource-coverage-capture";
+import type { AiRuntimeResourceServiceIntervalV1 } from "./ai-runtime-resource-service-interval-v1";
 
 import { CONSTRUCTION_AUTHORITY_EVENT, type ConstructionAuthorityEvent } from
   "../../../entity/components/construction/construction-authority-event";
@@ -63,8 +65,10 @@ export class AiRuntimeProductionCapture {
   private disposed = false;
   private readonly spatialCapture: AiRuntimeProductionSpatialCapture;
   private readonly initialConstruction: Map<number, AiRuntimeInitialConstructionV1>;
+  private readonly resourceCoverage: AiRuntimeResourceCoverageCapture;
+  private readonly resourceIntervalDeclaration: AiRuntimeProductionCaptureV1["resourceIntervalDeclaration"];
 
-  constructor(private readonly scene: ProbableWaffleScene) {
+  constructor(private readonly scene: ProbableWaffleScene, intervals: readonly AiRuntimeResourceServiceIntervalV1[] = []) {
     const ticks = getSceneService(scene, SimulationTickService);
     const bus = getSceneService(scene, CommandBusService);
     const index = getSceneService(scene, ActorIndexSystem);
@@ -72,11 +76,18 @@ export class AiRuntimeProductionCapture {
     const playerChanged = scene.communicator.playerChanged;
     if (!ticks || !bus || !index || !tech || !playerChanged) throw new Error("production_capture_authority_missing");
     this.startedTick = ticks.currentTick;
+    this.resourceIntervalDeclaration = structuredClone({ boundary: { tick: this.startedTick, captureSequence: 0 },
+      overflow: intervals.length > 256, intervals: intervals.length > 256 ? [] : intervals });
+    this.resourceCoverage = new AiRuntimeResourceCoverageCapture(this.startedTick, () => {
+      const clock = getSceneService(scene, SimulationTickService);
+      if (clock !== ticks) this.resourceCoverage.lose("clock_service_replaced");
+      return { tick: clock?.currentTick ?? this.startedTick, captureSequence: this.nextSequence - 1 };
+    });
     const initialActors = index.getAllIdActors();
     this.initialConstruction = captureAiRuntimeInitialConstruction(scene, initialActors, this.startedTick);
     this.spatialCapture = new AiRuntimeProductionSpatialCapture(scene, this.identify, (playerNumber, spatial) => {
       this.append({ ...this.boundary(playerNumber), kind: "spatial_authority", spatial });
-    });
+    }, this.resourceCoverage);
     for (const player of scene.players) {
       if (player.playerNumber !== undefined) this.lastBalances.set(player.playerNumber, this.resources(player.playerNumber));
     }
@@ -134,7 +145,10 @@ export class AiRuntimeProductionCapture {
       this.spatialCapture.unwatchActor(actor);
     }));
     // Components can finish initialization after index registration. This test-only scan attaches missing listeners.
-    this.subscriptions.add(ticks.tick$.subscribe(() => index.getAllIdActors().forEach((actor) => this.watchQueue(actor))));
+    this.subscriptions.add(ticks.tick$.subscribe(() => {
+      this.resourceCoverage.tick(ticks.currentTick);
+      index.getAllIdActors().forEach((actor) => this.watchQueue(actor));
+    }));
     initialActors.forEach((actor) => this.watchQueue(actor));
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.dispose, this);
     scene.events.once(Phaser.Scenes.Events.DESTROY, this.dispose, this);
@@ -156,6 +170,12 @@ export class AiRuntimeProductionCapture {
 
   private captureBoundary(playerNumber: number, requireDecision: boolean): AiRuntimeProductionCaptureV1 {
     if (this.disposed) throw new Error("production_capture_disposed");
+    try { return this.readBoundary(playerNumber, requireDecision); }
+    catch (error) { this.resourceCoverage.lose("boundary_read_failed"); throw error; }
+  }
+
+  private readBoundary(playerNumber: number, requireDecision: boolean): AiRuntimeProductionCaptureV1 {
+    if (isSnapshotApplyInProgress(this.scene)) this.resourceCoverage.lose("snapshot_restore");
     const tick = getSceneService(this.scene, SimulationTickService)?.currentTick ?? this.startedTick;
     const controller = requireDecision
       ? getSceneSystem(this.scene, AiPlayerHandler)?.getAiPlayerController(playerNumber) : undefined;
@@ -173,7 +193,7 @@ export class AiRuntimeProductionCapture {
     const state = controller?.getBrainState();
     const pending = this.pendingCommands.snapshot(playerNumber);
     const snapshot = {
-      tick, afterSequence: this.facts.reduce((sequence, fact) =>
+      tick, resourceCoverage: this.resourceCoverage.read(), afterSequence: this.facts.reduce((sequence, fact) =>
         fact.playerNumber === playerNumber ? fact.sequence : sequence, 0),
       observation: controller?.getCommittedObservation() ?? null,
       capabilityCatalog: controller?.getCommittedCapabilityCatalog() ?? null,
@@ -190,13 +210,18 @@ export class AiRuntimeProductionCapture {
     } satisfies AiRuntimeProductionCaptureV1["snapshots"][number];
     const snapshots = this.snapshots.get(playerNumber) ?? [];
     if (snapshots.length < MAX_SNAPSHOTS) snapshots.push(structuredClone(snapshot));
-    else this.snapshotDrops.set(playerNumber, (this.snapshotDrops.get(playerNumber) ?? 0) + 1);
+    else {
+      this.resourceCoverage.lose("snapshot_overflow");
+      this.snapshotDrops.set(playerNumber, (this.snapshotDrops.get(playerNumber) ?? 0) + 1);
+    }
     this.snapshots.set(playerNumber, snapshots);
     return structuredClone({
       schemaVersion: 1, kind: "production_authority_capture", startedTick: this.startedTick, playerNumber,
       droppedFactCount: this.factDrops.get(playerNumber) ?? 0,
       droppedSnapshotCount: this.snapshotDrops.get(playerNumber) ?? 0,
       initialConstruction: this.initialConstruction.get(playerNumber),
+      resourceCoverage: this.resourceCoverage.read(),
+      resourceIntervalDeclaration: this.resourceIntervalDeclaration,
       gaps: ["resource_item_attribution", "queue_resource_runtime_authority_unverified",
         "pending_dispatch_before_capture_or_restore", "navigation_placement_authority",
         "pre_registration_queue_events", "capture_local_identity_restore", "initial_paid_item_provenance",
@@ -209,6 +234,7 @@ export class AiRuntimeProductionCapture {
   dispose(): void {
     if (this.disposed) return;
     this.disposed = true;
+    this.resourceCoverage.lose("capture_disposed");
     this.spatialCapture.dispose();
     this.subscriptions.unsubscribe();
     this.queueSubscriptions.forEach((subscription) => subscription.unsubscribe());
@@ -362,7 +388,11 @@ export class AiRuntimeProductionCapture {
         "queue_progress", "queue_mutation", "queue_completion", "actor_registered", "research_completed"
       ]
         .includes(fact.kind) ? this.sampleBoundaryState(fact.playerNumber, exhaustedProgressItem) : undefined;
-      this.facts.push(structuredClone({ ...fact, sequence, ...(boundaryState ? { boundaryState } : {}) }));
-    } else this.factDrops.set(fact.playerNumber, (this.factDrops.get(fact.playerNumber) ?? 0) + 1);
+      try { this.facts.push(structuredClone({ ...fact, sequence, ...(boundaryState ? { boundaryState } : {}) })); }
+      catch (error) { this.resourceCoverage.lose("fact_append_failed"); throw error; }
+    } else {
+      this.resourceCoverage.lose("fact_overflow");
+      this.factDrops.set(fact.playerNumber, (this.factDrops.get(fact.playerNumber) ?? 0) + 1);
+    }
   }
 }

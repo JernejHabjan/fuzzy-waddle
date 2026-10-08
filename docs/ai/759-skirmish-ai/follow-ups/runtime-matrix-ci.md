@@ -38,7 +38,8 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
 ### Resource service input and interval checkpoints (2026-10-08, unverified)
 
 Authorized group: 33 consumed selection, 34 supported coverage/loss, 35 strict interval diagnostics.
-Base `42b5bf3d3c9777681d44b833ae0b6fcbc547843a`; the containing commit owns 33.
+Stage 33 is `0e1906024c7339a964fcc1dfdea93145b9e10509`, based on `42b5bf3d3`.
+Base 34 is that stage-33 commit; the containing commit owns 34.
 Last selected profile: GPT-6.1 Sol / medium; actual host settings unknown. No automatic model switch.
 All executable tests/validation remain deferred. The stage-32 contract below remains mandatory.
 
@@ -65,11 +66,42 @@ consumer is 35 in this authorized batch. No planner policy, durable field, schem
 known/unknown income, diagnostic failure, bounded report tails and test discovery. This closes authoring only; no
 formatter/lint/types/build/Jest/Playwright/source validator, simulation or other executable check ran.
 
+**34 — authored/unverified, purpose:** `AiRuntimeResourceCoverageCapture` / `AiRuntimeResourceCoverageV1` retain
+bounded weak component cohorts and real `(tick, captureSequence)` reads. Resource/attempt observers report failed
+reads, listeners, installation and append loss; restore, component/actor/owner/controller replacement, unwatch/disposal,
+clock replacement, skipped ticks and saturation fence the capture before diagnostic work. The same root inventory,
+registration and existing tick subscription supply installation; there is no new scan/query/timer. Actual event-time
+discovery of a late component cannot backfill an earlier execution. Loss is global and conservative within this one
+capture instance (`captureEpoch: 1`); this instance never reopens a lost epoch.
+
+`AiRuntimeProductionCapture` also freezes optional test-owned `AiRuntimeResourceServiceIntervalV1` declarations at
+installation, retaining an overflow flag and discarding an oversized group. Old callers remain valid and declare no
+interval. `validateRuntimeResourceCoverage` checks ordered tails, snapshot markers, sparse global sequence clocks,
+cohort identity/prefix preservation and monotone loss. Unsupported full component/lifetime/beneficiary-need mutation
+routes remain explicit gaps; this is partial channel authority, never complete income or continuous service coverage.
+
+**Source Implementation Review, 34:** traced the optional coverage owner through root -> spatial -> producer routes ->
+orders -> service attempts -> cargo observation. Loss callbacks are insulated from native results/errors; the original
+mutation runs once and the original native Promise remains unchanged. Read-side invalidation occurs before serializing
+loss counters. Existing subscriptions retain their teardown route; only weak component identities and detached bounded
+cohorts are retained. Snapshot/read/append/saturation failure cannot be repaired by later balances. Binary neighbour
+checks avoid rescanning all facts for every cohort at every read. Capture/output cost remains unmeasured.
+
+**Omission Audit, 34:** install/frontier/epoch/loss routes, fresh identities, lifecycle fences, numeric caps and legacy gaps
+are represented. Coverage specs cover failed samples, original mutation/error, subscriber cap, restore-before-reader,
+component replacement, cohort cap and fast-forward; all are authored/unrun. Unsupported history stays named, not inferred
+from successful samples. No durable schema, new actor query/timer, baseline refresh, editor/CI or skill/tool change.
+
+**Separate Final Closure Audit, 34:** rechecked optional constructor compatibility, real observation/teardown routes,
+late installation, actor/owner/component reuse, restore-before-append, clock/read positions and discarded oversized
+declarations. Coverage validator's consumer is 35 in this same batch. All executable checks remain deferred; complete
+beneficiary-need/lifetime authority and actual useful-throughput acceptance remain open.
+
 | Acceptance | Result / purpose | State |
 | --- | --- | --- |
 | 1. Provenance / ownership | Same worktree/branch, base 32, unrelated Nx merge ancestor preserved | Source reviewed |
 | 2. Actual accepted selection | Weak proposal inputs -> detached dispatch -> aggregate need helper | 33 authored; report consumer 35 pending |
-| 3. Supported coverage | Installation/frontier/loss and unsupported authority distinctions | 34 in progress |
+| 3. Supported coverage | Installation/frontier/loss and unsupported authority distinctions | 34 authored; report consumer 35 pending |
 | 4. Fixed interval accounting | Cohort, beneficiary, ordered reads, unique credits and capped windows | 35 in progress |
 | 5. Honest usefulness / capacity | Independent need/lifetime mutation history is required | Useful oracle open |
 | 6. Controls / final gate | Pure/dispatch specs authored; all execution deferred | Unverified |
@@ -80,6 +112,7 @@ Deferred 33 commands (do not run before the final gate):
 ```sh
 pnpm exec nx test probable-waffle-gameplay --testPathPatterns='ai-general-gathering-proposal|ai-resource-forecast' --runInBand
 pnpm exec nx test probable-waffle-phaser --testPathPatterns='dispatch-ai-brain-result' --runInBand
+pnpm exec nx test probable-waffle-phaser --testPathPatterns='ai-runtime-resource-coverage-capture|ai-runtime-resource-service-capture|ai-runtime-route-order-capture|pawn-resource-service-observation' --runInBand
 ```
 
 ### Useful resource service contract checkpoint (2026-10-08, unverified)
