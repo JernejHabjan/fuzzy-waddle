@@ -6,22 +6,21 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
-**Current batch (user policy, 2026-10-08):** the latest `continue` resumes the contract boundary after credit/cargo 29–31.
-Current step: #815/#816 machinery 32, **useful resource service contract**, authored/unverified; pause here.
-This is a documentation/design stage before capture/oracle implementation. Last selected profile is GPT-6.1 Sol / medium;
+**Current batch (user policy, 2026-10-08):** `continue to next batch. Go` authorizes the related 33–35 group.
+Current step: #815/#816 machinery 33, **consumed gathering selection**, authored/unverified; 34–35 remain in this batch.
+Keep related work together and pause after the group. Last selected profile is GPT-6.1 Sol / medium;
 actual host model/effort are unknown. Explain what was authored and why; commit/push, then recommend the next grouped
 profile. All executable tests and validation stay deferred to the final gate.
-Base `c7aefd0b8dd2217f90eeea5d6abe695bb74e2057`; the containing commit owns this slice.
+Base `42b5bf3d3c9777681d44b833ae0b6fcbc547843a`; the containing commit owns 33.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify remote on resume.
 Preserve unrelated Nx merge `59f72e037`. No family/issue is complete. The user removed the comment-permission rule.
 
-**Authored — why it is used:** the [useful-service contract](follow-ups/runtime-matrix-ci.md#useful-resource-service-contract-checkpoint-2026-10-08-unverified)
-defines exact ordered interval endpoints, forecast/resource/beneficiary units, unique credit accounting, coverage/loss
-fences and retained throughput windows. It prevents a few successful credits or sampled actors from being treated as
-continuous useful capacity. Source inspection found general gathering has `demandId: null` and consumes an aggregate
-forecast before new macro state projection. The first usefulness claim must therefore bind the actual selection inputs
-and measure aggregate forecast need; it cannot invent individual production-demand fulfillment. No runtime code/spec
-was added in 32. The implementation and every earlier executable check remain open.
+**Authored — why it is used:** the [selection/coverage/interval checkpoint](follow-ups/runtime-matrix-ci.md#resource-service-input-and-interval-checkpoints-2026-10-08-unverified)
+records actual consumed gathering forecasts and ledger inputs on weak proposal identity, then publishes only original
+accepted selections. Later reports can measure aggregate dated need without borrowing the newer macro forecast or
+inventing an individual demand. Pure proposal and dispatch controls are authored/unrun. Coverage and interval work
+remain in the authorized group. The [32 contract](follow-ups/runtime-matrix-ci.md#useful-resource-service-contract-checkpoint-2026-10-08-unverified)
+still requires independent unresolved-need history; potential contribution alone cannot prove usefulness.
 
 **Settled credit/cargo contract:** explicit transient execution handles cross awaits; no ambient current order can assign
 credit. Record native cargo additions, reset/restore fences, exact offered pile, emission recipient and scoped before/after
@@ -30,16 +29,14 @@ Campaign suppression is explicit and may accompany a full native return. Old/unk
 to the latest task. Whole known piles may retain several earlier gathering attempts; no invented FIFO/partial allocation.
 A credit proves a scoped balance change, independently from cargo lineage, accepted task/demand and continuous usefulness.
 
-**Next exact authoring action — why:** start 33 at `planning/ai-general-gathering-proposal.ts` and its actual forecast input,
-`planning/ai-resource-forecast.ts`, under `libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/`.
-Bind transient selection evidence to the accepted decision/intent/shared service command; never use a newer decision
-forecast or parse reasons. This supplies dated aggregate need independently of the existing nullable demand lineage.
-Then 34 captures supported cohort/frontier/loss authority; 35 projects exact income/need/retained-window reports and
-negative specs through existing consumers. These let later oracles distinguish isolated income from retained throughput.
+**Next exact authoring action — why:** continue 34 in `AiRuntimeResourceServiceCapture` and the existing root's actor
+subscription route; capture supported cohorts, read positions and loss fences. Continue 35 with strict income/need/window
+diagnostics through existing variant reports and negative specs. These let later oracles distinguish isolated income
+from retained throughput. Current task-owned uncommitted paths may already contain the following stages; inspect Git.
 Continuous capacity stays unavailable until each predicate has complete mutation coverage. Keep PRO-03/06/07 oracles,
 denominators and all uncovered gaps mandatory. All tests/validation stay deferred; no invented completion percentage.
 Recommend **GPT-6.1 Sol / high** across the related 33–35 group, then medium after actual authority routes are settled.
-This is a task-risk recommendation, not a host switch or automatic authorization for three more stages.
+This is a task-risk recommendation, not a host switch. The user authorized 33–35; pause after 35.
 
 | Dependency | State | Purpose / next boundary |
 | --- | --- | --- |
@@ -48,12 +45,13 @@ This is a task-risk recommendation, not a host switch or automatic authorization
 | Native cargo/application capture (30) | Authored, unverified | Exact pile, beneficiary and scoped balance change |
 | Strict cargo/credit projection (31) | Authored, unverified | Connect known contributors without inferring task fulfillment |
 | Useful service interval contract (32) | Authored, unverified | Define what income, aggregate need and retained throughput can prove |
-| Selected need / coverage / interval reports (33–35) | Planned, open | Capture actual selected inputs and complete supported interval evidence |
+| Selected need (33) | Authored, unverified | Actual accepted aggregate selection, separate from newer forecasts |
+| Supported coverage / interval diagnostics (34–35) | In progress | Bound observations and keep unsupported useful-service proof unavailable |
 | Continuous useful capacity | Open | Complete mutation authority for readiness, supply, access/safety and service |
 | Full production adapter/oracles/setup/strategy | Open | Independent PRO-03/06/07 assertions |
 | Executable validation | Deferred final gate | Establish correctness before issue/release closure |
 
-Source Implementation Review, Omission Audit and separate Final Closure Audit for 32 are in its contract checkpoint.
+Source Implementation Review, Omission Audit and separate Final Closure Audits are in the current checkpoint.
 Prior `resourceCredits` preserves actual scoped application independently from complete whole-pile contributors;
 unknown/old/mixed/restored/partial piles remain unattributed. Accepted service may have no selected demand.
 The [credit/cargo checkpoint](follow-ups/runtime-matrix-ci.md#production-credit-and-cargo-checkpoints-2026-10-08-unverified)
@@ -61,7 +59,7 @@ retains every unrun 29–31 command and repair. Stage 31 is `c7aefd0b8dd2217f90e
 30 is `67372aa37860d3e921facdb0671055a47b764515`, 29 is `00d6f2e77ab566262bd09225bdb945bf71e53210`.
 Stage 28 is `135c5b1c1cec0f4a8557d52f1511761887f449f5`, 27 is `77499c4db98e1f28d625ed6a66e465039d0b22a1`,
 26 is `4b0dd34d029e677a006a1b2dc174b25f35c144b5`, 25 is `1bfa9740460f0b2a7836ab44ebc0d38c18eb063e`.
-No fixed machinery total or percent is claimed. Contract stage 32 is authored; pause here. All native observer,
+No fixed machinery total or percent is claimed. Stage 32 is `42b5bf3d3`; continue the authorized 33–35 group. All native observer,
 report, prior movement and earlier final-gate obligations remain unrun. Capture/report cost and native compatibility are unmeasured.
 Source review repaired ES2024 constructor initialization and loss-safe cargo/transfer fences; no runtime pass is claimed.
 

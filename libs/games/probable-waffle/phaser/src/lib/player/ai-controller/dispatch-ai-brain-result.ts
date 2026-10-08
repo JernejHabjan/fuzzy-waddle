@@ -7,6 +7,8 @@ import { AI_DECISION_DISPATCH_EVENT, type AiDecisionDispatchEvent } from "./ai-d
 import { AI_INTENT_COMMAND_DISPATCH_EVENT } from "./ai-intent-command-dispatch-event";
 import { dispatchAiIntents } from "./ai-intent-dispatcher";
 import type { AiDecisionInputV1 } from "./ai-decision-input-v1";
+import { readAiGatheringSelection } from
+  "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-gathering-selection-observation";
 
 /** Publishes the actual accepting result, including empty decisions, before ordinary shared command dispatch. */
 export function dispatchAiBrainResult(
@@ -26,7 +28,11 @@ export function dispatchAiBrainResult(
     decisionSequence: debug.decisionSequence, authorityEpoch: authority.authorityEpoch };
   scene.events.emit(AI_DECISION_DISPATCH_EVENT, structuredClone({
     identity, ...(input ? { input } : {}), acceptedIntents: result.acceptedIntents, decisions: result.decisions,
-    reservations: result.nextState.reservations, economyProduction: result.nextState.economyProduction
+    reservations: result.nextState.reservations, economyProduction: result.nextState.economyProduction,
+    gatheringSelections: result.acceptedIntents.flatMap((intent) => {
+      const selection = readAiGatheringSelection(intent);
+      return selection ? [selection] : [];
+    })
   } satisfies AiDecisionDispatchEvent));
   dispatchAiIntents(scene, playerNumber, result.acceptedIntents, identity);
 }

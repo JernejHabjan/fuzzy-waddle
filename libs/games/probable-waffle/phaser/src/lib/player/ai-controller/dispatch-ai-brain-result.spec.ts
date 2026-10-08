@@ -1,5 +1,8 @@
 import Phaser from "phaser";
-import { FactionType, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
+import { FactionType, ProbableWaffleAiDifficulty, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import { rememberAiGatheringSelection } from
+  "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-gathering-selection-observation";
 import type { AiBrainStepResultV1 } from
   "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/ai-brain-step-result-v1";
 import { createAiBrainStateV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/create-ai-brain-state-v1";
@@ -62,5 +65,22 @@ describe("dispatchAiBrainResult", () => {
     expect(() => dispatchAiBrainResult(f.scene, 2, f.result, f.authority)).toThrow(failure);
     expect(records[0].acceptedIntents).toEqual([]);
     expect(records[0].decisions).toEqual([]);
+  });
+
+  it("publishes only accepted original proposal selections, leaving rejected and copied intents without authority", () => {
+    const f = fixture(), common = pendingCommandIntent();
+    const intent = { ...common, kind: "assign_gatherers", actorIds: ["worker"], demandId: null,
+      resourceType: ResourceType.Wood, sourceActorId: "source" } satisfies AiIntentV1;
+    const rejected = { ...intent, intentId: "intent:rejected", effectId: "effect:rejected" } satisfies AiIntentV1;
+    for (const proposal of [intent, rejected]) rememberAiGatheringSelection(proposal, () => ({
+      intentId: proposal.intentId, effectId: proposal.effectId, playerNumber: 2, tick: 99, observationGeneration: 7,
+      catalogGeneration: 7, resourceType: ResourceType.Wood, branch: "stockpile_fallback", forecast: null,
+      ledger: null, plannerDeficit: null }));
+    const records: AiDecisionDispatchEvent[] = [];
+    f.events.on(AI_DECISION_DISPATCH_EVENT, (event: AiDecisionDispatchEvent) => records.push(event));
+    dispatchAiBrainResult(f.scene, 2, { ...f.result, acceptedIntents: [intent] }, f.authority);
+    expect(records[0].gatheringSelections?.map((selection) => selection.intentId)).toEqual([intent.intentId]);
+    dispatchAiBrainResult(f.scene, 2, { ...f.result, acceptedIntents: [structuredClone(intent)] }, f.authority);
+    expect(records[1].gatheringSelections).toEqual([]);
   });
 });

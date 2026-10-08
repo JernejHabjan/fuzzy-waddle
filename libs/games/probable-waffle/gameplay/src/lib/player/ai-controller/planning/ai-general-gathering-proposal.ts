@@ -4,10 +4,11 @@ import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v
 import type { AiIntentV1 } from "../contracts/ai-intent-v1";
 import type { AiObservationV1 } from "../contracts/ai-observation-v1";
 import { nextIds } from "./ai-macro-effect-identity";
-import { selectAiForecastResource } from "./ai-resource-forecast";
+import { aiResourceForecastDeficit, selectAiForecastEntry } from "./ai-resource-forecast";
+import { rememberAiGatheringSelection } from "./ai-gathering-selection-observation";
 import { selectAiSurplusLaborTransfer } from "./ai-surplus-labor-transfer";
 
-/** Proposes one useful non-Field gathering assignment from observed source service and dated resource demand. */
+/** Proposes a non-Field gathering assignment from aggregate forecasts or the native stockpile fallback. */
 export function proposeAiGeneralGathering(
   observation: AiObservationV1,
   state: AiBrainStateV1,
@@ -48,8 +49,9 @@ export function proposeAiGeneralGathering(
       actor.resourceState.status === "known" ? actor.resourceState.value.resourceType : ResourceType.Wood
     )
   );
+  const selectedForecast = selectAiForecastEntry(observation, state.economyProduction.forecasts, sourceResourceTypes);
   const constrainedResource =
-    selectAiForecastResource(observation, state.economyProduction.forecasts, sourceResourceTypes) ??
+    selectedForecast?.resourceType ??
     observation.resources
       .filter((resource) => sourceResourceTypes.has(resource.resourceType))
       .sort((left, right) => left.stockpile - right.stockpile || left.resourceType.localeCompare(right.resourceType))[0]
@@ -92,7 +94,7 @@ export function proposeAiGeneralGathering(
     : transferable ? [transferable] : [];
   if (selectedWorkers.length === 0) return null;
   const ids = nextIds(state, "gather", ordinal);
-  return {
+  const intent = {
     ...ids,
     kind: "assign_gatherers",
     planId: state.opening.plan.planId,
@@ -122,5 +124,14 @@ export function proposeAiGeneralGathering(
     actorIds: selectedWorkers.map((worker) => worker.actorId),
     resourceType: constrainedResource,
     sourceActorId: gatherSource.actorId
-  };
+  } satisfies AiIntentV1;
+  rememberAiGatheringSelection(intent, () => ({ intentId: intent.intentId, effectId: intent.effectId,
+    playerNumber: observation.playerNumber, observationGeneration: observation.generation,
+    catalogGeneration: catalog.generation, tick: observation.tick, resourceType: constrainedResource,
+    branch: selectedForecast ? "forecast" : "stockpile_fallback",
+    forecast: selectedForecast ? { amount: selectedForecast.amount, horizonTick: selectedForecast.horizonTick,
+      confidencePermille: selectedForecast.confidencePermille } : null,
+    ledger: observation.resources.find((entry) => entry.resourceType === constrainedResource) ?? null,
+    plannerDeficit: selectedForecast ? aiResourceForecastDeficit(observation, selectedForecast) : null }));
+  return intent;
 }

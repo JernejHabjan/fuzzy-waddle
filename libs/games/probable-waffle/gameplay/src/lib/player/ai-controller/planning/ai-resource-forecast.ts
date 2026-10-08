@@ -64,11 +64,20 @@ export function selectAiForecastResource(
   forecasts: readonly ReturnType<typeof projectAiResourceForecasts>[number][],
   availableTypes: ReadonlySet<ResourceType>
 ): ResourceType | undefined {
+  return selectAiForecastEntry(observation, forecasts, availableTypes)?.resourceType;
+}
+
+/** Returns the actual winning entry, including duplicate-resource forecasts, in the native selector's stable order. */
+export function selectAiForecastEntry(
+  observation: AiObservationV1,
+  forecasts: readonly ReturnType<typeof projectAiResourceForecasts>[number][],
+  availableTypes: ReadonlySet<ResourceType>
+) {
   return [...forecasts]
     .filter((forecast) => availableTypes.has(forecast.resourceType))
-    .map((forecast) => ({ resourceType: forecast.resourceType, deficit: aiResourceForecastDeficit(observation, forecast) }))
-    .sort((left, right) => right.deficit - left.deficit || left.resourceType.localeCompare(right.resourceType))[0]
-    ?.resourceType;
+    .map((forecast) => ({ forecast, deficit: aiResourceForecastDeficit(observation, forecast) }))
+    .sort((left, right) => right.deficit - left.deficit ||
+      left.forecast.resourceType.localeCompare(right.forecast.resourceType))[0]?.forecast;
 }
 
 /** Uses empirical delivered income only within the bounded dated horizon; unknown income makes no promise. */

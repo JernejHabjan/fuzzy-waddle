@@ -35,6 +35,53 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
 
 ## Implementation order
 
+### Resource service input and interval checkpoints (2026-10-08, unverified)
+
+Authorized group: 33 consumed selection, 34 supported coverage/loss, 35 strict interval diagnostics.
+Base `42b5bf3d3c9777681d44b833ae0b6fcbc547843a`; the containing commit owns 33.
+Last selected profile: GPT-6.1 Sol / medium; actual host settings unknown. No automatic model switch.
+All executable tests/validation remain deferred. The stage-32 contract below remains mandatory.
+
+**33 — authored/unverified, purpose:** `selectAiForecastEntry` returns the native winning entry with the same sort,
+tie and fallback behavior. `AiGatheringSelection` / weak selection observation retain a detached selected ledger,
+forecast, generations, native deficit and exact branch without adding an intent/save/wire field. The dispatch event
+reads only original accepted proposal identities; copied/restored/rejected objects cannot borrow the metadata.
+`normalizeRuntimeResourceNeeds` validates bounded accepted inputs and derives gross aggregate unmet resources; the
+following report stage connects its consumer. This lets later accounting identify the resource need the AI actually
+selected, even when `demandId` is null and the next macro projection changes the forecast.
+
+**Source Implementation Review, 33:** traced the real macro proposal, selector, arbitration's reference-preserving
+`accepted.push(intent)`, result dispatch before its detached clone, and resource-deficit arithmetic. Diagnostic storage
+and read failures leave evidence unavailable. Sorting still evaluates every original entry and keeps native stable ties;
+the first duplicated resource entry is not retrospectively guessed. Weak storage holds no live state or intent history.
+The small per-proposal diagnostic clone is unmeasured and belongs to the final gate.
+
+**Omission Audit, 33:** consumed input, actual branch, accepted identities, aggregate units and nullable demand are
+represented. Pure proposal controls cover duplicate forecasts, later mutation, nonpositive native choices and fallback;
+dispatch controls cover accepted originals versus rejected/copied proposals. Both are authored/unrun. The report helper's
+consumer is 35 in this authorized batch. No planner policy, durable field, schema, editor, CI, baseline or skill/tool change.
+
+**Separate Final Closure Audit, 33:** rechecked selector forwarding, object identity through arbitration/dispatch,
+known/unknown income, diagnostic failure, bounded report tails and test discovery. This closes authoring only; no
+formatter/lint/types/build/Jest/Playwright/source validator, simulation or other executable check ran.
+
+| Acceptance | Result / purpose | State |
+| --- | --- | --- |
+| 1. Provenance / ownership | Same worktree/branch, base 32, unrelated Nx merge ancestor preserved | Source reviewed |
+| 2. Actual accepted selection | Weak proposal inputs -> detached dispatch -> aggregate need helper | 33 authored; report consumer 35 pending |
+| 3. Supported coverage | Installation/frontier/loss and unsupported authority distinctions | 34 in progress |
+| 4. Fixed interval accounting | Cohort, beneficiary, ordered reads, unique credits and capped windows | 35 in progress |
+| 5. Honest usefulness / capacity | Independent need/lifetime mutation history is required | Useful oracle open |
+| 6. Controls / final gate | Pure/dispatch specs authored; all execution deferred | Unverified |
+| 7. Publication / resume | Scoped commits, single normal batch push, remote check; pause after 35 | In progress |
+
+Deferred 33 commands (do not run before the final gate):
+
+```sh
+pnpm exec nx test probable-waffle-gameplay --testPathPatterns='ai-general-gathering-proposal|ai-resource-forecast' --runInBand
+pnpm exec nx test probable-waffle-phaser --testPathPatterns='dispatch-ai-brain-result' --runInBand
+```
+
 ### Useful resource service contract checkpoint (2026-10-08, unverified)
 
 Machinery 32 is the contract boundary after `c7aefd0b8dd2217f90eeea5d6abe695bb74e2057`.
@@ -170,7 +217,8 @@ and overflow with contradictory tail; observed zero and suppressed credit; other
 income retained despite spending without reopening fulfilled need; successful
 throughput with continuous capacity unavailable. Pair positive/negative cases through real native paths at the final gate.
 
-Next coherent group, recommended **GPT-6.1 Sol / high** throughout:
+Originally proposed coherent group, now authorized and recorded in the newer checkpoint above;
+recommended **GPT-6.1 Sol / high** throughout:
 
 1. **33, selection authority:** capture exact consumed forecast/observation and bind accepted service identities;
    this lets aggregate usefulness be measured without inventing an individual production demand.
