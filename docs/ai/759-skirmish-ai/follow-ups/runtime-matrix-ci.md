@@ -35,6 +35,122 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
 
 ## Implementation order
 
+### Ownership boundary design checkpoint (2026-10-08, source design only)
+
+42 is based on `ecd26ba772e822ebbb06f4f21bf9172ded4fd495` (41); containing commit owns this design.
+The latest `continue` authorizes this bounded design, publication and pause. Last selected profile is Sol 6.1 / medium;
+actual host settings remain unknown. No model switch or executable check. No runtime hook is added by this stage.
+
+**What / why:** define conservative closure at named native writers without promising complete mutation history.
+For example, a worker may start returning wood to a friendly drain and that drain may change owner during the wait.
+Native return still resolves the owner after the wait; a future pre-owner-change fence must prevent the earlier need
+from receiving a usefulness claim. Exact observed income and whole-pile lineage remain separate diagnostic evidence.
+These decisions give the next author a bounded implementation contract; they do not establish useful throughput.
+
+#### Supported scope, identity and closure
+
+The support unit is a capture installation observing a named route, not an actor ID, player number or equal endpoint.
+Capture-local identity binds actual scene, player, player state/data/resource object, actor and component objects to
+their installation. Serialized IDs locate records; they do not certify object continuity. No new saved identity, clock,
+actor scan, registry, timer or public API restriction is required by this design.
+
+1. **Selected need:** retain the exact consumed read, matching incoming start and selected intent/effect/generation
+   from 40. Freeze A/S0/R0/D0; a new result with different accepting liabilities remains unavailable. A later decision,
+   including empty/recovery/expiry reconciliation, closes the old generation before reconciliation. No fresh selection
+   may revive it. The exact resource-free own-admission exemption stays limited to 40's validated request/outcomes.
+2. **Native application:** keep 37's actual recipient/payload/operation pair and 41's read frontiers. Read overlap,
+   entry/terminal straddle, loss or conflicting supplied tail cannot be repaired by a later matching balance. Grant/spend
+   arithmetic stays 38's conditional bound; spending does not undo an earlier grant's consumption of the old shortage.
+3. **Boundary versus loss:** an exact known player decision fence closes that player's older needs. Unknown scope,
+   binding replacement, restore, reentrancy, dropped facts, reader failure or missing native terminal loses the capture
+   conservatively. A named actor ownership mutation will use the existing scene-wide irreversible loss route because
+   no complete actor-to-beneficiary/need dependency map exists. Over-invalidation is explicit; no post-event reopening.
+4. **Cross-await:** an attempt retains its original task/order context and actual gatherer/source/drain/component
+   installation identities. After the wait, identity/epoch validity determines diagnostic eligibility only; it must not
+   cancel, retry, reorder or modify native extraction/return. Return-time owner/economy and actual credit callback remain
+   authoritative even if they differ from entry. An invalid lifetime leaves attribution unavailable; native full return
+   or campaign suppression is preserved. Never substitute entry owner, latest task, nearest operation or inferred FIFO.
+5. **Cleanup:** capture-owned observers are passive, bounded and removed on disposal/shutdown. Loss state changes
+   before any fallible append. Exceptions from observers cannot prevent native mutation; missing evidence stays a gap.
+   Reentrant mutation uses original native ordering and loses history rather than serializing gameplay. A stale awaited
+   completion must not attach to a replacement capture; fresh installation cannot backfill pre-installation history.
+
+#### Writer contracts and implementation boundaries
+
+Source anchors are relative to `libs/games/probable-waffle/`, except the platform row. This table specifies future
+implementation duties; no row is newly intercepted or certified complete by stage 42.
+
+| Authority / source anchor | Required entry and identity rule | Remaining limit / implementation boundary |
+| --- | --- | --- |
+| `protocol/.../probable-waffle-player.ts`, `PlayerResourceObservation` | Keep paired named add/pay observations on the actual installed recipient. Player/state/data/resource identity replacement loses history before a read can certify a frame. | Public state and `getResources()` references still allow write/undo; matching samples never erase the mandatory mutable-alias gap. General authority requires a separate public API ownership decision, outside this batch. |
+| `phaser/.../campaign/participants/campaign-participant-scene-adapter.ts`, `applyStartingResources` | A future caller fence must precede direct slot writes and use actual scene context; this helper currently receives only a resource record. | Do not convert to add/pay: rounding, scaling and replacement semantics differ. Pre-installation setup is not observed history. Deferred separate route, not an extra hook in 43–44. |
+| `libs/platform/game-sessions/src/lib/game-instance.ts`, add/removal/reset | Future optional platform-level passive observer must precede push/filter assignment/reset and avoid a dependency on Phaser. Constructor roster creation precedes installation. | Public players array and public state replacement remain bypasses; current recipient reconciliation detects only persistent mismatch. Platform owner is baselined; split separately before editing. Not in 43–44. |
+| `phaser/.../world/services/recovery/reconnect.service.ts` | Preserve the existing pre-snapshot scene fence before actor rebuild and player-state assignment. | Completion, later matching bindings or controller restore cannot revive the lost capture. All unowned direct restore/replacement routes remain gaps. |
+| Pure planner/brain and `phaser/.../testing/ai-runtime-unspent-claims.ts` | Close older needs before pure reconciliation; preserve selected → admitted → queue liability / settled / released ownership. Only exact supported immediate payment terminal retires cash; physical future queue charges belong to D0, never both R0 and D0. | Callback-in-progress, uncertain terminal, pre-capture claims, unsupported non-queue purchase or lineage/price mismatch stays null. Outcome publication alone is not a pre-mutation authority. No planner/payment rewrite. |
+| `phaser/.../entity/components/queue/` named mutate/advance routes | Retain before/start boundaries. A future queue liability transfer needs exact command/item/price and actual payment terminal; only the advanced exhausted head may avoid future charges. | Raw queues/items and `setData` rebuilding remain unsupported. Never infer liability retirement from application or completion labels alone. Separate queue ownership work. |
+| `phaser/.../entity/components/owner-component.ts`, `setOwner` | After the same-owner early return, fence scene history **before** `ActorIndexSystem.updateActorOwnership`, owner assignment, UI work and `OwnerChangedEvent`. `clearOwner`, blink and defined-owner `setData` delegate to this route. | Selected next batch 43–44. No actor/player filter can claim exhaustive affected needs. Undefined-owner `setData` currently does nothing; preserve it. Same-owner call remains a no-op. |
+| `phaser/.../entity/components/combat/components/health-component.ts` | Future named health entry precedes write and `healthChanged.emit`; death/silent death must close before zero health and callbacks. Include restore/reset/definition/tech recalculation, not just `KilledEvent`. | Public health data/definition and component replacement remain bypasses. Baseline prerequisite plus complete writer inventory required in a later batch; post-death events cannot certify readiness. |
+| `phaser/.../entity/components/resource/resource-source-component.ts` | Future fences precede capacity/load, post-wait unload/capacity/stock writes, refill, lock, assigned-gatherer changes and restore clamp. Preserve actual extraction math, subject ordering and depletion/destroy. | Source definition, container and component lifetime remain separate authorities. Baseline split required. No assertion of continuous supply from extraction or a stock sample. |
+| `phaser/.../entity/components/resource/resource-drain-component.ts`, `returnResources` / `setData` | Future entry and post-wait phases retain exact context; fence capacity/load/unload/restore changes. Preserve post-wait owner/economy lookup and suppressed callback/full returned amount. | Drain conversion may still deliver to its actual new beneficiary; old need/lifetime is unavailable. Container, definition and readiness remain partial. No early owner snapshot used for native credit. |
+| Cargo/service/component registry and scene/controller/clock | Preserve known whole piles only, capture epoch, exact native credit and existing controller/restore/shutdown fences. Replacement, cargo clear/merge/restore and lost async context require pre-boundaries at their actual owners. | `ActorData.components` is exposed through actor data; silent map edits cannot be certified. Access/safety, container membership, readiness, clock/horizon and all four coverage channels remain incomplete. No new complete channel literal. |
+
+#### Next bounded implementation batch: 43–44 owner conversion fence
+
+Keep **GPT-6.1 Sol / medium** across both settled stages, then pause. This is the recommended next profile, not a model
+change. If the scoped split exposes an unresolved lifecycle or initialization contract, stop at that concrete blocker
+and recommend Sol / high; do not expand into health/source/platform restructuring. No fixed machinery total is implied.
+
+| Stage / purpose | Concrete authoring acceptance |
+| --- | --- |
+| **43: ownership presentation prerequisite** — make the baselined owner safe to edit | Separate ownership visual work into a focused owner presentation helper, retaining `OwnerComponent` as public facade and sole authoritative owner field. Delegate color/ring/pipeline/blink, visual frame updates, subscriptions and visual cleanup; retain static options/events, serialized shape, owner/index/event order and same-owner behavior. Keep existing callers on the facade and current definition/object references. Use callbacks/getters for owner access; do not copy or expose a second mutable owner. Constructor/on-ready and killed/destroy cleanup timing must remain equivalent. New owners comply with 400/200/140 and one substantive type per file. Remove only this file's obsolete baseline entry after the compliant split; never refresh baseline hashes. Author facade/order/visual-disposal controls, all unrun. Commit this behavior-preserving prerequisite separately. |
+| **44: passive pre-owner-change capture fence** — prevent old accounting surviving known conversion | Reuse `fenceSceneResourceHistory(scene, "resource_actor_owner_change")` immediately after the changed-owner check and before index lookup/update. Preserve native throw/reentrant/index/UI/event semantics; no subscriber means native behavior is unchanged. Generalize the helper's restore-only documentation to its now broader passive history boundary. Existing `AiRuntimeRecipientResourceCapture` scene subscription must deliver sticky coverage loss before index callbacks can reenter capture reads; no new listener owner or fact schema. Author changed/same/clear/blink/defined restore/no-op undefined restore, index throw/reentrancy, observer throw, no subscriber, capture disposal and owner-change-during-return controls. Reports must retain loss and unavailable need bounds/application quantities without upgrading any channel or suppressing actual native return. Commit/push and pause after both stages. |
+
+43–44 deliberately adds no health/source/drain/membership hooks, liability repricing, real interval declarations,
+new report metrics, new root budget, persistence or useful-service activation. Owner mutation on any actor during an
+installed capture can conservatively lose resource history, including actor initialization; document and control that
+cost rather than hiding it behind an incomplete cohort filter. Existing exact credits may remain diagnostic where
+their consumer permits it; no useful verdict follows from them.
+
+The 43 destination is `phaser/src/lib/entity/components/owner-presentation.ts`, beside the unchanged owner facade.
+Preserve public `ownerColor` access, `ownerDefinition`, `ZIndex` and event payload/timing. Immediate consumers include
+`convertible-component.ts` (blink), `combat/components/health-ui-component.ts` and
+`construction/construction-progress-ui-component.ts` (color event). Avoid eager constructor callbacks into an
+uninitialized helper and cyclic runtime imports for event constants; initialization/cleanup controls must cover these.
+Preserve existing delayed visual callbacks during the split; unrelated timer cleanup is a separate change.
+
+**Deferred evidence:** extend Phaser owner facade/presentation and scene-resource observation controls; extend existing
+recipient capture and drain specs for the real pre-index and cross-await ordering. Use a producer-shaped capture/report
+control, not only a hand-inserted loss flag. Add the authored owner spec to the final Phaser gate:
+
+```sh
+pnpm exec nx test probable-waffle-phaser --testPathPatterns='owner-component|scene-resource-observation|ai-runtime-recipient-resource-capture|resource-drain-component' --runInBand
+```
+
+Retain every 29–41 command and native pipeline/controller integration obligation. Final gate also checks source-size
+compliance, types/lint and runtime compatibility/capture cost; nothing executes during this authoring pass.
+
+| Acceptance | Source-design evidence / state |
+| --- | --- |
+| 42.1 Route scope / public aliases | Writer table names actual entry owners, missing direct-write/replace authority and mandatory gaps; complete history explicitly blocked. Design authored. |
+| 42.2 Need / liabilities / windows | Exact consumed versus accepting frame, no reopening, disjoint cash/queue retirement and paired native frontier rules specified. Implementation from 40–41 remains unverified. |
+| 42.3 Lifetime / await / cleanup | Actual object installations, post-wait recipient, passive pre-write loss, reentrancy and stale completion boundaries specified; unsupported lifetime evidence stays unavailable. Design authored. |
+| 42.4 Bounded next batch / size | Only owner presentation prerequisite and scene-loss reuse selected; baseline owners for health/source/platform explicitly deferred. 43–44 has concrete controls and pause, no broad hook sweep. |
+| 42.5 Handoff / evidence policy | Existing handoff updated to 42 design complete and 43–44 next; all executable validation deferred, no automatic model change or family closure. |
+
+**Source Implementation Review:** inspected actual owner early return → actor index → assignment → presentation → event,
+scene loss subscriber/irreversible coverage, recipient reconciliation and weak read scope, drain post-await owner/economy,
+source capacity/stock/restore, health pre-event writes, platform roster/reset and existing source baseline entries.
+The reuse of global loss avoids introducing an unsupported dependency registry; source split precedes the owner edit.
+
+**Omission Audit:** 42.1–42.5 covers every requested writer, selected liabilities, cross-await identity, alias limitation,
+restore/reentrancy/disposal, source prerequisites and deferred positive/negative controls. No runtime code/registration,
+schema, test or config changes are applicable to this design-only stage. No skill/tool changes are warranted.
+
+**Separate Final Closure Audit:** design is authored/source-reviewed only; implementation and all prior validation remain
+open. Reviewed the two task-owned document changes against the acceptance table and next-batch scope. Retain unresolved
+coordination documents; no proven runtime guidance exists to migrate from this stage. Preserve Nx merge `59f72e037`;
+commit/push only these documents, verify Git remote and pause. Useful metrics remain null and all channels partial.
+
 ### Native application window checkpoint (2026-10-08, authored/unverified)
 
 41 completes the authorized 40–41 authoring batch, based on
