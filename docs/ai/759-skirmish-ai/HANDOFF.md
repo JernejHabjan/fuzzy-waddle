@@ -6,7 +6,13 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
-**Current batch (user policy, 2026-10-08):** latest `continue` authorizes the bounded 36 authority-design checkpoint.
+**Current batch (user policy, 2026-10-08):** `continue with next batch` authorizes related 37–38 capture/accounting.
+Stage 37 prerequisite: split the protocol player owners without changing behavior; old `player.ts` exports remain compatible.
+Source review/Omission Audit: moved every existing class/type/helper and comment to its focused owner, preserving native
+methods, reset defaults, class identity and exports. Separate Final Closure Audit: task-owned split only; tests/validation
+deferred. Commit/push this prerequisite, then author the passive native observer. No model/skill/tool change.
+
+**Previous checkpoint:** latest prior `continue` authorized the bounded 36 authority-design checkpoint.
 Current step: #815/#816 machinery 36, **beneficiary need authority design**, authored; runtime implementation unverified/open.
 Pause here before the related 37–38 capture/accounting batch. Last selected profile is GPT-6.1 Sol / medium;
 actual host model/effort are unknown. Explain what was authored and why; commit/push, then recommend the next grouped
