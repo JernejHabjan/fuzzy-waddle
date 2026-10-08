@@ -39,7 +39,8 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
 
 Authorized group: 33 consumed selection, 34 supported coverage/loss, 35 strict interval diagnostics.
 Stage 33 is `0e1906024c7339a964fcc1dfdea93145b9e10509`, based on `42b5bf3d3`.
-Base 34 is that stage-33 commit; the containing commit owns 34.
+Stage 34 is `d226b6636d41cc7201803ba80d34869a32b59a78`, based on that stage-33 commit.
+Base 35 is that stage-34 commit; the containing commit owns 35. Pause after this 33–35 authoring group.
 Last selected profile: GPT-6.1 Sol / medium; actual host settings unknown. No automatic model switch.
 All executable tests/validation remain deferred. The stage-32 contract below remains mandatory.
 
@@ -97,22 +98,80 @@ late installation, actor/owner/component reuse, restore-before-append, clock/rea
 declarations. Coverage validator's consumer is 35 in this same batch. All executable checks remain deferred; complete
 beneficiary-need/lifetime authority and actual useful-throughput acceptance remain open.
 
+**35 — authored/unverified, purpose:** `projectRuntimeResourceServices` now consumes the selection and coverage
+helpers through `normalizeRuntimeNativeServices`; `RuntimeProductionCausalityV1.resourceServices` is retained by
+the existing `skirmish-ai-runtime-variant-runner.ts` report. No runtime recipe yet supplies interval declarations;
+ordinary captures still retain selection/coverage diagnostics plus the missing-declaration gap.
+
+`validateRuntimeResourceIntervals` accepts independently frozen dates, actor cohort, beneficiary/resource, run ceiling,
+fixed floors and explicit partial-window duration/floor. Every window needs unambiguous actual reads at its exact ticks;
+effects use `(left.captureSequence, right.captureSequence]` and their real ticks. Legacy/ambiguous/missing/lost reads,
+late/missing/replaced cohorts and snapshot drops cannot certify supported coverage. All supplied tails are inspected;
+256 need/cohort/interval/window groups and existing 8,192 fact bounds remain fail closed. Overlap for one beneficiary/
+resource is rejected, including different actor cohorts. Contradictions suppress parent normalized groups.
+
+Scoped observed income is the declared source cohort's subtotal, not all beneficiary income. Stable transfer identity
+is required for the interval total; each transfer counts once. Eligible observed whole-pile credits require one exact
+accepted gathering selection shared by every contributor, the same beneficiary/resource, an earlier observed cohort
+and no lifetime fence. Any later selected decision conservatively closes the old selection input. Mixed generations,
+cross-owner service, unknown/pending/partial piles, zero/suppression and later decisions cannot supply eligible positive
+contribution. The upper bound is capped once by gross unmet selected need across chronological windows and adjacent
+intervals; excess never becomes fulfillment value, and spending cannot reopen that cap.
+
+**Unimplemented mandatory proof:** `usefulContribution`, `retainedUsefulThroughput`, `continuousUsefulCapacity` and
+`meetsUsefulFloor` deliberately remain unavailable (`null`). Supported partial channels and a cap cannot show that the
+same beneficiary need was still unresolved at application, that other income had not filled it, or that readiness,
+supply, drain, ownership/access/safety and service stayed valid. Full recipient resource/liability/need and relied-on
+component/lifetime mutation routes, actual useful-window oracle, real recipe declarations and native positive/control
+evidence remain open. This is interval diagnostic authoring, not completed useful-service machinery or scenario closure.
+
+**Source Implementation Review, 35:** traced original accepted selections through each cargo contributor's earlier
+shared service command and real scoped credit, then the existing variant consumer. Repaired retrospective first-entry
+selection, missing supplied input fields, same-tick boundary ambiguity, repeated transfer totals, late cohort backfill,
+cross-window cap reuse and unsupported-history promotion. Reads/counters never seal async work; a pulse cannot count
+in a later empty window. Sparse installation clock checks use binary neighbours; report/capture cost is unmeasured.
+Every original attempt/capture gap and PRO-03/06/07 full oracle/denominator remains mandatory.
+
+**Omission Audit, 35:** acceptance 1–7 is represented by owning production symbols, consumers and the four focused
+spec owners. Synthetic report controls cover null demand versus newer forecast, fallback/expired/confidence/nonpositive/
+missing/rejected selection, same-tick/ambiguous reads, missing/late/lost/legacy/dropped coverage, revival, deadline/overlap,
+reused transfer, supersession/mixed generations, other income plus spending, pulse then empty window, overflow with
+contradictory tail and explicit partial-window floors. Earlier 29–31 native/zero/suppression/restore controls stay required.
+Actual usefulness and native fixtures are expressly unimplemented above; no no-op success adapter or fixture registration
+is claimed. Helpers are consumed; no save/wire/schema/editor/CI/baseline/skill/tool change or new plan file exists.
+
+**Separate Final Closure Audit, 35:** after repairs, rechecked accepted/cargo/recipient units, fixed deadlines/half-open
+positions, cohort lifetime and global-versus-subtotal authority, once-only accounting, cap renewal and existing report
+failure propagation. Commit only owned paths, normal batch push and verify remote SHA. Pause at this authoring boundary.
+No Jest, Playwright, formatter, lint, types/build, schema/source/repository validator, doctor/context/catalog, simulation
+or `git diff --check` ran. Nothing is validated and no issue/family closes; every earlier final-gate obligation remains.
+
+**Next — 36, purpose / recommended profile:** GPT-6.1 Sol / high for a bounded complete-beneficiary/need/lifetime authority
+design checkpoint. Start at the root resource observer, scoped credit helper, unspent-claim owner and boundary-state
+projection. Trace all actual resource mutators and forecast/claim supersession/abandonment; define complete initial
+authority plus every mutation/failure/loss fence before enabling actual useful contribution. Then group supported native
+capture and useful-window/recipe wiring under that settled contract. Do not invent a fixed remaining total or authorize
+this next group automatically. The high recommendation is task-specific;
+[OpenAI Docs](https://developers.openai.com/api/docs/models/gpt-6.1-sol) confirms Sol supports medium/high, not that this
+repository requires a particular setting. Host settings were not changed.
+
 | Acceptance | Result / purpose | State |
 | --- | --- | --- |
 | 1. Provenance / ownership | Same worktree/branch, base 32, unrelated Nx merge ancestor preserved | Source reviewed |
-| 2. Actual accepted selection | Weak proposal inputs -> detached dispatch -> aggregate need helper | 33 authored; report consumer 35 pending |
-| 3. Supported coverage | Installation/frontier/loss and unsupported authority distinctions | 34 authored; report consumer 35 pending |
-| 4. Fixed interval accounting | Cohort, beneficiary, ordered reads, unique credits and capped windows | 35 in progress |
+| 2. Actual accepted selection | Weak proposal inputs -> detached dispatch -> aggregate need helper -> reports | 33 authored/unverified |
+| 3. Supported coverage | Installation/frontier/loss and unsupported authority distinctions -> reports | 34 authored/unverified |
+| 4. Fixed interval accounting | Cohort, beneficiary, ordered reads, unique credits and capped windows | 35 diagnostics authored/unverified |
 | 5. Honest usefulness / capacity | Independent need/lifetime mutation history is required | Useful oracle open |
-| 6. Controls / final gate | Pure/dispatch specs authored; all execution deferred | Unverified |
-| 7. Publication / resume | Scoped commits, single normal batch push, remote check; pause after 35 | In progress |
+| 6. Controls / final gate | Pure/dispatch/coverage/report specs authored; all execution deferred | Unverified |
+| 7. Publication / resume | Scoped commits, single normal batch push, remote check; pause after 35 | Authoring boundary reached |
 
-Deferred 33 commands (do not run before the final gate):
+Deferred 33–35 commands (do not run before the final gate; retain every earlier command below):
 
 ```sh
 pnpm exec nx test probable-waffle-gameplay --testPathPatterns='ai-general-gathering-proposal|ai-resource-forecast' --runInBand
 pnpm exec nx test probable-waffle-phaser --testPathPatterns='dispatch-ai-brain-result' --runInBand
 pnpm exec nx test probable-waffle-phaser --testPathPatterns='ai-runtime-resource-coverage-capture|ai-runtime-resource-service-capture|ai-runtime-route-order-capture|pawn-resource-service-observation' --runInBand
+pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts skirmish-ai-runtime-resource-service.spec.ts skirmish-ai-runtime-resource-credit.spec.ts skirmish-ai-runtime-service-attempt.spec.ts skirmish-ai-runtime-production-causality-normalization.spec.ts
 ```
 
 ### Useful resource service contract checkpoint (2026-10-08, unverified)
@@ -261,8 +320,9 @@ recommended **GPT-6.1 Sol / high** throughout:
    variant reports; this lets oracles distinguish isolated income from retained useful throughput. Continuous capacity
    stays unavailable for predicates lacking complete mutation coverage; no full production closure is implied.
 
-These are three planned authoring stages, not authorization to run them automatically or a fixed remaining machinery
-total. Source-size prerequisites discovered at an edited owner need their own scoped extraction before hooks.
+These were three proposed authoring stages; the newer checkpoint above records their authorized diagnostic authoring.
+They are not a fixed remaining machinery total or completed useful-service proof. Source-size prerequisites discovered
+at an edited owner need their own scoped extraction before hooks.
 Use medium again once these actual authority routes are settled. This recommendation reflects cross-authority risk;
 [OpenAI Docs](https://developers.openai.com/api/docs/models/gpt-6.1-sol) confirms Sol supports medium/high, not that
 this repository requires one setting. Host settings are unchanged.

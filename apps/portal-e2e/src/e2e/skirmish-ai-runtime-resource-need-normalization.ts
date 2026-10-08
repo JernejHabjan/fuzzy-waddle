@@ -20,6 +20,9 @@ export function normalizeRuntimeResourceNeeds(capture: AiRuntimeProductionCaptur
     const seen = new Set<string>();
     for (const selection of selections) {
       count++;
+      if (!selection || typeof selection !== "object" || selection.forecast === undefined || selection.ledger === undefined) {
+        failures.push("production_resource_selection_invalid"); continue;
+      }
       const intent = fact.decision.acceptedIntents.filter((entry) => entry.intentId === selection.intentId &&
         entry.effectId === selection.effectId);
       const nonnegative = (value: number) => Number.isFinite(value) && value >= 0;

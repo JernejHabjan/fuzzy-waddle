@@ -7,19 +7,22 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 ## Quick resume
 
 **Current batch (user policy, 2026-10-08):** `continue to next batch. Go` authorizes the related 33–35 group.
-Current step: #815/#816 machinery 34, **supported resource coverage**, authored/unverified; 35 remains in this batch.
-Keep related work together and pause after the group. Last selected profile is GPT-6.1 Sol / medium;
+Current step: #815/#816 machinery 35, **resource interval diagnostics**, authored/unverified; 33–35 authoring boundary reached.
+Pause here before complete beneficiary/lifetime authority design. Last selected profile is GPT-6.1 Sol / medium;
 actual host model/effort are unknown. Explain what was authored and why; commit/push, then recommend the next grouped
 profile. All executable tests and validation stay deferred to the final gate.
-Base `0e1906024c7339a964fcc1dfdea93145b9e10509`; the containing commit owns 34.
+Base `d226b6636d41cc7201803ba80d34869a32b59a78`; the containing commit owns 35.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify remote on resume.
 Preserve unrelated Nx merge `59f72e037`. No family/issue is complete. The user removed the comment-permission rule.
 
 **Authored — why it is used:** the [selection/coverage/interval checkpoint](follow-ups/runtime-matrix-ci.md#resource-service-input-and-interval-checkpoints-2026-10-08-unverified)
-records actual consumed gathering forecasts and ledger inputs on weak proposal identity, then publishes only original
-accepted selections. Supported coverage now records exact cohort installation, read frontiers and monotone loss
-fences before fallible diagnostics; later success cannot hide a missing boundary. Existing inventory/tick subscriptions
-are reused. Pure proposal, dispatch and coverage controls are authored/unrun. Interval projection remains in this group.
+records actual consumed gathering inputs, accepted selection identities, bounded cohorts and irreversible observation
+loss. New `resourceServices` reaches the existing variant report through native-service/production normalization.
+Fixed declared windows now separate scoped observed income and a capped potential contribution to the chosen aggregate
+shortage. Example: one wood delivery can appear in the first window while the next remains empty; it cannot certify
+sustained useful work. Actual usefulness, retained useful throughput and continuous capacity remain null because full
+beneficiary-need/liability and component/lifetime history are unsupported. Four focused spec owners are authored/unrun;
+real runtime recipes do not yet declare these intervals. No tests/validation or family closure is claimed.
 The [32 contract](follow-ups/runtime-matrix-ci.md#useful-resource-service-contract-checkpoint-2026-10-08-unverified)
 still requires independent unresolved-need history; potential contribution alone cannot prove usefulness.
 
@@ -30,13 +33,18 @@ Campaign suppression is explicit and may accompany a full native return. Old/unk
 to the latest task. Whole known piles may retain several earlier gathering attempts; no invented FIFO/partial allocation.
 A credit proves a scoped balance change, independently from cargo lineage, accepted task/demand and continuous usefulness.
 
-**Next exact authoring action — why:** continue 35 with strict income/need/window
-diagnostics through existing variant reports and negative specs. These let later oracles distinguish isolated income
-from retained throughput. Current task-owned uncommitted paths may already contain the following stages; inspect Git.
+**Next exact authoring action — why:** 36 is a bounded authority-design checkpoint. Trace actual beneficiary resource
+application, live liabilities and selected-forecast supersession/abandonment before enabling any useful-contribution
+verdict. Start at `AiRuntimeProductionCapture`'s `resources_applied` observer and `sampleBoundaryState`,
+`observe-resource-credit.ts`, `ai-runtime-unspent-claims.ts`, and `project-ai-runtime-production-boundary-state.ts`
+under `libs/games/probable-waffle/phaser/src/lib/`; compare the actual shared player resource mutators with all writers.
+The existing root callback is not an operation-scoped before sample, and a source cohort cannot represent all beneficiary
+income. This design must establish an independently unresolved need at each credit, rather than promoting the cap.
+Then group supported native history capture and actual useful-window projection once the authority routes are settled.
 Continuous capacity stays unavailable until each predicate has complete mutation coverage. Keep PRO-03/06/07 oracles,
 denominators and all uncovered gaps mandatory. All tests/validation stay deferred; no invented completion percentage.
-Recommend **GPT-6.1 Sol / high** across the related 33–35 group, then medium after actual authority routes are settled.
-This is a task-risk recommendation, not a host switch. The user authorized 33–35; pause after 35.
+Recommend **GPT-6.1 Sol / high** for 36 and its related history/oracle work, then medium for settled wiring.
+This is a task-risk recommendation, not a host switch or authority to start that next group. Pause after 35.
 
 | Dependency | State | Purpose / next boundary |
 | --- | --- | --- |
@@ -47,7 +55,8 @@ This is a task-risk recommendation, not a host switch. The user authorized 33–
 | Useful service interval contract (32) | Authored, unverified | Define what income, aggregate need and retained throughput can prove |
 | Selected need (33) | Authored, unverified | Actual accepted aggregate selection, separate from newer forecasts |
 | Supported coverage / loss (34) | Authored, unverified | Bounded cohorts/read frontiers and irreversible observation loss |
-| Interval diagnostics (35) | In progress | Distinguish income/potential contribution from unavailable useful-service proof |
+| Interval diagnostics (35) | Authored, unverified | Fixed windows, unique credits and capped aggregate potential through reports |
+| Complete need/lifetime history and useful throughput | Open; 36 design next | Prove the same need remains unresolved at each credit and cover relied-on mutations |
 | Continuous useful capacity | Open | Complete mutation authority for readiness, supply, access/safety and service |
 | Full production adapter/oracles/setup/strategy | Open | Independent PRO-03/06/07 assertions |
 | Executable validation | Deferred final gate | Establish correctness before issue/release closure |
@@ -61,7 +70,9 @@ retains every unrun 29–31 command and repair. Stage 31 is `c7aefd0b8dd2217f90e
 Stage 28 is `135c5b1c1cec0f4a8557d52f1511761887f449f5`, 27 is `77499c4db98e1f28d625ed6a66e465039d0b22a1`,
 26 is `4b0dd34d029e677a006a1b2dc174b25f35c144b5`, 25 is `1bfa9740460f0b2a7836ab44ebc0d38c18eb063e`.
 Stage 33 is `0e1906024c7339a964fcc1dfdea93145b9e10509`; stage 32 is `42b5bf3d3`.
-No fixed machinery total or percent is claimed; continue the authorized 33–35 group. All native observer,
+Stage 34 is `d226b6636d41cc7201803ba80d34869a32b59a78`; the containing commit owns 35; verify its remote SHA.
+No fixed machinery total or percent is claimed; 33–35 authoring is delivered, useful-service acceptance remains open.
+All native observer,
 report, prior movement and earlier final-gate obligations remain unrun. Capture/report cost and native compatibility are unmeasured.
 Source review repaired ES2024 constructor initialization and loss-safe cargo/transfer fences; no runtime pass is claimed.
 
@@ -514,7 +525,7 @@ merely because their issue title mentions testing. All authored work remains unv
 | 1 / as needed | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `partial` | Split only owners blocking the selected batch | Stay Sol medium; optional Luna high |
 | 2 | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829) | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof | GPT-6.1 Sol, medium |
 | 3 | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `in_progress` | Finish pressure/recovery policy; defer victory proof | GPT-6.1 Sol, medium |
-| 4 / current batch | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Machinery 33–35 selection/coverage/interval group; useful-service oracle remains open | Sol high for unresolved authority; medium for settled wiring |
+| 4 / next boundary | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | 33–35 diagnostic authoring delivered; 36 complete beneficiary/lifetime authority design next | Sol high for unresolved authority; medium for settled wiring |
 | 5 / paired | #815 / #816 | `in_progress` | Remaining family contracts, focused fixtures, frozen maps and continuous-match tier | Sol medium; optional Luna high for established cases |
 | 6 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `in_progress` | Exact-once interruption, terminal and re-entry parity | GPT-6.1 Sol, medium |
 | 7 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `partial` | Generation fencing, phase restore/replay and cleanup cases | GPT-6.1 Sol, medium |
@@ -528,9 +539,9 @@ merely because their issue title mentions testing. All authored work remains unv
 The user policy below and latest Quick resume own #759 model choice and execution boundaries. The user selected Sol 6.1 / medium
 for the current implementation group. Use Sol for unresolved thinking/design; Luna / high is an optional choice for
 concrete routine work. Keep related work together to avoid unnecessary switches. This applies to this roadmap.
-The latest `continue to next batch. Go` authorizes 33–35. Stages 33–34 are authored/unverified; finish 35 in this group,
-then pause. Complete beneficiary need/liability and lifetime mutation authority remain unresolved; Sol / high is
-recommended for that next design boundary. Keep the settled interval implementation in the same current session.
+The latest `continue to next batch. Go` authorized 33–35, now authored/unverified; pause here.
+Complete beneficiary need/liability and lifetime mutation authority remain unresolved; 36 is the next bounded design
+checkpoint. Sol / high is recommended for that design and related history/oracle work; group implementation once settled.
 No model was switched automatically. Continuous useful capacity and full production proof remain open.
 
 | Responsibility | Model / effort |
@@ -574,8 +585,8 @@ No model was switched automatically. Continuous useful capacity and full product
 
 Copyable next-chat prompt:
 
-> Read docs/ai/759-skirmish-ai/HANDOFF.md and its resource service input/interval checkpoint. Resume 35 in the
-> authorized 33–35 group, then pause before unresolved complete beneficiary/lifetime authority design.
+> Read docs/ai/759-skirmish-ai/HANDOFF.md and its resource service input/interval checkpoint. Begin 36 with actual
+> beneficiary resource/liability/selected-need authority design; follow the newly authorized boundary and pause there.
 > Report what was authored and what comes next,
 > including what each will be used for and why it matters. Commit/push each coherent stage; pause at a stronger-reasoning
 > boundary and recommend the next model/effort. End each stage with the change, the problem it solves and its users;

@@ -2,6 +2,7 @@ import type { RuntimeProducerRoutesV1 } from "./skirmish-ai-runtime-producer-rou
 import type { RuntimeMovementV1 } from "./skirmish-ai-runtime-movement";
 import type { RuntimeServiceAttemptV1 } from "./skirmish-ai-runtime-service-attempt";
 import type { RuntimeResourceCreditV1 } from "./skirmish-ai-runtime-resource-credit";
+import type { projectRuntimeResourceServices } from "./skirmish-ai-runtime-resource-service-projection";
 import type { RuntimeProductionCancellationV1 } from "./skirmish-ai-runtime-production-cancellation";
 import type { RuntimeProductionCompletionV1 } from "./skirmish-ai-runtime-production-completion";
 import type { RuntimeProductionRejectionV1 } from "./skirmish-ai-runtime-production-rejection";
@@ -45,6 +46,8 @@ export interface RuntimeProductionCausalityV1 {
   readonly serviceAttempts: readonly RuntimeServiceAttemptV1[];
   /** Scoped actual beneficiary/balance changes and independently observed whole-pile contributors; no usefulness verdict. */
   readonly resourceCredits: readonly RuntimeResourceCreditV1[];
+  /** Selected aggregate needs and declared interval diagnostics; unsupported usefulness/capacity remain null. */
+  readonly resourceServices: ReturnType<typeof projectRuntimeResourceServices>;
   readonly spatialAuthority: RuntimeProductionSpatialAuthorityV1;
   /** Exact callback-time attempts/transitions, including repeated refunds; no saved paid-price ledger or full history. */
   readonly constructionAuthority: readonly Extract<AiRuntimeProductionFactV1, { kind: "construction_authority" }>[];
