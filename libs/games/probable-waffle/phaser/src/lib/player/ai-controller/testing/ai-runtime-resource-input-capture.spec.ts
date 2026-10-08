@@ -1,7 +1,7 @@
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { ProbableWafflePlayer, ProbableWafflePlayerState, ProbableWafflePlayerController } from
   "@fuzzy-waddle/probable-waffle-protocol";
-import { beginAiResourceInputRead, fenceAiResourceNeed } from "../observation/ai-resource-input-observation";
+import { beginAiResourceDecision, beginAiResourceInputRead, fenceAiResourceNeed } from "../observation/ai-resource-input-observation";
 import { readAiResourceInputRead } from
   "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-resource-input-observation";
 import type { AiObservationV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
@@ -23,8 +23,13 @@ describe("exact consumed resource input boundary", () => {
     beginAiResourceInputRead(scene, player)?.(observation);
     expect(readAiResourceInputRead(observation)).toMatchObject({ sequence: 1, generation: 7, playerNumber: 1 });
     expect(readAiResourceInputRead(structuredClone(observation))).toBeUndefined();
+    beginAiResourceDecision(scene, 1, observation);
+    expect(facts.at(-1)).toMatchObject({ kind: "resource_need_fence", reason: "controller_decision_started",
+      incomingRead: readAiResourceInputRead(observation) });
+    beginAiResourceDecision(scene, 1, structuredClone(observation));
+    expect(facts.at(-1)).not.toHaveProperty("incomingRead");
     fenceAiResourceNeed(scene, 1, "controller_brain_replaced");
-    expect(facts.at(-1)).toMatchObject({ kind: "resource_need_fence", sequence: 2, reason: "controller_brain_replaced" });
+    expect(facts.at(-1)).toMatchObject({ kind: "resource_need_fence", sequence: 4, reason: "controller_brain_replaced" });
     const finish = beginAiResourceInputRead(scene, player);
     fenceAiResourceNeed(scene, 1, "controller_disabled");
     const later = { ...observation, generation: 8 };

@@ -43,7 +43,7 @@ import type { AiBrainStepResultV1 } from
 import { dispatchAiIntents } from "./ai-intent-dispatcher";
 import { dispatchAiBrainResult } from "./dispatch-ai-brain-result";
 import { captureAiDecisionInput } from "./capture-ai-decision-input";
-import { fenceAiResourceNeed } from "./observation/ai-resource-input-observation";
+import { beginAiResourceDecision, fenceAiResourceNeed } from "./observation/ai-resource-input-observation";
 import type { AiDecisionInputV1 } from "./ai-decision-input-v1";
 
 export class PlayerAiController {
@@ -350,7 +350,7 @@ export class PlayerAiController {
     const observation = this.playerAiControllerAgent.getCommittedObservation();
     const bridge = this.getBrainCommandBridgeSnapshot();
     if (!observation || !this.brainState || !this.pureBrain) return;
-    fenceAiResourceNeed(this.scene, this.player.playerNumber, "controller_decision_started");
+    beginAiResourceDecision(this.scene, this.player.playerNumber, observation);
     const result = this.pureBrain.step(observation, this.brainState, bridge?.outcomes ?? []);
     this.dispatchAcceptedIntents(result.acceptedIntents, {
       result, authority: bridge?.authority ?? result.nextState.authority,

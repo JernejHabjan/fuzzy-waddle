@@ -26,7 +26,9 @@ export type AiRuntimeProductionFactV1 = {
 } & (
   | { readonly kind: "resource_input_read"; readonly read: AiResourceInputRead;
     readonly resources: AiObservationV1["resources"] }
-  | { readonly kind: "resource_need_fence"; readonly reason: string }
+  | { readonly kind: "resource_need_fence"; readonly reason: string;
+    /** Exact consumed read only at decision start; still closes every earlier selected generation. */
+    readonly incomingRead?: AiResourceInputRead }
   | { readonly kind: "recipient_resources_installed"; readonly resources: Record<ResourceType, number> | null }
   | { readonly kind: "recipient_resource_mutation"; readonly mutation: AiRuntimeRecipientMutationV1 }
   | {

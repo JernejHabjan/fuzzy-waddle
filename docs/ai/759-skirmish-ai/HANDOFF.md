@@ -6,17 +6,21 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
-**Current batch (user policy, 2026-10-08):** `continue` authorized bounded 39 coverage activation audit.
-Current step: #815/#816 machinery 39 **coverage activation audit**, source audit documented. Pause here.
-Next batch: 40–41 causal read/frame/closure repair and native application window diagnostics, before useful activation.
+**Current batch (user policy, 2026-10-08):** `continue` authorized grouped 40–41 diagnostic repairs.
+Current step: #815/#816 machinery 40 **causal read/frame/closure repair**, authored/unverified; 41 follows before pause.
+Next stage: 41 native application window diagnostics, before useful activation.
 Recommend GPT-6.1 Sol / high across both for the unresolved decision/lifecycle authority.
 Last selected profile GPT-6.1 Sol / medium; actual host settings unknown. No model switch.
 All executable tests/validation remain deferred to the final gate.
-Base `0e9dc0c9bc69c1aa04db1e1b35f51526efa4abc5` (38); containing commit owns 39.
+Base `1c7ecdef633d5d28cf3ca88b7ed4467eb5436c12` (39); containing commit owns 40.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify remote on resume.
 Preserve unrelated Nx merge `59f72e037`. No family/issue is complete. User removed the comment-permission rule.
 
-**Authored — why it is used:** [39 audit](follow-ups/runtime-matrix-ci.md#coverage-activation-audit-checkpoint-2026-10-08-source-audit-only)
+**Authored — why it is used:** [40 boundary repair](follow-ups/runtime-matrix-ci.md#causal-need-boundary-checkpoint-2026-10-08-authoredunverified)
+binds the incoming observation's actual read at decision start and distinguishes exact resource-free gathering admission
+from other closing events. Older needs close before reconciliation; new purchase/frame mismatches remain unavailable.
+Producer-shaped and negative controls are authored/unrun. 41 will place exact joined native operations into application
+windows while retaining legacy publication diagnostics. [39 audit](follow-ups/runtime-matrix-ci.md#coverage-activation-audit-checkpoint-2026-10-08-source-audit-only)
 names actual missing writers and two real producer timing obstacles: decision-start invalidates the incoming input read,
 and own gather dispatch closes its need before delivery. New accepted purchase claims can also invalidate the consumed
 liability frame. The documented 40–41 acceptance/control batch defines repairs without granting useful authority.

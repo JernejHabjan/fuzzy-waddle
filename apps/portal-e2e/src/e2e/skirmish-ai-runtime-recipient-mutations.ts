@@ -37,6 +37,12 @@ export function normalizeRuntimeRecipientMutations(capture: AiRuntimeProductionC
     if (duplicate && !isDeepStrictEqual(duplicate, fact)) failures.push("production_recipient_journal_reference_conflict");
     if (fact.kind === "resource_need_fence") {
       if (typeof fact.reason !== "string" || !fact.reason) failures.push("production_need_fence_invalid");
+      if (fact.incomingRead) {
+        const read = supplied.get(fact.incomingRead.sequence);
+        if (fact.reason !== "controller_decision_started" || read?.kind !== "resource_input_read" ||
+          read.sequence >= fact.sequence || read.playerNumber !== fact.playerNumber ||
+          !isDeepStrictEqual(read.read, fact.incomingRead)) failures.push("production_need_fence_read_conflict");
+      }
       continue;
     }
     if (fact.kind === "resource_input_read") {

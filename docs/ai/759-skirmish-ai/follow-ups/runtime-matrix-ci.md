@@ -35,6 +35,44 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
 
 ## Implementation order
 
+### Causal need boundary checkpoint (2026-10-08, authored/unverified)
+
+40 is based on `1c7ecdef633d5d28cf3ca88b7ed4467eb5436c12` (39); containing commit owns 40.
+The user authorized the grouped 40–41 batch. Continue with 41 after publishing 40, then pause.
+Actual host model/effort unknown; last selected Sol 6.1 / medium, recommended Sol 6.1 / high. No model switch.
+
+**What / why:** `beginAiResourceDecision` publishes the actual committed observation's weak read identity before
+the pure step. `resource_need_fence.incomingRead` does not keep older needs open. The report requires exactly one
+matching start between the read and selected result, while other intervening boundaries still invalidate the frame.
+`skirmish-ai-runtime-resource-need-boundaries.ts` recognizes only the exact selected gather intent, without resource
+claims, its unique request/dispatched receipt and exact stamped bus/actor admission outcomes. All other dispatches,
+rejections, throws, duplicates, later decisions and fences still close the generation. This lets conditional diagnostics
+follow a real producer's ordering without equating admission to delivery or sustained usefulness.
+
+| Acceptance / source evidence | Authored status / deferred evidence |
+| --- | --- |
+| 40.1 Incoming read versus older closure | Controller calls `beginAiResourceDecision` before reconciliation; capture serializes exact optional read; journal rejects conflicting fence/read references; projection requires one exact start and selected generation. |
+| 40.2 Own gather admission | Focused boundary helper reuses route request/payload validation, joins exact decision/intent/correlation/stamp and admits only dispatch plus successful individual actor application. Other outcomes close; repeated requests/receipts cannot gain exemption. |
+| 40.3 Frozen liabilities and lifetime | Original consumed ledger R0/D0 remains unchanged; mismatching accepting claims leave frame null. A native operation must finish before closure and forecast expiry; null quantitative needs cannot supply bounds. No pure planner, command bus or payment semantics changed. |
+| 40.4 Controls | New admission fixture/spec covers producer-shaped read/start/selection/request/outcome/receipt/native delivery, unrelated/rejected/thrown/reentrant dispatch, later empty decision, reconciliation closure before expiry/recovery, purchase frame mismatch, omitted scope, restore and loss. Updated input-capture spec checks weak identity versus clone; controller spec checks fence-before-thrown-pure-step ordering. All unrun. |
+| 40.5 Compatibility / ownership | Schema 1 gains an optional diagnostic fence field; legacy missing scope stays unavailable for new accounting while old publication diagnostics remain compatible. No listeners, budget or persistence changes; actual observation identity owns the passive read. |
+
+**Source Implementation Review:** traced pipeline read → committed observation → controller pre-step fence →
+selected result → synchronous bus dispatch/outcomes → receipt → native entry/terminal → whole-pile credit.
+ActionSystem emits applied admission per actor, so request/receipt-only exemptions would still close a normal need;
+the helper checks exact execution stamp and addressed actor. Rejections and unrelated outcomes remain boundaries.
+Source owners remain focused; no baseline refresh or source validator ran.
+
+**Omission Audit:** numbered acceptance 40.1–40.5 covers consumers, native call ordering, legacy omissions, liability
+mismatches, thrown/reentrant/loss paths and docs. Recovery/expiry controls establish pre-reconciliation closure,
+not full reservation lifecycle authority. Full native pipeline/controller integration remains a final-gate obligation.
+All earlier 29–38 checks remain deferred, plus the new boundary spec in the existing portal-e2e Playwright gate.
+
+**Separate Final Closure Audit:** reviewed complete task-owned diff; no executable tests, formatting, lint, types,
+builds or repository validation ran. Conditional bounds remain diagnostics; public aliases and incomplete need,
+liability/cargo/component histories retain mandatory gaps and null useful metrics. Nx merge `59f72e037` is preserved.
+Commit/push this coherent stage and continue to distinct native application window diagnostics (41).
+
 ### Coverage activation audit checkpoint (2026-10-08, source audit only)
 
 39 completes the bounded audit requested by `continue`, based on

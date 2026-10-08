@@ -7,6 +7,7 @@ import type { RuntimeResourceCreditV1 } from "./skirmish-ai-runtime-resource-cre
 import type { RuntimeResourceNeedAccountingV1 } from "./skirmish-ai-runtime-resource-need-accounting";
 import { normalizeRuntimeRecipientMutations } from "./skirmish-ai-runtime-recipient-mutations";
 import { calculateRuntimeResourceContribution } from "./calculate-runtime-resource-contribution";
+import { runtimeNeedHasIncomingStart, runtimeNeedOwnAdmissionSequences } from "./skirmish-ai-runtime-resource-need-boundaries";
 
 /** Frozen inputs and disjoint liabilities, closed conservatively at actual known boundaries. No partial channel activates usefulness. */
 export function projectRuntimeResourceNeedAccounting(capture: AiRuntimeProductionCaptureV1,
@@ -40,9 +41,13 @@ export function projectRuntimeResourceNeedAccounting(capture: AiRuntimeProductio
       claims.resources[type] === ledger.reservedUnspent && state.obligations[type] === ledger.obligationsDue
       ? { stockpile: ledger.stockpile, reservedUnspent: ledger.reservedUnspent, obligationsDue: ledger.obligationsDue } : null;
     if (!frame) local.add("production_need_reconciled_liability_frame_missing");
+    const incomingStart = runtimeNeedHasIncomingStart(capture, need);
+    if (!incomingStart) local.add("production_need_incoming_decision_scope_missing");
     if (marker && capture.facts.some((fact) => fact.playerNumber === selection.playerNumber &&
       fact.sequence > marker.sequence && fact.sequence < need.selectedSequence &&
-      ["resource_need_fence", "queue_mutation", "queue_progress", "queue_changed", "outcome", "intent_dispatch",
+      !(incomingStart && fact.kind === "resource_need_fence" && fact.reason === "controller_decision_started" &&
+        isDeepStrictEqual(fact.incomingRead, marker)) &&
+      ["decision_selected", "resource_need_fence", "queue_mutation", "queue_progress", "queue_changed", "outcome", "intent_dispatch",
         "actor_registered", "actor_unregistered", "construction_authority"].includes(fact.kind))) {
       local.add("production_need_input_liabilities_changed_before_acceptance");
     }
@@ -52,7 +57,9 @@ export function projectRuntimeResourceNeedAccounting(capture: AiRuntimeProductio
       selected.decision.economyProduction.forecasts.some((entry) => entry.resourceType === type &&
         entry.amount === forecast.amount && entry.horizonTick === forecast.horizonTick &&
         entry.confidencePermille === forecast.confidencePermille);
+    const admission = runtimeNeedOwnAdmissionSequences(capture, need);
     const close = capture.facts.find((fact) => fact.playerNumber === selection.playerNumber &&
+      !admission.has(fact.sequence) &&
       fact.sequence > need.selectedSequence && ["decision_selected", "resource_need_fence", "intent_dispatch", "outcome",
         "queue_changed", "queue_mutation", "queue_progress", "queue_completion", "construction_authority",
         "actor_registered", "actor_unregistered", "research_completed"].includes(fact.kind));
@@ -86,8 +93,9 @@ export function projectRuntimeResourceNeedAccounting(capture: AiRuntimeProductio
       if (used.has(mutation.operationId)) { failures.push("production_need_credit_operation_reused"); continue; }
       used.add(mutation.operationId);
       const applicationGaps = new Set(local);
-      const active = closedSequence === null || entry.sequence < closedSequence;
-      if (!active || entry.sequence <= need.selectedSequence || !forecast || entry.tick > forecast.horizonTick) {
+      const active = closedSequence === null || terminal.sequence < closedSequence;
+      if (!active || entry.sequence <= need.selectedSequence || !forecast || terminal.tick > forecast.horizonTick ||
+        need.grossUnmet === null) {
         applicationGaps.add("production_need_generation_closed_or_expired");
       }
       const prior = marker ? journal.operations.filter((operation) => operation.terminal.playerNumber === selection.playerNumber &&

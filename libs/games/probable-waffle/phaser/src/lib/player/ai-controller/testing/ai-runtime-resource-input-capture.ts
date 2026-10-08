@@ -13,9 +13,10 @@ export class AiRuntimeResourceInputCapture {
     frontier: () => number, boundary: (playerNumber: number) => { tick: number; sequence: number; playerNumber: number },
     append: (fact: AiRuntimeProductionFactV1) => void) {
     this.release = installAiResourceInputObserver(scene, {
-      fence: (playerNumber, reason) => {
+      fence: (playerNumber, reason, incomingRead) => {
         if (playerNumber === undefined) { coverage.lose("resource_need_player_missing"); return; }
-        try { append({ ...boundary(playerNumber), kind: "resource_need_fence", reason }); }
+        try { append({ ...boundary(playerNumber), kind: "resource_need_fence", reason,
+          ...(incomingRead ? { incomingRead } : {}) }); }
         catch { coverage.lose("resource_need_fence_append_failed"); }
       },
       begin: (player) => {

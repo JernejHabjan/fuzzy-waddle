@@ -51,11 +51,11 @@ test("replayed other income and spending cap a later whole-pile delivery, while 
     observedPositiveIncomeBefore: 7, observedUnresolvedUpperBound: 3, observedContributionUpperBound: 3,
     usefulContribution: null });
   expect(result.gaps).toContain("resource_need_lifecycle_routes_incomplete");
-  const lateCredit = { ...credit, fact: { ...credit.fact, sequence: 11 } };
-  const fence = { kind: "resource_need_fence" as const, sequence: 10, tick: 0, playerNumber: 1, reason: "controller_disabled" };
+  const lateCredit = { ...credit, fact: { ...credit.fact, sequence: 12 } };
+  const fence = { kind: "resource_need_fence" as const, sequence: 11, tick: 0, playerNumber: 1, reason: "controller_disabled" };
   const late = { ...capture, facts: [...capture.facts.slice(0, -1), fence, lateCredit.fact],
     recipientResourceFacts: [...capture.recipientResourceFacts, fence],
-    resourceCoverage: { ...capture.resourceCoverage, frontier: { tick: 0, captureSequence: 11 } } };
+    resourceCoverage: { ...capture.resourceCoverage, frontier: { tick: 0, captureSequence: 12 } } };
   expect(projectRuntimeResourceNeedAccounting(late, [need], [lateCredit]).records[0].applications[0])
     .toMatchObject({ observedContributionUpperBound: 3, usefulContribution: null });
 });

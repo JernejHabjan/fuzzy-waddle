@@ -1,5 +1,5 @@
-import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
-import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import type { AiIntentV1, AiObservationV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import { FactionType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { OrderType } from "../../ai/order-type";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
@@ -7,6 +7,8 @@ import { getSceneService } from "../../world/services/scene-component-helpers";
 import { PlayerAiController } from "./player-ai-controller";
 import type Phaser from "phaser";
 import { installAiResourceInputObserver } from "./observation/ai-resource-input-observation";
+import { rememberAiResourceInputRead } from
+  "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-resource-input-observation";
 
 jest.mock("../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
@@ -26,6 +28,33 @@ const baseIntent = {
 
 describe("PlayerAiController pure planner integration", () => {
   afterEach(() => jest.clearAllMocks());
+
+  it("binds the actual committed read before reconciliation even when the pure step throws", () => {
+    const controller = Object.create(PlayerAiController.prototype) as PlayerAiController;
+    const observation = { schemaVersion: 1, generation: 7, tick: 0, playerNumber: 1, faction: FactionType.Tivara,
+      actors: [], resources: [], accessProducts: [], effects: [], modeGoals: [], researchCandidates: [],
+      threatSummary: { observedTick: 0, visibleEnemyActorIds: [], rememberedEnemyActorIds: [], observedCapabilityFamilies: [] }
+    } satisfies AiObservationV1;
+    const read = { captureEpoch: 1, lossEpoch: 0, sequence: 2, playerNumber: 1, generation: 7 };
+    rememberAiResourceInputRead(observation, read);
+    const scene = {} as Phaser.Scene, order: string[] = [];
+    Reflect.set(controller, "scene", scene); Reflect.set(controller, "player", { playerNumber: 1 });
+    Reflect.set(controller, "playerAiControllerAgent", { getCommittedObservation: () => observation });
+    Reflect.set(controller, "getBrainCommandBridgeSnapshot", () => undefined);
+    Reflect.set(controller, "brainState", {});
+    Reflect.set(controller, "pureBrain", { step: (input: AiObservationV1) => {
+      order.push("reconcile"); expect(input).toBe(observation); throw new Error("pure_failed");
+    } });
+    const release = installAiResourceInputObserver(scene, { begin: () => undefined,
+      fence: (player, reason, incoming) => {
+        order.push("close_previous"); expect(player).toBe(1); expect(reason).toBe("controller_decision_started");
+        expect(incoming).toEqual(read);
+      } });
+    try {
+      expect(() => (controller as unknown as { stepPureBrain(): void }).stepPureBrain()).toThrow("pure_failed");
+      expect(order).toEqual(["close_previous", "reconcile"]);
+    } finally { release(); }
+  });
 
   it("publishes disable/authority/replacement fences before changing controller policy or attempting migration", () => {
     const controller = Object.create(PlayerAiController.prototype) as PlayerAiController;
