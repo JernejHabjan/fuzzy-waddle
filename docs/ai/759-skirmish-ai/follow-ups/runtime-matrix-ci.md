@@ -35,6 +35,99 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
 
 ## Implementation order
 
+### Coverage activation audit checkpoint (2026-10-08, source audit only)
+
+39 completes the bounded audit requested by `continue`, based on
+`0e9dc0c9bc69c1aa04db1e1b35f51526efa4abc5` (38). Containing commit owns 39. Only this plan and the handoff
+change; no runtime repair, coverage upgrade, test execution or useful-service acceptance is claimed. Pause after publication.
+
+**What / why:** traced the actual consumed read, decision fence, accepting event, claim reconciliation, command dispatch,
+native recipient operation and report window. The audit identifies where real producer ordering defeats synthetic
+accounting and names the mutation routes that still prevent useful-service authority. The next batch can repair
+diagnostics without mistaking a matching endpoint or a worker's income for sustained useful service.
+
+#### Concrete producer/consumer obstacles
+
+1. `observation/ai-observation-pipeline.ts` captures the resource input before
+   `PlayerAiController.stepPureBrain` emits `controller_decision_started`. The accounting projection treats every
+   `resource_need_fence` between the read and `decision_selected` as a liability change. Consequently an otherwise
+   matching real selection receives `production_need_input_liabilities_changed_before_acceptance`. The start fence
+   correctly closes older generations but does not by itself prove that the incoming read's liabilities changed.
+   Repair requires exact decision/read scope; ignoring all fences by reason or tick would conceal genuine interference.
+2. The same projection closes a selected need at any subsequent `intent_dispatch` or `outcome`. The controller publishes
+   the selection before dispatch, so the accepted gathering command's own dispatch closes it before later delivery.
+   A gather command without resource claims is not automatically a liability mutation. An exemption needs the exact
+   selected intent/effect/decision and supported command lifecycle, with unrelated/rejected/ambiguous events still
+   closing or remaining unavailable. A later decision, even empty, must close the previous generation.
+3. The observation ledger uses `reservedUnspent: 0`. Capture calls `AiRuntimeUnspentClaims.observeDecision` before
+   sampling the selected boundary, which includes newly accepted produce/research cash claims. The equality check
+   against the consumed ledger therefore rejects selections with nonzero new liabilities. This is conservative,
+   not a reason to replace selected R0 with a diagnostic total or count pending claims twice. Keep mismatching frames
+   null; distinguish the consumed frame from accepting-result liability changes and any later settled read.
+4. Stage 35 windows filter on credit publication sequence/tick. Stage 38 accounts by exact native operation entry,
+   but has not changed those windows. A delayed credit can land in a different diagnostic window from its application.
+   `installAiRuntimeProductionCapture` and multiplayer queue-world constructors pass no interval declarations.
+   Existing synthetic positive fixtures do not establish real producer sequencing, useful windows or native recipes.
+
+The bounds described in stage 38 are conditional diagnostics. Their synthetic arithmetic example does not establish
+that an ordinary native decision currently produces a non-null contribution bound. Keep legacy publication-based
+fields explicitly diagnostic; do not relabel them as application-owned evidence.
+
+#### Audited writer and lifetime routes
+
+Paths below are relative to `libs/games/probable-waffle/` unless explicitly qualified. This is an audited route list,
+not a declaration that arbitrary public writes have been exhaustively intercepted.
+
+| Writer / actual route | Current evidence and missing boundary | Safe consequence / prerequisite |
+| --- | --- | --- |
+| `protocol/.../probable-waffle-player.ts`: add/pay vector and leaf methods; public `getResources()` / state data | Native paired records cover named methods. Mutable references permit invisible write/undo histories. | Always retain mutable-alias gap; no proxy, freeze or resource API semantic change in the next batch. |
+| `phaser/.../campaign/participants/campaign-participant-scene-adapter.ts`: `applyStartingResources` | Writes resource slots directly, outside add/pay hooks. | Named entry fence can cover that route; installation timing and pre-capture changes cannot establish general alias coverage. |
+| `phaser/.../world/services/recovery/reconnect.service.ts`: snapshot apply and `Object.assign` of player state | `setSnapshotApplyInProgress(true)` fences before actor/state restore. Direct state replacement elsewhere is not thereby owned. | Retain restore loss and actual object-binding reconciliation; no epoch revival on restore completion. |
+| `libs/platform/game-sessions/.../game-instance.ts`: `addPlayer`, removals, public `players`, `stopLevel` | Player reset has a pre-write observer; membership mutations/public array replacement are detected only at later reconciliation. | Membership pre-fences need scoped ownership; same roster at two reads cannot certify intervening replacement. |
+| `gameplay/.../planning/ai-decision-planner.ts`: `reconcileReservations`; `brain/ai-brain.ts`: recovery release | Provisional expiry filters by due tick; terminal outcomes and abandoned recovery claims change reservations within the pure step. No per-transition native resource callback. | Exact decision-start closure covers older generations; a new need needs separately reconciled consumed/accepting frames. |
+| `phaser/.../testing/ai-runtime-unspent-claims.ts`: selection, dispatch, outcome, queue and payment transitions | Selected/admitted/queue-liability/released states exist; pre-capture, unsupported purchases and unfinished payment stay gaps. Outcome publication is not a general pre-mutation boundary. | Retain sticky gaps; immediate payment retirement and physical liability transfer must remain disjoint. |
+| `phaser/.../entity/components/queue/`: `mutateSharedQueueItem`, `advanceSharedQueueItem`, `QueueComponent.setData` / raw queues | Named mutation `before` and progress `started` precede native work. Restore rebuild and exposed queues/items permit bypass writes. | Close on actual before/start records; restore/raw references remain unsupported. Only the actually advanced exhausted head may be exempt from future charges. |
+| `phaser/.../entity/components/owner-component.ts`: `setOwner`, `clearOwner`, `setData` | Actor-index update and owner assignment precede `OwnerChangedEvent`; event alone is post-only evidence. | A future entry fence must precede the index callback and preserve reentrancy/native ordering. Retain lifetime gap now. |
+| `phaser/.../entity/components/combat/components/health-component.ts`: damage/heal setters, `killActor`, `setData`, delayed destroy | `killActor` writes health before `KilledEvent`; restore can set health without that event. Registration/removal records do not cover all earlier changes. | Health/owner/death/component lifetime needs its own pre-mutation ownership; later actor samples cannot prove continuous readiness. |
+| `phaser/.../entity/components/resource/resource-source-component.ts`: `extractResources`, refill, lock, `setData` | Capacity changes bracket an await; stock deduction occurs later. Refill/lock/restore alter supply outside an extraction record. | Each phase requires explicit lifetime context and fences; a current supply sample is not continuous supply. |
+| `phaser/.../entity/components/resource/resource-drain-component.ts`: `returnResources`, `setData` | Capacity changes bracket an await; actual drain owner and campaign economy are resolved afterward at emission. | Preserve actual beneficiary and suppression semantics; source-start owner cannot replace return-time owner. Capacity/owner/lifetime coverage remains partial. |
+| Cargo/service context and report | Known whole piles and exact callback/native operation join exist; mixed/unknown/restored cargo and silent component changes remain unsupported. | No FIFO allocation, nearest-operation lookup or ambient latest-task attribution; all four coverage channels remain partial. |
+
+Access/safety, container membership, component replacement, scene/controller lifetime and clock/horizon remain additional
+continuous-capacity requirements. This audit supplies no new path query, scan, timer, mutation listener or complete predicate history.
+
+#### Next bounded implementation batch: 40–41
+
+Keep **GPT-6.1 Sol / high** across both stages: the incoming decision/old-generation distinction is an unresolved causal
+contract, not routine field wiring. Last user-selected profile remains Sol 6.1 / medium; host settings are unknown,
+and no switch is performed. Group these related repairs and pause afterward; do not activate useful metrics.
+
+| Stage / purpose | Authoring acceptance and deferred controls |
+| --- | --- |
+| **40: causal read, frame and closure repair** — let report diagnostics distinguish a new accepted read from closure of an older need | Bind decision-start to exact consumed read and incoming selected identity; older needs still close before pure reconciliation. Preserve genuine intervening mutation/restore/loss fences. Classify exact self gather dispatch separately from actual liability/target changes; do not blanket-ignore outcomes. Keep nonzero accepting-result liability mismatches unavailable, never silently reprice selected R0/D0. Author a producer-shaped read → start → selection → own dispatch → native delivery control, unrelated dispatch, later empty decision, expiry/recovery, new purchase, thrown/reentrant/lost paths and legacy omissions. Preserve pure planner/native dispatch/payment semantics. |
+| **41: native application window diagnostics** — place a joined delivery in the window where money actually changed | Add a separately identified application-based projection using validated operation entry sequence/tick and exact endpoint frontiers; terminal and credit publication must still be present in the complete supplied tail. A joined operation straddling an endpoint, absent/duplicate/partial join, conflicting tail or missing read stays unavailable. Keep legacy fields backward-compatible and explicitly diagnostic. Author delayed publication across adjacent windows, boundary straddle, duplicate join, unrelated beneficiary, grant/spend before delivery and overflow controls. Useful contribution, useful floors, retained throughput and capacity stay null; do not add real interval recipes or upgrade channel declarations. |
+
+Before hooks, inspect each affected owner against the existing source-size/contracts rules and perform only required
+scoped splits. No baseline refresh. Keep one root fact budget, bounded identities and owned disposal. The final gate
+must run stage 40–41 controls together with all retained 29–38 obligations, including real pipeline/controller ordering;
+no new command runs during authoring. Further full-history implementation needs a separate explicit ownership design,
+especially public mutable aliases; adding method hooks alone cannot unlock it.
+
+**Source Implementation Review, 39:** traced read/start/selection/dispatch against the actual controller and accounting
+consumer; traced selected-before-frame claim ownership, queue before/start versus restore/raw references, reset versus
+membership, reconnect pre-fence, owner/death post-events, source/drain await phases, and installer/window consumers.
+The two producer timing obstacles and accepting-frame mismatch are recorded for repair, not asserted fixed.
+
+**Omission Audit, 39:** (1) provenance/scope, (2) recipient alias/state/membership routes, (3) claim/queue/frame routes,
+(4) owner/death/source/drain/cargo lifetime, (5) native versus publication windows/installers, (6) bounded next acceptance
+and deferred controls, (7) current handoff/publication/pause are accounted for. Unsupported arbitrary writes and predicate
+histories remain explicit blockers to activation; no audit table or positive fixture erases them.
+
+**Separate Final Closure Audit, 39:** documentation-only scope preserves runtime/native behavior, mandatory partial
+channels, null useful metrics, earlier deferred commands and unrelated Nx merge `59f72e037`. Current resume/grid/model
+guidance names 40–41 and why each is used. Publication checks establish Git provenance only; no runtime pass, fixed
+total/percent, issue/family completion or full-machine readiness is claimed. Commit/push the two task-owned docs and pause.
+
 ### Frozen need accounting checkpoint (2026-10-08, authored/unverified)
 
 38 completes the authorized 37–38 **partial-channel diagnostic authoring** batch, based on
