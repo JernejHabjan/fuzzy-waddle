@@ -7,16 +7,20 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 ## Quick resume
 
 **Current batch (user policy, 2026-10-08):** `continue` authorized bounded batch 43–44 owner split/fence.
-Current step: #815/#816 machinery 43 **owner presentation prerequisite**, authored/source-reviewed only; continue 44.
-Current batch: 43 prerequisite authored; passive pre-owner-change capture fence 44 next, then pause before useful activation.
+Current step: #815/#816 machinery 44 **passive owner conversion fence**, authored/source-reviewed only; pause here.
+Batch 43–44 authored, unverified. Next batch: 45–46 health presentation prerequisite and passive health history fence.
 Recommend GPT-6.1 Sol / medium across the settled batch; escalate only for a concrete unresolved contract.
 Last selected profile GPT-6.1 Sol / medium; actual host settings unknown. No model switch.
 All executable tests/validation remain deferred to the final gate.
-Base `1dbaaf5d1f574960aaf9b71f20d9b37bb3343c6b` (42); containing commit owns 43.
+Base `89ed0cf2cc757f76ecce400c3cb4647f67c8a687` (43, remote verified); containing commit owns 44.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify remote on resume.
 Preserve unrelated Nx merge `59f72e037`. No family/issue is complete. User removed the comment-permission rule.
 
-**Authored — why it is used:** [43 presentation split](follow-ups/runtime-matrix-ci.md#owner-presentation-prerequisite-checkpoint-2026-10-08-authoredunverified)
+**Authored — why it is used:** [44 owner fence](follow-ups/runtime-matrix-ci.md#owner-conversion-fence-checkpoint-2026-10-08-authoredunverified)
+loses scene resource history before owner-index callbacks. A converted drain still uses the post-wait owner and native full
+return; earlier need bounds/application-window quantities become unavailable. Actor initialization also loses global history.
+Native ordering, disposal, cross-await and report controls are authored/unrun; all authority channels remain partial.
+[43 presentation split](follow-ups/runtime-matrix-ci.md#owner-presentation-prerequisite-checkpoint-2026-10-08-authoredunverified)
 keeps owner identity on the facade and moves visuals into a focused helper, so the next passive fence can edit a compliant owner.
 Ordering, initialization and visual-disposal controls are authored/unrun.
 [42 design](follow-ups/runtime-matrix-ci.md#ownership-boundary-design-checkpoint-2026-10-08-source-design-only)
@@ -54,13 +58,13 @@ Campaign suppression is explicit and may accompany a full native return. Old/unk
 to the latest task. Whole known piles may retain several earlier gathering attempts; no invented FIFO/partial allocation.
 A credit proves a scoped balance change, independently from cargo lineage, accepted task/demand and continuous usefulness.
 
-**Next exact authoring action — why:** implement [43–44 owner conversion fence](follow-ups/runtime-matrix-ci.md#next-bounded-implementation-batch-4344-owner-conversion-fence).
-First split owner presentation while preserving facade/native ordering and removing only its obsolete source baseline
-entry. Then fence existing scene resource history after the same-owner no-op check and before actor-index mutation.
-This prevents older resource accounting from surviving a known conversion before callbacks observe changed ownership.
-Reuse passive global loss; do not invent a complete actor dependency map. Author real pre-index/cross-await controls,
-commit/push each coherent stage and pause after 44. Keep public semantics, partial channels and all useful metrics null.
-Recommend **GPT-6.1 Sol / medium** across both stages. No fixed total/percentage or full-history activation is claimed.
+**Next exact authoring action — why:** implement [45–46 health presentation and history fence](follow-ups/runtime-matrix-ci.md#next-bounded-implementation-batch-4546-health-presentation-and-history-fence).
+First split health UI/visual effects while keeping the public facade, native health/death ordering and actual data references.
+Then add passive scene-history loss before supported health/armor/definition/init/kill mutation boundaries.
+Damage, healing or death changes service readiness; the fence prevents a later delivery from certifying continuity across it.
+Author native failure/reentrancy, lifecycle and cross-await/report controls; commit/push each stage and pause after 46.
+Recommend **GPT-6.1 Sol / medium** across both; escalate only for a concrete unresolved lifecycle/initialization contract.
+Keep public aliases unsupported, channels partial, useful metrics null and all executable validation deferred.
 
 | Dependency | State | Purpose / next boundary |
 | --- | --- | --- |
@@ -77,7 +81,8 @@ Recommend **GPT-6.1 Sol / medium** across both stages. No fixed total/percentage
 | Coverage activation audit (39) | Source audit documented | Audited missing writers and actual producer timing |
 | Causal accounting / application windows (40–41) | Authored, unverified; pause reached | Exact incoming-read/admission boundaries and distinct native application windows |
 | Beneficiary / need / lifetime ownership design (42) | Authored, source-reviewed only | Named route/identity/loss contract and explicit alias limitations; no new runtime behavior |
-| Owner presentation and conversion fence (43–44) | 43 authored/unverified; 44 next | Compliant owner split, then passive pre-index loss to close old resource history |
+| Owner presentation and conversion fence (43–44) | Authored, unverified; pause reached | Compliant owner split, then passive pre-index loss to close old resource history |
+| Health presentation and mutation fence (45–46) | Next bounded batch | Compliant health split, then pre-mutation loss before callbacks can observe changed readiness |
 | Complete need/lifetime history and useful throughput | Open; activation still blocked | Public aliases and every relied-on mutation need authority before useful windows/real recipes |
 | Continuous useful capacity | Open | Complete mutation authority for readiness, supply, access/safety and service |
 | Full production adapter/oracles/setup/strategy | Open | Independent PRO-03/06/07 assertions |
@@ -97,7 +102,7 @@ Stage 34 is `d226b6636d41cc7201803ba80d34869a32b59a78`; 35 is `d2e48214230e66290
 Player-owner split prerequisite is `80a84493b155a2f431cc0aa172257ce9398e3624`;
 38 is `0e9dc0c9bc69c1aa04db1e1b35f51526efa4abc5`; 39 is `1c7ecdef633d5d28cf3ca88b7ed4467eb5436c12`.
 40 is `4647a4a427acf56ddf34579df3e64317dd8ac254`; 41 is `ecd26ba772e822ebbb06f4f21bf9172ded4fd495`;
-42 is `1dbaaf5d1f574960aaf9b71f20d9b37bb3343c6b`; containing commit owns 43.
+42 is `1dbaaf5d1f574960aaf9b71f20d9b37bb3343c6b`; 43 is `89ed0cf2cc757f76ecce400c3cb4647f67c8a687`; containing commit owns 44.
 No fixed machinery total/percent is claimed; diagnostic authoring is delivered, useful-service acceptance remains open.
 All native observer,
 report, prior movement and earlier final-gate obligations remain unrun. Capture/report cost and native compatibility are unmeasured.
@@ -552,7 +557,7 @@ merely because their issue title mentions testing. All authored work remains unv
 | 1 / as needed | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `partial` | Split only owners blocking the selected batch | Stay Sol medium; optional Luna high |
 | 2 | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829) | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof | GPT-6.1 Sol, medium |
 | 3 | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `in_progress` | Finish pressure/recovery policy; defer victory proof | GPT-6.1 Sol, medium |
-| 4 / next boundary | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | 43 split authored; 44 owner conversion fence next; useful activation blocked | Sol 6.1 medium for settled batch; high if a concrete contract blocker appears |
+| 4 / next boundary | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | 43–44 authored; 45–46 health split/fence next; useful activation blocked | Sol 6.1 medium for settled batch; high if a concrete contract blocker appears |
 | 5 / paired | #815 / #816 | `in_progress` | Remaining family contracts, focused fixtures, frozen maps and continuous-match tier | Sol medium; optional Luna high for established cases |
 | 6 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `in_progress` | Exact-once interruption, terminal and re-entry parity | GPT-6.1 Sol, medium |
 | 7 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `partial` | Generation fencing, phase restore/replay and cleanup cases | GPT-6.1 Sol, medium |
@@ -566,8 +571,8 @@ merely because their issue title mentions testing. All authored work remains unv
 The user policy below and latest Quick resume own #759 model choice and execution boundaries. The user selected Sol 6.1 / medium
 for the current implementation group. Use Sol for unresolved thinking/design; Luna / high is an optional choice for
 concrete routine work. Keep related work together to avoid unnecessary switches. This applies to this roadmap.
-The latest `continue` authorized 43–44; 43 split is authored/source-reviewed, continue 44 and pause after publication.
-Recommend GPT-6.1 Sol / medium across this settled owner split/fence batch.
+The latest `continue` authorized 43–44, now authored/source-reviewed only; pause after publication.
+45–46 is the next bounded health split/fence batch, recommended GPT-6.1 Sol / medium across both stages.
 Incoming-read identity, exact self-dispatch admission and distinct application windows are authored; native producer
 integration remains unrun. Do not infer that synthetic diagnostic controls complete the machinery.
 Complete mutable-alias, beneficiary need/liability and lifetime mutation authority remain activation blockers;
@@ -615,11 +620,11 @@ No model was switched automatically. Continuous useful capacity and full product
 
 Copyable next-chat prompt:
 
-> Read docs/ai/759-skirmish-ai/HANDOFF.md and its ownership boundary design checkpoint. Implement bounded batch 43–44:
-> separate owner presentation behind the unchanged facade, then add passive scene-history loss before owner index mutation.
-> Follow the exact 42 route/identity contract and 43–44 acceptance/controls, preserving native ordering and cleanup.
+> Read docs/ai/759-skirmish-ai/HANDOFF.md and its 45–46 acceptance. Implement bounded batch 45–46:
+> separate health presentation behind the unchanged facade, then add passive history loss before supported health mutation.
+> Follow the exact route/identity contract and health controls, preserving native ordering, references and cleanup.
 > Keep unsupported channels unavailable and native semantics intact; no useful activation or real interval recipes.
-> Use Sol 6.1 medium across both stages; escalate only for a concrete unresolved contract. Commit/push each stage and pause after 44.
+> Use Sol 6.1 medium across both stages; escalate only for a concrete unresolved contract. Commit/push each stage and pause after 46.
 > Report what was authored and what comes next,
 > including what each will be used for and why it matters. Commit/push each coherent stage; pause at a stronger-reasoning
 > boundary and recommend the next model/effort. End each stage with the change, the problem it solves and its users;

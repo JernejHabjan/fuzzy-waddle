@@ -1,4 +1,12 @@
 import { expect, test } from "@playwright/test";
+import { ProbableWafflePlayer, ProbableWafflePlayerState, ProbableWafflePlayerController } from
+  "@fuzzy-waddle/probable-waffle-protocol";
+import { AiRuntimeResourceCoverageCapture } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-resource-coverage-capture";
+import { AiRuntimeRecipientResourceCapture } from
+  "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-recipient-resource-capture";
+import type { ProbableWaffleScene } from "@fuzzy-waddle/probable-waffle-phaser/core/probable-waffle.scene";
+import { fenceSceneResourceHistory } from "@fuzzy-waddle/probable-waffle-phaser/data/scene-resource-observation";
 import { resourceApplicationFixture } from "./skirmish-ai-runtime-resource-application-fixture";
 import { projectRuntimeResourceServices } from "./skirmish-ai-runtime-resource-service-projection";
 import { normalizeRuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality-normalization";
@@ -81,4 +89,40 @@ test("an unrelated recipient's exact native credit cannot become this cohort's i
     resourceCoverage: f.coverage(20, 16) }, [credit]);
   expect(result.failures).toEqual([]);
   expect(result.applicationIntervals[0].observedIncome).toBe(0);
+});
+
+// Actual scene subscription/loss producer over synthetic accounting payloads; no real-match evidence is claimed.
+test("native owner boundary loss survives report projection and disables need/application quantities", () => {
+  const f = resourceApplicationFixture();
+  const player = new ProbableWafflePlayer(new ProbableWafflePlayerState(), new ProbableWafflePlayerController());
+  Object.defineProperty(player, "playerNumber", { value: 1 });
+  const scene = { players: [player] } as ProbableWaffleScene;
+  let frontier = { tick: 0, captureSequence: 0 };
+  const coverage = new AiRuntimeResourceCoverageCapture(0, () => frontier);
+  coverage.install({}, f.declaration.actorIds[0], 1);
+  const journalFacts: AiRuntimeProductionFactV1[] = [];
+  const journal = new AiRuntimeRecipientResourceCapture(scene, coverage,
+    (playerNumber) => ({ playerNumber, tick: frontier.tick, sequence: 0 }), () => frontier.captureSequence,
+    (fact) => { frontier = { ...frontier, captureSequence: frontier.captureSequence + 1 };
+      journalFacts.push({ ...fact, sequence: frontier.captureSequence }); });
+  try {
+    const snapshots = f.capture.snapshots.map((snapshot, index) => {
+      frontier = { tick: snapshot.tick, captureSequence: snapshot.afterSequence };
+      if (index === 1) fenceSceneResourceHistory(scene, "resource_actor_owner_change");
+      return { ...snapshot, resourceCoverage: coverage.read() };
+    });
+    const result = projectRuntimeResourceServices({ ...f.capture, snapshots, resourceCoverage: coverage.read() }, [f.credit]);
+    expect(journalFacts[0].kind).toBe("recipient_resources_installed");
+    expect(result.failures).toEqual([]);
+    expect(result.coverage).toMatchObject({ lost: true, losses: ["resource_actor_owner_change"],
+      channels: { recipientNativeMutations: "partial", selectedNeedLifecycle: "partial",
+        reconciledLiabilities: "partial", cargoLifetime: "partial" } });
+    expect(result.needAccounting[0].applications[0]).toMatchObject({ observedUnresolvedUpperBound: null,
+      observedContributionUpperBound: null, usefulContribution: null });
+    expect(result.applicationIntervals[0]).toMatchObject({ observedIncome: null, observedContributionUpperBound: null,
+      usefulContribution: null, retainedUsefulThroughput: null, continuousUsefulCapacity: null });
+    expect(result.intervals[0].observedIncome).toBe(7);
+    expect(result.intervals[0].eligibleIncome).toBeNull();
+    expect(result.gaps).toContain("production_resource_coverage_lost");
+  } finally { journal.dispose(); }
 });

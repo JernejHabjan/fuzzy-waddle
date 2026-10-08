@@ -35,6 +35,77 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
 
 ## Implementation order
 
+### Owner conversion fence checkpoint (2026-10-08, authored/unverified)
+
+Stage 44 is based on `89ed0cf2cc757f76ecce400c3cb4647f67c8a687` (43, remote verified); containing commit owns 44.
+`OwnerComponent.setOwner` now invokes `fenceSceneResourceHistory(scene, "resource_actor_owner_change")` after
+its same-owner early return and before index lookup/update. Existing recipient capture subscription marks global sticky
+loss immediately, before callbacks can reenter reads. No listener owner, schema, mutation record or root budget was added.
+The scene helper documents broader pre-mutation boundaries and isolates observer exceptions from native mutation.
+
+Why used: a drain converted while delivery awaits still credits its actual post-wait owner (or suppresses campaign
+credit) and returns the full native amount; earlier accounting cannot certify continuity across that known conversion.
+Any actor owner change during installed capture loses global history, including initial ownership assignment outside
+installed cohorts. This deliberate over-invalidation avoids claiming an exhaustive actor-to-beneficiary dependency map.
+Exact recipient credits can remain diagnostic; all four authority channels remain partial and useful verdicts null.
+
+| Acceptance | Implemented source / authored evidence |
+| --- | --- |
+| 44.1 Pre-index passive fence | OwnerComponent no-op → scene loss → index lookup/update → owner → visuals → event. owner-resource-history spec checks pre-lookup and pre-update reads, no cohort filter, initial ownership, same/defined/undefined restore, clear and blink. |
+| 44.2 Native failure / reentrancy | Same-owner no-op preserved; native index throw and nested conversion order controlled; observer throw is isolated by existing scene fence. No-subscriber and bounded/isolated scene subscriptions covered. |
+| 44.3 Capture lifetime | Existing recipient journal owns subscription/disposal; recipient and owner-history specs author sticky loss before native add, post-disposal silence and fresh partial installation without old-capture backfill. |
+| 44.4 Cross-await / reports | Extended resource-drain-credit spec changes actual OwnerComponent during actual drain wait for normal/granted/none economies, checks actual beneficiary, balances, unchanged context, notification and full return. Application report spec reads real coverage through real recipient scene subscriber/fence over synthetic accounting payloads; bounds/application quantities null, legacy income diagnostic, loss and partial channels retained. |
+| 44.5 Scope / delivery | No health/source/drain production mutation hook, roster/alias coverage claim, useful activation, metric, schema or persistence change. Source review only; commit/push and pause. All tests/validation unrun. |
+
+**Source Implementation Review:** traced facade no-op/restore/clear/blink through scene subscriber and irreversible
+coverage, including pre-index lookup, native index throw/reentrancy and observer exception isolation. Reviewed actual
+post-wait drain recipient/economy/emission and exact native journal operation; report consumers already suppress bounds
+and application quantities on loss. Tests use real native owners/journal and the existing pure report projection with
+synthetic accounting payloads; they do not establish runtime compatibility or real-match correctness.
+
+**Omission Audit:** 44.1–44.5 covers all requested hook, failure, lifetime, cross-await and report requirements. New
+owner-resource-history and drain-credit specs were added to the deferred gate pattern, alongside existing native journal
+and application specs. No new production consumer/registration or source baseline update is needed after 43.
+**Final Closure Audit (separate):** re-read the final hook, helper docs, all authored controls and existing consumers
+after edits; source authoring complete, all executable verification explicitly deferred. Conservative global loss,
+public aliases, capture cost and partial channels remain limitations. No reusable skill/tool update warranted.
+
+#### Next bounded implementation batch: 45–46 health presentation and history fence
+
+Keep **GPT-6.1 Sol / medium** across this related prerequisite/hook pair, then pause. The 42 writer contract already
+selects conservative global loss; do not reopen complete-history design or expand into source/drain/platform owners.
+If the split exposes a concrete initialization, disposal or reentrant event conflict, stop there and recommend Sol / high.
+
+- **45: health presentation prerequisite.** Existing anchor is
+  `phaser/src/lib/entity/components/combat/components/health-component.ts`; new destination is adjacent
+  `health-presentation.ts`. Delegate UI bars, visibility/frame/container/construction subscriptions, UI timeout,
+  health/armor bounds/refresh and damage/heal visual effects. Retain the facade's public health data/definition,
+  latestDamage, hidden flag, events, serialization, native damage/armor/heal/kill ordering, death sounds/animation,
+  simulation destruction delay and suppression. Helpers read current facade state/references rather than copying
+  mutable health/definition; preserve exact readiness and destruction order and HealthUiComponent's facade lookup.
+  Keep actor movement dependencies used by visual feedback in the focused helper. Preserve delayed callbacks rather
+  than mixing unrelated timer fixes. Split further by stable responsibility only if necessary for 400/200/140.
+  Remove only HealthComponent's obsolete baseline entry after compliance; never refresh hashes. Author public facade,
+  ready/restore, UI/effect and disposal controls, unrun. Commit/push this behavior-preserving prerequisite separately.
+- **46: passive health history boundary.** Reuse `fenceSceneResourceHistory` with
+  `resource_actor_health_change` before changed health and armor assignments in `setHealthValue`/`setArmorValue`,
+  after each same-value early return and before native events. Fence `setHealthDefinition` before definition replacement
+  and `init` before campaign modifier/definition/direct initial health/armor writes; these routes conservatively fence
+  even if the resulting values happen to match. Preserve original setter dispatch and suppression: no native event,
+  death call, sound or disposal is added by observation. Existing reset/heal/damage/defined restore/kill routes delegate.
+  Silent/normal kill with already-zero health remains a known gap if no changed setter occurs; add a pre-kill fence at
+  each valid active kill entry before suppression, events or destroy, preserving invalid-active early returns.
+  Public health/definition aliases remain unsupported. Author changed/same-value health and armor, initialization,
+  definition replacement, kill/silent kill, suppression/restore, event throw/reentrancy, observer throw/no subscriber,
+  capture disposal and cross-await native return controls. Extend real scene-subscriber report controls to show sticky
+  loss and unavailable quantities, without activating channels/useful metrics. Commit/push, then pause.
+
+Purpose: damage, healing, armor or death can invalidate earlier readiness/service assumptions before callbacks observe
+the mutation; conservative loss prevents a later resource delivery from proving continuity across that known boundary.
+Source/cargo/drain capacity, roster/alias and complete lifetime routes remain separate later work. No gameplay tuning,
+new metrics/budget, persistence, real interval recipes or executable checks are authorized by this next-batch plan.
+Final gate adds `health-component|health-presentation` to the existing Phaser controls and retains all prior commands.
+
 ### Owner presentation prerequisite checkpoint (2026-10-08, authored/unverified)
 
 Stage 43 is based on `1dbaaf5d1f574960aaf9b71f20d9b37bb3343c6b`; its containing commit owns this checkpoint.
@@ -152,7 +223,7 @@ recipient capture and drain specs for the real pre-index and cross-await orderin
 control, not only a hand-inserted loss flag. Add the authored owner spec to the final Phaser gate:
 
 ```sh
-pnpm exec nx test probable-waffle-phaser --testPathPatterns='owner-component|scene-resource-observation|ai-runtime-recipient-resource-capture|resource-drain-component' --runInBand
+pnpm exec nx test probable-waffle-phaser --testPathPatterns='owner-(component|resource-history)|scene-resource-observation|ai-runtime-recipient-resource-capture|resource-drain-(component|credit)' --runInBand
 ```
 
 Retain every 29–41 command and native pipeline/controller integration obligation. Final gate also checks source-size

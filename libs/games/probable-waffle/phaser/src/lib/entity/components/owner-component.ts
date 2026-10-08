@@ -1,4 +1,4 @@
-import Phaser from "phaser";
+import type Phaser from "phaser";
 import type { PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 import type { OwnerComponentData } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { OwnerDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/owner-definition";
@@ -7,6 +7,7 @@ import { arePlayersAllied } from "../../data/player-relation";
 import { getSceneService } from "../../world/services/scene-component-helpers";
 import { ActorIndexSystem } from "../../world/services/ActorIndexSystem";
 import { OwnerPresentation } from "./owner-presentation";
+import { fenceSceneResourceHistory } from "../../data/scene-resource-observation";
 
 /** Authoritative owner identity and public facade; visual state belongs to OwnerPresentation. */
 export class OwnerComponent {
@@ -41,6 +42,8 @@ export class OwnerComponent {
 
     // Handle tech tree unlock changes when owner changes
     if (oldOwner === newOwner) return;
+    // Global loss precedes index callbacks; an exhaustive actor-to-need dependency map is unavailable.
+    fenceSceneResourceHistory(this.gameObject.scene, "resource_actor_owner_change");
     const actorIndexSystem = getSceneService(this.gameObject.scene, ActorIndexSystem);
     actorIndexSystem?.updateActorOwnership(this.gameObject, oldOwner, newOwner);
     this.owner = playerNumber;

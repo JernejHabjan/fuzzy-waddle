@@ -1,3 +1,5 @@
+import { OwnerComponent } from "../../../entity/components/owner-component";
+import type Phaser from "phaser";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { ProbableWafflePlayer, ProbableWafflePlayerState, ProbableWafflePlayerController } from
   "@fuzzy-waddle/probable-waffle-protocol";
@@ -6,6 +8,14 @@ import { AiRuntimeResourceCoverageCapture } from "./ai-runtime-resource-coverage
 import type { AiRuntimeProductionFactV1 } from "./ai-runtime-production-fact-v1";
 import { fenceSceneResourceHistory } from "../../../data/scene-resource-observation";
 import { readAiRuntimeResourceOperationId } from "./ai-runtime-resource-operation-identity";
+
+jest.mock("../../../entity/components/owner-presentation", () => ({ OwnerPresentation: class {
+  attach() {} tryToSetComponents() {} assignOwnerColor() {} setOwnerColorToActor() {} playBlinkEffect() {}
+} }));
+jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
+jest.mock("../../../data/player-relation", () => ({ arePlayersAllied: jest.fn() }));
+jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
+jest.mock("../../../world/services/ActorIndexSystem", () => ({ ActorIndexSystem: class {} }));
 
 function fixture() {
   const player = new ProbableWafflePlayer(new ProbableWafflePlayerState(), new ProbableWafflePlayerController());
@@ -20,6 +30,16 @@ function fixture() {
 }
 
 describe("all-recipient native resource journal", () => {
+  it("fences initial actor ownership through the native owner route and retains later exact mutations as diagnostics", () => {
+    const f = fixture();
+    const actor = { scene: f.scene, emit: jest.fn() } as unknown as Phaser.GameObjects.GameObject;
+    const owner = new OwnerComponent(actor, { color: [] });
+    owner.setOwner(2); f.player.addResources({ wood: 3 }); f.journal.reconcile();
+    expect(f.coverage.read()).toMatchObject({ lost: true, losses: ["resource_actor_owner_change"] });
+    expect(f.facts.at(-1)).toMatchObject({ mutation: { phase: "returned", after: { wood: 203 }, lossEpoch: 1 } });
+    f.journal.dispose(); const disposed = f.coverage.read(); owner.clearOwner();
+    expect(f.coverage.read()).toEqual(disposed);
+  });
   it("fences append failures without changing the native mutation or its original error", () => {
     const f = fixture();
     const append = jest.spyOn(f.facts, "push").mockImplementation(() => { throw new Error("append"); });
