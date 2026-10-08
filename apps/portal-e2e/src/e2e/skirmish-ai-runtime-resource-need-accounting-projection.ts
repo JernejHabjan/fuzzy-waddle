@@ -1,5 +1,4 @@
 import { isDeepStrictEqual } from "node:util";
-import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiRuntimeProductionCaptureV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
 import type { RuntimeResourceNeedV1 } from "./skirmish-ai-runtime-resource-need";
@@ -8,6 +7,7 @@ import type { RuntimeResourceNeedAccountingV1 } from "./skirmish-ai-runtime-reso
 import { normalizeRuntimeRecipientMutations } from "./skirmish-ai-runtime-recipient-mutations";
 import { calculateRuntimeResourceContribution } from "./calculate-runtime-resource-contribution";
 import { runtimeNeedHasIncomingStart, runtimeNeedOwnAdmissionSequences } from "./skirmish-ai-runtime-resource-need-boundaries";
+import { runtimeResourceCreditMatchesOperation } from "./skirmish-ai-runtime-resource-application-join";
 
 /** Frozen inputs and disjoint liabilities, closed conservatively at actual known boundaries. No partial channel activates usefulness. */
 export function projectRuntimeResourceNeedAccounting(capture: AiRuntimeProductionCaptureV1,
@@ -83,11 +83,7 @@ export function projectRuntimeResourceNeedAccounting(capture: AiRuntimeProductio
       const application = value.operationId == null ? undefined : operations.get(value.operationId);
       if (!application) { local.add("production_need_credit_operation_join_missing"); continue; }
       const terminal = application.terminal, mutation = terminal.mutation, entry = application.entry;
-      if (terminal.playerNumber !== selection.playerNumber || mutation.action !== "add" ||
-        mutation.phase !== "returned" || terminal.sequence >= credit.fact.sequence ||
-        !isDeepStrictEqual(mutation.before, value.before) || !isDeepStrictEqual(mutation.after, value.after) ||
-        !isDeepStrictEqual(mutation.requested, value.callbackAmounts) || credit.appliedAmount !== mutation.requested?.[type] ||
-        Object.values(ResourceType).some((resource) => resource !== type && (mutation.requested?.[resource] ?? 0) !== 0)) {
+      if (!runtimeResourceCreditMatchesOperation(credit, application)) {
         failures.push("production_need_credit_operation_conflict"); continue;
       }
       if (used.has(mutation.operationId)) { failures.push("production_need_credit_operation_reused"); continue; }

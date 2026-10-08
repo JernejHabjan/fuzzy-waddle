@@ -7,14 +7,17 @@ import { normalizeRuntimeResourceNeeds } from "./skirmish-ai-runtime-resource-ne
 import { validateRuntimeResourceCoverage } from "./skirmish-ai-runtime-resource-coverage-validation";
 import { validateRuntimeResourceIntervals } from "./skirmish-ai-runtime-resource-interval-validation";
 import { projectRuntimeResourceNeedAccounting } from "./skirmish-ai-runtime-resource-need-accounting-projection";
+import { projectRuntimeResourceApplications } from "./skirmish-ai-runtime-resource-application-projection";
 
 /** Compose fail-closed diagnostic quantities. Complete unresolved need, throughput and capacity authority are still unsupported. */
 export function projectRuntimeResourceServices(capture: AiRuntimeProductionCaptureV1, credits: readonly RuntimeResourceCreditV1[]) {
   const selections = normalizeRuntimeResourceNeeds(capture), coverage = validateRuntimeResourceCoverage(capture);
   const declaration = validateRuntimeResourceIntervals(capture);
   const accounting = projectRuntimeResourceNeedAccounting(capture, selections.needs, credits);
-  const failures = [...selections.failures, ...coverage.failures, ...declaration.failures, ...accounting.failures];
-  const gaps = new Set([...selections.gaps, ...coverage.gaps, ...declaration.gaps, ...accounting.gaps]);
+  const applications = projectRuntimeResourceApplications(capture, declaration.declarations, credits, accounting.records);
+  const failures = [...selections.failures, ...coverage.failures, ...declaration.failures, ...accounting.failures,
+    ...applications.failures];
+  const gaps = new Set([...selections.gaps, ...coverage.gaps, ...declaration.gaps, ...accounting.gaps, ...applications.gaps]);
   const intervals: RuntimeResourceServiceIntervalV1[] = [];
   const remaining = new Map<number, number>();
   const transfers = new Set<number>();
@@ -109,6 +112,7 @@ export function projectRuntimeResourceServices(capture: AiRuntimeProductionCaptu
   }
   return { needs: failures.length ? [] : selections.needs, coverage: failures.length ? null : coverage.coverage,
     needAccounting: failures.length ? [] : accounting.records,
+    applicationIntervals: failures.length ? [] : applications.intervals,
     intervals: failures.length ? [] : structuredClone(intervals), failures: [...new Set(failures)], gaps: [...gaps] };
 }
 

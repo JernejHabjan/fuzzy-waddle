@@ -227,7 +227,8 @@ export function normalizeRuntimeProductionCausality(
     movements: failures.length ? [] : movement.movements,
     serviceAttempts: failures.length ? [] : service.attempts,
     resourceCredits: failures.length ? [] : resources.credits,
-    resourceServices: failures.length ? { ...native.resourceServices, needs: [], needAccounting: [], coverage: null, intervals: [] } :
+    resourceServices: failures.length ? { ...native.resourceServices, needs: [], needAccounting: [],
+      applicationIntervals: [], coverage: null, intervals: [] } :
       native.resourceServices,
     constructionAuthority: failures.length ? [] : construction.records,
     initialConstruction: failures.length ? null : constructionLineage.initial,

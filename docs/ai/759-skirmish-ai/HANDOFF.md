@@ -7,24 +7,26 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 ## Quick resume
 
 **Current batch (user policy, 2026-10-08):** `continue` authorized grouped 40–41 diagnostic repairs.
-Current step: #815/#816 machinery 40 **causal read/frame/closure repair**, authored/unverified; 41 follows before pause.
-Next stage: 41 native application window diagnostics, before useful activation.
-Recommend GPT-6.1 Sol / high across both for the unresolved decision/lifecycle authority.
+Current step: #815/#816 machinery 41 **native application window diagnostics**, authored/unverified. Batch 40–41 complete; pause here.
+Next stage: 42 bounded ownership design for beneficiary/need/liability and service lifetimes, before useful activation.
+Recommend GPT-6.1 Sol / high for the unresolved ownership contract; group its related decisions.
 Last selected profile GPT-6.1 Sol / medium; actual host settings unknown. No model switch.
 All executable tests/validation remain deferred to the final gate.
-Base `1c7ecdef633d5d28cf3ca88b7ed4467eb5436c12` (39); containing commit owns 40.
+Base `4647a4a427acf56ddf34579df3e64317dd8ac254` (40); containing commit owns 41.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify remote on resume.
 Preserve unrelated Nx merge `59f72e037`. No family/issue is complete. User removed the comment-permission rule.
 
 **Authored — why it is used:** [40 boundary repair](follow-ups/runtime-matrix-ci.md#causal-need-boundary-checkpoint-2026-10-08-authoredunverified)
 binds the incoming observation's actual read at decision start and distinguishes exact resource-free gathering admission
 from other closing events. Older needs close before reconciliation; new purchase/frame mismatches remain unavailable.
-Producer-shaped and negative controls are authored/unrun. 41 will place exact joined native operations into application
-windows while retaining legacy publication diagnostics. [39 audit](follow-ups/runtime-matrix-ci.md#coverage-activation-audit-checkpoint-2026-10-08-source-audit-only)
-names actual missing writers and two real producer timing obstacles: decision-start invalidates the incoming input read,
-and own gather dispatch closes its need before delivery. New accepted purchase claims can also invalidate the consumed
-liability frame. The documented 40–41 acceptance/control batch defines repairs without granting useful authority.
-Only the existing handoff/runtime plan changed in 39; runtime repairs remain unauthored and no executable checks ran.
+Producer-shaped and negative controls are authored/unrun.
+[41 windows](follow-ups/runtime-matrix-ci.md#native-application-window-checkpoint-2026-10-08-authoredunverified)
+adds `resourceServices.applicationIntervals`, using exact native operation entry/terminal and snapshot frontiers.
+For example, a delivery applied at tick 3 but published at tick 15 stays in the first application window; legacy
+publication diagnostics show the later window. A straddling/partial/missing join leaves new quantities unavailable.
+Shared exact recipient/payload joining serves both accounting and application windows; parent failures clear both.
+The [39 audit](follow-ups/runtime-matrix-ci.md#coverage-activation-audit-checkpoint-2026-10-08-source-audit-only)
+still names missing public alias and lifetime authority. No executable check or useful activation is claimed.
 [37 native journal](follow-ups/runtime-matrix-ci.md#recipient-native-journal-checkpoint-2026-10-08-authoredunverified)
 records all observed recipient resource changes at native entry/terminal positions and joins a delivery by exact
 payload/recipient/operation. [38 accounting](follow-ups/runtime-matrix-ci.md#frozen-need-accounting-checkpoint-2026-10-08-authoredunverified)
@@ -35,8 +37,8 @@ That example is conditional synthetic arithmetic, not proof that real producer o
 The report exposes observed bounds where supported while actual usefulness stays null. Native/source/cargo/need silent mutation routes,
 public mutable aliases and incomplete liability histories remain activation blockers. All new specs are authored, unrun.
 Failed installation/append and listener-churn cleanup were source-reviewed and repaired; no runtime pass is claimed.
-The earlier 33–35 interval diagnostics still use their existing diagnostic publication positions; actual application
-window ownership is an activation prerequisite. Real recipes declare no intervals; all prior final-gate duties remain.
+The earlier 33–35 interval diagnostics retain publication positions alongside the distinct 41 projection.
+Real recipes declare no intervals; all prior final-gate duties remain.
 
 **Settled credit/cargo contract:** explicit transient execution handles cross awaits; no ambient current order can assign
 credit. Record native cargo additions, reset/restore fences, exact offered pile, emission recipient and scoped before/after
@@ -45,16 +47,13 @@ Campaign suppression is explicit and may accompany a full native return. Old/unk
 to the latest task. Whole known piles may retain several earlier gathering attempts; no invented FIFO/partial allocation.
 A credit proves a scoped balance change, independently from cargo lineage, accepted task/demand and continuous usefulness.
 
-**Next exact authoring action — why:** complete the [40–41 batch](follow-ups/runtime-matrix-ci.md#next-bounded-implementation-batch-4041).
-40 binds the incoming read/decision scope separately from older-generation closure, distinguishes exact own gathering
-dispatch from liability changes, and keeps mismatching accepting-result frames unavailable. This allows diagnostic
-accounting to follow an actual selected worker without hiding genuine interference or repricing selected liabilities.
-41 adds distinct native-application window diagnostics, so delayed publication cannot move a delivery to another window;
-ambiguous/straddling operations remain unavailable and legacy fields retain their diagnostic meaning.
-Author producer-shaped and negative controls; defer execution. Keep public mutable resource/payment semantics,
-partial channels and null usefulness/floors/throughput/capacity. No real interval recipes or full-history activation.
-Inspect source-size prerequisites before hooks, group both stages, commit/push each coherent stage and pause afterward.
-Recommend **GPT-6.1 Sol / high** across this causal contract work; medium suits later settled wiring.
+**Next exact authoring action — why:** complete [42 ownership design](follow-ups/runtime-matrix-ci.md#next-bounded-authoring-action-42-ownership-design).
+Use the audited writer table to define supported pre-mutation routes, exact cross-await lifetime identity,
+liability retirement, restore/reentrancy/disposal and explicit public mutable alias limitations. This is used to choose
+a bounded later implementation batch whose diagnostics can prove their stated scope. Keep native public semantics,
+partial channels and null usefulness/floors/throughput/capacity; no real interval recipes or full-history activation.
+Record source-size prerequisites and deferred controls in existing docs, commit/push the bounded design and pause.
+Recommend **GPT-6.1 Sol / high** for ownership decisions; medium suits the later settled wiring.
 No fixed total/percentage is claimed. Public aliases and continuous lifetime predicates still need separate ownership design.
 
 | Dependency | State | Purpose / next boundary |
@@ -69,8 +68,9 @@ No fixed total/percentage is claimed. Public aliases and continuous lifetime pre
 | Interval diagnostics (35) | Authored, unverified | Fixed windows, unique credits and capped aggregate potential through reports |
 | Beneficiary/need authority design (36) | Authored; implementation open | Native writers, read/application positions, disjoint liabilities and conservative no-reopening contract |
 | Recipient journal and selected-need replay (37–38) | Authored, unverified; partial authority | Actual read/frame/native operation and conditional observed accounting bounds |
-| Coverage activation audit (39) | Source audit documented; pause reached | Names actual writers and producer obstacles; defines 40–41 repairs and deferred controls |
-| Causal accounting / application windows (40–41) | Next bounded authoring batch | Repair incoming-read/self-dispatch closure and native application window diagnostics |
+| Coverage activation audit (39) | Source audit documented | Audited missing writers and actual producer timing |
+| Causal accounting / application windows (40–41) | Authored, unverified; pause reached | Exact incoming-read/admission boundaries and distinct native application windows |
+| Beneficiary / need / lifetime ownership design (42) | Next bounded stage | Define supported pre-mutation authority and remaining public alias limits before hooks |
 | Complete need/lifetime history and useful throughput | Open; activation still blocked | Public aliases and every relied-on mutation need authority before useful windows/real recipes |
 | Continuous useful capacity | Open | Complete mutation authority for readiness, supply, access/safety and service |
 | Full production adapter/oracles/setup/strategy | Open | Independent PRO-03/06/07 assertions |
@@ -88,7 +88,8 @@ Stage 33 is `0e1906024c7339a964fcc1dfdea93145b9e10509`; stage 32 is `42b5bf3d3`.
 Stage 34 is `d226b6636d41cc7201803ba80d34869a32b59a78`; 35 is `d2e48214230e66290f95f7011c17951025cbacda`.
 36 is `47e88948d20658b17417cf8171e381fc5495874f`; 37 is `f72d123174e9e9d1fb5ccdd335bfbce6cbeeff34`.
 Player-owner split prerequisite is `80a84493b155a2f431cc0aa172257ce9398e3624`;
-38 is `0e9dc0c9bc69c1aa04db1e1b35f51526efa4abc5`; containing commit owns 39.
+38 is `0e9dc0c9bc69c1aa04db1e1b35f51526efa4abc5`; 39 is `1c7ecdef633d5d28cf3ca88b7ed4467eb5436c12`.
+40 is `4647a4a427acf56ddf34579df3e64317dd8ac254`; containing commit owns 41.
 No fixed machinery total/percent is claimed; diagnostic authoring is delivered, useful-service acceptance remains open.
 All native observer,
 report, prior movement and earlier final-gate obligations remain unrun. Capture/report cost and native compatibility are unmeasured.
@@ -543,7 +544,7 @@ merely because their issue title mentions testing. All authored work remains unv
 | 1 / as needed | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `partial` | Split only owners blocking the selected batch | Stay Sol medium; optional Luna high |
 | 2 | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829) | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof | GPT-6.1 Sol, medium |
 | 3 | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `in_progress` | Finish pressure/recovery policy; defer victory proof | GPT-6.1 Sol, medium |
-| 4 / next boundary | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | 39 source audit documented; 40–41 causal accounting/application windows next; useful activation still blocked | Sol high across causal repairs; medium for later settled wiring |
+| 4 / next boundary | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | 40–41 diagnostic repairs authored/unverified; 42 ownership design next; useful activation blocked | Sol high for ownership design; medium for settled wiring |
 | 5 / paired | #815 / #816 | `in_progress` | Remaining family contracts, focused fixtures, frozen maps and continuous-match tier | Sol medium; optional Luna high for established cases |
 | 6 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `in_progress` | Exact-once interruption, terminal and re-entry parity | GPT-6.1 Sol, medium |
 | 7 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `partial` | Generation fencing, phase restore/replay and cleanup cases | GPT-6.1 Sol, medium |
@@ -557,12 +558,12 @@ merely because their issue title mentions testing. All authored work remains unv
 The user policy below and latest Quick resume own #759 model choice and execution boundaries. The user selected Sol 6.1 / medium
 for the current implementation group. Use Sol for unresolved thinking/design; Luna / high is an optional choice for
 concrete routine work. Keep related work together to avoid unnecessary switches. This applies to this roadmap.
-The latest `continue` authorized 39, now documented as a bounded source audit; pause here.
-40–41 is the next bounded causal repair/application window batch, recommended GPT-6.1 Sol / high across both stages.
-Incoming-read identity and exact self-dispatch closure need careful implementation before diagnostic quantities can follow
-the real producer. Do not infer that successful synthetic accounting completes the machinery.
+The latest `continue` authorized 40–41, now authored/unverified; pause here.
+42 is the next bounded ownership-design stage, recommended GPT-6.1 Sol / high across its related decisions.
+Incoming-read identity, exact self-dispatch admission and distinct application windows are authored; native producer
+integration remains unrun. Do not infer that synthetic diagnostic controls complete the machinery.
 Complete mutable-alias, beneficiary need/liability and lifetime mutation authority remain activation blockers;
-the audit alone grants no useful-window verdict. Group implementation without per-file switches.
+the authored diagnostics grant no useful-window verdict. Group ownership decisions without per-file switches.
 No model was switched automatically. Continuous useful capacity and full production proof remain open.
 
 | Responsibility | Model / effort |
@@ -606,10 +607,11 @@ No model was switched automatically. Continuous useful capacity and full product
 
 Copyable next-chat prompt:
 
-> Read docs/ai/759-skirmish-ai/HANDOFF.md and its coverage activation audit checkpoint. Complete bounded 40–41:
-> repair causal input/frame/closure diagnostics, then add separately identified native application window diagnostics.
-> Follow the exact acceptance/negative controls, keep unsupported channels unavailable and native semantics intact.
-> No useful activation or real interval recipes; group both stages and pause afterward.
+> Read docs/ai/759-skirmish-ai/HANDOFF.md and its native application window checkpoint. Complete bounded 42 ownership design:
+> define supported pre-mutation authorities, exact lifetime identities, liability retirement and public alias limitations.
+> Use the audited writer table and completed 40–41 diagnostic constraints to specify one bounded implementation batch.
+> Keep unsupported channels unavailable and native semantics intact; no useful activation or real interval recipes.
+> Group the ownership decisions, commit/push the existing-doc design and pause afterward.
 > Report what was authored and what comes next,
 > including what each will be used for and why it matters. Commit/push each coherent stage; pause at a stronger-reasoning
 > boundary and recommend the next model/effort. End each stage with the change, the problem it solves and its users;

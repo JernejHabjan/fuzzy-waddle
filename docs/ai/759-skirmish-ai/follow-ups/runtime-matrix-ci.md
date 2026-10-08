@@ -35,6 +35,62 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
 
 ## Implementation order
 
+### Native application window checkpoint (2026-10-08, authored/unverified)
+
+41 completes the authorized 40–41 authoring batch, based on
+`4647a4a427acf56ddf34579df3e64317dd8ac254` (40). Containing commit owns 41. Commit/push and pause.
+Actual host model/effort unknown; last selected Sol 6.1 / medium. No model switch. Every executable check stays deferred.
+
+**What / why:** `resourceServices.applicationIntervals` is a separate `native_operation_entry` projection.
+`skirmish-ai-runtime-resource-application-interval.ts` names its diagnostic contract; the application projection
+places exact joined native entry/terminal pairs in `(start frontier, end frontier]`. Terminal and credit publication
+must exist in the complete supplied tail, although publication can follow the endpoint. The shared application join
+also serves frozen-need accounting, so both consumers check the same actual beneficiary and payload. Legacy
+`intervals` retain publication-position diagnostics; no old field is silently relabelled.
+
+| Acceptance / source evidence | Authored status / deferred evidence |
+| --- | --- |
+| 41.1 Native positions and endpoints | Application projection uses validated paired operations and exact snapshot frontiers/cohorts, never credit publication tick to choose the window. A pair crossing either endpoint, absent/ambiguous reads, drop/loss or incomplete journal leaves quantities null. |
+| 41.2 Complete supplied tail | Shared recipient replay inspects all supplied entries/terminals and conflicts. Exact credit fact must be present in source tail; repeated operation credit or payload/beneficiary conflict rejects the normalized parent. Legacy absent operation IDs leave only new quantities unavailable. |
+| 41.3 Diagnostic quantities | Observed income sums each exact scoped operation once. Observed contribution bounds use the selected accounting record; grant/spend before delivery still consumes the old shortage. All usefulness/floor/retained-throughput/capacity fields remain null; partial authority and mutable-alias gaps remain. |
+| 41.4 Consumers / compatibility | Service projection adds application intervals; production causality clears them with every other normalized group on failure. Legacy publication fields retain their meaning and shape. No real recipe declarations, gameplay hooks, persistence, budget or coverage upgrades. |
+| 41.5 Controls | New application fixture/spec covers publication in a later adjacent window, exact frontiers and boundary straddle, absent terminal/publication/join, missing/ambiguous reads/cohort, loss/drop, duplicate operation joins, conflicting tail, overflow and unrelated beneficiary. Grant then spend precedes native delivery; all controls are authored/unrun. |
+
+**Source Implementation Review:** traced shared native-payload predicate, all-tail recipient replay, fixed interval
+declarations, endpoint coverage/frontier validation, sparse source-player facts versus all-beneficiary journal, exact
+join reuse, accounting-bound consumption, legacy projection and final parent suppression. Source review repaired a
+synthetic unrelated-beneficiary control to retain the original recipient's payment terminal while inserting a distinct
+recipient installation. Focused new owners remain below source limits; no baseline refresh/check executed.
+
+**Omission Audit:** acceptance 41.1–41.5 includes registrations through existing derived report types, bounded arrays,
+all-tail failures and negative controls. No new producer listener or ownership allocation requires disposal. Existing
+partial cohort installation proves no continuous capacity. Authoring does not claim native integration or runtime cost.
+Add `skirmish-ai-runtime-resource-need-boundaries.spec.ts` and `skirmish-ai-runtime-resource-application.spec.ts` to the
+retained portal-e2e Playwright final gate; updated input-capture/controller specs join retained Phaser Jest patterns.
+All earlier commands and real pipeline/controller integration obligations remain deferred.
+
+Additional final-gate command (unrun; run with the retained 29–38 portal-e2e and Phaser commands):
+
+```sh
+pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts skirmish-ai-runtime-resource-need-boundaries.spec.ts skirmish-ai-runtime-resource-application.spec.ts
+```
+
+**Separate Final Closure Audit:** 40–41 is authored/unverified, with separate source review and omission audit; native
+planner/dispatch/resource semantics remain unchanged. Publication checks concern Git only. No executable validation,
+useful-service activation, issue/family closure, fixed machinery total or completed-capacity claim. Preserve Nx merge
+`59f72e037`, publish task-owned paths and pause.
+
+#### Next bounded authoring action: 42 ownership design
+
+Recommend **GPT-6.1 Sol / high** for the next ownership-design boundary. Define an explicit supported-route and
+loss/closure contract for beneficiary membership/state, selected liabilities and source/actor/cargo lifetimes before
+adding more hooks. Start from 39's audited writer table and 40–41's exact read/application constraints. Name each
+pre-mutation authority, cross-await identity, public mutable alias limitation, reentrancy/restore/disposal boundary,
+source-size prerequisite and deferred positive/negative control. Produce a concrete bounded implementation batch in
+these existing docs; do not infer complete history from named method hooks or change public resource/payment semantics.
+This design is used to choose what later diagnostic captures can prove without activating unsupported useful metrics.
+Keep related ownership decisions together; medium can implement settled wiring after this contract exists.
+
 ### Causal need boundary checkpoint (2026-10-08, authored/unverified)
 
 40 is based on `1c7ecdef633d5d28cf3ca88b7ed4467eb5436c12` (39); containing commit owns 40.

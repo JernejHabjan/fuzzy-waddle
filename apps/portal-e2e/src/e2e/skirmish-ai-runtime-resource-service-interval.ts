@@ -2,7 +2,8 @@ import type { AiRuntimeResourceServiceIntervalV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-resource-service-interval-v1";
 import type { RuntimeResourceNeedV1 } from "./skirmish-ai-runtime-resource-need";
 
-/** Observed interval quantities are diagnostics. Missing complete need history cannot become an actual usefulness verdict. */
+/** Legacy publication-position diagnostics; native application positions live in applicationIntervals separately.
+ * Missing complete need history cannot become an actual usefulness verdict. */
 export interface RuntimeResourceServiceIntervalV1 {
   readonly declaration: AiRuntimeResourceServiceIntervalV1;
   readonly need: RuntimeResourceNeedV1 | null;
