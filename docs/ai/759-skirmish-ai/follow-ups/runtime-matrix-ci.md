@@ -76,7 +76,7 @@ ConstructionSiteComponent direct writes remain known unsupported health routes; 
 All source-authoring obligations covered, exact task-owned publication follows; no executable evidence or issue closure.
 Runtime capture cost/native compatibility remain unmeasured. No skill/tool change or durable proven contract was established.
 
-#### Next bounded design batch: 47 construction health writer contract
+#### Authored design batch: 47 construction health writer contract
 
 Recommend **GPT-6.1 Sol / high** for this grouped authority design, then pause. Construction writes live health/armor
 silently rather than through HealthComponent setters; routing them through setters could add reactions/native events.
@@ -99,6 +99,115 @@ This is a concrete remaining writer contract, not a request to reopen all resour
 Purpose: construction progress and repair change actor readiness through exposed state. The next contract lets a later
 fence close earlier resource history at those actual writers without accidentally introducing health sounds/events/death.
 Source/drain capacity, complete lifetime, roster and arbitrary alias authorities remain subsequent open work.
+
+### Construction health writer checkpoint (2026-10-08, source design only)
+
+Stage 47 is based on `6011a432219678fcabad2a00f675964b83716507` (46, remote verified); containing commit owns
+this design. No runtime or test code changed. Actual host model/effort is unknown; last user selection is Sol 6.1 / medium.
+The source audit settles the next grouped implementation batch, **48–49**, recommended **GPT-6.1 Sol / medium**.
+Keep both stages together and pause after 49; commit/push the prerequisite separately before hooks.
+
+Why used: building work and repair silently mutate the same public health object used by native damage and UI reads.
+A delivery after that work must not inherit an earlier claim of continuous readiness. Completion/restore can change
+readiness even without health, so their native state transitions need explicit boundaries too. This design preserves
+silent writes; it does not convert construction into health setters or create damage/heal reactions.
+
+#### Exact source inventory and decision
+
+Paths below are relative to `libs/games/probable-waffle/phaser/src/lib/`.
+
+| Route / source anchor | Native order and reference / selected boundary |
+| --- | --- |
+| `entity/components/construction/construction-site-component.ts`: constructor / `init` / `setInitialHealth` | UI constructs first; ready callback precedes tick subscription and destroy/killed handlers. NotStarted ready resolves HealthComponent afresh, directly floors health then optional truthy-max armor; audio service then cached health lookup follow. Fence `resource_actor_health_change` after successful local health lookup and before the first health assignment, even matching values. No health means no health fence. Preserve eager/deferred readiness. |
+| `tryBuild`: immediate and assigned-worker start | Immediate branch calls start then initial health even if a synchronous start subscriber changes state. Assigned-worker start does not call initial health. Do not add a second guard. Existing state/killed guards precede progress; killed uses the cached facade. |
+| `startConstruction` | NotStarted check and production lookup/throw precede payment. Payment returns before remaining work and Constructing state assignments, lifecycle observation and state subject. Fence `resource_actor_construction_change` immediately after payment returns, before work/state writes. Payment failure keeps the native failure/state and adds no construction fence; an observer during payment still sees the pre-start site. |
+| `tryBuild`: progress | After Constructing/alive guards, calculate work using automatic plus assigned/pending builder count and resolve production definition. Fence `resource_actor_construction_change` after successful definition lookup and before decrementing remaining work. Then retain health `+=` followed by clamp, optional armor `+=` then clamp, sound, completion, fraction and progress notification. This one boundary covers work and silent vitality writes, including zero-work/capped values and sites without health. Do not coalesce arithmetic or resample health before the fence. |
+| `tryRepair` | Resolves current HealthComponent afresh; missing health, zero effective repairers and full health return before mutation. Calculate repair amount from the existing second count read, then fence `resource_actor_health_change` before health `+=`/clamp. Preserve zero-factor eligible repair's conservative fence, no armor repair, sound afterward and full-health `leaveRepairSite` callbacks. No setter/event/death call. |
+| `finishConstruction` / `completeConstruction` | Fence `resource_actor_construction_change` at finish entry before Finished assignment and lifecycle/state callbacks, even without a preceding progress tick or health object. Preserve state notification → visible completion sound → optional builder destruction → actor upgrade → score event. `completeConstruction` already-finished return stays fence-free. Progress-triggered finish deliberately fences twice. |
+| `setData` / `getData` | Fence `resource_actor_construction_change` at setData entry before any state/work/progress/sound/assignment writes or reference-resolution callbacks. Even empty/matching restore fences because it resolves references and emits restored/progress/state callbacks. Preserve pending ID copies and all-or-nothing resolution; getData remains read-only with identical saved fields. Construction restore itself does not restore health. |
+| `cancelConstruction` / `onDestroy` | Finished cancellation returns; otherwise lookup/refund then each builder's order reset. No health or construction-state assignment: do not add a cancellation health fence or invent a terminal state/payment ledger. Teardown observes first, then cancellation, then tick unsubscribe; repeated killed/destroy cancellation and throw-before-unsubscribe remain native. Stage 46 covers valid health death entry; arbitrary raw destroy remains an incomplete lifetime route. |
+| `tryResolveAssignedActorReferences`, assign/unassign methods | Pending counts drive progress/repair until every ID resolves; updates can change arrays before progress guards. No direct health writes here. Worker roster/assignment and complete capacity history remain unsupported; the selected fences do not certify those changes before the actual work/restore boundary. |
+
+`construction-progress.ts` owns the existing vitality formula: nonpositive gain returns zero, nonpositive production
+time returns the full missing vitality, otherwise scales by work. Retain two writes per health/armor gain, truthy armor
+predicate, native non-finite/negative arithmetic and progress-fraction behavior; this batch is not balance or arithmetic repair.
+`construction-payment.ts` retains the unusual start predicate `productionTime === PaymentType.PayImmediately`, current
+definition refund sampling, flooring, owner argument and resource reference identity. Do not move fences ahead of payment
+or wrap payment with a new callback. `observe-construction-authority.ts` remains the existing diagnostic emitter owner;
+its observation follows native transitions and cannot serve as a pre-mutation substitute.
+
+Completion's `data/actor-data.ts:upgradeFromConstructingToFullActorData` adds completed components/systems to the current
+maps, optionally applies a supplied definition, then emits ActorDataChangedEvent. Construction calls it without a supplied
+definition. Its no-actor-data fallback constructs full data and can replace components; the selected finish fence precedes
+that call but does not establish exhaustive component-map authority. `applyActorDefinitionToActor` restores construction
+before health. The new construction restore boundary therefore precedes construction callbacks even when later health
+setData matches and its setter emits nothing. Public component/data/definition aliases remain unsupported.
+
+#### Technology and immediate consumers
+
+The only production `setHealthDefinition` call found in Phaser source is `data/actor-level-utils.ts:upgradeActorToLevel`.
+After level/definition guards it changes animations and attack before calling the health facade, then regeneration,
+vision, container and level. Stage 46 already loses history before health definition replacement, including matching
+values; retain actual definition reference and reset-to-max setter behavior. Do not claim the whole multi-component
+upgrade is fenced at entry: animation/attack callbacks precede health, and an upgrade without health has no health fence.
+
+`entity/components/research/research-component.ts:handleResearchComplete` registers research (and its synchronous tech
+event) before upgrading owned actors selected by ActorIndexSystem; completion notifications follow upgrades.
+`data/tech-tree/tech-tree.service.ts` stores research/unlocks and emits registration, but has no direct health writer.
+`world/services/scene-actor-creator.ts:createActorFromDefinition` upgrades saved level, then reapplies saved health through
+facade setData. EditorActorLevel also calls upgradeActorToLevel. No duplicate technology health hook is planned.
+Research set/definition aliases and non-health upgrade readiness remain incomplete authority, not silently covered.
+
+ConstructionProgressUiComponent subscribes to the facade BehaviorSubject and destroys its own bar at 100; HealthPresentation
+subscribes to construction state for visibility. Both must keep seeing their existing notifications and silent health data.
+Existing `construction-site-component.spec.ts` exercises formula helpers only; `construction-lifecycle.spec.ts` uses the
+real component with payment/upgrade/UI adapters. Neither is executed evidence of the new boundaries.
+
+#### Next implementation batch: 48–49 construction presentation and history fence
+
+**48 — behavior-preserving sound prerequisite.** Extract construction sound presentation into adjacent
+`entity/components/construction/construction-presentation.ts`, with one focused class. The facade retains
+playingBuildSound as the serialized field; helper reads/writes it through callbacks rather than duplicating state.
+Move cached AudioService, visibility gates, sound selection and build/completion playback; initialize its service
+at the original init lookup position before cached health lookup. Store helper before an eager ready callback can run.
+Keep ConstructionProgressUiComponent construction, subjects, simulation subscription and destroy/killed ordering on
+the facade. Preserve flag-before-play behavior, existing completion callback, native audio throws, visibility/RNG order
+and optional completion audio. No new timers/listeners or late-callback cancellation. This isolates render/audio work
+and leaves room for readable hooks under 400/200/140. The component currently has no baseline entry (removed in prior
+construction extraction); no baseline hash refresh or invented exemption. Split only further stable responsibilities
+if source inspection finds a real limit problem. Author eager/deferred init, sound guards/flag/save/restore/callback,
+completion order and unchanged lifecycle/teardown controls; do not run them. Commit/push separately.
+
+**49 — passive construction writer fences.** Add the exact boundaries/reasons in the inventory using existing
+`data/scene-resource-observation.ts:fenceSceneResourceHistory`. Constant bounded scene dispatch, no cohort filter,
+new listener, schema, fact, budget, timer or persisted state. Preserve actual facade/data/definition identity, silent
+arithmetic and all native callbacks/results/errors. Multiple boundaries may increase lossEpoch; sticky loss is intentional.
+
+| Acceptance | Following implementation and authored controls (all unrun) |
+| --- | --- |
+| 49.1 Initial / progress / repair | Real component with controlled ready/ticks/adapters: loss sees old health/work/state; post-write construction/audio/repair callbacks see loss. Initial matching/armor absent/present; automatic/worker/pending work; zero/capped/instant work; repair missing/full/zero-worker guards, pending count, zero-factor, clamp and no armor/event/reaction/death. |
+| 49.2 Lifecycle / restore | Start payment and denied/thrown payment ordering; immediate versus assigned start; manual versus progress finish, no-health finish and already-finished guard; matching/empty/partial restore, pending resolution and unchanged saved fields. Retain cancellation/refund/order-reset and repeated teardown/unsubscribe behavior. |
+| 49.3 Failure / reentrancy / references | Observer throws do not suppress another observer or native work. Native payment/audio/upgrade/repair callbacks keep errors and partial state; nested restore/finish/progress reads never regain old history. Preserve initial local versus progress cached versus repair fresh health lookup. Do not freeze definitions/data across callbacks or add native guards. |
+| 49.4 Capture / delivery | Real scene recipient capture subscriber and journal: sticky global reason/epoch, no cohort filter, disposal silence and fresh partial capture without backfill. Cross-await real construction progress/repair against a live drain and actual protocol recipient preserves post-wait owner, campaign normal/granted/none behavior, exact application operation, notification and full native return. No destroyed-drain guarantee. |
+| 49.5 Report / limits / delivery | Extend existing real subscriber/fence application report control with construction reason over its synthetic payloads: need/application bounds and usefulness null, legacy income retained, every channel partial. Source-review consumers, size and ownership; update handoff, commit/push then pause. No useful activation or family/issue closure. |
+
+Final gate retains every earlier command and adds these authored controls to the existing selections (do not run now):
+
+```sh
+pnpm exec nx test probable-waffle-phaser --testPathPatterns='construction-site-component|construction-presentation|construction-resource-history|construction-drain-credit|construction-lifecycle|construction-payment|scene-resource-observation|ai-runtime-recipient-resource-capture' --runInBand
+pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts skirmish-ai-runtime-resource-application.spec.ts skirmish-ai-runtime-construction-authority.spec.ts
+```
+
+**Source Implementation Review:** traced direct writes, local/cached references, payment and notification order,
+constructor/readiness, restore resolution, completion component upgrade, researched definition callers and UI consumers.
+Selected conservative work/lifecycle loss explicitly; rejected health setter routing because it adds native health events.
+No mandatory baseline repair is inferred; sound extraction is a separate maintenance prerequisite before adding hooks.
+**Omission Audit:** 47.1 writer inventory, 47.2 actual technology caller, 47.3 exact reasons/order and silent semantics,
+47.4 bounded 48–49 acceptance/model/commands are recorded. Assignment/alias/raw destroy/non-health research routes remain
+explicit gaps; cancellation is not falsely labeled a health mutation. No runtime edits or new registration required by design.
+**Final Closure Audit (separate):** reviewed the design against native code and immediate consumers after drafting,
+reconciled handoff/current grid/resume policy. Design authored/source-reviewed only; all executable evidence deferred.
+No skill/tool update warranted. Commit/push this documentation slice and pause at 47.
 
 ### Health presentation prerequisite checkpoint (2026-10-08, authored/unverified)
 
