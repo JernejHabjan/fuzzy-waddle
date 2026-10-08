@@ -35,12 +35,224 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
 
 ## Implementation order
 
+### Beneficiary need authority design checkpoint (2026-10-08, unimplemented)
+
+36 is the user-authorized bounded design after `d2e48214230e66290f95f7011c17951025cbacda` (35).
+The containing commit owns this documentation slice. Selected profile remains GPT-6.1 Sol / medium; actual host
+settings are unknown. Source inspection only; no runtime change, executable spec, validation or model switch.
+Pause after this checkpoint. The 32 contract and all prior final-gate commands remain mandatory.
+
+**Purpose:** decide whether a particular gathering delivery still reduces its beneficiary's selected aggregate
+shortage. For example, another worker or a refund may already have supplied the wood. A delivery can remain real
+income while contributing zero to that old need. The current `potentialContribution` cannot decide this.
+
+#### Actual writers and ordering
+
+Paths below are relative to `libs/games/probable-waffle/` unless explicitly qualified. These are inspected source
+routes, not evidence that every mutation is covered by today's capture.
+
+| Authority / existing anchor | Finding / required implementation consequence |
+| --- | --- |
+| `protocol/src/lib/game-instance/probable-waffle/player.ts`: `addResources`, private `addResource`, `payAllResources`, public `payResources` | Actual resource writes are here. Vector operations iterate entries and can partially mutate before throwing. Observe actual mutators, including direct public single-resource payment; do not assume atomic payment. |
+| `protocol/src/lib/communicators/probable-waffle/listeners.ts`: resource cases | Shared listener invokes those mutators. Observing the later `playerChanged.on` callback does not supply an operation-scoped before sample. Human/AI purchases, refunds and other gatherers use the same recipient money. |
+| `phaser/src/lib/data/scene-data.ts`: `emitResource`, `sendPlayerStateEvent` | Routes through local send or normal communicator; restore can suppress emission. Returned emit is not proof of a native application. Preserve all existing routing/suppression behavior. |
+| `phaser/src/lib/entity/components/resource/observe-resource-credit.ts`: `prepare` | Exact payload-reference callback, before/after balance and nested interference already exist, but no native player-mutation ID joins that credit to a beneficiary-wide journal. Keep these requirements in addition to the new join. |
+| `phaser/src/lib/player/ai-controller/testing/ai-runtime-production-capture.ts`: constructor resource observer, `append` | `lastBalances` is the previous observed balance, not actual mutation entry. `resources_applied` also gets no `boundaryState` in the append allowlist. Facts are later filtered by source player; a recipient journal needs its own explicit projection. |
+| `phaser/src/lib/campaign/participants/campaign-participant-scene-adapter.ts`: `applyStartingResources` | Direct writes bypass resource events. Pre-installation setup supplies initial stock only; invocation during capture must fence authority before mutation. |
+| `phaser/src/lib/world/services/recovery/reconnect.service.ts`: `applySnapshot` | Sets the restore flag, recreates actors, then `Object.assign`s player state. Fence at restore entry, before any recreation/write; seeing the flag at a later snapshot is insufficient. |
+| `libs/platform/game-sessions/src/lib/player/player-state.ts`: `resetData`; game-instance construction/reset/player membership | Public state and player identities can be replaced. Installation binds actual player/state/resource objects; reset, removal/replacement and scene restart terminate that binding. |
+| Player `getResources()` and public `playerState.data` | Return/expose mutable objects. Method hooks do not intercept arbitrary alias writes or net-zero write/undo. Complete general resource history remains unsupported until these routes have an owned mutation boundary; matching endpoint balances cannot repair it. |
+
+Existing resource-event callers were inspected in construction payment/refund, queue payment/refund, immediate
+gathering, drain return, campaign grant/set actions, preset-world grants/starts and multiplayer test setup. All
+recipient additions must affect need accounting, even if their origin is not service or belongs to another player.
+Startup construction/loading is initial state, not income. Server mirrors and socket parity are separate #819 proof;
+one scene journal does not establish cross-client exact-once authority.
+
+#### Native mutation journal contract
+
+Implement a focused protocol-local passive observer keyed weakly by the actual player instance, with no Phaser or
+E2E dependency. The marked scene capture supplies simulation boundary reads and owns subscriptions. Ordinary
+listener-free mutators keep their native path. Keep the existing class token, APIs, arguments, receiver, mutation
+order, return/error and state/save/relay shapes. Use focused owners; split an oversized edited owner before hooks.
+
+- Each outer resource call gets a capture-local operation ID and actual entry/terminal positions in the root's
+  single ordered sequence. Record operation kind, exact requested vector, actual before/after vectors, return/throw,
+  player/state/resource binding and restore/loss state. Numeric resource values remain finite native units.
+- Vector-to-leaf calls belong to the same outer operation and count once. Direct `payResources` is also an outer
+  operation. A failure after a first resource write records its partial terminal balance and invalidates quantitative
+  history; never fabricate rollback or turn a thrown partial payment into zero mutation.
+- Begin/end readers, append and observer failures fence loss before fallible diagnostics. Native work still runs
+  exactly once with its original error. Reentrant diagnostic-triggered native operations are ambiguous and fence
+  the affected epoch; expected internal vector-to-leaf nesting is distinct from external reentrancy.
+- Bind the existing service emission's exact payload reference and recipient to one actual mutator application
+  while that synchronous emission is open. Retain a transient explicit operation token/ID in the credit record;
+  never select the nearest journal entry by tick, amount, resource, owner or a global ambient current order.
+  Missing/multiple/nested applications leave the join unavailable. Direct grants still enter the recipient journal
+  without becoming attributed service. Journal and old `resources_applied` facts are not summed twice.
+- Project the bounded journal for the actual beneficiary, including every source player and non-service addition.
+  Existing source-player filtering stays explicit. One recipient mutation may be referenced by several diagnostics
+  but is consumed once by operation ID; conflicting references invalidate the parent normalized groups.
+- Installation retains a detached initial vector and object identities at its real boundary. It cannot backfill
+  pre-capture work. Every sampled boundary must reconcile against the previous journal terminal vector; a mismatch,
+  unknown player, unsupported writer, open operation or replacement leaves completeness unavailable. This check
+  detects some bypasses; it is not proof that arbitrary alias mutations never occurred between reads.
+
+Use the existing 8,192 fact/identity, 256 snapshot/group and eight-listener/nesting bounds, with monotone loss before
+serialization. New journal records consume the existing root fact budget; do not create an unbounded second history.
+Keep all supplied tails inspectable and reject malformed/conflicting/overflow groups. Teardown removes only owned
+subscriptions; disposal/restore/restart cannot revive an epoch. No extra scan, navigation query or timer.
+
+**Coverage decision:** introduce separate explicit channel status for native recipient mutations, selected-need
+lifecycle, reconciled liabilities and cargo/lifetime. Today's four unsupported-history gaps remain mandatory.
+Do not replace them with one `complete` boolean. Native-mutator coverage alone is partial because public mutable
+aliases and state replacement exist. A test declaration, writer list or successful positive fixture cannot grant
+complete authority. Either implement the missing mutation boundary without changing gameplay semantics, or retain
+null usefulness and the exact unsupported route. This is an activation gate, not a reason to stop authoring records.
+
+#### Frozen need generation and conservative closure
+
+Use the original accepted selection identity and the 33 consumed inputs. At acceptance retain the original forecast
+`A`, resource, horizon, player/generations and input ledger `S0`, `R0`, `D0`. A later decision's freshly projected
+forecast cannot replace them: macro chooses gathering before `projectAiMacroEconomyState`, and
+`PlayerAiController.stepPureBrain` dispatches before saving `result.nextState`.
+
+Bind the consumed stock/obligation observation to its actual read position in this same capture epoch. The current
+selection has a tick/generation but no journal read marker; tick equality cannot fill that gap. Capture a transient
+read marker at the native observation projection and carry it through accepted selection metadata without save/wire
+changes. Missing/pre-installation/interfered reads stay unavailable. Replay all recipient additions between that
+input read and acceptance as well as later ones; a balance that happens to match again is insufficient. If the same
+accepting result already replaces the consumed target/forecast, close the old input immediately rather than borrowing
+its new forecast. A new supported generation needs actual fresh selected inputs.
+
+Establish a detached acceptance-time liability frame from the actual selected result plus reconciled unspent claims,
+pending admission ownership and live stored queue charges. Existing owners are `AiRuntimeUnspentClaims`,
+`AiRuntimePendingCommands`, `projectAiRuntimeProductionBoundaryState` and `projectAiProductionObligations`.
+The live controller brain/reservations can lag dispatch; use the exact selected event, not a newer/older saved view.
+The observation currently sets `reservedUnspent: 0`. Do not substitute diagnostic claim totals silently: if exact
+disjoint reconciled liabilities cannot establish that the selected `R0`/`D0` still apply, usefulness is unavailable.
+Do not add pending claims twice; a selected/admitted cash claim transfers into physical pay-over-time liability or
+retires on exact successful immediate payment. Pre-capture/unsupported construction and unfinished payment remain gaps.
+
+The first implementation deliberately closes the old generation on **any relevant liability or target change**;
+it does not reprice a new obligation into the old need. Close before the affected mutation/callback, using actual
+sequence order, for the following routes:
+
+- Every later selected decision, including an empty or non-gathering one. Same forecast values do not renew identity.
+- Claim release/expiry/recovery abandonment, admission rejection/cancellation/failure/payment, queue insertion/removal/
+  progress/completion/restore, or an affected actor's registration, owner transfer, death or removal. Existing outcome,
+  queue mutation/progress and unspent-claim events are starting anchors; post-only callbacks need a pre-mutation fence.
+  Successful zero-time progress has its existing exact exhausted-head exemption; never infer it from remaining time alone.
+- `PlayerAiController.setBrainState`, `setSaveState`, disable or authority loss; controller replacement, scene teardown,
+  restore, clock/loss fence and horizon expiry. These need actual entry hooks, not later roster/tick samples.
+
+If a relevant route cannot be observed, report missing lifecycle coverage; absence of a callback is not continued
+need. Closed generations stay closed. A new accepted quantitative selection may open a new generation only from
+new independently captured inputs/history. This is aggregate forecast service, not individual purchase fulfillment
+or strategic sufficiency. Keep the same-recipient/resource overlap rejection; no allocation across competing needs.
+
+#### Independent unresolved amount at each application
+
+Only when all relied-on channels are supported, define `B0 = max(0, S0 - R0 - D0)` and `G = max(0, A - B0)`.
+Let `Pbefore` be **all positive native additions to this beneficiary/resource after the exact consumed input read
+and before the exact application**, including other gatherers, cross-owner deliveries, refunds and grants.
+Pre-acceptance additions belong in this history too; the input's initial stock is excluded.
+Removals never subtract from this cumulative value. Retain the actual pre-application stock `Sbefore`; liabilities
+must still be the unchanged, independently reconciled `R0`/`D0` or the generation is already closed/unavailable.
+
+```text
+unresolvedBefore = min(max(0, G - Pbefore), max(0, A - max(0, Sbefore - R0 - D0)))
+spendableGain = max(0, Safter - R0 - D0) - max(0, Sbefore - R0 - D0)
+usefulContribution = min(eligibleScopedAppliedAmount, unresolvedBefore, max(0, spendableGain))
+```
+
+This is a conservative portion of a whole attributed pile; it does not divide cargo among attempts or originating
+demands. Eligibility still requires the 31/35 exact whole-pile accepted-selection/recipient/operation lineage and
+complete relied-on lifetime history. Unmatched ordinary income can close a need but cannot become useful service.
+The actual terminal balance `Safter` belongs to that same successful mutation. The marginal spendable cap prevents
+money absorbed entirely by already-owned liabilities from claiming to reduce the selected forecast shortage.
+Counting all positive additions against `G` remains deliberately conservative; this may undercount useful service,
+but it never renews the old generation after spending. Malformed/negative/non-finite requests or unmatched vector
+changes invalidate quantitative history without repairing native inputs or inferring application amounts.
+After each actual addition, advance `Pbefore` by its full applied positive amount, including surplus/ineligible income.
+Cap cumulative contribution once across windows/adjacent intervals for that generation. A satisfied generation
+never reopens because spending reduces the stockpile; changed liabilities require closure and a fresh selection.
+
+Example: an initial 10-wood shortage receives seven wood from another source, spends seven, then receives seven
+from the selected worker. The old generation can receive at most three useful wood, even though its current balance
+would allow all seven. If other income already supplied ten, the worker's delivery contributes zero. Conversely,
+unavailable recipient or liability history produces null, not zero. The formula is a future conservative service
+metric, not a claim that native planner demand has authoritative demand-unit allocation.
+
+Application order comes from the native mutation entry/terminal, not the later `resource_credit` publication. New
+credits must carry that exact join. A supersession occurring after native application but before its diagnostic
+publication cannot retroactively change the application order. Nested/interfering operations stay unavailable.
+Fixed window ownership likewise uses application position; actual reads never seal pending async continuations.
+
+Useful-window floors may be evaluated only with complete interval history and need/lifetime authority. A covered
+window with no qualifying contribution is zero; a missing window is null. A filled/closed generation cannot prove
+continued useful throughput in later windows. Renewed service requires independently declared/captured generations,
+not moving deadlines or extending the forecast. `continuousUsefulCapacity` stays null until complete readiness,
+supply, drain, access/safety and service predicate histories exist. Source refill/lock/restore, drain capacity and
+owner changes are additional actual writers, not covered by successful extraction/credit observations.
+
+#### Next grouped implementation and final-gate evidence
+
+Recommend **GPT-6.1 Sol / high** for the related 37–38 batch. This is a task-risk recommendation; settings are not
+changed. Keep the same profile across native observer and accounting work. Medium remains suitable for later settled
+fixture/report wiring. These are local authoring boundaries, not a remaining-machinery count or automatic authorization.
+
+| Next stage | What / why / authoring stop condition |
+| --- | --- |
+| 37: recipient mutation capture | Focused native observer and bounded beneficiary journal, exact credit operation join, restore/reset/replacement fences and authored native controls. Gives accounting all observed recipient income rather than a worker subtotal; partial channels remain explicit. |
+| 38: need lifecycle/accounting | Accepted liability frame, conservative generation closure, strict journal replay and unresolved-before projection with negative controls. Prevents other income or spending from being credited to the old need. Publish both related stages, then pause; usefulness stays null wherever a required writer/lifetime route is unsupported. |
+| After 38: activation/recipes | Audit remaining mutation authority before enabling useful windows, then frozen native positive/control declarations through the installer/browser config and existing variant consumer. Gives PRO oracles independent real evidence; do not assume 37–38 makes activation safe. |
+
+Author, but do not run until the final gate, controls for direct/vector mutations; partial throw; expected leaf nesting
+versus reentrancy; observer/reader/subscribe/append failure; unknown/removed/replaced player/resource objects; restore
+before write; alias mismatch and explicit unsupported alias history; other source/cross-owner income/refund/grant;
+suppressed/zero/pending credit; exact-reference duplicate/interference joins; same-tick application versus selection/
+publication ordering; stale selected ledger; claim-to-queue transfer without double reservation; pre-capture claims;
+payment/progress/zero-head boundaries; missing input read marker and income before acceptance; same-result forecast
+replacement; forecast/claim/lifetime closure; spending after fulfillment; income absorbed by existing liabilities;
+whole-pile mixed
+generations; empty versus missing fixed windows; overflow with contradictory tails. Reuse existing credit, unspent,
+queue-boundary and resource-service spec owners; add focused native observer/replay owners when implemented.
+Existing installer currently passes no intervals, so declarations and real PRO-03/06/07 positive/control recipes
+remain unimplemented. All full oracles/denominators and uncovered gaps remain mandatory.
+
+**Source Implementation Review, 36:** traced native event application to player writers, direct campaign/setup/restore
+paths, selected-result-before-save ordering, live queue liability and reconciled claim consumers. Rejected previous-
+balance reconstruction, source-cohort totals, amount-only joins, mutable-alias completeness and balance-only reopening.
+No gameplay/public API/save/wire/schema/editor/CI/baseline or skill/tool change; only the two existing roadmap docs.
+
+| Acceptance | Source evidence / status |
+| --- | --- |
+| 1. Provenance/scope | 35 local/remote SHA matched; Nx merge ancestor preserved; existing two-doc scope |
+| 2. Recipient writer authority | Native writer/bypass table and bounded journal contract; implementation open |
+| 3. Selected need/liabilities | Exact input read, accepting result, disjoint live frame and closure routes; implementation open |
+| 4. Independent usefulness | All-recipient positive history, no reopening and marginal spendable cap; activation gated |
+| 5. Failure/lifetime/consumers | Monotone channel loss, bounds/cleanup, exact application/window joins and mandatory PRO gaps |
+| 6. Negative/final evidence | Future native/replay controls named; no executable checks or runtime behavior added |
+| 7. Publication/resume | Two scoped docs, commit/normal push/remote check; pause before grouped 37–38 |
+
+**Omission Audit, 36:** the writer table, native journal, independent need/frame/closure contract, conservative
+formula, channel activation gate, fixed windows, bounds/cleanup and negative evidence above cover acceptance 1–6.
+Full mutable-alias, need/liability and cargo/lifetime mutation authority are explicit implementation blockers to positive
+usefulness, not design successes or lost requirements. No executable specs were added for a documentation-only stage.
+
+**Separate Final Closure Audit, 36:** after source review, rechecked partial native writes, recipient/source identity,
+application versus publication sequence, disjoint liabilities, monotone fulfilled/closed state and strict null/zero
+distinction. Acceptance 7 is scoped publication: commit/push these two docs and verify remote, then pause before 37–38.
+This closes the bounded design authoring only. All executable tests/validation remain deferred; no issue/family closes.
+
 ### Resource service input and interval checkpoints (2026-10-08, unverified)
 
 Authorized group: 33 consumed selection, 34 supported coverage/loss, 35 strict interval diagnostics.
 Stage 33 is `0e1906024c7339a964fcc1dfdea93145b9e10509`, based on `42b5bf3d3`.
 Stage 34 is `d226b6636d41cc7201803ba80d34869a32b59a78`, based on that stage-33 commit.
-Base 35 is that stage-34 commit; the containing commit owns 35. Pause after this 33–35 authoring group.
+Stage 35 is `d2e48214230e66290f95f7011c17951025cbacda`, based on that stage-34 commit.
+The 33–35 pause boundary was reached; the newer authority-design checkpoint above owns current continuation.
 Last selected profile: GPT-6.1 Sol / medium; actual host settings unknown. No automatic model switch.
 All executable tests/validation remain deferred. The stage-32 contract below remains mandatory.
 
