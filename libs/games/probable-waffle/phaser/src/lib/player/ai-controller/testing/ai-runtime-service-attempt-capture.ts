@@ -6,6 +6,8 @@ import type { AiRuntimeRouteOrderV1 } from "./ai-runtime-route-order-v1";
 import type { AiRuntimeProductionSpatialV1 } from "./ai-runtime-production-spatial-v1";
 import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor";
 import { AiRuntimeResourceServiceCapture } from "./ai-runtime-resource-service-capture";
+import { getActorComponent } from "../../../data/actor-component";
+import { GathererComponent } from "../../../entity/components/resource/gatherer-component";
 
 /** Test-owned weak attempts reuse order identities and actor subscriptions; no scene scans or money inference. */
 export class AiRuntimeServiceAttemptCapture {
@@ -24,7 +26,7 @@ export class AiRuntimeServiceAttemptCapture {
       const identity = execution ? this.identities.get(execution) : undefined;
       return identity ? { attemptId: identity.id,
         lifetimeValid: !!identity.restoreToken && identity.token() === identity.restoreToken } : undefined;
-    }, append);
+    }, append, (actor) => getActorComponent(actor, GathererComponent));
   }
 
   /** The owner's token getter detects restore, unwatch/reuse and controller replacement independently of current order. */

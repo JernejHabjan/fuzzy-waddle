@@ -1,6 +1,5 @@
 import { normalizeRuntimeProducerRoutes } from "./skirmish-ai-runtime-producer-route-normalization";
-import { normalizeRuntimeMovement } from "./skirmish-ai-runtime-movement-normalization";
-import { normalizeRuntimeServiceAttempts } from "./skirmish-ai-runtime-service-attempt-normalization";
+import { normalizeRuntimeNativeServices } from "./skirmish-ai-runtime-native-service-normalization";
 import { projectRuntimeProductionCancellations } from "./skirmish-ai-runtime-production-cancellations";
 import { validateRuntimeQueueRefundPolicy } from "./skirmish-ai-runtime-refund-policy";
 import { projectRuntimeProductionCompletions } from "./skirmish-ai-runtime-production-completions";
@@ -53,12 +52,9 @@ export function normalizeRuntimeProductionCausality(
   const spatial = normalizeRuntimeProductionSpatial(capture);
   failures.push(...spatial.failures);
   spatial.gaps.forEach((gap) => gaps.add(gap));
-  const movement = normalizeRuntimeMovement(capture);
-  failures.push(...movement.failures);
-  movement.gaps.forEach((gap) => gaps.add(gap));
-  const service = normalizeRuntimeServiceAttempts(capture);
-  failures.push(...service.failures);
-  service.gaps.forEach((gap) => gaps.add(gap));
+  const native = normalizeRuntimeNativeServices(capture), { movement, service, resources } = native;
+  failures.push(...native.failures);
+  native.gaps.forEach((gap) => gaps.add(gap));
   const construction = normalizeRuntimeConstructionAuthority(capture);
   failures.push(...construction.failures);
   construction.gaps.forEach((gap) => gaps.add(gap));
@@ -230,6 +226,7 @@ export function normalizeRuntimeProductionCausality(
     producerRoutes: failures.length ? { outputs: [], paths: [] } : routes.routes,
     movements: failures.length ? [] : movement.movements,
     serviceAttempts: failures.length ? [] : service.attempts,
+    resourceCredits: failures.length ? [] : resources.credits,
     constructionAuthority: failures.length ? [] : construction.records,
     initialConstruction: failures.length ? null : constructionLineage.initial,
     constructionLineage: failures.length ? [] : constructionLineage.entries,

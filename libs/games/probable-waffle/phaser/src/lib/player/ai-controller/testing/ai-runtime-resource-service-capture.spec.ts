@@ -8,6 +8,76 @@ import type { AiRuntimeProductionSpatialV1 } from "./ai-runtime-production-spati
 jest.mock("./capture-ai-runtime-created-actor", () => ({ captureAiRuntimeCreatedActor: jest.fn() }));
 
 describe("detached cargo/credit capture (unrun until final gate)", () => {
+  it("fences pending extraction even when the cargo-only restore record is lost", () => {
+    const scene = {} as Phaser.Scene, actor = { scene } as Phaser.GameObjects.GameObject;
+    jest.mocked(captureAiRuntimeCreatedActor).mockReturnValue({ actorId: "worker", objectName: ObjectNames.TivaraWorker,
+      canonicalObjectName: ObjectNames.TivaraWorker, playerNumber: 1, active: true, alive: true, finished: true, indexed: true });
+    const owner = {}, token = {}, execution = {}, records: AiRuntimeProductionSpatialV1[] = [];
+    const capture = new AiRuntimeResourceServiceCapture(scene,
+      () => ({ clockTick: 10, sceneActive: true, snapshotRestoreInProgress: false }),
+      () => ({ attemptId: 1, lifetimeValid: true }), (_owner, value) => {
+        if (value.kind === "resource_service" && value.phase === "cargo_changed" && value.change.reason === "restore") {
+          throw new Error("lost_restore_projection");
+        }
+        records.push(value);
+      }, () => owner);
+    const release = capture.watch(actor, () => token), cargo = { amount: 0, resourceType: ResourceType.Wood };
+    ResourceServiceObservation.begin(actor, owner, actor, () => cargo, execution);
+    ResourceServiceObservation.change(actor, owner, () => cargo, { reason: "restore" }, () => undefined);
+    ResourceServiceObservation.change(actor, owner, () => ({ ...cargo }),
+      { reason: "added", execution, target: actor, resourceType: ResourceType.Wood, delta: 1 }, () => { cargo.amount = 1; });
+    expect(records.at(-1)).toMatchObject({ phase: "cargo_changed", cargoId: 2, attemptId: 1, lifetimeValid: false });
+    expect(cargo.amount).toBe(1); release();
+  });
+  it("fences cargo-only restore without relying on board restoration", () => {
+    const scene = {} as Phaser.Scene, actor = { scene } as Phaser.GameObjects.GameObject;
+    jest.mocked(captureAiRuntimeCreatedActor).mockReturnValue({ actorId: "worker", objectName: ObjectNames.TivaraWorker,
+      canonicalObjectName: ObjectNames.TivaraWorker, playerNumber: 1, active: true, alive: true, finished: true, indexed: true });
+    const owner = {}, token = {}, records: AiRuntimeProductionSpatialV1[] = [];
+    const capture = new AiRuntimeResourceServiceCapture(scene,
+      () => ({ clockTick: 10, sceneActive: true, snapshotRestoreInProgress: false }), () => undefined,
+      (_owner, value) => records.push(value), () => owner);
+    const release = capture.watch(actor, () => token), sample = () => ({ amount: 3, resourceType: ResourceType.Wood });
+    const context = ResourceServiceObservation.offer(actor, owner, actor, sample);
+    ResourceServiceObservation.change(actor, owner, sample, { reason: "restore" }, () => undefined);
+    ResourceServiceObservation.publish({ actor, target: actor, context, kind: "resource_credit", channel: "drop_off",
+      resourceType: ResourceType.Wood, amount: 3, ownerArgument: 1, beneficiary: 1, status: "campaign_suppressed",
+      before: null, after: null, callbackAmounts: null, callbackCount: 0, interference: false,
+      snapshotRestoreInProgress: false, balanceMatches: false });
+    expect(records.at(-1)).toMatchObject({ cargoId: 1, transferId: 1, lifetimeValid: false }); release();
+  });
+
+  it("saturates cargo identities without truncating native mutations or transferring an earlier pile", () => {
+    const scene = {} as Phaser.Scene, actor = { scene } as Phaser.GameObjects.GameObject;
+    jest.mocked(captureAiRuntimeCreatedActor).mockReturnValue({ actorId: "worker", objectName: ObjectNames.TivaraWorker,
+      canonicalObjectName: ObjectNames.TivaraWorker, playerNumber: 1, active: true, alive: true, finished: true, indexed: true });
+    const token = {}, records: AiRuntimeProductionSpatialV1[] = [];
+    const capture = new AiRuntimeResourceServiceCapture(scene,
+      () => ({ clockTick: 10, sceneActive: true, snapshotRestoreInProgress: false }), () => undefined,
+      (_owner, value) => records.push(value));
+    const release = capture.watch(actor, () => token), mutate = jest.fn(), sample = () => ({ amount: 0, resourceType: null });
+    for (let index = 0; index < 8193; index++) ResourceServiceObservation.change(actor, {}, sample, { reason: "reset" }, mutate);
+    expect(records).toHaveLength(8192); expect(mutate).toHaveBeenCalledTimes(8193); release();
+  });
+
+  it("fences the old cargo component independently of board/actor identity", () => {
+    const scene = {} as Phaser.Scene, actor = { scene } as Phaser.GameObjects.GameObject, owner = {};
+    jest.mocked(captureAiRuntimeCreatedActor).mockReturnValue({ actorId: "worker", objectName: ObjectNames.TivaraWorker,
+      canonicalObjectName: ObjectNames.TivaraWorker, playerNumber: 1, active: true, alive: true, finished: true, indexed: true });
+    const token = {}, records: AiRuntimeProductionSpatialV1[] = [];
+    let live = owner;
+    const capture = new AiRuntimeResourceServiceCapture(scene,
+      () => ({ clockTick: 10, sceneActive: true, snapshotRestoreInProgress: false }), () => undefined,
+      (_owner, value) => records.push(value), () => live);
+    const release = capture.watch(actor, () => token), sample = () => ({ amount: 3, resourceType: ResourceType.Wood });
+    const context = ResourceServiceObservation.offer(actor, owner, actor, sample);
+    expect(records.at(-1)).toMatchObject({ lifetimeValid: true }); live = {};
+    ResourceServiceObservation.publish({ actor, target: actor, context, kind: "resource_credit", channel: "drop_off",
+      resourceType: ResourceType.Wood, amount: 3, ownerArgument: 1, beneficiary: 1, status: "campaign_suppressed",
+      before: null, after: null, callbackAmounts: null, callbackCount: 0, interference: false,
+      snapshotRestoreInProgress: false, balanceMatches: false });
+    expect(records.at(-1)).toMatchObject({ cargoId: 1, transferId: 1, lifetimeValid: false }); release();
+  });
   it("caps distinct observers and insulates a native cargo mutation from broken listeners", () => {
     const actor = {} as Phaser.GameObjects.GameObject, native = jest.fn(), sample = () => ({ amount: 0, resourceType: null });
     const listener = jest.fn(), releases = Array.from({ length: 8 }, () =>

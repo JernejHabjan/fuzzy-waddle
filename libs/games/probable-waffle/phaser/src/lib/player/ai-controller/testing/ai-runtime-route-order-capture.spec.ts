@@ -10,6 +10,7 @@ import { MovementQueryObservation } from "../../../entity/systems/movement-query
 import { MovementCompletionObservation } from "../../../entity/systems/movement-completion-observation";
 import { PawnResourceServiceObservation } from "../../../prefabs/ai-agents/pawn-resource-service-observation";
 import { ResourceServiceObservation } from "../../../entity/components/resource/resource-service-observation";
+import { GathererComponent } from "../../../entity/components/resource/gatherer-component";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { getGameObjectCurrentTile } from "../../../data/game-object-helper";
 import { AiRuntimeRouteOrderCapture } from "./ai-runtime-route-order-capture";
@@ -41,17 +42,22 @@ function fixture() {
 describe("marked capture order identities (unrun until final gate)", () => {
   it("threads the native service execution into cargo evidence independently of the later current order", async () => {
     const f = fixture(), owner = {}, order = new OrderData(OrderType.Gather, { targetGameObject: f.producer });
+    jest.mocked(getActorComponent).mockImplementation((_actor, component) => component === PawnAiController ?
+      { blackboard: f.board } as never : component === GathererComponent ? owner as never : undefined);
     f.board.addOrder(order);
     const promise = Promise.resolve(1);
     const pending = PawnResourceServiceObservation.invoke(f.product, f.board, order, f.producer, "gather", (execution) => {
       f.board.setCurrentOrder(new OrderData(OrderType.Stop));
-      ResourceServiceObservation.change(f.product, owner, () => ({ amount: 0, resourceType: ResourceType.Wood }),
-        { reason: "added", execution, target: f.producer, resourceType: ResourceType.Wood, delta: 1 }, () => undefined);
+      const cargo = { amount: 0, resourceType: ResourceType.Wood };
+      ResourceServiceObservation.begin(f.product, owner, f.producer, () => ({ ...cargo }), execution);
+      ResourceServiceObservation.change(f.product, owner, () => ({ ...cargo }),
+        { reason: "added", execution, target: f.producer, resourceType: ResourceType.Wood, delta: 1 }, () => { cargo.amount = 1; });
       return promise;
     });
     expect(pending).toBe(promise); expect(await pending).toBe(1);
-    expect(f.records.find((value) => value.kind === "resource_service")).toMatchObject({ attemptId: 1, cargoId: 1,
-      lifetimeValid: true, phase: "cargo_changed" }); f.capture.dispose();
+    expect(f.records.find((value) => value.kind === "resource_service" && value.phase === "cargo_changed"))
+      .toMatchObject({ attemptId: 1, cargoId: 1, lifetimeValid: true, phase: "cargo_changed",
+        before: { amount: 0 }, after: { amount: 1 } }); f.capture.dispose();
   });
   it("freezes service order data before native work and fences a pending return across restore", async () => {
     const f = fixture(), order = new OrderData(OrderType.Gather, { targetGameObject: f.producer });

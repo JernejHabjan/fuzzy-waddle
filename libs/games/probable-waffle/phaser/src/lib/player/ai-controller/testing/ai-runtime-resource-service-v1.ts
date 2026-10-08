@@ -17,6 +17,7 @@ export type AiRuntimeResourceServiceV1 = {
 } & (
   | { readonly phase: "cargo_changed"; readonly change: Pick<ResourceCargoChange, "reason" | "resourceType" | "delta">;
     readonly before: ResourceCargoSample; readonly after: ResourceCargoSample }
+  | { readonly phase: "cargo_started"; readonly cargo: ResourceCargoSample }
   | { readonly phase: "cargo_offered"; readonly cargo: ResourceCargoSample }
   | { readonly phase: "resource_credit"; readonly emissionRestoreInProgress: boolean | null } &
     Omit<Extract<ResourceServiceEvent, { kind: "resource_credit" }>,

@@ -10,18 +10,19 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 is the separate gatherer prerequisite and settled ownership contract; 30 adds native capture; 31 projects reports.
 Last selected profile is GPT-6.1 Sol / medium; actual host model/effort are unknown. Pause after 31, recommend the next
 profile, and explain what each authored stage enables. All executable tests and validation stay deferred to the final gate.
-Current step: #815/#816 machinery 30, **native cargo/application capture**, authored/unverified.
-Base `00d6f2e77ab566262bd09225bdb945bf71e53210`; the containing commit owns this slice.
+Current step: #815/#816 machinery 31, **strict cargo/credit report**, authored/unverified; all three stages authored, pause here.
+Base `67372aa37860d3e921facdb0671055a47b764515`; the containing commit owns this slice.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify remote on resume.
 Preserve unrelated Nx merge `59f72e037`. No family/issue is complete. The user removed the comment-permission rule.
 
-**Authored — why it is used:** `ResourceServiceObservation` records native cargo mutations, restore attempts and the
-exact offered pile. `observeResourceCredit` observes the native synchronous emission interval, exact callback payload
-identity, actual beneficiary and before/after balances, including suppressed/failed/unmatched application. Native return
-and credit remain independent. `AiRuntimeResourceServiceCapture` freezes these records under bounded weak cargo/transfer
-IDs and the existing attempt IDs/lifetime fences. This is the evidence input for strict report projection in 31.
-The 29 gatherer prerequisite is `00d6f2e77ab566262bd09225bdb945bf71e53210`; serialization/component tokens are retained.
-New/extended native observer, drain, execution and capture specs are authored/unrun.
+**Authored — why it is used:** `resourceCredits` now reaches existing production/variant reports. Strict validation scans
+all native cargo/credit tails and recomputes scoped application. Whole-pile attribution retains each earlier gathering
+attempt, its admitted order and dated service demand, separately from the delivery task and actual beneficiary. Unknown,
+old, mixed, restored, interrupted or partly consumed piles stay unattributed; native return cannot prove applied income.
+A scoped balance change can remain observable even when cargo ownership is unavailable. This supports later usefulness
+assertions without making them now. Native entry samples bind executions to cargo generations before awaits; even lost
+cargo-only restore records and replaced components fence pending ownership. All new/extended specs are authored/unrun.
+Stage 29 is `00d6f2e77ab566262bd09225bdb945bf71e53210`; 30 is `67372aa37860d3e921facdb0671055a47b764515`.
 
 **Settled credit/cargo contract:** explicit transient execution handles cross awaits; no ambient current order can assign
 credit. Record native cargo additions, reset/restore fences, exact offered pile, emission recipient and scoped before/after
@@ -30,18 +31,21 @@ Campaign suppression is explicit and may accompany a full native return. Old/unk
 to the latest task. Whole known piles may retain several earlier gathering attempts; no invented FIFO/partial allocation.
 A credit proves a scoped balance change, independently from cargo lineage, accepted task/demand and continuous usefulness.
 
-**Next exact authoring action — why:** project strict bounded cargo/credit records in existing production/variant reports.
-Validate all supplied tails, link offers to earlier known additions and their exact attempt/admission/demand, and retain
-cross-owner credit separately. Old/unknown/mixed/interrupted cargo stays explicitly unavailable; partial allocation is not
-invented. Campaign suppression, callback identity, balance mismatches, restore/reuse/controller/scene fences and missing
-terminals need negative report cases. No task fulfillment or continuous usefulness is established by a credited pile.
+**Next exact authoring action — why:** define the continuous useful-resource-service contract before implementing its
+capture/oracle. Read this checkpoint, the current resource credit/attempt projectors and #815/#816 PRO-03/06/07 obligations.
+Choose exact interval endpoints, horizon and coverage/loss rules, match the actual resource beneficiary and units to dated
+selected demand, and distinguish accepted assignment, observed income and retained useful capacity. Several sampled
+credits or a movement demand cannot prove continuous stability or resource-demand fulfillment. Keep observed whole-pile
+provenance and scoped application independent. No tests/validation until the final gate; no invented completion percentage.
+Recommend **GPT-6.1 Sol / high** for that unresolved causal/interval contract, then medium for its settled implementation
+group. Recommendations do not switch host settings or authorize automatic follow-up work.
 
 | Dependency | State | Purpose / next boundary |
 | --- | --- | --- |
 | Native movement and service attempt ownership (21–28) | Authored, unverified | Earlier task/order identity and lifetime boundaries |
 | Gatherer prerequisite and cargo contract (29) | Authored, unverified | Compliant focused native owners before hooks |
 | Native cargo/application capture (30) | Authored, unverified | Exact pile, beneficiary and scoped balance change |
-| Strict cargo/credit projection (31) | Next | Connect known contributors without inferring task fulfillment |
+| Strict cargo/credit projection (31) | Authored, unverified | Connect known contributors without inferring task fulfillment |
 | Continuous useful stability | Open | Define and observe retained useful benefit over an interval |
 | Full production adapter/oracles/setup/strategy | Open | Independent PRO-03/06/07 assertions |
 | Executable validation | Deferred final gate | Establish correctness before issue/release closure |
@@ -50,7 +54,9 @@ Source Implementation Review, Omission Audit, separate Final Closure Audit and u
 [credit/cargo checkpoint](follow-ups/runtime-matrix-ci.md#production-credit-and-cargo-checkpoints-2026-10-08-unverified).
 Stage 28 is `135c5b1c1cec0f4a8557d52f1511761887f449f5`, 27 is `77499c4db98e1f28d625ed6a66e465039d0b22a1`,
 26 is `4b0dd34d029e677a006a1b2dc174b25f35c144b5`, 25 is `1bfa9740460f0b2a7836ab44ebc0d38c18eb063e`.
-No fixed machinery total or percent is claimed. Prior native observer/report specs remain unrun and binding costs unmeasured.
+No fixed machinery total or percent is claimed. Three stages in this batch are authored; pause here. All native observer,
+report, prior movement and earlier final-gate obligations remain unrun. Capture/report cost and native compatibility are unmeasured.
+Source review repaired ES2024 constructor initialization and loss-safe cargo/transfer fences; no runtime pass is claimed.
 
 Prior batch 24 is in `aa4bf0a4920ba09d2df95045a2cae2a4d543239f`, based on `fc358946368d3ab595c7fd56bc1f9b7964eebb5d`;
 its [caller report checkpoint](follow-ups/runtime-matrix-ci.md#production-caller-report-checkpoint-2026-10-07-unverified)

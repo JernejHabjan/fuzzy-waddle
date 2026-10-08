@@ -4,13 +4,15 @@ import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { getActorComponent } from "../../../data/actor-component";
 import { ResourceSourceComponent } from "./resource-source-component";
 import { ResourceDrainComponent } from "./resource-drain-component";
-import type { GathererComponent } from "./gatherer-component";
+import { GathererComponent } from "./gatherer-component";
 import { GathererResourceExecution } from "./gatherer-resource-execution";
 import { OwnerComponent } from "../owner-component";
 import { emitResource, getPlayer } from "../../../data/scene-data";
 
 jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
 jest.mock("../../../data/scene-data", () => ({ emitResource: jest.fn(), getPlayer: jest.fn() }));
+jest.mock("../../../data/game-object-helper", () => ({ onObjectReady: jest.fn(), getGameObjectVisibility: jest.fn(),
+  getGameObjectLogicalTransform: jest.fn() }));
 
 function fixture() {
   const actor = {} as Phaser.GameObjects.GameObject, target = {} as Phaser.GameObjects.GameObject;
@@ -26,6 +28,17 @@ function fixture() {
 }
 
 describe("native gatherer execution ownership (unrun until final gate)", () => {
+  it("initializes facade owners after constructor parameters and retains the native actor receiver", async () => {
+    const actor = { once: jest.fn() } as unknown as Phaser.GameObjects.GameObject;
+    const target = {} as Phaser.GameObjects.GameObject, extractResources = jest.fn(async () => 1);
+    jest.mocked(getActorComponent).mockImplementation((_actor, component) => component === ResourceSourceComponent ?
+      { getResourceType: () => ResourceType.Wood, canAcceptGatherer: () => true, extractResources,
+        resourceSourceDefinition: {} } as never : undefined);
+    const facade = new GathererComponent(actor, { resourceSourceGameObjectClasses: [], resourceSweepRadius: 10 });
+    facade.carriedResourceType = ResourceType.Wood; facade.currentResourceSource = target;
+    expect(await facade.gatherResources(target)).toBe(1);
+    expect(extractResources).toHaveBeenCalledWith(actor, 1); expect(facade.carriedResourceAmount).toBe(1);
+  });
   it("retains the selected source across extraction and uses the live carried amount at completion", async () => {
     const f = fixture(); let resolve: ((value: number) => void) | undefined;
     const extraction = new Promise<number>((settle) => { resolve = settle; });

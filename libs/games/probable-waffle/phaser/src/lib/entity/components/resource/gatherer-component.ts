@@ -94,18 +94,21 @@ export class GathererComponent {
   /** Ready-time component used by native execution. */
   actorTranslateComponent?: ActorTranslateComponent;
 
-  private readonly targets = new GathererTargetSelection(this.gameObject, this);
-  private readonly execution = new GathererResourceExecution(this.gameObject, this,
-    (source) => this.getGatherDataForResourceSource(source), {
-      setCarriedResourceAmount: (amount, change) => this.setCarriedResourceAmount(amount, change),
-      playGatherSound: () => this.playGatherSound(), playGatherAnimation: () => this.playGatherAnimation(),
-      leaveCurrentResourceSource: () => this.leaveCurrentResourceSource()
-    });
+  private readonly targets: GathererTargetSelection;
+  private readonly execution: GathererResourceExecution;
 
   constructor(
     private readonly gameObject: GameObject,
     private readonly gathererComponentDefinition: GathererDefinition
   ) {
+    // Initialize after parameter properties; native ES class fields run before the constructor body.
+    this.targets = new GathererTargetSelection(this.gameObject, this);
+    this.execution = new GathererResourceExecution(this.gameObject, this,
+      (source) => this.getGatherDataForResourceSource(source), {
+        setCarriedResourceAmount: (amount, change) => this.setCarriedResourceAmount(amount, change),
+        playGatherSound: () => this.playGatherSound(), playGatherAnimation: () => this.playGatherAnimation(),
+        leaveCurrentResourceSource: () => this.leaveCurrentResourceSource()
+      });
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
     onObjectReady(this.gameObject, this.onObjectReady, this);

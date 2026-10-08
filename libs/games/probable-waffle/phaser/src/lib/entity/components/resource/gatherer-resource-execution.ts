@@ -21,6 +21,8 @@ export class GathererResourceExecution {
       playGatherSound: () => void;
       playGatherAnimation: () => void; leaveCurrentResourceSource: () => void }) {}
   async gatherResources(resourceSource: GameObject, execution?: object): Promise<number> {
+    ResourceServiceObservation.begin(this.gameObject, this.gatherer, resourceSource,
+      () => ({ amount: this.gatherer.carriedResourceAmount, resourceType: this.gatherer.carriedResourceType }), execution);
     if (this.gatherer.remainingCooldown > 0) return 0;
     if (!this.gatherer.carriedResourceType) {
       // Gatherer is not carrying any resources
@@ -114,6 +116,8 @@ export class GathererResourceExecution {
   }
 
   async returnResources(resourceDrain: GameObject, execution?: object): Promise<number> {
+    ResourceServiceObservation.begin(this.gameObject, this.gatherer, resourceDrain,
+      () => ({ amount: this.gatherer.carriedResourceAmount, resourceType: this.gatherer.carriedResourceType }), execution);
     if (!this.gatherer.carriedResourceType) {
       // Gatherer is not carrying any resources
       return 0;

@@ -98,6 +98,53 @@ source/schema/repository validators and diff check were not run; compatibility, 
 Deferred command: `pnpm exec nx test probable-waffle-phaser --testPathPatterns='observe-resource-credit|resource-drain-credit|resource-drain-component|gatherer-resource-execution|ai-runtime-resource-service-capture|ai-runtime-route-order-capture|pawn-resource-service-observation|pawn-agent-order-boundaries' --runInBand`.
 Next 31: connect exact applied credit and observed whole-pile contributors to admitted tasks without useful-service claims.
 
+**Stage 31 — authored/unverified**, base `67372aa37860d3e921facdb0671055a47b764515`:
+
+| Acceptance | Implementation / purpose | Evidence |
+| --- | --- | --- |
+| 1. Native entry generation | `ResourceServiceObservation.begin`, execution owner, marked weak execution IDs | Cargo bound before guards/awaits; no ambient later-order attribution, capped at 8,192 |
+| 2. Strict supplied evidence | `validateRuntimeResourceService`, `runtimeResourceCreditMatches` | Every supplied tail checked, including suppressed/failed/overflow; finite quantities, full vectors, exact callback claim, immutable cargo/transfer identities and no reused gathering additions |
+| 3. Separate actual credit and cargo | `normalizeRuntimeResourceCredits`, `RuntimeResourceCreditV1`, `RuntimeCargoContributionV1` | Actual beneficiary/scoped application independent from native result; whole observed pile and removal retain every earlier contributor, not the latest task |
+| 4. Lifecycle and loss | Capture entry/transfer maps and live component reader; report generation/source/target fences | Cargo-only restore invalidates before readers/append; execution cannot rebind to fresh cargo, even when restore projection is lost; replaced live gatherer blocks old ownership |
+| 5. Existing reports | `normalizeRuntimeNativeServices`, production causality type/normalizer, existing variant runner | One attempt normalization feeds cargo projection; contradictory resource evidence suppresses existing normalized groups; no oracle/CI/wire/planner registration |
+| 6. Cases | New resource fixture/report spec, extended capture/order spec | Multiple contributors, cross-owner/immediate/local-rally, zero, suppression, missing entry/owner/offer/consumption/admission/clock, mixed/partial cargo, restore/reuse, duplicate/identity/result contradictions, cap/lost restore authored/unrun |
+| 7. Pause/publication | Existing HANDOFF/checkpoint | Three stages authored; scoped publication, exact remote SHA verification; next unresolved useful-service interval requires Sol/high design |
+
+**Source Implementation Review:** native entry/offer/addition/credit/removal and terminal are joined through explicit weak
+handles, never latest order, purchase purpose, nearest tick or amount equality. Report recomputes actual credit from exact
+callback count/vector and scoped balances; whole-pile provenance additionally requires earlier native entry, admitted
+attempts, uninterrupted generation, matched complete consumption and source/target lifetime fences. Several same-type
+contributors retain distinct prior attempts/demands. Unknown amounts/types and partial consumption receive no invented
+FIFO allocation. A suppressed credit can consume an attributed pile while appliedAmount stays null. Zero remains zero.
+Native immediate return is extraction amount; drain return is offered amount. Resolved contradictions fail closed.
+
+Source review repaired the prerequisite owner initialization for the repository's ES2024 class-field semantics, moved
+cargo-restore invalidation before fallible readers/append, latched native execution to its entry cargo generation and checked
+the currently registered gatherer component. These repair the unverified 29/30 implementation, not a claimed test failure.
+The normalizer's native-service composition keeps the existing parent owner focused and normalizes attempts once. No
+native policy, extra await, Promise wrapper, query, timer, scene scan, persisted state or economy repair was introduced.
+Legacy attempt-level actual-credit/cargo gaps remain because attempts alone lack that authority; individual resourceCredits
+carry the new evidence. Full history, useful fulfillment and continuous stability stay explicit gaps. Bounds are 8,192 raw
+facts/weak IDs, 256 normalized cargo/entry/transfer/credit groups and 256 contributors per complete pile; repeated bounded
+scans and report serialization cost are unmeasured and require the final gate.
+
+**Omission Audit:** acceptance 1–7 authored with owning consumers/specs. Every new helper/type is consumed; existing
+runner retains the full causality object. No AI task fulfillment, continuous coverage or independent PRO oracle is declared.
+No schema/save/wire/CI/config/editor/baseline refresh, unrelated Nx edit, new plan or skill/tool change applies. All 29/30
+specs remain final-gate obligations after the source repairs; no source-size or performance pass is inferred.
+
+**Separate Final Closure Audit:** after source repairs, rechecked original Promise/error/callback order, native type/amount
+argument timing, entry-generation capture before awaits, component/controller/restore/reuse/disposal fences, all supplied
+error/overflow tails, strict parent suppression, report consumer and owned Git scope. No Jest/Playwright, formatter, lint,
+type/build, schema/source/repository validator, doctor/context/catalog/simulation or diff check ran. This closes authoring
+and authorized publication only; final gate must establish executable correctness and native compatibility.
+
+Deferred report command: `pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts skirmish-ai-runtime-resource-credit.spec.ts skirmish-ai-runtime-service-attempt.spec.ts skirmish-ai-runtime-route-order.spec.ts skirmish-ai-runtime-route-caller.spec.ts skirmish-ai-runtime-production-causality-normalization.spec.ts`.
+Retain the 29/30 Jest commands above and all earlier movement/capture/runtime/structure obligations. Current report
+fixtures are synthetic boundary evidence, not real match wins or demand usefulness. Three-stage group is authored; pause.
+Next recommendation: Sol 6.1 / high for exact continuous useful-resource-service interval/beneficiary/demand units and
+coverage contract, then medium for its settled implementation group. Actual host settings remain unknown.
+
 ### Production service foundation checkpoints (2026-10-07, unverified)
 
 User-authorized three-stage group: native service-attempt ownership (26), marked detached capture (27), strict report

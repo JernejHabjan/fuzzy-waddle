@@ -3,10 +3,12 @@ import { ResourceServiceObservation } from "../../../entity/components/resource/
 import type { AiRuntimeProductionSpatialV1 } from "./ai-runtime-production-spatial-v1";
 import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor";
 
-/** Reuses marked actor subscriptions. Restores/rebinding create fresh cargo identities; old transfers retain old fences. */
+/** Reuses marked actor subscriptions and current component authority. Fresh cargo never rebinds an old execution/transfer. */
 export class AiRuntimeResourceServiceCapture {
   private nextCargoId = 1;
   private nextTransferId = 1;
+  private executionCount = 0;
+  private readonly executions = new WeakMap<object, { cargoId: number; watch: object; token: object | undefined }>();
   private readonly cargo = new WeakMap<object, { id: number; watch: object; token: object | undefined }>();
   private readonly transfers = new WeakMap<object, { id: number; cargoId: number; token: object | undefined; watch: object }>();
 
@@ -14,19 +16,25 @@ export class AiRuntimeResourceServiceCapture {
     private readonly boundary: () => Pick<AiRuntimeProductionSpatialV1,
       "clockTick" | "snapshotRestoreInProgress" | "sceneActive">,
     private readonly attempt: (execution?: object) => { attemptId: number; lifetimeValid: boolean } | undefined,
-    private readonly append: (owner: number, value: AiRuntimeProductionSpatialV1) => void) {}
+    private readonly append: (owner: number, value: AiRuntimeProductionSpatialV1) => void,
+    private readonly liveCargo?: (actor: Phaser.GameObjects.GameObject) => object | undefined) {}
 
   watch(actor: Phaser.GameObjects.GameObject, token: () => object | undefined): () => void {
     const watch = {};
     return ResourceServiceObservation.subscribe(actor, (event) => {
+      const restoring = event.kind === "cargo_changed" && event.change.reason === "restore";
+      const oldCargo = event.kind === "cargo_changed" ? this.cargo.get(event.cargoOwner) : undefined;
+      // Fence before readers/append: a lost restore diagnostic must still invalidate the old transfer handle.
+      if (restoring && event.kind === "cargo_changed") this.cargo.delete(event.cargoOwner);
       try {
         const current = token();
-        const context = event.kind === "cargo_changed" ? undefined : event.context;
-        const cargoOwner = event.kind === "cargo_changed" ? event.cargoOwner : context?.cargoOwner;
-        let cargo = cargoOwner ? this.cargo.get(cargoOwner) : undefined;
+        const context = event.kind === "cargo_changed" || event.kind === "cargo_started" ? undefined : event.context;
+        const cargoOwner = event.kind === "cargo_changed" || event.kind === "cargo_started" ? event.cargoOwner : context?.cargoOwner;
+        let cargo = restoring ? oldCargo : cargoOwner ? this.cargo.get(cargoOwner) : undefined;
         if (cargoOwner && (!cargo || cargo.watch !== watch || cargo.token !== current)) {
           if (this.nextCargoId > 8192) return;
-          cargo = { id: this.nextCargoId++, watch, token: current }; this.cargo.set(cargoOwner, cargo);
+          cargo = { id: this.nextCargoId++, watch, token: current };
+          if (!restoring) this.cargo.set(cargoOwner, cargo);
         }
         const transferToken = event.kind === "cargo_changed" ? event.change.transfer : context?.transfer;
         let transfer = transferToken ? this.transfers.get(transferToken) : undefined;
@@ -35,7 +43,14 @@ export class AiRuntimeResourceServiceCapture {
           transfer = { id: this.nextTransferId++, cargoId: cargo.id, token: current, watch };
           this.transfers.set(transferToken, transfer);
         }
-        const execution = event.kind === "cargo_changed" ? event.change.execution : context?.execution;
+        const execution = event.kind === "cargo_changed" ? event.change.execution :
+          event.kind === "cargo_started" ? event.execution : context?.execution;
+        if (event.kind === "cargo_started" && execution && cargo && !this.executions.has(execution)) {
+          if (this.executionCount >= 8192) return;
+          this.executionCount++;
+          this.executions.set(execution, { cargoId: cargo.id, watch, token: current });
+        }
+        const entry = execution ? this.executions.get(execution) : undefined;
         const attempt = this.attempt(execution);
         const target = event.kind === "cargo_changed" ? event.change.target : event.target;
         const source = captureAiRuntimeCreatedActor(actor);
@@ -44,21 +59,22 @@ export class AiRuntimeResourceServiceCapture {
           target: target ? captureAiRuntimeCreatedActor(target) : null, sourceInCaptureScene: actor.scene === this.scene,
           targetInCaptureScene: target ? target.scene === this.scene : null,
           cargoId: transfer?.cargoId ?? cargo?.id ?? null, attemptId: attempt?.attemptId ?? null, transferId: transfer?.id ?? null,
-          lifetimeValid: !!current && (!execution || attempt?.lifetimeValid === true) &&
-            (!transfer || transfer.watch === watch && transfer.token === current), gaps: [] };
+          lifetimeValid: !!current && !!cargoOwner && this.liveCargo?.(actor) === cargoOwner &&
+            (!execution || attempt?.lifetimeValid === true) &&
+            (!execution || entry?.watch === watch && entry.token === current && entry.cargoId === cargo?.id) &&
+            (!transfer || transfer.watch === watch && transfer.token === current && transfer.cargoId === cargo?.id), gaps: [] };
         if (event.kind === "cargo_changed") {
           this.append(source.playerNumber, structuredClone({ ...common, phase: "cargo_changed",
             change: { reason: event.change.reason, resourceType: event.change.resourceType, delta: event.change.delta },
             before: event.before, after: event.after } satisfies AiRuntimeProductionSpatialV1));
-          if (event.change.reason === "restore" && cargoOwner) this.cargo.delete(cargoOwner);
-        } else if (event.kind === "cargo_offered") {
-          this.append(source.playerNumber, structuredClone({ ...common, phase: "cargo_offered", cargo: event.cargo }
+        } else if (event.kind === "cargo_offered" || event.kind === "cargo_started") {
+          this.append(source.playerNumber, structuredClone({ ...common, phase: event.kind, cargo: event.cargo }
             satisfies AiRuntimeProductionSpatialV1));
         } else {
           const { actor: _actor, context: _context, target: _target, kind: _kind,
             snapshotRestoreInProgress: emissionRestoreInProgress, ...credit } = event;
-          this.append(source.playerNumber, structuredClone({ ...common, ...credit, emissionRestoreInProgress, phase: "resource_credit" }
-            satisfies AiRuntimeProductionSpatialV1));
+          this.append(source.playerNumber, structuredClone({ ...common, ...credit, emissionRestoreInProgress,
+            phase: "resource_credit" } satisfies AiRuntimeProductionSpatialV1));
         }
       } catch { /* Capture loss is not repaired from a later pile, order or balance. */ }
     });

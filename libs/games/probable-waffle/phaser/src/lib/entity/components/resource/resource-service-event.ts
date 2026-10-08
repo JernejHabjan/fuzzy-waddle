@@ -6,6 +6,8 @@ import type { ResourceTransferContext } from "./resource-transfer-context";
 
 /** Local, unsaved evidence. Native return, offered pile and scoped applied balance remain independent facts. */
 export type ResourceServiceEvent = { readonly actor: Phaser.GameObjects.GameObject } & (
+  | { readonly kind: "cargo_started"; readonly cargoOwner: object; readonly execution?: object;
+    readonly target: Phaser.GameObjects.GameObject; readonly cargo: ResourceCargoSample }
   | { readonly kind: "cargo_changed"; readonly cargoOwner: object; readonly change: ResourceCargoChange;
     readonly before: ResourceCargoSample; readonly after: ResourceCargoSample }
   | { readonly kind: "cargo_offered"; readonly context: ResourceTransferContext;

@@ -23,6 +23,14 @@ export class ResourceServiceObservation {
     });
   }
 
+  /** Bind execution to the current cargo generation before native guards/awaits; a later restore cannot rebind it. */
+  static begin(actor: Phaser.GameObjects.GameObject, cargoOwner: object, target: Phaser.GameObjects.GameObject,
+    sample: () => ResourceCargoSample, execution?: object): void {
+    if (!this.observed(actor)) return;
+    try { this.publish({ kind: "cargo_started", actor, cargoOwner, target, execution, cargo: sample() }); }
+    catch { /* Missing entry evidence cannot be supplied by a later addition. */ }
+  }
+
   /** Observe the exact before/after mutation, including an attempted restore before any restore field changes. */
   static change(actor: Phaser.GameObjects.GameObject, cargoOwner: object, sample: () => ResourceCargoSample,
     change: ResourceCargoChange, mutate: () => void): void {
