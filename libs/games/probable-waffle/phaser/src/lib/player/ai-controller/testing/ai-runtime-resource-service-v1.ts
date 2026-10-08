@@ -19,7 +19,9 @@ export type AiRuntimeResourceServiceV1 = {
     readonly before: ResourceCargoSample; readonly after: ResourceCargoSample }
   | { readonly phase: "cargo_started"; readonly cargo: ResourceCargoSample }
   | { readonly phase: "cargo_offered"; readonly cargo: ResourceCargoSample }
-  | { readonly phase: "resource_credit"; readonly emissionRestoreInProgress: boolean | null } &
+  | { readonly phase: "resource_credit"; readonly emissionRestoreInProgress: boolean | null;
+    /** Exact successful native application join; null/legacy omission cannot borrow nearby money events. */
+    readonly operationId?: number | null } &
     Omit<Extract<ResourceServiceEvent, { kind: "resource_credit" }>,
-      "kind" | "actor" | "target" | "context" | "snapshotRestoreInProgress">
+      "kind" | "actor" | "target" | "context" | "snapshotRestoreInProgress" | "application">
 );

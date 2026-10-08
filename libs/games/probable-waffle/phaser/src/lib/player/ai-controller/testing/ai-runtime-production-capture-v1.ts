@@ -30,6 +30,8 @@ export interface AiRuntimeProductionCaptureV1 {
     readonly intervals: readonly AiRuntimeResourceServiceIntervalV1[];
   };
   readonly facts: readonly AiRuntimeProductionFactV1[];
+  /** All beneficiaries share the original root budget; retained separately from source-player filtered service facts. */
+  readonly recipientResourceFacts?: readonly AiRuntimeProductionFactV1[];
   readonly snapshots: readonly {
     readonly tick: number;
     /** Last observed fact for this player before sampling. Legacy captures cannot establish same-tick effect order. */

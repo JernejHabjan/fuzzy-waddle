@@ -7,6 +7,13 @@ export interface AiRuntimeResourceCoverageV1 {
   readonly frontier: { readonly tick: number; readonly captureSequence: number };
   readonly lost: boolean;
   readonly losses: readonly string[];
+  /** Separate authority channels; successful native mutations cannot upgrade alias/lifecycle coverage. */
+  readonly channels?: {
+    readonly recipientNativeMutations: "partial";
+    readonly selectedNeedLifecycle: "partial";
+    readonly reconciledLiabilities: "partial";
+    readonly cargoLifetime: "partial";
+  };
   readonly cohorts: readonly {
     readonly cohortId: number;
     readonly actorId: string;

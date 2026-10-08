@@ -3,6 +3,7 @@ import { ResourceServiceObservation } from "../../../entity/components/resource/
 import type { AiRuntimeProductionSpatialV1 } from "./ai-runtime-production-spatial-v1";
 import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor";
 import type { AiRuntimeResourceCoverageCapture } from "./ai-runtime-resource-coverage-capture";
+import { readAiRuntimeResourceOperationId } from "./ai-runtime-resource-operation-identity";
 
 /** Reuses marked actor subscriptions and current component authority. Fresh cargo never rebinds an old execution/transfer. */
 export class AiRuntimeResourceServiceCapture {
@@ -85,8 +86,10 @@ export class AiRuntimeResourceServiceCapture {
             this.coverage?.lose("resource_credit_authority_unavailable");
           }
           const { actor: _actor, context: _context, target: _target, kind: _kind,
+            application,
             snapshotRestoreInProgress: emissionRestoreInProgress, ...credit } = event;
           this.append(source.playerNumber, structuredClone({ ...common, ...credit, emissionRestoreInProgress,
+            operationId: readAiRuntimeResourceOperationId(this.scene, application),
             phase: "resource_credit" } satisfies AiRuntimeProductionSpatialV1));
         }
       } catch { this.coverage?.lose("resource_projection_failed"); }

@@ -7,30 +7,23 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 ## Quick resume
 
 **Current batch (user policy, 2026-10-08):** `continue with next batch` authorizes related 37–38 capture/accounting.
-Stage 37 prerequisite: split the protocol player owners without changing behavior; old `player.ts` exports remain compatible.
-Source review/Omission Audit: moved every existing class/type/helper and comment to its focused owner, preserving native
-methods, reset defaults, class identity and exports. Separate Final Closure Audit: task-owned split only; tests/validation
-deferred. Commit/push this prerequisite, then author the passive native observer. No model/skill/tool change.
-
-**Previous checkpoint:** latest prior `continue` authorized the bounded 36 authority-design checkpoint.
-Current step: #815/#816 machinery 36, **beneficiary need authority design**, authored; runtime implementation unverified/open.
-Pause here before the related 37–38 capture/accounting batch. Last selected profile is GPT-6.1 Sol / medium;
-actual host model/effort are unknown. Explain what was authored and why; commit/push, then recommend the next grouped
-profile. All executable tests and validation stay deferred to the final gate.
-Base `d2e48214230e66290f95f7011c17951025cbacda`; the containing commit owns 36.
+Current step: #815/#816 machinery 37 **recipient native journal**, authored/unverified; accounting 38 is next in this batch.
+Pause after 38. Last selected profile GPT-6.1 Sol / medium; actual host settings unknown. Recommended grouped profile
+GPT-6.1 Sol / high. All executable tests/validation remain deferred to the final gate.
+Base `80a84493b155a2f431cc0aa172257ce9398e3624` (player-owner split prerequisite); containing commit owns 37.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify remote on resume.
-Preserve unrelated Nx merge `59f72e037`. No family/issue is complete. The user removed the comment-permission rule.
+Preserve unrelated Nx merge `59f72e037`. No family/issue is complete. User removed the comment-permission rule.
 
-**Authored — why it is used:** the [36 authority design](follow-ups/runtime-matrix-ci.md#beneficiary-need-authority-design-checkpoint-2026-10-08-unimplemented)
-traces actual player money writers, snapshot/setup bypasses, selected-input timing and reconciled claims/live queue
-liabilities. It defines a bounded beneficiary journal, exact native application join and conservative need closure.
-Example: other income supplies seven of a ten-wood shortage, then is spent; a later selected worker's seven wood
-can contribute at most three to the old need. Spending cannot reopen it. Missing input-read/recipient/claim/lifetime
-history stays unavailable. Only this handoff and the existing runtime-matrix plan changed; no runtime code/spec added.
-Earlier [33–35 diagnostics](follow-ups/runtime-matrix-ci.md#resource-service-input-and-interval-checkpoints-2026-10-08-unverified)
-still expose scoped income/potential through `resourceServices`, with actual usefulness/throughput/capacity null.
-Real recipes still declare no intervals. The [32 contract](follow-ups/runtime-matrix-ci.md#useful-resource-service-contract-checkpoint-2026-10-08-unverified)
-and every prior unrun final-gate obligation remain mandatory. No family closure is claimed.
+**Authored — why it is used:** the [37 native journal](follow-ups/runtime-matrix-ci.md#recipient-native-journal-checkpoint-2026-10-08-authoredunverified)
+records all observed recipient mutations at actual native entry/terminal positions and joins delivery by exact payload
+reference/recipient/operation. This lets accounting see grants/refunds/other deliveries rather than a worker subtotal.
+Vector payments count once; thrown partial payments remain actual partial changes. Reset/restore/replacement/bypass
+fences and owned cleanup retain explicit partial coverage. New protocol/native/journal controls are authored, unrun.
+The [36 design](follow-ups/runtime-matrix-ci.md#beneficiary-need-authority-design-checkpoint-2026-10-08-partially-implemented)
+requires an exact consumed-input marker, detached reconciled liability frame and conservative generation closure in 38.
+Mutable aliases/net-zero bypasses and missing need/liability/cargo lifetimes still block actual usefulness.
+Earlier 33–35 diagnostics still expose scoped income/potential through `resourceServices`; actual usefulness,
+throughput/capacity remain null. Real recipes declare no intervals; all prior unrun final-gate obligations remain.
 
 **Settled credit/cargo contract:** explicit transient execution handles cross awaits; no ambient current order can assign
 credit. Record native cargo additions, reset/restore fences, exact offered pile, emission recipient and scoped before/after

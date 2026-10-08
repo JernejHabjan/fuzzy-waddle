@@ -13,6 +13,8 @@ export type ResourceServiceEvent = { readonly actor: Phaser.GameObjects.GameObje
   | { readonly kind: "cargo_offered"; readonly context: ResourceTransferContext;
     readonly target: Phaser.GameObjects.GameObject; readonly cargo: ResourceCargoSample }
   | { readonly kind: "resource_credit"; readonly context?: ResourceTransferContext;
+    /** Transient exact native mutation token; only the scene capture assigns its local operation ID. */
+    readonly application?: object;
     readonly target: Phaser.GameObjects.GameObject; readonly resourceType: ResourceType | null; readonly amount: number;
     readonly channel: "immediate" | "drop_off"; readonly ownerArgument: number | null; readonly beneficiary: number | null;
     readonly status: "returned" | "threw" | "campaign_suppressed";

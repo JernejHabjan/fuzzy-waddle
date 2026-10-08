@@ -11,6 +11,7 @@ import type { AiDecisionDispatchEvent } from "../ai-decision-dispatch-event";
 import type { AiRuntimeProductionBoundaryState } from "./ai-runtime-production-boundary-state";
 import type { AiRuntimeProductionSpatialV1 } from "./ai-runtime-production-spatial-v1";
 import type { AiRuntimeConstructionV1 } from "./ai-runtime-construction-v1";
+import type { AiRuntimeRecipientMutationV1 } from "./ai-runtime-recipient-mutation-v1";
 
 /** Raw authority callbacks in observer order. No resource event is labelled a payment/refund without item provenance. */
 export type AiRuntimeProductionFactV1 = {
@@ -20,6 +21,8 @@ export type AiRuntimeProductionFactV1 = {
   /** Callback-time state after the diagnostic ledger update; optional only for older/synthetic records. */
   readonly boundaryState?: AiRuntimeProductionBoundaryState;
 } & (
+  | { readonly kind: "recipient_resources_installed"; readonly resources: Record<ResourceType, number> | null }
+  | { readonly kind: "recipient_resource_mutation"; readonly mutation: AiRuntimeRecipientMutationV1 }
   | {
     readonly kind: "outcome";
     readonly outcome: GameCommandOutcome;

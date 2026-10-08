@@ -6,6 +6,7 @@ import type { ProbableWafflePlayerStateData } from "./probable-waffle-player-sta
 import type { ProbableWafflePlayerControllerData } from "./probable-waffle-player-controller-data";
 import type { ProbableWafflePlayerState } from "./probable-waffle-player-state";
 import type { ProbableWafflePlayerController } from "./probable-waffle-player-controller";
+import { PlayerResourceObservation } from "./player-resource-observation";
 
 export class ProbableWafflePlayer extends BasePlayer<
   ProbableWafflePlayerStateData,
@@ -50,8 +51,10 @@ export class ProbableWafflePlayer extends BasePlayer<
    * @deprecated
    */
   addResources(resources: Partial<Record<ResourceType, number>>): void {
-    Object.entries(resources).forEach(([resourceType, amount]) => {
-      this.addResource(resourceType as ResourceType, amount);
+    PlayerResourceObservation.run(this, "add", resources, () => {
+      Object.entries(resources).forEach(([resourceType, amount]) => {
+        this.addResource(resourceType as ResourceType, amount);
+      });
     });
   }
 
@@ -66,17 +69,21 @@ export class ProbableWafflePlayer extends BasePlayer<
    * @deprecated
    */
   payAllResources(resources: Partial<Record<ResourceType, number>>): void {
-    Object.entries(resources).forEach(([resourceType, amount]) => {
-      this.payResources(resourceType as ResourceType, amount);
+    PlayerResourceObservation.run(this, "pay", resources, () => {
+      Object.entries(resources).forEach(([resourceType, amount]) => {
+        PlayerResourceObservation.leaf(this, () => this.payResources(resourceType as ResourceType, amount));
+      });
     });
   }
 
   payResources(resourceType: ResourceType, amount: number): void {
-    const resourceAmount = this.playerState.data.resources[resourceType] || 0;
-    if (resourceAmount - amount < 0) {
-      throw new Error("Not enough resources");
-    }
-    this.playerState.data.resources[resourceType] = resourceAmount - amount;
+    PlayerResourceObservation.run(this, "pay", { [resourceType]: amount }, () => {
+      const resourceAmount = this.playerState.data.resources[resourceType] || 0;
+      if (resourceAmount - amount < 0) {
+        throw new Error("Not enough resources");
+      }
+      this.playerState.data.resources[resourceType] = resourceAmount - amount;
+    }, true);
   }
 
   canPayAllResources(constructionCosts: Partial<Record<ResourceType, number>>) {

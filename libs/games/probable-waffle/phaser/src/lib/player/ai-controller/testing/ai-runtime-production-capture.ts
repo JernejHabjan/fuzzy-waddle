@@ -40,6 +40,7 @@ import { captureAiRuntimeInitialConstruction } from "./capture-ai-runtime-initia
 import type { AiRuntimeInitialConstructionV1 } from "./ai-runtime-initial-construction-v1";
 import { AiRuntimeResourceCoverageCapture } from "./ai-runtime-resource-coverage-capture";
 import type { AiRuntimeResourceServiceIntervalV1 } from "./ai-runtime-resource-service-interval-v1";
+import { AiRuntimeRecipientResourceCapture } from "./ai-runtime-recipient-resource-capture";
 
 import { CONSTRUCTION_AUTHORITY_EVENT, type ConstructionAuthorityEvent } from
   "../../../entity/components/construction/construction-authority-event";
@@ -67,6 +68,7 @@ export class AiRuntimeProductionCapture {
   private readonly initialConstruction: Map<number, AiRuntimeInitialConstructionV1>;
   private readonly resourceCoverage: AiRuntimeResourceCoverageCapture;
   private readonly resourceIntervalDeclaration: AiRuntimeProductionCaptureV1["resourceIntervalDeclaration"];
+  private readonly recipientResources: AiRuntimeRecipientResourceCapture;
 
   constructor(private readonly scene: ProbableWaffleScene, intervals: readonly AiRuntimeResourceServiceIntervalV1[] = []) {
     const ticks = getSceneService(scene, SimulationTickService);
@@ -84,6 +86,8 @@ export class AiRuntimeProductionCapture {
       return { tick: clock?.currentTick ?? this.startedTick, captureSequence: this.nextSequence - 1 };
     });
     const initialActors = index.getAllIdActors();
+    this.recipientResources = new AiRuntimeRecipientResourceCapture(scene, this.resourceCoverage,
+      (playerNumber) => this.boundary(playerNumber), () => this.nextSequence - 1, (fact) => this.append(fact));
     this.initialConstruction = captureAiRuntimeInitialConstruction(scene, initialActors, this.startedTick);
     this.spatialCapture = new AiRuntimeProductionSpatialCapture(scene, this.identify, (playerNumber, spatial) => {
       this.append({ ...this.boundary(playerNumber), kind: "spatial_authority", spatial });
@@ -147,6 +151,7 @@ export class AiRuntimeProductionCapture {
     // Components can finish initialization after index registration. This test-only scan attaches missing listeners.
     this.subscriptions.add(ticks.tick$.subscribe(() => {
       this.resourceCoverage.tick(ticks.currentTick);
+      try { this.recipientResources.reconcile(); } catch { this.resourceCoverage.lose("recipient_reconcile_failed"); }
       index.getAllIdActors().forEach((actor) => this.watchQueue(actor));
     }));
     initialActors.forEach((actor) => this.watchQueue(actor));
@@ -175,6 +180,7 @@ export class AiRuntimeProductionCapture {
   }
 
   private readBoundary(playerNumber: number, requireDecision: boolean): AiRuntimeProductionCaptureV1 {
+    this.recipientResources.reconcile();
     if (isSnapshotApplyInProgress(this.scene)) this.resourceCoverage.lose("snapshot_restore");
     const tick = getSceneService(this.scene, SimulationTickService)?.currentTick ?? this.startedTick;
     const controller = requireDecision
@@ -226,7 +232,9 @@ export class AiRuntimeProductionCapture {
         "pending_dispatch_before_capture_or_restore", "navigation_placement_authority",
         "pre_registration_queue_events", "capture_local_identity_restore", "initial_paid_item_provenance",
         "decision_snapshot_cadence", ...pending.gaps],
-      facts: this.facts.filter((fact) => fact.playerNumber === playerNumber), snapshots
+      facts: this.facts.filter((fact) => fact.playerNumber === playerNumber), snapshots,
+      recipientResourceFacts: this.facts.filter((fact) =>
+        fact.kind === "recipient_resources_installed" || fact.kind === "recipient_resource_mutation")
     } satisfies AiRuntimeProductionCaptureV1);
   }
 
@@ -235,6 +243,7 @@ export class AiRuntimeProductionCapture {
     if (this.disposed) return;
     this.disposed = true;
     this.resourceCoverage.lose("capture_disposed");
+    this.recipientResources.dispose();
     this.spatialCapture.dispose();
     this.subscriptions.unsubscribe();
     this.queueSubscriptions.forEach((subscription) => subscription.unsubscribe());

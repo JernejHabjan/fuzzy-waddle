@@ -35,7 +35,42 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
 
 ## Implementation order
 
-### Beneficiary need authority design checkpoint (2026-10-08, unimplemented)
+### Recipient native journal checkpoint (2026-10-08, authored/unverified)
+
+37 follows the 36 design below, with a behavior-preserving player-owner split prerequisite `80a84493b`.
+The containing commit owns 37. Batch 37–38 is authorized; proceed to accounting after scoped publication.
+Last user-selected profile is GPT-6.1 Sol / medium; actual host settings unknown. Recommended profile remains
+GPT-6.1 Sol / high because native ordering/authority crosses protocol, scene capture and accounting.
+
+**What / why:** `PlayerResourceObservation` hooks actual add/vector-pay/direct-pay entry and terminal boundaries.
+Expected vector leaf calls count once. Partial thrown payment retains its terminal balance and original native error.
+`AiRuntimeRecipientResourceCapture` records initial stock and all observed recipients' native mutations in the same
+root budget, preserving a separate all-recipient projection alongside source-filtered service facts.
+`observeResourceApplication` joins an exact payload reference and actual recipient to one operation token;
+`readAiRuntimeResourceOperationId` converts only that token to a capture-local ID on credit publication.
+This supplies all observed grants/refunds/deliveries rather than a selected worker's subtotal, without adding income twice.
+
+Reset fences before its first write; scene snapshot-apply fences before restoration/recreation. Actual bound player,
+state, data and resource identities plus prior terminal balances are reconciled at existing tick/read boundaries.
+Replacements, bypass mismatch, thrown/invalid mutation, reentrancy, listener saturation and append failure fence
+monotone coverage. Owned teardown removes native/scene/identity subscriptions. No save/wire or native payment policy change.
+All four prior gaps remain; native recipient, selected lifecycle, reconciled liabilities and cargo lifetime channels
+are explicitly partial. Public mutable aliases and net-zero write/undo remain unsupported even when endpoints match.
+
+**Source Implementation Review / Omission Audit, 37:** traced protocol listener -> exact player mutator -> begin/terminal
+root records -> explicit token -> detached service credit, plus reset/restore/reconcile/teardown. Legacy synthetic players
+without native authority stay unavailable rather than fabricate bindings. Authored native observer, exact-application and
+recipient-journal specs cover direct/vector/partial throws, reentrancy, listener failure/saturation, foreign/equal-copy/
+duplicate application, restore/replacement/alias mismatch and explicitly unsupported net-zero aliases. None ran.
+
+**Separate Final Closure Audit, 37:** reviewed exact request/native error preservation, single outer vector operation,
+root-budget ownership, all-recipient filtering, no double sum with `resources_applied`, local operation IDs and null join.
+Source authoring complete for this partial channel; full alias/lifetime authority and useful activation remain open.
+Final gate must run the new `player-resource-observation`, `observe-resource-application` and
+`ai-runtime-recipient-resource-capture` specs with every prior deferred command. No executable validation ran.
+Commit/push 37, then continue the authorized 38 accounting slice; pause after the batch.
+
+### Beneficiary need authority design checkpoint (2026-10-08, partially implemented)
 
 36 is the user-authorized bounded design after `d2e48214230e66290f95f7011c17951025cbacda` (35).
 The containing commit owns this documentation slice. Selected profile remains GPT-6.1 Sol / medium; actual host

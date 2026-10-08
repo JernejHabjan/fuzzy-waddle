@@ -1,6 +1,7 @@
 import { BasePlayerState } from "@fuzzy-waddle/platform-game-sessions";
 import { ResourceType } from "../../probable-waffle/resource-type-definition";
 import type { ProbableWafflePlayerStateData } from "./probable-waffle-player-state-data";
+import { PlayerResourceObservation } from "./player-resource-observation";
 
 export class ProbableWafflePlayerState extends BasePlayerState<ProbableWafflePlayerStateData> {
   constructor(data?: ProbableWafflePlayerStateData) {
@@ -8,6 +9,7 @@ export class ProbableWafflePlayerState extends BasePlayerState<ProbableWafflePla
   }
 
   override resetData() {
+    PlayerResourceObservation.reset(this);
     super.resetData();
     this.data = {
       resources: {

@@ -48,8 +48,11 @@ export class AiRuntimeResourceCoverageCapture {
     const frontier = this.boundary();
     return structuredClone({ captureEpoch: 1, lossEpoch: this.lossEpoch, startedTick: this.startedTick,
       frontier, lost: this.lost, losses: [...this.losses], cohorts: this.cohorts,
+      channels: { recipientNativeMutations: "partial", selectedNeedLifecycle: "partial",
+        reconciledLiabilities: "partial", cargoLifetime: "partial" },
       gaps: ["resource_component_mutation_history_incomplete", "resource_service_lifetime_history_incomplete",
-        "resource_beneficiary_need_history_missing", "resource_continuous_capacity_predicates_missing"] }
+        "resource_beneficiary_need_history_missing", "resource_continuous_capacity_predicates_missing",
+        "resource_recipient_mutable_alias_history_incomplete"] }
       satisfies AiRuntimeResourceCoverageV1);
   }
 }
