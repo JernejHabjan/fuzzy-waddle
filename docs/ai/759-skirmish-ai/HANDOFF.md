@@ -7,18 +7,22 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 ## Quick resume
 
 **Current batch (user policy, 2026-10-08):** `continue` authorized grouped implementation stages 48–49.
-Current step: #815/#816 machinery 48 **construction sound prerequisite**, authored/unverified.
-Continue within this authorized batch to 49 passive construction writer fences; pause after 49 publication.
-Recommend GPT-6.1 Sol / medium for that settled implementation pair; keep its related routes in one batch.
+Current step: #815/#816 machinery 49 **construction writer fences**, authored/unverified; pause after 49 publication.
+48 sound extraction and 49 passive writer fences are authored. Next: 50 source/drain capacity and lifetime design.
+Recommend GPT-6.1 Sol / high for the next bounded ownership design, then medium for its settled implementation batch.
 Last selected profile GPT-6.1 Sol / medium; actual host settings unknown. No model switch.
 All executable tests/validation remain deferred to the final gate.
-Base `fa0dc1e4c0f1b589bb8265ba680a4e56b50ec609` (47, remote verified); containing commit owns 48.
+Base `04ded09863f51adb72a10b54ff8a30537678c8be` (48, remote verified); containing commit owns 49.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify remote on resume.
 Preserve unrelated Nx merge `59f72e037`. No family/issue is complete. User removed the comment-permission rule.
 
-**Authored — why it is used:** [48 sound extraction](follow-ups/runtime-matrix-ci.md#construction-presentation-checkpoint-2026-10-08-authoredunverified)
+**Authored — why it is used:** [49 construction fences](follow-ups/runtime-matrix-ci.md#construction-writer-fence-checkpoint-2026-10-08-authoredunverified)
+lose earlier resource history before silent initial/progress/repair health writes and work/start/finish/restore mutations.
+A delivery after repair or building completion cannot inherit an earlier continuous-readiness claim; native silent health,
+payment, return policy and callbacks are retained. Real facade/journal/drain and synthetic report controls authored/unrun.
+[48 sound extraction](follow-ups/runtime-matrix-ci.md#construction-presentation-checkpoint-2026-10-08-authoredunverified)
 moves playback into ConstructionPresentation while retaining the saved flag and native callbacks on the facade.
-This gives the next history hooks a focused construction owner. Sound/ready/lifecycle controls are authored/unrun.
+This keeps construction focused for passive history hooks. Sound/ready/lifecycle controls are authored/unrun.
 [47 construction writer design](follow-ups/runtime-matrix-ci.md#construction-health-writer-checkpoint-2026-10-08-source-design-only)
 selects passive loss before silent initial/progress/repair health writes and construction work/start/finish/restore changes.
 It lets later delivery accounting reject earlier readiness continuity while retaining native payment, silent health and
@@ -30,7 +34,7 @@ Cross-await controls use a real Phaser gatherer and a live drain, including sile
 [45 health presentation](follow-ups/runtime-matrix-ci.md#health-presentation-prerequisite-checkpoint-2026-10-08-authoredunverified)
 moves bars/visibility/hit/heal effects into a helper reading live facade state. Native damage/death, events and save state
 stay on the facade, allowing the next fence to edit a compliant owner. Lifecycle/effect/native controls authored/unrun.
-Construction direct health-data writes remain unsupported. Prior [44 owner fence](follow-ups/runtime-matrix-ci.md#owner-conversion-fence-checkpoint-2026-10-08-authoredunverified)
+Supported construction writes now fence history; arbitrary health/data aliases remain unsupported. Prior [44 owner fence](follow-ups/runtime-matrix-ci.md#owner-conversion-fence-checkpoint-2026-10-08-authoredunverified)
 loses scene resource history before owner-index callbacks. A converted drain still uses the post-wait owner and native full
 return; earlier need bounds/application-window quantities become unavailable. Actor initialization also loses global history.
 Native ordering, disposal, cross-await and report controls are authored/unrun; all authority channels remain partial.
@@ -72,13 +76,13 @@ Campaign suppression is explicit and may accompany a full native return. Old/unk
 to the latest task. Whole known piles may retain several earlier gathering attempts; no invented FIFO/partial allocation.
 A credit proves a scoped balance change, independently from cargo lineage, accepted task/demand and continuous usefulness.
 
-**Next exact authoring action — why:** implement [48–49 construction presentation and history fence](follow-ups/runtime-matrix-ci.md#next-implementation-batch-4849-construction-presentation-and-history-fence).
-48 moves construction sound presentation into a focused helper while retaining the facade's saved sound flag and native
-lookup/callback order, leaving room for readable hooks. Commit/push separately; 49 adds the settled pre-write boundaries
-and authored lifecycle/failure/capture/delivery/report controls. Earlier resource history must close before construction
-work, repair or completion changes readiness; health writes must stay silent. Recommend **GPT-6.1 Sol / medium** for this
-grouped implementation, commit/push each stage and pause after 49. No technology-wide or arbitrary alias fence is claimed.
-Public aliases remain unsupported, channels partial, useful metrics null and all executable validation deferred.
+**Next exact authoring action — why:** design [50 source/drain capacity and lifetime contract](follow-ups/runtime-matrix-ci.md#next-design-batch-50-source-and-drain-capacitylifetime-contract).
+Inventory stock/refill/locks/worker assignment, capacity/load/unload/restore and actual await/cleanup identities; settle
+conservative native entry boundaries and a coherent implementation batch. This will let later accounting reject earlier
+supply/drop-off assumptions after a source/drain changes, while retaining native extraction and return behavior.
+Recommend **GPT-6.1 Sol / high** for this unresolved ownership design; medium after contracts are concrete.
+Design docs only, commit/push and pause after 50. Public aliases/channels remain incomplete, useful metrics null,
+and all executable validation stays deferred to the final gate.
 
 | Dependency | State | Purpose / next boundary |
 | --- | --- | --- |
@@ -98,7 +102,8 @@ Public aliases remain unsupported, channels partial, useful metrics null and all
 | Owner presentation and conversion fence (43–44) | Authored, unverified; pause reached | Compliant owner split, then passive pre-index loss to close old resource history |
 | Health presentation and mutation fence (45–46) | Authored, unverified; pause reached | Compliant health split, then pre-mutation loss before callbacks can observe changed readiness |
 | Construction / repair health writer contract (47) | Source design authored; pause reached | Settled silent health/work/lifecycle boundaries and actual technology caller |
-| Construction presentation and writer fences (48–49) | 48 authored/unverified; 49 next in current batch | Separate sound work, then close history before actual construction/repair readiness changes |
+| Construction presentation and writer fences (48–49) | Authored, unverified; pause reached | Separate sound work and passive pre-write loss before construction/repair readiness changes |
+| Source/drain capacity and lifetime contract (50) | Next bounded design | Settle pre/post-await supply/drop-off mutation boundaries and implementation acceptance |
 | Complete need/lifetime history and useful throughput | Open; activation still blocked | Public aliases and every relied-on mutation need authority before useful windows/real recipes |
 | Continuous useful capacity | Open | Complete mutation authority for readiness, supply, access/safety and service |
 | Full production adapter/oracles/setup/strategy | Open | Independent PRO-03/06/07 assertions |
@@ -119,7 +124,8 @@ Player-owner split prerequisite is `80a84493b155a2f431cc0aa172257ce9398e3624`;
 38 is `0e9dc0c9bc69c1aa04db1e1b35f51526efa4abc5`; 39 is `1c7ecdef633d5d28cf3ca88b7ed4467eb5436c12`.
 40 is `4647a4a427acf56ddf34579df3e64317dd8ac254`; 41 is `ecd26ba772e822ebbb06f4f21bf9172ded4fd495`;
 42 is `1dbaaf5d1f574960aaf9b71f20d9b37bb3343c6b`; 43 is `89ed0cf2cc757f76ecce400c3cb4647f67c8a687`; 44 is `e173b564beda5d18a55dd9f28b03b91f550551ae`;
-45 is `e5a5eb242970489ebd2c2d7e1c2967b9ecb56cf8`; 46 is `6011a432219678fcabad2a00f675964b83716507`; 47 is `fa0dc1e4c0f1b589bb8265ba680a4e56b50ec609`; containing commit owns 48.
+45 is `e5a5eb242970489ebd2c2d7e1c2967b9ecb56cf8`; 46 is `6011a432219678fcabad2a00f675964b83716507`; 47 is `fa0dc1e4c0f1b589bb8265ba680a4e56b50ec609`;
+48 is `04ded09863f51adb72a10b54ff8a30537678c8be`; containing commit owns 49.
 No fixed machinery total/percent is claimed; diagnostic authoring is delivered, useful-service acceptance remains open.
 All native observer,
 report, prior movement and earlier final-gate obligations remain unrun. Capture/report cost and native compatibility are unmeasured.
@@ -574,7 +580,7 @@ merely because their issue title mentions testing. All authored work remains unv
 | 1 / as needed | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `partial` | Split only owners blocking the selected batch | Stay Sol medium; optional Luna high |
 | 2 | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829) | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof | GPT-6.1 Sol, medium |
 | 3 | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `in_progress` | Finish pressure/recovery policy; defer victory proof | GPT-6.1 Sol, medium |
-| 4 / next boundary | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | 48 sound extraction authored; 49 fences next; useful activation blocked | Sol 6.1 medium for settled construction implementation |
+| 4 / next boundary | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | 48–49 construction authored; 50 source/drain design next; useful activation blocked | Sol 6.1 high for new lifetime/capacity design |
 | 5 / paired | #815 / #816 | `in_progress` | Remaining family contracts, focused fixtures, frozen maps and continuous-match tier | Sol medium; optional Luna high for established cases |
 | 6 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `in_progress` | Exact-once interruption, terminal and re-entry parity | GPT-6.1 Sol, medium |
 | 7 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `partial` | Generation fencing, phase restore/replay and cleanup cases | GPT-6.1 Sol, medium |
@@ -588,9 +594,9 @@ merely because their issue title mentions testing. All authored work remains unv
 The user policy below and latest Quick resume own #759 model choice and execution boundaries. The user selected Sol 6.1 / medium
 for the current implementation group. Use Sol for unresolved thinking/design; Luna / high is an optional choice for
 concrete routine work. Keep related work together to avoid unnecessary switches. This applies to this roadmap.
-The latest `continue` authorized 48–49; 48 is authored/unverified, continue to 49 then pause.
-48–49 is the current bounded construction sound/writer fence pair; recommend GPT-6.1 Sol / medium for its settled contract.
-Stop and recommend high only if implementation exposes a concrete unresolved ordering/reference/lifecycle conflict.
+The latest `continue` authorized 48–49, now authored/unverified; pause after 49 publication.
+50 is the next bounded source/drain capacity and lifetime design; recommend GPT-6.1 Sol / high because its await/container
+identity and remaining ownership contract are unsettled. Return to medium for the resulting concrete implementation batch.
 Incoming-read identity, exact self-dispatch admission and distinct application windows are authored; native producer
 integration remains unrun. Do not infer that synthetic diagnostic controls complete the machinery.
 Complete mutable-alias, beneficiary need/liability and lifetime mutation authority remain activation blockers;
@@ -638,11 +644,11 @@ No model was switched automatically. Continuous useful capacity and full product
 
 Copyable next-chat prompt:
 
-> Read docs/ai/759-skirmish-ai/HANDOFF.md and its 48–49 acceptance. Implement the construction sound prerequisite,
-> preserving saved sound flag, ready/service lookup and native sound callback order; commit/push 48 separately.
-> Then implement the exact passive initial/progress/repair/start/finish/restore fences and authored controls in 49,
-> preserving silent health arithmetic and native payment/construction/repair semantics. Keep aliases/channels unsupported,
-> no useful activation or executable validation. Use Sol 6.1 medium across the pair; commit/push and pause after 49.
+> Read docs/ai/759-skirmish-ai/HANDOFF.md and its linked 50 design acceptance. Inventory actual source/drain stock,
+> refill/lock/assignment/restore and pre/post-await capacity/load/unload writers, container callbacks and lifetime identity.
+> Settle exact passive boundaries and a coherent implementation batch, preserving native extraction/return/payment/error
+> semantics. Keep aliases/channels unsupported and all executable validation deferred. Use Sol 6.1 high for design;
+> commit/push the existing design docs and pause after 50. Recommend medium for implementation once settled.
 > Report what was authored and what comes next,
 > including what each will be used for and why it matters. Commit/push each coherent stage; pause at a stronger-reasoning
 > boundary and recommend the next model/effort. End each stage with the change, the problem it solves and its users;

@@ -26,6 +26,7 @@ import { ProbableWaffleSceneEventName } from "../../../world/services/recovery/p
 import { buildsWithoutAssignedWorkers, constructionVitalityIncrement } from "./construction-progress";
 import { startConstructionPayment, refundConstructionPayment } from "./construction-payment";
 import { observeConstructionLifecycle } from "./observe-construction-authority";
+import { fenceSceneResourceHistory } from "../../../data/scene-resource-observation";
 
 export { buildsWithoutAssignedWorkers, constructionVitalityIncrement } from "./construction-progress";
 
@@ -121,6 +122,8 @@ export class ConstructionSiteComponent {
     const productionDefinition = this.productionDefinition;
     if (!productionDefinition) throw new Error("Production definition not found");
 
+    // Work and silent vitality writes invalidate earlier readiness even for zero or capped progress.
+    fenceSceneResourceHistory(this.gameObject.scene, "resource_actor_construction_change");
     this.remainingConstructionTime -= constructionProgress;
     const healthComponent = this.healthComponent;
     if (healthComponent) {
@@ -171,6 +174,8 @@ export class ConstructionSiteComponent {
     if (!productionDefinition) throw new Error("Production definition not found");
     startConstructionPayment(this.gameObject, productionDefinition, this.state, this.remainingConstructionTime);
 
+    // Payment callbacks retain pre-start state; only a returned payment reaches this boundary.
+    fenceSceneResourceHistory(this.gameObject.scene, "resource_actor_construction_change");
     // start building
     this.remainingConstructionTime = productionDefinition.productionTime;
     this.state = ConstructionStateEnum.Constructing;
@@ -181,6 +186,7 @@ export class ConstructionSiteComponent {
   private setInitialHealth() {
     const healthComponent = getActorComponent(this.gameObject, HealthComponent);
     if (healthComponent) {
+      fenceSceneResourceHistory(this.gameObject.scene, "resource_actor_health_change");
       healthComponent.healthComponentData.health = Math.floor(
         healthComponent.healthDefinition.maxHealth * this.constructionSiteDefinition.initialHealthPercentage
       );
@@ -264,6 +270,7 @@ export class ConstructionSiteComponent {
     // Fixes repair-rate drift from transiently missing repairer references during restore.
     const repairAmount =
       deltaWithTimeScale * this.constructionSiteDefinition.repairFactor * this.getAssignedRepairerCountForProgress();
+    fenceSceneResourceHistory(this.gameObject.scene, "resource_actor_health_change");
     healthComponent.healthComponentData.health += repairAmount;
     healthComponent.healthComponentData.health = Math.min(
       healthComponent.healthComponentData.health,
@@ -283,6 +290,7 @@ export class ConstructionSiteComponent {
   }
 
   private finishConstruction() {
+    fenceSceneResourceHistory(this.gameObject.scene, "resource_actor_construction_change");
     this.state = ConstructionStateEnum.Finished;
     observeConstructionLifecycle(this.gameObject, this.state, this.remainingConstructionTime, "finished");
     this.constructionStateChanged.next(this.state);
@@ -322,6 +330,8 @@ export class ConstructionSiteComponent {
   }
 
   setData(data: Partial<ConstructionSiteComponentData>) {
+    // Even matching restores resolve references and emit native callbacks; they cannot reopen prior history.
+    fenceSceneResourceHistory(this.gameObject.scene, "resource_actor_construction_change");
     if (data.state !== undefined) this.state = data.state;
     if (data.remainingConstructionTime !== undefined) this.remainingConstructionTime = data.remainingConstructionTime;
     if (data.progressPercentage !== undefined) this.progressPercentage = data.progressPercentage;

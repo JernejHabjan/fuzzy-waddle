@@ -209,9 +209,66 @@ explicit gaps; cancellation is not falsely labeled a health mutation. No runtime
 reconciled handoff/current grid/resume policy. Design authored/source-reviewed only; all executable evidence deferred.
 No skill/tool update warranted. Commit/push this documentation slice and pause at 47.
 
+### Construction writer fence checkpoint (2026-10-08, authored/unverified)
+
+Stage 49 is based on `04ded09863f51adb72a10b54ff8a30537678c8be` (48, remote verified); containing commit owns 49.
+The authorized 48–49 batch reaches its pause after this publication. Last selected profile GPT-6.1 Sol / medium;
+actual host settings unknown. Tests, formatter, lint, types, builds, source-size validation, doctor/context and simulations
+remain deferred to the final gate. No new useful metric, complete channel or issue/family closure is claimed.
+
+ConstructionSiteComponent uses existing fenceSceneResourceHistory at six native entries: initial health and eligible
+repair use resource_actor_health_change; progress, returned-payment start, finish and every restore use
+resource_actor_construction_change. Loss is scene-wide, bounded by the existing subscription owner, sticky and before
+writes/callbacks. Missing/full/zero-worker repair, failed payment and already-finished complete keep their old guards.
+The facade retains local initial, cached progress and fresh repair references, direct silent health/armor arithmetic,
+actual definitions/data, saved fields, native payment and completion/refund/error ordering. No listener/schema/timer
+or persisted field was introduced; no baseline refresh. Why used: a delivery after building work, repair or completion
+cannot inherit an earlier continuous-readiness claim. Native income and full return still follow actual delivery policy.
+
+| Acceptance | Implemented symbols / authored evidence (all unrun) |
+| --- | --- |
+| 49.1 Initial/progress/repair | Six facade hooks; construction-resource-history.spec.ts uses real construction/health facades and journal via a controlled fixture. Initial matching/absent/zero armor, automatic/assigned/pending/zero/capped/instant/no-health work, guard/failure, pending/zero-factor/clamped repair, silence/no death, retained facade/data/definition references. Includes native zero-time/zero-work NaN progress characterization. |
+| 49.2 Lifecycle/restore | construction-resource-history-lifecycle.spec.ts covers start ordering/errors, immediate versus assigned, reentrant immediate completion, manual/progress/no-health finish, no-op finish, empty/matching/partial restores and pending resolution, saved fields, cancellation/repeated teardown/refund failure/tick cleanup. construction-payment.spec.ts additionally connects actual paid/denied/throwing native payment to the real caller fence. Existing lifecycle/payment controls retained. |
+| 49.3 Failure/reentrancy/references | Both history specs cover throwing observers with later delivery, native audio/upgrade/repair/refund partial-state failures, nested restore/finish/reconcile reads and the original local/cached/fresh/live reference semantics. No new native state guard or snapshot. |
+| 49.4 Capture/delivery | Real recipient capture: global loss with no cohort, epoch on later actual protocol add, disposed silence, fresh partial capture without backfill. construction-drain-credit.spec.ts uses real construction/health facades, a live drain, actual protocol players, controlled wait/emitter, progress/repair and normal/granted/none economies. Keeps post-wait owner, full return, notification, native exact application object and loss epoch. No destroyed-drain claim. |
+| 49.5 Report/limits/delivery | Existing skirmish-ai-runtime-resource-application.spec.ts real subscriber/fence control adds construction reason over synthetic accounting payloads: need/application/usefulness quantities null, legacy income retained, all channels partial. Source-reviewed facade/helpers/spec ownership; executable size/cost/compatibility evidence remains unmeasured. Handoff and pause reconciled. |
+
+**Source Implementation Review:** traced each native input/guard/payment/write/notification/cleanup path against 47;
+reviewed silent arithmetic, reference resolution, sound helper and health/UI consumers. Repaired fixture ID lookup,
+kept actual payment integration separate from controlled error cases, and retained explicit instant-work NaN behavior.
+No event-based substitute, extra scan, observer filter or changed native economy policy was added.
+**Omission Audit:** 49.1–49.5 maps above; test/helper files are adjacent and selected by the retained final-gate patterns.
+Public assignments/aliases, non-health technology readiness, component replacement, raw destroy and complete source/drain
+capacity/lifetime authority remain gaps. Fresh capture does not backfill lost history. No skill/tool change warranted.
+**Final Closure Audit (separate):** reread final runtime changes, new controls and immediate consumers after source review;
+reconciled current/next state, provenance, acceptance and publication scope. Authored/source-reviewed only; no check pass.
+Commit/push exact owned paths and pause after 49; remote SHA must be verified before reporting publication.
+
+#### Next design batch: 50 source and drain capacity/lifetime contract
+
+Recommend **GPT-6.1 Sol / high** for this bounded new ownership design: source/drain operations cross awaits and container
+callbacks, and the remaining lifetime/alias contract is not settled by health/construction hooks. Return to medium for
+implementation once exact boundaries and acceptance are concrete. This recommendation does not change the running model.
+
+1. Read the stage-42 writer table, resource-source-component.ts, resource-drain-component.ts, adjacent resource-service
+   context/credit owners and specs; follow their actual ContainerComponent load/unload and ready/destroy consumers.
+2. Inventory source stock/refill/lock/assignment/restore and source/drain capacity mutations before/after waits. Record
+   current reference resampling, callbacks/errors/depletion and object/lifetime identities. Separate supported named
+   routes from public definition/data/container/component aliases, pre-installation state and destroyed-drain limitations.
+3. Settle conservative pre-write reasons/ordering using existing scene loss. Do not change native extraction amounts,
+   post-wait ownership/economy/full return, time/capacity/cleanup behavior or add exhaustive coverage claims. Identify any
+   baseline split prerequisite by source inspection without executing a validator or refreshing a hash.
+4. Define the next coherent implementation batch, exact authored controls/final-gate commands, purposes and model/effort;
+   update existing handoff/plan, source-review/Omission Audit/separate Final Closure Audit, commit/push design docs and pause.
+
+Purpose: later delivery accounting must reject earlier assumptions about usable supply and drop-off capacity when a
+source/drain changes, while native workers still extract and return under their original rules. Stage 50 is design only;
+no new runtime hook, alias API redesign, useful activation or executable validation. No fixed total/percent is implied.
+
 ### Construction presentation checkpoint (2026-10-08, authored/unverified)
 
-Stage 48 is based on `fa0dc1e4c0f1b589bb8265ba680a4e56b50ec609` (47, remote verified); containing commit owns 48.
+Stage 48 is `04ded09863f51adb72a10b54ff8a30537678c8be`, based on
+`fa0dc1e4c0f1b589bb8265ba680a4e56b50ec609` (47, remote verified).
 The current authorization covers 48–49, with a separate commit/push per stage and pause after 49.
 ConstructionPresentation owns cached audio, visibility/RNG and build/completion playback. ConstructionSiteComponent
 retains playingBuildSound in saved data, accessed by live callbacks, plus UI creation, state/subjects, ticks and teardown.

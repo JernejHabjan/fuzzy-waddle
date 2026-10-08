@@ -92,7 +92,7 @@ test("an unrelated recipient's exact native credit cannot become this cohort's i
 });
 
 // Actual scene subscription/loss producer over synthetic accounting payloads; no real-match evidence is claimed.
-for (const reason of ["resource_actor_owner_change", "resource_actor_health_change"]) {
+for (const reason of ["resource_actor_owner_change", "resource_actor_health_change", "resource_actor_construction_change"]) {
   test(`native ${reason} boundary loss survives report projection and disables need/application quantities`, () => {
     const f = resourceApplicationFixture();
     const player = new ProbableWafflePlayer(new ProbableWafflePlayerState(), new ProbableWafflePlayerController());

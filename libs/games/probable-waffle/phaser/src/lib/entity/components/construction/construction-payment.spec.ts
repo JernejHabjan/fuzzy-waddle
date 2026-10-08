@@ -8,17 +8,30 @@ import { getActorComponent } from "../../../data/actor-component";
 import { emitResource, getCommunicator, getPlayer, isSnapshotApplyInProgress } from "../../../data/scene-data";
 import { CONSTRUCTION_AUTHORITY_EVENT, type ConstructionAuthorityEvent } from "./construction-authority-event";
 import { startConstructionPayment, refundConstructionPayment } from "./construction-payment";
+import { ConstructionSiteComponent } from "./construction-site-component";
+import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
+import { subscribeSceneResourceLoss } from "../../../data/scene-resource-observation";
+import type { ConstructionSiteDefinition } from
+  "@fuzzy-waddle/probable-waffle-gameplay/entity/components/construction/construction-site-definition";
 
 jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
 jest.mock("../../../data/scene-data", () => ({ emitResource: jest.fn(), getCommunicator: jest.fn(),
   getPlayer: jest.fn(), isSnapshotApplyInProgress: jest.fn() }));
+jest.mock("../../../data/game-object-helper", () => ({ onObjectReady: jest.fn(), getGameObjectVisibility: () => undefined }));
+jest.mock("../../../data/actor-data", () => ({ upgradeFromConstructingToFullActorData: jest.fn() }));
+jest.mock("../../../data/actor-level-utils", () => ({ getResearchedLevelForActor: () => null }));
+jest.mock("../../../prefabs/definitions/actor-definitions", () => ({ getPwActorDefinition: jest.fn() }));
+jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: () => undefined }));
+jest.mock("./construction-progress-ui-component", () => ({ ConstructionProgressUiComponent: class {} }));
 
 function fixture(observe = true) {
   const changes = new Subject<{ property: "resource.added" | "resource.removed";
     data: { playerNumber: number; playerStateData: { resources: Partial<Record<ResourceType, number>> } } }>();
   const money: Record<ResourceType, number> = { food: 100, wood: 100, stone: 100, minerals: 100 };
   const events = new Phaser.Events.EventEmitter();
-  const site = { scene: { events } } as unknown as Phaser.GameObjects.GameObject;
+  const actorEvents = new Phaser.Events.EventEmitter();
+  const site = { scene: { events }, name: "site", on: actorEvents.on.bind(actorEvents), once: actorEvents.once.bind(actorEvents) }
+    as unknown as Phaser.GameObjects.GameObject;
   const records: ConstructionAuthorityEvent[] = [];
   if (observe) events.on(CONSTRUCTION_AUTHORITY_EVENT, (event: ConstructionAuthorityEvent) => records.push(event));
   const canPay = jest.fn(() => true);
@@ -39,6 +52,34 @@ function fixture(observe = true) {
 /** Native behavior characterization, including known policy defects; these authored cases have not run. */
 describe("construction payment authority", () => {
   beforeEach(() => jest.clearAllMocks());
+
+  it.each(["paid", "denied", "throw"] as const)("preserves actual %s payment before the caller's construction fence", (route) => {
+    const f = fixture(false), order: string[] = [], error = new Error("native payment");
+    f.definition.productionTime = 0;
+    jest.mocked(getPwActorDefinition).mockReturnValue({ components: { productionCost: f.definition } } as never);
+    const policy = { startImmediately: false, consumesBuilders: false, maxAssignedBuilders: 1, maxAssignedRepairers: 1,
+      progressMadeAutomatically: 1, progressMadePerBuilder: 1, repairFactor: 1, initialHealthPercentage: 0.1,
+      refundFactor: 0.5, canBeDragPlaced: false } satisfies ConstructionSiteDefinition;
+    const component = new ConstructionSiteComponent(f.site, policy);
+    const remove = subscribeSceneResourceLoss(f.site.scene, (reason) => {
+      expect(reason).toBe("resource_actor_construction_change");
+      expect(component.getData().state).toBe(ConstructionStateEnum.NotStarted); order.push("loss");
+    });
+    const native = jest.mocked(emitResource).getMockImplementation();
+    jest.mocked(emitResource).mockImplementation((...args) => {
+      expect(component.getData().state).toBe(ConstructionStateEnum.NotStarted); expect(order).toEqual([]);
+      order.push("emit"); if (route === "throw") throw error; native?.(...args);
+    });
+    component.constructionStateChanged.subscribe(() => order.push("state"));
+    if (route === "denied") {
+      f.canPay.mockReturnValue(false); expect(() => component.startConstruction()).toThrow("Cannot afford building costs");
+    } else if (route === "throw") expect(() => component.startConstruction()).toThrow(error);
+    else component.startConstruction();
+    expect(order).toEqual(route === "paid" ? ["emit", "loss", "state"] : route === "throw" ? ["emit"] : []);
+    expect(component.getData().state).toBe(route === "paid" ?
+      ConstructionStateEnum.Constructing : ConstructionStateEnum.NotStarted);
+    expect(f.money.food).toBe(route === "paid" ? 89 : 100); remove();
+  });
 
   it("retains the native time predicate instead of treating configured immediate cost as a charge", () => {
     const f = fixture(); startConstructionPayment(f.site, f.definition, ConstructionStateEnum.NotStarted, 0);
