@@ -6,70 +6,49 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
-**Next session (user policy, 2026-10-07):** last selected profile is **GPT-6.1 Sol / medium**; host settings are unknown.
-The user explicitly authorized three consecutive service-foundation stages: native attempt ownership
-(26), marked capture (27), strict report projection (28). All three are authored/unverified; pause after this group.
-Current step: #815/#816 machinery batch 28, **strict resource-service attempt report**, authored/unverified.
-Base `77499c4db98e1f28d625ed6a66e465039d0b22a1`; the containing commit owns this slice.
-Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify local/remote on resume.
-Nx merge `59f72e037` is preserved. No family/issue is complete. The user removed the comment-permission rule.
-All executable tests and validation remain deferred to the final gate.
+**Current batch (user policy, 2026-10-08):** three consecutive credit/cargo stages are authorized. Stage 29
+is the separate gatherer prerequisite and settled ownership contract; 30 adds native capture; 31 projects reports.
+Last selected profile is GPT-6.1 Sol / medium; actual host model/effort are unknown. Pause after 31, recommend the next
+profile, and explain what each authored stage enables. All executable tests and validation stay deferred to the final gate.
+Current step: #815/#816 machinery 29, **gatherer ownership prerequisite**, authored/unverified.
+Base `135c5b1c1cec0f4a8557d52f1511761887f449f5`; the containing commit owns this slice.
+Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify remote on resume.
+Preserve unrelated Nx merge `59f72e037`. No family/issue is complete. The user removed the comment-permission rule.
 
-**Latest authored work — what it is for:** `normalizeRuntimeServiceAttempts` validates every supplied native attempt,
-including orphan/failure/overflow tails, and exposes `serviceAttempts` in the existing production/variant reports.
-Frozen caller data identifies the earlier admitted task and its dated service demand independently from current order.
-Native zero, rejection/throw and partial history remain distinct. Restore/reuse/controller/source/target fences prevent
-old task revival. A worker can attempt drop-off and return an amount while the report still explicitly lacks credited
-income, resource type/beneficiary, cargo provenance, useful fulfillment and continuous stability. New report cases and
-additional observer bounds are authored/unrun; native capture/Promise forwarding and gatherer/drain policy remain.
+**Authored — why it is used:** `GathererComponent` remains the registered state/save/component facade. Focused
+`GathererTargetSelection` owns indexed targets and native distance ties; `GathererResourceExecution` owns native
+extract/return awaits and callback ordering. This removes the old gatherer source exemption before adding observation.
+Native amounts, assignments, player credit policy and serialization remain unchanged. Characterization cases are unrun.
 
-**Prior movement work:** marked captures now retain native execution start, selected endpoint, physical
-arrival/stop and boolean-return/error boundaries through an explicit transient token. Original versus fallback endpoint
-and actual terminal tile remain separate from query success and the admitted service target. Cancellation can still
-resolve true; callback failure can still follow physical arrival. The existing report retains strict movement intervals,
-detached caller/admission ownership, lifetime fences and bounded loss. A fallback cannot claim the original endpoint;
-neither endpoint arrival nor native return claims task usefulness. New observer/report specs and native boundary/capture
-cases are authored/unrun. No gameplay policy, extra query/timer/scan, saved/wire/planner field or CI change was added.
-Callback/error/Promise/occupancy behavior and capture/report cost remain unverified.
+**Settled credit/cargo contract:** explicit transient execution handles cross awaits; no ambient current order can assign
+credit. Record native cargo additions, reset/restore fences, exact offered pile, emission recipient and scoped before/after
+balances plus exact synchronous callback identity. Immediate credit uses source ownership; drain credit uses drain ownership.
+Campaign suppression is explicit and may accompany a full native return. Old/unknown or interrupted cargo cannot be credited
+to the latest task. Whole known piles may retain several earlier gathering attempts; no invented FIFO/partial allocation.
+A credit proves a scoped balance change, independently from cargo lineage, accepted task/demand and continuous usefulness.
 
-**Next step — what it is for:** actual resource-application/cargo ownership. Attempt ownership says which task ran, not
-whose resources were credited or which earlier gathering produced a carried pile. Capture exact emission/application
-and bounded cargo lineage before useful-service assertions; sustained usefulness follows a separate interval contract.
+**Next exact authoring action — why:** implement bounded passive resource hooks in the focused execution owner/facade/drain,
+then connect them to the existing marked actor subscriptions and detached spatial facts. This lets reports distinguish
+returned amounts from actual applied income and retain earlier cargo contributors. Reuse existing balance sampling and
+shared application (`ProbableWaffleListeners` -> `ProbableWafflePlayer.addResources`); no save/wire/planner fields, new scans,
+queries/timers or economy repair. Capture loss/restore/controller replacement/cross-owner credit must fail closed.
 
-Read the [service foundation checkpoint](follow-ups/runtime-matrix-ci.md#production-service-foundation-checkpoints-2026-10-07-unverified).
-**Next exact action:** recommend **GPT-6.1 Sol / high** for the cross-owner credit/cargo contract, then medium for settled
-implementation. Inspect
-`pawn-agent-resources.ts`, `GathererComponent.gatherResources/returnResources`, `ResourceDrainComponent.returnResources`
-and `emitResource`/actual resource application. Define a bounded transient service/cargo lineage contract across native
-order retargeting, source/drain ownership, awaits, mixed/old cargo, restore/reuse and campaign credit suppression. The drain
-returns the full amount even when campaign economy suppresses emission; its subject/Promise is not applied-income proof.
-Immediate gathering credits the source owner while drains credit their owner; the same order mutates Gather/ReturnResources
-and target. Do not attribute a whole carried pile to the latest movement/order or infer credited income from a return value.
-`gatherer-component.ts` has an existing source-size exemption: any necessary edit needs a separate compliant prerequisite
-split, never a baseline refresh. Preserve callbacks/Promises/money ordering and final-gate deferral. Resolve this causal
-contract first, then group its implementation and report/spec authoring on Sol / medium when sufficiently concrete.
-
-| Current dependency | State | Purpose / next boundary |
+| Dependency | State | Purpose / next boundary |
 | --- | --- | --- |
-| Movement ownership prerequisite | Authored, unverified (batch 21) | Focused route/recovery owners |
-| Pawn agent prerequisite | Authored, unverified (batch 22) | Focused owners retain native order use |
-| Native invocation/order capture | Authored, unverified (batch 23) | Exact caller identity carried to marked query records |
-| Strict caller validation/projection | Authored, unverified (batch 24) | Identify the order served without borrowing current-order or purchase evidence |
-| Native movement completion/arrival | Authored, unverified (batch 25) | Separate physical endpoint arrival, fallback, stop and native return |
-| Native service-attempt ownership | Authored, unverified (batch 26) | Retain the actual worker task and native target |
-| Marked service capture | Authored, unverified (batch 27) | Freeze attempt orders and lifetime boundaries |
-| Strict service report | Authored, unverified (batch 28) | Validate attempt ownership without claiming income |
-| Credited resource-service effects | Open design after foundation | Establish actual credit and exact cargo lineage |
-| Continuous useful stability | Open; depends on service contract | Establish retained useful benefit over a defined interval |
-| Full production adapter/oracles/setup/strategy | Open | Complete independent PRO-03/06/07 runtime assertions |
+| Native movement and service attempt ownership (21–28) | Authored, unverified | Earlier task/order identity and lifetime boundaries |
+| Gatherer prerequisite and cargo contract (29) | Authored, unverified | Compliant focused native owners before hooks |
+| Native cargo/application capture (30) | Next | Exact pile, beneficiary and scoped balance change |
+| Strict cargo/credit projection (31) | Pending 30 | Connect known contributors without inferring task fulfillment |
+| Continuous useful stability | Open | Define and observe retained useful benefit over an interval |
+| Full production adapter/oracles/setup/strategy | Open | Independent PRO-03/06/07 assertions |
 | Executable validation | Deferred final gate | Establish correctness before issue/release closure |
 
-No fixed total machinery count or completion percentage is claimed. The three authorized service-foundation stages are
-authored; pause here. Recommend Sol / high for unresolved cargo/application design, medium for settled implementation.
-Host model/effort settings are not independently exposed. Source review, Omission Audit, separate Final Closure Audit
-and unrun commands are in the checkpoint. No gameplay/save/wire/CI policy change, baseline refresh or new plan file exists.
-Stage 26 is `4b0dd34d029e677a006a1b2dc174b25f35c144b5`, stage 27 is `77499c4db98e1f28d625ed6a66e465039d0b22a1`;
-both are normally pushed. Stage 25 is `1bfa9740460f0b2a7836ab44ebc0d38c18eb063e`.
+Source Implementation Review, Omission Audit, separate Final Closure Audit and unrun commands are in the
+[credit/cargo checkpoint](follow-ups/runtime-matrix-ci.md#production-credit-and-cargo-checkpoints-2026-10-08-unverified).
+Stage 28 is `135c5b1c1cec0f4a8557d52f1511761887f449f5`, 27 is `77499c4db98e1f28d625ed6a66e465039d0b22a1`,
+26 is `4b0dd34d029e677a006a1b2dc174b25f35c144b5`, 25 is `1bfa9740460f0b2a7836ab44ebc0d38c18eb063e`.
+No fixed machinery total or percent is claimed. Prior native observer/report specs remain unrun and binding costs unmeasured.
+
 Prior batch 24 is in `aa4bf0a4920ba09d2df95045a2cae2a4d543239f`, based on `fc358946368d3ab595c7fd56bc1f9b7964eebb5d`;
 its [caller report checkpoint](follow-ups/runtime-matrix-ci.md#production-caller-report-checkpoint-2026-10-07-unverified)
 retains strict detached invocation/order validation independently from current-order co-observation.

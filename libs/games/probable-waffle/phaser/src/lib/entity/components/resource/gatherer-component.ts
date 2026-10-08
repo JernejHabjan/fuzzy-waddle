@@ -1,15 +1,10 @@
 import Phaser from "phaser";
 import { GatherData } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/resource/gather-data";
 import { ResourceSourceComponent } from "./resource-source-component";
-import { DistanceHelper } from "../../../library/distance-helper";
 import { Subject, type Subscription } from "rxjs";
 import { ContainerComponent } from "../building/container-component";
-import { ResourceDrainComponent } from "./resource-drain-component";
 import { type GathererComponentData, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { getActorComponent } from "../../../data/actor-component";
-import { OwnerComponent } from "../owner-component";
-import { ConstructionSiteComponent } from "../construction/construction-site-component";
-import { emitResource, getPlayer } from "../../../data/scene-data";
 import { HealthComponent } from "../combat/components/health-component";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { AudioService } from "../../../world/services/audio.service";
@@ -21,7 +16,6 @@ import { AnimationActorComponent } from "../animation/animation-actor-component"
 import { OrderType } from "../../../ai/order-type";
 import { ActorTranslateComponent } from "../movement/actor-translate-component";
 import {
-  getGameObjectLogicalTransform,
   getGameObjectVisibility,
   onObjectReady
 } from "../../../data/game-object-helper";
@@ -33,10 +27,11 @@ import type { SoundDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/ent
 import type { GathererDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/resource/gatherer-definition";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
+import { GathererTargetSelection } from "./gatherer-target-selection";
+import { GathererResourceExecution } from "./gatherer-resource-execution";
 type GameObject = Phaser.GameObjects.GameObject;
 
 export class GathererComponent {
-  private static readonly debug = false;
   // when cooldown has expired
   // onCooldownReady: EventEmitter<GameObject> = new EventEmitter<GameObject>();
   private readonly gatheredResources: GatherData[] = [
@@ -81,8 +76,10 @@ export class GathererComponent {
   previousResourceType: ResourceType | null = null;
   remainingCooldown = 0;
   private cooldownTickSub?: Subscription;
-  private simulationTickService?: SimulationTickService;
-  private cooldownStartedTick: number | null = null;
+  /** Shared execution clock; not serialized. */
+  simulationTickService?: SimulationTickService;
+  /** Same-tick cooldown fence shared with native execution. */
+  cooldownStartedTick: number | null = null;
   private pendingCurrentResourceSourceId: string | null = null;
   private pendingPreviousResourceSourceId: string | null = null;
 
@@ -92,7 +89,16 @@ export class GathererComponent {
   onResourcesReturned: Subject<[GameObject, ResourceType, number]> = new Subject<[GameObject, ResourceType, number]>();
   private audioService?: AudioService;
   private animationActorComponent?: AnimationActorComponent;
-  private actorTranslateComponent?: ActorTranslateComponent;
+  /** Ready-time component used by native execution. */
+  actorTranslateComponent?: ActorTranslateComponent;
+
+  private readonly targets = new GathererTargetSelection(this.gameObject, this);
+  private readonly execution = new GathererResourceExecution(this.gameObject, this,
+    (source) => this.getGatherDataForResourceSource(source), {
+      setCarriedResourceAmount: (amount) => this.setCarriedResourceAmount(amount),
+      playGatherSound: () => this.playGatherSound(), playGatherAnimation: () => this.playGatherAnimation(),
+      leaveCurrentResourceSource: () => this.leaveCurrentResourceSource()
+    });
 
   constructor(
     private readonly gameObject: GameObject,
@@ -208,62 +214,12 @@ export class GathererComponent {
     return true;
   }
 
-  async findClosestResourceDrain(): Promise<GameObject | null> {
-    if (this.carriedResourceType === null) {
-      // Gatherer is not carrying any resources
-      return null;
-    }
-
-    const gatherer = this.gameObject;
-    const gatherOwnerComponent = getActorComponent(gatherer, OwnerComponent);
-    const actorIndex = getSceneService(this.gameObject.scene, ActorIndexSystem);
-
-    // Use indexed drains if available, otherwise nothing
-    const drains = actorIndex ? actorIndex.getResourceDrainsFiltered(undefined, this.carriedResourceType) : [];
-
-    const validDrains = drains.filter((resourceDrain) => {
-      // check owner / team
-      if (!gatherOwnerComponent || !gatherOwnerComponent.isSameTeamAsGameObject(resourceDrain)) return false;
-
-      // check ready to use
-      return GathererComponent.isReadyToUse(resourceDrain);
-    });
-
-    // Use batch method for better performance
-    const pairs: [GameObject, GameObject][] = validDrains.map((drain) => [gatherer, drain]);
-    const distances = await DistanceHelper.batchGetDistancesBetweenGameObjects(pairs);
-
-    let closestResourceDrain: GameObject | null = null;
-    let closestResourceDrainDistance = Infinity;
-
-    for (let i = 0; i < validDrains.length; i++) {
-      const distance = distances[i];
-      if (typeof distance !== "number") {
-        continue;
-      }
-      const candidate = validDrains[i]!;
-      if (
-        distance < closestResourceDrainDistance ||
-        (distance === closestResourceDrainDistance &&
-          closestResourceDrain !== null &&
-          this.compareActorTieBreaker(candidate, closestResourceDrain) < 0)
-      ) {
-        closestResourceDrain = candidate;
-        closestResourceDrainDistance = distance;
-      }
-    }
-
-    return closestResourceDrain;
+  findClosestResourceDrain(): Promise<GameObject | null> { return this.targets.findClosestResourceDrain(); }
+  getClosestResourceSource(type: ResourceType | null, maxDistance: number): Promise<GameObject | undefined> {
+    return this.targets.getClosestResourceSource(type, maxDistance);
   }
-
-  /**
-   * Checks whether the specified actor is ready to use (e.g. finished building).
-   */
-  private static isReadyToUse(resourceDrain: GameObject): boolean {
-    const constructionSiteComponent = getActorComponent(resourceDrain, ConstructionSiteComponent);
-    if (!constructionSiteComponent) return true;
-    return constructionSiteComponent.isFinished;
-  }
+  gatherResources(source: GameObject): Promise<number> { return this.execution.gatherResources(source); }
+  returnResources(drain: GameObject): Promise<number> { return this.execution.returnResources(drain); }
 
   // Gets the resource source the gameObject has recently been gathering from, if available, or a similar one within its sweep radius
   async getPreferredResourceSource(): Promise<GameObject | undefined> {
@@ -281,71 +237,6 @@ export class GathererComponent {
     return this.getPreferredResourceSource();
   }
 
-  async getClosestResourceSource(
-    resourceType: ResourceType | null,
-    maxDistance: number
-  ): Promise<GameObject | undefined> {
-    const actorIndex = getSceneService(this.gameObject.scene, ActorIndexSystem);
-    const sources = actorIndex ? actorIndex.getResourceSourcesFiltered(resourceType ?? undefined) : [];
-
-    const validSources = sources.filter((gameObject) => {
-      const resourceSourceComponent = getActorComponent(gameObject, ResourceSourceComponent);
-      if (!resourceSourceComponent) return false;
-      // if not correct resource type
-      if (resourceType && resourceSourceComponent.getResourceType() !== resourceType) return false;
-      // check amount of resources
-      if (resourceSourceComponent.getCurrentResources() <= 0) return false;
-      // check if resource source can accept more gatherers
-      // noinspection RedundantIfStatementJS
-      if (!resourceSourceComponent.canAcceptGatherer()) return false;
-      return true;
-    });
-
-    // Use batch method for better performance
-    const pairs: [GameObject, GameObject][] = validSources.map((source) => [this.gameObject, source]);
-    const distances = await DistanceHelper.batchGetDistancesBetweenGameObjects(pairs);
-
-    let closestResourceSource: GameObject | undefined = undefined;
-    let closestResourceSourceDistance = Infinity;
-
-    for (let i = 0; i < validSources.length; i++) {
-      const distance = distances[i];
-      if (typeof distance !== "number") continue;
-      if (maxDistance > 0 && distance > maxDistance) continue;
-      const candidate = validSources[i];
-      if (!candidate) {
-        continue;
-      }
-      if (
-        distance < closestResourceSourceDistance ||
-        (distance === closestResourceSourceDistance &&
-          closestResourceSource !== undefined &&
-          this.compareActorTieBreaker(candidate, closestResourceSource) < 0)
-      ) {
-        closestResourceSource = candidate;
-        closestResourceSourceDistance = distance;
-      }
-    }
-    return closestResourceSource;
-  }
-
-  /**
-   * Deterministic tie-break for equal-distance candidates.
-   * Without this, Set/list iteration order differences can desync resource target selection.
-   */
-  private compareActorTieBreaker(left: GameObject, right: GameObject): number {
-    const leftId = getActorComponent(left, IdComponent)?.id;
-    const rightId = getActorComponent(right, IdComponent)?.id;
-    if (leftId && rightId && leftId !== rightId) {
-      return leftId.localeCompare(rightId);
-    }
-    const leftTransform = getGameObjectLogicalTransform(left);
-    const rightTransform = getGameObjectLogicalTransform(right);
-    const leftKey = `${left.name}:${Math.round(leftTransform?.x ?? 0)}:${Math.round(leftTransform?.y ?? 0)}:${Math.round(leftTransform?.z ?? 0)}`;
-    const rightKey = `${right.name}:${Math.round(rightTransform?.x ?? 0)}:${Math.round(rightTransform?.y ?? 0)}:${Math.round(rightTransform?.z ?? 0)}`;
-    return leftKey.localeCompare(rightKey);
-  }
-
   async getPreferredResourceDrain(): Promise<GameObject | null> {
     return this.findClosestResourceDrain();
   }
@@ -356,115 +247,6 @@ export class GathererComponent {
 
   get isGathering(): boolean {
     return !!this.currentResourceSource;
-  }
-
-  async gatherResources(resourceSource: GameObject): Promise<number> {
-    if (this.remainingCooldown > 0) return 0;
-    if (!this.carriedResourceType) {
-      // Gatherer is not carrying any resources
-      return 0;
-    }
-
-    // check resource type
-    const gatherData = this.getGatherDataForResourceSource(resourceSource);
-    if (!gatherData) return 0;
-
-    // Check again if we can gather (resource source might have changed)
-    const resourceSourceComponent = getActorComponent(resourceSource, ResourceSourceComponent);
-    if (!resourceSourceComponent) {
-      return 0;
-    }
-    if (!resourceSourceComponent.canAcceptGatherer() && resourceSource !== this.currentResourceSource) {
-      return 0;
-    }
-
-    // determine amount to gather
-    let amountToGather = gatherData.amountPerGathering;
-    if (this.carriedResourceAmount + amountToGather > gatherData.capacity) {
-      amountToGather = gatherData.capacity - this.carriedResourceAmount;
-    }
-
-    // gather resources
-    const gatheredAmount = await resourceSourceComponent.extractResources(this.gameObject, amountToGather);
-    if (getActorComponent(this.gameObject, HealthComponent)?.killed) {
-      // actor died while gathering
-      return 0;
-    }
-    this.setCarriedResourceAmount(this.carriedResourceAmount + gatheredAmount);
-
-    this.playGatherSound();
-    if (this.actorTranslateComponent) this.actorTranslateComponent.turnTowardsGameObject(resourceSource);
-    this.playGatherAnimation();
-
-    // start cooldown timer
-    this.remainingCooldown = gatherData.cooldown;
-    this.cooldownStartedTick = this.simulationTickService?.currentTick ?? null;
-
-    if (GathererComponent.debug) {
-      console.log(`Gathered ${gatheredAmount} ${gatherData.resourceType} from ${resourceSource.name}`);
-    }
-
-    this.onResourceGathered.next([this.gameObject, resourceSource, gatherData, gatheredAmount]);
-
-    // Allow the resource source definition to override the gatherer's default needsReturnToDrain
-    const needsReturnToDrain =
-      resourceSourceComponent.resourceSourceDefinition.needsReturnToDrain ?? gatherData.needsReturnToDrain;
-
-    if (needsReturnToDrain) {
-      // check if we're at capacity
-      if (this.carriedResourceAmount >= gatherData.capacity) {
-        this.leaveCurrentResourceSource();
-      }
-    } else {
-      // check if we're at capacity or the resource source is empty
-      if (this.carriedResourceAmount >= gatherData.capacity || resourceSourceComponent.getCurrentResources() === 0) {
-        // return immediately
-        const owner = getActorComponent(resourceSource, OwnerComponent)?.getOwner();
-        if (!owner) throw new Error("Owner not found");
-        const player = getPlayer(this.gameObject.scene, owner);
-        if (player) {
-          const carriedResourceType = this.carriedResourceType;
-
-          const carriedAmount = this.carriedResourceAmount;
-          if (carriedAmount > 0) {
-            emitResource(this.gameObject.scene, "resource.added", { [carriedResourceType]: carriedAmount }, owner);
-            this.setCarriedResourceAmount(0);
-
-            if (GathererComponent.debug) {
-              console.log(`Returned ${carriedAmount} ${carriedResourceType} to ${this.gameObject.name}`);
-            }
-            this.onResourcesReturned.next([this.gameObject, carriedResourceType, carriedAmount]);
-          }
-        }
-      }
-
-      // stop gathering
-      this.leaveCurrentResourceSource();
-    }
-    return gatheredAmount;
-  }
-
-  async returnResources(resourceDrain: GameObject): Promise<number> {
-    if (!this.carriedResourceType) {
-      // Gatherer is not carrying any resources
-      return 0;
-    }
-    // return resources
-    const resourceDrainComponent = getActorComponent(resourceDrain, ResourceDrainComponent);
-    if (!resourceDrainComponent) return 0;
-    const returnedResources = await resourceDrainComponent.returnResources(
-      this.gameObject,
-      this.carriedResourceType,
-      this.carriedResourceAmount
-    );
-    this.setCarriedResourceAmount(this.carriedResourceAmount - returnedResources);
-
-    if (GathererComponent.debug) {
-      console.log(`Returned ${returnedResources} ${this.carriedResourceType} to ${resourceDrain.name}`);
-    }
-    // notify listeners
-    this.onResourcesReturned.next([this.gameObject, this.carriedResourceType, returnedResources]);
-    return returnedResources;
   }
 
   isCapacityFull() {

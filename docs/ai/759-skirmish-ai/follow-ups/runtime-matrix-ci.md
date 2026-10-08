@@ -35,6 +35,36 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
 
 ## Implementation order
 
+### Production credit and cargo checkpoints (2026-10-08, unverified)
+
+Authorized group: gatherer prerequisite/contract (29), native cargo/application capture (30), strict report projection (31).
+Selected profile last reported Sol 6.1 / medium; actual host settings unknown. All executable validation is deferred.
+
+**Stage 29 — authored/unverified**, base `135c5b1c1cec0f4a8557d52f1511761887f449f5`:
+
+| Acceptance | Implementation / purpose | Evidence |
+| --- | --- | --- |
+| 1. Separate compliant prerequisite | `GathererTargetSelection`, `GathererResourceExecution`, facade forwarding | Target selection and awaits extracted; only exact obsolete gatherer exemption removed, no refresh |
+| 2. Native ownership and ordering | Same facade fields, source/drain/component/save token | Existing source selection, live cargo reads after awaits, subjects, cooldown and credit policy retained |
+| 3. Negative/pending cases | `gatherer-resource-execution.spec.ts` | Selected source/arguments retained across await, live cargo subtraction, rejection and cooldown authored/unrun |
+| 4. Causal contract | Handoff and owning source responsibilities | Actual balance application separate from emission, native return, cargo origins and task usefulness |
+| 5. Publication/resume | Existing handoff/checkpoint | Continue 30 then 31 in the authorized group; scoped commit/push with remote SHA verification |
+
+**Source Implementation Review:** traced existing pawn call sites and resource facade consumers through the two focused
+owners. State/serialized fields stay on the facade; owners forward original references and retain native await/callback
+order. Comparator formatting retains the same name/rounded-position key. Facade forwarders return owner Promises directly.
+Two small owner allocations per gatherer are unmeasured. This is the required prerequisite before touching the old baseline.
+
+**Omission Audit:** acceptance 1–5 authored. No target/price/economy/timer policy or wire/save/CI changes. Existing specs are
+registered by normal test discovery. No new plan, unrelated Nx edit, source-baseline refresh or skill/tool change.
+
+**Separate Final Closure Audit:** rechecked callback receiver, live cargo/clock reads, original error propagation, facade API,
+serialization and exact owned scope. Tests/format/lint/types/build/source validators/diff check were not run. Publication
+closes authoring only; final gate must establish native compatibility and structure compliance.
+
+Deferred command: `pnpm exec nx test probable-waffle-phaser --testPathPatterns='gatherer-resource-execution|pawn-agent-order-boundaries' --runInBand`.
+Next 30: explicit transient cargo/credit boundaries let later reports prove exact beneficiary and prior contributors.
+
 ### Production service foundation checkpoints (2026-10-07, unverified)
 
 User-authorized three-stage group: native service-attempt ownership (26), marked detached capture (27), strict report
