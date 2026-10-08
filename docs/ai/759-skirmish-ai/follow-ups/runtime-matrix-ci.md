@@ -35,6 +35,42 @@ spec is parameterized; running its IDE gutter entry without `AI_SKIRMISH_RUNTIME
 
 ## Implementation order
 
+### Health presentation prerequisite checkpoint (2026-10-08, authored/unverified)
+
+Stage 45 is based on `e173b564beda5d18a55dd9f28b03b91f550551ae` (44, remote verified); containing commit owns 45.
+`HealthComponent` retains authoritative health data/definition references, damage metadata, public events and bounds/
+visibility forwarders, serialization, health/armor setters, reactions, death audio/animation and simulation destruction.
+New adjacent `HealthPresentation` owns bars, construction/frame/container visibility, UI timeout and damage/heal effects.
+It reads current facade references through callbacks, with no copied health state. Bars still construct immediately;
+container attachment follows facade destruction registration; ready initialization runs after helper storage.
+Armor initialization still precedes animation/audio/service/translation lookup. Cleanup still unsubscribes construction,
+removes UI timeout, removes native simulation delay, then detaches container/frame listeners. Existing tint callbacks remain.
+
+Why used: a compliant native health owner can accept the next passive fence without blending render work into resource
+history observation or refreshing a source-size exemption. Owner/status bars and regeneration continue using the facade.
+Only HealthComponent's obsolete baseline entry was removed; no fence or native behavior change was added in 45.
+
+| Acceptance | Implemented source / authored evidence |
+| --- | --- |
+| 45.1 Facade / references | HealthComponent retains actual data/definition, events, getData/setData and damage/death order; health-component spec controls live reference, cloned save, defined/same/empty restore and definition replacement. |
+| 45.2 Ready / visibility | HealthPresentation stored before ready; initial armor and lookup order preserved. Spec controls eager initialization, campaign values, construction/vision/frame/container gates, bounds and visibility subject. HealthUiComponent still looks up the public facade. |
+| 45.3 Effects / cleanup | Spec controls armor-first damage, poison, blood/heal position/depth/tint, delayed visual cleanup, construction unsubscribe, UI timeout and native simulation-delay disposal. |
+| 45.4 Native death / size | Death remains on facade, with normal/silent/invalid-active order, fade/hidden fallback and 30-second simulation delay controls. Both owners below 400 physical lines by source inspection; only own baseline removed. |
+| 45.5 Delivery / policy | Source-reviewed only; all tests/types/lint/format/source validation unrun. Commit/push prerequisite separately, then authorized 46. |
+
+**Source Implementation Review:** compared moved methods with original source and inspected HealthUiComponent,
+OwnerPresentation and status-effect bar consumers. Ready/native dependency order and timer/listener disposal remain
+unchanged; tint casts now use unknown rather than any. Existing HealthUiComponent lifecycle remains its own responsibility.
+One helper allocation per actor is unmeasured. ConstructionSiteComponent's direct public-data writes bypass facade
+setters and remain an explicit unsupported route, not silently covered by the planned fence.
+
+**Omission Audit:** 45.1–45.5 covers split, references, lifecycle, effects, consumers, compliant source and publication.
+No new registry/schema, copied mutable health, native mutation observer, timer fix or other baseline refresh.
+**Final Closure Audit (separate):** reviewed facade/helper/spec and baseline diff after local cleanup; all authoring
+requirements mapped, source evidence only. Final gate retains previous commands and adds `health-component|health-presentation`.
+No runtime compatibility or durable proven contract/skill change is claimed. Next: implement exact 46 acceptance below,
+commit/push and pause; Sol 6.1 / medium remains appropriate for the settled pre-mutation contract.
+
 ### Owner conversion fence checkpoint (2026-10-08, authored/unverified)
 
 Stage 44 is based on `89ed0cf2cc757f76ecce400c3cb4647f67c8a687` (43, remote verified); containing commit owns 44.
@@ -223,7 +259,7 @@ recipient capture and drain specs for the real pre-index and cross-await orderin
 control, not only a hand-inserted loss flag. Add the authored owner spec to the final Phaser gate:
 
 ```sh
-pnpm exec nx test probable-waffle-phaser --testPathPatterns='owner-(component|resource-history)|scene-resource-observation|ai-runtime-recipient-resource-capture|resource-drain-(component|credit)' --runInBand
+pnpm exec nx test probable-waffle-phaser --testPathPatterns='owner-(component|resource-history)|health-component|health-presentation|scene-resource-observation|ai-runtime-recipient-resource-capture|resource-drain-(component|credit)' --runInBand
 ```
 
 Retain every 29–41 command and native pipeline/controller integration obligation. Final gate also checks source-size

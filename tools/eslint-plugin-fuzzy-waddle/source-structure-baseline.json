@@ -245,7 +245,6 @@
   "libs/games/probable-waffle/phaser/src/lib/entity/components/building/housing-cost-component.ts": "34cd5ed025bf6b7f234362dd8548194b88eee1ab90ef4d9c23f799017d0b5502",
   "libs/games/probable-waffle/phaser/src/lib/entity/components/building/placement-restriction-component.ts": "0c71718f99934ac677a08dee84b3ae031ac7305d37a4d975bbe98f56f1dde81c",
   "libs/games/probable-waffle/phaser/src/lib/entity/components/combat/components/attack-component.ts": "c88e91d3310959bba76aca30d51afab73e7c3bdf8fcb2e05cee8f7eb9d811c3f",
-  "libs/games/probable-waffle/phaser/src/lib/entity/components/combat/components/health-component.ts": "a93961f22cfae90b9f55d9b9b189650529104d2ccb7a6d91b84142ad60d399f5",
   "libs/games/probable-waffle/phaser/src/lib/entity/components/combat/components/health-regeneration-component.ts": "102265fb200d29ba7fdcee6e153df720722d9ac29bdf7702aa607ed556eb0c47",
   "libs/games/probable-waffle/phaser/src/lib/entity/components/combat/components/spell-component.ts": "3167ca7cd3daae73a56ef419f005519ff7b88f34b3c7371bf768d0a779059825",
   "libs/games/probable-waffle/phaser/src/lib/entity/components/combat/spell-definitions.ts": "abc185d66d5c3848bee1789c790695a5a1acf2d781d3e5f91531f08e9226573f",
