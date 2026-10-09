@@ -1,6 +1,12 @@
 import { ObjectNames, OrderType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import { createAiTestObservation, createAiTestOwnedActor, unknownAiValue } from "../testing/ai-test-fixtures";
+import type { AiObservedActorV1 } from "../contracts/ai-observation-v1";
+import {
+  createAiTestObservation,
+  createAiTestOwnedActor,
+  unknownAiValue,
+  requireAiTestEntry
+} from "../testing/ai-test-fixtures";
 import { canAffordAiEconomyCost, decideAiEconomyPolicy } from "./ai-economy-policy";
 
 const catalog: AiCapabilityCatalogV1 = {
@@ -33,6 +39,23 @@ const catalog: AiCapabilityCatalogV1 = {
     }
   ]
 };
+
+/** Observed gathering capability makes the worker a protected economy position, as in the native projection. */
+function economyWorker(actorId: string): AiObservedActorV1 {
+  return {
+    ...createAiTestOwnedActor(actorId),
+    capabilities: [
+      {
+        id: `${actorId}:gather`,
+        family: "gather",
+        level: 1,
+        domains: ["ground"],
+        targetDomains: [],
+        capacity: { status: "known", value: 1, observedTick: 20 }
+      }
+    ]
+  };
+}
 
 function foodSource(actorId: string, capacity: number) {
   return {
@@ -80,7 +103,12 @@ describe("decideAiEconomyPolicy", () => {
     const observation = {
       ...createAiTestObservation(),
       resources: [
-        { ...createAiTestObservation().resources[0], stockpile: 100, reservedUnspent: 50, obligationsDue: 20 }
+        {
+          ...requireAiTestEntry(createAiTestObservation().resources, 0),
+          stockpile: 100,
+          reservedUnspent: 50,
+          obligationsDue: 20
+        }
       ]
     };
 
@@ -89,11 +117,11 @@ describe("decideAiEconomyPolicy", () => {
   });
 
   it("grows beyond the six-worker recovery floor when dated demand and capacity exist", () => {
-    const workers = Array.from({ length: 6 }, (_, index) => createAiTestOwnedActor(`worker-${index}`));
+    const workers = Array.from({ length: 6 }, (_, index) => economyWorker(`worker-${index}`));
     const observation = {
       ...createAiTestObservation(),
       actors: [...workers, foodSource("food", 4)],
-      resources: [{ ...createAiTestObservation().resources[0], stockpile: 0 }]
+      resources: [{ ...requireAiTestEntry(createAiTestObservation().resources, 0), stockpile: 0 }]
     };
 
     const policy = decideAiEconomyPolicy(observation, catalog, [{ resourceType: ResourceType.Wood, amount: 600 }]);
@@ -103,11 +131,11 @@ describe("decideAiEconomyPolicy", () => {
   });
 
   it("defers optional worker growth during a credible near-term finishing mission", () => {
-    const workers = Array.from({ length: 8 }, (_, index) => createAiTestOwnedActor(`worker-${index}`));
+    const workers = Array.from({ length: 8 }, (_, index) => economyWorker(`worker-${index}`));
     const observation = {
       ...createAiTestObservation(),
       actors: [...workers, foodSource("food", 12)],
-      resources: [{ ...createAiTestObservation().resources[0], stockpile: 0 }]
+      resources: [{ ...requireAiTestEntry(createAiTestObservation().resources, 0), stockpile: 0 }]
     };
     const forecast = [{ resourceType: ResourceType.Wood, amount: 1200 }];
     const growing = decideAiEconomyPolicy(observation, catalog, forecast);
@@ -119,7 +147,7 @@ describe("decideAiEconomyPolicy", () => {
   });
 
   it("prices worker and army food together while reserving labor for other resources", () => {
-    const workers = Array.from({ length: 6 }, (_, index) => createAiTestOwnedActor(`worker-${index}`));
+    const workers = Array.from({ length: 6 }, (_, index) => economyWorker(`worker-${index}`));
     const observation = {
       ...createAiTestObservation(),
       actors: [...workers, foodSource("food", 8)],
@@ -146,7 +174,7 @@ describe("decideAiEconomyPolicy", () => {
 
   it("freezes optional growth under visible pressure while preserving returning workers", () => {
     const workers = Array.from({ length: 8 }, (_, index) => ({
-      ...createAiTestOwnedActor(`worker-${index}`),
+      ...economyWorker(`worker-${index}`),
       activeOrder: {
         status: "known" as const,
         value: index === 0 ? { orderType: OrderType.ReturnResources, targetActorId: "base" } : null,
@@ -186,7 +214,7 @@ describe("decideAiEconomyPolicy", () => {
     };
     const observation = {
       ...base,
-      actors: [createAiTestOwnedActor("worker"), guard, visibleRaider("air")],
+      actors: [economyWorker("worker"), guard, visibleRaider("air")],
       threatSummary: { ...base.threatSummary, visibleEnemyActorIds: ["enemy"] }
     };
     expect(decideAiEconomyPolicy(observation, defenseCatalog, []).posture).toBe("emergency");
@@ -215,7 +243,7 @@ describe("decideAiEconomyPolicy", () => {
     const base = createAiTestObservation();
     const attacked = {
       ...base,
-      actors: [...base.actors, visibleRaider()],
+      actors: [economyWorker("worker-1"), visibleRaider()],
       threatSummary: { ...base.threatSummary, visibleEnemyActorIds: ["enemy"] }
     };
     const first = decideAiEconomyPolicy(attacked, catalog, []);

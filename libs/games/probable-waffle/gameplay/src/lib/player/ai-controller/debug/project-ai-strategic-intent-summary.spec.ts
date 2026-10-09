@@ -1,10 +1,11 @@
 import { FactionType, ProbableWaffleAiDifficulty, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
 import { aiDeadline } from "../contracts/ai-core-types";
-import type { AiBrainStateV1, AiSquadStateV1 } from "../contracts/ai-brain-state-v1";
-import type { AiIntentDecisionV1 } from "../contracts/ai-intent-v1";
+import type { AiBrainStateV1, AiSquadStateV1, AiTransportStateV1 } from "../contracts/ai-brain-state-v1";
+import type { AiIntentDecisionV1, AiIntentV1 } from "../contracts/ai-intent-v1";
+import type { AiDemandV1 } from "../contracts/ai-plan-contracts";
 import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
-import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
+import { createAiTestObservation, createAiTestOwnedActor, requireAiTestEntry } from "../testing/ai-test-fixtures";
 import { projectAiStrategicIntentSummary } from "./project-ai-strategic-intent-summary";
 
 const observation = createAiTestObservation();
@@ -59,11 +60,19 @@ describe("committed strategic intent summary", () => {
       visibility: "visible" as const
     };
     const state = { ...brainState(), squads: [squad("attack", "rally")] };
-    const summary = projectAiStrategicIntentSummary({ ...observation, actors: [...observation.actors, enemy] }, state, []);
+    const summary = projectAiStrategicIntentSummary(
+      { ...observation, actors: [...observation.actors, enemy] },
+      state,
+      []
+    );
     expect(summary.objective).toContain("Attacking Tivara worker belonging to Player 2");
     expect(summary.force).toContain("2 ground units; rally");
     expect(summary.force).toContain("assembly deadline tick 80");
-    const engaged = projectAiStrategicIntentSummary(observation, { ...state, squads: [squad("defense", "engage")] }, []);
+    const engaged = projectAiStrategicIntentSummary(
+      observation,
+      { ...state, squads: [squad("defense", "engage")] },
+      []
+    );
     expect(engaged.objective).toContain("Defending against assigned area");
     expect(engaged.force).toContain("effect deadline tick 160");
     expect(engaged.objective).not.toContain("enemy-1");
@@ -71,7 +80,7 @@ describe("committed strategic intent summary", () => {
 
   it("shows committed composition, deficit, queue capacity, and observed counter evidence", () => {
     const state = brainState();
-    const demand = {
+    const demand: AiDemandV1 = {
       demandId: "demand:air",
       purpose: "counter_air_pressure",
       capabilityOrRole: "anti_air",
@@ -85,7 +94,7 @@ describe("committed strategic intent summary", () => {
       resourceObligations: {}
     };
     const queuedActor = {
-      ...observation.actors[0],
+      ...requireAiTestEntry(observation.actors, 0),
       queue: { status: "known" as const, value: { capacity: 3, occupied: 1, itemIds: ["queue-1"] }, observedTick: 20 }
     };
     const summary = projectAiStrategicIntentSummary(
@@ -113,35 +122,41 @@ describe("committed strategic intent summary", () => {
     const summary = projectAiStrategicIntentSummary(
       {
         ...observation,
-        resources: [{ ...observation.resources[0], stockpile: 2, reservedUnspent: 8, obligationsDue: 20 }]
+        resources: [
+          { ...requireAiTestEntry(observation.resources, 0), stockpile: 2, reservedUnspent: 8, obligationsDue: 20 }
+        ]
       },
       {
         ...state,
-        blockers: [{
-          blockerId: "blocker:wood",
-          planId: state.opening.plan.planId,
-          cause: "resource",
-          causeId: "wood",
-          enteredTick: 20,
-          deadline: aiDeadline(90),
-          status: "recovering"
-        }],
-        recovery: {
-          records: [{
-            recoveryKey: "recovery:wood",
-            domain: "economy",
+        blockers: [
+          {
+            blockerId: "blocker:wood",
             planId: state.opening.plan.planId,
-            actorId: null,
             cause: "resource",
+            causeId: "wood",
             enteredTick: 20,
-            lastProgressTick: 20,
-            nextRetryTick: 40,
-            phaseDeadline: aiDeadline(90),
-            attempt: 1,
-            state: "backoff",
-            alternate: "switch_to_wood",
-            releasedClaimIds: []
-          }]
+            deadline: aiDeadline(90),
+            status: "recovering"
+          }
+        ],
+        recovery: {
+          records: [
+            {
+              recoveryKey: "recovery:wood",
+              domain: "economy",
+              planId: state.opening.plan.planId,
+              actorId: null,
+              cause: "resource",
+              enteredTick: 20,
+              lastProgressTick: 20,
+              nextRetryTick: 40,
+              phaseDeadline: aiDeadline(90),
+              attempt: 1,
+              state: "backoff",
+              alternate: "switch_to_wood",
+              releasedClaimIds: []
+            }
+          ]
         }
       },
       []
@@ -150,16 +165,18 @@ describe("committed strategic intent summary", () => {
     expect(summary.blocker).toContain("Resource blocks opening build order until tick 90; backoff, retry tick 40");
     expect(summary.blocker).not.toContain("plan:opening");
   });
+});
 
+describe("committed strategic intent summary", () => {
   it("uses committed transport and concession state when there is no squad", () => {
     const state = brainState();
     const transport = {
-      planId: "plan:transport:1",
+      planId: "transport:1",
       phase: "boarding" as const,
       passengerIds: ["soldier-1"],
       transportIds: ["carrier-1"],
       queryIds: []
-    };
+    } satisfies AiTransportStateV1;
     const moving = projectAiStrategicIntentSummary(observation, { ...state, transport: [transport] }, []);
     expect(moving.objective).toContain("Transfer by unconfirmed transport");
     expect(moving.force).toContain("1 passenger, 1 carrier; boarding; deadline tick unknown");
@@ -172,7 +189,7 @@ describe("committed strategic intent summary", () => {
   });
 
   it("reports an accepted gather action and a rejected prerequisite separately", () => {
-    const intent = {
+    const intent: AiIntentV1 = {
       kind: "assign_gatherers" as const,
       intentId: "intent:gather",
       effectId: "effect:gather",
@@ -202,18 +219,28 @@ describe("committed strategic intent summary", () => {
 
   it("explains committed workforce growth, food runway, posture, and saturation without raw manager trace", () => {
     const state = brainState();
-    const summary = projectAiStrategicIntentSummary(observation, {
-      ...state,
-      economyProduction: {
-        ...state.economyProduction,
-        posture: { status: "pressured", enteredTick: 20, lastThreatTick: 20 },
-        workforce: {
-          workers: 8, queuedWorkers: 1, assignedWorkers: 6, desiredWorkers: 10,
-          desiredFoodSources: 4, foodRunwayTicks: 180, blocker: "resource_saturation",
-          economyPermille: 350, defensePermille: 650
+    const summary = projectAiStrategicIntentSummary(
+      observation,
+      {
+        ...state,
+        economyProduction: {
+          ...state.economyProduction,
+          posture: { status: "pressured", enteredTick: 20, lastThreatTick: 20 },
+          workforce: {
+            workers: 8,
+            queuedWorkers: 1,
+            assignedWorkers: 6,
+            desiredWorkers: 10,
+            desiredFoodSources: 4,
+            foodRunwayTicks: 180,
+            blocker: "resource_saturation",
+            economyPermille: 350,
+            defensePermille: 650
+          }
         }
-      }
-    }, []);
+      },
+      []
+    );
 
     expect(summary.economy).toContain("workforce 8+1 queued/10 desired, 6 gathering/returning");
     expect(summary.economy).toContain("food runway 180 ticks, 4 food sources needed");
@@ -230,19 +257,21 @@ describe("committed strategic intent summary", () => {
         squads: [squad("attack", "forming")],
         economyProduction: {
           ...state.economyProduction,
-          demands: [{
-            demandId: "demand:ranged",
-            purpose: "pressure",
-            capabilityOrRole: "ranged",
-            unit: "actor_count",
-            desired: 2,
-            satisfiedActorIds: [],
-            queuedIds: [],
-            constructingIds: [],
-            acceptedNotObservedEffectIds: [],
-            preferredObjectNames: [],
-            resourceObligations: {}
-          }]
+          demands: [
+            {
+              demandId: "demand:ranged",
+              purpose: "pressure",
+              capabilityOrRole: "ranged",
+              unit: "actor_count",
+              desired: 2,
+              satisfiedActorIds: [],
+              queuedIds: [],
+              constructingIds: [],
+              acceptedNotObservedEffectIds: [],
+              preferredObjectNames: [],
+              resourceObligations: {}
+            }
+          ]
         }
       },
       []

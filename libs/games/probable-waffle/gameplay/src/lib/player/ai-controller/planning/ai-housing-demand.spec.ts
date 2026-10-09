@@ -1,9 +1,14 @@
-import { FactionType, ObjectNames, ProbableWaffleAiDifficulty, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  FactionType,
+  ObjectNames,
+  ProbableWaffleAiDifficulty,
+  ResourceType
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
 import { digestCanonicalAiValue } from "../brain/canonical-ai-serialization";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
-import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
+import { createAiTestObservation, createAiTestOwnedActor, requireAiTestEntry } from "../testing/ai-test-fixtures";
 import { calculateAiHousingDemand } from "./ai-housing-demand";
 import { AiMacroManager } from "./ai-macro-manager";
 
@@ -111,8 +116,15 @@ describe("housing capacity demand", () => {
 
     expect(demand).toMatchObject({ readyCapacity: 8, used: 4, queuedPopulation: 4, neededBuildings: 1 });
     expect(demand.desiredBuildingCount).toBe(2);
-    expect(calculateAiHousingDemand({ ...observation, actors: [...workers, housing("house"), queuedProducer(0)] },
-      catalog, ObjectNames.Olival, 3, []).neededBuildings).toBe(0);
+    expect(
+      calculateAiHousingDemand(
+        { ...observation, actors: [...workers, housing("house"), queuedProducer(0)] },
+        catalog,
+        ObjectNames.Olival,
+        3,
+        []
+      ).neededBuildings
+    ).toBe(0);
   });
 
   it("counts unfinished and accepted capacity once instead of duplicating the same house", () => {
@@ -121,11 +133,14 @@ describe("housing capacity demand", () => {
     const actors = [...workers, housing("house"), queuedProducer(4)];
     const constructing = calculateAiHousingDemand(
       { ...base, actors: [...actors, { ...housing("site", 50), activeEffectIds: ["effect:supply"] }] },
-      catalog, ObjectNames.Olival, 3, ["effect:supply" as never]
+      catalog,
+      ObjectNames.Olival,
+      3,
+      ["effect:supply" as never]
     );
-    const accepted = calculateAiHousingDemand(
-      { ...base, actors }, catalog, ObjectNames.Olival, 3, ["effect:supply" as never]
-    );
+    const accepted = calculateAiHousingDemand({ ...base, actors }, catalog, ObjectNames.Olival, 3, [
+      "effect:supply" as never
+    ]);
 
     expect(constructing.neededBuildings).toBe(0);
     expect(accepted.neededBuildings).toBe(0);
@@ -162,15 +177,18 @@ describe("housing capacity demand", () => {
       };
     });
     const workers = Array.from({ length: 4 }, (_, index) => createAiTestOwnedActor(`worker-${index}`));
-    const proposal = (queued: number) => new AiMacroManager(() => catalog).propose(
-      {
-        ...base,
-        actors: [...workers, housing("house"), queuedProducer(queued)],
-        map: { ...base.map!, constructionCells: cells },
-        resources: [{ ...base.resources[0], stockpile: 200, reservedUnspent: 0, obligationsDue: 0 }]
-      },
-      state
-    );
+    const proposal = (queued: number) =>
+      new AiMacroManager(() => catalog).propose(
+        {
+          ...base,
+          actors: [...workers, housing("house"), queuedProducer(queued)],
+          map: { ...base.map!, constructionCells: cells },
+          resources: [
+            { ...requireAiTestEntry(base.resources, 0), stockpile: 200, reservedUnspent: 0, obligationsDue: 0 }
+          ]
+        },
+        state
+      );
     const subject = proposal(4);
     const control = proposal(0);
     expect(new Set(Array.from({ length: 3 }, () => digestCanonicalAiValue(proposal(4)))).size).toBe(1);
@@ -178,7 +196,9 @@ describe("housing capacity demand", () => {
     expect(subject.statePatch?.economyProduction?.demands).toEqual(
       expect.arrayContaining([expect.objectContaining({ purpose: "supply_buffer", unit: "actor_count", desired: 2 })])
     );
-    expect(subject.intents).toContainEqual(expect.objectContaining({ kind: "construct", objectName: ObjectNames.Olival }));
+    expect(subject.intents).toContainEqual(
+      expect.objectContaining({ kind: "construct", objectName: ObjectNames.Olival })
+    );
     const housingIntent = subject.intents.find(
       (intent) => intent.kind === "construct" && intent.objectName === ObjectNames.Olival
     );
@@ -186,7 +206,8 @@ describe("housing capacity demand", () => {
       expect.objectContaining({ kind: "resource", resourceType: ResourceType.Wood, amount: 80 })
     );
     expect(housingIntent?.utility).toBe(920);
-    expect(control.intents.some((intent) => intent.kind === "construct" && intent.objectName === ObjectNames.Olival))
-      .toBe(false);
+    expect(
+      control.intents.some((intent) => intent.kind === "construct" && intent.objectName === ObjectNames.Olival)
+    ).toBe(false);
   });
 });

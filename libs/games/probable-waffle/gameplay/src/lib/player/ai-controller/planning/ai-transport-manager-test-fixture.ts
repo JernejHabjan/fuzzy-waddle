@@ -82,8 +82,14 @@ export const routeRequest = {
   },
   firingNodeIds: []
 };
-export const route = queryAiAccessRouteV1(built.graph, routeRequest);
-if (route.kind !== "water_transport") throw new Error("invalid_boat_fixture_route");
+/** Preserve the checked transport discriminant for every importing lifecycle/route fixture. */
+function fixtureRoute() {
+  const result = queryAiAccessRouteV1(built.graph, routeRequest);
+  if (result.kind !== "water_transport") throw new Error("invalid_boat_fixture_route");
+  return result;
+}
+
+export const route = fixtureRoute();
 
 export const catalog: AiCapabilityCatalogV1 = {
   schemaVersion: 1,

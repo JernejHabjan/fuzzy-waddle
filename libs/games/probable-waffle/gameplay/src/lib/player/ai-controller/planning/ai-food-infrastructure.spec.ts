@@ -123,9 +123,10 @@ function observation(granaryCount: number, workerCount = 6) {
     tick: 200,
     actors: [...workers, ...granaries],
     map: { ...base.map!, constructionCells },
-    resources: base.resources.map((resource) =>
-      resource.resourceType === ResourceType.Food ? { ...resource, stockpile: 100 } : resource
-    )
+    resources: base.resources.map((resource) => ({
+      ...resource,
+      stockpile: resource.resourceType === ResourceType.Wood ? 230 : 100
+    }))
   };
 }
 
@@ -157,6 +158,18 @@ describe("AI food infrastructure", () => {
       expect.objectContaining({ kind: "construct", objectName: ObjectNames.Field })
     );
     expect(proposal.statePatch?.opening?.plan.lifecycle).toBe("completed");
+    const unfunded = observation(0);
+    expect(
+      new AiMacroManager(() => catalog)
+        .propose(
+          {
+            ...unfunded,
+            resources: unfunded.resources.map((resource) => ({ ...resource, stockpile: 109 }))
+          },
+          state()
+        )
+        .intents.some((intent) => intent.kind === "construct")
+    ).toBe(false);
   });
 
   it("adds a useful duplicate drop-off only when forecast-backed Field capacity justifies it", () => {

@@ -1,219 +1,25 @@
-import { FactionType, ObjectNames, ProbableWaffleAiDifficulty, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
+import { FactionType, ObjectNames, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { digestCanonicalAiValue } from "../brain/canonical-ai-serialization";
-import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
-import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
-import type { AiIntentV1 } from "../contracts/ai-intent-v1";
+
 import { aiDeadline } from "../contracts/ai-core-types";
 import type { AiReservationV1 } from "../contracts/ai-dependency-contracts";
 import { AiMacroManager } from "../planning/ai-macro-manager";
-import type { AiManagerProposalV1 } from "../planning/ai-manager-proposal";
-import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
+
 import { createAiProductionPolicyFixture } from "./ai-production-policy-fixture";
-import { createAiTestObservation, createAiTestOwnedActor } from "./ai-test-fixtures";
-
-interface AiProductionPureScenarioV1 {
-  readonly scenarioId: "PRO-01" | "PRO-02" | "PRO-03" | "PRO-04" | "PRO-05";
-  readonly purpose: string;
-  readonly execute: () => { readonly subject: AiManagerProposalV1; readonly control?: AiManagerProposalV1 };
-  readonly assertSemanticEffect: (result: ReturnType<AiProductionPureScenarioV1["execute"]>) => void;
-}
-
-const profile = createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium);
-
-const catalog: AiCapabilityCatalogV1 = {
-  schemaVersion: 1,
-  generation: 1,
-  unsupported: [],
-  entries: [
-    {
-      capabilityId: "worker",
-      family: "worker",
-      sourceObjectName: ObjectNames.TivaraWorker,
-      effectiveLevel: 1,
-      movementDomains: ["ground"],
-      targetDomains: [],
-      produces: [],
-      constructs: [ObjectNames.AnkGuard],
-      researches: [],
-      gathers: [ResourceType.Wood, ResourceType.Food],
-      housingCapacity: null,
-      housingCost: 1,
-      cargoCapacity: null
-    },
-    {
-      capabilityId: "producer",
-      family: "producer",
-      sourceObjectName: ObjectNames.AnkGuard,
-      effectiveLevel: 1,
-      movementDomains: [],
-      targetDomains: [],
-      produces: [ObjectNames.TivaraMacemanMale, ObjectNames.TivaraSlingshotFemale],
-      constructs: [],
-      researches: [],
-      gathers: [],
-      housingCapacity: null,
-      housingCost: null,
-      cargoCapacity: null,
-      constructionProfile: {
-        resourceCost: { [ResourceType.Wood]: 200 },
-        footprintRadiusTiles: 0,
-        visionRange: 6,
-        navigableHeight: null,
-        enterHeight: null,
-        exitHeight: null
-      }
-    },
-    {
-      capabilityId: "frontline",
-      family: "frontline",
-      sourceObjectName: ObjectNames.TivaraMacemanMale,
-      effectiveLevel: 1,
-      movementDomains: ["ground"],
-      targetDomains: ["ground"],
-      produces: [],
-      constructs: [],
-      researches: [],
-      gathers: [],
-      housingCapacity: null,
-      housingCost: 1,
-      cargoCapacity: null
-    },
-    {
-      capabilityId: "ranged",
-      family: "ranged",
-      sourceObjectName: ObjectNames.TivaraSlingshotFemale,
-      effectiveLevel: 1,
-      movementDomains: ["ground"],
-      targetDomains: ["ground"],
-      produces: [],
-      constructs: [],
-      researches: [],
-      gathers: [],
-      housingCapacity: null,
-      housingCost: 1,
-      cargoCapacity: null
-    }
-  ]
-};
-
-function completedOpeningState(faction = FactionType.Tivara) {
-  return createAiBrainStateV1({
-    playerNumber: 1,
-    faction,
-    profile,
-    tick: 200,
-    archetypeId: "balanced",
-    completedOpeningStepIds: [
-      "step:opening:bootstrap-worker",
-      "step:opening:supply-safety",
-      "step:opening:first-producer",
-      "step:opening:sustainable-food"
-    ]
-  });
-}
-
-function workers(faction: "Tivara" | "Skaduwee" = "Tivara") {
-  const workerName = faction === "Tivara" ? ObjectNames.TivaraWorkerMale : ObjectNames.SkaduweeWorkerMale;
-  return Array.from({ length: 6 }, (_, index) => ({
-    ...createAiTestOwnedActor(`worker-${faction}-${index}`), objectName: workerName
-  }));
-}
-
-function producer(actorId: string, objectName: ObjectNames = ObjectNames.AnkGuard) {
-  return { ...createAiTestOwnedActor(actorId), objectName };
-}
-
-function constructionCells() {
-  return Array.from({ length: 25 }, (_, index) => {
-    const x = 7 + (index % 5);
-    const y = 7 + Math.floor(index / 5);
-    return {
-      tileKey: `${x},${y}`,
-      position: { x, y, z: 0 },
-      groundPassable: true,
-      waterPassable: false,
-      elevation: 0,
-      observedBlocked: false
-    };
-  });
-}
-
-function propose(
-  actors: ReturnType<typeof createAiTestObservation>["actors"],
-  catalogInput = catalog,
-  state = completedOpeningState(),
-  faction = FactionType.Tivara,
-  resources = createAiTestObservation().resources
-): AiManagerProposalV1 {
-  const observation = createAiTestObservation();
-  return new AiMacroManager(() => catalogInput).propose(
-    {
-      ...observation,
-      faction,
-      tick: 200,
-      actors,
-      resources,
-      map: { ...observation.map!, constructionCells: constructionCells() }
-    },
-    state
-  );
-}
-
-function production(intents: readonly AiIntentV1[]) {
-  return intents.filter((intent) => intent.kind === "produce" && intent.demandId === "demand:composition:first-squad");
-}
-
-function capacityConstruction(intents: readonly AiIntentV1[]): readonly Extract<AiIntentV1, { readonly kind: "construct" }>[] {
-  return intents.filter(
-    (intent): intent is Extract<AiIntentV1, { readonly kind: "construct" }> =>
-      intent.kind === "construct" && intent.demandId === "demand:capacity:first-army"
-  );
-}
-
-function oneTypeCatalog(faction: "Tivara" | "Skaduwee" = "Tivara"): AiCapabilityCatalogV1 {
-  const producerName = faction === "Tivara" ? ObjectNames.AnkGuard : ObjectNames.InfantryInn;
-  const workerName = faction === "Tivara" ? ObjectNames.TivaraWorkerMale : ObjectNames.SkaduweeWorkerMale;
-  const frontlineName = faction === "Tivara" ? ObjectNames.TivaraMacemanMale : ObjectNames.SkaduweeWarriorMale;
-  const rangedName = faction === "Tivara" ? ObjectNames.TivaraSlingshotFemale : ObjectNames.SkaduweeRangedFemale;
-  return {
-    ...catalog,
-    entries: catalog.entries.map((entry) =>
-      entry.sourceObjectName === ObjectNames.TivaraWorker
-        ? { ...entry, sourceObjectName: workerName }
-        : entry.sourceObjectName === ObjectNames.AnkGuard
-        ? { ...entry, sourceObjectName: producerName, produces: [frontlineName] }
-        : entry.sourceObjectName === ObjectNames.TivaraMacemanMale
-          ? { ...entry, sourceObjectName: frontlineName, constructionProfile: {
-              resourceCost: { [ResourceType.Wood]: 35 }, footprintRadiusTiles: 0, visionRange: 6,
-              navigableHeight: null, enterHeight: null, exitHeight: null
-            } }
-          : entry.sourceObjectName === ObjectNames.TivaraSlingshotFemale
-            ? { ...entry, sourceObjectName: rangedName, produces: [] }
-            : entry
-    )
-  };
-}
-
-/** Existing useful copies remain legal beneficiaries; producer lane occupancy is observed separately. */
-function repeatedArmy(count: number, unitName: ObjectNames = ObjectNames.TivaraMacemanMale) {
-  return Array.from({ length: count }, (_, index) => ({
-    ...createAiTestOwnedActor(`military-${index}`),
-    objectName: unitName
-  }));
-}
-
-/** A real typed queue commitment fills a deficit even while another producer's lane remains idle. */
-function queuedProducer(count: number, producerName: ObjectNames = ObjectNames.AnkGuard,
-  unitName: ObjectNames = ObjectNames.TivaraMacemanMale) {
-  const items = Array.from({ length: count }, (_, index) => ({
-    itemId: `queued-${index}`, kind: "production" as const, objectName: unitName, researchType: null
-  }));
-  return {
-    ...producer("producer-1", producerName),
-    queue: { status: "known" as const, observedTick: 200,
-      value: { capacity: 5, occupied: count, itemIds: items.map((item) => item.itemId), items } }
-  };
-}
+import { createAiTestObservation } from "./ai-test-fixtures";
+import {
+  type AiProductionPureScenarioV1,
+  catalog,
+  completedOpeningState,
+  workers,
+  producer,
+  propose,
+  production,
+  capacityConstruction,
+  oneTypeCatalog,
+  repeatedArmy,
+  queuedProducer
+} from "./ai-production-scenario-test-fixtures";
 
 const scenarios: readonly AiProductionPureScenarioV1[] = [
   {
@@ -236,7 +42,7 @@ const scenarios: readonly AiProductionPureScenarioV1[] = [
       expect(capacityConstruction(subject.intents)).toHaveLength(0);
       expect(production(subject.intents)).toHaveLength(2);
       expect(subject.statePatch?.economyProduction?.demands).toEqual(
-        expect.arrayContaining([expect.objectContaining({ purpose: "dated_land_pressure", desired: 12 })])
+        expect.arrayContaining([expect.objectContaining({ purpose: "dated_ground_pressure", desired: 12 })])
       );
     }
   },
@@ -249,20 +55,35 @@ const scenarios: readonly AiProductionPureScenarioV1[] = [
     },
     assertSemanticEffect: ({ subject }) => {
       const transition = subject.statePatch?.economyProduction?.transition;
-      expect(transition).toMatchObject({ status: "committed", committedTick: 200, beginsTick: 350,
-        forceDeadlineTick: 750, desiredForce: 12, desiredProducers: 2 });
-      expect(subject.intents).toEqual(expect.arrayContaining([
-        expect.objectContaining({ kind: "construct", planId: transition?.planId, objectName: ObjectNames.AnkGuard })
-      ]));
+      expect(transition).toMatchObject({
+        status: "committed",
+        committedTick: 200,
+        beginsTick: 350,
+        forceDeadlineTick: 750,
+        desiredForce: 12,
+        desiredProducers: 2
+      });
+      expect(subject.intents).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ kind: "construct", planId: transition?.planId, objectName: ObjectNames.AnkGuard })
+        ])
+      );
       expect(subject.intents.some((intent) => intent.kind === "produce")).toBe(false);
     }
   },
   {
     scenarioId: "PRO-04",
-    purpose: "Ten useful copies admit two priced copies; the otherwise identical satisfied force stops excess production.",
+    purpose:
+      "Ten useful copies admit two priced copies; the otherwise identical satisfied force stops excess production.",
     execute: () => ({
-      subject: propose([...workers(), producer("producer-1"), producer("producer-2"), ...repeatedArmy(10)], oneTypeCatalog()),
-      control: propose([...workers(), producer("producer-1"), producer("producer-2"), ...repeatedArmy(12)], oneTypeCatalog())
+      subject: propose(
+        [...workers(), producer("producer-1"), producer("producer-2"), ...repeatedArmy(10)],
+        oneTypeCatalog()
+      ),
+      control: propose(
+        [...workers(), producer("producer-1"), producer("producer-2"), ...repeatedArmy(12)],
+        oneTypeCatalog()
+      )
     }),
     assertSemanticEffect: ({ subject, control }) => {
       expect(production(subject.intents)).toHaveLength(2);
@@ -271,8 +92,9 @@ const scenarios: readonly AiProductionPureScenarioV1[] = [
       );
       expect(new Set(production(subject.intents).map((intent) => intent.effectId)).size).toBe(2);
       for (const intent of production(subject.intents)) {
-        expect(intent.claims.filter((claim) => claim.kind === "resource"))
-          .toEqual([expect.objectContaining({ resourceType: ResourceType.Wood, amount: 35 })]);
+        expect(intent.claims.filter((claim) => claim.kind === "resource")).toEqual([
+          expect.objectContaining({ resourceType: ResourceType.Wood, amount: 35 })
+        ]);
       }
       expect(production(control?.intents ?? [])).toHaveLength(0);
     }
@@ -304,18 +126,40 @@ describe("typed deterministic production scenarios", () => {
   it("PRO-04 counts queued copies and unobserved leases before admitting another useful copy", () => {
     const execute = () => {
       const base = completedOpeningState();
-      const state = { ...base, reservations: Array.from({ length: 2 }, (_, index) => ({
-          claimId: `claim:composition:${index}`,
-          subjectKey: `effect:composition:effect:${index}`,
-          ownerPlanId: base.opening.plan.planId,
-          state: { kind: "provisional", expiresAt: aiDeadline(400) },
-          prerequisites: [], createdTick: 200
-        } satisfies AiReservationV1)) };
+      const state = {
+        ...base,
+        reservations: Array.from(
+          { length: 2 },
+          (_, index) =>
+            ({
+              claimId: `claim:composition:${index}`,
+              subjectKey: `effect:composition:effect:${index}`,
+              ownerPlanId: base.opening.plan.planId,
+              state: { kind: "provisional", expiresAt: aiDeadline(400) },
+              prerequisites: [],
+              createdTick: 200
+            }) satisfies AiReservationV1
+        )
+      };
       return {
-        queued: propose([...workers(), queuedProducer(2), producer("producer-2"), ...repeatedArmy(10)], oneTypeCatalog()),
-        leased: propose([...workers(), producer("producer-1"), producer("producer-2"), ...repeatedArmy(10)], oneTypeCatalog(), state),
-        observed: propose([...workers(), queuedProducer(2), producer("producer-2"), ...repeatedArmy(10)], oneTypeCatalog(), state),
-        oneMissing: propose([...workers(), producer("producer-1"), producer("producer-2"), ...repeatedArmy(11)], oneTypeCatalog())
+        queued: propose(
+          [...workers(), queuedProducer(2), producer("producer-2"), ...repeatedArmy(10)],
+          oneTypeCatalog()
+        ),
+        leased: propose(
+          [...workers(), producer("producer-1"), producer("producer-2"), ...repeatedArmy(10)],
+          oneTypeCatalog(),
+          state
+        ),
+        observed: propose(
+          [...workers(), queuedProducer(2), producer("producer-2"), ...repeatedArmy(10)],
+          oneTypeCatalog(),
+          state
+        ),
+        oneMissing: propose(
+          [...workers(), producer("producer-1"), producer("producer-2"), ...repeatedArmy(11)],
+          oneTypeCatalog()
+        )
       };
     };
     const result = execute();
@@ -324,9 +168,11 @@ describe("typed deterministic production scenarios", () => {
     expect(production(result.queued.intents)).toHaveLength(0);
     expect(production(result.leased.intents)).toHaveLength(0);
     expect(production(result.observed.intents)).toHaveLength(0);
-    expect(result.observed.statePatch?.economyProduction?.demands.find(
-      (demand) => demand.demandId === "demand:composition:first-squad"
-    )?.acceptedNotObservedEffectIds).toHaveLength(0);
+    expect(
+      result.observed.statePatch?.economyProduction?.demands.find(
+        (demand) => demand.demandId === "demand:composition:first-squad"
+      )?.acceptedNotObservedEffectIds
+    ).toHaveLength(0);
     expect(production(result.oneMissing.intents)).toHaveLength(1);
   });
 
@@ -337,11 +183,15 @@ describe("typed deterministic production scenarios", () => {
       const unitName = faction === "Tivara" ? ObjectNames.TivaraMacemanMale : ObjectNames.SkaduweeWarriorMale;
       const producerName = faction === "Tivara" ? ObjectNames.AnkGuard : ObjectNames.InfantryInn;
       const priced = oneTypeCatalog(faction);
-      const price = priced.entries.find((entry) => entry.sourceObjectName === unitName)
-        ?.constructionProfile?.resourceCost.wood;
+      const price = priced.entries.find((entry) => entry.sourceObjectName === unitName)?.constructionProfile
+        ?.resourceCost.wood;
       expect(price).toBeDefined();
-      const actors = [...workers(faction), producer("producer-1", producerName), producer("producer-2", producerName),
-        ...repeatedArmy(11, unitName)];
+      const actors = [
+        ...workers(faction),
+        producer("producer-1", producerName),
+        producer("producer-2", producerName),
+        ...repeatedArmy(11, unitName)
+      ];
       const withWood = (wood: number) => {
         const resources = [{ ...base.resources[0]!, stockpile: wood, reservedUnspent: 0, obligationsDue: 0 }];
         return propose(actors, priced, completedOpeningState(factionType), factionType, resources);
@@ -351,19 +201,34 @@ describe("typed deterministic production scenarios", () => {
       expect(new Set(exactRuns.map(digestCanonicalAiValue)).size).toBe(1);
       expect(production(exact.intents)).toHaveLength(1);
       expect(production(withWood(price! - 1).intents)).toHaveLength(0);
-      const reordered = propose([...actors].reverse(), { ...priced, entries: [...priced.entries].reverse() },
-        completedOpeningState(factionType), factionType,
-        [{ ...base.resources[0]!, stockpile: price!, reservedUnspent: 0, obligationsDue: 0 }]);
+      const reordered = propose(
+        [...actors].reverse(),
+        { ...priced, entries: [...priced.entries].reverse() },
+        completedOpeningState(factionType),
+        factionType,
+        [{ ...base.resources[0]!, stockpile: price!, reservedUnspent: 0, obligationsDue: 0 }]
+      );
       expect(digestCanonicalAiValue(reordered)).toBe(digestCanonicalAiValue(exact));
 
-      const laneActors = [...workers(faction), queuedProducer(1, producerName, unitName),
-        producer("producer-2", producerName), ...repeatedArmy(10, unitName)];
+      const laneActors = [
+        ...workers(faction),
+        queuedProducer(1, producerName, unitName),
+        producer("producer-2", producerName),
+        ...repeatedArmy(10, unitName)
+      ];
       const busyAndIdle = propose(laneActors, priced, completedOpeningState(factionType), factionType);
-      const laneRuns = [busyAndIdle, propose(laneActors, priced, completedOpeningState(factionType), factionType),
-        propose(laneActors, priced, completedOpeningState(factionType), factionType)];
+      const laneRuns = [
+        busyAndIdle,
+        propose(laneActors, priced, completedOpeningState(factionType), factionType),
+        propose(laneActors, priced, completedOpeningState(factionType), factionType)
+      ];
       expect(new Set(laneRuns.map(digestCanonicalAiValue)).size).toBe(1);
-      const laneReordered = propose([...laneActors].reverse(), { ...priced, entries: [...priced.entries].reverse() },
-        completedOpeningState(factionType), factionType);
+      const laneReordered = propose(
+        [...laneActors].reverse(),
+        { ...priced, entries: [...priced.entries].reverse() },
+        completedOpeningState(factionType),
+        factionType
+      );
       expect(digestCanonicalAiValue(laneReordered)).toBe(digestCanonicalAiValue(busyAndIdle));
       expect(production(busyAndIdle.intents)).toHaveLength(1);
       expect(production(busyAndIdle.intents)[0]?.producerId).toBe("producer-2");

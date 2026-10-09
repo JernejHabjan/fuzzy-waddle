@@ -71,6 +71,7 @@ describe("aiSpendingBudgetConflict", () => {
     const spent = emptySpend();
     spent.economy.set(ResourceType.Wood, 100);
 
+    // Spending 100 of the 130 protected wood leaves 30 protected while a pending purchase can use it.
     expect(
       aiSpendingBudgetConflict(
         defense,
@@ -78,6 +79,20 @@ describe("aiSpendingBudgetConflict", () => {
         { economyPermille: 650, defensePermille: 350 },
         () => 200,
         new Map([[ResourceType.Wood, 100]]),
+        spent
+      )
+    ).toBe(ResourceType.Wood);
+
+    // The full 65% of 400 is spent; both pending 100-wood proposals still fit the remaining 140 individually.
+    spent.economy.set(ResourceType.Wood, 260);
+
+    expect(
+      aiSpendingBudgetConflict(
+        defense,
+        [economy],
+        { economyPermille: 650, defensePermille: 350 },
+        () => 400,
+        new Map([[ResourceType.Wood, 260]]),
         spent
       )
     ).toBeNull();

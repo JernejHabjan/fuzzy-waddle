@@ -73,7 +73,8 @@ function combatActor(actorId: string, relation: "self" | "enemy", x: number): Ai
     owner: relation === "self" ? 1 : 2,
     relation,
     visibility: relation === "self" ? "owned" : "visible",
-    logicalPosition: { status: "known", value: { x, y: 0, z: 0 }, observedTick: 200 },
+    // Counterforce is near the offensive objective, outside the separate home-defense radius.
+    logicalPosition: { status: "known", value: { x: x * 20, y: 0, z: 0 }, observedTick: 200 },
     accessNodeId: { status: "known", value: x === 0 ? sourceNode : targetNode, observedTick: 200 },
     capabilities: [
       {
@@ -108,6 +109,7 @@ function strategyWorld(forceCount: number, workerCount: number, defenderCount: n
   const core: AiObservedActorV1 = {
     ...combatActor("enemy-core", "enemy", 1),
     capabilities: [],
+    housingCost: { status: "known", value: 0, observedTick: 200 },
     mainBuilding: { status: "known", value: true, observedTick: 200 }
   };
   const defenders = Array.from({ length: defenderCount }, (_, index) =>

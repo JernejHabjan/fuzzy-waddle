@@ -446,7 +446,7 @@ The following map preserves stage-50 design/authoring states; the final-gate che
 | M07 Real adapter/report bridge: expose actual producer evidence and explicit gaps | R; C7 root capture, variant runner, production normalization | 51–53 → 54 | Real Phaser actor/components/protocol player/read/native command path into report; initialization loss, post-await service loss and late/disposed capture; native income remains diagnostic while useful fields stay null; contradictory tail suppresses parent | Bridge assertion authored; K1/K3/K5 real-run evidence deferred |
 | M08 Normal-play impact: testing does not install heavy machinery during gaming | R; C8 below, installer/helper controls and existing profiler | 54 | Production/unmarked guard, no sample/clone/listener/timer/root journal; before/after disabled-path and bundle comparison; foreign host/duplicate capture, late callbacks | Fast-path/native controls and production build pass; paired C8/K5 cost/bundle evidence pending |
 | M09 Compliance/publication: economical implementation remains reviewable | R; C6 exact baselines, existing handoff | Each 51–54 | No refreshed hashes/new permanent stage names; task-only prerequisite and behavior commits; source review/Omission Audit/closure, remote SHA and clean task scope | Authored/source-reviewed; implementation commit `978cb09e70cbc6e2ed0b520971690ea47ab38045` remote-verified; checks deferred |
-| M10 Combined review and compatibility: decide readiness before execution | R; C1–C8, all changed consumers | 54 → Sol review | Trace real input → selected/admitted → native application → report/disposal; review all controls, repair concrete contract contradictions; every required unrun check remains listed | E2E typing/457 synthetic controls and native typing/143 suites/679 tests pass; gameplay K4/22 broader failures and K5 remain |
+| M10 Combined review and compatibility: decide readiness before execution | R; C1–C8, all changed consumers | 54 → Sol review | Trace real input → selected/admitted → native application → report/disposal; review all controls, repair concrete contract contradictions; every required unrun check remains listed | K4 all four compiler configs, gameplay 274/native 679/report 457 tests, scoped lint/format and production build pass; K5/C8 and broader release evidence remain |
 | M11 Mutation-complete useful resource/continuous capacity: 32/36 full proof | B; C7 plus 32/36/39/42 authority, public APIs | Explicit authority/scope decision; not a hidden fifth Luna pass | Net-zero alias undo, arbitrary definition/Map/item/roster replacement, hidden/stale threats/access changes between reads, full supported initial predicate history; no positive complete channel currently possible | Existing 32/36 gates; blocked, mandatory |
 | M12 Production useful outputs, legal setup and strategy: PRO-03/06/07 release | B; existing production authority contract and evaluators | Broader gameplay/fixture queue, separate from 51–54 | Both-faction transition/abandonment, exposed/safe/no-demand resilience, shared train/research and paid cancellation/pending refund pairs; full oracle and denominator | K5 and owning scenario/policy plans; open, mandatory |
 | M13 Finer loss scopes/continuous journal/lot allocation | O; no new files/owners | Not scheduled; new consumer must justify proposal | No actor-to-beneficiary dependency map, FIFO allocation or extra scan introduced just to recover a diagnostic bound | No extra gate; proposed only |
@@ -505,10 +505,124 @@ to the final gate by user instruction. Source review and Git publication are not
 | 54 / M08 | `fenceSceneResourceHistory`, `PlayerResourceObservation.reset/lose`, and installer: empty loss groups return before snapshot/reentrancy allocation; no matching marked host returns before config parsing or capture construction. | Code plus unmarked-host guard spec authored. Disabled-path profile, production bundle and native fast-path controls deferred. |
 | 54 / M09 | Changed only task-owned source, one E2E report assertion, the exact baseline removals and these existing plan/handoff files. | Source/Git scope review only. No executable validation or cost evidence. |
 
-M10 source review has now been performed, with concrete repairs and omissions recorded below. Missing control
-authoring is the next grouped boundary before gate readiness; executable validation remains deferred.
+Historical authoring boundary: M10 source review found missing controls, subsequently authored and executed in the
+final-gate checkpoints below. The user-authorized final gate is active; K5/C8 and broader release evidence remain.
 Do not claim stage validation before K1–K5. M11 remains a mandatory blocker from public mutable aliases
 and incomplete access/safety/lifetime history; M12 remains open for full PRO-03/06/07. Neither was reduced by this batch.
+
+### Final-gate combined gameplay checkpoint (2026-10-09, stage checked)
+
+User authorized continuing with the next coherent batch, with stable-boundary checks and one commit/push/pause.
+Base `04f311f2d0b5c734551c7b0ac767798b45ff09a1` was clean and remote-verified on `feature/759-skirmish-ai` in
+`/home/jernej/.codex/worktrees/7977/fuzzy-waddle`. Preserve unrelated Nx merge `59f72e037`. Actual model/effort
+unknown; no model switch, subagent or new machinery. The containing commit owns this batch; verify remote on resume.
+
+**Purpose / runtime repair:** `AiDecisionPlanner.strategyFor` retains the prior skirmish assessment while replacing
+its stance-owned fields. Otherwise an unchanged future production schedule is abandoned on the next macro step as
+`objective_changed`. `AiMacroObservation.owned` sorts its fresh filtered array by actor identity, keeping actor-set
+selection, demand order and digest stable when equivalent inputs are permuted. Skirmish assessment updates still
+belong to the skirmish proposal; changed-objective, emergency and expired-schedule controls remain passing.
+Restoring each original production owner alone against the repaired fixtures reproduces two schedule failures and
+four ordering failures; restoring candidate bytes makes both production specs pass all 22 tests. Candidate hashes
+are identical before/after that controlled regression experiment. No balance, usefulness or wire/save policy changed.
+
+**Fixture contracts / why:** nine required numeric spread slots use existing `requireAiTestEntry`; missing authored
+records throw rather than becoming unchecked assertions. Debug demand/intent/transport fixtures use their actual
+types and transport ID; adaptation IDs retain their literal type. Route helpers retain the actual combat domain and
+narrow a real `water_transport` result before shared lifecycle/route consumers read it. Completed tactics outcomes
+carry actual execution identity and `resultingActorIds`, without obsolete `reason` fields or a broad type assertion.
+Victory-route fixtures import their actual brain-state contract. These repairs remove all 44 strict diagnostics in
+12 existing specs, including two unmodified transport specs repaired through their shared fixture.
+
+Invalid worlds now exercise their advertised behavior: economy workers have gather capability; the healthy-workforce
+control has six workers, matching the existing recovery floor. Production uses the registered male worker type and
+both-faction constructs capabilities name the actual producer. Ordinary production stock 230 leaves 200 after the
+existing 10 reserve/20 obligation; explicit exact/below-price cases remain. Food stock 230 funds granary plus field;
+an added stock-109 control leaves 79 and rejects the granary. PRO-01/05 also required the matching builder capability;
+do not attribute those original failures solely to affordability. PRO-02's schema label is corrected from
+`dated_land_pressure` to `dated_ground_pressure`, retaining the desired-force assertion of 12.
+Victory enemy positions scale by 20 to stay outside the home-defense radius while preserving graph connectivity;
+static cores cost zero housing. The bounded smaller-mission target is an unarmed worker; an added otherwise identical
+armed defender suppresses attack. Its optional, incomplete `tactics: {} as never` is omitted. The spending fixture that
+spent 100 of a 130 economy quota now correctly expects a Wood conflict; a separate exhausted 260-of-260 setup retains
+the null assertion while both pending purchases individually fit remaining resources. Spending production code is unchanged.
+
+**Source ownership / splits:** 31 TypeScript paths: two production owners, six fixture owners and 23 specs (15 existing,
+eight new). All paths below are under `libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/`:
+
+- `planning/ai-tactics-test-fixtures.ts` supports the original tactics spec plus `ai-tactics-combat.spec.ts`,
+  `ai-tactics-deadlines.spec.ts` and `ai-tactics-targeting.spec.ts`; all 24 original cases remain.
+- `planning/ai-skirmish-test-fixtures.ts` supports the original manager plus `ai-skirmish-mission-lifecycle.spec.ts`
+  and `ai-skirmish-boundaries.spec.ts`; all 11 original cases remain.
+- `planning/ai-offensive-opportunity-test-fixtures.ts` supports the original selection spec plus
+  `ai-offensive-opportunity-domains.spec.ts` and `ai-offensive-opportunity-recovery.spec.ts`; all 13 original cases remain.
+- `testing/ai-economy-forecast-test-fixtures.ts` supports the original forecast spec and
+  `ai-economy-forecast-budget.spec.ts`; all six original cases remain.
+- `testing/ai-production-scenario-test-fixtures.ts` shares production setup; registrations and scenario rows stay
+  in the original production spec. Existing transport fixture is the sixth fixture owner.
+
+These helpers are test-only consumers, keeping setup reusable and all changed sources within existing file/function,
+width and declaration limits. The debug summary also splits its oversized describe without moving cases to new files.
+The generated testing catalog refreshes 37 owner-link/inventory lines, including the generator's current `research=0`
+field. No manifest, recipe, registration, denominator or new runtime coverage is claimed. Total published scope:
+31 TypeScript sources, generated catalog and two existing coordination docs (34 paths).
+
+| Acceptance / state | Evidence |
+| --- | --- |
+| 1. Clean baseline / passed | Doctor/context pass; actual gameplay config reproduces 44 diagnostics and full target reproduces 22 failures/252 passes on the clean base. |
+| 2. Causes / passed | Contract-correct fixtures and both production repairs reviewed; isolated original-owner regressions fail 2/4 respectively and restored candidate passes 22 tests. |
+| 3. Oracles / passed | AST audit retains 100 registration expressions and actual scenario-array initializers; all 303 expected matcher arguments retained after checked-read/parentheses/domain-label normalization; 306 now, three added controls. No skips, strictness/baseline/threshold changes. |
+| 4. Compatibility / passed | Actual full gameplay 60 suites/274 tests and Phaser 143 suites/679 tests pass with zero Nx cache hits; 457 synthetic reports/41 specs pass without browser/server. All four actual compiler configurations have zero diagnostics. |
+| 5. Quality/build / passed | Gameplay lint executes/pass; Phaser/protocol lint pass via 2/2 cache hits. Portal production build and dependencies pass by execution, 0/3 cache hits. All 31 sources pass formatting, explicit AST structure and diff whitespace checks; generated catalog check passes. |
+| 6. Remaining gate / pending | K5 real-browser and C8 paired disabled-path/bundle measurements are unrun. Server/socket/save/restart/hash/calibration and M11/M12 still prevent release closure; no complete useful-service activation. |
+
+Ignored evidence: `tmp/ai-plans/759-validation/gameplay-fixture-batch/`. Exact source manifest `source-files.txt`,
+base snapshots/logs, final compiler logs (`types-gameplay-final`, `types-native-closure`, `types-report-closure`,
+`types-protocol-final`), `tests-gameplay-final`, `tests-native-final`, `tests-report-final`, `quality-final`,
+`lint-consumers-final`, `build-final`, `format-closure`, `catalog-final`, regression logs/summary and `provenance.json`.
+Final 31-source SHA256 digest: `7ce9cc7f0bdf004d5f17a09826bec9364f0dda78706bd1dbe3ed897a5bea6ed0`.
+Artifacts may be absent on another machine; recorded counts are scoped evidence, not permission to invent raw records.
+
+```sh
+pnpm agent:doctor
+pnpm agent:context -- --issue 816
+pnpm exec tsc --noEmit -p libs/games/probable-waffle/gameplay/tsconfig.spec.json
+pnpm exec tsc --noEmit -p libs/games/probable-waffle/phaser/tsconfig.spec.json
+pnpm exec tsc --noEmit -p libs/games/probable-waffle/protocol/tsconfig.spec.json
+pnpm exec tsc --noEmit -p apps/portal-e2e/tsconfig.json
+pnpm exec nx test probable-waffle-gameplay --runInBand
+pnpm exec nx test probable-waffle-phaser --runInBand
+pnpm exec nx lint probable-waffle-gameplay
+pnpm exec nx run-many --targets=lint --projects=probable-waffle-phaser,probable-waffle-protocol
+pnpm exec nx build portal --configuration=production
+pnpm exec node tools/ai/generate-skirmish-test-catalog.mjs --check
+git diff --check
+```
+
+Synthetic reports use the existing ignored `tmp/ai-plans/playwright-resource-gate.config.ts` (actual base config,
+only unused webServer disabled) and the same 41-spec selection recorded in the production/queue checkpoint below.
+This is report execution, not browser evidence. Intermediate repair runs found and repaired local syntax/import/type
+errors; stable final sources pass. The catalog wrapper invocation with forwarded literal `--` rejected its arguments;
+the exact direct generator command above is the passing check. No tooling/config change was needed.
+
+**Implementation Review:** reviewed both production diffs against planner/schedule/assessment ownership and macro
+set semantics, fixture capability/price/domain/outcome contracts, split imports and every retained causal control.
+Filtered actor sorting does not mutate observation input. Existing lifecycle ordering, native/resource authority,
+consumed inputs, conservative null useful quantities and actual changed-objective abandonment remain intact.
+**Omission Audit:** all 44 diagnostics and 22 reproduced failures addressed; original registrations, parameterized
+rows and matcher arguments retained, with explicit schema-label normalization and three added controls. Generated
+catalog follows split owners; every new helper has test consumers. No registration/config/save/wire/lifecycle hooks
+changed or required for this batch. No reusable skill/tool update justified. Unexecuted release duties remain visible.
+**Separate Final Closure Audit:** all six acceptance rows reconciled; final source hashes match the checked candidate,
+generated catalog synchronization passes and exact staging contains 34 task-owned paths. All local doc links/anchors
+resolve after correcting three older slash-heading backlinks; unrelated Nx history is retained. Passing compatibility
+closes this batch's K4 repairs only. Normal commit/push, exact remote SHA and clean status close delivery, not release.
+
+**Next grouped batch — why:** inspect runtime recipe inventory and actual K5/C8 contracts, checking legal-world/M12
+prerequisites before the bounded production browser gate and paired disabled-path/bundle measurements. This tests
+real native-to-report behavior and ordinary-play cost; builds and synthetic reports cannot establish those results.
+Recommend **GPT-6.1 Sol / high** for causal runtime/provenance investigation. Do not assume complete useful authority;
+M11 and broader PRO-03/06/07 remain mandatory. Pause after publishing this checked gameplay batch.
 
 ### Final-gate combined native fixture checkpoint (2026-10-09, stage checked)
 
@@ -597,7 +711,7 @@ remain explicit. No reusable skill/tool change is justified by this local fixtur
 selection, final native test count, lint/format, doc links, task-owned scope and unrelated history. Native slice is
 stage checked; full K4/M10/release is not closed. Commit/push plus remote verification close delivery only.
 
-**Next combined batch — why:** refresh gameplay typing/failure evidence, then group repairs by actual shared
+**Historical next combined batch (now checked above) — why:** refresh gameplay typing/failure evidence, then group repairs by actual shared
 planner/production contract. Start with `pnpm exec tsc --noEmit -p libs/games/probable-waffle/gameplay/tsconfig.spec.json`
 and the earlier base-reproduced gameplay failure ledger; earlier counts are 44 diagnostics and 22 failed tests.
 Recommend **GPT-6.1 Sol / high** for causal investigation, retaining the now-passing native slice. Finish gameplay K4

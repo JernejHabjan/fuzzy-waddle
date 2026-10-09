@@ -32,6 +32,8 @@ function strategyFor(observation: AiObservationV1, state: AiBrainStateV1): AiStr
     candidate === "defend" || previous.goalId === null || observation.tick >= previous.commitmentDeadline.dueTick;
   if (candidate === previous.stance || !canInterrupt) return previous;
   return {
+    // This reducer owns the stance, not the skirmish assessment consumed by committed production schedules.
+    ...previous,
     stance: candidate,
     enteredTick: observation.tick,
     goalId: candidate === "opening" ? "plan:opening" : previous.goalId,

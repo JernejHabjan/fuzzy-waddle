@@ -10,7 +10,12 @@ import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
 import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
-import { createAiTestObservation, createAiTestOwnedActor, unknownAiValue } from "../testing/ai-test-fixtures";
+import {
+  createAiTestObservation,
+  createAiTestOwnedActor,
+  unknownAiValue,
+  requireAiTestEntry
+} from "../testing/ai-test-fixtures";
 import { AiResourceServiceManager } from "./ai-resource-service-manager";
 import { canAffordAiEconomyCost } from "./ai-economy-policy";
 
@@ -20,22 +25,58 @@ const catalog: AiCapabilityCatalogV1 = {
   unsupported: [],
   entries: [
     {
-      capabilityId: "worker", family: "worker", sourceObjectName: ObjectNames.TivaraWorker, effectiveLevel: 1,
-      movementDomains: ["ground"], targetDomains: [], produces: [], constructs: [ObjectNames.WorkMill], researches: [],
-      gathers: [ResourceType.Wood], housingCapacity: null, housingCost: 1, cargoCapacity: null
+      capabilityId: "worker",
+      family: "worker",
+      sourceObjectName: ObjectNames.TivaraWorker,
+      effectiveLevel: 1,
+      movementDomains: ["ground"],
+      targetDomains: [],
+      produces: [],
+      constructs: [ObjectNames.WorkMill],
+      researches: [],
+      gathers: [ResourceType.Wood],
+      housingCapacity: null,
+      housingCost: 1,
+      cargoCapacity: null
     },
     {
-      capabilityId: "main", family: "drop_off", sourceObjectName: ObjectNames.Sandhold, effectiveLevel: 1,
-      movementDomains: [], targetDomains: [], produces: [], constructs: [], researches: [], gathers: [],
-      acceptsResources: [ResourceType.Wood], housingCapacity: null, housingCost: null, cargoCapacity: null
+      capabilityId: "main",
+      family: "drop_off",
+      sourceObjectName: ObjectNames.Sandhold,
+      effectiveLevel: 1,
+      movementDomains: [],
+      targetDomains: [],
+      produces: [],
+      constructs: [],
+      researches: [],
+      gathers: [],
+      acceptsResources: [ResourceType.Wood],
+      housingCapacity: null,
+      housingCost: null,
+      cargoCapacity: null
     },
     {
-      capabilityId: "mill", family: "drop_off", sourceObjectName: ObjectNames.WorkMill, effectiveLevel: 1,
-      movementDomains: [], targetDomains: [], produces: [], constructs: [], researches: [], gathers: [],
-      acceptsResources: [ResourceType.Wood], housingCapacity: null, housingCost: null, cargoCapacity: null,
+      capabilityId: "mill",
+      family: "drop_off",
+      sourceObjectName: ObjectNames.WorkMill,
+      effectiveLevel: 1,
+      movementDomains: [],
+      targetDomains: [],
+      produces: [],
+      constructs: [],
+      researches: [],
+      gathers: [],
+      acceptsResources: [ResourceType.Wood],
+      housingCapacity: null,
+      housingCost: null,
+      cargoCapacity: null,
       constructionProfile: {
-        resourceCost: { [ResourceType.Wood]: 100 }, footprintRadiusTiles: 0, visionRange: 14,
-        navigableHeight: null, enterHeight: null, exitHeight: null
+        resourceCost: { [ResourceType.Wood]: 100 },
+        footprintRadiusTiles: 0,
+        visionRange: 14,
+        navigableHeight: null,
+        enterHeight: null,
+        exitHeight: null
       }
     }
   ]
@@ -43,20 +84,26 @@ const catalog: AiCapabilityCatalogV1 = {
 
 function actor(id: string, objectName: ObjectNames, x: number, y: number): AiObservedActorV1 {
   return {
-    ...createAiTestOwnedActor(id), objectName,
+    ...createAiTestOwnedActor(id),
+    objectName,
     logicalPosition: { status: "known", observedTick: 20, value: { x, y, z: 0 } }
   };
 }
 
 function tree(id: string, x: number): AiObservedActorV1 {
   return {
-    ...actor(id, ObjectNames.Tree1, x, 5), owner: null, relation: "neutral", visibility: "visible",
+    ...actor(id, ObjectNames.Tree1, x, 5),
+    owner: null,
+    relation: "neutral",
+    visibility: "visible",
     resourceState: {
-      status: "known", observedTick: 20,
+      status: "known",
+      observedTick: 20,
       value: {
         resourceType: ResourceType.Wood,
         available: { status: "known", value: 500, observedTick: 20 },
-        carried: unknownAiValue, growthReadyTick: unknownAiValue,
+        carried: unknownAiValue,
+        growthReadyTick: unknownAiValue,
         serviceCapacity: { status: "known", value: 4, observedTick: 20 }
       }
     }
@@ -81,26 +128,34 @@ function world(sourceX: number, extra: readonly AiObservedActorV1[] = []): AiObs
   const workers = Array.from({ length: 6 }, (_, index) => ({
     ...actor(`worker-${index}`, ObjectNames.TivaraWorker, sourceX - 3, 5),
     activeOrder: {
-      status: "known" as const, observedTick: 20,
+      status: "known" as const,
+      observedTick: 20,
       value: index === 0 ? { orderType: OrderType.Gather, targetActorId: "forest-b" } : null
     }
   }));
   return {
     ...base,
     actors: [...workers, actor("main", ObjectNames.Sandhold, 0, 5), tree("forest-b", sourceX), ...extra],
-    resources: [{ ...base.resources[0], stockpile: 300, reservedUnspent: 0, obligationsDue: 0 }],
+    resources: [{ ...requireAiTestEntry(base.resources, 0), stockpile: 300, reservedUnspent: 0, obligationsDue: 0 }],
     map: {
       bounds: { status: "known", value: { width: 80, height: 20 }, observedTick: 20 },
-      staticRevision: 1, frontierAccessNodeIds: [], scoutCoverageAccessNodeIds: [], dynamicObstacleActorIds: [],
-      regionGeneration: { generation: 1, status: "ready", continuationCursor: 0 }, constructionCells: cells
+      staticRevision: 1,
+      frontierAccessNodeIds: [],
+      scoutCoverageAccessNodeIds: [],
+      dynamicObstacleActorIds: [],
+      regionGeneration: { generation: 1, status: "ready", continuationCursor: 0 },
+      constructionCells: cells
     }
   };
 }
 
 function proposal(observation: AiObservationV1) {
   const initial = createAiBrainStateV1({
-    playerNumber: 1, faction: FactionType.Tivara,
-    profile: createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium), tick: 20, archetypeId: "balanced"
+    playerNumber: 1,
+    faction: FactionType.Tivara,
+    profile: createAiProfileConfigV1(ProbableWaffleAiDifficulty.Medium),
+    tick: 20,
+    archetypeId: "balanced"
   });
   const state = {
     ...initial,
@@ -118,10 +173,14 @@ describe("AiResourceServiceManager", () => {
     const intent = runs[0]?.intents[0];
 
     expect(new Set(runs.map(digestCanonicalAiValue)).size).toBe(1);
-    expect(intent).toEqual(expect.objectContaining({
-      kind: "construct", objectName: ObjectNames.WorkMill, spendingCategory: "economy",
-      reasonCode: expect.stringContaining("resource_service:wood:forest-b")
-    }));
+    expect(intent).toEqual(
+      expect.objectContaining({
+        kind: "construct",
+        objectName: ObjectNames.WorkMill,
+        spendingCategory: "economy",
+        reasonCode: expect.stringContaining("resource_service:wood:forest-b")
+      })
+    );
     expect(intent?.claims).toContainEqual(
       expect.objectContaining({ kind: "resource", resourceType: ResourceType.Wood, amount: 100 })
     );
@@ -190,7 +249,7 @@ describe("AiResourceServiceManager", () => {
         }
         return candidate;
       }),
-      resources: [{ ...baseline.resources[0], stockpile: 99 }]
+      resources: [{ ...requireAiTestEntry(baseline.resources, 0), stockpile: 99 }]
     };
 
     expect(canAffordAiEconomyCost(observation, { [ResourceType.Wood]: 100 })).toBe(false);
@@ -201,27 +260,31 @@ describe("AiResourceServiceManager", () => {
     const base = world(20);
     const destroyed: AiObservationV1 = {
       ...base,
-      actors: base.actors.filter((candidate) => candidate.actorId !== "main").map((candidate) =>
-        candidate.actorId === "worker-1"
-          ? {
-              ...candidate,
-              activeOrder: {
-                status: "known" as const, observedTick: 20,
-                value: { orderType: OrderType.ReturnResources, targetActorId: "main" }
-              },
-              resourceState: {
-                status: "known" as const, observedTick: 20,
-                value: {
-                  resourceType: ResourceType.Wood,
-                  available: unknownAiValue,
-                  carried: { status: "known" as const, value: 3, observedTick: 20 },
-                  growthReadyTick: unknownAiValue,
-                  serviceCapacity: unknownAiValue
+      actors: base.actors
+        .filter((candidate) => candidate.actorId !== "main")
+        .map((candidate) =>
+          candidate.actorId === "worker-1"
+            ? {
+                ...candidate,
+                activeOrder: {
+                  status: "known" as const,
+                  observedTick: 20,
+                  value: { orderType: OrderType.ReturnResources, targetActorId: "main" }
+                },
+                resourceState: {
+                  status: "known" as const,
+                  observedTick: 20,
+                  value: {
+                    resourceType: ResourceType.Wood,
+                    available: unknownAiValue,
+                    carried: { status: "known" as const, value: 3, observedTick: 20 },
+                    growthReadyTick: unknownAiValue,
+                    serviceCapacity: unknownAiValue
+                  }
                 }
               }
-            }
-          : candidate
-      )
+            : candidate
+        )
     };
     const runs = Array.from({ length: 3 }, () => proposal(destroyed));
     expect(new Set(runs.map(digestCanonicalAiValue)).size).toBe(1);
@@ -229,7 +292,10 @@ describe("AiResourceServiceManager", () => {
     expect(intent).toEqual(expect.objectContaining({ kind: "construct", objectName: ObjectNames.WorkMill }));
     if (intent?.kind === "construct") expect(intent.builderIds).toEqual(["worker-2"]);
 
-    const restored = { ...destroyed, actors: [...destroyed.actors, actor("restored-mill", ObjectNames.WorkMill, 19, 5)] };
+    const restored = {
+      ...destroyed,
+      actors: [...destroyed.actors, actor("restored-mill", ObjectNames.WorkMill, 19, 5)]
+    };
     expect(proposal(restored).intents).toHaveLength(0);
     const depleted: AiObservationV1 = {
       ...destroyed,

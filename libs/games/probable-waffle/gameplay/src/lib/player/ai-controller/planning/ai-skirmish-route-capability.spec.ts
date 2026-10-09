@@ -1,6 +1,7 @@
 import { FactionType, ObjectNames, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
 import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
+import type { AiObservedActorV1 } from "../contracts/ai-observation-v1";
 import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
 import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
 import { buildAiAccessGraphV1, queryAiAccessRouteV1, type AiAccessCellV1 } from "./ai-access-graph-v1";
@@ -46,7 +47,7 @@ const catalog: AiCapabilityCatalogV1 = {
   ]
 };
 
-function combatActor() {
+function combatActor(): AiObservedActorV1 {
   return {
     ...createAiTestOwnedActor("guard"),
     objectName: ObjectNames.TivaraMacemanMale,

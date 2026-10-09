@@ -1,5 +1,6 @@
 import { FactionType, ObjectNames, ProbableWaffleAiDifficulty } from "@fuzzy-waddle/probable-waffle-protocol";
 import { createAiBrainStateV1 } from "../brain/create-ai-brain-state-v1";
+import type { AiBrainStateV1 } from "../contracts/ai-brain-state-v1";
 import { digestCanonicalAiValue } from "../brain/canonical-ai-serialization";
 import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v1";
 import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
@@ -75,7 +76,8 @@ function actor(actorId: string, relation: "self" | "enemy", x: number): AiObserv
     owner: relation === "self" ? 1 : 2,
     relation,
     visibility: relation === "self" ? "owned" : "visible",
-    logicalPosition: { status: "known", value: { x, y: 0, z: 0 }, observedTick: 20 },
+    // Access nodes describe connectivity; enemy objectives sit beyond the home-defense radius.
+    logicalPosition: { status: "known", value: { x: x * 20, y: 0, z: 0 }, observedTick: 20 },
     accessNodeId: {
       status: "known",
       value: x === 0 ? home : x === 1 ? reachable : unexplored,
@@ -101,6 +103,7 @@ function actor(actorId: string, relation: "self" | "enemy", x: number): AiObserv
 function world(includeWorker: boolean, tick = 20): AiObservationV1 {
   const core: AiObservedActorV1 = {
     ...actor("enemy-core", "enemy", 2),
+    housingCost: { status: "known", value: 0, observedTick: 20 },
     mainBuilding: { status: "known", value: true, observedTick: 20 }
   };
   const worker: AiObservedActorV1 = {

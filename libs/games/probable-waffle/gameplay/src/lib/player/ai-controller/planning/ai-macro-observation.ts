@@ -4,8 +4,11 @@ import type { AiIntentV1 } from "../contracts/ai-intent-v1";
 import type { AiObservationV1 } from "../contracts/ai-observation-v1";
 import type { OpeningCheckpoint } from "./ai-opening-catalog";
 
+/** Macro treats owned actors as a set; stable identity order governs selection and projected demand records. */
 export function owned(observation: AiObservationV1) {
-  return observation.actors.filter((actor) => actor.relation === "self" && actor.visibility === "owned");
+  return observation.actors
+    .filter((actor) => actor.relation === "self" && actor.visibility === "owned")
+    .sort((left, right) => left.actorId.localeCompare(right.actorId));
 }
 
 export function checkpointActors(
