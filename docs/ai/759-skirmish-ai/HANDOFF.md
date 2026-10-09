@@ -19,7 +19,8 @@ Last explicitly selected profile Luna / high; actual settings for this review un
 All executable tests/validation remain deferred to the final gate.
 Batch base `58dc92f8a9ce4d44cfaa133bbcf621fe8fc22b5b` (stage 50, remote verified). Implementation commit
 `978cb09e70cbc6e2ed0b520971690ea47ab38045` contains 51–54. M10 base
-`bd30bea87f57d87c7751b3a9e5759e5a1e021f24` was remote-verified on resume; the containing commit owns these repairs and ledger.
+`bd30bea87f57d87c7751b3a9e5759e5a1e021f24` was remote-verified on resume. M10 review/repair commit
+`a952782dece8e36bef7bc92e01545021dc99fe48` is pushed and remote-verified; this publication metadata follows it.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify remote on resume.
 Preserve unrelated Nx merge `59f72e037`. No family/issue is complete. User removed the comment-permission rule.
 

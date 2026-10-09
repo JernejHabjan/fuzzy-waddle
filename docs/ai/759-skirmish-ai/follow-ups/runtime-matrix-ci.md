@@ -513,7 +513,8 @@ and incomplete access/safety/lifetime history; M12 remains open for full PRO-03/
 Base `bd30bea87f57d87c7751b3a9e5759e5a1e021f24` was remote-verified on resume. Reviewed implementation
 `978cb09e70cbc6e2ed0b520971690ea47ab38045`, its immediate native owners, capture consumers and adjacent specs.
 Actual host model/effort unknown; no subagents or independent reviewer. All executable checks remain deferred.
-The containing commit owns this review and repairs; publication is verified separately after commit.
+Review/repair commit `a952782dece8e36bef7bc92e01545021dc99fe48` is pushed and remote-verified;
+the containing documentation commit records that publication. No executable check result is claimed.
 
 | Acceptance | Source evidence / repair and purpose | Status |
 | --- | --- | --- |
