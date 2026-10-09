@@ -9,6 +9,8 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 **Current policy (user, 2026-10-09):** one consolidated design, then coherent implementation/repair batches;
 final-gate checks are active. Commit/push and pause at each agreed batch boundary, without a model switch per file.
 Recommendations do not change settings. Actual host model/effort unknown; next recommendation GPT-6.1 Sol / high.
+User added an [end-of-gate machinery necessity review](#end-of-gate-machinery-necessity-review) before final closure:
+evaluate the existing systems against their real consumers, simpler alternatives and measured costs.
 
 **Current step:** K5 diagnostic repairs checked and real-browser failure retained; K5 release and C8 cost remain open.
 The batch changes nine sources plus the testing guide and these two coordination docs. Async selected-input identity
@@ -691,6 +693,7 @@ Unexecuted authoring remains unverified; runtime tuning and legacy retirement st
 | 9 / prepare | [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828), [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `partial` | Review probes/opponent fixtures; measurements deferred | GPT-6.1 Sol, medium for contracts; Luna high for specified wiring |
 | Final gate | Required issues above | `in_progress` | Compatibility and diagnostic repairs checked; K5 real failure retained, C8 and broader release pending | GPT-6.1 Sol / high for outcome-lineage/legal-world investigation |
 | After parity | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | `not_started` | Evidence-backed legacy retirement | GPT-6.1 Sol, medium decision; Luna high cleanup |
+| Before final closure | Existing machinery / completion map | `not_started` | Evaluate every system's demonstrated need and cost; keep, simplify or propose retirement while preserving required proof | GPT-6.1 Sol / high for combined review |
 
 ## Model batches and pause contract
 
@@ -775,6 +778,7 @@ Copyable next-chat prompt:
 > Broader server/socket/save/restart/hash/calibration and M11/M12 still block release closure. No new machinery scope.
 > Keep the branch and unrelated Nx merge. Update the map/handoff, review/audit, commit/push exact task-owned changes,
 > verify remote SHA, then pause and recommend the next model/effort with the next step's purpose.
+> At the end of the gate, complete the machinery necessity review before declaring final closure.
 
 Optional [#822](https://github.com/JernejHabjan/fuzzy-waddle/issues/822) owns a future island map and natural
 transport-required runtime. It is detached from #759 and does not block core readiness.
@@ -822,6 +826,9 @@ fixture schedules and historical 12,000-tick diagnostics remain facts about auth
    terminal victory/recovery rather than passing on mere survival or elapsed ticks. Establish the final required
    matrix evidence after all repairs, tuning, optimization and legacy removal, reusing a complete passing sweep
    only if its relevant source/workload inputs still match.
+6. After required correctness, parity, calibration and cost evidence is available, perform the
+   [machinery necessity review](#end-of-gate-machinery-necessity-review). Recheck affected evidence after any resulting
+   simplification before final closure; do not start another machinery expansion pass.
 
 ## Final validation gate — not during the implementation sweep
 
@@ -831,6 +838,7 @@ static/unit checks first, then representative map/fixture preflight and manifest
 Generate the retained cross-shard repair list, fix confirmed shared causes in batches and rerun affected shards.
 Establish continuous-match/multiplayer/lifecycle parity, then perform calibration, measured optimization and gated
 legacy retirement. Finish required matrix evidence on the resulting revision, broader affected checks and code review.
+Then complete the machinery necessity review below before declaring closure.
 A complete passing sweep with unchanged relevant inputs can be retained; repeat affected calibration/benchmark evidence
 if later edits invalidate it. Treat the present 12,000-tick SEQ ceiling as a starting measurement, not a universal cap:
 increase it only if a real full match needs more time and the cause, wall cost and finite terminal deadline are
@@ -839,6 +847,30 @@ seeds, digest/provenance, wall time, and known failures in this handoff until ea
 subissue only after its authored requirements and final-gate evidence both pass; do not claim runtime, difficulty,
 multiplayer, lifecycle, or performance acceptance from unrun tests. #822 island-map content remains optional and must
 not block this gate.
+
+## End-of-gate machinery necessity review
+
+User-requested final step (2026-10-09), not_started. Depends on the required real-scenario, lifecycle and C8 evidence
+above; it adds a review of existing machinery, not a new implementation system. Purpose: determine which diagnostic
+and attribution systems earn their complexity in actual debugging/testing and ordinary play.
+
+1. Inventory the existing capture hooks, journals, identity/lineage joins, attribution/reconciliation, adapters,
+   reporting/replay tools and supporting fixtures. Use the existing completion map and actual source consumers;
+   record required versus optional proof, concrete usage and defects caught. Passing a system's own tests alone
+   does not justify it. Keep unproven usefulness distinct from established diagnostic value.
+2. Compare each system with a simpler alternative using measured normal-play CPU/allocation/bundle costs, marked
+   capture time/bytes, maintenance burden and diagnostic quality. Evaluate context efficiency on representative
+   passing and failing scenarios: raw versus selected summary/evidence bytes, follow-up reads/tool calls and wall
+   time; token/cache counts only when telemetry supplies them. Keep full raw evidence locally and inspect bounded
+   causal slices. A compact summary is for triage, not proof that all authority checks passed; byte reduction is
+   not a measured reduction in total session tokens.
+3. Record an evidence-backed keep/simplify/retire verdict for every system, its required consumer, rationale and
+   unresolved tradeoffs in the same completion map. Preserve mandatory oracles, provenance, unavailable/null states
+   and required replay/debug capability. Propose any required scope reduction explicitly rather than silently
+   dropping acceptance. Implement justified compatible cleanup in grouped batches and rerun only invalidated checks.
+4. Close this review when every system has a verdict or explicit blocker, affected evidence is current and the
+   remaining machinery has a concrete use and acceptable measured cost. Publish the coherent result and pause;
+   final release closure still requires all other mandatory gates. This is not approval to claim unmeasured savings.
 
 ## Active evidence and boundaries
 
