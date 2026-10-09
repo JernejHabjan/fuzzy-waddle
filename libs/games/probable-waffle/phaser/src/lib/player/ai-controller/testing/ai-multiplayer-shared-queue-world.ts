@@ -1,7 +1,11 @@
 import Phaser from "phaser";
 import { Subscription } from "rxjs";
-import { ProbableWaffleGameCommandTypes, type GameCommand, type GameCommandInput, type GameCommandOutcome } from
-  "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  ProbableWaffleGameCommandTypes,
+  type GameCommand,
+  type GameCommandInput,
+  type GameCommandOutcome
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getActorComponent } from "../../../data/actor-component";
 import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
@@ -13,14 +17,19 @@ import { getSceneService } from "../../../world/services/scene-component-helpers
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { AiRuntimeProductionCapture } from "./ai-runtime-production-capture";
 import type { AiMultiplayerSharedQueueWorldV1 } from "./ai-multiplayer-shared-queue-world-v1";
-import { prepareAiMultiplayerSharedQueueWorld, SHARED_QUEUE_CANCEL_WINDOW_TICKS, SHARED_QUEUE_STABILITY_TICKS } from
-  "./prepare-ai-multiplayer-shared-queue-world";
+import {
+  prepareAiMultiplayerSharedQueueWorld,
+  SHARED_QUEUE_CANCEL_WINDOW_TICKS,
+  SHARED_QUEUE_STABILITY_TICKS
+} from "./prepare-ai-multiplayer-shared-queue-world";
 
 /** Separate explicit opt-in, inside the existing local-development multiplayer diagnostics gate. */
 export function multiplayerSharedQueueWorldRequested(): AiMultiplayerSharedQueueWorldV1["branch"] | null {
   try {
-    const value = typeof window === "undefined" ? null :
-      window.sessionStorage.getItem("fuzzy-waddle:ai-multiplayer-shared-queue-world-v1");
+    const value =
+      typeof window === "undefined"
+        ? null
+        : window.sessionStorage.getItem("fuzzy-waddle:ai-multiplayer-shared-queue-world-v1");
     return value === "shared_contention" || value === "cancel_research" ? value : null;
   } catch {
     return null;
@@ -46,8 +55,11 @@ export class AiMultiplayerSharedQueueWorld {
   private researchCompleted = false;
   private disposed = false;
 
-  constructor(private readonly scene: ProbableWaffleScene, private readonly bus: CommandBusService,
-    private readonly branch: AiMultiplayerSharedQueueWorldV1["branch"]) {
+  constructor(
+    private readonly scene: ProbableWaffleScene,
+    private readonly bus: CommandBusService,
+    private readonly branch: AiMultiplayerSharedQueueWorldV1["branch"]
+  ) {
     const ticks = getSceneService(scene, SimulationTickService);
     if (!ticks) throw new Error("shared_queue_world_clock_missing");
     this.ticks = ticks;
@@ -76,8 +88,16 @@ export class AiMultiplayerSharedQueueWorld {
 
   /** Polling neither creates authority snapshots nor moves the clock. */
   getSnapshot(): AiMultiplayerSharedQueueWorldV1 {
-    return structuredClone({ branch: this.branch, state: this.state, failure: this.failure, setup: this.setup,
-      commands: this.commands, requests: this.requests, checkpoints: this.checkpoints, capture: this.latestCapture });
+    return structuredClone({
+      branch: this.branch,
+      state: this.state,
+      failure: this.failure,
+      setup: this.setup,
+      commands: this.commands,
+      requests: this.requests,
+      checkpoints: this.checkpoints,
+      capture: this.latestCapture
+    });
   }
 
   private onTick(tick: number): void {
@@ -110,7 +130,10 @@ export class AiMultiplayerSharedQueueWorld {
         if (probe && tick > probe.requestedTick && !this.requests.some((entry) => entry.role === "cancel")) {
           if (tick >= probe.command.tick) throw new Error("shared_queue_probe_applied_before_request");
           const cancellation = this.dispatch("cancel");
-          if (cancellation.tick <= probe.command.tick || cancellation.tick - this.paidTick > SHARED_QUEUE_CANCEL_WINDOW_TICKS) {
+          if (
+            cancellation.tick <= probe.command.tick ||
+            cancellation.tick - this.paidTick > SHARED_QUEUE_CANCEL_WINDOW_TICKS
+          ) {
             throw new Error("shared_queue_cancellation_window_invalid");
           }
           this.checkpoint("cancel_pending");
@@ -121,8 +144,10 @@ export class AiMultiplayerSharedQueueWorld {
       }
     }
     const first = this.checkpoints.find((entry) => entry.boundary === "paid")?.snapshot.tick;
-    const duration = this.branch === "shared_contention"
-      ? setup.train.durationMs + setup.research.durationMs : setup.replacement.durationMs;
+    const duration =
+      this.branch === "shared_contention"
+        ? setup.train.durationMs + setup.research.durationMs
+        : setup.replacement.durationMs;
     if (first !== undefined && tick > first + Math.ceil(duration / 50) + 100) {
       throw new Error("shared_queue_world_deadline_exceeded");
     }
@@ -133,12 +158,21 @@ export class AiMultiplayerSharedQueueWorld {
     if (!setup) throw new Error("shared_queue_world_setup_missing");
     const address = { playerNumber: setup.playerNumber, actorIds: [setup.producerActorId] };
     let input: GameCommandInput;
-    if (role === "train") input = { ...address, type: ProbableWaffleGameCommandTypes.Production, actorName: setup.train.product };
+    if (role === "train")
+      input = { ...address, type: ProbableWaffleGameCommandTypes.Production, actorName: setup.train.product };
     else if (role === "cancel") input = { ...address, type: ProbableWaffleGameCommandTypes.CancelResearch };
-    else input = { ...address, type: ProbableWaffleGameCommandTypes.Research,
-      researchType: role === "probe" || role === "resume" ? setup.replacement.type : setup.research.type };
+    else
+      input = {
+        ...address,
+        type: ProbableWaffleGameCommandTypes.Research,
+        researchType: role === "probe" || role === "resume" ? setup.replacement.type : setup.research.type
+      };
     const receipt = this.bus.dispatch(input);
-    if (receipt.status !== "dispatched" || !receipt.command.execution || receipt.command.tick <= this.ticks.currentTick) {
+    if (
+      receipt.status !== "dispatched" ||
+      !receipt.command.execution ||
+      receipt.command.tick <= this.ticks.currentTick
+    ) {
       throw new Error(`shared_queue_world_dispatch_failed:${role}`);
     }
     this.commands.push({ role, command: receipt.command });
@@ -148,17 +182,31 @@ export class AiMultiplayerSharedQueueWorld {
 
   private observeCommand(command: GameCommand): void {
     const setup = this.setup;
-    if (!setup || command.playerNumber !== setup.playerNumber || command.actorIds.length !== 1 ||
-      command.actorIds[0] !== setup.producerActorId || this.commands.some((entry) =>
-        entry.command.execution?.commandId === command.execution?.commandId)) return;
+    if (
+      !setup ||
+      command.playerNumber !== setup.playerNumber ||
+      command.actorIds.length !== 1 ||
+      command.actorIds[0] !== setup.producerActorId ||
+      this.commands.some((entry) => entry.command.execution?.commandId === command.execution?.commandId)
+    )
+      return;
     let role: AiMultiplayerSharedQueueWorldV1["commands"][number]["role"];
-    if (command.type === ProbableWaffleGameCommandTypes.Production && command.actorName === setup.train.product &&
-      this.branch === "shared_contention") role = "train";
-    else if (command.type === ProbableWaffleGameCommandTypes.CancelResearch && this.branch === "cancel_research") role = "cancel";
+    if (
+      command.type === ProbableWaffleGameCommandTypes.Production &&
+      command.actorName === setup.train.product &&
+      this.branch === "shared_contention"
+    )
+      role = "train";
+    else if (command.type === ProbableWaffleGameCommandTypes.CancelResearch && this.branch === "cancel_research")
+      role = "cancel";
     else if (command.type === ProbableWaffleGameCommandTypes.Research && command.researchType === setup.research.type) {
       role = this.branch === "shared_contention" ? "research" : "purchase";
-    } else if (command.type === ProbableWaffleGameCommandTypes.Research && command.researchType === setup.replacement.type &&
-      this.branch === "cancel_research") role = this.commands.some((entry) => entry.role === "probe") ? "resume" : "probe";
+    } else if (
+      command.type === ProbableWaffleGameCommandTypes.Research &&
+      command.researchType === setup.replacement.type &&
+      this.branch === "cancel_research"
+    )
+      role = this.commands.some((entry) => entry.role === "probe") ? "resume" : "probe";
     else throw new Error("shared_queue_world_unexpected_command");
     if (this.commands.some((entry) => entry.role === role)) throw new Error("shared_queue_world_repeated_role");
     this.commands.push({ role, command });
@@ -166,8 +214,15 @@ export class AiMultiplayerSharedQueueWorld {
 
   private observeOutcome(outcome: GameCommandOutcome): void {
     const setup = this.setup;
-    if (!setup || outcome.playerNumber !== setup.playerNumber || outcome.actorIds.length !== 1 ||
-      outcome.actorIds[0] !== setup.producerActorId || outcome.kind === "dispatched" || outcome.kind === "active") return;
+    if (
+      !setup ||
+      outcome.playerNumber !== setup.playerNumber ||
+      outcome.actorIds.length !== 1 ||
+      outcome.actorIds[0] !== setup.producerActorId ||
+      outcome.kind === "dispatched" ||
+      outcome.kind === "active"
+    )
+      return;
     if (outcome.kind === "applied" && ["ready", "purchasing"].includes(this.state)) {
       this.state = "paid";
       this.paidTick = outcome.tick;
@@ -175,27 +230,40 @@ export class AiMultiplayerSharedQueueWorld {
     } else if (outcome.kind === "applied" && this.branch === "shared_contention" && this.state === "paid") {
       this.state = "running";
       this.checkpoint("contending");
-    } else if (outcome.kind === "applied" && this.branch === "cancel_research" &&
-      ["refunded", "running"].includes(this.state)) {
+    } else if (
+      outcome.kind === "applied" &&
+      this.branch === "cancel_research" &&
+      ["refunded", "running"].includes(this.state)
+    ) {
       this.state = "running";
       this.checkpoint("resumed");
-    } else if (outcome.kind === "rejected" && this.branch === "cancel_research" &&
-      ["paid", "probing"].includes(this.state) && outcome.reason === "insufficient_resources") {
+    } else if (
+      outcome.kind === "rejected" &&
+      this.branch === "cancel_research" &&
+      ["paid", "probing"].includes(this.state) &&
+      outcome.reason === "insufficient_resources"
+    ) {
       this.state = "rejected";
       this.checkpoint("rejected");
     } else if (outcome.kind === "cancelled" && this.branch === "cancel_research" && this.state === "rejected") {
-      const original = this.checkpoints.find((entry) => entry.boundary === "paid")?.snapshot.queues
-        .flatMap((queue) => queue.lanes.flatMap((lane) => lane.items)).find((item) => item.researchType === setup.research.type);
+      const original = this.checkpoints
+        .find((entry) => entry.boundary === "paid")
+        ?.snapshot.queues.flatMap((queue) => queue.lanes.flatMap((lane) => lane.items))
+        .find((item) => item.researchType === setup.research.type);
       if (outcome.commandId === original?.commandId) return;
-      if (outcome.tick - this.paidTick > SHARED_QUEUE_CANCEL_WINDOW_TICKS) throw new Error("shared_queue_refund_window_exceeded");
+      if (outcome.tick - this.paidTick > SHARED_QUEUE_CANCEL_WINDOW_TICKS)
+        throw new Error("shared_queue_refund_window_exceeded");
       this.refundTick = outcome.tick;
       this.state = "refunded";
       this.checkpoint("refunded");
     } else if (outcome.kind === "completed" && this.state === "running") {
       const research = this.branch === "shared_contention" ? setup.research.type : setup.replacement.type;
-      if (outcome.worldLinkIds.length !== 1) throw new Error("shared_queue_completion_identity_missing");
-      if (outcome.worldLinkIds[0] === `research:${research}`) this.researchCompleted = true;
-      else if (this.branch === "shared_contention") this.createdActorId = outcome.worldLinkIds[0];
+      const worldLinkId = outcome.worldLinkIds[0];
+      if (outcome.worldLinkIds.length !== 1 || worldLinkId === undefined) {
+        throw new Error("shared_queue_completion_identity_missing");
+      }
+      if (worldLinkId === `research:${research}`) this.researchCompleted = true;
+      else if (this.branch === "shared_contention") this.createdActorId = worldLinkId;
       else throw new Error("shared_queue_completion_product_mismatch");
     } else if (outcome.kind === "rejected" || outcome.kind === "failed") {
       throw new Error(`shared_queue_world_unexpected_outcome:${outcome.reason}`);
@@ -208,10 +276,16 @@ export class AiMultiplayerSharedQueueWorld {
     const research = this.branch === "shared_contention" ? this.setup.research.type : this.setup.replacement.type;
     if (!getSceneService(this.scene, TechTreeService)?.isResearched(this.setup.playerNumber, research)) return false;
     if (this.branch === "cancel_research") return true;
-    const actor = this.createdActorId ? getSceneService(this.scene, ActorIndexSystem)?.getActorById(this.createdActorId) : null;
-    return !!actor?.active && actor.scene === this.scene && !getActorComponent(actor, HealthComponent)?.killed &&
+    const actor = this.createdActorId
+      ? getSceneService(this.scene, ActorIndexSystem)?.getActorById(this.createdActorId)
+      : null;
+    return (
+      !!actor?.active &&
+      actor.scene === this.scene &&
+      !getActorComponent(actor, HealthComponent)?.killed &&
       getActorComponent(actor, OwnerComponent)?.getOwner() === this.setup.playerNumber &&
-      this.setup.train.spawnObjectNames.some((name) => name === actor.name);
+      this.setup.train.spawnObjectNames.some((name) => name === actor.name)
+    );
   }
 
   private checkpoint(boundary: AiMultiplayerSharedQueueWorldV1["checkpoints"][number]["boundary"]): void {
@@ -224,11 +298,15 @@ export class AiMultiplayerSharedQueueWorld {
 
   private guard(action: () => void): void {
     if (this.disposed || this.state === "failed" || this.state === "complete") return;
-    try { action(); } catch (error) {
+    try {
+      action();
+    } catch (error) {
       this.failure = error instanceof Error ? error.message : "shared_queue_world_failed";
       this.state = "failed";
       if (this.setup) {
-        try { this.latestCapture = this.capture.captureHumanQueueBoundary(this.setup.playerNumber); } catch {
+        try {
+          this.latestCapture = this.capture.captureHumanQueueBoundary(this.setup.playerNumber);
+        } catch {
           // Retain the original failure when the shared authority itself is no longer readable.
         }
       }

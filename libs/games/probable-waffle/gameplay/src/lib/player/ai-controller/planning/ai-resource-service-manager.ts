@@ -88,11 +88,14 @@ export class AiResourceServiceManager implements AiProposalManagerV1 {
     const sources = observation.actors
       .filter((actor) => actor.relation !== "enemy" && actor.visibility !== "last_seen")
       .filter(
-        (actor) => actor.resourceState.status === "known" && actor.resourceState.value.available.status === "known"
+        (actor) =>
+          actor.resourceState.status === "known" &&
+          actor.resourceState.value.available.status === "known" &&
+          actor.resourceState.value.available.value >= 100
       )
-      .filter((actor) => actor.resourceState.status === "known" && actor.resourceState.value.available.value >= 100)
       .filter(
-        (actor) => actor.resourceState.status === "known" && actor.resourceState.value.resourceType !== ResourceType.Food
+        (actor) =>
+          actor.resourceState.status === "known" && actor.resourceState.value.resourceType !== ResourceType.Food
       )
       .filter((actor) => position(actor) !== null)
       .sort((left, right) => left.actorId.localeCompare(right.actorId));
@@ -134,7 +137,8 @@ export class AiResourceServiceManager implements AiProposalManagerV1 {
             (left.acceptsResources?.length ?? 0) - (right.acceptsResources?.length ?? 0) ||
             left.sourceObjectName.localeCompare(right.sourceObjectName)
         )[0];
-      if (!serviceEntry || !canAffordAiEconomyCost(observation, serviceEntry.constructionProfile!.resourceCost)) continue;
+      if (!serviceEntry || !canAffordAiEconomyCost(observation, serviceEntry.constructionProfile!.resourceCost))
+        continue;
       if (
         services.some(
           (actor) =>
@@ -142,13 +146,17 @@ export class AiResourceServiceManager implements AiProposalManagerV1 {
             !ready(actor) &&
             distance(position(actor)!, sourcePosition) <= SERVICE_RADIUS
         )
-      ) continue;
+      )
+        continue;
       const builder = workers
         .filter((actor) => {
           const order = actor.activeOrder?.status === "known" ? actor.activeOrder.value?.orderType : null;
           const cargo = actor.resourceState.status === "known" ? actor.resourceState.value.carried : null;
-          return order !== OrderType.Build && order !== OrderType.ReturnResources &&
-            !(cargo?.status === "known" && cargo.value > 0);
+          return (
+            order !== OrderType.Build &&
+            order !== OrderType.ReturnResources &&
+            !(cargo?.status === "known" && cargo.value > 0)
+          );
         })
         .sort(
           (left, right) =>
@@ -160,7 +168,8 @@ export class AiResourceServiceManager implements AiProposalManagerV1 {
         )
         .find((actor) =>
           catalog.entries.some(
-            (entry) => entry.sourceObjectName === actor.objectName && entry.constructs.includes(serviceEntry.sourceObjectName)
+            (entry) =>
+              entry.sourceObjectName === actor.objectName && entry.constructs.includes(serviceEntry.sourceObjectName)
           )
         );
       if (!builder) continue;
@@ -193,7 +202,10 @@ export class AiResourceServiceManager implements AiProposalManagerV1 {
         proposedTick: observation.tick,
         urgencyClass: 4,
         utility: 590,
-        preconditions: [{ kind: "actor_exists", actorId: builder.actorId }, { kind: "actor_exists", actorId: source.actorId }],
+        preconditions: [
+          { kind: "actor_exists", actorId: builder.actorId },
+          { kind: "actor_exists", actorId: source.actorId }
+        ],
         claims: [
           { claimId, kind: "actor", actorId: builder.actorId },
           { claimId: `${claimId}:site` as typeof claimId, kind: "site", siteKey },

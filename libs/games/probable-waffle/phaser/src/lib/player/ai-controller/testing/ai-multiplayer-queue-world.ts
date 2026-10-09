@@ -1,7 +1,11 @@
 import Phaser from "phaser";
 import { Subscription } from "rxjs";
-import { ProbableWaffleGameCommandTypes, type GameCommand, type GameCommandInput, type GameCommandOutcome } from
-  "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  ProbableWaffleGameCommandTypes,
+  type GameCommand,
+  type GameCommandInput,
+  type GameCommandOutcome
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { CommandBusService } from "../../../world/services/multiplayer/command-bus.service";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
@@ -13,8 +17,10 @@ import { prepareAiMultiplayerQueueWorld } from "./prepare-ai-multiplayer-queue-w
 
 export function multiplayerQueueWorldRequested(): boolean {
   try {
-    return typeof window !== "undefined" &&
-      window.sessionStorage.getItem("fuzzy-waddle:ai-multiplayer-queue-world-v1") === "cancel-refund";
+    return (
+      typeof window !== "undefined" &&
+      window.sessionStorage.getItem("fuzzy-waddle:ai-multiplayer-queue-world-v1") === "cancel-refund"
+    );
   } catch {
     return false;
   }
@@ -37,7 +43,10 @@ export class AiMultiplayerQueueWorld {
   private producedActorId: string | null = null;
   private disposed = false;
 
-  constructor(private readonly scene: ProbableWaffleScene, private readonly bus: CommandBusService) {
+  constructor(
+    private readonly scene: ProbableWaffleScene,
+    private readonly bus: CommandBusService
+  ) {
     const ticks = getSceneService(scene, SimulationTickService);
     if (!ticks) throw new Error("multiplayer_queue_world_clock_missing");
     this.ticks = ticks;
@@ -63,8 +72,15 @@ export class AiMultiplayerQueueWorld {
 
   /** Reading is passive: poll frequency neither samples authority nor schedules gameplay. */
   getSnapshot(): AiMultiplayerQueueWorldV1 {
-    return structuredClone({ state: this.state, failure: this.failure, setup: this.setup, commands: this.commands,
-      requests: this.requests, checkpoints: this.checkpoints, capture: this.latestCapture });
+    return structuredClone({
+      state: this.state,
+      failure: this.failure,
+      setup: this.setup,
+      commands: this.commands,
+      requests: this.requests,
+      checkpoints: this.checkpoints,
+      capture: this.latestCapture
+    });
   }
 
   private onTick(tick: number): void {
@@ -99,7 +115,11 @@ export class AiMultiplayerQueueWorld {
       this.dispatch("resume");
     }
     const purchase = this.requests.find((request) => request.role === "purchase");
-    if (purchase && this.state !== "complete" && tick > purchase.requestedTick + Math.ceil(this.setup.durationMs / 50) + 80) {
+    if (
+      purchase &&
+      this.state !== "complete" &&
+      tick > purchase.requestedTick + Math.ceil(this.setup.durationMs / 50) + 80
+    ) {
       throw new Error("multiplayer_queue_world_deadline_exceeded");
     }
   }
@@ -108,11 +128,24 @@ export class AiMultiplayerQueueWorld {
     const setup = this.setup;
     if (!setup) throw new Error("multiplayer_queue_world_setup_missing");
     const address = { playerNumber: setup.playerNumber, actorIds: [setup.producerActorId] };
-    const input = role === "cancel"
-      ? { ...address, type: ProbableWaffleGameCommandTypes.CancelProduction, queueIndex: 0 } satisfies GameCommandInput
-      : { ...address, type: ProbableWaffleGameCommandTypes.Production, actorName: setup.product } satisfies GameCommandInput;
+    const input =
+      role === "cancel"
+        ? ({
+            ...address,
+            type: ProbableWaffleGameCommandTypes.CancelProduction,
+            queueIndex: 0
+          } satisfies GameCommandInput)
+        : ({
+            ...address,
+            type: ProbableWaffleGameCommandTypes.Production,
+            actorName: setup.product
+          } satisfies GameCommandInput);
     const receipt = this.bus.dispatch(input);
-    if (receipt.status !== "dispatched" || !receipt.command.execution || receipt.command.tick <= this.ticks.currentTick) {
+    if (
+      receipt.status !== "dispatched" ||
+      !receipt.command.execution ||
+      receipt.command.tick <= this.ticks.currentTick
+    ) {
       throw new Error(`multiplayer_queue_world_dispatch_failed:${role}`);
     }
     this.commands.push({ role, command: receipt.command });
@@ -122,9 +155,14 @@ export class AiMultiplayerQueueWorld {
 
   private observeCommand(command: GameCommand): void {
     const setup = this.setup;
-    if (!setup || command.playerNumber !== setup.playerNumber || command.actorIds.length !== 1 ||
-      command.actorIds[0] !== setup.producerActorId || this.commands.some((entry) =>
-        entry.command.execution?.commandId === command.execution?.commandId)) return;
+    if (
+      !setup ||
+      command.playerNumber !== setup.playerNumber ||
+      command.actorIds.length !== 1 ||
+      command.actorIds[0] !== setup.producerActorId ||
+      this.commands.some((entry) => entry.command.execution?.commandId === command.execution?.commandId)
+    )
+      return;
     if (command.type === ProbableWaffleGameCommandTypes.CancelProduction) {
       this.commands.push({ role: "cancel", command });
     } else if (command.type === ProbableWaffleGameCommandTypes.Production && command.actorName === setup.product) {
@@ -137,14 +175,24 @@ export class AiMultiplayerQueueWorld {
 
   private observeOutcome(outcome: GameCommandOutcome): void {
     const setup = this.setup;
-    if (!setup || outcome.playerNumber !== setup.playerNumber || outcome.actorIds.length !== 1 ||
-      outcome.actorIds[0] !== setup.producerActorId || outcome.kind === "dispatched" || outcome.kind === "active") return;
+    if (
+      !setup ||
+      outcome.playerNumber !== setup.playerNumber ||
+      outcome.actorIds.length !== 1 ||
+      outcome.actorIds[0] !== setup.producerActorId ||
+      outcome.kind === "dispatched" ||
+      outcome.kind === "active"
+    )
+      return;
     if (outcome.kind === "applied" && ["ready", "purchasing"].includes(this.state)) {
       this.state = "paid";
       this.paidTick = outcome.tick;
       this.checkpoint("paid");
-    } else if (outcome.kind === "rejected" && ["paid", "probing"].includes(this.state) &&
-      outcome.reason === "insufficient_resources") {
+    } else if (
+      outcome.kind === "rejected" &&
+      ["paid", "probing"].includes(this.state) &&
+      outcome.reason === "insufficient_resources"
+    ) {
       this.state = "rejected";
       this.checkpoint("rejected");
     } else if (outcome.kind === "cancelled" && ["rejected", "probing"].includes(this.state)) {
@@ -157,8 +205,11 @@ export class AiMultiplayerQueueWorld {
       this.state = "resuming";
       this.checkpoint("resumed");
     } else if (outcome.kind === "completed" && this.state === "resuming") {
-      if (outcome.worldLinkIds.length !== 1) throw new Error("multiplayer_queue_spawn_identity_missing");
-      this.producedActorId = outcome.worldLinkIds[0];
+      const producedActorId = outcome.worldLinkIds[0];
+      if (outcome.worldLinkIds.length !== 1 || producedActorId === undefined) {
+        throw new Error("multiplayer_queue_spawn_identity_missing");
+      }
+      this.producedActorId = producedActorId;
       this.state = "finishing";
     } else if (["rejected", "failed"].includes(outcome.kind)) {
       throw new Error(`multiplayer_queue_world_unexpected_outcome:${outcome.reason}`);

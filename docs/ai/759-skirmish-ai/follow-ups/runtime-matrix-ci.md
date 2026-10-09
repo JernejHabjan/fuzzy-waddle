@@ -444,9 +444,9 @@ The following map preserves stage-50 design/authoring states; the final-gate che
 | M05 Exact consumed/accepting frames: explain purchase-plus-gather null bounds | R; C4 fact union/input/root/unspent/report fields | 52 → 53 | Real input/controller selected event with zero and nonzero new claims; immediate paid vs future queue transfer; due head exhaustion; unsupported building/pre-capture/expired/recovery claims and callback-in-progress; mismatch stays null | Code plus focused input/root/synthetic frame controls authored; full native integration still missing; K1/K3 deferred |
 | M06 Cargo/recipient/window compatibility: preserve credited income without false usefulness | R; C2/C4/C5 existing credit/application/need projections | 53 | Exact real payload join; normal/granted/none and changed owner; mixed/old/restored cargo; grant then spend cannot reopen shortage; publication delayed across application window; same-tick/straddle/overflow bad tail | Existing path retained; K1/K3 compatibility cases deferred |
 | M07 Real adapter/report bridge: expose actual producer evidence and explicit gaps | R; C7 root capture, variant runner, production normalization | 51–53 → 54 | Real Phaser actor/components/protocol player/read/native command path into report; initialization loss, post-await service loss and late/disposed capture; native income remains diagnostic while useful fields stay null; contradictory tail suppresses parent | Bridge assertion authored; K1/K3/K5 real-run evidence deferred |
-| M08 Normal-play impact: testing does not install heavy machinery during gaming | R; C8 below, installer/helper controls and existing profiler | 54 | Production/unmarked guard, no sample/clone/listener/timer/root journal; before/after disabled-path and bundle comparison; foreign host/duplicate capture, late callbacks | Fast paths/guard authored; K1/K4/K5 profile deferred |
+| M08 Normal-play impact: testing does not install heavy machinery during gaming | R; C8 below, installer/helper controls and existing profiler | 54 | Production/unmarked guard, no sample/clone/listener/timer/root journal; before/after disabled-path and bundle comparison; foreign host/duplicate capture, late callbacks | Fast-path/native controls and production build pass; paired C8/K5 cost/bundle evidence pending |
 | M09 Compliance/publication: economical implementation remains reviewable | R; C6 exact baselines, existing handoff | Each 51–54 | No refreshed hashes/new permanent stage names; task-only prerequisite and behavior commits; source review/Omission Audit/closure, remote SHA and clean task scope | Authored/source-reviewed; implementation commit `978cb09e70cbc6e2ed0b520971690ea47ab38045` remote-verified; checks deferred |
-| M10 Combined review and compatibility: decide readiness before execution | R; C1–C8, all changed consumers | 54 → Sol review | Trace real input → selected/admitted → native application → report/disposal; review all controls, repair concrete contract contradictions; every required unrun check remains listed | Preflight native/report batch checked below; K4 compiler/build blockers, wider compatibility and K5 remain |
+| M10 Combined review and compatibility: decide readiness before execution | R; C1–C8, all changed consumers | 54 → Sol review | Trace real input → selected/admitted → native application → report/disposal; review all controls, repair concrete contract contradictions; every required unrun check remains listed | Full native/main mock consumers and production compile pass; strict K4 spec/report types, two planner failures and K5 remain |
 | M11 Mutation-complete useful resource/continuous capacity: 32/36 full proof | B; C7 plus 32/36/39/42 authority, public APIs | Explicit authority/scope decision; not a hidden fifth Luna pass | Net-zero alias undo, arbitrary definition/Map/item/roster replacement, hidden/stale threats/access changes between reads, full supported initial predicate history; no positive complete channel currently possible | Existing 32/36 gates; blocked, mandatory |
 | M12 Production useful outputs, legal setup and strategy: PRO-03/06/07 release | B; existing production authority contract and evaluators | Broader gameplay/fixture queue, separate from 51–54 | Both-faction transition/abandonment, exposed/safe/no-demand resilience, shared train/research and paid cancellation/pending refund pairs; full oracle and denominator | K5 and owning scenario/policy plans; open, mandatory |
 | M13 Finer loss scopes/continuous journal/lot allocation | O; no new files/owners | Not scheduled; new consumer must justify proposal | No actor-to-beneficiary dependency map, FIFO allocation or extra scan introduced just to recover a diagnostic bound | No extra gate; proposed only |
@@ -510,6 +510,76 @@ authoring is the next grouped boundary before gate readiness; executable validat
 Do not claim stage validation before K1–K5. M11 remains a mandatory blocker from public mutable aliases
 and incomplete access/safety/lifetime history; M12 remains open for full PRO-03/06/07. Neither was reduced by this batch.
 
+### Final-gate production compiler and mock checkpoint (2026-10-09, partially checked)
+
+Base `426c03ee0c8a3584bfed147b28d16b8852f7acb7` was clean and remote-verified on
+`feature/759-skirmish-ai` in `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`. The containing commit publishes this
+coherent production/compiler compatibility slice; verify its remote SHA on resume. Actual model/effort unknown;
+next recommendation GPT-6.1 Sol / high. No independent reviewer/subagent. Final-gate execution remains authorized.
+
+**Purpose and repairs:** make the real portal compile while retaining native rules and strict types. Workforce keys
+in `validate-ai-brain-state-v1.ts` and adjacency offsets in `ai-producer-safety.ts` retain literal/tuple types.
+`ai-military-force-context.ts` preserves the ground/air domain union returned to macro consumers.
+`ai-resource-service-manager.ts` reads a known available amount inside the same narrowing predicate.
+The two multiplayer queue worlds retain their single checked completion ID; `PawnOrderObservation` retains a checked
+single order before rally callbacks. `IPlayerPawnControllerAgent` now declares the existing `CanBoardContainerNow` method.
+No affordability, workforce floor, producer throughput, save/wire schema, capture authority or usefulness policy changes.
+
+The shared production-capture fixture uses a native GameObject and supplies `sys.queueDepthSort` and `sys.isActive`;
+the movement fixture returns the actual 2D tile shape. This removes the unsafe actor assertion and makes the native
+mock lifecycle explicit. Source formatting was applied without refreshing structure baselines. No new files/machinery.
+
+| Acceptance / status | Evidence and limit |
+| --- | --- |
+| Preflight / passed | Doctor/context passed on the clean base. |
+| Production compile / passed | `nx build portal --configuration=production` passes on final source; 12 prior diagnostics cleared. Initial bundle warning remains: 1.08 MB against 1.00 MB; this is not the C8 paired gzip comparison. |
+| Native/mock compatibility / passed | Entire Phaser target: 142 suites / 679 tests. Main browser-host/game component controls: 2 suites / 7 tests; shared game container: 1 suite / 1 test. This proves these test consumers, not a real browser match. |
+| Focused pure planner / blocked | 35 passed / 2 failed in 5 suites, identical failures on base and candidate. Land-domain throughput expects 2 with only a 2-unit deficit; air-force fixture has an existing military actor and no gathering-capable workforce, so recovery owns food. Investigate/repair fixtures or policy with source evidence; retain domain/affordability/workforce oracles. |
+| Strict typing / blocked | Phaser spec config: 322 diagnostics, all specs. E2E config: 498. Newly checked gameplay config: 46 diagnostics, all specs. No non-spec diagnostics remain in Phaser/gameplay configs, but the full checks still fail. Counts are diagnostics, not distinct defects. |
+| Local quality / passed | Gameplay/Phaser project lints, exact changed-source Prettier and diff whitespace checks pass. Existing whole-ledger Markdown formatting remains final cleanup. |
+| Full gate / pending | K4 is incomplete; K5 browser, C8 cost/bundle, inherited server/socket/save/restart/hash/calibration and wider gameplay proof remain. M11 remains blocked and M12 open. |
+
+```sh
+pnpm exec nx build portal --configuration=production
+pnpm exec nx test probable-waffle-phaser --runInBand
+pnpm exec nx test probable-waffle-interface --testPathPatterns='ai-runtime-browser-test-host|probable-waffle-game.component' --runInBand
+pnpm exec nx test platform-game-host --testPathPatterns='game-container.component' --runInBand
+pnpm exec nx test probable-waffle-gameplay --testPathPatterns='ai-macro|ai-resource-service|ai-brain|ai-producer|ai-production-transition' --runInBand
+pnpm exec tsc --noEmit -p libs/games/probable-waffle/phaser/tsconfig.spec.json
+pnpm exec tsc --noEmit -p apps/portal-e2e/tsconfig.json
+pnpm exec tsc --noEmit -p libs/games/probable-waffle/gameplay/tsconfig.json
+pnpm exec nx run-many --targets=lint --projects=probable-waffle-gameplay,probable-waffle-phaser
+```
+
+Ignored artifacts: `tmp/ai-plans/759-validation/compiler-batch/` contains exact logs, commands, full diagnostic owner
+counts and final source provenance. Source digest: `65477085b3303953e24d840111bcf883ae21a184027ed8d70c01201eb5a85c86`.
+The base planner reproduction temporarily restored exact HEAD gameplay owner contents and restored candidate bytes
+afterward; base/candidate logs record the same two failures. The first native run preceded the fixture's scene hooks;
+its failures were repaired and the entire target rerun. One attempted `tsconfig.lib.json` route does not exist;
+the recorded gameplay check uses the actual `tsconfig.json`. No passing gameplay type check is claimed.
+
+**Next batch — why:** group checked native-fixture extraction/narrowing and report-contract repairs, then resolve
+the pure planner fixture/policy disagreements. These are required to trust evidence before K5 matches and C8 measurements.
+Start with `ai-runtime-production-capture.spec.ts` (101 diagnostics), `ai-runtime-queue-mutation-capture.spec.ts` (36)
+and completion/resource fixtures sharing those authorities; group E2E production operation/world controls (44/40) with
+their normalization owners. Resource need-boundaries (27), economy checkpoint (24) and the newly recorded gameplay spec
+types remain owning failures. First next check after shared-selector repairs is the Phaser `tsconfig.spec.json` command
+above. Do not suppress strictness, replace consumed inputs, refresh baselines, or weaken release oracles. Pause after
+the next coherent reviewed/checked/published slice. Production compilation is clear; full K4 is not.
+
+**Source Implementation Review:** self-reviewed exact known-value reads, literal types, completion identity rejection,
+single rally origin/callback cleanup, implemented boarding method and native fixture consumers. The mock itself remains
+unchanged in this batch. Existing runtime controls cover the affected paths; no new runtime strategy was introduced.
+
+**Omission Audit:** production compile and full native/main mock consumers have passing evidence; strict types and
+base-reproduced planner failures are explicit blockers. Browser/cost and inherited release duties remain pending. Earlier
+157 synthetic report / 6 protocol passes remain scoped evidence. No claim of complete lifetime/useful-service authority.
+No skill/tool change; no unrelated Nx merge or user work included.
+
+**Separate Final Closure Audit:** rechecked final source/fixture bytes, actual target/config ownership, formatting/lint,
+native consumer evidence and exact publication scope after repairs. This slice is checked and publishable; M10, K4,
+M11/M12 and overall release completion remain open. Normal push and remote-SHA verification close publication only.
+
 ### Final-gate preflight and repair checkpoint (2026-10-09, partially checked)
 
 Base `8616a2223b9390f3039a717b7fc14564bf81c6eb` was clean and remote-verified on
@@ -529,7 +599,8 @@ container mocks reset per test. Synthetic report fixtures use real enum names, c
 and the existing two contributor lots (3 + 4), without substituting consumed planner inputs. The extracted
 `skirmish-ai-runtime-construction-lineage-fixture.ts` keeps the spec within the source-size limit. E2E `rootDir`
 is the workspace root so its no-emit config can follow source aliases. Formatting was applied to touched files.
-The global Phaser test mock change still needs wider-consumer compatibility checks.
+The global Phaser test mock change was subsequently checked against the full native and main interface/host consumers
+in the production compiler/mocks checkpoint above; the following table records this earlier preflight's evidence.
 
 | Acceptance / status | Evidence and practical limit |
 | --- | --- |
@@ -565,7 +636,7 @@ pnpm exec nx run-many --targets=lint --projects=probable-waffle-phaser,probable-
 pnpm exec nx build portal --configuration=production
 ```
 
-**Next batch — why:** repair compilation and wider mock compatibility together, retaining fail-closed contracts. First
+**Historical continuation at this checkpoint:** repair compilation and wider mock compatibility together, retaining fail-closed contracts. First
 reproduce `pnpm exec nx build portal --configuration=production`. Its known owners are gameplay
 `validate-ai-brain-state-v1.ts` (workforce key narrowing), `ai-macro-manager.ts` (pressure-domain literal),
 `ai-producer-safety.ts` (adjacency tuple) and `ai-resource-service-manager.ts` (known-value narrowing); Phaser

@@ -10,23 +10,26 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 then one or more dependency-ordered implementation passes on Luna / high. Replace repeated per-component design stages.
 Begin with a scope/value review: justify every system by a concrete test/debugging consumer and prefer the simplest
 sufficient evidence. Expand design precision rather than machinery scope; map every requirement to implementation and validation.
-Current step: M10 final-gate native/report preflight and repair batch checked; the full gate remains in progress.
-Native checks pass 69 suites / 371 tests, synthetic report controls pass 157 tests, and protocol checks pass 6 tests.
-Doctor/context, three project lints, changed-file formatting and protocol TypeScript pass. Phaser TypeScript fails with
-336 diagnostics; E2E TypeScript fails with 510; the portal production build fails with 12 diagnostics. These are owning
-source/fixture blockers, not a validated baseline exemption. Browser matches and overhead measurements have not run.
-Next: GPT-6.1 Sol / high grouped compiler/build repairs and wider shared-mock compatibility, then K5 browser and cost
-evidence once compilation passes. This makes the real game runnable and establishes whether unused capture stays cheap.
+Current step: M10 final-gate production compiler and shared-mock compatibility batch checked; full K4 remains open.
+The portal production build passes. Full Phaser checks pass 142 suites / 679 tests; browser-host/interface controls
+pass 7 tests and the shared game-container control passes 1. Earlier synthetic report controls pass 157 tests and
+protocol checks pass 6 tests. Doctor/context, gameplay/Phaser lint and changed-source formatting pass.
+Phaser TypeScript still fails with 322 diagnostics, all in specs; E2E TypeScript fails with 498 diagnostics.
+The newly checked gameplay config has 46 spec diagnostics and none in non-spec owners.
+Two focused pure planner tests fail identically on the clean base and candidate; they remain final-gate blockers.
+Browser matches and paired overhead/bundle measurements have not run; a production build is not runtime evidence.
+Next: GPT-6.1 Sol / high grouped strict native-fixture and report-contract repairs, then K5 browser and cost evidence
+once K4 passes. This makes the evidence code type-safe before using it to judge real matches and disabled-path cost.
 Full useful-service authority remains blocked M11; broader production/gameplay proof remains M12. Four passes are not a full-project count.
 The user selected Luna / high for 51–54. The combined review identified and repaired concrete conflicts, and this
 grouped continuation authored the missing controls. Last explicitly selected profile Luna / high; actual settings for
 this continuation are unknown. The next recommendation is Sol / high because the gate spans native, browser, report,
 and cost evidence; recommendations do not switch models. The authorized final gate is now active.
-Latest preflight base `8616a2223b9390f3039a717b7fc14564bf81c6eb` was clean and remote-verified. The containing
-commit owns this repair/evidence batch; verify its remote SHA on resume. See the
-[preflight checkpoint](follow-ups/runtime-matrix-ci.md#final-gate-preflight-and-repair-checkpoint-2026-10-09-partially-checked)
-for commands, provenance, artifacts and remaining blockers. First next command:
-`pnpm exec nx build portal --configuration=production` after reviewing the recorded compiler owners.
+Latest batch base `426c03ee0c8a3584bfed147b28d16b8852f7acb7` was clean and remote-verified. The containing
+commit owns this compiler/compatibility batch; verify its remote SHA on resume. See the
+[compiler checkpoint](follow-ups/runtime-matrix-ci.md#final-gate-production-compiler-and-mock-checkpoint-2026-10-09-partially-checked)
+for commands, provenance, artifacts and remaining blockers. First next check after reviewing/fixing shared selectors:
+`pnpm exec tsc --noEmit -p libs/games/probable-waffle/phaser/tsconfig.spec.json`.
 Batch base `58dc92f8a9ce4d44cfaa133bbcf621fe8fc22b5b` (stage 50, remote verified). Implementation commit
 `978cb09e70cbc6e2ed0b520971690ea47ab38045` contains 51–54. M10 base
 `bd30bea87f57d87c7751b3a9e5759e5a1e021f24` was remote-verified on resume. M10 review/repair commit
@@ -36,14 +39,22 @@ controls described in the checkpoint; publication will be remote-verified with t
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify remote on resume.
 Preserve unrelated Nx merge `59f72e037`. No family/issue is complete. User removed the comment-permission rule.
 
-**Checked / repaired — why it is used:** the final-gate batch repairs newline-separated TypeScript assertions that
+**Latest checked / repaired — why it is used:** literal workforce keys, force domains and adjacency tuples now retain
+their exact types; resource-service filtering narrows the known amount where it is read. Multiplayer completion and
+rally capture retain a checked ID/order before using it; the pawn interface declares its existing boarding predicate.
+These repairs allow the real portal production build to compile without weakening strictness or changing planner rules.
+The shared production-capture fixture now creates a native GameObject and supplies depth-sort/activity scene hooks;
+the movement fixture supplies its actual 2D tile shape. The full native suite and main shared-mock consumers pass.
+Strict spec/report typing and two pre-existing planner failures remain; no new machinery or usefulness claim was added.
+
+**Earlier checked / repaired — why it is used:** the preflight batch repairs newline-separated TypeScript assertions that
 prevented capture/spec execution, joins service commands through their actual `decision.sequence`, and compares the
 numeric production error enum so unaffordable commands report `insufficient_resources`. Native fixtures now use the
 actual roster, resource observers and Phaser lifecycle; synthetic lots retain their two known contributions (3 + 4).
 The new construction-lineage fixture helper keeps the synthetic report test within the source-size limit. E2E `rootDir`
 now permits followed workspace source aliases. These checks support scoped attribution and conservative null usefulness;
 they do not establish complete useful-service authority or real-browser production success. The shared Phaser mock
-uses the installed native EventEmitter/GameObject; wider consumers still need compatibility checks in the next batch.
+uses the installed native EventEmitter/GameObject; full native and main interface/host consumers now pass in the latest batch.
 
 **Earlier authoring history:** [M10 review repairs](follow-ups/runtime-matrix-ci.md#combined-machinery-review-m10-2026-10-09-authoredunverified)
 make incomplete accepting states report unavailable frames, reject malformed liability tails even without a selected
@@ -121,9 +132,9 @@ Campaign suppression is explicit and may accompany a full native return. Old/unk
 to the latest task. Whole known piles may retain several earlier gathering attempts; no invented FIFO/partial allocation.
 A credit proves a scoped balance change, independently from cargo lineage, accepted task/demand and continuous usefulness.
 
-**Next action — why:** repair the recorded production compiler owners and strict fixture/type failures together on
-**GPT-6.1 Sol / high**. Recheck affected native/report cases and broader shared Phaser-mock consumers, then complete K4
-before K5. This enables real browser matches and the paired disabled-path/bundle measurements. Keep C1–C8 and the
+**Next action — why:** repair strict native-fixture selectors and E2E report contracts by shared owner on
+**GPT-6.1 Sol / high**. Resolve the recorded pure planner fixture/policy disagreements without weakening their oracles,
+and finish K4 before K5. This makes the evidence trustworthy before real browser and paired cost measurements. Keep C1–C8 and the
 useful-authority oracles intact; do not reset capture after setup or replace consumed planner inputs to obtain positive
 bounds. M11/M12 remain open blockers. Pause after the next coherent checked and published batch.
 
@@ -151,7 +162,7 @@ bounds. M11/M12 remain open blockers. Pause after the next coherent checked and 
 | Binding/restore/roster boundaries (52) | Scoped native/protocol controls pass | Fence replacement and brief roster churn; wider integration remains |
 | Consumed/accepting liability diagnostics (53) | Focused native/synthetic controls pass | Explain new claims while preserving consumed input; browser integration remains |
 | Real producer/report and operational controls (54) | Native/synthetic bridge checks pass; cost open | Carry capture into report; actual browser and disabled-path cost still need evidence |
-| Combined implementation review (M10) | Native/report preflight checked; full gate in progress | K1/K2 and expanded synthetic K3 pass; K4 compiler/build blockers and K5 remain |
+| Combined implementation review (M10) | Production compile and native compatibility checked; full gate in progress | Full native suite/build pass; strict K4 spec/report types, planner failures and K5 remain |
 | Missing-control authoring | Complete; native/report controls executed | Native owner/restore and report bridge checks pass; actual browser and cost evidence remain |
 | Complete need/lifetime history and useful throughput | Open; activation still blocked | Public aliases and every relied-on mutation need authority before useful windows/real recipes |
 | Continuous useful capacity | Open | Complete mutation authority for readiness, supply, access/safety and service |
@@ -643,8 +654,8 @@ merely because their issue title mentions testing. All authored work remains unv
 
 The latest user policy is **one consolidated design pass, then grouped implementation passes** for the
 remaining machinery. Stage 50 design, passes 51–54, M10 source review/repairs and grouped missing-control authoring
-are complete as authored work. M10 native/report preflight is checked; the full final gate remains in progress with
-compiler/build blockers and pending real-browser/cost evidence recorded in Quick resume.
+are complete as authored work. M10 production compile and native compatibility are checked; the full final gate remains
+in progress with strict spec/report types, two pure planner failures and pending browser/cost evidence in Quick resume.
 Full useful-service authority M11 remains blocked, and production/gameplay proof M12
 remains open; those obligations are not erased by the bounded diagnostic finish line.
 Design on GPT-6.1 Sol / high; implement settled contracts on Luna / high; return to Sol for a combined source review
@@ -655,8 +666,8 @@ No automatic model switch, subagent or new chat is authorized by this policy. Ex
 | --- | --- | --- |
 | Consolidated design, scope/value, shared/per-owner contracts and acceptance (50) | GPT-6.1 Sol / high | Authored/source-reviewed |
 | Settled implementation, compliance cleanup, wiring, fixtures and test authoring (51–54) | Luna / high | Authored; scoped native/report controls now checked, wider integration remains |
-| Combined implementation source review and unresolved contract conflicts (M10) | GPT-6.1 Sol / high | Source review/controls complete; native/report preflight checked, full gate in progress |
-| Final executable gate and repairs | GPT-6.1 Sol / high for current compiler/runtime investigation; Luna / high for settled repairs | Next grouped batch clears K4 and wider mock compatibility before K5 browser/cost evidence |
+| Combined implementation source review and unresolved contract conflicts (M10) | GPT-6.1 Sol / high | Source review/controls complete; full native suite and production compile checked, full gate in progress |
+| Final executable gate and repairs | GPT-6.1 Sol / high for strict report/fixture contracts and planner investigation; Luna / high for settled repairs | Next grouped batch clears remaining K4 types/planner blockers before K5 browser/cost evidence |
 
 - The design must produce a finite list of substantial implementation passes and completion criteria. A pass may contain
   several related owners and coherent commits. Do not create a new design stage or model pause for each file, helper,
@@ -706,9 +717,10 @@ No automatic model switch, subagent or new chat is authorized by this policy. Ex
 
 Copyable next-chat prompt:
 
-> Read docs/ai/759-skirmish-ai/HANDOFF.md and the final-gate preflight checkpoint in runtime-matrix-ci.md.
-> M10 has passing native/report preflight evidence but K4 types/build fail. On GPT-6.1 Sol / high, repair the recorded
-> production compiler owners and strict fixture contracts together, then check wider shared Phaser-mock consumers.
+> Read docs/ai/759-skirmish-ai/HANDOFF.md and the production compiler/mocks checkpoint in runtime-matrix-ci.md.
+> M10 has a passing production build, full native suite and main mock consumers; K4 strict types remain blocked.
+> On GPT-6.1 Sol / high, repair native fixture selectors and E2E report contracts in shared-owner groups, include the
+> newly recorded gameplay spec types, and investigate the two base-reproduced planner failures. Preserve their oracles.
 > The final gate is active: run focused checks for repairs and finish K4 before real-browser K5/cost measurements.
 > Preserve native behavior, consumed inputs, null usefulness, branch and unrelated Nx merge. Do not suppress strictness,
 > refresh baselines, broaden into M11/M12 or add new machinery. Update the map/handoff, review/audit, commit/push exact

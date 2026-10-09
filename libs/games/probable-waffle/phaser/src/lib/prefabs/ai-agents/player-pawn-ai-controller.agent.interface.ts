@@ -79,6 +79,7 @@ export interface IPlayerPawnControllerAgent {
   CanAssignRepairer(): boolean;
 
   // Movement
+  CanBoardContainerNow(): boolean;
   MoveToTarget(type: PlayerPawnRangeType): Promise<State>;
   MoveToTargetOrLocation(type: PlayerPawnRangeType): Promise<State>;
   MoveToLocation(): Promise<State>;

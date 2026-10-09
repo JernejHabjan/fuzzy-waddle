@@ -80,9 +80,15 @@ export function assertAiBrainStateV1(value: unknown): asserts value is AiBrainSt
       throw new Error("malformed_ai_economy_workforce");
     }
     for (const field of [
-      "workers", "queuedWorkers", "assignedWorkers", "desiredWorkers", "desiredFoodSources", "foodRunwayTicks",
-      "economyPermille", "defensePermille"
-    ]) {
+      "workers",
+      "queuedWorkers",
+      "assignedWorkers",
+      "desiredWorkers",
+      "desiredFoodSources",
+      "foodRunwayTicks",
+      "economyPermille",
+      "defensePermille"
+    ] as const) {
       const value = workforce[field];
       if (typeof value !== "number") throw new Error(`invalid_ai_integer:economyProduction.workforce.${field}`);
       assertAiNonNegativeInteger(value, `economyProduction.workforce.${field}`);
