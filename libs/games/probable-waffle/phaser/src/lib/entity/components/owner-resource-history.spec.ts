@@ -1,4 +1,5 @@
 import type Phaser from "phaser";
+import { ProbableWaffleGameInstance } from "@fuzzy-waddle/probable-waffle-protocol";
 import { ProbableWafflePlayer, ProbableWafflePlayerState, ProbableWafflePlayerController } from
   "@fuzzy-waddle/probable-waffle-protocol";
 import { OwnerComponent } from "./owner-component";
@@ -20,7 +21,8 @@ jest.mock("../../world/services/ActorIndexSystem", () => ({ ActorIndexSystem: cl
 function fixture() {
   const player = new ProbableWafflePlayer(new ProbableWafflePlayerState(), new ProbableWafflePlayerController());
   Object.defineProperty(player, "playerNumber", { value: 2 });
-  const scene = { players: [player] } as ProbableWaffleScene;
+  const gameInstance = new ProbableWaffleGameInstance(); gameInstance.players = [player];
+  const scene = { get players() { return gameInstance.players; }, baseGameData: { gameInstance } } as ProbableWaffleScene;
   const actor = { scene, emit: jest.fn() } as unknown as Phaser.GameObjects.GameObject;
   const owner = new OwnerComponent(actor, { color: [] }), facts: AiRuntimeProductionFactV1[] = [];
   const coverage = new AiRuntimeResourceCoverageCapture(0, () => ({ tick: 0, captureSequence: facts.length }));

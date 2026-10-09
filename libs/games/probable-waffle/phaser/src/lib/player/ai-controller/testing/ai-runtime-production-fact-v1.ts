@@ -27,6 +27,7 @@ export type AiRuntimeProductionFactV1 = {
 } & (
   | { readonly kind: "resource_input_read"; readonly read: AiResourceInputRead;
     readonly resources: AiObservationV1["resources"];
+    /** Detached ownership before the native ledger read; absent legacy evidence must never mean zero cash claims. */
     readonly unspentClaimsAtRead?: AiRuntimeUnspentClaimsV1 }
   | { readonly kind: "resource_need_fence"; readonly reason: string;
     /** Exact consumed read only at decision start; still closes every earlier selected generation. */
@@ -42,6 +43,7 @@ export type AiRuntimeProductionFactV1 = {
     readonly scheduledTick: number | null;
   }
   | { readonly kind: "decision_selected"; readonly decision: AiDecisionDispatchEvent;
+    /** Detached ownership before this selection adds/retires claims; boundaryState carries the accepting frame. */
     readonly unspentClaimsBeforeSelection?: AiRuntimeUnspentClaimsV1 }
   | { readonly kind: "construction_authority"; readonly construction: AiRuntimeConstructionV1 }
   | { readonly kind: "spatial_authority"; readonly spatial: AiRuntimeProductionSpatialV1 }

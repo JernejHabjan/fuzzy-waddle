@@ -1,4 +1,5 @@
 import { OwnerComponent } from "../../../entity/components/owner-component";
+import { ProbableWaffleGameInstance } from "@fuzzy-waddle/probable-waffle-protocol";
 import type Phaser from "phaser";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { ProbableWafflePlayer, ProbableWafflePlayerState, ProbableWafflePlayerController } from
@@ -20,7 +21,8 @@ jest.mock("../../../world/services/ActorIndexSystem", () => ({ ActorIndexSystem:
 function fixture() {
   const player = new ProbableWafflePlayer(new ProbableWafflePlayerState(), new ProbableWafflePlayerController());
   Object.defineProperty(player, "playerNumber", { value: 2 });
-  const scene = { players: [player] } as ProbableWaffleScene;
+  const gameInstance = new ProbableWaffleGameInstance(); gameInstance.players = [player];
+  const scene = { get players() { return gameInstance.players; }, baseGameData: { gameInstance } } as ProbableWaffleScene;
   const facts: AiRuntimeProductionFactV1[] = [];
   const coverage = new AiRuntimeResourceCoverageCapture(0, () => ({ tick: 0, captureSequence: facts.length }));
   const journal = new AiRuntimeRecipientResourceCapture(scene, coverage,
@@ -30,6 +32,17 @@ function fixture() {
 }
 
 describe("all-recipient native resource journal", () => {
+  it("keeps roster loss sticky after a remove/re-add whose final recipient and balance are identical", () => {
+    const f = fixture(), gameInstance = f.scene.baseGameData.gameInstance;
+    gameInstance.removePlayerByPlayer(f.player); gameInstance.addPlayer(f.player); f.journal.reconcile();
+    expect(f.coverage.read()).toMatchObject({ lost: true, losses: ["recipient_roster_mutation"] });
+    f.player.addResources({ wood: 1 });
+    expect(f.facts.at(-1)).toMatchObject({ mutation: { phase: "returned", lossEpoch: 2 } });
+    f.journal.dispose();
+    const old = f.coverage.read();
+    gameInstance.removePlayerByPlayer(f.player); gameInstance.addPlayer(f.player);
+    expect(f.coverage.read()).toEqual(old);
+  });
   it("fences initial actor ownership through the native owner route and retains later exact mutations as diagnostics", () => {
     const f = fixture();
     const actor = { scene: f.scene, emit: jest.fn() } as unknown as Phaser.GameObjects.GameObject;

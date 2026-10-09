@@ -1,4 +1,5 @@
 import type Phaser from "phaser";
+import { ProbableWaffleGameInstance } from "@fuzzy-waddle/probable-waffle-protocol";
 import { Subject } from "rxjs";
 import { ProbableWafflePlayer, ProbableWafflePlayerController, ProbableWafflePlayerState } from
   "@fuzzy-waddle/probable-waffle-protocol";
@@ -61,7 +62,8 @@ describe("native drain credit policy (unrun until final gate)", () => {
         } } satisfies ProbableWafflePlayerControllerData);
         return new ProbableWafflePlayer(new ProbableWafflePlayerState(), controller);
       });
-      const scene = { players } as ProbableWaffleScene;
+      const gameInstance = new ProbableWaffleGameInstance(); gameInstance.players = players;
+      const scene = { get players() { return gameInstance.players; }, baseGameData: { gameInstance } } as ProbableWaffleScene;
       const actor = { scene } as Phaser.GameObjects.GameObject;
       const target = { scene, emit: jest.fn() } as unknown as Phaser.GameObjects.GameObject;
       const owner = new OwnerComponent(target, { color: [] }); owner.setOwner(1);

@@ -17,7 +17,7 @@ export class AiRuntimeRecipientRosterCapture {
 
   constructor(private readonly gameInstance: ProbableWaffleGameInstance, private readonly lose: Loss) {
     if (AiRuntimeRecipientRosterCapture.owners.has(gameInstance)) {
-      lose("recipient_roster_capture_duplicated");
+      this.reportLoss("recipient_roster_capture_duplicated");
       this.disposed = true;
       return;
     }
@@ -27,7 +27,7 @@ export class AiRuntimeRecipientRosterCapture {
         this.install(key);
       }
     } catch {
-      lose("recipient_roster_installation_failed");
+      this.reportLoss("recipient_roster_installation_failed");
       this.dispose();
     }
   }
@@ -35,17 +35,17 @@ export class AiRuntimeRecipientRosterCapture {
   dispose(): void {
     if (this.disposed) return;
     this.disposed = true;
-    this.lose("recipient_roster_capture_disposed");
+    this.reportLoss("recipient_roster_capture_disposed");
     for (const item of this.installed.splice(0).reverse()) {
       if (Object.getOwnPropertyDescriptor(this.gameInstance, item.key)?.value !== item.wrapper) {
-        this.lose("recipient_roster_wrapper_replaced");
+        this.reportLoss("recipient_roster_wrapper_replaced");
         continue;
       }
       try {
         if (item.original) Object.defineProperty(this.gameInstance, item.key, item.original);
-        else Reflect.deleteProperty(this.gameInstance, item.key);
+        else if (!Reflect.deleteProperty(this.gameInstance, item.key)) this.reportLoss("recipient_roster_restore_failed");
       } catch {
-        this.lose("recipient_roster_restore_failed");
+        this.reportLoss("recipient_roster_restore_failed");
       }
     }
     if (AiRuntimeRecipientRosterCapture.owners.get(this.gameInstance) === this) {
@@ -53,13 +53,18 @@ export class AiRuntimeRecipientRosterCapture {
     }
   }
 
+  /** Diagnostic failures must not interrupt rollback, disposal or the native roster method. */
+  private readonly reportLoss = (reason: string): void => {
+    try { this.lose(reason); } catch { /* Keep native behavior and owned cleanup. */ }
+  };
+
   private install(key: RosterMethod): void {
     const original = Object.getOwnPropertyDescriptor(this.gameInstance, key);
     const method = this.gameInstance[key];
     if (typeof method !== "function") throw new Error("recipient_roster_method_missing");
-    const lose = this.lose;
+    const lose = this.reportLoss;
     const wrapper = function (this: unknown, ...args: unknown[]): unknown {
-      try { lose(key === "stopLevel" ? "recipient_level_reset" : "recipient_roster_mutation"); } catch { /* Keep native behavior. */ }
+      lose(key === "stopLevel" ? "recipient_level_reset" : "recipient_roster_mutation");
       return Reflect.apply(method, this, args);
     };
     Object.defineProperty(this.gameInstance, key, {

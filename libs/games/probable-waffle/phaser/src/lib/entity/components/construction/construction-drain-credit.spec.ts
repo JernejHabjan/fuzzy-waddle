@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { ProbableWaffleGameInstance } from "@fuzzy-waddle/probable-waffle-protocol";
 import { Subject } from "rxjs";
 import { ResourceType, ConstructionStateEnum, ProbableWafflePlayerType, ProbableWafflePlayer,
   ProbableWafflePlayerState, ProbableWafflePlayerController, type ProbableWafflePlayerControllerData } from
@@ -47,7 +48,9 @@ describe("construction readiness changes during native drain wait (authored; fin
         new ProbableWafflePlayerController({ userId: null, playerDefinition: {
           player: { playerNumber, joined: true }, playerType: ProbableWafflePlayerType.Human, campaignEconomy: economy
         } } satisfies ProbableWafflePlayerControllerData)));
-      const scene = { players, events: new Phaser.Events.EventEmitter() } as ProbableWaffleScene;
+      const gameInstance = new ProbableWaffleGameInstance(); gameInstance.players = players;
+      const scene = { get players() { return gameInstance.players; }, baseGameData: { gameInstance },
+        events: new Phaser.Events.EventEmitter() } as ProbableWaffleScene;
       const target = new Phaser.GameObjects.GameObject(scene, "site"); target.name = "site";
       const gatherer = new Phaser.GameObjects.GameObject(scene, "gatherer");
       const health = new HealthComponent(target, { maxHealth: 100, maxArmour: 20 });

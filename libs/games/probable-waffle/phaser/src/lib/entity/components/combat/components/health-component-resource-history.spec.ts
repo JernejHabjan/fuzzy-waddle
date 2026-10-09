@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { ProbableWaffleGameInstance } from "@fuzzy-waddle/probable-waffle-protocol";
 import { DamageType, ProbableWafflePlayer, ProbableWafflePlayerState, ProbableWafflePlayerController } from
   "@fuzzy-waddle/probable-waffle-protocol";
 import { HealthComponent } from "./health-component";
@@ -37,7 +38,9 @@ jest.mock("../../building/building-destruction-effect", () => ({
 function fixture() {
   const player = new ProbableWafflePlayer(new ProbableWafflePlayerState(), new ProbableWafflePlayerController());
   Object.defineProperty(player, "playerNumber", { value: 1 });
-  const scene = { players: [player], events: new Phaser.Events.EventEmitter() } as ProbableWaffleScene;
+  const gameInstance = new ProbableWaffleGameInstance(); gameInstance.players = [player];
+  const scene = { get players() { return gameInstance.players; }, baseGameData: { gameInstance },
+    events: new Phaser.Events.EventEmitter() } as ProbableWaffleScene;
   const actor = Object.assign(new Phaser.Events.EventEmitter(), { scene, active: true, getData: jest.fn(),
     destroy: jest.fn() });
   actor.destroy.mockImplementation(() => { actor.active = false; actor.emit(Phaser.GameObjects.Events.DESTROY); });

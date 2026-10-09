@@ -56,20 +56,25 @@ test("executes selected AI scenarios in real lobby-started Phaser matches", asyn
         .map((variant) => variant.id)
     );
     const scenarioVariants = variants.filter((variant) => applicableVariantIds.has(variant.variantId));
+    // Retain raw native evidence in the emitted failed report so bridge failures can be diagnosed at the final gate.
+    const bridgeFailures: string[] = [];
     if (["PRO-03", "PRO-06", "PRO-07"].includes(scenarioId)) {
       for (const variant of scenarioVariants) {
         const capture = variant.productionCapture;
         const report = variant.productionCausality;
-        if (!capture || !report) throw new Error(`runtime_production_report_missing:${scenarioId}:${variant.variantId}`);
+        if (!capture || !report) {
+          bridgeFailures.push(`runtime_production_report_missing:${scenarioId}:${variant.variantId}`);
+          continue;
+        }
         const selectedCount = capture.facts.filter((fact) => fact.kind === "decision_selected").length;
         if (selectedCount === 0 || report.decisions.length !== selectedCount) {
-          throw new Error(`runtime_production_decision_bridge_incomplete:${scenarioId}:${variant.variantId}`);
+          bridgeFailures.push(`runtime_production_decision_bridge_incomplete:${scenarioId}:${variant.variantId}`);
         }
         if (report.resourceServices.needAccounting.some((need) =>
           need.applications.some((application) => application.usefulContribution !== null)) ||
           report.resourceServices.applicationIntervals.some((interval) => interval.usefulContribution !== null ||
             interval.continuousUsefulCapacity !== null)) {
-          throw new Error(`runtime_production_partial_channel_activated:${scenarioId}:${variant.variantId}`);
+          bridgeFailures.push(`runtime_production_partial_channel_activated:${scenarioId}:${variant.variantId}`);
         }
       }
     }
@@ -78,6 +83,7 @@ test("executes selected AI scenarios in real lobby-started Phaser matches", asyn
         ? evaluateRuntimeVariant(scenarioId, fixture.assertions[scenarioId], scenarioVariants[0])
         : ["diagnostic_variant_missing_or_ambiguous"]
       : evaluateScenario(scenarioId, fixture, scenarioVariants);
+    failures.push(...bridgeFailures);
     scenarioResults.push({ scenarioId, passed: failures.length === 0, failures, variants: scenarioVariants });
   }
 

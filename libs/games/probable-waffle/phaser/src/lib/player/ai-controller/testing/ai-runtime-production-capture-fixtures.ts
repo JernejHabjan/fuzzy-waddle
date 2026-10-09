@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import { Subject } from "rxjs";
 import {
-  FactionType, ObjectNames, ProbableWaffleAiDifficulty, ResearchType, ResourceType,
+  FactionType, ObjectNames, ProbableWaffleAiDifficulty, ProbableWaffleGameInstance, ResearchType, ResourceType,
   type GameCommand, type GameCommandOutcome
 } from "@fuzzy-waddle/probable-waffle-protocol";
 import { createAiBrainStateV1 } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/brain/create-ai-brain-state-v1";
@@ -48,7 +48,8 @@ export function productionCaptureFixture() {
   const controller = { getBrainState: () => state, getCommittedObservation: () => undefined,
     getCommittedCapabilityCatalog: () => undefined,
     isDecisionBoundarySettled: jest.fn(() => true) };
-  const scene = { players: [{ playerNumber: 2 }], communicator: { playerChanged: { on: changes } },
+  const scene = { players: [{ playerNumber: 2 }], baseGameData: { gameInstance: new ProbableWaffleGameInstance() },
+    communicator: { playerChanged: { on: changes } },
     events: new Phaser.Events.EventEmitter() } as unknown as ProbableWaffleScene;
   const actor = { scene, active: true, name: ObjectNames.AnkGuard } as Phaser.GameObjects.GameObject;
   const indexedActors = [actor];
@@ -73,4 +74,3 @@ export function productionCaptureFixture() {
   return { capture: new AiRuntimeProductionCapture(scene), state, controller, scene, actor, queuedItems,
     ticks, money, changes, commands, outcomes, queueChanges, unregistered, registered, indexedActors, researches, completedResearch };
 }
-

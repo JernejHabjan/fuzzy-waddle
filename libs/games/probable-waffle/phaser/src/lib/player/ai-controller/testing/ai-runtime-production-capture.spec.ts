@@ -13,6 +13,7 @@ import { AI_INTENT_COMMAND_DISPATCH_EVENT } from "../ai-intent-command-dispatch-
 import { pendingCommandRequest, pendingCommandOutcome, pendingCommandFinished } from "./ai-runtime-pending-command-fixtures";
 import { productionCaptureFixture as setup, productionCaptureItem as item } from "./ai-runtime-production-capture-fixtures";
 import { PRODUCTION_SPATIAL_AUTHORITY_EVENT } from "../../../world/services/multiplayer/production-spatial-authority-event";
+import { unspentClaimFixture } from "./ai-runtime-unspent-claim-fixtures";
 
 jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
 jest.mock("../../../data/scene-data", () => ({
@@ -26,6 +27,19 @@ function outcome(kind: GameCommandOutcome["kind"], commandId = "cancel-request")
 }
 
 describe("AiRuntimeProductionCapture", () => {
+  it("retains the cash frame before new selected claims independently of the accepting boundary", () => {
+    const f = setup(), { decision } = unspentClaimFixture();
+    f.ticks.currentTick = 100;
+    f.scene.events.emit(AI_DECISION_DISPATCH_EVENT, { ...decision, acceptedIntents: [], decisions: [], reservations: [],
+      identity: { ...decision.identity, decisionSequence: 0 } } satisfies AiDecisionDispatchEvent);
+    f.scene.events.emit(AI_DECISION_DISPATCH_EVENT, decision);
+    const selected = f.capture.capture(2).facts.filter((fact) => fact.kind === "decision_selected")[1];
+    expect(selected.unspentClaimsBeforeSelection).toMatchObject({ resources: { food: 0 }, gaps: [] });
+    expect(selected.boundaryState?.unspentClaims).toMatchObject({ resources: { food: 35 }, gaps: [] });
+    expect(selected.unspentClaimsBeforeSelection).not.toBe(selected.boundaryState?.unspentClaims);
+    expect(selected.decision).toEqual(decision);
+    f.capture.dispose();
+  });
   it("detaches native spatial callbacks into the same observer ledger and removes their listener on teardown", () => {
     const f = setup(); const queued = { ...item(), remainingTime: 0 };
     f.scene.events.emit(PRODUCTION_SPATIAL_AUTHORITY_EVENT, { kind: "spawn", producer: f.actor, item: queued,

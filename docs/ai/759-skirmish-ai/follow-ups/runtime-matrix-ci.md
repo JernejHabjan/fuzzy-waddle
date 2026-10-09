@@ -294,7 +294,8 @@ the same pass. Stay on Luna / high across these passes. At 54, stop adding diagn
 The bounded finish line is: supported named writers lose stale history before native callbacks; reads distinguish
 consumed claims from newly accepted claims; a real native producer path reaches the existing reports with honest
 partial status; installation/disposal and ordinary-play cost have authored controls and exact final-gate measures.
-All rows M01–M09 below must have authored paths/cases before combined review M10. Executable success is a later gate.
+All rows M01–M09 below must have authored paths/cases before M10 can establish gate readiness.
+The combined source review found missing authoring and records it below. Executable success is a later gate.
 
 **Full useful-service machinery is still blocked, not completed by four passes.** Existing 32/36 requirements for
 mutation-complete beneficiary, liability, cargo/lifetime and continuous access/safety history remain mandatory.
@@ -380,8 +381,8 @@ loses history; native observation still returns. At `observeDecision`, snapshot 
 them, then append this snapshot with the selected event; existing `boundaryState.unspentClaims` remains after selection.
 Do not re-read the brain to reconstruct either frame.
 
-Add `T/ai-runtime-resource-liability-frames-v1.ts` (one interface) and matching `E/skirmish-ai-runtime-resource-liability-frames.ts`
-(projection functions, no new state owner). Report one optional `liabilityFrames` field per existing need-accounting record:
+Keep the report interface and projection functions in `E/skirmish-ai-runtime-resource-liability-frames.ts`
+(no new state owner or duplicate Phaser report type). Report one optional `liabilityFrames` field per existing need-accounting record:
 `consumedReserved`, `beforeSelectionReserved`, `acceptingReserved` are exact resource amounts or null; `status` is
 `matching | accepting_changed | unavailable`; `gaps` is readonly strings. Consume exact marker/read/player/resource
 and selected-fact identities. All three known vectors equal the consumed ledger's reserved amount, with existing due-cost
@@ -427,7 +428,8 @@ aggregate bounds and useful-capacity assertions. Report the exact reason at the 
 
 #### Finite passes and single completion map
 
-All implementation rows start `not_started`. Existing authored stage 29–49 paths are prerequisites, unverified.
+Implementation paths 51–54 are authored. M10 has source-reviewed them and recorded missing control authoring below;
+none has executable evidence. Existing authored stage 29–49 paths are prerequisites, unverified.
 R = required bounded implementation; B = existing mandatory acceptance still blocked; O = optional extra, not queued.
 Checks K1–K5 are defined below. Existing scenario authority remains `tools/ai/fixtures/skirmish-v1.json`, not this table.
 
@@ -437,12 +439,12 @@ Checks K1–K5 are defined below. Existing scenario authority remains `tools/ai/
 | M02 Container/containable: readiness cannot survive a known boarding/restore boundary | R; C1 building owners | 51 | Actual load/unload/dead-at-sea/shore/pending-ID resolution, full load no-op, undefined restore no-op; throw and callback ordering, repeated destroy/clear-before-unload | Code authored; K1 deferred |
 | M03 Component/queue/campaign restore: old actor/need identity cannot survive named replacement | R; C1/C6 actor-data, QueueComponent, campaign caller | 51 → 52 | Real named component replace/add/remove/upgrade/definition, source/health constructor callback, empty queue restore, campaign modes/rounding/startup skip; constructor/helper throws; matching restore still loses | Code authored; K1/K3 and C6 checks deferred |
 | M04 Recipient roster: journal knows remove/re-add before another read | R; C3 roster capture and recipient owner | 52 | Real protocol game instance add/remove/reset with actual protocol players; temporary removal/re-add, native throw, foreign receiver/descriptor/replacement, installation rollback, disposal/reinstall | Wrapper code/spec authored; K1/K2 deferred |
-| M05 Exact consumed/accepting frames: explain purchase-plus-gather null bounds | R; C4 fact union/input/root/unspent/report fields | 52 → 53 | Real input/controller selected event with zero and nonzero new claims; immediate paid vs future queue transfer; due head exhaustion; unsupported building/pre-capture/expired/recovery claims and callback-in-progress; mismatch stays null | Code authored; K1/K3 deferred |
+| M05 Exact consumed/accepting frames: explain purchase-plus-gather null bounds | R; C4 fact union/input/root/unspent/report fields | 52 → 53 | Real input/controller selected event with zero and nonzero new claims; immediate paid vs future queue transfer; due head exhaustion; unsupported building/pre-capture/expired/recovery claims and callback-in-progress; mismatch stays null | Code plus focused input/root/synthetic frame controls authored; full native integration still missing; K1/K3 deferred |
 | M06 Cargo/recipient/window compatibility: preserve credited income without false usefulness | R; C2/C4/C5 existing credit/application/need projections | 53 | Exact real payload join; normal/granted/none and changed owner; mixed/old/restored cargo; grant then spend cannot reopen shortage; publication delayed across application window; same-tick/straddle/overflow bad tail | Existing path retained; K1/K3 compatibility cases deferred |
 | M07 Real adapter/report bridge: expose actual producer evidence and explicit gaps | R; C7 root capture, variant runner, production normalization | 51–53 → 54 | Real Phaser actor/components/protocol player/read/native command path into report; initialization loss, post-await service loss and late/disposed capture; native income remains diagnostic while useful fields stay null; contradictory tail suppresses parent | Bridge assertion authored; K1/K3/K5 real-run evidence deferred |
 | M08 Normal-play impact: testing does not install heavy machinery during gaming | R; C8 below, installer/helper controls and existing profiler | 54 | Production/unmarked guard, no sample/clone/listener/timer/root journal; before/after disabled-path and bundle comparison; foreign host/duplicate capture, late callbacks | Fast paths/guard authored; K1/K4/K5 profile deferred |
 | M09 Compliance/publication: economical implementation remains reviewable | R; C6 exact baselines, existing handoff | Each 51–54 | No refreshed hashes/new permanent stage names; task-only prerequisite and behavior commits; source review/Omission Audit/closure, remote SHA and clean task scope | Authored/source-reviewed; implementation commit `978cb09e70cbc6e2ed0b520971690ea47ab38045` remote-verified; checks deferred |
-| M10 Combined review and compatibility: decide readiness before execution | R; C1–C8, all changed consumers | 54 → Sol review | Trace real input → selected/admitted → native application → report/disposal; review all controls, repair concrete contract contradictions; every required unrun check remains listed | K1–K5; not_started |
+| M10 Combined review and compatibility: decide readiness before execution | R; C1–C8, all changed consumers | 54 → Sol review | Trace real input → selected/admitted → native application → report/disposal; review all controls, repair concrete contract contradictions; every required unrun check remains listed | Source review/four repairs authored; gate readiness open pending missing controls below; K1–K5 unrun |
 | M11 Mutation-complete useful resource/continuous capacity: 32/36 full proof | B; C7 plus 32/36/39/42 authority, public APIs | Explicit authority/scope decision; not a hidden fifth Luna pass | Net-zero alias undo, arbitrary definition/Map/item/roster replacement, hidden/stale threats/access changes between reads, full supported initial predicate history; no positive complete channel currently possible | Existing 32/36 gates; blocked, mandatory |
 | M12 Production useful outputs, legal setup and strategy: PRO-03/06/07 release | B; existing production authority contract and evaluators | Broader gameplay/fixture queue, separate from 51–54 | Both-faction transition/abandonment, exposed/safe/no-demand resilience, shared train/research and paid cancellation/pending refund pairs; full oracle and denominator | K5 and owning scenario/policy plans; open, mandatory |
 | M13 Finer loss scopes/continuous journal/lot allocation | O; no new files/owners | Not scheduled; new consumer must justify proposal | No actor-to-beneficiary dependency map, FIFO allocation or extra scan introduced just to recover a diagnostic bound | No extra gate; proposed only |
@@ -501,11 +503,57 @@ to the final gate by user instruction. Source review and Git publication are not
 | 54 / M08 | `fenceSceneResourceHistory`, `PlayerResourceObservation.reset/lose`, and installer: empty loss groups return before snapshot/reentrancy allocation; no matching marked host returns before config parsing or capture construction. | Code plus unmarked-host guard spec authored. Disabled-path profile, production bundle and native fast-path controls deferred. |
 | 54 / M09 | Changed only task-owned source, one E2E report assertion, the exact baseline removals and these existing plan/handoff files. | Source/Git scope review only. No executable validation or cost evidence. |
 
-M10 is now the next boundary: combined GPT-6.1 Sol / high source review of 51–54, then pause before final-gate execution.
-Source review should specifically challenge wrapper descriptor restoration/receiver semantics, pre-write placement at every
-listed native branch, exact input/selection frame binding, report identity continuity, and whether empty observer exits
-allocate anything. Do not claim stage validation before K1–K5. M11 remains a mandatory blocker from public mutable aliases
+M10 source review has now been performed, with concrete repairs and omissions recorded below. Missing control
+authoring is the next grouped boundary before gate readiness; executable validation remains deferred.
+Do not claim stage validation before K1–K5. M11 remains a mandatory blocker from public mutable aliases
 and incomplete access/safety/lifetime history; M12 remains open for full PRO-03/06/07. Neither was reduced by this batch.
+
+### Combined machinery review M10 (2026-10-09, authored/unverified)
+
+Base `bd30bea87f57d87c7751b3a9e5759e5a1e021f24` was remote-verified on resume. Reviewed implementation
+`978cb09e70cbc6e2ed0b520971690ea47ab38045`, its immediate native owners, capture consumers and adjacent specs.
+Actual host model/effort unknown; no subagents or independent reviewer. All executable checks remain deferred.
+The containing commit owns this review and repairs; publication is verified separately after commit.
+
+| Acceptance | Source evidence / repair and purpose | Status |
+| --- | --- | --- |
+| M01/M02, C1/C2 | Traced source enter/wait/leave/deduct/subjects and drain enter/wait/leave/post-wait owner/credit/full return, plus container boarding/load/unload/sea/restore and containable clear-before-delegate. Named fences precede the designed writes; native math, callbacks and partial failure remain. | Source-reviewed; required dedicated native controls not authored |
+| M03, C1/C6 | Traced actor install/upgrade/add/remove/definition entry before constructors/map changes, queue restore before clear/clone/notify, and campaign caller inside startup-load skip. Inspected the three exact alias-baseline removals, with no hash refresh. | Source-reviewed; constructor/restore/campaign controls not authored; compliance unrun |
+| M04, C3/C5 | Roster loss reporting is now isolated during duplication, rollback and disposal too; a throwing diagnostic cannot strand owned wrappers. Tests cover real remove/re-add/reset, receiver/arguments/native return/throw identity, own/inherited descriptors, foreign replacement, duplicate owner, rollback and reinstall. | Repairs and focused controls authored; K1/K2 unrun |
+| M04/M06 compatibility | Seven native recipient fixtures lacked the newly required `baseGameData.gameInstance`; installation would lose before money hooks were attached. They now use real protocol game instances and live roster getters. The synthetic root fixture supplies its roster host while retaining its intentional unavailable native player authority. | Source incompatibility repaired; prior owner/health/construction/drain cases still unrun |
+| M05, C4 | Moved projection into the existing frame helper. Missing/changed accepting due liabilities, unknown restore status, state gaps and missing input scope cannot claim matching frames. Validates every supplied claim vector across resources and tails, even without gathering needs; malformed tails propagate through accounting/service/native normalization to suppress the parent. | Repairs plus input/root/synthetic report controls authored; actual controller/native producer integration missing |
+| M06, C2/C4/C5 | Existing exact payload/recipient/operation join, whole-pile ownership, incoming start/admission exemption and consumed-frame calculation retained. Accepting changes leave the old bound unavailable; legacy absent optional fields keep old diagnostics while new frame status is unavailable. | Source-reviewed; all earlier cargo/payment/window compatibility checks deferred |
+| M07 | Matrix bridge failures now join scenario failures so the emitted failed artifact retains raw capture and normalized gaps. Throwing before report emission previously lost that evidence. | Repair authored; dedicated native and real browser producer/report controls missing |
+| M08, C8 | Empty scene/protocol loss groups return before snapshot/reentrancy allocation; unmatched production host returns before config/capture creation. No new production listener, scan, timer, save/hash field or wire event. Static imports still require bundle measurement. | Source-reviewed; production/foreign-host controls and measurements remain open |
+| M09/M10 | Reviewed task-owned source/diff and immediate callers; no baseline refresh, new gameplay policy or skill/tool change. Added the frame spec to K3 below. | Source review completed; authored evidence is not gate readiness or validation |
+
+**Omission Audit — required authoring still missing:** the earlier claim that 51–54 had authored every M01–M09
+path/case was too broad. Preserve these existing requirements in one grouped authoring batch:
+
+- M01: `resource-source-resource-history.spec.ts` and `resource-drain-resource-history.spec.ts` for real owners,
+  controlled waits, old state at loss, assignment no-ops, stock/restore, partial load/unload throws, reentrancy and fresh partial capture.
+- M02: `container-resource-history.spec.ts` and containable controls for load/full no-op, boarding, delayed IDs,
+  sea/shore destruction, thrown callback ordering and clear-before-unload recursion.
+- M03: `actor-data-resource-history.spec.ts` plus queue/campaign adjacent controls for constructor timing/throw,
+  matching/empty restore, cloned lane placement, economy rounding/modes and startup-load skip.
+- M05/M06/M07: `T/ai-runtime-resource-producer-report.spec.ts` and
+  `E/skirmish-ai-runtime-resource-producer-report.spec.ts` for actual controller/input/native command/resource
+  capture and a legal marked browser world through `prepareRuntimeVariant`/`runVariant` into normalization,
+  including exact selected/admitted/operation/credit identities and loss/disposal. Existing synthetic/root tests and
+  the matrix decision-count assertion do not substitute for these cases.
+- M08: production/foreign-host/duplicate installer controls and disabled-fence lifecycle controls; paired CPU/heap/
+  bundle measurements execute only at the final gate. Retain every earlier deferred compatibility command.
+
+**Separate Final Closure Audit:** traced repaired helpers back to root fact append, recipient money observation,
+resource accounting/service/native/parent normalization, and the emitted matrix result. Native owners and consumed
+inputs remain unchanged; partial useful quantities remain null. No executable verification was run. M10 source review
+is complete but readiness remains open until the missing controls are authored and source-reviewed. M11 is blocked
+and M12 open; no acceptance was removed or treated as optional.
+
+**Next action — why:** author the above controls as one Luna / high batch from the settled contracts, then pause for
+GPT-6.1 Sol / high gate readiness and difficult verification repairs. These cases establish that the native writer and
+real report paths behave as specified, rather than just testing synthetic arithmetic. Do not add new machinery,
+reset capture after setup, weaken useful-authority oracles, or execute checks during this authoring batch.
 
 #### Deferred tests, operational acceptance and final gate
 
@@ -541,7 +589,7 @@ pnpm exec nx test probable-waffle-phaser --testPathPatterns='resource-(source|dr
 # K2: protocol money/reset observation and actual player compatibility
 pnpm exec nx test probable-waffle-protocol --testPathPatterns='player-resource-observation|player' --runInBand
 # K3: report join, frame, conditional arithmetic and negative controls (synthetic where labelled)
-pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts skirmish-ai-runtime-resource-need-accounting.spec.ts skirmish-ai-runtime-resource-need-boundaries.spec.ts skirmish-ai-runtime-resource-application.spec.ts skirmish-ai-runtime-resource-credit.spec.ts skirmish-ai-runtime-production-causality-normalization.spec.ts skirmish-ai-runtime-resource-producer-report.spec.ts
+pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts skirmish-ai-runtime-resource-need-accounting.spec.ts skirmish-ai-runtime-resource-liability-frames.spec.ts skirmish-ai-runtime-resource-need-boundaries.spec.ts skirmish-ai-runtime-resource-application.spec.ts skirmish-ai-runtime-resource-credit.spec.ts skirmish-ai-runtime-production-causality-normalization.spec.ts skirmish-ai-runtime-resource-producer-report.spec.ts
 # K4: real library configs, focused lint/source structure, integration build
 pnpm exec tsc --noEmit -p libs/games/probable-waffle/phaser/tsconfig.spec.json
 pnpm exec tsc --noEmit -p libs/games/probable-waffle/protocol/tsconfig.spec.json
@@ -577,13 +625,13 @@ runtime/schema/save/wire/manifest/balance/CI change, unused source owner, skill/
 
 **Separate Final Closure Audit:** rechecked native math/owner/economy/full return, pre-callback phase boundaries,
 no-op guards, matching restores, constructor order, descriptors/foreign wrappers, fresh-capture/no-backfill, old schema,
-fixed bounds, before/after claims and partial-channel consumers. Stage 50 design is authored/source-reviewed; 51–54,
-combined review, cost and executable validation remain not_started. Broad useful authority remains blocked M11;
+fixed bounds, before/after claims and partial-channel consumers. Stage 50 design and 51–54 code are authored;
+M10 source review/repairs are above. Missing controls, cost and executable validation remain open. Broad useful authority remains blocked M11;
 production/gameplay proof remains M12. Containing commit and verified remote publication own design delivery.
 
-Next: implement 51–54 on Luna / high from this map, source-review each coherent commit, commit/push under existing
-authority, and pause after 54 for combined GPT-6.1 Sol / high review. A smaller requested batch resumes the next unfinished
-pass. Do not invent another design stage for an ordinary repair. A concrete source contradiction may amend the affected
+Next: author the M10 omission list in one Luna / high batch, source-review, commit/push under existing
+authority, and pause for GPT-6.1 Sol / high gate readiness. Do not invent another design stage for an ordinary repair.
+A concrete source contradiction may amend the affected
 C/M row with source, native impact and replacement acceptance; only an unresolved architecture decision goes to Sol.
 Continue independent authorized work, retain safe commits, and never silently expand into M11/M12 or alter acceptance.
 

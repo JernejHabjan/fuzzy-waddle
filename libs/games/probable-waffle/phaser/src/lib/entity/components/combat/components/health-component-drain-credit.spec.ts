@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { ProbableWaffleGameInstance } from "@fuzzy-waddle/probable-waffle-protocol";
 import { Subject } from "rxjs";
 import { ResourceType, ProbableWafflePlayerType, type ProbableWafflePlayerControllerData } from
   "@fuzzy-waddle/probable-waffle-protocol";
@@ -57,7 +58,9 @@ describe("native health mutation during drain wait (final gate pending)", () => 
           player: { playerNumber: 2, joined: true }, playerType: ProbableWafflePlayerType.Human, campaignEconomy: economy
         } } satisfies ProbableWafflePlayerControllerData);
         const player = new ProbableWafflePlayer(new ProbableWafflePlayerState(), controller);
-        const scene = { players: [player], events: new Phaser.Events.EventEmitter(),
+        const gameInstance = new ProbableWaffleGameInstance(); gameInstance.players = [player];
+        const scene = { get players() { return gameInstance.players; }, baseGameData: { gameInstance },
+          events: new Phaser.Events.EventEmitter(),
           sys: { displayList: { exists: () => false } } } as unknown as ProbableWaffleScene;
         const targetObject = { scene } as Phaser.GameObjects.GameObject;
         const actor = new Phaser.GameObjects.GameObject(scene, "gatherer"), destroyed = jest.spyOn(actor, "destroy");

@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { ProbableWaffleGameInstance } from "@fuzzy-waddle/probable-waffle-protocol";
 import { Subject } from "rxjs";
 import { ProbableWafflePlayer, ProbableWafflePlayerState, ProbableWafflePlayerController } from
   "@fuzzy-waddle/probable-waffle-protocol";
@@ -37,7 +38,9 @@ jest.mock("./construction-payment", () => ({ startConstructionPayment: jest.fn()
 export function constructionHistoryFixture(overrides: Partial<ConstructionSiteDefinition> = {}, withHealth = true) {
   const player = new ProbableWafflePlayer(new ProbableWafflePlayerState(), new ProbableWafflePlayerController());
   Object.defineProperty(player, "playerNumber", { value: 1 });
-  const scene = { players: [player], events: new Phaser.Events.EventEmitter() } as ProbableWaffleScene;
+  const gameInstance = new ProbableWaffleGameInstance(); gameInstance.players = [player];
+  const scene = { get players() { return gameInstance.players; }, baseGameData: { gameInstance },
+    events: new Phaser.Events.EventEmitter() } as ProbableWaffleScene;
   const actor = Object.assign(new Phaser.Events.EventEmitter(), { scene, name: "site", active: true, getData: jest.fn() });
   const object = actor as unknown as Phaser.GameObjects.GameObject;
   const health = new HealthComponent(object, { maxHealth: 100, maxArmour: 20 });
