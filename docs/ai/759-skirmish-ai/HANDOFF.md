@@ -6,15 +6,17 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
-**Current policy (user, 2026-10-08):** one consolidated remaining-machinery design pass on GPT-6.1 Sol / high,
+**Current policy (user, 2026-10-09):** one consolidated remaining-machinery design pass on GPT-6.1 Sol / high,
 then one or more dependency-ordered implementation passes on Luna / high. Replace repeated per-component design stages.
+Begin with a scope/value review: justify every system by a concrete test/debugging consumer and prefer the simplest
+sufficient evidence. Expand design precision rather than machinery scope; map every requirement to implementation and validation.
 Current step: 49 construction writer fences authored/unverified and published; this commit updates execution policy only.
 Next: 50 consolidated machinery design, not started. Design determines the finite implementation passes and finish line.
 Pause after design publication for model selection; stay on Luna across settled implementation work without per-file switches.
 Sol reviews the combined implementation and handles unresolved contracts/difficult final-gate failures.
 Last selected profile GPT-6.1 Sol / medium; actual host settings unknown. Recommendations do not switch models.
 All executable tests/validation remain deferred to the final gate.
-Base `a989f66c1ec2cd9ae2fdc1c931e923eb261bb7fc` (49, remote verified); containing commit owns this policy update.
+Base `60fa7457d8b660cc5ad665ab3f0a34e775cfc285` (policy update, remote verified); containing commit owns this refinement.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify remote on resume.
 Preserve unrelated Nx merge `59f72e037`. No family/issue is complete. User removed the comment-permission rule.
 
@@ -83,6 +85,9 @@ On **GPT-6.1 Sol / high**, inventory all remaining authority/evidence gaps and i
 settle exact shared and per-owner contracts, then give **Luna / high** concrete dependency-ordered implementation passes.
 Include source/drain, aliases/roster/component lifetime, need/liabilities, capacity predicates and real producer/report
 integration. One design covers the whole remaining machinery; local implementation inspection is still required.
+Before specifying more hooks, justify each existing/proposed system against a concrete game test or debugging question,
+compare simpler alternatives and identify excessive complexity. Produce one completion map with required release evidence,
+optional exhaustive tracking, owning symbols, implementation pass and exact deferred validation for every requirement.
 Proposed deferrals must retain current mandatory acceptance unless the user explicitly approves a scope change.
 This replaces repeated design/split/hook cycles with a finite execution plan; it does not implement that design now.
 Commit/push design docs and pause for the model change. Keep all executable validation deferred, then have Sol review
@@ -612,6 +617,13 @@ No automatic model switch, subagent or new chat is authorized by this policy. Al
 - The design must produce a finite list of substantial implementation passes and completion criteria. A pass may contain
   several related owners and coherent commits. Do not create a new design stage or model pause for each file, helper,
   split or mutation hook. Commit boundaries provide review/provenance without forcing a model switch or end of turn.
+- Start design with a scope/value review of existing and proposed machinery. Each system needs a concrete test/debugging
+  consumer, a simpler-alternative assessment and a complexity/cost justification. Define a firm release finish line and
+  optional exhaustive coverage separately. Use one completion map to connect each requirement to its consumer,
+  owning contract/symbols, implementation pass, authored case, deferred check and evidence status; link existing manifests
+  rather than creating competing scenario authorities. The goal is sufficient evidence with less unnecessary machinery.
+- Allow small source-evidenced design amendments for real contradictions. Record the affected contract, impact and
+  replacement acceptance in the same completion map; do not restart the consolidated design or silently expand scope.
 - During Luna implementation, inspect local code and source-review/Omission Audit each coherent commit. Fix ordinary
   implementation errors within the agreed contract. Reopen design only for a concrete contradiction, missing authority
   decision or incompatible native ordering/lifetime behavior; record exact source evidence, retain safe work, and
@@ -653,7 +665,10 @@ Copyable next-chat prompt:
 > Read docs/ai/759-skirmish-ai/HANDOFF.md and its consolidated stage-50 design acceptance. Use GPT-6.1 Sol / high
 > for one source-grounded design covering all remaining machinery and interactions. Define required versus proposed
 > deferred scope, finish line, exact files/contracts/ordering/lifetimes, positive/negative test cases and deferred gate
-> commands. Produce a finite dependency-ordered set of one or more substantial Luna / high implementation passes,
+> commands. Begin with a scope/value review: justify each system by a concrete game test/debugging consumer, compare
+> simpler alternatives and flag excessive complexity. Map every requirement to its implementation and validation;
+> separate required release evidence from optional exhaustive tracking. Expand design precision, not machinery scope.
+> Produce a finite dependency-ordered set of one or more substantial Luna / high implementation passes,
 > with concrete escalation triggers. Preserve mandatory acceptance and normal-play capture/cost obligations.
 > Update existing docs, source-review/Omission Audit/separate Final Closure Audit, commit/push and pause for the model
 > change. Do not implement runtime code or execute validation in this design pass. Luna will implement settled work;
