@@ -10,17 +10,23 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 then one or more dependency-ordered implementation passes on Luna / high. Replace repeated per-component design stages.
 Begin with a scope/value review: justify every system by a concrete test/debugging consumer and prefer the simplest
 sufficient evidence. Expand design precision rather than machinery scope; map every requirement to implementation and validation.
-Current step: M10 combined source review and concrete repairs authored; executable evidence deferred.
-Next: one grouped missing-control authoring batch from the M10 omission list, then final-gate readiness review/execution.
+Current step: M10 combined source review and concrete repairs authored; grouped missing-control authoring is now complete.
+The new native ownership/restore specs cover controlled waits, pre-write state, no-ops, partial failures, delayed IDs,
+queue cloning, campaign economy modes and startup-load suppression. The marked report bridge now checks exact selected
+decision identities in one helper used by the real browser matrix driver. All controls are authored, unrun.
+Next: GPT-6.1 Sol / high final-gate readiness review, then execute the deferred K1–K5 and inherited checks and repair
+findings. That gate establishes native/report behavior and measures whether the capture fences stay cheap when unused.
 Full useful-service authority remains blocked M11; broader production/gameplay proof remains M12. Four passes are not a full-project count.
-The user selected Luna / high for 51–54. The combined review has now identified and repaired concrete conflicts.
-Pause at this review boundary; keep the remaining controls together instead of switching per spec.
-Last explicitly selected profile Luna / high; actual settings for this review unknown. Recommendations do not switch models.
-All executable tests/validation remain deferred to the final gate.
+The user selected Luna / high for 51–54. The combined review identified and repaired concrete conflicts, and this
+grouped continuation authored the missing controls. Last explicitly selected profile Luna / high; actual settings for
+this continuation are unknown. The next recommendation is Sol / high because the gate spans native, browser, report,
+and cost evidence; recommendations do not switch models. All executable tests/validation remain deferred to the final gate.
 Batch base `58dc92f8a9ce4d44cfaa133bbcf621fe8fc22b5b` (stage 50, remote verified). Implementation commit
 `978cb09e70cbc6e2ed0b520971690ea47ab38045` contains 51–54. M10 base
 `bd30bea87f57d87c7751b3a9e5759e5a1e021f24` was remote-verified on resume. M10 review/repair commit
 `a952782dece8e36bef7bc92e01545021dc99fe48` is pushed and remote-verified; this publication metadata follows it.
+Grouped M10 missing-control authoring commit `43b66d9fd` adds the native ownership/restore and producer-report
+controls described in the checkpoint; publication will be remote-verified with this documentation update.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify remote on resume.
 Preserve unrelated Nx merge `59f72e037`. No family/issue is complete. User removed the comment-permission rule.
 
@@ -29,15 +35,16 @@ make incomplete accepting states report unavailable frames, reject malformed lia
 need, and keep roster rollback/disposal working when diagnostics throw. Native recipient fixtures now expose the
 actual game-instance roster so installation reaches the money observers. Browser bridge failures retain their raw
 capture in the failed matrix artifact. Focused roster/input/root/frame controls are authored, unrun.
-The review found required native and dedicated producer/report controls were never authored; they remain explicit
-readiness blockers in the next grouped authoring batch, not merely pending executions.
+The review found required native and dedicated producer/report controls were never authored. The new source/drain,
+container/containable, actor-data, queue, campaign and report-bridge specs close that authoring gap. The real browser
+matrix uses the shared report check; it and all native controls still need execution at the final gate.
 [50 design and 51–54 implementation](follow-ups/runtime-matrix-ci.md#consolidated-machinery-design-checkpoint-2026-10-09-source-design-only)
 add pre-write loss fences at named supply, cargo, component, queue and campaign restore routes; those fences stop an old
 resource read from surviving a known change. A test-owned wrapper catches brief player removal/re-addition, liability
 frames explain when a newly selected purchase changed the later snapshot, and the marked browser report now checks that
 real decision records reach normalization. Empty observer paths return before allocating. The consumed AI input and
 all partial/null-usefulness behavior remain intact. Focused roster/report/frame controls are authored; missing native
-cases need authoring before the final gate, while executable checks and cost measurements remain deferred. M11 still blocks complete usefulness and M12
+controls are now authored; executable checks and cost measurements remain deferred. M11 still blocks complete usefulness and M12
 still holds broader PRO evidence; the design's suggested continuous-tracking deferral is not approved.
 [49 construction fences](follow-ups/runtime-matrix-ci.md#construction-writer-fence-checkpoint-2026-10-08-authoredunverified)
 lose earlier resource history before silent initial/progress/repair health writes and work/start/finish/restore mutations.
@@ -125,12 +132,12 @@ reset capture after setup or replace consumed planner inputs to obtain positive 
 | Construction / repair health writer contract (47) | Source design authored; pause reached | Settled silent health/work/lifecycle boundaries and actual technology caller |
 | Construction presentation and writer fences (48–49) | Authored, unverified; pause reached | Separate sound work and passive pre-write loss before construction/repair readiness changes |
 | Consolidated remaining-machinery design (50) | Authored/source-reviewed; pause reached | Exact C1–C8 contracts, M01–M13 completion map and finite bounded queue |
-| Named supply/container boundaries (51) | Code authored; unverified | Reject stale reads before stock/capacity/boarding changes; native cases deferred |
-| Binding/restore/roster boundaries (52) | Code and roster control authored; unverified | Fence replacement and brief roster churn; native restore cases deferred |
-| Consumed/accepting liability diagnostics (53) | Code and focused frame controls authored; unverified | Explain new claims while preserving the consumed input; native integration still needs controls |
-| Real producer/report and operational controls (54) | Code and bridge control authored; unverified | Carry real capture into the report and keep unmarked fences cheap; cost gate deferred |
-| Combined implementation review (M10) | Source review/repairs authored; readiness open | Four concrete findings repaired; missing native/producer controls block gate readiness |
-| Missing-control authoring | Next grouped batch; Luna high | Finish the existing M01–M08 controls without new machinery; then Sol gate readiness review |
+| Named supply/container boundaries (51) | Code and native controls authored; unverified | Reject stale reads before stock/capacity/boarding changes; run native boundary cases at gate |
+| Binding/restore/roster boundaries (52) | Code and roster/restore controls authored; unverified | Fence replacement and brief roster churn; test native restore cases at gate |
+| Consumed/accepting liability diagnostics (53) | Code and focused frame/native controls authored; unverified | Explain new claims while preserving consumed input; run integration cases at gate |
+| Real producer/report and operational controls (54) | Code and report bridge controls authored; unverified | Carry real capture into report and keep unmarked fences cheap; cost gate deferred |
+| Combined implementation review (M10) | Source review, repairs and controls authored; executable readiness deferred | Four concrete findings repaired; K1–K5 and inherited final-gate checks remain unrun |
+| Missing-control authoring | Authored/unrun; grouped batch complete | Native owner/restore controls and report bridge now have direct consumers; execution and cost evidence remain final-gate work |
 | Complete need/lifetime history and useful throughput | Open; activation still blocked | Public aliases and every relied-on mutation need authority before useful windows/real recipes |
 | Continuous useful capacity | Open | Complete mutation authority for readiness, supply, access/safety and service |
 | Full production adapter/oracles/setup/strategy | Open | Independent PRO-03/06/07 assertions |
@@ -620,8 +627,9 @@ merely because their issue title mentions testing. All authored work remains unv
 ## Model batches and pause contract
 
 The latest user policy is **one consolidated design pass, then grouped implementation passes** for the
-remaining machinery. Stage 50 design, passes 51–54 and M10 source review/repairs are authored.
-M10 readiness stays open for the missing controls named in its checkpoint; group their authoring into one batch.
+remaining machinery. Stage 50 design, passes 51–54, M10 source review/repairs and grouped missing-control authoring
+are complete as authored work. M10 executable readiness stays deferred to the final gate; no test or validation result
+is claimed.
 Full useful-service authority M11 remains blocked, and production/gameplay proof M12
 remains open; those obligations are not erased by the bounded diagnostic finish line.
 Design on GPT-6.1 Sol / high; implement settled contracts on Luna / high; return to Sol for a combined source review
@@ -632,9 +640,8 @@ No automatic model switch, subagent or new chat is authorized by this policy. Al
 | --- | --- | --- |
 | Consolidated design, scope/value, shared/per-owner contracts and acceptance (50) | GPT-6.1 Sol / high | Authored/source-reviewed |
 | Settled implementation, compliance cleanup, wiring, fixtures and test authoring (51–54) | Luna / high | Authored/source-reviewed; executable checks and full native cases deferred |
-| Combined implementation source review and unresolved contract conflicts (M10) | GPT-6.1 Sol / high | Source review/repairs authored; readiness open for missing controls |
-| Remaining specified native and real producer/report controls | Luna / high | Next grouped authoring batch; then Sol gate readiness |
-| Final executable gate and repairs | Sol for causal triage; Luna / high for concrete repairs | Execution remains deferred until the gate; honor exact acceptance and retained commands |
+| Combined implementation source review and unresolved contract conflicts (M10) | GPT-6.1 Sol / high | Source review/repairs and authored controls complete; execution still deferred |
+| Final executable gate and repairs | GPT-6.1 Sol / high for readiness and causal triage; Luna / high for concrete repairs | Next grouped stage; run K1–K5 and inherited checks, then record real browser/cost evidence |
 
 - The design must produce a finite list of substantial implementation passes and completion criteria. A pass may contain
   several related owners and coherent commits. Do not create a new design stage or model pause for each file, helper,

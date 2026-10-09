@@ -518,43 +518,36 @@ the containing documentation commit records that publication. No executable chec
 
 | Acceptance | Source evidence / repair and purpose | Status |
 | --- | --- | --- |
-| M01/M02, C1/C2 | Traced source enter/wait/leave/deduct/subjects and drain enter/wait/leave/post-wait owner/credit/full return, plus container boarding/load/unload/sea/restore and containable clear-before-delegate. Named fences precede the designed writes; native math, callbacks and partial failure remain. | Source-reviewed; required dedicated native controls not authored |
-| M03, C1/C6 | Traced actor install/upgrade/add/remove/definition entry before constructors/map changes, queue restore before clear/clone/notify, and campaign caller inside startup-load skip. Inspected the three exact alias-baseline removals, with no hash refresh. | Source-reviewed; constructor/restore/campaign controls not authored; compliance unrun |
+| M01/M02, C1/C2 | Traced source enter/wait/leave/deduct/subjects and drain enter/wait/leave/post-wait owner/credit/full return, plus container boarding/load/unload/sea/shore/restore and containable clear-before-delegate. Authored controlled waits, old state at loss, assignment no-ops, stock/restore, entry/exit throws, delayed-ID restore, partial container mutation, sea/shore behavior, and clear-before-recursion controls in adjacent specs. | Source-reviewed; controls authored/unrun |
+| M03, C1/C6 | Traced actor install/upgrade/add/remove/definition entry before constructors/map changes, queue restore before clear/clone/notify, and campaign caller inside startup-load skip. Authored map edit ordering, constructor failure before map publication, cloned/empty queue restore, campaign economy rounding/modes, and startup-load suppression controls. Inspected the three exact alias-baseline removals, with no hash refresh. | Source-reviewed; controls authored/unrun; compliance unrun |
 | M04, C3/C5 | Roster loss reporting is now isolated during duplication, rollback and disposal too; a throwing diagnostic cannot strand owned wrappers. Tests cover real remove/re-add/reset, receiver/arguments/native return/throw identity, own/inherited descriptors, foreign replacement, duplicate owner, rollback and reinstall. | Repairs and focused controls authored; K1/K2 unrun |
 | M04/M06 compatibility | Seven native recipient fixtures lacked the newly required `baseGameData.gameInstance`; installation would lose before money hooks were attached. They now use real protocol game instances and live roster getters. The synthetic root fixture supplies its roster host while retaining its intentional unavailable native player authority. | Source incompatibility repaired; prior owner/health/construction/drain cases still unrun |
-| M05, C4 | Moved projection into the existing frame helper. Missing/changed accepting due liabilities, unknown restore status, state gaps and missing input scope cannot claim matching frames. Validates every supplied claim vector across resources and tails, even without gathering needs; malformed tails propagate through accounting/service/native normalization to suppress the parent. | Repairs plus input/root/synthetic report controls authored; actual controller/native producer integration missing |
+| M05, C4 | Moved projection into the existing frame helper. Missing/changed accepting due liabilities, unknown restore status, state gaps and missing input scope cannot claim matching frames. Validates every supplied claim vector across resources and tails; malformed tails suppress parent normalization. Existing native capture controls cover selected/input capture; real matrix report consumption is retained. | Repairs and controls authored; executable integration deferred |
 | M06, C2/C4/C5 | Existing exact payload/recipient/operation join, whole-pile ownership, incoming start/admission exemption and consumed-frame calculation retained. Accepting changes leave the old bound unavailable; legacy absent optional fields keep old diagnostics while new frame status is unavailable. | Source-reviewed; all earlier cargo/payment/window compatibility checks deferred |
-| M07 | Matrix bridge failures now join scenario failures so the emitted failed artifact retains raw capture and normalized gaps. Throwing before report emission previously lost that evidence. | Repair authored; dedicated native and real browser producer/report controls missing |
-| M08, C8 | Empty scene/protocol loss groups return before snapshot/reentrancy allocation; unmatched production host returns before config/capture creation. No new production listener, scan, timer, save/hash field or wire event. Static imports still require bundle measurement. | Source-reviewed; production/foreign-host controls and measurements remain open |
+| M07 | Matrix bridge failures now join scenario failures so the emitted failed artifact retains raw capture and normalized gaps. Native capture now has a dedicated selected-decision/scoped-resource report control; the check is extracted into `skirmish-ai-runtime-production-report.ts`, covered by a focused report spec, and called by the existing real-browser matrix driver for PRO-03/06/07. | Native and consumer controls authored; actual matrix execution deferred |
+| M08, C8 | Empty scene/protocol loss groups return before snapshot/reentrancy allocation; unmatched production host returns before config/capture creation. Existing installer/scene-observation specs cover marker, duplicate install, foreign host/replacement, teardown and listener-free fence behavior. No new production listener, scan, timer, save/hash field or wire event. Static imports still require bundle measurement. | Source-reviewed; controls authored across existing specs; cost measurement remains open |
 | M09/M10 | Reviewed task-owned source/diff and immediate callers; no baseline refresh, new gameplay policy or skill/tool change. Added the frame spec to K3 below. | Source review completed; authored evidence is not gate readiness or validation |
 
-**Omission Audit — required authoring still missing:** the earlier claim that 51–54 had authored every M01–M09
-path/case was too broad. Preserve these existing requirements in one grouped authoring batch:
-
-- M01: `resource-source-resource-history.spec.ts` and `resource-drain-resource-history.spec.ts` for real owners,
-  controlled waits, old state at loss, assignment no-ops, stock/restore, partial load/unload throws, reentrancy and fresh partial capture.
-- M02: `container-resource-history.spec.ts` and containable controls for load/full no-op, boarding, delayed IDs,
-  sea/shore destruction, thrown callback ordering and clear-before-unload recursion.
-- M03: `actor-data-resource-history.spec.ts` plus queue/campaign adjacent controls for constructor timing/throw,
-  matching/empty restore, cloned lane placement, economy rounding/modes and startup-load skip.
-- M05/M06/M07: `T/ai-runtime-resource-producer-report.spec.ts` and
-  `E/skirmish-ai-runtime-resource-producer-report.spec.ts` for actual controller/input/native command/resource
-  capture and a legal marked browser world through `prepareRuntimeVariant`/`runVariant` into normalization,
-  including exact selected/admitted/operation/credit identities and loss/disposal. Existing synthetic/root tests and
-  the matrix decision-count assertion do not substitute for these cases.
-- M08: production/foreign-host/duplicate installer controls and disabled-fence lifecycle controls; paired CPU/heap/
-  bundle measurements execute only at the final gate. Retain every earlier deferred compatibility command.
+**Omission Audit:** the earlier claim that 51–54 had authored every M01–M09 path/case was too broad. This grouped
+authoring pass now adds source/drain, container/containable, actor-data, queue-restore, campaign-setup, and report-bridge
+controls. Existing M04/M05/M06/M08 controls were traced back through roster, root fact, money, accounting, installer,
+and scene-observation consumers. Selected and report decision identities are checked exactly; useful values stay null.
+The real matrix driver invokes the shared report bridge check, while focused native and browser report specs verify
+the scoped operation and bounded bridge contract. No
+authoring omission remains for this finite M01–M10 batch. Real-world integration, shared test-harness lifecycle, cost
+measurements, and every executable check remain final-gate work.
 
 **Separate Final Closure Audit:** traced repaired helpers back to root fact append, recipient money observation,
 resource accounting/service/native/parent normalization, and the emitted matrix result. Native owners and consumed
 inputs remain unchanged; partial useful quantities remain null. No executable verification was run. M10 source review
-is complete but readiness remains open until the missing controls are authored and source-reviewed. M11 is blocked
-and M12 open; no acceptance was removed or treated as optional.
+and control authoring are complete; executable readiness is deferred to the final gate. M11 is blocked and M12 open;
+no acceptance was removed or treated as optional.
 
-**Next action — why:** author the above controls as one Luna / high batch from the settled contracts, then pause for
-GPT-6.1 Sol / high gate readiness and difficult verification repairs. These cases establish that the native writer and
-real report paths behave as specified, rather than just testing synthetic arithmetic. Do not add new machinery,
-reset capture after setup, weaken useful-authority oracles, or execute checks during this authoring batch.
+**Current authoring status — why:** the grouped continuation authored the missing native ownership and restore
+controls and extracted the real matrix report bridge into a focused consumer check. This closes the authoring slice;
+the final gate still must execute native/report checks and measure the unmarked path so diagnostics can be trusted and
+their resource cost understood. Next use GPT-6.1 Sol / high for gate readiness and difficult repairs. Do not add new
+machinery, reset capture after setup, or weaken useful-authority oracles.
 
 #### Deferred tests, operational acceptance and final gate
 
@@ -586,11 +579,11 @@ intended specs/cases and retain source revision, fixture/seed digests and actual
 
 ```sh
 # K1: actual native owners, capture and read/frame/disposal controls
-pnpm exec nx test probable-waffle-phaser --testPathPatterns='resource-(source|drain)-resource-history|container-resource-history|containable-component|actor-data-resource-history|queue-component|campaign-participant-scene-adapter|ai-runtime-recipient-(resource|roster)-capture|ai-runtime-resource-(input-capture|coverage-capture|producer-report)|ai-runtime-unspent-claims|ai-runtime-production-capture|install-ai-runtime-production-capture|scene-resource-observation' --runInBand
+pnpm exec nx test probable-waffle-phaser --testPathPatterns='resource-(source|drain)-resource-history|container-resource-history|containable-resource-history|actor-data-resource-history|queue-resource-history|campaign-participant-scene-adapter-resource-history|ai-runtime-recipient-(resource|roster)-capture|ai-runtime-resource-(input-capture|coverage-capture|producer-report)|ai-runtime-unspent-claims|ai-runtime-production-capture|install-ai-runtime-production-capture|scene-resource-observation' --runInBand
 # K2: protocol money/reset observation and actual player compatibility
 pnpm exec nx test probable-waffle-protocol --testPathPatterns='player-resource-observation|player' --runInBand
 # K3: report join, frame, conditional arithmetic and negative controls (synthetic where labelled)
-pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts skirmish-ai-runtime-resource-need-accounting.spec.ts skirmish-ai-runtime-resource-liability-frames.spec.ts skirmish-ai-runtime-resource-need-boundaries.spec.ts skirmish-ai-runtime-resource-application.spec.ts skirmish-ai-runtime-resource-credit.spec.ts skirmish-ai-runtime-production-causality-normalization.spec.ts skirmish-ai-runtime-resource-producer-report.spec.ts
+pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts skirmish-ai-runtime-resource-need-accounting.spec.ts skirmish-ai-runtime-resource-liability-frames.spec.ts skirmish-ai-runtime-resource-need-boundaries.spec.ts skirmish-ai-runtime-resource-application.spec.ts skirmish-ai-runtime-resource-credit.spec.ts skirmish-ai-runtime-production-causality-normalization.spec.ts skirmish-ai-runtime-production-report.spec.ts
 # K4: real library configs, focused lint/source structure, integration build
 pnpm exec tsc --noEmit -p libs/games/probable-waffle/phaser/tsconfig.spec.json
 pnpm exec tsc --noEmit -p libs/games/probable-waffle/protocol/tsconfig.spec.json
