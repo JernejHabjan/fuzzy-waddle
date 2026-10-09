@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import { ConstructionStateEnum, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { AiRuntimeConstructionV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-construction-v1";
 import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
@@ -82,7 +83,7 @@ test("configured immediate construction can legitimately retain the native skipp
   const result = normalizeRuntimeConstructionAuthority({ ...f.capture, facts: [f.fact(skipped, 1)] });
   expect(result.failures).toEqual([]);
   expect(result.gaps).toContain("production_construction_configured_immediate_native_charge_skipped");
-  expect(result.records[0].construction).toMatchObject({ status: "skipped", requested: null });
+  expect(requireAiTestEntry(result.records, 0).construction).toMatchObject({ status: "skipped", requested: null });
 });
 
 test("a zero-work native charge and denial stay separate from configured payment mode", () => {
@@ -107,7 +108,7 @@ test("a zero-work native charge and denial stay separate from configured payment
   };
   const result = normalizeRuntimeConstructionAuthority({ ...f.capture, facts: [f.fact(denied, 1)] });
   expect(result.failures).toEqual([]);
-  expect(result.records[0].construction).toMatchObject({ status: "denied" });
+  expect(requireAiTestEntry(result.records, 0).construction).toMatchObject({ status: "denied" });
 });
 
 test("restore suppression, missing owner and nested/thrown intervals retain gaps without fabricated applied money", () => {

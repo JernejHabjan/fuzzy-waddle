@@ -17,7 +17,7 @@ frozen map and two representative behavior families using actual fixture reuse, 
 Dependency: #824 tooling and #826 preset-world support already exist. Consume their contracts. Pair #815 and #816
 by behavior family; short fixture authoring can proceed while continuous-match victory remains unproven. A known
 broken shared setup/API blocks its dependent cases, but a red full-match result is not a blanket authoring dependency.
-The handoff's deferred execution policy applies to all commands below.
+The handoff owns execution timing; the authorized final gate is now active.
 
 ## Cold start
 
@@ -446,7 +446,7 @@ The following map preserves stage-50 design/authoring states; the final-gate che
 | M07 Real adapter/report bridge: expose actual producer evidence and explicit gaps | R; C7 root capture, variant runner, production normalization | 51–53 → 54 | Real Phaser actor/components/protocol player/read/native command path into report; initialization loss, post-await service loss and late/disposed capture; native income remains diagnostic while useful fields stay null; contradictory tail suppresses parent | Bridge assertion authored; K1/K3/K5 real-run evidence deferred |
 | M08 Normal-play impact: testing does not install heavy machinery during gaming | R; C8 below, installer/helper controls and existing profiler | 54 | Production/unmarked guard, no sample/clone/listener/timer/root journal; before/after disabled-path and bundle comparison; foreign host/duplicate capture, late callbacks | Fast-path/native controls and production build pass; paired C8/K5 cost/bundle evidence pending |
 | M09 Compliance/publication: economical implementation remains reviewable | R; C6 exact baselines, existing handoff | Each 51–54 | No refreshed hashes/new permanent stage names; task-only prerequisite and behavior commits; source review/Omission Audit/closure, remote SHA and clean task scope | Authored/source-reviewed; implementation commit `978cb09e70cbc6e2ed0b520971690ea47ab38045` remote-verified; checks deferred |
-| M10 Combined review and compatibility: decide readiness before execution | R; C1–C8, all changed consumers | 54 → Sol review | Trace real input → selected/admitted → native application → report/disposal; review all controls, repair concrete contract contradictions; every required unrun check remains listed | Production/native compatibility and capture/queue fixture slices pass; remaining strict K4 types, 22 broader gameplay failures and K5 remain |
+| M10 Combined review and compatibility: decide readiness before execution | R; C1–C8, all changed consumers | 54 → Sol review | Trace real input → selected/admitted → native application → report/disposal; review all controls, repair concrete contract contradictions; every required unrun check remains listed | Production/native compatibility, E2E typing and 457 synthetic report controls pass; native/gameplay K4, 22 broader gameplay failures and K5 remain |
 | M11 Mutation-complete useful resource/continuous capacity: 32/36 full proof | B; C7 plus 32/36/39/42 authority, public APIs | Explicit authority/scope decision; not a hidden fifth Luna pass | Net-zero alias undo, arbitrary definition/Map/item/roster replacement, hidden/stale threats/access changes between reads, full supported initial predicate history; no positive complete channel currently possible | Existing 32/36 gates; blocked, mandatory |
 | M12 Production useful outputs, legal setup and strategy: PRO-03/06/07 release | B; existing production authority contract and evaluators | Broader gameplay/fixture queue, separate from 51–54 | Both-faction transition/abandonment, exposed/safe/no-demand resilience, shared train/research and paid cancellation/pending refund pairs; full oracle and denominator | K5 and owning scenario/policy plans; open, mandatory |
 | M13 Finer loss scopes/continuous journal/lot allocation | O; no new files/owners | Not scheduled; new consumer must justify proposal | No actor-to-beneficiary dependency map, FIFO allocation or extra scan introduced just to recover a diagnostic bound | No extra gate; proposed only |
@@ -510,6 +510,87 @@ authoring is the next grouped boundary before gate readiness; executable validat
 Do not claim stage validation before K1–K5. M11 remains a mandatory blocker from public mutable aliases
 and incomplete access/safety/lifetime history; M12 remains open for full PRO-03/06/07. Neither was reduced by this batch.
 
+### Final-gate production/queue report checkpoint (2026-10-09, partially checked)
+
+Base `6804b955d1f33b646c1acc9e0e9282940f736a68` was clean and remote-verified on
+`feature/759-skirmish-ai` in `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`. The containing commit publishes
+this grouped E2E slice; verify its remote SHA on resume. Actual model/effort unknown; recommendation GPT-6.1 Sol / high
+for the next native command/queue batch. The recommendation is task-specific judgment; it does not switch settings.
+No independent reviewer/subagent, production planner/native/save/wire change, or skill/tool change.
+
+**Purpose and implementation:** close E2E strict contracts before using the reports to judge real matches.
+`normalizeRuntimeProductionCausality`, scoped queue payments, production progress/unspent/rejections, rejection boundaries
+and cancellation paid-lineage retain checked records after exact count checks. The multiplayer queue/shared-queue and
+research cancellation normalizers use the same explicit receipt/callback/terminal ownership. Required single matches,
+order, payload and balance checks remain intact. Failed reports retain diagnostic command rows, while normalized
+money/effects remain empty. Duplicate-receipt and regressed-sequence controls also exercise the mandatory causal evaluator.
+
+Existing `requireAiTestEntry` checks authored slots in production/retry/queue fixtures and related report specs;
+normalizers never use it as authority. Synthetic command ticks are checked, spatial facts retain their exact kind,
+readonly gap arrays are copied only for the Playwright matcher, and mixed negative-control facts retain the complete union.
+The capacity evaluator now accepts only the actual variant/checkpoint fields it consumes, eliminating incomplete
+full-result casts. Construction, digest and multiplayer host-transfer captures retain checked values; all existing
+test declarations are retained once. The host-transfer and actual browser driver are compiled, not executed here.
+
+`evaluateEvidenceStopAtCheckpoint` requires every selected scenario assertion before evaluation. Missing assertions
+retain the full horizon and clear the sustained-success marker instead of crashing or treating a subset as complete.
+Its typed probe includes actual setup queue items. The new control passes the complete selection and rejects a missing
+assertion with retained prior success. Restoring the exact base evaluator reproduces a TypeError at
+`evaluateRuntimeVariant` (`requiredProductionContracts`); the candidate control passes. The diagnostic browser branch
+now records the same explicit missing-assertion failure as normal scenario evaluation. Browser execution remains K5.
+
+| Acceptance / state | Implemented path and evidence |
+| --- | --- |
+| 1. Prerequisites / passed | Clean base, exact remote SHA, agent doctor and issue-816 context pass. Existing actual configs/consumers inspected. |
+| 2. Exact production/queue authority / passed | Checked locals and exact fact predicates in the named normalizers; negative receipt/sequence controls and existing cancellation/completion/payment oracles pass. No rule/threshold relaxation. |
+| 3. Fixture and harness contracts / passed | Exact spatial kind, checked fixture slots, partial capacity input and complete evidence-stop probe. All original declarations retained across 15 changed specs. |
+| 4. Regression / passed | Evidence-stop base reproduction: 1 failed with the original TypeError; candidate complete/missing selection control passes. Initial two failures were incorrect expectations in newly authored diagnostic-command controls, repaired to the existing documented contract; no existing oracle was weakened. |
+| 5. E2E checks / passed | Full actual E2E TypeScript: 145 → 0 diagnostics, exit 0. Grouped 41 synthetic specs: 457 passed. Portal-e2e lint passes with 10 existing warnings; all 32 changed sources pass Prettier and diff checks. No config, baseline or suppression change. |
+| 6. Broader final gate / pending | Earlier Phaser/gameplay strict counts remain 161 / 44 and gameplay has 22 base-reproduced failures; not rerun here. K5 matches, paired disabled-path/bundle cost, socket/save/restart/hash/calibration remain. M11 blocked, M12 open. |
+
+```sh
+pnpm agent:doctor
+pnpm agent:context -- --issue 816
+pnpm exec tsc --noEmit -p apps/portal-e2e/tsconfig.json
+pnpm exec playwright test --config tmp/ai-plans/playwright-resource-gate.config.ts 'skirmish-ai-runtime-production.*spec.ts' 'skirmish-ai-multiplayer-(queue-normalization|shared-queue-normalization).spec.ts' 'skirmish-ai-runtime-construction.*spec.ts' 'skirmish-ai-runtime-(digest|evidence-stop).spec.ts' 'skirmish-ai-runtime-resource.*spec.ts' 'skirmish-ai-runtime-route-(order|caller).spec.ts' 'skirmish-ai-runtime-service-attempt.spec.ts' 'skirmish-ai-runtime-producer-routes.spec.ts'
+pnpm exec playwright test --config tmp/ai-plans/playwright-resource-gate.config.ts skirmish-ai-runtime-evidence-stop.spec.ts --grep 'checkpoint evidence stopping'
+pnpm exec nx lint portal-e2e
+git diff --check
+```
+
+The narrow evidence-stop command reproduced the base failure by temporarily restoring the evaluator's exact HEAD
+bytes and restoring candidate bytes in `finally`. Final checks run on the candidate source. Ignored artifacts under
+`tmp/ai-plans/759-validation/production-queue-report-batch/`: `types-final.log`, `compiler-summary.json`,
+`reports-final.log`, `reports-summary.json`, `evidence-stop-base.log`, `lint-final.log`, `format-final.log`,
+`spec-registration-audit.json`, `review-semantic.diff`, `source-files.json` and `provenance.json`.
+The 145 baseline diagnostics come from the prior batch's exact committed-source log; the final full configuration is
+freshly checked. Changed-source digest: `64b6a604200dc3142937d819ce6d42fd2c14d3e305dd6a315496311a6cf123d6`.
+The existing ignored Playwright config removes only the unused web server; these 457 controls use no browser/page fixture.
+Whole-ledger formatting remains final cleanup; changed-source formatting passes.
+
+**Next grouped batch — why:** repair native dispatch/queue fixtures so the real command application, payment and
+completion contracts can pass strict K4 checking before browser evidence is interpreted. Start with
+`phaser/.../player/ai-controller/dispatch-ai-intent-command.spec.ts` (18 earlier diagnostics),
+`entity/systems/shared-queue-resource.spec.ts` (15), `dispatch-ai-brain-result.spec.ts` (9) and
+`entity/components/queue/observe-queue-completion-authority.spec.ts` (8); resolve their exact paths from
+`tmp/ai-plans/759-validation/fixture-batch/types-native-final.log`. Inspect their actual native contracts and related
+controls, repair the coherent family, then run `pnpm exec tsc --noEmit -p libs/games/probable-waffle/phaser/tsconfig.spec.json`
+and focused native tests/lint. Preserve the now-green E2E type gate when any shared fixture contract changes.
+Then investigate the 22 wider gameplay failures from their first causal disagreement. K4 must finish before K5/cost;
+do not lower oracles, suppress strictness, refresh baselines, or expand machinery/M11/M12. Publish and pause.
+
+**Implementation Review:** self-reviewed all changed owners against the formatted-base semantic diff, exact production
+and multiplayer consumers, report rejection path, fixture records and existing assertions. Missing evidence remains
+explicit; helper failures are fixture failures, never fabricated report authority. No new gameplay lifecycle hooks.
+
+**Omission Audit:** all six acceptance items have evidence or explicit broader blockers above. Existing test registration
+and scenarios remain; native/browser execution is not claimed from type checks. Source/input/usefulness policy and
+unrelated Nx history remain intact. No reusable skill/tool change was justified.
+
+**Separate Final Closure Audit:** final source passes the full E2E type config, 457 selected controls, project lint and
+changed-source formatting; source hashes and exact task scope are checked before publication. The E2E slice is checked;
+M10/K4/release remains partial. Commit/push and remote-SHA verification close delivery, not broader gate readiness.
+
 ### Final-gate resource-report contract checkpoint (2026-10-09, partially checked)
 
 Base `88eb4be01b0750e002af018828ca7393ca636d13` was clean and remote-verified on
@@ -566,7 +647,7 @@ includes `reports-final.log`, `route-register-base.log`, `types-final.log`, per-
 The ignored Playwright config imports the real portal-e2e config and only removes the unused web server for these
 browser-free report controls. Existing whole-ledger formatting remains final cleanup; changed source formatting passes.
 
-**Next grouped batch — why:** production/queue report joins and native dispatch/queue fixtures must become type-safe
+**Historical next batch — why (E2E production/queue slice now checked above):** production/queue report joins and native dispatch/queue fixtures must become type-safe
 before they can establish trustworthy command/payment/completion evidence. Current largest E2E owners are cancellation
 specs (15), completion specs (13), both multiplayer queue fixtures (10 each), production causality normalization (10),
 rejection specs (10), progress and unspent reports (8 each), and multiplayer queue normalizers (7 each). Native owners

@@ -6,7 +6,11 @@ import type { RuntimeCheckpointV1 } from "./skirmish-ai-runtime-checkpoint";
 import { captureCheckpoint } from "./skirmish-ai-runtime-checkpoint-capture";
 import { last } from "./skirmish-ai-runtime-value";
 import { applyRuntimePerturbation } from "./skirmish-ai-runtime-perturbation-runner";
-import { digestRuntimeValue, projectRuntimeOutcomeDigestInput, projectRuntimePresetQueueDigest } from "./skirmish-ai-runtime-digest";
+import {
+  digestRuntimeValue,
+  projectRuntimeOutcomeDigestInput,
+  projectRuntimePresetQueueDigest
+} from "./skirmish-ai-runtime-digest";
 import { prepareRuntimeVariant } from "./skirmish-ai-runtime-variant-setup";
 import { canStopAfterTerminal } from "./skirmish-ai-runtime-terminal";
 import { evaluateEvidenceStopAtCheckpoint } from "./skirmish-ai-runtime-evidence-stop-evaluation";
@@ -40,7 +44,15 @@ export async function runVariant(
 
   try {
     const initialBoundary = await prepareRuntimeVariant(
-      page, fixture, variant, effectiveSeed, sourceRevision, fixtureDigest, profiling, aiErrors, debugProbe
+      page,
+      fixture,
+      variant,
+      effectiveSeed,
+      sourceRevision,
+      fixtureDigest,
+      profiling,
+      aiErrors,
+      debugProbe
     );
     const setupMs = Math.round(performance.now() - variantStartedAt);
     const checkpoints: RuntimeCheckpointV1[] = [];
@@ -53,12 +65,14 @@ export async function runVariant(
     );
     const captureProduction = applicableScenarioIds.some((id) => ["PRO-03", "PRO-06", "PRO-07"].includes(id));
     let productionCapture = captureProduction
-      ? await captureRuntimeProductionAuthority(page, fixture.recipe.aiPlayerNumber) : undefined;
+      ? await captureRuntimeProductionAuthority(page, fixture.recipe.aiPlayerNumber)
+      : undefined;
     let stopReason: RuntimeVariantResultV1["stopReason"] = "checkpoint_ceiling";
     let satisfiedSinceTick: number | null = null;
     const maximumTick = Math.max(
-      ...applicableScenarioIds
-        .map((scenarioId) => fixture.assertions[scenarioId]?.maximumTick ?? last(fixture.recipe.checkpointTicks))
+      ...applicableScenarioIds.map(
+        (scenarioId) => fixture.assertions[scenarioId]?.maximumTick ?? last(fixture.recipe.checkpointTicks)
+      )
     );
     const checkpointTicks = [...new Set(variant.checkpointTicks ?? fixture.recipe.checkpointTicks)]
       .filter((tick) => tick <= maximumTick)
@@ -95,7 +109,8 @@ export async function runVariant(
       const captureStartedAt = performance.now();
       const checkpoint = await captureCheckpoint(page, fixture.recipe.aiPlayerNumber, targetTick);
       checkpoints.push(checkpoint);
-      if (captureProduction) productionCapture = await captureRuntimeProductionAuthority(page, fixture.recipe.aiPlayerNumber);
+      if (captureProduction)
+        productionCapture = await captureRuntimeProductionAuthority(page, fixture.recipe.aiPlayerNumber);
       await debugProbe?.(page, index);
       if (profiling) {
         checkpointPhases.push({
@@ -115,8 +130,16 @@ export async function runVariant(
       }
       if (variant.evidenceStop) {
         const next = evaluateEvidenceStopAtCheckpoint({
-          variant, fixture, scenarioIds: applicableScenarioIds, initialBoundary, effectiveSeed,
-          checkpoints, perturbations, aiErrors, pendingEventTicks, satisfiedSinceTick
+          variant,
+          fixture,
+          scenarioIds: applicableScenarioIds,
+          initialBoundary,
+          effectiveSeed,
+          checkpoints,
+          perturbations,
+          aiErrors,
+          pendingEventTicks,
+          satisfiedSinceTick
         });
         satisfiedSinceTick = next.satisfiedSinceTick;
         if (next.stop) {
@@ -125,7 +148,7 @@ export async function runVariant(
         }
       }
     }
-    perturbations.push(...await collectRuntimePresetEvents(page, variant));
+    perturbations.push(...(await collectRuntimePresetEvents(page, variant)));
 
     const initialWorldDigest = digestRuntimeValue({
       seed: effectiveSeed,
@@ -146,7 +169,11 @@ export async function runVariant(
         : null
     });
     const outcomeDigest = digestRuntimeValue({
-      checkpoints: projectRuntimeOutcomeDigestInput(checkpoints, !variant.presetWorld, !!variant.productionCompositionBranch),
+      checkpoints: projectRuntimeOutcomeDigestInput(
+        checkpoints,
+        !variant.presetWorld,
+        !!variant.productionCompositionBranch
+      ),
       perturbations,
       aiErrors
     });
@@ -189,13 +216,20 @@ export async function runVariant(
       ...(variant.pressureBranch ? { pressureBranch: variant.pressureBranch } : {}),
       ...(variant.resourceServiceBranch ? { resourceServiceBranch: variant.resourceServiceBranch } : {}),
       ...(variant.productionCapacityBranch ? { productionCapacityBranch: variant.productionCapacityBranch } : {}),
-      ...(variant.productionCompositionBranch ? { productionCompositionBranch: variant.productionCompositionBranch } : {}),
+      ...(variant.productionCompositionBranch
+        ? { productionCompositionBranch: variant.productionCompositionBranch }
+        : {}),
       initialWorldDigest,
       outcomeDigest,
-      ...(productionCapture ? {
-        productionCapture,
-        productionCausality: normalizeRuntimeProductionCausality(productionCapture, initialBoundary.presetApplication)
-      } : {}),
+      ...(productionCapture
+        ? {
+            productionCapture,
+            productionCausality: normalizeRuntimeProductionCausality(
+              productionCapture,
+              initialBoundary.presetApplication ?? undefined
+            )
+          }
+        : {}),
       checkpoints,
       perturbations,
       aiErrors,

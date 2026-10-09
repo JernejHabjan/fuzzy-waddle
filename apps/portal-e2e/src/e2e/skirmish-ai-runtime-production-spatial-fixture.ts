@@ -91,13 +91,14 @@ export function productionSpatialFixture() {
     tile: { x: 6, y: 9 },
     position: { x: 100, y: 200, z: 0 }
   } satisfies AiRuntimeProductionSpatialV1;
-  const fact = (spatial: AiRuntimeProductionSpatialV1, sequence: number): AiRuntimeProductionFactV1 => ({
-    kind: "spatial_authority",
-    playerNumber: 1,
-    tick: spatial.clockTick ?? 20,
-    sequence,
-    spatial
-  });
+  const fact = (spatial: AiRuntimeProductionSpatialV1, sequence: number) =>
+    ({
+      kind: "spatial_authority",
+      playerNumber: 1,
+      tick: spatial.clockTick ?? 20,
+      sequence,
+      spatial
+    }) satisfies Extract<AiRuntimeProductionFactV1, { kind: "spatial_authority" }>;
   const capture = {
     ...base,
     snapshots: [],

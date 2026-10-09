@@ -32,20 +32,24 @@ test("executes selected AI scenarios in real lobby-started Phaser matches", asyn
       const executed: RuntimeVariantResultV1[] = [];
       for (const variant of fixture.recipe.variants.filter(
         (candidate) =>
-          (candidate.scenarioIds === undefined || candidate.scenarioIds.some((id) => request.scenarioIds.includes(id))) &&
+          (candidate.scenarioIds === undefined ||
+            candidate.scenarioIds.some((id) => request.scenarioIds.includes(id))) &&
           (!request.diagnosticSelection || candidate.id === request.diagnosticSelection.variantId)
       )) {
         for (let repetition = 1; repetition <= (variant.repetitions ?? 1); repetition += 1) {
           if (request.diagnosticSelection && repetition !== request.diagnosticSelection.repetition) continue;
-          executed.push(
-            {
-              ...(await runVariant(
-                browser, fixture, variant, request.seed, request.scenarioIds,
-                request.sourceRevision, request.fixtureDigest
-              )),
-              repetition
-            }
-          );
+          executed.push({
+            ...(await runVariant(
+              browser,
+              fixture,
+              variant,
+              request.seed,
+              request.scenarioIds,
+              request.sourceRevision,
+              request.fixtureDigest
+            )),
+            repetition
+          });
         }
       }
       variants = executed;
@@ -58,10 +62,16 @@ test("executes selected AI scenarios in real lobby-started Phaser matches", asyn
     );
     const scenarioVariants = variants.filter((variant) => applicableVariantIds.has(variant.variantId));
     // Retain raw native evidence in the emitted failed report so bridge failures can be diagnosed at the final gate.
-    const bridgeFailures = scenarioVariants.flatMap((variant) => checkRuntimeProductionReportBridge(scenarioId, variant));
+    const bridgeFailures = scenarioVariants.flatMap((variant) =>
+      checkRuntimeProductionReportBridge(scenarioId, variant)
+    );
+    const diagnosticVariant = scenarioVariants[0];
+    const assertion = fixture.assertions[scenarioId];
     const failures = request.diagnosticSelection
-      ? scenarioVariants.length === 1
-        ? evaluateRuntimeVariant(scenarioId, fixture.assertions[scenarioId], scenarioVariants[0])
+      ? scenarioVariants.length === 1 && diagnosticVariant
+        ? assertion
+          ? evaluateRuntimeVariant(scenarioId, assertion, diagnosticVariant)
+          : [`runtime_assertions_missing:${scenarioId}`]
         : ["diagnostic_variant_missing_or_ambiguous"]
       : evaluateScenario(scenarioId, fixture, scenarioVariants);
     failures.push(...bridgeFailures);
@@ -74,8 +84,12 @@ test("executes selected AI scenarios in real lobby-started Phaser matches", asyn
     dirtySourceDigest: request.dirtySourceDigest,
     fixtureDigest: request.fixtureDigest,
     status: request.diagnosticSelection
-      ? scenarioResults.every((result) => result.passed) ? "diagnostic_passed" : "diagnostic_failed"
-      : scenarioResults.every((result) => result.passed) ? "passed" : "failed",
+      ? scenarioResults.every((result) => result.passed)
+        ? "diagnostic_passed"
+        : "diagnostic_failed"
+      : scenarioResults.every((result) => result.passed)
+        ? "passed"
+        : "failed",
     diagnosticSelection: request.diagnosticSelection ?? null,
     scenarios: scenarioResults,
     workCounts: {
