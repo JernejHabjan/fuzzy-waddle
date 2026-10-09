@@ -148,24 +148,30 @@ export class PawnAgentMovement {
       const canMoveToTarget = await this.CanMoveToTarget(range);
       if (!canMoveToTarget) {
         // console.log("[Build] MoveToTarget: Cannot move to target (unreachable), type=", type);
+        this.stopFailedMove(currentOrder);
         return State.FAILED;
       }
       // console.log("[Build] MoveToTarget: Moving to target, type=", type);
-      const success = await movementSystem.moveToActorByAdjustingPathDynamically(target, {
-        radiusTilesAroundDestination: range,
-        onUpdateThrottled: () => {
-          // if the target is not alive, stop moving
-          const healthComponent = getActorComponent(target, HealthComponent);
-          if (healthComponent && healthComponent.killed) {
-            this.agent.Stop("MoveToTarget");
+      const success = await movementSystem.moveToActorByAdjustingPathDynamically(
+        target,
+        {
+          radiusTilesAroundDestination: range,
+          onUpdateThrottled: () => {
+            // if the target is not alive, stop moving
+            const healthComponent = getActorComponent(target, HealthComponent);
+            if (healthComponent && healthComponent.killed) {
+              this.agent.Stop("MoveToTarget");
+            }
           }
-        }
-      } satisfies Partial<PathMoveConfig>,
-        MovementQueryObservation.capture(this.gameObject, this.blackboard, currentOrder, "actor_movement"));
+        } satisfies Partial<PathMoveConfig>,
+        MovementQueryObservation.capture(this.gameObject, this.blackboard, currentOrder, "actor_movement")
+      );
       // console.log("[Build] MoveToTarget: Movement result=", success ? "SUCCESS" : "FAILED");
+      if (!success) this.stopFailedMove(currentOrder);
       return success ? State.SUCCEEDED : State.FAILED;
     } catch (e) {
       console.error("[Build] MoveToTarget: Error", e);
+      this.stopFailedMove(currentOrder);
       return State.FAILED;
     }
   }
@@ -198,25 +204,44 @@ export class PawnAgentMovement {
       const isAttackMove = currentOrder.orderType === OrderType.Attack && !currentOrder.data.targetGameObject;
       let success: boolean;
       if (isAttackMove) {
-        success = await movementSystem.moveToLocationByFollowingStaticPath(location, {
-          onUpdateThrottled: () => {
-            const enemy = this.closestAttackableEnemy();
-            if (enemy) {
-              currentOrder.data.targetGameObject = enemy;
-              movementSystem.cancelMovement();
+        success = await movementSystem.moveToLocationByFollowingStaticPath(
+          location,
+          {
+            onUpdateThrottled: () => {
+              const enemy = this.closestAttackableEnemy();
+              if (enemy) {
+                currentOrder.data.targetGameObject = enemy;
+                movementSystem.cancelMovement();
+              }
             }
-          }
-        } satisfies Partial<PathMoveConfig>,
-          MovementQueryObservation.capture(this.gameObject, this.blackboard, currentOrder, "location_movement"));
+          } satisfies Partial<PathMoveConfig>,
+          MovementQueryObservation.capture(this.gameObject, this.blackboard, currentOrder, "location_movement")
+        );
       } else {
-        success = await movementSystem.moveToLocationByFollowingStaticPath(location, undefined,
-          MovementQueryObservation.capture(this.gameObject, this.blackboard, currentOrder, "location_movement"));
+        success = await movementSystem.moveToLocationByFollowingStaticPath(
+          location,
+          undefined,
+          MovementQueryObservation.capture(this.gameObject, this.blackboard, currentOrder, "location_movement")
+        );
       }
+      if (!success) this.stopFailedMove(currentOrder);
       return success ? State.SUCCEEDED : State.FAILED;
     } catch (e) {
       // console.error("Error in MoveToLocation", e);
-      this.agent.Stop("MoveToLocation");
+      if (this.blackboard.getCurrentOrder() === currentOrder) this.agent.Stop("MoveToLocation");
       return State.FAILED;
+    }
+  }
+
+  /** A refused Move is terminal, not progress. Late returns cannot stop a replacement or an attack/gather cycle. */
+  private stopFailedMove(order: OrderData): void {
+    if (
+      order.orderType === OrderType.Move &&
+      this.blackboard.getCurrentOrder() === order &&
+      this.gameObject.active &&
+      this.gameObject.scene?.sys.isActive()
+    ) {
+      this.agent.Stop("Move - Movement Failed");
     }
   }
 
@@ -228,8 +253,11 @@ export class PawnAgentMovement {
     const movementSystem = getActorSystem(this.gameObject, MovementSystem);
     if (!movementSystem) return Promise.resolve(false);
     // noinspection UnnecessaryLocalVariableJS
-    return await movementSystem.canMoveTo(target, range,
-      MovementQueryObservation.capture(this.gameObject, this.blackboard, currentOrder, "reachability_probe"));
+    return await movementSystem.canMoveTo(
+      target,
+      range,
+      MovementQueryObservation.capture(this.gameObject, this.blackboard, currentOrder, "reachability_probe")
+    );
   }
 
   /**
@@ -249,5 +277,4 @@ export class PawnAgentMovement {
     this.blackboard.addOrder(new OrderData(OrderType.Move, { targetTileLocation: targetLocation }));
     return State.SUCCEEDED;
   }
-
 }

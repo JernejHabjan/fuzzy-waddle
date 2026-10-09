@@ -443,10 +443,10 @@ The following map preserves stage-50 design/authoring states; the final-gate che
 | M04 Recipient roster: journal knows remove/re-add before another read | R; C3 roster capture and recipient owner | 52 | Real protocol game instance add/remove/reset with actual protocol players; temporary removal/re-add, native throw, foreign receiver/descriptor/replacement, installation rollback, disposal/reinstall | Wrapper code/spec authored; K1/K2 deferred |
 | M05 Exact consumed/accepting frames: explain purchase-plus-gather null bounds | R; C4 fact union/input/root/unspent/report fields | 52 → 53 | Real input/controller selected event with zero and nonzero new claims; immediate paid vs future queue transfer; due head exhaustion; unsupported building/pre-capture/expired/recovery claims and callback-in-progress; mismatch stays null | Code plus focused input/root/synthetic frame controls authored; full native integration still missing; K1/K3 deferred |
 | M06 Cargo/recipient/window compatibility: preserve credited income without false usefulness | R; C2/C4/C5 existing credit/application/need projections | 53 | Exact real payload join; normal/granted/none and changed owner; mixed/old/restored cargo; grant then spend cannot reopen shortage; publication delayed across application window; same-tick/straddle/overflow bad tail | Existing path retained; K1/K3 compatibility cases deferred |
-| M07 Real adapter/report bridge: expose actual producer evidence and explicit gaps | R; C7 root capture, variant runner, production normalization | 51–53 → 54 | Real Phaser actor/components/protocol player/read/native command path into report; initialization loss, post-await service loss and late/disposed capture; native income remains diagnostic while useful fields stay null; contradictory tail suppresses parent | Native/synthetic controls and real 16-decision short replay pass; long K5 bridge fails on outcome lineage/authority, retained in the browser readiness checkpoint |
+| M07 Real adapter/report bridge: expose actual producer evidence and explicit gaps | R; C7 root capture, variant runner, production normalization | 51–53 → 54 | Real Phaser actor/components/protocol player/read/native command path into report; initialization loss, post-await service loss and late/disposed capture; native income remains diagnostic while useful fields stay null; contradictory tail suppresses parent | Short probe and full 611-decision native diagnostic bridge pass after causal repairs; full production contract/authority/capacity remains open in the native causal checkpoint |
 | M08 Normal-play impact: testing does not install heavy machinery during gaming | R; C8 below, installer/helper controls and existing profiler | 54 | Production/unmarked guard, no sample/clone/listener/timer/root journal; before/after disabled-path and bundle comparison; foreign host/duplicate capture, late callbacks | Fast-path/native controls and production build pass; marked capture phase measured, paired C8 cost/bundle evidence pending |
 | M09 Compliance/publication: economical implementation remains reviewable | R; C6 exact baselines, existing handoff | Each 51–54 | No refreshed hashes/new permanent stage names; task-only prerequisite and behavior commits; source review/Omission Audit/closure, remote SHA and clean task scope | Authored/source-reviewed; implementation commit `978cb09e70cbc6e2ed0b520971690ea47ab38045` remote-verified; checks deferred |
-| M10 Combined review and compatibility: decide readiness before execution | R; C1–C8, all changed consumers | 54 → Sol review | Trace real input → selected/admitted → native application → report/disposal; review all controls, repair concrete contract contradictions; every required unrun check remains listed | K4 compatibility and K5 timing/transport repairs checked; gameplay 274/native 679/report 461 tests pass; K5 actual failure retained, C8 and broader release remain |
+| M10 Combined review and compatibility: decide readiness before execution | R; C1–C8, all changed consumers | 54 → Sol review | Trace real input → selected/admitted → native application → report/disposal; review all controls, repair concrete contract contradictions; every required unrun check remains listed | K4 compatibility and K5 native causal repairs checked; native 702 tests, typing/build pass; prior gameplay 274/report 461 remain scoped evidence; full production failure retained, C8 and broader release remain |
 | M11 Mutation-complete useful resource/continuous capacity: 32/36 full proof | B; C7 plus 32/36/39/42 authority, public APIs | Explicit authority/scope decision; not a hidden fifth Luna pass | Net-zero alias undo, arbitrary definition/Map/item/roster replacement, hidden/stale threats/access changes between reads, full supported initial predicate history; no positive complete channel currently possible | Existing 32/36 gates; blocked, mandatory |
 | M12 Production useful outputs, legal setup and strategy: PRO-03/06/07 release | B; existing production authority contract and evaluators | Broader gameplay/fixture queue, separate from 51–54 | Both-faction transition/abandonment, exposed/safe/no-demand resilience, shared train/research and paid cancellation/pending refund pairs; full oracle and denominator | K5 and owning scenario/policy plans; open, mandatory |
 | M13 Finer loss scopes/continuous journal/lot allocation | O; no new files/owners | Not scheduled; new consumer must justify proposal | No actor-to-beneficiary dependency map, FIFO allocation or extra scan introduced just to recover a diagnostic bound | No extra gate; proposed only |
@@ -510,6 +510,96 @@ Historical authoring boundary: M10 source review found missing controls, subsequ
 final-gate checkpoints below. The user-authorized final gate is active; K5/C8 and broader release evidence remain.
 Do not claim stage validation before K1–K5. M11 remains a mandatory blocker from public mutable aliases
 and incomplete access/safety/lifetime history; M12 remains open for full PRO-03/06/07. Neither was reduced by this batch.
+
+### Final-gate native causal checkpoint (2026-10-09, stage checked)
+
+Clean base/remote `e3f192e0c243f5d97b6e98813d9e7791850328ca`, branch `feature/759-skirmish-ai`, worktree
+`/home/jernej/.codex/worktrees/7977/fuzzy-waddle`. User authorized this combined causal repair batch and active final
+checks, then commit/push/pause. Actual model/effort unknown; no switch, new chat or subagent. Containing commit owns
+publication; verify remote on resume. Unrelated Nx merge `59f72e037` retained.
+
+**Diagnosis / first disagreement:** an offline audit invokes the actual shared lineage validator for all 34 accepted
+queue, construction and service commands in the prior 69,310,679-byte native artifact. Only four `lost_outcome` facts
+fail lineage: one Move and three gathering orders. The Move repeatedly returns false from real navigation starting
+at tick 53 but remains current until tick 7,220. The gatherers continue positive native harvesting/drop-off before and
+after their timeouts, yet publish no progress outcome. These are native command lifecycle defects, not a reason to
+relax the report validator or extend its timeouts. The roster error independently originates in direct editor actors
+for absent player 3; campaign participants are resolved before actor initialization.
+
+**Implemented / why used:** `PawnAgentMovement.stopFailedMove` settles the current refused Move through existing
+`PawnAgentOrders.Stop` and terminal classification. Exact current-order/liveness checks prevent an old Promise from
+stopping a replacement. Attack-move and gather false-return recovery remain; exception cleanup keeps current-order
+ownership. `PawnAgentResources.reportResourceProgress` publishes the existing `active` outcome after a finite positive
+native return, only for the same current order, addressed actor and owner. This renews existing command reconciliation
+while zero work, replaced/converted/inactive/unstamped orders and truly stalled work retain timeout behavior.
+It proves native work, not terminal completion, income attribution or useful capacity. No new observer, timer, journal,
+schema or planner policy. Durable guidance is in `architecture/resilience-and-lifecycle.md` beside the AI controller.
+
+`SceneActorCreator.spawnFromSpawnList` excludes direct editor actors for absent positive player slots before components
+publish owner/player changes or registration. Spawn markers already use this boundary. Neutral `-1`/unowned and
+participating player/campaign actors retain initialization; saved/runtime definition creation is unchanged.
+The redundant local GameObject alias is removed so the touched owner satisfies the existing structure rule without
+refreshing a baseline. Three new specs cover movement terminals, resource progress/reconciliation and editor roster.
+
+| Acceptance / state | Evidence and remaining boundary |
+| --- | --- |
+| 1. Resume and full causal trace / checked | Doctor/context pass; 34 real accepted commands audited with actual family validators. Exactly four timeout facts cause prior lineage failures. Queue/construction validators and all authority oracles unchanged. |
+| 2. Native lifecycle repair / checked | Before: six failing new regressions / fourteen passing controls. Final: 23 new cases; native Move failure/stale Promise/exception/attack recovery and positive/zero/stalled/replaced/converted/inactive/unstamped resource controls pass. Full native suite 146 suites / 702 tests passes. |
+| 3. Legal roster / checked | Absent-owner actor destroyed before initialization/registration; neutral and campaign player-3 controls pass. Real 300-target-tick probe ends at 303 with no page errors, no player-3 actors, 849 facts and all 16 selections normalized; refused Move terminal at tick 26. Screenshot inspected. |
+| 4. Full native bridge / checked, scenario failed | Unchanged single PRO-03/Tivara diagnostic: 611 decisions / 12,031 ticks; 5,737 facts, zero dropped facts/snapshots; all 611 exact decisions retained, zero normalization/bridge failures and zero lost_outcome. 95 native resource progress outcomes; Move terminals at 53/11,699. Useful fields stay null. |
+| 5. Compatibility/quality / checked | Actual Phaser spec and E2E compiler configs exit zero; all six sources pass scoped libs flat ESLint with explicit existing structure rule and Prettier. Portal production build passes; initial-bundle warning remains, not paired C8 proof. Final formatted resource spec rerun: ten passing cases. |
+| 6. Release/cost / open or blocked | Full PRO-03 still fails missing production contract, mandatory authority gaps and minimum military-producer count. M11 blocked/M12 open; no useful activation or scenario registration. C8 and wider server/socket/save/restart/hash/calibration/necessity review pending. |
+| 7. Delivery / scoped | Three native sources, three new specs, durable lifecycle doc and two existing coordination docs. Exact staging; no ignored raw artifact, fixture, oracle, config or baseline change. Normal push and remote-SHA verification required. |
+
+**Provenance / retained evidence:** full matrix
+`tmp/ai-plans/759-validation/browser-readiness-batch/1791575849795-diagnostic_failed.json`; raw
+`tmp/ai-skirmish-runtime-results/run-BZnXyt/runtime.json`, **106,133,304 bytes**, SHA256
+`f2d37b5b69a203f11f778ed264f0689a020ee950c7f60b4f9f75b4720bd873e5`.
+Source base above, dirty `fnv1a32:f26886cd`, fixture `fnv1a32:221d6201`, seed 759101.
+Process wall 249,738 ms; phase setup 7,554 ms, advance 29,021 ms, settle 1,336 ms, capture 176,305 ms.
+These are marked diagnostic phase times, not isolated hooks, allocation evidence or paired normal-play cost.
+The short probe (`causal-native-probe.json`) is 13,925,856 bytes, SHA256
+`1f7bed9401d2cdf22be3f5478200963b55ff85421f731d9ed87b07cae04fdff9`.
+`causal-browser.spec.ts` asserts all page errors, unlike the existing AI-labelled error filter; no general full-match
+page-error guarantee is inferred from empty `aiErrors`. `causal-startup.png` retains the real screenshot.
+
+```sh
+pnpm agent:doctor
+pnpm agent:context -- --issue 816
+pnpm exec playwright test --config tmp/ai-plans/759-validation/browser-readiness-batch/lineage.config.ts
+pnpm exec jest --config libs/games/probable-waffle/phaser/jest.config.cts --runInBand
+pnpm exec tsc --noEmit -p libs/games/probable-waffle/phaser/tsconfig.spec.json
+pnpm exec tsc --noEmit -p apps/portal-e2e/tsconfig.json
+pnpm exec nx build portal --configuration=production
+pnpm exec playwright test --config tmp/ai-plans/759-validation/browser-readiness-batch/causal-browser.config.ts
+AI_SKIRMISH_PROFILE=1 pnpm exec node tools/ai/run-skirmish-matrix.mjs --scenario PRO-03 --variant tivara-production --repetition 1 --mode runtime --run-id k5-native-causal-candidate --output tmp/ai-plans/759-validation/browser-readiness-batch
+pnpm exec node tools/ai/summarize-skirmish-report.mjs --report tmp/ai-plans/759-validation/browser-readiness-batch/1791575849795-diagnostic_failed.json --scenario PRO-03 --failures-only --details
+```
+
+Ignored directory above retains `lineage-audit.json/log`, failing-before/passing-after logs, full native/compiler/lint/
+format/build logs, real probe/screenshot, runtime summary and `causal-evidence-summary.json`. Native full run took
+101.558 s while independent checks/startup were active; browser probe 44.2 s. Final production bytes are unchanged
+from the full browser run; later edits only format one spec and add documentation. These runs are scoped correctness
+evidence, not performance comparisons. Previous 461 synthetic/seven Node and gameplay 274 checks are prior scoped
+evidence; their owners were not changed or rerun here.
+
+**Implementation Review:** traced original native facts through accepted commands, movement refusal, current-order
+cleanup/terminal classification, real positive resource returns, reconciliation and shared report validation. Reviewed
+cross-await replacement, owner conversion, inactive/unstamped boundaries, campaign-before-startup ordering and save/load
+consumers. No timeout, report oracle or useful channel relaxed; every new helper has immediate native consumers.
+**Omission Audit:** all seven rows have evidence or named blockers; every original native test remains, 23 new cases
+execute exactly once. Failed runtime output is retained and not called release success. No gameplay-result comparison,
+new fixture family, skill/tool change, baseline refresh or cost claim is inferred.
+**Separate Final Closure Audit:** final source/structure/format, actual types, 702 native cases, current production
+build, native probe/full bridge, raw hashes, document links and exact staged ownership checked. This closes the causal
+repair slice only; K5 release, C8, M11/M12 and wider gate remain open. Publication requires normal push/remote equality.
+
+**Next combined batch / why:** GPT-6.1 Sol / high for C8 equivalent baseline/world setup, paired normal-play/marked
+CPU/allocation/reachable-gzip measurements and justified causal cost repair. Read C8 in this plan and use pinned baseline
+`af9d078d9`, one warm-up and at least three alternating pairs in production/unmarked/marked modes. The two natural
+diagnostics are not controlled cost pairs: world setup, actor identities and outcomes differ. Preserve native digests,
+full denominator/oracles and useful nulls; M11/M12 authority/adapter/gameplay remain mandatory after this cost boundary.
+Measure before expanding production proof; commit/push the coherent checked batch and pause.
 
 ### Final-gate browser readiness checkpoint (2026-10-09, diagnostic repairs checked)
 
@@ -612,7 +702,7 @@ negative. No speculative gameplay fix, new scenario registration or cost claim. 
 all controls, remaining real failure, document links, exact task scope and unrelated Nx merge retained were checked
 before publication. This closes diagnostic repairs only; K5/C8/release remain open.
 
-**Next combined batch / why:** GPT-6.1 Sol / high for the actual native outcome lineage and legal-world/M12 boundary.
+**Historical next combined batch / why (native causal repairs checked above):** GPT-6.1 Sol / high for the actual native outcome lineage and legal-world/M12 boundary.
 Start with the named report above (rerun the exact diagnostic if ignored artifacts are absent), then narrow
 `skirmish-ai-runtime-route-service-lineage.ts`, shared command outcomes, construction lineage and
 `SceneActorCreator.spawnFromSpawnList`. Establish the first disagreement and a focused native regression before

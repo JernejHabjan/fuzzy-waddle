@@ -9,6 +9,12 @@ import { GathererComponent } from "../../entity/components/resource/gatherer-com
 import { ResourceSourceComponent } from "../../entity/components/resource/resource-source-component";
 import { HealthComponent } from "../../entity/components/combat/components/health-component";
 import { PawnResourceServiceObservation } from "./pawn-resource-service-observation";
+import type { OrderData } from "../../ai/OrderData";
+import { OwnerComponent } from "../../entity/components/owner-component";
+import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
+import { getSceneService } from "../../world/services/scene-component-helpers";
+import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
+import { SimulationTickService } from "../../world/services/simulation-tick.service";
 
 /** Owns resource acquisition, gathering and return actions, preserving native target mutation and async boundaries.
  * Actor-local collaborators own no subscriptions, timers or saved state; the controller owns their lifetime.
@@ -69,8 +75,16 @@ export class PawnAgentResources {
     if (!resourceSourceComponent || resourceSourceComponent.getCurrentResources() <= 0) return State.FAILED;
     const successfullyStarted = gathererComponent.startGatheringResources(target);
     if (!successfullyStarted) return State.FAILED;
-    await PawnResourceServiceObservation.invoke(this.gameObject, this.blackboard, currentOrder, target, "gather",
-      (execution) => execution ? gathererComponent.gatherResources(target, execution) : gathererComponent.gatherResources(target));
+    const amount = await PawnResourceServiceObservation.invoke(
+      this.gameObject,
+      this.blackboard,
+      currentOrder,
+      target,
+      "gather",
+      (execution) =>
+        execution ? gathererComponent.gatherResources(target, execution) : gathererComponent.gatherResources(target)
+    );
+    this.reportResourceProgress(currentOrder, amount);
     return State.SUCCEEDED;
   }
 
@@ -82,9 +96,51 @@ export class PawnAgentResources {
     if (!target) return State.FAILED;
     const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
     if (!gathererComponent) return State.FAILED;
-    await PawnResourceServiceObservation.invoke(this.gameObject, this.blackboard, currentOrder, target, "drop_off",
-      (execution) => execution ? gathererComponent.returnResources(target, execution) : gathererComponent.returnResources(target));
+    const amount = await PawnResourceServiceObservation.invoke(
+      this.gameObject,
+      this.blackboard,
+      currentOrder,
+      target,
+      "drop_off",
+      (execution) =>
+        execution ? gathererComponent.returnResources(target, execution) : gathererComponent.returnResources(target)
+    );
+    this.reportResourceProgress(currentOrder, amount);
     return State.SUCCEEDED;
+  }
+
+  /** Positive native work renews the existing timeout; it proves neither terminal completion nor useful income. */
+  private reportResourceProgress(order: OrderData, amount: number): void {
+    const context = order.data.commandContext;
+    if (
+      !Number.isFinite(amount) ||
+      amount <= 0 ||
+      !context ||
+      this.blackboard.getCurrentOrder() !== order ||
+      !this.gameObject.active ||
+      !this.gameObject.scene?.sys.isActive() ||
+      getActorComponent(this.gameObject, OwnerComponent)?.getOwner() !== context.playerNumber
+    )
+      return;
+    const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
+    const tick = getSceneService(this.gameObject.scene, SimulationTickService)?.currentTick;
+    if (!actorId || !context.actorIds.includes(actorId) || tick === undefined) return;
+    getSceneService(this.gameObject.scene, CommandBusService)?.reportPersistedOutcome({
+      schemaVersion: 1,
+      kind: "active",
+      reason: "applied",
+      tick,
+      playerNumber: context.playerNumber,
+      commandId: context.execution.commandId,
+      commitmentKey: context.execution.commitmentKey,
+      authorityEpoch: context.execution.authorityEpoch,
+      sequence: context.execution.sequence,
+      ...(context.execution.intentId ? { intentId: context.execution.intentId } : {}),
+      ...(context.execution.effectId ? { effectId: context.execution.effectId } : {}),
+      actorIds: [actorId],
+      worldLinkIds: [],
+      detail: "native_resource_progress"
+    });
   }
 
   /** Starts native reacquisition without awaiting it; the tree immediately receives success. */
@@ -159,5 +215,4 @@ export class PawnAgentResources {
     currentOrder.data.targetGameObject = preferredResourceSource;
     return State.SUCCEEDED;
   }
-
 }

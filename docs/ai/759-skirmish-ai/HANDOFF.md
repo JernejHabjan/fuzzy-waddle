@@ -12,43 +12,44 @@ Recommendations do not change settings. Actual host model/effort unknown; next r
 User added an [end-of-gate machinery necessity review](#end-of-gate-machinery-necessity-review) before final closure:
 evaluate the existing systems against their real consumers, simpler alternatives and measured costs.
 
-**Current step:** K5 diagnostic repairs checked and real-browser failure retained; K5 release and C8 cost remain open.
-The batch changes nine sources plus the testing guide and these two coordination docs. Async selected-input identity
-may precede native publication; the unspent reconciler now accepts that exact later publication while retaining all
-lease/admission/payment/total and impossible-early-publication checks. A per-entry helper preserves the existing
-ownership predicates within source limits. The matrix now reads complete runtime output from a unique retained
-artifact, so native evidence can exceed the 32 MiB subprocess log buffer without being lost. Artifact readers reject
-missing/malformed/oversized/foreign output, with a 256 MiB read ceiling; direct console callers remain compatible.
-These are diagnostic/report repairs, with no gameplay, fixture, oracle, baseline, wire/save or useful-quantity change.
+**Current step:** K5 native causal repairs checked; full production release and paired C8 cost remain open.
+`PawnAgentMovement` settles a refused Move through the existing terminal path, guarded against late returns settling
+a replacement. `PawnAgentResources` emits existing `active` outcomes only after positive native work for the same
+current order/actor/owner, so productive gathering renews reconciliation while stalled work still times out.
+`SceneActorCreator` excludes absent positive player slots before editor actor initialization, matching spawn markers;
+neutral and participating campaign actors remain. Three focused regression specs and durable lifecycle guidance added.
+No new journal, timer, planner policy, oracle, fixture recipe, baseline, wire/save schema or useful activation.
 
-**Evidence:** doctor/context and inventory pass. All 461 synthetic report controls across 43 specs, seven Node/tool
-controls, actual E2E typing, nine-source scoped lint/structure/format and unchanged-predicate extraction audit pass.
-A real 300-target-tick probe ends at tick 303 with 903 facts and 16 selections. Exact raw replay goes from two timing
-failures/zero normalized decisions to zero failures/all 16 exact identities retained; useful fields stay null.
-The unchanged PRO-03/Tivara natural diagnostic now retains a 69,310,679-byte result, 611 decisions/12,020 actual ticks,
-5,316 facts and zero dropped facts/snapshots. It remains diagnostic_failed: missing production contract, outcome
-lineage, mandatory authority/capacity and bridge failures. Startup also exposes player-3 editor actors in a two-player
-lobby and two missing-player errors. Capture phase totals 175,220 ms versus advance 27,089 ms; this marked phase
-measurement is not isolated hook CPU, disabled-path overhead or paired C8 evidence. M11 blocked; M12 open.
-Previous M10/K4 compatibility remains checked: gameplay 274/native 679 tests, four compiler configs and production build.
+**Evidence:** doctor/context pass; all 702 native tests across 146 suites, actual Phaser/E2E typing, six-source scoped
+lint/structure/format and portal production build pass. Six new regressions fail before repair; fourteen controls pass.
+The real 300-target-tick probe ends at 303, with no page errors/player-3 actors, 849 facts/all 16 selections normalized
+and a refused Move terminal at tick 26. Full unchanged PRO-03/Tivara: 611 decisions/12,031 ticks, 5,737 facts,
+zero dropped facts/snapshots, all 611 decisions normalized, zero normalization/bridge failures, zero lost_outcome,
+95 native resource progress outcomes. Useful fields remain null. It is still diagnostic_failed on missing production
+contract, mandatory authority gaps and military-producer capacity. Marked capture totals 176,305 ms versus advance
+29,021 ms; this is not paired C8 or isolated hook CPU/allocations. M11 blocked; M12 open.
+Previous 461 synthetic/seven Node controls and gameplay 274 compatibility remain scoped prior evidence.
 
-**Provenance:** base/remote `4f4bd471e58d04a03dfec5e5ffc45944bdd739cd` was clean; the containing commit owns
+**Provenance:** base/remote `e3f192e0c243f5d97b6e98813d9e7791850328ca` was clean; the containing commit owns
 this batch. Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`;
 verify remote on resume. Preserve unrelated Nx merge `59f72e037`. User removed the comment-permission rule.
-Runtime dirty digest `fnv1a32:0ed8a8c4`, fixture `fnv1a32:221d6201`, seed 759101. See the
+Runtime dirty digest `fnv1a32:f26886cd`, fixture `fnv1a32:221d6201`, seed 759101. See the
+[native causal checkpoint](follow-ups/runtime-matrix-ci.md#final-gate-native-causal-checkpoint-2026-10-09-stage-checked)
+for exact commands, 106,133,304-byte raw artifact/hash, scoped evidence and remaining blockers. The prior
 [browser readiness checkpoint](follow-ups/runtime-matrix-ci.md#final-gate-browser-readiness-checkpoint-2026-10-09-diagnostic-repairs-checked)
-for exact commands, raw artifact/hash, scoped evidence and remaining blockers. The prior
+owns timing/transport repairs and the original failure; the
 [gameplay checkpoint](follow-ups/runtime-matrix-ci.md#final-gate-combined-gameplay-checkpoint-2026-10-09-stage-checked)
 owns K4 evidence and its two production fixes.
 
-**Next action / why:** on GPT-6.1 Sol / high, investigate actual native outcome lineage and legal-world/M12 setup as
-one combined causal batch. Make the real match judgeable before paired C8 measurements. Start with
-`pnpm exec node tools/ai/summarize-skirmish-report.mjs --report tmp/ai-plans/759-validation/browser-readiness-batch/1791571496389-diagnostic_failed.json --scenario PRO-03 --failures-only --details`.
+**Next action / why:** on GPT-6.1 Sol / high, run one combined C8 baseline/setup, measurement and causal-cost batch.
+The native diagnostic chain and legal roster now work; measure normal-play and marked diagnostic cost before expanding
+the remaining production proof. Start with
+`pnpm exec node tools/ai/summarize-skirmish-report.mjs --report tmp/ai-plans/759-validation/browser-readiness-batch/1791575849795-diagnostic_failed.json --scenario PRO-03 --failures-only --details`.
 Ignored artifacts may be absent on another machine; then rerun the exact single-variant diagnostic from the checkpoint.
-Inspect route/service/shared-command and construction lineage, then `SceneActorCreator.spawnFromSpawnList` and actual
-roster/campaign consumers. Keep full oracles and useful nulls; do not assume that four lost_outcome terminals uniquely
-explain the lineage failure. C8 still needs the pinned baseline, three alternating pairs and isolated CPU/allocation/
-reachable-gzip evidence. Pause after the next coherent checked and published batch.
+Read C8 in the runtime plan; use pinned baseline `af9d078d9`, a legal equivalent world on both revisions, one warm-up,
+three alternating pairs, production/unmarked/marked modes and isolated CPU/allocation/reachable-gzip evidence.
+The two natural matches are not cost pairs: actor identities, world setup and outcomes differ. Preserve full oracles,
+native bounds and useful nulls; M11/M12 still require their authority/adapter/gameplay work. Pause after publication.
 
 **Earlier checked / repaired — why it is used:** 18 capture/world specs, 15 component/movement/lifecycle specs and five
 campaign specs now use checked authored entries, current Sandhold/map/hook identities, actual native GameObjects
@@ -177,10 +178,10 @@ Campaign suppression is explicit and may accompany a full native return. Old/unk
 to the latest task. Whole known piles may retain several earlier gathering attempts; no invented FIFO/partial allocation.
 A credit proves a scoped balance change, independently from cargo lineage, accepted task/demand and continuous usefulness.
 
-**Next action — why:** trace the retained real-browser outcome-lineage failure and legal-world/M12 setup on
-**GPT-6.1 Sol / high**, using the exact report in Quick resume. The short native replay retains all 16 decisions,
-but the full match still suppresses the parent report. Resolve the first native disagreement and invalid player setup
-before paired C8 measurements, so both behavior and ordinary-play cost are judged against a legal world.
+**Next action — why:** measure paired C8 normal-play, marked capture and reachable-bundle cost on
+**GPT-6.1 Sol / high**, using the current checkpoint and pinned baseline. Native causal repairs now retain all 611
+decisions and a legal roster; full production authority/capacity still fails. A legal equivalent paired setup is required
+before interpreting performance. Use measurements to target justified cost repairs in the same coherent batch.
 Keep C1–C8, useful nulls and authority oracles intact; no capture reset or planner-input replacement. M11/M12 remain open.
 Pause after the next coherent checked and published batch.
 
@@ -207,8 +208,8 @@ Pause after the next coherent checked and published batch.
 | Named supply/container boundaries (51) | Native controls pass in K1 | Reject stale reads before stock/capacity/boarding changes; broader gameplay evidence remains |
 | Binding/restore/roster boundaries (52) | Scoped native/protocol controls pass | Fence replacement and brief roster churn; wider integration remains |
 | Consumed/accepting liability diagnostics (53) | Focused native/synthetic controls pass | Explain new claims while preserving consumed input; browser integration remains |
-| Real producer/report and operational controls (54) | Short native replay passes; full browser bridge fails; cost open | Exact native capture retained; resolve outcome lineage/legal setup before paired cost |
-| Combined implementation review (M10) | K4 compatibility checked; K5 diagnostic repairs checked; full gate in progress | Gameplay 274/native 679 and synthetic 461 pass; long browser report retained but fails; C8 pending |
+| Real producer/report and operational controls (54) | Full native diagnostic bridge passes; release proof/cost open | All 611 selections retained; legal roster and native outcomes repaired before paired cost |
+| Combined implementation review (M10) | K4 compatibility checked; K5 native causal repairs checked; full gate in progress | Native 702 pass; prior gameplay 274/report 461; long production authority/capacity still fails; C8 pending |
 | Missing-control authoring | Complete; native/report controls executed | Real 16-decision short replay passes; broader browser authority/setup and cost remain |
 | Complete need/lifetime history and useful throughput | Open; activation still blocked | Public aliases and every relied-on mutation need authority before useful windows/real recipes |
 | Continuous useful capacity | Open | Complete mutation authority for readiness, supply, access/safety and service |
@@ -235,8 +236,9 @@ Player-owner split prerequisite is `80a84493b155a2f431cc0aa172257ce9398e3624`;
 Four bounded diagnostic implementation passes are specified by 50; no full machinery/project total or percent is claimed.
 Useful-service acceptance remains open/blocked and must not be inferred from this bounded queue.
 Historical authoring entries above retain their original unrun status; current scoped evidence is in the latest checkpoints.
-Native compatibility now passes the full Phaser suite. Real browser integration and capture/report cost remain unmeasured.
-Source review repaired ES2024 constructor initialization and loss-safe cargo/transfer fences; no runtime pass is claimed.
+Native compatibility and the real diagnostic report bridge now pass. Paired hook/capture/bundle cost and full production
+release proof remain open. Earlier source review repaired ES2024 initialization and loss-safe cargo/transfer fences;
+that historical review alone supplied no runtime pass.
 
 Prior batch 24 is in `aa4bf0a4920ba09d2df95045a2cae2a4d543239f`, based on `fc358946368d3ab595c7fd56bc1f9b7964eebb5d`;
 its [caller report checkpoint](follow-ups/runtime-matrix-ci.md#production-caller-report-checkpoint-2026-10-07-unverified)
@@ -685,13 +687,13 @@ Unexecuted authoring remains unverified; runtime tuning and legacy retirement st
 | 1 / as needed | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `partial` | Split only owners blocking the selected batch | Stay Sol medium; optional Luna high |
 | 2 | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829) | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof | GPT-6.1 Sol, medium |
 | 3 | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `in_progress` | Finish pressure/recovery policy; defer victory proof | GPT-6.1 Sol, medium |
-| 4 / next boundary | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | M10/K4 compatibility checked; 461 report controls and browser diagnostic repairs pass; full K5 fails on retained authority/setup evidence, paired C8 pending | GPT-6.1 Sol / high |
+| 4 / next boundary | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Native causal repairs and 611-decision bridge checked; full production contract/authority/capacity still fails; next paired C8 setup/measurement | GPT-6.1 Sol / high |
 | 5 / paired | #815 / #816 | `in_progress` | Remaining family contracts, focused fixtures, frozen maps and continuous-match tier | Sol medium; optional Luna high for established cases |
 | 6 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `in_progress` | Exact-once interruption, terminal and re-entry parity | GPT-6.1 Sol, medium |
 | 7 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `partial` | Generation fencing, phase restore/replay and cleanup cases | GPT-6.1 Sol, medium |
 | 8 | #821 | `partial` | Remaining splits/renames and consumer updates | Stay Sol medium; optional Luna high |
 | 9 / prepare | [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828), [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `partial` | Review probes/opponent fixtures; measurements deferred | GPT-6.1 Sol, medium for contracts; Luna high for specified wiring |
-| Final gate | Required issues above | `in_progress` | Compatibility and diagnostic repairs checked; K5 real failure retained, C8 and broader release pending | GPT-6.1 Sol / high for outcome-lineage/legal-world investigation |
+| Final gate | Required issues above | `in_progress` | Native 702/type/build and full diagnostic bridge checked; K5 release failure retained; C8 and broader release pending | GPT-6.1 Sol / high for paired cost setup/measurement |
 | After parity | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | `not_started` | Evidence-backed legacy retirement | GPT-6.1 Sol, medium decision; Luna high cleanup |
 | Before final closure | Existing machinery / completion map | `not_started` | Evaluate every system's demonstrated need and cost; keep, simplify or propose retirement while preserving required proof | GPT-6.1 Sol / high for combined review |
 
@@ -700,10 +702,11 @@ Unexecuted authoring remains unverified; runtime tuning and legacy retirement st
 The latest user policy is **one consolidated design pass, then grouped implementation passes** for the
 remaining machinery. Stage 50 design, passes 51–54, M10 source review/repairs and grouped missing-control authoring
 are complete as authored work. M10 production compile, native compatibility and E2E production/queue/resource repairs are
-checked, including zero diagnostics in all four compiler configs, gameplay 60 suites/274 tests, native 143 suites/679
-tests, 461 synthetic reports and the production build. K5 diagnostic repairs now retain large native output and
-correct asynchronous selection timing; the short raw replay passes, full browser gate fails on outcome lineage/authority
-and legal setup remains open. C8 and broader server/socket/save/restart/hash/calibration evidence remain pending.
+checked, including prior zero diagnostics in four compiler configs, gameplay 60 suites/274 tests and 461 synthetic
+reports. Current native 146 suites/702 tests, Phaser/E2E typing and production build pass. K5 causal repairs now
+settle refused movement, renew actual resource progress and exclude absent editor owners. Full native diagnostics
+retain all 611 selections without lineage/bridge failure; full production contract/authority/capacity still fails.
+C8 and broader server/socket/save/restart/hash/calibration evidence remain pending.
 Full useful-service authority M11 remains blocked, and production/gameplay proof M12
 remains open; those obligations are not erased by the bounded diagnostic finish line.
 Design on GPT-6.1 Sol / high; implement settled contracts on Luna / high; return to Sol for a combined source review
@@ -715,7 +718,7 @@ No automatic model switch, subagent or new chat is authorized by this policy. Ex
 | Consolidated design, scope/value, shared/per-owner contracts and acceptance (50) | GPT-6.1 Sol / high | Authored/source-reviewed |
 | Settled implementation, compliance cleanup, wiring, fixtures and test authoring (51–54) | Luna / high | Authored; scoped native/report controls now checked, wider integration remains |
 | Combined implementation source review and unresolved contract conflicts (M10) | GPT-6.1 Sol / high | Source review/controls complete; E2E typing and 461 production/queue/resource/output controls pass, full gate in progress |
-| Final executable gate and repairs | GPT-6.1 Sol / high for browser/cost causal investigation; Luna / high for settled repairs | K5 diagnostic repairs checked; next native outcome lineage/legal-world setup, then paired C8 cost |
+| Final executable gate and repairs | GPT-6.1 Sol / high for browser/cost causal investigation; Luna / high for settled repairs | K5 native causal repairs/bridge checked; next equivalent paired C8 setup/cost, then remaining production proof |
 
 - The design must produce a finite list of substantial implementation passes and completion criteria. A pass may contain
   several related owners and coherent commits. Do not create a new design stage or model pause for each file, helper,
@@ -765,15 +768,15 @@ No automatic model switch, subagent or new chat is authorized by this policy. Ex
 
 Copyable next-chat prompt:
 
-> Read docs/ai/759-skirmish-ai/HANDOFF.md and the browser readiness checkpoint in runtime-matrix-ci.md.
-> Latest batch fixes async selected-input timing reconciliation and retains full browser results outside subprocess logs.
-> All 461 report controls, seven Node/tool controls, actual E2E typing and scoped lint/structure/format pass.
-> Exact native short replay retains all 16 selections with no failures. Full PRO-03/Tivara retains 611 decisions,
-> 12,020 ticks and a 69,310,679-byte artifact, but remains diagnostic_failed on lineage/authority/contract gaps.
-> Startup also records missing player-3 errors from editor actors in a two-player lobby. Paired C8 remains unrun.
-> On GPT-6.1 Sol / high, investigate actual outcome lineage and legal-world/M12 setup as one causal repair batch.
-> Start with the checkpoint's bounded summary/replay commands and native consumers; do not assume lost_outcome is
-> the unique cause. Make the world and authority chain judgeable before paired disabled-path/bundle measurements.
+> Read docs/ai/759-skirmish-ai/HANDOFF.md and the native causal checkpoint in runtime-matrix-ci.md.
+> Latest batch settles refused Move orders, renews progress after actual positive resource work and excludes absent
+> editor owners. All 702 native tests, actual Phaser/E2E typing, scoped lint/structure/format and production build pass.
+> The real 303-tick probe has no page errors. Full PRO-03/Tivara retains all 611 decisions at 12,031 ticks in a
+> 106,133,304-byte artifact, with no lineage/bridge failure or lost_outcome; mandatory contract/authority/capacity still fails.
+> On GPT-6.1 Sol / high, run the combined C8 equivalent baseline/world setup, measurement and causal-cost batch.
+> Start with the current checkpoint's bounded summary and C8 source anchors. Use pinned baseline af9d078d9,
+> legal equivalent worlds, warm-up and three alternating production/unmarked/marked pairs; retain digests/variance,
+> isolated hook CPU/allocations and reachable gzip evidence. Natural diagnostic runs are not performance pairs.
 > Preserve previous M10/K4 compatibility, mandatory oracles, native bounds, consumed inputs, useful nulls and baselines.
 > Broader server/socket/save/restart/hash/calibration and M11/M12 still block release closure. No new machinery scope.
 > Keep the branch and unrelated Nx merge. Update the map/handoff, review/audit, commit/push exact task-owned changes,

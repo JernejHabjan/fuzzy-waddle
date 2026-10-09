@@ -18,6 +18,12 @@ Command identity includes authority epoch and monotonic sequence. Applied effect
 
 Backpressure retains unresolved and required outcome records. A missing acknowledgement is reconciled against authoritative state/history before any retry. Absence of a produced actor is not proof an effect never applied when that actor could already have been consumed or destroyed.
 
+Native gathering and drop-off renew command progress only after a positive returned amount for the same current order,
+actor and owner. This keeps productive long-running work from timing out; zero work and stalled commands still expire
+under the existing deadlines. An `active` outcome proves native work, not terminal completion or useful income.
+A refused Move reports terminal failure immediately so recovery can release its command instead of retrying a missing
+path until timeout. Late movement returns cannot settle a replacement order.
+
 ## Saves and controller lifecycle
 
 Save/load preserves brain state, causal deadlines, debt, claims, accepted effects, difficulty, archetype, scheduler state and RNG. Equivalent logical continuation must produce the same decisions after canonical migration.
