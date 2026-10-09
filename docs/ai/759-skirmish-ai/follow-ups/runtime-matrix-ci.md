@@ -444,9 +444,9 @@ The following map preserves stage-50 design/authoring states; the final-gate che
 | M05 Exact consumed/accepting frames: explain purchase-plus-gather null bounds | R; C4 fact union/input/root/unspent/report fields | 52 → 53 | Real input/controller selected event with zero and nonzero new claims; immediate paid vs future queue transfer; due head exhaustion; unsupported building/pre-capture/expired/recovery claims and callback-in-progress; mismatch stays null | Code plus focused input/root/synthetic frame controls authored; full native integration still missing; K1/K3 deferred |
 | M06 Cargo/recipient/window compatibility: preserve credited income without false usefulness | R; C2/C4/C5 existing credit/application/need projections | 53 | Exact real payload join; normal/granted/none and changed owner; mixed/old/restored cargo; grant then spend cannot reopen shortage; publication delayed across application window; same-tick/straddle/overflow bad tail | Existing path retained; K1/K3 compatibility cases deferred |
 | M07 Real adapter/report bridge: expose actual producer evidence and explicit gaps | R; C7 root capture, variant runner, production normalization | 51–53 → 54 | Real Phaser actor/components/protocol player/read/native command path into report; initialization loss, post-await service loss and late/disposed capture; native income remains diagnostic while useful fields stay null; contradictory tail suppresses parent | Short probe and full 611-decision native diagnostic bridge pass after causal repairs; full production contract/authority/capacity remains open in the native causal checkpoint |
-| M08 Normal-play impact: testing does not install heavy machinery during gaming | R; C8 below, installer/helper controls and existing profiler | 54 | Production/unmarked guard, no sample/clone/listener/timer/root journal; before/after disabled-path and bundle comparison; foreign host/duplicate capture, late callbacks | Fast-path/native controls and production build pass; marked capture phase measured, paired C8 cost/bundle evidence pending |
+| M08 Normal-play impact: testing does not install heavy machinery during gaming | R; C8 below, installer/helper controls and existing profiler | 54 | Production/unmarked guard, no sample/clone/listener/timer/root journal; before/after disabled-path and bundle comparison; foreign host/duplicate capture, late callbacks | Production/unmarked controls pass; isolated empty-method profiles and candidate shipping bytes checked; 114,606 raw test-harness bytes remain reachable; full native pairs/budgets blocked on pinned baseline compilation |
 | M09 Compliance/publication: economical implementation remains reviewable | R; C6 exact baselines, existing handoff | Each 51–54 | No refreshed hashes/new permanent stage names; task-only prerequisite and behavior commits; source review/Omission Audit/closure, remote SHA and clean task scope | Authored/source-reviewed; implementation commit `978cb09e70cbc6e2ed0b520971690ea47ab38045` remote-verified; checks deferred |
-| M10 Combined review and compatibility: decide readiness before execution | R; C1–C8, all changed consumers | 54 → Sol review | Trace real input → selected/admitted → native application → report/disposal; review all controls, repair concrete contract contradictions; every required unrun check remains listed | K4 compatibility and K5 native causal repairs checked; native 702 tests, typing/build pass; prior gameplay 274/report 461 remain scoped evidence; full production failure retained, C8 and broader release remain |
+| M10 Combined review and compatibility: decide readiness before execution | R; C1–C8, all changed consumers | 54 → Sol review | Trace real input → selected/admitted → native application → report/disposal; review all controls, repair concrete contract contradictions; every required unrun check remains listed | K4/K5 and C8 prerequisite checked; prior native 702/gameplay 274/report 461 retained; full production failure and pinned baseline build failure block respective gates; wider release remains |
 | M11 Mutation-complete useful resource/continuous capacity: 32/36 full proof | B; C7 plus 32/36/39/42 authority, public APIs | Explicit authority/scope decision; not a hidden fifth Luna pass | Net-zero alias undo, arbitrary definition/Map/item/roster replacement, hidden/stale threats/access changes between reads, full supported initial predicate history; no positive complete channel currently possible | Existing 32/36 gates; blocked, mandatory |
 | M12 Production useful outputs, legal setup and strategy: PRO-03/06/07 release | B; existing production authority contract and evaluators | Broader gameplay/fixture queue, separate from 51–54 | Both-faction transition/abandonment, exposed/safe/no-demand resilience, shared train/research and paid cancellation/pending refund pairs; full oracle and denominator | K5 and owning scenario/policy plans; open, mandatory |
 | M13 Finer loss scopes/continuous journal/lot allocation | O; no new files/owners | Not scheduled; new consumer must justify proposal | No actor-to-beneficiary dependency map, FIFO allocation or extra scan introduced just to recover a diagnostic bound | No extra gate; proposed only |
@@ -510,6 +510,103 @@ Historical authoring boundary: M10 source review found missing controls, subsequ
 final-gate checkpoints below. The user-authorized final gate is active; K5/C8 and broader release evidence remain.
 Do not claim stage validation before K1–K5. M11 remains a mandatory blocker from public mutable aliases
 and incomplete access/safety/lifetime history; M12 remains open for full PRO-03/06/07. Neither was reduced by this batch.
+
+### Final-gate cost prerequisite checkpoint (2026-10-09, paired C8 blocked)
+
+User authorized the next combined cost batch with commit/push/pause. Clean base/remote were
+`17fde8c7ebf00825b99fe6bf73c294ddbd25133a` on `feature/759-skirmish-ai`, worktree
+`/home/jernej/.codex/worktrees/7977/fuzzy-waddle`. Actual host model/effort unknown; no subagents or model switch.
+The containing commit owns one added production-installation regression and evidence/operator guidance. No production
+source, build configuration, baseline, oracle, game recipe, timer, listener, journal or useful activation changed.
+
+**First disagreement / why it blocks C8:** a managed detached checkout of the exact pinned source
+`af9d078d9f3888a97550eb5c08b9215651f8df58` fails portal production compilation: 31 diagnostics across 13 source files.
+This includes three newline-separated `satisfies` parse failures, missing `CanBoardContainerNow`, unchecked optional
+entries and unretained literal/narrowed types. Its tracked tree stayed clean. Package/lockfile, portal project,
+TypeScript base and Nx configuration hashes match the candidate; both use the same installed dependency directory.
+LFS checkout hydrated the baseline's own assets (541 checked audio assets). Baseline uses the direct Node/Nx entry:
+pnpm's dependency freshness check rejects the reused modules symlink before compilation; bypassing that launcher does
+not change source, compiler, dependency versions or build options. The actual compiler failure remains decisive.
+No baseline bundle or equivalent native world can be accepted, so no full-world pairs or budget delta were fabricated.
+
+| Acceptance | Evidence and purpose | Status |
+| --- | --- | --- |
+| C8 runnable pinned baseline / same environment | Exact detached revision; matching five configuration/dependency hashes; real production compiler failure retained. | Blocked on baseline source; candidate builds |
+| C8 production/unmarked capture installation | Added `install-ai-runtime-production-capture.spec.ts` case with production environment and matching marked host: no capture construction, config read or shutdown/destroy listeners. Existing unmarked/marker/replacement/teardown and scene isolation/overflow controls pass. | Focused boundary checked; whole-world profiling pending |
+| C8 empty protocol/scene fences | Chromium isolated-source reset/lose probe: warm once, three alternating pairs of 500,000 cycles; actual baseline/candidate method bodies, same unattached keys and actual resource enum. CPU/heap profiles separate method stacks from caller/render/planner work. | Isolated fast-path evidence only |
+| C8 reachable shipping bytes | Actual candidate production stats and byte-checked outputs; index JS/CSS roots, static/dynamic import closure, gzip level 9 per output. Test-owned source contributions remain measurable. | Absolute candidate size checked; baseline delta unavailable |
+| C8 complete paired CPU/alloc/gzip budgets | Zero qualified native pairs. No simulation p95, marked installed-hook cost, equivalent state/outcome digests or 0.5% baseline gzip delta. | Blocked; no C8 acceptance/FPS claim |
+| Review / publication / wider gate | Implementation review, Omission Audit and separate Final Closure Audit; exact owned paths and remote equality at publication. K5 release, M11/M12, wider gate and final necessity review remain open. | This prerequisite slice checked; C8 not complete |
+
+**Measured independent evidence:** candidate production build passes (34.4 s, 0/3 cache hits; existing initial-budget
+warning). The all-app reachable code closure is 84 JS/CSS outputs, 6,238,883 raw bytes and 1,595,081 gzip bytes.
+Including 18 CSS-referenced font outputs gives 102 outputs, 10,035,387 raw bytes and 3,188,985 gzip bytes. Code and media
+totals stay separate for the entry/chunk budget. This includes lazy routes and is not the initial download or only the
+RTS route. Forty modules under the Phaser AI `testing/` directory
+contribute **114,606 raw bundled bytes**; this includes runtime capture, presets/host and multiplayer test adapters.
+Module contributions are not independently compressed sizes. Runtime installation guards therefore do not prove that
+test code disappears from the shipping bundle. No size regression or budget violation is inferred without the baseline.
+
+The isolated reset/lose pairs take baseline 56.3–67.2 ms (median 56.5) versus candidate 14.1–14.4 ms (median 14.3) per
+500,000 cycles. With 128-byte heap sampling, native profiler estimates assigned to those source method stacks are
+80,488,272 baseline bytes versus 3,460 candidate bytes. The candidate scene-fence method stack has no sampled allocation;
+there is no corresponding scene-fence module on this baseline. Heap frames omit source URLs, so attribution joins
+their script IDs to CPU source/function frames. JIT/caller/profiler allocations are excluded and inlining/sampling remain
+limits. These are TypeScript-transpiled isolated methods on unattached object keys, not a native game, production
+bundle or bound on per-tick overhead. No zero-allocation or zero-normal-play-cost claim is made.
+
+**Checks:** doctor/context pass; two native specs/six cases and protocol observer spec/five cases pass; actual Phaser
+spec typing, scoped lint/structure and format pass. Prior full native 702 and gameplay/report checks remain prior scoped
+evidence; no production source changed and no whole-match replay was needed to expose the baseline prerequisite.
+
+```sh
+# Baseline cwd: managed detached checkout at exact af9d078d9; reuse the identical installed dependencies.
+node tools/assets/check-git-lfs.mjs
+NX_DAEMON=false node node_modules/nx/dist/bin/nx.js build portal --configuration=production
+# Candidate cwd: /home/jernej/.codex/worktrees/7977/fuzzy-waddle
+pnpm exec nx build portal --configuration=production --stats-json=true
+node tmp/ai-plans/759-validation/cost-batch/measure-candidate-bundle.cjs
+node tmp/ai-plans/759-validation/cost-batch/measure-unobserved-fences.cjs
+pnpm exec jest --config libs/games/probable-waffle/phaser/jest.config.cts --runInBand --runTestsByPath libs/games/probable-waffle/phaser/src/lib/data/scene-resource-observation.spec.ts libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/install-ai-runtime-production-capture.spec.ts
+pnpm exec jest --config libs/games/probable-waffle/protocol/jest.config.cts --runInBand --runTestsByPath libs/games/probable-waffle/protocol/src/lib/game-instance/probable-waffle/player-resource-observation.spec.ts
+pnpm exec tsc --noEmit -p libs/games/probable-waffle/phaser/tsconfig.spec.json
+```
+
+Ignored `tmp/ai-plans/759-validation/cost-batch/` retains build/check logs, candidate stats and every reachable output,
+the stats-derived bundle inventory,
+two one-off measurement scripts, three CPU/heap profiles, the isolated probe and `cost-evidence-manifest.json` with
+environment/config/source/artifact hashes. The bundle inventory SHA-256 is
+`ef04cce94a6ed5fc2d5e07fdc7faf367d1797df6ffb1ee95bc2b46b0e33261e8`; isolated probe SHA-256
+`1bbc908ce082c116ad84dbe6cf3632f90025513e07d660f1e4a40e434c53905f`. Reachable bundle-set digest is
+`b42f89e3368134ef42ffbe8c672db09609337a5a001138b4897d43d041f4f28f`;
+stats SHA-256 `b5b5fc563caa5cd9e6b6ef4ce86a05b32bf03147ed88aeab175ee4cbb0e20601`.
+Scripts are local measurement artifacts, not new shipping/report machinery. Recreating them requires the documented
+closure/sampling method; missing artifacts supply no evidence. The clean measurement checkout is retained at
+`/home/jernej/.codex/worktrees/skirmish-cost-baseline/fuzzy-waddle`: app archival returns
+"This worktree is protected by a pinned task or workspace." No deletion workaround was used. Reuse the exact detached
+revision for qualification, or recreate/hydrate it if absent on another host.
+
+**Implementation Review:** checked the production guard before capture construction and configuration reads; the new
+case exercises a matching marked host and actual Phaser EventEmitter. Reviewed same dependency/config/source identity,
+native build failure, reachable import graph and per-file byte equality, gzip scope and profiler script-ID attribution.
+**Omission Audit:** every row above has scoped evidence or a named blocker. The three isolated pairs are not counted as
+the three required native-world pairs. Retained test-only bytes and positive sampled candidate bytes are reported;
+no new capture-off optimization or production exclusion is justified from a missing baseline delta alone.
+**Separate Final Closure Audit:** fresh focused checks, type/lint/format, source hashes, documentation links, unchanged
+production inputs and exact staged ownership checked. This closes only baseline diagnosis and independent cost evidence;
+it neither closes C8 nor the final release gate. No reusable skill/tool change was warranted.
+
+**Next combined batch / why:** GPT-6.1 Sol / high for C8 baseline qualification, then equivalent-world paired measurements
+and any measured cost repair. Preserve `af9d078d9` as the original source and failed-build evidence. Investigate a
+separately identified minimal compilation-compatibility overlay, reviewing every change for native/observation behavior;
+it is a derived reference and must carry its own patch/source digest. If equivalence cannot be justified, keep the
+original comparison blocked and present a concrete replacement-baseline/scope decision. `0641e9ed5` is the first
+recorded production-build pass but already contains the bounded machinery, so it cannot silently measure that
+machinery's full introduction. Do not copy candidate owners wholesale, borrow its bundle, disable strict checks or
+claim a passing C8 budget on a different reference. Only after qualification: legal equivalent roster/map/population/
+commands/tick ceiling, warm-up and at least three alternating native pairs in production/unmarked/marked modes,
+isolated CPU/allocations, variance and native state/outcome/source/bundle digests. Keep the retained shipping test bytes
+for the end-of-gate necessity review. Commit/push the coherent batch and pause.
 
 ### Final-gate native causal checkpoint (2026-10-09, stage checked)
 
@@ -594,7 +691,7 @@ new fixture family, skill/tool change, baseline refresh or cost claim is inferre
 build, native probe/full bridge, raw hashes, document links and exact staged ownership checked. This closes the causal
 repair slice only; K5 release, C8, M11/M12 and wider gate remain open. Publication requires normal push/remote equality.
 
-**Next combined batch / why:** GPT-6.1 Sol / high for C8 equivalent baseline/world setup, paired normal-play/marked
+**Historical next combined batch / why:** GPT-6.1 Sol / high for C8 equivalent baseline/world setup, paired normal-play/marked
 CPU/allocation/reachable-gzip measurements and justified causal cost repair. Read C8 in this plan and use pinned baseline
 `af9d078d9`, one warm-up and at least three alternating pairs in production/unmarked/marked modes. The two natural
 diagnostics are not controlled cost pairs: world setup, actor identities and outcomes differ. Preserve native digests,
@@ -1445,6 +1542,9 @@ native closure/request creation or rewrite protocol money semantics as a specula
 
 Final measurements compare baseline `af9d078d9` with the authored implementation revision, same environment/seed/map/
 population/command workload and tick ceiling: (a) production build, (b) unmarked developer game, (c) marked capture.
+The [cost prerequisite checkpoint](#final-gate-cost-prerequisite-checkpoint-2026-10-09-paired-c8-blocked) records that
+this exact source cannot compile. Its original native comparison remains blocked; qualify any derived reference with
+explicit provenance/equivalence before measuring, and never treat the isolated fast-path probe as a native pair.
 Use existing `AI_SKIRMISH_PROFILE=1` variant phase timing and browser performance/heap allocation profiling; profiler
 output must isolate hook CPU/allocations from unrelated rendering/planner work. Alternate baseline/candidate order,
 warm once and retain at least three paired runs; record variance, native outcome/state digests and source/bundle digests.

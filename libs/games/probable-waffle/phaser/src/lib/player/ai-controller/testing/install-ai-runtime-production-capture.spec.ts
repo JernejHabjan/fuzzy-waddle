@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { environment } from "@fuzzy-waddle/environments/environment";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { AiRuntimeProductionCapture } from "./ai-runtime-production-capture";
 import { readAiRuntimeBrowserTestConfigV1 } from "./ai-runtime-browser-test-config";
@@ -11,7 +12,37 @@ jest.mock("./ai-runtime-browser-test-config", () => ({ readAiRuntimeBrowserTestC
 describe("installAiRuntimeProductionCapture", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    environment.production = false;
     delete window.__fuzzyWaddleAiRuntimeBrowserTestV1;
+  });
+
+  afterEach(() => {
+    environment.production = false;
+    delete window.__fuzzyWaddleAiRuntimeBrowserTestV1;
+  });
+
+  it("installs no capture or teardown listeners in production even with a matching marked host", () => {
+    const events = new Phaser.Events.EventEmitter();
+    const game = {} as Phaser.Game;
+    const scene = { game, events } as unknown as ProbableWaffleScene;
+    const config = {
+      schemaVersion: 1 as const,
+      enabled: true as const,
+      seed: 1,
+      startPaused: true as const,
+      captureProduction: true as const
+    };
+    window.__fuzzyWaddleAiRuntimeBrowserTestV1 = { schemaVersion: 1, config, game, initialStateByPlayer: {} };
+    jest.mocked(readAiRuntimeBrowserTestConfigV1).mockReturnValue(config);
+    environment.production = true;
+
+    installAiRuntimeProductionCapture(scene);
+
+    expect(readAiRuntimeBrowserTestConfigV1).not.toHaveBeenCalled();
+    expect(AiRuntimeProductionCapture).not.toHaveBeenCalled();
+    expect(window.__fuzzyWaddleAiRuntimeBrowserTestV1.productionCapture).toBeUndefined();
+    expect(events.listenerCount(Phaser.Scenes.Events.SHUTDOWN)).toBe(0);
+    expect(events.listenerCount(Phaser.Scenes.Events.DESTROY)).toBe(0);
   });
 
   it("returns before reading test configuration when no matching marked game host exists", () => {
@@ -48,8 +79,13 @@ describe("installAiRuntimeProductionCapture", () => {
     const events = new Phaser.Events.EventEmitter();
     const game = {} as Phaser.Game;
     const scene = { game, events } as unknown as ProbableWaffleScene;
-    const config = { schemaVersion: 1 as const, enabled: true as const, seed: 1, startPaused: true as const,
-      captureProduction: true as const };
+    const config = {
+      schemaVersion: 1 as const,
+      enabled: true as const,
+      seed: 1,
+      startPaused: true as const,
+      captureProduction: true as const
+    };
     jest.mocked(readAiRuntimeBrowserTestConfigV1).mockReturnValue(config);
     jest.mocked(AiRuntimeProductionCapture).mockImplementation(() => ({ capture: jest.fn() }) as never);
     window.__fuzzyWaddleAiRuntimeBrowserTestV1 = { schemaVersion: 1, config, game, initialStateByPlayer: {} };

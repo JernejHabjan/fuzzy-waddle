@@ -44,6 +44,15 @@ The reader checks source/fixture/dirty provenance and a 256 MiB byte ceiling bef
 Missing, malformed, oversized or mismatched output supplies no runtime evidence. Direct Playwright callers
 without an artifact path retain the console result protocol.
 
+Capture installation and shipping code size are separate checks. The installer rejects production games even with a
+matching test marker, and unmarked games have no capture root. Static imports can still keep test-harness modules in
+production output. For size evidence, build with `--stats-json=true`, follow the index script/style roots and all static
+and dynamic output imports, then gzip each reachable output with the same settings. Report code totals separately from
+referenced media such as CSS fonts. Stats input `bytesInOutput` gives raw module contributions; it cannot assign
+independent gzip bytes to a module. Record the reachable set and digests.
+Compare only runnable, identified revisions with equivalent native worlds and workloads. An isolated empty-observer
+method probe can check a fast path, but cannot establish whole-game CPU, allocation or shipping-delta budgets.
+
 Use one browser runtime process at a time and group compatible IDs with `--scenarios`. Unit, type and tooling checks may be batched independently. Diagnose the earliest causal disagreement in this order:
 
 ```text
