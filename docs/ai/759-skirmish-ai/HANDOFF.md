@@ -17,7 +17,8 @@ The user selected Luna / high for this batch; stay on Luna across 51–54 withou
 Sol reviews the combined implementation and handles unresolved contracts/difficult final-gate failures.
 Last selected profile GPT-6.1 Sol / medium; actual host settings unknown. Recommendations do not switch models.
 All executable tests/validation remain deferred to the final gate.
-Batch base `58dc92f8a9ce4d44cfaa133bbcf621fe8fc22b5b` (stage 50, remote verified); batch commit will own 51–54.
+Batch base `58dc92f8a9ce4d44cfaa133bbcf621fe8fc22b5b` (stage 50, remote verified). Implementation commit
+`978cb09e70cbc6e2ed0b520971690ea47ab38045` contains 51–54 and matches the remote branch; this handoff update follows it.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify remote on resume.
 Preserve unrelated Nx merge `59f72e037`. No family/issue is complete. User removed the comment-permission rule.
 
