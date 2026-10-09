@@ -1,3 +1,4 @@
+import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import { expect, test } from "@playwright/test";
 import {
   ProbableWaffleGameInstance,
@@ -18,12 +19,12 @@ test("native application stays in its window when publication arrives later; gra
   const f = resourceApplicationFixture(),
     result = projectRuntimeResourceServices(f.capture, [f.credit]);
   expect(result.failures).toEqual([]);
-  expect(result.intervals[0].windows).toMatchObject([
+  expect(requireAiTestEntry(result.intervals, 0).windows).toMatchObject([
     { observedIncome: 0 },
     { observedIncome: 7 },
     { observedIncome: 0 }
   ]);
-  expect(result.applicationIntervals[0]).toMatchObject({
+  expect(requireAiTestEntry(result.applicationIntervals, 0)).toMatchObject({
     positionBasis: "native_operation_entry",
     observedIncome: 7,
     observedContributionUpperBound: 3,
@@ -65,7 +66,11 @@ for (const missing of [
       missing === "read"
         ? f.capture.snapshots.filter((snapshot) => snapshot.tick !== 10)
         : missing === "ambiguous_read"
-          ? [...f.capture.snapshots.slice(0, 2), f.capture.snapshots[1], ...f.capture.snapshots.slice(2)]
+          ? [
+              ...f.capture.snapshots.slice(0, 2),
+              requireAiTestEntry(f.capture.snapshots, 1),
+              ...f.capture.snapshots.slice(2)
+            ]
           : missing === "straddle"
             ? f.capture.snapshots.map((snapshot) =>
                 snapshot.tick === 10
@@ -98,7 +103,10 @@ for (const missing of [
     };
     const result = projectRuntimeResourceServices(capture, [credit]);
     if (missing === "publication") expect(result.applicationIntervals).toEqual([]);
-    else expect(result.applicationIntervals[0].windows[0].observedIncome).toBeNull();
+    else
+      expect(
+        requireAiTestEntry(requireAiTestEntry(result.applicationIntervals, 0).windows, 0).observedIncome
+      ).toBeNull();
   });
 }
 
@@ -122,7 +130,7 @@ test("duplicate joins, conflicting supplied tail and overflow clear application 
     ...f.capture,
     recipientResourceFacts: [
       ...f.capture.recipientResourceFacts,
-      { ...f.capture.recipientResourceFacts[0], sequence: 16 }
+      { ...requireAiTestEntry(f.capture.recipientResourceFacts, 0), sequence: 16 }
     ],
     resourceCoverage: f.coverage(20, 16)
   };
@@ -174,7 +182,7 @@ test("an unrelated recipient's exact native credit cannot become this cohort's i
     [credit]
   );
   expect(result.failures).toEqual([]);
-  expect(result.applicationIntervals[0].observedIncome).toBe(0);
+  expect(requireAiTestEntry(result.applicationIntervals, 0).observedIncome).toBe(0);
 });
 
 // Actual scene subscription/loss producer over synthetic accounting payloads; no real-match evidence is claimed.
@@ -197,7 +205,7 @@ for (const reason of [
     } as ProbableWaffleScene;
     let frontier = { tick: 0, captureSequence: 0 };
     const coverage = new AiRuntimeResourceCoverageCapture(0, () => frontier);
-    coverage.install({}, f.declaration.actorIds[0], 1);
+    coverage.install({}, requireAiTestEntry(f.declaration.actorIds, 0), 1);
     const journalFacts: AiRuntimeProductionFactV1[] = [];
     const journal = new AiRuntimeRecipientResourceCapture(
       scene,
@@ -218,7 +226,7 @@ for (const reason of [
       const result = projectRuntimeResourceServices({ ...f.capture, snapshots, resourceCoverage: coverage.read() }, [
         f.credit
       ]);
-      expect(journalFacts[0].kind).toBe("recipient_resources_installed");
+      expect(requireAiTestEntry(journalFacts, 0).kind).toBe("recipient_resources_installed");
       expect(result.failures).toEqual([]);
       expect(result.coverage).toMatchObject({
         lost: true,
@@ -230,20 +238,20 @@ for (const reason of [
           cargoLifetime: "partial"
         }
       });
-      expect(result.needAccounting[0].applications[0]).toMatchObject({
+      expect(requireAiTestEntry(requireAiTestEntry(result.needAccounting, 0).applications, 0)).toMatchObject({
         observedUnresolvedUpperBound: null,
         observedContributionUpperBound: null,
         usefulContribution: null
       });
-      expect(result.applicationIntervals[0]).toMatchObject({
+      expect(requireAiTestEntry(result.applicationIntervals, 0)).toMatchObject({
         observedIncome: null,
         observedContributionUpperBound: null,
         usefulContribution: null,
         retainedUsefulThroughput: null,
         continuousUsefulCapacity: null
       });
-      expect(result.intervals[0].observedIncome).toBe(7);
-      expect(result.intervals[0].eligibleIncome).toBeNull();
+      expect(requireAiTestEntry(result.intervals, 0).observedIncome).toBe(7);
+      expect(requireAiTestEntry(result.intervals, 0).eligibleIncome).toBeNull();
       expect(result.gaps).toContain("production_resource_coverage_lost");
     } finally {
       journal.dispose();

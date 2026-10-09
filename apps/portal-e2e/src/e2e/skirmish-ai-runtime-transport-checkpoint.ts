@@ -64,7 +64,13 @@ export async function captureRuntimeTransportCheckpoint(
         .flatMap((snapshot) => snapshot.decisions)
         .filter((decision) => decision.intent.reasonCode.startsWith("transport_"))
         .map((decision) =>
-          [decision.outcome, decision.reason, decision.detail, decision.intent.kind, decision.intent.reasonCode]
+          [
+            decision.outcome,
+            decision.reason,
+            decision.outcome === "rejected" ? decision.detail : undefined,
+            decision.intent.kind,
+            decision.intent.reasonCode
+          ]
             .filter((value) => value !== undefined)
             .join(":")
         ),
@@ -75,7 +81,7 @@ export async function captureRuntimeTransportCheckpoint(
           intentId: outcome.identity.intentId,
           effectId: outcome.identity.effectId,
           kind: outcome.kind,
-          reason: outcome.reason ?? null
+          reason: "reason" in outcome ? outcome.reason : null
         }))
     };
   }, aiPlayerNumber);

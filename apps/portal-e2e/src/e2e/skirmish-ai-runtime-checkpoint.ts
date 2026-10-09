@@ -178,7 +178,8 @@ export interface RuntimeCheckpointV1 {
   }[];
   readonly bases: readonly {
     readonly baseId: string;
-    readonly lifecycle: string;
+    /** Null for legacy brain state without a recorded base lifecycle. */
+    readonly lifecycle: string | null;
     readonly anchorActorId: string | null;
     readonly reservedSiteKey: string | null;
     readonly rejectedSiteCount: number;

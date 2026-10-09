@@ -510,6 +510,84 @@ authoring is the next grouped boundary before gate readiness; executable validat
 Do not claim stage validation before K1–K5. M11 remains a mandatory blocker from public mutable aliases
 and incomplete access/safety/lifetime history; M12 remains open for full PRO-03/06/07. Neither was reduced by this batch.
 
+### Final-gate resource-report contract checkpoint (2026-10-09, partially checked)
+
+Base `88eb4be01b0750e002af018828ca7393ca636d13` was clean and remote-verified on
+`feature/759-skirmish-ai` in `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`. The containing commit publishes
+this grouped E2E resource/route slice; verify its remote SHA on resume. Actual model/effort unknown; next recommendation
+GPT-6.1 Sol / high. Final-gate checks remain authorized. No independent reviewer/subagent or skill/tool changes.
+
+**Purpose and implementation:** make the report evidence type-safe without inventing missing authority.
+`RuntimePageControllerV1` now picks the eight existing read-only methods from `PlayerAiController`, replacing a stale
+hand-copied return schema. Economy, strategy and transport checkpoints narrow actual outcome/decision/intent unions;
+legacy missing base lifecycle is explicitly null in `RuntimeCheckpointV1`. This prevents checkpoint consumers from
+silently drifting away from the committed observation, catalog and brain contracts. The import is type-only; no live
+controller or planner is added to the E2E bundle through this alias.
+
+Resource coverage/interval validation, selected need normalization, recipient replay, service/application projection,
+credit normalization and route-service lineage retain checked local values and explicit fact predicates. Single exact
+matches remain required; missing/ambiguous read, intent, application or cohort evidence retains the existing failures,
+gaps and unavailable quantities. Selected intent controls now also cover duplicate identity and wrong action family.
+The existing `requireAiTestEntry` helper checks authored snapshot/report slots in six related specs and the application
+fixture; it is not used to manufacture evidence in report normalizers. Native, planner, save/wire and useful-service
+rules are unchanged; useful contribution/capacity fields remain null.
+
+The expanded report run exposed the route-caller re-registration fixture expecting an empty parent failure list despite
+duplicating an already completed product's registration. Exact base reproduction confirms the same failure. The control
+now directly proves unavailable route attribution through `validateRuntimeRouteOrders` / `projectRuntimeRouteOrder`,
+and separately requires the parent completion-authority failure and empty route group. The revival rejection remains.
+No completion or lifetime validator was relaxed. All original test declarations remain exactly once.
+
+| Acceptance / state | Source and evidence |
+| --- | --- |
+| Prerequisites / passed | `pnpm agent:doctor` and `pnpm agent:context -- --issue 816` pass on the clean base. |
+| Resource/route evidence / passed | 207 synthetic tests across 12 selected specs: resource credit/application/labor/need/liability/service, producer routes, route caller/order and service attempts. Two new selected-intent controls; all original declarations retained. No browser/server used. |
+| Exact failure repair / passed | Base register/unregister selection: 1 failed / 1 passed, with `production_ai_completion_actor_authority_invalid` on register. Candidate grouped run passes the strengthened route and parent controls. |
+| Strict typing / partial | Full E2E configuration: 300 → 145 diagnostics. Zero diagnostics across 22 changed source files; no newly introduced diagnostics elsewhere. Full type check still fails. |
+| Source quality / passed | Final portal-e2e lint, all 22 changed-source Prettier checks, registration AST audit and diff check pass. No source-structure baseline/config relaxation. |
+| Other K4 blockers / pending | Earlier Phaser/gameplay diagnostics remain 161 / 44, and broader gameplay has 22 base-reproduced failures. Those owners were not changed or rerun in this slice. |
+| Runtime/release authority / pending | K5 real matches, C8 paired disabled-path/bundle cost and inherited socket/save/restart/hash/calibration remain. Browser checkpoint execution is not proven by compile/report tests. M11 blocked and M12 open. |
+
+```sh
+pnpm agent:doctor
+pnpm agent:context -- --issue 816
+pnpm exec playwright test --config tmp/ai-plans/playwright-resource-gate.config.ts 'skirmish-ai-runtime-resource.*spec.ts' 'skirmish-ai-runtime-route-(order|caller).spec.ts' 'skirmish-ai-runtime-service-attempt.spec.ts' 'skirmish-ai-runtime-producer-routes.spec.ts'
+pnpm exec playwright test --config tmp/ai-plans/playwright-resource-gate.config.ts skirmish-ai-runtime-route-caller.spec.ts --grep 'register fences original'
+pnpm exec tsc --noEmit -p apps/portal-e2e/tsconfig.json
+pnpm exec nx lint portal-e2e
+git diff --check
+```
+
+The register/unregister command above reproduced the failure while the exact changed source bytes were temporarily
+replaced with HEAD, then restored in `finally`. Ignored evidence in `tmp/ai-plans/759-validation/resource-report-batch/`
+includes `reports-final.log`, `route-register-base.log`, `types-final.log`, per-owner `compiler-summary.json`,
+`lint-final.log`, `format-final.log`, `spec-registration-audit.json`, `review-semantic.diff`, `source-files.json` and
+`provenance.json`. Changed-source digest: `40c79174e65aeec032ff8709724f881f7db1302d776758768e25a1f43114ec83`.
+The ignored Playwright config imports the real portal-e2e config and only removes the unused web server for these
+browser-free report controls. Existing whole-ledger formatting remains final cleanup; changed source formatting passes.
+
+**Next grouped batch — why:** production/queue report joins and native dispatch/queue fixtures must become type-safe
+before they can establish trustworthy command/payment/completion evidence. Current largest E2E owners are cancellation
+specs (15), completion specs (13), both multiplayer queue fixtures (10 each), production causality normalization (10),
+rejection specs (10), progress and unspent reports (8 each), and multiplayer queue normalizers (7 each). Native owners
+remain dispatch-intent (18), shared queue resource (15), dispatch-brain-result (9), queue-completion authority (8).
+Read the existing owner diagnostics, repair one coherent command/queue group, run the actual configs and related
+controls, publish and pause. First next check: `pnpm exec tsc --noEmit -p apps/portal-e2e/tsconfig.json` after repairs.
+Then investigate the 22 wider gameplay failures from their first causal disagreement; K4 remains blocked until all
+required checks pass. Do not weaken oracles, suppress strictness, refresh baselines or add machinery scope.
+
+**Implementation Review:** self-reviewed the formatted-base semantic diff, real controller signatures and all immediate
+checkpoint consumers, exact lineage joins, missing evidence paths and original test registration. Type-only controller
+coupling and legacy null output have explicit consumers; browser execution remains a named pending gate.
+
+**Omission Audit:** all batch acceptance items have source and focused evidence above. No unused helper, new registration
+or production lifecycle hook. Test-only helper use stays separate from report authority. Wider compilation, gameplay
+and browser/cost duties remain open; unrelated Nx history preserved. No skill/tool change was needed.
+
+**Separate Final Closure Audit:** after the fixture repair, final source bytes pass all 207 selected controls, lint and
+formatting, retain every original declaration and introduce no new compiler diagnostics. Exact task-owned scope is
+publishable; M10/K4/release readiness remains partial. Normal push plus remote-SHA verification closes publication only.
+
 ### Final-gate capture and queue fixture checkpoint (2026-10-09, partially checked)
 
 Base `0641e9ed5851f542e6a12c43cb01d01b0787cd08` was clean and remote-verified on
@@ -568,7 +646,7 @@ The base reproduction restored exact HEAD gameplay owners and temporarily remove
 restored candidate bytes in `finally`. A later native-spec import cleanup was type-only; no executable statement changed
 after the native pass. The final full gameplay run includes the final base-ID/resource-shape repairs.
 
-**Next batch — why:** repair remaining resource/report joins and strict fixture families, then investigate wider gameplay
+**Historical next batch — why (resource/report slice now checked above):** repair remaining resource/report joins and strict fixture families, then investigate wider gameplay
 failures from their first causal disagreement. This is needed for trustworthy K4 evidence before K5 browser/cost work.
 Largest current report owners: `skirmish-ai-runtime-economy-checkpoint.ts` (24), resource-credit normalization (20),
 resource-service specs (29) and resource-application specs (18). Native owners include dispatch-intent (18), shared queue

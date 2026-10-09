@@ -59,7 +59,7 @@ export async function captureRuntimeStrategyCheckpoint(
         reason: decision.reason,
         kind: decision.intent.kind,
         reasonCode: decision.intent.reasonCode,
-        objectName: decision.intent.objectName ?? null
+        objectName: "objectName" in decision.intent ? decision.intent.objectName : null
       })),
       demands: state.economyProduction.demands
         .map((demand) => ({
@@ -102,14 +102,17 @@ export async function captureRuntimeStrategyCheckpoint(
                   .flatMap((item) => (item.kind === "production" && item.objectName ? [item.objectName] : []))
                   .sort()
               : [],
-          queuedItems: actor.queue.status === "known"
-            ? (actor.queue.value.items ?? []).map((item) => ({
-                itemId: item.itemId,
-                kind: item.kind,
-                objectName: item.objectName,
-                researchType: item.researchType
-              })).sort((left, right) => left.itemId.localeCompare(right.itemId))
-            : []
+          queuedItems:
+            actor.queue.status === "known"
+              ? (actor.queue.value.items ?? [])
+                  .map((item) => ({
+                    itemId: item.itemId,
+                    kind: item.kind,
+                    objectName: item.objectName,
+                    researchType: item.researchType
+                  }))
+                  .sort((left, right) => left.itemId.localeCompare(right.itemId))
+              : []
         }))
         .sort((left, right) => left.actorId.localeCompare(right.actorId)),
       squads: state.squads
@@ -163,7 +166,7 @@ export async function captureRuntimeStrategyCheckpoint(
       bases: state.bases
         .map((base) => ({
           baseId: base.baseId,
-          lifecycle: base.lifecycle,
+          lifecycle: base.lifecycle ?? null,
           anchorActorId: base.anchorActorId,
           reservedSiteKey: base.reservedSiteKey ?? null,
           rejectedSiteCount: base.rejectedSiteKeys?.length ?? 0

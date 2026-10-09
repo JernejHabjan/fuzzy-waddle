@@ -1,3 +1,4 @@
+import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import { expect, test } from "@playwright/test";
 import { evaluateRuntimeResourceService } from "./skirmish-ai-runtime-resource-service-evaluation";
 
@@ -10,13 +11,31 @@ const requirement = {
 } as const;
 
 const source = {
-  actorId: "forest", objectName: "Tree1", relation: "neutral", x: 20, y: 20, ready: true, resourceType: "wood"
+  actorId: "forest",
+  objectName: "Tree1",
+  relation: "neutral",
+  x: 20,
+  y: 20,
+  ready: true,
+  resourceType: "wood"
 };
 const remote = {
-  actorId: "old", objectName: "WorkMill", relation: "self", x: 2, y: 20, ready: true, resourceType: null
+  actorId: "old",
+  objectName: "WorkMill",
+  relation: "self",
+  x: 2,
+  y: 20,
+  ready: true,
+  resourceType: null
 };
 const local = {
-  actorId: "new", objectName: "WorkMill", relation: "self", x: 24, y: 20, ready: true, resourceType: null
+  actorId: "new",
+  objectName: "WorkMill",
+  relation: "self",
+  x: 24,
+  y: 20,
+  ready: true,
+  resourceType: null
 };
 const first = { tick: 20, resourceServiceActors: [source, remote], appliedCommands: [] };
 const applied = { commandId: "build", effectId: "effect:resource-service:forest:1" };
@@ -31,16 +50,21 @@ test.describe("resource-service runtime oracle", () => {
     };
     expect(evaluateRuntimeResourceService(requirement, variant)).toEqual([]);
     expect(evaluateRuntimeResourceService(requirement, { ...variant, checkpoints: [first] })).toEqual([
-      "resource_service_command_not_applied", "resource_service_local_dropoff_not_ready"
+      "resource_service_command_not_applied",
+      "resource_service_local_dropoff_not_ready"
     ]);
-    expect(evaluateRuntimeResourceService(requirement, {
-      ...variant,
-      checkpoints: [first, { ...variant.checkpoints[1], appliedCommands: [] }]
-    })).toEqual(["resource_service_command_not_applied"]);
-    expect(evaluateRuntimeResourceService(requirement, {
-      ...variant,
-      checkpoints: [{ ...first, resourceServiceActors: [remote] }]
-    })).toEqual(["resource_service_source_not_observed"]);
+    expect(
+      evaluateRuntimeResourceService(requirement, {
+        ...variant,
+        checkpoints: [first, { ...requireAiTestEntry(variant.checkpoints, 1), appliedCommands: [] }]
+      })
+    ).toEqual(["resource_service_command_not_applied"]);
+    expect(
+      evaluateRuntimeResourceService(requirement, {
+        ...variant,
+        checkpoints: [{ ...first, resourceServiceActors: [remote] }]
+      })
+    ).toEqual(["resource_service_source_not_observed"]);
   });
 
   test("rejects unneeded local construction in the served paired control", () => {
@@ -52,17 +76,24 @@ test.describe("resource-service runtime oracle", () => {
       checkpoints: [served, { ...served, tick: 500 }]
     };
     expect(evaluateRuntimeResourceService(requirement, variant)).toEqual([]);
-    expect(evaluateRuntimeResourceService(requirement, {
-      ...variant,
-      checkpoints: [served, { ...served, tick: 500, appliedCommands: [applied] }]
-    })).toEqual(["resource_service_unneeded_command"]);
-    expect(evaluateRuntimeResourceService(requirement, {
-      ...variant,
-      checkpoints: [served, {
-        ...served,
-        tick: 500,
-        resourceServiceActors: [...served.resourceServiceActors, { ...local, actorId: "extra" }]
-      }]
-    })).toEqual(["resource_service_unneeded_duplicate"]);
+    expect(
+      evaluateRuntimeResourceService(requirement, {
+        ...variant,
+        checkpoints: [served, { ...served, tick: 500, appliedCommands: [applied] }]
+      })
+    ).toEqual(["resource_service_unneeded_command"]);
+    expect(
+      evaluateRuntimeResourceService(requirement, {
+        ...variant,
+        checkpoints: [
+          served,
+          {
+            ...served,
+            tick: 500,
+            resourceServiceActors: [...served.resourceServiceActors, { ...local, actorId: "extra" }]
+          }
+        ]
+      })
+    ).toEqual(["resource_service_unneeded_duplicate"]);
   });
 });

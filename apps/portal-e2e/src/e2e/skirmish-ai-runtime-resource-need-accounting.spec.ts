@@ -1,3 +1,4 @@
+import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import { expect, test } from "@playwright/test";
 import { calculateRuntimeResourceContribution } from "./calculate-runtime-resource-contribution";
 import { normalizeRuntimeRecipientMutations } from "./skirmish-ai-runtime-recipient-mutations";
@@ -34,7 +35,10 @@ test("journal consumes paired actual applications once and never sums duplicate 
   expect(result.failures).toEqual([]);
   expect(result.gaps).toEqual([]);
   expect(result.operations).toHaveLength(1);
-  const repeated = { ...capture, recipientResourceFacts: [...capture.recipientResourceFacts, capture.facts[3]] };
+  const repeated = {
+    ...capture,
+    recipientResourceFacts: [...capture.recipientResourceFacts, requireAiTestEntry(capture.facts, 3)]
+  };
   expect(normalizeRuntimeRecipientMutations(repeated)).toMatchObject({
     operations: [],
     failures: ["production_recipient_journal_order_invalid"]
@@ -45,14 +49,17 @@ test("missing input or liability authority stays unavailable, and accepting-resu
   const { capture } = resourceServiceFixture();
   const needs = normalizeRuntimeResourceNeeds(capture).needs;
   const result = projectRuntimeResourceNeedAccounting(capture, needs, []);
-  expect(result.records[0]).toMatchObject({ frame: null, closedSequence: needs[0].selectedSequence });
-  expect(result.records[0].gaps).toContain("production_need_exact_input_read_missing");
+  expect(requireAiTestEntry(result.records, 0)).toMatchObject({
+    frame: null,
+    closedSequence: requireAiTestEntry(needs, 0).selectedSequence
+  });
+  expect(requireAiTestEntry(result.records, 0).gaps).toContain("production_need_exact_input_read_missing");
   expect(result.gaps).toContain("resource_recipient_mutable_alias_history_incomplete");
 });
 
 test("all supplied conflicting tails invalidate the parent rather than exposing a normalized journal prefix", () => {
   const { capture } = recipientJournalFixture();
-  const bad = { ...capture.facts[3], sequence: 5 };
+  const bad = { ...requireAiTestEntry(capture.facts, 3), sequence: 5 };
   const changed = {
     ...capture,
     recipientResourceFacts: [...capture.recipientResourceFacts, bad],
@@ -67,7 +74,7 @@ test("replayed other income and spending cap a later whole-pile delivery, while 
   expect(credit.contributions.map((lot) => lot.amount)).toEqual([3, 4]);
   const result = projectRuntimeResourceNeedAccounting(capture, [need], [credit]);
   expect(result.failures).toEqual([]);
-  expect(result.records[0].applications[0]).toMatchObject({
+  expect(requireAiTestEntry(requireAiTestEntry(result.records, 0).applications, 0)).toMatchObject({
     operationId: 3,
     observedPositiveIncomeBefore: 7,
     observedUnresolvedUpperBound: 3,
@@ -89,7 +96,12 @@ test("replayed other income and spending cap a later whole-pile delivery, while 
     recipientResourceFacts: [...capture.recipientResourceFacts, fence],
     resourceCoverage: { ...capture.resourceCoverage, frontier: { tick: 0, captureSequence: 12 } }
   };
-  expect(projectRuntimeResourceNeedAccounting(late, [need], [lateCredit]).records[0].applications[0]).toMatchObject({
+  expect(
+    requireAiTestEntry(
+      requireAiTestEntry(projectRuntimeResourceNeedAccounting(late, [need], [lateCredit]).records, 0).applications,
+      0
+    )
+  ).toMatchObject({
     observedContributionUpperBound: 3,
     usefulContribution: null
   });

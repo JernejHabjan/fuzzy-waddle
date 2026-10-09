@@ -43,7 +43,7 @@ export async function captureRuntimeEconomyCheckpoint(
       bridge.outcomes
         .filter((outcome) => ["rejected", "cancelled", "failed"].includes(outcome.kind))
         .forEach((outcome) => {
-          const reason = outcome.reason ?? "unknown";
+          const reason = "reason" in outcome ? outcome.reason : "unknown";
           terminalFailureReasons[reason] = (terminalFailureReasons[reason] ?? 0) + 1;
         });
       return {
@@ -146,9 +146,10 @@ export async function captureRuntimeEconomyCheckpoint(
         ),
         resourceServiceActors: observation.actors
           .filter((actor) => actor.logicalPosition.status === "known")
-          .filter((actor) =>
-            actor.resourceState.status === "known" ||
-            (actor.relation === "self" && (catalogByName.get(actor.objectName)?.acceptsResources?.length ?? 0) > 0)
+          .filter(
+            (actor) =>
+              actor.resourceState.status === "known" ||
+              (actor.relation === "self" && (catalogByName.get(actor.objectName)?.acceptsResources?.length ?? 0) > 0)
           )
           .map((actor) => ({
             actorId: actor.actorId,
@@ -177,9 +178,9 @@ export async function captureRuntimeEconomyCheckpoint(
             [
               decision.outcome,
               decision.reason,
-              decision.detail,
+              decision.outcome === "rejected" ? decision.detail : undefined,
               decision.intent.kind,
-              decision.intent.objectName,
+              "objectName" in decision.intent ? decision.intent.objectName : undefined,
               decision.intent.reasonCode
             ]
               .filter((value) => value !== undefined)
