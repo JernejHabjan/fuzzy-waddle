@@ -19,6 +19,7 @@ import { SharedQueueItemType } from "@fuzzy-waddle/probable-waffle-gameplay/enti
 import { ResearchComponent } from "../components/research/research-component";
 import { ProbableWaffleGameCommandTypes } from "@fuzzy-waddle/probable-waffle-protocol";
 import { OwnerComponent } from "../components/owner-component";
+import { AssignProductionErrorCode } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/assign-production-error-code";
 
 export class QueueCommandSystem {
   private commandBusSubscription?: Subscription;
@@ -86,7 +87,8 @@ export class QueueCommandSystem {
       cmd.execution ? { execution: cmd.execution, playerNumber: cmd.playerNumber, actorIds: cmd.actorIds } : undefined
     );
     if (error) {
-      const reason = String(error).toLowerCase().includes("resource") ? "insufficient_resources" : "application_failed";
+      const reason =
+        error === AssignProductionErrorCode.NotEnoughResources ? "insufficient_resources" : "application_failed";
       commandBus.reportOutcome(cmd, "rejected", reason, cmd.actorIds, [], String(error));
       return;
     }

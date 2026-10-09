@@ -433,6 +433,8 @@ none has executable evidence. Existing authored stage 29–49 paths are prerequi
 R = required bounded implementation; B = existing mandatory acceptance still blocked; O = optional extra, not queued.
 Checks K1–K5 are defined below. Existing scenario authority remains `tools/ai/fixtures/skirmish-v1.json`, not this table.
 
+The following map preserves stage-50 design/authoring states; the final-gate checkpoint below owns current executed evidence.
+
 | Requirement / consumer and purpose | Class; owning contract / files | Dependency / pass | Positive, control and recovery evidence | Deferred check / state |
 | --- | --- | --- | --- | --- |
 | M01 Named supply/capacity writers: need/accounting rejects stale history | R; C1/C2 resource source/drain, scene loss | 49 → 51 | Real source extraction and real drain credit across controlled wait; refill/lock/assignment/restore, duplicate assignment no-op; callback sees old stock/capacity at loss; native throws/reentrancy; fresh partial capture | Code authored; K1/K3 deferred |
@@ -444,7 +446,7 @@ Checks K1–K5 are defined below. Existing scenario authority remains `tools/ai/
 | M07 Real adapter/report bridge: expose actual producer evidence and explicit gaps | R; C7 root capture, variant runner, production normalization | 51–53 → 54 | Real Phaser actor/components/protocol player/read/native command path into report; initialization loss, post-await service loss and late/disposed capture; native income remains diagnostic while useful fields stay null; contradictory tail suppresses parent | Bridge assertion authored; K1/K3/K5 real-run evidence deferred |
 | M08 Normal-play impact: testing does not install heavy machinery during gaming | R; C8 below, installer/helper controls and existing profiler | 54 | Production/unmarked guard, no sample/clone/listener/timer/root journal; before/after disabled-path and bundle comparison; foreign host/duplicate capture, late callbacks | Fast paths/guard authored; K1/K4/K5 profile deferred |
 | M09 Compliance/publication: economical implementation remains reviewable | R; C6 exact baselines, existing handoff | Each 51–54 | No refreshed hashes/new permanent stage names; task-only prerequisite and behavior commits; source review/Omission Audit/closure, remote SHA and clean task scope | Authored/source-reviewed; implementation commit `978cb09e70cbc6e2ed0b520971690ea47ab38045` remote-verified; checks deferred |
-| M10 Combined review and compatibility: decide readiness before execution | R; C1–C8, all changed consumers | 54 → Sol review | Trace real input → selected/admitted → native application → report/disposal; review all controls, repair concrete contract contradictions; every required unrun check remains listed | Source review/four repairs authored; gate readiness open pending missing controls below; K1–K5 unrun |
+| M10 Combined review and compatibility: decide readiness before execution | R; C1–C8, all changed consumers | 54 → Sol review | Trace real input → selected/admitted → native application → report/disposal; review all controls, repair concrete contract contradictions; every required unrun check remains listed | Preflight native/report batch checked below; K4 compiler/build blockers, wider compatibility and K5 remain |
 | M11 Mutation-complete useful resource/continuous capacity: 32/36 full proof | B; C7 plus 32/36/39/42 authority, public APIs | Explicit authority/scope decision; not a hidden fifth Luna pass | Net-zero alias undo, arbitrary definition/Map/item/roster replacement, hidden/stale threats/access changes between reads, full supported initial predicate history; no positive complete channel currently possible | Existing 32/36 gates; blocked, mandatory |
 | M12 Production useful outputs, legal setup and strategy: PRO-03/06/07 release | B; existing production authority contract and evaluators | Broader gameplay/fixture queue, separate from 51–54 | Both-faction transition/abandonment, exposed/safe/no-demand resilience, shared train/research and paid cancellation/pending refund pairs; full oracle and denominator | K5 and owning scenario/policy plans; open, mandatory |
 | M13 Finer loss scopes/continuous journal/lot allocation | O; no new files/owners | Not scheduled; new consumer must justify proposal | No actor-to-beneficiary dependency map, FIFO allocation or extra scan introduced just to recover a diagnostic bound | No extra gate; proposed only |
@@ -507,6 +509,90 @@ M10 source review has now been performed, with concrete repairs and omissions re
 authoring is the next grouped boundary before gate readiness; executable validation remains deferred.
 Do not claim stage validation before K1–K5. M11 remains a mandatory blocker from public mutable aliases
 and incomplete access/safety/lifetime history; M12 remains open for full PRO-03/06/07. Neither was reduced by this batch.
+
+### Final-gate preflight and repair checkpoint (2026-10-09, partially checked)
+
+Base `8616a2223b9390f3039a717b7fc14564bf81c6eb` was clean and remote-verified on
+`feature/759-skirmish-ai` in `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`. The containing commit publishes
+this batch; verify its SHA against the remote on resume. Actual model/effort unavailable; recommendation remains
+GPT-6.1 Sol / high. No independent reviewer/subagent. The user-authorized final gate is active.
+
+**Purpose and repairs:** execute the authored native fences and scoped-credit/report consumers before actual browser
+matches. Newline-separated `as`/`satisfies` assertions were invalid or executed as separate expressions; corrected
+their boundaries. Report need accounting now joins `command.decision.sequence`, matching the producer contract instead
+of the obsolete nested `selectedDecision.fact`. Native production rejects unaffordable commands through the numeric
+`AssignProductionErrorCode.NotEnoughResources` enum, preserving `insufficient_resources` outcome semantics.
+
+Native fixtures now expose actual protocol players/rosters, synchronous money observers and installed Phaser
+EventEmitter/GameObject lifecycle. Restored campaign metadata and observer registration reflect the actual owners;
+container mocks reset per test. Synthetic report fixtures use real enum names, complete labelled service snapshots
+and the existing two contributor lots (3 + 4), without substituting consumed planner inputs. The extracted
+`skirmish-ai-runtime-construction-lineage-fixture.ts` keeps the spec within the source-size limit. E2E `rootDir`
+is the workspace root so its no-emit config can follow source aliases. Formatting was applied to touched files.
+The global Phaser test mock change still needs wider-consumer compatibility checks.
+
+| Acceptance / status | Evidence and practical limit |
+| --- | --- |
+| Readiness preflight / passed | `pnpm agent:doctor` and `pnpm agent:context -- --issue 816` passed on the clean base. |
+| K1 + inherited native selection / passed | 69 suites, 371 tests; source/drain/container/restore/roster/input/queue/construction/health/movement/capture/disposal consumers. Nonzero intended controls executed. |
+| K2 / passed | Protocol player/resource observation: 2 suites, 6 tests. |
+| K3 + related report selection / passed | 157 tests in 13 synthetic report specs; exact credit joins, lineage, windows, liabilities, conservative accounting and bridge checks. Playwright ran without a browser or portal server. This is not K5 production evidence. |
+| K4 / partial | Protocol `tsconfig.spec.json` passed; lints for Phaser/protocol/portal-e2e passed; changed-file formatting/diff checks passed. Phaser TypeScript: 336 diagnostics. E2E TypeScript: 510 diagnostics after removing the false source-root restriction. Portal production build: 12 diagnostics. |
+| M08/K5 / pending | No real browser matrix or paired disabled-path/bundle measurements: compilation is a prerequisite. No performance or shipping-byte claim. |
+| M11/M12 / blocked/open | Useful-service fields remain null. No complete alias/lifetime authority, useful throughput or broader production release success was established. |
+
+Ignored local evidence is retained in `tmp/ai-plans/759-validation/`: native/report/protocol logs, TypeScript logs,
+lint/build/format logs, commands and provenance. `provenance.json` records per-file hashes and the tested source digest
+`7289254a44d579b0955934388a8990fa37bfa770c31751c72c943c278070fc6a`. Only formatting of two specs changed
+after that grouped native pass; both were rerun together. `final-provenance.json` records the final source hashes.
+Final source digest: `beb3ccfbf15319b61fc67df4c460af151af5b3edcaca9614c0a1781e4bf36675`.
+These files are local artifacts; the checkpoint carries the transferable results and blockers. Whole-document Prettier
+checks fail for both ledgers on the clean base and candidate; their existing Markdown layout is retained. Changed
+source/config formatting passes; ledger formatting remains a documented final-gate cleanup item.
+
+```sh
+# K1 plus inherited native behavior: 69 suites / 371 tests
+pnpm exec nx test probable-waffle-phaser --testPathPatterns='gatherer|resource-cargo|resource-service|resource-drain-credit|observe-resource-credit|resource-source|health-component|health-presentation|owner-component|owner-presentation|construction|movement|ai-runtime|queue|resource-(source|drain)-resource-history|container-resource-history|containable-resource-history|actor-data-resource-history|campaign-participant-scene-adapter-resource-history|scene-resource-observation' --runInBand
+# K2: 2 suites / 6 tests
+pnpm exec nx test probable-waffle-protocol --testPathPatterns='player-resource-observation|player' --runInBand
+# Synthetic K3 expansion: 157 tests. The ignored config spreads the existing Playwright config,
+# sets testDir to ../../apps/portal-e2e/src/e2e and webServer to undefined. No browser is used.
+pnpm exec playwright test --config tmp/ai-plans/playwright-resource-gate.config.ts skirmish-ai-runtime-construction-authority.spec.ts skirmish-ai-runtime-construction-catalog.spec.ts skirmish-ai-runtime-construction-decision-lineage.spec.ts skirmish-ai-runtime-construction-lineage.spec.ts skirmish-ai-runtime-native-navigation.spec.ts skirmish-ai-runtime-producer-routes.spec.ts skirmish-ai-runtime-production-causality-normalization.spec.ts skirmish-ai-runtime-production-report.spec.ts skirmish-ai-runtime-resource-application.spec.ts skirmish-ai-runtime-resource-credit.spec.ts skirmish-ai-runtime-resource-liability-frames.spec.ts skirmish-ai-runtime-resource-need-accounting.spec.ts skirmish-ai-runtime-resource-need-boundaries.spec.ts
+pnpm exec tsc --noEmit -p libs/games/probable-waffle/phaser/tsconfig.spec.json
+pnpm exec tsc --noEmit -p libs/games/probable-waffle/protocol/tsconfig.spec.json
+pnpm exec tsc --noEmit -p apps/portal-e2e/tsconfig.json
+pnpm exec nx run-many --targets=lint --projects=probable-waffle-phaser,probable-waffle-protocol,portal-e2e
+pnpm exec nx build portal --configuration=production
+```
+
+**Next batch — why:** repair compilation and wider mock compatibility together, retaining fail-closed contracts. First
+reproduce `pnpm exec nx build portal --configuration=production`. Its known owners are gameplay
+`validate-ai-brain-state-v1.ts` (workforce key narrowing), `ai-macro-manager.ts` (pressure-domain literal),
+`ai-producer-safety.ts` (adjacency tuple) and `ai-resource-service-manager.ts` (known-value narrowing); Phaser
+`ai-multiplayer-queue-world.ts` / `ai-multiplayer-shared-queue-world.ts` (possibly absent produced ID),
+`pawn-agent-boarding.ts` (missing interface method) and `pawn-order-observation.ts` (possibly absent first order).
+Then repair strict spec/report contracts by shared owner rather than individual arbitrary stages. The largest diagnostic
+groups are `ai-runtime-production-capture.spec.ts` (101), `ai-runtime-queue-mutation-capture.spec.ts` (36),
+`skirmish-ai-runtime-production-operation-projection.spec.ts` (44),
+`skirmish-ai-runtime-production-world-normalization.spec.ts` (40), resource-service specs (29),
+resource-need boundaries (27) and economy checkpoint (24). Counts are diagnostics, not distinct defects.
+The source-root configuration repair alone is not a passing type check. Do not suppress strictness or refresh baselines.
+Build success enables K5; the C8 paired baseline/profile/bundle budgets and all inherited server/socket/save/hash and
+gameplay obligations remain. Stop after a coherent reviewed, checked and published compiler/build batch.
+
+**Source Implementation Review:** self-reviewed assertion semantics, producer-to-report decision identity, exact numeric
+queue error classification, real native roster/money/lifecycle fixtures and their immediate consumers. No new schema,
+wire/save fields, authority claims, baseline refresh or gameplay strategy. New fixture helper has an executed consumer.
+
+**Omission Audit:** K1/K2 and expanded synthetic K3 have recorded passes; K4 records both passing and failing checks.
+M01–M09 authoring obligations remain mapped above; passing scoped tests does not establish every broader integration
+obligation. K5, wider shared-mock compatibility, inherited checks and C8 measurement are explicit pending evidence.
+M11/M12 remain mandatory. No new machinery or skill/tool change.
+
+**Separate Final Closure Audit:** checked changed-source ownership, direct fixture imports, native error/outcome and
+accounting consumers after repairs. Partial useful fields and unsupported histories remain conservative. This preflight
+batch is checked and publishable; full M10/final gate and issue/release closure remain blocked by the recorded checks.
+Publication uses the containing commit with normal push and remote-SHA verification.
 
 ### Combined machinery review M10 (2026-10-09, authored/unverified)
 
@@ -623,8 +709,8 @@ fixed bounds, before/after claims and partial-channel consumers. Stage 50 design
 M10 source review/repairs are above. Missing controls, cost and executable validation remain open. Broad useful authority remains blocked M11;
 production/gameplay proof remains M12. Containing commit and verified remote publication own design delivery.
 
-Next: author the M10 omission list in one Luna / high batch, source-review, commit/push under existing
-authority, and pause for GPT-6.1 Sol / high gate readiness. Do not invent another design stage for an ordinary repair.
+Current continuation: missing-control authoring is complete and the final-gate preflight results are recorded above.
+Use GPT-6.1 Sol / high for grouped compiler/build repairs, then actual browser/cost evidence. Do not invent another design stage for an ordinary repair.
 A concrete source contradiction may amend the affected
 C/M row with source, native impact and replacement acceptance; only an unresolved architecture decision goes to Sol.
 Continue independent authorized work, retain safe commits, and never silently expand into M11/M12 or alter acceptance.

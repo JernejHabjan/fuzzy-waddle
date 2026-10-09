@@ -9,8 +9,12 @@ export class AiRuntimeResourceCoverageCapture {
   private readonly cohorts: AiRuntimeResourceCoverageV1["cohorts"][number][] = [];
   private readonly components = new WeakMap<object, number>();
 
-  constructor(private readonly startedTick: number,
-    private readonly boundary: () => AiRuntimeResourceCoverageV1["frontier"]) { this.lastTick = startedTick; }
+  constructor(
+    private readonly startedTick: number,
+    private readonly boundary: () => AiRuntimeResourceCoverageV1["frontier"]
+  ) {
+    this.lastTick = startedTick;
+  }
 
   /** Global conservative fence, including failure before owner/actor identity can be read. It cannot be repaired later. */
   readonly lose = (reason: string): void => {
@@ -24,10 +28,14 @@ export class AiRuntimeResourceCoverageCapture {
     const existing = this.components.get(component);
     if (existing !== undefined) {
       const cohort = this.cohorts[existing - 1];
-      if (cohort.actorId !== actorId || cohort.playerNumber !== playerNumber) this.lose("cohort_owner_or_actor_changed");
+      if (!cohort || cohort.actorId !== actorId || cohort.playerNumber !== playerNumber)
+        this.lose("cohort_owner_or_actor_changed");
       return;
     }
-    if (this.cohorts.length >= 256) { this.lose("cohort_overflow"); return; }
+    if (this.cohorts.length >= 256) {
+      this.lose("cohort_overflow");
+      return;
+    }
     if (this.cohorts.some((cohort) => cohort.actorId === actorId && cohort.playerNumber === playerNumber)) {
       this.lose("component_or_actor_identity_replaced");
     }
@@ -39,20 +47,35 @@ export class AiRuntimeResourceCoverageCapture {
 
   /** Tick emission is a start boundary, not an asynchronous tick seal. Missing intermediate ticks fence coverage. */
   tick(tick: number): void {
-    if (!Number.isSafeInteger(tick) || tick < this.lastTick || tick > this.lastTick + 1) this.lose("tick_discontinuity");
+    if (!Number.isSafeInteger(tick) || tick < this.lastTick || tick > this.lastTick + 1)
+      this.lose("tick_discontinuity");
     this.lastTick = tick;
   }
 
   /** Actual detached read position; unsupported mutation and global beneficiary authority remain explicit. */
   read(): AiRuntimeResourceCoverageV1 {
     const frontier = this.boundary();
-    return structuredClone({ captureEpoch: 1, lossEpoch: this.lossEpoch, startedTick: this.startedTick,
-      frontier, lost: this.lost, losses: [...this.losses], cohorts: this.cohorts,
-      channels: { recipientNativeMutations: "partial", selectedNeedLifecycle: "partial",
-        reconciledLiabilities: "partial", cargoLifetime: "partial" },
-      gaps: ["resource_component_mutation_history_incomplete", "resource_service_lifetime_history_incomplete",
-        "resource_beneficiary_need_history_missing", "resource_continuous_capacity_predicates_missing",
-        "resource_recipient_mutable_alias_history_incomplete"] }
-      satisfies AiRuntimeResourceCoverageV1);
+    return structuredClone({
+      captureEpoch: 1,
+      lossEpoch: this.lossEpoch,
+      startedTick: this.startedTick,
+      frontier,
+      lost: this.lost,
+      losses: [...this.losses],
+      cohorts: this.cohorts,
+      channels: {
+        recipientNativeMutations: "partial",
+        selectedNeedLifecycle: "partial",
+        reconciledLiabilities: "partial",
+        cargoLifetime: "partial"
+      },
+      gaps: [
+        "resource_component_mutation_history_incomplete",
+        "resource_service_lifetime_history_incomplete",
+        "resource_beneficiary_need_history_missing",
+        "resource_continuous_capacity_predicates_missing",
+        "resource_recipient_mutable_alias_history_incomplete"
+      ]
+    } satisfies AiRuntimeResourceCoverageV1);
   }
 }

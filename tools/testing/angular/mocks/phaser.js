@@ -1,5 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars,no-undef */
 // Shared Angular test mock for Phaser.
+const path = require("node:path");
+const EventEmitter = require(
+  path.join(path.dirname(require.resolve("phaser/package.json")), "src/events/EventEmitter.js")
+);
+const GameObject = require(
+  path.join(path.dirname(require.resolve("phaser/package.json")), "src/gameobjects/GameObject.js")
+);
 
 class Game {
   constructor(config) {
@@ -155,6 +162,7 @@ const Scale = {
 };
 
 const MathUtils = {
+  Clamp: (value, min, max) => Math.max(min, Math.min(max, value)),
   Between: (min = 0, max = 0) => Math.floor(Math.random() * (max - min + 1)) + min,
   Distance: {
     Between: () => 0,
@@ -186,7 +194,8 @@ const Types = {
 
 const Scenes = {
   Events: {
-    SHUTDOWN: "shutdown"
+    SHUTDOWN: "shutdown",
+    DESTROY: "destroy"
   }
 };
 
@@ -215,12 +224,14 @@ const Time = {
 };
 
 const Phaser = {
+  Events: { EventEmitter },
   Game,
   GameObjects: {
+    Events: { DESTROY: "destroy" },
     Container,
     Sprite,
     Image,
-    GameObject: Container,
+    GameObject,
     Text,
     Graphics,
     Group,
