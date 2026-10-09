@@ -7,9 +7,9 @@ import { parseRequest } from "./skirmish-ai-runtime-request-parser";
 import { runVariant } from "./skirmish-ai-runtime-variant-runner";
 import { last } from "./skirmish-ai-runtime-value";
 import { checkRuntimeProductionReportBridge } from "./skirmish-ai-runtime-production-report";
+import { publishRuntimeResult } from "./skirmish-ai-runtime-result-output";
 
 const runtimeRequestText = process.env.AI_SKIRMISH_RUNTIME_REQUEST;
-const resultPrefix = "AI_SKIRMISH_RUNTIME_RESULT_V1:";
 
 test.skip(!runtimeRequestText, "The skirmish AI runtime driver is invoked only by the matrix runner.");
 test.setTimeout(1_200_000);
@@ -106,7 +106,7 @@ test("executes selected AI scenarios in real lobby-started Phaser matches", asyn
       )
     }
   } as const;
-  console.log(`${resultPrefix}${JSON.stringify(report)}`);
+  publishRuntimeResult(report, process.env.AI_SKIRMISH_RUNTIME_RESULT_PATH);
   expect(report.workCounts.decisions).toBeGreaterThan(0);
   expect(report.workCounts.ticks).toBeGreaterThan(0);
   expect(scenarioResults.flatMap((result) => result.failures)).toEqual([]);

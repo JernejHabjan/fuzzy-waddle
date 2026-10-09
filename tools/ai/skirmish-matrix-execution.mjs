@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { runPureJestWithScenarioEvidence } from "./pure-scenario-evidence.mjs";
 import { pureFixtureReference, runtimeFixtureReference } from "./skirmish-matrix-fixtures.mjs";
 import { digestString, readHead, readJson, readWorkingTreeSource } from "./skirmish-matrix-io.mjs";
+import { createRuntimeResultPath, readRuntimeResult } from "./skirmish-runtime-result.mjs";
 
 export function invokeSelectedHarness(input, context) {
   const { manifest, fixtureDirectory } = context;
@@ -168,21 +169,31 @@ function invokeRuntimeHarness(input, context) {
   const workingTreeSource = readWorkingTreeSource();
   const workingTreeDigest = workingTreeSource.length > 0 ? digestString(workingTreeSource) : null;
   const fixtureDigest = digestString(JSON.stringify(fixtures));
-  const fixtureIdentityDigests = [...new Map(input.rows.map((row) => {
-    const reference = runtimeFixtureReference(row);
-    const fixture = readJson(join(fixtureDirectory, reference), 1024 * 1024);
-    return [reference, { reference, digest: `sha256:${createHash("sha256").update(JSON.stringify(fixture)).digest("hex")}` }];
-  })).values()].sort((left, right) => left.reference.localeCompare(right.reference));
+  const fixtureIdentityDigests = [
+    ...new Map(
+      input.rows.map((row) => {
+        const reference = runtimeFixtureReference(row);
+        const fixture = readJson(join(fixtureDirectory, reference), 1024 * 1024);
+        return [
+          reference,
+          { reference, digest: `sha256:${createHash("sha256").update(JSON.stringify(fixture)).digest("hex")}` }
+        ];
+      })
+    ).values()
+  ].sort((left, right) => left.reference.localeCompare(right.reference));
   const scenarioSources = input.rows.map((row) => {
     const reference = runtimeFixtureReference(row);
     const fixture = readJson(join(fixtureDirectory, reference), 1024 * 1024);
     return { scenarioId: row.id, group: row.group, reference, map: fixture.recipe.mapLabel };
   });
+  const resultArtifact = createRuntimeResultPath(workspaceRoot);
+  const sourceRevision = input.candidate ?? readHead();
   const environment = {
     ...process.env,
+    AI_SKIRMISH_RUNTIME_RESULT_PATH: resultArtifact,
     AI_SKIRMISH_RUNTIME_REQUEST: JSON.stringify({
       schemaVersion: 1,
-      sourceRevision: input.candidate ?? readHead(),
+      sourceRevision,
       dirtySourceDigest: workingTreeDigest,
       fixtureDigest,
       seed: input.seed ?? null,
@@ -205,13 +216,20 @@ function invokeRuntimeHarness(input, context) {
   );
   const wallMs = Math.round(performance.now() - startedAt);
   if (command.error) throw command.error;
-  const runtimeReport = parseRuntimeReport(`${command.stdout}\n${command.stderr}`);
+  const runtimeReport = readRuntimeResult(resultArtifact, {
+    sourceRevision,
+    dirtySourceDigest: workingTreeDigest,
+    fixtureDigest
+  });
   const report = {
     schemaVersion: 1,
     status: input.diagnosticSelection
       ? command.status === 0 && runtimeReport?.status === "diagnostic_passed"
-        ? "diagnostic_passed" : "diagnostic_failed"
-      : command.status === 0 && runtimeReport?.status === "passed" ? "passed" : "failed",
+        ? "diagnostic_passed"
+        : "diagnostic_failed"
+      : command.status === 0 && runtimeReport?.status === "passed"
+        ? "passed"
+        : "failed",
     suite: input.suite,
     manifestVersion: manifest.manifestVersion,
     candidate: input.candidate ?? readHead(),
@@ -235,7 +253,7 @@ function invokeRuntimeHarness(input, context) {
       decisions: runtimeReport?.workCounts?.decisions ?? 0,
       ticks: runtimeReport?.workCounts?.ticks ?? 0
     },
-    execution: { wallMs, processStarts: 1 },
+    execution: { wallMs, processStarts: 1, resultArtifact },
     runtime: runtimeReport,
     process: { exitCode: command.status, signal: command.signal, stdout: command.stdout, stderr: command.stderr }
   };
@@ -244,22 +262,4 @@ function invokeRuntimeHarness(input, context) {
   }
   if (report.status !== "passed" && report.status !== "diagnostic_passed") process.exitCode = 1;
   return report;
-}
-
-function parseRuntimeReport(output) {
-  const prefix = "AI_SKIRMISH_RUNTIME_RESULT_V1:";
-  const start = output.lastIndexOf(prefix);
-  if (start < 0) return null;
-  const line = output
-    .slice(start + prefix.length)
-    .split("\n", 1)[0]
-    ?.replace(/\u001b\[[0-9;]*m/g, "")
-    .trim();
-  if (!line) return null;
-  try {
-    const value = JSON.parse(line);
-    return value?.schemaVersion === 1 ? value : null;
-  } catch {
-    return null;
-  }
 }

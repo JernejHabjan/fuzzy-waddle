@@ -443,10 +443,10 @@ The following map preserves stage-50 design/authoring states; the final-gate che
 | M04 Recipient roster: journal knows remove/re-add before another read | R; C3 roster capture and recipient owner | 52 | Real protocol game instance add/remove/reset with actual protocol players; temporary removal/re-add, native throw, foreign receiver/descriptor/replacement, installation rollback, disposal/reinstall | Wrapper code/spec authored; K1/K2 deferred |
 | M05 Exact consumed/accepting frames: explain purchase-plus-gather null bounds | R; C4 fact union/input/root/unspent/report fields | 52 → 53 | Real input/controller selected event with zero and nonzero new claims; immediate paid vs future queue transfer; due head exhaustion; unsupported building/pre-capture/expired/recovery claims and callback-in-progress; mismatch stays null | Code plus focused input/root/synthetic frame controls authored; full native integration still missing; K1/K3 deferred |
 | M06 Cargo/recipient/window compatibility: preserve credited income without false usefulness | R; C2/C4/C5 existing credit/application/need projections | 53 | Exact real payload join; normal/granted/none and changed owner; mixed/old/restored cargo; grant then spend cannot reopen shortage; publication delayed across application window; same-tick/straddle/overflow bad tail | Existing path retained; K1/K3 compatibility cases deferred |
-| M07 Real adapter/report bridge: expose actual producer evidence and explicit gaps | R; C7 root capture, variant runner, production normalization | 51–53 → 54 | Real Phaser actor/components/protocol player/read/native command path into report; initialization loss, post-await service loss and late/disposed capture; native income remains diagnostic while useful fields stay null; contradictory tail suppresses parent | Bridge assertion authored; K1/K3/K5 real-run evidence deferred |
-| M08 Normal-play impact: testing does not install heavy machinery during gaming | R; C8 below, installer/helper controls and existing profiler | 54 | Production/unmarked guard, no sample/clone/listener/timer/root journal; before/after disabled-path and bundle comparison; foreign host/duplicate capture, late callbacks | Fast-path/native controls and production build pass; paired C8/K5 cost/bundle evidence pending |
+| M07 Real adapter/report bridge: expose actual producer evidence and explicit gaps | R; C7 root capture, variant runner, production normalization | 51–53 → 54 | Real Phaser actor/components/protocol player/read/native command path into report; initialization loss, post-await service loss and late/disposed capture; native income remains diagnostic while useful fields stay null; contradictory tail suppresses parent | Native/synthetic controls and real 16-decision short replay pass; long K5 bridge fails on outcome lineage/authority, retained in the browser readiness checkpoint |
+| M08 Normal-play impact: testing does not install heavy machinery during gaming | R; C8 below, installer/helper controls and existing profiler | 54 | Production/unmarked guard, no sample/clone/listener/timer/root journal; before/after disabled-path and bundle comparison; foreign host/duplicate capture, late callbacks | Fast-path/native controls and production build pass; marked capture phase measured, paired C8 cost/bundle evidence pending |
 | M09 Compliance/publication: economical implementation remains reviewable | R; C6 exact baselines, existing handoff | Each 51–54 | No refreshed hashes/new permanent stage names; task-only prerequisite and behavior commits; source review/Omission Audit/closure, remote SHA and clean task scope | Authored/source-reviewed; implementation commit `978cb09e70cbc6e2ed0b520971690ea47ab38045` remote-verified; checks deferred |
-| M10 Combined review and compatibility: decide readiness before execution | R; C1–C8, all changed consumers | 54 → Sol review | Trace real input → selected/admitted → native application → report/disposal; review all controls, repair concrete contract contradictions; every required unrun check remains listed | K4 all four compiler configs, gameplay 274/native 679/report 457 tests, scoped lint/format and production build pass; K5/C8 and broader release evidence remain |
+| M10 Combined review and compatibility: decide readiness before execution | R; C1–C8, all changed consumers | 54 → Sol review | Trace real input → selected/admitted → native application → report/disposal; review all controls, repair concrete contract contradictions; every required unrun check remains listed | K4 compatibility and K5 timing/transport repairs checked; gameplay 274/native 679/report 461 tests pass; K5 actual failure retained, C8 and broader release remain |
 | M11 Mutation-complete useful resource/continuous capacity: 32/36 full proof | B; C7 plus 32/36/39/42 authority, public APIs | Explicit authority/scope decision; not a hidden fifth Luna pass | Net-zero alias undo, arbitrary definition/Map/item/roster replacement, hidden/stale threats/access changes between reads, full supported initial predicate history; no positive complete channel currently possible | Existing 32/36 gates; blocked, mandatory |
 | M12 Production useful outputs, legal setup and strategy: PRO-03/06/07 release | B; existing production authority contract and evaluators | Broader gameplay/fixture queue, separate from 51–54 | Both-faction transition/abandonment, exposed/safe/no-demand resilience, shared train/research and paid cancellation/pending refund pairs; full oracle and denominator | K5 and owning scenario/policy plans; open, mandatory |
 | M13 Finer loss scopes/continuous journal/lot allocation | O; no new files/owners | Not scheduled; new consumer must justify proposal | No actor-to-beneficiary dependency map, FIFO allocation or extra scan introduced just to recover a diagnostic bound | No extra gate; proposed only |
@@ -509,6 +509,114 @@ Historical authoring boundary: M10 source review found missing controls, subsequ
 final-gate checkpoints below. The user-authorized final gate is active; K5/C8 and broader release evidence remain.
 Do not claim stage validation before K1–K5. M11 remains a mandatory blocker from public mutable aliases
 and incomplete access/safety/lifetime history; M12 remains open for full PRO-03/06/07. Neither was reduced by this batch.
+
+### Final-gate browser readiness checkpoint (2026-10-09, diagnostic repairs checked)
+
+User authorized the next coherent final-gate batch with commit/push/pause. Clean base and remote were
+`4f4bd471e58d04a03dfec5e5ffc45944bdd739cd` on `feature/759-skirmish-ai`, worktree
+`/home/jernej/.codex/worktrees/7977/fuzzy-waddle`. Actual host model/effort unknown. The containing commit owns
+these repairs; verify its remote SHA on resume. No gameplay policy, fixture recipe, authority oracle, source baseline,
+wire/save schema, useful-service activation or model setting changed.
+
+**What changed / why used:** `reconcileRuntimeProductionUnspent` now accepts publication after the exact consumed
+input tick, retaining the existing identity, accepted intent, lease, admission, payment and total checks. Async planning
+can publish at tick 23 for input tick 20; requiring equality falsely invalidated genuine cash ownership and suppressed
+the whole report. Publication before input still fails. `reconcileRuntimeUnspentEntry` extracts unchanged per-entry
+admission/payment/physical-transfer/release checks to keep the changed owner within source/function limits. It has one
+consumer, the same reconciler; this adds no capture or gameplay manager.
+
+`publishRuntimeResult` and `skirmish-runtime-result.mjs` move the complete browser result into a unique retained artifact
+instead of the subprocess log. The matrix reader validates source/fixture/dirty provenance and report shape, checks a
+256 MiB ceiling before loading, and fails closed on missing/malformed/oversized/foreign results. Direct Playwright
+callers retain the old console protocol. Matrix reports locate the raw artifact through `execution.resultArtifact`.
+This preserves failed native evidence without raising the existing 32 MiB subprocess log buffer or weakening native
+fact/snapshot/route bounds. Two report specs and one Node spec add timing, transport and unavailable/negative controls.
+
+**Real-browser evidence:** inventory remains 19/120 registered, 97 supported missing, four deferred, 13 recipes.
+PRO-03/06/07's natural recipe has no mandatory `requiredProductionContracts` or full production-evidence adapter.
+Do not launch the whole production family expecting release success. The initial single PRO-03/Tivara run failed with
+`spawnSync pnpm ENOBUFS`, no retained runtime payload. A separately retained real startup/300-tick probe reaches the
+normal lobby and Phaser world, installs capture before setup, and observes 903 native facts and 16 selections. Its
+8,165,349-byte capture/report originally had two unspent timing failures and zero normalized decisions. Replaying
+those exact raw bytes after repair retains all 16 identities/positions, zero normalization failures and null useful
+fields; SHA256 `37c863f96380b040d4ca908d8761a88b8d14538c939112f93e0f0dd0d73bb3c2`.
+Actual queue payment, mutation/progress/completion, resource mutation, shared delivery, registration and construction
+events are present. This is real captured data replay, not a full PRO case or continuous-usefulness proof.
+
+The unchanged full diagnostic recipe now completes and retains a **69,310,679-byte** runtime artifact:
+`tmp/ai-skirmish-runtime-results/run-oEObnE/runtime.json`, SHA256
+`b4b27d0e19b51db5bb52e6057c1d5cb6e49c00b04bb86ac9ac146b1b81d05261`.
+Matrix artifact `tmp/ai-plans/759-validation/browser-readiness-batch/1791571496389-diagnostic_failed.json`:
+source base above, dirty digest `fnv1a32:0ed8a8c4`, fixture digest `fnv1a32:221d6201`, seed 759101. One real test,
+611 decisions, 12,020 actual ticks, 244,964 ms process wall time. Capture retains 5,316 facts / 611 selected decisions,
+zero dropped facts/snapshots. Report remains **diagnostic_failed**: missing production contract, normalized
+`production_ai_outcome_lineage`, mandatory authority gaps and capacity assertion; the parent correctly suppresses
+normalized decisions and the browser bridge fails. Four native `lost_outcome` terminals are retained as uncertainty,
+not promoted to proof. Trace route/service/construction lineage against the exact report before choosing a repair;
+this batch does not assert that those four terminals are the unique cause of the lineage failure.
+
+The startup probe also observes two `Player not found with number 3` page errors. Ember Enclave directly authors
+player-3 actors while the skirmish lobby contains players 1/2; `SceneActorCreator.spawnFromSpawnList` initializes direct
+editor actors without the missing-player guard used for spawn markers. The runner only records AI-labelled page errors,
+so its empty `aiErrors` does not establish an error-free world. Legal-world/M12 investigation remains required.
+Screenshot `startup.png` and bounded `browser-errors.json` retain the reproduction; no map or roster was changed.
+
+**C8 status:** phase totals are setup 6,141 ms, advance 27,089 ms, settle 1,196 ms and capture 175,220 ms.
+The last checkpoint's capture is 42,341 ms. These combine browser capture and transport work, not isolated hook CPU
+or allocations, and do not prove disabled-path overhead. The existing production bundle still contains instrumentation
+strings; no attributed byte count or paired baseline comparison was measured. C8 remains pending: baseline
+`af9d078d9`, warm once, at least three alternating pairs with identical seed/map/population/commands/tick bound in
+production/unmarked/marked modes, native digests, variance, isolated CPU/allocations and reachable gzip bytes. Preserve
+the existing 1% plus 0.1 ms/tick p95 and 0.5% gzip budgets. M11 remains blocked, M12 open; no wider release closure.
+
+| Acceptance / state | Evidence and remaining boundary |
+| --- | --- |
+| 1. Resume/readiness / checked | Clean exact remote/base; doctor/context pass; inventory and actual K5/C8/M12 consumers inspected. |
+| 2. Async cash selection / checked | New late-publication test fails before repair with the same two native-probe failures; pre-input control passes. Final positive/negative controls and exact native replay pass. |
+| 3. Large result transport / checked | Seven Node/tool tests, including 33 MiB exact payload, fresh paths and malformed/foreign/oversized negatives; two publisher controls. Real 69,310,679-byte failed payload retained end to end. |
+| 4. Compatibility/limits / checked | 461 synthetic report tests across 43 specs pass; actual E2E compiler exits zero. Nine sources pass scoped ESLint plus explicit structure rule and Prettier. AST extraction audit retains all 15 moved ownership statements after the required continue-to-return adaptation. |
+| 5. Browser gate / failed, evidence retained | Full diagnostic performs 611 decisions/12,020 ticks; full authority, outcome lineage and bridge remain failed. Short native replay passes only its scoped diagnostic claims. |
+| 6. Cost and release / pending/blocked | C8 paired measurements absent; legal-world/page errors, M11/M12 and broader server/socket/save/restart/hash/calibration remain. |
+| 7. Delivery / scoped | Nine sources plus testing README, HANDOFF and this ledger. No unrelated or ignored raw artifact is staged; normal push and exact remote SHA verification required. |
+
+Ignored evidence directory: `tmp/ai-plans/759-validation/browser-readiness-batch/` contains baseline/candidate logs,
+startup screenshot/errors, exact native probe, replay summary, extraction audit, report/type/lint/format/tool logs and
+compact runtime summary. The probe's authored 300-tick wait ends at actual tick 303; the full recipe's 12,000 target
+ends at 12,020. Neither uses capture reset or planner-input replacement. Final runtime source differs from the dirty
+digest only by erased type-import formatting; final compiler/lint/format and replay cover those current bytes.
+
+```sh
+pnpm agent:doctor
+pnpm agent:context -- --issue 816
+pnpm exec node tools/ai/generate-skirmish-test-catalog.mjs --inventory
+AI_SKIRMISH_PROFILE=1 pnpm exec node tools/ai/run-skirmish-matrix.mjs --scenario PRO-03 --variant tivara-production --repetition 1 --mode runtime --run-id k5-readiness-candidate --output tmp/ai-plans/759-validation/browser-readiness-batch
+pnpm exec node tools/ai/summarize-skirmish-report.mjs --report tmp/ai-plans/759-validation/browser-readiness-batch/1791571496389-diagnostic_failed.json --scenario PRO-03 --failures-only --details
+pnpm exec node --test tools/ai/skirmish-runtime-result.test.mjs tools/ai/skirmish-runtime-diagnostic-selection.test.mjs
+pnpm exec tsc --noEmit -p apps/portal-e2e/tsconfig.json
+```
+
+The report check uses the previous 41-spec production/resource/route/construction/queue selection plus
+`skirmish-ai-runtime-production-unspent.spec.ts` and `skirmish-ai-runtime-result-output.spec.ts`; 457 original controls
+remain, four added. Browser code is not part of the production portal graph; no new build, native or gameplay change
+requires repeating the previous checked suites/build. The lint check uses the real E2E flat config with the existing
+source-structure rule added in an ignored task config; no repository config or baseline changed.
+
+**Implementation Review:** traced actual input identity versus publication, cash ownership, native payment/release,
+matrix environment/request, publisher-before-assertion, subprocess completion, retained artifact read and report/index
+consumers. Missing artifacts and nonzero process exits cannot become success. No fallback to truncated log data.
+**Omission Audit:** all seven rows have evidence or named blockers; every original report registration/oracle remains,
+helpers have consumers, direct console compatibility remains, wrong/early identity and unavailable authority stay
+negative. No speculative gameplay fix, new scenario registration or cost claim. No reusable skill change required.
+**Separate Final Closure Audit:** current source/types/format/lint/structure, extraction invariants, artifact hashes,
+all controls, remaining real failure, document links, exact task scope and unrelated Nx merge retained were checked
+before publication. This closes diagnostic repairs only; K5/C8/release remain open.
+
+**Next combined batch / why:** GPT-6.1 Sol / high for the actual native outcome lineage and legal-world/M12 boundary.
+Start with the named report above (rerun the exact diagnostic if ignored artifacts are absent), then narrow
+`skirmish-ai-runtime-route-service-lineage.ts`, shared command outcomes, construction lineage and
+`SceneActorCreator.spawnFromSpawnList`. Establish the first disagreement and a focused native regression before
+changing semantics. This makes a real match judgeable before paired C8 measurements. Group causal repairs and legal
+setup together; retain strict oracles, null useful quantities and phase-cost evidence. Publish that coherent batch and pause.
 
 ### Final-gate combined gameplay checkpoint (2026-10-09, stage checked)
 
@@ -618,7 +726,7 @@ generated catalog synchronization passes and exact staging contains 34 task-owne
 resolve after correcting three older slash-heading backlinks; unrelated Nx history is retained. Passing compatibility
 closes this batch's K4 repairs only. Normal commit/push, exact remote SHA and clean status close delivery, not release.
 
-**Next grouped batch — why:** inspect runtime recipe inventory and actual K5/C8 contracts, checking legal-world/M12
+**Historical next grouped batch (now investigated above) — why:** inspect runtime recipe inventory and actual K5/C8 contracts, checking legal-world/M12
 prerequisites before the bounded production browser gate and paired disabled-path/bundle measurements. This tests
 real native-to-report behavior and ordinary-play cost; builds and synthetic reports cannot establish those results.
 Recommend **GPT-6.1 Sol / high** for causal runtime/provenance investigation. Do not assume complete useful authority;

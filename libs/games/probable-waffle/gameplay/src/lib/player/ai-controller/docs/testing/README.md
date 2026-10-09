@@ -38,6 +38,12 @@ Matrix source ownership: `tools/ai/run-skirmish-matrix.mjs` handles CLI selectio
 browser drivers; `skirmish-matrix-io.mjs` owns bounded input, source provenance and path helpers. Keep rejection and
 report behavior stable when changing these boundaries.
 
+Browser results are retained separately under `tmp/ai-skirmish-runtime-results/`; the matrix report's
+`execution.resultArtifact` locates the raw payload. This keeps large native captures out of subprocess logs.
+The reader checks source/fixture/dirty provenance and a 256 MiB byte ceiling before accepting the artifact.
+Missing, malformed, oversized or mismatched output supplies no runtime evidence. Direct Playwright callers
+without an artifact path retain the console result protocol.
+
 Use one browser runtime process at a time and group compatible IDs with `--scenarios`. Unit, type and tooling checks may be batched independently. Diagnose the earliest causal disagreement in this order:
 
 ```text
