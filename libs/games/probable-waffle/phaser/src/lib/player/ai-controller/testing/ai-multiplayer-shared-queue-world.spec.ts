@@ -1,6 +1,12 @@
+import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import { Subject } from "rxjs";
-import { ObjectNames, ResearchType, type GameCommand, type GameCommandInput, type GameCommandOutcome } from
-  "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  ObjectNames,
+  ResearchType,
+  type GameCommand,
+  type GameCommandInput,
+  type GameCommandOutcome
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getActorComponent } from "../../../data/actor-component";
 import { OwnerComponent } from "../../../entity/components/owner-component";
@@ -17,7 +23,9 @@ import type { AiMultiplayerSharedQueueWorldV1 } from "./ai-multiplayer-shared-qu
 jest.mock("./ai-runtime-production-capture");
 jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
 jest.mock("./prepare-ai-multiplayer-shared-queue-world", () => ({
-  prepareAiMultiplayerSharedQueueWorld: jest.fn(), SHARED_QUEUE_CANCEL_WINDOW_TICKS: 20, SHARED_QUEUE_STABILITY_TICKS: 20
+  prepareAiMultiplayerSharedQueueWorld: jest.fn(),
+  SHARED_QUEUE_CANCEL_WINDOW_TICKS: 20,
+  SHARED_QUEUE_STABILITY_TICKS: 20
 }));
 jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
@@ -25,57 +33,159 @@ function fixture(branch: AiMultiplayerSharedQueueWorldV1["branch"], localPlayerN
   const outcomes = new Subject<GameCommandOutcome>();
   const commands = new Subject<GameCommand>();
   const ticks = { currentTick: 0, tick$: new Subject<number>() };
-  const scene = { playerOrNull: { playerNumber: localPlayerNumber }, events: { once: jest.fn(), off: jest.fn() } } as
-    unknown as ProbableWaffleScene;
+  const scene = {
+    playerOrNull: { playerNumber: localPlayerNumber },
+    events: { once: jest.fn(), off: jest.fn() }
+  } as unknown as ProbableWaffleScene;
   let indexed = false;
   let researched = false;
   const actor = { active: true, scene, name: ObjectNames.TivaraWorkerMale };
-  jest.mocked(getActorComponent).mockImplementation((_actor, component) =>
-    component === OwnerComponent ? { getOwner: () => 1 } as never : undefined);
+  jest
+    .mocked(getActorComponent)
+    .mockImplementation((_actor, component) =>
+      component === OwnerComponent ? ({ getOwner: () => 1 } as never) : undefined
+    );
   jest.mocked(getSceneService).mockImplementation((_scene, service) => {
     if (service === SimulationTickService) return ticks as never;
-    if (service === ActorIndexSystem) return { getActorById: () => indexed ? actor : undefined } as never;
+    if (service === ActorIndexSystem) return { getActorById: () => (indexed ? actor : undefined) } as never;
     if (service === TechTreeService) return { isResearched: () => researched } as never;
     return undefined;
   });
   const cash = { food: 50, wood: 150, stone: 0, minerals: 278 };
-  const snapshot = { observation: null, capabilityCatalog: null, economyProduction: null, reservations: [],
-    ownedActors: [], resources: cash, pendingCommands: [], pendingResourceClaims: cash, obligations: cash, completedResearch: [],
-    queues: [{ actorId: "producer", objectName: ObjectNames.Sandhold, lanes: [{ laneId: "producer:lane:0", capacity: 5,
-      items: [{ itemId: "queue:producer:purchase", commandId: "purchase", researchType: ResearchType.TivaraSlingshotUpgradeLevel2 }] }] }] };
-  const capture = { captureHumanQueueBoundary: jest.fn(() => ({ schemaVersion: 1, kind: "production_authority_capture",
-    startedTick: 0, playerNumber: 1, droppedFactCount: 0, droppedSnapshotCount: 0, gaps: [], facts: [],
-    snapshots: [{ ...snapshot, tick: ticks.currentTick }] })), dispose: jest.fn() };
+  const snapshot = {
+    observation: null,
+    capabilityCatalog: null,
+    economyProduction: null,
+    reservations: [],
+    ownedActors: [],
+    resources: cash,
+    pendingCommands: [],
+    pendingResourceClaims: cash,
+    obligations: cash,
+    completedResearch: [],
+    queues: [
+      {
+        actorId: "producer",
+        objectName: ObjectNames.Sandhold,
+        lanes: [
+          {
+            laneId: "producer:lane:0",
+            capacity: 5,
+            items: [
+              {
+                itemId: "queue:producer:purchase",
+                commandId: "purchase",
+                researchType: ResearchType.TivaraSlingshotUpgradeLevel2
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  };
+  const capture = {
+    captureHumanQueueBoundary: jest.fn(() => ({
+      schemaVersion: 1,
+      kind: "production_authority_capture",
+      startedTick: 0,
+      playerNumber: 1,
+      droppedFactCount: 0,
+      droppedSnapshotCount: 0,
+      gaps: [],
+      facts: [],
+      snapshots: [{ ...snapshot, tick: ticks.currentTick }]
+    })),
+    dispose: jest.fn()
+  };
   jest.mocked(AiRuntimeProductionCapture).mockImplementation(() => capture as never);
-  jest.mocked(prepareAiMultiplayerSharedQueueWorld).mockReturnValue({ tick: 1, playerNumber: 1,
-    producerActorId: "producer", producerObjectName: ObjectNames.Sandhold, initialResources: cash,
-    train: { product: ObjectNames.TivaraWorker, spawnObjectNames: [ObjectNames.TivaraWorkerMale],
-      price: { food: 50 }, durationMs: 5000, refundFactor: 0.5 },
-    research: { type: ResearchType.TivaraSlingshotUpgradeLevel2, price: { minerals: 200, wood: 150 },
-      durationMs: 40000, refundFactor: 0.5 },
-    replacement: { type: ResearchType.TivaraMacemanUpgradeLevel2, price: { minerals: 175 },
-      durationMs: 30000, refundFactor: 0.5 }, refundBudget: { food: 0, wood: 73, stone: 0, minerals: 97 } });
+  jest.mocked(prepareAiMultiplayerSharedQueueWorld).mockReturnValue({
+    tick: 1,
+    playerNumber: 1,
+    producerActorId: "producer",
+    producerObjectName: ObjectNames.Sandhold,
+    initialResources: cash,
+    train: {
+      product: ObjectNames.TivaraWorker,
+      spawnObjectNames: [ObjectNames.TivaraWorkerMale],
+      price: { food: 50 },
+      durationMs: 5000,
+      refundFactor: 0.5
+    },
+    research: {
+      type: ResearchType.TivaraSlingshotUpgradeLevel2,
+      price: { minerals: 200, wood: 150 },
+      durationMs: 40000,
+      refundFactor: 0.5
+    },
+    replacement: {
+      type: ResearchType.TivaraMacemanUpgradeLevel2,
+      price: { minerals: 175 },
+      durationMs: 30000,
+      refundFactor: 0.5
+    },
+    refundBudget: { food: 0, wood: 73, stone: 0, minerals: 97 }
+  });
   const sent: GameCommand[] = [];
   const roles = branch === "shared_contention" ? ["train", "research"] : ["purchase", "probe", "cancel", "resume"];
   const dispatch = jest.fn((input: GameCommandInput) => {
     const sequence = sent.length;
-    const command = { ...input, tick: ticks.currentTick + 2,
-      execution: { schemaVersion: 1, commandId: roles[sequence], commitmentKey: roles[sequence], source: "human",
-        authorityEpoch: 0, sequence } } satisfies GameCommand;
+    const role = requireAiTestEntry(roles, sequence);
+    const command = {
+      ...input,
+      tick: ticks.currentTick + 2,
+      execution: {
+        schemaVersion: 1,
+        commandId: role,
+        commitmentKey: role,
+        source: "human",
+        authorityEpoch: 0,
+        sequence
+      }
+    } satisfies GameCommand;
     sent.push(command);
     return { status: "dispatched", command } as const;
   });
   const bus = { commandOutcome$: outcomes, command$: commands, dispatch } as unknown as CommandBusService;
   const world = new AiMultiplayerSharedQueueWorld(scene, bus, branch);
-  const step = (tick: number) => { ticks.currentTick = tick; ticks.tick$.next(tick); };
+  const step = (tick: number) => {
+    ticks.currentTick = tick;
+    ticks.tick$.next(tick);
+  };
   const report = (commandId: string, kind: GameCommandOutcome["kind"], tick: number, worldLinkIds: string[] = []) => {
     ticks.currentTick = tick;
-    outcomes.next({ schemaVersion: 1, kind, reason: kind === "rejected" ? "insufficient_resources" : "applied", tick,
-      playerNumber: 1, commandId, commitmentKey: commandId, authorityEpoch: 0, sequence: roles.indexOf(commandId),
-      actorIds: ["producer"], worldLinkIds });
+    outcomes.next({
+      schemaVersion: 1,
+      kind,
+      reason: kind === "rejected" ? "insufficient_resources" : "applied",
+      tick,
+      playerNumber: 1,
+      commandId,
+      commitmentKey: commandId,
+      authorityEpoch: 0,
+      sequence: roles.indexOf(commandId),
+      actorIds: ["producer"],
+      worldLinkIds
+    });
   };
-  return { world, dispatch, sent, capture, ticks, commands, outcomes, step, report,
-    registerEffects: () => { indexed = true; researched = true; }, loseEffect: () => { indexed = false; researched = false; } };
+  return {
+    world,
+    dispatch,
+    sent,
+    capture,
+    ticks,
+    commands,
+    outcomes,
+    step,
+    report,
+    registerEffects: () => {
+      indexed = true;
+      researched = true;
+    },
+    loseEffect: () => {
+      indexed = false;
+      researched = false;
+    }
+  };
 }
 
 describe("distinct shared queue worlds (mocked scheduling, no runtime/network acceptance)", () => {
@@ -108,16 +218,26 @@ describe("distinct shared queue worlds (mocked scheduling, no runtime/network ac
     f.report("purchase", "applied", 3);
     f.step(4);
     f.step(5);
-    expect(f.sent[1]).toMatchObject({ type: "RESEARCH", researchType: ResearchType.TivaraMacemanUpgradeLevel2, tick: 6 });
-    expect(f.sent[2]).toMatchObject({ type: "CANCEL_RESEARCH", tick: 7 });
+    expect(requireAiTestEntry(f.sent, 1)).toMatchObject({
+      type: "RESEARCH",
+      researchType: ResearchType.TivaraMacemanUpgradeLevel2,
+      tick: 6
+    });
+    expect(requireAiTestEntry(f.sent, 2)).toMatchObject({ type: "CANCEL_RESEARCH", tick: 7 });
     f.report("probe", "rejected", 6);
     f.report("purchase", "cancelled", 7);
     expect(f.world.getSnapshot().state).toBe("rejected");
     f.report("cancel", "cancelled", 7);
     f.step(8);
-    expect(f.sent[3]).toMatchObject({ type: "RESEARCH", researchType: ResearchType.TivaraMacemanUpgradeLevel2 });
-    expect(f.sent.filter((command) => command.type === "RESEARCH" &&
-      command.researchType === ResearchType.TivaraSlingshotUpgradeLevel2)).toHaveLength(1);
+    expect(requireAiTestEntry(f.sent, 3)).toMatchObject({
+      type: "RESEARCH",
+      researchType: ResearchType.TivaraMacemanUpgradeLevel2
+    });
+    expect(
+      f.sent.filter(
+        (command) => command.type === "RESEARCH" && command.researchType === ResearchType.TivaraSlingshotUpgradeLevel2
+      )
+    ).toHaveLength(1);
     f.world.destroy();
   });
 
@@ -147,7 +267,10 @@ describe("distinct shared queue worlds (mocked scheduling, no runtime/network ac
     f.report("purchase", "applied", 3);
     f.step(4);
     f.step(6);
-    expect(f.world.getSnapshot()).toMatchObject({ state: "failed", failure: "shared_queue_probe_applied_before_request" });
+    expect(f.world.getSnapshot()).toMatchObject({
+      state: "failed",
+      failure: "shared_queue_probe_applied_before_request"
+    });
     expect(f.dispatch).toHaveBeenCalledTimes(2);
     f.world.destroy();
   });
@@ -164,7 +287,10 @@ describe("distinct shared queue worlds (mocked scheduling, no runtime/network ac
     f.step(904);
     f.loseEffect();
     f.step(905);
-    expect(f.world.getSnapshot()).toMatchObject({ state: "failed", failure: "shared_queue_world_effect_lost_during_stability" });
+    expect(f.world.getSnapshot()).toMatchObject({
+      state: "failed",
+      failure: "shared_queue_world_effect_lost_during_stability"
+    });
     f.world.destroy();
   });
 });

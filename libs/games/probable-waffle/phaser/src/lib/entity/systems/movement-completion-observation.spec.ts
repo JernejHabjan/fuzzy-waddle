@@ -7,7 +7,7 @@ import type { MovementQueryContext } from "./movement-query-context";
 
 jest.mock("../../data/game-object-helper", () => ({ getGameObjectCurrentTile: jest.fn() }));
 
-describe("passive physical movement boundaries (unrun until final gate)", () => {
+describe("passive physical movement boundaries", () => {
   beforeEach(() => jest.clearAllMocks());
 
   it("allocates no token and reads no position without a listener or explicit context", () => {
@@ -38,7 +38,7 @@ describe("passive physical movement boundaries (unrun until final gate)", () => 
     token?.destination(fallback, true);
     destination.x = 99;
     fallback.x = 99;
-    jest.mocked(getGameObjectCurrentTile).mockReturnValue({ x: 7, y: 9, z: 0 });
+    jest.mocked(getGameObjectCurrentTile).mockReturnValue({ x: 7, y: 9 });
     token?.terminal("arrived");
     token?.terminal("stopped");
     token?.returned(true);

@@ -79,7 +79,7 @@ jest.mock("../../building/building-destruction-effect", () => ({
 }));
 
 // Native health/drain/journal path with controlled simulation wait and emitResource adapter; no real-match proof.
-describe("native health mutation during drain wait (final gate pending)", () => {
+describe("native health mutation during drain wait", () => {
   it.each(["normal", "granted", "none"] as const)(
     "keeps %s native credit/full return across gatherer damage/death",
     async (economy) => {
@@ -107,7 +107,7 @@ describe("native health mutation during drain wait (final gate pending)", () => 
           events: new Phaser.Events.EventEmitter(),
           sys: { queueDepthSort: jest.fn(), displayList: { exists: () => false }, updateList: { remove: jest.fn() } }
         } as unknown as ProbableWaffleScene;
-        const targetObject = { scene } as Phaser.GameObjects.GameObject;
+        const targetObject = new Phaser.GameObjects.GameObject(scene, "drain-fixture");
         const actor = new Phaser.GameObjects.GameObject(scene, "gatherer"),
           destroyed = jest.spyOn(actor, "destroy");
         const health = new HealthComponent(actor, { maxHealth: 100 });

@@ -1,8 +1,11 @@
+import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import Phaser from "phaser";
 import type { Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
-import { PRODUCTION_SPATIAL_AUTHORITY_EVENT, type ProductionSpatialAuthorityEvent } from
-  "../../../world/services/multiplayer/production-spatial-authority-event";
+import {
+  PRODUCTION_SPATIAL_AUTHORITY_EVENT,
+  type ProductionSpatialAuthorityEvent
+} from "../../../world/services/multiplayer/production-spatial-authority-event";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { getGameObjectCurrentTile } from "../../../data/game-object-helper";
@@ -30,19 +33,26 @@ jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneSe
 function fixture() {
   const scene = { events: new Phaser.Events.EventEmitter(), sys: { isActive: () => true } } as unknown as Phaser.Scene;
   const source = { scene, active: true, name: ObjectNames.TivaraWorker } as Phaser.GameObjects.GameObject;
-  const target = { scene, active: true, name: ObjectNames.TivaraSandhold } as Phaser.GameObjects.GameObject;
-  let settle: (path: Vector2Simple[] | null) => void = () => { throw new Error("resolver_missing"); };
-  const promise = new Promise<Vector2Simple[] | null>((resolve) => { settle = resolve; });
+  const target = { scene, active: true, name: ObjectNames.Sandhold } as Phaser.GameObjects.GameObject;
+  let settle: (path: Vector2Simple[] | null) => void = () => {
+    throw new Error("resolver_missing");
+  };
+  const promise = new Promise<Vector2Simple[] | null>((resolve) => {
+    settle = resolve;
+  });
   const original = jest.fn(() => promise);
   let graph: HeightNavigationGraph | undefined = { cells: [], edgesByTileKey: new Map() };
   const readGraph = jest.fn(() => graph);
-  const navigation = { findAndUseNavigablePathBetweenGameObjectsWithRadius: original,
-    getHeightGraphDebugSnapshot: readGraph } as unknown as NavigationService;
+  const navigation = {
+    findAndUseNavigablePathBetweenGameObjectsWithRadius: original,
+    getHeightGraphDebugSnapshot: readGraph
+  } as unknown as NavigationService;
   const ticks = { currentTick: 10 };
   jest.mocked(getSceneService).mockImplementation((_scene, service) => {
     if (service === NavigationService) return navigation as never;
     if (service === SimulationTickService) return ticks as never;
-    if (service === ActorIndexSystem) return { getActorById: (id: string) => id === "source" ? source : target } as never;
+    if (service === ActorIndexSystem)
+      return { getActorById: (id: string) => (id === "source" ? source : target) } as never;
     return undefined;
   });
   jest.mocked(getActorComponent).mockImplementation((actor, component) => {
@@ -55,14 +65,33 @@ function fixture() {
   jest.mocked(getGameObjectCurrentTile).mockReturnValue({ x: 4, y: 5 });
   jest.mocked(isSnapshotApplyInProgress).mockReturnValue(false);
   const records: AiRuntimeProductionSpatialV1[] = [];
-  const capture = new AiRuntimeProductionSpatialCapture(scene, () => "unused", (_player, value) => records.push(structuredClone(value)));
-  return { scene, source, target, navigation, ticks, records, capture, original, promise, settle, readGraph,
-    replaceGraph: (value: HeightNavigationGraph | undefined) => { graph = value; } };
+  const capture = new AiRuntimeProductionSpatialCapture(
+    scene,
+    () => "unused",
+    (_player, value) => records.push(structuredClone(value))
+  );
+  return {
+    scene,
+    source,
+    target,
+    navigation,
+    ticks,
+    records,
+    capture,
+    original,
+    promise,
+    settle,
+    readGraph,
+    replaceGraph: (value: HeightNavigationGraph | undefined) => {
+      graph = value;
+    }
+  };
 }
 
 describe("production spatial capture", () => {
   it("joins only the synchronous native builder lookup and detaches its callback generation at terminal", async () => {
-    const f = fixture(), provenance = new NavigationProvenance();
+    const f = fixture(),
+      provenance = new NavigationProvenance();
     f.navigation.getNativeNavigationBoundary = () => provenance.sample();
     f.navigation.observeNativeNavigationQuery = (call, observer) => provenance.observe(call, observer);
     let query: NavigationNativeQuery | null = null;
@@ -72,35 +101,66 @@ describe("production spatial capture", () => {
     });
     const returned = f.navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius(f.source, f.target);
     expect(returned).toBe(f.promise);
-    expect(f.records[0]).not.toHaveProperty("nativeQuery");
-    provenance.cleared("ground"); provenance.completed(query);
-    f.settle([]); await returned;
-    expect(f.records[1]).toMatchObject({ nativeQuery: { queryId: 1, cache: "miss",
-      requested: { groundCacheClear: 0 }, completed: { groundCacheClear: 1 } } });
+    expect(requireAiTestEntry(f.records, 0)).not.toHaveProperty("nativeQuery");
     provenance.cleared("ground");
-    expect(f.records[1]?.kind === "builder_path" && f.records[1].nativeQuery?.completed?.groundCacheClear).toBe(1);
-    expect(f.original).toHaveBeenCalledTimes(1); f.capture.dispose();
+    provenance.completed(query);
+    f.settle([]);
+    await returned;
+    expect(requireAiTestEntry(f.records, 1)).toMatchObject({
+      nativeQuery: { queryId: 1, cache: "miss", requested: { groundCacheClear: 0 }, completed: { groundCacheClear: 1 } }
+    });
+    provenance.cleared("ground");
+    const completedPath = requireAiTestEntry(f.records, 1);
+    if (completedPath.kind !== "builder_path") throw new Error("synthetic_builder_path_missing");
+    expect(completedPath.nativeQuery?.completed?.groundCacheClear).toBe(1);
+    expect(f.original).toHaveBeenCalledTimes(1);
+    f.capture.dispose();
   });
 
   it("preserves the one native invocation when builder diagnostic projection throws", async () => {
     const f = fixture();
-    f.readGraph.mockImplementationOnce(() => { throw new Error("reader"); });
+    f.readGraph.mockImplementationOnce(() => {
+      throw new Error("reader");
+    });
     const returned = f.navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius(f.source, f.target);
-    expect(returned).toBe(f.promise); f.settle([]); await returned;
-    expect(f.original).toHaveBeenCalledTimes(1); f.capture.dispose();
+    expect(returned).toBe(f.promise);
+    f.settle([]);
+    await returned;
+    expect(f.original).toHaveBeenCalledTimes(1);
+    f.capture.dispose();
   });
 
   it("routes actual returned-product events through the installed marked capture and detaches the native item", () => {
     const f = fixture();
     const item = { ...productionCaptureItem(), remainingTime: 0 };
-    f.scene.events.emit(PRODUCTION_SPATIAL_AUTHORITY_EVENT, { kind: "output", producer: f.target, product: f.source,
-      item, rallyMode: "unset", target: null, targetTile: null } satisfies ProductionSpatialAuthorityEvent);
+    f.scene.events.emit(PRODUCTION_SPATIAL_AUTHORITY_EVENT, {
+      kind: "output",
+      producer: f.target,
+      product: f.source,
+      item,
+      rallyMode: "unset",
+      target: null,
+      targetTile: null
+    } satisfies ProductionSpatialAuthorityEvent);
     item.remainingTime = 99;
-    expect(f.records[0]).toMatchObject({ kind: "output", outputId: 1,
-      producer: { actorId: "target" }, product: { actorId: "source" }, item: { remainingTimeMs: 0 }, rallyMode: "unset" });
+    expect(requireAiTestEntry(f.records, 0)).toMatchObject({
+      kind: "output",
+      outputId: 1,
+      producer: { actorId: "target" },
+      product: { actorId: "source" },
+      item: { remainingTimeMs: 0 },
+      rallyMode: "unset"
+    });
     f.capture.dispose();
-    f.scene.events.emit(PRODUCTION_SPATIAL_AUTHORITY_EVENT, { kind: "output", producer: f.target, product: f.source,
-      item, rallyMode: "unset", target: null, targetTile: null } satisfies ProductionSpatialAuthorityEvent);
+    f.scene.events.emit(PRODUCTION_SPATIAL_AUTHORITY_EVENT, {
+      kind: "output",
+      producer: f.target,
+      product: f.source,
+      item,
+      rallyMode: "unset",
+      target: null,
+      targetTile: null
+    } satisfies ProductionSpatialAuthorityEvent);
     expect(f.records).toHaveLength(1);
   });
 
@@ -108,14 +168,19 @@ describe("production spatial capture", () => {
     const f = fixture();
     const pending = f.navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius(f.source, f.target);
     expect(pending).toBe(f.promise);
-    expect(f.records[0]).toMatchObject({ navigation: { graphObservationId: 1, updateRequestCount: 0 } });
+    expect(requireAiTestEntry(f.records, 0)).toMatchObject({
+      navigation: { graphObservationId: 1, updateRequestCount: 0 }
+    });
     f.scene.events.emit(NavigationService.UpdateNavigationEvent);
     f.replaceGraph({ cells: [], edgesByTileKey: new Map() });
-    f.settle([]); await pending;
-    expect(f.records[1]).toMatchObject({ navigation: { graphObservationId: 2, updateRequestCount: 1 } });
+    f.settle([]);
+    await pending;
+    expect(requireAiTestEntry(f.records, 1)).toMatchObject({
+      navigation: { graphObservationId: 2, updateRequestCount: 1 }
+    });
     expect(f.original).toHaveBeenCalledTimes(1);
     expect(f.readGraph).toHaveBeenCalledTimes(2);
-    expect(f.records[1]).not.toHaveProperty("graph");
+    expect(requireAiTestEntry(f.records, 1)).not.toHaveProperty("graph");
     f.capture.dispose();
     expect(f.scene.events.listenerCount(NavigationService.UpdateNavigationEvent)).toBe(0);
   });
@@ -124,36 +189,67 @@ describe("production spatial capture", () => {
     const f = fixture();
     const pending = f.navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius(f.source, f.target);
     f.scene.events.emit(NavigationService.UpdateNavigationEvent);
-    f.settle([]); await pending;
-    expect(f.records[1]).toMatchObject({ navigation: { graphObservationId: 1, updateRequestCount: 1 } });
+    f.settle([]);
+    await pending;
+    expect(requireAiTestEntry(f.records, 1)).toMatchObject({
+      navigation: { graphObservationId: 1, updateRequestCount: 1 }
+    });
     f.capture.dispose();
   });
 
   it("keeps missing/failed graph reads unavailable while returning the original Promise", async () => {
     for (const failed of [false, true]) {
       const f = fixture();
-      if (failed) f.readGraph.mockImplementation(() => { throw new Error("diagnostic_read_failed"); });
+      if (failed)
+        f.readGraph.mockImplementation(() => {
+          throw new Error("diagnostic_read_failed");
+        });
       else f.replaceGraph(undefined);
       const pending = f.navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius(f.source, f.target);
-      expect(pending).toBe(f.promise); f.settle([]); await pending;
-      expect(f.records[1]).toMatchObject({ navigation: {
-        graphObservationId: null, updateRequestCount: failed ? null : 0
-      } });
-      expect(f.original).toHaveBeenCalledTimes(1); f.capture.dispose();
+      expect(pending).toBe(f.promise);
+      f.settle([]);
+      await pending;
+      expect(requireAiTestEntry(f.records, 1)).toMatchObject({
+        navigation: {
+          graphObservationId: null,
+          updateRequestCount: failed ? null : 0
+        }
+      });
+      expect(f.original).toHaveBeenCalledTimes(1);
+      f.capture.dispose();
     }
   });
   it("retains native admission pricing in raw placement facts with missing-tech loss and disposal fencing", () => {
     const f = fixture();
-    const event = { kind: "placement", site: f.target, footprint: [{ x: 7, y: 9 }], legal: true, admissionCost: { food: 7 },
-      command: { type: "CONSTRUCT", tick: 10, playerNumber: 1, actorIds: ["source"], actorName: ObjectNames.TivaraSandhold,
-        tileVec3: { x: 7, y: 9, z: 0 }, siteKey: "site:key" } } satisfies ProductionSpatialAuthorityEvent;
+    const event = {
+      kind: "placement",
+      site: f.target,
+      footprint: [{ x: 7, y: 9 }],
+      legal: true,
+      admissionCost: { food: 7 },
+      command: {
+        type: "CONSTRUCT",
+        tick: 10,
+        playerNumber: 1,
+        actorIds: ["source"],
+        actorName: ObjectNames.Sandhold,
+        tileVec3: { x: 7, y: 9, z: 0 },
+        siteKey: "site:key"
+      }
+    } satisfies ProductionSpatialAuthorityEvent;
     f.scene.events.emit(PRODUCTION_SPATIAL_AUTHORITY_EVENT, event);
-    expect(f.records[0]).toMatchObject({ kind: "placement", clockTick: 10,
+    expect(requireAiTestEntry(f.records, 0)).toMatchObject({
+      kind: "placement",
+      clockTick: 10,
       catalog: { priceSource: "shared_command_base_definition", admissionCost: { food: 7 }, siteDefinition: null },
-      gaps: ["production_construction_effective_definition_missing"] });
+      gaps: ["production_construction_effective_definition_missing"]
+    });
     event.admissionCost.food = 99;
-    expect(f.records[0]?.kind === "placement" && f.records[0].catalog?.admissionCost).toEqual({ food: 7 });
-    f.capture.dispose(); f.scene.events.emit(PRODUCTION_SPATIAL_AUTHORITY_EVENT, event);
+    const placement = requireAiTestEntry(f.records, 0);
+    if (placement.kind !== "placement") throw new Error("synthetic_placement_missing");
+    expect(placement.catalog?.admissionCost).toEqual({ food: 7 });
+    f.capture.dispose();
+    f.scene.events.emit(PRODUCTION_SPATIAL_AUTHORITY_EVENT, event);
     expect(f.records).toHaveLength(1);
   });
   it("retains the original Promise and full empty/nonempty native result without issuing another query", async () => {
@@ -161,23 +257,38 @@ describe("production spatial capture", () => {
     expect(f.original).not.toHaveBeenCalled();
     const returned = f.navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius(f.source, f.target, 1);
     expect(returned).toBe(f.promise);
-    expect(f.records[0]).toMatchObject({ kind: "builder_path", phase: "requested", queryId: 1, clockTick: 10, radiusTiles: 1 });
+    expect(requireAiTestEntry(f.records, 0)).toMatchObject({
+      kind: "builder_path",
+      phase: "requested",
+      queryId: 1,
+      clockTick: 10,
+      radiusTiles: 1
+    });
     f.ticks.currentTick = 12;
-    const path = [{ x: 4, y: 5 }, { x: 5, y: 5 }]; f.settle(path);
+    const path = [
+      { x: 4, y: 5 },
+      { x: 5, y: 5 }
+    ];
+    f.settle(path);
     expect(await returned).toBe(path);
-    expect(f.records[1]).toMatchObject({ phase: "resolved", result: "path", path, clockTick: 12 });
-    const point = path[0]; if (!point) throw new Error("synthetic_path_point_missing"); point.x = 99;
-    const resolved = f.records[1];
+    expect(requireAiTestEntry(f.records, 1)).toMatchObject({ phase: "resolved", result: "path", path, clockTick: 12 });
+    const point = requireAiTestEntry(path, 0);
+    if (!point) throw new Error("synthetic_path_point_missing");
+    point.x = 99;
+    const resolved = requireAiTestEntry(f.records, 1);
     expect(resolved?.kind === "builder_path" && resolved.path?.[0]?.x).toBe(4);
-    expect(f.original).toHaveBeenCalledTimes(1); f.capture.dispose();
+    expect(f.original).toHaveBeenCalledTimes(1);
+    f.capture.dispose();
     expect(f.navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius).toBe(f.original);
   });
 
   it("keeps a null result distinct from an empty successful path", async () => {
     for (const path of [null, []]) {
-      const f = fixture(); const returned = f.navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius(f.source, f.target);
-      f.settle(path); await returned;
-      expect(f.records[1]).toMatchObject({ result: path === null ? "no_path" : "path", path });
+      const f = fixture();
+      const returned = f.navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius(f.source, f.target);
+      f.settle(path);
+      await returned;
+      expect(requireAiTestEntry(f.records, 1)).toMatchObject({ result: path === null ? "no_path" : "path", path });
       f.capture.dispose();
     }
   });
@@ -187,30 +298,43 @@ describe("production spatial capture", () => {
     const pending = f.navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius(f.source, f.target);
     const replacement = jest.fn(() => Promise.resolve(null));
     f.navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius = replacement;
-    f.capture.dispose(); f.settle([]); await pending;
+    f.capture.dispose();
+    f.settle([]);
+    await pending;
     expect(f.records).toHaveLength(1);
     expect(f.navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius).toBe(replacement);
     f.capture.dispose();
   });
 
   it("marks oversized successful results as loss, preserving the native result object", async () => {
-    const f = fixture(); const returned = f.navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius(f.source, f.target);
-    const path = Array.from({ length: 513 }, () => ({ x: 4, y: 5 })); f.settle(path);
+    const f = fixture();
+    const returned = f.navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius(f.source, f.target);
+    const path = Array.from({ length: 513 }, () => ({ x: 4, y: 5 }));
+    f.settle(path);
     expect(await returned).toBe(path);
-    expect(f.records[1]).toMatchObject({ result: "path", path: null, gaps: ["production_spatial_path_overflow"] });
+    expect(requireAiTestEntry(f.records, 1)).toMatchObject({
+      result: "path",
+      path: null,
+      gaps: ["production_spatial_path_overflow"]
+    });
     f.capture.dispose();
   });
 
   it("preserves native Promise rejection and synchronous throw without retrying the query", async () => {
-    const f = fixture(); const error = new Error("native_path_failed");
+    const f = fixture();
+    const error = new Error("native_path_failed");
     const rejected = Promise.reject<Vector2Simple[] | null>(error);
     f.original.mockImplementationOnce(() => rejected);
     const returned = f.navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius(f.source, f.target);
-    expect(returned).toBe(rejected); await expect(returned).rejects.toBe(error);
-    expect(f.records[1]).toMatchObject({ phase: "rejected", path: null, result: null });
-    f.original.mockImplementationOnce(() => { throw error; });
+    expect(returned).toBe(rejected);
+    await expect(returned).rejects.toBe(error);
+    expect(requireAiTestEntry(f.records, 1)).toMatchObject({ phase: "rejected", path: null, result: null });
+    f.original.mockImplementationOnce(() => {
+      throw error;
+    });
     expect(() => f.navigation.findAndUseNavigablePathBetweenGameObjectsWithRadius(f.source, f.target)).toThrow(error);
-    expect(f.records[3]).toMatchObject({ phase: "threw", path: null, result: null });
-    expect(f.original).toHaveBeenCalledTimes(2); f.capture.dispose();
+    expect(requireAiTestEntry(f.records, 3)).toMatchObject({ phase: "threw", path: null, result: null });
+    expect(f.original).toHaveBeenCalledTimes(2);
+    f.capture.dispose();
   });
 });

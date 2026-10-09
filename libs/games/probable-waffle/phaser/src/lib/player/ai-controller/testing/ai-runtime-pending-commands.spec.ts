@@ -1,6 +1,11 @@
+import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import { ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import { AiRuntimePendingCommands } from "./ai-runtime-pending-commands";
-import { pendingCommandRequest, pendingCommandOutcome, pendingCommandFinished } from "./ai-runtime-pending-command-fixtures";
+import {
+  pendingCommandRequest,
+  pendingCommandOutcome,
+  pendingCommandFinished
+} from "./ai-runtime-pending-command-fixtures";
 
 function admitted() {
   const ledger = new AiRuntimePendingCommands();
@@ -14,8 +19,13 @@ describe("AiRuntimePendingCommands", () => {
   it("owns real admitted claims between actual request and scheduled application, keeping detached product and identity", () => {
     const ledger = admitted();
     const snapshot = ledger.snapshot(2);
-    expect(snapshot.commands[0]).toMatchObject({ requestedTick: 100, scheduledTick: 102, proposedTick: 99,
-      commandId: "2:1:1:match:one", unresolvedActorIds: ["producer"] });
+    expect(requireAiTestEntry(snapshot.commands, 0)).toMatchObject({
+      requestedTick: 100,
+      scheduledTick: 102,
+      proposedTick: 99,
+      commandId: "2:1:1:match:one",
+      unresolvedActorIds: ["producer"]
+    });
     expect(snapshot.resources?.food).toBe(35);
     expect(snapshot.gaps).toEqual([]);
     expect(ledger.snapshot(1).commands).toEqual([]);
@@ -37,10 +47,16 @@ describe("AiRuntimePendingCommands", () => {
   it("observes a buffered cancellation with zero cash credit until real application, and never infers money from its receipt", () => {
     const ledger = new AiRuntimePendingCommands();
     const request = pendingCommandRequest();
-    ledger.observeDispatch({ ...request, claims: [],
-      command: { type: "CANCEL_PRODUCTION", playerNumber: 2, actorIds: ["producer"], queueIndex: 0 } }, 100);
+    ledger.observeDispatch(
+      {
+        ...request,
+        claims: [],
+        command: { type: "CANCEL_PRODUCTION", playerNumber: 2, actorIds: ["producer"], queueIndex: 0 }
+      },
+      100
+    );
     ledger.observeOutcome(pendingCommandOutcome(), 100);
-    expect(ledger.snapshot(2).commands[0].command.type).toBe("CANCEL_PRODUCTION");
+    expect(requireAiTestEntry(ledger.snapshot(2).commands, 0).command.type).toBe("CANCEL_PRODUCTION");
     expect(ledger.snapshot(2).resources?.food).toBe(0);
     ledger.observeOutcome(pendingCommandOutcome("cancelled"), 100);
     expect(ledger.snapshot(2).commands).toHaveLength(1);
@@ -53,18 +69,21 @@ describe("AiRuntimePendingCommands", () => {
     const ledger = new AiRuntimePendingCommands();
     ledger.observeDispatch(pendingCommandRequest("one", ["a", "b"]), 100);
     ledger.observeOutcome(pendingCommandOutcome("dispatched", "one", 102, ["a", "b"]), 100);
-    ledger.observeOutcome({ ...pendingCommandOutcome("rejected", "one", 100, ["a", "b"]),
-      reason: "duplicate_command" }, 100);
+    ledger.observeOutcome(
+      { ...pendingCommandOutcome("rejected", "one", 100, ["a", "b"]), reason: "duplicate_command" },
+      100
+    );
     ledger.observeOutcome({ ...pendingCommandOutcome("applied", "one", 102, ["a", "b"]), playerNumber: 1 }, 102);
     ledger.observeOutcome(pendingCommandOutcome("applied", "one", 101, ["a"]), 101);
     expect(ledger.snapshot(2).resources?.food).toBe(35);
     ledger.observeOutcome(pendingCommandOutcome("applied", "one", 102, ["a"]), 102);
-    expect(ledger.snapshot(2).commands[0].unresolvedActorIds).toEqual(["b"]);
+    expect(requireAiTestEntry(ledger.snapshot(2).commands, 0).unresolvedActorIds).toEqual(["b"]);
     expect(ledger.snapshot(2).resources?.food).toBe(35);
     ledger.observeOutcome(pendingCommandOutcome("rejected", "one", 102, ["b"]), 102);
     expect(ledger.snapshot(2).commands).toEqual([]);
     expect(ledger.snapshot(2).gaps).toEqual([
-      "pending_dispatch_early_application", "pending_dispatch_outcome_mismatch"
+      "pending_dispatch_early_application",
+      "pending_dispatch_outcome_mismatch"
     ]);
   });
 
@@ -74,11 +93,20 @@ describe("AiRuntimePendingCommands", () => {
     expect(ledger.snapshot(2).gaps).toContain("pending_dispatch_unobserved_intent");
     for (const amount of [-1, NaN, Infinity]) {
       const request = pendingCommandRequest(String(amount));
-      ledger.observeDispatch({ ...request, claims: [{ kind: "resource", claimId: "claim:bad",
-        resourceType: ResourceType.Food, amount }] }, 100);
+      ledger.observeDispatch(
+        { ...request, claims: [{ kind: "resource", claimId: "claim:bad", resourceType: ResourceType.Food, amount }] },
+        100
+      );
       ledger.observeOutcome(pendingCommandOutcome("dispatched", String(amount)), 100);
-      ledger.observeDispatch({ kind: "finished", playerNumber: 2, correlation: request.correlation,
-        receipt: { status: "rejected", reason: "application_failed" } }, 100);
+      ledger.observeDispatch(
+        {
+          kind: "finished",
+          playerNumber: 2,
+          correlation: request.correlation,
+          receipt: { status: "rejected", reason: "application_failed" }
+        },
+        100
+      );
     }
     expect(ledger.snapshot(2).commands).toEqual([]);
     expect(ledger.snapshot(2).resources?.food).toBe(0);
@@ -99,8 +127,10 @@ describe("AiRuntimePendingCommands", () => {
     ledger.observeDispatch(pendingCommandFinished("three", 103), 100);
     expect(ledger.snapshot(2).resources?.food).toBe(105);
     expect(ledger.snapshot(2).gaps).toEqual([
-      "pending_dispatch_application_exception", "pending_dispatch_outcome_uncertain",
-      "pending_dispatch_receipt_mismatch", "pending_dispatch_schedule_mismatch"
+      "pending_dispatch_application_exception",
+      "pending_dispatch_outcome_uncertain",
+      "pending_dispatch_receipt_mismatch",
+      "pending_dispatch_schedule_mismatch"
     ]);
     ledger.dispose();
     expect(ledger.snapshot(2)).toMatchObject({ commands: [], gaps: [], resources: { food: 0 } });
@@ -128,8 +158,15 @@ describe("AiRuntimePendingCommands", () => {
     expect(ledger.snapshot(2).gaps).toContain("pending_dispatch_invalid_admission");
     for (const suffix of ["large-one", "large-two"]) {
       const request = pendingCommandRequest(suffix);
-      ledger.observeDispatch({ ...request, claims: [{ kind: "resource", claimId: `claim:${suffix}`,
-        resourceType: ResourceType.Food, amount: Number.MAX_VALUE }] }, 100);
+      ledger.observeDispatch(
+        {
+          ...request,
+          claims: [
+            { kind: "resource", claimId: `claim:${suffix}`, resourceType: ResourceType.Food, amount: Number.MAX_VALUE }
+          ]
+        },
+        100
+      );
       ledger.observeOutcome(pendingCommandOutcome("dispatched", suffix), 100);
       ledger.observeDispatch(pendingCommandFinished(suffix), 100);
     }

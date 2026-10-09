@@ -1,4 +1,5 @@
-import type Phaser from "phaser";
+import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
+import Phaser from "phaser";
 import { ConstructionStateEnum, ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
@@ -14,11 +15,15 @@ jest.mock("../../../data/scene-data", () => ({ isSnapshotApplyInProgress: jest.f
 jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneService: jest.fn() }));
 
 function fixture(count = 1) {
-  const scene = { players: [{ playerNumber: 1 }, { playerNumber: 2 }] } as unknown as ProbableWaffleScene;
-  const actors = Array.from(
-    { length: count },
-    () => ({ scene, active: true, name: ObjectNames.TivaraSandhold }) as Phaser.GameObjects.GameObject
-  );
+  const scene = {
+    players: [{ playerNumber: 1 }, { playerNumber: 2 }],
+    sys: { queueDepthSort: jest.fn() }
+  } as unknown as ProbableWaffleScene;
+  const actors = Array.from({ length: count }, () => {
+    const actor = new Phaser.GameObjects.GameObject(scene, "initial-site-fixture");
+    actor.name = ObjectNames.Sandhold;
+    return actor;
+  });
   const data = {
     state: ConstructionStateEnum.Constructing,
     remainingConstructionTime: 75,
@@ -59,11 +64,11 @@ describe("installation-time construction inventory", () => {
       gaps: []
     });
     expect(result.get(2)?.sites).toEqual([]);
-    const actor = f.actors[0];
+    const actor = requireAiTestEntry(f.actors, 0);
     if (!actor) throw new Error("synthetic_actor_missing");
     f.data.remainingConstructionTime = 0;
     actor.active = false;
-    expect(result.get(1)?.sites[0]).toMatchObject({ remainingWorkMs: 75, site: { active: true } });
+    expect(requireAiTestEntry(result.get(1)?.sites, 0)).toMatchObject({ remainingWorkMs: 75, site: { active: true } });
   });
 
   it("discards the whole overflowing owner inventory and preserves an empty other-owner inventory", () => {
@@ -75,7 +80,7 @@ describe("installation-time construction inventory", () => {
 
   it("excludes known neutral ownership but cannot prove membership when a site has no owner authority", () => {
     const f = fixture(2);
-    const other = f.actors[1];
+    const other = requireAiTestEntry(f.actors, 1);
     if (!other) throw new Error("synthetic_actor_missing");
     f.owners.set(other, 999);
     expect(captureAiRuntimeInitialConstruction(f.scene, f.actors, 12).get(1)?.sites).toHaveLength(1);

@@ -1,3 +1,4 @@
+import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import { Subject } from "rxjs";
 import { ProbableWafflePlayerType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
@@ -13,16 +14,30 @@ describe("AiMultiplayerDiagnostics", () => {
     const commands = new Subject<{ playerNumber: number; transportMeta?: { serverRelaySequence: number } }>();
     const hashes = new Subject<{ tick: number; hash: string; emitterUserId: string }>();
     jest.mocked(getCommunicator).mockReturnValue({
-      gameCommandChanged: { on: commands }, stateHashChanged: { on: hashes }
+      gameCommandChanged: { on: commands },
+      stateHashChanged: { on: hashes }
     } as never);
     const scene = {
       userId: "host",
       playerOrNull: { playerNumber: 1 },
-      baseGameData: { gameInstance: { players: [
-        { playerNumber: 1, playerController: { data: { playerDefinition: { playerType: ProbableWafflePlayerType.Human } } } },
-        { playerNumber: 2, playerController: { data: { playerDefinition: { playerType: ProbableWafflePlayerType.Human } } } },
-        { playerNumber: 3, playerController: { data: { playerDefinition: { playerType: ProbableWafflePlayerType.AI } } } }
-      ] } },
+      baseGameData: {
+        gameInstance: {
+          players: [
+            {
+              playerNumber: 1,
+              playerController: { data: { playerDefinition: { playerType: ProbableWafflePlayerType.Human } } }
+            },
+            {
+              playerNumber: 2,
+              playerController: { data: { playerDefinition: { playerType: ProbableWafflePlayerType.Human } } }
+            },
+            {
+              playerNumber: 3,
+              playerController: { data: { playerDefinition: { playerType: ProbableWafflePlayerType.AI } } }
+            }
+          ]
+        }
+      },
       events: { once: jest.fn() }
     } as unknown as ProbableWaffleScene;
     const processedCommandIds = ["3:2:1:game", "1:2:1:game"];
@@ -46,12 +61,14 @@ describe("AiMultiplayerDiagnostics", () => {
         lastReceivedRelaySequenceByPlayer: { 2: 4 }
       },
       processedAiCommandIds: ["3:2:1:game"],
-      hashes: [{ tick: 20, hash: "local" }], queueWorld: null, sharedQueueWorld: null
+      hashes: [{ tick: 20, hash: "local" }],
+      queueWorld: null,
+      sharedQueueWorld: null
     });
     for (let tick = 21; tick <= 39; tick += 1) hashes.next({ tick, hash: `local-${tick}`, emitterUserId: "host" });
     for (let sequence = 2; sequence <= 22; sequence += 1) processedCommandIds.push(`3:2:${sequence}:game`);
     expect(observer.getSnapshot(3).hashes).toHaveLength(12);
-    expect(observer.getSnapshot(3).hashes[0].tick).toBe(28);
+    expect(requireAiTestEntry(observer.getSnapshot(3).hashes, 0).tick).toBe(28);
     expect(observer.getSnapshot(3).processedAiCommandIds).toHaveLength(16);
     observer.destroy();
     batches.next({ tick: 40, playerNumber: 1 });

@@ -1,6 +1,11 @@
+import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import { Subject } from "rxjs";
-import { ObjectNames, type GameCommand, type GameCommandInput, type GameCommandOutcome } from
-  "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  ObjectNames,
+  type GameCommand,
+  type GameCommandInput,
+  type GameCommandOutcome
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import type { CommandBusService } from "../../../world/services/multiplayer/command-bus.service";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
@@ -17,35 +22,93 @@ function fixture(localPlayerNumber = 1) {
   const commands = new Subject<GameCommand>();
   const ticks = { currentTick: 0, tick$: new Subject<number>() };
   const cash = { food: 75, wood: 0, stone: 0, minerals: 0 };
-  const snapshot = { tick: 0, observation: null, capabilityCatalog: null, ownedActors: [], economyProduction: null,
-    reservations: [], resources: cash, pendingCommands: [], pendingResourceClaims: cash, obligations: cash,
-    queues: [], completedResearch: [] };
+  const snapshot = {
+    tick: 0,
+    observation: null,
+    capabilityCatalog: null,
+    ownedActors: [],
+    economyProduction: null,
+    reservations: [],
+    resources: cash,
+    pendingCommands: [],
+    pendingResourceClaims: cash,
+    obligations: cash,
+    queues: [],
+    completedResearch: []
+  };
   const capture = {
-    captureHumanQueueBoundary: jest.fn(() => ({ schemaVersion: 1, kind: "production_authority_capture", startedTick: 0,
-      playerNumber: 1, droppedFactCount: 0, droppedSnapshotCount: 0, gaps: [], facts: [], snapshots: [{
-        ...snapshot, tick: ticks.currentTick
-      }] })), dispose: jest.fn()
+    captureHumanQueueBoundary: jest.fn(() => ({
+      schemaVersion: 1,
+      kind: "production_authority_capture",
+      startedTick: 0,
+      playerNumber: 1,
+      droppedFactCount: 0,
+      droppedSnapshotCount: 0,
+      gaps: [],
+      facts: [],
+      snapshots: [
+        {
+          ...snapshot,
+          tick: ticks.currentTick
+        }
+      ]
+    })),
+    dispose: jest.fn()
   };
   jest.mocked(AiRuntimeProductionCapture).mockImplementation(() => capture as never);
   jest.mocked(getSceneService).mockReturnValue(ticks as never);
-  jest.mocked(prepareAiMultiplayerQueueWorld).mockReturnValue({ tick: 1, playerNumber: 1, producerActorId: "producer",
-    product: ObjectNames.TivaraWorker, price: { food: 50 }, refundFactor: 0.5, durationMs: 5000, initialResources: cash });
-  const scene = { playerOrNull: { playerNumber: localPlayerNumber }, events: { once: jest.fn(), off: jest.fn() } } as
-    unknown as ProbableWaffleScene;
+  jest.mocked(prepareAiMultiplayerQueueWorld).mockReturnValue({
+    tick: 1,
+    playerNumber: 1,
+    producerActorId: "producer",
+    product: ObjectNames.TivaraWorker,
+    price: { food: 50 },
+    refundFactor: 0.5,
+    durationMs: 5000,
+    initialResources: cash
+  });
+  const scene = {
+    playerOrNull: { playerNumber: localPlayerNumber },
+    events: { once: jest.fn(), off: jest.fn() }
+  } as unknown as ProbableWaffleScene;
   const sent: GameCommand[] = [];
   const dispatch = jest.fn((input: GameCommandInput) => {
     const sequence = sent.length;
-    const command = { ...input, tick: ticks.currentTick + 2,
-      execution: { schemaVersion: 1, commandId: ["purchase", "probe", "cancel", "resume"][sequence],
-        commitmentKey: `test:${sequence}`, source: "human", authorityEpoch: 0, sequence } } satisfies GameCommand;
+    const command = {
+      ...input,
+      tick: ticks.currentTick + 2,
+      execution: {
+        schemaVersion: 1,
+        commandId: requireAiTestEntry(["purchase", "probe", "cancel", "resume"], sequence),
+        commitmentKey: `test:${sequence}`,
+        source: "human",
+        authorityEpoch: 0,
+        sequence
+      }
+    } satisfies GameCommand;
     sent.push(command);
     return { status: "dispatched", command } as const;
   });
   const bus = { commandOutcome$: outcomes, command$: commands, dispatch } as unknown as CommandBusService;
   const world = new AiMultiplayerQueueWorld(scene, bus);
-  const step = (tick: number) => { ticks.currentTick = tick; ticks.tick$.next(tick); };
-  const applied = () => outcomes.next({ schemaVersion: 1, kind: "applied", reason: "applied", tick: 3, playerNumber: 1,
-    commandId: "purchase", commitmentKey: "test:0", authorityEpoch: 0, sequence: 0, actorIds: ["producer"], worldLinkIds: [] });
+  const step = (tick: number) => {
+    ticks.currentTick = tick;
+    ticks.tick$.next(tick);
+  };
+  const applied = () =>
+    outcomes.next({
+      schemaVersion: 1,
+      kind: "applied",
+      reason: "applied",
+      tick: 3,
+      playerNumber: 1,
+      commandId: "purchase",
+      commitmentKey: "test:0",
+      authorityEpoch: 0,
+      sequence: 0,
+      actorIds: ["producer"],
+      worldLinkIds: []
+    });
   return { world, outcomes, commands, ticks, capture, sent, dispatch, step, applied };
 }
 
@@ -59,10 +122,12 @@ describe("buffered multiplayer queue experiment scheduling (mocked bus, no netwo
     f.step(3);
     expect(f.sent).toHaveLength(1);
     f.step(4);
-    expect(f.sent[1]).toMatchObject({ type: "PRODUCTION", tick: 6 });
+    expect(requireAiTestEntry(f.sent, 1)).toMatchObject({ type: "PRODUCTION", tick: 6 });
     f.step(5);
-    expect(f.sent[2]).toMatchObject({ type: "CANCEL_PRODUCTION", tick: 7 });
-    expect(f.world.getSnapshot().requests.find((request) => request.role === "cancel")).toMatchObject({ requestedTick: 5 });
+    expect(requireAiTestEntry(f.sent, 2)).toMatchObject({ type: "CANCEL_PRODUCTION", tick: 7 });
+    expect(f.world.getSnapshot().requests.find((request) => request.role === "cancel")).toMatchObject({
+      requestedTick: 5
+    });
     expect(f.world.getSnapshot().checkpoints.at(-1)?.boundary).toBe("cancel_pending");
     const calls = f.capture.captureHumanQueueBoundary.mock.calls.length;
     f.world.getSnapshot();
@@ -99,8 +164,10 @@ describe("buffered multiplayer queue experiment scheduling (mocked bus, no netwo
     f.applied();
     f.step(4);
     f.step(6);
-    expect(f.world.getSnapshot()).toMatchObject({ state: "failed",
-      failure: "multiplayer_queue_probe_applied_before_cancel_request" });
+    expect(f.world.getSnapshot()).toMatchObject({
+      state: "failed",
+      failure: "multiplayer_queue_probe_applied_before_cancel_request"
+    });
     expect(f.dispatch).toHaveBeenCalledTimes(2);
     f.world.destroy();
   });

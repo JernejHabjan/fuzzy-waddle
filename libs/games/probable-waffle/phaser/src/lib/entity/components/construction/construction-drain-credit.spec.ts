@@ -1,3 +1,4 @@
+import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import Phaser from "phaser";
 import { ProbableWaffleGameInstance } from "@fuzzy-waddle/probable-waffle-protocol";
 import { Subject } from "rxjs";
@@ -57,7 +58,7 @@ jest.mock("./construction-payment", () => ({
 }));
 
 // Real construction/health/drain/recipient journal, controlled wait and resource adapter; no actual-match proof.
-describe("construction readiness changes during native drain wait (authored; final gate pending)", () => {
+describe("construction readiness changes during native drain wait", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.mocked(onObjectReady).mockReset();
@@ -138,7 +139,7 @@ describe("construction readiness changes during native drain wait (authored; fin
         jest.mocked(isSnapshotApplyInProgress).mockReturnValue(false);
         jest.mocked(emitResource).mockImplementation((_scene, _action, amounts, number) => {
           expect(number).toBe(2);
-          players[1].addResources(amounts);
+          requireAiTestEntry(players, 1).addResources(amounts);
           changes.next({
             property: "resource.added",
             data: { playerNumber: 2, playerStateData: { resources: amounts } }
@@ -182,8 +183,8 @@ describe("construction readiness changes during native drain wait (authored; fin
         settle();
         expect(await pending).toBe(3);
         expect(returned).toHaveBeenLastCalledWith([ResourceType.Wood, 3, gatherer]);
-        expect(players[0].getResources().wood).toBe(200);
-        expect(players[1].getResources().wood).toBe(economy === "normal" ? 203 : 200);
+        expect(requireAiTestEntry(players, 0).getResources().wood).toBe(200);
+        expect(requireAiTestEntry(players, 1).getResources().wood).toBe(economy === "normal" ? 203 : 200);
         expect(records.at(-1)).toMatchObject({
           kind: "resource_credit",
           context,

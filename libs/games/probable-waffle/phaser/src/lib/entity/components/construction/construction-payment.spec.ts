@@ -1,3 +1,4 @@
+import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import Phaser from "phaser";
 import { Subject } from "rxjs";
 import { ConstructionStateEnum, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
@@ -66,7 +67,7 @@ function fixture(observe = true) {
   return { site, records, money, changes, canPay, definition };
 }
 
-/** Native behavior characterization, including known policy defects; these authored cases have not run. */
+/** Native behavior characterization, including known policy defects and controlled resource callbacks. */
 describe("construction payment authority", () => {
   beforeEach(() => jest.clearAllMocks());
 
@@ -124,7 +125,7 @@ describe("construction payment authority", () => {
     startConstructionPayment(f.site, f.definition, ConstructionStateEnum.NotStarted, 0);
     expect(emitResource).not.toHaveBeenCalled();
     expect(f.canPay).not.toHaveBeenCalled();
-    expect(f.records[0]).toMatchObject({
+    expect(requireAiTestEntry(f.records, 0)).toMatchObject({
       kind: "resource",
       status: "skipped",
       requiredWorkMs: 150,
@@ -140,7 +141,7 @@ describe("construction payment authority", () => {
     const definition = { ...f.definition, productionTime: 0, costType: PaymentType.PayOverTime };
     startConstructionPayment(f.site, definition, ConstructionStateEnum.NotStarted, 0);
     expect(emitResource).toHaveBeenCalledWith(f.site.scene, "resource.removed", definition.resources, 2);
-    expect(f.records[0]).toMatchObject({
+    expect(requireAiTestEntry(f.records, 0)).toMatchObject({
       status: "returned",
       configuredCostType: 1,
       configuredCost: { food: 11 },
@@ -151,7 +152,9 @@ describe("construction payment authority", () => {
       balanceMatches: true
     });
     definition.resources.food = 99;
-    expect(f.records[0].kind === "resource" && f.records[0].configuredCost).toEqual({ food: 11 });
+    const payment = requireAiTestEntry(f.records, 0);
+    if (payment.kind !== "resource") throw new Error("synthetic_construction_payment_missing");
+    expect(payment.configuredCost).toEqual({ food: 11 });
     expect(f.changes.observed).toBe(false);
   });
 
@@ -162,7 +165,7 @@ describe("construction payment authority", () => {
       startConstructionPayment(f.site, { ...f.definition, productionTime: 0 }, ConstructionStateEnum.NotStarted, 0)
     ).toThrow("Cannot afford building costs");
     expect(emitResource).not.toHaveBeenCalled();
-    expect(f.records[0]).toMatchObject({ status: "denied", callbackCount: 0 });
+    expect(requireAiTestEntry(f.records, 0)).toMatchObject({ status: "denied", callbackCount: 0 });
   });
 
   it("records native pre-start and repeated refunds separately, without inventing an earlier charge or cancellation guard", () => {
@@ -174,13 +177,13 @@ describe("construction payment authority", () => {
     refundConstructionPayment(f.site, definition, 0.5, progress, ConstructionStateEnum.NotStarted, 0);
     expect(progress).not.toHaveBeenCalled();
     expect(emitResource).toHaveBeenCalledTimes(2);
-    expect(f.records[0]).toMatchObject({
+    expect(requireAiTestEntry(f.records, 0)).toMatchObject({
       operation: "cancel_refund",
       state: 0,
       requested: { food: 5 },
       refundFactor: 0.5
     });
-    expect(f.records[1]).toMatchObject({
+    expect(requireAiTestEntry(f.records, 1)).toMatchObject({
       configuredCost: { food: 20 },
       requested: { food: 10 },
       before: { food: 105 },
@@ -193,14 +196,18 @@ describe("construction payment authority", () => {
     const progress = jest.fn(() => 0.25);
     refundConstructionPayment(f.site, f.definition, 0.5, progress, ConstructionStateEnum.Constructing, 112.5);
     expect(progress).toHaveBeenCalledTimes(1);
-    expect(f.records[0]).toMatchObject({ refundFactor: 0.125, requested: { food: 1 }, balanceMatches: true });
+    expect(requireAiTestEntry(f.records, 0)).toMatchObject({
+      refundFactor: 0.125,
+      requested: { food: 1 },
+      balanceMatches: true
+    });
   });
 
   it("keeps restore-suppressed emissions distinct from callback/balance application", () => {
     const f = fixture();
     jest.mocked(isSnapshotApplyInProgress).mockReturnValue(true);
     refundConstructionPayment(f.site, f.definition, 1, () => 0.5, ConstructionStateEnum.Constructing, 75);
-    expect(f.records[0]).toMatchObject({
+    expect(requireAiTestEntry(f.records, 0)).toMatchObject({
       status: "returned",
       snapshotRestoreInProgress: true,
       before: { food: 100 },
@@ -222,7 +229,11 @@ describe("construction payment authority", () => {
     expect(() =>
       refundConstructionPayment(f.site, f.definition, 1, () => 0.5, ConstructionStateEnum.Constructing, 75)
     ).toThrow(failure);
-    expect(f.records[0]).toMatchObject({ status: "threw", callbackCount: 0, balanceMatches: false });
+    expect(requireAiTestEntry(f.records, 0)).toMatchObject({
+      status: "threw",
+      callbackCount: 0,
+      balanceMatches: false
+    });
     expect(f.changes.observed).toBe(false);
   });
 
@@ -255,7 +266,11 @@ describe("construction payment authority", () => {
       f.changes.next({ property: action, data: { playerNumber: 2, playerStateData: { resources: { ...amounts } } } });
     });
     refundConstructionPayment(f.site, f.definition, 1, () => 0.5, ConstructionStateEnum.Constructing, 75);
-    expect(f.records[0]).toMatchObject({ after: { food: 105 }, callbackCount: 0, balanceMatches: false });
+    expect(requireAiTestEntry(f.records, 0)).toMatchObject({
+      after: { food: 105 },
+      callbackCount: 0,
+      balanceMatches: false
+    });
     expect(f.changes.observed).toBe(false);
   });
 
@@ -266,7 +281,7 @@ describe("construction payment authority", () => {
       for (let index = 0; index < 12; index++) native?.(...args);
     });
     refundConstructionPayment(f.site, f.definition, 1, () => 0.5, ConstructionStateEnum.Constructing, 75);
-    expect(f.records[0]).toMatchObject({ callbackCount: 9, balanceMatches: false });
+    expect(requireAiTestEntry(f.records, 0)).toMatchObject({ callbackCount: 9, balanceMatches: false });
     expect(f.changes.observed).toBe(false);
   });
 
@@ -279,7 +294,7 @@ describe("construction payment authority", () => {
     });
     f.definition.productionTime = 0;
     startConstructionPayment(f.site, f.definition, ConstructionStateEnum.NotStarted, 0);
-    expect(f.records[0]).toMatchObject({
+    expect(requireAiTestEntry(f.records, 0)).toMatchObject({
       configuredCost: { food: 11 },
       requested: { food: 11 },
       callbackAmounts: { food: 11 },
@@ -299,8 +314,16 @@ describe("construction payment authority", () => {
       native?.(...args);
     });
     refundConstructionPayment(f.site, f.definition, 1, () => 0.5, ConstructionStateEnum.Constructing, 75);
-    expect(f.records[0]).toMatchObject({ nestedEmission: false, callbackCount: 1, balanceMatches: true });
-    expect(f.records[1]).toMatchObject({ nestedEmission: true, callbackCount: 1, balanceMatches: false });
+    expect(requireAiTestEntry(f.records, 0)).toMatchObject({
+      nestedEmission: false,
+      callbackCount: 1,
+      balanceMatches: true
+    });
+    expect(requireAiTestEntry(f.records, 1)).toMatchObject({
+      nestedEmission: true,
+      callbackCount: 1,
+      balanceMatches: false
+    });
     expect(f.changes.observed).toBe(false);
   });
 });

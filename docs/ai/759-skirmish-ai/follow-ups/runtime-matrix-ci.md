@@ -446,7 +446,7 @@ The following map preserves stage-50 design/authoring states; the final-gate che
 | M07 Real adapter/report bridge: expose actual producer evidence and explicit gaps | R; C7 root capture, variant runner, production normalization | 51–53 → 54 | Real Phaser actor/components/protocol player/read/native command path into report; initialization loss, post-await service loss and late/disposed capture; native income remains diagnostic while useful fields stay null; contradictory tail suppresses parent | Bridge assertion authored; K1/K3/K5 real-run evidence deferred |
 | M08 Normal-play impact: testing does not install heavy machinery during gaming | R; C8 below, installer/helper controls and existing profiler | 54 | Production/unmarked guard, no sample/clone/listener/timer/root journal; before/after disabled-path and bundle comparison; foreign host/duplicate capture, late callbacks | Fast-path/native controls and production build pass; paired C8/K5 cost/bundle evidence pending |
 | M09 Compliance/publication: economical implementation remains reviewable | R; C6 exact baselines, existing handoff | Each 51–54 | No refreshed hashes/new permanent stage names; task-only prerequisite and behavior commits; source review/Omission Audit/closure, remote SHA and clean task scope | Authored/source-reviewed; implementation commit `978cb09e70cbc6e2ed0b520971690ea47ab38045` remote-verified; checks deferred |
-| M10 Combined review and compatibility: decide readiness before execution | R; C1–C8, all changed consumers | 54 → Sol review | Trace real input → selected/admitted → native application → report/disposal; review all controls, repair concrete contract contradictions; every required unrun check remains listed | E2E typing/457 synthetic controls and native dispatch/queue 66 controls pass; native types 101 remain, gameplay K4/22 broader failures and K5 remain |
+| M10 Combined review and compatibility: decide readiness before execution | R; C1–C8, all changed consumers | 54 → Sol review | Trace real input → selected/admitted → native application → report/disposal; review all controls, repair concrete contract contradictions; every required unrun check remains listed | E2E typing/457 synthetic controls and native typing/143 suites/679 tests pass; gameplay K4/22 broader failures and K5 remain |
 | M11 Mutation-complete useful resource/continuous capacity: 32/36 full proof | B; C7 plus 32/36/39/42 authority, public APIs | Explicit authority/scope decision; not a hidden fifth Luna pass | Net-zero alias undo, arbitrary definition/Map/item/roster replacement, hidden/stale threats/access changes between reads, full supported initial predicate history; no positive complete channel currently possible | Existing 32/36 gates; blocked, mandatory |
 | M12 Production useful outputs, legal setup and strategy: PRO-03/06/07 release | B; existing production authority contract and evaluators | Broader gameplay/fixture queue, separate from 51–54 | Both-faction transition/abandonment, exposed/safe/no-demand resilience, shared train/research and paid cancellation/pending refund pairs; full oracle and denominator | K5 and owning scenario/policy plans; open, mandatory |
 | M13 Finer loss scopes/continuous journal/lot allocation | O; no new files/owners | Not scheduled; new consumer must justify proposal | No actor-to-beneficiary dependency map, FIFO allocation or extra scan introduced just to recover a diagnostic bound | No extra gate; proposed only |
@@ -510,6 +510,100 @@ authoring is the next grouped boundary before gate readiness; executable validat
 Do not claim stage validation before K1–K5. M11 remains a mandatory blocker from public mutable aliases
 and incomplete access/safety/lifetime history; M12 remains open for full PRO-03/06/07. Neither was reduced by this batch.
 
+### Final-gate combined native fixture checkpoint (2026-10-09, stage checked)
+
+User authorized the three remaining native fixture families in one implementation/check/publication batch, with no
+pause or model switch between families. Base `ddd970bb8c223478f6b8881ef352b55936ce5228` was clean and remote-verified
+on `feature/759-skirmish-ai` in `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`; unrelated Nx history is retained.
+Actual model/effort unknown. The containing commit owns this batch; verify its remote SHA on resume. No subagent,
+new machinery, shared helper, production source, config, source-size baseline, wire/save or useful quantity changed.
+
+**Purpose / ownership:** repair existing native evidence controls against current contracts so later AI reports can
+rely on typed actor, queue, payment, movement and campaign records. All paths below are under
+`libs/games/probable-waffle/phaser/src/lib/`; 38 existing specs changed, with no new source files:
+
+- Capture/world (18 specs; 54 baseline diagnostics): `player/ai-controller/ai-runtime-decision-input.spec.ts` and
+  `capture-ai-producer-exposure.spec.ts`; under `player/ai-controller/testing/`, `ai-multiplayer-diagnostics.spec.ts`,
+  `ai-multiplayer-queue-world.spec.ts`, `ai-multiplayer-shared-queue-world.spec.ts`, `ai-runtime-construction-capture.spec.ts`,
+  `ai-runtime-pending-commands.spec.ts`, `ai-runtime-producer-route-capture.spec.ts`, `ai-runtime-production-spatial-capture.spec.ts`,
+  `ai-runtime-recipient-resource-capture.spec.ts`, `ai-runtime-recipient-roster-capture.spec.ts`, `ai-runtime-rejection-capture.spec.ts`,
+  `ai-runtime-route-order-capture.spec.ts`, `ai-runtime-unspent-claims.spec.ts`, `apply-ai-runtime-preset-queues.spec.ts`,
+  `capture-ai-runtime-construction-catalog.spec.ts`, `capture-ai-runtime-initial-construction.spec.ts` and
+  `capture-ai-runtime-production-world.spec.ts`. Existing `requireAiTestEntry` checks required slots and scheduled
+  command roles; actual event kinds narrow mutation/path/placement/order fields. `ObjectNames.Sandhold` is the
+  registered current definition with the worker production/construction capabilities these fixtures need, replacing
+  the nonexistent `TivaraSandhold`. Canonical capture identities retain enum values. Native preset/initial actors
+  use actual GameObjects; corruption controls require the original item/context before changing it.
+- Component/movement/lifecycle (15 specs; 34 baseline diagnostics): under `entity/components/combat/components/`,
+  `health-component.spec.ts`, `health-component-resource-history.spec.ts`, `health-component-drain-credit.spec.ts`;
+  under `entity/components/construction/`, `construction-drain-credit.spec.ts`, `construction-payment.spec.ts`,
+  `construction-presentation.spec.ts`, `construction-resource-history.spec.ts`; `entity/components/owner-component.spec.ts`,
+  `entity/components/resource/resource-drain-credit.spec.ts`, `entity/systems/movement-completion-observation.spec.ts`,
+  `entity/systems/movement-path-execution.spec.ts`, `prefabs/ai-agents/pawn-agent-order-boundaries.spec.ts`,
+  `prefabs/ai-agents/pawn-resource-service-observation.spec.ts`, `player/human-controller/single-selection.handler.spec.ts`
+  and `world/services/multiplayer/apply-shared-construction-command.spec.ts`. Native health/drain/builder actors replace
+  incomplete actor shapes. Payment/callback/player/service records are checked, audio uses its actual parameter
+  tuple, and current-tile mocks retain the real 2D shape. Readonly health definition variants replace the definition
+  value without calling a gameplay setter or adding a fence. Owner callbacks declare optional owner IDs, missing
+  visibility uses the actual null contract, and the pointer event fixture preserves other event constants.
+- Campaign (five specs; 13 baseline diagnostics): `campaign/actions/campaign-phaser-world-adapter.spec.ts`,
+  `campaign/actions/campaign-trusted-hook-registry.spec.ts`, `campaign/campaign-world-event-adapter.spec.ts`,
+  `campaign/objectives/campaign-objective-projection-store.spec.ts`, `campaign/scenario/scenario-reference-registry.spec.ts`.
+  Fixtures use team/owner-token/resource-vector/map-key/trusted-hook contracts. Scenario scenes retain real default
+  scene data and native marker/actor event dispatch behind explicitly headless scene plugins.
+
+| Acceptance / state | Implementation and evidence |
+| --- | --- |
+| 1. Baseline / passed | Doctor/context pass on the clean remote-verified base. Fresh actual native spec config reproduces all 101 diagnostics in the 38 selected owners. |
+| 2. All three families / passed | Final native spec typing exits zero, with zero diagnostics. No assertion/cast suppression, strictness change or baseline refresh. |
+| 3. Oracles / passed | AST audit preserves all 183 registration expressions and parameterized rows; all 799 matcher names/expected arguments match after normalizing checked reads, redundant formatting parentheses and the corrected enum. Guards require actual records/phases; missing authority/null useful quantities remain conservative. |
+| 4. Native compatibility / passed | Final full Phaser target: 143 suites / 679 tests, actual execution, zero cache hits. Final lint: zero errors/eight existing warnings; all 38 sources pass Prettier. |
+| 5. Review and delivery scope / passed | Formatted-base semantic diff self-reviewed; Omission Audit and separate Final Closure Audit below. Exact scope is 38 specs and these two coordination docs. Publication requires normal push and exact remote SHA verification. |
+| 6. Broader gate / pending | Earlier gameplay typing 44 diagnostics and full gameplay 22 failed / 252 passed remain blockers, not rerun by this native-only batch. E2E 457 report controls and earlier build/protocol checks remain unchanged evidence. Browser K5, paired cost/bundle, socket/save/restart/hash/calibration and M11/M12 remain open. |
+
+**Exact checks and provenance:** Phaser 4.2.1, actual project Jest/angular preset and
+`phaser/tsconfig.spec.json` including native specs and followed workspace sources. Ignored evidence is in
+`tmp/ai-plans/759-validation/native-fixture-batch/` (`source-files.txt`, clean `types-base.log`, final `types-closure.log`,
+`tests-closure.log`, `lint-closure.log`, `format-closure.log`, registration/assertion audits, compiler summary,
+per-source hashes and `review-semantic.diff`). Final SHA256 source digest:
+`fb684127274f4d19bc7d99ad186e4234ef11f6cfe6673d2fd4dfb2ba534a685f`.
+
+```sh
+pnpm agent:doctor
+pnpm agent:context -- --issue 816
+pnpm exec tsc --noEmit -p libs/games/probable-waffle/phaser/tsconfig.spec.json
+pnpm exec nx test probable-waffle-phaser --runInBand
+pnpm exec nx lint probable-waffle-phaser
+pnpm exec prettier --check $(cat tmp/ai-plans/759-validation/native-fixture-batch/source-files.txt)
+git diff --check
+```
+
+The first repair type run reduced 101 diagnostics to five task-caused fixture typing/narrowing errors; all five
+were repaired. The full initial native run passed 143 suites/679 tests, and the five corrected owners then passed
+37 tests. Review removed obsolete unrun labels and an unused import; final full typing/test/lint/format checks ran
+on that stable source. Nx Cloud artifact upload failed with ENETUNREACH on final test/lint runs; both executed
+locally and exited zero. No remote-cache success is claimed. One-off AST audit formatting normalization was
+repaired locally; it is ignored evidence tooling, not a new product authority.
+
+**Implementation Review:** self-reviewed the whole semantic diff and native capture/payment/command/lifecycle
+consumers. Retained resource amounts, callback/reference identity, death/restore ordering, original Promises/errors,
+queue corruption controls, overflow bounds and listener cleanup; no gameplay policy or useful-authority claim.
+**Omission Audit:** all three selected families/all 101 diagnostics are covered; all 183 registrations/rows and 799
+expected matcher arguments retained, including negative/recovery cases. No skipped registrations, unused helper,
+stale execution labels, new public API or unregistered code. No new behavioral regression test is needed for these
+fixture-only repairs. Unchanged shared source requires no E2E/build rerun; real browser/cost and gameplay blockers
+remain explicit. No reusable skill/tool change is justified by this local fixture repair.
+**Final Closure Audit:** rechecked all six acceptance rows after repairs, final source hashes, actual full-config
+selection, final native test count, lint/format, doc links, task-owned scope and unrelated history. Native slice is
+stage checked; full K4/M10/release is not closed. Commit/push plus remote verification close delivery only.
+
+**Next combined batch — why:** refresh gameplay typing/failure evidence, then group repairs by actual shared
+planner/production contract. Start with `pnpm exec tsc --noEmit -p libs/games/probable-waffle/gameplay/tsconfig.spec.json`
+and the earlier base-reproduced gameplay failure ledger; earlier counts are 44 diagnostics and 22 failed tests.
+Recommend **GPT-6.1 Sol / high** for causal investigation, retaining the now-passing native slice. Finish gameplay K4
+before K5 browser and paired cost measurements, so those matches are judged against working shared behavior.
+Pause after this checked/published combined native task.
+
 ### Final-gate native dispatch/queue fixture checkpoint (2026-10-09, partially checked)
 
 Base `e9ed4cc4916441b13274277f1164165a17095da7` was clean and remote-verified on
@@ -566,7 +660,8 @@ before final checks. The first multi-path Nx test command selected only one suit
 evidence. The corrected pattern selected 14 suites/66 tests. Final runs use the repaired source. No runtime behavior
 changed, so no new behavioral regression was needed. Earlier unchanged E2E/gameplay/build checks were not rerun.
 
-**Next grouped batch — why:** native capture/world fixtures need real actor shapes, current catalog definitions and
+**Historical next batch (now checked by the combined native checkpoint above) — why:** native capture/world fixtures
+need real actor shapes, current catalog definitions and
 checked queue/command records so later report evidence cannot be manufactured by a stale fixture. Start in
 `phaser/src/lib/player/ai-controller/testing/`: `ai-runtime-recipient-resource-capture.spec.ts` (six diagnostics),
 `ai-runtime-route-order-capture.spec.ts` (six), `ai-runtime-unspent-claims.spec.ts` (five),
