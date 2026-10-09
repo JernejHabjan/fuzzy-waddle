@@ -1,13 +1,13 @@
+import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import type { AiRuntimeProductionFactV1 } from "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
 import { OrderType, type GameCommand } from "@fuzzy-waddle/probable-waffle-protocol";
 import { resourceNeedAccountingFixture } from "./skirmish-ai-runtime-resource-need-accounting-fixture";
-
 /** Producer-shaped read/start/result/request/admission/receipt/application ordering; not native execution evidence. */
 export function resourceAdmissionFixture() {
   const f = resourceNeedAccountingFixture();
   const original = f.capture.facts.find((fact) => fact.kind === "decision_selected");
   if (!original || original.kind !== "decision_selected") throw new Error("resource_admission_selected_missing");
-  const intent = { ...original.decision.acceptedIntents[0], proposedTick: 0 };
+  const intent = { ...requireAiTestEntry(original.decision.acceptedIntents, 0), proposedTick: 0 };
   if (intent.kind !== "assign_gatherers") throw new Error("resource_admission_intent_missing");
   const selected = {
     ...original,
@@ -73,7 +73,7 @@ export function resourceAdmissionFixture() {
       ...common,
       sequence: 7,
       kind: "outcome",
-      outcome: { ...outcome, kind: "applied", reason: "applied", actorIds: [command.actorIds[0]] },
+      outcome: { ...outcome, kind: "applied", reason: "applied", actorIds: [requireAiTestEntry(command.actorIds, 0)] },
       scheduledTick: null
     },
     {

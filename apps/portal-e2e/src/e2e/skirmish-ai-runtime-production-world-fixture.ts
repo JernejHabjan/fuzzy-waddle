@@ -76,6 +76,7 @@ export function productionWorldFixture(payment: "immediate" | "tick" = "immediat
   ];
   const balance = { food: 100, wood: 100, stone: 100, minerals: 100 };
   const noObservation = (): AiObservationV1 | null => null;
+  const world = { snapshotRestoreInProgress: false, actors: [actor], catalog, gaps: [] };
   const capture = {
     ...source,
     facts,
@@ -94,7 +95,7 @@ export function productionWorldFixture(payment: "immediate" | "tick" = "immediat
         obligations: insertion.boundaryState.obligations ?? balance,
         queues: insertion.boundaryState.queues.map((queue) => ({ ...queue })),
         completedResearch: [],
-        world: { snapshotRestoreInProgress: false, actors: [actor], catalog, gaps: [] }
+        world
       }
     ]
   } satisfies AiRuntimeProductionCaptureV1;

@@ -5,6 +5,13 @@ import type { AiObservedActorV1, AiObservationV1 } from "../contracts/ai-observa
 /** Creates an explicit unknown value for Stage 2 pure fixtures. */
 export const unknownAiValue = { status: "unknown", reason: "not_observed" } as const;
 
+/** Requires an authored fixture slot; absent records must fail the test rather than survive a type assertion. */
+export function requireAiTestEntry<T>(entries: readonly T[] | null | undefined, index: number): T {
+  const entry = entries?.[index];
+  if (entry === undefined) throw new Error(`ai_test_fixture_entry_missing:${index}`);
+  return entry;
+}
+
 /** Creates a fully shaped owned actor without inventing unavailable capability values. */
 export function createAiTestOwnedActor(actorId: ActorId): AiObservedActorV1 {
   return {

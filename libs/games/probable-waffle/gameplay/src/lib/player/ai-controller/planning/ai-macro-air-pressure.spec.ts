@@ -9,12 +9,28 @@ import type { AiCapabilityCatalogV1 } from "../contracts/ai-capability-catalog-v
 import { createAiProfileConfigV1 } from "../profiles/ai-profile-defaults";
 import { createAiTestObservation, createAiTestOwnedActor } from "../testing/ai-test-fixtures";
 import { AiMacroManager } from "./ai-macro-manager";
+import { WORKER_RECOVERY_FLOOR } from "./ai-food-economy-proposal";
 
 const catalog: AiCapabilityCatalogV1 = {
   schemaVersion: 1,
   generation: 1,
   unsupported: [],
   entries: [
+    {
+      capabilityId: "worker",
+      family: "worker",
+      sourceObjectName: ObjectNames.SkaduweeWorker,
+      effectiveLevel: 1,
+      movementDomains: ["ground"],
+      targetDomains: [],
+      produces: [],
+      constructs: [],
+      researches: [],
+      gathers: [ResourceType.Food],
+      housingCapacity: null,
+      housingCost: 1,
+      cargoCapacity: null
+    },
     {
       capabilityId: "owlery",
       family: "producer",
@@ -102,11 +118,15 @@ describe("AI macro domain pressure", () => {
       }
     };
     const owl = { ...createAiTestOwnedActor("owl"), objectName: ObjectNames.SkaduweeOwl };
+    const workers = Array.from({ length: WORKER_RECOVERY_FLOOR }, (_, index) => ({
+      ...createAiTestOwnedActor(`worker-${index}`),
+      objectName: ObjectNames.SkaduweeWorker
+    }));
     const observation = {
       ...createAiTestObservation(),
       tick: 200,
       faction: FactionType.Skaduwee,
-      actors: [owlery, owl],
+      actors: [owlery, owl, ...workers],
       resources: [ResourceType.Food, ResourceType.Stone, ResourceType.Wood].map((resourceType) => ({
         resourceType,
         stockpile: 2000,
@@ -121,6 +141,10 @@ describe("AI macro domain pressure", () => {
       expect.objectContaining({ purpose: "dated_air_pressure", desired: 8 })
     );
     expect(proposal.intents).toContainEqual(
+      expect.objectContaining({ kind: "produce", objectName: ObjectNames.SkaduweeOwl })
+    );
+    const recovering = new AiMacroManager(() => catalog).propose({ ...observation, actors: [owlery, owl] }, state);
+    expect(recovering.intents).not.toContainEqual(
       expect.objectContaining({ kind: "produce", objectName: ObjectNames.SkaduweeOwl })
     );
   });

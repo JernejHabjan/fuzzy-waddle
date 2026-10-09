@@ -446,7 +446,7 @@ The following map preserves stage-50 design/authoring states; the final-gate che
 | M07 Real adapter/report bridge: expose actual producer evidence and explicit gaps | R; C7 root capture, variant runner, production normalization | 51–53 → 54 | Real Phaser actor/components/protocol player/read/native command path into report; initialization loss, post-await service loss and late/disposed capture; native income remains diagnostic while useful fields stay null; contradictory tail suppresses parent | Bridge assertion authored; K1/K3/K5 real-run evidence deferred |
 | M08 Normal-play impact: testing does not install heavy machinery during gaming | R; C8 below, installer/helper controls and existing profiler | 54 | Production/unmarked guard, no sample/clone/listener/timer/root journal; before/after disabled-path and bundle comparison; foreign host/duplicate capture, late callbacks | Fast-path/native controls and production build pass; paired C8/K5 cost/bundle evidence pending |
 | M09 Compliance/publication: economical implementation remains reviewable | R; C6 exact baselines, existing handoff | Each 51–54 | No refreshed hashes/new permanent stage names; task-only prerequisite and behavior commits; source review/Omission Audit/closure, remote SHA and clean task scope | Authored/source-reviewed; implementation commit `978cb09e70cbc6e2ed0b520971690ea47ab38045` remote-verified; checks deferred |
-| M10 Combined review and compatibility: decide readiness before execution | R; C1–C8, all changed consumers | 54 → Sol review | Trace real input → selected/admitted → native application → report/disposal; review all controls, repair concrete contract contradictions; every required unrun check remains listed | Full native/main mock consumers and production compile pass; strict K4 spec/report types, two planner failures and K5 remain |
+| M10 Combined review and compatibility: decide readiness before execution | R; C1–C8, all changed consumers | 54 → Sol review | Trace real input → selected/admitted → native application → report/disposal; review all controls, repair concrete contract contradictions; every required unrun check remains listed | Production/native compatibility and capture/queue fixture slices pass; remaining strict K4 types, 22 broader gameplay failures and K5 remain |
 | M11 Mutation-complete useful resource/continuous capacity: 32/36 full proof | B; C7 plus 32/36/39/42 authority, public APIs | Explicit authority/scope decision; not a hidden fifth Luna pass | Net-zero alias undo, arbitrary definition/Map/item/roster replacement, hidden/stale threats/access changes between reads, full supported initial predicate history; no positive complete channel currently possible | Existing 32/36 gates; blocked, mandatory |
 | M12 Production useful outputs, legal setup and strategy: PRO-03/06/07 release | B; existing production authority contract and evaluators | Broader gameplay/fixture queue, separate from 51–54 | Both-faction transition/abandonment, exposed/safe/no-demand resilience, shared train/research and paid cancellation/pending refund pairs; full oracle and denominator | K5 and owning scenario/policy plans; open, mandatory |
 | M13 Finer loss scopes/continuous journal/lot allocation | O; no new files/owners | Not scheduled; new consumer must justify proposal | No actor-to-beneficiary dependency map, FIFO allocation or extra scan introduced just to recover a diagnostic bound | No extra gate; proposed only |
@@ -510,6 +510,88 @@ authoring is the next grouped boundary before gate readiness; executable validat
 Do not claim stage validation before K1–K5. M11 remains a mandatory blocker from public mutable aliases
 and incomplete access/safety/lifetime history; M12 remains open for full PRO-03/06/07. Neither was reduced by this batch.
 
+### Final-gate capture and queue fixture checkpoint (2026-10-09, partially checked)
+
+Base `0641e9ed5851f542e6a12c43cb01d01b0787cd08` was clean and remote-verified on
+`feature/759-skirmish-ai` in `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`. The containing commit publishes this
+grouped fixture/report slice; verify its remote SHA on resume. Actual model/effort unknown; next recommendation
+GPT-6.1 Sol / high. No independent reviewer/subagent. Final-gate execution remains authorized.
+
+**Purpose and repairs:** make captured-record tests and queue/need report joins type-safe before using them to judge
+real matches. `requireAiTestEntry` in the existing pure AI test-fixtures module rejects an absent authored slot instead
+of casting it away. It is used only by specs/synthetic fixtures; report normalizers retain their own conservative guards.
+Native production, progress, completion, mutation and decision-boundary controls now require their actual records.
+Synthetic operation/refund/physical queue/world/admission fixtures and corresponding report specs use the same check.
+Mutable fixture world restore flags retain their boolean type; queue boundaries accept the actual readonly queue contract;
+copied nullable resource authority remains null rather than becoming a partial invented balance.
+
+`runtimeNeedHasIncomingStart` / `runtimeNeedOwnAdmissionSequences` retain a checked start, selected intent, request,
+finish and addressed actor before their existing exact identity comparisons. `normalizeRuntimeProductionInitialQueues`
+retains a checked delivered/applied record and explicitly narrows physical mutation facts before matching insertion.
+Missing or contradictory evidence retains its existing unavailable/gap/failure behavior; no useful authority is activated.
+
+The oversized macro spec is split into opening/gathering, construction, production and renewable-food specs sharing
+`ai-macro-test-fixtures.ts`. Native decision boundaries move to `ai-runtime-decision-boundary-capture.spec.ts` beside
+the queue-lifecycle spec. All 22 macro cases and 11 original capture cases remain registered exactly once.
+The land-domain control now covers both 3 ready units (9-unit deficit, 2 producers) and 10 ready units (2-unit deficit,
+1 producer). Air production supplies the current `WORKER_RECOVERY_FLOOR` through gathering-capable catalog facts;
+removing that workforce must suppress optional air production. Existing domain/affordability assertions remain.
+The split also repairs two existing macro fixture types: literal base IDs and explicit unknown carried/growth values.
+No game planner/native rule, schema, save/wire field, baseline exemption or new machinery was changed.
+
+| Acceptance / status | Evidence and limit |
+| --- | --- |
+| Preflight / passed | Doctor/context on the clean base; branch/remote verified. |
+| Native extraction / passed | 6 suites / 22 tests, including capture installation, decision boundaries, queue progress/mutation/completion and lifecycle. Zero diagnostics in these touched files. |
+| Macro fixtures / passed | 8 focused suites / 37 tests; both former failures repaired with valid workloads and stronger positive/control assertions. No strategy threshold changed. |
+| Report joins/consumers / passed | 93 synthetic tests in 8 related specs: operations, initial queues, world readiness, need boundaries, cancellation/rejection, removed ownership and physical queue mutation. No browser/server used. |
+| Strict typing / blocked | Phaser 322 → 161 diagnostics; E2E 498 → 300; gameplay 46 → 44. All 23 touched/new source files have zero diagnostics. Full configurations still fail; counts are not distinct defects. |
+| Wider gameplay / blocked | Candidate: 9 failed / 43 passed suites, 22 failed / 252 passed tests. Base: 11 failed / 38 passed suites, 24 failed / 250 passed tests. The same 22 remaining failure identities reproduce on base; only the two macro failures disappear. This is not a release exemption. |
+| Quality and registration / passed | Gameplay/Phaser/portal-e2e lints, exact source Prettier and diff checks pass. AST title comparison proves no omission/duplication across the two splits. Existing ledger formatting remains final cleanup. |
+| Full gate / pending | K4, K5 real browser, C8 paired disabled-path/bundle budgets and inherited server/socket/save/restart/hash/calibration remain; M11 blocked and M12 open. Earlier production/native/interface/protocol evidence remains scoped history. |
+
+```sh
+pnpm exec nx test probable-waffle-phaser --testPathPatterns='ai-runtime-(production-capture|decision-boundary-capture|queue-mutation-capture|completion-capture|production-boundaries)' --runInBand
+pnpm exec nx test probable-waffle-gameplay --testPathPatterns='ai-macro|ai-resource-service|ai-brain|ai-producer|ai-production-transition' --runInBand
+pnpm exec nx test probable-waffle-gameplay --runInBand
+pnpm exec playwright test --config tmp/ai-plans/playwright-resource-gate.config.ts skirmish-ai-runtime-production-operation-projection.spec.ts skirmish-ai-runtime-production-world-normalization.spec.ts skirmish-ai-runtime-production-initial-queue-normalization.spec.ts skirmish-ai-runtime-resource-need-boundaries.spec.ts skirmish-ai-runtime-production-cancellations.spec.ts skirmish-ai-runtime-production-rejections.spec.ts skirmish-ai-runtime-removed-queue-ownership.spec.ts skirmish-ai-runtime-production-queue-mutations.spec.ts
+pnpm exec tsc --noEmit -p libs/games/probable-waffle/phaser/tsconfig.spec.json
+pnpm exec tsc --noEmit -p apps/portal-e2e/tsconfig.json
+pnpm exec tsc --noEmit -p libs/games/probable-waffle/gameplay/tsconfig.json
+pnpm exec nx run-many --targets=lint --projects=probable-waffle-gameplay,probable-waffle-phaser,portal-e2e
+```
+
+Ignored local evidence: `tmp/ai-plans/759-validation/fixture-batch/` contains logs, exact commands, provenance,
+per-owner compiler counts and `gameplay-failure-comparison.json` with all 22 remaining failure names.
+Final source digest: `bae5137367a08b800530bdb0e4558dc3e1aaa2b28f7de9b8ce395073ac6289fb`.
+The base reproduction restored exact HEAD gameplay owners and temporarily removed the four new macro files, then
+restored candidate bytes in `finally`. A later native-spec import cleanup was type-only; no executable statement changed
+after the native pass. The final full gameplay run includes the final base-ID/resource-shape repairs.
+
+**Next batch — why:** repair remaining resource/report joins and strict fixture families, then investigate wider gameplay
+failures from their first causal disagreement. This is needed for trustworthy K4 evidence before K5 browser/cost work.
+Largest current report owners: `skirmish-ai-runtime-economy-checkpoint.ts` (24), resource-credit normalization (20),
+resource-service specs (29) and resource-application specs (18). Native owners include dispatch-intent (18), shared queue
+resource (15), dispatch-brain-result (9) and queue-completion authority controls (8). Gameplay type owners include
+transport route/lifecycle and skirmish-route capability fixtures. First next check after remaining report-join repairs:
+`pnpm exec tsc --noEmit -p apps/portal-e2e/tsconfig.json`.
+The nine failing gameplay owners are offensive opportunity selection, production scenarios, production policy scenarios,
+skirmish manager, victory-route scenarios, food infrastructure, economy policy, victory-pressure scenarios and spending
+budget conflicts. Keep all useful/liveness/fairness oracles; do not lower thresholds, suppress strictness, refresh baselines
+or expand machinery merely to obtain a pass. Pause after the next coherent reviewed/checked/published slice.
+
+**Source Implementation Review:** self-reviewed fixture-slot failure semantics, preserved test registrations, exact
+read/admission/insertion identities, nullable authority, readonly queue shapes and workload-derived macro expectations.
+No planner/native behavior or save/debug/lifecycle authority changes. New split files have executed consumers.
+
+**Omission Audit:** checked every batch acceptance against source, focused tests, strict diagnostics and broader gameplay
+evidence. All touched files are type-clean and compliant; mandatory wider failures remain explicitly open. Browser/cost
+and inherited release duties remain pending. No new machinery or skill/tool changes; unrelated Nx/user work preserved.
+
+**Separate Final Closure Audit:** rechecked final source bytes, registration counts, test/diagnostic provenance,
+formatting/lints and exact publication scope after repairs. This slice is checked and publishable; full M10/K4/release
+readiness remains blocked. Normal push and remote-SHA verification close publication only.
+
 ### Final-gate production compiler and mock checkpoint (2026-10-09, partially checked)
 
 Base `426c03ee0c8a3584bfed147b28d16b8852f7acb7` was clean and remote-verified on
@@ -558,7 +640,7 @@ afterward; base/candidate logs record the same two failures. The first native ru
 its failures were repaired and the entire target rerun. One attempted `tsconfig.lib.json` route does not exist;
 the recorded gameplay check uses the actual `tsconfig.json`. No passing gameplay type check is claimed.
 
-**Next batch — why:** group checked native-fixture extraction/narrowing and report-contract repairs, then resolve
+**Historical continuation at this checkpoint:** group checked native-fixture extraction/narrowing and report-contract repairs, then resolve
 the pure planner fixture/policy disagreements. These are required to trust evidence before K5 matches and C8 measurements.
 Start with `ai-runtime-production-capture.spec.ts` (101 diagnostics), `ai-runtime-queue-mutation-capture.spec.ts` (36)
 and completion/resource fixtures sharing those authorities; group E2E production operation/world controls (44/40) with
