@@ -250,8 +250,8 @@ Commit/push exact owned paths and pause after 49; remote SHA must be verified be
 **User policy (2026-10-09):** replace the narrow source/drain design and repeated per-component design stages with
 **one thorough consolidated design pass on GPT-6.1 Sol / high**, followed by **one or more substantial implementation
 passes on Luna / high**. Sol reviews the combined implementation and resolves concrete contract conflicts or difficult
-final-gate failures. Recommendations do not switch the active model. The present change records policy only;
-stage 50 is not started. Tests, types, lint, builds, simulations, doctor/context and validation remain deferred.
+final-gate failures. Recommendations do not switch the active model. Stage 50's consolidated source design is now
+authored below; implementation and all tests, types, lint, builds, simulations, doctor/context and validation remain deferred.
 
 Purpose: give the economical implementation model settled contracts and a finite finish line, while preventing
 ongoing hook-by-hook expansion. Implementation passes are dependency/review units; they do not require model switches
@@ -276,6 +276,290 @@ and adjacent service/cargo/credit owners; ContainerComponent and actor-data comp
 observation and platform game-instance roster; queue mutation/restore/payment owners; controller/pipeline/unspent-claims
 and report projection/coverage owners. Use direct navigation for these known owners and semantic discovery only for
 unknown remaining predicate writers. This list starts the inventory, not an assertion of exhaustive ownership.
+
+### Consolidated machinery design checkpoint (2026-10-09, source design only)
+
+Base `af9d078d9f3888a97550eb5c08b9215651f8df58`; containing commit owns stage 50. Recommended design profile
+GPT-6.1 Sol / high; last user-selected profile Sol / medium, actual host settings unknown. No automatic switch.
+This checkpoint implements 50.1–50.7 in the existing plan. It authors contracts and a bounded implementation queue,
+not runtime behavior, passing evidence, useful activation or family closure.
+
+#### Finish line and value decisions
+
+**Four implementation passes, 51–54, then one combined Sol review.** This is a source-grounded count for the
+bounded diagnostic work specified here. It replaces the informal 15–25 machinery-stage estimate. Each pass includes
+its local source review, fixtures and any necessary compliance cleanup; coherent prerequisite commits may sit inside
+the same pass. Stay on Luna / high across these passes. At 54, stop adding diagnostic systems and return to Sol.
+
+The bounded finish line is: supported named writers lose stale history before native callbacks; reads distinguish
+consumed claims from newly accepted claims; a real native producer path reaches the existing reports with honest
+partial status; installation/disposal and ordinary-play cost have authored controls and exact final-gate measures.
+All rows M01–M09 below must have authored paths/cases before combined review M10. Executable success is a later gate.
+
+**Full useful-service machinery is still blocked, not completed by four passes.** Existing 32/36 requirements for
+mutation-complete beneficiary, liability, cargo/lifetime and continuous access/safety history remain mandatory.
+Public resource/state/roster/component/definition/queue aliases permit write/undo without an observable method call.
+Named fences cannot certify their absence. There is no finite honest implementation count for that broader authority
+while those APIs remain unrestricted. M11 retains that blocker; M12 retains independent PRO-03/06/07 release evidence.
+Neither is silently downgraded to optional. The four passes must not add a `complete` channel or populate useful floors,
+retained useful throughput, continuous capacity or `usefulContribution` from partial channels.
+
+Recommended **scope proposal, not adopted acceptance:** use exact native applications and actual useful product/tech
+effects for the production release tests; retain aggregate-resource bounds as diagnostics, and defer exhaustive
+continuous resource capacity unless a required oracle actually consumes it. This would avoid a repository-wide
+mutation-API migration just for optional explanation. User approval is required before removing any current mandatory
+continuous-usefulness obligation. Until then M11 remains an explicit release blocker; no approval is inferred here.
+
+| System / concrete question | Simpler alternative and decision |
+| --- | --- |
+| Accepted decision/command, physical lane and completed actor/tech lineage | “Did this AI purchase create the useful force/research on time?” Dispatch counts cannot answer. Retain existing exact joins for PRO-03/06/07; no second event bus or paid ledger. |
+| Native route/caller/order and arrival/service attempt | “Did the purchased worker reach and perform its own assigned task?” Current-order or endpoint samples can belong to a later task. Retain bounded existing handles and passive query capture; no new path query/cache manager. |
+| Whole cargo pile and exact recipient mutation | “Which worker work produced this actual credit, and who received it?” Balance differences include grants/refunds/other workers. Retain exact payload/operation joins and known whole piles; no FIFO or partial-lot allocator. |
+| Selected forecast and native application windows | “Did money arrive before the dated need, or merely get reported later?” Final stock/publication timing cannot answer. Retain separate observed quantities and null useful quantities; no renamed diagnostic as an oracle. |
+| Named supply/container/component/restore loss | “Can an earlier read survive this known mutation?” A post-event snapshot is too late for a reentrant callback. Reuse the scene loss helper; deliberately conservative, with no dependency graph or new fact stream. |
+| Consumed versus accepting liabilities | “Why did a real selection fail the reconciled-frame check?” A later brain snapshot includes new claims. Add bounded before/after diagnostic fields in existing facts, preserving the actual planner input and current rejection. |
+| Platform roster routes | “Could remove/re-add before a read hide a recipient lifetime break?” Later reconciliation misses net-zero churn. Use capture-owned wrappers on this game instance only; avoid generic platform hooks, baseline splits and normal-play work. |
+| Continuous resource supply/readiness/access/safety | “Was usable safe service continuously available, including between reads?” Neither deliveries nor ready endpoints answer. Keep unsupported and mandatory blocker M11. Further mutation tracking is not automatically queued by a missing metric. |
+| Cost and capture-off controls | “Does testing machinery affect ordinary games?” A production guard proves installation policy, not bundle elimination or CPU cost. Measure disabled hooks and shipped code; add fast paths before more generic instrumentation. |
+
+#### Source inventory and exact implementation contracts
+
+Paths `P/...` below mean `libs/games/probable-waffle/phaser/src/lib/...`; `T/...` means its
+`player/ai-controller/testing/` directory; `E/...` means `apps/portal-e2e/src/e2e/...`.
+Existing shared authorities remain `AiRuntimeResourceCoverageCapture.lose`, `fenceSceneResourceHistory`,
+`ResourceServiceObservation`, `PlayerResourceObservation`, root `appendAiRuntimeProductionFact`, and exact native
+operation/transfer handles. No new persistent field, wire event, registry, timer, scene scan or planner mutation.
+
+**C1 — passive named entry.** Reuse `fenceSceneResourceHistory(scene, reason)`. No new per-owner listener.
+Call after the listed native no-op guards but before the first actual write or external callback in that phase.
+Fence state is sticky before fallible diagnostics; observers cannot prevent native work. Same-value restore and
+unguarded setters still fence. Named reasons below are literals used by controls, not a new schema/channel.
+Global loss is intentional: no exhaustive actor-to-need map exists. Ordinary extraction/container activity may therefore
+lose application-window bounds, even when the actual scoped credit survives. Do not filter actors to make a positive pass.
+
+| Native owner / symbol | Required edit, ordering and reason | Unsupported route retained |
+| --- | --- | --- |
+| `P/entity/components/resource/resource-source-component.ts:extractResources` | `resource_source_capacity_change` inside the enter branch before increment/load; after the await before unload/decrement. Then `resource_source_stock_change` before stock deduction, after the existing factor/min calculation. Preserve debug, resource subject, positive-only depletion subject, transform read, destroy and depleted-image order. | Public definition can change factor/type/cooldown/max mid-await; stock samples do not prove continuous supply. |
+| Same owner: `assignGatherer`, `unassignGatherer`, `refillResources`, `lockResources`, `setData` | Assignment reason `resource_source_assignment_change` inside existing has/not-has guards before Set mutation/subject. Stock reason before refill/lock; restore reason `resource_source_restore` inside defined-currentResources guard before max read/clamp/write. | No interception of arbitrary definition/Set aliases; matching values do not restore authority. |
+| `P/entity/components/resource/resource-drain-component.ts:init`, `returnResources`, `setData` | `resource_drain_capacity_change` before init writes, before pre-await increment/load and post-await unload/decrement; `resource_drain_restore` inside defined-capacity guard before write. | No change to the inherited zero maximum without a container or cached enter/maximum semantics. Definition aliases remain unsupported. |
+| `P/entity/components/building/container-component.ts` | `resource_container_change` before `setContainerDefinition` merge, boarding register/cancel mutations, successful load after can-load guard, unload before delete/reposition, and actual sea-destruction branch before iterating contained actors. `resource_container_restore` before pending-ID copy/clear and, after all references resolve, before delayed clear/load. | Pending/contained/definition aliases remain gaps. Getter arrays are copies, but contained actor identity is live. |
+| `P/entity/components/building/containable-component.ts` | `resource_container_change` before `setContainer`/`clearContainerReference`; after existing owner/pending guards in leave/kill/cancel before first write or delegated container callback. Preserve clear-before-unload recursion prevention. | Public pending boarding field can be assigned directly; do not claim complete transport history. |
+| `P/data/actor-data.ts` named installation/upgrade/add/remove/definition routes | `resource_actor_components_change` at each public mutation entry before constructors/map edits/callbacks; `applyActorDefinitionToActor` fences only after its absent-definition return. Wrapper entry before gather constructors matters: they can mutate ready state before `setActorData`. Keep the native duplicate fences on delegated routes. | Public Maps and `actor.setData(ActorDataKey, ...)` bypass named functions. No proxy/read-only conversion or cleanup of replaced components. |
+| `P/entity/components/queue/queue-component.ts:setData` | `resource_queue_restore` at entry before clearing any lane; preserve saved-item cloning, least-time placement, omitted overflow items and final notify order. Existing mutation/progress before/started records retain their original ownership. | Raw `queues`, `queuedItems`, definitions, item cost/time/context remain mutable. No synthetic enqueue/payment records for restored items. |
+| `P/campaign/participants/campaign-participant-scene-adapter.ts:configure` caller of `applyStartingResources` | `resource_campaign_setup` immediately before the call inside the existing non-startup-load branch, using the actual scene. Leave helper arguments, slot order, missing-field fallback, economy modes and `Math.round(amount * scale)` intact. | Setup preceding installation is not historical authority. Startup-load skip remains unchanged. |
+| Existing owner/health/construction/restore/controller routes | Retain 40/44/46/49 and reconnect pre-snapshot fences exactly; add regression coverage to the shared cases. | Health/data/definition aliases and raw destruction remain incomplete. No further presentation splits. |
+
+**C2 — native async and identity.** Source/drain keep their current await and return contracts. Source extraction
+uses the actual post-wait stock/definition and native math; drain resolves owner/player economy after waiting, then
+uses the exact payload/recipient mutation callback. Preserve granted/none suppression, notification and full returned
+amount. No early owner capture, cancellation, retry, health gate, additional await or compensation on errors.
+Existing gatherer `ResourceTransferContext` retains execution/cargo owner/transfer object; do not add an ambient source
+context or bind a late continuation to a new capture. Named source/drain fences use the current native scene at their
+listed phases. A shutdown-resolved wait may still run native continuation; diagnostic eligibility stays unavailable.
+Source/container native failures keep their partial state (including increments before thrown load/unload).
+
+**C3 — roster observation stays test-owned.** Add `T/ai-runtime-recipient-roster-capture.ts` with one class
+`AiRuntimeRecipientRosterCapture`. Constructor receives `scene.baseGameData.gameInstance` and `coverage.lose`; it wraps
+only `addPlayer`, `removePlayerByUserId`, `removePlayerByPlayer`, `stopLevel` on that instance. Preserve original property
+descriptors/absence, receiver, arguments, one native invocation, return and thrown value using `Reflect.apply`.
+Before delegation call loss reason `recipient_roster_mutation` (stop uses `recipient_level_reset`), isolating sink throws.
+Installation failure rolls back installed wrappers and loses history. Disposal restores only its own unchanged wrapper;
+a foreign replacement is left intact and loses `recipient_roster_wrapper_replaced`. No prototype patch or platform import
+of Phaser. One owner per instance via WeakMap; duplicate capture loses the second, never stacks wrappers. Exactly four
+method slots, no roster scan. `AiRuntimeRecipientResourceCapture` owns installation/cleanup; existing reconcile remains.
+Unknown new players need not be enrolled into a lost capture. Public array/state replacement and saved pre-wrapper
+method references remain explicit gaps. No claim that wrapping methods owns all membership mutations.
+
+**C4 — before/after liabilities are diagnostics, not substituted planner inputs.** Extend existing fact union only:
+`resource_input_read` gets optional `unspentClaimsAtRead: AiRuntimeUnspentClaimsV1`; `decision_selected` gets optional
+`unspentClaimsBeforeSelection: AiRuntimeUnspentClaimsV1`. Optional means old capture lacks this evidence, never zero.
+`AiRuntimeResourceInputCapture` receives a callback `snapshotClaims(playerNumber)` from the root capture. Invoke once
+at begin, before ledger read; the existing unchanged frontier/loss check binds that detached snapshot to the actual
+observation at finish. Append it in the same read fact; no added fact sequence or owned-actor scan. A failed snapshot
+loses history; native observation still returns. At `observeDecision`, snapshot claims before `observeDecision` updates
+them, then append this snapshot with the selected event; existing `boundaryState.unspentClaims` remains after selection.
+Do not re-read the brain to reconstruct either frame.
+
+Add `T/ai-runtime-resource-liability-frames-v1.ts` (one interface) and matching `E/skirmish-ai-runtime-resource-liability-frames.ts`
+(projection functions, no new state owner). Report one optional `liabilityFrames` field per existing need-accounting record:
+`consumedReserved`, `beforeSelectionReserved`, `acceptingReserved` are exact resource amounts or null; `status` is
+`matching | accepting_changed | unavailable`; `gaps` is readonly strings. Consume exact marker/read/player/resource
+and selected-fact identities. All three known vectors equal the consumed ledger's reserved amount, with existing due-cost
+checks unchanged, is `matching`; consumed and before-selection amounts matching the ledger with a known valid
+accepting inequality is `accepting_changed`; a before-selection mismatch is `unavailable` with a specific frame gap.
+Missing/invalid/sticky-gap,
+intervening boundary or pre-capture ownership is `unavailable`. Require finite nonnegative values; contradictions fail
+the normalized parent, not just this field. Extra diagnostic fields do not change `frame`, grossUnmet or the existing
+contribution calculation: an accepting mismatch still leaves bounds null. In particular consumed `reservedUnspent: 0`
+must not be replaced by newly selected purchase claims. Non-queue purchases remain unsupported; pending resource
+claims are not added again; paid cash and queue future obligations remain disjoint.
+
+**C5 — cleanup/bounds.** Preserve root 8,192 facts/identities, 256 snapshots/cohorts/need/window groups, 512 claim entries,
+8 observer limits and bounded 32 loss reasons. New fields use those existing budgets. Nested/throwing/failed terminal,
+restore, component replacement, dropped append or detach cannot revive an epoch. Disposal loses before removing hooks,
+is repeatable, restores only owned wrappers, and prevents stale work from attaching to a replacement capture.
+Fresh capture starts partial with no backfill. No capture object/sequence/weak identity appears in saves or hashes.
+
+**C6 — compliance is a prerequisite commit inside a pass, not another design stage.** Source inspection found
+source 214, container 276, actor-data 370 and platform game-instance 185 physical lines; the baselines do not imply
+each needs another helper class. In edited source/container/actor-data files remove the redundant top-level `GameObject`
+alias in favor of `Phaser.GameObjects.GameObject` and wrap long lines/imports/comments, preserving existing comments'
+meaning. Remove only their now-obsolete exact baseline entries after compliant authoring; never refresh hashes.
+No actor-data/helper or platform split is planned. Queue's 565 physical lines include substantial comments:
+retain the focused facade, existing separate `projectSharedQueueItems` helper and serialization order; wrap its long
+imports. If local inspection exposes a genuine size contradiction, record a C6 amendment instead of refreshing a hash.
+Limits remain 400/200/140; exact compliance is established at the deferred gate.
+
+**C7 — predicates and real producer timing are explicitly bounded.** `AiObservationPipeline.capture` projects actors,
+fair topology/access/threat facts, then starts the resource read around obligations and stock. Its ledger still reads
+reservedUnspent zero. `AiAccessGraphAdapter.advanceGraph` carries navigation/threat revisions and bounded pending work;
+`projectAiObservedActor`, visibility policy and `projectThreatSummary` are samples, not complete predicate journals.
+`SimulationTickService.tick$` starts a tick; `waitForSimulationDuration` resolves on elapsed simulation time/shutdown,
+and has a wall-clock fallback outside a live simulation service. Existing clock identity/discontinuity loss remains.
+No topology, motion, threat, definition, visibility or clock API migration is included. These are M11 blockers.
+
+`installAiRuntimeProductionCapture` installs before preset money/work; owner/health/construction initialization can
+already lose that epoch. C1 adds further expected service loss. Do not reset loss after setup, silently move installation,
+manufacture snapshot frontiers, or evaluate an old need in a fresh capture. Real recipes currently provide no resource
+interval declarations. Keep that state until an actual fixture supplies its independent fixed need/endpoints and
+supported authority; adding a declaration cannot supply missing history. Native scoped credits remain separate from
+aggregate bounds and useful-capacity assertions. Report the exact reason at the existing consumer.
+
+#### Finite passes and single completion map
+
+All implementation rows start `not_started`. Existing authored stage 29–49 paths are prerequisites, unverified.
+R = required bounded implementation; B = existing mandatory acceptance still blocked; O = optional extra, not queued.
+Checks K1–K5 are defined below. Existing scenario authority remains `tools/ai/fixtures/skirmish-v1.json`, not this table.
+
+| Requirement / consumer and purpose | Class; owning contract / files | Dependency / pass | Positive, control and recovery evidence | Deferred check / state |
+| --- | --- | --- | --- | --- |
+| M01 Named supply/capacity writers: need/accounting rejects stale history | R; C1/C2 resource source/drain, scene loss | 49 → 51 | Real source extraction and real drain credit across controlled wait; refill/lock/assignment/restore, duplicate assignment no-op; callback sees old stock/capacity at loss; native throws/reentrancy; fresh partial capture | K1/K3; not_started |
+| M02 Container/containable: readiness cannot survive a known boarding/restore boundary | R; C1 building owners | 51 | Actual load/unload/dead-at-sea/shore/pending-ID resolution, full load no-op, undefined restore no-op; throw and callback ordering, repeated destroy/clear-before-unload | K1; not_started |
+| M03 Component/queue/campaign restore: old actor/need identity cannot survive named replacement | R; C1/C6 actor-data, QueueComponent, campaign caller | 51 → 52 | Real named component replace/add/remove/upgrade/definition, source/health constructor callback, empty queue restore, campaign modes/rounding/startup skip; constructor/helper throws; matching restore still loses | K1/K3; not_started |
+| M04 Recipient roster: journal knows remove/re-add before another read | R; C3 roster capture and recipient owner | 52 | Real protocol game instance add/remove/reset with actual protocol players; temporary removal/re-add, native throw, foreign receiver/descriptor/replacement, installation rollback, disposal/reinstall | K1/K2; not_started |
+| M05 Exact consumed/accepting frames: explain purchase-plus-gather null bounds | R; C4 fact union/input/root/unspent/report fields | 52 → 53 | Real input/controller selected event with zero and nonzero new claims; immediate paid vs future queue transfer; due head exhaustion; unsupported building/pre-capture/expired/recovery claims and callback-in-progress; mismatch stays null | K1/K3; not_started |
+| M06 Cargo/recipient/window compatibility: preserve credited income without false usefulness | R; C2/C4/C5 existing credit/application/need projections | 53 | Exact real payload join; normal/granted/none and changed owner; mixed/old/restored cargo; grant then spend cannot reopen shortage; publication delayed across application window; same-tick/straddle/overflow bad tail | K1/K3; not_started |
+| M07 Real adapter/report bridge: expose actual producer evidence and explicit gaps | R; C7 root capture, variant runner, production normalization | 51–53 → 54 | Real Phaser actor/components/protocol player/read/native command path into report; initialization loss, post-await service loss and late/disposed capture; native income remains diagnostic while useful fields stay null; contradictory tail suppresses parent | K1/K3/K5; not_started |
+| M08 Normal-play impact: testing does not install heavy machinery during gaming | R; C8 below, installer/helper controls and existing profiler | 54 | Production/unmarked guard, no sample/clone/listener/timer/root journal; before/after disabled-path and bundle comparison; foreign host/duplicate capture, late callbacks | K1/K4/K5; not_started |
+| M09 Compliance/publication: economical implementation remains reviewable | R; C6 exact baselines, existing handoff | Each 51–54 | No refreshed hashes/new permanent stage names; task-only prerequisite and behavior commits; source review/Omission Audit/closure, remote SHA and clean task scope | K4; not_started |
+| M10 Combined review and compatibility: decide readiness before execution | R; C1–C8, all changed consumers | 54 → Sol review | Trace real input → selected/admitted → native application → report/disposal; review all controls, repair concrete contract contradictions; every required unrun check remains listed | K1–K5; not_started |
+| M11 Mutation-complete useful resource/continuous capacity: 32/36 full proof | B; C7 plus 32/36/39/42 authority, public APIs | Explicit authority/scope decision; not a hidden fifth Luna pass | Net-zero alias undo, arbitrary definition/Map/item/roster replacement, hidden/stale threats/access changes between reads, full supported initial predicate history; no positive complete channel currently possible | Existing 32/36 gates; blocked, mandatory |
+| M12 Production useful outputs, legal setup and strategy: PRO-03/06/07 release | B; existing production authority contract and evaluators | Broader gameplay/fixture queue, separate from 51–54 | Both-faction transition/abandonment, exposed/safe/no-demand resilience, shared train/research and paid cancellation/pending refund pairs; full oracle and denominator | K5 and owning scenario/policy plans; open, mandatory |
+| M13 Finer loss scopes/continuous journal/lot allocation | O; no new files/owners | Not scheduled; new consumer must justify proposal | No actor-to-beneficiary dependency map, FIFO allocation or extra scan introduced just to recover a diagnostic bound | No extra gate; proposed only |
+
+**51 — supply and containers (Luna / high):** implement M01/M02 and relevant C6 cleanup together. Use shared real
+actor/protocol fixtures beside resource components; tests `resource-source-resource-history.spec.ts`,
+`resource-drain-resource-history.spec.ts`, `container-resource-history.spec.ts`, and containable controls. Separate a
+compliance-only commit where needed, then native fence/test commit(s). Source-review cross-await branches and all
+subjects; finish when every listed method/guard/phase and recovery case is authored. These files help tests detect a
+known change in resource availability without changing what the worker extracts/returns.
+
+**52 — binding and restore boundaries (Luna / high):** implement M03/M04 with roster-wrapper fixture and
+`ai-runtime-recipient-roster-capture.spec.ts`, `actor-data-resource-history.spec.ts`, queue/campaign adjacent controls.
+Root/recipient capture owns cleanup; no platform-level production observer. Commit actor/restore and test-owned roster
+slices coherently; finish with descriptor/receiver/constructor timing/disposal cases. These routes stop old accounting
+from surviving an actor or recipient identity replacement that briefly returns to the same apparent state.
+
+**53 — input and claim frames (Luna / high):** implement M05/M06, extending existing resource-input, unspent-claims,
+production-capture and report specs. Add typed optional fields and small projection helper; preserve exact calculation,
+incoming-start/own-admission exemptions and all partial channels. Finish with a real read/selection frame case and
+nonzero-accepting-claim negative control; old capture parsing remains supported. This explains why newly purchased work
+changes available money without misrepresenting the resource values the AI actually consumed.
+
+**54 — producer/report and operational closure (Luna / high):** implement M07/M08/M09 controls and C8 fast paths;
+extend the existing real root-capture fixture and report normalization control with its output. Do not feed a synthetic
+oracle builder into browser results. Add `ai-runtime-resource-producer-report.spec.ts` on the Phaser side for actual
+producer timing; on E2E side extend existing application/causality specs, keeping synthetic arithmetic labelled.
+Add `E/skirmish-ai-runtime-resource-producer-report.spec.ts` for the actual browser bridge: use
+`prepareRuntimeVariant`/`runVariant` with an existing legal production world, then
+`captureRuntimeProductionAuthority` and `normalizeRuntimeProductionCausality`. Retain the raw capture and inspect its
+exact selected/admitted/native operation/credit identities; absence of a required native event is a failure, not a skip.
+Use existing marked-host accessor/probe paths for the controlled loss/disposal branch, not hand-inserted capture facts.
+The Phaser spec proves native raw ordering; the browser spec proves that runtime output reaches the report. Neither
+counts as a full PRO scenario or positive continuous-usefulness proof. Author ordinary-play/profile controls using
+existing runtime probe infrastructure; no new scenario registration claims.
+Update this map with authored symbols/unrun checks and handoff, publish, then pause for M10 Sol review. Finish the
+bounded queue here; M11/M12 remain visible rather than becoming an indefinite stream of helper stages.
+
+#### Deferred tests, operational acceptance and final gate
+
+**C8 — capture-off fast paths.** In `P/data/scene-resource-observation.ts:fenceSceneResourceHistory`, look up the group
+and return before creating a snapshot array if absent/empty. Do the equivalent before empty arrays/reentrancy bookkeeping
+in `PlayerResourceObservation.reset/lose`. Preserve snapshot iteration and every installed-observer failure/reentrancy
+rule. C3 allocates only while marked capture is installed. Existing `ResourceServiceObservation`/credit/input fast paths
+remain. Production guards do not prove tree shaking; retain static capture-import bundle measurement. Do not remove
+native closure/request creation or rewrite protocol money semantics as a speculative optimization in this batch.
+
+Final measurements compare baseline `af9d078d9` with the authored implementation revision, same environment/seed/map/
+population/command workload and tick ceiling: (a) production build, (b) unmarked developer game, (c) marked capture.
+Use existing `AI_SKIRMISH_PROFILE=1` variant phase timing and browser performance/heap allocation profiling; profiler
+output must isolate hook CPU/allocations from unrelated rendering/planner work. Alternate baseline/candidate order,
+warm once and retain at least three paired runs; record variance, native outcome/state digests and source/bundle digests.
+Baseline/profile work runs only at the final gate. A marked heavy-capture measurement is not disabled-hook overhead.
+
+Operational budgets for this bounded change: no installed journal/listener/timer/scans in production or unmarked mode;
+no new allocation attributable to an unobserved fence call (existing protocol closure/request costs remain measured);
+no repeatable disabled-path regression above both 1% of simulation CPU and 0.1 ms/tick p95; candidate production gzip
+entry+reachable-chunk size no more than 0.5% above this baseline. These are design acceptance budgets, unmeasured.
+If below profiler resolution, report that limit and the observed bound, not “zero overhead.” If exceeded, repair the
+owning fast path or escalate the exact tradeoff; no acceptance/FPS claim until measured. Report total reachable test-only
+capture bytes even when delta fits budget; no unsupported claim that all instrumentation was removed from shipping.
+
+K1–K5 add to, never replace, every deferred 29–49 and earlier controller/movement/queue/native/lifecycle command.
+No executable check runs during design or Luna authoring; test authoring is allowed. At execution confirm nonzero
+intended specs/cases and retain source revision, fixture/seed digests and actual native/report results.
+
+```sh
+# K1: actual native owners, capture and read/frame/disposal controls
+pnpm exec nx test probable-waffle-phaser --testPathPatterns='resource-(source|drain)-resource-history|container-resource-history|containable-component|actor-data-resource-history|queue-component|campaign-participant-scene-adapter|ai-runtime-recipient-(resource|roster)-capture|ai-runtime-resource-(input-capture|coverage-capture|producer-report)|ai-runtime-unspent-claims|ai-runtime-production-capture|install-ai-runtime-production-capture|scene-resource-observation' --runInBand
+# K2: protocol money/reset observation and actual player compatibility
+pnpm exec nx test probable-waffle-protocol --testPathPatterns='player-resource-observation|player' --runInBand
+# K3: report join, frame, conditional arithmetic and negative controls (synthetic where labelled)
+pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts skirmish-ai-runtime-resource-need-accounting.spec.ts skirmish-ai-runtime-resource-need-boundaries.spec.ts skirmish-ai-runtime-resource-application.spec.ts skirmish-ai-runtime-resource-credit.spec.ts skirmish-ai-runtime-production-causality-normalization.spec.ts skirmish-ai-runtime-resource-producer-report.spec.ts
+# K4: real library configs, focused lint/source structure, integration build
+pnpm exec tsc --noEmit -p libs/games/probable-waffle/phaser/tsconfig.spec.json
+pnpm exec tsc --noEmit -p libs/games/probable-waffle/protocol/tsconfig.spec.json
+pnpm exec tsc --noEmit -p apps/portal-e2e/tsconfig.json
+pnpm exec nx run-many --targets=lint --projects=probable-waffle-phaser,probable-waffle-protocol
+pnpm exec nx build portal --configuration=production
+# K5: existing real browser production gate and bounded report; no fake new supported row
+AI_SKIRMISH_PROFILE=1 pnpm ai:skirmish:production
+pnpm ai:skirmish:report -- --failures-only --details
+```
+
+Final gate also owns formatting/link/path/diff checks and existing agent doctor/context, source/schema/editor/repository,
+multiplayer, save/restart/hash, server/shared-command and calibration obligations. M11 cannot pass via these partial
+diagnostic fixtures. M12 requires its legal worlds/gameplay support before K5 can establish release success; an expected
+missing-authority failure is evidence of the blocker, not a completed family. No mandatory oracle/denominator changes.
+
+#### Stage-50 reviews and continuation rule
+
+**Source Implementation Review:** traced source/drain phases, container pending restore/containable recursion,
+actor-data constructor-before-map order, queue rebuild, actual campaign caller, protocol aliases/observers, roster owner,
+root selected-ledger update, resource-read frontier and application/need report consumers. Chose capture-owned roster
+wrappers instead of production platform hooks, minimum compliance cleanup instead of automatic helpers, and diagnostic
+frame explanation instead of replacing consumed inputs. Semantic discovery was attempted once; `jbcontext` unavailable,
+so indexed/narrow source reads supplied predicate anchors. Source review repaired the campaign caller anchor to
+`configure`, selected the actual spec/E2E TypeScript configs rather than nonexistent lib configs, and separated the
+native raw fixture from the real browser/report integration case. No executable compatibility/cost result is claimed.
+
+**Omission Audit:** 50.1 value/finish line is above; 50.2 source inventory is C1–C7/M01–M12; 50.3 exact edits, async,
+identity, errors, cleanup and bounds are C1–C6; 50.4 positive/control/recovery and cost/gate are map/C7/C8/K1–K5;
+50.5 is finite 51–54; 50.6 amendment/escalation below; 50.7 single map and handoff/publication are this checkpoint.
+Existing full authority and production obligations are blocked/open, not dropped or optionalized. No new plan file,
+runtime/schema/save/wire/manifest/balance/CI change, unused source owner, skill/tool change or extra agent was introduced.
+
+**Separate Final Closure Audit:** rechecked native math/owner/economy/full return, pre-callback phase boundaries,
+no-op guards, matching restores, constructor order, descriptors/foreign wrappers, fresh-capture/no-backfill, old schema,
+fixed bounds, before/after claims and partial-channel consumers. Stage 50 design is authored/source-reviewed; 51–54,
+combined review, cost and executable validation remain not_started. Broad useful authority remains blocked M11;
+production/gameplay proof remains M12. Containing commit and verified remote publication own design delivery.
+
+Next: implement 51–54 on Luna / high from this map, source-review each coherent commit, commit/push under existing
+authority, and pause after 54 for combined GPT-6.1 Sol / high review. A smaller requested batch resumes the next unfinished
+pass. Do not invent another design stage for an ordinary repair. A concrete source contradiction may amend the affected
+C/M row with source, native impact and replacement acceptance; only an unresolved architecture decision goes to Sol.
+Continue independent authorized work, retain safe commits, and never silently expand into M11/M12 or alter acceptance.
 
 ### Execution-policy refinement checkpoint (2026-10-09, documentation only)
 

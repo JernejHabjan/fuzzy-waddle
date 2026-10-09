@@ -10,17 +10,24 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 then one or more dependency-ordered implementation passes on Luna / high. Replace repeated per-component design stages.
 Begin with a scope/value review: justify every system by a concrete test/debugging consumer and prefer the simplest
 sufficient evidence. Expand design precision rather than machinery scope; map every requirement to implementation and validation.
-Current step: 49 construction writer fences authored/unverified and published; this commit updates execution policy only.
-Next: 50 consolidated machinery design, not started. Design determines the finite implementation passes and finish line.
-Pause after design publication for model selection; stay on Luna across settled implementation work without per-file switches.
+Current step: 50 consolidated source design authored/source-reviewed; containing commit owns design delivery.
+Next: four bounded diagnostic implementation passes 51–54 on Luna / high, then one combined Sol / high review.
+Full useful-service authority remains blocked M11; broader production/gameplay proof remains M12. Four passes are not a full-project count.
+Pause after design publication for model selection; stay on Luna across 51–54 without per-file switches.
 Sol reviews the combined implementation and handles unresolved contracts/difficult final-gate failures.
 Last selected profile GPT-6.1 Sol / medium; actual host settings unknown. Recommendations do not switch models.
 All executable tests/validation remain deferred to the final gate.
-Base `60fa7457d8b660cc5ad665ab3f0a34e775cfc285` (policy update, remote verified); containing commit owns this refinement.
+Base `af9d078d9f3888a97550eb5c08b9215651f8df58` (policy refinement, remote verified); containing commit owns stage 50.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify remote on resume.
 Preserve unrelated Nx merge `59f72e037`. No family/issue is complete. User removed the comment-permission rule.
 
-**Authored — why it is used:** [49 construction fences](follow-ups/runtime-matrix-ci.md#construction-writer-fence-checkpoint-2026-10-08-authoredunverified)
+**Authored — why it is used:** [50 consolidated design](follow-ups/runtime-matrix-ci.md#consolidated-machinery-design-checkpoint-2026-10-09-source-design-only)
+settles named native fences, test-owned roster wrappers, consumed/accepting liability diagnostics, real producer/report
+controls and normal-play cost budgets. It gives Luna four implementation passes with exact owners, cases and a stop boundary.
+Small baselined owners need type/line cleanup rather than automatic helper classes; no generic platform observer is planned.
+All partial channels and useful-quantity gaps remain. One completion map M01–M13 retains full authority/release blockers;
+the proposal to defer exhaustive continuous tracking is not an approved scope reduction. No runtime code or checks added.
+[49 construction fences](follow-ups/runtime-matrix-ci.md#construction-writer-fence-checkpoint-2026-10-08-authoredunverified)
 lose earlier resource history before silent initial/progress/repair health writes and work/start/finish/restore mutations.
 A delivery after repair or building completion cannot inherit an earlier continuous-readiness claim; native silent health,
 payment, return policy and callbacks are retained. Real facade/journal/drain and synthetic report controls authored/unrun.
@@ -80,18 +87,15 @@ Campaign suppression is explicit and may accompany a full native return. Old/unk
 to the latest task. Whole known piles may retain several earlier gathering attempts; no invented FIFO/partial allocation.
 A credit proves a scoped balance change, independently from cargo lineage, accepted task/demand and continuous usefulness.
 
-**Next exact authoring action — why:** complete [50 consolidated remaining-machinery design](follow-ups/runtime-matrix-ci.md#next-design-pass-50-consolidated-remaining-machinery).
-On **GPT-6.1 Sol / high**, inventory all remaining authority/evidence gaps and interactions, define the release finish line,
-settle exact shared and per-owner contracts, then give **Luna / high** concrete dependency-ordered implementation passes.
-Include source/drain, aliases/roster/component lifetime, need/liabilities, capacity predicates and real producer/report
-integration. One design covers the whole remaining machinery; local implementation inspection is still required.
-Before specifying more hooks, justify each existing/proposed system against a concrete game test or debugging question,
-compare simpler alternatives and identify excessive complexity. Produce one completion map with required release evidence,
-optional exhaustive tracking, owning symbols, implementation pass and exact deferred validation for every requirement.
-Proposed deferrals must retain current mandatory acceptance unless the user explicitly approves a scope change.
-This replaces repeated design/split/hook cycles with a finite execution plan; it does not implement that design now.
-Commit/push design docs and pause for the model change. Keep all executable validation deferred, then have Sol review
-the combined implementation before the final gate. Broader game-policy/scenario/parity work keeps its existing obligations.
+**Next exact authoring action — why:** implement [51–54 from the consolidated design/map](follow-ups/runtime-matrix-ci.md#consolidated-machinery-design-checkpoint-2026-10-09-source-design-only)
+on **Luna / high**. Start 51: source/drain pre/post-await stock/capacity and container/containable named writer fences,
+minimal baseline/type/line cleanup, and real native/negative/recovery controls. These prevent an earlier accounting read
+from surviving a known supply/container change while preserving what the worker actually extracts or returns.
+Then 52 binding/restore/roster boundaries, 53 consumed versus accepting liability diagnostics, 54 real producer/report
+and ordinary-play cost controls. Keep local source review and coherent commits within the same model batch; pause after
+54 for **GPT-6.1 Sol / high** combined review. All tests/validation stay deferred; no complete coverage or useful activation.
+Do not reset capture after setup or silently replace planner inputs to obtain positive bounds. M11/M12 stay mandatory
+blockers/open broader work; scope deferral is only a proposal. A smaller user-requested batch resumes the next unfinished pass.
 
 | Dependency | State | Purpose / next boundary |
 | --- | --- | --- |
@@ -112,7 +116,12 @@ the combined implementation before the final gate. Broader game-policy/scenario/
 | Health presentation and mutation fence (45–46) | Authored, unverified; pause reached | Compliant health split, then pre-mutation loss before callbacks can observe changed readiness |
 | Construction / repair health writer contract (47) | Source design authored; pause reached | Settled silent health/work/lifecycle boundaries and actual technology caller |
 | Construction presentation and writer fences (48–49) | Authored, unverified; pause reached | Separate sound work and passive pre-write loss before construction/repair readiness changes |
-| Consolidated remaining-machinery design (50) | Next single design pass | Settle remaining cross-system contracts, finish line and finite Luna high implementation passes |
+| Consolidated remaining-machinery design (50) | Authored/source-reviewed; pause reached | Exact C1–C8 contracts, M01–M13 completion map and finite bounded queue |
+| Named supply/container boundaries (51) | not_started; Luna high | Close old history before actual stock/capacity/boarding mutations; preserve native await/return |
+| Binding/restore/roster boundaries (52) | not_started; depends on 51 | Capture actor/recipient identity breaks without generic platform hooks |
+| Consumed/accepting liability diagnostics (53) | not_started; depends on 52 | Explain new cash claims without substituting the AI's consumed inputs |
+| Real producer/report and operational controls (54) | not_started; depends on 51–53 | Honest native report bridge, capture-off fast paths and authored cost gates |
+| Combined implementation review (M10) | not_started; Sol high after 54 | Trace combined native/report/lifetime behavior before executable gate |
 | Complete need/lifetime history and useful throughput | Open; activation still blocked | Public aliases and every relied-on mutation need authority before useful windows/real recipes |
 | Continuous useful capacity | Open | Complete mutation authority for readiness, supply, access/safety and service |
 | Full production adapter/oracles/setup/strategy | Open | Independent PRO-03/06/07 assertions |
@@ -135,7 +144,8 @@ Player-owner split prerequisite is `80a84493b155a2f431cc0aa172257ce9398e3624`;
 42 is `1dbaaf5d1f574960aaf9b71f20d9b37bb3343c6b`; 43 is `89ed0cf2cc757f76ecce400c3cb4647f67c8a687`; 44 is `e173b564beda5d18a55dd9f28b03b91f550551ae`;
 45 is `e5a5eb242970489ebd2c2d7e1c2967b9ecb56cf8`; 46 is `6011a432219678fcabad2a00f675964b83716507`; 47 is `fa0dc1e4c0f1b589bb8265ba680a4e56b50ec609`;
 48 is `04ded09863f51adb72a10b54ff8a30537678c8be`; 49 is `a989f66c1ec2cd9ae2fdc1c931e923eb261bb7fc`.
-No fixed machinery total/percent is claimed; diagnostic authoring is delivered, useful-service acceptance remains open.
+Four bounded diagnostic implementation passes are specified by 50; no full machinery/project total or percent is claimed.
+Useful-service acceptance remains open/blocked and must not be inferred from this bounded queue.
 All native observer,
 report, prior movement and earlier final-gate obligations remain unrun. Capture/report cost and native compatibility are unmeasured.
 Source review repaired ES2024 constructor initialization and loss-safe cargo/transfer fences; no runtime pass is claimed.
@@ -600,17 +610,18 @@ merely because their issue title mentions testing. All authored work remains unv
 
 ## Model batches and pause contract
 
-The latest user policy is **one consolidated design pass, then one or multiple implementation passes** for the
-remaining machinery. Stage 49 is published/authored/unverified. The stage-50 source/drain-only proposal is replaced
-by the consolidated design acceptance linked above. This policy update does not execute design or implementation.
+The latest user policy is **one consolidated design pass, then grouped implementation passes** for the
+remaining machinery. Stage 50 source design is authored/source-reviewed; four bounded passes 51–54 are specified
+in its single completion map. Full useful-service authority M11 remains blocked, and production/gameplay proof M12
+remains open; those obligations are not erased by the bounded diagnostic finish line.
 Design on GPT-6.1 Sol / high; implement settled contracts on Luna / high; return to Sol for a combined source review
 and unresolved architecture/causal questions or difficult final-gate failures. Actual host settings remain unknown.
 No automatic model switch, subagent or new chat is authorized by this policy. All executable validation stays deferred.
 
 | Responsibility | Model / effort | Boundary |
 | --- | --- | --- |
-| All remaining machinery design, release scope, shared/per-owner contracts and acceptance | GPT-6.1 Sol / high | One consolidated design pass; publish and pause for model selection |
-| Settled implementation, required source splits, wiring, fixtures and test authoring | Luna / high | One or more finite passes defined by design; keep related work on Luna |
+| Consolidated design, scope/value, shared/per-owner contracts and acceptance (50) | GPT-6.1 Sol / high | Authored/source-reviewed; publish and pause for model selection |
+| Settled implementation, compliance cleanup, wiring, fixtures and test authoring (51–54) | Luna / high | Four bounded passes in one model batch; publish coherent commits and pause after 54 |
 | Combined implementation source review and unresolved contract conflicts | GPT-6.1 Sol / high | Review the combined result; targeted design amendments only when evidence requires them |
 | Final executable gate and repairs | Sol for causal triage; Luna / high for concrete repairs | Execution remains deferred until the gate; honor exact acceptance and retained commands |
 
@@ -662,17 +673,15 @@ No automatic model switch, subagent or new chat is authorized by this policy. Al
 
 Copyable next-chat prompt:
 
-> Read docs/ai/759-skirmish-ai/HANDOFF.md and its consolidated stage-50 design acceptance. Use GPT-6.1 Sol / high
-> for one source-grounded design covering all remaining machinery and interactions. Define required versus proposed
-> deferred scope, finish line, exact files/contracts/ordering/lifetimes, positive/negative test cases and deferred gate
-> commands. Begin with a scope/value review: justify each system by a concrete game test/debugging consumer, compare
-> simpler alternatives and flag excessive complexity. Map every requirement to its implementation and validation;
-> separate required release evidence from optional exhaustive tracking. Expand design precision, not machinery scope.
-> Produce a finite dependency-ordered set of one or more substantial Luna / high implementation passes,
-> with concrete escalation triggers. Preserve mandatory acceptance and normal-play capture/cost obligations.
-> Update existing docs, source-review/Omission Audit/separate Final Closure Audit, commit/push and pause for the model
-> change. Do not implement runtime code or execute validation in this design pass. Luna will implement settled work;
-> Sol will review the combined result and resolve concrete contract conflicts or difficult final-gate failures.
+> Read docs/ai/759-skirmish-ai/HANDOFF.md and runtime-matrix-ci.md's consolidated machinery design checkpoint.
+> On Luna / high, implement the next unfinished pass in 51–54 from contracts C1–C8 and completion map M01–M13.
+> Keep dependency-compatible work in the same model batch, with coherent task-owned commits/pushes, and pause after
+> 54 for GPT-6.1 Sol / high combined source review. Start 51 with source/drain/container/containable named boundaries
+> and minimal compliance cleanup. Preserve native math, async/owner/economy/full return, callbacks and all partial gaps.
+> Do not reset capture after setup, invent useful quantities, replace consumed inputs, expand into M11/M12 or silently
+> approve their proposed deferral. Inspect local source, author controls, review/Omission Audit/separate Final Closure
+> Audit each pass and update the same completion map/handoff. Escalate only a concrete unresolved contract contradiction;
+> document small source-evidenced amendments and continue independent authorized work. Execute no tests/validation.
 > Report what was authored and what comes next,
 > including what each will be used for and why it matters. Commit/push each coherent stage; pause at a stronger-reasoning
 > boundary and recommend the next model/effort. End each stage with the change, the problem it solves and its users;
