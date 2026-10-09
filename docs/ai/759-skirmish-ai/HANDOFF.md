@@ -10,32 +10,36 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 then one or more dependency-ordered implementation passes on Luna / high. Replace repeated per-component design stages.
 Begin with a scope/value review: justify every system by a concrete test/debugging consumer and prefer the simplest
 sufficient evidence. Expand design precision rather than machinery scope; map every requirement to implementation and validation.
-Current step: M10 grouped production/queue reports and E2E harness contracts checked; E2E K4 typing passes.
-This batch passes 457 synthetic tests across 41 report specs, portal-e2e lint and all 32 changed-source formatting checks.
-Full E2E TypeScript diagnostics fell from 145 to zero. Exact command/payment/completion joins use checked records;
-fixtures retain exact fact kinds and require authored slots. Missing scenario assertions now preserve the full horizon
-instead of crashing evidence-stop evaluation, with a failing-base/passing-candidate regression. Diagnostic command
-rows remain available on failed reports, while normalized money/effects remain withheld. Useful-service quantities remain null.
+Current step: M10 native dispatch/queue fixture slice checked; full native K4 remains blocked.
+This batch repairs eight native specs and passes 66 tests across 14 command/queue/capture suites, native project lint
+and all eight changed-source formatting checks. Fresh full native TypeScript diagnostics fell from 161 to 101;
+all 60 diagnostics in the changed specs are resolved, with the remaining diagnostics unchanged from the clean base.
+All 41 original cases in those eight specs remain registered exactly once. Required fixture records are checked,
+dispatch records narrow by their actual phase, research cancellations use the real command shape and the emission
+builder retains its known finished phase. This makes native authority controls usable without changing gameplay rules.
+Earlier E2E typing passes with 457 synthetic tests across 41 report specs; that unchanged slice was not rerun here.
+Useful-service quantities remain null.
 Earlier focused native capture checks pass 6 suites / 22 tests, macro/planner checks pass 8 suites / 37 tests,
-and related synthetic queue reports pass 93 tests. Earlier Phaser/gameplay diagnostic counts remain 161 / 44;
-their configurations were not rerun for this E2E-only slice. The two macro workload failures remain repaired.
+and related synthetic queue reports pass 93 tests. Current Phaser diagnostics are 101; earlier gameplay diagnostics
+remain 44, not rerun here. The two macro workload failures remain repaired.
 The earlier full gameplay check still blocks: 22 failed / 252 passed across 52 suites; all 22 failures reproduce unchanged on the
 clean base (24 failed / 250 passed). These remain release blockers, not exemptions. Doctor/context pass.
 The earlier production build and full Phaser run (142 suites / 679 tests), interface/host controls and protocol checks
-remain recorded scoped evidence; this batch changes test/report code, not production planner/native rules.
+remain recorded scoped evidence; this batch changes native test fixtures, not production planner/native rules.
 Browser matches and paired overhead/bundle measurements have not run; a production build is not runtime evidence.
-Next: GPT-6.1 Sol / high native dispatch/queue fixture families, then broader gameplay failures and K5/cost evidence
+Next: GPT-6.1 Sol / high native capture/world fixture families, then remaining native/gameplay failures and K5/cost evidence
 once K4 passes. This makes the evidence code type-safe before using it to judge real matches and disabled-path cost.
 Full useful-service authority remains blocked M11; broader production/gameplay proof remains M12. Four passes are not a full-project count.
 The user selected Luna / high for 51–54. The combined review identified and repaired concrete conflicts, and this
 grouped continuation authored the missing controls. Last explicitly selected profile Luna / high; actual settings for
 this continuation are unknown. The next recommendation is Sol / high because the gate spans native, browser, report,
 and cost evidence; recommendations do not switch models. The authorized final gate is now active.
-Latest batch base `6804b955d1f33b646c1acc9e0e9282940f736a68` was clean and remote-verified. The containing
-commit owns this production/queue report batch; verify its remote SHA on resume. See the
-[production/queue checkpoint](follow-ups/runtime-matrix-ci.md#final-gate-productionqueue-report-checkpoint-2026-10-09-partially-checked)
-for commands, provenance, artifacts and remaining blockers. First next check after reviewing/fixing native dispatch/queue fixtures:
+Latest batch base `e9ed4cc4916441b13274277f1164165a17095da7` was clean and remote-verified. The containing
+commit owns this native dispatch/queue batch; verify its remote SHA on resume. See the
+[native queue checkpoint](follow-ups/runtime-matrix-ci.md#final-gate-native-dispatchqueue-fixture-checkpoint-2026-10-09-partially-checked)
+for commands, provenance, artifacts and remaining blockers. First next check after reviewing/fixing native capture/world fixtures:
 `pnpm exec tsc --noEmit -p libs/games/probable-waffle/phaser/tsconfig.spec.json`.
+Previous production/queue report commit `e9ed4cc49` reduced E2E diagnostics from 145 to zero and passed 457 controls.
 Previous resource-report commit `6804b955d` reduced E2E diagnostics from 300 to 145 and passed 207 controls.
 Batch base `58dc92f8a9ce4d44cfaa133bbcf621fe8fc22b5b` (stage 50, remote verified). Implementation commit
 `978cb09e70cbc6e2ed0b520971690ea47ab38045` contains 51–54. M10 base
@@ -46,7 +50,14 @@ controls described in the checkpoint; publication will be remote-verified with t
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify remote on resume.
 Preserve unrelated Nx merge `59f72e037`. No family/issue is complete. User removed the comment-permission rule.
 
-**Latest checked / repaired — why it is used:** production and multiplayer queue reports keep exact checked receipt,
+**Latest checked / repaired — why it is used:** native dispatch, physical queue, resource-emission and completion
+specs require actual fixture slots before reading their records. Request/receipt checks narrow by the real event kind;
+research cancellations preserve their actual execution identity without a production queue index. The finished-event
+fixture retains its phase while still allowing intentionally malformed progress/lineage controls. These repairs keep
+command ordering, payment/refund balance, ambiguity, restore suppression and cleanup checks usable under strict typing.
+No production source, helper, save/wire contract or gameplay behavior changed. Full native/gameplay K4 remains open.
+
+**Earlier checked / repaired — why it is used:** production and multiplayer queue reports keep exact checked receipt,
 callback, rejection, transfer and completion records, so ambiguous/missing authority cannot become normalized money
 or effects. Their fixtures and construction/digest controls preserve existing expectations under strict indexing.
 The capacity evaluator declares only the variant/checkpoint fields it reads; fixtures no longer cast incomplete data
@@ -157,8 +168,9 @@ Campaign suppression is explicit and may accompany a full native return. Old/unk
 to the latest task. Whole known piles may retain several earlier gathering attempts; no invented FIFO/partial allocation.
 A credit proves a scoped balance change, independently from cargo lineage, accepted task/demand and continuous usefulness.
 
-**Next action — why:** repair native dispatch/queue fixture families on
-**GPT-6.1 Sol / high**. Investigate the 22 base-reproduced gameplay failures without weakening their oracles,
+**Next action — why:** repair native capture/world fixture families on
+**GPT-6.1 Sol / high** so captured actor, queue and construction evidence uses real native shapes and current definitions.
+Then finish remaining native K4 and investigate the 22 base-reproduced gameplay failures without weakening their oracles,
 and finish K4 before K5. This makes the evidence trustworthy before real browser and paired cost measurements. Keep C1–C8 and the
 useful-authority oracles intact; do not reset capture after setup or replace consumed planner inputs to obtain positive
 bounds. M11/M12 remain open blockers. Pause after the next coherent checked and published batch.
@@ -187,7 +199,7 @@ bounds. M11/M12 remain open blockers. Pause after the next coherent checked and 
 | Binding/restore/roster boundaries (52) | Scoped native/protocol controls pass | Fence replacement and brief roster churn; wider integration remains |
 | Consumed/accepting liability diagnostics (53) | Focused native/synthetic controls pass | Explain new claims while preserving consumed input; browser integration remains |
 | Real producer/report and operational controls (54) | Native/synthetic bridge checks pass; cost open | Carry capture into report; actual browser and disabled-path cost still need evidence |
-| Combined implementation review (M10) | E2E production/queue/resource slices checked; full gate in progress | E2E typing passes and 457 synthetic controls pass; native/gameplay K4, broader gameplay failures and K5 remain |
+| Combined implementation review (M10) | E2E reports and native dispatch/queue slice checked; full gate in progress | E2E typing/457 synthetic controls pass; native 66 controls pass, types 101 remain; gameplay K4/failures and K5 remain |
 | Missing-control authoring | Complete; native/report controls executed | Native owner/restore and report bridge checks pass; actual browser and cost evidence remain |
 | Complete need/lifetime history and useful throughput | Open; activation still blocked | Public aliases and every relied-on mutation need authority before useful windows/real recipes |
 | Continuous useful capacity | Open | Complete mutation authority for readiness, supply, access/safety and service |
@@ -692,7 +704,7 @@ No automatic model switch, subagent or new chat is authorized by this policy. Ex
 | Consolidated design, scope/value, shared/per-owner contracts and acceptance (50) | GPT-6.1 Sol / high | Authored/source-reviewed |
 | Settled implementation, compliance cleanup, wiring, fixtures and test authoring (51–54) | Luna / high | Authored; scoped native/report controls now checked, wider integration remains |
 | Combined implementation source review and unresolved contract conflicts (M10) | GPT-6.1 Sol / high | Source review/controls complete; E2E typing and 457 production/queue/resource controls pass, full gate in progress |
-| Final executable gate and repairs | GPT-6.1 Sol / high for native command/queue authority and broader gameplay investigation; Luna / high for settled repairs | Next grouped batch repairs native K4 fixtures before gameplay/K5 browser/cost evidence |
+| Final executable gate and repairs | GPT-6.1 Sol / high for native capture/world contracts and broader gameplay investigation; Luna / high for settled repairs | Next grouped batch repairs native capture/world fixtures before remaining K4 and K5 browser/cost evidence |
 
 - The design must produce a finite list of substantial implementation passes and completion criteria. A pass may contain
   several related owners and coherent commits. Do not create a new design stage or model pause for each file, helper,
@@ -742,12 +754,13 @@ No automatic model switch, subagent or new chat is authorized by this policy. Ex
 
 Copyable next-chat prompt:
 
-> Read docs/ai/759-skirmish-ai/HANDOFF.md and the production/queue report checkpoint in runtime-matrix-ci.md.
+> Read docs/ai/759-skirmish-ai/HANDOFF.md and the native dispatch/queue fixture checkpoint in runtime-matrix-ci.md.
 > M10 has passing focused native/macro controls, full E2E typing and 457 synthetic production/queue/resource tests.
-> Diagnostics remain 161 Phaser / 44 gameplay from earlier checks; neither configuration was rerun in the latest batch.
+> Latest native batch passes 66 tests across 14 suites; native diagnostics fell from 161 to 101 with unowned diagnostics unchanged.
+> Gameplay typing still has 44 earlier diagnostics, not rerun here. All 41 changed-spec cases remain registered.
 > The two macro failures are fixed. Full gameplay has 22 unchanged base-reproduced failures; preserve their oracles.
-> On GPT-6.1 Sol / high, repair native dispatch/queue fixtures by owner,
-> then investigate broader gameplay failures. Use the recorded diagnostic/failure owners; no new machinery scope.
+> On GPT-6.1 Sol / high, repair native capture/world fixtures by owner,
+> then remaining native/gameplay K4 and broader gameplay failures. Use the recorded owners; no new machinery scope.
 > The final gate is active: run focused checks for repairs and finish K4 before real-browser K5/cost measurements.
 > Preserve native behavior, consumed inputs, null usefulness, branch and unrelated Nx merge. Do not suppress strictness,
 > refresh baselines, broaden into M11/M12 or add new machinery. Update the map/handoff, review/audit, commit/push exact

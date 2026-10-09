@@ -1,3 +1,4 @@
+import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import Phaser from "phaser";
 import { Subject } from "rxjs";
 import {
@@ -176,7 +177,7 @@ describe("shared queue resource callers", () => {
   it("charges the exact pre-insertion item and refunds the removed item with separate stamped cancellation lineage", () => {
     const fixture = setup();
     fixture.commands.next(purchase());
-    const item = fixture.queue.allItems[0];
+    const item = requireAiTestEntry(fixture.queue.allItems, 0);
     expect(fixture.money.food).toBe(60);
     expect(fixture.observations.slice(0, 3).every(({ event, queued }) => event.scope.item === item && !queued)).toBe(
       true
@@ -192,7 +193,7 @@ describe("shared queue resource callers", () => {
         ({ event, queued }) => event.scope.item === item && !queued && event.scope.cancellationCommand === cancellation
       )
     ).toBe(true);
-    expect(refunds[2].event).toMatchObject({
+    expect(requireAiTestEntry(refunds, 2).event).toMatchObject({
       phase: "finished",
       requested: { food: 20 },
       before: { food: 60 },
@@ -216,7 +217,7 @@ describe("shared queue resource callers", () => {
       actorName: ObjectNames.TivaraWorker,
       costData: { costType: PaymentType.PayOverTime, productionTime: 150, refundFactor: 1, resources: { food: 40 } }
     });
-    const item = fixture.queue.allItems[0];
+    const item = requireAiTestEntry(fixture.queue.allItems, 0);
     expect(fixture.money.food).toBe(100);
     fixture.step(1);
     fixture.step(2);
@@ -226,7 +227,7 @@ describe("shared queue resource callers", () => {
     expect(item.remainingTime).toBe(50);
     expect(fixture.money.food).toBe(20);
     expect(emitResource).toHaveBeenCalledTimes(2);
-    expect(fixture.observations[6]).toMatchObject({
+    expect(requireAiTestEntry(fixture.observations, 6)).toMatchObject({
       remainingTime: 50,
       event: { phase: "denied", reason: "insufficient_resources", requested: { food: 40 }, before: { food: 20 } }
     });
@@ -242,7 +243,7 @@ describe("shared queue resource callers", () => {
     fixture.queue.cancelProductionItem(item.productionData, cancellation);
     // Existing formula refunds one stored vector's remaining progress, not the 80 already paid.
     expect(fixture.money.food).toBe(33);
-    expect(fixture.observations[9].event).toMatchObject({
+    expect(requireAiTestEntry(fixture.observations, 9).event).toMatchObject({
       phase: "finished",
       requested: { food: 13 },
       balanceMatches: true
@@ -261,9 +262,9 @@ describe("shared queue resource callers", () => {
       researchType: ResearchType.SnowstormSpell,
       execution: execution("research", 1)
     });
-    const item = fixture.queue.allItems[0];
-    expect(fixture.observations[0].queued).toBe(false);
-    expect(fixture.observations[0].event.scope.amounts).toBe(definition.cost);
+    const item = requireAiTestEntry(fixture.queue.allItems, 0);
+    expect(requireAiTestEntry(fixture.observations, 0).queued).toBe(false);
+    expect(requireAiTestEntry(fixture.observations, 0).event.scope.amounts).toBe(definition.cost);
     item.remainingTime = item.totalTime / 2;
     fixture.ticks.currentTick = 2;
     const cancellation = {
@@ -280,7 +281,7 @@ describe("shared queue resource callers", () => {
         ({ event, queued }) => event.scope.item === item && queued && event.scope.cancellationCommand === cancellation
       )
     ).toBe(true);
-    expect(refunds[2].event).toMatchObject({
+    expect(requireAiTestEntry(refunds, 2).event).toMatchObject({
       phase: "finished",
       requested: { minerals: 25, wood: 12 },
       balanceMatches: true
@@ -315,7 +316,7 @@ describe("shared queue resource callers", () => {
     fixture.ticks.currentTick = 2;
     fixture.commands.next(cancel());
     expect(fixture.money.food).toBe(60);
-    expect(fixture.observations[4].event).toMatchObject({
+    expect(requireAiTestEntry(fixture.observations, 4).event).toMatchObject({
       phase: "finished",
       snapshotRestoreInProgress: true,
       callbackCount: 0,
@@ -337,7 +338,7 @@ describe("shared queue resource callers", () => {
     expect(emitResource).toHaveBeenCalledTimes(1);
     expect(getCommunicator).not.toHaveBeenCalled();
     expect(isSnapshotApplyInProgress).not.toHaveBeenCalled();
-    expect(fixture.queue.allItems[0].remainingTime).toBe(100);
+    expect(requireAiTestEntry(fixture.queue.allItems, 0).remainingTime).toBe(100);
     fixture.actor.emit(Phaser.GameObjects.Events.DESTROY);
   });
 });

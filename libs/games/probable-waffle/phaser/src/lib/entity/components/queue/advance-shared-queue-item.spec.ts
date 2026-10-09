@@ -1,6 +1,10 @@
+import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import Phaser from "phaser";
 import { Subject } from "rxjs";
-import { QueueItemType, type UnifiedQueueItem } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/queue-item";
+import {
+  QueueItemType,
+  type UnifiedQueueItem
+} from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/queue-item";
 import { PaymentType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/payment-type";
 import { ObjectNames } from "@fuzzy-waddle/probable-waffle-protocol";
 import { QueueComponent } from "./queue-component";
@@ -14,24 +18,43 @@ jest.mock("../../../world/services/scene-component-helpers", () => ({ getSceneSe
 
 function fixture(remainingTime = 100) {
   const ticks = new Subject<number>();
-  jest.mocked(getSceneService).mockImplementation((_scene, service) => service === SimulationTickService
-    ? { tick$: ticks } as never : undefined);
+  jest
+    .mocked(getSceneService)
+    .mockImplementation((_scene, service) =>
+      service === SimulationTickService ? ({ tick$: ticks } as never) : undefined
+    );
   const scene = { events: new Phaser.Events.EventEmitter(), sys: { isActive: () => true } };
   const actor = { scene, once: jest.fn() } as unknown as Phaser.GameObjects.GameObject;
   const queue = new QueueComponent(actor, { queueCount: 1, capacityPerQueue: 2 });
-  const item = { type: QueueItemType.Production, totalTime: 100, remainingTime,
-    productionData: { actorName: ObjectNames.TivaraWorker, costData: { costType: PaymentType.PayOverTime,
-      productionTime: 100, resources: { food: 7 }, refundFactor: 1 } } } satisfies UnifiedQueueItem;
-  queue.queues[0].queuedItems.push(item);
+  const item = {
+    type: QueueItemType.Production,
+    totalTime: 100,
+    remainingTime,
+    productionData: {
+      actorName: ObjectNames.TivaraWorker,
+      costData: { costType: PaymentType.PayOverTime, productionTime: 100, resources: { food: 7 }, refundFactor: 1 }
+    }
+  } satisfies UnifiedQueueItem;
+  requireAiTestEntry(queue.queues, 0).queuedItems.push(item);
   const log: string[] = [];
-  const pay = jest.fn(() => { log.push(`pay:${item.remainingTime}`); return true; });
-  queue.registerProductionComponent({ handlePayOverTimePayment: pay, emitQueueChange: jest.fn(),
+  const pay = jest.fn(() => {
+    log.push(`pay:${item.remainingTime}`);
+    return true;
+  });
+  queue.registerProductionComponent({
+    handlePayOverTimePayment: pay,
+    emitQueueChange: jest.fn(),
     emitProductionProgress: () => log.push(`ui:${item.remainingTime}`),
-    handleProductionComplete: jest.fn(async () => null) } as unknown as ProductionComponent);
+    handleProductionComplete: jest.fn(async () => null)
+  } as unknown as ProductionComponent);
   const events: { phase: QueueProgressEvent["phase"]; remaining: number; present: boolean }[] = [];
   scene.events.on(QUEUE_PROGRESS_EVENT, (event: QueueProgressEvent) => {
     log.push(`${event.phase}:${item.remainingTime}`);
-    events.push({ phase: event.phase, remaining: event.item.remainingTime, present: queue.allItems.includes(event.item) });
+    events.push({
+      phase: event.phase,
+      remaining: event.item.remainingTime,
+      present: queue.allItems.includes(event.item)
+    });
   });
   return { ticks, actor, queue, item, pay, log, events };
 }
@@ -49,11 +72,16 @@ describe("shared queue progress authority", () => {
   });
 
   it("denied payment preserves the head and progress; an emitter exception propagates before mutation", () => {
-    const f = fixture(); f.pay.mockReturnValue(false);
+    const f = fixture();
+    f.pay.mockReturnValue(false);
     f.ticks.next(1);
     expect(f.item.remainingTime).toBe(100);
     expect(f.events.map((event) => event.phase)).toEqual(["started", "denied"]);
-    expect(() => advanceSharedQueueItem(f.actor, f.item, 50, () => { throw new Error("emitter"); })).toThrow("emitter");
+    expect(() =>
+      advanceSharedQueueItem(f.actor, f.item, 50, () => {
+        throw new Error("emitter");
+      })
+    ).toThrow("emitter");
     expect(f.item.remainingTime).toBe(100);
     expect(f.events.at(-1)?.phase).toBe("threw");
   });

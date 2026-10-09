@@ -446,7 +446,7 @@ The following map preserves stage-50 design/authoring states; the final-gate che
 | M07 Real adapter/report bridge: expose actual producer evidence and explicit gaps | R; C7 root capture, variant runner, production normalization | 51–53 → 54 | Real Phaser actor/components/protocol player/read/native command path into report; initialization loss, post-await service loss and late/disposed capture; native income remains diagnostic while useful fields stay null; contradictory tail suppresses parent | Bridge assertion authored; K1/K3/K5 real-run evidence deferred |
 | M08 Normal-play impact: testing does not install heavy machinery during gaming | R; C8 below, installer/helper controls and existing profiler | 54 | Production/unmarked guard, no sample/clone/listener/timer/root journal; before/after disabled-path and bundle comparison; foreign host/duplicate capture, late callbacks | Fast-path/native controls and production build pass; paired C8/K5 cost/bundle evidence pending |
 | M09 Compliance/publication: economical implementation remains reviewable | R; C6 exact baselines, existing handoff | Each 51–54 | No refreshed hashes/new permanent stage names; task-only prerequisite and behavior commits; source review/Omission Audit/closure, remote SHA and clean task scope | Authored/source-reviewed; implementation commit `978cb09e70cbc6e2ed0b520971690ea47ab38045` remote-verified; checks deferred |
-| M10 Combined review and compatibility: decide readiness before execution | R; C1–C8, all changed consumers | 54 → Sol review | Trace real input → selected/admitted → native application → report/disposal; review all controls, repair concrete contract contradictions; every required unrun check remains listed | Production/native compatibility, E2E typing and 457 synthetic report controls pass; native/gameplay K4, 22 broader gameplay failures and K5 remain |
+| M10 Combined review and compatibility: decide readiness before execution | R; C1–C8, all changed consumers | 54 → Sol review | Trace real input → selected/admitted → native application → report/disposal; review all controls, repair concrete contract contradictions; every required unrun check remains listed | E2E typing/457 synthetic controls and native dispatch/queue 66 controls pass; native types 101 remain, gameplay K4/22 broader failures and K5 remain |
 | M11 Mutation-complete useful resource/continuous capacity: 32/36 full proof | B; C7 plus 32/36/39/42 authority, public APIs | Explicit authority/scope decision; not a hidden fifth Luna pass | Net-zero alias undo, arbitrary definition/Map/item/roster replacement, hidden/stale threats/access changes between reads, full supported initial predicate history; no positive complete channel currently possible | Existing 32/36 gates; blocked, mandatory |
 | M12 Production useful outputs, legal setup and strategy: PRO-03/06/07 release | B; existing production authority contract and evaluators | Broader gameplay/fixture queue, separate from 51–54 | Both-faction transition/abandonment, exposed/safe/no-demand resilience, shared train/research and paid cancellation/pending refund pairs; full oracle and denominator | K5 and owning scenario/policy plans; open, mandatory |
 | M13 Finer loss scopes/continuous journal/lot allocation | O; no new files/owners | Not scheduled; new consumer must justify proposal | No actor-to-beneficiary dependency map, FIFO allocation or extra scan introduced just to recover a diagnostic bound | No extra gate; proposed only |
@@ -510,6 +510,85 @@ authoring is the next grouped boundary before gate readiness; executable validat
 Do not claim stage validation before K1–K5. M11 remains a mandatory blocker from public mutable aliases
 and incomplete access/safety/lifetime history; M12 remains open for full PRO-03/06/07. Neither was reduced by this batch.
 
+### Final-gate native dispatch/queue fixture checkpoint (2026-10-09, partially checked)
+
+Base `e9ed4cc4916441b13274277f1164165a17095da7` was clean and remote-verified on
+`feature/759-skirmish-ai` in `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`. The containing commit publishes this
+native fixture slice; verify its remote SHA on resume. Actual model/effort unknown; next recommendation GPT-6.1 Sol / high
+for native capture/world contracts. Recommendations do not switch settings. No subagent or reusable skill/tool change.
+
+**Purpose and changed sources:** make existing native command and queue authority controls usable under strict spec
+typing before using capture evidence to judge real matches. Eight existing specs changed; no new source files:
+
+- `phaser/src/lib/player/ai-controller/dispatch-ai-intent-command.spec.ts` and `dispatch-ai-brain-result.spec.ts` retain
+  checked request/receipt/decision records; actual event kinds narrow the claims, identity and receipt assertions.
+  Original ordering, detached values, rejected/copied proposal and dispatch exception expectations remain.
+- `phaser/src/lib/entity/systems/shared-queue-resource.spec.ts`, `entity/components/queue/advance-shared-queue-item.spec.ts`,
+  `mutate-shared-queue-item.spec.ts` and `observe-queue-completion-authority.spec.ts` require queue lanes, live items and
+  callback records through existing `requireAiTestEntry`. Native balances, refund formula, removal/terminal ordering,
+  denied progress, restore suppression, exact completion return and subscription cleanup expectations remain.
+- `phaser/src/lib/data/emit-queue-item-resource.spec.ts` requires observed records before reading them. Duplicate,
+  nested, wrong-recipient/vector/action, malformed-sample and throwing-emitter controls retain their existing oracles.
+- `phaser/src/lib/player/ai-controller/testing/project-ai-runtime-queue-resource.spec.ts` declares the authored event's
+  actual `finished` phase with `Extract` and `satisfies`; live item fields still permit intentional missing-lineage and
+  malformed-progress controls. Research cancellations use the real command shape, retain execution identity, and omit
+  the production-only queue index. Wrong owner/type/actor and absent/reused cancellation controls remain negative.
+
+The paths above are under `libs/games/probable-waffle/`. Only specs and two coordination docs changed; no production
+observer, planner, money, queue, save/wire, shared helper or configuration change. Useful quantities remain null.
+Prettier accounts for most diff expansion in the older compact specs. No baseline refresh or strictness suppression.
+
+| Acceptance / state | Implementation and evidence |
+| --- | --- |
+| 1. Prerequisites / passed | Clean exact base/remote, doctor/context, actual Phaser 4.2.1, native Jest/TypeScript configs and authority consumers inspected. |
+| 2. Checked native fixture records / passed | Existing helper requires selected slots; request/finished kind guards keep discriminated assertions exact. All original 41 test cases retained once. |
+| 3. Real queue/emission shapes / passed | Research command rebuilt from actual fields and existing execution; finished-event builder preserves its discriminant. Negative provenance/callback controls still pass. |
+| 4. Focused native checks / passed | 66 tests across 14 suites, including every changed spec and adjacent capture/disposal consumers. Native lint: zero errors/eight existing warnings; all eight sources pass Prettier. |
+| 5. Full native typing / partially checked | Fresh clean-base 161 → candidate 101 diagnostics; all 60 owned diagnostics resolved. Canonical diagnostics outside changed files are exactly unchanged; full config still exits 2. |
+| 6. Remaining release evidence / blocked/pending | Remaining native K4, earlier gameplay 44 strict diagnostics and 22 base-reproduced failures, K5 matches and paired overhead/bundle, socket/save/restart/hash/calibration remain. M11 blocked/M12 open. |
+
+```sh
+pnpm agent:doctor
+pnpm agent:context -- --issue 816
+pnpm exec tsc --noEmit -p libs/games/probable-waffle/phaser/tsconfig.spec.json
+pnpm exec nx test probable-waffle-phaser --runInBand --testPathPatterns='(dispatch-ai-intent-command|dispatch-ai-brain-result|shared-queue-resource|observe-queue-completion-authority|advance-shared-queue-item|mutate-shared-queue-item|project-ai-runtime-queue-resource|emit-queue-item-resource|ai-runtime-production-capture|ai-runtime-completion-capture|ai-runtime-queue-mutation-capture|ai-runtime-pending-commands|ai-runtime-rejection-capture)\.spec\.ts$'
+pnpm exec nx lint probable-waffle-phaser
+pnpm exec prettier --check $(cat tmp/ai-plans/759-validation/native-queue-batch/source-files.txt)
+git diff --check
+```
+
+Ignored evidence: `tmp/ai-plans/759-validation/native-queue-batch/` contains `types-base.log`, `types-final.log`,
+`compiler-summary.json` (all remaining owners), `tests-final.log`, `lint-final.log`, `format-final.log`,
+`source-files.txt`, `spec-registration-audit.json`, `review-semantic.diff` and `provenance.json`.
+Changed-source SHA-256 digest: `f1cda889328b3b29e02c61b4c5a3a37c4b5cb58e2dd0a2150fdfe52050026922`.
+The first formatting/type/lint attempts exposed an introduced newline-before-`satisfies` syntax error; it was repaired
+before final checks. The first multi-path Nx test command selected only one suite/three tests; it is not whole-batch
+evidence. The corrected pattern selected 14 suites/66 tests. Final runs use the repaired source. No runtime behavior
+changed, so no new behavioral regression was needed. Earlier unchanged E2E/gameplay/build checks were not rerun.
+
+**Next grouped batch — why:** native capture/world fixtures need real actor shapes, current catalog definitions and
+checked queue/command records so later report evidence cannot be manufactured by a stale fixture. Start in
+`phaser/src/lib/player/ai-controller/testing/`: `ai-runtime-recipient-resource-capture.spec.ts` (six diagnostics),
+`ai-runtime-route-order-capture.spec.ts` (six), `ai-runtime-unspent-claims.spec.ts` (five),
+`capture-ai-runtime-construction-catalog.spec.ts` (five) and their related world/preset consumers. Counts are diagnostics,
+not distinct defects. Use the current compiler owner map, inspect actual contracts, repair the coherent family and
+run native typing plus selected real Jest/lint. Then remaining component/campaign native fixtures and gameplay K4;
+investigate broader gameplay failures causally. Finish K4 before K5/cost. Publish and pause; no new machinery scope.
+
+**Implementation Review:** self-reviewed the complete formatted-base semantic diff and traced dispatch identity,
+queue insertion/removal, native payment/refund and completion observation into existing capture consumers. Checked reads
+fail missing fixtures rather than fabricate authority; the projection's wrong-command controls still exercise wrong
+type/owner/actor with the real execution. Production oracles, setup and lifecycle contracts are unchanged.
+
+**Omission Audit:** all six acceptance items have scoped evidence or explicit blockers. All eight specs and 41 original
+cases remain registered; no unused new helper, missing registration, threshold relaxation or skip. Existing negative,
+throw, no-listener and cleanup cases execute. No browser/socket or complete K4 claim follows from these focused passes.
+
+**Separate Final Closure Audit:** after the syntax/filter repairs, verified final source hashes, exact spec registration,
+66-test selection, unchanged remaining diagnostics, project lint and formatting. The native fixture slice is checked;
+full K4/M10/release remains open. Scope is eight specs and two coordination docs; unrelated Nx history is preserved.
+Commit/push and remote-SHA verification close this batch's delivery only. Whole-ledger formatting remains final cleanup.
+
 ### Final-gate production/queue report checkpoint (2026-10-09, partially checked)
 
 Base `6804b955d1f33b646c1acc9e0e9282940f736a68` was clean and remote-verified on
@@ -568,7 +647,7 @@ freshly checked. Changed-source digest: `64b6a604200dc3142937d819ce6d42fd2c14d3e
 The existing ignored Playwright config removes only the unused web server; these 457 controls use no browser/page fixture.
 Whole-ledger formatting remains final cleanup; changed-source formatting passes.
 
-**Next grouped batch — why:** repair native dispatch/queue fixtures so the real command application, payment and
+**Historical next batch — why (native dispatch/queue slice now checked above):** repair native dispatch/queue fixtures so the real command application, payment and
 completion contracts can pass strict K4 checking before browser evidence is interpreted. Start with
 `phaser/.../player/ai-controller/dispatch-ai-intent-command.spec.ts` (18 earlier diagnostics),
 `entity/systems/shared-queue-resource.spec.ts` (15), `dispatch-ai-brain-result.spec.ts` (9) and
