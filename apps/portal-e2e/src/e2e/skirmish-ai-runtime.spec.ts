@@ -6,6 +6,7 @@ import { evaluateRuntimeVariant } from "./skirmish-ai-runtime-variant-evaluation
 import { parseRequest } from "./skirmish-ai-runtime-request-parser";
 import { runVariant } from "./skirmish-ai-runtime-variant-runner";
 import { last } from "./skirmish-ai-runtime-value";
+import { checkRuntimeProductionReportBridge } from "./skirmish-ai-runtime-production-report";
 
 const runtimeRequestText = process.env.AI_SKIRMISH_RUNTIME_REQUEST;
 const resultPrefix = "AI_SKIRMISH_RUNTIME_RESULT_V1:";
@@ -57,27 +58,7 @@ test("executes selected AI scenarios in real lobby-started Phaser matches", asyn
     );
     const scenarioVariants = variants.filter((variant) => applicableVariantIds.has(variant.variantId));
     // Retain raw native evidence in the emitted failed report so bridge failures can be diagnosed at the final gate.
-    const bridgeFailures: string[] = [];
-    if (["PRO-03", "PRO-06", "PRO-07"].includes(scenarioId)) {
-      for (const variant of scenarioVariants) {
-        const capture = variant.productionCapture;
-        const report = variant.productionCausality;
-        if (!capture || !report) {
-          bridgeFailures.push(`runtime_production_report_missing:${scenarioId}:${variant.variantId}`);
-          continue;
-        }
-        const selectedCount = capture.facts.filter((fact) => fact.kind === "decision_selected").length;
-        if (selectedCount === 0 || report.decisions.length !== selectedCount) {
-          bridgeFailures.push(`runtime_production_decision_bridge_incomplete:${scenarioId}:${variant.variantId}`);
-        }
-        if (report.resourceServices.needAccounting.some((need) =>
-          need.applications.some((application) => application.usefulContribution !== null)) ||
-          report.resourceServices.applicationIntervals.some((interval) => interval.usefulContribution !== null ||
-            interval.continuousUsefulCapacity !== null)) {
-          bridgeFailures.push(`runtime_production_partial_channel_activated:${scenarioId}:${variant.variantId}`);
-        }
-      }
-    }
+    const bridgeFailures = scenarioVariants.flatMap((variant) => checkRuntimeProductionReportBridge(scenarioId, variant));
     const failures = request.diagnosticSelection
       ? scenarioVariants.length === 1
         ? evaluateRuntimeVariant(scenarioId, fixture.assertions[scenarioId], scenarioVariants[0])
