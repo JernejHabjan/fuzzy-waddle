@@ -14,6 +14,15 @@ describe("installAiRuntimeProductionCapture", () => {
     delete window.__fuzzyWaddleAiRuntimeBrowserTestV1;
   });
 
+  it("returns before reading test configuration when no matching marked game host exists", () => {
+    const scene = { game: {}, events: new Phaser.Events.EventEmitter() } as unknown as ProbableWaffleScene;
+
+    installAiRuntimeProductionCapture(scene);
+
+    expect(readAiRuntimeBrowserTestConfigV1).not.toHaveBeenCalled();
+    expect(AiRuntimeProductionCapture).not.toHaveBeenCalled();
+  });
+
   it("requires the explicit marker and current game, installs once and detaches on direct scene destruction", () => {
     const events = new Phaser.Events.EventEmitter();
     const game = {} as Phaser.Game;

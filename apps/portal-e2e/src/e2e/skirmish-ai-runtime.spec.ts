@@ -56,6 +56,23 @@ test("executes selected AI scenarios in real lobby-started Phaser matches", asyn
         .map((variant) => variant.id)
     );
     const scenarioVariants = variants.filter((variant) => applicableVariantIds.has(variant.variantId));
+    if (["PRO-03", "PRO-06", "PRO-07"].includes(scenarioId)) {
+      for (const variant of scenarioVariants) {
+        const capture = variant.productionCapture;
+        const report = variant.productionCausality;
+        if (!capture || !report) throw new Error(`runtime_production_report_missing:${scenarioId}:${variant.variantId}`);
+        const selectedCount = capture.facts.filter((fact) => fact.kind === "decision_selected").length;
+        if (selectedCount === 0 || report.decisions.length !== selectedCount) {
+          throw new Error(`runtime_production_decision_bridge_incomplete:${scenarioId}:${variant.variantId}`);
+        }
+        if (report.resourceServices.needAccounting.some((need) =>
+          need.applications.some((application) => application.usefulContribution !== null)) ||
+          report.resourceServices.applicationIntervals.some((interval) => interval.usefulContribution !== null ||
+            interval.continuousUsefulCapacity !== null)) {
+          throw new Error(`runtime_production_partial_channel_activated:${scenarioId}:${variant.variantId}`);
+        }
+      }
+    }
     const failures = request.diagnosticSelection
       ? scenarioVariants.length === 1
         ? evaluateRuntimeVariant(scenarioId, fixture.assertions[scenarioId], scenarioVariants[0])

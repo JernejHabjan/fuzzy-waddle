@@ -21,7 +21,12 @@ import { addActorComponent } from "../../../data/actor-data";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { CommandBusService } from "../../../world/services/multiplayer/command-bus.service";
-import type { CancelProductionCommand, CancelResearchCommand, GameCommandOutcomeKind } from "@fuzzy-waddle/probable-waffle-protocol";
+import type {
+  CancelProductionCommand,
+  CancelResearchCommand,
+  GameCommandOutcomeKind
+} from "@fuzzy-waddle/probable-waffle-protocol";
+import { fenceSceneResourceHistory } from "../../../data/scene-resource-observation";
 
 /**
  * SharedQueueComponent is the queue owner and processor.
@@ -532,6 +537,7 @@ export class QueueComponent {
    * Set data from save/load
    */
   setData(items: UnifiedQueueItem[]): void {
+    fenceSceneResourceHistory(this.gameObject.scene, "resource_queue_restore");
     // Clear existing queues
     this.sharedQueues.forEach((queue) => {
       queue.queuedItems = [];

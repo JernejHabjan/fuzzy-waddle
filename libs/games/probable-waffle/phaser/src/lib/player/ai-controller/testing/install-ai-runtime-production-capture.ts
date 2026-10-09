@@ -6,9 +6,10 @@ import { readAiRuntimeBrowserTestConfigV1 } from "./ai-runtime-browser-test-conf
 
 /** Installs before preset money/work is applied. Ordinary scenes and unmarked developer worlds have no observer. */
 export function installAiRuntimeProductionCapture(scene: ProbableWaffleScene): void {
-  if (environment.production || typeof window === "undefined" || !readAiRuntimeBrowserTestConfigV1()?.captureProduction) return;
+  if (environment.production || typeof window === "undefined") return;
   const host = window.__fuzzyWaddleAiRuntimeBrowserTestV1;
   if (!host || host.game !== scene.game || host.productionCapture) return;
+  if (!readAiRuntimeBrowserTestConfigV1()?.captureProduction) return;
   const capture = new AiRuntimeProductionCapture(scene);
   const handle = { capture: (playerNumber: number) => capture.capture(playerNumber) };
   window.__fuzzyWaddleAiRuntimeBrowserTestV1 = { ...host, productionCapture: handle };

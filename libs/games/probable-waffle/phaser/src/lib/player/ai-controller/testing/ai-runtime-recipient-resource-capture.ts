@@ -5,6 +5,7 @@ import { subscribeSceneResourceLoss } from "../../../data/scene-resource-observa
 import type { AiRuntimeResourceCoverageCapture } from "./ai-runtime-resource-coverage-capture";
 import type { AiRuntimeProductionFactV1 } from "./ai-runtime-production-fact-v1";
 import { installAiRuntimeResourceOperationIdentity } from "./ai-runtime-resource-operation-identity";
+import { AiRuntimeRecipientRosterCapture } from "./ai-runtime-recipient-roster-capture";
 
 /** Bounded all-recipient native journal, sharing the root fact budget. Mutable aliases keep general authority unsupported. */
 export class AiRuntimeRecipientResourceCapture {
@@ -21,6 +22,8 @@ export class AiRuntimeRecipientResourceCapture {
     private readonly boundary: (playerNumber: number) => { tick: number; sequence: number; playerNumber: number },
     private readonly frontier: () => number, private readonly append: (fact: AiRuntimeProductionFactV1) => void) {
     try {
+      const roster = new AiRuntimeRecipientRosterCapture(scene.baseGameData.gameInstance, coverage.lose);
+      this.cleanup.push(() => roster.dispose());
       this.cleanup.push(installAiRuntimeResourceOperationIdentity(scene, (operation) => this.operations.get(operation)?.id ?? null));
       this.cleanup.push(subscribeSceneResourceLoss(scene, coverage.lose));
       for (const player of scene.players) {

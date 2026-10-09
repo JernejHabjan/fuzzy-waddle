@@ -1,4 +1,5 @@
 import type { RuntimeResourceNeedV1 } from "./skirmish-ai-runtime-resource-need";
+import type { RuntimeResourceLiabilityFramesV1 } from "./skirmish-ai-runtime-resource-liability-frames";
 
 /** Partial-history diagnostics. Upper bounds describe observed accounting only; useful contribution remains activation-gated. */
 export interface RuntimeResourceNeedAccountingV1 {
@@ -9,6 +10,7 @@ export interface RuntimeResourceNeedAccountingV1 {
     readonly reservedUnspent: number;
     readonly obligationsDue: number;
   } | null;
+  readonly liabilityFrames?: RuntimeResourceLiabilityFramesV1;
   readonly applications: readonly {
     readonly operationId: number;
     readonly entrySequence: number;

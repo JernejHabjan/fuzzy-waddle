@@ -7,12 +7,13 @@ import { getActorComponent } from "../../../data/actor-component";
 import { getGameObjectRenderedTransform } from "../../../data/game-object-helper";
 import type { ResourceSourceDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/resource/resource-source-definition";
 import { waitForSimulationDuration } from "../../../world/services/simulation-time";
-type GameObject = Phaser.GameObjects.GameObject;
+import { fenceSceneResourceHistory } from "../../../data/scene-resource-observation";
 
 export class ResourceSourceComponent {
   private static readonly debug = false;
-  onResourcesChanged: Subject<[ResourceType, number, GameObject]> = new Subject<[ResourceType, number, GameObject]>();
-  onDepleted: Subject<GameObject> = new Subject<GameObject>();
+  onResourcesChanged: Subject<[ResourceType, number, Phaser.GameObjects.GameObject]> =
+    new Subject<[ResourceType, number, Phaser.GameObjects.GameObject]>();
+  onDepleted: Subject<Phaser.GameObjects.GameObject> = new Subject<Phaser.GameObjects.GameObject>();
   onAssignedGatherersChanged: Subject<number> = new Subject<number>();
   private currentResources: number;
   private containerComponent?: ContainerComponent;
@@ -20,10 +21,10 @@ export class ResourceSourceComponent {
   private currentCapacity = 0;
   private depletedImage?: Phaser.GameObjects.Image;
   private scene?: Phaser.Scene;
-  private assignedGatherers: Set<GameObject> = new Set();
+  private assignedGatherers: Set<Phaser.GameObjects.GameObject> = new Set();
 
   constructor(
-    private readonly gameObject: GameObject,
+    private readonly gameObject: Phaser.GameObjects.GameObject,
     public readonly resourceSourceDefinition: ResourceSourceDefinition
   ) {
     this.currentResources = this.resourceSourceDefinition.maximumResources;
@@ -37,8 +38,9 @@ export class ResourceSourceComponent {
     this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.destroy, this);
   }
 
-  async extractResources(gatherer: GameObject, amount: number): Promise<number> {
+  async extractResources(gatherer: Phaser.GameObjects.GameObject, amount: number): Promise<number> {
     if (this.gathererMustEnter) {
+      fenceSceneResourceHistory(this.gameObject.scene, "resource_source_capacity_change");
       this.currentCapacity += 1;
       this.containerComponent?.loadGameObject(gatherer);
     }
@@ -46,6 +48,7 @@ export class ResourceSourceComponent {
     await waitForSimulationDuration(this.gameObject.scene, this.resourceSourceDefinition.cooldown);
 
     if (this.gathererMustEnter) {
+      fenceSceneResourceHistory(this.gameObject.scene, "resource_source_capacity_change");
       this.containerComponent?.unloadGameObject(gatherer);
       this.currentCapacity -= 1;
     }
@@ -54,6 +57,7 @@ export class ResourceSourceComponent {
 
     // deduct resources
     const oldResources = this.currentResources;
+    fenceSceneResourceHistory(this.gameObject.scene, "resource_source_stock_change");
     this.currentResources -= gatheredAmount;
     const newResources = this.currentResources;
 
@@ -118,7 +122,7 @@ export class ResourceSourceComponent {
     this.depletedImage = this.scene.add.image(renderedTransform.x, renderedTransform.y, texture, frame);
   }
 
-  canGathererEnter(gatherer: GameObject): boolean {
+  canGathererEnter(gatherer: Phaser.GameObjects.GameObject): boolean {
     return this.containerComponent?.canLoadGameObject(gatherer) ?? true;
   }
 
@@ -145,8 +149,9 @@ export class ResourceSourceComponent {
   /**
    * Register a gatherer as assigned to this resource source
    */
-  assignGatherer(gatherer: GameObject): void {
+  assignGatherer(gatherer: Phaser.GameObjects.GameObject): void {
     if (!this.assignedGatherers.has(gatherer)) {
+      fenceSceneResourceHistory(this.gameObject.scene, "resource_source_assignment_change");
       this.assignedGatherers.add(gatherer);
       this.onAssignedGatherersChanged.next(this.assignedGatherers.size);
     }
@@ -155,8 +160,9 @@ export class ResourceSourceComponent {
   /**
    * Unregister a gatherer from this resource source
    */
-  unassignGatherer(gatherer: GameObject): void {
+  unassignGatherer(gatherer: Phaser.GameObjects.GameObject): void {
     if (this.assignedGatherers.has(gatherer)) {
+      fenceSceneResourceHistory(this.gameObject.scene, "resource_source_assignment_change");
       this.assignedGatherers.delete(gatherer);
       this.onAssignedGatherersChanged.next(this.assignedGatherers.size);
     }
@@ -187,16 +193,19 @@ export class ResourceSourceComponent {
 
   /** Sets current resources to the definition maximum. Used by TendableComponent when crops are ready. */
   refillResources(): void {
+    fenceSceneResourceHistory(this.gameObject.scene, "resource_source_stock_change");
     this.currentResources = this.resourceSourceDefinition.maximumResources;
   }
 
   /** Sets current resources to zero. Used by TendableComponent to lock a field before it is grown. */
   lockResources(): void {
+    fenceSceneResourceHistory(this.gameObject.scene, "resource_source_stock_change");
     this.currentResources = 0;
   }
 
   setData(data: Partial<ResourceSourceComponentData>) {
     if (data.currentResources !== undefined) {
+      fenceSceneResourceHistory(this.gameObject.scene, "resource_source_restore");
       const max = this.resourceSourceDefinition.maximumResources;
       this.currentResources = Phaser.Math.Clamp(data.currentResources, 0, Math.max(0, max));
     }

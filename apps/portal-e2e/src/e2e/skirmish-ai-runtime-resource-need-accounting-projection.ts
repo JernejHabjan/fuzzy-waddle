@@ -4,6 +4,7 @@ import type { AiRuntimeProductionCaptureV1 } from
 import type { RuntimeResourceNeedV1 } from "./skirmish-ai-runtime-resource-need";
 import type { RuntimeResourceCreditV1 } from "./skirmish-ai-runtime-resource-credit";
 import type { RuntimeResourceNeedAccountingV1 } from "./skirmish-ai-runtime-resource-need-accounting";
+import type { RuntimeResourceLiabilityFramesV1 } from "./skirmish-ai-runtime-resource-liability-frames";
 import { normalizeRuntimeRecipientMutations } from "./skirmish-ai-runtime-recipient-mutations";
 import { calculateRuntimeResourceContribution } from "./calculate-runtime-resource-contribution";
 import { runtimeNeedHasIncomingStart, runtimeNeedOwnAdmissionSequences } from "./skirmish-ai-runtime-resource-need-boundaries";
@@ -50,6 +51,10 @@ export function projectRuntimeResourceNeedAccounting(capture: AiRuntimeProductio
       ["decision_selected", "resource_need_fence", "queue_mutation", "queue_progress", "queue_changed", "outcome", "intent_dispatch",
         "actor_registered", "actor_unregistered", "construction_authority"].includes(fact.kind))) {
       local.add("production_need_input_liabilities_changed_before_acceptance");
+    }
+    const liabilityFrames = projectLiabilityFrames(capture, need, read, selected, type, ledger, local);
+    if (liabilityFrames.gaps.some((gap) => gap === "liability_frame_value_invalid")) {
+      failures.push("production_need_liability_frame_value_invalid");
     }
     const forecast = selection.forecast;
     const sameTarget = selected?.kind === "decision_selected" && forecast &&
@@ -112,8 +117,55 @@ export function projectRuntimeResourceNeedAccounting(capture: AiRuntimeProductio
         gaps: [...applicationGaps, ...gaps] });
     }
     local.forEach((gap) => gaps.add(gap));
-    if (records.length < 256) records.push({ need, closedSequence, frame, applications, gaps: [...local, ...gaps] });
+    if (records.length < 256) records.push({ need, closedSequence, frame, liabilityFrames, applications,
+      gaps: [...local, ...gaps] });
   }
   if (needs.length > 256 || credits.length > 256) failures.push("production_need_accounting_overflow");
   return { records: failures.length ? [] : records, failures: [...new Set(failures)], gaps: [...gaps] };
+}
+
+function projectLiabilityFrames(capture: AiRuntimeProductionCaptureV1, need: RuntimeResourceNeedV1,
+  read: AiRuntimeProductionCaptureV1["facts"][number] | undefined,
+  selected: AiRuntimeProductionCaptureV1["facts"][number] | undefined,
+  type: RuntimeResourceNeedV1["selection"]["resourceType"], ledger: RuntimeResourceNeedV1["selection"]["ledger"],
+  scopeGaps: ReadonlySet<string>)
+  : RuntimeResourceLiabilityFramesV1 {
+  const gaps = new Set<string>();
+  const consumed = read?.kind === "resource_input_read" ? read.unspentClaimsAtRead : undefined;
+  const before = selected?.kind === "decision_selected" ? selected.unspentClaimsBeforeSelection : undefined;
+  const accepting = selected?.kind === "decision_selected" ? selected.boundaryState?.unspentClaims : undefined;
+  const values = [consumed?.resources?.[type], before?.resources?.[type], accepting?.resources?.[type]];
+  const amounts = values.map((amount) => typeof amount === "number" ? amount : null);
+  if (values.some((amount) => amount !== undefined && (typeof amount !== "number" || !Number.isFinite(amount) || amount < 0)) ||
+    [ledger?.reservedUnspent].some((amount) => amount !== undefined && (!Number.isFinite(amount) || amount < 0))) {
+    gaps.add("liability_frame_value_invalid");
+  }
+  if (!need.selection.resourceInputRead || read?.kind !== "resource_input_read" ||
+    read.sequence !== need.selection.resourceInputRead.sequence || read.playerNumber !== need.selection.playerNumber ||
+    !read.unspentClaimsAtRead) gaps.add("liability_consumed_frame_unavailable");
+  if (selected?.kind !== "decision_selected" || selected.playerNumber !== need.selection.playerNumber ||
+    selected.decision.identity.playerNumber !== need.selection.playerNumber ||
+    selected.decision.identity.tick !== need.selection.tick ||
+    selected.decision.identity.generation !== need.selection.observationGeneration ||
+    !selected.unspentClaimsBeforeSelection) gaps.add("liability_before_selection_frame_unavailable");
+  if (consumed?.gaps.length || before?.gaps.length || accepting?.gaps.length || capture.resourceCoverage?.lost ||
+    !capture.resourceCoverage || selected?.boundaryState?.snapshotRestoreInProgress ||
+    scopeGaps.has("production_need_input_liabilities_changed_before_acceptance")) {
+    gaps.add("liability_capture_or_snapshot_gap");
+  }
+  if (scopeGaps.has("production_need_exact_input_read_missing")) gaps.add("liability_consumed_input_mismatch");
+  const [consumedReserved, beforeSelectionReserved, acceptingReserved] = amounts;
+  if (consumedReserved === null || beforeSelectionReserved === null || acceptingReserved === null ||
+    ledger?.reservedUnspent === undefined || gaps.size) {
+    if (beforeSelectionReserved !== null && ledger?.reservedUnspent !== undefined &&
+      beforeSelectionReserved !== ledger.reservedUnspent) gaps.add("liability_before_selection_mismatch");
+    return { consumedReserved, beforeSelectionReserved, acceptingReserved, status: "unavailable", gaps: [...gaps] };
+  }
+  if (consumedReserved !== ledger.reservedUnspent || beforeSelectionReserved !== ledger.reservedUnspent) {
+    gaps.add("liability_before_selection_mismatch");
+    return { consumedReserved, beforeSelectionReserved, acceptingReserved, status: "unavailable", gaps: [...gaps] };
+  }
+  return acceptingReserved === consumedReserved
+    ? { consumedReserved, beforeSelectionReserved, acceptingReserved, status: "matching", gaps: [] }
+    : { consumedReserved, beforeSelectionReserved, acceptingReserved, status: "accepting_changed", gaps: [] };
 }

@@ -50,12 +50,7 @@ import { QueueCommandSystem } from "../entity/systems/queue-command.system";
 import { ScenarioActorReferenceComponent } from "../campaign/scenario/scenario-actor-reference.component";
 import { HealthRegenerationComponent } from "../entity/components/combat/components/health-regeneration-component";
 import { ConvertibleComponent } from "../entity/components/convertible-component";
-/**
- * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
- * storage boundaries do not drift into an unconstrained primitive.
- */
-type GameObject = Phaser.GameObjects.GameObject;
-
+import { fenceSceneResourceHistory } from "./scene-resource-observation";
 export const ActorDataKey = "actorData";
 export class ActorData {
   constructor(
@@ -73,6 +68,7 @@ export function setActorData(
   systems: any[],
   actorDefinition?: Partial<ActorDefinition>
 ) {
+  fenceSceneResourceHistory(actor.scene, "resource_actor_components_change");
   let actorData = actor.getData(ActorDataKey) as ActorData;
   if (actorData) {
     components.forEach((component) => actorData.components.set(component.constructor, component));
@@ -87,8 +83,9 @@ export function setActorData(
   actor.emit(ActorDataChangedEvent, actorData);
 }
 
-export function applyActorDefinitionToActor(actor: GameObject, actorDefinition?: Partial<ActorDefinition>) {
+export function applyActorDefinitionToActor(actor: Phaser.GameObjects.GameObject, actorDefinition?: Partial<ActorDefinition>) {
   if (!actorDefinition) return;
+  fenceSceneResourceHistory(actor.scene, "resource_actor_components_change");
   if (actorDefinition.id) getActorComponent(actor, IdComponent)?.setData(actorDefinition.id);
   if (actorDefinition.scenario)
     getActorComponent(actor, ScenarioActorReferenceComponent)?.setData(actorDefinition.scenario);
@@ -244,6 +241,7 @@ export function setCoreActorDataFromName(
   actor: Phaser.GameObjects.GameObject,
   actorDefinition?: Partial<ActorDefinition>
 ) {
+  fenceSceneResourceHistory(actor.scene, "resource_actor_components_change");
   const { components, systems } = gatherCoreActorData(actor);
   setActorData(actor, components, systems, actorDefinition);
 }
@@ -252,6 +250,7 @@ export function setConstructingActorDataFromName(
   actor: Phaser.GameObjects.GameObject,
   actorDefinition?: Partial<ActorDefinition>
 ) {
+  fenceSceneResourceHistory(actor.scene, "resource_actor_components_change");
   const { components, systems } = gatherConstructingActorData(actor);
   setActorData(actor, components, systems, actorDefinition);
 }
@@ -260,6 +259,7 @@ export function setFullActorDataFromName(
   actor: Phaser.GameObjects.GameObject,
   actorDefinition?: Partial<ActorDefinition>
 ) {
+  fenceSceneResourceHistory(actor.scene, "resource_actor_components_change");
   const actorData = gatherFullActorData(actor);
   if (actorDefinition?.convertible) {
     actorData.components.push(
@@ -276,6 +276,7 @@ export function upgradeFromCoreToConstructingActorData(
   actor: Phaser.GameObjects.GameObject,
   actorDefinition?: Partial<ActorDefinition>
 ) {
+  fenceSceneResourceHistory(actor.scene, "resource_actor_components_change");
   const actorData = actor.getData(ActorDataKey) as ActorData;
   if (!actorData) {
     setConstructingActorDataFromName(actor, actorDefinition);
@@ -304,6 +305,7 @@ export function upgradeFromConstructingToFullActorData(
   actor: Phaser.GameObjects.GameObject,
   actorDefinition?: Partial<ActorDefinition>
 ) {
+  fenceSceneResourceHistory(actor.scene, "resource_actor_components_change");
   const actorData = actor.getData(ActorDataKey) as ActorData;
   if (!actorData) {
     setFullActorDataFromName(actor, actorDefinition);
@@ -328,6 +330,7 @@ export function addActorComponent(
   component: any,
   actorDefinition?: Partial<ActorDefinition>
 ) {
+  fenceSceneResourceHistory(actor.scene, "resource_actor_components_change");
   const actorData = actor.getData(ActorDataKey) as ActorData;
   actorData.components.set(component.constructor, component);
   applyActorDefinitionToActor(actor, actorDefinition);
@@ -339,6 +342,7 @@ export function addActorSystem(
   system: any,
   actorDefinition?: Partial<ActorDefinition>
 ) {
+  fenceSceneResourceHistory(actor.scene, "resource_actor_components_change");
   const actorData = actor.getData(ActorDataKey) as ActorData;
   actorData.systems.set(system.constructor, system);
   applyActorDefinitionToActor(actor, actorDefinition);
@@ -350,6 +354,7 @@ export function removeActorComponent(
   component: any,
   actorDefinition?: Partial<ActorDefinition>
 ) {
+  fenceSceneResourceHistory(actor.scene, "resource_actor_components_change");
   const actorData = actor.getData(ActorDataKey) as ActorData;
   actorData.components.delete(component.constructor);
   applyActorDefinitionToActor(actor, actorDefinition);
@@ -361,6 +366,7 @@ export function removeActorSystem(
   system: any,
   actorDefinition?: Partial<ActorDefinition>
 ) {
+  fenceSceneResourceHistory(actor.scene, "resource_actor_components_change");
   const actorData = actor.getData(ActorDataKey) as ActorData;
   actorData.systems.delete(system.constructor);
   applyActorDefinitionToActor(actor, actorDefinition);

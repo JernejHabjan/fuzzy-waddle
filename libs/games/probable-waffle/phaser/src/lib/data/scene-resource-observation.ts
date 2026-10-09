@@ -13,7 +13,9 @@ export function subscribeSceneResourceLoss(scene: Phaser.Scene, callback: (reaso
 
 /** Lose history before native callbacks/writes; one failing observer cannot suppress native work or later observers. */
 export function fenceSceneResourceHistory(scene: Phaser.Scene, reason: string): void {
-  [...(listeners.get(scene) ?? [])].forEach((callback) => {
+  const group = listeners.get(scene);
+  if (!group?.size) return;
+  [...group].forEach((callback) => {
     try { callback(reason); } catch { /* Observation cannot prevent native mutation. */ }
   });
 }

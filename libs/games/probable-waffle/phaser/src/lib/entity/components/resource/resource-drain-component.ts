@@ -14,6 +14,7 @@ import type { ResourceDrainDefinition } from "@fuzzy-waddle/probable-waffle-game
 import { waitForSimulationDuration } from "../../../world/services/simulation-time";
 import type { ResourceTransferContext } from "./resource-transfer-context";
 import { observeResourceCredit } from "./observe-resource-credit";
+import { fenceSceneResourceHistory } from "../../../data/scene-resource-observation";
 /**
  * Defines the game object alias used by this module. Keep values in this named domain so linked APIs and
  * storage boundaries do not drift into an unconstrained primitive.
@@ -36,6 +37,7 @@ export class ResourceDrainComponent {
   }
 
   init(): void {
+    fenceSceneResourceHistory(this.gameObject.scene, "resource_drain_capacity_change");
     this.containerComponent = getActorComponent(this.gameObject, ContainerComponent);
     this.maximumGathererCapacity = this.containerComponent?.containerDefinition.capacity ?? 0;
     this.gathererMustEnter = !!this.containerComponent;
@@ -52,6 +54,7 @@ export class ResourceDrainComponent {
   async returnResources(gatherer: GameObject, resourceType: ResourceType, amount: number,
     context?: ResourceTransferContext): Promise<number> {
     if (this.gathererMustEnter) {
+      fenceSceneResourceHistory(this.gameObject.scene, "resource_drain_capacity_change");
       this.currentCapacity += 1;
       this.containerComponent?.loadGameObject(gatherer);
     }
@@ -59,6 +62,7 @@ export class ResourceDrainComponent {
     await waitForSimulationDuration(this.gameObject.scene, this.resourceDrainDefinition.cooldown);
 
     if (this.gathererMustEnter) {
+      fenceSceneResourceHistory(this.gameObject.scene, "resource_drain_capacity_change");
       this.containerComponent?.unloadGameObject(gatherer);
       this.currentCapacity -= 1;
     }
@@ -99,7 +103,10 @@ export class ResourceDrainComponent {
   }
 
   setData(data: Partial<ResourceDrainComponentData>) {
-    if (data.currentCapacity !== undefined) this.currentCapacity = data.currentCapacity;
+    if (data.currentCapacity !== undefined) {
+      fenceSceneResourceHistory(this.gameObject.scene, "resource_drain_restore");
+      this.currentCapacity = data.currentCapacity;
+    }
   }
 
   getData(): ResourceDrainComponentData {

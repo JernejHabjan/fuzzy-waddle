@@ -15,6 +15,7 @@ import type { AiRuntimeRecipientMutationV1 } from "./ai-runtime-recipient-mutati
 import type { AiResourceInputRead } from
   "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/planning/ai-resource-input-read";
 import type { AiObservationV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
+import type { AiRuntimeUnspentClaimsV1 } from "./ai-runtime-unspent-claims-v1";
 
 /** Raw authority callbacks in observer order. No resource event is labelled a payment/refund without item provenance. */
 export type AiRuntimeProductionFactV1 = {
@@ -25,7 +26,8 @@ export type AiRuntimeProductionFactV1 = {
   readonly boundaryState?: AiRuntimeProductionBoundaryState;
 } & (
   | { readonly kind: "resource_input_read"; readonly read: AiResourceInputRead;
-    readonly resources: AiObservationV1["resources"] }
+    readonly resources: AiObservationV1["resources"];
+    readonly unspentClaimsAtRead?: AiRuntimeUnspentClaimsV1 }
   | { readonly kind: "resource_need_fence"; readonly reason: string;
     /** Exact consumed read only at decision start; still closes every earlier selected generation. */
     readonly incomingRead?: AiResourceInputRead }
@@ -39,7 +41,8 @@ export type AiRuntimeProductionFactV1 = {
     /** Bus intended execution tick only on dispatched callbacks; the enclosing tick is observation time. */
     readonly scheduledTick: number | null;
   }
-  | { readonly kind: "decision_selected"; readonly decision: AiDecisionDispatchEvent }
+  | { readonly kind: "decision_selected"; readonly decision: AiDecisionDispatchEvent;
+    readonly unspentClaimsBeforeSelection?: AiRuntimeUnspentClaimsV1 }
   | { readonly kind: "construction_authority"; readonly construction: AiRuntimeConstructionV1 }
   | { readonly kind: "spatial_authority"; readonly spatial: AiRuntimeProductionSpatialV1 }
   | {

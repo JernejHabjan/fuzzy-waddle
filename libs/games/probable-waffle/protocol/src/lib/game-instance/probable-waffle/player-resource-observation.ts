@@ -32,13 +32,17 @@ export class PlayerResourceObservation {
 
   /** Called before reset's first write; constructor resets have no subscribers. */
   static reset(state: object): void {
-    [...(states.get(state) ?? [])].forEach((player) => this.lose(player, "recipient_state_reset"));
+    const group = states.get(state);
+    if (!group?.size) return;
+    [...group].forEach((player) => this.lose(player, "recipient_state_reset"));
   }
 
   static lose(player: ProbableWafflePlayer, reason: string): void {
+    const group = listeners.get(player);
+    if (!group?.size) return;
     if (reportingLoss.has(player)) return;
     reportingLoss.add(player);
-    try { [...(listeners.get(player) ?? [])].forEach((entry) => safely(() => entry.loss(reason))); }
+    try { [...group].forEach((entry) => safely(() => entry.loss(reason))); }
     finally { reportingLoss.delete(player); }
   }
 

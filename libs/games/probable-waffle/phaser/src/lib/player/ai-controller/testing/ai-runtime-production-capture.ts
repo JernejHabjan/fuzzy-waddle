@@ -93,7 +93,8 @@ export class AiRuntimeProductionCapture {
         (playerNumber) => this.boundary(playerNumber), () => this.nextSequence - 1, (fact) => this.append(fact));
       this.resourceInputs = new AiRuntimeResourceInputCapture(scene, this.resourceCoverage,
         () => this.recipientResources.reconcile(), () => this.nextSequence - 1,
-        (playerNumber) => this.boundary(playerNumber), (fact) => this.append(fact));
+        (playerNumber) => this.boundary(playerNumber), (fact) => this.append(fact),
+        (playerNumber) => this.unspentClaims.snapshot(playerNumber));
       this.initialConstruction = captureAiRuntimeInitialConstruction(scene, initialActors, this.startedTick);
       this.spatialCapture = new AiRuntimeProductionSpatialCapture(scene, this.identify, (playerNumber, spatial) => {
         this.append({ ...this.boundary(playerNumber), kind: "spatial_authority", spatial });
@@ -314,8 +315,10 @@ export class AiRuntimeProductionCapture {
   /** The selected result precedes dispatch, even when the saved brain/debug view still names the prior decision. */
   private readonly observeDecision = (decision: AiDecisionDispatchEvent): void => {
     if (this.disposed) return;
+    const unspentClaimsBeforeSelection = this.unspentClaims.snapshot(decision.identity.playerNumber);
     this.unspentClaims.observeDecision(decision);
-    this.append({ ...this.boundary(decision.identity.playerNumber), kind: "decision_selected", decision });
+    this.append({ ...this.boundary(decision.identity.playerNumber), kind: "decision_selected", decision,
+      unspentClaimsBeforeSelection });
   };
 
   private sampleBoundaryState(playerNumber: number, exhaustedProgressItem?: UnifiedQueueItem) {
