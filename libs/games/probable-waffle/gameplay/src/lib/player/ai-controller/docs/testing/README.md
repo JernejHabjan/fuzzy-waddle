@@ -76,6 +76,8 @@ continuation need their own evidence. Shipping size alone cannot establish CPU o
 For browser profiles, warm each source once, alternate source order, and compare every native boundary/outcome in
 the profiled runs with the ordinary qualified trajectory. Profiling can change timer/cache behavior; any trajectory
 difference invalidates the cost pair. Keep CPU and sampled-heap artifacts with their sampling intervals and hashes.
+Record browser/realm reuse: separate full warm-ups followed by fresh browsers warm shared resources, but do not retain
+JavaScript VM/JIT state. A steady-state claim needs a qualified warm-up/reset route in the retained runtime.
 Use the actual build source maps to attribute exclusive samples to capture/observation owners, excluding diagnostic
 readout stacks. Exclusive owner samples omit their callees; heap samples estimate allocation rather than retained
 memory. Report that scope and variance instead of treating unsampled work as zero. Synchronous scene UPDATE timings
@@ -84,8 +86,29 @@ include immediate hooks but omit later asynchronous gameplay and cannot supply a
 Normal lobby startup generates both seed and instance ID. Production ignores the test marker/preset and publishes
 no test game handle; unmarked development publishes no AI test host. Angular's development inspection API can read
 the ordinary game, but is absent from production. Live startup/root-absence checks establish this boundary, not
-equivalent workloads or absence of all journal/listener allocations. Qualify a common supported setup/read route
-before claiming normal-play overhead; do not install capture in production merely to make profiling convenient.
+equivalent workloads or absence of all journal/listener allocations.
+
+A native quicksave made at tick zero can provide a common capture-off setup. Use the real save serializer/codec,
+retain its exact encoded record, and load it through the ordinary Load UI in isolated browser storage. Loading keeps
+the saved seed/instance ID and restores RNG, command authority and AI save state. A loaded start is a distinct
+workload: saved AI/authority fields can differ from a fresh lobby boundary. Compare every complete native boundary
+and outcome across revisions/modes; never discard those fields to make the save appear equivalent to a fresh start.
+Tick-zero evidence does not establish continuation of an in-progress pawn WAIT or general save/restart parity.
+
+An external CDP debugger can retain the native scene object at its bootstrap boundary without publishing a global
+test host. Locate the breakpoint in each exact output, require a unique match and verify the scene/seed/ID/roster.
+For an accelerated replay, apply native manual clock pacing before the first tick, remove the breakpoint and disable
+the debugger before profiling, then stop the render loop and advance the same fixed updates as the qualified replay.
+The debugger reads the native world; the runner controls pacing. No running-world identity/state repair, capture
+installation, prototype wrapper or shipped hook is needed. Release the remote handle/browser/server afterward.
+This measures a capture-off accelerated workload, not rendered frame performance or ordinary wall-clock gameplay.
+
+Exclude only the injected readout subtree and runner self work by their actual script identity; native methods also
+named `capture` remain measured. Application exclusive samples include game and framework work and omit builtins,
+GC and other unattributed work; they are not isolated whole-simulation CPU. Without production source maps, report
+production diagnostic-owner costs as unavailable. Zero owner allocation samples are below the sampling resolution,
+not proof of zero allocation. Qualify a common supported setup/read route before claiming normal-play overhead;
+do not install capture in production merely to make profiling convenient.
 
 Player-controller decision settling does not establish quiescence of pawn behavior-tree actions or path promises.
 Inspect each native action's clock before treating an accelerated replay as a deterministic cost workload.

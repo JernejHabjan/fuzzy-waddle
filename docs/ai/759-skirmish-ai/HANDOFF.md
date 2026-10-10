@@ -11,48 +11,43 @@ checks are active. Commit/push and pause at each agreed boundary. Recommendation
 host model/effort unknown. Next recommendation GPT-6.1 Sol / high. The mandatory
 [end-of-gate machinery necessity review](#end-of-gate-machinery-necessity-review) remains not_started.
 
-**Current step:** C8 marked profiling checked; production/unmarked cost qualification remains blocked.
-One full warm-up per source plus three alternating CPU/heap-profiled pairs match every complete boundary and native
-outcome against the ordinary qualified trajectory. Four live capture-off startups check host absence, but random
-lobby identities and production's unavailable test/debug component handle prevent equivalent normal-mode workloads.
-No candidate executable source/config/spec or permanent runtime hook changed; original pinned acceptance stays blocked.
+**Current step:** C8 capture-off native save/load qualification and scoped profiling checked.
+Production and unmarked development now have a common supported setup/read route. Twelve ordinary worlds plus
+four full pre-run warm-ups and twelve profiled worlds match all 1,201 boundaries/outcome histories across both
+revisions/modes. No executable source/config/spec or permanent runtime hook changed. Steady-state/whole CPU and
+original pinned acceptance remain open; the final gate and machinery necessity review are not complete.
 
-**What changed / why:** ignored profiling/summary drivers retain full workload comparisons, actual CPU/heap profiles,
-source-map attribution and variance. Durable testing guidance explains exclusive owner samples, readout exclusion and
-normal lobby/production entry limits. Handoff/ledger record scoped measurements so marked diagnostic cost cannot be
-mistaken for normal-play overhead, retained heap growth or a whole-simulation budget pass.
+**What changed / why:** ignored drivers create a real tick-zero quicksave, use the supported Load UI and retain a
+native scene handle through an external bootstrap debugger. The breakpoint is removed/Debugger disabled before
+replay; native clock pacing replaces no world identity/state. Durable guidance explains exact full comparisons,
+readout attribution and fresh-browser warm-up limits. This lets production be observed without installing capture.
 
-**Evidence:** eight 1,200-tick marked worlds (two warm-ups/six profiled) match all 1,201 boundaries/outcomes; each ends
-with 28 actors/97 outcomes and no page/AI-step errors. Three qualified marked profile pairs; zero production/unmarked
-pairs. Median synchronous UPDATE total: reference 3,168.40 / candidate 3,159.50 ms; median per-run p95: 7.40 / 6.60 ms.
-Diagnostic-owner exclusive CPU mean: 694.93 +/- 16.96 / 711.13 +/- 29.09 ms; exclusive estimated cumulative allocation:
-187.99 +/- 1.04 / 187.30 +/- 2.29 decimal MB. These samples omit callees/unmapped work and are not disabled-path
-budgets. CPU interval 1,000 microseconds; heap interval 32,768 bytes including collected objects. Live production
-ignores a valid marker/preset; unmarked development has no test hosts and exposes two different ordinary seed/ID pairs.
-No captured startup errors. Prior comparator 40/native 718-case and build evidence remains valid because executable
-bytes are unchanged. Shipping code gzip remains +861 (+0.0540%), 40 diagnostic inputs/114,606 raw bytes.
+**Evidence:** three ordinary and three profiled pairs per capture-off mode; all 28 worlds end with 28 actors/97
+outcomes and no page/AI-step errors. CPU interval 1,000 microseconds; heap interval 32,768 bytes. Median UPDATE total:
+unmarked reference 2,271.50/candidate 2,304.80 ms; production 2,693.70/2,798.30 ms. Production application exclusive
+CPU means 3,358.48/3,536.55 ms (+5.30%); per-run p95 means 6.60/6.63 ms. Paired UPDATE deltas +104.60/+390.10/-1.10
+ms need investigation, not a diagnostic-hook attribution or budget verdict. Development diagnostic-owner CPU has
+no samples; candidate owner allocation has no samples (not zero-cost proof). Production owner attribution lacks
+maps. Fresh browsers do not retain warm VM/JIT state; app self samples are not complete simulation CPU.
 
-**Provenance:** clean base/remote `b38637e144cd4cf5735c582dc81a6fb902a9d317`; the containing commit owns this batch.
+**Provenance:** clean base/remote `6b2b97ccff32ce4d9e18fcb2a0acccc4de17d417`; the containing commit owns this batch.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify remote on resume.
-Preserve unrelated Nx merge `59f72e037` and the user's earlier comment-rule removal. The
-[marked profiling checkpoint](follow-ups/runtime-matrix-ci.md#final-gate-marked-profiling-checkpoint-2026-10-10-scoped-costs-checked)
-owns exact commands/scope/blockers. Ignored `tmp/ai-plans/759-validation/cost-batch/marked-profile/profile-summary.json`
-(34,639 bytes), `mode-startup-summary.json` and `closure-manifest.json` are the bounded resume packet. Repaired
-comparator identity/builds remain in `repair-aligned/reference-qualification.json`; candidate bundle source is still
-`2ad887586`. The protected detached `af9d078d9` retains exact 11 compile-only files/clean real index; three tracked
-overlays and both development inventories checked unchanged. No native overlay was applied in this batch.
+Preserve unrelated Nx merge `59f72e037` and earlier comment-rule removal. The
+[capture-off profiling checkpoint](follow-ups/runtime-matrix-ci.md#final-gate-capture-off-profiling-checkpoint-2026-10-10-scoped-costs-checked) owns exact commands/scope.
+Ignored `tmp/ai-plans/759-validation/cost-batch/normal-mode/profile-summary.json` (58751 bytes),
+`normal-equivalence-summary.json`, `save-setup-summary.json` and `closure-manifest.json` are the bounded resume packet.
+Comparator/build identity remains in `repair-aligned/reference-qualification.json`; candidate bundle source is
+`2ad887586`. Protected detached af9 retains exact 11 compile-only files/clean real index; no native overlay applied.
+Both development/production inventories and all three overlays remain unchanged. Shipping delta stays +861 gzip.
 
-**Next action / why:** GPT-6.1 Sol / high for one combined normal-mode setup/read qualification and profiling batch.
-Inspect the existing native save/Load UI route first: `loadSavedGameData` retains saved seed/instance metadata.
-A reviewed zero-tick native save plus external read-only debugger/profiler observation may provide a common route;
-neither setup nor production observation is implemented/proven yet. Qualify full production/unmarked trajectories/
-outcomes before one warm-up per source and three alternating CPU/allocation pairs per mode. Isolate actual simulation/
-hook work and report resolution limits; current marked UPDATE/self samples do not supply whole-CPU budgets.
-Do not add unconditional capture/game hooks, mutate a running world to force parity, freeze Date, filter transient
-orders, truncate a matching prefix or replace the original pinned policy. Player-AI settling is not all pawn/path
-quiescence; water ownership/wall TTL and saved WAIT phase remain limitations. Preserve full oracles/native bounds/
-useful nulls. Full PRO authority/capacity still fails; M11 blocked, M12 open (cross-player commitments), broader
-server/socket/save/restart/hash/calibration and machinery necessity review remain. Commit/push, verify, pause.
+**Next action / why:** GPT-6.1 Sol / high to qualify retained-runtime warm-up/reset and isolate simulation/hook CPU before accepting budgets.
+Use the proven native save/Load + external scene observation, review a supported reset in the retained browser/realm,
+and requalify full trajectories before warm measurements. Trace real native tick/async work and the production
+increase; application samples include framework work and omit builtins/GC/other work. Original pinned policy stays
+blocked separately. No unconditional capture/game hook, Date freeze, running-world identity repair, field filtering
+or matching prefix. Player-AI settling is not pawn/path quiescence; water/wall TTL and saved WAIT phase remain limits.
+Full PRO authority/capacity still fails; M11 blocked, M12 open (cross-player commitments), broader server/socket/
+save/restart/hash/calibration and final machinery necessity review remain. Commit/push/verify and pause.
 
 **Earlier checked / repaired — why it is used:** 18 capture/world specs, 15 component/movement/lifecycle specs and five
 campaign specs now use checked authored entries, current Sandhold/map/hook identities, actual native GameObjects
@@ -181,14 +176,11 @@ Campaign suppression is explicit and may accompany a full native return. Old/unk
 to the latest task. Whole known piles may retain several earlier gathering attempts; no invented FIFO/partial allocation.
 A credit proves a scoped balance change, independently from cargo lineage, accepted task/demand and continuous usefulness.
 
-**Next action — why:** qualify normal-mode setup/read access and measure CPU/allocation on **GPT-6.1 Sol / high**,
-following the marked profiling checkpoint. Three full marked profile pairs pass with scoped CPU/allocation evidence;
-production/unmarked pairs remain blocked by ordinary identity/setup/read access. Review the existing native save/Load
-route and external read-only production observation, then qualify full trajectories before warm-up and three alternating
-pairs per remaining mode. Preserve original pinned policy, M12 commitments and all clock/terrain/lifecycle limits.
-Measure the unchanged C8 budgets and group only evidence-backed repairs.
-Keep C1–C8, useful nulls and authority oracles intact; no capture reset or planner-input replacement. M11/M12 remain open.
-Pause after the next coherent checked and published batch.
+**Next action — why:** qualify retained-runtime warm-up/reset and isolate simulation/hook CPU before accepting budgets on **GPT-6.1 Sol / high**.
+Common save/Load and external production read access now qualify full capture-off trajectories; three scoped
+profile pairs per mode pass. Investigate production cost variation and retained-VM warming before accepting C8.
+Preserve original pinned policy, native oracles/useful nulls and M11/M12/lifecycle obligations. Pause after the next
+coherent checked and published batch.
 
 | Dependency                                            | State                                                                                                     | Purpose / next boundary                                                                                                                                                                                  |
 | ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -214,12 +206,12 @@ Pause after the next coherent checked and published batch.
 | Binding/restore/roster boundaries (52)                | Scoped native/protocol controls pass                                                                      | Fence replacement and brief roster churn; wider integration remains                                                                                                                                      |
 | Consumed/accepting liability diagnostics (53)         | Focused native/synthetic controls pass                                                                    | Explain new claims while preserving consumed input; browser integration remains                                                                                                                          |
 | Real producer/report and operational controls (54)    | Full native diagnostic bridge passes; release proof/cost open                                             | All 611 selections retained; legal roster and native outcomes repaired before paired cost                                                                                                                |
-| Combined implementation review (M10)                  | K4/K5 compatibility, derived C8 compilation and native initial equivalence checked; full gate in progress | Native 718/comparator 40 checked; three full marked profile pairs and scoped CPU/allocation measured. Live capture-off guards pass; normal-mode equivalence, whole CPU/original acceptance/full PRO open |
+| Combined implementation review (M10)                  | K4/K5 compatibility, derived C8 compilation and native initial equivalence checked; full gate in progress | Native 718/comparator 40 and all-mode scoped profiles checked. Capture-off save/read and full trajectories qualified; retained-VM/whole CPU/original acceptance/full PRO open                            |
 | Missing-control authoring                             | Complete; native/report controls executed                                                                 | Real 16-decision short replay passes; broader browser authority/setup and cost remain                                                                                                                    |
 | Complete need/lifetime history and useful throughput  | Open; activation still blocked                                                                            | Public aliases and every relied-on mutation need authority before useful windows/real recipes                                                                                                            |
 | Continuous useful capacity                            | Open                                                                                                      | Complete mutation authority for readiness, supply, access/safety and service                                                                                                                             |
 | Full production adapter/oracles/setup/strategy        | Open                                                                                                      | Independent PRO-03/06/07 assertions                                                                                                                                                                      |
-| Executable validation                                 | Final gate active, partially checked                                                                      | Native 718/type/build and marked profile pairs pass; scoped CPU/allocation recorded. K5 release fails; normal-mode workload/disabled costs, original acceptance and wider lifecycle/calibration open     |
+| Executable validation                                 | Final gate active, partially checked                                                                      | Native 718/type/build and all-mode scoped profile pairs pass; capture-off setup/read qualified. K5 release fails; retained-VM/disabled budgets, original acceptance and wider lifecycle/calibration open |
 
 Source Implementation Review, Omission Audit and separate Final Closure Audits are in the current checkpoint.
 Prior `resourceCredits` preserves actual scoped application independently from complete whole-pile contributors;
@@ -687,20 +679,20 @@ until one clean replacement run is necessary; do not reconstruct or dump the old
 gate. Run required checks at stable batch boundaries, repair their actual causes and retain exact evidence.
 Unexecuted authoring remains unverified; runtime tuning and legacy retirement still require their owning evidence.
 
-| Order                | Issue                                                                                                                            | State         | Next boundary                                                                                                                                                                  | Model / effort                                                    |
-| -------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------- |
-| 1 / as needed        | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821)                                                                  | `partial`     | Split only owners blocking the selected batch                                                                                                                                  | Stay Sol medium; optional Luna high                               |
-| 2                    | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829)                                                                  | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof                                                                                                              | GPT-6.1 Sol, medium                                               |
-| 3                    | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827)                                                                  | `in_progress` | Finish pressure/recovery policy; defer victory proof                                                                                                                           | GPT-6.1 Sol, medium                                               |
-| 4 / next boundary    | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Three full marked profile pairs/scoped costs checked; live capture-off guards pass. Next normal-mode setup/read qualification and profiling; original acceptance/full PRO open | GPT-6.1 Sol / high                                                |
-| 5 / paired           | #815 / #816                                                                                                                      | `in_progress` | Remaining family contracts, focused fixtures, frozen maps and continuous-match tier                                                                                            | Sol medium; optional Luna high for established cases              |
-| 6                    | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819)                                                                  | `in_progress` | Exact-once interruption, terminal and re-entry parity                                                                                                                          | GPT-6.1 Sol, medium                                               |
-| 7                    | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823)                                                                  | `partial`     | Generation fencing, phase restore/replay and cleanup cases                                                                                                                     | GPT-6.1 Sol, medium                                               |
-| 8                    | #821                                                                                                                             | `partial`     | Remaining splits/renames and consumer updates                                                                                                                                  | Stay Sol medium; optional Luna high                               |
-| 9 / prepare          | [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828), [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `partial`     | Review probes/opponent fixtures; measurements deferred                                                                                                                         | GPT-6.1 Sol, medium for contracts; Luna high for specified wiring |
-| Final gate           | Required issues above                                                                                                            | `in_progress` | Native 718/type/build, comparator 40 and marked profile pairs checked; scoped costs recorded. K5 failure retained; normal-mode qualification/budgets and wider gate pending    | GPT-6.1 Sol / high for normal-mode qualification/profiling        |
-| After parity         | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820)                                                                  | `not_started` | Evidence-backed legacy retirement                                                                                                                                              | GPT-6.1 Sol, medium decision; Luna high cleanup                   |
-| Before final closure | Existing machinery / completion map                                                                                              | `not_started` | Evaluate every system's demonstrated need and cost; keep, simplify or propose retirement while preserving required proof                                                       | GPT-6.1 Sol / high for combined review                            |
+| Order                | Issue                                                                                                                            | State         | Next boundary                                                                                                                                                                    | Model / effort                                                    |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| 1 / as needed        | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821)                                                                  | `partial`     | Split only owners blocking the selected batch                                                                                                                                    | Stay Sol medium; optional Luna high                               |
+| 2                    | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829)                                                                  | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof                                                                                                                | GPT-6.1 Sol, medium                                               |
+| 3                    | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827)                                                                  | `in_progress` | Finish pressure/recovery policy; defer victory proof                                                                                                                             | GPT-6.1 Sol, medium                                               |
+| 4 / next boundary    | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | All-mode scoped profile pairs checked; capture-off save/read and full trajectories qualified. Next retained-VM warming/simulation attribution; original acceptance/full PRO open | GPT-6.1 Sol / high                                                |
+| 5 / paired           | #815 / #816                                                                                                                      | `in_progress` | Remaining family contracts, focused fixtures, frozen maps and continuous-match tier                                                                                              | Sol medium; optional Luna high for established cases              |
+| 6                    | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819)                                                                  | `in_progress` | Exact-once interruption, terminal and re-entry parity                                                                                                                            | GPT-6.1 Sol, medium                                               |
+| 7                    | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823)                                                                  | `partial`     | Generation fencing, phase restore/replay and cleanup cases                                                                                                                       | GPT-6.1 Sol, medium                                               |
+| 8                    | #821                                                                                                                             | `partial`     | Remaining splits/renames and consumer updates                                                                                                                                    | Stay Sol medium; optional Luna high                               |
+| 9 / prepare          | [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828), [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `partial`     | Review probes/opponent fixtures; measurements deferred                                                                                                                           | GPT-6.1 Sol, medium for contracts; Luna high for specified wiring |
+| Final gate           | Required issues above                                                                                                            | `in_progress` | Native 718/type/build, comparator 40 and all-mode scoped profiles checked. K5 failure retained; retained-VM/whole CPU/disabled budgets and wider gate pending                    | GPT-6.1 Sol / high for retained-runtime/simulation profiling      |
+| After parity         | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820)                                                                  | `not_started` | Evidence-backed legacy retirement                                                                                                                                                | GPT-6.1 Sol, medium decision; Luna high cleanup                   |
+| Before final closure | Existing machinery / completion map                                                                                              | `not_started` | Evaluate every system's demonstrated need and cost; keep, simplify or propose retirement while preserving required proof                                                         | GPT-6.1 Sol / high for combined review                            |
 
 ## Model batches and pause contract
 
@@ -716,8 +708,8 @@ empty-observer profiles. Prior derived-reference size deltas are historical afte
 The Build Stop/range/cache chain is captured, ground routes isolated, and two full repaired candidate repeats match.
 Native WAIT now uses actual active elapsed simulation delta; player-AI settling still does not prove native action quiescence.
 The full native 147-suite/718-case run and two fresh full candidate repeats pass. The reviewed four-owner comparator
-now qualifies three full marked profile pairs with scoped CPU/allocation samples; live capture-off starts pass.
-Qualify normal-mode setup/read access and profile remaining modes/whole simulation; original pinned acceptance stays blocked;
+qualifies marked and capture-off profile pairs with scoped CPU/allocation samples; common native save/Load
+and external production read access pass. Qualify retained-VM warming and whole simulation; original acceptance stays blocked;
 broader server/socket/save/restart/hash/calibration evidence remains pending.
 Full useful-service authority M11 remains blocked, and production/gameplay proof M12
 remains open; those obligations are not erased by the bounded diagnostic finish line.
@@ -725,12 +717,12 @@ Design on GPT-6.1 Sol / high; implement settled contracts on Luna / high; return
 and unresolved architecture/causal questions or difficult final-gate failures. Actual host settings remain unknown.
 No automatic model switch, subagent or new chat is authorized by this policy. Executable final-gate validation is now active.
 
-| Responsibility                                                                          | Model / effort                                                                            | Boundary                                                                                                                                                               |
-| --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Consolidated design, scope/value, shared/per-owner contracts and acceptance (50)        | GPT-6.1 Sol / high                                                                        | Authored/source-reviewed                                                                                                                                               |
-| Settled implementation, compliance cleanup, wiring, fixtures and test authoring (51–54) | Luna / high                                                                               | Authored; scoped native/report controls now checked, wider integration remains                                                                                         |
-| Combined implementation source review and unresolved contract conflicts (M10)           | GPT-6.1 Sol / high                                                                        | Source review/controls complete; E2E typing and 461 production/queue/resource/output controls pass, full gate in progress                                              |
-| Final executable gate and repairs                                                       | GPT-6.1 Sol / high for browser/cost causal investigation; Luna / high for settled repairs | Native 718/comparator 40 and marked profile pairs checked; scoped costs/startup guards recorded. Next normal-mode qualification/budgets and production/lifecycle proof |
+| Responsibility                                                                          | Model / effort                                                                            | Boundary                                                                                                                                                                            |
+| --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Consolidated design, scope/value, shared/per-owner contracts and acceptance (50)        | GPT-6.1 Sol / high                                                                        | Authored/source-reviewed                                                                                                                                                            |
+| Settled implementation, compliance cleanup, wiring, fixtures and test authoring (51–54) | Luna / high                                                                               | Authored; scoped native/report controls now checked, wider integration remains                                                                                                      |
+| Combined implementation source review and unresolved contract conflicts (M10)           | GPT-6.1 Sol / high                                                                        | Source review/controls complete; E2E typing and 461 production/queue/resource/output controls pass, full gate in progress                                                           |
+| Final executable gate and repairs                                                       | GPT-6.1 Sol / high for browser/cost causal investigation; Luna / high for settled repairs | Native 718/comparator 40 and all-mode scoped profiles checked; capture-off save/read/full trajectories qualified. Next retained-VM/whole CPU/budgets and production/lifecycle proof |
 
 - The design must produce a finite list of substantial implementation passes and completion criteria. A pass may contain
   several related owners and coherent commits. Do not create a new design stage or model pause for each file, helper,
@@ -780,23 +772,19 @@ No automatic model switch, subagent or new chat is authorized by this policy. Ex
 
 Copyable next-chat prompt:
 
-> Read docs/ai/759-skirmish-ai/HANDOFF.md and the marked profiling checkpoint in runtime-matrix-ci.md.
-> The exact four-owner comparator/40 native cases and unchanged candidate 718-case evidence remain valid.
-> Eight full marked 1,200-tick worlds (two warm-ups/three profiled pairs) match every boundary/outcome.
-> Scoped UPDATE timings, exclusive source-mapped CPU/estimated allocations and variance are retained in
-> tmp/ai-plans/759-validation/cost-batch/marked-profile/profile-summary.json. Four live capture-off starts
-> show no diagnostic host; production ignores the valid marker/preset and has no Angular debug game handle.
-> Ordinary unmarked starts have different random seed/instance IDs. Zero qualified production/unmarked pairs;
-> whole-simulation/disabled budgets and original pinned acceptance remain blocked. Shipping delta stays +861 gzip.
-> On GPT-6.1 Sol / high, qualify a common normal-mode setup/read route first. Inspect native save/Load UI
-> (saved metadata retains seed/instance ID) and external read-only production debugger/profiler observation.
-> These routes are unimplemented/unproven; require full trajectories/outcomes before warm-up and three
-> alternating pairs per remaining mode, isolate simulation/hook work and report resolution limits.
-> No unconditional capture/game hook, running-world mutation, frozen Date, state filtering, matching prefix or
-> silent original-policy substitution. Preserve source/bundle hashes, full oracles/native bounds/useful nulls.
-> Water/wall TTL, pawn/path settling, saved WAIT phase, full PRO authority/capacity, M11/M12/commitments and
-> broader server/socket/restart/hash/calibration/machinery-review remain mandatory. Review/audit, update docs,
-> commit/push/verify exact remote and pause.
+> Read docs/ai/759-skirmish-ai/HANDOFF.md and the capture-off profiling checkpoint in runtime-matrix-ci.md.
+> Native 718/comparator 40 and unchanged builds remain valid. The common unedited native tick-zero quicksave,
+> supported Load UI and external bootstrap scene handle now qualify production/unmarked complete trajectories.
+> All 28 capture-off worlds match every 1,201 boundary/outcome history; three profiled pairs per mode checked.
+> Read normal-mode/profile-summary.json and closure-manifest.json first, not raw worlds. Fresh browsers do not
+> retain VM/JIT warming; app self samples are not whole simulation CPU, production owner mapping unavailable.
+> Production means are higher; paired UPDATE/p95 variation needs native causal attribution, not speculative fixes.
+> On GPT-6.1 Sol / high, qualify a supported retained-runtime warm-up/reset and isolate native tick/async/hook costs.
+> Requalify full trajectories before warm profiling. Original pinned policy stays blocked separately; +861 gzip.
+> No unconditional capture/game hook, Date freeze, running-world identity repair, field filtering or matching prefix.
+> Preserve bounds/oracles/useful nulls, water/wall TTL, pawn/path settling and saved WAIT phase limitations.
+> Full PRO authority/capacity, M11/M12/commitments, server/socket/save/restart/hash/calibration and machinery review
+> remain mandatory. Review/audit, update docs, commit/push/verify exact remote and pause.
 
 Optional [#822](https://github.com/JernejHabjan/fuzzy-waddle/issues/822) owns a future island map and natural
 transport-required runtime. It is detached from #759 and does not block core readiness.
