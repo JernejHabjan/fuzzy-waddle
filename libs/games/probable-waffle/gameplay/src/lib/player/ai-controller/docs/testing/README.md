@@ -63,6 +63,16 @@ diverge: a later gameplay repair can change the workload even when both initial 
 a causal difference, not paired performance evidence. Keep any behavior-aligned measurement reference explicitly
 separate from the original pinned acceptance reference.
 
+A reviewed behavior comparator may carry exact native correctness repairs on top of its compile compatibility
+overlay. Identify every excluded owner and both overlay digests, verify each repaired owner's emitted code against
+the candidate, execute its native regressions, and restore the historical checkout after building. Movement failure
+cleanup, positive resource progress, ground-route ownership and pawn WAIT timing must all agree before these builds
+can serve as a shared workload. This does not replace the original pinned acceptance policy. Preset `sourceRevision`
+accepts the actual 40-character Git SHA; put the composite overlay identity in the external qualification manifest.
+Qualify complete trajectories and native outcomes in repeated alternating pairs before collecting costs. Marked
+accelerated equivalence covers that selected workload; production/unmarked equivalence, normal frames and lifecycle
+continuation need their own evidence. Shipping size alone cannot establish CPU or allocation budgets.
+
 Player-controller decision settling does not establish quiescence of pawn behavior-tree actions or path promises.
 Inspect each native action's clock before treating an accelerated replay as a deterministic cost workload.
 Mistreevous WAIT nodes use wall time when `BehaviourTreeOptions.getDeltaTime` is absent, even if the caller steps on
