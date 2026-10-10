@@ -231,6 +231,31 @@ export class AiBaseManager implements AiProposalManagerV1 {
         });
       }
     }
+    intents.push(...this.proposeExpansion(observation, owned, anchors, bases, state, catalog));
+    return {
+      managerId: this.managerId,
+      lane: "essential_economy",
+      evaluated: true,
+      intents,
+      reasons: [
+        `bases:${bases.filter((base) => base.lifecycle === "active").length}`,
+        `local_resource:${localResourceValue}`,
+        `expansion:${expansionTrigger ?? "not_needed"}`,
+        `placement_authority:shared_command_application`
+      ],
+      statePatch: { bases }
+    };
+  }
+  /** Converts a reserved candidate into a shared construction proposal; native application revalidates the site. */
+  private proposeExpansion(
+    observation: AiObservationV1,
+    owned: readonly AiObservedActorV1[],
+    anchors: readonly AiObservedActorV1[],
+    bases: readonly AiBaseStateV1[],
+    state: AiBrainStateV1,
+    catalog: AiCapabilityCatalogV1
+  ): readonly AiIntentV1[] {
+    const intents: AiIntentV1[] = [];
     const expansion = bases.find(
       (base) => base.lifecycle === "proposed" && base.anchorPosition && base.reservedSiteKey
     );
@@ -297,18 +322,6 @@ export class AiBaseManager implements AiProposalManagerV1 {
         });
       }
     }
-    return {
-      managerId: this.managerId,
-      lane: "essential_economy",
-      evaluated: true,
-      intents,
-      reasons: [
-        `bases:${bases.filter((base) => base.lifecycle === "active").length}`,
-        `local_resource:${localResourceValue}`,
-        `expansion:${expansionTrigger ?? "not_needed"}`,
-        `placement_authority:shared_command_application`
-      ],
-      statePatch: { bases }
-    };
+    return intents;
   }
 }
