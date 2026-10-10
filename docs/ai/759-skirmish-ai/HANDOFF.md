@@ -12,14 +12,17 @@ Recommendations do not change settings. Actual host model/effort unknown; next r
 User added an [end-of-gate machinery necessity review](#end-of-gate-machinery-necessity-review) before final closure:
 evaluate the existing systems against their real consumers, simpler alternatives and measured costs.
 
-**Current step:** C8 derived-reference qualification checked; equivalent native-world pairing is next.
-Original `af9d078d9` still has its recorded 31 production compiler diagnostics. A replayable 11-file compatibility
-patch now makes a separately identified derived reference build without importing later gameplay repairs.
-Seven files emit identical JavaScript after the three intended syntax repairs; four add dense-array/private-state guards.
-The original source and failed-build evidence remain distinct. No candidate production source, configuration, recipe,
-oracle or useful activation changed. This closes the compile prerequisite, not C8's native-world acceptance.
+**Current step:** C8 native initial-world equivalence checked; trajectory diverges at tick 22, so cost pairing is blocked.
+Three alternating marked-developer qualification pairs use the same legal three-player Ember roster and fixed instance
+identity. All six worlds match initially and through tick 21; only the candidate terminates the same refused Move at 22.
+Each source repeats exactly through tick 80. This is the existing native repair, not new performance evidence.
+Two cross-player commitment collisions also reproduce in both sources and remain an M12 authority defect.
+No production source, configuration, recipe, oracle, useful activation or reference patch changed.
 
-**Evidence:** doctor/context and derived production build pass; 22 focused Phaser cases pass. Coverage/rally source
+**Evidence:** doctor/context and both development builds pass; six 80-tick native qualification replays have zero page
+errors and settled AI boundaries. Initial actor salt now uses the existing validated preset seam; no balance/actor/order
+change or post-hoc ID normalization. Zero qualified cost pairs; native p95/CPU, allocation and marked-hook cost remain
+unavailable. Earlier derived production build and 22 focused Phaser cases pass. Coverage/rally source
 differentials and 15 queue-completion differential cases preserve supported outcomes. Planner checks: 25 pass, one old
 throughput fixture fails identically with original and derived gameplay sources; it was not weakened or patched.
 Derived all-app reachable code is 1,594,251 gzip bytes; candidate is 1,595,081: +830 bytes / +0.052062%, below 0.5%
@@ -34,14 +37,17 @@ Zero qualified native pairs; native p95, marked hook cost and original-source gz
 Prior K5 native 702 tests/build and all 611-decision bridge checks remain scoped evidence; the full match still fails
 production contract/authority and military-producer capacity. Useful fields remain null; M11 blocked, M12 open.
 
-**Provenance:** base/remote `6af776cdb058651ad66b3ec3fafd74f13d4ddd56` was clean; the containing commit owns
+**Provenance:** base/remote `8fa4ac588e6bb8f133bcdbf84a6fae6af8cd5ee7` was clean; the containing commit owns
 this batch. Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`;
 verify remote on resume. Preserve unrelated Nx merge `59f72e037`. User removed the comment-permission rule. See the
+[native equivalence checkpoint](follow-ups/runtime-matrix-ci.md#final-gate-native-equivalence-checkpoint-2026-10-10-trajectory-divergence-checked)
+for exact setup, repeated state/bundle hashes, first causal divergence and the proposed reference scope. The
 [reference qualification checkpoint](follow-ups/runtime-matrix-ci.md#final-gate-reference-qualification-checkpoint-2026-10-10-compile-prerequisite-checked)
-for the tracked patch, exact source/build/bundle hashes, equivalence limits and remaining acceptance rows. The earlier
+owns the tracked patch, exact source/build/bundle hashes, compile-equivalence limits and remaining acceptance rows. The earlier
 [cost prerequisite checkpoint](follow-ups/runtime-matrix-ci.md#final-gate-cost-prerequisite-checkpoint-2026-10-09-paired-c8-blocked)
 retains the original compiler failure and isolated profiles.
-Ignored `tmp/ai-plans/759-validation/cost-batch/reference-closure-audit.json` owns current qualification hashes;
+Ignored `tmp/ai-plans/759-validation/cost-batch/native-equivalence-manifest.json` owns the six replay/build hashes;
+`native-equivalence-summary.json` is only 4,230 bytes. `reference-closure-audit.json` retains compile qualification hashes;
 `cost-evidence-manifest.json` retains the prior isolated evidence. No raw profiles need enter context.
 The protected measurement checkout now carries only the exact qualification patch; its detached
 HEAD remains `af9d078d9`. Reuse it only after patch/source identity checks; never call it the original clean source.
@@ -53,16 +59,18 @@ owns timing/transport repairs and the original failure; the
 [gameplay checkpoint](follow-ups/runtime-matrix-ci.md#final-gate-combined-gameplay-checkpoint-2026-10-09-stage-checked)
 owns K4 evidence and its two production fixes.
 
-**Next action / why:** on GPT-6.1 Sol / high, establish equivalent native-world pairing against the qualified derived
-reference so normal-play CPU/allocation and marked-hook cost can be measured. Verify the tracked patch hash
-`d9a65f6afed24f2b068d07f8b234dcc06df0da1938a21815526d0739a5a0cecb` and the qualification checkpoint first.
-The compilation/dense-array equivalence review does not prove whole-world equivalence: use a legal matching roster,
-map, initial population, commands and tick ceiling, and account for later Movement/Gather/roster repairs explicitly.
-If equivalent setup cannot be established, retain the blocked native comparison and present a concrete scope decision.
-The original pinned comparison stays blocked; do not silently substitute `0641e9ed5` or borrow a candidate bundle.
-Use a legal equivalent native world,
-one warm-up and three alternating production/unmarked/marked pairs with isolated CPU/allocations, variance and native
-state/outcome/source/bundle digests. Current isolated probes and natural matches cannot satisfy those pairs.
+**Next action / why:** on GPT-6.1 Sol / high, qualify a separately identified behavior-aligned diagnostic comparator
+so the diagnostic delta can be isolated from the existing native Move/Gather repairs. Read the native equivalence
+checkpoint's scope decision; preserve the current compile-derived reference and original pinned failure evidence.
+Review only the already-reviewed refused-Move and actual Gather/drop-off progress hunks, their excluded cost and native
+regressions; no wholesale candidate-owner copy or planner/frame/report changes. Require equal native boundaries and
+outcomes through a meaningful workload before warm-up plus three alternating production/unmarked/marked cost pairs.
+If another behavior differs, retain its first cause and stop speculative reference patching. Measurements against that
+new comparator do not satisfy original pinned acceptance without an explicit reference-policy decision. No reference
+policy change or new comparator was applied this batch. The both-source cross-player commitment defect remains M12 work.
+Verify existing patch SHA `d9a65f6afed24f2b068d07f8b234dcc06df0da1938a21815526d0739a5a0cecb` before reuse.
+Do not silently substitute `0641e9ed5`, borrow bundles, shorten to tick 21 or remove the native fix to force equivalence.
+Current isolated probes, untimed qualifications and natural matches cannot satisfy cost pairs.
 Preserve full oracles, native bounds and useful nulls; M11/M12 and the end-of-gate necessity review remain mandatory.
 Commit/push the coherent checked batch and pause.
 
@@ -193,43 +201,44 @@ Campaign suppression is explicit and may accompany a full native return. Old/unk
 to the latest task. Whole known piles may retain several earlier gathering attempts; no invented FIFO/partial allocation.
 A credit proves a scoped balance change, independently from cargo lineage, accepted task/demand and continuous usefulness.
 
-**Next action — why:** measure paired C8 normal-play and marked capture cost on
-**GPT-6.1 Sol / high**, using the qualification checkpoint and explicitly identified derived baseline. Native causal repairs now retain all 611
-decisions and a legal roster; full production authority/capacity still fails. A legal equivalent paired setup is required
-before interpreting performance. Use measurements to target justified cost repairs in the same coherent batch.
+**Next action — why:** qualify a separately identified behavior-aligned C8 diagnostic reference on
+**GPT-6.1 Sol / high**, following the native equivalence checkpoint. The legal initial world is now identical, but the
+existing refused-Move repair causes tick-22 divergence; three repeated untimed qualifications cannot justify a cost
+comparison. Preserve original pinned acceptance as blocked and the both-source player-commitment collision as M12 work.
+Once native trajectories match, measure the unchanged C8 budgets and group only evidence-backed cost repairs.
 Keep C1–C8, useful nulls and authority oracles intact; no capture reset or planner-input replacement. M11/M12 remain open.
 Pause after the next coherent checked and published batch.
 
-| Dependency | State | Purpose / next boundary |
-| --- | --- | --- |
-| Native movement and service attempt ownership (21–28) | Authored, unverified | Earlier task/order identity and lifetime boundaries |
-| Gatherer prerequisite and cargo contract (29) | Authored, unverified | Compliant focused native owners before hooks |
-| Native cargo/application capture (30) | Authored, unverified | Exact pile, beneficiary and scoped balance change |
-| Strict cargo/credit projection (31) | Authored, unverified | Connect known contributors without inferring task fulfillment |
-| Useful service interval contract (32) | Authored, unverified | Define what income, aggregate need and retained throughput can prove |
-| Selected need (33) | Authored, unverified | Actual accepted aggregate selection, separate from newer forecasts |
-| Supported coverage / loss (34) | Authored, unverified | Bounded cohorts/read frontiers and irreversible observation loss |
-| Interval diagnostics (35) | Authored, unverified | Fixed windows, unique credits and capped aggregate potential through reports |
-| Beneficiary/need authority design (36) | Authored; implementation open | Native writers, read/application positions, disjoint liabilities and conservative no-reopening contract |
-| Recipient journal and selected-need replay (37–38) | Authored, unverified; partial authority | Actual read/frame/native operation and conditional observed accounting bounds |
-| Coverage activation audit (39) | Source audit documented | Audited missing writers and actual producer timing |
-| Causal accounting / application windows (40–41) | Authored, unverified; pause reached | Exact incoming-read/admission boundaries and distinct native application windows |
-| Beneficiary / need / lifetime ownership design (42) | Authored, source-reviewed only | Named route/identity/loss contract and explicit alias limitations; no new runtime behavior |
-| Owner presentation and conversion fence (43–44) | Authored, unverified; pause reached | Compliant owner split, then passive pre-index loss to close old resource history |
-| Health presentation and mutation fence (45–46) | Authored, unverified; pause reached | Compliant health split, then pre-mutation loss before callbacks can observe changed readiness |
-| Construction / repair health writer contract (47) | Source design authored; pause reached | Settled silent health/work/lifecycle boundaries and actual technology caller |
-| Construction presentation and writer fences (48–49) | Authored, unverified; pause reached | Separate sound work and passive pre-write loss before construction/repair readiness changes |
-| Consolidated remaining-machinery design (50) | Authored/source-reviewed; pause reached | Exact C1–C8 contracts, M01–M13 completion map and finite bounded queue |
-| Named supply/container boundaries (51) | Native controls pass in K1 | Reject stale reads before stock/capacity/boarding changes; broader gameplay evidence remains |
-| Binding/restore/roster boundaries (52) | Scoped native/protocol controls pass | Fence replacement and brief roster churn; wider integration remains |
-| Consumed/accepting liability diagnostics (53) | Focused native/synthetic controls pass | Explain new claims while preserving consumed input; browser integration remains |
-| Real producer/report and operational controls (54) | Full native diagnostic bridge passes; release proof/cost open | All 611 selections retained; legal roster and native outcomes repaired before paired cost |
-| Combined implementation review (M10) | K4/K5 compatibility and derived C8 compile prerequisite checked; full gate in progress | Prior native 702/gameplay 274/report 461; derived reference builds, size delta +0.052062%; native world equivalence/costs and full production proof open |
-| Missing-control authoring | Complete; native/report controls executed | Real 16-decision short replay passes; broader browser authority/setup and cost remain |
-| Complete need/lifetime history and useful throughput | Open; activation still blocked | Public aliases and every relied-on mutation need authority before useful windows/real recipes |
-| Continuous useful capacity | Open | Complete mutation authority for readiness, supply, access/safety and service |
-| Full production adapter/oracles/setup/strategy | Open | Independent PRO-03/06/07 assertions |
-| Executable validation | Final gate active, partially checked | Compatibility passes; K5 diagnostic release fails; C8 derived reference builds, native pairing pending; original pinned comparison blocked; broader server/socket/save/restart/hash/calibration remain |
+| Dependency                                            | State                                                                                                     | Purpose / next boundary                                                                                                                                                                      |
+| ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Native movement and service attempt ownership (21–28) | Authored, unverified                                                                                      | Earlier task/order identity and lifetime boundaries                                                                                                                                          |
+| Gatherer prerequisite and cargo contract (29)         | Authored, unverified                                                                                      | Compliant focused native owners before hooks                                                                                                                                                 |
+| Native cargo/application capture (30)                 | Authored, unverified                                                                                      | Exact pile, beneficiary and scoped balance change                                                                                                                                            |
+| Strict cargo/credit projection (31)                   | Authored, unverified                                                                                      | Connect known contributors without inferring task fulfillment                                                                                                                                |
+| Useful service interval contract (32)                 | Authored, unverified                                                                                      | Define what income, aggregate need and retained throughput can prove                                                                                                                         |
+| Selected need (33)                                    | Authored, unverified                                                                                      | Actual accepted aggregate selection, separate from newer forecasts                                                                                                                           |
+| Supported coverage / loss (34)                        | Authored, unverified                                                                                      | Bounded cohorts/read frontiers and irreversible observation loss                                                                                                                             |
+| Interval diagnostics (35)                             | Authored, unverified                                                                                      | Fixed windows, unique credits and capped aggregate potential through reports                                                                                                                 |
+| Beneficiary/need authority design (36)                | Authored; implementation open                                                                             | Native writers, read/application positions, disjoint liabilities and conservative no-reopening contract                                                                                      |
+| Recipient journal and selected-need replay (37–38)    | Authored, unverified; partial authority                                                                   | Actual read/frame/native operation and conditional observed accounting bounds                                                                                                                |
+| Coverage activation audit (39)                        | Source audit documented                                                                                   | Audited missing writers and actual producer timing                                                                                                                                           |
+| Causal accounting / application windows (40–41)       | Authored, unverified; pause reached                                                                       | Exact incoming-read/admission boundaries and distinct native application windows                                                                                                             |
+| Beneficiary / need / lifetime ownership design (42)   | Authored, source-reviewed only                                                                            | Named route/identity/loss contract and explicit alias limitations; no new runtime behavior                                                                                                   |
+| Owner presentation and conversion fence (43–44)       | Authored, unverified; pause reached                                                                       | Compliant owner split, then passive pre-index loss to close old resource history                                                                                                             |
+| Health presentation and mutation fence (45–46)        | Authored, unverified; pause reached                                                                       | Compliant health split, then pre-mutation loss before callbacks can observe changed readiness                                                                                                |
+| Construction / repair health writer contract (47)     | Source design authored; pause reached                                                                     | Settled silent health/work/lifecycle boundaries and actual technology caller                                                                                                                 |
+| Construction presentation and writer fences (48–49)   | Authored, unverified; pause reached                                                                       | Separate sound work and passive pre-write loss before construction/repair readiness changes                                                                                                  |
+| Consolidated remaining-machinery design (50)          | Authored/source-reviewed; pause reached                                                                   | Exact C1–C8 contracts, M01–M13 completion map and finite bounded queue                                                                                                                       |
+| Named supply/container boundaries (51)                | Native controls pass in K1                                                                                | Reject stale reads before stock/capacity/boarding changes; broader gameplay evidence remains                                                                                                 |
+| Binding/restore/roster boundaries (52)                | Scoped native/protocol controls pass                                                                      | Fence replacement and brief roster churn; wider integration remains                                                                                                                          |
+| Consumed/accepting liability diagnostics (53)         | Focused native/synthetic controls pass                                                                    | Explain new claims while preserving consumed input; browser integration remains                                                                                                              |
+| Real producer/report and operational controls (54)    | Full native diagnostic bridge passes; release proof/cost open                                             | All 611 selections retained; legal roster and native outcomes repaired before paired cost                                                                                                    |
+| Combined implementation review (M10)                  | K4/K5 compatibility, derived C8 compilation and native initial equivalence checked; full gate in progress | Prior native 702/gameplay 274/report 461; size delta +0.052062%; tick-22 native divergence blocks costs; full production proof open                                                          |
+| Missing-control authoring                             | Complete; native/report controls executed                                                                 | Real 16-decision short replay passes; broader browser authority/setup and cost remain                                                                                                        |
+| Complete need/lifetime history and useful throughput  | Open; activation still blocked                                                                            | Public aliases and every relied-on mutation need authority before useful windows/real recipes                                                                                                |
+| Continuous useful capacity                            | Open                                                                                                      | Complete mutation authority for readiness, supply, access/safety and service                                                                                                                 |
+| Full production adapter/oracles/setup/strategy        | Open                                                                                                      | Independent PRO-03/06/07 assertions                                                                                                                                                          |
+| Executable validation                                 | Final gate active, partially checked                                                                      | Compatibility passes; K5 release fails; C8 initial world matches, native trajectory/costs blocked; original pinned comparison and broader server/socket/save/restart/hash/calibration remain |
 
 Source Implementation Review, Omission Audit and separate Final Closure Audits are in the current checkpoint.
 Prior `resourceCredits` preserves actual scoped application independently from complete whole-pile contributors;
@@ -697,20 +706,20 @@ until one clean replacement run is necessary; do not reconstruct or dump the old
 gate. Run required checks at stable batch boundaries, repair their actual causes and retain exact evidence.
 Unexecuted authoring remains unverified; runtime tuning and legacy retirement still require their owning evidence.
 
-| Order         | Issue                                                           | State         | Next boundary                                                     | Model / effort            |
-| ------------- | --------------------------------------------------------------- | ------------- | ----------------------------------------------------------------- | ------------------------- |
-| 1 / as needed | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821) | `partial` | Split only owners blocking the selected batch | Stay Sol medium; optional Luna high |
-| 2 | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829) | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof | GPT-6.1 Sol, medium |
-| 3 | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827) | `in_progress` | Finish pressure/recovery policy; defer victory proof | GPT-6.1 Sol, medium |
-| 4 / next boundary | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Native/bridge and derived C8 compile prerequisite checked; next qualify equivalent native worlds and measure paired CPU/allocations; full production proof open | GPT-6.1 Sol / high |
-| 5 / paired | #815 / #816 | `in_progress` | Remaining family contracts, focused fixtures, frozen maps and continuous-match tier | Sol medium; optional Luna high for established cases |
-| 6 | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819) | `in_progress` | Exact-once interruption, terminal and re-entry parity | GPT-6.1 Sol, medium |
-| 7 | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823) | `partial` | Generation fencing, phase restore/replay and cleanup cases | GPT-6.1 Sol, medium |
-| 8 | #821 | `partial` | Remaining splits/renames and consumer updates | Stay Sol medium; optional Luna high |
-| 9 / prepare | [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828), [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `partial` | Review probes/opponent fixtures; measurements deferred | GPT-6.1 Sol, medium for contracts; Luna high for specified wiring |
-| Final gate | Required issues above | `in_progress` | Prior native 702/type/build and full bridge checked; K5 release failure retained; derived C8 size delta below limit, native equivalence/pairs pending; wider gate pending | GPT-6.1 Sol / high for native pairing and costs |
-| After parity | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820) | `not_started` | Evidence-backed legacy retirement | GPT-6.1 Sol, medium decision; Luna high cleanup |
-| Before final closure | Existing machinery / completion map | `not_started` | Evaluate every system's demonstrated need and cost; keep, simplify or propose retirement while preserving required proof | GPT-6.1 Sol / high for combined review |
+| Order                | Issue                                                                                                                            | State         | Next boundary                                                                                                                                                                           | Model / effort                                                    |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| 1 / as needed        | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821)                                                                  | `partial`     | Split only owners blocking the selected batch                                                                                                                                           | Stay Sol medium; optional Luna high                               |
+| 2                    | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829)                                                                  | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof                                                                                                                       | GPT-6.1 Sol, medium                                               |
+| 3                    | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827)                                                                  | `in_progress` | Finish pressure/recovery policy; defer victory proof                                                                                                                                    | GPT-6.1 Sol, medium                                               |
+| 4 / next boundary    | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | C8 initial world checked; native tick-22 divergence blocks costs. Next qualify separately identified behavior-aligned comparator; original pinned acceptance/full production proof open | GPT-6.1 Sol / high                                                |
+| 5 / paired           | #815 / #816                                                                                                                      | `in_progress` | Remaining family contracts, focused fixtures, frozen maps and continuous-match tier                                                                                                     | Sol medium; optional Luna high for established cases              |
+| 6                    | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819)                                                                  | `in_progress` | Exact-once interruption, terminal and re-entry parity                                                                                                                                   | GPT-6.1 Sol, medium                                               |
+| 7                    | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823)                                                                  | `partial`     | Generation fencing, phase restore/replay and cleanup cases                                                                                                                              | GPT-6.1 Sol, medium                                               |
+| 8                    | #821                                                                                                                             | `partial`     | Remaining splits/renames and consumer updates                                                                                                                                           | Stay Sol medium; optional Luna high                               |
+| 9 / prepare          | [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828), [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `partial`     | Review probes/opponent fixtures; measurements deferred                                                                                                                                  | GPT-6.1 Sol, medium for contracts; Luna high for specified wiring |
+| Final gate           | Required issues above                                                                                                            | `in_progress` | Prior native 702/type/build and full bridge checked; K5 release failure retained; derived C8 size delta below limit, native trajectory/costs blocked; wider gate pending                | GPT-6.1 Sol / high for reference scope, native pairing and costs  |
+| After parity         | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820)                                                                  | `not_started` | Evidence-backed legacy retirement                                                                                                                                                       | GPT-6.1 Sol, medium decision; Luna high cleanup                   |
+| Before final closure | Existing machinery / completion map                                                                                              | `not_started` | Evaluate every system's demonstrated need and cost; keep, simplify or propose retirement while preserving required proof                                                                | GPT-6.1 Sol / high for combined review                            |
 
 ## Model batches and pause contract
 
@@ -722,8 +731,9 @@ reports. Current native 146 suites/702 tests, Phaser/E2E typing and production b
 settle refused movement, renew actual resource progress and exclude absent editor owners. Full native diagnostics
 retain all 611 selections without lineage/bridge failure; full production contract/authority/capacity still fails.
 C8 prerequisite checks retain the pinned source's failed production build, candidate shipping bytes and isolated
-empty-observer profiles. A minimal derived reference now builds and its code-size delta is below 0.5%; whole-world
-paired C8 still requires native equivalence and measurements, while original pinned acceptance remains blocked;
+empty-observer profiles. A minimal derived reference builds and its code-size delta is below 0.5%; three alternating
+qualifications now prove initial world/prefix equality and native divergence at tick 22. Whole-world paired C8 requires
+a justified comparator scope and equivalent trajectories before measurements; original pinned acceptance stays blocked;
 broader server/socket/save/restart/hash/calibration evidence remains pending.
 Full useful-service authority M11 remains blocked, and production/gameplay proof M12
 remains open; those obligations are not erased by the bounded diagnostic finish line.
@@ -731,12 +741,12 @@ Design on GPT-6.1 Sol / high; implement settled contracts on Luna / high; return
 and unresolved architecture/causal questions or difficult final-gate failures. Actual host settings remain unknown.
 No automatic model switch, subagent or new chat is authorized by this policy. Executable final-gate validation is now active.
 
-| Responsibility | Model / effort | Boundary |
-| --- | --- | --- |
-| Consolidated design, scope/value, shared/per-owner contracts and acceptance (50) | GPT-6.1 Sol / high | Authored/source-reviewed |
-| Settled implementation, compliance cleanup, wiring, fixtures and test authoring (51–54) | Luna / high | Authored; scoped native/report controls now checked, wider integration remains |
-| Combined implementation source review and unresolved contract conflicts (M10) | GPT-6.1 Sol / high | Source review/controls complete; E2E typing and 461 production/queue/resource/output controls pass, full gate in progress |
-| Final executable gate and repairs | GPT-6.1 Sol / high for browser/cost causal investigation; Luna / high for settled repairs | K5 repairs/bridge and derived C8 compile prerequisite checked; next native equivalence, paired CPU/allocations, remaining production proof |
+| Responsibility                                                                          | Model / effort                                                                            | Boundary                                                                                                                                                                       |
+| --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Consolidated design, scope/value, shared/per-owner contracts and acceptance (50)        | GPT-6.1 Sol / high                                                                        | Authored/source-reviewed                                                                                                                                                       |
+| Settled implementation, compliance cleanup, wiring, fixtures and test authoring (51–54) | Luna / high                                                                               | Authored; scoped native/report controls now checked, wider integration remains                                                                                                 |
+| Combined implementation source review and unresolved contract conflicts (M10)           | GPT-6.1 Sol / high                                                                        | Source review/controls complete; E2E typing and 461 production/queue/resource/output controls pass, full gate in progress                                                      |
+| Final executable gate and repairs                                                       | GPT-6.1 Sol / high for browser/cost causal investigation; Luna / high for settled repairs | K5 repairs/bridge, derived C8 compilation and native initial equivalence checked; next diagnostic-reference scope/trajectory, then paired costs and remaining production proof |
 
 - The design must produce a finite list of substantial implementation passes and completion criteria. A pass may contain
   several related owners and coherent commits. Do not create a new design stage or model pause for each file, helper,
@@ -786,17 +796,21 @@ No automatic model switch, subagent or new chat is authorized by this policy. Ex
 
 Copyable next-chat prompt:
 
-> Read docs/ai/759-skirmish-ai/HANDOFF.md and the reference qualification checkpoint in runtime-matrix-ci.md.
-> Latest batch qualifies af9d078d9 plus the tracked 11-file compatibility patch as a compile-compatible derived reference.
-> Verify patch SHA d9a65f6afed24f2b068d07f8b234dcc06df0da1938a21815526d0739a5a0cecb and source set first.
-> Seven files emit identical intended JavaScript; four add native dense-array/private-state guards. Build and 22 Phaser
-> cases pass; 25 planner cases pass and one old fixture fails identically on original/derived gameplay sources.
-> Derived code gzip delta is +830 bytes / +0.052062%; original pinned acceptance remains blocked. Native pairs are zero.
-> On GPT-6.1 Sol / high, establish equivalent native worlds and measure paired C8 CPU/allocations/marked-hook costs.
-> Account for later Move/Gather/roster repairs; if world equivalence fails, report a concrete scope decision.
-> Do not silently use 0641e9ed5 or call the patched checkout the original clean reference. Use equivalent legal
-> worlds, warm-up and three alternating production/unmarked/marked native pairs; retain digests, variance,
-> isolated CPU/allocations and reachable gzip. Isolated probes/natural diagnostic runs are not those pairs.
+> Read docs/ai/759-skirmish-ai/HANDOFF.md and the native equivalence checkpoint in runtime-matrix-ci.md.
+> Three alternating marked-developer qualification pairs repeat identical legal three-player Ember initial worlds
+> and boundaries through tick 21. Existing candidate refused-Move cleanup terminates the same command at tick 22;
+> reference retains it. Both sources also reproduce two cross-player commitment collisions; retain this M12 defect.
+> Zero cost pairs or CPU/allocation budget pass; these untimed replays do not measure normal play or rendering.
+> On GPT-6.1 Sol / high, qualify a separately identified behavior-aligned diagnostic comparator using only the already
+> reviewed refused-Move and native Gather/drop-off progress repairs, with exact patches, excluded costs and native
+> regressions. Preserve the compile-derived reference, original pinned failure and blocked acceptance; no silent
+> reference-policy change. A new comparator measures remaining diagnostic delta, not the original pinned criterion.
+> Verify existing patch SHA d9a65f6afed24f2b068d07f8b234dcc06df0da1938a21815526d0739a5a0cecb and source set first.
+> If another behavior diverges, retain its first cause and stop speculative overlay expansion. Do not shorten to tick 21,
+> remove the native repair, copy whole candidate owners/planner/frame/report changes, use 0641e9ed5 or borrow bundles.
+> Only after equal meaningful native trajectories, warm once and run three alternating production/unmarked/marked
+> cost pairs with isolated CPU/allocations, variance and native/source/bundle digests. Derived production gzip remains
+> +830 bytes / +0.052062% against the previous compile reference; remeasure for any new comparator.
 > Preserve previous M10/K4 compatibility, mandatory oracles, native bounds, consumed inputs, useful nulls and baselines.
 > Broader server/socket/save/restart/hash/calibration and M11/M12 still block release closure. No new machinery scope.
 > Keep the branch and unrelated Nx merge. Update the map/handoff, review/audit, commit/push exact task-owned changes,

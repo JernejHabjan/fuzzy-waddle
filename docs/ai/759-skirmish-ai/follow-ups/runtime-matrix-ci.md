@@ -435,22 +435,22 @@ Checks K1–K5 are defined below. Existing scenario authority remains `tools/ai/
 
 The following map preserves stage-50 design/authoring states; the final-gate checkpoint below owns current executed evidence.
 
-| Requirement / consumer and purpose | Class; owning contract / files | Dependency / pass | Positive, control and recovery evidence | Deferred check / state |
-| --- | --- | --- | --- | --- |
-| M01 Named supply/capacity writers: need/accounting rejects stale history | R; C1/C2 resource source/drain, scene loss | 49 → 51 | Real source extraction and real drain credit across controlled wait; refill/lock/assignment/restore, duplicate assignment no-op; callback sees old stock/capacity at loss; native throws/reentrancy; fresh partial capture | Code authored; K1/K3 deferred |
-| M02 Container/containable: readiness cannot survive a known boarding/restore boundary | R; C1 building owners | 51 | Actual load/unload/dead-at-sea/shore/pending-ID resolution, full load no-op, undefined restore no-op; throw and callback ordering, repeated destroy/clear-before-unload | Code authored; K1 deferred |
-| M03 Component/queue/campaign restore: old actor/need identity cannot survive named replacement | R; C1/C6 actor-data, QueueComponent, campaign caller | 51 → 52 | Real named component replace/add/remove/upgrade/definition, source/health constructor callback, empty queue restore, campaign modes/rounding/startup skip; constructor/helper throws; matching restore still loses | Code authored; K1/K3 and C6 checks deferred |
-| M04 Recipient roster: journal knows remove/re-add before another read | R; C3 roster capture and recipient owner | 52 | Real protocol game instance add/remove/reset with actual protocol players; temporary removal/re-add, native throw, foreign receiver/descriptor/replacement, installation rollback, disposal/reinstall | Wrapper code/spec authored; K1/K2 deferred |
-| M05 Exact consumed/accepting frames: explain purchase-plus-gather null bounds | R; C4 fact union/input/root/unspent/report fields | 52 → 53 | Real input/controller selected event with zero and nonzero new claims; immediate paid vs future queue transfer; due head exhaustion; unsupported building/pre-capture/expired/recovery claims and callback-in-progress; mismatch stays null | Code plus focused input/root/synthetic frame controls authored; full native integration still missing; K1/K3 deferred |
-| M06 Cargo/recipient/window compatibility: preserve credited income without false usefulness | R; C2/C4/C5 existing credit/application/need projections | 53 | Exact real payload join; normal/granted/none and changed owner; mixed/old/restored cargo; grant then spend cannot reopen shortage; publication delayed across application window; same-tick/straddle/overflow bad tail | Existing path retained; K1/K3 compatibility cases deferred |
-| M07 Real adapter/report bridge: expose actual producer evidence and explicit gaps | R; C7 root capture, variant runner, production normalization | 51–53 → 54 | Real Phaser actor/components/protocol player/read/native command path into report; initialization loss, post-await service loss and late/disposed capture; native income remains diagnostic while useful fields stay null; contradictory tail suppresses parent | Short probe and full 611-decision native diagnostic bridge pass after causal repairs; full production contract/authority/capacity remains open in the native causal checkpoint |
-| M08 Normal-play impact: testing does not install heavy machinery during gaming | R; C8 below, installer/helper controls and existing profiler | 54 | Production/unmarked guard, no sample/clone/listener/timer/root journal; before/after disabled-path and bundle comparison; foreign host/duplicate capture, late callbacks | Production/unmarked controls and isolated profiles checked; derived reference builds, code gzip delta +0.052062%; candidate 114,606 raw testing bytes remain reachable; native equivalence/pairs pending, original pinned budget blocked |
-| M09 Compliance/publication: economical implementation remains reviewable | R; C6 exact baselines, existing handoff | Each 51–54 | No refreshed hashes/new permanent stage names; task-only prerequisite and behavior commits; source review/Omission Audit/closure, remote SHA and clean task scope | Authored/source-reviewed; implementation commit `978cb09e70cbc6e2ed0b520971690ea47ab38045` remote-verified; checks deferred |
-| M10 Combined review and compatibility: decide readiness before execution | R; C1–C8, all changed consumers | 54 → Sol review | Trace real input → selected/admitted → native application → report/disposal; review all controls, repair concrete contract contradictions; every required unrun check remains listed | K4/K5 and derived C8 compile prerequisite checked; prior native 702/gameplay 274/report 461 retained; full production proof and native C8 equivalence/costs remain open; original pinned comparison blocked; wider release remains |
-| M11 Mutation-complete useful resource/continuous capacity: 32/36 full proof | B; C7 plus 32/36/39/42 authority, public APIs | Explicit authority/scope decision; not a hidden fifth Luna pass | Net-zero alias undo, arbitrary definition/Map/item/roster replacement, hidden/stale threats/access changes between reads, full supported initial predicate history; no positive complete channel currently possible | Existing 32/36 gates; blocked, mandatory |
-| M12 Production useful outputs, legal setup and strategy: PRO-03/06/07 release | B; existing production authority contract and evaluators | Broader gameplay/fixture queue, separate from 51–54 | Both-faction transition/abandonment, exposed/safe/no-demand resilience, shared train/research and paid cancellation/pending refund pairs; full oracle and denominator | K5 and owning scenario/policy plans; open, mandatory |
-| M13 Finer loss scopes/continuous journal/lot allocation | O; no new files/owners | Not scheduled; new consumer must justify proposal | No actor-to-beneficiary dependency map, FIFO allocation or extra scan introduced just to recover a diagnostic bound | No extra gate; proposed only |
-| Final machinery necessity review | R; existing M01–M12 consumers, C8 measurements and reporting/replay tools | End of gate, before final closure | Every existing system has demonstrated consumers/proof, simpler-alternative comparison, measured cost and a keep/simplify/retire verdict; representative context-byte/read-cost evidence retains diagnostic quality | User added 2026-10-09; not_started. [Owning review acceptance](../HANDOFF.md#end-of-gate-machinery-necessity-review); no new machinery scope or automatic acceptance reduction |
+| Requirement / consumer and purpose                                                             | Class; owning contract / files                                            | Dependency / pass                                               | Positive, control and recovery evidence                                                                                                                                                                                                                         | Deferred check / state                                                                                                                                                                                                                                   |
+| ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| M01 Named supply/capacity writers: need/accounting rejects stale history                       | R; C1/C2 resource source/drain, scene loss                                | 49 → 51                                                         | Real source extraction and real drain credit across controlled wait; refill/lock/assignment/restore, duplicate assignment no-op; callback sees old stock/capacity at loss; native throws/reentrancy; fresh partial capture                                      | Code authored; K1/K3 deferred                                                                                                                                                                                                                            |
+| M02 Container/containable: readiness cannot survive a known boarding/restore boundary          | R; C1 building owners                                                     | 51                                                              | Actual load/unload/dead-at-sea/shore/pending-ID resolution, full load no-op, undefined restore no-op; throw and callback ordering, repeated destroy/clear-before-unload                                                                                         | Code authored; K1 deferred                                                                                                                                                                                                                               |
+| M03 Component/queue/campaign restore: old actor/need identity cannot survive named replacement | R; C1/C6 actor-data, QueueComponent, campaign caller                      | 51 → 52                                                         | Real named component replace/add/remove/upgrade/definition, source/health constructor callback, empty queue restore, campaign modes/rounding/startup skip; constructor/helper throws; matching restore still loses                                              | Code authored; K1/K3 and C6 checks deferred                                                                                                                                                                                                              |
+| M04 Recipient roster: journal knows remove/re-add before another read                          | R; C3 roster capture and recipient owner                                  | 52                                                              | Real protocol game instance add/remove/reset with actual protocol players; temporary removal/re-add, native throw, foreign receiver/descriptor/replacement, installation rollback, disposal/reinstall                                                           | Wrapper code/spec authored; K1/K2 deferred                                                                                                                                                                                                               |
+| M05 Exact consumed/accepting frames: explain purchase-plus-gather null bounds                  | R; C4 fact union/input/root/unspent/report fields                         | 52 → 53                                                         | Real input/controller selected event with zero and nonzero new claims; immediate paid vs future queue transfer; due head exhaustion; unsupported building/pre-capture/expired/recovery claims and callback-in-progress; mismatch stays null                     | Code plus focused input/root/synthetic frame controls authored; full native integration still missing; K1/K3 deferred                                                                                                                                    |
+| M06 Cargo/recipient/window compatibility: preserve credited income without false usefulness    | R; C2/C4/C5 existing credit/application/need projections                  | 53                                                              | Exact real payload join; normal/granted/none and changed owner; mixed/old/restored cargo; grant then spend cannot reopen shortage; publication delayed across application window; same-tick/straddle/overflow bad tail                                          | Existing path retained; K1/K3 compatibility cases deferred                                                                                                                                                                                               |
+| M07 Real adapter/report bridge: expose actual producer evidence and explicit gaps              | R; C7 root capture, variant runner, production normalization              | 51–53 → 54                                                      | Real Phaser actor/components/protocol player/read/native command path into report; initialization loss, post-await service loss and late/disposed capture; native income remains diagnostic while useful fields stay null; contradictory tail suppresses parent | Short probe and full 611-decision native diagnostic bridge pass after causal repairs; full production contract/authority/capacity remains open in the native causal checkpoint                                                                           |
+| M08 Normal-play impact: testing does not install heavy machinery during gaming                 | R; C8 below, installer/helper controls and existing profiler              | 54                                                              | Production/unmarked guard, no sample/clone/listener/timer/root journal; before/after disabled-path and bundle comparison; foreign host/duplicate capture, late callbacks                                                                                        | Production/unmarked controls and isolated profiles checked; derived code gzip +0.052062%, candidate 114,606 raw testing bytes reachable; three qualifications prove initial equality and tick-22 divergence; native costs/original pinned budget blocked |
+| M09 Compliance/publication: economical implementation remains reviewable                       | R; C6 exact baselines, existing handoff                                   | Each 51–54                                                      | No refreshed hashes/new permanent stage names; task-only prerequisite and behavior commits; source review/Omission Audit/closure, remote SHA and clean task scope                                                                                               | Authored/source-reviewed; implementation commit `978cb09e70cbc6e2ed0b520971690ea47ab38045` remote-verified; checks deferred                                                                                                                              |
+| M10 Combined review and compatibility: decide readiness before execution                       | R; C1–C8, all changed consumers                                           | 54 → Sol review                                                 | Trace real input → selected/admitted → native application → report/disposal; review all controls, repair concrete contract contradictions; every required unrun check remains listed                                                                            | K4/K5, derived C8 compilation and initial world equality checked; prior native 702/gameplay 274/report 461 retained; native trajectory/costs, original pinned comparison and full production proof blocked; wider release remains                        |
+| M11 Mutation-complete useful resource/continuous capacity: 32/36 full proof                    | B; C7 plus 32/36/39/42 authority, public APIs                             | Explicit authority/scope decision; not a hidden fifth Luna pass | Net-zero alias undo, arbitrary definition/Map/item/roster replacement, hidden/stale threats/access changes between reads, full supported initial predicate history; no positive complete channel currently possible                                             | Existing 32/36 gates; blocked, mandatory                                                                                                                                                                                                                 |
+| M12 Production useful outputs, legal setup and strategy: PRO-03/06/07 release                  | B; existing production authority contract and evaluators                  | Broader gameplay/fixture queue, separate from 51–54             | Both-faction transition/abandonment, exposed/safe/no-demand resilience, shared train/research and paid cancellation/pending refund pairs; full oracle and denominator                                                                                           | K5 and owning scenario/policy plans; open, mandatory                                                                                                                                                                                                     |
+| M13 Finer loss scopes/continuous journal/lot allocation                                        | O; no new files/owners                                                    | Not scheduled; new consumer must justify proposal               | No actor-to-beneficiary dependency map, FIFO allocation or extra scan introduced just to recover a diagnostic bound                                                                                                                                             | No extra gate; proposed only                                                                                                                                                                                                                             |
+| Final machinery necessity review                                                               | R; existing M01–M12 consumers, C8 measurements and reporting/replay tools | End of gate, before final closure                               | Every existing system has demonstrated consumers/proof, simpler-alternative comparison, measured cost and a keep/simplify/retire verdict; representative context-byte/read-cost evidence retains diagnostic quality                                             | User added 2026-10-09; not_started. [Owning review acceptance](../HANDOFF.md#end-of-gate-machinery-necessity-review); no new machinery scope or automatic acceptance reduction                                                                           |
 
 **51 — supply and containers (Luna / high):** implement M01/M02 and relevant C6 cleanup together. Use shared real
 actor/protocol fixtures beside resource components; tests `resource-source-resource-history.spec.ts`,
@@ -510,6 +510,100 @@ Historical authoring boundary: M10 source review found missing controls, subsequ
 final-gate checkpoints below. The user-authorized final gate is active; K5/C8 and broader release evidence remain.
 Do not claim stage validation before K1–K5. M11 remains a mandatory blocker from public mutable aliases
 and incomplete access/safety/lifetime history; M12 remains open for full PRO-03/06/07. Neither was reduced by this batch.
+
+### Final-gate native equivalence checkpoint (2026-10-10, trajectory divergence checked)
+
+User authorized continuation and commit/push/pause; clean base/remote was
+`8fa4ac588e6bb8f133bcdbf84a6fae6af8cd5ee7`, branch `feature/759-skirmish-ai`, worktree
+`/home/jernej/.codex/worktrees/7977/fuzzy-waddle`. Actual model/effort unknown. Candidate source, configuration,
+dependencies, recipes, oracles and the tracked compatibility patch remain unchanged.
+
+**What was established / why:** a legal three-player Ember world now reproduces exactly between the candidate and
+the compile-qualified derived reference at tick zero and through tick 21. Three alternating qualification pairs
+reproduce the same first divergence at tick 22: the candidate terminates a refused Move, while the reference keeps it
+active. This proves the old natural-match comparison would mix native behavior changes with diagnostic cost.
+No timing, allocation or C8 budget pass is inferred. These are qualification pairs, not cost pairs.
+
+| Acceptance / purpose                          | Evidence / owning path                                                                                                                                                                                                                                | State                                                               |
+| --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| N1 Preserve identities and environment        | Replayed existing 11-file patch/source and production-output audit; same five config hashes. Both development builds pass using their own source/assets and identical installed dependencies.                                                         | Checked                                                             |
+| N2 Legal identical initial world              | Ordinary lobby: human 1 Skaduwee, AI 2/3 Tivara Normal; seed 759101, 18 indexed actors, no positive owner outside 1/2/3. Existing validated preset fixes instance identity without adding actors, queues, orders or changing balances.                | Checked for this marked developer world                             |
+| N3 Equivalent native trajectory before timing | Three pairs in reference/candidate, candidate/reference, reference/candidate order; all 81 boundaries repeat exactly within each source. Cross-source boundaries match 0–21, diverge at 22.                                                           | Trajectory equivalence blocked                                      |
+| N4 First cause and concrete next scope        | `PawnAgentMovement.stopFailedMove` → `PawnAgentOrders.Stop` → `CommandBusService.reportPersistedOutcome` closes the same Move only in the candidate. Separately, both sources reproduce cross-player commitment collisions. Reference decision below. | Cause checked; cost and M12 work open                               |
+| N5 Closure / publication                      | Scoped durable testing guidance and two coordination files; implementation review, omission and separate final closure audits. Exact staged scope and remote equality checked at publication.                                                         | This investigation batch checked; C8/M11/M12/wider gate remain open |
+
+**Replay setup:** first natural setup attempt had equal roster/population/balances/RNG digest but different actor IDs
+at tick zero. `ActorIdAuthorityService.sessionSalt` includes the random lobby instance ID. The existing preset seam in
+`ProbableWaffleGameComponent.setData` sets it before Phaser boots; no ID remapping or post-hoc state normalization used.
+The final preset is `fixtureId: native-cost-ember-roster`, `actors: []`, `resourceGrants: []`,
+`resourceStarts: [{ playerNumber: 1, amounts: { wood: 200 } }]`; each source supplies its own full HEAD SHA and the
+computed fixture digest. Existing native wood is already 200, so the setter emits no resource change. Validator
+requires nonempty authored work; an empty preset would be invalid. Both instances are exactly
+`runtime-fixture-759101-native-cost-ember-roster`, with production capture explicitly enabled in development.
+Both map assets and `MapEmberEnclave` authored/generated sources are unchanged between revisions; tilemap SHA-256
+`1dd43c9e171acd3ae43020bc1fa6b6f1c35380ddf069bd9219d0950c3cc582d1`.
+
+**Native evidence and limits:** six independent booted Phaser worlds, 80 exact 50 ms UPDATE boundaries each,
+all AI decision boundaries settled, zero page errors. The driver sleeps the render loop and uses the existing runtime
+bridge's scene-UPDATE convention; it does not measure normal rendering, real-time match duration, CPU or allocations.
+Per-tick snapshots retain the actual authoritative projection, bus authority/outcomes and both controller boundaries.
+Initial population is 7/6/5 owned actors and 2/0/1 workers for players 1/2/3. No fixture-authored command is added.
+The initial boundary SHA-256 is identical in all six runs:
+`d7f14bb42f149386d542b6644173c4737e303a457d6c04d41d7c9bc7906fe152`.
+
+At tick 20 the same player-2 command `2:0:1:runtime-fixture-759101-native-cost-ember-roster` is applied to
+`sim-4e1168b3` (`TivaraMacemanMale`). At tick 22 only the candidate records `failed/application_failed`, detail
+`Move - Movement Failed`, and removes its active progress/commitment. The reference retains the expected actor with
+no terminal actor. This is the already-reviewed `17fde8c7e` repair, not a new performance regression; do not remove it
+to force equivalence or shorten the workload to tick 21 and call that representative performance.
+Final boundary hashes differ and repeat within each source: reference
+`c62d54160ea6eb76620974b233c15c3f557a2c1f5aae0977213bad537fec6025`, candidate
+`7397ef6b20cf23f254c018043df4784b248d7b2c8bc6b7c846949a39c7cfbc4d`.
+
+**Additional M12 defect retained:** at tick 20 player 3 receives two `duplicate_command` rejections referencing
+player-2 commitments, for bootstrap-worker and the same neutral-target effect. `CommandBusService` indexes
+`activeCommitments` by the supplied key without player scope. Both sources reproduce the collision; it is not the
+first cross-source divergence or evidence of cost. Preserve this causal slice for the mandatory multiplayer/production
+authority pass; do not hide it by changing the recipe or count this world as full production correctness proof.
+
+**Reference scope decision / recommended next batch:** qualify a second, explicitly behavior-aligned diagnostic
+reference using only the already-reviewed refused-Move and actual Gather/drop-off progress repairs in addition to
+the compile overlay. Keep the original reference and its failure evidence intact; preserve both patch identities.
+Review each behavior hunk and its excluded cost contribution, run its native regressions and require equal state,
+commands/outcomes through a meaningful workload before profiling. Do not copy whole candidate owners, planner policy,
+resource-frame/report changes or silently change the pinned release criterion. A result against that new comparator
+measures the remaining diagnostic delta; it does not satisfy original pinned acceptance without an explicit reference
+policy decision. If other behavior diverges, retain the first cause and stop adding speculative reference patches.
+Keep the cross-player collision as a separate M12 repair obligation. This groups the reference/workload reasoning in
+one GPT-6.1 Sol / high batch, then permits the existing warm-up plus three alternating production/unmarked/marked
+cost pairs only where native equivalence holds. No cost optimization is justified by these untimed runs.
+
+**Commands / retained evidence:** unchanged-source development builds use
+`NX_DAEMON=false node node_modules/nx/dist/bin/nx.js build portal --configuration=development --stats-json=true`
+with separate output paths: candidate `tmp/ai-plans/759-validation/cost-batch/native-candidate`, reference
+`tmp/native-cost-reference` in its own checkout. Nx builds pass in 34.7/26.7 s, respectively, 0/3 cache hits.
+Ignored `tmp/ai-plans/759-validation/cost-batch/qualify-native-world.cjs` owns the bounded replay;
+`audit-native-equivalence.cjs` rechecks source identity, all six traces, exact prefix equality/divergence and retained
+actual output hashes. `native-equivalence-manifest.json` links artifacts; `native-equivalence-summary.json` is only
+4,230 bytes. Each raw reference/candidate trace is 1,335,204/1,354,910 bytes and remains on disk; the initial random-ID
+control is in `random-instance-control/`. No raw payload or profile needs enter context. Missing ignored evidence
+requires recreation from the setup/owners above, not a claim of inherited runtime success.
+Both development inventories retain hashes for 106 emitted JS/CSS files, including three copied service-worker files;
+actual emitted bytes and pre-postprocessing stats bytes are recorded separately. These inventories identify the
+executed builds and do not replace the previous production reachable-gzip closure. Production size evidence remains
++830 bytes / +0.052062% against the compile-derived reference only.
+
+**Implementation Review:** traced instance salt, preset validation/application, real lobby roster, clock/pause/settling,
+authoritative snapshots, native Move terminal cleanup and both-source commitment rejections. No production repair or
+new shipping measurement tool was authored. Durable instance/workload guidance lives in the testing README.
+**Omission Audit:** N1/N2 checked; N3 explicitly blocked by native behavior, N4 causally evidenced; zero qualified
+cost pairs, production/unmarked runtime profiling, marked-hook cost and original pinned acceptance remain open.
+**Separate Final Closure Audit:** verified exact patch/source set, repeated trace/bundle hashes, map identity, doc
+links, unchanged candidate production inputs, unrelated Nx ancestor and task-owned scope. No generic skill change
+was justified. Update handoff/map, commit/push and pause; M11/M12, wider gate and final machinery review remain required.
+Scoped format checks pass for this checkpoint, all five changed tables and the durable testing guide; diff whitespace
+and 54 handoff/plan links pass. Whole-file formatting fails on both original historical documents too; unchanged
+historical tables retain their prior layout rather than adding unrelated formatting churn.
 
 ### Final-gate reference qualification checkpoint (2026-10-10, compile prerequisite checked)
 
@@ -3401,6 +3495,7 @@ make those seams reviewable without extending a content-hash-exempt monolith. No
 | 6. Next causal/effect work | Oversized pawn agent prerequisite, actual caller/order seam, existing marked capture/report | Open; `queryCallerAttributed` remains false, and arrival/service/stable-usefulness authority is still absent |
 
 Changed native files under `libs/games/probable-waffle/phaser/src/lib/entity/systems/`:
+
 - `movement.system.ts` retains shared command admission, public route selection/probes, random-movement and direction exports.
 - `movement-runtime.ts` retains ready-time component/service reads and original lazy navigation/occupancy caching.
 - `movement-formation.ts` owns connected same-height slot selection, native reachability and destination reservations.
@@ -3494,15 +3589,18 @@ The new native admission/service-demand association is authored; actual query-ca
 | 6. Reviews/publication/handoff | This checkpoint, HANDOFF and exact task-owned staging | Source-only audits below; normal commit/push/exact remote verification closes only this authored slice, then pause |
 
 Native files under `libs/games/probable-waffle/phaser/src/lib/`:
+
 - `prefabs/ai-agents/pawn-order-observation.ts` and adjacent spec; `pawn-ai-blackboard.ts` has the successful-enqueue seam.
 - `entity/components/production/observe-production-rally-action.ts` and adjacent spec; `production-spawner.ts` scopes only
   its already-selected actor/tile action. Fallback movement stays untouched and supplies no fabricated order.
 
 Marked files under `player/ai-controller/testing/`:
+
 - `ai-runtime-route-order-v1.ts`, `ai-runtime-route-order-capture.ts` and adjacent spec.
 - Existing `ai-runtime-producer-route-v1.ts`, producer capture/spec, root production capture and spatial capture consumers.
 
 Report files under `apps/portal-e2e/src/e2e/`:
+
 - `skirmish-ai-runtime-route-order-lineage.ts`, order validation/projection, service command/lineage/outcome helpers,
   `skirmish-ai-runtime-route-order-fixture.ts` and `skirmish-ai-runtime-route-order.spec.ts`.
 - Existing producer route normalizer/contract, spatial kind router and shared production command lineage validator.
@@ -4518,59 +4616,59 @@ compaction; do not reload the whole catalog/history. Compact context size is a p
 ## Acceptance contracts
 
 - **Tooling:** use the existing bounded agent context/report commands when
-   execution is authorized, not a second context system. The new read-only
-   `pnpm ai:skirmish:catalog -- --inventory` groups registered recipes and flags repeated, long and mixed cases;
-   its implementation is authored but its unit test is deferred to the final gate. Extend the existing catalog
-   generator/fixture validator with typed execution-kind, variant-role and deadline-rationale metadata before editing
-   dozens of recipes. Add optional stop-on-evidence to the existing runtime driver before the broad execution sweep.
-   Derive actor/resource/queue/event summaries from `presetWorld`; author metadata/catalog cases for missing setup,
-   paired variants and justified long cases. Keep these in the existing bounded generator and adjacent helpers.
-   The bounded `--repair-list` mode already aggregates retained shards from a run directory or repeated explicit files
-   and has unrun provenance, path-selection and truncation tests;
-   review and execute it at the final gate rather than building a second reducer. Reject
-   mixed source revisions or incompatible workload provenance, and keep infrastructure failures distinct. Preserve
-   exact report paths, scenario/variant IDs, seeds, failure codes and replay selection. Accept explicit artifact paths
-   or one run directory; emit short text plus machine-readable cluster data, not raw checkpoint dumps. Cluster by
-   normalized first failed predicate plus family/map and available checkpoint evidence; label clusters provisional
-   until an agent confirms the shared causal owner. Add pure tool tests for grouping, distinct causes and provenance
-   rejection.
-   Different shards legitimately have different fixture-set digests: `skirmish-matrix-execution.mjs` hashes the
-   selected fixture set. Require common candidate/dirty-source/manifest and run identity, plus an expected
-   fixture identity-to-digest mapping per shard. Reject conflicting digests for the same fixture or unexpected
-   membership; do not require every shard's aggregate fixture digest to be equal. Retain source maps and exact
-   commands with each report. Add any missing provenance fields to the producer before relying on them in triage.
-   Do not build a parallel runner, hand-maintained 121-row sheet, or another broad repository index.
+  execution is authorized, not a second context system. The new read-only
+  `pnpm ai:skirmish:catalog -- --inventory` groups registered recipes and flags repeated, long and mixed cases;
+  its implementation is authored but its unit test is deferred to the final gate. Extend the existing catalog
+  generator/fixture validator with typed execution-kind, variant-role and deadline-rationale metadata before editing
+  dozens of recipes. Add optional stop-on-evidence to the existing runtime driver before the broad execution sweep.
+  Derive actor/resource/queue/event summaries from `presetWorld`; author metadata/catalog cases for missing setup,
+  paired variants and justified long cases. Keep these in the existing bounded generator and adjacent helpers.
+  The bounded `--repair-list` mode already aggregates retained shards from a run directory or repeated explicit files
+  and has unrun provenance, path-selection and truncation tests;
+  review and execute it at the final gate rather than building a second reducer. Reject
+  mixed source revisions or incompatible workload provenance, and keep infrastructure failures distinct. Preserve
+  exact report paths, scenario/variant IDs, seeds, failure codes and replay selection. Accept explicit artifact paths
+  or one run directory; emit short text plus machine-readable cluster data, not raw checkpoint dumps. Cluster by
+  normalized first failed predicate plus family/map and available checkpoint evidence; label clusters provisional
+  until an agent confirms the shared causal owner. Add pure tool tests for grouping, distinct causes and provenance
+  rejection.
+  Different shards legitimately have different fixture-set digests: `skirmish-matrix-execution.mjs` hashes the
+  selected fixture set. Require common candidate/dirty-source/manifest and run identity, plus an expected
+  fixture identity-to-digest mapping per shard. Reject conflicting digests for the same fixture or unexpected
+  membership; do not require every shard's aggregate fixture digest to be equal. Retain source maps and exact
+  commands with each report. Add any missing provenance fields to the producer before relying on them in triage.
+  Do not build a parallel runner, hand-maintained 121-row sheet, or another broad repository index.
 - **Fixtures:** convert one compatible family at a time to a recipe with finite checkpoints, deterministic perturbations,
-   authoritative assertions, and bounded deadlines.
-   Prefer #826's preset-world mode when unrelated opening/map prerequisites do not belong to the behavior under test.
-   Audit current variant counts and tick budgets first: aim for one run per positive/control branch and 200–2,000 ticks
-   for focused cases, with measured exceptions. Keep explicit determinism assertions at two or more identical starts;
-   update the evaluator contract with fixture repetition changes. Full-match victories remain separate, finite and
-   allowed to run longer when terminal behavior requires it. See the code-adjacent runtime E2E policy.
-   `tools/ai/fixtures/continuous-land-runtime.json` now owns only natural SEQ match recipes. Replace the temporary
-   natural `tools/ai/fixtures/production-natural-runtime.json` with focused PRO-03/06/07 files with legal preset actors;
-   PRO-04 now owns `focused-production-composition-runtime.json`, authored but unverified. Include
-   balances, queues and scheduled loss where needed. Group a positive/control pair together; do not create one file
-   per ID or share a 12,000-tick natural match merely because several IDs mention production. PRO-05 already owns
-   `tools/ai/fixtures/focused-production-replacement-runtime.json`, though its long deadline/repeats still need review.
-   Keep `apps/portal-e2e/src/e2e/skirmish-ai-runtime.spec.ts` generic; put family-specific setup/evaluation in focused
-   adjacent modules. Update manifest paths and every loader/catalog consumer for any nested fixture directories.
-   Positive/control pairs use the same seed and starting world except the causal variable under test. Keep exact
-   resources, faction roster and visibility legal; extend preset services only for state actually needed by a case.
-   Give sustained/absence assertions an explicit observation window. Follow the frozen-map contract incrementally;
-   optional island rows remain `deferred_content`, and mutable product maps are separate compatibility evidence.
+  authoritative assertions, and bounded deadlines.
+  Prefer #826's preset-world mode when unrelated opening/map prerequisites do not belong to the behavior under test.
+  Audit current variant counts and tick budgets first: aim for one run per positive/control branch and 200–2,000 ticks
+  for focused cases, with measured exceptions. Keep explicit determinism assertions at two or more identical starts;
+  update the evaluator contract with fixture repetition changes. Full-match victories remain separate, finite and
+  allowed to run longer when terminal behavior requires it. See the code-adjacent runtime E2E policy.
+  `tools/ai/fixtures/continuous-land-runtime.json` now owns only natural SEQ match recipes. Replace the temporary
+  natural `tools/ai/fixtures/production-natural-runtime.json` with focused PRO-03/06/07 files with legal preset actors;
+  PRO-04 now owns `focused-production-composition-runtime.json`, authored but unverified. Include
+  balances, queues and scheduled loss where needed. Group a positive/control pair together; do not create one file
+  per ID or share a 12,000-tick natural match merely because several IDs mention production. PRO-05 already owns
+  `tools/ai/fixtures/focused-production-replacement-runtime.json`, though its long deadline/repeats still need review.
+  Keep `apps/portal-e2e/src/e2e/skirmish-ai-runtime.spec.ts` generic; put family-specific setup/evaluation in focused
+  adjacent modules. Update manifest paths and every loader/catalog consumer for any nested fixture directories.
+  Positive/control pairs use the same seed and starting world except the causal variable under test. Keep exact
+  resources, faction roster and visibility legal; extend preset services only for state actually needed by a case.
+  Give sustained/absence assertions an explicit observation window. Follow the frozen-map contract incrementally;
+  optional island rows remain `deferred_content`, and mutable product maps are separate compatibility evidence.
 - **CI selection:** record each row as supported or explicitly deferred with its owner. Derive isolated shards by stable
-   manifest family from that status; do not copy scenario IDs into workflow YAML. Fail the selector when a supported
-   runtime-required row has no recipe, no shard, or no runnable command. A clean worker may run one Phaser/Playwright
-   process at a time; separate workers may run shards concurrently.
-   Publish compact JSON for every shard and retain trace/repro, browser logs, screenshots/video on failure.
+  manifest family from that status; do not copy scenario IDs into workflow YAML. Fail the selector when a supported
+  runtime-required row has no recipe, no shard, or no runnable command. A clean worker may run one Phaser/Playwright
+  process at a time; separate workers may run shards concurrently.
+  Publish compact JSON for every shard and retain trace/repro, browser logs, screenshots/video on failure.
 - **Completion:** stop-on-evidence uses settled checkpoints and independent authoritative outcome predicates. A positive case
-   may end once all selected assertions and required events are complete; negative controls and temporal/terminal
-   oracles run through their required horizon. Retain the actual stop tick and reason in reports. Author tests for
-   early success, pending event, negative control, missing effect and mandatory terminal result before execution.
-   A transient positive event cannot end a case that also requires retained workers, no duplicate construction,
-   cleanup or sustained pressure. Declare the minimum observation/stability window and all selected obligations;
-   shared variants stop only after all obligations finish. Continuous matches may stop on their real terminal result.
+  may end once all selected assertions and required events are complete; negative controls and temporal/terminal
+  oracles run through their required horizon. Retain the actual stop tick and reason in reports. Author tests for
+  early success, pending event, negative control, missing effect and mandatory terminal result before execution.
+  A transient positive event cannot end a case that also requires retained workers, no duplicate construction,
+  cleanup or sustained pressure. Declare the minimum observation/stability window and all selected obligations;
+  shared variants stop only after all obligations finish. Continuous matches may stop on their real terminal result.
 
 ## Authoring readiness before execution
 
@@ -4671,7 +4769,6 @@ terminal results fail the shard.
   clean full required matrix.
 - Run omission/final closure audits, update coverage counts and operator docs, commit, push, and close #816.
 
-
 ### Production legal queue-setup checkpoint (2026-10-03, unverified)
 
 This bounded prerequisite batch began at `c2cd61df413e27c96a439c01eca5f2b34faeddfd`. It authors ordinary paid setup and
@@ -4742,7 +4839,6 @@ pnpm ai:tools:test
 Also include the Playwright oracle-only `skirmish-ai-runtime-production-refund-evaluation.spec.ts`,
 `skirmish-ai-runtime-production-composition-evaluation.spec.ts` and `skirmish-ai-runtime-digest.spec.ts` in the grouped
 portal-e2e gate, then the frozen-map preflight and actual focused production worlds. All commands remain **unrun**.
-
 
 ### Production pending-command capture checkpoint (2026-10-03, unverified)
 
@@ -4896,7 +4992,6 @@ It remains **unrun**. Follow with map preflight, real production worlds and sock
 after the shared callers and legal worlds exist. Keep authored support, runnable scenario coverage and accepted
 runtime evidence separate.
 
-
 ### Production shared-queue callers checkpoint (2026-10-03, unverified)
 
 This grouped shared-owner batch began at `423b3a16fbaad9eb21f628bb58341f5363a6a469`. The behavior-preserving extraction
@@ -4962,7 +5057,6 @@ NX_DAEMON=false pnpm exec nx test probable-waffle-phaser --testPathPattern='shar
 ```
 
 All tests/E2E/simulations, formatting/lint/type/build/editor/schema/repository checks and doctor/context remain **unrun**.
-
 
 ### Production buffered multiplayer world checkpoint (2026-10-03, unverified)
 
@@ -5038,7 +5132,6 @@ runs the registered socket cases; do not print credentials or substitute local s
 with the existing preset/pending/payment/digest/oracle selections, frozen-map preflight and full causal worlds.
 All tests/E2E/simulations, formatting/lint/type/build/editor/schema/repository checks and doctor/context remain unrun.
 
-
 ### Production distinct shared queue worlds checkpoint (2026-10-03, unverified)
 
 This grouped authority batch began at `486e2a7a63f18710228aea8667f9d4407f79b846`. It authors two distinct human socket
@@ -5113,7 +5206,6 @@ multiplayer launcher discovers local Supabase credentials without printing them.
 Phaser mock emitter/lifecycle omissions remain final-gate repair work. The family oracle continues to reject missing
 full evidence, missing both-faction branch worlds and same-product cancellation/requeue cycles.
 
-
 ### Production AI causality checkpoint (2026-10-03, unverified)
 
 This bounded grouped adapter batch began at `e658318ae81b5dd9bd7618f0c3d4a70e557d19d3`. It connects actual accepted
@@ -5179,7 +5271,6 @@ The default Playwright config starts the local portal; this contract spec does n
 existing multiplayer selection still owns the human worlds. All tests/E2E/simulations, formatting/lint/types/build/
 editor/schema/repository checks and doctor/context/catalog commands remain unrun. Repair shared Phaser mock emitter/
 lifecycle omissions at that gate, then execute the full actual-world evidence; these contracts cannot count as it.
-
 
 ### Production AI decision and boundary checkpoint (2026-10-03, unverified)
 
@@ -5255,7 +5346,6 @@ The default config starts the local portal; these pure contract specs do not pro
 gate repair the shared Phaser mock emitter/lifecycle omissions, then run affected focused and actual-world checks.
 All tests/E2E/simulations, formatting/lint/types/build/editor/schema/repository checks and doctor/context/catalog remain
 unrun. Sampling overhead and live bootstrap/outcomes are unmeasured, not accepted production evidence.
-
 
 ### Production queue claims and progress checkpoint (2026-10-04, unverified)
 
@@ -5428,7 +5518,6 @@ lifecycle omissions remain prior unverified debt. All tests/E2E/simulations, for
 repository checks and doctor/context/catalog commands remain deferred. Type/module compatibility, source-structure
 checks, report/capture pressure, bootstrap and actual both-faction strategic outcomes still need executable evidence.
 
-
 ## Production physical queue checkpoint (2026-10-04, unverified)
 
 **Scope/provenance:** current #815/#816 PRO-03/06/07 substep is native physical insertion/removal interval authoring.
@@ -5519,7 +5608,6 @@ lifecycle omissions remain prior unverified debt. All tests/E2E/simulations, for
 repository checks and doctor/context/catalog commands remain deferred. Type/module compatibility, source structure,
 report/capture pressure, bootstrap and actual both-faction strategic outcomes still require executable evidence.
 
-
 ## Production native rejection checkpoint (2026-10-04, unverified)
 
 **Scope/provenance:** current #815/#816 PRO-03/06/07 substep is rejected admission/application plus exact selected-claim
@@ -5595,7 +5683,6 @@ pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts skirmish
 Review merged Nx 23.2.1/Jest 30.3.0/Phaser 4.2.1 flags/dependencies at that gate. Shared Phaser mock emitter/lifecycle
 omissions remain prior unverified debt. Type/module/source-structure compatibility, capture/report pressure, native
 bootstrap and both-faction strategic outcomes remain executable final-gate obligations.
-
 
 ## Production completed-effect authority checkpoint (2026-10-05, unverified)
 
@@ -5683,7 +5770,6 @@ type/build/editor/schema/repository checks and doctor/context/catalog commands r
 runtime compatibility, source structure, capture/report pressure, actual bootstrap and both-faction strategic outcomes
 remain final-gate obligations.
 
-
 ## Production cancellation lifecycle checkpoint (2026-10-05, unverified)
 
 **Scope/provenance:** #815/#816 PRO-03/06/07 native cancellation/refund lifecycle and removed per-tick queue-claim
@@ -5770,7 +5856,6 @@ format/lint/type/build/editor/schema/repository checks and doctor/context/catalo
 runtime native policy/creation/claims, tooling/module compatibility, shared mocks, capture/report pressure, legal
 bootstrap and useful both-faction strategic outcomes still require executable evidence.
 
-
 ### Production owned world/setup checkpoint (2026-10-05, unverified)
 
 **Scope/provenance:** grouped #815/#816 PRO-03/06/07 diagnostic authoring, beginning at
@@ -5850,7 +5935,6 @@ and strategic AI cancellation/transition worlds; keep compatible PRO-03/06 pairs
 for these cross-authority joins. Official OpenAI Docs searched/fetched this turn confirm complex coding and `high`
 support: [GPT-6.1 Sol](https://developers.openai.com/api/docs/models/gpt-6.1-sol). The recommendation is a task judgment,
 not a model switch or an inference about active settings. Commit/push this slice, verify remote, then pause.
-
 
 ### Production consumed decision input checkpoint (2026-10-05, unverified)
 
@@ -5938,7 +6022,6 @@ legal Skaduwee research producer setup and useful strategic AI cancellation/tran
 PRO-03/06 pairs. Retain **GPT-6.1 Sol / high** for these cross-authority joins. Official OpenAI Docs searched/opened
 this turn confirm complex coding and `high` support: [GPT-6.1 Sol](https://developers.openai.com/api/docs/models/gpt-6.1-sol).
 The recommendation is task judgment, not a switch or inference about active settings. Commit/push, verify remote, pause.
-
 
 ### Production spatial/exposure checkpoint (2026-10-05, unverified)
 

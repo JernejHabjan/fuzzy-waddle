@@ -53,6 +53,16 @@ independent gzip bytes to a module. Record the reachable set and digests.
 Compare only runnable, identified revisions with equivalent native worlds and workloads. An isolated empty-observer
 method probe can check a fast path, but cannot establish whole-game CPU, allocation or shipping-delta budgets.
 
+A matching simulation seed alone does not make separate lobby launches identical. `ActorIdAuthorityService` also
+salts actor IDs with the game-instance ID, which affects actor ordering and command identities. A validated preset
+fixes that ID from its seed and `fixtureId`; retain the same preset identity across paired runs and each source's own
+provenance. The preset must contain valid authored work. An exact resource start equal to the existing balance can
+establish identity without emitting a resource change; an empty preset is rejected. Check the legal roster and full
+initial native boundary before comparing later states. Trace the first differing command/outcome when trajectories
+diverge: a later gameplay repair can change the workload even when both initial boundaries match. Such runs establish
+a causal difference, not paired performance evidence. Keep any behavior-aligned measurement reference explicitly
+separate from the original pinned acceptance reference.
+
 Use one browser runtime process at a time and group compatible IDs with `--scenarios`. Unit, type and tooling checks may be batched independently. Diagnose the earliest causal disagreement in this order:
 
 ```text
