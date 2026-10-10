@@ -31,6 +31,16 @@ This prevents a transient return from attracting another worker to the same Fiel
 construction resources. The observed return order does not identify its original Field, so this guard defers staffing
 globally while that food return is unresolved.
 
+The native pawn's Gather tree returns a full pack before tending another crop cycle or finding a replacement for a
+depleted source. A farmer that fills its pack on the last ripe crop therefore delivers that food before regrowth;
+workers with remaining capacity still tend and harvest normally. The shared resource and construction MDSL roots
+have separate source owners and are composed into the existing pawn tree without changing its public entry point.
+
+Expansion construction carries every positive resource cost from the observed main building's catalog profile into
+the shared intent arbiter. Stockpile reservations and due obligations therefore block an unaffordable expansion
+before dispatch. A missing price profile keeps the saved candidate explicit without proposing free construction;
+native application retains responsibility for actual payment and site/builder legality.
+
 The resource-service proposer uses definition-derived drop-off resource types. A visible, valuable non-food source may
 justify a compatible mill/camp only when existing local service is too far away, a worker or dated demand can use it,
 its catalog cost is spendable, and a currently observed footprint improves travel. An already-served source, pending

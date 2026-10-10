@@ -13,42 +13,45 @@ slowdown. Keep correctness coverage. Commit/push and pause at each boundary; act
 Next recommendation GPT-6.1 Sol / high for remaining production recovery and release authority. The
 [end-of-gate machinery necessity review](#end-of-gate-machinery-necessity-review) remains not_started.
 
-**Current step:** combined command-authority and production repair batch checked; publication follows, then pause.
-Player-local commitments and Field-return labor are repaired. Full M12/PRO release proof remains open; M11 useful
-authority remains blocked. C8 sanity checking is complete and further diagnostic profiling is not queued.
+**Current step:** M12 food-delivery and expansion-admission repair batch checked; publication follows, then pause.
+Full packs now return before crop regrowth, and expansions claim their catalog cost. The natural match still stalls
+at five workers. Full M12/PRO release proof remains open; M11 useful authority remains blocked. C8 sanity checking
+is complete and further diagnostic profiling is not queued.
 
-**What changed / why:** command admission, terminal cleanup and saved pending keys now use player plus opaque key,
-so two AI players can independently request the same bootstrap task while one player's repeat stays suppressed.
-Legacy saves recover ownership from command identity; ambiguous ownership fails closed. CommandBusService and the
-protocol contracts were split into focused owners to satisfy source limits before changing authority; existing callers
-retain their facade/barrel paths. Relay echo gating, snapshot reseeding and cleanup have native regression coverage.
-Field staffing now recognizes food returned to Sandhold and other compatible drop-offs, preventing an extra farmer
-from consuming workers needed for wood. Unknown cargo is conservative; known wood returns do not block food staffing.
+**What changed / why:** resource and construction MDSL roots were split without changing the assembled tree, then
+the Gather selector was repaired to return a full pack before tending or replacing a depleted source. A farmer that
+fills its pack on the last crop can deliver the food before regrowth; partial packs keep normal tending/harvesting.
+Expansion proposals now carry all positive catalog-priced resource claims through the existing shared arbiter, so
+insufficient or reserved funds stop dispatch. Unknown prices retain the proposed candidate without free construction.
+The base proposal helper was extracted to satisfy method limits; no save/wire, growth, payment or balance rule changed.
 
-**Checked evidence:** full native 150 suites/734 tests; focused economy/production 8 suites/48 tests; protocol 18 and
-server validator 16 tests; native/gameplay spec typing, scoped structure/formatting and portal production build pass.
-The final focused transport/authority run checks the repaired lifecycle fixture. Negative controls reproduce the global
-key collision, foreign restored progress and Sandhold food-return errors before their repairs.
-One unprofiled PRO-03 baseline and one candidate retain real decisions and native effects: food-return staffing
-violations 1 → 0, final wood 40 → 160, resource rejections 7 → 3. Both still have five workers, two military units and
-one AnkGuard; neither establishes full production success, determinism or balance calibration.
+**Checked evidence:** full native 151 suites/739 tests; focused gameplay eight suites/33 tests; native/gameplay spec
+types, scoped structure/formatting and uncached portal production build pass. Delivery-order controls failed twice
+before repair; expansion controls failed four times before repair. The neutral tree split is byte-identical (25,853
+characters). One farming-only and one combined unprofiled PRO-03 diagnostic ran sequentially. The combined run has
+610 decisions/12,006 ticks, zero insufficient-resource outcomes and an observed 400-stone/400-wood expansion rejected
+by the arbiter. It still ends with five workers, two military units, one AnkGuard, five food and 160 wood. Three unique
+captured tick/actor rows still show full food packs at depleted Fields; branch priority alone does not prove recovery,
+throughput, determinism or balance calibration. Full production contracts and minimum producer assertion remain red.
 
-**Provenance:** clean base/remote `4ec57416300e1c69535feb80a79af2845d952259`; local splits `a0fb99ec8`, `a38b076a3`,
-authority repair `1c1b06e6e`; containing commit owns closure repairs, Field labor and this record.
+**Provenance:** clean base/remote `7c6cc81880cb7b903a9ec03aa3c5e2a19adbdee0`; neutral splits `5e8161cb0`, `b25c691bb`;
+containing commit owns both behavior repairs, controls and this record.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify remote on resume.
 Preserve Nx merge `59f72e037`, comment-rule removal, native oracles/bounds and useful nulls. The
-[combined checkpoint](follow-ups/runtime-matrix-ci.md#combined-command-authority-and-production-repair-checkpoint-2026-10-10-checked)
+[recovery checkpoint](follow-ups/runtime-matrix-ci.md#food-delivery-and-expansion-admission-checkpoint-2026-10-10-checked)
 owns exact files, checks, runtime hashes and limitations. Ignored evidence remains under `tmp/ai-plans/759-validation/`;
-no temporary artifact is committed. Browser candidate source is `1c1b06e6e923` plus Field patch, dirty digest
-`fnv1a32:58c1be9d`, fixture `fnv1a32:221d6201`, seed `759101`. Later closure repairs were checked separately.
+no temporary artifact is committed. Combined browser source is `b25c691bbcb8` plus both repairs, dirty digest
+`fnv1a32:7948a3db`, fixture `fnv1a32:221d6201`, seed `759101`. No shipped source changed during either match.
 The [performance sanity policy](follow-ups/runtime-matrix-ci.md#diagnostic-performance-sanity-check-policy-2026-10-10-checked)
 retains historical cost evidence; these gameplay changes do not inherit its parity or numerical measurements.
 
 **Next action / why:** GPT-6.1 Sol / high for grouped M12 recovery and production authority.
-Start from the latest PRO-03 candidate's worker recovery/food bottleneck: five workers versus the six-worker floor,
-15 food versus a 50-food worker cost, and 160 wood versus a 200-wood AnkGuard cost. Trace observed food throughput,
-recovery ordering and remaining resource rejections before changing policy. This should restore the workforce that
-allows additional useful military capacity. Then group related PRO-03/06/07 legal fixtures and missing authority/oracles;
+Start from the combined PRO-03 candidate's worker recovery/food bottleneck: five workers versus the six-worker floor,
+five food versus a 50-food worker cost, and 160 wood versus a 200-wood AnkGuard cost. Trace native branch progress,
+movement/await settling and delivery cadence against simulation time before changing policy. Field growth already
+uses simulation ticks; asynchronous/frame progress is a hypothesis, not an established cause. This should identify
+what prevents workforce recovery and useful additional military capacity. Group the next causal repair and its controls,
+then related PRO-03/06/07 legal fixtures and missing authority/oracles;
 do not weaken release assertions or restart profiling. Server/socket/save/restart/hash/calibration and the final machinery
 necessity review remain required. Pause after the next coherent checked, committed and remote-verified batch.
 
@@ -180,8 +183,9 @@ to the latest task. Whole known piles may retain several earlier gathering attem
 A credit proves a scoped balance change, independently from cargo lineage, accepted task/demand and continuous usefulness.
 
 **Next action — why:** investigate the remaining workforce/food recovery bottleneck and full production authority on
-**GPT-6.1 Sol / high**. Scoped command collisions and Field-return staffing are repaired; five workers and low food
-still prevent useful capacity growth. Keep M11/M12, correctness/parity/calibration and final machinery review duties.
+**GPT-6.1 Sol / high**. Scoped command collisions, Field-return staffing, full-pack priority and expansion pricing are
+repaired; five workers and low food still prevent useful capacity growth. Trace native delivery cadence and await/frame
+progress before tuning policy. Keep M11/M12, correctness/parity/calibration and final machinery review duties.
 C8 sanity checking is complete; strict diagnostic performance certification is retired. Publish and pause.
 
 | Dependency                                            | State                                                         | Purpose / next boundary                                                                                                                                        |
@@ -208,7 +212,7 @@ C8 sanity checking is complete; strict diagnostic performance certification is r
 | Binding/restore/roster boundaries (52)                | Scoped native/protocol controls pass                          | Fence replacement and brief roster churn; wider integration remains                                                                                            |
 | Consumed/accepting liability diagnostics (53)         | Focused native/synthetic controls pass                        | Explain new claims while preserving consumed input; browser integration remains                                                                                |
 | Real producer/report and operational controls (54)    | Full native diagnostic bridge passes; release proof/cost open | All 611 selections retained; legal roster and native outcomes repaired before paired cost                                                                      |
-| Combined implementation review (M10)                  | Correctness gate in progress; C8 sanity checked               | Native 734, scoped commitments/Field returns checked. C8 complete; full PRO, authority and lifecycle evidence open                                             |
+| Combined implementation review (M10)                  | Correctness gate in progress; C8 sanity checked               | Native 739, full-pack/expansion controls checked. C8 complete; workforce recovery, full PRO, authority and lifecycle open                                      |
 | Missing-control authoring                             | Complete; native/report controls executed                     | Real 16-decision short replay passes; broader browser authority/setup and cost remain                                                                          |
 | Complete need/lifetime history and useful throughput  | Open; activation still blocked                                | Public aliases and every relied-on mutation need authority before useful windows/real recipes                                                                  |
 | Continuous useful capacity                            | Open                                                          | Complete mutation authority for readiness, supply, access/safety and service                                                                                   |
@@ -725,7 +729,7 @@ No automatic model switch, subagent or new chat is authorized by this policy. Ex
 | Consolidated design, scope/value, shared/per-owner contracts and acceptance (50)        | GPT-6.1 Sol / high                                                                       | Authored/source-reviewed                                                                                                  |
 | Settled implementation, compliance cleanup, wiring, fixtures and test authoring (51–54) | Luna / high                                                                              | Authored; scoped native/report controls now checked, wider integration remains                                            |
 | Combined implementation source review and unresolved contract conflicts (M10)           | GPT-6.1 Sol / high                                                                       | Source review/controls complete; E2E typing and 461 production/queue/resource/output controls pass, full gate in progress |
-| Final executable gate and repairs                                                       | GPT-6.1 Sol / high for command/authority repairs; Luna / high for settled implementation | C8 complete; scoped commitments/Field returns checked; next recovery, full PRO and lifecycle proof                        |
+| Final executable gate and repairs                                                       | GPT-6.1 Sol / high for command/authority repairs; Luna / high for settled implementation | C8 complete; full-pack/expansion controls checked; next native recovery cadence, full PRO and lifecycle proof             |
 
 - The design must produce a finite list of substantial implementation passes and completion criteria. A pass may contain
   several related owners and coherent commits. Do not create a new design stage or model pause for each file, helper,
@@ -775,13 +779,14 @@ No automatic model switch, subagent or new chat is authorized by this policy. Ex
 
 Copyable next-chat prompt:
 
-> Read docs/ai/759-skirmish-ai/HANDOFF.md and the combined command authority/production checkpoint in runtime-matrix-ci.md.
-> Verify containing commit/remote and clean worktree. Player-scoped commitments and Field returns are checked;
-> native 734, focused economy/production 48, protocol 18/server 16 tests, types and production build pass.
-> Latest PRO-03 has zero food-return staffing violations and 160 wood, but five workers/15 food/one AnkGuard;
+> Read docs/ai/759-skirmish-ai/HANDOFF.md and the food-delivery/expansion-admission checkpoint in runtime-matrix-ci.md.
+> Verify containing commit/remote and clean worktree. Full packs now return before regrowth, and expansions claim
+> catalog costs; native 739, focused gameplay 33 tests, spec types and uncached production build pass.
+> Latest combined PRO-03 has zero insufficient-resource outcomes and 160 wood, but five workers/five food/one AnkGuard;
 > full production assertions still fail. Read its bounded summary, then only required decision/capture slices.
-> On GPT-6.1 Sol / high, trace worker-food recovery, remaining rejections and military capacity's recovery hold;
-> repair the first causal blocker with meaningful controls, then group related PRO-03/06/07 release-authority work.
+> On GPT-6.1 Sol / high, trace native branch progress, movement/await settling and delivery cadence against simulation
+> time. Do not assume a clock fault: Field growth already uses ticks. Repair the first causal blocker with meaningful
+> controls, then group related PRO-03/06/07 release-authority work without weakening assertions or increasing the ceiling.
 > C8 sanity is complete; further dedicated profiling/strict diagnostic performance certification is retired.
 > Preserve full oracles/useful nulls, source/fixture provenance, water/wall TTL, pawn/path settling and WAIT save limitations.
 > M11, full PRO/M12, server/socket/save/restart/hash/calibration and final machinery necessity review remain mandatory.

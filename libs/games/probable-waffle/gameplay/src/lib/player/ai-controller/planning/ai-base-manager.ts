@@ -7,6 +7,7 @@ import type { AiIntentV1 } from "../contracts/ai-intent-v1";
 import type { AiObservationV1, AiObservedActorV1 } from "../contracts/ai-observation-v1";
 import type { AiProfileConfigV1 } from "../contracts/ai-profile-config-v1";
 import type { AiManagerProposalV1, AiProposalManagerV1 } from "./ai-manager-proposal";
+import { createAiResourceCostClaims } from "./ai-resource-cost-claims";
 
 /** Sustained saturated local service before an expansion becomes a candidate. */
 export const AI_EXPANSION_SATURATION_TICKS = 600;
@@ -289,7 +290,9 @@ export class AiBaseManager implements AiProposalManagerV1 {
         catalog.entries.some(
           (entry) => entry.sourceObjectName === builder.objectName && entry.constructs.includes(mainObject)
         );
-      if (canConstructMain) {
+      const construction = catalog.entries.find((entry) => entry.sourceObjectName === mainObject)?.constructionProfile;
+      // Unknown prices cannot bypass the shared arbiter's stockpile reservation.
+      if (canConstructMain && construction) {
         const ordinal = state.identities.nextIntent;
         const intentId = `intent:expansion:${ordinal}` as AiIntentV1["intentId"];
         const effectId = `effect:expansion:${ordinal}` as AiIntentV1["effectId"];
@@ -306,6 +309,7 @@ export class AiBaseManager implements AiProposalManagerV1 {
           utility: macroOpening ? 660 : 520,
           preconditions: [{ kind: "actor_exists", actorId: builder.actorId }],
           claims: [
+            ...createAiResourceCostClaims(claimId, construction.resourceCost),
             { claimId, kind: "site", siteKey: expansion.reservedSiteKey! },
             {
               claimId: `${claimId}:builder` as AiIntentV1["claims"][number]["claimId"],

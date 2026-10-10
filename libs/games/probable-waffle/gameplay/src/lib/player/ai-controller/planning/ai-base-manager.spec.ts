@@ -31,6 +31,29 @@ const catalog: AiCapabilityCatalogV1 = {
       housingCapacity: null,
       housingCost: 1,
       cargoCapacity: null
+    },
+    {
+      capabilityId: "main",
+      family: "building",
+      sourceObjectName: ObjectNames.Sandhold,
+      effectiveLevel: 1,
+      movementDomains: [],
+      targetDomains: [],
+      produces: [],
+      constructs: [],
+      researches: [],
+      gathers: [],
+      housingCapacity: null,
+      housingCost: null,
+      cargoCapacity: null,
+      constructionProfile: {
+        resourceCost: { [ResourceType.Wood]: 400, [ResourceType.Stone]: 400 },
+        footprintRadiusTiles: 2,
+        visionRange: 8,
+        navigableHeight: null,
+        enterHeight: null,
+        exitHeight: null
+      }
     }
   ]
 };
@@ -148,6 +171,10 @@ describe("AiBaseManager", () => {
     expect(first.statePatch?.bases?.filter((base) => base.baseId.startsWith("base:expansion:"))).toHaveLength(1);
     expect(second.statePatch?.bases?.filter((base) => base.baseId.startsWith("base:expansion:"))).toHaveLength(1);
   });
+});
+
+describe("AiBaseManager", () => {
+  const manager = new AiBaseManager(profile, () => catalog);
 
   it("does not reissue expansion construction after the reserved site is observed", () => {
     const state = withCompletedOpening(

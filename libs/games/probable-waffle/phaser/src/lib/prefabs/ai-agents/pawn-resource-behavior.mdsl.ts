@@ -6,13 +6,19 @@ export const PawnResourceBehaviorMdsl = `root [Gather] {
         succeed {
             selector { /* executes until first succeeds */
 
+                /* Deliver a full pack before tending the next crop or replacing a depleted source. */
+                sequence {
+                    condition [GatherCapacityFull]
+                    action [AssignDropOffResourcesOrder]
+                }
+
                 /* ── FARM FIELD TENDING PATH ────────────────────────────── */
                 /* Guards: target must be a tendable field AND crops not ready. */
                 /* While growing: walk to spot, animate, wait 1.5s — succeeds  */
                 /* so the outer succeed{selector} absorbs the tick and the root */
                 /* restarts, looping back here until GrowthReady.               */
                 /* When GrowthReady: flip{} fails → branch fails → selector     */
-                /* falls through to GatherCapacityFull / GatherResource below.  */
+                /* falls through to harvest validation / GatherResource below. */
                 sequence {
                     condition [TargetHasTendableComponent]
                     /* Exit this branch when crops are ready → fall through to harvest */
@@ -62,12 +68,6 @@ export const PawnResourceBehaviorMdsl = `root [Gather] {
                         condition [HasHarvestComponent]
                     }
                     action [Stop, "Gather - No Harvest Component"]
-                }
-
-                /* if gathering capacity is full, drop off resources */
-                sequence {
-                    condition [GatherCapacityFull]
-                    action [AssignDropOffResourcesOrder]
                 }
 
                 /* exit current container */
