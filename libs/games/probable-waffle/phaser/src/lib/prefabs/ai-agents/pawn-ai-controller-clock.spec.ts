@@ -18,7 +18,7 @@ jest.mock("./player-pawn-ai-controller.mdsl", () => ({
   PlayerPawnAiControllerMdsl: "root { sequence { wait [250] action [Succeed] } }"
 }));
 
-/** The test-owned module accepts authored trees; the production definition remains an exact literal. */
+/** The test-owned module accepts authored trees; production composes its shared native branches. */
 const treeDefinition: { readonly PlayerPawnAiControllerMdsl: string } = definition;
 
 /** Real controller, tick service, native GameObject and installed tree; authored MDSL isolates WAIT timing. */
