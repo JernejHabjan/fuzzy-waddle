@@ -8,7 +8,10 @@ export interface GameCommandAuthorityState {
   readonly nextSequenceByPlayer: Readonly<Record<number, number>>;
   readonly processedSequenceWatermarkByPlayer?: Readonly<Record<number, number>>;
   readonly processedCommandIds: readonly string[];
+  /** Legacy global keys; restored by the owning command's player identity. New snapshots use the scoped field. */
   readonly activeCommitments?: Readonly<Record<string, string>>;
+  /** Player-local opaque commitment key to active command ID, preserving equal keys from different players. */
+  readonly activeCommitmentsByPlayer?: Readonly<Record<number, Readonly<Record<string, string>>>>;
   readonly activeCommandProgress?: Readonly<
     Record<string, { readonly expectedActorIds: readonly ActorId[]; readonly terminalActorIds: readonly ActorId[] }>
   >;

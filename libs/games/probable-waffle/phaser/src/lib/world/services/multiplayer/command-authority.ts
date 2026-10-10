@@ -1,3 +1,5 @@
+import { isSettlingCommandOutcome } from "./is-settling-command-outcome";
+import { CommandCommitmentRegistry } from "./command-commitment-registry";
 import {
   type GameCommand,
   type GameCommandAuthorityState,
@@ -42,7 +44,7 @@ export class CommandAuthority {
 
   readonly processedCommandIds = new Map<string, number>();
 
-  readonly activeCommitments = new Map<string, string>();
+  private readonly activeCommitments = new CommandCommitmentRegistry();
 
   readonly expectedActorIdsByCommand = new Map<string, readonly string[]>();
 
@@ -86,26 +88,16 @@ export class CommandAuthority {
 
   /** Publishes a completion whose originating command is represented by saved effect metadata. */
   reportPersistedOutcome(outcome: GameCommandOutcome): void {
-    if (
-      outcome.kind === "completed" ||
-      outcome.kind === "rejected" ||
-      outcome.kind === "cancelled" ||
-      outcome.kind === "failed"
-    ) {
-      if (
-        outcome.reason !== "duplicate_command" &&
-        outcome.reason !== "lost_outcome" &&
-        outcome.reason !== "outcome_backlog_overflow" &&
-        this.activeCommitments.get(outcome.commitmentKey) === outcome.commandId
-      ) {
+    if (isSettlingCommandOutcome(outcome)) {
+      if (this.activeCommitments.get(outcome.playerNumber, outcome.commitmentKey) === outcome.commandId) {
         const terminalActorIds = this.terminalActorIdsByCommand.get(outcome.commandId) ?? new Set<string>();
         outcome.actorIds.forEach((actorId) => terminalActorIds.add(actorId));
         this.terminalActorIdsByCommand.set(outcome.commandId, terminalActorIds);
         const expectedActorIds = this.expectedActorIdsByCommand.get(outcome.commandId) ?? outcome.actorIds;
         const settled =
           expectedActorIds.length === 0 || expectedActorIds.every((actorId) => terminalActorIds.has(actorId));
-        if (settled && this.activeCommitments.get(outcome.commitmentKey) === outcome.commandId) {
-          this.activeCommitments.delete(outcome.commitmentKey);
+        if (settled && this.activeCommitments.get(outcome.playerNumber, outcome.commitmentKey) === outcome.commandId) {
+          this.activeCommitments.delete(outcome.playerNumber, outcome.commitmentKey);
           this.expectedActorIdsByCommand.delete(outcome.commandId);
           this.terminalActorIdsByCommand.delete(outcome.commandId);
         }
@@ -138,9 +130,7 @@ export class CommandAuthority {
       nextSequenceByPlayer,
       processedSequenceWatermarkByPlayer,
       processedCommandIds: [...this.processedCommandIds.keys()],
-      activeCommitments: Object.fromEntries(
-        [...this.activeCommitments.entries()].sort(([left], [right]) => left.localeCompare(right))
-      ),
+      activeCommitmentsByPlayer: this.activeCommitments.snapshot(),
       activeCommandProgress: Object.fromEntries(
         [...this.expectedActorIdsByCommand.entries()]
           .sort(([left], [right]) => left.localeCompare(right))
@@ -262,7 +252,7 @@ export class CommandAuthority {
       );
       return;
     }
-    const activeCommandId = this.activeCommitments.get(execution.commitmentKey);
+    const activeCommandId = this.activeCommitments.get(upgraded.playerNumber, execution.commitmentKey);
     if (activeCommandId && activeCommandId !== execution.commandId) {
       this.reportOutcome(
         upgraded,
@@ -282,7 +272,7 @@ export class CommandAuthority {
         execution.sequence
       )
     );
-    this.activeCommitments.set(execution.commitmentKey, execution.commandId);
+    this.activeCommitments.set(upgraded.playerNumber, execution.commitmentKey, execution.commandId);
     this.expectedActorIdsByCommand.set(execution.commandId, [...upgraded.actorIds].sort());
     while (this.processedCommandIds.size > CommandAuthority.PROCESSED_COMMAND_LIMIT) {
       const oldest = this.processedCommandIds.keys().next().value as string | undefined;
@@ -333,10 +323,7 @@ export class CommandAuthority {
     for (const commandId of state.processedCommandIds.slice(-CommandAuthority.PROCESSED_COMMAND_LIMIT)) {
       this.processedCommandIds.set(commandId, -1);
     }
-    this.activeCommitments.clear();
-    for (const [commitmentKey, commandId] of Object.entries(state.activeCommitments ?? {})) {
-      this.activeCommitments.set(commitmentKey, commandId);
-    }
+    this.activeCommitments.restore(state);
     this.recentOutcomes.splice(
       0,
       this.recentOutcomes.length,
@@ -348,7 +335,7 @@ export class CommandAuthority {
       this.expectedActorIdsByCommand.set(commandId, [...progress.expectedActorIds].sort());
       this.terminalActorIdsByCommand.set(commandId, new Set(progress.terminalActorIds));
     }
-    const activeCommandIds = new Set(this.activeCommitments.values());
+    const activeCommandIds = new Set(this.activeCommitments.commandIds());
     for (const outcome of this.recentOutcomes) {
       if (
         activeCommandIds.has(outcome.commandId) &&
@@ -357,13 +344,8 @@ export class CommandAuthority {
       ) {
         this.expectedActorIdsByCommand.set(outcome.commandId, [...outcome.actorIds].sort());
       }
-      if (!activeCommandIds.has(outcome.commandId)) continue;
-      if (
-        outcome.kind !== "completed" &&
-        outcome.kind !== "rejected" &&
-        outcome.kind !== "cancelled" &&
-        outcome.kind !== "failed"
-      ) {
+      if (this.activeCommitments.get(outcome.playerNumber, outcome.commitmentKey) !== outcome.commandId) continue;
+      if (!isSettlingCommandOutcome(outcome)) {
         continue;
       }
       const terminalActorIds = this.terminalActorIdsByCommand.get(outcome.commandId) ?? new Set<string>();
