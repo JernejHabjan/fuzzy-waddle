@@ -151,7 +151,7 @@ root [ReturnResources] {
                 /* if gathering capacity is empty, gather */
                 sequence {
                     flip {
-                        condition [GatherCapacityFull]
+                        condition [HasCarriedResources]
                     }
                     action [AssignGatherResourcesOrder]
                 }

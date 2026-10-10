@@ -512,6 +512,91 @@ final-gate checkpoints below. The user-authorized final gate is active; K5/C8 an
 Do not claim stage validation before K1–K5. M11 remains a mandatory blocker from public mutable aliases
 and incomplete access/safety/lifetime history; M12 remains open for full PRO-03/06/07. Neither was reduced by this batch.
 
+### Shared food throughput and partial return checkpoint (2026-10-11)
+
+Grouped M12 recovery/balance batch, based on clean/remote `9a53ddd705997403a7a5b93aa823c527a753bd8d`.
+Neutral prerequisites: `c2f7d16c2` extracts fresh native gathering profiles; `a44daf896` separates the existing
+range/cooldown literal contracts and re-exports them from the original pawn interface. The profile values and restored
+inline emitted runtime body were identical before tuning; the type unions and interface members were unchanged before
+the new predicate. Neither prerequisite refreshes a structural baseline. Containing commit owns tuning, repair and evidence.
+
+**Purpose and causal boundary:** the retained prior combined PRO-03 capture has eleven native food credits of five
+each (55 total), ending at five workers. Native extraction, delivery and growth wait on simulation ticks. This batch
+does not establish a wall-clock defect or repair scheduler/navigation policy; frame/Promise settling remains a hypothesis.
+The user-authorized tuning reduces collection actions and trips while retaining crop yield and actual delivery/payment.
+
+| Acceptance | Implementation / purpose | Checked evidence / limits |
+| --- | --- | --- |
+| R1 Causal trace | Actual baseline credit events and bounded worker/Field transitions distinguish carried food from spendable stock. | `cadence-worker-field-transitions.json` retains 96 changing rows, not 96 independent episodes. No inferred clock defect. |
+| R2 Compliant owners | `create-default-gather-data.ts` returns independent per-component profiles; pawn literal types have separate owners with original import compatibility. | Neutral profile/runtime equivalence, 18 compatibility tests and explicit structure checks pass. |
+| R3 Shared balance | Food capacity 5→10, amount per harvest 2→5, worker cooldown 2,000→1,000 ms; Field extraction 2,000→1,000 ms and growth 45,000→30,000 ms (nominal assigned-tender growth 22.5→15 s). | Real source/gatherer/tender simulation controls: two harvests fill ten food, frozen wall time does not block extraction, growth refills thirty. Old values fail three targets, non-food control passes. |
+| R4 Partial return | ReturnResources tests cargo presence via native gatherer → PawnAgentResources → public agent/interface → MDSL, rather than treating less-than-full as empty. | Partial return fails before repair; seven tree cases and native restored 0/5/10 cargo predicates pass. Cargo stays intact until native delivery; no save schema change. |
+| R5 Final gate / publication | Focused/full native, types, explicit structure, format, production build, fresh affected world evidence and exact remote publication. | Final evidence recorded below; M11/full M12 remain open. |
+
+Tradeoffs: ten-food packs leave more food unspendable in transit, while larger harvests and shorter waits improve nominal
+renewable throughput for both human and AI workers. Field yield remains thirty; wood/stone/mineral profiles, Field price,
+Granary requirement, source assignment cap, unit/combat stats and source/drain ownership policy are unchanged. The Field
+tooltip now describes Granary unlock plus a compatible drop-off, matching the existing native rules. Other food sources
+retain source-owned immediate credit; this batch does not prove their repeated reassignment behavior. Balance calibration
+and paired multi-seed fairness evidence remain open; one natural run is not determinism or win-rate evidence.
+
+**Final checks:** full native 152 suites/748 tests; focused five suites/44 tests; native spec types, scoped explicit
+`source-structure-limits`, Prettier and uncached portal production build pass. Logs: `cadence-final-native-full.log`,
+`cadence-final-focused-native.log`, `cadence-final-native-types.log`, `cadence-final-structure.log`,
+`cadence-final-format.log`, `cadence-final-production-build.log`. Preflight doctor/context pass. Old-value controls:
+`cadence-balance-negative.log` (three fail/one pass) and `cadence-partial-return-negative.log` (one fail/six pass).
+
+**Fresh affected runtime:** source `a44daf8965cb65adace32a9486834a485622f540` plus final tuning/partial return,
+fixture `fnv1a32:221d6201`, original 12,000 requested-tick ceiling, one repetition per faction, sequential unprofiled runs.
+Tivara seed `759101`, dirty `fnv1a32:735c47e8`, report
+`shared-food-throughput-final/1791670529753-diagnostic_failed.json`, raw
+`tmp/ai-skirmish-runtime-results/run-GU3QMx/runtime.json`, SHA-256
+`d51fd0bbdc1792895445a647e29d9b0aa91198428cd32bbb21ed99ba956747eb`.
+610 decisions/12,007 actual ticks, six workers, two military units, one AnkGuard, food twenty/wood130 at the end;
+twelve native food credits of ten (120 total) versus eleven credits of five (55 total) in the prior candidate.
+This is observed progress, not paired statistical/determinism proof. PRO-03 remains diagnostic_failed: full production
+contract/authority gaps and minimum military producer count. Recent failure history also retains native movement and
+builder-assignment failures; zero insufficient-resource outcomes do not mean no other failures.
+Skaduwee seed `759102`, dirty `fnv1a32:7341c40b`, report
+`shared-food-throughput-final/1791670774505-diagnostic_failed.json`, raw
+`tmp/ai-skirmish-runtime-results/run-eTVzRj/runtime.json`, SHA-256
+`bea90619bad123e01489c719502beb613900923225899d5a726c39379447d3f4`.
+610 decisions/12,003 actual ticks, six workers, two military units, AnkGuard and InfantryInn, food thirty/wood100;
+thirteen native food credits of ten (130 total). It has no producer-floor failure, but PRO-03 remains diagnostic_failed
+on missing full production contract/authority. Its mixed-map starting actors are not proof of a legal faction-specific
+production world. Both variants have zero captured insufficient-resource command outcomes; neither proves victory,
+useful quantities or complete recovery. Bounded retained `cadence-final-world-summary.json` records credits and final
+counts for the next reader; read supported `cadence-final-runtime-*-summary.log` first. Dirty digests include
+documentation/spec edits; shipped source is frozen during each run. Two physical worlds total 1,220 decisions/24,010
+ticks; no paired repeat, timing certification or PRO-06/07 evidence is claimed.
+
+The grouped PRO-03/06/07 attempt on `c2f7d16c2edc` plus the initial tuning, dirty `fnv1a32:754c5366`, fixture
+`fnv1a32:221d6201`, failed at `publishRuntimeResult` / `JSON.stringify(report)` with `RangeError: Invalid string length`.
+Report `shared-food-throughput-batch/1791670127579-failed.json` has no runtime payload (377,061 ms); its zero reported
+decisions/ticks are missing evidence, not a gameplay result. The report repeats each fixture's raw variants in three
+scenario rows. No fixture bound or production oracle was reduced. Final affected evidence uses separate one-variant
+PRO-03 diagnostics; these cannot certify PRO-06/07 or the full two-faction release. The grouped output limit remains open.
+
+**Implementation Review / Omission Audit:** traced default profile creation, native extraction/cooldown and tending,
+Field return override, actual restored cargo, agent method forwarding, MDSL order selection and unchanged native credit.
+Reviewed original type imports/re-exports, independent arrays, tooltip rules and price/producer callers. All R1–R5 mapped;
+no diagnostic quantity is promoted to useful authority and no unsupported clock, navigation or full-recovery claim is made.
+
+**Separate Final Closure Audit:** reread final owners/contracts/consumers after all repairs and checked R1–R5 against
+actual controls, source provenance and both final reports. This bounded mechanics/balance batch is checked; grouped
+serialization, remaining native recovery failures and full release evidence are explicit open work. No source changed
+after final executable checks or during a match. Ignored captures/logs under `tmp/ai-plans/759-validation/` are retained
+locally and excluded from commits. Only exact task-owned source/specs/docs and the two neutral prerequisite commits are
+published by normal push with exact remote verification, then pause. Preserve Nx merge/comment-rule removal, water/wall TTL, pawn/path settling,
+WAIT save limitations and all release oracles. M11 remains blocked; full PRO/M12, server/socket/save/restart/hash/calibration
+and the final machinery necessity review remain open. C8 sanity is complete; further profiling is not queued.
+
+**Next grouped batch / why:** GPT-6.1 Sol / high for output-size repair, bounded native movement/builder/wood recovery
+triage and legal PRO-03/06/07 authority fixtures. Preserve every raw fact and assertion while removing repeated whole
+capture serialization; use fresh world failures to choose one causal repair before another balance adjustment.
+This lets full production evidence be captured and distinguishes a missing producer/effect from a missing oracle.
+Do not restart broad profiling or weaken null usefulness, full contracts, fair setup or tick ceilings.
+
 ### Food delivery and expansion admission checkpoint (2026-10-10, checked)
 
 User continued the grouped M12 recovery investigation. Clean base/remote

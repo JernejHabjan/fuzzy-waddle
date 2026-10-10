@@ -66,6 +66,8 @@ export interface IPlayerPawnControllerAgent {
   GatherHighValueResource(): State;
   HasHarvestComponent(): boolean;
   GatherCapacityFull(): boolean;
+  /** Cargo presence is independent of current pack capacity, particularly after restore or balance changes. */
+  HasCarriedResources(): boolean;
 
   // Construction and Building
   ConstructBuilding(): State;

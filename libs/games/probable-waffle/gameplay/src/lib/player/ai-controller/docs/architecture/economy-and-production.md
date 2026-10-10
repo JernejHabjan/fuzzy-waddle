@@ -36,6 +36,17 @@ depleted source. A farmer that fills its pack on the last ripe crop therefore de
 workers with remaining capacity still tend and harvest normally. The shared resource and construction MDSL roots
 have separate source owners and are composed into the existing pawn tree without changing its public entry point.
 
+Native food gathering uses a ten-food pack and collects up to five food per harvest, with a one-second worker
+cooldown. Fields take one second per extraction and thirty seconds per growth cycle before the assigned-tender boost.
+These shared values apply to human and AI workers; larger packs reduce drop-off trips while shorter collection waits
+make renewable food available for workforce recovery. Fields still yield thirty food per cycle, require a Granary to
+unlock construction and deliver harvested food to a compatible drop-off. Field food becomes spendable only on native
+delivery; other food sources retain their native source-owned immediate-credit policy. Larger packs keep more food
+unspendable during travel. A return order resumes gathering only when cargo is empty; a partial pack, including five food restored
+from older saves, is delivered before new gathering begins. `resource/create-default-gather-data.ts` in the Phaser
+component directory owns the per-resource profiles;
+each gatherer receives fresh profiles. Non-food gathering keeps its existing capacity, amount and cooldown.
+
 Expansion construction carries every positive resource cost from the observed main building's catalog profile into
 the shared intent arbiter. Stockpile reservations and due obligations therefore block an unaffordable expansion
 before dispatch. A missing price profile keeps the saved candidate explicit without proposing free construction;

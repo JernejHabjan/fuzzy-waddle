@@ -37,8 +37,8 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
     this.tending = new PawnAgentTending(gameObject, blackboard);
     this.boarding = new PawnAgentBoarding(gameObject, blackboard, this);
     this.spells = new PawnAgentSpells(gameObject);
-    this.movement = new PawnAgentMovement(
-      gameObject, blackboard, this, () => this.combat.getClosestAttackableVisibleEnemy()
+    this.movement = new PawnAgentMovement(gameObject, blackboard, this, () =>
+      this.combat.getClosestAttackableVisibleEnemy()
     );
   }
 
@@ -252,6 +252,10 @@ export class PlayerPawnAiControllerAgent implements IPlayerPawnControllerAgent {
 
   GatherCapacityFull(): boolean {
     return this.resources.GatherCapacityFull();
+  }
+
+  HasCarriedResources(): boolean {
+    return this.resources.HasCarriedResources();
   }
 
   AssignDropOffResourcesOrder(): Promise<State> {

@@ -186,6 +186,11 @@ export class PawnAgentResources {
     return gathererComponent.isCapacityFull();
   }
 
+  /** A returning partial pack still needs delivery, including cargo restored under an older capacity. */
+  HasCarriedResources(): boolean {
+    return getActorComponent(this.gameObject, GathererComponent)?.isCarryingResources() ?? false;
+  }
+
   async AssignDropOffResourcesOrder(): Promise<State> {
     const currentOrder = this.blackboard.getCurrentOrder();
     if (!currentOrder) return State.FAILED;

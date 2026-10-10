@@ -29,11 +29,11 @@ export function createDefaultGatherData(): GatherData[] {
       needsReturnToDrain: true
     },
     {
-      capacity: 5,
-      cooldown: 2000,
+      capacity: 10,
+      cooldown: 1000,
       range: 1,
       resourceType: ResourceType.Food,
-      amountPerGathering: 2,
+      amountPerGathering: 5,
       needsReturnToDrain: false
     }
   ];

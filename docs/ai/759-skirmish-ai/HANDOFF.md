@@ -22,49 +22,59 @@ batch; record the original/new values, purpose and tradeoffs. Change shared game
 players, keeping faction asymmetry intentional. Distinguish balance tuning from correctness repairs and check affected
 economy/production/combat scenarios with fresh evidence at the active final gate. Existing runtime results describe
 their original values; revised expectations must reflect an explained balance decision while preserving authority,
-fairness and useful-effect requirements. This policy update changes no gameplay values.
+fairness and useful-effect requirements.
 
-**Current step:** M12 food-delivery and expansion-admission repair batch checked and published through `998e3f02a`.
-Full packs now return before crop regrowth, and expansions claim their catalog cost. The natural match still stalls
-at five workers. Full M12/PRO release proof remains open; M11 useful authority remains blocked. C8 sanity checking
-is complete and further diagnostic profiling is not queued.
+**Current step:** M12 shared food-throughput and partial-return batch checked; containing commit owns publication.
+Both faction diagnostics reach six workers. Full M12/PRO release proof remains open; M11 useful authority remains
+blocked. C8 sanity checking is complete and further diagnostic profiling is not queued.
 
-**What changed / why:** resource and construction MDSL roots were split without changing the assembled tree, then
-the Gather selector was repaired to return a full pack before tending or replacing a depleted source. A farmer that
-fills its pack on the last crop can deliver the food before regrowth; partial packs keep normal tending/harvesting.
-Expansion proposals now carry all positive catalog-priced resource claims through the existing shared arbiter, so
-insufficient or reserved funds stop dispatch. Unknown prices retain the proposed candidate without free construction.
-The base proposal helper was extracted to satisfy method limits; no save/wire, growth, payment or balance rule changed.
+**What changed / why:** fresh native gathering profiles have a focused owner, and the pawn interface re-exports its
+existing range/cooldown types from separate files. Food packs hold ten instead of five; each harvest collects five
+instead of two. Food worker/Field extraction waits are one instead of two seconds; Field base growth is thirty instead
+of forty-five seconds, with the existing tender boost and thirty-food yield. Shared human/AI tuning reduces tiny trips
+and collection actions. ReturnResources now checks whether cargo exists, so a partial pack—including five food from an
+old save—reaches native delivery before gathering resumes. This repairs a correctness bug exposed by the new capacity.
+Larger packs keep more food unspendable during travel; no unit/combat/price/save/wire or native credit-owner rule changed.
+The Field tooltip now explains its actual Granary unlock and compatible drop-off rules.
 
-**Checked evidence:** full native 151 suites/739 tests; focused gameplay eight suites/33 tests; native/gameplay spec
-types, scoped structure/formatting and uncached portal production build pass. Delivery-order controls failed twice
-before repair; expansion controls failed four times before repair. The neutral tree split is byte-identical (25,853
-characters). One farming-only and one combined unprofiled PRO-03 diagnostic ran sequentially. The combined run has
-610 decisions/12,006 ticks, zero insufficient-resource outcomes and an observed 400-stone/400-wood expansion rejected
-by the arbiter. It still ends with five workers, two military units, one AnkGuard, five food and 160 wood. Three unique
-captured tick/actor rows still show full food packs at depleted Fields; branch priority alone does not prove recovery,
-throughput, determinism or balance calibration. Full production contracts and minimum producer assertion remain red.
+**Checked evidence:** final native 152 suites/748 tests, focused five suites/44 tests, native spec types, explicit
+structure/formatting and uncached portal production build pass. Old balance values fail three new native timing/cargo
+targets while the non-food control passes; partial return fails before repair. Actual restored 0/5/10 cargo uses the
+real gatherer and public pawn agent. Source waits use simulation ticks; no wall-clock defect is established. Neutral
+profile values/emitted runtime body and type unions/interface members are equivalent before tuning/predicate changes.
 
-**Provenance:** clean base/remote `7c6cc81880cb7b903a9ec03aa3c5e2a19adbdee0`; neutral splits `5e8161cb0`, `b25c691bb`;
-containing commit owns both behavior repairs, controls and this record.
+**Runtime evidence:** Tivara's fresh PRO-03 has 610 decisions/12,007 ticks, six workers, two military units, one
+AnkGuard, twenty food and 130 wood. It records twelve native food credits of ten (120 total), compared with eleven
+of five (55 total) in the prior candidate. This supports observed recovery progress, not complete production or
+determinism/calibration proof. Full contracts/authority and minimum producer assertion still fail; native movement and
+builder-assignment failures remain. Skaduwee has 610 decisions/12,003 ticks, six workers, two military units, two
+producers, thirty food/100 wood, and 130 food credited. Its full production contract still fails; mixed-map starting
+actors do not prove legal faction-specific setup. Neither variant records an insufficient-resource command outcome.
+The grouped PRO-03/06/07 capture failed serialization
+with `Invalid string length`, producing no runtime payload; this is an evidence-output failure, not a gameplay result.
+Separate faction PRO-03 diagnostics retain the recipe/oracles and cannot certify the full PRO-06/07 release.
+
+**Provenance:** clean base/remote `9a53ddd705997403a7a5b93aa823c527a753bd8d`; neutral prerequisites `c2f7d16c2`,
+`a44daf896`; containing commit owns shared tuning, partial-return repair, controls and this record.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify remote on resume.
 Preserve Nx merge `59f72e037`, comment-rule removal, native oracles/bounds and useful nulls. The
-[recovery checkpoint](follow-ups/runtime-matrix-ci.md#food-delivery-and-expansion-admission-checkpoint-2026-10-10-checked)
+[throughput checkpoint](follow-ups/runtime-matrix-ci.md#shared-food-throughput-and-partial-return-checkpoint-2026-10-11)
 owns exact files, checks, runtime hashes and limitations. Ignored evidence remains under `tmp/ai-plans/759-validation/`;
-no temporary artifact is committed. Combined browser source is `b25c691bbcb8` plus both repairs, dirty digest
-`fnv1a32:7948a3db`, fixture `fnv1a32:221d6201`, seed `759101`. No shipped source changed during either match.
+no temporary artifact is committed. No shipped source changed during any match. Prior food-return/expansion repairs
+remain intact; their earlier runtime results apply only to the earlier values.
+Final browser source is `a44daf8965cb` plus tuning/partial return; fixture `fnv1a32:221d6201`, seeds `759101`/`759102`,
+dirty digests `fnv1a32:735c47e8`/`fnv1a32:7341c40b` (include docs/spec changes). Start with the supported summaries and
+bounded `cadence-final-world-summary.json`; raw artifact paths/hashes live in the checkpoint.
 The [performance sanity policy](follow-ups/runtime-matrix-ci.md#diagnostic-performance-sanity-check-policy-2026-10-10-checked)
 retains historical cost evidence; these gameplay changes do not inherit its parity or numerical measurements.
 
 **Next action / why:** GPT-6.1 Sol / high for grouped M12 recovery and production authority.
-Start from the combined PRO-03 candidate's worker recovery/food bottleneck: five workers versus the six-worker floor,
-five food versus a 50-food worker cost, and 160 wood versus a 200-wood AnkGuard cost. Trace native branch progress,
-movement/await settling and delivery cadence against simulation time before changing policy. Field growth already
-uses simulation ticks; asynchronous/frame progress is a hypothesis, not an established cause. This should identify
-what prevents workforce recovery and useful additional military capacity. Consider the authorized balance options
-alongside causal repairs: harvest/growth speed, food yield and related unit/building/component values may be tuned
-when the observed economy warrants it. Group the next repair or balance adjustment and its controls,
-then related PRO-03/06/07 legal fixtures and missing authority/oracles;
+Use the fresh affected diagnostics to identify the remaining workforce recovery/food/wood bottleneck and distinguish
+native applied effects from incomplete authority. This should establish what still prevents useful additional military
+capacity and guide the next coherent repair. Field growth already uses simulation ticks; asynchronous/frame progress
+is a hypothesis, not an established cause. Resolve grouped report serialization without dropping authority evidence;
+then group the next causal repair or modest authorized balance adjustment and its controls with related PRO-03/06/07
+legal fixtures and missing authority/oracles;
 do not weaken release assertions or restart profiling. Server/socket/save/restart/hash/calibration and the final machinery
 necessity review remain required. Pause after the next coherent checked, committed and remote-verified batch.
 
@@ -195,10 +205,11 @@ Campaign suppression is explicit and may accompany a full native return. Old/unk
 to the latest task. Whole known piles may retain several earlier gathering attempts; no invented FIFO/partial allocation.
 A credit proves a scoped balance change, independently from cargo lineage, accepted task/demand and continuous usefulness.
 
-**Next action — why:** investigate the remaining workforce/food recovery bottleneck and full production authority on
-**GPT-6.1 Sol / high**. Scoped command collisions, Field-return staffing, full-pack priority and expansion pricing are
-repaired; five workers and low food still prevent useful capacity growth. Trace native delivery cadence and await/frame
-progress and evaluate the authorized balance options alongside repairs, so recovery can become economically viable.
+**Next action — why:** use the fresh food-throughput diagnostics to investigate the remaining recovery blocker and
+full production authority on **GPT-6.1 Sol / high**. Scoped command collisions, Field-return staffing, full-pack priority,
+expansion pricing and partial returns are repaired; shared food throughput is tuned and natively checked. Resolve the
+grouped capture serialization limit while preserving evidence, then group causal recovery repairs and legal PRO fixtures
+so useful capacity growth can be established.
 Keep M11/M12, correctness/parity/calibration and final machinery review duties.
 C8 sanity checking is complete; strict diagnostic performance certification is retired. Publish and pause.
 
@@ -704,13 +715,13 @@ Unexecuted authoring remains unverified; runtime tuning and legacy retirement st
 | 1 / as needed        | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821)                                                                  | `partial`     | Split only owners blocking the selected batch                                                                            | Stay Sol medium; optional Luna high                             |
 | 2                    | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829)                                                                  | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof                                                        | GPT-6.1 Sol, medium                                             |
 | 3                    | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827)                                                                  | `in_progress` | Finish pressure/recovery policy; defer victory proof                                                                     | GPT-6.1 Sol, medium                                             |
-| 4 / next boundary    | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Scoped player commitments/Field returns checked. Next workforce recovery and full PRO authority/capacity                 | GPT-6.1 Sol / high                                              |
+| 4 / next boundary    | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Shared food tuning/partial returns checked. Next remaining recovery, grouped capture output and full PRO authority/capacity | GPT-6.1 Sol / high                                              |
 | 5 / paired           | #815 / #816                                                                                                                      | `in_progress` | Remaining family contracts, focused fixtures, frozen maps and continuous-match tier                                      | Sol medium; optional Luna high for established cases            |
 | 6                    | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819)                                                                  | `in_progress` | Exact-once interruption, terminal and re-entry parity                                                                    | GPT-6.1 Sol, medium                                             |
 | 7                    | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823)                                                                  | `partial`     | Generation fencing, phase restore/replay and cleanup cases                                                               | GPT-6.1 Sol, medium                                             |
 | 8                    | #821                                                                                                                             | `partial`     | Remaining splits/renames and consumer updates                                                                            | Stay Sol medium; optional Luna high                             |
 | 9 / prepare          | [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828), [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `partial`     | Prepare difficulty/opponent evidence; runtime optimization only for a concrete slowdown                                  | GPT-6.1 Sol, medium; Sol high for a measured performance defect |
-| Final gate           | Required issues above                                                                                                            | `in_progress` | Native 734/types/build and scoped production checked. C8 complete; full PRO, lifecycle/calibration pending               | GPT-6.1 Sol / high for remaining production authority           |
+| Final gate           | Required issues above                                                                                                            | `in_progress` | Native 748/types/build and scoped production checked. C8 complete; full PRO, lifecycle/calibration pending               | GPT-6.1 Sol / high for remaining production authority           |
 | After parity         | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820)                                                                  | `not_started` | Evidence-backed legacy retirement                                                                                        | GPT-6.1 Sol, medium decision; Luna high cleanup                 |
 | Before final closure | Existing machinery / completion map                                                                                              | `not_started` | Evaluate every system's demonstrated need and cost; keep, simplify or propose retirement while preserving required proof | GPT-6.1 Sol / high for combined review                          |
 
@@ -743,7 +754,7 @@ No automatic model switch, subagent or new chat is authorized by this policy. Ex
 | Consolidated design, scope/value, shared/per-owner contracts and acceptance (50)        | GPT-6.1 Sol / high                                                                       | Authored/source-reviewed                                                                                                  |
 | Settled implementation, compliance cleanup, wiring, fixtures and test authoring (51–54) | Luna / high                                                                              | Authored; scoped native/report controls now checked, wider integration remains                                            |
 | Combined implementation source review and unresolved contract conflicts (M10)           | GPT-6.1 Sol / high                                                                       | Source review/controls complete; E2E typing and 461 production/queue/resource/output controls pass, full gate in progress |
-| Final executable gate and repairs                                                       | GPT-6.1 Sol / high for command/authority repairs; Luna / high for settled implementation | C8 complete; full-pack/expansion controls checked; next native recovery cadence, full PRO and lifecycle proof             |
+| Final executable gate and repairs                                                       | GPT-6.1 Sol / high for command/authority repairs; Luna / high for settled implementation | C8 complete; food tuning/partial-return controls checked; next remaining recovery, full PRO and lifecycle proof             |
 
 - The design must produce a finite list of substantial implementation passes and completion criteria. A pass may contain
   several related owners and coherent commits. Do not create a new design stage or model pause for each file, helper,
@@ -793,14 +804,16 @@ No automatic model switch, subagent or new chat is authorized by this policy. Ex
 
 Copyable next-chat prompt:
 
-> Read docs/ai/759-skirmish-ai/HANDOFF.md and the food-delivery/expansion-admission checkpoint in runtime-matrix-ci.md.
-> Verify containing commit/remote and clean worktree. Full packs now return before regrowth, and expansions claim
-> catalog costs; native 739, focused gameplay 33 tests, spec types and uncached production build pass.
-> Latest combined PRO-03 has zero insufficient-resource outcomes and 160 wood, but five workers/five food/one AnkGuard;
-> full production assertions still fail. Read its bounded summary, then only required decision/capture slices.
-> On GPT-6.1 Sol / high, trace native branch progress, movement/await settling and delivery cadence against simulation
-> time. Do not assume a clock fault: Field growth already uses ticks. Repair the first causal blocker with meaningful
-> controls, then group related PRO-03/06/07 release-authority work without weakening assertions or increasing the ceiling.
+> Read docs/ai/759-skirmish-ai/HANDOFF.md and the shared-food-throughput/partial-return checkpoint in runtime-matrix-ci.md.
+> Verify containing commit/remote and clean worktree. Food now uses ten-food packs, five per harvest, one-second worker
+> and Field extraction waits, and thirty-second base Field growth; yield stays thirty. Partial return orders deliver
+> cargo before resuming gathering, including old five-food packs. Native 748, focused 44 tests, spec types, explicit
+> structure/format and uncached production build pass. Both faction diagnostics reach six workers and credit 120/130
+> food, but full production authority remains red and Tivara still has only one producer. Read the fresh supported
+> summaries and cadence-final-world-summary.json before bounded raw capture slices.
+> On GPT-6.1 Sol / high, resolve the grouped raw report's JSON.stringify size limit without dropping evidence and use
+> the fresh runs to repair the remaining recovery/production blocker, then group related legal PRO-03/06/07 authority
+> fixtures. Preserve full assertions and tick ceilings; do not assume a clock fault or claim tuning proves recovery.
 > Targeted shared gameplay rebalancing is also authorized: harvest/seeding/growth speed, Field food yield, and relevant
 > character/unit/building/component costs, timings, capacities or combat stats. Record why and the original/new values;
 > group related tuning with the repair batch and check affected scenarios afresh. Preserve fairness and effect authority.

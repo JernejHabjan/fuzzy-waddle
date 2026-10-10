@@ -2,8 +2,9 @@ import { BehaviourTree, State } from "mistreevous";
 import { PawnResourceBehaviorMdsl } from "./pawn-resource-behavior.mdsl";
 
 /** Real resource branches with controlled physical predicates; no fake elapsed growth or native credit is claimed. */
-function fixture(full: boolean, ripe: boolean, tendable = true) {
-  let order = "gather";
+function fixture(full: boolean, ripe: boolean, tendable = true, initialOrder = "gather", initialCargo = full) {
+  let order = initialOrder;
+  let carrying = initialCargo;
   const agent = {
     PlayerOrderIs: (kind: string) => kind === order,
     TargetHasTendableComponent: () => tendable,
@@ -14,6 +15,7 @@ function fixture(full: boolean, ripe: boolean, tendable = true) {
     TargetIsAlive: () => true,
     HasHarvestComponent: () => true,
     GatherCapacityFull: () => full,
+    HasCarriedResources: () => carrying,
     SelfIsAlive: () => true,
     CooldownReady: () => true,
     InRange: () => State.SUCCEEDED,
@@ -35,7 +37,10 @@ function fixture(full: boolean, ripe: boolean, tendable = true) {
     LeaveConstructionSiteOrCurrentContainer: () => State.SUCCEEDED,
     MoveToTarget: () => State.SUCCEEDED,
     GatherResource: jest.fn(() => State.SUCCEEDED),
-    DropOffResources: jest.fn(() => State.SUCCEEDED)
+    DropOffResources: jest.fn(() => {
+      carrying = false;
+      return State.SUCCEEDED;
+    })
   };
   const tree = new BehaviourTree(
     `root { selector { branch [Gather] branch [ReturnResources] } }\n${PawnResourceBehaviorMdsl}`,
@@ -46,6 +51,22 @@ function fixture(full: boolean, ripe: boolean, tendable = true) {
 }
 
 describe("native resource branch ordering", () => {
+  it("delivers a partial restored pack before resuming gathering", () => {
+    const { agent, tree } = fixture(false, true, false, "returnResources", true);
+    tree.step();
+    expect(agent.DropOffResources).toHaveBeenCalledTimes(1);
+    expect(agent.AssignGatherResourcesOrder).not.toHaveBeenCalled();
+    tree.step();
+    expect(agent.AssignGatherResourcesOrder).toHaveBeenCalledTimes(1);
+  });
+
+  it("resumes gathering when the return order has no cargo", () => {
+    const { agent, tree } = fixture(false, true, false, "returnResources", false);
+    tree.step();
+    expect(agent.AssignGatherResourcesOrder).toHaveBeenCalledTimes(1);
+    expect(agent.DropOffResources).not.toHaveBeenCalled();
+  });
+
   it.each([false, true])("returns a full pack before tending/reacquiring a Field with ripe=%s", (ripe) => {
     const { agent, tree } = fixture(true, ripe);
     tree.step();
