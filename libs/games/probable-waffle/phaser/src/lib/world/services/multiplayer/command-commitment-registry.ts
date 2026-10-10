@@ -28,10 +28,6 @@ export class CommandCommitmentRegistry {
     this.players.clear();
   }
 
-  commandIds(): readonly string[] {
-    return [...this.players.values()].flatMap((commitments) => [...commitments.values()]);
-  }
-
   /** Stable player/key ordering is used by save, reconnect and authoritative state hashing. */
   snapshot(): NonNullable<GameCommandAuthorityState["activeCommitmentsByPlayer"]> {
     return Object.fromEntries(

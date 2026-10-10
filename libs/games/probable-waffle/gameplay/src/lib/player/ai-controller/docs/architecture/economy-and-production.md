@@ -24,6 +24,13 @@ throughput, while terminally failed effects are released so rejected work can be
 
 Workers retain ownership of useful in-progress duties such as returning resources. Reassignment is allowed when a source is depleted, inaccessible, unsafe or oversaturated, but a brief duty transition must not be mistaken for idleness.
 
+Field labor remains committed while its farmer returns food to any compatible drop-off, including a main building.
+Known cargo identifies food returns; when cargo identity is unavailable, a catalog-defined food-capable destination
+conservatively defers new Field staffing until gathering resumes. A known non-food delivery does not block staffing.
+This prevents a transient return from attracting another worker to the same Field and consuming labor reserved for
+construction resources. The observed return order does not identify its original Field, so this guard defers staffing
+globally while that food return is unresolved.
+
 The resource-service proposer uses definition-derived drop-off resource types. A visible, valuable non-food source may
 justify a compatible mill/camp only when existing local service is too far away, a worker or dated demand can use it,
 its catalog cost is spendable, and a currently observed footprint improves travel. An already-served source, pending

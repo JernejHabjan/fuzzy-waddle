@@ -105,6 +105,36 @@ describe("player-scoped command commitments", () => {
 });
 
 describe("restored aggregate command progress", () => {
+  it("does not seed actor progress from a different player's saved dispatch", () => {
+    const commandId = "2:0:0:test";
+    const saved = {
+      schemaVersion: 1,
+      authorityEpoch: 0,
+      nextSequenceByPlayer: { 2: 1 },
+      processedCommandIds: [commandId],
+      activeCommitmentsByPlayer: { 2: { [key]: commandId } },
+      outcomes: [
+        {
+          schemaVersion: 1,
+          kind: "dispatched",
+          reason: "applied",
+          tick: 0,
+          playerNumber: 3,
+          commandId,
+          commitmentKey: key,
+          authorityEpoch: 0,
+          sequence: 0,
+          actorIds: ["foreign-actor"],
+          worldLinkIds: []
+        }
+      ]
+    } satisfies GameCommandAuthorityState;
+    const { bus } = setup(saved);
+    expect(bus.getAuthorityState().activeCommandProgress?.[commandId]).toBeUndefined();
+    expect(bus.getAuthorityState().activeCommitmentsByPlayer?.[2]?.[key]).toBe(commandId);
+    bus.destroy();
+  });
+
   it("waits for every actor and ignores duplicate delivery diagnostics after restore", () => {
     const saved = {
       schemaVersion: 1,

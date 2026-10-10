@@ -29,11 +29,19 @@ export function proposeAiFieldLabor(
   // expose the source identity, so defer new Field assignments until all such workers resume gathering.
   const returningWorkerCount = self.filter((actor) => {
     const order = actor.activeOrder?.status === "known" ? actor.activeOrder.value : null;
-    if (order?.orderType !== OrderType.ReturnResources || !order.targetActorId) return false;
+    if (order?.orderType !== OrderType.ReturnResources) return false;
+    if (actor.resourceState.status === "known") return actor.resourceState.value.resourceType === ResourceType.Food;
+    // Main buildings can accept food too. With unavailable cargo/source identity, preserve the returning assignment
+    // until it resumes rather than staffing its apparently empty Field with a worker needed by another resource.
     return self.some(
       (target) =>
         target.actorId === order.targetActorId &&
-        (target.objectName === foodPrerequisiteObject || target.objectName === ObjectNames.Granary)
+        (target.objectName === foodPrerequisiteObject ||
+          target.objectName === ObjectNames.Granary ||
+          catalog.entries.some(
+            (entry) =>
+              entry.sourceObjectName === target.objectName && entry.acceptsResources?.includes(ResourceType.Food)
+          ))
     );
   }).length;
   const unstaffedFoodSource =
@@ -57,8 +65,7 @@ export function proposeAiFieldLabor(
       return (
         order === null ||
         (order.orderType === OrderType.Gather &&
-          (order.targetActorId === null ||
-            !readyFoodSources.some((source) => source.actorId === order.targetActorId)))
+          (order.targetActorId === null || !readyFoodSources.some((source) => source.actorId === order.targetActorId)))
       );
     })
     .sort((left, right) => {

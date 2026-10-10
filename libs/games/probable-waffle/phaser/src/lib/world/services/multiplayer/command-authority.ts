@@ -335,16 +335,11 @@ export class CommandAuthority {
       this.expectedActorIdsByCommand.set(commandId, [...progress.expectedActorIds].sort());
       this.terminalActorIdsByCommand.set(commandId, new Set(progress.terminalActorIds));
     }
-    const activeCommandIds = new Set(this.activeCommitments.commandIds());
     for (const outcome of this.recentOutcomes) {
-      if (
-        activeCommandIds.has(outcome.commandId) &&
-        outcome.kind === "dispatched" &&
-        !this.expectedActorIdsByCommand.has(outcome.commandId)
-      ) {
+      if (this.activeCommitments.get(outcome.playerNumber, outcome.commitmentKey) !== outcome.commandId) continue;
+      if (outcome.kind === "dispatched" && !this.expectedActorIdsByCommand.has(outcome.commandId)) {
         this.expectedActorIdsByCommand.set(outcome.commandId, [...outcome.actorIds].sort());
       }
-      if (this.activeCommitments.get(outcome.playerNumber, outcome.commitmentKey) !== outcome.commandId) continue;
       if (!isSettlingCommandOutcome(outcome)) {
         continue;
       }

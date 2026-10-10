@@ -45,7 +45,9 @@ export type { AiGameCommandCorrelation } from "./ai-game-command-correlation";
  * application, while actor-specific systems retain their capability/target checks.
  */
 export class CommandBusService {
-  static readonly INPUT_DELAY_TICKS = CommandLockstep.INPUT_DELAY_TICKS;
+  static get INPUT_DELAY_TICKS(): number {
+    return CommandLockstep.INPUT_DELAY_TICKS;
+  }
   private readonly authority: CommandAuthority;
   private readonly transport: CommandLockstep;
   constructor(private readonly scene: ProbableWaffleScene) {

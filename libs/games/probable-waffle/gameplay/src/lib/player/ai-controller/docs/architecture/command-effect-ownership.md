@@ -6,6 +6,14 @@ This inventory maps shared command/application responsibilities. Runtime validat
 
 `CommandBusService` stamps `{commandId, commitmentKey, source, authorityEpoch, sequence, intentId?, effectId?}`, emits `dispatched`, admits an effect once, and records `applied`/`active`/terminal outcomes. The authority state persists next sequences, per-player processed watermarks, bounded detailed IDs/outcomes, active commitments, and multi-actor terminal progress. A save, reconnect, replay, or host migration must restore/fence this state before applying a command tail.
 
+The bus delegates application identity and terminal progress to `CommandAuthority`, relay timing and snapshot
+heartbeat recovery to `CommandLockstep`, and bounded relay logs to `CommandRelayDiagnostics`. Admission and terminal
+cleanup use `(playerNumber, commitmentKey)`: equal opaque keys from separate players remain independent, while a
+same-player pending key still suppresses duplicate work. New snapshots store `activeCommitmentsByPlayer`.
+Legacy `activeCommitments` restore ownership from the command's validated player prefix, or an exact saved outcome
+for custom archive IDs; unavailable ownership fails closed. Duplicate delivery, missing-outcome and backlog-overflow
+diagnostics do not settle aggregate actor progress, including during restore.
+
 `AiCommandReconciliation` owns the per-AI pending window. Dispatch is never treated as application. Missing application/terminal evidence becomes a bounded `technical_fault`; stale epochs, processed sequences, duplicate command IDs, duplicate active commitments, and overflow are rejected without permitting a duplicate effect. `ai-command-outcome-adapter.ts` is the read-only bridge to the pure contracts. No manager may create another command authority.
 
 Useful duplicates remain legal: production commands receive distinct default commitment identities, while construction suppresses only the same active `siteKey`. Separate useful producers, deposits, houses, towers, walls, resource sites, and repeated units therefore remain possible. Demand managers own counts and capacity decisions; shared application only prevents duplicate application of the same accepted intent.
