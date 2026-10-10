@@ -571,7 +571,11 @@ baseline renewal, skill/tool change or further diagnostic profiling. Machinery n
 **Next / why:** GPT-6.1 Sol / high for grouped native recovery cadence and production authority. Trace remaining full
 packs, movement/await progress and simulation time; Field growth already uses ticks, so no clock cause is assumed.
 Repair the first established bottleneck with meaningful controls to make the six-worker floor economically reachable,
-then group related PRO-03/06/07 legal pairs and authority work. Commit/push/verify and pause at the next boundary.
+and evaluate targeted gameplay tuning under the handoff's **Balance scope (user, 2026-10-10)**. Harvest/seeding/growth
+speed, Field food yield and relevant character/unit/building/component values may be adjusted in related batches to
+improve economy, recovery or combat progression. Record original/new values and tradeoffs; fresh affected evidence
+must distinguish tuning from correctness repairs and retain fair shared definitions and full effect authority.
+Then group related PRO-03/06/07 legal pairs and authority work. Commit/push/verify and pause at the next boundary.
 
 ### Combined command authority and production repair checkpoint (2026-10-10, checked)
 

@@ -13,7 +13,18 @@ slowdown. Keep correctness coverage. Commit/push and pause at each boundary; act
 Next recommendation GPT-6.1 Sol / high for remaining production recovery and release authority. The
 [end-of-gate machinery necessity review](#end-of-gate-machinery-necessity-review) remains not_started.
 
-**Current step:** M12 food-delivery and expansion-admission repair batch checked; publication follows, then pause.
+**Balance scope (user, 2026-10-10):** targeted gameplay rebalancing is authorized alongside AI repairs. Options include
+faster harvesting, seeding/tending or crop growth, larger Field food yields, and adjustments to characters/units,
+buildings and their components: resource costs, production/construction time, carry/service capacity, movement,
+health, attacks and other relevant definition values. Use this when observed timings, yields or costs make the economy,
+recovery or combat progression too slow or poorly balanced. Group modest related adjustments into the current owner
+batch; record the original/new values, purpose and tradeoffs. Change shared gameplay definitions for human and AI
+players, keeping faction asymmetry intentional. Distinguish balance tuning from correctness repairs and check affected
+economy/production/combat scenarios with fresh evidence at the active final gate. Existing runtime results describe
+their original values; revised expectations must reflect an explained balance decision while preserving authority,
+fairness and useful-effect requirements. This policy update changes no gameplay values.
+
+**Current step:** M12 food-delivery and expansion-admission repair batch checked and published through `998e3f02a`.
 Full packs now return before crop regrowth, and expansions claim their catalog cost. The natural match still stalls
 at five workers. Full M12/PRO release proof remains open; M11 useful authority remains blocked. C8 sanity checking
 is complete and further diagnostic profiling is not queued.
@@ -50,7 +61,9 @@ Start from the combined PRO-03 candidate's worker recovery/food bottleneck: five
 five food versus a 50-food worker cost, and 160 wood versus a 200-wood AnkGuard cost. Trace native branch progress,
 movement/await settling and delivery cadence against simulation time before changing policy. Field growth already
 uses simulation ticks; asynchronous/frame progress is a hypothesis, not an established cause. This should identify
-what prevents workforce recovery and useful additional military capacity. Group the next causal repair and its controls,
+what prevents workforce recovery and useful additional military capacity. Consider the authorized balance options
+alongside causal repairs: harvest/growth speed, food yield and related unit/building/component values may be tuned
+when the observed economy warrants it. Group the next repair or balance adjustment and its controls,
 then related PRO-03/06/07 legal fixtures and missing authority/oracles;
 do not weaken release assertions or restart profiling. Server/socket/save/restart/hash/calibration and the final machinery
 necessity review remain required. Pause after the next coherent checked, committed and remote-verified batch.
@@ -185,7 +198,8 @@ A credit proves a scoped balance change, independently from cargo lineage, accep
 **Next action — why:** investigate the remaining workforce/food recovery bottleneck and full production authority on
 **GPT-6.1 Sol / high**. Scoped command collisions, Field-return staffing, full-pack priority and expansion pricing are
 repaired; five workers and low food still prevent useful capacity growth. Trace native delivery cadence and await/frame
-progress before tuning policy. Keep M11/M12, correctness/parity/calibration and final machinery review duties.
+progress and evaluate the authorized balance options alongside repairs, so recovery can become economically viable.
+Keep M11/M12, correctness/parity/calibration and final machinery review duties.
 C8 sanity checking is complete; strict diagnostic performance certification is retired. Publish and pause.
 
 | Dependency                                            | State                                                         | Purpose / next boundary                                                                                                                                        |
@@ -787,6 +801,9 @@ Copyable next-chat prompt:
 > On GPT-6.1 Sol / high, trace native branch progress, movement/await settling and delivery cadence against simulation
 > time. Do not assume a clock fault: Field growth already uses ticks. Repair the first causal blocker with meaningful
 > controls, then group related PRO-03/06/07 release-authority work without weakening assertions or increasing the ceiling.
+> Targeted shared gameplay rebalancing is also authorized: harvest/seeding/growth speed, Field food yield, and relevant
+> character/unit/building/component costs, timings, capacities or combat stats. Record why and the original/new values;
+> group related tuning with the repair batch and check affected scenarios afresh. Preserve fairness and effect authority.
 > C8 sanity is complete; further dedicated profiling/strict diagnostic performance certification is retired.
 > Preserve full oracles/useful nulls, source/fixture provenance, water/wall TTL, pawn/path settling and WAIT save limitations.
 > M11, full PRO/M12, server/socket/save/restart/hash/calibration and final machinery necessity review remain mandatory.
