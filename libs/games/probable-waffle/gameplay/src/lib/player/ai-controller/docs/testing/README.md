@@ -63,6 +63,15 @@ diverge: a later gameplay repair can change the workload even when both initial 
 a causal difference, not paired performance evidence. Keep any behavior-aligned measurement reference explicitly
 separate from the original pinned acceptance reference.
 
+Player-controller decision settling does not establish quiescence of pawn behavior-tree actions or path promises.
+Inspect each native action's clock before treating an accelerated replay as a deterministic cost workload.
+Mistreevous WAIT nodes use wall time when `BehaviourTreeOptions.getDeltaTime` is absent, even if the caller steps on
+fixed simulation ticks. Trace the first native order change and actual command outcome separately; a current Build
+order can change before command outcomes diverge. Diagnostic subscriptions/wrappers alter wall time, so traced
+controls locate ownership but cannot stand in for ordinary repeats or paired CPU measurements. An isolated WAIT
+control proves the clock dependency, not the cause of every whole-world mismatch. Preserve full native state and
+outcome comparisons; do not discard transient order state or truncate a workload to its last matching prefix.
+
 Use one browser runtime process at a time and group compatible IDs with `--scenarios`. Unit, type and tooling checks may be batched independently. Diagnose the earliest causal disagreement in this order:
 
 ```text
