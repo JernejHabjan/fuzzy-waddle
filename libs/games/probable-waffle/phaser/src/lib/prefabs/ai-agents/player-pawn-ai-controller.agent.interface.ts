@@ -1,7 +1,9 @@
 import { State } from "mistreevous";
 
-export type PlayerPawnRangeType = "move" | "gather" | "attack" | "dropOff" | "construct" | "heal" | "repair";
-export type PlayerPawnCooldownType = "gather" | "attack" | "construct" | "heal" | "repair";
+import type { PlayerPawnRangeType } from "./player-pawn-range-type";
+import type { PlayerPawnCooldownType } from "./player-pawn-cooldown-type";
+export type { PlayerPawnRangeType } from "./player-pawn-range-type";
+export type { PlayerPawnCooldownType } from "./player-pawn-cooldown-type";
 
 export interface IPlayerPawnControllerAgent {
   // Player Orders and Status
