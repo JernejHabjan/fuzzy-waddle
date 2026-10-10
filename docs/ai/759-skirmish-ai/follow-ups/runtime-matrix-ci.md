@@ -444,9 +444,9 @@ The following map preserves stage-50 design/authoring states; the final-gate che
 | M05 Exact consumed/accepting frames: explain purchase-plus-gather null bounds | R; C4 fact union/input/root/unspent/report fields | 52 → 53 | Real input/controller selected event with zero and nonzero new claims; immediate paid vs future queue transfer; due head exhaustion; unsupported building/pre-capture/expired/recovery claims and callback-in-progress; mismatch stays null | Code plus focused input/root/synthetic frame controls authored; full native integration still missing; K1/K3 deferred |
 | M06 Cargo/recipient/window compatibility: preserve credited income without false usefulness | R; C2/C4/C5 existing credit/application/need projections | 53 | Exact real payload join; normal/granted/none and changed owner; mixed/old/restored cargo; grant then spend cannot reopen shortage; publication delayed across application window; same-tick/straddle/overflow bad tail | Existing path retained; K1/K3 compatibility cases deferred |
 | M07 Real adapter/report bridge: expose actual producer evidence and explicit gaps | R; C7 root capture, variant runner, production normalization | 51–53 → 54 | Real Phaser actor/components/protocol player/read/native command path into report; initialization loss, post-await service loss and late/disposed capture; native income remains diagnostic while useful fields stay null; contradictory tail suppresses parent | Short probe and full 611-decision native diagnostic bridge pass after causal repairs; full production contract/authority/capacity remains open in the native causal checkpoint |
-| M08 Normal-play impact: testing does not install heavy machinery during gaming | R; C8 below, installer/helper controls and existing profiler | 54 | Production/unmarked guard, no sample/clone/listener/timer/root journal; before/after disabled-path and bundle comparison; foreign host/duplicate capture, late callbacks | Production/unmarked controls pass; isolated empty-method profiles and candidate shipping bytes checked; 114,606 raw test-harness bytes remain reachable; full native pairs/budgets blocked on pinned baseline compilation |
+| M08 Normal-play impact: testing does not install heavy machinery during gaming | R; C8 below, installer/helper controls and existing profiler | 54 | Production/unmarked guard, no sample/clone/listener/timer/root journal; before/after disabled-path and bundle comparison; foreign host/duplicate capture, late callbacks | Production/unmarked controls and isolated profiles checked; derived reference builds, code gzip delta +0.052062%; candidate 114,606 raw testing bytes remain reachable; native equivalence/pairs pending, original pinned budget blocked |
 | M09 Compliance/publication: economical implementation remains reviewable | R; C6 exact baselines, existing handoff | Each 51–54 | No refreshed hashes/new permanent stage names; task-only prerequisite and behavior commits; source review/Omission Audit/closure, remote SHA and clean task scope | Authored/source-reviewed; implementation commit `978cb09e70cbc6e2ed0b520971690ea47ab38045` remote-verified; checks deferred |
-| M10 Combined review and compatibility: decide readiness before execution | R; C1–C8, all changed consumers | 54 → Sol review | Trace real input → selected/admitted → native application → report/disposal; review all controls, repair concrete contract contradictions; every required unrun check remains listed | K4/K5 and C8 prerequisite checked; prior native 702/gameplay 274/report 461 retained; full production failure and pinned baseline build failure block respective gates; wider release remains |
+| M10 Combined review and compatibility: decide readiness before execution | R; C1–C8, all changed consumers | 54 → Sol review | Trace real input → selected/admitted → native application → report/disposal; review all controls, repair concrete contract contradictions; every required unrun check remains listed | K4/K5 and derived C8 compile prerequisite checked; prior native 702/gameplay 274/report 461 retained; full production proof and native C8 equivalence/costs remain open; original pinned comparison blocked; wider release remains |
 | M11 Mutation-complete useful resource/continuous capacity: 32/36 full proof | B; C7 plus 32/36/39/42 authority, public APIs | Explicit authority/scope decision; not a hidden fifth Luna pass | Net-zero alias undo, arbitrary definition/Map/item/roster replacement, hidden/stale threats/access changes between reads, full supported initial predicate history; no positive complete channel currently possible | Existing 32/36 gates; blocked, mandatory |
 | M12 Production useful outputs, legal setup and strategy: PRO-03/06/07 release | B; existing production authority contract and evaluators | Broader gameplay/fixture queue, separate from 51–54 | Both-faction transition/abandonment, exposed/safe/no-demand resilience, shared train/research and paid cancellation/pending refund pairs; full oracle and denominator | K5 and owning scenario/policy plans; open, mandatory |
 | M13 Finer loss scopes/continuous journal/lot allocation | O; no new files/owners | Not scheduled; new consumer must justify proposal | No actor-to-beneficiary dependency map, FIFO allocation or extra scan introduced just to recover a diagnostic bound | No extra gate; proposed only |
@@ -511,7 +511,119 @@ final-gate checkpoints below. The user-authorized final gate is active; K5/C8 an
 Do not claim stage validation before K1–K5. M11 remains a mandatory blocker from public mutable aliases
 and incomplete access/safety/lifetime history; M12 remains open for full PRO-03/06/07. Neither was reduced by this batch.
 
+### Final-gate reference qualification checkpoint (2026-10-10, compile prerequisite checked)
+
+User authorized continuation with commit/push/pause; base/remote was clean
+`6af776cdb058651ad66b3ec3fafd74f13d4ddd56` in `/home/jernej/.codex/worktrees/7977/fuzzy-waddle` on
+`feature/759-skirmish-ai`. Actual model/effort unknown. This batch owns a replayable measurement-reference patch and
+coordination evidence. Candidate production source, configurations, dependencies, fixtures and oracles are unchanged.
+
+**What changed / why:** [cost-baseline-compatibility.patch](fixtures/cost-baseline-compatibility.patch) applies only to
+original `af9d078d9f3888a97550eb5c08b9215651f8df58`. It fixes compilation of a derived cost reference without copying
+later candidate owners, planner policies, Movement/Gather/roster repairs, frame changes or report normalization.
+The original 31-diagnostic build failure remains valid. This derived source has its own identity; it does not turn the
+unbuildable original into a passing baseline or establish a release correctness result.
+
+| Acceptance / purpose | Implementation and evidence | State |
+| --- | --- | --- |
+| Q1 Preserve source/environment | Detached HEAD stays exactly pinned; 11-file patch only. Same installed dependencies and five package/lockfile/project/TS/Nx hashes as the candidate; original failed build retained. | Checked |
+| Q2 Minimal compatibility / native semantics | Seven emitted-identical files after three intended `satisfies` syntax repairs; four guard owners reviewed below. No resource filter merge or allocation change in the planner reference. | Scoped equivalence checked |
+| Q3 Executable reference | Same production compiler/configuration with stats passes. Five reference-owned Phaser specs / 22 cases pass. Two planner specs: 25 pass and one pre-existing fixture fails identically on original and derived gameplay sources. | Compile prerequisite checked; correctness failure retained |
+| Q4 Reachable bundle scope | Same index roots/static+dynamic traversal, actual byte sizes, gzip level 9 per file and code/media split as the candidate. All 102 outputs retained and hashed. | Derived size comparison checked |
+| Q5 Complete paired C8 budgets | Zero native pairs; no equivalent world/state/outcome digest, disabled p95/CPU, native allocations or installed marked-hook cost. Original pinned budget remains blocked. | Pending native equivalence and measurements |
+| Q6 Closure/publication | Exact tracked patch and two coordination files; patch replay/source identity and doc links checked; containing commit/remote verified at publication. | This qualification batch checked; C8/M11/M12/wider gate open |
+
+**Equivalence review:** compiler erasure uses installed TypeScript 6.0.3 / CommonJS / ES2022 with comments removed.
+For the three unparsable original statements only, join the newline before `satisfies` before comparing intended emitted
+code. This is a syntax-normalized comparison, not execution of invalid original JavaScript.
+
+| Patched owner | Exact scope / why it preserves supported reference behavior |
+| --- | --- |
+| `validate-ai-brain-state-v1.ts` | `as const` retains the existing workforce keys; emitted code identical. |
+| `ai-military-force-context.ts` | Declares existing ground/air literal result; emitted code identical. No macro/capacity/unit policy patch. |
+| `ai-producer-safety.ts` | `as const` retains the four existing adjacency tuples; emitted code identical. |
+| `ai-resource-service-manager.ts` | First filter's type predicate states the exact two known-status checks already performed. Both filter passes and all conditions remain; emitted code identical. |
+| `player-pawn-ai-controller.agent.interface.ts` | Declares existing `CanBoardContainerNow`; interface erased, implementation unchanged. |
+| `ai-runtime-resource-service-capture.ts`, `emit-construction-placement.ts` | Join the `satisfies` syntax; intended syntax-normalized emitted code identical. |
+| `ai-runtime-resource-coverage-capture.ts` | Join syntax and guard missing private cohort before dereference. Private array only appends and indexed IDs are created from its length; installed/repeated/converted/replaced/saturated/tick-loss differential matches original intended output. |
+| `pawn-order-observation.ts` | Retain checked first order before observer callbacks. Native private array contains only successfully enqueued order references; successful/ambiguous/nested/error/disposal differential matches original. |
+| `ai-multiplayer-queue-world.ts`, `ai-multiplayer-shared-queue-world.ts` | Retain checked completion ID; native outcomes carry dense string arrays. Fifteen actual-method differential cases cover product/research completions and empty/multiple-ID rejection in both branches. Existing adapter specs pass. |
+
+The four guards add runtime instructions; no zero-cost claim. Equivalence is limited to dense native outcomes,
+private capture arrays and typed diagnostic callbacks. Sparse/malformed arrays, accessor side effects, reflective private
+mutation or callbacks escaping their typed origin contract can differ. Native command/outcome constructors and private
+writers must stay within that domain in the eventual paired workload. Unit/differential evidence does not establish a
+legal equivalent world or gameplay victory. Prior later native repairs can change trajectories and must be accounted for.
+
+**Planner control:** original pinned gameplay sources and fixtures reproduce exactly the same land-throughput mismatch
+(`desired: 1`, fixture expects `2`), with 25 passing cases and one failure. The derived source has identical emitted
+planner code. The unrelated Phaser overlay remains installed during this pure control; no claim that the complete
+original tree passes. No fixture expectation or production policy was changed to qualify compilation.
+
+**Size evidence:** derived all-app closure: 84 JS/CSS outputs, 6,234,949 raw / **1,594,251 gzip bytes**; including the
+same 18 referenced fonts: 102 outputs, 10,031,453 raw / 3,188,155 gzip bytes. Candidate production inputs at `17fde8c7e`
+are unchanged by `6af776cdb` or this batch: 1,595,081 code gzip bytes, **+830 / +0.0520620655%** against this derived
+reference. This falls below 0.5% for the explicitly derived code-size comparison only; original pinned acceptance and
+complete C8 are not passed. Reference has 39 reachable AI testing modules / 112,524 raw contribution bytes; candidate
+has 40 / 114,606. These raw module totals are not independently compressible gzip bytes or the whole introduced machinery.
+Lazy all-app reachability is neither initial download nor RTS-only load. Existing initial-budget warning remains.
+
+**Replay/provenance:** patch SHA-256
+`d9a65f6afed24f2b068d07f8b234dcc06df0da1938a21815526d0739a5a0cecb`; sorted changed file/hash set
+`dbf35afcb4ffc3a47a48665281f6db6af9212bddb31635fd921933db6114a373`.
+Derived identity is original full SHA plus this patch SHA. Final production build passes in 27.5 s, 0/3 cache hits;
+five focused Phaser specs / 22 cases pass in 4.47 s. Derived stats SHA-256
+`511d6ec718d22c780f413a60f7133d13f56dd125a556f0303caa8d726a85db29`; reachable filename/output-hash set
+`025a1e27b8b7b439766455121262d4cec1782ad289bee78f1704215b62b9599e`; bundle inventory SHA-256
+`bd21965d559c011aaf99e836169366d9eacf7908af1184ee91d97972b3e8028f`.
+The managed measurement checkout remains at
+`/home/jernej/.codex/worktrees/skirmish-cost-baseline/fuzzy-waddle`, detached original HEAD with exactly this patch
+uncommitted; it is no longer a clean original checkout. It remains protected by the app. Do not archive/delete around
+that protection or silently commit it into the feature branch. Clean recreation: hydrate original LFS assets, reuse
+identical dependencies, verify/apply the tracked patch, then invoke the same compiler. Reject a foreign revision or
+pre-existing source changes before applying; patch context alone does not identify the complete reference.
+
+```sh
+# Clean detached original reference only; verify HEAD and patch hash before applying.
+test "$(git rev-parse HEAD)" = af9d078d9f3888a97550eb5c08b9215651f8df58
+git diff --quiet
+git diff --cached --quiet
+git apply --check /home/jernej/.codex/worktrees/7977/fuzzy-waddle/docs/ai/759-skirmish-ai/follow-ups/fixtures/cost-baseline-compatibility.patch
+git apply /home/jernej/.codex/worktrees/7977/fuzzy-waddle/docs/ai/759-skirmish-ai/follow-ups/fixtures/cost-baseline-compatibility.patch
+NX_DAEMON=false node node_modules/nx/dist/bin/nx.js build portal --configuration=production --stats-json=true
+```
+
+Ignored `tmp/ai-plans/759-validation/cost-batch/` retains `baseline-qualification.json`, original/derived planner logs,
+`derived-baseline-phaser-tests.log`, `derived-baseline-build.log`, `derived-baseline-bundle.json`,
+`derived-bundle-comparison.json`, every derived output/index/stats and one-off qualification/control/measurement scripts.
+`reference-closure-audit.json` independently checks patch application against a temporary original-source Git index,
+all 11 resulting file hashes, five environment/config hashes, all 102 retained output hashes/bytes/gzip sizes and 53
+local documentation links/anchors. The temporary index is removed without modifying either checkout's real index.
+No raw artifacts need enter model context. Missing local artifacts require fresh scoped checks; the tracked patch and
+the original compiler-failure checkpoint remain the reproducible source authority.
+
+**Implementation Review:** inspected all 11 hunks, type erasure, exact native/private array writers and caller contracts;
+did not merge planner filters, copy later owners or suppress the old fixture failure. Checked original/derived control
+and reachable output graph with consistent per-file compression.
+**Omission Audit:** Q1–Q4 have scoped evidence; Q5 explicitly remains open. No native pair, gameplay correctness, zero
+allocation, unchanged guard timing or whole machinery-size saving is inferred from compilation/differentials.
+**Separate Final Closure Audit:** after checks, verified patch replay, actual source set, retained bundle bytes/hashes,
+documentation links, unchanged candidate production inputs, unrelated Nx ancestor and exact staged scope. No generic
+tool/skill update was justified. This closes the compile-reference prerequisite only.
+
+**Next combined batch / why:** GPT-6.1 Sol / high for equivalent native-world setup and paired C8 CPU/allocation costs.
+Verify patch/source identity first; qualify legal equal roster/map/population/command stream/tick ceiling, comparing state
+and native outcomes before interpreting timing. Account for later refused-Move/Gather-progress/editor-roster repairs;
+do not use the old orphan-owner two-player Ember setup. Warm once, run at least three alternating pairs per
+production/unmarked/marked mode, isolate hook costs from renderer/planner/capture time and retain variance/digests.
+If equivalence fails, report the first causal divergence and a concrete scope decision. Keep original pinned budget
+blocked and label derived results explicitly. Group any justified cost repair with affected reruns, commit/push and pause.
+M11/M12, broader final gate and the end-of-gate necessity review remain mandatory.
+
 ### Final-gate cost prerequisite checkpoint (2026-10-09, paired C8 blocked)
+
+Historical source-prerequisite result. The [reference qualification checkpoint](#final-gate-reference-qualification-checkpoint-2026-10-10-compile-prerequisite-checked)
+owns the newer derived compilation reference and size comparison; the original pinned-source failure below remains valid.
 
 User authorized the next combined cost batch with commit/push/pause. Clean base/remote were
 `17fde8c7ebf00825b99fe6bf73c294ddbd25133a` on `feature/759-skirmish-ai`, worktree
@@ -596,7 +708,7 @@ no new capture-off optimization or production exclusion is justified from a miss
 production inputs and exact staged ownership checked. This closes only baseline diagnosis and independent cost evidence;
 it neither closes C8 nor the final release gate. No reusable skill/tool change was warranted.
 
-**Next combined batch / why:** GPT-6.1 Sol / high for C8 baseline qualification, then equivalent-world paired measurements
+**Historical next combined batch / why:** GPT-6.1 Sol / high for C8 baseline qualification, then equivalent-world paired measurements
 and any measured cost repair. Preserve `af9d078d9` as the original source and failed-build evidence. Investigate a
 separately identified minimal compilation-compatibility overlay, reviewing every change for native/observation behavior;
 it is a derived reference and must carry its own patch/source digest. If equivalence cannot be justified, keep the
@@ -1543,8 +1655,10 @@ native closure/request creation or rewrite protocol money semantics as a specula
 Final measurements compare baseline `af9d078d9` with the authored implementation revision, same environment/seed/map/
 population/command workload and tick ceiling: (a) production build, (b) unmarked developer game, (c) marked capture.
 The [cost prerequisite checkpoint](#final-gate-cost-prerequisite-checkpoint-2026-10-09-paired-c8-blocked) records that
-this exact source cannot compile. Its original native comparison remains blocked; qualify any derived reference with
-explicit provenance/equivalence before measuring, and never treat the isolated fast-path probe as a native pair.
+this exact source cannot compile. Its original native comparison remains blocked. The
+[reference qualification checkpoint](#final-gate-reference-qualification-checkpoint-2026-10-10-compile-prerequisite-checked)
+now qualifies a separately identified compile-compatible reference and scoped size delta; native world equivalence
+still needs evidence. Never treat the isolated fast-path probe as a native pair.
 Use existing `AI_SKIRMISH_PROFILE=1` variant phase timing and browser performance/heap allocation profiling; profiler
 output must isolate hook CPU/allocations from unrelated rendering/planner work. Alternate baseline/candidate order,
 warm once and retain at least three paired runs; record variance, native outcome/state digests and source/bundle digests.
@@ -1553,7 +1667,8 @@ Baseline/profile work runs only at the final gate. A marked heavy-capture measur
 Operational budgets for this bounded change: no installed journal/listener/timer/scans in production or unmarked mode;
 no new allocation attributable to an unobserved fence call (existing protocol closure/request costs remain measured);
 no repeatable disabled-path regression above both 1% of simulation CPU and 0.1 ms/tick p95; candidate production gzip
-entry+reachable-chunk size no more than 0.5% above this baseline. These are design acceptance budgets, unmeasured.
+entry+reachable-chunk size no more than 0.5% above this baseline. Native budgets remain unmeasured; the explicitly
+derived reference's code-size delta is below the limit, while original pinned acceptance remains blocked.
 If below profiler resolution, report that limit and the observed bound, not “zero overhead.” If exceeded, repair the
 owning fast path or escalate the exact tradeoff; no acceptance/FPS claim until measured. Report total reachable test-only
 capture bytes even when delta fits budget; no unsupported claim that all instrumentation was removed from shipping.
