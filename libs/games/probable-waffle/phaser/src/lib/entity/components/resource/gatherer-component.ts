@@ -15,10 +15,7 @@ import {
 import { AnimationActorComponent } from "../animation/animation-actor-component";
 import { OrderType } from "../../../ai/order-type";
 import { ActorTranslateComponent } from "../movement/actor-translate-component";
-import {
-  getGameObjectVisibility,
-  onObjectReady
-} from "../../../data/game-object-helper";
+import { getGameObjectVisibility, onObjectReady } from "../../../data/game-object-helper";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { AnimationType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/animation/animation-type";
 import { SoundType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/actor-audio/sound-type";
@@ -27,54 +24,21 @@ import type { SoundDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/ent
 import type { GathererDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/resource/gatherer-definition";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
+import { createDefaultGatherData } from "./create-default-gather-data";
 import { GathererTargetSelection } from "./gatherer-target-selection";
 import { GathererResourceExecution } from "./gatherer-resource-execution";
 import { ResourceServiceObservation } from "./resource-service-observation";
 import type { ResourceCargoChange } from "./resource-cargo-change";
-type GameObject = Phaser.GameObjects.GameObject;
 
 export class GathererComponent {
   // when cooldown has expired
-  // onCooldownReady: EventEmitter<GameObject> = new EventEmitter<GameObject>();
-  private readonly gatheredResources: GatherData[] = [
-    {
-      capacity: 3,
-      cooldown: 1000,
-      range: 1,
-      resourceType: ResourceType.Wood,
-      amountPerGathering: 1,
-      needsReturnToDrain: true
-    },
-    {
-      capacity: 3,
-      cooldown: 1000,
-      range: 1,
-      resourceType: ResourceType.Stone,
-      amountPerGathering: 1,
-      needsReturnToDrain: true
-    },
-    {
-      capacity: 3,
-      cooldown: 1000,
-      range: 1,
-      resourceType: ResourceType.Minerals,
-      amountPerGathering: 1,
-      needsReturnToDrain: true
-    },
-    {
-      capacity: 5,
-      cooldown: 2000,
-      range: 1,
-      resourceType: ResourceType.Food,
-      amountPerGathering: 2,
-      needsReturnToDrain: false
-    }
-  ];
+  // onCooldownReady: EventEmitter<Phaser.GameObjects.GameObject> = new EventEmitter<Phaser.GameObjects.GameObject>();
+  private readonly gatheredResources: GatherData[] = createDefaultGatherData();
   // amount the gameObject is carrying
   carriedResourceAmount = 0;
   carriedResourceType: ResourceType | null = null;
-  currentResourceSource: GameObject | null = null;
-  previousResourceSource: GameObject | null = null;
+  currentResourceSource: Phaser.GameObjects.GameObject | null = null;
+  previousResourceSource: Phaser.GameObjects.GameObject | null = null;
   previousResourceType: ResourceType | null = null;
   remainingCooldown = 0;
   private cooldownTickSub?: Subscription;
@@ -85,10 +49,11 @@ export class GathererComponent {
   private pendingCurrentResourceSourceId: string | null = null;
   private pendingPreviousResourceSourceId: string | null = null;
 
-  onResourceGathered: Subject<[GameObject, GameObject, GatherData, number]> = new Subject<
-    [GameObject, GameObject, GatherData, number]
+  onResourceGathered: Subject<[Phaser.GameObjects.GameObject, Phaser.GameObjects.GameObject, GatherData, number]> =
+    new Subject<[Phaser.GameObjects.GameObject, Phaser.GameObjects.GameObject, GatherData, number]>();
+  onResourcesReturned: Subject<[Phaser.GameObjects.GameObject, ResourceType, number]> = new Subject<
+    [Phaser.GameObjects.GameObject, ResourceType, number]
   >();
-  onResourcesReturned: Subject<[GameObject, ResourceType, number]> = new Subject<[GameObject, ResourceType, number]>();
   private audioService?: AudioService;
   private animationActorComponent?: AnimationActorComponent;
   /** Ready-time component used by native execution. */
@@ -98,17 +63,22 @@ export class GathererComponent {
   private readonly execution: GathererResourceExecution;
 
   constructor(
-    private readonly gameObject: GameObject,
+    private readonly gameObject: Phaser.GameObjects.GameObject,
     private readonly gathererComponentDefinition: GathererDefinition
   ) {
     // Initialize after parameter properties; native ES class fields run before the constructor body.
     this.targets = new GathererTargetSelection(this.gameObject, this);
-    this.execution = new GathererResourceExecution(this.gameObject, this,
-      (source) => this.getGatherDataForResourceSource(source), {
+    this.execution = new GathererResourceExecution(
+      this.gameObject,
+      this,
+      (source) => this.getGatherDataForResourceSource(source),
+      {
         setCarriedResourceAmount: (amount, change) => this.setCarriedResourceAmount(amount, change),
-        playGatherSound: () => this.playGatherSound(), playGatherAnimation: () => this.playGatherAnimation(),
+        playGatherSound: () => this.playGatherSound(),
+        playGatherAnimation: () => this.playGatherAnimation(),
         leaveCurrentResourceSource: () => this.leaveCurrentResourceSource()
-      });
+      }
+    );
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.destroy, this);
     onObjectReady(this.gameObject, this.onObjectReady, this);
@@ -159,7 +129,7 @@ export class GathererComponent {
     }
   }
 
-  canGatherFrom(gameObject: GameObject): boolean {
+  canGatherFrom(gameObject: Phaser.GameObjects.GameObject): boolean {
     // get resourceSourceComponent from gameObject
     const resourceSourceComponent = getActorComponent(gameObject, ResourceSourceComponent);
     if (!resourceSourceComponent) {
@@ -179,7 +149,7 @@ export class GathererComponent {
   /**
    * this gets set by the behavior tree
    */
-  startGatheringResources(resourceSource: GameObject): boolean {
+  startGatheringResources(resourceSource: Phaser.GameObjects.GameObject): boolean {
     if (this.currentResourceSource === resourceSource) return true;
 
     // Check again if we can gather from this resource source (including maxGatherers check)
@@ -219,20 +189,25 @@ export class GathererComponent {
     return true;
   }
 
-  findClosestResourceDrain(): Promise<GameObject | null> { return this.targets.findClosestResourceDrain(); }
-  getClosestResourceSource(type: ResourceType | null, maxDistance: number): Promise<GameObject | undefined> {
+  findClosestResourceDrain(): Promise<Phaser.GameObjects.GameObject | null> {
+    return this.targets.findClosestResourceDrain();
+  }
+  getClosestResourceSource(
+    type: ResourceType | null,
+    maxDistance: number
+  ): Promise<Phaser.GameObjects.GameObject | undefined> {
     return this.targets.getClosestResourceSource(type, maxDistance);
   }
   /** Optional transient diagnostic execution is forwarded explicitly; never serialized or used by native policy. */
-  gatherResources(source: GameObject, execution?: object): Promise<number> {
+  gatherResources(source: Phaser.GameObjects.GameObject, execution?: object): Promise<number> {
     return this.execution.gatherResources(source, execution);
   }
-  returnResources(drain: GameObject, execution?: object): Promise<number> {
+  returnResources(drain: Phaser.GameObjects.GameObject, execution?: object): Promise<number> {
     return this.execution.returnResources(drain, execution);
   }
 
   // Gets the resource source the gameObject has recently been gathering from, if available, or a similar one within its sweep radius
-  async getPreferredResourceSource(): Promise<GameObject | undefined> {
+  async getPreferredResourceSource(): Promise<Phaser.GameObjects.GameObject | undefined> {
     if (this.previousResourceSource) {
       return this.previousResourceSource;
     }
@@ -242,12 +217,12 @@ export class GathererComponent {
     );
   }
 
-  async getNewResourceSource(): Promise<GameObject | undefined> {
+  async getNewResourceSource(): Promise<Phaser.GameObjects.GameObject | undefined> {
     this.previousResourceSource = null;
     return this.getPreferredResourceSource();
   }
 
-  async getPreferredResourceDrain(): Promise<GameObject | null> {
+  async getPreferredResourceDrain(): Promise<Phaser.GameObjects.GameObject | null> {
     return this.findClosestResourceDrain();
   }
 
@@ -268,7 +243,7 @@ export class GathererComponent {
     return this.carriedResourceAmount >= gatherData.capacity;
   }
 
-  getGatherRange(resourceSource: GameObject): number {
+  getGatherRange(resourceSource: Phaser.GameObjects.GameObject): number {
     const gatherData = this.getGatherDataForResourceSource(resourceSource);
 
     if (!gatherData) {
@@ -281,7 +256,7 @@ export class GathererComponent {
     return this.gatheredResources.find((gatherData) => gatherData.resourceType === carriedResourceType) ?? null;
   }
 
-  private getGatherDataForResourceSource(resourceSource: GameObject): GatherData | null {
+  private getGatherDataForResourceSource(resourceSource: Phaser.GameObjects.GameObject): GatherData | null {
     const resourceSourceComponent = getActorComponent(resourceSource, ResourceSourceComponent);
     if (!resourceSourceComponent) return null;
 
@@ -289,11 +264,16 @@ export class GathererComponent {
   }
 
   private setCarriedResourceAmount(amount: number, change: ResourceCargoChange = { reason: "reset" }) {
-    ResourceServiceObservation.change(this.gameObject, this,
-      () => ({ amount: this.carriedResourceAmount, resourceType: this.carriedResourceType }), change, () => {
+    ResourceServiceObservation.change(
+      this.gameObject,
+      this,
+      () => ({ amount: this.carriedResourceAmount, resourceType: this.carriedResourceType }),
+      change,
+      () => {
         this.carriedResourceAmount = amount;
         if (amount <= 0) this.carriedResourceType = null;
-      });
+      }
+    );
   }
 
   private leaveCurrentResourceSource() {
@@ -394,8 +374,13 @@ export class GathererComponent {
 
   setData(data: Partial<GathererComponentData>) {
     // Fence provenance before even a partial or failed restore; native serialization remains unchanged.
-    ResourceServiceObservation.change(this.gameObject, this,
-      () => ({ amount: this.carriedResourceAmount, resourceType: this.carriedResourceType }), { reason: "restore" }, () => undefined);
+    ResourceServiceObservation.change(
+      this.gameObject,
+      this,
+      () => ({ amount: this.carriedResourceAmount, resourceType: this.carriedResourceType }),
+      { reason: "restore" },
+      () => undefined
+    );
     if (data.carriedResourceAmount !== undefined) {
       this.carriedResourceAmount = Number.isFinite(data.carriedResourceAmount)
         ? Math.max(0, data.carriedResourceAmount)
@@ -449,7 +434,7 @@ export class GathererComponent {
     }
   }
 
-  private actorId(actor: GameObject | null): string | null {
+  private actorId(actor: Phaser.GameObjects.GameObject | null): string | null {
     return actor ? (getActorComponent(actor, IdComponent)?.id ?? null) : null;
   }
 
@@ -457,7 +442,7 @@ export class GathererComponent {
     return typeof value === "string" && value.length > 0 ? value : null;
   }
 
-  private restoreResourceSource(source: GameObject): boolean {
+  private restoreResourceSource(source: Phaser.GameObjects.GameObject): boolean {
     if (this.currentResourceSource === source) return true;
     const sourceComponent = getActorComponent(source, ResourceSourceComponent);
     if (!sourceComponent) return false;
