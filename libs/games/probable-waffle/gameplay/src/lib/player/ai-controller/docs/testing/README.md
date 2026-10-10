@@ -110,6 +110,19 @@ production diagnostic-owner costs as unavailable. Zero owner allocation samples 
 not proof of zero allocation. Qualify a common supported setup/read route before claiming normal-play overhead;
 do not install capture in production merely to make profiling convenient.
 
+For retained-browser warming, use the native in-game Load event/dialog after the full warm-up, then the actual Load
+button. Record the retained document object, time origin/default context and exact native script identities across
+resets. The application may recreate the Phaser game while keeping its realm and compiled modules. A sleeping old
+render loop can defer native game destruction: wake it before opening Load and require the old scene to reach
+DESTROYED with zero event registrations before measuring its replacement. Release old remote scene handles.
+These checks prove the selected reset and warm-up reuse, not JIT optimization state, convergence or every async cleanup.
+
+Inclusive CPU scopes must be explicit. Count each sample once in the union of native application ancestry, including
+builtin/URL-less callees, while excluding injected readout, runner self and idle. Keep global GC/unattached work separate.
+The actual fixed-clock tick stack includes synchronous tick listeners; later async continuations may lose that ancestor.
+Native/application ancestry also includes framework activity and cannot supply complete isolated simulation/hook CPU.
+Inclusive hot-frame rows overlap; do not sum them or turn source-map gaps into zero-cost claims.
+
 Player-controller decision settling does not establish quiescence of pawn behavior-tree actions or path promises.
 Inspect each native action's clock before treating an accelerated replay as a deterministic cost workload.
 Mistreevous WAIT nodes use wall time when `BehaviourTreeOptions.getDeltaTime` is absent, even if the caller steps on

@@ -444,9 +444,9 @@ The following map preserves stage-50 design/authoring states; the final-gate che
 | M05 Exact consumed/accepting frames: explain purchase-plus-gather null bounds                  | R; C4 fact union/input/root/unspent/report fields                         | 52 → 53                                                         | Real input/controller selected event with zero and nonzero new claims; immediate paid vs future queue transfer; due head exhaustion; unsupported building/pre-capture/expired/recovery claims and callback-in-progress; mismatch stays null                     | Code plus focused input/root/synthetic frame controls authored; full native integration still missing; K1/K3 deferred                                                                           |
 | M06 Cargo/recipient/window compatibility: preserve credited income without false usefulness    | R; C2/C4/C5 existing credit/application/need projections                  | 53                                                              | Exact real payload join; normal/granted/none and changed owner; mixed/old/restored cargo; grant then spend cannot reopen shortage; publication delayed across application window; same-tick/straddle/overflow bad tail                                          | Existing path retained; K1/K3 compatibility cases deferred                                                                                                                                      |
 | M07 Real adapter/report bridge: expose actual producer evidence and explicit gaps              | R; C7 root capture, variant runner, production normalization              | 51–53 → 54                                                      | Real Phaser actor/components/protocol player/read/native command path into report; initialization loss, post-await service loss and late/disposed capture; native income remains diagnostic while useful fields stay null; contradictory tail suppresses parent | Short probe and full 611-decision native diagnostic bridge pass after causal repairs; full production contract/authority/capacity remains open in the native causal checkpoint                  |
-| M08 Normal-play impact: testing does not install heavy machinery during gaming                 | R; C8 below, installer/helper controls and existing profiler              | 54                                                              | Production/unmarked guard, no sample/clone/listener/timer/root journal; before/after disabled-path and bundle comparison; foreign host/duplicate capture, late callbacks                                                                                        | Three profiled pairs per capture mode checked; capture-off save/read access qualified. Code gzip +861 (+0.0540%), diagnostics 114,606 raw bytes. Retained-VM/whole CPU/original acceptance open |
+| M08 Normal-play impact: testing does not install heavy machinery during gaming                 | R; C8 below, installer/helper controls and existing profiler              | 54                                                              | Production/unmarked guard, no sample/clone/listener/timer/root journal; before/after disabled-path and bundle comparison; foreign host/duplicate capture, late callbacks                                                                                        | Three profiled pairs per capture mode checked; capture-off save/read access qualified. Code gzip +861 (+0.0540%), diagnostics 114,606 raw bytes. Retained realm/reset qualified; complete CPU/convergence/original acceptance open |
 | M09 Compliance/publication: economical implementation remains reviewable                       | R; C6 exact baselines, existing handoff                                   | Each 51–54                                                      | No refreshed hashes/new permanent stage names; task-only prerequisite and behavior commits; source review/Omission Audit/closure, remote SHA and clean task scope                                                                                               | Authored/source-reviewed; implementation commit `978cb09e70cbc6e2ed0b520971690ea47ab38045` remote-verified; checks deferred                                                                     |
-| M10 Combined review and compatibility: decide readiness before execution                       | R; C1–C8, all changed consumers                                           | 54 → Sol review                                                 | Trace real input → selected/admitted → native application → report/disposal; review all controls, repair concrete contract contradictions; every required unrun check remains listed                                                                            | Native 718/comparator 40 and all-mode scoped profiles checked. Capture-off save/read qualified; retained-VM/whole CPU/original acceptance/full PRO/lifecycle open                               |
+| M10 Combined review and compatibility: decide readiness before execution                       | R; C1–C8, all changed consumers                                           | 54 → Sol review                                                 | Trace real input → selected/admitted → native application → report/disposal; review all controls, repair concrete contract contradictions; every required unrun check remains listed                                                                            | Native 718/comparator 40 and all-mode scoped profiles checked. Capture-off save/read qualified; retained reset qualified; complete CPU/convergence/original acceptance/full PRO/lifecycle open                               |
 | M11 Mutation-complete useful resource/continuous capacity: 32/36 full proof                    | B; C7 plus 32/36/39/42 authority, public APIs                             | Explicit authority/scope decision; not a hidden fifth Luna pass | Net-zero alias undo, arbitrary definition/Map/item/roster replacement, hidden/stale threats/access changes between reads, full supported initial predicate history; no positive complete channel currently possible                                             | Existing 32/36 gates; blocked, mandatory                                                                                                                                                        |
 | M12 Production useful outputs, legal setup and strategy: PRO-03/06/07 release                  | B; existing production authority contract and evaluators                  | Broader gameplay/fixture queue, separate from 51–54             | Both-faction transition/abandonment, exposed/safe/no-demand resilience, shared train/research and paid cancellation/pending refund pairs; full oracle and denominator                                                                                           | K5 and owning scenario/policy plans; open, mandatory                                                                                                                                            |
 | M13 Finer loss scopes/continuous journal/lot allocation                                        | O; no new files/owners                                                    | Not scheduled; new consumer must justify proposal               | No actor-to-beneficiary dependency map, FIFO allocation or extra scan introduced just to recover a diagnostic bound                                                                                                                                             | No extra gate; proposed only                                                                                                                                                                    |
@@ -510,6 +510,110 @@ Historical authoring boundary: M10 source review found missing controls, subsequ
 final-gate checkpoints below. The user-authorized final gate is active; K5/C8 and broader release evidence remain.
 Do not claim stage validation before K1–K5. M11 remains a mandatory blocker from public mutable aliases
 and incomplete access/safety/lifetime history; M12 remains open for full PRO-03/06/07. Neither was reduced by this batch.
+
+### Final-gate retained-browser profiling checkpoint (2026-10-10, warm reset checked)
+
+Clean base/remote `f577e7a8935279acd19937847abdb7f670e8a579`; the containing commit owns this batch.
+Actual host model/effort unknown. No executable source/config/spec, permanent observation hook, native overlay or
+build output changed. Prior native 718/comparator 40 and shipping +861 gzip evidence remains scoped and unchanged.
+
+| Acceptance                                  | Path / evidence                                                                                                                                                                                                                                                                                                     | Status                                                              |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| R1 Preserve source/comparator/save identity | Doctor/context pass; exact protected af9 + 11 compile-only files/clean index; all four native owner hashes, three overlays and development/production inventories pass. Same unedited native tick-zero quicksave.                                                                                                   | Checked                                                             |
+| R2 Warm and reset in a retained realm       | Full warm-up per source/mode; native in-game `load-game` utility event opens the existing Load dialog; actual Load button stops/restores/refreshes the game. Same retained document object, timeOrigin, default execution-context unique ID and native bootstrap script ID/hash across all four worlds per browser. | Checked for selected reset                                          |
+| R3 Preserve complete workload               | Four warm-ups + twelve profiled worlds; three alternating pairs per capture-off mode; all 1,201 native boundaries/outcome histories equal the prior qualified saved workload. All sixteen end 28 actors/97 outcomes, no page/AI-step errors, no marker/test hosts.                                                  | Checked                                                             |
+| R4 Isolate costs and investigate increase   | Exact injected runner/readout identities; application self, inclusive native/tick stacks, sampled heap and variance retained. Builtins under native ancestors included; global GC/other/idle separate. Fresh profiles reanalyzed without replay.                                                                    | Scoped evidence; complete async/hook CPU and budget acceptance open |
+| R5 Close owned batch                        | Driver/source review, documentation/links, syntax checks, Omission Audit and separate Final Closure Audit. Temporary scripts/raws remain ignored; three docs published.                                                                                                                                             | Checked slice; wider gate open                                      |
+
+**What changed / why:** the existing native save/Load route now resets a full world without losing the JavaScript
+realm and compiled application scripts. This permits warm comparisons without a shipped hook or capture installation.
+The external debugger applies manual clock pacing at bootstrap, then removes its breakpoint and disables itself before
+profiling. The native world advance/capture function is byte-identical to the previously qualified driver.
+No document navigation/reload occurs after warm-up; no running-world state/identity repair or field filtering occurs.
+Invoking the same utility event as the native menu is deliberate control, not pointer/UI appearance verification.
+
+**Cleanup repair in the temporary driver:** an initial production probe retained the trajectory but left the old
+scene RUNNING (5), pending game destruction, with 24 event registrations because the runner had put its loop to sleep.
+That probe is quarantined under `retained-mode/asleep-probe/` and excluded from acceptance/cost pairs. The repaired
+route wakes the old native loop before opening Load; the normal refresh destroys it. Each measured reset requires
+scene DESTROYED (9) and zero scene event registrations before reading/profiling the replacement. A separate repaired
+production probe passed, retained under `clean-probe/`; final evidence uses the complete fresh batch only. Remote old
+scene handles are released after destruction. Current browser/server/document/scene handles close in finally blocks.
+This checks scene destruction, not every possible pending async action or broader save/reconnect continuation.
+
+**Measured costs:** CPU sampling 1,000 microseconds; heap sampling 32,768 bytes including collected objects.
+One full warm-up in each of four browsers, then three measured resets/worlds per browser. Mean ± population SD:
+
+| Mode / metric                                    | Reference       | Candidate        |
+| ------------------------------------------------ | --------------- | ---------------- |
+| unmarked / UPDATE total ms / 1,200 ticks         | 1986.07 ± 61.48 | 2012.07 ± 117.98 |
+| unmarked / Per-run UPDATE p95 ms                 | 5.97 ± 0.21     | 5.37 ± 0.37      |
+| unmarked / Application exclusive CPU ms          | 2540.67 ± 68.22 | 2589.94 ± 125.00 |
+| unmarked / Native-stack inclusive CPU ms         | 2582.16 ± 71.49 | 2621.85 ± 126.88 |
+| unmarked / Native tick-stack inclusive CPU ms    | 1704.41 ± 57.13 | 1750.37 ± 92.21  |
+| unmarked / Application estimated allocation MB   | 765.02 ± 8.82   | 760.22 ± 4.03    |
+| production / UPDATE total ms / 1,200 ticks       | 2309.53 ± 46.94 | 2311.13 ± 123.20 |
+| production / Per-run UPDATE p95 ms               | 6.17 ± 0.21     | 6.30 ± 0.51      |
+| production / Application exclusive CPU ms        | 2880.39 ± 65.44 | 2889.29 ± 133.07 |
+| production / Native-stack inclusive CPU ms       | 2914.33 ± 65.67 | 2915.27 ± 129.23 |
+| production / Native tick-stack inclusive CPU ms  | 1770.33 ± 30.00 | 1784.72 ± 97.83  |
+| production / Application estimated allocation MB | 812.42 ± 5.04   | 813.39 ± 5.01    |
+
+Production mean native-stack CPU delta 0.03%; UPDATE total delta 0.07%.
+Paired production UPDATE deltas: -199.30/21.90/182.20 ms;
+p95 deltas: -0.10/-0.10/0.60 ms;
+native-stack CPU deltas: -225.47/47.28/181.02 ms.
+Each run's values/range/median and inclusive hot frames remain in the bounded summary. Retaining the realm proves
+warm-up reuse, not JIT optimization state or steady-state convergence. Three profiled repeats, debugger bootstrap
+resets and synchronous UPDATE timings are not ordinary rendered-frame/whole-simulation budget acceptance.
+The earlier fresh-browser application CPU increase (+5.30%) does not repeat at the same magnitude here: retained
+production application means 2,880.39/2,889.29 ms (+0.31%), native-stack means +0.03%, UPDATE totals +0.07%.
+Production per-run p95 deltas -0.10/-0.10/+0.60 ms and rising candidate timings still leave variation/convergence open;
+this does not establish a causal warm-up explanation or a budget pass. Development diagnostic samples: reference
+[1.093, 0, 0] ms (one ResourceServiceObservation sample), candidate [0, 0, 0]; all six owner heap samples zero.
+Unsampled work remains below resolution, not absent.
+
+Signed negative CPU deltas (0 samples, 0 microseconds total) are preserved, not clamped.
+
+**Attribution:** native-stack CPU counts the union of non-readout application ancestry, including builtin/URL-less
+callees, while excluding runner self, idle, global GC and unattached work. It also includes Phaser/Angular/Zone and
+other application activity in the sampling window. Native tick-stack CPU counts the subset under the actual
+`SimulationTickService.onUpdateFrameNonDeterministic`; its `tick$` listeners are measured, but later async continuations
+may lose that ancestor. Inclusive frame rows overlap and cannot be summed. Readout remains excluded only under the
+injected `capture` script; native `capture` and gameplay `getAuthorityState` remain included. Native command-bus,
+reconciliation and fixed-clock source files are unchanged from af9; their work is not itself a new hook regression.
+Production diagnostic owner maps remain unavailable; development maps apply only to their own outputs. Sampled
+allocation is cumulative estimated allocation, not retained heap or proof of no allocation/listener/journal.
+
+**Evidence packet / commands:** all artifacts below are ignored in `tmp/ai-plans/759-validation/cost-batch/retained-mode/`.
+`profile-summary.json` (150780 bytes), SHA-256 `d57add0e55f8bcccf420930bac863794bc4df080ea99c2fdcef30ae1b8046c11`, owns 40 raw hashes
+(16 worlds + 24 CPU/heap profiles), per-run metrics/variance and six pairs. `workload-summary.json` owns realm/reset
+proof; `fresh-stack-summary.json` reanalyzes the twelve previously qualified fresh-browser CPU profiles and retains
+prior summary SHA `1c8bf08867bca7be892f1365be30fc0bee9d5aa23e3417c9b34f249ef5145e44`. `source-guard.json` and `closure-manifest.json` own guard/audit hashes.
+Full boundary SHA `52d82ea3f6818148583719e9dd8ad24c57e4f7737d615756eb31c70b80339a30`; outcome SHA `0f0463a91dd63c3b9576f2eab39cd766592863b646496e717bbd82982c6248e9`.
+Native save record remains SHA `4cfdfc342d36f031a9eca71c97c107c2ec5ef4fb4caf90fe7c26b7c04fd1b04e`.
+
+`pnpm agent:doctor` and `pnpm agent:context -- --issue 759` pass at clean f577.
+`node tmp/ai-plans/759-validation/cost-batch/run-retained-world.cjs` runs the grouped retained-world qualification/profile.
+`node tmp/ai-plans/759-validation/cost-batch/summarize-retained-profile.cjs` and `summarize-fresh-native-stacks.cjs`
+perform offline attribution without rerunning profiles. `check-retained-sources.cjs` checks the unchanged source/output
+contract; `audit-retained-profile.cjs` checks raw digests, full trajectories, realm/reset identity, metrics and doc scope.
+No full Jest/type/build repeat is needed for this docs-only slice; prior executable evidence is not invalidated.
+
+**Implementation review:** traced utility event → Load modal → stop/load/refresh → native Phaser destruction/bootstrap;
+repaired asleep-loop teardown before acceptance. Reviewed exact readout exclusion, inclusive overlap, signed deltas,
+source-map identity and async/GC gaps. No speculative native optimization or general skill/tool change.
+**Omission Audit:** R1–R3 pass; R4 supplies scoped native CPU investigation and retained warm-up, with complete async/
+hook attribution, convergence, disabled allocation/1% + 0.1 ms p95 and original pinned acceptance explicitly open.
+Normal frames, water/wall TTL, player-AI versus pawn/path settling and saved WAIT phase remain limits. Full PRO failures,
+M11/M12/cross-player commitments, server/socket/save/restart/hash/calibration and machinery necessity review remain.
+**Final Closure Audit:** separate post-check raw/source/doc/link/staged-scope review closes this evidence slice;
+publication requires commit/push/exact remote verification. C8 and the overall release gate are not complete.
+
+**Next / why:** GPT-6.1 Sol / high for focused native tick/async/hook attribution and disabled-path budget investigation.
+Use the qualified retained reset and bounded hot frames; investigate measured variation and prove any native repair
+causally before changing it. Retain original pinned policy separately. Do not repeat setup qualification or fabricate
+complete simulation CPU from application/inclusive samples. Commit/push/verify and pause at the next coherent boundary.
 
 ### Final-gate capture-off profiling checkpoint (2026-10-10, scoped costs checked)
 
@@ -2273,8 +2377,8 @@ this exact source cannot compile. Its original native comparison remains blocked
 qualifies a separately identified compile-compatible reference and scoped size delta. The
 [behavior-aligned checkpoint](#final-gate-behavior-aligned-reference-checkpoint-2026-10-10-native-action-timing-blocked)
 adds the earlier movement/resource repairs and historical size delta. The later four-owner comparator, marked profiling and capture-off profiling checkpoints qualify full native
-trajectories and scoped samples in all three modes. Retained-VM warming, whole CPU/original acceptance and normal
-frames remain open; the capture-off checkpoint owns the current production cost investigation.
+trajectories and scoped samples in all three modes. The retained-browser checkpoint qualifies realm/script reuse and destruction before warm profiling. Complete async/hook CPU,
+convergence/original acceptance and normal frames remain open; that checkpoint owns the current cost investigation.
 Never treat an isolated fast-path probe or an untimed qualification as a native cost pair.
 Use existing `AI_SKIRMISH_PROFILE=1` variant phase timing and browser performance/heap allocation profiling; profiler
 output must isolate hook CPU/allocations from unrelated rendering/planner work. Alternate baseline/candidate order,
