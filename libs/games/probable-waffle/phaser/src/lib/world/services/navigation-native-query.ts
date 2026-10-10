@@ -1,7 +1,7 @@
 import type { Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
 import type { NavigationNativeBoundary } from "./navigation-native-boundary";
 
-/** Exact native lookup, including the request-time lineage of a shared mutable cache entry. No path is copied here. */
+/** Exact native lookup and cache insertion lineage. Provenance observes route ownership without changing it. */
 export interface NavigationNativeQuery {
   /** Scene-local bounded identity, shared by ground, occupancy overlays and water. */
   readonly queryId: number;

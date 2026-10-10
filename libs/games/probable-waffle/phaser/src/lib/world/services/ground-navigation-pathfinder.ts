@@ -4,13 +4,18 @@ import { NavigationProvenance } from "./navigation-provenance";
 import type { NavigationNativeQuery } from "./navigation-native-query";
 import type { NavigationHeightGraph } from "./navigation-height-graph";
 
-/** Owns the native ground EasyStar instance, one-second wall-clock cache and uncached occupancy overlays. */
+/** Owns native ground EasyStar queries and a one-second cache whose routes are isolated from movement consumers. */
 export class GroundNavigationPathfinder {
   private readonly easyStar = new EasyStar();
-  // Native result arrays remain shared with callers, including subsequent caller mutations.
-  private readonly pathCache = new Map<string, {
-    path: Vector2Simple[] | null; timestamp: number; query: NavigationNativeQuery | null
-  }>();
+  // Movement consumes paths with shift(); cached routes must retain their original tiles for later range probes.
+  private readonly pathCache = new Map<
+    string,
+    {
+      path: readonly Readonly<Vector2Simple>[] | null;
+      timestamp: number;
+      query: NavigationNativeQuery | null;
+    }
+  >();
   private static readonly PATH_CACHE_TTL_MS = 1000;
 
   constructor(
@@ -25,7 +30,7 @@ export class GroundNavigationPathfinder {
     this.provenance.cleared("ground");
   }
 
-  /** Samples performance.now once at request time; caches null/empty paths and original mutable result arrays. */
+  /** Retains request-time wall-clock TTL and null/empty results; each caller owns its mutable route and tile objects. */
   async findPath(fromTileXY: Vector2Simple, toTileXY: Vector2Simple): Promise<Vector2Simple[] | null> {
     // Create cache key
     const cacheKey = `${fromTileXY.x},${fromTileXY.y}->${toTileXY.x},${toTileXY.y}`;
@@ -34,23 +39,30 @@ export class GroundNavigationPathfinder {
     // Check cache
     const cached = this.pathCache.get(cacheKey);
     const hit = !!cached && now - cached.timestamp < GroundNavigationPathfinder.PATH_CACHE_TTL_MS;
-    const query = this.provenance.query("ground_static", fromTileXY, toTileXY, hit ? "hit" : "miss", now,
-      hit ? cached?.query : null);
+    const query = this.provenance.query(
+      "ground_static",
+      fromTileXY,
+      toTileXY,
+      hit ? "hit" : "miss",
+      now,
+      hit ? cached?.query : null
+    );
     if (hit && cached) {
       this.provenance.completed(query);
-      return cached.path;
+      return this.copyPath(cached.path);
     }
 
     return new Promise((resolve) => {
       this.easyStar.findPath(fromTileXY.x, fromTileXY.y, toTileXY.x, toTileXY.y, (path) => {
         const result = !path ? null : path.length === 0 ? [] : path;
+        const cachedPath = this.copyPath(result);
 
         if (this.DEBUG && result) {
           this.drawPath(result);
         }
 
         // Cache the result
-        this.pathCache.set(cacheKey, { path: result, timestamp: now, query });
+        this.pathCache.set(cacheKey, { path: cachedPath, timestamp: now, query });
         this.provenance.completed(query);
 
         // Periodically clean up old cache entries
@@ -62,6 +74,11 @@ export class GroundNavigationPathfinder {
       });
       this.easyStar.calculate();
     });
+  }
+
+  /** Copy at insertion and cache delivery: neither array consumption nor tile edits can corrupt another query. */
+  private copyPath(path: readonly Readonly<Vector2Simple>[] | null): Vector2Simple[] | null {
+    return path?.map((tile) => ({ ...tile })) ?? null;
   }
 
   /**

@@ -1,11 +1,11 @@
-# #759 follow-up implementation plans
+# Skirmish AI follow-up implementation plans
 
 Each open subissue has one cold-start plan. The GitHub issue owns status and discussion; its linked file owns the
 implementation route, source anchors, evidence, and completion boundary. Product behavior remains documented beside the
 AI controller.
 
-Read the handoff's current execution policy first: during the current authoring sweep, commands that run tests,
-simulations, lint, builds, doctor/context or validation in these plans are deferred. Pair #815/#816 by behavior family
+Read the handoff's current execution policy first: final-gate tests, simulations, lint, builds and doctor/context
+are active at coherent verification boundaries. Pair #815/#816 by behavior family
 using #816's compact batch table. Source contracts gate authoring; passing parity evidence gates legacy removal;
 formal issue closure follows final evidence on the delivered revision. Finish a coherent batch before switching models.
 The handoff's [model batches and pause contract](../HANDOFF.md#model-batches-and-pause-contract) owns current model

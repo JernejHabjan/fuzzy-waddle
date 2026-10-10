@@ -12,80 +12,57 @@ Recommendations do not change settings. Actual host model/effort unknown; next r
 User added an [end-of-gate machinery necessity review](#end-of-gate-machinery-necessity-review) before final closure:
 evaluate the existing systems against their real consumers, simpler alternatives and measured costs.
 
-**Current step:** C8 behavior-aligned diagnostic reference built; longer native equivalence remains blocked.
-The new tracked two-owner patch adds only the reviewed refused-Move and positive Gather/drop-off progress repairs
-on top of the original compile overlay. Eighteen native regressions and development/production builds pass.
-An ordinary 1,200-tick qualification pair matches through 441, then differs in a worker's current Build order at 442;
-native outcomes differ at 960. Two 500-tick traced controls differ at 296 and outcomes at 367. No speculative overlay
-expansion or cost profiling followed. Live pawn WAIT nodes have no simulation delta; an installed-library control
-proves wall-clock-dependent completion. The exact wait/path/action chain for the first Build mismatch is unresolved.
-Two cross-player commitment collisions remain a separate M12 defect. Candidate production source/configuration,
-recipes, oracles, useful activation and original reference policy remain unchanged; protected sources restored.
+**Current step:** C8 native action investigation: ground-path cache ownership repaired and stage checked.
+The new trace captures `Build - Target Unreachable` at tick 442 after a range probe returns two tiles on candidate
+and zero on the behavior-aligned reference. A separate cache trace proves movement consumes a shared cached array
+from two tiles to zero; another probe then receives that same empty array. Ground cache insertion and hit delivery
+now copy route arrays and tile objects, so movement cannot corrupt a later range query. Cache TTL, native query
+provenance, null/empty semantics, overlays and pending-callback behavior remain covered. WAIT simulation-clock
+authority and water cache ownership are still open; this repair does not claim all native clocks are deterministic.
 
-**Evidence:** current doctor/context, 18 aligned-reference native cases and both reference builds pass, 0/3 Nx cache hits.
-Six new marked worlds (two ordinary, four traced) have zero page errors and settled player-AI boundaries, which do not
-prove pawn/path Promise quiescence. Both ordinary worlds record 17 positive native resource-progress outcomes;
-reference/candidate have 16/15 completions by tick 1,200. Zero qualified cost pairs. The behavior overlay adds 106 gzip
-bytes to the earlier derived reference; candidate is +724 bytes / +0.045410% against this new comparator only.
-Original pinned acceptance stays blocked. See the [behavior-aligned checkpoint](follow-ups/runtime-matrix-ci.md#final-gate-behavior-aligned-reference-checkpoint-2026-10-10-native-action-timing-blocked).
-Earlier doctor/context and both development builds pass; six 80-tick native qualification replays have zero page
-errors and settled AI boundaries. Initial actor salt now uses the existing validated preset seam; no balance/actor/order
-change or post-hoc ID normalization. Zero qualified cost pairs; native p95/CPU, allocation and marked-hook cost remain
-unavailable. Earlier derived production build and 22 focused Phaser cases pass. Coverage/rally source
-differentials and 15 queue-completion differential cases preserve supported outcomes. Planner checks: 25 pass, one old
-throughput fixture fails identically with original and derived gameplay sources; it was not weakened or patched.
-Derived all-app reachable code is 1,594,251 gzip bytes; candidate is 1,595,081: +830 bytes / +0.052062%, below 0.5%
-for this derived-reference size comparison only. Original-source budget acceptance and native pairs remain unproven.
-Prior candidate checks remain scoped evidence. Candidate all-app reachable scripts/styles total
-1,595,081 gzip bytes across 84 code outputs (3,188,985 including 18 referenced fonts). Forty AI test-harness modules
-still contribute 114,606 raw bundled bytes; installation guards do not prove shipping exclusion.
-Isolated empty reset/lose methods: three alternating 500,000-cycle
-pairs, baseline median 56.5 ms versus candidate 14.3 ms; 128-byte heap sampling assigns 80,488,272 versus 3,460 bytes
-to their source method stacks. This is isolated-source evidence, not whole-game overhead or zero allocation.
-Zero qualified native pairs; native p95, marked hook cost and original-source gzip delta remain unavailable.
-Prior K5 native 702 tests/build and all 611-decision bridge checks remain scoped evidence; the full match still fails
-production contract/authority and military-producer capacity. Useful fields remain null; M11 blocked, M12 open.
+**What changed / why:** `GroundNavigationPathfinder` owns the repaired route snapshots. Existing ground-cache and
+navigation-provenance specs now assert consumer isolation while retaining expiry and old-callback lineage controls;
+the query contract comment reflects ownership. The testing guide explains the actual cache/range failure and probe
+limits. The follow-up index has a unique heading so `agent:context --issue 759` selects this handoff, and its stale
+verification-deferral text now agrees with the active final gate. No new shipping diagnostic subsystem was added.
 
-**Provenance:** base/remote `72621aeed91cf0e356301a9440f4f62ef410018b` was clean; the containing commit owns
-this batch. Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`;
-verify remote on resume. Preserve unrelated Nx merge `59f72e037`. User removed the comment-permission rule. See the
-[native equivalence checkpoint](follow-ups/runtime-matrix-ci.md#final-gate-native-equivalence-checkpoint-2026-10-10-trajectory-divergence-checked)
-for exact setup, repeated state/bundle hashes, first causal divergence and the proposed reference scope. The
-[reference qualification checkpoint](follow-ups/runtime-matrix-ci.md#final-gate-reference-qualification-checkpoint-2026-10-10-compile-prerequisite-checked)
-owns the tracked patch, exact source/build/bundle hashes, compile-equivalence limits and remaining acceptance rows. The earlier
-[cost prerequisite checkpoint](follow-ups/runtime-matrix-ci.md#final-gate-cost-prerequisite-checkpoint-2026-10-09-paired-c8-blocked)
-retains the original compiler failure and isolated profiles.
-Ignored `tmp/ai-plans/759-validation/cost-batch/behavior-aligned/closure-manifest.json` owns this batch's composed
-13-file replay, six new native traces, restored source and build/output identities. Its bounded causal slice and
-bundle comparison avoid reading raw captures. The new behavior patch SHA is
-`1c8f31e679e7bb81a88d4e8271b16688e5f3d1ce01e4d627b2a1fa1346bae30a`; both overlays define the comparator identity.
-Candidate development bundle source remains `8fa4ac588`, verified production-input equivalent to this batch's base.
-Ignored `tmp/ai-plans/759-validation/cost-batch/native-equivalence-manifest.json` owns the earlier six replay/build hashes;
-`native-equivalence-summary.json` is only 4,230 bytes. `reference-closure-audit.json` retains compile qualification hashes;
-`cost-evidence-manifest.json` retains the prior isolated evidence. No raw profiles need enter context.
-The protected measurement checkout now carries only the exact qualification patch; its detached
-HEAD remains `af9d078d9`. Reuse it only after patch/source identity checks; never call it the original clean source.
-Prior native diagnostic provenance is runtime dirty `fnv1a32:f26886cd`, fixture `fnv1a32:221d6201`, seed 759101; the
-[native causal checkpoint](follow-ups/runtime-matrix-ci.md#final-gate-native-causal-checkpoint-2026-10-09-stage-checked)
-owns its exact commands and 106,133,304-byte raw artifact/hash. The prior
-[browser readiness checkpoint](follow-ups/runtime-matrix-ci.md#final-gate-browser-readiness-checkpoint-2026-10-09-diagnostic-repairs-checked)
-owns timing/transport repairs and the original failure; the
-[gameplay checkpoint](follow-ups/runtime-matrix-ci.md#final-gate-combined-gameplay-checkpoint-2026-10-09-stage-checked)
-owns K4 evidence and its two production fixes.
+**Evidence:** the new isolation regression fails on the original owner with an empty cached array, then passes with
+the repair. All 25 core native cases and 10 adjacent route-capture cases pass, alongside native source/spec typing,
+scoped lint/formatting and development/production builds. Both builds execute with 0/3 Nx cache hits. Two fresh ordinary 1,200-tick marked candidate replays have identical
+full boundaries and native outcomes; each ends with 28 actors and 97 outcomes, zero page errors and zero captured
+AI-controller/pawn-tree step errors. Raw replays are each 75,148,789 bytes with the same SHA; only bounded summaries
+were read. This is repeatability of this accelerated candidate workload, not cross-source or performance evidence.
+Fresh all-app reachable production code is 1,595,131 gzip bytes (+50 versus the prior candidate build); 40 diagnostic
+modules still contribute 114,606 raw bytes. CPU/allocations of route copying and marked hooks remain unmeasured.
+The earlier +724-byte comparator delta is historical and must not be used for this repaired candidate.
 
-**Next action / why:** on GPT-6.1 Sol / high, resolve the native action timing boundary before further C8 profiling.
-Follow `PawnAiController.stepBehaviourTree`, its absent `BehaviourTreeOptions.getDeltaTime`, native MDSL WAIT nodes,
-async movement/reachability and Build Stop/reassignment through the blackboard. Prove the earliest disagreement with
-bounded native traces, distinguish wall-clock waits from unresolved pawn/path promises, then repair only evidenced
-simulation-time authority with focused regressions. Player-AI settled does not mean all native actions settled.
-Do not assume the demonstrated WAIT defect alone explains tick 442; traced controls affect wall time and are not
-performance evidence. Preserve both reference overlays and original pinned failure; no further speculative comparator
-patching or shortened prefix workload. Any new repair invalidates affected pairing evidence and needs an explicit
-comparator scope, never a silent reference-policy change. Keep the commitment-key collision as separate M12 work.
-Only after equal meaningful native trajectories, warm once and run three alternating production/unmarked/marked cost
-pairs with isolated CPU/allocations and variance. Current profiles and untimed qualifications cannot satisfy cost pairs.
-Preserve full oracles, native bounds and useful nulls; M11/M12 and the end-of-gate necessity review remain mandatory.
-Commit/push the coherent checked batch and pause.
+**Provenance:** clean base/remote `33109f84abb4fb6d66adcd3a5b087a37f28f0c08`; the containing commit owns this batch.
+Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify remote on resume.
+Preserve unrelated Nx merge `59f72e037` and the user's earlier comment-permission-rule removal.
+The [path ownership checkpoint](follow-ups/runtime-matrix-ci.md#final-gate-native-path-ownership-checkpoint-2026-10-10-stage-checked)
+owns exact checks, causal slices, source/build/raw hashes and limits. Ignored
+`tmp/ai-plans/759-validation/cost-batch/path-ownership/closure-manifest.json` and `candidate-repeat-summary.json`
+are the bounded resume packet. Formatter changes to the production owner have identical comment-free TypeScript
+emit to the built input; final tests/types/lint cover the formatted files. Historical sources were not patched in
+this batch and still carry only the exact 11-file compile overlay, detached HEAD `af9d078d9`, real index clean.
+Both tracked reference overlays and their prior artifacts remain intact. Older traced controls use development
+bundles rooted at `8fa4ac588`, production-input equivalent to this clean base; their generated summary's older
+`72621aeed` label is not the executed candidate bundle identity. The new candidate uses its fresh repaired build.
+
+**Next action / why:** GPT-6.1 Sol / high for the remaining native clock contract, then comparator qualification.
+Design and repair `PawnAiController` WAIT delta from actual elapsed simulation time, with real-library regressions
+for cadence, newly entered waits, pause, fallback and teardown. Do not confuse this separate demonstrated clock
+defect with the captured cache/range/Build chain. Inspect water route ownership and unresolved native actions where
+they affect the selected workload; player-AI settling still does not prove pawn/path quiescence. Review the native
+repairs together before extending the behavior-only reference with exact reviewed diffs. The existing two-owner
+comparator omits the ground repair, so it is no longer behavior aligned; do not profile or reuse its budget delta.
+Any extended comparator must explicitly exclude only reviewed native repairs and stay separate from original pinned
+acceptance. Requalify full native trajectories/outcomes before warming and three alternating cost pairs in each
+production/unmarked/marked mode. Do not freeze wall time, drop transient order state, truncate to a matching prefix
+or silently replace the original reference policy. Zero qualified cost pairs; original pinned acceptance blocked.
+Full PRO production/authority/capacity still fails; M11 blocked, M12 open (including separate cross-player commitment
+key collisions), broader server/socket/save/restart/hash/calibration and the machinery necessity review remain.
+Preserve mandatory oracles, native bounds and useful nulls. Commit/push the coherent checked batch and pause.
 
 **Earlier checked / repaired — why it is used:** 18 capture/world specs, 15 component/movement/lifecycle specs and five
 campaign specs now use checked authored entries, current Sandhold/map/hook identities, actual native GameObjects
@@ -223,36 +200,36 @@ Once native trajectories match, measure the unchanged C8 budgets and group only 
 Keep C1–C8, useful nulls and authority oracles intact; no capture reset or planner-input replacement. M11/M12 remain open.
 Pause after the next coherent checked and published batch.
 
-| Dependency                                            | State                                                                                                     | Purpose / next boundary                                                                                                                                                                      |
-| ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Native movement and service attempt ownership (21–28) | Authored, unverified                                                                                      | Earlier task/order identity and lifetime boundaries                                                                                                                                          |
-| Gatherer prerequisite and cargo contract (29)         | Authored, unverified                                                                                      | Compliant focused native owners before hooks                                                                                                                                                 |
-| Native cargo/application capture (30)                 | Authored, unverified                                                                                      | Exact pile, beneficiary and scoped balance change                                                                                                                                            |
-| Strict cargo/credit projection (31)                   | Authored, unverified                                                                                      | Connect known contributors without inferring task fulfillment                                                                                                                                |
-| Useful service interval contract (32)                 | Authored, unverified                                                                                      | Define what income, aggregate need and retained throughput can prove                                                                                                                         |
-| Selected need (33)                                    | Authored, unverified                                                                                      | Actual accepted aggregate selection, separate from newer forecasts                                                                                                                           |
-| Supported coverage / loss (34)                        | Authored, unverified                                                                                      | Bounded cohorts/read frontiers and irreversible observation loss                                                                                                                             |
-| Interval diagnostics (35)                             | Authored, unverified                                                                                      | Fixed windows, unique credits and capped aggregate potential through reports                                                                                                                 |
-| Beneficiary/need authority design (36)                | Authored; implementation open                                                                             | Native writers, read/application positions, disjoint liabilities and conservative no-reopening contract                                                                                      |
-| Recipient journal and selected-need replay (37–38)    | Authored, unverified; partial authority                                                                   | Actual read/frame/native operation and conditional observed accounting bounds                                                                                                                |
-| Coverage activation audit (39)                        | Source audit documented                                                                                   | Audited missing writers and actual producer timing                                                                                                                                           |
-| Causal accounting / application windows (40–41)       | Authored, unverified; pause reached                                                                       | Exact incoming-read/admission boundaries and distinct native application windows                                                                                                             |
-| Beneficiary / need / lifetime ownership design (42)   | Authored, source-reviewed only                                                                            | Named route/identity/loss contract and explicit alias limitations; no new runtime behavior                                                                                                   |
-| Owner presentation and conversion fence (43–44)       | Authored, unverified; pause reached                                                                       | Compliant owner split, then passive pre-index loss to close old resource history                                                                                                             |
-| Health presentation and mutation fence (45–46)        | Authored, unverified; pause reached                                                                       | Compliant health split, then pre-mutation loss before callbacks can observe changed readiness                                                                                                |
-| Construction / repair health writer contract (47)     | Source design authored; pause reached                                                                     | Settled silent health/work/lifecycle boundaries and actual technology caller                                                                                                                 |
-| Construction presentation and writer fences (48–49)   | Authored, unverified; pause reached                                                                       | Separate sound work and passive pre-write loss before construction/repair readiness changes                                                                                                  |
-| Consolidated remaining-machinery design (50)          | Authored/source-reviewed; pause reached                                                                   | Exact C1–C8 contracts, M01–M13 completion map and finite bounded queue                                                                                                                       |
-| Named supply/container boundaries (51)                | Native controls pass in K1                                                                                | Reject stale reads before stock/capacity/boarding changes; broader gameplay evidence remains                                                                                                 |
-| Binding/restore/roster boundaries (52)                | Scoped native/protocol controls pass                                                                      | Fence replacement and brief roster churn; wider integration remains                                                                                                                          |
-| Consumed/accepting liability diagnostics (53)         | Focused native/synthetic controls pass                                                                    | Explain new claims while preserving consumed input; browser integration remains                                                                                                              |
-| Real producer/report and operational controls (54)    | Full native diagnostic bridge passes; release proof/cost open                                             | All 611 selections retained; legal roster and native outcomes repaired before paired cost                                                                                                    |
-| Combined implementation review (M10)                  | K4/K5 compatibility, derived C8 compilation and native initial equivalence checked; full gate in progress | Prior native 702/gameplay 274/report 461; aligned size +0.045410%; native Build/timing divergence blocks costs; full production proof open                                                   |
-| Missing-control authoring                             | Complete; native/report controls executed                                                                 | Real 16-decision short replay passes; broader browser authority/setup and cost remain                                                                                                        |
-| Complete need/lifetime history and useful throughput  | Open; activation still blocked                                                                            | Public aliases and every relied-on mutation need authority before useful windows/real recipes                                                                                                |
-| Continuous useful capacity                            | Open                                                                                                      | Complete mutation authority for readiness, supply, access/safety and service                                                                                                                 |
-| Full production adapter/oracles/setup/strategy        | Open                                                                                                      | Independent PRO-03/06/07 assertions                                                                                                                                                          |
-| Executable validation                                 | Final gate active, partially checked                                                                      | Compatibility passes; K5 release fails; C8 initial world matches, native trajectory/costs blocked; original pinned comparison and broader server/socket/save/restart/hash/calibration remain |
+| Dependency                                            | State                                                                                                     | Purpose / next boundary                                                                                                                                                                                                   |
+| ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Native movement and service attempt ownership (21–28) | Authored, unverified                                                                                      | Earlier task/order identity and lifetime boundaries                                                                                                                                                                       |
+| Gatherer prerequisite and cargo contract (29)         | Authored, unverified                                                                                      | Compliant focused native owners before hooks                                                                                                                                                                              |
+| Native cargo/application capture (30)                 | Authored, unverified                                                                                      | Exact pile, beneficiary and scoped balance change                                                                                                                                                                         |
+| Strict cargo/credit projection (31)                   | Authored, unverified                                                                                      | Connect known contributors without inferring task fulfillment                                                                                                                                                             |
+| Useful service interval contract (32)                 | Authored, unverified                                                                                      | Define what income, aggregate need and retained throughput can prove                                                                                                                                                      |
+| Selected need (33)                                    | Authored, unverified                                                                                      | Actual accepted aggregate selection, separate from newer forecasts                                                                                                                                                        |
+| Supported coverage / loss (34)                        | Authored, unverified                                                                                      | Bounded cohorts/read frontiers and irreversible observation loss                                                                                                                                                          |
+| Interval diagnostics (35)                             | Authored, unverified                                                                                      | Fixed windows, unique credits and capped aggregate potential through reports                                                                                                                                              |
+| Beneficiary/need authority design (36)                | Authored; implementation open                                                                             | Native writers, read/application positions, disjoint liabilities and conservative no-reopening contract                                                                                                                   |
+| Recipient journal and selected-need replay (37–38)    | Authored, unverified; partial authority                                                                   | Actual read/frame/native operation and conditional observed accounting bounds                                                                                                                                             |
+| Coverage activation audit (39)                        | Source audit documented                                                                                   | Audited missing writers and actual producer timing                                                                                                                                                                        |
+| Causal accounting / application windows (40–41)       | Authored, unverified; pause reached                                                                       | Exact incoming-read/admission boundaries and distinct native application windows                                                                                                                                          |
+| Beneficiary / need / lifetime ownership design (42)   | Authored, source-reviewed only                                                                            | Named route/identity/loss contract and explicit alias limitations; no new runtime behavior                                                                                                                                |
+| Owner presentation and conversion fence (43–44)       | Authored, unverified; pause reached                                                                       | Compliant owner split, then passive pre-index loss to close old resource history                                                                                                                                          |
+| Health presentation and mutation fence (45–46)        | Authored, unverified; pause reached                                                                       | Compliant health split, then pre-mutation loss before callbacks can observe changed readiness                                                                                                                             |
+| Construction / repair health writer contract (47)     | Source design authored; pause reached                                                                     | Settled silent health/work/lifecycle boundaries and actual technology caller                                                                                                                                              |
+| Construction presentation and writer fences (48–49)   | Authored, unverified; pause reached                                                                       | Separate sound work and passive pre-write loss before construction/repair readiness changes                                                                                                                               |
+| Consolidated remaining-machinery design (50)          | Authored/source-reviewed; pause reached                                                                   | Exact C1–C8 contracts, M01–M13 completion map and finite bounded queue                                                                                                                                                    |
+| Named supply/container boundaries (51)                | Native controls pass in K1                                                                                | Reject stale reads before stock/capacity/boarding changes; broader gameplay evidence remains                                                                                                                              |
+| Binding/restore/roster boundaries (52)                | Scoped native/protocol controls pass                                                                      | Fence replacement and brief roster churn; wider integration remains                                                                                                                                                       |
+| Consumed/accepting liability diagnostics (53)         | Focused native/synthetic controls pass                                                                    | Explain new claims while preserving consumed input; browser integration remains                                                                                                                                           |
+| Real producer/report and operational controls (54)    | Full native diagnostic bridge passes; release proof/cost open                                             | All 611 selections retained; legal roster and native outcomes repaired before paired cost                                                                                                                                 |
+| Combined implementation review (M10)                  | K4/K5 compatibility, derived C8 compilation and native initial equivalence checked; full gate in progress | Prior native 702/gameplay 274/report 461; aligned size +0.045410%; native Build/timing divergence blocks costs; full production proof open                                                                                |
+| Missing-control authoring                             | Complete; native/report controls executed                                                                 | Real 16-decision short replay passes; broader browser authority/setup and cost remain                                                                                                                                     |
+| Complete need/lifetime history and useful throughput  | Open; activation still blocked                                                                            | Public aliases and every relied-on mutation need authority before useful windows/real recipes                                                                                                                             |
+| Continuous useful capacity                            | Open                                                                                                      | Complete mutation authority for readiness, supply, access/safety and service                                                                                                                                              |
+| Full production adapter/oracles/setup/strategy        | Open                                                                                                      | Independent PRO-03/06/07 assertions                                                                                                                                                                                       |
+| Executable validation                                 | Final gate active, partially checked                                                                      | Compatibility passes; K5 release fails; C8 ground cache repaired; candidate repeats match, native clocks/comparator/costs open; original pinned comparison and broader server/socket/save/restart/hash/calibration remain |
 
 Source Implementation Review, Omission Audit and separate Final Closure Audits are in the current checkpoint.
 Prior `resourceCredits` preserves actual scoped application independently from complete whole-pile contributors;
@@ -720,20 +697,20 @@ until one clean replacement run is necessary; do not reconstruct or dump the old
 gate. Run required checks at stable batch boundaries, repair their actual causes and retain exact evidence.
 Unexecuted authoring remains unverified; runtime tuning and legacy retirement still require their owning evidence.
 
-| Order                | Issue                                                                                                                            | State         | Next boundary                                                                                                                                                             | Model / effort                                                     |
-| -------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| 1 / as needed        | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821)                                                                  | `partial`     | Split only owners blocking the selected batch                                                                                                                             | Stay Sol medium; optional Luna high                                |
-| 2                    | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829)                                                                  | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof                                                                                                         | GPT-6.1 Sol, medium                                                |
-| 3                    | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827)                                                                  | `in_progress` | Finish pressure/recovery policy; defer victory proof                                                                                                                      | GPT-6.1 Sol, medium                                                |
-| 4 / next boundary    | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | C8 behavior comparator builds; native Build/timing divergence blocks costs. Next trace/repair native action clocks; original pinned acceptance/full production proof open | GPT-6.1 Sol / high                                                 |
-| 5 / paired           | #815 / #816                                                                                                                      | `in_progress` | Remaining family contracts, focused fixtures, frozen maps and continuous-match tier                                                                                       | Sol medium; optional Luna high for established cases               |
-| 6                    | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819)                                                                  | `in_progress` | Exact-once interruption, terminal and re-entry parity                                                                                                                     | GPT-6.1 Sol, medium                                                |
-| 7                    | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823)                                                                  | `partial`     | Generation fencing, phase restore/replay and cleanup cases                                                                                                                | GPT-6.1 Sol, medium                                                |
-| 8                    | #821                                                                                                                             | `partial`     | Remaining splits/renames and consumer updates                                                                                                                             | Stay Sol medium; optional Luna high                                |
-| 9 / prepare          | [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828), [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `partial`     | Review probes/opponent fixtures; measurements deferred                                                                                                                    | GPT-6.1 Sol, medium for contracts; Luna high for specified wiring  |
-| Final gate           | Required issues above                                                                                                            | `in_progress` | Prior native 702/type/build and full bridge checked; K5 release failure retained; derived C8 size delta below limit, native trajectory/costs blocked; wider gate pending  | GPT-6.1 Sol / high for native action clocks, equivalence and costs |
-| After parity         | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820)                                                                  | `not_started` | Evidence-backed legacy retirement                                                                                                                                         | GPT-6.1 Sol, medium decision; Luna high cleanup                    |
-| Before final closure | Existing machinery / completion map                                                                                              | `not_started` | Evaluate every system's demonstrated need and cost; keep, simplify or propose retirement while preserving required proof                                                  | GPT-6.1 Sol / high for combined review                             |
+| Order                | Issue                                                                                                                            | State         | Next boundary                                                                                                                                                                    | Model / effort                                                               |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| 1 / as needed        | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821)                                                                  | `partial`     | Split only owners blocking the selected batch                                                                                                                                    | Stay Sol medium; optional Luna high                                          |
+| 2                    | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829)                                                                  | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof                                                                                                                | GPT-6.1 Sol, medium                                                          |
+| 3                    | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827)                                                                  | `in_progress` | Finish pressure/recovery policy; defer victory proof                                                                                                                             | GPT-6.1 Sol, medium                                                          |
+| 4 / next boundary    | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | C8 ground cache repaired; two full candidate repeats match. Next native WAIT clocks and behavior comparator qualification; original pinned acceptance/full production proof open | GPT-6.1 Sol / high                                                           |
+| 5 / paired           | #815 / #816                                                                                                                      | `in_progress` | Remaining family contracts, focused fixtures, frozen maps and continuous-match tier                                                                                              | Sol medium; optional Luna high for established cases                         |
+| 6                    | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819)                                                                  | `in_progress` | Exact-once interruption, terminal and re-entry parity                                                                                                                            | GPT-6.1 Sol, medium                                                          |
+| 7                    | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823)                                                                  | `partial`     | Generation fencing, phase restore/replay and cleanup cases                                                                                                                       | GPT-6.1 Sol, medium                                                          |
+| 8                    | #821                                                                                                                             | `partial`     | Remaining splits/renames and consumer updates                                                                                                                                    | Stay Sol medium; optional Luna high                                          |
+| 9 / prepare          | [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828), [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `partial`     | Review probes/opponent fixtures; measurements deferred                                                                                                                           | GPT-6.1 Sol, medium for contracts; Luna high for specified wiring            |
+| Final gate           | Required issues above                                                                                                            | `in_progress` | Prior native 702/type/build and full bridge checked; K5 release failure retained; ground cache repair/repeats checked; native WAIT/comparator/costs and wider gate pending       | GPT-6.1 Sol / high for native WAIT clocks, reference qualification and costs |
+| After parity         | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820)                                                                  | `not_started` | Evidence-backed legacy retirement                                                                                                                                                | GPT-6.1 Sol, medium decision; Luna high cleanup                              |
+| Before final closure | Existing machinery / completion map                                                                                              | `not_started` | Evaluate every system's demonstrated need and cost; keep, simplify or propose retirement while preserving required proof                                                         | GPT-6.1 Sol / high for combined review                                       |
 
 ## Model batches and pause contract
 
@@ -741,14 +718,14 @@ The latest user policy is **one consolidated design pass, then grouped implement
 remaining machinery. Stage 50 design, passes 51–54, M10 source review/repairs and grouped missing-control authoring
 are complete as authored work. M10 production compile, native compatibility and E2E production/queue/resource repairs are
 checked, including prior zero diagnostics in four compiler configs, gameplay 60 suites/274 tests and 461 synthetic
-reports. Current native 146 suites/702 tests, Phaser/E2E typing and production build pass. K5 causal repairs now
+reports. Prior native 146 suites/702 tests, Phaser/E2E typing and production build pass remain scoped evidence. K5 causal repairs now
 settle refused movement, renew actual resource progress and exclude absent editor owners. Full native diagnostics
 retain all 611 selections without lineage/bridge failure; full production contract/authority/capacity still fails.
 C8 prerequisite checks retain the pinned source's failed production build, candidate shipping bytes and isolated
-empty-observer profiles. Compile-derived and two-owner behavior-aligned references build; both scoped size deltas
-are below 0.5%. The new ordinary trajectory matches through 441, then differs at 442; traced controls differ at 296.
-Native WAIT uses wall time and player-AI settling does not prove native action quiescence. Resolve the exact action
-timing chain before equivalent trajectories and measurements; original pinned acceptance stays blocked;
+empty-observer profiles. Prior derived-reference size deltas are historical after the native ground cache repair.
+The Build Stop/range/cache chain is captured, ground routes isolated, and two full repaired candidate repeats match.
+Native WAIT still uses wall time and player-AI settling does not prove native action quiescence. Repair the WAIT
+clock contract, qualify an explicitly repaired behavior comparator, then measure; original pinned acceptance stays blocked;
 broader server/socket/save/restart/hash/calibration evidence remains pending.
 Full useful-service authority M11 remains blocked, and production/gameplay proof M12
 remains open; those obligations are not erased by the bounded diagnostic finish line.
@@ -756,12 +733,12 @@ Design on GPT-6.1 Sol / high; implement settled contracts on Luna / high; return
 and unresolved architecture/causal questions or difficult final-gate failures. Actual host settings remain unknown.
 No automatic model switch, subagent or new chat is authorized by this policy. Executable final-gate validation is now active.
 
-| Responsibility                                                                          | Model / effort                                                                            | Boundary                                                                                                                                                                                   |
-| --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Consolidated design, scope/value, shared/per-owner contracts and acceptance (50)        | GPT-6.1 Sol / high                                                                        | Authored/source-reviewed                                                                                                                                                                   |
-| Settled implementation, compliance cleanup, wiring, fixtures and test authoring (51–54) | Luna / high                                                                               | Authored; scoped native/report controls now checked, wider integration remains                                                                                                             |
-| Combined implementation source review and unresolved contract conflicts (M10)           | GPT-6.1 Sol / high                                                                        | Source review/controls complete; E2E typing and 461 production/queue/resource/output controls pass, full gate in progress                                                                  |
-| Final executable gate and repairs                                                       | GPT-6.1 Sol / high for browser/cost causal investigation; Luna / high for settled repairs | K5 repairs/bridge, derived C8 compilation and native initial equivalence checked; behavior comparator built; next native action clocks/equivalence, then paired costs and production proof |
+| Responsibility                                                                          | Model / effort                                                                            | Boundary                                                                                                                                                                                                        |
+| --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Consolidated design, scope/value, shared/per-owner contracts and acceptance (50)        | GPT-6.1 Sol / high                                                                        | Authored/source-reviewed                                                                                                                                                                                        |
+| Settled implementation, compliance cleanup, wiring, fixtures and test authoring (51–54) | Luna / high                                                                               | Authored; scoped native/report controls now checked, wider integration remains                                                                                                                                  |
+| Combined implementation source review and unresolved contract conflicts (M10)           | GPT-6.1 Sol / high                                                                        | Source review/controls complete; E2E typing and 461 production/queue/resource/output controls pass, full gate in progress                                                                                       |
+| Final executable gate and repairs                                                       | GPT-6.1 Sol / high for browser/cost causal investigation; Luna / high for settled repairs | K5 repairs/bridge, derived C8 compilation and native initial equivalence checked; ground cache repaired; candidate repeats match; next WAIT clocks, repaired comparator/equivalence, costs and production proof |
 
 - The design must produce a finite list of substantial implementation passes and completion criteria. A pass may contain
   several related owners and coherent commits. Do not create a new design stage or model pause for each file, helper,
@@ -811,27 +788,22 @@ No automatic model switch, subagent or new chat is authorized by this policy. Ex
 
 Copyable next-chat prompt:
 
-> Read docs/ai/759-skirmish-ai/HANDOFF.md and the behavior-aligned reference checkpoint in runtime-matrix-ci.md.
-> The two-owner diagnostic comparator builds and passes 18 native cases; its original compile overlay is preserved.
-> Ordinary 1,200-tick qualification matches through 441, differs in current Build at 442 and native outcomes at 960.
-> Two 500-tick traced controls differ at 296, outcomes at 367; they perturb wall time and are not cost or ordinary
-> repeat evidence. Native WAIT lacks simulation delta; isolated installed WAIT proves wall-clock dependence, but
-> does not establish the exact Build Stop cause. Player-AI settling does not settle pawn/path actions.
-> On GPT-6.1 Sol / high, trace Build Stop reason/pending movement and native tree state, distinguish these clock and
-> settling obligations, then repair only evidenced simulation-time authority with meaningful regressions.
-> Preserve both exact patches, original pinned failure/blocked acceptance and separate M12 player-key collision.
-> Behavior patch SHA 1c8f31e679e7bb81a88d4e8271b16688e5f3d1ce01e4d627b2a1fa1346bae30a; verify composition
-> and restored historical checkout first. No speculative overlay expansion or silent reference-policy change.
-> Do not freeze browser wall time, remove current-order state, shorten to the matching prefix or borrow bundles.
-> Any new native repair needs fresh affected pairing evidence and explicit comparator scope. Only after equal
-> meaningful native trajectories, warm once and run three alternating production/unmarked/marked cost pairs with
-> isolated CPU/allocations, variance and native/source/bundle digests. Candidate gzip is +724 / +0.045410% against
-> this comparator only; zero qualified cost pairs and original pinned acceptance still blocked.
-> Preserve previous M10/K4 compatibility, mandatory oracles, native bounds, consumed inputs, useful nulls and baselines.
-> Broader server/socket/save/restart/hash/calibration and M11/M12 still block release closure. No new machinery scope.
-> Keep the branch and unrelated Nx merge. Update the map/handoff, review/audit, commit/push exact task-owned changes,
-> verify remote SHA, then pause and recommend the next model/effort with the next step's purpose.
-> At the end of the gate, complete the machinery necessity review before declaring final closure.
+> Read docs/ai/759-skirmish-ai/HANDOFF.md and the native path ownership checkpoint in runtime-matrix-ci.md.
+> Ground navigation cache now isolates route arrays and tile objects from movement consumers. The new regression
+> fails on the original owner and passes with the repair; 25 focused cases, native typing/lint/format and both builds
+> pass. Two ordinary full 1,200-tick repaired-candidate replays have identical boundaries/outcomes and no captured
+> page or AI-step errors. These are repeatability probes, not cross-source qualification or cost evidence.
+> On GPT-6.1 Sol / high, design/repair pawn WAIT simulation delta and prove cadence, pause, newly entered waits,
+> fallback and teardown with the installed library. Investigate water cache ownership and native action settling
+> where relevant. Preserve the captured Build Stop/cache/range chain separately from the WAIT obligation.
+> The old behavior comparator omits this ground repair. Review native repairs together and qualify a narrowly
+> extended behavior-only comparator before cost pairs; retain exact source/bundle identities and original pinned
+> failure/blocked policy. No speculative patch, frozen wall time, ignored order state or shortened prefix.
+> Candidate shipping code is now 1,595,131 gzip bytes; earlier +724 comparator delta is historical, not current.
+> Zero qualified cost pairs. Full production/authority/capacity, M11/M12, multiplayer/lifecycle/calibration and the
+> end-of-gate machinery necessity review remain mandatory. Preserve strict types, oracles, native bounds and nulls.
+> Work in the existing branch/worktree, preserve unrelated Nx merge, update handoff/map and durable guidance,
+> review/audit, commit/push task-owned changes, verify exact remote SHA, then pause with next model/effort/purpose.
 
 Optional [#822](https://github.com/JernejHabjan/fuzzy-waddle/issues/822) owns a future island map and natural
 transport-required runtime. It is detached from #759 and does not block core readiness.

@@ -72,6 +72,14 @@ controls locate ownership but cannot stand in for ordinary repeats or paired CPU
 control proves the clock dependency, not the cause of every whole-world mismatch. Preserve full native state and
 outcome comparisons; do not discard transient order state or truncate a workload to its last matching prefix.
 
+Movement consumes ground routes with `shift()`. The ground cache must keep its own route and tile objects and copy
+them on a hit; otherwise a later range probe can receive an empty consumed path and incorrectly report proximity.
+Trace the native Stop reason, selected order, path length and cache entry alongside world boundaries. Wall-clock
+expiry can expose different consumed entries in different runs; extra tracing can change that expiry too. A repaired
+candidate repeating the same full trajectory supports that workload's repeatability, but does not qualify a historical
+comparator that lacks the repair or establish a CPU/allocation budget. Review ownership on each terrain separately;
+ground isolation does not prove water isolation or simulation-clock WAIT authority.
+
 Use one browser runtime process at a time and group compatible IDs with `--scenarios`. Unit, type and tooling checks may be batched independently. Diagnose the earliest causal disagreement in this order:
 
 ```text
