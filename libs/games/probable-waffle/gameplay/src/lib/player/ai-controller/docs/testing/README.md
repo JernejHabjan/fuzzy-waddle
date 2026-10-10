@@ -73,6 +73,20 @@ Qualify complete trajectories and native outcomes in repeated alternating pairs 
 accelerated equivalence covers that selected workload; production/unmarked equivalence, normal frames and lifecycle
 continuation need their own evidence. Shipping size alone cannot establish CPU or allocation budgets.
 
+For browser profiles, warm each source once, alternate source order, and compare every native boundary/outcome in
+the profiled runs with the ordinary qualified trajectory. Profiling can change timer/cache behavior; any trajectory
+difference invalidates the cost pair. Keep CPU and sampled-heap artifacts with their sampling intervals and hashes.
+Use the actual build source maps to attribute exclusive samples to capture/observation owners, excluding diagnostic
+readout stacks. Exclusive owner samples omit their callees; heap samples estimate allocation rather than retained
+memory. Report that scope and variance instead of treating unsampled work as zero. Synchronous scene UPDATE timings
+include immediate hooks but omit later asynchronous gameplay and cannot supply a whole-simulation CPU budget.
+
+Normal lobby startup generates both seed and instance ID. Production ignores the test marker/preset and publishes
+no test game handle; unmarked development publishes no AI test host. Angular's development inspection API can read
+the ordinary game, but is absent from production. Live startup/root-absence checks establish this boundary, not
+equivalent workloads or absence of all journal/listener allocations. Qualify a common supported setup/read route
+before claiming normal-play overhead; do not install capture in production merely to make profiling convenient.
+
 Player-controller decision settling does not establish quiescence of pawn behavior-tree actions or path promises.
 Inspect each native action's clock before treating an accelerated replay as a deterministic cost workload.
 Mistreevous WAIT nodes use wall time when `BehaviourTreeOptions.getDeltaTime` is absent, even if the caller steps on
