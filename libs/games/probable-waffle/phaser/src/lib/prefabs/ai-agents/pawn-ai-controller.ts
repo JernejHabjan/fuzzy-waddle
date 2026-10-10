@@ -22,6 +22,7 @@ export class PawnAiController {
   readonly blackboard: PawnAiBlackboard = new PawnAiBlackboard();
   private readonly agent: PlayerPawnAiControllerAgent;
   private readonly behaviourTree: BehaviourTree;
+  /** Active simulation milliseconds accumulated since the last tree step; not persisted with the blackboard. */
   private elapsedTime: number = 0;
   private nodeDebugger?: NodeDebugger;
   private aiDebuggingSubscription?: Subscription;
@@ -33,11 +34,11 @@ export class PawnAiController {
     private readonly gameObject: Phaser.GameObjects.GameObject,
     private readonly pawnAiDefinition: PawnAiDefinition
   ) {
-    const options = environment.production
-      ? {}
-      : ({
-          //onNodeStateChange: (change: NodeStateChange) => console.log(change)
-        } satisfies BehaviourTreeOptions);
+    const options = {
+      // Mistreevous counts this delta on every WAIT update, including entry. Keep it stable throughout the step.
+      // Use actual elapsed time (including cadence overshoot), in seconds, rather than wall time or the configured interval.
+      getDeltaTime: () => this.elapsedTime / 1000
+    } satisfies BehaviourTreeOptions;
     switch (pawnAiDefinition.type) {
       case AiType.Character:
         this.agent = new PlayerPawnAiControllerAgent(this.gameObject, this.blackboard);

@@ -66,7 +66,18 @@ separate from the original pinned acceptance reference.
 Player-controller decision settling does not establish quiescence of pawn behavior-tree actions or path promises.
 Inspect each native action's clock before treating an accelerated replay as a deterministic cost workload.
 Mistreevous WAIT nodes use wall time when `BehaviourTreeOptions.getDeltaTime` is absent, even if the caller steps on
-fixed simulation ticks. Trace the first native order change and actual command outcome separately; a current Build
+fixed simulation ticks. `PawnAiController` supplies its accumulated active elapsed time in seconds to both production
+and development trees, before resetting that accumulator after the step. The default 100 ms cadence collects two
+50 ms ticks; a 125 ms cadence steps with the actual 150 ms, and a sub-tick cadence still receives 50 ms. Mistreevous
+counts the delta on a WAIT's entry update too: a 5 ms polling wait can finish on its first 100 ms update, while a
+1500 ms wait takes fifteen such updates. This is the library's discrete update contract, not an exact duration from
+the wall-clock moment of entry. Existing guards can still interrupt waits. Paused frames, tick-counter jumps and
+inactive/dead actors add no active delta; the isolated frame fallback uses the existing scaled frame delta and is
+not a lockstep clock. Cancellation resets the tree's WAIT progress while retaining controller cadence. Blackboard
+snapshots do not persist the tree's phase or accumulated elapsed time; this clock repair alone does not prove
+save/reconnect/host-transfer continuation parity.
+
+Trace the first native order change and actual command outcome separately; a current Build
 order can change before command outcomes diverge. Diagnostic subscriptions/wrappers alter wall time, so traced
 controls locate ownership but cannot stand in for ordinary repeats or paired CPU measurements. An isolated WAIT
 control proves the clock dependency, not the cause of every whole-world mismatch. Preserve full native state and
