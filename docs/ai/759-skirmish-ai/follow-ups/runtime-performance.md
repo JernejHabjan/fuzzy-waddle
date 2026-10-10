@@ -6,6 +6,12 @@ Make long, real Phaser skirmish matches responsive and shorten browser-matrix wa
 outcomes, decision authority, or fairness. This is runtime performance work, not the fastest-credible-victory strategy
 policy in #827. Preserve terminal assertions and use the measured finite deadlines in the runtime E2E policy.
 
+**Current scope (user, 2026-10-10):** diagnostic machinery needs only a brief performance sanity check. The completed
+C8 warm-browser evidence satisfies it; strict CPU/allocation/bundle certification and further dedicated diagnostic
+profiling are retired from the release gate, not certified as passed. Keep installation, cleanup, authority and gameplay
+correctness coverage. Use this optimization plan only when a concrete gameplay slowdown or materially slow scenario
+justifies investigation; it is not a prerequisite for continuing AI repairs. The handoff owns the current scope and evidence.
+
 Start on Sol/high for the profile and causal choice of hot path; use Terra/high for a bounded implementation after the
 profile names its owner. Pair with #816's continuous-match runs; focused fixtures target 200–2,000 ticks with
 justified exceptions. Do not block #827 on optional optimization unless profiling shows a correctness failure.
@@ -23,7 +29,7 @@ justified exceptions. Do not block #827 on optional optimization unless profilin
    locate the last four; do not read entire trees. The runner currently pauses at each checkpoint and waits for a
    settled decision, so isolate setup, simulated play, settle/capture, and teardown time.
 
-## Required profiling and acceptance
+## Checks when an optimization is justified
 
 - Record per-variant wall time and normalized milliseconds per 1,000 simulated ticks, plus checkpoint-specific times.
   Measure browser main-thread long tasks and game-frame time over representative early/mid/late windows; record machine

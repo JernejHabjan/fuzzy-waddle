@@ -44,6 +44,11 @@ The reader checks source/fixture/dirty provenance and a 256 MiB byte ceiling bef
 Missing, malformed, oversized or mismatched output supplies no runtime evidence. Direct Playwright callers
 without an artifact path retain the console result protocol.
 
+A diagnostic-impact sanity check can use existing representative warm runs and installation/cleanup coverage. Record
+the observed costs and measurement limits, then stop when there is no clear substantial slowdown. Detailed profiling
+below is an investigation technique for a concrete performance problem, not a requirement to certify every diagnostic
+hook. Keep gameplay, authority, installation and cleanup correctness tests regardless of profiling scope.
+
 Capture installation and shipping code size are separate checks. The installer rejects production games even with a
 matching test marker, and unmarked games have no capture root. Static imports can still keep test-harness modules in
 production output. For size evidence, build with `--stats-json=true`, follow the index script/style roots and all static
@@ -67,7 +72,7 @@ A reviewed behavior comparator may carry exact native correctness repairs on top
 overlay. Identify every excluded owner and both overlay digests, verify each repaired owner's emitted code against
 the candidate, execute its native regressions, and restore the historical checkout after building. Movement failure
 cleanup, positive resource progress, ground-route ownership and pawn WAIT timing must all agree before these builds
-can serve as a shared workload. This does not replace the original pinned acceptance policy. Preset `sourceRevision`
+can serve as a shared workload. This does not establish acceptance against the original historical source. Preset `sourceRevision`
 accepts the actual 40-character Git SHA; put the composite overlay identity in the external qualification manifest.
 Qualify complete trajectories and native outcomes in repeated alternating pairs before collecting costs. Marked
 accelerated equivalence covers that selected workload; production/unmarked equivalence, normal frames and lifecycle

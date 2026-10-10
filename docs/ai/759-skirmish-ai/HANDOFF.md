@@ -6,44 +6,44 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
-**Current policy (user, 2026-10-09):** consolidated design, then coherent implementation/repair batches; final-gate
-checks are active. Commit/push and pause at each agreed boundary. Recommendations do not change settings; actual
-host model/effort unknown. Next recommendation GPT-6.1 Sol / high. The mandatory
+**Current policy (user, 2026-10-10):** consolidated design and coherent repair batches; correctness final-gate
+checks remain active. Diagnostic performance needs only a brief sanity check, satisfied by the completed warmed runs.
+Remove further dedicated profiling and strict performance certification from the active gate; revisit only a concrete
+slowdown. Keep correctness coverage. Commit/push and pause at each boundary; actual host model/effort unknown.
+Next recommendation GPT-6.1 Sol / high for shared command authority. The
 [end-of-gate machinery necessity review](#end-of-gate-machinery-necessity-review) remains not_started.
 
-**Current step:** C8 retained-browser warm reset and scoped native profiling checked.
-Four full warm-ups and twelve profiled worlds match all 1,201 boundaries/outcome histories. Native in-game Load
-preserves the document/compiled scripts; every measured reset destroys the old scene and clears its event registrations.
-No executable source/config/spec or permanent hook changed. Complete async/hook CPU, convergence and original pinned
-acceptance remain open; the final gate and machinery necessity review are not complete.
+**Current step:** C8 diagnostic performance sanity check complete; exhaustive certification retired by user scope.
+The bounded review rechecked the existing summary digest and its published audit. Six warmed capture-off pairs match
+all 1,201 boundaries/outcome histories (16 worlds including warm-ups, 24 profiles). No new match/profile/suite was run.
+Mean production UPDATE differs +0.07%, native-stack CPU +0.03%; no clear large slowdown. Individual runs vary.
+Whole simulation/hook CPU, zero allocation, convergence, normal frames and original pinned performance acceptance
+were not certified; they are no longer release prerequisites for diagnostic machinery. Gameplay baseline/parity and
+all existing installation, cleanup, authority and gameplay tests remain required.
 
-**What changed / why:** ignored drivers reuse the native tick-zero save and supported in-game Load dialog in retained
-browsers. They wake the old loop before Load so native destruction can finish, then require DESTROYED/zero events.
-Offline attribution adds inclusive native/tick stacks and reanalyzes prior fresh profiles. This permits warmed,
-full-workload comparisons without installing capture and keeps incomplete CPU scope explicit.
+**What changed / why:** the handoff, completion map, operational acceptance, performance plan and testing guidance now
+use the existing results as the brief check. The extra profiling queue and numerical certification gates are removed
+so effort goes to actual AI defects. No source/spec/config changed. Ignored profiling artifacts remain available for
+provenance and the final machinery review; delete them only when no active evidence consumer needs them.
 
-**Evidence:** three alternating profile pairs per capture-off mode, 16 full worlds and 24 profiles, ending 28 actors/97
-outcomes with no page/AI-step errors or test hosts. Mean production UPDATE total 2309.53/
-2311.13 ms; native-stack CPU 2914.33/
-2915.27 ms (0.03%). These samples include framework work and omit
-unattached async/GC work. Retained realm identity is proven; steady-state convergence/normal rendered frames are not.
-Native getAuthorityState work remains measured; production diagnostic owner mapping remains unavailable.
-
-**Provenance:** clean base/remote `f577e7a8935279acd19937847abdb7f670e8a579`; the containing commit owns this batch.
+**Provenance:** clean base/remote `abe59b12013d3bcdd55cea520d90a9c19fb9b4f5`; containing commit owns the policy update.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify remote on resume.
-Preserve Nx merge `59f72e037` and comment-rule removal. The
-[retained-browser checkpoint](follow-ups/runtime-matrix-ci.md#final-gate-retained-browser-profiling-checkpoint-2026-10-10-warm-reset-checked) owns exact commands/scope.
-Ignored `tmp/ai-plans/759-validation/cost-batch/retained-mode/profile-summary.json` (150780 bytes),
-`workload-summary.json`, `fresh-stack-summary.json`, `source-guard.json` and `closure-manifest.json` are the bounded packet.
-Comparator/build identity stays in `repair-aligned/reference-qualification.json`; candidate source `2ad887586`.
-Protected detached af9 retains exact 11 compile-only files/clean real index. Source/bundles/overlays and +861 gzip unchanged.
+Preserve Nx merge `59f72e037`, comment-rule removal, native oracles/bounds and useful nulls. The
+[performance sanity policy](follow-ups/runtime-matrix-ci.md#diagnostic-performance-sanity-check-policy-2026-10-10-checked) owns the scope and brief evidence.
+Existing ignored `cost-batch/retained-mode/profile-summary.json` and `closure-manifest.json` under
+`tmp/ai-plans/759-validation/` retain the measured record; candidate source `2ad887586` and comparator/build identity
+remain unchanged. The protected detached af9 still has exact 11 compile-only files/clean real index. No new original
+reference acceptance claim; +861 gzip is scoped historical evidence, not a numerical release gate.
 
-**Next action / why:** GPT-6.1 Sol / high for focused native tick/async/hook attribution and disabled-path budgets.
-Use the qualified retained reset and bounded hot frames to investigate measured variation; no setup redo or speculative
-optimization. Original pinned policy stays blocked separately. No unconditional hook, Date freeze, running-world identity
-repair, field filtering or matching prefix. Preserve water/wall TTL, pawn/path settling and saved WAIT phase limits.
-Full PRO authority/capacity still fails; M11 blocked, M12 open/cross-player commitments, broader server/socket/
-save/restart/hash/calibration and final machinery necessity review remain. Commit/push/verify and pause.
+**Next action / why:** GPT-6.1 Sol / high for M12 shared commitment authority and production failures.
+Start with `world/services/multiplayer/command-bus.service.ts` under the Phaser library: its active commitment map is
+keyed only by commitmentKey. The retained tick-20 world shows player 3 colliding with player 2's bootstrap-worker
+and stage9 keys. Trace admission, terminal cleanup, authority snapshot and restore; reproduce distinct-player versus
+same-player behavior, then repair the owner with focused regressions and required save/restore compatibility.
+This prevents one AI player's pending task from suppressing another player's legitimate command. Group related
+command/authority cases, then return to PRO-03/06/07 capacity/production failures; do not restart performance profiling.
+M11 useful authority remains blocked. Server/socket/save/restart/hash/calibration and the final machinery review remain.
+Pause after the next coherent checked, committed and remote-verified batch.
 
 **Earlier checked / repaired — why it is used:** 18 capture/world specs, 15 component/movement/lifecycle specs and five
 campaign specs now use checked authored entries, current Sandhold/map/hook identities, actual native GameObjects
@@ -172,41 +172,41 @@ Campaign suppression is explicit and may accompany a full native return. Old/unk
 to the latest task. Whole known piles may retain several earlier gathering attempts; no invented FIFO/partial allocation.
 A credit proves a scoped balance change, independently from cargo lineage, accepted task/demand and continuous usefulness.
 
-**Next action — why:** focused native tick/async/hook attribution and disabled-path budgets on **GPT-6.1 Sol / high**.
-Retained browser/realm, compiled scripts and native destruction/reset now qualify full capture-off warm-up/profile pairs.
-Investigate cost variation with bounded inclusive hot frames; complete CPU/convergence and original acceptance remain open.
-Preserve original policy, native oracles/useful nulls and M11/M12/lifecycle duties. Pause after the next checked/published batch.
+**Next action — why:** repair cross-player commitment authority on **GPT-6.1 Sol / high**, then continue the actual
+production/capacity failures. C8 sanity checking is complete; strict diagnostic performance certification is retired.
+Trace command admission/cleanup/save/restore, reproduce player-key collisions and preserve same-player duplicate
+suppression. Keep M11/M12, correctness/parity/calibration and final machinery review duties. Publish and pause.
 
-| Dependency                                            | State                                                                                                     | Purpose / next boundary                                                                                                                                                                                               |
-| ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Native movement and service attempt ownership (21–28) | Authored, unverified                                                                                      | Earlier task/order identity and lifetime boundaries                                                                                                                                                                   |
-| Gatherer prerequisite and cargo contract (29)         | Authored, unverified                                                                                      | Compliant focused native owners before hooks                                                                                                                                                                          |
-| Native cargo/application capture (30)                 | Authored, unverified                                                                                      | Exact pile, beneficiary and scoped balance change                                                                                                                                                                     |
-| Strict cargo/credit projection (31)                   | Authored, unverified                                                                                      | Connect known contributors without inferring task fulfillment                                                                                                                                                         |
-| Useful service interval contract (32)                 | Authored, unverified                                                                                      | Define what income, aggregate need and retained throughput can prove                                                                                                                                                  |
-| Selected need (33)                                    | Authored, unverified                                                                                      | Actual accepted aggregate selection, separate from newer forecasts                                                                                                                                                    |
-| Supported coverage / loss (34)                        | Authored, unverified                                                                                      | Bounded cohorts/read frontiers and irreversible observation loss                                                                                                                                                      |
-| Interval diagnostics (35)                             | Authored, unverified                                                                                      | Fixed windows, unique credits and capped aggregate potential through reports                                                                                                                                          |
-| Beneficiary/need authority design (36)                | Authored; implementation open                                                                             | Native writers, read/application positions, disjoint liabilities and conservative no-reopening contract                                                                                                               |
-| Recipient journal and selected-need replay (37–38)    | Authored, unverified; partial authority                                                                   | Actual read/frame/native operation and conditional observed accounting bounds                                                                                                                                         |
-| Coverage activation audit (39)                        | Source audit documented                                                                                   | Audited missing writers and actual producer timing                                                                                                                                                                    |
-| Causal accounting / application windows (40–41)       | Authored, unverified; pause reached                                                                       | Exact incoming-read/admission boundaries and distinct native application windows                                                                                                                                      |
-| Beneficiary / need / lifetime ownership design (42)   | Authored, source-reviewed only                                                                            | Named route/identity/loss contract and explicit alias limitations; no new runtime behavior                                                                                                                            |
-| Owner presentation and conversion fence (43–44)       | Authored, unverified; pause reached                                                                       | Compliant owner split, then passive pre-index loss to close old resource history                                                                                                                                      |
-| Health presentation and mutation fence (45–46)        | Authored, unverified; pause reached                                                                       | Compliant health split, then pre-mutation loss before callbacks can observe changed readiness                                                                                                                         |
-| Construction / repair health writer contract (47)     | Source design authored; pause reached                                                                     | Settled silent health/work/lifecycle boundaries and actual technology caller                                                                                                                                          |
-| Construction presentation and writer fences (48–49)   | Authored, unverified; pause reached                                                                       | Separate sound work and passive pre-write loss before construction/repair readiness changes                                                                                                                           |
-| Consolidated remaining-machinery design (50)          | Authored/source-reviewed; pause reached                                                                   | Exact C1–C8 contracts, M01–M13 completion map and finite bounded queue                                                                                                                                                |
-| Named supply/container boundaries (51)                | Native controls pass in K1                                                                                | Reject stale reads before stock/capacity/boarding changes; broader gameplay evidence remains                                                                                                                          |
-| Binding/restore/roster boundaries (52)                | Scoped native/protocol controls pass                                                                      | Fence replacement and brief roster churn; wider integration remains                                                                                                                                                   |
-| Consumed/accepting liability diagnostics (53)         | Focused native/synthetic controls pass                                                                    | Explain new claims while preserving consumed input; browser integration remains                                                                                                                                       |
-| Real producer/report and operational controls (54)    | Full native diagnostic bridge passes; release proof/cost open                                             | All 611 selections retained; legal roster and native outcomes repaired before paired cost                                                                                                                             |
-| Combined implementation review (M10)                  | K4/K5 compatibility, derived C8 compilation and native initial equivalence checked; full gate in progress | Native 718/comparator 40 and all-mode scoped profiles checked. Capture-off save/read and full trajectories qualified; retained reset checked; complete CPU/convergence/original acceptance/full PRO open              |
-| Missing-control authoring                             | Complete; native/report controls executed                                                                 | Real 16-decision short replay passes; broader browser authority/setup and cost remain                                                                                                                                 |
-| Complete need/lifetime history and useful throughput  | Open; activation still blocked                                                                            | Public aliases and every relied-on mutation need authority before useful windows/real recipes                                                                                                                         |
-| Continuous useful capacity                            | Open                                                                                                      | Complete mutation authority for readiness, supply, access/safety and service                                                                                                                                          |
-| Full production adapter/oracles/setup/strategy        | Open                                                                                                      | Independent PRO-03/06/07 assertions                                                                                                                                                                                   |
-| Executable validation                                 | Final gate active, partially checked                                                                      | Native 718/type/build and all-mode scoped profile pairs pass; capture-off setup/read qualified. K5 release fails; complete CPU/convergence/disabled budgets, original acceptance and wider lifecycle/calibration open |
+| Dependency                                            | State                                                         | Purpose / next boundary                                                                                                                                        |
+| ----------------------------------------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Native movement and service attempt ownership (21–28) | Authored, unverified                                          | Earlier task/order identity and lifetime boundaries                                                                                                            |
+| Gatherer prerequisite and cargo contract (29)         | Authored, unverified                                          | Compliant focused native owners before hooks                                                                                                                   |
+| Native cargo/application capture (30)                 | Authored, unverified                                          | Exact pile, beneficiary and scoped balance change                                                                                                              |
+| Strict cargo/credit projection (31)                   | Authored, unverified                                          | Connect known contributors without inferring task fulfillment                                                                                                  |
+| Useful service interval contract (32)                 | Authored, unverified                                          | Define what income, aggregate need and retained throughput can prove                                                                                           |
+| Selected need (33)                                    | Authored, unverified                                          | Actual accepted aggregate selection, separate from newer forecasts                                                                                             |
+| Supported coverage / loss (34)                        | Authored, unverified                                          | Bounded cohorts/read frontiers and irreversible observation loss                                                                                               |
+| Interval diagnostics (35)                             | Authored, unverified                                          | Fixed windows, unique credits and capped aggregate potential through reports                                                                                   |
+| Beneficiary/need authority design (36)                | Authored; implementation open                                 | Native writers, read/application positions, disjoint liabilities and conservative no-reopening contract                                                        |
+| Recipient journal and selected-need replay (37–38)    | Authored, unverified; partial authority                       | Actual read/frame/native operation and conditional observed accounting bounds                                                                                  |
+| Coverage activation audit (39)                        | Source audit documented                                       | Audited missing writers and actual producer timing                                                                                                             |
+| Causal accounting / application windows (40–41)       | Authored, unverified; pause reached                           | Exact incoming-read/admission boundaries and distinct native application windows                                                                               |
+| Beneficiary / need / lifetime ownership design (42)   | Authored, source-reviewed only                                | Named route/identity/loss contract and explicit alias limitations; no new runtime behavior                                                                     |
+| Owner presentation and conversion fence (43–44)       | Authored, unverified; pause reached                           | Compliant owner split, then passive pre-index loss to close old resource history                                                                               |
+| Health presentation and mutation fence (45–46)        | Authored, unverified; pause reached                           | Compliant health split, then pre-mutation loss before callbacks can observe changed readiness                                                                  |
+| Construction / repair health writer contract (47)     | Source design authored; pause reached                         | Settled silent health/work/lifecycle boundaries and actual technology caller                                                                                   |
+| Construction presentation and writer fences (48–49)   | Authored, unverified; pause reached                           | Separate sound work and passive pre-write loss before construction/repair readiness changes                                                                    |
+| Consolidated remaining-machinery design (50)          | Authored/source-reviewed; pause reached                       | Exact C1–C8 contracts, M01–M13 completion map and finite bounded queue                                                                                         |
+| Named supply/container boundaries (51)                | Native controls pass in K1                                    | Reject stale reads before stock/capacity/boarding changes; broader gameplay evidence remains                                                                   |
+| Binding/restore/roster boundaries (52)                | Scoped native/protocol controls pass                          | Fence replacement and brief roster churn; wider integration remains                                                                                            |
+| Consumed/accepting liability diagnostics (53)         | Focused native/synthetic controls pass                        | Explain new claims while preserving consumed input; browser integration remains                                                                                |
+| Real producer/report and operational controls (54)    | Full native diagnostic bridge passes; release proof/cost open | All 611 selections retained; legal roster and native outcomes repaired before paired cost                                                                      |
+| Combined implementation review (M10)                  | Correctness gate in progress; C8 sanity checked               | Native 718/comparator 40 and scoped profiles checked. C8 sanity complete; remaining full PRO, authority and lifecycle evidence open                            |
+| Missing-control authoring                             | Complete; native/report controls executed                     | Real 16-decision short replay passes; broader browser authority/setup and cost remain                                                                          |
+| Complete need/lifetime history and useful throughput  | Open; activation still blocked                                | Public aliases and every relied-on mutation need authority before useful windows/real recipes                                                                  |
+| Continuous useful capacity                            | Open                                                          | Complete mutation authority for readiness, supply, access/safety and service                                                                                   |
+| Full production adapter/oracles/setup/strategy        | Open                                                          | Independent PRO-03/06/07 assertions                                                                                                                            |
+| Executable validation                                 | Final gate active, partially checked                          | Final correctness gate active; C8 sanity complete. K5 production failures and wider lifecycle/calibration remain; diagnostic performance certification retired |
 
 Source Implementation Review, Omission Audit and separate Final Closure Audits are in the current checkpoint.
 Prior `resourceCredits` preserves actual scoped application independently from complete whole-pile contributors;
@@ -243,7 +243,7 @@ Prior batch 22 [pawn ownership checkpoint](follow-ups/runtime-matrix-ci.md#produ
 is in `7096907e46618902a3170a5450af21232cf0ecd2`, based on `298c0f2f106aefc0f6d0bf9702bf627f6dfb266a`.
 The behavior-tree facade retains its public API and shares the actual blackboard with nine focused owners. Native order
 read/mutation timing and callbacks were preserved; the old source exemption was removed without refresh. Two boundary
-specs remain unrun. Nine small owner allocations per pawn agent are unmeasured and belong to the final gate.
+specs remain unrun. Nine small owner allocations per pawn agent remain unmeasured; strict allocation certification is retired by the 2026-10-10 C8 policy.
 
 Prior batch 21 [movement ownership checkpoint](follow-ups/runtime-matrix-ci.md#production-movement-ownership-checkpoint-2026-10-07-unverified)
 is in `298c0f2f106aefc0f6d0bf9702bf627f6dfb266a`, based on `ef33516103f40f7cbb0d7ca72092332d31a663d2`.
@@ -674,20 +674,20 @@ until one clean replacement run is necessary; do not reconstruct or dump the old
 gate. Run required checks at stable batch boundaries, repair their actual causes and retain exact evidence.
 Unexecuted authoring remains unverified; runtime tuning and legacy retirement still require their owning evidence.
 
-| Order                | Issue                                                                                                                            | State         | Next boundary                                                                                                                                                                                    | Model / effort                                                    |
-| -------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------- |
-| 1 / as needed        | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821)                                                                  | `partial`     | Split only owners blocking the selected batch                                                                                                                                                    | Stay Sol medium; optional Luna high                               |
-| 2                    | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829)                                                                  | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof                                                                                                                                | GPT-6.1 Sol, medium                                               |
-| 3                    | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827)                                                                  | `in_progress` | Finish pressure/recovery policy; defer victory proof                                                                                                                                             | GPT-6.1 Sol, medium                                               |
-| 4 / next boundary    | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | All-mode scoped profile pairs checked; capture-off save/read and full trajectories qualified. Retained reset checked; next native tick/async/hook attribution; original acceptance/full PRO open | GPT-6.1 Sol / high                                                |
-| 5 / paired           | #815 / #816                                                                                                                      | `in_progress` | Remaining family contracts, focused fixtures, frozen maps and continuous-match tier                                                                                                              | Sol medium; optional Luna high for established cases              |
-| 6                    | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819)                                                                  | `in_progress` | Exact-once interruption, terminal and re-entry parity                                                                                                                                            | GPT-6.1 Sol, medium                                               |
-| 7                    | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823)                                                                  | `partial`     | Generation fencing, phase restore/replay and cleanup cases                                                                                                                                       | GPT-6.1 Sol, medium                                               |
-| 8                    | #821                                                                                                                             | `partial`     | Remaining splits/renames and consumer updates                                                                                                                                                    | Stay Sol medium; optional Luna high                               |
-| 9 / prepare          | [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828), [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `partial`     | Review probes/opponent fixtures; measurements deferred                                                                                                                                           | GPT-6.1 Sol, medium for contracts; Luna high for specified wiring |
-| Final gate           | Required issues above                                                                                                            | `in_progress` | Native 718/type/build, comparator 40 and all-mode scoped profiles checked. K5 failure retained; complete CPU/convergence/disabled budgets and wider gate pending                                 | GPT-6.1 Sol / high for native tick/async/hook attribution         |
-| After parity         | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820)                                                                  | `not_started` | Evidence-backed legacy retirement                                                                                                                                                                | GPT-6.1 Sol, medium decision; Luna high cleanup                   |
-| Before final closure | Existing machinery / completion map                                                                                              | `not_started` | Evaluate every system's demonstrated need and cost; keep, simplify or propose retirement while preserving required proof                                                                         | GPT-6.1 Sol / high for combined review                            |
+| Order                | Issue                                                                                                                            | State         | Next boundary                                                                                                             | Model / effort                                                  |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| 1 / as needed        | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821)                                                                  | `partial`     | Split only owners blocking the selected batch                                                                             | Stay Sol medium; optional Luna high                             |
+| 2                    | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829)                                                                  | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof                                                         | GPT-6.1 Sol, medium                                             |
+| 3                    | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827)                                                                  | `in_progress` | Finish pressure/recovery policy; defer victory proof                                                                      | GPT-6.1 Sol, medium                                             |
+| 4 / next boundary    | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | C8 sanity complete. Next cross-player commitment admission/cleanup/save/restore, then full PRO authority/capacity repairs | GPT-6.1 Sol / high                                              |
+| 5 / paired           | #815 / #816                                                                                                                      | `in_progress` | Remaining family contracts, focused fixtures, frozen maps and continuous-match tier                                       | Sol medium; optional Luna high for established cases            |
+| 6                    | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819)                                                                  | `in_progress` | Exact-once interruption, terminal and re-entry parity                                                                     | GPT-6.1 Sol, medium                                             |
+| 7                    | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823)                                                                  | `partial`     | Generation fencing, phase restore/replay and cleanup cases                                                                | GPT-6.1 Sol, medium                                             |
+| 8                    | #821                                                                                                                             | `partial`     | Remaining splits/renames and consumer updates                                                                             | Stay Sol medium; optional Luna high                             |
+| 9 / prepare          | [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828), [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `partial`     | Prepare difficulty/opponent evidence; runtime optimization only for a concrete slowdown                                   | GPT-6.1 Sol, medium; Sol high for a measured performance defect |
+| Final gate           | Required issues above                                                                                                            | `in_progress` | Native 718/type/build/comparator 40 remain scoped. C8 sanity complete; K5, multiplayer/lifecycle and calibration pending  | GPT-6.1 Sol / high for shared command authority                 |
+| After parity         | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820)                                                                  | `not_started` | Evidence-backed legacy retirement                                                                                         | GPT-6.1 Sol, medium decision; Luna high cleanup                 |
+| Before final closure | Existing machinery / completion map                                                                                              | `not_started` | Evaluate every system's demonstrated need and cost; keep, simplify or propose retirement while preserving required proof  | GPT-6.1 Sol / high for combined review                          |
 
 ## Model batches and pause contract
 
@@ -704,7 +704,8 @@ The Build Stop/range/cache chain is captured, ground routes isolated, and two fu
 Native WAIT now uses actual active elapsed simulation delta; player-AI settling still does not prove native action quiescence.
 The full native 147-suite/718-case run and two fresh full candidate repeats pass. The reviewed four-owner comparator
 qualifies marked and capture-off profile pairs with scoped CPU/allocation samples; common native save/Load
-and external production read access pass. Retained realm/reset passes; complete async/hook CPU and convergence remain open; original acceptance stays blocked;
+and external production read access pass. C8 sanity is complete under the 2026-10-10 policy; strict diagnostic
+performance certification is retired without claiming whole CPU/zero allocation or original pinned acceptance;
 broader server/socket/save/restart/hash/calibration evidence remains pending.
 Full useful-service authority M11 remains blocked, and production/gameplay proof M12
 remains open; those obligations are not erased by the bounded diagnostic finish line.
@@ -712,12 +713,12 @@ Design on GPT-6.1 Sol / high; implement settled contracts on Luna / high; return
 and unresolved architecture/causal questions or difficult final-gate failures. Actual host settings remain unknown.
 No automatic model switch, subagent or new chat is authorized by this policy. Executable final-gate validation is now active.
 
-| Responsibility                                                                          | Model / effort                                                                            | Boundary                                                                                                                                                                                                       |
-| --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Consolidated design, scope/value, shared/per-owner contracts and acceptance (50)        | GPT-6.1 Sol / high                                                                        | Authored/source-reviewed                                                                                                                                                                                       |
-| Settled implementation, compliance cleanup, wiring, fixtures and test authoring (51–54) | Luna / high                                                                               | Authored; scoped native/report controls now checked, wider integration remains                                                                                                                                 |
-| Combined implementation source review and unresolved contract conflicts (M10)           | GPT-6.1 Sol / high                                                                        | Source review/controls complete; E2E typing and 461 production/queue/resource/output controls pass, full gate in progress                                                                                      |
-| Final executable gate and repairs                                                       | GPT-6.1 Sol / high for browser/cost causal investigation; Luna / high for settled repairs | Native 718/comparator 40 and all-mode scoped profiles checked; capture-off save/read/full trajectories qualified. Retained reset checked; next complete CPU/convergence/budgets and production/lifecycle proof |
+| Responsibility                                                                          | Model / effort                                                                           | Boundary                                                                                                                  |
+| --------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Consolidated design, scope/value, shared/per-owner contracts and acceptance (50)        | GPT-6.1 Sol / high                                                                       | Authored/source-reviewed                                                                                                  |
+| Settled implementation, compliance cleanup, wiring, fixtures and test authoring (51–54) | Luna / high                                                                              | Authored; scoped native/report controls now checked, wider integration remains                                            |
+| Combined implementation source review and unresolved contract conflicts (M10)           | GPT-6.1 Sol / high                                                                       | Source review/controls complete; E2E typing and 461 production/queue/resource/output controls pass, full gate in progress |
+| Final executable gate and repairs                                                       | GPT-6.1 Sol / high for command/authority repairs; Luna / high for settled implementation | C8 sanity complete; next cross-player shared authority, production/capacity and lifecycle proof                           |
 
 - The design must produce a finite list of substantial implementation passes and completion criteria. A pass may contain
   several related owners and coherent commits. Do not create a new design stage or model pause for each file, helper,
@@ -767,17 +768,16 @@ No automatic model switch, subagent or new chat is authorized by this policy. Ex
 
 Copyable next-chat prompt:
 
-> Read docs/ai/759-skirmish-ai/HANDOFF.md and the retained-browser profiling checkpoint in runtime-matrix-ci.md.
-> Native 718/comparator 40 and unchanged builds remain valid. Retained in-game Load now qualifies warm reset:
-> same document/default context/native script identities; old scene DESTROYED with zero event registrations.
-> All 16 warmed capture-off worlds match every 1,201 boundary/outcome history; three profile pairs per mode pass.
-> Read retained-mode/profile-summary.json and closure-manifest.json first, not raw worlds.
-> Native/tick inclusive stacks include builtin callees but framework/unattached async/GC and convergence limits remain.
-> On GPT-6.1 Sol / high, investigate native tick/async/hook attribution and disabled-path costs using bounded hot frames.
-> Do not redo proven setup or optimize speculatively. Production owner maps unavailable; original pinned acceptance blocked.
-> Preserve +861 gzip/source/output/overlay identity, full oracles/useful nulls, water/wall TTL, pawn/path settling and WAIT save limits.
-> Full PRO/M11/M12/cross-player commitments, server/socket/save/restart/hash/calibration and machinery review remain mandatory.
-> Review/audit, update docs, commit/push/verify exact remote and pause.
+> Read docs/ai/759-skirmish-ai/HANDOFF.md and the diagnostic performance sanity policy in runtime-matrix-ci.md.
+> C8 sanity is complete; further dedicated profiling and strict diagnostic performance gates are retired by user request.
+> Existing warmed production means are near equal; no zero-cost/full-budget certification is claimed. Correctness tests stay.
+> Native 718/comparator 40 and unchanged builds remain scoped evidence. Verify the containing commit/remote and clean worktree.
+> On GPT-6.1 Sol / high, trace and reproduce the cross-player activeCommitments collision in CommandBusService.
+> Cover admission, same-player duplicate suppression, terminal cleanup and authority save/restore compatibility; repair the owner.
+> Start from retained tick-20 player-3/player-2 bootstrap-worker/stage9 collisions, then return to PRO authority/capacity failures.
+> Preserve full oracles/useful nulls, source/fixture provenance, water/wall TTL, pawn/path settling and WAIT save limitations.
+> M11, full PRO/M12, server/socket/save/restart/hash/calibration and final machinery necessity review remain mandatory.
+> Review/audit, update handoff with what changed and why, commit/push/verify exact remote and pause.
 
 Optional [#822](https://github.com/JernejHabjan/fuzzy-waddle/issues/822) owns a future island map and natural
 transport-required runtime. It is detached from #759 and does not block core readiness.
@@ -820,12 +820,13 @@ fixture schedules and historical 12,000-tick diagnostics remain facts about auth
 5. Before the final gate, tell the user. Preflight representative map/fixture infrastructure, then run compatible
    family/map shards as one retained sweep and generate a compact repair list. Confirm causal clusters from one
    representative each, repair shared owners in batches and rerun affected shards.
-   Measure the shortest credible full-match deadlines, run paired difficulty/performance evidence and extended soaks,
+   Measure the shortest credible full-match deadlines, run paired difficulty evidence and extended soaks;
+   investigate performance only for a concrete slowdown,
    and finish code/omission review. A longer full-match deadline needs documented evidence; preserve mandatory
    terminal victory/recovery rather than passing on mere survival or elapsed ticks. Establish the final required
    matrix evidence after all repairs, tuning, optimization and legacy removal, reusing a complete passing sweep
    only if its relevant source/workload inputs still match.
-6. After required correctness, parity, calibration and cost evidence is available, perform the
+6. After required correctness, parity and calibration evidence plus the completed C8 sanity check, perform the
    [machinery necessity review](#end-of-gate-machinery-necessity-review). Recheck affected evidence after any resulting
    simplification before final closure; do not start another machinery expansion pass.
 
@@ -835,7 +836,7 @@ The single gate for changed behavior and newly authored tests is now active. Do 
 an older commit as evidence for newer unverified code. At the gate, run repository doctor/context and smallest focused
 static/unit checks first, then representative map/fixture preflight and manifest-derived pure/Playwright family shards.
 Generate the retained cross-shard repair list, fix confirmed shared causes in batches and rerun affected shards.
-Establish continuous-match/multiplayer/lifecycle parity, then perform calibration, measured optimization and gated
+Establish continuous-match/multiplayer/lifecycle parity, then perform calibration, justified optimization and gated
 legacy retirement. Finish required matrix evidence on the resulting revision, broader affected checks and code review.
 Then complete the machinery necessity review below before declaring closure.
 A complete passing sweep with unchanged relevant inputs can be retained; repeat affected calibration/benchmark evidence
@@ -849,7 +850,7 @@ not block this gate.
 
 ## End-of-gate machinery necessity review
 
-User-requested final step (2026-10-09), not_started. Depends on the required real-scenario, lifecycle and C8 evidence
+User-requested final step (2026-10-09), not_started. Depends on required real-scenario/lifecycle evidence and the completed C8 sanity check
 above; it adds a review of existing machinery, not a new implementation system. Purpose: determine which diagnostic
 and attribution systems earn their complexity in actual debugging/testing and ordinary play.
 
@@ -857,10 +858,12 @@ and attribution systems earn their complexity in actual debugging/testing and or
    reporting/replay tools and supporting fixtures. Use the existing completion map and actual source consumers;
    record required versus optional proof, concrete usage and defects caught. Passing a system's own tests alone
    does not justify it. Keep unproven usefulness distinct from established diagnostic value.
-2. Compare each system with a simpler alternative using measured normal-play CPU/allocation/bundle costs, marked
+2. Compare each system with a simpler alternative using available scoped C8 sanity evidence and explicit
+   measurement gaps, marked
    capture time/bytes, maintenance burden and diagnostic quality. Evaluate context efficiency on representative
    passing and failing scenarios: raw versus selected summary/evidence bytes, follow-up reads/tool calls and wall
-   time; token/cache counts only when telemetry supplies them. Keep full raw evidence locally and inspect bounded
+   time; token/cache counts only when telemetry supplies them. Do not reintroduce strict diagnostic performance
+   certification or new profiling as a review prerequisite. Keep useful raw evidence locally and inspect bounded
    causal slices. A compact summary is for triage, not proof that all authority checks passed; byte reduction is
    not a measured reduction in total session tokens.
 3. Record an evidence-backed keep/simplify/retire verdict for every system, its required consumer, rationale and
