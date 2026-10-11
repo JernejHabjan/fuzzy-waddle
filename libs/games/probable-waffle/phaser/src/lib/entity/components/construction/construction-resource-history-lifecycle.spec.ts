@@ -218,7 +218,7 @@ describe("construction restore and cleanup resource history", () => {
     f.journal.dispose();
   });
 
-  it("keeps cancellation refund, order reset, repeated teardown and unsubscribe without a new state fence", () => {
+  it("unpaid teardown resets builder orders once without crediting a refund or adding a state fence", () => {
     const f = constructionHistoryFixture(),
       order: string[] = [],
       reset = jest.fn(() => order.push("reset"));
@@ -234,23 +234,25 @@ describe("construction restore and cleanup resource history", () => {
     });
     f.actor.emit(HealthComponent.KilledEvent);
     f.actor.emit(Phaser.GameObjects.Events.DESTROY);
-    expect(order).toEqual(["refund", "reset", "refund", "reset"]);
+    expect(order).toEqual(["reset"]);
+    expect(refundConstructionPayment).not.toHaveBeenCalled();
     expect(f.ticks.observed).toBe(false);
     expect(f.component.getData().state).toBe(ConstructionStateEnum.NotStarted);
     expect(f.coverage.read().lost).toBe(false);
     f.journal.dispose();
   });
 
-  it("retains native refund failure before tick cleanup", () => {
+  it("propagates a started refund failure while still releasing tick listeners", () => {
     const f = constructionHistoryFixture(),
       error = new Error("refund");
     jest.mocked(refundConstructionPayment).mockImplementation(() => {
       throw error;
     });
+    f.component.setData({ state: ConstructionStateEnum.Constructing, remainingConstructionTime: 500 });
+    const epoch = f.coverage.read().lossEpoch;
     expect(() => f.actor.emit(HealthComponent.KilledEvent)).toThrow(error);
-    expect(f.ticks.observed).toBe(true);
-    expect(f.coverage.read().lost).toBe(false);
-    f.ticks.complete();
+    expect(f.ticks.observed).toBe(false);
+    expect(f.coverage.read().lossEpoch).toBe(epoch);
     f.journal.dispose();
   });
 

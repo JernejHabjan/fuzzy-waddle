@@ -97,14 +97,22 @@ observed sharing a lane; other train/research completions cannot replace them.
 
 `productionCausality.enqueues` joins checked physical insertion to its own immediate charge or actual new per-tick
 obligation. It removes that command's own admitted budget once from unspent reservations while retaining other claims;
-it never substitutes pending claims, predicted refunds or a nearby callback. These enqueue-only inputs do not supply
-the complete definition catalog, paired setup, construction/payment/refund/loss event stream or useful-effect proof.
+it never substitutes pending claims, predicted refunds or a nearby callback. `queueLifecycleEvents` additionally
+projects successful per-tick payments, exact registered completions and distinct cancellation requests/removals/refunds
+in native sequence order. Missing cash or claim boundaries remain named gaps. `definitionCatalog` reads actual sampled
+producer options and placement definitions, rejects changing definitions and checks stored enqueue price/duration against
+the preceding producer-scoped option. Neither channel supplies independent paired setup, full construction/loss events,
+fair reachability or useful-effect proof. Construction duration here is required work, not elapsed builder travel/work time.
 `productionEvidence` remains absent until its whole contract is independently supported.
 
 Automatic construction starts wait when the native payment branch denies affordability. Denial records remain
 available, while construction state, work and initial health stay unchanged until a later successful retry. Explicit
-starts still throw on denied payment, and unexpected resource callback errors propagate. This preserves the existing
-native `productionTime` start-payment predicate; it does not establish configured-price equivalence or change balance.
+starts still throw on denied payment, and unexpected resource callback errors propagate. Payment uses configured
+`costType`, independently of construction duration: positive-duration immediate buildings pay before work starts;
+per-tick definitions do not pay at start merely because their duration is zero. Unstarted sites cannot refund an unpaid
+placement. Killed/destroy teardown disposes once and releases tick listeners even when a native refund callback throws.
+These are shared human/AI correctness repairs; definition costs/times and refund multipliers are unchanged. This does not
+establish a complete paid-price history across restores, changed definitions or unsupported per-tick construction work.
 
 A reviewed behavior comparator may carry exact native correctness repairs on top of its compile compatibility
 overlay. Identify every excluded owner and both overlay digests, verify each repaired owner's emitted code against

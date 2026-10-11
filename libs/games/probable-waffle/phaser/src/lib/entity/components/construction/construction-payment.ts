@@ -9,7 +9,7 @@ import { emitResource, getPlayer } from "../../../data/scene-data";
 import { OwnerComponent } from "../owner-component";
 import { observeConstructionResource } from "./observe-construction-authority";
 
-/** Native start predicate is preserved; scheduler retries can wait on denial without hiding resource-callback errors. */
+/** Configured immediate costs are paid before work starts; automatic retries wait only on native affordability denial. */
 export function startConstructionPayment(
   gameObject: Phaser.GameObjects.GameObject,
   productionDefinition: ProductionCostDefinition,
@@ -17,7 +17,7 @@ export function startConstructionPayment(
   remainingWorkMs: number,
   waitForFunds = false
 ): false | void {
-  if (productionDefinition.productionTime === PaymentType.PayImmediately) {
+  if (productionDefinition.costType === PaymentType.PayImmediately) {
     const ownerComponent = getActorComponent(gameObject, OwnerComponent);
     const owner = ownerComponent?.getOwner();
     if (owner === undefined) throw new Error("Owner not found");

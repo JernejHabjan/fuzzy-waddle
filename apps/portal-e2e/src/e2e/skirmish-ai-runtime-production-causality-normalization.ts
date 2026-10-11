@@ -2,7 +2,6 @@ import { runtimeProductionCaptureFailures } from "./skirmish-ai-runtime-producti
 import { normalizeRuntimeProductionWorldAuthority } from "./skirmish-ai-runtime-production-world-authority";
 import { normalizeRuntimeProducerRoutes } from "./skirmish-ai-runtime-producer-route-normalization";
 import { projectRuntimeProductionCancellations } from "./skirmish-ai-runtime-production-cancellations";
-import { validateRuntimeQueueRefundPolicy } from "./skirmish-ai-runtime-refund-policy";
 import { projectRuntimeProductionCompletions } from "./skirmish-ai-runtime-production-completions";
 import { projectRuntimeProductionRejections } from "./skirmish-ai-runtime-production-rejections";
 import { projectRuntimeProductionQueueMutations } from "./skirmish-ai-runtime-production-queue-mutations";
@@ -12,16 +11,15 @@ import type { AiRuntimeProductionCaptureV1 } from
 import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
 import { isRuntimeQueueCommand } from "./skirmish-ai-runtime-production-command-lineage";
 import { normalizeRuntimeProductionCommands } from "./skirmish-ai-runtime-production-command-normalization";
-import {
-  normalizeRuntimeScopedQueuePayments,
-  sameRuntimeQueueVector
-} from "./skirmish-ai-runtime-scoped-queue-payments";
+import { normalizeRuntimeProductionPayments } from "./skirmish-ai-runtime-production-payments";
 
 import { projectRuntimeProductionOperations } from "./skirmish-ai-runtime-production-operation-projection";
 import { validateRuntimeProductionProgress } from "./skirmish-ai-runtime-production-progress";
 import { runtimeProductionApplicationGaps } from "./skirmish-ai-runtime-production-application-gaps";
 import { projectRuntimeProductionEffectRetention } from "./skirmish-ai-runtime-production-effect-retention-projection";
 import { projectRuntimeProductionEnqueues } from "./skirmish-ai-runtime-production-event-projection";
+import { projectRuntimeProductionLifecycleEvents } from "./skirmish-ai-runtime-production-lifecycle-events";
+import { projectRuntimeProductionCatalog } from "./skirmish-ai-runtime-production-catalog-projection";
 // prettier-ignore
 import type { AiRuntimePresetApplicationV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application-v1";
@@ -73,46 +71,10 @@ export function normalizeRuntimeProductionCausality(
   );
   failures.push(...progress.failures);
   progress.gaps.forEach((gap) => gaps.add(gap));
-  const queueFacts = capture.facts.filter((fact) => fact.kind === "queue_resource");
-  const scoped = queueFacts.filter((fact) => {
-    const value = fact.resource;
-    if (value.originatingCommandContext?.execution.source !== "ai") return false;
-    if (
-      !commands.some(
-        (entry) => entry.command.execution?.commandId === value.originatingCommandContext?.execution.commandId
-      )
-    ) {
-      failures.push("production_ai_unattributed_payment");
-      return false;
-    }
-    if (value.payment !== "immediate" && value.operation !== "cancellation_refund") {
-      if (value.payment === "unknown") gaps.add("production_ai_payment_mode_unknown");
-      else if (value.operation !== "tick_charge") {
-        gaps.add("production_ai_per_tick_liability_missing");
-      }
-      return false;
-    }
-    if (value.emission.phase === "denied") {
-      gaps.add("production_ai_denied_payment");
-      return false;
-    }
-    return true;
-  });
-  const payments = normalizeRuntimeScopedQueuePayments(
-    { ...capture, facts: scoped },
-    commands.map((entry) => entry.command)
-  );
-  failures.push(...payments.failures);
-  for (const payment of payments.payments) {
-    const value = payment.resource;
-    if (
-      value.operation === "immediate_charge" &&
-      !sameRuntimeQueueVector(value.storedPrice, value.emission.requested)
-    ) {
-      failures.push("production_ai_charge_stored_price_mismatch");
-    }
-    failures.push(...validateRuntimeQueueRefundPolicy(value));
-  }
+  const money = normalizeRuntimeProductionPayments(capture, commands);
+  const { queueFacts, payments } = money;
+  failures.push(...money.failures);
+  money.gaps.forEach((gap) => gaps.add(gap));
   const rejections = projectRuntimeProductionRejections(capture, commands, payments.payments, admissions);
   failures.push(...rejections.failures);
   rejections.gaps.forEach((gap) => gaps.add(gap));
@@ -155,6 +117,22 @@ export function normalizeRuntimeProductionCausality(
   const completions = projectRuntimeProductionCompletions(capture, commands, mutations.mutations);
   failures.push(...completions.failures);
   completions.gaps.forEach((gap) => gaps.add(gap));
+  const lifecycle = projectRuntimeProductionLifecycleEvents(capture, {
+    enqueues: enqueues.events,
+    operations: operations.operations,
+    queueMutations: mutations.mutations,
+    completions: completions.completions,
+    cancellations: cancellations.cancellations
+  });
+  failures.push(...lifecycle.failures);
+  lifecycle.gaps.forEach((gap) => gaps.add(gap));
+  const definitions = projectRuntimeProductionCatalog({
+    worldSnapshots: world.snapshots,
+    queueMutations: mutations.mutations,
+    constructionCatalog: constructionCatalog.entries
+  });
+  failures.push(...definitions.failures);
+  definitions.gaps.forEach((gap) => gaps.add(gap));
   const routes = normalizeRuntimeProducerRoutes(capture, commands, completions.completions, spatial.authority);
   failures.push(...routes.failures);
   routes.gaps.forEach((gap) => gaps.add(gap));
@@ -216,6 +194,8 @@ export function normalizeRuntimeProductionCausality(
     cancellations: failures.length ? [] : cancellations.cancellations,
     queueMutations: failures.length ? [] : mutations.mutations,
     enqueues: failures.length ? [] : enqueues.events,
+    queueLifecycleEvents: failures.length ? [] : lifecycle.events,
+    definitionCatalog: failures.length ? [] : definitions.catalog,
     rejections: failures.length ? [] : rejections.rejections
   } satisfies RuntimeProductionCausalityV1);
 }

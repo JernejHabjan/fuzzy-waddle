@@ -71,7 +71,7 @@ function fixture(observe = true) {
   return { site, records, money, changes, canPay, definition };
 }
 
-/** Native behavior characterization, including known policy defects and controlled resource callbacks. */
+/** Configured payment authority with controlled resource callbacks, including denial and unexpected errors. */
 describe("construction payment authority", () => {
   beforeEach(() => jest.clearAllMocks());
 
@@ -124,36 +124,36 @@ describe("construction payment authority", () => {
     }
   );
 
-  it("retains the native time predicate instead of treating configured immediate cost as a charge", () => {
+  it("charges configured immediate costs even when construction needs positive work", () => {
     const f = fixture();
     startConstructionPayment(f.site, f.definition, ConstructionStateEnum.NotStarted, 0);
-    expect(emitResource).not.toHaveBeenCalled();
-    expect(f.canPay).not.toHaveBeenCalled();
+    expect(emitResource).toHaveBeenCalledWith(f.site.scene, "resource.removed", f.definition.resources, 2);
+    expect(f.canPay).toHaveBeenCalledTimes(1);
     expect(requireAiTestEntry(f.records, 0)).toMatchObject({
       kind: "resource",
-      status: "skipped",
+      status: "returned",
       requiredWorkMs: 150,
       configuredCostType: 0,
-      requested: null,
-      balanceMatches: false
+      requested: { food: 11 },
+      before: { food: 100 },
+      after: { food: 89 },
+      balanceMatches: true
     });
     expect(f.changes.observed).toBe(false);
   });
 
-  it("observes the actual zero-time charge and preserves its original vector and detached pre-callback definition", () => {
+  it("does not charge per-tick costs at start even for zero-duration work", () => {
     const f = fixture();
     const definition = { ...f.definition, productionTime: 0, costType: PaymentType.PayOverTime };
     startConstructionPayment(f.site, definition, ConstructionStateEnum.NotStarted, 0);
-    expect(emitResource).toHaveBeenCalledWith(f.site.scene, "resource.removed", definition.resources, 2);
+    expect(emitResource).not.toHaveBeenCalled();
     expect(requireAiTestEntry(f.records, 0)).toMatchObject({
-      status: "returned",
+      status: "skipped",
       configuredCostType: 1,
       configuredCost: { food: 11 },
-      requested: { food: 11 },
-      before: { food: 100 },
-      after: { food: 89 },
-      callbackCount: 1,
-      balanceMatches: true
+      requested: null,
+      callbackCount: 0,
+      balanceMatches: false
     });
     definition.resources.food = 99;
     const payment = requireAiTestEntry(f.records, 0);

@@ -43,9 +43,11 @@ export class ConstructionSiteComponent {
   private readonly presentation: ConstructionPresentation;
   private healthComponent?: HealthComponent;
   private simulationTickSub?: Subscription;
-  private playingBuildSound: boolean = false;
+  private playingBuildSound = false;
   private pendingAssignedBuilderIds?: string[];
   private pendingAssignedRepairerIds?: string[];
+  /** Killed and destroy callbacks can both address this component; refund and listener disposal happen once. */
+  private teardownComplete = false;
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
     private readonly constructionSiteDefinition: ConstructionSiteDefinition
@@ -216,18 +218,19 @@ export class ConstructionSiteComponent {
 
   cancelConstruction() {
     if (this.isFinished) return;
-
-    const productionDefinition = this.productionDefinition;
-    if (!productionDefinition) throw new Error("Production definition not found");
-
-    refundConstructionPayment(
-      this.gameObject,
-      productionDefinition,
-      this.constructionSiteDefinition.refundFactor,
-      () => this.getProgressFraction(),
-      this.state,
-      this.remainingConstructionTime
-    );
+    // A rejected/unstarted placement has never paid; its assigned builders still need normal order cleanup.
+    if (this.state !== ConstructionStateEnum.NotStarted) {
+      const productionDefinition = this.productionDefinition;
+      if (!productionDefinition) throw new Error("Production definition not found");
+      refundConstructionPayment(
+        this.gameObject,
+        productionDefinition,
+        this.constructionSiteDefinition.refundFactor,
+        () => this.getProgressFraction(),
+        this.state,
+        this.remainingConstructionTime
+      );
+    }
 
     // stop action on builders
     this.assignedBuilders.forEach((builder) => {
@@ -369,9 +372,16 @@ export class ConstructionSiteComponent {
   }
 
   private onDestroy() {
-    observeConstructionLifecycle(this.gameObject, this.state, this.remainingConstructionTime, "teardown");
-    this.cancelConstruction();
-    this.simulationTickSub?.unsubscribe();
+    if (this.teardownComplete) return;
+    this.teardownComplete = true;
+    try {
+      observeConstructionLifecycle(this.gameObject, this.state, this.remainingConstructionTime, "teardown");
+      this.cancelConstruction();
+    } finally {
+      this.simulationTickSub?.unsubscribe();
+      this.gameObject.off(Phaser.GameObjects.Events.DESTROY, this.onDestroy, this);
+      this.gameObject.off(HealthComponent.KilledEvent, this.onDestroy, this);
+    }
   }
 
   private tryResolveAssignedActorReferences(): void {

@@ -32,6 +32,10 @@ import type { RuntimeProductionEvidenceV1 } from "./skirmish-ai-runtime-producti
  * it cannot supply full navigation/exposure, cadence closure, paired setup, stable usefulness or complete event liabilities.
  */
 export interface RuntimeProductionCausalityV1 {
+  /** Checked queue lifecycle inputs in observer order; other lifecycle families and full fair setup remain separate. */
+  readonly queueLifecycleEvents?: RuntimeProductionEvidenceV1["events"];
+  /** Shared sampled definition prices, rejecting changed definitions; prerequisites remain decision/command authority. */
+  readonly definitionCatalog?: RuntimeProductionEvidenceV1["catalog"];
   /** Checked enqueue-only contract inputs; absence of other event kinds still prevents full production evidence. */
   readonly enqueues?: RuntimeProductionEvidenceV1["events"];
   readonly schemaVersion: 1;

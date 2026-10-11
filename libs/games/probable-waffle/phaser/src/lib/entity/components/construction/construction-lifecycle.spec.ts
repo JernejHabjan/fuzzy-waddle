@@ -40,7 +40,8 @@ describe("construction lifecycle boundaries", () => {
       name: "site",
       scene: { events: sceneEvents },
       on: actorEvents.on.bind(actorEvents),
-      once: actorEvents.once.bind(actorEvents)
+      once: actorEvents.once.bind(actorEvents),
+      off: actorEvents.off.bind(actorEvents)
     } as unknown as Phaser.GameObjects.GameObject;
     const definition = {
       components: { productionCost: { costType: 0, productionTime: 150, resources: { food: 11 }, refundFactor: 1 } }
@@ -89,16 +90,28 @@ describe("construction lifecycle boundaries", () => {
     expect(refundConstructionPayment).toHaveBeenCalledTimes(1);
   });
 
-  it("retains repeated killed/destroy teardown before start and does not invent a terminal/cancellation state", () => {
+  it("unstarted killed/destroy teardown cannot refund an unpaid site and disposes once", () => {
     const f = fixture();
     f.actorEvents.emit(HealthComponent.KilledEvent);
     f.actorEvents.emit(Phaser.GameObjects.Events.DESTROY);
     expect(f.records.map((record) => [record.kind, record.state, record.remainingWorkMs])).toEqual([
-      ["lifecycle", ConstructionStateEnum.NotStarted, 0],
       ["lifecycle", ConstructionStateEnum.NotStarted, 0]
     ]);
-    expect(refundConstructionPayment).toHaveBeenCalledTimes(2);
+    expect(refundConstructionPayment).not.toHaveBeenCalled();
     expect(f.ticks.observed).toBe(false);
     expect(f.component.getData().state).toBe(ConstructionStateEnum.NotStarted);
+  });
+
+  it("started killed/destroy teardown refunds once and releases the scheduler even when the callback throws", () => {
+    const f = fixture();
+    f.component.startConstruction();
+    const failure = new Error("refund callback");
+    jest.mocked(refundConstructionPayment).mockImplementationOnce(() => {
+      throw failure;
+    });
+    expect(() => f.actorEvents.emit(HealthComponent.KilledEvent)).toThrow(failure);
+    f.actorEvents.emit(Phaser.GameObjects.Events.DESTROY);
+    expect(refundConstructionPayment).toHaveBeenCalledTimes(1);
+    expect(f.ticks.observed).toBe(false);
   });
 });

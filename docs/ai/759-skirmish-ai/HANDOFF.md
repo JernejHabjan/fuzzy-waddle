@@ -36,45 +36,44 @@ economy/production/combat scenarios with fresh evidence at the active final gate
 their original values; revised expectations must reflect an explained balance decision while preserving authority,
 fairness and useful-effect requirements.
 
-**Current step:** M12 eight-stage production batch remains in_progress. This containing commit delivers a
-checked prerequisite slice; the full PRO gate and M11 useful authority remain open. Actual model/effort unknown.
+**Current step:** M12 consolidated ten-item production batch remains in_progress. The containing commit delivers
+payment and queue-lifecycle repairs at the explicit larger-contract boundary from the batch estimate; it does **not**
+complete all ten items. Full PRO and M11 useful authority remain open. Actual host model/effort unknown.
 
-**What changed / why:** production oracles now recognize real fulfilled commitments within their original deadline,
-retain exact correctly typed output identities, and require completion of the exact contending train/research items.
-Pinned scheduled losses address the original authored producer, never its replacement; strict parsing, native damage,
-independent browser ID checks and shutdown/completion cleanup cover the actual public preset path. Enqueue-only
-productionCausality inputs join insertion to its own native payment/liability and exclude its own admitted budget once.
-Complete productionEvidence is still absent: catalog, complete lifecycle/pay/refund/loss events and paired setup are missing.
+**What changed / why:** immediate construction now checks configured costType rather than productionTime, so
+positive-duration buildings actually pay before work starts. Automatic denied starts still wait without work/health
+progress; explicit denial and unexpected callback errors still throw. Unstarted rejected placements cannot manufacture
+refunds; killed/destroy teardown refunds/disposes once and always releases tick listeners. Definition prices, durations
+and refund multipliers are unchanged; no speculative balance tuning.
 
-**Concrete gameplay repair / why:** a short native run exposed repeated affordability exceptions from automatic
-construction starts. Those retries now wait on the actual denied payment branch without progressing work/state or
-resetting health; explicit starts and unexpected callback failures still throw. No balance change; the existing native
-productionTime payment predicate is preserved and needs authority review before configured-price equivalence is claimed.
+Queue lifecycle inputs now connect checked insertions, successful per-tick charges, exact native registrations and
+separate cancellation request/removal/refund sequences. Sampled definition catalog entries reject changed prices and
+check each stored enqueue price/duration against its preceding actual producer option. These extend the existing report
+normalizer; no new capture loop, timer, cache or native save/wire fields. Missing boundaries remain explicit.
+Complete productionEvidence is still absent; authored diagnostic inputs never become full causal certification.
 
-**Checked slice:** final native, formatting and structure results are recorded in the
-[production lifecycle checkpoint](follow-ups/runtime-matrix-ci.md#production-lifecycle-and-evidence-checkpoint-2026-10-11).
-Native 159 suites/849 tests, production browser controls 208 and Node tool tests twelve pass; native/browser types,
-formatting, scoped structure, catalog consistency and uncached production build pass. One ordinary lint error reproduces
-at unchanged HEAD; the scoped structure check disables only that unrelated no-inferrable-types rule.
-Original owners fail one public native caller control, five browser oracle controls and three funding controls; all
-restored byte-for-byte. Full long PRO scenarios were not rerun or certified by this slice. Full assertions remain active.
+**Ten-item status / why remaining:** see the
+[consolidated production checkpoint](follow-ups/runtime-matrix-ci.md#consolidated-production-contract-boundary-2026-10-11).
+Item 1 is implemented; 2/3/9 have scoped implementation; 4–8 remain unimplemented behind the complete proof contract.
+Item 10 closes only this checked source slice, not the requested full batch or end-of-gate machinery review.
+The initial estimate still understated the semantic gap; do not create success-labelled worlds or lower assertions.
 
-**Finite native evidence:** one process/two serial faction worlds, both original queue completions at tick 100,
-original producer removal at 240 and peer retained through final tick 420. Zero captured affordability exceptions,
-dropped facts/snapshots or selected omissions. Tivara seed 759101, fixture fnv1a32:e105ca2f; Skaduwee seed 759102,
-fixture fnv1a32:4f0db9ce. Base ef693af22d861f6f2234cc56068da84d0a7eef69 plus checked source repairs;
-ignored production-proof-runtime-loss-final.log and production-proof-source-provenance.json retain exact evidence.
-A subsequent explicit-wait argument assertion/format repair changes tests only; shipped runtime source stayed frozen.
-This is setup/lifecycle proof, not the strategic PRO-06 release gate. Prior full-run evidence remains in the
-[production-start checkpoint](follow-ups/runtime-matrix-ci.md#production-start-checkpoint-2026-10-11).
+**Next exact action / why:** one connected design pass over production-evidence.ts, production-contract-evaluation.ts,
+producer-resilience-evaluation.ts, production-transition-evaluation.ts and the native AiDecisionInputV1 / selected-result
+contract. Separate paused world tick zero from first fair decision and consumed-input versus publication ticks; use
+actual target-specific weapon/elevation bands, time-scoped reachability and explicit paired-world differences. Define
+how a pending-refund scenario uses real cancellation authority while the planner's retain_committed_production policy
+remains intentional. Then implement remaining construction/loss joins and physical scenarios together, with complete
+oracles. Recommend GPT-6.1 Sol / high for this authority/policy design, followed by grouped implementation once concrete.
+Commit/push, verify remote and pause at this contract boundary. Full M12/M11, socket/save/restart/hash/calibration and
+end-of-gate machinery review remain open. Validation evidence is recorded in the linked checkpoint.
 
-**Next batch / why:** continue this same production batch with definition-backed complete production event and paired
-setup authority. Review the preserved native start-payment predicate, then author genuine committed/abandoned,
-exposed/safe/low-value/no-demand and strategic contention/pending-refund worlds using actual AI decisions. These inputs
-will let the full causal oracles identify policy faults instead of stopping at missing authority. No synthetic records
-or injected brain state. Keep related work together with short causal checks before long matches. Full M12/M11,
-server/socket/save/restart/hash/calibration and the final machinery necessity review remain open. Recommend
-GPT-6.1 Sol / high for connected policy/authority reasoning. Commit/push, verify remote and pause at this boundary.
+**Checked slice:** 159 native suites/850 tests, 216 browser controls plus one finite two-faction lifecycle test,
+native/browser types, exact formatting, scoped lint/structure, catalog consistency and uncached production build pass.
+Six new regression controls fail with the original construction owners; source is restored byte-for-byte.
+Two unchanged non-null warnings remain. The finite queue/loss check completes at tick 100, removes the original
+at 240 and retains its peer; requested final 400 is actually sampled at 446/433, with zero captured affordability
+errors, dropped facts/snapshots or selected omissions. Full long PRO recipes were not rerun or certified.
 
 **Previous movement repair / why:** `MovementSystem` distinguishes EasyStar's empty same-tile route from no route. It confirms
 the pawn's live active-scene tile after the asynchronous query, creates its own singleton route, cancels older movement

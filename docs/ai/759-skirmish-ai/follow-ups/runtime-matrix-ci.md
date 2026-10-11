@@ -1,5 +1,92 @@
 # Playwright runtime matrix and CI — #816
 
+## Consolidated production contract boundary (2026-10-11)
+
+The user authorized all ten proposed items, replacing the earlier eight-stage execution grouping below. The full
+batch remains **in_progress** at the explicit larger-contract
+boundary stated in its estimate; this commit checks only payment/lifecycle/definition repairs. It does not complete
+scenario authoring or release acceptance. Base 29375794367bd6ba11f68643c22d3d24ecccf040; worktree
+/home/jernej/.codex/worktrees/7977/fuzzy-waddle, branch feature/759-skirmish-ai. Actual host model/effort unknown.
+No unrelated Nx migration changes, new plan files, scenario registration, balance tuning or performance suite.
+
+| Item | Implemented owner / purpose | Status / remaining work |
+| --- | --- | --- |
+| 1 Payment rules | construction-payment.ts now tests costType, not duration; positive-duration immediate construction really pays | stage_checked; native controls and finite faction worlds |
+| 2 Real definitions | production-catalog-projection.ts uses sampled producer options/placement definitions, rejects changed global prices and mismatched stored enqueue prices/times | Partial; prerequisite admission, construction work versus elapsed time and complete initial building catalog remain distinct |
+| 3 Event links | production-lifecycle-events.ts projects exact enqueue/pay/completion and cancel-request/removal/refund observer sequences into the existing report normalizer | Partial; complete construction/loss/rejection events, seeded-item joins and full liabilities still missing |
+| 4 Equivalent starts | Reviewed current initial digest and production pair evaluator | not_started implementation; digest includes authored fixture IDs/events and does not independently attest all actual geometry/starting state |
+| 5 Committed/abandoned worlds | Reviewed actual transition owner and oracle | not_started implementation; selected consumed tick differs from later publication/world capture, and sampled checkpoint ticks cannot attest every exact derived deadline |
+| 6 Exposed/safe/value/no-demand worlds | Reviewed actual producerExposure and resilience oracle | not_started implementation; target-specific native weapon/elevation bands do not match one universal 2D range; snapshot reachability is explicitly null |
+| 7 Strategic train/research worlds | Existing exact-lane contention oracle retained | not_started implementation; full event/catalog/setup bridge required before new fixture can certify real strategic output |
+| 8 Cancellation/refund worlds | Existing native cancellation authority joined into ordered queue inputs | not_started implementation; adaptation intentionally retains paid production. Define a real cancellation trigger or explicitly controlled shared-authority experiment without injecting brain state |
+| 9 Demonstrated repairs | construction-site-component.ts prevents unpaid pre-start refunds, handles killed/destroy once and releases tick/listeners even after refund error | Scoped repairs stage_checked; costs/times/refund multipliers unchanged. Full saved paid-price and per-tick construction policy not certified |
+| 10 Gate/machinery/delivery | Broad native/browser controls and finite runtime, types, format/structure/lint/build; no new native capture mechanism | Only this slice checked; full PRO/M11 and end-of-gate machinery review remain open |
+
+**Implementation Review:** traced shared construction admission -> spawn/footprint/builder checks -> native start payment
+-> resource callback -> work transition -> kill/destroy cleanup. Admission only checks affordability; it does not debit,
+so switching to configured costType does not introduce a second admission debit. Denied retries still stop before
+construction work/health reset. An unstarted illegal/rejected site never paid and cannot refund. Teardown latches before
+callbacks and releases subscriptions in finally, preserving native callback errors. Existing public explicit starts,
+base/effective definition selection, prices and refund multipliers remain as owned by their existing paths.
+
+Queue events use checked native mutation/operation/completion/cancellation lineage and exact boundary cash/claims;
+no nearby callback, pending refund or zero-filled missing authority. A legacy synthetic cancel request without its
+boundary stays unavailable; only a pure control explicitly supplying that input can satisfy the helper. Registered
+completion retains its own product/item identity and registration sequence. Native event order is preserved even when
+research refunds before physical removal. Catalog projection preserves producer-scoped preceding samples and rejects
+stored price/time mismatch or changing global definitions. It does not infer prerequisite legality from advertised options.
+Payment normalization was extracted without behavior changes to keep the coordinator bounded; baseline not refreshed.
+
+**Omission Audit:** all ten items mapped above. New readers are consumed by normalizeRuntimeProductionCausality,
+already called by runVariant, and synthetic controls execute through that owner. Full productionEvidence is absent.
+No authored physical future/resilience/contention/refund worlds or full paired digest are claimed. Paused tick zero has
+no fair committed AI input; production-world reachability is deliberately null. The native exposure record supplies
+per-target attack choice, minimum/effective range and floored 3D elevation distance, while the old oracle accepts a
+universal Euclidean range. Selected-result identity dates consumed input, not later async publication. Finite final
+checkpoints overshoot requested ticks (446/433 for 400 here), so an exact-deadline contract needs native ordered authority,
+not rounded or renamed snapshots. These are concrete contract conflicts, not license to weaken assertions.
+
+**Next connected design / why:** revise the proof contract around separate paused setup and first fair decision,
+consumed/selected/application clocks, actual target-pair weapon bands and time-scoped reachability. Define exact
+paired-variable exclusions against independently captured complete world inputs. Preserve continuous/exact-ID useful
+output requirements through real lifecycle facts. Decide the cancellation experiment's authority explicitly while
+retaining the existing planner policy unless a demonstrated strategic defect justifies changing it. Then implement
+construction/loss/initial-item/rejection joins and all physical scenario families in one grouped pass. Do not add
+synthetic success records, silently set reachable=true, substitute coordinate proximity, relabel diagnostic worlds as
+causal proof, delete mandatory branches or enlarge their deadlines. Recommend GPT-6.1 Sol / high for this design;
+economical grouped implementation follows only after source contracts and acceptance are concrete.
+
+**Validation:** final uncached native 159 suites/850 tests pass; focused construction three suites/39 pass.
+Browser 216 controls plus one finite native two-faction test pass in one process (217 tests, 1.4 minutes).
+Both native/browser TypeScript checks, exact owned formatting, explicit structure/lint (zero errors, two unchanged
+non-null warnings), catalog consistency and uncached portal production build pass. Original construction owners
+fail six regression controls (33 pass); both source files are restored byte-for-byte. No broad repeat is needed after
+exact restoration. Initial controls found two diagnostic defects: nonexistent item.kind prevented definition matching,
+and an older synthetic cancellation request lacked its cash boundary. Fixed kind discrimination and added explicit
+missing-boundary rejection plus a separate complete pure control. No native record was filled or weakened.
+An initial lint invocation used the stale legacy route and could not parse imports; current flat config succeeds.
+Two new long import lines were repaired; no source baseline refresh. Doctor/context pass at base revision.
+
+**Finite native evidence:** queue completion tick 100, pinned original removal tick 240, peer retained in both worlds;
+final Tivara tick 446, seed 759101, fixture fnv1a32:e105ca2f, original sim-5ae7dcbb, peer sim-c5ae0737.
+Skaduwee tick 433, seed 759102, fixture fnv1a32:4f0db9ce, original sim-00c6f678, peer sim-fb6c85f4.
+Zero captured affordability errors, dropped facts/snapshots or selected omissions. This is finite lifecycle evidence,
+not recovery strategy, continuous usefulness, exact deadline, determinism or full PRO certification. Gameplay source
+was frozen during the match/build; later changes affect only diagnostic import formatting and documents.
+Source composite for the twelve owned TS files (sorted path, NUL, bytes, NUL), base 29375794367bd6ba11f68643c22d3d24ecccf040:
+d659357673405c3068e34f08a19c765ac1cb70ec5ab27b23271e89a6460d7be2.
+production-batch-source-provenance.json retains filenames. This is a source digest, not a generated release fingerprint.
+
+**Separate Final Closure Audit:** item 1 and scoped 2/3/9 repairs stage_checked; entire ten-item batch in_progress.
+All mandatory items retain the statuses above; 4–8 and full 10 are not complete. Rechecked real caller/report wiring,
+error propagation, native subscription disposal, exact ownership and failed-before controls. Full productionEvidence
+remains absent. The scoped machinery review retains existing capture owners and rejects added capture loops, timers,
+caches and performance tools; wider end-of-gate necessity review remains open. Ignored evidence lives under
+tmp/ai-plans/759-validation/production-batch-*. Containing commit owns normal publication and exact remote verification.
+Full M12/M11, socket/save/restart/hash/calibration remain open. Commit/push and pause at this contract boundary;
+next is the connected design above on GPT-6.1 Sol / high, without automatic model switching.
+
+
 ## Production lifecycle and evidence checkpoint (2026-10-11)
 
 The requested eight-stage production batch is **in_progress**. This delivery is a prerequisite repair slice,
