@@ -24,6 +24,16 @@ throughput, while terminally failed effects are released so rejected work can be
 
 Workers retain ownership of useful in-progress duties such as returning resources. Reassignment is allowed when a source is depleted, inaccessible, unsafe or oversaturated, but a brief duty transition must not be mistaken for idleness.
 
+Native source/drain selection belongs to the order that requested it. After an asynchronous lookup or gathering range
+probe, replacement, cancellation, changed type/target, worker death or inactive scene discards the result before
+retargeting or admitting extraction. This protects newer delivery and player orders from late recovery work. Native
+extraction or delivery already admitted retains its existing transfer semantics; a discarded lookup is not income.
+The legacy logistics rebalancer selects only unloaded workers, rechecks their assignment after source lookup and
+counts a reassignment only when native admission succeeds. Refusal does not start its successful-rebalance cooldown.
+After delivery empties a pack, a destroyed remembered source triggers fresh selection. If no live source remains,
+the pawn finishes the return through normal Stop/order/queue/movement cleanup instead of repeatedly depositing zero.
+Loaded workers retain delivery ownership, and a late selection cannot stop a replacement order.
+
 Field labor remains committed while its farmer returns food to any compatible drop-off, including a main building.
 Known cargo identifies food returns; when cargo identity is unavailable, a catalog-defined food-capable destination
 conservatively defers new Field staffing until gathering resumes. A known non-food delivery does not block staffing.

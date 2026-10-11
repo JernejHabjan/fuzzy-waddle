@@ -107,10 +107,11 @@ describe("pawn agent native order boundaries", () => {
     expect(move).not.toHaveBeenCalled();
   });
 
-  it("resource acquisition mutates the order read after the native lookup finishes", async () => {
+  it("resource acquisition discards a lookup after order replacement", async () => {
     const f = fixture(),
       earlier = new OrderData(OrderType.Gather),
       later = new OrderData(OrderType.Gather);
+    f.actor.active = f.target.active = true;
     f.blackboard.setCurrentOrder(earlier);
     let release: ((target: Phaser.GameObjects.GameObject) => void) | undefined;
     const drain = jest.fn(
@@ -128,16 +129,17 @@ describe("pawn agent native order boundaries", () => {
     f.blackboard.setCurrentOrder(later);
     if (!release) throw new Error("pawn_test_drain_missing");
     release(f.target);
-    expect(await pending).toBe(State.SUCCEEDED);
+    expect(await pending).toBe(State.FAILED);
     expect(earlier.data.targetGameObject).toBeUndefined();
-    expect(later.data.targetGameObject).toBe(f.target);
+    expect(later.data.targetGameObject).toBeUndefined();
     expect(drain).toHaveBeenCalledTimes(1);
   });
 
-  it("gathering keeps its earlier order while the range action awaits", async () => {
+  it("gathering does not admit extraction after order replacement during the range probe", async () => {
     const f = fixture(),
       earlier = new OrderData(OrderType.Gather, { targetGameObject: f.target });
     const later = new OrderData(OrderType.Stop);
+    f.actor.active = f.target.active = true;
     f.blackboard.setCurrentOrder(earlier);
     let release: ((state: State) => void) | undefined;
     jest.spyOn(f.agent, "InRange").mockImplementation(
@@ -168,14 +170,11 @@ describe("pawn agent native order boundaries", () => {
     f.blackboard.setCurrentOrder(later);
     if (!release) throw new Error("pawn_test_range_missing");
     release(State.SUCCEEDED);
-    expect(await pending).toBe(State.SUCCEEDED);
-    expect(gatherer.startGatheringResources).toHaveBeenCalledWith(f.target);
-    expect(gatherer.gatherResources).toHaveBeenCalledWith(f.target, requireAiTestEntry(events, 0).execution);
+    expect(await pending).toBe(State.FAILED);
+    expect(gatherer.startGatheringResources).not.toHaveBeenCalled();
+    expect(gatherer.gatherResources).not.toHaveBeenCalled();
     expect(f.blackboard.getCurrentOrder()).toBe(later);
-    expect(events).toMatchObject([
-      { phase: "started", operation: "gather", order: earlier, target: f.target },
-      { phase: "resolved", operation: "gather", order: earlier, target: f.target, amount: 2 }
-    ]);
+    expect(events).toEqual([]);
     unsubscribe();
   });
 
@@ -204,6 +203,33 @@ describe("pawn agent native order boundaries", () => {
     expect(pop).toHaveBeenCalledTimes(1);
     expect(f.blackboard.getCurrentOrder()).toBeUndefined();
     expect(f.blackboard.anyOrderInQueue()).toBe(false);
+  });
+});
+
+describe("pawn order terminal cleanup", () => {
+  beforeEach(() => jest.resetAllMocks());
+  afterEach(() => jest.restoreAllMocks());
+
+  it("finishing an empty return with no source releases the actual native order and queue", async () => {
+    const f = fixture(),
+      order = new OrderData(OrderType.ReturnResources, { targetGameObject: f.target });
+    f.actor.active = f.target.active = true;
+    f.blackboard.addOrder(order);
+    f.blackboard.setCurrentOrder(order);
+    jest.mocked(getActorComponent).mockImplementation((_actor, token) =>
+      token === GathererComponent
+        ? ({
+            getPreferredResourceSource: async () => undefined,
+            isCarryingResources: () => false
+          } as never)
+        : undefined
+    );
+    const cancelMovement = jest.fn();
+    jest.mocked(getActorSystem).mockReturnValue({ cancelMovement } as never);
+    expect(await f.agent.AssignGatherResourcesOrder()).toBe(State.SUCCEEDED);
+    expect(f.blackboard.getCurrentOrder()).toBeUndefined();
+    expect(f.blackboard.anyOrderInQueue()).toBe(false);
+    expect(cancelMovement).toHaveBeenCalledTimes(1);
   });
 
   it("retains the moved-to-shore boarding request until the boat can load the passenger", () => {

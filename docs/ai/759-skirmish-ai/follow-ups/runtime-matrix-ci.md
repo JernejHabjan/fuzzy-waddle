@@ -1,5 +1,68 @@
 # Playwright runtime matrix and CI — #816
 
+## Resource-order recovery checkpoint (2026-10-11)
+
+**Scope:** three related M12 recovery fixes on `feature/759-skirmish-ai`, base/remote
+`d23c77725609075eb7b71d027484341ce2068507`. Actual model/effort unknown; containing commit owns publication.
+
+| Acceptance | Owner / why used | Evidence / status |
+| --- | --- | --- |
+| R1: Late lookup cannot steal newer orders | `PawnAgentResources` source/drain lookups and gathering range admission revalidate order identity, type, target and actor/scene liveness across awaits | Replacement, cancellation, retargeting, dead/inactive actor/scene, inactive target, fallback, success and rejection controls; checked |
+| R2: Reassignment reports actual admission | `LogisticsManager.redirectToScarce` skips cargo, rechecks active assignment after selection, counts only `startGatheringResources(true)` | Native-refusal/success cooldown and stale cargo/assignment/stopped/actor/scene controls; checked |
+| R3: Empty return releases its worker | `AssignGatherResourcesOrder` replaces an inactive remembered source, retains newly appearing cargo and uses normal Stop when an empty return has no live source | Public agent control clears real order/queue and cancels movement; loaded and replacement controls preserve delivery; checked |
+| R4: Review, verify, document, publish | Durable economy guidance, HANDOFF and this checkpoint | Scoped final gate checked; full release remains open; containing commit owns publication |
+
+**Implementation Review:** traced Gather/ReturnResources admission and fallthrough, both source selection awaits,
+drain selection, current-order replacement/reset/restore, native source admission and resource execution, direct legacy
+logistics and actual Stop terminal/queue/movement cleanup. No new subscriptions, timers, saved tokens or cache policy.
+Already-admitted extraction/drop-off retains its native transfer semantics. The source lookup no longer reads a
+replacement order as its destination. Failed native reassignment does not claim success or consume its success cooldown.
+Empty returns can finish only while the original live order still owns the operation; loaded returns remain protected.
+The Stop callback and public pawn facade remain the existing owners. No oracle, balance, save/wire or pure policy change.
+
+**Causal evidence:** the previous ten-wood carrier arrived at 11,939 and completed its same-tile range query at 12,006,
+the capture bound; no final-pack delivery refusal exists. Last prior delivery credited ten at 10,608. Bounded
+`recovery-carrier-causal.json` retains four tail cases, none omitted. The initial candidate match
+`order-recovery/1791735737603-failed.json` then exposed an empty return repeatedly resolving drop-off with zero;
+last positive command progress 2,751 timed out at 9,951. Live-source refusal required fresh-source/terminal cleanup,
+implemented before publication. `recovery-timeout.json` retains six receipts and the bounded service tail with omission
+counts. Initial candidate source is base plus the first two fixes, dirty `fnv1a32:3548c67a`; two worlds/1,221 decisions/
+24,034 ticks/397,702 ms. This justified a second final match after the related source change; neither run overlaps.
+
+**Omission Audit:** all R1/R2/R3 controls are registered native Jest specs; final focused four suites/80 tests pass.
+Original production owners fail 53/pass 27 with final controls and are restored byte-for-byte. Final broad native gate
+passes 157 suites/830 tests, spec types, explicit structure, owned formatting and uncached portal production build.
+Initial fixture-active wiring and a resource enum literal were corrected. The existing long logistics log string was
+wrapped without changing content; the boundary describe callback exceeded 200 lines after adding the cleanup control,
+so assertions were regrouped without semantic changes and all eight boundary cases rerun successfully. No baseline
+refresh. Pure gameplay unchanged; prior 64/299 evidence is historical. Doctor/context pass. No native credit, useful
+effect, full recovery or legal faction proof is inferred from test doubles or successful reassignment alone.
+
+**Final runtime:** `order-recovery-final/1791736717088-failed.json` and supported `indexes/` report: source
+`d23c77725609075eb7b71d027484341ce2068507` plus all repairs, dirty `fnv1a32:0ab2f6c2`, fixture `fnv1a32:221d6201`,
+seeds `759101`/`759102`; one process shares two worlds across PRO-03/06/07. 1,221 decisions/24,029 ticks, 379,443 ms.
+Gameplay source frozen throughout both matches. Tivara: seven workers/one AnkGuard, food/wood credits 190/160,
+stockpile wood 120, two initial military units, 104 damage/one enemy loss. Skaduwee: five workers/two producers,
+credits 90/140, stockpile wood 160, two initial military units, no damage/loss. Both have zero captured zero-resource
+drop-offs or resource-command timeouts; the explicit empty-return terminal branch is proved by the native control,
+not a captured final-match terminal. Two Tivara Attack validation failures remain; zero failed Moves. Command summaries
+retain cancellation/hidden-target and Skaduwee illegal-site cases. Four known-positive carriers are projected without
+omission. Full rows remain red (220/219/219 assertions), including branches/authority and Tivara's producer floor.
+Mixed-faction initial actors persist. No causal statistical gain, legal paired setup or useful new-capacity proof.
+
+Raw `tmp/ai-skirmish-runtime-results/run-yvtjTG/runtime.json`: 214,668,948 bytes, SHA-256
+`346dd750f7fec8dff9293112af9f52d87f0a7ae015060087068f7ebc14272e51`; matrix 214,797,188 bytes.
+Start with `recovery-final-summary-final.log`, then `recovery-final-world-summary-final.json`; all two failed outcomes
+and four known-positive carriers retained, none omitted. Initial and final results use separate ignored artifact paths.
+No raw capture, temporary projection, plan or diagnostic machinery is staged.
+
+**Final Closure Audit:** R1/R2/R3 implemented and checked, R4 owns durable guidance, review, gates and publication.
+Scope is two production owners, four amended/new native specs, one durable economy doc and two existing progress files.
+Nx migration `59f72e037` retained. M12 remains open; M11 useful authority, legal paired production recipes,
+server/socket/save/restart/hash/calibration and end-of-gate machinery necessity review remain unresolved. Next batch
+starts at legal production recipes and dependency-ready authority, then funding/throughput for useful capacity;
+do not manufacture another cargo/route repair from pending cargo alone. Recommend GPT-6.1 Sol / high, then pause.
+
 ## Cargo preservation checkpoint (2026-10-11)
 
 **Scope:** M12 grouped resource depletion/delivery safeguards on `feature/759-skirmish-ai`, base/remote

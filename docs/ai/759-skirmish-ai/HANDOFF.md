@@ -36,51 +36,58 @@ economy/production/combat scenarios with fresh evidence at the active final gate
 their original values; revised expectations must reflect an explained balance decision while preserving authority,
 fairness and useful-effect requirements.
 
-**Current step:** M12 grouped depleted-source/cargo preservation batch stage_checked; full PRO remains red.
-Containing commit owns publication. Full M12/PRO release proof remains open; M11 useful authority remains blocked.
-C8 sanity checking is complete and further diagnostic profiling is not queued.
+**Current step:** M12 grouped resource-order recovery batch stage_checked; full PRO remains red.
+Containing commit owns publication. Full M12 release proof remains open; M11 useful authority remains blocked.
+C8 sanity checking is complete; no further diagnostic profiling is queued. Actual model/effort unknown.
 
-**What changed / why:** native Gather delivers partial cargo before replacing a missing/exhausted non-crop source.
-Full/partial delivery branches retry an unavailable drain without falling through to source acquisition or Stop.
-Native source switching preserves same-resource cargo and refuses a different resource before changing assignment
-or cargo; delivery must empty the pack first. This prevents collected resources disappearing during recovery.
-Unripe Fields keep tending with partial packs. No AI policy, balance, save/wire, cache, oracle or diagnostic machinery
-changed. Prior scouting admission/lifecycle and macro builder delivery protections remain intact.
+**What changed / why:** source/drain lookups and the gathering range probe may mutate/admit work only for their
+unchanged live requesting order. Cancellation, replacement, type/target changes, actor death/inactivity and scene
+teardown discard late results. The legacy logistics caller preserves loaded workers and newer assignments, counts
+only native accepted switches and leaves its success cooldown untouched on refusal. After an empty return, a destroyed
+remembered source triggers fresh selection; no live replacement finishes the return through normal Stop/order/queue/
+movement cleanup instead of depositing zero indefinitely. Cargo appearing during selection keeps delivery ownership.
+These three related fixes protect recovery and release empty workers for useful new duties. Already-admitted native
+transfers retain their existing semantics. No balance, AI policy, save/wire, navigation cache, oracle or machinery change.
 
-**Current checks:** all 155 native suites/767 tests, native types, explicit structure, final owned-source formatting and
-uncached portal production build pass. Thirteen focused controls fail five/pass eight against original owners, restored
-byte-for-byte; all pass after repair. Original facade formatting passes; the task-owned one-line warning was corrected
-after the match by a whitespace-only wrap. Initial new-fixture Phaser wiring was corrected before causal checks.
-Gameplay policy is unchanged; prior 64 gameplay suites/299 tests remain historical evidence. Doctor/context pass.
-Artifacts use ignored tmp/ai-plans/759-validation/cargo-*; no raw capture or temporary file is committed.
+**Current checks:** final 157 native suites/830 tests, native spec types, explicit source structure, owned-source
+formatting and uncached portal production build pass. Eighty focused controls fail 53/pass 27 against original owners,
+restored byte-for-byte; all pass after repair. Public native cleanup control clears the actual order/queue and cancels
+movement. Initial fixture and enum typing mistakes were repaired. A long existing logistics log string was wrapped
+without changing its text; the amended boundary suite was split into two describe blocks to meet the 200-line limit.
+Final boundary assertions pass after regrouping. No baseline refresh. Pure gameplay is unchanged; prior 64 gameplay
+suites/299 tests remain historical evidence. Doctor/context pass; artifacts use ignored recovery-* validation paths.
 
-**Current causal evidence:** prior Tivara has no observed Tree6 remaining, three Gather workers with no observed target,
-one holding ten wood. A missing drain can let the full-pack branch fall through; a source switch previously reset cargo.
-funding-before.json/funding-orphan-cargo.json retain bounded facts. Prior attack refusals at tick 10,660 follow target
-health falling to 6%, then last-seen at 10,659; no independent death proof is captured. Facing already tolerates missing
-transforms, so no facing/attack change is justified. Retention alone cannot fund a second 200-wood/50-stone AnkGuard.
-Explicit incompatible Gather requests may still fail; unavailable drains can still strand retained cargo. Legacy
-logistics already ignores source-switch refusal when counting reassignments; that existing gap remains uncertified.
+**Causal trace / why the batch expanded:** the previous retained ten-wood carrier gathered at 11,606, arrived at the
+WorkMill delivery tile at 11,939, then completed its same-tile range probe at the 12,006 capture bound. Its last prior
+delivery credited ten at 10,608; no delivery refusal is captured. recovery-carrier-causal.json retains all four tail
+cases with zero omitted. Do not chase a route defect from that pending pack alone. The first candidate match then
+exposed an empty ReturnResources worker repeatedly depositing zero; last positive progress 2,751 expired at 9,951.
+Live-source refusal needed fallback/terminal cleanup before publication. recovery-timeout.json retains that causal
+join. The final follow-up and meaningful controls close this path; the first candidate was not published.
 
-**Current runtime evidence:** cargo-preservation/1791726965611-failed.json and supported index retain two worlds once
-across PRO-03/06/07: source abd35f340719e2444477c3f829e159bb1b402005 plus repairs, dirty fnv1a32:df8b8fc4, fixture
-fnv1a32:221d6201, seeds 759101/759102. One process, 1,220 decisions/24,025 ticks, 395,187 ms. Both worlds have
-zero captured native failed outcomes/failed Moves. Tivara has six workers/one producer, Skaduwee six/two; native food
-credits 110/120, wood credits 150/140, final wood stockpile 170/100. Final Tivara ten-wood cargo is under ReturnResources
-to WorkMill, not credited income. Full PRO-03/06/07 still fails (220/219/219 assertions) for required branches/authority
-and Tivara's producer floor; command summary retains two cancelled/two illegal-site cases. Mixed-faction setup remains.
-No causal statistical improvement, legal paired setup, complete recovery or useful-capacity proof is inferred.
-Raw tmp/ai-skirmish-runtime-results/run-eCDPfm/runtime.json: 213,121,695 bytes, SHA-256
-a2a00b6587893b3d4d13c7573024ba84d174f822b3417ca32548a64b542b3a9f; matrix 213,250,474 bytes. Start with
-cargo-final-summary.log, bounded cargo-final-world-summary.json/cargo-final-carriers.json (four known-positive
-carriers, zero omitted). Gameplay source stayed frozen during the match; afterward only guard whitespace/docs changed.
-Implementation Review, Omission Audit and separate Final Closure Audit complete for this scoped batch.
-See the [cargo checkpoint](follow-ups/runtime-matrix-ci.md#cargo-preservation-checkpoint-2026-10-11).
+**Current runtime evidence:** order-recovery-final/1791736717088-failed.json and supported indexes companion share two
+worlds across PRO-03/06/07: source d23c77725609075eb7b71d027484341ce2068507 plus repairs, dirty fnv1a32:0ab2f6c2,
+fixture fnv1a32:221d6201, seeds 759101/759102. One process, 1,221 decisions/24,029 ticks, 379,443 ms. Tivara ends
+with seven workers/one producer, 190 food/160 wood credited and wood stockpile 120; Skaduwee five/two, 90/140 credited
+and wood stockpile 160. Both have zero captured zero-resource drop-offs or resource-command timeouts. The explicit
+empty-return terminal branch is proven by the native control, not by a captured final-match terminal. Two Tivara
+Attack validation failures remain; no failed Move is captured. Tivara reports 104 damage/one enemy loss; Skaduwee zero.
+Mixed-faction initial actors persist. Full rows still fail (220/219/219 assertions) for required branches/authority
+and Tivara's producer floor. No causal statistical improvement, legal paired setup or useful new-capacity proof is inferred.
+Raw tmp/ai-skirmish-runtime-results/run-yvtjTG/runtime.json: 214,668,948 bytes, SHA-256
+346dd750f7fec8dff9293112af9f52d87f0a7ae015060087068f7ebc14272e51; matrix 214,797,188 bytes.
+Start with recovery-final-summary-final.log and bounded recovery-final-world-summary-final.json (all two failures and
+four known-positive carriers retained, zero omitted). Gameplay source stayed frozen during each match. Initial
+order-recovery/1791735737603-failed.json is before empty-return cleanup and remains separate historical evidence.
+Implementation Review, Omission Audit and separate Final Closure Audit complete for the scoped three-fix batch.
+See the [resource-order checkpoint](follow-ups/runtime-matrix-ci.md#resource-order-recovery-checkpoint-2026-10-11).
 
-**Next batch / why:** trace retained delivery refusals using existing native route/drain evidence, then repair legal
-paired production setup and dependency-ready authority gaps to fund and prove useful military capacity. Keep related
-causal work together. Recommend GPT-6.1 Sol / high; actual model/effort unknown, no automatic switch. Commit/push and pause.
-Previous scouting evidence remains in its [checkpoint](follow-ups/runtime-matrix-ci.md#scouting-and-builder-delivery-checkpoint-2026-10-11).
+**Next batch / why:** implement legal paired PRO-03/06/07 production setup and dependency-ready native authority gaps,
+then measure funding/throughput against useful military capacity. Begin with fixture catalog inventory and the named
+production recipes; preserve full assertions and useful-effect requirements. Further cargo/route repair needs concrete
+fresh refusal/no-progress evidence. Recommend GPT-6.1 Sol / high for this causal/authority work; no automatic switch.
+Commit/push and pause. Previous cargo protections remain in their
+[cargo checkpoint](follow-ups/runtime-matrix-ci.md#cargo-preservation-checkpoint-2026-10-11).
 
 **Previous movement repair / why:** `MovementSystem` distinguishes EasyStar's empty same-tile route from no route. It confirms
 the pawn's live active-scene tile after the asynchronous query, creates its own singleton route, cancels older movement

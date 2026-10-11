@@ -104,6 +104,7 @@ function fixture() {
   const resources = new PawnAgentResources(actor, board, {
     SelfIsAlive: () => true,
     InRange: async () => State.SUCCEEDED,
+    Stop: jest.fn(),
     AcquireNewResourceSource: jest.fn()
   });
   return {

@@ -23,48 +23,58 @@ export class PawnAgentResources {
   constructor(
     private readonly gameObject: Phaser.GameObjects.GameObject,
     private readonly blackboard: PawnAiBlackboard,
-    private readonly agent: Pick<PlayerPawnAiControllerAgent, "SelfIsAlive" | "InRange" | "AcquireNewResourceSource">
+    private readonly agent: Pick<
+      PlayerPawnAiControllerAgent,
+      "SelfIsAlive" | "InRange" | "AcquireNewResourceSource" | "Stop"
+    >
   ) {}
 
-  /** Assigns the native lookup result to the current order read after source selection finishes. */
+  /** A lookup may retarget only the live order that requested it. */
   async AcquireNewResourceSource() {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return State.FAILED;
+    const orderType = currentOrder.orderType;
+    const target = currentOrder.data.targetGameObject;
     const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
     if (!gathererComponent) return State.FAILED;
     let resourceSource = await gathererComponent.getPreferredResourceSource();
+    if (!this.isCurrentResourceOrder(currentOrder, orderType, target)) return State.FAILED;
     const currentResources = resourceSource?.active
       ? getActorComponent(resourceSource, ResourceSourceComponent)?.getCurrentResources()
       : 0;
     if (!currentResources || currentResources <= 0) {
       resourceSource = await gathererComponent.getNewResourceSource();
     }
-    if (!resourceSource) return State.FAILED;
-    const currentOrder = this.blackboard.getCurrentOrder();
-    if (!currentOrder) return State.FAILED;
+    if (!resourceSource?.active || !this.isCurrentResourceOrder(currentOrder, orderType, target)) return State.FAILED;
     currentOrder.data.targetGameObject = resourceSource;
     return State.SUCCEEDED;
   }
 
-  /** Reads the destination order after awaiting the preferred drain, preserving native retargeting. */
+  /** Discards late drain selection after cancellation or retargeting. */
   async AcquireNewResourceDrain(): Promise<State> {
+    const currentOrder = this.blackboard.getCurrentOrder();
+    if (!currentOrder) return State.FAILED;
+    const orderType = currentOrder.orderType;
+    const target = currentOrder.data.targetGameObject;
     const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
     if (!gathererComponent) return State.FAILED;
     const resourceDrain = await gathererComponent.getPreferredResourceDrain();
-    if (!resourceDrain) return State.FAILED;
-    const currentOrder = this.blackboard.getCurrentOrder();
-    if (!currentOrder) return State.FAILED;
+    if (!resourceDrain?.active || !this.isCurrentResourceOrder(currentOrder, orderType, target)) return State.FAILED;
     currentOrder.data.targetGameObject = resourceDrain;
     return State.SUCCEEDED;
   }
 
-  /** Retains the entry order across the range probe, then lets the gatherer own work and delivery. */
+  /** Revalidates the entry order after the range probe, before admitting native extraction. */
   async GatherResource(): Promise<State> {
     const currentOrder = this.blackboard.getCurrentOrder();
     if (!currentOrder) return State.FAILED;
+    const orderType = currentOrder.orderType;
+    const target = currentOrder.data.targetGameObject;
     if (!this.agent.SelfIsAlive()) return State.FAILED;
     const inRange = await this.agent.InRange("gather");
-    if (inRange !== State.SUCCEEDED) return State.FAILED;
-    const target = currentOrder.data.targetGameObject;
-    if (!target) return State.FAILED;
+    if (inRange !== State.SUCCEEDED || !this.isCurrentResourceOrder(currentOrder, orderType, target))
+      return State.FAILED;
+    if (!target?.active) return State.FAILED;
     const targetHealth = getActorComponent(target, HealthComponent);
     if (targetHealth && !targetHealth.alive) return State.FAILED;
     const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
@@ -194,12 +204,15 @@ export class PawnAgentResources {
   async AssignDropOffResourcesOrder(): Promise<State> {
     const currentOrder = this.blackboard.getCurrentOrder();
     if (!currentOrder) return State.FAILED;
+    const orderType = currentOrder.orderType;
+    const target = currentOrder.data.targetGameObject;
 
     const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
     if (!gathererComponent) return State.FAILED;
 
     const preferredResourceDrain = await gathererComponent.getPreferredResourceDrain();
-    if (!preferredResourceDrain) return State.FAILED;
+    if (!preferredResourceDrain?.active || !this.isCurrentResourceOrder(currentOrder, orderType, target))
+      return State.FAILED;
 
     currentOrder.orderType = OrderType.ReturnResources;
     currentOrder.data.targetGameObject = preferredResourceDrain;
@@ -209,15 +222,45 @@ export class PawnAgentResources {
   async AssignGatherResourcesOrder(): Promise<State> {
     const currentOrder = this.blackboard.getCurrentOrder();
     if (!currentOrder) return State.FAILED;
+    const orderType = currentOrder.orderType;
+    const target = currentOrder.data.targetGameObject;
 
     const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
     if (!gathererComponent) return State.FAILED;
 
-    const preferredResourceSource = await gathererComponent.getPreferredResourceSource();
-    if (!preferredResourceSource) return State.FAILED;
+    let preferredResourceSource = await gathererComponent.getPreferredResourceSource();
+    if (!this.isCurrentResourceOrder(currentOrder, orderType, target)) return State.FAILED;
+    if (preferredResourceSource && !preferredResourceSource.active) {
+      preferredResourceSource = await gathererComponent.getNewResourceSource();
+      if (!this.isCurrentResourceOrder(currentOrder, orderType, target)) return State.FAILED;
+    }
+    if (orderType === OrderType.ReturnResources && gathererComponent.isCarryingResources()) return State.FAILED;
+    if (!preferredResourceSource?.active) {
+      // Delivery is finished; no source means release the empty worker instead of depositing zero forever.
+      if (orderType === OrderType.ReturnResources) {
+        return this.agent.Stop("ReturnResources - No Resource Sources Exist");
+      }
+      return State.FAILED;
+    }
 
     currentOrder.orderType = OrderType.Gather;
     currentOrder.data.targetGameObject = preferredResourceSource;
     return State.SUCCEEDED;
+  }
+
+  /** No listener or saved token is needed: replacement, retargeting and actor teardown invalidate this work. */
+  private isCurrentResourceOrder(
+    order: OrderData,
+    type: OrderType,
+    target: Phaser.GameObjects.GameObject | undefined
+  ): boolean {
+    return (
+      this.blackboard.getCurrentOrder() === order &&
+      order.orderType === type &&
+      order.data.targetGameObject === target &&
+      this.gameObject.active &&
+      !!this.gameObject.scene?.sys.isActive() &&
+      this.agent.SelfIsAlive()
+    );
   }
 }
