@@ -36,11 +36,26 @@ economy/production/combat scenarios with fresh evidence at the active final gate
 their original values; revised expectations must reflect an explained balance decision while preserving authority,
 fairness and useful-effect requirements.
 
-**Current step:** M12 consolidated ten-item production batch remains in_progress. The containing commit delivers
-payment and queue-lifecycle repairs at the explicit larger-contract boundary from the batch estimate; it does **not**
-complete all ten items. Full PRO and M11 useful authority remain open. Actual host model/effort unknown.
+**Current step:** M12 consolidated ten-item production batch remains in_progress; the connected authority design is
+authored after source review, not implemented or runtime validated. Source base/remote on entry:
+54f4553be3a4b0ce28e7d1ff88d88b166defec9c, feature/759-skirmish-ai in
+/home/jernej/.codex/worktrees/7977/fuzzy-waddle. This commit changes only the existing handoff/plan. Full PRO and M11
+useful authority remain open. Actual host model/effort unknown.
 
-**What changed / why:** immediate construction now checks configured costType rather than productionTime, so
+**What this stage authored / why:** the
+[connected production authority design](follow-ups/runtime-matrix-ci.md#production-authority-design-2026-10-11)
+defines V2 proof inputs with separate paused setup, consumed decision, publication and application clocks. Native
+closed-tick frontiers preserve exact deadlines despite browser overshoot; target-specific native weapon bands replace
+universal range, and actual builder/output routes replace general reachability guesses. Independent actual-world setup
+comparison permits only declared causal differences. Construction/payment/claim/refund joins and all eight branches
+are mapped to existing owners, with useful exact-ID output and complete survival intervals retained.
+
+Abandonment releases optional forecasts but follows already paid work to its real terminal; it does not require erasing
+that work. Pending-refund testing uses explicit controlled shared commands while adaptation deliberately retains paid
+production. Neither design decision injects planner state or invents an AI cancellation policy. No game code, fixture,
+test or balance changed; prior gameplay evidence remains scoped to the prior source. No gameplay checks rerun here.
+
+**Previous implementation / why:** immediate construction now checks configured costType rather than productionTime, so
 positive-duration buildings actually pay before work starts. Automatic denied starts still wait without work/health
 progress; explicit denial and unexpected callback errors still throw. Unstarted rejected placements cannot manufacture
 refunds; killed/destroy teardown refunds/disposes once and always releases tick listeners. Definition prices, durations
@@ -58,15 +73,15 @@ Item 1 is implemented; 2/3/9 have scoped implementation; 4–8 remain unimplemen
 Item 10 closes only this checked source slice, not the requested full batch or end-of-gate machinery review.
 The initial estimate still understated the semantic gap; do not create success-labelled worlds or lower assertions.
 
-**Next exact action / why:** one connected design pass over production-evidence.ts, production-contract-evaluation.ts,
-producer-resilience-evaluation.ts, production-transition-evaluation.ts and the native AiDecisionInputV1 / selected-result
-contract. Separate paused world tick zero from first fair decision and consumed-input versus publication ticks; use
-actual target-specific weapon/elevation bands, time-scoped reachability and explicit paired-world differences. Define
-how a pending-refund scenario uses real cancellation authority while the planner's retain_committed_production policy
-remains intentional. Then implement remaining construction/loss joins and physical scenarios together, with complete
-oracles. Recommend GPT-6.1 Sol / high for this authority/policy design, followed by grouped implementation once concrete.
-Commit/push, verify remote and pause at this contract boundary. Full M12/M11, socket/save/restart/hash/calibration and
-end-of-gate machinery review remain open. Validation evidence is recorded in the linked checkpoint.
+**Next exact action / why:** implement design Pass A: RuntimeProductionEvidenceV2 and its existing contract/pair/
+transition/resilience/refund consumers, opt-in native closed frontiers, complete actual setup and event/claim/definition
+joins with meaningful controls. This supplies honest proof inputs before physical worlds can certify behavior. Pass B
+groups all eight branches for both factions, demonstrated repairs, the final correctness gate and machinery necessity
+review. Keep full outcomes/deadlines and no performance certification suite. Recommend GPT-6.1 Sol / high for Pass A's
+connected runtime authority; Sol / medium for specified Pass B fixture assembly, escalating for actual causal/policy
+defects. Luna / high only for concrete mechanical work. Commit/push, verify remote and pause at each pass.
+Full M12/M11, socket/save/restart/hash/calibration and end-of-gate machinery review remain open. The design section
+owns acceptance and scope; the checkpoint below it owns prior validation evidence.
 
 **Checked slice:** 159 native suites/850 tests, 216 browser controls plus one finite two-faction lifecycle test,
 native/browser types, exact formatting, scoped lint/structure, catalog consistency and uncached production build pass.

@@ -1,5 +1,185 @@
 # Playwright runtime matrix and CI — #816
 
+## Production authority design (2026-10-11)
+
+**State:** design_authored after source review, not implemented or runtime validated. This is the connected design
+requested at the preceding boundary, based on 54f4553be3a4b0ce28e7d1ff88d88b166defec9c. The ten-item batch remains
+in_progress. This section owns the next implementation; the checkpoint below records the preceding source slice.
+Actual host model/effort unknown. No gameplay, capture, fixture, assertion or balance changes in this design commit.
+
+### Numbered acceptance and implementation decisions
+
+1. **Separate setup from decisions.** Replace the full browser proof shape with RuntimeProductionEvidenceV2 rather
+   than silently reinterpret V1. Retain diagnostic V1 capture types and existing queue projections. V2 has distinct
+   setup, decisions, world boundaries, events and coverage sections. Setup is the paused actual world at tick zero;
+   it has no fair threat/reachability verdict or manufactured transition. Decisions reference the exact captured
+   AiDecisionDispatchEvent identity, consumed input, selected reservations and economyProduction. World boundaries
+   contain actual owned actor/queue/tech state, never a copy of the last planner observation. Initial identity checks
+   use setup; transition/resilience causal checks use their first eligible decision. Capture must start before preset
+   payments, or retain their separately checked setup applications with their original identities and before/after cash.
+
+2. **Preserve all clocks and sequences.** Every decision keeps inputTick=identity.tick, inputGeneration,
+   selectedTick=fact.tick and selectedSequence=fact.sequence. Existing cadence.tick is the actual controller boundary
+   recorded at publication, not another name for inputTick. Every applied event keeps its own applicationTick and
+   observer sequence; a request also keeps scheduledTick. Require inputTick <= selectedTick <= applicationTick for
+   linked commands, exact epoch/decision/effect identity and monotonic publication order. Stale consumed inputs remain
+   dated inputs; they cannot certify current exposure. Transition committedTick must equal its originating consumed
+   observation tick, not the later sampled world tick. Immutable target/domain/product/producer/desiredForce/
+   desiredProducers/unitDurationTicks/beginsTick/forceDeadlineTick survive all status changes.
+
+3. **Close exact native frontiers, not browser polling targets.** Add one opt-in callback at the fixed-clock advance
+   immediately before the next tick's tick$.next, consumed by the existing production capture. A compact boundary
+   records capturedAtTick=t+1, closedThroughTick=t and afterSequence before any t+1 subscriber runs. It is not labelled
+   a tick-t snapshot. A callback applying asynchronously after this frontier receives its actual later clock and
+   cannot satisfy a tick-t deadline. Capture only tracked actor IDs, liveness/readiness, physical positions, lanes and
+   tech changes needed by active production proofs; coalesce identical consecutive fixed-tick states into covered
+   intervals and retain ordered changes/deadline frontiers, not full observations or one retained snapshot per tick.
+   Money and lifecycle callbacks remain individual events. Register the derived
+   begins/deadline/stability frontiers when the selected commitment arrives; if a deadline has already closed, fail
+   unavailable rather than backfill. End a run after closing latestTick; ignore later facts for that proof while retaining
+   their real timestamps in diagnostics. Fast-forward, restore, skipped ticks, listener errors, overflow or capture
+   shutdown before closure break coverage. Observer failures mark proof unavailable and detach; they must not escape
+   into or stop the gameplay clock. The normal game has no installed observer, retained proof buffer or timer.
+   Subscription disposal is owned by capture stop/scene shutdown; one capture per scene/player, bounded by the existing
+   fact/snapshot limits. Do not add another simulation clock, polling loop or persistent/save/wire field.
+
+4. **Use target-specific exposure and scoped access.** Delete the full proof's universal buildingRange and general
+   reachable boolean. At a decision, use the already captured producerExposure pairs plus the same input's visible
+   threats. A producer is geometrically exposed iff a complete current pair set contains a known positive-damage
+   selected ground weapon whose native minimum/effective range band contains it. Safe requires complete current pairs,
+   with no applicable band; unavailable is never safe. Preserve selected attack, elevation and floored 3D distance;
+   cooldown/orders/stun are not implied. Hidden/remembered threats are excluded, not read from the live opponent index.
+   Physical compact boundaries track the already fairly bound producer/threat identities and geometry to invalidate a
+   claimed safe interval when either moves, changes weapon/level, dies or leaves visibility. A new fair binding is
+   required after invalidation; a later safe sample cannot erase an exposed interval.
+
+   Access has a purpose and interval: builder-to-site admission uses the consumed conservative construction-cell flood
+   as planner evidence, followed by exact native builder_path query/terminal and actual construction work; unit-output
+   usability requires the replacement's own legal spawn and actual native route/arrival to the declared owned rally
+   region. Never infer native navigation from a flood, access-node membership or producer coordinates. Initial producers
+   need actual readiness/legal queue admission; buildings do not themselves travel. Do not launch extra all-pairs path
+   probes. Reuse builder/output routes, invalidate their proofs on topology/identity/order changes and retain unavailable
+   status if the normal path provides no authority. Continuous alive/finished capacity comes from the covered physical
+   boundaries; observed arrival proves that interval's use, not permanent reachability.
+
+5. **Attest actual paired starts independently.** Add a setup projection to the existing capture/setup application
+   owners, not to authored fixture JSON. Include actual map identity/topology/content revision, simulation seed and
+   player/faction/profile, every indexed actor's canonical type/owner/logical position/elevation/level/health/construction
+   state, all resources and cargo, queues with stored price/payment/progress, orders, tech, initial pending commands and
+   AI opening configuration. Missing or truncated fields prevent a digest. Fixture labels, source provenance and future
+   perturbation schedules remain separately reported; they are not actual world equivalence. Canonicalize actor/item IDs
+   into independently derived setup roles using type/owner/position plus checked authored-ID-to-live-ID binding where
+   needed; duplicate indistinguishable roles fail, never sort random IDs to invent correspondence. Include inherited map
+   actors, not only newly authored actors. Compare canonical structures as well as their digest to explain mismatches.
+
+   PRO-03 has identical initial state and a common commitment prefix; only one declared, later objective-change event
+   differs. PRO-06 critical/safe permits only the designated threat position to differ; producer, workers, resources,
+   weapons, level and objective remain equal. Low-value/no-demand permits only the declared physical objective/defense
+   difference that changes actual assessed demand. Each pair declares exact role/field exclusions and reports both raw
+   values; no arbitrary ignored paths, resources, AI state or geometry. Verify that the allowed change actually changes
+   the consumed causal variable and that every other canonical field is equal. Queue worlds are standalone, not fake pairs.
+
+6. **Complete events and definitions at their owning boundaries.** Keep existing queueLifecycleEvents as the checked
+   queue slice; build the V2 bridge only when construction, rejection, loss, setup-paid-item and global liability joins
+   are complete. Construction admission, payment, work-start, ready completion and teardown are distinct events joined
+   by stamped command/effect/site/builder identity. Capture effective definition/level and prerequisite admission at that
+   operation; use producer-scoped product/research definitions, not a global productKey price across changed levels.
+   Definition work duration is separate from builder travel, concurrent work and elapsed time; actual ready completion
+   must precede begins/loss, without asserting admissionTick+definitionDuration equals readiness. No per-tick construction
+   success is certified until native paid-work authority exists. Construction claims join the same selected/admitted/
+   charged/transferred/released ownership path as queue claims; forecast prerequisites are never reserved spendable cash.
+   Rejections need actual shared denial and unchanged cash/lane, not inferred absence. Loss joins the pinned native
+   damage/removal identity and covered absence. Seeded queues retain actual setup charges; resourceStarts overwriting
+   the post-charge balance are explicit setup writes, not fabricated payments or runtime income.
+
+   Refund authority is the real resource-added callback for its exact item and native refund policy. Preserve the
+   request/removal/refund ordering even when research refunds before removal. Do not invent a delayed refund application
+   inside a synchronous cancellation: the pending interval is request-to-scheduled-execution. A request has identity and
+   scheduled time, but no payment/obligation mutation; unlike money events it need not have a synthetic cash frame. All
+   financial probes/applications still require their own complete cash, unspent-claim and obligation frames. Update the
+   partial lifecycle adapter accordingly; preserve its missing-frame negative control for actual financial events.
+
+7. **Author physical causal worlds, not planner records.** Use the existing guarded faction roster/test map and preset
+   application. Start with actual opening prerequisites already fulfilled by physical actors or wait for normal opening
+   completion; do not inject brain state, an assessment, demand, transition, accepted intent or success record. Product,
+   producer, research and budget choices come from actual faction definitions and legal shared services. Keep existing
+   latestTick/stableForTicks and derived commitment deadlines; inability to meet them is a defect to investigate, not
+   reason to enlarge them. Bind events to exact original roles and apply them through ordinary services.
+
+   | Family / required branches per faction | Inputs and required evidence / why |
+   | --- | --- |
+   | PRO-03 future_committed / future_abandoned | Same idle producer, legal builder, visible pressure objective and funded force requiring two producers. Common real commitment first; control changes that exact objective before begins. Committed case builds ready capacity before begins and achieves the exact force by its fixed deadline. Abandoned case releases only optional unspent work, never revives dates or cancels paid work merely to satisfy the oracle. |
+   | PRO-06 critical_exposed / safe_served | One critical producer, useful assessed deficit, affordable spare capacity and same visible target-specific weapon; only threat position changes. Critical case has safe ready capacity before pinned original loss, then useful exact-ID output. Safe control refuses needless redundancy. |
+   | PRO-06 low_value / no_demand | Same exposed producer and economy; declared physical objective/defense difference makes actual selected demand already served or absent. Neither case buys unnecessary redundancy. Do not force a zero demand value or suppress an ordinary opening requirement. |
+   | PRO-07 shared_contention | One real shared train/research lane and physical prerequisites/evidence giving both actual AI proposals strategic value. Observe accepted or deferred proposals, actual serial admissions, no double reservation, both exact-item completions and retained unit/tech benefit. A scripted enqueue pair alone is only a shared-service control. |
+   | PRO-07 cancel_pending_refund | Explicit controlled shared-command experiment: seed one actually paid item, schedule its exact cancellation for a later native tick, make an unaffordable-before-refund command probe during the request interval, then admit/complete useful work after the actual refund. Report controlled origin separately from AI-selected decisions; retain adaptation's retain_committed_production policy. |
+
+   The abandonment oracle currently rejects every construction for the whole run and requires irreversible leases to
+   keep an unchanged state forever. Replace those predicates with the documented native invariant: no new optional
+   dispatch after abandonment publication, released forecasts stay released, and already admitted/paid work retains
+   exact lifecycle ownership through completion/loss rather than vanishing or being refunded by abandonment. Include a
+   pre-admission control where possible and an already-admitted control; neither may erase legitimate paid work. This
+   corrects a contract contradiction, not the required release/retention outcome in strategic-scenarios.md.
+
+8. **Prove useful effects and complete intervals.** A completion self-report alone is insufficient. Unit proof joins
+   exact item -> registration -> correct owner/type -> legal spawn -> normal route/arrival into the declared rally
+   region and retains that same actor alive throughout stableForTicks. Research proof joins its exact item, actual tech
+   installation and effective changed capability/level used by subsequent relevant production or combat. Count only
+   the contending items/transition plan/replacement producer being tested. A closed deadline frontier proves force at
+   or before the unchanged deadline; complete physical history proves survival afterward. No gaps, replacement IDs,
+   unrelated output, late publication or final aggregate can satisfy a missing interval.
+
+9. **Fail closed and migrate consumers together.** V2 is required by full PRO-03/06/07 once its bridge and controls are
+   implemented. Old/partial records remain readable diagnostics but cannot pass full V2 acceptance. Update variant result,
+   report, evaluation, pair evaluation, fixtures and test factories together; do not mix V1 events/snapshots into V2 by
+   casting. Add meaningful negative controls for wrong clocks/epochs, missing frontiers, changed pair fields, hidden or
+   minimum-range/elevation threats, stale paths, dropped histories, unrelated products and duplicate/late refunds.
+   Retain all required branches and prior payment/lifecycle regressions. No baseline refresh or production capture
+   restart loop. Review current ai-producer-safety.ts separately from oracle authority: its 2D any-weapon estimate differs
+   from native selected-weapon 3D geometry. If a physical case demonstrates a decision defect, repair the owning shared
+   calculation with fair input; do not make the independent oracle repeat that approximation. Balance changes remain
+   permitted only with an observed workload, original/new values and a fresh affected final run.
+
+10. **Implement and close in two coherent passes.** Pass A migrates the V2 contract/consumers, minimal native frontiers
+    and setup inputs, all event/claim/definition joins and their focused controls. Pass B authors all eight branches for
+    both factions, grouped physical triage and demonstrated owner repairs, then one stable-source correctness gate and
+    scoped machinery review. Pass A must supply real complete inputs before Pass B claims certification. Use existing
+    catalog registrations/runner/report paths; derive checks from the registered recipes, not another handwritten list.
+    Run short causal controls before expensive worlds; once stable, run the native/browser/type/lint/structure/format/
+    catalog/build gate and all affected full PRO worlds in grouped processes. Record actual clocks, complete selected
+    case counts and fixture/source digests. No repeated broad suite per family and no performance certification suite.
+    End-of-gate necessity review removes unused/redundant helpers and temporary checks while retaining needed regression
+    controls and release authority; M11 socket/save/restart/hash/calibration are separate remaining obligations.
+
+### Review, omissions and delivery boundary
+
+**Implementation Review:** traced native observeAiProductionTransition -> productionTransitionClaims -> macro capacity
+proposal -> selected-result capture, native construction/queue/refund owners and fixed-clock loop. Reviewed the existing
+target-specific exposure normalizer, explicitly null world reachability, actual setup queue charges, tick-zero capture
+without a controller decision, paired digest and all three full production evaluators. This review found the abandonment
+and cancellation-request contradictions above in addition to the previously recorded clock/geometry gaps.
+
+**Omission Audit:** decisions 1–10 cover setup, clocks, exact deadlines, fair geometry, purpose-scoped access, paired
+differences, definitions/payments/claims, physical branches, useful output, migration and grouped final checks. Existing
+diagnostics remain partial; no authored design section is marked runtime-certified. Full fixture numeric positions,
+selected legal research products and physical trajectories must be bound from actual faction definitions in Pass B;
+if they do not trigger the required normal policy, diagnose the owning policy instead of authoring expected records.
+No new plan file, game code, fixture, test, performance probe, model switch or AI cancellation policy in this commit.
+
+**Separate Final Closure Audit:** this design stage closes source inspection and concrete contract decisions, not
+the ten-item implementation or full M12/M11 release. The native frontier/setup capture additions are explicitly
+unimplemented and must be checked for conditional installation, bounds and cleanup in Pass A. Prior 850 native/217
+browser checks apply only to 54f4553be's source; no gameplay checks were rerun for this documentation-only stage.
+Delivery requires exact owned-doc diff review, whitespace check, normal commit/push and remote SHA verification.
+
+**Next exact action / why:** implement Pass A beginning with RuntimeProductionEvidenceV2 and the existing production
+contract/pair/transition/resilience/refund consumers, then capture closed frontiers and complete setup/event/claim
+authority. This makes real worlds evaluable without invented timing or navigation facts. Recommend GPT-6.1 Sol / high
+for Pass A's connected authority implementation; GPT-6.1 Sol / medium is suitable for Pass B's fixture assembly once
+Pass A controls pass, escalating for a demonstrated policy/causal defect. Luna / high is appropriate only for already
+specified mechanical helpers/fixtures, not this unresolved runtime integration. Commit/push and pause at each pass;
+recommendations do not switch the active model. Full ten-item batch and end-of-gate review remain in_progress/not_started.
+
 ## Consolidated production contract boundary (2026-10-11)
 
 The user authorized all ten proposed items, replacing the earlier eight-stage execution grouping below. The full
