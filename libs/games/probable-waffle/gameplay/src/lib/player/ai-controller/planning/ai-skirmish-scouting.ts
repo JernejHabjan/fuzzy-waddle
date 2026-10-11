@@ -1,37 +1,124 @@
-import { aiDeadline, type AiClaimId, type AiPlanId, type AiSquadId } from "../contracts/ai-core-types";
+import {
+  aiDeadline,
+  type AiAccessNodeId,
+  type AiClaimId,
+  type AiPlanId,
+  type AiSquadId
+} from "../contracts/ai-core-types";
 import type { AiSquadStateV1 } from "../contracts/ai-brain-state-v1";
 import type { AiSkirmishProposalContext } from "./ai-skirmish-proposal-context";
-import { baseId, domains, intentBase, node, position, regionId, withTimeline } from "./ai-skirmish-support";
+import {
+  baseId,
+  domains,
+  intentBase,
+  node,
+  position,
+  regionId,
+  routeCapability,
+  withTimeline
+} from "./ai-skirmish-support";
+import { queryAiAccessRouteV1 } from "./ai-access-graph-v1";
+
+/** Scouting has no transport child owner; only an immediately executable route can admit a member. */
+function canScoutNode(
+  context: AiSkirmishProposalContext,
+  actor: AiSkirmishProposalContext["combat"][number],
+  targetNode: AiAccessNodeId
+): boolean {
+  const graph = context.observation.map?.accessGraph;
+  const sourceNode = node(actor);
+  if (!graph || !sourceNode || context.primaryOwnedActors.has(actor.actorId)) return false;
+  return (
+    queryAiAccessRouteV1(graph, {
+      queryId: `scout:${context.observation.tick}:${actor.actorId}:${targetNode}`,
+      kind: "movement",
+      fromNodeId: sourceNode,
+      toNodeId: targetNode,
+      capabilities: routeCapability(context.observation, [actor], context.catalog),
+      firingNodeIds: []
+    }).kind === "direct"
+  );
+}
 
 function appendNeutralClaim(context: AiSkirmishProposalContext): void {
-  const neutral = context.observation.actors
+  if (context.opponent) return;
+  const previous = context.state.squads.find((squad) => squad.squadId === "squad:scout:neutral");
+  if (previous) {
+    const members = context.combat.filter(
+      (actor) => previous.actorIds.includes(actor.actorId) && !context.primaryOwnedActors.has(actor.actorId)
+    );
+    const covered =
+      previous.lifecycle?.targetRegionId !== null &&
+      context.observation.map?.scoutCoverageAccessNodeIds.some(
+        (nodeId) => nodeId === previous.lifecycle?.targetRegionId
+      ) === true;
+    const expired =
+      previous.lifecycle !== undefined && previous.lifecycle.effectDeadline.dueTick <= context.observation.tick;
+    const terminal = previous.state === "completed" || previous.state === "cancelled";
+    const state = terminal
+      ? previous.state
+      : covered
+        ? "completed"
+        : expired || members.length === 0
+          ? "cancelled"
+          : previous.state;
+    // Keep the mission deadline and terminal record: a new proposal must not renew or redispatch the same claim.
+    context.nextSquads.push({
+      ...previous,
+      state,
+      actorIds: members.map((actor) => actor.actorId),
+      ...(previous.lifecycle
+        ? {
+            lifecycle: {
+              ...previous.lifecycle,
+              terminalReason: terminal
+                ? previous.lifecycle.terminalReason
+                : covered
+                  ? "region_observed"
+                  : expired
+                    ? "scout_deadline"
+                    : members.length === 0
+                      ? "members_unavailable"
+                      : null
+            }
+          }
+        : {})
+    });
+    if (state !== "completed" && state !== "cancelled")
+      members.forEach((actor) => context.primaryOwnedActors.add(actor.actorId));
+    return;
+  }
+  const candidates = context.observation.actors
     .filter((actor) => actor.relation === "neutral" && actor.visibility === "visible" && position(actor) !== undefined)
-    .sort((left, right) => left.actorId.localeCompare(right.actorId))[0];
-  const existingNeutralClaim = context.state.squads.find(
-    (squad) =>
-      squad.role === "scout" &&
-      squad.objectiveId === `neutral:${neutral?.actorId ?? "none"}` &&
-      squad.state !== "completed"
-  );
-  if (!neutral || !context.combat[0] || existingNeutralClaim || context.opponent) return;
+    .filter(
+      (actor) =>
+        actor.resourceState.status === "known" &&
+        actor.resourceState.value.available.status === "known" &&
+        actor.resourceState.value.available.value > 0
+    )
+    .sort((left, right) => left.actorId.localeCompare(right.actorId));
+  const neutral = candidates.find((actor) => {
+    const targetNode = node(actor);
+    return targetNode !== undefined && context.combat.some((member) => canScoutNode(context, member, targetNode));
+  });
+  const targetNode = node(neutral);
+  const member = targetNode ? context.combat.find((actor) => canScoutNode(context, actor, targetNode)) : undefined;
+  const destination = context.observation.map?.accessGraph?.nodes.find((entry) => entry.nodeId === targetNode);
+  if (!neutral || !member || !destination) return;
   const claimantId = "squad:scout:neutral" as AiSquadId;
   const claimantPlanId = `plan:${claimantId}` as AiPlanId;
   const claimant: AiSquadStateV1 = {
     squadId: claimantId,
     role: "scout",
-    domain: domains(context.combat[0]!).includes("air")
-      ? "air"
-      : domains(context.combat[0]!).includes("water")
-        ? "water"
-        : "ground",
-    actorIds: [context.combat[0].actorId],
+    domain: domains(member).includes("air") ? "air" : domains(member).includes("water") ? "water" : "ground",
+    actorIds: [member.actorId],
     objectiveId: `neutral:${neutral.actorId}`,
     state: "moving",
     lifecycle: {
       targetPlayerNumber: null,
       targetRegionId: regionId(neutral),
       protectedBaseId: baseId(context.state),
-      rallyNodeId: node(context.combat[0]!) ?? null,
+      rallyNodeId: node(member) ?? null,
       retreatNodeId: context.homeAccess ?? null,
       createdTick: context.observation.tick,
       assemblyDeadline: aiDeadline(context.observation.tick + 200),
@@ -41,6 +128,7 @@ function appendNeutralClaim(context: AiSkirmishProposalContext): void {
       terminalReason: null
     }
   };
+  context.primaryOwnedActors.add(member.actorId);
   context.nextSquads.push(claimant);
   context.intents.push({
     ...intentBase(
@@ -53,7 +141,8 @@ function appendNeutralClaim(context: AiSkirmishProposalContext): void {
     ),
     kind: "move",
     actorIds: claimant.actorIds,
-    logicalPosition: position(neutral)!,
+    // Neutral resource/scenery footprints are occupied; visit the fair graph's traversable region instead.
+    logicalPosition: destination.representativePosition,
     claims: [
       {
         claimId: `claim:neutral:${neutral.actorId}` as AiClaimId,
@@ -72,28 +161,32 @@ function appendNeutralClaim(context: AiSkirmishProposalContext): void {
 }
 
 function appendFrontierScout(context: AiSkirmishProposalContext): void {
-  const { currentQuestion, combat, observation, activeScout } = context;
+  const { currentQuestion, combat, observation } = context;
+  const activeScout = context.activeScout?.squadId === "squad:scout:neutral" ? undefined : context.activeScout;
   if (context.opponent || !currentQuestion || !combat[0] || !observation.map?.accessGraph) return;
   const target = observation.map.accessGraph.nodes.find(
     (candidate) => candidate.nodeId === currentQuestion.kind.replace("safe_route:", "")
   );
-  const scoutPosition = target?.representativePosition;
-  if (!scoutPosition) return;
+  if (!target) return;
+  const scoutPosition = target.representativePosition;
+  const eligible = combat.filter((actor) => canScoutNode(context, actor, target.nodeId));
   const scoutId = activeScout?.squadId ?? ("squad:scout:primary" as AiSquadId);
   const scoutPlanId = `plan:${scoutId}` as AiPlanId;
   const continuingScout = activeScout?.objectiveId === currentQuestion.questionId;
   const retainedScoutMembers =
-    continuingScout && activeScout ? combat.filter((actor) => activeScout.actorIds.includes(actor.actorId)) : [];
-  const scoutMembers =
-    retainedScoutMembers.length > 0 ? retainedScoutMembers : combat.slice(0, Math.min(3, combat.length));
+    continuingScout && activeScout ? eligible.filter((actor) => activeScout.actorIds.includes(actor.actorId)) : [];
+  const scoutMembers = retainedScoutMembers.length > 0 ? retainedScoutMembers : eligible.slice(0, 3);
+  const lead = scoutMembers[0];
+  if (!lead) return;
+  const sameMembers =
+    continuingScout &&
+    activeScout !== undefined &&
+    activeScout.actorIds.length === scoutMembers.length &&
+    scoutMembers.every((actor) => activeScout.actorIds.includes(actor.actorId));
   const scout: AiSquadStateV1 = {
     squadId: scoutId,
     role: "scout",
-    domain: domains(scoutMembers[0] ?? combat[0]!).includes("air")
-      ? "air"
-      : domains(scoutMembers[0] ?? combat[0]!).includes("water")
-        ? "water"
-        : "ground",
+    domain: domains(lead).includes("air") ? "air" : domains(lead).includes("water") ? "water" : "ground",
     actorIds: scoutMembers.map((actor) => actor.actorId),
     objectiveId: currentQuestion.questionId,
     state: "moving",
@@ -101,7 +194,7 @@ function appendFrontierScout(context: AiSkirmishProposalContext): void {
       targetPlayerNumber: null,
       targetRegionId: target.nodeId,
       protectedBaseId: baseId(context.state),
-      rallyNodeId: node(combat[0]!) ?? null,
+      rallyNodeId: node(lead) ?? null,
       retreatNodeId: context.homeAccess ?? null,
       createdTick: continuingScout ? (activeScout?.lifecycle?.createdTick ?? observation.tick) : observation.tick,
       assemblyDeadline: continuingScout
@@ -114,10 +207,11 @@ function appendFrontierScout(context: AiSkirmishProposalContext): void {
       recoveryAttempt: continuingScout ? (activeScout?.lifecycle?.recoveryAttempt ?? 0) : 0,
       terminalReason: null
     },
-    ...(continuingScout && activeScout?.tactics ? { tactics: activeScout.tactics } : {})
+    ...(sameMembers && activeScout?.tactics ? { tactics: activeScout.tactics } : {})
   };
+  scout.actorIds.forEach((actorId) => context.primaryOwnedActors.add(actorId));
   context.nextSquads.push(scout);
-  if (!continuingScout || !activeScout?.tactics)
+  if (!sameMembers || !activeScout?.tactics)
     context.intents.push({
       ...intentBase(
         context.state,
@@ -129,6 +223,11 @@ function appendFrontierScout(context: AiSkirmishProposalContext): void {
       ),
       kind: "scout",
       actorIds: scout.actorIds,
+      claims: scout.actorIds.map((actorId) => ({
+        claimId: `claim:scout:${scoutId}:${actorId}` as AiClaimId,
+        kind: "actor",
+        actorId
+      })),
       logicalPosition: scoutPosition
     });
 }

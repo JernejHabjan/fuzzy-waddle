@@ -47,6 +47,13 @@ from older saves, is delivered before new gathering begins. `resource/create-def
 component directory owns the per-resource profiles;
 each gatherer receives fresh profiles. Non-food gathering keeps its existing capacity, amount and cooldown.
 
+The shared macro builder selector leaves a worker with known positive cargo or an active `ReturnResources` order
+under the gather/delivery owner's control. This includes partial packs restored from older saves and return orders
+whose cargo amount is unavailable. Opening, housing, food prerequisite/Field capacity, military capacity and production
+transition checks use this selector; they wait or choose another worker while preserving their unmet demand. After
+native delivery clears the cargo and return order, construction can select the worker again. This admission rule does
+not change payment, delivery credit or native construction legality.
+
 Expansion construction carries every positive resource cost from the observed main building's catalog profile into
 the shared intent arbiter. Stockpile reservations and due obligations therefore block an unaffordable expansion
 before dispatch. A missing price profile keeps the saved candidate explicit without proposing free construction;

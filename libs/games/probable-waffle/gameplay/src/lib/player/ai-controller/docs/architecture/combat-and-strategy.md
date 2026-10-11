@@ -6,6 +6,18 @@ Every active squad and meaningful spending plan links to an objective, evidence,
 
 Scouting asks explicit questions about starts, expansions, production, composition and access. Repeated sightings of the same contact do not inflate strength or confidence. Stale knowledge loses certainty and drives legal search rather than hidden-state targeting.
 
+Scout admission requires a direct route in the committed player-fair access graph for each assigned pawn. Unknown,
+pending, disconnected or transport-dependent access does not authorize a Move. Neutral resource reconnaissance
+requires visible positive resource availability and a known access region; scenery is not a resource objective. The
+destination is the region's traversable representative, never the occupied tree/resource tile. This is an information
+mission, not proof of claiming ownership, resource delivery or useful economic effect.
+
+Neutral and frontier missions share the proposal's actor ownership set, and frontier intents carry actor claims for
+arbitration. A neutral mission retains its original deadline without redispatch. Observed region coverage completes it;
+expiry or loss of available members cancels it. Its terminal record prevents recreating that neutral mission. Frontier
+replacement rechecks each member's route and discards tactics for changed membership while retaining the existing
+mission deadline. Defense and attack ownership take precedence over scouting.
+
 ## Missions
 
 Offensive missions progress through assembly, rally, advance, engagement, regroup/recovery and closure. They launch with a useful feasible force rather than waiting forever for an optional straggler. A finite deadline forces retargeting, recovery or failure; changing the mission ID does not reset causal age.

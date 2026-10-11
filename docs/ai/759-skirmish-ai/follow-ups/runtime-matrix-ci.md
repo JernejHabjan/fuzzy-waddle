@@ -1,5 +1,67 @@
 # Playwright runtime matrix and CI — #816
 
+## Scouting and builder delivery checkpoint (2026-10-11)
+
+**Scope:** grouped M12 causal repairs on `feature/759-skirmish-ai`, clean base/remote
+`490bf818029eee0c41cb3ff36143958314766977`. Actual host model/effort unknown. The containing commit owns publication.
+
+**Observed disagreement:** both retained natural worlds sent a neutral-claim Move to Tree6 at (22,23), while its access
+was unknown; the pawn at (36,16) returned false. This differs from the previously repaired empty same-tile route.
+Tivara's final producer proposal was independently rejected for wood: 110 observed versus the 200-wood/50-stone price.
+No evidence establishes a clock fault or justifies weakening the two-producer release assertion.
+
+| Acceptance | Owner and purpose | Evidence / state |
+| --- | --- | --- |
+| S1: Admit usable scouting destinations | `planning/ai-skirmish-scouting.ts`: visible positive neutral resources, known access, direct route per member; visit the graph representative rather than occupied resource tile | Native prior failure joins plus `ai-scouting-admission.spec.ts`; checked pure behavior; fresh worlds have no captured failed Moves |
+| S2: Preserve actor and mission ownership | Same owner: defense/attack/neutral/frontier ownership set, frontier actor claims, retained neutral deadline/terminal record, discard changed-membership tactics without deadline renewal | Unknown/pending/disconnected/scenery/exhaustion/duplicate mission and continuation/expiry/coverage controls; checked |
+| S3: Keep cargo under delivery ownership | `planning/ai-macro-observation.ts` / `isAvailableBuilder`: known positive cargo and ReturnResources cannot be replaced by opening/housing/food/Field/military construction or transition readiness | `ai-builder-delivery.spec.ts`: 1/5/10 cargo, unknown return amount, post-delivery availability, real macro alternative-builder/retained-deficit cases; checked |
+| S4: Preserve contracts and active gate | Existing command application, save/wire, cache/TTL, balances, PRO recipes/assertions and useful nulls unchanged | Gameplay/native suites, types, structure/format and production build pass; full runtime remains mandatory |
+| S5: Explain, audit and publish | Owning combat/economy architecture docs and HANDOFF explain purpose/limits | Implementation Review, Omission Audit and separate Final Closure Audit complete; containing commit owns publication |
+
+**Checks:** `pnpm agent:doctor` and `pnpm agent:context -- --issue 816` pass. All 64 gameplay suites/299 tests and
+154 native suites/761 tests pass, using uncached `pnpm exec nx test <project> --runInBand --skip-nx-cache`.
+`pnpm exec tsc --project <gameplay|phaser>/tsconfig.spec.json --noEmit`, explicit owned-file
+`fuzzy-waddle/source-structure-limits:error`, four-file Prettier check and uncached `portal:build:production` pass.
+Final 17 authored controls fail 15/pass two against both original production owners, restored byte-for-byte afterwards.
+Earlier fixture-only map typing/guard errors were repaired; the final fixture authors the full construction-map contract.
+All logs/artifacts use ignored `tmp/ai-plans/759-validation/recovery-*`; no temporary file is staged.
+
+**Runtime:** `scouting-delivery-recovery/1791712759688-failed.json` and `indexes/` companion, source
+`490bf818029eee0c41cb3ff36143958314766977` plus final repairs; dirty `fnv1a32:4f88f8d3`, fixture `fnv1a32:221d6201`,
+seeds `759101`/`759102`. One foreground process groups PRO-03/06/07, sharing two physical worlds; 1,228 decisions/
+24,084 ticks, 464,188 ms. Gameplay source stayed frozen. Both worlds have zero captured failed Move outcomes.
+Tivara ends with eight workers/one producer, 230 food/170 wood credited, final wood 70; Skaduwee six/two, 130 food/
+160 wood credited, final wood 120. These credits are native `resource.added`, not cargo, removals or proof of usefulness.
+Tivara records 245 capacity rejections for wood and two attack-validation failures at tick 10,660. Full PRO-03/06/07
+remains red for paired branches/authority and Tivara's producer floor; Skaduwee still has mixed-faction initial actors.
+A later Tivara neutral Move targets (21,22), but is cancelled at (25,22); it does not prove physical arrival/usefulness.
+Raw `tmp/ai-skirmish-runtime-results/run-dDNjzZ/runtime.json`: 195,328,025 bytes, SHA-256
+`fd5767ee8f08e04c70cd93ae0b193909695a94f0a777939a3f8eda9d1748db77`; matrix 195,461,073 bytes. The supported
+summary is `recovery-final-summary.log`; bounded worlds/cases/neutral phases are `recovery-final-world-summary.json`,
+`recovery-final-cases.json`, `recovery-neutral-arrival.json`. Full artifacts stay ignored; no diagnostic profiling added.
+
+**Implementation Review:** traced committed observation, route query, proposal ownership, intent arbitration and
+existing native Move replacement/arrival cleanup. Neutral continuation retains deadlines and terminal state; coverage
+means information, not resource claim/usefulness. Read every macro builder-selector consumer and native owned-cargo
+projection. Delivery clears cargo through its existing native owner; the admission predicate introduces no timer,
+listener, live reference, save field, dispatch mutation or payment owner. Direct-route scouts do not acquire a transport
+child; existing attack/transport owners remain unchanged. No shared balance tuning was needed for these correctness fixes.
+
+**Omission Audit:** S1–S3 have real manager regressions and negative controls; S4's source checks pass and runtime has
+fresh scoped evidence with full release failures preserved. S5 has durable docs and this scoped handoff. Full PRO useful authority, paired legal faction setup, M11,
+server/socket/save/restart/hash/calibration and end-of-gate machinery review remain open. No diagnostic profiling added.
+
+**Next grouped work / why:** use fresh bounded capture to trace wood funding/delivery and producer progress, then group
+legal paired PRO-03/06/07 setups with missing authority/oracles where dependency-ready. This proves legally created,
+useful military capacity; scouting information and cargo presence are insufficient. Recommend **GPT-6.1 Sol / high**
+for that causal/authority work; no automatic model switch. Commit/push/verify clean remote, then pause.
+
+**Final Closure Audit:** acceptance S1–S5 have implemented owners, evidence and documented limits. Source/fixture/
+seed provenance, prior same-tile/build/food repairs, native caches/TTL, useful nulls, WAIT/save boundaries and Nx merge
+are preserved. Owned source meets structure/format; no baseline hash refresh or balance/oracle change. Exact owned
+scope is two production files, two new regression specs, two durable architecture docs and two existing handoff/plan
+files. Runtime failure remains a named release blocker, not a claim that the scoped repairs failed their causal checks.
+
 ## Outcome
 
 All supported runtime-required scenarios launch a real lobby-created Phaser match, observe authoritative effects, and run

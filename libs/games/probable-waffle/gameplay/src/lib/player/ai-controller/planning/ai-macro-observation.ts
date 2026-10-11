@@ -68,7 +68,15 @@ export function queuedObjectIds(observation: AiObservationV1, objectName: Object
 }
 
 export function isAvailableBuilder(actor: AiObservationV1["actors"][number]): boolean {
-  return actor.activeOrder?.status !== "known" || actor.activeOrder.value?.orderType !== OrderType.Build;
+  // Construction replacement must not strand cargo from a gather/delivery cycle, including partial old-save packs.
+  if (
+    actor.resourceState.status === "known" &&
+    actor.resourceState.value.carried.status === "known" &&
+    actor.resourceState.value.carried.value > 0
+  )
+    return false;
+  const order = actor.activeOrder?.status === "known" ? actor.activeOrder.value?.orderType : undefined;
+  return order !== OrderType.Build && order !== OrderType.ReturnResources;
 }
 
 export function hasAssignedBuilder(observation: AiObservationV1, siteActorId: string): boolean {
