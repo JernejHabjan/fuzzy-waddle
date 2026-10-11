@@ -21,7 +21,17 @@ export const PawnConstructionBehaviorMdsl = `root [Build] {
                     action [Stop, "Build - No Builder Component"]
                 }
 
-                /* if builder cannot be assigned, stop */
+                /* Construction may finish while this worker approaches. Queue follow-up before Stop clears the target. */
+                sequence {
+                    condition [SelfIsAlive]
+                    condition [TargetIsAlive]
+                    condition [ConstructionSiteFinished]
+                    action [AutoAssignTendOrderIfTendable]
+                    action [Stop, "Build - Construction Finished"]
+                    action [AssignNextBuildOrder]
+                }
+
+                /* if builder cannot be assigned to an unfinished site, stop */
                 sequence {
                     flip {
                         condition [CanAssignBuilder]

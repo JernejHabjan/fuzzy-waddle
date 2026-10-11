@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { decodeRuntimeArtifact } from "../../apps/portal-e2e/src/e2e/skirmish-ai-runtime-artifact-codec.mjs";
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { dirname, isAbsolute, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -61,6 +62,7 @@ export function resolveRepairReportPaths(input, root = workspaceRoot) {
 }
 
 export function summarizeReport(report, options = {}) {
+  report = decodeRuntimeArtifact(report);
   const lines = [];
   const runtime = report.runtime ?? (Array.isArray(report.scenarios) ? report : null);
   const label = options.path ? relative(workspaceRoot, options.path) || options.path : "report";
@@ -265,7 +267,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
           throw new Error("repair_report_invalid_manifest");
         const entries = resolveRepairReportPaths(options.input).map((path) => ({
           path: relative(workspaceRoot, path) || path,
-          report: JSON.parse(readFileSync(path, "utf8"))
+          report: decodeRuntimeArtifact(JSON.parse(readFileSync(path, "utf8")))
         }));
         const expectedIds = manifest?.rows.filter((row) => row.drivers.includes("runtime") &&
           row.runtimeSupport?.status !== "deferred_content").map((row) => row.id);

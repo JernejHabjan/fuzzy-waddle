@@ -512,6 +512,67 @@ final-gate checkpoints below. The user-authorized final gate is active; K5/C8 an
 Do not claim stage validation before K1–K5. M11 remains a mandatory blocker from public mutable aliases
 and incomplete access/safety/lifetime history; M12 remains open for full PRO-03/06/07. Neither was reduced by this batch.
 
+### Grouped artifact and construction completion checkpoint (2026-10-11)
+
+Combined M12 output/gameplay batch, based on published clean `b14e2d27ff5a1b37d089736dc4ec41804abe2c10`.
+Actual host model/effort unknown. User explicitly included the next gameplay repair in this output batch.
+
+| Acceptance | Owner / evidence | State |
+| --- | --- | --- |
+| G1 lossless grouped output | E2E `skirmish-ai-runtime-artifact-codec.mjs`, publisher, runtime file reader and matrix writer retain shared variant objects once. Two-world grouped output is 185,269,924 raw bytes, below the unchanged 256 MiB ceiling. Every scenario/fact/failure/provenance/work count survives expansion. | checked |
+| G2 compatibility / rejection | Inline V1 and direct console remain unchanged. Codec rejects unknown encodings, malformed/out-of-range references and unused table entries; reader retains provenance and byte checks. Codec/reader/summary/repair 24 controls pass; publisher three pass, old publisher one fail/two pass. | checked |
+| G3 native completion race | `PawnConstructionBehaviorMdsl` checks a live finished target before new-builder admission. It queues tendable follow-up before existing Stop clears target, reports `Build - Construction Finished`, then seeks normal next work. Terminal classifier completes that exact reason; dead/unfinished/unavailable and unknown reasons retain failures. Real Stop cleanup and two native Skaduwee completions are checked. | checked |
+| G4 affected final gate | 153 native suites/754 tests, native and E2E types, explicit source structure and uncached portal production build pass. Construction branch fails before repair (one fail/three pass). Final grouped PRO-03/06/07 retains both worlds with unchanged recipes/assertions/ceiling; full release oracles remain failed. | bounded repair checked; full M12 open |
+| G5 review / publication | Owning operator and gameplay docs updated; raw artifacts/logs remain ignored. No unit/balance/price/save/wire authority changes. Full M11/M12, legal paired PRO branches and calibration/lifecycle remain open. Containing commit owns publication; verify its exact remote on resume. | closure ready; publication follows |
+
+Concrete causal evidence: prior Tivara resume-Granary command at tick 553, native completion 960, false terminal
+failure 990. Fresh pre-repair grouped Skaduwee failures at ticks 1,214/2,036 target InfantryInn/Granary observed at
+100% construction and full health immediately before failure. `grouped-construction-before.json` retains those bounded
+joins. This is a finished-target ordering defect, not an established builder-speed or simulation-clock defect.
+A completed terminal order is not attribution that this worker created useful capacity; independent authority stays null.
+
+Fresh pre-repair grouped report: `tmp/ai-plans/759-validation/grouped-production-recovery/1791698327088-failed.json`.
+Source `b14e2d27ff5a` plus output repair; dirty `fnv1a32:c29fe608`, fixture `fnv1a32:221d6201`.
+One process, 1,220 decisions/24,025 actual ticks, 421,392 ms; six Tivara/four Skaduwee workers.
+Three scenario rows reuse two physical matches; they are not six new worlds. Full required branches/authority still fail.
+Raw `tmp/ai-skirmish-runtime-results/run-kuJvVb/runtime.json` and matrix retain complete results with checked
+`shared-runtime-variants-v1` storage. Supported summary and bounded index both read the retained report successfully.
+
+Checks/logs are under ignored `tmp/ai-plans/759-validation/`: `grouped-output-{doctor,context,focused,types,publisher,
+publisher-negative,tools,catalog-baseline}.log`, `grouped-construction-negative.log`, and
+`grouped-final-{native,native-types,structure,build,format}.log`.
+The broad tools suite has 64 passes/one pre-existing catalog-count failure (154 versus 121), reproduced in a clean
+HEAD archive. Existing runner/reporter formatting warnings reproduce at HEAD (`grouped-format-baseline.json`);
+all other changed source is formatted. Do not call the broader tools/format routes wholly green.
+
+Implementation review: traced shared fixture caching through publisher, file decoding, matrix persistence, ordinary
+summary and repair-list loading. Codec deduplicates object identity, never variant IDs, so distinct seeds/repetitions
+remain independent. Followed finished construction through predicate, native Stop cleanup and terminal reconciliation.
+Omission Audit: G1/G2 evidence is retained, G3/G4 native controls and affected runtime are retained, G5 publication follows.
+No full production authority, lifecycle, victory, statistical calibration or performance proof is inferred.
+
+Final affected runtime: `grouped-production-recovery-final/1791698850150-failed.json`, source `b14e2d27ff5a` plus
+both repairs, dirty `fnv1a32:b8ccb0b2`, fixture `fnv1a32:221d6201`, seeds `759101`/`759102`.
+One process, 1,220 decisions/24,026 actual ticks, 376,007 ms. Tivara has eight workers/one producer and 200 native food
+credited; Skaduwee six workers/two producers and 140 credited. Two Skaduwee completed Build receipts at ticks 1,530
+and 2,168 join live already-finished InfantryInn/Granary; there are no builder-admission failures in either world.
+Tivara does not exercise the new branch in this run. Native movement refusals remain three/five. These single paired
+worlds do not prove statistical improvement, complete recovery or legal faction-specific setup. Full PRO-03/06/07
+remains failed for required branches and authority; preserve every oracle and useful null.
+Raw `tmp/ai-skirmish-runtime-results/run-2JJI5S/runtime.json`: 222,838,817 bytes, SHA-256
+`15500b5455999d1bc3b89bffb9e9c7c7ded96b7ac288b4740d81019e0c3edfb2`; matrix 222,965,594 bytes.
+Supported index/summary and `grouped-final-world-summary.json` retain bounded exact provenance and native joins.
+
+Separate Final Closure Audit: after checks and final runtime, rechecked G1–G5, source imports/callers, native follow-up
+ordering, strict reference/provenance/ceiling rejection, compatibility, all selected rows and task-owned staging scope.
+Bounded output/build repairs are checked; full release, baseline catalog/format failures and future authority remain
+explicitly open. Source was frozen throughout both accelerated match processes; docs/spec changes explain differing
+dirty digests. No structure baseline, seed recipe, assertion, tick ceiling or diagnostic profiling policy changed.
+
+Next grouped work should use final bounded worlds to choose remaining recovery/native movement and legal paired
+PRO-03/06/07 authority repairs. Sol 6.1/high remains recommended for unresolved causal/authority design.
+Do not repeat dedicated diagnostic profiling. Commit/push, verify remote and pause at this batch boundary.
+
 ### Shared food throughput and partial return checkpoint (2026-10-11)
 
 Grouped M12 recovery/balance batch, based on clean/remote `9a53ddd705997403a7a5b93aa823c527a753bd8d`.

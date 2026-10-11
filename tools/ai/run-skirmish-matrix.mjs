@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { encodeRuntimeArtifact } from "../../apps/portal-e2e/src/e2e/skirmish-ai-runtime-artifact-codec.mjs";
 import { writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -363,7 +364,8 @@ function writeReport(report) {
   mkdirSync(reportDirectory, { recursive: true });
   const name = `${Date.now()}-${report.status ?? "report"}.json`;
   const path = join(reportDirectory, name);
-  writeFileSync(path, `${JSON.stringify(report, null, 2)}\n`);
+  // Preserve shared captures in storage too; expanding them again would recreate the V8 string-length failure.
+  writeFileSync(path, `${JSON.stringify(encodeRuntimeArtifact(report))}\n`);
   process.stdout.write(`${relative(workspaceRoot, path)}\n`);
   if (report.runtime || report.reason) {
     const indexDirectory = join(reportDirectory, "indexes");

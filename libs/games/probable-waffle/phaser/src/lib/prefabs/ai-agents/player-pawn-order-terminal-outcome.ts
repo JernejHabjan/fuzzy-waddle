@@ -10,6 +10,7 @@ const completedOrderReasons = new Set([
   "Attack - Target Not Alive",
   "Move - Reached Target",
   "Stop - Order Complete",
+  "Build - Construction Finished",
   "Gather - No Resources Exist",
   "Repair - Target Health Full",
   "Heal - Target Health Full"

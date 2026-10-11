@@ -137,6 +137,12 @@ Research competes with survival, supply, production and expansion. Its value dep
 
 ## Recovery expectations
 
+A native Build order may reach its target after construction has already finished. The pawn checks live, finished
+construction before new-builder admission, queues the normal tendable/next-site follow-up, and reports completed
+through the existing order cleanup. A completed building cannot accept another construction worker; that alone is
+not an application failure. Dead or unfinished unavailable targets retain their failure path. This terminal receipt
+does not prove that this worker created the building or supply independent useful-capacity attribution.
+
 - Replace lost workers and critical productive capacity when economically feasible.
 - Restore sustainable food and compatible drop-off service after depletion or destruction.
 - Avoid circular worker/resource/building prerequisite reservations.

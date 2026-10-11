@@ -24,11 +24,45 @@ economy/production/combat scenarios with fresh evidence at the active final gate
 their original values; revised expectations must reflect an explained balance decision while preserving authority,
 fairness and useful-effect requirements.
 
-**Current step:** M12 shared food-throughput and partial-return batch checked; containing commit owns publication.
-Both faction diagnostics reach six workers. Full M12/PRO release proof remains open; M11 useful authority remains
+**Current step:** M12 grouped artifact output and native construction completion batch checked; full PRO remains red.
+Containing commit owns publication. Full M12/PRO release proof remains open; M11 useful authority remains
 blocked. C8 sanity checking is complete and further diagnostic profiling is not queued.
 
-**What changed / why:** fresh native gathering profiles have a focused owner, and the pawn interface re-exports its
+**What changed / why:** grouped file reports retain each shared physical variant once using checked integer references.
+The file reader and compact reporter reconstruct every raw fact, null authority, failure and original work count;
+matrix persistence uses the same encoding. This removes duplicated capture strings without increasing the 256 MiB
+ceiling. Inline legacy files and direct console output remain compatible. Native Build now recognizes a live finished
+target before new-builder admission, queues normal follow-up before Stop clears the target, and reports completed
+through existing cleanup. This prevents a resume-build arriving after actual completion from falsely failing. Dead
+or unfinished unavailable sites still fail; this receipt does not establish useful-capacity attribution.
+
+**Current checks:** 153 native suites/754 tests, native/E2E types, explicit structure and uncached portal production
+build pass. Codec/reader/summary/repair controls: 24 tests pass; publisher controls: three pass, while the old publisher
+fails the grouped control (one fail/two pass). Construction branch fails before repair (one fail/three pass).
+The broad tools suite has one pre-existing catalog-count failure (154 versus 121), reproduced in a HEAD archive.
+Two existing runner/reporter formatting warnings also reproduce at HEAD; other changed source passes formatting.
+
+**Final affected runtime:** `grouped-production-recovery-final/1791698850150-failed.json`: two physical worlds,
+1,220 decisions/24,026 actual ticks, one process, 376,007 ms. Source `b14e2d27ff5a` plus both repairs, dirty
+`fnv1a32:b8ccb0b2`, fixture `fnv1a32:221d6201`, seeds `759101`/`759102`. Tivara ends with eight workers/one producer
+and 200 food credited; Skaduwee six workers/two producers and 140 food credited. Two native Skaduwee Build receipts
+now complete at ticks 1,530/2,168 for already-finished InfantryInn/Granary; no builder-admission failure is captured
+in either world. Movement refusals remain three/five. This proves the bounded native completion path, not causal
+win-rate, complete recovery, legal faction setup or useful-capacity authority. All three full scenarios still fail.
+Raw artifact `tmp/ai-skirmish-runtime-results/run-2JJI5S/runtime.json` is 222,838,817 bytes; the matrix is 222,965,594
+bytes, both retaining two complete captures once. Raw SHA-256 is
+`15500b5455999d1bc3b89bffb9e9c7c7ded96b7ac288b4740d81019e0c3edfb2`.
+Start with its supported `indexes/` report and bounded `grouped-final-world-summary.json` under the validation directory.
+See the [grouped artifact/construction checkpoint](follow-ups/runtime-matrix-ci.md#grouped-artifact-and-construction-completion-checkpoint-2026-10-11).
+
+**Grouped evidence before construction repair:** `grouped-production-recovery/1791698327088-failed.json` retains
+two worlds, 1,220 decisions/24,025 ticks, 185,398,325 matrix bytes and 185,269,924 raw bytes. Source `b14e2d27ff5a`
+plus output repair, dirty `fnv1a32:c29fe608`, fixture `fnv1a32:221d6201`. PRO-03/06/07 remain failed for required
+branches/authority. Tivara ends with six workers; Skaduwee four. Both Skaduwee builder failures target already-finished
+InfantryInn/Granary; `grouped-construction-before.json` retains the bounded joins. Earlier Tivara Granary native
+completion at tick 960 precedes the false failure at 990. These pre-repair worlds remain historical controls.
+
+**Previous food batch / why:** fresh native gathering profiles have a focused owner, and the pawn interface re-exports its
 existing range/cooldown types from separate files. Food packs hold ten instead of five; each harvest collects five
 instead of two. Food worker/Field extraction waits are one instead of two seconds; Field base growth is thirty instead
 of forty-five seconds, with the existing tender boost and thirty-food yield. Shared human/AI tuning reduces tiny trips
@@ -37,13 +71,13 @@ old save—reaches native delivery before gathering resumes. This repairs a corr
 Larger packs keep more food unspendable during travel; no unit/combat/price/save/wire or native credit-owner rule changed.
 The Field tooltip now explains its actual Granary unlock and compatible drop-off rules.
 
-**Checked evidence:** final native 152 suites/748 tests, focused five suites/44 tests, native spec types, explicit
+**Previous checked evidence:** final native 152 suites/748 tests, focused five suites/44 tests, native spec types, explicit
 structure/formatting and uncached portal production build pass. Old balance values fail three new native timing/cargo
 targets while the non-food control passes; partial return fails before repair. Actual restored 0/5/10 cargo uses the
 real gatherer and public pawn agent. Source waits use simulation ticks; no wall-clock defect is established. Neutral
 profile values/emitted runtime body and type unions/interface members are equivalent before tuning/predicate changes.
 
-**Runtime evidence:** Tivara's fresh PRO-03 has 610 decisions/12,007 ticks, six workers, two military units, one
+**Previous runtime evidence:** Tivara's fresh PRO-03 has 610 decisions/12,007 ticks, six workers, two military units, one
 AnkGuard, twenty food and 130 wood. It records twelve native food credits of ten (120 total), compared with eleven
 of five (55 total) in the prior candidate. This supports observed recovery progress, not complete production or
 determinism/calibration proof. Full contracts/authority and minimum producer assertion still fail; native movement and
@@ -69,11 +103,11 @@ The [performance sanity policy](follow-ups/runtime-matrix-ci.md#diagnostic-perfo
 retains historical cost evidence; these gameplay changes do not inherit its parity or numerical measurements.
 
 **Next action / why:** GPT-6.1 Sol / high for grouped M12 recovery and production authority.
-Use the fresh affected diagnostics to identify the remaining workforce recovery/food/wood bottleneck and distinguish
+Use the final affected diagnostics to identify remaining movement, economy and military-capacity blockers and distinguish
 native applied effects from incomplete authority. This should establish what still prevents useful additional military
 capacity and guide the next coherent repair. Field growth already uses simulation ticks; asynchronous/frame progress
-is a hypothesis, not an established cause. Resolve grouped report serialization without dropping authority evidence;
-then group the next causal repair or modest authorized balance adjustment and its controls with related PRO-03/06/07
+is a hypothesis, not an established cause. Grouped report serialization is repaired with lossless shared-variant storage.
+Group the next causal repair or modest authorized balance adjustment and its controls with related PRO-03/06/07
 legal fixtures and missing authority/oracles;
 do not weaken release assertions or restart profiling. Server/socket/save/restart/hash/calibration and the final machinery
 necessity review remain required. Pause after the next coherent checked, committed and remote-verified batch.
@@ -205,10 +239,11 @@ Campaign suppression is explicit and may accompany a full native return. Old/unk
 to the latest task. Whole known piles may retain several earlier gathering attempts; no invented FIFO/partial allocation.
 A credit proves a scoped balance change, independently from cargo lineage, accepted task/demand and continuous usefulness.
 
-**Next action — why:** use the fresh food-throughput diagnostics to investigate the remaining recovery blocker and
+**Next action — why:** use the final grouped production diagnostics to investigate the remaining recovery blocker and
 full production authority on **GPT-6.1 Sol / high**. Scoped command collisions, Field-return staffing, full-pack priority,
-expansion pricing and partial returns are repaired; shared food throughput is tuned and natively checked. Resolve the
-grouped capture serialization limit while preserving evidence, then group causal recovery repairs and legal PRO fixtures
+expansion pricing and partial returns are repaired; shared food throughput is tuned and natively checked. Grouped
+capture storage now preserves shared variants once; finished native construction no longer fails builder admission.
+Group remaining causal recovery repairs and legal PRO fixtures
 so useful capacity growth can be established.
 Keep M11/M12, correctness/parity/calibration and final machinery review duties.
 C8 sanity checking is complete; strict diagnostic performance certification is retired. Publish and pause.
@@ -715,13 +750,13 @@ Unexecuted authoring remains unverified; runtime tuning and legacy retirement st
 | 1 / as needed        | [#821](https://github.com/JernejHabjan/fuzzy-waddle/issues/821)                                                                  | `partial`     | Split only owners blocking the selected batch                                                                            | Stay Sol medium; optional Luna high                             |
 | 2                    | [#829](https://github.com/JernejHabjan/fuzzy-waddle/issues/829)                                                                  | `in_progress` | Finish labor, throughput and threat-budget authoring; defer proof                                                        | GPT-6.1 Sol, medium                                             |
 | 3                    | [#827](https://github.com/JernejHabjan/fuzzy-waddle/issues/827)                                                                  | `in_progress` | Finish pressure/recovery policy; defer victory proof                                                                     | GPT-6.1 Sol, medium                                             |
-| 4 / next boundary    | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Shared food tuning/partial returns checked. Next remaining recovery, grouped capture output and full PRO authority/capacity | GPT-6.1 Sol / high                                              |
+| 4 / next boundary    | [#815](https://github.com/JernejHabjan/fuzzy-waddle/issues/815), [#816](https://github.com/JernejHabjan/fuzzy-waddle/issues/816) | `in_progress` | Food/partial returns, grouped capture and finished-build repair checked. Next movement/capacity and legal PRO authority | GPT-6.1 Sol / high                                              |
 | 5 / paired           | #815 / #816                                                                                                                      | `in_progress` | Remaining family contracts, focused fixtures, frozen maps and continuous-match tier                                      | Sol medium; optional Luna high for established cases            |
 | 6                    | [#819](https://github.com/JernejHabjan/fuzzy-waddle/issues/819)                                                                  | `in_progress` | Exact-once interruption, terminal and re-entry parity                                                                    | GPT-6.1 Sol, medium                                             |
 | 7                    | [#823](https://github.com/JernejHabjan/fuzzy-waddle/issues/823)                                                                  | `partial`     | Generation fencing, phase restore/replay and cleanup cases                                                               | GPT-6.1 Sol, medium                                             |
 | 8                    | #821                                                                                                                             | `partial`     | Remaining splits/renames and consumer updates                                                                            | Stay Sol medium; optional Luna high                             |
 | 9 / prepare          | [#828](https://github.com/JernejHabjan/fuzzy-waddle/issues/828), [#817](https://github.com/JernejHabjan/fuzzy-waddle/issues/817) | `partial`     | Prepare difficulty/opponent evidence; runtime optimization only for a concrete slowdown                                  | GPT-6.1 Sol, medium; Sol high for a measured performance defect |
-| Final gate           | Required issues above                                                                                                            | `in_progress` | Native 748/types/build and scoped production checked. C8 complete; full PRO, lifecycle/calibration pending               | GPT-6.1 Sol / high for remaining production authority           |
+| Final gate           | Required issues above                                                                                                            | `in_progress` | Native 754/types/build checked. C8 complete; full PRO, lifecycle/calibration and baseline catalog failure pending               | GPT-6.1 Sol / high for remaining production authority           |
 | After parity         | [#820](https://github.com/JernejHabjan/fuzzy-waddle/issues/820)                                                                  | `not_started` | Evidence-backed legacy retirement                                                                                        | GPT-6.1 Sol, medium decision; Luna high cleanup                 |
 | Before final closure | Existing machinery / completion map                                                                                              | `not_started` | Evaluate every system's demonstrated need and cost; keep, simplify or propose retirement while preserving required proof | GPT-6.1 Sol / high for combined review                          |
 
@@ -754,7 +789,7 @@ No automatic model switch, subagent or new chat is authorized by this policy. Ex
 | Consolidated design, scope/value, shared/per-owner contracts and acceptance (50)        | GPT-6.1 Sol / high                                                                       | Authored/source-reviewed                                                                                                  |
 | Settled implementation, compliance cleanup, wiring, fixtures and test authoring (51–54) | Luna / high                                                                              | Authored; scoped native/report controls now checked, wider integration remains                                            |
 | Combined implementation source review and unresolved contract conflicts (M10)           | GPT-6.1 Sol / high                                                                       | Source review/controls complete; E2E typing and 461 production/queue/resource/output controls pass, full gate in progress |
-| Final executable gate and repairs                                                       | GPT-6.1 Sol / high for command/authority repairs; Luna / high for settled implementation | C8 complete; food tuning/partial-return controls checked; next remaining recovery, full PRO and lifecycle proof             |
+| Final executable gate and repairs                                                       | GPT-6.1 Sol / high for command/authority repairs; Luna / high for settled implementation | C8 complete; food/partial returns/grouped output/finished-build checked; full PRO/lifecycle remain             |
 
 - The design must produce a finite list of substantial implementation passes and completion criteria. A pass may contain
   several related owners and coherent commits. Do not create a new design stage or model pause for each file, helper,
@@ -804,15 +839,12 @@ No automatic model switch, subagent or new chat is authorized by this policy. Ex
 
 Copyable next-chat prompt:
 
-> Read docs/ai/759-skirmish-ai/HANDOFF.md and the shared-food-throughput/partial-return checkpoint in runtime-matrix-ci.md.
-> Verify containing commit/remote and clean worktree. Food now uses ten-food packs, five per harvest, one-second worker
-> and Field extraction waits, and thirty-second base Field growth; yield stays thirty. Partial return orders deliver
-> cargo before resuming gathering, including old five-food packs. Native 748, focused 44 tests, spec types, explicit
-> structure/format and uncached production build pass. Both faction diagnostics reach six workers and credit 120/130
-> food, but full production authority remains red and Tivara still has only one producer. Read the fresh supported
-> summaries and cadence-final-world-summary.json before bounded raw capture slices.
-> On GPT-6.1 Sol / high, resolve the grouped raw report's JSON.stringify size limit without dropping evidence and use
-> the fresh runs to repair the remaining recovery/production blocker, then group related legal PRO-03/06/07 authority
+> Read docs/ai/759-skirmish-ai/HANDOFF.md and the grouped-artifact/construction checkpoint in runtime-matrix-ci.md.
+> Verify containing commit/remote and clean worktree. Shared food tuning and partial returns remain. Grouped file output
+> now retains each physical variant once, with checked lossless references. Native Build recognizes live finished targets
+> before admission and reports completion through normal cleanup. Native 754, native/E2E types and production build pass.
+> Read the fresh supported index and bounded grouped world summary before raw capture slices.
+> On GPT-6.1 Sol / high, use the final runs to repair the remaining recovery/production blocker, then group legal PRO-03/06/07 authority
 > fixtures. Preserve full assertions and tick ceilings; do not assume a clock fault or claim tuning proves recovery.
 > Targeted shared gameplay rebalancing is also authorized: harvest/seeding/growth speed, Field food yield, and relevant
 > character/unit/building/component costs, timings, capacities or combat stats. Record why and the original/new values;

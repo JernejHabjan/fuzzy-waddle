@@ -50,6 +50,13 @@ the explicit Playwright timeout for the whole selected variant group. A timeout 
 tests/decisions/ticks is an infrastructure failure, not behavioral evidence.
 
 Use `pnpm ai:skirmish:report -- --report <artifact> --scenario <ID> --failures-only --details` for bounded triage.
+Grouped file reports may use `artifactEncoding: shared-runtime-variants-v1`: each scenario's `variants` contains
+integer indexes into `artifactVariants`, which retains each shared physical match once. The runtime file reader and
+compact reporter expand checked references back to the complete inline V1 report. Raw facts, null authority, failures,
+provenance and physical work counts are unchanged. Invalid references, unused variants and unknown encodings fail
+closed; the 256 MiB runtime artifact ceiling remains. Single-use variant reports and direct console output retain
+the inline representation. Custom raw-file consumers must use `decodeRuntimeArtifact` from the E2E artifact codec
+before reading variants. Matrix persistence uses the same encoding, so it cannot recreate duplicated capture strings.
 For a retained sweep, isolate its artifacts in one directory, give every shard the same `--run-id`, then use
 `pnpm ai:skirmish:report -- --report <directory> --repair-list --require-supported`. The output is compact JSON;
 nonzero exit means a failing or missing required row. These new contracts are authored but unverified until the final gate.

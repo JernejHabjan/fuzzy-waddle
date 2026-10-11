@@ -1,5 +1,6 @@
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
+import { decodeRuntimeArtifact } from "../../apps/portal-e2e/src/e2e/skirmish-ai-runtime-artifact-codec.mjs";
 
 // Raw bounded captures can exceed the subprocess log buffer. Read their artifact separately, with a byte ceiling.
 export const MAX_RUNTIME_RESULT_BYTES = 256 * 1024 * 1024;
@@ -17,7 +18,7 @@ export function readRuntimeResult(path, identity) {
   if (statSync(path).size > MAX_RUNTIME_RESULT_BYTES) throw new Error("runtime_result_artifact_oversized");
   let report;
   try {
-    report = JSON.parse(readFileSync(path, "utf8"));
+    report = decodeRuntimeArtifact(JSON.parse(readFileSync(path, "utf8")));
   } catch {
     throw new Error("runtime_result_artifact_malformed");
   }

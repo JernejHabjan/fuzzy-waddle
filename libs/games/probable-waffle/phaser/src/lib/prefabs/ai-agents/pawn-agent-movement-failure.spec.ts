@@ -66,12 +66,28 @@ function fixture(orderType = OrderType.Move) {
     canMoveTo,
     cancelMovement
   } as never);
-  return { actor, board, order, move, report, nativeMove, canMoveTo, cancelMovement };
+  return { actor, board, order, orders, move, report, nativeMove, canMoveTo, cancelMovement };
 }
 
 describe("native Move refusal settles its command", () => {
   beforeEach(() => jest.resetAllMocks());
   afterEach(() => jest.restoreAllMocks());
+
+  it("settles and cleans an actual build order after its target has finished", () => {
+    const f = fixture(OrderType.Build);
+    expect(f.orders.Stop("Build - Construction Finished")).toBe(State.SUCCEEDED);
+    expect(f.report).toHaveBeenCalledWith(
+      expect.objectContaining({
+        commandId: "command",
+        actorIds: ["pawn"],
+        kind: "completed",
+        reason: "applied"
+      })
+    );
+    expect(f.board.getCurrentOrder()).toBeUndefined();
+    expect(f.board.anyOrderInQueue()).toBe(false);
+    expect(f.cancelMovement).toHaveBeenCalledTimes(1);
+  });
 
   it("reports failure at the native no-path return and removes the order instead of waiting 7200 ticks", async () => {
     const f = fixture();
