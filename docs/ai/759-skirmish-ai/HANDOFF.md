@@ -13,6 +13,18 @@ slowdown. Keep correctness coverage. Commit/push and pause at each boundary; act
 Next recommendation GPT-6.1 Sol / high for remaining production recovery and release authority. The
 [end-of-gate machinery necessity review](#end-of-gate-machinery-necessity-review) remains not_started.
 
+**Execution efficiency (user, 2026-10-11):** use the skirmish skill's runtime-triage sequence: review affected
+arrival/cancellation/replacement, direct callers and cleanup before expensive matches; finish related controls/repairs
+before the final broad checks and grouped run. Keep necessary causal tests and reruns. Project bounded causal fields
+instead of full nested facts; use longer owned-session waits and fewer redundant status probes. No new machinery is
+needed. A replay of retained movement evidence reduces 59,706 bytes to 2,440 while retaining all eight cases, six
+same-tile and two distinct failures, with zero omitted cases (`workflow-projection-measure.json` under ignored
+validation artifacts). This is an extract-size proxy, not measured token savings or proof of future run-count savings.
+The workflow-only change does not advance M12 or invalidate its unchanged gameplay evidence.
+Implementation Review, Omission Audit and separate Final Closure Audit preserve required gates, evidence and scope.
+Skill schema validation passes; `skills:check` fails on the existing `ai-observation-actor-projector.ts` route,
+reproduced at unchanged HEAD (`workflow-skills-baseline.log`). No gameplay or expensive match rerun was needed.
+
 **Balance scope (user, 2026-10-10):** targeted gameplay rebalancing is authorized alongside AI repairs. Options include
 faster harvesting, seeding/tending or crop growth, larger Field food yields, and adjustments to characters/units,
 buildings and their components: resource costs, production/construction time, carry/service capacity, movement,

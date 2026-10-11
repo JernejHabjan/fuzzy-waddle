@@ -21,6 +21,7 @@ description: Implement, diagnose or validate the Probable Waffle skirmish AI, de
 
 - Keep an internal acceptance list keyed by scenario ID and invariant. Repair the first causal disagreement: observation -> demand/mission -> intent/claim -> shared application -> outcome -> cleanup.
 - Batch related focused Jest specs and independent TypeScript/build checks. Run only one accelerated Phaser/Playwright match process at a time; group compatible runtime IDs with `--scenarios` so the browser starts once.
+  Before expensive matches, finish the affected lifecycle review and controls in [runtime triage](references/runtime-triage.md), steps 4–5.
 - When execution is authorized, run `pnpm agent:doctor` and `pnpm agent:context -- --issue <number>` first for
   unfinished #759 work. During an explicit no-validation sweep, use the handoff and indexed source directly; do not
   run these commands merely because this skill lists them. Use
@@ -33,7 +34,10 @@ description: Implement, diagnose or validate the Probable Waffle skirmish AI, de
   `pnpm ai:skirmish:report -- --report <path> --scenario <ID> --failures-only --details`. Never inspect or print full
   JSON before the bounded summary identifies a missing field.
 - Run a long matrix in one owned foreground terminal/session. If the tool yields while it remains active, confirm the
-  original PID once and poll sparsely; never launch a retry or background sleep to wait. No runtime payload or zero
+  original PID once. Prefer a 30–50 second session wait when supported over a separate sleep plus short polls; keep each
+  wait within the host's communication limit. Avoid repeated empty log tails, directory checks and process inventories.
+  Share state changes and concise waiting updates at the required cadence, without repeating the completed checklist.
+  Never launch a retry or background sleep to wait. No runtime payload or zero
   tests/decisions/ticks is infrastructure evidence, not an AI behavior result.
 - A dispatch, debug label or authored fixture is not outcome evidence. Preserve fixture/source/seed digests and fail closed when a required runtime or pinned-baseline path is absent.
 - Do not weaken a liveness, authority, fairness or useful-effect oracle to make a run pass. A balance threshold may change only with recorded workload evidence and a fresh affected run.

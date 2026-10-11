@@ -1,18 +1,28 @@
 # Runtime triage
 
-Use this only after a skirmish runtime or calibration failure.
+Use this after a skirmish runtime or calibration failure. The affected-path review and validation sequencing in
+steps 4–5 also apply before expensive runtime validation without a prior failure.
 
 1. Summarize the newest artifact with `pnpm ai:skirmish:report -- --failures-only --details`. For a named artifact use
    `pnpm ai:skirmish:report -- --report <path> --scenario <ID> --failures-only --details`. Inspect raw JSON only when
-   this bounded summary lacks one required field.
+   this bounded summary lacks one required field. For that gap, join by typed event/command identity and project only
+   the causal fields needed (for example command, destination, actual position and outcome). Do not stringify complete
+   facts or nested boundary snapshots to find a match. Bound printed rows/bytes, include omitted counts and retain
+   complete evidence in ignored artifacts; expand a named case when needed instead of dumping all cases.
 2. If the report has no runtime payload or zero tests, decisions, or ticks, classify the first process/harness failure.
    Do not draw behavior conclusions or rerun until timeout, browser, server, and provenance boundaries are sound.
 3. Compare the first failing checkpoint with the preceding one. Record actor/worker counts, income, resources, queues,
    squads, objectives, mission events, score deltas, perturbation dispatch and command-failure families.
 4. Trace the responsible actor through committed observation, manager ownership, arbitration, shared application and
-   terminal outcome. Add a focused failing regression before changing the owner.
-5. Run affected focused specs together, then the grouped Playwright scenarios once. Independent Jest/type/build commands
-   may run concurrently; accelerated browser matches may not.
+   terminal outcome. Add a focused failing regression before changing the owner. Before expensive validation, review
+   the entire affected path through arrival/completion, cancellation or replacement, callbacks and cleanup of timers,
+   listeners and reservations. Include direct callers that lack a pawn/order cleanup owner. Add relevant controls and
+   finish related implementation repairs before the broad checks and match, so late cleanup discoveries do not force
+   an avoidable second pass.
+5. Use small causal tests when they guide implementation; once the slice is stable, batch required Jest/type/build
+   checks and run grouped Playwright scenarios. Independent checks may run concurrently; accelerated matches may not.
+   Repeat passed broad checks or matches only when subsequent source changes, failures or unresolved evidence require
+   it. Preserve every required gate; one final pass is a target, not a restriction on necessary investigation.
 6. Ensure the explicit test timeout covers selected variants plus startup/checkpoint overhead. Prefer #826 preset-world
    runtime for focused invariants; keep full natural matches for emergent and terminal evidence.
 
