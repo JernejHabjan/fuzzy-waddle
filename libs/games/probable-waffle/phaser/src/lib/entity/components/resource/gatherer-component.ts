@@ -155,6 +155,12 @@ export class GathererComponent {
     // Check again if we can gather from this resource source (including maxGatherers check)
     if (!this.canGatherFrom(resourceSource)) return false;
 
+    const resourceSourceComponent = getActorComponent(resourceSource, ResourceSourceComponent);
+    const gatherData = this.getGatherDataForResourceSource(resourceSource);
+    if (!resourceSourceComponent || !gatherData) return false;
+    if (this.isCarryingResources() && this.carriedResourceType !== resourceSourceComponent.getResourceType())
+      return false;
+
     // Unassign from previous resource source if switching
     if (this.currentResourceSource) {
       const previousResourceSourceComponent = getActorComponent(this.currentResourceSource, ResourceSourceComponent);
@@ -165,18 +171,10 @@ export class GathererComponent {
 
     this.currentResourceSource = resourceSource;
 
-    const resourceSourceComponent = getActorComponent(resourceSource, ResourceSourceComponent);
-    if (!resourceSourceComponent) return false;
-
     // Assign this gatherer to the new resource source
     resourceSourceComponent.assignGatherer(this.gameObject);
 
-    const gatherData = this.getGatherDataForResourceSource(resourceSource);
-
-    if (!gatherData) return false;
-
-    // reset carried amount
-    this.setCarriedResourceAmount(0);
+    // Switching between sources must preserve the pack; a different resource requires delivery first.
     this.carriedResourceType = resourceSourceComponent.getResourceType();
 
     if (resourceSourceComponent.mustGathererEnter()) {

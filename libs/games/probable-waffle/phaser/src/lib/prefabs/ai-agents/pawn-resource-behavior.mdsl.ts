@@ -9,7 +9,15 @@ export const PawnResourceBehaviorMdsl = `root [Gather] {
                 /* Deliver a full pack before tending the next crop or replacing a depleted source. */
                 sequence {
                     condition [GatherCapacityFull]
-                    action [AssignDropOffResourcesOrder]
+                    succeed { action [AssignDropOffResourcesOrder] }
+                }
+
+                /* Preserve a partial pack when a non-crop source disappears or runs out. */
+                sequence {
+                    condition [HasCarriedResources]
+                    flip { condition [TargetHasTendableComponent] }
+                    flip { condition [TargetHasResources] }
+                    succeed { action [AssignDropOffResourcesOrder] }
                 }
 
                 /* ── FARM FIELD TENDING PATH ────────────────────────────── */

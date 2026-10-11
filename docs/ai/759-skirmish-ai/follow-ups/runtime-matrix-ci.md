@@ -1,5 +1,68 @@
 # Playwright runtime matrix and CI — #816
 
+## Cargo preservation checkpoint (2026-10-11)
+
+**Scope:** M12 grouped resource depletion/delivery safeguards on `feature/759-skirmish-ai`, base/remote
+`abd35f340719e2444477c3f829e159bb1b402005`. Actual model/effort unknown; containing commit owns publication.
+
+**Observed disagreement:** the retained Tivara world has no observed Tree6 left, three Gather workers with no observed
+target and one holding ten wood. Its native wood credits are 170 against a Tree6 definition of 180; this identifies
+undelivered cargo, not proof of why drain selection failed. The two attack refusals at tick 10,660 follow the same
+enemy's health falling from 85% to 6%, then becoming last-seen at 10,659. No independent death fact is captured.
+`ActorTranslateComponent.turnTowardsGameObject` already tolerates missing transforms after source destruction.
+Neither a clock/facing fault nor a balance change is justified by these observations.
+
+| Acceptance | Owner / why used | Evidence / status |
+| --- | --- | --- |
+| R1: Delivery precedes depleted-source recovery | `PawnResourceBehaviorMdsl`: full packs and partial packs from missing/exhausted non-crop sources select delivery; failed drain lookup absorbs the step and retries rather than falling through | Real Mistreevous controls cover partial/full packs, missing drain, empty return, normal harvest and renewable Field tending; checked |
+| R2: Source switching preserves cargo | `GathererComponent.startGatheringResources`: same-resource switching keeps cargo, different-resource switching refuses before changing assignment; empty packs still switch | Real facade/source assignment controls cover all three cases; checked |
+| R3: Preserve failure and authority boundaries | Existing native extraction/drop-off, attack liveness, command receipts, save/wire, navigation cache/TTL, balances and PRO assertions | No attack/oracle/diagnostic machinery change; existing failures remain visible |
+| R4: Review, verify and publish | Owning economy architecture guidance, this checkpoint and HANDOFF | Review complete; final runtime/closure record below |
+
+**Implementation Review:** traced the real Gather/ReturnResources branches, both source-acquisition fallthroughs,
+drain assignment failure, source destruction, facing, extraction callbacks, native drop-off and immediate credit,
+assignment/unassignment, cargo restore and public source-switch callers. Source/type/data checks occur before old
+assignment removal. Same-source fast return and compatible-source capacity policy remain intact. No new subscriptions,
+timers, schemas or saved state. Partial renewable Field tending is intentionally retained. Explicit incompatible Gather
+requests may still fail; unavailable drains can still strand retained cargo. The legacy logistics caller already ignores
+source-switch refusal when counting reassignments; that existing receipt/counting gap is not certified by this repair.
+
+**Omission Audit:** R1/R2 have five new failing-before controls and eight passing controls against original owners,
+restored byte-for-byte afterwards; repaired focused set passes all 13. The full native suite passes 155 suites/767 tests,
+native spec types, explicit structure and uncached production build pass. New source-switch fixtures initially lacked
+Phaser scene wiring and were corrected before causal checks. Final owned-source formatting passes after wrapping one
+unchanged guard across two lines; the original owner's formatting also passes, so the initial warning was task-owned.
+No pure AI policy changed, so prior gameplay suite evidence is retained. R3 preserves full release failures and useful
+nulls. R4 requires fresh grouped evidence and publication. Full PRO, legal faction setups, M11 useful authority,
+server/socket/save/restart/hash/calibration and machinery necessity review remain open. No dedicated profiling added.
+
+**Runtime:** `cargo-preservation/1791726965611-failed.json` and supported `indexes/` companion: source
+`abd35f340719e2444477c3f829e159bb1b402005` plus repairs, dirty `fnv1a32:df8b8fc4`, fixture `fnv1a32:221d6201`, seeds
+`759101`/`759102`. One process shares two worlds across PRO-03/06/07; 1,220 decisions/24,025 ticks, 395,187 ms.
+Gameplay source stayed frozen throughout. Afterward only the guard's whitespace and documentation changed.
+Both worlds have zero captured native failed outcomes/failed Moves. Tivara ends with six workers/one producer,
+110 food/150 wood credited and stockpile wood 170; Skaduwee six/two, 120 food/140 wood credited, stockpile wood 100.
+Final Tivara retains ten wood under ReturnResources to WorkMill; this proves retained delivery ownership, not credit.
+All three full rows remain failed (220/219/219 assertions) for branches/authority and Tivara's producer floor;
+the command summary still records two cancelled and two illegal-site cases. Mixed-faction initial actors remain.
+There is no causal statistical improvement or complete recovery claim. Raw
+`tmp/ai-skirmish-runtime-results/run-eCDPfm/runtime.json` is 213,121,695 bytes, SHA-256
+`a2a00b6587893b3d4d13c7573024ba84d174f822b3417ca32548a64b542b3a9f`; matrix 213,250,474 bytes.
+Start with `cargo-final-summary.log`, then bounded `cargo-final-world-summary.json` and `cargo-final-carriers.json`
+(all four known-positive carriers retained, zero omitted). Artifacts use ignored validation storage; none is staged.
+
+**Final Closure Audit:** R1/R2 have native controls and fresh bounded runtime observations; R3 retains existing failure
+and release authority requirements; R4 has durable guidance, checked owned scope and publication handoff. The scoped
+cargo protections are stage_checked, while full M12 remains open. Source structure, types, full native suite, final
+formatting and production build pass; final whitespace-only formatting does not change the tested guard behavior.
+Exact scope is two native production owners, one amended/one new spec, one durable economy doc and two existing
+progress files. No gameplay policy, balance, save/wire, cache, oracle or diagnostic machinery change; Nx merge retained.
+
+**Next grouped work / why:** investigate any retained delivery refusal through existing native route/drain evidence;
+then repair legal paired production setup and dependency-ready authority gaps so military capacity is funded and
+proved useful. Cargo retention alone proves neither income nor affordability. Recommend **GPT-6.1 Sol / high** for
+that causal/authority batch; no automatic model switch. Publish and pause at this batch boundary.
+
 ## Scouting and builder delivery checkpoint (2026-10-11)
 
 **Scope:** grouped M12 causal repairs on `feature/759-skirmish-ai`, clean base/remote

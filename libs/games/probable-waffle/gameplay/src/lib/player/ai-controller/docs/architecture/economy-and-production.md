@@ -144,6 +144,15 @@ Research competes with survival, supply, production and expansion. Its value dep
 
 ## Recovery expectations
 
+Native Gather delivers a full pack before tending or source acquisition. A partial pack from an exhausted or missing
+non-crop source also goes to delivery first. Failed drain selection absorbs that tree step and retries; it cannot fall
+through to source acquisition, gathering or Stop with cargo still held. Unripe renewable Fields retain their tending
+path while a partial pack has room. `GathererComponent.startGatheringResources` preserves cargo when switching between
+sources of the same resource and refuses a different resource before changing either assignment or cargo. Delivery
+must empty the pack first. These protections retain collected resources; they do not establish drain reachability,
+successful native credit, producer affordability or complete depletion recovery. Explicit incompatible Gather commands
+can still be refused, and unavailable drains still require recovery by their existing owners.
+
 A native Build order may reach its target after construction has already finished. The pawn checks live, finished
 construction before new-builder admission, queues the normal tendable/next-site follow-up, and reports completed
 through the existing order cleanup. A completed building cannot accept another construction worker; that alone is

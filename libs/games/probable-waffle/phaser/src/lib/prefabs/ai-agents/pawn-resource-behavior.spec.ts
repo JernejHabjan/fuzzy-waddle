@@ -93,6 +93,27 @@ describe("native resource branch ordering", () => {
     expect(agent.GatherResource).not.toHaveBeenCalled();
   });
 
+  it("delivers a partial pack from a depleted non-crop source before reacquisition", () => {
+    const { agent, tree } = fixture(false, false, false, "gather", true);
+    tree.step();
+    expect(agent.AssignDropOffResourcesOrder).toHaveBeenCalledTimes(1);
+    expect(agent.AcquireNewResourceSource).not.toHaveBeenCalled();
+    expect(agent.GatherResource).not.toHaveBeenCalled();
+    tree.step();
+    expect(agent.DropOffResources).toHaveBeenCalledTimes(1);
+  });
+
+  it.each([false, true])("retains cargo when drain lookup fails with full=%s", (full) => {
+    const { agent, tree } = fixture(full, false, false, "gather", true);
+    agent.AssignDropOffResourcesOrder.mockImplementation(() => State.FAILED);
+    tree.step();
+    expect(agent.AssignDropOffResourcesOrder).toHaveBeenCalledTimes(1);
+    expect(agent.AcquireNewResourceSource).not.toHaveBeenCalled();
+    expect(agent.Stop).not.toHaveBeenCalled();
+    tree.step();
+    expect(agent.AssignDropOffResourcesOrder).toHaveBeenCalledTimes(2);
+  });
+
   it("harvests a ripe Field while the pack has room", () => {
     const { agent, tree } = fixture(false, true);
     tree.step();
