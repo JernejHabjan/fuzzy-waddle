@@ -24,25 +24,40 @@ economy/production/combat scenarios with fresh evidence at the active final gate
 their original values; revised expectations must reflect an explained balance decision while preserving authority,
 fairness and useful-effect requirements.
 
-**Current step:** M12 grouped artifact output and native construction completion batch checked; full PRO remains red.
+**Current step:** M12 already-reached location movement batch checked; full PRO remains red.
 Containing commit owns publication. Full M12/PRO release proof remains open; M11 useful authority remains
 blocked. C8 sanity checking is complete and further diagnostic profiling is not queued.
 
-**What changed / why:** grouped file reports retain each shared physical variant once using checked integer references.
-The file reader and compact reporter reconstruct every raw fact, null authority, failure and original work count;
-matrix persistence uses the same encoding. This removes duplicated capture strings without increasing the 256 MiB
-ceiling. Inline legacy files and direct console output remain compatible. Native Build now recognizes a live finished
-target before new-builder admission, queues normal follow-up before Stop clears the target, and reports completed
-through existing cleanup. This prevents a resume-build arriving after actual completion from falsely failing. Dead
-or unfinished unavailable sites still fail; this receipt does not establish useful-capacity attribution.
+**What changed / why:** `MovementSystem` distinguishes EasyStar's empty same-tile route from no route. It confirms
+the pawn's live active-scene tile after the asynchronous query, creates its own singleton route, cancels older movement
+and releases its step before normal arrival callbacks/animation/destination cleanup. An already-positioned formation
+pawn can now complete its Move instead of falsely failing. Null, wrong/missing position and inactive cases still fail.
+Native cache results/TTL, balances, save/command identities and scenario assertions are unchanged. Physical position
+does not prove travel, mission usefulness or useful production capacity. Prior lossless grouped output, food throughput,
+partial-return and finished-Build repairs remain intact.
 
-**Current checks:** 153 native suites/754 tests, native/E2E types, explicit structure and uncached portal production
-build pass. Codec/reader/summary/repair controls: 24 tests pass; publisher controls: three pass, while the old publisher
-fails the grouped control (one fail/two pass). Construction branch fails before repair (one fail/three pass).
-The broad tools suite has one pre-existing catalog-count failure (154 versus 121), reproduced in a HEAD archive.
-Two existing runner/reporter formatting warnings also reproduce at HEAD; other changed source passes formatting.
+**Current checks:** final 154 native suites/761 tests, native types, explicit structure, new-spec formatting and uncached
+portal production build pass. Initial focused four suites/35 tests pass; original arrival controls fail before repair
+(two failures/four passes). Review's prior-movement cancellation control fails before cleanup (one failure/six passes).
+The movement facade's formatting warning reproduces at HEAD; no whole-file reformat/baseline refresh is included.
+Prior broad-tools catalog-count failure and runner/reporter formatting warnings remain documented baseline gate issues;
+those unaffected tool routes were not rerun in this gameplay batch.
 
-**Final affected runtime:** `grouped-production-recovery-final/1791698850150-failed.json`: two physical worlds,
+**Current evidence:** final `reached-position-recovery-final/1791710304812-failed.json` records six native same-tile
+Move completions (Tivara ticks 9,360/10,624; Skaduwee 888/1,654/10,690/11,956) and one remaining scout no-route
+failure per world. Source `fa28f62d0f516018b6efbd773c8d4289e2814e71` plus both final repairs, dirty
+`fnv1a32:0d7a75af`, fixture `fnv1a32:221d6201`, seeds `759101`/`759102`. One process, 1,222 decisions/24,042
+ticks, 456,302 ms. Both worlds end with six workers; Tivara one producer/170 food credited, Skaduwee two producers/
+110 credited. Full PRO-03/06/07 remains red for required branches and authority; no complete recovery, useful-capacity,
+legal faction setup, statistical improvement or determinism proof is inferred. Raw
+`tmp/ai-skirmish-runtime-results/run-nZG67x/runtime.json` is 216,403,157 bytes, SHA-256
+`18bdf47ac9458f5ce50506242da875cce40aa7a69e91bf1a2556832147dfd88b`; matrix 216,530,852 bytes.
+Start with its supported `indexes/` report and `movement-final-world-summary.json`/`movement-final-failures.json`
+under ignored `tmp/ai-plans/759-validation/`. Initial-source evidence before the cancellation follow-up is retained
+separately in `movement-first-world-summary.json`; gameplay source stayed frozen during each match.
+See the [already-reached movement checkpoint](follow-ups/runtime-matrix-ci.md#already-reached-location-movement-checkpoint-2026-10-11).
+
+**Previous grouped output/construction runtime:** `grouped-production-recovery-final/1791698850150-failed.json`: two physical worlds,
 1,220 decisions/24,026 actual ticks, one process, 376,007 ms. Source `b14e2d27ff5a` plus both repairs, dirty
 `fnv1a32:b8ccb0b2`, fixture `fnv1a32:221d6201`, seeds `759101`/`759102`. Tivara ends with eight workers/one producer
 and 200 food credited; Skaduwee six workers/two producers and 140 food credited. Two native Skaduwee Build receipts
@@ -88,7 +103,7 @@ The grouped PRO-03/06/07 capture failed serialization
 with `Invalid string length`, producing no runtime payload; this is an evidence-output failure, not a gameplay result.
 Separate faction PRO-03 diagnostics retain the recipe/oracles and cannot certify the full PRO-06/07 release.
 
-**Provenance:** clean base/remote `9a53ddd705997403a7a5b93aa823c527a753bd8d`; neutral prerequisites `c2f7d16c2`,
+**Previous food provenance:** clean base/remote `9a53ddd705997403a7a5b93aa823c527a753bd8d`; neutral prerequisites `c2f7d16c2`,
 `a44daf896`; containing commit owns shared tuning, partial-return repair, controls and this record.
 Worktree `/home/jernej/.codex/worktrees/7977/fuzzy-waddle`, branch `feature/759-skirmish-ai`; verify remote on resume.
 Preserve Nx merge `59f72e037`, comment-rule removal, native oracles/bounds and useful nulls. The
@@ -103,9 +118,10 @@ The [performance sanity policy](follow-ups/runtime-matrix-ci.md#diagnostic-perfo
 retains historical cost evidence; these gameplay changes do not inherit its parity or numerical measurements.
 
 **Next action / why:** GPT-6.1 Sol / high for grouped M12 recovery and production authority.
-Use the final affected diagnostics to identify remaining movement, economy and military-capacity blockers and distinguish
-native applied effects from incomplete authority. This should establish what still prevents useful additional military
-capacity and guide the next coherent repair. Field growth already uses simulation ticks; asynchronous/frame progress
+Use the final bounded movement worlds to investigate the distinct early scout no-route case and remaining economy/
+military-capacity blockers; combine related legal PRO-03/06/07 fixtures and missing authority/oracles where dependencies
+permit. This should establish what still prevents useful additional military capacity, rather than treating an
+already-reached position as a failure. Field growth already uses simulation ticks; asynchronous/frame progress
 is a hypothesis, not an established cause. Grouped report serialization is repaired with lossless shared-variant storage.
 Group the next causal repair or modest authorized balance adjustment and its controls with related PRO-03/06/07
 legal fixtures and missing authority/oracles;
@@ -242,7 +258,8 @@ A credit proves a scoped balance change, independently from cargo lineage, accep
 **Next action — why:** use the final grouped production diagnostics to investigate the remaining recovery blocker and
 full production authority on **GPT-6.1 Sol / high**. Scoped command collisions, Field-return staffing, full-pack priority,
 expansion pricing and partial returns are repaired; shared food throughput is tuned and natively checked. Grouped
-capture storage now preserves shared variants once; finished native construction no longer fails builder admission.
+capture storage now preserves shared variants once; finished native construction no longer fails builder admission;
+already-positioned native location Moves now use normal arrival and cancel older movement before zero-step completion.
 Group remaining causal recovery repairs and legal PRO fixtures
 so useful capacity growth can be established.
 Keep M11/M12, correctness/parity/calibration and final machinery review duties.
@@ -839,11 +856,12 @@ No automatic model switch, subagent or new chat is authorized by this policy. Ex
 
 Copyable next-chat prompt:
 
-> Read docs/ai/759-skirmish-ai/HANDOFF.md and the grouped-artifact/construction checkpoint in runtime-matrix-ci.md.
+> Read docs/ai/759-skirmish-ai/HANDOFF.md and the already-reached movement checkpoint in runtime-matrix-ci.md.
 > Verify containing commit/remote and clean worktree. Shared food tuning and partial returns remain. Grouped file output
 > now retains each physical variant once, with checked lossless references. Native Build recognizes live finished targets
-> before admission and reports completion through normal cleanup. Native 754, native/E2E types and production build pass.
-> Read the fresh supported index and bounded grouped world summary before raw capture slices.
+> before admission and reports completion through normal cleanup. Native location Moves accept checked empty same-tile
+> routes and cancel older movement before zero-step arrival. Final native 761, native types and production build pass.
+> Read the fresh supported index and bounded movement world summary before raw capture slices.
 > On GPT-6.1 Sol / high, use the final runs to repair the remaining recovery/production blocker, then group legal PRO-03/06/07 authority
 > fixtures. Preserve full assertions and tick ceilings; do not assume a clock fault or claim tuning proves recovery.
 > Targeted shared gameplay rebalancing is also authorized: harvest/seeding/growth speed, Field food yield, and relevant

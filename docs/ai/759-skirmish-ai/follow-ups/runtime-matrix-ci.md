@@ -512,6 +512,91 @@ final-gate checkpoints below. The user-authorized final gate is active; K5/C8 an
 Do not claim stage validation before K1–K5. M11 remains a mandatory blocker from public mutable aliases
 and incomplete access/safety/lifetime history; M12 remains open for full PRO-03/06/07. Neither was reduced by this batch.
 
+### Already-reached location movement checkpoint (2026-10-11)
+
+M12 native movement batch, based on published clean `fa28f62d0f516018b6efbd773c8d4289e2814e71`.
+Actual host model/effort unknown; containing commit owns publication. Full M12/PRO remains open.
+
+| Acceptance | Owner / evidence | State |
+| --- | --- | --- |
+| P1 distinguish arrival from no route | Prior grouped index/summary and bounded `movement-before.json`: six of eight failed Moves start and finish on the requested tile | Checked |
+| P2 preserve native completion and failures | `MovementSystem.moveToLocationByFollowingStaticPath`; real EasyStar/cache, callback, null, wrong/missing position and inactive controls | Checked |
+| P3 affected compatibility | Initial focused four suites/35 tests; final full native 154 suites/761 tests, native types, structure and production build pass | Checked |
+| P4 fresh native outcomes | Final grouped PRO-03/06/07 has six native same-tile completed Moves, one distinct scout failure per world; source frozen | Checked; full PRO open |
+| P5 durable contract and scoped delivery | Command-effect ownership and handoff updated; audits complete; containing commit owns publication | Checked; verify containing remote commit on resume |
+
+**Purpose:** a formation Move can legitimately ask an already-positioned pawn to remain on its tile. Installed EasyStar
+returns an empty route for equal start/end tiles. The native facade previously rejected every empty route, producing
+`Move - Movement Failed` and releasing the AI commitment as failed despite the pawn already being in position.
+The prior Tivara run has two such failures; Skaduwee has four. Both also have an early scout failure whose starting
+tile differs from the requested tile; these are distinct no-route cases, not proven repaired by this change.
+
+The facade now confirms live active-scene position after an empty query result and creates an invocation-owned
+singleton route only when it equals the requested tile. The existing path executor consumes the start tile and performs
+zero-step arrival, callback, animation stop and final destination release. Zero-step execution cancels previous movement
+and releases its step before arrival, including direct callers with no pawn Stop owner. Native cache storage/results/TTL, water/wall
+rules, normal paths, flying movement, query exceptions, command identity and saved orders remain unchanged. Null routes
+and unknown/different tiles remain false; an inactive actor after the asynchronous query remains false.
+Physical arrival does not prove travel, mission usefulness or additional production capacity.
+
+**Checks:** ignored `tmp/ai-plans/759-validation/movement-{doctor,context,arrival-negative,focused,native,types,
+structure,build,spec-format}.log` and `movement-final-{native,types,structure,build,format}.log`.
+New controls fail before repair (two failures/four passes) and pass after repair;
+the positive uses the installed EasyStar through `GroundNavigationPathfinder`, including the existing cache, rather
+than returning an authored successful route. The second failing control proves the completion callback and reservation
+cleanup are exercised. Review added the prior-movement cancellation control: before cleanup it fails (one failure/six
+passes), retained in `movement-cleanup-negative.log`. Final native gate passes 154 suites/761 tests; final uncached
+production build passes three tasks. Types, explicit structure and new-spec formatting pass on the final source.
+The new spec is formatted. The movement facade's existing formatting warning reproduces at clean HEAD
+(`movement-format-baseline.json`); no unrelated whole-file reformat or source-structure baseline refresh is included.
+Previously established broad-tools catalog failure and runner/reporter formatting warnings remain baseline issues.
+
+Implementation Review: traced installed EasyStar's equal-tile callback through the native facade, existing path executor,
+arrival observation, callback/animation cleanup and pawn in-range/Stop terminal allowlist. The route cache still receives
+and returns its native empty value; callers create no shared mutable singleton. Omission Audit: P1–P3 have causal and
+negative-control evidence; final runtime and closure audit below supply P4/P5. No balancing, fixture/oracle changes,
+new diagnostic machinery or performance profiling was needed.
+
+Initial affected run before the cancellation follow-up: `reached-position-recovery/1791709749890-failed.json`, source
+`fa28f62d0f516018b6efbd773c8d4289e2814e71` plus arrival repair, dirty `fnv1a32:ca8ee1b9`, fixture
+`fnv1a32:221d6201`, seeds `759101`/`759102`. One process, 1,224 decisions/24,087 ticks, 476,495 ms. Six native
+same-tile Move completions replace the prior false failures (Tivara ticks 8,600/9,864; Skaduwee 888/1,620/10,164/11,430).
+Each joins native started/destination/arrived/returned-true and completed `Move - Reached Target`; neither world has
+a same-tile failure, but both retain one scout no-route failure. Both end with six workers; Tivara one producer/180
+food credited, Skaduwee two producers/160 credited. Full PRO-03/06/07 remains failed. This is historical evidence for
+the initial repair, not final-source proof for the subsequent cancellation change. Raw artifact
+`tmp/ai-skirmish-runtime-results/run-rElbJT/runtime.json`: 216,226,205 bytes, SHA-256
+`0ef06ebd376d51406200e062f4cc2326a0eba23fd39e544860e03e1137a06fc2`;
+matrix 216,354,638 bytes. Bounded joins/provenance: `movement-first-world-summary.json`.
+
+**Final affected runtime:** `reached-position-recovery-final/1791710304812-failed.json`, source `fa28f62d0f516018b6efbd773c8d4289e2814e71`
+plus arrival/cancellation repairs, dirty `fnv1a32:0d7a75af`, fixture `fnv1a32:221d6201`, seeds `759101`/`759102`.
+One process, two physical worlds reused by three rows, 1,222 decisions/24,042 ticks, 456,302 ms. Native joined
+started/destination/arrived/returned-true plus completed/applied `Move - Reached Target` confirms six same-tile
+completions: Tivara ticks 9,360/10,624; Skaduwee 888/1,654/10,690/11,956. Neither world has a same-tile failure.
+Each retains one scout failure toward (22,23) from (36,16), distinct from the repaired branch.
+Both end with six workers; Tivara one military producer/170 native food credited, Skaduwee two producers/110 credited.
+Food counts include only `resource.added`, not spending. Full PRO-03/06/07 still fails required branches/authority.
+This establishes the bounded movement branch, not useful capacity, complete recovery, legal faction setup,
+statistical improvement, determinism or release readiness. Raw
+`tmp/ai-skirmish-runtime-results/run-nZG67x/runtime.json`: 216,403,157 bytes, SHA-256
+`18bdf47ac9458f5ce50506242da875cce40aa7a69e91bf1a2556832147dfd88b`; matrix 216,530,852 bytes.
+Supported index and `movement-final-summary.log` precede bounded `movement-final-world-summary.json` and
+`movement-final-failures.json`. These artifacts remain ignored; no temporary captures are committed.
+
+**Separate Final Closure Audit:** after the cancellation repair, final 761-test/type/structure/build/format checks
+and final runtime, rechecked P1–P5, current consumers, completion allowlist, callback/step/destination cleanup,
+native cache isolation, negative cases and task-owned staging scope. No shipped source changed during either runtime
+process. No manifest, fixture, assertion, tick ceiling, save/wire schema, structural baseline or profiling policy changed.
+Native movement slice is checked; full M11/M12, prior baseline catalog/format failures, lifecycle/calibration and final
+machinery necessity review remain open. Publication uses the containing commit and exact remote verification.
+
+**Next / why:** on GPT-6.1 Sol/high, trace the remaining scout no-route failure and economy/military producer floor;
+group related causal repairs with legal paired PRO-03/06/07 fixtures and independent authority where dependencies
+permit. This should establish whether useful new capacity is actually created and exercised, without treating a
+position completion as mission or production usefulness. No further dedicated diagnostic profiling is queued.
+Commit/push, verify remote and pause at this boundary.
+
 ### Grouped artifact and construction completion checkpoint (2026-10-11)
 
 Combined M12 output/gameplay batch, based on published clean `b14e2d27ff5a1b37d089736dc4ec41804abe2c10`.

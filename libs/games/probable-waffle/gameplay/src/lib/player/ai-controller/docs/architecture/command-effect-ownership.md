@@ -36,6 +36,15 @@ Useful duplicates remain legal: production commands receive distinct default com
 | Proximity conversion               | No command: this is a normal world rule, not AI ownership mutation                                              | `ConvertibleComponent` canonically selects active/live contenders by distance, player, then actor ID and calls its existing owner transition                                                                            | Conversion emits `convertible-converted` with owner/trigger actor and persists accumulated interval/converted state. AI may approach but cannot set owner directly                                                                                                                                                                                   |
 | Concession                         | `CONCEDE {reason}` with an empty actor set; host delegation rules still apply                                   | `SharedCommandApplicationService` invokes `GameModeConditionChecker.applyConcession`, which uses the normal eliminated-player and actor cleanup path                                                                    | Completed only when the mode accepted elimination; otherwise rejected. A technical command fault is never converted into concession                                                                                                                                                                                                                  |
 
+Native location movement distinguishes EasyStar's empty same-tile route from an unreachable destination. After the
+asynchronous query, `MovementSystem` accepts an empty route only when the actor remains active in its active scene and
+its live tile equals the requested tile. A zero-step route cancels earlier movement and releases its step reservation
+before executing the existing arrival path, including completion callback,
+animation stop and destination-reservation cleanup; the pawn's normal in-range check owns `Move - Reached Target`.
+Null routes, empty routes at another or unknown tile, and inactive actors remain failures. This confirms an already
+reached position, not travel, strategic mission effect or useful production capacity. Path caches and their TTLs retain
+the native empty result; only the movement invocation creates its own singleton route.
+
 ## Persistence, replay, and diagnostics
 
 - `ProbableWaffleGameStateData.commandAuthority`, `AIBehaviorTreeStateData.commandReconciliation`, command-linked queue/order records, pending spell impacts, AOE zones, summon expiries, and conversion progress are the durable owners.

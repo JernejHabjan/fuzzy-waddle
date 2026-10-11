@@ -138,6 +138,12 @@ export class MovementSystem {
       path = await MovementQueryObservation.invoke(this.gameObject, queryContext, "initial",
         () => this.runtime.navigationService!.findPathFromGameObjectToTile(this.gameObject, tileVec3));
     } catch (error) { completion?.threw(); throw error; }
+    // EasyStar returns [] when start equals destination. Confirm the live position after the async query;
+    // missing/no-route results remain failures. A singleton uses normal arrival callbacks and reservation cleanup.
+    if (path?.length === 0 && isGameObjectActiveInActiveScene(this.gameObject)) {
+      const currentTile = getGameObjectCurrentTile(this.gameObject);
+      if (currentTile?.x === tileVec3.x && currentTile.y === tileVec3.y) path = [{ ...currentTile }];
+    }
     if (!path || !path.length) { completion?.returned(false); return false; }
 
     if (this.DEBUG) console.log(`Moving to tile ${tileVec3.x}, ${tileVec3.y}`);
@@ -147,6 +153,8 @@ export class MovementSystem {
     let success = false;
     try {
       if (path.length) {
+        // A zero-step route must also stop older movement, even without a pawn order owning Stop cleanup.
+        if (path.length === 1) this.cancelMovement();
         completion?.destination(path[path.length - 1]);
         // Remove the first tile, as it's the current tile
         path.shift();
