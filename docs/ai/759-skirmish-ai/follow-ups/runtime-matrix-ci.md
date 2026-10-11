@@ -1,5 +1,54 @@
 # Playwright runtime matrix and CI — #816
 
+## Production-start checkpoint (2026-10-11)
+
+Scoped M12 setup batch stage_checked; containing commit owns publication. Full M12 release and M11 useful authority
+remain open. Actual model/effort unknown; next recommendation GPT-6.1 Sol / high.
+
+| Acceptance | Owner / purpose | Evidence / state |
+| --- | --- | --- |
+| P1 Native setup authority | assert-ai-runtime-preset-roster.ts, preset type/parser, public application; graph-backed faction actors/products/loss types, inherited roster and native tile bounds before creation/payment, repeated before setup completion | Both actual faction starts pass; foreign/unknown/missing-service/faction and invalid-tile controls pass; original public caller fails one control/five pass and is restored byte-for-byte |
+| P2 Independent application boundary | skirmish-ai-runtime-preset-roster.ts and prepareRuntimeVariant; every fixture/native identity, unique ID, concrete name multiplicity and actual owned starting copies | Eight browser assertion controls and both real world launches pass; no synthetic evidence is promoted to usefulness |
+| P3 Concrete production inputs | git mv production-natural-runtime.json to production-economy-runtime.json; manifest and generated catalog updated; exact resources, legal faction producers/workers on frozen map | Both six-worker/200-each starts applied; first producer locations refused native spawns, corrected from (1000,480) to (800,848); both final military spawns succeed at tick 120 |
+| P4 Gates / publication | Native/browser/tool controls, types, explicit source limits, formatting, uncached production build, durable testing guidance, handoff | Final 158 native suites/838 tests, focused fourteen, browser eight and tools twelve pass; full PRO remains failed, not closed |
+
+Implementation Review traced strict opt-in parsing, real graph/canonical aliases, inherited index, pre-mutation validation,
+created indexing, delayed queue setup, normal capture guards and the browser's independent starting boundary. No timers,
+subscriptions, caches or save/wire fields were added. Neutral resource definition checks remain native; special owned
+creature diagnostics retain the default opt-out. Tile-center membership does not prove footprint terrain or useful output.
+Omission Audit preserves required causal branches, entire useful-effect assertions, both factions, source/fixture provenance,
+normal-game guards, funding/throughput and independent release authority. It does not replace causal production fixtures
+with these standalone diagnostics. Final Closure Audit follows the repaired controls/checks; no baseline refresh or new
+machinery/profiling. Existing Nx merge 59f72e037 remains required ancestry.
+
+The catalog-count control previously included runtime variant rows (154 versus 121). It now extracts unique scenario
+identities from the scenario section, including the three named SEQ labels. Twelve focused Node tool cases and catalog
+check pass. The initial test syntax and extraction error were repaired. Source controls/types/builds were repeated only
+when the tile-bound repair invalidated earlier source evidence; matches were sequential with shipped source frozen.
+
+Final runtime: tmp/ai-plans/759-validation/legal-production-economy-final/1791743179759-failed.json and supported indexes.
+Source 80cd4a7f8c8f7a6c428f030234eea7cf36f75777 plus final code/fixture repairs; dirty fnv1a32:c848df12, fixture
+fnv1a32:06ec463a, seeds 759101/759102. One browser process/two shared worlds, 1,213 decisions/24,067 ticks, 615,105 ms.
+Tivara military spawn succeeds at tile (41,17); Skaduwee at (40,16), both tick 120. Final normalization errors and dropped
+facts/snapshots are zero. Tivara ends fourteen workers/two military/one producer, food zero/wood ten; Skaduwee thirteen/
+two/one, food forty/wood twenty. Native score wood collection 230/240 and spending 420 each; no damage/enemy losses.
+Two Tivara Move failures and seven Skaduwee invalid-footprint rejections remain. Full rows fail 223/221/221 assertions;
+causal branches/authority, producer requirements and useful-capacity proof are not closed. Counts between changed worlds
+are not causal statistical improvement. Concurrent independent checks and changed trajectories supply no performance comparison.
+
+Final raw: tmp/ai-skirmish-runtime-results/run-Tt9BCB/runtime.json; 234,261,677 bytes;
+SHA-256 79c09353629b882f61dd32a7753d1b885054ae7141587b1fd907a0caac736cf8. Matrix 234,390,639 bytes.
+Cold start: ignored roster-runtime-final-summary.log and roster-final-world-summary.json retain both variants, all military
+spawns and every retained non-cancellation failure, with zero omitted cases. Initial legal-production-economy/
+1791742307166-failed.json is before corrected locations/tile guards: dirty fnv1a32:ee9fa5e5, fixture fnv1a32:c608de4a,
+1,222 decisions/24,062 ticks, 402,066 ms; first military spawns refused, Tivara payload errors, Skaduwee 155 dropped facts.
+Raw run-sCplUJ/runtime.json: 171,838,323 bytes, SHA-256 b2bbb36e32cff974f7ead4d0614df9ca84a810307dcb576db45addb34dea7541.
+It remains historical evidence, not the published final source. All tmp artifacts are ignored.
+
+Next: short focused causal transition/resilience/queue branch setup, native authority joins and food/funding/placement
+blockers that prevent those tests. Preserve full useful-effect oracles; further route work needs retained causal evidence.
+Use GPT-6.1 Sol / high for the next reasoning batch; no automatic switch. Publish, verify exact remote/clean tree, then pause.
+
 ## Resource-order recovery checkpoint (2026-10-11)
 
 **Scope:** three related M12 recovery fixes on `feature/759-skirmish-ai`, base/remote
@@ -5834,7 +5883,7 @@ compaction; do not reload the whole catalog/history. Compact context size is a p
   update the evaluator contract with fixture repetition changes. Full-match victories remain separate, finite and
   allowed to run longer when terminal behavior requires it. See the code-adjacent runtime E2E policy.
   `tools/ai/fixtures/continuous-land-runtime.json` now owns only natural SEQ match recipes. Replace the temporary
-  natural `tools/ai/fixtures/production-natural-runtime.json` with focused PRO-03/06/07 files with legal preset actors;
+  standalone `tools/ai/fixtures/production-economy-runtime.json` diagnostic with focused causal PRO-03/06/07 pairs;
   PRO-04 now owns `focused-production-composition-runtime.json`, authored but unverified. Include
   balances, queues and scheduled loss where needed. Group a positive/control pair together; do not create one file
   per ID or share a 12,000-tick natural match merely because several IDs mention production. PRO-05 already owns

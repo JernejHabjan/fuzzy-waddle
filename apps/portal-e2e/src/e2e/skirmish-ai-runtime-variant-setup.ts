@@ -1,9 +1,11 @@
+// prettier-ignore
 import type { AiRuntimePresetApplicationV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-application-v1";
 import type { Page } from "@playwright/test";
 import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
 import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
 import { installRuntimeAccessor } from "./skirmish-ai-runtime-browser-accessor";
+import { assertRuntimePresetRoster } from "./skirmish-ai-runtime-preset-roster";
 
 /** Installs bounded browser probes, launches the ordinary lobby, and verifies authored pre-tick state. */
 export async function prepareRuntimeVariant(
@@ -58,8 +60,15 @@ export async function prepareRuntimeVariant(
         })
       );
     },
-    { seed: effectiveSeed, presetWorld: variant.presetWorld, revision: sourceRevision, digest: fixtureDigest,
-      captureProduction: (variant.scenarioIds ?? fixture.scenarioIds).some((id) => ["PRO-03", "PRO-06", "PRO-07"].includes(id)) }
+    {
+      seed: effectiveSeed,
+      presetWorld: variant.presetWorld,
+      revision: sourceRevision,
+      digest: fixtureDigest,
+      captureProduction: (variant.scenarioIds ?? fixture.scenarioIds).some((id) =>
+        ["PRO-03", "PRO-06", "PRO-07"].includes(id)
+      )
+    }
   );
   await configureLobby(page, fixture, variant);
   await installRuntimeAccessor(page);
@@ -70,12 +79,15 @@ export async function prepareRuntimeVariant(
   );
   await debugProbe?.(page, -1);
   if (variant.presetWorld?.queues?.length || variant.presetWorld?.researchQueues?.length) {
-    const expected = (variant.presetWorld.queues ?? []).reduce((count, queue) => count + queue.count, 0) +
+    const expected =
+      (variant.presetWorld.queues ?? []).reduce((count, queue) => count + queue.count, 0) +
       (variant.presetWorld.researchQueues?.length ?? 0);
     await page.waitForFunction(
       (count) => {
         const host = (
-          window as unknown as { __fuzzyWaddleAiRuntimeBrowserTestV1?: { presetApplication?: { queuedItemCount: number } } }
+          window as unknown as {
+            __fuzzyWaddleAiRuntimeBrowserTestV1?: { presetApplication?: { queuedItemCount: number } };
+          }
         ).__fuzzyWaddleAiRuntimeBrowserTestV1;
         return host?.presetApplication?.queuedItemCount === count;
       },
@@ -117,6 +129,7 @@ export async function prepareRuntimeVariant(
     if (application.fixtureId !== variant.presetWorld.fixtureId) throw new Error("runtime_preset_fixture_mismatch");
     if (application.sourceRevision !== sourceRevision) throw new Error("runtime_preset_source_mismatch");
     if (application.fixtureDigest !== fixtureDigest) throw new Error("runtime_preset_digest_mismatch");
+    assertRuntimePresetRoster(variant.presetWorld, application, fixture.recipe.aiPlayerNumber, initialBoundary.state);
     if (application.resourceStartCount !== (variant.presetWorld.resourceStarts?.length ?? 0)) {
       throw new Error("runtime_preset_resource_start_mismatch");
     }
@@ -127,30 +140,50 @@ export async function prepareRuntimeVariant(
         }
       }
     }
-    const requestedQueues = (variant.presetWorld.queues?.reduce((count, queue) => count + queue.count, 0) ?? 0) +
+    const requestedQueues =
+      (variant.presetWorld.queues?.reduce((count, queue) => count + queue.count, 0) ?? 0) +
       (variant.presetWorld.researchQueues?.length ?? 0);
     if (application.queuedItemCount !== requestedQueues) throw new Error("runtime_preset_queue_mismatch");
     const expectedQueueItems = [
       ...(variant.presetWorld.queues ?? []).flatMap((queue) =>
-        Array.from({ length: queue.count }, () => ({ producerFixtureActorId: queue.producerFixtureActorId,
-          objectName: queue.actorName, researchType: null }))),
-      ...(variant.presetWorld.researchQueues ?? []).map((queue) => ({ producerFixtureActorId: queue.producerFixtureActorId,
-        objectName: null, researchType: queue.researchType }))
+        Array.from({ length: queue.count }, () => ({
+          producerFixtureActorId: queue.producerFixtureActorId,
+          objectName: queue.actorName,
+          researchType: null
+        }))
+      ),
+      ...(variant.presetWorld.researchQueues ?? []).map((queue) => ({
+        producerFixtureActorId: queue.producerFixtureActorId,
+        objectName: null,
+        researchType: queue.researchType
+      }))
     ];
     const observedQueueItems = application.initialQueueItems.map((item) => ({
       producerFixtureActorId: item.producerFixtureActorId,
-      objectName: item.objectName, researchType: item.researchType
+      objectName: item.objectName,
+      researchType: item.researchType
     }));
-    if (JSON.stringify([...expectedQueueItems].sort(compareQueueItem)) !==
+    if (
+      JSON.stringify([...expectedQueueItems].sort(compareQueueItem)) !==
         JSON.stringify([...observedQueueItems].sort(compareQueueItem)) ||
-        new Set(application.initialQueueItems.map((item) => item.itemId)).size !== requestedQueues) {
+      new Set(application.initialQueueItems.map((item) => item.itemId)).size !== requestedQueues
+    ) {
       throw new Error("runtime_preset_queue_identity_mismatch");
     }
-    if (application.queueApplications.length !== requestedQueues || application.queueApplications.some((entry) =>
-      !entry.command.execution || entry.itemId !== `queue:${entry.command.actorIds[0]}:${entry.command.execution.commandId}` ||
-      !application.initialQueueItems.some((item) => item.itemId === entry.itemId &&
-        item.producerFixtureActorId === entry.producerFixtureActorId) ||
-      !entry.outcomes.some((outcome) => outcome.kind === "applied" && outcome.commandId === entry.command.execution?.commandId))) {
+    if (
+      application.queueApplications.length !== requestedQueues ||
+      application.queueApplications.some(
+        (entry) =>
+          !entry.command.execution ||
+          entry.itemId !== `queue:${entry.command.actorIds[0]}:${entry.command.execution.commandId}` ||
+          !application.initialQueueItems.some(
+            (item) => item.itemId === entry.itemId && item.producerFixtureActorId === entry.producerFixtureActorId
+          ) ||
+          !entry.outcomes.some(
+            (outcome) => outcome.kind === "applied" && outcome.commandId === entry.command.execution?.commandId
+          )
+      )
+    ) {
       throw new Error("runtime_preset_queue_application_provenance_missing");
     }
     if (application.initialOrderCount !== (variant.presetWorld.initialOrders?.length ?? 0)) {
@@ -166,9 +199,11 @@ function compareQueueItem(
   left: { producerFixtureActorId: string; objectName: string | null; researchType: string | null },
   right: { producerFixtureActorId: string; objectName: string | null; researchType: string | null }
 ): number {
-  return left.producerFixtureActorId.localeCompare(right.producerFixtureActorId) ||
+  return (
+    left.producerFixtureActorId.localeCompare(right.producerFixtureActorId) ||
     (left.objectName ?? "").localeCompare(right.objectName ?? "") ||
-    (left.researchType ?? "").localeCompare(right.researchType ?? "");
+    (left.researchType ?? "").localeCompare(right.researchType ?? "")
+  );
 }
 
 async function configureLobby(page: Page, fixture: RuntimeFixtureV1, variant: RuntimeVariantV1): Promise<void> {

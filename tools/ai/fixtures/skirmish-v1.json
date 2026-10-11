@@ -96,7 +96,7 @@
       "id": "PRO-03",
       "stages": [7],
       "group": "production",
-      "fixture": "production-natural-runtime.json",
+      "fixture": "production-economy-runtime.json",
       "authoredFixture": "production-scenarios.json",
       "drivers": ["pure", "runtime"]
     },
@@ -120,7 +120,7 @@
       "id": "PRO-06",
       "stages": [7, 12, 14],
       "group": "production",
-      "fixture": "production-natural-runtime.json",
+      "fixture": "production-economy-runtime.json",
       "authoredFixture": "stage-14-adaptation.json",
       "drivers": ["pure", "runtime"]
     },
@@ -128,7 +128,7 @@
       "id": "PRO-07",
       "stages": [7, 14],
       "group": "production",
-      "fixture": "production-natural-runtime.json",
+      "fixture": "production-economy-runtime.json",
       "authoredFixture": "stage-14-adaptation.json",
       "drivers": ["pure", "runtime"]
     },

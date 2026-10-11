@@ -1,6 +1,11 @@
 import { environment } from "@fuzzy-waddle/environments/environment";
 import type Phaser from "phaser";
-import { DamageType, ObjectNames, ResourceType, type PlayerStateResources } from "@fuzzy-waddle/probable-waffle-protocol";
+import {
+  DamageType,
+  ObjectNames,
+  ResourceType,
+  type PlayerStateResources
+} from "@fuzzy-waddle/probable-waffle-protocol";
 import { emitResource, getPlayer } from "../../../data/scene-data";
 import { getActorComponent } from "../../../data/actor-component";
 import { HealthComponent } from "../../../entity/components/combat/components/health-component";
@@ -19,6 +24,7 @@ import { SimulationTickService } from "../../../world/services/simulation-tick.s
 import { scheduleAiRuntimePresetSetup } from "./schedule-ai-runtime-preset-setup";
 import { applyAiRuntimePresetQueues } from "./apply-ai-runtime-preset-queues";
 import { installAiRuntimeProductionCapture } from "./install-ai-runtime-production-capture";
+import { assertAiRuntimePresetRoster } from "./assert-ai-runtime-preset-roster";
 import {
   readAiRuntimeBrowserTestConfigV1,
   recordAiRuntimePresetApplicationV1,
@@ -31,7 +37,10 @@ export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, crea
   installAiRuntimeProductionCapture(scene);
   const preset = readAiRuntimeBrowserTestConfigV1()?.presetWorld;
   if (!preset) return;
-  const validOwners = new Set(scene.players.map((player) => player.playerNumber).filter((owner) => owner !== undefined));
+  assertAiRuntimePresetRoster(scene, preset);
+  const validOwners = new Set(
+    scene.players.map((player) => player.playerNumber).filter((owner) => owner !== undefined)
+  );
   for (const actor of preset.actors) {
     if (actor.owner === null) {
       if (!getPwActorDefinition(actor.actorName, null)?.components?.resourceSource) {
@@ -60,7 +69,8 @@ export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, crea
   }
   for (const queue of preset.queues ?? []) {
     const producer = preset.actors.find((actor) => actor.fixtureActorId === queue.producerFixtureActorId);
-    const available = producer && getPwActorDefinition(producer.actorName, null)?.components?.production?.availableProduceActors;
+    const available =
+      producer && getPwActorDefinition(producer.actorName, null)?.components?.production?.availableProduceActors;
     const cost = getPwActorDefinition(queue.actorName, null)?.components?.productionCost;
     if (!available?.includes(queue.actorName) || !cost) {
       throw new Error(`runtime_preset_unsupported_queue:${queue.producerFixtureActorId}`);
@@ -70,7 +80,11 @@ export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, crea
   const createdActors = new Map<string, Phaser.GameObjects.GameObject>();
   const createdActorIds: Record<string, string> = {};
   for (const actor of preset.actors) {
-    const created = creator.createFinishedActor(actor.actorName as ObjectNames, actor.position, actor.owner ?? undefined);
+    const created = creator.createFinishedActor(
+      actor.actorName as ObjectNames,
+      actor.position,
+      actor.owner ?? undefined
+    );
     if (!created) throw new Error(`runtime_preset_actor_creation_failed:${actor.fixtureActorId}`);
     const actorId = getActorComponent(created, IdComponent)?.id;
     if (!actorId) throw new Error(`runtime_preset_actor_id_missing:${actor.fixtureActorId}`);
@@ -82,7 +96,12 @@ export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, crea
     emitResource(scene, "resource.added", grant.amounts as Partial<PlayerStateResources>, grant.playerNumber);
   }
   const completeSetup = () => {
-    const { queuedItemCount, initialQueueItems, queueApplications } = applyAiRuntimePresetQueues(scene, preset, createdActors);
+    assertAiRuntimePresetRoster(scene, preset);
+    const { queuedItemCount, initialQueueItems, queueApplications } = applyAiRuntimePresetQueues(
+      scene,
+      preset,
+      createdActors
+    );
     for (const start of preset.resourceStarts ?? []) {
       const player = getPlayer(scene, start.playerNumber);
       if (!player) throw new Error("runtime_preset_resource_start_player_missing");
@@ -90,16 +109,23 @@ export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, crea
         const target = start.amounts[resourceType];
         if (target === undefined) continue;
         const current = player.getResources()[resourceType] ?? 0;
-        if (target > current) emitResource(scene, "resource.added", { [resourceType]: target - current }, start.playerNumber);
-        if (target < current) emitResource(scene, "resource.removed", { [resourceType]: current - target }, start.playerNumber);
+        if (target > current)
+          emitResource(scene, "resource.added", { [resourceType]: target - current }, start.playerNumber);
+        if (target < current)
+          emitResource(scene, "resource.removed", { [resourceType]: current - target }, start.playerNumber);
       }
     }
     for (const initialOrder of preset.initialOrders ?? []) {
       const worker = createdActors.get(initialOrder.workerFixtureActorId);
       const source = createdActors.get(initialOrder.sourceFixtureActorId);
       const pawn = worker ? getActorComponent(worker, PawnAiController) : undefined;
-      if (!worker || !source || !pawn || !getActorComponent(worker, GathererComponent) ||
-        !getActorComponent(source, ResourceSourceComponent)) {
+      if (
+        !worker ||
+        !source ||
+        !pawn ||
+        !getActorComponent(worker, GathererComponent) ||
+        !getActorComponent(source, ResourceSourceComponent)
+      ) {
         throw new Error(`runtime_preset_invalid_initial_gather:${initialOrder.workerFixtureActorId}`);
       }
       pawn.blackboard.overrideOrderQueueAndActiveOrder(new OrderData(OrderType.Gather, { targetGameObject: source }));
@@ -118,7 +144,9 @@ export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, crea
       initialOrderCount: preset.initialOrders?.length ?? 0,
       eventResults: []
     });
-    const pendingEvents = [...(preset.events ?? [])].sort((left, right) => left.tick - right.tick || left.id.localeCompare(right.id));
+    const pendingEvents = [...(preset.events ?? [])].sort(
+      (left, right) => left.tick - right.tick || left.id.localeCompare(right.id)
+    );
     if (pendingEvents.length === 0) return;
     const tickService = getSceneService(scene, SimulationTickService);
     const actorIndex = getSceneService(scene, ActorIndexSystem);

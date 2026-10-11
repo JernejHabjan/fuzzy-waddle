@@ -15,12 +15,25 @@ function hasOnlyKeys(value: Record<string, unknown>, keys: readonly string[]): b
 }
 
 function validPresetWorld(value: unknown): boolean {
-  if (!isRecord(value) || !hasOnlyKeys(value, [
-    "fixtureId", "provenance", "actors", "resourceGrants", "resourceStarts", "queues", "researchQueues", "initialOrders", "events"
-  ])) {
+  if (
+    !isRecord(value) ||
+    !hasOnlyKeys(value, [
+      "fixtureId",
+      "requireFactionRoster",
+      "provenance",
+      "actors",
+      "resourceGrants",
+      "resourceStarts",
+      "queues",
+      "researchQueues",
+      "initialOrders",
+      "events"
+    ])
+  ) {
     return false;
   }
   if (typeof value["fixtureId"] !== "string" || !/^[a-z0-9][a-z0-9-]{2,63}$/.test(value["fixtureId"])) return false;
+  if (value["requireFactionRoster"] !== undefined && value["requireFactionRoster"] !== true) return false;
   const provenance = value["provenance"];
   if (
     !isRecord(provenance) ||
@@ -71,8 +84,12 @@ function validPresetWorld(value: unknown): boolean {
     const amounts = start["amounts"];
     if (!isRecord(amounts) || !hasOnlyKeys(amounts, [...resourceTypes])) return false;
     const values = Object.values(amounts);
-    return values.length > 0 && values.every((amount) => typeof amount === "number" &&
-      Number.isSafeInteger(amount) && amount >= 0 && amount <= 100_000);
+    return (
+      values.length > 0 &&
+      values.every(
+        (amount) => typeof amount === "number" && Number.isSafeInteger(amount) && amount >= 0 && amount <= 100_000
+      )
+    );
   });
   const queues = value["queues"] ?? [];
   if (!Array.isArray(queues) || queues.length > 16) return false;
@@ -96,8 +113,14 @@ function validPresetWorld(value: unknown): boolean {
     if (!isRecord(queue) || !hasOnlyKeys(queue, ["producerFixtureActorId", "researchType"])) return false;
     const producerId = queue["producerFixtureActorId"];
     const type = queue["researchType"];
-    if (typeof producerId !== "string" || !fixtureActorIds.has(producerId) || actorOwners.get(producerId) === null ||
-      typeof type !== "string" || !researchTypes.has(type)) return false;
+    if (
+      typeof producerId !== "string" ||
+      !fixtureActorIds.has(producerId) ||
+      actorOwners.get(producerId) === null ||
+      typeof type !== "string" ||
+      !researchTypes.has(type)
+    )
+      return false;
     const identity = `${actorOwners.get(producerId)}:${type}`;
     if (researched.has(identity)) return false;
     researched.add(identity);
@@ -133,13 +156,24 @@ function validPresetWorld(value: unknown): boolean {
       actorNames.has(event["objectName"])
     );
   });
-  const workCount = value["actors"].length + value["resourceGrants"].length + resourceStarts.length +
-    queues.length + researchQueues.length + initialOrders.length + events.length;
-  return validGrants && validStarts && validQueues && validResearchQueues && validOrders && validEvents && workCount > 0;
+  const workCount =
+    value["actors"].length +
+    value["resourceGrants"].length +
+    resourceStarts.length +
+    queues.length +
+    researchQueues.length +
+    initialOrders.length +
+    events.length;
+  return (
+    validGrants && validStarts && validQueues && validResearchQueues && validOrders && validEvents && workCount > 0
+  );
 }
 
 export function isAiRuntimeBrowserTestConfigV1(value: unknown): value is AiRuntimeBrowserTestConfigV1 {
-  if (!isRecord(value) || !hasOnlyKeys(value, ["schemaVersion", "enabled", "seed", "startPaused", "presetWorld", "captureProduction"])) {
+  if (
+    !isRecord(value) ||
+    !hasOnlyKeys(value, ["schemaVersion", "enabled", "seed", "startPaused", "presetWorld", "captureProduction"])
+  ) {
     return false;
   }
   return (

@@ -68,6 +68,20 @@ diverge: a later gameplay repair can change the workload even when both initial 
 a causal difference, not paired performance evidence. Keep any behavior-aligned measurement reference explicitly
 separate from the original pinned acceptance reference.
 
+Production presets can require `requireFactionRoster: true`. The native bootstrap checks the ordinary indexed world,
+authored actors, seeded products and scheduled-loss actor types against each owner's `TechTreeService` faction graph,
+resolving concrete variants to their canonical definitions. It checks before actor/money work and again before completing
+setup. Each authored position must also resolve through the native isometric converter to an in-bounds tile; rectangular
+world-coordinate bounds alone admit positions beyond an isometric map edge. This checks the tile, not whole-footprint
+terrain or successful unit spawning. Neutral sources still require a resource-source definition. This is an opt-in so
+special diagnostic worlds with owned creatures remain possible. It proves roster membership at setup, not acquisition prerequisites or later mutation
+history. Strict recipes name concrete actor variants; the browser verifies every created fixture ID, unique native ID,
+created-name multiplicity and owned starting copies. A preset declaration alone cannot satisfy these checks.
+
+`production-economy-runtime.json` retains standalone, economically constrained worlds on the frozen economy map for
+funding/throughput diagnosis. Its full PRO-03/06/07 oracles remain active. These legal starts do not substitute for the
+required transition/abandonment, exposed/safe/low-value/no-demand or shared-queue/pending-refund causal branches.
+
 A reviewed behavior comparator may carry exact native correctness repairs on top of its compile compatibility
 overlay. Identify every excluded owner and both overlay digests, verify each repaired owner's emitted code against
 the candidate, execute its native regressions, and restore the historical checkout after building. Movement failure

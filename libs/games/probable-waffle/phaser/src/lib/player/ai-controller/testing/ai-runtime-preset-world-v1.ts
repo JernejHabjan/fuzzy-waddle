@@ -3,6 +3,8 @@ import type { ObjectNames, ResearchType, ResourceType } from "@fuzzy-waddle/prob
 /** Test-authored world inputs applied through real scene actor and resource services before tick zero. */
 export interface AiRuntimePresetWorldV1 {
   readonly fixtureId: string;
+  /** Production recipes require the authored faction graph, including the ordinary map's indexed actors. */
+  readonly requireFactionRoster?: true;
   readonly provenance: {
     readonly sourceRevision: string;
     readonly fixtureDigest: string;

@@ -1,5 +1,6 @@
 export interface RuntimePresetWorldV1 {
   readonly fixtureId: string;
+  readonly requireFactionRoster?: true;
   readonly actors: readonly {
     readonly fixtureActorId: string;
     readonly actorName: string;

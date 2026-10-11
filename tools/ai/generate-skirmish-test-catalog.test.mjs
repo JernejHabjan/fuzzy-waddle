@@ -25,7 +25,13 @@ test("catalog requirements retain explicit setup and result or mark missing setu
 
 test("catalog includes all scenario identities and distinguishes wiring from passing evidence", () => {
   const catalog = renderCatalog();
-  assert.equal((catalog.match(/^\| \[[^\]]+\]\([^)]*\) \|/gm) ?? []).length, 121);
+  const scenarioSection = catalog.split("## Registered runtime variants")[0];
+  const ids = [...scenarioSection.matchAll(/^\| \[([^\]]+)\]\([^)]*\) \|/gm)].map(
+    (match) => match[1].match(/[A-Z]+-[0-9]{2}/)?.[0]
+  );
+  assert.equal(ids.length, 121);
+  assert.equal(new Set(ids).size, 121);
+  assert.equal(ids.includes(undefined), false);
   assert.match(catalog, /Continuous land-match victory \(SEQ-01\)/);
   assert.match(catalog, /Defend a home raid and resume play \(SEQ-02\)/);
   assert.match(catalog, /Island transport and expansion \(SEQ-05\)/);
