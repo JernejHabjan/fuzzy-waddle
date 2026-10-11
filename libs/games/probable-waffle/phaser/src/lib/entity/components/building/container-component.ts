@@ -1,10 +1,9 @@
-type GameObject = Phaser.GameObjects.GameObject;
 import Phaser from "phaser";
 import { HealthComponent } from "../combat/components/health-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { VisionComponent } from "../vision-component";
 import { getGameObjectVisibility, isWaterUnit } from "../../../data/game-object-helper";
-import type { ContainerComponentData } from "@fuzzy-waddle/probable-waffle-protocol";
+import { type ContainerComponentData, ProbableWaffleGameCommandTypes } from "@fuzzy-waddle/probable-waffle-protocol";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
@@ -16,41 +15,46 @@ import { RepresentableComponent } from "../representable-component";
 import { ActorTranslateComponent } from "../movement/actor-translate-component";
 import type { Vector2Simple } from "@fuzzy-waddle/platform-game-sessions";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
+import { CommandBusService } from "../../../world/services/multiplayer/command-bus.service";
+import { fenceSceneResourceHistory } from "../../../data/scene-resource-observation";
 
 /**
  * apply to resource source that needs gameObjects to enter to gather
  */
 export class ContainerComponent {
   static readonly GameObjectVisibilityChanged = "GameObjectVisibilityChanged";
-  private containedGameObjects = new Set<GameObject>();
+  private containedGameObjects = new Set<Phaser.GameObjects.GameObject>();
   /** Units that have issued a boarding request but not yet physically loaded. */
-  private pendingBoarders = new Set<GameObject>();
+  private pendingBoarders = new Set<Phaser.GameObjects.GameObject>();
   /**
    * The agreed-upon shore tile where each pending boarder will wait.
    * Stored when the boarder registers its request so the boat can navigate
    * to the exact same tile instead of independently computing its own shore.
    */
-  private pendingBoarderShores = new Map<GameObject, Vector2Simple>();
+  private pendingBoarderShores = new Map<Phaser.GameObjects.GameObject, Vector2Simple>();
   /** Emits whenever units are loaded or unloaded, so HUD can refresh container display. */
   readonly containerChanged = new Subject<void>();
   // Fixes partial container restore when referenced units are not indexed yet at setData time.
   private pendingContainedIds?: string[];
   private simulationTickSub?: Subscription;
+  private commandSubscription?: Subscription;
 
   constructor(
-    private readonly gameObject: GameObject,
+    private readonly gameObject: Phaser.GameObjects.GameObject,
     public containerDefinition: ContainerDefinition
   ) {
     // Fixes one-shot restore race by retrying contained-id resolution on deterministic ticks.
     this.simulationTickSub = getSceneService(gameObject.scene, SimulationTickService)?.tick$.subscribe(() =>
       this.tryResolveContainedActorReferences()
     );
+    this.listenToUnloadCommands();
     gameObject.once(Phaser.GameObjects.Events.DESTROY, this.destroy, this);
     gameObject.once(HealthComponent.KilledEvent, this.onKilled, this);
   }
 
   /** Replaces the container definition (e.g. on actor level-up). */
   setContainerDefinition(def: ContainerDefinition): void {
+    fenceSceneResourceHistory(this.gameObject.scene, "resource_container_change");
     this.containerDefinition = {
       ...this.containerDefinition,
       ...def
@@ -59,13 +63,17 @@ export class ContainerComponent {
   }
 
   /** Unit registers intent to board this container (e.g. right-clicked while it's in water). */
-  registerBoardingRequest(unit: GameObject, targetShore?: Vector2Simple): void {
+  registerBoardingRequest(unit: Phaser.GameObjects.GameObject, targetShore?: Vector2Simple): void {
+    fenceSceneResourceHistory(this.gameObject.scene, "resource_container_change");
     this.pendingBoarders.add(unit);
     if (targetShore) this.pendingBoarderShores.set(unit, targetShore);
     this.containerChanged.next();
   }
 
-  cancelBoardingRequest(unit: GameObject): void {
+  cancelBoardingRequest(unit: Phaser.GameObjects.GameObject): void {
+    if (this.pendingBoarders.has(unit) || this.pendingBoarderShores.has(unit)) {
+      fenceSceneResourceHistory(this.gameObject.scene, "resource_container_change");
+    }
     this.pendingBoarders.delete(unit);
     this.pendingBoarderShores.delete(unit);
   }
@@ -74,7 +82,7 @@ export class ContainerComponent {
    * Returns the shore tile the boarder agreed to wait at, if one was registered.
    * The boat uses this to navigate to the same tile instead of independently picking one.
    */
-  getTargetShoreForBoarder(unit: GameObject): Vector2Simple | undefined {
+  getTargetShoreForBoarder(unit: Phaser.GameObjects.GameObject): Vector2Simple | undefined {
     return this.pendingBoarderShores.get(unit);
   }
 
@@ -82,11 +90,11 @@ export class ContainerComponent {
     return this.pendingBoarders.size > 0;
   }
 
-  getPendingBoarders(): GameObject[] {
+  getPendingBoarders(): Phaser.GameObjects.GameObject[] {
     return Array.from(this.pendingBoarders);
   }
 
-  getContainedGameObjects(): GameObject[] {
+  getContainedGameObjects(): Phaser.GameObjects.GameObject[] {
     return Array.from(this.containedGameObjects);
   }
 
@@ -96,6 +104,7 @@ export class ContainerComponent {
     const isOnShore = tile ? (navigationService?.isShoreTile(tile) ?? false) : false;
     if (!isOnShore) {
       // Silently destroy all contained actors — they go down with the ship
+      fenceSceneResourceHistory(this.gameObject.scene, "resource_container_change");
       this.containedGameObjects.forEach((go) => {
         getActorComponent(go, ContainableComponent)?.clearContainerReference();
         const health = getActorComponent(go, HealthComponent);
@@ -121,6 +130,7 @@ export class ContainerComponent {
   destroy() {
     this.onKilled();
     this.simulationTickSub?.unsubscribe();
+    this.commandSubscription?.unsubscribe();
     this.containerChanged.complete();
   }
 
@@ -130,7 +140,8 @@ export class ContainerComponent {
     });
   }
 
-  unloadGameObject(gameObject: GameObject) {
+  unloadGameObject(gameObject: Phaser.GameObjects.GameObject) {
+    fenceSceneResourceHistory(this.gameObject.scene, "resource_container_change");
     this.containedGameObjects.delete(gameObject);
     this.repositionNearContainer(gameObject);
     this.setGameObjectVisible(gameObject, true);
@@ -139,7 +150,46 @@ export class ContainerComponent {
     this.containerChanged.next();
   }
 
-  private repositionNearContainer(gameObject: GameObject) {
+  private listenToUnloadCommands(): void {
+    const commandBus = getSceneService(this.gameObject.scene, CommandBusService);
+    if (!commandBus) return;
+    this.commandSubscription = commandBus.command$.subscribe((command) => {
+      if (command.type !== ProbableWaffleGameCommandTypes.Unload) return;
+      const containerId = getActorComponent(this.gameObject, IdComponent)?.id;
+      if (!containerId || !command.actorIds.includes(containerId)) return;
+      if (isWaterUnit(this.gameObject)) {
+        const navigationService = getSceneService(this.gameObject.scene, NavigationService);
+        const currentTile = navigationService?.getCenterTileCoordUnderObject(this.gameObject);
+        if (!currentTile || !navigationService?.isShoreTile(currentTile)) {
+          commandBus.reportOutcome(command, "rejected", "invalid_target", [containerId], [], "not_at_shore");
+          return;
+        }
+      }
+      const requested = command.passengerIds
+        ? this.getContainedGameObjects().filter((actor) => {
+            const actorId = getActorComponent(actor, IdComponent)?.id;
+            return actorId !== undefined && command.passengerIds?.includes(actorId);
+          })
+        : this.getContainedGameObjects();
+      if (command.passengerIds && requested.length !== new Set(command.passengerIds).size) {
+        commandBus.reportOutcome(command, "rejected", "invalid_target", [containerId], [], "cargo_not_found");
+        return;
+      }
+      if (requested.length === 0) {
+        commandBus.reportOutcome(command, "rejected", "invalid_target", [containerId], [], "cargo_not_found");
+        return;
+      }
+      const unloadedIds: string[] = [];
+      for (const actor of requested) {
+        const actorId = getActorComponent(actor, IdComponent)?.id;
+        this.unloadGameObject(actor);
+        if (actorId) unloadedIds.push(actorId);
+      }
+      commandBus.reportOutcome(command, "completed", "applied", [containerId], unloadedIds);
+    });
+  }
+
+  private repositionNearContainer(gameObject: Phaser.GameObjects.GameObject) {
     const navigationService = getSceneService(this.gameObject.scene, NavigationService);
     if (!navigationService) return;
     const spawnTile = navigationService.getSpawnPointAroundGameObject(this.gameObject);
@@ -158,7 +208,7 @@ export class ContainerComponent {
     }
   }
 
-  canLoadGameObject(gameObject: GameObject): boolean {
+  canLoadGameObject(gameObject: Phaser.GameObjects.GameObject): boolean {
     // check if gameObject is not already in container
     if (this.containedGameObjects.has(gameObject)) {
       return false;
@@ -166,16 +216,17 @@ export class ContainerComponent {
     return this.containedGameObjects.size < this.containerDefinition.capacity;
   }
 
-  loadGameObject(gameObject: GameObject) {
+  loadGameObject(gameObject: Phaser.GameObjects.GameObject) {
     if (!this.canLoadGameObject(gameObject)) {
       return;
     }
+    fenceSceneResourceHistory(this.gameObject.scene, "resource_container_change");
     this.containedGameObjects.add(gameObject);
     this.setGameObjectVisible(gameObject, false);
     this.containerChanged.next();
   }
 
-  setGameObjectVisible(gameObject: GameObject, visible: boolean) {
+  setGameObjectVisible(gameObject: Phaser.GameObjects.GameObject, visible: boolean) {
     const visionComponent = getActorComponent(this.gameObject, VisionComponent);
     if (!visionComponent || !visionComponent.visibilityByCurrentPlayer) visible = false;
 
@@ -186,6 +237,7 @@ export class ContainerComponent {
 
   setData(data: Partial<ContainerComponentData>) {
     if (data.containedIds !== undefined) {
+      fenceSceneResourceHistory(this.gameObject.scene, "resource_container_restore");
       // Fixes silent drops of contained units during reconnect snapshots with delayed actor indexing.
       this.pendingContainedIds = [...data.containedIds];
       this.containedGameObjects.clear();
@@ -214,7 +266,7 @@ export class ContainerComponent {
       return;
     }
 
-    const resolvedActors: GameObject[] = [];
+    const resolvedActors: Phaser.GameObjects.GameObject[] = [];
     for (const id of this.pendingContainedIds) {
       const actor = actorIndex.getActorById(id);
       if (!actor) {
@@ -224,6 +276,7 @@ export class ContainerComponent {
       resolvedActors.push(actor);
     }
 
+    fenceSceneResourceHistory(this.gameObject.scene, "resource_container_restore");
     this.containedGameObjects.clear();
     resolvedActors.forEach((actor) => {
       this.loadGameObject(actor);

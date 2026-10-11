@@ -16,11 +16,13 @@ import { AiType } from "./ai-type";
 import { getActorComponent } from "../../data/actor-component";
 import { isGameObjectActiveInActiveScene } from "../../data/game-object-helper";
 import { SimulationTickService } from "../../world/services/simulation-tick.service";
+import { reportCancelledPawnOrders } from "./report-cancelled-pawn-orders";
 
 export class PawnAiController {
   readonly blackboard: PawnAiBlackboard = new PawnAiBlackboard();
   private readonly agent: PlayerPawnAiControllerAgent;
   private readonly behaviourTree: BehaviourTree;
+  /** Active simulation milliseconds accumulated since the last tree step; not persisted with the blackboard. */
   private elapsedTime: number = 0;
   private nodeDebugger?: NodeDebugger;
   private aiDebuggingSubscription?: Subscription;
@@ -32,11 +34,11 @@ export class PawnAiController {
     private readonly gameObject: Phaser.GameObjects.GameObject,
     private readonly pawnAiDefinition: PawnAiDefinition
   ) {
-    const options = environment.production
-      ? {}
-      : ({
-          //onNodeStateChange: (change: NodeStateChange) => console.log(change)
-        } satisfies BehaviourTreeOptions);
+    const options = {
+      // Mistreevous counts this delta on every WAIT update, including entry. Keep it stable throughout the step.
+      // Use actual elapsed time (including cadence overshoot), in seconds, rather than wall time or the configured interval.
+      getDeltaTime: () => this.elapsedTime / 1000
+    } satisfies BehaviourTreeOptions;
     switch (pawnAiDefinition.type) {
       case AiType.Character:
         this.agent = new PlayerPawnAiControllerAgent(this.gameObject, this.blackboard);
@@ -55,6 +57,8 @@ export class PawnAiController {
         };
         break;
     }
+    this.blackboard.queuedOrderCancellationHandler = (orders) =>
+      reportCancelledPawnOrders(this.gameObject, orders, "queued order cancelled by replacement");
 
     if (!environment.production) {
       const aiDebuggingService = getSceneService(this.gameObject.scene, DebuggingService)!;
@@ -152,6 +156,7 @@ export class PawnAiController {
   }
 
   private onShutdown() {
+    this.agent.reportInterruptedOrdersOnShutdown();
     this.gameObject.scene?.events.off(Phaser.Scenes.Events.UPDATE, this.updateFrameNonDeterministicFallback, this);
     this.tickSubscription?.unsubscribe();
     this.aiDebuggingSubscription?.unsubscribe();

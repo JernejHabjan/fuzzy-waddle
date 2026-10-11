@@ -43,7 +43,11 @@ export class MapBrowserComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     // Using the levels getter from map-selector
-    this.maps = Object.values(ProbableWaffleLevels).filter((level) => (environment.production ? !level.devOnly : true));
+    const aiRuntimeTest = !environment.production && typeof window !== "undefined" &&
+      window.sessionStorage.getItem("fuzzy-waddle:ai-runtime-browser-test-v1") !== null;
+    this.maps = Object.values(ProbableWaffleLevels).filter((level) =>
+      level.testOnly ? aiRuntimeTest : (environment.production ? !level.devOnly : true)
+    );
     this.filterMaps(this.searchQuery());
 
     // Listen for map changes to update the selected map ID

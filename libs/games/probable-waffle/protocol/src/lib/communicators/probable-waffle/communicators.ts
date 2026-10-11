@@ -426,6 +426,12 @@ export interface ProbableWaffleSnapshotData {
   campaignMission?: CampaignMissionRuntimeState;
   /** Documents the random state member and its declared contract at this boundary. */
   randomState?: import("../../probable-waffle/deterministic-random").DeterministicRandomState;
+  /** Deduplication and authority epoch restored before command-tail playback. */
+  commandAuthority?: import("../../game-instance/probable-waffle/game-command").GameCommandAuthorityState;
+  /** Simulation-tick expiry state for spell-created actors. */
+  summonExpiries?: import("../../game-instance/probable-waffle/game-state").SummonExpiryData[];
+  /** Persistent spell zones restored with their remaining simulation duration. */
+  aoeZones?: import("../../probable-waffle/spell/aoe-zone-data").AoeZoneData[];
 }
 
 /**

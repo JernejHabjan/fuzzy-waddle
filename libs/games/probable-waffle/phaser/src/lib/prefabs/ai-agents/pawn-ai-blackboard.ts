@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { Blackboard } from "../../ai/blackboard";
 import { OrderData } from "../../ai/OrderData";
 import { Subject } from "rxjs";
+import { PawnOrderObservation } from "./pawn-order-observation";
 
 export class PawnAiBlackboard extends Blackboard {
   private orderQueue: OrderData[] = [];
@@ -10,6 +11,7 @@ export class PawnAiBlackboard extends Blackboard {
   private status: "idle" | "executing" | "paused" = "idle";
   private failedOrders: OrderData[] = [];
   cancellationHandler?: () => void;
+  queuedOrderCancellationHandler?: (orders: readonly OrderData[]) => void;
   currentOrderChanged = new Subject<OrderData | undefined>();
 
   getStatus(): string {
@@ -22,6 +24,7 @@ export class PawnAiBlackboard extends Blackboard {
 
   addOrder(order: OrderData): void {
     this.orderQueue.push(order);
+    PawnOrderObservation.enqueued(this, order);
   }
 
   anyOrderInQueue(): boolean {
@@ -37,6 +40,11 @@ export class PawnAiBlackboard extends Blackboard {
       return this.orderQueue[0];
     }
     return undefined;
+  }
+
+  /** Returns a read-only snapshot used to settle command effects on actor teardown. */
+  getQueuedOrders(): readonly OrderData[] {
+    return [...this.orderQueue];
   }
 
   getCurrentOrder(): OrderData | undefined {
@@ -60,8 +68,11 @@ export class PawnAiBlackboard extends Blackboard {
   }
 
   overrideOrderQueueAndActiveOrder(orderData: OrderData): void {
+    const queuedOrders = this.orderQueue.filter((order) => order !== this.currentOrder);
     this.resetCurrentOrder();
+    if (queuedOrders.length > 0) this.queuedOrderCancellationHandler?.(queuedOrders);
     this.orderQueue = [orderData];
+    PawnOrderObservation.enqueued(this, orderData);
   }
 
   resetCurrentOrder(callCancellationHandler: boolean = true): void {

@@ -1,0 +1,176 @@
+diff --git a/libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/contracts/validate-ai-brain-state-v1.ts b/libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/contracts/validate-ai-brain-state-v1.ts
+index cb685924b..1cfcce3f2 100644
+--- a/libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/contracts/validate-ai-brain-state-v1.ts
++++ b/libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/contracts/validate-ai-brain-state-v1.ts
+@@ -82,7 +82,7 @@ export function assertAiBrainStateV1(value: unknown): asserts value is AiBrainSt
+     for (const field of [
+       "workers", "queuedWorkers", "assignedWorkers", "desiredWorkers", "desiredFoodSources", "foodRunwayTicks",
+       "economyPermille", "defensePermille"
+-    ]) {
++    ] as const) {
+       const value = workforce[field];
+       if (typeof value !== "number") throw new Error(`invalid_ai_integer:economyProduction.workforce.${field}`);
+       assertAiNonNegativeInteger(value, `economyProduction.workforce.${field}`);
+diff --git a/libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-military-force-context.ts b/libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-military-force-context.ts
+index 32c07faf6..81f0eba98 100644
+--- a/libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-military-force-context.ts
++++ b/libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-military-force-context.ts
+@@ -20,7 +20,8 @@ export function observeAiMilitaryForce(args: {
+   readonly firstForce: number;
+ }) {
+   const { observation, state, catalog, self, openingComplete, firstForce } = args;
+-  const pressureDomain = openingComplete && state.strategy.assessment?.routeDomain === "air" ? "air" : "ground";
++  const pressureDomain: "ground" | "air" =
++    openingComplete && state.strategy.assessment?.routeDomain === "air" ? "air" : "ground";
+   let military = self.filter(
+     (actor) =>
+       actor.housingCost.status === "known" &&
+diff --git a/libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-producer-safety.ts b/libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-producer-safety.ts
+index 5d1460ed0..e1ece9fb2 100644
+--- a/libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-producer-safety.ts
++++ b/libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-producer-safety.ts
+@@ -39,7 +39,7 @@ export function reachableAiConstructionTiles(observation: AiObservationV1, build
+   for (let index = 0; index < pending.length; index += 1) {
+     const current = pending[index];
+     if (!current) continue;
+-    for (const [dx, dy] of [[-1, 0], [0, -1], [0, 1], [1, 0]]) {
++    for (const [dx, dy] of [[-1, 0], [0, -1], [0, 1], [1, 0]] as const) {
+       const next = cells.get(`${current.position.x + dx},${current.position.y + dy}`);
+       if (!next || reachable.has(next.tileKey) || !next.groundPassable || next.observedBlocked ||
+         next.elevation !== current.elevation) continue;
+diff --git a/libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-resource-service-manager.ts b/libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-resource-service-manager.ts
+index ca767fb59..336e36c27 100644
+--- a/libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-resource-service-manager.ts
++++ b/libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/planning/ai-resource-service-manager.ts
+@@ -88,7 +88,12 @@ export class AiResourceServiceManager implements AiProposalManagerV1 {
+     const sources = observation.actors
+       .filter((actor) => actor.relation !== "enemy" && actor.visibility !== "last_seen")
+       .filter(
+-        (actor) => actor.resourceState.status === "known" && actor.resourceState.value.available.status === "known"
++        (actor): actor is AiObservedActorV1 & {
++          readonly resourceState: {
++            readonly status: "known";
++            readonly value: { readonly available: { readonly status: "known" } };
++          };
++        } => actor.resourceState.status === "known" && actor.resourceState.value.available.status === "known"
+       )
+       .filter((actor) => actor.resourceState.status === "known" && actor.resourceState.value.available.value >= 100)
+       .filter(
+diff --git a/libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/ai-multiplayer-queue-world.ts b/libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/ai-multiplayer-queue-world.ts
+index e93a159e6..b50b77de3 100644
+--- a/libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/ai-multiplayer-queue-world.ts
++++ b/libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/ai-multiplayer-queue-world.ts
+@@ -157,8 +157,11 @@ export class AiMultiplayerQueueWorld {
+       this.state = "resuming";
+       this.checkpoint("resumed");
+     } else if (outcome.kind === "completed" && this.state === "resuming") {
+-      if (outcome.worldLinkIds.length !== 1) throw new Error("multiplayer_queue_spawn_identity_missing");
+-      this.producedActorId = outcome.worldLinkIds[0];
++      const producedActorId = outcome.worldLinkIds[0];
++      if (outcome.worldLinkIds.length !== 1 || producedActorId === undefined) {
++        throw new Error("multiplayer_queue_spawn_identity_missing");
++      }
++      this.producedActorId = producedActorId;
+       this.state = "finishing";
+     } else if (["rejected", "failed"].includes(outcome.kind)) {
+       throw new Error(`multiplayer_queue_world_unexpected_outcome:${outcome.reason}`);
+diff --git a/libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/ai-multiplayer-shared-queue-world.ts b/libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/ai-multiplayer-shared-queue-world.ts
+index 5d0158b17..6bdd5ebb5 100644
+--- a/libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/ai-multiplayer-shared-queue-world.ts
++++ b/libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/ai-multiplayer-shared-queue-world.ts
+@@ -193,9 +193,12 @@ export class AiMultiplayerSharedQueueWorld {
+       this.checkpoint("refunded");
+     } else if (outcome.kind === "completed" && this.state === "running") {
+       const research = this.branch === "shared_contention" ? setup.research.type : setup.replacement.type;
+-      if (outcome.worldLinkIds.length !== 1) throw new Error("shared_queue_completion_identity_missing");
+-      if (outcome.worldLinkIds[0] === `research:${research}`) this.researchCompleted = true;
+-      else if (this.branch === "shared_contention") this.createdActorId = outcome.worldLinkIds[0];
++      const worldLinkId = outcome.worldLinkIds[0];
++      if (outcome.worldLinkIds.length !== 1 || worldLinkId === undefined) {
++        throw new Error("shared_queue_completion_identity_missing");
++      }
++      if (worldLinkId === `research:${research}`) this.researchCompleted = true;
++      else if (this.branch === "shared_contention") this.createdActorId = worldLinkId;
+       else throw new Error("shared_queue_completion_product_mismatch");
+     } else if (outcome.kind === "rejected" || outcome.kind === "failed") {
+       throw new Error(`shared_queue_world_unexpected_outcome:${outcome.reason}`);
+diff --git a/libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/ai-runtime-resource-coverage-capture.ts b/libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/ai-runtime-resource-coverage-capture.ts
+index 43ee857da..e41dcee7c 100644
+--- a/libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/ai-runtime-resource-coverage-capture.ts
++++ b/libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/ai-runtime-resource-coverage-capture.ts
+@@ -24,7 +24,9 @@ export class AiRuntimeResourceCoverageCapture {
+     const existing = this.components.get(component);
+     if (existing !== undefined) {
+       const cohort = this.cohorts[existing - 1];
+-      if (cohort.actorId !== actorId || cohort.playerNumber !== playerNumber) this.lose("cohort_owner_or_actor_changed");
++      if (!cohort || cohort.actorId !== actorId || cohort.playerNumber !== playerNumber) {
++        this.lose("cohort_owner_or_actor_changed");
++      }
+       return;
+     }
+     if (this.cohorts.length >= 256) { this.lose("cohort_overflow"); return; }
+@@ -52,7 +54,6 @@ export class AiRuntimeResourceCoverageCapture {
+         reconciledLiabilities: "partial", cargoLifetime: "partial" },
+       gaps: ["resource_component_mutation_history_incomplete", "resource_service_lifetime_history_incomplete",
+         "resource_beneficiary_need_history_missing", "resource_continuous_capacity_predicates_missing",
+-        "resource_recipient_mutable_alias_history_incomplete"] }
+-      satisfies AiRuntimeResourceCoverageV1);
++        "resource_recipient_mutable_alias_history_incomplete"] } satisfies AiRuntimeResourceCoverageV1);
+   }
+ }
+diff --git a/libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/ai-runtime-resource-service-capture.ts b/libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/ai-runtime-resource-service-capture.ts
+index 22f099e24..ea59b4bd9 100644
+--- a/libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/ai-runtime-resource-service-capture.ts
++++ b/libs/games/probable-waffle/phaser/src/lib/player/ai-controller/testing/ai-runtime-resource-service-capture.ts
+@@ -79,8 +79,8 @@ export class AiRuntimeResourceServiceCapture {
+             change: { reason: event.change.reason, resourceType: event.change.resourceType, delta: event.change.delta },
+             before: event.before, after: event.after } satisfies AiRuntimeProductionSpatialV1));
+         } else if (event.kind === "cargo_offered" || event.kind === "cargo_started") {
+-          this.append(source.playerNumber, structuredClone({ ...common, phase: event.kind, cargo: event.cargo }
+-            satisfies AiRuntimeProductionSpatialV1));
++          this.append(source.playerNumber,
++            structuredClone({ ...common, phase: event.kind, cargo: event.cargo } satisfies AiRuntimeProductionSpatialV1));
+         } else {
+           if (event.status === "returned" && (!event.before || !event.after || event.callbackCount !== 1 || event.interference)) {
+             this.coverage?.lose("resource_credit_authority_unavailable");
+diff --git a/libs/games/probable-waffle/phaser/src/lib/prefabs/ai-agents/pawn-order-observation.ts b/libs/games/probable-waffle/phaser/src/lib/prefabs/ai-agents/pawn-order-observation.ts
+index 4e32013c3..49336da02 100644
+--- a/libs/games/probable-waffle/phaser/src/lib/prefabs/ai-agents/pawn-order-observation.ts
++++ b/libs/games/probable-waffle/phaser/src/lib/prefabs/ai-agents/pawn-order-observation.ts
+@@ -40,9 +40,10 @@ export class PawnOrderObservation {
+       if (previous) this.origins.set(board, previous);
+       else this.origins.delete(board);
+       // A nested cancellation can enqueue other orders. Ambiguous scopes cannot attribute any of them to rally.
+-      if (depth <= 8 && origin.orders.length === 1) {
++      const order = origin.orders[0];
++      if (depth <= 8 && origin.orders.length === 1 && order !== undefined) {
+         this.observers.get(board)?.forEach((observer) => {
+-          try { observer(origin.orders[0], origin); } catch { /* Preserve the original action result/error. */ }
++          try { observer(order, origin); } catch { /* Preserve the original action result/error. */ }
+         });
+       }
+     }
+diff --git a/libs/games/probable-waffle/phaser/src/lib/prefabs/ai-agents/player-pawn-ai-controller.agent.interface.ts b/libs/games/probable-waffle/phaser/src/lib/prefabs/ai-agents/player-pawn-ai-controller.agent.interface.ts
+index 6a5bb72ab..88cde1f6f 100644
+--- a/libs/games/probable-waffle/phaser/src/lib/prefabs/ai-agents/player-pawn-ai-controller.agent.interface.ts
++++ b/libs/games/probable-waffle/phaser/src/lib/prefabs/ai-agents/player-pawn-ai-controller.agent.interface.ts
+@@ -79,6 +79,7 @@ export interface IPlayerPawnControllerAgent {
+   CanAssignRepairer(): boolean;
+
+   // Movement
++  CanBoardContainerNow(): boolean;
+   MoveToTarget(type: PlayerPawnRangeType): Promise<State>;
+   MoveToTargetOrLocation(type: PlayerPawnRangeType): Promise<State>;
+   MoveToLocation(): Promise<State>;
+diff --git a/libs/games/probable-waffle/phaser/src/lib/world/services/multiplayer/emit-construction-placement.ts b/libs/games/probable-waffle/phaser/src/lib/world/services/multiplayer/emit-construction-placement.ts
+index 4075cb6b0..c879e460b 100644
+--- a/libs/games/probable-waffle/phaser/src/lib/world/services/multiplayer/emit-construction-placement.ts
++++ b/libs/games/probable-waffle/phaser/src/lib/world/services/multiplayer/emit-construction-placement.ts
+@@ -10,6 +10,5 @@ export function emitConstructionPlacement(
+ ): void {
+   if (!scene.events.listenerCount(PRODUCTION_SPATIAL_AUTHORITY_EVENT)) return;
+   scene.events.emit(PRODUCTION_SPATIAL_AUTHORITY_EVENT,
+-    { kind: "placement", command, site, footprint, legal, admissionCost: { ...admissionCost } }
+-    satisfies ProductionSpatialAuthorityEvent);
++    { kind: "placement", command, site, footprint, legal, admissionCost: { ...admissionCost } } satisfies ProductionSpatialAuthorityEvent);
+ }

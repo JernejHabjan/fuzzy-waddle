@@ -1,0 +1,223 @@
+diff --git a/libs/games/probable-waffle/phaser/src/lib/prefabs/ai-agents/pawn-agent-movement.ts b/libs/games/probable-waffle/phaser/src/lib/prefabs/ai-agents/pawn-agent-movement.ts
+index 843db8a15..a02b1a072 100644
+--- a/libs/games/probable-waffle/phaser/src/lib/prefabs/ai-agents/pawn-agent-movement.ts
++++ b/libs/games/probable-waffle/phaser/src/lib/prefabs/ai-agents/pawn-agent-movement.ts
+@@ -148,24 +148,30 @@ export class PawnAgentMovement {
+       const canMoveToTarget = await this.CanMoveToTarget(range);
+       if (!canMoveToTarget) {
+         // console.log("[Build] MoveToTarget: Cannot move to target (unreachable), type=", type);
++        this.stopFailedMove(currentOrder);
+         return State.FAILED;
+       }
+       // console.log("[Build] MoveToTarget: Moving to target, type=", type);
+-      const success = await movementSystem.moveToActorByAdjustingPathDynamically(target, {
+-        radiusTilesAroundDestination: range,
+-        onUpdateThrottled: () => {
+-          // if the target is not alive, stop moving
+-          const healthComponent = getActorComponent(target, HealthComponent);
+-          if (healthComponent && healthComponent.killed) {
+-            this.agent.Stop("MoveToTarget");
++      const success = await movementSystem.moveToActorByAdjustingPathDynamically(
++        target,
++        {
++          radiusTilesAroundDestination: range,
++          onUpdateThrottled: () => {
++            // if the target is not alive, stop moving
++            const healthComponent = getActorComponent(target, HealthComponent);
++            if (healthComponent && healthComponent.killed) {
++              this.agent.Stop("MoveToTarget");
++            }
+           }
+-        }
+-      } satisfies Partial<PathMoveConfig>,
+-        MovementQueryObservation.capture(this.gameObject, this.blackboard, currentOrder, "actor_movement"));
++        } satisfies Partial<PathMoveConfig>,
++        MovementQueryObservation.capture(this.gameObject, this.blackboard, currentOrder, "actor_movement")
++      );
+       // console.log("[Build] MoveToTarget: Movement result=", success ? "SUCCESS" : "FAILED");
++      if (!success) this.stopFailedMove(currentOrder);
+       return success ? State.SUCCEEDED : State.FAILED;
+     } catch (e) {
+       console.error("[Build] MoveToTarget: Error", e);
++      this.stopFailedMove(currentOrder);
+       return State.FAILED;
+     }
+   }
+@@ -198,28 +204,47 @@ export class PawnAgentMovement {
+       const isAttackMove = currentOrder.orderType === OrderType.Attack && !currentOrder.data.targetGameObject;
+       let success: boolean;
+       if (isAttackMove) {
+-        success = await movementSystem.moveToLocationByFollowingStaticPath(location, {
+-          onUpdateThrottled: () => {
+-            const enemy = this.closestAttackableEnemy();
+-            if (enemy) {
+-              currentOrder.data.targetGameObject = enemy;
+-              movementSystem.cancelMovement();
++        success = await movementSystem.moveToLocationByFollowingStaticPath(
++          location,
++          {
++            onUpdateThrottled: () => {
++              const enemy = this.closestAttackableEnemy();
++              if (enemy) {
++                currentOrder.data.targetGameObject = enemy;
++                movementSystem.cancelMovement();
++              }
+             }
+-          }
+-        } satisfies Partial<PathMoveConfig>,
+-          MovementQueryObservation.capture(this.gameObject, this.blackboard, currentOrder, "location_movement"));
++          } satisfies Partial<PathMoveConfig>,
++          MovementQueryObservation.capture(this.gameObject, this.blackboard, currentOrder, "location_movement")
++        );
+       } else {
+-        success = await movementSystem.moveToLocationByFollowingStaticPath(location, undefined,
+-          MovementQueryObservation.capture(this.gameObject, this.blackboard, currentOrder, "location_movement"));
++        success = await movementSystem.moveToLocationByFollowingStaticPath(
++          location,
++          undefined,
++          MovementQueryObservation.capture(this.gameObject, this.blackboard, currentOrder, "location_movement")
++        );
+       }
++      if (!success) this.stopFailedMove(currentOrder);
+       return success ? State.SUCCEEDED : State.FAILED;
+     } catch (e) {
+       // console.error("Error in MoveToLocation", e);
+-      this.agent.Stop("MoveToLocation");
++      if (this.blackboard.getCurrentOrder() === currentOrder) this.agent.Stop("MoveToLocation");
+       return State.FAILED;
+     }
+   }
+ 
++  /** A refused Move is terminal, not progress. Late returns cannot stop a replacement or an attack/gather cycle. */
++  private stopFailedMove(order: OrderData): void {
++    if (
++      order.orderType === OrderType.Move &&
++      this.blackboard.getCurrentOrder() === order &&
++      this.gameObject.active &&
++      this.gameObject.scene?.sys.isActive()
++    ) {
++      this.agent.Stop("Move - Movement Failed");
++    }
++  }
++
+   private async CanMoveToTarget(range: number): Promise<boolean> {
+     const currentOrder = this.blackboard.getCurrentOrder();
+     if (!currentOrder) return false;
+@@ -228,8 +253,11 @@ export class PawnAgentMovement {
+     const movementSystem = getActorSystem(this.gameObject, MovementSystem);
+     if (!movementSystem) return Promise.resolve(false);
+     // noinspection UnnecessaryLocalVariableJS
+-    return await movementSystem.canMoveTo(target, range,
+-      MovementQueryObservation.capture(this.gameObject, this.blackboard, currentOrder, "reachability_probe"));
++    return await movementSystem.canMoveTo(
++      target,
++      range,
++      MovementQueryObservation.capture(this.gameObject, this.blackboard, currentOrder, "reachability_probe")
++    );
+   }
+ 
+   /**
+@@ -249,5 +277,4 @@ export class PawnAgentMovement {
+     this.blackboard.addOrder(new OrderData(OrderType.Move, { targetTileLocation: targetLocation }));
+     return State.SUCCEEDED;
+   }
+-
+ }
+diff --git a/libs/games/probable-waffle/phaser/src/lib/prefabs/ai-agents/pawn-agent-resources.ts b/libs/games/probable-waffle/phaser/src/lib/prefabs/ai-agents/pawn-agent-resources.ts
+index 2c8cf2197..84af5b051 100644
+--- a/libs/games/probable-waffle/phaser/src/lib/prefabs/ai-agents/pawn-agent-resources.ts
++++ b/libs/games/probable-waffle/phaser/src/lib/prefabs/ai-agents/pawn-agent-resources.ts
+@@ -9,6 +9,12 @@ import { GathererComponent } from "../../entity/components/resource/gatherer-com
+ import { ResourceSourceComponent } from "../../entity/components/resource/resource-source-component";
+ import { HealthComponent } from "../../entity/components/combat/components/health-component";
+ import { PawnResourceServiceObservation } from "./pawn-resource-service-observation";
++import type { OrderData } from "../../ai/OrderData";
++import { OwnerComponent } from "../../entity/components/owner-component";
++import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
++import { getSceneService } from "../../world/services/scene-component-helpers";
++import { CommandBusService } from "../../world/services/multiplayer/command-bus.service";
++import { SimulationTickService } from "../../world/services/simulation-tick.service";
+ 
+ /** Owns resource acquisition, gathering and return actions, preserving native target mutation and async boundaries.
+  * Actor-local collaborators own no subscriptions, timers or saved state; the controller owns their lifetime.
+@@ -69,8 +75,16 @@ export class PawnAgentResources {
+     if (!resourceSourceComponent || resourceSourceComponent.getCurrentResources() <= 0) return State.FAILED;
+     const successfullyStarted = gathererComponent.startGatheringResources(target);
+     if (!successfullyStarted) return State.FAILED;
+-    await PawnResourceServiceObservation.invoke(this.gameObject, this.blackboard, currentOrder, target, "gather",
+-      (execution) => execution ? gathererComponent.gatherResources(target, execution) : gathererComponent.gatherResources(target));
++    const amount = await PawnResourceServiceObservation.invoke(
++      this.gameObject,
++      this.blackboard,
++      currentOrder,
++      target,
++      "gather",
++      (execution) =>
++        execution ? gathererComponent.gatherResources(target, execution) : gathererComponent.gatherResources(target)
++    );
++    this.reportResourceProgress(currentOrder, amount);
+     return State.SUCCEEDED;
+   }
+ 
+@@ -82,11 +96,53 @@ export class PawnAgentResources {
+     if (!target) return State.FAILED;
+     const gathererComponent = getActorComponent(this.gameObject, GathererComponent);
+     if (!gathererComponent) return State.FAILED;
+-    await PawnResourceServiceObservation.invoke(this.gameObject, this.blackboard, currentOrder, target, "drop_off",
+-      (execution) => execution ? gathererComponent.returnResources(target, execution) : gathererComponent.returnResources(target));
++    const amount = await PawnResourceServiceObservation.invoke(
++      this.gameObject,
++      this.blackboard,
++      currentOrder,
++      target,
++      "drop_off",
++      (execution) =>
++        execution ? gathererComponent.returnResources(target, execution) : gathererComponent.returnResources(target)
++    );
++    this.reportResourceProgress(currentOrder, amount);
+     return State.SUCCEEDED;
+   }
+ 
++  /** Positive native work renews the existing timeout; it proves neither terminal completion nor useful income. */
++  private reportResourceProgress(order: OrderData, amount: number): void {
++    const context = order.data.commandContext;
++    if (
++      !Number.isFinite(amount) ||
++      amount <= 0 ||
++      !context ||
++      this.blackboard.getCurrentOrder() !== order ||
++      !this.gameObject.active ||
++      !this.gameObject.scene?.sys.isActive() ||
++      getActorComponent(this.gameObject, OwnerComponent)?.getOwner() !== context.playerNumber
++    )
++      return;
++    const actorId = getActorComponent(this.gameObject, IdComponent)?.id;
++    const tick = getSceneService(this.gameObject.scene, SimulationTickService)?.currentTick;
++    if (!actorId || !context.actorIds.includes(actorId) || tick === undefined) return;
++    getSceneService(this.gameObject.scene, CommandBusService)?.reportPersistedOutcome({
++      schemaVersion: 1,
++      kind: "active",
++      reason: "applied",
++      tick,
++      playerNumber: context.playerNumber,
++      commandId: context.execution.commandId,
++      commitmentKey: context.execution.commitmentKey,
++      authorityEpoch: context.execution.authorityEpoch,
++      sequence: context.execution.sequence,
++      ...(context.execution.intentId ? { intentId: context.execution.intentId } : {}),
++      ...(context.execution.effectId ? { effectId: context.execution.effectId } : {}),
++      actorIds: [actorId],
++      worldLinkIds: [],
++      detail: "native_resource_progress"
++    });
++  }
++
+   /** Starts native reacquisition without awaiting it; the tree immediately receives success. */
+   ContinueGathering() {
+     this.agent.AcquireNewResourceSource();
+@@ -159,5 +215,4 @@ export class PawnAgentResources {
+     currentOrder.data.targetGameObject = preferredResourceSource;
+     return State.SUCCEEDED;
+   }
+-
+ }

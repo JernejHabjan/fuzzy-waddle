@@ -7,6 +7,8 @@ import { getSceneService } from "../world/services/scene-component-helpers";
 import { ActorIndexSystem } from "../world/services/ActorIndexSystem";
 import { SimulationTickService } from "../world/services/simulation-tick.service";
 import type { Subscription } from "rxjs";
+import type { GameCommandExecution } from "@fuzzy-waddle/probable-waffle-protocol";
+import type { ActorId, PlayerNumber } from "@fuzzy-waddle/platform-game-sessions";
 type GameObject = Phaser.GameObjects.GameObject;
 
 export class OrderData {
@@ -16,6 +18,11 @@ export class OrderData {
       targetGameObject?: GameObject;
       targetTileLocation?: Vector3Simple;
       targetGameObjectId?: string;
+      commandContext?: {
+        execution: GameCommandExecution;
+        playerNumber: PlayerNumber;
+        actorIds: readonly ActorId[];
+      };
     } = {}
   ) {}
 
@@ -26,14 +33,24 @@ export class OrderData {
         targetTileLocation: order.data.targetTileLocation,
         targetGameObjectId: order.data.targetGameObject
           ? getActorComponent(order.data.targetGameObject, IdComponent)?.id
-          : order.data.targetGameObjectId
+          : order.data.targetGameObjectId,
+        commandContext: order.data.commandContext ? structuredClone(order.data.commandContext) : undefined
       }
     };
   }
 
   static mapFromRecordToOrderDataClass(record: Record<string, any>, scene: Phaser.Scene): OrderData {
     const orderType = record.orderType as OrderType;
-    const data: { targetGameObject?: GameObject; targetTileLocation?: Vector3Simple; targetGameObjectId?: string } = {};
+    const data: {
+      targetGameObject?: GameObject;
+      targetTileLocation?: Vector3Simple;
+      targetGameObjectId?: string;
+      commandContext?: {
+        execution: GameCommandExecution;
+        playerNumber: PlayerNumber;
+        actorIds: readonly ActorId[];
+      };
+    } = {};
     if (record.data?.targetTileLocation) {
       data.targetTileLocation = record.data.targetTileLocation as Vector3Simple;
     }
@@ -44,6 +61,7 @@ export class OrderData {
       // Fixes desync from wall-clock restore ordering by resolving actor references on simulation ticks.
       OrderData.resolveTargetGameObjectDeterministic(scene, data, targetGameObjectId);
     }
+    if (record.data?.commandContext) data.commandContext = structuredClone(record.data.commandContext);
     return new OrderData(orderType, data);
   }
 

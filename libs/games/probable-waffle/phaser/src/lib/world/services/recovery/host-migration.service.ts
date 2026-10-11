@@ -3,10 +3,11 @@ import type { Subscription } from "rxjs";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { type ProbableWaffleHostMigratedEvent } from "@fuzzy-waddle/probable-waffle-protocol";
 import { getCommunicator } from "../../../data/scene-data";
-import { getSceneSystem } from "../scene-component-helpers";
+import { getSceneService, getSceneSystem } from "../scene-component-helpers";
 import { SnapshotService } from "./snapshot.service";
 import { AiPlayerHandler } from "../../../player/ai-controller/ai-player-handler";
 import { createMultiplayerClientLogger } from "../multiplayer/multiplayer-client-logger";
+import { CommandBusService } from "../multiplayer/command-bus.service";
 
 /** Handles ownership handoff so a newly promoted host immediately starts serving snapshots. */
 export class HostMigrationService {
@@ -14,14 +15,21 @@ export class HostMigrationService {
   private snapshotService?: SnapshotService;
   private readonly logger = createMultiplayerClientLogger("HostMigration");
 
-  init(scene: ProbableWaffleScene): void {
+  init(scene: ProbableWaffleScene, snapshotService: SnapshotService): void {
+    this.snapshotService = snapshotService;
     const communicator = getCommunicator(scene);
     if (!communicator.hostMigrated || scene.baseGameData.gameInstance.gameInstanceMetadata.isReplay()) {
       return;
     }
 
     this.hostMigrationSub = communicator.hostMigrated.on.subscribe((event: ProbableWaffleHostMigratedEvent) => {
-      if (event.currentHostUserId !== scene.userId) {
+      const commandBus = getSceneService(scene, CommandBusService);
+      const authorityEpoch = commandBus?.getAuthorityState().authorityEpoch ?? 0;
+      commandBus?.advanceAuthorityEpoch(authorityEpoch + 1);
+      const isLocalHost = event.currentHostUserId === scene.userId;
+      getSceneSystem(scene, AiPlayerHandler)?.setHostAuthorityActive(isLocalHost);
+      if (!isLocalHost) {
+        snapshotService.destroy();
         return;
       }
 
@@ -29,9 +37,7 @@ export class HostMigrationService {
         `[HostMigration] Host moved from ${event.previousHostUserId ?? "unknown"} to ${event.currentHostUserId}.`
       );
 
-      this.snapshotService ??= new SnapshotService();
-      this.snapshotService.init(scene);
-      getSceneSystem(scene, AiPlayerHandler)?.createAiPlayerControllersForAiPlayers();
+      snapshotService.init(scene, true);
     });
 
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.destroy());

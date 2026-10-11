@@ -1,3 +1,4 @@
+import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/player/ai-controller/testing/ai-test-fixtures";
 import {
   AOTA_CAMPAIGN_MISSIONS,
   asCampaignContentId,
@@ -6,7 +7,7 @@ import {
   type MissionDialogueBundle,
   type MissionObjectiveDefinition
 } from "@fuzzy-waddle/probable-waffle-campaign";
-import { CampaignFaction, type ProbableWaffleMapEnum } from "@fuzzy-waddle/probable-waffle-protocol";
+import { CampaignFaction } from "@fuzzy-waddle/probable-waffle-protocol";
 import { CampaignObjectiveProjectionStore } from "./campaign-objective-projection-store";
 
 const id = asCampaignContentId;
@@ -22,14 +23,16 @@ describe("CampaignObjectiveProjectionStore", () => {
       display: { announceReveal: true, announceCompletion: true, showInTracker: true }
     };
     const state = createCampaignMissionRuntimeState("ashes-of-the-ancients", mission(definition));
-    state.objectives["survive"]!.status = "active";
-    state.objectives["survive"]!.announcedStatuses.push("active");
+    const survive = state.objectives["survive"];
+    if (!survive) throw new Error("synthetic_objective_missing");
+    survive.status = "active";
+    survive.announcedStatuses.push("active");
     const first = new CampaignObjectiveProjectionStore([definition], dialogue(), state, "keyboard-mouse");
     const notifications = jest.fn();
     first.notifications$.subscribe(notifications);
 
     first.rebuild(JSON.parse(JSON.stringify(state)));
-    expect(first.projection.tracker[0]?.title).toBe("Survive");
+    expect(requireAiTestEntry(first.projection.tracker, 0)?.title).toBe("Survive");
     expect(notifications).not.toHaveBeenCalled();
 
     first.presentEffects([
@@ -76,7 +79,7 @@ function mission(objective: MissionObjectiveDefinition): CampaignMissionContent 
     id: "dreams",
     chapterId: "prologue",
     revision: 1,
-    mapId: 1 as ProbableWaffleMapEnum,
+    mapKey: "MapSandbox",
     prerequisites: [],
     catalogue: {
       order: 1,
@@ -86,7 +89,7 @@ function mission(objective: MissionObjectiveDefinition): CampaignMissionContent 
       briefing: "test",
       objectiveSummaries: []
     },
-    implementation: AOTA_CAMPAIGN_MISSIONS[0]!.implementation,
+    implementation: AOTA_CAMPAIGN_MISSIONS[0].implementation,
     participants: [],
     progressionAllowance: { loadoutSlotCount: 0 },
     initialState: { activePhaseIds: [], facts: [], counters: [], timers: [] },

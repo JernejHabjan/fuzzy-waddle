@@ -18,4 +18,8 @@ describe("MapFilterComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy();
   });
+
+  it("does not offer the AI-only map as a public lobby filter", () => {
+    expect(fixture.nativeElement.textContent).not.toContain("AI Open Economy (test only)");
+  });
 });

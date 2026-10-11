@@ -15,13 +15,16 @@ describe("GameCommandValidatorService", () => {
 
   function createGameInstance(): ProbableWaffleGameInstance {
     return {
-      getPlayerByNumber: jest.fn().mockReturnValue({
+      getPlayerByNumber: jest.fn((playerNumber: number) => ({
         playerController: {
           data: {
-            userId: "user-1"
+            userId: playerNumber === 2 ? null : "user-1"
           }
         }
-      }),
+      })),
+      gameInstanceMetadata: {
+        data: { createdBy: "user-1", currentHostUserId: "user-1" }
+      },
       gameState: {
         data: {
           actors: [
@@ -51,6 +54,11 @@ describe("GameCommandValidatorService", () => {
               research: {
                 researches: []
               }
+            },
+            {
+              id: { id: "ai-actor-1" },
+              owner: { ownerId: 2 },
+              translatable: {}
             }
           ]
         }
@@ -239,5 +247,92 @@ describe("GameCommandValidatorService", () => {
     service.allowInitialTickBootstrap("gi-1");
     const result = service.validate(createMoveEvent(640, 0, 93), createGameInstance(), { id: "user-1" } as never);
     expect(result).toEqual({ valid: true });
+  });
+
+  it("accepts a host-delegated AI command with deterministic execution identity", () => {
+    const event: ProbableWaffleGameCommandEvent = {
+      gameInstanceId: "gi-1",
+      emitterUserId: "user-1",
+      tick: 0,
+      playerNumber: 1,
+      commands: [
+        {
+          type: "STOP",
+          tick: 0,
+          playerNumber: 2,
+          actorIds: ["ai-actor-1"],
+          execution: {
+            schemaVersion: 1,
+            commandId: "2:4:9:gi-1",
+            commitmentKey: "ai-stop-9",
+            source: "ai",
+            authorityEpoch: 4,
+            sequence: 9
+          }
+        }
+      ]
+    };
+    expect(service.validate(event, createGameInstance(), { id: "user-1" } as never)).toEqual({ valid: true });
+  });
+
+  it("accepts a typed production rally-point command", () => {
+    expect(
+      service.validate(
+        createQueueEvent({
+          type: "SET_RALLY_POINT",
+          tick: 0,
+          playerNumber: 1,
+          actorIds: ["actor-2"],
+          tileVec3: { x: 7, y: 8, z: 0 },
+          worldVec3: { x: 480, y: 320, z: 0 }
+        }),
+        createGameInstance(),
+        { id: "user-1" } as never
+      )
+    ).toEqual({ valid: true });
+  });
+
+  it("relays an empty batch for malformed deterministic command identity", () => {
+    const event = createQueueEvent({
+      type: "STOP",
+      tick: 0,
+      playerNumber: 1,
+      actorIds: ["actor-1"],
+      execution: {
+        schemaVersion: 1,
+        commandId: "2:0:0:wrong-player",
+        commitmentKey: "stop:actor-1",
+        source: "human",
+        authorityEpoch: 0,
+        sequence: 0
+      }
+    });
+    expect(service.validate(event, createGameInstance(), { id: "user-1" } as never)).toEqual({
+      valid: false,
+      relayEmpty: true,
+      reason: expect.stringContaining("identity")
+    });
+  });
+
+  it("rejects execution source metadata that claims AI authority over a human player", () => {
+    const event = createQueueEvent({
+      type: "STOP",
+      tick: 0,
+      playerNumber: 1,
+      actorIds: ["actor-1"],
+      execution: {
+        schemaVersion: 1,
+        commandId: "1:0:0:gi-1",
+        commitmentKey: "stop:actor-1",
+        source: "ai",
+        authorityEpoch: 0,
+        sequence: 0
+      }
+    });
+    expect(service.validate(event, createGameInstance(), { id: "user-1" } as never)).toEqual({
+      valid: false,
+      relayEmpty: true,
+      reason: expect.stringContaining("human player")
+    });
   });
 });

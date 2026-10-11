@@ -4,6 +4,7 @@ import { ActorData, ActorDataKey } from "../../data/actor-data";
 import { ProbableWaffleScene } from "../../core/probable-waffle.scene";
 import { ScenarioActorReferenceComponent } from "./scenario-actor-reference.component";
 import { IndexedScenarioReferenceRegistry, ScenarioReferenceError } from "./scenario-reference-registry";
+import type { ScenarioMarkerKind } from "./scenario-marker";
 
 describe("IndexedScenarioReferenceRegistry", () => {
   beforeAll(() => {
@@ -81,33 +82,37 @@ describe("IndexedScenarioReferenceRegistry", () => {
   });
 });
 
-function fakeScene(markers: Record<string, unknown>[]): ProbableWaffleScene {
-  const scene = Object.create(ProbableWaffleScene.prototype) as ProbableWaffleScene & Record<string, unknown>;
-  scene["baseGameData"] = {};
-  scene["sceneGameData"] = { baseGameData: {}, components: [], systems: [], services: [], initializers: {} };
-  scene["scene"] = { key: "ScenarioTest" };
-  scene["children"] = { list: markers };
-  scene["events"] = { once: jest.fn() };
+function fakeScene(markers: Phaser.GameObjects.GameObject[]): ProbableWaffleScene {
+  const scene = new ProbableWaffleScene();
+  // The shared Scene mock is headless; retain real scene data and supply only registry-facing plugins.
+  Object.defineProperties(scene, {
+    scene: { value: { key: "ScenarioTest" } },
+    children: { value: { list: markers } },
+    events: { value: new Phaser.Events.EventEmitter() }
+  });
   return scene;
 }
 
-function marker(kind: string, scenarioId: string, properties: Record<string, unknown>): Record<string, unknown> {
-  return { scenarioMarkerKind: kind, scenarioId, x: 0, y: 0, ...properties };
+function marker(kind: ScenarioMarkerKind, scenarioId: string, properties: Record<string, unknown>) {
+  const scene = { sys: { queueDepthSort: jest.fn() } } as unknown as Phaser.Scene;
+  return Object.assign(new Phaser.GameObjects.GameObject(scene, "scenario-marker-fixture"), {
+    scenarioMarkerKind: kind,
+    scenarioId,
+    x: 0,
+    y: 0,
+    ...properties
+  });
 }
 
 function fakeActor(roleId: string, tags: string[], transform = { x: 0, y: 0, z: 0 }) {
   const scenario = new ScenarioActorReferenceComponent();
   scenario.setData({ roleId, tags });
   const actorData = new ActorData(new Map([[ScenarioActorReferenceComponent, scenario]]), new Map());
-  const handlers = new Map<string, () => void>();
-  const actor = {
+  const scene = { sys: { queueDepthSort: jest.fn() } } as unknown as Phaser.Scene;
+  const actor = Object.assign(new Phaser.GameObjects.GameObject(scene, "scenario-actor-fixture"), {
     ...transform,
     hasTransformComponent: true,
-    getData: (key: string) => (key === ActorDataKey ? actorData : undefined),
-    once: (event: string, handler: () => void) => handlers.set(event, handler),
-    off: (event: string, handler: () => void) => {
-      if (handlers.get(event) === handler) handlers.delete(event);
-    }
-  } as unknown as Phaser.GameObjects.GameObject;
-  return { actor, emitDestroy: () => handlers.get("destroy")?.() };
+    getData: (key: string) => (key === ActorDataKey ? actorData : undefined)
+  });
+  return { actor, emitDestroy: () => actor.emit(Phaser.GameObjects.Events.DESTROY) };
 }

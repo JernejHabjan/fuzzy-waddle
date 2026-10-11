@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "evidenceKind": "runtime",
+  "scenarioIds": ["SEQ-01", "SEQ-02"],
+  "purpose": "Exercise real mission victory and home-raid recovery in continuous land matches.",
+  "driver": "runtime",
+  "status": "ready_for_runtime_execution",
+  "context": {
+    "mapId": "EmberEnclave+RiverCrossing",
+    "mapDigest": "resolved_from_candidate_assets",
+    "side": 2,
+    "rulesVersion": "probable-waffle-rules-v1"
+  },
+  "recipe": {
+    "mapLabel": "Ember Enclave",
+    "aiPlayerNumber": 2,
+    "simulationTimeScale": 100,
+    "checkpointTicks": [20, 1000, 2000, 3000, 4500, 6000, 8000, 10000, 12000],
+    "variants": [
+      {
+        "id": "tivara-land-loop",
+        "executionKind": "continuous",
+        "role": "standalone",
+        "scenarioIds": ["SEQ-01"],
+        "seed": 759101,
+        "mapLabel": "Ember Enclave",
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal"
+      },
+      {
+        "id": "skaduwee-land-loop",
+        "executionKind": "continuous",
+        "role": "standalone",
+        "scenarioIds": ["SEQ-01"],
+        "seed": 759105,
+        "mapLabel": "River Crossing",
+        "aiFaction": "Skaduwee",
+        "humanFaction": "Tivara",
+        "difficulty": "Normal"
+      },
+      {
+        "id": "tivara-home-raid",
+        "executionKind": "continuous",
+        "role": "standalone",
+        "scenarioIds": ["SEQ-02"],
+        "seed": 759103,
+        "mapLabel": "Ember Enclave",
+        "aiFaction": "Tivara",
+        "humanFaction": "Skaduwee",
+        "difficulty": "Normal",
+        "perturbations": [{ "id": "home-raid", "tick": 2500, "kind": "human_attack_ai_home", "maximumAttackers": 3 }]
+      },
+      {
+        "id": "skaduwee-home-raid",
+        "executionKind": "continuous",
+        "role": "standalone",
+        "scenarioIds": ["SEQ-02"],
+        "seed": 759104,
+        "mapLabel": "River Crossing",
+        "aiFaction": "Skaduwee",
+        "humanFaction": "Tivara",
+        "difficulty": "Normal",
+        "perturbations": [{ "id": "home-raid", "tick": 2500, "kind": "human_attack_ai_home", "maximumAttackers": 1 }]
+      }
+    ]
+  },
+  "assertions": {
+    "SEQ-01": {
+      "maximumTick": 12000,
+      "minimumDecisions": 300,
+      "minimumAppliedCommands": 20,
+      "requiredAiFactions": ["Tivara", "Skaduwee"],
+      "requireDeliveredIncome": true,
+      "minimumMilitaryCount": 8,
+      "firstOffensiveLaunchByTick": 12000,
+      "minimumOffensiveLaunchCount": 1,
+      "minimumDamageDealt": 1,
+      "minimumEnemyLosses": 1,
+      "requireMissionContinuation": true,
+      "requiredGroundRouteVariantIds": ["skaduwee-land-loop"],
+      "requireAiVictory": true
+    },
+    "SEQ-02": {
+      "maximumTick": 12000,
+      "minimumDecisions": 300,
+      "minimumAppliedCommands": 20,
+      "requiredAiFactions": ["Tivara", "Skaduwee"],
+      "requireDeliveredIncome": true,
+      "minimumMilitaryCount": 8,
+      "firstOffensiveLaunchByTick": 12000,
+      "minimumDamageDealt": 1,
+      "requireMissionContinuation": true,
+      "requireRaidDefenseRecovery": true
+    }
+  },
+  "deliberatelyBrokenOracle": "accept_a_self_reported_mission_without_applied_commands_damage_or_an_authoritative_victory"
+}

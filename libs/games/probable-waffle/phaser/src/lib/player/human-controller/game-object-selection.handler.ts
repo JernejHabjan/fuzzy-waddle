@@ -76,7 +76,7 @@ export class GameObjectSelectionHandler {
               // Ownership filtering happens at dispatch time — only own actors are in selection.
               const playerNumber = getCurrentPlayerNumber(this.scene);
               const selectedActorIds = getPlayer(this.scene)?.getSelection() ?? [];
-              if (playerNumber && selectedActorIds.length) {
+              if (playerNumber !== undefined && selectedActorIds.length) {
                 const commandBus = getSceneService(this.scene, CommandBusService);
                 commandBus?.dispatch({
                   type: "ACTOR_ACTION",
@@ -107,7 +107,7 @@ export class GameObjectSelectionHandler {
                 (actor) => getActorComponent(actor, IdComponent)!.id
               );
               const playerNumber = getCurrentPlayerNumber(this.scene);
-              if (playerNumber && selectedActorObjectIds.length) {
+              if (playerNumber !== undefined && selectedActorObjectIds.length) {
                 const commandBus = getSceneService(this.scene, CommandBusService);
                 commandBus?.dispatch({
                   type: "MOVE",
