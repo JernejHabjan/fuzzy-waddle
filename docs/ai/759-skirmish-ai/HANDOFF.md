@@ -36,61 +36,45 @@ economy/production/combat scenarios with fresh evidence at the active final gate
 their original values; revised expectations must reflect an explained balance decision while preserving authority,
 fairness and useful-effect requirements.
 
-**Current step:** M12 grouped production-start batch stage_checked; full PRO remains red.
-Containing commit owns publication. Full M12 and M11 useful authority remain open. Actual model/effort unknown.
+**Current step:** M12 eight-stage production batch remains in_progress. This containing commit delivers a
+checked prerequisite slice; the full PRO gate and M11 useful authority remain open. Actual model/effort unknown.
 
-**What changed / why:** strict production presets opt into the real TechTreeService faction roster. The native owner
-checks inherited map actors, authored actors, queue products and scheduled-loss types before actor/money work and again
-at setup completion. Concrete variants resolve to canonical graph membership; neutral sources retain their definition
-rule. Authored positions must resolve through the native isometric converter to in-bounds tiles. The browser independently
-checks created fixture/native ID coverage, unique IDs, concrete names and repeated owned copies. These safeguards make
-starting evidence trustworthy; roster/tile membership does not certify acquisition prerequisites, entire footprints,
-continuous history or usefulness. Special diagnostic worlds remain opt-in, with normal production guards unchanged.
+**What changed / why:** production oracles now recognize real fulfilled commitments within their original deadline,
+retain exact correctly typed output identities, and require completion of the exact contending train/research items.
+Pinned scheduled losses address the original authored producer, never its replacement; strict parsing, native damage,
+independent browser ID checks and shutdown/completion cleanup cover the actual public preset path. Enqueue-only
+productionCausality inputs join insertion to its own native payment/liability and exclude its own admitted budget once.
+Complete productionEvidence is still absent: catalog, complete lifecycle/pay/refund/loss events and paired setup are missing.
 
-**Recipe / why:** production-economy-runtime.json replaces the mixed-map natural diagnostic; manifest and generated
-catalog follow the new owner. Both factions use the frozen AI Open Economy map, six authored workers, their own producer
-and housing, Granary/Field/WorkMill and exact 200 food/wood/stone/minerals with no grants or seeded queues. Ordinary
-faction starts remain present. The full assertions and 12,000-tick ceiling are unchanged; standalone funding diagnostics
-are not required causal pairs. The catalog test now counts unique scenario identities in its scenario section, instead
-of also counting runtime variants. No AI policy, balance, save/wire, oracle, bound or capture machinery change.
+**Concrete gameplay repair / why:** a short native run exposed repeated affordability exceptions from automatic
+construction starts. Those retries now wait on the actual denied payment branch without progressing work/state or
+resetting health; explicit starts and unexpected callback failures still throw. No balance change; the existing native
+productionTime payment predicate is preserved and needs authority review before configured-price equivalence is claimed.
 
-**Checked:** 158 native suites/838 tests, 14 focused native controls, eight browser assertion controls, twelve focused
-tool tests, native spec/browser types, explicit owned-source structure, formatting and uncached portal production build
-pass. The real public preset caller fails one new control against the original owner (five pass); restored byte-for-byte.
-A test syntax mistake and catalog identity extraction were repaired. No baseline refresh. Pure gameplay is unchanged.
-Doctor/context pass. Validation artifacts use ignored roster-* paths. Implementation Review, Omission Audit and separate
-Final Closure Audit cover the scoped setup batch; full production/authority obligations remain explicit blockers.
+**Checked slice:** final native, formatting and structure results are recorded in the
+[production lifecycle checkpoint](follow-ups/runtime-matrix-ci.md#production-lifecycle-and-evidence-checkpoint-2026-10-11).
+Native 159 suites/849 tests, production browser controls 208 and Node tool tests twelve pass; native/browser types,
+formatting, scoped structure, catalog consistency and uncached production build pass. One ordinary lint error reproduces
+at unchanged HEAD; the scoped structure check disables only that unrelated no-inferrable-types rule.
+Original owners fail one public native caller control, five browser oracle controls and three funding controls; all
+restored byte-for-byte. Full long PRO scenarios were not rerun or certified by this slice. Full assertions remain active.
 
-**Causal setup repair:** the first candidate at legal-production-economy/1791742307166-failed.json exposed both first
-military completions refusing with no_legal_spawn_location. The copied producer position (1000,480) was corrected to
-(800,848), and strict native tile bounds now reject invalid converter answers. The initial capture has Tivara payload
-validation errors and 155 Skaduwee dropped facts; it is not final evidence. The source/fixture change required a second,
-nonoverlapping grouped run. No speculative gameplay spawn or navigation repair was made.
-
-**Final runtime:** legal-production-economy-final/1791743179759-failed.json and its supported indexes companion retain
-two physical worlds shared across PRO-03/06/07: source 80cd4a7f8c8f7a6c428f030234eea7cf36f75777 plus final repairs,
-dirty fnv1a32:c848df12, fixture fnv1a32:06ec463a, seeds 759101/759102. One process, 1,213 decisions/24,067 ticks,
-615,105 ms. Both strict starting rosters/IDs/balances pass. Both native military spawns succeed at tick 120: Tivara Maceman
-at tile (41,17), Skaduwee Warrior at (40,16). Neither capture drops facts/snapshots or has normalization failures.
-Tivara ends at tick 12,060 with fourteen workers/two military units/one producer, stock food zero/wood ten; Skaduwee at
-12,007 with thirteen/two/one, food forty/wood twenty. Native score reports wood collected 230/240 and spent 420 each.
-No damage/enemy loss is reported. Tivara retains two Move failures; Skaduwee seven invalid-footprint rejections.
-Full rows fail 223/221/221 assertions for required branches/authority and production requirements. No useful new-capacity,
-legal causal pair, statistical improvement, determinism or performance comparison is inferred. Shipped source stayed
-frozen during each match; docs changed separately. Raw run-sCplUJ remains the initial candidate; final raw is
-tmp/ai-skirmish-runtime-results/run-Tt9BCB/runtime.json, 234,261,677 bytes, SHA-256
-79c09353629b882f61dd32a7753d1b885054ae7141587b1fd907a0caac736cf8; matrix 234,390,639 bytes.
-Start with roster-runtime-final-summary.log and roster-final-world-summary.json (all two variants, military spawns and
-non-cancellation failures retained, zero omitted). See the
+**Finite native evidence:** one process/two serial faction worlds, both original queue completions at tick 100,
+original producer removal at 240 and peer retained through final tick 420. Zero captured affordability exceptions,
+dropped facts/snapshots or selected omissions. Tivara seed 759101, fixture fnv1a32:e105ca2f; Skaduwee seed 759102,
+fixture fnv1a32:4f0db9ce. Base ef693af22d861f6f2234cc56068da84d0a7eef69 plus checked source repairs;
+ignored production-proof-runtime-loss-final.log and production-proof-source-provenance.json retain exact evidence.
+A subsequent explicit-wait argument assertion/format repair changes tests only; shipped runtime source stayed frozen.
+This is setup/lifecycle proof, not the strategic PRO-06 release gate. Prior full-run evidence remains in the
 [production-start checkpoint](follow-ups/runtime-matrix-ci.md#production-start-checkpoint-2026-10-11).
 
-**Next batch / why:** use the checked faction-valid starts to author the required focused causal PRO-03/06/07 branches
-and consume the native production authority joins. Review food/funding and the retained invalid-footprint/scout failures
-where they block those cases. Prefer short causal subject/controls before another long funding diagnostic; keep the
-full assertions and useful-effect requirements. M11 exhaustive authority, server/socket/save/restart/hash/calibration
-and the final machinery necessity review remain open. Recommend GPT-6.1 Sol / high for causal setup/authority reasoning;
-no automatic switch. Commit/push and pause. Previous cargo recovery remains in its
-[resource-order checkpoint](follow-ups/runtime-matrix-ci.md#resource-order-recovery-checkpoint-2026-10-11).
+**Next batch / why:** continue this same production batch with definition-backed complete production event and paired
+setup authority. Review the preserved native start-payment predicate, then author genuine committed/abandoned,
+exposed/safe/low-value/no-demand and strategic contention/pending-refund worlds using actual AI decisions. These inputs
+will let the full causal oracles identify policy faults instead of stopping at missing authority. No synthetic records
+or injected brain state. Keep related work together with short causal checks before long matches. Full M12/M11,
+server/socket/save/restart/hash/calibration and the final machinery necessity review remain open. Recommend
+GPT-6.1 Sol / high for connected policy/authority reasoning. Commit/push, verify remote and pause at this boundary.
 
 **Previous movement repair / why:** `MovementSystem` distinguishes EasyStar's empty same-tile route from no route. It confirms
 the pawn's live active-scene tile after the asynchronous query, creates its own singleton route, cancels older movement

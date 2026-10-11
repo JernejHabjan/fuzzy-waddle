@@ -1,8 +1,5 @@
 import Phaser from "phaser";
-import {
-  type ConstructionSiteComponentData,
-  ConstructionStateEnum
-} from "@fuzzy-waddle/probable-waffle-protocol";
+import { type ConstructionSiteComponentData, ConstructionStateEnum } from "@fuzzy-waddle/probable-waffle-protocol";
 import { HealthComponent } from "../combat/components/health-component";
 import { getActorComponent } from "../../../data/actor-component";
 import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
@@ -15,8 +12,10 @@ import { BuilderComponent } from "./builder-component";
 import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { ConstructionPresentation } from "./construction-presentation";
 import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller";
+// prettier-ignore
 import type { ConstructionSiteDefinition } from
   "@fuzzy-waddle/probable-waffle-gameplay/entity/components/construction/construction-site-definition";
+// prettier-ignore
 import type { ProductionCostDefinition } from
   "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/production-cost-definition";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
@@ -52,8 +51,13 @@ export class ConstructionSiteComponent {
     private readonly constructionSiteDefinition: ConstructionSiteDefinition
   ) {
     this.constructionProgressUiComponent = new ConstructionProgressUiComponent(this.gameObject);
-    this.presentation = new ConstructionPresentation(this.gameObject,
-      () => this.playingBuildSound, (playing) => { this.playingBuildSound = playing; });
+    this.presentation = new ConstructionPresentation(
+      this.gameObject,
+      () => this.playingBuildSound,
+      (playing) => {
+        this.playingBuildSound = playing;
+      }
+    );
     onObjectReady(gameObject, this.init, this);
     this.simulationTickSub = getSceneService(gameObject.scene, SimulationTickService)?.tick$.subscribe(() =>
       this.update()
@@ -94,16 +98,17 @@ export class ConstructionSiteComponent {
 
   /**
    * Attempts construction only after ownership, resource, placement, and assigned-worker invariants have been checked.
-   * It performs the state transition and associated cleanup as one operation so partially built actors cannot leak into normal production flow.
+   * It performs the state transition and associated cleanup as one operation
+   * so partially built actors cannot leak into normal production flow.
    */
   private tryBuild(deltaWithTimeScale: number) {
     if (this.state === ConstructionStateEnum.NotStarted && this.constructionSiteDefinition.startImmediately) {
-      this.startConstruction();
+      if (!this.startConstruction(true)) return;
       this.setInitialHealth();
     }
 
     if (this.state === ConstructionStateEnum.NotStarted && this.getAssignedBuilderCountForProgress() > 0) {
-      this.startConstruction();
+      if (!this.startConstruction(true)) return;
     }
 
     if (this.state !== ConstructionStateEnum.Constructing) return;
@@ -166,13 +171,23 @@ export class ConstructionSiteComponent {
     this.constructionProgressPercentageChanged.next(this.progressPercentage);
   }
 
-  startConstruction() {
+  /** Explicit starts retain denial errors; automatic retries wait without advancing work, health or construction state. */
+  startConstruction(waitForFunds = false): boolean {
     if (this.state !== ConstructionStateEnum.NotStarted) {
       throw new Error("ConstructionSiteComponent can only be started once");
     }
     const productionDefinition = this.productionDefinition;
     if (!productionDefinition) throw new Error("Production definition not found");
-    startConstructionPayment(this.gameObject, productionDefinition, this.state, this.remainingConstructionTime);
+    if (
+      startConstructionPayment(
+        this.gameObject,
+        productionDefinition,
+        this.state,
+        this.remainingConstructionTime,
+        waitForFunds
+      ) === false
+    )
+      return false;
 
     // Payment callbacks retain pre-start state; only a returned payment reaches this boundary.
     fenceSceneResourceHistory(this.gameObject.scene, "resource_actor_construction_change");
@@ -181,6 +196,7 @@ export class ConstructionSiteComponent {
     this.state = ConstructionStateEnum.Constructing;
     observeConstructionLifecycle(this.gameObject, this.state, this.remainingConstructionTime, "started");
     this.constructionStateChanged.next(this.state);
+    return true;
   }
 
   private setInitialHealth() {
@@ -204,8 +220,14 @@ export class ConstructionSiteComponent {
     const productionDefinition = this.productionDefinition;
     if (!productionDefinition) throw new Error("Production definition not found");
 
-    refundConstructionPayment(this.gameObject, productionDefinition, this.constructionSiteDefinition.refundFactor,
-      () => this.getProgressFraction(), this.state, this.remainingConstructionTime);
+    refundConstructionPayment(
+      this.gameObject,
+      productionDefinition,
+      this.constructionSiteDefinition.refundFactor,
+      () => this.getProgressFraction(),
+      this.state,
+      this.remainingConstructionTime
+    );
 
     // stop action on builders
     this.assignedBuilders.forEach((builder) => {

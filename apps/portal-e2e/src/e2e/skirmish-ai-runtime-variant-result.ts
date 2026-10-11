@@ -1,9 +1,11 @@
+// prettier-ignore
 import type { AiRuntimePresetQueueApplicationV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-preset-queue-application-v1";
 import type { RuntimeCheckpointV1 } from "./skirmish-ai-runtime-checkpoint";
 import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
 import type { RuntimeProductionEvidenceV1 } from "./skirmish-ai-runtime-production-evidence";
 import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
+// prettier-ignore
 import type { AiRuntimeProductionCaptureV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
 
@@ -55,6 +57,7 @@ export interface RuntimeVariantResultV1 {
     readonly tick: number;
     readonly dispatchedActors: number;
     readonly subjectName: string | null;
+    readonly affectedActorId?: string | null;
   }[];
   readonly aiErrors: readonly string[];
   readonly timing?: {

@@ -21,6 +21,32 @@ const config = {
 };
 
 describe("runtime preset neutral source validation", () => {
+  it("pins a loss only to an authored actor with the same owner and concrete name", () => {
+    const actor = { ...neutralSource, fixtureActorId: "producer", actorName: "AnkGuard", owner: 2 };
+    const event = {
+      id: "producer-loss",
+      tick: 100,
+      kind: "destroy_owned_actor",
+      owner: 2,
+      objectName: "AnkGuard",
+      fixtureActorId: "producer"
+    };
+    const valid = { ...config, presetWorld: { ...config.presetWorld, actors: [actor], events: [event] } };
+    expect(isAiRuntimeBrowserTestConfigV1(valid)).toBe(true);
+    for (const changed of [
+      { fixtureActorId: "missing" },
+      { fixtureActorId: null },
+      { owner: 1 },
+      { objectName: "InfantryInn" }
+    ]) {
+      expect(
+        isAiRuntimeBrowserTestConfigV1({
+          ...valid,
+          presetWorld: { ...valid.presetWorld, events: [{ ...event, ...changed }] }
+        })
+      ).toBe(false);
+    }
+  });
   it("accepts only an explicit strict faction-roster request", () => {
     const presetWorld = { ...config.presetWorld, requireFactionRoster: true };
     expect(isAiRuntimeBrowserTestConfigV1({ ...config, presetWorld })).toBe(true);

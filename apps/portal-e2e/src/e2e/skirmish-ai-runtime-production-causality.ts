@@ -9,6 +9,7 @@ import type { RuntimeProductionRejectionV1 } from "./skirmish-ai-runtime-product
 import type { RuntimeProductionQueueMutationV1 } from "./skirmish-ai-runtime-production-queue-mutation";
 import type { AiIntentV1 } from "@fuzzy-waddle/probable-waffle-gameplay";
 import type { GameCommand } from "@fuzzy-waddle/probable-waffle-protocol";
+// prettier-ignore
 import type { AiRuntimeProductionFactV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-fact-v1";
 import type { RuntimeProductionOperationV1 } from "./skirmish-ai-runtime-production-operation";
@@ -20,14 +21,19 @@ import type { RuntimeProductionSpatialAuthorityV1 } from "./skirmish-ai-runtime-
 import type { RuntimeProductionEffectRetentionV1 } from "./skirmish-ai-runtime-production-effect-retention";
 import type { RuntimeConstructionCatalogEntryV1 } from "./skirmish-ai-runtime-construction-catalog-entry";
 import type { RuntimeConstructionLineageV1 } from "./skirmish-ai-runtime-construction-lineage";
+// prettier-ignore
 import type { AiRuntimeInitialConstructionV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-initial-construction-v1";
+
+import type { RuntimeProductionEvidenceV1 } from "./skirmish-ai-runtime-production-evidence";
 
 /**
  * Diagnostic AI lineage, not RuntimeProductionEvidenceV1. Retains actual accepted intent and observer order;
  * it cannot supply full navigation/exposure, cadence closure, paired setup, stable usefulness or complete event liabilities.
  */
 export interface RuntimeProductionCausalityV1 {
+  /** Checked enqueue-only contract inputs; absence of other event kinds still prevents full production evidence. */
+  readonly enqueues?: RuntimeProductionEvidenceV1["events"];
   readonly schemaVersion: 1;
   readonly failures: readonly string[];
   /** Original capture gaps remain attached even when an individual causal chain is sound. */
@@ -79,9 +85,12 @@ export interface RuntimeProductionCausalityV1 {
     readonly outcomes: readonly Extract<AiRuntimeProductionFactV1, { kind: "outcome" }>[];
   }[];
   /** Exact raw operation boundaries, including the genuine post-progress callback; never promoted to full event obligations. */
-  readonly operationBoundaries: readonly Extract<AiRuntimeProductionFactV1, {
-    kind: "queue_resource" | "queue_changed" | "queue_progress" | "queue_mutation"
-  }>[];
+  readonly operationBoundaries: readonly Extract<
+    AiRuntimeProductionFactV1,
+    {
+      kind: "queue_resource" | "queue_changed" | "queue_progress" | "queue_mutation";
+    }
+  >[];
   /** Exact native physical insertion/removal intervals; full lifecycle/useful-effect evidence remains separate. */
   readonly queueMutations: readonly RuntimeProductionQueueMutationV1[];
   /** Complete scoped money/progress intervals; nullable unspent claims keep unsupported ownership explicit. */

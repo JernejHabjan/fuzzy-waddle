@@ -2,7 +2,9 @@ import { requireAiTestEntry } from "@fuzzy-waddle/probable-waffle-gameplay/playe
 import Phaser from "phaser";
 import { Subject } from "rxjs";
 import { ConstructionStateEnum, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
-import type { ProductionCostDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/production-cost-definition";
+// prettier-ignore
+import type { ProductionCostDefinition } from
+  "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/production-cost-definition";
 import { PaymentType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/payment-type";
 import { getActorComponent } from "../../../data/actor-component";
 import { emitResource, getCommunicator, getPlayer, isSnapshotApplyInProgress } from "../../../data/scene-data";
@@ -11,7 +13,9 @@ import { startConstructionPayment, refundConstructionPayment } from "./construct
 import { ConstructionSiteComponent } from "./construction-site-component";
 import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
 import { subscribeSceneResourceLoss } from "../../../data/scene-resource-observation";
-import type { ConstructionSiteDefinition } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/construction/construction-site-definition";
+// prettier-ignore
+import type { ConstructionSiteDefinition } from
+  "@fuzzy-waddle/probable-waffle-gameplay/entity/components/construction/construction-site-definition";
 
 jest.mock("../../../data/actor-component", () => ({ getActorComponent: jest.fn() }));
 jest.mock("../../../data/scene-data", () => ({
@@ -167,6 +171,43 @@ describe("construction payment authority", () => {
     expect(emitResource).not.toHaveBeenCalled();
     expect(requireAiTestEntry(f.records, 0)).toMatchObject({ status: "denied", callbackCount: 0 });
   });
+
+  it("an automatic denied retry returns false without emitting money or inventing progress", () => {
+    const f = fixture();
+    f.canPay.mockReturnValue(false);
+    expect(
+      startConstructionPayment(
+        f.site,
+        { ...f.definition, productionTime: 0 },
+        ConstructionStateEnum.NotStarted,
+        0,
+        true
+      )
+    ).toBe(false);
+    expect(emitResource).not.toHaveBeenCalled();
+    expect(requireAiTestEntry(f.records, 0)).toMatchObject({ status: "denied", callbackCount: 0 });
+  });
+
+  it("automatic payment still propagates a real resource-callback failure", () => {
+    const f = fixture(),
+      error = new Error("native resource failure");
+    jest.mocked(emitResource).mockImplementation(() => {
+      throw error;
+    });
+    expect(() =>
+      startConstructionPayment(
+        f.site,
+        { ...f.definition, productionTime: 0 },
+        ConstructionStateEnum.NotStarted,
+        0,
+        true
+      )
+    ).toThrow(error);
+  });
+});
+
+describe("construction refund authority", () => {
+  beforeEach(() => jest.clearAllMocks());
 
   it("records native pre-start and repeated refunds separately, without inventing an earlier charge or cancellation guard", () => {
     const f = fixture();

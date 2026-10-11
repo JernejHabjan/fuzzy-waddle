@@ -104,6 +104,48 @@ test("PRO-07 useful train and research occupy one real shared lane and independe
   ).toEqual([]);
 });
 
+test("PRO-07 unrelated completions cannot stand in for the items that actually contended", () => {
+  const evidence = contention();
+  const unrelated = evidence.events.map((event) =>
+    event.kind === "complete" ? { ...event, itemId: `${event.itemId}-unrelated` } : event
+  );
+  const extra = evidence.events
+    .filter((event) => event.kind === "enqueue")
+    .map((event, index) => ({
+      ...event,
+      sequence: index + 3,
+      tick: 200,
+      effectId: `unrelated:${index}`,
+      itemId: `${event.itemId}-unrelated`,
+      laneId: `separate-${index}`
+    }));
+  const extraSnapshot = {
+    ...evidence.snapshots[1]!,
+    tick: 250,
+    producers: evidence.snapshots[1]!.producers.map((producer) => ({
+      ...producer,
+      lanes: ["train", "research"].map((item, index) => ({
+        laneId: `separate-${index}`,
+        capacity: 1,
+        itemIds: [`${item}-unrelated`]
+      }))
+    }))
+  };
+  const snapshots = [...evidence.snapshots.slice(0, 2), extraSnapshot, ...evidence.snapshots.slice(2)];
+  const events = [
+    ...unrelated.slice(0, 2),
+    ...extra,
+    ...unrelated.slice(2).map((event, index) => ({ ...event, sequence: index + 5 }))
+  ];
+  expect(
+    evaluateRuntimeProductionContract("PRO-07", productionContract("PRO-07", "shared_contention"), {
+      ...evidence,
+      snapshots,
+      events
+    })
+  ).toContain("production_useful_train_research_completion_missing");
+});
+
 test("PRO-07 pending refund cannot fund an order before application, including same-tick application ordering", () => {
   expect(
     evaluateRuntimeProductionContract("PRO-07", productionContract("PRO-07", "cancel_pending_refund"), pendingRefund())

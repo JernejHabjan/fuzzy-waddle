@@ -27,7 +27,7 @@ export interface RuntimeProductionEvidenceV1 {
       readonly beginsTick: number;
       readonly forceDeadlineTick: number;
       readonly desiredForce: number;
-      readonly status: "committed" | "abandoned";
+      readonly status: "committed" | "abandoned" | "fulfilled" | "expired";
     } | null;
     readonly leases: readonly {
       readonly claimId: string;
@@ -45,7 +45,11 @@ export interface RuntimeProductionEvidenceV1 {
       readonly position: { readonly x: number; readonly y: number };
       /** Only owned/fair committed reachability, not a path inferred from coordinate proximity. */
       readonly reachable: boolean;
-      readonly lanes: readonly { readonly laneId: string; readonly capacity: number; readonly itemIds: readonly string[] }[];
+      readonly lanes: readonly {
+        readonly laneId: string;
+        readonly capacity: number;
+        readonly itemIds: readonly string[];
+      }[];
     }[];
     readonly products: readonly { readonly actorId: string; readonly productKey: string }[];
     readonly visibleThreats: readonly {
@@ -71,7 +75,16 @@ export interface RuntimeProductionEvidenceV1 {
     readonly commandId: string;
     readonly effectId: string;
     readonly planId: string | null;
-    readonly kind: "construct" | "enqueue" | "enqueue_rejected" | "pay" | "complete" | "cancel_requested" | "cancel" | "refund" | "loss";
+    readonly kind:
+      | "construct"
+      | "enqueue"
+      | "enqueue_rejected"
+      | "pay"
+      | "complete"
+      | "cancel_requested"
+      | "cancel"
+      | "refund"
+      | "loss";
     readonly actorId: string;
     readonly productKey: string;
     readonly itemId: string | null;

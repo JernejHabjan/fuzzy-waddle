@@ -1,5 +1,6 @@
 import type Phaser from "phaser";
 import { PaymentType } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/payment-type";
+// prettier-ignore
 import type { ProductionCostDefinition } from
   "@fuzzy-waddle/probable-waffle-gameplay/entity/components/production/production-cost-definition";
 import { ConstructionStateEnum, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
@@ -8,11 +9,14 @@ import { emitResource, getPlayer } from "../../../data/scene-data";
 import { OwnerComponent } from "../owner-component";
 import { observeConstructionResource } from "./observe-construction-authority";
 
-/** Native start predicate is preserved verbatim: configured costType does not decide this branch. */
+/** Native start predicate is preserved; scheduler retries can wait on denial without hiding resource-callback errors. */
 export function startConstructionPayment(
-  gameObject: Phaser.GameObjects.GameObject, productionDefinition: ProductionCostDefinition,
-  state: ConstructionStateEnum, remainingWorkMs: number
-): void {
+  gameObject: Phaser.GameObjects.GameObject,
+  productionDefinition: ProductionCostDefinition,
+  state: ConstructionStateEnum,
+  remainingWorkMs: number,
+  waitForFunds = false
+): false | void {
   if (productionDefinition.productionTime === PaymentType.PayImmediately) {
     const ownerComponent = getActorComponent(gameObject, OwnerComponent);
     const owner = ownerComponent?.getOwner();
@@ -22,27 +26,59 @@ export function startConstructionPayment(
 
     const canAfford = player.canPayAllResources(productionDefinition.resources);
     if (canAfford) {
-      observeConstructionResource({ site: gameObject, state, remainingWorkMs, definition: productionDefinition,
-        operation: "start_charge", owner, amounts: productionDefinition.resources, refundFactor: null },
-        () => emitResource(gameObject.scene, "resource.removed", productionDefinition.resources, owner));
+      observeConstructionResource(
+        {
+          site: gameObject,
+          state,
+          remainingWorkMs,
+          definition: productionDefinition,
+          operation: "start_charge",
+          owner,
+          amounts: productionDefinition.resources,
+          refundFactor: null
+        },
+        () => emitResource(gameObject.scene, "resource.removed", productionDefinition.resources, owner)
+      );
     } else {
-      observeConstructionResource({ site: gameObject, state, remainingWorkMs, definition: productionDefinition,
-        operation: "start_charge", owner, amounts: productionDefinition.resources, refundFactor: null, noEmission: "denied" });
+      observeConstructionResource({
+        site: gameObject,
+        state,
+        remainingWorkMs,
+        definition: productionDefinition,
+        operation: "start_charge",
+        owner,
+        amounts: productionDefinition.resources,
+        refundFactor: null,
+        noEmission: "denied"
+      });
+      if (waitForFunds) return false;
       throw new Error("Cannot afford building costs");
     }
   } else {
-    observeConstructionResource({ site: gameObject, state, remainingWorkMs, definition: productionDefinition,
-      operation: "start_charge", owner: undefined, amounts: null, refundFactor: null, noEmission: "skipped" });
+    observeConstructionResource({
+      site: gameObject,
+      state,
+      remainingWorkMs,
+      definition: productionDefinition,
+      operation: "start_charge",
+      owner: undefined,
+      amounts: null,
+      refundFactor: null,
+      noEmission: "skipped"
+    });
   }
 }
 
 /** Resamples progress through the caller exactly as before; no paid-price ledger or cancellation guard is inferred. */
 export function refundConstructionPayment(
-  gameObject: Phaser.GameObjects.GameObject, productionDefinition: ProductionCostDefinition,
-  refundFactor: number, getProgressFraction: () => number, state: ConstructionStateEnum, remainingWorkMs: number
+  gameObject: Phaser.GameObjects.GameObject,
+  productionDefinition: ProductionCostDefinition,
+  refundFactor: number,
+  getProgressFraction: () => number,
+  state: ConstructionStateEnum,
+  remainingWorkMs: number
 ): void {
-  const TimeRefundFactor =
-    productionDefinition.costType === PaymentType.PayImmediately ? getProgressFraction() : 1.0;
+  const TimeRefundFactor = productionDefinition.costType === PaymentType.PayImmediately ? getProgressFraction() : 1.0;
   const actualRefundFactor = refundFactor * TimeRefundFactor;
 
   // refund costs
@@ -53,7 +89,17 @@ export function refundConstructionPayment(
 
   const ownerComponent = getActorComponent(gameObject, OwnerComponent);
   const owner = ownerComponent?.getOwner();
-  observeConstructionResource({ site: gameObject, state, remainingWorkMs, definition: productionDefinition,
-    operation: "cancel_refund", owner, amounts: refundCosts, refundFactor: actualRefundFactor },
-    () => emitResource(gameObject.scene, "resource.added", refundCosts, owner));
+  observeConstructionResource(
+    {
+      site: gameObject,
+      state,
+      remainingWorkMs,
+      definition: productionDefinition,
+      operation: "cancel_refund",
+      owner,
+      amounts: refundCosts,
+      refundFactor: actualRefundFactor
+    },
+    () => emitResource(gameObject.scene, "resource.added", refundCosts, owner)
+  );
 }

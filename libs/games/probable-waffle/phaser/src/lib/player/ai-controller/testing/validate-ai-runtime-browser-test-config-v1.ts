@@ -48,6 +48,7 @@ function validPresetWorld(value: unknown): boolean {
   if (!Array.isArray(value["actors"]) || value["actors"].length > 100) return false;
   const fixtureActorIds = new Set<string>();
   const actorOwners = new Map<string, number | null>();
+  const authoredNames = new Map<string, string>();
   for (const actor of value["actors"]) {
     if (!isRecord(actor) || !hasOnlyKeys(actor, ["fixtureActorId", "actorName", "owner", "position"])) return false;
     const fixtureActorId = actor["fixtureActorId"];
@@ -59,6 +60,7 @@ function validPresetWorld(value: unknown): boolean {
       return false;
     }
     actorOwners.set(fixtureActorId, actor["owner"] as number | null);
+    authoredNames.set(fixtureActorId, actor["actorName"]);
     const position = actor["position"];
     if (!isRecord(position) || !hasOnlyKeys(position, ["x", "y", "z"])) return false;
     if (![position["x"], position["y"], position["z"]].every((coordinate) => Number.isFinite(coordinate))) return false;
@@ -142,10 +144,20 @@ function validPresetWorld(value: unknown): boolean {
   if (!Array.isArray(events) || events.length > 16) return false;
   const eventIds = new Set<string>();
   const validEvents = events.every((event) => {
-    if (!isRecord(event) || !hasOnlyKeys(event, ["id", "tick", "kind", "owner", "objectName"])) return false;
+    if (!isRecord(event) || !hasOnlyKeys(event, ["id", "tick", "kind", "owner", "objectName", "fixtureActorId"]))
+      return false;
     if (typeof event["id"] !== "string" || !/^[a-z0-9][a-z0-9-]{2,63}$/.test(event["id"])) return false;
     if (eventIds.has(event["id"])) return false;
     eventIds.add(event["id"]);
+    const target = event["fixtureActorId"];
+    if (
+      target !== undefined &&
+      (typeof target !== "string" ||
+        !authoredNames.has(target) ||
+        actorOwners.get(target) !== event["owner"] ||
+        authoredNames.get(target) !== event["objectName"])
+    )
+      return false;
     return (
       Number.isSafeInteger(event["tick"]) &&
       (event["tick"] as number) > 0 &&

@@ -37,5 +37,6 @@ export interface RuntimePresetWorldV1 {
     readonly kind: "destroy_owned_actor";
     readonly owner: number;
     readonly objectName: string;
+    readonly fixtureActorId?: string;
   }[];
 }

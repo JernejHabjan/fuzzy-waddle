@@ -45,5 +45,7 @@ export interface AiRuntimePresetWorldV1 {
     readonly kind: "destroy_owned_actor";
     readonly owner: number;
     readonly objectName: ObjectNames;
+    /** Pin a scheduled loss to its original authored actor, rather than a later same-type replacement. */
+    readonly fixtureActorId?: string;
   }[];
 }

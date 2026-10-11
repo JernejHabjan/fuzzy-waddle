@@ -28,5 +28,7 @@ export interface AiRuntimePresetApplicationV1 {
     readonly tick: number;
     readonly affectedActors: number;
     readonly subjectName: string;
+    /** Native identity actually addressed; null means no live matching original actor remained. */
+    readonly affectedActorId?: string | null;
   }[];
 }

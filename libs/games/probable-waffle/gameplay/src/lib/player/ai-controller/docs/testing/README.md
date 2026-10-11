@@ -82,6 +82,30 @@ created-name multiplicity and owned starting copies. A preset declaration alone 
 funding/throughput diagnosis. Its full PRO-03/06/07 oracles remain active. These legal starts do not substitute for the
 required transition/abandonment, exposed/safe/low-value/no-demand or shared-queue/pending-refund causal branches.
 
+Scheduled `destroy_owned_actor` events can pin `fixtureActorId` to an authored actor with the same owner and concrete
+name. The event owner damages only that original live indexed object, records its native ID and releases both tick
+and shutdown subscriptions when finished. If it has already disappeared, it never selects a same-type replacement.
+The browser checks the declared event ID, exact tick, type and addressed native ID. Addressed damage is not death
+proof; require native removal and later world absence separately. `AI_SKIRMISH_PRESET_LOSS=1` enables the finite
+two-faction lifecycle check in `skirmish-ai-test-preset-loss.spec.ts`; it does not certify PRO-06 resilience.
+
+Production transition evidence retains the planner's `fulfilled` and `expired` states. Fulfillment can satisfy the
+committed branch only within the original deadline, with linked actual output and the same retained product identities.
+Premature fulfillment, expiry, revival and changed dates fail. Replacement evidence also retains correctly typed
+post-loss products throughout its sampled stable interval. Shared contention requires completion of the exact items
+observed sharing a lane; other train/research completions cannot replace them.
+
+`productionCausality.enqueues` joins checked physical insertion to its own immediate charge or actual new per-tick
+obligation. It removes that command's own admitted budget once from unspent reservations while retaining other claims;
+it never substitutes pending claims, predicted refunds or a nearby callback. These enqueue-only inputs do not supply
+the complete definition catalog, paired setup, construction/payment/refund/loss event stream or useful-effect proof.
+`productionEvidence` remains absent until its whole contract is independently supported.
+
+Automatic construction starts wait when the native payment branch denies affordability. Denial records remain
+available, while construction state, work and initial health stay unchanged until a later successful retry. Explicit
+starts still throw on denied payment, and unexpected resource callback errors propagate. This preserves the existing
+native `productionTime` start-payment predicate; it does not establish configured-price equivalence or change balance.
+
 A reviewed behavior comparator may carry exact native correctness repairs on top of its compile compatibility
 overlay. Identify every excluded owner and both overlay digests, verify each repaired owner's emitted code against
 the candidate, execute its native regressions, and restore the historical checkout after building. Movement failure

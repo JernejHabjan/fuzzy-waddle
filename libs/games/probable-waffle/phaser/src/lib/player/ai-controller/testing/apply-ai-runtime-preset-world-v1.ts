@@ -1,14 +1,8 @@
 import { environment } from "@fuzzy-waddle/environments/environment";
 import type Phaser from "phaser";
-import {
-  DamageType,
-  ObjectNames,
-  ResourceType,
-  type PlayerStateResources
-} from "@fuzzy-waddle/probable-waffle-protocol";
+import { ObjectNames, ResourceType, type PlayerStateResources } from "@fuzzy-waddle/probable-waffle-protocol";
 import { emitResource, getPlayer } from "../../../data/scene-data";
 import { getActorComponent } from "../../../data/actor-component";
-import { HealthComponent } from "../../../entity/components/combat/components/health-component";
 import { getPwActorDefinition } from "../../../prefabs/definitions/actor-definitions";
 import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import { OrderData } from "../../../ai/OrderData";
@@ -18,18 +12,12 @@ import { ResourceSourceComponent } from "../../../entity/components/resource/res
 import { PawnAiController } from "../../../prefabs/ai-agents/pawn-ai-controller";
 import type GameProbableWaffleScene from "../../../world/scenes/GameProbableWaffleScene";
 import type { SceneActorCreator } from "../../../world/services/scene-actor-creator";
-import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
-import { getSceneService } from "../../../world/services/scene-component-helpers";
-import { SimulationTickService } from "../../../world/services/simulation-tick.service";
 import { scheduleAiRuntimePresetSetup } from "./schedule-ai-runtime-preset-setup";
 import { applyAiRuntimePresetQueues } from "./apply-ai-runtime-preset-queues";
 import { installAiRuntimeProductionCapture } from "./install-ai-runtime-production-capture";
+import { installAiRuntimePresetEvents } from "./install-ai-runtime-preset-events";
 import { assertAiRuntimePresetRoster } from "./assert-ai-runtime-preset-roster";
-import {
-  readAiRuntimeBrowserTestConfigV1,
-  recordAiRuntimePresetApplicationV1,
-  recordAiRuntimePresetEventV1
-} from "./ai-runtime-browser-test-config";
+import { readAiRuntimeBrowserTestConfigV1, recordAiRuntimePresetApplicationV1 } from "./ai-runtime-browser-test-config";
 
 /** Applies a validated preset after normal map indexing and before the first simulation tick or AI observation. */
 export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, creator: SceneActorCreator): void {
@@ -144,37 +132,7 @@ export function applyAiRuntimePresetWorldV1(scene: GameProbableWaffleScene, crea
       initialOrderCount: preset.initialOrders?.length ?? 0,
       eventResults: []
     });
-    const pendingEvents = [...(preset.events ?? [])].sort(
-      (left, right) => left.tick - right.tick || left.id.localeCompare(right.id)
-    );
-    if (pendingEvents.length === 0) return;
-    const tickService = getSceneService(scene, SimulationTickService);
-    const actorIndex = getSceneService(scene, ActorIndexSystem);
-    if (!tickService || !actorIndex) throw new Error("runtime_preset_event_services_unavailable");
-    const subscription = tickService.tick$.subscribe(() => {
-      while (pendingEvents[0] && pendingEvents[0].tick <= tickService.currentTick) {
-        const event = pendingEvents.shift();
-        if (!event) break;
-        const target = actorIndex
-          .getOwnedActors(event.owner)
-          .filter((actor) => actor.name === event.objectName)
-          .sort((left, right) => {
-            const leftId = getActorComponent(left, IdComponent)?.id ?? "";
-            const rightId = getActorComponent(right, IdComponent)?.id ?? "";
-            return leftId.localeCompare(rightId);
-          })[0];
-        const health = target ? getActorComponent(target, HealthComponent) : undefined;
-        if (health) health.takeDamage(Number.MAX_SAFE_INTEGER, DamageType.Physical);
-        recordAiRuntimePresetEventV1({
-          id: event.id,
-          tick: tickService.currentTick,
-          affectedActors: health ? 1 : 0,
-          subjectName: event.objectName
-        });
-      }
-      if (pendingEvents.length === 0) subscription.unsubscribe();
-    });
-    scene.onShutdown.subscribe(() => subscription.unsubscribe());
+    installAiRuntimePresetEvents(scene, preset, createdActors);
   };
   if ((preset.queues?.length ?? 0) + (preset.researchQueues?.length ?? 0) > 0) {
     scheduleAiRuntimePresetSetup(scene, completeSetup);

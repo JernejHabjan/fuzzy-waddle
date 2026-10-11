@@ -45,7 +45,14 @@
           ],
           "queues": [{ "producerFixtureActorId": "ai-producer-1", "actorName": "TivaraMacemanMale", "count": 1 }],
           "events": [
-            { "id": "producer-loss", "tick": 500, "kind": "destroy_owned_actor", "owner": 2, "objectName": "AnkGuard" }
+            {
+              "id": "producer-loss",
+              "tick": 500,
+              "kind": "destroy_owned_actor",
+              "owner": 2,
+              "objectName": "AnkGuard",
+              "fixtureActorId": "ai-producer-1"
+            }
           ]
         }
       }

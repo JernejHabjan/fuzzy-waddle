@@ -1,5 +1,85 @@
 # Playwright runtime matrix and CI — #816
 
+## Production lifecycle and evidence checkpoint (2026-10-11)
+
+The requested eight-stage production batch is **in_progress**. This delivery is a prerequisite repair slice,
+not completion of all eight stages or the full M12/PRO gate. The initial batch estimate underestimated missing
+native policy/evidence work; no causal fixture labels or synthetic records are promoted to runtime proof.
+Base ef693af22d861f6f2234cc56068da84d0a7eef69, worktree /home/jernej/.codex/worktrees/7977/fuzzy-waddle,
+branch feature/759-skirmish-ai. The containing commit owns publication. Actual model/effort unknown; retain
+GPT-6.1 Sol / high for the remaining connected policy/authority/world work.
+
+| Acceptance / original stage | Implemented owner and why | State / remaining evidence |
+| --- | --- | --- |
+| 1. Future committed/abandoned cases | Transition oracle admits genuine fulfilled state within the original deadline, checks linked output, prevents revival and retains exact product IDs; unrelated products do not inflate the initial force | Prerequisite checked; real paired worlds remain unauthored |
+| 2. Producer resilience cases | Optional pinned fixtureActorId, strict type/owner parser, native scheduled damage and independent addressed-ID/tick checks; original loss cannot select its replacement | Prerequisite checked; exposed/safe/low-value/no-demand causal worlds remain unauthored |
+| 3. Shared queue/refund cases | Shared-contention oracle requires the exact pair's useful completions, rejecting unrelated train/research successes | Prerequisite checked; real strategic AI contention/cancellation worlds remain unauthored. Cancel intent/dispatcher already exist; adaptation still retains committed production |
+| 4. Concrete blockers | Automatic construction retries wait on native affordability denial without progressing state/work; explicit starts and genuine callback errors still throw | Checked native controls and final two-faction runtime. Native productionTime payment predicate, pricing/refund characterization and balance values preserved |
+| 5. Final checks/delivery | Grouped native/browser controls, types, structure, Node tools, build, finite native loss check, scoped publication | Scoped checks complete; containing commit owns publication. Required full PRO evidence still open |
+| 6. Production authority joins | productionCausality.enqueues joins checked insertion to its own real charge or remaining per-tick obligation; excludes its own admitted claim once and preserves other reservations | Enqueue-only projection checked; complete construction/pay/refund/loss events, definition catalog and paired setup remain missing |
+| 7. Useful output | Replacement products must retain their native ID and correct type across the sampled stable interval; transition and contention effects require exact identities | Oracle controls checked; native samples do not certify strategic utility or continuous history |
+| 8. Machinery necessity review | Reuses existing bounded callbacks/claim/queue records. Splits oversized dispatch/world/oracle owners; event completion releases tick and shutdown listeners | Scoped source review complete; no new capture loop, timer, cache, profiling or baseline refresh. Broader end-of-gate review remains pending |
+
+**Implementation Review:** traced parser -> public preset creation -> original object map -> indexed live target ->
+native damage -> addressed-ID record -> browser check -> native removal/owned-world absence. Reviewed disappearance,
+same-type substitution, inactive/dead/cross-scene actors, legacy name selection, completion and shutdown cleanup.
+Reviewed enqueue mutation/payment identity, exact boundaries, admitted claim transfer, explicit unsupported ownership,
+per-tick liability and retained raw gaps. Full productionEvidence remains absent. Transition fulfilled/expired states
+match the actual planner; checked no premature/late fulfillment, revival, changed dates or aggregate-ID substitution.
+Shared completions must belong to the observed contending items; resilience cannot exchange the product type or lose
+and later resurrect its alleged stable output.
+
+**Omission Audit:** full future/resilience/queue worlds, fair reachability/exposure, complete catalog/event authority,
+paired setup and continuous useful history are not supplied by this slice. Cancellation intent support was found in
+the existing contract/dispatcher after an initially incomplete search; no new cancellation policy was invented.
+M11 exhaustive resource authority, server/socket/save/restart/hash/calibration remain open. PRO-05 pins its existing
+producer-loss input; its long replacement release recipe was not executed and is not newly certified. New finite
+native check is explicit opt-in setup/lifecycle evidence only, not a weakened PRO scenario or a performance test.
+
+**Checks:** final 159 native suites/849 tests pass, as do production browser 208 controls, twelve focused Node
+cases, native/browser types, catalog consistency, explicit owned-source structure, formatting and uncached portal
+production build. Scoped lint finds one no-inferrable-types error reproduced at unchanged HEAD in the construction
+component; the structure check disables only that unrelated rule. Eighteen non-null assertion warnings remain.
+All logs/projections live under ignored tmp/ai-plans/759-validation/production-proof-*. Original owners fail one native
+caller control (five pass), five browser oracle controls (fifteen pass) and three funding controls (thirty-three pass);
+all restored byte-for-byte. Initial enqueue controls compared prefixed planner IDs against native effect IDs; repaired
+to use accepted planner identity. Narrow responsibility splits satisfy source limits without baseline refresh.
+The final broad native repeat exposed one legacy four-argument mock assertion; updated to assert explicit wait=false,
+then all 849 pass. Its formatting repair changes tests only, so the final runtime/build remain applicable.
+
+**Final finite runtime:** one process/two serial faction worlds, both final tick 420, queue completion at 100,
+original native producer removal exactly at 240 and peer retained. Zero captured affordability errors, dropped
+facts/snapshots or selected omissions. Tivara seed 759101, fixture fnv1a32:e105ca2f, original sim-5ae7dcbb,
+peer sim-c5ae0737; Skaduwee seed 759102, fixture fnv1a32:4f0db9ce, original sim-00c6f678, peer sim-fb6c85f4.
+production-proof-runtime-loss-final.log retains the bounded result. Source base ef693af22d861f6f2234cc56068da84d0a7eef69
+plus final dirty gameplay repairs; gameplay source frozen during the run. Composite SHA-256 for all 34 owned source/
+fixture files (sorted filename, NUL, bytes, NUL) after the subsequent test-only repair:
+aee158bacb6e13743bd63dd6198f7e80612088226365e5950d2e7f0101f96fd1.
+production-proof-source-provenance.json retains the exact filenames; this is source provenance, not a release fingerprint.
+
+**Initial finite runtime:** one process, two serial faction worlds, each with two authored producers and one real paid
+seeded production item. Both units complete at tick 100; native original removal occurs exactly at 240, and the other
+producer remains. Tivara final tick 436, fixture fnv1a32:e105ca2f, seed 759101; Skaduwee 420,
+fixture fnv1a32:4f0db9ce, seed 759102. No dropped facts/snapshots; selected-case projection omits zero.
+This run exposed repeated Cannot afford building costs exceptions from automatic construction retries. The new
+wait mode returns false only for that actual denial branch; resource callback/owner/definition failures propagate.
+No construction fence, state transition, work or initial-health reset occurs on denied start. Native denial capture
+is preserved; no predicted income, charge, refund or completion is invented. Funding source changed afterward, so
+this initial run is historical rather than final-source evidence.
+
+**Separate Final Closure Audit:** prerequisite slice stage_checked against the eight-item map, immediate callers,
+negative controls and final source evidence. Full eight-stage batch remains in_progress: strategic paired fixtures and
+complete event/catalog/setup authority are explicit blockers. Task-owned source/docs only; ignored evidence stays local,
+existing Nx migration remains ancestry, publication requires normal push and exact remote verification. No whole-family
+or release closure. No new performance suite, capture loop or agent tooling change is justified by this slice.
+
+**Next exact action / why:** continue the same eight-stage batch with definition-backed complete production event
+and paired setup authority, using the existing native records and guarded faction starts. Review the preserved native
+start-payment predicate before claiming configured-price equivalence. Then author genuine future/resilience pairs
+and standalone strategic queue/refund worlds; use physical inputs and actual AI decisions, never injected brain state
+or expected success records. Keep short causal cases, full oracles and useful-effect requirements. Group related
+source work and its final gate; commit/push and pause at the next checked boundary. Retain GPT-6.1 Sol / high.
+
 ## Production-start checkpoint (2026-10-11)
 
 Scoped M12 setup batch stage_checked; containing commit owns publication. Full M12 release and M11 useful authority
