@@ -5,6 +5,7 @@ import type { RuntimeCheckpointV1 } from "./skirmish-ai-runtime-checkpoint";
 import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
 import type { RuntimeProductionEvidenceV1 } from "./skirmish-ai-runtime-production-evidence";
 import type { RuntimeProductionCausalityV1 } from "./skirmish-ai-runtime-production-causality";
+import type { RuntimeProductionEvidenceV2 } from "./skirmish-ai-runtime-production-evidence-v2";
 // prettier-ignore
 import type { AiRuntimeProductionCaptureV1 } from
   "@fuzzy-waddle/probable-waffle-phaser/player/ai-controller/testing/ai-runtime-production-capture-v1";
@@ -12,6 +13,8 @@ import type { AiRuntimeProductionCaptureV1 } from
 export interface RuntimeVariantResultV1 {
   /** Absent until a real runtime adapter has retained ordered production/resource authority facts. */
   readonly productionEvidence?: RuntimeProductionEvidenceV1;
+  /** Full authority channels keep setup, selected clocks and closed physical history separate from legacy diagnostics. */
+  readonly productionEvidenceV2?: RuntimeProductionEvidenceV2;
   /** Raw authority diagnostics retain explicit gaps and cannot satisfy the independent evidence contract. */
   readonly productionCapture?: AiRuntimeProductionCaptureV1;
   /** Checked AI intent/authority lineage with unresolved gaps; never substitutes for full productionEvidence. */

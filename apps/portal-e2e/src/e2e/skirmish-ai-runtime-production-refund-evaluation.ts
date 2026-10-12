@@ -3,7 +3,9 @@ import type { RuntimeProductionContractV1 } from "./skirmish-ai-runtime-producti
 import type { RuntimeProductionEvidenceV1 } from "./skirmish-ai-runtime-production-evidence";
 
 /** Checks application-order cash, definition prices and remaining pay-over-time commitments without predicted refunds. */
-export function evaluateRuntimeProductionPayments(evidence: RuntimeProductionEvidenceV1): string[] {
+export function evaluateRuntimeProductionPayments(
+  evidence: Pick<RuntimeProductionEvidenceV1, "events" | "catalog">
+): string[] {
   const failures: string[] = [];
   const paid = new Map<string, Record<string, number>>();
   const remainingTicks = new Map<string, { ticks: number; actorId: string; productKey: string }>();

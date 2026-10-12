@@ -4,7 +4,15 @@ const branches = {
   "PRO-07": ["shared_contention", "cancel_pending_refund"]
 };
 const contractKeys = new Set([
-  "scenarioId", "latestTick", "stableForTicks", "branch", "producerObjectName", "productKey", "pairId"
+  "scenarioId",
+  "latestTick",
+  "stableForTicks",
+  "branch",
+  "producerObjectName",
+  "productKey",
+  "pairId",
+  "pairedPositionRole",
+  "usefulRallyActorRole"
 ]);
 
 function record(value) {
@@ -22,22 +30,49 @@ function nonempty(value) {
 export function validProductionContracts(recipe, assertion, scenarioId) {
   const contracts = assertion.requiredProductionContracts;
   const allowed = branches[scenarioId];
-  if (!allowed || !record(contracts) || !Array.isArray(recipe.variants) || !Array.isArray(assertion.requiredAiFactions)) return false;
-  const variants = recipe.variants.filter((variant) => variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId));
-  if (!variants.length || Object.keys(contracts).length !== variants.length ||
-      Object.keys(contracts).some((id) => !variants.some((variant) => variant.id === id))) return false;
+  if (!allowed || !record(contracts) || !Array.isArray(recipe.variants) || !Array.isArray(assertion.requiredAiFactions))
+    return false;
+  const variants = recipe.variants.filter(
+    (variant) => variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId)
+  );
+  if (
+    !variants.length ||
+    Object.keys(contracts).length !== variants.length ||
+    Object.keys(contracts).some((id) => !variants.some((variant) => variant.id === id))
+  )
+    return false;
   for (const variant of variants) {
     const contract = contracts[variant.id];
     const ticks = variant.checkpointTicks ?? recipe.checkpointTicks;
-    if (!record(contract) || Object.keys(contract).some((key) => !contractKeys.has(key)) ||
-        contract.scenarioId !== scenarioId || !allowed.includes(contract.branch) ||
-        !Number.isSafeInteger(contract.latestTick) || !Number.isSafeInteger(contract.stableForTicks) ||
-        contract.stableForTicks < 1 || contract.latestTick <= contract.stableForTicks ||
-        !Array.isArray(ticks) || !ticks.includes(contract.latestTick) ||
-        (assertion.maximumTick !== undefined && contract.latestTick > assertion.maximumTick) ||
-        !nonempty(contract.producerObjectName) || !nonempty(contract.productKey) || !nonempty(contract.pairId) ||
-        variant.evidenceStop !== undefined ||
-        (scenarioId !== "PRO-07" && contract.pairId !== variant.pairId)) return false;
+    if (
+      !record(contract) ||
+      Object.keys(contract).some((key) => !contractKeys.has(key)) ||
+      contract.scenarioId !== scenarioId ||
+      !allowed.includes(contract.branch) ||
+      !Number.isSafeInteger(contract.latestTick) ||
+      !Number.isSafeInteger(contract.stableForTicks) ||
+      contract.stableForTicks < 1 ||
+      contract.latestTick <= contract.stableForTicks ||
+      !Array.isArray(ticks) ||
+      !ticks.includes(contract.latestTick) ||
+      (assertion.maximumTick !== undefined && contract.latestTick > assertion.maximumTick) ||
+      !nonempty(contract.producerObjectName) ||
+      !nonempty(contract.productKey) ||
+      !nonempty(contract.pairId) ||
+      variant.evidenceStop !== undefined ||
+      (scenarioId !== "PRO-07" && contract.pairId !== variant.pairId)
+    )
+      return false;
+    for (const key of ["pairedPositionRole", "usefulRallyActorRole"]) {
+      if (
+        contract[key] !== undefined &&
+        (!nonempty(contract[key]) ||
+          !Array.isArray(variant.presetWorld?.actors) ||
+          !variant.presetWorld.actors.some((actor) => actor.fixtureActorId === contract[key]))
+      )
+        return false;
+    }
+    if (contract.pairedPositionRole !== undefined && scenarioId !== "PRO-06") return false;
   }
   for (const faction of assertion.requiredAiFactions) {
     const selected = variants.filter((variant) => variant.aiFaction === faction);
@@ -56,11 +91,22 @@ export function validProductionContracts(recipe, assertion, scenarioId) {
     for (const pair of pairs.values()) {
       if (pair.length !== 2) return false;
       const [left, right] = pair.map((variant) => contracts[variant.id]);
-      const expected = scenarioId === "PRO-03" ? allowed :
-        [left.branch, right.branch].includes("critical_exposed") ? ["critical_exposed", "safe_served"] : ["low_value", "no_demand"];
-      if (!expected.every((branch) => [left.branch, right.branch].includes(branch)) ||
-          left.latestTick !== right.latestTick || left.stableForTicks !== right.stableForTicks ||
-          left.producerObjectName !== right.producerObjectName || left.productKey !== right.productKey) return false;
+      const expected =
+        scenarioId === "PRO-03"
+          ? allowed
+          : [left.branch, right.branch].includes("critical_exposed")
+            ? ["critical_exposed", "safe_served"]
+            : ["low_value", "no_demand"];
+      if (
+        !expected.every((branch) => [left.branch, right.branch].includes(branch)) ||
+        left.latestTick !== right.latestTick ||
+        left.stableForTicks !== right.stableForTicks ||
+        left.producerObjectName !== right.producerObjectName ||
+        left.productKey !== right.productKey ||
+        left.pairedPositionRole !== right.pairedPositionRole ||
+        left.usefulRallyActorRole !== right.usefulRallyActorRole
+      )
+        return false;
     }
   }
   return true;

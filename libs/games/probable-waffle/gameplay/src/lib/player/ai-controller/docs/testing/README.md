@@ -20,6 +20,25 @@ example, ECO-04's zero-wood labor case requires a ready wood source and an AI-is
 fixture-authored starting orders or planner debug text do not satisfy it. ECO-08's separate pure case covers both
 factions' two-worker opening bootstrap; its runtime workforce-growth case remains a distinct Playwright obligation.
 
+## Native production authority
+
+Full PRO-03/06/07 runtime evaluation consumes `productionEvidenceV2`. Legacy V1 captures and pure oracle controls
+remain diagnostic regressions; they cannot satisfy the runtime gate. V2 separates paused actual setup, exact consumed
+and selected decisions, operation-time definitions, native lifecycle callbacks and closed physical intervals.
+
+`inputTick` belongs to the consumed observation, `selectedTick` to publication, and `applicationTick` to the actual
+callback. Before tick t+1 subscribers run, the native observer captures `closedThroughTick=t` with
+`capturedAtTick=t+1`. Later browser polling cannot move an effect backward to its requested checkpoint. Unchanged
+physical states coalesce; money callbacks remain individual. Missing coverage, restore, clock jumps, dropped records
+and observer failures keep the proof unavailable. The observer detaches on failure and capture/scene disposal.
+
+Only the explicit developer capture opt-in and an armed native horizon install this history. Ordinary matches install
+no observer or proof buffers. Setup comparison uses actual indexed actors/components, players, tech, map topology and
+runtime content. `pairedPositionRole` permits only a named PRO-06 actor's physical position to differ;
+`usefulRallyActorRole` names the owned actor used by the normal rally route. Both refer to checked preset actor bindings.
+Fair target-specific weapon pairs, actual builder paths/work, exact unit spawn/rally arrival and covered survival
+replace general range/reachability guesses. Missing native authority never becomes a safe/reachable verdict.
+
 ## Stable commands
 
 ```bash

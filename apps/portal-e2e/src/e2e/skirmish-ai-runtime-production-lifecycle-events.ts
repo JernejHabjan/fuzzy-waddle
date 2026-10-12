@@ -93,18 +93,20 @@ export function projectRuntimeProductionLifecycleEvents(
     const removal = eventAt(cancellation.removal.sequence, cancellation.commandId, cancellation.item.itemId);
     const refund = eventAt(cancellation.refund.sequence, cancellation.commandId, cancellation.item.itemId);
     const money = cancellation.refund;
-    if (!request || !removal || !refund || !money.reservedUnspentBefore) {
+    if (!removal || !refund || !money.reservedUnspentBefore) {
       gaps.push("production_ai_lifecycle_refund_authority_missing");
       continue;
     }
-    events.push(
-      {
+    if (request)
+      events.push({
         ...request,
         kind: "cancel_requested",
         effectId: cancellation.effectId,
         planId: cancellation.planId,
         scheduledTick: cancellation.scheduledTick
-      },
+      });
+    else gaps.push("production_ai_lifecycle_refund_authority_missing");
+    events.push(
       { ...removal, kind: "cancel", effectId: cancellation.effectId, planId: cancellation.planId },
       {
         ...refund,

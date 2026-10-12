@@ -5,12 +5,21 @@ export interface RuntimeProductionContractV1 {
   readonly latestTick: number;
   readonly stableForTicks: number;
   readonly branch:
-    | "future_committed" | "future_abandoned"
-    | "critical_exposed" | "safe_served" | "low_value" | "no_demand"
-    | "shared_contention" | "cancel_pending_refund";
+    | "future_committed"
+    | "future_abandoned"
+    | "critical_exposed"
+    | "safe_served"
+    | "low_value"
+    | "no_demand"
+    | "shared_contention"
+    | "cancel_pending_refund";
   /** Definition-backed producer and useful product selected by the causal fixture. */
   readonly producerObjectName: string;
   readonly productKey: string;
   /** Causal group identity; transition/resilience branches require same-seed pairs, queue branches are separate worlds. */
   readonly pairId: string;
+  /** Only this checked fixture role's physical position may differ in a resilience pair. No other ignored fields. */
+  readonly pairedPositionRole?: string;
+  /** Checked owned setup actor used by the ordinary rally route. Omission cannot certify useful unit arrival. */
+  readonly usefulRallyActorRole?: string;
 }

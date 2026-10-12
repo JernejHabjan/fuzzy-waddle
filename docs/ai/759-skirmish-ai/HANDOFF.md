@@ -36,52 +36,59 @@ economy/production/combat scenarios with fresh evidence at the active final gate
 their original values; revised expectations must reflect an explained balance decision while preserving authority,
 fairness and useful-effect requirements.
 
-**Current step:** M12 consolidated ten-item production batch remains in_progress; the connected authority design is
-authored after source review, not implemented or runtime validated. Source base/remote on entry:
-54f4553be3a4b0ce28e7d1ff88d88b166defec9c, feature/759-skirmish-ai in
-/home/jernej/.codex/worktrees/7977/fuzzy-waddle. This commit changes only the existing handoff/plan. Full PRO and M11
-useful authority remain open. Actual host model/effort unknown.
+**Current step:** M12 production authority implementation is **stage_checked** for the supported capture/consumer
+paths; the consolidated ten-item batch remains **in_progress**. Source base 24a4993978c11cd223430e2e0cbdc03c2490859d,
+branch feature/759-skirmish-ai, worktree /home/jernej/.codex/worktrees/7977/fuzzy-waddle. Actual host model/effort unknown.
+The commit containing this ledger is the publication revision; do not substitute the base for its checked dirty source.
 
-**What this stage authored / why:** the
-[connected production authority design](follow-ups/runtime-matrix-ci.md#production-authority-design-2026-10-11)
-defines V2 proof inputs with separate paused setup, consumed decision, publication and application clocks. Native
-closed-tick frontiers preserve exact deadlines despite browser overshoot; target-specific native weapon bands replace
-universal range, and actual builder/output routes replace general reachability guesses. Independent actual-world setup
-comparison permits only declared causal differences. Construction/payment/claim/refund joins and all eight branches
-are mapped to existing owners, with useful exact-ID output and complete survival intervals retained.
+**What this batch implemented / why:**
 
-Abandonment releases optional forecasts but follows already paid work to its real terminal; it does not require erasing
-that work. Pending-refund testing uses explicit controlled shared commands while adaptation deliberately retains paid
-production. Neither design decision injects planner state or invents an AI cancellation policy. No game code, fixture,
-test or balance changed; prior gameplay evidence remains scoped to the prior source. No gameplay checks rerun here.
+- V2 separates actual paused setup, consumed input, selected publication and applied-event clocks, so an old observation
+  or late callback cannot masquerade as current evidence.
+- One opt-in native clock hook records closed intervals and exact deadlines. Both finite faction worlds poll at 419
+  while retaining closedThroughTick=400 / capturedAtTick=401; browser overshoot no longer erases that deadline.
+- Producer-specific fair bindings preserve native weapon/elevation bands and invalidate on movement, visibility,
+  weapon/level change or removal. Losing the original producer does not invalidate an unchanged replacement. Actual
+  builder work/query and an exact owned rally arrival/actor survival replace general reachability guesses.
+- Actual indexed setup includes inherited actors, component state/cargo/orders/queues, players/tech, runtime content,
+  seed and topology. Canonical role comparison permits only a named physical position change; fixture labels/future
+  schedules do not establish equivalence. PRO-03 also checks a common first commitment.
+- Native construction cash claims survive placement and retire only at the exact successful payment, including multiple
+  builders. Operation-time producer definitions, setup payments, rejection/removal/refund boundaries and native death
+  identities retain their separate joins. Requests require identity/time, not fabricated cash frames. Setup initialization
+  is distinct from runtime construction, and explicit resource-start overwrites are not income.
 
-**Previous implementation / why:** immediate construction now checks configured costType rather than productionTime, so
-positive-duration buildings actually pay before work starts. Automatic denied starts still wait without work/health
-progress; explicit denial and unexpected callback errors still throw. Unstarted rejected placements cannot manufacture
-refunds; killed/destroy teardown refunds/disposes once and always releases tick listeners. Definition prices, durations
-and refund multipliers are unchanged; no speculative balance tuning.
+The runner/report/pair/full evaluator use productionEvidenceV2. Legacy V1 remains diagnostic and in pure regression
+controls. Abandonment releases forecasts and follows already admitted work through a real terminal or retained native
+identity, instead of banning all earlier construction or retaining an immutable paid lease forever. Native callbacks,
+queue retirement and variant-start reporting were split to satisfy size limits; no baseline refresh. Prices, timings,
+faction balance and the AI's retain_committed_production cancellation policy are unchanged.
 
-Queue lifecycle inputs now connect checked insertions, successful per-tick charges, exact native registrations and
-separate cancellation request/removal/refund sequences. Sampled definition catalog entries reject changed prices and
-check each stored enqueue price/duration against its preceding actual producer option. These extend the existing report
-normalizer; no new capture loop, timer, cache or native save/wire fields. Missing boundaries remain explicit.
-Complete productionEvidence is still absent; authored diagnostic inputs never become full causal certification.
+**Evidence / limits:** 163 Phaser suites / 867 tests, 221 selected browser checks (including one serial two-faction native
+check), six parser controls; native/browser types, owned lint/structure/format, catalog, uncached portal production build,
+doctor/context and whitespace checks pass. Six pre-existing non-null assertions remain warnings in the finite spec.
+The erased test-fixture cast repair additionally passes native types and two focused controls. Artifacts are ignored under
+`tmp/ai-plans/759-validation/authority-v2-*`; the 58 owned code files have composite SHA-256
+`fb13b76558d18887828acf4b6d583e8f30a77786134a3fd65eaa82a45d21911f` (sorted path NUL bytes NUL).
+Finite worlds capture 24 setup actors each, exact native completion=100 and pinned loss=240, with zero drops, funding
+errors or omitted cases. They are not the eight strategic branches or a full release proof.
 
-**Ten-item status / why remaining:** see the
-[consolidated production checkpoint](follow-ups/runtime-matrix-ci.md#consolidated-production-contract-boundary-2026-10-11).
-Item 1 is implemented; 2/3/9 have scoped implementation; 4–8 remain unimplemented behind the complete proof contract.
-Item 10 closes only this checked source slice, not the requested full batch or end-of-gate machinery review.
-The initial estimate still understated the semantic gap; do not create success-labelled worlds or lower assertions.
+**Outstanding authority:** per-tick construction remains explicitly unavailable without a paid-work ledger. Stale/awaited
+route or incomplete fair bindings remain unavailable, not successful. The explicit controlled pending-refund experiment
+and its human/shared-command origin must be integrated when authoring that physical family; do not inject AI selections
+or invent an AI cancellation policy. No complete full-native V2 strategic success is claimed by this source gate.
 
-**Next exact action / why:** implement design Pass A: RuntimeProductionEvidenceV2 and its existing contract/pair/
-transition/resilience/refund consumers, opt-in native closed frontiers, complete actual setup and event/claim/definition
-joins with meaningful controls. This supplies honest proof inputs before physical worlds can certify behavior. Pass B
-groups all eight branches for both factions, demonstrated repairs, the final correctness gate and machinery necessity
-review. Keep full outcomes/deadlines and no performance certification suite. Recommend GPT-6.1 Sol / high for Pass A's
-connected runtime authority; Sol / medium for specified Pass B fixture assembly, escalating for actual causal/policy
-defects. Luna / high only for concrete mechanical work. Commit/push, verify remote and pause at each pass.
-Full M12/M11, socket/save/restart/hash/calibration and end-of-gate machinery review remain open. The design section
-owns acceptance and scope; the checkpoint below it owns prior validation evidence.
+**Next exact action / why:** continue the connected design's Pass B: author all eight PRO-03/06/07 branches for both
+factions using the actual captured setup/definitions and normal shared services. Bind pairedPositionRole and
+usefulRallyActorRole to declared actual actors; add the normal rally/control inputs needed by those worlds. Run short
+causal worlds first and repair the native owner or reader for each demonstrated missing/incorrect authority. Then run
+one grouped full correctness gate and the machinery necessity review. This turns the new measurements into demonstrated
+AI fixes. Recommend GPT-6.1 Sol / high for this first integrated world/controlled-origin pass; medium fits mechanical
+fixture assembly once those native paths are concrete. Keep this related work grouped and commit/push/pause at its
+boundary. Full M12/M11, socket/save/restart/hash/calibration and end-of-gate machinery review remain open.
+
+
+### Prior evidence and remaining roadmap
 
 **Checked slice:** 159 native suites/850 tests, 216 browser controls plus one finite two-faction lifecycle test,
 native/browser types, exact formatting, scoped lint/structure, catalog consistency and uncached production build pass.

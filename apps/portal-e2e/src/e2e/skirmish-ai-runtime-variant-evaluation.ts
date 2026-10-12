@@ -12,7 +12,7 @@ import { evaluateRuntimeWorkerGrowth } from "./skirmish-ai-runtime-worker-growth
 import { isAiVictory } from "./skirmish-ai-runtime-terminal";
 import { evaluateRuntimeProductionCapacity } from "./skirmish-ai-runtime-production-capacity-evaluation";
 import { evaluateRuntimeProductionComposition } from "./skirmish-ai-runtime-production-composition-evaluation";
-import { evaluateRuntimeProductionContract } from "./skirmish-ai-runtime-production-contract-evaluation";
+import { evaluateRuntimeProductionAuthority } from "./skirmish-ai-runtime-production-authority-evaluation";
 import { evaluateRuntimeProductionCounts } from "./skirmish-ai-runtime-production-count-evaluation";
 import { evaluateRuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality-evaluation";
 
@@ -21,11 +21,17 @@ export function evaluateRuntimeVariant(
   assertion: RuntimeAssertionV1,
   variant: RuntimeVariantResultV1
 ): string[] {
-  const failures = evaluateRuntimeProductionContract(
-    scenarioId, assertion.requiredProductionContracts?.[variant.variantId], variant.productionEvidence
+  const failures = evaluateRuntimeProductionAuthority(
+    scenarioId,
+    assertion.requiredProductionContracts?.[variant.variantId],
+    variant.productionEvidenceV2
   ).map((failure) => `${variant.variantId}:${failure}`);
-  failures.push(...evaluateRuntimeProductionCausality(scenarioId, variant.productionCausality)
-    .map((failure) => `${variant.variantId}:${failure}`));
+  failures.push(
+    ...(variant.productionEvidenceV2
+      ? (variant.productionCausality?.failures ?? [])
+      : evaluateRuntimeProductionCausality(scenarioId, variant.productionCausality)
+    ).map((failure) => `${variant.variantId}:${failure}`)
+  );
   const final = last(variant.checkpoints);
   const appliedCommands = new Map(
     variant.checkpoints
@@ -132,10 +138,16 @@ export function evaluateRuntimeVariant(
     failures.push(`${variant.variantId}:ground_route_missing`);
   }
   failures.push(...evaluateRuntimeRaidRecovery(assertion, variant, final, hasAiVictory));
-  failures.push(...evaluateRuntimeProductionCapacity(scenarioId, assertion.requiredProductionCapacity, variant)
-    .map((failure) => `${variant.variantId}:${failure}`));
-  failures.push(...evaluateRuntimeProductionComposition(assertion.requiredProductionComposition, variant)
-    .map((failure) => `${variant.variantId}:${failure}`));
+  failures.push(
+    ...evaluateRuntimeProductionCapacity(scenarioId, assertion.requiredProductionCapacity, variant).map(
+      (failure) => `${variant.variantId}:${failure}`
+    )
+  );
+  failures.push(
+    ...evaluateRuntimeProductionComposition(assertion.requiredProductionComposition, variant).map(
+      (failure) => `${variant.variantId}:${failure}`
+    )
+  );
   failures.push(...evaluateRuntimePresetWorld(assertion, variant));
   if (assertion.requiredSupplyPrebuild) {
     failures.push(

@@ -6,6 +6,7 @@ import type { RuntimeFixtureV1 } from "./skirmish-ai-runtime-fixture";
 import type { RuntimeVariantV1 } from "./skirmish-ai-runtime-variant";
 import { digestRuntimeValue } from "./skirmish-ai-runtime-digest";
 import { runVariant } from "./skirmish-ai-runtime-variant-runner";
+import { captureRuntimeProductionAuthority } from "./skirmish-ai-runtime-production-capture";
 
 test.skip(
   process.env.AI_SKIRMISH_PRESET_LOSS !== "1",
@@ -75,10 +76,12 @@ test("both faction worlds lose the pinned original while preserving another same
       revision,
       digestRuntimeValue(fixture),
       async (page, checkpoint) => {
-        if (checkpoint === -1)
+        if (checkpoint === -1) {
           page.on("pageerror", (error) => {
             if (error.message.includes("Cannot afford building costs")) fundingErrors.push(error.message);
           });
+          await captureRuntimeProductionAuthority(page, fixture.recipe.aiPlayerNumber, 400);
+        }
       }
     );
     const originalId = result.presetCreatedActorIds["producer"]!;
@@ -88,6 +91,11 @@ test("both faction worlds lose the pinned original while preserving another same
     expect(fundingErrors).toEqual([]);
     expect(capture.droppedFactCount).toBe(0);
     expect(capture.droppedSnapshotCount).toBe(0);
+    expect(capture.setup?.actors.length).toBeGreaterThan(0);
+    expect(capture.setupGaps).toEqual([]);
+    expect(capture.frontiers?.closedThroughTick).toBe(400);
+    expect(capture.frontiers?.intervals.at(-1)?.capturedAtTick).toBe(401);
+    expect(capture.frontiers?.gaps).toEqual([]);
     expect(result.perturbations).toContainEqual({
       id: "original-producer-loss",
       tick: 240,
@@ -95,8 +103,11 @@ test("both faction worlds lose the pinned original while preserving another same
       subjectName: producer.actorName,
       affectedActorId: originalId
     });
-    const loss = capture.facts.filter((fact) => fact.kind === "actor_unregistered" && fact.actorId === originalId);
+    const loss = capture.facts
+      .filter((fact) => fact.kind === "actor_unregistered")
+      .filter((fact) => fact.actorId === originalId);
     expect(loss).toHaveLength(1);
+    expect(loss[0]?.actor?.alive).toBe(false);
     expect(capture.facts.filter((fact) => fact.kind === "actor_unregistered" && fact.actorId === otherId)).toEqual([]);
     const final = capture.snapshots.at(-1)!;
     expect(final.ownedActors.some((actor) => actor.actorId === originalId)).toBe(false);
@@ -115,6 +126,8 @@ test("both faction worlds lose the pinned original while preserving another same
       fixtureDigest: digestRuntimeValue(fixture),
       seed: result.seed,
       finalTick: final.tick,
+      closedThroughTick: capture.frontiers?.closedThroughTick,
+      setupActors: capture.setup?.actors.length,
       originalId,
       otherId,
       lossTicks: loss.map((fact) => fact.tick),

@@ -6,17 +6,14 @@ import type { RuntimeCheckpointV1 } from "./skirmish-ai-runtime-checkpoint";
 import { captureCheckpoint } from "./skirmish-ai-runtime-checkpoint-capture";
 import { last } from "./skirmish-ai-runtime-value";
 import { applyRuntimePerturbation } from "./skirmish-ai-runtime-perturbation-runner";
-import {
-  digestRuntimeValue,
-  projectRuntimeOutcomeDigestInput,
-  projectRuntimePresetQueueDigest
-} from "./skirmish-ai-runtime-digest";
+import { digestRuntimeValue, projectRuntimeOutcomeDigestInput } from "./skirmish-ai-runtime-digest";
+import { projectRuntimeVariantStart } from "./skirmish-ai-runtime-variant-start-report";
 import { prepareRuntimeVariant } from "./skirmish-ai-runtime-variant-setup";
 import { canStopAfterTerminal } from "./skirmish-ai-runtime-terminal";
 import { evaluateEvidenceStopAtCheckpoint } from "./skirmish-ai-runtime-evidence-stop-evaluation";
 import { collectRuntimePresetEvents } from "./skirmish-ai-runtime-preset-event-results";
 import { captureRuntimeProductionAuthority } from "./skirmish-ai-runtime-production-capture";
-import { normalizeRuntimeProductionCausality } from "./skirmish-ai-runtime-production-causality-normalization";
+import { buildRuntimeProductionReport } from "./skirmish-ai-runtime-production-report";
 
 export async function runVariant(
   browser: Browser,
@@ -64,9 +61,15 @@ export async function runVariant(
       (scenarioId) => variant.scenarioIds === undefined || variant.scenarioIds.includes(scenarioId)
     );
     const captureProduction = applicableScenarioIds.some((id) => ["PRO-03", "PRO-06", "PRO-07"].includes(id));
+    const productionHorizons = applicableScenarioIds.flatMap((id) => {
+      const contract = fixture.assertions[id]?.requiredProductionContracts?.[variant.id];
+      return contract ? [contract.latestTick] : [];
+    });
+    const productionHorizon = productionHorizons.length ? Math.max(...productionHorizons) : undefined;
     let productionCapture = captureProduction
-      ? await captureRuntimeProductionAuthority(page, fixture.recipe.aiPlayerNumber)
+      ? await captureRuntimeProductionAuthority(page, fixture.recipe.aiPlayerNumber, productionHorizon)
       : undefined;
+    const closedProductionHorizon = productionCapture?.frontiers?.latestTick ?? productionHorizon;
     let stopReason: RuntimeVariantResultV1["stopReason"] = "checkpoint_ceiling";
     let satisfiedSinceTick: number | null = null;
     const maximumTick = Math.max(
@@ -102,7 +105,13 @@ export async function runVariant(
         "resume",
         index === 0 ? 1 : fixture.recipe.simulationTimeScale
       );
-      await waitForSimulationTick(page, fixture.recipe.aiPlayerNumber, targetTick);
+      await waitForSimulationTick(
+        page,
+        fixture.recipe.aiPlayerNumber,
+        closedProductionHorizon !== undefined && targetTick >= closedProductionHorizon
+          ? closedProductionHorizon + 1
+          : targetTick
+      );
       const settleStartedAt = performance.now();
       await setSimulationState(page, fixture.recipe.aiPlayerNumber, "pause", fixture.recipe.simulationTimeScale);
       await waitForSettledDecision(page, fixture.recipe.aiPlayerNumber);
@@ -150,24 +159,6 @@ export async function runVariant(
     }
     perturbations.push(...(await collectRuntimePresetEvents(page, variant)));
 
-    const initialWorldDigest = digestRuntimeValue({
-      seed: effectiveSeed,
-      actors: initialBoundary.state.ownedActorNames,
-      authoredPreset: variant.presetWorld ?? null,
-      preset: initialBoundary.presetApplication
-        ? {
-            fixtureId: initialBoundary.presetApplication.fixtureId,
-            sourceRevision: initialBoundary.presetApplication.sourceRevision,
-            fixtureDigest: initialBoundary.presetApplication.fixtureDigest,
-            createdActorNames: initialBoundary.presetApplication.createdActorNames,
-            resourceGrantCount: initialBoundary.presetApplication.resourceGrantCount,
-            resourceStartCount: initialBoundary.presetApplication.resourceStartCount,
-            queuedItemCount: initialBoundary.presetApplication.queuedItemCount,
-            initialQueueItems: projectRuntimePresetQueueDigest(initialBoundary.presetApplication.initialQueueItems),
-            initialOrderCount: initialBoundary.presetApplication.initialOrderCount
-          }
-        : null
-    });
     const outcomeDigest = digestRuntimeValue({
       checkpoints: projectRuntimeOutcomeDigestInput(
         checkpoints,
@@ -194,41 +185,11 @@ export async function runVariant(
         })
       : null;
     return {
-      variantId: variant.id,
-      mapLabel: variant.mapLabel ?? fixture.recipe.mapLabel,
+      ...projectRuntimeVariantStart(variant, initialBoundary, effectiveSeed, fixture.recipe.mapLabel),
       stopReason,
-      seed: effectiveSeed,
-      aiFaction: variant.aiFaction,
-      initialOwnedActorCount: initialBoundary.state.ownedActorCount,
-      initialWorkerCount: initialBoundary.state.workerCount,
-      presetFixtureId: initialBoundary.presetApplication?.fixtureId ?? null,
-      presetCreatedActorNames: initialBoundary.presetApplication?.createdActorNames ?? [],
-      presetCreatedActorIds: initialBoundary.presetApplication?.createdActorIds ?? {},
-      presetResourceGrantCount: initialBoundary.presetApplication?.resourceGrantCount ?? 0,
-      presetResourceStartCount: initialBoundary.presetApplication?.resourceStartCount ?? 0,
-      presetInitialResourceBalances: initialBoundary.initialResourceBalances,
-      presetQueuedItemCount: initialBoundary.presetApplication?.queuedItemCount ?? 0,
-      presetInitialQueueItems: initialBoundary.presetApplication?.initialQueueItems ?? [],
-      presetQueueApplications: initialBoundary.presetApplication?.queueApplications ?? [],
-      presetInitialOrderCount: initialBoundary.presetApplication?.initialOrderCount ?? 0,
-      determinismGroup: variant.determinismGroup ?? null,
-      ...(variant.supplyBranch ? { supplyBranch: variant.supplyBranch } : {}),
-      ...(variant.pressureBranch ? { pressureBranch: variant.pressureBranch } : {}),
-      ...(variant.resourceServiceBranch ? { resourceServiceBranch: variant.resourceServiceBranch } : {}),
-      ...(variant.productionCapacityBranch ? { productionCapacityBranch: variant.productionCapacityBranch } : {}),
-      ...(variant.productionCompositionBranch
-        ? { productionCompositionBranch: variant.productionCompositionBranch }
-        : {}),
-      initialWorldDigest,
       outcomeDigest,
       ...(productionCapture
-        ? {
-            productionCapture,
-            productionCausality: normalizeRuntimeProductionCausality(
-              productionCapture,
-              initialBoundary.presetApplication ?? undefined
-            )
-          }
+        ? buildRuntimeProductionReport(productionCapture, initialBoundary.presetApplication ?? undefined)
         : {}),
       checkpoints,
       perturbations,

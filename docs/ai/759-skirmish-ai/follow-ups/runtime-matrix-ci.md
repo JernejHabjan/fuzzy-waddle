@@ -1,8 +1,82 @@
 # Playwright runtime matrix and CI — #816
 
+## Connected production authority implementation (2026-10-12)
+
+**State:** stage_checked supported source paths, not full strategic-world certification. This is the user-authorized
+five-part implementation batch based on 24a4993978c11cd223430e2e0cbdc03c2490859d. The ten-item M12 batch remains
+in_progress. The design below remains the contract for physical authoring, including its unsupported-authority rules.
+Actual host model/effort unknown; worktree /home/jernej/.codex/worktrees/7977/fuzzy-waddle, feature/759-skirmish-ai.
+
+| Acceptance                     | Implemented owner / purpose                                                                                                                        | Evidence / status                                                                                                                                                                |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 Separate clocks/setup        | production-evidence-v2/projection + authority-evaluation; selected strategy/opening accompany the exact consumed result                            | V2 controls, types and real paused setup; stage_checked                                                                                                                          |
+| 2 Exact closed deadlines       | SimulationTickService.observeClosedFrontiers -> AiRuntimeProductionProofCapture/Frontiers -> runner horizon+1                                      | Native ordering/error/disposal controls; two actual closed tick-400 worlds despite polling 419; stage_checked                                                                    |
+| 3 Target-specific geometry/use | AiRuntimeExposureBinding + recovery/builder-work/useful-output evaluators; native query/spawn/order/arrival joins and continuous exact-ID survival | Per-producer loss/visibility controls, existing weapon/minimum/elevation controls; full strategic useful paths remain a physical obligation                                      |
+| 4 Actual paired starts         | capture-ai-runtime-production-setup + production-setup comparison and pair evaluator                                                               | Actual 24-actor setup per faction, canonical/exclusion/ambiguity controls, common commitment check; full physical pairs not authored                                             |
+| 5 Lifecycle/cash joins         | unspent construction claims + operation catalog + lifecycle V2 projection; baseline lifetimes/setup payments remain separate                       | Multi-builder/payment/duplicate/wrong-owner controls, queue/refund regressions, native death=240; controlled full-origin experiment and per-tick construction remain unavailable |
+
+**Implementation Review:** traced input -> selected result -> stamped application -> money -> native work/completion ->
+index/route/retention -> disposal. The native hook runs after increment and before tick$.next, and detaches failed
+observers without propagating their errors into the simulation. One capture owns the sequence/fact budget; armed
+histories coalesce physical state and retain required deadlines. Bounds, restore/fast-forward, scene/clock replacement,
+late installation and missing authority fail closed. There is no new clock, game timer or save/relay field.
+
+A global geometry flag would have invalidated a surviving replacement when its peer died. Producer-specific validity
+now follows only that producer and already-fair threats; loss/reuse fences survive identical-looking replacements.
+A stale new selection does not refresh or erase an unchanged earlier fair binding. Safe capacity is first bound after
+actual ready completion and before loss, then checked over every covered interval. Unit usefulness requires its own
+legal spawn, normal owned rally route/arrival and exact actor survival; research benefit additionally requires a relevant
+subsequent unit at the effective upgraded level. No universal weapon range or producer-wide reachable boolean enters V2.
+
+Construction claims retain cash until the native successful immediate start charge; placement is not payment.
+Setup component initialization/actor lifetimes remain a distinct channel, and a paused resource overwrite resets generic
+balance comparison without manufacturing an income event. Intermediate immediate-payment callbacks preserve their
+indeterminate claim state; complete checked operation endpoints own the proof. Cancellation requests retain identity
+and scheduled time without borrowing a monetary frame. Refund/removal keep their actual native order.
+
+**Omission Audit:** all five responsibilities have real producers and consumers. Native class callbacks and queue claim
+retirement were split, preserving the single buffer, ordering and teardown; SimulationPauseReason keeps its former
+import surface through re-export. The strict fixture parser accepts and binds the two new role fields while retaining
+all faction/branch requirements. Legacy V1 controls remain isolated from full runtime acceptance. No authored fixture
+manufactures state, arrival, exposure or payment records; no game balance/AI cancellation change or performance suite.
+The normal-rally inputs and explicit controlled pending-refund origin still need physical family integration in Pass B.
+Per-tick construction cannot be certified by these records; missing/awaited history is explicitly unavailable.
+
+**Separate Final Closure Audit:** this gate checks source mechanisms, regressions and finite native setup/deadlines/loss,
+not full PRO-03/06/07, M11, determinism or release. No full-native V2 strategic success is claimed. The final source digest
+is fb13b76558d18887828acf4b6d583e8f30a77786134a3fd65eaa82a45d21911f across 58 owned TS/MJS files. An erased test-fixture
+assertion changed only type checking after the broad run; native types and its two controls were rerun. Source framing
+and mandatory branches/deadlines were retained; unsupported origins never become AI-selected proof.
+
+Final gate commands/results (logs under ignored tmp/ai-plans/759-validation/authority-v2-\*):
+
+- pnpm exec nx test probable-waffle-phaser --skipNxCache --runInBand: 163 suites / 867 tests pass.
+- AI_SKIRMISH_PRESET_LOSS=1 pnpm exec playwright test --config apps/portal-e2e/playwright.config.ts
+  'skirmish-ai-(runtime-(production|producer-resilience|preset-event-results).\*spec|test-preset-loss.spec)\.ts' --workers=1:
+  221 checks pass in one process; the finite check runs both factions serially.
+- pnpm exec node --test tools/ai/skirmish-runtime-production-contract-fixture.test.mjs: six controls pass.
+- pnpm exec tsc -p apps/portal-e2e/tsconfig.json --noEmit and
+  pnpm exec tsc -p libs/games/probable-waffle/phaser/tsconfig.spec.json --noEmit: pass.
+- Exact owned ESLint using eslint.config.mjs and fuzzy-waddle/source-structure-limits:error: zero errors; six existing
+  finite-spec non-null warnings. Exact owned Prettier checks and git diff --check pass; no baseline update.
+- pnpm ai:skirmish:catalog --check, pnpm agent:doctor, pnpm agent:context -- --issue 759: pass.
+- pnpm exec nx build portal --configuration=production --skipNxCache: pass uncached.
+
+Native finite results: Tivara seed759101 / fixture fnv1a32:e105ca2f; Skaduwee seed759102 / fixture fnv1a32:4f0db9ce.
+Each has 24 actual setup actors, completion=100, pinned original death/removal=240, final poll=419 and closedThrough=400
+at capturedAt=401. Same-type peer retained; zero dropped facts/snapshots, funding errors or omitted selected cases.
+This is a compact native regression, not a substitute for the required strategic worlds or a performance certification.
+
+**Next / why:** Pass B groups all eight branches x both factions, actual normal-rally/control inputs, short causal triage
+and demonstrated owner/reader repairs, then one stable full correctness gate and machinery review. These worlds expose
+actual AI defects using the new authority. Recommend GPT-6.1 Sol / high for the integrated native/controlled-origin
+work; medium for settled mechanical fixture assembly. Do not split this into per-file model switches. Commit/push and
+verify remote SHA, then pause. Existing source provenance and unresolved full M12/M11 gates remain intact.
+
 ## Production authority design (2026-10-11)
 
-**State:** design_authored after source review, not implemented or runtime validated. This is the connected design
+**State at design commit:** design_authored after source review. The implementation checkpoint above owns current
+source evidence; full physical authority remains unvalidated. This is the connected design
 requested at the preceding boundary, based on 54f4553be3a4b0ce28e7d1ff88d88b166defec9c. The ten-item batch remains
 in_progress. This section owns the next implementation; the checkpoint below records the preceding source slice.
 Actual host model/effort unknown. No gameplay, capture, fixture, assertion or balance changes in this design commit.

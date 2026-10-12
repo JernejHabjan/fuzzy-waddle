@@ -7,6 +7,8 @@ import type { AiRuntimeProductionWorldV1 } from "./ai-runtime-production-world-v
 import type { AiRuntimeInitialConstructionV1 } from "./ai-runtime-initial-construction-v1";
 import type { AiRuntimeResourceCoverageV1 } from "./ai-runtime-resource-coverage-v1";
 import type { AiRuntimeResourceServiceIntervalV1 } from "./ai-runtime-resource-service-interval-v1";
+import type { AiRuntimeProductionSetupV1 } from "./ai-runtime-production-setup-v1";
+import type { AiRuntimeProductionFrontiers } from "./ai-runtime-production-frontiers";
 
 /**
  * Diagnostic raw capture, not RuntimeProductionEvidenceV1. Missing causal attribution and navigation/placement proof
@@ -20,6 +22,10 @@ export interface AiRuntimeProductionCaptureV1 {
   readonly droppedFactCount: number;
   readonly droppedSnapshotCount: number;
   readonly gaps: readonly string[];
+  /** Opt-in complete setup and closed native history. Legacy diagnostics omit these instead of backfilling. */
+  readonly setup?: AiRuntimeProductionSetupV1;
+  readonly setupGaps?: readonly string[];
+  readonly frontiers?: ReturnType<AiRuntimeProductionFrontiers["read"]>;
   /** Captured once at listener installation; legacy omission cannot be repaired from later actor snapshots. */
   readonly initialConstruction?: AiRuntimeInitialConstructionV1;
   readonly resourceCoverage?: AiRuntimeResourceCoverageV1;

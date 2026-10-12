@@ -1,40 +1,32 @@
-import { QUEUE_COMPLETION_AUTHORITY_EVENT, type QueueCompletionAuthorityEvent } from
-  "../../../entity/components/queue/queue-completion-authority-event";
-import { projectAiRuntimeQueueCompletion } from "./project-ai-runtime-queue-completion";
+import { AiRuntimeProductionWorldCapture } from "./ai-runtime-production-world-capture";
 import { captureAiRuntimeCreatedActor } from "./capture-ai-runtime-created-actor";
-import { QUEUE_MUTATION_EVENT, type QueueMutationEvent } from "../../../entity/components/queue/queue-mutation-event";
-import { projectAiRuntimeQueueMutation } from "./project-ai-runtime-queue-mutation";
 import Phaser from "phaser";
 import { Subscription } from "rxjs";
 import { ProbableWafflePlayerType, ResourceType } from "@fuzzy-waddle/probable-waffle-protocol";
 import type { UnifiedQueueItem } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/queue/queue-item";
-import { IdComponent } from "@fuzzy-waddle/probable-waffle-gameplay/entity/components/id-component";
 import type { ProbableWaffleScene } from "../../../core/probable-waffle.scene";
 import { getActorComponent } from "../../../data/actor-component";
 import { getPlayer, isSnapshotApplyInProgress } from "../../../data/scene-data";
 import { TechTreeService } from "../../../data/tech-tree/tech-tree.service";
 import { OwnerComponent } from "../../../entity/components/owner-component";
-import { HealthComponent } from "../../../entity/components/combat/components/health-component";
 import { QueueComponent } from "../../../entity/components/queue/queue-component";
 import { ActorIndexSystem } from "../../../world/services/ActorIndexSystem";
 import { CommandBusService } from "../../../world/services/multiplayer/command-bus.service";
-import { getSceneService, getSceneSystem } from "../../../world/services/scene-component-helpers";
+import { getSceneService } from "../../../world/services/scene-component-helpers";
 import { SimulationTickService } from "../../../world/services/simulation-tick.service";
-import { AiPlayerHandler } from "../ai-player-handler";
-import { projectAiProductionObligations } from "../observation/ai-production-obligations";
 import { captureAiRuntimeProductionQueue } from "./ai-runtime-production-queues";
 import type { AiRuntimeProductionCaptureV1 } from "./ai-runtime-production-capture-v1";
 import type { AiRuntimeProductionFactV1 } from "./ai-runtime-production-fact-v1";
-import { AI_INTENT_COMMAND_DISPATCH_EVENT, type AiIntentCommandDispatchEvent } from "../ai-intent-command-dispatch-event";
+import {
+  AI_INTENT_COMMAND_DISPATCH_EVENT,
+  type AiIntentCommandDispatchEvent
+} from "../ai-intent-command-dispatch-event";
 import { AiRuntimePendingCommands } from "./ai-runtime-pending-commands";
-import { QUEUE_RESOURCE_EMISSION_EVENT, type QueueResourceEmissionEvent } from "../../../data/queue-resource-emission-event";
-import { projectAiRuntimeQueueResource } from "./project-ai-runtime-queue-resource";
 
 import { AI_DECISION_DISPATCH_EVENT, type AiDecisionDispatchEvent } from "../ai-decision-dispatch-event";
 import { AiRuntimeUnspentClaims } from "./ai-runtime-unspent-claims";
-import { QUEUE_PROGRESS_EVENT, type QueueProgressEvent } from "../../../entity/components/queue/queue-progress-event";
 import { projectAiRuntimeProductionBoundaryState } from "./project-ai-runtime-production-boundary-state";
-import { captureAiRuntimeProductionWorld } from "./capture-ai-runtime-production-world";
+import { captureAiRuntimeProductionSnapshot } from "./capture-ai-runtime-production-snapshot";
 import { AiRuntimeProductionSpatialCapture } from "./ai-runtime-production-spatial-capture";
 import { captureAiRuntimeInitialConstruction } from "./capture-ai-runtime-initial-construction";
 import type { AiRuntimeInitialConstructionV1 } from "./ai-runtime-initial-construction-v1";
@@ -44,8 +36,13 @@ import { AiRuntimeRecipientResourceCapture } from "./ai-runtime-recipient-resour
 import { AiRuntimeResourceInputCapture } from "./ai-runtime-resource-input-capture";
 import { AI_RUNTIME_MAX_FACTS as MAX_FACTS, appendAiRuntimeProductionFact } from "./append-ai-runtime-production-fact";
 
-import { CONSTRUCTION_AUTHORITY_EVENT, type ConstructionAuthorityEvent } from
-  "../../../entity/components/construction/construction-authority-event";
+import {
+  CONSTRUCTION_AUTHORITY_EVENT,
+  type ConstructionAuthorityEvent
+} from "../../../entity/components/construction/construction-authority-event";
+import { AiRuntimeProductionProofCapture } from "./ai-runtime-production-proof-capture";
+
+import { AiRuntimeProductionQueueCapture } from "./ai-runtime-production-queue-capture";
 
 const MAX_SNAPSHOTS = 256;
 
@@ -54,7 +51,6 @@ export class AiRuntimeProductionCapture {
   private readonly subscriptions = new Subscription();
   private readonly queueSubscriptions = new Map<Phaser.GameObjects.GameObject, Subscription>();
   private readonly localItemIds = new WeakMap<UnifiedQueueItem, string>();
-  private readonly lastBalances = new Map<number, Record<ResourceType, number>>();
   private readonly facts: AiRuntimeProductionFactV1[] = [];
   private readonly snapshots = new Map<number, AiRuntimeProductionCaptureV1["snapshots"][number][]>();
   private readonly snapshotDrops = new Map<number, number>();
@@ -71,8 +67,14 @@ export class AiRuntimeProductionCapture {
   private readonly resourceIntervalDeclaration: AiRuntimeProductionCaptureV1["resourceIntervalDeclaration"];
   private readonly recipientResources: AiRuntimeRecipientResourceCapture;
   private readonly resourceInputs: AiRuntimeResourceInputCapture;
+  private readonly proof: AiRuntimeProductionProofCapture;
+  private queueAuthority?: AiRuntimeProductionQueueCapture;
+  private worldAuthority?: AiRuntimeProductionWorldCapture;
 
-  constructor(private readonly scene: ProbableWaffleScene, intervals: readonly AiRuntimeResourceServiceIntervalV1[] = []) {
+  constructor(
+    private readonly scene: ProbableWaffleScene,
+    intervals: readonly AiRuntimeResourceServiceIntervalV1[] = []
+  ) {
     const ticks = getSceneService(scene, SimulationTickService);
     const bus = getSceneService(scene, CommandBusService);
     const index = getSceneService(scene, ActorIndexSystem);
@@ -80,8 +82,12 @@ export class AiRuntimeProductionCapture {
     const playerChanged = scene.communicator.playerChanged;
     if (!ticks || !bus || !index || !tech || !playerChanged) throw new Error("production_capture_authority_missing");
     this.startedTick = ticks.currentTick;
-    this.resourceIntervalDeclaration = structuredClone({ boundary: { tick: this.startedTick, captureSequence: 0 },
-      overflow: intervals.length > 256, intervals: intervals.length > 256 ? [] : intervals });
+    this.proof = new AiRuntimeProductionProofCapture(scene, this.identify, () => this.nextSequence - 1);
+    this.resourceIntervalDeclaration = structuredClone({
+      boundary: { tick: this.startedTick, captureSequence: 0 },
+      overflow: intervals.length > 256,
+      intervals: intervals.length > 256 ? [] : intervals
+    });
     this.resourceCoverage = new AiRuntimeResourceCoverageCapture(this.startedTick, () => {
       const clock = getSceneService(scene, SimulationTickService);
       if (clock !== ticks) this.resourceCoverage.lose("clock_service_replaced");
@@ -89,90 +95,113 @@ export class AiRuntimeProductionCapture {
     });
     const initialActors = index.getAllIdActors();
     try {
-      this.recipientResources = new AiRuntimeRecipientResourceCapture(scene, this.resourceCoverage,
-        (playerNumber) => this.boundary(playerNumber), () => this.nextSequence - 1, (fact) => this.append(fact));
-      this.resourceInputs = new AiRuntimeResourceInputCapture(scene, this.resourceCoverage,
-        () => this.recipientResources.reconcile(), () => this.nextSequence - 1,
-        (playerNumber) => this.boundary(playerNumber), (fact) => this.append(fact),
-        (playerNumber) => this.unspentClaims.snapshot(playerNumber));
+      this.recipientResources = new AiRuntimeRecipientResourceCapture(
+        scene,
+        this.resourceCoverage,
+        (playerNumber) => this.boundary(playerNumber),
+        () => this.nextSequence - 1,
+        (fact) => this.append(fact)
+      );
+      this.resourceInputs = new AiRuntimeResourceInputCapture(
+        scene,
+        this.resourceCoverage,
+        () => this.recipientResources.reconcile(),
+        () => this.nextSequence - 1,
+        (playerNumber) => this.boundary(playerNumber),
+        (fact) => this.append(fact),
+        (playerNumber) => this.unspentClaims.snapshot(playerNumber)
+      );
       this.initialConstruction = captureAiRuntimeInitialConstruction(scene, initialActors, this.startedTick);
-      this.spatialCapture = new AiRuntimeProductionSpatialCapture(scene, this.identify, (playerNumber, spatial) => {
-        this.append({ ...this.boundary(playerNumber), kind: "spatial_authority", spatial });
-      }, this.resourceCoverage);
-      for (const player of scene.players) {
-        if (player.playerNumber !== undefined) this.lastBalances.set(player.playerNumber, this.resources(player.playerNumber));
-      }
+      this.spatialCapture = new AiRuntimeProductionSpatialCapture(
+        scene,
+        this.identify,
+        (playerNumber, spatial) => {
+          if (spatial.kind === "placement" && spatial.site.actorId && spatial.legal) {
+            this.unspentClaims.observePlacement(spatial.command, spatial.site.actorId);
+          }
+          this.append({ ...this.boundary(playerNumber), kind: "spatial_authority", spatial });
+        },
+        this.resourceCoverage
+      );
+      this.queueAuthority = new AiRuntimeProductionQueueCapture(
+        scene,
+        this.identify,
+        this.unspentClaims,
+        (player) => this.boundary(player),
+        (fact, item) => this.append(fact, item)
+      );
       scene.events.on(AI_DECISION_DISPATCH_EVENT, this.observeDecision, this);
       scene.events.on(AI_INTENT_COMMAND_DISPATCH_EVENT, this.observeDispatch, this);
-      scene.events.on(QUEUE_MUTATION_EVENT, this.observeMutation, this);
-      scene.events.on(QUEUE_COMPLETION_AUTHORITY_EVENT, this.observeCompletion, this);
-      scene.events.on(QUEUE_PROGRESS_EVENT, this.observeProgress, this);
-      scene.events.on(QUEUE_RESOURCE_EMISSION_EVENT, this.observeQueueResource, this);
       scene.events.on(CONSTRUCTION_AUTHORITY_EVENT, this.observeConstruction, this);
-      this.subscriptions.add(bus.commandOutcome$.subscribe((outcome) => {
-        const boundary = this.boundary(outcome.playerNumber);
-        const boundaryStateBefore = this.facts.length < MAX_FACTS ? this.sampleBoundaryState(outcome.playerNumber) : undefined;
-        this.pendingCommands.observeOutcome(outcome, boundary.tick);
-        this.unspentClaims.observeOutcome(outcome);
-        this.append({ ...boundary, kind: "outcome", outcome, boundaryStateBefore,
-          scheduledTick: outcome.kind === "dispatched" ? outcome.tick : null });
-      }));
-      this.subscriptions.add(bus.command$.subscribe((command) => this.append({
-        ...this.boundary(command.playerNumber), kind: "command_delivered", command
-      })));
-      this.subscriptions.add(playerChanged.on.subscribe((event) => {
-        if (event.property !== "resource.added" && event.property !== "resource.removed") return;
-        const playerNumber = event.data.playerNumber;
-        if (playerNumber === undefined) return;
-        const after = this.resources(playerNumber);
-        const before = this.lastBalances.get(playerNumber) ?? after;
-        const amounts = { ...event.data.playerStateData?.resources };
-        const sign = event.property === "resource.added" ? 1 : -1;
-        const balanceMatches = Object.values(ResourceType).every((resource) =>
-          after[resource] === before[resource] + sign * (amounts[resource] ?? 0));
-        this.lastBalances.set(playerNumber, after);
-        this.append({ ...this.boundary(playerNumber), kind: "resources_applied", action: event.property,
-          amounts, before, after, balanceMatches });
-      }));
-      this.subscriptions.add(tech.researchCompleted.subscribe(({ playerNumber, researchType }) => this.append({
-        ...this.boundary(playerNumber), kind: "research_completed", researchType
-      })));
-      this.subscriptions.add(index.actorRegistered.subscribe((actor) => {
-        const playerNumber = getActorComponent(actor, OwnerComponent)?.getOwner();
-        if (playerNumber !== undefined && actor.scene === this.scene) this.append({
-          ...this.boundary(playerNumber), kind: "actor_registered", actor: captureAiRuntimeCreatedActor(actor),
-          snapshotRestoreInProgress: isSnapshotApplyInProgress(this.scene)
-        });
-        this.watchQueue(actor);
-      }));
-      this.subscriptions.add(index.actorUnregistered.subscribe((actor) => {
-        const playerNumber = getActorComponent(actor, OwnerComponent)?.getOwner();
-        const actorId = getActorComponent(actor, IdComponent)?.id;
-        if (playerNumber !== undefined && actorId) this.append({
-          ...this.boundary(playerNumber), kind: "actor_unregistered", actorId, objectName: actor.name
-        });
-        this.queueSubscriptions.get(actor)?.unsubscribe();
-        this.queueSubscriptions.delete(actor);
-        this.spatialCapture.unwatchActor(actor);
-      }));
+      this.subscriptions.add(
+        bus.commandOutcome$.subscribe((outcome) => {
+          const boundary = this.boundary(outcome.playerNumber);
+          const boundaryStateBefore =
+            this.facts.length < MAX_FACTS ? this.sampleBoundaryState(outcome.playerNumber) : undefined;
+          this.pendingCommands.observeOutcome(outcome, boundary.tick);
+          this.unspentClaims.observeOutcome(outcome);
+          this.append({
+            ...boundary,
+            kind: "outcome",
+            outcome,
+            boundaryStateBefore,
+            scheduledTick: outcome.kind === "dispatched" ? outcome.tick : null
+          });
+        })
+      );
+      this.subscriptions.add(
+        bus.command$.subscribe((command) =>
+          this.append({
+            ...this.boundary(command.playerNumber),
+            kind: "command_delivered",
+            command
+          })
+        )
+      );
+      this.worldAuthority = new AiRuntimeProductionWorldCapture(scene, {
+        resources: (player) => this.resources(player),
+        boundary: (player) => this.boundary(player),
+        append: (fact) => this.append(fact),
+        watchQueue: (actor) => this.watchQueue(actor),
+        unwatchActor: (actor) => {
+          this.queueSubscriptions.get(actor)?.unsubscribe();
+          this.queueSubscriptions.delete(actor);
+          this.spatialCapture.unwatchActor(actor);
+        }
+      });
       // Components can finish initialization after index registration. This test-only scan attaches missing listeners.
-      this.subscriptions.add(ticks.tick$.subscribe(() => {
-        this.resourceCoverage.tick(ticks.currentTick);
-        try { this.recipientResources.reconcile(); } catch { this.resourceCoverage.lose("recipient_reconcile_failed"); }
-        index.getAllIdActors().forEach((actor) => this.watchQueue(actor));
-      }));
+      this.subscriptions.add(
+        ticks.tick$.subscribe(() => {
+          this.resourceCoverage.tick(ticks.currentTick);
+          try {
+            this.recipientResources.reconcile();
+          } catch {
+            this.resourceCoverage.lose("recipient_reconcile_failed");
+          }
+          index.getAllIdActors().forEach((actor) => this.watchQueue(actor));
+        })
+      );
       initialActors.forEach((actor) => this.watchQueue(actor));
       scene.events.once(Phaser.Scenes.Events.SHUTDOWN, this.dispose, this);
       scene.events.once(Phaser.Scenes.Events.DESTROY, this.dispose, this);
     } catch (error) {
       this.resourceCoverage.lose("capture_installation_failed");
-      try { this.dispose(); } catch { /* Preserve the original installation error after owned cleanup. */ }
+      try {
+        this.dispose();
+      } catch {
+        /* Preserve the original installation error after owned cleanup. */
+      }
       throw error;
     }
   }
 
   /** Appends one detached snapshot at a settled decision boundary; tick zero permits no committed AI input yet. */
-  capture(playerNumber: number): AiRuntimeProductionCaptureV1 {
+  capture(playerNumber: number, latestTick?: number): AiRuntimeProductionCaptureV1 {
+    if (latestTick !== undefined) {
+      const clock = getSceneService(this.scene, SimulationTickService);
+      if (clock?.currentTick === 0 && clock.isPaused) this.worldAuthority?.syncSetupBalances();
+      this.proof.arm(playerNumber, latestTick);
+    }
     return this.captureBoundary(playerNumber, true);
   }
 
@@ -187,45 +216,29 @@ export class AiRuntimeProductionCapture {
 
   private captureBoundary(playerNumber: number, requireDecision: boolean): AiRuntimeProductionCaptureV1 {
     if (this.disposed) throw new Error("production_capture_disposed");
-    try { return this.readBoundary(playerNumber, requireDecision); }
-    catch (error) { this.resourceCoverage.lose("boundary_read_failed"); throw error; }
+    try {
+      return this.readBoundary(playerNumber, requireDecision);
+    } catch (error) {
+      this.resourceCoverage.lose("boundary_read_failed");
+      throw error;
+    }
   }
 
   private readBoundary(playerNumber: number, requireDecision: boolean): AiRuntimeProductionCaptureV1 {
     this.recipientResources.reconcile();
     if (isSnapshotApplyInProgress(this.scene)) this.resourceCoverage.lose("snapshot_restore");
-    const tick = getSceneService(this.scene, SimulationTickService)?.currentTick ?? this.startedTick;
-    const controller = requireDecision
-      ? getSceneSystem(this.scene, AiPlayerHandler)?.getAiPlayerController(playerNumber) : undefined;
-    if (requireDecision && tick > 0 && (!controller || !controller.isDecisionBoundarySettled())) {
-      throw new Error("production_capture_boundary_unsettled");
-    }
-    const actors = (getSceneService(this.scene, ActorIndexSystem)?.getOwnedActors(playerNumber) ?? [])
-      .filter((actor) => actor.scene === this.scene && actor.active && !getActorComponent(actor, HealthComponent)?.killed)
-      .sort((a, b) => (getActorComponent(a, IdComponent)?.id ?? "").localeCompare(getActorComponent(b, IdComponent)?.id ?? ""));
-    actors.forEach((actor) => this.watchQueue(actor));
-    const queues = actors.flatMap((actor) => {
-      const queue = captureAiRuntimeProductionQueue(actor, this.identify);
-      return queue ? [queue] : [];
-    });
-    const state = controller?.getBrainState();
-    const pending = this.pendingCommands.snapshot(playerNumber);
-    const snapshot = {
-      tick, resourceCoverage: this.resourceCoverage.read(), afterSequence: this.facts.reduce((sequence, fact) =>
-        fact.playerNumber === playerNumber ? fact.sequence : sequence, 0),
-      observation: controller?.getCommittedObservation() ?? null,
-      capabilityCatalog: controller?.getCommittedCapabilityCatalog() ?? null,
-      world: captureAiRuntimeProductionWorld(this.scene, playerNumber, actors),
-      ownedActors: actors.flatMap((actor) => {
-        const actorId = getActorComponent(actor, IdComponent)?.id;
-        return actorId ? [{ actorId, objectName: actor.name }] : [];
-      }),
-      economyProduction: state?.economyProduction ?? null, reservations: state?.reservations ?? [],
+    const { snapshot, pending } = captureAiRuntimeProductionSnapshot(this.scene, playerNumber, requireDecision, {
+      startedTick: this.startedTick,
+      afterSequence: this.facts.reduce(
+        (sequence, fact) => (fact.playerNumber === playerNumber ? fact.sequence : sequence),
+        0
+      ),
       resources: this.resources(playerNumber),
-      pendingCommands: pending.commands, pendingResourceClaims: pending.resources,
-      obligations: projectAiProductionObligations(actors.flatMap((actor) => getActorComponent(actor, QueueComponent)?.allItems ?? [])),
-      queues, completedResearch: [...(getSceneService(this.scene, TechTreeService)?.getPlayerResearch(playerNumber) ?? [])].sort()
-    } satisfies AiRuntimeProductionCaptureV1["snapshots"][number];
+      resourceCoverage: this.resourceCoverage.read(),
+      pendingCommands: this.pendingCommands,
+      identify: this.identify,
+      watchQueue: (actor) => this.watchQueue(actor)
+    });
     const snapshots = this.snapshots.get(playerNumber) ?? [];
     if (snapshots.length < MAX_SNAPSHOTS) snapshots.push(structuredClone(snapshot));
     else {
@@ -234,20 +247,36 @@ export class AiRuntimeProductionCapture {
     }
     this.snapshots.set(playerNumber, snapshots);
     return structuredClone({
-      schemaVersion: 1, kind: "production_authority_capture", startedTick: this.startedTick, playerNumber,
+      schemaVersion: 1,
+      kind: "production_authority_capture",
+      startedTick: this.startedTick,
+      playerNumber,
+      ...this.proof.read(playerNumber),
       droppedFactCount: this.factDrops.get(playerNumber) ?? 0,
       droppedSnapshotCount: this.snapshotDrops.get(playerNumber) ?? 0,
       initialConstruction: this.initialConstruction.get(playerNumber),
       resourceCoverage: this.resourceCoverage.read(),
       resourceIntervalDeclaration: this.resourceIntervalDeclaration,
-      gaps: ["resource_item_attribution", "queue_resource_runtime_authority_unverified",
-        "pending_dispatch_before_capture_or_restore", "navigation_placement_authority",
-        "pre_registration_queue_events", "capture_local_identity_restore", "initial_paid_item_provenance",
-        "decision_snapshot_cadence", ...pending.gaps],
-      facts: this.facts.filter((fact) => fact.playerNumber === playerNumber), snapshots,
-      recipientResourceFacts: this.facts.filter((fact) =>
-        fact.kind === "recipient_resources_installed" || fact.kind === "recipient_resource_mutation" ||
-        fact.kind === "resource_input_read" || fact.kind === "resource_need_fence")
+      gaps: [
+        "resource_item_attribution",
+        "queue_resource_runtime_authority_unverified",
+        "pending_dispatch_before_capture_or_restore",
+        "navigation_placement_authority",
+        "pre_registration_queue_events",
+        "capture_local_identity_restore",
+        "initial_paid_item_provenance",
+        "decision_snapshot_cadence",
+        ...pending.gaps
+      ],
+      facts: this.facts.filter((fact) => fact.playerNumber === playerNumber),
+      snapshots,
+      recipientResourceFacts: this.facts.filter(
+        (fact) =>
+          fact.kind === "recipient_resources_installed" ||
+          fact.kind === "recipient_resource_mutation" ||
+          fact.kind === "resource_input_read" ||
+          fact.kind === "resource_need_fence"
+      )
     } satisfies AiRuntimeProductionCaptureV1);
   }
 
@@ -256,13 +285,15 @@ export class AiRuntimeProductionCapture {
     if (this.disposed) return;
     this.disposed = true;
     this.resourceCoverage.lose("capture_disposed");
+    this.proof.dispose();
+    this.queueAuthority?.dispose();
+    this.worldAuthority?.dispose();
     this.recipientResources?.dispose();
     this.resourceInputs?.dispose();
     this.spatialCapture?.dispose();
     this.subscriptions.unsubscribe();
     this.queueSubscriptions.forEach((subscription) => subscription.unsubscribe());
     this.queueSubscriptions.clear();
-    this.lastBalances.clear();
     this.initialConstruction?.clear();
     this.snapshots.clear();
     this.facts.length = 0;
@@ -270,10 +301,6 @@ export class AiRuntimeProductionCapture {
     this.unspentClaims.dispose();
     this.scene.events.off(AI_DECISION_DISPATCH_EVENT, this.observeDecision, this);
     this.scene.events.off(AI_INTENT_COMMAND_DISPATCH_EVENT, this.observeDispatch, this);
-    this.scene.events.off(QUEUE_MUTATION_EVENT, this.observeMutation, this);
-    this.scene.events.off(QUEUE_COMPLETION_AUTHORITY_EVENT, this.observeCompletion, this);
-    this.scene.events.off(QUEUE_PROGRESS_EVENT, this.observeProgress, this);
-    this.scene.events.off(QUEUE_RESOURCE_EMISSION_EVENT, this.observeQueueResource, this);
     this.scene.events.off(CONSTRUCTION_AUTHORITY_EVENT, this.observeConstruction, this);
     this.scene.events.off(Phaser.Scenes.Events.SHUTDOWN, this.dispose, this);
     this.scene.events.off(Phaser.Scenes.Events.DESTROY, this.dispose, this);
@@ -296,14 +323,17 @@ export class AiRuntimeProductionCapture {
     if (this.disposed || actor.scene !== this.scene || this.queueSubscriptions.has(actor)) return;
     const queue = getActorComponent(actor, QueueComponent);
     if (!queue) return;
-    this.queueSubscriptions.set(actor, queue.queueChangedObservable.subscribe(() => {
-      const playerNumber = getActorComponent(actor, OwnerComponent)?.getOwner();
-      const captured = captureAiRuntimeProductionQueue(actor, this.identify);
-      if (playerNumber !== undefined && captured) {
-        this.unspentClaims.observeQueue(playerNumber, captured);
-        this.append({ ...this.boundary(playerNumber), kind: "queue_changed", queue: captured });
-      }
-    }));
+    this.queueSubscriptions.set(
+      actor,
+      queue.queueChangedObservable.subscribe(() => {
+        const playerNumber = getActorComponent(actor, OwnerComponent)?.getOwner();
+        const captured = captureAiRuntimeProductionQueue(actor, this.identify);
+        if (playerNumber !== undefined && captured) {
+          this.unspentClaims.observeQueue(playerNumber, captured);
+          this.append({ ...this.boundary(playerNumber), kind: "queue_changed", queue: captured });
+        }
+      })
+    );
   }
 
   private resources(playerNumber: number): Record<ResourceType, number> {
@@ -317,77 +347,33 @@ export class AiRuntimeProductionCapture {
     if (this.disposed) return;
     const unspentClaimsBeforeSelection = this.unspentClaims.snapshot(decision.identity.playerNumber);
     this.unspentClaims.observeDecision(decision);
-    this.append({ ...this.boundary(decision.identity.playerNumber), kind: "decision_selected", decision,
-      unspentClaimsBeforeSelection });
+    this.append({
+      ...this.boundary(decision.identity.playerNumber),
+      kind: "decision_selected",
+      decision,
+      unspentClaimsBeforeSelection
+    });
   };
 
   private sampleBoundaryState(playerNumber: number, exhaustedProgressItem?: UnifiedQueueItem) {
-    return projectAiRuntimeProductionBoundaryState(this.scene, playerNumber, this.pendingCommands, this.identify,
-      this.unspentClaims.snapshot(playerNumber), exhaustedProgressItem);
+    return projectAiRuntimeProductionBoundaryState(
+      this.scene,
+      playerNumber,
+      this.pendingCommands,
+      this.identify,
+      this.unspentClaims.snapshot(playerNumber),
+      exhaustedProgressItem
+    );
   }
 
   private readonly observeDispatch = (event: AiIntentCommandDispatchEvent): void => {
     if (this.disposed) return;
     const boundary = this.boundary(event.playerNumber);
-    const boundaryStateBefore = this.facts.length < MAX_FACTS ? this.sampleBoundaryState(event.playerNumber) : undefined;
+    const boundaryStateBefore =
+      this.facts.length < MAX_FACTS ? this.sampleBoundaryState(event.playerNumber) : undefined;
     this.pendingCommands.observeDispatch(event, boundary.tick);
     this.unspentClaims.observeDispatch(event);
     this.append({ ...boundary, kind: "intent_dispatch", event, boundaryStateBefore });
-  };
-
-  /** The live item can be outside the queue; projecting now preserves its actual handle identity and lineage. */
-  private readonly observeQueueResource = (event: QueueResourceEmissionEvent): void => {
-    if (this.disposed) return;
-    const boundary = this.boundary(event.scope.playerNumber);
-    const resource = projectAiRuntimeQueueResource(event, this.identify, boundary.tick);
-    this.unspentClaims.observeResource(event.scope.playerNumber, resource);
-    this.append({ ...boundary, kind: "queue_resource", resource });
-  };
-
-  /** Actual creator/tech authority, sampled separately from prior removal and later native terminal reporting. */
-  private readonly observeCompletion = (event: QueueCompletionAuthorityEvent): void => {
-    if (this.disposed) return;
-    const playerNumber = getActorComponent(event.producer, OwnerComponent)?.getOwner();
-    if (playerNumber === undefined) return;
-    this.append({ ...this.boundary(playerNumber), kind: "queue_completion",
-      completion: projectAiRuntimeQueueCompletion(event, this.identify) });
-  };
-
-  /** Earliest physical insertion transfers future charges; removal callbacks retain their actual terminal ordering. */
-  private readonly observeMutation = (event: QueueMutationEvent): void => {
-    if (this.disposed) return;
-    const playerNumber = getActorComponent(event.producer, OwnerComponent)?.getOwner();
-    if (playerNumber === undefined) return;
-    const mutation = projectAiRuntimeQueueMutation(event, this.identify);
-    if (event.operation === "enqueue" && event.phase === "after") {
-      const queue = captureAiRuntimeProductionQueue(event.producer, this.identify);
-      if (queue) this.unspentClaims.observeQueue(playerNumber, queue);
-    }
-    // A completing head has already consumed its actual last progress attempt before this splice.
-    const exhausted = event.operation === "complete_remove" && event.phase === "before" && event.item.remainingTime === 0
-      ? event.item : undefined;
-    this.append({ ...this.boundary(playerNumber), kind: "queue_mutation", mutation }, exhausted);
-  };
-
-  /** Samples the actual live head after shared decrement, before progress subscribers or async completion can mutate it. */
-  private readonly observeProgress = (event: QueueProgressEvent): void => {
-    if (this.disposed) return;
-    const playerNumber = getActorComponent(event.producer, OwnerComponent)?.getOwner();
-    if (playerNumber === undefined) return;
-    let queue: ReturnType<typeof captureAiRuntimeProductionQueue> = null;
-    try { queue = captureAiRuntimeProductionQueue(event.producer, this.identify); }
-    catch { /* Missing authority stays explicit. */ }
-    const itemId = queue ? this.identify(queue.actorId, event.item) : null;
-    const lane = queue?.lanes.find((candidate) => candidate.items[0]?.itemId === itemId);
-    const item = lane?.items[0] ?? null;
-    const progress = {
-      attemptId: event.attemptId, phase: event.phase, actorId: queue?.actorId ?? null, item,
-      laneId: lane?.laneId ?? null, deltaMs: event.deltaMs, remainingBeforeMs: event.remainingBeforeMs,
-      snapshotRestoreInProgress: isSnapshotApplyInProgress(this.scene),
-      gaps: item ? [] : ["production_progress_live_head_missing"]
-    };
-    const exhausted = item && event.phase === "advanced" && event.item.remainingTime === 0 ? event.item : undefined;
-    this.append({ ...this.boundary(playerNumber), kind: "queue_progress", progress }, exhausted);
   };
 
   private readonly observeConstruction = (event: ConstructionAuthorityEvent): void => {
@@ -395,9 +381,22 @@ export class AiRuntimeProductionCapture {
     const { site: liveSite, ...record } = event;
     const site = captureAiRuntimeCreatedActor(liveSite);
     if (site.playerNumber === null) return;
-    this.append({ ...this.boundary(site.playerNumber), kind: "construction_authority",
-      construction: { ...record, site, clockTick: getSceneService(this.scene, SimulationTickService)?.currentTick ?? null,
-        sceneActive: this.scene.sys?.isActive() ?? false } });
+    this.unspentClaims.observeConstruction(site.playerNumber, {
+      ...record,
+      site,
+      clockTick: getSceneService(this.scene, SimulationTickService)?.currentTick ?? null,
+      sceneActive: this.scene.sys?.isActive() ?? false
+    });
+    this.append({
+      ...this.boundary(site.playerNumber),
+      kind: "construction_authority",
+      construction: {
+        ...record,
+        site,
+        clockTick: getSceneService(this.scene, SimulationTickService)?.currentTick ?? null,
+        sceneActive: this.scene.sys?.isActive() ?? false
+      }
+    });
   };
 
   private boundary(playerNumber: number) {
@@ -406,9 +405,16 @@ export class AiRuntimeProductionCapture {
 
   private append(fact: AiRuntimeProductionFactV1, exhaustedProgressItem?: UnifiedQueueItem): void {
     if (this.disposed) return;
-    appendAiRuntimeProductionFact(this.facts, fact, this.nextSequence++,
-      () => this.sampleBoundaryState(fact.playerNumber, exhaustedProgressItem), this.resourceCoverage.lose, () => {
+    this.proof.observe({ ...fact, sequence: this.nextSequence });
+    appendAiRuntimeProductionFact(
+      this.facts,
+      fact,
+      this.nextSequence++,
+      () => this.sampleBoundaryState(fact.playerNumber, exhaustedProgressItem),
+      this.resourceCoverage.lose,
+      () => {
         this.factDrops.set(fact.playerNumber, (this.factDrops.get(fact.playerNumber) ?? 0) + 1);
-      });
+      }
+    );
   }
 }

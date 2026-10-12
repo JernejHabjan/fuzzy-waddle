@@ -70,7 +70,9 @@ describe("installAiRuntimeProductionCapture", () => {
     installAiRuntimeProductionCapture(scene);
     expect(AiRuntimeProductionCapture).toHaveBeenCalledTimes(1);
     window.__fuzzyWaddleAiRuntimeBrowserTestV1?.productionCapture?.capture(2);
-    expect(capture).toHaveBeenCalledWith(2);
+    expect(capture).toHaveBeenCalledWith(2, undefined);
+    window.__fuzzyWaddleAiRuntimeBrowserTestV1?.productionCapture?.capture(2, 400);
+    expect(capture).toHaveBeenLastCalledWith(2, 400);
     events.emit(Phaser.Scenes.Events.DESTROY);
     expect(window.__fuzzyWaddleAiRuntimeBrowserTestV1?.productionCapture).toBeUndefined();
   });
