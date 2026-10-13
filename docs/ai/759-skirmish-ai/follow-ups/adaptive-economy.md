@@ -17,7 +17,7 @@ Read only the following during the authoring sweep. Doctor/context and test exec
 2. `ai-macro-manager.ts`, `ai-resource-forecast.ts`, `ai-worker-recovery.ts`, `ai-skirmish-defense.ts`, and adjacent specs;
 3. the economy, defense, combat, runtime-E2E, and debug documents linked by the AI documentation index;
 4. SEQ-01/02 plus the smallest applicable ECO/PRO/DEF fixture rows;
-5. the latest retained evidence in `docs/ai/759-skirmish-ai/HANDOFF.md`.
+5. selected economy/victory entries in `../REMAINING-WORK.md` and relevant production facts in `../CURRENT-EVIDENCE.md`.
 
 The current six-worker value is an opening/recovery floor. It must not remain the effective long-game workforce target.
 The current 600-tick forecast prices unmet demand but does not yet turn dated income need, saturation, and threat into a

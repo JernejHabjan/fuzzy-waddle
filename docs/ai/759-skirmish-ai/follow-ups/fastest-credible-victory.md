@@ -15,7 +15,8 @@ Read only:
 1. `libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/architecture/combat-and-strategy.md`
 2. STRAT-05–10, RAID-01/02, SCOUT-01–05, SEQ-01/02, and C-01–06 in the AI testing docs
 3. `ai-skirmish-offense.ts`, `ai-adaptation-manager.ts`, `ai-macro-manager.ts`, and their focused specs
-4. the latest SEQ report in `docs/ai/759-skirmish-ai/HANDOFF.md`
+4. full-victory/raid-recovery entries in `../REMAINING-WORK.md`; exact historical SEQ provenance only when needed
+   under `../archive/HANDOFF-history.md#active-evidence-and-boundaries`
 5. related issue #654 for event-driven opponent weakness evidence; do not duplicate stale legacy-controller state
 
 Doctor/context and runtime reproduction wait for the handoff's final gate during the current authoring sweep.

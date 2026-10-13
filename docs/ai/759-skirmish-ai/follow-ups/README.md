@@ -4,7 +4,9 @@ Each open subissue has one cold-start plan. The GitHub issue owns status and dis
 implementation route, source anchors, evidence, and completion boundary. Product behavior remains documented beside the
 AI controller.
 
-**Current execution inventory:** [remaining work](../REMAINING-WORK.md) groups the original scope into seven finite
+**Start with [HANDOFF.md](../HANDOFF.md):** “continue” resumes its next unfinished step. Load only the selected package
+and issue sections; historical evidence is on demand. The [scenario inventory](../SCENARIO-INVENTORY.md) is a lookup,
+not a mandatory startup read. [Remaining work](../REMAINING-WORK.md) groups the original scope into seven finite
 packages and lists every scenario's concrete outcome, registration gap and next action. Start there and in HANDOFF's
 quick resume. Existing estimates and authoring-only test deferrals in historical packets are not current policy.
 Use existing controls before writing replacements; no new diagnostic machinery/tooling prerequisite is scheduled.

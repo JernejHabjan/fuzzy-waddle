@@ -22,7 +22,8 @@ Read only:
 2. the SEQ and D-06 rows in `tools/ai/fixtures/skirmish-v1.json`
 3. `tools/ai/fixtures/continuous-land-runtime.json`
 4. `tools/ai/fixtures/baseline-v1.json` and `difficulty-calibration-v1.json`
-5. the latest compact SEQ report recorded in `docs/ai/759-skirmish-ai/HANDOFF.md`
+5. the full-victory/raid-recovery entries in `../REMAINING-WORK.md`; for exact older SEQ provenance only,
+   the relevant entries under `../archive/HANDOFF-history.md#active-evidence-and-boundaries`
 
 The pinned baseline is `de47f482889db30420692bf4406fba463d7db296`. Never substitute candidate code when the
 baseline checkout/adapter fails.

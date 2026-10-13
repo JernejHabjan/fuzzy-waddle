@@ -10,7 +10,8 @@ description: Implement, diagnose or validate the Probable Waffle skirmish AI, de
 1. Read the [AI documentation index](../../../../libs/games/probable-waffle/gameplay/src/lib/player/ai-controller/docs/README.md). For unfinished #759 work, read only [HANDOFF.md](../../../../docs/ai/759-skirmish-ai/HANDOFF.md).
    When a #759 subissue has a linked cold-start plan, read that plan instead of reconstructing its scope from the parent handoff.
    The #824 repository-wide efficiency/tooling gate and #825 current-content domain/transport foundation are complete.
-   A generic request to continue draft PR #814 follows the first active row in the handoff progress grid. Optional
+   A generic “continue” request resumes the handoff's current unfinished step, then the next dependency-ready package.
+   Read only its selected plan/scenario/evidence sections; never load the archive or full historical ledger by default. Optional
    island-map issue #822 is not a core dependency or merge gate.
 2. Read only the named manifest rows/fixtures implicated by the task. Use the [RTS source index](../fuzzy-waddle-phaser/references/rts-source-index.md) once, then navigate exact symbols and adjacent specs.
    If a JetBrains semantic tool is available, probe it once with a known symbol and use it for bounded symbol/call
