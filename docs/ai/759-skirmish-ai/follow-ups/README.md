@@ -8,6 +8,10 @@ AI controller.
 packages and lists every scenario's concrete outcome, registration gap and next action. Start there and in HANDOFF's
 quick resume. Existing estimates and authoring-only test deferrals in historical packets are not current policy.
 Use existing controls before writing replacements; no new diagnostic machinery/tooling prerequisite is scheduled.
+Group related owners/issues across packages wherever dependencies permit; package boundaries do not require separate
+sessions. Batch reports use a few **Done / why** and **Next / why** bullets plus labeled completed/remaining percentages
+with exact counts, separating registration from validated outcomes. The combined machinery review/removal is the last
+implementation/review task after gameplay, integration, calibration, debug and legacy work; earlier verdicts are evidence.
 
 Read the handoff's current execution policy first: final-gate tests, simulations, lint, builds and doctor/context
 are active at coherent verification boundaries. Pair #815/#816 by behavior family

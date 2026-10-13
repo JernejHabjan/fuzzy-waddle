@@ -6,6 +6,16 @@ implementation routes live in the [subissue plans](follow-ups/README.md). Git/PR
 
 ## Quick resume
 
+**Batch/report policy (user, 2026-10-13):** collect related known issues and coverage gaps across the finite queue,
+then implement and verify shared-owner slices together wherever dependencies permit. Avoid repeat sessions on the
+same economy/movement/queue/recovery topic. End each batch with a few **Done / why** bullets, labeled completed/remaining
+percentages with counts, and a few **Next / why** bullets; include the grouped scope, model/effort and push/pause status.
+See [report rules and measured baseline](REMAINING-WORK.md#required-batch-report-and-progress-percentages): pure
+registration 50.5% complete / 49.5% remaining; supported runtime registration 16.4% / 83.6%. These are coverage measures,
+not overall AI completion. Reconcile existing scenario evidence as packages progress; do not invent a global percentage.
+The combined machinery necessity/removal review is **the last implementation/review task**, after required gameplay,
+integration, calibration, debug and legacy work. Earlier verdicts are retained evidence; no interim removal batch is scheduled.
+
 **Finite remaining queue (user, 2026-10-13):** resume from [REMAINING-WORK.md](REMAINING-WORK.md),
 not historical stage narration. It inventories all 121 existing scenario setups/outcomes, current fixture registrations,
 known production failures and seven grouped work packages. Fresh catalog rendering finds 55 missing pure registrations
@@ -25,7 +35,8 @@ checks remain active. Diagnostic performance needs only a brief sanity check, sa
 Remove further dedicated profiling and strict performance certification from the active gate; revisit only a concrete
 slowdown. Keep correctness coverage. Commit/push and pause at each boundary; actual host model/effort unknown.
 Next recommendation GPT-6.1 Sol / high for remaining production recovery and release authority. The
-[end-of-gate machinery necessity review](#end-of-gate-machinery-necessity-review) is in_progress; see the scoped verdicts below.
+[end-of-gate machinery necessity review](#end-of-gate-machinery-necessity-review) is deferred to the final task;
+earlier scoped verdicts remain below as evidence.
 
 **Execution efficiency (user, 2026-10-11):** use the skirmish skill's runtime-triage sequence: review affected
 arrival/cancellation/replacement, direct callers and cleanup before expensive matches; finish related controls/repairs
@@ -1064,7 +1075,8 @@ not block this gate.
 
 ## End-of-gate machinery necessity review
 
-User-requested review, **in_progress** (scoped verdicts 2026-10-13). No new profiling suite is required. The earlier
+User-requested review, **deferred to the last implementation/review task** under the 2026-10-13 policy.
+The scoped verdicts below are historical evidence, not an interim removal queue. No new profiling suite is required. The earlier
 C8 sanity check remains the performance boundary; current trajectories establish no paired speedup/token claim.
 
 | Machinery                                                           | Verdict / concrete consumer and value                                                                                                                                                                  | Limits / remaining action                                                                                                                            |

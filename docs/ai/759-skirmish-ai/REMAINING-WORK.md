@@ -48,6 +48,47 @@ Packages 2–4 can share implementation/context with package 1 where the same ow
 Local lifecycle preparation need not wait for combat; real socket cases depend on the multiplayer harness.
 Final legacy removal depends on parity evidence. Execute settled independent cases in family batches, not one chat per ID.
 
+**Batching policy (user, 2026-10-13):** before touching an owner, collect its known related failures, missing mappings
+and applicable negative/recovery controls across packages. Design and implement that coherent slice together; reuse
+the same fixtures and source context. Do not revisit economy, movement, queues or recovery in separate sessions when
+their dependencies permit one batch. Package numbers organize outcomes, not mandatory separate turns or model switches.
+Retain scoped evidence, then run affected checks and the grouped gate at a stable boundary. Separate work only for a
+real dependency, unresolved design decision or agreed pause boundary, and state the reason in the report.
+
+**Machinery review is last (user, 2026-10-13):** complete required gameplay/scenario, multiplayer/lifecycle,
+calibration, debug and legacy work first. Within package 7, the final implementation/review task is the combined
+keep/simplify/remove decision for diagnostic machinery. Earlier scoped verdicts are historical evidence, not an active
+cleanup queue. Do not schedule interim machinery-removal batches. Recheck evidence affected by final simplification,
+then perform closure audits and publication; do not start another expansion cycle.
+
+## Required batch report and progress percentages
+
+Every implementation batch ends with these short sections, using a few bullets in each:
+
+- **Done / why:** two to four bullets naming changed behavior, its purpose and the evidence obtained. Say whether
+  something was authored, tested or fully validated; do not equate those states.
+- **Progress:** current package and selected IDs; percentage completed and remaining with the numerator/denominator,
+  source/evidence date and metric label. Include newly closed outcomes and still-failing/missing items.
+- **Next / why:** two to four bullets naming the next concrete repairs/outcomes and why they matter. State which
+  related work will be batched together, then the recommended model/effort and publication/pause status.
+
+Use separate percentages for fixture registration and validated behavior. Calculate from the existing manifest and
+retained complete evidence, not commit counts, elapsed sessions, helper counts or guesses. Four content-deferred runtime
+rows are excluded from the supported runtime denominator and reported separately. Partial branch passes do not validate
+an entire scenario. Invalidate only outcomes affected by later source/fixture changes, with a reason.
+
+| Measured coverage at this snapshot | Completed | Remaining | What the number means |
+| --- | --- | --- | --- |
+| Pure fixture registration | 56/111 = **50.5%** | 55/111 = **49.5%** | Required pure scenarios with registered fixtures; not behavior completion |
+| Supported runtime recipe registration | 19/116 = **16.4%** | 97/116 = **83.6%** | Runtime recipes connected; four island-content rows excluded; not behavior completion |
+| Scenario behavior validation | Not yet reconciled across the full manifest | Not yet measurable | Existing subset passes and failures are recorded, but no truthful overall completion percentage can yet be derived |
+
+During each selected package, reconcile its existing complete evidence into the row status and report its exact
+validated/required percentage as well as the registration figures. Reuse existing reports; do not build another metrics
+system or rerun unchanged passing controls merely to populate the inventory. Until a complete evidence tally exists,
+explicitly report overall behavior percentage as unavailable alongside the numeric coverage measures. Never present
+the registration percentage as the percentage of AI implementation completed or of engineering time remaining.
+
 ## Immediate production repair list
 
 1. **Army arrival:** prevent normal squad intake before a produced unit's queued rally becomes active; resolve
